@@ -54,5 +54,11 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\UnshieldSharp\UnshieldSharp\UnshieldSharp.csproj">
+      <Project>{39edc0b8-5e96-4a16-9104-2d0025836071}</Project>
+      <Name>UnshieldSharp</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,0 +1,3 @@
+[submodule "UnshieldSharp"]
+	path = UnshieldSharp
+	url = https://github.com/mnadareski/UnshieldSharp
