@@ -34,6 +34,20 @@ namespace BurnOutSharp
         /// </summary>
         /// <remarks>
         /// TODO: Sector scanning?
+        /// The following protections are known, but not detected:
+        /// - Alcatraz (http://www.kdg-mt.com/1/product_d_6.html)
+        /// - AlphaAudio (http://settec.net/eng/pro_cd.html)
+        /// - CopyLok / CodeLok (http://web.archive.org/web/20041215075727/http://www.panlok.com/codelok2.htm)
+        /// - CrypKey (http://www.crypkey.com/products/cdlock/cdmain.html)
+        /// - DBB (http://web.archive.org/web/20040604233815/www.wkit.com/sites/wkit/setup/eng/index.asp)
+        /// - FADE (http://www.codemasters.com/news/displayarticles.php?showarticle=500)
+        /// - LockBlocks (https://www.cdmediaworld.com/hardware/cdrom/cd_protections_lockblocks.shtml)
+        /// - MusicGuard (http://web.archive.org/web/20020606000647/http://www.musicguard.com)
+        /// - Phenoprotect (https://www.cdmediaworld.com/hardware/cdrom/cd_protections_phenoprotect.shtml)
+        /// - Roxxe (http://web.archive.org/web/20050309084802/http://www.roxxe.cz)
+        /// - SAFEAUDIO (https://www.cdmediaworld.com/hardware/cdrom/cd_protections_safeaudio.shtml)
+        /// - The Bongle (http://web.archive.org/web/19990508193708/www.hideseek.com/products.htm)
+        /// - The Copy-Protected CD (http://web.archive.org/web/19990508193708/www.hideseek.com/products.htm)
         /// </remarks>
         public static Dictionary<string, string> Scan(string path)
         {
@@ -1015,10 +1029,10 @@ namespace BurnOutSharp
             // CopyKiller
             mapping.Add("Autorun.dat", "CopyKiller");
 
-            // DiskGuard
-            mapping.Add("IOSLINK.VXD", "DiskGuard");
-            mapping.Add("IOSLINK.DLL", "DiskGuard");
-            mapping.Add("IOSLINK.SYS", "DiskGuard");
+            // DiscGuard
+            mapping.Add("IOSLINK.VXD", "DiscGuard");
+            mapping.Add("IOSLINK.DLL", "DiscGuard");
+            mapping.Add("IOSLINK.SYS", "DiscGuard");
 
             // DVD Crypt
             mapping.Add("DvdCrypt.pdb", "DVD Crypt");
@@ -1057,8 +1071,8 @@ namespace BurnOutSharp
             // MediaCloQ
             mapping.Add("sunncomm.ico", "MediaCloQ");
 
-            // MediaMax CD-3
-            mapping.Add("LaunchCd.exe", "MediaMax CD-3");
+            // MediaMax CD3
+            mapping.Add("LaunchCd.exe", "MediaMax CD3");
 
             // Origin
             mapping.Add("OriginSetup.exe", "Origin");
@@ -1114,9 +1128,9 @@ namespace BurnOutSharp
             mapping.Add("solidshield-cd.dll", "SolidShield");
             mapping.Add("c11prot.dll", "SolidShield");
 
-            // Softlock
-            mapping.Add("SOFTLOCKI.dat", "Softlock");
-            mapping.Add("SOFTLOCKC.dat", "Softlock");
+            // SoftLock
+            mapping.Add("SOFTLOCKI.dat", "SoftLock");
+            mapping.Add("SOFTLOCKC.dat", "SoftLock");
 
             // StarForce
             mapping.Add("protect.dll", "StarForce");
@@ -1255,8 +1269,8 @@ namespace BurnOutSharp
             // PE Compact 2 - Not a protection
             //mapping["PEC2"] = "PE Compact 2";
 
-            // Ring-Protech
-            mapping[(char)0x00 + "Allocator" + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00] = "Ring-Protech";
+            // Ring PROTECH
+            mapping[(char)0x00 + "Allocator" + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00] = "Ring PROTECH";
 
             // SafeLock
             mapping["SafeLock"] = "SafeLock";
