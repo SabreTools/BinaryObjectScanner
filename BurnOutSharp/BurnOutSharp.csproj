@@ -58,6 +58,7 @@
     <Compile Include="ProtectionFind.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="BurnOutSharp.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
