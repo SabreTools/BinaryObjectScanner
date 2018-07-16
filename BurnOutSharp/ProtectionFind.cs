@@ -242,32 +242,51 @@ namespace BurnOutSharp
                         + "i" + (char)0x00 + "b" + (char)0x00 + "r" + (char)0x00 + "a" + (char)0x00 + "r" + (char)0x00 + "y"))
                         return "SolidShield " + GetFileVersion(file);
 
-                    if ((position = FileContent.IndexOf("" + (char)0xEF + (char)0xBE + (char)0xAD + (char)0xDE)) > -1)
+                    if (FileContent.Contains("S" + (char)0x00 + "o" + (char)0x00 + "l" + (char)0x00 + "i" + (char)0x00 + "d" + (char)0x00
+                        + "s" + (char)0x00 + "h" + (char)0x00 + "i" + (char)0x00 + "e" + (char)0x00 + "l" + (char)0x00 + "d" + (char)0x00
+                        + " " + (char)0x00 + "L" + (char)0x00 + "i" + (char)0x00 + "b" + (char)0x00 + "r" + (char)0x00 + "a" + (char)0x00
+                        + "r" + (char)0x00 + "y")
+                        || FileContent.Contains("S" + (char)0x00 + "o" + (char)0x00 + "l" + (char)0x00 + "i" + (char)0x00 + "d" + (char)0x00
+                            + "s" + (char)0x00 + "h" + (char)0x00 + "i" + (char)0x00 + "e" + (char)0x00 + "l" + (char)0x00 + "d" + (char)0x00
+                            + " " + (char)0x00 + "A" + (char)0x00 + "c" + (char)0x00 + "t" + (char)0x00 + "i" + (char)0x00 + "v" + (char)0x00
+                            + "a" + (char)0x00 + "t" + (char)0x00 + "i" + (char)0x00 + "o" + (char)0x00 + "n" + (char)0x00 + " " + (char)0x00
+                            + "L" + (char)0x00 + "i" + (char)0x00 + "b" + (char)0x00 + "r" + (char)0x00 + "a" + (char)0x00 + "r" + (char)0x00 + "y"))
                     {
-                        if (FileContent.Substring(position + 5, 3) == "" + (char)0x00 + (char)0x00 + (char)0x00
-                            && FileContent.Substring(position + 16, 4) == "" + (char)0x00 + (char)0x10 + (char)0x00 + (char)0x00)
-                            return "SolidShield 1 (SolidShield EXE Wrapper)";
-                        else
-                        {
-                            string version = GetFileVersion(file);
-                            string desc = FileVersionInfo.GetVersionInfo(file).FileDescription.ToLower();
-                            if (!string.IsNullOrEmpty(version) && desc.Contains("solidshield"))
-                                return "SolidShield Core.dll " + version;
-                        }
+                        string companyName = FileVersionInfo.GetVersionInfo(file).CompanyName.ToLower();
+                        if (companyName.Contains("solidshield") || companyName.Contains("tages"))
+                            return "SolidShield Core.dll " + GetFileVersion(file);
                     }
 
-                    position = FileContent.IndexOf("" + (char)0xAD + (char)0xDE + (char)0xFE + (char)0xCA + (char)0x4);
-                    position = position == -1 ? FileContent.IndexOf("" + (char)0xAD + (char)0xDE + (char)0xFE + (char)0xCA + (char)0x5) : position;
-                    if (position > -1)
+                    if ((position = FileContent.IndexOf("" + (char)0xEF + (char)0xBE + (char)0xAD + (char)0xDE)) > -1)
                     {
-                        position--; // TODO: Verify this subtract
-                        if (FileContent.Substring(position + 5, 3) == "" + (char)0x00 + (char)0x00 + (char)0x00
-                            && FileContent.Substring(position + 16, 4) == "" + (char)0x00 + (char)0x10 + (char)0x00 + (char)0x00)
+                        var id1 = FileContent.Substring(position + 5, 3);
+                        var id2 = FileContent.Substring(position + 16, 4);
+
+                        if (id1 == "" + (char)0x00 + (char)0x00 + (char)0x00 && id2 == "" + (char)0x00 + (char)0x10 + (char)0x00 + (char)0x00)
+                            return "SolidShield 1 (SolidShield EXE Wrapper)";
+                        else if (id1 == ".o&" && id2 == "ÛÅ›¹")
+                            return "SolidShield 2 (SolidShield v2 EXE Wrapper)"; // TODO: Verify against other SolidShield 2 discs
+                    }
+
+                    if (FileContent.Contains("A" + (char)0x00 + "c" + (char)0x00 + "t" + (char)0x00 + "i" + (char)0x00 + "v" + (char)0x00
+                        + "a" + (char)0x00 + "t" + (char)0x00 + "i" + (char)0x00 + "o" + (char)0x00 + "n" + (char)0x00 + " " + (char)0x00
+                        + "M" + (char)0x00 + "a" + (char)0x00 + "n" + (char)0x00 + "a" + (char)0x00 + "g" + (char)0x00 + "e" + (char)0x00 + "r"))
+                    {
+                        string companyName = FileVersionInfo.GetVersionInfo(file).CompanyName.ToLower();
+                        if (companyName.Contains("solidshield") || companyName.Contains("tages"))
+                            return "SolidShield Activation Manager Module " + GetFileVersion(file);
+                    }
+
+                    if ((position = FileContent.IndexOf("" + (char)0xAD + (char)0xDE + (char)0xFE + (char)0xCA)) > -1)
+                    {
+                        if ((FileContent[position + 3] == (char)0x04 || FileContent[position + 3] == (char)0x05)
+                            && FileContent.Substring(position + 4, 3) == "" + (char)0x00 + (char)0x00 + (char)0x00
+                            && FileContent.Substring(position + 15, 4) == "" + (char)0x00 + (char)0x10 + (char)0x00 + (char)0x00)
                         {
-                            return "SolidShield 2";
+                            return "SolidShield 2 (SolidShield v2 EXE Wrapper)";
                         }
-                        else if (FileContent.Substring(position + 5, 3) == "" + (char)0x00 + (char)0x00 + (char)0x00
-                            && FileContent.Substring(position + 16, 4) == "" + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00)
+                        else if (FileContent.Substring(position + 4, 3) == "" + (char)0x00 + (char)0x00 + (char)0x00
+                            && FileContent.Substring(position + 15, 4) == "" + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00)
                         {
                             position = FileContent.IndexOf("T" + (char)0x00 + "a" + (char)0x00 + "g" + (char)0x00 + "e" + (char)0x00 + "s"
                                 + (char)0x00 + "S" + (char)0x00 + "e" + (char)0x00 + "t" + (char)0x00 + "u" + (char)0x00 + "p"
@@ -282,10 +301,13 @@ namespace BurnOutSharp
                             }
                             else
                             {
-                                return "SolidShield 2";
+                                return "SolidShield 2 (SolidShield v2 EXE Wrapper)";
                             }
                         }
                     }
+
+                    if ((position = FileContent.IndexOf("Solidshield")) > 0)
+                        return "SolidShield " + GetSolidShieldVersion(file, position);
 
                     // StarForce
                     if (FileContent.Contains("(" + (char)0x00 + "c" + (char)0x00 + ")" + (char)0x00 + " " + (char)0x00 + "P" + (char)0x00
@@ -581,6 +603,14 @@ namespace BurnOutSharp
                 return "SolidShield " + ScanInFile(file);
             else if (Path.GetFileName(file) == "c11prot.dll")
                 return "SolidShield " + ScanInFile(file);
+
+            // TAGES
+            if (Path.GetFileName(file) == "TagesClient.exe")
+                return "TAGES Activation Client " + GetFileVersion(file);
+            else if (Path.GetFileName(file) == "TagesSetup.exe")
+                return "TAGES Setup " + GetFileVersion(file);
+            else if (Path.GetFileName(file) == "TagesSetup_x64.exe")
+                return "TAGES Setup " + GetFileVersion(file);
 
             // WTM Copy Protection
             if (Path.GetFileName(file) == "Viewer.exe")
@@ -910,6 +940,21 @@ namespace BurnOutSharp
                 return "7." + (bytes[0] ^ 0x10).ToString("00") + "." + (bytes[1] ^ 0x10).ToString("0000");
                 //return "7.01-7.10"
             }
+        }
+
+        private static string GetSolidShieldVersion(string file, int position)
+        {
+            BinaryReader br = new BinaryReader(new StreamReader(file).BaseStream, Encoding.Default);
+            br.BaseStream.Seek(position + 12, SeekOrigin.Begin); // Begin reading after "Solidshield"
+            char version = br.ReadChar();
+            br.ReadByte();
+            char subVersion = br.ReadChar();
+            br.ReadByte();
+            char subsubVersion = br.ReadChar();
+            br.ReadByte();
+            char subsubsubVersion = br.ReadChar();
+            br.Close();
+            return version + "." + subVersion + "." + subsubVersion + "." + subsubsubVersion;
         }
 
         private static string GetSysiphusVersion(string file, int position)
