@@ -1027,7 +1027,7 @@ namespace BurnOutSharp
             mapping.Add("CHKCDXNT.DLL", "CD-X");
 
             // CopyKiller
-            mapping.Add("Autorun.dat", "CopyKiller");
+            // mapping.Add("Autorun.dat", "CopyKiller");
 
             // DiscGuard
             mapping.Add("IOSLINK.VXD", "DiscGuard");
