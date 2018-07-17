@@ -32,6 +32,8 @@ namespace BurnOutSharp
         /// <summary>
         /// Scan a path to find any known copy protection(s)
         /// </summary>
+        /// <param name="path">Path to scan for protection(s)</param>
+        /// <returns>Dictionary of filename to protection mappings, if possible</returns>
         /// <remarks>
         /// TODO: Sector scanning?
         /// The following protections are known, but not detected:
