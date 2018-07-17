@@ -24,15 +24,15 @@ using System.Threading;
 
 namespace BurnOutSharp
 {
-    struct Section
+    internal static class EVORE
     {
-        public uint iVirtualSize;
-        public uint iVirtualOffset;
-        public uint iRawOffset;
-    }
+        private struct Section
+        {
+            public uint iVirtualSize;
+            public uint iVirtualOffset;
+            public uint iRawOffset;
+        }
 
-    public static class EVORE
-    {
         private const int WaitSeconds = 20;
 
         private static Process StartSafe(string file)
