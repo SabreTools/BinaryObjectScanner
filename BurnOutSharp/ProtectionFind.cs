@@ -56,46 +56,66 @@ namespace BurnOutSharp
             // Create mappings for checking against
             var mappings = CreateFilenameProtectionMapping();
 
-            // Get the lists of files to be used
-            string[] files = Directory.GetFiles(path, "*", SearchOption.AllDirectories);
-
-            // DVD-Movie-PROTECT
-            if (DVDMoviePROTECT(path, files))
-                protections[path] = "DVD-Movie-PROTECT";
-
-            // LaserLock
-            if (Directory.Exists(Path.Combine(path, "LASERLOK")))
-                protections[path] = "LaserLock";
-
-            // Protect DVD-Video
-            if (ProtectDVDVideo(path, files))
-                protections[path] = "Protect DVD-Video";
-
-            // Zzxzz
-            if (Directory.Exists(Path.Combine(path, "Zzxzz")))
-                protections[path] = "Zzxzz";
-
-            // Loop through all files and scan them
-            foreach (string file in files)
+            // If we have a file
+            if (File.Exists(path))
             {
                 // If the file is in the list of known files, add that to the protections found
-                if (mappings.ContainsKey(Path.GetFileName(file)))
-                    protections[file] = mappings[Path.GetFileName(file)];
+                if (mappings.ContainsKey(Path.GetFileName(path)))
+                    protections[path] = mappings[Path.GetFileName(path)];
 
                 // If the extension matches one of the known extension, add that to the protections found
-                if (mappings.ContainsKey(Path.GetExtension(file)))
-                    protections[file] = mappings[Path.GetExtension(file)];
+                if (mappings.ContainsKey(Path.GetExtension(path)))
+                    protections[path] = mappings[Path.GetExtension(path)];
 
                 // Now check to see if the file contains any additional information
-                string protectionname = ScanInFile(file)?.Replace("" + (char)0x00, "");
+                string protectionname = ScanInFile(path)?.Replace("" + (char)0x00, "");
                 if (!String.IsNullOrEmpty(protectionname))
-                    protections[file] = protectionname;
+                    protections[path] = protectionname;
+            }
+            // If we have a directory
+            else if (Directory.Exists(path))
+            {
+                // Get the lists of files to be used
+                string[] files = Directory.GetFiles(path, "*", SearchOption.AllDirectories);
+
+                // DVD-Movie-PROTECT
+                if (DVDMoviePROTECT(path, files))
+                    protections[path] = "DVD-Movie-PROTECT";
+
+                // LaserLock
+                if (Directory.Exists(Path.Combine(path, "LASERLOK")))
+                    protections[path] = "LaserLock";
+
+                // Protect DVD-Video
+                if (ProtectDVDVideo(path, files))
+                    protections[path] = "Protect DVD-Video";
+
+                // Zzxzz
+                if (Directory.Exists(Path.Combine(path, "Zzxzz")))
+                    protections[path] = "Zzxzz";
+
+                // Loop through all files and scan them
+                foreach (string file in files)
+                {
+                    // If the file is in the list of known files, add that to the protections found
+                    if (mappings.ContainsKey(Path.GetFileName(file)))
+                        protections[file] = mappings[Path.GetFileName(file)];
+
+                    // If the extension matches one of the known extension, add that to the protections found
+                    if (mappings.ContainsKey(Path.GetExtension(file)))
+                        protections[file] = mappings[Path.GetExtension(file)];
+
+                    // Now check to see if the file contains any additional information
+                    string protectionname = ScanInFile(file)?.Replace("" + (char)0x00, "");
+                    if (!String.IsNullOrEmpty(protectionname))
+                        protections[file] = protectionname;
+                }
             }
 
             // If we have an empty list, we need to take care of that
             if (protections.Count(p => !String.IsNullOrWhiteSpace(p.Value)) == 0)
             {
-                protections = null;
+                protections = new Dictionary<string, string>();
             }
 
             return protections;
