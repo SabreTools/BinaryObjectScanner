@@ -45,7 +45,7 @@ Below is a list of the protections that can be detected using this code:
 - Origin (partial)
 - ProtectDisc
 - Protect DVD-Video
-- PSX LibCrypt (partial)
+- PlayStation Anti-modchip (En/Jp, not "Red Hand")
 - Ring PROTECH
 - SafeCast
 - SafeDisc (all versions)

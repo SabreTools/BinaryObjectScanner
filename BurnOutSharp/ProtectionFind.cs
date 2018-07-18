@@ -99,6 +99,10 @@ namespace BurnOutSharp
                 if (ProtectDVDVideo(path, files))
                     protections[path] = "Protect DVD-Video";
 
+                // PSX Anti-modchip
+                if (PSXAntiModchip(path, files))
+                    protections[path] = "PlayStation Anti-modchip";
+
                 // Zzxzz
                 if (Directory.Exists(Path.Combine(path, "Zzxzz")))
                     protections[path] = "Zzxzz";
@@ -691,6 +695,31 @@ namespace BurnOutSharp
             return false;
         }
 
+        private static bool PSXAntiModchip(string path, string[] files)
+        {
+            if (files.Where(s => s.ToLower().EndsWith(".cnf")).Count() > 0)
+            {
+                foreach (string file in files)
+                {
+                    try
+                    {
+                        // Load the current file and check for specialty strings first
+                        StreamReader sr = new StreamReader(file, Encoding.Default);
+                        string FileContent = sr.ReadToEnd();
+                        sr.Close();
+
+                        if (FileContent.Contains("     SOFTWARE TERMINATED\nCONSOLE MAY HAVE BEEN MODIFIED\n     CALL 1-888-780-7690")
+                            || FileContent.Contains("強制終了しました。\n本体が改造されている\nおそれがあります。"))
+                            return true;
+
+                    }
+                    catch { }
+                }
+            }
+
+            return false;
+        }
+
         #endregion
 
         #region Version detections
@@ -1156,9 +1185,6 @@ namespace BurnOutSharp
 
             // Origin
             mapping.Add("OriginSetup.exe", "Origin");
-
-            // PSX LibCrypt - TODO: That's... not accurate
-            mapping.Add(".cnf", "PSX LibCrypt");
 
             // SafeCast
             mapping.Add("cdac11ba.exe", "SafeCast");
