@@ -33,6 +33,7 @@ namespace BurnOutSharp
         /// Scan a path to find any known copy protection(s)
         /// </summary>
         /// <param name="path">Path to scan for protection(s)</param>
+        /// <param name="progress">Optional progress indicator that will return a float in the range from 0 to 1</param>
         /// <returns>Dictionary of filename to protection mappings, if possible</returns>
         /// <remarks>
         /// TODO: Sector scanning?
@@ -51,9 +52,12 @@ namespace BurnOutSharp
         /// - The Bongle (http://web.archive.org/web/19990508193708/www.hideseek.com/products.htm)
         /// - The Copy-Protected CD (http://web.archive.org/web/19990508193708/www.hideseek.com/products.htm)
         /// </remarks>
-        public static Dictionary<string, string> Scan(string path)
+        public static Dictionary<string, string> Scan(string path, IProgress<float> progress = null)
         {
             var protections = new Dictionary<string, string>();
+
+            // Checkpoint
+            progress?.Report(0);
 
             // Create mappings for checking against
             var mappings = CreateFilenameProtectionMapping();
@@ -97,8 +101,14 @@ namespace BurnOutSharp
                     protections[path] = "Zzxzz";
 
                 // Loop through all files and scan them
-                foreach (string file in files)
+                for (int i = 0; i < files.Length; i++)
                 {
+                    // Get the current file
+                    string file = files[i];
+
+                    // Checkpoint
+                    progress?.Report(i / files.Length);
+
                     // If the file is in the list of known files, add that to the protections found
                     if (mappings.ContainsKey(Path.GetFileName(file)))
                         protections[file] = mappings[Path.GetFileName(file)];
@@ -119,6 +129,9 @@ namespace BurnOutSharp
             {
                 protections = new Dictionary<string, string>();
             }
+
+            // Checkpoint
+            progress?.Report(1);
 
             return protections;
         }
