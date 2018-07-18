@@ -52,12 +52,12 @@ namespace BurnOutSharp
         /// - The Bongle (http://web.archive.org/web/19990508193708/www.hideseek.com/products.htm)
         /// - The Copy-Protected CD (http://web.archive.org/web/19990508193708/www.hideseek.com/products.htm)
         /// </remarks>
-        public static Dictionary<string, string> Scan(string path, IProgress<float> progress = null)
+        public static Dictionary<string, string> Scan(string path, IProgress<Progress> progress = null)
         {
             var protections = new Dictionary<string, string>();
 
             // Checkpoint
-            progress?.Report(0);
+            progress?.Report(new Progress(null, 0, null));
 
             // Create mappings for checking against
             var mappings = CreateFilenameProtectionMapping();
@@ -77,6 +77,9 @@ namespace BurnOutSharp
                 string protectionname = ScanInFile(path)?.Replace("" + (char)0x00, "");
                 if (!String.IsNullOrEmpty(protectionname))
                     protections[path] = protectionname;
+
+                // Checkpoint
+                progress?.Report(new Progress(path, 1, protectionname));
             }
             // If we have a directory
             else if (Directory.Exists(path))
@@ -106,9 +109,6 @@ namespace BurnOutSharp
                     // Get the current file
                     string file = files[i];
 
-                    // Checkpoint
-                    progress?.Report(i / files.Length);
-
                     // If the file is in the list of known files, add that to the protections found
                     if (mappings.ContainsKey(Path.GetFileName(file)))
                         protections[file] = mappings[Path.GetFileName(file)];
@@ -121,6 +121,9 @@ namespace BurnOutSharp
                     string protectionname = ScanInFile(file)?.Replace("" + (char)0x00, "");
                     if (!String.IsNullOrEmpty(protectionname))
                         protections[file] = protectionname;
+
+                    // Checkpoint
+                    progress?.Report(new Progress(file, i / files.Length, protectionname));
                 }
             }
 
@@ -129,9 +132,6 @@ namespace BurnOutSharp
             {
                 protections = new Dictionary<string, string>();
             }
-
-            // Checkpoint
-            progress?.Report(1);
 
             return protections;
         }

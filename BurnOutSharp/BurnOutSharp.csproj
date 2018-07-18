@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="CaseInsensitiveDictionary.cs" />
     <Compile Include="EVORE.cs" />
+    <Compile Include="Progress.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProtectionFind.cs" />
   </ItemGroup>
