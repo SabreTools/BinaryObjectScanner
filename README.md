@@ -1,5 +1,7 @@
 # BurnOutSharp
 
+[![Build status](https://ci.appveyor.com/api/projects/status/gmdft5bk1h8a1c31?svg=true)](https://ci.appveyor.com/project/mnadareski/burnoutsharp)
+
 C# port of the protection scanning ability of [BurnOut](http://burnout.sourceforge.net/) plus numerous updates and additions. This currently compiles as a library so it can be used in any C# application. For an example of usage, see [DICUI](https://github.com/reignstumble/DICUI).
 
 In addition to the original BurnOut code, this port adds the ability to scan inside of Microsoft CAB files (courtesy of [libmspack4n](https://github.com/activescott/libmspack4n)) and InstallShield CAB files (courtesy of [UnshieldSharp](https://github.com/mnadareski/UnshieldSharp)).
