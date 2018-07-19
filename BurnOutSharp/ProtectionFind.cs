@@ -462,6 +462,7 @@ namespace BurnOutSharp
             {
                 try
                 {
+                    List<string> protections = new List<string>();
                     string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
                     Directory.CreateDirectory(tempPath);
 
@@ -479,16 +480,17 @@ namespace BurnOutSharp
                             catch { }
 
                             if (!String.IsNullOrEmpty(protection))
-                            {
-                                try
-                                {
-                                    Directory.Delete(tempPath, true);
-                                }
-                                catch { }
-                                return protection;
-                            }
+                                protections.Add(protection);
                         }
                     }
+
+                    try
+                    {
+                        Directory.Delete(tempPath, true);
+                    }
+                    catch { }
+
+                    return string.Join(", ", protections);
                 }
                 catch { }
             }
@@ -498,6 +500,7 @@ namespace BurnOutSharp
             {
                 try
                 {
+                    List<string> protections = new List<string>();
                     string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
                     Directory.CreateDirectory(tempPath);
 
@@ -510,15 +513,16 @@ namespace BurnOutSharp
                         File.Delete(tempfile);
 
                         if (!String.IsNullOrEmpty(protection))
-                        {
-                            try
-                            {
-                                Directory.Delete(tempPath, true);
-                            }
-                            catch { }
-                            return protection;
-                        }
+                            protections.Add(protection);
                     }
+
+                    try
+                    {
+                        Directory.Delete(tempPath, true);
+                    }
+                    catch { }
+
+                    return string.Join(", ", protections);
                 }
                 catch { }
             }

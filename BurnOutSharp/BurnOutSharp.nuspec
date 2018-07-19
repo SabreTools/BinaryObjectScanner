@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>BurnOutSharp</id>
-    <version>1.03.7</version>
+    <version>1.03.7.1</version>
     <title>BurnOutSharp</title>
     <authors>Matt Nadareski, Gernot Knippen</authors>
     <owners>Matt Nadareski, Gernot Knippen</owners>
@@ -15,7 +15,7 @@
     <dependencies>
       <dependency id="LessIO" version="0.5.0" />
       <dependency id="libmspack4n" version="0.8.0" />
-      <dependency id="UnshieldSharp" version="1.4.2.1" />
+      <dependency id="UnshieldSharp" version="1.4.2.2" />
     </dependencies>
   </metadata>
   <files>
