@@ -52,12 +52,12 @@ namespace BurnOutSharp
         /// - The Bongle (http://web.archive.org/web/19990508193708/www.hideseek.com/products.htm)
         /// - The Copy-Protected CD (http://web.archive.org/web/19990508193708/www.hideseek.com/products.htm)
         /// </remarks>
-        public static Dictionary<string, string> Scan(string path, IProgress<Progress> progress = null)
+        public static Dictionary<string, string> Scan(string path, IProgress<FileProtection> progress = null)
         {
             var protections = new Dictionary<string, string>();
 
             // Checkpoint
-            progress?.Report(new Progress(null, 0, null));
+            progress?.Report(new FileProtection(null, 0, null));
 
             // Create mappings for checking against
             var mappings = CreateFilenameProtectionMapping();
@@ -79,7 +79,7 @@ namespace BurnOutSharp
                     protections[path] = protectionname;
 
                 // Checkpoint
-                progress?.Report(new Progress(path, 1, protectionname));
+                progress?.Report(new FileProtection(path, 1, protectionname));
             }
             // If we have a directory
             else if (Directory.Exists(path))
@@ -127,7 +127,7 @@ namespace BurnOutSharp
                         protections[file] = protectionname;
 
                     // Checkpoint
-                    progress?.Report(new Progress(file, i / files.Length, protectionname));
+                    progress?.Report(new FileProtection(file, i / files.Length, protectionname));
                 }
             }
 
@@ -192,6 +192,13 @@ namespace BurnOutSharp
                             + (char)0x00 + (char)0x00 + "N" + (char)0x00 + "O" + (char)0x00 + "T" + (char)0x00 + "A" + (char)0x00 + "T"
                             + (char)0x00 + "I" + (char)0x00 + "O" + (char)0x00 + "N"))
                         return "Impulse Reactor " + GetFileVersion(file);
+
+                    // Inno Setup
+                    if ((position = FileContent.IndexOf("Inno")) == 0x30)
+                    {
+                        // TOOO: Add Inno Setup extraction
+                        return "Inno Setup " + GetInnoSetupVersion(file);
+                    }
 
                     // JoWooD X-Prot
                     if (FileContent.Contains(".ext    ")
@@ -736,6 +743,30 @@ namespace BurnOutSharp
             if (version[0] == 0x00)
                 return "";
             return new string(version);
+        }
+
+        private static string GetInnoSetupVersion(string file)
+        {
+            BinaryReader br = new BinaryReader(new StreamReader(file).BaseStream);
+            br.BaseStream.Seek(0x30, SeekOrigin.Begin);
+            string signature = new String(br.ReadChars(12));
+
+            if (signature == "rDlPtS02" + (char)0x87 + "eVx")
+                return "1.2.10";
+            else if (signature == "rDlPtS04" + (char)0x87 + "eVx")
+                return "4.0.0";
+            else if (signature == "rDlPtS05" + (char)0x87 + "eVx")
+                return "4.0.3";
+            else if (signature == "rDlPtS06" + (char)0x87 + "eVx")
+                return "4.0.10";
+            else if (signature == "rDlPtS07" + (char)0x87 + "eVx")
+                return "4.1.6";
+            else if (signature == "rDlPtS" + (char)0xcd + (char)0xe6 + (char)0xd7 + "{" + (char)0x0b + "*")
+                return "5.1.5";
+            else if (signature == "nS5W7dT" + (char)0x83 + (char)0xaa + (char)0x1b + (char)0x0f + "j")
+                return "5.1.5";
+
+            return string.Empty;
         }
 
         private static string GetJoWooDXProt1Version(string file, int position)
