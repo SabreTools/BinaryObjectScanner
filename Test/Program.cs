@@ -16,6 +16,8 @@ namespace Test
             }
 
             Console.ReadLine();
+
+            //ProtectionFind.ScanSectors('D', 2048);
         }
 
         private static void Changed(object source, FileProtection value)
