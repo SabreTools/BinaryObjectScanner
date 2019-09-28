@@ -248,6 +248,11 @@ namespace BurnOutSharp
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
+            // SafeDisc
+            protection = SafeDisc.CheckPath(path, files, isDirectory);
+            if (!string.IsNullOrWhiteSpace(protection))
+                protections.Add(protection);
+
             // SafeDisc Lite
             protection = SafeDiscLite.CheckPath(path, files, isDirectory);
             if (!string.IsNullOrWhiteSpace(protection))

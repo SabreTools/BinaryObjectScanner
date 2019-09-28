@@ -26,13 +26,13 @@ namespace BurnOutSharp.ProtectionType
                     return "StarForce " + Utilities.GetFileVersion(file);
             }
 
-            else if (fileContent.Contains(".sforce")
+            if (fileContent.Contains(".sforce")
                 || fileContent.Contains(".brick"))
             {
                 return "StarForce 3-5";
             }
 
-            else if (fileContent.Contains("P" + (char)0x00 + "r" + (char)0x00 + "o" + (char)0x00 + "t" + (char)0x00 + "e" + (char)0x00
+            if (fileContent.Contains("P" + (char)0x00 + "r" + (char)0x00 + "o" + (char)0x00 + "t" + (char)0x00 + "e" + (char)0x00
                 + "c" + (char)0x00 + "t" + (char)0x00 + "e" + (char)0x00 + "d" + (char)0x00 + " " + (char)0x00 + "M" + (char)0x00
                 + "o" + (char)0x00 + "d" + (char)0x00 + "u" + (char)0x00 + "l" + (char)0x00 + "e"))
             {

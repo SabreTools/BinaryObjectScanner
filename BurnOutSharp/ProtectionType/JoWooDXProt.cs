@@ -18,10 +18,9 @@ namespace BurnOutSharp.ProtectionType
                     return "JoWooD X-Prot v1";
                 }
             }
-            else if (fileContent.Contains("@HC09    "))
-            {
+
+            if (fileContent.Contains("@HC09    "))
                 return "JoWooD X-Prot v2";
-            }
 
             return null;
         }

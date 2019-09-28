@@ -7,6 +7,31 @@ namespace BurnOutSharp.ProtectionType
 {
     public class SafeDisc
     {
+        public static string CheckContents(string file, string fileContent)
+        {
+            int position;
+            if ((position = fileContent.IndexOf("BoG_ *90.0&!!  Yy>")) > -1)
+            {
+                if (fileContent.IndexOf("product activation library") > 0)
+                    return "SafeCast " + GetVersion(file, position);
+                else
+                    return "SafeDisc " + GetVersion(file, position);
+            }
+
+            if (fileContent.Contains((char)0x00 + (char)0x00 + "BoG_")
+                || fileContent.Contains("stxt774")
+                || fileContent.Contains("stxt371"))
+            {
+                string version = EVORE.SearchSafeDiscVersion(file);
+                if (version.Length > 0)
+                    return "SafeDisc " + version;
+
+                return "SafeDisc 3.20-4.xx (version removed)";
+            }
+
+            return null;
+        }
+
         public static string CheckPath(string path, IEnumerable<string> files, bool isDirectory)
         {
             if (isDirectory)
@@ -65,31 +90,6 @@ namespace BurnOutSharp.ProtectionType
                 {
                     return GetSecdrvVersion(path);
                 }
-            }
-
-            return null;
-        }
-
-        public static string CheckContents(string file, string fileContent)
-        {
-            int position;
-            if ((position = fileContent.IndexOf("BoG_ *90.0&!!  Yy>")) > -1)
-            {
-                if (fileContent.IndexOf("product activation library") > 0)
-                    return "SafeCast " + GetVersion(file, position);
-                else
-                    return "SafeDisc " + GetVersion(file, position);
-            }
-
-            if (fileContent.Contains((char)0x00 + (char)0x00 + "BoG_")
-                || fileContent.Contains("stxt774")
-                || fileContent.Contains("stxt371"))
-            {
-                string version = EVORE.SearchSafeDiscVersion(file);
-                if (version.Length > 0)
-                    return "SafeDisc " + version;
-
-                return "SafeDisc 3.20-4.xx (version removed)";
             }
 
             return null;

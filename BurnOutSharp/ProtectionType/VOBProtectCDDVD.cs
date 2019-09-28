@@ -11,11 +11,9 @@ namespace BurnOutSharp.ProtectionType
         {
             int position;
             if ((position = fileContent.IndexOf("VOB ProtectCD")) > -1)
-            {
                 return "VOB ProtectCD/DVD " + GetOldVersion(file, --position); // TODO: Verify this subtract
-            }
 
-            else if ((position = fileContent.IndexOf("DCP-BOV" + (char)0x00 + (char)0x00)) > -1)
+            if ((position = fileContent.IndexOf("DCP-BOV" + (char)0x00 + (char)0x00)) > -1)
             {
                 string version = GetVersion(file, --position); // TODO: Verify this subtract
                 if (version.Length > 0)
@@ -36,10 +34,8 @@ namespace BurnOutSharp.ProtectionType
                 return "VOB ProtectCD/DVD 5.9-6.0" + GetBuild(file, position);
             }
 
-            else if (fileContent.Contains(".vob.pcd"))
-            {
+            if (fileContent.Contains(".vob.pcd"))
                 return "VOB ProtectCD";
-            }
 
             return null;
         }

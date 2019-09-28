@@ -13,7 +13,7 @@ namespace BurnOutSharp.ProtectionType
             if ((position = fileContent.IndexOf("CD-Cops,  ver. ")) > -1)
                 return "CD-Cops " + GetVersion(file, position);
 
-            else if (fileContent.Contains(".grand" + (char)0x00))
+            if (fileContent.Contains(".grand" + (char)0x00))
                 return "CD-Cops";
 
             return null;

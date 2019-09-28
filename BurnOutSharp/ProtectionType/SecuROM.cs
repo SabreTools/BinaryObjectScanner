@@ -11,32 +11,24 @@ namespace BurnOutSharp.ProtectionType
         {
             int position;
             if ((position = fileContent.IndexOf("AddD" + (char)0x03 + (char)0x00 + (char)0x00 + (char)0x00)) > -1)
-            {
                 return "SecuROM " + GetV4Version(file, position);
-            }
 
-            else if ((position = fileContent.IndexOf("" + (char)0xCA + (char)0xDD + (char)0xDD + (char)0xAC + (char)0x03)) > -1)
-            {
+            if ((position = fileContent.IndexOf("" + (char)0xCA + (char)0xDD + (char)0xDD + (char)0xAC + (char)0x03)) > -1)
                 return "SecuROM " + GetV5Version(file, position);
-            }
 
-            else if (fileContent.Contains(".securom")
+            if (fileContent.Contains(".securom")
                 || fileContent.StartsWith(".securom" + (char)0xE0 + (char)0xC0))
             {
                 return "SecuROM " + GetV7Version(file);
             }
 
-            else if (fileContent.Contains("_and_play.dll" + (char)0x00 + "drm_pagui_doit"))
-            {
+            if (fileContent.Contains("_and_play.dll" + (char)0x00 + "drm_pagui_doit"))
                 return "SecuROM Product Activation " + Utilities.GetFileVersion(file);
-            }
 
-            else if (fileContent.Contains("_and_play.dll" + (char)0x00 + "drm_pagui_doit"))
-            {
+            if (fileContent.Contains("_and_play.dll" + (char)0x00 + "drm_pagui_doit"))
                 return "SecuROM Product Activation " + Utilities.GetFileVersion(file);
-            }
 
-            else if (fileContent.Contains(".cms_t" + (char)0x00)
+            if (fileContent.Contains(".cms_t" + (char)0x00)
                 || fileContent.Contains(".cms_d" + (char)0x00))
             {
                 return "SecuROM 1-3";

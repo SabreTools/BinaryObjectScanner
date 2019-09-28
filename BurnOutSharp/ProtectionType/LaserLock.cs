@@ -18,29 +18,23 @@ namespace BurnOutSharp.ProtectionType
                 return "LaserLock " + GetVersion(fileContent, position) + " " + GetBuild(fileContent, true);
             }
 
-            else if (fileContent.Contains("Packed by SPEEnc V2 Asterios Parlamentas.PE"))
-            {
+            if (fileContent.Contains("Packed by SPEEnc V2 Asterios Parlamentas.PE"))
                 return "LaserLock Marathon " + GetBuild(fileContent, false);
-            }
 
-            else if ((position = fileContent.IndexOf("GetModuleHandleA" + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00
+            if ((position = fileContent.IndexOf("GetModuleHandleA" + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00
                 + "GetProcAddress" + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00 + "LoadLibraryA" + (char)0x00 + (char)0x00
                 + "KERNEL32.dll" + (char)0x00 + "ëy" + (char)0x01 + "SNIF")) > -1)
             {
                 return "LaserLock " + GetVersion(fileContent, --position) + " " + GetBuild(fileContent, false);
             }
 
-            else if (Path.GetFileName(file) == "NOMOUSE.SP")
-            {
+            if (Path.GetFileName(file) == "NOMOUSE.SP")
                 return "LaserLock " + GetVersion16Bit(file);
-            }
 
-            else if (fileContent.Contains(":\\LASERLOK\\LASERLOK.IN" + (char)0x00 + "C:\\NOMOUSE.SP"))
-            {
+            if (fileContent.Contains(":\\LASERLOK\\LASERLOK.IN" + (char)0x00 + "C:\\NOMOUSE.SP"))
                 return "LaserLock 3";
-            }
 
-            else if (fileContent.Contains("LASERLOK_INIT" + (char)0xC + "LASERLOK_RUN" + (char)0xE + "LASERLOK_CHECK"
+            if (fileContent.Contains("LASERLOK_INIT" + (char)0xC + "LASERLOK_RUN" + (char)0xE + "LASERLOK_CHECK"
                 + (char)0xF + "LASERLOK_CHECK2" + (char)0xF + "LASERLOK_CHECK3"))
             {
                 return "LaserLock 5";
