@@ -11,7 +11,7 @@ namespace BurnOutSharp.ProtectionType
         {
             if (isDirectory)
             {
-                // TODO: Confirm if OR or AND
+                // TODO: Verify if these are OR or AND
                 if (files.Count(f => Path.GetFileName(f).Equals("_cdp16.dat", StringComparison.OrdinalIgnoreCase)) > 0
                     || files.Count(f => Path.GetFileName(f).Equals("_cdp16.dll", StringComparison.OrdinalIgnoreCase)) > 0
                     || files.Count(f => Path.GetFileName(f).Equals("_cdp32.dat", StringComparison.OrdinalIgnoreCase)) > 0
