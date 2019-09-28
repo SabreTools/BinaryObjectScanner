@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>BurnOutSharp</id>
-    <version>1.03.7.1</version>
+    <version>1.03.8.0</version>
     <title>BurnOutSharp</title>
     <authors>Matt Nadareski, Gernot Knippen</authors>
     <owners>Matt Nadareski, Gernot Knippen</owners>
@@ -10,7 +10,7 @@
     <projectUrl>https://github.com/mnadareski/BurnOutSharp</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Port of BurnOut to C#, with additions</description>
-    <copyright>Copyright (c)2005-2010 Gernot Knippen, Copyright (c)2018 Matt Nadareski</copyright>
+    <copyright>Copyright (c)2005-2010 Gernot Knippen, Copyright (c)2018-2019 Matt Nadareski</copyright>
     <tags>protection scan burnout</tags>
     <dependencies>
       <dependency id="LessIO" version="0.5.0" />
