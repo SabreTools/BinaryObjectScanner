@@ -97,7 +97,7 @@ namespace BurnOutSharp
                     }
 
                     // Checkpoint
-                    progress?.Report(new FileProtection(file, i / files.Count(), contentProtection));
+                    progress?.Report(new FileProtection(file, i / (float)files.Count(), contentProtection));
                 }
             }
 
