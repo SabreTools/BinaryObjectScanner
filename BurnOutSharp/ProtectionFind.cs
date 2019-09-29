@@ -46,10 +46,10 @@ namespace BurnOutSharp
             // If we have a file
             if (File.Exists(path))
             {
-                // Try using just the path first to get protection info
-                string pathProtection = ScanPath(path, false);
-                if (!string.IsNullOrWhiteSpace(pathProtection))
-                    protections[path] = pathProtection;
+                // Try using just the file first to get protection info
+                string fileProtection = ScanPath(path, false);
+                if (!string.IsNullOrWhiteSpace(fileProtection))
+                    protections[path] = fileProtection;
 
                 // Now check to see if the file contains any additional information
                 string contentProtection = ScanInFile(path)?.Replace("" + (char)0x00, "");
@@ -81,10 +81,20 @@ namespace BurnOutSharp
                     // Get the current file
                     string file = files.ElementAt(i);
 
+                    // Try using just the file first to get protection info
+                    string fileProtection = ScanPath(file, false);
+                    if (!string.IsNullOrWhiteSpace(fileProtection))
+                        protections[file] = fileProtection;
+
                     // Now check to see if the file contains any additional information
                     string contentProtection = ScanInFile(file)?.Replace("" + (char)0x00, "");
                     if (!string.IsNullOrWhiteSpace(contentProtection))
-                        protections[file] = contentProtection;
+                    {
+                        if (protections.ContainsKey(file))
+                            protections[file] += $", {contentProtection}";
+                        else
+                            protections[file] = contentProtection;
+                    }
 
                     // Checkpoint
                     progress?.Report(new FileProtection(file, i / files.Count(), contentProtection));
