@@ -92,6 +92,7 @@ namespace BurnOutSharp.ProtectionType
 
         private static string GetVersionBuild76till10(string file, int position, out int irefBuild)
         {
+            irefBuild = 0;
             if (file == null)
                 return string.Empty;
 

@@ -38,7 +38,7 @@ namespace BurnOutSharp
         private static Process StartSafe(string file)
         {
             if (file == null)
-                return string.Empty;
+                return null;
 
             Process startingprocess = new Process();
             startingprocess.StartInfo.FileName = file;
