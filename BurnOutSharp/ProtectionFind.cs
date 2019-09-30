@@ -386,7 +386,7 @@ namespace BurnOutSharp
                 {
                     // Load the current file content
                     string fileContent = null;
-                    using (StreamReader sr = new StreamReader(file))
+                    using (StreamReader sr = new StreamReader(file, Encoding.Default))
                     {
                         fileContent = sr.ReadToEnd();
                     }
@@ -560,7 +560,7 @@ namespace BurnOutSharp
                 {
                     // Load the current file content
                     string fileContent = null;
-                    using (StreamReader sr = new StreamReader(stream))
+                    using (StreamReader sr = new StreamReader(stream, Encoding.Default))
                     {
                         fileContent = sr.ReadToEnd();
                     }
@@ -647,6 +647,7 @@ namespace BurnOutSharp
         /// <summary>
         /// Scan the contents of a file for protection
         /// </summary>
+        /// TODO: This needs to work on a byte array of file content instead of string
         private static List<string> ScanFileContent(string file, string fileContent)
         {
             // Files can be protected in multiple ways
