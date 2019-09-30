@@ -58,6 +58,9 @@ namespace BurnOutSharp.ProtectionType
 
         private static string GetBuild(string file, int position)
         {
+            if (file == null)
+                return string.Empty;
+
             using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             using (var br = new BinaryReader(fs))
             {
@@ -73,6 +76,9 @@ namespace BurnOutSharp.ProtectionType
 
         private static string GetOldVersion(string file, int position)
         {
+            if (file == null)
+                return string.Empty;
+
             using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             using (var br = new BinaryReader(fs))
             {
@@ -92,6 +98,9 @@ namespace BurnOutSharp.ProtectionType
 
         private static string GetVersion(string file, int position)
         {
+            if (file == null)
+                return string.Empty;
+
             using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             using (var br = new BinaryReader(fs))
             {

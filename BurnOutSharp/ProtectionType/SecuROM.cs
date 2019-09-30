@@ -80,6 +80,9 @@ namespace BurnOutSharp.ProtectionType
 
         private static string GetV4Version(string file, int position)
         {
+            if (file == null)
+                return string.Empty;
+
             using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             using (var br = new BinaryReader(fs))
             {
@@ -103,6 +106,9 @@ namespace BurnOutSharp.ProtectionType
 
         private static string GetV5Version(string file, int position)
         {
+            if (file == null)
+                return string.Empty;
+
             using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             using (var br = new BinaryReader(fs))
             {
@@ -129,6 +135,9 @@ namespace BurnOutSharp.ProtectionType
 
         private static string GetV7Version(string file)
         {
+            if (file == null)
+                return string.Empty;
+
             using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             using (var br = new BinaryReader(fs))
             {

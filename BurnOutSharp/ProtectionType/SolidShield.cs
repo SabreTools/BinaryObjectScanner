@@ -27,7 +27,10 @@ namespace BurnOutSharp.ProtectionType
                     + "a" + (char)0x00 + "t" + (char)0x00 + "i" + (char)0x00 + "o" + (char)0x00 + "n" + (char)0x00 + " " + (char)0x00
                     + "L" + (char)0x00 + "i" + (char)0x00 + "b" + (char)0x00 + "r" + (char)0x00 + "a" + (char)0x00 + "r" + (char)0x00 + "y"))
             {
-                string companyName = FileVersionInfo.GetVersionInfo(file).CompanyName.ToLower();
+                string companyName = string.Empty;
+                if (file != null)
+                    companyName = FileVersionInfo.GetVersionInfo(file).CompanyName.ToLower();
+
                 if (companyName.Contains("solidshield") || companyName.Contains("tages"))
                     return "SolidShield Core.dll " + Utilities.GetFileVersion(file);
             }
@@ -47,7 +50,10 @@ namespace BurnOutSharp.ProtectionType
                 + "a" + (char)0x00 + "t" + (char)0x00 + "i" + (char)0x00 + "o" + (char)0x00 + "n" + (char)0x00 + " " + (char)0x00
                 + "M" + (char)0x00 + "a" + (char)0x00 + "n" + (char)0x00 + "a" + (char)0x00 + "g" + (char)0x00 + "e" + (char)0x00 + "r"))
             {
-                string companyName = FileVersionInfo.GetVersionInfo(file).CompanyName.ToLower();
+                string companyName = string.Empty;
+                if (file != null)
+                    companyName = FileVersionInfo.GetVersionInfo(file).CompanyName.ToLower();
+
                 if (companyName.Contains("solidshield") || companyName.Contains("tages"))
                     return "SolidShield Activation Manager Module " + Utilities.GetFileVersion(file);
             }
@@ -125,6 +131,9 @@ namespace BurnOutSharp.ProtectionType
 
         private static string GetVersion(string file, int position)
         {
+            if (file == null)
+                return string.Empty;
+
             using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             using (var br = new BinaryReader(fs))
             {

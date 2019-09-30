@@ -37,6 +37,9 @@ namespace BurnOutSharp
 
         private static Process StartSafe(string file)
         {
+            if (file == null)
+                return string.Empty;
+
             Process startingprocess = new Process();
             startingprocess.StartInfo.FileName = file;
             startingprocess.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
@@ -56,6 +59,9 @@ namespace BurnOutSharp
 
         private static string MakeTempFile(string file, string sExtension = ".exe")
         {
+            if (file == null)
+                return string.Empty;
+
             FileInfo filei = new FileInfo(file);
             try
             {
@@ -69,6 +75,9 @@ namespace BurnOutSharp
 
         private static bool IsEXE(string file)
         {
+            if (file == null)
+                return false;
+
             BinaryReader breader = new BinaryReader(File.OpenRead(file));
             breader.ReadBytes(60);
             int PEHeaderOffset = breader.ReadInt32();
@@ -85,6 +94,9 @@ namespace BurnOutSharp
 
         private static string[] CopyDependentDlls(string exefile)
         {
+            if (exefile == null)
+                return null;
+
             FileInfo fiExe = new FileInfo(exefile);
             Section[] sections = ReadSections(exefile);
             BinaryReader breader = new BinaryReader(File.OpenRead(exefile), Encoding.Default);
@@ -141,6 +153,9 @@ namespace BurnOutSharp
 
         private static Section[] ReadSections(string exefile)
         {
+            if (exefile == null)
+                return null;
+
             BinaryReader breader = new BinaryReader(File.OpenRead(exefile));
             breader.ReadBytes(60);
             uint PEHeaderOffset = breader.ReadUInt32();
@@ -184,6 +199,9 @@ namespace BurnOutSharp
 
         public static string SearchProtectDiscVersion(string file)
         {
+            if (file == null)
+                return string.Empty;
+
             Process exe = new Process();
             Process[] processes = new Process[0];
             string version = "";
@@ -339,6 +357,9 @@ namespace BurnOutSharp
 
         public static string SearchSafeDiscVersion(string file)
         {
+            if (file == null)
+                return string.Empty;
+
             Process exe = new Process();
             string version = "";
             DateTime timestart;

@@ -97,6 +97,9 @@ namespace BurnOutSharp.ProtectionType
 
         private static string GetDPlayerXVersion(string file)
         {
+            if (file == null)
+                return string.Empty;
+
             FileInfo fi = new FileInfo(file);
             if (fi.Length == 81408)
                 return "SafeDisc 1.0x";
@@ -122,6 +125,9 @@ namespace BurnOutSharp.ProtectionType
 
         private static string GetDrvmgtVersion(string file)
         {
+            if (file == null)
+                return string.Empty;
+
             FileInfo fi = new FileInfo(file);
             if (fi.Length == 34816)
                 return "SafeDisc 1.0x";
@@ -147,6 +153,9 @@ namespace BurnOutSharp.ProtectionType
 
         private static string GetSecdrvVersion(string file)
         {
+            if (file == null)
+                return string.Empty;
+
             FileInfo fi = new FileInfo(file);
             if (fi.Length == 20128)
                 return "SafeDisc 2.10";
@@ -178,6 +187,9 @@ namespace BurnOutSharp.ProtectionType
 
         private static string GetVersion(string file, int position)
         {
+            if (file == null)
+                return string.Empty;
+
             using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             using (var br = new BinaryReader(fs))
             {

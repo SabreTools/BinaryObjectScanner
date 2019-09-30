@@ -116,7 +116,7 @@ namespace BurnOutSharp
         /// <param name="path"></param>
         /// <param name="isDirectory"></param>
         /// <returns></returns>
-        private static string ScanPath(string path, bool isDirectory)
+        public static string ScanPath(string path, bool isDirectory)
         {
             List<string> protections = new List<string>();
             string protection;
@@ -353,7 +353,8 @@ namespace BurnOutSharp
         /// <summary>
         /// Scan an individual file for copy protection
         /// </summary>
-        private static string ScanInFile(string file)
+        /// <param name="file">File path for scanning</param>
+        public static string ScanInFile(string file)
         {
             // Get the extension for certain checks
             string extension = Path.GetExtension(file).ToLower().TrimStart('.');
@@ -383,196 +384,14 @@ namespace BurnOutSharp
             {
                 try
                 {
-                    // Load the current file and check for specialty strings first
-                    StreamReader sr = new StreamReader(file, Encoding.Default);
-                    string protection;
-                    string fileContent = sr.ReadToEnd();
-                    sr.Close();
+                    // Load the current file content
+                    string fileContent = null;
+                    using (StreamReader sr = new StreamReader(file))
+                    {
+                        fileContent = sr.ReadToEnd();
+                    }
 
-                    // 3PLock
-                    protection = ThreePLock.CheckContents(fileContent);
-                    if (!string.IsNullOrWhiteSpace(protection))
-                        protections.Add(protection);
-
-                    // ActiveMARK
-                    protection = ActiveMARK.CheckContents(fileContent);
-                    if (!string.IsNullOrWhiteSpace(protection))
-                        protections.Add(protection);
-
-                    // Alpha-ROM
-                    protection = AlphaROM.CheckContents(fileContent);
-                    if (!string.IsNullOrWhiteSpace(protection))
-                        protections.Add(protection);
-
-                    // Armadillo
-                    protection = Armadillo.CheckContents(fileContent);
-                    if (!string.IsNullOrWhiteSpace(protection))
-                        protections.Add(protection);
-
-                    // CD-Cops
-                    protection = CDCops.CheckContents(file, fileContent);
-                    if (!string.IsNullOrWhiteSpace(protection))
-                        protections.Add(protection);
-
-                    // CD-Lock
-                    protection = CDLock.CheckContents(fileContent);
-                    if (!string.IsNullOrWhiteSpace(protection))
-                        protections.Add(protection);
-
-                    // CDSHiELD SE
-                    protection = CDSHiELDSE.CheckContents(fileContent);
-                    if (!string.IsNullOrWhiteSpace(protection))
-                        protections.Add(protection);
-
-                    // CD Check
-                    protection = CDCheck.CheckContents(fileContent);
-                    if (!string.IsNullOrWhiteSpace(protection))
-                        protections.Add(protection);
-
-                    // Cenega ProtectDVD
-                    protection = CengaProtectDVD.CheckContents(fileContent);
-                    if (!string.IsNullOrWhiteSpace(protection))
-                        protections.Add(protection);
-
-                    // Code Lock
-                    protection = CodeLock.CheckContents(fileContent);
-                    if (!string.IsNullOrWhiteSpace(protection))
-                        protections.Add(protection);
-
-                    // CopyKiller
-                    protection = CopyKiller.CheckContents(fileContent);
-                    if (!string.IsNullOrWhiteSpace(protection))
-                        protections.Add(protection);
-
-                    // Cucko (EA Custom)
-                    protection = Cucko.CheckContents(fileContent);
-                    if (!string.IsNullOrWhiteSpace(protection))
-                        protections.Add(protection);
-
-                    // dotFuscator
-                    protection = dotFuscator.CheckContents(fileContent);
-                    if (!string.IsNullOrWhiteSpace(protection))
-                        protections.Add(protection);
-
-                    // DVD-Cops
-                    protection = DVDCops.CheckContents(file, fileContent);
-                    if (!string.IsNullOrWhiteSpace(protection))
-                        protections.Add(protection);
-
-                    // EA CdKey Registration Module
-                    protection = EACdKey.CheckContents(fileContent);
-                    if (!string.IsNullOrWhiteSpace(protection))
-                        protections.Add(protection);
-
-                    // EXE Stealth
-                    protection = EXEStealth.CheckContents(fileContent);
-                    if (!string.IsNullOrWhiteSpace(protection))
-                        protections.Add(protection);
-
-                    // Games for Windows - Live
-                    protection = GFWL.CheckContents(fileContent);
-                    if (!string.IsNullOrWhiteSpace(protection))
-                        protections.Add(protection);
-
-                    // Impulse Reactor
-                    protection = ImpulseReactor.CheckContents(file, fileContent);
-                    if (!string.IsNullOrWhiteSpace(protection))
-                        protections.Add(protection);
-
-                    // Inno Setup
-                    protection = InnoSetup.CheckContents(file, fileContent);
-                    if (!string.IsNullOrWhiteSpace(protection))
-                        protections.Add(protection);
-
-                    // JoWooD X-Prot
-                    protection = JoWooDXProt.CheckContents(file, fileContent);
-                    if (!string.IsNullOrWhiteSpace(protection))
-                        protections.Add(protection);
-
-                    // Key-Lock (Dongle)
-                    protection = KeyLock.CheckContents(fileContent);
-                    if (!string.IsNullOrWhiteSpace(protection))
-                        protections.Add(protection);
-
-                    // LaserLock
-                    protection = LaserLock.CheckContents(file, fileContent);
-                    if (!string.IsNullOrWhiteSpace(protection))
-                        protections.Add(protection);
-
-                    // PE Compact
-                    protection = PECompact.CheckContents(fileContent);
-                    if (!string.IsNullOrWhiteSpace(protection))
-                        protections.Add(protection);
-
-                    // ProtectDisc
-                    protection = ProtectDisc.CheckContents(file, fileContent);
-                    if (!string.IsNullOrWhiteSpace(protection))
-                        protections.Add(protection);
-
-                    // Ring PROTECH
-                    protection = RingPROTECH.CheckContents(fileContent);
-                    if (!string.IsNullOrWhiteSpace(protection))
-                        protections.Add(protection);
-
-                    // SafeDisc / SafeCast
-                    protection = SafeDisc.CheckContents(file, fileContent);
-                    if (!string.IsNullOrWhiteSpace(protection))
-                        protections.Add(protection);
-
-                    // SafeLock
-                    protection = SafeLock.CheckContents(fileContent);
-                    if (!string.IsNullOrWhiteSpace(protection))
-                        protections.Add(protection);
-
-                    // SecuROM
-                    protection = SecuROM.CheckContents(file, fileContent);
-                    if (!string.IsNullOrWhiteSpace(protection))
-                        protections.Add(protection);
-
-                    // SmartE
-                    protection = SmartE.CheckContents(fileContent);
-                    if (!string.IsNullOrWhiteSpace(protection))
-                        protections.Add(protection);
-
-                    // SolidShield
-                    protection = SolidShield.CheckContents(file, fileContent);
-                    if (!string.IsNullOrWhiteSpace(protection))
-                        protections.Add(protection);
-
-                    // StarForce
-                    protection = StarForce.CheckContents(file, fileContent);
-                    if (!string.IsNullOrWhiteSpace(protection))
-                        protections.Add(protection);
-
-                    // SVK Protector
-                    protection = SVKProtector.CheckContents(fileContent);
-                    if (!string.IsNullOrWhiteSpace(protection))
-                        protections.Add(protection);
-
-                    // Sysiphus / Sysiphus DVD
-                    protection = Sysiphus.CheckContents(file, fileContent);
-                    if (!string.IsNullOrWhiteSpace(protection))
-                        protections.Add(protection);
-
-                    // TAGES
-                    protection = Tages.CheckContents(file, fileContent);
-                    if (!string.IsNullOrWhiteSpace(protection))
-                        protections.Add(protection);
-
-                    // VOB ProtectCD/DVD
-                    protection = VOBProtectCDDVD.CheckContents(file, fileContent);
-                    if (!string.IsNullOrWhiteSpace(protection))
-                        protections.Add(protection);
-
-                    // WTM CD Protect
-                    protection = WTMCDProtect.CheckContents(fileContent);
-                    if (!string.IsNullOrWhiteSpace(protection))
-                        protections.Add(protection);
-
-                    // Xtreme-Protector
-                    protection = XtremeProtector.CheckContents(fileContent);
-                    if (!string.IsNullOrWhiteSpace(protection))
-                        protections.Add(protection);
+                    protections.AddRange(ScanFileContent(file, fileContent));
                 }
                 catch { }
             }
@@ -602,7 +421,6 @@ namespace BurnOutSharp
                 {
                     // We don't care what the error was
                 }
-                // No-op
             }
 
             #endregion
@@ -702,6 +520,325 @@ namespace BurnOutSharp
                 return string.Empty;
             else
                 return string.Join(", ", protections);
+        }
+
+        /// <summary>
+        /// Scan an individual stream for copy protection
+        /// </summary>
+        /// <param name="stream">Generic stream to scan</param>
+        /// <param name="file">File path to be used for name checks (optional)</param>
+        public static string ScanInFile(Stream stream, string file = null)
+        {
+            // Assume the first part of the stream is the start of a file
+            string magic = "";
+            try
+            {
+                using (BinaryReader br = new BinaryReader(stream, Encoding.Default, true))
+                {
+                    magic = new string(br.ReadChars(8));
+                }
+            }
+            catch
+            {
+                // We don't care what the issue was, we can't open the file
+                return null;
+            }
+
+            // If we can, seek to the beginning of the stream
+            if (stream.CanSeek)
+                stream.Seek(0, SeekOrigin.Begin);
+
+            // Files can be protected in multiple ways
+            List<string> protections = new List<string>();
+
+            #region Executable Content Checks
+
+            // Windows Executable and DLL
+            if (magic.StartsWith("MZ"))
+            {
+                try
+                {
+                    // Load the current file content
+                    string fileContent = null;
+                    using (StreamReader sr = new StreamReader(stream))
+                    {
+                        fileContent = sr.ReadToEnd();
+                    }
+
+                    protections.AddRange(ScanFileContent(file, fileContent));
+                }
+                catch { }
+            }
+
+            #endregion
+
+            #region Textfile Content Checks
+
+            if (magic.StartsWith("{\rtf") // Rich Text File
+                || magic.StartsWith("" + (char)0xd0 + (char)0xcf + (char)0x11 + (char)0xe0 + (char)0xa1 + (char)0xb1 + (char)0x1a + (char)0xe1)) // Microsoft Office File (old)
+            {
+                try
+                {
+                    // Load the current file content
+                    string fileContent = null;
+                    using (StreamReader sr = new StreamReader(stream))
+                    {
+                        fileContent = sr.ReadToEnd();
+                    }
+
+                    // CD-Key
+                    if (fileContent.Contains("a valid serial number is required")
+                        || fileContent.Contains("serial number is located"))
+                    {
+                        protections.Add("CD-Key / Serial");
+                    }
+                }
+                catch
+                {
+                    // We don't care what the error was
+                }
+            }
+
+            #endregion
+
+            #region Archive Content Checks
+
+            // 7-zip
+            if (magic.StartsWith("7z" + (char)0xbc + (char)0xaf + (char)0x27 + (char)0x1c))
+            {
+                // No-op
+            }
+
+            // InstallShield CAB
+            else if (magic.StartsWith("ISc"))
+            {
+                // TODO: Update UnshieldSharp to include generic stream support
+            }
+
+            // Microsoft CAB
+            else if (magic.StartsWith("MSCF"))
+            {
+                // TODO: See if LibMSPackN can use generic streams
+            }
+
+            // PKZIP
+            else if (magic.StartsWith("PK" + (char)03 + (char)04)
+                || magic.StartsWith("PK" + (char)05 + (char)06)
+                || magic.StartsWith("PK" + (char)07 + (char)08))
+            {
+                // No-op
+            }
+
+            // RAR
+            else if (magic.StartsWith("Rar!"))
+            {
+                // No-op
+            }
+
+            #endregion
+
+            // Return blank if nothing found, or comma-separated list of protections
+            if (protections.Count() == 0)
+                return string.Empty;
+            else
+                return string.Join(", ", protections);
+        }
+
+        /// <summary>
+        /// Scan the contents of a file for protection
+        /// </summary>
+        private static List<string> ScanFileContent(string file, string fileContent)
+        {
+            // Files can be protected in multiple ways
+            List<string> protections = new List<string>();
+            string protection;
+
+            // 3PLock
+            protection = ThreePLock.CheckContents(fileContent);
+            if (!string.IsNullOrWhiteSpace(protection))
+                protections.Add(protection);
+
+            // ActiveMARK
+            protection = ActiveMARK.CheckContents(fileContent);
+            if (!string.IsNullOrWhiteSpace(protection))
+                protections.Add(protection);
+
+            // Alpha-ROM
+            protection = AlphaROM.CheckContents(fileContent);
+            if (!string.IsNullOrWhiteSpace(protection))
+                protections.Add(protection);
+
+            // Armadillo
+            protection = Armadillo.CheckContents(fileContent);
+            if (!string.IsNullOrWhiteSpace(protection))
+                protections.Add(protection);
+
+            // CD-Cops
+            protection = CDCops.CheckContents(file, fileContent);
+            if (!string.IsNullOrWhiteSpace(protection))
+                protections.Add(protection);
+
+            // CD-Lock
+            protection = CDLock.CheckContents(fileContent);
+            if (!string.IsNullOrWhiteSpace(protection))
+                protections.Add(protection);
+
+            // CDSHiELD SE
+            protection = CDSHiELDSE.CheckContents(fileContent);
+            if (!string.IsNullOrWhiteSpace(protection))
+                protections.Add(protection);
+
+            // CD Check
+            protection = CDCheck.CheckContents(fileContent);
+            if (!string.IsNullOrWhiteSpace(protection))
+                protections.Add(protection);
+
+            // Cenega ProtectDVD
+            protection = CengaProtectDVD.CheckContents(fileContent);
+            if (!string.IsNullOrWhiteSpace(protection))
+                protections.Add(protection);
+
+            // Code Lock
+            protection = CodeLock.CheckContents(fileContent);
+            if (!string.IsNullOrWhiteSpace(protection))
+                protections.Add(protection);
+
+            // CopyKiller
+            protection = CopyKiller.CheckContents(fileContent);
+            if (!string.IsNullOrWhiteSpace(protection))
+                protections.Add(protection);
+
+            // Cucko (EA Custom)
+            protection = Cucko.CheckContents(fileContent);
+            if (!string.IsNullOrWhiteSpace(protection))
+                protections.Add(protection);
+
+            // dotFuscator
+            protection = dotFuscator.CheckContents(fileContent);
+            if (!string.IsNullOrWhiteSpace(protection))
+                protections.Add(protection);
+
+            // DVD-Cops
+            protection = DVDCops.CheckContents(file, fileContent);
+            if (!string.IsNullOrWhiteSpace(protection))
+                protections.Add(protection);
+
+            // EA CdKey Registration Module
+            protection = EACdKey.CheckContents(fileContent);
+            if (!string.IsNullOrWhiteSpace(protection))
+                protections.Add(protection);
+
+            // EXE Stealth
+            protection = EXEStealth.CheckContents(fileContent);
+            if (!string.IsNullOrWhiteSpace(protection))
+                protections.Add(protection);
+
+            // Games for Windows - Live
+            protection = GFWL.CheckContents(fileContent);
+            if (!string.IsNullOrWhiteSpace(protection))
+                protections.Add(protection);
+
+            // Impulse Reactor
+            protection = ImpulseReactor.CheckContents(file, fileContent);
+            if (!string.IsNullOrWhiteSpace(protection))
+                protections.Add(protection);
+
+            // Inno Setup
+            protection = InnoSetup.CheckContents(file, fileContent);
+            if (!string.IsNullOrWhiteSpace(protection))
+                protections.Add(protection);
+
+            // JoWooD X-Prot
+            protection = JoWooDXProt.CheckContents(file, fileContent);
+            if (!string.IsNullOrWhiteSpace(protection))
+                protections.Add(protection);
+
+            // Key-Lock (Dongle)
+            protection = KeyLock.CheckContents(fileContent);
+            if (!string.IsNullOrWhiteSpace(protection))
+                protections.Add(protection);
+
+            // LaserLock
+            protection = LaserLock.CheckContents(file, fileContent);
+            if (!string.IsNullOrWhiteSpace(protection))
+                protections.Add(protection);
+
+            // PE Compact
+            protection = PECompact.CheckContents(fileContent);
+            if (!string.IsNullOrWhiteSpace(protection))
+                protections.Add(protection);
+
+            // ProtectDisc
+            protection = ProtectDisc.CheckContents(file, fileContent);
+            if (!string.IsNullOrWhiteSpace(protection))
+                protections.Add(protection);
+
+            // Ring PROTECH
+            protection = RingPROTECH.CheckContents(fileContent);
+            if (!string.IsNullOrWhiteSpace(protection))
+                protections.Add(protection);
+
+            // SafeDisc / SafeCast
+            protection = SafeDisc.CheckContents(file, fileContent);
+            if (!string.IsNullOrWhiteSpace(protection))
+                protections.Add(protection);
+
+            // SafeLock
+            protection = SafeLock.CheckContents(fileContent);
+            if (!string.IsNullOrWhiteSpace(protection))
+                protections.Add(protection);
+
+            // SecuROM
+            protection = SecuROM.CheckContents(file, fileContent);
+            if (!string.IsNullOrWhiteSpace(protection))
+                protections.Add(protection);
+
+            // SmartE
+            protection = SmartE.CheckContents(fileContent);
+            if (!string.IsNullOrWhiteSpace(protection))
+                protections.Add(protection);
+
+            // SolidShield
+            protection = SolidShield.CheckContents(file, fileContent);
+            if (!string.IsNullOrWhiteSpace(protection))
+                protections.Add(protection);
+
+            // StarForce
+            protection = StarForce.CheckContents(file, fileContent);
+            if (!string.IsNullOrWhiteSpace(protection))
+                protections.Add(protection);
+
+            // SVK Protector
+            protection = SVKProtector.CheckContents(fileContent);
+            if (!string.IsNullOrWhiteSpace(protection))
+                protections.Add(protection);
+
+            // Sysiphus / Sysiphus DVD
+            protection = Sysiphus.CheckContents(file, fileContent);
+            if (!string.IsNullOrWhiteSpace(protection))
+                protections.Add(protection);
+
+            // TAGES
+            protection = Tages.CheckContents(file, fileContent);
+            if (!string.IsNullOrWhiteSpace(protection))
+                protections.Add(protection);
+
+            // VOB ProtectCD/DVD
+            protection = VOBProtectCDDVD.CheckContents(file, fileContent);
+            if (!string.IsNullOrWhiteSpace(protection))
+                protections.Add(protection);
+
+            // WTM CD Protect
+            protection = WTMCDProtect.CheckContents(fileContent);
+            if (!string.IsNullOrWhiteSpace(protection))
+                protections.Add(protection);
+
+            // Xtreme-Protector
+            protection = XtremeProtector.CheckContents(fileContent);
+            if (!string.IsNullOrWhiteSpace(protection))
+                protections.Add(protection);
+
+            return protections;
         }
 
         /// <summary>

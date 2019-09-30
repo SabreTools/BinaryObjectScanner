@@ -14,6 +14,9 @@ namespace BurnOutSharp
         /// </summary>
         public static string GetFileVersion(string file)
         {
+            if (file == null)
+                return string.Empty;
+
             FileVersionInfo fvinfo = FileVersionInfo.GetVersionInfo(file);
             if (fvinfo.FileVersion == null)
                 return "";

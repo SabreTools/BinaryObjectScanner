@@ -28,7 +28,7 @@ namespace BurnOutSharp.ProtectionType
                 return "LaserLock " + GetVersion(fileContent, --position) + " " + GetBuild(fileContent, false);
             }
 
-            if (Path.GetFileName(file) == "NOMOUSE.SP")
+            if (file != null && Path.GetFileName(file) == "NOMOUSE.SP")
                 return "LaserLock " + GetVersion16Bit(file);
 
             if (fileContent.Contains(":\\LASERLOK\\LASERLOK.IN" + (char)0x00 + "C:\\NOMOUSE.SP"))
