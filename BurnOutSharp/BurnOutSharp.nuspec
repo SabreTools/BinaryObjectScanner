@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>BurnOutSharp</id>
-    <version>1.03.7.1</version>
+    <version>1.03.8.0</version>
     <title>BurnOutSharp</title>
     <authors>Matt Nadareski, Gernot Knippen</authors>
     <owners>Matt Nadareski, Gernot Knippen</owners>
@@ -10,16 +10,20 @@
     <projectUrl>https://github.com/mnadareski/BurnOutSharp</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Port of BurnOut to C#, with additions</description>
-    <copyright>Copyright (c)2005-2010 Gernot Knippen, Copyright (c)2018 Matt Nadareski</copyright>
+    <copyright>Copyright (c)2005-2010 Gernot Knippen, Copyright (c)2018-2019 Matt Nadareski</copyright>
     <tags>protection scan burnout</tags>
     <dependencies>
       <dependency id="LessIO" version="0.5.0" />
       <dependency id="libmspack4n" version="0.8.0" />
-      <dependency id="UnshieldSharp" version="1.4.2.2" />
+      <dependency id="UnshieldSharp" version="1.4.2.3" />
     </dependencies>
   </metadata>
   <files>
-    <file src="bin\Debug\BurnOutSharp.dll" target="lib\net461\BurnOutSharp.dll" />
-    <file src="bin\Debug\BurnOutSharp.pdb" target="lib\net461\BurnOutSharp.pdb" />
+    <file src="bin\Debug\net462\BurnOutSharp.dll" target="lib\net462\BurnOutSharp.dll" />
+    <file src="bin\Debug\net462\BurnOutSharp.pdb" target="lib\net462\BurnOutSharp.pdb" />
+    <file src="bin\Debug\net472\BurnOutSharp.dll" target="lib\net472\BurnOutSharp.dll" />
+    <file src="bin\Debug\net472\BurnOutSharp.pdb" target="lib\net472\BurnOutSharp.pdb" />
+    <file src="bin\Debug\netcoreapp3.0\BurnOutSharp.dll" target="lib\netcoreapp3.0\BurnOutSharp.dll" />
+    <file src="bin\Debug\netcoreapp3.0\BurnOutSharp.pdb" target="lib\netcoreapp3.0\BurnOutSharp.pdb" />
   </files>
 </package>

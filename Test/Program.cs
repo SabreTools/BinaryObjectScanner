@@ -16,11 +16,13 @@ namespace Test
             }
 
             Console.ReadLine();
+
+            //ProtectionFind.ScanSectors('D', 2048);
         }
 
         private static void Changed(object source, FileProtection value)
         {
-            Console.WriteLine($"{value.Percentage * 100}: {value.Filename} - {value.Protection}");
+            Console.WriteLine($"{value.Percentage * 100:N2}%: {value.Filename} - {value.Protection}");
         }
     }
 }
