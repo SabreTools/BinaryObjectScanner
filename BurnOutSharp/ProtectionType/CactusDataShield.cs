@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -11,8 +12,7 @@ namespace BurnOutSharp.ProtectionType
         {
             if (Path.GetFileName(file) == "CDSPlayer.app")
             {
-                using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                using (var sr = new StreamReader(fs))
+                using (var sr = new StreamReader(file, Encoding.Default))
                 {
                     return "Cactus Data Shield " + sr.ReadLine().Substring(3) + "(" + sr.ReadLine() + ")";
                 }

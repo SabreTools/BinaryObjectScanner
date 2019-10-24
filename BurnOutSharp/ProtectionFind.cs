@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using BurnOutSharp.ProtectionType;
 using LibMSPackN;
@@ -436,36 +437,51 @@ namespace BurnOutSharp
             // InstallShield CAB
             else if (magic.StartsWith("ISc"))
             {
-                try
+                // Get the name of the first cabinet file or header
+                string directory = Path.GetDirectoryName(file);
+                string noExtension = Path.GetFileNameWithoutExtension(file);
+                string filenamePattern = Path.Combine(directory, noExtension);
+                filenamePattern = new Regex(@"\d+$").Replace(filenamePattern, string.Empty);
+
+                bool cabinetHeaderExists = File.Exists(Path.Combine(directory, filenamePattern + "1.hdr"));
+                bool shouldScanCabinet = cabinetHeaderExists
+                    ? file.Equals(Path.Combine(directory, filenamePattern + "1.hdr"), StringComparison.OrdinalIgnoreCase)
+                    : file.Equals(Path.Combine(directory, filenamePattern + "1.cab"), StringComparison.OrdinalIgnoreCase);
+
+                // If we have the first file
+                if (shouldScanCabinet)
                 {
-                    string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-                    Directory.CreateDirectory(tempPath);
-
-                    UnshieldCabinet cabfile = UnshieldCabinet.Open(file);
-                    for (int i = 0; i < cabfile.FileCount; i++)
-                    {
-                        string tempFileName = Path.Combine(tempPath, cabfile.FileName(i));
-                        if (cabfile.FileSave(i, tempFileName))
-                        {
-                            string protection = ScanInFile(tempFileName);
-                            try
-                            {
-                                File.Delete(tempFileName);
-                            }
-                            catch { }
-
-                            if (!string.IsNullOrEmpty(protection))
-                                protections.Add(protection);
-                        }
-                    }
-
                     try
                     {
-                        Directory.Delete(tempPath, true);
+                        string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+                        Directory.CreateDirectory(tempPath);
+
+                        UnshieldCabinet cabfile = UnshieldCabinet.Open(file);
+                        for (int i = 0; i < cabfile.FileCount; i++)
+                        {
+                            string tempFileName = Path.Combine(tempPath, cabfile.FileName(i));
+                            if (cabfile.FileSave(i, tempFileName))
+                            {
+                                string protection = ScanInFile(tempFileName);
+                                try
+                                {
+                                    File.Delete(tempFileName);
+                                }
+                                catch { }
+
+                                if (!string.IsNullOrEmpty(protection))
+                                    protections.Add(protection);
+                            }
+                        }
+
+                        try
+                        {
+                            Directory.Delete(tempPath, true);
+                        }
+                        catch { }
                     }
                     catch { }
                 }
-                catch { }
             }
 
             // Microsoft CAB

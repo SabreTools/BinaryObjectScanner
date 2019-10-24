@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -26,28 +27,19 @@ namespace BurnOutSharp.ProtectionType
                 {
                     foreach (string file in files)
                     {
-                        using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                        using (var sr = new StreamReader(fs))
+                        // Load the current file content
+                        string fileContent = null;
+                        using (StreamReader sr = new StreamReader(file, Encoding.Default))
                         {
-                            string fileContent = sr.ReadToEnd();
-                            string protection = CheckContents(path, fileContent);
-                            if (!string.IsNullOrWhiteSpace(protection))
-                                return protection;
+                            fileContent = sr.ReadToEnd();
                         }
+
+                        string protection = CheckContents(path, fileContent);
+                        if (!string.IsNullOrWhiteSpace(protection))
+                            return protection;
                     }
                 }
-            }
-            else
-            {
-                using (var fs = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                using (var sr = new StreamReader(fs))
-                {
-                    string fileContent = sr.ReadToEnd();
-                    string protection = CheckContents(path, fileContent);
-                    if (!string.IsNullOrWhiteSpace(protection))
-                        return protection;
-                }
-            }            
+            }      
 
             return null;
         }
