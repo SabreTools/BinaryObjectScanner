@@ -39,20 +39,7 @@ namespace BurnOutSharp.ProtectionType
                             return protection;
                     }
                 }
-            }
-            else
-            {
-                // Load the current file content
-                string fileContent = null;
-                using (StreamReader sr = new StreamReader(path, Encoding.Default))
-                {
-                    fileContent = sr.ReadToEnd();
-                }
-
-                string protection = CheckContents(path, fileContent);
-                if (!string.IsNullOrWhiteSpace(protection))
-                    return protection;
-            }            
+            }      
 
             return null;
         }
