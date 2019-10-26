@@ -37,7 +37,7 @@ namespace BurnOutSharp
 
         private static Process StartSafe(string file)
         {
-            if (file == null)
+            if (file == null || !File.Exists(file))
                 return null;
 
             Process startingprocess = new Process();
@@ -59,7 +59,7 @@ namespace BurnOutSharp
 
         private static string MakeTempFile(string file, string sExtension = ".exe")
         {
-            if (file == null)
+            if (file == null || !File.Exists(file))
                 return string.Empty;
 
             FileInfo filei = new FileInfo(file);
@@ -75,7 +75,7 @@ namespace BurnOutSharp
 
         private static bool IsEXE(string file)
         {
-            if (file == null)
+            if (file == null || !File.Exists(file))
                 return false;
 
             BinaryReader breader = new BinaryReader(File.OpenRead(file));
@@ -199,7 +199,7 @@ namespace BurnOutSharp
 
         public static string SearchProtectDiscVersion(string file)
         {
-            if (file == null)
+            if (file == null || !File.Exists(file))
                 return string.Empty;
 
             Process exe = new Process();
@@ -357,7 +357,7 @@ namespace BurnOutSharp
 
         public static string SearchSafeDiscVersion(string file)
         {
-            if (file == null)
+            if (file == null || !File.Exists(file))
                 return string.Empty;
 
             Process exe = new Process();

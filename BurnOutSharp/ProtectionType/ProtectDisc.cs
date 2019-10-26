@@ -41,7 +41,7 @@ namespace BurnOutSharp.ProtectionType
 
         private static string GetVersionBuild6till8(string file, int position)
         {
-            if (file == null)
+            if (file == null || !File.Exists(file))
                 return string.Empty;
 
             using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
@@ -93,7 +93,7 @@ namespace BurnOutSharp.ProtectionType
         private static string GetVersionBuild76till10(string file, int position, out int irefBuild)
         {
             irefBuild = 0;
-            if (file == null)
+            if (file == null || !File.Exists(file))
                 return string.Empty;
 
             using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
