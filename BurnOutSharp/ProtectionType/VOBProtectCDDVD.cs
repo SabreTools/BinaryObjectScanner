@@ -58,7 +58,7 @@ namespace BurnOutSharp.ProtectionType
 
         private static string GetBuild(string file, int position)
         {
-            if (file == null)
+            if (file == null || !File.Exists(file))
                 return string.Empty;
 
             using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
@@ -76,7 +76,7 @@ namespace BurnOutSharp.ProtectionType
 
         private static string GetOldVersion(string file, int position)
         {
-            if (file == null)
+            if (file == null || !File.Exists(file))
                 return string.Empty;
 
             using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
@@ -98,7 +98,7 @@ namespace BurnOutSharp.ProtectionType
 
         private static string GetVersion(string file, int position)
         {
-            if (file == null)
+            if (file == null || !File.Exists(file))
                 return string.Empty;
 
             using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))

@@ -17,7 +17,7 @@ namespace BurnOutSharp.ProtectionType
 
         private static string GetVersion(string file)
         {
-            if (file == null)
+            if (file == null || !File.Exists(file))
                 return string.Empty;
 
             using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))

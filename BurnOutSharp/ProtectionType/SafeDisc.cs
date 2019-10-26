@@ -39,15 +39,22 @@ namespace BurnOutSharp.ProtectionType
                 // TODO: These are all cop-outs that don't check the existence of the other files
                 if (files.Count(f => Path.GetFileName(f).Equals("DPLAYERX.DLL", StringComparison.OrdinalIgnoreCase)) > 0)
                 {
-                    return GetDPlayerXVersion(path);
+                    string file = files.First(f => Path.GetFileName(f).Equals("DPLAYERX.DLL", StringComparison.OrdinalIgnoreCase));
+                    return GetDPlayerXVersion(file);
                 }
                 else if (files.Count(f => Path.GetFileName(f).Equals("drvmgt.dll", StringComparison.OrdinalIgnoreCase)) > 0)
                 {
-                    return GetDrvmgtVersion(path);
+                    string file = files.First(f => Path.GetFileName(f).Equals("drvmgt.dll", StringComparison.OrdinalIgnoreCase));
+                    return GetDrvmgtVersion(file);
                 }
                 else if (files.Count(f => Path.GetFileName(f).Equals("secdrv.sys", StringComparison.OrdinalIgnoreCase)) > 0)
                 {
-                    return GetSecdrvVersion(path);
+                    string file = files.First(f => Path.GetFileName(f).Equals("secdrv.sys", StringComparison.OrdinalIgnoreCase));
+                    return GetSecdrvVersion(file);
+                }
+                else if (path.EndsWith(".SafeDiscDVD.bundle", StringComparison.OrdinalIgnoreCase))
+                {
+                    return "SafeDisc for Macintosh";
                 }
             }
             else
@@ -97,7 +104,7 @@ namespace BurnOutSharp.ProtectionType
 
         private static string GetDPlayerXVersion(string file)
         {
-            if (file == null)
+            if (file == null || !File.Exists(file))
                 return string.Empty;
 
             FileInfo fi = new FileInfo(file);
@@ -125,7 +132,7 @@ namespace BurnOutSharp.ProtectionType
 
         private static string GetDrvmgtVersion(string file)
         {
-            if (file == null)
+            if (file == null || !File.Exists(file))
                 return string.Empty;
 
             FileInfo fi = new FileInfo(file);
@@ -153,7 +160,7 @@ namespace BurnOutSharp.ProtectionType
 
         private static string GetSecdrvVersion(string file)
         {
-            if (file == null)
+            if (file == null || !File.Exists(file))
                 return string.Empty;
 
             FileInfo fi = new FileInfo(file);
@@ -187,7 +194,7 @@ namespace BurnOutSharp.ProtectionType
 
         private static string GetVersion(string file, int position)
         {
-            if (file == null)
+            if (file == null || !File.Exists(file))
                 return string.Empty;
 
             using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
