@@ -380,8 +380,11 @@ namespace BurnOutSharp
 
             #region Executable Content Checks
 
-            // Windows Executable and DLL
-            if (magic.StartsWith("MZ"))
+            if (magic.StartsWith("MZ") // Windows Executable and DLL
+                || magic.StartsWith((char)0x7f + "ELF") // Unix binaries
+                || magic.StartsWith("" + (char)0xfe + (char)0xed + (char)0xfa + (char)0xce) // Macintosh
+                || magic.StartsWith("" + (char)0xce + (char)0xfa + (char)0xed + (char)0xfe) // Macintosh
+                || magic.StartsWith("Joy!peff")) // Macintosh
             {
                 try
                 {
