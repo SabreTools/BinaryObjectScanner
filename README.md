@@ -41,6 +41,7 @@ Below is a list of the protections that can be detected using this code:
 - JoWooD X-Prot (v1/v2)
 - Key2Audio XS
 - Key-Lock (Dongle)
+- LibCrypt (Separate subfile scan only)
 - LaserLock
 - MediaCloQ
 - MediaMax CD3
