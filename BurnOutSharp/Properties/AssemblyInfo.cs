@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Matt Nadareski, Gernot Knippen")]
 [assembly: AssemblyProduct("BurnOutSharp")]
-[assembly: AssemblyCopyright("Copyright (c)2005-2010 Gernot Knippen, Copyright (c)2018 Matt Nadareski")]
+[assembly: AssemblyCopyright("Copyright (c)2005-2010 Gernot Knippen, Copyright (c)2018-2020 Matt Nadareski")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.03.9.0")]
-[assembly: AssemblyFileVersion("1.03.9.0")]
+[assembly: AssemblyVersion("1.03.9.1")]
+[assembly: AssemblyFileVersion("1.03.9.1")]
