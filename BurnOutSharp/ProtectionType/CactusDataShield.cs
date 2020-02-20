@@ -8,6 +8,7 @@ namespace BurnOutSharp.ProtectionType
 {
     public class CactusDataShield
     {
+        // TODO: Get header info for CDSPlayer.app so it can be integrated better into the rest of the content checks
         public static string CheckContents(string file)
         {
             if (Path.GetFileName(file) == "CDSPlayer.app")

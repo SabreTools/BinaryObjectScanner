@@ -249,11 +249,6 @@ namespace BurnOutSharp
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
-            // PSX Anti-modchip
-            protection = PSXAntiModchip.CheckPath(path, files, isDirectory);
-            if (!string.IsNullOrWhiteSpace(protection))
-                protections.Add(protection);
-
             // SafeCast
             protection = SafeCast.CheckPath(path, files, isDirectory);
             if (!string.IsNullOrWhiteSpace(protection))
