@@ -12,10 +12,10 @@ namespace BurnOutSharp.ProtectionType
             if (isDirectory)
             {
                 // TODO: Verify if these are OR or AND
-                if (files.Count(f => Path.GetFileName(f).Equals("Start_Here.exe", StringComparison.OrdinalIgnoreCase)) > 0
-                    || files.Count(f => Path.GetFileName(f).Equals("HCPSMng.exe", StringComparison.OrdinalIgnoreCase)) > 0
-                    || files.Count(f => Path.GetFileName(f).Equals("MFINT.DLL", StringComparison.OrdinalIgnoreCase)) > 0
-                    || files.Count(f => Path.GetFileName(f).Equals("MFIMP.DLL", StringComparison.OrdinalIgnoreCase)) > 0)
+                if (files.Any(f => Path.GetFileName(f).Equals("Start_Here.exe", StringComparison.OrdinalIgnoreCase))
+                    || files.Any(f => Path.GetFileName(f).Equals("HCPSMng.exe", StringComparison.OrdinalIgnoreCase))
+                    || files.Any(f => Path.GetFileName(f).Equals("MFINT.DLL", StringComparison.OrdinalIgnoreCase))
+                    || files.Any(f => Path.GetFileName(f).Equals("MFIMP.DLL", StringComparison.OrdinalIgnoreCase)))
                 {
                     return "Hexalock AutoLock";
                 }

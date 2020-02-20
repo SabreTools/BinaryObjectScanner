@@ -23,7 +23,7 @@ namespace BurnOutSharp.ProtectionType
         {
             if (isDirectory)
             {
-                if (files.Count(f => Path.GetExtension(f).Trim('.').Equals("AFP", StringComparison.OrdinalIgnoreCase)) > 0)
+                if (files.Any(f => Path.GetExtension(f).Trim('.').Equals("AFP", StringComparison.OrdinalIgnoreCase)))
                     return "CD-Lock";
             }
             else

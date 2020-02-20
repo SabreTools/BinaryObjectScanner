@@ -11,7 +11,7 @@ namespace BurnOutSharp.ProtectionType
         {
             if (isDirectory)
             {
-                if (files.Count(f => Path.GetFileName(f).Equals("UplayInstaller.exe", StringComparison.OrdinalIgnoreCase)) > 0)
+                if (files.Any(f => Path.GetFileName(f).Equals("UplayInstaller.exe", StringComparison.OrdinalIgnoreCase)))
                     return "Uplay";
             }
             else

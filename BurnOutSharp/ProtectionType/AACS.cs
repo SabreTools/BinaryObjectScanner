@@ -11,8 +11,8 @@ namespace BurnOutSharp.ProtectionType
         {
             if (isDirectory)
             {
-                if (files.Count(f => f.Contains(Path.Combine("aacs", "VTKF000.AACS"))) > 0
-                    && files.Count(f => f.Contains(Path.Combine("AACS", "CPSUnit00001.cci"))) > 0)
+                if (files.Any(f => f.Contains(Path.Combine("aacs", "VTKF000.AACS")))
+                    && files.Any(f => f.Contains(Path.Combine("AACS", "CPSUnit00001.cci"))))
                 {
                     return "AACS";
                 }

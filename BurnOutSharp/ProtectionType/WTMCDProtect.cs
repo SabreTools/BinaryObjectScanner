@@ -20,10 +20,10 @@ namespace BurnOutSharp.ProtectionType
             if (isDirectory)
             {
                 // TODO: Verify if these are OR or AND
-                if (files.Count(f => Path.GetExtension(f).Trim('.').Equals("IMP", StringComparison.OrdinalIgnoreCase)) > 0
-                    || files.Count(f => Path.GetFileName(f).Equals("imp.dat", StringComparison.OrdinalIgnoreCase)) > 0
-                    || files.Count(f => Path.GetFileName(f).Equals("wtmfiles.dat", StringComparison.OrdinalIgnoreCase)) > 0
-                    || files.Count(f => Path.GetFileName(f).Equals("Viewer.exe", StringComparison.OrdinalIgnoreCase)) > 0)
+                if (files.Any(f => Path.GetExtension(f).Trim('.').Equals("IMP", StringComparison.OrdinalIgnoreCase))
+                    || files.Any(f => Path.GetFileName(f).Equals("imp.dat", StringComparison.OrdinalIgnoreCase))
+                    || files.Any(f => Path.GetFileName(f).Equals("wtmfiles.dat", StringComparison.OrdinalIgnoreCase))
+                    || files.Any(f => Path.GetFileName(f).Equals("Viewer.exe", StringComparison.OrdinalIgnoreCase)))
                 {
                     return "WTM CD Protect";
                 }

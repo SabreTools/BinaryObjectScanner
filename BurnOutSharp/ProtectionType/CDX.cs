@@ -12,9 +12,9 @@ namespace BurnOutSharp.ProtectionType
             if (isDirectory)
             {
                 // TODO: Verify if these are OR or AND
-                if (files.Count(f => Path.GetFileName(f).Equals("CHKCDX16.DLL", StringComparison.OrdinalIgnoreCase)) > 0
-                    || files.Count(f => Path.GetFileName(f).Equals("CHKCDX32.DLL", StringComparison.OrdinalIgnoreCase)) > 0
-                    || files.Count(f => Path.GetFileName(f).Equals("CHKCDXNT.DLL", StringComparison.OrdinalIgnoreCase)) > 0)
+                if (files.Any(f => Path.GetFileName(f).Equals("CHKCDX16.DLL", StringComparison.OrdinalIgnoreCase))
+                    || files.Any(f => Path.GetFileName(f).Equals("CHKCDX32.DLL", StringComparison.OrdinalIgnoreCase))
+                    || files.Any(f => Path.GetFileName(f).Equals("CHKCDXNT.DLL", StringComparison.OrdinalIgnoreCase)))
                 {
                     return "CD-X";
                 }

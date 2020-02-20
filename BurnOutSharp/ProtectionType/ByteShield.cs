@@ -11,8 +11,8 @@ namespace BurnOutSharp.ProtectionType
         {
             if (isDirectory)
             {
-                if (files.Count(f => Path.GetFileName(f).Equals("Byteshield.dll", StringComparison.OrdinalIgnoreCase)) > 0
-                    || files.Count(f => Path.GetExtension(f).Trim('.').Equals("bbz", StringComparison.OrdinalIgnoreCase)) > 0)
+                if (files.Any(f => Path.GetFileName(f).Equals("Byteshield.dll", StringComparison.OrdinalIgnoreCase))
+                    || files.Any(f => Path.GetExtension(f).Trim('.').Equals("bbz", StringComparison.OrdinalIgnoreCase)))
                 {
                     return "ByteShield";
                 }

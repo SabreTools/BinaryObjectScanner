@@ -20,9 +20,9 @@ namespace BurnOutSharp.ProtectionType
             if (isDirectory)
             {
                 // TODO: Verify if these are OR or AND
-                if (files.Count(f => Path.GetFileName(f).Equals("SafeLock.dat", StringComparison.OrdinalIgnoreCase)) > 0
-                    || files.Count(f => Path.GetFileName(f).Equals("SafeLock.001", StringComparison.OrdinalIgnoreCase)) > 0
-                    || files.Count(f => Path.GetFileName(f).Equals("SafeLock.128", StringComparison.OrdinalIgnoreCase)) > 0)
+                if (files.Any(f => Path.GetFileName(f).Equals("SafeLock.dat", StringComparison.OrdinalIgnoreCase))
+                    || files.Any(f => Path.GetFileName(f).Equals("SafeLock.001", StringComparison.OrdinalIgnoreCase))
+                    || files.Any(f => Path.GetFileName(f).Equals("SafeLock.128", StringComparison.OrdinalIgnoreCase)))
                 {
                     return "SafeLock";
                 }

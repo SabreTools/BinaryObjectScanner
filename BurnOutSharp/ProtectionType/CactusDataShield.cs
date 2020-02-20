@@ -26,17 +26,17 @@ namespace BurnOutSharp.ProtectionType
             if (isDirectory)
             {
                 // TODO: Verify if these are OR or AND
-                if (files.Count(f => Path.GetFileName(f).Equals("CDSPlayer.app", StringComparison.OrdinalIgnoreCase)) > 0)
+                if (files.Any(f => Path.GetFileName(f).Equals("CDSPlayer.app", StringComparison.OrdinalIgnoreCase)))
                 {
                     string file = files.First(f => Path.GetFileName(f).Equals("CDSPlayer.app", StringComparison.OrdinalIgnoreCase));
                     string protection = CheckContents(file);
                     if (!string.IsNullOrWhiteSpace(protection))
                         return protection;
                 }
-                else if (files.Count(f => Path.GetFileName(f).Equals("yucca.cds", StringComparison.OrdinalIgnoreCase)) > 0
-                    || files.Count(f => Path.GetFileName(f).Equals("wmmp.exe", StringComparison.OrdinalIgnoreCase)) > 0
-                    || files.Count(f => Path.GetFileName(f).Equals("PJSTREAM.DLL", StringComparison.OrdinalIgnoreCase)) > 0
-                    || files.Count(f => Path.GetFileName(f).Equals("CACTUSPJ.exe", StringComparison.OrdinalIgnoreCase)) > 0)
+                else if (files.Any(f => Path.GetFileName(f).Equals("yucca.cds", StringComparison.OrdinalIgnoreCase))
+                    || files.Any(f => Path.GetFileName(f).Equals("wmmp.exe", StringComparison.OrdinalIgnoreCase))
+                    || files.Any(f => Path.GetFileName(f).Equals("PJSTREAM.DLL", StringComparison.OrdinalIgnoreCase))
+                    || files.Any(f => Path.GetFileName(f).Equals("CACTUSPJ.exe", StringComparison.OrdinalIgnoreCase)))
                 {
                     return "Cactus Data Shield 200";
                 }

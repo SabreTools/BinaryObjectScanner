@@ -11,7 +11,7 @@ namespace BurnOutSharp.ProtectionType
         {
             if (isDirectory)
             {
-                if (files.Count(f => Path.GetFileName(f).Equals("_742893.016", StringComparison.OrdinalIgnoreCase)) > 0)
+                if (files.Any(f => Path.GetFileName(f).Equals("_742893.016", StringComparison.OrdinalIgnoreCase)))
                     return "TZCopyProtector";
             }
             else
