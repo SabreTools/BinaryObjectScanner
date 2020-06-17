@@ -146,7 +146,7 @@ namespace BurnOutSharp.ProtectionType
             //SecuROM 7 new and 8
             if (bytes[3] == 0x5C) // if (bytes[0] == 0xED && bytes[3] == 0x5C {
             {
-                return $"{bytes[0] ^ 0xEA}.{(bytes[1] ^ 0x2C).ToString("00")}.{(bytes[2] ^ 0x8).ToString("0000")}";
+                return $"{bytes[0] ^ 0xEA}.{bytes[1] ^ 0x2C:00}.{bytes[2] ^ 0x8:0000}";
             }
 
             // SecuROM 7 old
@@ -154,7 +154,7 @@ namespace BurnOutSharp.ProtectionType
             {
                 index = 122;
                 bytes = fileContent.Skip(index).Take(2).ToArray();
-                return $"7.{(bytes[0] ^ 0x10).ToString("00")}.{(bytes[1] ^ 0x10).ToString("0000")}"; //return "7.01-7.10"
+                return $"7.{bytes[0] ^ 0x10:00}.{bytes[1] ^ 0x10:0000}"; //return "7.01-7.10"
             }
         }
     }

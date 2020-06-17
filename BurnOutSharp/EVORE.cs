@@ -193,9 +193,6 @@ namespace BurnOutSharp
 
         public static string SearchProtectDiscVersion(string file, byte[] fileContent)
         {
-            Process exe = new Process();
-            Process[] processes = new Process[0];
-
             string version = "";
             DateTime timestart;
             if (!IsEXE(fileContent))
@@ -222,10 +219,11 @@ namespace BurnOutSharp
                 catch { }
             }
 
-            exe = StartSafe(tempexe);
+            Process exe = StartSafe(tempexe);
             if (exe == null)
                 return "";
 
+            Process[] processes = new Process[0];
             timestart = DateTime.Now;
             do
             {

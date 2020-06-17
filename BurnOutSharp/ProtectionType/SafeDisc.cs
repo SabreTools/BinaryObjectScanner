@@ -227,7 +227,7 @@ namespace BurnOutSharp.ProtectionType
             int subsubVersion = BitConverter.ToInt32(fileContent, index);
 
             if (version != 0)
-                return $"{version}.{subVersion.ToString("00")}.{subsubVersion.ToString("000")}";
+                return $"{version}.{subVersion:00}.{subsubVersion:000}";
 
             index = position + 18 + 14; // Begin reading after "BoG_ *90.0&!!  Yy>" for newer SafeDisc
             version = BitConverter.ToInt32(fileContent, index);
@@ -239,7 +239,7 @@ namespace BurnOutSharp.ProtectionType
             if (version == 0)
                 return "";
 
-            return $"{version}.{subVersion.ToString("00")}.{subsubVersion.ToString("000")}";
+            return $"{version}.{subVersion:00}.{subsubVersion:000}";
         }
     }
 }

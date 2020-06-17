@@ -114,7 +114,8 @@ namespace BurnOutSharp.ProtectionType
 
         private static string GetVersion16Bit(string file)
         {
-            using (var br = new BinaryReader(File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
+            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            using (var br = new BinaryReader(fs))
             {
                 return GetVersion16Bit(br.ReadBytes((int)fs.Length));
             }
