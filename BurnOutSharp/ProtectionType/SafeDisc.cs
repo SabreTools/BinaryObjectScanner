@@ -16,16 +16,16 @@ namespace BurnOutSharp.ProtectionType
                 // "product activation library"
                 byte[] check2 = new byte[] { 0x70, 0x72, 0x6F, 0x64, 0x75, 0x63, 0x74, 0x20, 0x61, 0x63, 0x74, 0x69, 0x76, 0x61, 0x74, 0x69, 0x6F, 0x6E, 0x20, 0x6C, 0x69, 0x62, 0x72, 0x61, 0x72, 0x79 };
                 if (fileContent.Contains(check2, out int position2))
-                    return $"SafeCast {GetVersion(file, position)} (Index {position}, {position2})";
+                    return $"SafeCast {GetVersion(fileContent, position)} (Index {position}, {position2})";
                 else
-                    return $"SafeDisc {GetVersion(file, position)} (Index {position})";
+                    return $"SafeDisc {GetVersion(fileContent, position)} (Index {position})";
             }
 
             // (char)0x00 + (char)0x00 + "BoG_"
             check = new byte[] { 0x00, 0x00, 0x42, 0x6F, 0x47, 0x5F };
             if (fileContent.Contains(check, out position))
             {
-                string version = EVORE.SearchSafeDiscVersion(file);
+                string version = EVORE.SearchSafeDiscVersion(file, fileContent);
                 if (version.Length > 0)
                     return $"SafeDisc {version} (Index {position})";
 
@@ -36,7 +36,7 @@ namespace BurnOutSharp.ProtectionType
             check = new byte[] { 0x73, 0x74, 0x78, 0x74, 0x37, 0x37, 0x34 };
             if (fileContent.Contains(check, out position))
             {
-                string version = EVORE.SearchSafeDiscVersion(file);
+                string version = EVORE.SearchSafeDiscVersion(file, fileContent);
                 if (version.Length > 0)
                     return $"SafeDisc {version} (Index {position})";
 
@@ -47,7 +47,7 @@ namespace BurnOutSharp.ProtectionType
             check = new byte[] { 0x73, 0x74, 0x78, 0x74, 0x33, 0x37, 0x31 };
             if (fileContent.Contains(check, out position))
             {
-                string version = EVORE.SearchSafeDiscVersion(file);
+                string version = EVORE.SearchSafeDiscVersion(file, fileContent);
                 if (version.Length > 0)
                     return $"SafeDisc {version} (Index {position})";
 
@@ -217,32 +217,29 @@ namespace BurnOutSharp.ProtectionType
                 return "SafeDisc 2 or greater";
         }
 
-        private static string GetVersion(string file, int position)
+        private static string GetVersion(byte[] fileContent, int position)
         {
-            if (file == null || !File.Exists(file))
-                return string.Empty;
+            int index = position + 20; // Begin reading after "BoG_ *90.0&!!  Yy>" for old SafeDisc
+            int version = BitConverter.ToInt32(fileContent, index);
+            index += 4;
+            int subVersion = BitConverter.ToInt32(fileContent, index);
+            index += 4;
+            int subsubVersion = BitConverter.ToInt32(fileContent, index);
 
-            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            using (var br = new BinaryReader(fs))
-            {
-                br.BaseStream.Seek(position + 20, SeekOrigin.Begin); // Begin reading after "BoG_ *90.0&!!  Yy>" for old SafeDisc
-                int version = br.ReadInt32();
-                int subVersion = br.ReadInt32();
-                int subsubVersion = br.ReadInt32();
+            if (version != 0)
+                return $"{version}.{subVersion.ToString("00")}.{subsubVersion.ToString("000")}";
 
-                if (version != 0)
-                    return version + "." + subVersion.ToString("00") + "." + subsubVersion.ToString("000");
+            index = position + 18 + 14; // Begin reading after "BoG_ *90.0&!!  Yy>" for newer SafeDisc
+            version = BitConverter.ToInt32(fileContent, index);
+            index += 4;
+            subVersion = BitConverter.ToInt32(fileContent, index);
+            index += 4;
+            subsubVersion = BitConverter.ToInt32(fileContent, index);
 
-                br.BaseStream.Seek(position + 18 + 14, SeekOrigin.Begin); // Begin reading after "BoG_ *90.0&!!  Yy>" for newer SafeDisc
-                version = br.ReadInt32();
-                subVersion = br.ReadInt32();
-                subsubVersion = br.ReadInt32();
+            if (version == 0)
+                return "";
 
-                if (version == 0)
-                    return "";
-
-                return version + "." + subVersion.ToString("00") + "." + subsubVersion.ToString("000");
-            }
+            return $"{version}.{subVersion.ToString("00")}.{subsubVersion.ToString("000")}";
         }
     }
 }

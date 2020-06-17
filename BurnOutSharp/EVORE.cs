@@ -57,120 +57,114 @@ namespace BurnOutSharp
             return startingprocess;
         }
 
-        private static string MakeTempFile(string file, string sExtension = ".exe")
+        private static string MakeTempFile(byte[] fileContent, string sExtension = ".exe")
         {
-            if (file == null || !File.Exists(file))
-                return string.Empty;
-
-            FileInfo filei = new FileInfo(file);
+            string filei = Guid.NewGuid().ToString();
+            string tempPath = Path.Combine(Path.GetTempPath(), "tmp", $"{filei}*{sExtension}");
             try
             {
-                File.Delete(Path.Combine(Path.GetTempPath(), "tmp", filei.Name + "*" + sExtension));
+                File.Delete(tempPath);
             }
             catch { }
-            filei = filei.CopyTo(Path.GetTempPath() + "tmp" + filei.Name + Directory.GetFiles(Path.GetTempPath(), "tmp" + filei.Name + "*" + sExtension).Length + sExtension, true);
-            filei.Attributes = FileAttributes.Temporary | FileAttributes.NotContentIndexed;
-            return filei.FullName;
+
+            using (BinaryWriter bw = new BinaryWriter(File.OpenWrite(tempPath)))
+            {
+                bw.Write(fileContent);
+            }
+
+            return Path.GetFullPath(tempPath);
         }
 
-        private static bool IsEXE(string file)
+        private static bool IsEXE(byte[] fileContent)
         {
-            if (file == null || !File.Exists(file))
-                return false;
+            int PEHeaderOffset = BitConverter.ToInt32(fileContent, 60);
+            short Characteristics = BitConverter.ToInt16(fileContent, PEHeaderOffset + 22);
 
-            BinaryReader breader = new BinaryReader(File.OpenRead(file));
-            breader.ReadBytes(60);
-            int PEHeaderOffset = breader.ReadInt32();
-            breader.BaseStream.Seek(PEHeaderOffset, SeekOrigin.Begin);
-            breader.ReadBytes(22);
-            short Characteristics = breader.ReadInt16();
-            breader.Close();
-            //check if file is dll
+            // Check if file is dll
             if ((Characteristics & 0x2000) == 0x2000)
                 return false;
             else
                 return true;
         }
 
-        private static string[] CopyDependentDlls(string exefile)
+        private static string[] CopyDependentDlls(string file, byte[] fileContent)
         {
-            if (exefile == null)
-                return null;
+            Section[] sections = ReadSections(fileContent);
 
-            FileInfo fiExe = new FileInfo(exefile);
-            Section[] sections = ReadSections(exefile);
-            BinaryReader breader = new BinaryReader(File.OpenRead(exefile), Encoding.Default);
             long lastPosition;
             string[] saDependentDLLs = null;
-            breader.ReadBytes(60);
-            int PEHeaderOffset = breader.ReadInt32();
-            breader.BaseStream.Seek(PEHeaderOffset + 120 + 8, SeekOrigin.Begin); //120 Bytes till IMAGE_DATA_DIRECTORY array,8 Bytes=size of IMAGE_DATA_DIRECTORY
-            uint ImportTableRVA = breader.ReadUInt32();
-            uint ImportTableSize = breader.ReadUInt32();
-            breader.BaseStream.Seek(RVA2Offset(ImportTableRVA, sections), SeekOrigin.Begin);
-            breader.BaseStream.Seek(12, SeekOrigin.Current);
-            uint DllNameRVA = breader.ReadUInt32();
+            int index = 60;
+            int PEHeaderOffset = BitConverter.ToInt32(fileContent, index);
+            index = PEHeaderOffset + 120 + 8; //120 Bytes till IMAGE_DATA_DIRECTORY array,8 Bytes=size of IMAGE_DATA_DIRECTORY
+            uint ImportTableRVA = BitConverter.ToUInt32(fileContent, index);
+            index += 4;
+            uint ImportTableSize = BitConverter.ToUInt32(fileContent, index);
+            index = (int)RVA2Offset(ImportTableRVA, sections);
+            index += 12;
+            uint DllNameRVA = BitConverter.ToUInt32(fileContent, index);
+            index += 4;
             while (DllNameRVA != 0)
             {
                 string sDllName = "";
                 byte bChar;
-                lastPosition = breader.BaseStream.Position;
+                lastPosition = index;
                 uint DLLNameOffset = RVA2Offset(DllNameRVA, sections);
                 if (DLLNameOffset > 0)
                 {
-                    breader.BaseStream.Seek(DLLNameOffset, SeekOrigin.Begin);
-                    if (breader.PeekChar() > -1)
+                    index = (int)DLLNameOffset;
+                    if ((char)fileContent[index] > -1)
                     {
                         do
                         {
-                            bChar = breader.ReadByte();
+                            bChar = fileContent[index];
+                            index++;
                             sDllName += (char)bChar;
-                        } while (bChar != 0 && breader.PeekChar() > -1);
+                        } while (bChar != 0 && (char)fileContent[index] > -1);
 
                         sDllName = sDllName.Remove(sDllName.Length - 1, 1);
-                        if (File.Exists(Path.Combine(fiExe.DirectoryName, sDllName)))
+                        if (File.Exists(Path.Combine(Path.GetDirectoryName(file), sDllName)))
                         {
                             if (saDependentDLLs == null)
                                 saDependentDLLs = new string[0];
                             else
                                 saDependentDLLs = new string[saDependentDLLs.Length];
 
-                            FileInfo fiDLL = new FileInfo(Path.Combine(fiExe.DirectoryName, sDllName));
+                            FileInfo fiDLL = new FileInfo(Path.Combine(Path.GetDirectoryName(file), sDllName));
                             saDependentDLLs[saDependentDLLs.Length - 1] = fiDLL.CopyTo(Path.GetTempPath() + sDllName, true).FullName;
                         }
                     }
 
-                    breader.BaseStream.Seek(lastPosition, SeekOrigin.Begin);
+                    index = (int)lastPosition;
                 }
 
-                breader.BaseStream.Seek(4 + 12, SeekOrigin.Current);
-                DllNameRVA = breader.ReadUInt32();
+                index += 4 + 12;
+                DllNameRVA = BitConverter.ToUInt32(fileContent, index);
+                index += 4;
             }
 
-            breader.Close();
             return saDependentDLLs;
         }
 
-        private static Section[] ReadSections(string exefile)
+        private static Section[] ReadSections(byte[] fileContent)
         {
-            if (exefile == null)
+            if (fileContent == null)
                 return null;
 
-            BinaryReader breader = new BinaryReader(File.OpenRead(exefile));
-            breader.ReadBytes(60);
-            uint PEHeaderOffset = breader.ReadUInt32();
-            breader.BaseStream.Seek(PEHeaderOffset + 6, SeekOrigin.Begin);
-            ushort NumberOfSections = breader.ReadUInt16();
-            breader.BaseStream.Seek(PEHeaderOffset + 120 + 16 * 8, SeekOrigin.Begin);
+            uint PEHeaderOffset = BitConverter.ToUInt32(fileContent, 60);
+            ushort NumberOfSections = BitConverter.ToUInt16(fileContent, (int)PEHeaderOffset + 6);
             Section[] sections = new Section[NumberOfSections];
+            int index = (int)PEHeaderOffset + 120 + 16 * 8;            
             for (int i = 0; i < NumberOfSections; i++)
             {
-                breader.BaseStream.Seek(8, SeekOrigin.Current);
-                uint ivs = breader.ReadUInt32();
-                uint ivo = breader.ReadUInt32();
-                breader.BaseStream.Seek(4, SeekOrigin.Current);
-                uint iro = breader.ReadUInt32();
-                breader.BaseStream.Seek(16, SeekOrigin.Current);
+                index += 8;
+                uint ivs = BitConverter.ToUInt32(fileContent, index);
+                index += 4;
+                uint ivo = BitConverter.ToUInt32(fileContent, index);
+                index += 4;
+                index += 4;
+                uint iro = BitConverter.ToUInt32(fileContent, index);
+                index += 4;
+                index += 16;
 
                 sections[i] = new Section()
                 {
@@ -179,7 +173,7 @@ namespace BurnOutSharp
                     iRawOffset = iro,
                 };
             }
-            breader.Close();
+
             return sections;
         }
 
@@ -197,19 +191,18 @@ namespace BurnOutSharp
 
         #region "EVORE version-search-functions"
 
-        public static string SearchProtectDiscVersion(string file)
+        public static string SearchProtectDiscVersion(string file, byte[] fileContent)
         {
-            if (file == null || !File.Exists(file))
-                return string.Empty;
-
             Process exe = new Process();
             Process[] processes = new Process[0];
+
             string version = "";
             DateTime timestart;
-            if (!IsEXE(file))
+            if (!IsEXE(fileContent))
                 return "";
-            string tempexe = MakeTempFile(file);
-            string[] DependentDlls = CopyDependentDlls(file);
+
+            string tempexe = MakeTempFile(fileContent);
+            string[] DependentDlls = CopyDependentDlls(file, fileContent);
             try
             {
                 File.Delete(Path.Combine(Path.GetTempPath(), "a*.tmp"));
@@ -228,9 +221,11 @@ namespace BurnOutSharp
                 }
                 catch { }
             }
+
             exe = StartSafe(tempexe);
             if (exe == null)
                 return "";
+
             timestart = DateTime.Now;
             do
             {
@@ -242,6 +237,7 @@ namespace BurnOutSharp
                 {
                     files = Directory.GetFiles(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ProtectDisc"), "p*.dll");
                 }
+
                 if (files != null)
                 {
                     if (files.Length > 0)
@@ -326,11 +322,13 @@ namespace BurnOutSharp
                 }
                 catch { }
             }
+
             try
             {
                 File.Delete(Path.Combine(Path.GetTempPath(), "a*.tmp"));
             }
             catch { }
+
             try
             {
                 File.Delete(Path.Combine(Path.GetTempPath(), "PCD*.sys"));
@@ -355,19 +353,16 @@ namespace BurnOutSharp
             return version;
         }
 
-        public static string SearchSafeDiscVersion(string file)
+        public static string SearchSafeDiscVersion(string file, byte[] fileContent)
         {
-            if (file == null || !File.Exists(file))
-                return string.Empty;
-
             Process exe = new Process();
             string version = "";
             DateTime timestart;
-            if (!IsEXE(file))
+            if (!IsEXE(fileContent))
                 return "";
 
-            string tempexe = MakeTempFile(file);
-            string[] DependentDlls = CopyDependentDlls(file);
+            string tempexe = MakeTempFile(fileContent);
+            string[] DependentDlls = CopyDependentDlls(file, fileContent);
             try
             {
                 Directory.Delete(Path.Combine(Path.GetTempPath(), "~e*"), true);

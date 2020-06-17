@@ -97,7 +97,7 @@ namespace BurnOutSharp.ProtectionType
             // "Solidshield"
             check = new byte[] { 0x53, 0x6F, 0x6C, 0x69, 0x64, 0x73, 0x68, 0x69, 0x65, 0x6C, 0x64 };
             if (fileContent.Contains(check, out position))
-                return $"SolidShield {GetVersion(file, position)} (Index {position})";
+                return $"SolidShield {GetVersion(fileContent, position)} (Index {position})";
 
             // "B" + (char)0x00 + "I" + (char)0x00 + "N" + (char)0x00 + (char)0x7 + (char)0x00 + "I" + (char)0x00 + "D" + (char)0x00 + "R" + (char)0x00 + "_" + (char)0x00 + "S" + (char)0x00 + "G" + (char)0x00 + "T" + (char)0x0
             check = new byte[] { 0x42, 0x00, 0x49, 0x00, 0x4E, 0x00, 0x07, 0x00, 0x49, 0x00, 0x44, 0x00, 0x52, 0x00, 0x5F, 0x00, 0x53, 0x00, 0x47, 0x00, 0x54, 0x00 };
@@ -134,24 +134,21 @@ namespace BurnOutSharp.ProtectionType
             return null;
         }
 
-        private static string GetVersion(string file, int position)
+        private static string GetVersion(byte[] fileContent, int position)
         {
-            if (file == null || !File.Exists(file))
-                return string.Empty;
-
-            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            using (var br = new BinaryReader(fs))
-            {
-                br.BaseStream.Seek(position + 12, SeekOrigin.Begin); // Begin reading after "Solidshield"
-                char version = br.ReadChar();
-                br.ReadByte();
-                char subVersion = br.ReadChar();
-                br.ReadByte();
-                char subsubVersion = br.ReadChar();
-                br.ReadByte();
-                char subsubsubVersion = br.ReadChar();
-                return version + "." + subVersion + "." + subsubVersion + "." + subsubsubVersion;
-            }
+            int index = position + 12; // Begin reading after "Solidshield"
+            char version = (char)fileContent[index];
+            index++;
+            index++;
+            char subVersion = (char)fileContent[index];
+            index++;
+            index++;
+            char subSubVersion = (char)fileContent[index];
+            index++;
+            index++;
+            char subSubSubVersion = (char)fileContent[index];
+            
+            return $"{version}.{subVersion}.{subSubVersion}.{subSubSubVersion}";
         }
     }
 }

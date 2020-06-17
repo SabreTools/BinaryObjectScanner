@@ -25,7 +25,7 @@ namespace BurnOutSharp.ProtectionType
                 return $"LaserLock {GetVersion(fileContent, --position2)} {GetBuild(fileContent, false)} (Index {position2})";
 
             if (file != null && string.Equals(Path.GetFileName(file), "NOMOUSE.SP", StringComparison.OrdinalIgnoreCase))
-                return $"LaserLock {GetVersion16Bit(file)}";
+                return $"LaserLock {GetVersion16Bit(fileContent)} (Index 71)";
 
             // ":\\LASERLOK\\LASERLOK.IN" + (char)0x00 + "C:\\NOMOUSE.SP"
             check = new byte[] { 0x3A, 0x5C, 0x5C, 0x4C, 0x41, 0x53, 0x45, 0x52, 0x4C, 0x4F, 0x4B, 0x5C, 0x5C, 0x4C, 0x41, 0x53, 0x45, 0x52, 0x4C, 0x4F, 0x4B, 0x2E, 0x49, 0x4E, 0x00, 0x43, 0x3A, 0x5C, 0x5C, 0x4E, 0x4F, 0x4D, 0x4F, 0x55, 0x53, 0x45, 0x2E, 0x53, 0x50 };
@@ -62,6 +62,9 @@ namespace BurnOutSharp.ProtectionType
             }
             else
             {
+                if (path != null && string.Equals(Path.GetFileName(path), "NOMOUSE.SP", StringComparison.OrdinalIgnoreCase))
+                    return $"LaserLock {GetVersion16Bit(path)}";
+
                 if (Path.GetFileName(path).Equals("NOMOUSE.SP", StringComparison.OrdinalIgnoreCase)
                     || Path.GetFileName(path).Equals("NOMOUSE.COM", StringComparison.OrdinalIgnoreCase)
                     || Path.GetFileName(path).Equals("l16dll.dll", StringComparison.OrdinalIgnoreCase)
@@ -84,15 +87,21 @@ namespace BurnOutSharp.ProtectionType
             string year, month, day;
             if (versionTwo)
             {
-                day = new string(fileContent.Skip(position + 14).Take(2).Select(b => (char)b).ToArray());
-                month = new string(fileContent.Skip(position + 14 + 3).Take(2).Select(b => (char)b).ToArray());
-                year = "20" + new string(fileContent.Skip(position + 14 + 6).Take(2).Select(b => (char)b).ToArray());
+                int index = position + 14;
+                day = new string(fileContent.Skip(index).Take(2).Select(b => (char)b).ToArray());
+                index += 3;
+                month = new string(fileContent.Skip(index).Take(2).Select(b => (char)b).ToArray());
+                index += 3;
+                year = "20" + new string(fileContent.Skip(index).Take(2).Select(b => (char)b).ToArray());
             }
             else
             {
-                day = new string(fileContent.Skip(position + 13).Take(2).Select(b => (char)b).ToArray());
-                month = new string(fileContent.Skip(position + 13 + 3).Take(2).Select(b => (char)b).ToArray());
-                year = "20" + new string(fileContent.Skip(position + 13 + 6).Take(2).Select(b => (char)b).ToArray());
+                int index = position + 13;
+                day = new string(fileContent.Skip(index).Take(2).Select(b => (char)b).ToArray());
+                index += 3;
+                month = new string(fileContent.Skip(index).Take(2).Select(b => (char)b).ToArray());
+                index += 3;
+                year = "20" + new string(fileContent.Skip(index).Take(2).Select(b => (char)b).ToArray());
             }
 
             return $"(Build {year}-{month}-{day})";
@@ -105,21 +114,19 @@ namespace BurnOutSharp.ProtectionType
 
         private static string GetVersion16Bit(string file)
         {
-            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            using (var br = new BinaryReader(fs))
+            using (var br = new BinaryReader(File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
             {
-                char[] version = new char[3];
-                br.BaseStream.Seek(71, SeekOrigin.Begin);
-                version[0] = br.ReadChar();
-                br.ReadByte();
-                version[1] = br.ReadChar();
-                version[2] = br.ReadChar();
-
-                if (char.IsNumber(version[0]) && char.IsNumber(version[1]) && char.IsNumber(version[2]))
-                    return version[0] + "." + version[1] + version[2];
-
-                return "";
+                return GetVersion16Bit(br.ReadBytes((int)fs.Length));
             }
+        }
+
+        private static string GetVersion16Bit(byte[] fileContent)
+        {
+            char[] version = fileContent.Skip(71).Take(4).Select(b => (char)b).ToArray();
+            if (char.IsNumber(version[0]) && char.IsNumber(version[2]) && char.IsNumber(version[3]))
+                return $"{version[0]}.{version[2]}{version[3]}";
+
+            return "";
         }
     }
 }

@@ -690,7 +690,7 @@ namespace BurnOutSharp
                 protections.Add(protection);
 
             // CD-Cops
-            protection = CDCops.CheckContents(file, fileContent);
+            protection = CDCops.CheckContents(fileContent);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
@@ -735,7 +735,7 @@ namespace BurnOutSharp
                 protections.Add(protection);
 
             // DVD-Cops
-            protection = DVDCops.CheckContents(file, fileContent);
+            protection = DVDCops.CheckContents(fileContent);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
@@ -760,12 +760,12 @@ namespace BurnOutSharp
                 protections.Add(protection);
 
             // Inno Setup
-            protection = InnoSetup.CheckContents(file, fileContent);
+            protection = InnoSetup.CheckContents(fileContent);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
             // JoWooD X-Prot
-            protection = JoWooDXProt.CheckContents(file, fileContent);
+            protection = JoWooDXProt.CheckContents(fileContent);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
@@ -830,7 +830,7 @@ namespace BurnOutSharp
                 protections.Add(protection);
 
             // Sysiphus / Sysiphus DVD
-            protection = Sysiphus.CheckContents(file, fileContent);
+            protection = Sysiphus.CheckContents(fileContent);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 

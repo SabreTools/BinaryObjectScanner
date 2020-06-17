@@ -25,7 +25,7 @@ namespace BurnOutSharp.ProtectionType
             {
                 // (char)0xFF + (char)0xFF + "h"
                 if (fileContent.Skip(--position + 8).Take(3).SequenceEqual(new byte[] { 0xFF, 0xFF, 0x68 })) // TODO: Verify this subtract
-                    return $"TAGES {GetVersion(file, position)} (Index {position})";
+                    return $"TAGES {GetVersion(fileContent, position)} (Index {position})";
             }
 
             return null;
@@ -88,27 +88,19 @@ namespace BurnOutSharp.ProtectionType
             return null;
         }
 
-        private static string GetVersion(string file, int position)
+        private static string GetVersion(byte[] fileContent, int position)
         {
-            if (file == null || !File.Exists(file))
-                return string.Empty;
-
-            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            using (var br = new BinaryReader(fs))
+            switch (fileContent[position + 7])
             {
-                br.BaseStream.Seek(position + 7, SeekOrigin.Begin);
-                byte bVersion = br.ReadByte();
-                switch (bVersion)
-                {
-                    case 0x1B:
-                        return "5.3-5.4";
-                    case 0x14:
-                        return "5.5.0";
-                    case 0x4:
-                        return "5.5.2";
-                }
-                return "";
+                case 0x1B:
+                    return "5.3-5.4";
+                case 0x14:
+                    return "5.5.0";
+                case 0x4:
+                    return "5.5.2";
             }
+
+            return "";
         }
     }
 }
