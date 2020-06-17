@@ -4,11 +4,11 @@ namespace BurnOutSharp.ProtectionType
 {
     public class DVDCops
     {
-        public static string CheckContents(string file, string fileContent)
+        public static string CheckContents(string file, byte[] fileContent)
         {
-            string check = "DVD-Cops,  ver. ";
-            int position = fileContent.IndexOf(check);
-            if (position > -1)
+            // "DVD-Cops,  ver. "
+            byte[] check = new byte[] { 0x44, 0x56, 0x44, 0x2D, 0x43, 0x6F, 0x70, 0x73, 0x2C, 0x20, 0x20, 0x76, 0x65, 0x72, 0x2E, 0x20 };
+            if (fileContent.Contains(check, out int position))
                 return $"DVD-Cops {GetVersion(file, position)} (Index {position})";
 
             return null;

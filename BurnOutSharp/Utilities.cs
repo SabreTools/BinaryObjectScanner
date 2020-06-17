@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -9,6 +10,34 @@ namespace BurnOutSharp
 {
     public static class Utilities
     {
+        /// <summary>
+        /// Search for a byte array in another array
+        /// </summary>
+        public static bool Contains(this byte[] stack, byte[] needle, out int position)
+        {
+            // Initialize the found position to -1
+            position = -1;
+
+            // If either array is null or empty, we can't do anything
+            if (stack == null || stack.Length == 0 || needle == null || needle.Length == 0)
+                return false;
+
+            // If the needle array is larger than the stack array, it can't be contained within
+            if (needle.Length > stack.Length)
+                return false;
+
+            for (int i = 0; i < stack.Length - needle.Length; i++)
+            {
+                if (needle.SequenceEqual(stack.Skip(i).Take(needle.Length)))
+                {
+                    position = i;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         /// <summary>
         /// Get the file version as reported by the filesystem
         /// </summary>

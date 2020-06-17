@@ -2,12 +2,13 @@
 {
     public class Cucko
     {
-        public static string CheckContents(string fileContent)
+        // TODO: Verify this doesn't over-match
+        public static string CheckContents(byte[] fileContent)
         {
-            // TODO: Verify this doesn't over-match
-            string check = "EASTL";
-            if (fileContent.Contains(check))
-                return $"Cucko (EA Custom) (Index {fileContent.IndexOf(check)})";
+            // "EASTL"
+            byte[] check = new byte[] { 0x45, 0x41, 0x53, 0x54, 0x4C };
+            if (fileContent.Contains(check, out int position))
+                return $"Cucko (EA Custom) (Index {position})";
 
             return null;
         }

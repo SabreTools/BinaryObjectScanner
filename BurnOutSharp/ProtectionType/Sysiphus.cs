@@ -4,16 +4,16 @@ namespace BurnOutSharp.ProtectionType
 {
     public class Sysiphus
     {
-        public static string CheckContents(string file, string fileContent)
+        public static string CheckContents(string file, byte[] fileContent)
         {
-            string check = "V SUHPISYSDVD";
-            int position = fileContent.IndexOf(check);
-            if (position > -1)
+            // "V SUHPISYSDVD"
+            byte[] check = new byte[] { 0x56, 0x20, 0x53, 0x55, 0x48, 0x50, 0x49, 0x53, 0x59, 0x53, 0x44, 0x56, 0x44 };
+            if (fileContent.Contains(check, out int position))
                 return $"Sysiphus DVD {GetVersion(file, position)} (Index {position})";
 
-            check = "V SUHPISYS";
-            position = fileContent.IndexOf(check);
-            if (position > -1)
+            // "V SUHPISYS"
+            check = new byte[] { 0x56, 0x20, 0x53, 0x55, 0x48, 0x50, 0x49, 0x53, 0x59, 0x53 };
+            if (fileContent.Contains(check, out position))
                 return $"Sysiphus {GetVersion(file, position)} (Index {position})";
 
             return null;

@@ -384,10 +384,11 @@ namespace BurnOutSharp
                 try
                 {
                     // Load the current file content
-                    string fileContent = null;
-                    using (StreamReader sr = new StreamReader(file, Encoding.Default))
+                    byte[] fileContent = null;
+                    using (FileStream fs = File.OpenRead(file))
+                    using (BinaryReader br = new BinaryReader(fs, Encoding.Default))
                     {
-                        fileContent = sr.ReadToEnd();
+                        fileContent = br.ReadBytes((int)fs.Length);
                     }
 
                     protections.AddRange(ScanFileContent(file, fileContent));
@@ -573,10 +574,11 @@ namespace BurnOutSharp
                 try
                 {
                     // Load the current file content
-                    string fileContent = null;
-                    using (StreamReader sr = new StreamReader(stream, Encoding.Default))
+                    byte[] fileContent = null;
+                    using (FileStream fs = File.OpenRead(file))
+                    using (BinaryReader br = new BinaryReader(fs, Encoding.Default))
                     {
-                        fileContent = sr.ReadToEnd();
+                        fileContent = br.ReadBytes((int)fs.Length);
                     }
 
                     protections.AddRange(ScanFileContent(file, fileContent));
@@ -595,7 +597,7 @@ namespace BurnOutSharp
                 {
                     // Load the current file content
                     string fileContent = null;
-                    using (StreamReader sr = new StreamReader(stream))
+                    using (StreamReader sr = new StreamReader(file, Encoding.Default))
                     {
                         fileContent = sr.ReadToEnd();
                     }
@@ -661,8 +663,7 @@ namespace BurnOutSharp
         /// <summary>
         /// Scan the contents of a file for protection
         /// </summary>
-        /// TODO: This needs to work on a byte array of file content instead of string
-        private static List<string> ScanFileContent(string file, string fileContent)
+        private static List<string> ScanFileContent(string file, byte[] fileContent)
         {
             // Files can be protected in multiple ways
             List<string> protections = new List<string>();

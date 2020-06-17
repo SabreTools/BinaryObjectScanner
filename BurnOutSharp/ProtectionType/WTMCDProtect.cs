@@ -7,11 +7,12 @@ namespace BurnOutSharp.ProtectionType
 {
     public class WTMCDProtect
     {
-        public static string CheckContents(string fileContent)
+        public static string CheckContents(byte[] fileContent)
         {
-            string check = "WTM76545";
-            if (fileContent.Contains(check))
-                return $"WTM CD Protect (Index {fileContent.IndexOf(check)})";
+            // "WTM76545"
+            byte[] check = new byte[] { 0x57, 0x54, 0x4D, 0x37, 0x36, 0x35, 0x34, 0x35 };
+            if (fileContent.Contains(check, out int position))
+                return $"WTM CD Protect (Index {position})";
 
             return null;
         }

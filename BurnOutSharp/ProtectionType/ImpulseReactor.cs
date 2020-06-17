@@ -7,16 +7,18 @@ namespace BurnOutSharp.ProtectionType
 {
     public class ImpulseReactor
     {
-        public static string CheckContents(string file, string fileContent)
+        public static string CheckContents(string file, byte[] fileContent)
         {
-            string check = "CVPInitializeClient";
-            if (fileContent.Contains(check))
+            // "CVPInitializeClient"
+            byte[] check = new byte[] { 0x43, 0x56, 0x50, 0x49, 0x6E, 0x69, 0x74, 0x69, 0x61, 0x6C, 0x69, 0x7A, 0x65, 0x43, 0x6C, 0x69, 0x65, 0x6E, 0x74 };
+            if (fileContent.Contains(check, out int position))
             {
-                string check2 = "A" + (char)0x00 + "T" + (char)0x00 + "T" + (char)0x00 + "L" + (char)0x00 + "I" + (char)0x00 + "S" + (char)0x00 + "T" + (char)0x00 + (char)0x00 + (char)0x00 + "E" + (char)0x00 + "L" + (char)0x00 + "E" + (char)0x00 + "M" + (char)0x00 + "E" + (char)0x00 + "N" + (char)0x00 + "T" + (char)0x00 + (char)0x00 + (char)0x00 + "N" + (char)0x00 + "O" + (char)0x00 + "T" + (char)0x00 + "A" + (char)0x00 + "T" + (char)0x00 + "I" + (char)0x00 + "O" + (char)0x00 + "N";
-                if (fileContent.Contains(check2))
-                    return $"Impulse Reactor {Utilities.GetFileVersion(file)} (Index {fileContent.IndexOf(check)}, {fileContent.IndexOf(check2)}";
+                // "A" + (char)0x00 + "T" + (char)0x00 + "T" + (char)0x00 + "L" + (char)0x00 + "I" + (char)0x00 + "S" + (char)0x00 + "T" + (char)0x00 + (char)0x00 + (char)0x00 + "E" + (char)0x00 + "L" + (char)0x00 + "E" + (char)0x00 + "M" + (char)0x00 + "E" + (char)0x00 + "N" + (char)0x00 + "T" + (char)0x00 + (char)0x00 + (char)0x00 + "N" + (char)0x00 + "O" + (char)0x00 + "T" + (char)0x00 + "A" + (char)0x00 + "T" + (char)0x00 + "I" + (char)0x00 + "O" + (char)0x00 + "N"
+                byte[] check2 = new byte[] { 0x41, 0x00, 0x54, 0x00, 0x54, 0x00, 0x4C, 0x00, 0x49, 0x00, 0x53, 0x00, 0x54, 0x00, 0x00, 0x00, 0x45, 0x00, 0x4C, 0x00, 0x45, 0x00, 0x4D, 0x00, 0x45, 0x00, 0x4E, 0x00, 0x54, 0x00, 0x00, 0x00, 0x4E, 0x00, 0x4F, 0x00, 0x54, 0x00, 0x41, 0x00, 0x54, 0x00, 0x49, 0x00, 0x4F, 0x00, 0x4E };
+                if (fileContent.Contains(check2, out int position2))
+                    return $"Impulse Reactor {Utilities.GetFileVersion(file)} (Index {position}, {position2}";
                 else
-                    return $"Impulse Reactor (Index {fileContent.IndexOf(check)})";
+                    return $"Impulse Reactor (Index {position})";
             }
 
             return null;

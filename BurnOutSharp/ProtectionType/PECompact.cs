@@ -2,11 +2,12 @@
 {
     public class PECompact
     {
-        public static string CheckContents(string fileContent)
+        public static string CheckContents(byte[] fileContent)
         {
-            string check = "PEC2";
-            if (fileContent.Contains(check))
-                return $"PE Compact 2 (Index {fileContent.IndexOf(check)})";
+            // "PEC2"
+            byte[] check = new byte[] { 0x50, 0x45, 0x43, 0x32 };
+            if (fileContent.Contains(check, out int position))
+                return $"PE Compact 2 (Index {position})";
 
             return null;
         }

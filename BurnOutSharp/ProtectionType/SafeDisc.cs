@@ -7,47 +7,51 @@ namespace BurnOutSharp.ProtectionType
 {
     public class SafeDisc
     {
-        public static string CheckContents(string file, string fileContent)
+        public static string CheckContents(string file, byte[] fileContent)
         {
-            string check = "BoG_ *90.0&!!  Yy>";
-            int position = fileContent.IndexOf(check);
-            if (position > -1)
+            // "BoG_ *90.0&!!  Yy>"
+            byte[] check = new byte[] { 0x42, 0x6F, 0x47, 0x5F, 0x20, 0x2A, 0x39, 0x30, 0x2E, 0x30, 0x26, 0x21, 0x21, 0x20, 0x20, 0x59, 0x79, 0x3E };
+            if (fileContent.Contains(check, out int position))
             {
-                string check2 = "product activation library";
-                if (fileContent.Contains(check2))
-                    return $"SafeCast {GetVersion(file, position)} (Index {position}, {fileContent.IndexOf(check2)}";
+                // "product activation library"
+                byte[] check2 = new byte[] { 0x70, 0x72, 0x6F, 0x64, 0x75, 0x63, 0x74, 0x20, 0x61, 0x63, 0x74, 0x69, 0x76, 0x61, 0x74, 0x69, 0x6F, 0x6E, 0x20, 0x6C, 0x69, 0x62, 0x72, 0x61, 0x72, 0x79 };
+                if (fileContent.Contains(check2, out int position2))
+                    return $"SafeCast {GetVersion(file, position)} (Index {position}, {position2})";
                 else
                     return $"SafeDisc {GetVersion(file, position)} (Index {position})";
             }
 
-            check = (char)0x00 + (char)0x00 + "BoG_";
-            if (fileContent.Contains(check))
+            // (char)0x00 + (char)0x00 + "BoG_"
+            check = new byte[] { 0x00, 0x00, 0x42, 0x6F, 0x47, 0x5F };
+            if (fileContent.Contains(check, out position))
             {
                 string version = EVORE.SearchSafeDiscVersion(file);
                 if (version.Length > 0)
-                    return $"SafeDisc {version} (Index {fileContent.IndexOf(check)})";
+                    return $"SafeDisc {version} (Index {position})";
 
-                return $"SafeDisc 3.20-4.xx (version removed) (Index {fileContent.IndexOf(check)})";
+                return $"SafeDisc 3.20-4.xx (version removed) (Index {position})";
             }
 
-            check = "stxt774";
-            if (fileContent.Contains(check))
+            // "stxt774"
+            check = new byte[] { 0x73, 0x74, 0x78, 0x74, 0x37, 0x37, 0x34 };
+            if (fileContent.Contains(check, out position))
             {
                 string version = EVORE.SearchSafeDiscVersion(file);
                 if (version.Length > 0)
-                    return $"SafeDisc {version} (Index {fileContent.IndexOf(check)})";
+                    return $"SafeDisc {version} (Index {position})";
 
-                return $"SafeDisc 3.20-4.xx (version removed) (Index {fileContent.IndexOf(check)})";
+                return $"SafeDisc 3.20-4.xx (version removed) (Index {position})";
             }
 
-            check = "stxt371";
-            if (fileContent.Contains(check))
+            // "stxt371"
+            check = new byte[] { 0x73, 0x74, 0x78, 0x74, 0x33, 0x37, 0x31 };
+            if (fileContent.Contains(check, out position))
             {
                 string version = EVORE.SearchSafeDiscVersion(file);
                 if (version.Length > 0)
-                    return $"SafeDisc {version} (Index {fileContent.IndexOf(check)})";
+                    return $"SafeDisc {version} (Index {position})";
 
-                return $"SafeDisc 3.20-4.xx (version removed) (Index {fileContent.IndexOf(check)})";
+                return $"SafeDisc 3.20-4.xx (version removed) (Index {position})";
             }
 
             return null;

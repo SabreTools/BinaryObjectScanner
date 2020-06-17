@@ -4,12 +4,13 @@ namespace BurnOutSharp.ProtectionType
 {
     public class InnoSetup
     {
-        public static string CheckContents(string file, string fileContent)
+        // TOOO: Add Inno Setup extraction
+        public static string CheckContents(string file, byte[] fileContent)
         {
-            // TOOO: Add Inno Setup extraction
-            string check = "Inno";
-            if (fileContent.IndexOf(check) == 0x30)
-                return $"Inno Setup {GetVersion(file)} (Index {fileContent.IndexOf(check)})";
+            // "Inno"
+            byte[] check = new byte[] { 0x49, 0x6e, 0x6e, 0x6f };
+            if (fileContent.Contains(check, out int position) && position == 0x30)
+                return $"Inno Setup {GetVersion(file)} (Index {position})";
 
             return null;
         }

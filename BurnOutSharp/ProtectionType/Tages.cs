@@ -7,21 +7,24 @@ namespace BurnOutSharp.ProtectionType
 {
     public class Tages
     {
-        public static string CheckContents(string file, string fileContent)
+        public static string CheckContents(string file, byte[] fileContent)
         {
-            string check = "protected-tages-runtime.exe";
-            if (fileContent.Contains(check))
-                return $"TAGES {Utilities.GetFileVersion(file)} (Index {fileContent.IndexOf(check)})";
+            // "protected-tages-runtime.exe"
+            byte[] check = new byte[] { 0x70, 0x72, 0x6F, 0x74, 0x65, 0x63, 0x74, 0x65, 0x64, 0x2D, 0x74, 0x61, 0x67, 0x65, 0x73, 0x2D, 0x72, 0x75, 0x6E, 0x74, 0x69, 0x6D, 0x65, 0x2E, 0x65, 0x78, 0x65 };
+            if (fileContent.Contains(check, out int position))
+                return $"TAGES {Utilities.GetFileVersion(file)} (Index {position})";
 
-            check = "tagesprotection.com";
-            if (fileContent.Contains(check))
-                return $"TAGES {Utilities.GetFileVersion(file)} (Index {fileContent.IndexOf(check)})";
+            // "tagesprotection.com"
+            check = new byte[] { 0x74, 0x61, 0x67, 0x65, 0x73, 0x70, 0x72, 0x6F, 0x74, 0x65, 0x63, 0x74, 0x69, 0x6F, 0x6E, 0x2E, 0x63, 0x6F, 0x6D };
+            if (fileContent.Contains(check, out position))
+                return $"TAGES {Utilities.GetFileVersion(file)} (Index {position})";
 
-            check = "" + (char)0xE8 + "u" + (char)0x00 + (char)0x00 + (char)0x00 + (char)0xE8;
-            int position = fileContent.IndexOf(check);
-            if (position > -1)
+            // (char)0xE8 + "u" + (char)0x00 + (char)0x00 + (char)0x00 + (char)0xE8
+            check = new byte[] { 0xE8, 0x75, 0x00, 0x00, 0x00, 0xE8 };
+            if (fileContent.Contains(check, out position))
             {
-                if (fileContent.Substring(--position + 8, 3) == "" + (char)0xFF + (char)0xFF + "h") // TODO: Verify this subtract
+                // (char)0xFF + (char)0xFF + "h"
+                if (fileContent.Skip(--position + 8).Take(3).SequenceEqual(new byte[] { 0xFF, 0xFF, 0x68 })) // TODO: Verify this subtract
                     return $"TAGES {GetVersion(file, position)} (Index {position})";
             }
 

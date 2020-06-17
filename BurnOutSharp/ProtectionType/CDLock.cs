@@ -7,11 +7,12 @@ namespace BurnOutSharp.ProtectionType
 {
     public class CDLock
     {
-        public static string CheckContents(string fileContent)
+        public static string CheckContents(byte[] fileContent)
         {
-            string check = "2" + (char)0xF2 + (char)0x02 + (char)0x82 + (char)0xC3 + (char)0xBC + (char)0x0B + "$" + (char)0x99 + (char)0xAD + "'C" + (char)0xE4 + (char)0x9D + "st" + (char)0x99 + (char)0xFA + "2$" + (char)0x9D + ")4" + (char)0xFF + "t";
-            if (fileContent.Contains(check))
-                return $"CD-Lock (Index {fileContent.IndexOf(check)})";
+            // "2" + (char)0xF2 + (char)0x02 + (char)0x82 + (char)0xC3 + (char)0xBC + (char)0x0B + "$" + (char)0x99 + (char)0xAD + "'C" + (char)0xE4 + (char)0x9D + "st" + (char)0x99 + (char)0xFA + "2$" + (char)0x9D + ")4" + (char)0xFF + "t"
+            byte[] check = new byte[] { 0x32, 0xF2, 0x02, 0x82, 0xC3, 0xBC, 0x0B, 0x24, 0x99, 0xAD, 0x27, 0x43, 0xE4, 0x9D, 0x73, 0x74, 0x99, 0xFA, 0x32, 0x24, 0x9D, 0x29, 0x34, 0xFF, 0x74 };
+            if (fileContent.Contains(check, out int position))
+                return $"CD-Lock (Index {position})";
 
             return null;
         }
