@@ -6,11 +6,10 @@ namespace BurnOutSharp.ProtectionType
     {
         public static string CheckContents(string file, string fileContent)
         {
-            if (fileContent.IndexOf("Inno") == 0x30)
-            {
-                // TOOO: Add Inno Setup extraction
-                return "Inno Setup " + GetVersion(file);
-            }
+            // TOOO: Add Inno Setup extraction
+            string check = "Inno";
+            if (fileContent.IndexOf(check) == 0x30)
+                return $"Inno Setup {GetVersion(file)} (Index {fileContent.IndexOf(check)})";
 
             return null;
         }

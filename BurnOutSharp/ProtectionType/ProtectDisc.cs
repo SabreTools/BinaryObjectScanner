@@ -7,8 +7,9 @@ namespace BurnOutSharp.ProtectionType
     {
         public static string CheckContents(string file, string fileContent)
         {
-            int position;
-            if ((position = fileContent.IndexOf("HúMETINF")) > -1)
+            string check = "HúMETINF";
+            int position = fileContent.IndexOf(check);
+            if (position > -1)
             {
                 string version = EVORE.SearchProtectDiscVersion(file);
                 if (version.Length > 0)
@@ -17,23 +18,27 @@ namespace BurnOutSharp.ProtectionType
                     if (astrVersionArray[0] == "9")
                     {
                         if (GetVersionBuild76till10(file, position, out int ibuild).Length > 0)
-                            return "ProtectDisc " + astrVersionArray[0] + "." + astrVersionArray[1] + astrVersionArray[2] + "." + astrVersionArray[3] + " (Build " + ibuild + ")";
+                            return $"ProtectDisc {astrVersionArray[0]}.{astrVersionArray[1]}{astrVersionArray[2]}.{astrVersionArray[3]} (Build {ibuild}) (Index {position})";
                     }
                     else
-                        return "ProtectDisc " + astrVersionArray[0] + "." + astrVersionArray[1] + "." + astrVersionArray[2] + " (Build " + astrVersionArray[3] + ")";
+                    {
+                        return $"ProtectDisc {astrVersionArray[0]}.{astrVersionArray[1]}.{astrVersionArray[2]} (Build {astrVersionArray[3]}) (Index {position})";
+                    }
                 }
             }
 
-            if ((position = fileContent.IndexOf("ACE-PCD")) > -1)
+            check = "ACE-PCD";
+            position = fileContent.IndexOf(check);
+            if (position > -1)
             {
                 string version = EVORE.SearchProtectDiscVersion(file);
                 if (version.Length > 0)
                 {
                     string[] astrVersionArray = version.Split('.');
-                    return "ProtectDisc " + astrVersionArray[0] + "." + astrVersionArray[1] + "." + astrVersionArray[2] + " (Build " + astrVersionArray[3] + ")";
+                    return $"ProtectDisc {astrVersionArray[0]}.{astrVersionArray[1]}.{astrVersionArray[2]} (Build {astrVersionArray[3]}) (Index {position})";
                 }
 
-                return "ProtectDisc " + GetVersionBuild6till8(file, position);
+                return $"ProtectDisc {GetVersionBuild6till8(file, position)} (Index {position})";
             }
 
             return null;

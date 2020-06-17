@@ -9,20 +9,14 @@ namespace BurnOutSharp.ProtectionType
     {
         public static string CheckContents(string file, string fileContent)
         {
-            if (fileContent.Contains("CVPInitializeClient"))
+            string check = "CVPInitializeClient";
+            if (fileContent.Contains(check))
             {
-                if (fileContent.Contains("A" + (char)0x00 + "T" + (char)0x00 + "T" + (char)0x00 + "L" + (char)0x00 + "I"
-                    + (char)0x00 + "S" + (char)0x00 + "T" + (char)0x00 + (char)0x00 + (char)0x00 + "E" + (char)0x00 + "L"
-                    + (char)0x00 + "E" + (char)0x00 + "M" + (char)0x00 + "E" + (char)0x00 + "N" + (char)0x00 + "T" + (char)0x00
-                    + (char)0x00 + (char)0x00 + "N" + (char)0x00 + "O" + (char)0x00 + "T" + (char)0x00 + "A" + (char)0x00 + "T"
-                    + (char)0x00 + "I" + (char)0x00 + "O" + (char)0x00 + "N"))
-                {
-                    return "Impulse Reactor " + Utilities.GetFileVersion(file);
-                }
+                string check2 = "A" + (char)0x00 + "T" + (char)0x00 + "T" + (char)0x00 + "L" + (char)0x00 + "I" + (char)0x00 + "S" + (char)0x00 + "T" + (char)0x00 + (char)0x00 + (char)0x00 + "E" + (char)0x00 + "L" + (char)0x00 + "E" + (char)0x00 + "M" + (char)0x00 + "E" + (char)0x00 + "N" + (char)0x00 + "T" + (char)0x00 + (char)0x00 + (char)0x00 + "N" + (char)0x00 + "O" + (char)0x00 + "T" + (char)0x00 + "A" + (char)0x00 + "T" + (char)0x00 + "I" + (char)0x00 + "O" + (char)0x00 + "N";
+                if (fileContent.Contains(check2))
+                    return $"Impulse Reactor {Utilities.GetFileVersion(file)} (Index {fileContent.IndexOf(check)}, {fileContent.IndexOf(check2)}";
                 else
-                {
-                    return "Impulse Reactor";
-                }
+                    return $"Impulse Reactor (Index {fileContent.IndexOf(check)})";
             }
 
             return null;

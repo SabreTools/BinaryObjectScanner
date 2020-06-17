@@ -9,36 +9,32 @@ namespace BurnOutSharp.ProtectionType
     {
         public static string CheckContents(string file, string fileContent)
         {
-            int position;
-            if (fileContent.Contains("Packed by SPEEnc V2 Asterios Parlamentas.PE")
-                && (position = fileContent.IndexOf("GetModuleHandleA" + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00
-                + "GetProcAddress" + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00 + "LoadLibraryA" + (char)0x00 + (char)0x00
-                + "KERNEL32.dll" + (char)0x00 + "ëy" + (char)0x01 + "SNIF")) > -1)
+            string check = "Packed by SPEEnc V2 Asterios Parlamentas.PE";
+            string check2 = "GetModuleHandleA" + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00 + "GetProcAddress" + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00 + "LoadLibraryA" + (char)0x00 + (char)0x00 + "KERNEL32.dll" + (char)0x00 + "ëy" + (char)0x01 + "SNIF";
+            int position = fileContent.IndexOf(check2);
+            if (fileContent.Contains(check))
             {
-                return "LaserLock " + GetVersion(fileContent, position) + " " + GetBuild(fileContent, true);
+                if (position > -1)
+                    return $"LaserLock {GetVersion(fileContent, position)} {GetBuild(fileContent, true)} (Index {fileContent.IndexOf(check)}, {position})";
+                else
+                    return $"LaserLock Marathon {GetBuild(fileContent, false)} (Index {fileContent.IndexOf(check)})";
+            }
+            else if (position > -1)
+            {
+                return $"LaserLock {GetVersion(fileContent, --position)} {GetBuild(fileContent, false)} (Index {position})";
             }
 
-            if (fileContent.Contains("Packed by SPEEnc V2 Asterios Parlamentas.PE"))
-                return "LaserLock Marathon " + GetBuild(fileContent, false);
+            check = "NOMOUSE.SP";
+            if (file != null && string.Equals(Path.GetFileName(file), check, StringComparison.OrdinalIgnoreCase))
+                return $"LaserLock {GetVersion16Bit(file)}";
 
-            if ((position = fileContent.IndexOf("GetModuleHandleA" + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00
-                + "GetProcAddress" + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00 + "LoadLibraryA" + (char)0x00 + (char)0x00
-                + "KERNEL32.dll" + (char)0x00 + "ëy" + (char)0x01 + "SNIF")) > -1)
-            {
-                return "LaserLock " + GetVersion(fileContent, --position) + " " + GetBuild(fileContent, false);
-            }
+            check = ":\\LASERLOK\\LASERLOK.IN" + (char)0x00 + "C:\\NOMOUSE.SP";
+            if (fileContent.Contains(check))
+                return $"LaserLock 3 (Index {fileContent.IndexOf(check)})";
 
-            if (file != null && Path.GetFileName(file) == "NOMOUSE.SP")
-                return "LaserLock " + GetVersion16Bit(file);
-
-            if (fileContent.Contains(":\\LASERLOK\\LASERLOK.IN" + (char)0x00 + "C:\\NOMOUSE.SP"))
-                return "LaserLock 3";
-
-            if (fileContent.Contains("LASERLOK_INIT" + (char)0xC + "LASERLOK_RUN" + (char)0xE + "LASERLOK_CHECK"
-                + (char)0xF + "LASERLOK_CHECK2" + (char)0xF + "LASERLOK_CHECK3"))
-            {
-                return "LaserLock 5";
-            }
+            check = "LASERLOK_INIT" + (char)0xC + "LASERLOK_RUN" + (char)0xE + "LASERLOK_CHECK" + (char)0xF + "LASERLOK_CHECK2" + (char)0xF + "LASERLOK_CHECK3";
+            if (fileContent.Contains(check))
+                return $"LaserLock 5 (Index {fileContent.IndexOf(check)})";
 
             return null;
         }

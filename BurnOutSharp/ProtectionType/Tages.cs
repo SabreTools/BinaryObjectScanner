@@ -9,14 +9,21 @@ namespace BurnOutSharp.ProtectionType
     {
         public static string CheckContents(string file, string fileContent)
         {
-            int position;
-            if (fileContent.Contains("protected-tages-runtime.exe") ||
-                        fileContent.Contains("tagesprotection.com"))
-                return "TAGES " + Utilities.GetFileVersion(file);
+            string check = "protected-tages-runtime.exe";
+            if (fileContent.Contains(check))
+                return $"TAGES {Utilities.GetFileVersion(file)} (Index {fileContent.IndexOf(check)})";
 
-            if ((position = fileContent.IndexOf("" + (char)0xE8 + "u" + (char)0x00 + (char)0x00 + (char)0x00 + (char)0xE8)) > -1
-                && fileContent.Substring(--position + 8, 3) == "" + (char)0xFF + (char)0xFF + "h") // TODO: Verify this subtract
-                return "TAGES " + GetVersion(file, position);
+            check = "tagesprotection.com";
+            if (fileContent.Contains(check))
+                return $"TAGES {Utilities.GetFileVersion(file)} (Index {fileContent.IndexOf(check)})";
+
+            check = "" + (char)0xE8 + "u" + (char)0x00 + (char)0x00 + (char)0x00 + (char)0xE8;
+            int position = fileContent.IndexOf(check);
+            if (position > -1)
+            {
+                if (fileContent.Substring(--position + 8, 3) == "" + (char)0xFF + (char)0xFF + "h") // TODO: Verify this subtract
+                    return $"TAGES {GetVersion(file, position)} (Index {position})";
+            }
 
             return null;
         }

@@ -9,24 +9,45 @@ namespace BurnOutSharp.ProtectionType
     {
         public static string CheckContents(string file, string fileContent)
         {
-            int position;
-            if ((position = fileContent.IndexOf("BoG_ *90.0&!!  Yy>")) > -1)
+            string check = "BoG_ *90.0&!!  Yy>";
+            int position = fileContent.IndexOf(check);
+            if (position > -1)
             {
-                if (fileContent.IndexOf("product activation library") > 0)
-                    return "SafeCast " + GetVersion(file, position);
+                string check2 = "product activation library";
+                if (fileContent.Contains(check2))
+                    return $"SafeCast {GetVersion(file, position)} (Index {position}, {fileContent.IndexOf(check2)}";
                 else
-                    return "SafeDisc " + GetVersion(file, position);
+                    return $"SafeDisc {GetVersion(file, position)} (Index {position})";
             }
 
-            if (fileContent.Contains((char)0x00 + (char)0x00 + "BoG_")
-                || fileContent.Contains("stxt774")
-                || fileContent.Contains("stxt371"))
+            check = (char)0x00 + (char)0x00 + "BoG_";
+            if (fileContent.Contains(check))
             {
                 string version = EVORE.SearchSafeDiscVersion(file);
                 if (version.Length > 0)
-                    return "SafeDisc " + version;
+                    return $"SafeDisc {version} (Index {fileContent.IndexOf(check)})";
 
-                return "SafeDisc 3.20-4.xx (version removed)";
+                return $"SafeDisc 3.20-4.xx (version removed) (Index {fileContent.IndexOf(check)})";
+            }
+
+            check = "stxt774";
+            if (fileContent.Contains(check))
+            {
+                string version = EVORE.SearchSafeDiscVersion(file);
+                if (version.Length > 0)
+                    return $"SafeDisc {version} (Index {fileContent.IndexOf(check)})";
+
+                return $"SafeDisc 3.20-4.xx (version removed) (Index {fileContent.IndexOf(check)})";
+            }
+
+            check = "stxt371";
+            if (fileContent.Contains(check))
+            {
+                string version = EVORE.SearchSafeDiscVersion(file);
+                if (version.Length > 0)
+                    return $"SafeDisc {version} (Index {fileContent.IndexOf(check)})";
+
+                return $"SafeDisc 3.20-4.xx (version removed) (Index {fileContent.IndexOf(check)})";
             }
 
             return null;

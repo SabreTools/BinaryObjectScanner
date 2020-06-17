@@ -5,8 +5,9 @@
         public static string CheckContents(string fileContent)
         {
             // TODO: Verify this doesn't over-match
-            if (fileContent.Contains("EASTL"))
-                return "Cucko (EA Custom)";
+            string check = "EASTL";
+            if (fileContent.Contains(check))
+                return $"Cucko (EA Custom) (Index {fileContent.IndexOf(check)})";
 
             return null;
         }

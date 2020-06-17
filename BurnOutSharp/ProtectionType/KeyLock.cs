@@ -4,8 +4,9 @@
     {
         public static string CheckContents(string fileContent)
         {
-            if (fileContent.Contains("KEY-LOCK COMMAND"))
-                return "Key-Lock (Dongle)";
+            string check = "KEY-LOCK COMMAND";
+            if (fileContent.Contains(check))
+                return $"Key-Lock (Dongle) (Index {fileContent.IndexOf(check)})";
 
             return null;
         }

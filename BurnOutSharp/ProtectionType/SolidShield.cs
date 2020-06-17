@@ -10,94 +10,91 @@ namespace BurnOutSharp.ProtectionType
     {
         public static string CheckContents(string file, string fileContent)
         {
-            int position;
-            if (fileContent.Contains("D" + (char)0x00 + "V" + (char)0x00 + "M" + (char)0x00 + " " + (char)0x00 + "L" + (char)0x00
-                        + "i" + (char)0x00 + "b" + (char)0x00 + "r" + (char)0x00 + "a" + (char)0x00 + "r" + (char)0x00 + "y"))
-            {
-                return "SolidShield " + Utilities.GetFileVersion(file);
-            }
+            string check = "D" + (char)0x00 + "V" + (char)0x00 + "M" + (char)0x00 + " " + (char)0x00 + "L" + (char)0x00 + "i" + (char)0x00 + "b" + (char)0x00 + "r" + (char)0x00 + "a" + (char)0x00 + "r" + (char)0x00 + "y";
+            if (fileContent.Contains(check))
+                return $"SolidShield {Utilities.GetFileVersion(file)} (Index {fileContent.IndexOf(check)})";
 
-            if (fileContent.Contains("S" + (char)0x00 + "o" + (char)0x00 + "l" + (char)0x00 + "i" + (char)0x00 + "d" + (char)0x00
-                + "s" + (char)0x00 + "h" + (char)0x00 + "i" + (char)0x00 + "e" + (char)0x00 + "l" + (char)0x00 + "d" + (char)0x00
-                + " " + (char)0x00 + "L" + (char)0x00 + "i" + (char)0x00 + "b" + (char)0x00 + "r" + (char)0x00 + "a" + (char)0x00
-                + "r" + (char)0x00 + "y")
-                || fileContent.Contains("S" + (char)0x00 + "o" + (char)0x00 + "l" + (char)0x00 + "i" + (char)0x00 + "d" + (char)0x00
-                    + "s" + (char)0x00 + "h" + (char)0x00 + "i" + (char)0x00 + "e" + (char)0x00 + "l" + (char)0x00 + "d" + (char)0x00
-                    + " " + (char)0x00 + "A" + (char)0x00 + "c" + (char)0x00 + "t" + (char)0x00 + "i" + (char)0x00 + "v" + (char)0x00
-                    + "a" + (char)0x00 + "t" + (char)0x00 + "i" + (char)0x00 + "o" + (char)0x00 + "n" + (char)0x00 + " " + (char)0x00
-                    + "L" + (char)0x00 + "i" + (char)0x00 + "b" + (char)0x00 + "r" + (char)0x00 + "a" + (char)0x00 + "r" + (char)0x00 + "y"))
+            check = "S" + (char)0x00 + "o" + (char)0x00 + "l" + (char)0x00 + "i" + (char)0x00 + "d" + (char)0x00 + "s" + (char)0x00 + "h" + (char)0x00 + "i" + (char)0x00 + "e" + (char)0x00 + "l" + (char)0x00 + "d" + (char)0x00 + " " + (char)0x00 + "L" + (char)0x00 + "i" + (char)0x00 + "b" + (char)0x00 + "r" + (char)0x00 + "a" + (char)0x00 + "r" + (char)0x00 + "y";
+            if (fileContent.Contains(check))
             {
                 string companyName = string.Empty;
                 if (file != null)
                     companyName = FileVersionInfo.GetVersionInfo(file).CompanyName.ToLower();
 
                 if (companyName.Contains("solidshield") || companyName.Contains("tages"))
-                    return "SolidShield Core.dll " + Utilities.GetFileVersion(file);
+                    return $"SolidShield Core.dll {Utilities.GetFileVersion(file)} (Index {fileContent.IndexOf(check)})";
             }
 
-            if ((position = fileContent.IndexOf("" + (char)0xEF + (char)0xBE + (char)0xAD + (char)0xDE)) > -1)
+            check = "S" + (char)0x00 + "o" + (char)0x00 + "l" + (char)0x00 + "i" + (char)0x00 + "d" + (char)0x00 + "s" + (char)0x00 + "h" + (char)0x00 + "i" + (char)0x00 + "e" + (char)0x00 + "l" + (char)0x00 + "d" + (char)0x00 + " " + (char)0x00 + "A" + (char)0x00 + "c" + (char)0x00 + "t" + (char)0x00 + "i" + (char)0x00 + "v" + (char)0x00 + "a" + (char)0x00 + "t" + (char)0x00 + "i" + (char)0x00 + "o" + (char)0x00 + "n" + (char)0x00 + " " + (char)0x00 + "L" + (char)0x00 + "i" + (char)0x00 + "b" + (char)0x00 + "r" + (char)0x00 + "a" + (char)0x00 + "r" + (char)0x00 + "y";
+            if (fileContent.Contains(check))
+            {
+                string companyName = string.Empty;
+                if (file != null)
+                    companyName = FileVersionInfo.GetVersionInfo(file).CompanyName.ToLower();
+
+                if (companyName.Contains("solidshield") || companyName.Contains("tages"))
+                    return $"SolidShield Core.dll {Utilities.GetFileVersion(file)} (Index {fileContent.IndexOf(check)})";
+            }
+
+            check = "" + (char)0xEF + (char)0xBE + (char)0xAD + (char)0xDE;
+            int position = fileContent.IndexOf(check);
+            if (position > -1)
             {
                 var id1 = fileContent.Substring(position + 5, 3);
                 var id2 = fileContent.Substring(position + 16, 4);
 
                 if (id1 == "" + (char)0x00 + (char)0x00 + (char)0x00 && id2 == "" + (char)0x00 + (char)0x10 + (char)0x00 + (char)0x00)
-                    return "SolidShield 1 (SolidShield EXE Wrapper)";
+                    return $"SolidShield 1 (SolidShield EXE Wrapper) (Index {position})";
                 else if (id1 == ".o&" && id2 == "ÛÅ›¹")
-                    return "SolidShield 2 (SolidShield v2 EXE Wrapper)"; // TODO: Verify against other SolidShield 2 discs
+                    return $"SolidShield 2 (SolidShield v2 EXE Wrapper) (Index {position})"; // TODO: Verify against other SolidShield 2 discs
             }
 
-            if (fileContent.Contains("A" + (char)0x00 + "c" + (char)0x00 + "t" + (char)0x00 + "i" + (char)0x00 + "v" + (char)0x00
-                + "a" + (char)0x00 + "t" + (char)0x00 + "i" + (char)0x00 + "o" + (char)0x00 + "n" + (char)0x00 + " " + (char)0x00
-                + "M" + (char)0x00 + "a" + (char)0x00 + "n" + (char)0x00 + "a" + (char)0x00 + "g" + (char)0x00 + "e" + (char)0x00 + "r"))
+            check = "A" + (char)0x00 + "c" + (char)0x00 + "t" + (char)0x00 + "i" + (char)0x00 + "v" + (char)0x00 + "a" + (char)0x00 + "t" + (char)0x00 + "i" + (char)0x00 + "o" + (char)0x00 + "n" + (char)0x00 + " " + (char)0x00 + "M" + (char)0x00 + "a" + (char)0x00 + "n" + (char)0x00 + "a" + (char)0x00 + "g" + (char)0x00 + "e" + (char)0x00 + "r";
+            if (fileContent.Contains(check))
             {
                 string companyName = string.Empty;
                 if (file != null)
                     companyName = FileVersionInfo.GetVersionInfo(file).CompanyName.ToLower();
 
                 if (companyName.Contains("solidshield") || companyName.Contains("tages"))
-                    return "SolidShield Activation Manager Module " + Utilities.GetFileVersion(file);
+                    return $"SolidShield Activation Manager Module {Utilities.GetFileVersion(file)} (Index {fileContent.IndexOf(check)})";
             }
 
-            if ((position = fileContent.IndexOf("" + (char)0xAD + (char)0xDE + (char)0xFE + (char)0xCA)) > -1)
+            check = "" + (char)0xAD + (char)0xDE + (char)0xFE + (char)0xCA;
+            position = fileContent.IndexOf(check);
+            if (position > -1)
             {
                 if ((fileContent[position + 3] == (char)0x04 || fileContent[position + 3] == (char)0x05)
                     && fileContent.Substring(position + 4, 3) == "" + (char)0x00 + (char)0x00 + (char)0x00
                     && fileContent.Substring(position + 15, 4) == "" + (char)0x00 + (char)0x10 + (char)0x00 + (char)0x00)
                 {
-                    return "SolidShield 2 (SolidShield v2 EXE Wrapper)";
+                    return $"SolidShield 2 (SolidShield v2 EXE Wrapper) (Index {position})";
                 }
                 else if (fileContent.Substring(position + 4, 3) == "" + (char)0x00 + (char)0x00 + (char)0x00
                     && fileContent.Substring(position + 15, 4) == "" + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00)
                 {
-                    position = fileContent.IndexOf("T" + (char)0x00 + "a" + (char)0x00 + "g" + (char)0x00 + "e" + (char)0x00 + "s"
-                        + (char)0x00 + "S" + (char)0x00 + "e" + (char)0x00 + "t" + (char)0x00 + "u" + (char)0x00 + "p"
-                        + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00 + "0" + (char)0x00 + (char)0x8
-                        + (char)0x00 + (char)0x1 + (char)0x0 + "F" + (char)0x00 + "i" + (char)0x00 + "l" + (char)0x00 + "e"
-                        + (char)0x00 + "V" + (char)0x00 + "e" + (char)0x00 + "r" + (char)0x00 + "s" + (char)0x00 + "i" + (char)0x00
-                        + "o" + (char)0x00 + "n" + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00);
+                    string check2 = "T" + (char)0x00 + "a" + (char)0x00 + "g" + (char)0x00 + "e" + (char)0x00 + "s" + (char)0x00 + "S" + (char)0x00 + "e" + (char)0x00 + "t" + (char)0x00 + "u" + (char)0x00 + "p" + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00 + "0" + (char)0x00 + (char)0x8 + (char)0x00 + (char)0x1 + (char)0x0 + "F" + (char)0x00 + "i" + (char)0x00 + "l" + (char)0x00 + "e" + (char)0x00 + "V" + (char)0x00 + "e" + (char)0x00 + "r" + (char)0x00 + "s" + (char)0x00 + "i" + (char)0x00 + "o" + (char)0x00 + "n" + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00;
+                    position = fileContent.IndexOf(check2);
                     if (position > -1)
                     {
                         position--; // TODO: Verify this subtract
-                        return "SolidShield 2 + Tagès " + fileContent.Substring(position + 0x38, 1) + "." + fileContent.Substring(position + 0x38 + 4, 1) + "." + fileContent.Substring(position + 0x38 + 8, 1) + "." + fileContent.Substring(position + 0x38 + 12, 1);
+                        return $"SolidShield 2 + Tagès {fileContent.Substring(position + 0x38, 1)}.{fileContent.Substring(position + 0x38 + 4, 1)}.{fileContent.Substring(position + 0x38 + 8, 1)}.{fileContent.Substring(position + 0x38 + 12, 1)} (Index { fileContent.IndexOf(check)}, {position})";
                     }
                     else
                     {
-                        return "SolidShield 2 (SolidShield v2 EXE Wrapper)";
+                        return $"SolidShield 2 (SolidShield v2 EXE Wrapper) (Index {fileContent.IndexOf(check)})";
                     }
                 }
             }
 
-            if ((position = fileContent.IndexOf("Solidshield")) > 0)
-            {
-                return "SolidShield " + GetVersion(file, position);
-            }
+            check = "Solidshield";
+            position = fileContent.IndexOf(check);
+            if (position > -1)
+                return $"SolidShield {GetVersion(file, position)} (Index {position})";
 
-            if (fileContent.Contains("B" + (char)0x00 + "I" + (char)0x00 + "N" + (char)0x00 + (char)0x7 + (char)0x00 +
-                "I" + (char)0x00 + "D" + (char)0x00 + "R" + (char)0x00 + "_" + (char)0x00 +
-                "S" + (char)0x00 + "G" + (char)0x00 + "T" + (char)0x0))
-            {
-                return "SolidShield";
-            }
+            check = "B" + (char)0x00 + "I" + (char)0x00 + "N" + (char)0x00 + (char)0x7 + (char)0x00 + "I" + (char)0x00 + "D" + (char)0x00 + "R" + (char)0x00 + "_" + (char)0x00 + "S" + (char)0x00 + "G" + (char)0x00 + "T" + (char)0x0;
+            if (fileContent.Contains(check))
+                return $"SolidShield (Index {position})";
 
             return null;
         }

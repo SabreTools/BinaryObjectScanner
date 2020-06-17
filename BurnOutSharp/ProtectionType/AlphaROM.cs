@@ -4,8 +4,9 @@
     {
         public static string CheckContents(string fileContent)
         {
-            if (fileContent.Contains("SETTEC"))
-                return "Alpha-ROM";
+            string check = "SETTEC";
+            if (fileContent.Contains(check))
+                return $"Alpha-ROM (Index {fileContent.IndexOf(check)})";
 
             return null;
         }

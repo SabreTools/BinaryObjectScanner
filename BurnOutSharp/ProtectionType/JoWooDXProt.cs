@@ -6,21 +6,20 @@ namespace BurnOutSharp.ProtectionType
     {
         public static string CheckContents(string file, string fileContent)
         {
-            int position;
-            if (fileContent.Contains(".ext    "))
+            string check = ".ext    ";
+            if (fileContent.Contains(check))
             {
-                if ((position = fileContent.IndexOf("kernel32.dll" + (char)0x00 + (char)0x00 + (char)0x00 + "VirtualProtect")) > -1)
-                {
-                    return "JoWooD X-Prot " + GetVersion(file, --position);
-                }
+                string check2 = "kernel32.dll" + (char)0x00 + (char)0x00 + (char)0x00 + "VirtualProtect";
+                int position = fileContent.IndexOf(check2);
+                if (position > -1)
+                    return $"JoWooD X-Prot {GetVersion(file, --position)} (Index {fileContent.IndexOf(check)})";
                 else
-                {
-                    return "JoWooD X-Prot v1";
-                }
+                    return $"JoWooD X-Prot v1 (Index {fileContent.IndexOf(check)})";
             }
 
-            if (fileContent.Contains("@HC09    "))
-                return "JoWooD X-Prot v2";
+            check = "@HC09    ";
+            if (fileContent.Contains(check))
+                return $"JoWooD X-Prot v2 (Index {fileContent.IndexOf(check)})";
 
             return null;
         }

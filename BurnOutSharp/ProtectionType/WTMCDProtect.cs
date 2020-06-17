@@ -9,8 +9,9 @@ namespace BurnOutSharp.ProtectionType
     {
         public static string CheckContents(string fileContent)
         {
-            if (fileContent.Contains("WTM76545"))
-                return "WTM CD Protect";
+            string check = "WTM76545";
+            if (fileContent.Contains(check))
+                return $"WTM CD Protect (Index {fileContent.IndexOf(check)})";
 
             return null;
         }

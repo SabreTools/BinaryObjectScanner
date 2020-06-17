@@ -4,8 +4,9 @@
     {
         public static string CheckContents(string fileContent)
         {
-            if (fileContent.Contains(".cenega"))
-                return "Cenega ProtectDVD";
+            string check = ".cenega";
+            if (fileContent.Contains(check))
+                return $"Cenega ProtectDVD (Index {fileContent.IndexOf(check)})";
 
             return null;
         }

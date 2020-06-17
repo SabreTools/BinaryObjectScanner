@@ -9,8 +9,9 @@ namespace BurnOutSharp.ProtectionType
     {
         public static string CheckContents(string fileContent)
         {
-            if (fileContent.Contains("BITARTS"))
-                return "SmartE";
+            string check = "BITARTS";
+            if (fileContent.Contains(check))
+                return $"SmartE (Index {fileContent.IndexOf(check)})";
 
             return null;
         }

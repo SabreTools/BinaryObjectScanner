@@ -4,8 +4,9 @@
     {
         public static string CheckContents(string fileContent)
         {
-            if (fileContent.Contains("XPROT   "))
-                return "Xtreme-Protector";
+            string check = "XPROT   ";
+            if (fileContent.Contains(check))
+                return $"Xtreme-Protector (Index {fileContent.IndexOf(check)})";
 
             return null;
         }

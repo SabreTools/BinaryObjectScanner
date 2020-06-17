@@ -4,8 +4,9 @@
     {
         public static string CheckContents(string fileContent)
         {
-            if (fileContent.Contains((char)0x00 + "Allocator" + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00))
-                return "Ring PROTECH";
+            string check = (char)0x00 + "Allocator" + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00;
+            if (fileContent.Contains(check))
+                return $"Ring PROTECH (Index {fileContent.IndexOf(check)})";
 
             return null;
         }

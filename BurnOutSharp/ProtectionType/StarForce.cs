@@ -9,35 +9,43 @@ namespace BurnOutSharp.ProtectionType
     {
         public static string CheckContents(string file, string fileContent)
         {
+            string check = "(" + (char)0x00 + "c" + (char)0x00 + ")" + (char)0x00 + " " + (char)0x00 + "P" + (char)0x00 + "r" + (char)0x00 + "o" + (char)0x00 + "t" + (char)0x00 + "e" + (char)0x00 + "c" + (char)0x00 + "t" + (char)0x00 + "i" + (char)0x00 + "o" + (char)0x00 + "n" + (char)0x00 + " " + (char)0x00 + "T" + (char)0x00 + "e" + (char)0x00 + "c" + (char)0x00 + "h" + (char)0x00 + "n" + (char)0x00 + "o" + (char)0x00 + "l" + (char)0x00 + "o" + (char)0x00 + "g" + (char)0x00 + "y" + (char)0x00;
             int position;
-            if (fileContent.Contains("(" + (char)0x00 + "c" + (char)0x00 + ")" + (char)0x00 + " " + (char)0x00 + "P" + (char)0x00
-                + "r" + (char)0x00 + "o" + (char)0x00 + "t" + (char)0x00 + "e" + (char)0x00 + "c" + (char)0x00 + "t" + (char)0x00
-                + "i" + (char)0x00 + "o" + (char)0x00 + "n" + (char)0x00 + " " + (char)0x00 + "T" + (char)0x00 + "e" + (char)0x00
-                + "c" + (char)0x00 + "h" + (char)0x00 + "n" + (char)0x00 + "o" + (char)0x00 + "l" + (char)0x00 + "o" + (char)0x00
-                + "g" + (char)0x00 + "y" + (char)0x00)
-            || fileContent.Contains("Protection Technology, Ltd."))
+            if (fileContent.Contains(check))
             {
                 //if (FileContent.Contains("PSA_GetDiscLabel")
                 //if (FileContent.Contains("(c) Protection Technology")
                 position = fileContent.IndexOf("TradeName") - 1;
                 if (position != -1 && position != -2)
-                    return "StarForce " + Utilities.GetFileVersion(file) + " (" + fileContent.Substring(position + 22, 30).Split((char)0x00)[0] + ")";
+                    return $"StarForce {Utilities.GetFileVersion(file)} ({fileContent.Substring(position + 22, 30).Split((char)0x00)[0]}) (Index {fileContent.IndexOf(check)}, {position})";
                 else
-                    return "StarForce " + Utilities.GetFileVersion(file);
+                    return $"StarForce {Utilities.GetFileVersion(file)} (Index {fileContent.IndexOf(check)}, {position})";
             }
 
-            if (fileContent.Contains(".sforce")
-                || fileContent.Contains(".brick"))
+
+            check = "Protection Technology, Ltd.";
+            if (fileContent.Contains(check))
             {
-                return "StarForce 3-5";
+                //if (FileContent.Contains("PSA_GetDiscLabel")
+                //if (FileContent.Contains("(c) Protection Technology")
+                position = fileContent.IndexOf("TradeName") - 1;
+                if (position != -1 && position != -2)
+                    return $"StarForce {Utilities.GetFileVersion(file)} ({fileContent.Substring(position + 22, 30).Split((char)0x00)[0]}) (Index {fileContent.IndexOf(check)}, {position})";
+                else
+                    return $"StarForce {Utilities.GetFileVersion(file)} (Index {fileContent.IndexOf(check)})";
             }
 
-            if (fileContent.Contains("P" + (char)0x00 + "r" + (char)0x00 + "o" + (char)0x00 + "t" + (char)0x00 + "e" + (char)0x00
-                + "c" + (char)0x00 + "t" + (char)0x00 + "e" + (char)0x00 + "d" + (char)0x00 + " " + (char)0x00 + "M" + (char)0x00
-                + "o" + (char)0x00 + "d" + (char)0x00 + "u" + (char)0x00 + "l" + (char)0x00 + "e"))
-            {
-                return "StarForce 5";
-            }
+            check = ".sforce";
+            if (fileContent.Contains(check))
+                return $"StarForce 3-5 (Index {fileContent.IndexOf(check)})";
+
+            check = ".brick";
+            if (fileContent.Contains(check))
+                return $"StarForce 3-5 (Index {fileContent.IndexOf(check)})";
+
+            check = "P" + (char)0x00 + "r" + (char)0x00 + "o" + (char)0x00 + "t" + (char)0x00 + "e" + (char)0x00 + "c" + (char)0x00 + "t" + (char)0x00 + "e" + (char)0x00 + "d" + (char)0x00 + " " + (char)0x00 + "M" + (char)0x00 + "o" + (char)0x00 + "d" + (char)0x00 + "u" + (char)0x00 + "l" + (char)0x00 + "e";
+            if (fileContent.Contains(check))
+                return $"StarForce 5 (Index {fileContent.IndexOf(check)})";
 
             return null;
         }

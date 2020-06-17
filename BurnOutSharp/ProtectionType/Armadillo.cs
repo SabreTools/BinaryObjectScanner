@@ -4,9 +4,13 @@
     {
         public static string CheckContents(string fileContent)
         {
-            if (fileContent.Contains(".nicode" + (char)0x00)
-                || fileContent.Contains("ARMDEBUG"))
-                return "Armadillo";
+            string check = ".nicode" + (char)0x00;
+            if (fileContent.Contains(check))
+                return $"Armadillo (Index {fileContent.IndexOf(check)})";
+
+            check = "ARMDEBUG";
+            if (fileContent.Contains(check))
+                return $"Armadillo (Index {fileContent.IndexOf(check)})";
 
             return null;
         }

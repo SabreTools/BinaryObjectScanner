@@ -9,8 +9,9 @@ namespace BurnOutSharp.ProtectionType
     {
         public static string CheckContents(string fileContent)
         {
-            if (fileContent.Contains("SafeLock"))
-                return "SafeLock";
+            string check = "SafeLock";
+            if (fileContent.Contains(check))
+                return $"SafeLock (Index {fileContent.IndexOf(check)})";
 
             return null;
         }

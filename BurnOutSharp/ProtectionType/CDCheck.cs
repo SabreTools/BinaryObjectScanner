@@ -4,9 +4,13 @@
     {
         public static string CheckContents(string fileContent)
         {
-            if (fileContent.Contains("GetDriveType")
-                || fileContent.Contains("GetVolumeInformation"))
-                return "CD Check";
+            string check = "GetDriveType";
+            if (fileContent.Contains(check))
+                return $"CD Check (Index {fileContent.IndexOf(check)})";
+
+            check = "GetVolumeInformation";
+            if (fileContent.Contains(check))
+                return $"CD Check (Index {fileContent.IndexOf(check)})";
 
             return null;
         }

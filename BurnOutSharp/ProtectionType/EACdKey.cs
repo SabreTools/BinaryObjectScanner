@@ -4,8 +4,9 @@
     {
         public static string CheckContents(string fileContent)
         {
-            if (fileContent.Contains("ereg.ea-europe.com"))
-                return "EA CdKey Registration Module";
+            string check = "ereg.ea-europe.com";
+            if (fileContent.Contains(check))
+                return $"EA CdKey Registration Module (Index {fileContent.IndexOf(check)})";
 
             return null;
         }

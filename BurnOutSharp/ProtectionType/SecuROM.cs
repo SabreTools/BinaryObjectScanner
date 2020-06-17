@@ -9,30 +9,35 @@ namespace BurnOutSharp.ProtectionType
     {
         public static string CheckContents(string file, string fileContent)
         {
-            int position;
-            if ((position = fileContent.IndexOf("AddD" + (char)0x03 + (char)0x00 + (char)0x00 + (char)0x00)) > -1)
-                return "SecuROM " + GetV4Version(file, position);
+            string check = "AddD" + (char)0x03 + (char)0x00 + (char)0x00 + (char)0x00;
+            int position = fileContent.IndexOf(check);
+            if (position > -1)
+                return $"SecuROM {GetV4Version(file, position)} (Index {position})";
 
-            if ((position = fileContent.IndexOf("" + (char)0xCA + (char)0xDD + (char)0xDD + (char)0xAC + (char)0x03)) > -1)
-                return "SecuROM " + GetV5Version(file, position);
+            check = "" + (char)0xCA + (char)0xDD + (char)0xDD + (char)0xAC + (char)0x03;
+            position = fileContent.IndexOf(check);
+            if (position > -1)
+                return $"SecuROM {GetV5Version(file, position)} (Index {position})";
 
-            if (fileContent.Contains(".securom")
-                || fileContent.StartsWith(".securom" + (char)0xE0 + (char)0xC0))
-            {
-                return "SecuROM " + GetV7Version(file);
-            }
+            check = ".securom" + (char)0xE0 + (char)0xC0;
+            if (fileContent.Contains(check))
+                return $"SecuROM {GetV7Version(file)} (Index {fileContent.IndexOf(check)}";
 
-            if (fileContent.Contains("_and_play.dll" + (char)0x00 + "drm_pagui_doit"))
-                return "SecuROM Product Activation " + Utilities.GetFileVersion(file);
+            check = ".securom";
+            if (fileContent.Contains(check))
+                return $"SecuROM {GetV7Version(file)} (Index {fileContent.IndexOf(check)}";
 
-            if (fileContent.Contains("_and_play.dll" + (char)0x00 + "drm_pagui_doit"))
-                return "SecuROM Product Activation " + Utilities.GetFileVersion(file);
+            check = "_and_play.dll" + (char)0x00 + "drm_pagui_doit";
+            if (fileContent.Contains(check))
+                return $"SecuROM Product Activation {Utilities.GetFileVersion(file)} (Index {fileContent.IndexOf(check)}";
 
-            if (fileContent.Contains(".cms_t" + (char)0x00)
-                || fileContent.Contains(".cms_d" + (char)0x00))
-            {
-                return "SecuROM 1-3";
-            }
+            check = ".cms_t" + (char)0x00;
+            if (fileContent.Contains(check))
+                return $"SecuROM 1-3 (Index {fileContent.IndexOf(check)}";
+
+            check = ".cms_d" + (char)0x00;
+            if (fileContent.Contains(check))
+                return $"SecuROM 1-3 (Index {fileContent.IndexOf(check)}";
 
             return null;
         }

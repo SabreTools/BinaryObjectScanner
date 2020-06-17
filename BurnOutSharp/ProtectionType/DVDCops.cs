@@ -6,9 +6,10 @@ namespace BurnOutSharp.ProtectionType
     {
         public static string CheckContents(string file, string fileContent)
         {
-            int position;
-            if ((position = fileContent.IndexOf("DVD-Cops,  ver. ")) > -1)
-                return "DVD-Cops " + GetVersion(file, position);
+            string check = "DVD-Cops,  ver. ";
+            int position = fileContent.IndexOf(check);
+            if (position > -1)
+                return $"DVD-Cops {GetVersion(file, position)} (Index {position})";
 
             return null;
         }

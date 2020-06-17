@@ -9,33 +9,34 @@ namespace BurnOutSharp.ProtectionType
     {
         public static string CheckContents(string file, string fileContent)
         {
-            int position;
-            if ((position = fileContent.IndexOf("VOB ProtectCD")) > -1)
-                return "VOB ProtectCD/DVD " + GetOldVersion(file, --position); // TODO: Verify this subtract
+            string check = "VOB ProtectCD";
+            int position = fileContent.IndexOf(check);
+            if (position > -1)
+                return $"VOB ProtectCD/DVD {GetOldVersion(file, --position)} (Index {position})"; // TODO: Verify this subtract
 
-            if ((position = fileContent.IndexOf("DCP-BOV" + (char)0x00 + (char)0x00)) > -1)
+            check = "DCP-BOV" + (char)0x00 + (char)0x00;
+            position = fileContent.IndexOf(check);
+            if (position > -1)
             {
                 string version = GetVersion(file, --position); // TODO: Verify this subtract
                 if (version.Length > 0)
-                {
-                    return "VOB ProtectCD/DVD " + version;
-                }
+                    return $"VOB ProtectCD/DVD {version} (Index {position})";
 
                 version = EVORE.SearchProtectDiscVersion(file);
                 if (version.Length > 0)
                 {
                     if (version.StartsWith("2"))
-                    {
-                        version = "6" + version.Substring(1);
-                    }
-                    return "VOB ProtectCD/DVD " + version;
+                        version = $"6{version.Substring(1)}";
+
+                    return $"VOB ProtectCD/DVD {version} (Index {position})";
                 }
 
-                return "VOB ProtectCD/DVD 5.9-6.0" + GetBuild(file, position);
+                return $"VOB ProtectCD/DVD 5.9-6.0 {GetBuild(file, position)} (Index {position})";
             }
 
-            if (fileContent.Contains(".vob.pcd"))
-                return "VOB ProtectCD";
+            check = ".vob.pcd";
+            if (fileContent.Contains(check))
+                return $"VOB ProtectCD (Index {fileContent.IndexOf(check)})";
 
             return null;
         }

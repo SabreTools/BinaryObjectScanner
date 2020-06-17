@@ -9,8 +9,9 @@ namespace BurnOutSharp.ProtectionType
     {
         public static string CheckContents(string fileContent)
         {
-            if (fileContent.Contains("Tom Commander"))
-                return "CopyKiller";
+            string check = "Tom Commander";
+            if (fileContent.Contains(check))
+                return $"CopyKiller (Index {fileContent.IndexOf(check)})";
 
             return null;
         }

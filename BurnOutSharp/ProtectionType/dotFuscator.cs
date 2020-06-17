@@ -4,8 +4,9 @@
     {
         public static string CheckContents(string fileContent)
         {
-            if (fileContent.Contains("DotfuscatorAttribute"))
-                return "dotFuscator";
+            string check = "DotfuscatorAttribute";
+            if (fileContent.Contains(check))
+                return $"dotFuscator (Index {fileContent.IndexOf(check)})";
 
             return null;
         }

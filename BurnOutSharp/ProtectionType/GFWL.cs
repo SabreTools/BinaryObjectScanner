@@ -9,8 +9,9 @@ namespace BurnOutSharp.ProtectionType
     {
         public static string CheckContents(string fileContent)
         {
-            if (fileContent.Contains("xlive.dll"))
-                return "Games for Windows - Live";
+            string check = "xlive.dll";
+            if (fileContent.Contains(check))
+                return $"Games for Windows - Live (Index {fileContent.IndexOf(check)})";
 
             return null;
         }

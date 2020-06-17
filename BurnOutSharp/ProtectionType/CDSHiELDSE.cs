@@ -4,8 +4,9 @@
     {
         public static string CheckContents(string fileContent)
         {
-            if (fileContent.Contains("~0017.tmp"))
-                return "CDSHiELD SE";
+            string check = "~0017.tmp";
+            if (fileContent.Contains(check))
+                return $"CDSHiELD SE (Index {fileContent.IndexOf(check)})";
 
             return null;
         }

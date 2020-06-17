@@ -9,12 +9,14 @@ namespace BurnOutSharp.ProtectionType
     {
         public static string CheckContents(string file, string fileContent)
         {
-            int position;
-            if ((position = fileContent.IndexOf("CD-Cops,  ver. ")) > -1)
-                return "CD-Cops " + GetVersion(file, position);
+            string check = "CD-Cops,  ver. ";
+            int position = fileContent.IndexOf(check);
+            if (position > -1)
+                return $"CD-Cops {GetVersion(file, position)} (Index {position})";
 
-            if (fileContent.Contains(".grand" + (char)0x00))
-                return "CD-Cops";
+            check = ".grand" + (char)0x00;
+            if (fileContent.Contains(check))
+                return $"CD-Cops (Index {fileContent.IndexOf(check)})";
 
             return null;
         }
