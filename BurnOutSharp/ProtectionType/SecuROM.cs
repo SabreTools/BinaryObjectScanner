@@ -126,11 +126,11 @@ namespace BurnOutSharp.ProtectionType
             byte[] subSubSubVersion = new byte[4];
             subSubSubVersion[0] = (byte)(fileContent[index] ^ 16);
             index++;
-            subSubSubVersion[2] = (byte)(fileContent[index] ^ 116);
+            subSubSubVersion[1] = (byte)(fileContent[index] ^ 116);
             index++;
-            subSubSubVersion[3] = (byte)(fileContent[index] ^ 34);
+            subSubSubVersion[2] = (byte)(fileContent[index] ^ 34);
             index++;
-            subSubSubVersion[4] = (byte)(fileContent[index] ^ 22);
+            subSubSubVersion[3] = (byte)(fileContent[index] ^ 22);
 
             if (version == 0 || version > 9)
                 return "";

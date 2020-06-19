@@ -450,6 +450,7 @@ namespace BurnOutSharp
                 // If we have the first file
                 if (shouldScanCabinet)
                 {
+                    // If the cab file itself fails
                     try
                     {
                         string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
@@ -458,12 +459,15 @@ namespace BurnOutSharp
                         UnshieldCabinet cabfile = UnshieldCabinet.Open(file);
                         for (int i = 0; i < cabfile.FileCount; i++)
                         {
+                            // If an individual entry fails
                             try
                             {
                                 string tempFile = Path.Combine(tempPath, cabfile.FileName(i));
                                 if (cabfile.FileSave(i, tempFile))
                                 {
                                     string protection = ScanInFile(tempFile);
+
+                                    // If tempfile cleanup fails
                                     try
                                     {
                                         File.Delete(tempFile);
@@ -477,6 +481,7 @@ namespace BurnOutSharp
                             catch { }
                         }
 
+                        // If temp directory cleanup fails
                         try
                         {
                             Directory.Delete(tempPath, true);
@@ -490,6 +495,7 @@ namespace BurnOutSharp
             // Microsoft CAB
             else if (magic.StartsWith("MSCF"))
             {
+                // If the cab file itself fails
                 try
                 {
                     string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
@@ -499,11 +505,14 @@ namespace BurnOutSharp
                     {
                         foreach (var sub in cabfile.GetFiles())
                         {
+                            // If an individual entry fails
                             try
                             {
                                 string tempfile = Path.Combine(tempPath, sub.Filename);
                                 sub.ExtractTo(tempfile);
                                 string protection = ScanInFile(tempfile);
+                                
+                                // If tempfile cleanup fails
                                 try
                                 {
                                     File.Delete(tempfile);
@@ -516,6 +525,7 @@ namespace BurnOutSharp
                             catch { }
                         }
 
+                        // If temp directory cleanup fails
                         try
                         {
                             Directory.Delete(tempPath, true);
