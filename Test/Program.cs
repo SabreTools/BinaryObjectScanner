@@ -15,6 +15,7 @@ namespace Test
                 Console.WriteLine(String.Join("\r\n", ProtectionFind.Scan(arg, p).Select(kvp => kvp.Key + ": " + kvp.Value)));
             }
 
+            Console.WriteLine("Press any button to close...");
             Console.ReadLine();
 
             //ProtectionFind.ScanSectors('D', 2048);

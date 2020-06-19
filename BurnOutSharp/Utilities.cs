@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -28,7 +27,7 @@ namespace BurnOutSharp
 
             for (int i = 0; i < stack.Length - needle.Length; i++)
             {
-                if (needle.SequenceEqual(stack.Skip(i).Take(needle.Length)))
+                if (stack.EqualAt(needle, i))
                 {
                     position = i;
                     return true;
@@ -36,6 +35,24 @@ namespace BurnOutSharp
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Get if a stack at a certain index is equal to a needle
+        /// </summary>
+        private static bool EqualAt(this byte[] stack, byte[] needle, int index)
+        {
+            // If we're too close to the end of the stack, return false
+            if (needle.Length >= stack.Length - index)
+                return false;
+
+            for (int i = 0; i < needle.Length; i++)
+            {
+                if (stack[i + index] != needle[i])
+                    return false;
+            }
+
+            return true;
         }
 
         /// <summary>
