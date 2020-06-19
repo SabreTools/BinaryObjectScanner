@@ -458,19 +458,23 @@ namespace BurnOutSharp
                         UnshieldCabinet cabfile = UnshieldCabinet.Open(file);
                         for (int i = 0; i < cabfile.FileCount; i++)
                         {
-                            string tempFileName = Path.Combine(tempPath, cabfile.FileName(i));
-                            if (cabfile.FileSave(i, tempFileName))
+                            try
                             {
-                                string protection = ScanInFile(tempFileName);
-                                try
+                                string tempFile = Path.Combine(tempPath, cabfile.FileName(i));
+                                if (cabfile.FileSave(i, tempFile))
                                 {
-                                    File.Delete(tempFileName);
-                                }
-                                catch { }
+                                    string protection = ScanInFile(tempFile);
+                                    try
+                                    {
+                                        File.Delete(tempFile);
+                                    }
+                                    catch { }
 
-                                if (!string.IsNullOrEmpty(protection))
-                                    protections.Add(protection);
+                                    if (!string.IsNullOrEmpty(protection))
+                                        protections.Add(protection);
+                                }
                             }
+                            catch { }
                         }
 
                         try
@@ -495,13 +499,21 @@ namespace BurnOutSharp
                     {
                         foreach (var sub in cabfile.GetFiles())
                         {
-                            string tempfile = Path.Combine(tempPath, sub.Filename);
-                            sub.ExtractTo(tempfile);
-                            string protection = ScanInFile(tempfile);
-                            File.Delete(tempfile);
+                            try
+                            {
+                                string tempfile = Path.Combine(tempPath, sub.Filename);
+                                sub.ExtractTo(tempfile);
+                                string protection = ScanInFile(tempfile);
+                                try
+                                {
+                                    File.Delete(tempfile);
+                                }
+                                catch { }
 
-                            if (!string.IsNullOrEmpty(protection))
-                                protections.Add(protection);
+                                if (!string.IsNullOrEmpty(protection))
+                                    protections.Add(protection);
+                            }
+                            catch { }
                         }
 
                         try

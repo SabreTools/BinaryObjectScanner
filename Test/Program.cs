@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using BurnOutSharp;
 
@@ -12,7 +13,12 @@ namespace Test
             p.ProgressChanged += Changed;
             foreach (string arg in args)
             {
-                Console.WriteLine(String.Join("\r\n", ProtectionFind.Scan(arg, p).Select(kvp => kvp.Key + ": " + kvp.Value)));
+                string protections = String.Join("\r\n", ProtectionFind.Scan(arg, p).Select(kvp => kvp.Key + ": " + kvp.Value));
+                Console.WriteLine(protections);
+                using (StreamWriter sw = new StreamWriter(File.OpenWrite($"{DateTime.Now:yyyy-MM-dd_hhmmss}.txt")))
+                {
+                    sw.WriteLine(protections);
+                }
             }
 
             Console.WriteLine("Press any button to close...");
