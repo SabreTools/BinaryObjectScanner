@@ -12,7 +12,7 @@ namespace BurnOutSharp
         /// <summary>
         /// Search for a byte array in another array
         /// </summary>
-        public static bool Contains(this byte[] stack, byte[] needle, out int position)
+        public static bool Contains(this byte[] stack, byte[] needle, out int position, int start = 0, int end = -1)
         {
             // Initialize the found position to -1
             position = -1;
@@ -25,7 +25,13 @@ namespace BurnOutSharp
             if (needle.Length > stack.Length)
                 return false;
 
-            for (int i = 0; i < stack.Length - needle.Length; i++)
+            // If start or end are not set properly, set them to defaults
+            if (start < 0)
+                start = 0;
+            if (end < 0)
+                end = stack.Length - needle.Length;
+
+            for (int i = start; i < end; i++)
             {
                 if (stack.EqualAt(needle, i))
                 {
@@ -35,6 +41,14 @@ namespace BurnOutSharp
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// See if a byte array starts with another
+        /// </summary>
+        public static bool StartsWith(this byte[] stack, byte[] needle)
+        {
+            return stack.Contains(needle, out int _, start: 0, end: 0);
         }
 
         /// <summary>

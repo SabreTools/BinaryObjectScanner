@@ -16,12 +16,17 @@
     <PackageReference Include="libmspack4n">
       <Version>0.9.10</Version>
     </PackageReference>
+    <PackageReference Include="SharpCompress" Version="0.25.1" />
     <PackageReference Include="UnshieldSharp">
       <Version>1.4.2.3</Version>
     </PackageReference>
     <PackageReference Include="zlib.net">
       <Version>1.0.4</Version>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="External\StormLib\" />
   </ItemGroup>
 
 </Project>

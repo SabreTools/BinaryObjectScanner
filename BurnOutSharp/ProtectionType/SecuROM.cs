@@ -22,27 +22,27 @@ namespace BurnOutSharp.ProtectionType
             // ".securom" + (char)0xE0 + (char)0xC0
             check = new byte[] { 0x2E, 0x73, 0x65, 0x63, 0x75, 0x72, 0x6F, 0x6D, 0xE0, 0xC0 };
             if (fileContent.Contains(check, out position) && position == 0)
-                return $"SecuROM {GetV7Version(fileContent)} (Index {position}";
+                return $"SecuROM {GetV7Version(fileContent)} (Index {position})";
 
             // ".securom"
             check = new byte[] { 0x2E, 0x73, 0x65, 0x63, 0x75, 0x72, 0x6F, 0x6D };
             if (fileContent.Contains(check, out position))
-                return $"SecuROM {GetV7Version(fileContent)} (Index {position}";
+                return $"SecuROM {GetV7Version(fileContent)} (Index {position})";
 
             // "_and_play.dll" + (char)0x00 + "drm_pagui_doit"
             check = new byte[] { 0x5F, 0x61, 0x6E, 0x64, 0x5F, 0x70, 0x6C, 0x61, 0x79, 0x2E, 0x64, 0x6C, 0x6C, 0x00, 0x64, 0x72, 0x6D, 0x5F, 0x70, 0x61, 0x67, 0x75, 0x69, 0x5F, 0x64, 0x6F, 0x69, 0x74 };
             if (fileContent.Contains(check, out position))
-                return $"SecuROM Product Activation {Utilities.GetFileVersion(file)} (Index {position}";
+                return $"SecuROM Product Activation {Utilities.GetFileVersion(file)} (Index {position})";
 
             // ".cms_t" + (char)0x00
             check = new byte[] { 0x2E, 0x63, 0x6D, 0x73, 0x5F, 0x74, 0x00 };
             if (fileContent.Contains(check, out position))
-                return $"SecuROM 1-3 (Index {position}";
+                return $"SecuROM 1-3 (Index {position})";
 
             // ".cms_d" + (char)0x00
             check = new byte[] { 0x2E, 0x63, 0x6D, 0x73, 0x5F, 0x64, 0x00 };
             if (fileContent.Contains(check, out position))
-                return $"SecuROM 1-3 (Index {position}";
+                return $"SecuROM 1-3 (Index {position})";
 
             return null;
         }
