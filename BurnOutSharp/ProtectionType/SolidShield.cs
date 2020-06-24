@@ -43,8 +43,8 @@ namespace BurnOutSharp.ProtectionType
             check = new byte[] { };
             if (fileContent.Contains(check, out position))
             {
-                var id1 = fileContent.Skip(position + 5).Take(3);
-                var id2 = fileContent.Skip(position + 16).Take(4);
+                var id1 = new ArraySegment<byte>(fileContent, position + 5, 3);
+                var id2 = new ArraySegment<byte>(fileContent, position + 16, 4);
 
                 if (id1.SequenceEqual(new byte[] { 0x00, 0x00, 0x00 }) && id2.SequenceEqual(new byte[] { 0x00, 0x10, 0x00, 0x00 }))
                     return $"SolidShield 1 (SolidShield EXE Wrapper) (Index {position})";
@@ -68,8 +68,8 @@ namespace BurnOutSharp.ProtectionType
             check = new byte[] { 0xAD, 0xDE, 0xFE, 0xCA };
             if (fileContent.Contains(check, out position))
             {
-                var id1 = fileContent.Skip(position + 4).Take(3);
-                var id2 = fileContent.Skip(position + 15).Take(4);
+                var id1 = new ArraySegment<byte>(fileContent, position + 4, 3);
+                var id2 = new ArraySegment<byte>(fileContent, position + 15, 4);
 
                 if ((fileContent[position + 3] == 0x04 || fileContent[position + 3] == 0x05)
                     && id1.SequenceEqual(new byte[] { 0x00, 0x00, 0x00 })

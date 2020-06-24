@@ -94,13 +94,16 @@ namespace BurnOutSharp.ProtectionType
             char version = (char)fileContent[index];
             index += 2;
 
-            string subVersion = new string(fileContent.Skip(index).Take(2).Select(b => (char)b).ToArray());
+            string subVersion = new string(new ArraySegment<byte>(fileContent, index, 2).Select(b => (char)b).ToArray());
             index += 3;
 
-            string subSubVersion = new string(fileContent.Skip(index).Take(2).Select(b => (char)b).ToArray());
+            string subSubVersion = new string(new ArraySegment<byte>(fileContent, index, 2).Select(b => (char)b).ToArray());
             index += 3;
 
-            string subSubSubVersion = new string(fileContent.Skip(index).Take(4).Select(b => (char)b).ToArray());
+            string subSubSubVersion = new string(new ArraySegment<byte>(fileContent, index, 4).Select(b => (char)b).ToArray());
+
+            if (!char.IsNumber(version))
+                return "(very old, v3 or less)";
 
             return $"{version}.{subVersion}.{subSubVersion}.{subSubSubVersion}";
         }
@@ -141,7 +144,7 @@ namespace BurnOutSharp.ProtectionType
         private static string GetV7Version(byte[] fileContent)
         {
             int index = 236;
-            byte[] bytes = fileContent.Skip(index).Take(4).ToArray();
+            byte[] bytes = new ArraySegment<byte>(fileContent, index, 4).ToArray();
             
             //SecuROM 7 new and 8
             if (bytes[3] == 0x5C) // if (bytes[0] == 0xED && bytes[3] == 0x5C {
@@ -153,7 +156,7 @@ namespace BurnOutSharp.ProtectionType
             else
             {
                 index = 122;
-                bytes = fileContent.Skip(index).Take(2).ToArray();
+                bytes = new ArraySegment<byte>(fileContent, index, 2).ToArray();
                 return $"7.{bytes[0] ^ 0x10:00}.{bytes[1] ^ 0x10:0000}"; //return "7.01-7.10"
             }
         }

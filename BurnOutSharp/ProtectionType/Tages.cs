@@ -24,7 +24,7 @@ namespace BurnOutSharp.ProtectionType
             if (fileContent.Contains(check, out position))
             {
                 // (char)0xFF + (char)0xFF + "h"
-                if (fileContent.Skip(--position + 8).Take(3).SequenceEqual(new byte[] { 0xFF, 0xFF, 0x68 })) // TODO: Verify this subtract
+                if (new ArraySegment<byte>(fileContent, --position + 8, 3).SequenceEqual(new byte[] { 0xFF, 0xFF, 0x68 })) // TODO: Verify this subtract
                     return $"TAGES {GetVersion(fileContent, position)} (Index {position})";
             }
 

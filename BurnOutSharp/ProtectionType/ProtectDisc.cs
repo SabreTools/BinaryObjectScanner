@@ -50,12 +50,12 @@ namespace BurnOutSharp.ProtectionType
             string strBuild;
 
             int index = position - 12;
-            if (fileContent.Skip(index).Take(4).SequenceEqual(new byte[] { 0x0A, 0x0D, 0x0A, 0x0D })) // ProtectDisc 6-7 with Build Number in plain text
+            if (new ArraySegment<byte>(fileContent, index, 4).SequenceEqual(new byte[] { 0x0A, 0x0D, 0x0A, 0x0D })) // ProtectDisc 6-7 with Build Number in plain text
             {
                 index = position - 12 - 6;
 
                 // ProtectDisc 7
-                if (new string(fileContent.Skip(index).Take(6).Select(b => (char)b).ToArray()) == "Henrik")
+                if (new string(new ArraySegment<byte>(fileContent, index, 6).Select(b => (char)b).ToArray()) == "Henrik")
                 {
                     version = "7.1-7.5";
                     index = position - 12 - 6 - 6;
@@ -86,7 +86,7 @@ namespace BurnOutSharp.ProtectionType
                     return "8.0";
             }
 
-            strBuild = new string(fileContent.Skip(index).Take(5).Select(b => (char)b).ToArray());
+            strBuild = new string(new ArraySegment<byte>(fileContent, index, 5).Select(b => (char)b).ToArray());
             return $"{version} (Build {strBuild})";
         }
 

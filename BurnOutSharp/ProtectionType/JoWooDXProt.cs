@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -28,7 +29,7 @@ namespace BurnOutSharp.ProtectionType
 
         private static string GetVersion(byte[] fileContent, int position)
         {
-            char[] version = fileContent.Skip(position + 67).Take(8).Select(b => (char)b).ToArray();
+            char[] version = new ArraySegment<byte>(fileContent, position + 67, 8).Select(b => (char)b).ToArray();
             return $"{version[0]}.{version[2]}.{version[4]}.{version[6]}{version[7]}";
         }
     }

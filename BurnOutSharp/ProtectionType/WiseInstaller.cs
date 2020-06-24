@@ -3,6 +3,7 @@
     public class WiseInstaller
     {
         // TODO: Add Wise Installer extraction
+        // Decompile E_WISE_W.EXE?
         public static string CheckContents(byte[] fileContent)
         {
             // "WiseMain"

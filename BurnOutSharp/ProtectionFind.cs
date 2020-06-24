@@ -510,6 +510,7 @@ namespace BurnOutSharp
             {
                 // TODO: Implement
                 // https://github.com/Rupan/HLLib
+                // Decompile GCFScape?
                 protections.Add("Sorry, GCF files cannot be scanned, please extract manually and scan the output");
             }
 

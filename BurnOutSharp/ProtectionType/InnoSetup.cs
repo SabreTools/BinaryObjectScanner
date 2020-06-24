@@ -1,10 +1,12 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 
 namespace BurnOutSharp.ProtectionType
 {
     public class InnoSetup
     {
         // TOOO: Add Inno Setup extraction
+        // https://github.com/dscharrer/InnoExtract
         public static string CheckContents(byte[] fileContent)
         {
             // "Inno"
@@ -17,7 +19,7 @@ namespace BurnOutSharp.ProtectionType
 
         private static string GetVersion(byte[] fileContent)
         {
-            byte[] signature = fileContent.Skip(0x30).Take(12).ToArray();
+            byte[] signature = new ArraySegment<byte>(fileContent, 0x30, 12).ToArray();
 
             // "rDlPtS02" + (char)0x87 + "eVx"
             if (signature.SequenceEqual( new byte[] { 0x72, 0x44, 0x6C, 0x50, 0x74, 0x53, 0x30, 0x32, 0x87, 0x65, 0x56, 0x78 }))

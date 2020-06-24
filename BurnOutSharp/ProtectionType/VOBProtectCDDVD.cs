@@ -69,7 +69,7 @@ namespace BurnOutSharp.ProtectionType
 
         private static string GetOldVersion(byte[] fileContent, int position)
         {
-            char[] version = fileContent.Skip(position + 16).Take(4).Select(b => (char)b).ToArray(); // Begin reading after "VOB ProtectCD"
+            char[] version = new ArraySegment<byte>(fileContent, position + 16, 4).Select(b => (char)b).ToArray(); // Begin reading after "VOB ProtectCD"
             if (char.IsNumber(version[0]) && char.IsNumber(version[2]) && char.IsNumber(version[3]))
                 return $"{version[0]}.{version[2]}{version[3]}";
 

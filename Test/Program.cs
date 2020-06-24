@@ -15,7 +15,7 @@ namespace Test
             {
                 string protections = String.Join("\r\n", ProtectionFind.Scan(arg, p).Select(kvp => kvp.Key + ": " + kvp.Value));
                 Console.WriteLine(protections);
-                using (StreamWriter sw = new StreamWriter(File.OpenWrite($"{DateTime.Now:yyyy-MM-dd_hhmmss}.txt")))
+                using (StreamWriter sw = new StreamWriter(File.OpenWrite($"{DateTime.Now:yyyy-MM-dd_HHmmss}.txt")))
                 {
                     sw.WriteLine(protections);
                 }

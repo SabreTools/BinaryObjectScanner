@@ -88,20 +88,20 @@ namespace BurnOutSharp.ProtectionType
             if (versionTwo)
             {
                 int index = position + 14;
-                day = new string(fileContent.Skip(index).Take(2).Select(b => (char)b).ToArray());
+                day = new string(new ArraySegment<byte>(fileContent, index, 2).Select(b => (char)b).ToArray());
                 index += 3;
-                month = new string(fileContent.Skip(index).Take(2).Select(b => (char)b).ToArray());
+                month = new string(new ArraySegment<byte>(fileContent, index, 2).Select(b => (char)b).ToArray());
                 index += 3;
-                year = "20" + new string(fileContent.Skip(index).Take(2).Select(b => (char)b).ToArray());
+                year = "20" + new string(new ArraySegment<byte>(fileContent, index, 2).Select(b => (char)b).ToArray());
             }
             else
             {
                 int index = position + 13;
-                day = new string(fileContent.Skip(index).Take(2).Select(b => (char)b).ToArray());
+                day = new string(new ArraySegment<byte>(fileContent, index, 2).Select(b => (char)b).ToArray());
                 index += 3;
-                month = new string(fileContent.Skip(index).Take(2).Select(b => (char)b).ToArray());
+                month = new string(new ArraySegment<byte>(fileContent, index, 2).Select(b => (char)b).ToArray());
                 index += 3;
-                year = "20" + new string(fileContent.Skip(index).Take(2).Select(b => (char)b).ToArray());
+                year = "20" + new string(new ArraySegment<byte>(fileContent, index, 2).Select(b => (char)b).ToArray());
             }
 
             return $"(Build {year}-{month}-{day})";
@@ -109,7 +109,7 @@ namespace BurnOutSharp.ProtectionType
 
         private static string GetVersion(byte[] fileContent, int position)
         {
-            return new string(fileContent.Skip(position + 76).Take(4).Select(b => (char)b).ToArray());
+            return new string(new ArraySegment<byte>(fileContent, position + 76, 4).Select(b => (char)b).ToArray());
         }
 
         private static string GetVersion16Bit(string file)
@@ -123,7 +123,7 @@ namespace BurnOutSharp.ProtectionType
 
         private static string GetVersion16Bit(byte[] fileContent)
         {
-            char[] version = fileContent.Skip(71).Take(4).Select(b => (char)b).ToArray();
+            char[] version = new ArraySegment<byte>(fileContent, 71, 4).Select(b => (char)b).ToArray();
             if (char.IsNumber(version[0]) && char.IsNumber(version[2]) && char.IsNumber(version[3]))
                 return $"{version[0]}.{version[2]}{version[3]}";
 
