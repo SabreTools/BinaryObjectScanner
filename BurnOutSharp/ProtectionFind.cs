@@ -24,12 +24,16 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using BurnOutSharp.ProtectionType;
+using HLExtract.Net;
 using LibMSPackN;
 using SharpCompress.Archives;
 using SharpCompress.Archives.GZip;
 using SharpCompress.Archives.Rar;
 using SharpCompress.Archives.SevenZip;
 using SharpCompress.Archives.Zip;
+using SharpCompress.Compressors;
+using SharpCompress.Compressors.Deflate;
+using StormLibSharp;
 using UnshieldSharp;
 
 namespace BurnOutSharp
@@ -459,219 +463,44 @@ namespace BurnOutSharp
             // 7-zip
             if (magic.StartsWith("7z" + (char)0xbc + (char)0xaf + (char)0x27 + (char)0x1c))
             {
-                // If the 7-zip file itself fails
-                try
-                {
-                    string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-                    Directory.CreateDirectory(tempPath);
-
-                    using (SevenZipArchive sevenZipFile = SevenZipArchive.Open(stream))
-                    {
-                        foreach (var entry in sevenZipFile.Entries)
-                        {
-                            // If an individual entry fails
-                            try
-                            {
-                                // If we have a directory, skip it
-                                if (entry.IsDirectory)
-                                    continue;
-
-                                string tempfile = Path.Combine(tempPath, entry.Key);
-                                entry.WriteToFile(tempfile);
-                                string protection = ScanInFile(tempfile);
-
-                                // If tempfile cleanup fails
-                                try
-                                {
-                                    File.Delete(tempfile);
-                                }
-                                catch { }
-
-                                if (!string.IsNullOrEmpty(protection))
-                                    protections.Add(protection);
-                            }
-                            catch { }
-                        }
-
-                        // If temp directory cleanup fails
-                        try
-                        {
-                            Directory.Delete(tempPath, true);
-                        }
-                        catch { }
-                    }
-                }
-                catch { }
+                protections.AddRange(ProcessSevenZip(stream));
             }
 
-            // GCF
+            // BFPK
+            if (magic.StartsWith("BFPK"))
+            {
+                protections.AddRange(ProcessBfpk(stream));
+            }
+
+            // GCF - TODO: Add stream opening support
             if (magic.StartsWith("" + (char)0x01 + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x01 + (char)0x00 + (char)0x00 + (char)0x00)
                 || string.Equals(extension, "gcf", StringComparison.OrdinalIgnoreCase))
             {
-                // TODO: Implement
-                // https://github.com/Rupan/HLLib
-                // Decompile GCFScape?
-                protections.Add("Sorry, GCF files cannot be scanned, please extract manually and scan the output");
+                protections.AddRange(ProcessValve(file));
             }
 
             // GZIP
             if (magic.StartsWith("" + (char)0x1F + (char)0x8B))
             {
-                // If the rar file itself fails
-                try
-                {
-                    string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-                    Directory.CreateDirectory(tempPath);
-
-                    using (GZipArchive zipFile = GZipArchive.Open(stream))
-                    {
-                        foreach (var entry in zipFile.Entries)
-                        {
-                            // If an individual entry fails
-                            try
-                            {
-                                // If we have a directory, skip it
-                                if (entry.IsDirectory)
-                                    continue;
-
-                                string tempfile = Path.Combine(tempPath, entry.Key);
-                                entry.WriteToFile(tempfile);
-                                string protection = ScanInFile(tempfile);
-
-                                // If tempfile cleanup fails
-                                try
-                                {
-                                    File.Delete(tempfile);
-                                }
-                                catch { }
-
-                                if (!string.IsNullOrEmpty(protection))
-                                    protections.Add(protection);
-                            }
-                            catch { }
-                        }
-
-                        // If temp directory cleanup fails
-                        try
-                        {
-                            Directory.Delete(tempPath, true);
-                        }
-                        catch { }
-                    }
-                }
-                catch { }
+                protections.AddRange(ProcessGZip(stream));
             }
 
             // InstallShield CAB - TODO: Add stream opening support
             else if (file != null && magic.StartsWith("ISc"))
             {
-                // Get the name of the first cabinet file or header
-                string directory = Path.GetDirectoryName(file);
-                string noExtension = Path.GetFileNameWithoutExtension(file);
-                string filenamePattern = Path.Combine(directory, noExtension);
-                filenamePattern = new Regex(@"\d+$").Replace(filenamePattern, string.Empty);
-
-                bool cabinetHeaderExists = File.Exists(Path.Combine(directory, filenamePattern + "1.hdr"));
-                bool shouldScanCabinet = cabinetHeaderExists
-                    ? file.Equals(Path.Combine(directory, filenamePattern + "1.hdr"), StringComparison.OrdinalIgnoreCase)
-                    : file.Equals(Path.Combine(directory, filenamePattern + "1.cab"), StringComparison.OrdinalIgnoreCase);
-
-                // If we have the first file
-                if (shouldScanCabinet)
-                {
-                    // If the cab file itself fails
-                    try
-                    {
-                        string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-                        Directory.CreateDirectory(tempPath);
-
-                        UnshieldCabinet cabfile = UnshieldCabinet.Open(file);
-                        for (int i = 0; i < cabfile.FileCount; i++)
-                        {
-                            // If an individual entry fails
-                            try
-                            {
-                                string tempFile = Path.Combine(tempPath, cabfile.FileName(i));
-                                if (cabfile.FileSave(i, tempFile))
-                                {
-                                    string protection = ScanInFile(tempFile);
-
-                                    // If tempfile cleanup fails
-                                    try
-                                    {
-                                        File.Delete(tempFile);
-                                    }
-                                    catch { }
-
-                                    if (!string.IsNullOrEmpty(protection))
-                                        protections.Add(protection);
-                                }
-                            }
-                            catch { }
-                        }
-
-                        // If temp directory cleanup fails
-                        try
-                        {
-                            Directory.Delete(tempPath, true);
-                        }
-                        catch { }
-                    }
-                    catch { }
-                }
+                protections.AddRange(ProcessISCab(file));
             }
 
             // Microsoft CAB - TODO: Add stream opening support
             else if (file != null && magic.StartsWith("MSCF"))
             {
-                // If the cab file itself fails
-                try
-                {
-                    string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-                    Directory.CreateDirectory(tempPath);
-
-                    using (MSCabinet cabfile = new MSCabinet(file))
-                    {
-                        foreach (var sub in cabfile.GetFiles())
-                        {
-                            // If an individual entry fails
-                            try
-                            {
-                                string tempfile = Path.Combine(tempPath, sub.Filename);
-                                sub.ExtractTo(tempfile);
-                                string protection = ScanInFile(tempfile);
-
-                                // If tempfile cleanup fails
-                                try
-                                {
-                                    File.Delete(tempfile);
-                                }
-                                catch { }
-
-                                if (!string.IsNullOrEmpty(protection))
-                                    protections.Add(protection);
-                            }
-                            catch { }
-                        }
-
-                        // If temp directory cleanup fails
-                        try
-                        {
-                            Directory.Delete(tempPath, true);
-                        }
-                        catch { }
-                    }
-                }
-                catch { }
+                protections.AddRange(ProcessMSCab(file));
             }
 
-            // MPQ
+            // MPQ - TODO: Add stream opening support
             else if (magic.StartsWith("MPQ" + (char)0x1A))
             {
-                // TODO: Implement
-                // https://github.com/Kanma/MPQExtractor
-                // https://github.com/ladislav-zezula/StormLib
-                protections.Add("Sorry, MPQ files cannot be scanned, please extract manually and scan the output");
+                protections.AddRange(ProcessMpq(file));
             }
 
             // PKZIP
@@ -679,97 +508,19 @@ namespace BurnOutSharp
                 || magic.StartsWith("PK" + (char)05 + (char)06)
                 || magic.StartsWith("PK" + (char)07 + (char)08))
             {
-                // If the zip file itself fails
-                try
-                {
-                    string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-                    Directory.CreateDirectory(tempPath);
-
-                    using (ZipArchive zipFile = ZipArchive.Open(stream))
-                    {
-                        foreach (var entry in zipFile.Entries)
-                        {
-                            // If an individual entry fails
-                            try
-                            {
-                                // If we have a directory, skip it
-                                if (entry.IsDirectory)
-                                    continue;
-
-                                string tempfile = Path.Combine(tempPath, entry.Key);
-                                entry.WriteToFile(tempfile);
-                                string protection = ScanInFile(tempfile);
-
-                                // If tempfile cleanup fails
-                                try
-                                {
-                                    File.Delete(tempfile);
-                                }
-                                catch { }
-
-                                if (!string.IsNullOrEmpty(protection))
-                                    protections.Add(protection);
-                            }
-                            catch { }
-                        }
-
-                        // If temp directory cleanup fails
-                        try
-                        {
-                            Directory.Delete(tempPath, true);
-                        }
-                        catch { }
-                    }
-                }
-                catch { }
+                protections.AddRange(ProcessZip(stream));
             }
 
             // RAR
             else if (magic.StartsWith("Rar!"))
             {
-                // If the rar file itself fails
-                try
-                {
-                    string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-                    Directory.CreateDirectory(tempPath);
+                protections.AddRange(ProcessRar(stream));
+            }
 
-                    using (RarArchive zipFile = RarArchive.Open(stream))
-                    {
-                        foreach (var entry in zipFile.Entries)
-                        {
-                            // If an individual entry fails
-                            try
-                            {
-                                // If we have a directory, skip it
-                                if (entry.IsDirectory)
-                                    continue;
-
-                                string tempfile = Path.Combine(tempPath, entry.Key);
-                                entry.WriteToFile(tempfile);
-                                string protection = ScanInFile(tempfile);
-
-                                // If tempfile cleanup fails
-                                try
-                                {
-                                    File.Delete(tempfile);
-                                }
-                                catch { }
-
-                                if (!string.IsNullOrEmpty(protection))
-                                    protections.Add(protection);
-                            }
-                            catch { }
-                        }
-
-                        // If temp directory cleanup fails
-                        try
-                        {
-                            Directory.Delete(tempPath, true);
-                        }
-                        catch { }
-                    }
-                }
-                catch { }
+            // VPK - TODO: Add stream opening support
+            if (string.Equals(extension, "vpk", StringComparison.OrdinalIgnoreCase))
+            {
+                protections.AddRange(ProcessValve(file));
             }
 
             #endregion
@@ -1041,5 +792,512 @@ namespace BurnOutSharp
 
             return null;
         }
+
+        #region Archive Processing
+
+        /// <summary>
+        /// Process a 7-zip archive
+        /// </summary>
+        private static List<string> ProcessSevenZip(Stream stream)
+        {
+            List<string> protections = new List<string>();
+
+            // If the 7-zip file itself fails
+            try
+            {
+                string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+                Directory.CreateDirectory(tempPath);
+
+                using (SevenZipArchive sevenZipFile = SevenZipArchive.Open(stream))
+                {
+                    foreach (var entry in sevenZipFile.Entries)
+                    {
+                        // If an individual entry fails
+                        try
+                        {
+                            // If we have a directory, skip it
+                            if (entry.IsDirectory)
+                                continue;
+
+                            string tempfile = Path.Combine(tempPath, entry.Key);
+                            entry.WriteToFile(tempfile);
+                            string protection = ScanInFile(tempfile);
+
+                            // If tempfile cleanup fails
+                            try
+                            {
+                                File.Delete(tempfile);
+                            }
+                            catch { }
+
+                            if (!string.IsNullOrEmpty(protection))
+                                protections.Add($"\r\n{entry.Key} - {protection}");
+                        }
+                        catch { }
+                    }
+
+                    // If temp directory cleanup fails
+                    try
+                    {
+                        Directory.Delete(tempPath, true);
+                    }
+                    catch { }
+                }
+            }
+            catch { }
+
+            return protections;
+        }
+
+        /// <summary>
+        /// Process a BFPK archive
+        /// </summary>
+        private static List<string> ProcessBfpk(Stream stream)
+        {
+            List<string> protections = new List<string>();
+
+            using (BinaryReader br = new BinaryReader(stream, Encoding.Default, true))
+            {
+                Console.WriteLine($"Name\tOffset\tZip Size\tActual Size");
+
+                br.ReadBytes(4); // Skip magic number
+
+                int version = br.ReadInt32();
+                int files = br.ReadInt32();
+                long TMP = br.BaseStream.Position;
+
+                for (int i = 0; i < files; i++)
+                {
+                    br.BaseStream.Seek(TMP, SeekOrigin.Begin);
+
+                    int NSIZE = br.ReadInt32();
+                    string name = new string(br.ReadChars(NSIZE));
+
+                    int size = br.ReadInt32();
+                    int offset = br.ReadInt32();
+
+                    TMP = br.BaseStream.Position;
+
+                    br.BaseStream.Seek(offset, SeekOrigin.Begin);
+                    int zsize = br.ReadInt32();
+
+                    if (zsize == size)
+                        Console.WriteLine($"{name}\t{offset}\t{zsize}");
+                    else
+                        Console.WriteLine($"{name}\t{offset}\t{zsize}\t{size}");
+
+                    // TODO: Figure out compression scheme
+                    string tempfile = Path.Combine(Path.GetTempPath(), name);
+                    if (!Directory.Exists(Path.GetDirectoryName(tempfile)))
+                        Directory.CreateDirectory(Path.GetDirectoryName(tempfile));
+
+                    using (FileStream fs = File.OpenWrite(tempfile))
+                    using (DeflateStream ds = new DeflateStream(br.BaseStream, CompressionMode.Decompress))
+                    {
+                        int totalRead = 0;
+                        while (totalRead < size)
+                        {
+                            byte[] buffer = new byte[3 * 1024 * 1024];
+                            int toread = Math.Min(buffer.Length, size - totalRead);
+                            int read = ds.Read(buffer, 0, toread);
+                            totalRead += read;
+                            fs.Write(buffer, 0, read);
+                        }
+                    }
+
+                    br.BaseStream.Seek(TMP, SeekOrigin.Begin);
+                }
+            }
+
+            return protections;
+        }
+
+        /// <summary>
+        /// Process a GZip archive
+        /// </summary>
+        private static List<string> ProcessGZip(Stream stream)
+        {
+            List<string> protections = new List<string>();
+
+            // If the gzip file itself fails
+            try
+            {
+                string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+                Directory.CreateDirectory(tempPath);
+
+                using (GZipArchive zipFile = GZipArchive.Open(stream))
+                {
+                    foreach (var entry in zipFile.Entries)
+                    {
+                        // If an individual entry fails
+                        try
+                        {
+                            // If we have a directory, skip it
+                            if (entry.IsDirectory)
+                                continue;
+
+                            string tempfile = Path.Combine(tempPath, entry.Key);
+                            entry.WriteToFile(tempfile);
+                            string protection = ScanInFile(tempfile);
+
+                            // If tempfile cleanup fails
+                            try
+                            {
+                                File.Delete(tempfile);
+                            }
+                            catch { }
+
+                            if (!string.IsNullOrEmpty(protection))
+                                protections.Add($"\r\n{entry.Key} - {protection}");
+                        }
+                        catch { }
+                    }
+
+                    // If temp directory cleanup fails
+                    try
+                    {
+                        Directory.Delete(tempPath, true);
+                    }
+                    catch { }
+                }
+            }
+            catch { }
+
+            return protections;
+        }
+
+        /// <summary>
+        /// Process an InstallShield CAB archive
+        /// </summary>
+        private static List<string> ProcessISCab(string file)
+        {
+            List<string> protections = new List<string>();
+
+            // Get the name of the first cabinet file or header
+            string directory = Path.GetDirectoryName(file);
+            string noExtension = Path.GetFileNameWithoutExtension(file);
+            string filenamePattern = Path.Combine(directory, noExtension);
+            filenamePattern = new Regex(@"\d+$").Replace(filenamePattern, string.Empty);
+
+            bool cabinetHeaderExists = File.Exists(Path.Combine(directory, filenamePattern + "1.hdr"));
+            bool shouldScanCabinet = cabinetHeaderExists
+                ? file.Equals(Path.Combine(directory, filenamePattern + "1.hdr"), StringComparison.OrdinalIgnoreCase)
+                : file.Equals(Path.Combine(directory, filenamePattern + "1.cab"), StringComparison.OrdinalIgnoreCase);
+
+            // If we have the first file
+            if (shouldScanCabinet)
+            {
+                // If the cab file itself fails
+                try
+                {
+                    string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+                    Directory.CreateDirectory(tempPath);
+
+                    UnshieldCabinet cabfile = UnshieldCabinet.Open(file);
+                    for (int i = 0; i < cabfile.FileCount; i++)
+                    {
+                        // If an individual entry fails
+                        try
+                        {
+                            string tempFile = Path.Combine(tempPath, cabfile.FileName(i));
+                            if (cabfile.FileSave(i, tempFile))
+                            {
+                                string protection = ScanInFile(tempFile);
+
+                                // If tempfile cleanup fails
+                                try
+                                {
+                                    File.Delete(tempFile);
+                                }
+                                catch { }
+
+                                if (!string.IsNullOrEmpty(protection))
+                                    protections.Add($"\r\n{cabfile.FileName(i)} - {protection}");
+                            }
+                        }
+                        catch { }
+                    }
+
+                    // If temp directory cleanup fails
+                    try
+                    {
+                        Directory.Delete(tempPath, true);
+                    }
+                    catch { }
+                }
+                catch { }
+            }
+
+            return protections;
+        }
+
+        /// <summary>
+        /// Process an MPQ archive
+        /// </summary>
+        private static List<string> ProcessMpq(string file)
+        {
+            List<string> protections = new List<string>();
+
+            // If the mpq file itself fails
+            try
+            {
+                string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+                Directory.CreateDirectory(tempPath);
+
+                using (MpqArchive mpqArchive = new MpqArchive(file, FileAccess.Read))
+                {
+                    string listfile = null;
+                    MpqFileStream listStream = mpqArchive.OpenFile("(listfile)");
+                    bool canRead = listStream.CanRead;
+                    
+                    using (StreamReader sr = new StreamReader(listStream))
+                    {
+                        listfile = sr.ReadToEnd();
+                        Console.WriteLine(listfile);
+                    }
+
+                    string sub = string.Empty;
+                    while ((sub = listfile) != null)
+                    {
+                        // If an individual entry fails
+                        try
+                        {
+                            string tempfile = Path.Combine(tempPath, sub);
+                            Directory.CreateDirectory(Path.GetDirectoryName(tempfile));
+                            mpqArchive.ExtractFile(sub, tempfile);
+                            string protection = ScanInFile(tempfile);
+
+                            // If tempfile cleanup fails
+                            try
+                            {
+                                File.Delete(tempfile);
+                            }
+                            catch { }
+
+                            if (!string.IsNullOrEmpty(protection))
+                                protections.Add($"\r\n{sub} - {protection}");
+                        }
+                        catch { }
+                    }
+
+                    // If temp directory cleanup fails
+                    try
+                    {
+                        Directory.Delete(tempPath, true);
+                    }
+                    catch { }
+                }
+            }
+            catch { }
+
+            return protections;
+        }
+
+        /// <summary>
+        /// Process a Microsoft CAB archive
+        /// </summary>
+        private static List<string> ProcessMSCab(string file)
+        {
+            List<string> protections = new List<string>();
+
+            // If the cab file itself fails
+            try
+            {
+                string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+                Directory.CreateDirectory(tempPath);
+
+                using (MSCabinet cabfile = new MSCabinet(file))
+                {
+                    foreach (var sub in cabfile.GetFiles())
+                    {
+                        // If an individual entry fails
+                        try
+                        {
+                            string tempfile = Path.Combine(tempPath, sub.Filename);
+                            sub.ExtractTo(tempfile);
+                            string protection = ScanInFile(tempfile);
+
+                            // If tempfile cleanup fails
+                            try
+                            {
+                                File.Delete(tempfile);
+                            }
+                            catch { }
+
+                            if (!string.IsNullOrEmpty(protection))
+                                protections.Add($"\r\n{sub.Filename} - {protection}");
+                        }
+                        catch { }
+                    }
+
+                    // If temp directory cleanup fails
+                    try
+                    {
+                        Directory.Delete(tempPath, true);
+                    }
+                    catch { }
+                }
+            }
+            catch { }
+
+            return protections;
+        }
+
+        /// <summary>
+        /// Process a RAR archive
+        /// </summary>
+        private static List<string> ProcessRar(Stream stream)
+        {
+            List<string> protections = new List<string>();
+
+            // If the rar file itself fails
+            try
+            {
+                string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+                Directory.CreateDirectory(tempPath);
+
+                using (RarArchive zipFile = RarArchive.Open(stream))
+                {
+                    foreach (var entry in zipFile.Entries)
+                    {
+                        // If an individual entry fails
+                        try
+                        {
+                            // If we have a directory, skip it
+                            if (entry.IsDirectory)
+                                continue;
+
+                            string tempfile = Path.Combine(tempPath, entry.Key);
+                            entry.WriteToFile(tempfile);
+                            string protection = ScanInFile(tempfile);
+
+                            // If tempfile cleanup fails
+                            try
+                            {
+                                File.Delete(tempfile);
+                            }
+                            catch { }
+
+                            if (!string.IsNullOrEmpty(protection))
+                                protections.Add($"\r\n{entry.Key} - {protection}");
+                        }
+                        catch { }
+                    }
+
+                    // If temp directory cleanup fails
+                    try
+                    {
+                        Directory.Delete(tempPath, true);
+                    }
+                    catch { }
+                }
+            }
+            catch { }
+
+            return protections;
+        }
+
+        /// <summary>
+        /// Process a Valve archive
+        /// </summary>
+        private static List<string> ProcessValve(string file)
+        {
+            List<string> protections = new List<string>();
+
+            // TODO: Figure out how to extract root AND/OR port native code
+            //string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            //Directory.CreateDirectory(tempPath);
+
+            //string[] args = new string[]
+            //{
+            //    "-p", file,
+            //    "-d", tempPath,
+            //};
+
+            //HLExtractProgram.Process(args);
+
+            //if (Directory.Exists(tempPath))
+            //{
+            //    foreach (string tempFile in Directory.EnumerateFiles(tempPath, "*", SearchOption.AllDirectories))
+            //    {
+            //        string protection = ScanInFile(tempFile);
+
+            //        // If tempfile cleanup fails
+            //        try
+            //        {
+            //            File.Delete(tempFile);
+            //        }
+            //        catch { }
+
+            //        if (!string.IsNullOrEmpty(protection))
+            //            protections.Add(tempFile);
+            //    }
+            //}
+
+            //// If temp directory cleanup fails
+            //try
+            //{
+            //    Directory.Delete(tempPath, true);
+            //}
+            //catch { }
+
+            return protections;
+        }
+
+        /// <summary>
+        /// Process a PKZIP archive
+        /// </summary>
+        private static List<string> ProcessZip(Stream stream)
+        {
+            List<string> protections = new List<string>();
+
+            // If the zip file itself fails
+            try
+            {
+                string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+                Directory.CreateDirectory(tempPath);
+
+                using (ZipArchive zipFile = ZipArchive.Open(stream))
+                {
+                    foreach (var entry in zipFile.Entries)
+                    {
+                        // If an individual entry fails
+                        try
+                        {
+                            // If we have a directory, skip it
+                            if (entry.IsDirectory)
+                                continue;
+
+                            string tempfile = Path.Combine(tempPath, entry.Key);
+                            entry.WriteToFile(tempfile);
+                            string protection = ScanInFile(tempfile);
+
+                            // If tempfile cleanup fails
+                            try
+                            {
+                                File.Delete(tempfile);
+                            }
+                            catch { }
+
+                            if (!string.IsNullOrEmpty(protection))
+                                protections.Add($"\r\n{entry.Key} - {protection}");
+                        }
+                        catch { }
+                    }
+
+                    // If temp directory cleanup fails
+                    try
+                    {
+                        Directory.Delete(tempPath, true);
+                    }
+                    catch { }
+                }
+            }
+            catch { }
+
+            return protections;
+        }
+
+        #endregion
     }
 }

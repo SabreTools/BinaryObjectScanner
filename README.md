@@ -4,7 +4,15 @@
 
 C# port of the protection scanning ability of [BurnOut](http://burnout.sourceforge.net/) plus numerous updates and additions. This currently compiles as a library so it can be used in any C# application. For an example of usage, see [DICUI](https://github.com/reignstumble/DICUI).
 
-In addition to the original BurnOut code, this port adds the ability to scan inside of Microsoft CAB files (courtesy of [libmspack4n](https://github.com/activescott/libmspack4n)) and InstallShield CAB files (courtesy of [UnshieldSharp](https://github.com/mnadareski/UnshieldSharp)).
+In addition to the original BurnOut code, the following libraries (or ports thereof) are used for file handling:
+
+- [HLExtract](https://github.com/Rupan/HLLib) - Various Valve archive format extraction
+- [libmspack4n](https://github.com/activescott/libmspack4n) - Microsoft CAB extraction
+- [psxt001z](https://github.com/Dremora/psxt001z) - PS1 LibCrypt detection
+- [SharpCompress](https://github.com/adamhathcock/sharpcompress) - 7zip/GZip/RAR/PKZIP extraction
+- [StormLib](https://github.com/ladislav-zezula/StormLib) - MPQ extraction
+- [StormLibSharp](https://github.com/robpaveza/stormlibsharp) - MPQ extraction
+- [UnshieldSharp](https://github.com/mnadareski/UnshieldSharp) - InstallShield CAB extraction
 
 ## Protections Detected
 
@@ -38,6 +46,7 @@ Below is a list of the protections that can be detected using this code:
 - Hexalock Autolock
 - Impulse Reactor
 - IndyVCD
+- Inno Setup
 - JoWooD X-Prot (v1/v2)
 - Key2Audio XS
 - Key-Lock (Dongle)
@@ -66,6 +75,7 @@ Below is a list of the protections that can be detected using this code:
 - Uplay (partial)
 - VOB ProtectCD/DVD
 - Winlock
+- WISE Installer
 - WTM CD Protect
 - WTM Copy Protection
 - XCP
