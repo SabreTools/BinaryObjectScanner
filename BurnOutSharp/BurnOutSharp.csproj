@@ -14,19 +14,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="LessIO">
-      <Version>0.6.16</Version>
-    </PackageReference>
-    <PackageReference Include="libmspack4n">
-      <Version>0.9.10</Version>
-    </PackageReference>
+    <PackageReference Include="LessIO" Version="0.6.16" />
+    <PackageReference Include="libmspack4n" Version="0.9.10" />
     <PackageReference Include="SharpCompress" Version="0.25.1" />
-    <PackageReference Include="UnshieldSharp">
-      <Version>1.4.2.3</Version>
-    </PackageReference>
-    <PackageReference Include="zlib.net">
-      <Version>1.0.4</Version>
-    </PackageReference>
+    <PackageReference Include="UnshieldSharp" Version="1.4.2.3" />
+    <PackageReference Include="WiseUnpacker" Version="1.0.0" />
+    <PackageReference Include="zlib.net" Version="1.0.4" />
   </ItemGroup>
 
   <ItemGroup>

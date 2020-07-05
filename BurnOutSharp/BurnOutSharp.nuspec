@@ -16,6 +16,7 @@
       <dependency id="LessIO" version="0.5.0" />
       <dependency id="libmspack4n" version="0.8.0" />
       <dependency id="UnshieldSharp" version="1.4.2.3" />
+      <dependency id="WiseUnpacker" version="1.0.0" />
     </dependencies>
   </metadata>
   <files>
