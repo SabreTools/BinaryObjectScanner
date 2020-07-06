@@ -18,7 +18,7 @@ namespace BurnOutSharp.ProtectionType
                 if (!File.Exists(file))
                     return protections;
 
-                protections.AddRange(ProcessWise(file));
+                protections.AddRange(WiseInstaller.Scan(file));
 
                 return protections;
             }
@@ -26,7 +26,7 @@ namespace BurnOutSharp.ProtectionType
             return null;
         }
 
-        private static List<string> ProcessWise(string file)
+        public static List<string> Scan(string file)
         {
             List<string> protections = new List<string>();
 
@@ -41,7 +41,7 @@ namespace BurnOutSharp.ProtectionType
 
                 foreach (string tempFile in Directory.EnumerateFiles(tempPath, "*", SearchOption.AllDirectories))
                 {
-                    string protection = ProtectionFind.ScanInFile(tempFile);
+                    string protection = ProtectionFind.ScanContent(tempFile);
 
                     // If tempfile cleanup fails
                     try
@@ -58,5 +58,6 @@ namespace BurnOutSharp.ProtectionType
 
             return protections;
         }
+
     }
 }

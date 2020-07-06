@@ -20,59 +20,14 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
+using BurnOutSharp.FileType;
 using BurnOutSharp.ProtectionType;
-using HLExtract.Net;
-using LibMSPackN;
-using SharpCompress.Archives;
-using SharpCompress.Archives.GZip;
-using SharpCompress.Archives.Rar;
-using SharpCompress.Archives.SevenZip;
-using SharpCompress.Archives.Zip;
-using SharpCompress.Compressors;
-using SharpCompress.Compressors.Deflate;
-using StormLibSharp;
-using UnshieldSharp;
 
 namespace BurnOutSharp
 {
     public static class ProtectionFind
     {
-        /// <summary>
-        /// Currently recognized magic strings for supported file types
-        /// TODO: Use for filtering on archive formats so not all files get extracted
-        /// </summary>
-        private readonly static string[] recognizedMagicStrings = new string[]
-        {
-            // Archives
-            "7z" + (char)0xbc + (char)0xaf + (char)0x27 + (char)0x1c, // 7-Zip File Format
-            "BFPK", // BFPK file format
-            "" + (char)0x01 + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x01 + (char)0x00 + (char)0x00 + (char)0x00, // GCF
-            "" + (char)0x1F + (char)0x8B, // GZIP compressed file
-            "ISc", // InstallShield Cabinet file
-            "MSCF", // Microsoft Cabinet file
-            "MPQ" + (char)0x1A, // MPQ file format
-            "PK" + (char)03 + (char)04, // PKZIP file format
-            "PK" + (char)05 + (char)06, // PKZIP file format (empty archive)
-            "PK" + (char)07 + (char)08, // PKZIP file format (spanned archive)
-            "Rar!", // RAR archive
-
-            // Executables
-            "MZ", // DOS MZ executable file format (and descendants)
-            (char)0x7f + "ELF", // Executable and Linkable Format
-            "" + (char)0xfe + (char)0xed + (char)0xfa + (char)0xce, // Mach-O binary (32-bit)
-            "" + (char)0xce + (char)0xfa + (char)0xed + (char)0xfe, // Mach-O binary (64-bit)
-            "Joy!peff", // Prefrred Executable File Format
-
-            // Textfiles
-            "{\rtf", // Rich Text File
-            "<!DOCTYP", // HTML and XML
-            "<html", // HTML
-            "" + (char)0xd0 + (char)0xcf + (char)0x11 + (char)0xe0 + (char)0xa1 + (char)0xb1 + (char)0x1a + (char)0xe1, // Microsoft Office File (old)
-        };
-
         /// <summary>
         /// Scan a path to find any known copy protection(s)
         /// </summary>
@@ -95,7 +50,7 @@ namespace BurnOutSharp
                     protections[path] = fileProtection;
 
                 // Now check to see if the file contains any additional information
-                string contentProtection = ScanInFile(path)?.Replace("" + (char)0x00, "");
+                string contentProtection = ScanContent(path)?.Replace("" + (char)0x00, "");
                 if (!string.IsNullOrWhiteSpace(contentProtection))
                 {
                     if (protections.ContainsKey(path))
@@ -130,7 +85,7 @@ namespace BurnOutSharp
                         protections[file] = fileProtection;
 
                     // Now check to see if the file contains any additional information
-                    string contentProtection = ScanInFile(file)?.Replace("" + (char)0x00, "");
+                    string contentProtection = ScanContent(file)?.Replace("" + (char)0x00, "");
                     if (!string.IsNullOrWhiteSpace(contentProtection))
                     {
                         if (protections.ContainsKey(file))
@@ -392,11 +347,11 @@ namespace BurnOutSharp
         /// Scan an individual file for copy protection
         /// </summary>
         /// <param name="file">File path for scanning</param>
-        public static string ScanInFile(string file)
+        public static string ScanContent(string file)
         {
             using (FileStream fs = File.OpenRead(file))
             {
-                return ScanInFile(fs, file);
+                return ScanContent(fs, file);
             }
         }
 
@@ -405,367 +360,76 @@ namespace BurnOutSharp
         /// </summary>
         /// <param name="stream">Generic stream to scan</param>
         /// <param name="file">File path to be used for name checks (optional)</param>
-        public static string ScanInFile(Stream stream, string file = null)
+        public static string ScanContent(Stream stream, string file = null)
         {
             // Get the extension for certain checks
             string extension = Path.GetExtension(file).ToLower().TrimStart('.');
 
             // Assume the first part of the stream is the start of a file
-            string magic = string.Empty;
+            byte[] magic = new byte[16];
             try
             {
-                using (BinaryReader br = new BinaryReader(stream, Encoding.Default, true))
-                {
-                    magic = new string(br.ReadChars(8));
-                }
+                stream.Read(magic, 0, 16);
+                stream.Seek(-16, SeekOrigin.Current);
             }
             catch
             {
-                // We don't care what the issue was, we can't open the file
+                // We don't care what the issue was, we can't read or seek the file
                 return null;
             }
-
-            // If we can, seek to the beginning of the stream
-            if (stream.CanSeek)
-                stream.Seek(0, SeekOrigin.Begin);
 
             // Files can be protected in multiple ways
             List<string> protections = new List<string>();
 
-            #region Executable Content Checks
+            // 7-Zip archive
+            if (SevenZip.ShouldScan(magic))
+                protections.AddRange(SevenZip.Scan(stream));
 
-            // Executables
-            if (magic.StartsWith("MZ") // DOS MZ executable file format (and descendants)
-                || magic.StartsWith((char)0x7f + "ELF") // Executable and Linkable Format
-                || magic.StartsWith("" + (char)0xfe + (char)0xed + (char)0xfa + (char)0xce) // Mach-O binary (32-bit)
-                || magic.StartsWith("" + (char)0xce + (char)0xfa + (char)0xed + (char)0xfe) // Mach-O binary (64-bit)
-                || magic.StartsWith("Joy!peff")) // Prefrred Executable File Format
-            {
-                try
-                {
-                    // Load the current file content
-                    byte[] fileContent = null;
-                    using (BinaryReader br = new BinaryReader(stream, Encoding.Default, true))
-                    {
-                        fileContent = br.ReadBytes((int)stream.Length);
-                    }
+            // BFPK archive
+            if (BFPK.ShouldScan(magic))
+                protections.AddRange(BFPK.Scan(stream));
 
-                    // If we can, seek to the beginning of the stream
-                    if (stream.CanSeek)
-                        stream.Seek(0, SeekOrigin.Begin);
-
-                    protections.AddRange(ScanFileContent(file, fileContent));
-                }
-                catch { }
-            }
-
-            #endregion
-
-            #region Textfile Content Checks
-
-            if (magic.StartsWith("{\rtf") // Rich Text File
-                || magic.StartsWith("" + (char)0xd0 + (char)0xcf + (char)0x11 + (char)0xe0 + (char)0xa1 + (char)0xb1 + (char)0x1a + (char)0xe1) // Microsoft Office File (old)
-                || string.Equals(extension, "txt", StringComparison.OrdinalIgnoreCase)) // Generic textfile (no header)
-            {
-                try
-                {
-                    // Load the current file content
-                    string fileContent = null;
-                    using (StreamReader sr = new StreamReader(stream, Encoding.Default, false, 1024 * 1024, true))
-                    {
-                        fileContent = sr.ReadToEnd();
-                    }
-
-                    // CD-Key
-                    if (fileContent.Contains("a valid serial number is required")
-                        || fileContent.Contains("serial number is located"))
-                    {
-                        protections.Add("CD-Key / Serial");
-                    }
-                }
-                catch
-                {
-                    // We don't care what the error was
-                }
-            }
-
-            #endregion
-
-            #region Archive Content Checks
-
-            // 7-zip
-            if (magic.StartsWith("7z" + (char)0xbc + (char)0xaf + (char)0x27 + (char)0x1c))
-            {
-                protections.AddRange(ProcessSevenZip(stream));
-            }
-
-            // BFPK
-            if (magic.StartsWith("BFPK"))
-            {
-                protections.AddRange(ProcessBfpk(stream));
-            }
-
-            // GCF - TODO: Add stream opening support
-            if (magic.StartsWith("" + (char)0x01 + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x01 + (char)0x00 + (char)0x00 + (char)0x00)
-                || string.Equals(extension, "gcf", StringComparison.OrdinalIgnoreCase))
-            {
-                protections.AddRange(ProcessValve(file));
-            }
+            // Executable
+            if (Executable.ShouldScan(magic))
+                protections.AddRange(Executable.Scan(stream, file));
 
             // GZIP
-            if (magic.StartsWith("" + (char)0x1F + (char)0x8B))
-            {
-                protections.AddRange(ProcessGZip(stream));
-            }
+            if (GZIP.ShouldScan(magic))
+                protections.AddRange(GZIP.Scan(stream));
 
-            // InstallShield CAB - TODO: Add stream opening support
-            else if (file != null && magic.StartsWith("ISc"))
-            {
-                protections.AddRange(ProcessISCab(file));
-            }
+            // InstallShield Cabinet
+            if (file != null && InstallShieldCAB.ShouldScan(magic))
+                protections.AddRange(InstallShieldCAB.Scan(file));
 
-            // Microsoft CAB - TODO: Add stream opening support
-            else if (file != null && magic.StartsWith("MSCF"))
-            {
-                protections.AddRange(ProcessMSCab(file));
-            }
+            // Microsoft Cabinet
+            if (file != null && MicrosoftCAB.ShouldScan(magic))
+                protections.AddRange(MicrosoftCAB.Scan(file));
 
-            // MPQ - TODO: Add stream opening support
-            else if (magic.StartsWith("MPQ" + (char)0x1A))
-            {
-                protections.AddRange(ProcessMpq(file));
-            }
+            // MPQ archive
+            if (file != null && MPQ.ShouldScan(magic))
+                protections.AddRange(MPQ.Scan(file));
 
-            // PKZIP
-            else if (magic.StartsWith("PK" + (char)03 + (char)04)
-                || magic.StartsWith("PK" + (char)05 + (char)06)
-                || magic.StartsWith("PK" + (char)07 + (char)08))
-            {
-                protections.AddRange(ProcessZip(stream));
-            }
+            // PKZIP archive (and derivatives)
+            if (PKZIP.ShouldScan(magic))
+                protections.AddRange(PKZIP.Scan(stream));
 
-            // RAR
-            else if (magic.StartsWith("Rar!"))
-            {
-                protections.AddRange(ProcessRar(stream));
-            }
+            // RAR archive
+            if (RAR.ShouldScan(magic))
+                protections.AddRange(RAR.Scan(stream));
 
-            // VPK - TODO: Add stream opening support
-            if (string.Equals(extension, "vpk", StringComparison.OrdinalIgnoreCase))
-            {
-                protections.AddRange(ProcessValve(file));
-            }
+            // Text-based files
+            if (Textfile.ShouldScan(magic, extension))
+                protections.AddRange(Textfile.Scan(stream));
 
-            #endregion
+            // Valve archive formats
+            if (file != null && Valve.ShouldScan(magic, extension))
+                protections.AddRange(Valve.Scan(file));
 
             // Return blank if nothing found, or comma-separated list of protections
             if (protections.Count() == 0)
                 return string.Empty;
             else
                 return string.Join(", ", protections);
-        }
-
-        /// <summary>
-        /// Scan the contents of a file for protection
-        /// </summary>
-        private static List<string> ScanFileContent(string file, byte[] fileContent)
-        {
-            // Files can be protected in multiple ways
-            List<string> protections = new List<string>();
-            List<string> subProtections = new List<string>();
-            string protection;
-
-            // 3PLock
-            protection = ThreePLock.CheckContents(fileContent);
-            if (!string.IsNullOrWhiteSpace(protection))
-                protections.Add(protection);
-
-            // ActiveMARK
-            protection = ActiveMARK.CheckContents(fileContent);
-            if (!string.IsNullOrWhiteSpace(protection))
-                protections.Add(protection);
-
-            // Alpha-ROM
-            protection = AlphaROM.CheckContents(fileContent);
-            if (!string.IsNullOrWhiteSpace(protection))
-                protections.Add(protection);
-
-            // Armadillo
-            protection = Armadillo.CheckContents(fileContent);
-            if (!string.IsNullOrWhiteSpace(protection))
-                protections.Add(protection);
-
-            // CD-Cops
-            protection = CDCops.CheckContents(fileContent);
-            if (!string.IsNullOrWhiteSpace(protection))
-                protections.Add(protection);
-
-            // CD-Lock
-            protection = CDLock.CheckContents(fileContent);
-            if (!string.IsNullOrWhiteSpace(protection))
-                protections.Add(protection);
-
-            // CDSHiELD SE
-            protection = CDSHiELDSE.CheckContents(fileContent);
-            if (!string.IsNullOrWhiteSpace(protection))
-                protections.Add(protection);
-
-            // CD Check
-            protection = CDCheck.CheckContents(fileContent);
-            if (!string.IsNullOrWhiteSpace(protection))
-                protections.Add(protection);
-
-            // Cenega ProtectDVD
-            protection = CengaProtectDVD.CheckContents(fileContent);
-            if (!string.IsNullOrWhiteSpace(protection))
-                protections.Add(protection);
-
-            // Code Lock
-            protection = CodeLock.CheckContents(fileContent);
-            if (!string.IsNullOrWhiteSpace(protection))
-                protections.Add(protection);
-
-            // CopyKiller
-            protection = CopyKiller.CheckContents(fileContent);
-            if (!string.IsNullOrWhiteSpace(protection))
-                protections.Add(protection);
-
-            // Cucko (EA Custom)
-            protection = Cucko.CheckContents(fileContent);
-            if (!string.IsNullOrWhiteSpace(protection))
-                protections.Add(protection);
-
-            // dotFuscator
-            protection = dotFuscator.CheckContents(fileContent);
-            if (!string.IsNullOrWhiteSpace(protection))
-                protections.Add(protection);
-
-            // DVD-Cops
-            protection = DVDCops.CheckContents(fileContent);
-            if (!string.IsNullOrWhiteSpace(protection))
-                protections.Add(protection);
-
-            // EA CdKey Registration Module
-            protection = EACdKey.CheckContents(fileContent);
-            if (!string.IsNullOrWhiteSpace(protection))
-                protections.Add(protection);
-
-            // EXE Stealth
-            protection = EXEStealth.CheckContents(fileContent);
-            if (!string.IsNullOrWhiteSpace(protection))
-                protections.Add(protection);
-
-            // Games for Windows - Live
-            protection = GFWL.CheckContents(fileContent);
-            if (!string.IsNullOrWhiteSpace(protection))
-                protections.Add(protection);
-
-            // Impulse Reactor
-            protection = ImpulseReactor.CheckContents(file, fileContent);
-            if (!string.IsNullOrWhiteSpace(protection))
-                protections.Add(protection);
-
-            // Inno Setup
-            protection = InnoSetup.CheckContents(fileContent);
-            if (!string.IsNullOrWhiteSpace(protection))
-                protections.Add(protection);
-
-            // JoWooD X-Prot
-            protection = JoWooDXProt.CheckContents(fileContent);
-            if (!string.IsNullOrWhiteSpace(protection))
-                protections.Add(protection);
-
-            // Key-Lock (Dongle)
-            protection = KeyLock.CheckContents(fileContent);
-            if (!string.IsNullOrWhiteSpace(protection))
-                protections.Add(protection);
-
-            // LaserLock
-            protection = LaserLock.CheckContents(file, fileContent);
-            if (!string.IsNullOrWhiteSpace(protection))
-                protections.Add(protection);
-
-            // PE Compact
-            protection = PECompact.CheckContents(fileContent);
-            if (!string.IsNullOrWhiteSpace(protection))
-                protections.Add(protection);
-
-            // ProtectDisc
-            protection = ProtectDisc.CheckContents(file, fileContent);
-            if (!string.IsNullOrWhiteSpace(protection))
-                protections.Add(protection);
-
-            // Ring PROTECH
-            protection = RingPROTECH.CheckContents(fileContent);
-            if (!string.IsNullOrWhiteSpace(protection))
-                protections.Add(protection);
-
-            // SafeDisc / SafeCast
-            protection = SafeDisc.CheckContents(file, fileContent);
-            if (!string.IsNullOrWhiteSpace(protection))
-                protections.Add(protection);
-
-            // SafeLock
-            protection = SafeLock.CheckContents(fileContent);
-            if (!string.IsNullOrWhiteSpace(protection))
-                protections.Add(protection);
-
-            // SecuROM
-            protection = SecuROM.CheckContents(file, fileContent);
-            if (!string.IsNullOrWhiteSpace(protection))
-                protections.Add(protection);
-
-            // SmartE
-            protection = SmartE.CheckContents(fileContent);
-            if (!string.IsNullOrWhiteSpace(protection))
-                protections.Add(protection);
-
-            // SolidShield
-            protection = SolidShield.CheckContents(file, fileContent);
-            if (!string.IsNullOrWhiteSpace(protection))
-                protections.Add(protection);
-
-            // StarForce
-            protection = StarForce.CheckContents(file, fileContent);
-            if (!string.IsNullOrWhiteSpace(protection))
-                protections.Add(protection);
-
-            // SVK Protector
-            protection = SVKProtector.CheckContents(fileContent);
-            if (!string.IsNullOrWhiteSpace(protection))
-                protections.Add(protection);
-
-            // Sysiphus / Sysiphus DVD
-            protection = Sysiphus.CheckContents(fileContent);
-            if (!string.IsNullOrWhiteSpace(protection))
-                protections.Add(protection);
-
-            // TAGES
-            protection = Tages.CheckContents(file, fileContent);
-            if (!string.IsNullOrWhiteSpace(protection))
-                protections.Add(protection);
-
-            // VOB ProtectCD/DVD
-            protection = VOBProtectCDDVD.CheckContents(file, fileContent);
-            if (!string.IsNullOrWhiteSpace(protection))
-                protections.Add(protection);
-
-            // Wise Installer
-            subProtections = WiseInstaller.CheckContents(file, fileContent);
-            if (subProtections != null && subProtections.Count > 0)
-                protections.AddRange(subProtections);
-
-            // WTM CD Protect
-            protection = WTMCDProtect.CheckContents(fileContent);
-            if (!string.IsNullOrWhiteSpace(protection))
-                protections.Add(protection);
-
-            // Xtreme-Protector
-            protection = XtremeProtector.CheckContents(fileContent);
-            if (!string.IsNullOrWhiteSpace(protection))
-                protections.Add(protection);
-
-            return protections;
         }
 
         /// <summary>
@@ -826,512 +490,5 @@ namespace BurnOutSharp
 
             return null;
         }
-
-        #region Archive Processing
-
-        /// <summary>
-        /// Process a 7-zip archive
-        /// </summary>
-        private static List<string> ProcessSevenZip(Stream stream)
-        {
-            List<string> protections = new List<string>();
-
-            // If the 7-zip file itself fails
-            try
-            {
-                string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-                Directory.CreateDirectory(tempPath);
-
-                using (SevenZipArchive sevenZipFile = SevenZipArchive.Open(stream))
-                {
-                    foreach (var entry in sevenZipFile.Entries)
-                    {
-                        // If an individual entry fails
-                        try
-                        {
-                            // If we have a directory, skip it
-                            if (entry.IsDirectory)
-                                continue;
-
-                            string tempfile = Path.Combine(tempPath, entry.Key);
-                            entry.WriteToFile(tempfile);
-                            string protection = ScanInFile(tempfile);
-
-                            // If tempfile cleanup fails
-                            try
-                            {
-                                File.Delete(tempfile);
-                            }
-                            catch { }
-
-                            if (!string.IsNullOrEmpty(protection))
-                                protections.Add($"\r\n{entry.Key} - {protection}");
-                        }
-                        catch { }
-                    }
-
-                    // If temp directory cleanup fails
-                    try
-                    {
-                        Directory.Delete(tempPath, true);
-                    }
-                    catch { }
-                }
-            }
-            catch { }
-
-            return protections;
-        }
-
-        /// <summary>
-        /// Process a BFPK archive
-        /// </summary>
-        private static List<string> ProcessBfpk(Stream stream)
-        {
-            List<string> protections = new List<string>();
-
-            using (BinaryReader br = new BinaryReader(stream, Encoding.Default, true))
-            {
-                Console.WriteLine($"Name\tOffset\tZip Size\tActual Size");
-
-                br.ReadBytes(4); // Skip magic number
-
-                int version = br.ReadInt32();
-                int files = br.ReadInt32();
-                long TMP = br.BaseStream.Position;
-
-                for (int i = 0; i < files; i++)
-                {
-                    br.BaseStream.Seek(TMP, SeekOrigin.Begin);
-
-                    int NSIZE = br.ReadInt32();
-                    string name = new string(br.ReadChars(NSIZE));
-
-                    int size = br.ReadInt32();
-                    int offset = br.ReadInt32();
-
-                    TMP = br.BaseStream.Position;
-
-                    br.BaseStream.Seek(offset, SeekOrigin.Begin);
-                    int zsize = br.ReadInt32();
-
-                    if (zsize == size)
-                        Console.WriteLine($"{name}\t{offset}\t{zsize}");
-                    else
-                        Console.WriteLine($"{name}\t{offset}\t{zsize}\t{size}");
-
-                    // TODO: Figure out compression scheme
-                    string tempfile = Path.Combine(Path.GetTempPath(), name);
-                    if (!Directory.Exists(Path.GetDirectoryName(tempfile)))
-                        Directory.CreateDirectory(Path.GetDirectoryName(tempfile));
-
-                    using (FileStream fs = File.OpenWrite(tempfile))
-                    using (DeflateStream ds = new DeflateStream(br.BaseStream, CompressionMode.Decompress))
-                    {
-                        int totalRead = 0;
-                        while (totalRead < size)
-                        {
-                            byte[] buffer = new byte[3 * 1024 * 1024];
-                            int toread = Math.Min(buffer.Length, size - totalRead);
-                            int read = ds.Read(buffer, 0, toread);
-                            totalRead += read;
-                            fs.Write(buffer, 0, read);
-                        }
-                    }
-
-                    br.BaseStream.Seek(TMP, SeekOrigin.Begin);
-                }
-            }
-
-            return protections;
-        }
-
-        /// <summary>
-        /// Process a GZip archive
-        /// </summary>
-        private static List<string> ProcessGZip(Stream stream)
-        {
-            List<string> protections = new List<string>();
-
-            // If the gzip file itself fails
-            try
-            {
-                string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-                Directory.CreateDirectory(tempPath);
-
-                using (GZipArchive zipFile = GZipArchive.Open(stream))
-                {
-                    foreach (var entry in zipFile.Entries)
-                    {
-                        // If an individual entry fails
-                        try
-                        {
-                            // If we have a directory, skip it
-                            if (entry.IsDirectory)
-                                continue;
-
-                            string tempfile = Path.Combine(tempPath, entry.Key);
-                            entry.WriteToFile(tempfile);
-                            string protection = ScanInFile(tempfile);
-
-                            // If tempfile cleanup fails
-                            try
-                            {
-                                File.Delete(tempfile);
-                            }
-                            catch { }
-
-                            if (!string.IsNullOrEmpty(protection))
-                                protections.Add($"\r\n{entry.Key} - {protection}");
-                        }
-                        catch { }
-                    }
-
-                    // If temp directory cleanup fails
-                    try
-                    {
-                        Directory.Delete(tempPath, true);
-                    }
-                    catch { }
-                }
-            }
-            catch { }
-
-            return protections;
-        }
-
-        /// <summary>
-        /// Process an InstallShield CAB archive
-        /// </summary>
-        private static List<string> ProcessISCab(string file)
-        {
-            List<string> protections = new List<string>();
-
-            // Get the name of the first cabinet file or header
-            string directory = Path.GetDirectoryName(file);
-            string noExtension = Path.GetFileNameWithoutExtension(file);
-            string filenamePattern = Path.Combine(directory, noExtension);
-            filenamePattern = new Regex(@"\d+$").Replace(filenamePattern, string.Empty);
-
-            bool cabinetHeaderExists = File.Exists(Path.Combine(directory, filenamePattern + "1.hdr"));
-            bool shouldScanCabinet = cabinetHeaderExists
-                ? file.Equals(Path.Combine(directory, filenamePattern + "1.hdr"), StringComparison.OrdinalIgnoreCase)
-                : file.Equals(Path.Combine(directory, filenamePattern + "1.cab"), StringComparison.OrdinalIgnoreCase);
-
-            // If we have the first file
-            if (shouldScanCabinet)
-            {
-                // If the cab file itself fails
-                try
-                {
-                    string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-                    Directory.CreateDirectory(tempPath);
-
-                    UnshieldCabinet cabfile = UnshieldCabinet.Open(file);
-                    for (int i = 0; i < cabfile.FileCount; i++)
-                    {
-                        // If an individual entry fails
-                        try
-                        {
-                            string tempFile = Path.Combine(tempPath, cabfile.FileName(i));
-                            if (cabfile.FileSave(i, tempFile))
-                            {
-                                string protection = ScanInFile(tempFile);
-
-                                // If tempfile cleanup fails
-                                try
-                                {
-                                    File.Delete(tempFile);
-                                }
-                                catch { }
-
-                                if (!string.IsNullOrEmpty(protection))
-                                    protections.Add($"\r\n{cabfile.FileName(i)} - {protection}");
-                            }
-                        }
-                        catch { }
-                    }
-
-                    // If temp directory cleanup fails
-                    try
-                    {
-                        Directory.Delete(tempPath, true);
-                    }
-                    catch { }
-                }
-                catch { }
-            }
-
-            return protections;
-        }
-
-        /// <summary>
-        /// Process an MPQ archive
-        /// </summary>
-        private static List<string> ProcessMpq(string file)
-        {
-            List<string> protections = new List<string>();
-
-            // If the mpq file itself fails
-            try
-            {
-                string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-                Directory.CreateDirectory(tempPath);
-
-                using (MpqArchive mpqArchive = new MpqArchive(file, FileAccess.Read))
-                {
-                    string listfile = null;
-                    MpqFileStream listStream = mpqArchive.OpenFile("(listfile)");
-                    bool canRead = listStream.CanRead;
-                    
-                    using (StreamReader sr = new StreamReader(listStream))
-                    {
-                        listfile = sr.ReadToEnd();
-                        Console.WriteLine(listfile);
-                    }
-
-                    string sub = string.Empty;
-                    while ((sub = listfile) != null)
-                    {
-                        // If an individual entry fails
-                        try
-                        {
-                            string tempfile = Path.Combine(tempPath, sub);
-                            Directory.CreateDirectory(Path.GetDirectoryName(tempfile));
-                            mpqArchive.ExtractFile(sub, tempfile);
-                            string protection = ScanInFile(tempfile);
-
-                            // If tempfile cleanup fails
-                            try
-                            {
-                                File.Delete(tempfile);
-                            }
-                            catch { }
-
-                            if (!string.IsNullOrEmpty(protection))
-                                protections.Add($"\r\n{sub} - {protection}");
-                        }
-                        catch { }
-                    }
-
-                    // If temp directory cleanup fails
-                    try
-                    {
-                        Directory.Delete(tempPath, true);
-                    }
-                    catch { }
-                }
-            }
-            catch { }
-
-            return protections;
-        }
-
-        /// <summary>
-        /// Process a Microsoft CAB archive
-        /// </summary>
-        private static List<string> ProcessMSCab(string file)
-        {
-            List<string> protections = new List<string>();
-
-            // If the cab file itself fails
-            try
-            {
-                string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-                Directory.CreateDirectory(tempPath);
-
-                using (MSCabinet cabfile = new MSCabinet(file))
-                {
-                    foreach (var sub in cabfile.GetFiles())
-                    {
-                        // If an individual entry fails
-                        try
-                        {
-                            string tempfile = Path.Combine(tempPath, sub.Filename);
-                            sub.ExtractTo(tempfile);
-                            string protection = ScanInFile(tempfile);
-
-                            // If tempfile cleanup fails
-                            try
-                            {
-                                File.Delete(tempfile);
-                            }
-                            catch { }
-
-                            if (!string.IsNullOrEmpty(protection))
-                                protections.Add($"\r\n{sub.Filename} - {protection}");
-                        }
-                        catch { }
-                    }
-
-                    // If temp directory cleanup fails
-                    try
-                    {
-                        Directory.Delete(tempPath, true);
-                    }
-                    catch { }
-                }
-            }
-            catch { }
-
-            return protections;
-        }
-
-        /// <summary>
-        /// Process a RAR archive
-        /// </summary>
-        private static List<string> ProcessRar(Stream stream)
-        {
-            List<string> protections = new List<string>();
-
-            // If the rar file itself fails
-            try
-            {
-                string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-                Directory.CreateDirectory(tempPath);
-
-                using (RarArchive zipFile = RarArchive.Open(stream))
-                {
-                    foreach (var entry in zipFile.Entries)
-                    {
-                        // If an individual entry fails
-                        try
-                        {
-                            // If we have a directory, skip it
-                            if (entry.IsDirectory)
-                                continue;
-
-                            string tempfile = Path.Combine(tempPath, entry.Key);
-                            entry.WriteToFile(tempfile);
-                            string protection = ScanInFile(tempfile);
-
-                            // If tempfile cleanup fails
-                            try
-                            {
-                                File.Delete(tempfile);
-                            }
-                            catch { }
-
-                            if (!string.IsNullOrEmpty(protection))
-                                protections.Add($"\r\n{entry.Key} - {protection}");
-                        }
-                        catch { }
-                    }
-
-                    // If temp directory cleanup fails
-                    try
-                    {
-                        Directory.Delete(tempPath, true);
-                    }
-                    catch { }
-                }
-            }
-            catch { }
-
-            return protections;
-        }
-
-        /// <summary>
-        /// Process a Valve archive
-        /// </summary>
-        private static List<string> ProcessValve(string file)
-        {
-            List<string> protections = new List<string>();
-
-            // TODO: Figure out how to extract root AND/OR port native code
-            //string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-            //Directory.CreateDirectory(tempPath);
-
-            //string[] args = new string[]
-            //{
-            //    "-p", file,
-            //    "-d", tempPath,
-            //};
-
-            //HLExtractProgram.Process(args);
-
-            //if (Directory.Exists(tempPath))
-            //{
-            //    foreach (string tempFile in Directory.EnumerateFiles(tempPath, "*", SearchOption.AllDirectories))
-            //    {
-            //        string protection = ScanInFile(tempFile);
-
-            //        // If tempfile cleanup fails
-            //        try
-            //        {
-            //            File.Delete(tempFile);
-            //        }
-            //        catch { }
-
-            //        if (!string.IsNullOrEmpty(protection))
-            //            protections.Add(tempFile);
-            //    }
-            //}
-
-            //// If temp directory cleanup fails
-            //try
-            //{
-            //    Directory.Delete(tempPath, true);
-            //}
-            //catch { }
-
-            return protections;
-        }
-
-        /// <summary>
-        /// Process a PKZIP archive
-        /// </summary>
-        private static List<string> ProcessZip(Stream stream)
-        {
-            List<string> protections = new List<string>();
-
-            // If the zip file itself fails
-            try
-            {
-                string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-                Directory.CreateDirectory(tempPath);
-
-                using (ZipArchive zipFile = ZipArchive.Open(stream))
-                {
-                    foreach (var entry in zipFile.Entries)
-                    {
-                        // If an individual entry fails
-                        try
-                        {
-                            // If we have a directory, skip it
-                            if (entry.IsDirectory)
-                                continue;
-
-                            string tempfile = Path.Combine(tempPath, entry.Key);
-                            entry.WriteToFile(tempfile);
-                            string protection = ScanInFile(tempfile);
-
-                            // If tempfile cleanup fails
-                            try
-                            {
-                                File.Delete(tempfile);
-                            }
-                            catch { }
-
-                            if (!string.IsNullOrEmpty(protection))
-                                protections.Add($"\r\n{entry.Key} - {protection}");
-                        }
-                        catch { }
-                    }
-
-                    // If temp directory cleanup fails
-                    try
-                    {
-                        Directory.Delete(tempPath, true);
-                    }
-                    catch { }
-                }
-            }
-            catch { }
-
-            return protections;
-        }
-
-        #endregion
     }
 }
