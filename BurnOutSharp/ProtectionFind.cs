@@ -41,6 +41,39 @@ namespace BurnOutSharp
     public static class ProtectionFind
     {
         /// <summary>
+        /// Currently recognized magic strings for supported file types
+        /// TODO: Use for filtering on archive formats so not all files get extracted
+        /// </summary>
+        private readonly static string[] recognizedMagicStrings = new string[]
+        {
+            // Archives
+            "7z" + (char)0xbc + (char)0xaf + (char)0x27 + (char)0x1c, // 7-Zip File Format
+            "BFPK", // BFPK file format
+            "" + (char)0x01 + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x01 + (char)0x00 + (char)0x00 + (char)0x00, // GCF
+            "" + (char)0x1F + (char)0x8B, // GZIP compressed file
+            "ISc", // InstallShield Cabinet file
+            "MSCF", // Microsoft Cabinet file
+            "MPQ" + (char)0x1A, // MPQ file format
+            "PK" + (char)03 + (char)04, // PKZIP file format
+            "PK" + (char)05 + (char)06, // PKZIP file format (empty archive)
+            "PK" + (char)07 + (char)08, // PKZIP file format (spanned archive)
+            "Rar!", // RAR archive
+
+            // Executables
+            "MZ", // DOS MZ executable file format (and descendants)
+            (char)0x7f + "ELF", // Executable and Linkable Format
+            "" + (char)0xfe + (char)0xed + (char)0xfa + (char)0xce, // Mach-O binary (32-bit)
+            "" + (char)0xce + (char)0xfa + (char)0xed + (char)0xfe, // Mach-O binary (64-bit)
+            "Joy!peff", // Prefrred Executable File Format
+
+            // Textfiles
+            "{\rtf", // Rich Text File
+            "<!DOCTYP", // HTML and XML
+            "<html", // HTML
+            "" + (char)0xd0 + (char)0xcf + (char)0x11 + (char)0xe0 + (char)0xa1 + (char)0xb1 + (char)0x1a + (char)0xe1, // Microsoft Office File (old)
+        };
+
+        /// <summary>
         /// Scan a path to find any known copy protection(s)
         /// </summary>
         /// <param name="path">Path to scan for protection(s)</param>
@@ -401,12 +434,12 @@ namespace BurnOutSharp
 
             #region Executable Content Checks
 
-            // Windows Executable and DLL
-            if (magic.StartsWith("MZ") // Windows Executable and DLL
-                || magic.StartsWith((char)0x7f + "ELF") // Unix binaries
-                || magic.StartsWith("" + (char)0xfe + (char)0xed + (char)0xfa + (char)0xce) // Macintosh
-                || magic.StartsWith("" + (char)0xce + (char)0xfa + (char)0xed + (char)0xfe) // Macintosh
-                || magic.StartsWith("Joy!peff")) // Macintosh
+            // Executables
+            if (magic.StartsWith("MZ") // DOS MZ executable file format (and descendants)
+                || magic.StartsWith((char)0x7f + "ELF") // Executable and Linkable Format
+                || magic.StartsWith("" + (char)0xfe + (char)0xed + (char)0xfa + (char)0xce) // Mach-O binary (32-bit)
+                || magic.StartsWith("" + (char)0xce + (char)0xfa + (char)0xed + (char)0xfe) // Mach-O binary (64-bit)
+                || magic.StartsWith("Joy!peff")) // Prefrred Executable File Format
             {
                 try
                 {
@@ -539,6 +572,7 @@ namespace BurnOutSharp
         {
             // Files can be protected in multiple ways
             List<string> protections = new List<string>();
+            List<string> subProtections = new List<string>();
             string protection;
 
             // 3PLock
@@ -717,9 +751,9 @@ namespace BurnOutSharp
                 protections.Add(protection);
 
             // Wise Installer
-            protection = WiseInstaller.CheckContents(fileContent);
-            if (!string.IsNullOrWhiteSpace(protection))
-                protections.Add(protection);
+            subProtections = WiseInstaller.CheckContents(file, fileContent);
+            if (subProtections != null && subProtections.Count > 0)
+                protections.AddRange(subProtections);
 
             // WTM CD Protect
             protection = WTMCDProtect.CheckContents(fileContent);
