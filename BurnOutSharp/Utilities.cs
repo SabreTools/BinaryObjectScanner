@@ -48,7 +48,7 @@ namespace BurnOutSharp
         /// </summary>
         public static bool StartsWith(this byte[] stack, byte[] needle)
         {
-            return stack.Contains(needle, out int _, start: 0, end: 0);
+            return stack.Contains(needle, out int _, start: 0, end: 1);
         }
 
         /// <summary>
