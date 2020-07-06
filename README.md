@@ -13,6 +13,7 @@ In addition to the original BurnOut code, the following libraries (or ports ther
 - [StormLib](https://github.com/ladislav-zezula/StormLib) - MPQ extraction
 - [StormLibSharp](https://github.com/robpaveza/stormlibsharp) - MPQ extraction
 - [UnshieldSharp](https://github.com/mnadareski/UnshieldSharp) - InstallShield CAB extraction
+- [WiseUnpacker](https://github.com/mnadareski/WiseUnpacker) - Wise Installer extraction
 
 ## Protections Detected
 
