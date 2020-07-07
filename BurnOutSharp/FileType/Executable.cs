@@ -234,7 +234,7 @@ namespace BurnOutSharp.FileType
                 protections.Add(protection);
 
             // Wise Installer
-            subProtections = ProtectionType.WiseInstaller.CheckContents(file, fileContent);
+            subProtections = WiseInstaller.CheckContents(file, fileContent);
             if (subProtections != null && subProtections.Count > 0)
                 protections.AddRange(subProtections);
 

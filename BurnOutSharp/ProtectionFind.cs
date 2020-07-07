@@ -389,6 +389,10 @@ namespace BurnOutSharp
             if (BFPK.ShouldScan(magic))
                 protections.AddRange(BFPK.Scan(stream));
 
+            // BZip2
+            if (BZip2.ShouldScan(magic))
+                protections.AddRange(BZip2.Scan(stream));
+
             // Executable
             if (Executable.ShouldScan(magic))
                 protections.AddRange(Executable.Scan(stream, file));
@@ -417,6 +421,10 @@ namespace BurnOutSharp
             if (RAR.ShouldScan(magic))
                 protections.AddRange(RAR.Scan(stream));
 
+            // Tape Archive
+            if (TapeArchive.ShouldScan(magic))
+                protections.AddRange(TapeArchive.Scan(stream));
+
             // Text-based files
             if (Textfile.ShouldScan(magic, extension))
                 protections.AddRange(Textfile.Scan(stream));
@@ -424,6 +432,10 @@ namespace BurnOutSharp
             // Valve archive formats
             if (file != null && Valve.ShouldScan(magic))
                 protections.AddRange(Valve.Scan(file));
+
+            // XZ
+            if (XZ.ShouldScan(magic))
+                protections.AddRange(XZ.Scan(stream));
 
             // Return blank if nothing found, or comma-separated list of protections
             if (protections.Count() == 0)
