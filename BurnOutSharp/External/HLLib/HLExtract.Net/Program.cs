@@ -532,7 +532,7 @@ namespace HLExtract.Net
 
 	        while(true)
 	        {
-                string sLine;
+				string sLine = null;
                 if(Commands.Count > 0)
                 {
 					sLine = Commands[0].Trim().Trim('\'');
@@ -546,7 +546,7 @@ namespace HLExtract.Net
                     //Console.Write("{0}>", HLLib.hlItemGetName(pItem));
 
                     // Get and parse line.
-                    sLine = //Console.ReadLine().Trim();
+                    //sLine = Console.ReadLine().Trim();
                 }
                 if(sLine == null)
                 {
@@ -1035,8 +1035,10 @@ namespace HLExtract.Net
 
 									        HLLib.hlPackageClose();
 
-									        if(!bSilent)
-										        //Console.WriteLine("{0} closed.", HLLib.hlItemGetName(pSubItem));
+											if (!bSilent)
+											{
+												//Console.WriteLine("{0} closed.", HLLib.hlItemGetName(pSubItem));
+											}
 								        }
 								        else
 								        {
