@@ -37,7 +37,6 @@ namespace BurnOutSharp.FileType
         {
             List<string> protections = new List<string>();
 
-            // TODO: Figure out how to extract root AND/OR port native code
             string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
             Directory.CreateDirectory(tempPath);
 
