@@ -21,58 +21,100 @@ namespace BurnOutSharp.FileType
         {
             List<string> protections = new List<string>();
 
-            using (BinaryReader br = new BinaryReader(stream, Encoding.Default, true))
+            // If the BFPK file itself fails
+            try
             {
-                Console.WriteLine($"Name\tOffset\tZip Size\tActual Size");
+                string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+                Directory.CreateDirectory(tempPath);
 
-                br.ReadBytes(4); // Skip magic number
-
-                int version = br.ReadInt32();
-                int files = br.ReadInt32();
-                long TMP = br.BaseStream.Position;
-
-                for (int i = 0; i < files; i++)
+                using (BinaryReader br = new BinaryReader(stream, Encoding.Default, true))
                 {
-                    br.BaseStream.Seek(TMP, SeekOrigin.Begin);
+                    br.ReadBytes(4); // Skip magic number
 
-                    int NSIZE = br.ReadInt32();
-                    string name = new string(br.ReadChars(NSIZE));
+                    int version = br.ReadInt32();
+                    int files = br.ReadInt32();
+                    long current = br.BaseStream.Position;
 
-                    int size = br.ReadInt32();
-                    int offset = br.ReadInt32();
-
-                    TMP = br.BaseStream.Position;
-
-                    br.BaseStream.Seek(offset, SeekOrigin.Begin);
-                    int zsize = br.ReadInt32();
-
-                    if (zsize == size)
-                        Console.WriteLine($"{name}\t{offset}\t{zsize}");
-                    else
-                        Console.WriteLine($"{name}\t{offset}\t{zsize}\t{size}");
-
-                    // TODO: Figure out compression scheme
-                    string tempfile = Path.Combine(Path.GetTempPath(), name);
-                    if (!Directory.Exists(Path.GetDirectoryName(tempfile)))
-                        Directory.CreateDirectory(Path.GetDirectoryName(tempfile));
-
-                    using (FileStream fs = File.OpenWrite(tempfile))
-                    using (DeflateStream ds = new DeflateStream(br.BaseStream, CompressionMode.Decompress))
+                    for (int i = 0; i < files; i++)
                     {
-                        int totalRead = 0;
-                        while (totalRead < size)
-                        {
-                            byte[] buffer = new byte[3 * 1024 * 1024];
-                            int toread = Math.Min(buffer.Length, size - totalRead);
-                            int read = ds.Read(buffer, 0, toread);
-                            totalRead += read;
-                            fs.Write(buffer, 0, read);
-                        }
-                    }
+                        br.BaseStream.Seek(current, SeekOrigin.Begin);
 
-                    br.BaseStream.Seek(TMP, SeekOrigin.Begin);
+                        int nameSize = br.ReadInt32();
+                        string name = new string(br.ReadChars(nameSize));
+
+                        uint uncompressedSize = br.ReadUInt32();
+                        int offset = br.ReadInt32();
+
+                        current = br.BaseStream.Position;
+
+                        br.BaseStream.Seek(offset, SeekOrigin.Begin);
+                        uint compressedSize = br.ReadUInt32();
+                        
+                        // Some files can lack the length prefix
+                        if (compressedSize > br.BaseStream.Length)
+                        {
+                            br.BaseStream.Seek(-4, SeekOrigin.Current);
+                            compressedSize = uncompressedSize;
+                        }
+
+                        // If an individual entry fails
+                        try
+                        {
+                            string tempFile = Path.Combine(tempPath, name);
+                            if (!Directory.Exists(Path.GetDirectoryName(tempFile)))
+                                Directory.CreateDirectory(Path.GetDirectoryName(tempFile));
+
+                            if (compressedSize == uncompressedSize)
+                            {
+                                using (FileStream fs = File.OpenWrite(tempFile))
+                                {
+                                    fs.Write(br.ReadBytes((int)uncompressedSize), 0, (int)uncompressedSize);
+                                }
+                            }
+                            else
+                            {
+                                using (FileStream fs = File.OpenWrite(tempFile))
+                                {
+                                    try
+                                    {
+                                        ZlibStream zs = new ZlibStream(br.BaseStream, CompressionMode.Decompress);
+                                        zs.CopyTo(fs);
+                                    }
+                                    catch (ZlibException)
+                                    {
+                                        br.BaseStream.Seek(offset + 4, SeekOrigin.Begin);
+                                        fs.Write(br.ReadBytes((int)compressedSize), 0, (int)compressedSize);
+                                    }
+                                }
+                            }
+
+                            string protection = ProtectionFind.ScanContent(tempFile);
+
+                            // If tempfile cleanup fails
+                            try
+                            {
+                                File.Delete(tempFile);
+                            }
+                            catch { }
+
+                            if (!string.IsNullOrEmpty(protection))
+                                protections.Add(tempFile);
+                        }
+                        catch { }
+                        
+
+                        br.BaseStream.Seek(current, SeekOrigin.Begin);
+                    }
                 }
+
+                // If temp directory cleanup fails
+                try
+                {
+                    Directory.Delete(tempPath, true);
+                }
+                catch { }
             }
+            catch { }
 
             return protections;
         }
