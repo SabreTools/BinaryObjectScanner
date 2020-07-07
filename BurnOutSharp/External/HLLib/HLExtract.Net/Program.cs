@@ -46,7 +46,7 @@ namespace HLExtract.Net
 
 	        if(HLLib.hlGetUnsignedInteger(HLLib.HLOption.HL_VERSION) < HLLib.HL_VERSION_NUMBER)
 	        {
-		        Console.WriteLine("Wrong HLLib version: v{0}.", HLLib.hlGetString(HLLib.HLOption.HL_VERSION));
+		        //Console.WriteLine("Wrong HLLib version: v{0}.", HLLib.hlGetString(HLLib.HLOption.HL_VERSION));
 		        return 1;
 	        }
 
@@ -214,8 +214,8 @@ namespace HLExtract.Net
 
 	        if(ePackageType == HLLib.HLPackageType.HL_PACKAGE_NONE)
 	        {
-                Console.WriteLine("Error loading {0}:", sPackage);
-                Console.WriteLine("Unsupported package type.");
+                //Console.WriteLine("Error loading {0}:", sPackage);
+                //Console.WriteLine("Unsupported package type.");
 
 		        HLLib.hlShutdown();
                 Pause();
@@ -227,8 +227,8 @@ namespace HLExtract.Net
 	        // to the package.
 	        if(!HLLib.hlCreatePackage(ePackageType, out uiPackage))
 	        {
-                Console.WriteLine("Error loading {0}:", sPackage);
-                Console.WriteLine(HLLib.hlGetString(HLLib.HLOption.HL_ERROR_SHORT_FORMATED));
+                //Console.WriteLine("Error loading {0}:", sPackage);
+                //Console.WriteLine(HLLib.hlGetString(HLLib.HLOption.HL_ERROR_SHORT_FORMATED));
 
                 HLLib. hlShutdown();
                 Pause();
@@ -254,8 +254,8 @@ namespace HLExtract.Net
 	        // This is useful for, say, loading .gcf files while Steam is running.
 	        if(!HLLib.hlPackageOpenFile(sPackage, uiMode))
 	        {
-                Console.WriteLine("Error loading {0}:", sPackage);
-                Console.WriteLine(HLLib.hlGetString(HLLib.HLOption.HL_ERROR_SHORT_FORMATED));
+                //Console.WriteLine("Error loading {0}:", sPackage);
+                //Console.WriteLine(HLLib.hlGetString(HLLib.HLOption.HL_ERROR_SHORT_FORMATED));
 
                 HLLib. hlShutdown();
                 Pause();
@@ -270,7 +270,7 @@ namespace HLExtract.Net
 	        }
 
 	        if(!bSilent)
-		        Console.WriteLine("{0} opened.", sPackage);
+		        //Console.WriteLine("{0} opened.", sPackage);
 
 	        // Interactive console mode.
 	        EnterConsole(uiPackage, Commands);
@@ -279,7 +279,7 @@ namespace HLExtract.Net
 	        HLLib.hlPackageClose();
 
 	        if(!bSilent)
-		        Console.WriteLine("{0} closed.", sPackage);
+		        //Console.WriteLine("{0} closed.", sPackage);
 
 	        // Free up the allocated memory.
 	        HLLib.hlDeletePackage(uiPackage);
@@ -293,8 +293,8 @@ namespace HLExtract.Net
         {
             if(bPause)
             {
-                Console.Write("Press any key to continue . . . ");
-                Console.ReadKey(true);
+                //Console.Write("Press any key to continue . . . ");
+                //Console.ReadKey(true);
             }
         }
 
@@ -302,30 +302,30 @@ namespace HLExtract.Net
         {
             System.Reflection.AssemblyName Name = System.Reflection.Assembly.GetExecutingAssembly().GetName();
 
-	        Console.WriteLine("HLExtract.Net v{0}.{1}.{2} using HLLib v{3}", Name.Version.Major, Name.Version.Minor, Name.Version.Build, HLLib.hlGetString(HLLib.HLOption.HL_VERSION));
-	        Console.WriteLine();
-	        Console.WriteLine("Correct HLExtract.Net usage:");
-	        Console.WriteLine(" -p <filepath>       (Package to load.)");
-	        Console.WriteLine(" -d <path>           (Destination extraction directory.)");
-            Console.WriteLine(" -x <command>        (Execute console command.)");
-	        Console.WriteLine(" -s                  (Silent mode.)");
-            Console.WriteLine(" -u                  (Don't pause on error..)");
-	        Console.WriteLine(" -m                  (Use file mapping.)");
-	        Console.WriteLine(" -q                  (Use quick file mapping.)");
-	        Console.WriteLine(" -v                  (Allow volatile access.)");
-            Console.WriteLine(" -w                  (Allow write access.)");
-	        Console.WriteLine(" -o                  (Don't overwrite files.)");
-	        Console.WriteLine(" -n <path>           (NCF file's root path.)");
-	        Console.WriteLine();
-	        Console.WriteLine("Example HLExtract.Net usage:");
-	        Console.WriteLine("HLExtract.Net.exe -p \"C:\\half-life.gcf\" -d \"C:\\backup\"");
-	        Console.WriteLine("HLExtract.Net.exe -p \"C:\\half-life.gcf\" -m -v");
-            Console.WriteLine("HLExtract.Net.exe -p \"C:\\half-life.gcf\" -w -x defragment -x exit");
-	        Console.WriteLine();
-	        Console.WriteLine("Batching HLExtract.Net:");
-            Console.WriteLine("for %%F in (*.gcf) do HLExtract.Net.exe -p \"%%F\" -u -v -x \"info .\" -x exit");
-            Console.WriteLine("for %%F in (*.gcf) do HLExtract.Net.exe -p \"%%F\" -s -u -x \"validate .\" -x exit");
-            Console.WriteLine("for %%F in (*.gcf) do HLExtract.Net.exe -p \"%%F\" -s -u -w -x defragment -x exit");
+	        //Console.WriteLine("HLExtract.Net v{0}.{1}.{2} using HLLib v{3}", Name.Version.Major, Name.Version.Minor, Name.Version.Build, HLLib.hlGetString(HLLib.HLOption.HL_VERSION));
+	        //Console.WriteLine();
+	        //Console.WriteLine("Correct HLExtract.Net usage:");
+	        //Console.WriteLine(" -p <filepath>       (Package to load.)");
+	        //Console.WriteLine(" -d <path>           (Destination extraction directory.)");
+            //Console.WriteLine(" -x <command>        (Execute console command.)");
+	        //Console.WriteLine(" -s                  (Silent mode.)");
+            //Console.WriteLine(" -u                  (Don't pause on error..)");
+	        //Console.WriteLine(" -m                  (Use file mapping.)");
+	        //Console.WriteLine(" -q                  (Use quick file mapping.)");
+	        //Console.WriteLine(" -v                  (Allow volatile access.)");
+            //Console.WriteLine(" -w                  (Allow write access.)");
+	        //Console.WriteLine(" -o                  (Don't overwrite files.)");
+	        //Console.WriteLine(" -n <path>           (NCF file's root path.)");
+	        //Console.WriteLine();
+	        //Console.WriteLine("Example HLExtract.Net usage:");
+	        //Console.WriteLine("HLExtract.Net.exe -p \"C:\\half-life.gcf\" -d \"C:\\backup\"");
+	        //Console.WriteLine("HLExtract.Net.exe -p \"C:\\half-life.gcf\" -m -v");
+            //Console.WriteLine("HLExtract.Net.exe -p \"C:\\half-life.gcf\" -w -x defragment -x exit");
+	        //Console.WriteLine();
+	        //Console.WriteLine("Batching HLExtract.Net:");
+            //Console.WriteLine("for %%F in (*.gcf) do HLExtract.Net.exe -p \"%%F\" -u -v -x \"info .\" -x exit");
+            //Console.WriteLine("for %%F in (*.gcf) do HLExtract.Net.exe -p \"%%F\" -s -u -x \"validate .\" -x exit");
+            //Console.WriteLine("for %%F in (*.gcf) do HLExtract.Net.exe -p \"%%F\" -s -u -w -x defragment -x exit");
 
             Pause();
         }
@@ -358,7 +358,7 @@ namespace HLExtract.Net
         static void ProgressStart()
         {
 	        uiProgressLast = 0;
-	        Console.Write("0%");
+	        //Console.Write("0%");
         }
 
         static void ProgressUpdate(UInt64 uiBytesDone, UInt64 uiBytesTotal)
@@ -371,15 +371,15 @@ namespace HLExtract.Net
 			        uiProgressLast += 10;
 			        if(uiProgressLast == 100)
 			        {
-				        Console.Write("100% ");
+				        //Console.Write("100% ");
 			        }
 			        else if(uiProgressLast == 50)
 			        {
-				        Console.Write("50%");
+				        //Console.Write("50%");
 			        }
 			        else
 			        {
-				        Console.Write(".");
+				        //Console.Write(".");
 			        }
 		        }
 	        }
@@ -391,12 +391,12 @@ namespace HLExtract.Net
 	        {
 		        if(HLLib.hlItemGetType(pItem) == HLLib.HLDirectoryItemType.HL_ITEM_FILE)
 		        {
-			        Console.Write("  Extracting {0}: ", HLLib.hlItemGetName(pItem));
+			        //Console.Write("  Extracting {0}: ", HLLib.hlItemGetName(pItem));
 			        ProgressStart();
 		        }
 		        else
 		        {
-			        Console.WriteLine("  Extracting {0}:", HLLib.hlItemGetName(pItem));
+			        //Console.WriteLine("  Extracting {0}:", HLLib.hlItemGetName(pItem));
 		        }
 	        }
         }
@@ -416,11 +416,11 @@ namespace HLExtract.Net
 			        HLLib.hlItemGetSize(pItem, out uiSize);
 			        if(HLLib.hlItemGetType(pItem) == HLLib.HLDirectoryItemType.HL_ITEM_FILE)
 			        {
-				        Console.WriteLine("OK ({0} B)", uiSize);
+				        //Console.WriteLine("OK ({0} B)", uiSize);
 			        }
 			        else
 			        {
-				        Console.WriteLine("  Done {0}: OK ({1} B)", HLLib.hlItemGetName(pItem), uiSize);
+				        //Console.WriteLine("  Done {0}: OK ({1} B)", HLLib.hlItemGetName(pItem), uiSize);
 			        }
 		        }
 	        }
@@ -430,24 +430,24 @@ namespace HLExtract.Net
 		        {
 			        if(HLLib.hlItemGetType(pItem) == HLLib.HLDirectoryItemType.HL_ITEM_FILE)
 			        {
-				        Console.WriteLine("Errored");
-				        Console.WriteLine("    {0}", HLLib.hlGetString(HLLib.HLOption.HL_ERROR_SHORT_FORMATED));
+				        //Console.WriteLine("Errored");
+				        //Console.WriteLine("    {0}", HLLib.hlGetString(HLLib.HLOption.HL_ERROR_SHORT_FORMATED));
 			        }
 			        else
 			        {
-				        Console.WriteLine("  Done {0}: Errored", HLLib.hlItemGetName(pItem));
+				        //Console.WriteLine("  Done {0}: Errored", HLLib.hlItemGetName(pItem));
 			        }
 		        }
 		        else
 		        {
 			        if(HLLib.hlItemGetType(pItem) == HLLib.HLDirectoryItemType.HL_ITEM_FILE)
 			        {
-				        Console.WriteLine("  Error extracting {0}:", GetPath(pItem));
-				        Console.WriteLine("    {0}", HLLib.hlGetString(HLLib.HLOption.HL_ERROR_SHORT_FORMATED));
+				        //Console.WriteLine("  Error extracting {0}:", GetPath(pItem));
+				        //Console.WriteLine("    {0}", HLLib.hlGetString(HLLib.HLOption.HL_ERROR_SHORT_FORMATED));
 			        }
 			        else
 			        {
-				        Console.WriteLine("  Error extracting {0}.", GetPath(pItem));
+				        //Console.WriteLine("  Error extracting {0}.", GetPath(pItem));
 			        }
 		        }
 	        }
@@ -479,7 +479,7 @@ namespace HLExtract.Net
 	        case HLLib.HLDirectoryItemType.HL_ITEM_FOLDER:
 		        if(!bSilent)
 		        {
-			        Console.WriteLine("  Validating {0}:", HLLib.hlItemGetName(pItem));
+			        //Console.WriteLine("  Validating {0}:", HLLib.hlItemGetName(pItem));
 		        }
 
 		        uint uiItemCount = HLLib.hlFolderGetCount(pItem);
@@ -494,13 +494,13 @@ namespace HLExtract.Net
 
 		        if(!bSilent)
 		        {
-			        Console.WriteLine("  Done {0}: {1}", HLLib.hlItemGetName(pItem), GetValidation(eValidation));
+			        //Console.WriteLine("  Done {0}: {1}", HLLib.hlItemGetName(pItem), GetValidation(eValidation));
 		        }
 		        break;
 	        case HLLib.HLDirectoryItemType.HL_ITEM_FILE:
 		        if(!bSilent)
 		        {
-			        Console.Write("  Validating {0}: ", HLLib.hlItemGetName(pItem));
+			        //Console.Write("  Validating {0}: ", HLLib.hlItemGetName(pItem));
 			        ProgressStart();
 		        }
 
@@ -512,13 +512,13 @@ namespace HLExtract.Net
 			        {
 			        case HLLib.HLValidation.HL_VALIDATES_INCOMPLETE:
 			        case HLLib.HLValidation.HL_VALIDATES_CORRUPT:
-				        Console.WriteLine("  Validating {0}: {1}", GetPath(pItem), GetValidation(eValidation));
+				        //Console.WriteLine("  Validating {0}: {1}", GetPath(pItem), GetValidation(eValidation));
 				        break;
 			        }
 		        }
 		        else
 		        {
-                    Console.WriteLine(GetValidation(eValidation));
+                    //Console.WriteLine(GetValidation(eValidation));
 		        }
 		        break;
 	        }
@@ -535,18 +535,18 @@ namespace HLExtract.Net
                 string sLine;
                 if(Commands.Count > 0)
                 {
-                    sLine = Commands[0].Trim();
+					sLine = Commands[0].Trim().Trim('\'');
 
-                    Console.WriteLine("{0}>{1}", HLLib.hlItemGetName(pItem), sLine);
+                    //Console.WriteLine("{0}>{1}", HLLib.hlItemGetName(pItem), sLine);
                     Commands.RemoveAt(0);
                 }
                 else
                 {
                     // Command prompt.
-                    Console.Write("{0}>", HLLib.hlItemGetName(pItem));
+                    //Console.Write("{0}>", HLLib.hlItemGetName(pItem));
 
                     // Get and parse line.
-                    sLine = Console.ReadLine().Trim();
+                    sLine = //Console.ReadLine().Trim();
                 }
                 if(sLine == null)
                 {
@@ -585,9 +585,9 @@ namespace HLExtract.Net
 			        uint uiItemCount = HLLib.hlFolderGetCount(pItem);
 			        uint uiFolderCount = 0, uiFileCount = 0;
 
-			        Console.WriteLine("Directory of {0}:", GetPath(pItem));
+			        //Console.WriteLine("Directory of {0}:", GetPath(pItem));
 
-			        Console.WriteLine();
+			        //Console.WriteLine();
 
 			        if(sArgument.Length == 0)
 			        {
@@ -598,12 +598,12 @@ namespace HLExtract.Net
 					        if(HLLib.hlItemGetType(pSubItem) == HLLib.HLDirectoryItemType.HL_ITEM_FOLDER)
 					        {
 						        uiFolderCount++;
-						        Console.WriteLine("  <{0}>", HLLib.hlItemGetName(pSubItem));
+						        //Console.WriteLine("  <{0}>", HLLib.hlItemGetName(pSubItem));
 					        }
 					        else if(HLLib.hlItemGetType(pSubItem) == HLLib.HLDirectoryItemType.HL_ITEM_FILE)
 					        {
 						        uiFileCount++;
-						        Console.WriteLine("  {0}", HLLib.hlItemGetName(pSubItem));
+						        //Console.WriteLine("  {0}", HLLib.hlItemGetName(pSubItem));
 					        }
 				        }
 			        }
@@ -615,28 +615,28 @@ namespace HLExtract.Net
 					        if(HLLib.hlItemGetType(pSubItem) == HLLib.HLDirectoryItemType.HL_ITEM_FOLDER)
 					        {
 						        uiFolderCount++;
-						        Console.WriteLine("  <{0}>", HLLib.hlItemGetName(pSubItem));
+						        //Console.WriteLine("  <{0}>", HLLib.hlItemGetName(pSubItem));
 					        }
 					        else if(HLLib.hlItemGetType(pSubItem) == HLLib.HLDirectoryItemType.HL_ITEM_FILE)
 					        {
 						        uiFileCount++;
-						        Console.WriteLine("  {0}", HLLib.hlItemGetName(pSubItem));
+						        //Console.WriteLine("  {0}", HLLib.hlItemGetName(pSubItem));
 					        }
 
 					        pSubItem = HLLib.hlFolderFindNext(pItem, pSubItem, sArgument, HLLib.HLFindType.HL_FIND_ALL | HLLib.HLFindType.HL_FIND_NO_RECURSE);
 				        }
 			        }
 
-			        Console.WriteLine();
+			        //Console.WriteLine();
 
 			        // Could also have used hlFolderGetFolderCount() and
 			        // hlFolderGetFileCount().
 
-			        Console.WriteLine("Summary:");
-			        Console.WriteLine();
-			        Console.WriteLine("  {0} Folder{1}.", uiFolderCount, uiFolderCount != 1 ? "s" : "");
-			        Console.WriteLine("  {0} File{1}.", uiFileCount, uiFileCount != 1 ? "s" : "");
-			        Console.WriteLine();
+			        //Console.WriteLine("Summary:");
+			        //Console.WriteLine();
+			        //Console.WriteLine("  {0} Folder{1}.", uiFolderCount, uiFolderCount != 1 ? "s" : "");
+			        //Console.WriteLine("  {0} File{1}.", uiFileCount, uiFileCount != 1 ? "s" : "");
+			        //Console.WriteLine();
 		        }
 		        //
 		        // Change directory.
@@ -646,7 +646,7 @@ namespace HLExtract.Net
 		        {
 			        if(sArgument.Length == 0)
 			        {
-				        Console.WriteLine("No argument for command cd supplied.");
+				        //Console.WriteLine("No argument for command cd supplied.");
 			        }
 			        else
 			        {
@@ -662,7 +662,7 @@ namespace HLExtract.Net
 					        }
 					        else
 					        {
-						        Console.WriteLine("Folder does not have a parent.");
+						        //Console.WriteLine("Folder does not have a parent.");
 					        }
 				        }
 				        else
@@ -682,7 +682,7 @@ namespace HLExtract.Net
 
 					        if(!bFound)
 					        {
-						        Console.WriteLine("{0} not found.", sArgument);
+						        //Console.WriteLine("{0} not found.", sArgument);
 					        }
 				        }
 			        }
@@ -702,7 +702,7 @@ namespace HLExtract.Net
 		        {
 			        if(sArgument.Length == 0)
 			        {
-				        Console.WriteLine("No argument for command info supplied.");
+				        //Console.WriteLine("No argument for command info supplied.");
 			        }
 			        else
 			        {
@@ -710,24 +710,24 @@ namespace HLExtract.Net
 
 				        if(pSubItem != IntPtr.Zero)
 				        {
-					        Console.WriteLine("Information for {0}:", GetPath(pSubItem));
-					        Console.WriteLine();
+					        //Console.WriteLine("Information for {0}:", GetPath(pSubItem));
+					        //Console.WriteLine();
 
 					        switch(HLLib.hlItemGetType(pSubItem))
 					        {
 					        case HLLib.HLDirectoryItemType.HL_ITEM_FOLDER:
-						        Console.WriteLine("  Type: Folder");
-						        Console.WriteLine("  Size: {0} B", HLLib.hlFolderGetSizeEx(pSubItem, true));
-						        Console.WriteLine("  Size On Disk: {0} B", HLLib.hlFolderGetSizeOnDiskEx(pSubItem, true));
-						        Console.WriteLine("  Folders: {0}", HLLib.hlFolderGetFolderCount(pSubItem, true));
-						        Console.WriteLine("  Files: {0}", HLLib.hlFolderGetFileCount(pSubItem, true));
+						        //Console.WriteLine("  Type: Folder");
+						        //Console.WriteLine("  Size: {0} B", HLLib.hlFolderGetSizeEx(pSubItem, true));
+						        //Console.WriteLine("  Size On Disk: {0} B", HLLib.hlFolderGetSizeOnDiskEx(pSubItem, true));
+						        //Console.WriteLine("  Folders: {0}", HLLib.hlFolderGetFolderCount(pSubItem, true));
+						        //Console.WriteLine("  Files: {0}", HLLib.hlFolderGetFileCount(pSubItem, true));
 						        break;
 					        case HLLib.HLDirectoryItemType.HL_ITEM_FILE:
-						        Console.WriteLine("  Type: File");
-						        Console.WriteLine("  Extractable: {0}", HLLib.hlFileGetExtractable(pSubItem) != 0 ? "True" : "False");
-						        //Console.WriteLine("  Validates: {0}", HLLib.hlFileGetValidates(pSubItem) ? "True" : "False");
-						        Console.WriteLine("  Size: {0} B", HLLib.hlFileGetSize(pSubItem));
-						        Console.WriteLine("  Size On Disk: {0} B", HLLib.hlFileGetSizeOnDisk(pSubItem));
+						        //Console.WriteLine("  Type: File");
+						        //Console.WriteLine("  Extractable: {0}", HLLib.hlFileGetExtractable(pSubItem) != 0 ? "True" : "False");
+						        ////Console.WriteLine("  Validates: {0}", HLLib.hlFileGetValidates(pSubItem) ? "True" : "False");
+						        //Console.WriteLine("  Size: {0} B", HLLib.hlFileGetSize(pSubItem));
+						        //Console.WriteLine("  Size On Disk: {0} B", HLLib.hlFileGetSizeOnDisk(pSubItem));
 						        break;
 					        }
 
@@ -739,16 +739,16 @@ namespace HLExtract.Net
 						        {
                                     if(Attribute.eAttributeType != HLLib.HLAttributeType.HL_ATTRIBUTE_INVALID)
                                     {
-                                        Console.WriteLine("  {0}: {1}", Attribute.GetName(), Attribute.ToString());
+                                        //Console.WriteLine("  {0}: {1}", Attribute.GetName(), Attribute.ToString());
                                     }
 						        }
 					        }
 
-					        Console.WriteLine();
+					        //Console.WriteLine();
 				        }
 				        else
 				        {
-					        Console.WriteLine("{0} not found.", sArgument);
+					        //Console.WriteLine("{0} not found.", sArgument);
 				        }
 			        }
 		        }
@@ -760,7 +760,7 @@ namespace HLExtract.Net
 		        {
 			        if(sArgument.Length == 0)
 			        {
-				        Console.WriteLine("No argument for command extract supplied.");
+				        //Console.WriteLine("No argument for command extract supplied.");
 			        }
 			        else
 			        {
@@ -780,21 +780,21 @@ namespace HLExtract.Net
 					        // Item is extracted to cDestination\Item->GetName().
 					        if(!bSilent)
 					        {
-						        Console.WriteLine("Extracting {0}...", HLLib.hlItemGetName(pSubItem));
-						        Console.WriteLine();
+						        //Console.WriteLine("Extracting {0}...", HLLib.hlItemGetName(pSubItem));
+						        //Console.WriteLine();
 					        }
 
 					        HLLib.hlItemExtract(pSubItem, sDestination);
 
 					        if(!bSilent)
 					        {
-						        Console.WriteLine("");
-						        Console.WriteLine("Done.");
+						        //Console.WriteLine("");
+						        //Console.WriteLine("Done.");
 					        }
 				        }
 				        else
 				        {
-					        Console.WriteLine("{0} not found.", sArgument);
+					        //Console.WriteLine("{0} not found.", sArgument);
 				        }
 			        }
 		        }
@@ -806,7 +806,7 @@ namespace HLExtract.Net
 		        {
 			        if(sArgument.Length == 0)
 			        {
-				        Console.WriteLine("No argument for command extract supplied.");
+				        //Console.WriteLine("No argument for command extract supplied.");
 			        }
 			        else
 			        {
@@ -824,21 +824,21 @@ namespace HLExtract.Net
 				        {
 					        if(!bSilent)
 					        {
-						        Console.WriteLine("Validating {0}...", HLLib.hlItemGetName(pSubItem));
-						        Console.WriteLine();
+						        //Console.WriteLine("Validating {0}...", HLLib.hlItemGetName(pSubItem));
+						        //Console.WriteLine();
 					        }
 
 					        Validate(pSubItem);
 
 					        if(!bSilent)
 					        {
-						        Console.WriteLine();
-						        Console.WriteLine("Done.");
+						        //Console.WriteLine();
+						        //Console.WriteLine("Done.");
 					        }
 				        }
 				        else
 				        {
-					        Console.WriteLine("{0} not found.", sArgument);
+					        //Console.WriteLine("{0} not found.", sArgument);
 				        }
 			        }
 		        }
@@ -862,25 +862,25 @@ namespace HLExtract.Net
 
 			        if(!bSilent)
 			        {
-				        Console.WriteLine("Defragmenting...");
-				        Console.WriteLine();
+				        //Console.WriteLine("Defragmenting...");
+				        //Console.WriteLine();
 			        }
 
                     HLLib.hlSetBoolean(HLLib.HLOption.HL_FORCE_DEFRAGMENT, bForceDefragment);
 
-                    Console.Write("  Progress: ");
+                    //Console.Write("  Progress: ");
                     ProgressStart();
                     if(!HLLib.hlPackageDefragment())
                     {
-                        Console.Write(" {0}", HLLib.hlGetString(HLLib.HLOption.HL_ERROR_SHORT_FORMATED));
+                        //Console.Write(" {0}", HLLib.hlGetString(HLLib.HLOption.HL_ERROR_SHORT_FORMATED));
                     }
 
 			        if(!bSilent)
 			        {
-                        Console.WriteLine();
+                        //Console.WriteLine();
 
-				        Console.WriteLine();
-				        Console.WriteLine("Done.");
+				        //Console.WriteLine();
+				        //Console.WriteLine("Done.");
 			        }
 		        }
 		        //
@@ -891,15 +891,15 @@ namespace HLExtract.Net
 		        {
 			        if(sArgument.Length == 0)
 			        {
-				        Console.WriteLine("No argument for command find supplied.");
+				        //Console.WriteLine("No argument for command find supplied.");
 			        }
 			        else
 			        {
 				        // Search for the requested items.
 				        if(!bSilent)
 				        {
-					        Console.WriteLine("Searching for {0}...", sArgument);
-					        Console.WriteLine();
+					        //Console.WriteLine("Searching for {0}...", sArgument);
+					        //Console.WriteLine();
 				        }
 
 				        uint uiFolderCount = 0, uiFileCount = 0;
@@ -911,12 +911,12 @@ namespace HLExtract.Net
                                 case HLLib.HLDirectoryItemType.HL_ITEM_FOLDER:
                                     uiFolderCount++;
 
-                                    Console.WriteLine("  Found folder: {0}", GetPath(pSubItem));
+                                    //Console.WriteLine("  Found folder: {0}", GetPath(pSubItem));
                                     break;
                                 case HLLib.HLDirectoryItemType.HL_ITEM_FILE:
                                     uiFileCount++;
 
-                                    Console.WriteLine("  Found file: {0}", GetPath(pSubItem));
+                                    //Console.WriteLine("  Found file: {0}", GetPath(pSubItem));
                                     break;
                             }
 
@@ -927,11 +927,11 @@ namespace HLExtract.Net
 				        {
 					        if(uiFolderCount != 0 || uiFileCount != 0)
 					        {
-						        Console.WriteLine();
+						        //Console.WriteLine();
 					        }
 
-					        Console.WriteLine("  {0} folder{1} and {2} file{3} found.", uiFolderCount, uiFolderCount != 1 ? "s" : "", uiFileCount, uiFileCount != 1 ? "s" : "");
-					        Console.WriteLine();
+					        //Console.WriteLine("  {0} folder{1} and {2} file{3} found.", uiFolderCount, uiFolderCount != 1 ? "s" : "", uiFileCount, uiFileCount != 1 ? "s" : "");
+					        //Console.WriteLine();
 				        }
 			        }
 		        }
@@ -943,7 +943,7 @@ namespace HLExtract.Net
 		        {
 			        if(sArgument.Length == 0)
 			        {
-				        Console.WriteLine("No argument for command type supplied.");
+				        //Console.WriteLine("No argument for command type supplied.");
 			        }
 			        else
 			        {
@@ -953,8 +953,8 @@ namespace HLExtract.Net
 				        {
 					        if(!bSilent)
 					        {
-						        Console.WriteLine("Type for {0}:", GetPath(pSubItem));
-						        Console.WriteLine();
+						        //Console.WriteLine("Type for {0}:", GetPath(pSubItem));
+						        //Console.WriteLine();
 					        }
 
                             IntPtr pStream;
@@ -967,7 +967,7 @@ namespace HLExtract.Net
 							        {
 								        if((iChar >= ' ' && iChar <= '~') || iChar == '\n' || iChar == '\t')
 								        {
-									        Console.Write(iChar);
+									        //Console.Write(iChar);
 								        }
 							        }
 
@@ -975,27 +975,27 @@ namespace HLExtract.Net
 						        }
 						        else
 						        {
-                                    Console.WriteLine("Error typing {0}:", HLLib.hlItemGetName(pSubItem));
-							        Console.WriteLine(HLLib.hlGetString(HLLib.HLOption.HL_ERROR_SHORT_FORMATED));
+                                    //Console.WriteLine("Error typing {0}:", HLLib.hlItemGetName(pSubItem));
+							        //Console.WriteLine(HLLib.hlGetString(HLLib.HLOption.HL_ERROR_SHORT_FORMATED));
 						        }
 
 						        HLLib.hlFileReleaseStream(pSubItem, pStream);
 					        }
 					        else
 					        {
-                                Console.WriteLine("Error typing {0}:", HLLib.hlItemGetName(pSubItem));
-						        Console.WriteLine(HLLib.hlGetString(HLLib.HLOption.HL_ERROR_SHORT_FORMATED));
+                                //Console.WriteLine("Error typing {0}:", HLLib.hlItemGetName(pSubItem));
+						        //Console.WriteLine(HLLib.hlGetString(HLLib.HLOption.HL_ERROR_SHORT_FORMATED));
 					        }
 
 					        if(!bSilent)
 					        {
-						        Console.WriteLine();
-						        Console.WriteLine("Done.");
+						        //Console.WriteLine();
+						        //Console.WriteLine("Done.");
 					        }
 				        }
 				        else
 				        {
-					        Console.WriteLine("{0} not found.", sArgument);
+					        //Console.WriteLine("{0} not found.", sArgument);
 				        }
 			        }
 		        }
@@ -1007,7 +1007,7 @@ namespace HLExtract.Net
 		        {
 			        if(sArgument.Length == 0)
 			        {
-				        Console.WriteLine("No argument for command open supplied.");
+				        //Console.WriteLine("No argument for command open supplied.");
 			        }
 			        else
 			        {
@@ -1029,19 +1029,19 @@ namespace HLExtract.Net
 								        if(HLLib.hlPackageOpenStream(pStream, (uint)HLLib.HLFileMode.HL_MODE_READ))
 								        {
 									        if(!bSilent)
-										        Console.WriteLine("{0} opened.", HLLib.hlItemGetName(pSubItem));
+										        //Console.WriteLine("{0} opened.", HLLib.hlItemGetName(pSubItem));
 
 									        EnterConsole(uiSubPackage, Commands);
 
 									        HLLib.hlPackageClose();
 
 									        if(!bSilent)
-										        Console.WriteLine("{0} closed.", HLLib.hlItemGetName(pSubItem));
+										        //Console.WriteLine("{0} closed.", HLLib.hlItemGetName(pSubItem));
 								        }
 								        else
 								        {
-                                            Console.WriteLine("Error opening {0}:", HLLib.hlItemGetName(pSubItem));
-						                    Console.WriteLine(HLLib.hlGetString(HLLib.HLOption.HL_ERROR_SHORT_FORMATED));
+                                            //Console.WriteLine("Error opening {0}:", HLLib.hlItemGetName(pSubItem));
+						                    //Console.WriteLine(HLLib.hlGetString(HLLib.HLOption.HL_ERROR_SHORT_FORMATED));
 								        }
 
 								        HLLib.hlDeletePackage(uiSubPackage);
@@ -1050,29 +1050,29 @@ namespace HLExtract.Net
 							        }
 							        else
 							        {
-                                        Console.WriteLine("Error opening {0}:", HLLib.hlItemGetName(pSubItem));
-						                Console.WriteLine(HLLib.hlGetString(HLLib.HLOption.HL_ERROR_SHORT_FORMATED));
+                                        //Console.WriteLine("Error opening {0}:", HLLib.hlItemGetName(pSubItem));
+						                //Console.WriteLine(HLLib.hlGetString(HLLib.HLOption.HL_ERROR_SHORT_FORMATED));
 							        }
 
 							        HLLib.hlStreamClose(pStream);
 						        }
 						        else
 						        {
-                                    Console.WriteLine("Error opening {0}:", HLLib.hlItemGetName(pSubItem));
-						            Console.WriteLine(HLLib.hlGetString(HLLib.HLOption.HL_ERROR_SHORT_FORMATED));
+                                    //Console.WriteLine("Error opening {0}:", HLLib.hlItemGetName(pSubItem));
+						            //Console.WriteLine(HLLib.hlGetString(HLLib.HLOption.HL_ERROR_SHORT_FORMATED));
 						        }
 
 						        HLLib.hlFileReleaseStream(pSubItem, pStream);
 					        }
 					        else
 					        {
-                                Console.WriteLine("Error opening {0}:", HLLib.hlItemGetName(pSubItem));
-						        Console.WriteLine(HLLib.hlGetString(HLLib.HLOption.HL_ERROR_SHORT_FORMATED));
+                                //Console.WriteLine("Error opening {0}:", HLLib.hlItemGetName(pSubItem));
+						        //Console.WriteLine(HLLib.hlGetString(HLLib.HLOption.HL_ERROR_SHORT_FORMATED));
 					        }
 				        }
 				        else
 				        {
-					        Console.WriteLine("{0} not found.", sArgument);
+					        //Console.WriteLine("{0} not found.", sArgument);
 				        }
 			        }
 		        }
@@ -1081,10 +1081,10 @@ namespace HLExtract.Net
 		        //
 		        else if(String.Equals(sCommand, "status", StringComparison.CurrentCultureIgnoreCase))
 		        {
-                    Console.WriteLine("Total size: {0} B", HLLib.hlGetUnsignedLong(HLLib.HLOption.HL_PACKAGE_SIZE));
-			        Console.WriteLine("Total mapping allocations: {0}", HLLib.hlGetUnsignedInteger(HLLib.HLOption.HL_PACKAGE_TOTAL_ALLOCATIONS));
-                    Console.WriteLine("Total mapping memory allocated: {0} B", HLLib.hlGetUnsignedLong(HLLib.HLOption.HL_PACKAGE_TOTAL_MEMORY_ALLOCATED));
-                    Console.WriteLine("Total mapping memory used: {0} B", HLLib.hlGetUnsignedLong(HLLib.HLOption.HL_PACKAGE_TOTAL_MEMORY_USED));
+                    //Console.WriteLine("Total size: {0} B", HLLib.hlGetUnsignedLong(HLLib.HLOption.HL_PACKAGE_SIZE));
+			        //Console.WriteLine("Total mapping allocations: {0}", HLLib.hlGetUnsignedInteger(HLLib.HLOption.HL_PACKAGE_TOTAL_ALLOCATIONS));
+                    //Console.WriteLine("Total mapping memory allocated: {0} B", HLLib.hlGetUnsignedLong(HLLib.HLOption.HL_PACKAGE_TOTAL_MEMORY_ALLOCATED));
+                    //Console.WriteLine("Total mapping memory used: {0} B", HLLib.hlGetUnsignedLong(HLLib.HLOption.HL_PACKAGE_TOTAL_MEMORY_USED));
 
 			        uint uiAttributeCount = HLLib.hlPackageGetAttributeCount();
 			        for(uint i = 0; i < uiAttributeCount; i++)
@@ -1094,7 +1094,7 @@ namespace HLExtract.Net
 				        {
                             if(Attribute.eAttributeType != HLLib.HLAttributeType.HL_ATTRIBUTE_INVALID)
                             {
-                                Console.WriteLine("{0}: {1}", Attribute.GetName(), Attribute.ToString());
+                                //Console.WriteLine("{0}: {1}", Attribute.GetName(), Attribute.ToString());
                             }
 				        }
 			        }
@@ -1103,7 +1103,7 @@ namespace HLExtract.Net
                 {
                     if(sArgument.Length == 0)
                     {
-                        Console.WriteLine("No argument for command open supplied.");
+                        //Console.WriteLine("No argument for command open supplied.");
                     }
                     else
                     {
@@ -1123,24 +1123,24 @@ namespace HLExtract.Net
                 }
                 else if(String.Equals(sCommand, "help", StringComparison.CurrentCultureIgnoreCase))
                 {
-                    Console.WriteLine("Valid commands:");
-                    Console.WriteLine();
-                    Console.WriteLine("dir <filter>       (Directory list.)");
-                    Console.WriteLine("cd <folder>        (Change directroy.)");
-                    Console.WriteLine("info <item>        (Item information.)");
-                    Console.WriteLine("extract <item>     (Extract item.)");
-                    Console.WriteLine("validate <item>    (Validate item.)");
-                    Console.WriteLine("defragment [force] (Defragment package.)");
-                    Console.WriteLine("find <filter>      (Find item.)");
-                    Console.WriteLine("type <file>        (Type a file.)");
-                    Console.WriteLine("open <file>        (Open a nested package.)");
-                    Console.WriteLine("root               (Go to the root folder.)");
-                    Console.WriteLine("status             (Package information.)");
-                    Console.WriteLine("execute <cmd>|...  (Execute 1 or more pipe delimited commands.)");
-                    Console.WriteLine("cls                (Clear the screen.)");
-                    Console.WriteLine("help               (Program help.)");
-                    Console.WriteLine("exit               (Quit program.)");
-                    Console.WriteLine();
+                    //Console.WriteLine("Valid commands:");
+                    //Console.WriteLine();
+                    //Console.WriteLine("dir <filter>       (Directory list.)");
+                    //Console.WriteLine("cd <folder>        (Change directroy.)");
+                    //Console.WriteLine("info <item>        (Item information.)");
+                    //Console.WriteLine("extract <item>     (Extract item.)");
+                    //Console.WriteLine("validate <item>    (Validate item.)");
+                    //Console.WriteLine("defragment [force] (Defragment package.)");
+                    //Console.WriteLine("find <filter>      (Find item.)");
+                    //Console.WriteLine("type <file>        (Type a file.)");
+                    //Console.WriteLine("open <file>        (Open a nested package.)");
+                    //Console.WriteLine("root               (Go to the root folder.)");
+                    //Console.WriteLine("status             (Package information.)");
+                    //Console.WriteLine("execute <cmd>|...  (Execute 1 or more pipe delimited commands.)");
+                    //Console.WriteLine("cls                (Clear the screen.)");
+                    //Console.WriteLine("help               (Program help.)");
+                    //Console.WriteLine("exit               (Quit program.)");
+                    //Console.WriteLine();
                 }
                 else if(String.Equals(sCommand, "exit", StringComparison.CurrentCultureIgnoreCase))
                 {
@@ -1148,7 +1148,7 @@ namespace HLExtract.Net
                 }
                 else
                 {
-                    Console.WriteLine("Unkown command: {0}", sCommand);
+                    //Console.WriteLine("Unkown command: {0}", sCommand);
                 }
 	        }
         }

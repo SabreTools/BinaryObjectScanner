@@ -422,7 +422,7 @@ namespace BurnOutSharp
                 protections.AddRange(Textfile.Scan(stream));
 
             // Valve archive formats
-            if (file != null && Valve.ShouldScan(magic, extension))
+            if (file != null && Valve.ShouldScan(magic))
                 protections.AddRange(Valve.Scan(file));
 
             // Return blank if nothing found, or comma-separated list of protections

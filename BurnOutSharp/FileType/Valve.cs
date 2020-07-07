@@ -7,21 +7,26 @@ namespace BurnOutSharp.FileType
 {
     internal class Valve
     {
-        // TODO: Re-enable when scanning is fixed
-        public static bool ShouldScan(byte[] magic, string extension)
+        public static bool ShouldScan(byte[] magic)
         {
-            return false;
-
             // GCF
-            if (magic.StartsWith(new byte[] { 0x01, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00 }))
+            if (magic.StartsWith(new byte[] { 0x01, 0x00, 0x00, 0x00 }))
                 return true;
 
-            // GCF
-            if (string.Equals(extension, "gcf", StringComparison.OrdinalIgnoreCase))
+            // PAK
+            if (magic.StartsWith(new byte[] { 0x50, 0x41, 0x43, 0x4b }))
+                return true;
+
+            // SGA
+            if (magic.StartsWith(new byte[] { 0x5f, 0x41, 0x52, 0x43, 0x48, 0x49, 0x56, 0x45 }))
                 return true;
 
             // VPK
-            if (string.Equals(extension, "vpk", StringComparison.OrdinalIgnoreCase))
+            if (magic.StartsWith(new byte[] { 0x55, 0xaa, 0x12, 0x34 }))
+                return true;
+
+            // WAD
+            if (magic.StartsWith(new byte[] { 0x57, 0x41, 0x44, 0x33 }))
                 return true;
 
             return false;
@@ -39,6 +44,9 @@ namespace BurnOutSharp.FileType
             string[] args = new string[]
             {
                 "-p", file,
+                "-x", "root",
+                "-x", "'extract .'",
+                "-x", "exit",
                 "-d", tempPath,
             };
 
