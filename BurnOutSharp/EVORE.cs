@@ -60,13 +60,14 @@ namespace BurnOutSharp
         private static string MakeTempFile(byte[] fileContent, string sExtension = ".exe")
         {
             string filei = Guid.NewGuid().ToString();
-            string tempPath = Path.Combine(Path.GetTempPath(), "tmp", $"{filei}*{sExtension}");
+            string tempPath = Path.Combine(Path.GetTempPath(), "tmp", $"{filei}{sExtension}");
             try
             {
                 File.Delete(tempPath);
             }
             catch { }
 
+            Directory.CreateDirectory(Path.GetDirectoryName(tempPath));
             using (BinaryWriter bw = new BinaryWriter(File.OpenWrite(tempPath)))
             {
                 bw.Write(fileContent);
