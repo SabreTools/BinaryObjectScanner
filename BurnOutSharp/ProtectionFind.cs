@@ -32,6 +32,7 @@ namespace BurnOutSharp
         /// Scan a path to find any known copy protection(s)
         /// </summary>
         /// <param name="path">Path to scan for protection(s)</param>
+        /// <param name="includePosition">True to include scanned copy protection position, false otherwise (default)</param>
         /// <param name="progress">Optional progress indicator that will return a float in the range from 0 to 1</param>
         /// <returns>Dictionary of filename to protection mappings, if possible</returns>
         public static Dictionary<string, string> Scan(string path, bool includePosition = false, IProgress<FileProtection> progress = null)
@@ -342,8 +343,6 @@ namespace BurnOutSharp
             else
                 return string.Join(", ", protections);
         }
-
-        // TODO: Make `includePosition` optional in the two methods below
 
         /// <summary>
         /// Scan an individual file for copy protection
