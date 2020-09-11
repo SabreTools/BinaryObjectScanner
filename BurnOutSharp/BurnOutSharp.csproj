@@ -2,16 +2,24 @@
 
   <PropertyGroup>
     <TargetFrameworks>net472;net48;netcoreapp3.1</TargetFrameworks>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <Title>BurnOutSharp</Title>
+    <AssemblyName>BurnOutSharp</AssemblyName>
+    <Description>Port of BurnOut to C#, with additions</Description>
+    <Authors>Matt Nadareski;Gernot Knippen</Authors>
+    <Product>BurnOutSharp</Product>
+    <Copyright>Copyright (c)2005-2010 Gernot Knippen, Copyright (c)2018-2020 Matt Nadareski</Copyright>
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+    <RepositoryUrl>https://github.com/mnadareski/BurnOutSharp</RepositoryUrl>
+    <Version>1.4.0</Version>
+    <AssemblyVersion>1.4.0</AssemblyVersion>
+    <FileVersion>1.04.0</FileVersion>
+    <IncludeSource>true</IncludeSource>
+    <IncludeSymbols>true</IncludeSymbols>
   </PropertyGroup>
 
   <PropertyGroup>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Include="BurnOutSharp.nuspec" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="LessIO" Version="0.6.16" />
@@ -20,6 +28,10 @@
     <PackageReference Include="UnshieldSharp" Version="1.4.2.3" />
     <PackageReference Include="WiseUnpacker" Version="1.0.0" />
     <PackageReference Include="zlib.net" Version="1.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="LICENSE.txt" Pack="true" PackagePath="$(PackageLicenseFile)"/>
   </ItemGroup>
 
   <ItemGroup>
