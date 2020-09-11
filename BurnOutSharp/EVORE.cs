@@ -67,13 +67,19 @@ namespace BurnOutSharp
             }
             catch { }
 
-            Directory.CreateDirectory(Path.GetDirectoryName(tempPath));
-            using (BinaryWriter bw = new BinaryWriter(File.OpenWrite(tempPath)))
+            try
             {
-                bw.Write(fileContent);
-            }
+                Directory.CreateDirectory(Path.GetDirectoryName(tempPath));
+                using (BinaryWriter bw = new BinaryWriter(File.OpenWrite(tempPath)))
+                {
+                    bw.Write(fileContent);
+                }
 
-            return Path.GetFullPath(tempPath);
+                return Path.GetFullPath(tempPath);
+            }
+            catch { }
+
+            return null;
         }
 
         private static bool IsEXE(byte[] fileContent)
