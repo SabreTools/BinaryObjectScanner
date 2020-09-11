@@ -5,7 +5,7 @@ namespace BurnOutSharp.ProtectionType
 {
     public class ProtectDisc
     {
-        public static string CheckContents(string file, byte[] fileContent)
+        public static string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
             // "HúMETINF"
             byte[] check = new byte[] { 0x48, 0xFA, 0x4D, 0x45, 0x54, 0x49, 0x4E, 0x46 };
@@ -18,11 +18,11 @@ namespace BurnOutSharp.ProtectionType
                     if (astrVersionArray[0] == "9")
                     {
                         if (GetVersionBuild76till10(fileContent, position, out int ibuild).Length > 0)
-                            return $"ProtectDisc {astrVersionArray[0]}.{astrVersionArray[1]}{astrVersionArray[2]}.{astrVersionArray[3]} (Build {ibuild}) (Index {position})";
+                            return $"ProtectDisc {astrVersionArray[0]}.{astrVersionArray[1]}{astrVersionArray[2]}.{astrVersionArray[3]} (Build {ibuild})" + (includePosition ? $" (Index {position})" : string.Empty);
                     }
                     else
                     {
-                        return $"ProtectDisc {astrVersionArray[0]}.{astrVersionArray[1]}.{astrVersionArray[2]} (Build {astrVersionArray[3]}) (Index {position})";
+                        return $"ProtectDisc {astrVersionArray[0]}.{astrVersionArray[1]}.{astrVersionArray[2]} (Build {astrVersionArray[3]})" + (includePosition ? $" (Index {position})" : string.Empty);
                     }
                 }
             }
@@ -35,10 +35,10 @@ namespace BurnOutSharp.ProtectionType
                 if (version.Length > 0)
                 {
                     string[] astrVersionArray = version.Split('.');
-                    return $"ProtectDisc {astrVersionArray[0]}.{astrVersionArray[1]}.{astrVersionArray[2]} (Build {astrVersionArray[3]}) (Index {position})";
+                    return $"ProtectDisc {astrVersionArray[0]}.{astrVersionArray[1]}.{astrVersionArray[2]} (Build {astrVersionArray[3]})" + (includePosition ? $" (Index {position})" : string.Empty);
                 }
 
-                return $"ProtectDisc {GetVersionBuild6till8(fileContent, position)} (Index {position})";
+                return $"ProtectDisc {GetVersionBuild6till8(fileContent, position)}" + (includePosition ? $" (Index {position})" : string.Empty);
             }
 
             return null;

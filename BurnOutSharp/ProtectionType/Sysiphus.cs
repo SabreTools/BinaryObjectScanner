@@ -2,17 +2,17 @@
 {
     public class Sysiphus
     {
-        public static string CheckContents(byte[] fileContent)
+        public static string CheckContents(byte[] fileContent, bool includePosition = false)
         {
             // "V SUHPISYSDVD"
             byte[] check = new byte[] { 0x56, 0x20, 0x53, 0x55, 0x48, 0x50, 0x49, 0x53, 0x59, 0x53, 0x44, 0x56, 0x44 };
             if (fileContent.Contains(check, out int position))
-                return $"Sysiphus DVD {GetVersion(fileContent, position)} (Index {position})";
+                return $"Sysiphus DVD {GetVersion(fileContent, position)}" + (includePosition ? $" (Index {position})" : string.Empty);
 
             // "V SUHPISYS"
             check = new byte[] { 0x56, 0x20, 0x53, 0x55, 0x48, 0x50, 0x49, 0x53, 0x59, 0x53 };
             if (fileContent.Contains(check, out position))
-                return $"Sysiphus {GetVersion(fileContent, position)} (Index {position})";
+                return $"Sysiphus {GetVersion(fileContent, position)}" + (includePosition ? $" (Index {position})" : string.Empty);
 
             return null;
         }

@@ -13,7 +13,7 @@ namespace Test
             p.ProgressChanged += Changed;
             foreach (string arg in args)
             {
-                string protections = String.Join("\r\n", ProtectionFind.Scan(arg, p).Select(kvp => kvp.Key + ": " + kvp.Value.TrimEnd()));
+                string protections = String.Join("\r\n", ProtectionFind.Scan(arg, true, p).Select(kvp => kvp.Key + ": " + kvp.Value.TrimEnd()));
                 Console.WriteLine(protections);
                 using (StreamWriter sw = new StreamWriter(File.OpenWrite($"{DateTime.Now:yyyy-MM-dd_HHmmss}.txt")))
                 {

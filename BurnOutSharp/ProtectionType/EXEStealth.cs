@@ -2,12 +2,12 @@
 {
     public class EXEStealth
     {
-        public static string CheckContents(byte[] fileContent)
+        public static string CheckContents(byte[] fileContent, bool includePosition = false)
         {
             // "??[[__[[_" + (char)0x00 + "{{" + (char)0x0 + (char)0x00 + "{{" + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x0 + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00 + "?;??;??"
             byte[] check = new byte[] { 0x3F, 0x3F, 0x5B, 0x5B, 0x5F, 0x5F, 0x5B, 0x5B, 0x5F, 0x00, 0x7B, 0x7B, 0x00, 0x00, 0x7B, 0x7B, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, 0x3F, 0x3B, 0x3F, 0x3F, 0x3B, 0x3F, 0x3F };
             if (fileContent.Contains(check, out int position))
-                return $"EXE Stealth (Index {position})";
+                return $"EXE Stealth" + (includePosition ? $" (Index {position})" : string.Empty);
 
             return null;
         }

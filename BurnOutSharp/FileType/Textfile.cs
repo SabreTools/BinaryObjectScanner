@@ -32,7 +32,7 @@ namespace BurnOutSharp.FileType
             return false;
         }
 
-        public static List<string> Scan(Stream stream)
+        public static List<string> Scan(Stream stream, bool includePosition = false)
         {
             List<string> protections = new List<string>();
 

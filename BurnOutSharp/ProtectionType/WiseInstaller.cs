@@ -7,18 +7,19 @@ namespace BurnOutSharp.ProtectionType
 {
     public class WiseInstaller
     {
-        public static List<string> CheckContents(string file, byte[] fileContent)
+        public static List<string> CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
             // "WiseMain"
             byte[] check = new byte[] { 0x57, 0x69, 0x73, 0x65, 0x4D, 0x61, 0x69, 0x6E };
             if (fileContent.Contains(check, out int position))
             {
-                List<string> protections = new List<string> { $"Wise Installation Wizard Module (Index {position})" };
+                List<string> protections = new List<string> { "Wise Installation Wizard Module" + (includePosition ? $" (Index {position})" : string.Empty)
+            };
 
                 if (!File.Exists(file))
                     return protections;
 
-                protections.AddRange(WiseInstaller.Scan(file));
+                protections.AddRange(WiseInstaller.Scan(file, includePosition));
 
                 return protections;
             }
@@ -26,7 +27,7 @@ namespace BurnOutSharp.ProtectionType
             return null;
         }
 
-        public static List<string> Scan(string file)
+        public static List<string> Scan(string file, bool includePosition = false)
         {
             List<string> protections = new List<string>();
 
@@ -41,7 +42,7 @@ namespace BurnOutSharp.ProtectionType
 
                 foreach (string tempFile in Directory.EnumerateFiles(tempPath, "*", SearchOption.AllDirectories))
                 {
-                    string protection = ProtectionFind.ScanContent(tempFile);
+                    string protection = ProtectionFind.ScanContent(tempFile, includePosition);
 
                     // If tempfile cleanup fails
                     try

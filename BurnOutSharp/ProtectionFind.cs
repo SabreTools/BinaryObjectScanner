@@ -34,7 +34,7 @@ namespace BurnOutSharp
         /// <param name="path">Path to scan for protection(s)</param>
         /// <param name="progress">Optional progress indicator that will return a float in the range from 0 to 1</param>
         /// <returns>Dictionary of filename to protection mappings, if possible</returns>
-        public static Dictionary<string, string> Scan(string path, IProgress<FileProtection> progress = null)
+        public static Dictionary<string, string> Scan(string path, bool includePosition = false, IProgress<FileProtection> progress = null)
         {
             var protections = new Dictionary<string, string>();
 
@@ -50,7 +50,7 @@ namespace BurnOutSharp
                     protections[path] = fileProtection;
 
                 // Now check to see if the file contains any additional information
-                string contentProtection = ScanContent(path)?.Replace("" + (char)0x00, "");
+                string contentProtection = ScanContent(path, includePosition)?.Replace("" + (char)0x00, "");
                 if (!string.IsNullOrWhiteSpace(contentProtection))
                 {
                     if (protections.ContainsKey(path))
@@ -85,7 +85,7 @@ namespace BurnOutSharp
                         protections[file] = fileProtection;
 
                     // Now check to see if the file contains any additional information
-                    string contentProtection = ScanContent(file)?.Replace("" + (char)0x00, "");
+                    string contentProtection = ScanContent(file, includePosition)?.Replace("" + (char)0x00, "");
                     if (!string.IsNullOrWhiteSpace(contentProtection))
                     {
                         if (protections.ContainsKey(file))
@@ -343,15 +343,18 @@ namespace BurnOutSharp
                 return string.Join(", ", protections);
         }
 
+        // TODO: Make `includePosition` optional in the two methods below
+
         /// <summary>
         /// Scan an individual file for copy protection
         /// </summary>
         /// <param name="file">File path for scanning</param>
-        public static string ScanContent(string file)
+        /// <param name="includePosition">True to include scanned copy protection position, false otherwise (default)</param>
+        public static string ScanContent(string file, bool includePosition = false)
         {
             using (FileStream fs = File.OpenRead(file))
             {
-                return ScanContent(fs, file);
+                return ScanContent(fs, file, includePosition);
             }
         }
 
@@ -360,7 +363,8 @@ namespace BurnOutSharp
         /// </summary>
         /// <param name="stream">Generic stream to scan</param>
         /// <param name="file">File path to be used for name checks (optional)</param>
-        public static string ScanContent(Stream stream, string file = null)
+        /// <param name="includePosition">True to include scanned copy protection position, false otherwise (default)</param>
+        public static string ScanContent(Stream stream, string file = null, bool includePosition = false)
         {
             // Get the extension for certain checks
             string extension = Path.GetExtension(file).ToLower().TrimStart('.');
@@ -383,59 +387,59 @@ namespace BurnOutSharp
 
             // 7-Zip archive
             if (SevenZip.ShouldScan(magic))
-                protections.AddRange(SevenZip.Scan(stream));
+                protections.AddRange(SevenZip.Scan(stream, includePosition));
 
             // BFPK archive
             if (BFPK.ShouldScan(magic))
-                protections.AddRange(BFPK.Scan(stream));
+                protections.AddRange(BFPK.Scan(stream, includePosition));
 
             // BZip2
             if (BZip2.ShouldScan(magic))
-                protections.AddRange(BZip2.Scan(stream));
+                protections.AddRange(BZip2.Scan(stream, includePosition));
 
             // Executable
             if (Executable.ShouldScan(magic))
-                protections.AddRange(Executable.Scan(stream, file));
+                protections.AddRange(Executable.Scan(stream, file, includePosition));
 
             // GZIP
             if (GZIP.ShouldScan(magic))
-                protections.AddRange(GZIP.Scan(stream));
+                protections.AddRange(GZIP.Scan(stream, includePosition));
 
             // InstallShield Cabinet
             if (file != null && InstallShieldCAB.ShouldScan(magic))
-                protections.AddRange(InstallShieldCAB.Scan(file));
+                protections.AddRange(InstallShieldCAB.Scan(file, includePosition));
 
             // Microsoft Cabinet
             if (file != null && MicrosoftCAB.ShouldScan(magic))
-                protections.AddRange(MicrosoftCAB.Scan(file));
+                protections.AddRange(MicrosoftCAB.Scan(file, includePosition));
 
             // MPQ archive
             if (file != null && MPQ.ShouldScan(magic))
-                protections.AddRange(MPQ.Scan(file));
+                protections.AddRange(MPQ.Scan(file, includePosition));
 
             // PKZIP archive (and derivatives)
             if (PKZIP.ShouldScan(magic))
-                protections.AddRange(PKZIP.Scan(stream));
+                protections.AddRange(PKZIP.Scan(stream, includePosition));
 
             // RAR archive
             if (RAR.ShouldScan(magic))
-                protections.AddRange(RAR.Scan(stream));
+                protections.AddRange(RAR.Scan(stream, includePosition));
 
             // Tape Archive
             if (TapeArchive.ShouldScan(magic))
-                protections.AddRange(TapeArchive.Scan(stream));
+                protections.AddRange(TapeArchive.Scan(stream, includePosition));
 
             // Text-based files
             if (Textfile.ShouldScan(magic, extension))
-                protections.AddRange(Textfile.Scan(stream));
+                protections.AddRange(Textfile.Scan(stream, includePosition));
 
             // Valve archive formats
             if (file != null && Valve.ShouldScan(magic))
-                protections.AddRange(Valve.Scan(file));
+                protections.AddRange(Valve.Scan(file, includePosition));
 
             // XZ
             if (XZ.ShouldScan(magic))
-                protections.AddRange(XZ.Scan(stream));
+                protections.AddRange(XZ.Scan(stream, includePosition));
 
             // Return blank if nothing found, or comma-separated list of protections
             if (protections.Count() == 0)

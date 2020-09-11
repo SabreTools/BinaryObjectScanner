@@ -7,7 +7,7 @@ namespace BurnOutSharp.ProtectionType
 {
     public class LaserLock
     {
-        public static string CheckContents(string file, byte[] fileContent)
+        public static string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
             // "Packed by SPEEnc V2 Asterios Parlamentas.PE"
             byte[] check = new byte[] { 0x50, 0x61, 0x63, 0x6B, 0x65, 0x64, 0x20, 0x62, 0x79, 0x20, 0x53, 0x50, 0x45, 0x45, 0x6E, 0x63, 0x20, 0x56, 0x32, 0x20, 0x41, 0x73, 0x74, 0x65, 0x72, 0x69, 0x6F, 0x73, 0x20, 0x50, 0x61, 0x72, 0x6C, 0x61, 0x6D, 0x65, 0x6E, 0x74, 0x61, 0x73, 0x2E, 0x50, 0x45 };
@@ -18,24 +18,24 @@ namespace BurnOutSharp.ProtectionType
             bool containsCheck2 = fileContent.Contains(check2, out int position2);
 
             if (containsCheck && containsCheck2)
-                return $"LaserLock {GetVersion(fileContent, position2)} {GetBuild(fileContent, true)} (Index {position}, {position2})";
+                return $"LaserLock {GetVersion(fileContent, position2)} {GetBuild(fileContent, true)}" + (includePosition ? $" (Index {position}, {position2})" : string.Empty);
             else if (containsCheck && !containsCheck2)
-                return $"LaserLock Marathon {GetBuild(fileContent, false)} (Index {position})";
+                return $"LaserLock Marathon {GetBuild(fileContent, false)}" + (includePosition ? $" (Index {position})" : string.Empty);
             else if (!containsCheck && containsCheck2)
-                return $"LaserLock {GetVersion(fileContent, --position2)} {GetBuild(fileContent, false)} (Index {position2})";
+                return $"LaserLock {GetVersion(fileContent, --position2)} {GetBuild(fileContent, false)}" + (includePosition ? $" (Index {position2})" : string.Empty);
 
             if (file != null && string.Equals(Path.GetFileName(file), "NOMOUSE.SP", StringComparison.OrdinalIgnoreCase))
-                return $"LaserLock {GetVersion16Bit(fileContent)} (Index 71)";
+                return $"LaserLock {GetVersion16Bit(fileContent)}" + (includePosition ? $" (Index 71)" : string.Empty);
 
             // ":\\LASERLOK\\LASERLOK.IN" + (char)0x00 + "C:\\NOMOUSE.SP"
             check = new byte[] { 0x3A, 0x5C, 0x5C, 0x4C, 0x41, 0x53, 0x45, 0x52, 0x4C, 0x4F, 0x4B, 0x5C, 0x5C, 0x4C, 0x41, 0x53, 0x45, 0x52, 0x4C, 0x4F, 0x4B, 0x2E, 0x49, 0x4E, 0x00, 0x43, 0x3A, 0x5C, 0x5C, 0x4E, 0x4F, 0x4D, 0x4F, 0x55, 0x53, 0x45, 0x2E, 0x53, 0x50 };
             if (fileContent.Contains(check, out position))
-                return $"LaserLock 3 (Index {position})";
+                return "LaserLock 3" + (includePosition ? $" (Index {position})" : string.Empty);
 
             // "LASERLOK_INIT" + (char)0xC + "LASERLOK_RUN" + (char)0xE + "LASERLOK_CHECK" + (char)0xF + "LASERLOK_CHECK2" + (char)0xF + "LASERLOK_CHECK3"
             check = new byte[] { 0x4C, 0x41, 0x53, 0x45, 0x52, 0x4C, 0x4F, 0x4B, 0x5F, 0x49, 0x4E, 0x49, 0x54, 0x0C, 0x4C, 0x41, 0x53, 0x45, 0x52, 0x4C, 0x4F, 0x4B, 0x5F, 0x52, 0x55, 0x4E, 0x0E, 0x4C, 0x41, 0x53, 0x45, 0x52, 0x4C, 0x4F, 0x4B, 0x5F, 0x43, 0x48, 0x45, 0x43, 0x4B, 0x0F, 0x4C, 0x41, 0x53, 0x45, 0x52, 0x4C, 0x4F, 0x4B, 0x5F, 0x43, 0x48, 0x45, 0x43, 0x4B, 0x32, 0x0F, 0x4C, 0x41, 0x53, 0x45, 0x52, 0x4C, 0x4F, 0x4B, 0x5F, 0x43, 0x48, 0x45, 0x43, 0x4B, 0x33 };
             if (fileContent.Contains(check, out position))
-                return $"LaserLock 5 (Index {position})";
+                return "LaserLock 5" + (includePosition ? $" (Index {position})" : string.Empty);
 
             return null;
         }

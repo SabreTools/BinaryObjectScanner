@@ -7,17 +7,17 @@ namespace BurnOutSharp.ProtectionType
 {
     public class CDCops
     {
-        public static string CheckContents(byte[] fileContent)
+        public static string CheckContents(byte[] fileContent, bool includePosition = false)
         {
             // "CD-Cops,  ver. "
             byte[] check = new byte[] { 0x43, 0x44, 0x2D, 0x43, 0x6F, 0x70, 0x73, 0x2C, 0x20, 0x20, 0x76, 0x65, 0x72, 0x2E, 0x20 };
             if (fileContent.Contains(check, out int position))
-                return $"CD-Cops {GetVersion(fileContent, position)} (Index {position})";
+                return $"CD-Cops {GetVersion(fileContent, position)}" + (includePosition ? $" (Index {position})" : string.Empty);
 
             // ".grand" + (char)0x00
             check = new byte[] { 0x2E, 0x67, 0x72, 0x61, 0x6E, 0x64, 0x00};
             if (fileContent.Contains(check, out position))
-                return $"CD-Cops (Index {position})";
+                return "CD-Cops" + (includePosition ? $" (Index {position})" : string.Empty);
 
             return null;
         }

@@ -7,42 +7,42 @@ namespace BurnOutSharp.ProtectionType
 {
     public class SecuROM
     {
-        public static string CheckContents(string file, byte[] fileContent)
+        public static string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
             // "AddD" + (char)0x03 + (char)0x00 + (char)0x00 + (char)0x00)
             byte[] check = new byte[] { 0x41, 0x64, 0x64, 0x44, 0x03, 0x00, 0x00, 0x00 };
             if (fileContent.Contains(check, out int position))
-                return $"SecuROM {GetV4Version(fileContent, position)} (Index {position})";
+                return $"SecuROM {GetV4Version(fileContent, position)}" + (includePosition ? $" (Index {position})" : string.Empty);
 
             // (char)0xCA + (char)0xDD + (char)0xDD + (char)0xAC + (char)0x03
             check = new byte[] { 0xCA, 0xDD, 0xDD, 0xAC, 0x03 };
             if (fileContent.Contains(check, out position))
-                return $"SecuROM {GetV5Version(fileContent, position)} (Index {position})";
+                return $"SecuROM {GetV5Version(fileContent, position)}" + (includePosition ? $" (Index {position})" : string.Empty);
 
             // ".securom" + (char)0xE0 + (char)0xC0
             check = new byte[] { 0x2E, 0x73, 0x65, 0x63, 0x75, 0x72, 0x6F, 0x6D, 0xE0, 0xC0 };
             if (fileContent.Contains(check, out position) && position == 0)
-                return $"SecuROM {GetV7Version(fileContent)} (Index {position})";
+                return $"SecuROM {GetV7Version(fileContent)}" + (includePosition ? $" (Index {position})" : string.Empty);
 
             // ".securom"
             check = new byte[] { 0x2E, 0x73, 0x65, 0x63, 0x75, 0x72, 0x6F, 0x6D };
             if (fileContent.Contains(check, out position))
-                return $"SecuROM {GetV7Version(fileContent)} (Index {position})";
+                return $"SecuROM {GetV7Version(fileContent)}" + (includePosition ? $" (Index {position})" : string.Empty);
 
             // "_and_play.dll" + (char)0x00 + "drm_pagui_doit"
             check = new byte[] { 0x5F, 0x61, 0x6E, 0x64, 0x5F, 0x70, 0x6C, 0x61, 0x79, 0x2E, 0x64, 0x6C, 0x6C, 0x00, 0x64, 0x72, 0x6D, 0x5F, 0x70, 0x61, 0x67, 0x75, 0x69, 0x5F, 0x64, 0x6F, 0x69, 0x74 };
             if (fileContent.Contains(check, out position))
-                return $"SecuROM Product Activation {Utilities.GetFileVersion(file)} (Index {position})";
+                return $"SecuROM Product Activation {Utilities.GetFileVersion(file)}" + (includePosition ? $" (Index {position})" : string.Empty);
 
             // ".cms_t" + (char)0x00
             check = new byte[] { 0x2E, 0x63, 0x6D, 0x73, 0x5F, 0x74, 0x00 };
             if (fileContent.Contains(check, out position))
-                return $"SecuROM 1-3 (Index {position})";
+                return "SecuROM 1-3" + (includePosition ? $" (Index {position})" : string.Empty);
 
             // ".cms_d" + (char)0x00
             check = new byte[] { 0x2E, 0x63, 0x6D, 0x73, 0x5F, 0x64, 0x00 };
             if (fileContent.Contains(check, out position))
-                return $"SecuROM 1-3 (Index {position})";
+                return "SecuROM 1-3" + (includePosition ? $" (Index {position})" : string.Empty);
 
             return null;
         }

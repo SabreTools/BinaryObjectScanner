@@ -8,12 +8,12 @@ namespace BurnOutSharp.ProtectionType
 {
     public class SolidShield
     {
-        public static string CheckContents(string file, byte[] fileContent)
+        public static string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
             // "D" + (char)0x00 + "V" + (char)0x00 + "M" + (char)0x00 + " " + (char)0x00 + "L" + (char)0x00 + "i" + (char)0x00 + "b" + (char)0x00 + "r" + (char)0x00 + "a" + (char)0x00 + "r" + (char)0x00 + "y"
             byte[] check = new byte[] { 0x44, 0x00, 0x56, 0x00, 0x4D, 0x00, 0x20, 0x00, 0x4C, 0x00, 0x69, 0x00, 0x62, 0x00, 0x72, 0x00, 0x61, 0x00, 0x72, 0x00, 0x79 };
             if (fileContent.Contains(check, out int position))
-                return $"SolidShield {Utilities.GetFileVersion(file)} (Index {position})";
+                return $"SolidShield {Utilities.GetFileVersion(file)}" + (includePosition ? $" (Index {position})" : string.Empty);
 
             // "S" + (char)0x00 + "o" + (char)0x00 + "l" + (char)0x00 + "i" + (char)0x00 + "d" + (char)0x00 + "s" + (char)0x00 + "h" + (char)0x00 + "i" + (char)0x00 + "e" + (char)0x00 + "l" + (char)0x00 + "d" + (char)0x00 + " " + (char)0x00 + "L" + (char)0x00 + "i" + (char)0x00 + "b" + (char)0x00 + "r" + (char)0x00 + "a" + (char)0x00 + "r" + (char)0x00 + "y"
             check = new byte[] { 0x53, 0x00, 0x6F, 0x00, 0x6C, 0x00, 0x69, 0x00, 0x64, 0x00, 0x73, 0x00, 0x68, 0x00, 0x69, 0x00, 0x65, 0x00, 0x6C, 0x00, 0x64, 0x00, 0x20, 0x00, 0x4C, 0x00, 0x69, 0x00, 0x62, 0x00, 0x72, 0x00, 0x61, 0x00, 0x72, 0x00, 0x79 };
@@ -24,7 +24,7 @@ namespace BurnOutSharp.ProtectionType
                     companyName = FileVersionInfo.GetVersionInfo(file).CompanyName.ToLower();
 
                 if (companyName.Contains("solidshield") || companyName.Contains("tages"))
-                    return $"SolidShield Core.dll {Utilities.GetFileVersion(file)} (Index {position})";
+                    return $"SolidShield Core.dll {Utilities.GetFileVersion(file)}" + (includePosition ? $" (Index {position})" : string.Empty);
             }
 
             // "S" + (char)0x00 + "o" + (char)0x00 + "l" + (char)0x00 + "i" + (char)0x00 + "d" + (char)0x00 + "s" + (char)0x00 + "h" + (char)0x00 + "i" + (char)0x00 + "e" + (char)0x00 + "l" + (char)0x00 + "d" + (char)0x00 + " " + (char)0x00 + "A" + (char)0x00 + "c" + (char)0x00 + "t" + (char)0x00 + "i" + (char)0x00 + "v" + (char)0x00 + "a" + (char)0x00 + "t" + (char)0x00 + "i" + (char)0x00 + "o" + (char)0x00 + "n" + (char)0x00 + " " + (char)0x00 + "L" + (char)0x00 + "i" + (char)0x00 + "b" + (char)0x00 + "r" + (char)0x00 + "a" + (char)0x00 + "r" + (char)0x00 + "y"
@@ -36,7 +36,7 @@ namespace BurnOutSharp.ProtectionType
                     companyName = FileVersionInfo.GetVersionInfo(file).CompanyName.ToLower();
 
                 if (companyName.Contains("solidshield") || companyName.Contains("tages"))
-                    return $"SolidShield Core.dll {Utilities.GetFileVersion(file)} (Index {position})";
+                    return $"SolidShield Core.dll {Utilities.GetFileVersion(file)}" + (includePosition ? $" (Index {position})" : string.Empty);
             }
 
             // (char)0xEF + (char)0xBE + (char)0xAD + (char)0xDE
@@ -47,9 +47,9 @@ namespace BurnOutSharp.ProtectionType
                 var id2 = new ArraySegment<byte>(fileContent, position + 16, 4);
 
                 if (id1.SequenceEqual(new byte[] { 0x00, 0x00, 0x00 }) && id2.SequenceEqual(new byte[] { 0x00, 0x10, 0x00, 0x00 }))
-                    return $"SolidShield 1 (SolidShield EXE Wrapper) (Index {position})";
+                    return "SolidShield 1 (SolidShield EXE Wrapper)" + (includePosition ? $" (Index {position})" : string.Empty);
                 else if (id1.SequenceEqual(new byte[] { 0x2E, 0x6F, 0x26 }) && id2.SequenceEqual(new byte[] { 0xDB, 0xC5, 0x20, 0x3A, 0xB9 }))
-                    return $"SolidShield 2 (SolidShield v2 EXE Wrapper) (Index {position})"; // TODO: Verify against other SolidShield 2 discs
+                    return "SolidShield 2 (SolidShield v2 EXE Wrapper)" + (includePosition ? $" (Index {position})" : string.Empty); // TODO: Verify against other SolidShield 2 discs
             }
 
             // "A" + (char)0x00 + "c" + (char)0x00 + "t" + (char)0x00 + "i" + (char)0x00 + "v" + (char)0x00 + "a" + (char)0x00 + "t" + (char)0x00 + "i" + (char)0x00 + "o" + (char)0x00 + "n" + (char)0x00 + " " + (char)0x00 + "M" + (char)0x00 + "a" + (char)0x00 + "n" + (char)0x00 + "a" + (char)0x00 + "g" + (char)0x00 + "e" + (char)0x00 + "r"
@@ -61,7 +61,7 @@ namespace BurnOutSharp.ProtectionType
                     companyName = FileVersionInfo.GetVersionInfo(file).CompanyName.ToLower();
 
                 if (companyName.Contains("solidshield") || companyName.Contains("tages"))
-                    return $"SolidShield Activation Manager Module {Utilities.GetFileVersion(file)} (Index {position})";
+                    return $"SolidShield Activation Manager Module {Utilities.GetFileVersion(file)}" + (includePosition ? $" (Index {position})" : string.Empty);
             }
 
             // (char)0xAD + (char)0xDE + (char)0xFE + (char)0xCA
@@ -75,7 +75,7 @@ namespace BurnOutSharp.ProtectionType
                     && id1.SequenceEqual(new byte[] { 0x00, 0x00, 0x00 })
                     && id2.SequenceEqual(new byte[] { 0x00, 0x10, 0x00, 0x00 }))
                 {
-                    return $"SolidShield 2 (SolidShield v2 EXE Wrapper) (Index {position})";
+                    return "SolidShield 2 (SolidShield v2 EXE Wrapper)" + (includePosition ? $" (Index {position})" : string.Empty);
                 }
                 else if (id1.SequenceEqual(new byte[] { 0x00, 0x00, 0x00 })
                     && id2.SequenceEqual(new byte[] { 0x00, 0x00, 0x00, 0x00 }))
@@ -85,11 +85,11 @@ namespace BurnOutSharp.ProtectionType
                     if (fileContent.Contains(check2, out int position2))
                     {
                         position2--; // TODO: Verify this subtract
-                        return $"SolidShield 2 + Tagès {fileContent[position2 + 0x38]}.{fileContent[position2 + 0x38 + 4]}.{fileContent[position2 + 0x38 + 8]}.{fileContent[position + 0x38 + 12]} (Index {position}, {position2})";
+                        return $"SolidShield 2 + Tagès {fileContent[position2 + 0x38]}.{fileContent[position2 + 0x38 + 4]}.{fileContent[position2 + 0x38 + 8]}.{fileContent[position + 0x38 + 12]}" + (includePosition ? $" (Index {position}, {position2})" : string.Empty);
                     }
                     else
                     {
-                        return $"SolidShield 2 (SolidShield v2 EXE Wrapper) (Index {position})";
+                        return "SolidShield 2 (SolidShield v2 EXE Wrapper)" + (includePosition ? $" (Index {position})" : string.Empty);
                     }
                 }
             }
@@ -97,12 +97,12 @@ namespace BurnOutSharp.ProtectionType
             // "Solidshield"
             check = new byte[] { 0x53, 0x6F, 0x6C, 0x69, 0x64, 0x73, 0x68, 0x69, 0x65, 0x6C, 0x64 };
             if (fileContent.Contains(check, out position))
-                return $"SolidShield {GetVersion(fileContent, position)} (Index {position})";
+                return $"SolidShield {GetVersion(fileContent, position)}" + (includePosition ? $" (Index {position})" : string.Empty);
 
             // "B" + (char)0x00 + "I" + (char)0x00 + "N" + (char)0x00 + (char)0x7 + (char)0x00 + "I" + (char)0x00 + "D" + (char)0x00 + "R" + (char)0x00 + "_" + (char)0x00 + "S" + (char)0x00 + "G" + (char)0x00 + "T" + (char)0x0
             check = new byte[] { 0x42, 0x00, 0x49, 0x00, 0x4E, 0x00, 0x07, 0x00, 0x49, 0x00, 0x44, 0x00, 0x52, 0x00, 0x5F, 0x00, 0x53, 0x00, 0x47, 0x00, 0x54, 0x00 };
             if (fileContent.Contains(check, out position))
-                return $"SolidShield (Index {position})";
+                return "SolidShield" + (includePosition ? $" (Index {position})" : string.Empty);
 
             return null;
         }

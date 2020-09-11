@@ -33,7 +33,7 @@ namespace BurnOutSharp.FileType
         }
 
         // TODO: Add stream opening support
-        public static List<string> Scan(string file)
+        public static List<string> Scan(string file, bool includePosition = false)
         {
             List<string> protections = new List<string>();
 
@@ -55,7 +55,7 @@ namespace BurnOutSharp.FileType
             {
                 foreach (string tempFile in Directory.EnumerateFiles(tempPath, "*", SearchOption.AllDirectories))
                 {
-                    string protection = ProtectionFind.ScanContent(tempFile);
+                    string protection = ProtectionFind.ScanContent(tempFile, includePosition);
 
                     // If tempfile cleanup fails
                     try

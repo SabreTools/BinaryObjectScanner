@@ -7,7 +7,7 @@ namespace BurnOutSharp.ProtectionType
 {
     public class SafeDisc
     {
-        public static string CheckContents(string file, byte[] fileContent)
+        public static string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
             // "BoG_ *90.0&!!  Yy>"
             byte[] check = new byte[] { 0x42, 0x6F, 0x47, 0x5F, 0x20, 0x2A, 0x39, 0x30, 0x2E, 0x30, 0x26, 0x21, 0x21, 0x20, 0x20, 0x59, 0x79, 0x3E };
@@ -16,9 +16,9 @@ namespace BurnOutSharp.ProtectionType
                 // "product activation library"
                 byte[] check2 = new byte[] { 0x70, 0x72, 0x6F, 0x64, 0x75, 0x63, 0x74, 0x20, 0x61, 0x63, 0x74, 0x69, 0x76, 0x61, 0x74, 0x69, 0x6F, 0x6E, 0x20, 0x6C, 0x69, 0x62, 0x72, 0x61, 0x72, 0x79 };
                 if (fileContent.Contains(check2, out int position2))
-                    return $"SafeCast {GetVersion(fileContent, position)} (Index {position}, {position2})";
+                    return $"SafeCast {GetVersion(fileContent, position)}" + (includePosition ? $" (Index {position}, {position2})" : string.Empty);
                 else
-                    return $"SafeDisc {GetVersion(fileContent, position)} (Index {position})";
+                    return $"SafeDisc {GetVersion(fileContent, position)}" + (includePosition ? $" (Index {position})" : string.Empty);
             }
 
             // (char)0x00 + (char)0x00 + "BoG_"
@@ -27,9 +27,9 @@ namespace BurnOutSharp.ProtectionType
             {
                 string version = EVORE.SearchSafeDiscVersion(file, fileContent);
                 if (version.Length > 0)
-                    return $"SafeDisc {version} (Index {position})";
+                    return $"SafeDisc {version}" + (includePosition ? $" (Index {position})" : string.Empty);
 
-                return $"SafeDisc 3.20-4.xx (version removed) (Index {position})";
+                return "SafeDisc 3.20-4.xx (version removed)" + (includePosition ? $" (Index {position})" : string.Empty);
             }
 
             // "stxt774"
@@ -38,9 +38,9 @@ namespace BurnOutSharp.ProtectionType
             {
                 string version = EVORE.SearchSafeDiscVersion(file, fileContent);
                 if (version.Length > 0)
-                    return $"SafeDisc {version} (Index {position})";
+                    return $"SafeDisc {version}" + (includePosition ? $" (Index {position})" : string.Empty);
 
-                return $"SafeDisc 3.20-4.xx (version removed) (Index {position})";
+                return "SafeDisc 3.20-4.xx (version removed)" + (includePosition ? $" (Index {position})" : string.Empty);
             }
 
             // "stxt371"
@@ -49,9 +49,9 @@ namespace BurnOutSharp.ProtectionType
             {
                 string version = EVORE.SearchSafeDiscVersion(file, fileContent);
                 if (version.Length > 0)
-                    return $"SafeDisc {version} (Index {position})";
+                    return $"SafeDisc {version}" + (includePosition ? $" (Index {position})" : string.Empty);
 
-                return $"SafeDisc 3.20-4.xx (version removed) (Index {position})";
+                return "SafeDisc 3.20-4.xx (version removed)" + (includePosition ? $" (Index {position})" : string.Empty);
             }
 
             return null;

@@ -21,7 +21,7 @@ namespace BurnOutSharp.FileType
             return false;
         }
 
-        public static List<string> Scan(Stream stream)
+        public static List<string> Scan(Stream stream, bool includePosition = false)
         {
             List<string> protections = new List<string>();
 
@@ -44,7 +44,7 @@ namespace BurnOutSharp.FileType
 
                             string tempfile = Path.Combine(tempPath, entry.Key);
                             entry.WriteToFile(tempfile);
-                            string protection = ProtectionFind.ScanContent(tempfile);
+                            string protection = ProtectionFind.ScanContent(tempfile, includePosition);
 
                             // If tempfile cleanup fails
                             try
