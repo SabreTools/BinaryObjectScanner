@@ -214,7 +214,7 @@ namespace BurnOutSharp.ProtectionType
             else if (fi.Length == 11973)
                 return "SafeDisc 3.20";
             else
-                return "SafeDisc 2 or greater";
+                return "SafeDisc 1 or greater";
         }
 
         private static string GetVersion(byte[] fileContent, int position)
