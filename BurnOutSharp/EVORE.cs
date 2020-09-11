@@ -413,9 +413,9 @@ namespace BurnOutSharp
             try
             {
                 File.Delete(Path.Combine(Path.GetTempPath(), "~e*"));
+                File.Delete(tempexe);
             }
             catch { }
-            File.Delete(tempexe);
 
             if (DependentDlls != null)
             {
