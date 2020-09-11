@@ -20,11 +20,10 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="bin\Debug\net462\BurnOutSharp.dll" target="lib\net462\BurnOutSharp.dll" />
     <file src="bin\Debug\net462\BurnOutSharp.pdb" target="lib\net462\BurnOutSharp.pdb" />
     <file src="bin\Debug\net472\BurnOutSharp.dll" target="lib\net472\BurnOutSharp.dll" />
     <file src="bin\Debug\net472\BurnOutSharp.pdb" target="lib\net472\BurnOutSharp.pdb" />
-    <file src="bin\Debug\netcoreapp3.0\BurnOutSharp.dll" target="lib\netcoreapp3.0\BurnOutSharp.dll" />
-    <file src="bin\Debug\netcoreapp3.0\BurnOutSharp.pdb" target="lib\netcoreapp3.0\BurnOutSharp.pdb" />
+    <file src="bin\Debug\netcoreapp3.1\BurnOutSharp.dll" target="lib\netcoreapp3.1\BurnOutSharp.dll" />
+    <file src="bin\Debug\netcoreapp3.1\BurnOutSharp.pdb" target="lib\netcoreapp3.1\BurnOutSharp.pdb" />
   </files>
 </package>
