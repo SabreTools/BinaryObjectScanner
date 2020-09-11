@@ -7,10 +7,12 @@ namespace BurnOutSharp.ProtectionType
 {
     public class SafeLock
     {
-        public static string CheckContents(string fileContent)
+        public static string CheckContents(byte[] fileContent)
         {
-            if (fileContent.Contains("SafeLock"))
-                return "SafeLock";
+            // "SafeLock"
+            byte[] check = new byte[] { 0x53, 0x61, 0x66, 0x65, 0x4C, 0x6F, 0x63, 0x6B };
+            if (fileContent.Contains(check, out int position))
+                return $"SafeLock (Index {position})";
 
             return null;
         }

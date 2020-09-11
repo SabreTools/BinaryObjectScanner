@@ -7,10 +7,12 @@ namespace BurnOutSharp.ProtectionType
 {
     public class SmartE
     {
-        public static string CheckContents(string fileContent)
+        public static string CheckContents(byte[] fileContent)
         {
-            if (fileContent.Contains("BITARTS"))
-                return "SmartE";
+            // "BITARTS"
+            byte[] check = new byte[] { 0x42, 0x49, 0x54, 0x41, 0x52, 0x54, 0x53 };
+            if (fileContent.Contains(check, out int position))
+                return $"SmartE (Index {position})";
 
             return null;
         }

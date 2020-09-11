@@ -7,14 +7,17 @@ namespace BurnOutSharp.ProtectionType
 {
     public class CDCops
     {
-        public static string CheckContents(string file, string fileContent)
+        public static string CheckContents(byte[] fileContent)
         {
-            int position;
-            if ((position = fileContent.IndexOf("CD-Cops,  ver. ")) > -1)
-                return "CD-Cops " + GetVersion(file, position);
+            // "CD-Cops,  ver. "
+            byte[] check = new byte[] { 0x43, 0x44, 0x2D, 0x43, 0x6F, 0x70, 0x73, 0x2C, 0x20, 0x20, 0x76, 0x65, 0x72, 0x2E, 0x20 };
+            if (fileContent.Contains(check, out int position))
+                return $"CD-Cops {GetVersion(fileContent, position)} (Index {position})";
 
-            if (fileContent.Contains(".grand" + (char)0x00))
-                return "CD-Cops";
+            // ".grand" + (char)0x00
+            check = new byte[] { 0x2E, 0x67, 0x72, 0x61, 0x6E, 0x64, 0x00};
+            if (fileContent.Contains(check, out position))
+                return $"CD-Cops (Index {position})";
 
             return null;
         }
@@ -47,21 +50,13 @@ namespace BurnOutSharp.ProtectionType
             return null;
         }
 
-        private static string GetVersion(string file, int position)
+        private static string GetVersion(byte[] fileContent, int position)
         {
-            if (file == null || !File.Exists(file))
-                return string.Empty;
+            char[] version = new ArraySegment<byte>(fileContent, position + 15, 4).Select(b => (char)b).ToArray();
+            if (version[0] == 0x00)
+                return "";
 
-            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            using (var br = new BinaryReader(fs))
-            {
-                br.BaseStream.Seek(position + 15, SeekOrigin.Begin); // Begin reading after "CD-Cops,  ver."
-                char[] version = br.ReadChars(4);
-                if (version[0] == 0x00)
-                    return "";
-
-                return new string(version);
-            }
+            return new string(version);
         }
     }
 }

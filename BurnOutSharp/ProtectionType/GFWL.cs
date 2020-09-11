@@ -7,10 +7,12 @@ namespace BurnOutSharp.ProtectionType
 {
     public class GFWL
     {
-        public static string CheckContents(string fileContent)
+        public static string CheckContents(byte[] fileContent)
         {
-            if (fileContent.Contains("xlive.dll"))
-                return "Games for Windows - Live";
+            // "xlive.dll"
+            byte[] check = new byte[] { 0x78, 0x6C, 0x69, 0x76, 0x65, 0x2E, 0x64, 0x6C, 0x6C };
+            if (fileContent.Contains(check, out int position))
+                return $"Games for Windows - Live (Index {position})";
 
             return null;
         }

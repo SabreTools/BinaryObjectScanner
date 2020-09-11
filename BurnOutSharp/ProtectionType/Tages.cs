@@ -7,16 +7,26 @@ namespace BurnOutSharp.ProtectionType
 {
     public class Tages
     {
-        public static string CheckContents(string file, string fileContent)
+        public static string CheckContents(string file, byte[] fileContent)
         {
-            int position;
-            if (fileContent.Contains("protected-tages-runtime.exe") ||
-                        fileContent.Contains("tagesprotection.com"))
-                return "TAGES " + Utilities.GetFileVersion(file);
+            // "protected-tages-runtime.exe"
+            byte[] check = new byte[] { 0x70, 0x72, 0x6F, 0x74, 0x65, 0x63, 0x74, 0x65, 0x64, 0x2D, 0x74, 0x61, 0x67, 0x65, 0x73, 0x2D, 0x72, 0x75, 0x6E, 0x74, 0x69, 0x6D, 0x65, 0x2E, 0x65, 0x78, 0x65 };
+            if (fileContent.Contains(check, out int position))
+                return $"TAGES {Utilities.GetFileVersion(file)} (Index {position})";
 
-            if ((position = fileContent.IndexOf("" + (char)0xE8 + "u" + (char)0x00 + (char)0x00 + (char)0x00 + (char)0xE8)) > -1
-                && fileContent.Substring(--position + 8, 3) == "" + (char)0xFF + (char)0xFF + "h") // TODO: Verify this subtract
-                return "TAGES " + GetVersion(file, position);
+            // "tagesprotection.com"
+            check = new byte[] { 0x74, 0x61, 0x67, 0x65, 0x73, 0x70, 0x72, 0x6F, 0x74, 0x65, 0x63, 0x74, 0x69, 0x6F, 0x6E, 0x2E, 0x63, 0x6F, 0x6D };
+            if (fileContent.Contains(check, out position))
+                return $"TAGES {Utilities.GetFileVersion(file)} (Index {position})";
+
+            // (char)0xE8 + "u" + (char)0x00 + (char)0x00 + (char)0x00 + (char)0xE8
+            check = new byte[] { 0xE8, 0x75, 0x00, 0x00, 0x00, 0xE8 };
+            if (fileContent.Contains(check, out position))
+            {
+                // (char)0xFF + (char)0xFF + "h"
+                if (new ArraySegment<byte>(fileContent, --position + 8, 3).SequenceEqual(new byte[] { 0xFF, 0xFF, 0x68 })) // TODO: Verify this subtract
+                    return $"TAGES {GetVersion(fileContent, position)} (Index {position})";
+            }
 
             return null;
         }
@@ -78,27 +88,19 @@ namespace BurnOutSharp.ProtectionType
             return null;
         }
 
-        private static string GetVersion(string file, int position)
+        private static string GetVersion(byte[] fileContent, int position)
         {
-            if (file == null || !File.Exists(file))
-                return string.Empty;
-
-            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            using (var br = new BinaryReader(fs))
+            switch (fileContent[position + 7])
             {
-                br.BaseStream.Seek(position + 7, SeekOrigin.Begin);
-                byte bVersion = br.ReadByte();
-                switch (bVersion)
-                {
-                    case 0x1B:
-                        return "5.3-5.4";
-                    case 0x14:
-                        return "5.5.0";
-                    case 0x4:
-                        return "5.5.2";
-                }
-                return "";
+                case 0x1B:
+                    return "5.3-5.4";
+                case 0x14:
+                    return "5.5.0";
+                case 0x4:
+                    return "5.5.2";
             }
+
+            return "";
         }
     }
 }

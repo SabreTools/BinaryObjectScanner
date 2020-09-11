@@ -63,7 +63,7 @@ namespace BurnOutSharp.External.psxt001z
 			{
 				subfile.Seek(12, SeekOrigin.Current);
 				if (subfile.Read(buffer, 0, 12) == 0)
-					return true;
+					return modifiedSectors != 0;
 
 				subfile.Seek(72, SeekOrigin.Current);
 
@@ -128,7 +128,7 @@ namespace BurnOutSharp.External.psxt001z
 			}
 
 			Console.WriteLine($"Number of modified sectors: {modifiedSectors}");
-			return true;
+			return modifiedSectors != 0;
 		}
 
 		private static byte btoi(byte b)

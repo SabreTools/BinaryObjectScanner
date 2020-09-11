@@ -10,6 +10,66 @@ namespace BurnOutSharp
     public static class Utilities
     {
         /// <summary>
+        /// Search for a byte array in another array
+        /// </summary>
+        public static bool Contains(this byte[] stack, byte[] needle, out int position, int start = 0, int end = -1)
+        {
+            // Initialize the found position to -1
+            position = -1;
+
+            // If either array is null or empty, we can't do anything
+            if (stack == null || stack.Length == 0 || needle == null || needle.Length == 0)
+                return false;
+
+            // If the needle array is larger than the stack array, it can't be contained within
+            if (needle.Length > stack.Length)
+                return false;
+
+            // If start or end are not set properly, set them to defaults
+            if (start < 0)
+                start = 0;
+            if (end < 0)
+                end = stack.Length - needle.Length;
+
+            for (int i = start; i < end; i++)
+            {
+                if (stack.EqualAt(needle, i))
+                {
+                    position = i;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// See if a byte array starts with another
+        /// </summary>
+        public static bool StartsWith(this byte[] stack, byte[] needle)
+        {
+            return stack.Contains(needle, out int _, start: 0, end: 1);
+        }
+
+        /// <summary>
+        /// Get if a stack at a certain index is equal to a needle
+        /// </summary>
+        private static bool EqualAt(this byte[] stack, byte[] needle, int index)
+        {
+            // If we're too close to the end of the stack, return false
+            if (needle.Length >= stack.Length - index)
+                return false;
+
+            for (int i = 0; i < needle.Length; i++)
+            {
+                if (stack[i + index] != needle[i])
+                    return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
         /// Get the file version as reported by the filesystem
         /// </summary>
         public static string GetFileVersion(string file)
