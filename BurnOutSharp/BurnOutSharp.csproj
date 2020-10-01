@@ -10,9 +10,9 @@
     <Copyright>Copyright (c)2005-2010 Gernot Knippen, Copyright (c)2018-2020 Matt Nadareski</Copyright>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
     <RepositoryUrl>https://github.com/mnadareski/BurnOutSharp</RepositoryUrl>
-    <Version>1.4.0</Version>
-    <AssemblyVersion>1.4.0</AssemblyVersion>
-    <FileVersion>1.04.0</FileVersion>
+    <Version>1.4.1</Version>
+    <AssemblyVersion>1.4.1</AssemblyVersion>
+    <FileVersion>1.04.1</FileVersion>
     <IncludeSource>true</IncludeSource>
     <IncludeSymbols>true</IncludeSymbols>
   </PropertyGroup>
@@ -24,29 +24,28 @@
   <ItemGroup>
     <PackageReference Include="LessIO" Version="0.6.16" />
     <PackageReference Include="libmspack4n" Version="0.9.10" />
-    <PackageReference Include="SharpCompress" Version="0.25.1" />
+    <PackageReference Include="SharpCompress" Version="0.26.0" />
     <PackageReference Include="UnshieldSharp" Version="1.4.2.3" />
-    <PackageReference Include="WiseUnpacker" Version="1.0.0" />
+    <PackageReference Include="WiseUnpacker" Version="1.0.1" />
     <PackageReference Include="zlib.net" Version="1.0.4" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="LICENSE.txt" Pack="true" PackagePath="$(PackageLicenseFile)"/>
+    <None Include="LICENSE.txt" Pack="true" PackagePath="$(PackageLicenseFile)" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="HLLib.x64.dll">
+    <None Include="*.dll" Pack="true">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+      <PackageCopyToOutput>true</PackageCopyToOutput>
     </None>
-    <None Update="HLLib.x86.dll">
+    <None Include="*.pdb" Pack="true">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+      <PackageCopyToOutput>true</PackageCopyToOutput>
     </None>
-    <None Update="StormLib.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="StormLib.pdb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
+  
+</ItemGroup>
 
 </Project>
