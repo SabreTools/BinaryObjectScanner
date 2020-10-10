@@ -13,9 +13,7 @@ namespace BurnOutSharp.ProtectionType
             byte[] check = new byte[] { 0x57, 0x69, 0x73, 0x65, 0x4D, 0x61, 0x69, 0x6E };
             if (fileContent.Contains(check, out int position))
             {
-                List<string> protections = new List<string> { "Wise Installation Wizard Module" + (includePosition ? $" (Index {position})" : string.Empty)
-            };
-
+                List<string> protections = new List<string> { "Wise Installation Wizard Module" + (includePosition ? $" (Index {position})" : string.Empty) };
                 if (!File.Exists(file))
                     return protections;
 
