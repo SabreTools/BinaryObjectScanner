@@ -243,6 +243,11 @@ namespace BurnOutSharp.FileType
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
+            // XCP 1/2
+            protection = XCP.CheckContents(fileContent, includePosition);
+            if (!string.IsNullOrWhiteSpace(protection))
+                protections.Add(protection);
+
             // Xtreme-Protector
             protection = XtremeProtector.CheckContents(fileContent, includePosition);
             if (!string.IsNullOrWhiteSpace(protection))
