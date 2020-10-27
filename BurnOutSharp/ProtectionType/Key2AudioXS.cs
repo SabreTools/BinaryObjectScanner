@@ -15,7 +15,7 @@ namespace BurnOutSharp.ProtectionType
                 if (files.Any(f => Path.GetFileName(f).Equals("SDKHM.EXE", StringComparison.OrdinalIgnoreCase))
                     || files.Any(f => Path.GetFileName(f).Equals("SDKHM.DLL", StringComparison.OrdinalIgnoreCase)))
                 {
-                    return "Key2Audio XS";
+                    return "key2AudioXS";
                 }
             }
             else
@@ -23,7 +23,7 @@ namespace BurnOutSharp.ProtectionType
                 if (Path.GetFileName(path).Equals("SDKHM.EXE", StringComparison.OrdinalIgnoreCase)
                     || Path.GetFileName(path).Equals("SDKHM.DLL", StringComparison.OrdinalIgnoreCase))
                 {
-                    return "Key2Audio XS";
+                    return "key2AudioXS";
                 }
             }
 

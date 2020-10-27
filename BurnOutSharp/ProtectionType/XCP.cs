@@ -33,10 +33,10 @@ namespace BurnOutSharp.ProtectionType
             if (isDirectory)
             {
                 // INI-like file that can be parsed out
-                string xcpDatPath = files.FirstOrDefault(f => Path.GetFileName(f).Equals("VERSION.DAT", StringComparison.OrdinalIgnoreCase));
-                if (!string.IsNullOrWhiteSpace(xcpDatPath))
+                string versionDatPath = files.FirstOrDefault(f => Path.GetFileName(f).Equals("VERSION.DAT", StringComparison.OrdinalIgnoreCase));
+                if (!string.IsNullOrWhiteSpace(versionDatPath))
                 {
-                    string xcpVersion = GetXCPVersion(xcpDatPath);
+                    string xcpVersion = GetDatVersion(versionDatPath);
                     if (!string.IsNullOrWhiteSpace(xcpVersion))
                         return xcpVersion;
                 }
@@ -54,7 +54,7 @@ namespace BurnOutSharp.ProtectionType
                 // INI-like file that can be parsed out
                 if (Path.GetFileName(path).Equals("VERSION.DAT", StringComparison.OrdinalIgnoreCase))
                 {
-                    string xcpVersion = GetXCPVersion(path);
+                    string xcpVersion = GetDatVersion(path);
                     if (!string.IsNullOrWhiteSpace(xcpVersion))
                         return xcpVersion;
                 }
@@ -70,7 +70,7 @@ namespace BurnOutSharp.ProtectionType
             return null;
         }
 
-        private static string GetXCPVersion(string path)
+        private static string GetDatVersion(string path)
         {
             try
             {
