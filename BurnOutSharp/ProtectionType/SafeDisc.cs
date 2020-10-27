@@ -85,12 +85,7 @@ namespace BurnOutSharp.ProtectionType
             else
             {
                 // V1
-                if (Path.GetFileName(path).Equals("CLCD16.DLL", StringComparison.OrdinalIgnoreCase)
-                    || Path.GetFileName(path).Equals("CLCD32.DLL", StringComparison.OrdinalIgnoreCase)
-                    || Path.GetFileName(path).Equals("CLOKSPL.EXE", StringComparison.OrdinalIgnoreCase)
-                    || Path.GetExtension(path).Trim('.').Equals("icd", StringComparison.OrdinalIgnoreCase)
-                    || Path.GetExtension(path).Trim('.').Equals("016", StringComparison.OrdinalIgnoreCase)
-                    || Path.GetExtension(path).Trim('.').Equals("256", StringComparison.OrdinalIgnoreCase))
+                if (Path.GetFileName(path).Equals("CLCD16.DLL", StringComparison.OrdinalIgnoreCase))
                 {
                     return "SafeDisc 1";
                 }
@@ -98,7 +93,10 @@ namespace BurnOutSharp.ProtectionType
                 // V1 or greater
                 else if (Path.GetFileName(path).Equals("00000001.TMP", StringComparison.OrdinalIgnoreCase)
                     || Path.GetFileName(path).Equals("CLCD32.DLL", StringComparison.OrdinalIgnoreCase)
-                    || Path.GetFileName(path).Equals("CLOKSPL.EXE", StringComparison.OrdinalIgnoreCase))
+                    || Path.GetFileName(path).Equals("CLOKSPL.EXE", StringComparison.OrdinalIgnoreCase)
+                    || Path.GetExtension(path).Trim('.').Equals("icd", StringComparison.OrdinalIgnoreCase)
+                    || Path.GetExtension(path).Trim('.').Equals("016", StringComparison.OrdinalIgnoreCase)
+                    || Path.GetExtension(path).Trim('.').Equals("256", StringComparison.OrdinalIgnoreCase))
                 {
                     return "SafeDisc 1 or greater";
                 }
