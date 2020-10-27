@@ -8,17 +8,8 @@ namespace BurnOutSharp.ProtectionType
 {
     public class CactusDataShield
     {
-        // TODO: Get header info for CDSPlayer.app so it can be integrated better into the rest of the content checks
-        public static string CheckContents(string file)
+        public static string CheckContents(byte[] fileContent, bool includePosition = false)
         {
-            if (Path.GetFileName(file) == "CDSPlayer.app")
-            {
-                using (var sr = new StreamReader(file, Encoding.Default))
-                {
-                    return "Cactus Data Shield " + sr.ReadLine().Substring(3) + "(" + sr.ReadLine() + ")";
-                }
-            }
-
             return null;
         }
 
@@ -27,14 +18,15 @@ namespace BurnOutSharp.ProtectionType
             if (isDirectory)
             {
                 // TODO: Verify if these are OR or AND
-                if (files.Any(f => Path.GetFileName(f).Equals("CDSPlayer.app", StringComparison.OrdinalIgnoreCase)))
+                string appPath = files.FirstOrDefault(f => Path.GetFileName(f).Equals("CDSPlayer.app", StringComparison.OrdinalIgnoreCase));
+                if (!string.IsNullOrWhiteSpace(appPath))
                 {
-                    string file = files.First(f => Path.GetFileName(f).Equals("CDSPlayer.app", StringComparison.OrdinalIgnoreCase));
-                    string protection = CheckContents(file);
-                    if (!string.IsNullOrWhiteSpace(protection))
-                        return protection;
+                    string version = GetVersion(appPath);
+                    if (!string.IsNullOrWhiteSpace(version))
+                        return $"Cactus Data Shield {version}";
                 }
-                else if (files.Any(f => Path.GetFileName(f).Equals("yucca.cds", StringComparison.OrdinalIgnoreCase))
+                
+                if (files.Any(f => Path.GetFileName(f).Equals("yucca.cds", StringComparison.OrdinalIgnoreCase))
                     || files.Any(f => Path.GetFileName(f).Equals("wmmp.exe", StringComparison.OrdinalIgnoreCase))
                     || files.Any(f => Path.GetFileName(f).Equals("PJSTREAM.DLL", StringComparison.OrdinalIgnoreCase))
                     || files.Any(f => Path.GetFileName(f).Equals("CACTUSPJ.exe", StringComparison.OrdinalIgnoreCase)))
@@ -46,11 +38,12 @@ namespace BurnOutSharp.ProtectionType
             {
                 if (Path.GetFileName(path).Equals("CDSPlayer.app", StringComparison.OrdinalIgnoreCase))
                 {
-                    string protection = CheckContents(path);
-                    if (!string.IsNullOrWhiteSpace(protection))
-                        return protection;
+                    string version = GetVersion(path);
+                    if (!string.IsNullOrWhiteSpace(version))
+                        return $"Cactus Data Shield {version}";
                 }
-                else if (Path.GetFileName(path).Equals("yucca.cds", StringComparison.OrdinalIgnoreCase)
+                
+                if (Path.GetFileName(path).Equals("yucca.cds", StringComparison.OrdinalIgnoreCase)
                     || Path.GetFileName(path).Equals("wmmp.exe", StringComparison.OrdinalIgnoreCase)
                     || Path.GetFileName(path).Equals("PJSTREAM.DLL", StringComparison.OrdinalIgnoreCase)
                     || Path.GetFileName(path).Equals("CACTUSPJ.exe", StringComparison.OrdinalIgnoreCase))
@@ -60,6 +53,25 @@ namespace BurnOutSharp.ProtectionType
             }
 
             return null;
+        }
+
+        private static string GetVersion(string path)
+        {
+            if (!File.Exists(path))
+                return null;
+
+            try
+            {
+                // TODO: Can we do anything with the contents? Take a look at CDSPlayer.app
+                using (var sr = new StreamReader(path, Encoding.Default))
+                {
+                    return sr.ReadLine().Substring(3) + "(" + sr.ReadLine() + ")";
+                }
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }
