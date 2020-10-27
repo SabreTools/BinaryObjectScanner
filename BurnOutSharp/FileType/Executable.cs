@@ -228,6 +228,11 @@ namespace BurnOutSharp.FileType
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
+            // UPX
+            protection = UPX.CheckContents(fileContent, includePosition);
+            if (!string.IsNullOrWhiteSpace(protection))
+                protections.Add(protection);
+
             // VOB ProtectCD/DVD
             protection = VOBProtectCDDVD.CheckContents(file, fileContent, includePosition);
             if (!string.IsNullOrWhiteSpace(protection))

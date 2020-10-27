@@ -74,6 +74,7 @@ Below is a list of the protections that can be detected using this code:
 - TAGES (mostly complete)
 - TZCopyProtector
 - Uplay (partial)
+- UPX
 - VOB ProtectCD/DVD
 - Winlock
 - WISE Installer
