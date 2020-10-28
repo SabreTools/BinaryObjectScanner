@@ -40,7 +40,7 @@ namespace BurnOutSharp.FileType
 
                         // Collect and format all found protections
                         var fileProtections = ProtectionFind.Scan(tempFile, includePosition);
-                        string protection = string.Join("\r\n", fileProtections.Select(kvp => kvp.Key + ": " + kvp.Value.TrimEnd()));
+                        string protection = string.Join("\r\n", fileProtections.Select(kvp => kvp.Key.Substring(tempPath.Length) + ": " + kvp.Value.TrimEnd()));
 
                         // If tempfile cleanup fails
                         try

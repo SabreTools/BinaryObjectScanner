@@ -55,7 +55,7 @@ namespace BurnOutSharp.FileType
 
                     // Collect and format all found protections
                     var fileProtections = ProtectionFind.Scan(tempPath, includePosition);
-                    protections = fileProtections.Select(kvp => kvp.Key + ": " + kvp.Value.TrimEnd()).ToList();
+                    protections = fileProtections.Select(kvp => kvp.Key.Substring(tempPath.Length) + ": " + kvp.Value.TrimEnd()).ToList();
 
                     // If temp directory cleanup fails
                     try

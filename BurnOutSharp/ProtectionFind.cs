@@ -62,11 +62,20 @@ namespace BurnOutSharp
             // Checkpoint
             FileProgress?.Report(new FileProtection(null, 0, null));
 
+            // Temp variables for reporting
+            string tempFilePath = Path.GetTempPath();
+            string tempFilePathWithGuid = Path.Combine(tempFilePath, Guid.NewGuid().ToString());
+
             // If we have a file
             if (File.Exists(path))
             {
                 // Set total
                 Total = 1;
+
+                // Get the reportable file name
+                string reportableFileName = path;
+                if (reportableFileName.StartsWith(tempFilePath))
+                    reportableFileName = reportableFileName.Substring(tempFilePathWithGuid.Length);
 
                 // Try using just the file first to get protection info
                 string fileProtection = ScanPath(path, false);
@@ -74,7 +83,7 @@ namespace BurnOutSharp
                     protections[path] = fileProtection;
 
                 // Checkpoint
-                FileProgress?.Report(new FileProtection(path, 1, "Checking file"));
+                FileProgress?.Report(new FileProtection(reportableFileName, 1, "Checking file"));
 
                 // Now check to see if the file contains any additional information
                 string contentProtection = ScanContent(path, includePosition)?.Replace("" + (char)0x00, "");
@@ -88,7 +97,7 @@ namespace BurnOutSharp
 
                 // Checkpoint
                 protections.TryGetValue(path, out string fullProtection);
-                FileProgress?.Report(new FileProtection(path, 1, fullProtection ?? string.Empty));
+                FileProgress?.Report(new FileProtection(reportableFileName, 1, fullProtection ?? string.Empty));
             }
             // If we have a directory
             else if (Directory.Exists(path))
@@ -113,8 +122,13 @@ namespace BurnOutSharp
                     // Get the current file
                     string file = files.ElementAt(i);
 
+                    // Get the reportable file name
+                    string reportableFileName = file;
+                    if (reportableFileName.StartsWith(tempFilePath))
+                        reportableFileName = reportableFileName.Substring(tempFilePathWithGuid.Length);
+
                     // Checkpoint
-                    FileProgress?.Report(new FileProtection(file, i / (float)files.Count(), "Checking file"));
+                    FileProgress?.Report(new FileProtection(reportableFileName, i / (float)files.Count(), "Checking file"));
 
                     // Try using just the file first to get protection info
                     string fileProtection = ScanPath(file, false);
@@ -133,7 +147,7 @@ namespace BurnOutSharp
 
                     // Checkpoint
                     protections.TryGetValue(file, out string fullProtection);
-                    FileProgress?.Report(new FileProtection(file, i / (float)files.Count(), fullProtection ?? string.Empty));
+                    FileProgress?.Report(new FileProtection(reportableFileName, i / (float)files.Count(), fullProtection ?? string.Empty));
                 }
             }
 
