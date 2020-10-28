@@ -88,27 +88,16 @@ namespace BurnOutSharp.FileType
                                     }
                                 }
                             }
-
-                            // Collect and format all found protections
-                            var fileProtections = ProtectionFind.Scan(tempFile, includePosition);
-                            string protection = string.Join("\r\n", fileProtections.Select(kvp => kvp.Key + ": " + kvp.Value.TrimEnd()));
-
-                            // If tempfile cleanup fails
-                            try
-                            {
-                                File.Delete(tempFile);
-                            }
-                            catch { }
-
-                            if (!string.IsNullOrEmpty(protection))
-                                protections.Add(tempFile);
                         }
                         catch { }
                         
-
                         br.BaseStream.Seek(current, SeekOrigin.Begin);
                     }
                 }
+
+                // Collect and format all found protections
+                var fileProtections = ProtectionFind.Scan(tempPath, includePosition);
+                protections = fileProtections.Select(kvp => kvp.Key + ": " + kvp.Value.TrimEnd()).ToList();
 
                 // If temp directory cleanup fails
                 try
