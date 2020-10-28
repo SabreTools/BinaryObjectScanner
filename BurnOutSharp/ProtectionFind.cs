@@ -147,7 +147,7 @@ namespace BurnOutSharp
 
                     // Checkpoint
                     protections.TryGetValue(file, out string fullProtection);
-                    FileProgress?.Report(new FileProtection(reportableFileName, i / (float)files.Count(), fullProtection ?? string.Empty));
+                    FileProgress?.Report(new FileProtection(reportableFileName, (i + 1) / (float)files.Count(), fullProtection ?? string.Empty));
                 }
             }
 
