@@ -34,16 +34,6 @@ namespace BurnOutSharp
         private static IProgress<FileProtection> FileProgress = null;
 
         /// <summary>
-        /// Current file index
-        /// </summary>
-        private static int Index = 0;
-
-        /// <summary>
-        /// Current file total
-        /// </summary>
-        private static int Total = 0;
-
-        /// <summary>
         /// Scan a path to find any known copy protection(s)
         /// </summary>
         /// <param name="path">Path to scan for protection(s)</param>
@@ -69,9 +59,6 @@ namespace BurnOutSharp
             // If we have a file
             if (File.Exists(path))
             {
-                // Set total
-                Total = 1;
-
                 // Get the reportable file name
                 string reportableFileName = path;
                 if (reportableFileName.StartsWith(tempFilePath))
@@ -105,9 +92,6 @@ namespace BurnOutSharp
                 // Get the lists of files to be used
                 var files = Directory.EnumerateFiles(path, "*", SearchOption.AllDirectories);
 
-                // Set total
-                Total = files.Count();
-
                 // Try using just the path first to get protection info
                 string pathProtection = ScanPath(path, true);
                 if (!string.IsNullOrWhiteSpace(pathProtection))
@@ -116,9 +100,6 @@ namespace BurnOutSharp
                 // Loop through all files and scan their contents
                 for (int i = 0; i < files.Count(); i++)
                 {
-                    // Set index
-                    Index = i;
-
                     // Get the current file
                     string file = files.ElementAt(i);
 
@@ -435,10 +416,6 @@ namespace BurnOutSharp
             // Files can be protected in multiple ways
             List<string> protections = new List<string>();
 
-            // Cache current values
-            int tempIndex = Index;
-            int tempTotal = Total;
-
             // 7-Zip archive
             if (SevenZip.ShouldScan(magic))
                 protections.AddRange(SevenZip.Scan(stream, includePosition));
@@ -494,10 +471,6 @@ namespace BurnOutSharp
             // XZ
             if (XZ.ShouldScan(magic))
                 protections.AddRange(XZ.Scan(stream, includePosition));
-
-            // Reset values
-            Index = tempIndex;
-            Total = tempTotal;
 
             // Return blank if nothing found, or comma-separated list of protections
             if (protections.Count() == 0)
