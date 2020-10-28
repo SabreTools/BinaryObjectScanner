@@ -118,11 +118,6 @@ namespace BurnOutSharp.FileType
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
-            // Cucko (EA Custom)
-            protection = Cucko.CheckContents(fileContent, includePosition);
-            if (!string.IsNullOrWhiteSpace(protection))
-                protections.Add(protection);
-
             // dotFuscator
             protection = dotFuscator.CheckContents(fileContent, includePosition);
             if (!string.IsNullOrWhiteSpace(protection))
@@ -135,6 +130,11 @@ namespace BurnOutSharp.FileType
 
             // EA CdKey Registration Module
             protection = EACdKey.CheckContents(fileContent, includePosition);
+            if (!string.IsNullOrWhiteSpace(protection))
+                protections.Add(protection);
+
+            // EA Protections
+            protection = ElectronicArts.CheckContents(fileContent, includePosition);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
