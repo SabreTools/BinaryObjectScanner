@@ -34,6 +34,16 @@ namespace BurnOutSharp
         private static IProgress<FileProtection> FileProgress = null;
 
         /// <summary>
+        /// Current file index
+        /// </summary>
+        private static int Index = 0;
+
+        /// <summary>
+        /// Current file total
+        /// </summary>
+        private static int Total = 0;
+
+        /// <summary>
         /// Scan a path to find any known copy protection(s)
         /// </summary>
         /// <param name="path">Path to scan for protection(s)</param>
@@ -55,10 +65,16 @@ namespace BurnOutSharp
             // If we have a file
             if (File.Exists(path))
             {
+                // Set total
+                Total = 1;
+
                 // Try using just the file first to get protection info
                 string fileProtection = ScanPath(path, false);
                 if (!string.IsNullOrWhiteSpace(fileProtection))
                     protections[path] = fileProtection;
+
+                // Checkpoint
+                FileProgress?.Report(new FileProtection(path, 1, "Checking file"));
 
                 // Now check to see if the file contains any additional information
                 string contentProtection = ScanContent(path, includePosition)?.Replace("" + (char)0x00, "");
@@ -71,13 +87,17 @@ namespace BurnOutSharp
                 }
 
                 // Checkpoint
-                FileProgress?.Report(new FileProtection(path, 1, contentProtection));
+                protections.TryGetValue(path, out string fullProtection);
+                FileProgress?.Report(new FileProtection(path, 1, fullProtection ?? string.Empty));
             }
             // If we have a directory
             else if (Directory.Exists(path))
             {
                 // Get the lists of files to be used
                 var files = Directory.EnumerateFiles(path, "*", SearchOption.AllDirectories);
+
+                // Set total
+                Total = files.Count();
 
                 // Try using just the path first to get protection info
                 string pathProtection = ScanPath(path, true);
@@ -87,8 +107,14 @@ namespace BurnOutSharp
                 // Loop through all files and scan their contents
                 for (int i = 0; i < files.Count(); i++)
                 {
+                    // Set index
+                    Index = i;
+
                     // Get the current file
                     string file = files.ElementAt(i);
+
+                    // Checkpoint
+                    FileProgress?.Report(new FileProtection(file, i / (float)files.Count(), "Checking file"));
 
                     // Try using just the file first to get protection info
                     string fileProtection = ScanPath(file, false);
@@ -106,7 +132,8 @@ namespace BurnOutSharp
                     }
 
                     // Checkpoint
-                    FileProgress?.Report(new FileProtection(file, i / (float)files.Count(), contentProtection));
+                    protections.TryGetValue(file, out string fullProtection);
+                    FileProgress?.Report(new FileProtection(file, i / (float)files.Count(), fullProtection ?? string.Empty));
                 }
             }
 
@@ -394,6 +421,10 @@ namespace BurnOutSharp
             // Files can be protected in multiple ways
             List<string> protections = new List<string>();
 
+            // Cache current values
+            int tempIndex = Index;
+            int tempTotal = Total;
+
             // 7-Zip archive
             if (SevenZip.ShouldScan(magic))
                 protections.AddRange(SevenZip.Scan(stream, includePosition));
@@ -449,6 +480,10 @@ namespace BurnOutSharp
             // XZ
             if (XZ.ShouldScan(magic))
                 protections.AddRange(XZ.Scan(stream, includePosition));
+
+            // Reset values
+            Index = tempIndex;
+            Total = tempTotal;
 
             // Return blank if nothing found, or comma-separated list of protections
             if (protections.Count() == 0)
