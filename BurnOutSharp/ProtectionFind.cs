@@ -77,13 +77,13 @@ namespace BurnOutSharp
                 if (reportableFileName.StartsWith(tempFilePath))
                     reportableFileName = reportableFileName.Substring(tempFilePathWithGuid.Length);
 
+                // Checkpoint
+                FileProgress?.Report(new FileProtection(reportableFileName, 1, "Checking file" + (path != reportableFileName ? " from archive" : string.Empty)));
+
                 // Try using just the file first to get protection info
                 string fileProtection = ScanPath(path, false);
                 if (!string.IsNullOrWhiteSpace(fileProtection))
                     protections[path] = fileProtection;
-
-                // Checkpoint
-                FileProgress?.Report(new FileProtection(reportableFileName, 1, "Checking file"));
 
                 // Now check to see if the file contains any additional information
                 string contentProtection = ScanContent(path, includePosition)?.Replace("" + (char)0x00, "");
@@ -128,7 +128,7 @@ namespace BurnOutSharp
                         reportableFileName = reportableFileName.Substring(tempFilePathWithGuid.Length);
 
                     // Checkpoint
-                    FileProgress?.Report(new FileProtection(reportableFileName, i / (float)files.Count(), "Checking file"));
+                    FileProgress?.Report(new FileProtection(reportableFileName, i / (float)files.Count(), "Checking file" + (file != reportableFileName ? " from archive" : string.Empty)));
 
                     // Try using just the file first to get protection info
                     string fileProtection = ScanPath(file, false);
