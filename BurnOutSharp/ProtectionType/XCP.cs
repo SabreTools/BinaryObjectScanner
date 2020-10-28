@@ -32,33 +32,24 @@ namespace BurnOutSharp.ProtectionType
         {
             if (isDirectory)
             {
-                // INI-like file that can be parsed out
-                string versionDatPath = files.FirstOrDefault(f => Path.GetFileName(f).Equals("VERSION.DAT", StringComparison.OrdinalIgnoreCase));
-                if (!string.IsNullOrWhiteSpace(versionDatPath))
-                {
-                    string xcpVersion = GetDatVersion(versionDatPath);
-                    if (!string.IsNullOrWhiteSpace(xcpVersion))
-                        return xcpVersion;
-                }
-
                 // TODO: Verify if these are OR or AND
                 if (files.Any(f => Path.GetFileName(f).Equals("XCP.DAT", StringComparison.OrdinalIgnoreCase))
                     || files.Any(f => Path.GetFileName(f).Equals("ECDPlayerControl.ocx", StringComparison.OrdinalIgnoreCase))
                     || files.Any(f => Path.GetFileName(f).Equals("go.exe", StringComparison.OrdinalIgnoreCase))) // Path.Combine("contents", "go.exe")
                 {
+                    string versionDatPath = files.FirstOrDefault(f => Path.GetFileName(f).Equals("VERSION.DAT", StringComparison.OrdinalIgnoreCase));
+                    if (!string.IsNullOrWhiteSpace(versionDatPath))
+                    {
+                        string xcpVersion = GetDatVersion(versionDatPath);
+                        if (!string.IsNullOrWhiteSpace(xcpVersion))
+                            return xcpVersion;
+                    }
+
                     return "XCP";
                 }
             }
             else
             {
-                // INI-like file that can be parsed out
-                if (Path.GetFileName(path).Equals("VERSION.DAT", StringComparison.OrdinalIgnoreCase))
-                {
-                    string xcpVersion = GetDatVersion(path);
-                    if (!string.IsNullOrWhiteSpace(xcpVersion))
-                        return xcpVersion;
-                }
-
                 if (Path.GetFileName(path).Equals("XCP.DAT", StringComparison.OrdinalIgnoreCase)
                     || Path.GetFileName(path).Equals("ECDPlayerControl.ocx", StringComparison.OrdinalIgnoreCase)
                     || Path.GetFileName(path).Equals("go.exe", StringComparison.OrdinalIgnoreCase))

@@ -78,6 +78,11 @@ namespace BurnOutSharp.FileType
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
+            // Cactus Data Shield
+            protection = CactusDataShield.CheckContents(fileContent, includePosition);
+            if (!string.IsNullOrWhiteSpace(protection))
+                protections.Add(protection);
+
             // CD-Cops
             protection = CDCops.CheckContents(fileContent, includePosition);
             if (!string.IsNullOrWhiteSpace(protection))

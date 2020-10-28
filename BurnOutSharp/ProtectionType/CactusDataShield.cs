@@ -10,6 +10,21 @@ namespace BurnOutSharp.ProtectionType
     {
         public static string CheckContents(byte[] fileContent, bool includePosition = false)
         {
+            // DATA.CDS
+            byte[] check = new byte[] { 0x44, 0x41, 0x54, 0x41, 0x2E, 0x43, 0x44, 0x53 };
+            if (fileContent.Contains(check, out int position))
+                return "Cactus Data Shield 200" + (includePosition ? $" (Index {position})" : string.Empty);
+
+            // \*.CDS
+            check = new byte[] { 0x5C, 0x2A, 0x2E, 0x43, 0x44, 0x53 };
+            if (fileContent.Contains(check, out position))
+                return "Cactus Data Shield 200" + (includePosition ? $" (Index {position})" : string.Empty);
+
+            // CDSPlayer
+            check = new byte[] { 0x43, 0x44, 0x53, 0x50, 0x6C, 0x61, 0x79, 0x65, 0x72 };
+            if (fileContent.Contains(check, out position))
+                return "Cactus Data Shield 200" + (includePosition ? $" (Index {position})" : string.Empty);
+
             return null;
         }
 
@@ -17,36 +32,30 @@ namespace BurnOutSharp.ProtectionType
         {
             if (isDirectory)
             {
-                // TODO: Verify if these are OR or AND
-                string appPath = files.FirstOrDefault(f => Path.GetFileName(f).Equals("CDSPlayer.app", StringComparison.OrdinalIgnoreCase));
-                if (!string.IsNullOrWhiteSpace(appPath))
-                {
-                    string version = GetVersion(appPath);
-                    if (!string.IsNullOrWhiteSpace(version))
-                        return $"Cactus Data Shield {version}";
-                }
-                
                 if (files.Any(f => Path.GetFileName(f).Equals("yucca.cds", StringComparison.OrdinalIgnoreCase))
                     || files.Any(f => Path.GetFileName(f).Equals("wmmp.exe", StringComparison.OrdinalIgnoreCase))
                     || files.Any(f => Path.GetFileName(f).Equals("PJSTREAM.DLL", StringComparison.OrdinalIgnoreCase))
-                    || files.Any(f => Path.GetFileName(f).Equals("CACTUSPJ.exe", StringComparison.OrdinalIgnoreCase)))
+                    || files.Any(f => Path.GetFileName(f).Equals("CACTUSPJ.exe", StringComparison.OrdinalIgnoreCase))
+                    || files.Any(f => Path.GetFileName(f).Equals("CDSPlayer.app", StringComparison.OrdinalIgnoreCase)))
                 {
+                    string versionPath = files.FirstOrDefault(f => Path.GetFileName(f).Equals("version.txt", StringComparison.OrdinalIgnoreCase));
+                    if (!string.IsNullOrWhiteSpace(versionPath))
+                    {
+                        string version = GetVersion(versionPath);
+                        if (!string.IsNullOrWhiteSpace(version))
+                            return $"Cactus Data Shield {version}";
+                    }
+
                     return "Cactus Data Shield 200";
                 }
             }
             else
             {
-                if (Path.GetFileName(path).Equals("CDSPlayer.app", StringComparison.OrdinalIgnoreCase))
-                {
-                    string version = GetVersion(path);
-                    if (!string.IsNullOrWhiteSpace(version))
-                        return $"Cactus Data Shield {version}";
-                }
-                
                 if (Path.GetFileName(path).Equals("yucca.cds", StringComparison.OrdinalIgnoreCase)
                     || Path.GetFileName(path).Equals("wmmp.exe", StringComparison.OrdinalIgnoreCase)
                     || Path.GetFileName(path).Equals("PJSTREAM.DLL", StringComparison.OrdinalIgnoreCase)
-                    || Path.GetFileName(path).Equals("CACTUSPJ.exe", StringComparison.OrdinalIgnoreCase))
+                    || Path.GetFileName(path).Equals("CACTUSPJ.exe", StringComparison.OrdinalIgnoreCase)
+                    || Path.GetFileName(path).Equals("CDSPlayer.app", StringComparison.OrdinalIgnoreCase))
                 {
                     return "Cactus Data Shield 200";
                 }
@@ -62,10 +71,9 @@ namespace BurnOutSharp.ProtectionType
 
             try
             {
-                // TODO: Can we do anything with the contents? Take a look at CDSPlayer.app
                 using (var sr = new StreamReader(path, Encoding.Default))
                 {
-                    return sr.ReadLine().Substring(3) + "(" + sr.ReadLine() + ")";
+                    return $"{sr.ReadLine().Substring(3)} ({sr.ReadLine()})";
                 }
             }
             catch
