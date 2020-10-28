@@ -39,22 +39,16 @@ namespace BurnOutSharp.ProtectionType
                 Wise unpacker = new Wise();
                 unpacker.ExtractTo(file, tempPath);
 
-                foreach (string tempFile in Directory.EnumerateFiles(tempPath, "*", SearchOption.AllDirectories))
+                // Collect and format all found protections
+                var fileProtections = ProtectionFind.Scan(tempPath, includePosition);
+                protections = fileProtections.Select(kvp => kvp.Key + ": " + kvp.Value.TrimEnd()).ToList();
+
+                // If temp directory cleanup fails
+                try
                 {
-                    // Collect and format all found protections
-                    var fileProtections = ProtectionFind.Scan(tempFile, includePosition);
-                    string protection = string.Join("\r\n", fileProtections.Select(kvp => kvp.Key + ": " + kvp.Value.TrimEnd()));
-
-                    // If tempfile cleanup fails
-                    try
-                    {
-                        File.Delete(tempFile);
-                    }
-                    catch { }
-
-                    if (!string.IsNullOrEmpty(protection))
-                        protections.Add($"\r\n{tempFile.Substring(tempPath.Length)} - {protection}");
+                    Directory.Delete(tempPath, true);
                 }
+                catch { }
             }
             catch { }
 
