@@ -32,11 +32,11 @@ namespace BurnOutSharp.ProtectionType
         {
             if (isDirectory)
             {
-                if (files.Any(f => Path.GetFileName(f).Equals("yucca.cds", StringComparison.OrdinalIgnoreCase))
-                    || files.Any(f => Path.GetFileName(f).Equals("wmmp.exe", StringComparison.OrdinalIgnoreCase))
+                if (files.Any(f => Path.GetFileName(f).Equals("CACTUSPJ.exe", StringComparison.OrdinalIgnoreCase))
+                    || files.Any(f => Path.GetFileName(f).Equals("CDSPlayer.app", StringComparison.OrdinalIgnoreCase))
                     || files.Any(f => Path.GetFileName(f).Equals("PJSTREAM.DLL", StringComparison.OrdinalIgnoreCase))
-                    || files.Any(f => Path.GetFileName(f).Equals("CACTUSPJ.exe", StringComparison.OrdinalIgnoreCase))
-                    || files.Any(f => Path.GetFileName(f).Equals("CDSPlayer.app", StringComparison.OrdinalIgnoreCase)))
+                    || files.Any(f => Path.GetFileName(f).Equals("wmmp.exe", StringComparison.OrdinalIgnoreCase))
+                    || files.Any(f => Path.GetExtension(f).Trim('.').Equals("cds", StringComparison.OrdinalIgnoreCase)))
                 {
                     string versionPath = files.FirstOrDefault(f => Path.GetFileName(f).Equals("version.txt", StringComparison.OrdinalIgnoreCase));
                     if (!string.IsNullOrWhiteSpace(versionPath))
@@ -51,11 +51,11 @@ namespace BurnOutSharp.ProtectionType
             }
             else
             {
-                if (Path.GetFileName(path).Equals("yucca.cds", StringComparison.OrdinalIgnoreCase)
-                    || Path.GetFileName(path).Equals("wmmp.exe", StringComparison.OrdinalIgnoreCase)
+                if (Path.GetFileName(path).Equals("CACTUSPJ.exe", StringComparison.OrdinalIgnoreCase)
+                    || Path.GetFileName(path).Equals("CDSPlayer.app", StringComparison.OrdinalIgnoreCase)
                     || Path.GetFileName(path).Equals("PJSTREAM.DLL", StringComparison.OrdinalIgnoreCase)
-                    || Path.GetFileName(path).Equals("CACTUSPJ.exe", StringComparison.OrdinalIgnoreCase)
-                    || Path.GetFileName(path).Equals("CDSPlayer.app", StringComparison.OrdinalIgnoreCase))
+                    || Path.GetFileName(path).Equals("wmmp.exe", StringComparison.OrdinalIgnoreCase)
+                    || Path.GetExtension(path).Trim('.').Equals("cds", StringComparison.OrdinalIgnoreCase))
                 {
                     return "Cactus Data Shield 200";
                 }
