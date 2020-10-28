@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>net472;net48;netcoreapp3.1</TargetFrameworks>
+    <PlatformTarget>x86</PlatformTarget>
     <Title>BurnOutSharp</Title>
     <AssemblyName>BurnOutSharp</AssemblyName>
     <Description>Port of BurnOut to C#, with additions</Description>
