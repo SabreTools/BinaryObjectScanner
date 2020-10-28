@@ -29,18 +29,29 @@ namespace BurnOutSharp
     public static class ProtectionFind
     {
         /// <summary>
+        /// Progress indicator
+        /// </summary>
+        private static IProgress<FileProtection> FileProgress = null;
+
+        /// <summary>
         /// Scan a path to find any known copy protection(s)
         /// </summary>
         /// <param name="path">Path to scan for protection(s)</param>
         /// <param name="includePosition">True to include scanned copy protection position, false otherwise (default)</param>
         /// <param name="progress">Optional progress indicator that will return a float in the range from 0 to 1</param>
         /// <returns>Dictionary of filename to protection mappings, if possible</returns>
+        /// TODO: For all of the archives that use this, ensure that they scan the temp extraction directory, if applicable
         public static Dictionary<string, string> Scan(string path, bool includePosition = false, IProgress<FileProtection> progress = null)
         {
+            // Set the progress indicator, if it's not set already
+            if (FileProgress == null)
+                FileProgress = progress;
+
+            // Initialize the protections dictionary
             var protections = new Dictionary<string, string>();
 
             // Checkpoint
-            progress?.Report(new FileProtection(null, 0, null));
+            FileProgress?.Report(new FileProtection(null, 0, null));
 
             // If we have a file
             if (File.Exists(path))
@@ -61,7 +72,7 @@ namespace BurnOutSharp
                 }
 
                 // Checkpoint
-                progress?.Report(new FileProtection(path, 1, contentProtection));
+                FileProgress?.Report(new FileProtection(path, 1, contentProtection));
             }
             // If we have a directory
             else if (Directory.Exists(path))
@@ -96,7 +107,7 @@ namespace BurnOutSharp
                     }
 
                     // Checkpoint
-                    progress?.Report(new FileProtection(file, i / (float)files.Count(), contentProtection));
+                    FileProgress?.Report(new FileProtection(file, i / (float)files.Count(), contentProtection));
                 }
             }
 

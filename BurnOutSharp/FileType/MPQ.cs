@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using StormLibSharp;
 
 namespace BurnOutSharp.FileType
@@ -44,15 +45,18 @@ namespace BurnOutSharp.FileType
                         // If an individual entry fails
                         try
                         {
-                            string tempfile = Path.Combine(tempPath, sub);
-                            Directory.CreateDirectory(Path.GetDirectoryName(tempfile));
-                            mpqArchive.ExtractFile(sub, tempfile);
-                            string protection = ProtectionFind.ScanContent(tempfile, includePosition);
+                            string tempFile = Path.Combine(tempPath, sub);
+                            Directory.CreateDirectory(Path.GetDirectoryName(tempFile));
+                            mpqArchive.ExtractFile(sub, tempFile);
+
+                            // Collect and format all found protections
+                            var fileProtections = ProtectionFind.Scan(tempFile, includePosition);
+                            string protection = string.Join("\r\n", fileProtections.Select(kvp => kvp.Key + ": " + kvp.Value.TrimEnd()));
 
                             // If tempfile cleanup fails
                             try
                             {
-                                File.Delete(tempfile);
+                                File.Delete(tempFile);
                             }
                             catch { }
 

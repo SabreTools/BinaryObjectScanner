@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using SharpCompress.Compressors;
 using SharpCompress.Compressors.BZip2;
 
@@ -31,18 +32,20 @@ namespace BurnOutSharp.FileType
                     // If an individual entry fails
                     try
                     {
-                        string tempfile = Path.Combine(tempPath, Guid.NewGuid().ToString());
-                        using (FileStream fs = File.OpenWrite(tempfile))
+                        string tempFile = Path.Combine(tempPath, Guid.NewGuid().ToString());
+                        using (FileStream fs = File.OpenWrite(tempFile))
                         {
                             bz2File.CopyTo(fs);
                         }
 
-                        string protection = ProtectionFind.ScanContent(tempfile, includePosition);
+                        // Collect and format all found protections
+                        var fileProtections = ProtectionFind.Scan(tempFile, includePosition);
+                        string protection = string.Join("\r\n", fileProtections.Select(kvp => kvp.Key + ": " + kvp.Value.TrimEnd()));
 
                         // If tempfile cleanup fails
                         try
                         {
-                            File.Delete(tempfile);
+                            File.Delete(tempFile);
                         }
                         catch { }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using LibMSPackN;
 
 namespace BurnOutSharp.FileType
@@ -33,14 +34,17 @@ namespace BurnOutSharp.FileType
                         // If an individual entry fails
                         try
                         {
-                            string tempfile = Path.Combine(tempPath, sub.Filename);
-                            sub.ExtractTo(tempfile);
-                            string protection = ProtectionFind.ScanContent(tempfile, includePosition);
+                            string tempFile = Path.Combine(tempPath, sub.Filename);
+                            sub.ExtractTo(tempFile);
+
+                            // Collect and format all found protections
+                            var fileProtections = ProtectionFind.Scan(tempFile, includePosition);
+                            string protection = string.Join("\r\n", fileProtections.Select(kvp => kvp.Key + ": " + kvp.Value.TrimEnd()));
 
                             // If tempfile cleanup fails
                             try
                             {
-                                File.Delete(tempfile);
+                                File.Delete(tempFile);
                             }
                             catch { }
 

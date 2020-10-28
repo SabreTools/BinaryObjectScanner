@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using SharpCompress.Archives;
 using SharpCompress.Archives.SevenZip;
 
@@ -37,14 +38,17 @@ namespace BurnOutSharp.FileType
                             if (entry.IsDirectory)
                                 continue;
 
-                            string tempfile = Path.Combine(tempPath, entry.Key);
-                            entry.WriteToFile(tempfile);
-                            string protection = ProtectionFind.ScanContent(tempfile, includePosition);
+                            string tempFile = Path.Combine(tempPath, entry.Key);
+                            entry.WriteToFile(tempFile);
+
+                            // Collect and format all found protections
+                            var fileProtections = ProtectionFind.Scan(tempFile, includePosition);
+                            string protection = string.Join("\r\n", fileProtections.Select(kvp => kvp.Key + ": " + kvp.Value.TrimEnd()));
 
                             // If tempfile cleanup fails
                             try
                             {
-                                File.Delete(tempfile);
+                                File.Delete(tempFile);
                             }
                             catch { }
 

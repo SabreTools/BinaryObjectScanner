@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using UnshieldSharp;
 
@@ -50,7 +51,9 @@ namespace BurnOutSharp.FileType
                             string tempFile = Path.Combine(tempPath, cabfile.FileName(i));
                             if (cabfile.FileSave(i, tempFile))
                             {
-                                string protection = ProtectionFind.ScanContent(tempFile, includePosition);
+                                // Collect and format all found protections
+                                var fileProtections = ProtectionFind.Scan(tempFile, includePosition);
+                                string protection = string.Join("\r\n", fileProtections.Select(kvp => kvp.Key + ": " + kvp.Value.TrimEnd()));
 
                                 // If tempfile cleanup fails
                                 try

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Wise = WiseUnpacker.WiseUnpacker;
 
 namespace BurnOutSharp.ProtectionType
@@ -40,7 +41,9 @@ namespace BurnOutSharp.ProtectionType
 
                 foreach (string tempFile in Directory.EnumerateFiles(tempPath, "*", SearchOption.AllDirectories))
                 {
-                    string protection = ProtectionFind.ScanContent(tempFile, includePosition);
+                    // Collect and format all found protections
+                    var fileProtections = ProtectionFind.Scan(tempFile, includePosition);
+                    string protection = string.Join("\r\n", fileProtections.Select(kvp => kvp.Key + ": " + kvp.Value.TrimEnd()));
 
                     // If tempfile cleanup fails
                     try
