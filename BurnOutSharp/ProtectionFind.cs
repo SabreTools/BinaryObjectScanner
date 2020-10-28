@@ -40,7 +40,6 @@ namespace BurnOutSharp
         /// <param name="includePosition">True to include scanned copy protection position, false otherwise (default)</param>
         /// <param name="progress">Optional progress indicator that will return a float in the range from 0 to 1</param>
         /// <returns>Dictionary of filename to protection mappings, if possible</returns>
-        /// TODO: For all of the archives that use this, ensure that they scan the temp extraction directory, if applicable
         public static Dictionary<string, string> Scan(string path, bool includePosition = false, IProgress<FileProtection> progress = null)
         {
             // Set the progress indicator, if it's not set already
