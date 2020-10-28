@@ -128,13 +128,8 @@ namespace BurnOutSharp.FileType
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
-            // EA CdKey Registration Module
-            protection = EACdKey.CheckContents(fileContent, includePosition);
-            if (!string.IsNullOrWhiteSpace(protection))
-                protections.Add(protection);
-
             // EA Protections
-            protection = ElectronicArts.CheckContents(fileContent, includePosition);
+            protection = ElectronicArts.CheckContents(file, fileContent, includePosition);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
