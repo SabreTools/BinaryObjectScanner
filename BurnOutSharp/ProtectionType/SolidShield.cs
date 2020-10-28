@@ -64,6 +64,11 @@ namespace BurnOutSharp.ProtectionType
                     return $"SolidShield Activation Manager Module {Utilities.GetFileVersion(file)}" + (includePosition ? $" (Index {position})" : string.Empty);
             }
 
+            // dvm.dll
+            check = new byte[] { 0x64, 0x76, 0x6D, 0x2E, 0x64, 0x6C, 0x6C };
+            if (fileContent.Contains(check, out position))
+                return $"SolidShield EXE Wrapper" + (includePosition ? $" (Index {position})" : string.Empty);
+
             // (char)0xAD + (char)0xDE + (char)0xFE + (char)0xCA
             check = new byte[] { 0xAD, 0xDE, 0xFE, 0xCA };
             if (fileContent.Contains(check, out position))
