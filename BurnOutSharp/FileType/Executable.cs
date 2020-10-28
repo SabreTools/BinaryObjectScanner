@@ -98,10 +98,10 @@ namespace BurnOutSharp.FileType
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
-            // CD Check - Disabled because of too many false positives
-            //protection = CDCheck.CheckContents(fileContent, includePosition);
-            //if (!string.IsNullOrWhiteSpace(protection))
-            //    protections.Add(protection);
+            // CD Check
+            protection = CDCheck.CheckContents(fileContent, includePosition);
+            if (!string.IsNullOrWhiteSpace(protection))
+                protections.Add(protection);
 
             // Cenega ProtectDVD
             protection = CengaProtectDVD.CheckContents(fileContent, includePosition);
