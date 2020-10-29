@@ -63,8 +63,8 @@ namespace BurnOutSharp.FileType
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
-            // 21Studios Online Activation
-            protection = TwentyOneStudios.CheckContents(fileContent, includePosition);
+            // 321Studios Online Activation
+            protection = ThreeTwoOneStudios.CheckContents(fileContent, includePosition);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
