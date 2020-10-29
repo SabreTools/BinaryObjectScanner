@@ -14,7 +14,18 @@
          * 
          * Luxor, World, Cradle, and Kingdom:
          * - Trial + (char)0x00 + P - 54 72 69 61 6C 00 50
+         *     + This is possibly followed by a version number. Undetermined if it's the software or protection version.
          * - NO NESTED PRMS SUPPORTED - 4E 4F 20 4E 45 53 54 45 44 20 50 52 4D 53 20 53 55 50 50 4F 52 54 45 44
          */
+
+        public static string CheckContents(byte[] fileContent, bool includePosition = false)
+        {
+            // Trial + (char)0x00 + P
+            byte[] check = new byte[] { 0x54, 0x72, 0x69, 0x61, 0x6C, 0x00, 0x50 };
+            if (fileContent.Contains(check, out int position))
+                return "ITENIUM Trial & Buy Protection" + (includePosition ? $" (Index {position})" : string.Empty);
+
+            return null;
+        }
     }
 }
