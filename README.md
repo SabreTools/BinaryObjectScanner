@@ -20,6 +20,7 @@ In addition to the original BurnOut code, the following libraries (or ports ther
 Below is a list of the protections that can be detected using this code:
 
 - 3PLock
+- 321Studios Online Activation
 - AACS
 - ActiveMARK / ActiveMARK 5
 - Alpha-DVD
@@ -36,11 +37,11 @@ Below is a list of the protections that can be detected using this code:
 - Cenga ProtectDVD
 - Code Lock
 - CopyKiller
-- Cucko (EA Custom) (partial)
 - DiscGuard
 - DVD-Cops
 - DVD-Movie-PROTECT
 - DVD Crypt
+- EA Protections (Including Cucko, EA CDKey, and EA DRM)
 - EXE Stealth
 - Freelock
 - Games for Windows - Live (partial)
