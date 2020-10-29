@@ -20,6 +20,11 @@
             if (fileContent.Contains(check, out position))
                 return $"EA CdKey Registration Module {Utilities.GetFileVersion(file)}" + (includePosition ? $" (Index {position})" : string.Empty);
 
+            // C + (char)0x00 + D + (char)0x00 + K + (char)0x00 + e + (char)0x00 + y + (char)0x00
+            check = new byte[] { 0x43, 0x00, 0x44, 0x00, 0x4B, 0x00, 0x65, 0x00, 0x79, 0x00 };
+            if (fileContent.Contains(check, out position))
+                return $"EA CdKey Registration Module {Utilities.GetFileVersion(file)}" + (includePosition ? $" (Index {position})" : string.Empty);
+            
             // ereg.ea-europe.com
             check = new byte[] { 0x65, 0x72, 0x65, 0x67, 0x2E, 0x65, 0x61, 0x2D, 0x65, 0x75, 0x72, 0x6F, 0x70, 0x65, 0x2E, 0x63, 0x6F, 0x6D };
             if (fileContent.Contains(check, out position))
