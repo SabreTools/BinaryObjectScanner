@@ -444,6 +444,10 @@ namespace BurnOutSharp
             if (file != null && MicrosoftCAB.ShouldScan(magic))
                 protections.AddRange(MicrosoftCAB.Scan(file, includePosition));
 
+            // MSI
+            if (file != null && MSI.ShouldScan(magic))
+                protections.AddRange(MSI.Scan(file, includePosition));
+
             // MPQ archive
             if (file != null && MPQ.ShouldScan(magic))
                 protections.AddRange(MPQ.Scan(file, includePosition));

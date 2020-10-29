@@ -28,6 +28,7 @@
     <PackageReference Include="SharpCompress" Version="0.26.0" />
     <PackageReference Include="UnshieldSharp" Version="1.4.2.3" />
     <PackageReference Include="WiseUnpacker" Version="1.0.1" />
+    <PackageReference Include="wix-libs" Version="3.11.1" />
     <PackageReference Include="zlib.net" Version="1.0.4" />
   </ItemGroup>
 

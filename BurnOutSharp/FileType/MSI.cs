@@ -2,15 +2,19 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using LibMSPackN;
+using Microsoft.Deployment.WindowsInstaller;
+using Microsoft.Deployment.WindowsInstaller.Package;
 
 namespace BurnOutSharp.FileType
 {
-    internal class MicrosoftCAB
+    internal class MSI
     {
         public static bool ShouldScan(byte[] magic)
         {
-            if (magic.StartsWith(new byte[] { 0x4d, 0x53, 0x43, 0x46 }))
+            if (magic.StartsWith(new byte[] { 0xD0, 0xCF, 0x11, 0xE0, 0xA1, 0xB1, 0x1A, 0xE1 }))
                 return true;
 
             return false;
@@ -21,24 +25,15 @@ namespace BurnOutSharp.FileType
         {
             List<string> protections = new List<string>();
 
-            // If the cab file itself fails
+            // If the MSI file itself fails
             try
             {
                 string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
                 Directory.CreateDirectory(tempPath);
 
-                using (MSCabinet cabfile = new MSCabinet(file))
+                using (Database msidb = new Database(file, DatabaseOpenMode.ReadOnly))
                 {
-                    foreach (var sub in cabfile.GetFiles())
-                    {
-                        // If an individual entry fails
-                        try
-                        {
-                            string tempFile = Path.Combine(tempPath, sub.Filename);
-                            sub.ExtractTo(tempFile);
-                        }
-                        catch { }
-                    }
+                    msidb.ExportAll(tempPath);
                 }
 
                 // Collect and format all found protections
