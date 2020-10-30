@@ -1,8 +1,8 @@
-using System.Text;
 using System;
 using System.Linq;
+using System.Text;
 
-namespace BurnOutSharp.ProtectionType
+namespace BurnOutSharp.PackerType
 {
     public class NSIS
     {

@@ -1,4 +1,4 @@
-﻿namespace BurnOutSharp.ProtectionType
+﻿namespace BurnOutSharp.PackerType
 {
     public class PECompact
     {

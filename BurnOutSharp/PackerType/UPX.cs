@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace BurnOutSharp.ProtectionType
+namespace BurnOutSharp.PackerType
 {
     public class UPX
     {
