@@ -56,6 +56,7 @@ Below is a list of the protections that can be detected using this code:
 - LaserLock
 - MediaCloQ
 - MediaMax CD3
+- NSIS
 - Origin (partial)
 - ProtectDisc
 - Protect DVD-Video
