@@ -172,7 +172,12 @@ namespace BurnOutSharp.FileType
             protection = LaserLock.CheckContents(file, fileContent, includePosition);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
-
+			
+			// NSIS
+			protection = NSIS.CheckContents(fileContent, includePosition);
+            if (!string.IsNullOrWhiteSpace(protection))
+                protections.Add(protection);
+			
             // PE Compact
             protection = PECompact.CheckContents(fileContent, includePosition);
             if (!string.IsNullOrWhiteSpace(protection))
