@@ -59,6 +59,8 @@ namespace BurnOutSharp.FileType
             List<string> subProtections = new List<string>();
             string protection;
 
+            #region Protections
+
             // 3PLock
             protection = ThreePLock.CheckContents(fileContent, includePosition);
             if (!string.IsNullOrWhiteSpace(protection))
@@ -76,11 +78,6 @@ namespace BurnOutSharp.FileType
 
             // Alpha-ROM
             protection = AlphaROM.CheckContents(fileContent, includePosition);
-            if (!string.IsNullOrWhiteSpace(protection))
-                protections.Add(protection);
-
-            // Armadillo
-            protection = Armadillo.CheckContents(fileContent, includePosition);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
@@ -124,11 +121,6 @@ namespace BurnOutSharp.FileType
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
-            // dotFuscator
-            protection = dotFuscator.CheckContents(fileContent, includePosition);
-            if (!string.IsNullOrWhiteSpace(protection))
-                protections.Add(protection);
-
             // DVD-Cops
             protection = DVDCops.CheckContents(fileContent, includePosition);
             if (!string.IsNullOrWhiteSpace(protection))
@@ -136,11 +128,6 @@ namespace BurnOutSharp.FileType
 
             // EA Protections
             protection = ElectronicArts.CheckContents(file, fileContent, includePosition);
-            if (!string.IsNullOrWhiteSpace(protection))
-                protections.Add(protection);
-
-            // EXE Stealth
-            protection = EXEStealth.CheckContents(fileContent, includePosition);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
@@ -171,16 +158,6 @@ namespace BurnOutSharp.FileType
 
             // LaserLock
             protection = LaserLock.CheckContents(file, fileContent, includePosition);
-            if (!string.IsNullOrWhiteSpace(protection))
-                protections.Add(protection);
-            
-            // NSIS
-            protection = NSIS.CheckContents(fileContent, includePosition);
-            if (!string.IsNullOrWhiteSpace(protection))
-                protections.Add(protection);
-            
-            // PE Compact
-            protection = PECompact.CheckContents(fileContent, includePosition);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
@@ -239,11 +216,6 @@ namespace BurnOutSharp.FileType
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
-            // UPX
-            protection = UPX.CheckContents(fileContent, includePosition);
-            if (!string.IsNullOrWhiteSpace(protection))
-                protections.Add(protection);
-
             // VOB ProtectCD/DVD
             protection = VOBProtectCDDVD.CheckContents(file, fileContent, includePosition);
             if (!string.IsNullOrWhiteSpace(protection))
@@ -268,6 +240,43 @@ namespace BurnOutSharp.FileType
             protection = XtremeProtector.CheckContents(fileContent, includePosition);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
+
+            #endregion
+
+            // These are detected as protections until we can unpack them
+            #region Packers
+
+            // Armadillo
+            protection = Armadillo.CheckContents(fileContent, includePosition);
+            if (!string.IsNullOrWhiteSpace(protection))
+                protections.Add(protection);
+
+            // dotFuscator
+            protection = dotFuscator.CheckContents(fileContent, includePosition);
+            if (!string.IsNullOrWhiteSpace(protection))
+                protections.Add(protection);
+
+            // EXE Stealth
+            protection = EXEStealth.CheckContents(fileContent, includePosition);
+            if (!string.IsNullOrWhiteSpace(protection))
+                protections.Add(protection);
+
+            // NSIS
+            protection = NSIS.CheckContents(fileContent, includePosition);
+            if (!string.IsNullOrWhiteSpace(protection))
+                protections.Add(protection);
+
+            // PE Compact
+            protection = PECompact.CheckContents(fileContent, includePosition);
+            if (!string.IsNullOrWhiteSpace(protection))
+                protections.Add(protection);
+
+            // UPX
+            protection = UPX.CheckContents(fileContent, includePosition);
+            if (!string.IsNullOrWhiteSpace(protection))
+                protections.Add(protection);
+
+            #endregion
 
             return protections;
         }
