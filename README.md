@@ -14,6 +14,7 @@ In addition to the original BurnOut code, the following libraries (or ports ther
 - [StormLibSharp](https://github.com/robpaveza/stormlibsharp) - MPQ extraction
 - [UnshieldSharp](https://github.com/mnadareski/UnshieldSharp) - InstallShield CAB extraction
 - [WiseUnpacker](https://github.com/mnadareski/WiseUnpacker) - Wise Installer extraction
+- [wix-libs](https://wixtoolset.org/) - MSI extraction
 
 ## Protections Detected
 
@@ -25,7 +26,6 @@ Below is a list of the protections that can be detected using this code:
 - ActiveMARK / ActiveMARK 5
 - Alpha-DVD
 - Alpha-ROM
-- Armadillo
 - Bitpool
 - ByteShield
 - Cactus Data Shield
@@ -42,7 +42,6 @@ Below is a list of the protections that can be detected using this code:
 - DVD-Movie-PROTECT
 - DVD Crypt
 - EA Protections (Including Cucko, EA CDKey, and EA DRM)
-- EXE Stealth
 - Freelock
 - Games for Windows - Live (partial)
 - Hexalock Autolock
@@ -56,7 +55,6 @@ Below is a list of the protections that can be detected using this code:
 - LaserLock
 - MediaCloQ
 - MediaMax CD3
-- NSIS
 - Origin (partial)
 - ProtectDisc
 - Protect DVD-Video
@@ -76,7 +74,6 @@ Below is a list of the protections that can be detected using this code:
 - TAGES (mostly complete)
 - TZCopyProtector
 - Uplay (partial)
-- UPX
 - VOB ProtectCD/DVD
 - Winlock
 - WISE Installer
@@ -85,6 +82,17 @@ Below is a list of the protections that can be detected using this code:
 - XCP
 - Xtreme-Protector
 - Zzxzz
+
+## Executable Packers Detected
+
+Below is a list of the executable packers that can be detected using this code:
+
+- Armadillo
+- dotFuscator
+- EXE Stealth
+- NSIS
+- PECompact
+- UPX
 
 ## Contributions
 
