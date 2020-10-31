@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using BurnOutSharp;
 
 namespace Test
@@ -29,6 +30,10 @@ namespace Test
                     {
                         foreach (string key in protections.Keys)
                         {
+                            // Skip over files with no protection
+                            if (protections[key] == null || !protections[key].Any())
+                                continue;
+
                             string line = $"{key}: {string.Join(", ", protections[key])}";
                             Console.WriteLine(line);
                             sw.WriteLine(line);
