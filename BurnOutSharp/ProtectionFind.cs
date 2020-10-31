@@ -144,8 +144,8 @@ namespace BurnOutSharp
         /// <summary>
         /// Scan a path for indications of copy protection
         /// </summary>
-        /// <param name="path"></param>
-        /// <param name="isDirectory"></param>
+        /// <param name="path">Path to scan file and folder names</param>
+        /// <param name="isDirectory">True if the path is a directory, false otherwise</param>
         /// <returns></returns>
         public static string ScanPath(string path, bool isDirectory)
         {
@@ -383,9 +383,16 @@ namespace BurnOutSharp
         /// <param name="includePosition">True to include scanned copy protection position, false otherwise (default)</param>
         public static string ScanContent(string file, bool includePosition = false)
         {
-            using (FileStream fs = File.OpenRead(file))
+            try
             {
-                return ScanContent(fs, file, includePosition);
+                using (FileStream fs = File.OpenRead(file))
+                {
+                    return ScanContent(fs, file, includePosition);
+                }
+            }
+            catch
+            {
+                return null;
             }
         }
 
