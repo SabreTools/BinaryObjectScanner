@@ -79,7 +79,7 @@ namespace BurnOutSharp
                 return;
 
             // Use a placeholder value if the path is null
-            pathToPrepend = pathToPrepend ?? "ARCHIVE";
+            pathToPrepend = (pathToPrepend ?? "ARCHIVE").TrimEnd(Path.DirectorySeparatorChar);
 
             // Get a list of all of the keys
             var keys = original.Keys.ToList();
@@ -91,7 +91,7 @@ namespace BurnOutSharp
                 string currentKey = keys[i];
 
                 // Otherwise, get the new key name and transfer over
-                string newKey = Path.Combine(pathToPrepend, currentKey);
+                string newKey = $"{pathToPrepend}{Path.DirectorySeparatorChar}{currentKey.Trim(Path.DirectorySeparatorChar)}";
                 original[newKey] = original[currentKey];
                 original.Remove(currentKey);
             }
