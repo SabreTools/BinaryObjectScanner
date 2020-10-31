@@ -12,7 +12,7 @@
             // CDCheck
             check = new byte[] { 0x43, 0x44, 0x43, 0x68, 0x65, 0x63, 0x6B };
             if (fileContent.Contains(check, out position))
-                return "Microsoft Game Studios CD Check" + (includePosition ? $" (Index {position})" : string.Empty);
+                return "Executable-Based CD Check" + (includePosition ? $" (Index {position})" : string.Empty);
 
             return null;
         }
