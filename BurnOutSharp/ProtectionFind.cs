@@ -416,6 +416,20 @@ namespace BurnOutSharp
             // Files can be protected in multiple ways
             List<string> protections = new List<string>();
 
+            #region Non-Archive Formats
+
+            // Executable
+            if (Executable.ShouldScan(magic))
+                protections.AddRange(Executable.Scan(stream, file, includePosition));
+
+            // Text-based files
+            if (Textfile.ShouldScan(magic, extension))
+                protections.AddRange(Textfile.Scan(stream, includePosition));
+
+            #endregion
+
+            #region Archive Formats
+
             // 7-Zip archive
             if (SevenZip.ShouldScan(magic))
                 protections.AddRange(SevenZip.Scan(stream, includePosition));
@@ -427,10 +441,6 @@ namespace BurnOutSharp
             // BZip2
             if (BZip2.ShouldScan(magic))
                 protections.AddRange(BZip2.Scan(stream, includePosition));
-
-            // Executable
-            if (Executable.ShouldScan(magic))
-                protections.AddRange(Executable.Scan(stream, file, includePosition));
 
             // GZIP
             if (GZIP.ShouldScan(magic))
@@ -464,10 +474,6 @@ namespace BurnOutSharp
             if (TapeArchive.ShouldScan(magic))
                 protections.AddRange(TapeArchive.Scan(stream, includePosition));
 
-            // Text-based files
-            if (Textfile.ShouldScan(magic, extension))
-                protections.AddRange(Textfile.Scan(stream, includePosition));
-
             // Valve archive formats
             if (file != null && Valve.ShouldScan(magic))
                 protections.AddRange(Valve.Scan(file, includePosition));
@@ -475,6 +481,8 @@ namespace BurnOutSharp
             // XZ
             if (XZ.ShouldScan(magic))
                 protections.AddRange(XZ.Scan(stream, includePosition));
+
+            #endregion
 
             // Return blank if nothing found, or comma-separated list of protections
             if (protections.Count() == 0)
