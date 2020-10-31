@@ -22,7 +22,11 @@ namespace BurnOutSharp.PackerType
             try
             {
                 index -= 5;
-                return Encoding.ASCII.GetString(fileContent, index, 4);
+                string versionString = Encoding.ASCII.GetString(fileContent, index, 4);
+                if (!char.IsNumber(versionString[0]))
+                    return "(Unknown Version)";
+
+                return versionString;
             }
             catch
             {
