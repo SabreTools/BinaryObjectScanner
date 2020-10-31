@@ -146,6 +146,11 @@ namespace BurnOutSharp.FileType
             if (!string.IsNullOrWhiteSpace(protection))
                 Utilities.AppendToDictionary(protections, file, protection);
 
+            // ITENIUM Trial & Buy Protection
+            protection = Itenium.CheckContents(fileContent, scanner.IncludePosition);
+            if (!string.IsNullOrWhiteSpace(protection))
+                Utilities.AppendToDictionary(protections, file, protection);
+
             // JoWooD X-Prot
             protection = JoWooDXProt.CheckContents(fileContent, scanner.IncludePosition);
             if (!string.IsNullOrWhiteSpace(protection))
