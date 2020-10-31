@@ -19,7 +19,7 @@ namespace Test
                 IncludePosition = true,
                 ScanAllFiles = false,
                 ScanArchives = true,
-                IncludePackers = true,
+                ScanPackers = true,
             };
 
             foreach (string arg in args)

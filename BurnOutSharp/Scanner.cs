@@ -34,7 +34,7 @@ namespace BurnOutSharp
         /// <summary>
         /// Determines if packers are counted as detected protections or not
         /// </summary>
-        public bool IncludePackers { get; set; } = false;
+        public bool ScanPackers { get; set; } = false;
 
         /// <summary>
         /// Constructor

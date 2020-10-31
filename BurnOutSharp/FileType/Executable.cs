@@ -251,7 +251,7 @@ namespace BurnOutSharp.FileType
             #region Packers
 
             // If we're looking for packers too, run scans
-            if (scanner.IncludePackers)
+            if (scanner.ScanPackers)
             {
 
                 // Armadillo
