@@ -8,7 +8,6 @@ using BurnOutSharp.ProtectionType;
 namespace BurnOutSharp
 {
     // TODO: Use the file progress everywhere
-    // TODO: Re-enable direct stream scanning
     // TODO: Should FileTypes be exposed directly as well so the scans can be exposed easier?
     public class Scanner
     {
@@ -61,6 +60,13 @@ namespace BurnOutSharp
             if (paths == null || !paths.Any())
                 return null;
 
+            // Checkpoint
+            FileProgress?.Report(new FileProtection(null, 0, null));
+
+            // Temp variables for reporting
+            string tempFilePath = Path.GetTempPath();
+            string tempFilePathWithGuid = Path.Combine(tempFilePath, Guid.NewGuid().ToString());
+
             // Loop through each path and get the returned values
             var protections = new Dictionary<string, List<string>>();
             foreach (string path in paths)
@@ -73,32 +79,25 @@ namespace BurnOutSharp
 
                     // Scan for path-detectable protections
                     var directoryPathProtections = GetPathProtections(path, files);
-                    if (directoryPathProtections != null && directoryPathProtections.Any())
-                    {
-                        foreach (string key in directoryPathProtections.Keys)
-                        {
-                            if (!protections.ContainsKey(key))
-                                protections[key] = new List<string>();
-
-                            protections[key].AddRange(directoryPathProtections[key]);
-                        }
-                    }
+                    Utilities.AppendToDictionary(protections, directoryPathProtections);
 
                     // Scan each file in directory separately
-                    foreach (string file in files)
+                    for (int i = 0; i < files.Count(); i++)
                     {
+                        // Get the current file
+                        string file = files.ElementAt(i);
+
+                        // Get the reportable file name
+                        string reportableFileName = file;
+                        if (reportableFileName.StartsWith(tempFilePath))
+                            reportableFileName = reportableFileName.Substring(tempFilePathWithGuid.Length);
+
+                        // Checkpoint
+                        FileProgress?.Report(new FileProtection(reportableFileName, i / (float)files.Count(), "Checking file" + (file != reportableFileName ? " from archive" : string.Empty)));
+
                         // Scan for path-detectable protections
                         var filePathProtections = GetPathProtections(file);
-                        if (filePathProtections != null && filePathProtections.Any())
-                        {
-                            foreach (string key in filePathProtections.Keys)
-                            {
-                                if (!protections.ContainsKey(key))
-                                    protections[key] = new List<string>();
-
-                                protections[key].AddRange(filePathProtections[key]);
-                            }
-                        }
+                        Utilities.AppendToDictionary(protections, filePathProtections);
 
                         // Scan for content-detectable protections
                         var fileProtections = GetInternalProtections(file);
@@ -112,24 +111,28 @@ namespace BurnOutSharp
                                 protections[key].AddRange(fileProtections[key]);
                             }
                         }
-                    }    
+
+                        // Checkpoint
+                        protections.TryGetValue(file, out List<string> fullProtectionList);
+                        string fullProtection = (fullProtectionList != null && fullProtectionList.Any() ? string.Join(", ", fullProtectionList) : null);
+                        FileProgress?.Report(new FileProtection(reportableFileName, (i + 1) / (float)files.Count(), fullProtection ?? string.Empty));
+                    }
                 }
 
                 // Scan a single file by itself
                 else if (File.Exists(path))
                 {
+                    // Get the reportable file name
+                    string reportableFileName = path;
+                    if (reportableFileName.StartsWith(tempFilePath))
+                        reportableFileName = reportableFileName.Substring(tempFilePathWithGuid.Length);
+
+                    // Checkpoint
+                    FileProgress?.Report(new FileProtection(reportableFileName, 0, "Checking file" + (path != reportableFileName ? " from archive" : string.Empty)));
+
                     // Scan for path-detectable protections
                     var filePathProtections = GetPathProtections(path);
-                    if (filePathProtections != null && filePathProtections.Any())
-                    {
-                        foreach (string key in filePathProtections.Keys)
-                        {
-                            if (!protections.ContainsKey(key))
-                                protections[key] = new List<string>();
-
-                            protections[key].AddRange(filePathProtections[key]);
-                        }
-                    }
+                    Utilities.AppendToDictionary(protections, filePathProtections);
 
                     // Scan for content-detectable protections
                     var fileProtections = GetInternalProtections(path);
@@ -143,12 +146,17 @@ namespace BurnOutSharp
                             protections[key].AddRange(fileProtections[key]);
                         }
                     }
+
+                    // Checkpoint
+                    protections.TryGetValue(path, out List<string> fullProtectionList);
+                    string fullProtection = (fullProtectionList != null && fullProtectionList.Any() ? string.Join(", ", fullProtectionList) : null);
+                    FileProgress?.Report(new FileProtection(reportableFileName, 1, fullProtection ?? string.Empty));
                 }
 
                 // Throw on an invalid path
                 else
                 {
-                    throw new FileNotFoundException($"{path} is not a directory or file, skipping...");
+                    // throw new FileNotFoundException($"{path} is not a directory or file, skipping...");
                 }
             }
 
@@ -428,21 +436,15 @@ namespace BurnOutSharp
                 // Executable
                 if (ScanAllFiles || Executable.ShouldScan(magic))
                 {
-                    var subProtections = Executable.Scan(fs, file, IncludePosition);
-                    if (!protections.ContainsKey(file))
-                        protections[file] = new List<string>();
-
-                    protections[file] = subProtections;
+                    var subProtections = Executable.Scan(this, fs, file);
+                    Utilities.AppendToDictionary(protections, subProtections);
                 }
 
                 // Text-based files
                 if (ScanAllFiles || Textfile.ShouldScan(magic, extension))
                 {
-                    var subProtections = Executable.Scan(fs, file, IncludePosition);
-                    if (!protections.ContainsKey(file))
-                        protections[file] = new List<string>();
-
-                    protections[file] = subProtections;
+                    var subProtections = Textfile.Scan(fs);
+                    Utilities.AppendToDictionary(protections, file, subProtections);
                 }
 
                 #endregion
@@ -457,130 +459,91 @@ namespace BurnOutSharp
                     if (SevenZip.ShouldScan(magic))
                     {
                         var subProtections = SevenZip.Scan(this, fs);
-                        if (!protections.ContainsKey(file))
-                            protections[file] = new List<string>();
-
-                        protections[file] = subProtections;
+                        Utilities.AppendToDictionary(protections, subProtections);
                     }
 
                     // BFPK archive
                     if (BFPK.ShouldScan(magic))
                     {
                         var subProtections = BFPK.Scan(this, fs);
-                        if (!protections.ContainsKey(file))
-                            protections[file] = new List<string>();
-
-                        protections[file] = subProtections;
+                        Utilities.AppendToDictionary(protections, subProtections);
                     }
 
                     // BZip2
                     if (BZip2.ShouldScan(magic))
                     {
                         var subProtections = BZip2.Scan(this, fs);
-                        if (!protections.ContainsKey(file))
-                            protections[file] = new List<string>();
-
-                        protections[file] = subProtections;
+                        Utilities.AppendToDictionary(protections, subProtections);
                     }
 
                     // GZIP
                     if (GZIP.ShouldScan(magic))
                     {
                         var subProtections = GZIP.Scan(this, fs);
-                        if (!protections.ContainsKey(file))
-                            protections[file] = new List<string>();
-
-                        protections[file] = subProtections;
+                        Utilities.AppendToDictionary(protections, subProtections);
                     }
 
                     // InstallShield Cabinet
                     if (file != null && InstallShieldCAB.ShouldScan(magic))
                     {
                         var subProtections = InstallShieldCAB.Scan(this, file);
-                        if (!protections.ContainsKey(file))
-                            protections[file] = new List<string>();
-
-                        protections[file] = subProtections;
+                        Utilities.AppendToDictionary(protections, subProtections);
                     }
 
                     // Microsoft Cabinet
                     if (file != null && MicrosoftCAB.ShouldScan(magic))
                     {
                         var subProtections = MicrosoftCAB.Scan(this, file);
-                        if (!protections.ContainsKey(file))
-                            protections[file] = new List<string>();
-
-                        protections[file] = subProtections;
+                        Utilities.AppendToDictionary(protections, subProtections);
                     }
 
                     // MSI
                     if (file != null && MSI.ShouldScan(magic))
                     {
                         var subProtections = MSI.Scan(this, file);
-                        if (!protections.ContainsKey(file))
-                            protections[file] = new List<string>();
-
-                        protections[file] = subProtections;
+                        Utilities.AppendToDictionary(protections, subProtections);
                     }
 
                     // MPQ archive
                     if (file != null && MPQ.ShouldScan(magic))
                     {
                         var subProtections = MPQ.Scan(this, file);
-                        if (!protections.ContainsKey(file))
-                            protections[file] = new List<string>();
-
-                        protections[file] = subProtections;
+                        Utilities.AppendToDictionary(protections, subProtections);
                     }
 
                     // PKZIP archive (and derivatives)
                     if (PKZIP.ShouldScan(magic))
                     {
                         var subProtections = PKZIP.Scan(this, fs);
-                        if (!protections.ContainsKey(file))
-                            protections[file] = new List<string>();
-
-                        protections[file] = subProtections;
+                        Utilities.AppendToDictionary(protections, subProtections);
                     }
 
                     // RAR archive
                     if (RAR.ShouldScan(magic))
                     {
                         var subProtections = RAR.Scan(this, fs);
-                        if (!protections.ContainsKey(file))
-                            protections[file] = new List<string>();
-
-                        protections[file] = subProtections;
+                        Utilities.AppendToDictionary(protections, subProtections);
                     }
 
                     // Tape Archive
                     if (TapeArchive.ShouldScan(magic))
                     {
                         var subProtections = TapeArchive.Scan(this, fs);
-                        if (!protections.ContainsKey(file))
-                            protections[file] = new List<string>();
-
-                        protections[file] = subProtections;
+                        Utilities.AppendToDictionary(protections, subProtections);
                     }
 
                     // Valve archive formats
                     if (file != null && Valve.ShouldScan(magic))
                     {
                         var subProtections = Valve.Scan(this, file);
-                        if (!protections.ContainsKey(file))
-                            protections[file] = new List<string>();
-
-                        protections[file] = subProtections;
+                        Utilities.AppendToDictionary(protections, subProtections);
                     }
 
                     // XZ
                     if (XZ.ShouldScan(magic))
                     {
                         var subProtections = XZ.Scan(this, fs);
-                        if (!protections.ContainsKey(file))
-                            protections[file] = new List<string>();
-
-                        protections[file] = subProtections;
+                        Utilities.AppendToDictionary(protections, subProtections);
                     }
                 }
 

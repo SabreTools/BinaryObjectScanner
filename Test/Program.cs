@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using BurnOutSharp;
 
 namespace Test
@@ -9,15 +8,36 @@ namespace Test
     {
         static void Main(string[] args)
         {
+            // Create progress indicator
             var p = new Progress<FileProtection>();
             p.ProgressChanged += Changed;
+
+            // Create scanner to be shared
+            var scanner = new Scanner(p)
+            {
+                IncludePosition = true,
+                ScanAllFiles = false,
+                ScanArchives = true,
+            };
+
             foreach (string arg in args)
             {
-                string protections = string.Join("\r\n", ProtectionFind.Scan(arg, true, p).Select(kvp => kvp.Key + ": " + kvp.Value.TrimEnd()));
-                Console.WriteLine(protections);
-                using (StreamWriter sw = new StreamWriter(File.OpenWrite($"{DateTime.Now:yyyy-MM-dd_HHmmss}.txt")))
+                var protections = scanner.GetProtections(arg);
+                if (protections != null)
                 {
-                    sw.WriteLine(protections);
+                    using (StreamWriter sw = new StreamWriter(File.OpenWrite($"{DateTime.Now:yyyy-MM-dd_HHmmss}.txt")))
+                    {
+                        foreach (string key in protections.Keys)
+                        {
+                            string line = $"{key}: {string.Join(", ", protections[key])}";
+                            Console.WriteLine(line);
+                            sw.WriteLine(line);
+                        }
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"No protections found for {arg}");
                 }
             }
 

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using SharpCompress.Archives;
 using SharpCompress.Archives.Rar;
 
@@ -22,21 +21,13 @@ namespace BurnOutSharp.FileType
             return false;
         }
 
-        public static Dictionary<string, List<string>> Scan(Scanner parentScanner, Stream stream)
+        public static Dictionary<string, List<string>> Scan(Scanner scanner, Stream stream)
         {
             // If the rar file itself fails
             try
             {
                 string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
                 Directory.CreateDirectory(tempPath);
-
-                // Create a new scanner for the new temp path
-                Scanner subScanner = new Scanner(parentScanner.FileProgress)
-                {
-                    IncludePosition = parentScanner.IncludePosition,
-                    ScanAllFiles = parentScanner.ScanAllFiles,
-                    ScanArchives = parentScanner.ScanArchives,
-                };
 
                 using (RarArchive zipFile = RarArchive.Open(stream))
                 {
@@ -57,7 +48,7 @@ namespace BurnOutSharp.FileType
                 }
 
                 // Collect and format all found protections
-                var protections = subScanner.GetProtections(tempPath);
+                var protections = scanner.GetProtections(tempPath);
 
                 // If temp directory cleanup fails
                 try

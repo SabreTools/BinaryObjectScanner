@@ -16,7 +16,7 @@ namespace BurnOutSharp.FileType
         }
 
         // TODO: Add stream opening support
-        public static Dictionary<string, List<string>> Scan(Scanner parentScanner, string file)
+        public static Dictionary<string, List<string>> Scan(Scanner scanner, string file)
         {
             // If the MSI file itself fails
             try
@@ -24,21 +24,13 @@ namespace BurnOutSharp.FileType
                 string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
                 Directory.CreateDirectory(tempPath);
 
-                // Create a new scanner for the new temp path
-                Scanner subScanner = new Scanner(parentScanner.FileProgress)
-                {
-                    IncludePosition = parentScanner.IncludePosition,
-                    ScanAllFiles = parentScanner.ScanAllFiles,
-                    ScanArchives = parentScanner.ScanArchives,
-                };
-
                 using (Database msidb = new Database(file, DatabaseOpenMode.ReadOnly))
                 {
                     msidb.ExportAll(tempPath);
                 }
 
                 // Collect and format all found protections
-                var protections = subScanner.GetProtections(tempPath);
+                var protections = scanner.GetProtections(tempPath);
 
                 // If temp directory cleanup fails
                 try

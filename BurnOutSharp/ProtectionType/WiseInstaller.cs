@@ -1,24 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Wise = WiseUnpacker.WiseUnpacker;
 
 namespace BurnOutSharp.ProtectionType
 {
     public class WiseInstaller
     {
-        public static List<string> CheckContents(string file, byte[] fileContent, bool includePosition = false)
+        public static Dictionary<string, List<string>> CheckContents(Scanner scanner, string file, byte[] fileContent)
         {
-            // "WiseMain"
+            // WiseMain
             byte[] check = new byte[] { 0x57, 0x69, 0x73, 0x65, 0x4D, 0x61, 0x69, 0x6E };
             if (fileContent.Contains(check, out int position))
             {
-                List<string> protections = new List<string> { "Wise Installation Wizard Module" + (includePosition ? $" (Index {position})" : string.Empty) };
-                if (!File.Exists(file))
+                Dictionary<string, List<string>> protections = new Dictionary<string, List<string>>
+                {
+                    [file ?? "NO FILENAME"] = new List<string> { "Wise Installation Wizard Module" + (scanner.IncludePosition ? $" (Index {position})" : string.Empty) },
+                };
+
+                if (file == null || !File.Exists(file))
                     return protections;
 
-                protections.AddRange(WiseInstaller.Scan(file, includePosition));
+                var subProtections = Scan(scanner, file);
+                Utilities.AppendToDictionary(protections, subProtections);
 
                 return protections;
             }
@@ -26,10 +30,8 @@ namespace BurnOutSharp.ProtectionType
             return null;
         }
 
-        public static List<string> Scan(string file, bool includePosition = false)
+        public static Dictionary<string, List<string>> Scan(Scanner scanner, string file)
         {
-            List<string> protections = new List<string>();
-
             // If the installer file itself fails
             try
             {
@@ -40,7 +42,7 @@ namespace BurnOutSharp.ProtectionType
                 unpacker.ExtractTo(file, tempPath);
 
                 // Collect and format all found protections
-                var protections = subScanner.GetProtections();
+                var protections = scanner.GetProtections(tempPath);
 
                 // If temp directory cleanup fails
                 try
@@ -48,10 +50,12 @@ namespace BurnOutSharp.ProtectionType
                     Directory.Delete(tempPath, true);
                 }
                 catch { }
+
+                return protections;
             }
             catch { }
 
-            return protections;
+            return null;
         }
 
     }

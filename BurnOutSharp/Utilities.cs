@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -7,7 +8,7 @@ using System.Threading;
 
 namespace BurnOutSharp
 {
-    public static class Utilities
+    internal static class Utilities
     {
         /// <summary>
         /// Search for a byte array in another array
@@ -107,6 +108,60 @@ namespace BurnOutSharp
             }
 
             return fsName;
+        }
+
+        /// <summary>
+        /// Append one result to a results dictionary
+        /// </summary>
+        /// <param name="original">Dictionary to append to</param>
+        /// <param name="key">Key to add information to</param>
+        /// <param name="value">String value to add</param>
+        public static void AppendToDictionary(Dictionary<string, List<string>> original, string key, string value)
+        {
+            AppendToDictionary(original, key, new List<string> { value });
+        }
+
+        /// <summary>
+        /// Append one result to a results dictionary
+        /// </summary>
+        /// <param name="original">Dictionary to append to</param>
+        /// <param name="key">Key to add information to</param>
+        /// <param name="value">String value to add</param>
+        public static void AppendToDictionary(Dictionary<string, List<string>> original, string key, List<string> values)
+        {
+            // If the dictionary is null, just return
+            if (original == null)
+                return;
+
+            // Use a placeholder value if the key is null
+            key = key ?? "NO FILENAME";
+
+            // Add the key if needed and then append the lists
+            if (!original.ContainsKey(key))
+                original[key] = new List<string>();
+
+            original[key].AddRange(values);
+        }
+
+        /// <summary>
+        /// Append one results dictionary to another
+        /// </summary>
+        /// <param name="original">Dictionary to append to</param>
+        /// <param name="addition">Dictionary to pull from</param>
+        public static void AppendToDictionary(Dictionary<string, List<string>> original, Dictionary<string, List<string>> addition)
+        {
+            // If either dictionary is missing, just return
+            if (original == null || addition == null)
+                return;
+
+            // Loop through each of the addition keys and add accordingly
+            foreach (string key in addition.Keys)
+            {
+                if (!original.ContainsKey(key))
+                    original[key] = new List<string>();
+
+                original[key].AddRange(addition[key]);
+            }
         }
 
         #region P/Invoke
