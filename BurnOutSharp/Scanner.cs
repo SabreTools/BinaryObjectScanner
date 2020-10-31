@@ -156,7 +156,8 @@ namespace BurnOutSharp
                 // Throw on an invalid path
                 else
                 {
-                    // throw new FileNotFoundException($"{path} is not a directory or file, skipping...");
+                    Console.WriteLine($"{path} is not a directory or file, skipping...");
+                    //throw new FileNotFoundException($"{path} is not a directory or file, skipping...");
                 }
             }
 
@@ -459,6 +460,7 @@ namespace BurnOutSharp
                     if (SevenZip.ShouldScan(magic))
                     {
                         var subProtections = SevenZip.Scan(this, fs);
+                        Utilities.PrependToKeys(protections, file);
                         Utilities.AppendToDictionary(protections, subProtections);
                     }
 
@@ -466,6 +468,7 @@ namespace BurnOutSharp
                     if (BFPK.ShouldScan(magic))
                     {
                         var subProtections = BFPK.Scan(this, fs);
+                        Utilities.PrependToKeys(protections, file);
                         Utilities.AppendToDictionary(protections, subProtections);
                     }
 
@@ -473,6 +476,7 @@ namespace BurnOutSharp
                     if (BZip2.ShouldScan(magic))
                     {
                         var subProtections = BZip2.Scan(this, fs);
+                        Utilities.PrependToKeys(protections, file);
                         Utilities.AppendToDictionary(protections, subProtections);
                     }
 
@@ -480,6 +484,7 @@ namespace BurnOutSharp
                     if (GZIP.ShouldScan(magic))
                     {
                         var subProtections = GZIP.Scan(this, fs);
+                        Utilities.PrependToKeys(protections, file);
                         Utilities.AppendToDictionary(protections, subProtections);
                     }
 
@@ -487,6 +492,7 @@ namespace BurnOutSharp
                     if (file != null && InstallShieldCAB.ShouldScan(magic))
                     {
                         var subProtections = InstallShieldCAB.Scan(this, file);
+                        Utilities.PrependToKeys(protections, file);
                         Utilities.AppendToDictionary(protections, subProtections);
                     }
 
@@ -494,6 +500,7 @@ namespace BurnOutSharp
                     if (file != null && MicrosoftCAB.ShouldScan(magic))
                     {
                         var subProtections = MicrosoftCAB.Scan(this, file);
+                        Utilities.PrependToKeys(protections, file);
                         Utilities.AppendToDictionary(protections, subProtections);
                     }
 
@@ -501,6 +508,7 @@ namespace BurnOutSharp
                     if (file != null && MSI.ShouldScan(magic))
                     {
                         var subProtections = MSI.Scan(this, file);
+                        Utilities.PrependToKeys(protections, file);
                         Utilities.AppendToDictionary(protections, subProtections);
                     }
 
@@ -508,6 +516,7 @@ namespace BurnOutSharp
                     if (file != null && MPQ.ShouldScan(magic))
                     {
                         var subProtections = MPQ.Scan(this, file);
+                        Utilities.PrependToKeys(protections, file);
                         Utilities.AppendToDictionary(protections, subProtections);
                     }
 
@@ -515,6 +524,7 @@ namespace BurnOutSharp
                     if (PKZIP.ShouldScan(magic))
                     {
                         var subProtections = PKZIP.Scan(this, fs);
+                        Utilities.PrependToKeys(protections, file);
                         Utilities.AppendToDictionary(protections, subProtections);
                     }
 
@@ -522,6 +532,7 @@ namespace BurnOutSharp
                     if (RAR.ShouldScan(magic))
                     {
                         var subProtections = RAR.Scan(this, fs);
+                        Utilities.PrependToKeys(protections, file);
                         Utilities.AppendToDictionary(protections, subProtections);
                     }
 
@@ -529,6 +540,7 @@ namespace BurnOutSharp
                     if (TapeArchive.ShouldScan(magic))
                     {
                         var subProtections = TapeArchive.Scan(this, fs);
+                        Utilities.PrependToKeys(protections, file);
                         Utilities.AppendToDictionary(protections, subProtections);
                     }
 
@@ -536,6 +548,7 @@ namespace BurnOutSharp
                     if (file != null && Valve.ShouldScan(magic))
                     {
                         var subProtections = Valve.Scan(this, file);
+                        Utilities.PrependToKeys(protections, file);
                         Utilities.AppendToDictionary(protections, subProtections);
                     }
 
@@ -543,6 +556,7 @@ namespace BurnOutSharp
                     if (XZ.ShouldScan(magic))
                     {
                         var subProtections = XZ.Scan(this, fs);
+                        Utilities.PrependToKeys(protections, file);
                         Utilities.AppendToDictionary(protections, subProtections);
                     }
                 }

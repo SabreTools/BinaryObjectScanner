@@ -47,6 +47,9 @@ namespace BurnOutSharp.FileType
                 }
                 catch { }
 
+                // Remove temporary path references
+                Utilities.StripFromKeys(protections, tempPath);
+
                 return protections;
             }
             catch { }
