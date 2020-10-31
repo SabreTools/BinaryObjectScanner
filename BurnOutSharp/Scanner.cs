@@ -18,11 +18,6 @@ namespace BurnOutSharp
         public IProgress<FileProtection> FileProgress { get; set; } = null;
 
         /// <summary>
-        /// List of paths that will be scanned with this object
-        /// </summary>
-        public List<string> Paths { get; set; } = new List<string>();
-
-        /// <summary>
         /// Determines whether the byte position of found protection is included or not
         /// </summary>
         public bool IncludePosition { get; set; } = false;
@@ -40,39 +35,35 @@ namespace BurnOutSharp
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="path">Path to create a scanner for</param>
         /// <param name="fileProgress">Optional progress callback</param>
-        public Scanner(string path, IProgress<FileProtection> fileProgress = null)
+        public Scanner(IProgress<FileProtection> fileProgress = null)
         {
-            Paths = new List<string> { path };
             FileProgress = fileProgress;
         }
 
         /// <summary>
-        /// Constructor
+        /// Scan a single path and get all found protections
         /// </summary>
-        /// <param name="paths">Paths to create a scanner for</param>
-        /// <param name="fileProgress">Optional progress callback</param>
-        public Scanner(List<string> paths, IProgress<FileProtection> fileProgress = null)
+        /// <param name="path">Path to scan</param>
+        /// <returns>Dictionary of list of strings representing the found protections</returns>
+        public Dictionary<string, List<string>> GetProtections(string path)
         {
-            Paths = paths;
-            FileProgress = fileProgress;
+            return GetProtections(new List<string> { path });
         }
 
         /// <summary>
         /// Scan the list of paths and get all found protections
         /// </summary>
         /// <returns>Dictionary of list of strings representing the found protections</returns>
-        /// TODO: Should this populate an internal field instead of returning?
-        public Dictionary<string, List<string>> GetProtections()
+        public Dictionary<string, List<string>> GetProtections(List<string> paths)
         {
             // If we have no paths, we can't scan
-            if (Paths == null || !Paths.Any())
+            if (paths == null || !paths.Any())
                 return null;
 
             // Loop through each path and get the returned values
             var protections = new Dictionary<string, List<string>>();
-            foreach (string path in Paths)
+            foreach (string path in paths)
             {
                 // Directories scan each internal file individually
                 if (Directory.Exists(path))
@@ -459,13 +450,13 @@ namespace BurnOutSharp
                 #region Archive File Types
 
                 // If we're scanning archives, we have a few to try out
-                // TODO: All archives should return a dictionary instead of a list
+                // TODO: All archives should prefix internal paths properly
                 if (ScanArchives)
                 {
                     // 7-Zip archive
                     if (SevenZip.ShouldScan(magic))
                     {
-                        var subProtections = SevenZip.Scan(this, fs, IncludePosition);
+                        var subProtections = SevenZip.Scan(this, fs);
                         if (!protections.ContainsKey(file))
                             protections[file] = new List<string>();
 
@@ -475,7 +466,7 @@ namespace BurnOutSharp
                     // BFPK archive
                     if (BFPK.ShouldScan(magic))
                     {
-                        var subProtections = BFPK.Scan(this, fs, IncludePosition);
+                        var subProtections = BFPK.Scan(this, fs);
                         if (!protections.ContainsKey(file))
                             protections[file] = new List<string>();
 
@@ -485,7 +476,7 @@ namespace BurnOutSharp
                     // BZip2
                     if (BZip2.ShouldScan(magic))
                     {
-                        var subProtections = BZip2.Scan(this, fs, IncludePosition);
+                        var subProtections = BZip2.Scan(this, fs);
                         if (!protections.ContainsKey(file))
                             protections[file] = new List<string>();
 
@@ -495,7 +486,7 @@ namespace BurnOutSharp
                     // GZIP
                     if (GZIP.ShouldScan(magic))
                     {
-                        var subProtections = GZIP.Scan(this, fs, IncludePosition);
+                        var subProtections = GZIP.Scan(this, fs);
                         if (!protections.ContainsKey(file))
                             protections[file] = new List<string>();
 
@@ -505,7 +496,7 @@ namespace BurnOutSharp
                     // InstallShield Cabinet
                     if (file != null && InstallShieldCAB.ShouldScan(magic))
                     {
-                        var subProtections = InstallShieldCAB.Scan(this, file, IncludePosition);
+                        var subProtections = InstallShieldCAB.Scan(this, file);
                         if (!protections.ContainsKey(file))
                             protections[file] = new List<string>();
 
@@ -515,7 +506,7 @@ namespace BurnOutSharp
                     // Microsoft Cabinet
                     if (file != null && MicrosoftCAB.ShouldScan(magic))
                     {
-                        var subProtections = MicrosoftCAB.Scan(this, file, IncludePosition);
+                        var subProtections = MicrosoftCAB.Scan(this, file);
                         if (!protections.ContainsKey(file))
                             protections[file] = new List<string>();
 
@@ -525,7 +516,7 @@ namespace BurnOutSharp
                     // MSI
                     if (file != null && MSI.ShouldScan(magic))
                     {
-                        var subProtections = MSI.Scan(this, file, IncludePosition);
+                        var subProtections = MSI.Scan(this, file);
                         if (!protections.ContainsKey(file))
                             protections[file] = new List<string>();
 
@@ -535,7 +526,7 @@ namespace BurnOutSharp
                     // MPQ archive
                     if (file != null && MPQ.ShouldScan(magic))
                     {
-                        var subProtections = MPQ.Scan(this, file, IncludePosition);
+                        var subProtections = MPQ.Scan(this, file);
                         if (!protections.ContainsKey(file))
                             protections[file] = new List<string>();
 
@@ -545,7 +536,7 @@ namespace BurnOutSharp
                     // PKZIP archive (and derivatives)
                     if (PKZIP.ShouldScan(magic))
                     {
-                        var subProtections = PKZIP.Scan(this, fs, IncludePosition);
+                        var subProtections = PKZIP.Scan(this, fs);
                         if (!protections.ContainsKey(file))
                             protections[file] = new List<string>();
 
@@ -555,7 +546,7 @@ namespace BurnOutSharp
                     // RAR archive
                     if (RAR.ShouldScan(magic))
                     {
-                        var subProtections = RAR.Scan(this, fs, IncludePosition);
+                        var subProtections = RAR.Scan(this, fs);
                         if (!protections.ContainsKey(file))
                             protections[file] = new List<string>();
 
@@ -565,7 +556,7 @@ namespace BurnOutSharp
                     // Tape Archive
                     if (TapeArchive.ShouldScan(magic))
                     {
-                        var subProtections = TapeArchive.Scan(this, fs, IncludePosition);
+                        var subProtections = TapeArchive.Scan(this, fs);
                         if (!protections.ContainsKey(file))
                             protections[file] = new List<string>();
 
@@ -575,7 +566,7 @@ namespace BurnOutSharp
                     // Valve archive formats
                     if (file != null && Valve.ShouldScan(magic))
                     {
-                        var subProtections = Valve.Scan(this, file, IncludePosition);
+                        var subProtections = Valve.Scan(this, file);
                         if (!protections.ContainsKey(file))
                             protections[file] = new List<string>();
 
@@ -585,7 +576,7 @@ namespace BurnOutSharp
                     // XZ
                     if (XZ.ShouldScan(magic))
                     {
-                        var subProtections = XZ.Scan(this, fs, IncludePosition);
+                        var subProtections = XZ.Scan(this, fs);
                         if (!protections.ContainsKey(file))
                             protections[file] = new List<string>();
 

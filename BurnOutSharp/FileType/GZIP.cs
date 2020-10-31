@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using SharpCompress.Archives;
 using SharpCompress.Archives.GZip;
 
@@ -17,10 +16,8 @@ namespace BurnOutSharp.FileType
             return false;
         }
 
-        public static List<string> Scan(Scanner parentScanner, Stream stream, bool includePosition = false)
+        public static Dictionary<string, List<string>> Scan(Scanner parentScanner, Stream stream)
         {
-            List<string> protections = new List<string>();
-
             // If the gzip file itself fails
             try
             {
@@ -28,7 +25,7 @@ namespace BurnOutSharp.FileType
                 Directory.CreateDirectory(tempPath);
 
                 // Create a new scanner for the new temp path
-                Scanner subScanner = new Scanner(tempPath, parentScanner.FileProgress)
+                Scanner subScanner = new Scanner(parentScanner.FileProgress)
                 {
                     IncludePosition = parentScanner.IncludePosition,
                     ScanAllFiles = parentScanner.ScanAllFiles,
@@ -48,35 +45,26 @@ namespace BurnOutSharp.FileType
 
                             string tempFile = Path.Combine(tempPath, entry.Key);
                             entry.WriteToFile(tempFile);
-
-                            // Collect and format all found protections
-                            var fileProtections = ProtectionFind.Scan(tempFile, includePosition);
-                            string protection = string.Join("\r\n", fileProtections.Select(kvp => kvp.Key.Substring(tempPath.Length) + ": " + kvp.Value.TrimEnd()));
-
-                            // If tempfile cleanup fails
-                            try
-                            {
-                                File.Delete(tempFile);
-                            }
-                            catch { }
-
-                            if (!string.IsNullOrEmpty(protection))
-                                protections.Add($"\r\n{entry.Key} - {protection}");
                         }
                         catch { }
                     }
-
-                    // If temp directory cleanup fails
-                    try
-                    {
-                        Directory.Delete(tempPath, true);
-                    }
-                    catch { }
                 }
+
+                // Collect and format all found protections
+                var protections = subScanner.GetProtections(tempPath);
+
+                // If temp directory cleanup fails
+                try
+                {
+                    Directory.Delete(tempPath, true);
+                }
+                catch { }
+
+                return protections;
             }
             catch { }
 
-            return protections;
+            return null;
         }
     }
 }

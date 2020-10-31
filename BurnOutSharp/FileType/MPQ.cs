@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using StormLibSharp;
 
 namespace BurnOutSharp.FileType
@@ -17,10 +16,8 @@ namespace BurnOutSharp.FileType
         }
 
         // TODO: Add stream opening support
-        public static List<string> Scan(Scanner parentScanner, string file, bool includePosition = false)
+        public static Dictionary<string, List<string>> Scan(Scanner parentScanner, string file)
         {
-            List<string> protections = new List<string>();
-
             // If the mpq file itself fails
             try
             {
@@ -28,7 +25,7 @@ namespace BurnOutSharp.FileType
                 Directory.CreateDirectory(tempPath);
 
                 // Create a new scanner for the new temp path
-                Scanner subScanner = new Scanner(tempPath, parentScanner.FileProgress)
+                Scanner subScanner = new Scanner(parentScanner.FileProgress)
                 {
                     IncludePosition = parentScanner.IncludePosition,
                     ScanAllFiles = parentScanner.ScanAllFiles,
@@ -59,22 +56,23 @@ namespace BurnOutSharp.FileType
                         }
                         catch { }
                     }
-
-                    // Collect and format all found protections
-                    var fileProtections = ProtectionFind.Scan(tempPath, includePosition);
-                    protections = fileProtections.Select(kvp => kvp.Key.Substring(tempPath.Length) + ": " + kvp.Value.TrimEnd()).ToList();
-
-                    // If temp directory cleanup fails
-                    try
-                    {
-                        Directory.Delete(tempPath, true);
-                    }
-                    catch { }
                 }
+
+                // Collect and format all found protections
+                var protections = subScanner.GetProtections(tempPath);
+
+                // If temp directory cleanup fails
+                try
+                {
+                    Directory.Delete(tempPath, true);
+                }
+                catch { }
+
+                return protections;
             }
             catch { }
 
-            return protections;
+            return null;
         }
     }
 }
