@@ -20,7 +20,7 @@ namespace BurnOutSharp.FileType
             return false;
         }
 
-        public static List<string> Scan(Stream stream, bool includePosition = false)
+        public static List<string> Scan(Scanner parentScanner, Stream stream, bool includePosition = false)
         {
             List<string> protections = new List<string>();
 
@@ -29,6 +29,14 @@ namespace BurnOutSharp.FileType
             {
                 string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
                 Directory.CreateDirectory(tempPath);
+
+                // Create a new scanner for the new temp path
+                Scanner subScanner = new Scanner(tempPath, parentScanner.FileProgress)
+                {
+                    IncludePosition = parentScanner.IncludePosition,
+                    ScanAllFiles = parentScanner.ScanAllFiles,
+                    ScanArchives = parentScanner.ScanArchives,
+                };
 
                 using (TarArchive tarFile = TarArchive.Open(stream))
                 {

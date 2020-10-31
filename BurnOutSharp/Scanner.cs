@@ -49,9 +49,21 @@ namespace BurnOutSharp
         }
 
         /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="paths">Paths to create a scanner for</param>
+        /// <param name="fileProgress">Optional progress callback</param>
+        public Scanner(List<string> paths, IProgress<FileProtection> fileProgress = null)
+        {
+            Paths = paths;
+            FileProgress = fileProgress;
+        }
+
+        /// <summary>
         /// Scan the list of paths and get all found protections
         /// </summary>
         /// <returns>Dictionary of list of strings representing the found protections</returns>
+        /// TODO: Should this populate an internal field instead of returning?
         public Dictionary<string, List<string>> GetProtections()
         {
             // If we have no paths, we can't scan
@@ -158,7 +170,7 @@ namespace BurnOutSharp
         /// <param name="path">Path of the directory or file to scan</param>
         /// <param name="files">Files contained within if the path is a directory</param>
         /// <returns>Dictionary of list of strings representing the found protections</returns>
-        public Dictionary<string, List<string>> GetPathProtections(string path, List<string> files = null)
+        private Dictionary<string, List<string>> GetPathProtections(string path, List<string> files = null)
         {
             List<string> protections = new List<string>();
             string protection;
@@ -446,134 +458,139 @@ namespace BurnOutSharp
 
                 #region Archive File Types
 
-                // 7-Zip archive
-                if (SevenZip.ShouldScan(magic))
+                // If we're scanning archives, we have a few to try out
+                // TODO: All archives should return a dictionary instead of a list
+                if (ScanArchives)
                 {
-                    var subProtections = SevenZip.Scan(fs, IncludePosition);
-                    if (!protections.ContainsKey(file))
-                        protections[file] = new List<string>();
+                    // 7-Zip archive
+                    if (SevenZip.ShouldScan(magic))
+                    {
+                        var subProtections = SevenZip.Scan(this, fs, IncludePosition);
+                        if (!protections.ContainsKey(file))
+                            protections[file] = new List<string>();
 
-                    protections[file] = subProtections;
-                }
+                        protections[file] = subProtections;
+                    }
 
-                // BFPK archive
-                if (BFPK.ShouldScan(magic))
-                {
-                    var subProtections = BFPK.Scan(fs, IncludePosition);
-                    if (!protections.ContainsKey(file))
-                        protections[file] = new List<string>();
+                    // BFPK archive
+                    if (BFPK.ShouldScan(magic))
+                    {
+                        var subProtections = BFPK.Scan(this, fs, IncludePosition);
+                        if (!protections.ContainsKey(file))
+                            protections[file] = new List<string>();
 
-                    protections[file] = subProtections;
-                }
+                        protections[file] = subProtections;
+                    }
 
-                // BZip2
-                if (BZip2.ShouldScan(magic))
-                {
-                    var subProtections = BZip2.Scan(fs, IncludePosition);
-                    if (!protections.ContainsKey(file))
-                        protections[file] = new List<string>();
+                    // BZip2
+                    if (BZip2.ShouldScan(magic))
+                    {
+                        var subProtections = BZip2.Scan(this, fs, IncludePosition);
+                        if (!protections.ContainsKey(file))
+                            protections[file] = new List<string>();
 
-                    protections[file] = subProtections;
-                }
+                        protections[file] = subProtections;
+                    }
 
-                // GZIP
-                if (GZIP.ShouldScan(magic))
-                {
-                    var subProtections = GZIP.Scan(fs, IncludePosition);
-                    if (!protections.ContainsKey(file))
-                        protections[file] = new List<string>();
+                    // GZIP
+                    if (GZIP.ShouldScan(magic))
+                    {
+                        var subProtections = GZIP.Scan(this, fs, IncludePosition);
+                        if (!protections.ContainsKey(file))
+                            protections[file] = new List<string>();
 
-                    protections[file] = subProtections;
-                }
+                        protections[file] = subProtections;
+                    }
 
-                // InstallShield Cabinet
-                if (file != null && InstallShieldCAB.ShouldScan(magic))
-                {
-                    var subProtections = InstallShieldCAB.Scan(file, IncludePosition);
-                    if (!protections.ContainsKey(file))
-                        protections[file] = new List<string>();
+                    // InstallShield Cabinet
+                    if (file != null && InstallShieldCAB.ShouldScan(magic))
+                    {
+                        var subProtections = InstallShieldCAB.Scan(this, file, IncludePosition);
+                        if (!protections.ContainsKey(file))
+                            protections[file] = new List<string>();
 
-                    protections[file] = subProtections;
-                }
+                        protections[file] = subProtections;
+                    }
 
-                // Microsoft Cabinet
-                if (file != null && MicrosoftCAB.ShouldScan(magic))
-                {
-                    var subProtections = MicrosoftCAB.Scan(file, IncludePosition);
-                    if (!protections.ContainsKey(file))
-                        protections[file] = new List<string>();
+                    // Microsoft Cabinet
+                    if (file != null && MicrosoftCAB.ShouldScan(magic))
+                    {
+                        var subProtections = MicrosoftCAB.Scan(this, file, IncludePosition);
+                        if (!protections.ContainsKey(file))
+                            protections[file] = new List<string>();
 
-                    protections[file] = subProtections;
-                }
+                        protections[file] = subProtections;
+                    }
 
-                // MSI
-                if (file != null && MSI.ShouldScan(magic))
-                {
-                    var subProtections = MSI.Scan(file, IncludePosition);
-                    if (!protections.ContainsKey(file))
-                        protections[file] = new List<string>();
+                    // MSI
+                    if (file != null && MSI.ShouldScan(magic))
+                    {
+                        var subProtections = MSI.Scan(this, file, IncludePosition);
+                        if (!protections.ContainsKey(file))
+                            protections[file] = new List<string>();
 
-                    protections[file] = subProtections;
-                }
+                        protections[file] = subProtections;
+                    }
 
-                // MPQ archive
-                if (file != null && MPQ.ShouldScan(magic))
-                {
-                    var subProtections = MPQ.Scan(file, IncludePosition);
-                    if (!protections.ContainsKey(file))
-                        protections[file] = new List<string>();
+                    // MPQ archive
+                    if (file != null && MPQ.ShouldScan(magic))
+                    {
+                        var subProtections = MPQ.Scan(this, file, IncludePosition);
+                        if (!protections.ContainsKey(file))
+                            protections[file] = new List<string>();
 
-                    protections[file] = subProtections;
-                }
+                        protections[file] = subProtections;
+                    }
 
-                // PKZIP archive (and derivatives)
-                if (PKZIP.ShouldScan(magic))
-                {
-                    var subProtections = PKZIP.Scan(fs, IncludePosition);
-                    if (!protections.ContainsKey(file))
-                        protections[file] = new List<string>();
+                    // PKZIP archive (and derivatives)
+                    if (PKZIP.ShouldScan(magic))
+                    {
+                        var subProtections = PKZIP.Scan(this, fs, IncludePosition);
+                        if (!protections.ContainsKey(file))
+                            protections[file] = new List<string>();
 
-                    protections[file] = subProtections;
-                }
+                        protections[file] = subProtections;
+                    }
 
-                // RAR archive
-                if (RAR.ShouldScan(magic))
-                {
-                    var subProtections = RAR.Scan(fs, IncludePosition);
-                    if (!protections.ContainsKey(file))
-                        protections[file] = new List<string>();
+                    // RAR archive
+                    if (RAR.ShouldScan(magic))
+                    {
+                        var subProtections = RAR.Scan(this, fs, IncludePosition);
+                        if (!protections.ContainsKey(file))
+                            protections[file] = new List<string>();
 
-                    protections[file] = subProtections;
-                }
+                        protections[file] = subProtections;
+                    }
 
-                // Tape Archive
-                if (TapeArchive.ShouldScan(magic))
-                {
-                    var subProtections = TapeArchive.Scan(fs, IncludePosition);
-                    if (!protections.ContainsKey(file))
-                        protections[file] = new List<string>();
+                    // Tape Archive
+                    if (TapeArchive.ShouldScan(magic))
+                    {
+                        var subProtections = TapeArchive.Scan(this, fs, IncludePosition);
+                        if (!protections.ContainsKey(file))
+                            protections[file] = new List<string>();
 
-                    protections[file] = subProtections;
-                }
+                        protections[file] = subProtections;
+                    }
 
-                // Valve archive formats
-                if (file != null && Valve.ShouldScan(magic))
-                {
-                    var subProtections = Valve.Scan(file, IncludePosition);
-                    if (!protections.ContainsKey(file))
-                        protections[file] = new List<string>();
+                    // Valve archive formats
+                    if (file != null && Valve.ShouldScan(magic))
+                    {
+                        var subProtections = Valve.Scan(this, file, IncludePosition);
+                        if (!protections.ContainsKey(file))
+                            protections[file] = new List<string>();
 
-                    protections[file] = subProtections;
-                }
+                        protections[file] = subProtections;
+                    }
 
-                // XZ
-                if (XZ.ShouldScan(magic))
-                {
-                    var subProtections = XZ.Scan(fs, IncludePosition);
-                    if (!protections.ContainsKey(file))
-                        protections[file] = new List<string>();
+                    // XZ
+                    if (XZ.ShouldScan(magic))
+                    {
+                        var subProtections = XZ.Scan(this, fs, IncludePosition);
+                        if (!protections.ContainsKey(file))
+                            protections[file] = new List<string>();
 
-                    protections[file] = subProtections;
+                        protections[file] = subProtections;
+                    }
                 }
 
                 #endregion

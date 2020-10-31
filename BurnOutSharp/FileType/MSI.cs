@@ -21,7 +21,7 @@ namespace BurnOutSharp.FileType
         }
 
         // TODO: Add stream opening support
-        public static List<string> Scan(string file, bool includePosition = false)
+        public static List<string> Scan(Scanner parentScanner, string file, bool includePosition = false)
         {
             List<string> protections = new List<string>();
 
@@ -30,6 +30,14 @@ namespace BurnOutSharp.FileType
             {
                 string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
                 Directory.CreateDirectory(tempPath);
+
+                // Create a new scanner for the new temp path
+                Scanner subScanner = new Scanner(tempPath, parentScanner.FileProgress)
+                {
+                    IncludePosition = parentScanner.IncludePosition,
+                    ScanAllFiles = parentScanner.ScanAllFiles,
+                    ScanArchives = parentScanner.ScanArchives,
+                };
 
                 using (Database msidb = new Database(file, DatabaseOpenMode.ReadOnly))
                 {
