@@ -248,38 +248,42 @@ namespace BurnOutSharp.FileType
 
             #endregion
 
-            // These are detected as protections until we can unpack them
             #region Packers
 
-            // Armadillo
-            protection = Armadillo.CheckContents(fileContent, scanner.IncludePosition);
-            if (!string.IsNullOrWhiteSpace(protection))
-                Utilities.AppendToDictionary(protections, file, protection);
+            // If we're looking for packers too, run scans
+            if (scanner.IncludePackers)
+            {
 
-            // dotFuscator
-            protection = dotFuscator.CheckContents(fileContent, scanner.IncludePosition);
-            if (!string.IsNullOrWhiteSpace(protection))
-                Utilities.AppendToDictionary(protections, file, protection);
+                // Armadillo
+                protection = Armadillo.CheckContents(fileContent, scanner.IncludePosition);
+                if (!string.IsNullOrWhiteSpace(protection))
+                    Utilities.AppendToDictionary(protections, file, protection);
 
-            // EXE Stealth
-            protection = EXEStealth.CheckContents(fileContent, scanner.IncludePosition);
-            if (!string.IsNullOrWhiteSpace(protection))
-                Utilities.AppendToDictionary(protections, file, protection);
+                // dotFuscator
+                protection = dotFuscator.CheckContents(fileContent, scanner.IncludePosition);
+                if (!string.IsNullOrWhiteSpace(protection))
+                    Utilities.AppendToDictionary(protections, file, protection);
 
-            // NSIS
-            protection = NSIS.CheckContents(fileContent, scanner.IncludePosition);
-            if (!string.IsNullOrWhiteSpace(protection))
-                Utilities.AppendToDictionary(protections, file, protection);
+                // EXE Stealth
+                protection = EXEStealth.CheckContents(fileContent, scanner.IncludePosition);
+                if (!string.IsNullOrWhiteSpace(protection))
+                    Utilities.AppendToDictionary(protections, file, protection);
 
-            // PE Compact
-            protection = PECompact.CheckContents(fileContent, scanner.IncludePosition);
-            if (!string.IsNullOrWhiteSpace(protection))
-                Utilities.AppendToDictionary(protections, file, protection);
+                // NSIS
+                protection = NSIS.CheckContents(fileContent, scanner.IncludePosition);
+                if (!string.IsNullOrWhiteSpace(protection))
+                    Utilities.AppendToDictionary(protections, file, protection);
 
-            // UPX
-            protection = UPX.CheckContents(fileContent, scanner.IncludePosition);
-            if (!string.IsNullOrWhiteSpace(protection))
-                Utilities.AppendToDictionary(protections, file, protection);
+                // PE Compact
+                protection = PECompact.CheckContents(fileContent, scanner.IncludePosition);
+                if (!string.IsNullOrWhiteSpace(protection))
+                    Utilities.AppendToDictionary(protections, file, protection);
+
+                // UPX
+                protection = UPX.CheckContents(fileContent, scanner.IncludePosition);
+                if (!string.IsNullOrWhiteSpace(protection))
+                    Utilities.AppendToDictionary(protections, file, protection);
+            }
 
             #endregion
 

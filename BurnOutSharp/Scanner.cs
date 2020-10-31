@@ -32,6 +32,11 @@ namespace BurnOutSharp
         public bool ScanArchives { get; set; } = true;
 
         /// <summary>
+        /// Determines if packers are counted as detected protections or not
+        /// </summary>
+        public bool IncludePackers { get; set; } = false;
+
+        /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="fileProgress">Optional progress callback</param>
