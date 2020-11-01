@@ -37,7 +37,8 @@ namespace BurnOutSharp.FileType
                         // If an individual entry fails
                         try
                         {
-                            string tempFile = Path.Combine(tempPath, sub.Filename);
+                            // The trim here is for some very odd and stubborn files
+                            string tempFile = Path.Combine(tempPath, sub.Filename.TrimEnd('.'));
                             sub.ExtractTo(tempFile);
                         }
                         catch { }
