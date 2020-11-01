@@ -68,6 +68,31 @@ namespace BurnOutSharp
         }
 
         /// <summary>
+        /// Remove empty or null keys from a results dictionary
+        /// </summary>
+        /// <param name="original">Dictionary to clean</param>
+        public static void ClearEmptyKeys(Dictionary<string, List<string>> original)
+        {
+            // If the dictionary is missing, we can't do anything
+            if (original == null)
+                return;
+
+            // Get a list of all of the keys
+            var keys = original.Keys.ToList();
+
+            // Iterate and reset keys
+            for (int i = 0; i < keys.Count; i++)
+            {
+                // Get the current key
+                string key = keys[i];
+
+                // If the key is empty, remove it
+                if (original[key] == null || !original[key].Any())
+                    original.Remove(key);
+            }
+        }
+
+        /// <summary>
         /// Prepend a parent path from dictionary keys, if possible
         /// </summary>
         /// <param name="original">Dictionary to strip values from</param>

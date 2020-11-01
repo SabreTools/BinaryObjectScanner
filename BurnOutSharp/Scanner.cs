@@ -166,6 +166,9 @@ namespace BurnOutSharp
                 }
             }
 
+            // Clear out any empty keys
+            Utilities.ClearEmptyKeys(protections);
+
             return protections;
         }
 
@@ -568,6 +571,9 @@ namespace BurnOutSharp
 
                 #endregion
             }
+
+            // Clear out any empty keys
+            Utilities.ClearEmptyKeys(protections);
 
             return protections;
         }
