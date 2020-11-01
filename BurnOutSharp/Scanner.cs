@@ -7,8 +7,6 @@ using BurnOutSharp.ProtectionType;
 
 namespace BurnOutSharp
 {
-    // TODO: Use the file progress everywhere
-    // TODO: Should FileTypes be exposed directly as well so the scans can be exposed easier?
     public class Scanner
     {
         /// <summary>
