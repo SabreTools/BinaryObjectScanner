@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+#if NET_FRAMEWORK
 using LibMSPackN;
+#endif
 
 namespace BurnOutSharp.FileType
 {
@@ -9,8 +11,10 @@ namespace BurnOutSharp.FileType
     {
         public static bool ShouldScan(byte[] magic)
         {
+#if NET_FRAMEWORK
             if (magic.StartsWith(new byte[] { 0x4d, 0x53, 0x43, 0x46 }))
                 return true;
+#endif
 
             return false;
         }
@@ -18,6 +22,7 @@ namespace BurnOutSharp.FileType
         // TODO: Add stream opening support
         public static Dictionary<string, List<string>> Scan(Scanner scanner, string file)
         {
+#if NET_FRAMEWORK
             // If the cab file itself fails
             try
             {
@@ -54,7 +59,7 @@ namespace BurnOutSharp.FileType
                 return protections;
             }
             catch { }
-
+#endif
             return null;
         }
     }

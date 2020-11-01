@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+#if NET_FRAMEWORK
 using Microsoft.Deployment.WindowsInstaller;
+#endif
 
 namespace BurnOutSharp.FileType
 {
@@ -9,8 +11,10 @@ namespace BurnOutSharp.FileType
     {
         public static bool ShouldScan(byte[] magic)
         {
+#if NET_FRAMEWORK
             if (magic.StartsWith(new byte[] { 0xD0, 0xCF, 0x11, 0xE0, 0xA1, 0xB1, 0x1A, 0xE1 }))
                 return true;
+#endif
 
             return false;
         }
@@ -18,6 +22,7 @@ namespace BurnOutSharp.FileType
         // TODO: Add stream opening support
         public static Dictionary<string, List<string>> Scan(Scanner scanner, string file)
         {
+#if NET_FRAMEWORK
             // If the MSI file itself fails
             try
             {
@@ -45,6 +50,7 @@ namespace BurnOutSharp.FileType
                 return protections;
             }
             catch { }
+#endif
 
             return null;
         }
