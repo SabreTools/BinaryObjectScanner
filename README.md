@@ -94,6 +94,24 @@ Below is a list of the executable packers that can be detected using this code:
 - PECompact
 - UPX
 
+## Archive Formats
+
+Below is a list of archive or archive-like formats that can be extracted and have contents scanned using this code:
+
+- 7zip
+- BFPK
+- BZIP2
+- GZIP
+- InstallShield CAB
+- Microsoft CAB (.NET Framework 4.7.2 and 4.8 only)
+- MPQ
+- Microsoft Installer (MSI) (.NET Framework 4.7.2 and 4.8 only)
+- PKZIP and derived files
+- RAR
+- TAR
+- Valve archive formats
+- XZ
+
 ## Contributions
 
 Contributions to the project are welcome. Please follow the current coding styles and please do not add any keys or legally dubious things to the code. Thank you to all of the testers, particularly from the DICUI project who helped get this rolling.
