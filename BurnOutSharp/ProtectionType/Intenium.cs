@@ -1,9 +1,9 @@
 ﻿namespace BurnOutSharp.ProtectionType
 {
-    public class Itenium
+    public class Intenium
     {
         /*
-         * Possible strings for finding ITENIUM Trial & Buy Protection
+         * Possible strings for finding INTENIUM Trial & Buy Protection
          * 
          * Luxor Only:
          * - command_buyNowCb - 63 6F 6D 6D 61 6E 64 5F 62 75 79 4E 6F 77 43 62
@@ -23,7 +23,7 @@
             // Trial + (char)0x00 + P
             byte[] check = new byte[] { 0x54, 0x72, 0x69, 0x61, 0x6C, 0x00, 0x50 };
             if (fileContent.Contains(check, out int position))
-                return "ITENIUM Trial & Buy Protection" + (includePosition ? $" (Index {position})" : string.Empty);
+                return "INTENIUM Trial & Buy Protection" + (includePosition ? $" (Index {position})" : string.Empty);
 
             return null;
         }
