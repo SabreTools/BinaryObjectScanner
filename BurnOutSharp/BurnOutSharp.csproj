@@ -30,7 +30,7 @@
     <PackageReference Include="LessIO" Version="1.0.34" Condition="'$(TargetFramework)'!='netcoreapp3.1'" />
     <PackageReference Include="libmspack4n" Version="0.9.10" Condition="'$(TargetFramework)'!='netcoreapp3.1'" />
     <PackageReference Include="SharpCompress" Version="0.26.0" />
-    <PackageReference Include="UnshieldSharp" Version="1.4.2.3" />
+    <PackageReference Include="UnshieldSharp" Version="1.4.2.3" Condition="'$(TargetFramework)'!='netcoreapp3.1'" />
     <PackageReference Include="WiseUnpacker" Version="1.0.1" />
     <PackageReference Include="wix-libs" Version="3.11.1" Condition="'$(TargetFramework)'!='netcoreapp3.1'" />
   </ItemGroup>

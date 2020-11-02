@@ -62,6 +62,7 @@ namespace BurnOutSharp.FileType
             }
             catch { }
 #endif
+
             return null;
         }
     }

@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
+#if NET_FRAMEWORK
 using UnshieldSharp;
+#endif
 
 namespace BurnOutSharp.FileType
 {
@@ -10,8 +12,10 @@ namespace BurnOutSharp.FileType
     {
         public static bool ShouldScan(byte[] magic)
         {
+#if NET_FRAMEWORK
             if (magic.StartsWith(new byte[] { 0x49, 0x53, 0x63 }))
                 return true;
+#endif
 
             return false;
         }
@@ -19,6 +23,7 @@ namespace BurnOutSharp.FileType
         // TODO: Add stream opening support
         public static Dictionary<string, List<string>> Scan(Scanner scanner, string file)
         {
+#if NET_FRAMEWORK
             // Get the name of the first cabinet file or header
             string directory = Path.GetDirectoryName(file);
             string noExtension = Path.GetFileNameWithoutExtension(file);
@@ -68,6 +73,7 @@ namespace BurnOutSharp.FileType
                 }
                 catch { }
             }
+#endif
 
             return null;
         }
