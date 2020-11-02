@@ -49,8 +49,6 @@ namespace Test
 
             Console.WriteLine("Press any button to close...");
             Console.ReadLine();
-
-            //ProtectionFind.ScanSectors('D', 2048);
         }
 
         private static void Changed(object source, FileProtection value)

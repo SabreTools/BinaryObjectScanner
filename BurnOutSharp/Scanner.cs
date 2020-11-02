@@ -459,7 +459,6 @@ namespace BurnOutSharp
                 #region Archive File Types
 
                 // If we're scanning archives, we have a few to try out
-                // TODO: All archives should prefix internal paths properly
                 if (ScanArchives)
                 {
                     // 7-Zip archive
