@@ -22,6 +22,7 @@ namespace BurnOutSharp.ProtectionType
                     return protections;
 
                 var subProtections = Scan(scanner, file);
+                Utilities.PrependToKeys(subProtections, file);
                 Utilities.AppendToDictionary(protections, subProtections);
 
                 return protections;
@@ -50,6 +51,9 @@ namespace BurnOutSharp.ProtectionType
                     Directory.Delete(tempPath, true);
                 }
                 catch { }
+
+                // Remove temporary path references
+                Utilities.StripFromKeys(protections, tempPath);
 
                 return protections;
             }
