@@ -33,7 +33,6 @@ namespace BurnOutSharp.FileType
                     using (StreamReader sr = new StreamReader(listStream))
                     {
                         listfile = sr.ReadToEnd();
-                        Console.WriteLine(listfile);
                     }
 
                     string sub = string.Empty;
