@@ -46,11 +46,14 @@ namespace BurnOutSharp.FileType
                 }
 
                 // CD-Key
-                if (fileContent.Contains("a valid serial number is required")
-                    || fileContent.Contains("serial number is located"))
-                {
+                if (fileContent.Contains("a valid serial number is required"))
                     protections.Add("CD-Key / Serial");
-                }
+                else if (fileContent.Contains("serial number is located"))
+                    protections.Add("CD-Key / Serial");
+
+                // MediaMax
+                if (fileContent.Contains("MediaMax technology"))
+                    protections.Add("MediaMax CD-3");
             }
             catch
             {
