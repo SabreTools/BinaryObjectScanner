@@ -166,6 +166,11 @@ namespace BurnOutSharp.FileType
             if (!string.IsNullOrWhiteSpace(protection))
                 Utilities.AppendToDictionary(protections, file, protection);
 
+            // MediaMax CD-3
+            protection = MediaMaxCD3.CheckContents(fileContent, scanner.IncludePosition);
+            if (!string.IsNullOrWhiteSpace(protection))
+                Utilities.AppendToDictionary(protections, file, protection);
+
             // ProtectDisc
             protection = ProtectDisc.CheckContents(file, fileContent, scanner.IncludePosition);
             if (!string.IsNullOrWhiteSpace(protection))
