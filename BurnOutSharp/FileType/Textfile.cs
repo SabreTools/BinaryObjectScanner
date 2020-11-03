@@ -26,7 +26,7 @@ namespace BurnOutSharp.FileType
                 return true;
 
             // Generic textfile (no header)
-            if (string.Equals(extension, "txt", StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(extension.TrimStart('.'), "txt", StringComparison.OrdinalIgnoreCase))
                 return true;
 
             return false;
@@ -40,7 +40,7 @@ namespace BurnOutSharp.FileType
             {
                 // Load the current file content
                 string fileContent = null;
-                using (StreamReader sr = new StreamReader(stream, Encoding.Default, false, 1024 * 1024, true))
+                using (var sr = new StreamReader(stream, Encoding.Default, true, 1024 * 1024, true))
                 {
                     fileContent = sr.ReadToEnd();
                 }
