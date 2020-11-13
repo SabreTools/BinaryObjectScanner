@@ -19,21 +19,13 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
+using BurnOutSharp.ExecutableType.Microsoft;
 
 namespace BurnOutSharp
 {
     internal static class EVORE
     {
-        // TODO: Replace this with BurnOutSharp.ExecutableType.Microsoft.IMAGE_SECTION_HEADER
-        internal struct Section
-        {
-            public uint iVirtualSize;
-            public uint iVirtualOffset;
-            public uint iRawOffset;
-        }
-
-        internal const int WaitSeconds = 20;
-
         internal static Process StartSafe(string file)
         {
             if (file == null || !File.Exists(file))
@@ -48,11 +40,11 @@ namespace BurnOutSharp
             {
                 startingprocess.Start();
             }
-            catch (Exception ex)
+            catch
             {
-                Console.WriteLine(ex.Message);
                 return null;
             }
+
             return startingprocess;
         }
 
@@ -95,7 +87,7 @@ namespace BurnOutSharp
 
         internal static string[] CopyDependentDlls(string file, byte[] fileContent)
         {
-            Section[] sections = ReadSections(fileContent);
+            var sections = ReadSections(fileContent);
 
             long lastPosition;
             string[] saDependentDLLs = null;
@@ -151,47 +143,76 @@ namespace BurnOutSharp
             return saDependentDLLs;
         }
 
-        internal static Section[] ReadSections(byte[] fileContent)
+        internal static IMAGE_SECTION_HEADER?[] ReadSections(byte[] fileContent)
         {
             if (fileContent == null)
                 return null;
 
             uint PEHeaderOffset = BitConverter.ToUInt32(fileContent, 60);
             ushort NumberOfSections = BitConverter.ToUInt16(fileContent, (int)PEHeaderOffset + 6);
-            Section[] sections = new Section[NumberOfSections];
+            var sections = new IMAGE_SECTION_HEADER?[NumberOfSections];
             int index = (int)PEHeaderOffset + 120 + 16 * 8;            
             for (int i = 0; i < NumberOfSections; i++)
             {
-                index += 8;
-                uint ivs = BitConverter.ToUInt32(fileContent, index);
-                index += 4;
-                uint ivo = BitConverter.ToUInt32(fileContent, index);
-                index += 4;
-                index += 4;
-                uint iro = BitConverter.ToUInt32(fileContent, index);
-                index += 4;
-                index += 16;
-
-                sections[i] = new Section()
-                {
-                    iVirtualSize = ivs,
-                    iVirtualOffset = ivo,
-                    iRawOffset = iro,
-                };
+                sections[i] = ReadSection(fileContent, index);
             }
 
             return sections;
         }
 
-        internal static uint RVA2Offset(uint RVA, Section[] sections)
+        private static IMAGE_SECTION_HEADER? ReadSection(byte[] fileContent, int ptr)
         {
-            int i = 0;
-            while (i != sections.Length)
+            // Get the size of a section header for later
+            int sectionSize = Marshal.SizeOf<IMAGE_SECTION_HEADER>();
+
+            // If the contents are null or the wrong size, we can't read a section
+            if (fileContent == null || fileContent.Length < sectionSize)
+                return null;
+
+            // Create a new section and try our best to read one
+            IMAGE_SECTION_HEADER? section = null;
+            IntPtr tempPtr = IntPtr.Zero;
+            try
             {
-                if (sections[i].iVirtualOffset <= RVA && sections[i].iVirtualOffset + sections[i].iVirtualSize > RVA)
-                    return RVA - sections[i].iVirtualOffset + sections[i].iRawOffset;
-                i++;
+                // Get the pointer to where the section will go
+                tempPtr = Marshal.AllocHGlobal(sectionSize);
+                
+                // If we couldn't get the space, just return null
+                if (tempPtr == IntPtr.Zero)
+                    return null;
+
+                // Copy from the array to the new space
+                Marshal.Copy(fileContent, ptr, tempPtr, sectionSize);
+
+                // Get the new section and return
+                section = Marshal.PtrToStructure<IMAGE_SECTION_HEADER>(tempPtr);
             }
+            catch
+            {
+                // We don't care what the error was
+                return null;
+            }
+            finally
+            {
+                if (tempPtr != IntPtr.Zero)
+                    Marshal.FreeHGlobal(tempPtr);
+            }
+
+            return section;
+        }
+
+        internal static uint RVA2Offset(uint RVA, IMAGE_SECTION_HEADER?[] sections)
+        {
+            for (int i = 0; i < sections.Length; i++)
+            {
+                if (!sections[i].HasValue)
+                    continue;
+
+                var section = sections[i].Value;
+                if (section.VirtualAddress <= RVA && section.VirtualAddress + section.PhysicalAddressOrVirtualSize > RVA)
+                    return RVA - section.VirtualAddress + section.PointerToRawData;
+            }
+            
             return 0;
         }
     }

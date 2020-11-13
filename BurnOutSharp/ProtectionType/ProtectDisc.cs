@@ -261,7 +261,7 @@ namespace BurnOutSharp.ProtectionType
                     else if (processes[0].WorkingSet64 > exe.WorkingSet64) //else if (processes[0].Modules.Count > exe.Modules.Count)
                         exe = processes[0];
                 }
-            } while (processes.Length > 0 && DateTime.Now.Subtract(timestart).TotalSeconds < EVORE.WaitSeconds);
+            } while (processes.Length > 0 && DateTime.Now.Subtract(timestart).TotalSeconds < 20);
 
             Thread.Sleep(500);
             if (!exe.HasExited)

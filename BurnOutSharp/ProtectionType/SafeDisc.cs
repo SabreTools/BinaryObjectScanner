@@ -290,7 +290,7 @@ namespace BurnOutSharp.ProtectionType
                         catch { }
                     }
                 }
-            } while (!exe.HasExited && DateTime.Now.Subtract(timestart).TotalSeconds < EVORE.WaitSeconds);
+            } while (!exe.HasExited && DateTime.Now.Subtract(timestart).TotalSeconds < 20);
 
             if (!exe.HasExited)
                 exe.Kill();
