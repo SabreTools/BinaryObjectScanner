@@ -26,28 +26,29 @@ namespace BurnOutSharp
 {
     internal static class EVORE
     {
-        internal static Process StartSafe(string file)
+        /// <summary>
+        /// Checks if the file contents that represent a PE is a DLL or an EXE
+        /// </summary>
+        /// <param name="fileContent">File contents to check</param>
+        /// <returns>True if the file is an EXE, false if it's a DLL</returns>
+        internal static bool IsEXE(byte[] fileContent)
         {
-            if (file == null || !File.Exists(file))
-                return null;
+            int PEHeaderOffset = BitConverter.ToInt32(fileContent, 60);
+            short Characteristics = BitConverter.ToInt16(fileContent, PEHeaderOffset + 22);
 
-            Process startingprocess = new Process();
-            startingprocess.StartInfo.FileName = file;
-            startingprocess.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            startingprocess.StartInfo.CreateNoWindow = true;
-            startingprocess.StartInfo.ErrorDialog = false;
-            try
-            {
-                startingprocess.Start();
-            }
-            catch
-            {
-                return null;
-            }
-
-            return startingprocess;
+            // Check if file is dll
+            if ((Characteristics & 0x2000) == 0x2000)
+                return false;
+            else
+                return true;
         }
 
+        /// <summary>
+        /// Writes the file contents to a temporary file, if possible
+        /// </summary>
+        /// <param name="fileContent">File contents to write</param>
+        /// <param name="sExtension">Optional extension for the temproary file, defaults to ".exe"</param>
+        /// <returns>Name of the new temporary file, null on error</returns>
         internal static string MakeTempFile(byte[] fileContent, string sExtension = ".exe")
         {
             string filei = Guid.NewGuid().ToString();
@@ -73,18 +74,12 @@ namespace BurnOutSharp
             return null;
         }
 
-        internal static bool IsEXE(byte[] fileContent)
-        {
-            int PEHeaderOffset = BitConverter.ToInt32(fileContent, 60);
-            short Characteristics = BitConverter.ToInt16(fileContent, PEHeaderOffset + 22);
-
-            // Check if file is dll
-            if ((Characteristics & 0x2000) == 0x2000)
-                return false;
-            else
-                return true;
-        }
-
+        /// <summary>
+        /// Copies all required DLLs for a given executable
+        /// </summary>
+        /// <param name="file">Temporary file path</param>
+        /// <param name="fileContent">File contents to read</param>
+        /// <returns>Paths for all of the copied DLLs, null on error</returns>
         internal static string[] CopyDependentDlls(string file, byte[] fileContent)
         {
             var sections = ReadSections(fileContent);
@@ -143,7 +138,34 @@ namespace BurnOutSharp
             return saDependentDLLs;
         }
 
-        internal static IMAGE_SECTION_HEADER?[] ReadSections(byte[] fileContent)
+        /// <summary>
+        /// Attempt to run an executable
+        /// </summary>
+        /// <param name="file">Executable to attempt to run</param>
+        /// <returns>Process representing the running executable, null on error</returns>
+        internal static Process StartSafe(string file)
+        {
+            if (file == null || !File.Exists(file))
+                return null;
+
+            Process startingprocess = new Process();
+            startingprocess.StartInfo.FileName = file;
+            startingprocess.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            startingprocess.StartInfo.CreateNoWindow = true;
+            startingprocess.StartInfo.ErrorDialog = false;
+            try
+            {
+                startingprocess.Start();
+            }
+            catch
+            {
+                return null;
+            }
+
+            return startingprocess;
+        }
+
+        private static IMAGE_SECTION_HEADER?[] ReadSections(byte[] fileContent)
         {
             if (fileContent == null)
                 return null;
@@ -201,7 +223,7 @@ namespace BurnOutSharp
             return section;
         }
 
-        internal static uint RVA2Offset(uint RVA, IMAGE_SECTION_HEADER?[] sections)
+        private static uint RVA2Offset(uint RVA, IMAGE_SECTION_HEADER?[] sections)
         {
             for (int i = 0; i < sections.Length; i++)
             {
@@ -212,7 +234,7 @@ namespace BurnOutSharp
                 if (section.VirtualAddress <= RVA && section.VirtualAddress + section.PhysicalAddressOrVirtualSize > RVA)
                     return RVA - section.VirtualAddress + section.PointerToRawData;
             }
-            
+
             return 0;
         }
     }
