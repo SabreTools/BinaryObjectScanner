@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -25,7 +27,7 @@ namespace BurnOutSharp.ProtectionType
             check = new byte[] { 0x00, 0x00, 0x42, 0x6F, 0x47, 0x5F };
             if (fileContent.Contains(check, out position))
             {
-                string version = EVORE.SearchSafeDiscVersion(file, fileContent);
+                string version = SearchSafeDiscVersion(file, fileContent);
                 if (version.Length > 0)
                     return $"SafeDisc {version}" + (includePosition ? $" (Index {position})" : string.Empty);
 
@@ -36,7 +38,7 @@ namespace BurnOutSharp.ProtectionType
             check = new byte[] { 0x73, 0x74, 0x78, 0x74, 0x37, 0x37, 0x34 };
             if (fileContent.Contains(check, out position))
             {
-                string version = EVORE.SearchSafeDiscVersion(file, fileContent);
+                string version = SearchSafeDiscVersion(file, fileContent);
                 if (version.Length > 0)
                     return $"SafeDisc {version}" + (includePosition ? $" (Index {position})" : string.Empty);
 
@@ -47,7 +49,7 @@ namespace BurnOutSharp.ProtectionType
             check = new byte[] { 0x73, 0x74, 0x78, 0x74, 0x33, 0x37, 0x31 };
             if (fileContent.Contains(check, out position))
             {
-                string version = EVORE.SearchSafeDiscVersion(file, fileContent);
+                string version = SearchSafeDiscVersion(file, fileContent);
                 if (version.Length > 0)
                     return $"SafeDisc {version}" + (includePosition ? $" (Index {position})" : string.Empty);
 
@@ -238,6 +240,90 @@ namespace BurnOutSharp.ProtectionType
                 return "";
 
             return $"{version}.{subVersion:00}.{subsubVersion:000}";
+        }
+    
+        // TODO: Analyze this method and figure out if this can be done without attempting execution
+        private static string SearchSafeDiscVersion(string file, byte[] fileContent)
+        {
+            Process exe;
+            string version = "";
+            DateTime timestart;
+            if (!EVORE.IsEXE(fileContent))
+                return "";
+
+            string tempexe = EVORE.MakeTempFile(fileContent);
+            string[] DependentDlls = EVORE.CopyDependentDlls(file, fileContent);
+            try
+            {
+                Directory.Delete(Path.Combine(Path.GetTempPath(), "~e*"), true);
+            }
+            catch { }
+            try
+            {
+                File.Delete(Path.Combine(Path.GetTempPath(), "~e*"));
+            }
+            catch { }
+
+            exe = EVORE.StartSafe(tempexe);
+            if (exe == null)
+                return "";
+
+            timestart = DateTime.Now;
+            do
+            {
+                if (Directory.GetDirectories(Path.GetTempPath(), "~e*").Length > 0)
+                {
+                    string[] files = Directory.GetFiles(Directory.GetDirectories(Path.GetTempPath(), "~e*")[0], "~de*.tmp");
+                    if (files.Length > 0)
+                    {
+                        StreamReader sr;
+                        try
+                        {
+                            sr = new StreamReader(files[0], Encoding.Default);
+                            string FileContent = sr.ReadToEnd();
+                            sr.Close();
+                            int position = FileContent.IndexOf("%ld.%ld.%ld, %ld, %s,") - 1;
+                            if (position > -1)
+                                version = FileContent.Substring(position + 28, 12);
+                            break;
+                        }
+                        catch { }
+                    }
+                }
+            } while (!exe.HasExited && DateTime.Now.Subtract(timestart).TotalSeconds < EVORE.WaitSeconds);
+
+            if (!exe.HasExited)
+                exe.Kill();
+            exe.Close();
+
+            try
+            {
+                Directory.Delete(Path.Combine(Path.GetTempPath(), "~e*"), true);
+            }
+            catch { }
+            try
+            {
+                File.Delete(Path.Combine(Path.GetTempPath(), "~e*"));
+                File.Delete(tempexe);
+            }
+            catch { }
+
+            if (DependentDlls != null)
+            {
+                for (int i = 0; i < DependentDlls.Length; i--)
+                {
+                    try
+                    {
+                        File.Delete(DependentDlls[i]);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("!error while deleting file " + DependentDlls[i] + "; " + ex.Message);
+                    }
+                }
+            }
+
+            return version;
         }
     }
 }

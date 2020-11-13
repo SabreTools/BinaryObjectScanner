@@ -19,23 +19,22 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Text;
-using System.Threading;
 
 namespace BurnOutSharp
 {
     internal static class EVORE
     {
-        private struct Section
+        // TODO: Replace this with BurnOutSharp.ExecutableType.Microsoft.IMAGE_SECTION_HEADER
+        internal struct Section
         {
             public uint iVirtualSize;
             public uint iVirtualOffset;
             public uint iRawOffset;
         }
 
-        private const int WaitSeconds = 20;
+        internal const int WaitSeconds = 20;
 
-        private static Process StartSafe(string file)
+        internal static Process StartSafe(string file)
         {
             if (file == null || !File.Exists(file))
                 return null;
@@ -57,7 +56,7 @@ namespace BurnOutSharp
             return startingprocess;
         }
 
-        private static string MakeTempFile(byte[] fileContent, string sExtension = ".exe")
+        internal static string MakeTempFile(byte[] fileContent, string sExtension = ".exe")
         {
             string filei = Guid.NewGuid().ToString();
             string tempPath = Path.Combine(Path.GetTempPath(), "tmp", $"{filei}{sExtension}");
@@ -82,7 +81,7 @@ namespace BurnOutSharp
             return null;
         }
 
-        private static bool IsEXE(byte[] fileContent)
+        internal static bool IsEXE(byte[] fileContent)
         {
             int PEHeaderOffset = BitConverter.ToInt32(fileContent, 60);
             short Characteristics = BitConverter.ToInt16(fileContent, PEHeaderOffset + 22);
@@ -94,7 +93,7 @@ namespace BurnOutSharp
                 return true;
         }
 
-        private static string[] CopyDependentDlls(string file, byte[] fileContent)
+        internal static string[] CopyDependentDlls(string file, byte[] fileContent)
         {
             Section[] sections = ReadSections(fileContent);
 
@@ -152,7 +151,7 @@ namespace BurnOutSharp
             return saDependentDLLs;
         }
 
-        private static Section[] ReadSections(byte[] fileContent)
+        internal static Section[] ReadSections(byte[] fileContent)
         {
             if (fileContent == null)
                 return null;
@@ -184,7 +183,7 @@ namespace BurnOutSharp
             return sections;
         }
 
-        private static uint RVA2Offset(uint RVA, Section[] sections)
+        internal static uint RVA2Offset(uint RVA, Section[] sections)
         {
             int i = 0;
             while (i != sections.Length)
@@ -195,256 +194,5 @@ namespace BurnOutSharp
             }
             return 0;
         }
-
-        // TODO: These should either be wrapped into their respective protections
-        // or they should be replaced entirely so they don't try to run on the
-        // machine when scanning. 16-bit applications are likely going to fail
-        // on nearly every machine that would be using this
-        #region EVORE version-search-functions
-
-        public static string SearchProtectDiscVersion(string file, byte[] fileContent)
-        {
-            string version = "";
-            DateTime timestart;
-            if (!IsEXE(fileContent))
-                return "";
-
-            string tempexe = MakeTempFile(fileContent);
-            string[] DependentDlls = CopyDependentDlls(file, fileContent);
-            try
-            {
-                File.Delete(Path.Combine(Path.GetTempPath(), "a*.tmp"));
-            }
-            catch { }
-            try
-            {
-                File.Delete(Path.Combine(Path.GetTempPath(), "PCD*.sys"));
-            }
-            catch { }
-            if (Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ProtectDisc")))
-            {
-                try
-                {
-                    File.Delete(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ProtectDisc", "p*.dll"));
-                }
-                catch { }
-            }
-
-            Process exe = StartSafe(tempexe);
-            if (exe == null)
-                return "";
-
-            Process[] processes = new Process[0];
-            timestart = DateTime.Now;
-            do
-            {
-                exe.Refresh();
-                string[] files = null;
-
-                //check for ProtectDisc 8.2-x
-                if (Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ProtectDisc")))
-                {
-                    files = Directory.GetFiles(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ProtectDisc"), "p*.dll");
-                }
-
-                if (files != null)
-                {
-                    if (files.Length > 0)
-                    {
-                        FileVersionInfo fvinfo = FileVersionInfo.GetVersionInfo(files[0]);
-                        if (fvinfo.FileVersion != "")
-                        {
-                            version = fvinfo.FileVersion.Replace(" ", "").Replace(",", ".");
-                            //ProtectDisc 9 uses a ProtectDisc-Core dll version 8.0.x
-                            if (version.StartsWith("8.0"))
-                                version = "";
-                            fvinfo = null;
-                            break;
-                        }
-                    }
-                }
-
-                //check for ProtectDisc 7.1-8.1
-                files = Directory.GetFiles(Path.GetTempPath(), "a*.tmp");
-                if (files.Length > 0)
-                {
-                    FileVersionInfo fvinfo = FileVersionInfo.GetVersionInfo(files[0]);
-                    if (fvinfo.FileVersion != "")
-                    {
-                        version = fvinfo.FileVersion.Replace(" ", "").Replace(",", ".");
-                        fvinfo = null;
-                        break;
-                    }
-                }
-
-                if (exe.HasExited)
-                    break;
-
-                processes = Process.GetProcessesByName(exe.ProcessName);
-                if (processes.Length == 2)
-                {
-                    processes[0].Refresh();
-                    processes[1].Refresh();
-                    if (processes[1].WorkingSet64 > exe.WorkingSet64)
-                        exe = processes[1];
-                    else if (processes[0].WorkingSet64 > exe.WorkingSet64) //else if (processes[0].Modules.Count > exe.Modules.Count)
-                        exe = processes[0];
-                }
-            } while (processes.Length > 0 && DateTime.Now.Subtract(timestart).TotalSeconds < WaitSeconds);
-
-            Thread.Sleep(500);
-            if (!exe.HasExited)
-            {
-                processes = Process.GetProcessesByName(exe.ProcessName);
-                if (processes.Length == 2)
-                {
-                    try
-                    {
-                        processes[0].Kill();
-                    }
-                    catch { }
-                    processes[0].Close();
-                    try
-                    {
-                        processes[1].Kill();
-                    }
-                    catch { }
-                }
-                else
-                {
-                    exe.Refresh();
-                    try
-                    {
-                        exe.Kill();
-                    }
-                    catch { }
-                }
-            }
-
-            exe.Close();
-            Thread.Sleep(500);
-            if (Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ProtectDisc")))
-            {
-                try
-                {
-                    File.Delete(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ProtectDisc", "p*.dll"));
-                }
-                catch { }
-            }
-
-            try
-            {
-                File.Delete(Path.Combine(Path.GetTempPath(), "a*.tmp"));
-            }
-            catch { }
-
-            try
-            {
-                File.Delete(Path.Combine(Path.GetTempPath(), "PCD*.sys"));
-            }
-            catch { }
-            File.Delete(tempexe);
-            if (DependentDlls != null)
-            {
-                for (int i = 0; i < DependentDlls.Length; i++)
-                {
-                    try
-                    {
-                        File.Delete(DependentDlls[i]);
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine("!error while deleting file " + DependentDlls[i] + "; " + ex.Message);
-                    }
-                }
-            }
-
-            return version;
-        }
-
-        public static string SearchSafeDiscVersion(string file, byte[] fileContent)
-        {
-            Process exe = new Process();
-            string version = "";
-            DateTime timestart;
-            if (!IsEXE(fileContent))
-                return "";
-
-            string tempexe = MakeTempFile(fileContent);
-            string[] DependentDlls = CopyDependentDlls(file, fileContent);
-            try
-            {
-                Directory.Delete(Path.Combine(Path.GetTempPath(), "~e*"), true);
-            }
-            catch { }
-            try
-            {
-                File.Delete(Path.Combine(Path.GetTempPath(), "~e*"));
-            }
-            catch { }
-
-            exe = StartSafe(tempexe);
-            if (exe == null)
-                return "";
-
-            timestart = DateTime.Now;
-            do
-            {
-                if (Directory.GetDirectories(Path.GetTempPath(), "~e*").Length > 0)
-                {
-                    string[] files = Directory.GetFiles(Directory.GetDirectories(Path.GetTempPath(), "~e*")[0], "~de*.tmp");
-                    if (files.Length > 0)
-                    {
-                        StreamReader sr;
-                        try
-                        {
-                            sr = new StreamReader(files[0], Encoding.Default);
-                            string FileContent = sr.ReadToEnd();
-                            sr.Close();
-                            int position = FileContent.IndexOf("%ld.%ld.%ld, %ld, %s,") - 1;
-                            if (position > -1)
-                                version = FileContent.Substring(position + 28, 12);
-                            break;
-                        }
-                        catch { }
-                    }
-                }
-            } while (!exe.HasExited && DateTime.Now.Subtract(timestart).TotalSeconds < WaitSeconds);
-
-            if (!exe.HasExited)
-                exe.Kill();
-            exe.Close();
-
-            try
-            {
-                Directory.Delete(Path.Combine(Path.GetTempPath(), "~e*"), true);
-            }
-            catch { }
-            try
-            {
-                File.Delete(Path.Combine(Path.GetTempPath(), "~e*"));
-                File.Delete(tempexe);
-            }
-            catch { }
-
-            if (DependentDlls != null)
-            {
-                for (int i = 0; i < DependentDlls.Length; i--)
-                {
-                    try
-                    {
-                        File.Delete(DependentDlls[i]);
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine("!error while deleting file " + DependentDlls[i] + "; " + ex.Message);
-                    }
-                }
-            }
-
-            return version;
-        }
-
-        #endregion
     }
 }
