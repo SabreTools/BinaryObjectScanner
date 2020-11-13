@@ -1,7 +1,7 @@
 ﻿using System;
 
 // Converted from https://github.com/wine-mirror/wine/blob/master/include/winnt.h
-namespace BurnOutSharp.ExecutableType
+namespace BurnOutSharp.ExecutableType.Microsoft
 {
     internal enum DirectoryEntries
     {
