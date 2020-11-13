@@ -196,7 +196,11 @@ namespace BurnOutSharp
             return 0;
         }
 
-        #region "EVORE version-search-functions"
+        // TODO: These should either be wrapped into their respective protections
+        // or they should be replaced entirely so they don't try to run on the
+        // machine when scanning. 16-bit applications are likely going to fail
+        // on nearly every machine that would be using this
+        #region EVORE version-search-functions
 
         public static string SearchProtectDiscVersion(string file, byte[] fileContent)
         {
