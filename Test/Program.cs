@@ -10,7 +10,7 @@ namespace Test
         static void Main(string[] args)
         {
             // Create progress indicator
-            var p = new Progress<FileProtection>();
+            var p = new Progress<ProtectionProgress>();
             p.ProgressChanged += Changed;
 
             // Create scanner to be shared
@@ -51,7 +51,7 @@ namespace Test
             Console.ReadLine();
         }
 
-        private static void Changed(object source, FileProtection value)
+        private static void Changed(object source, ProtectionProgress value)
         {
             Console.WriteLine($"{value.Percentage * 100:N2}%: {value.Filename} - {value.Protection}");
         }
