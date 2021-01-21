@@ -26,17 +26,25 @@ namespace BurnOutSharp.FileType
 
                 using (MpqArchive mpqArchive = new MpqArchive(file, FileAccess.Read))
                 {
+                    // Try to open the listfile
                     string listfile = null;
                     MpqFileStream listStream = mpqArchive.OpenFile("(listfile)");
-                    bool canRead = listStream.CanRead;
+                   
+                    // If we can't read the listfile, we just return
+                    if (!listStream.CanRead)
+                        return null;
 
+                    // Read the listfile in for processing
                     using (StreamReader sr = new StreamReader(listStream))
                     {
                         listfile = sr.ReadToEnd();
                     }
 
-                    string sub = string.Empty;
-                    while ((sub = listfile) != null)
+                    // Split the listfile by newlines
+                    string[] listfileLines = listfile.Replace("\r\n", "\n").Split('\n');
+
+                    // Loop over each entry
+                    foreach (string sub in listfileLines)
                     {
                         // If an individual entry fails
                         try
