@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net472;net48;netcoreapp3.1</TargetFrameworks>
+    <TargetFrameworks>net472;net48;netcoreapp3.1;net5.0</TargetFrameworks>
     <PlatformTarget>x86</PlatformTarget>
     <Title>BurnOutSharp</Title>
     <AssemblyName>BurnOutSharp</AssemblyName>
@@ -22,17 +22,17 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   
-  <PropertyGroup Condition="'$(TargetFramework)'!='netcoreapp3.1'">
+  <PropertyGroup Condition="'$(TargetFramework)'!='netcoreapp3.1' AND '$(TargetFramework)'!='net5.0'">
     <DefineConstants>NET_FRAMEWORK</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LessIO" Version="1.0.34" Condition="'$(TargetFramework)'!='netcoreapp3.1'" />
-    <PackageReference Include="libmspack4n" Version="0.9.10" Condition="'$(TargetFramework)'!='netcoreapp3.1'" />
+    <PackageReference Include="LessIO" Version="1.0.34" Condition="'$(TargetFramework)'!='netcoreapp3.1' AND '$(TargetFramework)'!='net5.0'" />
+    <PackageReference Include="libmspack4n" Version="0.9.10" Condition="'$(TargetFramework)'!='netcoreapp3.1' AND '$(TargetFramework)'!='net5.0'" />
     <PackageReference Include="SharpCompress" Version="0.26.0" />
     <PackageReference Include="UnshieldSharp" Version="1.4.2.4" />
     <PackageReference Include="WiseUnpacker" Version="1.0.1" />
-    <PackageReference Include="wix-libs" Version="3.11.1" Condition="'$(TargetFramework)'!='netcoreapp3.1'" />
+    <PackageReference Include="wix-libs" Version="3.11.1" Condition="'$(TargetFramework)'!='netcoreapp3.1' AND '$(TargetFramework)'!='net5.0'" />
   </ItemGroup>
 
   <ItemGroup>
