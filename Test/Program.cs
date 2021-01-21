@@ -24,26 +24,36 @@ namespace Test
 
             foreach (string arg in args)
             {
-                var protections = scanner.GetProtections(arg);
-                if (protections != null)
+                try
                 {
-                    using (StreamWriter sw = new StreamWriter(File.OpenWrite($"{DateTime.Now:yyyy-MM-dd_HHmmss}.txt")))
+                    var protections = scanner.GetProtections(arg);
+                    if (protections != null)
                     {
-                        foreach (string key in protections.Keys)
+                        using (StreamWriter sw = new StreamWriter(File.OpenWrite($"{DateTime.Now:yyyy-MM-dd_HHmmss}.txt")))
                         {
-                            // Skip over files with no protection
-                            if (protections[key] == null || !protections[key].Any())
-                                continue;
+                            foreach (string key in protections.Keys)
+                            {
+                                // Skip over files with no protection
+                                if (protections[key] == null || !protections[key].Any())
+                                    continue;
 
-                            string line = $"{key}: {string.Join(", ", protections[key])}";
-                            Console.WriteLine(line);
-                            sw.WriteLine(line);
+                                string line = $"{key}: {string.Join(", ", protections[key])}";
+                                Console.WriteLine(line);
+                                sw.WriteLine(line);
+                            }
                         }
                     }
+                    else
+                    {
+                        Console.WriteLine($"No protections found for {arg}");
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    Console.WriteLine($"No protections found for {arg}");
+                    using (StreamWriter sw = new StreamWriter(File.OpenWrite($"{DateTime.Now:yyyy-MM-dd_HHmmss}-exception.txt")))
+                    {
+                        sw.WriteLine(ex.Message);
+                    }
                 }
             }
 
