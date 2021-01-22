@@ -8,12 +8,12 @@
     <Description>Port of BurnOut to C#, with additions</Description>
     <Authors>Matt Nadareski;Gernot Knippen</Authors>
     <Product>BurnOutSharp</Product>
-    <Copyright>Copyright (c)2005-2010 Gernot Knippen, Copyright (c)2018-2020 Matt Nadareski</Copyright>
+    <Copyright>Copyright (c)2005-2010 Gernot Knippen, Copyright (c)2018-2021 Matt Nadareski</Copyright>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
     <RepositoryUrl>https://github.com/mnadareski/BurnOutSharp</RepositoryUrl>
-    <Version>1.5.0</Version>
-    <AssemblyVersion>1.5.0</AssemblyVersion>
-    <FileVersion>1.5.0</FileVersion>
+    <Version>1.5.1</Version>
+    <AssemblyVersion>1.5.1</AssemblyVersion>
+    <FileVersion>1.5.1</FileVersion>
     <IncludeSource>true</IncludeSource>
     <IncludeSymbols>true</IncludeSymbols>
   </PropertyGroup>
@@ -22,17 +22,17 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   
-  <PropertyGroup Condition="'$(TargetFramework)'!='netcoreapp3.1' AND '$(TargetFramework)'!='net5.0'">
+  <PropertyGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
     <DefineConstants>NET_FRAMEWORK</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LessIO" Version="1.0.34" Condition="'$(TargetFramework)'!='netcoreapp3.1' AND '$(TargetFramework)'!='net5.0'" />
-    <PackageReference Include="libmspack4n" Version="0.9.10" Condition="'$(TargetFramework)'!='netcoreapp3.1' AND '$(TargetFramework)'!='net5.0'" />
+    <PackageReference Include="LessIO" Version="1.0.34" Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'" />
+    <PackageReference Include="libmspack4n" Version="0.9.10" Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'" />
     <PackageReference Include="SharpCompress" Version="0.26.0" />
     <PackageReference Include="UnshieldSharp" Version="1.4.2.4" />
     <PackageReference Include="WiseUnpacker" Version="1.0.1" />
-    <PackageReference Include="wix-libs" Version="3.11.1" Condition="'$(TargetFramework)'!='netcoreapp3.1' AND '$(TargetFramework)'!='net5.0'" />
+    <PackageReference Include="wix-libs" Version="3.11.1" Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'" />
   </ItemGroup>
 
   <ItemGroup>
