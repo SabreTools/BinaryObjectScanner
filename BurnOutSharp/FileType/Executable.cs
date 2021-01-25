@@ -258,7 +258,6 @@ namespace BurnOutSharp.FileType
             // If we're looking for packers too, run scans
             if (scanner.ScanPackers)
             {
-
                 // Armadillo
                 protection = Armadillo.CheckContents(fileContent, scanner.IncludePosition);
                 if (!string.IsNullOrWhiteSpace(protection))

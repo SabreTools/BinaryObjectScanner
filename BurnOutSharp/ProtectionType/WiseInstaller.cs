@@ -21,9 +21,12 @@ namespace BurnOutSharp.ProtectionType
                 if (file == null || !File.Exists(file))
                     return protections;
 
-                var subProtections = Scan(scanner, file);
-                Utilities.PrependToKeys(subProtections, file);
-                Utilities.AppendToDictionary(protections, subProtections);
+                if (scanner.ScanArchives)
+                {
+                    var subProtections = Scan(scanner, file);
+                    Utilities.PrependToKeys(subProtections, file);
+                    Utilities.AppendToDictionary(protections, subProtections);
+                }
 
                 return protections;
             }
