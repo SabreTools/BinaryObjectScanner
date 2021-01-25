@@ -196,8 +196,8 @@ namespace BurnOutSharp
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
-			// BD+
-			protection = BDPlus.CheckPath(path, files, isDirectory);
+		    // BD+
+		    protection = BDPlus.CheckPath(path, files, isDirectory);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 		

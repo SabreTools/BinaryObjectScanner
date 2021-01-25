@@ -6,7 +6,7 @@ namespace BurnOutSharp.ProtectionType
 {
     public class BDPlus
     {
-		// TODO: Detect version
+	    // TODO: Detect version
         public static string CheckPath(string path, IEnumerable<string> files, bool isDirectory)
         {
             if (!isDirectory)
