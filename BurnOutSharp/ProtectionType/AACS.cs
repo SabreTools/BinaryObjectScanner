@@ -7,7 +7,7 @@ namespace BurnOutSharp.ProtectionType
 {
     public class AACS
     {
-	    // TODO: Detect version
+        // TODO: Detect version
         public static string CheckPath(string path, IEnumerable<string> files, bool isDirectory)
         {
             if (isDirectory)
