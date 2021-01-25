@@ -13,10 +13,9 @@ namespace BurnOutSharp.ProtectionType
             byte[] check = new byte[] { 0x57, 0x69, 0x73, 0x65, 0x4D, 0x61, 0x69, 0x6E };
             if (fileContent.Contains(check, out int position))
             {
-                Dictionary<string, List<string>> protections = new Dictionary<string, List<string>>
-                {
-                    [file ?? "NO FILENAME"] = new List<string> { "Wise Installation Wizard Module" + (scanner.IncludePosition ? $" (Index {position})" : string.Empty) },
-                };
+                Dictionary<string, List<string>> protections = new Dictionary<string, List<string>>();
+                if (scanner.ScanPackers)
+                    protections[file ?? "NO FILENAME"] = new List<string> { "Wise Installation Wizard Module" + (scanner.IncludePosition ? $" (Index {position})" : string.Empty) };
 
                 if (file == null || !File.Exists(file))
                     return protections;
