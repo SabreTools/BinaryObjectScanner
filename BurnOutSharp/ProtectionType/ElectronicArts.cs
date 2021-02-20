@@ -8,16 +8,17 @@
         //      - There's little information outside of PiD detection that actually knows about Cucko
         //      - Are all programs made with the EASTL considered protected by Cucko?
         //      - Leads: EASTL structures (like `fixed_list`), `allocator.h`, `EASTLLocalAllocatorModule`, EA registry entries
+        //      - Steam version includes `EASTL` strings but is not listed as protected by PiD
         public static string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
             // EASTL
-            byte[] check = new byte[] { 0x45, 0x41, 0x53, 0x54, 0x4C };
-            if (fileContent.Contains(check, out int position))
-                return "Cucko (EA Custom)" + (includePosition ? $" (Index {position})" : string.Empty);
+            // byte[] check = new byte[] { 0x45, 0x41, 0x53, 0x54, 0x4C };
+            // if (fileContent.Contains(check, out int position))
+            //     return "Cucko (EA Custom)" + (includePosition ? $" (Index {position})" : string.Empty);
 
             // R + (char)0x00 + e + (char)0x00 + g + (char)0x00 + i + (char)0x00 + s + (char)0x00 + t + (char)0x00 + r + (char)0x00 + a + (char)0x00 + t + (char)0x00 + i + (char)0x00 + o + (char)0x00 + n + (char)0x00 +   + (char)0x00 + C + (char)0x00 + o + (char)0x00 + d + (char)0x00 + e + (char)0x00
-            check = new byte[] { 0x52, 0x00, 0x65, 0x00, 0x67, 0x00, 0x69, 0x00, 0x73, 0x00, 0x74, 0x00, 0x72, 0x00, 0x61, 0x00, 0x74, 0x00, 0x69, 0x00, 0x6F, 0x00, 0x6E, 0x00, 0x20, 0x00, 0x43, 0x00, 0x6F, 0x00, 0x64, 0x00, 0x65, 0x00 };
-            if (fileContent.Contains(check, out position))
+            byte[] check = new byte[] { 0x52, 0x00, 0x65, 0x00, 0x67, 0x00, 0x69, 0x00, 0x73, 0x00, 0x74, 0x00, 0x72, 0x00, 0x61, 0x00, 0x74, 0x00, 0x69, 0x00, 0x6F, 0x00, 0x6E, 0x00, 0x20, 0x00, 0x43, 0x00, 0x6F, 0x00, 0x64, 0x00, 0x65, 0x00 };
+            if (fileContent.Contains(check, out int position))
                 return $"EA CdKey Registration Module {Utilities.GetFileVersion(file)}" + (includePosition ? $" (Index {position})" : string.Empty);
 
             // R + (char)0x00 + e + (char)0x00 + g + (char)0x00 + i + (char)0x00 + s + (char)0x00 + t + (char)0x00 + r + (char)0x00 + a + (char)0x00 + t + (char)0x00 + i + (char)0x00 + o + (char)0x00 + n + (char)0x00 +   + (char)0x00 + c + (char)0x00 + o + (char)0x00 + d + (char)0x00 + e + (char)0x00
