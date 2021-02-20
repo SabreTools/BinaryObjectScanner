@@ -41,7 +41,7 @@ Below is a list of the protections that can be detected using this code:
 - DVD-Cops
 - DVD-Movie-PROTECT
 - DVD Crypt
-- EA Protections (Including Cucko, EA CDKey, and EA DRM)
+- EA Protections (Including ~~Cucko~~, EA CDKey, and EA DRM)
 - Freelock
 - Games for Windows - Live (partial)
 - Hexalock Autolock

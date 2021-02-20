@@ -4,11 +4,8 @@
     {
         // TODO: Verify this doesn't over-match
         // TODO: Do more research into the Cucko protection:
-        //      - Current usage looks for "EASTL" which just stands for "EA Standard Library"
+        //      - Reference to `eastl` or `EASTL` is standard for EA products and does not indicate Cucko by itself
         //      - There's little information outside of PiD detection that actually knows about Cucko
-        //      - Are all programs made with the EASTL considered protected by Cucko?
-        //      - Leads: EASTL structures (like `fixed_list`), `allocator.h`, `EASTLLocalAllocatorModule`, EA registry entries
-        //      - Steam version includes `EASTL` strings but is not listed as protected by PiD
         public static string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
             // EASTL
