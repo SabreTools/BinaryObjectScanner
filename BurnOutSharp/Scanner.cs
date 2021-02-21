@@ -253,11 +253,6 @@ namespace BurnOutSharp
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
-            // EA Protections
-            protection = ElectronicArts.CheckPath(path, files, isDirectory);
-            if (!string.IsNullOrWhiteSpace(protection))
-                protections.Add(protection);
-
             // FreeLock
             protection = FreeLock.CheckPath(path, files, isDirectory);
             if (!string.IsNullOrWhiteSpace(protection))
@@ -300,6 +295,11 @@ namespace BurnOutSharp
 
             // MediaMax CD3
             protection = MediaMaxCD3.CheckPath(path, files, isDirectory);
+            if (!string.IsNullOrWhiteSpace(protection))
+                protections.Add(protection);
+
+            // Origin
+            protection = Origin.CheckPath(path, files, isDirectory);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 

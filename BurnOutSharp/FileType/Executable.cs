@@ -171,6 +171,11 @@ namespace BurnOutSharp.FileType
             if (!string.IsNullOrWhiteSpace(protection))
                 Utilities.AppendToDictionary(protections, file, protection);
 
+            // Origin
+            protection = Origin.CheckContents(fileContent, scanner.IncludePosition);
+            if (!string.IsNullOrWhiteSpace(protection))
+                Utilities.AppendToDictionary(protections, file, protection);
+
             // ProtectDisc
             protection = ProtectDisc.CheckContents(file, fileContent, scanner.IncludePosition);
             if (!string.IsNullOrWhiteSpace(protection))
