@@ -19,7 +19,7 @@ namespace BurnOutSharp.PackerType
             if (fileContent.Contains(check, out position))
             {
                 string version = GetVersion(fileContent, position);
-                return $"UPX/NOS {version}" + (includePosition ? $" (Index {position})" : string.Empty);
+                return $"UPX (NOS Variant) {version}" + (includePosition ? $" (Index {position})" : string.Empty);
             }
 
             // UPX0
@@ -30,7 +30,7 @@ namespace BurnOutSharp.PackerType
                 byte[] check2 = new byte[] { 0x55, 0x50, 0x58, 0x31 };
                 if (fileContent.Contains(check2, out int position2))
                 {
-                    return $"UPX (Unknown / Modified Version)" + (includePosition ? $" (Index {position}, {position2})" : string.Empty);
+                    return $"UPX (Unknown Version)" + (includePosition ? $" (Index {position}, {position2})" : string.Empty);
                 }                
             }
 
@@ -42,7 +42,7 @@ namespace BurnOutSharp.PackerType
                 byte[] check2 = new byte[] { 0x4E, 0x4F, 0x53, 0x31 };
                 if (fileContent.Contains(check2, out int position2))
                 {
-                    return $"UPX/NOS (Unknown / Modified Version)" + (includePosition ? $" (Index {position}, {position2})" : string.Empty);
+                    return $"UPX (NOS Variant) (Unknown Version)" + (includePosition ? $" (Index {position}, {position2})" : string.Empty);
                 }
             }
 
