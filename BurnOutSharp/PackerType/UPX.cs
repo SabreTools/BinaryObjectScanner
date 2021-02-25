@@ -4,7 +4,6 @@ namespace BurnOutSharp.PackerType
 {
     public class UPX
     {
-        // TODO: Verify the NOS0/1 check with other executables
         public static string CheckContents(byte[] fileContent, bool includePosition = false)
         {
             // UPX!
@@ -13,6 +12,14 @@ namespace BurnOutSharp.PackerType
             {
                 string version = GetVersion(fileContent, position);
                 return $"UPX {version}" + (includePosition ? $" (Index {position})" : string.Empty);
+            }
+
+            // NOS 
+            check = new byte[] { 0x55, 0x50, 0x58, 0x21 };
+            if (fileContent.Contains(check, out position))
+            {
+                string version = GetVersion(fileContent, position);
+                return $"UPX/NOS {version}" + (includePosition ? $" (Index {position})" : string.Empty);
             }
 
             // UPX0
@@ -35,7 +42,7 @@ namespace BurnOutSharp.PackerType
                 byte[] check2 = new byte[] { 0x4E, 0x4F, 0x53, 0x31 };
                 if (fileContent.Contains(check2, out int position2))
                 {
-                    return $"UPX (Unknown / Modified Version)" + (includePosition ? $" (Index {position}, {position2})" : string.Empty);
+                    return $"UPX/NOS (Unknown / Modified Version)" + (includePosition ? $" (Index {position}, {position2})" : string.Empty);
                 }
             }
 
