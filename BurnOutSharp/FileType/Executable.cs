@@ -154,11 +154,6 @@ namespace BurnOutSharp.FileType
             if (!string.IsNullOrWhiteSpace(protection))
                 Utilities.AppendToDictionary(protections, file, protection);
 
-            // Inno Setup
-            protection = new InnoSetup().CheckContents(file, fileContent, scanner.IncludePosition);
-            if (!string.IsNullOrWhiteSpace(protection))
-                Utilities.AppendToDictionary(protections, file, protection);
-
             // INTENIUM Trial & Buy Protection
             protection = new Intenium().CheckContents(file, fileContent, scanner.IncludePosition);
             if (!string.IsNullOrWhiteSpace(protection))
@@ -271,6 +266,14 @@ namespace BurnOutSharp.FileType
             // If we're looking for archives too, run scans
             if (scanner.ScanArchives)
             {
+                // Inno Setup
+                if (file != null && !string.IsNullOrEmpty(new InnoSetup().CheckContents(file, fileContent, scanner.IncludePosition)))
+                {
+                    var subProtections = new InnoSetup().Scan(scanner, null, file);
+                    Utilities.PrependToKeys(subProtections, file);
+                    Utilities.AppendToDictionary(protections, subProtections);
+                }
+
                 // Wise Installer
                 if (file != null && !string.IsNullOrEmpty(new WiseInstaller().CheckContents(file, fileContent, scanner.IncludePosition)))
                 {
@@ -299,6 +302,11 @@ namespace BurnOutSharp.FileType
 
                 // EXE Stealth
                 protection = new EXEStealth().CheckContents(file, fileContent, scanner.IncludePosition);
+                if (!string.IsNullOrWhiteSpace(protection))
+                    Utilities.AppendToDictionary(protections, file, protection);
+
+                // Inno Setup
+                protection = new InnoSetup().CheckContents(file, fileContent, scanner.IncludePosition);
                 if (!string.IsNullOrWhiteSpace(protection))
                     Utilities.AppendToDictionary(protections, file, protection);
 

@@ -1,12 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace BurnOutSharp.ProtectionType
 {
-    public class InnoSetup : IContentCheck
+    public class InnoSetup : IContentCheck, IScannable
     {
-        // TOOO: Add Inno Setup extraction
-        // https://github.com/dscharrer/InnoExtract
+        /// <inheritdoc/>
+        public bool ShouldScan(byte[] magic) => true;
+
+        /// <inheritdoc/>
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
@@ -15,6 +19,26 @@ namespace BurnOutSharp.ProtectionType
             if (fileContent.Contains(check, out int position) && position == 0x30)
                 return $"Inno Setup {GetVersion(fileContent)}" + (includePosition ? $" (Index {position})" : string.Empty);
 
+            return null;
+        }
+
+        /// <inheritdoc/>
+        public Dictionary<string, List<string>> Scan(Scanner scanner, string file)
+        {
+            if (!File.Exists(file))
+                return null;
+
+            using (var fs = File.OpenRead(file))
+            {
+                return Scan(scanner, fs, file);
+            }
+        }
+
+        // TOOO: Add Inno Setup extraction
+        // https://github.com/dscharrer/InnoExtract
+        /// <inheritdoc/>
+        public Dictionary<string, List<string>> Scan(Scanner scanner, Stream stream, string file)
+        {
             return null;
         }
 
