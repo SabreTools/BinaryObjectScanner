@@ -7,7 +7,7 @@ using System.Threading;
 
 namespace BurnOutSharp.ProtectionType
 {
-    public class VOBProtectCDDVD
+    public class VOBProtectCDDVD : IPathCheck
     {
         public static string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
@@ -44,7 +44,8 @@ namespace BurnOutSharp.ProtectionType
             return null;
         }
 
-        public static string CheckPath(string path, IEnumerable<string> files, bool isDirectory)
+        /// <inheritdoc/>
+        public string CheckPath(string path, IEnumerable<string> files, bool isDirectory)
         {
             if (isDirectory)
             {

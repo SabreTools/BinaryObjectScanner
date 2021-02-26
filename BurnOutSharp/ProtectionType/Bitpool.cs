@@ -5,9 +5,10 @@ using System.Linq;
 
 namespace BurnOutSharp.ProtectionType
 {
-    public class Bitpool
+    public class Bitpool : IPathCheck
     {
-        public static string CheckPath(string path, IEnumerable<string> files, bool isDirectory)
+        /// <inheritdoc/>
+        public string CheckPath(string path, IEnumerable<string> files, bool isDirectory)
         {
             if (isDirectory)
             {

@@ -187,214 +187,214 @@ namespace BurnOutSharp
                 isDirectory = true;
 
             // AACS
-            protection = AACS.CheckPath(path, files, isDirectory);
+            protection = new AACS().CheckPath(path, files, isDirectory);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
             // Alpha-DVD
-            protection = AlphaDVD.CheckPath(path, files, isDirectory);
+            protection = new AlphaDVD().CheckPath(path, files, isDirectory);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
             // Bitpool
-            protection = Bitpool.CheckPath(path, files, isDirectory);
+            protection = new Bitpool().CheckPath(path, files, isDirectory);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
             // ByteShield
-            protection = ByteShield.CheckPath(path, files, isDirectory);
+            protection = new ByteShield().CheckPath(path, files, isDirectory);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
             // Cactus Data Shield
-            protection = CactusDataShield.CheckPath(path, files, isDirectory);
+            protection = new CactusDataShield().CheckPath(path, files, isDirectory);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
             // CD-Cops
-            protection = CDCops.CheckPath(path, files, isDirectory);
+            protection = new CDCops().CheckPath(path, files, isDirectory);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
             // CD-Lock
-            protection = CDLock.CheckPath(path, files, isDirectory);
+            protection = new CDLock().CheckPath(path, files, isDirectory);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
             // CD-Protector
-            protection = CDProtector.CheckPath(path, files, isDirectory);
+            protection = new CDProtector().CheckPath(path, files, isDirectory);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
             // CD-X
-            protection = CDX.CheckPath(path, files, isDirectory);
+            protection = new CDX().CheckPath(path, files, isDirectory);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
             /*
             // CopyKiller
-            protection = CopyKiller.CheckPath(path, files, isDirectory);
+            protection = new CopyKiller().CheckPath(path, files, isDirectory);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
             */
 
             // DiscGuard
-            protection = DiscGuard.CheckPath(path, files, isDirectory);
+            protection = new DiscGuard().CheckPath(path, files, isDirectory);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
             // DVD Crypt
-            protection = DVDCrypt.CheckPath(path, files, isDirectory);
+            protection = new DVDCrypt().CheckPath(path, files, isDirectory);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
             // DVD-Movie-PROTECT
-            protection = DVDMoviePROTECT.CheckPath(path, files, isDirectory);
+            protection = new DVDMoviePROTECT().CheckPath(path, files, isDirectory);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
             // FreeLock
-            protection = FreeLock.CheckPath(path, files, isDirectory);
+            protection = new FreeLock().CheckPath(path, files, isDirectory);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
             // Games for Windows - Live
-            protection = GFWL.CheckPath(path, files, isDirectory);
+            protection = new GFWL().CheckPath(path, files, isDirectory);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
             // Hexalock AutoLock
-            protection = HexalockAutoLock.CheckPath(path, files, isDirectory);
+            protection = new HexalockAutoLock().CheckPath(path, files, isDirectory);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
             // Impulse Reactor
-            protection = ImpulseReactor.CheckPath(path, files, isDirectory);
+            protection = new ImpulseReactor().CheckPath(path, files, isDirectory);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
             // IndyVCD
-            protection = IndyVCD.CheckPath(path, files, isDirectory);
+            protection = new IndyVCD().CheckPath(path, files, isDirectory);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
             // Key2Audio XS
-            protection = Key2AudioXS.CheckPath(path, files, isDirectory);
+            protection = new Key2AudioXS().CheckPath(path, files, isDirectory);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
             // LaserLock
-            protection = LaserLock.CheckPath(path, files, isDirectory);
+            protection = new LaserLock().CheckPath(path, files, isDirectory);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
             // MediaCloQ
-            protection = MediaCloQ.CheckPath(path, files, isDirectory);
+            protection = new MediaCloQ().CheckPath(path, files, isDirectory);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
             // MediaMax CD3
-            protection = MediaMaxCD3.CheckPath(path, files, isDirectory);
+            protection = new MediaMaxCD3().CheckPath(path, files, isDirectory);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
             // Origin
-            protection = Origin.CheckPath(path, files, isDirectory);
+            protection = new Origin().CheckPath(path, files, isDirectory);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
             // Protect DVD-Video
-            protection = ProtectDVDVideo.CheckPath(path, files, isDirectory);
+            protection = new ProtectDVDVideo().CheckPath(path, files, isDirectory);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
             // SafeCast
-            protection = SafeCast.CheckPath(path, files, isDirectory);
+            protection = new SafeCast().CheckPath(path, files, isDirectory);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
             // SafeDisc
-            protection = SafeDisc.CheckPath(path, files, isDirectory);
+            protection = new SafeDisc().CheckPath(path, files, isDirectory);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
             // SafeDisc Lite
-            protection = SafeDiscLite.CheckPath(path, files, isDirectory);
+            protection = new SafeDiscLite().CheckPath(path, files, isDirectory);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
             // SafeLock
-            protection = SafeLock.CheckPath(path, files, isDirectory);
+            protection = new SafeLock().CheckPath(path, files, isDirectory);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
             // SecuROM
-            protection = SecuROM.CheckPath(path, files, isDirectory);
+            protection = new SecuROM().CheckPath(path, files, isDirectory);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
             // SmartE
-            protection = SmartE.CheckPath(path, files, isDirectory);
+            protection = new SmartE().CheckPath(path, files, isDirectory);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
             // SoftLock
-            protection = SoftLock.CheckPath(path, files, isDirectory);
+            protection = new SoftLock().CheckPath(path, files, isDirectory);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
             // SolidShield
-            protection = SolidShield.CheckPath(path, files, isDirectory);
+            protection = new SolidShield().CheckPath(path, files, isDirectory);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
             // StarForce
-            protection = StarForce.CheckPath(path, files, isDirectory);
+            protection = new StarForce().CheckPath(path, files, isDirectory);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
             // Steam
-            protection = Steam.CheckPath(path, files, isDirectory);
+            protection = new Steam().CheckPath(path, files, isDirectory);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
             // TAGES
-            protection = Tages.CheckPath(path, files, isDirectory);
+            protection = new Tages().CheckPath(path, files, isDirectory);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
             // TZCopyProtector
-            protection = TZCopyProtector.CheckPath(path, files, isDirectory);
+            protection = new TZCopyProtector().CheckPath(path, files, isDirectory);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
             // Uplay
-            protection = Uplay.CheckPath(path, files, isDirectory);
+            protection = new Uplay().CheckPath(path, files, isDirectory);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
             // VOB ProtectCD/DVD
-            protection = VOBProtectCDDVD.CheckPath(path, files, isDirectory);
+            protection = new VOBProtectCDDVD().CheckPath(path, files, isDirectory);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
             // Winlock
-            protection = Winlock.CheckPath(path, files, isDirectory);
+            protection = new Winlock().CheckPath(path, files, isDirectory);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
             // WTM CD Protect
-            protection = WTMCDProtect.CheckPath(path, files, isDirectory);
+            protection = new WTMCDProtect().CheckPath(path, files, isDirectory);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
             // XCP
-            protection = XCP.CheckPath(path, files, isDirectory);
+            protection = new XCP().CheckPath(path, files, isDirectory);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 
             // Zzxzz
-            protection = Zzxzz.CheckPath(path, isDirectory);
+            protection = new Zzxzz().CheckPath(path, files, isDirectory);
             if (!string.IsNullOrWhiteSpace(protection))
                 protections.Add(protection);
 

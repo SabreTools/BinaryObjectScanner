@@ -1,11 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace BurnOutSharp.ProtectionType
 {
-    public class Zzxzz
+    public class Zzxzz : IPathCheck
     {
-        public static string CheckPath(string path, bool isDirectory)
+        /// <inheritdoc/>
+        public string CheckPath(string path, IEnumerable<string> files, bool isDirectory)
         {
             if (isDirectory)
             {

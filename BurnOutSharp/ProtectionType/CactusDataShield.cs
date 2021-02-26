@@ -6,7 +6,7 @@ using System.Text;
 
 namespace BurnOutSharp.ProtectionType
 {
-    public class CactusDataShield
+    public class CactusDataShield : IPathCheck
     {
         public static string CheckContents(byte[] fileContent, bool includePosition = false)
         {
@@ -28,7 +28,8 @@ namespace BurnOutSharp.ProtectionType
             return null;
         }
 
-        public static string CheckPath(string path, IEnumerable<string> files, bool isDirectory)
+        /// <inheritdoc/>
+        public string CheckPath(string path, IEnumerable<string> files, bool isDirectory)
         {
             if (isDirectory)
             {
