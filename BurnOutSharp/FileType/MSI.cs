@@ -7,9 +7,10 @@ using Microsoft.Deployment.WindowsInstaller;
 
 namespace BurnOutSharp.FileType
 {
-    internal class MSI
+    internal class MSI : IScannable
     {
-        public static bool ShouldScan(byte[] magic)
+        /// <inheritdoc/>
+        public bool ShouldScan(byte[] magic)
         {
 #if NET_FRAMEWORK
             if (magic.StartsWith(new byte[] { 0xD0, 0xCF, 0x11, 0xE0, 0xA1, 0xB1, 0x1A, 0xE1 }))
@@ -19,8 +20,21 @@ namespace BurnOutSharp.FileType
             return false;
         }
 
+        /// <inheritdoc/>
+        public Dictionary<string, List<string>> Scan(Scanner scanner, string file)
+        {
+            if (!File.Exists(file))
+                return null;
+
+            using (var fs = File.OpenRead(file))
+            {
+                return Scan(scanner, fs, file);
+            }
+        }
+
         // TODO: Add stream opening support
-        public static Dictionary<string, List<string>> Scan(Scanner scanner, string file)
+        /// <inheritdoc/>
+        public Dictionary<string, List<string>> Scan(Scanner scanner, Stream stream, string file)
         {
 #if NET_FRAMEWORK
             // If the MSI file itself fails

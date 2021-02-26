@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using SharpCompress.Compressors;
 using SharpCompress.Compressors.BZip2;
 
 namespace BurnOutSharp.FileType
 {
-    internal class BZip2
+    internal class BZip2 : IScannable
     {
-        public static bool ShouldScan(byte[] magic)
+        /// <inheritdoc/>
+        public bool ShouldScan(byte[] magic)
         {
             if (magic.StartsWith(new byte[] { 0x42, 0x52, 0x68 }))
                 return true;
@@ -17,9 +17,22 @@ namespace BurnOutSharp.FileType
             return false;
         }
 
-        public static Dictionary<string, List<string>> Scan(Scanner scanner, Stream stream)
+        /// <inheritdoc/>
+        public Dictionary<string, List<string>> Scan(Scanner scanner, string file)
         {
-            // If the 7-zip file itself fails
+            if (!File.Exists(file))
+                return null;
+
+            using (var fs = File.OpenRead(file))
+            {
+                return Scan(scanner, fs, file);
+            }
+        }
+
+        /// <inheritdoc/>
+        public Dictionary<string, List<string>> Scan(Scanner scanner, Stream stream, string file)
+        {
+            // If the BZip2 file itself fails
             try
             {
                 string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());

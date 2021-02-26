@@ -5,9 +5,10 @@ using HLExtract.Net;
 
 namespace BurnOutSharp.FileType
 {
-    internal class Valve
+    internal class Valve : IScannable
     {
-        public static bool ShouldScan(byte[] magic)
+        /// <inheritdoc/>
+        public bool ShouldScan(byte[] magic)
         {
             // GCF
             if (magic.StartsWith(new byte[] { 0x01, 0x00, 0x00, 0x00 }))
@@ -32,8 +33,21 @@ namespace BurnOutSharp.FileType
             return false;
         }
 
+        /// <inheritdoc/>
+        public Dictionary<string, List<string>> Scan(Scanner scanner, string file)
+        {
+            if (!File.Exists(file))
+                return null;
+
+            using (var fs = File.OpenRead(file))
+            {
+                return Scan(scanner, fs, file);
+            }
+        }
+
         // TODO: Add stream opening support
-        public static Dictionary<string, List<string>> Scan(Scanner scanner, string file)
+        /// <inheritdoc/>
+        public Dictionary<string, List<string>> Scan(Scanner scanner, Stream stream, string file)
         {
             string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
             Directory.CreateDirectory(tempPath);

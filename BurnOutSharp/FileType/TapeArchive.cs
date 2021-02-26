@@ -6,9 +6,10 @@ using SharpCompress.Archives.Tar;
 
 namespace BurnOutSharp.FileType
 {
-    internal class TapeArchive
+    internal class TapeArchive : IScannable
     {
-        public static bool ShouldScan(byte[] magic)
+        /// <inheritdoc/>
+        public bool ShouldScan(byte[] magic)
         {
             if (magic.StartsWith(new byte[] { 0x75, 0x73, 0x74, 0x61, 0x72, 0x00, 0x30, 0x30 }))
                 return true;
@@ -19,7 +20,20 @@ namespace BurnOutSharp.FileType
             return false;
         }
 
-        public static Dictionary<string, List<string>> Scan(Scanner scanner, Stream stream)
+        /// <inheritdoc/>
+        public Dictionary<string, List<string>> Scan(Scanner scanner, string file)
+        {
+            if (!File.Exists(file))
+                return null;
+
+            using (var fs = File.OpenRead(file))
+            {
+                return Scan(scanner, fs, file);
+            }
+        }
+
+        /// <inheritdoc/>
+        public Dictionary<string, List<string>> Scan(Scanner scanner, Stream stream, string file)
         {
             // If the tar file itself fails
             try

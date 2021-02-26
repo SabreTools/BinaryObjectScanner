@@ -6,9 +6,10 @@ using SharpCompress.Archives.Zip;
 
 namespace BurnOutSharp.FileType
 {
-    internal class PKZIP
+    internal class PKZIP : IScannable
     {
-        public static bool ShouldScan(byte[] magic)
+        /// <inheritdoc/>
+        public bool ShouldScan(byte[] magic)
         {
             // PKZIP
             if (magic.StartsWith(new byte[] { 0x50, 0x4b, 0x03, 0x04 }))
@@ -25,7 +26,20 @@ namespace BurnOutSharp.FileType
             return false;
         }
 
-        public static Dictionary<string, List<string>> Scan(Scanner scanner, Stream stream)
+        /// <inheritdoc/>
+        public Dictionary<string, List<string>> Scan(Scanner scanner, string file)
+        {
+            if (!File.Exists(file))
+                return null;
+
+            using (var fs = File.OpenRead(file))
+            {
+                return Scan(scanner, fs, file);
+            }
+        }
+
+        /// <inheritdoc/>
+        public Dictionary<string, List<string>> Scan(Scanner scanner, Stream stream, string file)
         {
             // If the zip file itself fails
             try

@@ -8,9 +8,10 @@ using LibMSPackN;
 namespace BurnOutSharp.FileType
 {
     // Specification available at http://download.microsoft.com/download/5/0/1/501ED102-E53F-4CE0-AA6B-B0F93629DDC6/Exchange/%5BMS-CAB%5D.pdf
-    internal class MicrosoftCAB
+    internal class MicrosoftCAB : IScannable
     {
-        public static bool ShouldScan(byte[] magic)
+        /// <inheritdoc/>
+        public bool ShouldScan(byte[] magic)
         {
 #if NET_FRAMEWORK
             if (magic.StartsWith(new byte[] { 0x4d, 0x53, 0x43, 0x46 }))
@@ -20,8 +21,21 @@ namespace BurnOutSharp.FileType
             return false;
         }
 
+        /// <inheritdoc/>
+        public Dictionary<string, List<string>> Scan(Scanner scanner, string file)
+        {
+            if (!File.Exists(file))
+                return null;
+
+            using (var fs = File.OpenRead(file))
+            {
+                return Scan(scanner, fs, file);
+            }
+        }
+
         // TODO: Add stream opening support
-        public static Dictionary<string, List<string>> Scan(Scanner scanner, string file)
+        /// <inheritdoc/>
+        public Dictionary<string, List<string>> Scan(Scanner scanner, Stream stream, string file)
         {
 #if NET_FRAMEWORK
             // If the cab file itself fails

@@ -6,9 +6,10 @@ using SharpCompress.Archives.Rar;
 
 namespace BurnOutSharp.FileType
 {
-    internal class RAR
+    internal class RAR : IScannable
     {
-        public static bool ShouldScan(byte[] magic)
+        /// <inheritdoc/>
+        public bool ShouldScan(byte[] magic)
         {
             // RAR archive version 1.50 onwards
             if (magic.StartsWith(new byte[] { 0x52, 0x61, 0x72, 0x21, 0x1a, 0x07, 0x00 }))
@@ -21,7 +22,20 @@ namespace BurnOutSharp.FileType
             return false;
         }
 
-        public static Dictionary<string, List<string>> Scan(Scanner scanner, Stream stream)
+        /// <inheritdoc/>
+        public Dictionary<string, List<string>> Scan(Scanner scanner, string file)
+        {
+            if (!File.Exists(file))
+                return null;
+
+            using (var fs = File.OpenRead(file))
+            {
+                return Scan(scanner, fs, file);
+            }
+        }
+
+        /// <inheritdoc/>
+        public Dictionary<string, List<string>> Scan(Scanner scanner, Stream stream, string file)
         {
             // If the rar file itself fails
             try

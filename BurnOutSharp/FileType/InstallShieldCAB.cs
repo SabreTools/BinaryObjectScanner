@@ -6,9 +6,10 @@ using UnshieldSharp;
 
 namespace BurnOutSharp.FileType
 {
-    internal class InstallShieldCAB
+    internal class InstallShieldCAB : IScannable
     {
-        public static bool ShouldScan(byte[] magic)
+        /// <inheritdoc/>
+        public bool ShouldScan(byte[] magic)
         {
             if (magic.StartsWith(new byte[] { 0x49, 0x53, 0x63 }))
                 return true;
@@ -16,8 +17,21 @@ namespace BurnOutSharp.FileType
             return false;
         }
 
+        /// <inheritdoc/>
+        public Dictionary<string, List<string>> Scan(Scanner scanner, string file)
+        {
+            if (!File.Exists(file))
+                return null;
+
+            using (var fs = File.OpenRead(file))
+            {
+                return Scan(scanner, fs, file);
+            }
+        }
+
         // TODO: Add stream opening support
-        public static Dictionary<string, List<string>> Scan(Scanner scanner, string file)
+        /// <inheritdoc/>
+        public Dictionary<string, List<string>> Scan(Scanner scanner, Stream stream, string file)
         {
             // Get the name of the first cabinet file or header
             string directory = Path.GetDirectoryName(file);

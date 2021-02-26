@@ -6,9 +6,10 @@ using BurnOutSharp.ProtectionType;
 
 namespace BurnOutSharp.FileType
 {
-    internal class Executable
+    internal class Executable : IScannable
     {
-        public static bool ShouldScan(byte[] magic)
+        /// <inheritdoc/>
+        public bool ShouldScan(byte[] magic)
         {
             // DOS MZ executable file format (and descendants)
             if (magic.StartsWith(new byte[] { 0x4d, 0x5a }))
@@ -41,7 +42,20 @@ namespace BurnOutSharp.FileType
             return false;
         }
 
-        public static Dictionary<string, List<string>> Scan(Scanner scanner, Stream stream, string file = null)
+        /// <inheritdoc/>
+        public Dictionary<string, List<string>> Scan(Scanner scanner, string file)
+        {
+            if (!File.Exists(file))
+                return null;
+
+            using (var fs = File.OpenRead(file))
+            {
+                return Scan(scanner, fs, file);
+            }
+        }
+
+        /// <inheritdoc/>
+        public Dictionary<string, List<string>> Scan(Scanner scanner, Stream stream, string file)
         {
             // Load the current file content
             byte[] fileContent = null;
@@ -56,7 +70,6 @@ namespace BurnOutSharp.FileType
 
             // Files can be protected in multiple ways
             var protections = new Dictionary<string, List<string>>();
-            var subProtections = new Dictionary<string, List<string>>();
             string protection;
 
             #region Protections
@@ -236,11 +249,6 @@ namespace BurnOutSharp.FileType
             if (!string.IsNullOrWhiteSpace(protection))
                 Utilities.AppendToDictionary(protections, file, protection);
 
-            // Wise Installer
-            subProtections = WiseInstaller.CheckContents(scanner, file, fileContent);
-            if (subProtections != null && subProtections.Count > 0)
-                Utilities.AppendToDictionary(protections, subProtections);
-
             // WTM CD Protect
             protection = new WTMCDProtect().CheckContents(file, fileContent, scanner.IncludePosition);
             if (!string.IsNullOrWhiteSpace(protection))
@@ -255,6 +263,22 @@ namespace BurnOutSharp.FileType
             protection = new XtremeProtector().CheckContents(file, fileContent, scanner.IncludePosition);
             if (!string.IsNullOrWhiteSpace(protection))
                 Utilities.AppendToDictionary(protections, file, protection);
+
+            #endregion
+
+            #region Archive-as-Executable Formats / Installers
+
+            // If we're looking for archives too, run scans
+            if (scanner.ScanArchives)
+            {
+                // Wise Installer
+                if (file != null && !string.IsNullOrEmpty(new WiseInstaller().CheckContents(file, fileContent, scanner.IncludePosition)))
+                {
+                    var subProtections = new WiseInstaller().Scan(scanner, null, file);
+                    Utilities.PrependToKeys(subProtections, file);
+                    Utilities.AppendToDictionary(protections, subProtections);
+                }
+            }
 
             #endregion
 
@@ -290,6 +314,11 @@ namespace BurnOutSharp.FileType
 
                 // UPX
                 protection = new UPX().CheckContents(file, fileContent, scanner.IncludePosition);
+                if (!string.IsNullOrWhiteSpace(protection))
+                    Utilities.AppendToDictionary(protections, file, protection);
+
+                // Wise Installer
+                protection = new WiseInstaller().CheckContents(file, fileContent, scanner.IncludePosition);
                 if (!string.IsNullOrWhiteSpace(protection))
                     Utilities.AppendToDictionary(protections, file, protection);
             }
