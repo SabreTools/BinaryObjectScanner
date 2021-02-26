@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace BurnOutSharp.ProtectionType
+namespace BurnOutSharp.PackerType
 {
     public class InnoSetup : IContentCheck, IScannable
     {

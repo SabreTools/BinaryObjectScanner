@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Wise = WiseUnpacker.WiseUnpacker;
 
-namespace BurnOutSharp.ProtectionType
+namespace BurnOutSharp.PackerType
 {
     public class WiseInstaller : IContentCheck, IScannable
     {
