@@ -5,10 +5,11 @@ using System.Linq;
 
 namespace BurnOutSharp.ProtectionType
 {
+    // TODO: Can this be split into file and directory checks separately?
     public class Steam : IPathCheck
     {
         /// <inheritdoc/>
-        public string CheckPath(string path, IEnumerable<string> files, bool isDirectory)
+        public string CheckPath(string path, bool isDirectory, IEnumerable<string> files)
         {
             if (isDirectory)
             {
