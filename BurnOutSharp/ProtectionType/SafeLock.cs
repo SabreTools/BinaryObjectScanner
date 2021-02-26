@@ -5,9 +5,10 @@ using System.Linq;
 
 namespace BurnOutSharp.ProtectionType
 {
-    public class SafeLock : IPathCheck
+    public class SafeLock : IContentCheck, IPathCheck
     {
-        public static string CheckContents(byte[] fileContent, bool includePosition = false)
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
             // "SafeLock"
             byte[] check = new byte[] { 0x53, 0x61, 0x66, 0x65, 0x4C, 0x6F, 0x63, 0x6B };

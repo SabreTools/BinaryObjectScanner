@@ -1,8 +1,9 @@
 ﻿namespace BurnOutSharp.ProtectionType
 {
-    public class Sysiphus
+    public class Sysiphus : IContentCheck
     {
-        public static string CheckContents(byte[] fileContent, bool includePosition = false)
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
             // "V SUHPISYSDVD"
             byte[] check = new byte[] { 0x56, 0x20, 0x53, 0x55, 0x48, 0x50, 0x49, 0x53, 0x59, 0x53, 0x44, 0x56, 0x44 };

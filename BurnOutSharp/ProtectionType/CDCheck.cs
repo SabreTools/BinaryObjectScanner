@@ -1,8 +1,9 @@
 ﻿namespace BurnOutSharp.ProtectionType
 {
-    public class CDCheck
+    public class CDCheck : IContentCheck
     {
-        public static string CheckContents(byte[] fileContent, bool includePosition = false)
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
             // MGS CDCheck
             byte[] check = new byte[] { 0x4D, 0x47, 0x53, 0x20, 0x43, 0x44, 0x43, 0x68, 0x65, 0x63, 0x6B };

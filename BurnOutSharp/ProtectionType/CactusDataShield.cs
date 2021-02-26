@@ -6,9 +6,10 @@ using System.Text;
 
 namespace BurnOutSharp.ProtectionType
 {
-    public class CactusDataShield : IPathCheck
+    public class CactusDataShield : IContentCheck, IPathCheck
     {
-        public static string CheckContents(byte[] fileContent, bool includePosition = false)
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
             // DATA.CDS
             byte[] check = new byte[] { 0x44, 0x41, 0x54, 0x41, 0x2E, 0x43, 0x44, 0x53 };

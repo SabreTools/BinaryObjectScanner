@@ -5,9 +5,10 @@ using System.Linq;
 
 namespace BurnOutSharp.ProtectionType
 {
-    public class MediaMaxCD3 : IPathCheck
+    public class MediaMaxCD3 : IContentCheck, IPathCheck
     {
-        public static string CheckContents(byte[] fileContent, bool includePosition = false)
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
             // Cd3Ctl
             byte[] check = new byte[] { 0x43, 0x64, 0x33, 0x43, 0x74, 0x6C };

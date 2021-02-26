@@ -3,9 +3,10 @@ using System.Linq;
 
 namespace BurnOutSharp.ProtectionType
 {
-    public class JoWooDXProt
+    public class JoWooDXProt : IContentCheck
     {
-        public static string CheckContents(byte[] fileContent, bool includePosition = false)
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
             // ".ext    "
             byte[] check = new byte[] { 0x2E, 0x65, 0x78, 0x74, 0x20, 0x20, 0x20, 0x20 };

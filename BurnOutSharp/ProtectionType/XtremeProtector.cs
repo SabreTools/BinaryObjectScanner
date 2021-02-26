@@ -1,8 +1,9 @@
 ﻿namespace BurnOutSharp.ProtectionType
 {
-    public class XtremeProtector
+    public class XtremeProtector : IContentCheck
     {
-        public static string CheckContents(byte[] fileContent, bool includePosition = false)
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
             // "XPROT   "
             byte[] check = new byte[] { 0x58, 0x50, 0x52, 0x4F, 0x54, 0x20, 0x20, 0x20 };

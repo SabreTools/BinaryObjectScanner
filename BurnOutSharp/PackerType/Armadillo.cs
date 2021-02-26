@@ -1,8 +1,9 @@
 ﻿namespace BurnOutSharp.PackerType
 {
-    public class Armadillo
+    public class Armadillo : IContentCheck
     {
-        public static string CheckContents(byte[] fileContent, bool includePosition = false)
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
             // ".nicode" + (char)0x00
             byte[] check = new byte[] { 0x2E, 0x6E, 0x69, 0x63, 0x6F, 0x64, 0x65, 0x00 };

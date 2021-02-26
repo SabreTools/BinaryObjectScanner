@@ -5,9 +5,10 @@ using System.Linq;
 
 namespace BurnOutSharp.ProtectionType
 {
-    public class GFWL : IPathCheck
+    public class GFWL : IContentCheck, IPathCheck
     {
-        public static string CheckContents(byte[] fileContent, bool includePosition = false)
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
             // "xlive.dll"
             byte[] check = new byte[] { 0x78, 0x6C, 0x69, 0x76, 0x65, 0x2E, 0x64, 0x6C, 0x6C };

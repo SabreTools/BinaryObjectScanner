@@ -5,9 +5,10 @@ using System.Linq;
 
 namespace BurnOutSharp.ProtectionType
 {
-    public class CDCops : IPathCheck
+    public class CDCops : IContentCheck, IPathCheck
     {
-        public static string CheckContents(byte[] fileContent, bool includePosition = false)
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
             // "CD-Cops,  ver. "
             byte[] check = new byte[] { 0x43, 0x44, 0x2D, 0x43, 0x6F, 0x70, 0x73, 0x2C, 0x20, 0x20, 0x76, 0x65, 0x72, 0x2E, 0x20 };

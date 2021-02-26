@@ -1,12 +1,13 @@
 ﻿namespace BurnOutSharp.ProtectionType
 {
-    public class ElectronicArts
+    public class ElectronicArts : IContentCheck
     {
         // TODO: Verify this doesn't over-match
         // TODO: Do more research into the Cucko protection:
         //      - Reference to `EASTL` and `EAStdC` are standard for EA products and does not indicate Cucko by itself
         //      - There's little information outside of PiD detection that actually knows about Cucko
-        public static string CheckContents(string file, byte[] fileContent, bool includePosition = false)
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
             // EASTL
             // byte[] check = new byte[] { 0x45, 0x41, 0x53, 0x54, 0x4C };

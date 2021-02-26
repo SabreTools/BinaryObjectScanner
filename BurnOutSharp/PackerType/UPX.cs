@@ -2,9 +2,10 @@ using System.Text;
 
 namespace BurnOutSharp.PackerType
 {
-    public class UPX
+    public class UPX : IContentCheck
     {
-        public static string CheckContents(byte[] fileContent, bool includePosition = false)
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
             // UPX!
             byte[] check = new byte[] { 0x55, 0x50, 0x58, 0x21 };

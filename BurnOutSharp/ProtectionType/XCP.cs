@@ -6,9 +6,10 @@ using BurnOutSharp.FileType;
 
 namespace BurnOutSharp.ProtectionType
 {
-    public class XCP : IPathCheck
+    public class XCP : IContentCheck, IPathCheck
     {
-        public static string CheckContents(byte[] fileContent, bool includePosition = false)
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
             // XCP.DAT
             byte[] check = new byte[] { 0x58, 0x43, 0x50, 0x2E, 0x44, 0x41, 0x54 };

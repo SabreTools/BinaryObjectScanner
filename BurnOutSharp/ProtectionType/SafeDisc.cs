@@ -7,9 +7,10 @@ using System.Text;
 
 namespace BurnOutSharp.ProtectionType
 {
-    public class SafeDisc : IPathCheck
+    public class SafeDisc : IContentCheck, IPathCheck
     {
-        public static string CheckContents(string file, byte[] fileContent, bool includePosition = false)
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
             // "BoG_ *90.0&!!  Yy>"
             byte[] check = new byte[] { 0x42, 0x6F, 0x47, 0x5F, 0x20, 0x2A, 0x39, 0x30, 0x2E, 0x30, 0x26, 0x21, 0x21, 0x20, 0x20, 0x59, 0x79, 0x3E };

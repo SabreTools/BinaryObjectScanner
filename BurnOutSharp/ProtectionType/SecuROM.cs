@@ -6,9 +6,10 @@ using System.Text;
 
 namespace BurnOutSharp.ProtectionType
 {
-    public class SecuROM : IPathCheck
+    public class SecuROM : IContentCheck, IPathCheck
     {
-        public static string CheckContents(string file, byte[] fileContent, bool includePosition = false)
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
             // "AddD" + (char)0x03 + (char)0x00 + (char)0x00 + (char)0x00)
             byte[] check = new byte[] { 0x41, 0x64, 0x64, 0x44, 0x03, 0x00, 0x00, 0x00 };

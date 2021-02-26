@@ -4,9 +4,10 @@ using System.Text;
 
 namespace BurnOutSharp.PackerType
 {
-    public class NSIS
+    public class NSIS : IContentCheck
     {
-        public static string CheckContents(byte[] fileContent, bool includePosition = false)
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
             // Nullsoft Install System
             byte[] check = new byte[] { 0x4e, 0x75, 0x6c, 0x6c, 0x73, 0x6f, 0x66, 0x74, 0x20, 0x49, 0x6e, 0x73, 0x74, 0x61, 0x6c, 0x6c, 0x20, 0x53, 0x79, 0x73, 0x74, 0x65, 0x6d };

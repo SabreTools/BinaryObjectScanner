@@ -3,11 +3,12 @@ using System.Linq;
 
 namespace BurnOutSharp.ProtectionType
 {
-    public class InnoSetup
+    public class InnoSetup : IContentCheck
     {
         // TOOO: Add Inno Setup extraction
         // https://github.com/dscharrer/InnoExtract
-        public static string CheckContents(byte[] fileContent, bool includePosition = false)
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
             // "Inno"
             byte[] check = new byte[] { 0x49, 0x6E, 0x6E, 0x6F };

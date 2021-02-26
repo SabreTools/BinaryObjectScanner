@@ -1,8 +1,9 @@
 ﻿namespace BurnOutSharp.ProtectionType
 {
-    public class AlphaROM
+    public class AlphaROM : IContentCheck
     {
-        public static string CheckContents(byte[] fileContent, bool includePosition = false)
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
             // "SETTEC"
             byte[] check = new byte[] { 0x53, 0x45, 0x54, 0x54, 0x45, 0x43 };

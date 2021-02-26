@@ -1,9 +1,10 @@
 ﻿namespace BurnOutSharp.ProtectionType
 {
-    public class CodeLock
+    public class CodeLock : IContentCheck
     {
         // TODO: Verify if these are OR or AND
-        public static string CheckContents(byte[] fileContent, bool includePosition = false)
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
             // "icd1" + (char)0x00
             byte[] check = new byte[] { 0x69, 0x63, 0x64, 0x31, 0x00 };

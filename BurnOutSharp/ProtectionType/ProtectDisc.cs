@@ -6,9 +6,10 @@ using System.Threading;
 
 namespace BurnOutSharp.ProtectionType
 {
-    public class ProtectDisc
+    public class ProtectDisc : IContentCheck
     {
-        public static string CheckContents(string file, byte[] fileContent, bool includePosition = false)
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
             // "HúMETINF"
             byte[] check = new byte[] { 0x48, 0xFA, 0x4D, 0x45, 0x54, 0x49, 0x4E, 0x46 };

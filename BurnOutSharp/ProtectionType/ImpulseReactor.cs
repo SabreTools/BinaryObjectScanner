@@ -5,9 +5,10 @@ using System.Linq;
 
 namespace BurnOutSharp.ProtectionType
 {
-    public class ImpulseReactor : IPathCheck
+    public class ImpulseReactor : IContentCheck, IPathCheck
     {
-        public static string CheckContents(string file, byte[] fileContent, bool includePosition = false)
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
             // "CVPInitializeClient"
             byte[] check = new byte[] { 0x43, 0x56, 0x50, 0x49, 0x6E, 0x69, 0x74, 0x69, 0x61, 0x6C, 0x69, 0x7A, 0x65, 0x43, 0x6C, 0x69, 0x65, 0x6E, 0x74 };

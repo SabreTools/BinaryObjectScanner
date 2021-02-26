@@ -1,8 +1,9 @@
 ﻿namespace BurnOutSharp.ProtectionType
 {
-    public class ActiveMARK
+    public class ActiveMARK : IContentCheck
     {
-        public static string CheckContents(byte[] fileContent, bool includePosition = false)
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
             // "TMSAMVOF"
             byte[] check = new byte[] { 0x54, 0x4D, 0x53, 0x41, 0x4D, 0x56, 0x4F, 0x46 };

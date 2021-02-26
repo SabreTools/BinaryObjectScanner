@@ -5,9 +5,10 @@ using System.Linq;
 
 namespace BurnOutSharp.ProtectionType
 {
-    public class Tages : IPathCheck
+    public class Tages : IContentCheck, IPathCheck
     {
-        public static string CheckContents(string file, byte[] fileContent, bool includePosition = false)
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
             // "protected-tages-runtime.exe"
             byte[] check = new byte[] { 0x70, 0x72, 0x6F, 0x74, 0x65, 0x63, 0x74, 0x65, 0x64, 0x2D, 0x74, 0x61, 0x67, 0x65, 0x73, 0x2D, 0x72, 0x75, 0x6E, 0x74, 0x69, 0x6D, 0x65, 0x2E, 0x65, 0x78, 0x65 };

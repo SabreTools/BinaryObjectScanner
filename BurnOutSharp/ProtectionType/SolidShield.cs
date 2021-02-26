@@ -6,9 +6,10 @@ using System.Linq;
 
 namespace BurnOutSharp.ProtectionType
 {
-    public class SolidShield : IPathCheck
+    public class SolidShield : IContentCheck, IPathCheck
     {
-        public static string CheckContents(string file, byte[] fileContent, bool includePosition = false)
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
             // "D" + (char)0x00 + "V" + (char)0x00 + "M" + (char)0x00 + " " + (char)0x00 + "L" + (char)0x00 + "i" + (char)0x00 + "b" + (char)0x00 + "r" + (char)0x00 + "a" + (char)0x00 + "r" + (char)0x00 + "y"
             byte[] check = new byte[] { 0x44, 0x00, 0x56, 0x00, 0x4D, 0x00, 0x20, 0x00, 0x4C, 0x00, 0x69, 0x00, 0x62, 0x00, 0x72, 0x00, 0x61, 0x00, 0x72, 0x00, 0x79 };

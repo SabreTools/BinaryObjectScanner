@@ -62,177 +62,177 @@ namespace BurnOutSharp.FileType
             #region Protections
 
             // 3PLock
-            protection = ThreePLock.CheckContents(fileContent, scanner.IncludePosition);
+            protection = new ThreePLock().CheckContents(file, fileContent, scanner.IncludePosition);
             if (!string.IsNullOrWhiteSpace(protection))
                 Utilities.AppendToDictionary(protections, file, protection);
 
             // 321Studios Online Activation
-            protection = ThreeTwoOneStudios.CheckContents(fileContent, scanner.IncludePosition);
+            protection = new ThreeTwoOneStudios().CheckContents(file, fileContent, scanner.IncludePosition);
             if (!string.IsNullOrWhiteSpace(protection))
                 Utilities.AppendToDictionary(protections, file, protection);
 
             // ActiveMARK
-            protection = ActiveMARK.CheckContents(fileContent, scanner.IncludePosition);
+            protection = new ActiveMARK().CheckContents(file, fileContent, scanner.IncludePosition);
             if (!string.IsNullOrWhiteSpace(protection))
                 Utilities.AppendToDictionary(protections, file, protection);
 
             // Alpha-ROM
-            protection = AlphaROM.CheckContents(fileContent, scanner.IncludePosition);
+            protection = new AlphaROM().CheckContents(file, fileContent, scanner.IncludePosition);
             if (!string.IsNullOrWhiteSpace(protection))
                 Utilities.AppendToDictionary(protections, file, protection);
 
             // Cactus Data Shield
-            protection = CactusDataShield.CheckContents(fileContent, scanner.IncludePosition);
+            protection = new CactusDataShield().CheckContents(file, fileContent, scanner.IncludePosition);
             if (!string.IsNullOrWhiteSpace(protection))
                 Utilities.AppendToDictionary(protections, file, protection);
 
             // CD-Cops
-            protection = CDCops.CheckContents(fileContent, scanner.IncludePosition);
+            protection = new CDCops().CheckContents(file, fileContent, scanner.IncludePosition);
             if (!string.IsNullOrWhiteSpace(protection))
                 Utilities.AppendToDictionary(protections, file, protection);
 
             // CD-Lock
-            protection = CDLock.CheckContents(fileContent, scanner.IncludePosition);
+            protection = new CDLock().CheckContents(file, fileContent, scanner.IncludePosition);
             if (!string.IsNullOrWhiteSpace(protection))
                 Utilities.AppendToDictionary(protections, file, protection);
 
             // CDSHiELD SE
-            protection = CDSHiELDSE.CheckContents(fileContent, scanner.IncludePosition);
+            protection = new CDSHiELDSE().CheckContents(file, fileContent, scanner.IncludePosition);
             if (!string.IsNullOrWhiteSpace(protection))
                 Utilities.AppendToDictionary(protections, file, protection);
 
             // CD Check
-            protection = CDCheck.CheckContents(fileContent, scanner.IncludePosition);
+            protection = new CDCheck().CheckContents(file, fileContent, scanner.IncludePosition);
             if (!string.IsNullOrWhiteSpace(protection))
                 Utilities.AppendToDictionary(protections, file, protection);
 
             // Cenega ProtectDVD
-            protection = CengaProtectDVD.CheckContents(fileContent, scanner.IncludePosition);
+            protection = new CengaProtectDVD().CheckContents(file, fileContent, scanner.IncludePosition);
             if (!string.IsNullOrWhiteSpace(protection))
                 Utilities.AppendToDictionary(protections, file, protection);
 
             // Code Lock
-            protection = CodeLock.CheckContents(fileContent, scanner.IncludePosition);
+            protection = new CodeLock().CheckContents(file, fileContent, scanner.IncludePosition);
             if (!string.IsNullOrWhiteSpace(protection))
                 Utilities.AppendToDictionary(protections, file, protection);
 
             // CopyKiller
-            protection = CopyKiller.CheckContents(fileContent, scanner.IncludePosition);
+            protection = new CopyKiller().CheckContents(file, fileContent, scanner.IncludePosition);
             if (!string.IsNullOrWhiteSpace(protection))
                 Utilities.AppendToDictionary(protections, file, protection);
 
             // DVD-Cops
-            protection = DVDCops.CheckContents(fileContent, scanner.IncludePosition);
+            protection = new DVDCops().CheckContents(file, fileContent, scanner.IncludePosition);
             if (!string.IsNullOrWhiteSpace(protection))
                 Utilities.AppendToDictionary(protections, file, protection);
 
             // EA Protections
-            protection = ElectronicArts.CheckContents(file, fileContent, scanner.IncludePosition);
+            protection = new ElectronicArts().CheckContents(file, fileContent, scanner.IncludePosition);
             if (!string.IsNullOrWhiteSpace(protection))
                 Utilities.AppendToDictionary(protections, file, protection);
 
             // Games for Windows - Live
-            protection = GFWL.CheckContents(fileContent, scanner.IncludePosition);
+            protection = new GFWL().CheckContents(file, fileContent, scanner.IncludePosition);
             if (!string.IsNullOrWhiteSpace(protection))
                 Utilities.AppendToDictionary(protections, file, protection);
 
             // Impulse Reactor
-            protection = ImpulseReactor.CheckContents(file, fileContent, scanner.IncludePosition);
+            protection = new ImpulseReactor().CheckContents(file, fileContent, scanner.IncludePosition);
             if (!string.IsNullOrWhiteSpace(protection))
                 Utilities.AppendToDictionary(protections, file, protection);
 
             // Inno Setup
-            protection = InnoSetup.CheckContents(fileContent, scanner.IncludePosition);
+            protection = new InnoSetup().CheckContents(file, fileContent, scanner.IncludePosition);
             if (!string.IsNullOrWhiteSpace(protection))
                 Utilities.AppendToDictionary(protections, file, protection);
 
             // INTENIUM Trial & Buy Protection
-            protection = Intenium.CheckContents(fileContent, scanner.IncludePosition);
+            protection = new Intenium().CheckContents(file, fileContent, scanner.IncludePosition);
             if (!string.IsNullOrWhiteSpace(protection))
                 Utilities.AppendToDictionary(protections, file, protection);
 
             // JoWooD X-Prot
-            protection = JoWooDXProt.CheckContents(fileContent, scanner.IncludePosition);
+            protection = new JoWooDXProt().CheckContents(file, fileContent, scanner.IncludePosition);
             if (!string.IsNullOrWhiteSpace(protection))
                 Utilities.AppendToDictionary(protections, file, protection);
 
             // Key-Lock (Dongle)
-            protection = KeyLock.CheckContents(fileContent, scanner.IncludePosition);
+            protection = new KeyLock().CheckContents(file, fileContent, scanner.IncludePosition);
             if (!string.IsNullOrWhiteSpace(protection))
                 Utilities.AppendToDictionary(protections, file, protection);
 
             // LaserLock
-            protection = LaserLock.CheckContents(file, fileContent, scanner.IncludePosition);
+            protection = new LaserLock().CheckContents(file, fileContent, scanner.IncludePosition);
             if (!string.IsNullOrWhiteSpace(protection))
                 Utilities.AppendToDictionary(protections, file, protection);
 
             // MediaMax CD-3
-            protection = MediaMaxCD3.CheckContents(fileContent, scanner.IncludePosition);
+            protection = new MediaMaxCD3().CheckContents(file, fileContent, scanner.IncludePosition);
             if (!string.IsNullOrWhiteSpace(protection))
                 Utilities.AppendToDictionary(protections, file, protection);
 
             // Origin
-            protection = Origin.CheckContents(fileContent, scanner.IncludePosition);
+            protection = new Origin().CheckContents(file, fileContent, scanner.IncludePosition);
             if (!string.IsNullOrWhiteSpace(protection))
                 Utilities.AppendToDictionary(protections, file, protection);
 
             // ProtectDisc
-            protection = ProtectDisc.CheckContents(file, fileContent, scanner.IncludePosition);
+            protection = new ProtectDisc().CheckContents(file, fileContent, scanner.IncludePosition);
             if (!string.IsNullOrWhiteSpace(protection))
                 Utilities.AppendToDictionary(protections, file, protection);
 
             // Ring PROTECH
-            protection = RingPROTECH.CheckContents(fileContent, scanner.IncludePosition);
+            protection = new RingPROTECH().CheckContents(file, fileContent, scanner.IncludePosition);
             if (!string.IsNullOrWhiteSpace(protection))
                 Utilities.AppendToDictionary(protections, file, protection);
 
             // SafeDisc / SafeCast
-            protection = SafeDisc.CheckContents(file, fileContent, scanner.IncludePosition);
+            protection = new SafeDisc().CheckContents(file, fileContent, scanner.IncludePosition);
             if (!string.IsNullOrWhiteSpace(protection))
                 Utilities.AppendToDictionary(protections, file, protection);
 
             // SafeLock
-            protection = SafeLock.CheckContents(fileContent, scanner.IncludePosition);
+            protection = new SafeLock().CheckContents(file, fileContent, scanner.IncludePosition);
             if (!string.IsNullOrWhiteSpace(protection))
                 Utilities.AppendToDictionary(protections, file, protection);
 
             // SecuROM
-            protection = SecuROM.CheckContents(file, fileContent, scanner.IncludePosition);
+            protection = new SecuROM().CheckContents(file, fileContent, scanner.IncludePosition);
             if (!string.IsNullOrWhiteSpace(protection))
                 Utilities.AppendToDictionary(protections, file, protection);
 
             // SmartE
-            protection = SmartE.CheckContents(fileContent, scanner.IncludePosition);
+            protection = new SmartE().CheckContents(file, fileContent, scanner.IncludePosition);
             if (!string.IsNullOrWhiteSpace(protection))
                 Utilities.AppendToDictionary(protections, file, protection);
 
             // SolidShield
-            protection = SolidShield.CheckContents(file, fileContent, scanner.IncludePosition);
+            protection = new SolidShield().CheckContents(file, fileContent, scanner.IncludePosition);
             if (!string.IsNullOrWhiteSpace(protection))
                 Utilities.AppendToDictionary(protections, file, protection);
 
             // StarForce
-            protection = StarForce.CheckContents(file, fileContent, scanner.IncludePosition);
+            protection = new StarForce().CheckContents(file, fileContent, scanner.IncludePosition);
             if (!string.IsNullOrWhiteSpace(protection))
                 Utilities.AppendToDictionary(protections, file, protection);
 
             // SVK Protector
-            protection = SVKProtector.CheckContents(fileContent, scanner.IncludePosition);
+            protection = new SVKProtector().CheckContents(file, fileContent, scanner.IncludePosition);
             if (!string.IsNullOrWhiteSpace(protection))
                 Utilities.AppendToDictionary(protections, file, protection);
 
             // Sysiphus / Sysiphus DVD
-            protection = Sysiphus.CheckContents(fileContent, scanner.IncludePosition);
+            protection = new Sysiphus().CheckContents(file, fileContent, scanner.IncludePosition);
             if (!string.IsNullOrWhiteSpace(protection))
                 Utilities.AppendToDictionary(protections, file, protection);
 
             // TAGES
-            protection = Tages.CheckContents(file, fileContent, scanner.IncludePosition);
+            protection = new Tages().CheckContents(file, fileContent, scanner.IncludePosition);
             if (!string.IsNullOrWhiteSpace(protection))
                 Utilities.AppendToDictionary(protections, file, protection);
 
             // VOB ProtectCD/DVD
-            protection = VOBProtectCDDVD.CheckContents(file, fileContent, scanner.IncludePosition);
+            protection = new VOBProtectCDDVD().CheckContents(file, fileContent, scanner.IncludePosition);
             if (!string.IsNullOrWhiteSpace(protection))
                 Utilities.AppendToDictionary(protections, file, protection);
 
@@ -242,17 +242,17 @@ namespace BurnOutSharp.FileType
                 Utilities.AppendToDictionary(protections, subProtections);
 
             // WTM CD Protect
-            protection = WTMCDProtect.CheckContents(fileContent, scanner.IncludePosition);
+            protection = new WTMCDProtect().CheckContents(file, fileContent, scanner.IncludePosition);
             if (!string.IsNullOrWhiteSpace(protection))
                 Utilities.AppendToDictionary(protections, file, protection);
 
             // XCP 1/2
-            protection = XCP.CheckContents(fileContent, scanner.IncludePosition);
+            protection = new XCP().CheckContents(file, fileContent, scanner.IncludePosition);
             if (!string.IsNullOrWhiteSpace(protection))
                 Utilities.AppendToDictionary(protections, file, protection);
 
             // Xtreme-Protector
-            protection = XtremeProtector.CheckContents(fileContent, scanner.IncludePosition);
+            protection = new XtremeProtector().CheckContents(file, fileContent, scanner.IncludePosition);
             if (!string.IsNullOrWhiteSpace(protection))
                 Utilities.AppendToDictionary(protections, file, protection);
 
@@ -264,32 +264,32 @@ namespace BurnOutSharp.FileType
             if (scanner.ScanPackers)
             {
                 // Armadillo
-                protection = Armadillo.CheckContents(fileContent, scanner.IncludePosition);
+                protection = new Armadillo().CheckContents(file, fileContent, scanner.IncludePosition);
                 if (!string.IsNullOrWhiteSpace(protection))
                     Utilities.AppendToDictionary(protections, file, protection);
 
                 // dotFuscator
-                protection = dotFuscator.CheckContents(fileContent, scanner.IncludePosition);
+                protection = new dotFuscator().CheckContents(file, fileContent, scanner.IncludePosition);
                 if (!string.IsNullOrWhiteSpace(protection))
                     Utilities.AppendToDictionary(protections, file, protection);
 
                 // EXE Stealth
-                protection = EXEStealth.CheckContents(fileContent, scanner.IncludePosition);
+                protection = new EXEStealth().CheckContents(file, fileContent, scanner.IncludePosition);
                 if (!string.IsNullOrWhiteSpace(protection))
                     Utilities.AppendToDictionary(protections, file, protection);
 
                 // NSIS
-                protection = NSIS.CheckContents(fileContent, scanner.IncludePosition);
+                protection = new NSIS().CheckContents(file, fileContent, scanner.IncludePosition);
                 if (!string.IsNullOrWhiteSpace(protection))
                     Utilities.AppendToDictionary(protections, file, protection);
 
                 // PE Compact
-                protection = PECompact.CheckContents(fileContent, scanner.IncludePosition);
+                protection = new PECompact().CheckContents(file, fileContent, scanner.IncludePosition);
                 if (!string.IsNullOrWhiteSpace(protection))
                     Utilities.AppendToDictionary(protections, file, protection);
 
                 // UPX
-                protection = UPX.CheckContents(fileContent, scanner.IncludePosition);
+                protection = new UPX().CheckContents(file, fileContent, scanner.IncludePosition);
                 if (!string.IsNullOrWhiteSpace(protection))
                     Utilities.AppendToDictionary(protections, file, protection);
             }

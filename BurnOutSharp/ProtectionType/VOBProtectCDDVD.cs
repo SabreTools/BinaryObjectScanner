@@ -7,9 +7,10 @@ using System.Threading;
 
 namespace BurnOutSharp.ProtectionType
 {
-    public class VOBProtectCDDVD : IPathCheck
+    public class VOBProtectCDDVD : IContentCheck, IPathCheck
     {
-        public static string CheckContents(string file, byte[] fileContent, bool includePosition = false)
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
             // "VOB ProtectCD"
             byte[] check = new byte[] { 0x56, 0x4F, 0x42, 0x20, 0x50, 0x72, 0x6F, 0x74, 0x65, 0x63, 0x74, 0x43, 0x44 };
