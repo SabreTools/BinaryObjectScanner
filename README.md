@@ -47,7 +47,6 @@ Below is a list of the protections that can be detected using this code:
 - Hexalock Autolock
 - Impulse Reactor
 - IndyVCD
-- Inno Setup
 - JoWooD X-Prot (v1/v2)
 - Key2Audio XS
 - Key-Lock (Dongle)
@@ -76,7 +75,6 @@ Below is a list of the protections that can be detected using this code:
 - Uplay (partial)
 - VOB ProtectCD/DVD
 - Winlock
-- WISE Installer
 - WTM CD Protect
 - WTM Copy Protection
 - XCP
@@ -90,9 +88,11 @@ Below is a list of the executable packers that can be detected using this code:
 - Armadillo
 - dotFuscator
 - EXE Stealth
+- Inno Setup
 - NSIS
 - PECompact
 - UPX
+- WISE Installer
 
 ## Archive Formats
 
@@ -103,7 +103,7 @@ Below is a list of archive or archive-like formats that can be extracted and hav
 - BZIP2
 - GZIP
 - InstallShield CAB
-- Microsoft CAB (.NET Framework 4.7.2 and 4.8 only)
+- Microsoft CAB
 - MPQ
 - Microsoft Installer (MSI) (.NET Framework 4.7.2 and 4.8 only)
 - PKZIP and derived files
@@ -114,5 +114,5 @@ Below is a list of archive or archive-like formats that can be extracted and hav
 
 ## Contributions
 
-Contributions to the project are welcome. Please follow the current coding styles and please do not add any keys or legally dubious things to the code. Thank you to all of the testers, particularly from the DICUI project who helped get this rolling.
+Contributions to the project are welcome. Please follow the current coding styles and please do not add any keys or legally dubious things to the code. Thank you to all of the testers, particularly from the MPF project who helped get this rolling.
 

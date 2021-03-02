@@ -27,8 +27,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LessIO" Version="1.0.34" Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'" />
-    <PackageReference Include="libmspack4n" Version="0.9.10" Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'" />
     <PackageReference Include="SharpCompress" Version="0.26.0" />
     <PackageReference Include="UnshieldSharp" Version="1.4.2.4" />
     <PackageReference Include="WiseUnpacker" Version="1.0.1" />
