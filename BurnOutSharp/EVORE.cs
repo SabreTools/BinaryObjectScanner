@@ -37,10 +37,7 @@ namespace BurnOutSharp
             short Characteristics = BitConverter.ToInt16(fileContent, PEHeaderOffset + 22);
 
             // Check if file is dll
-            if ((Characteristics & 0x2000) == 0x2000)
-                return false;
-            else
-                return true;
+            return (Characteristics & 0x2000) != 0x2000;
         }
 
         /// <summary>

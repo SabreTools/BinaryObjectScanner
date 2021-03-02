@@ -90,7 +90,7 @@ namespace BurnOutSharp.FileType
                 IContentCheck contentCheck = Activator.CreateInstance(contentCheckClass) as IContentCheck;
                 string protection = contentCheck.CheckContents(file, fileContent, scanner.IncludePosition);
 
-                // If we have a valid cotnent check based on settings
+                // If we have a valid content check based on settings
                 if (!contentCheckClass.Namespace.ToLowerInvariant().Contains("packertype") || scanner.ScanPackers)
                 {
                     if (!string.IsNullOrWhiteSpace(protection))
