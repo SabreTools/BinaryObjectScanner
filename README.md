@@ -14,7 +14,7 @@ In addition to the original BurnOut code, the following libraries (or ports ther
 - [StormLibSharp](https://github.com/robpaveza/stormlibsharp) - MPQ extraction
 - [UnshieldSharp](https://github.com/mnadareski/UnshieldSharp) - InstallShield CAB extraction
 - [WiseUnpacker](https://github.com/mnadareski/WiseUnpacker) - Wise Installer extraction
-- [wix-libs](https://wixtoolset.org/) - MSI extraction
+- [WixToolset.Dtf](https://github.com/wixtoolset/Dtf) - MSI extraction
 
 ## Protections Detected
 
@@ -105,7 +105,7 @@ Below is a list of archive or archive-like formats that can be extracted and hav
 - InstallShield CAB
 - Microsoft CAB
 - MPQ
-- Microsoft Installer (MSI) (.NET Framework 4.7.2 and 4.8 only)
+- Microsoft Installer (MSI)
 - PKZIP and derived files
 - RAR
 - TAR

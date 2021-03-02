@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net472;net48;netcoreapp3.1;net5.0</TargetFrameworks>
+    <TargetFrameworks>net472;net48;netcoreapp3.1;net5.0-windows</TargetFrameworks>
     <PlatformTarget>x86</PlatformTarget>
     <Title>BurnOutSharp</Title>
     <AssemblyName>BurnOutSharp</AssemblyName>
@@ -21,16 +21,11 @@
   <PropertyGroup>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-  
-  <PropertyGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
-    <DefineConstants>NET_FRAMEWORK</DefineConstants>
-  </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="SharpCompress" Version="0.26.0" />
     <PackageReference Include="UnshieldSharp" Version="1.4.2.4" />
     <PackageReference Include="WiseUnpacker" Version="1.0.1" />
-    <PackageReference Include="wix-libs" Version="3.11.1" Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'" />
   </ItemGroup>
 
   <ItemGroup>
@@ -48,7 +43,6 @@
       <CopyToPublishDirectory>Always</CopyToPublishDirectory>
       <PackageCopyToOutput>true</PackageCopyToOutput>
     </None>
-  
-</ItemGroup>
+  </ItemGroup>
 
 </Project>
