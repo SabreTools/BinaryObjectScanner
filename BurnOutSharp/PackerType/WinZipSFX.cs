@@ -13,6 +13,8 @@ namespace BurnOutSharp.PackerType
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
             // Every single version has the "WinZip Self-Extractor", and every 3+ version has a "version=" string due to internally including an XML
+            // TODO: Harden detection to prevent a text file containing "version=" in a 2.x archive from being falsely detected as 3+ archive
+
             // "WinZip Self-Extractor"
             byte[] check = new byte[] { 0x57, 0x69, 0x6E, 0x5A, 0x69, 0x70, 0x20, 0x53, 0x65, 0x6C, 0x66, 0x2D, 0x45, 0x78, 0x74, 0x72, 0x61, 0x63, 0x74, 0x6F, 0x72 };
             if (fileContent.Contains(check, out int position))
@@ -59,56 +61,37 @@ namespace BurnOutSharp.PackerType
                Hex: 0x57, 0x00, 0x69, 0x00, 0x6E, 0x00, 0x5A, 0x00, 0x69, 0x00, 0x70, 0x00, 0x20, 0x00, 0x53, 0x00, 0x65, 0x00, 0x6C, 0x00, 0x66, 0x00, 0x2D, 0x00, 0x45, 0x00, 0x78, 0x00, 0x74, 0x00, 0x72, 0x00, 0x61, 0x00, 0x63, 0x00, 0x74, 0x00, 0x6F, 0x00, 0x72, 0x00 */
 
             // "3.0.7158.0"
-            byte[] check3 = new byte[] { 0x33, 0x2E, 0x30, 0x2E, 0x37, 0x31, 0x35, 0x38, 0x2E, 0x30 };
-            if (fileContent.Contains(check3, out position))
-            {
-                string version = "3.0.7158";
-                return version;
-            }
+            byte[] check = new byte[] { 0x33, 0x2E, 0x30, 0x2E, 0x37, 0x31, 0x35, 0x38, 0x2E, 0x30 };
+            if (fileContent.Contains(check, out position))
+                return "3.0.7158";
 
             // "3.1.7556.0"
-            byte[] check4 = new byte[] { 0x33, 0x2E, 0x31, 0x2E, 0x37, 0x35, 0x35, 0x36, 0x2E, 0x30 };
-            if (fileContent.Contains(check4, out position))
-            {
-                string version = "3.1.7556";
-                return version;
-            }
+            check = new byte[] { 0x33, 0x2E, 0x31, 0x2E, 0x37, 0x35, 0x35, 0x36, 0x2E, 0x30 };
+            if (fileContent.Contains(check, out position))
+                return "3.1.7556";
 
             // "3.1.8421.0"
-            byte[] check5 = new byte[] { 0x33, 0x2E, 0x31, 0x2E, 0x38, 0x34, 0x32, 0x31, 0x2E, 0x30 };
-            if (fileContent.Contains(check5, out position))
-            {
-                string version = "4.0.8421";
-                return version;
-            }
+            check = new byte[] { 0x33, 0x2E, 0x31, 0x2E, 0x38, 0x34, 0x32, 0x31, 0x2E, 0x30 };
+            if (fileContent.Contains(check, out position))
+                return "4.0.8421";
 
             // "3.1.8672.0"
-            byte[] check6 = new byte[] { 0x33, 0x2E, 0x31, 0x2E, 0x38, 0x36, 0x37, 0x32, 0x2E, 0x30 };
-            if (fileContent.Contains(check6, out position))
-            {
-                string version = "4.0.8672";
-                return version;
-            }
+            check = new byte[] { 0x33, 0x2E, 0x31, 0x2E, 0x38, 0x36, 0x37, 0x32, 0x2E, 0x30 };
+            if (fileContent.Contains(check, out position))
+                return "4.0.8672";
 
             // "4.0.1221.0"
-            byte[] check7 = new byte[] { 0x34, 0x2E, 0x30, 0x2E, 0x31, 0x32, 0x32, 0x31, 0x2E, 0x30 };
-            if (fileContent.Contains(check7, out position))
-            {
-                string version = "4.0.12218";
-                return version;
-            }
+            check = new byte[] { 0x34, 0x2E, 0x30, 0x2E, 0x31, 0x32, 0x32, 0x31, 0x2E, 0x30 };
+            if (fileContent.Contains(check, out position))
+                return "4.0.12218";
 
             else
-            {
-                string version = "Unknown version above 3.0";
-                return version;
-            }
+                return "Unknown version above 3.0";
         }
 
         private static string GetV2Version(byte[] fileContent, int position)
         {
-            string version = "Version 2.x";
-            return version;
+            return "Version 2.x";
         }
     }
 }
