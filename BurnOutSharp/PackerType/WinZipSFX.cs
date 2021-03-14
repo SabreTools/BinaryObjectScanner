@@ -46,9 +46,9 @@ namespace BurnOutSharp.PackerType
                 return Scan(scanner, fs, file);
             }
         }
+
         /// <inheritdoc/>
-        // Most of this code is literally just lifted from PKZIP.cs, so make sure that it works efficiently for this use
-        public Dictionary<string, List<string>> Scan(Scanner scanner, Stream stream, string file)
+         public Dictionary<string, List<string>> Scan(Scanner scanner, Stream stream, string file)
         {
             // If the zip file itself fails
             try
