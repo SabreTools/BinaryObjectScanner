@@ -93,6 +93,7 @@ Below is a list of the executable packers that can be detected using this code:
 - NSIS
 - PECompact
 - UPX
+- WinZip SFX
 - WISE Installer
 
 ## Archive Formats
