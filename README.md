@@ -26,6 +26,7 @@ Below is a list of the protections that can be detected using this code:
 - ActiveMARK / ActiveMARK 5
 - Alpha-DVD
 - Alpha-ROM
+- BD+
 - Bitpool
 - ByteShield
 - Cactus Data Shield
