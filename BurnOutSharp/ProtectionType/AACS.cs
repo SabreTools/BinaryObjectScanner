@@ -15,41 +15,53 @@ namespace BurnOutSharp.ProtectionType
                 if (files.Any(f => f.Contains(Path.Combine("AACS", "MKBROM.AACS"))))
                 {
                     string versionPathHDDVD = files.FirstOrDefault(f => Path.GetFileName(f).Equals("MKBROM.AACS", StringComparison.OrdinalIgnoreCase));
-                    int? version = GetVersionHDDVD(versionPathHDDVD);
+                    int? version = GetVersion(versionPathHDDVD);
+                    if (version == null)
+                        return "AACS (Unknown Version)";
                     return $"AACS Version {version}";
                 }
                 if (files.Any(f => f.Contains(Path.Combine("AACS", "MKB_RO.inf"))))
                 {
                     string versionPathBD = files.FirstOrDefault(f => Path.GetFileName(f).Equals("MKB_RO.inf", StringComparison.OrdinalIgnoreCase));
-                    int? version = GetVersionBD(versionPathBD);
+                    int? version = GetVersion(versionPathBD);
+                    if (version == null)
+                        return "AACS (Unknown Version)";
                     return $"AACS Version {version}";
                 }
+            }
+            else
+            {
+                string filename = Path.GetFileName(path);
+                if (filename.Equals("MKBROM.AACS", StringComparison.OrdinalIgnoreCase))
+                {
+                    string versionPathHDDVD = path;
+                    int? version = GetVersion(versionPathHDDVD);
+                    if (version == null)
+                        return "AACS (Unknown Version)";
+                    return $"AACS Version {version}";
+                }
+                if (filename.Equals("MKB_RO.inf", StringComparison.OrdinalIgnoreCase))
+                {
+                    string versionPathBD = path;
+                    int? version = GetVersion(versionPathBD);
+                    if (version == null)
+                        return "AACS (Unknown Version)";
+                    return $"AACS Version {version}";
+                } 
             }
 
             return null;
         }
-        private static int? GetVersionHDDVD(string path)
+        private static int? GetVersion(string path)
         {
             try
             {
-                FileStream file = File.OpenRead(path);
-                file.Seek(0xB, SeekOrigin.Begin);
-                int? version = file.ReadByte();
-                return version;
-            }
-            catch
-            {
-                return null;
-            }
-        }
-        private static int? GetVersionBD(string path)
-        {
-            try
-            {
-                FileStream file = File.OpenRead(path);
-                file.Seek(0xB, SeekOrigin.Begin);
-                int? version = file.ReadByte();
-                return version;
+                using (var fs = File.OpenRead(path))
+                {
+                    fs.Seek(0xB, SeekOrigin.Begin);
+                    int version = fs.ReadByte();
+                    return version;
+                }
             }
             catch
             {
