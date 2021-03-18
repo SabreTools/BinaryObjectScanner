@@ -46,23 +46,21 @@ namespace BurnOutSharp.ProtectionType
         }
         private static int? GetVersion(string path)
         {
-            if (File.Exists(path))
+            if (!File.Exists(path))
+                return null;
+            try
             {
-                try
+                using (var fs = File.OpenRead(path))
                 {
-                    using (var fs = File.OpenRead(path))
-                    {
-                        fs.Seek(0xB, SeekOrigin.Begin);
-                        int version = fs.ReadByte();
-                        return version;
-                    }
-                }
-                catch
-                {
-                    return null;
+                    fs.Seek(0xB, SeekOrigin.Begin);
+                    int version = fs.ReadByte();
+                    return version;
                 }
             }
-            return null;
+            catch
+            {
+                return null;
+            }
         }
     }
 }
