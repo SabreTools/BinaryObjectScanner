@@ -12,23 +12,49 @@ namespace BurnOutSharp.ProtectionType
         {
             if (isDirectory)
             {
-                if (files.Any(f => f.Contains(Path.Combine("aacs", "VTKF000.AACS")))
-                    && files.Any(f => f.Contains(Path.Combine("AACS", "CPSUnit00001.cci"))))
+                if (files.Any(f => f.Contains(Path.Combine("AACS", "MKBROM.AACS"))))
                 {
-                    return "AACS";
+                    string versionPathHDDVD = files.FirstOrDefault(f => Path.GetFileName(f).Equals("MKBROM.AACS", StringComparison.OrdinalIgnoreCase));
+                    int? version = GetVersionHDDVD(versionPathHDDVD);
+                    return $"AACS Version {version}";
                 }
-            }
-            else
-            {
-                string filename = Path.GetFileName(path);
-                if (filename.Equals("VTKF000.AACS", StringComparison.OrdinalIgnoreCase)
-                    || filename.Equals("CPSUnit00001.cci", StringComparison.OrdinalIgnoreCase))
+                if (files.Any(f => f.Contains(Path.Combine("AACS", "MKB_RO.inf"))))
                 {
-                    return "AACS";
+                    string versionPathBD = files.FirstOrDefault(f => Path.GetFileName(f).Equals("MKB_RO.inf", StringComparison.OrdinalIgnoreCase));
+                    int? version = GetVersionBD(versionPathBD);
+                    return $"AACS Version {version}";
                 }
             }
 
             return null;
+        }
+        private static int? GetVersionHDDVD(string path)
+        {
+            try
+            {
+                FileStream file = File.OpenRead(path);
+                file.Seek(0xB, SeekOrigin.Begin);
+                int? version = file.ReadByte();
+                return version;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+        private static int? GetVersionBD(string path)
+        {
+            try
+            {
+                FileStream file = File.OpenRead(path);
+                file.Seek(0xB, SeekOrigin.Begin);
+                int? version = file.ReadByte();
+                return version;
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }
