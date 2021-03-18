@@ -46,8 +46,7 @@ namespace BurnOutSharp.ProtectionType
                     int month = fs.ReadByte();
                     int day = fs.ReadByte();
 
-                    year1 = year1 << 8;
-                    int year = year1 | year2;
+                    int year = (year1 = year1 << 8) | year2;
 
                     // If the result isn't a valid date, report it as an unknown version
                     if (year < 2006 || year > 2100 || month < 1 || month > 12 || day < 1 || day > 31)
