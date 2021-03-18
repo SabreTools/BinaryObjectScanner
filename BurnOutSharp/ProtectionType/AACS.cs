@@ -14,19 +14,15 @@ namespace BurnOutSharp.ProtectionType
             {
                 if (files.Any(f => f.Contains(Path.Combine("AACS", "MKBROM.AACS"))))
                 {
-                    string versionPathHDDVD = files.FirstOrDefault(f => Path.GetFileName(f).Equals("MKBROM.AACS", StringComparison.OrdinalIgnoreCase));
-                    int? version = GetVersion(versionPathHDDVD);
-                    if (version == null)
-                        return "AACS (Unknown Version)";
-                    return $"AACS Version {version}";
+                    string file = files.FirstOrDefault(f => Path.GetFileName(f).Equals("MKBROM.AACS", StringComparison.OrdinalIgnoreCase));
+                    int? version = GetVersion(file);
+                    return (version == null ? "AACS (Unknown Version)" : $"AACS Version {version}");
                 }
                 if (files.Any(f => f.Contains(Path.Combine("AACS", "MKB_RO.inf"))))
                 {
-                    string versionPathBD = files.FirstOrDefault(f => Path.GetFileName(f).Equals("MKB_RO.inf", StringComparison.OrdinalIgnoreCase));
-                    int? version = GetVersion(versionPathBD);
-                    if (version == null)
-                        return "AACS (Unknown Version)";
-                    return $"AACS Version {version}";
+                    string file = files.FirstOrDefault(f => Path.GetFileName(f).Equals("MKB_RO.inf", StringComparison.OrdinalIgnoreCase));
+                    int? version = GetVersion(file);
+                    return (version == null ? "AACS (Unknown Version)" : $"AACS Version {version}");
                 }
             }
             else
@@ -34,19 +30,15 @@ namespace BurnOutSharp.ProtectionType
                 string filename = Path.GetFileName(path);
                 if (filename.Equals("MKBROM.AACS", StringComparison.OrdinalIgnoreCase))
                 {
-                    string versionPathHDDVD = path;
-                    int? version = GetVersion(versionPathHDDVD);
-                    if (version == null)
-                        return "AACS (Unknown Version)";
-                    return $"AACS Version {version}";
+                    string file = path;
+                    int? version = GetVersion(file);
+                    return (version == null ? "AACS (Unknown Version)" : $"AACS Version {version}");
                 }
                 if (filename.Equals("MKB_RO.inf", StringComparison.OrdinalIgnoreCase))
                 {
-                    string versionPathBD = path;
-                    int? version = GetVersion(versionPathBD);
-                    if (version == null)
-                        return "AACS (Unknown Version)";
-                    return $"AACS Version {version}";
+                    string file = path;
+                    int? version = GetVersion(file);
+                    return (version == null ? "AACS (Unknown Version)" : $"AACS Version {version}");
                 } 
             }
 
@@ -54,19 +46,23 @@ namespace BurnOutSharp.ProtectionType
         }
         private static int? GetVersion(string path)
         {
-            try
+            if (File.Exists(path))
             {
-                using (var fs = File.OpenRead(path))
+                try
                 {
-                    fs.Seek(0xB, SeekOrigin.Begin);
-                    int version = fs.ReadByte();
-                    return version;
+                    using (var fs = File.OpenRead(path))
+                    {
+                        fs.Seek(0xB, SeekOrigin.Begin);
+                        int version = fs.ReadByte();
+                        return version;
+                    }
+                }
+                catch
+                {
+                    return null;
                 }
             }
-            catch
-            {
-                return null;
-            }
+            return null;
         }
     }
 }
