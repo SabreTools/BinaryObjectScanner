@@ -30,14 +30,12 @@ namespace BurnOutSharp.ProtectionType
                 string filename = Path.GetFileName(path);
                 if (filename.Equals("MKBROM.AACS", StringComparison.OrdinalIgnoreCase))
                 {
-                    string file = path;
-                    int? version = GetVersion(file);
+                    int? version = GetVersion(path);
                     return (version == null ? "AACS (Unknown Version)" : $"AACS Version {version}");
                 }
                 if (filename.Equals("MKB_RO.inf", StringComparison.OrdinalIgnoreCase))
                 {
-                    string file = path;
-                    int? version = GetVersion(file);
+                    int? version = GetVersion(path);
                     return (version == null ? "AACS (Unknown Version)" : $"AACS Version {version}");
                 } 
             }
