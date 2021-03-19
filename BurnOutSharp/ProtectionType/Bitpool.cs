@@ -8,19 +8,20 @@ namespace BurnOutSharp.ProtectionType
     public class Bitpool : IPathCheck
     {
         /// <inheritdoc/>
-        public string CheckPath(string path, bool isDirectory, IEnumerable<string> files)
+        public string CheckDirectoryPath(string path, IEnumerable<string> files)
         {
-            if (isDirectory)
-            {
-                if (files.Any(f => Path.GetFileName(f).Equals("bitpool.rsc", StringComparison.OrdinalIgnoreCase)))
-                    return "Bitpool";
-            }
-            else
-            {
-                if (Path.GetFileName(path).Equals("bitpool.rsc", StringComparison.OrdinalIgnoreCase))
-                    return "Bitpool";
-            }
+            if (files.Any(f => Path.GetFileName(f).Equals("bitpool.rsc", StringComparison.OrdinalIgnoreCase)))
+                return "Bitpool";
 
+            return null;
+        }
+
+        /// <inheritdoc/>
+        public string CheckFilePath(string path)
+        {
+            if (Path.GetFileName(path).Equals("bitpool.rsc", StringComparison.OrdinalIgnoreCase))
+                return "Bitpool";
+            
             return null;
         }
     }

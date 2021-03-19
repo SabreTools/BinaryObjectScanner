@@ -19,24 +19,25 @@ namespace BurnOutSharp.ProtectionType
         }
 
         /// <inheritdoc/>
-        public string CheckPath(string path, bool isDirectory, IEnumerable<string> files)
+        public string CheckDirectoryPath(string path, IEnumerable<string> files)
         {
-            if (isDirectory)
+            // TODO: Verify if these are OR or AND
+            if (files.Any(f => Path.GetFileName(f).Equals("00001.TMP", StringComparison.OrdinalIgnoreCase))
+                || files.Any(f => Path.GetFileName(f).Equals("00002.TMP", StringComparison.OrdinalIgnoreCase)))
             {
-                // TODO: Verify if these are OR or AND
-                if (files.Any(f => Path.GetFileName(f).Equals("00001.TMP", StringComparison.OrdinalIgnoreCase))
-                    || files.Any(f => Path.GetFileName(f).Equals("00002.TMP", StringComparison.OrdinalIgnoreCase)))
-                {
-                    return "SmartE";
-                }
+                return "SmartE";
             }
-            else
+            
+            return null;
+        }
+
+        /// <inheritdoc/>
+        public string CheckFilePath(string path)
+        {
+            if (Path.GetFileName(path).Equals("00001.TMP", StringComparison.OrdinalIgnoreCase)
+                || Path.GetFileName(path).Equals("00002.TMP", StringComparison.OrdinalIgnoreCase))
             {
-                if (Path.GetFileName(path).Equals("00001.TMP", StringComparison.OrdinalIgnoreCase)
-                    || Path.GetFileName(path).Equals("00002.TMP", StringComparison.OrdinalIgnoreCase))
-                {
-                    return "SmartE";
-                }
+                return "SmartE";
             }
 
             return null;

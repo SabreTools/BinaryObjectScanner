@@ -19,28 +19,29 @@ namespace BurnOutSharp.ProtectionType
         }
 
         /// <inheritdoc/>
-        public string CheckPath(string path, bool isDirectory, IEnumerable<string> files)
+        public string CheckDirectoryPath(string path, IEnumerable<string> files)
         {
-            if (isDirectory)
+            // TODO: Verify if these are OR or AND
+            if (files.Any(f => Path.GetExtension(f).Trim('.').Equals("IMP", StringComparison.OrdinalIgnoreCase))
+                || files.Any(f => Path.GetFileName(f).Equals("imp.dat", StringComparison.OrdinalIgnoreCase))
+                || files.Any(f => Path.GetFileName(f).Equals("wtmfiles.dat", StringComparison.OrdinalIgnoreCase))
+                || files.Any(f => Path.GetFileName(f).Equals("Viewer.exe", StringComparison.OrdinalIgnoreCase)))
             {
-                // TODO: Verify if these are OR or AND
-                if (files.Any(f => Path.GetExtension(f).Trim('.').Equals("IMP", StringComparison.OrdinalIgnoreCase))
-                    || files.Any(f => Path.GetFileName(f).Equals("imp.dat", StringComparison.OrdinalIgnoreCase))
-                    || files.Any(f => Path.GetFileName(f).Equals("wtmfiles.dat", StringComparison.OrdinalIgnoreCase))
-                    || files.Any(f => Path.GetFileName(f).Equals("Viewer.exe", StringComparison.OrdinalIgnoreCase)))
-                {
-                    return "WTM CD Protect";
-                }
+                return "WTM CD Protect";
             }
-            else
+
+            return null;
+        }
+
+        /// <inheritdoc/>
+        public string CheckFilePath(string path)
+        {
+            if (Path.GetExtension(path).Trim('.').Equals("IMP", StringComparison.OrdinalIgnoreCase)
+                || Path.GetFileName(path).Equals("imp.dat", StringComparison.OrdinalIgnoreCase)
+                || Path.GetFileName(path).Equals("wtmfiles.dat", StringComparison.OrdinalIgnoreCase)
+                || Path.GetFileName(path).Equals("Viewer.exe", StringComparison.OrdinalIgnoreCase))
             {
-                if (Path.GetExtension(path).Trim('.').Equals("IMP", StringComparison.OrdinalIgnoreCase)
-                    || Path.GetFileName(path).Equals("imp.dat", StringComparison.OrdinalIgnoreCase)
-                    || Path.GetFileName(path).Equals("wtmfiles.dat", StringComparison.OrdinalIgnoreCase)
-                    || Path.GetFileName(path).Equals("Viewer.exe", StringComparison.OrdinalIgnoreCase))
-                {
-                    return "WTM CD Protect";
-                }
+                return "WTM CD Protect";
             }
 
             return null;

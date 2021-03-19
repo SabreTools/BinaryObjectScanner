@@ -19,18 +19,19 @@ namespace BurnOutSharp.ProtectionType
         }
 
         /// <inheritdoc/>
-        public string CheckPath(string path, bool isDirectory, IEnumerable<string> files)
+        public string CheckDirectoryPath(string path, IEnumerable<string> files)
         {
-            if (isDirectory)
-            {
-                if (files.Any(f => Path.GetFileName(f).Equals("OriginSetup.exe", StringComparison.OrdinalIgnoreCase)))
-                    return "Origin";
-            }
-            else
-            {
-                if (Path.GetFileName(path).Equals("OriginSetup.exe", StringComparison.OrdinalIgnoreCase))
-                    return "Origin";
-            }
+            if (files.Any(f => Path.GetFileName(f).Equals("OriginSetup.exe", StringComparison.OrdinalIgnoreCase)))
+                return "Origin";
+            
+            return null;
+        }
+
+        /// <inheritdoc/>
+        public string CheckFilePath(string path)
+        {
+            if (Path.GetFileName(path).Equals("OriginSetup.exe", StringComparison.OrdinalIgnoreCase))
+                return "Origin";
 
             return null;
         }

@@ -8,18 +8,19 @@ namespace BurnOutSharp.ProtectionType
     public class FreeLock : IPathCheck
     {
         /// <inheritdoc/>
-        public string CheckPath(string path, bool isDirectory, IEnumerable<string> files)
+        public string CheckDirectoryPath(string path, IEnumerable<string> files)
         {
-            if (isDirectory)
-            {
-                if (files.Any(f => Path.GetFileName(f).Equals("FREELOCK.IMG", StringComparison.OrdinalIgnoreCase)))
-                    return "FreeLock";
-            }
-            else
-            {
-                if (Path.GetFileName(path).Equals("FREELOCK.IMG", StringComparison.OrdinalIgnoreCase))
-                    return "FreeLock";
-            }
+            if (files.Any(f => Path.GetFileName(f).Equals("FREELOCK.IMG", StringComparison.OrdinalIgnoreCase)))
+                return "FreeLock";
+            
+            return null;
+        }
+
+        /// <inheritdoc/>
+        public string CheckFilePath(string path)
+        {
+            if (Path.GetFileName(path).Equals("FREELOCK.IMG", StringComparison.OrdinalIgnoreCase))
+                return "FreeLock";
 
             return null;
         }

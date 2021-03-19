@@ -8,19 +8,20 @@ namespace BurnOutSharp.ProtectionType
     public class AlphaDVD : IPathCheck
     {
         /// <inheritdoc/>
-        public string CheckPath(string path, bool isDirectory, IEnumerable<string> files)
+        public string CheckDirectoryPath(string path, IEnumerable<string> files)
         {
-            if (isDirectory)
-            {
-                if (files.Any(f => Path.GetFileName(f).Equals("PlayDVD.exe", StringComparison.OrdinalIgnoreCase)))
-                    return "Alpha-DVD";
-            }
-            else
-            {
-                if (Path.GetFileName(path).Equals("PlayDVD.exe", StringComparison.OrdinalIgnoreCase))
-                    return "Alpha-DVD";
-            }
+            if (files.Any(f => Path.GetFileName(f).Equals("PlayDVD.exe", StringComparison.OrdinalIgnoreCase)))
+                return "Alpha-DVD";
 
+            return null;
+        }
+
+        /// <inheritdoc/>
+        public string CheckFilePath(string path)
+        {
+            if (Path.GetFileName(path).Equals("PlayDVD.exe", StringComparison.OrdinalIgnoreCase))
+                return "Alpha-DVD";
+            
             return null;
         }
     }

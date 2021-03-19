@@ -7,11 +7,8 @@ namespace BurnOutSharp.ProtectionType
     public class DVDMoviePROTECT : IPathCheck
     {
         /// <inheritdoc/>
-        public string CheckPath(string path, bool isDirectory, IEnumerable<string> files)
+        public string CheckDirectoryPath(string path, IEnumerable<string> files)
         {
-            if (!isDirectory)
-                return null;
-
             if (Directory.Exists(Path.Combine(path, "VIDEO_TS")))
             {
                 string[] bupfiles = files.Where(s => s.EndsWith(".bup")).ToArray();
@@ -24,6 +21,12 @@ namespace BurnOutSharp.ProtectionType
                 }
             }
 
+            return null;
+        }
+
+        /// <inheritdoc/>
+        public string CheckFilePath(string path)
+        {
             return null;
         }
     }

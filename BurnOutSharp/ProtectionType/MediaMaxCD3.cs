@@ -24,18 +24,19 @@ namespace BurnOutSharp.ProtectionType
         }
 
         /// <inheritdoc/>
-        public string CheckPath(string path, bool isDirectory, IEnumerable<string> files)
+        public string CheckDirectoryPath(string path, IEnumerable<string> files)
         {
-            if (isDirectory)
-            {
-                if (files.Any(f => Path.GetFileName(f).Equals("LaunchCd.exe", StringComparison.OrdinalIgnoreCase)))
-                    return "MediaMax CD-3";
-            }
-            else
-            {
-                if (Path.GetFileName(path).Equals("LaunchCd.exe", StringComparison.OrdinalIgnoreCase))
-                    return "MediaMax CD-3";
-            }
+            if (files.Any(f => Path.GetFileName(f).Equals("LaunchCd.exe", StringComparison.OrdinalIgnoreCase)))
+                return "MediaMax CD-3";
+            
+            return null;
+        }
+
+        /// <inheritdoc/>
+        public string CheckFilePath(string path)
+        {
+            if (Path.GetFileName(path).Equals("LaunchCd.exe", StringComparison.OrdinalIgnoreCase))
+                return "MediaMax CD-3";
 
             return null;
         }

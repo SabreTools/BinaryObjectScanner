@@ -61,69 +61,70 @@ namespace BurnOutSharp.ProtectionType
         }
 
         /// <inheritdoc/>
-        public string CheckPath(string path, bool isDirectory, IEnumerable<string> files)
+        public string CheckDirectoryPath(string path, IEnumerable<string> files)
         {
-            if (isDirectory)
+            // TODO: These are all cop-outs that don't check the existence of the other files
+            if (files.Any(f => Path.GetFileName(f).Equals("DPLAYERX.DLL", StringComparison.OrdinalIgnoreCase)))
             {
-                // TODO: These are all cop-outs that don't check the existence of the other files
-                if (files.Any(f => Path.GetFileName(f).Equals("DPLAYERX.DLL", StringComparison.OrdinalIgnoreCase)))
-                {
-                    string file = files.First(f => Path.GetFileName(f).Equals("DPLAYERX.DLL", StringComparison.OrdinalIgnoreCase));
-                    return GetDPlayerXVersion(file);
-                }
-                else if (files.Any(f => Path.GetFileName(f).Equals("drvmgt.dll", StringComparison.OrdinalIgnoreCase)))
-                {
-                    string file = files.First(f => Path.GetFileName(f).Equals("drvmgt.dll", StringComparison.OrdinalIgnoreCase));
-                    return GetDrvmgtVersion(file);
-                }
-                else if (files.Any(f => Path.GetFileName(f).Equals("secdrv.sys", StringComparison.OrdinalIgnoreCase)))
-                {
-                    string file = files.First(f => Path.GetFileName(f).Equals("secdrv.sys", StringComparison.OrdinalIgnoreCase));
-                    return GetSecdrvVersion(file);
-                }
-                else if (path.EndsWith(".SafeDiscDVD.bundle", StringComparison.OrdinalIgnoreCase))
-                {
-                    return "SafeDisc for Macintosh";
-                }
+                string file = files.First(f => Path.GetFileName(f).Equals("DPLAYERX.DLL", StringComparison.OrdinalIgnoreCase));
+                return GetDPlayerXVersion(file);
             }
-            else
+            else if (files.Any(f => Path.GetFileName(f).Equals("drvmgt.dll", StringComparison.OrdinalIgnoreCase)))
             {
-                // V1
-                if (Path.GetFileName(path).Equals("CLCD16.DLL", StringComparison.OrdinalIgnoreCase)
-                    || Path.GetFileName(path).Equals("CLCD32.DLL", StringComparison.OrdinalIgnoreCase)
-                    || Path.GetFileName(path).Equals("CLOKSPL.EXE", StringComparison.OrdinalIgnoreCase)
-                    || Path.GetExtension(path).Trim('.').Equals("icd", StringComparison.OrdinalIgnoreCase))
-                {
-                    return "SafeDisc 1";
-                }
+                string file = files.First(f => Path.GetFileName(f).Equals("drvmgt.dll", StringComparison.OrdinalIgnoreCase));
+                return GetDrvmgtVersion(file);
+            }
+            else if (files.Any(f => Path.GetFileName(f).Equals("secdrv.sys", StringComparison.OrdinalIgnoreCase)))
+            {
+                string file = files.First(f => Path.GetFileName(f).Equals("secdrv.sys", StringComparison.OrdinalIgnoreCase));
+                return GetSecdrvVersion(file);
+            }
+            else if (path.EndsWith(".SafeDiscDVD.bundle", StringComparison.OrdinalIgnoreCase))
+            {
+                return "SafeDisc for Macintosh";
+            }
+            
+            return null;
+        }
 
-                // V1 or greater
-                else if (Path.GetFileName(path).Equals("00000001.TMP", StringComparison.OrdinalIgnoreCase)
-                    || Path.GetExtension(path).Trim('.').Equals("016", StringComparison.OrdinalIgnoreCase)
-                    || Path.GetExtension(path).Trim('.').Equals("256", StringComparison.OrdinalIgnoreCase))
-                {
-                    return "SafeDisc 1 or greater";
-                }
+        /// <inheritdoc/>
+        public string CheckFilePath(string path)
+        {
+            // V1
+            if (Path.GetFileName(path).Equals("CLCD16.DLL", StringComparison.OrdinalIgnoreCase)
+                || Path.GetFileName(path).Equals("CLCD32.DLL", StringComparison.OrdinalIgnoreCase)
+                || Path.GetFileName(path).Equals("CLOKSPL.EXE", StringComparison.OrdinalIgnoreCase)
+                || Path.GetExtension(path).Trim('.').Equals("icd", StringComparison.OrdinalIgnoreCase))
+            {
+                return "SafeDisc 1";
+            }
 
-                // V2 or greater
-                else if (Path.GetFileName(path).Equals("00000002.TMP", StringComparison.OrdinalIgnoreCase))
-                {
-                    return "SafeDisc 2 or greater";
-                }
+            // V1 or greater
+            else if (Path.GetFileName(path).Equals("00000001.TMP", StringComparison.OrdinalIgnoreCase)
+                || Path.GetExtension(path).Trim('.').Equals("016", StringComparison.OrdinalIgnoreCase)
+                || Path.GetExtension(path).Trim('.').Equals("256", StringComparison.OrdinalIgnoreCase))
+            {
+                return "SafeDisc 1 or greater";
+            }
 
-                // Specific Versions
-                else if (Path.GetFileName(path).Equals("DPLAYERX.DLL", StringComparison.OrdinalIgnoreCase))
-                {
-                    return GetDPlayerXVersion(path);
-                }
-                else if (Path.GetFileName(path).Equals("drvmgt.dll", StringComparison.OrdinalIgnoreCase))
-                {
-                    return GetDrvmgtVersion(path);
-                }
-                else if (Path.GetFileName(path).Equals("secdrv.sys", StringComparison.OrdinalIgnoreCase))
-                {
-                    return GetSecdrvVersion(path);
-                }
+            // V2 or greater
+            else if (Path.GetFileName(path).Equals("00000002.TMP", StringComparison.OrdinalIgnoreCase))
+            {
+                return "SafeDisc 2 or greater";
+            }
+
+            // Specific Versions
+            else if (Path.GetFileName(path).Equals("DPLAYERX.DLL", StringComparison.OrdinalIgnoreCase))
+            {
+                return GetDPlayerXVersion(path);
+            }
+            else if (Path.GetFileName(path).Equals("drvmgt.dll", StringComparison.OrdinalIgnoreCase))
+            {
+                return GetDrvmgtVersion(path);
+            }
+            else if (Path.GetFileName(path).Equals("secdrv.sys", StringComparison.OrdinalIgnoreCase))
+            {
+                return GetSecdrvVersion(path);
             }
 
             return null;

@@ -19,26 +19,27 @@ namespace BurnOutSharp.ProtectionType
         }
 
         /// <inheritdoc/>
-        public string CheckPath(string path, bool isDirectory, IEnumerable<string> files)
+        public string CheckDirectoryPath(string path, IEnumerable<string> files)
         {
-            if (isDirectory)
+            // TODO: Verify if these are OR or AND
+            if (files.Any(f => Path.GetFileName(f).Equals("SafeLock.dat", StringComparison.OrdinalIgnoreCase))
+                || files.Any(f => Path.GetFileName(f).Equals("SafeLock.001", StringComparison.OrdinalIgnoreCase))
+                || files.Any(f => Path.GetFileName(f).Equals("SafeLock.128", StringComparison.OrdinalIgnoreCase)))
             {
-                // TODO: Verify if these are OR or AND
-                if (files.Any(f => Path.GetFileName(f).Equals("SafeLock.dat", StringComparison.OrdinalIgnoreCase))
-                    || files.Any(f => Path.GetFileName(f).Equals("SafeLock.001", StringComparison.OrdinalIgnoreCase))
-                    || files.Any(f => Path.GetFileName(f).Equals("SafeLock.128", StringComparison.OrdinalIgnoreCase)))
-                {
-                    return "SafeLock";
-                }
+                return "SafeLock";
             }
-            else
+            
+            return null;
+        }
+
+        /// <inheritdoc/>
+        public string CheckFilePath(string path)
+        {
+            if (Path.GetFileName(path).Equals("SafeLock.dat", StringComparison.OrdinalIgnoreCase)
+                || Path.GetFileName(path).Equals("SafeLock.001", StringComparison.OrdinalIgnoreCase)
+                || Path.GetFileName(path).Equals("SafeLock.128", StringComparison.OrdinalIgnoreCase))
             {
-                if (Path.GetFileName(path).Equals("SafeLock.dat", StringComparison.OrdinalIgnoreCase)
-                    || Path.GetFileName(path).Equals("SafeLock.001", StringComparison.OrdinalIgnoreCase)
-                    || Path.GetFileName(path).Equals("SafeLock.128", StringComparison.OrdinalIgnoreCase))
-                {
-                    return "SafeLock";
-                }
+                return "SafeLock";
             }
 
             return null;

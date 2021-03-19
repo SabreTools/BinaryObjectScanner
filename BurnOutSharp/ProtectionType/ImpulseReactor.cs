@@ -26,18 +26,19 @@ namespace BurnOutSharp.ProtectionType
         }
 
         /// <inheritdoc/>
-        public string CheckPath(string path, bool isDirectory, IEnumerable<string> files)
+        public string CheckDirectoryPath(string path, IEnumerable<string> files)
         {
-            if (isDirectory)
-            {
-                if (files.Any(f => Path.GetFileName(f).Equals("ImpulseReactor.dll", StringComparison.OrdinalIgnoreCase)))
-                    return "Impulse Reactor " + Utilities.GetFileVersion(files.First(f => Path.GetFileName(f).Equals("ImpulseReactor.dll", StringComparison.OrdinalIgnoreCase)));
-            }
-            else
-            {
-                if (Path.GetFileName(path).Equals("ImpulseReactor.dll", StringComparison.OrdinalIgnoreCase))
+            if (files.Any(f => Path.GetFileName(f).Equals("ImpulseReactor.dll", StringComparison.OrdinalIgnoreCase)))
+                return "Impulse Reactor " + Utilities.GetFileVersion(files.First(f => Path.GetFileName(f).Equals("ImpulseReactor.dll", StringComparison.OrdinalIgnoreCase)));
+            
+            return null;
+        }
+
+        /// <inheritdoc/>
+        public string CheckFilePath(string path)
+        {
+            if (Path.GetFileName(path).Equals("ImpulseReactor.dll", StringComparison.OrdinalIgnoreCase))
                     return "Impulse Reactor " + Utilities.GetFileVersion(path);
-            }
 
             return null;
         }

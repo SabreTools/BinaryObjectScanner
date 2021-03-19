@@ -8,40 +8,49 @@ namespace BurnOutSharp.ProtectionType
     public class AACS : IPathCheck
     {
         /// <inheritdoc/>
-        public string CheckPath(string path, bool isDirectory, IEnumerable<string> files)
+        public string CheckDirectoryPath(string path, IEnumerable<string> files)
         {
-            if (isDirectory)
+            // HD-DVD
+            if (files.Any(f => f.Contains(Path.Combine("AACS", "MKBROM.AACS"))))
             {
-                if (files.Any(f => f.Contains(Path.Combine("AACS", "MKBROM.AACS"))))
-                {
-                    string file = files.FirstOrDefault(f => Path.GetFileName(f).Equals("MKBROM.AACS", StringComparison.OrdinalIgnoreCase));
-                    int? version = GetVersion(file);
-                    return (version == null ? "AACS (Unknown Version)" : $"AACS Version {version}");
-                }
-                if (files.Any(f => f.Contains(Path.Combine("AACS", "MKB_RO.inf"))))
-                {
-                    string file = files.FirstOrDefault(f => Path.GetFileName(f).Equals("MKB_RO.inf", StringComparison.OrdinalIgnoreCase));
-                    int? version = GetVersion(file);
-                    return (version == null ? "AACS (Unknown Version)" : $"AACS Version {version}");
-                }
+                string file = files.FirstOrDefault(f => Path.GetFileName(f).Equals("MKBROM.AACS", StringComparison.OrdinalIgnoreCase));
+                int? version = GetVersion(file);
+                return version == null ? "AACS (Unknown Version)" : $"AACS Version {version}";
             }
-            else
+
+            // BD-ROM
+            if (files.Any(f => f.Contains(Path.Combine("AACS", "MKB_RO.inf"))))
             {
-                string filename = Path.GetFileName(path);
-                if (filename.Equals("MKBROM.AACS", StringComparison.OrdinalIgnoreCase))
-                {
-                    int? version = GetVersion(path);
-                    return (version == null ? "AACS (Unknown Version)" : $"AACS Version {version}");
-                }
-                if (filename.Equals("MKB_RO.inf", StringComparison.OrdinalIgnoreCase))
-                {
-                    int? version = GetVersion(path);
-                    return (version == null ? "AACS (Unknown Version)" : $"AACS Version {version}");
-                } 
+                string file = files.FirstOrDefault(f => Path.GetFileName(f).Equals("MKB_RO.inf", StringComparison.OrdinalIgnoreCase));
+                int? version = GetVersion(file);
+                return version == null ? "AACS (Unknown Version)" : $"AACS Version {version}";
             }
 
             return null;
         }
+
+        /// <inheritdoc/>
+        public string CheckFilePath(string path)
+        {
+            string filename = Path.GetFileName(path);
+
+            // HD-DVD
+            if (filename.Equals("MKBROM.AACS", StringComparison.OrdinalIgnoreCase))
+            {
+                int? version = GetVersion(path);
+                return version == null ? "AACS (Unknown Version)" : $"AACS Version {version}";
+            }
+
+            // BD-ROM
+            if (filename.Equals("MKB_RO.inf", StringComparison.OrdinalIgnoreCase))
+            {
+                int? version = GetVersion(path);
+                return version == null ? "AACS (Unknown Version)" : $"AACS Version {version}";
+            }
+
+            return null;
+        }
+
         private static int? GetVersion(string path)
         {
             if (!File.Exists(path))

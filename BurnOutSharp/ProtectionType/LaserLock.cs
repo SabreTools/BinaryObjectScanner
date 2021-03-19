@@ -42,40 +42,41 @@ namespace BurnOutSharp.ProtectionType
         }
 
         /// <inheritdoc/>
-        public string CheckPath(string path, bool isDirectory, IEnumerable<string> files)
+        public string CheckDirectoryPath(string path, IEnumerable<string> files)
         {
-            if (isDirectory)
+            if (Directory.Exists(Path.Combine(path, "LASERLOK")))
             {
-                if (Directory.Exists(Path.Combine(path, "LASERLOK")))
-                {
-                    return "LaserLock";
-                }
-
-                // TODO: Verify if these are OR or AND
-                else if (files.Any(f => Path.GetFileName(f).Equals("NOMOUSE.SP", StringComparison.OrdinalIgnoreCase))
-                    || files.Any(f => Path.GetFileName(f).Equals("NOMOUSE.COM", StringComparison.OrdinalIgnoreCase))
-                    || files.Any(f => Path.GetFileName(f).Equals("l16dll.dll", StringComparison.OrdinalIgnoreCase))
-                    || files.Any(f => Path.GetFileName(f).Equals("laserlok.in", StringComparison.OrdinalIgnoreCase))
-                    || files.Any(f => Path.GetFileName(f).Equals("laserlok.o10", StringComparison.OrdinalIgnoreCase))
-                    || files.Any(f => Path.GetFileName(f).Equals("laserlok.011", StringComparison.OrdinalIgnoreCase)))
-                {
-                    return "LaserLock";
-                }
+                return "LaserLock";
             }
-            else
-            {
-                if (path != null && string.Equals(Path.GetFileName(path), "NOMOUSE.SP", StringComparison.OrdinalIgnoreCase))
-                    return $"LaserLock {GetVersion16Bit(path)}";
 
-                if (Path.GetFileName(path).Equals("NOMOUSE.SP", StringComparison.OrdinalIgnoreCase)
-                    || Path.GetFileName(path).Equals("NOMOUSE.COM", StringComparison.OrdinalIgnoreCase)
-                    || Path.GetFileName(path).Equals("l16dll.dll", StringComparison.OrdinalIgnoreCase)
-                    || Path.GetFileName(path).Equals("laserlok.in", StringComparison.OrdinalIgnoreCase)
-                    || Path.GetFileName(path).Equals("laserlok.o10", StringComparison.OrdinalIgnoreCase)
-                    || Path.GetFileName(path).Equals("laserlok.011", StringComparison.OrdinalIgnoreCase))
-                {
-                    return "LaserLock";
-                }
+            // TODO: Verify if these are OR or AND
+            else if (files.Any(f => Path.GetFileName(f).Equals("NOMOUSE.SP", StringComparison.OrdinalIgnoreCase))
+                || files.Any(f => Path.GetFileName(f).Equals("NOMOUSE.COM", StringComparison.OrdinalIgnoreCase))
+                || files.Any(f => Path.GetFileName(f).Equals("l16dll.dll", StringComparison.OrdinalIgnoreCase))
+                || files.Any(f => Path.GetFileName(f).Equals("laserlok.in", StringComparison.OrdinalIgnoreCase))
+                || files.Any(f => Path.GetFileName(f).Equals("laserlok.o10", StringComparison.OrdinalIgnoreCase))
+                || files.Any(f => Path.GetFileName(f).Equals("laserlok.011", StringComparison.OrdinalIgnoreCase)))
+            {
+                return "LaserLock";
+            }
+            
+            return null;
+        }
+
+        /// <inheritdoc/>
+        public string CheckFilePath(string path)
+        {
+            if (path != null && string.Equals(Path.GetFileName(path), "NOMOUSE.SP", StringComparison.OrdinalIgnoreCase))
+                return $"LaserLock {GetVersion16Bit(path)}";
+
+            if (Path.GetFileName(path).Equals("NOMOUSE.SP", StringComparison.OrdinalIgnoreCase)
+                || Path.GetFileName(path).Equals("NOMOUSE.COM", StringComparison.OrdinalIgnoreCase)
+                || Path.GetFileName(path).Equals("l16dll.dll", StringComparison.OrdinalIgnoreCase)
+                || Path.GetFileName(path).Equals("laserlok.in", StringComparison.OrdinalIgnoreCase)
+                || Path.GetFileName(path).Equals("laserlok.o10", StringComparison.OrdinalIgnoreCase)
+                || Path.GetFileName(path).Equals("laserlok.011", StringComparison.OrdinalIgnoreCase))
+            {
+                return "LaserLock";
             }
 
             return null;

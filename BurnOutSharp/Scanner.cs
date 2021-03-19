@@ -198,7 +198,13 @@ namespace BurnOutSharp
             foreach (var pathCheckClass in pathCheckClasses)
             {
                 IPathCheck pathCheck = Activator.CreateInstance(pathCheckClass) as IPathCheck;
-                string protection = pathCheck.CheckPath(path, isDirectory, files);
+                
+                string protection = null;
+                if (isDirectory)
+                    protection = pathCheck.CheckDirectoryPath(path, files);
+                else
+                    protection = pathCheck.CheckFilePath(path);
+
                 if (!string.IsNullOrWhiteSpace(protection))
                     protections.Add(protection);
             }

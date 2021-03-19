@@ -5,12 +5,18 @@ namespace BurnOutSharp
     public interface IPathCheck
     {
         /// <summary>
-        /// Check a path for protections based on file and directory names
+        /// Check a file path for protections based on path name
         /// </summary>
         /// <param name="path">Path to check for protection indicators</param>
-        /// <param name="isDirectory">True if the path represents a directory, false otherwise</param>
-        /// <param name="files">Enumerable of strings representing files in a directory if the path is a directory, assumed null otherwise</param>
-        /// <returns>String containing any protections found in the path</returns>
-        string CheckPath(string path, bool isDirectory, IEnumerable<string> files);
+        /// <param name="files">Enumerable of strings representing files in a directory</param>
+        /// <remarks>This can do some limited content checking as well, but it's suggested to use IContentCheck instead, if possible</remarks>
+        string CheckDirectoryPath(string path, IEnumerable<string> files);
+
+        /// <summary>
+        /// Check a file path for protections based on path name
+        /// </summary>
+        /// <param name="path">Path to check for protection indicators</param>
+        /// <remarks>This can do some limited content checking as well, but it's suggested to use IContentCheck instead, if possible</remarks>
+        string CheckFilePath(string path);
     }
 }

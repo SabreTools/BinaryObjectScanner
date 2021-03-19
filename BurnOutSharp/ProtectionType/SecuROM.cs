@@ -50,42 +50,43 @@ namespace BurnOutSharp.ProtectionType
         }
 
         /// <inheritdoc/>
-        public string CheckPath(string path, bool isDirectory, IEnumerable<string> files)
+        public string CheckDirectoryPath(string path, IEnumerable<string> files)
         {
-            if (isDirectory)
+            // TODO: Verify if these are OR or AND
+            if (files.Any(f => Path.GetFileName(f).Equals("CMS16.DLL", StringComparison.OrdinalIgnoreCase))
+                || files.Any(f => Path.GetFileName(f).Equals("CMS_95.DLL", StringComparison.OrdinalIgnoreCase))
+                || files.Any(f => Path.GetFileName(f).Equals("CMS_NT.DLL", StringComparison.OrdinalIgnoreCase))
+                || files.Any(f => Path.GetFileName(f).Equals("CMS32_95.DLL", StringComparison.OrdinalIgnoreCase))
+                || files.Any(f => Path.GetFileName(f).Equals("CMS32_NT.DLL", StringComparison.OrdinalIgnoreCase)))
             {
-                // TODO: Verify if these are OR or AND
-                if (files.Any(f => Path.GetFileName(f).Equals("CMS16.DLL", StringComparison.OrdinalIgnoreCase))
-                    || files.Any(f => Path.GetFileName(f).Equals("CMS_95.DLL", StringComparison.OrdinalIgnoreCase))
-                    || files.Any(f => Path.GetFileName(f).Equals("CMS_NT.DLL", StringComparison.OrdinalIgnoreCase))
-                    || files.Any(f => Path.GetFileName(f).Equals("CMS32_95.DLL", StringComparison.OrdinalIgnoreCase))
-                    || files.Any(f => Path.GetFileName(f).Equals("CMS32_NT.DLL", StringComparison.OrdinalIgnoreCase)))
-                {
-                    return "SecuROM";
-                }
-                else if (files.Any(f => Path.GetFileName(f).Equals("SINTF32.DLL", StringComparison.OrdinalIgnoreCase))
-                    || files.Any(f => Path.GetFileName(f).Equals("SINTF16.DLL", StringComparison.OrdinalIgnoreCase))
-                    || files.Any(f => Path.GetFileName(f).Equals("SINTFNT.DLL", StringComparison.OrdinalIgnoreCase)))
-                {
-                    return "SecuROM New";
-                }
+                return "SecuROM";
             }
-            else
+            else if (files.Any(f => Path.GetFileName(f).Equals("SINTF32.DLL", StringComparison.OrdinalIgnoreCase))
+                || files.Any(f => Path.GetFileName(f).Equals("SINTF16.DLL", StringComparison.OrdinalIgnoreCase))
+                || files.Any(f => Path.GetFileName(f).Equals("SINTFNT.DLL", StringComparison.OrdinalIgnoreCase)))
             {
-                if (Path.GetFileName(path).Equals("CMS16.DLL", StringComparison.OrdinalIgnoreCase)
-                    || Path.GetFileName(path).Equals("CMS_95.DLL", StringComparison.OrdinalIgnoreCase)
-                    || Path.GetFileName(path).Equals("CMS_NT.DLL", StringComparison.OrdinalIgnoreCase)
-                    || Path.GetFileName(path).Equals("CMS32_95.DLL", StringComparison.OrdinalIgnoreCase)
-                    || Path.GetFileName(path).Equals("CMS32_NT.DLL", StringComparison.OrdinalIgnoreCase))
-                {
-                    return "SecuROM";
-                }
-                else if (Path.GetFileName(path).Equals("SINTF32.DLL", StringComparison.OrdinalIgnoreCase)
-                    || Path.GetFileName(path).Equals("SINTF16.DLL", StringComparison.OrdinalIgnoreCase)
-                    || Path.GetFileName(path).Equals("SINTFNT.DLL", StringComparison.OrdinalIgnoreCase))
-                {
-                    return "SecuROM New";
-                }
+                return "SecuROM New";
+            }
+            
+            return null;
+        }
+
+        /// <inheritdoc/>
+        public string CheckFilePath(string path)
+        {
+            if (Path.GetFileName(path).Equals("CMS16.DLL", StringComparison.OrdinalIgnoreCase)
+                || Path.GetFileName(path).Equals("CMS_95.DLL", StringComparison.OrdinalIgnoreCase)
+                || Path.GetFileName(path).Equals("CMS_NT.DLL", StringComparison.OrdinalIgnoreCase)
+                || Path.GetFileName(path).Equals("CMS32_95.DLL", StringComparison.OrdinalIgnoreCase)
+                || Path.GetFileName(path).Equals("CMS32_NT.DLL", StringComparison.OrdinalIgnoreCase))
+            {
+                return "SecuROM";
+            }
+            else if (Path.GetFileName(path).Equals("SINTF32.DLL", StringComparison.OrdinalIgnoreCase)
+                || Path.GetFileName(path).Equals("SINTF16.DLL", StringComparison.OrdinalIgnoreCase)
+                || Path.GetFileName(path).Equals("SINTFNT.DLL", StringComparison.OrdinalIgnoreCase))
+            {
+                return "SecuROM New";
             }
 
             return null;

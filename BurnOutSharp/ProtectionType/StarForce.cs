@@ -65,24 +65,25 @@ namespace BurnOutSharp.ProtectionType
         }
 
         /// <inheritdoc/>
-        public string CheckPath(string path, bool isDirectory, IEnumerable<string> files)
+        public string CheckDirectoryPath(string path, IEnumerable<string> files)
         {
-            if (isDirectory)
+            // TODO: Verify if these are OR or AND
+            if (files.Any(f => Path.GetFileName(f).Equals("protect.dll", StringComparison.OrdinalIgnoreCase))
+                || files.Any(f => Path.GetFileName(f).Equals("protect.exe", StringComparison.OrdinalIgnoreCase)))
             {
-                // TODO: Verify if these are OR or AND
-                if (files.Any(f => Path.GetFileName(f).Equals("protect.dll", StringComparison.OrdinalIgnoreCase))
-                    || files.Any(f => Path.GetFileName(f).Equals("protect.exe", StringComparison.OrdinalIgnoreCase)))
-                {
-                    return "StarForce";
-                }
+                return "StarForce";
             }
-            else
+            
+            return null;
+        }
+
+        /// <inheritdoc/>
+        public string CheckFilePath(string path)
+        {
+            if (Path.GetFileName(path).Equals("protect.dll", StringComparison.OrdinalIgnoreCase)
+                || Path.GetFileName(path).Equals("protect.exe", StringComparison.OrdinalIgnoreCase))
             {
-                if (Path.GetFileName(path).Equals("protect.dll", StringComparison.OrdinalIgnoreCase)
-                    || Path.GetFileName(path).Equals("protect.exe", StringComparison.OrdinalIgnoreCase))
-                {
-                    return "StarForce";
-                }
+                return "StarForce";
             }
 
             return null;

@@ -8,18 +8,19 @@ namespace BurnOutSharp.ProtectionType
     public class Winlock : IPathCheck
     {
         /// <inheritdoc/>
-        public string CheckPath(string path, bool isDirectory, IEnumerable<string> files)
+        public string CheckDirectoryPath(string path, IEnumerable<string> files)
         {
-            if (isDirectory)
-            {
-                if (files.Any(f => Path.GetFileName(f).Equals("WinLock.PSX", StringComparison.OrdinalIgnoreCase)))
-                    return "Winlock";
-            }
-            else
-            {
-                if (Path.GetFileName(path).Equals("WinLock.PSX", StringComparison.OrdinalIgnoreCase))
-                    return "Winlock";
-            }
+            if (files.Any(f => Path.GetFileName(f).Equals("WinLock.PSX", StringComparison.OrdinalIgnoreCase)))
+                return "Winlock";
+
+            return null;
+        }
+
+        /// <inheritdoc/>
+        public string CheckFilePath(string path)
+        {
+            if (Path.GetFileName(path).Equals("WinLock.PSX", StringComparison.OrdinalIgnoreCase))
+                return "Winlock";
 
             return null;
         }

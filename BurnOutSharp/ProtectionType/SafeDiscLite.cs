@@ -8,18 +8,19 @@ namespace BurnOutSharp.ProtectionType
     public class SafeDiscLite : IPathCheck
     {
         /// <inheritdoc/>
-        public string CheckPath(string path, bool isDirectory, IEnumerable<string> files)
+        public string CheckDirectoryPath(string path, IEnumerable<string> files)
         {
-            if (isDirectory)
-            {
-                if (files.Any(f => Path.GetFileName(f).Equals("00000001.LT1", StringComparison.OrdinalIgnoreCase)))
-                    return "SafeDisc Lite";
-            }
-            else
-            {
-                if (Path.GetFileName(path).Equals("00000001.LT1", StringComparison.OrdinalIgnoreCase))
-                    return "SafeDisc Lite";
-            }
+            if (files.Any(f => Path.GetFileName(f).Equals("00000001.LT1", StringComparison.OrdinalIgnoreCase)))
+                return "SafeDisc Lite";
+            
+            return null;
+        }
+
+        /// <inheritdoc/>
+        public string CheckFilePath(string path)
+        {
+            if (Path.GetFileName(path).Equals("00000001.LT1", StringComparison.OrdinalIgnoreCase))
+                return "SafeDisc Lite";
 
             return null;
         }

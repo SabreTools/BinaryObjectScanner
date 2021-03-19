@@ -8,24 +8,25 @@ namespace BurnOutSharp.ProtectionType
     public class IndyVCD : IPathCheck
     {
         /// <inheritdoc/>
-        public string CheckPath(string path, bool isDirectory, IEnumerable<string> files)
+        public string CheckDirectoryPath(string path, IEnumerable<string> files)
         {
-            if (isDirectory)
+            // TODO: Verify if these are OR or AND
+            if (files.Any(f => Path.GetFileName(f).Equals("INDYVCD.AX", StringComparison.OrdinalIgnoreCase))
+                || files.Any(f => Path.GetFileName(f).Equals("INDYMP3.idt", StringComparison.OrdinalIgnoreCase)))
             {
-                // TODO: Verify if these are OR or AND
-                if (files.Any(f => Path.GetFileName(f).Equals("INDYVCD.AX", StringComparison.OrdinalIgnoreCase))
-                    || files.Any(f => Path.GetFileName(f).Equals("INDYMP3.idt", StringComparison.OrdinalIgnoreCase)))
-                {
-                    return "IndyVCD";
-                }
+                return "IndyVCD";
             }
-            else
+            
+            return null;
+        }
+
+        /// <inheritdoc/>
+        public string CheckFilePath(string path)
+        {
+            if (Path.GetFileName(path).Equals("INDYVCD.AX", StringComparison.OrdinalIgnoreCase)
+                || Path.GetFileName(path).Equals("INDYMP3.idt", StringComparison.OrdinalIgnoreCase))
             {
-                if (Path.GetFileName(path).Equals("INDYVCD.AX", StringComparison.OrdinalIgnoreCase)
-                    || Path.GetFileName(path).Equals("INDYMP3.idt", StringComparison.OrdinalIgnoreCase))
-                {
-                    return "IndyVCD";
-                }
+                return "IndyVCD";
             }
 
             return null;

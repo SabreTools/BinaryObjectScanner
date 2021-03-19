@@ -8,24 +8,25 @@ namespace BurnOutSharp.ProtectionType
     public class SoftLock : IPathCheck
     {
         /// <inheritdoc/>
-        public string CheckPath(string path, bool isDirectory, IEnumerable<string> files)
+        public string CheckDirectoryPath(string path, IEnumerable<string> files)
         {
-            if (isDirectory)
+            // TODO: Verify if these are OR or AND
+            if (files.Any(f => Path.GetFileName(f).Equals("SOFTLOCKI.dat", StringComparison.OrdinalIgnoreCase))
+                || files.Any(f => Path.GetFileName(f).Equals("SOFTLOCKC.dat", StringComparison.OrdinalIgnoreCase)))
             {
-                // TODO: Verify if these are OR or AND
-                if (files.Any(f => Path.GetFileName(f).Equals("SOFTLOCKI.dat", StringComparison.OrdinalIgnoreCase))
-                    || files.Any(f => Path.GetFileName(f).Equals("SOFTLOCKC.dat", StringComparison.OrdinalIgnoreCase)))
-                {
-                    return "SoftLock";
-                }
+                return "SoftLock";
             }
-            else
+            
+            return null;
+        }
+
+        /// <inheritdoc/>
+        public string CheckFilePath(string path)
+        {
+            if (Path.GetFileName(path).Equals("SOFTLOCKI.dat", StringComparison.OrdinalIgnoreCase)
+                || Path.GetFileName(path).Equals("SOFTLOCKC.dat", StringComparison.OrdinalIgnoreCase))
             {
-                if (Path.GetFileName(path).Equals("SOFTLOCKI.dat", StringComparison.OrdinalIgnoreCase)
-                    || Path.GetFileName(path).Equals("SOFTLOCKC.dat", StringComparison.OrdinalIgnoreCase))
-                {
-                    return "SoftLock";
-                }
+                return "SoftLock";
             }
 
             return null;

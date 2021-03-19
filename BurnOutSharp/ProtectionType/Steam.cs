@@ -9,29 +9,30 @@ namespace BurnOutSharp.ProtectionType
     public class Steam : IPathCheck
     {
         /// <inheritdoc/>
-        public string CheckPath(string path, bool isDirectory, IEnumerable<string> files)
+        public string CheckDirectoryPath(string path, IEnumerable<string> files)
         {
-            if (isDirectory)
+            if (files.Any(f => Path.GetFileName(f).Equals("SteamInstall.exe", StringComparison.OrdinalIgnoreCase))
+                || files.Any(f => Path.GetFileName(f).Equals("SteamInstall.ini", StringComparison.OrdinalIgnoreCase))
+                || files.Any(f => Path.GetFileName(f).Equals("SteamInstall.msi", StringComparison.OrdinalIgnoreCase))
+                || files.Any(f => Path.GetFileName(f).Equals("SteamRetailInstaller.dmg", StringComparison.OrdinalIgnoreCase))
+                || files.Any(f => Path.GetFileName(f).Equals("SteamSetup.exe", StringComparison.OrdinalIgnoreCase)))
             {
-                if (files.Any(f => Path.GetFileName(f).Equals("SteamInstall.exe", StringComparison.OrdinalIgnoreCase))
-                    || files.Any(f => Path.GetFileName(f).Equals("SteamInstall.ini", StringComparison.OrdinalIgnoreCase))
-                    || files.Any(f => Path.GetFileName(f).Equals("SteamInstall.msi", StringComparison.OrdinalIgnoreCase))
-                    || files.Any(f => Path.GetFileName(f).Equals("SteamRetailInstaller.dmg", StringComparison.OrdinalIgnoreCase))
-                    || files.Any(f => Path.GetFileName(f).Equals("SteamSetup.exe", StringComparison.OrdinalIgnoreCase)))
-                {
-                    return "Steam";
-                }
+                return "Steam";
             }
-            else
+            
+            return null;
+        }
+
+        /// <inheritdoc/>
+        public string CheckFilePath(string path)
+        {
+            if (Path.GetFileName(path).Equals("SteamInstall.exe", StringComparison.OrdinalIgnoreCase)
+                || Path.GetFileName(path).Equals("SteamInstall.ini", StringComparison.OrdinalIgnoreCase)
+                || Path.GetFileName(path).Equals("SteamInstall.msi", StringComparison.OrdinalIgnoreCase)
+                || Path.GetFileName(path).Equals("SteamRetailInstaller.dmg", StringComparison.OrdinalIgnoreCase)
+                || Path.GetFileName(path).Equals("SteamSetup.exe", StringComparison.OrdinalIgnoreCase))
             {
-                if (Path.GetFileName(path).Equals("SteamInstall.exe", StringComparison.OrdinalIgnoreCase)
-                    || Path.GetFileName(path).Equals("SteamInstall.ini", StringComparison.OrdinalIgnoreCase)
-                    || Path.GetFileName(path).Equals("SteamInstall.msi", StringComparison.OrdinalIgnoreCase)
-                    || Path.GetFileName(path).Equals("SteamRetailInstaller.dmg", StringComparison.OrdinalIgnoreCase)
-                    || Path.GetFileName(path).Equals("SteamSetup.exe", StringComparison.OrdinalIgnoreCase))
-                {
-                    return "Steam";
-                }
+                return "Steam";
             }
 
             return null;

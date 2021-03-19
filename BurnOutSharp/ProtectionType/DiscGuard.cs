@@ -8,26 +8,28 @@ namespace BurnOutSharp.ProtectionType
     public class DiscGuard : IPathCheck
     {
         /// <inheritdoc/>
-        public string CheckPath(string path, bool isDirectory, IEnumerable<string> files)
+        public string CheckDirectoryPath(string path, IEnumerable<string> files)
         {
-            if (isDirectory)
+            if (files.Any(f => Path.GetFileName(f).Equals("IOSLINK.VXD", StringComparison.OrdinalIgnoreCase))
+                && files.Any(f => Path.GetFileName(f).Equals("IOSLINK.DLL", StringComparison.OrdinalIgnoreCase))
+                && files.Any(f => Path.GetFileName(f).Equals("IOSLINK.SYS", StringComparison.OrdinalIgnoreCase)))
             {
-                if (files.Any(f => Path.GetFileName(f).Equals("IOSLINK.VXD", StringComparison.OrdinalIgnoreCase))
-                    && files.Any(f => Path.GetFileName(f).Equals("IOSLINK.SYS", StringComparison.OrdinalIgnoreCase)))
-                {
-                    return "DiscGuard";
-                }
-            }
-            else
-            {
-                if (Path.GetFileName(path).Equals("IOSLINK.VXD", StringComparison.OrdinalIgnoreCase)
-                    || Path.GetFileName(path).Equals("IOSLINK.DLL", StringComparison.OrdinalIgnoreCase)
-                    || Path.GetFileName(path).Equals("IOSLINK.SYS", StringComparison.OrdinalIgnoreCase))
-                {
-                    return "DiscGuard";
-                }
+                return "DiscGuard";
             }
 
+            return null;
+        }
+
+        /// <inheritdoc/>
+        public string CheckFilePath(string path)
+        {
+            if (Path.GetFileName(path).Equals("IOSLINK.VXD", StringComparison.OrdinalIgnoreCase)
+                || Path.GetFileName(path).Equals("IOSLINK.DLL", StringComparison.OrdinalIgnoreCase)
+                || Path.GetFileName(path).Equals("IOSLINK.SYS", StringComparison.OrdinalIgnoreCase))
+            {
+                return "DiscGuard";
+            }
+            
             return null;
         }
     }

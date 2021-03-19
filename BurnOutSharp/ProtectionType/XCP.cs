@@ -30,34 +30,35 @@ namespace BurnOutSharp.ProtectionType
         }
 
         /// <inheritdoc/>
-        public string CheckPath(string path, bool isDirectory, IEnumerable<string> files)
+        public string CheckDirectoryPath(string path, IEnumerable<string> files)
         {
-            if (isDirectory)
+            // TODO: Verify if these are OR or AND
+            if (files.Any(f => Path.GetFileName(f).Equals("XCP.DAT", StringComparison.OrdinalIgnoreCase))
+                || files.Any(f => Path.GetFileName(f).Equals("ECDPlayerControl.ocx", StringComparison.OrdinalIgnoreCase))
+                || files.Any(f => Path.GetFileName(f).Equals("go.exe", StringComparison.OrdinalIgnoreCase))) // Path.Combine("contents", "go.exe")
             {
-                // TODO: Verify if these are OR or AND
-                if (files.Any(f => Path.GetFileName(f).Equals("XCP.DAT", StringComparison.OrdinalIgnoreCase))
-                    || files.Any(f => Path.GetFileName(f).Equals("ECDPlayerControl.ocx", StringComparison.OrdinalIgnoreCase))
-                    || files.Any(f => Path.GetFileName(f).Equals("go.exe", StringComparison.OrdinalIgnoreCase))) // Path.Combine("contents", "go.exe")
+                string versionDatPath = files.FirstOrDefault(f => Path.GetFileName(f).Equals("VERSION.DAT", StringComparison.OrdinalIgnoreCase));
+                if (!string.IsNullOrWhiteSpace(versionDatPath))
                 {
-                    string versionDatPath = files.FirstOrDefault(f => Path.GetFileName(f).Equals("VERSION.DAT", StringComparison.OrdinalIgnoreCase));
-                    if (!string.IsNullOrWhiteSpace(versionDatPath))
-                    {
-                        string xcpVersion = GetDatVersion(versionDatPath);
-                        if (!string.IsNullOrWhiteSpace(xcpVersion))
-                            return xcpVersion;
-                    }
+                    string xcpVersion = GetDatVersion(versionDatPath);
+                    if (!string.IsNullOrWhiteSpace(xcpVersion))
+                        return xcpVersion;
+                }
 
-                    return "XCP";
-                }
+                return "XCP";
             }
-            else
+
+            return null;
+        }
+
+        /// <inheritdoc/>
+        public string CheckFilePath(string path)
+        {
+            if (Path.GetFileName(path).Equals("XCP.DAT", StringComparison.OrdinalIgnoreCase)
+                || Path.GetFileName(path).Equals("ECDPlayerControl.ocx", StringComparison.OrdinalIgnoreCase)
+                || Path.GetFileName(path).Equals("go.exe", StringComparison.OrdinalIgnoreCase))
             {
-                if (Path.GetFileName(path).Equals("XCP.DAT", StringComparison.OrdinalIgnoreCase)
-                    || Path.GetFileName(path).Equals("ECDPlayerControl.ocx", StringComparison.OrdinalIgnoreCase)
-                    || Path.GetFileName(path).Equals("go.exe", StringComparison.OrdinalIgnoreCase))
-                {
-                    return "XCP";
-                }
+                return "XCP";
             }
 
             return null;

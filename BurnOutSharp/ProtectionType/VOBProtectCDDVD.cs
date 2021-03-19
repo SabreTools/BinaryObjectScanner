@@ -46,18 +46,19 @@ namespace BurnOutSharp.ProtectionType
         }
 
         /// <inheritdoc/>
-        public string CheckPath(string path, bool isDirectory, IEnumerable<string> files)
+        public string CheckDirectoryPath(string path, IEnumerable<string> files)
         {
-            if (isDirectory)
-            {
-                if (files.Any(f => Path.GetFileName(f).Equals("VOB-PCD.KEY", StringComparison.OrdinalIgnoreCase)))
-                    return "VOB ProtectCD/DVD";
-            }
-            else
-            {
-                if (Path.GetFileName(path).Equals("VOB-PCD.KEY", StringComparison.OrdinalIgnoreCase))
-                    return "VOB ProtectCD/DVD";
-            }
+            if (files.Any(f => Path.GetFileName(f).Equals("VOB-PCD.KEY", StringComparison.OrdinalIgnoreCase)))
+                return "VOB ProtectCD/DVD";
+
+            return null;
+        }
+
+        /// <inheritdoc/>
+        public string CheckFilePath(string path)
+        {
+            if (Path.GetFileName(path).Equals("VOB-PCD.KEY", StringComparison.OrdinalIgnoreCase))
+                return "VOB ProtectCD/DVD";
 
             return null;
         }

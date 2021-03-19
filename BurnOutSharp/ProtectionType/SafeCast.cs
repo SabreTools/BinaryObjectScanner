@@ -8,18 +8,19 @@ namespace BurnOutSharp.ProtectionType
     public class SafeCast : IPathCheck
     {
         /// <inheritdoc/>
-        public string CheckPath(string path, bool isDirectory, IEnumerable<string> files)
+        public string CheckDirectoryPath(string path, IEnumerable<string> files)
         {
-            if (isDirectory)
-            {
-                if (files.Any(f => Path.GetFileName(f).Equals("cdac11ba.exe", StringComparison.OrdinalIgnoreCase)))
-                    return "SafeCast";
-            }
-            else
-            {
-                if (Path.GetFileName(path).Equals("cdac11ba.exe", StringComparison.OrdinalIgnoreCase))
-                    return "SafeCast";
-            }
+            if (files.Any(f => Path.GetFileName(f).Equals("cdac11ba.exe", StringComparison.OrdinalIgnoreCase)))
+                return "SafeCast";
+            
+            return null;
+        }
+
+        /// <inheritdoc/>
+        public string CheckFilePath(string path)
+        {
+            if (Path.GetFileName(path).Equals("cdac11ba.exe", StringComparison.OrdinalIgnoreCase))
+                return "SafeCast";
 
             return null;
         }

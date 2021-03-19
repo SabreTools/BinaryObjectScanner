@@ -114,28 +114,29 @@ namespace BurnOutSharp.ProtectionType
         }
 
         /// <inheritdoc/>
-        public string CheckPath(string path, bool isDirectory, IEnumerable<string> files)
+        public string CheckDirectoryPath(string path, IEnumerable<string> files)
         {
-            if (isDirectory)
+            // TODO: Verify if these are OR or AND
+            if (files.Any(f => Path.GetFileName(f).Equals("dvm.dll", StringComparison.OrdinalIgnoreCase))
+                || files.Any(f => Path.GetFileName(f).Equals("hc.dll", StringComparison.OrdinalIgnoreCase))
+                || files.Any(f => Path.GetFileName(f).Equals("solidshield-cd.dll", StringComparison.OrdinalIgnoreCase))
+                || files.Any(f => Path.GetFileName(f).Equals("c11prot.dll", StringComparison.OrdinalIgnoreCase)))
             {
-                // TODO: Verify if these are OR or AND
-                if (files.Any(f => Path.GetFileName(f).Equals("dvm.dll", StringComparison.OrdinalIgnoreCase))
-                    || files.Any(f => Path.GetFileName(f).Equals("hc.dll", StringComparison.OrdinalIgnoreCase))
-                    || files.Any(f => Path.GetFileName(f).Equals("solidshield-cd.dll", StringComparison.OrdinalIgnoreCase))
-                    || files.Any(f => Path.GetFileName(f).Equals("c11prot.dll", StringComparison.OrdinalIgnoreCase)))
-                {
-                    return "SolidShield";
-                }
+                return "SolidShield";
             }
-            else
+            
+            return null;
+        }
+
+        /// <inheritdoc/>
+        public string CheckFilePath(string path)
+        {
+            if (Path.GetFileName(path).Equals("dvm.dll", StringComparison.OrdinalIgnoreCase)
+                || Path.GetFileName(path).Equals("hc.dll", StringComparison.OrdinalIgnoreCase)
+                || Path.GetFileName(path).Equals("solidshield-cd.dll", StringComparison.OrdinalIgnoreCase)
+                || Path.GetFileName(path).Equals("c11prot.dll", StringComparison.OrdinalIgnoreCase))
             {
-                if (Path.GetFileName(path).Equals("dvm.dll", StringComparison.OrdinalIgnoreCase)
-                    || Path.GetFileName(path).Equals("hc.dll", StringComparison.OrdinalIgnoreCase)
-                    || Path.GetFileName(path).Equals("solidshield-cd.dll", StringComparison.OrdinalIgnoreCase)
-                    || Path.GetFileName(path).Equals("c11prot.dll", StringComparison.OrdinalIgnoreCase))
-                {
-                    return "SolidShield";
-                }
+                return "SolidShield";
             }
 
             return null;

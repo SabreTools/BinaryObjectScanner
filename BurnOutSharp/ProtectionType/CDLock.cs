@@ -19,19 +19,20 @@ namespace BurnOutSharp.ProtectionType
         }
 
         /// <inheritdoc/>
-        public string CheckPath(string path, bool isDirectory, IEnumerable<string> files)
+        public string CheckDirectoryPath(string path, IEnumerable<string> files)
         {
-            if (isDirectory)
-            {
-                if (files.Any(f => Path.GetExtension(f).Trim('.').Equals("AFP", StringComparison.OrdinalIgnoreCase)))
-                    return "CD-Lock";
-            }
-            else
-            {
-                if (Path.GetExtension(path).Trim('.').Equals("AFP", StringComparison.OrdinalIgnoreCase))
-                    return "CD-Lock";
-            }
+            if (files.Any(f => Path.GetExtension(f).Trim('.').Equals("AFP", StringComparison.OrdinalIgnoreCase)))
+                return "CD-Lock";
 
+            return null;
+        }
+
+        /// <inheritdoc/>
+        public string CheckFilePath(string path)
+        {
+            if (Path.GetExtension(path).Trim('.').Equals("AFP", StringComparison.OrdinalIgnoreCase))
+                return "CD-Lock";
+            
             return null;
         }
     }
