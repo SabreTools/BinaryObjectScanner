@@ -63,28 +63,33 @@ namespace BurnOutSharp.ProtectionType
         /// <inheritdoc/>
         public string CheckDirectoryPath(string path, IEnumerable<string> files)
         {
-            // TODO: These are all cop-outs that don't check the existence of the other files
+            List<string> protections = new List<string>();
+
             if (files.Any(f => Path.GetFileName(f).Equals("DPLAYERX.DLL", StringComparison.OrdinalIgnoreCase)))
             {
                 string file = files.First(f => Path.GetFileName(f).Equals("DPLAYERX.DLL", StringComparison.OrdinalIgnoreCase));
-                return GetDPlayerXVersion(file);
+                protections.Add($"dplayerx.dll {GetDPlayerXVersion(file)}");
             }
             else if (files.Any(f => Path.GetFileName(f).Equals("drvmgt.dll", StringComparison.OrdinalIgnoreCase)))
             {
                 string file = files.First(f => Path.GetFileName(f).Equals("drvmgt.dll", StringComparison.OrdinalIgnoreCase));
-                return GetDrvmgtVersion(file);
+                protections.Add($"drvmgt.dll {GetDrvmgtVersion(file)}");
             }
             else if (files.Any(f => Path.GetFileName(f).Equals("secdrv.sys", StringComparison.OrdinalIgnoreCase)))
             {
                 string file = files.First(f => Path.GetFileName(f).Equals("secdrv.sys", StringComparison.OrdinalIgnoreCase));
-                return GetSecdrvVersion(file);
+                protections.Add($"secdrv.sys {GetSecdrvVersion(file)}");
             }
-            else if (path.EndsWith(".SafeDiscDVD.bundle", StringComparison.OrdinalIgnoreCase))
+            else if (path.Contains(".SafeDiscDVD.bundle")
+                || files.Any(f => f.Contains(".SafeDiscDVD.bundle")))
             {
-                return "SafeDisc for Macintosh";
+                protections.Add("SafeDisc for Macintosh");
             }
             
-            return null;
+            if (protections.Count() == 0)
+                return null;
+            else
+                return string.Join(", ", protections);
         }
 
         /// <inheritdoc/>

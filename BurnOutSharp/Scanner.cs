@@ -174,7 +174,7 @@ namespace BurnOutSharp
 
             return protections;
         }
-        
+
         /// <summary>
         /// Get the path-detectable protections associated with a single path
         /// </summary>
@@ -182,7 +182,6 @@ namespace BurnOutSharp
         /// <param name="files">Files contained within</param>
         /// <returns>Dictionary of list of strings representing the found protections</returns>
         private Dictionary<string, List<string>> GetDirectoryPathProtections(string path, List<string> files)
-        
         {
             // Create an empty list for protections
             List<string> protections = new List<string>();
