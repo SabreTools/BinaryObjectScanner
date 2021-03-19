@@ -86,7 +86,7 @@ namespace BurnOutSharp
                     var files = Directory.EnumerateFiles(path, "*", SearchOption.AllDirectories).ToList();
 
                     // Scan for path-detectable protections
-                    var directoryPathProtections = GetPathProtections(path, true, files);
+                    var directoryPathProtections = GetDirectoryPathProtections(path, files);
                     Utilities.AppendToDictionary(protections, directoryPathProtections);
 
                     // Scan each file in directory separately
@@ -104,7 +104,7 @@ namespace BurnOutSharp
                         FileProgress?.Report(new ProtectionProgress(reportableFileName, i / (float)files.Count(), "Checking file" + (file != reportableFileName ? " from archive" : string.Empty)));
 
                         // Scan for path-detectable protections
-                        var filePathProtections = GetPathProtections(file, false);
+                        var filePathProtections = GetFilePathProtections(file);
                         Utilities.AppendToDictionary(protections, filePathProtections);
 
                         // Scan for content-detectable protections
@@ -139,7 +139,7 @@ namespace BurnOutSharp
                     FileProgress?.Report(new ProtectionProgress(reportableFileName, 0, "Checking file" + (path != reportableFileName ? " from archive" : string.Empty)));
 
                     // Scan for path-detectable protections
-                    var filePathProtections = GetPathProtections(path, false);
+                    var filePathProtections = GetFilePathProtections(path);
                     Utilities.AppendToDictionary(protections, filePathProtections);
 
                     // Scan for content-detectable protections
@@ -174,37 +174,56 @@ namespace BurnOutSharp
 
             return protections;
         }
-
+        
         /// <summary>
         /// Get the path-detectable protections associated with a single path
         /// </summary>
-        /// <param name="path">Path of the directory or file to scan</param>
-        /// <param name="isDirectory">True if the path is a directory, false otherwise</param>
-        /// <param name="files">Files contained within if the path is a directory</param>
+        /// <param name="path">Path of the directory to scan</param>
+        /// <param name="files">Files contained within</param>
         /// <returns>Dictionary of list of strings representing the found protections</returns>
-        private Dictionary<string, List<string>> GetPathProtections(string path, bool isDirectory, List<string> files = null)
+        private Dictionary<string, List<string>> GetDirectoryPathProtections(string path, List<string> files)
+        
         {
             // Create an empty list for protections
             List<string> protections = new List<string>();
 
-            // Get all IPathCheck implementations
-            if (pathCheckClasses == null)
-            {
-                pathCheckClasses = Assembly.GetExecutingAssembly().GetTypes()
-                    .Where(t => t.IsClass && t.GetInterface("IPathCheck") != null);
-            }
+            // Initialize the needed classes
+            InitPathCheckClasses();
 
             // Iterate through all path checks
             foreach (var pathCheckClass in pathCheckClasses)
             {
                 IPathCheck pathCheck = Activator.CreateInstance(pathCheckClass) as IPathCheck;
-                
-                string protection = null;
-                if (isDirectory)
-                    protection = pathCheck.CheckDirectoryPath(path, files);
-                else
-                    protection = pathCheck.CheckFilePath(path);
+                string protection = pathCheck.CheckDirectoryPath(path, files);;
+                if (!string.IsNullOrWhiteSpace(protection))
+                    protections.Add(protection);
+            }
 
+            // Create and return the dictionary
+            return new Dictionary<string, List<string>>
+            {
+                [path] = protections
+            };
+        }
+
+        /// <summary>
+        /// Get the path-detectable protections associated with a single path
+        /// </summary>
+        /// <param name="path">Path of the file to scan</param>
+        /// <returns>Dictionary of list of strings representing the found protections</returns>
+        private Dictionary<string, List<string>> GetFilePathProtections(string path)
+        {
+            // Create an empty list for protections
+            List<string> protections = new List<string>();
+
+            // Initialize the needed classes
+            InitPathCheckClasses();
+
+            // Iterate through all path checks
+            foreach (var pathCheckClass in pathCheckClasses)
+            {
+                IPathCheck pathCheck = Activator.CreateInstance(pathCheckClass) as IPathCheck;
+                string protection = pathCheck.CheckFilePath(path);
                 if (!string.IsNullOrWhiteSpace(protection))
                     protections.Add(protection);
             }
@@ -384,6 +403,18 @@ namespace BurnOutSharp
             Utilities.ClearEmptyKeys(protections);
 
             return protections;
+        }
+    
+        /// <summary>
+        /// Initialize all IPathCheck implementations
+        /// </summary>
+        private void InitPathCheckClasses()
+        {
+            if (pathCheckClasses == null)
+            {
+                pathCheckClasses = Assembly.GetExecutingAssembly().GetTypes()
+                    .Where(t => t.IsClass && t.GetInterface("IPathCheck") != null);
+            }
         }
     }
 }
