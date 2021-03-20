@@ -94,6 +94,7 @@ Below is a list of the executable packers that can be detected using this code:
 - Inno Setup
 - NSIS
 - PECompact
+- Setup Factory
 - UPX
 - WinZip SFX
 - WISE Installer
