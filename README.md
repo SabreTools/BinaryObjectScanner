@@ -45,6 +45,8 @@ Below is a list of the protections that can be detected using this code:
 - EA Protections (Including ~~Cucko~~, EA CDKey, and EA DRM)
 - Freelock
 - Games for Windows - Live (partial)
+- Generic CD Check
+- Generic Online Registration
 - Hexalock Autolock
 - Impulse Reactor
 - IndyVCD
