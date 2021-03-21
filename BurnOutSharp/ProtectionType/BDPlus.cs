@@ -47,13 +47,13 @@ namespace BurnOutSharp.ProtectionType
                     fs.Seek(0x0D, SeekOrigin.Begin);
                     byte[] date = new byte[4];
                     fs.Read(date, 0, 4); //yymd
-                    short year = BitConverter.ToInt16(date, 0);
+                    short year = BitConverter.ToInt16(date.Reverse().ToArray(), 2);
 
                     // Do some rudimentary date checking
                     if (year < 2006 || year > 2100 || date[2] < 1 || date[2] > 12 || date[3] < 1 || date[3] > 31)
                         return null;
 
-                    return $"{year}/{date[2]}/{date[3]}";
+                    return $"{year:0000}/{date[2]:00}/{date[3]:00}";
                 }
             }
             catch
