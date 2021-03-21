@@ -5,7 +5,6 @@ using System.Linq;
 
 namespace BurnOutSharp.ProtectionType
 {
-    // TODO: Can this be split into file and directory checks separately?
     public class Steam : IPathCheck
     {
         /// <inheritdoc/>

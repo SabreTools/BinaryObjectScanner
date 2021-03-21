@@ -10,12 +10,13 @@ namespace BurnOutSharp.ProtectionType
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
-            // "WTM76545"
-            byte?[] check = new byte?[] { 0x57, 0x54, 0x4D, 0x37, 0x36, 0x35, 0x34, 0x35 };
-            if (fileContent.FirstPosition(check, out int position))
-                return "WTM CD Protect" + (includePosition ? $" (Index {position})" : string.Empty);
+            var mappings = new Dictionary<byte?[], string>
+            {
+                // WTM76545
+                [new byte?[] { 0x57, 0x54, 0x4D, 0x37, 0x36, 0x35, 0x34, 0x35 }] = "WTM CD Protect",
+            };
 
-            return null;
+            return Utilities.GetContentMatches(fileContent, mappings, includePosition);
         }
 
         /// <inheritdoc/>

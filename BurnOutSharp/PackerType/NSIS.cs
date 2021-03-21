@@ -20,9 +20,7 @@ namespace BurnOutSharp.PackerType
             // NullsoftInst
             check = new byte?[] { 0x4e, 0x75, 0x6c, 0x6c, 0x73, 0x6f, 0x66, 0x74, 0x49, 0x6e, 0x73, 0x74 };
             if (fileContent.FirstPosition(check, out position))
-            {
                 return $"NSIS" + (includePosition ? $" (Index {position})" : string.Empty);
-            }
 
             return null;
         }

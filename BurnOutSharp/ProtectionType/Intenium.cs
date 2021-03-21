@@ -1,4 +1,6 @@
-﻿namespace BurnOutSharp.ProtectionType
+﻿using System.Collections.Generic;
+
+namespace BurnOutSharp.ProtectionType
 {
     public class Intenium : IContentCheck
     {
@@ -21,12 +23,13 @@
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
-            // Trial + (char)0x00 + P
-            byte?[] check = new byte?[] { 0x54, 0x72, 0x69, 0x61, 0x6C, 0x00, 0x50 };
-            if (fileContent.FirstPosition(check, out int position))
-                return "INTENIUM Trial & Buy Protection" + (includePosition ? $" (Index {position})" : string.Empty);
+            var mappings = new Dictionary<byte?[], string>
+            {
+                // Trial + (char)0x00 + P
+                [new byte?[] { 0x54, 0x72, 0x69, 0x61, 0x6C, 0x00, 0x50 }] = "INTENIUM Trial & Buy Protection",
+            };
 
-            return null;
+            return Utilities.GetContentMatches(fileContent, mappings, includePosition);
         }
     }
 }

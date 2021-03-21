@@ -1,4 +1,6 @@
-﻿namespace BurnOutSharp.ProtectionType
+﻿using System.Collections.Generic;
+
+namespace BurnOutSharp.ProtectionType
 {
     public class CodeLock : IContentCheck
     {
@@ -6,22 +8,19 @@
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
-            // "icd1" + (char)0x00
-            byte?[] check = new byte?[] { 0x69, 0x63, 0x64, 0x31, 0x00 };
-            if (fileContent.FirstPosition(check, out int position))
-                return "Code Lock" + (includePosition ? $" (Index {position})" : string.Empty);
+            var mappings = new Dictionary<byte?[], string>
+            {
+                // icd1 + (char)0x00
+                [new byte?[] { 0x69, 0x63, 0x64, 0x31, 0x00 }] = "Code Lock",
 
-            // "icd2" + (char)0x00
-            check = new byte?[] { 0x69, 0x63, 0x64, 0x32, 0x00 };
-            if (fileContent.FirstPosition(check, out position))
-                return "Code Lock" + (includePosition ? $" (Index {position})" : string.Empty);
+                // icd2 + (char)0x00
+                [new byte?[] { 0x69, 0x63, 0x64, 0x32, 0x00 }] = "Code Lock",
 
-            // "CODE-LOCK.OCX"
-            check = new byte?[] { 0x43, 0x4F, 0x44, 0x45, 0x2D, 0x4C, 0x4F, 0x43, 0x4B, 0x2E, 0x4F, 0x43, 0x58 };
-            if (fileContent.FirstPosition(check, out position))
-                return "Code Lock" + (includePosition ? $" (Index {position})" : string.Empty);
+                // CODE-LOCK.OCX
+                [new byte?[] { 0x43, 0x4F, 0x44, 0x45, 0x2D, 0x4C, 0x4F, 0x43, 0x4B, 0x2E, 0x4F, 0x43, 0x58 }] = "Code Lock",
+            };
 
-            return null;
+            return Utilities.GetContentMatches(fileContent, mappings, includePosition);
         }
     }
 }

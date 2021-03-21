@@ -252,17 +252,43 @@ namespace BurnOutSharp
         /// <param name="mappings">Mapping of byte array to string for matching</param>
         /// <param name="includePosition">True to include positional data, false otherwise</param>
         /// <returns>String representing the matched protection, null otherwise</returns>
+        /// <remarks>
+        /// This is useful for checks that don't do anything special with versions or other positions.
+        /// TODO: Make variant of this that returns *all* content matches for later
+        /// TODO: Make variant of this that can take multiple content checks per check for later
+        /// </remarks>
         public static string GetContentMatches(byte[] fileContent, Dictionary<byte?[], string> mappings, bool includePosition = false)
+        {
+            return GetVersionedContentMatches(fileContent, mappings.Select(kvp => (kvp.Key, (Func<byte[], int, string>)null, kvp.Value)).ToList(), includePosition);
+        }
+
+        /// <summary>
+        /// Get versioned content matches for a given protection
+        /// </summary>
+        /// <param name="fileContent">Byte array representing the file contents</param>
+        /// <param name="mappings">Tuple of matching byte array, version method, and string to output</param>
+        /// <param name="includePosition">True to include positional data, false otherwise</param>
+        /// <returns>String representing the matched protection, null otherwise</returns>
+        /// <remarks>
+        /// This is useful for checks that don't do anything special with versions or other positions.
+        /// TODO: Make variant of this that returns *all* content matches for later
+        /// TODO: Make variant of this that can take multiple content checks per check for later
+        /// </remarks>
+        public static string GetVersionedContentMatches(byte[] fileContent, List<(byte?[], Func<byte[], int, string>, string)> mappings, bool includePosition = false)
         {
             // If there's no mappings, we can't match
             if (mappings == null || !mappings.Any())
                 return null;
 
             // Loop through and try everything otherwise
-            foreach (var kvp in mappings)
+            foreach (var mapping in mappings)
             {
-                if (fileContent.FirstPosition(kvp.Key, out int position))
-                    return kvp.Value + (includePosition ? $" (Index {position})" : string.Empty);
+                if (fileContent.FirstPosition(mapping.Item1, out int position))
+                {
+                    string version = mapping.Item2 == null ? string.Empty : (mapping.Item2(fileContent, position) ?? "Unknown Version");
+                    string protection = string.IsNullOrWhiteSpace(version) ? mapping.Item3 : $"{mapping.Item3} {version}";
+                    return protection + (includePosition ? $" (Index {position})" : string.Empty);
+                }
             }
 
             return null;

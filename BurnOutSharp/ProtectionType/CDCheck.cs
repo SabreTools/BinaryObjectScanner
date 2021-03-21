@@ -1,37 +1,37 @@
-﻿namespace BurnOutSharp.ProtectionType
+﻿using System.Collections.Generic;
+
+namespace BurnOutSharp.ProtectionType
 {
     public class CDCheck : IContentCheck
     {
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
-            // MGS CDCheck
-            byte?[] check = new byte?[] { 0x4D, 0x47, 0x53, 0x20, 0x43, 0x44, 0x43, 0x68, 0x65, 0x63, 0x6B };
-            if (fileContent.FirstPosition(check, out int position))
-                return "Microsoft Game Studios CD Check" + (includePosition ? $" (Index {position})" : string.Empty);
-            
-            // CDCheck
-            check = new byte?[] { 0x43, 0x44, 0x43, 0x68, 0x65, 0x63, 0x6B };
-            if (fileContent.FirstPosition(check, out position))
-                return "Executable-Based CD Check" + (includePosition ? $" (Index {position})" : string.Empty);
+            var mappings = new Dictionary<byte?[], string>
+            {
+                // MGS CDCheck
+                [new byte?[] { 0x4D, 0x47, 0x53, 0x20, 0x43, 0x44, 0x43, 0x68, 0x65, 0x63, 0x6B }] = "Microsoft Game Studios CD Check",
 
-            return null;
+                // CDCheck
+                [new byte?[] { 0x43, 0x44, 0x43, 0x68, 0x65, 0x63, 0x6B }] = "Executable-Based CD Check",
+            };
+
+            return Utilities.GetContentMatches(fileContent, mappings, includePosition);
         }
 
         // These content checks are too broad to be useful
         private static string CheckContentsBroad(byte[] fileContent, bool includePosition = false)
         {
-            // GetDriveType
-            byte?[] check = new byte?[] { 0x47, 0x65, 0x74, 0x44, 0x72, 0x69, 0x76, 0x65, 0x54, 0x79, 0x70, 0x65 };
-            if (fileContent.FirstPosition(check, out int position))
-                return "CD Check" + (includePosition ? $" (Index {position})" : string.Empty);
+            var mappings = new Dictionary<byte?[], string>
+            {
+                // GetDriveType
+                [new byte?[] { 0x47, 0x65, 0x74, 0x44, 0x72, 0x69, 0x76, 0x65, 0x54, 0x79, 0x70, 0x65 }] = "Executable-Based CD Check",
 
-            // GetVolumeInformation
-            check = new byte?[] { 0x47, 0x65, 0x74, 0x56, 0x6F, 0x6C, 0x75, 0x6D, 0x65, 0x49, 0x6E, 0x66, 0x6F, 0x72, 0x6D, 0x61, 0x74, 0x69, 0x6F, 0x6E };
-            if (fileContent.FirstPosition(check, out position))
-                return "CD Check" + (includePosition ? $" (Index {position})" : string.Empty);
+                // GetVolumeInformation
+                [new byte?[] { 0x47, 0x65, 0x74, 0x56, 0x6F, 0x6C, 0x75, 0x6D, 0x65, 0x49, 0x6E, 0x66, 0x6F, 0x72, 0x6D, 0x61, 0x74, 0x69, 0x6F, 0x6E }] = "Executable-Based CD Check",
+            };
 
-            return null;
+            return Utilities.GetContentMatches(fileContent, mappings, includePosition);
         }
     }
 }

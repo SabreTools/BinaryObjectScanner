@@ -55,6 +55,7 @@ namespace BurnOutSharp.ProtectionType
         {
             if (!File.Exists(path))
                 return null;
+
             try
             {
                 using (var fs = File.OpenRead(path))
