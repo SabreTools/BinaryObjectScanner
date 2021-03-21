@@ -19,26 +19,12 @@ namespace BurnOutSharp.PackerType
             // WinZip Self-Extractor
             byte[] check = new byte[] { 0x57, 0x69, 0x6E, 0x5A, 0x69, 0x70, 0x20, 0x53, 0x65, 0x6C, 0x66, 0x2D, 0x45, 0x78, 0x74, 0x72, 0x61, 0x63, 0x74, 0x6F, 0x72 };
             if (fileContent.Contains(check, out int position))
-            {
-                // "<?xml"
-                byte[] check2 = new byte[] { 0x3C, 0x3F, 0x78, 0x6D, 0x6C };
-                if (fileContent.Contains(check2, out int position2))
-                    return $"WinZip SFX {GetV3PlusVersion(fileContent, position2)}" + (includePosition ? $" (Index {position}, {position2})" : string.Empty);
-                else
-                    return $"WinZip SFX {GetV2Version(fileContent)}" + (includePosition ? $" (Index {position})" : string.Empty);
-            }
+                return $"WinZip SFX {GetVersion(fileContent)}" + (includePosition ? $" (Index {position})" : string.Empty);
 
             // _winzip_
             check = new byte[] { 0x5F, 0x77, 0x69, 0x6E, 0x7A, 0x69, 0x70, 0x5F };
             if (fileContent.Contains(check, out position))
-            {
-                // "<?xml"
-                byte[] check2 = new byte[] { 0x3C, 0x3F, 0x78, 0x6D, 0x6C };
-                if (fileContent.Contains(check2, out int position2))
-                    return $"WinZip SFX {GetV3PlusVersion(fileContent, position2)}" + (includePosition ? $" (Index {position}, {position2})" : string.Empty);
-                else
-                    return $"WinZip SFX {GetV2Version(fileContent)}" + (includePosition ? $" (Index {position})" : string.Empty);
-            }
+                return $"WinZip SFX {GetVersion(fileContent)}" + (includePosition ? $" (Index {position})" : string.Empty);
 
             return null;
         }
@@ -103,44 +89,14 @@ namespace BurnOutSharp.PackerType
             return null;
         }
 
-        private static string GetV3PlusVersion(byte[] fileContent, int xmlStartPosition)
+        private static string GetVersion(byte[] fileContent)
         {
-            // </assembly>
-            byte[] check = new byte[] { 0x3C, 0x2F, 0x61, 0x73, 0x73, 0x65, 0x6D, 0x62, 0x6C, 0x79, 0x3E };
-            if (fileContent.Contains(check, out int position, start: xmlStartPosition))
-            {
-                int offset = position + 11 - xmlStartPosition;
-                string xmlString = Encoding.ASCII.GetString(fileContent, xmlStartPosition, offset);
-
-                try
-                {
-                    // Load the XML string as a document
-                    var xmlDoc = new XmlDocument();
-                    xmlDoc.LoadXml(xmlString);
-
-                    // Get the version attribute, if possible
-                    string xmlVersion = xmlDoc["assembly"]["assemblyIdentity"].GetAttributeNode("version").InnerXml;
-
-                    // Some version strings don't exactly match the public version number
-                    switch (xmlVersion)
-                    {
-                        case "3.0.7158.0":
-                            return "3.0.7158";
-                        case "3.1.7556.0":
-                            return "3.1.7556";
-                        case "3.1.8421.0":
-                            return "4.0.8421";
-                        case "3.1.8672.0":
-                            return "4.0.8672";
-                        case "4.0.1221.0":
-                            return "4.0.12218";
-                        default:
-                            return $"(Unknown Version - {xmlVersion})";
-                    }
-                }
-                catch { }
-            }
-
+            // Check the manifest version first
+            string version = Utilities.GetManifestVersion(fileContent);
+            if (!string.IsNullOrEmpty(version))
+                return GetV3PlusVersion(version);
+            
+            // Assume an earlier version
             return GetV2Version(fileContent);
         }
 
@@ -160,7 +116,7 @@ namespace BurnOutSharp.PackerType
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03,
             };
             if (fileContent.Contains(check, out _))
-                return "Version 2.0 (MS-DOS/16-bit)";
+                return "2.0 (MS-DOS/16-bit)";
 
             check = new byte[]
             {
@@ -174,7 +130,7 @@ namespace BurnOutSharp.PackerType
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03,
             };
             if (fileContent.Contains(check, out _))
-                return "Version 2.0 (16-bit)";
+                return "2.0 (16-bit)";
                 
             check = new byte[]
             {
@@ -216,7 +172,7 @@ namespace BurnOutSharp.PackerType
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03,
             };
             if (fileContent.Contains(check, out _))
-                return "Version 2.1 RC2 (MS-DOS/16-bit)";
+                return "2.1 RC2 (MS-DOS/16-bit)";
 
             check = new byte[]
             {
@@ -230,7 +186,7 @@ namespace BurnOutSharp.PackerType
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03,
             };
             if (fileContent.Contains(check, out _))
-                return "Version 2.1 RC2 (16-bit)";
+                return "2.1 RC2 (16-bit)";
 
             check = new byte[]
             {
@@ -272,7 +228,7 @@ namespace BurnOutSharp.PackerType
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03,
             };
             if (fileContent.Contains(check, out _))
-                return "Version 2.1 (MS-DOS/16-bit)";
+                return "2.1 (MS-DOS/16-bit)";
 
             check = new byte[]
             {
@@ -286,7 +242,7 @@ namespace BurnOutSharp.PackerType
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03,
             };
             if (fileContent.Contains(check, out _))
-                return "Version 2.1 (16-bit)";
+                return "2.1 (16-bit)";
 
             check = new byte[]
             {
@@ -334,7 +290,7 @@ namespace BurnOutSharp.PackerType
                 0x53, 0x46, 0x58,
             };
             if (fileContent.Contains(check, out _))
-                return "Version 2.0 (32-bit)";
+                return "2.0 (32-bit)";
 
             // .............]�92....�P..............�P..�P..�P..VW95SRE.SFX
             check = new byte[]
@@ -364,7 +320,7 @@ namespace BurnOutSharp.PackerType
                 0x53, 0x46, 0x58,
             };
             if (fileContent.Contains(check, out _))
-                return "Version 2.1 RC2 (32-bit)";
+                return "2.1 RC2 (32-bit)";
 
             // .............���3....�P..............�P..�P..�P..VW95SRE.SFX
             check = new byte[]
@@ -394,7 +350,7 @@ namespace BurnOutSharp.PackerType
                 0x53, 0x46, 0x58,
             };
             if (fileContent.Contains(check, out _))
-                return "Version 2.1 (32-bit)";
+                return "2.1 (32-bit)";
 
             // .............{��3....�P..............�P..�P..�P..VW95SRE.SFX
             check = new byte[]
@@ -427,7 +383,7 @@ namespace BurnOutSharp.PackerType
                 0x00, 0x60, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00,
             };
             if (fileContent.Contains(check, out _))
-                return "Version 2.2.4003";
+                return "2.2.4003";
                 
             // PE..L.....[:........�........V...*.......?.......p....@.
             check = new byte[]
@@ -446,6 +402,26 @@ namespace BurnOutSharp.PackerType
             #endregion
 
             return "Unknown Version 2.X";
+        }
+    
+        private static string GetV3PlusVersion(string version)
+        {
+            // Some version strings don't exactly match the public version number
+            switch (version)
+            {
+                case "3.0.7158.0":
+                    return "3.0.7158";
+                case "3.1.7556.0":
+                    return "3.1.7556";
+                case "3.1.8421.0":
+                    return "4.0.8421";
+                case "3.1.8672.0":
+                    return "4.0.8672";
+                case "4.0.1221.0":
+                    return "4.0.12218";
+                default:
+                    return $"(Unknown Version - {version})";
+            }
         }
     }
 }
