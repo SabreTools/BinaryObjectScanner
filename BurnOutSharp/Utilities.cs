@@ -243,11 +243,36 @@ namespace BurnOutSharp
 
         #endregion
 
-        #region Version Finding
+        #region Protection
+
+        /// <summary>
+        /// Get simple content matches for a given protection
+        /// </summary>
+        /// <param name="fileContent">Byte array representing the file contents</param>
+        /// <param name="mappings">Mapping of byte array to string for matching</param>
+        /// <param name="includePosition">True to include positional data, false otherwise</param>
+        /// <returns>String representing the matched protection, null otherwise</returns>
+        public static string GetContentMatches(byte[] fileContent, Dictionary<byte?[], string> mappings, bool includePosition = false)
+        {
+            // If there's no mappings, we can't match
+            if (mappings == null || !mappings.Any())
+                return null;
+
+            // Loop through and try everything otherwise
+            foreach (var kvp in mappings)
+            {
+                if (fileContent.FirstPosition(kvp.Key, out int position))
+                    return kvp.Value + (includePosition ? $" (Index {position})" : string.Empty);
+            }
+
+            return null;
+        }
 
         /// <summary>
         /// Get the file version as reported by the filesystem
         /// </summary>
+        /// <param name="file">File to check for version</param>
+        /// <returns>Version string, null on error</returns>
         public static string GetFileVersion(string file)
         {
             if (file == null || !File.Exists(file))
@@ -265,6 +290,8 @@ namespace BurnOutSharp
         /// <summary>
         /// Get the assembly version as determined by an embedded assembly manifest
         /// </summary>
+        /// <param name="fileContent">Byte array representing the file contents</param>
+        /// <returns>Version string, null on error</returns>
         /// <remarks>TODO: How do we find the manifest specifically better?</remarks>
         public static string GetManifestVersion(byte[] fileContent)
         {
