@@ -37,25 +37,23 @@ namespace BurnOutSharp.ProtectionType
         /// <remarks>Version detection logic from libbdplus was used to implement this</remarks>
         private static string GetVersion(string path)
         {
+            if (!File.Exists(path))
+                return null;
+
             try
             {
                 using (var fs = File.OpenRead(path))
                 {
-                    fs.Seek(0x0d, SeekOrigin.Begin);
-                    int year1 = fs.ReadByte();
-                    int year2 = fs.ReadByte();
-                    int month = fs.ReadByte();
-                    int day = fs.ReadByte();
+                    fs.Seek(0x0D, SeekOrigin.Begin);
+                    byte[] date = new byte[4];
+                    fs.Read(date, 0, 4); //yymd
+                    short year = BitConverter.ToInt16(date, 0);
 
-                    int year = (year1 << 8) | year2;
-
-                    // If the result isn't a valid date, report it as an unknown version
-                    if (year < 2006 || year > 2100 || month < 1 || month > 12 || day < 1 || day > 31)
-                    {
+                    // Do some rudimentary date checking
+                    if (year < 2006 || year > 2100 || date[2] < 1 || date[2] > 12 || date[3] < 1 || date[3] > 31)
                         return null;
-                    }
 
-                    return $"{year}/{month}/{day}";
+                    return $"{year}/{date[2]}/{date[3]}";
                 }
             }
             catch
