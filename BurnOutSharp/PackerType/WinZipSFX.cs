@@ -144,7 +144,7 @@ namespace BurnOutSharp.PackerType
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03,
             };
             if (fileContent.FirstPosition(check, out _))
-                return "Compact Version 2.0 (16-bit)";
+                return "Compact 2.0 (16-bit)";
                 
             check = new byte[]
             {
@@ -158,7 +158,7 @@ namespace BurnOutSharp.PackerType
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03,
             };
             if (fileContent.FirstPosition(check, out _))
-                return "Software Installation Version 2.0 (16-bit)";
+                return "Software Installation 2.0 (16-bit)";
 
             check = new byte[]
             {
@@ -200,7 +200,7 @@ namespace BurnOutSharp.PackerType
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03,
             };
             if (fileContent.FirstPosition(check, out _))
-                return "Compact Version 2.1 RC2 (16-bit)";
+                return "Compact 2.1 RC2 (16-bit)";
 
             check = new byte[]
             {
@@ -214,7 +214,7 @@ namespace BurnOutSharp.PackerType
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03,
             };
             if (fileContent.FirstPosition(check, out _))
-                return "Software Installation Version 2.1 RC2 (16-bit)";
+                return "Software Installation 2.1 RC2 (16-bit)";
 
             check = new byte[]
             {
@@ -256,7 +256,7 @@ namespace BurnOutSharp.PackerType
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03,
             };
             if (fileContent.FirstPosition(check, out _))
-                return "Compact Version 2.1 (16-bit)";
+                return "Compact 2.1 (16-bit)";
 
             check = new byte[]
             {
@@ -271,7 +271,7 @@ namespace BurnOutSharp.PackerType
             };
 
             if (fileContent.FirstPosition(check, out _))
-                return "Software Installation Version 2.1 (16-bit)";
+                return "Software Installation 2.1 (16-bit)";
 
             #endregion
 
@@ -305,7 +305,7 @@ namespace BurnOutSharp.PackerType
                 0x2E, 0x53, 0x46, 0x58,
             };
             if (fileContent.FirstPosition(check, out _))
-                return "Software Installation Version 2.0 (32-bit)";
+                return "Software Installation 2.0 (32-bit)";
 
             // .............���3....�P..............�P..�P..�P..VW95SE.SFX
             check = new byte[]
@@ -335,7 +335,7 @@ namespace BurnOutSharp.PackerType
                 0x2E, 0x53, 0x46, 0x58,
             };
             if (fileContent.FirstPosition(check, out _))
-                return "Software Installation Version 2.1 RC2 (32-bit)";
+                return "Software Installation 2.1 RC2 (32-bit)";
 
             // .............U��3....�P..............�P..�P..�P..VW95SE.SFX
             check = new byte[]
@@ -365,7 +365,7 @@ namespace BurnOutSharp.PackerType
                 0x2E, 0x53, 0x46, 0x58,
             };
             if (fileContent.FirstPosition(check, out _))
-                return "Software Installation Version 2.1 (32-bit)";
+                return "Software Installation 2.1 (32-bit)";
 
             #endregion
 
@@ -397,11 +397,11 @@ namespace BurnOutSharp.PackerType
                 0x00, 0x70, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00, 
             };
             if (fileContent.FirstPosition(check, out _))
-                return "Software Installation Version 2.2.4003";
+                return "Software Installation 2.2.4003";
 
             #endregion
 
-            return "Unknown Version 2.X";
+            return "Unknown 2.X";
         }
     
         private static string GetV3PlusVersion(string version)
@@ -420,7 +420,7 @@ namespace BurnOutSharp.PackerType
                 case "4.0.1221.0":
                     return "4.0.12218";
                 default:
-                    return $"(Unknown Version - {version})";
+                    return $"(Unknown - {version})";
             }
         }
     }
