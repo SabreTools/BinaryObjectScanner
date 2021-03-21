@@ -15,7 +15,7 @@ namespace BurnOutSharp.PackerType
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
             // "Inno"
-            byte[] check = new byte[] { 0x49, 0x6E, 0x6E, 0x6F };
+            byte?[] check = new byte?[] { 0x49, 0x6E, 0x6E, 0x6F };
             if (fileContent.FirstPosition(check, out int position) && position == 0x30)
                 return $"Inno Setup {GetVersion(fileContent)}" + (includePosition ? $" (Index {position})" : string.Empty);
 

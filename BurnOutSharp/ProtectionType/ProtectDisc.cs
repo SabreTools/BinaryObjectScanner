@@ -12,7 +12,7 @@ namespace BurnOutSharp.ProtectionType
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
             // "HúMETINF"
-            byte[] check = new byte[] { 0x48, 0xFA, 0x4D, 0x45, 0x54, 0x49, 0x4E, 0x46 };
+            byte?[] check = new byte?[] { 0x48, 0xFA, 0x4D, 0x45, 0x54, 0x49, 0x4E, 0x46 };
             if (fileContent.FirstPosition(check, out int position))
             {
                 string version = SearchProtectDiscVersion(file, fileContent);
@@ -32,7 +32,7 @@ namespace BurnOutSharp.ProtectionType
             }
 
             // "ACE-PCD"
-            check = new byte[] { 0x41, 0x43, 0x45, 0x2D, 0x50, 0x43, 0x44 };
+            check = new byte?[] { 0x41, 0x43, 0x45, 0x2D, 0x50, 0x43, 0x44 };
             if (fileContent.FirstPosition(check, out position))
             {
                 string version = SearchProtectDiscVersion(file, fileContent);

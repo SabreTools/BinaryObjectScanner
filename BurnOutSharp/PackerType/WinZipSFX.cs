@@ -17,12 +17,12 @@ namespace BurnOutSharp.PackerType
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
             // WinZip Self-Extractor
-            byte[] check = new byte[] { 0x57, 0x69, 0x6E, 0x5A, 0x69, 0x70, 0x20, 0x53, 0x65, 0x6C, 0x66, 0x2D, 0x45, 0x78, 0x74, 0x72, 0x61, 0x63, 0x74, 0x6F, 0x72 };
+            byte?[] check = new byte?[] { 0x57, 0x69, 0x6E, 0x5A, 0x69, 0x70, 0x20, 0x53, 0x65, 0x6C, 0x66, 0x2D, 0x45, 0x78, 0x74, 0x72, 0x61, 0x63, 0x74, 0x6F, 0x72 };
             if (fileContent.FirstPosition(check, out int position))
                 return $"WinZip SFX {GetVersion(fileContent)}" + (includePosition ? $" (Index {position})" : string.Empty);
 
             // _winzip_
-            check = new byte[] { 0x5F, 0x77, 0x69, 0x6E, 0x7A, 0x69, 0x70, 0x5F };
+            check = new byte?[] { 0x5F, 0x77, 0x69, 0x6E, 0x7A, 0x69, 0x70, 0x5F };
             if (fileContent.FirstPosition(check, out position))
                 return $"WinZip SFX {GetVersion(fileContent)}" + (includePosition ? $" (Index {position})" : string.Empty);
 
@@ -104,7 +104,7 @@ namespace BurnOutSharp.PackerType
         {
             #region 16-bit NE Header Checks
 
-            byte[] check = new byte[]
+            byte?[] check = new byte?[]
             {
                 0x4E, 0x45, 0x11, 0x20, 0x86, 0x00, 0x02, 0x00,
                 0x00, 0x00, 0x00, 0x00, 0x0A, 0x03, 0x03, 0x00,
@@ -118,7 +118,7 @@ namespace BurnOutSharp.PackerType
             if (fileContent.FirstPosition(check, out _))
                 return "2.0 (MS-DOS/16-bit)";
 
-            check = new byte[]
+            check = new byte?[]
             {
                 0x4E, 0x45, 0x11, 0x20, 0x86, 0x00, 0x02, 0x00,
                 0x00, 0x00, 0x00, 0x00, 0x0A, 0x03, 0x03, 0x00,
@@ -132,7 +132,7 @@ namespace BurnOutSharp.PackerType
             if (fileContent.FirstPosition(check, out _))
                 return "2.0 (16-bit)";
                 
-            check = new byte[]
+            check = new byte?[]
             {
                 0x4E, 0x45, 0x11, 0x20, 0x80, 0x00, 0x02, 0x00,
                 0x00, 0x00, 0x00, 0x00, 0x0A, 0x03, 0x03, 0x00,
@@ -146,7 +146,7 @@ namespace BurnOutSharp.PackerType
             if (fileContent.FirstPosition(check, out _))
                 return "Compact 2.0 (16-bit)";
                 
-            check = new byte[]
+            check = new byte?[]
             {
                 0x4E, 0x45, 0x11, 0x20, 0xCD, 0x00, 0x02, 0x00,
                 0x00, 0x00, 0x00, 0x00, 0x02, 0x03, 0x03, 0x00,
@@ -160,7 +160,7 @@ namespace BurnOutSharp.PackerType
             if (fileContent.FirstPosition(check, out _))
                 return "Software Installation 2.0 (16-bit)";
 
-            check = new byte[]
+            check = new byte?[]
             {
                 0x4E, 0x45, 0x11, 0x20, 0x86, 0x00, 0x02, 0x00,
                 0x00, 0x00, 0x00, 0x00, 0x0A, 0x03, 0x03, 0x00,
@@ -174,7 +174,7 @@ namespace BurnOutSharp.PackerType
             if (fileContent.FirstPosition(check, out _))
                 return "2.1 RC2 (MS-DOS/16-bit)";
 
-            check = new byte[]
+            check = new byte?[]
             {
                 0x4E, 0x45, 0x11, 0x20, 0xBE, 0x00, 0x02, 0x00,
                 0x00, 0x00, 0x00, 0x00, 0x02, 0x03, 0x03, 0x00,
@@ -188,7 +188,7 @@ namespace BurnOutSharp.PackerType
             if (fileContent.FirstPosition(check, out _))
                 return "2.1 RC2 (16-bit)";
 
-            check = new byte[]
+            check = new byte?[]
             {
                 0x4E, 0x45, 0x11, 0x20, 0x80, 0x00, 0x02, 0x00,
                 0x00, 0x00, 0x00, 0x00, 0x0A, 0x03, 0x03, 0x00,
@@ -202,7 +202,7 @@ namespace BurnOutSharp.PackerType
             if (fileContent.FirstPosition(check, out _))
                 return "Compact 2.1 RC2 (16-bit)";
 
-            check = new byte[]
+            check = new byte?[]
             {
                 0x4E, 0x45, 0x11, 0x20, 0xBE, 0x00, 0x02, 0x00,
                 0x00, 0x00, 0x00, 0x00, 0x02, 0x03, 0x03, 0x00,
@@ -216,7 +216,7 @@ namespace BurnOutSharp.PackerType
             if (fileContent.FirstPosition(check, out _))
                 return "Software Installation 2.1 RC2 (16-bit)";
 
-            check = new byte[]
+            check = new byte?[]
             {
                 0x4E, 0x45, 0x11, 0x20, 0x86, 0x00, 0x02, 0x00,
                 0x00, 0x00, 0x00, 0x00, 0x0A, 0x03, 0x03, 0x00,
@@ -230,7 +230,7 @@ namespace BurnOutSharp.PackerType
             if (fileContent.FirstPosition(check, out _))
                 return "2.1 (MS-DOS/16-bit)";
 
-            check = new byte[]
+            check = new byte?[]
             {
                 0x4E, 0x45, 0x11, 0x20, 0xBE, 0x00, 0x02, 0x00, 
                 0x00, 0x00, 0x00, 0x00, 0x02, 0x03, 0x03, 0x00,
@@ -244,7 +244,7 @@ namespace BurnOutSharp.PackerType
             if (fileContent.FirstPosition(check, out _))
                 return "2.1 (16-bit)";
 
-            check = new byte[]
+            check = new byte?[]
             {
                 0x4E, 0x45, 0x11, 0x20, 0x80, 0x00, 0x02, 0x00,
                 0x00, 0x00, 0x00, 0x00, 0x0A, 0x03, 0x03, 0x00,
@@ -258,7 +258,7 @@ namespace BurnOutSharp.PackerType
             if (fileContent.FirstPosition(check, out _))
                 return "Compact 2.1 (16-bit)";
 
-            check = new byte[]
+            check = new byte?[]
             {
                 0x4E, 0x45, 0x11, 0x20, 0xBE, 0x00, 0x02, 0x00,
                 0x00, 0x00, 0x00, 0x00, 0x02, 0x03, 0x03, 0x00,
@@ -278,7 +278,7 @@ namespace BurnOutSharp.PackerType
             #region 32-bit SFX Header Checks
 
             // .............8�92....�P..............�P..�P..�P..VW95SE.SFX
-            check = new byte[]
+            check = new byte?[]
             {
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x38, 0x9C, 0x39,
@@ -293,7 +293,7 @@ namespace BurnOutSharp.PackerType
                 return "2.0 (32-bit)";
 
             // .............]�92....�P..............�P..�P..�P..VW95SRE.SFX
-            check = new byte[]
+            check = new byte?[]
             {
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x5D, 0x9C, 0x39,
@@ -308,7 +308,7 @@ namespace BurnOutSharp.PackerType
                 return "Software Installation 2.0 (32-bit)";
 
             // .............���3....�P..............�P..�P..�P..VW95SE.SFX
-            check = new byte[]
+            check = new byte?[]
             {
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x84, 0x82, 0x94,
@@ -323,7 +323,7 @@ namespace BurnOutSharp.PackerType
                 return "2.1 RC2 (32-bit)";
 
             // .............���3....�P..............�P..�P..�P..VW95SRE.SFX
-            check = new byte[]
+            check = new byte?[]
             {
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                 0x00, 0x00, 0x00, 0x00, 0x00, 0xB0, 0x82, 0x94,
@@ -338,7 +338,7 @@ namespace BurnOutSharp.PackerType
                 return "Software Installation 2.1 RC2 (32-bit)";
 
             // .............U��3....�P..............�P..�P..�P..VW95SE.SFX
-            check = new byte[]
+            check = new byte?[]
             {
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x55, 0xCD, 0xCC,
@@ -353,7 +353,7 @@ namespace BurnOutSharp.PackerType
                 return "2.1 (32-bit)";
 
             // .............{��3....�P..............�P..�P..�P..VW95SRE.SFX
-            check = new byte[]
+            check = new byte?[]
             {
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x7B, 0xCD, 0xCC,
@@ -372,7 +372,7 @@ namespace BurnOutSharp.PackerType
             #region 32-bit PE Header Checks
 
             // PE..L...i.[:........�........J...*......�9.......`....@.
-            check = new byte[]
+            check = new byte?[]
             {
                 0x50, 0x45, 0x00, 0x00, 0x4C, 0x01, 0x05, 0x00,
                 0x69, 0x1B, 0x5B, 0x3A, 0x00, 0x00, 0x00, 0x00,
@@ -386,7 +386,7 @@ namespace BurnOutSharp.PackerType
                 return "2.2.4003";
                 
             // PE..L.....[:........�........V...*.......?.......p....@.
-            check = new byte[]
+            check = new byte?[]
             {
                 0x50, 0x45, 0x00, 0x00, 0x4C, 0x01, 0x05, 0x00,
                 0x81, 0x1B, 0x5B, 0x3A, 0x00, 0x00, 0x00, 0x00,

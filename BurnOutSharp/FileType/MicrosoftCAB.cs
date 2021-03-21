@@ -11,7 +11,7 @@ namespace BurnOutSharp.FileType
         /// <inheritdoc/>
         public bool ShouldScan(byte[] magic)
         {
-            if (magic.StartsWith(new byte[] { 0x4d, 0x53, 0x43, 0x46 }))
+            if (magic.StartsWith(new byte?[] { 0x4d, 0x53, 0x43, 0x46 }))
                 return true;
 
             return false;
