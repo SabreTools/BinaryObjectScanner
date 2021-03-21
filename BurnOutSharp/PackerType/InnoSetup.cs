@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.PackerType
 {
@@ -11,15 +12,18 @@ namespace BurnOutSharp.PackerType
         public bool ShouldScan(byte[] magic) => true;
 
         /// <inheritdoc/>
-        /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
-            // Inno
-            byte?[] check = new byte?[] { 0x49, 0x6E, 0x6E, 0x6F };
-            if (fileContent.FirstPosition(check, out int position) && position == 0x30)
-                return $"Inno Setup {GetVersion(fileContent)}" + (includePosition ? $" (Index {position})" : string.Empty);
+            var matchers = new List<Matcher>
+            {
+                // Inno
+                new Matcher(
+                    new ContentMatch(new byte?[] { 0x49, 0x6E, 0x6E, 0x6F }, start: 0x30, end: 0x31),
+                    GetVersion,
+                    "Inno Setup"),
+            };
 
-            return null;
+            return Utilities.GetContentMatches(file, fileContent, matchers, includePosition);
         }
 
         /// <inheritdoc/>
@@ -42,7 +46,7 @@ namespace BurnOutSharp.PackerType
             return null;
         }
 
-        private static string GetVersion(byte[] fileContent)
+        public static string GetVersion(string file, byte[] fileContent, int position)
         {
             byte[] signature = new ArraySegment<byte>(fileContent, 0x30, 12).ToArray();
 

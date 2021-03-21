@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using BurnOutSharp.Matching;
 
 namespace BurnOutSharp
 {
@@ -246,49 +247,56 @@ namespace BurnOutSharp
         #region Protection
 
         /// <summary>
-        /// Get simple content matches for a given protection
+        /// Get content matches for a given protection
         /// </summary>
+        /// <param name="file">File to check for matches</param>
         /// <param name="fileContent">Byte array representing the file contents</param>
-        /// <param name="mappings">Mapping of byte array to string for matching</param>
+        /// <param name="matchers">Enumerable of matchers to be run on the file</param>
         /// <param name="includePosition">True to include positional data, false otherwise</param>
         /// <returns>String representing the matched protection, null otherwise</returns>
-        /// <remarks>
-        /// This is useful for checks that don't do anything special with versions or other positions.
         /// TODO: Make variant of this that returns *all* content matches for later
-        /// TODO: Make variant of this that can take multiple content checks per check for later
-        /// </remarks>
-        public static string GetContentMatches(byte[] fileContent, Dictionary<byte?[], string> mappings, bool includePosition = false)
-        {
-            return GetVersionedContentMatches(fileContent, mappings.Select(kvp => (kvp.Key, (Func<byte[], int, string>)null, kvp.Value)).ToList(), includePosition);
-        }
-
-        /// <summary>
-        /// Get versioned content matches for a given protection
-        /// </summary>
-        /// <param name="fileContent">Byte array representing the file contents</param>
-        /// <param name="mappings">Tuple of matching byte array, version method, and string to output</param>
-        /// <param name="includePosition">True to include positional data, false otherwise</param>
-        /// <returns>String representing the matched protection, null otherwise</returns>
-        /// <remarks>
-        /// This is useful for checks that don't do anything special with versions or other positions.
-        /// TODO: Make variant of this that returns *all* content matches for later
-        /// TODO: Make variant of this that can take multiple content checks per check for later
-        /// </remarks>
-        public static string GetVersionedContentMatches(byte[] fileContent, List<(byte?[], Func<byte[], int, string>, string)> mappings, bool includePosition = false)
+        public static string GetContentMatches(string file, byte[] fileContent, IEnumerable<Matcher> matchers, bool includePosition = false)
         {
             // If there's no mappings, we can't match
-            if (mappings == null || !mappings.Any())
+            if (matchers == null || !matchers.Any())
                 return null;
 
             // Loop through and try everything otherwise
-            foreach (var mapping in mappings)
+            foreach (var matcher in matchers)
             {
-                if (fileContent.FirstPosition(mapping.Item1, out int position))
+                // Setup for a single matcher
+                bool allMatches = true;
+                List<int> positions = new List<int>();
+
+                // Loop through all content matches and make sure all pass
+                foreach (var contentMatch in matcher.ContentMatches)
                 {
-                    string version = mapping.Item2 == null ? string.Empty : (mapping.Item2(fileContent, position) ?? "Unknown Version");
-                    string protection = string.IsNullOrWhiteSpace(version) ? mapping.Item3 : $"{mapping.Item3} {version}";
-                    return protection + (includePosition ? $" (Index {position})" : string.Empty);
+                    if (!fileContent.FirstPosition(contentMatch.Needle, out int position, contentMatch.Start, contentMatch.End))
+                    {
+                        allMatches = false;
+                        break;
+                    }
+                    else
+                    {
+                        positions.Add(position);
+                    }
                 }
+
+                // If not all matches pass, then we continue
+                if (!allMatches)
+                    continue;
+
+                // Format the list of all positions found
+                string positionsString = string.Join(", ", positions);
+
+                // If we there is no version method, just return the protection name
+                if (matcher.GetVersion == null)
+                    return (matcher.ProtectionName ?? "Unknown Protection") + (includePosition ? $" (Index {positionsString})" : string.Empty);
+
+                // Otherwise, invoke the version method
+                // TODO: Pass all positions to the version finding method
+                string version = matcher.GetVersion(file, fileContent, positions[0]) ?? "Unknown Version";
+                return $"{matcher.ProtectionName} {version}" + (includePosition ? $" (Index {positionsString})" : string.Empty);
             }
 
             return null;

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using BurnOutSharp.Matching;
 using SharpCompress.Archives;
 using SharpCompress.Archives.Rar;
 
@@ -14,13 +15,18 @@ namespace BurnOutSharp.PackerType
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
-            var mappings = new Dictionary<byte?[], string>
+            var matchers = new List<Matcher>
             {
                 // Software\WinRAR SFX
-                [new byte?[] { 0x53, 0x6F, 0x66, 0x74, 0x77, 0x61, 0x72, 0x65, 0x5C, 0x57, 0x69, 0x6E, 0x52, 0x41, 0x52, 0x20, 0x53, 0x46, 0x58 }] = "WinRAR SFX",
+                new Matcher(new byte?[]
+                {
+                    0x53, 0x6F, 0x66, 0x74, 0x77, 0x61, 0x72, 0x65,
+                    0x5C, 0x57, 0x69, 0x6E, 0x52, 0x41, 0x52, 0x20,
+                    0x53, 0x46, 0x58
+                }, "WinRAR SFX"),
             };
 
-            return Utilities.GetContentMatches(fileContent, mappings, includePosition);
+            return Utilities.GetContentMatches(file, fileContent, matchers, includePosition);
         }
 
         public Dictionary<string, List<string>> Scan(Scanner scanner, string file)

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using BurnOutSharp.Matching;
 using SharpCompress.Archives;
 using SharpCompress.Archives.Zip;
 
@@ -14,17 +15,21 @@ namespace BurnOutSharp.PackerType
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
-            // WinZip Self-Extractor
-            byte?[] check = new byte?[] { 0x57, 0x69, 0x6E, 0x5A, 0x69, 0x70, 0x20, 0x53, 0x65, 0x6C, 0x66, 0x2D, 0x45, 0x78, 0x74, 0x72, 0x61, 0x63, 0x74, 0x6F, 0x72 };
-            if (fileContent.FirstPosition(check, out int position))
-                return $"WinZip SFX {GetVersion(fileContent)}" + (includePosition ? $" (Index {position})" : string.Empty);
+            var matchers = new List<Matcher>
+            {
+                // WinZip Self-Extractor
+                new Matcher(new byte?[]
+                {
+                    0x57, 0x69, 0x6E, 0x5A, 0x69, 0x70, 0x20, 0x53,
+                    0x65, 0x6C, 0x66, 0x2D, 0x45, 0x78, 0x74, 0x72,
+                    0x61, 0x63, 0x74, 0x6F, 0x72
+                }, GetVersion, "WinZip SFX"),
 
-            // _winzip_
-            check = new byte?[] { 0x5F, 0x77, 0x69, 0x6E, 0x7A, 0x69, 0x70, 0x5F };
-            if (fileContent.FirstPosition(check, out position))
-                return $"WinZip SFX {GetVersion(fileContent)}" + (includePosition ? $" (Index {position})" : string.Empty);
+                // _winzip_
+                new Matcher(new byte?[] { 0x5F, 0x77, 0x69, 0x6E, 0x7A, 0x69, 0x70, 0x5F }, GetVersion, "WinZip SFX"),
+            };
 
-            return null;
+            return Utilities.GetContentMatches(file, fileContent, matchers, includePosition);
         }
 
         /// <inheritdoc/>
@@ -87,7 +92,7 @@ namespace BurnOutSharp.PackerType
             return null;
         }
 
-        private static string GetVersion(byte[] fileContent)
+        public static string GetVersion(string file, byte[] fileContent, int position)
         {
             // Check the manifest version first
             string version = Utilities.GetManifestVersion(fileContent);

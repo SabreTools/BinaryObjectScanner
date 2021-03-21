@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.PackerType
 {
@@ -9,23 +11,19 @@ namespace BurnOutSharp.PackerType
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
-            // Nullsoft Install System
-            byte?[] check = new byte?[] { 0x4e, 0x75, 0x6c, 0x6c, 0x73, 0x6f, 0x66, 0x74, 0x20, 0x49, 0x6e, 0x73, 0x74, 0x61, 0x6c, 0x6c, 0x20, 0x53, 0x79, 0x73, 0x74, 0x65, 0x6d };
-            if (fileContent.FirstPosition(check, out int position))
+            var matchers = new List<Matcher>
             {
-                string version = GetVersion(fileContent, position);
-                return $"NSIS {version}" + (includePosition ? $" (Index {position})" : string.Empty);
-            }
+                // Nullsoft Install System
+                new Matcher(new byte?[] { 0x4e, 0x75, 0x6c, 0x6c, 0x73, 0x6f, 0x66, 0x74, 0x20, 0x49, 0x6e, 0x73, 0x74, 0x61, 0x6c, 0x6c, 0x20, 0x53, 0x79, 0x73, 0x74, 0x65, 0x6d }, GetVersion, "NSIS"),
 
-            // NullsoftInst
-            check = new byte?[] { 0x4e, 0x75, 0x6c, 0x6c, 0x73, 0x6f, 0x66, 0x74, 0x49, 0x6e, 0x73, 0x74 };
-            if (fileContent.FirstPosition(check, out position))
-                return $"NSIS" + (includePosition ? $" (Index {position})" : string.Empty);
+                // NullsoftInst
+                new Matcher(new byte?[] { 0x4e, 0x75, 0x6c, 0x6c, 0x73, 0x6f, 0x66, 0x74, 0x49, 0x6e, 0x73, 0x74 }, "NSIS"),
+            };
 
-            return null;
+            return Utilities.GetContentMatches(file, fileContent, matchers, includePosition);
         }
 
-        private static string GetVersion(byte[] fileContent, int index)
+        public static string GetVersion(string file, byte[] fileContent, int index)
         {
             try
             {
