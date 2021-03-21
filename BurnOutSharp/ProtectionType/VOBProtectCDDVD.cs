@@ -13,12 +13,12 @@ namespace BurnOutSharp.ProtectionType
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
             // "VOB ProtectCD"
-            byte[] check = new byte[] { 0x56, 0x4F, 0x42, 0x20, 0x50, 0x72, 0x6F, 0x74, 0x65, 0x63, 0x74, 0x43, 0x44 };
+            byte?[] check = new byte?[] { 0x56, 0x4F, 0x42, 0x20, 0x50, 0x72, 0x6F, 0x74, 0x65, 0x63, 0x74, 0x43, 0x44 };
             if (fileContent.FirstPosition(check, out int position))
                 return $"VOB ProtectCD/DVD {GetOldVersion(fileContent, --position)}" + (includePosition ? $" (Index {position})" : string.Empty); // TODO: Verify this subtract
 
             // "DCP-BOV" + (char)0x00 + (char)0x00
-            check = new byte[] { 0x44, 0x43, 0x50, 0x2D, 0x42, 0x4F, 0x56, 0x00, 0x00 };
+            check = new byte?[] { 0x44, 0x43, 0x50, 0x2D, 0x42, 0x4F, 0x56, 0x00, 0x00 };
             if (fileContent.FirstPosition(check, out position))
             {
                 string version = GetVersion(fileContent, --position); // TODO: Verify this subtract
@@ -38,7 +38,7 @@ namespace BurnOutSharp.ProtectionType
             }
 
             // ".vob.pcd"
-            check = new byte[] { 0x2E, 0x76, 0x6F, 0x62, 0x2E, 0x70, 0x63, 0x64 };
+            check = new byte?[] { 0x2E, 0x76, 0x6F, 0x62, 0x2E, 0x70, 0x63, 0x64 };
             if (fileContent.FirstPosition(check, out position))
                 return "VOB ProtectCD" + (includePosition ? $" (Index {position})" : string.Empty);
 

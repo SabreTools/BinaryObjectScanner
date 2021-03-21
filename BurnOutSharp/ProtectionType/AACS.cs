@@ -15,7 +15,7 @@ namespace BurnOutSharp.ProtectionType
             {
                 string file = files.FirstOrDefault(f => Path.GetFileName(f).Equals("MKBROM.AACS", StringComparison.OrdinalIgnoreCase));
                 int? version = GetVersion(file);
-                return version == null ? "AACS (Unknown Version)" : $"AACS Version {version}";
+                return version == null ? "AACS (Unknown Version)" : $"AACS {version}";
             }
 
             // BD-ROM
@@ -23,7 +23,7 @@ namespace BurnOutSharp.ProtectionType
             {
                 string file = files.FirstOrDefault(f => Path.GetFileName(f).Equals("MKB_RO.inf", StringComparison.OrdinalIgnoreCase));
                 int? version = GetVersion(file);
-                return version == null ? "AACS (Unknown Version)" : $"AACS Version {version}";
+                return version == null ? "AACS (Unknown Version)" : $"AACS {version}";
             }
 
             return null;
@@ -38,14 +38,14 @@ namespace BurnOutSharp.ProtectionType
             if (filename.Equals("MKBROM.AACS", StringComparison.OrdinalIgnoreCase))
             {
                 int? version = GetVersion(path);
-                return version == null ? "AACS (Unknown Version)" : $"AACS Version {version}";
+                return version == null ? "AACS (Unknown Version)" : $"AACS {version}";
             }
 
             // BD-ROM
             if (filename.Equals("MKB_RO.inf", StringComparison.OrdinalIgnoreCase))
             {
                 int? version = GetVersion(path);
-                return version == null ? "AACS (Unknown Version)" : $"AACS Version {version}";
+                return version == null ? "AACS (Unknown Version)" : $"AACS {version}";
             }
 
             return null;

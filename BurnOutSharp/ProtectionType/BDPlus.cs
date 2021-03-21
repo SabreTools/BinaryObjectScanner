@@ -15,7 +15,7 @@ namespace BurnOutSharp.ProtectionType
             {
                 string file = files.FirstOrDefault(f => Path.GetFileName(f).Equals("00000.svm", StringComparison.OrdinalIgnoreCase));
                 string version = GetVersion(file);
-                return version == null ? "BD+ (Unknown Version)" : $"BD+ Version {version}";
+                return version == null ? "BD+ (Unknown Version)" : $"BD+ {version}";
             }
 
             return null;
@@ -28,7 +28,7 @@ namespace BurnOutSharp.ProtectionType
             if (filename.Equals("00000.svm", StringComparison.OrdinalIgnoreCase))
             {
                 string version = GetVersion(path);
-                return version == null ? "BD+ (Unknown Version)" : $"BD+ Version {version}";
+                return version == null ? "BD+ (Unknown Version)" : $"BD+ {version}";
             }
             
             return null;

@@ -12,15 +12,15 @@ namespace BurnOutSharp.FileType
         public bool ShouldScan(byte[] magic)
         {
             // PKZIP
-            if (magic.StartsWith(new byte[] { 0x50, 0x4b, 0x03, 0x04 }))
+            if (magic.StartsWith(new byte?[] { 0x50, 0x4b, 0x03, 0x04 }))
                 return true;
 
             // PKZIP (Empty Archive)
-            if (magic.StartsWith(new byte[] { 0x50, 0x4b, 0x05, 0x06 }))
+            if (magic.StartsWith(new byte?[] { 0x50, 0x4b, 0x05, 0x06 }))
                 return true;
 
             // PKZIP (Spanned Archive)
-            if (magic.StartsWith(new byte[] { 0x50, 0x4b, 0x07, 0x08 }))
+            if (magic.StartsWith(new byte?[] { 0x50, 0x4b, 0x07, 0x08 }))
                 return true;
 
             return false;

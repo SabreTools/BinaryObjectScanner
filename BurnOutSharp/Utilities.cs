@@ -159,7 +159,7 @@ namespace BurnOutSharp
         /// <summary>
         /// Find the first position of one array in another, if possible
         /// </summary>
-        public static bool FirstPosition(this byte[] stack, byte[] needle, out int position, int start = 0, int end = -1)
+        public static bool FirstPosition(this byte[] stack, byte?[] needle, out int position, int start = 0, int end = -1)
         {
             (bool found, int foundPosition) = FindPosition(stack, needle, start, end, false);
             position = foundPosition;
@@ -169,7 +169,7 @@ namespace BurnOutSharp
         /// <summary>
         /// Find the last position of one array in another, if possible
         /// </summary>
-        public static bool LastPosition(this byte[] stack, byte[] needle, out int position, int start = 0, int end = -1)
+        public static bool LastPosition(this byte[] stack, byte?[] needle, out int position, int start = 0, int end = -1)
         {
             (bool found, int foundPosition) = FindPosition(stack, needle, start, end, true);
             position = foundPosition;
@@ -179,7 +179,7 @@ namespace BurnOutSharp
         /// <summary>
         /// See if a byte array starts with another
         /// </summary>
-        public static bool StartsWith(this byte[] stack, byte[] needle)
+        public static bool StartsWith(this byte[] stack, byte?[] needle)
         {
             return stack.FirstPosition(needle, out int _, start: 0, end: 1);
         }
@@ -187,15 +187,15 @@ namespace BurnOutSharp
         /// <summary>
         /// See if a byte array ends with another
         /// </summary>
-        public static bool EndsWith(this byte[] stack, byte[] needle)
+        public static bool EndsWith(this byte[] stack, byte?[] needle)
         {
             return stack.FirstPosition(needle, out int _, start: stack.Length - needle.Length);
         }
-        
+
         /// <summary>
         /// Find the position of one array in another, if possible
         /// </summary>
-        private static (bool, int) FindPosition(byte[] stack, byte[] needle, int start, int end, bool reverse)
+        private static (bool, int) FindPosition(byte[] stack, byte?[] needle, int start, int end, bool reverse)
         {
             // If either array is null or empty, we can't do anything
             if (stack == null || stack.Length == 0 || needle == null || needle.Length == 0)
@@ -223,7 +223,7 @@ namespace BurnOutSharp
         /// <summary>
         /// Get if a stack at a certain index is equal to a needle
         /// </summary>
-        private static bool EqualAt(this byte[] stack, byte[] needle, int index)
+        private static bool EqualAt(this byte[] stack, byte?[] needle, int index)
         {
             // If we're too close to the end of the stack, return false
             if (needle.Length >= stack.Length - index)
@@ -231,7 +231,10 @@ namespace BurnOutSharp
 
             for (int i = 0; i < needle.Length; i++)
             {
-                if (stack[i + index] != needle[i])
+                // A null value is a wildcard
+                if (needle[i] == null)
+                    continue;
+                else if (stack[i + index] != needle[i])
                     return false;
             }
 
@@ -239,6 +242,8 @@ namespace BurnOutSharp
         }
 
         #endregion
+
+        #region Version Finding
 
         /// <summary>
         /// Get the file version as reported by the filesystem
@@ -264,12 +269,12 @@ namespace BurnOutSharp
         public static string GetManifestVersion(byte[] fileContent)
         {
             // <?xml
-            byte[] manifestStart = new byte[] { 0x3C, 0x3F, 0x78, 0x6D, 0x6C };
+            byte?[] manifestStart = new byte?[] { 0x3C, 0x3F, 0x78, 0x6D, 0x6C };
             if (!fileContent.LastPosition(manifestStart, out int manifestStartPosition))
                 return null;
             
             // </assembly>
-            byte[] manifestEnd = new byte[] { 0x3C, 0x2F, 0x61, 0x73, 0x73, 0x65, 0x6D, 0x62, 0x6C, 0x79, 0x3E };
+            byte?[] manifestEnd = new byte?[] { 0x3C, 0x2F, 0x61, 0x73, 0x73, 0x65, 0x6D, 0x62, 0x6C, 0x79, 0x3E };
             if (!fileContent.FirstPosition(manifestEnd, out int manifestEndPosition, start: manifestStartPosition))
                 return null;
             
@@ -306,5 +311,7 @@ namespace BurnOutSharp
                 return null;
             }
         }
+    
+        #endregion
     }
 }

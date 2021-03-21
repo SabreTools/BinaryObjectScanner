@@ -11,7 +11,7 @@ namespace BurnOutSharp.ProtectionType
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
             // BITARTS
-            byte[] check = new byte[] { 0x42, 0x49, 0x54, 0x41, 0x52, 0x54, 0x53 };
+            byte?[] check = new byte?[] { 0x42, 0x49, 0x54, 0x41, 0x52, 0x54, 0x53 };
             if (fileContent.FirstPosition(check, out int position))
                 return "SmartE" + (includePosition ? $" (Index {position})" : string.Empty);
 

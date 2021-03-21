@@ -22,19 +22,19 @@ namespace BurnOutSharp.FileType
         public bool ShouldScan(byte[] magic, string extension)
         {
             // Rich Text File
-            if (magic.StartsWith(new byte[] { 0x7b, 0x5c, 0x72, 0x74, 0x66, 0x31 }))
+            if (magic.StartsWith(new byte?[] { 0x7b, 0x5c, 0x72, 0x74, 0x66, 0x31 }))
                 return true;
 
             // HTML
-            if (magic.StartsWith(new byte[] { 0x3c, 0x68, 0x74, 0x6d, 0x6c }))
+            if (magic.StartsWith(new byte?[] { 0x3c, 0x68, 0x74, 0x6d, 0x6c }))
                 return true;
 
             // HTML and XML
-            if (magic.StartsWith(new byte[] { 0x3c, 0x21, 0x44, 0x4f, 0x43, 0x54, 0x59, 0x50, 0x45 }))
+            if (magic.StartsWith(new byte?[] { 0x3c, 0x21, 0x44, 0x4f, 0x43, 0x54, 0x59, 0x50, 0x45 }))
                 return true;
 
             // Microsoft Office File (old)
-            if (magic.StartsWith(new byte[] { 0xd0, 0xcf, 0x11, 0xe0, 0xa1, 0xb1, 0x1a, 0xe1 }))
+            if (magic.StartsWith(new byte?[] { 0xd0, 0xcf, 0x11, 0xe0, 0xa1, 0xb1, 0x1a, 0xe1 }))
                 return true;
 
             // Generic textfile (no header)

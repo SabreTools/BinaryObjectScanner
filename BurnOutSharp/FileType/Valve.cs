@@ -11,23 +11,23 @@ namespace BurnOutSharp.FileType
         public bool ShouldScan(byte[] magic)
         {
             // GCF
-            if (magic.StartsWith(new byte[] { 0x01, 0x00, 0x00, 0x00 }))
+            if (magic.StartsWith(new byte?[] { 0x01, 0x00, 0x00, 0x00 }))
                 return true;
 
             // PAK
-            if (magic.StartsWith(new byte[] { 0x50, 0x41, 0x43, 0x4b }))
+            if (magic.StartsWith(new byte?[] { 0x50, 0x41, 0x43, 0x4b }))
                 return true;
 
             // SGA
-            if (magic.StartsWith(new byte[] { 0x5f, 0x41, 0x52, 0x43, 0x48, 0x49, 0x56, 0x45 }))
+            if (magic.StartsWith(new byte?[] { 0x5f, 0x41, 0x52, 0x43, 0x48, 0x49, 0x56, 0x45 }))
                 return true;
 
             // VPK
-            if (magic.StartsWith(new byte[] { 0x55, 0xaa, 0x12, 0x34 }))
+            if (magic.StartsWith(new byte?[] { 0x55, 0xaa, 0x12, 0x34 }))
                 return true;
 
             // WAD
-            if (magic.StartsWith(new byte[] { 0x57, 0x41, 0x44, 0x33 }))
+            if (magic.StartsWith(new byte?[] { 0x57, 0x41, 0x44, 0x33 }))
                 return true;
 
             return false;
