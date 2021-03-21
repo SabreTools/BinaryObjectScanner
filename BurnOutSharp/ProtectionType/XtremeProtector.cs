@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -7,13 +8,13 @@ namespace BurnOutSharp.ProtectionType
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
-            var mappings = new Dictionary<byte?[], string>
+            var matchers = new List<Matcher>
             {
                 // XPROT   
-                [new byte?[] { 0x58, 0x50, 0x52, 0x4F, 0x54, 0x20, 0x20, 0x20 }] = "Xtreme-Protector",
+                new Matcher(new byte?[] { 0x58, 0x50, 0x52, 0x4F, 0x54, 0x20, 0x20, 0x20 }, "Xtreme-Protector"),
             };
 
-            return Utilities.GetContentMatches(fileContent, mappings, includePosition);
+            return Utilities.GetContentMatches(file, fileContent, matchers, includePosition);
         }
     }
 }

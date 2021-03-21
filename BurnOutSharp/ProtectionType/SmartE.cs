@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -10,13 +11,13 @@ namespace BurnOutSharp.ProtectionType
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
-            var mappings = new Dictionary<byte?[], string>
+            var matchers = new List<Matcher>
             {
                 // BITARTS
-                [new byte?[] { 0x42, 0x49, 0x54, 0x41, 0x52, 0x54, 0x53 }] = "SmartE",
+                new Matcher(new byte?[] { 0x42, 0x49, 0x54, 0x41, 0x52, 0x54, 0x53 }, "SmartE"),
             };
 
-            return Utilities.GetContentMatches(fileContent, mappings, includePosition);
+            return Utilities.GetContentMatches(file, fileContent, matchers, includePosition);
         }
 
         /// <inheritdoc/>

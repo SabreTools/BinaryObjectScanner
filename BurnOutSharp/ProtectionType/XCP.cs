@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using BurnOutSharp.FileType;
+using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -11,19 +12,19 @@ namespace BurnOutSharp.ProtectionType
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
-            var mappings = new Dictionary<byte?[], string>
+            var matchers = new List<Matcher>
             {
                 // XCP.DAT
-                [new byte?[] { 0x58, 0x43, 0x50, 0x2E, 0x44, 0x41, 0x54 }] = "XCP",
+                new Matcher(new byte?[] { 0x58, 0x43, 0x50, 0x2E, 0x44, 0x41, 0x54 }, "XCP"),
 
                 // XCPPlugins.dll
-                [new byte?[] { 0x58, 0x43, 0x50, 0x50, 0x6C, 0x75, 0x67, 0x69, 0x6E, 0x73, 0x2E, 0x64, 0x6C, 0x6C }] = "XCP",
+                new Matcher(new byte?[] { 0x58, 0x43, 0x50, 0x50, 0x6C, 0x75, 0x67, 0x69, 0x6E, 0x73, 0x2E, 0x64, 0x6C, 0x6C }, "XCP"),
 
                 // XCPPhoenix.dll
-                [new byte?[] { 0x58, 0x43, 0x50, 0x50, 0x68, 0x6F, 0x65, 0x6E, 0x69, 0x78, 0x2E, 0x64, 0x6C, 0x6C }] = "XCP",
+                new Matcher(new byte?[] { 0x58, 0x43, 0x50, 0x50, 0x68, 0x6F, 0x65, 0x6E, 0x69, 0x78, 0x2E, 0x64, 0x6C, 0x6C }, "XCP"),
             };
 
-            return Utilities.GetContentMatches(fileContent, mappings, includePosition);
+            return Utilities.GetContentMatches(file, fileContent, matchers, includePosition);
         }
 
         /// <inheritdoc/>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -10,13 +11,13 @@ namespace BurnOutSharp.ProtectionType
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
-            var mappings = new Dictionary<byte?[], string>
+            var matchers = new List<Matcher>
             {
                 // WTM76545
-                [new byte?[] { 0x57, 0x54, 0x4D, 0x37, 0x36, 0x35, 0x34, 0x35 }] = "WTM CD Protect",
+                new Matcher(new byte?[] { 0x57, 0x54, 0x4D, 0x37, 0x36, 0x35, 0x34, 0x35 }, "WTM CD Protect"),
             };
 
-            return Utilities.GetContentMatches(fileContent, mappings, includePosition);
+            return Utilities.GetContentMatches(file, fileContent, matchers, includePosition);
         }
 
         /// <inheritdoc/>
