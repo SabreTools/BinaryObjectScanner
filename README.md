@@ -96,6 +96,7 @@ Below is a list of the executable packers that can be detected using this code:
 - PECompact
 - Setup Factory
 - UPX
+- WinRAR SFX
 - WinZip SFX
 - WISE Installer
 
