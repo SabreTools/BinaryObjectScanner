@@ -89,6 +89,7 @@ Below is a list of the protections that can be detected using this code:
 Below is a list of the executable packers that can be detected using this code:
 
 - Armadillo
+- CExe
 - dotFuscator
 - EXE Stealth
 - Inno Setup
