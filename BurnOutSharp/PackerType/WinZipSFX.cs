@@ -18,12 +18,12 @@ namespace BurnOutSharp.PackerType
         {
             // WinZip Self-Extractor
             byte[] check = new byte[] { 0x57, 0x69, 0x6E, 0x5A, 0x69, 0x70, 0x20, 0x53, 0x65, 0x6C, 0x66, 0x2D, 0x45, 0x78, 0x74, 0x72, 0x61, 0x63, 0x74, 0x6F, 0x72 };
-            if (fileContent.Contains(check, out int position))
+            if (fileContent.FirstPosition(check, out int position))
                 return $"WinZip SFX {GetVersion(fileContent)}" + (includePosition ? $" (Index {position})" : string.Empty);
 
             // _winzip_
             check = new byte[] { 0x5F, 0x77, 0x69, 0x6E, 0x7A, 0x69, 0x70, 0x5F };
-            if (fileContent.Contains(check, out position))
+            if (fileContent.FirstPosition(check, out position))
                 return $"WinZip SFX {GetVersion(fileContent)}" + (includePosition ? $" (Index {position})" : string.Empty);
 
             return null;
@@ -115,7 +115,7 @@ namespace BurnOutSharp.PackerType
                 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x02, 0x00,
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03,
             };
-            if (fileContent.Contains(check, out _))
+            if (fileContent.FirstPosition(check, out _))
                 return "2.0 (MS-DOS/16-bit)";
 
             check = new byte[]
@@ -129,7 +129,7 @@ namespace BurnOutSharp.PackerType
                 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x02, 0x00,
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03,
             };
-            if (fileContent.Contains(check, out _))
+            if (fileContent.FirstPosition(check, out _))
                 return "2.0 (16-bit)";
                 
             check = new byte[]
@@ -143,7 +143,7 @@ namespace BurnOutSharp.PackerType
                 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x02, 0x00,
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03,
             };
-            if (fileContent.Contains(check, out _))
+            if (fileContent.FirstPosition(check, out _))
                 return "Compact Version 2.0 (16-bit)";
                 
             check = new byte[]
@@ -157,7 +157,7 @@ namespace BurnOutSharp.PackerType
                 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x02, 0x00,
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03,
             };
-            if (fileContent.Contains(check, out _))
+            if (fileContent.FirstPosition(check, out _))
                 return "Software Installation Version 2.0 (16-bit)";
 
             check = new byte[]
@@ -171,7 +171,7 @@ namespace BurnOutSharp.PackerType
                 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x02, 0x00,
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03,
             };
-            if (fileContent.Contains(check, out _))
+            if (fileContent.FirstPosition(check, out _))
                 return "2.1 RC2 (MS-DOS/16-bit)";
 
             check = new byte[]
@@ -185,7 +185,7 @@ namespace BurnOutSharp.PackerType
                 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x02, 0x00,
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03,
             };
-            if (fileContent.Contains(check, out _))
+            if (fileContent.FirstPosition(check, out _))
                 return "2.1 RC2 (16-bit)";
 
             check = new byte[]
@@ -199,7 +199,7 @@ namespace BurnOutSharp.PackerType
                 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x02, 0x00,
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03,
             };
-            if (fileContent.Contains(check, out _))
+            if (fileContent.FirstPosition(check, out _))
                 return "Compact Version 2.1 RC2 (16-bit)";
 
             check = new byte[]
@@ -213,7 +213,7 @@ namespace BurnOutSharp.PackerType
                 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x02, 0x00,
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03,
             };
-            if (fileContent.Contains(check, out _))
+            if (fileContent.FirstPosition(check, out _))
                 return "Software Installation Version 2.1 RC2 (16-bit)";
 
             check = new byte[]
@@ -227,7 +227,7 @@ namespace BurnOutSharp.PackerType
                 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x02, 0x00,
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03,
             };
-            if (fileContent.Contains(check, out _))
+            if (fileContent.FirstPosition(check, out _))
                 return "2.1 (MS-DOS/16-bit)";
 
             check = new byte[]
@@ -241,7 +241,7 @@ namespace BurnOutSharp.PackerType
                 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x02, 0x00,
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03,
             };
-            if (fileContent.Contains(check, out _))
+            if (fileContent.FirstPosition(check, out _))
                 return "2.1 (16-bit)";
 
             check = new byte[]
@@ -255,7 +255,7 @@ namespace BurnOutSharp.PackerType
                 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x02, 0x00,
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03,
             };
-            if (fileContent.Contains(check, out _))
+            if (fileContent.FirstPosition(check, out _))
                 return "Compact Version 2.1 (16-bit)";
 
             check = new byte[]
@@ -270,7 +270,7 @@ namespace BurnOutSharp.PackerType
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03,
             };
 
-            if (fileContent.Contains(check, out _))
+            if (fileContent.FirstPosition(check, out _))
                 return "Software Installation Version 2.1 (16-bit)";
 
             #endregion
@@ -289,7 +289,7 @@ namespace BurnOutSharp.PackerType
                 0x00, 0x56, 0x57, 0x39, 0x35, 0x53, 0x45, 0x2E,
                 0x53, 0x46, 0x58,
             };
-            if (fileContent.Contains(check, out _))
+            if (fileContent.FirstPosition(check, out _))
                 return "2.0 (32-bit)";
 
             // .............]�92....�P..............�P..�P..�P..VW95SRE.SFX
@@ -304,7 +304,7 @@ namespace BurnOutSharp.PackerType
                 0x00, 0x56, 0x57, 0x39, 0x35, 0x53, 0x52, 0x45,
                 0x2E, 0x53, 0x46, 0x58,
             };
-            if (fileContent.Contains(check, out _))
+            if (fileContent.FirstPosition(check, out _))
                 return "Software Installation Version 2.0 (32-bit)";
 
             // .............���3....�P..............�P..�P..�P..VW95SE.SFX
@@ -319,7 +319,7 @@ namespace BurnOutSharp.PackerType
                 0x00, 0x56, 0x57, 0x39, 0x35, 0x53, 0x45, 0x2E,
                 0x53, 0x46, 0x58,
             };
-            if (fileContent.Contains(check, out _))
+            if (fileContent.FirstPosition(check, out _))
                 return "2.1 RC2 (32-bit)";
 
             // .............���3....�P..............�P..�P..�P..VW95SRE.SFX
@@ -334,7 +334,7 @@ namespace BurnOutSharp.PackerType
                 0x00, 0x56, 0x57, 0x39, 0x35, 0x53, 0x52, 0x45,
                 0x2E, 0x53, 0x46, 0x58,
             };
-            if (fileContent.Contains(check, out _))
+            if (fileContent.FirstPosition(check, out _))
                 return "Software Installation Version 2.1 RC2 (32-bit)";
 
             // .............U��3....�P..............�P..�P..�P..VW95SE.SFX
@@ -349,7 +349,7 @@ namespace BurnOutSharp.PackerType
                 0x00, 0x56, 0x57, 0x39, 0x35, 0x53, 0x45, 0x2E,
                 0x53, 0x46, 0x58,
             };
-            if (fileContent.Contains(check, out _))
+            if (fileContent.FirstPosition(check, out _))
                 return "2.1 (32-bit)";
 
             // .............{��3....�P..............�P..�P..�P..VW95SRE.SFX
@@ -364,7 +364,7 @@ namespace BurnOutSharp.PackerType
                 0x00, 0x56, 0x57, 0x39, 0x35, 0x53, 0x52, 0x45,
                 0x2E, 0x53, 0x46, 0x58,
             };
-            if (fileContent.Contains(check, out _))
+            if (fileContent.FirstPosition(check, out _))
                 return "Software Installation Version 2.1 (32-bit)";
 
             #endregion
@@ -382,7 +382,7 @@ namespace BurnOutSharp.PackerType
                 0xD8, 0x39, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00,
                 0x00, 0x60, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00,
             };
-            if (fileContent.Contains(check, out _))
+            if (fileContent.FirstPosition(check, out _))
                 return "2.2.4003";
                 
             // PE..L.....[:........�........V...*.......?.......p....@.
@@ -396,7 +396,7 @@ namespace BurnOutSharp.PackerType
                 0x8F, 0x3F, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00,
                 0x00, 0x70, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00, 
             };
-            if (fileContent.Contains(check, out _))
+            if (fileContent.FirstPosition(check, out _))
                 return "Software Installation Version 2.2.4003";
 
             #endregion

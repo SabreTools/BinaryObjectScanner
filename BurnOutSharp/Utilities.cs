@@ -157,37 +157,23 @@ namespace BurnOutSharp
         #region Byte Arrays
 
         /// <summary>
-        /// Search for a byte array in another array
+        /// Find the first position of one array in another, if possible
         /// </summary>
-        public static bool Contains(this byte[] stack, byte[] needle, out int position, int start = 0, int end = -1)
+        public static bool FirstPosition(this byte[] stack, byte[] needle, out int position, int start = 0, int end = -1)
         {
-            // Initialize the found position to -1
-            position = -1;
+            (bool found, int foundPosition) = FindPosition(stack, needle, start, end, false);
+            position = foundPosition;
+            return found;
+        }
 
-            // If either array is null or empty, we can't do anything
-            if (stack == null || stack.Length == 0 || needle == null || needle.Length == 0)
-                return false;
-
-            // If the needle array is larger than the stack array, it can't be contained within
-            if (needle.Length > stack.Length)
-                return false;
-
-            // If start or end are not set properly, set them to defaults
-            if (start < 0)
-                start = 0;
-            if (end < 0)
-                end = stack.Length - needle.Length;
-
-            for (int i = start; i < end; i++)
-            {
-                if (stack.EqualAt(needle, i))
-                {
-                    position = i;
-                    return true;
-                }
-            }
-
-            return false;
+        /// <summary>
+        /// Find the last position of one array in another, if possible
+        /// </summary>
+        public static bool LastPosition(this byte[] stack, byte[] needle, out int position, int start = 0, int end = -1)
+        {
+            (bool found, int foundPosition) = FindPosition(stack, needle, start, end, true);
+            position = foundPosition;
+            return found;
         }
 
         /// <summary>
@@ -195,7 +181,43 @@ namespace BurnOutSharp
         /// </summary>
         public static bool StartsWith(this byte[] stack, byte[] needle)
         {
-            return stack.Contains(needle, out int _, start: 0, end: 1);
+            return stack.FirstPosition(needle, out int _, start: 0, end: 1);
+        }
+
+        /// <summary>
+        /// See if a byte array ends with another
+        /// </summary>
+        public static bool EndsWith(this byte[] stack, byte[] needle)
+        {
+            return stack.FirstPosition(needle, out int _, start: stack.Length - needle.Length);
+        }
+        
+        /// <summary>
+        /// Find the position of one array in another, if possible
+        /// </summary>
+        private static (bool, int) FindPosition(byte[] stack, byte[] needle, int start, int end, bool reverse)
+        {
+            // If either array is null or empty, we can't do anything
+            if (stack == null || stack.Length == 0 || needle == null || needle.Length == 0)
+                return (false, -1);
+
+            // If the needle array is larger than the stack array, it can't be contained within
+            if (needle.Length > stack.Length)
+                return (false, -1);
+
+            // If start or end are not set properly, set them to defaults
+            if (start < 0)
+                start = 0;
+            if (end < 0)
+                end = stack.Length - needle.Length;
+
+            for (int i = reverse ? end : start; reverse ? i > start : i < end; i += reverse ? -1 : 1)
+            {
+                if (stack.EqualAt(needle, i))
+                    return (true, i);
+            }
+
+            return (false, -1);
         }
 
         /// <summary>
@@ -243,12 +265,12 @@ namespace BurnOutSharp
         {
             // <?xml
             byte[] manifestStart = new byte[] { 0x3C, 0x3F, 0x78, 0x6D, 0x6C };
-            if (!fileContent.Contains(manifestStart, out int manifestStartPosition))
+            if (!fileContent.LastPosition(manifestStart, out int manifestStartPosition))
                 return null;
             
             // </assembly>
             byte[] manifestEnd = new byte[] { 0x3C, 0x2F, 0x61, 0x73, 0x73, 0x65, 0x6D, 0x62, 0x6C, 0x79, 0x3E };
-            if (!fileContent.Contains(manifestEnd, out int manifestEndPosition, start: manifestStartPosition))
+            if (!fileContent.FirstPosition(manifestEnd, out int manifestEndPosition, start: manifestStartPosition))
                 return null;
             
             // Read in the manifest to a string

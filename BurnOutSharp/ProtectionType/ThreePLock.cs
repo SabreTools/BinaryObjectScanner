@@ -7,11 +7,11 @@
         {
             // .ldr
             byte[] check = new byte[] { 0x2E, 0x6C, 0x64, 0x72 };
-            if (fileContent.Contains(check, out int position))
+            if (fileContent.FirstPosition(check, out int position))
             {
                 // .ldt
                 byte[] check2 = new byte[] { 0x2E, 0x6C, 0x64, 0x74 };
-                if (fileContent.Contains(check2, out int position2))
+                if (fileContent.FirstPosition(check2, out int position2))
                     return "3PLock" + (includePosition ? $" (Index {position}, {position2})" : string.Empty);
             }
 

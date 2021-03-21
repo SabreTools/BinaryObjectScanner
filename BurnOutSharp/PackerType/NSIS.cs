@@ -11,7 +11,7 @@ namespace BurnOutSharp.PackerType
         {
             // Nullsoft Install System
             byte[] check = new byte[] { 0x4e, 0x75, 0x6c, 0x6c, 0x73, 0x6f, 0x66, 0x74, 0x20, 0x49, 0x6e, 0x73, 0x74, 0x61, 0x6c, 0x6c, 0x20, 0x53, 0x79, 0x73, 0x74, 0x65, 0x6d };
-            if (fileContent.Contains(check, out int position))
+            if (fileContent.FirstPosition(check, out int position))
             {
                 string version = GetVersion(fileContent, position);
                 return $"NSIS {version}" + (includePosition ? $" (Index {position})" : string.Empty);
@@ -19,7 +19,7 @@ namespace BurnOutSharp.PackerType
 
             // NullsoftInst
             check = new byte[] { 0x4e, 0x75, 0x6c, 0x6c, 0x73, 0x6f, 0x66, 0x74, 0x49, 0x6e, 0x73, 0x74 };
-            if (fileContent.Contains(check, out position))
+            if (fileContent.FirstPosition(check, out position))
             {
                 return $"NSIS" + (includePosition ? $" (Index {position})" : string.Empty);
             }

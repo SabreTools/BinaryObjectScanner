@@ -15,7 +15,7 @@ namespace BurnOutSharp.PackerType
         {
             // WiseMain
             byte[] check = new byte[] { 0x57, 0x69, 0x73, 0x65, 0x4D, 0x61, 0x69, 0x6E };
-            if (fileContent.Contains(check, out int position))
+            if (fileContent.FirstPosition(check, out int position))
                 return "Wise Installation Wizard Module" + (includePosition ? $" (Index {position})" : string.Empty);
 
             return null;

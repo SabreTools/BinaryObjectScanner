@@ -12,7 +12,7 @@ namespace BurnOutSharp.ProtectionType
         {
             // "xlive.dll"
             byte[] check = new byte[] { 0x78, 0x6C, 0x69, 0x76, 0x65, 0x2E, 0x64, 0x6C, 0x6C };
-            if (fileContent.Contains(check, out int position))
+            if (fileContent.FirstPosition(check, out int position))
                 return "Games for Windows - Live" + (includePosition ? $" (Index {position})" : string.Empty);
 
             return null;

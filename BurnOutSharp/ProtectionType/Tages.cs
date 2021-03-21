@@ -12,17 +12,17 @@ namespace BurnOutSharp.ProtectionType
         {
             // "protected-tages-runtime.exe"
             byte[] check = new byte[] { 0x70, 0x72, 0x6F, 0x74, 0x65, 0x63, 0x74, 0x65, 0x64, 0x2D, 0x74, 0x61, 0x67, 0x65, 0x73, 0x2D, 0x72, 0x75, 0x6E, 0x74, 0x69, 0x6D, 0x65, 0x2E, 0x65, 0x78, 0x65 };
-            if (fileContent.Contains(check, out int position))
+            if (fileContent.FirstPosition(check, out int position))
                 return $"TAGES {Utilities.GetFileVersion(file)}" + (includePosition ? $" (Index {position})" : string.Empty);
 
             // "tagesprotection.com"
             check = new byte[] { 0x74, 0x61, 0x67, 0x65, 0x73, 0x70, 0x72, 0x6F, 0x74, 0x65, 0x63, 0x74, 0x69, 0x6F, 0x6E, 0x2E, 0x63, 0x6F, 0x6D };
-            if (fileContent.Contains(check, out position))
+            if (fileContent.FirstPosition(check, out position))
                 return $"TAGES {Utilities.GetFileVersion(file)}" + (includePosition ? $" (Index {position})" : string.Empty);
 
             // (char)0xE8 + "u" + (char)0x00 + (char)0x00 + (char)0x00 + (char)0xE8
             check = new byte[] { 0xE8, 0x75, 0x00, 0x00, 0x00, 0xE8 };
-            if (fileContent.Contains(check, out position))
+            if (fileContent.FirstPosition(check, out position))
             {
                 // (char)0xFF + (char)0xFF + "h"
                 if (new ArraySegment<byte>(fileContent, --position + 8, 3).SequenceEqual(new byte[] { 0xFF, 0xFF, 0x68 })) // TODO: Verify this subtract

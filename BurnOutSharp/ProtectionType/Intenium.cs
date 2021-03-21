@@ -23,7 +23,7 @@
         {
             // Trial + (char)0x00 + P
             byte[] check = new byte[] { 0x54, 0x72, 0x69, 0x61, 0x6C, 0x00, 0x50 };
-            if (fileContent.Contains(check, out int position))
+            if (fileContent.FirstPosition(check, out int position))
                 return "INTENIUM Trial & Buy Protection" + (includePosition ? $" (Index {position})" : string.Empty);
 
             return null;

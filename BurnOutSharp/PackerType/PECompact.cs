@@ -7,7 +7,7 @@
         {
             // "PEC2"
             byte[] check = new byte[] { 0x50, 0x45, 0x43, 0x32 };
-            if (fileContent.Contains(check, out int position, end: 2048))
+            if (fileContent.FirstPosition(check, out int position, end: 2048))
                 return "PE Compact 2" + (includePosition ? $" (Index {position})" : string.Empty);
 
             return null;

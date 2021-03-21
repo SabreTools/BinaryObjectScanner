@@ -13,17 +13,17 @@ namespace BurnOutSharp.ProtectionType
         {
             // XCP.DAT
             byte[] check = new byte[] { 0x58, 0x43, 0x50, 0x2E, 0x44, 0x41, 0x54 };
-            if (fileContent.Contains(check, out int position))
+            if (fileContent.FirstPosition(check, out int position))
                 return "XCP" + (includePosition ? $" (Index {position})" : string.Empty);
         
             // XCPPlugins.dll
             check = new byte[] { 0x58, 0x43, 0x50, 0x50, 0x6C, 0x75, 0x67, 0x69, 0x6E, 0x73, 0x2E, 0x64, 0x6C, 0x6C };
-            if (fileContent.Contains(check, out position))
+            if (fileContent.FirstPosition(check, out position))
                 return "XCP" + (includePosition ? $" (Index {position})" : string.Empty);
             
             // XCPPhoenix.dll
             check = new byte[] { 0x58, 0x43, 0x50, 0x50, 0x68, 0x6F, 0x65, 0x6E, 0x69, 0x78, 0x2E, 0x64, 0x6C, 0x6C };
-            if (fileContent.Contains(check, out position))
+            if (fileContent.FirstPosition(check, out position))
                 return "XCP" + (includePosition ? $" (Index {position})" : string.Empty);
 
             return null;

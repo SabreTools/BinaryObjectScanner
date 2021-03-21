@@ -13,17 +13,17 @@ namespace BurnOutSharp.ProtectionType
         {
             // DATA.CDS
             byte[] check = new byte[] { 0x44, 0x41, 0x54, 0x41, 0x2E, 0x43, 0x44, 0x53 };
-            if (fileContent.Contains(check, out int position))
+            if (fileContent.FirstPosition(check, out int position))
                 return "Cactus Data Shield 200" + (includePosition ? $" (Index {position})" : string.Empty);
 
             // \*.CDS
             check = new byte[] { 0x5C, 0x2A, 0x2E, 0x43, 0x44, 0x53 };
-            if (fileContent.Contains(check, out position))
+            if (fileContent.FirstPosition(check, out position))
                 return "Cactus Data Shield 200" + (includePosition ? $" (Index {position})" : string.Empty);
 
             // CDSPlayer
             check = new byte[] { 0x43, 0x44, 0x53, 0x50, 0x6C, 0x61, 0x79, 0x65, 0x72 };
-            if (fileContent.Contains(check, out position))
+            if (fileContent.FirstPosition(check, out position))
                 return "Cactus Data Shield 200" + (includePosition ? $" (Index {position})" : string.Empty);
 
             return null;

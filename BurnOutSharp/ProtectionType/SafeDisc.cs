@@ -14,11 +14,11 @@ namespace BurnOutSharp.ProtectionType
         {
             // "BoG_ *90.0&!!  Yy>"
             byte[] check = new byte[] { 0x42, 0x6F, 0x47, 0x5F, 0x20, 0x2A, 0x39, 0x30, 0x2E, 0x30, 0x26, 0x21, 0x21, 0x20, 0x20, 0x59, 0x79, 0x3E };
-            if (fileContent.Contains(check, out int position))
+            if (fileContent.FirstPosition(check, out int position))
             {
                 // "product activation library"
                 byte[] check2 = new byte[] { 0x70, 0x72, 0x6F, 0x64, 0x75, 0x63, 0x74, 0x20, 0x61, 0x63, 0x74, 0x69, 0x76, 0x61, 0x74, 0x69, 0x6F, 0x6E, 0x20, 0x6C, 0x69, 0x62, 0x72, 0x61, 0x72, 0x79 };
-                if (fileContent.Contains(check2, out int position2))
+                if (fileContent.FirstPosition(check2, out int position2))
                     return $"SafeCast {GetVersion(fileContent, position)}" + (includePosition ? $" (Index {position}, {position2})" : string.Empty);
                 else
                     return $"SafeDisc {GetVersion(fileContent, position)}" + (includePosition ? $" (Index {position})" : string.Empty);
@@ -26,7 +26,7 @@ namespace BurnOutSharp.ProtectionType
 
             // (char)0x00 + (char)0x00 + "BoG_"
             check = new byte[] { 0x00, 0x00, 0x42, 0x6F, 0x47, 0x5F };
-            if (fileContent.Contains(check, out position))
+            if (fileContent.FirstPosition(check, out position))
             {
                 string version = SearchSafeDiscVersion(file, fileContent);
                 if (version.Length > 0)
@@ -37,7 +37,7 @@ namespace BurnOutSharp.ProtectionType
 
             // "stxt774"
             check = new byte[] { 0x73, 0x74, 0x78, 0x74, 0x37, 0x37, 0x34 };
-            if (fileContent.Contains(check, out position))
+            if (fileContent.FirstPosition(check, out position))
             {
                 string version = SearchSafeDiscVersion(file, fileContent);
                 if (version.Length > 0)
@@ -48,7 +48,7 @@ namespace BurnOutSharp.ProtectionType
 
             // "stxt371"
             check = new byte[] { 0x73, 0x74, 0x78, 0x74, 0x33, 0x37, 0x31 };
-            if (fileContent.Contains(check, out position))
+            if (fileContent.FirstPosition(check, out position))
             {
                 string version = SearchSafeDiscVersion(file, fileContent);
                 if (version.Length > 0)
