@@ -22,7 +22,7 @@ namespace BurnOutSharp.PackerType
                 }, "Caphyon Advanced Installer"),
             };
 
-            return Utilities.GetFirstContentMatch(file, fileContent, matchers, includePosition);
+            return MatchUtil.GetFirstContentMatch(file, fileContent, matchers, includePosition);
         }
     }
 }

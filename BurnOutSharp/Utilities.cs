@@ -168,11 +168,13 @@ namespace BurnOutSharp
             // Initialize the loop variables
             bool found = true;
             int lastPosition = start;
+            var matcher = new ContentMatch(needle, end: end);
 
             // Loop over and get all positions
             while (found)
             {
-                (found, lastPosition) = FindPosition(stack, needle, lastPosition, end, false);
+                matcher.Start = lastPosition;
+                (found, lastPosition) = matcher.Match(stack, false);
                 if (found)
                     positions.Add(lastPosition);
             }
@@ -185,7 +187,8 @@ namespace BurnOutSharp
         /// </summary>
         public static bool FirstPosition(this byte[] stack, byte?[] needle, out int position, int start = 0, int end = -1)
         {
-            (bool found, int foundPosition) = FindPosition(stack, needle, start, end, false);
+            var matcher = new ContentMatch(needle, start, end);
+            (bool found, int foundPosition) = matcher.Match(stack, false);
             position = foundPosition;
             return found;
         }
@@ -195,7 +198,8 @@ namespace BurnOutSharp
         /// </summary>
         public static bool LastPosition(this byte[] stack, byte?[] needle, out int position, int start = 0, int end = -1)
         {
-            (bool found, int foundPosition) = FindPosition(stack, needle, start, end, true);
+            var matcher = new ContentMatch(needle, start, end);
+            (bool found, int foundPosition) = matcher.Match(stack, true);
             position = foundPosition;
             return found;
         }
@@ -216,88 +220,9 @@ namespace BurnOutSharp
             return stack.FirstPosition(needle, out int _, start: stack.Length - needle.Length);
         }
 
-        /// <summary>
-        /// Find the position of one array in another, if possible
-        /// </summary>
-        private static (bool, int) FindPosition(byte[] stack, byte?[] needle, int start, int end, bool reverse)
-        {
-            // If either array is null or empty, we can't do anything
-            if (stack == null || stack.Length == 0 || needle == null || needle.Length == 0)
-                return (false, -1);
-
-            // If the needle array is larger than the stack array, it can't be contained within
-            if (needle.Length > stack.Length)
-                return (false, -1);
-
-            // If start or end are not set properly, set them to defaults
-            if (start < 0)
-                start = 0;
-            if (end < 0)
-                end = stack.Length - needle.Length;
-
-            for (int i = reverse ? end : start; reverse ? i > start : i < end; i += reverse ? -1 : 1)
-            {
-                if (stack.EqualAt(needle, i))
-                    return (true, i);
-            }
-
-            return (false, -1);
-        }
-
-        /// <summary>
-        /// Get if a stack at a certain index is equal to a needle
-        /// </summary>
-        private static bool EqualAt(this byte[] stack, byte?[] needle, int index)
-        {
-            // If we're too close to the end of the stack, return false
-            if (needle.Length >= stack.Length - index)
-                return false;
-
-            for (int i = 0; i < needle.Length; i++)
-            {
-                // A null value is a wildcard
-                if (needle[i] == null)
-                    continue;
-                else if (stack[i + index] != needle[i])
-                    return false;
-            }
-
-            return true;
-        }
-
         #endregion
 
         #region Protection
-
-        /// <summary>
-        /// Get all content matches for a given list of matchers
-        /// </summary>
-        /// <param name="file">File to check for matches</param>
-        /// <param name="fileContent">Byte array representing the file contents</param>
-        /// <param name="matchers">Enumerable of matchers to be run on the file</param>
-        /// <param name="includePosition">True to include positional data, false otherwise</param>
-        /// <returns>List of strings representing the matched protections, null or empty otherwise</returns>
-        public static List<string> GetAllContentMatches(string file, byte[] fileContent, IEnumerable<Matcher> matchers, bool includePosition = false)
-        {
-            return FindAllContentMatches(file, fileContent, matchers, includePosition, false);
-        }
-
-        /// <summary>
-        /// Get first content match for a given list of matchers
-        /// </summary>
-        /// <param name="file">File to check for matches</param>
-        /// <param name="fileContent">Byte array representing the file contents</param>
-        /// <param name="matchers">Enumerable of matchers to be run on the file</param>
-        /// <param name="includePosition">True to include positional data, false otherwise</param>
-        /// <returns>String representing the matched protection, null otherwise</returns>
-        public static string GetFirstContentMatch(string file, byte[] fileContent, IEnumerable<Matcher> matchers, bool includePosition = false)
-        {
-            var contentMatches = FindAllContentMatches(file, fileContent, matchers, includePosition, false);
-            if (contentMatches == null || !contentMatches.Any())
-                return null;
-            
-            return contentMatches.First();
-        }
 
         /// <summary>
         /// Get the file version as reported by the filesystem
@@ -382,79 +307,6 @@ namespace BurnOutSharp
             }
         }
     
-        /// <summary>
-        /// Get the required set of content matches on a per Matcher basis
-        /// </summary>
-        /// <param name="file">File to check for matches</param>
-        /// <param name="fileContent">Byte array representing the file contents</param>
-        /// <param name="matchers">Enumerable of matchers to be run on the file</param>
-        /// <param name="includePosition">True to include positional data, false otherwise</param>
-        /// <param name="stopAfterFirst">True to stop after the first match, false otherwise</param>
-        /// <returns>List of strings representing the matched protections, null or empty otherwise</returns>        
-        private static List<string> FindAllContentMatches(
-            string file,
-            byte[] fileContent,
-            IEnumerable<Matcher> matchers,
-            bool includePosition,
-            bool stopAfterFirst)
-        {
-            // If there's no mappings, we can't match
-            if (matchers == null || !matchers.Any())
-                return null;
-
-            // Initialize the list of matched protections
-            List<string> matchedProtections = new List<string>();
-
-            // Loop through and try everything otherwise
-            foreach (var matcher in matchers)
-            {
-                // Setup for a single matcher
-                bool allMatches = true;
-                List<int> positions = new List<int>();
-
-                // Loop through all content matches and make sure all pass
-                foreach (var contentMatch in matcher.ContentMatches)
-                {
-                    if (!fileContent.FirstPosition(contentMatch.Needle, out int position, contentMatch.Start, contentMatch.End))
-                    {
-                        allMatches = false;
-                        break;
-                    }
-                    else
-                    {
-                        positions.Add(position);
-                    }
-                }
-
-                // If not all matches pass, then we continue
-                if (!allMatches)
-                    continue;
-
-                // Format the list of all positions found
-                string positionsString = string.Join(", ", positions);
-
-                // If we there is no version method, just return the protection name
-                if (matcher.GetVersion == null)
-                {
-                    matchedProtections.Add((matcher.ProtectionName ?? "Unknown Protection") + (includePosition ? $" (Index {positionsString})" : string.Empty));
-                }
-
-                // Otherwise, invoke the version method
-                // TODO: Pass all positions to the version finding method
-                else
-                {
-                    string version = matcher.GetVersion(file, fileContent, positions[0]) ?? "Unknown Version";
-                    matchedProtections.Add($"{matcher.ProtectionName} {version}" + (includePosition ? $" (Index {positionsString})" : string.Empty));
-                }
-
-                // If we're stopping after the first protection, bail out here
-                if (stopAfterFirst)
-                    return matchedProtections;
-            }
-
-            return matchedProtections;
-        }
-
         #endregion
     }
 }

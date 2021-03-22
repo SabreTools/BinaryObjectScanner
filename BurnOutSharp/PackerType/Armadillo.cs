@@ -17,7 +17,7 @@ namespace BurnOutSharp.PackerType
                 new Matcher(new byte?[] { 0x41, 0x52, 0x4D, 0x44, 0x45, 0x42, 0x55, 0x47 }, "Armadillo"),
             };
 
-            return Utilities.GetFirstContentMatch(file, fileContent, matchers, includePosition);
+            return MatchUtil.GetFirstContentMatch(file, fileContent, matchers, includePosition);
         }
     }
 }

@@ -44,7 +44,7 @@ namespace BurnOutSharp.PackerType
                 // }, GetVersion, "Setup Factory"),
             };
 
-            return Utilities.GetFirstContentMatch(file, fileContent, matchers, includePosition);
+            return MatchUtil.GetFirstContentMatch(file, fileContent, matchers, includePosition);
         }
 
         /// <inheritdoc/>

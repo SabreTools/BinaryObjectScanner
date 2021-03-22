@@ -17,7 +17,7 @@ namespace BurnOutSharp.ProtectionType
                 new Matcher(new byte?[] { 0x57, 0x54, 0x4D, 0x37, 0x36, 0x35, 0x34, 0x35 }, "WTM CD Protect"),
             };
 
-            return Utilities.GetFirstContentMatch(file, fileContent, matchers, includePosition);
+            return MatchUtil.GetFirstContentMatch(file, fileContent, matchers, includePosition);
         }
 
         /// <inheritdoc/>

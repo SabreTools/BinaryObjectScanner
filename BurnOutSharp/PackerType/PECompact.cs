@@ -27,7 +27,7 @@ namespace BurnOutSharp.PackerType
                 }, "PE Compact 2"),
             };
 
-            return Utilities.GetFirstContentMatch(file, fileContent, matchers, includePosition);
+            return MatchUtil.GetFirstContentMatch(file, fileContent, matchers, includePosition);
         }
 
         public static string GetVersion(string file, byte[] fileContent, int position)

@@ -55,5 +55,36 @@ namespace BurnOutSharp.Matching
         }
 
         #endregion
+
+        #region Matching
+
+        /// <summary>
+        /// Determine wheter all content matches pass
+        /// </summary>
+        /// <param name="fileContent">Byte array representing the file contents</param>
+        /// <returns>Tuole of passing status and matching positions</returns>        
+        public (bool, List<int>) MatchesAll(byte[] fileContent)
+        {
+            // If no content matches are defined, we fail out
+            if (ContentMatches == null || !ContentMatches.Any())
+                return (false, null);
+
+            // Initialize the position list
+            List<int> positions = new List<int>();
+
+            // Loop through all content matches and make sure all pass
+            foreach (var contentMatch in ContentMatches)
+            {
+                (bool match, int position) = contentMatch.Match(fileContent);
+                if (!match)
+                    return (false, null);
+                else
+                    positions.Add(position);
+            }
+
+            return (true, positions);
+        }
+
+        #endregion
     }
 }

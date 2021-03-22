@@ -28,7 +28,7 @@ namespace BurnOutSharp.ProtectionType
                 // }, "3PLock"),
             };
 
-            return Utilities.GetFirstContentMatch(file, fileContent, matchers, includePosition);
+            return MatchUtil.GetFirstContentMatch(file, fileContent, matchers, includePosition);
         }
     }
 }

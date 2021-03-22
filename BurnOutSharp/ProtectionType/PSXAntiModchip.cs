@@ -42,7 +42,7 @@ namespace BurnOutSharp.ProtectionType
                 }, "PlayStation Anti-modchip (Japanese)"),
             };
 
-            return Utilities.GetFirstContentMatch(file, fileContent, matchers, includePosition);
+            return MatchUtil.GetFirstContentMatch(file, fileContent, matchers, includePosition);
         }
     }
 }

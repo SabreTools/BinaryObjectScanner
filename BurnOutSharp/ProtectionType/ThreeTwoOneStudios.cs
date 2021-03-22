@@ -22,7 +22,7 @@ namespace BurnOutSharp.ProtectionType
                 }, "321Studios Online Activation"),
             };
 
-            return Utilities.GetFirstContentMatch(file, fileContent, matchers, includePosition);
+            return MatchUtil.GetFirstContentMatch(file, fileContent, matchers, includePosition);
         }
     }
 }

@@ -29,7 +29,7 @@ namespace BurnOutSharp.PackerType
                     }, end: 200), "CExe"),
             };
 
-            return Utilities.GetFirstContentMatch(file, fileContent, matchers, includePosition);
+            return MatchUtil.GetFirstContentMatch(file, fileContent, matchers, includePosition);
         }
 
         /// <inheritdoc/>
