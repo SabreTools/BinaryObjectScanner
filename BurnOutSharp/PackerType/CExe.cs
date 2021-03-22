@@ -1,9 +1,11 @@
 using System.Collections.Generic;
 using System.IO;
+using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.PackerType
 {
-    // The official website for CExe also includes the source code (which does have to be retrieved by the Wayback Machine). http://www.scottlu.com/Content/CExe.html
+    // The official website for CExe also includes the source code (which does have to be retrieved by the Wayback Machine)
+    // http://www.scottlu.com/Content/CExe.html
     public class CExe : IContentCheck, IScannable
     {
         /// <inheritdoc/>
@@ -12,14 +14,22 @@ namespace BurnOutSharp.PackerType
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
-            // "%WoÁa6.’a6.’a6.’a6.’{6.’.).’f6.’‰).’`6.’Ù0.’`6.’"
-            byte?[] check = new byte?[] { 0x25, 0x57, 0x6F, 0xC1, 0x61, 0x36, 0x01, 0x92, 0x61, 0x36, 0x01, 0x92, 0x61, 0x36, 0x01, 0x92, 0x61, 0x36, 0x00, 0x92, 0x7B, 0x36, 0x01, 0x92, 0x03, 0x29, 0x12, 0x92, 0x66, 0x36, 0x01, 0x92, 0x89, 0x29, 0x0A, 0x92, 0x60, 0x36, 0x01, 0x92, 0xD9, 0x30, 0x07, 0x92, 0x60, 0x36, 0x01, 0x92 };
-            if (fileContent.FirstPosition(check, out int position, end: 200))
+            var matchers = new List<Matcher>
             {
-                return "CExe";
-            }
+                // %Woï¿½a6.ï¿½a6.ï¿½a6.ï¿½a6.ï¿½{6.ï¿½.).ï¿½f6.ï¿½ï¿½).ï¿½`6.ï¿½ï¿½0.ï¿½`6.ï¿½
+                new Matcher(
+                    new ContentMatch(new byte?[]
+                    {
+                        0x25, 0x57, 0x6F, 0xC1, 0x61, 0x36, 0x01, 0x92,
+                        0x61, 0x36, 0x01, 0x92, 0x61, 0x36, 0x01, 0x92,
+                        0x61, 0x36, 0x00, 0x92, 0x7B, 0x36, 0x01, 0x92,
+                        0x03, 0x29, 0x12, 0x92, 0x66, 0x36, 0x01, 0x92,
+                        0x89, 0x29, 0x0A, 0x92, 0x60, 0x36, 0x01, 0x92,
+                        0xD9, 0x30, 0x07, 0x92, 0x60, 0x36, 0x01, 0x92
+                    }, end: 200), "CExe"),
+            };
 
-            return null;
+            return Utilities.GetFirstContentMatch(file, fileContent, matchers, includePosition);
         }
 
         /// <inheritdoc/>
