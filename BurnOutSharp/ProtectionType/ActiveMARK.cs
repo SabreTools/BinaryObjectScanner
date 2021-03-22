@@ -22,7 +22,7 @@ namespace BurnOutSharp.ProtectionType
                 }, "ActiveMARK 5"),
             };
 
-            return Utilities.GetContentMatches(file, fileContent, matchers, includePosition);
+            return Utilities.GetFirstContentMatch(file, fileContent, matchers, includePosition);
         }
     }
 }

@@ -106,7 +106,7 @@ namespace BurnOutSharp.ProtectionType
                 }, "EA DRM Protection"),
             };
 
-            return Utilities.GetContentMatches(file, fileContent, matchers, includePosition);
+            return Utilities.GetFirstContentMatch(file, fileContent, matchers, includePosition);
         }
     }
 }

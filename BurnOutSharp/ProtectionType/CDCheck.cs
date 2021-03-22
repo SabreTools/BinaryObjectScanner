@@ -21,7 +21,7 @@ namespace BurnOutSharp.ProtectionType
                 new Matcher(new byte?[] { 0x43, 0x44, 0x43, 0x68, 0x65, 0x63, 0x6B }, "Executable-Based CD Check"),
             };
 
-            return Utilities.GetContentMatches(file, fileContent, matchers, includePosition);
+            return Utilities.GetFirstContentMatch(file, fileContent, matchers, includePosition);
         }
 
         // These content checks are too broad to be useful
@@ -45,7 +45,7 @@ namespace BurnOutSharp.ProtectionType
                 }, "Executable-Based CD Check"),
             };
 
-            return Utilities.GetContentMatches(file, fileContent, matchers, includePosition);
+            return Utilities.GetFirstContentMatch(file, fileContent, matchers, includePosition);
         }
     }
 }

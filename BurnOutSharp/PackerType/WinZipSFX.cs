@@ -29,7 +29,7 @@ namespace BurnOutSharp.PackerType
                 new Matcher(new byte?[] { 0x5F, 0x77, 0x69, 0x6E, 0x7A, 0x69, 0x70, 0x5F }, GetVersion, "WinZip SFX"),
             };
 
-            return Utilities.GetContentMatches(file, fileContent, matchers, includePosition);
+            return Utilities.GetFirstContentMatch(file, fileContent, matchers, includePosition);
         }
 
         /// <inheritdoc/>

@@ -21,7 +21,7 @@ namespace BurnOutSharp.PackerType
                 }, "EXE Stealth"),
             };
 
-            return Utilities.GetContentMatches(file, fileContent, matchers, includePosition);
+            return Utilities.GetFirstContentMatch(file, fileContent, matchers, includePosition);
         }
     }
 }

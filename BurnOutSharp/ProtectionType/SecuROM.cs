@@ -46,7 +46,7 @@ namespace BurnOutSharp.ProtectionType
                 new Matcher(new byte?[] { 0x2E, 0x63, 0x6D, 0x73, 0x5F, 0x64, 0x00 }, "SecuROM 1-3"),
             };
 
-            return Utilities.GetContentMatches(file, fileContent, matchers, includePosition);
+            return Utilities.GetFirstContentMatch(file, fileContent, matchers, includePosition);
         }
 
         /// <inheritdoc/>

@@ -24,7 +24,7 @@ namespace BurnOutSharp.ProtectionType
                 new Matcher(new byte?[] { 0x2E, 0x67, 0x72, 0x61, 0x6E, 0x64, 0x00 }, "CD-Cops"),
             };
 
-            return Utilities.GetContentMatches(file, fileContent, matchers, includePosition);
+            return Utilities.GetFirstContentMatch(file, fileContent, matchers, includePosition);
         }
 
         /// <inheritdoc/>

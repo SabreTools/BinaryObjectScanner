@@ -29,7 +29,7 @@ namespace BurnOutSharp.PackerType
                 }, "NSIS"),
             };
 
-            return Utilities.GetContentMatches(file, fileContent, matchers, includePosition);
+            return Utilities.GetFirstContentMatch(file, fileContent, matchers, includePosition);
         }
 
         public static string GetVersion(string file, byte[] fileContent, int index)
