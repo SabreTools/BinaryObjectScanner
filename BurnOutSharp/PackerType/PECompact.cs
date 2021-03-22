@@ -17,7 +17,7 @@ namespace BurnOutSharp.PackerType
                 new Matcher(new byte?[] { 0x70, 0x65, 0x63, 0x31 }, "PE Compact 1"),
 
                 // PEC2
-                new Matcher(new byte?[] { 0x50, 0x45, 0x43, 0x32 }, GetVersion, "PE Compact 2 v"),
+                new Matcher(new byte?[] { 0x50, 0x45, 0x43, 0x32 }, GetVersion, "PE Compact 2"),
 
                 // PECompact2
                 new Matcher(new byte?[]
@@ -32,7 +32,7 @@ namespace BurnOutSharp.PackerType
 
         public static string GetVersion(string file, byte[] fileContent, int position)
         {
-            return BitConverter.ToInt16(fileContent, position + 4).ToString();
+            return $"v{BitConverter.ToInt16(fileContent, position + 4)}";
         }
     }
 }

@@ -14,8 +14,8 @@ namespace BurnOutSharp.PackerType
                 // UPX!
                 new Matcher(new byte?[] { 0x55, 0x50, 0x58, 0x21 }, GetVersion, "Inno Setup"),
 
-                // NOS
-                new Matcher(new byte?[] { 0x4E, 0x4F, 0x53 }, GetVersion, "UPX (NOS Variant)"),
+                // NOS 
+                new Matcher(new byte?[] { 0x4E, 0x4F, 0x53, 0x20 }, GetVersion, "UPX (NOS Variant)"),
 
                 new Matcher(
                     new List<byte?[]>
