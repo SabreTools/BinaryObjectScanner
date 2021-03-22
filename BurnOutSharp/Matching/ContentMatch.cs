@@ -3,7 +3,7 @@ using System.Diagnostics.Eventing.Reader;
 namespace BurnOutSharp.Matching
 {
     /// <summary>
-    /// Single matching criteria
+    /// Content matching criteria
     /// </summary>
     internal class ContentMatch
     {
