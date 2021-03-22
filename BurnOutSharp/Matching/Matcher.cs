@@ -100,7 +100,7 @@ namespace BurnOutSharp.Matching
         /// Determine whether all content matches pass
         /// </summary>
         /// <param name="fileContent">Byte array representing the file contents</param>
-        /// <returns>Tuole of passing status and matching positions</returns>        
+        /// <returns>Tuple of passing status and matching positions</returns>        
         public (bool, List<int>) MatchesAll(byte[] fileContent)
         {
             // If no content matches are defined, we fail out
@@ -127,7 +127,7 @@ namespace BurnOutSharp.Matching
         /// Determine whether all content matches pass
         /// </summary>
         /// <param name="stack">List of strings to try to match</param>
-        /// <returns>Tuole of passing status and matching values</returns>        
+        /// <returns>Tuple of passing status and matching values</returns>        
         public (bool, List<string>) MatchesAll(List<string> stack)
         {
             // If no path matches are defined, we fail out
@@ -154,7 +154,7 @@ namespace BurnOutSharp.Matching
         /// Determine whether any content matches pass
         /// </summary>
         /// <param name="stack">List of strings to try to match</param>
-        /// <returns>Tuole of passing status and matching values</returns>        
+        /// <returns>Tuple of passing status and matching values</returns>        
         public (bool, string) MatchesAny(List<string> stack)
         {
             // If no path matches are defined, we fail out

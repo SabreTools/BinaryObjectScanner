@@ -13,13 +13,19 @@ namespace BurnOutSharp.Matching
         public string Needle { get; set; }
 
         /// <summary>
+        /// Match exact casing instead of invariant
+        /// </summary>
+        public bool MatchExact { get; set; }
+
+        /// <summary>
         /// Match that values end with the needle and not just contains
         /// </summary>
         public bool UseEndsWith { get; set; }
 
-        public PathMatch(string needle, bool useEndsWith = false)
+        public PathMatch(string needle, bool matchExact = false, bool useEndsWith = false)
         {
             Needle = needle;
+            MatchExact = matchExact;
             UseEndsWith = useEndsWith;
         }
 
@@ -35,11 +41,17 @@ namespace BurnOutSharp.Matching
             if (stack == null || stack.Count == 0 || Needle == null || Needle.Length == 0)
                 return (false, null);
 
+            // Preprocess the needle, if necessary
+            string procNeedle = MatchExact ? Needle : Needle.ToLowerInvariant();
+
             foreach (string stackItem in stack)
             {
-                if (UseEndsWith && stackItem.EndsWith(Needle))
+                // Preprocess the stack item, ir necessary
+                string procStackItem = MatchExact ? stackItem : stackItem.ToLowerInvariant();
+
+                if (UseEndsWith && procStackItem.EndsWith(procNeedle))
                     return (true, stackItem);
-                else if (!UseEndsWith && stackItem.Contains(Needle))
+                else if (!UseEndsWith && procStackItem.Contains(procNeedle))
                     return (true, stackItem);
             }
 
