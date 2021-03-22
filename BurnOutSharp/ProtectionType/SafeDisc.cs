@@ -7,6 +7,7 @@ using System.Text;
 
 namespace BurnOutSharp.ProtectionType
 {
+    // TODO: Figure out how to use GetContentMatches here
     public class SafeDisc : IContentCheck, IPathCheck
     {
         /// <inheritdoc/>

@@ -18,7 +18,11 @@ namespace BurnOutSharp.ProtectionType
                 new Matcher(new byte?[] { 0x69, 0x63, 0x64, 0x32, 0x00 }, "Code Lock"),
 
                 // CODE-LOCK.OCX
-                new Matcher(new byte?[] { 0x43, 0x4F, 0x44, 0x45, 0x2D, 0x4C, 0x4F, 0x43, 0x4B, 0x2E, 0x4F, 0x43, 0x58 }, "Code Lock"),
+                new Matcher(new byte?[]
+                {
+                    0x43, 0x4F, 0x44, 0x45, 0x2D, 0x4C, 0x4F, 0x43,
+                    0x4B, 0x2E, 0x4F, 0x43, 0x58
+                }, "Code Lock"),
             };
 
             return Utilities.GetContentMatches(file, fileContent, matchers, includePosition);

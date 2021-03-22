@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -11,42 +12,41 @@ namespace BurnOutSharp.ProtectionType
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
-            // "AddD" + (char)0x03 + (char)0x00 + (char)0x00 + (char)0x00)
-            byte?[] check = new byte?[] { 0x41, 0x64, 0x64, 0x44, 0x03, 0x00, 0x00, 0x00 };
-            if (fileContent.FirstPosition(check, out int position))
-                return $"SecuROM {GetV4Version(fileContent, position)}" + (includePosition ? $" (Index {position})" : string.Empty);
+            var matchers = new List<Matcher>
+            {
+                // AddD + (char)0x03 + (char)0x00 + (char)0x00 + (char)0x00)
+                new Matcher(new byte?[] { 0x41, 0x64, 0x64, 0x44, 0x03, 0x00, 0x00, 0x00 }, GetV4Version, "SecuROM"),
 
-            // (char)0xCA + (char)0xDD + (char)0xDD + (char)0xAC + (char)0x03
-            check = new byte?[] { 0xCA, 0xDD, 0xDD, 0xAC, 0x03 };
-            if (fileContent.FirstPosition(check, out position))
-                return $"SecuROM {GetV5Version(fileContent, position)}" + (includePosition ? $" (Index {position})" : string.Empty);
+                // (char)0xCA + (char)0xDD + (char)0xDD + (char)0xAC + (char)0x03
+                new Matcher(new byte?[] { 0xCA, 0xDD, 0xDD, 0xAC, 0x03 }, GetV5Version, "SecuROM"),
 
-            // ".securom" + (char)0xE0 + (char)0xC0
-            check = new byte?[] { 0x2E, 0x73, 0x65, 0x63, 0x75, 0x72, 0x6F, 0x6D, 0xE0, 0xC0 };
-            if (fileContent.FirstPosition(check, out position) && position == 0)
-                return $"SecuROM {GetV7Version(fileContent)}" + (includePosition ? $" (Index {position})" : string.Empty);
+                // .securom + (char)0xE0 + (char)0xC0
+                new Matcher(new byte?[]
+                {
+                    0x2E, 0x73, 0x65, 0x63, 0x75, 0x72, 0x6F, 0x6D,
+                    0xE0, 0xC0
+                }, GetV7Version, "SecuROM"),
 
-            // ".securom"
-            check = new byte?[] { 0x2E, 0x73, 0x65, 0x63, 0x75, 0x72, 0x6F, 0x6D };
-            if (fileContent.FirstPosition(check, out position))
-                return $"SecuROM {GetV7Version(fileContent)}" + (includePosition ? $" (Index {position})" : string.Empty);
+                // .securom
+                new Matcher(new byte?[] { 0x2E, 0x73, 0x65, 0x63, 0x75, 0x72, 0x6F, 0x6D }, GetV7Version, "SecuROM"),
 
-            // "_and_play.dll" + (char)0x00 + "drm_pagui_doit"
-            check = new byte?[] { 0x5F, 0x61, 0x6E, 0x64, 0x5F, 0x70, 0x6C, 0x61, 0x79, 0x2E, 0x64, 0x6C, 0x6C, 0x00, 0x64, 0x72, 0x6D, 0x5F, 0x70, 0x61, 0x67, 0x75, 0x69, 0x5F, 0x64, 0x6F, 0x69, 0x74 };
-            if (fileContent.FirstPosition(check, out position))
-                return $"SecuROM Product Activation {Utilities.GetFileVersion(file)}" + (includePosition ? $" (Index {position})" : string.Empty);
+                // _and_play.dll + (char)0x00 + drm_pagui_doit
+                new Matcher(new byte?[]
+                {
+                    0x5F, 0x61, 0x6E, 0x64, 0x5F, 0x70, 0x6C, 0x61,
+                    0x79, 0x2E, 0x64, 0x6C, 0x6C, 0x00, 0x64, 0x72,
+                    0x6D, 0x5F, 0x70, 0x61, 0x67, 0x75, 0x69, 0x5F,
+                    0x64, 0x6F, 0x69, 0x74
+                }, Utilities.GetFileVersion, "SecuROM Product Activation"),
 
-            // ".cms_t" + (char)0x00
-            check = new byte?[] { 0x2E, 0x63, 0x6D, 0x73, 0x5F, 0x74, 0x00 };
-            if (fileContent.FirstPosition(check, out position))
-                return "SecuROM 1-3" + (includePosition ? $" (Index {position})" : string.Empty);
+                // .cms_t + (char)0x00
+                new Matcher(new byte?[] { 0x2E, 0x63, 0x6D, 0x73, 0x5F, 0x74, 0x00 }, "SecuROM 1-3"),
 
-            // ".cms_d" + (char)0x00
-            check = new byte?[] { 0x2E, 0x63, 0x6D, 0x73, 0x5F, 0x64, 0x00 };
-            if (fileContent.FirstPosition(check, out position))
-                return "SecuROM 1-3" + (includePosition ? $" (Index {position})" : string.Empty);
+                // .cms_d + (char)0x00
+                new Matcher(new byte?[] { 0x2E, 0x63, 0x6D, 0x73, 0x5F, 0x64, 0x00 }, "SecuROM 1-3"),
+            };
 
-            return null;
+            return Utilities.GetContentMatches(file, fileContent, matchers, includePosition);
         }
 
         /// <inheritdoc/>
@@ -92,7 +92,7 @@ namespace BurnOutSharp.ProtectionType
             return null;
         }
 
-        private static string GetV4Version(byte[] fileContent, int position)
+        public static string GetV4Version(string file, byte[] fileContent, int position)
         {
             int index = position + 8; // Begin reading after "AddD"
             char version = (char)fileContent[index];
@@ -112,7 +112,7 @@ namespace BurnOutSharp.ProtectionType
             return $"{version}.{subVersion}.{subSubVersion}.{subSubSubVersion}";
         }
 
-        private static string GetV5Version(byte[] fileContent, int position)
+        public static string GetV5Version(string file, byte[] fileContent, int position)
         {
             int index = position + 8; // Begin reading after "ÊÝÝ¬"
             byte version = (byte)(fileContent[index] & 0x0F);
@@ -145,7 +145,7 @@ namespace BurnOutSharp.ProtectionType
             return $"{version}.{subVersion[0]}{subVersion[1]}.{subSubVersion[0]}{subSubVersion[1]}.{subSubSubVersion[0]}{subSubSubVersion[1]}{subSubSubVersion[2]}{subSubSubVersion[3]}";
         }
 
-        private static string GetV7Version(byte[] fileContent)
+        public static string GetV7Version(string file, byte[] fileContent, int position)
         {
             int index = 236;
             byte[] bytes = new ReadOnlySpan<byte>(fileContent, index, 4).ToArray();

@@ -20,7 +20,11 @@ namespace BurnOutSharp.PackerType
                 new Matcher(new byte?[] { 0x50, 0x45, 0x43, 0x32 }, GetVersion, "PE Compact 2 v"),
 
                 // PECompact2
-                new Matcher(new byte?[] { 0x50, 0x45, 0x43, 0x6F, 0x6D, 0x70, 0x61, 0x63, 0x74, 0x32 }, "PE Compact 2"),
+                new Matcher(new byte?[]
+                {
+                    0x50, 0x45, 0x43, 0x6F, 0x6D, 0x70, 0x61, 0x63,
+                    0x74, 0x32
+                }, "PE Compact 2"),
             };
 
             return Utilities.GetContentMatches(file, fileContent, matchers, includePosition);

@@ -14,7 +14,11 @@ namespace BurnOutSharp.ProtectionType
             var matchers = new List<Matcher>
             {
                 // Tom Commander
-                new Matcher(new byte?[] { 0x54, 0x6F, 0x6D, 0x20, 0x43, 0x6F, 0x6D, 0x6D, 0x61, 0x6E, 0x64, 0x65, 0x72 }, "CopyKiller"),
+                new Matcher(new byte?[]
+                {
+                    0x54, 0x6F, 0x6D, 0x20, 0x43, 0x6F, 0x6D, 0x6D,
+                    0x61, 0x6E, 0x64, 0x65, 0x72
+                }, "CopyKiller"),
             };
 
             return Utilities.GetContentMatches(file, fileContent, matchers, includePosition);

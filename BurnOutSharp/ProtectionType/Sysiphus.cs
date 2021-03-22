@@ -1,24 +1,34 @@
-﻿namespace BurnOutSharp.ProtectionType
+﻿using System.Collections.Generic;
+using BurnOutSharp.Matching;
+
+namespace BurnOutSharp.ProtectionType
 {
     public class Sysiphus : IContentCheck
     {
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
-            // "V SUHPISYSDVD"
-            byte?[] check = new byte?[] { 0x56, 0x20, 0x53, 0x55, 0x48, 0x50, 0x49, 0x53, 0x59, 0x53, 0x44, 0x56, 0x44 };
-            if (fileContent.FirstPosition(check, out int position))
-                return $"Sysiphus DVD {GetVersion(fileContent, position)}" + (includePosition ? $" (Index {position})" : string.Empty);
+            var matchers = new List<Matcher>
+            {
+                // V SUHPISYSDVD
+                new Matcher(new byte?[]
+                {
+                    0x56, 0x20, 0x53, 0x55, 0x48, 0x50, 0x49, 0x53,
+                    0x59, 0x53, 0x44, 0x56, 0x44
+                }, GetVersion, "Sysiphus DVD"),
 
-            // "V SUHPISYS"
-            check = new byte?[] { 0x56, 0x20, 0x53, 0x55, 0x48, 0x50, 0x49, 0x53, 0x59, 0x53 };
-            if (fileContent.FirstPosition(check, out position))
-                return $"Sysiphus {GetVersion(fileContent, position)}" + (includePosition ? $" (Index {position})" : string.Empty);
+                // V SUHPISYSDVD
+                new Matcher(new byte?[]
+                {
+                    0x56, 0x20, 0x53, 0x55, 0x48, 0x50, 0x49, 0x53,
+                    0x59, 0x53
+                }, GetVersion, "Sysiphus"),
+            };
 
-            return null;
+            return Utilities.GetContentMatches(file, fileContent, matchers, includePosition);
         }
 
-        private static string GetVersion(byte[] fileContent, int position)
+        public static string GetVersion(string file, byte[] fileContent, int position)
         {
             int index = position - 3;
             char subVersion = (char)fileContent[index];

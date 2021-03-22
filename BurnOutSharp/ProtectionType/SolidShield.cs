@@ -6,6 +6,7 @@ using System.Linq;
 
 namespace BurnOutSharp.ProtectionType
 {
+    // TODO: Figure out how to use GetContentMatches here
     public class SolidShield : IContentCheck, IPathCheck
     {
         /// <inheritdoc/>

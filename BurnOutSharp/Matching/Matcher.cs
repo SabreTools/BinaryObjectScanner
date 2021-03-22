@@ -27,13 +27,13 @@ namespace BurnOutSharp.Matching
         #region Constructors
 
         public Matcher(byte?[] needle, string protectionName)
-            : this(new List<byte?[]>() { needle }, null, protectionName) { }
+            : this(new List<byte?[]> { needle }, null, protectionName) { }
 
         public Matcher(List<byte?[]> needles, string protectionName)
             : this(needles, null, protectionName) { }
 
         public Matcher(byte?[] needle, Func<string, byte[], int, string> getVersion, string protectionName)
-            : this(new List<byte?[]>() { needle }, getVersion, protectionName) { }
+            : this(new List<byte?[]> { needle }, getVersion, protectionName) { }
 
         public Matcher(List<byte?[]> needles, Func<string, byte[], int, string> getVersion, string protectionName)
             : this(needles.Select(n => new ContentMatch(n)).ToList(), getVersion, protectionName) { }

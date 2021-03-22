@@ -322,6 +322,18 @@ namespace BurnOutSharp
         }
 
         /// <summary>
+        /// Wrapper for GetFileVersion for use in matching
+        /// </summary>
+        /// <param name="file">File to check for version</param>
+        /// <param name="fileContent">Byte array representing the file contents</param>
+        /// <param name="position">Last matched position in the contents</param>
+        /// <returns>Version string, null on error</returns>
+        public static string GetFileVersion(string file, byte[] fileContent, int position)
+        {
+            return GetFileVersion(file);
+        }
+
+        /// <summary>
         /// Get the assembly version as determined by an embedded assembly manifest
         /// </summary>
         /// <param name="fileContent">Byte array representing the file contents</param>

@@ -7,6 +7,7 @@ using System.Threading;
 
 namespace BurnOutSharp.ProtectionType
 {
+    // TODO: Figure out how to use GetContentMatches here
     public class VOBProtectCDDVD : IContentCheck, IPathCheck
     {
         /// <inheritdoc/>
