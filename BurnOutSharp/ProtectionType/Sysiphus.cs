@@ -38,8 +38,8 @@ namespace BurnOutSharp.ProtectionType
 
             if (char.IsNumber(version) && char.IsNumber(subVersion))
                 return $"{version}.{subVersion}";
-            else
-                return "";
+
+            return string.Empty;
         }
     }
 }

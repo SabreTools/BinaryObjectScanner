@@ -91,8 +91,12 @@ namespace BurnOutSharp.Matching
                 // Otherwise, invoke the version method
                 else
                 {
-                    string version = matcher.GetContentVersion(file, fileContent, positions) ?? "Unknown Version";
-                    matchedProtections.Add($"{matcher.ProtectionName ?? "Unknown Protection"} {version}" + (includePosition ? $" (Index {positionsString})" : string.Empty));
+                    // A null version returned means the check didn't pass at the version step
+                    string version = matcher.GetContentVersion(file, fileContent, positions);
+                    if (version == null)
+                        continue;
+
+                    matchedProtections.Add($"{matcher.ProtectionName ?? "Unknown Protection"} {version}".TrimEnd() + (includePosition ? $" (Index {positionsString})" : string.Empty));
                 }
 
                 // If we're stopping after the first protection, bail out here

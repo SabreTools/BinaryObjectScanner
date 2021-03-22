@@ -113,9 +113,9 @@ namespace BurnOutSharp.ProtectionType
                     return "5.5.0";
                 case 0x4:
                     return "5.5.2";
+                default:
+                    return string.Empty;
             }
-
-            return "";
         }
     }
 }

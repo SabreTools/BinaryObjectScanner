@@ -140,7 +140,7 @@ namespace BurnOutSharp.ProtectionType
             subSubSubVersion[3] = (byte)(fileContent[index] ^ 22);
 
             if (version == 0 || version > 9)
-                return "";
+                return string.Empty;
 
             return $"{version}.{subVersion[0]}{subVersion[1]}.{subSubVersion[0]}{subSubVersion[1]}.{subSubSubVersion[0]}{subSubSubVersion[1]}{subSubSubVersion[2]}{subSubSubVersion[3]}";
         }

@@ -27,7 +27,7 @@ namespace BurnOutSharp.ProtectionType
         {
             char[] version = new ArraySegment<byte>(fileContent, positions[0] + 15, 4).Select(b => (char)b).ToArray();
             if (version[0] == 0x00)
-                return "";
+                return string.Empty;
 
             return new string(version);
         }

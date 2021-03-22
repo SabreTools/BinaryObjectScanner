@@ -79,7 +79,7 @@ namespace BurnOutSharp.PackerType
             if (!string.IsNullOrEmpty(version))
                 return version;
 
-            return null;
+            return "(Unknown Version)";
         }
     }
 }

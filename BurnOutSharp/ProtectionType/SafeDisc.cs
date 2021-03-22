@@ -160,7 +160,7 @@ namespace BurnOutSharp.ProtectionType
             subsubVersion = BitConverter.ToInt32(fileContent, index);
 
             if (version == 0)
-                return "";
+                return string.Empty;
 
             return $"{version}.{subVersion:00}.{subsubVersion:000}";
         }
