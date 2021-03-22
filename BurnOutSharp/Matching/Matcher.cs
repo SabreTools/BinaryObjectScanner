@@ -15,15 +15,21 @@ namespace BurnOutSharp.Matching
         public IEnumerable<ContentMatch> ContentMatches { get; set; }
 
         /// <summary>
+        /// Function to get a content version for this Matcher
+        /// </summary>
+        /// TODO: Can this be made more generic?
+        public Func<string, byte[], int, string> GetContentVersion { get; set; }
+
+        /// <summary>
         /// Set of all path matches
         /// </summary>
         public IEnumerable<PathMatch> PathMatches { get; set; }
 
         /// <summary>
-        /// Function to get a version for this Matcher
+        /// Function to get a path version for this Matcher
         /// </summary>
         /// TODO: Can this be made more generic?
-        public Func<string, byte[], int, string> GetVersion { get; set; }
+        public Func<List<string>, string> GetPathVersion { get; set; }
 
         /// <summary>
         /// Name of the protection to show
@@ -56,7 +62,7 @@ namespace BurnOutSharp.Matching
         public Matcher(List<ContentMatch> needles, Func<string, byte[], int, string> getVersion, string protectionName)
         {
             ContentMatches = needles;
-            GetVersion = getVersion;
+            GetContentVersion = getVersion;
             ProtectionName = protectionName;
         }
 
@@ -70,10 +76,10 @@ namespace BurnOutSharp.Matching
         public Matcher(List<string> needles, string protectionName)
             : this(needles, null, protectionName) { }
 
-        public Matcher(string needle, Func<string, byte[], int, string> getVersion, string protectionName)
+        public Matcher(string needle, Func<List<string>, string> getVersion, string protectionName)
             : this(new List<string> { needle }, getVersion, protectionName) { }
 
-        public Matcher(List<string> needles, Func<string, byte[], int, string> getVersion, string protectionName)
+        public Matcher(List<string> needles, Func<List<string>, string> getVersion, string protectionName)
             : this(needles.Select(n => new PathMatch(n)).ToList(), getVersion, protectionName) { }
 
         public Matcher(PathMatch needle, string protectionName)
@@ -82,13 +88,13 @@ namespace BurnOutSharp.Matching
         public Matcher(List<PathMatch> needles, string protectionName)
             : this(needles, null, protectionName) { }
 
-        public Matcher(PathMatch needle, Func<string, byte[], int, string> getVersion, string protectionName)
+        public Matcher(PathMatch needle, Func<List<string>, string> getVersion, string protectionName)
             : this(new List<PathMatch>() { needle }, getVersion, protectionName) { }
 
-        public Matcher(List<PathMatch> needles, Func<string, byte[], int, string> getVersion, string protectionName)
+        public Matcher(List<PathMatch> needles, Func<List<string>, string> getVersion, string protectionName)
         {
             PathMatches = needles;
-            GetVersion = getVersion;
+            GetPathVersion = getVersion;
             ProtectionName = protectionName;
         }
 

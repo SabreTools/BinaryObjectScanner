@@ -83,7 +83,7 @@ namespace BurnOutSharp.Matching
                 string positionsString = string.Join(", ", positions);
 
                 // If we there is no version method, just return the protection name
-                if (matcher.GetVersion == null)
+                if (matcher.GetContentVersion == null)
                 {
                     matchedProtections.Add((matcher.ProtectionName ?? "Unknown Protection") + (includePosition ? $" (Index {positionsString})" : string.Empty));
                 }
@@ -92,7 +92,7 @@ namespace BurnOutSharp.Matching
                 // TODO: Pass all positions to the version finding method
                 else
                 {
-                    string version = matcher.GetVersion(file, fileContent, positions[0]) ?? "Unknown Version";
+                    string version = matcher.GetContentVersion(file, fileContent, positions[0]) ?? "Unknown Version";
                     matchedProtections.Add($"{matcher.ProtectionName ?? "Unknown Protection"} {version}" + (includePosition ? $" (Index {positionsString})" : string.Empty));
                 }
 
@@ -195,8 +195,18 @@ namespace BurnOutSharp.Matching
                 if (!passes)
                     continue;
 
-                //Add the matched protection
-                matchedProtections.Add(matcher.ProtectionName ?? "Unknown Protection");
+                // If we there is no version method, just return the protection name
+                if (matcher.GetPathVersion == null)
+                {
+                    matchedProtections.Add(matcher.ProtectionName ?? "Unknown Protection");
+                }
+
+                // Otherwise, invoke the version method
+                else
+                {
+                    string version = matcher.GetPathVersion(files) ?? "Unknown Version";
+                    matchedProtections.Add($"{matcher.ProtectionName ?? "Unknown Protection"} {version}");
+                }
 
                 // If we're stopping after the first protection, bail out here
                 if (stopAfterFirst)
