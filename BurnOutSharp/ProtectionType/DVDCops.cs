@@ -23,9 +23,9 @@ namespace BurnOutSharp.ProtectionType
             return MatchUtil.GetFirstContentMatch(file, fileContent, matchers, includePosition);
         }
 
-        public static string GetVersion(string file, byte[] fileContent, int position)
+        public static string GetVersion(string file, byte[] fileContent, List<int> positions)
         {
-            char[] version = new ArraySegment<byte>(fileContent, position + 15, 4).Select(b => (char)b).ToArray();
+            char[] version = new ArraySegment<byte>(fileContent, positions[0] + 15, 4).Select(b => (char)b).ToArray();
             if (version[0] == 0x00)
                 return "";
 

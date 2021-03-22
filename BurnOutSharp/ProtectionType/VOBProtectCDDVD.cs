@@ -50,9 +50,9 @@ namespace BurnOutSharp.ProtectionType
             return null;
         }
 
-        public static string GetOldVersion(string file, byte[] fileContent, int position)
+        public static string GetOldVersion(string file, byte[] fileContent, List<int> positions)
         {
-            position--; // TODO: Verify this subtract
+            int position = positions[0]--; // TODO: Verify this subtract
             char[] version = new ArraySegment<byte>(fileContent, position + 16, 4).Select(b => (char)b).ToArray(); // Begin reading after "VOB ProtectCD"
             if (char.IsNumber(version[0]) && char.IsNumber(version[2]) && char.IsNumber(version[3]))
                 return $"{version[0]}.{version[2]}{version[3]}";
@@ -60,9 +60,9 @@ namespace BurnOutSharp.ProtectionType
             return "old";
         }
 
-        public static string GetVersion(string file, byte[] fileContent, int position)
+        public static string GetVersion(string file, byte[] fileContent, List<int> positions)
         {
-            string version = GetVersion(fileContent, --position); // TODO: Verify this subtract
+            string version = GetVersion(fileContent, --positions[0]); // TODO: Verify this subtract
             if (version.Length > 0)
                 return version;
 
@@ -75,7 +75,7 @@ namespace BurnOutSharp.ProtectionType
                 return version;
             }
 
-            return $"5.9-6.0 {GetBuild(fileContent, position)}";
+            return $"5.9-6.0 {GetBuild(fileContent, positions[0])}";
         }
 
         private static string GetBuild(byte[] fileContent, int position)

@@ -46,7 +46,7 @@ namespace BurnOutSharp.PackerType
             return null;
         }
 
-        public static string GetVersion(string file, byte[] fileContent, int position)
+        public static string GetVersion(string file, byte[] fileContent, List<int> positions)
         {
             byte[] signature = new ArraySegment<byte>(fileContent, 0x30, 12).ToArray();
 

@@ -131,9 +131,18 @@ namespace BurnOutSharp.ProtectionType
             return null;
         }
 
-        public static string GetVersion(string file, byte[] fileContent, int position)
+        public static string Get320to4xVersion(string file, byte[] fileContent, List<int> positions)
         {
-            int index = position + 20; // Begin reading after "BoG_ *90.0&!!  Yy>" for old SafeDisc
+            string version = SearchSafeDiscVersion(file, fileContent);
+            if (version.Length > 0)
+                return version;
+
+            return "3.20-4.xx (version removed)";
+        }
+
+        public static string GetVersion(string file, byte[] fileContent, List<int> positions)
+        {
+            int index = positions[0] + 20; // Begin reading after "BoG_ *90.0&!!  Yy>" for old SafeDisc
             int version = BitConverter.ToInt32(fileContent, index);
             index += 4;
             int subVersion = BitConverter.ToInt32(fileContent, index);
@@ -143,7 +152,7 @@ namespace BurnOutSharp.ProtectionType
             if (version != 0)
                 return $"{version}.{subVersion:00}.{subsubVersion:000}";
 
-            index = position + 18 + 14; // Begin reading after "BoG_ *90.0&!!  Yy>" for newer SafeDisc
+            index = positions[0] + 18 + 14; // Begin reading after "BoG_ *90.0&!!  Yy>" for newer SafeDisc
             version = BitConverter.ToInt32(fileContent, index);
             index += 4;
             subVersion = BitConverter.ToInt32(fileContent, index);
@@ -154,15 +163,6 @@ namespace BurnOutSharp.ProtectionType
                 return "";
 
             return $"{version}.{subVersion:00}.{subsubVersion:000}";
-        }
-
-        public static string Get320to4xVersion(string file, byte[] fileContent, int position)
-        {
-            string version = SearchSafeDiscVersion(file, fileContent);
-            if (version.Length > 0)
-                return version;
-
-            return "3.20-4.xx (version removed)";
         }
 
         private static string GetDPlayerXVersion(string file)

@@ -25,7 +25,7 @@ namespace BurnOutSharp.ProtectionType
             return MatchUtil.GetFirstContentMatch(file, fileContent, matchers, includePosition);
         }
 
-        public static string GetVersion6till8(string file, byte[] fileContent, int position)
+        public static string GetVersion6till8(string file, byte[] fileContent, List<int> positions)
         {
             string version = SearchProtectDiscVersion(file, fileContent);
             if (version.Length > 0)
@@ -34,10 +34,10 @@ namespace BurnOutSharp.ProtectionType
                 return $"{astrVersionArray[0]}.{astrVersionArray[1]}.{astrVersionArray[2]} (Build {astrVersionArray[3]})";
             }
 
-            return $"{GetVersionBuild6till8(fileContent, position)}";
+            return $"{GetVersionBuild6till8(fileContent, positions[0])}";
         }
 
-        public static string GetVersion76till10(string file, byte[] fileContent, int position)
+        public static string GetVersion76till10(string file, byte[] fileContent, List<int> positions)
         {
             string version = SearchProtectDiscVersion(file, fileContent);
             if (version.Length > 0)
@@ -45,7 +45,7 @@ namespace BurnOutSharp.ProtectionType
                 string[] astrVersionArray = version.Split('.');
                 if (astrVersionArray[0] == "9")
                 {
-                    if (GetVersionBuild76till10(fileContent, position, out int ibuild).Length > 0)
+                    if (GetVersionBuild76till10(fileContent, positions[0], out int ibuild).Length > 0)
                         return $"{astrVersionArray[0]}.{astrVersionArray[1]}{astrVersionArray[2]}.{astrVersionArray[3]} (Build {ibuild})";
                 }
                 else

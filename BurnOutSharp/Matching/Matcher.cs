@@ -17,8 +17,7 @@ namespace BurnOutSharp.Matching
         /// <summary>
         /// Function to get a content version for this Matcher
         /// </summary>
-        /// TODO: Can this be made more generic?
-        public Func<string, byte[], int, string> GetContentVersion { get; set; }
+        public Func<string, byte[], List<int>, string> GetContentVersion { get; set; }
 
         /// <summary>
         /// Set of all path matches
@@ -28,7 +27,6 @@ namespace BurnOutSharp.Matching
         /// <summary>
         /// Function to get a path version for this Matcher
         /// </summary>
-        /// TODO: Can this be made more generic?
         public Func<List<string>, string> GetPathVersion { get; set; }
 
         /// <summary>
@@ -44,10 +42,10 @@ namespace BurnOutSharp.Matching
         public Matcher(List<byte?[]> needles, string protectionName)
             : this(needles, null, protectionName) { }
 
-        public Matcher(byte?[] needle, Func<string, byte[], int, string> getVersion, string protectionName)
+        public Matcher(byte?[] needle, Func<string, byte[], List<int>, string> getVersion, string protectionName)
             : this(new List<byte?[]> { needle }, getVersion, protectionName) { }
 
-        public Matcher(List<byte?[]> needles, Func<string, byte[], int, string> getVersion, string protectionName)
+        public Matcher(List<byte?[]> needles, Func<string, byte[], List<int>, string> getVersion, string protectionName)
             : this(needles.Select(n => new ContentMatch(n)).ToList(), getVersion, protectionName) { }
 
         public Matcher(ContentMatch needle, string protectionName)
@@ -56,10 +54,10 @@ namespace BurnOutSharp.Matching
         public Matcher(List<ContentMatch> needles, string protectionName)
             : this(needles, null, protectionName) { }
 
-        public Matcher(ContentMatch needle, Func<string, byte[], int, string> getVersion, string protectionName)
+        public Matcher(ContentMatch needle, Func<string, byte[], List<int>, string> getVersion, string protectionName)
             : this(new List<ContentMatch>() { needle }, getVersion, protectionName) { }
 
-        public Matcher(List<ContentMatch> needles, Func<string, byte[], int, string> getVersion, string protectionName)
+        public Matcher(List<ContentMatch> needles, Func<string, byte[], List<int>, string> getVersion, string protectionName)
         {
             ContentMatches = needles;
             GetContentVersion = getVersion;

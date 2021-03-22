@@ -92,9 +92,9 @@ namespace BurnOutSharp.ProtectionType
             return null;
         }
 
-        public static string GetV4Version(string file, byte[] fileContent, int position)
+        public static string GetV4Version(string file, byte[] fileContent, List<int> positions)
         {
-            int index = position + 8; // Begin reading after "AddD"
+            int index = positions[0] + 8; // Begin reading after "AddD"
             char version = (char)fileContent[index];
             index += 2;
 
@@ -112,9 +112,9 @@ namespace BurnOutSharp.ProtectionType
             return $"{version}.{subVersion}.{subSubVersion}.{subSubSubVersion}";
         }
 
-        public static string GetV5Version(string file, byte[] fileContent, int position)
+        public static string GetV5Version(string file, byte[] fileContent, List<int> positions)
         {
-            int index = position + 8; // Begin reading after "ÊÝÝ¬"
+            int index = positions[0] + 8; // Begin reading after "ÊÝÝ¬"
             byte version = (byte)(fileContent[index] & 0x0F);
             index += 2;
 
@@ -145,7 +145,7 @@ namespace BurnOutSharp.ProtectionType
             return $"{version}.{subVersion[0]}{subVersion[1]}.{subSubVersion[0]}{subSubVersion[1]}.{subSubSubVersion[0]}{subSubSubVersion[1]}{subSubSubVersion[2]}{subSubSubVersion[3]}";
         }
 
-        public static string GetV7Version(string file, byte[] fileContent, int position)
+        public static string GetV7Version(string file, byte[] fileContent, List<int> positions)
         {
             int index = 236;
             byte[] bytes = new ReadOnlySpan<byte>(fileContent, index, 4).ToArray();

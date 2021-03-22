@@ -94,11 +94,11 @@ namespace BurnOutSharp.ProtectionType
             return null;
         }
 
-        public static string GetVersion(string file, byte[] fileContent, int position)
+        public static string GetVersion(string file, byte[] fileContent, List<int> positions)
         {
             // (char)0xFF + (char)0xFF + "h"
-            if (new ArraySegment<byte>(fileContent, --position + 8, 3).SequenceEqual(new byte[] { 0xFF, 0xFF, 0x68 })) // TODO: Verify this subtract
-                return GetVersion(fileContent, position);
+            if (new ArraySegment<byte>(fileContent, --positions[0] + 8, 3).SequenceEqual(new byte[] { 0xFF, 0xFF, 0x68 })) // TODO: Verify this subtract
+                return GetVersion(fileContent, positions[0]);
                 
             return null;
         }

@@ -89,10 +89,9 @@ namespace BurnOutSharp.Matching
                 }
 
                 // Otherwise, invoke the version method
-                // TODO: Pass all positions to the version finding method
                 else
                 {
-                    string version = matcher.GetContentVersion(file, fileContent, positions[0]) ?? "Unknown Version";
+                    string version = matcher.GetContentVersion(file, fileContent, positions) ?? "Unknown Version";
                     matchedProtections.Add($"{matcher.ProtectionName ?? "Unknown Protection"} {version}" + (includePosition ? $" (Index {positionsString})" : string.Empty));
                 }
 

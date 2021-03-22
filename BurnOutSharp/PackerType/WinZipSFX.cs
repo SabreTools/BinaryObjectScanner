@@ -92,7 +92,7 @@ namespace BurnOutSharp.PackerType
             return null;
         }
 
-        public static string GetVersion(string file, byte[] fileContent, int position)
+        public static string GetVersion(string file, byte[] fileContent, List<int> positions)
         {
             // Check the manifest version first
             string version = Utilities.GetManifestVersion(fileContent);

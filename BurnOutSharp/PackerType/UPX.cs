@@ -45,10 +45,11 @@ namespace BurnOutSharp.PackerType
             return MatchUtil.GetFirstContentMatch(file, fileContent, matchers, includePosition);
         }
 
-        public static string GetVersion(string file, byte[] fileContent, int index)
+        public static string GetVersion(string file, byte[] fileContent, List<int> positions)
         {
             try
             {
+                int index = positions[0];
                 index -= 5;
                 string versionString = Encoding.ASCII.GetString(fileContent, index, 4);
                 if (!char.IsNumber(versionString[0]))

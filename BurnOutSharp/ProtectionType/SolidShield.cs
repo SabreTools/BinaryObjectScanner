@@ -7,7 +7,6 @@ using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
 {
-    // TODO: Figure out how to use GetContentMatches here
     public class SolidShield : IContentCheck, IPathCheck
     {
         /// <inheritdoc/>
@@ -62,7 +61,8 @@ namespace BurnOutSharp.ProtectionType
                 // dvm.dll
                 new Matcher(new byte?[] { 0x64, 0x76, 0x6D, 0x2E, 0x64, 0x6C, 0x6C }, "SolidShield EXE Wrapper"),
 
-                // Placeholder for the complex SolidShield + TAGES check
+                // (char)0xAD + (char)0xDE + (char)0xFE + (char)0xCA
+                new Matcher(new byte?[] { 0xAD, 0xDE, 0xFE, 0xCA }, GetVersionPlusTages, "SolidShield"),
 
                 // Solidshield
                 new Matcher(new byte?[]
@@ -80,41 +80,7 @@ namespace BurnOutSharp.ProtectionType
                 }, "SolidShield"),
             };
 
-            string firstMatch = MatchUtil.GetFirstContentMatch(file, fileContent, matchers, includePosition);
-            if (firstMatch != null)
-                return firstMatch;
-
-            // (char)0xAD + (char)0xDE + (char)0xFE + (char)0xCA
-            byte?[] check = new byte?[] { 0xAD, 0xDE, 0xFE, 0xCA };
-            if (fileContent.FirstPosition(check, out int position))
-            {
-                var id1 = new ArraySegment<byte>(fileContent, position + 4, 3);
-                var id2 = new ArraySegment<byte>(fileContent, position + 15, 4);
-
-                if ((fileContent[position + 3] == 0x04 || fileContent[position + 3] == 0x05)
-                    && id1.SequenceEqual(new byte[] { 0x00, 0x00, 0x00 })
-                    && id2.SequenceEqual(new byte[] { 0x00, 0x10, 0x00, 0x00 }))
-                {
-                    return "SolidShield 2 (SolidShield v2 EXE Wrapper)" + (includePosition ? $" (Index {position})" : string.Empty);
-                }
-                else if (id1.SequenceEqual(new byte[] { 0x00, 0x00, 0x00 })
-                    && id2.SequenceEqual(new byte[] { 0x00, 0x00, 0x00, 0x00 }))
-                {
-                    // "T" + (char)0x00 + "a" + (char)0x00 + "g" + (char)0x00 + "e" + (char)0x00 + "s" + (char)0x00 + "S" + (char)0x00 + "e" + (char)0x00 + "t" + (char)0x00 + "u" + (char)0x00 + "p" + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00 + "0" + (char)0x00 + (char)0x8 + (char)0x00 + (char)0x1 + (char)0x0 + "F" + (char)0x00 + "i" + (char)0x00 + "l" + (char)0x00 + "e" + (char)0x00 + "V" + (char)0x00 + "e" + (char)0x00 + "r" + (char)0x00 + "s" + (char)0x00 + "i" + (char)0x00 + "o" + (char)0x00 + "n" + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00
-                    byte?[] check2 = new byte?[] { 0x54, 0x61, 0x67, 0x65, 0x73, 0x53, 0x65, 0x74, 0x75, 0x70, 0x30, 0x08, 0x01, 0x00, 0x46, 0x69, 0x6C, 0x65, 0x56, 0x65, 0x72, 0x73, 0x69, 0x6F, 0x6E, 0x00, 0x00, 0x00, 0x00 };
-                    if (fileContent.FirstPosition(check2, out int position2))
-                    {
-                        position2--; // TODO: Verify this subtract
-                        return $"SolidShield 2 + Tagès {fileContent[position2 + 0x38]}.{fileContent[position2 + 0x38 + 4]}.{fileContent[position2 + 0x38 + 8]}.{fileContent[position + 0x38 + 12]}" + (includePosition ? $" (Index {position}, {position2})" : string.Empty);
-                    }
-                    else
-                    {
-                        return "SolidShield 2 (SolidShield v2 EXE Wrapper)" + (includePosition ? $" (Index {position})" : string.Empty);
-                    }
-                }
-            }
-
-            return null;
+            return MatchUtil.GetFirstContentMatch(file, fileContent, matchers, includePosition);
         }
 
         /// <inheritdoc/>
@@ -146,10 +112,10 @@ namespace BurnOutSharp.ProtectionType
             return null;
         }
 
-        public static string GetExeWrapperVersion(string file, byte[] fileContent, int position)
+        public static string GetExeWrapperVersion(string file, byte[] fileContent, List<int> positions)
         {
-            var id1 = new ArraySegment<byte>(fileContent, position + 5, 3);
-            var id2 = new ArraySegment<byte>(fileContent, position + 16, 4);
+            var id1 = new ArraySegment<byte>(fileContent, positions[0] + 5, 3);
+            var id2 = new ArraySegment<byte>(fileContent, positions[0] + 16, 4);
 
             if (id1.SequenceEqual(new byte[] { 0x00, 0x00, 0x00 }) && id2.SequenceEqual(new byte[] { 0x00, 0x10, 0x00, 0x00 }))
                 return "1 (SolidShield EXE Wrapper)";
@@ -159,7 +125,7 @@ namespace BurnOutSharp.ProtectionType
             return null;
         }
 
-        public static string GetFileVersion(string file, byte[] fileContent, int position)
+        public static string GetFileVersion(string file, byte[] fileContent, List<int> positions)
         {
             string companyName = string.Empty;
             if (file != null)
@@ -171,9 +137,9 @@ namespace BurnOutSharp.ProtectionType
             return null;
         }
 
-        public static string GetVersion(string file, byte[] fileContent, int position)
+        public static string GetVersion(string file, byte[] fileContent, List<int> positions)
         {
-            int index = position + 12; // Begin reading after "Solidshield"
+            int index = positions[0] + 12; // Begin reading after "Solidshield"
             char version = (char)fileContent[index];
             index++;
             index++;
@@ -186,6 +152,37 @@ namespace BurnOutSharp.ProtectionType
             char subSubSubVersion = (char)fileContent[index];
             
             return $"{version}.{subVersion}.{subSubVersion}.{subSubSubVersion}";
+        }
+    
+        public static string GetVersionPlusTages(string file, byte[] fileContent, List<int> positions)
+        {
+            int position = positions[0];
+            var id1 = new ArraySegment<byte>(fileContent, position + 4, 3);
+            var id2 = new ArraySegment<byte>(fileContent, position + 15, 4);
+
+            if ((fileContent[position + 3] == 0x04 || fileContent[position + 3] == 0x05)
+                && id1.SequenceEqual(new byte[] { 0x00, 0x00, 0x00 })
+                && id2.SequenceEqual(new byte[] { 0x00, 0x10, 0x00, 0x00 }))
+            {
+                return "2 (SolidShield v2 EXE Wrapper)";
+            }
+            else if (id1.SequenceEqual(new byte[] { 0x00, 0x00, 0x00 })
+                && id2.SequenceEqual(new byte[] { 0x00, 0x00, 0x00, 0x00 }))
+            {
+                // "T" + (char)0x00 + "a" + (char)0x00 + "g" + (char)0x00 + "e" + (char)0x00 + "s" + (char)0x00 + "S" + (char)0x00 + "e" + (char)0x00 + "t" + (char)0x00 + "u" + (char)0x00 + "p" + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00 + "0" + (char)0x00 + (char)0x8 + (char)0x00 + (char)0x1 + (char)0x0 + "F" + (char)0x00 + "i" + (char)0x00 + "l" + (char)0x00 + "e" + (char)0x00 + "V" + (char)0x00 + "e" + (char)0x00 + "r" + (char)0x00 + "s" + (char)0x00 + "i" + (char)0x00 + "o" + (char)0x00 + "n" + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00
+                byte?[] check2 = new byte?[] { 0x54, 0x61, 0x67, 0x65, 0x73, 0x53, 0x65, 0x74, 0x75, 0x70, 0x30, 0x08, 0x01, 0x00, 0x46, 0x69, 0x6C, 0x65, 0x56, 0x65, 0x72, 0x73, 0x69, 0x6F, 0x6E, 0x00, 0x00, 0x00, 0x00 };
+                if (fileContent.FirstPosition(check2, out int position2))
+                {
+                    position2--; // TODO: Verify this subtract
+                    return $"2 + Tagès {fileContent[position2 + 0x38]}.{fileContent[position2 + 0x38 + 4]}.{fileContent[position2 + 0x38 + 8]}.{fileContent[position + 0x38 + 12]}" + (includePosition ? $" (Index {position}, {position2})" : string.Empty);
+                }
+                else
+                {
+                    return "2 (SolidShield v2 EXE Wrapper)";
+                }
+            }
+
+            return null;
         }
     }
 }

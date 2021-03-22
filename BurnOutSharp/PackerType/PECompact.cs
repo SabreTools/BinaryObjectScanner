@@ -30,9 +30,9 @@ namespace BurnOutSharp.PackerType
             return MatchUtil.GetFirstContentMatch(file, fileContent, matchers, includePosition);
         }
 
-        public static string GetVersion(string file, byte[] fileContent, int position)
+        public static string GetVersion(string file, byte[] fileContent, List<int> positions)
         {
-            return $"v{BitConverter.ToInt16(fileContent, position + 4)}";
+            return $"v{BitConverter.ToInt16(fileContent, positions[0] + 4)}";
         }
     }
 }
