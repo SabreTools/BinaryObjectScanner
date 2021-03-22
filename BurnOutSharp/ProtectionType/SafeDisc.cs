@@ -4,61 +4,56 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
 {
-    // TODO: Figure out how to use GetContentMatches here
     public class SafeDisc : IContentCheck, IPathCheck
     {
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
-            // "BoG_ *90.0&!!  Yy>"
-            byte?[] check = new byte?[] { 0x42, 0x6F, 0x47, 0x5F, 0x20, 0x2A, 0x39, 0x30, 0x2E, 0x30, 0x26, 0x21, 0x21, 0x20, 0x20, 0x59, 0x79, 0x3E };
-            if (fileContent.FirstPosition(check, out int position))
+            var matchers = new List<Matcher>
             {
-                // "product activation library"
-                byte?[] check2 = new byte?[] { 0x70, 0x72, 0x6F, 0x64, 0x75, 0x63, 0x74, 0x20, 0x61, 0x63, 0x74, 0x69, 0x76, 0x61, 0x74, 0x69, 0x6F, 0x6E, 0x20, 0x6C, 0x69, 0x62, 0x72, 0x61, 0x72, 0x79 };
-                if (fileContent.FirstPosition(check2, out int position2))
-                    return $"SafeCast {GetVersion(fileContent, position)}" + (includePosition ? $" (Index {position}, {position2})" : string.Empty);
-                else
-                    return $"SafeDisc {GetVersion(fileContent, position)}" + (includePosition ? $" (Index {position})" : string.Empty);
-            }
+                new Matcher(new List<byte?[]>
+                {
+                    // BoG_ *90.0&!!  Yy>
+                    new byte?[]
+                    {
+                        0x42, 0x6F, 0x47, 0x5F, 0x20, 0x2A, 0x39, 0x30,
+                        0x2E, 0x30, 0x26, 0x21, 0x21, 0x20, 0x20, 0x59,
+                        0x79, 0x3E
+                    },
 
-            // (char)0x00 + (char)0x00 + "BoG_"
-            check = new byte?[] { 0x00, 0x00, 0x42, 0x6F, 0x47, 0x5F };
-            if (fileContent.FirstPosition(check, out position))
-            {
-                string version = SearchSafeDiscVersion(file, fileContent);
-                if (version.Length > 0)
-                    return $"SafeDisc {version}" + (includePosition ? $" (Index {position})" : string.Empty);
+                    // product activation library
+                    new byte?[]
+                    {
+                        0x70, 0x72, 0x6F, 0x64, 0x75, 0x63, 0x74, 0x20,
+                        0x61, 0x63, 0x74, 0x69, 0x76, 0x61, 0x74, 0x69,
+                        0x6F, 0x6E, 0x20, 0x6C, 0x69, 0x62, 0x72, 0x61,
+                        0x72, 0x79
+                    },
+                }, GetVersion, "SafeCast"),
 
-                return "SafeDisc 3.20-4.xx (version removed)" + (includePosition ? $" (Index {position})" : string.Empty);
-            }
+                // BoG_ *90.0&!!  Yy>
+                new Matcher(new byte?[]
+                {
+                    0x42, 0x6F, 0x47, 0x5F, 0x20, 0x2A, 0x39, 0x30,
+                    0x2E, 0x30, 0x26, 0x21, 0x21, 0x20, 0x20, 0x59,
+                    0x79, 0x3E
+                }, "SafeDisc"),
 
-            // "stxt774"
-            check = new byte?[] { 0x73, 0x74, 0x78, 0x74, 0x37, 0x37, 0x34 };
-            if (fileContent.FirstPosition(check, out position))
-            {
-                string version = SearchSafeDiscVersion(file, fileContent);
-                if (version.Length > 0)
-                    return $"SafeDisc {version}" + (includePosition ? $" (Index {position})" : string.Empty);
+                // (char)0x00 + (char)0x00 + BoG_
+                new Matcher(new byte?[] { 0x00, 0x00, 0x42, 0x6F, 0x47, 0x5F }, Get320to4xVersion, "SafeDisc"),
 
-                return "SafeDisc 3.20-4.xx (version removed)" + (includePosition ? $" (Index {position})" : string.Empty);
-            }
+                // stxt774
+                new Matcher(new byte?[] { 0x73, 0x74, 0x78, 0x74, 0x37, 0x37, 0x34 }, Get320to4xVersion, "SafeDisc"),
 
-            // "stxt371"
-            check = new byte?[] { 0x73, 0x74, 0x78, 0x74, 0x33, 0x37, 0x31 };
-            if (fileContent.FirstPosition(check, out position))
-            {
-                string version = SearchSafeDiscVersion(file, fileContent);
-                if (version.Length > 0)
-                    return $"SafeDisc {version}" + (includePosition ? $" (Index {position})" : string.Empty);
+                // stxt371
+                new Matcher(new byte?[] { 0x73, 0x74, 0x78, 0x74, 0x33, 0x37, 0x31 }, Get320to4xVersion, "SafeDisc"),
+            };
 
-                return "SafeDisc 3.20-4.xx (version removed)" + (includePosition ? $" (Index {position})" : string.Empty);
-            }
-
-            return null;
+            return MatchUtil.GetFirstContentMatch(file, fileContent, matchers, includePosition);
         }
 
         /// <inheritdoc/>
@@ -134,6 +129,40 @@ namespace BurnOutSharp.ProtectionType
             }
 
             return null;
+        }
+
+        public static string GetVersion(string file, byte[] fileContent, int position)
+        {
+            int index = position + 20; // Begin reading after "BoG_ *90.0&!!  Yy>" for old SafeDisc
+            int version = BitConverter.ToInt32(fileContent, index);
+            index += 4;
+            int subVersion = BitConverter.ToInt32(fileContent, index);
+            index += 4;
+            int subsubVersion = BitConverter.ToInt32(fileContent, index);
+
+            if (version != 0)
+                return $"{version}.{subVersion:00}.{subsubVersion:000}";
+
+            index = position + 18 + 14; // Begin reading after "BoG_ *90.0&!!  Yy>" for newer SafeDisc
+            version = BitConverter.ToInt32(fileContent, index);
+            index += 4;
+            subVersion = BitConverter.ToInt32(fileContent, index);
+            index += 4;
+            subsubVersion = BitConverter.ToInt32(fileContent, index);
+
+            if (version == 0)
+                return "";
+
+            return $"{version}.{subVersion:00}.{subsubVersion:000}";
+        }
+
+        public static string Get320to4xVersion(string file, byte[] fileContent, int position)
+        {
+            string version = SearchSafeDiscVersion(file, fileContent);
+            if (version.Length > 0)
+                return version;
+
+            return "3.20-4.xx (version removed)";
         }
 
         private static string GetDPlayerXVersion(string file)
@@ -226,31 +255,6 @@ namespace BurnOutSharp.ProtectionType
                 return "SafeDisc 1 or greater";
         }
 
-        private static string GetVersion(byte[] fileContent, int position)
-        {
-            int index = position + 20; // Begin reading after "BoG_ *90.0&!!  Yy>" for old SafeDisc
-            int version = BitConverter.ToInt32(fileContent, index);
-            index += 4;
-            int subVersion = BitConverter.ToInt32(fileContent, index);
-            index += 4;
-            int subsubVersion = BitConverter.ToInt32(fileContent, index);
-
-            if (version != 0)
-                return $"{version}.{subVersion:00}.{subsubVersion:000}";
-
-            index = position + 18 + 14; // Begin reading after "BoG_ *90.0&!!  Yy>" for newer SafeDisc
-            version = BitConverter.ToInt32(fileContent, index);
-            index += 4;
-            subVersion = BitConverter.ToInt32(fileContent, index);
-            index += 4;
-            subsubVersion = BitConverter.ToInt32(fileContent, index);
-
-            if (version == 0)
-                return "";
-
-            return $"{version}.{subVersion:00}.{subsubVersion:000}";
-        }
-    
         // TODO: Analyze this method and figure out if this can be done without attempting execution
         private static string SearchSafeDiscVersion(string file, byte[] fileContent)
         {

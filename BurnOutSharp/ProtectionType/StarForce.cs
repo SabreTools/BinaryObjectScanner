@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -47,22 +48,25 @@ namespace BurnOutSharp.ProtectionType
                     return $"StarForce {Utilities.GetFileVersion(file)}" + (includePosition ? $" (Index {position}, {position2})" : string.Empty);
             }
 
-            // ".sforce"
-            check = new byte?[] { 0x2E, 0x73, 0x66, 0x6F, 0x72, 0x63, 0x65 };
-            if (fileContent.FirstPosition(check, out position))
-                return "StarForce 3-5" + (includePosition ? $" (Index {position})" : string.Empty);
+            var matchers = new List<Matcher>
+            {
+                // .sforce
+                new Matcher(new byte?[] { 0x2E, 0x73, 0x66, 0x6F, 0x72, 0x63, 0x65 }, "StarForce 3-5"),
 
-            // ".brick"
-            check = new byte?[] { 0x2E, 0x62, 0x72, 0x69, 0x63, 0x6B };
-            if (fileContent.FirstPosition(check, out position))
-                return "StarForce 3-5" + (includePosition ? $" (Index {position})" : string.Empty);
+                // .brick
+                new Matcher(new byte?[] { 0x2E, 0x62, 0x72, 0x69, 0x63, 0x6B }, "StarForce 3-5"),
 
-            // "P" + (char)0x00 + "r" + (char)0x00 + "o" + (char)0x00 + "t" + (char)0x00 + "e" + (char)0x00 + "c" + (char)0x00 + "t" + (char)0x00 + "e" + (char)0x00 + "d" + (char)0x00 + " " + (char)0x00 + "M" + (char)0x00 + "o" + (char)0x00 + "d" + (char)0x00 + "u" + (char)0x00 + "l" + (char)0x00 + "e"
-            check = new byte?[] { 0x50, 0x00, 0x72, 0x00, 0x6f, 0x00, 0x74, 0x00, 0x65, 0x00, 0x63, 0x00, 0x74, 0x00, 0x65, 0x00, 0x64, 0x00, 0x20, 0x00, 0x4d, 0x00, 0x6f, 0x00, 0x64, 0x00, 0x75, 0x00, 0x6c, 0x00, 0x65 };
-            if (fileContent.FirstPosition(check, out position))
-                return "StarForce 5" + (includePosition ? $" (Index {position})" : string.Empty);
+                // P + (char)0x00 + r + (char)0x00 + o + (char)0x00 + t + (char)0x00 + e + (char)0x00 + c + (char)0x00 + t + (char)0x00 + e + (char)0x00 + d + (char)0x00 +   + (char)0x00 + M + (char)0x00 + o + (char)0x00 + d + (char)0x00 + u + (char)0x00 + l + (char)0x00 + e + (char)0x00
+                new Matcher(new byte?[]
+                {
+                    0x50, 0x00, 0x72, 0x00, 0x6f, 0x00, 0x74, 0x00,
+                    0x65, 0x00, 0x63, 0x00, 0x74, 0x00, 0x65, 0x00,
+                    0x64, 0x00, 0x20, 0x00, 0x4d, 0x00, 0x6f, 0x00,
+                    0x64, 0x00, 0x75, 0x00, 0x6c, 0x00, 0x65, 0x00
+                }, "StarForce 5"),
+            };
 
-            return null;
+            return MatchUtil.GetFirstContentMatch(file, fileContent, matchers, includePosition);
         }
 
         /// <inheritdoc/>

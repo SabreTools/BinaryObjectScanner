@@ -4,46 +4,32 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
 {
-    // TODO: Figure out how to use GetContentMatches here
     public class VOBProtectCDDVD : IContentCheck, IPathCheck
     {
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
-            // "VOB ProtectCD"
-            byte?[] check = new byte?[] { 0x56, 0x4F, 0x42, 0x20, 0x50, 0x72, 0x6F, 0x74, 0x65, 0x63, 0x74, 0x43, 0x44 };
-            if (fileContent.FirstPosition(check, out int position))
-                return $"VOB ProtectCD/DVD {GetOldVersion(fileContent, --position)}" + (includePosition ? $" (Index {position})" : string.Empty); // TODO: Verify this subtract
-
-            // "DCP-BOV" + (char)0x00 + (char)0x00
-            check = new byte?[] { 0x44, 0x43, 0x50, 0x2D, 0x42, 0x4F, 0x56, 0x00, 0x00 };
-            if (fileContent.FirstPosition(check, out position))
+            var matchers = new List<Matcher>
             {
-                string version = GetVersion(fileContent, --position); // TODO: Verify this subtract
-                if (version.Length > 0)
-                    return $"VOB ProtectCD/DVD {version}" + (includePosition ? $" (Index {position})" : string.Empty);
-
-                version = SearchProtectDiscVersion(file, fileContent);
-                if (version.Length > 0)
+                // VOB ProtectCD
+                new Matcher(new byte?[]
                 {
-                    if (version.StartsWith("2"))
-                        version = $"6{version.Substring(1)}";
+                    0x56, 0x4F, 0x42, 0x20, 0x50, 0x72, 0x6F, 0x74,
+                    0x65, 0x63, 0x74, 0x43, 0x44
+                }, GetOldVersion, "VOB ProtectCD/DVD"),
 
-                    return $"VOB ProtectCD/DVD {version}" + (includePosition ? $" (Index {position})" : string.Empty);
-                }
+                // DCP-BOV + (char)0x00 + (char)0x00
+                new Matcher(new byte?[] { 0x44, 0x43, 0x50, 0x2D, 0x42, 0x4F, 0x56, 0x00, 0x00 }, GetVersion, "VOB ProtectCD/DVD"),
 
-                return $"VOB ProtectCD/DVD 5.9-6.0 {GetBuild(fileContent, position)}" + (includePosition ? $" (Index {position})" : string.Empty);
-            }
+                // .vob.pcd
+                new Matcher(new byte?[] { 0x2E, 0x76, 0x6F, 0x62, 0x2E, 0x70, 0x63, 0x64 }, "VOB ProtectCD"),
+            };
 
-            // ".vob.pcd"
-            check = new byte?[] { 0x2E, 0x76, 0x6F, 0x62, 0x2E, 0x70, 0x63, 0x64 };
-            if (fileContent.FirstPosition(check, out position))
-                return "VOB ProtectCD" + (includePosition ? $" (Index {position})" : string.Empty);
-
-            return null;
+            return MatchUtil.GetFirstContentMatch(file, fileContent, matchers, includePosition);
         }
 
         /// <inheritdoc/>
@@ -64,6 +50,34 @@ namespace BurnOutSharp.ProtectionType
             return null;
         }
 
+        public static string GetOldVersion(string file, byte[] fileContent, int position)
+        {
+            position--; // TODO: Verify this subtract
+            char[] version = new ArraySegment<byte>(fileContent, position + 16, 4).Select(b => (char)b).ToArray(); // Begin reading after "VOB ProtectCD"
+            if (char.IsNumber(version[0]) && char.IsNumber(version[2]) && char.IsNumber(version[3]))
+                return $"{version[0]}.{version[2]}{version[3]}";
+
+            return "old";
+        }
+
+        public static string GetVersion(string file, byte[] fileContent, int position)
+        {
+            string version = GetVersion(fileContent, --position); // TODO: Verify this subtract
+            if (version.Length > 0)
+                return version;
+
+            version = SearchProtectDiscVersion(file, fileContent);
+            if (version.Length > 0)
+            {
+                if (version.StartsWith("2"))
+                    version = $"6{version.Substring(1)}";
+
+                return version;
+            }
+
+            return $"5.9-6.0 {GetBuild(fileContent, position)}";
+        }
+
         private static string GetBuild(byte[] fileContent, int position)
         {
             if (!char.IsNumber((char)fileContent[position - 13]))
@@ -71,15 +85,6 @@ namespace BurnOutSharp.ProtectionType
 
             int build = BitConverter.ToInt16(fileContent, position - 4); // Check if this is supposed to be a 4-byte read
             return $" (Build {build})";
-        }
-
-        private static string GetOldVersion(byte[] fileContent, int position)
-        {
-            char[] version = new ArraySegment<byte>(fileContent, position + 16, 4).Select(b => (char)b).ToArray(); // Begin reading after "VOB ProtectCD"
-            if (char.IsNumber(version[0]) && char.IsNumber(version[2]) && char.IsNumber(version[3]))
-                return $"{version[0]}.{version[2]}{version[3]}";
-
-            return "old";
         }
 
         private static string GetVersion(byte[] fileContent, int position)

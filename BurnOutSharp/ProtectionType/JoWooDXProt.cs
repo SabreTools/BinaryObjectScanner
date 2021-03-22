@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -21,12 +23,13 @@ namespace BurnOutSharp.ProtectionType
                     return $"JoWooD X-Prot v1" + (includePosition ? $" (Index {position})" : string.Empty);
             }
 
-            // "@HC09    "
-            check = new byte?[] { 0x40, 0x48, 0x43, 0x30, 0x39, 0x20, 0x20, 0x20, 0x20 };
-            if (fileContent.FirstPosition(check, out position))
-                return $"JoWooD X-Prot v2" + (includePosition ? $" (Index {position})" : string.Empty);
+            var matchers = new List<Matcher>
+            {
+                // @HC09    
+                new Matcher(new byte?[] { 0x40, 0x48, 0x43, 0x30, 0x39, 0x20, 0x20, 0x20, 0x20 }, "JoWooD X-Prot v2"),
+            };
 
-            return null;
+            return MatchUtil.GetFirstContentMatch(file, fileContent, matchers, includePosition);
         }
 
         private static string GetVersion(byte[] fileContent, int position)

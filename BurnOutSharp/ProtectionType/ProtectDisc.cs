@@ -1,49 +1,57 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
 {
-    // TODO: Figure out how to use GetContentMatches here
     public class ProtectDisc : IContentCheck
     {
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
-            // "HúMETINF"
-            byte?[] check = new byte?[] { 0x48, 0xFA, 0x4D, 0x45, 0x54, 0x49, 0x4E, 0x46 };
-            if (fileContent.FirstPosition(check, out int position))
+            var matchers = new List<Matcher>
             {
-                string version = SearchProtectDiscVersion(file, fileContent);
-                if (version.Length > 0)
-                {
-                    string[] astrVersionArray = version.Split('.');
-                    if (astrVersionArray[0] == "9")
-                    {
-                        if (GetVersionBuild76till10(fileContent, position, out int ibuild).Length > 0)
-                            return $"ProtectDisc {astrVersionArray[0]}.{astrVersionArray[1]}{astrVersionArray[2]}.{astrVersionArray[3]} (Build {ibuild})" + (includePosition ? $" (Index {position})" : string.Empty);
-                    }
-                    else
-                    {
-                        return $"ProtectDisc {astrVersionArray[0]}.{astrVersionArray[1]}.{astrVersionArray[2]} (Build {astrVersionArray[3]})" + (includePosition ? $" (Index {position})" : string.Empty);
-                    }
-                }
+                // HúMETINF
+                new Matcher(new byte?[] { 0x48, 0xFA, 0x4D, 0x45, 0x54, 0x49, 0x4E, 0x46 }, GetVersion76till10, "ProtectDisc"),
+
+                // ACE-PCD
+                new Matcher(new byte?[] { 0x41, 0x43, 0x45, 0x2D, 0x50, 0x43, 0x44 }, GetVersion6till8, "ProtectDisc"),
+            };
+
+            return MatchUtil.GetFirstContentMatch(file, fileContent, matchers, includePosition);
+        }
+
+        public static string GetVersion6till8(string file, byte[] fileContent, int position)
+        {
+            string version = SearchProtectDiscVersion(file, fileContent);
+            if (version.Length > 0)
+            {
+                string[] astrVersionArray = version.Split('.');
+                return $"{astrVersionArray[0]}.{astrVersionArray[1]}.{astrVersionArray[2]} (Build {astrVersionArray[3]})";
             }
 
-            // "ACE-PCD"
-            check = new byte?[] { 0x41, 0x43, 0x45, 0x2D, 0x50, 0x43, 0x44 };
-            if (fileContent.FirstPosition(check, out position))
-            {
-                string version = SearchProtectDiscVersion(file, fileContent);
-                if (version.Length > 0)
-                {
-                    string[] astrVersionArray = version.Split('.');
-                    return $"ProtectDisc {astrVersionArray[0]}.{astrVersionArray[1]}.{astrVersionArray[2]} (Build {astrVersionArray[3]})" + (includePosition ? $" (Index {position})" : string.Empty);
-                }
+            return $"{GetVersionBuild6till8(fileContent, position)}";
+        }
 
-                return $"ProtectDisc {GetVersionBuild6till8(fileContent, position)}" + (includePosition ? $" (Index {position})" : string.Empty);
+        public static string GetVersion76till10(string file, byte[] fileContent, int position)
+        {
+            string version = SearchProtectDiscVersion(file, fileContent);
+            if (version.Length > 0)
+            {
+                string[] astrVersionArray = version.Split('.');
+                if (astrVersionArray[0] == "9")
+                {
+                    if (GetVersionBuild76till10(fileContent, position, out int ibuild).Length > 0)
+                        return $"{astrVersionArray[0]}.{astrVersionArray[1]}{astrVersionArray[2]}.{astrVersionArray[3]} (Build {ibuild})";
+                }
+                else
+                {
+                    return $"{astrVersionArray[0]}.{astrVersionArray[1]}.{astrVersionArray[2]} (Build {astrVersionArray[3]})";
+                }
             }
 
             return null;
