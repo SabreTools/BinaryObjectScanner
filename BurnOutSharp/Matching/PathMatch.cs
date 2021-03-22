@@ -12,9 +12,15 @@ namespace BurnOutSharp.Matching
         /// </summary>
         public string Needle { get; set; }
 
-        public PathMatch(string needle)
+        /// <summary>
+        /// Match that values end with the needle and not just contains
+        /// </summary>
+        public bool UseEndsWith { get; set; }
+
+        public PathMatch(string needle, bool useEndsWith = false)
         {
             Needle = needle;
+            UseEndsWith = useEndsWith;
         }
 
         #region Matching
@@ -31,7 +37,9 @@ namespace BurnOutSharp.Matching
 
             foreach (string stackItem in stack)
             {
-                if (stackItem.Contains(Needle))
+                if (UseEndsWith && stackItem.EndsWith(Needle))
+                    return (true, stackItem);
+                else if (!UseEndsWith && stackItem.Contains(Needle))
                     return (true, stackItem);
             }
 
