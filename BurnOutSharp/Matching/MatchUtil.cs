@@ -4,10 +4,12 @@ using System.Linq;
 namespace BurnOutSharp.Matching
 {
     /// <summary>
-    /// Helper class for content matching
+    /// Helper class for matching
     /// </summary>
     internal static class MatchUtil
     {
+        #region Content Matching
+
         /// <summary>
         /// Get all content matches for a given list of matchers
         /// </summary>
@@ -101,5 +103,109 @@ namespace BurnOutSharp.Matching
 
             return matchedProtections;
         }
+    
+        #endregion
+
+        #region Path Matching
+
+        /// <summary>
+        /// Get all path matches for a given list of matchers
+        /// </summary>
+        /// <param name="file">File path to check for matches</param>
+        /// <param name="matchers">Enumerable of matchers to be run on the file</param>
+        /// <param name="any">True if any path match is a success, false if all have to match</param>
+        /// <returns>List of strings representing the matched protections, null or empty otherwise</returns>
+        public static List<string> GetAllPathMatches(string file, IEnumerable<Matcher> matchers, bool any = false)
+        {
+            return FindAllPathMatches(new List<string> { file }, matchers, any, false);
+        }
+
+        // <summary>
+        /// Get all path matches for a given list of matchers
+        /// </summary>
+        /// <param name="files">File paths to check for matches</param>
+        /// <param name="matchers">Enumerable of matchers to be run on the file</param>
+        /// <param name="any">True if any path match is a success, false if all have to match</param>
+        /// <returns>List of strings representing the matched protections, null or empty otherwise</returns>
+        public static List<string> GetAllPathMatches(List<string> files, IEnumerable<Matcher> matchers, bool any = false)
+        {
+            return FindAllPathMatches(files, matchers, any, false);
+        }
+
+        /// <summary>
+        /// Get first path match for a given list of matchers
+        /// </summary>
+        /// <param name="file">File path to check for matches</param>
+        /// <param name="matchers">Enumerable of matchers to be run on the file</param>
+        /// <param name="any">True if any path match is a success, false if all have to match</param>
+        /// <returns>String representing the matched protection, null otherwise</returns>
+        public static string GetFirstPathMatch(string file, IEnumerable<Matcher> matchers, bool any = false)
+        {
+            var contentMatches = FindAllPathMatches(new List<string> { file }, matchers, any, true);
+            if (contentMatches == null || !contentMatches.Any())
+                return null;
+            
+            return contentMatches.First();
+        }
+
+        /// <summary>
+        /// Get first path match for a given list of matchers
+        /// </summary>
+        /// <param name="files">File paths to check for matches</param>
+        /// <param name="matchers">Enumerable of matchers to be run on the file</param>
+        /// <param name="any">True if any path match is a success, false if all have to match</param>
+        /// <returns>String representing the matched protection, null otherwise</returns>
+        public static string GetFirstPathMatch(List<string> files, IEnumerable<Matcher> matchers, bool any = false)
+        {
+            var contentMatches = FindAllPathMatches(files, matchers, any, true);
+            if (contentMatches == null || !contentMatches.Any())
+                return null;
+            
+            return contentMatches.First();
+        }
+
+        /// <summary>
+        /// Get the required set of path matches on a per Matcher basis
+        /// </summary>
+        /// <param name="files">File paths to check for matches</param>
+        /// <param name="matchers">Enumerable of matchers to be run on the file</param>
+        /// <param name="any">True if any path match is a success, false if all have to match</param>
+        /// <param name="stopAfterFirst">True to stop after the first match, false otherwise</param>
+        /// <returns>List of strings representing the matched protections, null or empty otherwise</returns>        
+        private static List<string> FindAllPathMatches(List<string> files, IEnumerable<Matcher> matchers, bool any, bool stopAfterFirst)
+        {
+            // If there's no mappings, we can't match
+            if (matchers == null || !matchers.Any())
+                return null;
+
+            // Initialize the list of matched protections
+            List<string> matchedProtections = new List<string>();
+
+            // Loop through and try everything otherwise
+            foreach (var matcher in matchers)
+            {
+                // Determine if the matcher passes
+                bool passes;
+                if (any)
+                    (passes, _) = matcher.MatchesAny(files);
+                else
+                    (passes, _) = matcher.MatchesAll(files);
+                
+                // If we don't have a pass, just continue
+                if (!passes)
+                    continue;
+
+                //Add the matched protection
+                matchedProtections.Add(matcher.ProtectionName ?? "Unknown Protection");
+
+                // If we're stopping after the first protection, bail out here
+                if (stopAfterFirst)
+                    return matchedProtections;
+            }
+
+            return matchedProtections;
+        }
+    
+        #endregion
     }
 }
