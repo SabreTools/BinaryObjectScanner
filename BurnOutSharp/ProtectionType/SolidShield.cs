@@ -174,7 +174,7 @@ namespace BurnOutSharp.ProtectionType
                 if (fileContent.FirstPosition(check2, out int position2))
                 {
                     position2--; // TODO: Verify this subtract
-                    return $"2 + Tagès {fileContent[position2 + 0x38]}.{fileContent[position2 + 0x38 + 4]}.{fileContent[position2 + 0x38 + 8]}.{fileContent[position + 0x38 + 12]}" + (includePosition ? $" (Index {position}, {position2})" : string.Empty);
+                    return $"2 + Tagès {fileContent[position2 + 0x38]}.{fileContent[position2 + 0x38 + 4]}.{fileContent[position2 + 0x38 + 8]}.{fileContent[position + 0x38 + 12]}";
                 }
                 else
                 {
