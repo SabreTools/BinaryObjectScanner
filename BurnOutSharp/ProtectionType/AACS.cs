@@ -37,14 +37,14 @@ namespace BurnOutSharp.ProtectionType
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
 
-        public static string GetVersion(string path, IEnumerable<string> files)
+        public static string GetVersion(string firstMatchedString, IEnumerable<string> files)
         {
-            if (!File.Exists(path))
+            if (!File.Exists(firstMatchedString))
                 return "(Unknown Version)";
 
             try
             {
-                using (var fs = File.OpenRead(path))
+                using (var fs = File.OpenRead(firstMatchedString))
                 {
                     fs.Seek(0xB, SeekOrigin.Begin);
                     return fs.ReadByte().ToString();
