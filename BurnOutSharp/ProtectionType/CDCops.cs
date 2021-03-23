@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using BurnOutSharp.Matching;
 
@@ -30,31 +29,33 @@ namespace BurnOutSharp.ProtectionType
         /// <inheritdoc/>
         public string CheckDirectoryPath(string path, IEnumerable<string> files)
         {
-            if (files.Any(f => Path.GetFileName(f).Equals("CDCOPS.DLL", StringComparison.OrdinalIgnoreCase))
-                && (files.Any(f => Path.GetExtension(f).Trim('.').Equals("GZ_", StringComparison.OrdinalIgnoreCase))
-                    || files.Any(f => Path.GetExtension(f).Trim('.').Equals("W_X", StringComparison.OrdinalIgnoreCase))
-                    || files.Any(f => Path.GetExtension(f).Trim('.').Equals("Qz", StringComparison.OrdinalIgnoreCase))
-                    || files.Any(f => Path.GetExtension(f).Trim('.').Equals("QZ_", StringComparison.OrdinalIgnoreCase))))
+            // TODO: Original had "CDCOPS.DLL" required and all the rest in a combined OR
+            var matchers = new List<PathMatchSet>
             {
-                return "CD-Cops";
-            }
+                new PathMatchSet(new PathMatch("CDCOPS.DLL", useEndsWith: true), "CD-Cops"),
+                new PathMatchSet(new PathMatch(".GZ_", useEndsWith: true), "CD-Cops"),
+                new PathMatchSet(new PathMatch(".W_X", useEndsWith: true), "CD-Cops"),
+                new PathMatchSet(new PathMatch(".Qz", useEndsWith: true), "CD-Cops"),
+                new PathMatchSet(new PathMatch(".QZ_", useEndsWith: true), "CD-Cops"),
+            };
 
-            return null;
+            var matches = MatchUtil.GetAllMatches(files, matchers, any: true);
+            return string.Join(", ", matches);
         }
 
         /// <inheritdoc/>
         public string CheckFilePath(string path)
         {
-            if (Path.GetFileName(path).Equals("CDCOPS.DLL", StringComparison.OrdinalIgnoreCase)
-                || Path.GetExtension(path).Trim('.').Equals("GZ_", StringComparison.OrdinalIgnoreCase)
-                || Path.GetExtension(path).Trim('.').Equals("W_X", StringComparison.OrdinalIgnoreCase)
-                || Path.GetExtension(path).Trim('.').Equals("Qz", StringComparison.OrdinalIgnoreCase)
-                || Path.GetExtension(path).Trim('.').Equals("QZ_", StringComparison.OrdinalIgnoreCase))
+            var matchers = new List<PathMatchSet>
             {
-                return "CD-Cops";
-            }
-            
-            return null;
+                new PathMatchSet(new PathMatch("CDCOPS.DLL", useEndsWith: true), "CD-Cops"),
+                new PathMatchSet(new PathMatch(".GZ_", useEndsWith: true), "CD-Cops"),
+                new PathMatchSet(new PathMatch(".W_X", useEndsWith: true), "CD-Cops"),
+                new PathMatchSet(new PathMatch(".Qz", useEndsWith: true), "CD-Cops"),
+                new PathMatchSet(new PathMatch(".QZ_", useEndsWith: true), "CD-Cops"),
+            };
+
+            return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
 
         public static string GetVersion(string file, byte[] fileContent, List<int> positions)

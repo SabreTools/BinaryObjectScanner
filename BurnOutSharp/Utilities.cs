@@ -244,7 +244,7 @@ namespace BurnOutSharp
         }
 
         /// <summary>
-        /// Wrapper for GetFileVersion for use in matching
+        /// Wrapper for GetFileVersion for use in content matching
         /// </summary>
         /// <param name="file">File to check for version</param>
         /// <param name="fileContent">Byte array representing the file contents</param>
@@ -253,6 +253,17 @@ namespace BurnOutSharp
         public static string GetFileVersion(string file, byte[] fileContent, List<int> positions)
         {
             return GetFileVersion(file);
+        }
+
+        /// <summary>
+        /// Wrapper for GetFileVersion for use in path matching
+        /// </summary>
+        /// <param name="firstMatchedString">File to check for version</param>
+        /// <param name="files">Full list of input paths</param>
+        /// <returns>Version string, null on error</returns>
+        public static string GetFileVersion(string firstMatchedString, IEnumerable<string> files)
+        {
+            return GetFileVersion(firstMatchedString);
         }
 
         /// <summary>

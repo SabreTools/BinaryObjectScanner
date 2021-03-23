@@ -4,6 +4,7 @@ using System.Linq;
 
 namespace BurnOutSharp.ProtectionType
 {
+    // TODO: Figure out how to use path check framework here
     public class DVDMoviePROTECT : IPathCheck
     {
         /// <inheritdoc/>

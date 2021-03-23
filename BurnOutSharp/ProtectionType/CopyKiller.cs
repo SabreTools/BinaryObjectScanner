@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.Collections.Generic;
 using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
@@ -28,20 +25,25 @@ namespace BurnOutSharp.ProtectionType
         public string CheckDirectoryPath(string path, IEnumerable<string> files)
         {
             // TODO: The following checks are overly broad and should be refined
-            // if (files.Any(f => Path.GetFileName(f).Equals("Autorun.dat", StringComparison.OrdinalIgnoreCase)))
-            //     return "CopyKiller";
+            var matchers = new List<PathMatchSet>
+            {
+                //new PathMatchSet(new PathMatch("Autorun.dat", useEndsWith: true), "CopyKiller"),
+            };
 
-            return null;
+            var matches = MatchUtil.GetAllMatches(files, matchers, any: true);
+            return string.Join(", ", matches);
         }
 
         /// <inheritdoc/>
         public string CheckFilePath(string path)
         {
             // TODO: The following checks are overly broad and should be refined
-            // if (Path.GetFileName(path).Equals("Autorun.dat", StringComparison.OrdinalIgnoreCase))
-            //     return "CopyKiller";
-            
-            return null;
+            var matchers = new List<PathMatchSet>
+            {
+                //new PathMatchSet(new PathMatch("Autorun.dat", useEndsWith: true), "CopyKiller"),
+            };
+
+            return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
     }
 }

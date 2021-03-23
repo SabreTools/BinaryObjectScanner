@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.Collections.Generic;
+using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -11,25 +9,26 @@ namespace BurnOutSharp.ProtectionType
         public string CheckDirectoryPath(string path, IEnumerable<string> files)
         {
             // TODO: Verify if these are OR or AND
-            if (files.Any(f => Path.GetFileName(f).Equals("INDYVCD.AX", StringComparison.OrdinalIgnoreCase))
-                || files.Any(f => Path.GetFileName(f).Equals("INDYMP3.idt", StringComparison.OrdinalIgnoreCase)))
+            var matchers = new List<PathMatchSet>
             {
-                return "IndyVCD";
-            }
-            
-            return null;
+                new PathMatchSet(new PathMatch("INDYVCD.AX", useEndsWith: true), "IndyVCD"),
+                new PathMatchSet(new PathMatch("INDYMP3.idt", useEndsWith: true), "IndyVCD"),
+            };
+
+            var matches = MatchUtil.GetAllMatches(files, matchers, any: true);
+            return string.Join(", ", matches);
         }
 
         /// <inheritdoc/>
         public string CheckFilePath(string path)
         {
-            if (Path.GetFileName(path).Equals("INDYVCD.AX", StringComparison.OrdinalIgnoreCase)
-                || Path.GetFileName(path).Equals("INDYMP3.idt", StringComparison.OrdinalIgnoreCase))
+            var matchers = new List<PathMatchSet>
             {
-                return "IndyVCD";
-            }
+                new PathMatchSet(new PathMatch("INDYVCD.AX", useEndsWith: true), "IndyVCD"),
+                new PathMatchSet(new PathMatch("INDYMP3.idt", useEndsWith: true), "IndyVCD"),
+            };
 
-            return null;
+            return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
     }
 }

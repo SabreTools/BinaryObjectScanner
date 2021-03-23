@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.Collections.Generic;
 using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
@@ -29,19 +26,24 @@ namespace BurnOutSharp.ProtectionType
         /// <inheritdoc/>
         public string CheckDirectoryPath(string path, IEnumerable<string> files)
         {
-            if (files.Any(f => Path.GetExtension(f).Trim('.').Equals("AFP", StringComparison.OrdinalIgnoreCase)))
-                return "CD-Lock";
+            var matchers = new List<PathMatchSet>
+            {
+                new PathMatchSet(new PathMatch(".AFP", useEndsWith: true), "CD-Lock"),
+            };
 
-            return null;
+            var matches = MatchUtil.GetAllMatches(files, matchers, any: true);
+            return string.Join(", ", matches);
         }
 
         /// <inheritdoc/>
         public string CheckFilePath(string path)
         {
-            if (Path.GetExtension(path).Trim('.').Equals("AFP", StringComparison.OrdinalIgnoreCase))
-                return "CD-Lock";
-            
-            return null;
+            var matchers = new List<PathMatchSet>
+            {
+                new PathMatchSet(new PathMatch(".AFP", useEndsWith: true), "CD-Lock"),
+            };
+
+            return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
     }
 }

@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.Collections.Generic;
+using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -11,29 +9,30 @@ namespace BurnOutSharp.ProtectionType
         public string CheckDirectoryPath(string path, IEnumerable<string> files)
         {
             // TODO: Verify if these are OR or AND
-            if (files.Any(f => Path.GetFileName(f).Equals("_cdp16.dat", StringComparison.OrdinalIgnoreCase))
-                || files.Any(f => Path.GetFileName(f).Equals("_cdp16.dll", StringComparison.OrdinalIgnoreCase))
-                || files.Any(f => Path.GetFileName(f).Equals("_cdp32.dat", StringComparison.OrdinalIgnoreCase))
-                || files.Any(f => Path.GetFileName(f).Equals("_cdp32.dll", StringComparison.OrdinalIgnoreCase)))
+            var matchers = new List<PathMatchSet>
             {
-                return "CD-Protector";
-            }
+                new PathMatchSet(new PathMatch("_cdp16.dat", useEndsWith: true), "CD-Protector"),
+                new PathMatchSet(new PathMatch("_cdp16.dll", useEndsWith: true), "CD-Protector"),
+                new PathMatchSet(new PathMatch("_cdp32.dat", useEndsWith: true), "CD-Protector"),
+                new PathMatchSet(new PathMatch("_cdp32.dll", useEndsWith: true), "CD-Protector"),
+            };
 
-            return null;
+            var matches = MatchUtil.GetAllMatches(files, matchers, any: true);
+            return string.Join(", ", matches);
         }
 
         /// <inheritdoc/>
         public string CheckFilePath(string path)
         {
-            if (Path.GetFileName(path).Equals("_cdp16.dat", StringComparison.OrdinalIgnoreCase)
-                || Path.GetFileName(path).Equals("_cdp16.dll", StringComparison.OrdinalIgnoreCase)
-                || Path.GetFileName(path).Equals("_cdp32.dat", StringComparison.OrdinalIgnoreCase)
-                || Path.GetFileName(path).Equals("_cdp32.dll", StringComparison.OrdinalIgnoreCase))
+            var matchers = new List<PathMatchSet>
             {
-                return "CD-Protector";
-            }
-            
-            return null;
+                new PathMatchSet(new PathMatch("_cdp16.dat", useEndsWith: true), "CD-Protector"),
+                new PathMatchSet(new PathMatch("_cdp16.dll", useEndsWith: true), "CD-Protector"),
+                new PathMatchSet(new PathMatch("_cdp32.dat", useEndsWith: true), "CD-Protector"),
+                new PathMatchSet(new PathMatch("_cdp32.dll", useEndsWith: true), "CD-Protector"),
+            };
+
+            return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
     }
 }

@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.Collections.Generic;
+using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -11,25 +9,26 @@ namespace BurnOutSharp.ProtectionType
         public string CheckDirectoryPath(string path, IEnumerable<string> files)
         {
             // TODO: Verify if these are OR or AND
-            if (files.Any(f => Path.GetFileName(f).Equals("SDKHM.EXE", StringComparison.OrdinalIgnoreCase))
-                || files.Any(f => Path.GetFileName(f).Equals("SDKHM.DLL", StringComparison.OrdinalIgnoreCase)))
+            var matchers = new List<PathMatchSet>
             {
-                return "key2AudioXS";
-            }
-            
-            return null;
+                new PathMatchSet(new PathMatch("SDKHM.EXE", useEndsWith: true), "key2AudioXS"),
+                new PathMatchSet(new PathMatch("SDKHM.DLL", useEndsWith: true), "key2AudioXS"),
+            };
+
+            var matches = MatchUtil.GetAllMatches(files, matchers, any: true);
+            return string.Join(", ", matches);
         }
 
         /// <inheritdoc/>
         public string CheckFilePath(string path)
         {
-            if (Path.GetFileName(path).Equals("SDKHM.EXE", StringComparison.OrdinalIgnoreCase)
-                || Path.GetFileName(path).Equals("SDKHM.DLL", StringComparison.OrdinalIgnoreCase))
+            var matchers = new List<PathMatchSet>
             {
-                return "key2AudioXS";
-            }
+                new PathMatchSet(new PathMatch("SDKHM.EXE", useEndsWith: true), "key2AudioXS"),
+                new PathMatchSet(new PathMatch("SDKHM.DLL", useEndsWith: true), "key2AudioXS"),
+            };
 
-            return null;
+            return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
     }
 }
