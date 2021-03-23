@@ -18,7 +18,7 @@ namespace BurnOutSharp.ProtectionType
                 new PathMatchSet(Path.Combine("AACS", "MKBROM.AACS"), GetVersion, "AACS"),
             };
 
-            var matches = MatchUtil.GetAllMatches(files, matchers, any: true);
+            var matches = MatchUtil.GetFirstMatch(files, matchers, any: true);
             return string.Join(", ", matches);
         }
 
@@ -34,8 +34,7 @@ namespace BurnOutSharp.ProtectionType
                 new PathMatchSet("MKBROM.AACS", GetVersion, "AACS"),
             };
 
-            var matches = MatchUtil.GetAllMatches(path, matchers, any: true);
-            return string.Join(", ", matches);
+            return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
 
         public static string GetVersion(string path, IEnumerable<string> files)
