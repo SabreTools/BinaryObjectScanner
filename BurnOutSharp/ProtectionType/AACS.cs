@@ -18,7 +18,7 @@ namespace BurnOutSharp.ProtectionType
                 new PathMatchSet(Path.Combine("AACS", "MKBROM.AACS"), GetVersion, "AACS"),
             };
 
-            var matches = MatchUtil.GetFirstMatch(files, matchers, any: true);
+            var matches = MatchUtil.GetAllMatches(files, matchers, any: true);
             return string.Join(", ", matches);
         }
 
@@ -28,10 +28,10 @@ namespace BurnOutSharp.ProtectionType
             var matchers = new List<PathMatchSet>
             {
                 // BD-ROM
-                new PathMatchSet("MKB_RO.inf", GetVersion, "AACS"),
+                new PathMatchSet(new PathMatch("MKB_RO.inf", useEndsWith: true), GetVersion, "AACS"),
 
                 // HD-DVD
-                new PathMatchSet("MKBROM.AACS", GetVersion, "AACS"),
+                new PathMatchSet(new PathMatch("MKBROM.AACS", useEndsWith: true), GetVersion, "AACS"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

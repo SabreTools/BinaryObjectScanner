@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -10,39 +11,41 @@ namespace BurnOutSharp.ProtectionType
         /// <inheritdoc/>
         public string CheckDirectoryPath(string path, IEnumerable<string> files)
         {
-            if (files.Any(f => f.Contains(Path.Combine("BDSVM", "00000.svm")))
-                && files.Any(f => f.Contains(Path.Combine("BDSVM", "BACKUP", "00000.svm"))))
+            var matchers = new List<PathMatchSet>
             {
-                string file = files.FirstOrDefault(f => Path.GetFileName(f).Equals("00000.svm", StringComparison.OrdinalIgnoreCase));
-                string version = GetVersion(file);
-                return version == null ? "BD+ (Unknown Version)" : $"BD+ {version}";
-            }
+                new PathMatchSet(new List<string>
+                {
+                    Path.Combine("BDSVM", "00000.svm"),
+                    Path.Combine("BDSVM", "BACKUP", "00000.svm"),
+                }, GetVersion, "BD+"),
+            };
 
-            return null;
+            var matches = MatchUtil.GetAllMatches(files, matchers, any: true);
+            return string.Join(", ", matches);
         }
 
         /// <inheritdoc/>
         public string CheckFilePath(string path)
         {
-            string filename = Path.GetFileName(path);
-            if (filename.Equals("00000.svm", StringComparison.OrdinalIgnoreCase))
+            var matchers = new List<PathMatchSet>
             {
-                string version = GetVersion(path);
-                return version == null ? "BD+ (Unknown Version)" : $"BD+ {version}";
-            }
-            
-            return null;
+                new PathMatchSet(new PathMatch("00000.svm", useEndsWith: true), GetVersion, "BD+"),
+            };
+
+            return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
 
-        /// <remarks>Version detection logic from libbdplus was used to implement this</remarks>
-        private static string GetVersion(string path)
+        /// <remarks>
+        /// Version detection logic from libbdplus was used to implement this
+        /// </remarks>
+        public static string GetVersion(string firstMatchedString, IEnumerable<string> files)
         {
-            if (!File.Exists(path))
-                return null;
+            if (!File.Exists(firstMatchedString))
+                return "(Unknown Version)";
 
             try
             {
-                using (var fs = File.OpenRead(path))
+                using (var fs = File.OpenRead(firstMatchedString))
                 {
                     fs.Seek(0x0D, SeekOrigin.Begin);
                     byte[] date = new byte[4];
@@ -51,14 +54,14 @@ namespace BurnOutSharp.ProtectionType
 
                     // Do some rudimentary date checking
                     if (year < 2006 || year > 2100 || date[2] < 1 || date[2] > 12 || date[3] < 1 || date[3] > 31)
-                        return null;
+                        return "(Invalid Version)";
 
                     return $"{year:0000}/{date[2]:00}/{date[3]:00}";
                 }
             }
             catch
             {
-                return null;
+                return "(Unknown Version)";
             }
         }
     }
