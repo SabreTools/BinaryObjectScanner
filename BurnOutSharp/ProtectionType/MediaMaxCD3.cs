@@ -8,7 +8,7 @@ namespace BurnOutSharp.ProtectionType
         /// <summary>
         /// Set of all ContentMatchSets for this protection
         /// </summary>
-        private static List<ContentMatchSet> contentMatchers = new List<ContentMatchSet>
+        private static readonly List<ContentMatchSet> contentMatchers = new List<ContentMatchSet>
         {
             // Cd3Ctl
             new ContentMatchSet(new byte?[] { 0x43, 0x64, 0x33, 0x43, 0x74, 0x6C }, "MediaMax CD-3"),

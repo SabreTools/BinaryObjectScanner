@@ -13,7 +13,7 @@ namespace BurnOutSharp.ProtectionType
         /// <summary>
         /// Set of all ContentMatchSets for this protection
         /// </summary>
-        private static List<ContentMatchSet> contentMatchers = new List<ContentMatchSet>
+        private static readonly List<ContentMatchSet> contentMatchers = new List<ContentMatchSet>
         {
             // HúMETINF
             new ContentMatchSet(new byte?[] { 0x48, 0xFA, 0x4D, 0x45, 0x54, 0x49, 0x4E, 0x46 }, GetVersion76till10, "ProtectDisc"),

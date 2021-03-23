@@ -8,7 +8,7 @@ namespace BurnOutSharp.ProtectionType
         /// <summary>
         /// Set of all ContentMatchSets for this protection
         /// </summary>
-        private static List<ContentMatchSet> contentMatchers = new List<ContentMatchSet>
+        private static readonly List<ContentMatchSet> contentMatchers = new List<ContentMatchSet>
         {
             // SETTEC
             new ContentMatchSet(new byte?[] { 0x53, 0x45, 0x54, 0x54, 0x45, 0x43 }, "Alpha-ROM"),

@@ -8,7 +8,7 @@ namespace BurnOutSharp.ProtectionType
         /// <summary>
         /// Set of all ContentMatchSets for this protection
         /// </summary>
-        private static List<ContentMatchSet> contentMatchers = new List<ContentMatchSet>
+        private static readonly List<ContentMatchSet> contentMatchers = new List<ContentMatchSet>
         {
             // EASTL
             //new ContentMatchSet(new byte?[] { 0x45, 0x41, 0x53, 0x54, 0x4C }, "Cucko (EA Custom)"),

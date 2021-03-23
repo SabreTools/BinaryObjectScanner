@@ -9,7 +9,7 @@ namespace BurnOutSharp.ProtectionType
         /// Set of all ContentMatchSets for this protection
         /// </summary>
         /// TODO: Verify if these are OR or AND
-        private static List<ContentMatchSet> contentMatchers = new List<ContentMatchSet>
+        private static readonly List<ContentMatchSet> contentMatchers = new List<ContentMatchSet>
         {
             // icd1 + (char)0x00
             new ContentMatchSet(new byte?[] { 0x69, 0x63, 0x64, 0x31, 0x00 }, "Code Lock"),

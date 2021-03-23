@@ -8,7 +8,7 @@ namespace BurnOutSharp.PackerType
         /// <summary>
         /// Set of all ContentMatchSets for this protection
         /// </summary>
-        private static List<ContentMatchSet> contentMatchers = new List<ContentMatchSet>
+        private static readonly List<ContentMatchSet> contentMatchers = new List<ContentMatchSet>
         {
             // DotfuscatorAttribute
             new ContentMatchSet(new byte?[]

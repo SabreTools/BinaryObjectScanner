@@ -9,7 +9,7 @@ namespace BurnOutSharp.PackerType
         /// <summary>
         /// Set of all ContentMatchSets for this protection
         /// </summary>
-        private static List<ContentMatchSet> contentMatchers = new List<ContentMatchSet>
+        private static readonly List<ContentMatchSet> contentMatchers = new List<ContentMatchSet>
         {
             // S.e.t.u.p. .F.a.c.t.o.r.y.
             new ContentMatchSet(new byte?[]

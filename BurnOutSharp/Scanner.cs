@@ -37,7 +37,7 @@ namespace BurnOutSharp
         /// <summary>
         /// Cache for all IPathCheck types
         /// </summary>
-        private static IEnumerable<IPathCheck> pathCheckClasses = InitPathCheckClasses();
+        private static readonly IEnumerable<IPathCheck> pathCheckClasses = InitPathCheckClasses();
 
         /// <summary>
         /// Constructor

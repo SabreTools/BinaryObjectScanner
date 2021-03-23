@@ -8,7 +8,7 @@ namespace BurnOutSharp.ProtectionType
         /// <summary>
         /// Set of all ContentMatchSets for this protection
         /// </summary>
-        private static List<ContentMatchSet> contentMatchers = new List<ContentMatchSet>
+        private static readonly List<ContentMatchSet> contentMatchers = new List<ContentMatchSet>
         {
             // 3 + (char)0x00 + 1 + 2 + (char)0x00 + 1 + (char)0x00 + S + (char)0x00 + t + (char)0x00 + u + (char)0x00 + d + (char)0x00 + i + (char)0x00 + o + (char)0x00 + s + (char)0x00 +   + (char)0x00 + A + (char)0x00 + c + (char)0x00 + t + (char)0x00 + i + (char)0x00 + v + (char)0x00 + a + (char)0x00 + t + (char)0x00 + i + (char)0x00 + o + (char)0x00 + n + (char)0x00
             new ContentMatchSet(new byte?[]

@@ -12,7 +12,7 @@ namespace BurnOutSharp.FileType
         /// <summary>
         /// Cache for all IContentCheck types
         /// </summary>
-        private static IEnumerable<IContentCheck> contentCheckClasses = InitContentCheckClasses();
+        private static readonly IEnumerable<IContentCheck> contentCheckClasses = InitContentCheckClasses();
 
         /// <inheritdoc/>
         public bool ShouldScan(byte[] magic)

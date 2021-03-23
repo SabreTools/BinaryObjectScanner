@@ -12,7 +12,7 @@ namespace BurnOutSharp.ProtectionType
         /// <summary>
         /// Set of all ContentMatchSets for this protection
         /// </summary>
-        private static List<ContentMatchSet> contentMatchers = new List<ContentMatchSet>
+        private static readonly List<ContentMatchSet> contentMatchers = new List<ContentMatchSet>
         {
             // :\\LASERLOK\\LASERLOK.IN + (char)0x00 + C:\\NOMOUSE.SP
             new ContentMatchSet(new byte?[]
