@@ -11,7 +11,7 @@ namespace BurnOutSharp.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
-                // HD-DVD
+                // BD-ROM
                 new PathMatchSet(Path.Combine("AACS", "MKB_RO.inf"), GetVersion, "AACS"),
 
                 // HD-DVD
@@ -27,7 +27,7 @@ namespace BurnOutSharp.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
-                // HD-DVD
+                // BD-ROM
                 new PathMatchSet("MKB_RO.inf", GetVersion, "AACS"),
 
                 // HD-DVD
