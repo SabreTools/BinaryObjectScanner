@@ -7,7 +7,7 @@ namespace BurnOutSharp.ProtectionType
     public class AACS : IPathCheck
     {
         /// <inheritdoc/>
-        public string CheckDirectoryPath(string path, IEnumerable<string> files)
+        public List<string> CheckDirectoryPath(string path, IEnumerable<string> files)
         {
             var matchers = new List<PathMatchSet>
             {
@@ -18,8 +18,7 @@ namespace BurnOutSharp.ProtectionType
                 new PathMatchSet(Path.Combine("AACS", "MKBROM.AACS"), GetVersion, "AACS"),
             };
 
-            var matches = MatchUtil.GetAllMatches(files, matchers, any: true);
-            return string.Join(", ", matches);
+            return MatchUtil.GetAllMatches(files, matchers, any: true);
         }
 
         /// <inheritdoc/>

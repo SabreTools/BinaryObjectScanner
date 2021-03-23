@@ -40,7 +40,7 @@ namespace BurnOutSharp.ProtectionType
         }
 
         /// <inheritdoc/>
-        public string CheckDirectoryPath(string path, IEnumerable<string> files)
+        public List<string> CheckDirectoryPath(string path, IEnumerable<string> files)
         {
             // TODO: Verify if these are OR or AND
             if (files.Any(f => Path.GetFileName(f).Equals("XCP.DAT", StringComparison.OrdinalIgnoreCase))
@@ -52,10 +52,10 @@ namespace BurnOutSharp.ProtectionType
                 {
                     string xcpVersion = GetDatVersion(versionDatPath);
                     if (!string.IsNullOrWhiteSpace(xcpVersion))
-                        return xcpVersion;
+                        return new List<string>() { xcpVersion };
                 }
 
-                return "XCP";
+                return new List<string>() { "XCP" };
             }
 
             return null;

@@ -8,7 +8,7 @@ namespace BurnOutSharp.ProtectionType
     public class DVDMoviePROTECT : IPathCheck
     {
         /// <inheritdoc/>
-        public string CheckDirectoryPath(string path, IEnumerable<string> files)
+        public List<string> CheckDirectoryPath(string path, IEnumerable<string> files)
         {
             if (Directory.Exists(Path.Combine(path, "VIDEO_TS")))
             {
@@ -18,7 +18,7 @@ namespace BurnOutSharp.ProtectionType
                     FileInfo bupfile = new FileInfo(bupfiles[i]);
                     FileInfo ifofile = new FileInfo(bupfile.DirectoryName + "\\" + bupfile.Name.Substring(0, bupfile.Name.Length - bupfile.Extension.Length) + ".ifo");
                     if (bupfile.Length != ifofile.Length)
-                        return "DVD-Movie-PROTECT"; ;
+                        return new List<string>() { "DVD-Movie-PROTECT" };
                 }
             }
 

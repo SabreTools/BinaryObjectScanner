@@ -86,7 +86,7 @@ namespace BurnOutSharp.ProtectionType
         }
 
         /// <inheritdoc/>
-        public string CheckDirectoryPath(string path, IEnumerable<string> files)
+        public List<string> CheckDirectoryPath(string path, IEnumerable<string> files)
         {
             // TODO: Verify if these are OR or AND
             var matchers = new List<PathMatchSet>
@@ -97,8 +97,7 @@ namespace BurnOutSharp.ProtectionType
                 new PathMatchSet(new PathMatch("c11prot.dll", useEndsWith: true), "SolidShield"),
             };
 
-            var matches = MatchUtil.GetAllMatches(files, matchers, any: true);
-            return string.Join(", ", matches);
+            return MatchUtil.GetAllMatches(files, matchers, any: true);
         }
 
         /// <inheritdoc/>

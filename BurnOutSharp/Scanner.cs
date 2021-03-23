@@ -189,9 +189,9 @@ namespace BurnOutSharp
             // Iterate through all path checks
             foreach (var pathCheckClass in pathCheckClasses)
             {
-                string protection = pathCheckClass.CheckDirectoryPath(path, files);
-                if (!string.IsNullOrWhiteSpace(protection))
-                    protections.Add(protection);
+                List<string> protection = pathCheckClass.CheckDirectoryPath(path, files);
+                if (protection != null)
+                    protections.AddRange(protection);
             }
 
             // Create and return the dictionary

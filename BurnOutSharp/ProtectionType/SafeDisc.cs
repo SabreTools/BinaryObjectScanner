@@ -61,7 +61,7 @@ namespace BurnOutSharp.ProtectionType
         }
 
         /// <inheritdoc/>
-        public string CheckDirectoryPath(string path, IEnumerable<string> files)
+        public List<string> CheckDirectoryPath(string path, IEnumerable<string> files)
         {
             List<string> protections = new List<string>();
 
@@ -85,11 +85,11 @@ namespace BurnOutSharp.ProtectionType
             {
                 protections.Add("SafeDisc for Macintosh");
             }
-            
+
             if (protections.Count == 0)
                 return null;
             else
-                return string.Join(", ", protections);
+                return protections;
         }
 
         /// <inheritdoc/>

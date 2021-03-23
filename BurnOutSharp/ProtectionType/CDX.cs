@@ -6,7 +6,7 @@ namespace BurnOutSharp.ProtectionType
     public class CDX : IPathCheck
     {
         /// <inheritdoc/>
-        public string CheckDirectoryPath(string path, IEnumerable<string> files)
+        public List<string> CheckDirectoryPath(string path, IEnumerable<string> files)
         {
             // TODO: Verify if these are OR or AND
             var matchers = new List<PathMatchSet>
@@ -16,8 +16,7 @@ namespace BurnOutSharp.ProtectionType
                 new PathMatchSet(new PathMatch("CHKCDXNT.DLL", useEndsWith: true), "CD-X"),
             };
 
-            var matches = MatchUtil.GetAllMatches(files, matchers, any: true);
-            return string.Join(", ", matches);
+            return MatchUtil.GetAllMatches(files, matchers, any: true);
         }
 
         /// <inheritdoc/>

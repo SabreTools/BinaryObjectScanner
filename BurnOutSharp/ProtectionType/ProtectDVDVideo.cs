@@ -8,7 +8,7 @@ namespace BurnOutSharp.ProtectionType
     public class ProtectDVDVideo : IPathCheck
     {
         /// <inheritdoc/>
-        public string CheckDirectoryPath(string path, IEnumerable<string> files)
+        public List<string> CheckDirectoryPath(string path, IEnumerable<string> files)
         {
             if (Directory.Exists(Path.Combine(path, "VIDEO_TS")))
             {
@@ -17,7 +17,7 @@ namespace BurnOutSharp.ProtectionType
                 {
                     FileInfo ifofile = new FileInfo(ifofiles[i]);
                     if (ifofile.Length == 0)
-                        return "Protect DVD-Video";
+                        return new List<string>() { "Protect DVD-Video" };
                 }
             }
             

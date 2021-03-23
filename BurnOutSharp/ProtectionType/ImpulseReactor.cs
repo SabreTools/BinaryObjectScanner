@@ -48,15 +48,14 @@ namespace BurnOutSharp.ProtectionType
         }
 
         /// <inheritdoc/>
-        public string CheckDirectoryPath(string path, IEnumerable<string> files)
+        public List<string> CheckDirectoryPath(string path, IEnumerable<string> files)
         {
             var matchers = new List<PathMatchSet>
             {
                 new PathMatchSet(new PathMatch("ImpulseReactor.dll", useEndsWith: true), Utilities.GetFileVersion, "Impulse Reactor"),
             };
 
-            var matches = MatchUtil.GetAllMatches(files, matchers, any: true);
-            return string.Join(", ", matches);
+            return MatchUtil.GetAllMatches(files, matchers, any: true);
         }
 
         /// <inheritdoc/>
