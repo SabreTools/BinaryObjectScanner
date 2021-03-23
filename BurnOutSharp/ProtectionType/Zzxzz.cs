@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
+using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -9,23 +9,25 @@ namespace BurnOutSharp.ProtectionType
         /// <inheritdoc/>
         public string CheckDirectoryPath(string path, IEnumerable<string> files)
         {
-            if (File.Exists(Path.Combine(path, "Zzxzz", "Zzz.aze")))
-                return "Zzxzz";
+            var matchers = new List<PathMatchSet>
+            {
+                new PathMatchSet(Path.Combine(path, "Zzxzz", "Zzz.aze"), "Zzxzz"),
+                new PathMatchSet($"Zzxzz{Path.DirectorySeparatorChar}", "Zzxzz"),
+            };
 
-            else if (Directory.Exists(Path.Combine(path, "Zzxzz")))
-                return "Zzxzz";
-
-            return null;
+            var matches = MatchUtil.GetAllMatches(files, matchers, any: true);
+            return string.Join(", ", matches);
         }
 
         /// <inheritdoc/>
         public string CheckFilePath(string path)
         {
-            string filename = Path.GetFileName(path);
-            if (filename.Equals("Zzz.aze", StringComparison.OrdinalIgnoreCase))
-                return "Zzxzz";
+            var matchers = new List<PathMatchSet>
+            {
+                new PathMatchSet(new PathMatch("Zzz.aze", useEndsWith: true), "Zzxzz"),
+            };
 
-            return null;
+            return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
     }
 }

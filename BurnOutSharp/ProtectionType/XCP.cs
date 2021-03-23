@@ -7,6 +7,7 @@ using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
 {
+    // TODO: Figure out how to use path check framework here
     public class XCP : IContentCheck, IPathCheck
     {
         /// <summary>

@@ -8,6 +8,7 @@ using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
 {
+    // TODO: Figure out how to use path check framework here
     public class SafeDisc : IContentCheck, IPathCheck
     {
         /// <summary>

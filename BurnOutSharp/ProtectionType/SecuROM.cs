@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Text;
 using BurnOutSharp.Matching;
 
@@ -55,44 +53,42 @@ namespace BurnOutSharp.ProtectionType
         /// <inheritdoc/>
         public string CheckDirectoryPath(string path, IEnumerable<string> files)
         {
-            // TODO: Verify if these are OR or AND
-            if (files.Any(f => Path.GetFileName(f).Equals("CMS16.DLL", StringComparison.OrdinalIgnoreCase))
-                || files.Any(f => Path.GetFileName(f).Equals("CMS_95.DLL", StringComparison.OrdinalIgnoreCase))
-                || files.Any(f => Path.GetFileName(f).Equals("CMS_NT.DLL", StringComparison.OrdinalIgnoreCase))
-                || files.Any(f => Path.GetFileName(f).Equals("CMS32_95.DLL", StringComparison.OrdinalIgnoreCase))
-                || files.Any(f => Path.GetFileName(f).Equals("CMS32_NT.DLL", StringComparison.OrdinalIgnoreCase)))
+            var matchers = new List<PathMatchSet>
             {
-                return "SecuROM";
-            }
-            else if (files.Any(f => Path.GetFileName(f).Equals("SINTF32.DLL", StringComparison.OrdinalIgnoreCase))
-                || files.Any(f => Path.GetFileName(f).Equals("SINTF16.DLL", StringComparison.OrdinalIgnoreCase))
-                || files.Any(f => Path.GetFileName(f).Equals("SINTFNT.DLL", StringComparison.OrdinalIgnoreCase)))
-            {
-                return "SecuROM New";
-            }
-            
-            return null;
+                // TODO: Verify if these are OR or AND
+                new PathMatchSet(new PathMatch("CMS16.DLL", useEndsWith: true), "SecuROM"),
+                new PathMatchSet(new PathMatch("CMS_95.DLL", useEndsWith: true), "SecuROM"),
+                new PathMatchSet(new PathMatch("CMS_NT.DLL", useEndsWith: true), "SecuROM"),
+                new PathMatchSet(new PathMatch("CMS32_95.DLL", useEndsWith: true), "SecuROM"),
+                new PathMatchSet(new PathMatch("CMS32_NT.DLL", useEndsWith: true), "SecuROM"),
+
+                // TODO: Verify if these are OR or AND
+                new PathMatchSet(new PathMatch("SINTF32.DLL", useEndsWith: true), "SecuROM New"),
+                new PathMatchSet(new PathMatch("SINTF16.DLL", useEndsWith: true), "SecuROM New"),
+                new PathMatchSet(new PathMatch("SINTFNT.DLL", useEndsWith: true), "SecuROM New"),
+            };
+
+            var matches = MatchUtil.GetAllMatches(files, matchers, any: true);
+            return string.Join(", ", matches);
         }
 
         /// <inheritdoc/>
         public string CheckFilePath(string path)
         {
-            if (Path.GetFileName(path).Equals("CMS16.DLL", StringComparison.OrdinalIgnoreCase)
-                || Path.GetFileName(path).Equals("CMS_95.DLL", StringComparison.OrdinalIgnoreCase)
-                || Path.GetFileName(path).Equals("CMS_NT.DLL", StringComparison.OrdinalIgnoreCase)
-                || Path.GetFileName(path).Equals("CMS32_95.DLL", StringComparison.OrdinalIgnoreCase)
-                || Path.GetFileName(path).Equals("CMS32_NT.DLL", StringComparison.OrdinalIgnoreCase))
+            var matchers = new List<PathMatchSet>
             {
-                return "SecuROM";
-            }
-            else if (Path.GetFileName(path).Equals("SINTF32.DLL", StringComparison.OrdinalIgnoreCase)
-                || Path.GetFileName(path).Equals("SINTF16.DLL", StringComparison.OrdinalIgnoreCase)
-                || Path.GetFileName(path).Equals("SINTFNT.DLL", StringComparison.OrdinalIgnoreCase))
-            {
-                return "SecuROM New";
-            }
+                new PathMatchSet(new PathMatch("CMS16.DLL", useEndsWith: true), "SecuROM"),
+                new PathMatchSet(new PathMatch("CMS_95.DLL", useEndsWith: true), "SecuROM"),
+                new PathMatchSet(new PathMatch("CMS_NT.DLL", useEndsWith: true), "SecuROM"),
+                new PathMatchSet(new PathMatch("CMS32_95.DLL", useEndsWith: true), "SecuROM"),
+                new PathMatchSet(new PathMatch("CMS32_NT.DLL", useEndsWith: true), "SecuROM"),
 
-            return null;
+                new PathMatchSet(new PathMatch("SINTF32.DLL", useEndsWith: true), "SecuROM New"),
+                new PathMatchSet(new PathMatch("SINTF16.DLL", useEndsWith: true), "SecuROM New"),
+                new PathMatchSet(new PathMatch("SINTFNT.DLL", useEndsWith: true), "SecuROM New"),
+            };
+
+            return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
 
         public static string GetV4Version(string file, byte[] fileContent, List<int> positions)

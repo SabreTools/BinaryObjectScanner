@@ -38,19 +38,24 @@ namespace BurnOutSharp.ProtectionType
         /// <inheritdoc/>
         public string CheckDirectoryPath(string path, IEnumerable<string> files)
         {
-            if (files.Any(f => Path.GetFileName(f).Equals("VOB-PCD.KEY", StringComparison.OrdinalIgnoreCase)))
-                return "VOB ProtectCD/DVD";
+            var matchers = new List<PathMatchSet>
+            {
+                new PathMatchSet(new PathMatch("VOB-PCD.KEY", useEndsWith: true), "VOB ProtectCD/DVD"),
+            };
 
-            return null;
+            var matches = MatchUtil.GetAllMatches(files, matchers, any: true);
+            return string.Join(", ", matches);
         }
 
         /// <inheritdoc/>
         public string CheckFilePath(string path)
         {
-            if (Path.GetFileName(path).Equals("VOB-PCD.KEY", StringComparison.OrdinalIgnoreCase))
-                return "VOB ProtectCD/DVD";
+            var matchers = new List<PathMatchSet>
+            {
+                new PathMatchSet(new PathMatch("VOB-PCD.KEY", useEndsWith: true), "VOB ProtectCD/DVD"),
+            };
 
-            return null;
+            return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
 
         public static string GetOldVersion(string file, byte[] fileContent, List<int> positions)

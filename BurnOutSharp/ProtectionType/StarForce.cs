@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Linq;
 using BurnOutSharp.Matching;
 
@@ -125,25 +123,26 @@ namespace BurnOutSharp.ProtectionType
         public string CheckDirectoryPath(string path, IEnumerable<string> files)
         {
             // TODO: Verify if these are OR or AND
-            if (files.Any(f => Path.GetFileName(f).Equals("protect.dll", StringComparison.OrdinalIgnoreCase))
-                || files.Any(f => Path.GetFileName(f).Equals("protect.exe", StringComparison.OrdinalIgnoreCase)))
+            var matchers = new List<PathMatchSet>
             {
-                return "StarForce";
-            }
-            
-            return null;
+                new PathMatchSet(new PathMatch("protect.dll", useEndsWith: true), "StarForce"),
+                new PathMatchSet(new PathMatch("protect.exe", useEndsWith: true), "StarForce"),
+            };
+
+            var matches = MatchUtil.GetAllMatches(files, matchers, any: true);
+            return string.Join(", ", matches);
         }
 
         /// <inheritdoc/>
         public string CheckFilePath(string path)
         {
-            if (Path.GetFileName(path).Equals("protect.dll", StringComparison.OrdinalIgnoreCase)
-                || Path.GetFileName(path).Equals("protect.exe", StringComparison.OrdinalIgnoreCase))
+            var matchers = new List<PathMatchSet>
             {
-                return "StarForce";
-            }
+                new PathMatchSet(new PathMatch("protect.dll", useEndsWith: true), "StarForce"),
+                new PathMatchSet(new PathMatch("protect.exe", useEndsWith: true), "StarForce"),
+            };
 
-            return null;
+            return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
     
         public static string GetVersion(string file, byte[] fileContent, List<int> positions)

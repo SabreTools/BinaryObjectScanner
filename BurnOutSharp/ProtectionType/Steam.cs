@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.Collections.Generic;
+using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -10,31 +8,32 @@ namespace BurnOutSharp.ProtectionType
         /// <inheritdoc/>
         public string CheckDirectoryPath(string path, IEnumerable<string> files)
         {
-            if (files.Any(f => Path.GetFileName(f).Equals("SteamInstall.exe", StringComparison.OrdinalIgnoreCase))
-                || files.Any(f => Path.GetFileName(f).Equals("SteamInstall.ini", StringComparison.OrdinalIgnoreCase))
-                || files.Any(f => Path.GetFileName(f).Equals("SteamInstall.msi", StringComparison.OrdinalIgnoreCase))
-                || files.Any(f => Path.GetFileName(f).Equals("SteamRetailInstaller.dmg", StringComparison.OrdinalIgnoreCase))
-                || files.Any(f => Path.GetFileName(f).Equals("SteamSetup.exe", StringComparison.OrdinalIgnoreCase)))
+            var matchers = new List<PathMatchSet>
             {
-                return "Steam";
-            }
-            
-            return null;
+                new PathMatchSet(new PathMatch("SteamInstall.exe", useEndsWith: true), "Steam"),
+                new PathMatchSet(new PathMatch("SteamInstall.ini", useEndsWith: true), "Steam"),
+                new PathMatchSet(new PathMatch("SteamInstall.msi", useEndsWith: true), "Steam"),
+                new PathMatchSet(new PathMatch("SteamRetailInstaller.dmg", useEndsWith: true), "Steam"),
+                new PathMatchSet(new PathMatch("SteamSetup.exe", useEndsWith: true), "Steam"),
+            };
+
+            var matches = MatchUtil.GetAllMatches(files, matchers, any: true);
+            return string.Join(", ", matches);
         }
 
         /// <inheritdoc/>
         public string CheckFilePath(string path)
         {
-            if (Path.GetFileName(path).Equals("SteamInstall.exe", StringComparison.OrdinalIgnoreCase)
-                || Path.GetFileName(path).Equals("SteamInstall.ini", StringComparison.OrdinalIgnoreCase)
-                || Path.GetFileName(path).Equals("SteamInstall.msi", StringComparison.OrdinalIgnoreCase)
-                || Path.GetFileName(path).Equals("SteamRetailInstaller.dmg", StringComparison.OrdinalIgnoreCase)
-                || Path.GetFileName(path).Equals("SteamSetup.exe", StringComparison.OrdinalIgnoreCase))
+            var matchers = new List<PathMatchSet>
             {
-                return "Steam";
-            }
+                new PathMatchSet(new PathMatch("SteamInstall.exe", useEndsWith: true), "Steam"),
+                new PathMatchSet(new PathMatch("SteamInstall.ini", useEndsWith: true), "Steam"),
+                new PathMatchSet(new PathMatch("SteamInstall.msi", useEndsWith: true), "Steam"),
+                new PathMatchSet(new PathMatch("SteamRetailInstaller.dmg", useEndsWith: true), "Steam"),
+                new PathMatchSet(new PathMatch("SteamSetup.exe", useEndsWith: true), "Steam"),
+            };
 
-            return null;
+            return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
     }
 }

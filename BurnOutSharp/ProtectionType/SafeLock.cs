@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.Collections.Generic;
 using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
@@ -27,27 +24,28 @@ namespace BurnOutSharp.ProtectionType
         public string CheckDirectoryPath(string path, IEnumerable<string> files)
         {
             // TODO: Verify if these are OR or AND
-            if (files.Any(f => Path.GetFileName(f).Equals("SafeLock.dat", StringComparison.OrdinalIgnoreCase))
-                || files.Any(f => Path.GetFileName(f).Equals("SafeLock.001", StringComparison.OrdinalIgnoreCase))
-                || files.Any(f => Path.GetFileName(f).Equals("SafeLock.128", StringComparison.OrdinalIgnoreCase)))
+            var matchers = new List<PathMatchSet>
             {
-                return "SafeLock";
-            }
-            
-            return null;
+                new PathMatchSet(new PathMatch("SafeLock.dat", useEndsWith: true), "SafeLock"),
+                new PathMatchSet(new PathMatch("SafeLock.001", useEndsWith: true), "SafeLock"),
+                new PathMatchSet(new PathMatch("SafeLock.128", useEndsWith: true), "SafeLock"),
+            };
+
+            var matches = MatchUtil.GetAllMatches(files, matchers, any: true);
+            return string.Join(", ", matches);
         }
 
         /// <inheritdoc/>
         public string CheckFilePath(string path)
         {
-            if (Path.GetFileName(path).Equals("SafeLock.dat", StringComparison.OrdinalIgnoreCase)
-                || Path.GetFileName(path).Equals("SafeLock.001", StringComparison.OrdinalIgnoreCase)
-                || Path.GetFileName(path).Equals("SafeLock.128", StringComparison.OrdinalIgnoreCase))
+            var matchers = new List<PathMatchSet>
             {
-                return "SafeLock";
-            }
+                new PathMatchSet(new PathMatch("SafeLock.dat", useEndsWith: true), "SafeLock"),
+                new PathMatchSet(new PathMatch("SafeLock.001", useEndsWith: true), "SafeLock"),
+                new PathMatchSet(new PathMatch("SafeLock.128", useEndsWith: true), "SafeLock"),
+            };
 
-            return null;
+            return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
     }
 }
