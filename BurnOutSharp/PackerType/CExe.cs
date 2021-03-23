@@ -14,10 +14,10 @@ namespace BurnOutSharp.PackerType
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
-            var matchers = new List<Matcher>
+            var matchers = new List<ContentMatchSet>
             {
                 // %Wo�a6.�a6.�a6.�a6.�{6.�.).�f6.��).�`6.��0.�`6.�
-                new Matcher(
+                new ContentMatchSet(
                     new ContentMatch(new byte?[]
                     {
                         0x25, 0x57, 0x6F, 0xC1, 0x61, 0x36, 0x01, 0x92,

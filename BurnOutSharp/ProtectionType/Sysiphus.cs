@@ -8,17 +8,17 @@ namespace BurnOutSharp.ProtectionType
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
-            var matchers = new List<Matcher>
+            var matchers = new List<ContentMatchSet>
             {
                 // V SUHPISYSDVD
-                new Matcher(new byte?[]
+                new ContentMatchSet(new byte?[]
                 {
                     0x56, 0x20, 0x53, 0x55, 0x48, 0x50, 0x49, 0x53,
                     0x59, 0x53, 0x44, 0x56, 0x44
                 }, GetVersion, "Sysiphus DVD"),
 
                 // V SUHPISYSDVD
-                new Matcher(new byte?[]
+                new ContentMatchSet(new byte?[]
                 {
                     0x56, 0x20, 0x53, 0x55, 0x48, 0x50, 0x49, 0x53,
                     0x59, 0x53

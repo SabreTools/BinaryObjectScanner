@@ -12,10 +12,10 @@ namespace BurnOutSharp.ProtectionType
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
-            var matchers = new List<Matcher>
+            var matchers = new List<ContentMatchSet>
             {
                 // D + (char)0x00 + V + (char)0x00 + M + (char)0x00 +   + (char)0x00 + L + (char)0x00 + i + (char)0x00 + b + (char)0x00 + r + (char)0x00 + a + (char)0x00 + r + (char)0x00 + y + (char)0x00
-                new Matcher(new byte?[]
+                new ContentMatchSet(new byte?[]
                 {
                     0x44, 0x00, 0x56, 0x00, 0x4D, 0x00, 0x20, 0x00,
                     0x4C, 0x00, 0x69, 0x00, 0x62, 0x00, 0x72, 0x00,
@@ -23,7 +23,7 @@ namespace BurnOutSharp.ProtectionType
                 }, Utilities.GetFileVersion, "SolidShield"),
 
                 // S + (char)0x00 + o + (char)0x00 + l + (char)0x00 + i + (char)0x00 + d + (char)0x00 + s + (char)0x00 + h + (char)0x00 + i + (char)0x00 + e + (char)0x00 + l + (char)0x00 + d + (char)0x00 +   + (char)0x00 + L + (char)0x00 + i + (char)0x00 + b + (char)0x00 + r + (char)0x00 + a + (char)0x00 + r + (char)0x00 + y + (char)0x00
-                new Matcher(new byte?[]
+                new ContentMatchSet(new byte?[]
                 {
                     0x53, 0x00, 0x6F, 0x00, 0x6C, 0x00, 0x69, 0x00,
                     0x64, 0x00, 0x73, 0x00, 0x68, 0x00, 0x69, 0x00,
@@ -33,7 +33,7 @@ namespace BurnOutSharp.ProtectionType
                 }, GetFileVersion, "SolidShield Core.dll"),
 
                 // S + (char)0x00 + o + (char)0x00 + l + (char)0x00 + i + (char)0x00 + d + (char)0x00 + s + (char)0x00 + h + (char)0x00 + i + (char)0x00 + e + (char)0x00 + l + (char)0x00 + d + (char)0x00 +   + (char)0x00 + A + (char)0x00 + c + (char)0x00 + t + (char)0x00 + i + (char)0x00 + v + (char)0x00 + a + (char)0x00 + t + (char)0x00 + i + (char)0x00 + o + (char)0x00 + n + (char)0x00 +   + (char)0x00 + L + (char)0x00 + i + (char)0x00 + b + (char)0x00 + r + (char)0x00 + a + (char)0x00 + r + (char)0x00 + y + (char)0x00
-                new Matcher(new byte?[]
+                new ContentMatchSet(new byte?[]
                 {
                     0x53, 0x00, 0x6F, 0x00, 0x6C, 0x00, 0x69, 0x00,
                     0x64, 0x00, 0x73, 0x00, 0x68, 0x00, 0x69, 0x00,
@@ -46,10 +46,10 @@ namespace BurnOutSharp.ProtectionType
                 }, GetFileVersion, "SolidShield Core.dll"),
 
                 // (char)0xEF + (char)0xBE + (char)0xAD + (char)0xDE
-                new Matcher(new byte?[] { 0xEF, 0xBE, 0xAD, 0xDE }, GetExeWrapperVersion, "SolidShield"),
+                new ContentMatchSet(new byte?[] { 0xEF, 0xBE, 0xAD, 0xDE }, GetExeWrapperVersion, "SolidShield"),
 
                 // A + (char)0x00 + c + (char)0x00 + t + (char)0x00 + i + (char)0x00 + v + (char)0x00 + a + (char)0x00 + t + (char)0x00 + i + (char)0x00 + o + (char)0x00 + n + (char)0x00 +   + (char)0x00 + M + (char)0x00 + a + (char)0x00 + n + (char)0x00 + a + (char)0x00 + g + (char)0x00 + e + (char)0x00 + r + (char)0x00
-                new Matcher(new byte?[]
+                new ContentMatchSet(new byte?[]
                 {
                     0x41, 0x00, 0x63, 0x00, 0x74, 0x00, 0x69, 0x00,
                     0x76, 0x00, 0x61, 0x00, 0x74, 0x00, 0x69, 0x00,
@@ -59,20 +59,20 @@ namespace BurnOutSharp.ProtectionType
                 }, GetFileVersion, "SolidShield Activation Manager Module"),
 
                 // dvm.dll
-                new Matcher(new byte?[] { 0x64, 0x76, 0x6D, 0x2E, 0x64, 0x6C, 0x6C }, "SolidShield EXE Wrapper"),
+                new ContentMatchSet(new byte?[] { 0x64, 0x76, 0x6D, 0x2E, 0x64, 0x6C, 0x6C }, "SolidShield EXE Wrapper"),
 
                 // (char)0xAD + (char)0xDE + (char)0xFE + (char)0xCA
-                new Matcher(new byte?[] { 0xAD, 0xDE, 0xFE, 0xCA }, GetVersionPlusTages, "SolidShield"),
+                new ContentMatchSet(new byte?[] { 0xAD, 0xDE, 0xFE, 0xCA }, GetVersionPlusTages, "SolidShield"),
 
                 // Solidshield
-                new Matcher(new byte?[]
+                new ContentMatchSet(new byte?[]
                 {
                     0x53, 0x6F, 0x6C, 0x69, 0x64, 0x73, 0x68, 0x69,
                     0x65, 0x6C, 0x64
                 }, GetVersion, "SolidShield"),
 
                 // B + (char)0x00 + I + (char)0x00 + N + (char)0x00 + (char)0x7 + (char)0x00 + I + (char)0x00 + D + (char)0x00 + R + (char)0x00 + _ + (char)0x00 + S + (char)0x00 + G + (char)0x00 + T + (char)0x00
-                new Matcher(new byte?[]
+                new ContentMatchSet(new byte?[]
                 {
                     0x42, 0x00, 0x49, 0x00, 0x4E, 0x00, 0x07, 0x00,
                     0x49, 0x00, 0x44, 0x00, 0x52, 0x00, 0x5F, 0x00,

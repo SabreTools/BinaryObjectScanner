@@ -11,9 +11,9 @@ namespace BurnOutSharp.ProtectionType
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
-            var matchers = new List<Matcher>
+            var matchers = new List<ContentMatchSet>
             {
-                new Matcher(new List<byte?[]>
+                new ContentMatchSet(new List<byte?[]>
                 {
                     // CVPInitializeClient
                     new byte?[]
@@ -36,7 +36,7 @@ namespace BurnOutSharp.ProtectionType
                 }, Utilities.GetFileVersion, "Impulse Reactor"),
 
                 // CVPInitializeClient
-                new Matcher(new byte?[]
+                new ContentMatchSet(new byte?[]
                 {
                     0x43, 0x56, 0x50, 0x49, 0x6E, 0x69, 0x74, 0x69,
                     0x61, 0x6C, 0x69, 0x7A, 0x65, 0x43, 0x6C, 0x69,

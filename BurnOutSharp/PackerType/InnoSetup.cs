@@ -14,10 +14,10 @@ namespace BurnOutSharp.PackerType
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
-            var matchers = new List<Matcher>
+            var matchers = new List<ContentMatchSet>
             {
                 // Inno
-                new Matcher(
+                new ContentMatchSet(
                     new ContentMatch(new byte?[] { 0x49, 0x6E, 0x6E, 0x6F }, start: 0x30, end: 0x31),
                     GetVersion,
                     "Inno Setup"),

@@ -1,11 +1,9 @@
-using System.Diagnostics.Eventing.Reader;
-
 namespace BurnOutSharp.Matching
 {
     /// <summary>
     /// Content matching criteria
     /// </summary>
-    internal class ContentMatch
+    internal class ContentMatch : IMatch<byte?[]>
     {
         /// <summary>
         /// Content to match
@@ -22,6 +20,12 @@ namespace BurnOutSharp.Matching
         /// </summary>
         public int End { get; set; }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="needle">Byte array representing the search</param>
+        /// <param name="start">Optional starting index</param>
+        /// <param name="end">Optional ending index</param>
         public ContentMatch(byte?[] needle, int start = -1, int end = -1)
         {
             Needle = needle;
@@ -36,7 +40,8 @@ namespace BurnOutSharp.Matching
         /// </summary>
         /// <param name="stack">Array to search for the given content</param>
         /// <param name="reverse">True to search from the end of the array, false from the start</param>
-        public (bool, int) Match(byte[] stack, bool reverse = false)
+        /// <returns>Tuple of success and found position</returns>
+        public (bool success, int position) Match(byte[] stack, bool reverse = false)
         {
             // If either array is null or empty, we can't do anything
             if (stack == null || stack.Length == 0 || Needle == null || Needle.Length == 0)
@@ -66,6 +71,7 @@ namespace BurnOutSharp.Matching
         /// </summary>
         /// <param name="stack">Array to search for the given content</param>
         /// <param name="index">Starting index to check equality</param>
+        /// <returns>True if the needle matches the stack at a given index</returns>
         private bool EqualAt(byte[] stack, int index)
         {
             // If the index is invalid, we can't do anything

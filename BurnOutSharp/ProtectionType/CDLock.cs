@@ -11,10 +11,10 @@ namespace BurnOutSharp.ProtectionType
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
-            var matchers = new List<Matcher>
+            var matchers = new List<ContentMatchSet>
             {
                 // 2 + (char)0xF2 + (char)0x02 + (char)0x82 + (char)0xC3 + (char)0xBC + (char)0x0B + $ + (char)0x99 + (char)0xAD + 'C + (char)0xE4 + (char)0x9D + st + (char)0x99 + (char)0xFA + 2$ + (char)0x9D + )4 + (char)0xFF + t
-                new Matcher(new byte?[]
+                new ContentMatchSet(new byte?[]
                 {
                     0x32, 0xF2, 0x02, 0x82, 0xC3, 0xBC, 0x0B, 0x24,
                     0x99, 0xAD, 0x27, 0x43, 0xE4, 0x9D, 0x73, 0x74,

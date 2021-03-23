@@ -11,10 +11,10 @@ namespace BurnOutSharp.ProtectionType
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
-            var matchers = new List<Matcher>
+            var matchers = new List<ContentMatchSet>
             {
                 // protected-tages-runtime.exe
-                new Matcher(new byte?[]
+                new ContentMatchSet(new byte?[]
                 {
                     0x70, 0x72, 0x6F, 0x74, 0x65, 0x63, 0x74, 0x65,
                     0x64, 0x2D, 0x74, 0x61, 0x67, 0x65, 0x73, 0x2D,
@@ -23,7 +23,7 @@ namespace BurnOutSharp.ProtectionType
                 }, Utilities.GetFileVersion, "TAGES"),
 
                 // tagesprotection.com
-                new Matcher(new byte?[]
+                new ContentMatchSet(new byte?[]
                 {
                     0x74, 0x61, 0x67, 0x65, 0x73, 0x70, 0x72, 0x6F,
                     0x74, 0x65, 0x63, 0x74, 0x69, 0x6F, 0x6E, 0x2E,
@@ -31,7 +31,7 @@ namespace BurnOutSharp.ProtectionType
                 }, Utilities.GetFileVersion, "TAGES"),
 
                 // (char)0xE8 + u + (char)0x00 + (char)0x00 + (char)0x00 + (char)0xE8
-                new Matcher(new byte?[] { 0xE8, 0x75, 0x00, 0x00, 0x00, 0xE8 }, GetVersion, "TAGES"),
+                new ContentMatchSet(new byte?[] { 0xE8, 0x75, 0x00, 0x00, 0x00, 0xE8 }, GetVersion, "TAGES"),
             };
 
             return MatchUtil.GetFirstContentMatch(file, fileContent, matchers, includePosition);
@@ -64,7 +64,7 @@ namespace BurnOutSharp.ProtectionType
                 protections.Add("TAGES Setup " + Utilities.GetFileVersion(file));
             }
 
-            if (protections.Count() == 0)
+            if (protections.Count == 0)
                 return null;
             else
                 return string.Join(", ", protections);

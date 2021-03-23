@@ -15,10 +15,10 @@ namespace BurnOutSharp.PackerType
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
-            var matchers = new List<Matcher>
+            var matchers = new List<ContentMatchSet>
             {
                 // WinZip Self-Extractor
-                new Matcher(new byte?[]
+                new ContentMatchSet(new byte?[]
                 {
                     0x57, 0x69, 0x6E, 0x5A, 0x69, 0x70, 0x20, 0x53,
                     0x65, 0x6C, 0x66, 0x2D, 0x45, 0x78, 0x74, 0x72,
@@ -26,7 +26,7 @@ namespace BurnOutSharp.PackerType
                 }, GetVersion, "WinZip SFX"),
 
                 // _winzip_
-                new Matcher(new byte?[] { 0x5F, 0x77, 0x69, 0x6E, 0x7A, 0x69, 0x70, 0x5F }, GetVersion, "WinZip SFX"),
+                new ContentMatchSet(new byte?[] { 0x5F, 0x77, 0x69, 0x6E, 0x7A, 0x69, 0x70, 0x5F }, GetVersion, "WinZip SFX"),
             };
 
             return MatchUtil.GetFirstContentMatch(file, fileContent, matchers, includePosition);
@@ -105,11 +105,11 @@ namespace BurnOutSharp.PackerType
 
         private static string GetV2Version(string file, byte[] fileContent)
         {
-            var matchers = new List<Matcher>
+            var matchers = new List<ContentMatchSet>
             {
                 #region 16-bit NE Header Checks
 
-                new Matcher(new byte?[]
+                new ContentMatchSet(new byte?[]
                 {
                     0x4E, 0x45, 0x11, 0x20, 0x86, 0x00, 0x02, 0x00,
                     0x00, 0x00, 0x00, 0x00, 0x0A, 0x03, 0x03, 0x00,
@@ -121,7 +121,7 @@ namespace BurnOutSharp.PackerType
                     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03,
                 }, "2.0 (MS-DOS/16-bit)"),
 
-                new Matcher(new byte?[]
+                new ContentMatchSet(new byte?[]
                 {
                     0x4E, 0x45, 0x11, 0x20, 0x86, 0x00, 0x02, 0x00,
                     0x00, 0x00, 0x00, 0x00, 0x0A, 0x03, 0x03, 0x00,
@@ -133,7 +133,7 @@ namespace BurnOutSharp.PackerType
                     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03,
                 }, "2.0 (16-bit)"),
 
-                new Matcher(new byte?[]
+                new ContentMatchSet(new byte?[]
                 {
                     0x4E, 0x45, 0x11, 0x20, 0x80, 0x00, 0x02, 0x00,
                     0x00, 0x00, 0x00, 0x00, 0x0A, 0x03, 0x03, 0x00,
@@ -145,7 +145,7 @@ namespace BurnOutSharp.PackerType
                     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03,
                 }, "Compact 2.0 (16-bit)"),
 
-                new Matcher(new byte?[]
+                new ContentMatchSet(new byte?[]
                 {
                     0x4E, 0x45, 0x11, 0x20, 0xCD, 0x00, 0x02, 0x00,
                     0x00, 0x00, 0x00, 0x00, 0x02, 0x03, 0x03, 0x00,
@@ -157,7 +157,7 @@ namespace BurnOutSharp.PackerType
                     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03,
                 }, "Software Installation 2.0 (16-bit)"),
 
-                new Matcher(new byte?[]
+                new ContentMatchSet(new byte?[]
                 {
                     0x4E, 0x45, 0x11, 0x20, 0x86, 0x00, 0x02, 0x00,
                     0x00, 0x00, 0x00, 0x00, 0x0A, 0x03, 0x03, 0x00,
@@ -169,7 +169,7 @@ namespace BurnOutSharp.PackerType
                     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03,
                 }, "2.1 RC2 (MS-DOS/16-bit)"),
 
-                new Matcher(new byte?[]
+                new ContentMatchSet(new byte?[]
                 {
                     0x4E, 0x45, 0x11, 0x20, 0xBE, 0x00, 0x02, 0x00,
                     0x00, 0x00, 0x00, 0x00, 0x02, 0x03, 0x03, 0x00,
@@ -181,7 +181,7 @@ namespace BurnOutSharp.PackerType
                     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03,
                 }, "2.1 RC2 (16-bit)"),
 
-                new Matcher(new byte?[]
+                new ContentMatchSet(new byte?[]
                 {
                     0x4E, 0x45, 0x11, 0x20, 0x80, 0x00, 0x02, 0x00,
                     0x00, 0x00, 0x00, 0x00, 0x0A, 0x03, 0x03, 0x00,
@@ -193,7 +193,7 @@ namespace BurnOutSharp.PackerType
                     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03,
                 }, "Compact 2.1 RC2 (16-bit)"),
 
-                new Matcher(new byte?[]
+                new ContentMatchSet(new byte?[]
                 {
                     0x4E, 0x45, 0x11, 0x20, 0xBE, 0x00, 0x02, 0x00,
                     0x00, 0x00, 0x00, 0x00, 0x02, 0x03, 0x03, 0x00,
@@ -205,7 +205,7 @@ namespace BurnOutSharp.PackerType
                     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03,
                 }, "Software Installation 2.1 RC2 (16-bit)"),
 
-                new Matcher(new byte?[]
+                new ContentMatchSet(new byte?[]
                 {
                     0x4E, 0x45, 0x11, 0x20, 0x86, 0x00, 0x02, 0x00,
                     0x00, 0x00, 0x00, 0x00, 0x0A, 0x03, 0x03, 0x00,
@@ -217,7 +217,7 @@ namespace BurnOutSharp.PackerType
                     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03,
                 }, "2.1 (MS-DOS/16-bit)"),
 
-                new Matcher(new byte?[]
+                new ContentMatchSet(new byte?[]
                 {
                     0x4E, 0x45, 0x11, 0x20, 0xBE, 0x00, 0x02, 0x00, 
                     0x00, 0x00, 0x00, 0x00, 0x02, 0x03, 0x03, 0x00,
@@ -229,7 +229,7 @@ namespace BurnOutSharp.PackerType
                     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03,
                 }, "2.1 (16-bit)"),
 
-                new Matcher(new byte?[]
+                new ContentMatchSet(new byte?[]
                 {
                     0x4E, 0x45, 0x11, 0x20, 0x80, 0x00, 0x02, 0x00,
                     0x00, 0x00, 0x00, 0x00, 0x0A, 0x03, 0x03, 0x00,
@@ -241,7 +241,7 @@ namespace BurnOutSharp.PackerType
                     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03,
                 }, "Compact 2.1 (16-bit)"),
 
-                new Matcher(new byte?[]
+                new ContentMatchSet(new byte?[]
                 {
                     0x4E, 0x45, 0x11, 0x20, 0xBE, 0x00, 0x02, 0x00,
                     0x00, 0x00, 0x00, 0x00, 0x02, 0x03, 0x03, 0x00,
@@ -258,7 +258,7 @@ namespace BurnOutSharp.PackerType
                 #region 32-bit SFX Header Checks
 
                 // .............8�92....�P..............�P..�P..�P..VW95SE.SFX
-                new Matcher(new byte?[]
+                new ContentMatchSet(new byte?[]
                 {
                     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                     0x00, 0x00, 0x00, 0x00, 0x00, 0x38, 0x9C, 0x39,
@@ -271,7 +271,7 @@ namespace BurnOutSharp.PackerType
                 }, "2.0 (32-bit)"),
 
                 // .............]�92....�P..............�P..�P..�P..VW95SRE.SFX
-                new Matcher(new byte?[]
+                new ContentMatchSet(new byte?[]
                 {
                     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                     0x00, 0x00, 0x00, 0x00, 0x00, 0x5D, 0x9C, 0x39,
@@ -284,7 +284,7 @@ namespace BurnOutSharp.PackerType
                 }, "Software Installation 2.0 (32-bit)"),
 
                 // .............���3....�P..............�P..�P..�P..VW95SE.SFX
-                new Matcher(new byte?[]
+                new ContentMatchSet(new byte?[]
                 {
                     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                     0x00, 0x00, 0x00, 0x00, 0x00, 0x84, 0x82, 0x94,
@@ -297,7 +297,7 @@ namespace BurnOutSharp.PackerType
                 }, "2.1 RC2 (32-bit)"),
 
                 // .............���3....�P..............�P..�P..�P..VW95SRE.SFX
-                new Matcher(new byte?[]
+                new ContentMatchSet(new byte?[]
                 {
                     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                     0x00, 0x00, 0x00, 0x00, 0x00, 0xB0, 0x82, 0x94,
@@ -310,7 +310,7 @@ namespace BurnOutSharp.PackerType
                 }, "Software Installation 2.1 RC2 (32-bit)"),
 
                 // .............U��3....�P..............�P..�P..�P..VW95SE.SFX
-                new Matcher(new byte?[]
+                new ContentMatchSet(new byte?[]
                 {
                     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                     0x00, 0x00, 0x00, 0x00, 0x00, 0x55, 0xCD, 0xCC,
@@ -323,7 +323,7 @@ namespace BurnOutSharp.PackerType
                 }, "2.1 (32-bit)"),
 
                 // .............{��3....�P..............�P..�P..�P..VW95SRE.SFX
-                new Matcher(new byte?[]
+                new ContentMatchSet(new byte?[]
                 {
                     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                     0x00, 0x00, 0x00, 0x00, 0x00, 0x7B, 0xCD, 0xCC,
@@ -339,7 +339,7 @@ namespace BurnOutSharp.PackerType
 
                 #region 32-bit PE Header Checks
 
-                new Matcher(new byte?[]
+                new ContentMatchSet(new byte?[]
                 {
                     0x50, 0x45, 0x00, 0x00, 0x4C, 0x01, 0x05, 0x00,
                     0x69, 0x1B, 0x5B, 0x3A, 0x00, 0x00, 0x00, 0x00,
@@ -350,7 +350,7 @@ namespace BurnOutSharp.PackerType
                     0x00, 0x60, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00,
                 }, "2.2.4003"),
 
-                new Matcher(new byte?[]
+                new ContentMatchSet(new byte?[]
                 {
                     0x50, 0x45, 0x00, 0x00, 0x4C, 0x01, 0x05, 0x00,
                     0x81, 0x1B, 0x5B, 0x3A, 0x00, 0x00, 0x00, 0x00,

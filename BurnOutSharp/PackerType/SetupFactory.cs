@@ -12,10 +12,10 @@ namespace BurnOutSharp.PackerType
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
-            var matchers = new List<Matcher>
+            var matchers = new List<ContentMatchSet>
             {
                 // S.e.t.u.p. .F.a.c.t.o.r.y.
-                new Matcher(new byte?[]
+                new ContentMatchSet(new byte?[]
                 {
                     0x53, 0x00, 0x65, 0x00, 0x74, 0x00, 0x75, 0x00,
                     0x70, 0x00, 0x20, 0x00, 0x46, 0x00, 0x61, 0x00,
@@ -25,7 +25,7 @@ namespace BurnOutSharp.PackerType
 
                 // Longer version of the check that can be used if false positves become an issue:
                 // S.e.t.u.p. .F.a.c.t.o.r.y. .i.s. .a. .t.r.a.d.e.m.a.r.k. .o.f. .I.n.d.i.g.o. .R.o.s.e. .C.o.r.p.o.r.a.t.i.o.n.
-                // new Matcher(new byte?[]
+                // new ContentMatchSet(new byte?[]
                 // {
                 //     0x53, 0x00, 0x65, 0x00, 0x74, 0x00, 0x75, 0x00,
                 //     0x70, 0x00, 0x20, 0x00, 0x46, 0x00, 0x61, 0x00,

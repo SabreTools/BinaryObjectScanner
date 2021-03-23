@@ -11,10 +11,10 @@ namespace BurnOutSharp.ProtectionType
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
-            var matchers = new List<Matcher>
+            var matchers = new List<ContentMatchSet>
             {
                 // WTM76545
-                new Matcher(new byte?[] { 0x57, 0x54, 0x4D, 0x37, 0x36, 0x35, 0x34, 0x35 }, "WTM CD Protect"),
+                new ContentMatchSet(new byte?[] { 0x57, 0x54, 0x4D, 0x37, 0x36, 0x35, 0x34, 0x35 }, "WTM CD Protect"),
             };
 
             return MatchUtil.GetFirstContentMatch(file, fileContent, matchers, includePosition);

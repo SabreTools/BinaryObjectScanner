@@ -13,20 +13,20 @@ namespace BurnOutSharp.ProtectionType
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
-            var matchers = new List<Matcher>
+            var matchers = new List<ContentMatchSet>
             {
                 // VOB ProtectCD
-                new Matcher(new byte?[]
+                new ContentMatchSet(new byte?[]
                 {
                     0x56, 0x4F, 0x42, 0x20, 0x50, 0x72, 0x6F, 0x74,
                     0x65, 0x63, 0x74, 0x43, 0x44
                 }, GetOldVersion, "VOB ProtectCD/DVD"),
 
                 // DCP-BOV + (char)0x00 + (char)0x00
-                new Matcher(new byte?[] { 0x44, 0x43, 0x50, 0x2D, 0x42, 0x4F, 0x56, 0x00, 0x00 }, GetVersion, "VOB ProtectCD/DVD"),
+                new ContentMatchSet(new byte?[] { 0x44, 0x43, 0x50, 0x2D, 0x42, 0x4F, 0x56, 0x00, 0x00 }, GetVersion, "VOB ProtectCD/DVD"),
 
                 // .vob.pcd
-                new Matcher(new byte?[] { 0x2E, 0x76, 0x6F, 0x62, 0x2E, 0x70, 0x63, 0x64 }, "VOB ProtectCD"),
+                new ContentMatchSet(new byte?[] { 0x2E, 0x76, 0x6F, 0x62, 0x2E, 0x70, 0x63, 0x64 }, "VOB ProtectCD"),
             };
 
             return MatchUtil.GetFirstContentMatch(file, fileContent, matchers, includePosition);

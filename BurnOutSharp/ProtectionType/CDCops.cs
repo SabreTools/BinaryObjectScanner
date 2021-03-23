@@ -11,17 +11,17 @@ namespace BurnOutSharp.ProtectionType
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
-            var matchers = new List<Matcher>
+            var matchers = new List<ContentMatchSet>
             {
                 // CD-Cops,  ver. 
-                new Matcher(new byte?[]
+                new ContentMatchSet(new byte?[]
                 {
                     0x43, 0x44, 0x2D, 0x43, 0x6F, 0x70, 0x73, 0x2C,
                     0x20, 0x20, 0x76, 0x65, 0x72, 0x2E, 0x20
                 }, GetVersion, "CD-Cops"),
 
                 // .grand + (char)0x00
-                new Matcher(new byte?[] { 0x2E, 0x67, 0x72, 0x61, 0x6E, 0x64, 0x00 }, "CD-Cops"),
+                new ContentMatchSet(new byte?[] { 0x2E, 0x67, 0x72, 0x61, 0x6E, 0x64, 0x00 }, "CD-Cops"),
             };
 
             return MatchUtil.GetFirstContentMatch(file, fileContent, matchers, includePosition);

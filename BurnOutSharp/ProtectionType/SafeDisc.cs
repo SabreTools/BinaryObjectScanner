@@ -13,9 +13,9 @@ namespace BurnOutSharp.ProtectionType
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
-            var matchers = new List<Matcher>
+            var matchers = new List<ContentMatchSet>
             {
-                new Matcher(new List<byte?[]>
+                new ContentMatchSet(new List<byte?[]>
                 {
                     // BoG_ *90.0&!!  Yy>
                     new byte?[]
@@ -36,7 +36,7 @@ namespace BurnOutSharp.ProtectionType
                 }, GetVersion, "SafeCast"),
 
                 // BoG_ *90.0&!!  Yy>
-                new Matcher(new byte?[]
+                new ContentMatchSet(new byte?[]
                 {
                     0x42, 0x6F, 0x47, 0x5F, 0x20, 0x2A, 0x39, 0x30,
                     0x2E, 0x30, 0x26, 0x21, 0x21, 0x20, 0x20, 0x59,
@@ -44,13 +44,13 @@ namespace BurnOutSharp.ProtectionType
                 }, "SafeDisc"),
 
                 // (char)0x00 + (char)0x00 + BoG_
-                new Matcher(new byte?[] { 0x00, 0x00, 0x42, 0x6F, 0x47, 0x5F }, Get320to4xVersion, "SafeDisc"),
+                new ContentMatchSet(new byte?[] { 0x00, 0x00, 0x42, 0x6F, 0x47, 0x5F }, Get320to4xVersion, "SafeDisc"),
 
                 // stxt774
-                new Matcher(new byte?[] { 0x73, 0x74, 0x78, 0x74, 0x37, 0x37, 0x34 }, Get320to4xVersion, "SafeDisc"),
+                new ContentMatchSet(new byte?[] { 0x73, 0x74, 0x78, 0x74, 0x37, 0x37, 0x34 }, Get320to4xVersion, "SafeDisc"),
 
                 // stxt371
-                new Matcher(new byte?[] { 0x73, 0x74, 0x78, 0x74, 0x33, 0x37, 0x31 }, Get320to4xVersion, "SafeDisc"),
+                new ContentMatchSet(new byte?[] { 0x73, 0x74, 0x78, 0x74, 0x33, 0x37, 0x31 }, Get320to4xVersion, "SafeDisc"),
             };
 
             return MatchUtil.GetFirstContentMatch(file, fileContent, matchers, includePosition);
@@ -82,7 +82,7 @@ namespace BurnOutSharp.ProtectionType
                 protections.Add("SafeDisc for Macintosh");
             }
             
-            if (protections.Count() == 0)
+            if (protections.Count == 0)
                 return null;
             else
                 return string.Join(", ", protections);

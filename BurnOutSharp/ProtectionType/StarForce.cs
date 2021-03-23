@@ -11,9 +11,9 @@ namespace BurnOutSharp.ProtectionType
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
-            var matchers = new List<Matcher>
+            var matchers = new List<ContentMatchSet>
             {
-                new Matcher(new List<byte?[]>
+                new ContentMatchSet(new List<byte?[]>
                 {
                     // ( + (char)0x00 + c + (char)0x00 + ) + (char)0x00 +   + (char)0x00 + P + (char)0x00 + r + (char)0x00 + o + (char)0x00 + t + (char)0x00 + e + (char)0x00 + c + (char)0x00 + t + (char)0x00 + i + (char)0x00 + o + (char)0x00 + n + (char)0x00 +   + (char)0x00 + T + (char)0x00 + e + (char)0x00 + c + (char)0x00 + h + (char)0x00 + n + (char)0x00 + o + (char)0x00 + l + (char)0x00 + o + (char)0x00 + g + (char)0x00 + y + (char)0x00
                     new byte?[]
@@ -48,7 +48,7 @@ namespace BurnOutSharp.ProtectionType
                 }, GetVersion, "StarForce"),
 
                 // ( + (char)0x00 + c + (char)0x00 + ) + (char)0x00 +   + (char)0x00 + P + (char)0x00 + r + (char)0x00 + o + (char)0x00 + t + (char)0x00 + e + (char)0x00 + c + (char)0x00 + t + (char)0x00 + i + (char)0x00 + o + (char)0x00 + n + (char)0x00 +   + (char)0x00 + T + (char)0x00 + e + (char)0x00 + c + (char)0x00 + h + (char)0x00 + n + (char)0x00 + o + (char)0x00 + l + (char)0x00 + o + (char)0x00 + g + (char)0x00 + y + (char)0x00
-                new Matcher(new byte?[]
+                new ContentMatchSet(new byte?[]
                 {
                     0x28, 0x00, 0x63, 0x00, 0x29, 0x00, 0x20, 0x00,
                     0x50, 0x00, 0x72, 0x00, 0x6F, 0x00, 0x74, 0x00,
@@ -59,7 +59,7 @@ namespace BurnOutSharp.ProtectionType
                     0x79, 0x00
                 }, Utilities.GetFileVersion, "StarForce"),
 
-                new Matcher(new List<byte?[]>
+                new ContentMatchSet(new List<byte?[]>
                 {
                     // Protection Technology, Ltd.
                     new byte?[]
@@ -91,7 +91,7 @@ namespace BurnOutSharp.ProtectionType
                 }, GetVersion, "StarForce"),
 
                 // Protection Technology, Ltd.
-                new Matcher(new byte?[]
+                new ContentMatchSet(new byte?[]
                 {
                     0x50, 0x72, 0x6F, 0x74, 0x65, 0x63, 0x74, 0x69,
                     0x6F, 0x6E, 0x20, 0x54, 0x65, 0x63, 0x68, 0x6E,
@@ -100,13 +100,13 @@ namespace BurnOutSharp.ProtectionType
                 }, Utilities.GetFileVersion, "StarForce"),
 
                 // .sforce
-                new Matcher(new byte?[] { 0x2E, 0x73, 0x66, 0x6F, 0x72, 0x63, 0x65 }, "StarForce 3-5"),
+                new ContentMatchSet(new byte?[] { 0x2E, 0x73, 0x66, 0x6F, 0x72, 0x63, 0x65 }, "StarForce 3-5"),
 
                 // .brick
-                new Matcher(new byte?[] { 0x2E, 0x62, 0x72, 0x69, 0x63, 0x6B }, "StarForce 3-5"),
+                new ContentMatchSet(new byte?[] { 0x2E, 0x62, 0x72, 0x69, 0x63, 0x6B }, "StarForce 3-5"),
 
                 // P + (char)0x00 + r + (char)0x00 + o + (char)0x00 + t + (char)0x00 + e + (char)0x00 + c + (char)0x00 + t + (char)0x00 + e + (char)0x00 + d + (char)0x00 +   + (char)0x00 + M + (char)0x00 + o + (char)0x00 + d + (char)0x00 + u + (char)0x00 + l + (char)0x00 + e + (char)0x00
-                new Matcher(new byte?[]
+                new ContentMatchSet(new byte?[]
                 {
                     0x50, 0x00, 0x72, 0x00, 0x6f, 0x00, 0x74, 0x00,
                     0x65, 0x00, 0x63, 0x00, 0x74, 0x00, 0x65, 0x00,

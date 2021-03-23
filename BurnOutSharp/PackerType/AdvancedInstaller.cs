@@ -9,10 +9,10 @@ namespace BurnOutSharp.PackerType
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
-            var matchers = new List<Matcher>
+            var matchers = new List<ContentMatchSet>
             {
                 // Software\Caphyon\Advanced Installer
-                new Matcher(new byte?[]
+                new ContentMatchSet(new byte?[]
                 {
                     0x53, 0x6F, 0x66, 0x74, 0x77, 0x61, 0x72, 0x65,
                     0x5C, 0x43, 0x61, 0x70, 0x68, 0x79, 0x6F, 0x6E,

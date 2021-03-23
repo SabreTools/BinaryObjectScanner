@@ -30,10 +30,10 @@ namespace BurnOutSharp.ProtectionType
             if (file != null && string.Equals(Path.GetFileName(file), "NOMOUSE.SP", StringComparison.OrdinalIgnoreCase))
                 return $"LaserLock {GetVersion16Bit(fileContent)}" + (includePosition ? $" (Index 71)" : string.Empty);
 
-            var matchers = new List<Matcher>
+            var matchers = new List<ContentMatchSet>
             {
                 // :\\LASERLOK\\LASERLOK.IN + (char)0x00 + C:\\NOMOUSE.SP
-                new Matcher(new byte?[]
+                new ContentMatchSet(new byte?[]
                 {
                     0x3A, 0x5C, 0x5C, 0x4C, 0x41, 0x53, 0x45, 0x52,
                     0x4C, 0x4F, 0x4B, 0x5C, 0x5C, 0x4C, 0x41, 0x53,
@@ -43,7 +43,7 @@ namespace BurnOutSharp.ProtectionType
                 }, "LaserLock 3"),
 
                 // LASERLOK_INIT + (char)0xC + LASERLOK_RUN + (char)0xE + LASERLOK_CHECK + (char)0xF + LASERLOK_CHECK2 + (char)0xF + LASERLOK_CHECK3
-                new Matcher(new byte?[]
+                new ContentMatchSet(new byte?[]
                 {
                     0x4C, 0x41, 0x53, 0x45, 0x52, 0x4C, 0x4F, 0x4B,
                     0x5F, 0x49, 0x4E, 0x49, 0x54, 0x0C, 0x4C, 0x41,

@@ -90,7 +90,7 @@ namespace BurnOutSharp
                     Utilities.AppendToDictionary(protections, directoryPathProtections);
 
                     // Scan each file in directory separately
-                    for (int i = 0; i < files.Count(); i++)
+                    for (int i = 0; i < files.Count; i++)
                     {
                         // Get the current file
                         string file = files.ElementAt(i);
@@ -101,7 +101,7 @@ namespace BurnOutSharp
                             reportableFileName = reportableFileName.Substring(tempFilePathWithGuid.Length);
 
                         // Checkpoint
-                        FileProgress?.Report(new ProtectionProgress(reportableFileName, i / (float)files.Count(), "Checking file" + (file != reportableFileName ? " from archive" : string.Empty)));
+                        FileProgress?.Report(new ProtectionProgress(reportableFileName, i / (float)files.Count, "Checking file" + (file != reportableFileName ? " from archive" : string.Empty)));
 
                         // Scan for path-detectable protections
                         var filePathProtections = GetFilePathProtections(file);
@@ -123,7 +123,7 @@ namespace BurnOutSharp
                         // Checkpoint
                         protections.TryGetValue(file, out List<string> fullProtectionList);
                         string fullProtection = (fullProtectionList != null && fullProtectionList.Any() ? string.Join(", ", fullProtectionList) : null);
-                        FileProgress?.Report(new ProtectionProgress(reportableFileName, (i + 1) / (float)files.Count(), fullProtection ?? string.Empty));
+                        FileProgress?.Report(new ProtectionProgress(reportableFileName, (i + 1) / (float)files.Count, fullProtection ?? string.Empty));
                     }
                 }
 
@@ -407,7 +407,7 @@ namespace BurnOutSharp
         /// <summary>
         /// Initialize all IPathCheck implementations
         /// </summary>
-        private void InitPathCheckClasses()
+        private static void InitPathCheckClasses()
         {
             if (pathCheckClasses == null)
             {

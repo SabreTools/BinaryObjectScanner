@@ -10,12 +10,12 @@ namespace BurnOutSharp.ProtectionType
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
-            var matchers = new List<Matcher>
+            var matchers = new List<ContentMatchSet>
             {
                 // @HC09    
-                new Matcher(new byte?[] { 0x40, 0x48, 0x43, 0x30, 0x39, 0x20, 0x20, 0x20, 0x20 }, "JoWooD X-Prot v2"),
+                new ContentMatchSet(new byte?[] { 0x40, 0x48, 0x43, 0x30, 0x39, 0x20, 0x20, 0x20, 0x20 }, "JoWooD X-Prot v2"),
 
-                new Matcher(new List<byte?[]>
+                new ContentMatchSet(new List<byte?[]>
                 {
                     // .ext    
                     new byte?[] { 0x2E, 0x65, 0x78, 0x74, 0x20, 0x20, 0x20, 0x20 },
@@ -31,7 +31,7 @@ namespace BurnOutSharp.ProtectionType
                 }, GetVersion, "JoWooD X-Prot"),
 
                 // .ext      
-                new Matcher(new byte?[] { 0x2E, 0x65, 0x78, 0x74, 0x20, 0x20, 0x20, 0x20 }, "JoWooD X-Prot v1"),
+                new ContentMatchSet(new byte?[] { 0x2E, 0x65, 0x78, 0x74, 0x20, 0x20, 0x20, 0x20 }, "JoWooD X-Prot v1"),
             };
 
             return MatchUtil.GetFirstContentMatch(file, fileContent, matchers, includePosition);

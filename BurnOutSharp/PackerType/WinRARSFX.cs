@@ -15,10 +15,10 @@ namespace BurnOutSharp.PackerType
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
-            var matchers = new List<Matcher>
+            var matchers = new List<ContentMatchSet>
             {
                 // Software\WinRAR SFX
-                new Matcher(new byte?[]
+                new ContentMatchSet(new byte?[]
                 {
                     0x53, 0x6F, 0x66, 0x74, 0x77, 0x61, 0x72, 0x65,
                     0x5C, 0x57, 0x69, 0x6E, 0x52, 0x41, 0x52, 0x20,

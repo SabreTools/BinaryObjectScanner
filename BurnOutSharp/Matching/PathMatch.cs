@@ -5,7 +5,7 @@ namespace BurnOutSharp.Matching
     /// <summary>
     /// Path matching criteria
     /// </summary>
-    internal class PathMatch
+    internal class PathMatch : IMatch<string>
     {
         /// <summary>
         /// String to match
@@ -22,6 +22,12 @@ namespace BurnOutSharp.Matching
         /// </summary>
         public bool UseEndsWith { get; set; }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="needle">String representing the search</param>
+        /// <param name="matchExact">True to match exact casing, false otherwise</param>
+        /// <param name="useEndsWith">True to match the end only, false for all contents</param>
         public PathMatch(string needle, bool matchExact = false, bool useEndsWith = false)
         {
             Needle = needle;
@@ -35,6 +41,7 @@ namespace BurnOutSharp.Matching
         /// Get if this match can be found in a stack
         /// </summary>
         /// <param name="stack">List of strings to search for the given content</param>
+        /// <returns>Tuple of success and matched item</returns>
         public (bool, string) Match(List<string> stack)
         {
             // If either array is null or empty, we can't do anything
@@ -46,7 +53,7 @@ namespace BurnOutSharp.Matching
 
             foreach (string stackItem in stack)
             {
-                // Preprocess the stack item, ir necessary
+                // Preprocess the stack item, if necessary
                 string procStackItem = MatchExact ? stackItem : stackItem.ToLowerInvariant();
 
                 if (UseEndsWith && procStackItem.EndsWith(procNeedle))
