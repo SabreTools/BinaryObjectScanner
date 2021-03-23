@@ -7,23 +7,26 @@ namespace BurnOutSharp.ProtectionType
 {
     public class CDCops : IContentCheck, IPathCheck
     {
+        /// <summary>
+        /// Set of all ContentMatchSets for this protection
+        /// </summary>
+        private static List<ContentMatchSet> contentMatchers = new List<ContentMatchSet>
+        {
+            // CD-Cops,  ver. 
+            new ContentMatchSet(new byte?[]
+            {
+                0x43, 0x44, 0x2D, 0x43, 0x6F, 0x70, 0x73, 0x2C,
+                0x20, 0x20, 0x76, 0x65, 0x72, 0x2E, 0x20
+            }, GetVersion, "CD-Cops"),
+
+            // .grand + (char)0x00
+            new ContentMatchSet(new byte?[] { 0x2E, 0x67, 0x72, 0x61, 0x6E, 0x64, 0x00 }, "CD-Cops"),
+        };
+
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
-            var matchers = new List<ContentMatchSet>
-            {
-                // CD-Cops,  ver. 
-                new ContentMatchSet(new byte?[]
-                {
-                    0x43, 0x44, 0x2D, 0x43, 0x6F, 0x70, 0x73, 0x2C,
-                    0x20, 0x20, 0x76, 0x65, 0x72, 0x2E, 0x20
-                }, GetVersion, "CD-Cops"),
-
-                // .grand + (char)0x00
-                new ContentMatchSet(new byte?[] { 0x2E, 0x67, 0x72, 0x61, 0x6E, 0x64, 0x00 }, "CD-Cops"),
-            };
-
-            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includePosition);
+            return MatchUtil.GetFirstMatch(file, fileContent, contentMatchers, includePosition);
         }
 
         /// <inheritdoc/>

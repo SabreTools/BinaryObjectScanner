@@ -3,7 +3,7 @@ using System.IO;
 
 namespace BurnOutSharp
 {
-    public interface IScannable
+    internal interface IScannable
     {
         /// <summary>
         /// Determine if a file signature matches one of the expected values

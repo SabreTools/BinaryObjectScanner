@@ -9,44 +9,47 @@ namespace BurnOutSharp.ProtectionType
 {
     public class SecuROM : IContentCheck, IPathCheck
     {
+        /// <summary>
+        /// Set of all ContentMatchSets for this protection
+        /// </summary>
+        private static List<ContentMatchSet> contentMatchers = new List<ContentMatchSet>
+        {
+            // AddD + (char)0x03 + (char)0x00 + (char)0x00 + (char)0x00)
+            new ContentMatchSet(new byte?[] { 0x41, 0x64, 0x64, 0x44, 0x03, 0x00, 0x00, 0x00 }, GetV4Version, "SecuROM"),
+
+            // (char)0xCA + (char)0xDD + (char)0xDD + (char)0xAC + (char)0x03
+            new ContentMatchSet(new byte?[] { 0xCA, 0xDD, 0xDD, 0xAC, 0x03 }, GetV5Version, "SecuROM"),
+
+            // .securom + (char)0xE0 + (char)0xC0
+            new ContentMatchSet(new byte?[]
+            {
+                0x2E, 0x73, 0x65, 0x63, 0x75, 0x72, 0x6F, 0x6D,
+                0xE0, 0xC0
+            }, GetV7Version, "SecuROM"),
+
+            // .securom
+            new ContentMatchSet(new byte?[] { 0x2E, 0x73, 0x65, 0x63, 0x75, 0x72, 0x6F, 0x6D }, GetV7Version, "SecuROM"),
+
+            // _and_play.dll + (char)0x00 + drm_pagui_doit
+            new ContentMatchSet(new byte?[]
+            {
+                0x5F, 0x61, 0x6E, 0x64, 0x5F, 0x70, 0x6C, 0x61,
+                0x79, 0x2E, 0x64, 0x6C, 0x6C, 0x00, 0x64, 0x72,
+                0x6D, 0x5F, 0x70, 0x61, 0x67, 0x75, 0x69, 0x5F,
+                0x64, 0x6F, 0x69, 0x74
+            }, Utilities.GetFileVersion, "SecuROM Product Activation"),
+
+            // .cms_t + (char)0x00
+            new ContentMatchSet(new byte?[] { 0x2E, 0x63, 0x6D, 0x73, 0x5F, 0x74, 0x00 }, "SecuROM 1-3"),
+
+            // .cms_d + (char)0x00
+            new ContentMatchSet(new byte?[] { 0x2E, 0x63, 0x6D, 0x73, 0x5F, 0x64, 0x00 }, "SecuROM 1-3"),
+        };
+
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
-            var matchers = new List<ContentMatchSet>
-            {
-                // AddD + (char)0x03 + (char)0x00 + (char)0x00 + (char)0x00)
-                new ContentMatchSet(new byte?[] { 0x41, 0x64, 0x64, 0x44, 0x03, 0x00, 0x00, 0x00 }, GetV4Version, "SecuROM"),
-
-                // (char)0xCA + (char)0xDD + (char)0xDD + (char)0xAC + (char)0x03
-                new ContentMatchSet(new byte?[] { 0xCA, 0xDD, 0xDD, 0xAC, 0x03 }, GetV5Version, "SecuROM"),
-
-                // .securom + (char)0xE0 + (char)0xC0
-                new ContentMatchSet(new byte?[]
-                {
-                    0x2E, 0x73, 0x65, 0x63, 0x75, 0x72, 0x6F, 0x6D,
-                    0xE0, 0xC0
-                }, GetV7Version, "SecuROM"),
-
-                // .securom
-                new ContentMatchSet(new byte?[] { 0x2E, 0x73, 0x65, 0x63, 0x75, 0x72, 0x6F, 0x6D }, GetV7Version, "SecuROM"),
-
-                // _and_play.dll + (char)0x00 + drm_pagui_doit
-                new ContentMatchSet(new byte?[]
-                {
-                    0x5F, 0x61, 0x6E, 0x64, 0x5F, 0x70, 0x6C, 0x61,
-                    0x79, 0x2E, 0x64, 0x6C, 0x6C, 0x00, 0x64, 0x72,
-                    0x6D, 0x5F, 0x70, 0x61, 0x67, 0x75, 0x69, 0x5F,
-                    0x64, 0x6F, 0x69, 0x74
-                }, Utilities.GetFileVersion, "SecuROM Product Activation"),
-
-                // .cms_t + (char)0x00
-                new ContentMatchSet(new byte?[] { 0x2E, 0x63, 0x6D, 0x73, 0x5F, 0x74, 0x00 }, "SecuROM 1-3"),
-
-                // .cms_d + (char)0x00
-                new ContentMatchSet(new byte?[] { 0x2E, 0x63, 0x6D, 0x73, 0x5F, 0x64, 0x00 }, "SecuROM 1-3"),
-            };
-
-            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includePosition);
+            return MatchUtil.GetFirstMatch(file, fileContent, contentMatchers, includePosition);
         }
 
         /// <inheritdoc/>

@@ -8,22 +8,25 @@ namespace BurnOutSharp.PackerType
 {
     public class InnoSetup : IContentCheck, IScannable
     {
+        /// <summary>
+        /// Set of all ContentMatchSets for this protection
+        /// </summary>
+        private static List<ContentMatchSet> contentMatchers = new List<ContentMatchSet>
+        {
+            // Inno
+            new ContentMatchSet(
+                new ContentMatch(new byte?[] { 0x49, 0x6E, 0x6E, 0x6F }, start: 0x30, end: 0x31),
+                GetVersion,
+                "Inno Setup"),
+        };
+
         /// <inheritdoc/>
         public bool ShouldScan(byte[] magic) => true;
 
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
-            var matchers = new List<ContentMatchSet>
-            {
-                // Inno
-                new ContentMatchSet(
-                    new ContentMatch(new byte?[] { 0x49, 0x6E, 0x6E, 0x6F }, start: 0x30, end: 0x31),
-                    GetVersion,
-                    "Inno Setup"),
-            };
-
-            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includePosition);
+            return MatchUtil.GetFirstMatch(file, fileContent, contentMatchers, includePosition);
         }
 
         /// <inheritdoc/>

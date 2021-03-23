@@ -1,6 +1,6 @@
 ﻿namespace BurnOutSharp
 {
-    public interface IContentCheck
+    internal interface IContentCheck
     {
         /// <summary>
         /// Check a path for protections based on file contents

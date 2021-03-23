@@ -2,7 +2,7 @@
 
 namespace BurnOutSharp
 {
-    public interface IPathCheck
+    internal interface IPathCheck
     {
         /// <summary>
         /// Check a file path for protections based on path name
