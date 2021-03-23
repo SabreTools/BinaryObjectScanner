@@ -37,7 +37,7 @@ namespace BurnOutSharp
         /// <summary>
         /// Cache for all IPathCheck types
         /// </summary>
-        private static IEnumerable<Type> pathCheckClasses = null;
+        private static IEnumerable<IPathCheck> pathCheckClasses = InitPathCheckClasses();
 
         /// <summary>
         /// Constructor
@@ -186,14 +186,10 @@ namespace BurnOutSharp
             // Create an empty list for protections
             List<string> protections = new List<string>();
 
-            // Initialize the needed classes
-            InitPathCheckClasses();
-
             // Iterate through all path checks
             foreach (var pathCheckClass in pathCheckClasses)
             {
-                IPathCheck pathCheck = Activator.CreateInstance(pathCheckClass) as IPathCheck;
-                string protection = pathCheck.CheckDirectoryPath(path, files);
+                string protection = pathCheckClass.CheckDirectoryPath(path, files);
                 if (!string.IsNullOrWhiteSpace(protection))
                     protections.Add(protection);
             }
@@ -215,14 +211,10 @@ namespace BurnOutSharp
             // Create an empty list for protections
             List<string> protections = new List<string>();
 
-            // Initialize the needed classes
-            InitPathCheckClasses();
-
             // Iterate through all path checks
             foreach (var pathCheckClass in pathCheckClasses)
             {
-                IPathCheck pathCheck = Activator.CreateInstance(pathCheckClass) as IPathCheck;
-                string protection = pathCheck.CheckFilePath(path);
+                string protection = pathCheckClass.CheckFilePath(path);
                 if (!string.IsNullOrWhiteSpace(protection))
                     protections.Add(protection);
             }
@@ -407,13 +399,11 @@ namespace BurnOutSharp
         /// <summary>
         /// Initialize all IPathCheck implementations
         /// </summary>
-        private static void InitPathCheckClasses()
+        private static IEnumerable<IPathCheck> InitPathCheckClasses()
         {
-            if (pathCheckClasses == null)
-            {
-                pathCheckClasses = Assembly.GetExecutingAssembly().GetTypes()
-                    .Where(t => t.IsClass && t.GetInterface("IPathCheck") != null);
-            }
+            return Assembly.GetExecutingAssembly().GetTypes()
+                .Where(t => t.IsClass && t.GetInterface(nameof(IPathCheck)) != null)
+                .Select(t => Activator.CreateInstance(t) as IPathCheck);
         }
     }
 }

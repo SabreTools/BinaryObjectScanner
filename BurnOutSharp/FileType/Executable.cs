@@ -12,7 +12,7 @@ namespace BurnOutSharp.FileType
         /// <summary>
         /// Cache for all IContentCheck types
         /// </summary>
-        private static IEnumerable<Type> contentCheckClasses = null;
+        private static IEnumerable<IContentCheck> contentCheckClasses = InitContentCheckClasses();
 
         /// <inheritdoc/>
         public bool ShouldScan(byte[] magic)
@@ -77,30 +77,22 @@ namespace BurnOutSharp.FileType
             // Files can be protected in multiple ways
             var protections = new Dictionary<string, List<string>>();
 
-            // Get all IContentCheck implementations
-            if (contentCheckClasses == null)
-            {
-                contentCheckClasses = Assembly.GetExecutingAssembly().GetTypes()
-                    .Where(t => t.IsClass && t.GetInterface("IContentCheck") != null);
-            }
-
             // Iterate through all content checks
             foreach (var contentCheckClass in contentCheckClasses)
             {
-                IContentCheck contentCheck = Activator.CreateInstance(contentCheckClass) as IContentCheck;
-                string protection = contentCheck.CheckContents(file, fileContent, scanner.IncludePosition);
+                string protection = contentCheckClass.CheckContents(file, fileContent, scanner.IncludePosition);
 
                 // If we have a valid content check based on settings
-                if (!contentCheckClass.Namespace.ToLowerInvariant().Contains("packertype") || scanner.ScanPackers)
+                if (!contentCheckClass.GetType().Namespace.ToLowerInvariant().Contains("packertype") || scanner.ScanPackers)
                 {
                     if (!string.IsNullOrWhiteSpace(protection))
                         Utilities.AppendToDictionary(protections, file, protection);
                 }
 
                 // If we have an IScannable implementation
-                if (contentCheckClass.GetInterface("IScannable") != null)
+                if (contentCheckClass is IScannable)
                 {
-                    IScannable scannable = Activator.CreateInstance(contentCheckClass) as IScannable;
+                    IScannable scannable = contentCheckClass as IScannable;
                     if (file != null && !string.IsNullOrEmpty(protection))
                     {
                         var subProtections = scannable.Scan(scanner, null, file);
@@ -111,6 +103,16 @@ namespace BurnOutSharp.FileType
             }
 
             return protections;
+        }
+
+        /// <summary>
+        /// Initialize all IContentCheck implementations
+        /// </summary>
+        private static IEnumerable<IContentCheck> InitContentCheckClasses()
+        {
+            return Assembly.GetExecutingAssembly().GetTypes()
+                .Where(t => t.IsClass && t.GetInterface(nameof(IContentCheck)) != null)
+                .Select(t => Activator.CreateInstance(t) as IContentCheck);
         }
     }
 }
