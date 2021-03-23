@@ -63,7 +63,7 @@ namespace BurnOutSharp.Matching
         {
             // If no path matches are defined, we fail out
             if (Matchers == null || !Matchers.Any())
-                return (false, null);
+                return (false, new List<string>());
 
             // Initialize the value list
             List<string> values = new List<string>();
@@ -73,7 +73,7 @@ namespace BurnOutSharp.Matching
             {
                 (bool match, string value) = pathMatch.Match(stack);
                 if (!match)
-                    return (false, null);
+                    return (false, new List<string>());
                 else
                     values.Add(value);
             }

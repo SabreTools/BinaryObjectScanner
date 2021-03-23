@@ -64,7 +64,7 @@ namespace BurnOutSharp.Matching
         {
             // If no content matches are defined, we fail out
             if (Matchers == null || !Matchers.Any())
-                return (false, null);
+                return (false, new List<int>());
 
             // Initialize the position list
             List<int> positions = new List<int>();
@@ -74,7 +74,7 @@ namespace BurnOutSharp.Matching
             {
                 (bool match, int position) = contentMatch.Match(fileContent);
                 if (!match)
-                    return (false, null);
+                    return (false, new List<int>());
                 else
                     positions.Add(position);
             }

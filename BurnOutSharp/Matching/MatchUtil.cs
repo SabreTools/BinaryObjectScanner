@@ -179,7 +179,7 @@ namespace BurnOutSharp.Matching
         {
             // If there's no mappings, we can't match
             if (matchers == null || !matchers.Any())
-                return null;
+                return new List<string>();
 
             // Initialize the list of matched protections
             List<string> matchedProtections = new List<string>();
