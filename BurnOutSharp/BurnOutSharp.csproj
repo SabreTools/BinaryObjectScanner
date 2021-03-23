@@ -38,11 +38,6 @@
       <CopyToPublishDirectory>Always</CopyToPublishDirectory>
       <PackageCopyToOutput>true</PackageCopyToOutput>
     </None>
-    <None Include="*.pdb" Pack="true">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
-      <PackageCopyToOutput>true</PackageCopyToOutput>
-    </None>
   </ItemGroup>
 
 </Project>
