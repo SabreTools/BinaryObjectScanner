@@ -130,7 +130,7 @@ namespace BurnOutSharp.Matching
         /// <param name="matchers">Enumerable of PathMatchSets to be run on the file</param>
         /// <param name="any">True if any path match is a success, false if all have to match</param>
         /// <returns>List of strings representing the matched protections, null or empty otherwise</returns>
-        public static List<string> GetAllMatches(List<string> files, IEnumerable<PathMatchSet> matchers, bool any = false)
+        public static List<string> GetAllMatches(IEnumerable<string> files, IEnumerable<PathMatchSet> matchers, bool any = false)
         {
             return FindAllMatches(files, matchers, any, false);
         }
@@ -158,7 +158,7 @@ namespace BurnOutSharp.Matching
         /// <param name="matchers">Enumerable of PathMatchSets to be run on the file</param>
         /// <param name="any">True if any path match is a success, false if all have to match</param>
         /// <returns>String representing the matched protection, null otherwise</returns>
-        public static string GetFirstMatch(List<string> files, IEnumerable<PathMatchSet> matchers, bool any = false)
+        public static string GetFirstMatch(IEnumerable<string> files, IEnumerable<PathMatchSet> matchers, bool any = false)
         {
             var contentMatches = FindAllMatches(files, matchers, any, true);
             if (contentMatches == null || !contentMatches.Any())
@@ -175,7 +175,7 @@ namespace BurnOutSharp.Matching
         /// <param name="any">True if any path match is a success, false if all have to match</param>
         /// <param name="stopAfterFirst">True to stop after the first match, false otherwise</param>
         /// <returns>List of strings representing the matched protections, null or empty otherwise</returns>        
-        private static List<string> FindAllMatches(List<string> files, IEnumerable<PathMatchSet> matchers, bool any, bool stopAfterFirst)
+        private static List<string> FindAllMatches(IEnumerable<string> files, IEnumerable<PathMatchSet> matchers, bool any, bool stopAfterFirst)
         {
             // If there's no mappings, we can't match
             if (matchers == null || !matchers.Any())

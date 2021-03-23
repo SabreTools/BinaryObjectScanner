@@ -13,12 +13,12 @@ namespace BurnOutSharp.Matching
         /// Function to get a path version for this Matcher
         /// </summary>
         /// <remarks>
-        /// A path version method takes the matched path and a list of files
+        /// A path version method takes the matched path and an enumerable of files
         /// and returns a single string. That string is either a version string,
         /// in which case it will be appended to the protection name, or `null`,
         /// in which case it will cause the protection to be omitted.
         /// </remarks>
-        public Func<string, List<string>, string> GetVersion { get; set; }
+        public Func<string, IEnumerable<string>, string> GetVersion { get; set; }
 
         #region Constructors
 
@@ -28,10 +28,10 @@ namespace BurnOutSharp.Matching
         public PathMatchSet(List<string> needles, string protectionName)
             : this(needles, null, protectionName) { }
 
-        public PathMatchSet(string needle, Func<string, List<string>, string> getVersion, string protectionName)
+        public PathMatchSet(string needle, Func<string, IEnumerable<string>, string> getVersion, string protectionName)
             : this(new List<string> { needle }, getVersion, protectionName) { }
 
-        public PathMatchSet(List<string> needles, Func<string, List<string>, string> getVersion, string protectionName)
+        public PathMatchSet(List<string> needles, Func<string, IEnumerable<string>, string> getVersion, string protectionName)
             : this(needles.Select(n => new PathMatch(n)).ToList(), getVersion, protectionName) { }
 
         public PathMatchSet(PathMatch needle, string protectionName)
@@ -40,10 +40,10 @@ namespace BurnOutSharp.Matching
         public PathMatchSet(List<PathMatch> needles, string protectionName)
             : this(needles, null, protectionName) { }
 
-        public PathMatchSet(PathMatch needle, Func<string, List<string>, string> getVersion, string protectionName)
+        public PathMatchSet(PathMatch needle, Func<string, IEnumerable<string>, string> getVersion, string protectionName)
             : this(new List<PathMatch>() { needle }, getVersion, protectionName) { }
 
-        public PathMatchSet(List<PathMatch> needles, Func<string, List<string>, string> getVersion, string protectionName)
+        public PathMatchSet(List<PathMatch> needles, Func<string, IEnumerable<string>, string> getVersion, string protectionName)
         {
             Matchers = needles;
             GetVersion = getVersion;
@@ -59,7 +59,7 @@ namespace BurnOutSharp.Matching
         /// </summary>
         /// <param name="stack">List of strings to try to match</param>
         /// <returns>Tuple of passing status and matching values</returns>        
-        public (bool, List<string>) MatchesAll(List<string> stack)
+        public (bool, List<string>) MatchesAll(IEnumerable<string> stack)
         {
             // If no path matches are defined, we fail out
             if (Matchers == null || !Matchers.Any())
@@ -86,7 +86,7 @@ namespace BurnOutSharp.Matching
         /// </summary>
         /// <param name="stack">List of strings to try to match</param>
         /// <returns>Tuple of passing status and first matching value</returns>        
-        public (bool, string) MatchesAny(List<string> stack)
+        public (bool, string) MatchesAny(IEnumerable<string> stack)
         {
             // If no path matches are defined, we fail out
             if (Matchers == null || !Matchers.Any())

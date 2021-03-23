@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BurnOutSharp.Matching
 {
@@ -42,10 +43,10 @@ namespace BurnOutSharp.Matching
         /// </summary>
         /// <param name="stack">List of strings to search for the given content</param>
         /// <returns>Tuple of success and matched item</returns>
-        public (bool, string) Match(List<string> stack)
+        public (bool, string) Match(IEnumerable<string> stack)
         {
             // If either array is null or empty, we can't do anything
-            if (stack == null || stack.Count == 0 || Needle == null || Needle.Length == 0)
+            if (stack == null || !stack.Any() || Needle == null || Needle.Length == 0)
                 return (false, null);
 
             // Preprocess the needle, if necessary
