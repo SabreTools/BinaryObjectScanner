@@ -32,7 +32,7 @@ namespace BurnOutSharp.ProtectionType
                 }, "XCP"),
             };
 
-            return MatchUtil.GetFirstContentMatch(file, fileContent, matchers, includePosition);
+            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includePosition);
         }
 
         /// <inheritdoc/>

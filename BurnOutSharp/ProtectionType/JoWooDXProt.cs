@@ -34,7 +34,7 @@ namespace BurnOutSharp.ProtectionType
                 new ContentMatchSet(new byte?[] { 0x2E, 0x65, 0x78, 0x74, 0x20, 0x20, 0x20, 0x20 }, "JoWooD X-Prot v1"),
             };
 
-            return MatchUtil.GetFirstContentMatch(file, fileContent, matchers, includePosition);
+            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includePosition);
         }
 
         public static string GetVersion(string file, byte[] fileContent, List<int> positions)

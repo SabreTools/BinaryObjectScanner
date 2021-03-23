@@ -25,7 +25,7 @@ namespace BurnOutSharp.ProtectionType
                 }, "Code Lock"),
             };
 
-            return MatchUtil.GetFirstContentMatch(file, fileContent, matchers, includePosition);
+            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includePosition);
         }
     }
 }

@@ -26,7 +26,7 @@ namespace BurnOutSharp.PackerType
                 }, "WinRAR SFX"),
             };
 
-            return MatchUtil.GetFirstContentMatch(file, fileContent, matchers, includePosition);
+            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includePosition);
         }
 
         public Dictionary<string, List<string>> Scan(Scanner scanner, string file)

@@ -29,7 +29,7 @@ namespace BurnOutSharp.PackerType
                 new ContentMatchSet(new byte?[] { 0x5F, 0x77, 0x69, 0x6E, 0x7A, 0x69, 0x70, 0x5F }, GetVersion, "WinZip SFX"),
             };
 
-            return MatchUtil.GetFirstContentMatch(file, fileContent, matchers, includePosition);
+            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includePosition);
         }
 
         /// <inheritdoc/>
@@ -364,7 +364,7 @@ namespace BurnOutSharp.PackerType
                 #endregion
             };
 
-            string match = MatchUtil.GetFirstContentMatch(file, fileContent, matchers, false);
+            string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, false);
             return match ?? "Unknown 2.x";
         }
     

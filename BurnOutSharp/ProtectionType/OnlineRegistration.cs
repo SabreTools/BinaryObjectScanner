@@ -21,7 +21,7 @@ namespace BurnOutSharp.ProtectionType
                 }, Utilities.GetFileVersion, "Executable-Based Online Registration"),
             };
 
-            return MatchUtil.GetFirstContentMatch(file, fileContent, matchers, includePosition);
+            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includePosition);
         }
     }
 }

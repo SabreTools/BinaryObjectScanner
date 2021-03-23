@@ -24,7 +24,7 @@ namespace BurnOutSharp.ProtectionType
                 }, "MediaMax CD-3"),
             };
 
-            return MatchUtil.GetFirstContentMatch(file, fileContent, matchers, includePosition);
+            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includePosition);
         }
 
         /// <inheritdoc/>

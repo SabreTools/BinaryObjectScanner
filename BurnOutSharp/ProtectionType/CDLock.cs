@@ -23,7 +23,7 @@ namespace BurnOutSharp.ProtectionType
                 }, "CD-Lock"),
             };
 
-            return MatchUtil.GetFirstContentMatch(file, fileContent, matchers, includePosition);
+            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includePosition);
         }
 
         /// <inheritdoc/>

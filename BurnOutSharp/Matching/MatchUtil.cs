@@ -18,13 +18,13 @@ namespace BurnOutSharp.Matching
         /// <param name="matchers">Enumerable of ContentMatchSets to be run on the file</param>
         /// <param name="includePosition">True to include positional data, false otherwise</param>
         /// <returns>List of strings representing the matched protections, null or empty otherwise</returns>
-        public static List<string> GetAllContentMatches(
+        public static List<string> GetAllMatches(
             string file,
             byte[] fileContent,
             IEnumerable<ContentMatchSet> matchers,
             bool includePosition = false)
         {
-            return FindAllContentMatches(file, fileContent, matchers, includePosition, false);
+            return FindAllMatches(file, fileContent, matchers, includePosition, false);
         }
 
         /// <summary>
@@ -35,13 +35,13 @@ namespace BurnOutSharp.Matching
         /// <param name="matchers">Enumerable of ContentMatchSets to be run on the file</param>
         /// <param name="includePosition">True to include positional data, false otherwise</param>
         /// <returns>String representing the matched protection, null otherwise</returns>
-        public static string GetFirstContentMatch(
+        public static string GetFirstMatch(
             string file,
             byte[] fileContent,
             IEnumerable<ContentMatchSet> matchers,
             bool includePosition = false)
         {
-            var contentMatches = FindAllContentMatches(file, fileContent, matchers, includePosition, true);
+            var contentMatches = FindAllMatches(file, fileContent, matchers, includePosition, true);
             if (contentMatches == null || !contentMatches.Any())
                 return null;
             
@@ -57,7 +57,7 @@ namespace BurnOutSharp.Matching
         /// <param name="includePosition">True to include positional data, false otherwise</param>
         /// <param name="stopAfterFirst">True to stop after the first match, false otherwise</param>
         /// <returns>List of strings representing the matched protections, null or empty otherwise</returns>        
-        private static List<string> FindAllContentMatches(
+        private static List<string> FindAllMatches(
             string file,
             byte[] fileContent,
             IEnumerable<ContentMatchSet> matchers,
@@ -118,9 +118,9 @@ namespace BurnOutSharp.Matching
         /// <param name="matchers">Enumerable of PathMatchSets to be run on the file</param>
         /// <param name="any">True if any path match is a success, false if all have to match</param>
         /// <returns>List of strings representing the matched protections, null or empty otherwise</returns>
-        public static List<string> GetAllPathMatches(string file, IEnumerable<PathMatchSet> matchers, bool any = false)
+        public static List<string> GetAllMatches(string file, IEnumerable<PathMatchSet> matchers, bool any = false)
         {
-            return FindAllPathMatches(new List<string> { file }, matchers, any, false);
+            return FindAllMatches(new List<string> { file }, matchers, any, false);
         }
 
         // <summary>
@@ -130,9 +130,9 @@ namespace BurnOutSharp.Matching
         /// <param name="matchers">Enumerable of PathMatchSets to be run on the file</param>
         /// <param name="any">True if any path match is a success, false if all have to match</param>
         /// <returns>List of strings representing the matched protections, null or empty otherwise</returns>
-        public static List<string> GetAllPathMatches(List<string> files, IEnumerable<PathMatchSet> matchers, bool any = false)
+        public static List<string> GetAllMatches(List<string> files, IEnumerable<PathMatchSet> matchers, bool any = false)
         {
-            return FindAllPathMatches(files, matchers, any, false);
+            return FindAllMatches(files, matchers, any, false);
         }
 
         /// <summary>
@@ -142,9 +142,9 @@ namespace BurnOutSharp.Matching
         /// <param name="matchers">Enumerable of PathMatchSets to be run on the file</param>
         /// <param name="any">True if any path match is a success, false if all have to match</param>
         /// <returns>String representing the matched protection, null otherwise</returns>
-        public static string GetFirstPathMatch(string file, IEnumerable<PathMatchSet> matchers, bool any = false)
+        public static string GetFirstMatch(string file, IEnumerable<PathMatchSet> matchers, bool any = false)
         {
-            var contentMatches = FindAllPathMatches(new List<string> { file }, matchers, any, true);
+            var contentMatches = FindAllMatches(new List<string> { file }, matchers, any, true);
             if (contentMatches == null || !contentMatches.Any())
                 return null;
             
@@ -158,9 +158,9 @@ namespace BurnOutSharp.Matching
         /// <param name="matchers">Enumerable of PathMatchSets to be run on the file</param>
         /// <param name="any">True if any path match is a success, false if all have to match</param>
         /// <returns>String representing the matched protection, null otherwise</returns>
-        public static string GetFirstPathMatch(List<string> files, IEnumerable<PathMatchSet> matchers, bool any = false)
+        public static string GetFirstMatch(List<string> files, IEnumerable<PathMatchSet> matchers, bool any = false)
         {
-            var contentMatches = FindAllPathMatches(files, matchers, any, true);
+            var contentMatches = FindAllMatches(files, matchers, any, true);
             if (contentMatches == null || !contentMatches.Any())
                 return null;
             
@@ -175,7 +175,7 @@ namespace BurnOutSharp.Matching
         /// <param name="any">True if any path match is a success, false if all have to match</param>
         /// <param name="stopAfterFirst">True to stop after the first match, false otherwise</param>
         /// <returns>List of strings representing the matched protections, null or empty otherwise</returns>        
-        private static List<string> FindAllPathMatches(List<string> files, IEnumerable<PathMatchSet> matchers, bool any, bool stopAfterFirst)
+        private static List<string> FindAllMatches(List<string> files, IEnumerable<PathMatchSet> matchers, bool any, bool stopAfterFirst)
         {
             // If there's no mappings, we can't match
             if (matchers == null || !matchers.Any())

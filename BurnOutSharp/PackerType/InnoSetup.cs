@@ -23,7 +23,7 @@ namespace BurnOutSharp.PackerType
                     "Inno Setup"),
             };
 
-            return MatchUtil.GetFirstContentMatch(file, fileContent, matchers, includePosition);
+            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includePosition);
         }
 
         /// <inheritdoc/>

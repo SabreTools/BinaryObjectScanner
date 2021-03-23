@@ -19,7 +19,7 @@ namespace BurnOutSharp.ProtectionType
                 }, "Ring PROTECH [Check disc for physical ring]"),
             };
 
-            return MatchUtil.GetFirstContentMatch(file, fileContent, matchers, includePosition);
+            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includePosition);
         }
     }
 }

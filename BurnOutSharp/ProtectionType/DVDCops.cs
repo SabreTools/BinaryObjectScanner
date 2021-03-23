@@ -20,7 +20,7 @@ namespace BurnOutSharp.ProtectionType
                 }, GetVersion, "DVD-Cops"),
             };
 
-            return MatchUtil.GetFirstContentMatch(file, fileContent, matchers, includePosition);
+            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includePosition);
         }
 
         public static string GetVersion(string file, byte[] fileContent, List<int> positions)
