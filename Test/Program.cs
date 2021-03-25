@@ -57,7 +57,7 @@ namespace Test
                 }
             }
 
-            Console.WriteLine("Press any button to close...");
+            Console.WriteLine("Press Enter to close...");
             Console.ReadLine();
         }
 
