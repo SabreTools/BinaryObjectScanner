@@ -14,7 +14,7 @@ namespace Test
             var p = new Progress<ProtectionProgress>();
             p.ProgressChanged += Changed;
 
-            // Create scanner to be shared
+            // Create scanner for all paths
             var scanner = new Scanner(p)
             {
                 IncludePosition = true,
@@ -29,7 +29,7 @@ namespace Test
                 GetAndWriteProtections(scanner, arg);
             }
 
-            Console.WriteLine("Press any button to close...");
+            Console.WriteLine("Press enter to close the program...");
             Console.ReadLine();
         }
 
@@ -89,6 +89,9 @@ namespace Test
             }
         }
 
+        /// <summary>
+        /// Protection progress changed handler
+        /// </summary>
         private static void Changed(object source, ProtectionProgress value)
         {
             Console.WriteLine($"{value.Percentage * 100:N2}%: {value.Filename} - {value.Protection}");
