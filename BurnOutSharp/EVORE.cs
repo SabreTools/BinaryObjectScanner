@@ -162,14 +162,14 @@ namespace BurnOutSharp
             return startingprocess;
         }
 
-        private static IMAGE_SECTION_HEADER?[] ReadSections(byte[] fileContent)
+        private static IMAGE_SECTION_HEADER[] ReadSections(byte[] fileContent)
         {
             if (fileContent == null)
                 return null;
 
             uint PEHeaderOffset = BitConverter.ToUInt32(fileContent, 60);
             ushort NumberOfSections = BitConverter.ToUInt16(fileContent, (int)PEHeaderOffset + 6);
-            var sections = new IMAGE_SECTION_HEADER?[NumberOfSections];
+            var sections = new IMAGE_SECTION_HEADER[NumberOfSections];
             int index = (int)PEHeaderOffset + 120 + 16 * 8;            
             for (int i = 0; i < NumberOfSections; i++)
             {
@@ -179,7 +179,7 @@ namespace BurnOutSharp
             return sections;
         }
 
-        private static IMAGE_SECTION_HEADER? ReadSection(byte[] fileContent, int ptr)
+        private static IMAGE_SECTION_HEADER ReadSection(byte[] fileContent, int ptr)
         {
             // Get the size of a section header for later
             int sectionSize = Marshal.SizeOf<IMAGE_SECTION_HEADER>();
@@ -189,7 +189,7 @@ namespace BurnOutSharp
                 return null;
 
             // Create a new section and try our best to read one
-            IMAGE_SECTION_HEADER? section = null;
+            IMAGE_SECTION_HEADER section = null;
             IntPtr tempPtr = IntPtr.Zero;
             try
             {
@@ -220,15 +220,15 @@ namespace BurnOutSharp
             return section;
         }
 
-        private static uint RVA2Offset(uint RVA, IMAGE_SECTION_HEADER?[] sections)
+        private static uint RVA2Offset(uint RVA, IMAGE_SECTION_HEADER[] sections)
         {
             for (int i = 0; i < sections.Length; i++)
             {
-                if (!sections[i].HasValue)
+                if (sections[i] == null)
                     continue;
 
-                var section = sections[i].Value;
-                if (section.VirtualAddress <= RVA && section.VirtualAddress + section.PhysicalAddressOrVirtualSize > RVA)
+                var section = sections[i];
+                if (section.VirtualAddress <= RVA && section.VirtualAddress + section.PhysicalAddress > RVA)
                     return RVA - section.VirtualAddress + section.PointerToRawData;
             }
 
