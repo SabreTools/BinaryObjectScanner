@@ -14,10 +14,10 @@ namespace BurnOutSharp.PackerType
             var matchers = new List<ContentMatchSet>
             {
                 // pec1
-                new ContentMatchSet(new byte?[] { 0x70, 0x65, 0x63, 0x31 }, "PE Compact 1"),
+                new ContentMatchSet(new ContentMatch(new byte?[] { 0x70, 0x65, 0x63, 0x31 }, end: 2048), "PE Compact 1"),
 
                 // PEC2
-                new ContentMatchSet(new byte?[] { 0x50, 0x45, 0x43, 0x32 }, GetVersion, "PE Compact 2"),
+                new ContentMatchSet(new ContentMatch(new byte?[] { 0x50, 0x45, 0x43, 0x32 }, end: 2048), GetVersion, "PE Compact 2"),
 
                 // PECompact2
                 new ContentMatchSet(new byte?[]
