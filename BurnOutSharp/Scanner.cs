@@ -17,6 +17,7 @@ namespace BurnOutSharp
         /// <summary>
         /// Determines whether the byte position of found protection is included or not
         /// </summary>
+        /// TODO: Change this to a more generic debug flag for broader use
         public bool IncludePosition { get; set; } = false;
 
         /// <summary>
