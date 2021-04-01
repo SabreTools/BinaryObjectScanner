@@ -11,29 +11,32 @@
  */
 
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace BurnOutSharp.ExecutableType.Microsoft
 {
+    [StructLayout(LayoutKind.Sequential)]
     internal class IMAGE_SECTION_HEADER
     {
-        public byte[] Name { get; private set; }
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
+        public byte[] Name;
         
         // Misc
-        public uint PhysicalAddress { get; private set; }
-        public uint VirtualSize { get; private set; }
+        public uint PhysicalAddress;
+        public uint VirtualSize;
 
-        public uint VirtualAddress { get; private set; }
-        public uint SizeOfRawData { get; private set; }
-        public uint PointerToRawData { get; private set; }
-        public uint PointerToRelocations { get; private set; }
-        public uint PointerToLinenumbers { get; private set; }
-        public ushort NumberOfRelocations { get; private set; }
-        public ushort NumberOfLinenumbers { get; private set; }
-        public SectionCharacteristics Characteristics { get; private set; }
+        public uint VirtualAddress;
+        public uint SizeOfRawData;
+        public uint PointerToRawData;
+        public uint PointerToRelocations;
+        public uint PointerToLinenumbers;
+        public ushort NumberOfRelocations;
+        public ushort NumberOfLinenumbers;
+        public SectionCharacteristics Characteristics;
 
         public static IMAGE_SECTION_HEADER Deserialize(Stream stream)
         {
-            IMAGE_SECTION_HEADER ish = new IMAGE_SECTION_HEADER();
+            var ish = new IMAGE_SECTION_HEADER();
 
             ish.Name = stream.ReadBytes(Constants.IMAGE_SIZEOF_SHORT_NAME);
 
