@@ -18,7 +18,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft
     [StructLayout(LayoutKind.Sequential)]
     internal class IMAGE_SECTION_HEADER
     {
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = Constants.IMAGE_SIZEOF_SHORT_NAME)]
         public byte[] Name;
         
         // Misc

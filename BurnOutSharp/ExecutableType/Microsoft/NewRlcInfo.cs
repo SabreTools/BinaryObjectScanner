@@ -11,22 +11,24 @@
  */
 
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace BurnOutSharp.ExecutableType.Microsoft
 {
     /// <summary>
     /// Relocation info
     /// </summary>
+    [StructLayout(LayoutKind.Sequential)]
     internal class NewRlcInfo
     {
         /// <summary>
         /// Number of relocation items that follow
         /// </summary>
-        public ushort RelocationItemCount { get; private set; }
+        public ushort RelocationItemCount;
     
         public static NewRlcInfo Deserialize(Stream stream)
         {
-            NewRlcInfo nri = new NewRlcInfo();
+            var nri = new NewRlcInfo();
 
             nri.RelocationItemCount = stream.ReadUInt16();
 

@@ -11,27 +11,31 @@
  */
 
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace BurnOutSharp.ExecutableType.Microsoft
 {
     /// <summary>
     /// Resource type or name string
     /// </summary>
+    /// TODO: Fix this because SizeConst = 0 is not valid
+    [StructLayout(LayoutKind.Sequential)]
     internal class RsrcString
     {
         /// <summary>
         /// Number of bytes in string
         /// </summary>
-        public byte Length { get; private set; }
+        public byte Length;
         
         /// <summary>
         /// Next of string
         /// </summary>
-        public char[] Text { get; private set; }
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 0)]
+        public char[] Text;
 
         public static RsrcString Deserialize(Stream stream)
         {
-            RsrcString rs = new RsrcString();
+            var rs = new RsrcString();
 
             rs.Length = stream.ReadByteValue();
             rs.Text = stream.ReadChars(rs.Length);

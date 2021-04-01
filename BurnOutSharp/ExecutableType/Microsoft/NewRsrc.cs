@@ -11,23 +11,25 @@
  */
 
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace BurnOutSharp.ExecutableType.Microsoft
 {
     /// <summary>
     /// Resource table
     /// </summary>
+    [StructLayout(LayoutKind.Sequential)]
     internal class NewRsrc
     {
         /// <summary>
         /// Alignment shift count for resources
         /// </summary>
-        public ushort AlignmentShiftCount { get; private set; }
-        public RsrcTypeInfo TypeInfo { get; private set; }
+        public ushort AlignmentShiftCount;
+        public RsrcTypeInfo TypeInfo;
 
         public static NewRsrc Deserialize(Stream stream)
         {
-            NewRsrc nr = new NewRsrc();
+            var nr = new NewRsrc();
 
             nr.AlignmentShiftCount = stream.ReadUInt16();
             nr.TypeInfo = RsrcTypeInfo.Deserialize(stream);

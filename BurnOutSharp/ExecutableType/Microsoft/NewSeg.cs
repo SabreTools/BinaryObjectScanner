@@ -11,37 +11,39 @@
  */
 
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace BurnOutSharp.ExecutableType.Microsoft
 {
     /// <summary>
     /// New .EXE segment table entry
     /// </summary>
+    [StructLayout(LayoutKind.Sequential)]
     internal class NewSeg
     {
         /// <summary>
         /// File sector of start of segment
         /// </summary>
-        public ushort StartFileSector { get; private set; }
+        public ushort StartFileSector;
         
         /// <summary>
         /// Number of bytes in file
         /// </summary>
-        public ushort BytesInFile { get; private set; }
+        public ushort BytesInFile;
         
         /// <summary>
         /// Attribute flags
         /// </summary>
-        public ushort Flags { get; private set; }
+        public ushort Flags;
         
         /// <summary>
         /// Minimum allocation in bytes
         /// </summary>
-        public ushort MinimumAllocation { get; private set; }
+        public ushort MinimumAllocation;
 
         public static NewSeg Deserialize(Stream stream)
         {
-            NewSeg ns = new NewSeg();
+            var ns = new NewSeg();
 
             ns.StartFileSector = stream.ReadUInt16();
             ns.BytesInFile = stream.ReadUInt16();

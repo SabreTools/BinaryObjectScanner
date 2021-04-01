@@ -11,19 +11,21 @@
  */
 
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace BurnOutSharp.ExecutableType.Microsoft
 {
+    [StructLayout(LayoutKind.Sequential)]
     internal class TYPEINFO
     {
-        public ushort TypeID { get; private set; }
-        public ushort ResourceCount { get; private set; }
-        public uint Reserved { get; private set; }
-        public NAMEINFO NameInfo { get; private set; }
+        public ushort TypeID;
+        public ushort ResourceCount;
+        public uint Reserved;
+        public NAMEINFO NameInfo;
 
         public static TYPEINFO Deserialize(Stream stream)
         {
-            TYPEINFO ti = new TYPEINFO();
+            var ti = new TYPEINFO();
 
             ti.TypeID = stream.ReadUInt16();
             ti.ResourceCount = stream.ReadUInt16();

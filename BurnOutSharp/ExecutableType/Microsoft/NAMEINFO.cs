@@ -11,21 +11,23 @@
  */
 
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace BurnOutSharp.ExecutableType.Microsoft
 {
+    [StructLayout(LayoutKind.Sequential)]
     internal class NAMEINFO
     {
-        public ushort Offset { get; private set; }
-        public ushort Length { get; private set; }
-        public ushort Flags { get; private set; }
-        public ushort ID { get; private set; }
-        public ushort Handle { get; private set; }
-        public ushort Usage { get; private set; }
+        public ushort Offset;
+        public ushort Length;
+        public ushort Flags;
+        public ushort ID;
+        public ushort Handle;
+        public ushort Usage;
 
         public static NAMEINFO Deserialize(Stream stream)
         {
-            NAMEINFO ni = new NAMEINFO();
+            var ni = new NAMEINFO();
 
             ni.Offset = stream.ReadUInt16();
             ni.Length = stream.ReadUInt16();

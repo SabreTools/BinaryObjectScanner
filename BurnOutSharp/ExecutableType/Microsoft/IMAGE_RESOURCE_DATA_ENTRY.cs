@@ -11,19 +11,21 @@
  */
 
 using System.IO;
+using System.Runtime.InteropServices;
  
 namespace BurnOutSharp.ExecutableType.Microsoft
 {
+    [StructLayout(LayoutKind.Sequential)]
     internal class IMAGE_RESOURCE_DATA_ENTRY
     {
-        public uint OffsetToData { get; private set; }
-        public uint Size { get; private set; }
-        public uint CodePage { get; private set; }
-        public uint Reserved { get; private set; }
+        public uint OffsetToData;
+        public uint Size;
+        public uint CodePage;
+        public uint Reserved;
 
         public static IMAGE_RESOURCE_DATA_ENTRY Deserialize(Stream stream)
         {
-            IMAGE_RESOURCE_DATA_ENTRY irde = new IMAGE_RESOURCE_DATA_ENTRY();
+            var irde = new IMAGE_RESOURCE_DATA_ENTRY();
 
             irde.OffsetToData = stream.ReadUInt32();
             irde.Size = stream.ReadUInt32();

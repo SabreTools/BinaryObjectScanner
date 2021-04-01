@@ -11,12 +11,14 @@
  */
 
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace BurnOutSharp.ExecutableType.Microsoft
 {
     /// <summary>
     /// Resource name information block
     /// </summary>
+    [StructLayout(LayoutKind.Sequential)]
     internal class RsrcNameInfo
     {
         /*
@@ -29,36 +31,36 @@ namespace BurnOutSharp.ExecutableType.Microsoft
         /// <summary>
         /// File offset to resource data
         /// </summary>
-        public ushort Offset { get; private set; }
+        public ushort Offset;
         
         /// <summary>
         /// Length of resource data
         /// </summary>
-        public ushort Length { get; private set; }
+        public ushort Length;
         
         /// <summary>
         /// Resource flags
         /// </summary>
-        public ushort Flags { get; private set; }
+        public ushort Flags;
         
         /// <summary>
         /// Resource name id
         /// </summary>
-        public ushort NameID { get; private set; }
+        public ushort NameID;
         
         /// <summary>
         /// If loaded, then global handle
         /// </summary>
-        public ushort Handle { get; private set; }
+        public ushort Handle;
         
         /// <summary>
         /// Initially zero. Number of times the handle for this resource has been given out
         /// </summary>
-        public ushort UsageCount { get; private set; }
+        public ushort UsageCount;
 
         public static RsrcNameInfo Deserialize(Stream stream)
         {
-            RsrcNameInfo rni = new RsrcNameInfo();
+            var rni = new RsrcNameInfo();
 
             rni.Offset = stream.ReadUInt16();
             rni.Length = stream.ReadUInt16();

@@ -11,22 +11,24 @@
  */
 
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace BurnOutSharp.ExecutableType.Microsoft
 {
+    [StructLayout(LayoutKind.Sequential)]
     internal class IMAGE_FILE_HEADER
     {
-        public ushort Machine { get; private set; }
-        public ushort NumberOfSections { get; private set; }
-        public uint TimeDateStamp { get; private set; }
-        public uint PointerToSymbolTable { get; private set; }
-        public uint NumberOfSymbols { get; private set; }
-        public ushort SizeOfOptionalHeader { get; private set; }
-        public ushort Characteristics { get; private set; }
+        public ushort Machine;
+        public ushort NumberOfSections;
+        public uint TimeDateStamp;
+        public uint PointerToSymbolTable;
+        public uint NumberOfSymbols;
+        public ushort SizeOfOptionalHeader;
+        public ushort Characteristics;
 
         public static IMAGE_FILE_HEADER Deserialize(Stream stream)
         {
-            IMAGE_FILE_HEADER ifh = new IMAGE_FILE_HEADER();
+            var ifh = new IMAGE_FILE_HEADER();
 
             ifh.Machine = stream.ReadUInt16();
             ifh.NumberOfSections = stream.ReadUInt16();

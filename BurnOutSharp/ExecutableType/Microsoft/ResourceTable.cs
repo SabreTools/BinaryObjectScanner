@@ -11,20 +11,23 @@
  */
 
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace BurnOutSharp.ExecutableType.Microsoft
 {
+    [StructLayout(LayoutKind.Sequential)]
     internal class ResourceTable
     {
-        public ushort rscAlignShift { get; private set; }
-        public TYPEINFO TypeInfo { get; private set; }
-        public ushort rscEndTypes { get; private set; }
-        public sbyte[][] rscResourceNames { get; private set; }
-        public byte rscEndNames { get; private set; }
+        public ushort rscAlignShift;
+        public TYPEINFO TypeInfo;
+        public ushort rscEndTypes;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 0)]
+        public sbyte[][] rscResourceNames;
+        public byte rscEndNames;
 
         public static ResourceTable Deserialize(Stream stream)
         {
-            ResourceTable rt = new ResourceTable();
+            var rt = new ResourceTable();
 
             rt.rscAlignShift = stream.ReadUInt16();
             rt.TypeInfo = TYPEINFO.Deserialize(stream);

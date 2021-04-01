@@ -12,34 +12,37 @@
 
 using System;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace BurnOutSharp.ExecutableType.Microsoft
 {
     /// <summary>
     /// Relocation item
     /// </summary>
+    /// TODO: Fix this because Marshal will not work since it's not a direct read
+    [StructLayout(LayoutKind.Sequential)]
     internal class NewRlc
     {
-        public char SourceType { get; private set; }            // Source type
-        public char Flags { get; private set; }                 // Flag byte
-        public ushort SourceOffset { get; private set; }        // Source offset
+        public char SourceType;            // Source type
+        public char Flags;                 // Flag byte
+        public ushort SourceOffset;        // Source offset
 
         // nr_intref - Internal Reference
-        public char TargetSegmentNumber { get; private set; }   // Target segment number
-        public char Reserved1 { get; private set; }             // Reserved
-        public ushort TargetEntryTableOffset { get; private set; }      // Target Entry Table offset
+        public char TargetSegmentNumber;   // Target segment number
+        public char Reserved1;             // Reserved
+        public ushort TargetEntryTableOffset;      // Target Entry Table offset
 
         // nr_import - Import
-        public ushort ModuleReferenceTableIndex { get; private set; }   // Index into Module Reference Table
-        public ushort ProcedureOffset { get; private set; }     // Procedure ordinal or name offset
+        public ushort ModuleReferenceTableIndex;   // Index into Module Reference Table
+        public ushort ProcedureOffset;     // Procedure ordinal or name offset
 
         // nr_osfix - Operating system fixup
-        public ushort OperatingSystemFixupType { get; private set; }    // OSFIXUP type
-        public ushort Reserved2 { get; private set; }           // Reserved
+        public ushort OperatingSystemFixupType;    // OSFIXUP type
+        public ushort Reserved2;           // Reserved
 
         public static NewRlc Deserialize(Stream stream)
         {
-            NewRlc nr = new NewRlc();
+            var nr = new NewRlc();
 
             nr.SourceType = stream.ReadChar();
             nr.Flags = stream.ReadChar();

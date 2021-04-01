@@ -11,17 +11,19 @@
  */
 
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace BurnOutSharp.ExecutableType.Microsoft
 {
+    [StructLayout(LayoutKind.Sequential)]
     internal class IMAGE_DATA_DIRECTORY
     {
-        public uint VirtualAddress { get; private set; }
-        public uint Size { get; private set; }
+        public uint VirtualAddress;
+        public uint Size;
 
         public static IMAGE_DATA_DIRECTORY Deserialize(Stream stream)
         {
-            IMAGE_DATA_DIRECTORY idd = new IMAGE_DATA_DIRECTORY();
+            var idd = new IMAGE_DATA_DIRECTORY();
 
             idd.VirtualAddress = stream.ReadUInt32();
             idd.Size = stream.ReadUInt32();

@@ -11,33 +11,37 @@
  */
 
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace BurnOutSharp.ExecutableType.Microsoft
 {
     /// <summary>
     /// DOS 1, 2, 3 .EXE header
     /// </summary>
+    [StructLayout(LayoutKind.Sequential)]
     internal class IMAGE_DOS_HEADER
     {
-        public ushort Magic { get; private set; }                   // 00 Magic number
-        public ushort LastPageBytes { get; private set; }           // 02 Bytes on last page of file
-        public ushort Pages { get; private set; }                   // 04 Pages in file
-        public ushort Relocations { get; private set; }             // 06 Relocations
-        public ushort HeaderParagraphSize { get; private set; }     // 08 Size of header in paragraphs
-        public ushort MinimumExtraParagraphs { get; private set; }  // 0A Minimum extra paragraphs needed
-        public ushort MaximumExtraParagraphs { get; private set; }  // 0C Maximum extra paragraphs needed
-        public ushort InitialSSValue { get; private set; }          // 0E Initial (relative) SS value
-        public ushort InitialSPValue { get; private set; }          // 10 Initial SP value
-        public ushort Checksum { get; private set; }                // 12 Checksum
-        public ushort InitialIPValue { get; private set; }          // 14 Initial IP value
-        public ushort InitialCSValue { get; private set; }          // 16 Initial (relative) CS value
-        public ushort RelocationTableAddr { get; private set; }     // 18 File address of relocation table
-        public ushort OverlayNumber { get; private set; }           // 1A Overlay number
-        public ushort[] Reserved1 { get; private set; }             // 1C Reserved words
-        public ushort OEMIdentifier { get; private set; }           // 24 OEM identifier (for e_oeminfo)
-        public ushort OEMInformation { get; private set; }          // 26 OEM information; e_oemid specific
-        public ushort[] Reserved2 { get; private set; }             // 28 Reserved words
-        public int NewExeHeaderAddr { get; private set; }           // 3C File address of new exe header
+        public ushort Magic;                   // 00 Magic number
+        public ushort LastPageBytes;           // 02 Bytes on last page of file
+        public ushort Pages;                   // 04 Pages in file
+        public ushort Relocations;             // 06 Relocations
+        public ushort HeaderParagraphSize;     // 08 Size of header in paragraphs
+        public ushort MinimumExtraParagraphs;  // 0A Minimum extra paragraphs needed
+        public ushort MaximumExtraParagraphs;  // 0C Maximum extra paragraphs needed
+        public ushort InitialSSValue;          // 0E Initial (relative) SS value
+        public ushort InitialSPValue;          // 10 Initial SP value
+        public ushort Checksum;                // 12 Checksum
+        public ushort InitialIPValue;          // 14 Initial IP value
+        public ushort InitialCSValue;          // 16 Initial (relative) CS value
+        public ushort RelocationTableAddr;     // 18 File address of relocation table
+        public ushort OverlayNumber;           // 1A Overlay number
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = Constants.ERES1WDS)]
+        public ushort[] Reserved1;             // 1C Reserved words
+        public ushort OEMIdentifier;           // 24 OEM identifier (for e_oeminfo)
+        public ushort OEMInformation;          // 26 OEM information; e_oemid specific
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = Constants.ERES2WDS)]
+        public ushort[] Reserved2;             // 28 Reserved words
+        public int NewExeHeaderAddr;           // 3C File address of new exe header
 
         public static IMAGE_DOS_HEADER Deserialize(Stream stream)
         {

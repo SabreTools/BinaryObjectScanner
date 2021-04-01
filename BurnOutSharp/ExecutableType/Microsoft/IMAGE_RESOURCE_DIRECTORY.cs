@@ -11,21 +11,23 @@
  */
 
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace BurnOutSharp.ExecutableType.Microsoft
 {
+    [StructLayout(LayoutKind.Sequential)]
     internal class IMAGE_RESOURCE_DIRECTORY
     {
-        public uint Characteristics { get; private set; }
-        public uint TimeDateStamp { get; private set; }
-        public ushort MajorVersion { get; private set; }
-        public ushort MinorVersion { get; private set; }
-        public ushort NumberOfNamedEntries { get; private set; }
-        public ushort NumberOfIdEntries { get; private set; }
+        public uint Characteristics;
+        public uint TimeDateStamp;
+        public ushort MajorVersion;
+        public ushort MinorVersion;
+        public ushort NumberOfNamedEntries;
+        public ushort NumberOfIdEntries;
 
         public static IMAGE_RESOURCE_DIRECTORY Deserialize(Stream stream)
         {
-            IMAGE_RESOURCE_DIRECTORY ird = new IMAGE_RESOURCE_DIRECTORY();
+            var ird = new IMAGE_RESOURCE_DIRECTORY();
 
             ird.Characteristics = stream.ReadUInt32();
             ird.TimeDateStamp = stream.ReadUInt32();

@@ -11,51 +11,54 @@
  */
 
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace BurnOutSharp.ExecutableType.Microsoft
 {
+    [StructLayout(LayoutKind.Sequential)]
     internal class IMAGE_OPTIONAL_HEADER
     {
         // Standard fields
 
-        public ushort Magic { get; private set; }
-        public byte MajorLinkerVersion { get; private set; }
-        public byte MinorLinkerVersion { get; private set; }
-        public uint SizeOfCode { get; private set; }
-        public uint SizeOfInitializedData { get; private set; }
-        public uint SizeOfUninitializedData { get; private set; }
-        public uint AddressOfEntryPoint { get; private set; }
-        public uint BaseOfCode { get; private set; }
-        public uint BaseOfData { get; private set; }
+        public ushort Magic;
+        public byte MajorLinkerVersion;
+        public byte MinorLinkerVersion;
+        public uint SizeOfCode;
+        public uint SizeOfInitializedData;
+        public uint SizeOfUninitializedData;
+        public uint AddressOfEntryPoint;
+        public uint BaseOfCode;
+        public uint BaseOfData;
 
         // NT additional fields.
 
-        public uint ImageBase { get; private set; }
-        public uint SectionAlignment { get; private set; }
-        public uint FileAlignment { get; private set; }
-        public ushort MajorOperatingSystemVersion { get; private set; }
-        public ushort MinorOperatingSystemVersion { get; private set; }
-        public ushort MajorImageVersion { get; private set; }
-        public ushort MinorImageVersion { get; private set; }
-        public ushort MajorSubsystemVersion { get; private set; }
-        public ushort MinorSubsystemVersion { get; private set; }
-        public uint Reserved1 { get; private set; }
-        public uint SizeOfImage { get; private set; }
-        public uint SizeOfHeaders { get; private set; }
-        public uint CheckSum { get; private set; }
-        public ushort Subsystem { get; private set; }
-        public ushort DllCharacteristics { get; private set; }
-        public uint SizeOfStackReserve { get; private set; }
-        public uint SizeOfStackCommit { get; private set; }
-        public uint SizeOfHeapReserve { get; private set; }
-        public uint SizeOfHeapCommit { get; private set; }
-        public uint LoaderFlags { get; private set; }
-        public uint NumberOfRvaAndSizes { get; private set; }
-        public IMAGE_DATA_DIRECTORY[] DataDirectory { get; private set; }
+        public uint ImageBase;
+        public uint SectionAlignment;
+        public uint FileAlignment;
+        public ushort MajorOperatingSystemVersion;
+        public ushort MinorOperatingSystemVersion;
+        public ushort MajorImageVersion;
+        public ushort MinorImageVersion;
+        public ushort MajorSubsystemVersion;
+        public ushort MinorSubsystemVersion;
+        public uint Reserved1;
+        public uint SizeOfImage;
+        public uint SizeOfHeaders;
+        public uint CheckSum;
+        public ushort Subsystem;
+        public ushort DllCharacteristics;
+        public uint SizeOfStackReserve;
+        public uint SizeOfStackCommit;
+        public uint SizeOfHeapReserve;
+        public uint SizeOfHeapCommit;
+        public uint LoaderFlags;
+        public uint NumberOfRvaAndSizes;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = Constants.IMAGE_NUMBEROF_DIRECTORY_ENTRIES)]
+        public IMAGE_DATA_DIRECTORY[] DataDirectory;
 
         public static IMAGE_OPTIONAL_HEADER Deserialize(Stream stream)
         {
-            IMAGE_OPTIONAL_HEADER ioh = new IMAGE_OPTIONAL_HEADER();
+            var ioh = new IMAGE_OPTIONAL_HEADER();
 
             ioh.Magic = stream.ReadUInt16();
             ioh.MajorLinkerVersion = stream.ReadByteValue();

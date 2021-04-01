@@ -11,17 +11,19 @@
  */
 
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace BurnOutSharp.ExecutableType.Microsoft
 {
+    [StructLayout(LayoutKind.Sequential)]
     internal class IMAGE_RESOURCE_DIR_STRING_U
     {
-        public ushort Length { get; private set; }
-        public char[] NameString { get; private set; }
+        public ushort Length;
+        public char[] NameString;
 
         public static IMAGE_RESOURCE_DIR_STRING_U Deserialize(Stream stream)
         {
-            IMAGE_RESOURCE_DIR_STRING_U irdsu = new IMAGE_RESOURCE_DIR_STRING_U();
+            var irdsu = new IMAGE_RESOURCE_DIR_STRING_U();
 
             irdsu.Length = stream.ReadUInt16();
             irdsu.NameString = stream.ReadChars(irdsu.Length);

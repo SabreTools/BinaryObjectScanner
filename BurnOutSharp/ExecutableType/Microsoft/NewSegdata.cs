@@ -12,12 +12,15 @@
 
 using System;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace BurnOutSharp.ExecutableType.Microsoft
 {
     /// <summary>
     /// Segment data
     /// </summary>
+    /// TODO: Fix this because Marshal will not work since it's not a direct read
+    [StructLayout(LayoutKind.Sequential)]
     internal class NewSegdata
     {
         #region ns_iter
@@ -25,17 +28,17 @@ namespace BurnOutSharp.ExecutableType.Microsoft
         /// <summary>
         /// Number of iterations
         /// </summary>
-        public ushort Iterations { get; private set; }
+        public ushort Iterations;
         
         /// <summary>
         /// Number of bytes
         /// </summary>
-        public ushort TotalBytes { get; private set; }
+        public ushort TotalBytes;
         
         /// <summary>
         /// Iterated data bytes
         /// </summary>
-        public char IteratedDataBytes { get; private set; }
+        public char IteratedDataBytes;
 
         #endregion
 
@@ -44,13 +47,13 @@ namespace BurnOutSharp.ExecutableType.Microsoft
         /// <summary>
         /// Data bytes
         /// </summary>
-        public char DataBytes { get; private set; }
+        public char DataBytes;
 
         #endregion
 
         public static NewSegdata Deserialize(Stream stream)
         {
-            NewSegdata nsd = new NewSegdata();
+            var nsd = new NewSegdata();
 
             nsd.Iterations = stream.ReadUInt16();
             nsd.TotalBytes = stream.ReadUInt16();

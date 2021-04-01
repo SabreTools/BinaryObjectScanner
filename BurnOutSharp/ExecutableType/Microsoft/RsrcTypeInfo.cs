@@ -11,21 +11,23 @@
  */
 
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace BurnOutSharp.ExecutableType.Microsoft
 {
     /// <summary>
     /// Resource type information block
     /// </summary>
+    [StructLayout(LayoutKind.Sequential)]
     internal class RsrcTypeInfo
     {
-        public ushort ID { get; private set; }
-        public ushort rt_nres { get; private set; }
-        public uint rt_proc { get; private set; }
+        public ushort ID;
+        public ushort rt_nres;
+        public uint rt_proc;
 
         public static RsrcTypeInfo Deserialize(Stream stream)
         {
-            RsrcTypeInfo rti = new RsrcTypeInfo();
+            var rti = new RsrcTypeInfo();
 
             rti.ID = stream.ReadUInt16();
             rti.rt_nres = stream.ReadUInt16();
