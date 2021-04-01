@@ -40,7 +40,7 @@ namespace BurnOutSharp.ProtectionType
                 0x42, 0x6F, 0x47, 0x5F, 0x20, 0x2A, 0x39, 0x30,
                 0x2E, 0x30, 0x26, 0x21, 0x21, 0x20, 0x20, 0x59,
                 0x79, 0x3E
-            }, "SafeDisc"),
+            }, GetVersion, "SafeDisc"),
 
             // (char)0x00 + (char)0x00 + BoG_
             new ContentMatchSet(new byte?[] { 0x00, 0x00, 0x42, 0x6F, 0x47, 0x5F }, Get320to4xVersion, "SafeDisc"),
@@ -70,7 +70,7 @@ namespace BurnOutSharp.ProtectionType
                 new PathMatch("00000001.TMP", useEndsWith: true),
                 //new PathMatch(".016", useEndsWith: true), // Potentially over-matching
                 //new PathMatch(".256", useEndsWith: true), // Potentially over-matching
-            }, "SafeDisc 1-2"),
+            }, "SafeDisc 1-3"),
 
             new PathMatchSet(new PathMatch("00000002.TMP", useEndsWith: true), "SafeDisc 2"),
 
