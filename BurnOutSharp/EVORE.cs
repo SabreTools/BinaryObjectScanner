@@ -181,43 +181,50 @@ namespace BurnOutSharp
 
         private static IMAGE_SECTION_HEADER ReadSection(byte[] fileContent, int ptr)
         {
-            // Get the size of a section header for later
-            int sectionSize = Marshal.SizeOf<IMAGE_SECTION_HEADER>();
-
-            // If the contents are null or the wrong size, we can't read a section
-            if (fileContent == null || fileContent.Length < sectionSize)
-                return null;
-
-            // Create a new section and try our best to read one
-            IMAGE_SECTION_HEADER section = null;
-            IntPtr tempPtr = IntPtr.Zero;
             try
             {
-                // Get the pointer to where the section will go
-                tempPtr = Marshal.AllocHGlobal(sectionSize);
-                
-                // If we couldn't get the space, just return null
-                if (tempPtr == IntPtr.Zero)
+                // Get the size of a section header for later
+                int sectionSize = Marshal.SizeOf<IMAGE_SECTION_HEADER>();
+
+                // If the contents are null or the wrong size, we can't read a section
+                if (fileContent == null || fileContent.Length < sectionSize)
                     return null;
 
-                // Copy from the array to the new space
-                Marshal.Copy(fileContent, ptr, tempPtr, sectionSize);
+                // Create a new section and try our best to read one
+                IMAGE_SECTION_HEADER section = null;
+                IntPtr tempPtr = IntPtr.Zero;
+                try
+                {
+                    // Get the pointer to where the section will go
+                    tempPtr = Marshal.AllocHGlobal(sectionSize);
+                    
+                    // If we couldn't get the space, just return null
+                    if (tempPtr == IntPtr.Zero)
+                        return null;
 
-                // Get the new section and return
-                section = Marshal.PtrToStructure<IMAGE_SECTION_HEADER>(tempPtr);
+                    // Copy from the array to the new space
+                    Marshal.Copy(fileContent, ptr, tempPtr, sectionSize);
+
+                    // Get the new section and return
+                    section = Marshal.PtrToStructure<IMAGE_SECTION_HEADER>(tempPtr);
+                }
+                catch
+                {
+                    // We don't care what the error was
+                    return null;
+                }
+                finally
+                {
+                    if (tempPtr != IntPtr.Zero)
+                        Marshal.FreeHGlobal(tempPtr);
+                }
+
+                return section;
             }
             catch
             {
-                // We don't care what the error was
                 return null;
             }
-            finally
-            {
-                if (tempPtr != IntPtr.Zero)
-                    Marshal.FreeHGlobal(tempPtr);
-            }
-
-            return section;
         }
 
         private static uint RVA2Offset(uint RVA, IMAGE_SECTION_HEADER[] sections)
