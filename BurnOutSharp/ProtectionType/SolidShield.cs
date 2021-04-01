@@ -79,6 +79,17 @@ namespace BurnOutSharp.ProtectionType
             }, "SolidShield"),
         };
 
+        /// <summary>
+        /// Set of all PathMatchSets for this protection
+        /// </summary>
+        private static readonly List<PathMatchSet> pathMatchers = new List<PathMatchSet>
+        {
+            new PathMatchSet(new PathMatch("dvm.dll", useEndsWith: true), "SolidShield"),
+            new PathMatchSet(new PathMatch("hc.dll", useEndsWith: true), "SolidShield"),
+            new PathMatchSet(new PathMatch("solidshield-cd.dll", useEndsWith: true), "SolidShield"),
+            new PathMatchSet(new PathMatch("c11prot.dll", useEndsWith: true), "SolidShield"),
+        };
+
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
@@ -89,39 +100,24 @@ namespace BurnOutSharp.ProtectionType
         public List<string> CheckDirectoryPath(string path, IEnumerable<string> files)
         {
             // TODO: Verify if these are OR or AND
-            var matchers = new List<PathMatchSet>
-            {
-                new PathMatchSet(new PathMatch("dvm.dll", useEndsWith: true), "SolidShield"),
-                new PathMatchSet(new PathMatch("hc.dll", useEndsWith: true), "SolidShield"),
-                new PathMatchSet(new PathMatch("solidshield-cd.dll", useEndsWith: true), "SolidShield"),
-                new PathMatchSet(new PathMatch("c11prot.dll", useEndsWith: true), "SolidShield"),
-            };
-
-            return MatchUtil.GetAllMatches(files, matchers, any: true);
+            return MatchUtil.GetAllMatches(files, pathMatchers, any: true);
         }
 
         /// <inheritdoc/>
         public string CheckFilePath(string path)
         {
-            var matchers = new List<PathMatchSet>
-            {
-                new PathMatchSet(new PathMatch("dvm.dll", useEndsWith: true), "SolidShield"),
-                new PathMatchSet(new PathMatch("hc.dll", useEndsWith: true), "SolidShield"),
-                new PathMatchSet(new PathMatch("solidshield-cd.dll", useEndsWith: true), "SolidShield"),
-                new PathMatchSet(new PathMatch("c11prot.dll", useEndsWith: true), "SolidShield"),
-            };
-
-            return MatchUtil.GetFirstMatch(path, matchers, any: true);
+            return MatchUtil.GetFirstMatch(path, pathMatchers, any: true);
         }
 
         public static string GetExeWrapperVersion(string file, byte[] fileContent, List<int> positions)
         {
-            var id1 = new ArraySegment<byte>(fileContent, positions[0] + 5, 3);
-            var id2 = new ArraySegment<byte>(fileContent, positions[0] + 16, 4);
+            int position = positions[0];
+            var id1 = new ArraySegment<byte>(fileContent, position + 5, 3);
+            var id2 = new ArraySegment<byte>(fileContent, position + 16, 4);
 
             if (id1.SequenceEqual(new byte[] { 0x00, 0x00, 0x00 }) && id2.SequenceEqual(new byte[] { 0x00, 0x10, 0x00, 0x00 }))
                 return "1 (SolidShield EXE Wrapper)";
-            else if (id1.SequenceEqual(new byte[] { 0x2E, 0x6F, 0x26 }) && id2.SequenceEqual(new byte[] { 0xDB, 0xC5, 0x20, 0x3A, 0xB9 }))
+            else if (id1.SequenceEqual(new byte[] { 0x2E, 0x6F, 0x26 }) && id2.SequenceEqual(new byte[] { 0xDB, 0xC5, 0x20, 0x3A })) // new byte[] { 0xDB, 0xC5, 0x20, 0x3A, 0xB9 }
                 return "2 (SolidShield v2 EXE Wrapper)"; // TODO: Verify against other SolidShield 2 discs
             
             return null;
@@ -172,7 +168,13 @@ namespace BurnOutSharp.ProtectionType
                 && id2.SequenceEqual(new byte[] { 0x00, 0x00, 0x00, 0x00 }))
             {
                 // "T" + (char)0x00 + "a" + (char)0x00 + "g" + (char)0x00 + "e" + (char)0x00 + "s" + (char)0x00 + "S" + (char)0x00 + "e" + (char)0x00 + "t" + (char)0x00 + "u" + (char)0x00 + "p" + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00 + "0" + (char)0x00 + (char)0x8 + (char)0x00 + (char)0x1 + (char)0x0 + "F" + (char)0x00 + "i" + (char)0x00 + "l" + (char)0x00 + "e" + (char)0x00 + "V" + (char)0x00 + "e" + (char)0x00 + "r" + (char)0x00 + "s" + (char)0x00 + "i" + (char)0x00 + "o" + (char)0x00 + "n" + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00
-                byte?[] check2 = new byte?[] { 0x54, 0x61, 0x67, 0x65, 0x73, 0x53, 0x65, 0x74, 0x75, 0x70, 0x30, 0x08, 0x01, 0x00, 0x46, 0x69, 0x6C, 0x65, 0x56, 0x65, 0x72, 0x73, 0x69, 0x6F, 0x6E, 0x00, 0x00, 0x00, 0x00 };
+                byte?[] check2 = new byte?[]
+                {
+                    0x54, 0x61, 0x67, 0x65, 0x73, 0x53, 0x65, 0x74,
+                    0x75, 0x70, 0x30, 0x08, 0x01, 0x00, 0x46, 0x69,
+                    0x6C, 0x65, 0x56, 0x65, 0x72, 0x73, 0x69, 0x6F,
+                    0x6E, 0x00, 0x00, 0x00, 0x00
+                };
                 if (fileContent.FirstPosition(check2, out int position2))
                 {
                     position2--; // TODO: Verify this subtract
