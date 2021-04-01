@@ -2,13 +2,11 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Text;
 using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
 {
-    // TODO: Figure out how to use path check framework here
     public class SafeDisc : IContentCheck, IPathCheck
     {
         /// <summary>
@@ -54,6 +52,34 @@ namespace BurnOutSharp.ProtectionType
             new ContentMatchSet(new byte?[] { 0x73, 0x74, 0x78, 0x74, 0x33, 0x37, 0x31 }, Get320to4xVersion, "SafeDisc"),
         };
 
+        /// <summary>
+        /// Set of all PathMatchSets for this protection
+        /// </summary>
+        private static readonly List<PathMatchSet> pathMatchers = new List<PathMatchSet>
+        {
+            new PathMatchSet(new List<PathMatch>
+            {
+                new PathMatch("CLCD16.DLL", useEndsWith: true),
+                new PathMatch("CLCD32.DLL", useEndsWith: true),
+                new PathMatch("CLOKSPL.EXE", useEndsWith: true),
+                new PathMatch(".icd", useEndsWith: true),
+            }, "SafeDisc 1"),
+
+            new PathMatchSet(new List<PathMatch>
+            {
+                new PathMatch("00000001.TMP", useEndsWith: true),
+                //new PathMatch(".016", useEndsWith: true), // Potentially over-matching
+                //new PathMatch(".256", useEndsWith: true), // Potentially over-matching
+            }, "SafeDisc 1-2"),
+
+            new PathMatchSet(new PathMatch("00000002.TMP", useEndsWith: true), "SafeDisc 2"),
+
+            new PathMatchSet(new PathMatch("DPLAYERX.DLL", useEndsWith: true), GetDPlayerXVersion, "SafeDisc (dplayerx.dll)"),
+            new PathMatchSet(new PathMatch("drvmgt.dll", useEndsWith: true), GetDrvmgtVersion, "SafeDisc (drvmgt.dll)"),
+            new PathMatchSet(new PathMatch("secdrv.sys", useEndsWith: true), GetSecdrvVersion, "SafeDisc (secdrv.sys)"),
+            new PathMatchSet(".SafeDiscDVD.bundle", "SafeDisc for Macintosh"),
+        };
+
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
@@ -63,76 +89,13 @@ namespace BurnOutSharp.ProtectionType
         /// <inheritdoc/>
         public List<string> CheckDirectoryPath(string path, IEnumerable<string> files)
         {
-            List<string> protections = new List<string>();
-
-            if (files.Any(f => Path.GetFileName(f).Equals("DPLAYERX.DLL", StringComparison.OrdinalIgnoreCase)))
-            {
-                string file = files.First(f => Path.GetFileName(f).Equals("DPLAYERX.DLL", StringComparison.OrdinalIgnoreCase));
-                protections.Add($"dplayerx.dll {GetDPlayerXVersion(file)}");
-            }
-            else if (files.Any(f => Path.GetFileName(f).Equals("drvmgt.dll", StringComparison.OrdinalIgnoreCase)))
-            {
-                string file = files.First(f => Path.GetFileName(f).Equals("drvmgt.dll", StringComparison.OrdinalIgnoreCase));
-                protections.Add($"drvmgt.dll {GetDrvmgtVersion(file)}");
-            }
-            else if (files.Any(f => Path.GetFileName(f).Equals("secdrv.sys", StringComparison.OrdinalIgnoreCase)))
-            {
-                string file = files.First(f => Path.GetFileName(f).Equals("secdrv.sys", StringComparison.OrdinalIgnoreCase));
-                protections.Add($"secdrv.sys {GetSecdrvVersion(file)}");
-            }
-            else if (path.Contains(".SafeDiscDVD.bundle")
-                || files.Any(f => f.Contains(".SafeDiscDVD.bundle")))
-            {
-                protections.Add("SafeDisc for Macintosh");
-            }
-
-            if (protections.Count == 0)
-                return null;
-            else
-                return protections;
+            return MatchUtil.GetAllMatches(files, pathMatchers, any: false);
         }
 
         /// <inheritdoc/>
         public string CheckFilePath(string path)
         {
-            // V1
-            if (Path.GetFileName(path).Equals("CLCD16.DLL", StringComparison.OrdinalIgnoreCase)
-                || Path.GetFileName(path).Equals("CLCD32.DLL", StringComparison.OrdinalIgnoreCase)
-                || Path.GetFileName(path).Equals("CLOKSPL.EXE", StringComparison.OrdinalIgnoreCase)
-                || Path.GetExtension(path).Trim('.').Equals("icd", StringComparison.OrdinalIgnoreCase))
-            {
-                return "SafeDisc 1";
-            }
-
-            // V1 or greater
-            else if (Path.GetFileName(path).Equals("00000001.TMP", StringComparison.OrdinalIgnoreCase)
-                || Path.GetExtension(path).Trim('.').Equals("016", StringComparison.OrdinalIgnoreCase)
-                || Path.GetExtension(path).Trim('.').Equals("256", StringComparison.OrdinalIgnoreCase))
-            {
-                return "SafeDisc 1 or greater";
-            }
-
-            // V2 or greater
-            else if (Path.GetFileName(path).Equals("00000002.TMP", StringComparison.OrdinalIgnoreCase))
-            {
-                return "SafeDisc 2 or greater";
-            }
-
-            // Specific Versions
-            else if (Path.GetFileName(path).Equals("DPLAYERX.DLL", StringComparison.OrdinalIgnoreCase))
-            {
-                return GetDPlayerXVersion(path);
-            }
-            else if (Path.GetFileName(path).Equals("drvmgt.dll", StringComparison.OrdinalIgnoreCase))
-            {
-                return GetDrvmgtVersion(path);
-            }
-            else if (Path.GetFileName(path).Equals("secdrv.sys", StringComparison.OrdinalIgnoreCase))
-            {
-                return GetSecdrvVersion(path);
-            }
-
-            return null;
+            return MatchUtil.GetFirstMatch(path, pathMatchers, any: true);
         }
 
         public static string Get320to4xVersion(string file, byte[] fileContent, List<int> positions)
@@ -169,94 +132,94 @@ namespace BurnOutSharp.ProtectionType
             return $"{version}.{subVersion:00}.{subsubVersion:000}";
         }
 
-        private static string GetDPlayerXVersion(string file)
+        public static string GetDPlayerXVersion(string firstMatchedString, IEnumerable<string> files)
         {
-            if (file == null || !File.Exists(file))
+            if (firstMatchedString == null || !File.Exists(firstMatchedString))
                 return string.Empty;
 
-            FileInfo fi = new FileInfo(file);
+            FileInfo fi = new FileInfo(firstMatchedString);
             if (fi.Length == 81408)
-                return "SafeDisc 1.0x";
+                return "1.0x";
             else if (fi.Length == 155648)
-                return "SafeDisc 1.1x";
+                return "1.1x";
             else if (fi.Length == 156160)
-                return "SafeDisc 1.1x-1.2x";
+                return "1.1x-1.2x";
             else if (fi.Length == 163328)
-                return "SafeDisc 1.3x";
+                return "1.3x";
             else if (fi.Length == 165888)
-                return "SafeDisc 1.35";
+                return "1.35";
             else if (fi.Length == 172544)
-                return "SafeDisc 1.40";
+                return "1.40";
             else if (fi.Length == 173568)
-                return "SafeDisc 1.4x";
+                return "1.4x";
             else if (fi.Length == 136704)
-                return "SafeDisc 1.4x";
+                return "1.4x";
             else if (fi.Length == 138752)
-                return "SafeDisc 1.5x";
+                return "1.5x";
             else
-                return "SafeDisc 1";
+                return "1";
         }
 
-        private static string GetDrvmgtVersion(string file)
+        public static string GetDrvmgtVersion(string firstMatchedString, IEnumerable<string> files)
         {
-            if (file == null || !File.Exists(file))
+            if (firstMatchedString == null || !File.Exists(firstMatchedString))
                 return string.Empty;
 
-            FileInfo fi = new FileInfo(file);
+            FileInfo fi = new FileInfo(firstMatchedString);
             if (fi.Length == 34816)
-                return "SafeDisc 1.0x";
+                return "1.0x";
             else if (fi.Length == 32256)
-                return "SafeDisc 1.1x-1.3x";
+                return "1.1x-1.3x";
             else if (fi.Length == 31744)
-                return "SafeDisc 1.4x";
+                return "1.4x";
             else if (fi.Length == 34304)
-                return "SafeDisc 1.5x-2.40";
+                return "1.5x-2.40";
             else if (fi.Length == 35840)
-                return "SafeDisc 2.51-2.60";
+                return "2.51-2.60";
             else if (fi.Length == 40960)
-                return "SafeDisc 2.70";
+                return "2.70";
             else if (fi.Length == 23552)
-                return "SafeDisc 2.80";
+                return "2.80";
             else if (fi.Length == 41472)
-                return "SafeDisc 2.90-3.10";
+                return "2.90-3.10";
             else if (fi.Length == 24064)
-                return "SafeDisc 3.15-3.20";
+                return "3.15-3.20";
             else
-                return "SafeDisc 1 or greater";
+                return "1-3";
         }
 
-        private static string GetSecdrvVersion(string file)
+        public static string GetSecdrvVersion(string firstMatchedString, IEnumerable<string> files)
         {
-            if (file == null || !File.Exists(file))
+            if (firstMatchedString == null || !File.Exists(firstMatchedString))
                 return string.Empty;
 
-            FileInfo fi = new FileInfo(file);
+            FileInfo fi = new FileInfo(firstMatchedString);
             if (fi.Length == 20128)
-                return "SafeDisc 2.10";
+                return "2.10";
             else if (fi.Length == 27440)
-                return "SafeDisc 2.30";
+                return "2.30";
             else if (fi.Length == 28624)
-                return "SafeDisc 2.40";
+                return "2.40";
             else if (fi.Length == 18768)
-                return "SafeDisc 2.50";
+                return "2.50";
             else if (fi.Length == 28400)
-                return "SafeDisc 2.51";
+                return "2.51";
             else if (fi.Length == 29392)
-                return "SafeDisc 2.60";
+                return "2.60";
             else if (fi.Length == 11376)
-                return "SafeDisc 2.70";
+                return "2.70";
             else if (fi.Length == 12464)
-                return "SafeDisc 2.80";
+                return "2.80";
             else if (fi.Length == 12400)
-                return "SafeDisc 2.90";
+                return "2.90";
             else if (fi.Length == 12528)
-                return "SafeDisc 3.10";
+                return "3.10";
             else if (fi.Length == 12528)
-                return "SafeDisc 3.15";
+                return "3.15";
             else if (fi.Length == 11973)
-                return "SafeDisc 3.20";
+                return "3.20";
             else
-                return "SafeDisc 1 or greater";
+                return "1-3";
         }
 
         // TODO: Analyze this method and figure out if this can be done without attempting execution
