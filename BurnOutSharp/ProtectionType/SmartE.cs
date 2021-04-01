@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
@@ -26,8 +27,8 @@ namespace BurnOutSharp.ProtectionType
             // TODO: Verify if these are OR or AND
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new PathMatch("00001.TMP", useEndsWith: true), "SmartE"),
-                new PathMatchSet(new PathMatch("00002.TMP", useEndsWith: true), "SmartE"),
+                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}00001.TMP", useEndsWith: true), "SmartE"),
+                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}00002.TMP", useEndsWith: true), "SmartE"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);
@@ -38,8 +39,8 @@ namespace BurnOutSharp.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new PathMatch("00001.TMP", useEndsWith: true), "SmartE"),
-                new PathMatchSet(new PathMatch("00002.TMP", useEndsWith: true), "SmartE"),
+                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}00001.TMP", useEndsWith: true), "SmartE"),
+                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}00002.TMP", useEndsWith: true), "SmartE"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
