@@ -1,0 +1,3 @@
+[submodule "BurnOutSharp/External/LessIO"]
+	path = BurnOutSharp/External/LessIO
+	url = https://github.com/activescott/LessIO.git

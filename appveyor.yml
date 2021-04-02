@@ -1,0 +1,50 @@
+# version format
+version: 1.5.1-{build}
+
+# pull request template
+pull_requests:
+  do_not_increment_build_number: true
+
+# vm template
+image: Visual Studio 2019
+
+# environment variables
+environment:
+  EnableNuGetPackageRestore: true
+
+# msbuild configuration
+platform:
+- Any CPU
+configuration:
+- Debug
+
+# install dependencies
+install:
+- ps: appveyor DownloadFile https://dist.nuget.org/win-x86-commandline/latest/nuget.exe
+- cd %APPVEYOR_BUILD_FOLDER%
+- git submodule update --init --recursive
+
+# pre-build script
+before_build:
+- nuget restore
+
+# build step
+build:
+  verbosity: minimal
+  project: BurnOutSharp.sln
+
+# post-build step
+after_build:
+- cd Test\bin\Debug
+- 7z a BurnOutSharp_net48.zip net48\*
+- 7z a BurnOutSharp_netcoreapp3.1.zip netcoreapp3.1\*
+- 7z a BurnOutSharp_net5.0.zip net5.0\*
+
+# artifact linking
+artifacts:
+- path: Test\bin\Debug\BurnOutSharp_net48.zip
+  name: BurnOutSharp (.NET Framework 4.8)
+- path: Test\bin\Debug\BurnOutSharp_netcoreapp3.1.zip
+  name: BurnOutSharp (.NET Core 3.1)
+- path: Test\bin\Debug\BurnOutSharp_net5.0.zip
+  name: BurnOutSharp (.NET 5.0)
