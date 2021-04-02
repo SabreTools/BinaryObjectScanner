@@ -40,7 +40,12 @@
       External\libmspack4n\lib\**\*;
       External\libmspack4n\libmspack4ntest\**\*;
       External\stormlibsharp\lib\**;
-      External\stormlibsharp\TestConsole\**
+      External\stormlibsharp\TestConsole\**;
+      External\WixToolset\src\Samples\**;
+      External\WixToolset\src\Tools\**;
+      External\WixToolset\src\WixToolset.Dtf.MSBuild\**;
+      External\WixToolset\src\WixToolset.Dtf.Resources\**;
+      External\WixToolset\src\WixToolsetTests.*\**
     </DefaultItemExcludes>
   </PropertyGroup>
 

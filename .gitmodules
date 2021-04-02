@@ -10,3 +10,6 @@
 [submodule "BurnOutSharp/External/stormlibsharp"]
 	path = BurnOutSharp/External/stormlibsharp
 	url = https://github.com/robpaveza/stormlibsharp.git
+[submodule "BurnOutSharp/External/WixToolset"]
+	path = BurnOutSharp/External/WixToolset
+	url = https://github.com/wixtoolset/Dtf.git
