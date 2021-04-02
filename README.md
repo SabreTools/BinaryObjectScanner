@@ -10,7 +10,6 @@ In addition to the original BurnOut code, the following libraries (or ports ther
 - [libmspack4n](https://github.com/activescott/libmspack4n) - Microsoft CAB extraction
 - [psxt001z](https://github.com/Dremora/psxt001z) - PS1 LibCrypt detection
 - [SharpCompress](https://github.com/adamhathcock/sharpcompress) - 7zip/GZip/RAR/PKZIP extraction
-- [StormLib](https://github.com/ladislav-zezula/StormLib) - MPQ extraction
 - [StormLibSharp](https://github.com/robpaveza/stormlibsharp) - MPQ extraction
 - [UnshieldSharp](https://github.com/mnadareski/UnshieldSharp) - InstallShield CAB extraction
 - [WiseUnpacker](https://github.com/mnadareski/WiseUnpacker) - Wise Installer extraction
