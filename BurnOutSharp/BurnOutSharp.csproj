@@ -30,7 +30,13 @@
 
   <!-- These are needed for dealing with submodules -->
   <PropertyGroup>
-    <DefaultItemExcludes>$(DefaultItemExcludes);**\AssemblyInfo.cs;External\LessIO\src\LessIO.Tests\**\*</DefaultItemExcludes>
+    <DefaultItemExcludes>
+      $(DefaultItemExcludes);
+      **\AssemblyInfo.cs;
+      External\LessIO\src\LessIO.Tests\**\*;
+      External\libmspack4n\lib\**\*;
+      External\libmspack4n\libmspack4ntest\**\*
+    </DefaultItemExcludes>
   </PropertyGroup>
 
   <ItemGroup>

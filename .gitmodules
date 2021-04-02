@@ -1,3 +1,6 @@
 [submodule "BurnOutSharp/External/LessIO"]
 	path = BurnOutSharp/External/LessIO
 	url = https://github.com/activescott/LessIO.git
+[submodule "BurnOutSharp/External/libmspack4n"]
+	path = BurnOutSharp/External/libmspack4n
+	url = https://github.com/activescott/libmspack4n.git
