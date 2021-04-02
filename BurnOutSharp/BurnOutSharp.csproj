@@ -33,6 +33,9 @@
     <DefaultItemExcludes>
       $(DefaultItemExcludes);
       **\AssemblyInfo.cs;
+      External\hllib\HLExtract\**\*;
+      External\hllib\HLExtract.Net\Program.cs;
+      External\hllib\HLLib\**\*;
       External\LessIO\src\LessIO.Tests\**\*;
       External\libmspack4n\lib\**\*;
       External\libmspack4n\libmspack4ntest\**\*

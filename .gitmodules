@@ -4,3 +4,6 @@
 [submodule "BurnOutSharp/External/libmspack4n"]
 	path = BurnOutSharp/External/libmspack4n
 	url = https://github.com/activescott/libmspack4n.git
+[submodule "BurnOutSharp/External/hllib"]
+	path = BurnOutSharp/External/hllib
+	url = https://github.com/RavuAlHemio/hllib.git
