@@ -280,7 +280,6 @@ namespace BurnOutSharp.FileType
                 Console.WriteLine("Unsupported package type.");
 
 		        HLLib.hlShutdown();
-                Pause();
 		        return 3;
 	        }
 
@@ -293,7 +292,6 @@ namespace BurnOutSharp.FileType
                 Console.WriteLine(HLLib.hlGetString(HLLib.HLOption.HL_ERROR_SHORT_FORMATED));
 
                 HLLib. hlShutdown();
-                Pause();
 		        return 3;
 	        }
 
@@ -320,7 +318,6 @@ namespace BurnOutSharp.FileType
                 Console.WriteLine(HLLib.hlGetString(HLLib.HLOption.HL_ERROR_SHORT_FORMATED));
 
                 HLLib. hlShutdown();
-                Pause();
 		        return 3;
 	        }
 
