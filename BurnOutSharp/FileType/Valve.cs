@@ -129,7 +129,6 @@ namespace BurnOutSharp.FileType
 				        }
 				        else
 				        {
-					        PrintUsage();
 					        return 2;
 				        }
 			        }
@@ -141,7 +140,6 @@ namespace BurnOutSharp.FileType
 				        }
 				        else
 				        {
-					        PrintUsage();
 					        return 2;
 				        }
 			        }
@@ -153,7 +151,6 @@ namespace BurnOutSharp.FileType
 				        }
 				        else
 				        {
-					        PrintUsage();
 					        return 2;
 				        }
 			        }
@@ -165,7 +162,6 @@ namespace BurnOutSharp.FileType
 				        }
 				        else
 				        {
-					        PrintUsage();
 					        return 2;
 				        }
 			        }
@@ -200,7 +196,6 @@ namespace BurnOutSharp.FileType
 			        }
 			        else
 			        {
-				        PrintUsage();
 				        return 2;
 			        }
 		        }
@@ -209,7 +204,6 @@ namespace BurnOutSharp.FileType
 	        // Make sure we have something to do.
 	        if(sPackage.Length == 0)
 	        {
-		        PrintUsage();
 		        return 2;
 	        }
 
@@ -346,47 +340,6 @@ namespace BurnOutSharp.FileType
 	        HLLib.hlShutdown();
 
 	        return 0;
-        }
-
-        private static void Pause()
-        {
-            if(bPause)
-            {
-                Console.Write("Press any key to continue . . . ");
-                Console.ReadKey(true);
-            }
-        }
-
-        private static void PrintUsage()
-        {
-            System.Reflection.AssemblyName Name = System.Reflection.Assembly.GetExecutingAssembly().GetName();
-
-	        Console.WriteLine("HLExtract.Net v{0}.{1}.{2} using HLLib v{3}", Name.Version.Major, Name.Version.Minor, Name.Version.Build, HLLib.hlGetString(HLLib.HLOption.HL_VERSION));
-	        Console.WriteLine();
-	        Console.WriteLine("Correct HLExtract.Net usage:");
-	        Console.WriteLine(" -p <filepath>       (Package to load.)");
-	        Console.WriteLine(" -d <path>           (Destination extraction directory.)");
-            Console.WriteLine(" -x <command>        (Execute console command.)");
-	        Console.WriteLine(" -s                  (Silent mode.)");
-            Console.WriteLine(" -u                  (Don't pause on error..)");
-	        Console.WriteLine(" -m                  (Use file mapping.)");
-	        Console.WriteLine(" -q                  (Use quick file mapping.)");
-	        Console.WriteLine(" -v                  (Allow volatile access.)");
-            Console.WriteLine(" -w                  (Allow write access.)");
-	        Console.WriteLine(" -o                  (Don't overwrite files.)");
-	        Console.WriteLine(" -n <path>           (NCF file's root path.)");
-	        Console.WriteLine();
-	        Console.WriteLine("Example HLExtract.Net usage:");
-	        Console.WriteLine("HLExtract.Net.exe -p \"C:\\half-life.gcf\" -d \"C:\\backup\"");
-	        Console.WriteLine("HLExtract.Net.exe -p \"C:\\half-life.gcf\" -m -v");
-            Console.WriteLine("HLExtract.Net.exe -p \"C:\\half-life.gcf\" -w -x defragment -x exit");
-	        Console.WriteLine();
-	        Console.WriteLine("Batching HLExtract.Net:");
-            Console.WriteLine("for %%F in (*.gcf) do HLExtract.Net.exe -p \"%%F\" -u -v -x \"info .\" -x exit");
-            Console.WriteLine("for %%F in (*.gcf) do HLExtract.Net.exe -p \"%%F\" -s -u -x \"validate .\" -x exit");
-            Console.WriteLine("for %%F in (*.gcf) do HLExtract.Net.exe -p \"%%F\" -s -u -w -x defragment -x exit");
-
-            Pause();
         }
 
         private static readonly uint MAX_PATH_SIZE = 512;
