@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.PackerType
@@ -18,6 +19,12 @@ namespace BurnOutSharp.PackerType
                 new ContentMatch(new byte?[] { 0x49, 0x6E, 0x6E, 0x6F }, start: 0x30, end: 0x31),
                 GetVersion,
                 "Inno Setup"),
+
+            new ContentMatchSet(new byte?[]
+            {
+                0x49, 0x6E, 0x6E, 0x6F, 0x20, 0x53, 0x65, 0x74, 0x75, 0x70, 0x20, 0x53,
+                0x65, 0x74, 0x75, 0x70, 0x20, 0x44, 0x61, 0x74, 0x61, 0x20, 0x28
+            }, GetVersion, "Inno Setup"),
         };
 
         /// <inheritdoc/>
@@ -81,7 +88,22 @@ namespace BurnOutSharp.PackerType
             else if (signature.SequenceEqual(new byte[] { 0x6E, 0x53, 0x35, 0x57, 0x37, 0x64, 0x54, 0x83, 0xAA, 0x1B, 0x0F, 0x6A }))
                 return "5.1.5";
 
-            return string.Empty;
+            try
+            {
+                int index = positions[0];
+                index += 22;
+                if (fileContent[index] != '(')
+                    return "(Unknown Version)";
+                index += 1;
+
+                var versionBytes = new ReadOnlySpan<byte>(fileContent, index, 16).ToArray();
+                var onlyVersion = versionBytes.TakeWhile(b => b != ')').ToArray();
+                return Encoding.ASCII.GetString(onlyVersion);
+            }
+            catch
+            {
+                return string.Empty;
+            }
         }
     }
 }
