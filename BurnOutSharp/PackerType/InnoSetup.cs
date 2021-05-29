@@ -17,9 +17,10 @@ namespace BurnOutSharp.PackerType
             // Inno
             new ContentMatchSet(
                 new ContentMatch(new byte?[] { 0x49, 0x6E, 0x6E, 0x6F }, start: 0x30, end: 0x31),
-                GetVersion,
+                GetSignatureVersion,
                 "Inno Setup"),
 
+            // Inno Setup Setup Data (
             new ContentMatchSet(new byte?[]
             {
                 0x49, 0x6E, 0x6E, 0x6F, 0x20, 0x53, 0x65, 0x74, 0x75, 0x70, 0x20, 0x53,
@@ -56,7 +57,7 @@ namespace BurnOutSharp.PackerType
             return null;
         }
 
-        public static string GetVersion(string file, byte[] fileContent, List<int> positions)
+        public static string GetSignatureVersion(string file, byte[] fileContent, List<int> positions)
         {
             byte[] signature = new ArraySegment<byte>(fileContent, 0x30, 12).ToArray();
 
@@ -88,6 +89,11 @@ namespace BurnOutSharp.PackerType
             else if (signature.SequenceEqual(new byte[] { 0x6E, 0x53, 0x35, 0x57, 0x37, 0x64, 0x54, 0x83, 0xAA, 0x1B, 0x0F, 0x6A }))
                 return "5.1.5";
 
+            return string.Empty;
+        }
+
+        public static string GetVersion(string file, byte[] fileContent, List<int> positions)
+        {
             try
             {
                 int index = positions[0];
@@ -102,7 +108,7 @@ namespace BurnOutSharp.PackerType
             }
             catch
             {
-                return string.Empty;
+                return "Unknown Version";
             }
         }
     }
