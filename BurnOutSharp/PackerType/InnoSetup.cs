@@ -97,10 +97,7 @@ namespace BurnOutSharp.PackerType
             try
             {
                 int index = positions[0];
-                index += 22;
-                if (fileContent[index] != '(')
-                    return "(Unknown Version)";
-                index += 1;
+                index += 23;
 
                 var versionBytes = new ReadOnlySpan<byte>(fileContent, index, 16).ToArray();
                 var onlyVersion = versionBytes.TakeWhile(b => b != ')').ToArray();
@@ -108,7 +105,7 @@ namespace BurnOutSharp.PackerType
             }
             catch
             {
-                return "Unknown Version";
+                return "(Unknown Version)";
             }
         }
     }
