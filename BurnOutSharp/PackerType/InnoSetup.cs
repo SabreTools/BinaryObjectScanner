@@ -14,18 +14,18 @@ namespace BurnOutSharp.PackerType
         /// </summary>
         private static readonly List<ContentMatchSet> contentMatchers = new List<ContentMatchSet>
         {
-            // Inno
-            new ContentMatchSet(
-                new ContentMatch(new byte?[] { 0x49, 0x6E, 0x6E, 0x6F }, start: 0x30, end: 0x31),
-                GetSignatureVersion,
-                "Inno Setup"),
-
             // Inno Setup Setup Data (
             new ContentMatchSet(new byte?[]
             {
                 0x49, 0x6E, 0x6E, 0x6F, 0x20, 0x53, 0x65, 0x74, 0x75, 0x70, 0x20, 0x53,
                 0x65, 0x74, 0x75, 0x70, 0x20, 0x44, 0x61, 0x74, 0x61, 0x20, 0x28
             }, GetVersion, "Inno Setup"),
+
+            // Inno
+            new ContentMatchSet(
+                new ContentMatch(new byte?[] { 0x49, 0x6E, 0x6E, 0x6F }, start: 0x30, end: 0x31),
+                GetOldVersion,
+                "Inno Setup"),
         };
 
         /// <inheritdoc/>
@@ -57,9 +57,19 @@ namespace BurnOutSharp.PackerType
             return null;
         }
 
-        public static string GetSignatureVersion(string file, byte[] fileContent, List<int> positions)
+        public static string GetOldVersion(string file, byte[] fileContent, List<int> positions)
         {
-            byte[] signature = new ArraySegment<byte>(fileContent, 0x30, 12).ToArray();
+            var matchers = new List<ContentMatchSet>
+            {
+                // "rDlPtS02" + (char)0x87 + "eVx"
+                new ContentMatchSet(new byte?[] { 0x72, 0x44, 0x6C, 0x50, 0x74, 0x53, 0x30, 0x32, 0x87, 0x65, 0x56, 0x78 }, "1.2.16 or earlier"),
+            };
+
+            string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, false);
+            return match ?? "Unknown 1.X";
+
+
+            /* byte[] signature = new ArraySegment<byte>(fileContent, 0x30, 12).ToArray();
 
             // "rDlPtS02" + (char)0x87 + "eVx"
             if (signature.SequenceEqual( new byte[] { 0x72, 0x44, 0x6C, 0x50, 0x74, 0x53, 0x30, 0x32, 0x87, 0x65, 0x56, 0x78 }))
@@ -87,7 +97,7 @@ namespace BurnOutSharp.PackerType
 
             // "nS5W7dT" + (char)0x83 + (char)0xaa + (char)0x1b + (char)0x0f + "j"
             else if (signature.SequenceEqual(new byte[] { 0x6E, 0x53, 0x35, 0x57, 0x37, 0x64, 0x54, 0x83, 0xAA, 0x1B, 0x0F, 0x6A }))
-                return "5.1.5";
+                return "5.1.5"; */
 
             return string.Empty;
         }
