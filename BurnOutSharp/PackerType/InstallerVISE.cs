@@ -28,6 +28,8 @@ namespace BurnOutSharp.PackerType
             return MatchUtil.GetFirstMatch(file, fileContent, contentMatchers, includePosition);
         }
 
+        // TODO: Add Installer VISE extraction
+        // https://github.com/Bioruebe/UniExtract2
         /// <inheritdoc/>
         public Dictionary<string, List<string>> Scan(Scanner scanner, string file)
         {
