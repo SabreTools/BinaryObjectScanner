@@ -17,8 +17,9 @@ namespace BurnOutSharp.PackerType
             // Inno Setup Setup Data (
             new ContentMatchSet(new byte?[]
             {
-                0x49, 0x6E, 0x6E, 0x6F, 0x20, 0x53, 0x65, 0x74, 0x75, 0x70, 0x20, 0x53,
-                0x65, 0x74, 0x75, 0x70, 0x20, 0x44, 0x61, 0x74, 0x61, 0x20, 0x28
+                0x49, 0x6E, 0x6E, 0x6F, 0x20, 0x53, 0x65, 0x74, 
+                0x75, 0x70, 0x20, 0x53, 0x65, 0x74, 0x75, 0x70, 
+                0x20, 0x44, 0x61, 0x74, 0x61, 0x20, 0x28
             }, GetVersion, "Inno Setup"),
 
             // Inno
@@ -66,7 +67,7 @@ namespace BurnOutSharp.PackerType
             };
 
             string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, false);
-            return match ?? "Unknown 1.X";
+            return match ?? "Unknown 1.X"; 
         }
 
         public static string GetVersion(string file, byte[] fileContent, List<int> positions)
@@ -81,12 +82,12 @@ namespace BurnOutSharp.PackerType
 
                 index += onlyVersion.Length + 2;
                 var unicodeBytes = new ReadOnlySpan<byte>(fileContent, index, 3).ToArray();
-
+                string version = Encoding.ASCII.GetString(onlyVersion);
 
                 if (unicodeBytes.SequenceEqual(new byte[] { 0x28, 0x75, 0x29 }))
-                    return (Encoding.ASCII.GetString(onlyVersion) + " (Unicode)");
+                    return (version + " (Unicode)");
 
-                return Encoding.ASCII.GetString(onlyVersion);
+                return version;
             }
             catch
             {
