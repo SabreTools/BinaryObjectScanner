@@ -93,6 +93,7 @@ Below is a list of the executable packers that can be detected using this code:
 - dotFuscator
 - EXE Stealth
 - Inno Setup
+- Installer VISE
 - NSIS
 - PECompact
 - Setup Factory
