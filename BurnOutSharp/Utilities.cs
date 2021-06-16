@@ -317,7 +317,62 @@ namespace BurnOutSharp
                 return null;
             }
         }
-    
+
+        /// <summary>
+        /// Get the assembly version as determined by an embedded assembly manifest
+        /// </summary>
+        /// <param name="fileContent">Byte array representing the file contents</param>
+        /// <returns>Version string, null on error</returns>
+        /// <remarks>TODO: How do we find the manifest specifically better?</remarks>
+        public static string GetManifestDescription(byte[] fileContent)
+        {
+            // <?xml
+            byte?[] manifestStart = new byte?[] { 0x3C, 0x3F, 0x78, 0x6D, 0x6C };
+            if (!fileContent.LastPosition(manifestStart, out int manifestStartPosition))
+                return null;
+
+            // </assembly>
+            byte?[] manifestEnd = new byte?[] { 0x3C, 0x2F, 0x61, 0x73, 0x73, 0x65, 0x6D, 0x62, 0x6C, 0x79, 0x3E };
+            if (!fileContent.FirstPosition(manifestEnd, out int manifestEndPosition, start: manifestStartPosition))
+                return null;
+
+            // Read in the manifest to a string
+            int manifestLength = manifestEndPosition + "</assembly>".Length - manifestStartPosition;
+            string manifestString = Encoding.ASCII.GetString(fileContent, manifestStartPosition, manifestLength);
+
+            // Try to read the XML in from the string
+            try
+            {
+                // Load the XML string as a document
+                var manifestDoc = new XmlDocument();
+                manifestDoc.LoadXml(manifestString);
+
+                // If the XML has no children, it's invalid
+                if (!manifestDoc.HasChildNodes)
+                    return null;
+
+                // Try to read the assembly node
+                var assemblyNode = manifestDoc["assembly"];
+                if (assemblyNode == null)
+                    return null;
+
+                // Try to read the assemblyIdentity
+                var assemblyIdentityNode = assemblyNode["assemblyIdentity"];
+                if (assemblyIdentityNode == null)
+                    return null;
+
+                // Return the content of the description node, if possible
+                var DescriptionNode = assemblyNode["description"];
+                if (DescriptionNode == null)
+                    return null;
+                return DescriptionNode.InnerXml;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
         #endregion
     }
 }
