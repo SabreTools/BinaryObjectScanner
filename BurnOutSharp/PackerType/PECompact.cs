@@ -35,8 +35,8 @@ namespace BurnOutSharp.PackerType
         {
             short version = BitConverter.ToInt16(fileContent, positions[0] + 4);
             if (version == 0)
-                return null;
-            return $"Internal Version {version}";
+                return string.Empty;
+            return $"(Internal Version {version})";
         }
     }
 }
