@@ -30,9 +30,13 @@ namespace BurnOutSharp.PackerType
             return MatchUtil.GetFirstMatch(file, fileContent, matchers, includePosition);
         }
 
+        // TODO: Improve version detection, Protection ID is able to detect ranges of versions. For example, 1.66-1.84 or 2.20-3.02.
         public static string GetVersion(string file, byte[] fileContent, List<int> positions)
         {
-            return $"v{BitConverter.ToInt16(fileContent, positions[0] + 4)}";
+            short version = BitConverter.ToInt16(fileContent, positions[0] + 4);
+            if (version == 0)
+                return string.Empty;
+            return $"(Internal Version {version})";
         }
     }
 }
