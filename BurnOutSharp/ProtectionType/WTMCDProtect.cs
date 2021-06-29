@@ -41,9 +41,9 @@ namespace BurnOutSharp.ProtectionType
             var matchers = new List<PathMatchSet>
             {
                 new PathMatchSet(new PathMatch(".IMP", useEndsWith: true), "WTM CD Protect"),
-                new PathMatchSet(new PathMatch("imp.dat", useEndsWith: true), "WTM CD Protect"),
-                new PathMatchSet(new PathMatch("wtmfiles.dat", useEndsWith: true), "WTM CD Protect"),
-                new PathMatchSet(new PathMatch("Viewer.exe", useEndsWith: true), "WTM CD Protect"),
+                new PathMatchSet(new PathMatch("\\imp.dat", useEndsWith: true), "WTM CD Protect"),
+                new PathMatchSet(new PathMatch("\\wtmfiles.dat", useEndsWith: true), "WTM CD Protect"),
+                new PathMatchSet(new PathMatch("\\Viewer.exe", useEndsWith: true), "WTM CD Protect"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
