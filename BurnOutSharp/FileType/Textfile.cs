@@ -80,6 +80,10 @@ namespace BurnOutSharp.FileType
                 // MediaMax
                 if (fileContent.Contains("MediaMax technology"))
                     Utilities.AppendToDictionary(protections, file, "MediaMax CD-3");
+
+                // XCP
+                if (fileContent.Contains("http://cp.sonybmg.com/xcp/"))
+                    Utilities.AppendToDictionary(protections, file, "XCP");
             }
             catch
             {
