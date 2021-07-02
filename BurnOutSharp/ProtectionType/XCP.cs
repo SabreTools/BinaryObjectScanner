@@ -15,9 +15,12 @@ namespace BurnOutSharp.ProtectionType
         /// </summary>
         private static readonly List<ContentMatchSet> contentMatchers = new List<ContentMatchSet>
         {
+
+            // Found in GO.EXE
             // XCP.DAT
             new ContentMatchSet(new byte?[] { 0x58, 0x43, 0x50, 0x2E, 0x44, 0x41, 0x54 }, "XCP"),
 
+            // Found in GO.EXE
             // XCPPlugins.dll
             new ContentMatchSet(new byte?[]
             {
@@ -25,6 +28,7 @@ namespace BurnOutSharp.ProtectionType
                 0x6E, 0x73, 0x2E, 0x64, 0x6C, 0x6C
             }, "XCP"),
 
+            // Found in GO.EXE
             // XCPPhoenix.dll
             new ContentMatchSet(new byte?[]
             {
@@ -32,28 +36,10 @@ namespace BurnOutSharp.ProtectionType
                 0x69, 0x78, 0x2E, 0x64, 0x6C, 0x6C
             }, "XCP"),
 
-            // close xcpdrive
+            // xcpdrive
             new ContentMatchSet(new byte?[]
             {
-                0x63, 0x6C, 0x6F, 0x73, 0x65, 0x20, 0x78, 0x63, 
-                0x70, 0x64, 0x72, 0x69, 0x76, 0x65 
-            }, "XCP"),
-
-            // set xcpdrive door open
-            new ContentMatchSet(new byte?[]
-            {
-                0x73, 0x65, 0x74, 0x20, 0x78, 0x63, 0x70, 0x64,
-                0x72, 0x69, 0x76, 0x65, 0x20, 0x64, 0x6F, 0x6F, 
-                0x72, 0x20, 0x6F, 0x70, 0x65, 0x6E 
-            }, "XCP"),
-
-            // type cdaudio alias xcpdrive
-            new ContentMatchSet(new byte?[]
-            {
-                0x74, 0x79, 0x70, 0x65, 0x20, 0x63, 0x64, 0x61, 
-                0x75, 0x64, 0x69, 0x6F, 0x20, 0x61, 0x6C, 0x69, 
-                0x61, 0x73, 0x20, 0x78, 0x63, 0x70, 0x64, 0x72,
-                0x69, 0x76, 0x65 
+                0x78, 0x63,  0x70, 0x64, 0x72, 0x69, 0x76, 0x65 
             }, "XCP"),
         };
 
