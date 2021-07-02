@@ -9,7 +9,7 @@ namespace BurnOutSharp.ProtectionType
     /// The "CD.IDX" appears to purposefully contain bad sectors in most, if not all, cases.
     /// A "bitpool.rsc" file is present in some, but not all Bitpool protected games. The purpose of it is so far unclear.
     /// </summary>
-    public class Bitpool : IPathCheck
+    public class Bitpool : IContentCheck, IPathCheck
     {
 
         /// <summary>
@@ -25,6 +25,13 @@ namespace BurnOutSharp.ProtectionType
                 0x52, 0x53, 0x43 
             }, "Bitpool"),
         };
+
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
+        {
+            return MatchUtil.GetFirstMatch(file, fileContent, contentMatchers, includePosition);
+        }
+
         /// <inheritdoc/>
         public List<string> CheckDirectoryPath(string path, IEnumerable<string> files)
         {
