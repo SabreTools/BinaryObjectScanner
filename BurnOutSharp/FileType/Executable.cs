@@ -63,19 +63,27 @@ namespace BurnOutSharp.FileType
         /// <inheritdoc/>
         public Dictionary<string, List<string>> Scan(Scanner scanner, Stream stream, string file)
         {
+            // Files can be protected in multiple ways
+            var protections = new Dictionary<string, List<string>>();
+
             // Load the current file content
             byte[] fileContent = null;
-            using (BinaryReader br = new BinaryReader(stream, Encoding.Default, true))
+            try
             {
-                fileContent = br.ReadBytes((int)stream.Length);
+                using (BinaryReader br = new BinaryReader(stream, Encoding.Default, true))
+                {
+                    fileContent = br.ReadBytes((int)stream.Length);
+                }
+            }
+            catch
+            {
+                Utilities.AppendToDictionary(protections, file, "[File too large to be scanned]");
+                return protections;
             }
 
             // If we can, seek to the beginning of the stream
             if (stream.CanSeek)
                 stream.Seek(0, SeekOrigin.Begin);
-
-            // Files can be protected in multiple ways
-            var protections = new Dictionary<string, List<string>>();
 
             // Iterate through all content checks
             foreach (var contentCheckClass in contentCheckClasses)
