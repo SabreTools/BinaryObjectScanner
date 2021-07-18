@@ -25,6 +25,9 @@ namespace BurnOutSharp.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
+                // Might be specifically GFWL/Gfwlivesetup.exe
+                new PathMatchSet(new PathMatch("Gfwlivesetup.exe", useEndsWith: true), "Games for Windows - Live"),
+                new PathMatchSet(new PathMatch("xliveinstall.dll", useEndsWith: true), "Games for Windows - Live"),
                 new PathMatchSet(new PathMatch("XLiveRedist.msi", useEndsWith: true), "Games for Windows - Live"),
             };
 
@@ -36,6 +39,9 @@ namespace BurnOutSharp.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
+                // Might be specifically GFWL/Gfwlivesetup.exe
+                new PathMatchSet(new PathMatch("Gfwlivesetup.exe", useEndsWith: true), "Games for Windows - Live"),
+                new PathMatchSet(new PathMatch("xliveinstall.dll", useEndsWith: true), "Games for Windows - Live"),
                 new PathMatchSet(new PathMatch("XLiveRedist.msi", useEndsWith: true), "Games for Windows - Live"),
             };
 
