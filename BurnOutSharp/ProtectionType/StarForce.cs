@@ -122,14 +122,13 @@ namespace BurnOutSharp.ProtectionType
         /// <inheritdoc/>
         public List<string> CheckDirectoryPath(string path, IEnumerable<string> files)
         {
-            // TODO: Verify if these are OR or AND
             var matchers = new List<PathMatchSet>
             {
                 new PathMatchSet(new PathMatch("protect.dll", useEndsWith: true), "StarForce"),
                 new PathMatchSet(new PathMatch("protect.exe", useEndsWith: true), "StarForce"),
             };
 
-            return MatchUtil.GetAllMatches(files, matchers, any: true);
+            return MatchUtil.GetAllMatches(files, matchers, any: false);
         }
 
         /// <inheritdoc/>
@@ -141,7 +140,7 @@ namespace BurnOutSharp.ProtectionType
                 new PathMatchSet(new PathMatch("protect.exe", useEndsWith: true), "StarForce"),
             };
 
-            return MatchUtil.GetFirstMatch(path, matchers, any: true);
+            return MatchUtil.GetFirstMatch(path, matchers, any: false);
         }
     
         public static string GetVersion(string file, byte[] fileContent, List<int> positions)
