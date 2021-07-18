@@ -29,7 +29,7 @@ namespace BurnOutSharp.PackerType
         // TODO: Add Installer VISE extraction
         // https://github.com/Bioruebe/UniExtract2
         /// <inheritdoc/>
-        public ConcurrentDictionary<string, List<string>> Scan(Scanner scanner, string file)
+        public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, string file)
         {
             if (!File.Exists(file))
                 return null;
@@ -41,7 +41,7 @@ namespace BurnOutSharp.PackerType
         }
 
         /// <inheritdoc/>
-        public ConcurrentDictionary<string, List<string>> Scan(Scanner scanner, Stream stream, string file)
+        public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, Stream stream, string file)
         {
             return null;
         }

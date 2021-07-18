@@ -30,7 +30,7 @@ namespace BurnOutSharp.PackerType
             return MatchUtil.GetFirstMatch(file, fileContent, matchers, includePosition);
         }
 
-        public ConcurrentDictionary<string, List<string>> Scan(Scanner scanner, string file)
+        public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, string file)
         {
             if (!File.Exists(file))
                 return null;
@@ -42,7 +42,7 @@ namespace BurnOutSharp.PackerType
         }
 
         /// <inheritdoc/>
-        public ConcurrentDictionary<string, List<string>> Scan(Scanner scanner, Stream stream, string file)
+        public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, Stream stream, string file)
         {
             // If the rar file itself fails
             try

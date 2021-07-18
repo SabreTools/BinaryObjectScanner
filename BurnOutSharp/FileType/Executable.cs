@@ -51,7 +51,7 @@ namespace BurnOutSharp.FileType
         }
 
         /// <inheritdoc/>
-        public ConcurrentDictionary<string, List<string>> Scan(Scanner scanner, string file)
+        public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, string file)
         {
             if (!File.Exists(file))
                 return null;
@@ -63,10 +63,10 @@ namespace BurnOutSharp.FileType
         }
 
         /// <inheritdoc/>
-        public ConcurrentDictionary<string, List<string>> Scan(Scanner scanner, Stream stream, string file)
+        public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, Stream stream, string file)
         {
             // Files can be protected in multiple ways
-            var protections = new ConcurrentDictionary<string, List<string>>();
+            var protections = new ConcurrentDictionary<string, ConcurrentQueue<string>>();
 
             // Load the current file content
             byte[] fileContent = null;

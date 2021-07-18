@@ -67,7 +67,7 @@ namespace Test
         /// </summary>
         /// <param name="path">File or directory path</param>
         /// <param name="protections">Dictionary of protections found, if any</param>
-        private static void WriteProtectionResultFile(string path, ConcurrentDictionary<string, List<string>> protections)
+        private static void WriteProtectionResultFile(string path, ConcurrentDictionary<string, ConcurrentQueue<string>> protections)
         {
             if (protections == null)
             {
@@ -77,13 +77,13 @@ namespace Test
 
             using (var sw = new StreamWriter(File.OpenWrite($"{DateTime.Now:yyyy-MM-dd_HHmmss}.txt")))
             {
-                foreach (string key in protections.Keys)
+                foreach (string key in protections.Keys.OrderBy(k => k))
                 {
                     // Skip over files with no protection
                     if (protections[key] == null || !protections[key].Any())
                         continue;
 
-                    string line = $"{key}: {string.Join(", ", protections[key])}";
+                    string line = $"{key}: {string.Join(", ", protections[key].OrderBy(p => p))}";
                     Console.WriteLine(line);
                     sw.WriteLine(line);
                 }

@@ -19,7 +19,7 @@ namespace BurnOutSharp.FileType
         }
 
         /// <inheritdoc/>
-        public ConcurrentDictionary<string, List<string>> Scan(Scanner scanner, string file)
+        public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, string file)
         {
             if (!File.Exists(file))
                 return null;
@@ -32,7 +32,7 @@ namespace BurnOutSharp.FileType
 
         // TODO: Add stream opening support
         /// <inheritdoc/>
-        public ConcurrentDictionary<string, List<string>> Scan(Scanner scanner, Stream stream, string file)
+        public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, Stream stream, string file)
         {
             // Get the name of the first cabinet file or header
             string directory = Path.GetDirectoryName(file);

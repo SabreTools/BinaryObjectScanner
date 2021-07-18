@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -46,8 +47,10 @@ namespace BurnOutSharp.ProtectionType
         }
 
         /// <inheritdoc/>
-        public List<string> CheckDirectoryPath(string path, IEnumerable<string> files)
+        public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string> files)
         {
+            var protections = new ConcurrentQueue<string>();
+
             // TODO: Verify if these are OR or AND
             if (files.Any(f => Path.GetFileName(f).Equals("XCP.DAT", StringComparison.OrdinalIgnoreCase))
                 || files.Any(f => Path.GetFileName(f).Equals("ECDPlayerControl.ocx", StringComparison.OrdinalIgnoreCase)))
@@ -57,13 +60,15 @@ namespace BurnOutSharp.ProtectionType
                 {
                     string xcpVersion = GetDatVersion(versionDatPath);
                     if (!string.IsNullOrWhiteSpace(xcpVersion))
-                        return new List<string>() { xcpVersion };
+                        protections.Enqueue(xcpVersion);
                 }
-
-                return new List<string>() { "XCP" };
+                else
+                {
+                    protections.Enqueue("XCP");
+                }
             }
 
-            return null;
+            return protections;
         }
 
         /// <inheritdoc/>

@@ -34,7 +34,7 @@ namespace BurnOutSharp.PackerType
         }
 
         /// <inheritdoc/>
-        public ConcurrentDictionary<string, List<string>> Scan(Scanner scanner, string file)
+        public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, string file)
         {
             if (!File.Exists(file))
                 return null;
@@ -47,7 +47,7 @@ namespace BurnOutSharp.PackerType
 
         /// <inheritdoc/>
         // TODO: Add extraction if viable
-        public ConcurrentDictionary<string, List<string>> Scan(Scanner scanner, Stream stream, string file)
+        public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, Stream stream, string file)
         {
             return null;
         }

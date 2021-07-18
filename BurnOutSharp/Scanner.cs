@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using BurnOutSharp.FileType;
 
 namespace BurnOutSharp
@@ -55,7 +56,7 @@ namespace BurnOutSharp
         /// </summary>
         /// <param name="path">Path to scan</param>
         /// <returns>Dictionary of list of strings representing the found protections</returns>
-        public ConcurrentDictionary<string, List<string>> GetProtections(string path)
+        public ConcurrentDictionary<string, ConcurrentQueue<string>> GetProtections(string path)
         {
             return GetProtections(new List<string> { path });
         }
@@ -64,7 +65,7 @@ namespace BurnOutSharp
         /// Scan the list of paths and get all found protections
         /// </summary>
         /// <returns>Dictionary of list of strings representing the found protections</returns>
-        public ConcurrentDictionary<string, List<string>> GetProtections(List<string> paths)
+        public ConcurrentDictionary<string, ConcurrentQueue<string>> GetProtections(List<string> paths)
         {
             // If we have no paths, we can't scan
             if (paths == null || !paths.Any())
@@ -78,7 +79,7 @@ namespace BurnOutSharp
             string tempFilePathWithGuid = Path.Combine(tempFilePath, Guid.NewGuid().ToString());
 
             // Loop through each path and get the returned values
-            var protections = new ConcurrentDictionary<string, List<string>>();
+            var protections = new ConcurrentDictionary<string, ConcurrentQueue<string>>();
             foreach (string path in paths)
             {
                 // Directories scan each internal file individually
@@ -116,14 +117,14 @@ namespace BurnOutSharp
                             foreach (string key in fileProtections.Keys)
                             {
                                 if (!protections.ContainsKey(key))
-                                    protections[key] = new List<string>();
+                                    protections[key] = new ConcurrentQueue<string>();
 
                                 protections[key].AddRange(fileProtections[key]);
                             }
                         }
 
                         // Checkpoint
-                        protections.TryGetValue(file, out List<string> fullProtectionList);
+                        protections.TryGetValue(file, out ConcurrentQueue<string> fullProtectionList);
                         string fullProtection = (fullProtectionList != null && fullProtectionList.Any() ? string.Join(", ", fullProtectionList) : null);
                         FileProgress?.Report(new ProtectionProgress(reportableFileName, (i + 1) / (float)files.Count, fullProtection ?? string.Empty));
                     }
@@ -151,14 +152,14 @@ namespace BurnOutSharp
                         foreach (string key in fileProtections.Keys)
                         {
                             if (!protections.ContainsKey(key))
-                                protections[key] = new List<string>();
+                                protections[key] = new ConcurrentQueue<string>();
 
                             protections[key].AddRange(fileProtections[key]);
                         }
                     }
 
                     // Checkpoint
-                    protections.TryGetValue(path, out List<string> fullProtectionList);
+                    protections.TryGetValue(path, out ConcurrentQueue<string> fullProtectionList);
                     string fullProtection = (fullProtectionList != null && fullProtectionList.Any() ? string.Join(", ", fullProtectionList) : null);
                     FileProgress?.Report(new ProtectionProgress(reportableFileName, 1, fullProtection ?? string.Empty));
                 }
@@ -183,24 +184,24 @@ namespace BurnOutSharp
         /// <param name="path">Path of the directory to scan</param>
         /// <param name="files">Files contained within</param>
         /// <returns>Dictionary of list of strings representing the found protections</returns>
-        private ConcurrentDictionary<string, List<string>> GetDirectoryPathProtections(string path, List<string> files)
+        private ConcurrentDictionary<string, ConcurrentQueue<string>> GetDirectoryPathProtections(string path, List<string> files)
         {
-            // Create an empty list for protections
-            List<string> protections = new List<string>();
+            // Create an empty queue for protections
+            var protections = new ConcurrentQueue<string>();
 
             // Preprocess the list of files
             files = files.Select(f => f.Replace('\\', '/')).ToList();
 
             // Iterate through all path checks
-            foreach (var pathCheckClass in pathCheckClasses)
+            Parallel.ForEach(pathCheckClasses, pathCheckClass =>
             {
-                List<string> protection = pathCheckClass.CheckDirectoryPath(path, files);
+                ConcurrentQueue<string> protection = pathCheckClass.CheckDirectoryPath(path, files);
                 if (protection != null)
                     protections.AddRange(protection);
-            }
+            });
 
             // Create and return the dictionary
-            return new ConcurrentDictionary<string, List<string>>
+            return new ConcurrentDictionary<string, ConcurrentQueue<string>>
             {
                 [path] = protections
             };
@@ -211,21 +212,21 @@ namespace BurnOutSharp
         /// </summary>
         /// <param name="path">Path of the file to scan</param>
         /// <returns>Dictionary of list of strings representing the found protections</returns>
-        private ConcurrentDictionary<string, List<string>> GetFilePathProtections(string path)
+        private ConcurrentDictionary<string, ConcurrentQueue<string>> GetFilePathProtections(string path)
         {
-            // Create an empty list for protections
-            List<string> protections = new List<string>();
+            // Create an empty queue for protections
+            var protections = new ConcurrentQueue<string>();
 
             // Iterate through all path checks
-            foreach (var pathCheckClass in pathCheckClasses)
+            Parallel.ForEach(pathCheckClasses, pathCheckClass =>
             {
                 string protection = pathCheckClass.CheckFilePath(path.Replace("\\", "/"));
                 if (!string.IsNullOrWhiteSpace(protection))
-                    protections.Add(protection);
-            }
+                    protections.Enqueue(protection);
+            });
 
             // Create and return the dictionary
-            return new ConcurrentDictionary<string, List<string>>
+            return new ConcurrentDictionary<string, ConcurrentQueue<string>>
             {
                 [path] = protections
             };
@@ -236,14 +237,14 @@ namespace BurnOutSharp
         /// </summary>
         /// <param name="file">Path to the file to scan</param>
         /// <returns>Dictionary of list of strings representing the found protections</returns>
-        private ConcurrentDictionary<string, List<string>> GetInternalProtections(string file)
+        private ConcurrentDictionary<string, ConcurrentQueue<string>> GetInternalProtections(string file)
         {
             // Quick sanity check before continuing
             if (!File.Exists(file))
                 return null;
 
             // Initialze the protections found
-            var protections = new ConcurrentDictionary<string, List<string>>();
+            var protections = new ConcurrentDictionary<string, ConcurrentQueue<string>>();
 
             // Get the extension for certain checks
             string extension = Path.GetExtension(file).ToLower().TrimStart('.');

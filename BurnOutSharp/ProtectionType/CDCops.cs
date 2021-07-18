@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using BurnOutSharp.Matching;
@@ -27,7 +28,7 @@ namespace BurnOutSharp.ProtectionType
         }
 
         /// <inheritdoc/>
-        public List<string> CheckDirectoryPath(string path, IEnumerable<string> files)
+        public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string> files)
         {
             // TODO: Original had "CDCOPS.DLL" required and all the rest in a combined OR
             var matchers = new List<PathMatchSet>

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace BurnOutSharp.ProtectionType
     public class BDPlus : IPathCheck
     {
         /// <inheritdoc/>
-        public List<string> CheckDirectoryPath(string path, IEnumerable<string> files)
+        public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string> files)
         {
             var matchers = new List<PathMatchSet>
             {

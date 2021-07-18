@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -8,8 +9,10 @@ namespace BurnOutSharp.ProtectionType
     public class ProtectDVDVideo : IPathCheck
     {
         /// <inheritdoc/>
-        public List<string> CheckDirectoryPath(string path, IEnumerable<string> files)
+        public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string> files)
         {
+            var protections = new ConcurrentQueue<string>();
+
             if (Directory.Exists(Path.Combine(path, "VIDEO_TS")))
             {
                 string[] ifofiles = files.Where(s => s.EndsWith(".ifo")).ToArray();
@@ -17,11 +20,14 @@ namespace BurnOutSharp.ProtectionType
                 {
                     FileInfo ifofile = new FileInfo(ifofiles[i]);
                     if (ifofile.Length == 0)
-                        return new List<string>() { "Protect DVD-Video" };
+                    {
+                        protections.Enqueue("Protect DVD-Video");
+                        break;
+                    }
                 }
             }
             
-            return null;
+            return protections;
         }
 
         /// <inheritdoc/>

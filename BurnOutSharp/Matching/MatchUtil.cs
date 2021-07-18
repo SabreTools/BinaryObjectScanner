@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -18,7 +19,7 @@ namespace BurnOutSharp.Matching
         /// <param name="matchers">Enumerable of ContentMatchSets to be run on the file</param>
         /// <param name="includePosition">True to include positional data, false otherwise</param>
         /// <returns>List of strings representing the matched protections, null or empty otherwise</returns>
-        public static List<string> GetAllMatches(
+        public static ConcurrentQueue<string> GetAllMatches(
             string file,
             byte[] fileContent,
             IEnumerable<ContentMatchSet> matchers,
@@ -57,7 +58,7 @@ namespace BurnOutSharp.Matching
         /// <param name="includePosition">True to include positional data, false otherwise</param>
         /// <param name="stopAfterFirst">True to stop after the first match, false otherwise</param>
         /// <returns>List of strings representing the matched protections, null or empty otherwise</returns>        
-        private static List<string> FindAllMatches(
+        private static ConcurrentQueue<string> FindAllMatches(
             string file,
             byte[] fileContent,
             IEnumerable<ContentMatchSet> matchers,
@@ -68,8 +69,8 @@ namespace BurnOutSharp.Matching
             if (matchers == null || !matchers.Any())
                 return null;
 
-            // Initialize the list of matched protections
-            List<string> matchedProtections = new List<string>();
+            // Initialize the queue of matched protections
+            var matchedProtections = new ConcurrentQueue<string>();
 
             // Loop through and try everything otherwise
             foreach (var matcher in matchers)
@@ -85,7 +86,7 @@ namespace BurnOutSharp.Matching
                 // If we there is no version method, just return the protection name
                 if (matcher.GetVersion == null)
                 {
-                    matchedProtections.Add((matcher.ProtectionName ?? "Unknown Protection") + (includePosition ? $" (Index {positionsString})" : string.Empty));
+                    matchedProtections.Enqueue((matcher.ProtectionName ?? "Unknown Protection") + (includePosition ? $" (Index {positionsString})" : string.Empty));
                 }
 
                 // Otherwise, invoke the version method
@@ -96,7 +97,7 @@ namespace BurnOutSharp.Matching
                     if (version == null)
                         continue;
 
-                    matchedProtections.Add($"{matcher.ProtectionName ?? "Unknown Protection"} {version}".TrimEnd() + (includePosition ? $" (Index {positionsString})" : string.Empty));
+                    matchedProtections.Enqueue($"{matcher.ProtectionName ?? "Unknown Protection"} {version}".TrimEnd() + (includePosition ? $" (Index {positionsString})" : string.Empty));
                 }
 
                 // If we're stopping after the first protection, bail out here
@@ -118,7 +119,7 @@ namespace BurnOutSharp.Matching
         /// <param name="matchers">Enumerable of PathMatchSets to be run on the file</param>
         /// <param name="any">True if any path match is a success, false if all have to match</param>
         /// <returns>List of strings representing the matched protections, null or empty otherwise</returns>
-        public static List<string> GetAllMatches(string file, IEnumerable<PathMatchSet> matchers, bool any = false)
+        public static ConcurrentQueue<string> GetAllMatches(string file, IEnumerable<PathMatchSet> matchers, bool any = false)
         {
             return FindAllMatches(new List<string> { file }, matchers, any, false);
         }
@@ -130,7 +131,7 @@ namespace BurnOutSharp.Matching
         /// <param name="matchers">Enumerable of PathMatchSets to be run on the file</param>
         /// <param name="any">True if any path match is a success, false if all have to match</param>
         /// <returns>List of strings representing the matched protections, null or empty otherwise</returns>
-        public static List<string> GetAllMatches(IEnumerable<string> files, IEnumerable<PathMatchSet> matchers, bool any = false)
+        public static ConcurrentQueue<string> GetAllMatches(IEnumerable<string> files, IEnumerable<PathMatchSet> matchers, bool any = false)
         {
             return FindAllMatches(files, matchers, any, false);
         }
@@ -175,14 +176,14 @@ namespace BurnOutSharp.Matching
         /// <param name="any">True if any path match is a success, false if all have to match</param>
         /// <param name="stopAfterFirst">True to stop after the first match, false otherwise</param>
         /// <returns>List of strings representing the matched protections, null or empty otherwise</returns>        
-        private static List<string> FindAllMatches(IEnumerable<string> files, IEnumerable<PathMatchSet> matchers, bool any, bool stopAfterFirst)
+        private static ConcurrentQueue<string> FindAllMatches(IEnumerable<string> files, IEnumerable<PathMatchSet> matchers, bool any, bool stopAfterFirst)
         {
             // If there's no mappings, we can't match
             if (matchers == null || !matchers.Any())
-                return new List<string>();
+                return new ConcurrentQueue<string>();
 
             // Initialize the list of matched protections
-            List<string> matchedProtections = new List<string>();
+            var matchedProtections = new ConcurrentQueue<string>();
 
             // Loop through and try everything otherwise
             foreach (var matcher in matchers)
@@ -210,7 +211,7 @@ namespace BurnOutSharp.Matching
                 // If we there is no version method, just return the protection name
                 if (matcher.GetVersion == null)
                 {
-                    matchedProtections.Add(matcher.ProtectionName ?? "Unknown Protection");
+                    matchedProtections.Enqueue(matcher.ProtectionName ?? "Unknown Protection");
                 }
 
                 // Otherwise, invoke the version method
@@ -221,7 +222,7 @@ namespace BurnOutSharp.Matching
                     if (version == null)
                         continue;
 
-                    matchedProtections.Add($"{matcher.ProtectionName ?? "Unknown Protection"} {version}".TrimEnd());
+                    matchedProtections.Enqueue($"{matcher.ProtectionName ?? "Unknown Protection"} {version}".TrimEnd());
                 }
 
                 // If we're stopping after the first protection, bail out here
