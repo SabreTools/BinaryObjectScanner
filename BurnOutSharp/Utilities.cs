@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -19,9 +20,11 @@ namespace BurnOutSharp
         /// <param name="original">Dictionary to append to</param>
         /// <param name="key">Key to add information to</param>
         /// <param name="value">String value to add</param>
-        public static void AppendToDictionary(Dictionary<string, List<string>> original, string key, string value)
+        public static void AppendToDictionary(ConcurrentDictionary<string, ConcurrentQueue<string>> original, string key, string value)
         {
-            AppendToDictionary(original, key, new List<string> { value });
+            var values = new ConcurrentQueue<string>();
+            values.Enqueue(value);
+            AppendToDictionary(original, key, values);
         }
 
         /// <summary>
@@ -30,7 +33,7 @@ namespace BurnOutSharp
         /// <param name="original">Dictionary to append to</param>
         /// <param name="key">Key to add information to</param>
         /// <param name="value">String value to add</param>
-        public static void AppendToDictionary(Dictionary<string, List<string>> original, string key, List<string> values)
+        public static void AppendToDictionary(ConcurrentDictionary<string, ConcurrentQueue<string>> original, string key, ConcurrentQueue<string> values)
         {
             // If the dictionary is null, just return
             if (original == null)
@@ -40,9 +43,7 @@ namespace BurnOutSharp
             key = key ?? "NO FILENAME";
 
             // Add the key if needed and then append the lists
-            if (!original.ContainsKey(key))
-                original[key] = new List<string>();
-
+            original.TryAdd(key, new ConcurrentQueue<string>());
             original[key].AddRange(values);
         }
 
@@ -51,7 +52,7 @@ namespace BurnOutSharp
         /// </summary>
         /// <param name="original">Dictionary to append to</param>
         /// <param name="addition">Dictionary to pull from</param>
-        public static void AppendToDictionary(Dictionary<string, List<string>> original, Dictionary<string, List<string>> addition)
+        public static void AppendToDictionary(ConcurrentDictionary<string, ConcurrentQueue<string>> original, ConcurrentDictionary<string, ConcurrentQueue<string>> addition)
         {
             // If either dictionary is missing, just return
             if (original == null || addition == null)
@@ -60,9 +61,7 @@ namespace BurnOutSharp
             // Loop through each of the addition keys and add accordingly
             foreach (string key in addition.Keys)
             {
-                if (!original.ContainsKey(key))
-                    original[key] = new List<string>();
-
+                original.TryAdd(key, new ConcurrentQueue<string>());
                 original[key].AddRange(addition[key]);
             }
         }
@@ -71,7 +70,7 @@ namespace BurnOutSharp
         /// Remove empty or null keys from a results dictionary
         /// </summary>
         /// <param name="original">Dictionary to clean</param>
-        public static void ClearEmptyKeys(Dictionary<string, List<string>> original)
+        public static void ClearEmptyKeys(ConcurrentDictionary<string, ConcurrentQueue<string>> original)
         {
             // If the dictionary is missing, we can't do anything
             if (original == null)
@@ -88,7 +87,7 @@ namespace BurnOutSharp
 
                 // If the key is empty, remove it
                 if (original[key] == null || !original[key].Any())
-                    original.Remove(key);
+                    original.TryRemove(key, out _);
             }
         }
 
@@ -97,7 +96,7 @@ namespace BurnOutSharp
         /// </summary>
         /// <param name="original">Dictionary to strip values from</param>
         /// <param name="pathToPrepend">Path to strip from the keys</param>
-        public static void PrependToKeys(Dictionary<string, List<string>> original, string pathToPrepend)
+        public static void PrependToKeys(ConcurrentDictionary<string, ConcurrentQueue<string>> original, string pathToPrepend)
         {
             // If the dictionary is missing, we can't do anything
             if (original == null)
@@ -118,7 +117,7 @@ namespace BurnOutSharp
                 // Otherwise, get the new key name and transfer over
                 string newKey = $"{pathToPrepend}{Path.DirectorySeparatorChar}{currentKey.Trim(Path.DirectorySeparatorChar)}";
                 original[newKey] = original[currentKey];
-                original.Remove(currentKey);
+                original.TryRemove(currentKey, out _);
             }
         }
 
@@ -127,7 +126,7 @@ namespace BurnOutSharp
         /// </summary>
         /// <param name="original">Dictionary to strip values from</param>
         /// <param name="pathToStrip">Path to strip from the keys</param>
-        public static void StripFromKeys(Dictionary<string, List<string>> original, string pathToStrip)
+        public static void StripFromKeys(ConcurrentDictionary<string, ConcurrentQueue<string>> original, string pathToStrip)
         {
             // If either is missing, we can't do anything
             if (original == null || string.IsNullOrEmpty(pathToStrip))
@@ -149,7 +148,27 @@ namespace BurnOutSharp
                 // Otherwise, get the new key name and transfer over
                 string newKey = currentKey.Substring(pathToStrip.Length);
                 original[newKey] = original[currentKey];
-                original.Remove(currentKey);
+                original.TryRemove(currentKey, out _);
+            }
+        }
+
+        #endregion
+
+        #region Concurrent Manipulation
+
+        /// <summary>
+        /// Add a range of values from one queue to another
+        /// </summary>
+        /// <param name="original">Queue to add data to</param>
+        /// <param name="values">Queue to get data from</param>
+        public static void AddRange(this ConcurrentQueue<string> original, ConcurrentQueue<string> values)
+        {
+            while (!values.IsEmpty)
+            {
+                if (!values.TryDequeue(out string value))
+                    return;
+
+                original.Enqueue(value);
             }
         }
 

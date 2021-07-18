@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 
 namespace BurnOutSharp
 {
@@ -10,7 +11,7 @@ namespace BurnOutSharp
         /// <param name="path">Path to check for protection indicators</param>
         /// <param name="files">Enumerable of strings representing files in a directory</param>
         /// <remarks>This can do some limited content checking as well, but it's suggested to use IContentCheck instead, if possible</remarks>
-        List<string> CheckDirectoryPath(string path, IEnumerable<string> files);
+        ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string> files);
 
         /// <summary>
         /// Check a file path for protections based on path name

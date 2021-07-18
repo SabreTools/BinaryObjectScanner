@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace BurnOutSharp.FileType
 {
@@ -49,7 +51,7 @@ namespace BurnOutSharp.FileType
         }
 
         /// <inheritdoc/>
-        public Dictionary<string, List<string>> Scan(Scanner scanner, string file)
+        public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, string file)
         {
             if (!File.Exists(file))
                 return null;
@@ -61,10 +63,10 @@ namespace BurnOutSharp.FileType
         }
 
         /// <inheritdoc/>
-        public Dictionary<string, List<string>> Scan(Scanner scanner, Stream stream, string file)
+        public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, Stream stream, string file)
         {
             // Files can be protected in multiple ways
-            var protections = new Dictionary<string, List<string>>();
+            var protections = new ConcurrentDictionary<string, ConcurrentQueue<string>>();
 
             // Load the current file content
             byte[] fileContent = null;
@@ -86,7 +88,7 @@ namespace BurnOutSharp.FileType
                 stream.Seek(0, SeekOrigin.Begin);
 
             // Iterate through all content checks
-            foreach (var contentCheckClass in contentCheckClasses)
+            Parallel.ForEach(contentCheckClasses, contentCheckClass =>
             {
                 string protection = contentCheckClass.CheckContents(file, fileContent, scanner.IncludePosition);
 
@@ -108,7 +110,7 @@ namespace BurnOutSharp.FileType
                         Utilities.AppendToDictionary(protections, subProtections);
                     }
                 }
-            }
+            });
 
             return protections;
         }

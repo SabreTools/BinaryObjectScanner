@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using BurnOutSharp.Matching;
@@ -33,7 +34,7 @@ namespace BurnOutSharp.PackerType
         }
 
         /// <inheritdoc/>
-        public Dictionary<string, List<string>> Scan(Scanner scanner, string file)
+        public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, string file)
         {
             if (!File.Exists(file))
                 return null;
@@ -46,7 +47,7 @@ namespace BurnOutSharp.PackerType
 
         /// <inheritdoc/>
         // TODO: Add extraction if viable
-        public Dictionary<string, List<string>> Scan(Scanner scanner, Stream stream, string file)
+        public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, Stream stream, string file)
         {
             return null;
         }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -39,30 +40,30 @@ namespace BurnOutSharp.ProtectionType
         }
 
         /// <inheritdoc/>
-        public List<string> CheckDirectoryPath(string path, IEnumerable<string> files)
+        public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string> files)
         {
-            List<string> protections = new List<string>();
+            var protections = new ConcurrentQueue<string>();
 
             // TODO: Verify if these are OR or AND
             if (files.Any(f => Path.GetFileName(f).Equals("Tages.dll", StringComparison.OrdinalIgnoreCase))
                 || files.Any(f => Path.GetFileName(f).Equals("Wave.aif", StringComparison.OrdinalIgnoreCase)))
             {
-                protections.Add("TAGES");
+                protections.Enqueue("TAGES");
             }
             if (files.Any(f => Path.GetFileName(f).Equals("tagesclient.exe", StringComparison.OrdinalIgnoreCase)))
             {
                 string file = files.First(f => Path.GetFileName(f).Equals("tagesclient.exe", StringComparison.OrdinalIgnoreCase));
-                protections.Add("TAGES Activation Client " + Utilities.GetFileVersion(file));
+                protections.Enqueue("TAGES Activation Client " + Utilities.GetFileVersion(file));
             }
             if (files.Any(f => Path.GetFileName(f).Equals("TagesSetup.exe", StringComparison.OrdinalIgnoreCase)))
             {
                 string file = files.First(f => Path.GetFileName(f).Equals("TagesSetup.exe", StringComparison.OrdinalIgnoreCase));
-                protections.Add("TAGES Setup " + Utilities.GetFileVersion(file));
+                protections.Enqueue("TAGES Setup " + Utilities.GetFileVersion(file));
             }
             if (files.Any(f => Path.GetFileName(f).Equals("TagesSetup_x64.exe", StringComparison.OrdinalIgnoreCase)))
             {
                 string file = files.First(f => Path.GetFileName(f).Equals("TagesSetup_x64.exe", StringComparison.OrdinalIgnoreCase));
-                protections.Add("TAGES Setup " + Utilities.GetFileVersion(file));
+                protections.Enqueue("TAGES Setup " + Utilities.GetFileVersion(file));
             }
 
             if (protections.Count == 0)
