@@ -5,30 +5,27 @@ namespace BurnOutSharp.ProtectionType
 {
     public class Sysiphus : IContentCheck
     {
-        /// <summary>
-        /// Set of all ContentMatchSets for this protection
-        /// </summary>
-        private static readonly List<ContentMatchSet> contentMatchers = new List<ContentMatchSet>
-        {
-            // V SUHPISYSDVD
-            new ContentMatchSet(new byte?[]
-            {
-                0x56, 0x20, 0x53, 0x55, 0x48, 0x50, 0x49, 0x53,
-                0x59, 0x53, 0x44, 0x56, 0x44
-            }, GetVersion, "Sysiphus DVD"),
-
-            // V SUHPISYSDVD
-            new ContentMatchSet(new byte?[]
-            {
-                0x56, 0x20, 0x53, 0x55, 0x48, 0x50, 0x49, 0x53,
-                0x59, 0x53
-            }, GetVersion, "Sysiphus"),
-        };
-
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
-            return MatchUtil.GetFirstMatch(file, fileContent, contentMatchers, includePosition);
+            var matchers = new List<ContentMatchSet>
+            {
+                // V SUHPISYSDVD
+                new ContentMatchSet(new byte?[]
+                {
+                    0x56, 0x20, 0x53, 0x55, 0x48, 0x50, 0x49, 0x53,
+                    0x59, 0x53, 0x44, 0x56, 0x44
+                }, GetVersion, "Sysiphus DVD"),
+
+                // V SUHPISYSDVD
+                new ContentMatchSet(new byte?[]
+                {
+                    0x56, 0x20, 0x53, 0x55, 0x48, 0x50, 0x49, 0x53,
+                    0x59, 0x53
+                }, GetVersion, "Sysiphus"),
+            };
+
+            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includePosition);
         }
 
         public static string GetVersion(string file, byte[] fileContent, List<int> positions)

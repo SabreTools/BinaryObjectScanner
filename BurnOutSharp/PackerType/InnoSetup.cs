@@ -9,33 +9,30 @@ namespace BurnOutSharp.PackerType
 {
     public class InnoSetup : IContentCheck, IScannable
     {
-        /// <summary>
-        /// Set of all ContentMatchSets for this protection
-        /// </summary>
-        private static readonly List<ContentMatchSet> contentMatchers = new List<ContentMatchSet>
-        {
-            // Inno Setup Setup Data (
-            new ContentMatchSet(new byte?[]
-            {
-                0x49, 0x6E, 0x6E, 0x6F, 0x20, 0x53, 0x65, 0x74, 
-                0x75, 0x70, 0x20, 0x53, 0x65, 0x74, 0x75, 0x70, 
-                0x20, 0x44, 0x61, 0x74, 0x61, 0x20, 0x28
-            }, GetVersion, "Inno Setup"),
-
-            // Inno
-            new ContentMatchSet(
-                new ContentMatch(new byte?[] { 0x49, 0x6E, 0x6E, 0x6F }, start: 0x30, end: 0x31),
-                GetOldVersion,
-                "Inno Setup"),
-        };
-
         /// <inheritdoc/>
         public bool ShouldScan(byte[] magic) => true;
 
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
-            return MatchUtil.GetFirstMatch(file, fileContent, contentMatchers, includePosition);
+            var matchers = new List<ContentMatchSet>
+            {
+                // Inno Setup Setup Data (
+                new ContentMatchSet(new byte?[]
+                {
+                    0x49, 0x6E, 0x6E, 0x6F, 0x20, 0x53, 0x65, 0x74,
+                    0x75, 0x70, 0x20, 0x53, 0x65, 0x74, 0x75, 0x70,
+                    0x20, 0x44, 0x61, 0x74, 0x61, 0x20, 0x28
+                }, GetVersion, "Inno Setup"),
+
+                // Inno
+                new ContentMatchSet(
+                    new ContentMatch(new byte?[] { 0x49, 0x6E, 0x6E, 0x6F }, start: 0x30, end: 0x31),
+                    GetOldVersion,
+                    "Inno Setup"),
+            };
+
+            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includePosition);
         }
 
         /// <inheritdoc/>

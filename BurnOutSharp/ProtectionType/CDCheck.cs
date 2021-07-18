@@ -5,26 +5,23 @@ namespace BurnOutSharp.ProtectionType
 {
     public class CDCheck : IContentCheck
     {
-        /// <summary>
-        /// Set of all ContentMatchSets for this protection
-        /// </summary>
-        private static readonly List<ContentMatchSet> contentMatchers = new List<ContentMatchSet>
-        {
-            // MGS CDCheck
-            new ContentMatchSet(new byte?[]
-            {
-                0x4D, 0x47, 0x53, 0x20, 0x43, 0x44, 0x43, 0x68,
-                0x65, 0x63, 0x6B
-            }, "Microsoft Game Studios CD Check"),
-
-            // CDCheck
-            new ContentMatchSet(new byte?[] { 0x43, 0x44, 0x43, 0x68, 0x65, 0x63, 0x6B }, "Executable-Based CD Check"),
-        };
-
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
-            return MatchUtil.GetFirstMatch(file, fileContent, contentMatchers, includePosition);
+            var matchers = new List<ContentMatchSet>
+            {
+                // MGS CDCheck
+                new ContentMatchSet(new byte?[]
+                {
+                    0x4D, 0x47, 0x53, 0x20, 0x43, 0x44, 0x43, 0x68,
+                    0x65, 0x63, 0x6B
+                }, "Microsoft Game Studios CD Check"),
+
+                // CDCheck
+                new ContentMatchSet(new byte?[] { 0x43, 0x44, 0x43, 0x68, 0x65, 0x63, 0x6B }, "Executable-Based CD Check"),
+            };
+
+            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includePosition);
         }
 
         // These content checks are too broad to be useful

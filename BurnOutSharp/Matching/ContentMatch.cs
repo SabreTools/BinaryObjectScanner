@@ -59,6 +59,11 @@ namespace BurnOutSharp.Matching
 
             for (int i = reverse ? End : Start; reverse ? i > Start : i < End; i += reverse ? -1 : 1)
             {
+                // If we somehow have an invalid end and we haven't matched, return
+                if (i > stack.Length)
+                    return (false, -1);
+
+                // Check to see if the values are equal
                 if (EqualAt(stack, i))
                     return (true, i);
             }

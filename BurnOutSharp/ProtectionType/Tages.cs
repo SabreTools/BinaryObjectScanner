@@ -9,36 +9,33 @@ namespace BurnOutSharp.ProtectionType
     // TODO: Figure out how to use path check framework here
     public class Tages : IContentCheck, IPathCheck
     {
-        /// <summary>
-        /// Set of all ContentMatchSets for this protection
-        /// </summary>
-        private static readonly List<ContentMatchSet> contentMatchers = new List<ContentMatchSet>
-        {
-            // protected-tages-runtime.exe
-            new ContentMatchSet(new byte?[]
-            {
-                0x70, 0x72, 0x6F, 0x74, 0x65, 0x63, 0x74, 0x65,
-                0x64, 0x2D, 0x74, 0x61, 0x67, 0x65, 0x73, 0x2D,
-                0x72, 0x75, 0x6E, 0x74, 0x69, 0x6D, 0x65, 0x2E,
-                0x65, 0x78, 0x65
-            }, Utilities.GetFileVersion, "TAGES"),
-
-            // tagesprotection.com
-            new ContentMatchSet(new byte?[]
-            {
-                0x74, 0x61, 0x67, 0x65, 0x73, 0x70, 0x72, 0x6F,
-                0x74, 0x65, 0x63, 0x74, 0x69, 0x6F, 0x6E, 0x2E,
-                0x63, 0x6F, 0x6D
-            }, Utilities.GetFileVersion, "TAGES"),
-
-            // (char)0xE8 + u + (char)0x00 + (char)0x00 + (char)0x00 + (char)0xE8
-            new ContentMatchSet(new byte?[] { 0xE8, 0x75, 0x00, 0x00, 0x00, 0xE8 }, GetVersion, "TAGES"),
-        };
-
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
-            return MatchUtil.GetFirstMatch(file, fileContent, contentMatchers, includePosition);
+            var matchers = new List<ContentMatchSet>
+            {
+                // protected-tages-runtime.exe
+                new ContentMatchSet(new byte?[]
+                {
+                    0x70, 0x72, 0x6F, 0x74, 0x65, 0x63, 0x74, 0x65,
+                    0x64, 0x2D, 0x74, 0x61, 0x67, 0x65, 0x73, 0x2D,
+                    0x72, 0x75, 0x6E, 0x74, 0x69, 0x6D, 0x65, 0x2E,
+                    0x65, 0x78, 0x65
+                }, Utilities.GetFileVersion, "TAGES"),
+
+                // tagesprotection.com
+                new ContentMatchSet(new byte?[]
+                {
+                    0x74, 0x61, 0x67, 0x65, 0x73, 0x70, 0x72, 0x6F,
+                    0x74, 0x65, 0x63, 0x74, 0x69, 0x6F, 0x6E, 0x2E,
+                    0x63, 0x6F, 0x6D
+                }, Utilities.GetFileVersion, "TAGES"),
+
+                // (char)0xE8 + u + (char)0x00 + (char)0x00 + (char)0x00 + (char)0xE8
+                new ContentMatchSet(new byte?[] { 0xE8, 0x75, 0x00, 0x00, 0x00, 0xE8 }, GetVersion, "TAGES"),
+            };
+
+            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includePosition);
         }
 
         /// <inheritdoc/>

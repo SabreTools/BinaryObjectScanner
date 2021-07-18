@@ -7,23 +7,20 @@ namespace BurnOutSharp.ProtectionType
 {
     public class DVDCops : IContentCheck
     {
-        /// <summary>
-        /// Set of all ContentMatchSets for this protection
-        /// </summary>
-        private static readonly List<ContentMatchSet> contentMatchers = new List<ContentMatchSet>
-        {
-            // DVD-Cops,  ver. 
-            new ContentMatchSet(new byte?[]
-            {
-                0x44, 0x56, 0x44, 0x2D, 0x43, 0x6F, 0x70, 0x73,
-                0x2C, 0x20, 0x20, 0x76, 0x65, 0x72, 0x2E, 0x20
-            }, GetVersion, "DVD-Cops"),
-        };
-
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
-            return MatchUtil.GetFirstMatch(file, fileContent, contentMatchers, includePosition);
+            var matchers = new List<ContentMatchSet>
+            {
+                // DVD-Cops,  ver. 
+                new ContentMatchSet(new byte?[]
+                {
+                    0x44, 0x56, 0x44, 0x2D, 0x43, 0x6F, 0x70, 0x73,
+                    0x2C, 0x20, 0x20, 0x76, 0x65, 0x72, 0x2E, 0x20
+                }, GetVersion, "DVD-Cops"),
+            };
+
+            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includePosition);
         }
 
         public static string GetVersion(string file, byte[] fileContent, List<int> positions)

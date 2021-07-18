@@ -21,19 +21,16 @@ namespace BurnOutSharp.ProtectionType
          * - NO NESTED PRMS SUPPORTED - 4E 4F 20 4E 45 53 54 45 44 20 50 52 4D 53 20 53 55 50 50 4F 52 54 45 44
          */
 
-        /// <summary>
-        /// Set of all ContentMatchSets for this protection
-        /// </summary>
-        private static readonly List<ContentMatchSet> contentMatchers = new List<ContentMatchSet>
-        {
-            // Trial + (char)0x00 + P
-            new ContentMatchSet(new byte?[] { 0x54, 0x72, 0x69, 0x61, 0x6C, 0x00, 0x50 }, "INTENIUM Trial & Buy Protection"),
-        };
-
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
-            return MatchUtil.GetFirstMatch(file, fileContent, contentMatchers, includePosition);
+            var matchers = new List<ContentMatchSet>
+            {
+                // Trial + (char)0x00 + P
+                new ContentMatchSet(new byte?[] { 0x54, 0x72, 0x69, 0x61, 0x6C, 0x00, 0x50 }, "INTENIUM Trial & Buy Protection"),
+            };
+
+            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includePosition);
         }
     }
 }

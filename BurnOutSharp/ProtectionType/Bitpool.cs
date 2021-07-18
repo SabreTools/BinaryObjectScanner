@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using BurnOutSharp.Matching;
+﻿using BurnOutSharp.Matching;
+using System.Collections.Generic;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -11,25 +11,21 @@ namespace BurnOutSharp.ProtectionType
     /// </summary>
     public class Bitpool : IContentCheck, IPathCheck
     {
-
-        /// <summary>
-        /// Set of all ContentMatchSets for this protection
-        /// </summary>
-        private static readonly List<ContentMatchSet> contentMatchers = new List<ContentMatchSet>
-        {
-            // Sometimes found in CD.IDX
-            // BITPOOL.RSC
-            new ContentMatchSet(new byte?[]
-            {
-                0x42, 0x49, 0x54, 0x50, 0x4F, 0x4F, 0x4C, 0x2E, 
-                0x52, 0x53, 0x43 
-            }, "Bitpool"),
-        };
-
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
-            return MatchUtil.GetFirstMatch(file, fileContent, contentMatchers, includePosition);
+            var matchers = new List<ContentMatchSet>
+            {
+                // Sometimes found in CD.IDX
+                // BITPOOL.RSC
+                new ContentMatchSet(new byte?[]
+                {
+                    0x42, 0x49, 0x54, 0x50, 0x4F, 0x4F, 0x4C, 0x2E,
+                    0x52, 0x53, 0x43
+                }, "Bitpool"),
+            };
+
+            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includePosition);
         }
 
         /// <inheritdoc/>

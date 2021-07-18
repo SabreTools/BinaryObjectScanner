@@ -10,43 +10,39 @@ namespace BurnOutSharp.ProtectionType
     // TODO: Figure out how to use path check framework here
     public class XCP : IContentCheck, IPathCheck
     {
-        /// <summary>
-        /// Set of all ContentMatchSets for this protection
-        /// </summary>
-        private static readonly List<ContentMatchSet> contentMatchers = new List<ContentMatchSet>
-        {
-
-            // Found in GO.EXE
-            // XCP.DAT
-            new ContentMatchSet(new byte?[] { 0x58, 0x43, 0x50, 0x2E, 0x44, 0x41, 0x54 }, "XCP"),
-
-            // Found in GO.EXE
-            // XCPPlugins.dll
-            new ContentMatchSet(new byte?[]
-            {
-                0x58, 0x43, 0x50, 0x50, 0x6C, 0x75, 0x67, 0x69,
-                0x6E, 0x73, 0x2E, 0x64, 0x6C, 0x6C
-            }, "XCP"),
-
-            // Found in GO.EXE
-            // XCPPhoenix.dll
-            new ContentMatchSet(new byte?[]
-            {
-                0x58, 0x43, 0x50, 0x50, 0x68, 0x6F, 0x65, 0x6E,
-                0x69, 0x78, 0x2E, 0x64, 0x6C, 0x6C
-            }, "XCP"),
-
-            // xcpdrive
-            new ContentMatchSet(new byte?[]
-            {
-                0x78, 0x63,  0x70, 0x64, 0x72, 0x69, 0x76, 0x65 
-            }, "XCP"),
-        };
-
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
-            return MatchUtil.GetFirstMatch(file, fileContent, contentMatchers, includePosition);
+            var matchers = new List<ContentMatchSet>
+            {
+                // Found in GO.EXE
+                // XCP.DAT
+                new ContentMatchSet(new byte?[] { 0x58, 0x43, 0x50, 0x2E, 0x44, 0x41, 0x54 }, "XCP"),
+
+                // Found in GO.EXE
+                // XCPPlugins.dll
+                new ContentMatchSet(new byte?[]
+                {
+                    0x58, 0x43, 0x50, 0x50, 0x6C, 0x75, 0x67, 0x69,
+                    0x6E, 0x73, 0x2E, 0x64, 0x6C, 0x6C
+                }, "XCP"),
+
+                // Found in GO.EXE
+                // XCPPhoenix.dll
+                new ContentMatchSet(new byte?[]
+                {
+                    0x58, 0x43, 0x50, 0x50, 0x68, 0x6F, 0x65, 0x6E,
+                    0x69, 0x78, 0x2E, 0x64, 0x6C, 0x6C
+                }, "XCP"),
+
+                // xcpdrive
+                new ContentMatchSet(new byte?[]
+                {
+                    0x78, 0x63,  0x70, 0x64, 0x72, 0x69, 0x76, 0x65
+                }, "XCP"),
+            };
+
+            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includePosition);
         }
 
         /// <inheritdoc/>

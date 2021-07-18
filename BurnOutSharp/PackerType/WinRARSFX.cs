@@ -9,27 +9,24 @@ namespace BurnOutSharp.PackerType
 {
     public class WinRARSFX : IContentCheck, IScannable
     {
-        /// <summary>
-        /// Set of all ContentMatchSets for this protection
-        /// </summary>
-        private static readonly List<ContentMatchSet> contentMatchers = new List<ContentMatchSet>
-        {
-            // Software\WinRAR SFX
-            new ContentMatchSet(new byte?[]
-            {
-                0x53, 0x6F, 0x66, 0x74, 0x77, 0x61, 0x72, 0x65,
-                0x5C, 0x57, 0x69, 0x6E, 0x52, 0x41, 0x52, 0x20,
-                0x53, 0x46, 0x58
-            }, "WinRAR SFX"),
-        };
-
         /// <inheritdoc/>
         public bool ShouldScan(byte[] magic) => true;
 
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
-            return MatchUtil.GetFirstMatch(file, fileContent, contentMatchers, includePosition);
+            var matchers = new List<ContentMatchSet>
+            {
+                // Software\WinRAR SFX
+                new ContentMatchSet(new byte?[]
+                {
+                    0x53, 0x6F, 0x66, 0x74, 0x77, 0x61, 0x72, 0x65,
+                    0x5C, 0x57, 0x69, 0x6E, 0x52, 0x41, 0x52, 0x20,
+                    0x53, 0x46, 0x58
+                }, "WinRAR SFX"),
+            };
+
+            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includePosition);
         }
 
         public Dictionary<string, List<string>> Scan(Scanner scanner, string file)

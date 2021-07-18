@@ -10,49 +10,6 @@ namespace BurnOutSharp.ProtectionType
     public class SafeDisc : IContentCheck, IPathCheck
     {
         /// <summary>
-        /// Set of all ContentMatchSets for this protection
-        /// </summary>
-        private static readonly List<ContentMatchSet> contentMatchers = new List<ContentMatchSet>
-        {
-            new ContentMatchSet(new List<byte?[]>
-            {
-                // BoG_ *90.0&!!  Yy>
-                new byte?[]
-                {
-                    0x42, 0x6F, 0x47, 0x5F, 0x20, 0x2A, 0x39, 0x30,
-                    0x2E, 0x30, 0x26, 0x21, 0x21, 0x20, 0x20, 0x59,
-                    0x79, 0x3E
-                },
-
-                // product activation library
-                new byte?[]
-                {
-                    0x70, 0x72, 0x6F, 0x64, 0x75, 0x63, 0x74, 0x20,
-                    0x61, 0x63, 0x74, 0x69, 0x76, 0x61, 0x74, 0x69,
-                    0x6F, 0x6E, 0x20, 0x6C, 0x69, 0x62, 0x72, 0x61,
-                    0x72, 0x79
-                },
-            }, GetVersion, "SafeCast"),
-
-            // BoG_ *90.0&!!  Yy>
-            new ContentMatchSet(new byte?[]
-            {
-                0x42, 0x6F, 0x47, 0x5F, 0x20, 0x2A, 0x39, 0x30,
-                0x2E, 0x30, 0x26, 0x21, 0x21, 0x20, 0x20, 0x59,
-                0x79, 0x3E
-            }, GetVersion, "SafeDisc"),
-
-            // (char)0x00 + (char)0x00 + BoG_
-            new ContentMatchSet(new byte?[] { 0x00, 0x00, 0x42, 0x6F, 0x47, 0x5F }, Get320to4xVersion, "SafeDisc"),
-
-            // stxt774
-            new ContentMatchSet(new byte?[] { 0x73, 0x74, 0x78, 0x74, 0x37, 0x37, 0x34 }, Get320to4xVersion, "SafeDisc"),
-
-            // stxt371
-            new ContentMatchSet(new byte?[] { 0x73, 0x74, 0x78, 0x74, 0x33, 0x37, 0x31 }, Get320to4xVersion, "SafeDisc"),
-        };
-
-        /// <summary>
         /// Set of all PathMatchSets for this protection
         /// </summary>
         private static readonly List<PathMatchSet> pathMatchers = new List<PathMatchSet>
@@ -83,7 +40,47 @@ namespace BurnOutSharp.ProtectionType
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
-            return MatchUtil.GetFirstMatch(file, fileContent, contentMatchers, includePosition);
+            var matchers = new List<ContentMatchSet>
+            {
+                new ContentMatchSet(new List<byte?[]>
+                {
+                    // BoG_ *90.0&!!  Yy>
+                    new byte?[]
+                    {
+                        0x42, 0x6F, 0x47, 0x5F, 0x20, 0x2A, 0x39, 0x30,
+                        0x2E, 0x30, 0x26, 0x21, 0x21, 0x20, 0x20, 0x59,
+                        0x79, 0x3E
+                    },
+
+                    // product activation library
+                    new byte?[]
+                    {
+                        0x70, 0x72, 0x6F, 0x64, 0x75, 0x63, 0x74, 0x20,
+                        0x61, 0x63, 0x74, 0x69, 0x76, 0x61, 0x74, 0x69,
+                        0x6F, 0x6E, 0x20, 0x6C, 0x69, 0x62, 0x72, 0x61,
+                        0x72, 0x79
+                    },
+                }, GetVersion, "SafeCast"),
+
+                // BoG_ *90.0&!!  Yy>
+                new ContentMatchSet(new byte?[]
+                {
+                    0x42, 0x6F, 0x47, 0x5F, 0x20, 0x2A, 0x39, 0x30,
+                    0x2E, 0x30, 0x26, 0x21, 0x21, 0x20, 0x20, 0x59,
+                    0x79, 0x3E
+                }, GetVersion, "SafeDisc"),
+
+                // (char)0x00 + (char)0x00 + BoG_
+                new ContentMatchSet(new byte?[] { 0x00, 0x00, 0x42, 0x6F, 0x47, 0x5F }, Get320to4xVersion, "SafeDisc"),
+
+                // stxt774
+                new ContentMatchSet(new byte?[] { 0x73, 0x74, 0x78, 0x74, 0x37, 0x37, 0x34 }, Get320to4xVersion, "SafeDisc"),
+
+                // stxt371
+                new ContentMatchSet(new byte?[] { 0x73, 0x74, 0x78, 0x74, 0x33, 0x37, 0x31 }, Get320to4xVersion, "SafeDisc"),
+            };
+
+            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includePosition);
         }
 
         /// <inheritdoc/>

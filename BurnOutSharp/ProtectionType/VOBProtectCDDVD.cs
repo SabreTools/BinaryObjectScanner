@@ -10,29 +10,26 @@ namespace BurnOutSharp.ProtectionType
 {
     public class VOBProtectCDDVD : IContentCheck, IPathCheck
     {
-        /// <summary>
-        /// Set of all ContentMatchSets for this protection
-        /// </summary>
-        private static readonly List<ContentMatchSet> contentMatchers = new List<ContentMatchSet>
-        {
-            // VOB ProtectCD
-            new ContentMatchSet(new byte?[]
-            {
-                0x56, 0x4F, 0x42, 0x20, 0x50, 0x72, 0x6F, 0x74,
-                0x65, 0x63, 0x74, 0x43, 0x44
-            }, GetOldVersion, "VOB ProtectCD/DVD"),
-
-            // DCP-BOV + (char)0x00 + (char)0x00
-            new ContentMatchSet(new byte?[] { 0x44, 0x43, 0x50, 0x2D, 0x42, 0x4F, 0x56, 0x00, 0x00 }, GetVersion, "VOB ProtectCD/DVD"),
-
-            // .vob.pcd
-            new ContentMatchSet(new byte?[] { 0x2E, 0x76, 0x6F, 0x62, 0x2E, 0x70, 0x63, 0x64 }, "VOB ProtectCD"),
-        };
-
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
-            return MatchUtil.GetFirstMatch(file, fileContent, contentMatchers, includePosition);
+            var matchers = new List<ContentMatchSet>
+            {
+                // VOB ProtectCD
+                new ContentMatchSet(new byte?[]
+                {
+                    0x56, 0x4F, 0x42, 0x20, 0x50, 0x72, 0x6F, 0x74,
+                    0x65, 0x63, 0x74, 0x43, 0x44
+                }, GetOldVersion, "VOB ProtectCD/DVD"),
+
+                // DCP-BOV + (char)0x00 + (char)0x00
+                new ContentMatchSet(new byte?[] { 0x44, 0x43, 0x50, 0x2D, 0x42, 0x4F, 0x56, 0x00, 0x00 }, GetVersion, "VOB ProtectCD/DVD"),
+
+                // .vob.pcd
+                new ContentMatchSet(new byte?[] { 0x2E, 0x76, 0x6F, 0x62, 0x2E, 0x70, 0x63, 0x64 }, "VOB ProtectCD"),
+            };
+
+            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includePosition);
         }
 
         /// <inheritdoc/>
