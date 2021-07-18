@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -36,7 +37,7 @@ namespace BurnOutSharp.PackerType
         }
 
         /// <inheritdoc/>
-        public Dictionary<string, List<string>> Scan(Scanner scanner, string file)
+        public ConcurrentDictionary<string, List<string>> Scan(Scanner scanner, string file)
         {
             if (!File.Exists(file))
                 return null;
@@ -50,7 +51,7 @@ namespace BurnOutSharp.PackerType
         // TOOO: Add Inno Setup extraction
         // https://github.com/dscharrer/InnoExtract
         /// <inheritdoc/>
-        public Dictionary<string, List<string>> Scan(Scanner scanner, Stream stream, string file)
+        public ConcurrentDictionary<string, List<string>> Scan(Scanner scanner, Stream stream, string file)
         {
             return null;
         }

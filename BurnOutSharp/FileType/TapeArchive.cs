@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using SharpCompress.Archives;
@@ -21,7 +22,7 @@ namespace BurnOutSharp.FileType
         }
 
         /// <inheritdoc/>
-        public Dictionary<string, List<string>> Scan(Scanner scanner, string file)
+        public ConcurrentDictionary<string, List<string>> Scan(Scanner scanner, string file)
         {
             if (!File.Exists(file))
                 return null;
@@ -33,7 +34,7 @@ namespace BurnOutSharp.FileType
         }
 
         /// <inheritdoc/>
-        public Dictionary<string, List<string>> Scan(Scanner scanner, Stream stream, string file)
+        public ConcurrentDictionary<string, List<string>> Scan(Scanner scanner, Stream stream, string file)
         {
             // If the tar file itself fails
             try

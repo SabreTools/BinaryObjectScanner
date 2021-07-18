@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -66,7 +67,7 @@ namespace Test
         /// </summary>
         /// <param name="path">File or directory path</param>
         /// <param name="protections">Dictionary of protections found, if any</param>
-        private static void WriteProtectionResultFile(string path, Dictionary<string, List<string>> protections)
+        private static void WriteProtectionResultFile(string path, ConcurrentDictionary<string, List<string>> protections)
         {
             if (protections == null)
             {

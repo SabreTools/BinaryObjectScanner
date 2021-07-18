@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using BurnOutSharp.Matching;
@@ -35,7 +36,7 @@ namespace BurnOutSharp.PackerType
         // TODO: Find a way to generically detect 2.X versions and improve exact version detection for SFX PE versions bundled with WinZip 11+
 
         /// <inheritdoc/>
-        public Dictionary<string, List<string>> Scan(Scanner scanner, string file)
+        public ConcurrentDictionary<string, List<string>> Scan(Scanner scanner, string file)
         {
             if (!File.Exists(file))
                 return null;
@@ -47,7 +48,7 @@ namespace BurnOutSharp.PackerType
         }
 
         /// <inheritdoc/>
-        public Dictionary<string, List<string>> Scan(Scanner scanner, Stream stream, string file)
+        public ConcurrentDictionary<string, List<string>> Scan(Scanner scanner, Stream stream, string file)
         {
             // If the zip file itself fails
             try

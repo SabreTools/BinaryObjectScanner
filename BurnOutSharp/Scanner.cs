@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -54,7 +55,7 @@ namespace BurnOutSharp
         /// </summary>
         /// <param name="path">Path to scan</param>
         /// <returns>Dictionary of list of strings representing the found protections</returns>
-        public Dictionary<string, List<string>> GetProtections(string path)
+        public ConcurrentDictionary<string, List<string>> GetProtections(string path)
         {
             return GetProtections(new List<string> { path });
         }
@@ -63,7 +64,7 @@ namespace BurnOutSharp
         /// Scan the list of paths and get all found protections
         /// </summary>
         /// <returns>Dictionary of list of strings representing the found protections</returns>
-        public Dictionary<string, List<string>> GetProtections(List<string> paths)
+        public ConcurrentDictionary<string, List<string>> GetProtections(List<string> paths)
         {
             // If we have no paths, we can't scan
             if (paths == null || !paths.Any())
@@ -77,7 +78,7 @@ namespace BurnOutSharp
             string tempFilePathWithGuid = Path.Combine(tempFilePath, Guid.NewGuid().ToString());
 
             // Loop through each path and get the returned values
-            var protections = new Dictionary<string, List<string>>();
+            var protections = new ConcurrentDictionary<string, List<string>>();
             foreach (string path in paths)
             {
                 // Directories scan each internal file individually
@@ -182,7 +183,7 @@ namespace BurnOutSharp
         /// <param name="path">Path of the directory to scan</param>
         /// <param name="files">Files contained within</param>
         /// <returns>Dictionary of list of strings representing the found protections</returns>
-        private Dictionary<string, List<string>> GetDirectoryPathProtections(string path, List<string> files)
+        private ConcurrentDictionary<string, List<string>> GetDirectoryPathProtections(string path, List<string> files)
         {
             // Create an empty list for protections
             List<string> protections = new List<string>();
@@ -199,7 +200,7 @@ namespace BurnOutSharp
             }
 
             // Create and return the dictionary
-            return new Dictionary<string, List<string>>
+            return new ConcurrentDictionary<string, List<string>>
             {
                 [path] = protections
             };
@@ -210,7 +211,7 @@ namespace BurnOutSharp
         /// </summary>
         /// <param name="path">Path of the file to scan</param>
         /// <returns>Dictionary of list of strings representing the found protections</returns>
-        private Dictionary<string, List<string>> GetFilePathProtections(string path)
+        private ConcurrentDictionary<string, List<string>> GetFilePathProtections(string path)
         {
             // Create an empty list for protections
             List<string> protections = new List<string>();
@@ -224,7 +225,7 @@ namespace BurnOutSharp
             }
 
             // Create and return the dictionary
-            return new Dictionary<string, List<string>>
+            return new ConcurrentDictionary<string, List<string>>
             {
                 [path] = protections
             };
@@ -235,14 +236,14 @@ namespace BurnOutSharp
         /// </summary>
         /// <param name="file">Path to the file to scan</param>
         /// <returns>Dictionary of list of strings representing the found protections</returns>
-        private Dictionary<string, List<string>> GetInternalProtections(string file)
+        private ConcurrentDictionary<string, List<string>> GetInternalProtections(string file)
         {
             // Quick sanity check before continuing
             if (!File.Exists(file))
                 return null;
 
             // Initialze the protections found
-            var protections = new Dictionary<string, List<string>>();
+            var protections = new ConcurrentDictionary<string, List<string>>();
 
             // Get the extension for certain checks
             string extension = Path.GetExtension(file).ToLower().TrimStart('.');

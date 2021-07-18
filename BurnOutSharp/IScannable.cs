@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
 
 namespace BurnOutSharp
@@ -19,7 +20,7 @@ namespace BurnOutSharp
         /// <param name="file">Path to the input file</param>
         /// <returns>Dictionary mapping paths to protection lists</returns>
         /// <remarks>Ideally, this should just point to the other scan implementation</remarks>
-        Dictionary<string, List<string>> Scan(Scanner scanner, string file);
+        ConcurrentDictionary<string, List<string>> Scan(Scanner scanner, string file);
 
         /// <summary>
         /// Scan a stream for all internal protections
@@ -28,6 +29,6 @@ namespace BurnOutSharp
         /// <param name="stream">Stream representing the input file</param>
         /// <param name="file">Path to the input file</param>
         /// <returns>Dictionary mapping paths to protection lists</returns>
-        Dictionary<string, List<string>> Scan(Scanner scanner, Stream stream, string filename);
+        ConcurrentDictionary<string, List<string>> Scan(Scanner scanner, Stream stream, string filename);
     }
 }
