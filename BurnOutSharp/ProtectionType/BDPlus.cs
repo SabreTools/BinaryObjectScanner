@@ -15,8 +15,8 @@ namespace BurnOutSharp.ProtectionType
             {
                 new PathMatchSet(new List<string>
                 {
-                    Path.Combine("BDSVM", "00000.svm"),
-                    Path.Combine("BDSVM", "BACKUP", "00000.svm"),
+                    Path.Combine("BDSVM", "00000.svm").Replace("\\", "/"),
+                    Path.Combine("BDSVM", "BACKUP", "00000.svm").Replace("\\", "/"),
                 }, GetVersion, "BD+"),
             };
 

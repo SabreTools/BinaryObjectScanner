@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using BurnOutSharp.Matching;
 
@@ -11,8 +11,8 @@ namespace BurnOutSharp.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(Path.Combine(path, "Zzxzz", "Zzz.aze"), "Zzxzz"),
-                new PathMatchSet($"Zzxzz{Path.DirectorySeparatorChar}", "Zzxzz"),
+                new PathMatchSet(Path.Combine(path, "Zzxzz", "Zzz.aze").Replace("\\", "/"), "Zzxzz"),
+                new PathMatchSet($"Zzxzz/", "Zzxzz"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);

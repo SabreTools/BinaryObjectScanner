@@ -187,6 +187,9 @@ namespace BurnOutSharp
             // Create an empty list for protections
             List<string> protections = new List<string>();
 
+            // Preprocess the list of files
+            files = files.Select(f => f.Replace('\\', '/')).ToList();
+
             // Iterate through all path checks
             foreach (var pathCheckClass in pathCheckClasses)
             {
@@ -215,7 +218,7 @@ namespace BurnOutSharp
             // Iterate through all path checks
             foreach (var pathCheckClass in pathCheckClasses)
             {
-                string protection = pathCheckClass.CheckFilePath(path);
+                string protection = pathCheckClass.CheckFilePath(path.Replace("\\", "/"));
                 if (!string.IsNullOrWhiteSpace(protection))
                     protections.Add(protection);
             }

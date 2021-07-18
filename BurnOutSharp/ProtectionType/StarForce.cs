@@ -139,8 +139,6 @@ namespace BurnOutSharp.ProtectionType
                 // TODO: Re-consolidate these once path matching is improved
                 new PathMatchSet(new PathMatch("/protect.dll", useEndsWith: true), "StarForce"),
                 new PathMatchSet(new PathMatch("/protect.exe", useEndsWith: true), "StarForce"),
-                new PathMatchSet(new PathMatch("\\protect.dll", useEndsWith: true), "StarForce"),
-                new PathMatchSet(new PathMatch("\\protect.exe", useEndsWith: true), "StarForce"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

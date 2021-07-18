@@ -12,10 +12,10 @@ namespace BurnOutSharp.ProtectionType
             var matchers = new List<PathMatchSet>
             {
                 // BD-ROM
-                new PathMatchSet(Path.Combine("AACS", "MKB_RO.inf"), GetVersion, "AACS"),
+                new PathMatchSet(Path.Combine("AACS", "MKB_RO.inf").Replace("\\", "/"), GetVersion, "AACS"),
 
                 // HD-DVD
-                new PathMatchSet(Path.Combine("AACS", "MKBROM.AACS"), GetVersion, "AACS"),
+                new PathMatchSet(Path.Combine("AACS", "MKBROM.AACS").Replace("\\", "/"), GetVersion, "AACS"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);

@@ -16,7 +16,7 @@ namespace BurnOutSharp.ProtectionType
                 for (int i = 0; i < bupfiles.Length; i++)
                 {
                     FileInfo bupfile = new FileInfo(bupfiles[i]);
-                    FileInfo ifofile = new FileInfo(bupfile.DirectoryName + "\\" + bupfile.Name.Substring(0, bupfile.Name.Length - bupfile.Extension.Length) + ".ifo");
+                    FileInfo ifofile = new FileInfo(Path.Combine(bupfile.DirectoryName, bupfile.Name.Substring(0, bupfile.Name.Length - bupfile.Extension.Length) + ".ifo"));
                     if (bupfile.Length != ifofile.Length)
                         return new List<string>() { "DVD-Movie-PROTECT" };
                 }
