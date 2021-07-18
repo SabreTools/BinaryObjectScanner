@@ -14,7 +14,7 @@ namespace BurnOutSharp.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(Path.Combine("ZDAT", "webmast.dxx"), "Tivola Ring Protection"),
+                new PathMatchSet(Path.Combine("ZDAT", "webmast.dxx"), "Tivola Ring Protection [Check disc for physical ring]"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);
@@ -25,7 +25,7 @@ namespace BurnOutSharp.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(Path.Combine("ZDAT", "webmast.dxx"), "Tivola Ring Protection"),
+                new PathMatchSet(Path.Combine("ZDAT", "webmast.dxx"), "Tivola Ring Protection [Check disc for physical ring]"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
