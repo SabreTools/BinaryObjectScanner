@@ -43,7 +43,7 @@ Below is a list of the protections that can be detected using this code:
 - DVD Crypt
 - EA Protections (Including ~~Cucko~~, EA CDKey, and EA DRM)
 - Freelock
-- Games for Windows - Live (partial)
+- Games for Windows - Live
 - Generic CD Check
 - Generic Online Registration
 - Hexalock Autolock
@@ -73,6 +73,7 @@ Below is a list of the protections that can be detected using this code:
 - SVK Protector
 - Sysiphus / Sysiphus DVD
 - TAGES (mostly complete)
+- Tivola Ring Protection
 - TZCopyProtector
 - Uplay (partial)
 - VOB ProtectCD/DVD
@@ -97,7 +98,7 @@ Below is a list of the executable packers that can be detected using this code:
 - NSIS
 - PECompact
 - Setup Factory
-- UPX
+- UPX and UPX (NOS Variant)
 - WinRAR SFX
 - WinZip SFX
 - WISE Installer
