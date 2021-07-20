@@ -14,8 +14,9 @@ namespace BurnOutSharp.PackerType
                 // UPX!
                 new ContentMatchSet(new byte?[] { 0x55, 0x50, 0x58, 0x21 }, GetVersion, "UPX"),
 
+                // This over-matches by itself, seemingly
                 // NOS 
-                new ContentMatchSet(new byte?[] { 0x4E, 0x4F, 0x53, 0x20 }, GetVersion, "UPX (NOS Variant)"),
+                //new ContentMatchSet(new byte?[] { 0x4E, 0x4F, 0x53, 0x20 }, GetVersion, "UPX (NOS Variant)"),
 
                 new ContentMatchSet(
                     new List<byte?[]>
