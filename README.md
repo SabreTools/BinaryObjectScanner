@@ -111,6 +111,7 @@ Below is a list of archive or archive-like formats that can be extracted and hav
 - BFPK
 - BZIP2
 - GZIP
+- InstallShield Archive V3 (Z)
 - InstallShield CAB
 - Microsoft CAB
 - MPQ
