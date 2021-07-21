@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
-using UnshieldSharp.Cabinet;
+using UnshieldSharp.Archive;
 
 namespace BurnOutSharp.FileType
 {
-    internal class InstallShieldCAB : IScannable
+    internal class InstallShieldArchiveV3 : IScannable
     {
         /// <inheritdoc/>
         public bool ShouldScan(byte[] magic)
         {
-            if (magic.StartsWith(new byte?[] { 0x49, 0x53, 0x63 }))
+            if (magic.StartsWith(new byte?[] { 0x13, 0x5D, 0x65, 0x8C }))
                 return true;
 
             return false;
@@ -53,14 +54,24 @@ namespace BurnOutSharp.FileType
                     string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
                     Directory.CreateDirectory(tempPath);
 
-                    InstallShieldCabinet cabfile = InstallShieldCabinet.Open(file);
-                    for (int i = 0; i < cabfile.FileCount; i++)
+                    UnshieldSharp.Archive.InstallShieldArchiveV3 archive = new UnshieldSharp.Archive.InstallShieldArchiveV3(file);
+                    foreach (CompressedFile cfile in archive.Files.Select(kvp => kvp.Value))
                     {
                         // If an individual entry fails
                         try
                         {
-                            string tempFile = Path.Combine(tempPath, cabfile.FileName(i));
-                            cabfile.FileSave(i, tempFile);
+                            string tempFile = Path.Combine(tempPath, cfile.FullPath);
+                            if (!Directory.Exists(Path.GetDirectoryName(tempFile)))
+                                Directory.CreateDirectory(Path.GetDirectoryName(tempFile));
+
+                            (byte[] fileContents, string error) = archive.Extract(cfile.FullPath);
+                            if (!string.IsNullOrWhiteSpace(error))
+                                continue;
+
+                            using (FileStream fs = File.OpenWrite(tempFile))
+                            {
+                                fs.Write(fileContents, 0, fileContents.Length);
+                            }
                         }
                         catch { }
                     }

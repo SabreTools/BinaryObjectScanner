@@ -320,6 +320,14 @@ namespace BurnOutSharp
                         Utilities.AppendToDictionary(protections, subProtections);
                     }
 
+                    // InstallShield Archive V3 (Z)
+                    if (file != null && new InstallShieldArchiveV3().ShouldScan(magic))
+                    {
+                        var subProtections = new InstallShieldArchiveV3().Scan(this, file);
+                        Utilities.PrependToKeys(subProtections, file);
+                        Utilities.AppendToDictionary(protections, subProtections);
+                    }
+
                     // InstallShield Cabinet
                     if (file != null && new InstallShieldCAB().ShouldScan(magic))
                     {
