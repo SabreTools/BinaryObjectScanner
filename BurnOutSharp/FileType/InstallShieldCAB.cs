@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
-using UnshieldSharp;
+using UnshieldSharp.Cabinet;
 
 namespace BurnOutSharp.FileType
 {
@@ -54,7 +54,7 @@ namespace BurnOutSharp.FileType
                     string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
                     Directory.CreateDirectory(tempPath);
 
-                    UnshieldCabinet cabfile = UnshieldCabinet.Open(file);
+                    InstallShieldCabinet cabfile = InstallShieldCabinet.Open(file);
                     for (int i = 0; i < cabfile.FileCount; i++)
                     {
                         // If an individual entry fails
