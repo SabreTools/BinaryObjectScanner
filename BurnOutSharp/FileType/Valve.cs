@@ -50,35 +50,42 @@ namespace BurnOutSharp.FileType
         /// <inheritdoc/>
         public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, Stream stream, string file)
         {
-            string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-            Directory.CreateDirectory(tempPath);
-
-            string[] args = new string[]
+			// If the Valve archive itself fails
+			try
             {
-                "-p", file,
-                "-x", "root",
-                "-x", "'extract .'",
-                "-x", "exit",
-                "-d", tempPath,
-            };
+				string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+				Directory.CreateDirectory(tempPath);
 
-            Run(args);
+				string[] args = new string[]
+				{
+				"-p", file,
+				"-x", "root",
+				"-x", "'extract .'",
+				"-x", "exit",
+				"-d", tempPath,
+				};
 
-            // Collect and format all found protections
-            var protections = scanner.GetProtections(tempPath);
+				Run(args);
 
-            // If temp directory cleanup fails
-            try
-            {
-                Directory.Delete(tempPath, true);
-            }
-            catch { }
+				// Collect and format all found protections
+				var protections = scanner.GetProtections(tempPath);
 
-            // Remove temporary path references
-            Utilities.StripFromKeys(protections, tempPath);
+				// If temp directory cleanup fails
+				try
+				{
+					Directory.Delete(tempPath, true);
+				}
+				catch { }
 
-            return protections;
-        }
+				// Remove temporary path references
+				Utilities.StripFromKeys(protections, tempPath);
+
+				return protections;
+			}
+			catch { }
+
+			return null;
+		}
 
         // This code was copied over from HLExtract.NET\Program.cs
         // It was copied over due to access issues with the existing class.
