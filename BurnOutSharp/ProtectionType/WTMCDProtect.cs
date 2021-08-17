@@ -43,8 +43,11 @@ namespace BurnOutSharp.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new PathMatch("wtmfiles.dat", useEndsWith: true), "WTM Protection Viewer"),
-                new PathMatchSet(new PathMatch("Viewer.exe", useEndsWith: true), "WTM Protection Viewer"),
+                new PathMatchSet(new List<PathMatch>
+                {
+                    new PathMatch("wtmfiles.dat", useEndsWith: true),
+                    new PathMatch("Viewer.exe", useEndsWith: true),
+                }, "WTM Protection Viewer"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: false);
