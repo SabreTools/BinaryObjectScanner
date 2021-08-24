@@ -10,7 +10,6 @@ namespace BurnOutSharp.PackerType
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
-            // TODO: Add byte-based checks for these as well for when we're working on stream alone
             var fvinfo = Utilities.GetFileVersionInfo(file);
 
             string name = fvinfo?.InternalName.Trim();
@@ -39,7 +38,22 @@ namespace BurnOutSharp.PackerType
                 new ContentMatchSet(new byte?[]
                 {
                     0x77, 0x65, 0x78, 0x74, 0x72, 0x61, 0x63, 0x74, 
-                    0x5F, 0x63, 0x6C, 0x65, 0x61, 0x6E, 0x75, 0x70
+                    0x5F, 0x63, 0x6C, 0x65, 0x61, 0x6E, 0x75, 0x70,
+                }, GetVersion, "Microsoft CAB SFX"),
+
+                // W + (char)0x00 + e + (char)0x00 + x + (char)0x00 + t + (char)0x00 + r + (char)0x00 + a + (char)0x00 + c + (char)0x00 + t + (char)0x00
+                new ContentMatchSet(new byte?[]
+                {
+                    0x57, 0x00, 0x65, 0x00, 0x78, 0x00, 0x74, 0x00, 
+                    0x72, 0x00, 0x61, 0x00, 0x63, 0x00, 0x74, 0x00,
+                }, GetVersion, "Microsoft CAB SFX"),
+
+                // W + (char)0x00 + E + (char)0x00 + X + (char)0x00 + T + (char)0x00 + R + (char)0x00 + A + (char)0x00 + C + (char)0x00 + T + (char)0x00 + . + (char)0x00 + E + (char)0x00 + X + (char)0x00 + E + (char)0x00
+                new ContentMatchSet(new byte?[]
+                {
+                    0x57, 0x00, 0x45, 0x00, 0x58, 0x00, 0x54, 0x00,
+                    0x52, 0x00, 0x41, 0x00, 0x43, 0x00, 0x54, 0x00,
+                    0x2E, 0x00, 0x45, 0x00, 0x58, 0x00, 0x45, 0x00,
                 }, GetVersion, "Microsoft CAB SFX"),
 
                 /* This detects a different but similar type of SFX that uses Microsoft CAB files.
