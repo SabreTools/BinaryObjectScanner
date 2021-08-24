@@ -8,9 +8,6 @@ namespace BurnOutSharp.PackerType
     public class MicrosoftCABSFX : IContentCheck
     {
         /// <inheritdoc/>
-        public bool ShouldScan(byte[] magic) => true;
-
-        /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
             // TODO: Add byte-based checks for these as well for when we're working on stream alone
@@ -18,11 +15,23 @@ namespace BurnOutSharp.PackerType
 
             string name = fvinfo?.InternalName.Trim();
             if (!string.IsNullOrWhiteSpace(name) && name.Equals("Wextract", StringComparison.OrdinalIgnoreCase))
-                return $"Microsoft CAB SFX v{Utilities.GetFileVersion(file)}";
+            {
+                string version = GetVersion(file, fileContent, null);
+                if (!string.IsNullOrWhiteSpace(version))
+                    return $"Microsoft CAB SFX v{Utilities.GetFileVersion(file)}";
+
+                return "Microsoft CAB SFX";
+            }
 
             name = fvinfo?.OriginalFilename.Trim();
             if (!string.IsNullOrWhiteSpace(name) && name.Equals("WEXTRACT.EXE", StringComparison.OrdinalIgnoreCase))
-                return $"Microsoft CAB SFX v{Utilities.GetFileVersion(file)}";
+            {
+                string version = GetVersion(file, fileContent, null);
+                if (!string.IsNullOrWhiteSpace(version))
+                    return $"Microsoft CAB SFX v{Utilities.GetFileVersion(file)}";
+
+                return "Microsoft CAB SFX";
+            }
 
             var matchers = new List<ContentMatchSet>
             {
