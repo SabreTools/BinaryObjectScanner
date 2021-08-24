@@ -13,6 +13,7 @@ namespace BurnOutSharp.PackerType
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
+            // TODO: Add byte-based checks for these as well for when we're working on stream alone
             var fvinfo = Utilities.GetFileVersionInfo(file);
 
             string name = fvinfo?.InternalName.Trim();
