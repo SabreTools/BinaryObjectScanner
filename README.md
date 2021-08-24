@@ -95,6 +95,7 @@ Below is a list of the executable packers that can be detected using this code:
 - EXE Stealth
 - Inno Setup
 - Installer VISE
+- Intel Installation Framework
 - Microsoft CAB SFX
 - NSIS
 - PECompact
