@@ -7,7 +7,7 @@ namespace BurnOutSharp.ProtectionType
     public class Origin : IContentCheck, IPathCheck
     {
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
         {
             var matchers = new List<ContentMatchSet>
             {
@@ -15,7 +15,7 @@ namespace BurnOutSharp.ProtectionType
                 new ContentMatchSet(new byte?[] { 0x4F, 0x00, 0x72, 0x00, 0x69, 0x00, 0x67, 0x00, 0x69, 0x00, 0x6E, 0x00, 0x53, 0x00, 0x65, 0x00, 0x74, 0x00, 0x75, 0x00, 0x70, 0x00, 0x2E, 0x00, 0x65, 0x00, 0x78, 0x00, 0x65, 0x00 }, "Origin"),
             };
 
-            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includePosition);
+            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
         }
 
         /// <inheritdoc/>

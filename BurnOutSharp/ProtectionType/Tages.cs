@@ -11,7 +11,7 @@ namespace BurnOutSharp.ProtectionType
     public class Tages : IContentCheck, IPathCheck
     {
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
         {
             var matchers = new List<ContentMatchSet>
             {
@@ -36,7 +36,7 @@ namespace BurnOutSharp.ProtectionType
                 new ContentMatchSet(new byte?[] { 0xE8, 0x75, 0x00, 0x00, 0x00, 0xE8 }, GetVersion, "TAGES"),
             };
 
-            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includePosition);
+            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
         }
 
         /// <inheritdoc/>

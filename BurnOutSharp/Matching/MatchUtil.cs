@@ -17,15 +17,15 @@ namespace BurnOutSharp.Matching
         /// <param name="file">File to check for matches</param>
         /// <param name="fileContent">Byte array representing the file contents</param>
         /// <param name="matchers">Enumerable of ContentMatchSets to be run on the file</param>
-        /// <param name="includePosition">True to include positional data, false otherwise</param>
+        /// <param name="includeDebug">True to include positional data, false otherwise</param>
         /// <returns>List of strings representing the matched protections, null or empty otherwise</returns>
         public static ConcurrentQueue<string> GetAllMatches(
             string file,
             byte[] fileContent,
             IEnumerable<ContentMatchSet> matchers,
-            bool includePosition = false)
+            bool includeDebug = false)
         {
-            return FindAllMatches(file, fileContent, matchers, includePosition, false);
+            return FindAllMatches(file, fileContent, matchers, includeDebug, false);
         }
 
         /// <summary>
@@ -34,15 +34,15 @@ namespace BurnOutSharp.Matching
         /// <param name="file">File to check for matches</param>
         /// <param name="fileContent">Byte array representing the file contents</param>
         /// <param name="matchers">Enumerable of ContentMatchSets to be run on the file</param>
-        /// <param name="includePosition">True to include positional data, false otherwise</param>
+        /// <param name="includeDebug">True to include positional data, false otherwise</param>
         /// <returns>String representing the matched protection, null otherwise</returns>
         public static string GetFirstMatch(
             string file,
             byte[] fileContent,
             IEnumerable<ContentMatchSet> matchers,
-            bool includePosition = false)
+            bool includeDebug = false)
         {
-            var contentMatches = FindAllMatches(file, fileContent, matchers, includePosition, true);
+            var contentMatches = FindAllMatches(file, fileContent, matchers, includeDebug, true);
             if (contentMatches == null || !contentMatches.Any())
                 return null;
             
@@ -55,14 +55,14 @@ namespace BurnOutSharp.Matching
         /// <param name="file">File to check for matches</param>
         /// <param name="fileContent">Byte array representing the file contents</param>
         /// <param name="matchers">Enumerable of ContentMatchSets to be run on the file</param>
-        /// <param name="includePosition">True to include positional data, false otherwise</param>
+        /// <param name="includeDebug">True to include positional data, false otherwise</param>
         /// <param name="stopAfterFirst">True to stop after the first match, false otherwise</param>
         /// <returns>List of strings representing the matched protections, null or empty otherwise</returns>        
         private static ConcurrentQueue<string> FindAllMatches(
             string file,
             byte[] fileContent,
             IEnumerable<ContentMatchSet> matchers,
-            bool includePosition,
+            bool includeDebug,
             bool stopAfterFirst)
         {
             // If there's no mappings, we can't match
@@ -86,7 +86,7 @@ namespace BurnOutSharp.Matching
                 // If we there is no version method, just return the protection name
                 if (matcher.GetVersion == null)
                 {
-                    matchedProtections.Enqueue((matcher.ProtectionName ?? "Unknown Protection") + (includePosition ? $" (Index {positionsString})" : string.Empty));
+                    matchedProtections.Enqueue((matcher.ProtectionName ?? "Unknown Protection") + (includeDebug ? $" (Index {positionsString})" : string.Empty));
                 }
 
                 // Otherwise, invoke the version method
@@ -97,7 +97,7 @@ namespace BurnOutSharp.Matching
                     if (version == null)
                         continue;
 
-                    matchedProtections.Enqueue($"{matcher.ProtectionName ?? "Unknown Protection"} {version}".TrimEnd() + (includePosition ? $" (Index {positionsString})" : string.Empty));
+                    matchedProtections.Enqueue($"{matcher.ProtectionName ?? "Unknown Protection"} {version}".TrimEnd() + (includeDebug ? $" (Index {positionsString})" : string.Empty));
                 }
 
                 // If we're stopping after the first protection, bail out here

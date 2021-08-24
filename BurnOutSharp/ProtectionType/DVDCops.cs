@@ -8,7 +8,7 @@ namespace BurnOutSharp.ProtectionType
     public class DVDCops : IContentCheck
     {
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
         {
             var matchers = new List<ContentMatchSet>
             {
@@ -20,7 +20,7 @@ namespace BurnOutSharp.ProtectionType
                 }, GetVersion, "DVD-Cops"),
             };
 
-            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includePosition);
+            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
         }
 
         public static string GetVersion(string file, byte[] fileContent, List<int> positions)

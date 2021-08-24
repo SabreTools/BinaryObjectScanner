@@ -9,8 +9,8 @@
         /// </summary>
         /// <param name="file">File to check for protection indicators</param>
         /// <param name="fileContent">Byte array representing the file contents</param>
-        /// <param name="includePosition">True to include positional data, false otherwise</param>
+        /// <param name="includeDebug">True to include debug data, false otherwise</param>
         /// <returns>String containing any protections found in the file</returns>
-        string CheckContents(string file, byte[] fileContent, bool includePosition);
+        string CheckContents(string file, byte[] fileContent, bool includeDebug);
     }
 }

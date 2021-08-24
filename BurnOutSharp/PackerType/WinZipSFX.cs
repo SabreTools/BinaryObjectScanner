@@ -14,7 +14,7 @@ namespace BurnOutSharp.PackerType
         public bool ShouldScan(byte[] magic) => true;
 
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
         {
             var matchers = new List<ContentMatchSet>
             {
@@ -30,7 +30,7 @@ namespace BurnOutSharp.PackerType
                 new ContentMatchSet(new byte?[] { 0x5F, 0x77, 0x69, 0x6E, 0x7A, 0x69, 0x70, 0x5F }, GetVersion, "WinZip SFX"),
             };
 
-            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includePosition);
+            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
         }
 
         // TODO: Find a way to generically detect 2.X versions and improve exact version detection for SFX PE versions bundled with WinZip 11+

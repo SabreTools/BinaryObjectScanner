@@ -17,7 +17,7 @@ namespace Test
             // Create scanner for all paths
             var scanner = new Scanner(p)
             {
-                IncludePosition = true,
+                IncludeDebug = true,
                 ScanAllFiles = false,
                 ScanArchives = true,
                 ScanPackers = true,

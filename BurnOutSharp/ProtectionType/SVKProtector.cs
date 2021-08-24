@@ -6,7 +6,7 @@ namespace BurnOutSharp.ProtectionType
     public class SVKProtector : IContentCheck
     {
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
         {
             var matchers = new List<ContentMatchSet>
             {
@@ -14,7 +14,7 @@ namespace BurnOutSharp.ProtectionType
                 new ContentMatchSet(new byte?[] { 0x3F, 0x53, 0x56, 0x4B, 0x50, 0x00, 0x00 }, "SVK Protector"),
             };
 
-            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includePosition);
+            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
         }
     }
 }

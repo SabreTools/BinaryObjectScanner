@@ -22,7 +22,7 @@ namespace BurnOutSharp.ProtectionType
          */
 
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
         {
             var matchers = new List<ContentMatchSet>
             {
@@ -30,7 +30,7 @@ namespace BurnOutSharp.ProtectionType
                 new ContentMatchSet(new byte?[] { 0x54, 0x72, 0x69, 0x61, 0x6C, 0x00, 0x50 }, "INTENIUM Trial & Buy Protection"),
             };
 
-            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includePosition);
+            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
         }
     }
 }

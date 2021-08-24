@@ -6,7 +6,7 @@ namespace BurnOutSharp.ProtectionType
     public class CDCheck : IContentCheck
     {
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
         {
             var matchers = new List<ContentMatchSet>
             {
@@ -21,11 +21,11 @@ namespace BurnOutSharp.ProtectionType
                 new ContentMatchSet(new byte?[] { 0x43, 0x44, 0x43, 0x68, 0x65, 0x63, 0x6B }, "Executable-Based CD Check"),
             };
 
-            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includePosition);
+            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
         }
 
         // These content checks are too broad to be useful
-        private static string CheckContentsBroad(string file, byte[] fileContent, bool includePosition = false)
+        private static string CheckContentsBroad(string file, byte[] fileContent, bool includeDebug = false)
         {
             var matchers = new List<ContentMatchSet>
             {
@@ -45,7 +45,7 @@ namespace BurnOutSharp.ProtectionType
                 }, "Executable-Based CD Check"),
             };
 
-            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includePosition);
+            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
         }
     }
 }

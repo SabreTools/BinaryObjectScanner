@@ -6,7 +6,7 @@ namespace BurnOutSharp.ProtectionType
     public class RingPROTECH : IContentCheck
     {
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
         {
             var matchers = new List<ContentMatchSet>
             {
@@ -18,7 +18,7 @@ namespace BurnOutSharp.ProtectionType
                 }, "Ring PROTECH [Check disc for physical ring]"),
             };
 
-            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includePosition);
+            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
         }
     }
 }

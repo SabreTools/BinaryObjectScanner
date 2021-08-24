@@ -8,7 +8,7 @@ namespace BurnOutSharp.ProtectionType
     public class JoWooDXProt : IContentCheck
     {
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
         {
             var matchers = new List<ContentMatchSet>
             {
@@ -34,7 +34,7 @@ namespace BurnOutSharp.ProtectionType
                 new ContentMatchSet(new byte?[] { 0x2E, 0x65, 0x78, 0x74, 0x20, 0x20, 0x20, 0x20 }, "JoWooD X-Prot v1"),
             };
 
-            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includePosition);
+            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
         }
 
         public static string GetVersion(string file, byte[] fileContent, List<int> positions)

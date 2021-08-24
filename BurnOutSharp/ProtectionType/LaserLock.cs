@@ -11,7 +11,7 @@ namespace BurnOutSharp.ProtectionType
     public class LaserLock : IContentCheck, IPathCheck
     {
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
         {
             // "Packed by SPEEnc V2 Asterios Parlamentas.PE"
             byte?[] check = new byte?[] { 0x50, 0x61, 0x63, 0x6B, 0x65, 0x64, 0x20, 0x62, 0x79, 0x20, 0x53, 0x50, 0x45, 0x45, 0x6E, 0x63, 0x20, 0x56, 0x32, 0x20, 0x41, 0x73, 0x74, 0x65, 0x72, 0x69, 0x6F, 0x73, 0x20, 0x50, 0x61, 0x72, 0x6C, 0x61, 0x6D, 0x65, 0x6E, 0x74, 0x61, 0x73, 0x2E, 0x50, 0x45 };
@@ -22,14 +22,14 @@ namespace BurnOutSharp.ProtectionType
             bool containsCheck2 = fileContent.FirstPosition(check2, out int position2);
 
             if (containsCheck && containsCheck2)
-                return $"LaserLock {GetVersion(fileContent, position2)} {GetBuild(fileContent, true)}" + (includePosition ? $" (Index {position}, {position2})" : string.Empty);
+                return $"LaserLock {GetVersion(fileContent, position2)} {GetBuild(fileContent, true)}" + (includeDebug ? $" (Index {position}, {position2})" : string.Empty);
             else if (containsCheck && !containsCheck2)
-                return $"LaserLock Marathon {GetBuild(fileContent, false)}" + (includePosition ? $" (Index {position})" : string.Empty);
+                return $"LaserLock Marathon {GetBuild(fileContent, false)}" + (includeDebug ? $" (Index {position})" : string.Empty);
             else if (!containsCheck && containsCheck2)
-                return $"LaserLock {GetVersion(fileContent, --position2)} {GetBuild(fileContent, false)}" + (includePosition ? $" (Index {position2})" : string.Empty);
+                return $"LaserLock {GetVersion(fileContent, --position2)} {GetBuild(fileContent, false)}" + (includeDebug ? $" (Index {position2})" : string.Empty);
 
             if (file != null && string.Equals(Path.GetFileName(file), "NOMOUSE.SP", StringComparison.OrdinalIgnoreCase))
-                return $"LaserLock {GetVersion16Bit(fileContent)}" + (includePosition ? $" (Index 71)" : string.Empty);
+                return $"LaserLock {GetVersion16Bit(fileContent)}" + (includeDebug ? $" (Index 71)" : string.Empty);
 
             var matchers = new List<ContentMatchSet>
             {
@@ -59,7 +59,7 @@ namespace BurnOutSharp.ProtectionType
                 }, "LaserLock 5"),
             };
 
-            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includePosition);
+            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
         }
 
         /// <inheritdoc/>

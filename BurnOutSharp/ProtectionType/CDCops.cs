@@ -9,7 +9,7 @@ namespace BurnOutSharp.ProtectionType
     public class CDCops : IContentCheck, IPathCheck
     {
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
         {
             var matchers = new List<ContentMatchSet>
             {
@@ -24,7 +24,7 @@ namespace BurnOutSharp.ProtectionType
                 new ContentMatchSet(new byte?[] { 0x2E, 0x67, 0x72, 0x61, 0x6E, 0x64, 0x00 }, "CD-Cops"),
             };
 
-            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includePosition);
+            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
         }
 
         /// <inheritdoc/>

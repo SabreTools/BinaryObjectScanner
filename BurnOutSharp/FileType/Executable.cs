@@ -90,7 +90,7 @@ namespace BurnOutSharp.FileType
             // Iterate through all content checks
             Parallel.ForEach(contentCheckClasses, contentCheckClass =>
             {
-                string protection = contentCheckClass.CheckContents(file, fileContent, scanner.IncludePosition);
+                string protection = contentCheckClass.CheckContents(file, fileContent, scanner.IncludeDebug);
 
                 // If we have a valid content check based on settings
                 if (!contentCheckClass.GetType().Namespace.ToLowerInvariant().Contains("packertype") || scanner.ScanPackers)

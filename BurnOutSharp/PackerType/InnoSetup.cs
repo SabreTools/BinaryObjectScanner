@@ -14,7 +14,7 @@ namespace BurnOutSharp.PackerType
         public bool ShouldScan(byte[] magic) => true;
 
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
         {
             var matchers = new List<ContentMatchSet>
             {
@@ -33,7 +33,7 @@ namespace BurnOutSharp.PackerType
                     "Inno Setup"),
             };
 
-            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includePosition);
+            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
         }
 
         /// <inheritdoc/>

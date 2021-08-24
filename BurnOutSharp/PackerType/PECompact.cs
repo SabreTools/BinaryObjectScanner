@@ -8,7 +8,7 @@ namespace BurnOutSharp.PackerType
     public class PECompact : IContentCheck
     {
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
         {
             // Another possible version string for version 1 is "PECO" (50 45 43 4F)
             var matchers = new List<ContentMatchSet>
@@ -27,7 +27,7 @@ namespace BurnOutSharp.PackerType
                 }, "PE Compact 2"),
             };
 
-            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includePosition);
+            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
         }
 
         // TODO: Improve version detection, Protection ID is able to detect ranges of versions. For example, 1.66-1.84 or 2.20-3.02.

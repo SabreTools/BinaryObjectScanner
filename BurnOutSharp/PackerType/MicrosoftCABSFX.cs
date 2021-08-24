@@ -13,7 +13,7 @@ namespace BurnOutSharp.PackerType
         public bool ShouldScan(byte[] magic) => true;
 
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
         {
             var fvinfo = Utilities.GetFileVersionInfo(file);
 
@@ -67,7 +67,7 @@ namespace BurnOutSharp.PackerType
                 new ContentMatchSet(new byte?[] { 0x4D, 0x53, 0x43, 0x46, 0x75 }, GetVersion, "Microsoft CAB SFX"),
             };
 
-            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includePosition);
+            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
         }
 
         /// <inheritdoc/>

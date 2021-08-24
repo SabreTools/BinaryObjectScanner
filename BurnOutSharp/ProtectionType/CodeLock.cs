@@ -6,7 +6,7 @@ namespace BurnOutSharp.ProtectionType
     public class CodeLock : IContentCheck
     {
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
         {
             // TODO: Verify if these are OR or AND
             var matchers = new List<ContentMatchSet>
@@ -25,7 +25,7 @@ namespace BurnOutSharp.ProtectionType
                 }, "Code Lock"),
             };
 
-            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includePosition);
+            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
         }
     }
 }

@@ -17,10 +17,9 @@ namespace BurnOutSharp
         public IProgress<ProtectionProgress> FileProgress { get; set; } = null;
 
         /// <summary>
-        /// Determines whether the byte position of found protection is included or not
+        /// Determines if debug information is output or not
         /// </summary>
-        /// TODO: Change this to a more generic debug flag for broader use
-        public bool IncludePosition { get; set; } = false;
+        public bool IncludeDebug { get; set; } = false;
 
         /// <summary>
         /// Determines whether all files are scanned or just executables are

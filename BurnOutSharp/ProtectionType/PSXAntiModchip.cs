@@ -8,7 +8,7 @@ namespace BurnOutSharp.ProtectionType
         // TODO: Figure out PSX binary header so this can be checked explicitly
         // TODO: Detect Red Hand protection
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
         {
             var matchers = new List<ContentMatchSet>
             {
@@ -42,7 +42,7 @@ namespace BurnOutSharp.ProtectionType
                 }, "PlayStation Anti-modchip (Japanese)"),
             };
 
-            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includePosition);
+            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
         }
     }
 }
