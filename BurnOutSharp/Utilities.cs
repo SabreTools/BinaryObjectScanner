@@ -301,41 +301,18 @@ namespace BurnOutSharp
         /// </summary>
         /// <param name="fileContent">Byte array representing the file contents</param>
         /// <returns>Version string, null on error</returns>
-        /// <remarks>TODO: How do we find the manifest specifically better?</remarks>
         public static string GetManifestVersion(byte[] fileContent)
         {
-            // <?xml
-            byte?[] manifestStart = new byte?[] { 0x3C, 0x3F, 0x78, 0x6D, 0x6C };
-            if (!fileContent.LastPosition(manifestStart, out int manifestStartPosition))
-                return null;
-            
-            // </assembly>
-            byte?[] manifestEnd = new byte?[] { 0x3C, 0x2F, 0x61, 0x73, 0x73, 0x65, 0x6D, 0x62, 0x6C, 0x79, 0x3E };
-            if (!fileContent.FirstPosition(manifestEnd, out int manifestEndPosition, start: manifestStartPosition))
-                return null;
-            
             // Read in the manifest to a string
-            int manifestLength = manifestEndPosition + "</assembly>".Length - manifestStartPosition;
-            string manifestString = Encoding.ASCII.GetString(fileContent, manifestStartPosition, manifestLength);
+            string manifestString = GetEmbeddedAssemblyManifest(fileContent);
+            if (string.IsNullOrWhiteSpace(manifestString))
+                return null;
 
             // Try to read the XML in from the string
             try
             {
-                // Load the XML string as a document
-                var manifestDoc = new XmlDocument();
-                manifestDoc.LoadXml(manifestString);
-
-                // If the XML has no children, it's invalid
-                if (!manifestDoc.HasChildNodes)
-                    return null;
-                
-                // Try to read the assembly node
-                var assemblyNode = manifestDoc["assembly"];
-                if (assemblyNode == null)
-                    return null;
-                
                 // Try to read the assemblyIdentity
-                var assemblyIdentityNode = assemblyNode["assemblyIdentity"];
+                var assemblyIdentityNode = GetAssemblyIdentityNode(manifestString);
                 if (assemblyIdentityNode == null)
                     return null;
                 
@@ -353,8 +330,41 @@ namespace BurnOutSharp
         /// </summary>
         /// <param name="fileContent">Byte array representing the file contents</param>
         /// <returns>Version string, null on error</returns>
-        /// <remarks>TODO: How do we find the manifest specifically better?</remarks>
         public static string GetManifestDescription(byte[] fileContent)
+        {
+            // Read in the manifest to a string
+            string manifestString = GetEmbeddedAssemblyManifest(fileContent);
+            if (string.IsNullOrWhiteSpace(manifestString))
+                return null;
+
+            // Try to read the XML in from the string
+            try
+            {
+                // Try to read the assemblyIdentity
+                var assemblyIdentityNode = GetAssemblyIdentityNode(manifestString);
+                if (assemblyIdentityNode == null)
+                    return null;
+
+                // Return the content of the description node, if possible
+                var descriptionNode = assemblyIdentityNode["description"];
+                if (descriptionNode == null)
+                    return null;
+                    
+                return descriptionNode.InnerXml;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Get the embedded assembly manifest
+        /// </summary>
+        /// <param name="fileContent">Byte array representing the file contents</param>
+        /// <returns>Embedded assembly manifest as a string, if possible</returns>
+        /// <remarks>TODO: How do we find the manifest specifically better?</remarks>
+        private static string GetEmbeddedAssemblyManifest(byte[] fileContent)
         {
             // <?xml
             byte?[] manifestStart = new byte?[] { 0x3C, 0x3F, 0x78, 0x6D, 0x6C };
@@ -368,9 +378,20 @@ namespace BurnOutSharp
 
             // Read in the manifest to a string
             int manifestLength = manifestEndPosition + "</assembly>".Length - manifestStartPosition;
-            string manifestString = Encoding.ASCII.GetString(fileContent, manifestStartPosition, manifestLength);
+            return Encoding.ASCII.GetString(fileContent, manifestStartPosition, manifestLength);
+        }
 
-            // Try to read the XML in from the string
+        /// <summary>
+        /// Get the assembly identity node from an embedded manifest
+        /// </summary>
+        /// <param name="manifestString">String representing the XML document</param>
+        /// <returns>Assembly identity node, if possible</returns>
+        private static XmlElement GetAssemblyIdentityNode(string manifestString)
+        {
+            // An invalid string means we can't read it
+            if (string.IsNullOrWhiteSpace(manifestString))
+                return null;
+
             try
             {
                 // Load the XML string as a document
@@ -387,15 +408,7 @@ namespace BurnOutSharp
                     return null;
 
                 // Try to read the assemblyIdentity
-                var assemblyIdentityNode = assemblyNode["assemblyIdentity"];
-                if (assemblyIdentityNode == null)
-                    return null;
-
-                // Return the content of the description node, if possible
-                var DescriptionNode = assemblyNode["description"];
-                if (DescriptionNode == null)
-                    return null;
-                return DescriptionNode.InnerXml;
+                return assemblyNode["assemblyIdentity"];
             }
             catch
             {
