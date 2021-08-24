@@ -1,5 +1,7 @@
 ﻿namespace BurnOutSharp
 {
+    // TODO: This should either include an override that takes a Stream instead of the byte[]
+    // OR have a completely separate check for when it's an executable specifically
     internal interface IContentCheck
     {
         /// <summary>
@@ -9,7 +11,6 @@
         /// <param name="fileContent">Byte array representing the file contents</param>
         /// <param name="includePosition">True to include positional data, false otherwise</param>
         /// <returns>String containing any protections found in the file</returns>
-        /// TODO: This should be replaced with a "GenerateMatchers" that produces a list of matchers to be run instead
         string CheckContents(string file, byte[] fileContent, bool includePosition);
     }
 }
