@@ -45,8 +45,7 @@ namespace BurnOutSharp.PackerType
         // This method of version detection is suboptimal because the version is sometimes the version of the included software, not the SFX itself.
         public static string GetVersion(string file, byte[] fileContent, List<int> positions)
         {
-            FileVersionInfo fileDetails = FileVersionInfo.GetVersionInfo(file);
-            return "v" + fileDetails.FileVersion;
+            return "v" + Utilities.GetFileVersion(file);
         }
     }
 }
