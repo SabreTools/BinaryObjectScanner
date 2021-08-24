@@ -86,7 +86,7 @@ namespace BurnOutSharp.ProtectionType
         private static string GetBuild(byte[] fileContent, int position)
         {
             if (!char.IsNumber((char)fileContent[position - 13]))
-                return ""; //Build info removed
+                return string.Empty; //Build info removed
 
             int build = BitConverter.ToInt16(fileContent, position - 4); // Check if this is supposed to be a 4-byte read
             return $" (Build {build})";
@@ -103,81 +103,67 @@ namespace BurnOutSharp.ProtectionType
                 return $"5.{subVersion}.{subsubVersion}";
             }
 
-            return "";
+            return string.Empty;
         }
     
         // TODO: Analyze this method and figure out if this can be done without attempting execution
         private static string SearchProtectDiscVersion(string file, byte[] fileContent)
         {
-            string version = "";
-            DateTime timestart;
+            // If the file isn't executable, don't even bother
             if (!EVORE.IsEXE(fileContent))
-                return "";
+                return string.Empty;
 
+            // Get some of the required paths
             string tempexe = EVORE.MakeTempFile(fileContent);
-            string[] DependentDlls = EVORE.CopyDependentDlls(file, fileContent);
-            try
-            {
-                File.Delete(Path.Combine(Path.GetTempPath(), "a*.tmp"));
-            }
-            catch { }
-            try
-            {
-                File.Delete(Path.Combine(Path.GetTempPath(), "PCD*.sys"));
-            }
-            catch { }
-            if (Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ProtectDisc")))
-            {
-                try
-                {
-                    File.Delete(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ProtectDisc", "p*.dll"));
-                }
-                catch { }
-            }
+            string[] dependentDlls = EVORE.CopyDependentDlls(file, fileContent);
+            string pdPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ProtectDisc");
 
+            // Clean up any temp files before attempting to run
+            Utilities.SafeTempDelete("a*.tmp");
+            Utilities.SafeTempDelete("PCD*.sys");
+            if (Directory.Exists(pdPath))
+                Utilities.SafeDelete(Path.Combine(pdPath, "p*.dll"));
+
+            // Try to safely start the temp executable
             Process exe = EVORE.StartSafe(tempexe);
             if (exe == null)
-                return "";
+                return string.Empty;
 
+            string version = "";
             Process[] processes = new Process[0];
-            timestart = DateTime.Now;
+            DateTime timestart = DateTime.Now;
             do
             {
                 exe.Refresh();
                 string[] files = null;
 
-                //check for ProtectDisc 8.2-x
-                if (Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ProtectDisc")))
-                {
-                    files = Directory.GetFiles(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ProtectDisc"), "p*.dll");
-                }
+                // Check for ProtectDisc 8.2-x
+                if (Directory.Exists(pdPath))
+                    files = Directory.GetFiles(pdPath, "p*.dll");
 
-                if (files != null)
+                if (files.Any())
                 {
-                    if (files.Length > 0)
+                    string fileVersion = Utilities.GetFileVersion(files[0]);
+                    if (!string.IsNullOrWhiteSpace(fileVersion))
                     {
-                        var fvinfo = Utilities.GetFileVersionInfo(files[0]);
-                        if (!string.IsNullOrWhiteSpace(fvinfo?.FileVersion))
-                        {
-                            version = fvinfo.FileVersion.Replace(" ", "").Replace(",", ".");
-                            //ProtectDisc 9 uses a ProtectDisc-Core dll version 8.0.x
-                            if (version.StartsWith("8.0"))
-                                version = "";
-                            fvinfo = null;
-                            break;
-                        }
+                        version = fileVersion;
+
+                        // ProtectDisc 9 uses a ProtectDisc-Core dll version 8.0.x
+                        if (version.StartsWith("8.0"))
+                            version = string.Empty;
+
+                        break;
                     }
                 }
 
                 //check for ProtectDisc 7.1-8.1
                 files = Directory.GetFiles(Path.GetTempPath(), "a*.tmp");
-                if (files.Length > 0)
+                if (files.Any())
                 {
-                    var fvinfo = Utilities.GetFileVersionInfo(files[0]);
-                    if (!string.IsNullOrWhiteSpace(fvinfo?.FileVersion))
+                    string fileVersion = Utilities.GetFileVersion(files[0]);
+                    if (!string.IsNullOrWhiteSpace(fileVersion))
                     {
-                        version = fvinfo.FileVersion.Replace(" ", "").Replace(",", ".");
-                        fvinfo = null;
+                        version = fileVersion;
                         break;
                     }
                 }
@@ -228,39 +214,19 @@ namespace BurnOutSharp.ProtectionType
 
             exe.Close();
             Thread.Sleep(500);
-            if (Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ProtectDisc")))
-            {
-                try
-                {
-                    File.Delete(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ProtectDisc", "p*.dll"));
-                }
-                catch { }
-            }
 
-            try
-            {
-                File.Delete(Path.Combine(Path.GetTempPath(), "a*.tmp"));
-            }
-            catch { }
+            // Clean up any temp files after running
+            Utilities.SafeDelete(tempexe);
+            Utilities.SafeTempDelete("a*.tmp");
+            Utilities.SafeTempDelete("PCD*.sys");
+            if (Directory.Exists(pdPath))
+                Utilities.SafeDelete(Path.Combine(pdPath, "p*.dll"));
 
-            try
+            if (dependentDlls != null)
             {
-                File.Delete(Path.Combine(Path.GetTempPath(), "PCD*.sys"));
-            }
-            catch { }
-            File.Delete(tempexe);
-            if (DependentDlls != null)
-            {
-                for (int i = 0; i < DependentDlls.Length; i++)
+                foreach (string dll in dependentDlls)
                 {
-                    try
-                    {
-                        File.Delete(DependentDlls[i]);
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine("!error while deleting file " + DependentDlls[i] + "; " + ex.Message);
-                    }
+                    Utilities.SafeDelete(dll);
                 }
             }
 

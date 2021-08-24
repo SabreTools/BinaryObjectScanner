@@ -148,7 +148,7 @@ namespace BurnOutSharp.ProtectionType
             if (char.IsNumber(version[0]) && char.IsNumber(version[2]) && char.IsNumber(version[3]))
                 return $"{version[0]}.{version[2]}{version[3]}";
 
-            return "";
+            return string.Empty;
         }
     }
 }

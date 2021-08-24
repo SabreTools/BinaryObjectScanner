@@ -223,30 +223,25 @@ namespace BurnOutSharp.ProtectionType
         // TODO: Analyze this method and figure out if this can be done without attempting execution
         private static string SearchSafeDiscVersion(string file, byte[] fileContent)
         {
-            Process exe;
-            string version = "";
-            DateTime timestart;
+            // If the file isn't executable, don't even bother
             if (!EVORE.IsEXE(fileContent))
-                return "";
+                return string.Empty;
 
+            // Get some of the required paths
             string tempexe = EVORE.MakeTempFile(fileContent);
-            string[] DependentDlls = EVORE.CopyDependentDlls(file, fileContent);
-            try
-            {
-                Directory.Delete(Path.Combine(Path.GetTempPath(), "~e*"), true);
-            }
-            catch { }
-            try
-            {
-                File.Delete(Path.Combine(Path.GetTempPath(), "~e*"));
-            }
-            catch { }
+            string[] dependentDlls = EVORE.CopyDependentDlls(file, fileContent);
 
-            exe = EVORE.StartSafe(tempexe);
+            // Clean up any temp files before attempting to run
+            Utilities.SafeTempDelete("~e*", isDirectory: true);
+            Utilities.SafeTempDelete("~e*", isDirectory: false);
+
+            // Try to safely start the temp executable
+            Process exe = EVORE.StartSafe(tempexe);
             if (exe == null)
-                return "";
+                return string.Empty;
 
-            timestart = DateTime.Now;
+            string version = "";
+            DateTime timestart = DateTime.Now;
             do
             {
                 if (Directory.GetDirectories(Path.GetTempPath(), "~e*").Length > 0)
@@ -258,11 +253,11 @@ namespace BurnOutSharp.ProtectionType
                         try
                         {
                             sr = new StreamReader(files[0], Encoding.Default);
-                            string FileContent = sr.ReadToEnd();
+                            string localFileContent = sr.ReadToEnd();
                             sr.Close();
-                            int position = FileContent.IndexOf("%ld.%ld.%ld, %ld, %s,") - 1;
+                            int position = localFileContent.IndexOf("%ld.%ld.%ld, %ld, %s,") - 1;
                             if (position > -1)
-                                version = FileContent.Substring(position + 28, 12);
+                                version = localFileContent.Substring(position + 28, 12);
                             break;
                         }
                         catch { }
@@ -272,32 +267,19 @@ namespace BurnOutSharp.ProtectionType
 
             if (!exe.HasExited)
                 exe.Kill();
+
             exe.Close();
 
-            try
-            {
-                Directory.Delete(Path.Combine(Path.GetTempPath(), "~e*"), true);
-            }
-            catch { }
-            try
-            {
-                File.Delete(Path.Combine(Path.GetTempPath(), "~e*"));
-                File.Delete(tempexe);
-            }
-            catch { }
+            // Clean up any temp files after running
+            Utilities.SafeDelete(tempexe);
+            Utilities.SafeTempDelete("~e*", isDirectory: true);
+            Utilities.SafeTempDelete("~e*", isDirectory: false);
 
-            if (DependentDlls != null)
+            if (dependentDlls != null)
             {
-                for (int i = 0; i < DependentDlls.Length; i--)
+                foreach (string dll in dependentDlls)
                 {
-                    try
-                    {
-                        File.Delete(DependentDlls[i]);
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine("!error while deleting file " + DependentDlls[i] + "; " + ex.Message);
-                    }
+                    Utilities.SafeDelete(dll);
                 }
             }
 

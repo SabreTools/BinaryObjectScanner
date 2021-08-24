@@ -270,7 +270,7 @@ namespace BurnOutSharp
         /// <returns>Version string, null on error</returns>
         public static string GetFileVersion(string file)
         {
-            var fvinfo = GetFileVersionInfo (file);
+            var fvinfo = GetFileVersionInfo(file);
             if (fvinfo?.FileVersion == null)
                 return string.Empty;
             if (fvinfo.FileVersion != "")
@@ -286,10 +286,7 @@ namespace BurnOutSharp
         /// <param name="fileContent">Byte array representing the file contents</param>
         /// <param name="positions">Last matched positions in the contents</param>
         /// <returns>Version string, null on error</returns>
-        public static string GetFileVersion(string file, byte[] fileContent, List<int> positions)
-        {
-            return GetFileVersion(file);
-        }
+        public static string GetFileVersion(string file, byte[] fileContent, List<int> positions) => GetFileVersion(file);
 
         /// <summary>
         /// Wrapper for GetFileVersion for use in path matching
@@ -297,10 +294,7 @@ namespace BurnOutSharp
         /// <param name="firstMatchedString">File to check for version</param>
         /// <param name="files">Full list of input paths</param>
         /// <returns>Version string, null on error</returns>
-        public static string GetFileVersion(string firstMatchedString, IEnumerable<string> files)
-        {
-            return GetFileVersion(firstMatchedString);
-        }
+        public static string GetFileVersion(string firstMatchedString, IEnumerable<string> files) => GetFileVersion(firstMatchedString);
 
         /// <summary>
         /// Get the assembly version as determined by an embedded assembly manifest
@@ -408,6 +402,42 @@ namespace BurnOutSharp
                 return null;
             }
         }
+
+        #endregion
+
+        #region IO Helpers
+
+        /// <summary>
+        /// Safely attempt to delete a path
+        /// </summary>
+        /// <param name="path">Path to be deleted</param>
+        /// <param name="isDirectory">True to treat the path as a directory, false for a file</param>
+        public static void SafeDelete(string path, bool isDirectory = false)
+        {
+            // No valid path means we can't delete
+            if (string.IsNullOrWhiteSpace(path))
+                return;
+            
+            // Attempt to delete the path
+            try
+            {
+                if (!isDirectory && File.Exists(path))
+                    File.Delete(path);
+                else if (isDirectory && Directory.Exists(path))
+                    Directory.Delete(path, true);
+            }
+            catch
+            {
+                // Absorb any errors in deletion
+            }
+        }
+
+        /// <summary>
+        /// Safely attempt to delete a path in the temp directory
+        /// </summary>
+        /// <param name="path">Path in the temp directory to be deleted</param>
+        /// <param name="isDirectory">True to treat the path as a directory, false for a file</param>
+        public static void SafeTempDelete(string path, bool isDirectory = false) => SafeDelete(Path.Combine(Path.GetTempPath(), path), isDirectory);
 
         #endregion
     }
