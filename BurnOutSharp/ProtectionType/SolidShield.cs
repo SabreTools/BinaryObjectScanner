@@ -123,11 +123,8 @@ namespace BurnOutSharp.ProtectionType
 
         public static string GetFileVersion(string file, byte[] fileContent, List<int> positions)
         {
-            string companyName = string.Empty;
-            if (file != null)
-                companyName = FileVersionInfo.GetVersionInfo(file).CompanyName.ToLower();
-
-            if (companyName.Contains("solidshield") || companyName.Contains("tages"))
+            string companyName = Utilities.GetFileVersionInfo(file)?.CompanyName.ToLowerInvariant();
+            if (!string.IsNullOrWhiteSpace(companyName) && (companyName.Contains("solidshield") || companyName.Contains("tages")))
                 return Utilities.GetFileVersion(file);
             
             return null;

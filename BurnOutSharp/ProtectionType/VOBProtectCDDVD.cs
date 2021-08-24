@@ -156,8 +156,8 @@ namespace BurnOutSharp.ProtectionType
                 {
                     if (files.Length > 0)
                     {
-                        FileVersionInfo fvinfo = FileVersionInfo.GetVersionInfo(files[0]);
-                        if (fvinfo.FileVersion != "")
+                        var fvinfo = Utilities.GetFileVersionInfo(files[0]);
+                        if (!string.IsNullOrWhiteSpace(fvinfo?.FileVersion))
                         {
                             version = fvinfo.FileVersion.Replace(" ", "").Replace(",", ".");
                             //ProtectDisc 9 uses a ProtectDisc-Core dll version 8.0.x
@@ -173,8 +173,8 @@ namespace BurnOutSharp.ProtectionType
                 files = Directory.GetFiles(Path.GetTempPath(), "a*.tmp");
                 if (files.Length > 0)
                 {
-                    FileVersionInfo fvinfo = FileVersionInfo.GetVersionInfo(files[0]);
-                    if (fvinfo.FileVersion != "")
+                    var fvinfo = Utilities.GetFileVersionInfo(files[0]);
+                    if (!string.IsNullOrWhiteSpace(fvinfo?.FileVersion))
                     {
                         version = fvinfo.FileVersion.Replace(" ", "").Replace(",", ".");
                         fvinfo = null;

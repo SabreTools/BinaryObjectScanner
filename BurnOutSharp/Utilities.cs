@@ -244,18 +244,35 @@ namespace BurnOutSharp
         #region Protection
 
         /// <summary>
+        /// Get the file version info object related to a path, if possible
+        /// </summary>
+        /// <param name="file">File to get information for</param>
+        /// <returns>FileVersionInfo object on success, null on error</returns>
+        public static FileVersionInfo GetFileVersionInfo(string file)
+        {
+            if (file == null || !File.Exists(file))
+                return null;
+
+            try
+            {
+                return FileVersionInfo.GetVersionInfo(file);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
         /// Get the file version as reported by the filesystem
         /// </summary>
         /// <param name="file">File to check for version</param>
         /// <returns>Version string, null on error</returns>
         public static string GetFileVersion(string file)
         {
-            if (file == null || !File.Exists(file))
+            var fvinfo = GetFileVersionInfo (file);
+            if (fvinfo?.FileVersion == null)
                 return string.Empty;
-
-            FileVersionInfo fvinfo = FileVersionInfo.GetVersionInfo(file);
-            if (fvinfo.FileVersion == null)
-                return "";
             if (fvinfo.FileVersion != "")
                 return fvinfo.FileVersion.Replace(", ", ".");
             else
