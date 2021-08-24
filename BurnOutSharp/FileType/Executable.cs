@@ -100,9 +100,8 @@ namespace BurnOutSharp.FileType
                 }
 
                 // If we have an IScannable implementation
-                if (contentCheckClass is IScannable)
+                if (contentCheckClass is IScannable scannable)
                 {
-                    IScannable scannable = contentCheckClass as IScannable;
                     if (file != null && !string.IsNullOrEmpty(protection))
                     {
                         var subProtections = scannable.Scan(scanner, null, file);

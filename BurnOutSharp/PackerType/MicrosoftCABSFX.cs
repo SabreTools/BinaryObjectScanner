@@ -1,12 +1,17 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.PackerType
 {
     // TODO: Add extraction, which should be possible with LibMSPackN, but it refuses to extract due to SFX files lacking the typical CAB identifiers.
-    public class MicrosoftCABSFX : IContentCheck
+    public class MicrosoftCABSFX : IContentCheck, IScannable
     {
+        /// <inheritdoc/>
+        public bool ShouldScan(byte[] magic) => true;
+
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includePosition = false)
         {
@@ -63,6 +68,24 @@ namespace BurnOutSharp.PackerType
             };
 
             return MatchUtil.GetFirstMatch(file, fileContent, matchers, includePosition);
+        }
+
+        /// <inheritdoc/>
+        public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, string file)
+        {
+            if (!File.Exists(file))
+                return null;
+
+            using (var fs = File.OpenRead(file))
+            {
+                return Scan(scanner, fs, file);
+            }
+        }
+
+        /// <inheritdoc/>
+        public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, Stream stream, string file)
+        {
+            return null;
         }
 
         // This method of version detection is suboptimal because the version is sometimes the version of the included software, not the SFX itself.
