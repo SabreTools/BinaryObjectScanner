@@ -17,7 +17,7 @@ namespace BurnOutSharp.PackerType
         {
             var fvinfo = Utilities.GetFileVersionInfo(file);
 
-            string name = fvinfo?.InternalName.Trim();
+            string name = fvinfo?.InternalName?.Trim();
             if (!string.IsNullOrWhiteSpace(name) && name.Equals("Wextract", StringComparison.OrdinalIgnoreCase))
             {
                 string version = GetVersion(file, fileContent, null);
@@ -27,7 +27,7 @@ namespace BurnOutSharp.PackerType
                 return "Microsoft CAB SFX";
             }
 
-            name = fvinfo?.OriginalFilename.Trim();
+            name = fvinfo?.OriginalFilename?.Trim();
             if (!string.IsNullOrWhiteSpace(name) && name.Equals("WEXTRACT.EXE", StringComparison.OrdinalIgnoreCase))
             {
                 string version = GetVersion(file, fileContent, null);
