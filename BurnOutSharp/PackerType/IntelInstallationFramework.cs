@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using BurnOutSharp.Matching;
+using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.PackerType
 {

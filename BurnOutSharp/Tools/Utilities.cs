@@ -8,7 +8,7 @@ using System.Text;
 using System.Xml;
 using BurnOutSharp.Matching;
 
-namespace BurnOutSharp
+namespace BurnOutSharp.Tools
 {
     internal static class Utilities
     {

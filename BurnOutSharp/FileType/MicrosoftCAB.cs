@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.IO;
+using BurnOutSharp.Tools;
 using LibMSPackN;
 
 namespace BurnOutSharp.FileType

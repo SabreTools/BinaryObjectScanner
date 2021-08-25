@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.IO;
+using BurnOutSharp.Tools;
 using SharpCompress.Archives;
 using SharpCompress.Archives.Rar;
 

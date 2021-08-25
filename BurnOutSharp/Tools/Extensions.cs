@@ -2,9 +2,9 @@ using System;
 using System.IO;
 using System.Text;
 
-namespace BurnOutSharp
+namespace BurnOutSharp.Tools
 {
-    internal static class Ebuffertensions
+    internal static class BufferExtensions
     {
         /// <summary>
         /// Read a byte from the stream

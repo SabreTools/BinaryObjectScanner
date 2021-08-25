@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using BurnOutSharp.Matching;
+using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ProtectionType
 {

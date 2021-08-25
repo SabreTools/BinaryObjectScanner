@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
+using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.FileType
 {

@@ -24,7 +24,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using BurnOutSharp.ExecutableType.Microsoft;
 
-namespace BurnOutSharp
+namespace BurnOutSharp.Tools
 {
     internal static class EVORE
     {

@@ -12,6 +12,7 @@
 
 using System.IO;
 using System.Runtime.InteropServices;
+using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ExecutableType.Microsoft
 {

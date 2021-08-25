@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.IO;
+using BurnOutSharp.Tools;
 using WixToolset.Dtf.WindowsInstaller;
 
 namespace BurnOutSharp.FileType
