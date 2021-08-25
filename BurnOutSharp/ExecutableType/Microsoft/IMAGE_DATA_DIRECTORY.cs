@@ -10,6 +10,7 @@
  *    http://csn.ul.ie/~caolan/pub/winresdump/winresdump/newexe.h
  */
 
+using System;
 using System.IO;
 using System.Runtime.InteropServices;
 
@@ -27,6 +28,16 @@ namespace BurnOutSharp.ExecutableType.Microsoft
 
             idd.VirtualAddress = stream.ReadUInt32();
             idd.Size = stream.ReadUInt32();
+
+            return idd;
+        }
+
+        public static IMAGE_DATA_DIRECTORY Deserialize(byte[] content, int offset)
+        {
+            var idd = new IMAGE_DATA_DIRECTORY();
+
+            idd.VirtualAddress = BitConverter.ToUInt32(content, offset); offset += 4;
+            idd.Size = BitConverter.ToUInt32(content, offset); offset += 4;
 
             return idd;
         }

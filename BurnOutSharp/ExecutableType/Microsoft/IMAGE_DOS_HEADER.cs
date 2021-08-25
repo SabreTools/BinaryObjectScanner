@@ -10,6 +10,7 @@
  *    http://csn.ul.ie/~caolan/pub/winresdump/winresdump/newexe.h
  */
 
+using System;
 using System.IO;
 using System.Runtime.InteropServices;
 
@@ -74,6 +75,41 @@ namespace BurnOutSharp.ExecutableType.Microsoft
                 idh.Reserved2[i] = stream.ReadUInt16();
             }
             idh.NewExeHeaderAddr = stream.ReadInt32();
+
+            return idh;
+        }
+
+        public static IMAGE_DOS_HEADER Deserialize(byte[] content, int offset)
+        {
+            IMAGE_DOS_HEADER idh = new IMAGE_DOS_HEADER();
+
+            idh.Magic = BitConverter.ToUInt16(content, offset); offset += 2;
+            idh.LastPageBytes = BitConverter.ToUInt16(content, offset); offset += 2;
+            idh.Pages = BitConverter.ToUInt16(content, offset); offset += 2;
+            idh.Relocations = BitConverter.ToUInt16(content, offset); offset += 2;
+            idh.HeaderParagraphSize = BitConverter.ToUInt16(content, offset); offset += 2;
+            idh.MinimumExtraParagraphs = BitConverter.ToUInt16(content, offset); offset += 2;
+            idh.MaximumExtraParagraphs = BitConverter.ToUInt16(content, offset); offset += 2;
+            idh.InitialSSValue = BitConverter.ToUInt16(content, offset); offset += 2;
+            idh.InitialSPValue = BitConverter.ToUInt16(content, offset); offset += 2;
+            idh.Checksum = BitConverter.ToUInt16(content, offset); offset += 2;
+            idh.InitialIPValue = BitConverter.ToUInt16(content, offset); offset += 2;
+            idh.InitialCSValue = BitConverter.ToUInt16(content, offset); offset += 2;
+            idh.RelocationTableAddr = BitConverter.ToUInt16(content, offset); offset += 2;
+            idh.OverlayNumber = BitConverter.ToUInt16(content, offset); offset += 2;
+            idh.Reserved1 = new ushort[Constants.ERES1WDS];
+            for (int i = 0; i < Constants.ERES1WDS; i++)
+            {
+                idh.Reserved1[i] = BitConverter.ToUInt16(content, offset); offset += 2;
+            }
+            idh.OEMIdentifier = BitConverter.ToUInt16(content, offset); offset += 2;
+            idh.OEMInformation = BitConverter.ToUInt16(content, offset); offset += 2;
+            idh.Reserved2 = new ushort[Constants.ERES2WDS];
+            for (int i = 0; i < Constants.ERES2WDS; i++)
+            {
+                idh.Reserved2[i] = BitConverter.ToUInt16(content, offset); offset += 2;
+            }
+            idh.NewExeHeaderAddr = BitConverter.ToInt32(content, offset); offset += 4;
 
             return idh;
         }

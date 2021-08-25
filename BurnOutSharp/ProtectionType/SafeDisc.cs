@@ -224,7 +224,7 @@ namespace BurnOutSharp.ProtectionType
         private static string SearchSafeDiscVersion(string file, byte[] fileContent)
         {
             // If the file isn't executable, don't even bother
-            if (!EVORE.IsEXE(fileContent))
+            if (!EVORE.IsPEExecutable(fileContent))
                 return string.Empty;
 
             // Get some of the required paths
