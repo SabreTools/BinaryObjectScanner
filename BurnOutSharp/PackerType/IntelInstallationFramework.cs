@@ -12,7 +12,7 @@ namespace BurnOutSharp.PackerType
         {
             var fvinfo = Utilities.GetFileVersionInfo(file);
 
-            string name = fvinfo?.FileDescription.Trim();
+            string name = fvinfo?.FileDescription?.Trim();
             if (!string.IsNullOrWhiteSpace(name)
                 && (name.Equals("Intel(R) Installation Framework", StringComparison.OrdinalIgnoreCase)
                 || name.Equals("Intel Installation Framework", StringComparison.OrdinalIgnoreCase)))
@@ -20,7 +20,7 @@ namespace BurnOutSharp.PackerType
                 return $"Intel Installation Framework {Utilities.GetFileVersion(file)}";
             }
 
-            name = fvinfo?.ProductName.Trim();
+            name = fvinfo?.ProductName?.Trim();
             if (!string.IsNullOrWhiteSpace(name)
                 && (name.Equals("Intel(R) Installation Framework", StringComparison.OrdinalIgnoreCase)
                 || name.Equals("Intel Installation Framework", StringComparison.OrdinalIgnoreCase)))
