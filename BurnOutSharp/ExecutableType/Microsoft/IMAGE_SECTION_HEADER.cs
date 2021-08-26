@@ -1,15 +1,4 @@
-/*
- *	  NEWEXE.H (C) Copyright Microsoft Corp 1984-1987
- *
- *	  Data structure definitions for the OS/2 & Windows
- *	  executable file format.
- *
- *	  Modified by IVS on 24-Jan-1991 for Resource DeCompiler
- *	  (C) Copyright IVS 1991
- *
- *    http://csn.ul.ie/~caolan/pub/winresdump/winresdump/newexe.h
- */
-
+using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using BurnOutSharp.Tools;
@@ -21,11 +10,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft
     {
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = Constants.IMAGE_SIZEOF_SHORT_NAME)]
         public byte[] Name;
-        
-        // Misc
-        public uint PhysicalAddress;
         public uint VirtualSize;
-
         public uint VirtualAddress;
         public uint SizeOfRawData;
         public uint PointerToRawData;
@@ -40,11 +25,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft
             var ish = new IMAGE_SECTION_HEADER();
 
             ish.Name = stream.ReadBytes(Constants.IMAGE_SIZEOF_SHORT_NAME);
-
-            // Misc
-            ish.PhysicalAddress = stream.ReadUInt32();
-            ish.VirtualSize = ish.PhysicalAddress;
-
+            ish.VirtualSize = stream.ReadUInt32();
             ish.VirtualAddress = stream.ReadUInt32();
             ish.SizeOfRawData = stream.ReadUInt32();
             ish.PointerToRawData = stream.ReadUInt32();
@@ -53,6 +34,25 @@ namespace BurnOutSharp.ExecutableType.Microsoft
             ish.NumberOfRelocations = stream.ReadUInt16();
             ish.NumberOfLinenumbers = stream.ReadUInt16();
             ish.Characteristics = (SectionCharacteristics)stream.ReadUInt32();
+
+            return ish;
+        }
+
+        public static IMAGE_SECTION_HEADER Deserialize(byte[] content, int offset)
+        {
+            var ish = new IMAGE_SECTION_HEADER();
+
+            ish.Name = new byte[Constants.IMAGE_SIZEOF_SHORT_NAME];
+            Array.Copy(content, offset, ish.Name, 0, Constants.IMAGE_SIZEOF_SHORT_NAME); offset += Constants.IMAGE_SIZEOF_SHORT_NAME;
+            ish.VirtualSize = BitConverter.ToUInt32(content, offset); offset += 4;
+            ish.VirtualAddress = BitConverter.ToUInt32(content, offset); offset += 4;
+            ish.SizeOfRawData = BitConverter.ToUInt32(content, offset); offset += 4;
+            ish.PointerToRawData = BitConverter.ToUInt32(content, offset); offset += 4;
+            ish.PointerToRelocations = BitConverter.ToUInt32(content, offset); offset += 4;
+            ish.PointerToLinenumbers = BitConverter.ToUInt32(content, offset); offset += 4;
+            ish.NumberOfRelocations = BitConverter.ToUInt16(content, offset); offset += 2;
+            ish.NumberOfLinenumbers = BitConverter.ToUInt16(content, offset); offset += 2;
+            ish.Characteristics = (SectionCharacteristics)BitConverter.ToUInt32(content, offset); offset += 4;
 
             return ish;
         }

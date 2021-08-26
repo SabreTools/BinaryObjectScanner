@@ -56,31 +56,6 @@ namespace BurnOutSharp.ExecutableType.Microsoft
 
         public const ushort IMAGE_NUMBEROF_DIRECTORY_ENTRIES = 16;
 
-        /* Directory Entries */
-
-        /* Export Directory */
-        public const byte IMAGE_DIRECTORY_ENTRY_EXPORT = 0;
-        /* Import Directory */
-        public const byte IMAGE_DIRECTORY_ENTRY_IMPORT = 1;
-        /* Resource Directory */
-        public const byte IMAGE_DIRECTORY_ENTRY_RESOURCE = 2;
-        /* Exception Directory */
-        public const byte IMAGE_DIRECTORY_ENTRY_EXCEPTION = 3;
-        /* Security Directory */
-        public const byte IMAGE_DIRECTORY_ENTRY_SECURITY = 4;
-        /* Base Relocation Table */
-        public const byte IMAGE_DIRECTORY_ENTRY_BASERELOC = 5;
-        /* Debug Directory */
-        public const byte IMAGE_DIRECTORY_ENTRY_DEBUG = 6;
-        /* Description String */
-        public const byte IMAGE_DIRECTORY_ENTRY_COPYRIGHT = 7;
-        /* Machine Value (MIPS GP) */
-        public const byte IMAGE_DIRECTORY_ENTRY_GLOBALPTR = 8;
-        /* TLS Directory */
-        public const byte IMAGE_DIRECTORY_ENTRY_TLS = 9;
-        /* Load Configuration Directory */
-        public const byte IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG = 10;
-
         #endregion
 
         #region IMAGE_SECTION_HEADER

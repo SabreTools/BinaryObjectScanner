@@ -23,6 +23,8 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using BurnOutSharp.ExecutableType.Microsoft;
+using BurnOutSharp.ExecutableType.Microsoft.Sections;
+using BurnOutSharp.ExecutableType.Microsoft.Tables;
 
 namespace BurnOutSharp.Tools
 {
@@ -44,7 +46,7 @@ namespace BurnOutSharp.Tools
                 IMAGE_FILE_HEADER ifh = IMAGE_FILE_HEADER.Deserialize(fileContent, idh.NewExeHeaderAddr);
 
                 // Check if file is dll
-                return (ifh.Characteristics & 0x2000) != 0x2000;
+                return ifh.Characteristics.HasFlag(ImageObjectCharacteristics.IMAGE_FILE_DLL);
             }
             catch
             {
@@ -103,18 +105,22 @@ namespace BurnOutSharp.Tools
                 unsafe
                 {
                     // Read all of the executable header information
-                    IMAGE_DOS_HEADER idh = IMAGE_DOS_HEADER.Deserialize(fileContent, 0);
-                    IMAGE_FILE_HEADER ifh = IMAGE_FILE_HEADER.Deserialize(fileContent, idh.NewExeHeaderAddr);
-                    IMAGE_OPTIONAL_HEADER ioh = IMAGE_OPTIONAL_HEADER.Deserialize(fileContent, idh.NewExeHeaderAddr + Marshal.SizeOf(ifh));
-                    
-                    // Find the import directory entry
-                    IMAGE_DATA_DIRECTORY idei = ioh.DataDirectory[Constants.IMAGE_DIRECTORY_ENTRY_IMPORT];
+                    PEExecutable pex = PEExecutable.Deserialize(fileContent, 0);
 
+                    // Find the import directory entry
+                    IMAGE_DATA_DIRECTORY idei = pex.OptionalHeader.DataDirectories[(byte)ImageDirectory.IMAGE_DIRECTORY_ENTRY_IMPORT];
+                    
                     // Set the table index and size
-                    int tableIndex = (int)idei.VirtualAddress;
+                    int tableIndex = (int)ConvertVirtualAddress(idei.VirtualAddress, pex.SectionHeaders);
                     int tableSize = (int)idei.Size;
                     if (tableIndex <= 0 || tableSize <= 0)
                         return null;
+
+                    // Load the table from index
+                    ImportDataSection idata = ImportDataSection.Deserialize(fileContent, tableIndex, pex.OptionalHeader.Magic == OptionalHeaderType.PE32Plus, hintCount: 0);
+                    ImportDirectoryTable idt = idata.ImportDirectoryTable;
+
+                    // TODO: Use the known layout to determine the names in a more automated way instead of having to iterate
                     
                     // Retrieve the table data
                     byte[] tableData = new byte[tableSize];
@@ -203,29 +209,15 @@ namespace BurnOutSharp.Tools
         /// <param name="fileContent">Byte array representing the executable</param>
         /// <param name="ptr">Pointer to the location in the array to read from</param>
         /// <returns>An array of section headers, null on error</returns>
-        private static IMAGE_SECTION_HEADER[] ReadSections(byte[] fileContent)
+        internal static IMAGE_SECTION_HEADER[] ReadSections(byte[] fileContent)
         {
             if (fileContent == null)
                 return null;
 
             try
             {
-                unsafe
-                {
-                    IMAGE_DOS_HEADER idh = IMAGE_DOS_HEADER.Deserialize(fileContent, 0);
-                    IMAGE_FILE_HEADER ifh = IMAGE_FILE_HEADER.Deserialize(fileContent, idh.NewExeHeaderAddr);
-
-                    var sections = new IMAGE_SECTION_HEADER[ifh.NumberOfSections];
-                    
-                    int index = idh.NewExeHeaderAddr + Marshal.SizeOf(ifh) + ifh.SizeOfOptionalHeader;
-                    for (int i = 0; i < ifh.NumberOfSections; i++)
-                    {
-                        sections[i] = ReadSection(fileContent, index); index += 40;
-                    }
-
-                    return sections;
-                }
-                
+                PEExecutable pex = PEExecutable.Deserialize(fileContent, 0);
+                return pex.SectionHeaders;
             }
             catch
             {
@@ -234,57 +226,27 @@ namespace BurnOutSharp.Tools
         }
 
         /// <summary>
-        /// Read a single section header from a PE executable
+        /// Convert a virtual address to a physical one
         /// </summary>
-        /// <param name="fileContent">Byte array representing the executable</param>
-        /// <param name="ptr">Pointer to the location in the array to read from</param>
-        /// <returns>Section header, null on error</returns>
-        private static IMAGE_SECTION_HEADER ReadSection(byte[] fileContent, int ptr)
+        /// <param name="virtualAddress">Virtual address to convert</param>
+        /// <param name="sections">Array of sections to check against</param>
+        /// <returns>Physical address, 0 on error</returns>
+        internal static uint ConvertVirtualAddress(uint virtualAddress, IMAGE_SECTION_HEADER[] sections)
         {
-            try
+            // Loop through all of the sections
+            for (int i = 0; i < sections.Length; i++)
             {
-                // Get the size of a section header for later
-                int sectionSize = Marshal.SizeOf<IMAGE_SECTION_HEADER>();
+                // If the section is invalid, just skip it
+                if (sections[i] == null)
+                    continue;
 
-                // If the contents are null or the wrong size, we can't read a section
-                if (fileContent == null || fileContent.Length < sectionSize)
-                    return null;
-
-                // Create a new section and try our best to read one
-                IMAGE_SECTION_HEADER section = null;
-                IntPtr tempPtr = IntPtr.Zero;
-                try
-                {
-                    // Get the pointer to where the section will go
-                    tempPtr = Marshal.AllocHGlobal(sectionSize);
-                    
-                    // If we couldn't get the space, just return null
-                    if (tempPtr == IntPtr.Zero)
-                        return null;
-
-                    // Copy from the array to the new space
-                    Marshal.Copy(fileContent, ptr, tempPtr, sectionSize);
-
-                    // Get the new section and return
-                    section = Marshal.PtrToStructure<IMAGE_SECTION_HEADER>(tempPtr);
-                }
-                catch
-                {
-                    // We don't care what the error was
-                    return null;
-                }
-                finally
-                {
-                    if (tempPtr != IntPtr.Zero)
-                        Marshal.FreeHGlobal(tempPtr);
-                }
-
-                return section;
+                // Attempt to derive the physical address from the current section
+                var section = sections[i];
+                if (virtualAddress >= section.VirtualAddress && virtualAddress <= section.VirtualAddress + section.VirtualSize)
+                    return section.PointerToRawData + virtualAddress - section.VirtualAddress;
             }
-            catch
-            {
-                return null;
-            }
+
+            return 0;
         }
     }
 }
