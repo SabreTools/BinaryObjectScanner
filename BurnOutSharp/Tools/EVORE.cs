@@ -21,7 +21,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using BurnOutSharp.ExecutableType.Microsoft;
 using BurnOutSharp.ExecutableType.Microsoft.Sections;
 using BurnOutSharp.ExecutableType.Microsoft.Tables;
@@ -30,6 +29,30 @@ namespace BurnOutSharp.Tools
 {
     internal static class EVORE
     {
+        /// <summary>
+        /// Convert a virtual address to a physical one
+        /// </summary>
+        /// <param name="virtualAddress">Virtual address to convert</param>
+        /// <param name="sections">Array of sections to check against</param>
+        /// <returns>Physical address, 0 on error</returns>
+        internal static uint ConvertVirtualAddress(uint virtualAddress, IMAGE_SECTION_HEADER[] sections)
+        {
+            // Loop through all of the sections
+            for (int i = 0; i < sections.Length; i++)
+            {
+                // If the section is invalid, just skip it
+                if (sections[i] == null)
+                    continue;
+
+                // Attempt to derive the physical address from the current section
+                var section = sections[i];
+                if (virtualAddress >= section.VirtualAddress && virtualAddress <= section.VirtualAddress + section.VirtualSize)
+                    return section.PointerToRawData + virtualAddress - section.VirtualAddress;
+            }
+
+            return 0;
+        }
+
         /// <summary>
         /// Checks if the file contents represent a PE executable
         /// </summary>
@@ -42,11 +65,8 @@ namespace BurnOutSharp.Tools
 
             try
             {
-                IMAGE_DOS_HEADER idh = IMAGE_DOS_HEADER.Deserialize(fileContent, 0);
-                IMAGE_FILE_HEADER ifh = IMAGE_FILE_HEADER.Deserialize(fileContent, idh.NewExeHeaderAddr);
-
-                // Check if file is dll
-                return ifh.Characteristics.HasFlag(ImageObjectCharacteristics.IMAGE_FILE_DLL);
+                PEExecutable pex = PEExecutable.Deserialize(fileContent, 0);
+                return pex.COFFFileHeader.Characteristics.HasFlag(ImageObjectCharacteristics.IMAGE_FILE_DLL);
             }
             catch
             {
@@ -174,7 +194,7 @@ namespace BurnOutSharp.Tools
         /// </summary>
         /// <param name="file">Executable to attempt to run</param>
         /// <returns>Process representing the running executable, null on error</returns>
-        public static Process StartSafe(string file)
+        internal static Process StartSafe(string file)
         {
             if (file == null || !File.Exists(file))
                 return null;
@@ -201,52 +221,6 @@ namespace BurnOutSharp.Tools
             {
                 return null;
             }
-        }
-
-        /// <summary>
-        /// Read all section headers from a PE executable
-        /// </summary>
-        /// <param name="fileContent">Byte array representing the executable</param>
-        /// <param name="ptr">Pointer to the location in the array to read from</param>
-        /// <returns>An array of section headers, null on error</returns>
-        internal static IMAGE_SECTION_HEADER[] ReadSections(byte[] fileContent)
-        {
-            if (fileContent == null)
-                return null;
-
-            try
-            {
-                PEExecutable pex = PEExecutable.Deserialize(fileContent, 0);
-                return pex.SectionHeaders;
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Convert a virtual address to a physical one
-        /// </summary>
-        /// <param name="virtualAddress">Virtual address to convert</param>
-        /// <param name="sections">Array of sections to check against</param>
-        /// <returns>Physical address, 0 on error</returns>
-        internal static uint ConvertVirtualAddress(uint virtualAddress, IMAGE_SECTION_HEADER[] sections)
-        {
-            // Loop through all of the sections
-            for (int i = 0; i < sections.Length; i++)
-            {
-                // If the section is invalid, just skip it
-                if (sections[i] == null)
-                    continue;
-
-                // Attempt to derive the physical address from the current section
-                var section = sections[i];
-                if (virtualAddress >= section.VirtualAddress && virtualAddress <= section.VirtualAddress + section.VirtualSize)
-                    return section.PointerToRawData + virtualAddress - section.VirtualAddress;
-            }
-
-            return 0;
         }
     }
 }
