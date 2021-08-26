@@ -22,13 +22,9 @@ namespace BurnOutSharp.PackerType
             };
         }
 
+        //TODO: Add exact version detection for Windows builds, make sure versions before 3.X are detected as well, and detect the Mac builds.
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
-        {
-            //TODO: Add exact version detection for Windows builds, make sure versions before 3.X are detected as well, and detect the Mac builds.
-            var matchers = GetContentMatchSets();
-            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
-        }
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false) => null;
 
         // TODO: Add Installer VISE extraction
         // https://github.com/Bioruebe/UniExtract2

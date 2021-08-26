@@ -84,11 +84,7 @@ namespace BurnOutSharp.ProtectionType
         }
 
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
-        {
-            var matchers = GetContentMatchSets();
-            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
-        }
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false) => null;
 
         /// <inheritdoc/>
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string> files)

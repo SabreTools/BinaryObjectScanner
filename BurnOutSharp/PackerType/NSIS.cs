@@ -31,11 +31,7 @@ namespace BurnOutSharp.PackerType
         }
 
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
-        {
-            var matchers = GetContentMatchSets();
-            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
-        }
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false) => null;
 
         public static string GetVersion(string file, byte[] fileContent, List<int> positions)
         {

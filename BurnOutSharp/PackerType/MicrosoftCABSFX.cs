@@ -72,8 +72,7 @@ namespace BurnOutSharp.PackerType
                 return "Microsoft CAB SFX";
             }
 
-            var matchers = GetContentMatchSets();
-            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
+            return null;
         }
 
         /// <inheritdoc/>

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using BurnOutSharp.Matching;
 using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.FileType
@@ -88,18 +89,32 @@ namespace BurnOutSharp.FileType
             if (stream.CanSeek)
                 stream.Seek(0, SeekOrigin.Begin);
 
+            // TODO: Find a way to combine the outputs of GetContentMatchSet to make this more efficient
+            // If they can be combined, we can have it do a Unique check per file
+
             // Iterate through all content checks
             Parallel.ForEach(contentCheckClasses, contentCheckClass =>
             {
-                // TODO: Find a way to combine the outputs of GetContentMatchSet
-                // TODO: Have CheckContents take priority over GetContentMatchSet results
-                string protection = contentCheckClass.CheckContents(file, fileContent, scanner.IncludeDebug);
+                // Track if any protection is found
+                bool foundProtection = false;
 
-                // If we have a valid content check based on settings
-                if (!contentCheckClass.GetType().Namespace.ToLowerInvariant().Contains("packertype") || scanner.ScanPackers)
+                // Check using custom content checks first
+                string protection = contentCheckClass.CheckContents(file, fileContent, scanner.IncludeDebug);
+                foundProtection |= !string.IsNullOrWhiteSpace(protection);
+                if (ShouldAddProtection(contentCheckClass, scanner, protection))
+                    Utilities.AppendToDictionary(protections, file, protection);
+
+                // If we didn't find anything in a custom check, use the content match sets
+                if (!foundProtection)
                 {
-                    if (!string.IsNullOrWhiteSpace(protection))
-                        Utilities.AppendToDictionary(protections, file, protection);
+                    var contentMatchSets = contentCheckClass.GetContentMatchSets();
+                    if (contentMatchSets != null && contentMatchSets.Any())
+                    {
+                        protection = MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, scanner.IncludeDebug);
+                        foundProtection |= !string.IsNullOrWhiteSpace(protection);
+                        if (ShouldAddProtection(contentCheckClass, scanner, protection))
+                            Utilities.AppendToDictionary(protections, file, protection);
+                    }
                 }
 
                 // If we have an IScannable implementation
@@ -125,6 +140,24 @@ namespace BurnOutSharp.FileType
             return Assembly.GetExecutingAssembly().GetTypes()
                 .Where(t => t.IsClass && t.GetInterface(nameof(IContentCheck)) != null)
                 .Select(t => Activator.CreateInstance(t) as IContentCheck);
+        }
+    
+        /// <summary>
+        /// Check to see if a protection should be added or not
+        /// </summary>
+        /// <param name="contentCheckClass">Class that was last used to check</param>
+        /// <param name="scanner">Scanner object for state tracking</param>
+        /// <param name="protection">The protection result to be checked</param>
+        private bool ShouldAddProtection(IContentCheck contentCheckClass, Scanner scanner, string protection)
+        {
+            // If we have a valid content check based on settings
+            if (!contentCheckClass.GetType().Namespace.ToLowerInvariant().Contains("packertype") || scanner.ScanPackers)
+            {
+                if (!string.IsNullOrWhiteSpace(protection))
+                    return true;
+            }
+
+            return false;
         }
     }
 }

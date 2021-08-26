@@ -64,8 +64,7 @@ namespace BurnOutSharp.ProtectionType
             if (file != null && string.Equals(Path.GetFileName(file), "NOMOUSE.SP", StringComparison.OrdinalIgnoreCase))
                 return $"LaserLock {GetVersion16Bit(fileContent)}" + (includeDebug ? $" (Index 71)" : string.Empty);
 
-            var matchers = GetContentMatchSets();
-            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
+            return null;
         }
 
         /// <inheritdoc/>

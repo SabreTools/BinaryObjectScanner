@@ -61,8 +61,7 @@ namespace BurnOutSharp.PackerType
                 return $"Intel Installation Framework {Utilities.GetFileVersion(file)}";
             }
 
-            var matchers = GetContentMatchSets();
-            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
+            return null;
         }
     }
 }

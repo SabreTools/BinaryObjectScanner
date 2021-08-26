@@ -22,6 +22,10 @@ namespace BurnOutSharp.Tools
         /// <param name="value">String value to add</param>
         public static void AppendToDictionary(ConcurrentDictionary<string, ConcurrentQueue<string>> original, string key, string value)
         {
+            // If the value is empty, don't add it
+            if (string.IsNullOrWhiteSpace(value))
+                return;
+
             var values = new ConcurrentQueue<string>();
             values.Enqueue(value);
             AppendToDictionary(original, key, values);

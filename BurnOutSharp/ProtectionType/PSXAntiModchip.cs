@@ -44,10 +44,6 @@ namespace BurnOutSharp.ProtectionType
         // TODO: Figure out PSX binary header so this can be checked explicitly
         // TODO: Detect Red Hand protection
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
-        {
-            var matchers = GetContentMatchSets();
-            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
-        }
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false) => null;
     }
 }
