@@ -7,9 +7,9 @@ namespace BurnOutSharp.ProtectionType
     public class CDLock : IContentCheck, IPathCheck
     {
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        public List<ContentMatchSet> GetContentMatchSets()
         {
-            var matchers = new List<ContentMatchSet>
+            return new List<ContentMatchSet>
             {
                 // 2 + (char)0xF2 + (char)0x02 + (char)0x82 + (char)0xC3 + (char)0xBC + (char)0x0B + $ + (char)0x99 + (char)0xAD + 'C + (char)0xE4 + (char)0x9D + st + (char)0x99 + (char)0xFA + 2$ + (char)0x9D + )4 + (char)0xFF + t
                 new ContentMatchSet(new byte?[]
@@ -20,7 +20,12 @@ namespace BurnOutSharp.ProtectionType
                     0x74
                 }, "CD-Lock"),
             };
+        }
 
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        {
+            var matchers = GetContentMatchSets();
             return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
         }
 

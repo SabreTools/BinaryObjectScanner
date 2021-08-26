@@ -8,9 +8,9 @@ namespace BurnOutSharp.ProtectionType
     public class ImpulseReactor : IContentCheck, IPathCheck
     {
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        public List<ContentMatchSet> GetContentMatchSets()
         {
-            var matchers = new List<ContentMatchSet>
+            return new List<ContentMatchSet>
             {
                 new ContentMatchSet(new List<byte?[]>
                 {
@@ -42,7 +42,12 @@ namespace BurnOutSharp.ProtectionType
                     0x65, 0x6E, 0x74
                 }, "Impulse Reactor"),
             };
+        }
 
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        {
+            var matchers = GetContentMatchSets();
             return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
         }
 

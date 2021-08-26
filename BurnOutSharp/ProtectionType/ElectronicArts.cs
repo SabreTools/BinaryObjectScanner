@@ -11,9 +11,9 @@ namespace BurnOutSharp.ProtectionType
         //      - Reference to `EASTL` and `EAStdC` are standard for EA products and does not indicate Cucko by itself
         //      - There's little information outside of PiD detection that actually knows about Cucko
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        public List<ContentMatchSet> GetContentMatchSets()
         {
-            var matchers = new List<ContentMatchSet>
+            return new List<ContentMatchSet>
             {
                 // EASTL
                 //new ContentMatchSet(new byte?[] { 0x45, 0x41, 0x53, 0x54, 0x4C }, "Cucko (EA Custom)"),
@@ -96,7 +96,12 @@ namespace BurnOutSharp.ProtectionType
                     0x72, 0x00
                 }, "EA DRM Protection"),
             };
+        }
 
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        {
+            var matchers = GetContentMatchSets();
             return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
         }
     }

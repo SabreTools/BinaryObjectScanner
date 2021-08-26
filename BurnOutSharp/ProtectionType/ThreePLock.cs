@@ -6,9 +6,9 @@ namespace BurnOutSharp.ProtectionType
     public class ThreePLock : IContentCheck
     {
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        public List<ContentMatchSet> GetContentMatchSets()
         {
-            var matchers = new List<ContentMatchSet>
+            return new List<ContentMatchSet>
             {
                 new ContentMatchSet(new List<byte?[]>
                 {
@@ -27,7 +27,12 @@ namespace BurnOutSharp.ProtectionType
                 //     0x53, 0x56, 0x57
                 // }, "3PLock"),
             };
+        }
 
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        {
+            var matchers = GetContentMatchSets();
             return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
         }
     }

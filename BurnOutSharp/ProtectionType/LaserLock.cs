@@ -12,27 +12,9 @@ namespace BurnOutSharp.ProtectionType
     public class LaserLock : IContentCheck, IPathCheck
     {
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        public List<ContentMatchSet> GetContentMatchSets()
         {
-            // "Packed by SPEEnc V2 Asterios Parlamentas.PE"
-            byte?[] check = new byte?[] { 0x50, 0x61, 0x63, 0x6B, 0x65, 0x64, 0x20, 0x62, 0x79, 0x20, 0x53, 0x50, 0x45, 0x45, 0x6E, 0x63, 0x20, 0x56, 0x32, 0x20, 0x41, 0x73, 0x74, 0x65, 0x72, 0x69, 0x6F, 0x73, 0x20, 0x50, 0x61, 0x72, 0x6C, 0x61, 0x6D, 0x65, 0x6E, 0x74, 0x61, 0x73, 0x2E, 0x50, 0x45 };
-            bool containsCheck = fileContent.FirstPosition(check, out int position);
-
-            // "GetModuleHandleA" + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00 + "GetProcAddress" + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00 + "LoadLibraryA" + (char)0x00 + (char)0x00 + "KERNEL32.dll" + (char)0x00 + "ëy" + (char)0x01 + "SNIF"
-            byte?[] check2 = { 0x47, 0x65, 0x74, 0x4D, 0x6F, 0x64, 0x75, 0x6C, 0x65, 0x48, 0x61, 0x6E, 0x64, 0x6C, 0x65, 0x41, 0x00, 0x00, 0x00, 0x00, 0x47, 0x65, 0x74, 0x50, 0x72, 0x6F, 0x63, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x00, 0x00, 0x00, 0x00, 0x4C, 0x6F, 0x61, 0x64, 0x4C, 0x69, 0x62, 0x72, 0x61, 0x72, 0x79, 0x41, 0x00, 0x00, 0x4B, 0x45, 0x52, 0x4E, 0x45, 0x4C, 0x33, 0x32, 0x2E, 0x64, 0x6C, 0x6C, 0x00, 0xEB, 0x79, 0x01, 0x53, 0x4E, 0x49, 0x46 };
-            bool containsCheck2 = fileContent.FirstPosition(check2, out int position2);
-
-            if (containsCheck && containsCheck2)
-                return $"LaserLock {GetVersion(fileContent, position2)} {GetBuild(fileContent, true)}" + (includeDebug ? $" (Index {position}, {position2})" : string.Empty);
-            else if (containsCheck && !containsCheck2)
-                return $"LaserLock Marathon {GetBuild(fileContent, false)}" + (includeDebug ? $" (Index {position})" : string.Empty);
-            else if (!containsCheck && containsCheck2)
-                return $"LaserLock {GetVersion(fileContent, --position2)} {GetBuild(fileContent, false)}" + (includeDebug ? $" (Index {position2})" : string.Empty);
-
-            if (file != null && string.Equals(Path.GetFileName(file), "NOMOUSE.SP", StringComparison.OrdinalIgnoreCase))
-                return $"LaserLock {GetVersion16Bit(fileContent)}" + (includeDebug ? $" (Index 71)" : string.Empty);
-
-            var matchers = new List<ContentMatchSet>
+            return new List<ContentMatchSet>
             {
                 // :\\LASERLOK\\LASERLOK.IN + (char)0x00 + C:\\NOMOUSE.SP
                 new ContentMatchSet(new byte?[]
@@ -59,7 +41,30 @@ namespace BurnOutSharp.ProtectionType
                     0x33
                 }, "LaserLock 5"),
             };
+        }
 
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        {
+            // "Packed by SPEEnc V2 Asterios Parlamentas.PE"
+            byte?[] check = new byte?[] { 0x50, 0x61, 0x63, 0x6B, 0x65, 0x64, 0x20, 0x62, 0x79, 0x20, 0x53, 0x50, 0x45, 0x45, 0x6E, 0x63, 0x20, 0x56, 0x32, 0x20, 0x41, 0x73, 0x74, 0x65, 0x72, 0x69, 0x6F, 0x73, 0x20, 0x50, 0x61, 0x72, 0x6C, 0x61, 0x6D, 0x65, 0x6E, 0x74, 0x61, 0x73, 0x2E, 0x50, 0x45 };
+            bool containsCheck = fileContent.FirstPosition(check, out int position);
+
+            // "GetModuleHandleA" + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00 + "GetProcAddress" + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00 + "LoadLibraryA" + (char)0x00 + (char)0x00 + "KERNEL32.dll" + (char)0x00 + "ëy" + (char)0x01 + "SNIF"
+            byte?[] check2 = { 0x47, 0x65, 0x74, 0x4D, 0x6F, 0x64, 0x75, 0x6C, 0x65, 0x48, 0x61, 0x6E, 0x64, 0x6C, 0x65, 0x41, 0x00, 0x00, 0x00, 0x00, 0x47, 0x65, 0x74, 0x50, 0x72, 0x6F, 0x63, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x00, 0x00, 0x00, 0x00, 0x4C, 0x6F, 0x61, 0x64, 0x4C, 0x69, 0x62, 0x72, 0x61, 0x72, 0x79, 0x41, 0x00, 0x00, 0x4B, 0x45, 0x52, 0x4E, 0x45, 0x4C, 0x33, 0x32, 0x2E, 0x64, 0x6C, 0x6C, 0x00, 0xEB, 0x79, 0x01, 0x53, 0x4E, 0x49, 0x46 };
+            bool containsCheck2 = fileContent.FirstPosition(check2, out int position2);
+
+            if (containsCheck && containsCheck2)
+                return $"LaserLock {GetVersion(fileContent, position2)} {GetBuild(fileContent, true)}" + (includeDebug ? $" (Index {position}, {position2})" : string.Empty);
+            else if (containsCheck && !containsCheck2)
+                return $"LaserLock Marathon {GetBuild(fileContent, false)}" + (includeDebug ? $" (Index {position})" : string.Empty);
+            else if (!containsCheck && containsCheck2)
+                return $"LaserLock {GetVersion(fileContent, --position2)} {GetBuild(fileContent, false)}" + (includeDebug ? $" (Index {position2})" : string.Empty);
+
+            if (file != null && string.Equals(Path.GetFileName(file), "NOMOUSE.SP", StringComparison.OrdinalIgnoreCase))
+                return $"LaserLock {GetVersion16Bit(fileContent)}" + (includeDebug ? $" (Index 71)" : string.Empty);
+
+            var matchers = GetContentMatchSets();
             return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
         }
 

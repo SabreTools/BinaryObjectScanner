@@ -12,9 +12,9 @@ namespace BurnOutSharp.ProtectionType
     public class XCP : IContentCheck, IPathCheck
     {
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        public List<ContentMatchSet> GetContentMatchSets()
         {
-            var matchers = new List<ContentMatchSet>
+            return new List<ContentMatchSet>
             {
                 // Found in GO.EXE
                 // XCP.DAT
@@ -42,7 +42,12 @@ namespace BurnOutSharp.ProtectionType
                     0x78, 0x63,  0x70, 0x64, 0x72, 0x69, 0x76, 0x65
                 }, "XCP"),
             };
+        }
 
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        {
+            var matchers = GetContentMatchSets();
             return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
         }
 

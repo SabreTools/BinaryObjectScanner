@@ -9,9 +9,9 @@ namespace BurnOutSharp.PackerType
     public class NSIS : IContentCheck
     {
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        public List<ContentMatchSet> GetContentMatchSets()
         {
-            var matchers = new List<ContentMatchSet>
+            return new List<ContentMatchSet>
             {
                 // Nullsoft Install System
                 new ContentMatchSet(new byte?[]
@@ -28,7 +28,12 @@ namespace BurnOutSharp.PackerType
                     0x49, 0x6e, 0x73, 0x74
                 }, "NSIS"),
             };
+        }
 
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        {
+            var matchers = GetContentMatchSets();
             return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
         }
 

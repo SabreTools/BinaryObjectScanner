@@ -9,27 +9,9 @@ namespace BurnOutSharp.PackerType
     public class IntelInstallationFramework : IContentCheck
     {
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        public List<ContentMatchSet> GetContentMatchSets()
         {
-            var fvinfo = Utilities.GetFileVersionInfo(file);
-
-            string name = fvinfo?.FileDescription?.Trim();
-            if (!string.IsNullOrWhiteSpace(name)
-                && (name.Equals("Intel(R) Installation Framework", StringComparison.OrdinalIgnoreCase)
-                || name.Equals("Intel Installation Framework", StringComparison.OrdinalIgnoreCase)))
-            {
-                return $"Intel Installation Framework {Utilities.GetFileVersion(file)}";
-            }
-
-            name = fvinfo?.ProductName?.Trim();
-            if (!string.IsNullOrWhiteSpace(name)
-                && (name.Equals("Intel(R) Installation Framework", StringComparison.OrdinalIgnoreCase)
-                || name.Equals("Intel Installation Framework", StringComparison.OrdinalIgnoreCase)))
-            {
-                return $"Intel Installation Framework {Utilities.GetFileVersion(file)}";
-            }
-
-            var matchers = new List<ContentMatchSet>
+            return new List<ContentMatchSet>
             {
                 // I + (char)0x00 + n + (char)0x00 + t + (char)0x00 + e + (char)0x00 + l + (char)0x00 + ( + (char)0x00 + R + (char)0x00 + ) + (char)0x00 +   + (char)0x00 + I + (char)0x00 + n + (char)0x00 + s + (char)0x00 + t + (char)0x00 + a + (char)0x00 + l + (char)0x00 + l + (char)0x00 + a + (char)0x00 + t + (char)0x00 + i + (char)0x00 + o + (char)0x00 + n + (char)0x00 +   + (char)0x00 + F + (char)0x00 + r + (char)0x00 + a + (char)0x00 + m + (char)0x00 + e + (char)0x00 + w + (char)0x00 + o + (char)0x00 + r + (char)0x00 + k + (char)0x00
                 new ContentMatchSet(new byte?[]
@@ -56,7 +38,30 @@ namespace BurnOutSharp.PackerType
                     0x77, 0x00, 0x6F, 0x00, 0x72, 0x00, 0x6B, 0x00,
                 }, Utilities.GetFileVersion, "Intel Installation Framework"),
             };
+        }
 
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        {
+            var fvinfo = Utilities.GetFileVersionInfo(file);
+
+            string name = fvinfo?.FileDescription?.Trim();
+            if (!string.IsNullOrWhiteSpace(name)
+                && (name.Equals("Intel(R) Installation Framework", StringComparison.OrdinalIgnoreCase)
+                || name.Equals("Intel Installation Framework", StringComparison.OrdinalIgnoreCase)))
+            {
+                return $"Intel Installation Framework {Utilities.GetFileVersion(file)}";
+            }
+
+            name = fvinfo?.ProductName?.Trim();
+            if (!string.IsNullOrWhiteSpace(name)
+                && (name.Equals("Intel(R) Installation Framework", StringComparison.OrdinalIgnoreCase)
+                || name.Equals("Intel Installation Framework", StringComparison.OrdinalIgnoreCase)))
+            {
+                return $"Intel Installation Framework {Utilities.GetFileVersion(file)}";
+            }
+
+            var matchers = GetContentMatchSets();
             return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
         }
     }

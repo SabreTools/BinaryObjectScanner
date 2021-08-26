@@ -8,9 +8,9 @@ namespace BurnOutSharp.ProtectionType
     public class DVDCops : IContentCheck
     {
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        public List<ContentMatchSet> GetContentMatchSets()
         {
-            var matchers = new List<ContentMatchSet>
+            return new List<ContentMatchSet>
             {
                 // DVD-Cops,  ver. 
                 new ContentMatchSet(new byte?[]
@@ -19,7 +19,12 @@ namespace BurnOutSharp.ProtectionType
                     0x2C, 0x20, 0x20, 0x76, 0x65, 0x72, 0x2E, 0x20
                 }, GetVersion, "DVD-Cops"),
             };
+        }
 
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        {
+            var matchers = GetContentMatchSets();
             return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
         }
 

@@ -7,9 +7,9 @@ namespace BurnOutSharp.ProtectionType
     public class MediaMaxCD3 : IContentCheck, IPathCheck
     {
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        public List<ContentMatchSet> GetContentMatchSets()
         {
-            var matchers = new List<ContentMatchSet>
+            return new List<ContentMatchSet>
             {
                 // Cd3Ctl
                 new ContentMatchSet(new byte?[] { 0x43, 0x64, 0x33, 0x43, 0x74, 0x6C }, "MediaMax CD-3"),
@@ -21,7 +21,12 @@ namespace BurnOutSharp.ProtectionType
                     0x6C, 0x6C, 0x53, 0x62, 0x63, 0x70
                 }, "MediaMax CD-3"),
             };
+        }
 
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        {
+            var matchers = GetContentMatchSets();
             return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
         }
 

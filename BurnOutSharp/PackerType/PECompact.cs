@@ -8,10 +8,10 @@ namespace BurnOutSharp.PackerType
     public class PECompact : IContentCheck
     {
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        public List<ContentMatchSet> GetContentMatchSets()
         {
             // Another possible version string for version 1 is "PECO" (50 45 43 4F)
-            var matchers = new List<ContentMatchSet>
+            return new List<ContentMatchSet>
             {
                 // pec1
                 new ContentMatchSet(new ContentMatch(new byte?[] { 0x70, 0x65, 0x63, 0x31 }, end: 2048), "PE Compact 1"),
@@ -26,7 +26,12 @@ namespace BurnOutSharp.PackerType
                     0x74, 0x32
                 }, "PE Compact 2"),
             };
+        }
 
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        {
+            var matchers = GetContentMatchSets();
             return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
         }
 

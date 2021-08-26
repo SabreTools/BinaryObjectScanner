@@ -21,9 +21,9 @@ namespace BurnOutSharp.ProtectionType
         };
 
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        public List<ContentMatchSet> GetContentMatchSets()
         {
-            var matchers = new List<ContentMatchSet>
+            return new List<ContentMatchSet>
             {
                 // D + (char)0x00 + V + (char)0x00 + M + (char)0x00 +   + (char)0x00 + L + (char)0x00 + i + (char)0x00 + b + (char)0x00 + r + (char)0x00 + a + (char)0x00 + r + (char)0x00 + y + (char)0x00
                 new ContentMatchSet(new byte?[]
@@ -90,7 +90,12 @@ namespace BurnOutSharp.ProtectionType
                     0x53, 0x00, 0x47, 0x00, 0x54, 0x00
                 }, "SolidShield"),
             };
+        }
 
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        {
+            var matchers = GetContentMatchSets();
             return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
         }
 

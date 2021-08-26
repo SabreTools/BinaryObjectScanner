@@ -12,9 +12,10 @@ namespace BurnOutSharp.PackerType
         public bool ShouldScan(byte[] magic) => true;
 
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        public List<ContentMatchSet> GetContentMatchSets()
         {
-            var matchers = new List<ContentMatchSet>
+            // Another possible version string for version 1 is "PECO" (50 45 43 4F)
+            return new List<ContentMatchSet>
             {
                 // S.e.t.u.p. .F.a.c.t.o.r.y.
                 new ContentMatchSet(new byte?[]
@@ -45,7 +46,12 @@ namespace BurnOutSharp.PackerType
                 //     0x69, 0x00, 0x6F, 0x00, 0x6E, 0x00
                 // }, GetVersion, "Setup Factory"),
             };
+        }
 
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        {
+            var matchers = GetContentMatchSets();
             return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
         }
 

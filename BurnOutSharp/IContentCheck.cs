@@ -1,9 +1,18 @@
-﻿namespace BurnOutSharp
+﻿using System.Collections.Generic;
+using BurnOutSharp.Matching;
+
+namespace BurnOutSharp
 {
     // TODO: This should either include an override that takes a Stream instead of the byte[]
     // OR have a completely separate check for when it's an executable specifically
     internal interface IContentCheck
     {
+        /// <summary>
+        /// Get a list of content match sets that represent a protection
+        /// </summary>
+        /// <returns>List of content match sets, null if not applicable</returns>
+        List<ContentMatchSet> GetContentMatchSets();
+
         /// <summary>
         /// Check a path for protections based on file contents
         /// </summary>

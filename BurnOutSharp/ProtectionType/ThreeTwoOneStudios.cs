@@ -6,9 +6,9 @@ namespace BurnOutSharp.ProtectionType
     public class ThreeTwoOneStudios : IContentCheck
     {
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        public List<ContentMatchSet> GetContentMatchSets()
         {
-            var matchers = new List<ContentMatchSet>
+            return new List<ContentMatchSet>
             {
                 // 3 + (char)0x00 + 1 + 2 + (char)0x00 + 1 + (char)0x00 + S + (char)0x00 + t + (char)0x00 + u + (char)0x00 + d + (char)0x00 + i + (char)0x00 + o + (char)0x00 + s + (char)0x00 +   + (char)0x00 + A + (char)0x00 + c + (char)0x00 + t + (char)0x00 + i + (char)0x00 + v + (char)0x00 + a + (char)0x00 + t + (char)0x00 + i + (char)0x00 + o + (char)0x00 + n + (char)0x00
                 new ContentMatchSet(new byte?[]
@@ -21,7 +21,12 @@ namespace BurnOutSharp.ProtectionType
                     0x6E, 0x00
                 }, "321Studios Online Activation"),
             };
+        }
 
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        {
+            var matchers = GetContentMatchSets();
             return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
         }
     }

@@ -13,9 +13,9 @@ namespace BurnOutSharp.ProtectionType
     public class Bitpool : IContentCheck, IPathCheck
     {
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        public List<ContentMatchSet> GetContentMatchSets()
         {
-            var matchers = new List<ContentMatchSet>
+            return new List<ContentMatchSet>
             {
                 // Sometimes found in CD.IDX
                 // BITPOOL.RSC
@@ -25,7 +25,12 @@ namespace BurnOutSharp.ProtectionType
                     0x52, 0x53, 0x43
                 }, "Bitpool"),
             };
+        }
 
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        {
+            var matchers = GetContentMatchSets();
             return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
         }
 

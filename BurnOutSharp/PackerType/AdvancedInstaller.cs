@@ -7,9 +7,9 @@ namespace BurnOutSharp.PackerType
     public class AdvancedInstaller : IContentCheck
     {
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        public List<ContentMatchSet> GetContentMatchSets()
         {
-            var matchers = new List<ContentMatchSet>
+            return new List<ContentMatchSet>
             {
                 // Software\Caphyon\Advanced Installer
                 new ContentMatchSet(new byte?[]
@@ -21,7 +21,12 @@ namespace BurnOutSharp.PackerType
                     0x6C, 0x65, 0x72
                 }, "Caphyon Advanced Installer"),
             };
+        }
 
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        {
+            var matchers = GetContentMatchSets();
             return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
         }
     }

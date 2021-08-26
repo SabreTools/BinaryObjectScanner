@@ -6,10 +6,10 @@ namespace BurnOutSharp.ProtectionType
     public class CodeLock : IContentCheck
     {
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        public List<ContentMatchSet> GetContentMatchSets()
         {
             // TODO: Verify if these are OR or AND
-            var matchers = new List<ContentMatchSet>
+            return new List<ContentMatchSet>
             {
                 // icd1 + (char)0x00
                 new ContentMatchSet(new byte?[] { 0x69, 0x63, 0x64, 0x31, 0x00 }, "Code Lock"),
@@ -24,7 +24,12 @@ namespace BurnOutSharp.ProtectionType
                     0x4B, 0x2E, 0x4F, 0x43, 0x58
                 }, "Code Lock"),
             };
+        }
 
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        {
+            var matchers = GetContentMatchSets();
             return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
         }
     }

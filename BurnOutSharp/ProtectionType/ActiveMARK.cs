@@ -6,9 +6,9 @@ namespace BurnOutSharp.ProtectionType
     public class ActiveMARK : IContentCheck
     {
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        public List<ContentMatchSet> GetContentMatchSets()
         {
-            var matchers = new List<ContentMatchSet>
+            return new List<ContentMatchSet>
             {
                 // TMSAMVOF
                 new ContentMatchSet(new byte?[] { 0x54, 0x4D, 0x53, 0x41, 0x4D, 0x56, 0x4F, 0x46 }, "ActiveMARK"),
@@ -21,7 +21,12 @@ namespace BurnOutSharp.ProtectionType
                     0x9A, 0xC1, 0x16, 0x00, 0x10, 0xC2, 0x16, 0x00
                 }, "ActiveMARK 5"),
             };
+        }
 
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        {
+            var matchers = GetContentMatchSets();
             return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
         }
     }

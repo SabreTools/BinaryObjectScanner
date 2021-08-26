@@ -6,9 +6,9 @@ namespace BurnOutSharp.PackerType
     public class dotFuscator : IContentCheck
     {
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        public List<ContentMatchSet> GetContentMatchSets()
         {
-            var matchers = new List<ContentMatchSet>
+            return new List<ContentMatchSet>
             {
                 // DotfuscatorAttribute
                 new ContentMatchSet(new byte?[]
@@ -18,7 +18,12 @@ namespace BurnOutSharp.PackerType
                     0x62, 0x75, 0x74, 0x65
                 }, "dotFuscator"),
             };
+        }
 
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        {
+            var matchers = GetContentMatchSets();
             return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
         }
     }

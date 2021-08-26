@@ -7,9 +7,9 @@ namespace BurnOutSharp.ProtectionType
     public class CopyKiller : IContentCheck, IPathCheck
     {
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        public List<ContentMatchSet> GetContentMatchSets()
         {
-            var matchers = new List<ContentMatchSet>
+            return new List<ContentMatchSet>
             {
                 // Tom Commander
                 new ContentMatchSet(new byte?[]
@@ -18,7 +18,12 @@ namespace BurnOutSharp.ProtectionType
                     0x61, 0x6E, 0x64, 0x65, 0x72
                 }, "CopyKiller"),
             };
+        }
 
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        {
+            var matchers = GetContentMatchSets();
             return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
         }
 

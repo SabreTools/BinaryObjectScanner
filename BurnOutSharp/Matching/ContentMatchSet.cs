@@ -7,7 +7,7 @@ namespace BurnOutSharp.Matching
     /// <summary>
     /// A set of content matches that work together
     /// </summary>
-    internal class ContentMatchSet : MatchSet<ContentMatch, byte?[]>
+    public class ContentMatchSet : MatchSet<ContentMatch, byte?[]>
     {
         /// <summary>
         /// Function to get a content version

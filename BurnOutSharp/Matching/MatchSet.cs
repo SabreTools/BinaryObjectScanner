@@ -5,7 +5,7 @@ namespace BurnOutSharp.Matching
     /// <summary>
     /// Wrapper for a single set of matching criteria
     /// </summary>
-    internal abstract class MatchSet<T, U> where T : IMatch<U>
+    public abstract class MatchSet<T, U> where T : IMatch<U>
     {
         /// <summary>
         /// Set of all matchers

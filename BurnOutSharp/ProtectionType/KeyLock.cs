@@ -6,9 +6,9 @@ namespace BurnOutSharp.ProtectionType
     public class KeyLock : IContentCheck
     {
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        public List<ContentMatchSet> GetContentMatchSets()
         {
-            var matchers = new List<ContentMatchSet>
+            return new List<ContentMatchSet>
             {
                 // KEY-LOCK COMMAND
                 new ContentMatchSet(new byte?[]
@@ -17,7 +17,12 @@ namespace BurnOutSharp.ProtectionType
                     0x20, 0x43, 0x4F, 0x4D, 0x4D, 0x41, 0x4E, 0x44
                 }, "Key-Lock (Dongle)"),
             };
+        }
 
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        {
+            var matchers = GetContentMatchSets();
             return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
         }
     }

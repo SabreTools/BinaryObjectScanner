@@ -40,9 +40,9 @@ namespace BurnOutSharp.ProtectionType
         };
 
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        public List<ContentMatchSet> GetContentMatchSets()
         {
-            var matchers = new List<ContentMatchSet>
+            return new List<ContentMatchSet>
             {
                 new ContentMatchSet(new List<byte?[]>
                 {
@@ -81,7 +81,12 @@ namespace BurnOutSharp.ProtectionType
                 // stxt371
                 new ContentMatchSet(new byte?[] { 0x73, 0x74, 0x78, 0x74, 0x33, 0x37, 0x31 }, Get320to4xVersion, "SafeDisc"),
             };
+        }
 
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        {
+            var matchers = GetContentMatchSets();
             return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
         }
 

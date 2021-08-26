@@ -91,6 +91,8 @@ namespace BurnOutSharp.FileType
             // Iterate through all content checks
             Parallel.ForEach(contentCheckClasses, contentCheckClass =>
             {
+                // TODO: Find a way to combine the outputs of GetContentMatchSet
+                // TODO: Have CheckContents take priority over GetContentMatchSet results
                 string protection = contentCheckClass.CheckContents(file, fileContent, scanner.IncludeDebug);
 
                 // If we have a valid content check based on settings

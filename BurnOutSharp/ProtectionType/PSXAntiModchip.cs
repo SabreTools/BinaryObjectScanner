@@ -5,12 +5,10 @@ namespace BurnOutSharp.ProtectionType
 {
     public class PSXAntiModchip : IContentCheck
     {
-        // TODO: Figure out PSX binary header so this can be checked explicitly
-        // TODO: Detect Red Hand protection
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        public List<ContentMatchSet> GetContentMatchSets()
         {
-            var matchers = new List<ContentMatchSet>
+            return new List<ContentMatchSet>
             {
                 //      SOFTWARE TERMINATED\nCONSOLE MAY HAVE BEEN MODIFIED\n     CALL 1-888-780-7690
                 new ContentMatchSet(new byte?[]
@@ -41,7 +39,14 @@ namespace BurnOutSharp.ProtectionType
                     0x30, 0x59, 0x30, 0x02
                 }, "PlayStation Anti-modchip (Japanese)"),
             };
+        }
 
+        // TODO: Figure out PSX binary header so this can be checked explicitly
+        // TODO: Detect Red Hand protection
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        {
+            var matchers = GetContentMatchSets();
             return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
         }
     }

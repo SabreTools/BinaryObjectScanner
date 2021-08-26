@@ -9,9 +9,9 @@ namespace BurnOutSharp.ProtectionType
     public class StarForce : IContentCheck, IPathCheck
     {
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        public List<ContentMatchSet> GetContentMatchSets()
         {
-            var matchers = new List<ContentMatchSet>
+            return new List<ContentMatchSet>
             {
                 new ContentMatchSet(new List<byte?[]>
                 {
@@ -114,7 +114,12 @@ namespace BurnOutSharp.ProtectionType
                     0x64, 0x00, 0x75, 0x00, 0x6c, 0x00, 0x65, 0x00
                 }, "StarForce 5"),
             };
+        }
 
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        {
+            var matchers = GetContentMatchSets();
             return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
         }
 

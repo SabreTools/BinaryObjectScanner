@@ -7,9 +7,9 @@ namespace BurnOutSharp.ProtectionType
     public class WTMCDProtect : IContentCheck, IPathCheck
     {
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        public List<ContentMatchSet> GetContentMatchSets()
         {
-            var matchers = new List<ContentMatchSet>
+            return new List<ContentMatchSet>
             {
                 // This string is found in the .imp files associated with this protection.
                 // WTM76545
@@ -34,7 +34,12 @@ namespace BurnOutSharp.ProtectionType
                     0x48, 0x61, 0x6E, 0x73, 0x70, 0x65, 0x74, 0x65, 0x72
                 }, "WTM Protection Viewer"),
             };
+        }
 
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        {
+            var matchers = GetContentMatchSets();
             return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
         }
 

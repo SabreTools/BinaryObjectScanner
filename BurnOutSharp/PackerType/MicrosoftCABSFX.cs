@@ -14,31 +14,9 @@ namespace BurnOutSharp.PackerType
         public bool ShouldScan(byte[] magic) => true;
 
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        public List<ContentMatchSet> GetContentMatchSets()
         {
-            var fvinfo = Utilities.GetFileVersionInfo(file);
-
-            string name = fvinfo?.InternalName?.Trim();
-            if (!string.IsNullOrWhiteSpace(name) && name.Equals("Wextract", StringComparison.OrdinalIgnoreCase))
-            {
-                string version = GetVersion(file, fileContent, null);
-                if (!string.IsNullOrWhiteSpace(version))
-                    return $"Microsoft CAB SFX v{Utilities.GetFileVersion(file)}";
-
-                return "Microsoft CAB SFX";
-            }
-
-            name = fvinfo?.OriginalFilename?.Trim();
-            if (!string.IsNullOrWhiteSpace(name) && name.Equals("WEXTRACT.EXE", StringComparison.OrdinalIgnoreCase))
-            {
-                string version = GetVersion(file, fileContent, null);
-                if (!string.IsNullOrWhiteSpace(version))
-                    return $"Microsoft CAB SFX v{Utilities.GetFileVersion(file)}";
-
-                return "Microsoft CAB SFX";
-            }
-
-            var matchers = new List<ContentMatchSet>
+            return new List<ContentMatchSet>
             {
                 // wextract_cleanup
                 new ContentMatchSet(new byte?[]
@@ -67,7 +45,34 @@ namespace BurnOutSharp.PackerType
                 // MSCFu
                 new ContentMatchSet(new byte?[] { 0x4D, 0x53, 0x43, 0x46, 0x75 }, GetVersion, "Microsoft CAB SFX"),
             };
+        }
 
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        {
+            var fvinfo = Utilities.GetFileVersionInfo(file);
+
+            string name = fvinfo?.InternalName?.Trim();
+            if (!string.IsNullOrWhiteSpace(name) && name.Equals("Wextract", StringComparison.OrdinalIgnoreCase))
+            {
+                string version = GetVersion(file, fileContent, null);
+                if (!string.IsNullOrWhiteSpace(version))
+                    return $"Microsoft CAB SFX v{Utilities.GetFileVersion(file)}";
+
+                return "Microsoft CAB SFX";
+            }
+
+            name = fvinfo?.OriginalFilename?.Trim();
+            if (!string.IsNullOrWhiteSpace(name) && name.Equals("WEXTRACT.EXE", StringComparison.OrdinalIgnoreCase))
+            {
+                string version = GetVersion(file, fileContent, null);
+                if (!string.IsNullOrWhiteSpace(version))
+                    return $"Microsoft CAB SFX v{Utilities.GetFileVersion(file)}";
+
+                return "Microsoft CAB SFX";
+            }
+
+            var matchers = GetContentMatchSets();
             return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
         }
 

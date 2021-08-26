@@ -8,9 +8,9 @@ namespace BurnOutSharp.ProtectionType
     public class GFWL : IContentCheck, IPathCheck
     {
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        public List<ContentMatchSet> GetContentMatchSets()
         {
-            var matchers = new List<ContentMatchSet>
+            return new List<ContentMatchSet>
             {
                 // xlive.dll
                 new ContentMatchSet(new byte?[] { 0x78, 0x6C, 0x69, 0x76, 0x65, 0x2E, 0x64, 0x6C, 0x6C }, "Games for Windows LIVE"),
@@ -44,7 +44,12 @@ namespace BurnOutSharp.ProtectionType
                     0x4C, 0x00, 0x49, 0x00, 0x56, 0x00, 0x45, 0x00,
                 }, Utilities.GetFileVersion, "Games for Windows LIVE"),
             };
+        }
 
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        {
+            var matchers = GetContentMatchSets();
             return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
         }
 

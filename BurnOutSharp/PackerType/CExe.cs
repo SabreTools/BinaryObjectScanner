@@ -11,11 +11,11 @@ namespace BurnOutSharp.PackerType
     {
         /// <inheritdoc/>
         public bool ShouldScan(byte[] magic) => true;
-
+        
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        public List<ContentMatchSet> GetContentMatchSets()
         {
-            var matchers = new List<ContentMatchSet>
+            return new List<ContentMatchSet>
             {
                 // %Wo�a6.�a6.�a6.�a6.�{6.�.).�f6.��).�`6.��0.�`6.�
                 new ContentMatchSet(
@@ -29,7 +29,12 @@ namespace BurnOutSharp.PackerType
                         0xD9, 0x30, 0x07, 0x92, 0x60, 0x36, 0x01, 0x92
                     }, end: 200), "CExe"),
             };
+        }
 
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        {
+            var matchers = GetContentMatchSets();
             return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
         }
 

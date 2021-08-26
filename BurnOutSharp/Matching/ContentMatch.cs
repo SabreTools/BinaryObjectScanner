@@ -3,7 +3,7 @@ namespace BurnOutSharp.Matching
     /// <summary>
     /// Content matching criteria
     /// </summary>
-    internal class ContentMatch : IMatch<byte?[]>
+    public class ContentMatch : IMatch<byte?[]>
     {
         /// <summary>
         /// Content to match

@@ -6,9 +6,9 @@ namespace BurnOutSharp.ProtectionType
     public class Sysiphus : IContentCheck
     {
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        public List<ContentMatchSet> GetContentMatchSets()
         {
-            var matchers = new List<ContentMatchSet>
+            return new List<ContentMatchSet>
             {
                 // V SUHPISYSDVD
                 new ContentMatchSet(new byte?[]
@@ -24,7 +24,12 @@ namespace BurnOutSharp.ProtectionType
                     0x59, 0x53
                 }, GetVersion, "Sysiphus"),
             };
+        }
 
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        {
+            var matchers = GetContentMatchSets();
             return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
         }
 
