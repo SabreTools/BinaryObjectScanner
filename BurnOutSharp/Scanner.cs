@@ -71,6 +71,9 @@ namespace BurnOutSharp
             if (paths == null || !paths.Any())
                 return null;
 
+            // Set a starting starting time for debug output
+            DateTime startTime = DateTime.UtcNow;
+
             // Checkpoint
             FileProgress?.Report(new ProtectionProgress(null, 0, null));
 
@@ -174,6 +177,10 @@ namespace BurnOutSharp
 
             // Clear out any empty keys
             Utilities.ClearEmptyKeys(protections);
+
+            // If we're in debug, output the elasped time to console
+            if (IncludeDebug)
+                Console.WriteLine($"Time elapsed: {DateTime.UtcNow.Subtract(startTime)}");
 
             return protections;
         }
