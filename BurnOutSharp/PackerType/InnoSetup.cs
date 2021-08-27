@@ -22,8 +22,8 @@ namespace BurnOutSharp.PackerType
         public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
         {
             // Get the sections from the executable, if possible
-            PEExecutable pex = PEExecutable.Deserialize(fileContent, 0);
-            var sections = pex?.SectionHeaders;
+            PortableExecutable pex = PortableExecutable.Deserialize(fileContent, 0);
+            var sections = pex?.SectionTable;
             if (sections == null)
                 return null;
             
@@ -34,7 +34,7 @@ namespace BurnOutSharp.PackerType
             });
             if (dataSection != null)
             {
-                int sectionAddr = (int)EVORE.ConvertVirtualAddress(dataSection.VirtualAddress, sections);
+                int sectionAddr = (int)dataSection.PointerToRawData;
                 int sectionEnd = sectionAddr + (int)dataSection.VirtualSize;
                 var matchers = new List<ContentMatchSet>
                 {
@@ -56,7 +56,7 @@ namespace BurnOutSharp.PackerType
             }
 
             // Get the DOS stub from the executable, if possible
-            var stub = pex?.MSDOSStub;
+            var stub = pex?.DOSStubHeader;
             if (stub == null)
                 return null;
             

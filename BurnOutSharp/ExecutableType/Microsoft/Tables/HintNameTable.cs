@@ -1,7 +1,5 @@
-using System;
-using System.Collections.Generic;
 using System.IO;
-using BurnOutSharp.Tools;
+using BurnOutSharp.ExecutableType.Microsoft.Entries;
 
 namespace BurnOutSharp.ExecutableType.Microsoft.Tables
 {

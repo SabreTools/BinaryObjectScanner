@@ -39,11 +39,16 @@ namespace BurnOutSharp.Tools
         /// <summary>
         /// Read a character array from the stream
         /// </summary>
-        public static char[] ReadChars(this Stream stream, int count)
+        public static char[] ReadChars(this Stream stream, int count) => stream.ReadChars(count, Encoding.Default);
+
+        /// <summary>
+        /// Read a character array from the stream
+        /// </summary>
+        public static char[] ReadChars(this Stream stream, int count, Encoding encoding)
         {
             byte[] buffer = new byte[count];
             stream.Read(buffer, 0, count);
-            return Encoding.Default.GetString(buffer).ToCharArray();
+            return encoding.GetString(buffer).ToCharArray();
         }
 
         /// <summary>

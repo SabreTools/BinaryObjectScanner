@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using BurnOutSharp.ExecutableType.Microsoft;
 using BurnOutSharp.Matching;
 using BurnOutSharp.Tools;
 
@@ -43,6 +46,18 @@ namespace BurnOutSharp.PackerType
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
         {
+            // Get the sections from the executable, if possible
+            PortableExecutable pex = PortableExecutable.Deserialize(fileContent, 0);
+            var sections = pex?.SectionTable;
+            if (sections == null)
+                return null;
+            
+            // Assembly information lives in the .rsrc section
+            // I need to find out how to navigate the resources in general
+            // as well as figure out the specific resources for both
+            // file info and MUI (XML) info. Once I figure this out,
+            // that also opens the doors to easier assembly XML checks.
+
             var fvinfo = Utilities.GetFileVersionInfo(file);
 
             string name = fvinfo?.FileDescription?.Trim();

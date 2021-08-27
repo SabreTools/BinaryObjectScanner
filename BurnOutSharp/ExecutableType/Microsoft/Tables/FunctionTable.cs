@@ -1,3 +1,5 @@
+using BurnOutSharp.ExecutableType.Microsoft.Entries;
+
 namespace BurnOutSharp.ExecutableType.Microsoft.Tables
 {
     /// <summary>

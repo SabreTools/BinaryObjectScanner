@@ -3,10 +3,24 @@ using System.IO;
 using System.Runtime.InteropServices;
 using BurnOutSharp.Tools;
 
-namespace BurnOutSharp.ExecutableType.Microsoft
+namespace BurnOutSharp.ExecutableType.Microsoft.Headers
 {
+    /// <summary>
+    /// Every image file has an optional header that provides information to the loader.
+    /// This header is optional in the sense that some files (specifically, object files) do not have it.
+    /// For image files, this header is required. An object file can have an optional header, but generally
+    /// this header has no function in an object file except to increase its size.
+    /// 
+    /// Note that the size of the optional header is not fixed.
+    /// The SizeOfOptionalHeader field in the COFF header must be used to validate that a probe into the file
+    /// for a particular data directory does not go beyond SizeOfOptionalHeader.
+    /// 
+    /// The NumberOfRvaAndSizes field of the optional header should also be used to ensure that no probe for
+    /// a particular data directory entry goes beyond the optional header.
+    /// In addition, it is important to validate the optional header magic number for format compatibility.
+    /// </summary>
     [StructLayout(LayoutKind.Sequential)]
-    internal class IMAGE_OPTIONAL_HEADER
+    internal class OptionalHeader
     {
         #region Standard Fields
 
@@ -222,9 +236,9 @@ namespace BurnOutSharp.ExecutableType.Microsoft
 
         #endregion
 
-        public static IMAGE_OPTIONAL_HEADER Deserialize(Stream stream)
+        public static OptionalHeader Deserialize(Stream stream)
         {
-            var ioh = new IMAGE_OPTIONAL_HEADER();
+            var ioh = new OptionalHeader();
 
             ioh.Magic = (OptionalHeaderType)stream.ReadUInt16();
             ioh.MajorLinkerVersion = stream.ReadByteValue();
@@ -287,9 +301,9 @@ namespace BurnOutSharp.ExecutableType.Microsoft
             return ioh;
         }
 
-        public static IMAGE_OPTIONAL_HEADER Deserialize(byte[] content, int offset)
+        public static OptionalHeader Deserialize(byte[] content, int offset)
         {
-            var ioh = new IMAGE_OPTIONAL_HEADER();
+            var ioh = new OptionalHeader();
 
             ioh.Magic = (OptionalHeaderType)BitConverter.ToUInt16(content, offset); offset += 2;
             ioh.MajorLinkerVersion = content[offset]; offset++;

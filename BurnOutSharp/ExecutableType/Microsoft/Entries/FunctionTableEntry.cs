@@ -1,4 +1,4 @@
-namespace BurnOutSharp.ExecutableType.Microsoft.Tables
+namespace BurnOutSharp.ExecutableType.Microsoft.Entries
 {
     /// <summary>
     /// Each entry in the export address table is a field that uses one of two formats in the following table.

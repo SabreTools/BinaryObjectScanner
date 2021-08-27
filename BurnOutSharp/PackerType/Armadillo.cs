@@ -25,8 +25,8 @@ namespace BurnOutSharp.PackerType
         public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
         {
             // Get the sections from the executable, if possible
-            PEExecutable pex = PEExecutable.Deserialize(fileContent, 0);
-            var sections = pex?.SectionHeaders;
+            PortableExecutable pex = PortableExecutable.Deserialize(fileContent, 0);
+            var sections = pex?.SectionTable;
             if (sections == null)
                 return null;
 
@@ -38,7 +38,7 @@ namespace BurnOutSharp.PackerType
             // Loop through all "extension" sections
             foreach (var section in sections.Where(s => s != null && Encoding.ASCII.GetString(s.Name).Trim('\0').EndsWith("1")))
             {
-                int sectionAddr = (int)EVORE.ConvertVirtualAddress(section.VirtualAddress, sections);
+                int sectionAddr = (int)section.PointerToRawData;
                 int sectionEnd = sectionAddr + (int)section.VirtualSize;
                 var matchers = new List<ContentMatchSet>
                 {

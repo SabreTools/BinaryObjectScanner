@@ -75,6 +75,8 @@ namespace BurnOutSharp.ProtectionType
                 // (char)0x00 + (char)0x00 + BoG_
                 new ContentMatchSet(new byte?[] { 0x00, 0x00, 0x42, 0x6F, 0x47, 0x5F }, Get320to4xVersion, "SafeDisc"),
 
+                // TODO: These two following are section headers. They should be converted to section header checks instead
+
                 // stxt774
                 new ContentMatchSet(new byte?[] { 0x73, 0x74, 0x78, 0x74, 0x37, 0x37, 0x34 }, Get320to4xVersion, "SafeDisc"),
 

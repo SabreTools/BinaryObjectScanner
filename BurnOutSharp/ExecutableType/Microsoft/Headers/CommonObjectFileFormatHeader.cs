@@ -3,10 +3,10 @@ using System.IO;
 using System.Runtime.InteropServices;
 using BurnOutSharp.Tools;
 
-namespace BurnOutSharp.ExecutableType.Microsoft
+namespace BurnOutSharp.ExecutableType.Microsoft.Headers
 {
     [StructLayout(LayoutKind.Sequential)]
-    internal class IMAGE_FILE_HEADER
+    internal class CommonObjectFileFormatHeader
     {
         /// <summary>
         /// After the MS-DOS stub, at the file offset specified at offset 0x3c, is a 4-byte signature that identifies the file as a PE format image file.
@@ -55,9 +55,9 @@ namespace BurnOutSharp.ExecutableType.Microsoft
         /// </summary>
         public ImageObjectCharacteristics Characteristics;
 
-        public static IMAGE_FILE_HEADER Deserialize(Stream stream)
+        public static CommonObjectFileFormatHeader Deserialize(Stream stream)
         {
-            var ifh = new IMAGE_FILE_HEADER();
+            var ifh = new CommonObjectFileFormatHeader();
 
             ifh.Signature = stream.ReadUInt32();
             ifh.Machine = (MachineType)stream.ReadUInt16();
@@ -71,9 +71,9 @@ namespace BurnOutSharp.ExecutableType.Microsoft
             return ifh;
         }
 
-        public static IMAGE_FILE_HEADER Deserialize(byte[] content, int offset)
+        public static CommonObjectFileFormatHeader Deserialize(byte[] content, int offset)
         {
-            var ifh = new IMAGE_FILE_HEADER();
+            var ifh = new CommonObjectFileFormatHeader();
 
             ifh.Signature = BitConverter.ToUInt32(content, offset); offset += 4;
             ifh.Machine = (MachineType)BitConverter.ToUInt16(content, offset); offset += 2;

@@ -17,8 +17,8 @@ namespace BurnOutSharp.PackerType
         public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
         {
             // Get the sections from the executable, if possible
-            PEExecutable pex = PEExecutable.Deserialize(fileContent, 0);
-            var sections = pex?.SectionHeaders;
+            PortableExecutable pex = PortableExecutable.Deserialize(fileContent, 0);
+            var sections = pex?.SectionTable;
             if (sections == null)
                 return null;
 
@@ -26,7 +26,7 @@ namespace BurnOutSharp.PackerType
             var rdataSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".rdata"));
             if (rdataSection != null)
             {
-                int sectionAddr = (int)EVORE.ConvertVirtualAddress(rdataSection.VirtualAddress, sections);
+                int sectionAddr = (int)rdataSection.PointerToRawData;
                 int sectionEnd = sectionAddr + (int)rdataSection.VirtualSize;
                 var matchers = new List<ContentMatchSet>
                 {

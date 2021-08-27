@@ -22,6 +22,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using BurnOutSharp.ExecutableType.Microsoft;
+using BurnOutSharp.ExecutableType.Microsoft.Headers;
 using BurnOutSharp.ExecutableType.Microsoft.Sections;
 using BurnOutSharp.ExecutableType.Microsoft.Tables;
 
@@ -35,7 +36,7 @@ namespace BurnOutSharp.Tools
         /// <param name="virtualAddress">Virtual address to convert</param>
         /// <param name="sections">Array of sections to check against</param>
         /// <returns>Physical address, 0 on error</returns>
-        internal static uint ConvertVirtualAddress(uint virtualAddress, IMAGE_SECTION_HEADER[] sections)
+        internal static uint ConvertVirtualAddress(uint virtualAddress, SectionHeader[] sections)
         {
             // Loop through all of the sections
             for (int i = 0; i < sections.Length; i++)
@@ -65,8 +66,8 @@ namespace BurnOutSharp.Tools
 
             try
             {
-                PEExecutable pex = PEExecutable.Deserialize(fileContent, 0);
-                return pex.COFFFileHeader.Characteristics.HasFlag(ImageObjectCharacteristics.IMAGE_FILE_DLL);
+                PortableExecutable pex = PortableExecutable.Deserialize(fileContent, 0);
+                return pex.ImageFileHeader.Characteristics.HasFlag(ImageObjectCharacteristics.IMAGE_FILE_DLL);
             }
             catch
             {
@@ -125,13 +126,13 @@ namespace BurnOutSharp.Tools
                 unsafe
                 {
                     // Read all of the executable header information
-                    PEExecutable pex = PEExecutable.Deserialize(fileContent, 0);
+                    PortableExecutable pex = PortableExecutable.Deserialize(fileContent, 0);
 
                     // Find the import directory entry
                     IMAGE_DATA_DIRECTORY idei = pex.OptionalHeader.DataDirectories[(byte)ImageDirectory.IMAGE_DIRECTORY_ENTRY_IMPORT];
                     
                     // Set the table index and size
-                    int tableIndex = (int)ConvertVirtualAddress(idei.VirtualAddress, pex.SectionHeaders);
+                    int tableIndex = (int)ConvertVirtualAddress(idei.VirtualAddress, pex.SectionTable);
                     int tableSize = (int)idei.Size;
                     if (tableIndex <= 0 || tableSize <= 0)
                         return null;

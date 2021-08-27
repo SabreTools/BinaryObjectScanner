@@ -2,13 +2,13 @@ using System;
 using System.IO;
 using BurnOutSharp.Tools;
 
-namespace BurnOutSharp.ExecutableType.Microsoft.Tables
+namespace BurnOutSharp.ExecutableType.Microsoft.Entries
 {
     /// <summary>
-    /// Each import directory entry has the following format
+    /// Each import address entry has the following format
     /// </summary>
-    /// <remarks>https://docs.microsoft.com/en-us/windows/win32/debug/pe-format#import-directory-table</remarks>
-    internal class ImportDirectoryTableEntry
+    /// <remarks>https://docs.microsoft.com/en-us/windows/win32/debug/pe-format#import-address-table</remarks>
+    internal class ImportAddressTableEntry
     {
         /// <summary>
         /// The RVA of the import lookup table.
@@ -53,30 +53,30 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Tables
                 && ImportAddressTableRVA == 0;
         }
 
-        public static ImportDirectoryTableEntry Deserialize(Stream stream)
+        public static ImportAddressTableEntry Deserialize(Stream stream)
         {
-            var idte = new ImportDirectoryTableEntry();
+            var iate = new ImportAddressTableEntry();
 
-            idte.ImportLookupTableRVA = stream.ReadUInt32();
-            idte.TimeDateStamp = stream.ReadUInt32();
-            idte.ForwarderChain = stream.ReadUInt32();
-            idte.NameRVA = stream.ReadUInt32();
-            idte.ImportAddressTableRVA = stream.ReadUInt32();
+            iate.ImportLookupTableRVA = stream.ReadUInt32();
+            iate.TimeDateStamp = stream.ReadUInt32();
+            iate.ForwarderChain = stream.ReadUInt32();
+            iate.NameRVA = stream.ReadUInt32();
+            iate.ImportAddressTableRVA = stream.ReadUInt32();
 
-            return idte;
+            return iate;
         }
 
-        public static ImportDirectoryTableEntry Deserialize(byte[] content, int offset)
+        public static ImportAddressTableEntry Deserialize(byte[] content, int offset)
         {
-            var idte = new ImportDirectoryTableEntry();
+            var iate = new ImportAddressTableEntry();
 
-            idte.ImportLookupTableRVA = BitConverter.ToUInt32(content, offset); offset += 4;
-            idte.TimeDateStamp = BitConverter.ToUInt32(content, offset); offset += 4;
-            idte.ForwarderChain = BitConverter.ToUInt32(content, offset); offset += 4;
-            idte.NameRVA = BitConverter.ToUInt32(content, offset); offset += 4;
-            idte.ImportAddressTableRVA = BitConverter.ToUInt32(content, offset); offset += 4;
+            iate.ImportLookupTableRVA = BitConverter.ToUInt32(content, offset); offset += 4;
+            iate.TimeDateStamp = BitConverter.ToUInt32(content, offset); offset += 4;
+            iate.ForwarderChain = BitConverter.ToUInt32(content, offset); offset += 4;
+            iate.NameRVA = BitConverter.ToUInt32(content, offset); offset += 4;
+            iate.ImportAddressTableRVA = BitConverter.ToUInt32(content, offset); offset += 4;
 
-            return idte;
+            return iate;
         }
     }
 }

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using BurnOutSharp.ExecutableType.Microsoft;
+using BurnOutSharp.ExecutableType.Microsoft.Headers;
 using BurnOutSharp.Matching;
 using BurnOutSharp.Tools;
 
@@ -16,8 +17,8 @@ namespace BurnOutSharp.PackerType
         public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
         {
             // Get the sections from the executable, if possible
-            PEExecutable pex = PEExecutable.Deserialize(fileContent, 0);
-            var sections = pex?.SectionHeaders;
+            PortableExecutable pex = PortableExecutable.Deserialize(fileContent, 0);
+            var sections = pex?.SectionTable;
             if (sections == null)
                 return null;
 
@@ -92,7 +93,7 @@ namespace BurnOutSharp.PackerType
         /// <param name="sections">Array of sections to check against</param>
         /// <param name="sectionPrefix">Prefix of the sections to check for</param>
         /// <returns>Real address of the section data, -1 on error</returns>
-        private int FindData(byte[] fileContent, IMAGE_SECTION_HEADER[] sections, string sectionPrefix)
+        private int FindData(byte[] fileContent, SectionHeader[] sections, string sectionPrefix)
         {
             // Get the two matching sections, if possible
             var firstSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith($"{sectionPrefix}0"));
@@ -103,7 +104,7 @@ namespace BurnOutSharp.PackerType
                 return -1;
 
             // Return the first section address
-            return (int)EVORE.ConvertVirtualAddress(firstSection.VirtualAddress, sections);
+            return (int)firstSection.PointerToRawData;
         }
     }
 }

@@ -1,9 +1,8 @@
 using System;
 using System.IO;
-using System.Linq;
 using BurnOutSharp.Tools;
 
-namespace BurnOutSharp.ExecutableType.Microsoft.Tables
+namespace BurnOutSharp.ExecutableType.Microsoft.Entries
 {
     /// <summary>
     /// Each entry in the hint/name table has the following format
