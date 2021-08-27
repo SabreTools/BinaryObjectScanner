@@ -367,7 +367,10 @@ namespace BurnOutSharp.Tools
         /// </summary>
         /// <param name="fileContent">Byte array representing the file contents</param>
         /// <returns>Embedded assembly manifest as a string, if possible</returns>
-        /// <remarks>TODO: How do we find the manifest specifically better?</remarks>
+        /// <remarks>
+        /// TODO: How do we find the manifest specifically better
+        /// TODO: This should be derived specifically in the .rsrc section
+        /// </remarks>
         private static string GetEmbeddedAssemblyManifest(byte[] fileContent)
         {
             // <?xml
