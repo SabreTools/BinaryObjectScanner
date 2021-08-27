@@ -281,12 +281,12 @@ namespace BurnOutSharp.ExecutableType.Microsoft
         /// <summary>
         /// The content of this field is assumed to be applicable to any machine type
         /// </summary>
-        IMAGE_FILE_MACHINE_UNKNOWN      = 0x0,
+        IMAGE_FILE_MACHINE_UNKNOWN      = 0x0000,
 
         /// <summary>
         /// Matsushita AM33
         /// </summary>
-        IMAGE_FILE_MACHINE_AM33         = 0x1d3,
+        IMAGE_FILE_MACHINE_AM33         = 0x01d3,
 
         /// <summary>
         /// x64
@@ -296,7 +296,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft
         /// <summary>
         /// ARM little endian
         /// </summary>
-        IMAGE_FILE_MACHINE_ARM          = 0x1c0,
+        IMAGE_FILE_MACHINE_ARM          = 0x01c0,
 
         /// <summary>
         /// ARM64 little endian
@@ -306,22 +306,22 @@ namespace BurnOutSharp.ExecutableType.Microsoft
         /// <summary>
         /// ARM Thumb-2 little endian
         /// </summary>
-        IMAGE_FILE_MACHINE_ARMNT        = 0x1c4,
+        IMAGE_FILE_MACHINE_ARMNT        = 0x01c4,
 
         /// <summary>
         /// EFI byte code
         /// </summary>
-        IMAGE_FILE_MACHINE_EBC          = 0xebc,
+        IMAGE_FILE_MACHINE_EBC          = 0x0ebc,
 
         /// <summary>
         /// Intel 386 or later processors and compatible processors
         /// </summary>
-        IMAGE_FILE_MACHINE_I386         = 0x14c,
+        IMAGE_FILE_MACHINE_I386         = 0x014c,
 
         /// <summary>
         /// Intel Itanium processor family
         /// </summary>
-        IMAGE_FILE_MACHINE_IA64         = 0x200,
+        IMAGE_FILE_MACHINE_IA64         = 0x0200,
 
         /// <summary>
         /// Mitsubishi M32R little endian
@@ -331,32 +331,32 @@ namespace BurnOutSharp.ExecutableType.Microsoft
         /// <summary>
         /// MIPS16
         /// </summary>
-        IMAGE_FILE_MACHINE_MIPS16       = 0x266,
+        IMAGE_FILE_MACHINE_MIPS16       = 0x0266,
 
         /// <summary>
         /// MIPS with FPU
         /// </summary>
-        IMAGE_FILE_MACHINE_MIPSFPU      = 0x366,
+        IMAGE_FILE_MACHINE_MIPSFPU      = 0x0366,
 
         /// <summary>
         /// MIPS16 with FPU
         /// </summary>
-        IMAGE_FILE_MACHINE_MIPSFPU16    = 0x466,
+        IMAGE_FILE_MACHINE_MIPSFPU16    = 0x0466,
 
         /// <summary>
         /// Power PC little endian
         /// </summary>
-        IMAGE_FILE_MACHINE_POWERPC      = 0x1f0,
+        IMAGE_FILE_MACHINE_POWERPC      = 0x01f0,
 
         /// <summary>
         /// Power PC with floating point support
         /// </summary>
-        IMAGE_FILE_MACHINE_POWERPCFP    = 0x1f1,
+        IMAGE_FILE_MACHINE_POWERPCFP    = 0x01f1,
 
         /// <summary>
         /// MIPS little endian
         /// </summary>
-        IMAGE_FILE_MACHINE_R4000        = 0x166,
+        IMAGE_FILE_MACHINE_R4000        = 0x0166,
 
         /// <summary>
         /// RISC-V 32-bit address space
@@ -376,32 +376,32 @@ namespace BurnOutSharp.ExecutableType.Microsoft
         /// <summary>
         /// Hitachi SH3
         /// </summary>
-        IMAGE_FILE_MACHINE_SH3          = 0x1a2,
+        IMAGE_FILE_MACHINE_SH3          = 0x01a2,
 
         /// <summary>
         /// Hitachi SH3 DSP
         /// </summary>
-        IMAGE_FILE_MACHINE_SH3DSP       = 0x1a3,
+        IMAGE_FILE_MACHINE_SH3DSP       = 0x01a3,
 
         /// <summary>
         /// Hitachi SH4
         /// </summary>
-        IMAGE_FILE_MACHINE_SH4          = 0x1a6,
+        IMAGE_FILE_MACHINE_SH4          = 0x01a6,
 
         /// <summary>
         /// Hitachi SH5
         /// </summary>
-        IMAGE_FILE_MACHINE_SH5          = 0x1a8,
+        IMAGE_FILE_MACHINE_SH5          = 0x01a8,
 
         /// <summary>
         /// Thumb
         /// </summary>
-        IMAGE_FILE_MACHINE_THUMB        = 0x1c2,
+        IMAGE_FILE_MACHINE_THUMB        = 0x01c2,
 
         /// <summary>
         /// MIPS little-endian WCE v2
         /// </summary>
-        IMAGE_FILE_MACHINE_WCEMIPSV2    = 0x169,
+        IMAGE_FILE_MACHINE_WCEMIPSV2    = 0x0169,
     }
 
     /// <summary>
