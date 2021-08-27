@@ -7,18 +7,19 @@ using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.PackerType
 {
+    // TODO: Add version checking, if possible
     public class Armadillo : IContentCheck
     {
         /// <inheritdoc/>
-        public List<ContentMatchSet> GetContentMatchSets()
-        {
-            // TODO: Remove this if the below section check is proven
-            return new List<ContentMatchSet>
-            {
-                // .nicode + (char)0x00
-                new ContentMatchSet(new byte?[] { 0x2E, 0x6E, 0x69, 0x63, 0x6F, 0x64, 0x65, 0x00 }, "Armadillo"),
-            };
-        }
+        public List<ContentMatchSet> GetContentMatchSets() => null;
+        // {
+        //     // TODO: Remove this if the below section check is proven
+        //     return new List<ContentMatchSet>
+        //     {
+        //         // .nicode + (char)0x00
+        //         new ContentMatchSet(new byte?[] { 0x2E, 0x6E, 0x69, 0x63, 0x6F, 0x64, 0x65, 0x00 }, "Armadillo"),
+        //     };
+        // }
 
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
@@ -34,26 +35,22 @@ namespace BurnOutSharp.PackerType
             if (nicodeSection != null)
                 return "Armadillo";
 
-            // Get the .text1 section for scanning
-            var textSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".text1"));
-            if (textSection != null)
+            // Loop through all "extension" sections
+            foreach (var section in sections.Where(s => s != null && Encoding.ASCII.GetString(s.Name).Trim('\0').EndsWith("1")))
             {
-                System.Console.WriteLine($"{Encoding.ASCII.GetString(textSection.Name)} {textSection.VirtualAddress}");
-
-                int textSectionAddr = (int)EVORE.ConvertVirtualAddress(textSection.VirtualAddress, sections);
-                int textSectionEnd = textSectionAddr + (int)textSection.VirtualSize;
-
-                System.Console.WriteLine($"{Encoding.ASCII.GetString(textSection.Name)} {textSectionAddr} - {textSectionEnd}");
-
+                int sectionAddr = (int)EVORE.ConvertVirtualAddress(section.VirtualAddress, sections);
+                int sectionEnd = sectionAddr + (int)section.VirtualSize;
                 var matchers = new List<ContentMatchSet>
                 {
                     // ARMDEBUG
                     new ContentMatchSet(
-                        new ContentMatch(new byte?[] { 0x41, 0x52, 0x4D, 0x44, 0x45, 0x42, 0x55, 0x47 }, start: textSectionAddr, end: textSectionEnd),
+                        new ContentMatch(new byte?[] { 0x41, 0x52, 0x4D, 0x44, 0x45, 0x42, 0x55, 0x47 }, start: sectionAddr, end: sectionEnd),
                         "Armadillo"),
                 };
 
-                return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
+                string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
+                if (!string.IsNullOrWhiteSpace(match))
+                    return match;
             }
 
             return null;
