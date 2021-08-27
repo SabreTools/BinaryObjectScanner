@@ -60,13 +60,24 @@ namespace BurnOutSharp.PackerType
         {
             try
             {
-                int index = positions[0];
-                index -= 5;
+                // Check the normal version location first
+                int index = positions[0] - 5;
                 string versionString = Encoding.ASCII.GetString(fileContent, index, 4);
-                if (!char.IsNumber(versionString[0]))
-                    return "(Unknown Version)";
+                if (char.IsNumber(versionString[0]))
+                    return versionString;
+                
+                // Check for the old-style string
+                //
+                // Example:
+                // $Info: This file is packed with the UPX executable packer http://upx.tsx.org $
+                // $Id: UPX 1.02 Copyright (C) 1996-2000 the UPX Team. All Rights Reserved. $
+                // UPX!
+                index = positions[0] - 67;
+                versionString = Encoding.ASCII.GetString(fileContent, index, 4);
+                if (char.IsNumber(versionString[0]))
+                    return versionString;
 
-                return versionString;
+                return "(Unknown Version)";
             }
             catch
             {
