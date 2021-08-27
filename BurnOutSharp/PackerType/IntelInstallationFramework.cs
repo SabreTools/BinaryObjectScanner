@@ -47,11 +47,12 @@ namespace BurnOutSharp.PackerType
         public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
         {
             // Get the sections from the executable, if possible
-            PortableExecutable pex = PortableExecutable.Deserialize(fileContent, 0);
-            var sections = pex?.SectionTable;
-            if (sections == null)
-                return null;
+            // PortableExecutable pex = PortableExecutable.Deserialize(fileContent, 0);
+            // var sections = pex?.SectionTable;
+            // if (sections == null)
+            //     return null;
             
+            // TODO: Implement resource finding instead of using the built in methods
             // Assembly information lives in the .rsrc section
             // I need to find out how to navigate the resources in general
             // as well as figure out the specific resources for both
