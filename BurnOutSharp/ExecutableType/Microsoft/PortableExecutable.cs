@@ -1,8 +1,9 @@
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
 using BurnOutSharp.ExecutableType.Microsoft.Headers;
 using BurnOutSharp.ExecutableType.Microsoft.Sections;
-using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ExecutableType.Microsoft
 {
@@ -75,6 +76,40 @@ namespace BurnOutSharp.ExecutableType.Microsoft
 
         // TODO: Add more and more parts of a standard PE executable, not just the header
         // TODO: Add data directory table information here instead of in IMAGE_OPTIONAL_HEADER
+
+        /// <summary>
+        /// Determine if a section is contained within the section table
+        /// </summary>
+        /// <param name="sectionName">Name of the section to check for</param>
+        /// <param name="exact">True to enable exact matching of names, false for starts-with</param>
+        /// <returns>Tuple of contains and index</returns>
+        public bool ContainsSection(string sectionName, bool exact = false)
+        {
+            // Get all section names first
+            string[] sectionNames = GetSectionNames();
+            if (sectionNames == null)
+                return false;
+            
+            // If we're checking exactly, return only exact matches (with nulls trimmed)
+            if (exact)
+                return sectionNames.Any(n => n.Trim('\0').Equals(sectionName));
+            
+            // Otherwise, check if section name starts with the value
+            else
+                return sectionNames.Any(n => n.Trim('\0').StartsWith(sectionName));
+        }
+
+        /// <summary>
+        /// Get the list of section names
+        /// </summary>
+        public string[] GetSectionNames()
+        {
+            // Invalid table means no names are accessible
+            if (SectionTable == null || SectionTable.Length == 0)
+                return null;
+            
+            return SectionTable.Select(s => Encoding.ASCII.GetString(s.Name)).ToArray();
+        }
 
         public static PortableExecutable Deserialize(Stream stream)
         {
