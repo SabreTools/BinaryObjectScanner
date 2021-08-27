@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using BurnOutSharp.ExecutableType.Microsoft;
 using BurnOutSharp.Matching;
+
 
 namespace BurnOutSharp.PackerType
 {
@@ -8,36 +12,41 @@ namespace BurnOutSharp.PackerType
     public class PECompact : IContentCheck
     {
         /// <inheritdoc/>
-        public List<ContentMatchSet> GetContentMatchSets()
-        {
-            // Another possible version string for version 1 is "PECO" (50 45 43 4F)
-            return new List<ContentMatchSet>
-            {
-                // pec1
-                new ContentMatchSet(new ContentMatch(new byte?[] { 0x70, 0x65, 0x63, 0x31 }, end: 2048), "PE Compact 1"),
-
-                // PEC2
-                new ContentMatchSet(new ContentMatch(new byte?[] { 0x50, 0x45, 0x43, 0x32 }, end: 2048), GetVersion, "PE Compact 2"),
-
-                // PECompact2
-                new ContentMatchSet(new byte?[]
-                {
-                    0x50, 0x45, 0x43, 0x6F, 0x6D, 0x70, 0x61, 0x63,
-                    0x74, 0x32
-                }, "PE Compact 2"),
-            };
-        }
+        public List<ContentMatchSet> GetContentMatchSets() => null;
 
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false) => null;
-
-        // TODO: Improve version detection, Protection ID is able to detect ranges of versions. For example, 1.66-1.84 or 2.20-3.02.
-        public static string GetVersion(string file, byte[] fileContent, List<int> positions)
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
         {
-            short version = BitConverter.ToInt16(fileContent, positions[0] + 4);
-            if (version == 0)
-                return string.Empty;
-            return $"(Internal Version {version})";
+            // Get the sections from the executable, if possible
+            PortableExecutable pex = PortableExecutable.Deserialize(fileContent, 0);
+            var sections = pex?.SectionTable;
+            if (sections == null)
+                return null;
+            
+            // TODO: Do something with this information -
+            // PE Compact 1 uses the symbol table pointer in the file header to store the value 1329808720 / 50 45 43 4F / PECO
+            // Console.WriteLine($"{file} symbol table pointer: {pex.ImageFileHeader.PointerToSymbolTable}");
+            // Console.WriteLine($"{file} ptr as string: {Encoding.ASCII.GetString(BitConverter.GetBytes(pex.ImageFileHeader.PointerToSymbolTable))}");
+
+            // TODO: Get more granular version detection. PiD is somehow able to detect version ranges based
+            // on the data in the file. This may be related to information in other fields
+
+            // Get the pec1 section, if it exists
+            var pec1Section = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith("pec1"));
+            if (pec1Section != null)
+                return "PE Compact v1.x";
+
+            // Get the PEC2 section, if it exists
+            var textSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".text"));
+            if (textSection != null && textSection.PointerToRelocations == 0x32434550)
+            {
+                if (textSection.PointerToLinenumbers != 0)
+                    return $"PE Compact v{textSection.PointerToLinenumbers} (internal version)";
+                
+                return "PE Compact v2.x (or newer)";
+            }
+
+            return null;
         }
     }
 }
