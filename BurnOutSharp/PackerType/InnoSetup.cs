@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using BurnOutSharp.ExecutableType.Microsoft;
 using BurnOutSharp.Matching;
+using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.PackerType
 {
@@ -14,28 +16,62 @@ namespace BurnOutSharp.PackerType
         public bool ShouldScan(byte[] magic) => true;
 
         /// <inheritdoc/>
-        public List<ContentMatchSet> GetContentMatchSets()
-        {
-            return new List<ContentMatchSet>
-            {
-                // Inno Setup Setup Data (
-                new ContentMatchSet(new byte?[]
-                {
-                    0x49, 0x6E, 0x6E, 0x6F, 0x20, 0x53, 0x65, 0x74,
-                    0x75, 0x70, 0x20, 0x53, 0x65, 0x74, 0x75, 0x70,
-                    0x20, 0x44, 0x61, 0x74, 0x61, 0x20, 0x28
-                }, GetVersion, "Inno Setup"),
-
-                // Inno
-                new ContentMatchSet(
-                    new ContentMatch(new byte?[] { 0x49, 0x6E, 0x6E, 0x6F }, start: 0x30, end: 0x31),
-                    GetOldVersion,
-                    "Inno Setup"),
-            };
-        }
+        public List<ContentMatchSet> GetContentMatchSets() => null;
 
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false) => null;
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        {
+            // Get the sections from the executable, if possible
+            PEExecutable pex = PEExecutable.Deserialize(fileContent, 0);
+            var sections = pex?.SectionHeaders;
+            if (sections == null)
+                return null;
+            
+            // Get the DATA/.data section, if it exists
+            var dataSection = sections.FirstOrDefault(s => {
+                string name = Encoding.ASCII.GetString(s.Name).Trim('\0');
+                return name.StartsWith("DATA") || name.StartsWith(".data");
+            });
+            if (dataSection != null)
+            {
+                int sectionAddr = (int)EVORE.ConvertVirtualAddress(dataSection.VirtualAddress, sections);
+                int sectionEnd = sectionAddr + (int)dataSection.VirtualSize;
+                var matchers = new List<ContentMatchSet>
+                {
+                    // Inno Setup Setup Data (
+                    new ContentMatchSet(
+                        new ContentMatch(new byte?[]
+                        {
+                            0x49, 0x6E, 0x6E, 0x6F, 0x20, 0x53, 0x65, 0x74,
+                            0x75, 0x70, 0x20, 0x53, 0x65, 0x74, 0x75, 0x70,
+                            0x20, 0x44, 0x61, 0x74, 0x61, 0x20, 0x28
+                        }, start: sectionAddr, end: sectionEnd),
+                        GetVersion,
+                        "Inno Setup"),
+                };
+
+                string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
+                if (!string.IsNullOrWhiteSpace(match))
+                    return match;
+            }
+
+            // Get the DOS stub from the executable, if possible
+            var stub = pex?.MSDOSStub;
+            if (stub == null)
+                return null;
+            
+            // Check for "Inno" in the reserved words
+            if (stub.Reserved2[4] == 0x6E49 && stub.Reserved2[5] == 0x6F6E)
+            {
+                string version = GetOldVersion(file, fileContent, new List<int> { 0x30 });
+                if (!string.IsNullOrWhiteSpace(version))
+                    return $"Inno Setup {version}";
+                
+                return "Inno Setup (Unknown Version)";
+            }
+
+            return null;
+        }
 
         /// <inheritdoc/>
         public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, string file)
