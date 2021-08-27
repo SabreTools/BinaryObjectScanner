@@ -8,6 +8,7 @@ namespace BurnOutSharp.PackerType
         /// <inheritdoc/>
         public List<ContentMatchSet> GetContentMatchSets()
         {
+            // TODO: Obtain a sample to find where this string is in a typical executable
             return new List<ContentMatchSet>
             {
                 // ??[[__[[_ + (char)0x00 + {{ + (char)0x0 + (char)0x00 + {{ + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x0 + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00 + ?;??;??
