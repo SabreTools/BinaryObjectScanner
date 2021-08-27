@@ -2,6 +2,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using BurnOutSharp.ExecutableType.Microsoft.Headers;
 using BurnOutSharp.ExecutableType.Microsoft.Sections;
+using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ExecutableType.Microsoft
 {
@@ -92,7 +93,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft
                     pex.SectionTable[i] = SectionHeader.Deserialize(stream);
                 }
 
-                // TODO: Uncomment these when all directories are understod and implemented
+                // TODO: Uncomment these as the directories are understod and implemented
                 // // Export Table
                 // var table = pex.SectionTable[(byte)ImageDirectory.IMAGE_DIRECTORY_ENTRY_EXPORT];
                 // if (table.VirtualSize > 0)
@@ -103,16 +104,26 @@ namespace BurnOutSharp.ExecutableType.Microsoft
                 // }
 
                 // // Import Table
-                // table = pex.SectionHeaders[(byte)ImageDirectory.IMAGE_DIRECTORY_ENTRY_IMPORT];
+                // table = pex.SectionTable[(byte)ImageDirectory.IMAGE_DIRECTORY_ENTRY_IMPORT];
                 // if (table.VirtualSize > 0)
                 // {
-                //     int tableAddress = (int)EVORE.ConvertVirtualAddress(table.VirtualAddress, pex.SectionHeaders);
+                //     int tableAddress = (int)EVORE.ConvertVirtualAddress(table.VirtualAddress, pex.SectionTable);
                 //     stream.Seek(tableAddress, SeekOrigin.Begin);
                 //     pex.ImportTable = ImportDataSection.Deserialize(stream, pex.OptionalHeader.Magic == OptionalHeaderType.PE32Plus, hintCount: 0); // TODO: Figure out where this count comes from
                 // }
+
+                // // Resource Table
+                // var table = pex.SectionTable[(byte)ImageDirectory.IMAGE_DIRECTORY_ENTRY_RESOURCE];
+                // if (table.VirtualSize > 0)
+                // {
+                //     int tableAddress = (int)EVORE.ConvertVirtualAddress(table.VirtualAddress, pex.SectionTable);
+                //     stream.Seek(tableAddress, SeekOrigin.Begin);
+                //     pex.ResourceSection = ResourceSection.Deserialize(stream, pex.SectionTable);
+                // }
             }
-            catch
+            catch (System.Exception ex)
             {
+                System.Console.WriteLine($"Errored out on a file: {ex}");
                 return null;
             }
 
@@ -140,7 +151,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft
                         pex.SectionTable[i] = SectionHeader.Deserialize(content, offset); offset += 40;
                     }
 
-                    // TODO: Uncomment these when all directories are understod and implemented
+                    // TODO: Uncomment these as the directories are understod and implemented
                     // // Export Table
                     // var table = pex.SectionTable[(byte)ImageDirectory.IMAGE_DIRECTORY_ENTRY_EXPORT];
                     // if (table.VirtualSize > 0)
@@ -150,16 +161,25 @@ namespace BurnOutSharp.ExecutableType.Microsoft
                     // }
 
                     // // Import Table
-                    // table = pex.SectionHeaders[(byte)ImageDirectory.IMAGE_DIRECTORY_ENTRY_IMPORT];
+                    // table = pex.SectionTable[(byte)ImageDirectory.IMAGE_DIRECTORY_ENTRY_IMPORT];
                     // if (table.VirtualSize > 0)
                     // {
-                    //     int tableAddress = (int)EVORE.ConvertVirtualAddress(table.VirtualAddress, pex.SectionHeaders);
-                    //     pex.ImportTable = ImportDataSection.Deserialize(content, tableAddress, pex.OptionalHeader.Magic == OptionalHeaderType.PE32Plus, hintCount: 0); offset += Marshal.SizeOf(pex.ImportTable); // TODO: Figure out where this count comes from
+                    //     int tableAddress = (int)EVORE.ConvertVirtualAddress(table.VirtualAddress, pex.SectionTable);
+                    //     pex.ImportTable = ImportDataSection.Deserialize(content, tableAddress, pex.OptionalHeader.Magic == OptionalHeaderType.PE32Plus, hintCount: 0);
+                    // }
+
+                    // // Resource Table
+                    // var table = pex.SectionTable[(byte)ImageDirectory.IMAGE_DIRECTORY_ENTRY_RESOURCE];
+                    // if (table.VirtualSize > 0)
+                    // {
+                    //     int tableAddress = (int)EVORE.ConvertVirtualAddress(table.VirtualAddress, pex.SectionTable);
+                    //     pex.ResourceSection = ResourceSection.Deserialize(content, tableAddress, pex.SectionTable);
                     // }
                 }
             }
-            catch
+            catch (System.Exception ex)
             {
+                System.Console.WriteLine($"Errored out on a file: {ex}");
                 return null;
             }
 

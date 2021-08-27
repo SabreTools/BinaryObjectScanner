@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using BurnOutSharp.ExecutableType.Microsoft.Headers;
 using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ExecutableType.Microsoft.Entries
@@ -18,8 +19,6 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
     /// <remarks>https://docs.microsoft.com/en-us/windows/win32/debug/pe-format#resource-directory-entries</remarks>
     internal class ResourceDirectoryTableEntry
     {
-        #region Name Entry
-
         /// <summary>
         /// The offset of a string that gives the Type, Name, or Language ID entry, depending on level of table.
         /// </summary>
@@ -40,31 +39,70 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
         /// </summary>
         public uint SubdirectoryOffset => DataEntryOffset;
 
-        #endregion
+        /// <summary>
+        /// Resource Data entry (a leaf).
+        /// </summary>
+        public ResourceDataEntry DataEntry;
 
         /// <summary>
         /// Determine if an entry represents a leaf or another directory table
         /// </summary>
         public bool IsResourceDataEntry() => (DataEntryOffset & (1 << 31)) == 0;
 
-        public static ResourceDirectoryTableEntry Deserialize(Stream stream)
+        public static ResourceDirectoryTableEntry Deserialize(Stream stream, SectionHeader[] sections)
         {
-            var idte = new ResourceDirectoryTableEntry();
+            var rdte = new ResourceDirectoryTableEntry();
 
-            idte.NameOffset = stream.ReadUInt32();
-            idte.DataEntryOffset = stream.ReadUInt32();
+            rdte.NameOffset = stream.ReadUInt32();
+            rdte.DataEntryOffset = stream.ReadUInt32();
 
-            return idte;
+            // Read in the data if we have a leaf
+            if (rdte.IsResourceDataEntry())
+            {
+                long lastPosition = stream.Position;
+                try
+                {
+                    int dataEntryAddress = (int)EVORE.ConvertVirtualAddress(rdte.DataEntryOffset, sections);
+                    if (dataEntryAddress > 0)
+                    {
+                        stream.Seek(dataEntryAddress, SeekOrigin.Begin);
+                        rdte.DataEntry = ResourceDataEntry.Deserialize(stream);
+                    }
+                }
+                catch { }
+                finally
+                {
+                    stream.Seek(lastPosition, SeekOrigin.Begin);
+                }
+            }
+
+            // TODO: Add parsing for further directory table entries in the tree
+
+            return rdte;
         }
 
-        public static ResourceDirectoryTableEntry Deserialize(byte[] content, int offset)
+        public static ResourceDirectoryTableEntry Deserialize(byte[] content, int offset, SectionHeader[] sections)
         {
-            var idte = new ResourceDirectoryTableEntry();
+            var rdte = new ResourceDirectoryTableEntry();
 
-            idte.NameOffset = BitConverter.ToUInt32(content, offset); offset += 4;
-            idte.DataEntryOffset = BitConverter.ToUInt32(content, offset); offset += 4;
+            rdte.NameOffset = BitConverter.ToUInt32(content, offset); offset += 4;
+            rdte.DataEntryOffset = BitConverter.ToUInt32(content, offset); offset += 4;
 
-            return idte;
+            // Read in the data if we have a leaf
+            if (rdte.IsResourceDataEntry())
+            {
+                try
+                {
+                    int dataEntryAddress = (int)EVORE.ConvertVirtualAddress(rdte.DataEntryOffset, sections);
+                    if (dataEntryAddress > 0)
+                        rdte.DataEntry = ResourceDataEntry.Deserialize(content, dataEntryAddress);
+                }
+                catch { }
+            }
+
+            // TODO: Add parsing for further directory table entries in the tree
+
+            return rdte;
         }
     }
 }
