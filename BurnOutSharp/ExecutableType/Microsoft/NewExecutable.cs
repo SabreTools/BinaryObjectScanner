@@ -30,6 +30,9 @@ namespace BurnOutSharp.ExecutableType.Microsoft
         #endregion
 
         // TODO: Add more and more parts of a standard NE executable, not just the header
+        // TODO: Tables? What about the tables?
+        // TODO: Implement the rest of the structures found at http://bytepointer.com/resources/win16_ne_exe_format_win3.0.htm
+        // (Left off at RESIDENT-NAME TABLE)
 
         public static NewExecutable Deserialize(Stream stream)
         {

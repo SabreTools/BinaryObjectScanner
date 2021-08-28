@@ -9,36 +9,40 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Headers
     /// The NE header is a relatively large structure with multiple characteristics.
     /// Because of the age of the format some items are unclear in meaning.
     /// </summary>
+    /// <remarks>http://bytepointer.com/resources/win16_ne_exe_format_win3.0.htm</remarks>
     [StructLayout(LayoutKind.Sequential)]
     internal class NewExecutableHeader
     {
         /// <summary>
-        /// "NE" [00]
+        /// Signature word. [00]
+        /// "N" is low-order byte.
+        /// "E" is high-order byte.
         /// </summary>
         public ushort Magic;
         
         /// <summary>
-        /// The major linker version [02]
+        /// Version number of the linker. [02]
         /// </summary>
         public byte LinkerVersion;
         
         /// <summary>
-        /// The minor linker version [03]
+        /// Revision number of the linker. [03]
         /// </summary>
         public byte LinkerRevision;
         
         /// <summary>
-        /// Offset of Entry Table [04]
+        /// Entry Table file offset, relative to the beginning of the segmented EXE header. [04]
         /// </summary>
         public ushort EntryTableOffset;
         
         /// <summary>
-        /// Length of entry table in bytes [06]
+        /// Number of bytes in the entry table. [06]
         /// </summary>
         public ushort EntryTableSize;
         
         /// <summary>
-        /// 32-bit CRC of entire contents of file [08]
+        /// 32-bit CRC of entire contents of file. [08]
+        /// These words are taken as 00 during the calculation.
         /// </summary>
         public uint CrcChecksum;
         

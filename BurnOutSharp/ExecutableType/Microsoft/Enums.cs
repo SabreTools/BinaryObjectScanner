@@ -588,107 +588,6 @@ namespace BurnOutSharp.ExecutableType.Microsoft
         NRSOFF32 = 0x0D,
     }
 
-    /// <summary>
-    /// Format of NS_FLAGS(x)
-    /// 
-    /// x                   Unused
-    ///  h                  Huge segment
-    ///   c                 32-bit code segment
-    ///    d                Discardable segment
-    ///     DD              I/O privilege level (286 DPL bits)
-    ///       c             Conforming segment
-    ///        r            Segment has relocations
-    ///         e           Execute/read only
-    ///          p          Preload segment
-    ///           P         Pure segment
-    ///            m        Movable segment
-    ///             i       Iterated segment
-    ///              ttt    Segment type
-    /// </summary>
-    [Flags]
-    internal enum NsFlags : ushort
-    {
-        /// <summary>
-        /// Segment type mask
-        /// </summary>
-        NSTYPE = 0x0007,
-        
-        /// <summary>
-        /// Code segment
-        /// </summary>
-        NSCODE = 0x0000,
-        
-        /// <summary>
-        /// Data segment
-        /// </summary>
-        NSDATA = 0x0001,
-        
-        /// <summary>
-        /// Iterated segment flag
-        /// </summary>
-        NSITER = 0x0008,
-        
-        /// <summary>
-        /// Movable segment flag
-        /// </summary>
-        NSMOVE = 0x0010,
-        
-        /// <summary>
-        /// Shared segment flag
-        /// </summary>
-        NSSHARED = 0x0020,
-        
-        /// <summary>
-        /// For compatibility
-        /// </summary>
-        NSPURE = 0x0020,
-        
-        /// <summary>
-        /// Preload segment flag
-        /// </summary>
-        NSPRELOAD = 0x0040,
-        
-        /// <summary>
-        /// Execute-only (code segment), or read-only (data segment)
-        /// </summary>
-        NSEXRD = 0x0080,
-        
-        /// <summary>
-        /// Segment has relocations
-        /// </summary>
-        NSRELOC = 0x0100,
-        
-        /// <summary>
-        /// Conforming segment
-        /// </summary>
-        NSCONFORM = 0x0200,
-        
-        /// <summary>
-        /// I/O privilege level (286 DPL bits)
-        /// </summary>
-        NSDPL = 0x0C00,
-        
-        /// <summary>
-        /// Left shift count for SEGDPL field
-        /// </summary>
-        SHIFTDPL = 10,
-        
-        /// <summary>
-        /// Segment is discardable
-        /// </summary>
-        NSDISCARD = 0x1000,
-        
-        /// <summary>
-        /// 32-bit code segment
-        /// </summary>
-        NS32BIT = 0x2000,
-        
-        /// <summary>
-        /// Huge memory segment, length of segment and minimum allocation size are in segment sector units
-        /// </summary>
-        NSHUGE = 0x4000,
-    }
-
     // https://docs.microsoft.com/en-us/windows/win32/debug/pe-format#optional-header-image-only
     internal enum OptionalHeaderType : ushort
     {
@@ -706,6 +605,26 @@ namespace BurnOutSharp.ExecutableType.Microsoft
         /// PE32+ images allow for a 64-bit address space while limiting the image size to 2 gigabytes.
         /// </summary>
         PE32Plus    = 0x20b,
+    }
+
+    /// http://bytepointer.com/resources/win16_ne_exe_format_win3.0.htm
+    [Flags]
+    internal enum ResourceTableEntryFlags : ushort
+    {
+        /// <summary>
+        /// Resource is not fixed.
+        /// </summary>
+        MOVEABLE = 0x0010,
+
+        /// <summary>
+        /// Resource can be shared.
+        /// </summary>
+        PURE = 0x0020,
+        
+        /// <summary>
+        /// Resource is preloaded.
+        /// </summary>
+        PRELOAD = 0x0040,
     }
 
     /// <summary>
@@ -955,6 +874,91 @@ namespace BurnOutSharp.ExecutableType.Microsoft
         /// The section can be written to.
         /// </summary>
         IMAGE_SCN_MEM_WRITE                     = 0x80000000,
+    }
+    
+    /// http://bytepointer.com/resources/win16_ne_exe_format_win3.0.htm
+    [Flags]
+    internal enum SegmentTableEntryFlags : ushort
+    {
+        /// <summary>
+        /// Segment-type field.
+        /// </summary>
+        TYPE = 0x0007,
+        
+        /// <summary>
+        /// Code-segment type.
+        /// </summary>
+        CODE = 0x0000,
+        
+        /// <summary>
+        /// Data-segment type.
+        /// </summary>
+        DATA = 0x0001,
+        
+        /// <summary>
+        /// Iterated segment flag
+        /// </summary>
+        ITER = 0x0008,
+        
+        /// <summary>
+        /// Segment is not fixed.
+        /// </summary>
+        MOVEABLE = 0x0010,
+        
+        /// <summary>
+        /// Shared segment flag
+        /// </summary>
+        SHARED = 0x0020,
+        
+        /// <summary>
+        /// For compatibility
+        /// </summary>
+        PURE = 0x0020,
+        
+        /// <summary>
+        /// Segment will be preloaded; read-only if this is a data segment.
+        /// </summary>
+        PRELOAD = 0x0040,
+        
+        /// <summary>
+        /// Execute-only (code segment), or read-only (data segment)
+        /// </summary>
+        EXRD = 0x0080,
+        
+        /// <summary>
+        /// Set if segment has relocation records.
+        /// </summary>
+        RELOCINFO = 0x0100,
+        
+        /// <summary>
+        /// Conforming segment
+        /// </summary>
+        CONFORM = 0x0200,
+        
+        /// <summary>
+        /// I/O privilege level (286 DPL bits)
+        /// </summary>
+        DPL = 0x0C00,
+        
+        /// <summary>
+        /// Left shift count for SEGDPL field
+        /// </summary>
+        SHIFTDPL = 10,
+        
+        /// <summary>
+        /// Discard priority.
+        /// </summary>
+        DISCARD = 0x1000,
+        
+        /// <summary>
+        /// 32-bit code segment
+        /// </summary>
+        NS32BIT = 0x2000,
+        
+        /// <summary>
+        /// Huge memory segment, length of segment and minimum allocation size are in segment sector units
+        /// </summary>
+        HUGE = 0x4000,
     }
 
     [Flags]
