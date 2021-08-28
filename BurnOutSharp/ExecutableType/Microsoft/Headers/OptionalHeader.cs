@@ -232,7 +232,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Headers
         /// Data-directory entries following the optional header
         /// </summary>
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = Constants.IMAGE_NUMBEROF_DIRECTORY_ENTRIES)]
-        public IMAGE_DATA_DIRECTORY[] DataDirectories;
+        public DataDirectoryHeader[] DataDirectories;
 
         #endregion
 
@@ -292,10 +292,10 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Headers
 
             ioh.LoaderFlags = stream.ReadUInt32();
             ioh.NumberOfRvaAndSizes = stream.ReadUInt32();
-            ioh.DataDirectories = new IMAGE_DATA_DIRECTORY[Constants.IMAGE_NUMBEROF_DIRECTORY_ENTRIES];
+            ioh.DataDirectories = new DataDirectoryHeader[Constants.IMAGE_NUMBEROF_DIRECTORY_ENTRIES];
             for (int i = 0; i < Constants.IMAGE_NUMBEROF_DIRECTORY_ENTRIES; i++)
             {
-                ioh.DataDirectories[i] = IMAGE_DATA_DIRECTORY.Deserialize(stream);
+                ioh.DataDirectories[i] = DataDirectoryHeader.Deserialize(stream);
             }
 
             return ioh;
@@ -361,10 +361,10 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Headers
 
             ioh.LoaderFlags = BitConverter.ToUInt32(content, offset); offset += 4;
             ioh.NumberOfRvaAndSizes = BitConverter.ToUInt32(content, offset); offset += 4;
-            ioh.DataDirectories = new IMAGE_DATA_DIRECTORY[Constants.IMAGE_NUMBEROF_DIRECTORY_ENTRIES];
+            ioh.DataDirectories = new DataDirectoryHeader[Constants.IMAGE_NUMBEROF_DIRECTORY_ENTRIES];
             for (int i = 0; i < Constants.IMAGE_NUMBEROF_DIRECTORY_ENTRIES; i++)
             {
-                ioh.DataDirectories[i] = IMAGE_DATA_DIRECTORY.Deserialize(content, offset); offset += 8;
+                ioh.DataDirectories[i] = DataDirectoryHeader.Deserialize(content, offset); offset += 8;
             }
 
             return ioh;
