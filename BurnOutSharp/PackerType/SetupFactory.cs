@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using BurnOutSharp.Matching;
@@ -14,7 +15,6 @@ namespace BurnOutSharp.PackerType
         /// <inheritdoc/>
         public List<ContentMatchSet> GetContentMatchSets()
         {
-            // Another possible version string for version 1 is "PECO" (50 45 43 4F)
             return new List<ContentMatchSet>
             {
                 // S.e.t.u.p. .F.a.c.t.o.r.y.
@@ -49,7 +49,33 @@ namespace BurnOutSharp.PackerType
         }
 
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false) => null;
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        {
+            // Get the sections from the executable, if possible
+            // PortableExecutable pex = PortableExecutable.Deserialize(fileContent, 0);
+            // var sections = pex?.SectionTable;
+            // if (sections == null)
+            //     return null;
+            
+            // TODO: Implement resource finding instead of using the built in methods
+            // Assembly information lives in the .rsrc section
+            // I need to find out how to navigate the resources in general
+            // as well as figure out the specific resources for both
+            // file info and MUI (XML) info. Once I figure this out,
+            // that also opens the doors to easier assembly XML checks.
+
+            var fvinfo = Utilities.GetFileVersionInfo(file);
+
+            string name = fvinfo?.LegalTrademarks?.Trim();
+            if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Setup Factory", StringComparison.OrdinalIgnoreCase))
+                return $"Setup Factory {GetVersion(file, fileContent, null)}";
+
+            name = fvinfo?.ProductName?.Trim();
+            if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Setup Factory", StringComparison.OrdinalIgnoreCase))
+                return $"Setup Factory {GetVersion(file, fileContent, null)}";
+
+            return null;
+        }
 
         /// <inheritdoc/>
         public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, string file)
