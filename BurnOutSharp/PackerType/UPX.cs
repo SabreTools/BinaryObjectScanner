@@ -4,7 +4,6 @@ using System.Text;
 using BurnOutSharp.ExecutableType.Microsoft;
 using BurnOutSharp.ExecutableType.Microsoft.Headers;
 using BurnOutSharp.Matching;
-using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.PackerType
 {

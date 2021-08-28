@@ -2,6 +2,9 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text;
+using BurnOutSharp.ExecutableType.Microsoft;
 using BurnOutSharp.Matching;
 using BurnOutSharp.Tools;
 using SharpCompress.Archives;
@@ -15,22 +18,41 @@ namespace BurnOutSharp.PackerType
         public bool ShouldScan(byte[] magic) => true;
 
         /// <inheritdoc/>
-        public List<ContentMatchSet> GetContentMatchSets()
-        {
-            return new List<ContentMatchSet>
-            {
-                // Software\WinRAR SFX
-                new ContentMatchSet(new byte?[]
-                {
-                    0x53, 0x6F, 0x66, 0x74, 0x77, 0x61, 0x72, 0x65,
-                    0x5C, 0x57, 0x69, 0x6E, 0x52, 0x41, 0x52, 0x20,
-                    0x53, 0x46, 0x58
-                }, "WinRAR SFX"),
-            };
-        }
+        public List<ContentMatchSet> GetContentMatchSets() => null;
 
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false) => null;
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        {
+            // Get the sections from the executable, if possible
+            PortableExecutable pex = PortableExecutable.Deserialize(fileContent, 0);
+            var sections = pex?.SectionTable;
+            if (sections == null)
+                return null;
+
+            // Get the .data section, if it exists
+            var dataSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).Trim('\0').StartsWith(".data"));
+            if (dataSection != null)
+            {
+                int sectionAddr = (int)dataSection.PointerToRawData;
+                int sectionEnd = sectionAddr + (int)dataSection.VirtualSize;
+                var matchers = new List<ContentMatchSet>
+                {
+                    // Software\WinRAR SFX
+                    new ContentMatchSet(new byte?[]
+                    {
+                        0x53, 0x6F, 0x66, 0x74, 0x77, 0x61, 0x72, 0x65,
+                        0x5C, 0x57, 0x69, 0x6E, 0x52, 0x41, 0x52, 0x20,
+                        0x53, 0x46, 0x58
+                    }, "WinRAR SFX"),
+                };
+
+                string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
+                if (!string.IsNullOrWhiteSpace(match))
+                    return match;
+            }
+
+            return null;
+        }
 
         public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, string file)
         {
