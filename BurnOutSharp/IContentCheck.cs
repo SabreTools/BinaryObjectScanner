@@ -5,6 +5,10 @@ namespace BurnOutSharp
 {
     // TODO: This should either include an override that takes a Stream instead of the byte[]
     // OR have a completely separate check for when it's an executable specifically
+    // TODO: Once more checks have been converted over to using PortableExecutable, NewExecutable,
+    // and DOS Executable, then add an override for `CheckContents` that takes an executable type
+    // as one of the arguments. This will reduce the amount of times the same file will be parsed
+    // into an in-memory header
     internal interface IContentCheck
     {
         /// <summary>
