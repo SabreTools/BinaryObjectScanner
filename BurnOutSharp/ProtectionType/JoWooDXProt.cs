@@ -30,8 +30,13 @@ namespace BurnOutSharp.ProtectionType
                     },
                 }, GetVersion, "JoWooD X-Prot"),
 
+                // TODO: This is likely a section header name. When converting, check this
+                // It also likely goes along with the above. Not sure how yet
+
                 // .ext      
-                new ContentMatchSet(new byte?[] { 0x2E, 0x65, 0x78, 0x74, 0x20, 0x20, 0x20, 0x20 }, "JoWooD X-Prot v1"),
+                new ContentMatchSet(
+                    new ContentMatch(new byte?[] { 0x2E, 0x65, 0x78, 0x74, 0x20, 0x20, 0x20, 0x20 }, end: 2048),
+                    "JoWooD X-Prot v1"),
             };
         }
 
