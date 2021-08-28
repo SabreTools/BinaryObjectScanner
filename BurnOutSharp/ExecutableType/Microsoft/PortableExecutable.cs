@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -117,11 +118,25 @@ namespace BurnOutSharp.ExecutableType.Microsoft
 
             try
             {
+                // Attempt to read the DOS header first
                 pex.DOSStubHeader = MSDOSExecutableHeader.Deserialize(stream); stream.Seek(pex.DOSStubHeader.NewExeHeaderAddr, SeekOrigin.Begin);
+                if (pex.DOSStubHeader.Magic != Constants.IMAGE_DOS_SIGNATURE)
+                    return null;
+                
+                // If the new header address is invalid for the file, it's not a PE
+                if (pex.DOSStubHeader.NewExeHeaderAddr >= stream.Length)
+                    return null;
+
+                // Then attempt to read the PE header
                 pex.ImageFileHeader = CommonObjectFileFormatHeader.Deserialize(stream);
+                if (pex.ImageFileHeader.Signature != Constants.IMAGE_NT_SIGNATURE)
+                    return null;
+
+                // If the optional header is supposed to exist, read that as well
                 if (pex.ImageFileHeader.SizeOfOptionalHeader > 0)
                     pex.OptionalHeader = OptionalHeader.Deserialize(stream);
                 
+                // Then read in the section table
                 pex.SectionTable = new SectionHeader[pex.ImageFileHeader.NumberOfSections];
                 for (int i = 0; i < pex.ImageFileHeader.NumberOfSections; i++)
                 {
@@ -156,9 +171,9 @@ namespace BurnOutSharp.ExecutableType.Microsoft
                 //     pex.ResourceSection = ResourceSection.Deserialize(stream, pex.SectionTable);
                 // }
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
-                System.Console.WriteLine($"Errored out on a file: {ex}");
+                //Console.WriteLine($"Errored out on a file: {ex}");
                 return null;
             }
 
@@ -173,13 +188,28 @@ namespace BurnOutSharp.ExecutableType.Microsoft
             {
                 unsafe
                 {
+                    // Attempt to read the DOS header first
                     pex.DOSStubHeader = MSDOSExecutableHeader.Deserialize(content, offset); offset = pex.DOSStubHeader.NewExeHeaderAddr;
+                    if (pex.DOSStubHeader.Magic != Constants.IMAGE_DOS_SIGNATURE)
+                        return null;
+
+                    // If the new header address is invalid for the file, it's not a PE
+                    if (pex.DOSStubHeader.NewExeHeaderAddr >= content.Length)
+                        return null;
+
+                    // Then attempt to read the PE header
                     pex.ImageFileHeader = CommonObjectFileFormatHeader.Deserialize(content, offset); offset += Marshal.SizeOf(pex.ImageFileHeader);
+                    if (pex.ImageFileHeader.Signature != Constants.IMAGE_NT_SIGNATURE)
+                        return null;
+
+                    // If the optional header is supposed to exist, read that as well
                     if (pex.ImageFileHeader.SizeOfOptionalHeader > 0)
                     {
-                        pex.OptionalHeader = OptionalHeader.Deserialize(content, offset); offset += pex.ImageFileHeader.SizeOfOptionalHeader;
+                        pex.OptionalHeader = OptionalHeader.Deserialize(content, offset);
+                        offset += pex.ImageFileHeader.SizeOfOptionalHeader;
                     }
 
+                    // Then read in the section table
                     pex.SectionTable = new SectionHeader[pex.ImageFileHeader.NumberOfSections];
                     for (int i = 0; i < pex.ImageFileHeader.NumberOfSections; i++)
                     {
@@ -212,9 +242,9 @@ namespace BurnOutSharp.ExecutableType.Microsoft
                     // }
                 }
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
-                System.Console.WriteLine($"Errored out on a file: {ex}");
+                //Console.WriteLine($"Errored out on a file: {ex}");
                 return null;
             }
 
