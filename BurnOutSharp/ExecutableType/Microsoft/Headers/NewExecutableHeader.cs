@@ -241,7 +241,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Headers
             neh.ResidentNameTableOffset = BitConverter.ToUInt16(contents, offset); offset += 2;
             neh.ModuleReferenceTableOffset = BitConverter.ToUInt16(contents, offset); offset += 2;
             neh.ImportedNamesTableOffset = BitConverter.ToUInt16(contents, offset); offset += 2;
-            neh.NonResidentNamesTableOffset = BitConverter.ToUInt16(contents, offset); offset += 2;
+            neh.NonResidentNamesTableOffset = BitConverter.ToUInt32(contents, offset); offset += 4;
             neh.MovableEntriesCount = BitConverter.ToUInt16(contents, offset); offset += 2;
             neh.SegmentAlignmentShiftCount = BitConverter.ToUInt16(contents, offset); offset += 2;
             neh.ResourceEntriesCount = BitConverter.ToUInt16(contents, offset); offset += 2;
