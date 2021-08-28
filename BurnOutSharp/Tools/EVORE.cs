@@ -129,7 +129,7 @@ namespace BurnOutSharp.Tools
                     PortableExecutable pex = PortableExecutable.Deserialize(fileContent, 0);
 
                     // Find the import directory entry
-                    IMAGE_DATA_DIRECTORY idei = pex.OptionalHeader.DataDirectories[(byte)ImageDirectory.IMAGE_DIRECTORY_ENTRY_IMPORT];
+                    DataDirectoryHeader idei = pex.OptionalHeader.DataDirectories[(byte)ImageDirectory.IMAGE_DIRECTORY_ENTRY_IMPORT];
                     
                     // Set the table index and size
                     int tableIndex = (int)ConvertVirtualAddress(idei.VirtualAddress, pex.SectionTable);
