@@ -315,8 +315,13 @@ namespace BurnOutSharp.Tools
             // Try to read the XML in from the string
             try
             {
+                // Try to read the assembly
+                var assemblyNode = GetAssemblyNode(manifestString);
+                if (assemblyNode == null)
+                    return null;
+
                 // Try to read the assemblyIdentity
-                var assemblyIdentityNode = GetAssemblyIdentityNode(manifestString);
+                var assemblyIdentityNode = assemblyNode["assemblyIdentity"];
                 if (assemblyIdentityNode == null)
                     return null;
                 
@@ -344,13 +349,13 @@ namespace BurnOutSharp.Tools
             // Try to read the XML in from the string
             try
             {
-                // Try to read the assemblyIdentity
-                var assemblyIdentityNode = GetAssemblyIdentityNode(manifestString);
-                if (assemblyIdentityNode == null)
+                // Try to read the assembly
+                var assemblyNode = GetAssemblyNode(manifestString);
+                if (assemblyNode == null)
                     return null;
 
                 // Return the content of the description node, if possible
-                var descriptionNode = assemblyIdentityNode["description"];
+                var descriptionNode = assemblyNode["description"];
                 if (descriptionNode == null)
                     return null;
                     
@@ -393,7 +398,7 @@ namespace BurnOutSharp.Tools
         /// </summary>
         /// <param name="manifestString">String representing the XML document</param>
         /// <returns>Assembly identity node, if possible</returns>
-        private static XmlElement GetAssemblyIdentityNode(string manifestString)
+        private static XmlElement GetAssemblyNode(string manifestString)
         {
             // An invalid string means we can't read it
             if (string.IsNullOrWhiteSpace(manifestString))
@@ -410,12 +415,7 @@ namespace BurnOutSharp.Tools
                     return null;
 
                 // Try to read the assembly node
-                var assemblyNode = manifestDoc["assembly"];
-                if (assemblyNode == null)
-                    return null;
-
-                // Try to read the assemblyIdentity
-                return assemblyNode["assemblyIdentity"];
+                return manifestDoc["assembly"];
             }
             catch
             {
