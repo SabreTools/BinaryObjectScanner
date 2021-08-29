@@ -566,8 +566,9 @@ namespace BurnOutSharp.FileType
                     // Command prompt.
                     Console.Write("{0}>", HLLib.hlItemGetName(pItem));
 
-                    // Get and parse line.
-                    sLine = Console.ReadLine().Trim();
+                    // Get and parse line. -- Commented out because we don't want it to read anything in automatic mode
+                    //sLine = Console.ReadLine().Trim();
+                    sLine = null;
                 }
                 if(sLine == null)
                 {
