@@ -1,5 +1,8 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using BurnOutSharp.ExecutableType.Microsoft;
 using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
@@ -7,23 +10,44 @@ namespace BurnOutSharp.ProtectionType
     public class CDLock : IContentCheck, IPathCheck
     {
         /// <inheritdoc/>
-        public List<ContentMatchSet> GetContentMatchSets()
-        {
-            return new List<ContentMatchSet>
-            {
-                // 2 + (char)0xF2 + (char)0x02 + (char)0x82 + (char)0xC3 + (char)0xBC + (char)0x0B + $ + (char)0x99 + (char)0xAD + 'C + (char)0xE4 + (char)0x9D + st + (char)0x99 + (char)0xFA + 2$ + (char)0x9D + )4 + (char)0xFF + t
-                new ContentMatchSet(new byte?[]
-                {
-                    0x32, 0xF2, 0x02, 0x82, 0xC3, 0xBC, 0x0B, 0x24,
-                    0x99, 0xAD, 0x27, 0x43, 0xE4, 0x9D, 0x73, 0x74,
-                    0x99, 0xFA, 0x32, 0x24, 0x9D, 0x29, 0x34, 0xFF,
-                    0x74
-                }, "CD-Lock"),
-            };
-        }
+        public List<ContentMatchSet> GetContentMatchSets() => null;
 
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false) => null;
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        {
+            // Get the sections from the executable, if possible
+            PortableExecutable pex = PortableExecutable.Deserialize(fileContent, 0);
+            var sections = pex?.SectionTable;
+            if (sections == null)
+                return null;
+
+            // Get the .data section, if it exists
+            var dataSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".data"));
+            if (dataSection != null)
+            {
+                int sectionAddr = (int)dataSection.PointerToRawData;
+                int sectionEnd = sectionAddr + (int)dataSection.VirtualSize;
+                var matchers = new List<ContentMatchSet>
+                {
+                    // 2 + (char)0xF2 + (char)0x02 + (char)0x82 + (char)0xC3 + (char)0xBC + (char)0x0B + $ + (char)0x99 + (char)0xAD + 'C + (char)0xE4 + (char)0x9D + st + (char)0x99 + (char)0xFA + 2$ + (char)0x9D + )4 + (char)0xFF + t
+                    new ContentMatchSet(
+                        new ContentMatch(new byte?[]
+                        {
+                            0x32, 0xF2, 0x02, 0x82, 0xC3, 0xBC, 0x0B, 0x24,
+                            0x99, 0xAD, 0x27, 0x43, 0xE4, 0x9D, 0x73, 0x74,
+                            0x99, 0xFA, 0x32, 0x24, 0x9D, 0x29, 0x34, 0xFF,
+                            0x74
+                        }, start: sectionAddr, end: sectionEnd),
+                    "CD-Lock"),
+                };
+
+                string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
+                if (!string.IsNullOrWhiteSpace(match))
+                    return match;
+            }
+
+            return null;
+        }
 
         /// <inheritdoc/>
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string> files)
