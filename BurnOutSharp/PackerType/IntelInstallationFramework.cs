@@ -47,14 +47,6 @@ namespace BurnOutSharp.PackerType
             var sections = pex?.SectionTable;
             if (sections == null)
                 return null;
-
-            foreach (var section in sections)
-            {
-                string sectionName = Encoding.ASCII.GetString(section.Name).Trim('\0');
-                int sectionAddr = (int)section.PointerToRawData;
-                int sectionEnd = sectionAddr + (int)section.VirtualSize;
-                System.Console.WriteLine($"{sectionName}: {sectionAddr} -> {sectionEnd}");
-            }
             
             // Get the .rsrc section, if it exists
             var rsrcSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".rsrc"));
