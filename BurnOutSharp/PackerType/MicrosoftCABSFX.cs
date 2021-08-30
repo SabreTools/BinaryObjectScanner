@@ -2,6 +2,9 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text;
+using BurnOutSharp.ExecutableType.Microsoft;
 using BurnOutSharp.Matching;
 using BurnOutSharp.Tools;
 
@@ -14,48 +17,11 @@ namespace BurnOutSharp.PackerType
         public bool ShouldScan(byte[] magic) => true;
 
         /// <inheritdoc/>
-        public List<ContentMatchSet> GetContentMatchSets()
-        {
-            return new List<ContentMatchSet>
-            {
-                // wextract_cleanup
-                new ContentMatchSet(new byte?[]
-                {
-                    0x77, 0x65, 0x78, 0x74, 0x72, 0x61, 0x63, 0x74, 
-                    0x5F, 0x63, 0x6C, 0x65, 0x61, 0x6E, 0x75, 0x70,
-                }, GetVersion, "Microsoft CAB SFX"),
-
-                // W + (char)0x00 + e + (char)0x00 + x + (char)0x00 + t + (char)0x00 + r + (char)0x00 + a + (char)0x00 + c + (char)0x00 + t + (char)0x00
-                new ContentMatchSet(new byte?[]
-                {
-                    0x57, 0x00, 0x65, 0x00, 0x78, 0x00, 0x74, 0x00, 
-                    0x72, 0x00, 0x61, 0x00, 0x63, 0x00, 0x74, 0x00,
-                }, GetVersion, "Microsoft CAB SFX"),
-
-                // W + (char)0x00 + E + (char)0x00 + X + (char)0x00 + T + (char)0x00 + R + (char)0x00 + A + (char)0x00 + C + (char)0x00 + T + (char)0x00 + . + (char)0x00 + E + (char)0x00 + X + (char)0x00 + E + (char)0x00
-                new ContentMatchSet(new byte?[]
-                {
-                    0x57, 0x00, 0x45, 0x00, 0x58, 0x00, 0x54, 0x00,
-                    0x52, 0x00, 0x41, 0x00, 0x43, 0x00, 0x54, 0x00,
-                    0x2E, 0x00, 0x45, 0x00, 0x58, 0x00, 0x45, 0x00,
-                }, GetVersion, "Microsoft CAB SFX"),
-
-                /* This detects a different but similar type of SFX that uses Microsoft CAB files.
-                   Further research is needed to see if it's just a different version or entirely separate. */
-                // MSCFu
-                new ContentMatchSet(new byte?[] { 0x4D, 0x53, 0x43, 0x46, 0x75 }, GetVersion, "Microsoft CAB SFX"),
-            };
-        }
+        public List<ContentMatchSet> GetContentMatchSets() => null;
 
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
         {
-            // Get the sections from the executable, if possible
-            // PortableExecutable pex = PortableExecutable.Deserialize(fileContent, 0);
-            // var sections = pex?.SectionTable;
-            // if (sections == null)
-            //     return null;
-            
             // TODO: Implement resource finding instead of using the built in methods
             // Assembly information lives in the .rsrc section
             // I need to find out how to navigate the resources in general
@@ -83,6 +49,89 @@ namespace BurnOutSharp.PackerType
                     return $"Microsoft CAB SFX v{Utilities.GetFileVersion(file)}";
 
                 return "Microsoft CAB SFX";
+            }
+
+            // Get the sections from the executable, if possible
+            PortableExecutable pex = PortableExecutable.Deserialize(fileContent, 0);
+            var sections = pex?.SectionTable;
+            if (sections == null)
+                return null;
+
+            // Get the .data section, if it exists
+            var dataSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".data"));
+            if (dataSection != null)
+            {
+                int sectionAddr = (int)dataSection.PointerToRawData;
+                int sectionEnd = sectionAddr + (int)dataSection.VirtualSize;
+                var matchers = new List<ContentMatchSet>
+                {
+                    // wextract_cleanup
+                    new ContentMatchSet(
+                        new ContentMatch(new byte?[]
+                        {
+                            0x77, 0x65, 0x78, 0x74, 0x72, 0x61, 0x63, 0x74, 
+                            0x5F, 0x63, 0x6C, 0x65, 0x61, 0x6E, 0x75, 0x70,
+                        }, start: sectionAddr, end: sectionEnd),
+                    GetVersion, "Microsoft CAB SFX"),
+                };
+
+                string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
+                if (!string.IsNullOrWhiteSpace(match))
+                    return match;
+            }
+            
+            // Get the .rsrc section, if it exists
+            var rsrcSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".rsrc"));
+            if (rsrcSection != null)
+            {
+                int sectionAddr = (int)rsrcSection.PointerToRawData;
+                int sectionEnd = sectionAddr + (int)rsrcSection.VirtualSize;
+                var matchers = new List<ContentMatchSet>
+                {
+                    // W + (char)0x00 + e + (char)0x00 + x + (char)0x00 + t + (char)0x00 + r + (char)0x00 + a + (char)0x00 + c + (char)0x00 + t + (char)0x00
+                    new ContentMatchSet(
+                        new ContentMatch(new byte?[]
+                        {
+                            0x57, 0x00, 0x65, 0x00, 0x78, 0x00, 0x74, 0x00, 
+                            0x72, 0x00, 0x61, 0x00, 0x63, 0x00, 0x74, 0x00,
+                        }, start: sectionAddr, end: sectionEnd),
+                    GetVersion, "Microsoft CAB SFX"),
+
+                    // W + (char)0x00 + E + (char)0x00 + X + (char)0x00 + T + (char)0x00 + R + (char)0x00 + A + (char)0x00 + C + (char)0x00 + T + (char)0x00 + . + (char)0x00 + E + (char)0x00 + X + (char)0x00 + E + (char)0x00
+                    new ContentMatchSet(
+                        new ContentMatch(new byte?[]
+                        {
+                            0x57, 0x00, 0x45, 0x00, 0x58, 0x00, 0x54, 0x00,
+                            0x52, 0x00, 0x41, 0x00, 0x43, 0x00, 0x54, 0x00,
+                            0x2E, 0x00, 0x45, 0x00, 0x58, 0x00, 0x45, 0x00,
+                        }, start: sectionAddr, end: sectionEnd),
+                    GetVersion, "Microsoft CAB SFX"),
+                };
+
+                string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
+                if (!string.IsNullOrWhiteSpace(match))
+                    return match;
+            }
+
+            // Get the .text section, if it exists
+            var textSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".text"));
+            if (textSection != null)
+            {
+                int sectionAddr = (int)textSection.PointerToRawData;
+                int sectionEnd = sectionAddr + (int)textSection.VirtualSize;
+                var matchers = new List<ContentMatchSet>
+                {
+                    /* This detects a different but similar type of SFX that uses Microsoft CAB files.
+                       Further research is needed to see if it's just a different version or entirely separate. */
+                    // MSCFu
+                    new ContentMatchSet(
+                        new ContentMatch(new byte?[] { 0x4D, 0x53, 0x43, 0x46, 0x75 }, start: sectionAddr, end: sectionEnd),
+                    GetVersion, "Microsoft CAB SFX"),
+                };
+
+                string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
+                if (!string.IsNullOrWhiteSpace(match))
+                    return match;
             }
 
             return null;
