@@ -56,7 +56,7 @@ namespace Test
             {
                 using (StreamWriter sw = new StreamWriter(File.OpenWrite($"{DateTime.Now:yyyy-MM-dd_HHmmss}-exception.txt")))
                 {
-                    sw.WriteLine(ex.Message);
+                    sw.WriteLine(ex);
                 }
             }
         }
