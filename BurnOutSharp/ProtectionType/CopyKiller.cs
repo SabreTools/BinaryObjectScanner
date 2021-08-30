@@ -9,6 +9,7 @@ namespace BurnOutSharp.ProtectionType
         /// <inheritdoc/>
         public List<ContentMatchSet> GetContentMatchSets()
         {
+            // TODO: Obtain a sample to find where this string is in a typical executable
             return new List<ContentMatchSet>
             {
                 // Tom Commander
@@ -27,6 +28,7 @@ namespace BurnOutSharp.ProtectionType
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string> files)
         {
             // TODO: The following checks are overly broad and should be refined
+            // TODO: Look into .PFF files as an indicator. At least one disc has those oversized files
             var matchers = new List<PathMatchSet>
             {
                 //new PathMatchSet(new PathMatch("Autorun.dat", useEndsWith: true), "CopyKiller"),
@@ -39,6 +41,7 @@ namespace BurnOutSharp.ProtectionType
         public string CheckFilePath(string path)
         {
             // TODO: The following checks are overly broad and should be refined
+            // TODO: Look into .PFF files as an indicator. At least one disc has those oversized files
             var matchers = new List<PathMatchSet>
             {
                 //new PathMatchSet(new PathMatch("Autorun.dat", useEndsWith: true), "CopyKiller"),
