@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using BurnOutSharp.ExecutableType.Microsoft;
 using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
@@ -13,21 +14,52 @@ namespace BurnOutSharp.ProtectionType
         /// <inheritdoc/>
         public List<ContentMatchSet> GetContentMatchSets()
         {
+            // TODO: Both of these are found in Mac binaries
             return new List<ContentMatchSet>
             {
-                // DATA.CDS
-                new ContentMatchSet(new byte?[] { 0x44, 0x41, 0x54, 0x41, 0x2E, 0x43, 0x44, 0x53 }, "Cactus Data Shield 200"),
-
-                // \*.CDS
-                new ContentMatchSet(new byte?[] { 0x5C, 0x2A, 0x2E, 0x43, 0x44, 0x53 }, "Cactus Data Shield 200"),
-
                 // CDSPlayer
                 new ContentMatchSet(new byte?[] { 0x43, 0x44, 0x53, 0x50, 0x6C, 0x61, 0x79, 0x65, 0x72 }, "Cactus Data Shield 200"),
+
+                // yucca.cds
+                new ContentMatchSet(new byte?[] { 0x79, 0x75, 0x63, 0x63, 0x61, 0x2E, 0x63, 0x64, 0x73 }, "Cactus Data Shield 200"),
             };
         }
 
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false) => null;
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        {
+            // Get the sections from the executable, if possible
+            PortableExecutable pex = PortableExecutable.Deserialize(fileContent, 0);
+            var sections = pex?.SectionTable;
+            if (sections == null)
+                return null;
+
+            // Get the .data section, if it exists
+            var dataSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".data"));
+            if (dataSection != null)
+            {
+                int sectionAddr = (int)dataSection.PointerToRawData;
+                int sectionEnd = sectionAddr + (int)dataSection.VirtualSize;
+                var matchers = new List<ContentMatchSet>
+                {
+                    // \*.CDS
+                    new ContentMatchSet(
+                        new ContentMatch(new byte?[] { 0x5C, 0x2A, 0x2E, 0x43, 0x44, 0x53 }, start: sectionAddr, end: sectionEnd),
+                        "Cactus Data Shield 200"),
+                    
+                    // DATA.CDS
+                    new ContentMatchSet(
+                        new ContentMatch(new byte?[] { 0x44, 0x41, 0x54, 0x41, 0x2E, 0x43, 0x44, 0x53 }, start: sectionAddr, end: sectionEnd),
+                        "Cactus Data Shield 200"),
+                };
+
+                string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
+                if (!string.IsNullOrWhiteSpace(match))
+                    return match;
+            }
+
+            return null;
+        }
 
         /// <inheritdoc/>
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string> files)
