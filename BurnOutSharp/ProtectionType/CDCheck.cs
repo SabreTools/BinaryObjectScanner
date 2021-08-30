@@ -1,4 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using BurnOutSharp.ExecutableType.Microsoft;
 using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
@@ -8,22 +11,58 @@ namespace BurnOutSharp.ProtectionType
         /// <inheritdoc/>
         public List<ContentMatchSet> GetContentMatchSets()
         {
+            // TODO: Obtain a sample to find where this string is in a typical executable
+            // TODO: Is this too broad in general? It _does_ indicate a CD check, but there's no real
+            // way of knowing how consistent it is
             return new List<ContentMatchSet>
             {
-                // MGS CDCheck
-                new ContentMatchSet(new byte?[]
-                {
-                    0x4D, 0x47, 0x53, 0x20, 0x43, 0x44, 0x43, 0x68,
-                    0x65, 0x63, 0x6B
-                }, "Microsoft Game Studios CD Check"),
-
                 // CDCheck
                 new ContentMatchSet(new byte?[] { 0x43, 0x44, 0x43, 0x68, 0x65, 0x63, 0x6B }, "Executable-Based CD Check"),
             };
         }
 
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false) => null;
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        {
+            // Get the sections from the executable, if possible
+            PortableExecutable pex = PortableExecutable.Deserialize(fileContent, 0);
+            var sections = pex?.SectionTable;
+            if (sections == null)
+                return null;
+
+            foreach (var section in sections)
+            {
+                string sectionName = Encoding.ASCII.GetString(section.Name).Trim('\0');
+                int sectionAddr = (int)section.PointerToRawData;
+                int sectionEnd = sectionAddr + (int)section.VirtualSize;
+                System.Console.WriteLine($"{sectionName}: {sectionAddr} -> {sectionEnd}");
+            }
+
+            // Get the .rdata section, if it exists
+            var rdataSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".rdata"));
+            if (rdataSection != null)
+            {
+                int sectionAddr = (int)rdataSection.PointerToRawData;
+                int sectionEnd = sectionAddr + (int)rdataSection.VirtualSize;
+                var matchers = new List<ContentMatchSet>
+                {
+                    // MGS CDCheck
+                    new ContentMatchSet(
+                        new ContentMatch(new byte?[]
+                        {
+                            0x4D, 0x47, 0x53, 0x20, 0x43, 0x44, 0x43, 0x68,
+                            0x65, 0x63, 0x6B
+                        }, start: sectionAddr, end: sectionEnd),
+                    "Microsoft Game Studios CD Check"),
+                };
+
+                string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
+                if (!string.IsNullOrWhiteSpace(match))
+                    return match;
+            }
+
+            return null;
+        }
 
         // These content checks are too broad to be useful
         private static string CheckContentsBroad(string file, byte[] fileContent, bool includeDebug = false)
