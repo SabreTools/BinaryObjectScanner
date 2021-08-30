@@ -61,7 +61,7 @@ namespace BurnOutSharp.PackerType
             if (rdataSection != null)
             {
                 int sectionAddr = (int)rdataSection.PointerToRawData;
-                int sectionEnd = sectionAddr + (int)dataSection.VirtualSize;
+                int sectionEnd = sectionAddr + (int)rdataSection.VirtualSize;
                 var matchers = new List<ContentMatchSet>
                 {
                     // WiseMain
