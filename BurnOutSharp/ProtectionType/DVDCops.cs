@@ -10,6 +10,7 @@ namespace BurnOutSharp.ProtectionType
         /// <inheritdoc/>
         public List<ContentMatchSet> GetContentMatchSets()
         {
+            // TODO: Obtain a sample to find where this string is in a typical executable
             return new List<ContentMatchSet>
             {
                 // DVD-Cops,  ver. 
@@ -21,6 +22,7 @@ namespace BurnOutSharp.ProtectionType
             };
         }
 
+        /// TODO: Does this look for the `.grand` section like CD-Cops?
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includeDebug = false) => null;
 
