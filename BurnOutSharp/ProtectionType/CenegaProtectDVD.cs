@@ -29,8 +29,8 @@ namespace BurnOutSharp.ProtectionType
                 return null;
 
             // Get the .cenega section, if it exists -- TODO: Confirm this check with a real disc
-            var nicodeSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".cenega"));
-            if (nicodeSection != null)
+            var cenegaSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".cenega"));
+            if (cenegaSection != null)
                 return "Cenega ProtectDVD";
 
             return null;
