@@ -1,4 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using BurnOutSharp.ExecutableType.Microsoft;
 using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
@@ -22,16 +25,37 @@ namespace BurnOutSharp.ProtectionType
          */
 
         /// <inheritdoc/>
-        public List<ContentMatchSet> GetContentMatchSets()
-        {
-            return new List<ContentMatchSet>
-            {
-                // Trial + (char)0x00 + P
-                new ContentMatchSet(new byte?[] { 0x54, 0x72, 0x69, 0x61, 0x6C, 0x00, 0x50 }, "INTENIUM Trial & Buy Protection"),
-            };
-        }
+        public List<ContentMatchSet> GetContentMatchSets() => null;
 
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false) => null;
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        {
+            // Get the sections from the executable, if possible
+            PortableExecutable pex = PortableExecutable.Deserialize(fileContent, 0);
+            var sections = pex?.SectionTable;
+            if (sections == null)
+                return null;
+
+            // Get the .rsrc section, if it exists
+            var rsrcSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".rsrc"));
+            if (rsrcSection != null)
+            {
+                int sectionAddr = (int)rsrcSection.PointerToRawData;
+                int sectionEnd = sectionAddr + (int)rsrcSection.VirtualSize;
+                var matchers = new List<ContentMatchSet>
+                {
+                    // Trial + (char)0x00 + P
+                    new ContentMatchSet(
+                        new ContentMatch(new byte?[] { 0x54, 0x72, 0x69, 0x61, 0x6C, 0x00, 0x50 }, start: sectionAddr, end: sectionEnd),
+                    "INTENIUM Trial & Buy Protection"),
+                };
+
+                string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
+                if (!string.IsNullOrWhiteSpace(match))
+                    return match;
+            }
+
+            return null;
+        }
     }
 }
