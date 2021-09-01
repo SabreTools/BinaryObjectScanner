@@ -67,7 +67,7 @@ namespace BurnOutSharp.Tools
             try
             {
                 PortableExecutable pex = PortableExecutable.Deserialize(fileContent, 0);
-                return pex.ImageFileHeader.Characteristics.HasFlag(ImageObjectCharacteristics.IMAGE_FILE_DLL);
+                return !pex.ImageFileHeader.Characteristics.HasFlag(ImageObjectCharacteristics.IMAGE_FILE_DLL);
             }
             catch
             {
