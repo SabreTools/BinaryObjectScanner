@@ -11,9 +11,14 @@ namespace BurnOutSharp.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
+                new PathMatchSet(new PathMatch("SteamInstall.bom", useEndsWith: true), "Steam"),
                 new PathMatchSet(new PathMatch("SteamInstall.exe", useEndsWith: true), "Steam"),
+                new PathMatchSet(new PathMatch("SteamInstall.info", useEndsWith: true), "Steam"),
                 new PathMatchSet(new PathMatch("SteamInstall.ini", useEndsWith: true), "Steam"),
                 new PathMatchSet(new PathMatch("SteamInstall.msi", useEndsWith: true), "Steam"),
+                new PathMatchSet(new PathMatch("SteamInstall.pax.gz", useEndsWith: true), "Steam"),
+                new PathMatchSet(new PathMatch("SteamInstall.pkg", useEndsWith: true), "Steam"),
+                new PathMatchSet(new PathMatch("SteamInstall.sizes", useEndsWith: true), "Steam"),
                 new PathMatchSet(new PathMatch("SteamInstall_Czech.msi", useEndsWith: true), "Steam"),
                 new PathMatchSet(new PathMatch("SteamInstall_English.msi", useEndsWith: true), "Steam"),
                 new PathMatchSet(new PathMatch("SteamInstall_French.msi", useEndsWith: true), "Steam"),
@@ -22,6 +27,7 @@ namespace BurnOutSharp.ProtectionType
                 new PathMatchSet(new PathMatch("SteamInstall_Polish.msi", useEndsWith: true), "Steam"),
                 new PathMatchSet(new PathMatch("SteamInstall_Russian.msi", useEndsWith: true), "Steam"),
                 new PathMatchSet(new PathMatch("SteamInstall_Spanish.msi", useEndsWith: true), "Steam"),
+                new PathMatchSet(new PathMatch("SteamRetailInstaller", useEndsWith: true), "Steam"),
                 new PathMatchSet(new PathMatch("SteamRetailInstaller.dmg", useEndsWith: true), "Steam"),
                 new PathMatchSet(new PathMatch("SteamService.exe", useEndsWith: true), "Steam"),
                 new PathMatchSet(new PathMatch("SteamSetup.exe", useEndsWith: true), "Steam"), 
@@ -35,9 +41,14 @@ namespace BurnOutSharp.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
+                new PathMatchSet(new PathMatch("SteamInstall.bom", useEndsWith: true), "Steam"),
                 new PathMatchSet(new PathMatch("SteamInstall.exe", useEndsWith: true), "Steam"),
+                new PathMatchSet(new PathMatch("SteamInstall.info", useEndsWith: true), "Steam"),
                 new PathMatchSet(new PathMatch("SteamInstall.ini", useEndsWith: true), "Steam"),
                 new PathMatchSet(new PathMatch("SteamInstall.msi", useEndsWith: true), "Steam"),
+                new PathMatchSet(new PathMatch("SteamInstall.pax.gz", useEndsWith: true), "Steam"),
+                new PathMatchSet(new PathMatch("SteamInstall.pkg", useEndsWith: true), "Steam"),
+                new PathMatchSet(new PathMatch("SteamInstall.sizes", useEndsWith: true), "Steam"),
                 new PathMatchSet(new PathMatch("SteamInstall_Czech.msi", useEndsWith: true), "Steam"),
                 new PathMatchSet(new PathMatch("SteamInstall_English.msi", useEndsWith: true), "Steam"),
                 new PathMatchSet(new PathMatch("SteamInstall_French.msi", useEndsWith: true), "Steam"),
@@ -46,9 +57,10 @@ namespace BurnOutSharp.ProtectionType
                 new PathMatchSet(new PathMatch("SteamInstall_Polish.msi", useEndsWith: true), "Steam"),
                 new PathMatchSet(new PathMatch("SteamInstall_Russian.msi", useEndsWith: true), "Steam"),
                 new PathMatchSet(new PathMatch("SteamInstall_Spanish.msi", useEndsWith: true), "Steam"),
+                new PathMatchSet(new PathMatch("SteamRetailInstaller", useEndsWith: true), "Steam"),
                 new PathMatchSet(new PathMatch("SteamRetailInstaller.dmg", useEndsWith: true), "Steam"),
                 new PathMatchSet(new PathMatch("SteamService.exe", useEndsWith: true), "Steam"),
-                new PathMatchSet(new PathMatch("SteamSetup.exe", useEndsWith: true), "Steam"), 
+                new PathMatchSet(new PathMatch("SteamSetup.exe", useEndsWith: true), "Steam"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
