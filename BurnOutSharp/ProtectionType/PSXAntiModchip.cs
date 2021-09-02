@@ -8,6 +8,7 @@ namespace BurnOutSharp.ProtectionType
         /// <inheritdoc/>
         public List<ContentMatchSet> GetContentMatchSets()
         {
+            // TODO: Detect Red Hand protection
             return new List<ContentMatchSet>
             {
                 //      SOFTWARE TERMINATED\nCONSOLE MAY HAVE BEEN MODIFIED\n     CALL 1-888-780-7690
@@ -41,9 +42,13 @@ namespace BurnOutSharp.ProtectionType
             };
         }
 
-        // TODO: Figure out PSX binary header so this can be checked explicitly
-        // TODO: Detect Red Hand protection
+        // TODO: Figure out PSX binary header so this can be checked explicitly.
+        // For now, this means that the CheckContents check is redundant for external
+        // use through other programs
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false) => null;
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        {
+            return MatchUtil.GetFirstMatch(file, fileContent, GetContentMatchSets(), includeDebug);
+        }
     }
 }
