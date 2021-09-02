@@ -8,6 +8,7 @@ namespace BurnOutSharp.ProtectionType
         /// <inheritdoc/>
         public List<ContentMatchSet> GetContentMatchSets()
         {
+            // TODO: Obtain a sample to find where this string is in a typical executable
             return new List<ContentMatchSet>
             {
                 // (char)0x00 + Allocator + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00
