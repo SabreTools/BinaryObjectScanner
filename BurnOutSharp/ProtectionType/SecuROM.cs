@@ -9,6 +9,8 @@ using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ProtectionType
 {
+    // TODO: Investigate why White Label v8 doesn't get detected - http://redump.org/disc/48997/
+    // TODO: Does the ".shr" section in the code have anything to do with this?
     public class SecuROM : IContentCheck, IPathCheck
     {
         /// <inheritdoc/>
