@@ -2,11 +2,15 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using BurnOutSharp.ExecutableType.Microsoft;
 using BurnOutSharp.Matching;
 using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ProtectionType
 {
+    // TODO: Not matching all SolidShield Wrapper v1 (See JackKeane)
+    // TODO: Not matching all SolidShield Wrapper v1 (See NFS11)
     public class SolidShield : IContentCheck, IPathCheck
     {
         /// <summary>
@@ -23,64 +27,11 @@ namespace BurnOutSharp.ProtectionType
         /// <inheritdoc/>
         public List<ContentMatchSet> GetContentMatchSets()
         {
+            // TODO: Obtain a sample to find where this string is in a typical executable
             return new List<ContentMatchSet>
             {
-                // D + (char)0x00 + V + (char)0x00 + M + (char)0x00 +   + (char)0x00 + L + (char)0x00 + i + (char)0x00 + b + (char)0x00 + r + (char)0x00 + a + (char)0x00 + r + (char)0x00 + y + (char)0x00
-                new ContentMatchSet(new byte?[]
-                {
-                    0x44, 0x00, 0x56, 0x00, 0x4D, 0x00, 0x20, 0x00,
-                    0x4C, 0x00, 0x69, 0x00, 0x62, 0x00, 0x72, 0x00,
-                    0x61, 0x00, 0x72, 0x00, 0x79, 0x00
-                }, Utilities.GetFileVersion, "SolidShield"),
-
-                // S + (char)0x00 + o + (char)0x00 + l + (char)0x00 + i + (char)0x00 + d + (char)0x00 + s + (char)0x00 + h + (char)0x00 + i + (char)0x00 + e + (char)0x00 + l + (char)0x00 + d + (char)0x00 +   + (char)0x00 + L + (char)0x00 + i + (char)0x00 + b + (char)0x00 + r + (char)0x00 + a + (char)0x00 + r + (char)0x00 + y + (char)0x00
-                new ContentMatchSet(new byte?[]
-                {
-                    0x53, 0x00, 0x6F, 0x00, 0x6C, 0x00, 0x69, 0x00,
-                    0x64, 0x00, 0x73, 0x00, 0x68, 0x00, 0x69, 0x00,
-                    0x65, 0x00, 0x6C, 0x00, 0x64, 0x00, 0x20, 0x00,
-                    0x4C, 0x00, 0x69, 0x00, 0x62, 0x00, 0x72, 0x00,
-                    0x61, 0x00, 0x72, 0x00, 0x79, 0x00
-                }, GetFileVersion, "SolidShield Core.dll"),
-
-                // S + (char)0x00 + o + (char)0x00 + l + (char)0x00 + i + (char)0x00 + d + (char)0x00 + s + (char)0x00 + h + (char)0x00 + i + (char)0x00 + e + (char)0x00 + l + (char)0x00 + d + (char)0x00 +   + (char)0x00 + A + (char)0x00 + c + (char)0x00 + t + (char)0x00 + i + (char)0x00 + v + (char)0x00 + a + (char)0x00 + t + (char)0x00 + i + (char)0x00 + o + (char)0x00 + n + (char)0x00 +   + (char)0x00 + L + (char)0x00 + i + (char)0x00 + b + (char)0x00 + r + (char)0x00 + a + (char)0x00 + r + (char)0x00 + y + (char)0x00
-                new ContentMatchSet(new byte?[]
-                {
-                    0x53, 0x00, 0x6F, 0x00, 0x6C, 0x00, 0x69, 0x00,
-                    0x64, 0x00, 0x73, 0x00, 0x68, 0x00, 0x69, 0x00,
-                    0x65, 0x00, 0x6C, 0x00, 0x64, 0x00, 0x20, 0x00,
-                    0x41, 0x00, 0x63, 0x00, 0x74, 0x00, 0x69, 0x00,
-                    0x76, 0x00, 0x61, 0x00, 0x74, 0x00, 0x69, 0x00,
-                    0x6F, 0x00, 0x6E, 0x00, 0x20, 0x00, 0x4C, 0x00,
-                    0x69, 0x00, 0x62, 0x00, 0x72, 0x00, 0x61, 0x00,
-                    0x72, 0x00, 0x79, 0x00
-                }, GetFileVersion, "SolidShield Core.dll"),
-
-                // (char)0xEF + (char)0xBE + (char)0xAD + (char)0xDE
-                new ContentMatchSet(new byte?[] { 0xEF, 0xBE, 0xAD, 0xDE }, GetExeWrapperVersion, "SolidShield"),
-
-                // A + (char)0x00 + c + (char)0x00 + t + (char)0x00 + i + (char)0x00 + v + (char)0x00 + a + (char)0x00 + t + (char)0x00 + i + (char)0x00 + o + (char)0x00 + n + (char)0x00 +   + (char)0x00 + M + (char)0x00 + a + (char)0x00 + n + (char)0x00 + a + (char)0x00 + g + (char)0x00 + e + (char)0x00 + r + (char)0x00
-                new ContentMatchSet(new byte?[]
-                {
-                    0x41, 0x00, 0x63, 0x00, 0x74, 0x00, 0x69, 0x00,
-                    0x76, 0x00, 0x61, 0x00, 0x74, 0x00, 0x69, 0x00,
-                    0x6f, 0x00, 0x6e, 0x00, 0x20, 0x00, 0x4d, 0x00,
-                    0x61, 0x00, 0x6e, 0x00, 0x61, 0x00, 0x67, 0x00,
-                    0x65, 0x00, 0x72, 0x00
-                }, GetFileVersion, "SolidShield Activation Manager Module"),
-
-                // dvm.dll
-                new ContentMatchSet(new byte?[] { 0x64, 0x76, 0x6D, 0x2E, 0x64, 0x6C, 0x6C }, "SolidShield EXE Wrapper"),
-
                 // (char)0xAD + (char)0xDE + (char)0xFE + (char)0xCA
                 new ContentMatchSet(new byte?[] { 0xAD, 0xDE, 0xFE, 0xCA }, GetVersionPlusTages, "SolidShield"),
-
-                // Solidshield
-                new ContentMatchSet(new byte?[]
-                {
-                    0x53, 0x6F, 0x6C, 0x69, 0x64, 0x73, 0x68, 0x69,
-                    0x65, 0x6C, 0x64
-                }, GetVersion, "SolidShield"),
 
                 // B + (char)0x00 + I + (char)0x00 + N + (char)0x00 + (char)0x7 + (char)0x00 + I + (char)0x00 + D + (char)0x00 + R + (char)0x00 + _ + (char)0x00 + S + (char)0x00 + G + (char)0x00 + T + (char)0x00
                 new ContentMatchSet(new byte?[]
@@ -88,12 +39,167 @@ namespace BurnOutSharp.ProtectionType
                     0x42, 0x00, 0x49, 0x00, 0x4E, 0x00, 0x07, 0x00,
                     0x49, 0x00, 0x44, 0x00, 0x52, 0x00, 0x5F, 0x00,
                     0x53, 0x00, 0x47, 0x00, 0x54, 0x00
-                }, "SolidShield"),
+                }, "SolidShield [ContentMatchSet]"),
             };
         }
 
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false) => null;
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        {
+            // TODO: Implement resource finding instead of using the built in methods
+            // Assembly information lives in the .rsrc section
+            // I need to find out how to navigate the resources in general
+            // as well as figure out the specific resources for both
+            // file info and MUI (XML) info. Once I figure this out,
+            // that also opens the doors to easier assembly XML checks.
+
+            var fvinfo = Utilities.GetFileVersionInfo(file);
+
+            string name = fvinfo?.FileDescription?.Trim();
+            if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("DVM Library", StringComparison.OrdinalIgnoreCase))
+                return $"SolidShield {Utilities.GetFileVersion(file)}";
+            else if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Solidshield Activation Library", StringComparison.OrdinalIgnoreCase))
+                return $"SolidShield Core.dll {Utilities.GetFileVersion(file)}";
+            else if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Activation Manager", StringComparison.OrdinalIgnoreCase))
+                return $"SolidShield Activation Manager Module {GetFileVersion(file, fileContent, null)}";
+
+            name = fvinfo?.ProductName?.Trim();
+            if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Solidshield Activation Library", StringComparison.OrdinalIgnoreCase))
+                return $"SolidShield Core.dll {Utilities.GetFileVersion(file)}";
+            else if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Solidshield Library", StringComparison.OrdinalIgnoreCase))
+                return $"SolidShield Core.dll {Utilities.GetFileVersion(file)}";
+            else if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Activation Manager", StringComparison.OrdinalIgnoreCase))
+                return $"SolidShield Activation Manager Module {GetFileVersion(file, fileContent, null)}";
+
+            // Get the sections from the executable, if possible
+            PortableExecutable pex = PortableExecutable.Deserialize(fileContent, 0);
+            var sections = pex?.SectionTable;
+            if (sections == null)
+                return null;
+
+            foreach (var section in sections)
+            {
+                string sectionName = System.Text.Encoding.ASCII.GetString(section.Name).Trim('\0');
+                int sectionAddr = (int)section.PointerToRawData;
+                int sectionEnd = sectionAddr + (int)section.VirtualSize;
+                System.Console.WriteLine($"{sectionName}: {sectionAddr} -> {sectionEnd}");
+            }
+
+            // Get the .init section, if it exists
+            var initSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".init"));
+            if (initSection != null)
+            {
+                int sectionAddr = (int)initSection.PointerToRawData;
+                int sectionEnd = sectionAddr + (int)initSection.VirtualSize;
+                var matchers = new List<ContentMatchSet>
+                {
+                    // (char)0xEF + (char)0xBE + (char)0xAD + (char)0xDE
+                    new ContentMatchSet(
+                        new ContentMatch(new byte?[] { 0xEF, 0xBE, 0xAD, 0xDE }, start: sectionAddr, end: sectionEnd),
+                    GetExeWrapperVersion, "SolidShield EXE Wrapper"),
+
+                    // dvm.dll
+                    new ContentMatchSet(
+                        new ContentMatch(new byte?[] { 0x64, 0x76, 0x6D, 0x2E, 0x64, 0x6C, 0x6C }, start: sectionAddr, end: sectionEnd),
+                    "SolidShield EXE Wrapper v1"),
+                };
+
+                string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
+                if (!string.IsNullOrWhiteSpace(match))
+                    return match;
+            }
+
+            // Get the .rsrc section, if it exists
+            var rsrcSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".rsrc"));
+            if (rsrcSection != null)
+            {
+                int sectionAddr = (int)rsrcSection.PointerToRawData;
+                int sectionEnd = sectionAddr + (int)rsrcSection.VirtualSize;
+                var matchers = new List<ContentMatchSet>
+                {
+                    // D + (char)0x00 + V + (char)0x00 + M + (char)0x00 +   + (char)0x00 + L + (char)0x00 + i + (char)0x00 + b + (char)0x00 + r + (char)0x00 + a + (char)0x00 + r + (char)0x00 + y + (char)0x00
+                    new ContentMatchSet(
+                        new ContentMatch(new byte?[]
+                        {
+                            0x44, 0x00, 0x56, 0x00, 0x4D, 0x00, 0x20, 0x00,
+                            0x4C, 0x00, 0x69, 0x00, 0x62, 0x00, 0x72, 0x00,
+                            0x61, 0x00, 0x72, 0x00, 0x79, 0x00
+                        }, start: sectionAddr, end: sectionEnd),
+                    Utilities.GetFileVersion, "SolidShield"),
+
+                    // A + (char)0x00 + c + (char)0x00 + t + (char)0x00 + i + (char)0x00 + v + (char)0x00 + a + (char)0x00 + t + (char)0x00 + i + (char)0x00 + o + (char)0x00 + n + (char)0x00 +   + (char)0x00 + M + (char)0x00 + a + (char)0x00 + n + (char)0x00 + a + (char)0x00 + g + (char)0x00 + e + (char)0x00 + r + (char)0x00
+                    new ContentMatchSet(
+                        new ContentMatch(new byte?[]
+                        {
+                            0x41, 0x00, 0x63, 0x00, 0x74, 0x00, 0x69, 0x00,
+                            0x76, 0x00, 0x61, 0x00, 0x74, 0x00, 0x69, 0x00,
+                            0x6f, 0x00, 0x6e, 0x00, 0x20, 0x00, 0x4d, 0x00,
+                            0x61, 0x00, 0x6e, 0x00, 0x61, 0x00, 0x67, 0x00,
+                            0x65, 0x00, 0x72, 0x00
+                        }, start: sectionAddr, end: sectionEnd),
+                    GetFileVersion, "SolidShield Activation Manager Module"),
+
+                    // S + (char)0x00 + o + (char)0x00 + l + (char)0x00 + i + (char)0x00 + d + (char)0x00 + s + (char)0x00 + h + (char)0x00 + i + (char)0x00 + e + (char)0x00 + l + (char)0x00 + d + (char)0x00 +   + (char)0x00 + L + (char)0x00 + i + (char)0x00 + b + (char)0x00 + r + (char)0x00 + a + (char)0x00 + r + (char)0x00 + y + (char)0x00
+                    new ContentMatchSet(
+                        new ContentMatch(new byte?[]
+                        {
+                            0x53, 0x00, 0x6F, 0x00, 0x6C, 0x00, 0x69, 0x00,
+                            0x64, 0x00, 0x73, 0x00, 0x68, 0x00, 0x69, 0x00,
+                            0x65, 0x00, 0x6C, 0x00, 0x64, 0x00, 0x20, 0x00,
+                            0x4C, 0x00, 0x69, 0x00, 0x62, 0x00, 0x72, 0x00,
+                            0x61, 0x00, 0x72, 0x00, 0x79, 0x00
+                        }, start: sectionAddr, end: sectionEnd),
+                    Utilities.GetFileVersion, "SolidShield Core.dll"),
+
+                    // S + (char)0x00 + o + (char)0x00 + l + (char)0x00 + i + (char)0x00 + d + (char)0x00 + s + (char)0x00 + h + (char)0x00 + i + (char)0x00 + e + (char)0x00 + l + (char)0x00 + d + (char)0x00 +   + (char)0x00 + A + (char)0x00 + c + (char)0x00 + t + (char)0x00 + i + (char)0x00 + v + (char)0x00 + a + (char)0x00 + t + (char)0x00 + i + (char)0x00 + o + (char)0x00 + n + (char)0x00 +   + (char)0x00 + L + (char)0x00 + i + (char)0x00 + b + (char)0x00 + r + (char)0x00 + a + (char)0x00 + r + (char)0x00 + y + (char)0x00
+                    new ContentMatchSet(
+                        new ContentMatch(new byte?[]
+                        {
+                            0x53, 0x00, 0x6F, 0x00, 0x6C, 0x00, 0x69, 0x00,
+                            0x64, 0x00, 0x73, 0x00, 0x68, 0x00, 0x69, 0x00,
+                            0x65, 0x00, 0x6C, 0x00, 0x64, 0x00, 0x20, 0x00,
+                            0x41, 0x00, 0x63, 0x00, 0x74, 0x00, 0x69, 0x00,
+                            0x76, 0x00, 0x61, 0x00, 0x74, 0x00, 0x69, 0x00,
+                            0x6F, 0x00, 0x6E, 0x00, 0x20, 0x00, 0x4C, 0x00,
+                            0x69, 0x00, 0x62, 0x00, 0x72, 0x00, 0x61, 0x00,
+                            0x72, 0x00, 0x79, 0x00
+                        }, start: sectionAddr, end: sectionEnd),
+                    Utilities.GetFileVersion, "SolidShield Core.dll"),
+                };
+
+                string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
+                if (!string.IsNullOrWhiteSpace(match))
+                    return match;
+            }
+
+            // Search the last two available sections
+            for (int i = sections.Length - 2; i < sections.Length; i++)
+            {
+                var nthSection = sections[i];
+                if (nthSection != null)
+                {
+                    int sectionAddr = (int)nthSection.PointerToRawData;
+                    int sectionEnd = sectionAddr + (int)nthSection.VirtualSize;
+                    var matchers = new List<ContentMatchSet>
+                    {
+                        // Solidshield
+                        new ContentMatchSet(
+                            new ContentMatch(new byte?[]
+                            {
+                                0x53, 0x6F, 0x6C, 0x69, 0x64, 0x73, 0x68, 0x69,
+                                0x65, 0x6C, 0x64
+                            }, start: sectionAddr, end: sectionEnd),
+                        GetVersion, "SolidShield EXE Wrapper"),
+                    };
+
+                    string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
+                    if (!string.IsNullOrWhiteSpace(match))
+                        return match;
+                }
+            }
+
+            return null;
+        }
 
         /// <inheritdoc/>
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string> files)
@@ -115,9 +221,9 @@ namespace BurnOutSharp.ProtectionType
             var id2 = new ArraySegment<byte>(fileContent, position + 16, 4);
 
             if (id1.SequenceEqual(new byte[] { 0x00, 0x00, 0x00 }) && id2.SequenceEqual(new byte[] { 0x00, 0x10, 0x00, 0x00 }))
-                return "1 (SolidShield EXE Wrapper)";
+                return "v1";
             else if (id1.SequenceEqual(new byte[] { 0x2E, 0x6F, 0x26 }) && id2.SequenceEqual(new byte[] { 0xDB, 0xC5, 0x20, 0x3A })) // new byte[] { 0xDB, 0xC5, 0x20, 0x3A, 0xB9 }
-                return "2 (SolidShield v2 EXE Wrapper)"; // TODO: Verify against other SolidShield 2 discs
+                return "v2"; // TODO: Verify against other SolidShield 2 discs
             
             return null;
         }
@@ -144,6 +250,9 @@ namespace BurnOutSharp.ProtectionType
             index++;
             index++;
             char subSubSubVersion = (char)fileContent[index];
+
+            if (!char.IsNumber(version))
+                return null;
             
             return $"{version}.{subVersion}.{subSubVersion}.{subSubSubVersion}";
         }
