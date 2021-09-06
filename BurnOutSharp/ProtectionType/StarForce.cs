@@ -1,6 +1,9 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using BurnOutSharp.ExecutableType.Microsoft;
 using BurnOutSharp.Matching;
 using BurnOutSharp.Tools;
 
@@ -9,115 +12,119 @@ namespace BurnOutSharp.ProtectionType
     public class StarForce : IContentCheck, IPathCheck
     {
         /// <inheritdoc/>
-        public List<ContentMatchSet> GetContentMatchSets()
-        {
-            return new List<ContentMatchSet>
-            {
-                new ContentMatchSet(new List<byte?[]>
-                {
-                    // ( + (char)0x00 + c + (char)0x00 + ) + (char)0x00 +   + (char)0x00 + P + (char)0x00 + r + (char)0x00 + o + (char)0x00 + t + (char)0x00 + e + (char)0x00 + c + (char)0x00 + t + (char)0x00 + i + (char)0x00 + o + (char)0x00 + n + (char)0x00 +   + (char)0x00 + T + (char)0x00 + e + (char)0x00 + c + (char)0x00 + h + (char)0x00 + n + (char)0x00 + o + (char)0x00 + l + (char)0x00 + o + (char)0x00 + g + (char)0x00 + y + (char)0x00
-                    new byte?[]
-                    {
-                        0x28, 0x00, 0x63, 0x00, 0x29, 0x00, 0x20, 0x00,
-                        0x50, 0x00, 0x72, 0x00, 0x6F, 0x00, 0x74, 0x00,
-                        0x65, 0x00, 0x63, 0x00, 0x74, 0x00, 0x69, 0x00,
-                        0x6F, 0x00, 0x6E, 0x00, 0x20, 0x00, 0x54, 0x00,
-                        0x65, 0x00, 0x63, 0x00, 0x68, 0x00, 0x6E, 0x00,
-                        0x6F, 0x00, 0x6C, 0x00, 0x6F, 0x00, 0x67, 0x00,
-                        0x79, 0x00
-                    },
-
-                    // // PSA_GetDiscLabel
-                    // new byte?[]
-                    // {
-                    //     0x50, 0x53, 0x41, 0x5F, 0x47, 0x65, 0x74, 0x44,
-                    //     0x69, 0x73, 0x63, 0x4C, 0x61, 0x62, 0x65, 0x6C
-                    // },
-
-                    // (c) Protection Technology
-                    // new byte?[]
-                    // {
-                    //     0x28, 0x63, 0x29, 0x20, 0x50, 0x72, 0x6F, 0x74,
-                    //     0x65, 0x63, 0x74, 0x69, 0x6F, 0x6E, 0x20, 0x54,
-                    //     0x65, 0x63, 0x68, 0x6E, 0x6F, 0x6C, 0x6F, 0x67,
-                    //     0x79
-                    // },
-
-                    // TradeName
-                    new byte?[] { 0x54, 0x72, 0x61, 0x64, 0x65, 0x4E, 0x61, 0x6D, 0x65 },
-                }, GetVersion, "StarForce"),
-
-                // ( + (char)0x00 + c + (char)0x00 + ) + (char)0x00 +   + (char)0x00 + P + (char)0x00 + r + (char)0x00 + o + (char)0x00 + t + (char)0x00 + e + (char)0x00 + c + (char)0x00 + t + (char)0x00 + i + (char)0x00 + o + (char)0x00 + n + (char)0x00 +   + (char)0x00 + T + (char)0x00 + e + (char)0x00 + c + (char)0x00 + h + (char)0x00 + n + (char)0x00 + o + (char)0x00 + l + (char)0x00 + o + (char)0x00 + g + (char)0x00 + y + (char)0x00
-                new ContentMatchSet(new byte?[]
-                {
-                    0x28, 0x00, 0x63, 0x00, 0x29, 0x00, 0x20, 0x00,
-                    0x50, 0x00, 0x72, 0x00, 0x6F, 0x00, 0x74, 0x00,
-                    0x65, 0x00, 0x63, 0x00, 0x74, 0x00, 0x69, 0x00,
-                    0x6F, 0x00, 0x6E, 0x00, 0x20, 0x00, 0x54, 0x00,
-                    0x65, 0x00, 0x63, 0x00, 0x68, 0x00, 0x6E, 0x00,
-                    0x6F, 0x00, 0x6C, 0x00, 0x6F, 0x00, 0x67, 0x00,
-                    0x79, 0x00
-                }, Utilities.GetFileVersion, "StarForce"),
-
-                new ContentMatchSet(new List<byte?[]>
-                {
-                    // Protection Technology, Ltd.
-                    new byte?[]
-                    {
-                        0x50, 0x72, 0x6F, 0x74, 0x65, 0x63, 0x74, 0x69,
-                        0x6F, 0x6E, 0x20, 0x54, 0x65, 0x63, 0x68, 0x6E,
-                        0x6F, 0x6C, 0x6F, 0x67, 0x79, 0x2C, 0x20, 0x4C,
-                        0x74, 0x64, 0x2E
-                    },
-
-                    // // PSA_GetDiscLabel
-                    // new byte?[]
-                    // {
-                    //     0x50, 0x53, 0x41, 0x5F, 0x47, 0x65, 0x74, 0x44,
-                    //     0x69, 0x73, 0x63, 0x4C, 0x61, 0x62, 0x65, 0x6C
-                    // },
-
-                    // (c) Protection Technology
-                    // new byte?[]
-                    // {
-                    //     0x28, 0x63, 0x29, 0x20, 0x50, 0x72, 0x6F, 0x74,
-                    //     0x65, 0x63, 0x74, 0x69, 0x6F, 0x6E, 0x20, 0x54,
-                    //     0x65, 0x63, 0x68, 0x6E, 0x6F, 0x6C, 0x6F, 0x67,
-                    //     0x79
-                    // },
-
-                    // TradeName
-                    new byte?[] { 0x54, 0x72, 0x61, 0x64, 0x65, 0x4E, 0x61, 0x6D, 0x65 },
-                }, GetVersion, "StarForce"),
-
-                // .sforce
-                new ContentMatchSet(new byte?[] { 0x2E, 0x73, 0x66, 0x6F, 0x72, 0x63, 0x65 }, "StarForce 3-5"),
-
-                // .brick
-                new ContentMatchSet(new byte?[] { 0x2E, 0x62, 0x72, 0x69, 0x63, 0x6B }, "StarForce 3-5"),
-
-                // Protection Technology, Ltd.
-                new ContentMatchSet(new byte?[]
-                {
-                    0x50, 0x72, 0x6F, 0x74, 0x65, 0x63, 0x74, 0x69,
-                    0x6F, 0x6E, 0x20, 0x54, 0x65, 0x63, 0x68, 0x6E,
-                    0x6F, 0x6C, 0x6F, 0x67, 0x79, 0x2C, 0x20, 0x4C,
-                    0x74, 0x64, 0x2E
-                }, Utilities.GetFileVersion, "StarForce"),
-
-                // P + (char)0x00 + r + (char)0x00 + o + (char)0x00 + t + (char)0x00 + e + (char)0x00 + c + (char)0x00 + t + (char)0x00 + e + (char)0x00 + d + (char)0x00 +   + (char)0x00 + M + (char)0x00 + o + (char)0x00 + d + (char)0x00 + u + (char)0x00 + l + (char)0x00 + e + (char)0x00
-                new ContentMatchSet(new byte?[]
-                {
-                    0x50, 0x00, 0x72, 0x00, 0x6f, 0x00, 0x74, 0x00,
-                    0x65, 0x00, 0x63, 0x00, 0x74, 0x00, 0x65, 0x00,
-                    0x64, 0x00, 0x20, 0x00, 0x4d, 0x00, 0x6f, 0x00,
-                    0x64, 0x00, 0x75, 0x00, 0x6c, 0x00, 0x65, 0x00
-                }, "StarForce 5"),
-            };
-        }
+        public List<ContentMatchSet> GetContentMatchSets() => null;
 
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false) => null;
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        {
+            // TODO: Implement resource finding instead of using the built in methods
+            // Assembly information lives in the .rsrc section
+            // I need to find out how to navigate the resources in general
+            // as well as figure out the specific resources for both
+            // file info and MUI (XML) info. Once I figure this out,
+            // that also opens the doors to easier assembly XML checks.
+
+            var fvinfo = Utilities.GetFileVersionInfo(file);
+
+            string name = fvinfo?.LegalCopyright?.Trim();
+            if (!string.IsNullOrWhiteSpace(name) && name.Contains("Protection Technology"))
+                return $"StarForce {Utilities.GetFileVersion(file)}";
+
+            // TODO: Find what fvinfo field actually maps to this
+            name = fvinfo?.FileDescription?.Trim();
+            if (!string.IsNullOrWhiteSpace(name) && name.Contains("Protected Module"))
+                return $"StarForce 5";
+
+            // Get the sections from the executable, if possible
+            PortableExecutable pex = PortableExecutable.Deserialize(fileContent, 0);
+            var sections = pex?.SectionTable;
+            if (sections == null)
+                return null;
+
+            // Get the .rsrc section, if it exists
+            var rsrcSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".rsrc"));
+            if (rsrcSection != null)
+            {
+                int sectionAddr = (int)rsrcSection.PointerToRawData;
+                int sectionEnd = sectionAddr + (int)rsrcSection.VirtualSize;
+                var matchers = new List<ContentMatchSet>
+                {
+                    // P + (char)0x00 + r + (char)0x00 + o + (char)0x00 + t + (char)0x00 + e + (char)0x00 + c + (char)0x00 + t + (char)0x00 + i + (char)0x00 + o + (char)0x00 + n + (char)0x00 +   + (char)0x00 + T + (char)0x00 + e + (char)0x00 + c + (char)0x00 + h + (char)0x00 + n + (char)0x00 + o + (char)0x00 + l + (char)0x00 + o + (char)0x00 + g + (char)0x00 + y + (char)0x00
+                    new ContentMatchSet(
+                        new ContentMatch(new byte?[]
+                        {
+                            0x50, 0x00, 0x72, 0x00, 0x6F, 0x00, 0x74, 0x00,
+                            0x65, 0x00, 0x63, 0x00, 0x74, 0x00, 0x69, 0x00,
+                            0x6F, 0x00, 0x6E, 0x00, 0x20, 0x00, 0x54, 0x00,
+                            0x65, 0x00, 0x63, 0x00, 0x68, 0x00, 0x6E, 0x00,
+                            0x6F, 0x00, 0x6C, 0x00, 0x6F, 0x00, 0x67, 0x00,
+                            0x79, 0x00
+                        }, start: sectionAddr, end: sectionEnd),
+                    Utilities.GetFileVersion, "StarForce"),
+
+                    // P + (char)0x00 + r + (char)0x00 + o + (char)0x00 + t + (char)0x00 + e + (char)0x00 + c + (char)0x00 + t + (char)0x00 + e + (char)0x00 + d + (char)0x00 +   + (char)0x00 + M + (char)0x00 + o + (char)0x00 + d + (char)0x00 + u + (char)0x00 + l + (char)0x00 + e + (char)0x00
+                    new ContentMatchSet(
+                        new ContentMatch(new byte?[]
+                        {
+                            0x50, 0x00, 0x72, 0x00, 0x6f, 0x00, 0x74, 0x00,
+                            0x65, 0x00, 0x63, 0x00, 0x74, 0x00, 0x65, 0x00,
+                            0x64, 0x00, 0x20, 0x00, 0x4d, 0x00, 0x6f, 0x00,
+                            0x64, 0x00, 0x75, 0x00, 0x6c, 0x00, 0x65, 0x00
+                        }, start: sectionAddr, end: sectionEnd),
+                    "StarForce 5"),
+
+                    // TODO: Confirm that these additonal checks do anything
+                    // new ContentMatchSet(new List<ContentMatch>
+                    // {
+                    //     // P + (char)0x00 + r + (char)0x00 + o + (char)0x00 + t + (char)0x00 + e + (char)0x00 + c + (char)0x00 + t + (char)0x00 + i + (char)0x00 + o + (char)0x00 + n + (char)0x00 +   + (char)0x00 + T + (char)0x00 + e + (char)0x00 + c + (char)0x00 + h + (char)0x00 + n + (char)0x00 + o + (char)0x00 + l + (char)0x00 + o + (char)0x00 + g + (char)0x00 + y + (char)0x00
+                    //     new ContentMatch(new byte?[]
+                    //     {
+                    //         0x50, 0x00, 0x72, 0x00, 0x6F, 0x00, 0x74, 0x00,
+                    //         0x65, 0x00, 0x63, 0x00, 0x74, 0x00, 0x69, 0x00,
+                    //         0x6F, 0x00, 0x6E, 0x00, 0x20, 0x00, 0x54, 0x00,
+                    //         0x65, 0x00, 0x63, 0x00, 0x68, 0x00, 0x6E, 0x00,
+                    //         0x6F, 0x00, 0x6C, 0x00, 0x6F, 0x00, 0x67, 0x00,
+                    //         0x79, 0x00
+                    //     }, start: sectionAddr, end: sectionEnd),
+
+                    //     // // PSA_GetDiscLabel
+                    //     // new ContentMatch(new byte?[]
+                    //     // {
+                    //     //     0x50, 0x53, 0x41, 0x5F, 0x47, 0x65, 0x74, 0x44,
+                    //     //     0x69, 0x73, 0x63, 0x4C, 0x61, 0x62, 0x65, 0x6C
+                    //     // }, start: sectionAddr, end: sectionEnd),
+
+                    //     // (c) Protection Technology
+                    //     // new ContentMatch(new byte?[]
+                    //     // {
+                    //     //     0x28, 0x63, 0x29, 0x20, 0x50, 0x72, 0x6F, 0x74,
+                    //     //     0x65, 0x63, 0x74, 0x69, 0x6F, 0x6E, 0x20, 0x54,
+                    //     //     0x65, 0x63, 0x68, 0x6E, 0x6F, 0x6C, 0x6F, 0x67,
+                    //     //     0x79
+                    //     // }, start: sectionAddr, end: sectionEnd),
+
+                    //     // TradeName
+                    //     new ContentMatch(new byte?[] { 0x54, 0x72, 0x61, 0x64, 0x65, 0x4E, 0x61, 0x6D, 0x65 }, start: sectionAddr, end: sectionEnd),
+                    // }, GetVersion, "StarForce"),
+                };
+
+                string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
+                if (!string.IsNullOrWhiteSpace(match))
+                    return match;
+            }
+
+            // Get the .brick section, if it exists
+            var brickSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".brick"));
+            if (brickSection != null)
+                return "StarForce 3-5";
+
+            // Get the .sforce* section, if it exists
+            var sforceSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".sforce"));
+            if (sforceSection != null)
+                return "StarForce 3-5";
+
+            return null;
+        }
 
         /// <inheritdoc/>
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string> files)
