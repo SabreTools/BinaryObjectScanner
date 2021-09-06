@@ -4,6 +4,7 @@ using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
 {
+    // TODO: Investigate what content checks can be done here
     public class Steam : IPathCheck
     {
         /// <inheritdoc/>
