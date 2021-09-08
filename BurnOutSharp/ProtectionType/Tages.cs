@@ -3,17 +3,19 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using BurnOutSharp.ExecutableType.Microsoft;
 using BurnOutSharp.Matching;
 using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ProtectionType
 {
     // TODO: Figure out how to use path check framework here
-    public class Tages : IContentCheck, IPathCheck
+    public class TAGES : IContentCheck, IPathCheck
     {
         /// <inheritdoc/>
         public List<ContentMatchSet> GetContentMatchSets()
         {
+            // TODO: Obtain a sample to find where this string is in a typical executable
             return new List<ContentMatchSet>
             {
                 // protected-tages-runtime.exe
@@ -25,21 +27,46 @@ namespace BurnOutSharp.ProtectionType
                     0x65, 0x78, 0x65
                 }, Utilities.GetFileVersion, "TAGES"),
 
-                // tagesprotection.com
-                new ContentMatchSet(new byte?[]
-                {
-                    0x74, 0x61, 0x67, 0x65, 0x73, 0x70, 0x72, 0x6F,
-                    0x74, 0x65, 0x63, 0x74, 0x69, 0x6F, 0x6E, 0x2E,
-                    0x63, 0x6F, 0x6D
-                }, Utilities.GetFileVersion, "TAGES"),
-
                 // (char)0xE8 + u + (char)0x00 + (char)0x00 + (char)0x00 + (char)0xE8
                 new ContentMatchSet(new byte?[] { 0xE8, 0x75, 0x00, 0x00, 0x00, 0xE8 }, GetVersion, "TAGES"),
             };
         }
 
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false) => null;
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        {
+            // Get the sections from the executable, if possible
+            PortableExecutable pex = PortableExecutable.Deserialize(fileContent, 0);
+            var sections = pex?.SectionTable;
+            if (sections == null)
+                return null;
+
+            // Get the last section
+            var lastSection = sections.LastOrDefault();
+            if (lastSection != null)
+            {
+                int sectionAddr = (int)lastSection.PointerToRawData;
+                int sectionEnd = sectionAddr + (int)lastSection.VirtualSize;
+                var matchers = new List<ContentMatchSet>
+                {
+                    // tagesprotection.com
+                    new ContentMatchSet(
+                        new ContentMatch(new byte?[]
+                        {
+                            0x74, 0x61, 0x67, 0x65, 0x73, 0x70, 0x72, 0x6F,
+                            0x74, 0x65, 0x63, 0x74, 0x69, 0x6F, 0x6E, 0x2E,
+                            0x63, 0x6F, 0x6D
+                        }, start: sectionEnd),
+                    Utilities.GetFileVersion, "TAGES [tagesprotection.com]"),
+                };
+
+                string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
+                if (!string.IsNullOrWhiteSpace(match))
+                    return match;
+            }
+
+            return null;
+        }
 
         /// <inheritdoc/>
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string> files)
