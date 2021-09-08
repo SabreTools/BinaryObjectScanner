@@ -51,6 +51,14 @@ namespace BurnOutSharp.ProtectionType
             if (sections == null)
                 return null;
 
+            foreach (var section in sections)
+            {
+                string sectionName = System.Text.Encoding.ASCII.GetString(section.Name).Trim('\0');
+                int sectionAddr = (int)section.PointerToRawData;
+                int sectionEnd = sectionAddr + (int)section.VirtualSize;
+                System.Console.WriteLine($"{sectionName}: {sectionAddr} -> {sectionEnd}");
+            }
+
             // Get the .text section, if it exists
             var textSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".text"));
             if (textSection != null)
@@ -58,6 +66,36 @@ namespace BurnOutSharp.ProtectionType
                 // This subtract is needed because BoG_ starts before the .text section
                 int sectionAddr = (int)textSection.PointerToRawData - 64;
                 int sectionEnd = sectionAddr + (int)textSection.VirtualSize;
+                var matchers = new List<ContentMatchSet>
+                {
+                    // BoG_ *90.0&!!  Yy>
+                    new ContentMatchSet(
+                        new ContentMatch(new byte?[]
+                        {
+                            0x42, 0x6F, 0x47, 0x5F, 0x20, 0x2A, 0x39, 0x30,
+                            0x2E, 0x30, 0x26, 0x21, 0x21, 0x20, 0x20, 0x59,
+                            0x79, 0x3E
+                        }, start: sectionAddr, end: sectionEnd),
+                    GetVersion, "SafeDisc"),
+
+                    // (char)0x00 + (char)0x00 + BoG_
+                    new ContentMatchSet(
+                        new ContentMatch(new byte?[] { 0x00, 0x00, 0x42, 0x6F, 0x47, 0x5F }, start: sectionAddr, end: sectionEnd),
+                    Get320to4xVersion, "SafeDisc"),
+                };
+
+                string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
+                if (!string.IsNullOrWhiteSpace(match))
+                    return match;
+            }
+
+            // Get the .txt2 section, if it exists
+            var txt2Section = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".txt2"));
+            if (txt2Section != null)
+            {
+                // This subtract is needed because BoG_ starts before the .txt2 section
+                int sectionAddr = (int)txt2Section.PointerToRawData - 64;
+                int sectionEnd = sectionAddr + (int)txt2Section.VirtualSize;
                 var matchers = new List<ContentMatchSet>
                 {
                     // BoG_ *90.0&!!  Yy>
