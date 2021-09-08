@@ -62,7 +62,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
                 long lastPosition = stream.Position;
                 try
                 {
-                    int dataEntryAddress = (int)EVORE.ConvertVirtualAddress(rdte.DataEntryOffset, sections);
+                    int dataEntryAddress = (int)ConvertVirtualAddress(rdte.DataEntryOffset, sections);
                     if (dataEntryAddress > 0)
                     {
                         stream.Seek(dataEntryAddress, SeekOrigin.Begin);
@@ -93,7 +93,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
             {
                 try
                 {
-                    int dataEntryAddress = (int)EVORE.ConvertVirtualAddress(rdte.DataEntryOffset, sections);
+                    int dataEntryAddress = (int)ConvertVirtualAddress(rdte.DataEntryOffset, sections);
                     if (dataEntryAddress > 0)
                         rdte.DataEntry = ResourceDataEntry.Deserialize(content, dataEntryAddress);
                 }
@@ -103,6 +103,30 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
             // TODO: Add parsing for further directory table entries in the tree
 
             return rdte;
+        }
+
+        /// <summary>
+        /// Convert a virtual address to a physical one
+        /// </summary>
+        /// <param name="virtualAddress">Virtual address to convert</param>
+        /// <param name="sections">Array of sections to check against</param>
+        /// <returns>Physical address, 0 on error</returns>
+        private static uint ConvertVirtualAddress(uint virtualAddress, SectionHeader[] sections)
+        {
+            // Loop through all of the sections
+            for (int i = 0; i < sections.Length; i++)
+            {
+                // If the section is invalid, just skip it
+                if (sections[i] == null)
+                    continue;
+
+                // Attempt to derive the physical address from the current section
+                var section = sections[i];
+                if (virtualAddress >= section.VirtualAddress && virtualAddress <= section.VirtualAddress + section.VirtualSize)
+                    return section.PointerToRawData + virtualAddress - section.VirtualAddress;
+            }
+
+            return 0;
         }
     }
 }

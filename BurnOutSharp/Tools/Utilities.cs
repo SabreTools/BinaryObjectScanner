@@ -424,41 +424,5 @@ namespace BurnOutSharp.Tools
         }
 
         #endregion
-
-        #region IO Helpers
-
-        /// <summary>
-        /// Safely attempt to delete a path
-        /// </summary>
-        /// <param name="path">Path to be deleted</param>
-        /// <param name="isDirectory">True to treat the path as a directory, false for a file</param>
-        public static void SafeDelete(string path, bool isDirectory = false)
-        {
-            // No valid path means we can't delete
-            if (string.IsNullOrWhiteSpace(path))
-                return;
-            
-            // Attempt to delete the path
-            try
-            {
-                if (!isDirectory && File.Exists(path))
-                    File.Delete(path);
-                else if (isDirectory && Directory.Exists(path))
-                    Directory.Delete(path, true);
-            }
-            catch
-            {
-                // Absorb any errors in deletion
-            }
-        }
-
-        /// <summary>
-        /// Safely attempt to delete a path in the temp directory
-        /// </summary>
-        /// <param name="path">Path in the temp directory to be deleted</param>
-        /// <param name="isDirectory">True to treat the path as a directory, false for a file</param>
-        public static void SafeTempDelete(string path, bool isDirectory = false) => SafeDelete(Path.Combine(Path.GetTempPath(), path), isDirectory);
-
-        #endregion
     }
 }

@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using BurnOutSharp.ExecutableType.Microsoft;
 using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
 {
-    // TODO: Investigate the connection between this and VOB Protect CD/DVD
+    // This protection was called VOB ProtectCD / ProtectDVD in versions prior to 6
     public class ProtectDISC : IContentCheck
     {
         /// <inheritdoc/>
@@ -40,6 +41,48 @@ namespace BurnOutSharp.ProtectionType
                     return match;
             }
 
+            // Get the .data section, if it exists
+            var dataSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".data"));
+            if (dataSection != null)
+            {
+                int sectionAddr = (int)dataSection.PointerToRawData;
+                int sectionEnd = sectionAddr + (int)dataSection.VirtualSize;
+                var matchers = new List<ContentMatchSet>
+                {
+                    // DCP-BOV + (char)0x00 + (char)0x00
+                    new ContentMatchSet(
+                        new ContentMatch(new byte?[] { 0x44, 0x43, 0x50, 0x2D, 0x42, 0x4F, 0x56, 0x00, 0x00 }, start: sectionAddr, end: sectionEnd),
+                    GetVersion3till6, "VOB ProtectCD/DVD"),
+                };
+
+                string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
+                if (!string.IsNullOrWhiteSpace(match))
+                    return match;
+            }
+
+            // Get the second to last section
+            var secondToLastSection = sections.Length > 1 ? sections[sections.Length - 2] : null;
+            if (secondToLastSection != null)
+            {
+                int sectionAddr = (int)secondToLastSection.PointerToRawData;
+                int sectionEnd = sectionAddr + (int)secondToLastSection.VirtualSize;
+                var matchers = new List<ContentMatchSet>
+                {
+                    // VOB ProtectCD
+                    new ContentMatchSet(
+                        new ContentMatch(new byte?[]
+                        {
+                            0x56, 0x4F, 0x42, 0x20, 0x50, 0x72, 0x6F, 0x74,
+                            0x65, 0x63, 0x74, 0x43, 0x44
+                        }, start: sectionAddr, end: sectionEnd),
+                    GetOldVersion, "VOB ProtectCD/DVD"),
+                };
+
+                string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
+                if (!string.IsNullOrWhiteSpace(match))
+                    return match;
+            }
+
             // Get the last section (example names: ACE5, akxpxgcv, and piofinqb)
             var lastSection = sections.LastOrDefault();
             if (lastSection != null)
@@ -52,6 +95,11 @@ namespace BurnOutSharp.ProtectionType
                     new ContentMatchSet(
                         new ContentMatch(new byte?[] { 0x48, 0xFA, 0x4D, 0x45, 0x54, 0x49, 0x4E, 0x46 }, start: sectionAddr, end: sectionEnd),
                     GetVersion76till10, "ProtectDISC"),
+
+                    // DCP-BOV + (char)0x00 + (char)0x00
+                    new ContentMatchSet(
+                        new ContentMatch(new byte?[] { 0x44, 0x43, 0x50, 0x2D, 0x42, 0x4F, 0x56, 0x00, 0x00 }, start: sectionAddr, end: sectionEnd),
+                    GetVersion3till6, "VOB ProtectCD/DVD"),
                 };
 
                 string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
@@ -59,7 +107,37 @@ namespace BurnOutSharp.ProtectionType
                     return match;
             }
 
+            // Get the .vob.pcd section, if it exists
+            var vobpcdSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".vob.pcd"));
+            if (vobpcdSection != null)
+                return "VOB ProtectCD";
+
             return null;
+        }
+
+        public static string GetOldVersion(string file, byte[] fileContent, List<int> positions)
+        {
+            int position = positions[0] + 16; // Begin reading after "VOB ProtectCD"
+            char[] version = new ArraySegment<byte>(fileContent, position, 4).Select(b => (char)b).ToArray();
+            if (char.IsNumber(version[0]) && char.IsNumber(version[2]) && char.IsNumber(version[3]))
+                return $"{version[0]}.{version[2]}{version[3]}";
+
+            // Look for the legacy support version
+            position = positions[0] + "VOB ProtectCD with LEGACY SYSIPHOS Support V".Length;
+            version = new ArraySegment<byte>(fileContent, position, 7).Select(b => (char)b).ToArray();
+            if (char.IsNumber(version[0]) && char.IsNumber(version[2]) && char.IsNumber(version[4]))
+                return new string(version);
+
+            return "old";
+        }
+
+        public static string GetVersion3till6(string file, byte[] fileContent, List<int> positions)
+        {
+            string version = GetVOBVersion(fileContent, positions[0]);
+            if (version.Length > 0)
+                return version;
+
+            return $"5.9-6.0 {GetVOBBuild(fileContent, positions[0])}";
         }
 
         public static string GetVersion6till8(string file, byte[] fileContent, List<int> positions)
@@ -195,6 +273,24 @@ namespace BurnOutSharp.ProtectionType
             }
 
             return string.Empty;
+        }
+ 
+        private static string GetVOBBuild(byte[] fileContent, int position)
+        {
+            if (!char.IsNumber((char)fileContent[position - 13]))
+                return string.Empty; //Build info removed
+
+            int build = BitConverter.ToInt16(fileContent, position - 4); // Check if this is supposed to be a 4-byte read
+            return $" (Build {build})";
+        }
+
+        // TODO: Ensure that this version finding works for all known versions
+        private static string GetVOBVersion(byte[] fileContent, int position)
+        {
+            byte version = fileContent[position - 2];
+            byte subVersion = (byte)((fileContent[position - 3] & 0xF0) >> 4);
+            byte subSubVersion = (byte)((fileContent[position - 4] & 0xF0) >> 4);
+            return $"{version}.{subVersion}.{subSubVersion}";
         }
     }
 }
