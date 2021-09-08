@@ -9,6 +9,7 @@ namespace BurnOutSharp
     // and DOS Executable, then add an override for `CheckContents` that takes an executable type
     // as one of the arguments. This will reduce the amount of times the same file will be parsed
     // into an in-memory header
+    // TODO: Once all checks are converted over to executable section based, remove the `GetContentMatchSets` from this
     internal interface IContentCheck
     {
         /// <summary>
