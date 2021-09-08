@@ -1,8 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using BurnOutSharp.ExecutableType.Microsoft;
 using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
 {
+    // TODO: Figure out how to get version numbers
     public class ActiveMARK : IContentCheck
     {
         /// <inheritdoc/>
@@ -11,9 +15,6 @@ namespace BurnOutSharp.ProtectionType
             // TODO: Obtain a sample to find where this string is in a typical executable
             return new List<ContentMatchSet>
             {
-                // TMSAMVOF
-                new ContentMatchSet(new byte?[] { 0x54, 0x4D, 0x53, 0x41, 0x4D, 0x56, 0x4F, 0x46 }, "ActiveMARK"),
-
                 // " " + (char)0xC2 + (char)0x16 + (char)0x00 + (char)0xA8 + (char)0xC1 + (char)0x16 + (char)0x00 + (char)0xB8 + (char)0xC1 + (char)0x16 + (char)0x00 + (char)0x86 + (char)0xC8 + (char)0x16 + (char)0x00 + (char)0x9A + (char)0xC1 + (char)0x16 + (char)0x00 + (char)0x10 + (char)0xC2 + (char)0x16 + (char)0x00
                 new ContentMatchSet(new byte?[]
                 {
@@ -25,6 +26,34 @@ namespace BurnOutSharp.ProtectionType
         }
 
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false) => null;
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        {
+            // Get the sections from the executable, if possible
+            PortableExecutable pex = PortableExecutable.Deserialize(fileContent, 0);
+            var sections = pex?.SectionTable;
+            if (sections == null)
+                return null;
+
+            // Get the last .bss section, if it exists
+            var bssSection = sections.LastOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".bss"));
+            if (bssSection != null)
+            {
+                int sectionAddr = (int)bssSection.PointerToRawData;
+                int sectionEnd = sectionAddr + (int)bssSection.VirtualSize;
+                var matchers = new List<ContentMatchSet>
+                {
+                    // TMSAMVOF
+                    new ContentMatchSet(
+                        new ContentMatch(new byte?[] { 0x54, 0x4D, 0x53, 0x41, 0x4D, 0x56, 0x4F, 0x46 }, start: sectionAddr, end: sectionEnd),
+                    "ActiveMARK"),
+                };
+
+                string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
+                if (!string.IsNullOrWhiteSpace(match))
+                    return match;
+            }
+
+            return null;
+        }
     }
 }
