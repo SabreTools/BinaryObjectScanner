@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using BurnOutSharp.ExecutableType.Microsoft.Headers;
 using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ExecutableType.Microsoft.Entries
@@ -22,7 +21,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
         /// <summary>
         /// The offset of a string that gives the Type, Name, or Language ID entry, depending on level of table.
         /// </summary>
-        public uint NameOffset => (uint)(IntegerId & (1 << 32));
+        public uint NameOffset => (uint)(IntegerId ^ (1 << 31));
 
         /// <summary>
         /// The string that gives the Type, Name, or Language ID entry, depending on level of table pointed to by NameOffset
@@ -42,7 +41,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
         /// <summary>
         /// High bit 1. The lower 31 bits are the address of another resource directory table (the next level down).
         /// </summary>
-        public uint SubdirectoryOffset => (uint)(DataEntryOffset & (1 << 32));
+        public uint SubdirectoryOffset => (uint)(DataEntryOffset ^ (1 << 31));
 
         /// <summary>
         /// Resource Data entry (a leaf).
@@ -54,12 +53,12 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
         /// <summary>
         /// Determine if an entry has a name or integer identifier
         /// </summary>
-        public bool IsIntegerIDEntry() => (NameOffset & (1 << 32)) == 0;
+        public bool IsIntegerIDEntry() => (IntegerId & (1 << 31)) == 0;
 
         /// <summary>
         /// Determine if an entry represents a leaf or another directory table
         /// </summary>
-        public bool IsResourceDataEntry() => (DataEntryOffset & (1 << 32)) == 0;
+        public bool IsResourceDataEntry() => (DataEntryOffset & (1 << 31)) == 0;
 
         public static ResourceDirectoryTableEntry Deserialize(Stream stream, long sectionStart)
         {
