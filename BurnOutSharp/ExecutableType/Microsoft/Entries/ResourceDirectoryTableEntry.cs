@@ -22,12 +22,17 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
         /// <summary>
         /// The offset of a string that gives the Type, Name, or Language ID entry, depending on level of table.
         /// </summary>
-        public uint NameOffset;
+        public uint NameOffset => (uint)(IntegerId & (1 << 32));
+
+        /// <summary>
+        /// The string that gives the Type, Name, or Language ID entry, depending on level of table pointed to by NameOffset
+        /// </summary>
+        public ResourceDirectoryString Name;
 
         /// <summary>
         /// A 32-bit integer that identifies the Type, Name, or Language ID entry.
         /// </summary>
-        public uint IntegerId => NameOffset;
+        public uint IntegerId;
 
         /// <summary>
         /// High bit 0. Address of a Resource Data entry (a leaf).
@@ -37,42 +42,66 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
         /// <summary>
         /// High bit 1. The lower 31 bits are the address of another resource directory table (the next level down).
         /// </summary>
-        public uint SubdirectoryOffset => DataEntryOffset;
+        public uint SubdirectoryOffset => (uint)(DataEntryOffset & (1 << 32));
 
         /// <summary>
         /// Resource Data entry (a leaf).
         /// </summary>
         public ResourceDataEntry DataEntry;
 
+        private bool NameFieldIsIntegerId = false;
+
+        /// <summary>
+        /// Determine if an entry has a name or integer identifier
+        /// </summary>
+        public bool IsIntegerIDEntry() => (NameOffset & (1 << 32)) == 0;
+
         /// <summary>
         /// Determine if an entry represents a leaf or another directory table
         /// </summary>
-        public bool IsResourceDataEntry() => (DataEntryOffset & (1 << 31)) == 0;
+        public bool IsResourceDataEntry() => (DataEntryOffset & (1 << 32)) == 0;
 
-        public static ResourceDirectoryTableEntry Deserialize(Stream stream, SectionHeader[] sections)
+        public static ResourceDirectoryTableEntry Deserialize(Stream stream, long sectionStart)
         {
             var rdte = new ResourceDirectoryTableEntry();
 
-            rdte.NameOffset = stream.ReadUInt32();
-            rdte.DataEntryOffset = stream.ReadUInt32();
+            rdte.IntegerId = stream.ReadUInt32();
+            if (!rdte.IsIntegerIDEntry())
+            {
+                long lastPosition = stream.Position;
+                int nameAddress = (int)(rdte.NameOffset + sectionStart);
+                if (nameAddress >= 0 && nameAddress < stream.Length)
+                {
+                    try
+                    {
+                        stream.Seek(nameAddress, SeekOrigin.Begin);
+                        rdte.Name = ResourceDirectoryString.Deserialize(stream);
+                    }
+                    catch { }
+                    finally
+                    {
+                        stream.Seek(lastPosition, SeekOrigin.Begin);
+                    }
+                }
+            }
 
-            // Read in the data if we have a leaf
+            rdte.DataEntryOffset = stream.ReadUInt32();
             if (rdte.IsResourceDataEntry())
             {
                 long lastPosition = stream.Position;
-                try
+                int dataEntryAddress = (int)(rdte.DataEntryOffset + sectionStart);
+                if (dataEntryAddress > 0 && dataEntryAddress < stream.Length)
                 {
-                    int dataEntryAddress = (int)ConvertVirtualAddress(rdte.DataEntryOffset, sections);
-                    if (dataEntryAddress > 0)
+                    try
                     {
                         stream.Seek(dataEntryAddress, SeekOrigin.Begin);
                         rdte.DataEntry = ResourceDataEntry.Deserialize(stream);
                     }
-                }
-                catch { }
-                finally
-                {
-                    stream.Seek(lastPosition, SeekOrigin.Begin);
+                    catch { }
+                    finally
+                    {
+                        stream.Seek(lastPosition, SeekOrigin.Begin);
+                    }
                 }
             }
 
@@ -81,52 +110,41 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
             return rdte;
         }
 
-        public static ResourceDirectoryTableEntry Deserialize(byte[] content, int offset, SectionHeader[] sections)
+        public static ResourceDirectoryTableEntry Deserialize(byte[] content, int offset, long sectionStart)
         {
             var rdte = new ResourceDirectoryTableEntry();
 
-            rdte.NameOffset = BitConverter.ToUInt32(content, offset); offset += 4;
-            rdte.DataEntryOffset = BitConverter.ToUInt32(content, offset); offset += 4;
+            rdte.IntegerId = BitConverter.ToUInt32(content, offset); offset += 4;
+            if (!rdte.IsIntegerIDEntry())
+            {
+                int nameAddress = (int)(rdte.NameOffset + sectionStart);
+                if (nameAddress >= 0 && nameAddress < content.Length)
+                {
+                    try
+                    {
+                        rdte.Name = ResourceDirectoryString.Deserialize(content, nameAddress);
+                    }
+                    catch { }
+                }
+            }
 
-            // Read in the data if we have a leaf
+            rdte.DataEntryOffset = BitConverter.ToUInt32(content, offset); offset += 4;
             if (rdte.IsResourceDataEntry())
             {
-                try
+                int dataEntryAddress = (int)(rdte.DataEntryOffset + sectionStart);
+                if (dataEntryAddress > 0 && dataEntryAddress < content.Length)
                 {
-                    int dataEntryAddress = (int)ConvertVirtualAddress(rdte.DataEntryOffset, sections);
-                    if (dataEntryAddress > 0)
+                    try
+                    {
                         rdte.DataEntry = ResourceDataEntry.Deserialize(content, dataEntryAddress);
+                    }
+                    catch { }
                 }
-                catch { }
             }
 
             // TODO: Add parsing for further directory table entries in the tree
 
             return rdte;
-        }
-
-        /// <summary>
-        /// Convert a virtual address to a physical one
-        /// </summary>
-        /// <param name="virtualAddress">Virtual address to convert</param>
-        /// <param name="sections">Array of sections to check against</param>
-        /// <returns>Physical address, 0 on error</returns>
-        private static uint ConvertVirtualAddress(uint virtualAddress, SectionHeader[] sections)
-        {
-            // Loop through all of the sections
-            for (int i = 0; i < sections.Length; i++)
-            {
-                // If the section is invalid, just skip it
-                if (sections[i] == null)
-                    continue;
-
-                // Attempt to derive the physical address from the current section
-                var section = sections[i];
-                if (virtualAddress >= section.VirtualAddress && virtualAddress <= section.VirtualAddress + section.VirtualSize)
-                    return section.PointerToRawData + virtualAddress - section.VirtualAddress;
-            }
-
-            return 0;
         }
     }
 }

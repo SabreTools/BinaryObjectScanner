@@ -22,22 +22,24 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Sections
         /// </summary>
         public ResourceDirectoryTable ResourceDirectoryTable;
 
-        public static ResourceSection Deserialize(Stream stream, SectionHeader[] sections)
+        public static ResourceSection Deserialize(Stream stream)
         {
             var rs = new ResourceSection();
 
-            rs.ResourceDirectoryTable = ResourceDirectoryTable.Deserialize(stream, sections);
+            long sectionStart = stream.Position;
+            rs.ResourceDirectoryTable = ResourceDirectoryTable.Deserialize(stream, sectionStart);
 
             return rs;
         }
 
-        public static ResourceSection Deserialize(byte[] content, int offset, SectionHeader[] sections)
+        public static ResourceSection Deserialize(byte[] content, int offset)
         {
             var rs = new ResourceSection();
 
             unsafe
             {
-                rs.ResourceDirectoryTable = ResourceDirectoryTable.Deserialize(content, offset, sections); offset += Marshal.SizeOf(rs.ResourceDirectoryTable);
+                long sectionStart = offset;
+                rs.ResourceDirectoryTable = ResourceDirectoryTable.Deserialize(content, offset, sectionStart); offset += Marshal.SizeOf(rs.ResourceDirectoryTable);
             }
 
             return rs;

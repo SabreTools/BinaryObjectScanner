@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 using BurnOutSharp.Tools;
@@ -21,14 +22,24 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
         /// <summary>
         /// The variable-length Unicode string data, word-aligned.
         /// </summary>
-        public char[] UnicodeString;
+        public string UnicodeString;
 
         public static ResourceDirectoryString Deserialize(Stream stream)
         {
             var rds = new ResourceDirectoryString();
 
             rds.Length = stream.ReadUInt16();
-            rds.UnicodeString = stream.ReadChars(rds.Length, Encoding.Unicode);
+            rds.UnicodeString = new string(stream.ReadChars(rds.Length, Encoding.Unicode));
+
+            return rds;
+        }
+
+        public static ResourceDirectoryString Deserialize(byte[] content, int offset)
+        {
+            var rds = new ResourceDirectoryString();
+
+            rds.Length = BitConverter.ToUInt16(content, offset); offset += 2;
+            rds.UnicodeString = Encoding.Unicode.GetString(content, offset, rds.Length);
 
             return rds;
         }

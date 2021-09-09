@@ -48,10 +48,10 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Sections
             var eds = new ExportDataSection();
 
             eds.ExportDirectoryTable = ExportDirectoryTable.Deserialize(stream);
-            eds.ExportAddressTable = ExportAddressTable.Deserialize(stream, count: 0); // TODO: Figure out where this count comes from
-            eds.NamePointerTable = ExportNamePointerTable.Deserialize(stream, count: 0); // TODO: Figure out where this count comes from
-            eds.OrdinalTable = ExportOrdinalTable.Deserialize(stream, count: 0); // TODO: Figure out where this count comes from
-            //eds.ExportNameTable = ExportNameTable.Deserialize(stream); // TODO: set this table based on the NamePointerTable value
+            // eds.ExportAddressTable = ExportAddressTable.Deserialize(stream, count: 0); // TODO: Figure out where this count comes from
+            // eds.NamePointerTable = ExportNamePointerTable.Deserialize(stream, count: 0); // TODO: Figure out where this count comes from
+            // eds.OrdinalTable = ExportOrdinalTable.Deserialize(stream, count: 0); // TODO: Figure out where this count comes from
+            // eds.ExportNameTable = ExportNameTable.Deserialize(stream); // TODO: set this table based on the NamePointerTable value
 
             return eds;
         }
@@ -63,10 +63,10 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Sections
             unsafe
             {
                 eds.ExportDirectoryTable = ExportDirectoryTable.Deserialize(content, offset); offset += Marshal.SizeOf(eds.ExportDirectoryTable);
-                eds.ExportAddressTable = ExportAddressTable.Deserialize(content, offset, count: 0); offset += Marshal.SizeOf(eds.ExportAddressTable); // TODO: Figure out where this count comes from
-                eds.NamePointerTable = ExportNamePointerTable.Deserialize(content, offset, count: 0); offset += Marshal.SizeOf(eds.NamePointerTable); // TODO: Figure out where this count comes from
-                eds.OrdinalTable = ExportOrdinalTable.Deserialize(content, offset, count: 0); offset += Marshal.SizeOf(eds.OrdinalTable); // TODO: Figure out where this count comes from
-                //eds.ExportNameTable = ExportNameTable.Deserialize(stream); offset += Marshal.SizeOf(eds.ExportAddressTable); // TODO: set this table based on the NamePointerTable value
+                // eds.ExportAddressTable = ExportAddressTable.Deserialize(content, offset, count: 0); offset += Marshal.SizeOf(eds.ExportAddressTable); // TODO: Figure out where this count comes from
+                // eds.NamePointerTable = ExportNamePointerTable.Deserialize(content, offset, count: 0); offset += Marshal.SizeOf(eds.NamePointerTable); // TODO: Figure out where this count comes from
+                // eds.OrdinalTable = ExportOrdinalTable.Deserialize(content, offset, count: 0); offset += Marshal.SizeOf(eds.OrdinalTable); // TODO: Figure out where this count comes from
+                // eds.ExportNameTable = ExportNameTable.Deserialize(stream); offset += Marshal.SizeOf(eds.ExportAddressTable); // TODO: set this table based on the NamePointerTable value
             }
 
             return eds;

@@ -83,7 +83,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft
         /// </summary>
         /// <param name="sectionName">Name of the section to check for</param>
         /// <param name="exact">True to enable exact matching of names, false for starts-with</param>
-        /// <returns>Tuple of contains and index</returns>
+        /// <returns>True if the section is in the executable, false otherwise</returns>
         public bool ContainsSection(string sectionName, bool exact = false)
         {
             // Get all section names first
@@ -98,6 +98,27 @@ namespace BurnOutSharp.ExecutableType.Microsoft
             // Otherwise, check if section name starts with the value
             else
                 return sectionNames.Any(n => n.Trim('\0').StartsWith(sectionName));
+        }
+
+        /// <summary>
+        /// Get the section based on name, if possible
+        /// </summary>
+        /// <param name="sectionName">Name of the section to check for</param>
+        /// <param name="exact">True to enable exact matching of names, false for starts-with</param>
+        /// <returns>Section data on success, null on error</returns>
+        public SectionHeader GetSection(string sectionName, bool exact = false)
+        {
+            // If we have no sections, we can't do anything
+            if (SectionTable == null || !SectionTable.Any())
+                return null;
+            
+            // If we're checking exactly, return only exact matches (with nulls trimmed)
+            if (exact)
+                return SectionTable.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).Trim('\0').Equals(sectionName));
+            
+            // Otherwise, check if section name starts with the value
+            else
+                return SectionTable.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).Trim('\0').StartsWith(sectionName));
         }
 
         /// <summary>
@@ -170,6 +191,33 @@ namespace BurnOutSharp.ExecutableType.Microsoft
                 //     stream.Seek(tableAddress, SeekOrigin.Begin);
                 //     pex.ResourceSection = ResourceSection.Deserialize(stream, pex.SectionTable);
                 // }
+
+                // // Export Table
+                // var table = pex.GetSection(".edata", true);
+                // if (table != null && table.VirtualSize > 0)
+                // {
+                //     int tableAddress = (int)ConvertVirtualAddress(table.VirtualAddress, pex.SectionTable);
+                //     stream.Seek(tableAddress, SeekOrigin.Begin);
+                //     pex.ExportTable = ExportDataSection.Deserialize(stream);
+                // }
+
+                // // Import Table
+                // table = pex.GetSection(".idata", true);
+                // if (table != null && table.VirtualSize > 0)
+                // {
+                //     int tableAddress = (int)ConvertVirtualAddress(table.VirtualAddress, pex.SectionTable);
+                //     stream.Seek(tableAddress, SeekOrigin.Begin);
+                //     pex.ImportTable = ImportDataSection.Deserialize(stream, pex.OptionalHeader.Magic == OptionalHeaderType.PE32Plus, hintCount: 0);
+                // }
+
+                // Resource Table
+                var table = pex.GetSection(".rsrc", true);
+                if (table != null && table.VirtualSize > 0)
+                {
+                    int tableAddress = (int)ConvertVirtualAddress(table.VirtualAddress, pex.SectionTable);
+                    stream.Seek(tableAddress, SeekOrigin.Begin);
+                    pex.ResourceSection = ResourceSection.Deserialize(stream);
+                }
             }
             catch (Exception ex)
             {
@@ -216,30 +264,29 @@ namespace BurnOutSharp.ExecutableType.Microsoft
                         pex.SectionTable[i] = SectionHeader.Deserialize(content, offset); offset += 40;
                     }
 
-                    // TODO: Uncomment these as the directories are understod and implemented
                     // // Export Table
-                    // var table = pex.SectionTable[(byte)ImageDirectory.IMAGE_DIRECTORY_ENTRY_EXPORT];
-                    // if (table.VirtualSize > 0)
+                    // var table = pex.GetSection(".edata", true);
+                    // if (table != null && table.VirtualSize > 0)
                     // {
-                    //     int tableAddress = (int)EVORE.ConvertVirtualAddress(table.VirtualAddress, pex.SectionTable);
+                    //     int tableAddress = (int)ConvertVirtualAddress(table.VirtualAddress, pex.SectionTable);
                     //     pex.ExportTable = ExportDataSection.Deserialize(content, tableAddress);
                     // }
 
                     // // Import Table
-                    // table = pex.SectionTable[(byte)ImageDirectory.IMAGE_DIRECTORY_ENTRY_IMPORT];
-                    // if (table.VirtualSize > 0)
+                    // table = pex.GetSection(".idata", true);
+                    // if (table != null && table.VirtualSize > 0)
                     // {
-                    //     int tableAddress = (int)EVORE.ConvertVirtualAddress(table.VirtualAddress, pex.SectionTable);
+                    //     int tableAddress = (int)ConvertVirtualAddress(table.VirtualAddress, pex.SectionTable);
                     //     pex.ImportTable = ImportDataSection.Deserialize(content, tableAddress, pex.OptionalHeader.Magic == OptionalHeaderType.PE32Plus, hintCount: 0);
                     // }
 
-                    // // Resource Table
-                    // var table = pex.SectionTable[(byte)ImageDirectory.IMAGE_DIRECTORY_ENTRY_RESOURCE];
-                    // if (table.VirtualSize > 0)
-                    // {
-                    //     int tableAddress = (int)EVORE.ConvertVirtualAddress(table.VirtualAddress, pex.SectionTable);
-                    //     pex.ResourceSection = ResourceSection.Deserialize(content, tableAddress, pex.SectionTable);
-                    // }
+                    // Resource Table
+                    var table = pex.GetSection(".rsrc", true);
+                    if (table != null && table.VirtualSize > 0)
+                    {
+                        int tableAddress = (int)ConvertVirtualAddress(table.VirtualAddress, pex.SectionTable);
+                        pex.ResourceSection = ResourceSection.Deserialize(content, tableAddress);
+                    }
                 }
             }
             catch (Exception ex)
@@ -249,6 +296,30 @@ namespace BurnOutSharp.ExecutableType.Microsoft
             }
 
             return pex;
+        }
+
+        /// <summary>
+        /// Convert a virtual address to a physical one
+        /// </summary>
+        /// <param name="virtualAddress">Virtual address to convert</param>
+        /// <param name="sections">Array of sections to check against</param>
+        /// <returns>Physical address, 0 on error</returns>
+        public static uint ConvertVirtualAddress(uint virtualAddress, SectionHeader[] sections)
+        {
+            // Loop through all of the sections
+            for (int i = 0; i < sections.Length; i++)
+            {
+                // If the section is invalid, just skip it
+                if (sections[i] == null)
+                    continue;
+
+                // Attempt to derive the physical address from the current section
+                var section = sections[i];
+                if (virtualAddress >= section.VirtualAddress && virtualAddress <= section.VirtualAddress + section.VirtualSize)
+                    return section.PointerToRawData + virtualAddress - section.VirtualAddress;
+            }
+
+            return 0;
         }
     }
 }

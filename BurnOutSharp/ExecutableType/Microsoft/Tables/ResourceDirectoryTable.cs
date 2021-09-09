@@ -68,7 +68,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Tables
         // TODO: Determine how to store or reference the resource directory strings
         // that immediately follow the last directory entry but before the data
 
-        public static ResourceDirectoryTable Deserialize(Stream stream, SectionHeader[] sections)
+        public static ResourceDirectoryTable Deserialize(Stream stream, long sectionStart)
         {
             var rdt = new ResourceDirectoryTable();
 
@@ -82,19 +82,19 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Tables
             rdt.NamedEntries = new ResourceDirectoryTableEntry[rdt.NumberOfNamedEntries];
             for (int i = 0; i < rdt.NumberOfNamedEntries; i++)
             {
-                rdt.NamedEntries[i] = ResourceDirectoryTableEntry.Deserialize(stream, sections);
+                rdt.NamedEntries[i] = ResourceDirectoryTableEntry.Deserialize(stream, sectionStart);
             }
 
             rdt.IdEntries = new ResourceDirectoryTableEntry[rdt.NumberOfIdEntries];
             for (int i = 0; i < rdt.NumberOfIdEntries; i++)
             {
-                rdt.IdEntries[i] = ResourceDirectoryTableEntry.Deserialize(stream, sections);
+                rdt.IdEntries[i] = ResourceDirectoryTableEntry.Deserialize(stream, sectionStart);
             }
 
             return rdt;
         }
 
-        public static ResourceDirectoryTable Deserialize(byte[] content, int offset, SectionHeader[] sections)
+        public static ResourceDirectoryTable Deserialize(byte[] content, int offset, long sectionStart)
         {
             var rdt = new ResourceDirectoryTable();
 
@@ -108,13 +108,13 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Tables
             rdt.NamedEntries = new ResourceDirectoryTableEntry[rdt.NumberOfNamedEntries];
             for (int i = 0; i < rdt.NumberOfNamedEntries; i++)
             {
-                rdt.NamedEntries[i] = ResourceDirectoryTableEntry.Deserialize(content, offset, sections); offset += 8;
+                rdt.NamedEntries[i] = ResourceDirectoryTableEntry.Deserialize(content, offset, sectionStart); offset += 8;
             }
 
             rdt.IdEntries = new ResourceDirectoryTableEntry[rdt.NumberOfIdEntries];
             for (int i = 0; i < rdt.NumberOfIdEntries; i++)
             {
-                rdt.IdEntries[i] = ResourceDirectoryTableEntry.Deserialize(content, offset, sections); offset += 8;
+                rdt.IdEntries[i] = ResourceDirectoryTableEntry.Deserialize(content, offset, sectionStart); offset += 8;
             }
 
             return rdt;
