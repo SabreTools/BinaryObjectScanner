@@ -216,7 +216,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft
                 {
                     int tableAddress = (int)ConvertVirtualAddress(table.VirtualAddress, pex.SectionTable);
                     stream.Seek(tableAddress, SeekOrigin.Begin);
-                    pex.ResourceSection = ResourceSection.Deserialize(stream);
+                    pex.ResourceSection = ResourceSection.Deserialize(stream, pex.SectionTable);
                 }
             }
             catch (Exception ex)
@@ -285,7 +285,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft
                     if (table != null && table.VirtualSize > 0)
                     {
                         int tableAddress = (int)ConvertVirtualAddress(table.VirtualAddress, pex.SectionTable);
-                        pex.ResourceSection = ResourceSection.Deserialize(content, tableAddress);
+                        pex.ResourceSection = ResourceSection.Deserialize(content, tableAddress, pex.SectionTable);
                     }
                 }
             }

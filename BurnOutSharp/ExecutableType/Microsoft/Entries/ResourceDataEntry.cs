@@ -1,6 +1,9 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
+using BurnOutSharp.ExecutableType.Microsoft.Headers;
 using BurnOutSharp.Tools;
  
 namespace BurnOutSharp.ExecutableType.Microsoft.Entries
@@ -15,6 +18,35 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
         /// The address of a unit of resource data in the Resource Data area.
         /// </summary>
         public uint OffsetToData;
+
+        /// <summary>
+        /// A unit of resource data in the Resource Data area.
+        /// </summary>
+        public byte[] Data;
+
+        /// <summary>
+        /// A unit of resource data in the Resource Data area.
+        /// </summary>
+        public string EncodedData
+        {
+            get
+            {
+                int codePage = (int)CodePage;
+                if (Data == null || codePage < 0)
+                    return string.Empty;
+
+                try
+                {
+                    Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+                    return Encoding.GetEncoding(codePage).GetString(Data);
+                }
+                catch (Exception ex)
+                {
+                    return Encoding.ASCII.GetString(Data);
+                }
+                
+            }
+        }
 
         /// <summary>
         /// The size, in bytes, of the resource data that is pointed to by the Data RVA field.
@@ -32,7 +64,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
         /// </summary>
         public uint Reserved;
 
-        public static ResourceDataEntry Deserialize(Stream stream)
+        public static ResourceDataEntry Deserialize(Stream stream, SectionHeader[] sections)
         {
             var rde = new ResourceDataEntry();
 
@@ -41,10 +73,19 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
             rde.CodePage = stream.ReadUInt32();
             rde.Reserved = stream.ReadUInt32();
 
+            int realOffsetToData = (int)PortableExecutable.ConvertVirtualAddress(rde.OffsetToData, sections);
+            if (realOffsetToData > -1 && realOffsetToData < stream.Length)
+            {
+                long lastPosition = stream.Position;
+                stream.Seek(realOffsetToData, SeekOrigin.Begin);
+                rde.Data = stream.ReadBytes((int)rde.Size);
+                stream.Seek(lastPosition, SeekOrigin.Begin);
+            }
+
             return rde;
         }
 
-        public static ResourceDataEntry Deserialize(byte[] content, int offset)
+        public static ResourceDataEntry Deserialize(byte[] content, int offset, SectionHeader[] sections)
         {
             var rde = new ResourceDataEntry();
 
@@ -52,6 +93,10 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
             rde.Size = BitConverter.ToUInt32(content, offset); offset += 4;
             rde.CodePage = BitConverter.ToUInt32(content, offset); offset += 4;
             rde.Reserved = BitConverter.ToUInt32(content, offset); offset += 4;
+
+            int realOffsetToData = (int)PortableExecutable.ConvertVirtualAddress(rde.OffsetToData, sections);
+            if (realOffsetToData > -1 && realOffsetToData < content.Length)
+                rde.Data = new ArraySegment<byte>(content, realOffsetToData, (int)rde.Size).ToArray();
 
             return rde;
         }

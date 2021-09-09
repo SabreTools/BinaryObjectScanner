@@ -1,5 +1,7 @@
 using System;
 using System.IO;
+using BurnOutSharp.ExecutableType.Microsoft.Headers;
+using BurnOutSharp.ExecutableType.Microsoft.Tables;
 using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ExecutableType.Microsoft.Entries
@@ -48,7 +50,10 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
         /// </summary>
         public ResourceDataEntry DataEntry;
 
-        private bool NameFieldIsIntegerId = false;
+        /// <summary>
+        /// Another resource directory table (the next level down).
+        /// </summary>
+        public ResourceDirectoryTable Subdirectory;
 
         /// <summary>
         /// Determine if an entry has a name or integer identifier
@@ -60,47 +65,44 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
         /// </summary>
         public bool IsResourceDataEntry() => (DataEntryOffset & (1 << 31)) == 0;
 
-        public static ResourceDirectoryTableEntry Deserialize(Stream stream, long sectionStart)
+        public static ResourceDirectoryTableEntry Deserialize(Stream stream, long sectionStart, SectionHeader[] sections)
         {
             var rdte = new ResourceDirectoryTableEntry();
 
             rdte.IntegerId = stream.ReadUInt32();
             if (!rdte.IsIntegerIDEntry())
             {
-                long lastPosition = stream.Position;
                 int nameAddress = (int)(rdte.NameOffset + sectionStart);
                 if (nameAddress >= 0 && nameAddress < stream.Length)
                 {
-                    try
-                    {
-                        stream.Seek(nameAddress, SeekOrigin.Begin);
-                        rdte.Name = ResourceDirectoryString.Deserialize(stream);
-                    }
-                    catch { }
-                    finally
-                    {
-                        stream.Seek(lastPosition, SeekOrigin.Begin);
-                    }
+                    long lastPosition = stream.Position;
+                    stream.Seek(nameAddress, SeekOrigin.Begin);
+                    rdte.Name = ResourceDirectoryString.Deserialize(stream);
+                    stream.Seek(lastPosition, SeekOrigin.Begin);
                 }
             }
 
             rdte.DataEntryOffset = stream.ReadUInt32();
             if (rdte.IsResourceDataEntry())
             {
-                long lastPosition = stream.Position;
                 int dataEntryAddress = (int)(rdte.DataEntryOffset + sectionStart);
                 if (dataEntryAddress > 0 && dataEntryAddress < stream.Length)
                 {
-                    try
-                    {
-                        stream.Seek(dataEntryAddress, SeekOrigin.Begin);
-                        rdte.DataEntry = ResourceDataEntry.Deserialize(stream);
-                    }
-                    catch { }
-                    finally
-                    {
-                        stream.Seek(lastPosition, SeekOrigin.Begin);
-                    }
+                    long lastPosition = stream.Position;
+                    stream.Seek(dataEntryAddress, SeekOrigin.Begin);
+                    rdte.DataEntry = ResourceDataEntry.Deserialize(stream, sections);
+                    stream.Seek(lastPosition, SeekOrigin.Begin);
+                }
+            }
+            else
+            {
+                int subdirectoryAddress = (int)(rdte.SubdirectoryOffset + sectionStart);
+                if (subdirectoryAddress > 0 && subdirectoryAddress < stream.Length)
+                {
+                    long lastPosition = stream.Position;
+                    stream.Seek(subdirectoryAddress, SeekOrigin.Begin);
+                    rdte.Subdirectory = ResourceDirectoryTable.Deserialize(stream, sectionStart, sections);
+                    stream.Seek(lastPosition, SeekOrigin.Begin);
                 }
             }
 
@@ -109,7 +111,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
             return rdte;
         }
 
-        public static ResourceDirectoryTableEntry Deserialize(byte[] content, int offset, long sectionStart)
+        public static ResourceDirectoryTableEntry Deserialize(byte[] content, int offset, long sectionStart, SectionHeader[] sections)
         {
             var rdte = new ResourceDirectoryTableEntry();
 
@@ -118,13 +120,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
             {
                 int nameAddress = (int)(rdte.NameOffset + sectionStart);
                 if (nameAddress >= 0 && nameAddress < content.Length)
-                {
-                    try
-                    {
-                        rdte.Name = ResourceDirectoryString.Deserialize(content, nameAddress);
-                    }
-                    catch { }
-                }
+                    rdte.Name = ResourceDirectoryString.Deserialize(content, nameAddress);
             }
 
             rdte.DataEntryOffset = BitConverter.ToUInt32(content, offset); offset += 4;
@@ -132,13 +128,13 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
             {
                 int dataEntryAddress = (int)(rdte.DataEntryOffset + sectionStart);
                 if (dataEntryAddress > 0 && dataEntryAddress < content.Length)
-                {
-                    try
-                    {
-                        rdte.DataEntry = ResourceDataEntry.Deserialize(content, dataEntryAddress);
-                    }
-                    catch { }
-                }
+                    rdte.DataEntry = ResourceDataEntry.Deserialize(content, dataEntryAddress, sections);
+            }
+            else
+            {
+                int subdirectoryAddress = (int)(rdte.SubdirectoryOffset + sectionStart);
+                if (subdirectoryAddress > 0 && subdirectoryAddress < content.Length)
+                    rdte.Subdirectory = ResourceDirectoryTable.Deserialize(content, subdirectoryAddress, sectionStart, sections);
             }
 
             // TODO: Add parsing for further directory table entries in the tree
