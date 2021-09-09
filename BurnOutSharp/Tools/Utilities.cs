@@ -4,8 +4,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Xml;
+using BurnOutSharp.ExecutableType.Microsoft;
+using BurnOutSharp.ExecutableType.Microsoft.Sections;
+using BurnOutSharp.ExecutableType.Microsoft.Tables;
 using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.Tools
@@ -307,8 +309,14 @@ namespace BurnOutSharp.Tools
         /// <returns>Version string, null on error</returns>
         public static string GetManifestVersion(byte[] fileContent)
         {
+            // If we don't have a PE executable, just return null
+            PortableExecutable pex = PortableExecutable.Deserialize(fileContent, 0);
+            var resourceSection = pex?.ResourceSection;
+            if (resourceSection == null)
+                return null;
+            
             // Read in the manifest to a string
-            string manifestString = GetEmbeddedAssemblyManifest(fileContent);
+            string manifestString = FindAssemblyManifest(pex.ResourceSection);
             if (string.IsNullOrWhiteSpace(manifestString))
                 return null;
 
@@ -341,8 +349,14 @@ namespace BurnOutSharp.Tools
         /// <returns>Version string, null on error</returns>
         public static string GetManifestDescription(byte[] fileContent)
         {
+            // If we don't have a PE executable, just return null
+            PortableExecutable pex = PortableExecutable.Deserialize(fileContent, 0);
+            var resourceSection = pex?.ResourceSection;
+            if (resourceSection == null)
+                return null;
+            
             // Read in the manifest to a string
-            string manifestString = GetEmbeddedAssemblyManifest(fileContent);
+            string manifestString = FindAssemblyManifest(pex.ResourceSection);
             if (string.IsNullOrWhiteSpace(manifestString))
                 return null;
 
@@ -368,29 +382,59 @@ namespace BurnOutSharp.Tools
         }
 
         /// <summary>
-        /// Get the embedded assembly manifest
+        /// Find the assembly manifest from a resource section, if possible
         /// </summary>
-        /// <param name="fileContent">Byte array representing the file contents</param>
-        /// <returns>Embedded assembly manifest as a string, if possible</returns>
-        /// <remarks>
-        /// TODO: How do we find the manifest specifically better
-        /// TODO: This should be derived specifically in the .rsrc section
-        /// </remarks>
-        private static string GetEmbeddedAssemblyManifest(byte[] fileContent)
+        /// <param name="rs">ResourceSection from the executable</param>
+        /// <returns>Full assembly manifest, null on error</returns>
+        private static string FindAssemblyManifest(ResourceSection rs)
         {
-            // <?xml
-            byte?[] manifestStart = new byte?[] { 0x3C, 0x3F, 0x78, 0x6D, 0x6C };
-            if (!fileContent.LastPosition(manifestStart, out int manifestStartPosition))
+            if (rs == null)
                 return null;
 
-            // </assembly>
-            byte?[] manifestEnd = new byte?[] { 0x3C, 0x2F, 0x61, 0x73, 0x73, 0x65, 0x6D, 0x62, 0x6C, 0x79, 0x3E };
-            if (!fileContent.FirstPosition(manifestEnd, out int manifestEndPosition, start: manifestStartPosition))
+            return FindAssemblyManifest(rs.ResourceDirectoryTable);
+        }
+
+        /// <summary>
+        /// Find the assembly manifest from a resource directory table, if possible
+        /// </summary>
+        /// <param name="rdt">ResourceDirectoryTable representing a layer</param>
+        /// <returns>Full assembly manifest, null on error</returns>
+        private static string FindAssemblyManifest(ResourceDirectoryTable rdt)
+        {
+            if (rdt == null)
                 return null;
 
-            // Read in the manifest to a string
-            int manifestLength = manifestEndPosition + "</assembly>".Length - manifestStartPosition;
-            return Encoding.ASCII.GetString(fileContent, manifestStartPosition, manifestLength);
+            foreach (var rdte in rdt.NamedEntries)
+            {
+                if (rdte.IsResourceDataEntry() && rdte.DataEntry != null)
+                {
+                    if (rdte.DataEntry.EncodedData.StartsWith("<assembly"))
+                        return rdte.DataEntry.EncodedData;
+                }
+                else
+                {
+                    string manifest = FindAssemblyManifest(rdte.Subdirectory);
+                    if (!string.IsNullOrWhiteSpace(manifest))
+                        return manifest;
+                }
+            }
+
+            foreach (var rdte in rdt.IdEntries)
+            {
+                if (rdte.IsResourceDataEntry() && rdte.DataEntry != null)
+                {
+                    if (rdte.DataEntry.EncodedData.StartsWith("<assembly"))
+                        return rdte.DataEntry.EncodedData;
+                }
+                else
+                {
+                    string manifest = FindAssemblyManifest(rdte.Subdirectory);
+                    if (!string.IsNullOrWhiteSpace(manifest))
+                        return manifest;
+                }
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -417,7 +461,7 @@ namespace BurnOutSharp.Tools
                 // Try to read the assembly node
                 return manifestDoc["assembly"];
             }
-            catch
+            catch (Exception ex)
             {
                 return null;
             }
