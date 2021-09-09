@@ -24,6 +24,10 @@
 
   <ItemGroup>
     <PackageReference Include="SharpCompress" Version="0.28.3" />
+    <PackageReference Include="Teronis.MSBuild.Packaging.ProjectBuildInPackage" Version="0.1.7">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="UnshieldSharp" Version="1.6.5" />
     <PackageReference Include="WiseUnpacker" Version="1.0.2" />
   </ItemGroup>
@@ -40,12 +44,7 @@
       External\libmspack4n\lib\**\*;
       External\libmspack4n\libmspack4ntest\**\*;
       External\stormlibsharp\lib\**;
-      External\stormlibsharp\TestConsole\**;
-      External\WixToolset\src\Samples\**;
-      External\WixToolset\src\Tools\**;
-      External\WixToolset\src\WixToolset.Dtf.MSBuild\**;
-      External\WixToolset\src\WixToolset.Dtf.Resources\**;
-      External\WixToolset\src\WixToolsetTests.*\**
+      External\stormlibsharp\TestConsole\**
     </DefaultItemExcludes>
   </PropertyGroup>
 
@@ -59,6 +58,12 @@
       <CopyToPublishDirectory>Always</CopyToPublishDirectory>
       <PackageCopyToOutput>true</PackageCopyToOutput>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WixToolset\src\WixToolset.Dtf.WindowsInstaller\WixToolset.Dtf.WindowsInstaller.csproj">
+      <PrivateAssets>all</PrivateAssets>
+    </ProjectReference>
   </ItemGroup>
 
 </Project>
