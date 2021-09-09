@@ -24,7 +24,7 @@
 
   <ItemGroup>
     <PackageReference Include="SharpCompress" Version="0.28.3" />
-    <PackageReference Include="UnshieldSharp" Version="1.6.0" />
+    <PackageReference Include="UnshieldSharp" Version="1.6.5" />
     <PackageReference Include="WiseUnpacker" Version="1.0.2" />
   </ItemGroup>
 
