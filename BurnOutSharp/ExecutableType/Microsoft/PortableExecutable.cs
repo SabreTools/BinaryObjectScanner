@@ -234,7 +234,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft
                 var table = pex.GetLastSection(".rsrc", true);
                 if (table != null && table.VirtualSize > 0)
                 {
-                    int tableAddress = (int)table.PointerToRawData;
+                    stream.Seek((int)table.PointerToRawData, SeekOrigin.Begin);
                     pex.ResourceSection = ResourceSection.Deserialize(stream, pex.SectionTable);
                 }
             }
