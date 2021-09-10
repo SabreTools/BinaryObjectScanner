@@ -49,7 +49,7 @@ namespace BurnOutSharp.PackerType
                     if (!string.IsNullOrWhiteSpace(version))
                         return $"WinZip SFX {version}";
 
-                    version = GetAdjustedManifestVersion(file, fileContent);
+                    version = GetAdjustedManifestVersion(pex);
                     if (!string.IsNullOrWhiteSpace(version))
                         return $"WinZip SFX {version}";
                     
@@ -102,7 +102,7 @@ namespace BurnOutSharp.PackerType
                     if (!string.IsNullOrWhiteSpace(version))
                     {
                         // Try to grab the value from the manifest, if possible
-                        string manifestVersion = GetAdjustedManifestVersion(file, fileContent);
+                        string manifestVersion = GetAdjustedManifestVersion(pex);
                         if (!string.IsNullOrWhiteSpace(manifestVersion))
                             return $"WinZip SFX {manifestVersion}";
 
@@ -194,11 +194,11 @@ namespace BurnOutSharp.PackerType
         /// <summary>
         /// Get the version from the assembly manifest, correcting where possible
         /// </summary>
-        private static string GetAdjustedManifestVersion(string file, byte[] fileContent)
+        private static string GetAdjustedManifestVersion(PortableExecutable pex)
         {
             // Get the manifest information, if possible
-            string description = Utilities.GetManifestDescription(fileContent);
-            string version = Utilities.GetManifestVersion(fileContent);
+            string description = Utilities.GetManifestDescription(pex);
+            string version = Utilities.GetManifestVersion(pex);
 
             // Either an incorrect description or empty version mean we can't match
             if (description != "WinZip Self-Extractor")

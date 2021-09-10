@@ -51,14 +51,6 @@ namespace BurnOutSharp.ProtectionType
             if (sections == null)
                 return null;
 
-            foreach (var section in sections)
-            {
-                string sectionName = System.Text.Encoding.ASCII.GetString(section.Name).Trim('\0');
-                int sectionAddr = (int)section.PointerToRawData;
-                int sectionEnd = sectionAddr + (int)section.VirtualSize;
-                System.Console.WriteLine($"{sectionName}: {sectionAddr} -> {sectionEnd}");
-            }
-
             // Get the .text section, if it exists
             var textSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".text"));
             if (textSection != null)

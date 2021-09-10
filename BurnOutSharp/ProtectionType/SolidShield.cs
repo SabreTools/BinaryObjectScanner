@@ -46,38 +46,29 @@ namespace BurnOutSharp.ProtectionType
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
         {
-            // TODO: Implement resource finding instead of using the built in methods
-            // Assembly information lives in the .rsrc section
-            // I need to find out how to navigate the resources in general
-            // as well as figure out the specific resources for both
-            // file info and MUI (XML) info. Once I figure this out,
-            // that also opens the doors to easier assembly XML checks.
-
-            var fvinfo = Utilities.GetFileVersionInfo(file);
-
-            string name = fvinfo?.FileDescription?.Trim();
-            if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("DVM Library", StringComparison.OrdinalIgnoreCase))
-                return $"SolidShield {Utilities.GetFileVersion(fileContent)}";
-            else if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Solidshield Activation Library", StringComparison.OrdinalIgnoreCase))
-                return $"SolidShield Core.dll {Utilities.GetFileVersion(fileContent)}";
-            else if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Activation Manager", StringComparison.OrdinalIgnoreCase))
-                return $"SolidShield Activation Manager Module {GetFileVersion(file, fileContent, null)}";
-
-            name = fvinfo?.ProductName?.Trim();
-            if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Solidshield Activation Library", StringComparison.OrdinalIgnoreCase))
-                return $"SolidShield Core.dll {Utilities.GetFileVersion(fileContent)}";
-            else if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Solidshield Library", StringComparison.OrdinalIgnoreCase))
-                return $"SolidShield Core.dll {Utilities.GetFileVersion(fileContent)}";
-            else if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Activation Manager", StringComparison.OrdinalIgnoreCase))
-                return $"SolidShield Activation Manager Module {GetFileVersion(file, fileContent, null)}";
-
             // Get the sections from the executable, if possible
             PortableExecutable pex = PortableExecutable.Deserialize(fileContent, 0);
             var sections = pex?.SectionTable;
             if (sections == null)
                 return null;
 
-            // Get the .init section, if it exists
+            string name = Utilities.GetFileDescription(pex)?.Trim();
+            if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("DVM Library", StringComparison.OrdinalIgnoreCase))
+                return $"SolidShield {Utilities.GetFileVersion(pex)}";
+            else if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Solidshield Activation Library", StringComparison.OrdinalIgnoreCase))
+                return $"SolidShield Core.dll {Utilities.GetFileVersion(pex)}";
+            else if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Activation Manager", StringComparison.OrdinalIgnoreCase))
+                return $"SolidShield Activation Manager Module {GetFileVersion(pex)}";
+
+           name = Utilities.GetProductName(pex);
+            if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Solidshield Activation Library", StringComparison.OrdinalIgnoreCase))
+                return $"SolidShield Core.dll {Utilities.GetFileVersion(pex)}";
+            else if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Solidshield Library", StringComparison.OrdinalIgnoreCase))
+                return $"SolidShield Core.dll {Utilities.GetFileVersion(pex)}";
+            else if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Activation Manager", StringComparison.OrdinalIgnoreCase))
+                return $"SolidShield Activation Manager Module {GetFileVersion(pex)}";
+
+             // Get the .init section, if it exists
             var initSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".init"));
             if (initSection != null)
             {
@@ -118,45 +109,6 @@ namespace BurnOutSharp.ProtectionType
                             0x61, 0x00, 0x72, 0x00, 0x79, 0x00
                         }, start: sectionAddr, end: sectionEnd),
                     Utilities.GetFileVersion, "SolidShield"),
-
-                    // A + (char)0x00 + c + (char)0x00 + t + (char)0x00 + i + (char)0x00 + v + (char)0x00 + a + (char)0x00 + t + (char)0x00 + i + (char)0x00 + o + (char)0x00 + n + (char)0x00 +   + (char)0x00 + M + (char)0x00 + a + (char)0x00 + n + (char)0x00 + a + (char)0x00 + g + (char)0x00 + e + (char)0x00 + r + (char)0x00
-                    new ContentMatchSet(
-                        new ContentMatch(new byte?[]
-                        {
-                            0x41, 0x00, 0x63, 0x00, 0x74, 0x00, 0x69, 0x00,
-                            0x76, 0x00, 0x61, 0x00, 0x74, 0x00, 0x69, 0x00,
-                            0x6f, 0x00, 0x6e, 0x00, 0x20, 0x00, 0x4d, 0x00,
-                            0x61, 0x00, 0x6e, 0x00, 0x61, 0x00, 0x67, 0x00,
-                            0x65, 0x00, 0x72, 0x00
-                        }, start: sectionAddr, end: sectionEnd),
-                    GetFileVersion, "SolidShield Activation Manager Module"),
-
-                    // S + (char)0x00 + o + (char)0x00 + l + (char)0x00 + i + (char)0x00 + d + (char)0x00 + s + (char)0x00 + h + (char)0x00 + i + (char)0x00 + e + (char)0x00 + l + (char)0x00 + d + (char)0x00 +   + (char)0x00 + L + (char)0x00 + i + (char)0x00 + b + (char)0x00 + r + (char)0x00 + a + (char)0x00 + r + (char)0x00 + y + (char)0x00
-                    new ContentMatchSet(
-                        new ContentMatch(new byte?[]
-                        {
-                            0x53, 0x00, 0x6F, 0x00, 0x6C, 0x00, 0x69, 0x00,
-                            0x64, 0x00, 0x73, 0x00, 0x68, 0x00, 0x69, 0x00,
-                            0x65, 0x00, 0x6C, 0x00, 0x64, 0x00, 0x20, 0x00,
-                            0x4C, 0x00, 0x69, 0x00, 0x62, 0x00, 0x72, 0x00,
-                            0x61, 0x00, 0x72, 0x00, 0x79, 0x00
-                        }, start: sectionAddr, end: sectionEnd),
-                    Utilities.GetFileVersion, "SolidShield Core.dll"),
-
-                    // S + (char)0x00 + o + (char)0x00 + l + (char)0x00 + i + (char)0x00 + d + (char)0x00 + s + (char)0x00 + h + (char)0x00 + i + (char)0x00 + e + (char)0x00 + l + (char)0x00 + d + (char)0x00 +   + (char)0x00 + A + (char)0x00 + c + (char)0x00 + t + (char)0x00 + i + (char)0x00 + v + (char)0x00 + a + (char)0x00 + t + (char)0x00 + i + (char)0x00 + o + (char)0x00 + n + (char)0x00 +   + (char)0x00 + L + (char)0x00 + i + (char)0x00 + b + (char)0x00 + r + (char)0x00 + a + (char)0x00 + r + (char)0x00 + y + (char)0x00
-                    new ContentMatchSet(
-                        new ContentMatch(new byte?[]
-                        {
-                            0x53, 0x00, 0x6F, 0x00, 0x6C, 0x00, 0x69, 0x00,
-                            0x64, 0x00, 0x73, 0x00, 0x68, 0x00, 0x69, 0x00,
-                            0x65, 0x00, 0x6C, 0x00, 0x64, 0x00, 0x20, 0x00,
-                            0x41, 0x00, 0x63, 0x00, 0x74, 0x00, 0x69, 0x00,
-                            0x76, 0x00, 0x61, 0x00, 0x74, 0x00, 0x69, 0x00,
-                            0x6F, 0x00, 0x6E, 0x00, 0x20, 0x00, 0x4C, 0x00,
-                            0x69, 0x00, 0x62, 0x00, 0x72, 0x00, 0x61, 0x00,
-                            0x72, 0x00, 0x79, 0x00
-                        }, start: sectionAddr, end: sectionEnd),
-                    Utilities.GetFileVersion, "SolidShield Core.dll"),
                 };
 
                 string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
@@ -220,15 +172,6 @@ namespace BurnOutSharp.ProtectionType
             return null;
         }
 
-        public static string GetFileVersion(string file, byte[] fileContent, List<int> positions)
-        {
-            string companyName = Utilities.GetFileVersionInfo(file)?.CompanyName.ToLowerInvariant();
-            if (!string.IsNullOrWhiteSpace(companyName) && (companyName.Contains("solidshield") || companyName.Contains("tages")))
-                return Utilities.GetFileVersion(fileContent);
-            
-            return null;
-        }
-
         public static string GetVersion(string file, byte[] fileContent, List<int> positions)
         {
             int index = positions[0] + 12; // Begin reading after "Solidshield"
@@ -283,6 +226,15 @@ namespace BurnOutSharp.ProtectionType
                 }
             }
 
+            return null;
+        }
+    
+        private static string GetFileVersion(PortableExecutable pex)
+        {
+            string companyName = Utilities.GetCompanyName(pex)?.ToLowerInvariant();
+            if (!string.IsNullOrWhiteSpace(companyName) && (companyName.Contains("solidshield") || companyName.Contains("tages")))
+                return Utilities.GetFileVersion(pex);
+            
             return null;
         }
     }

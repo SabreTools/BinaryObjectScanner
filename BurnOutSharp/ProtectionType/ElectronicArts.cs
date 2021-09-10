@@ -36,30 +36,21 @@ namespace BurnOutSharp.ProtectionType
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
         {
-            // TODO: Implement resource finding instead of using the built in methods
-            // Assembly information lives in the .rsrc section
-            // I need to find out how to navigate the resources in general
-            // as well as figure out the specific resources for both
-            // file info and MUI (XML) info. Once I figure this out,
-            // that also opens the doors to easier assembly XML checks.
-
-            var fvinfo = Utilities.GetFileVersionInfo(file);
-
-            string name = fvinfo?.FileDescription?.Trim();
-            if (!string.IsNullOrWhiteSpace(name) && name.Contains("Registration code installer program"))
-                return $"EA CdKey Registration Module {Utilities.GetFileVersion(fileContent)}";
-            else if (!string.IsNullOrWhiteSpace(name) && name.Equals("EA DRM Helper", StringComparison.OrdinalIgnoreCase))
-                return $"EA DRM Protection {Utilities.GetFileVersion(fileContent)}";
-
-            name = fvinfo?.InternalName?.Trim();
-            if (!string.IsNullOrWhiteSpace(name) && name.Equals("CDCode", StringComparison.Ordinal))
-                return $"EA CdKey Registration Module {Utilities.GetFileVersion(fileContent)}";
-
             // Get the sections from the executable, if possible
             PortableExecutable pex = PortableExecutable.Deserialize(fileContent, 0);
             var sections = pex?.SectionTable;
             if (sections == null)
                 return null;
+
+            string name = Utilities.GetFileDescription(pex);
+            if (!string.IsNullOrWhiteSpace(name) && name.Contains("Registration code installer program"))
+                return $"EA CdKey Registration Module {Utilities.GetFileVersion(pex)}";
+            else if (!string.IsNullOrWhiteSpace(name) && name.Equals("EA DRM Helper", StringComparison.OrdinalIgnoreCase))
+                return $"EA DRM Protection {Utilities.GetFileVersion(pex)}";
+
+            name = Utilities.GetInternalName(pex);
+            if (!string.IsNullOrWhiteSpace(name) && name.Equals("CDCode", StringComparison.Ordinal))
+                return $"EA CdKey Registration Module {Utilities.GetFileVersion(pex)}";
 
             // Get the .data section, if it exists
             var dataSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".data"));
@@ -101,45 +92,6 @@ namespace BurnOutSharp.ProtectionType
                             0x4B, 0x00, 0x65, 0x00, 0x79, 0x00
                         }, start: sectionAddr, end: sectionEnd),
                     Utilities.GetFileVersion, "EA CdKey Registration Module"),
-
-                     // I + (char)0x00 + n + (char)0x00 + t + (char)0x00 + e + (char)0x00 + r + (char)0x00 + n + (char)0x00 + a + (char)0x00 + l + (char)0x00 + N + (char)0x00 + a + (char)0x00 + m + (char)0x00 + e + (char)0x00 +  + (char)0x00 +  + (char)0x00 + C + (char)0x00 + D + (char)0x00 + C + (char)0x00 + o + (char)0x00 + d + (char)0x00 + e + (char)0x00
-                    new ContentMatchSet(
-                        new ContentMatch(new byte?[]
-                        {
-                            0x49, 0x00, 0x6E, 0x00, 0x74, 0x00, 0x65, 0x00,
-                            0x72, 0x00, 0x6E, 0x00, 0x61, 0x00, 0x6C, 0x00,
-                            0x4E, 0x00, 0x61, 0x00, 0x6D, 0x00, 0x65, 0x00,
-                            0x00, 0x00, 0x43, 0x00, 0x44, 0x00, 0x43, 0x00,
-                            0x6F, 0x00, 0x64, 0x00, 0x65, 0x00
-                        }, start: sectionAddr, end: sectionEnd),
-                    Utilities.GetFileVersion, "EA CdKey Registration Module"),
-
-                    // R + (char)0x00 + e + (char)0x00 + g + (char)0x00 + i + (char)0x00 + s + (char)0x00 + t + (char)0x00 + r + (char)0x00 + a + (char)0x00 + t + (char)0x00 + i + (char)0x00 + o + (char)0x00 + n + (char)0x00 +   + (char)0x00 + C/c + (char)0x00 + o + (char)0x00 + d + (char)0x00 + e + (char)0x00 +   + (char)0x00 + i + (char)0x00 + n + (char)0x00 + s + (char)0x00 + t + (char)0x00 + a + (char)0x00 + l + (char)0x00 + l + (char)0x00 + e + (char)0x00 + r + (char)0x00 +   + (char)0x00 + p + (char)0x00 + r + (char)0x00 + o + (char)0x00 + g + (char)0x00 + r + (char)0x00 + a + (char)0x00 + m + (char)0x00
-                    new ContentMatchSet(
-                        new ContentMatch(new byte?[]
-                        {
-                            0x52, 0x00, 0x65, 0x00, 0x67, 0x00, 0x69, 0x00,
-                            0x73, 0x00, 0x74, 0x00, 0x72, 0x00, 0x61, 0x00,
-                            0x74, 0x00, 0x69, 0x00, 0x6F, 0x00, 0x6E, 0x00,
-                            0x20, 0x00, null, 0x00, 0x6F, 0x00, 0x64, 0x00,
-                            0x65, 0x00, 0x20, 0x00, 0x69, 0x00, 0x6E, 0x00,
-                            0x73, 0x00, 0x74, 0x00, 0x61, 0x00, 0x6C, 0x00,
-                            0x6C, 0x00, 0x65, 0x00, 0x72, 0x00, 0x20, 0x00,
-                            0x70, 0x00, 0x72, 0x00, 0x6F, 0x00, 0x67, 0x00,
-                            0x72, 0x00, 0x61, 0x00, 0x6D, 0x00
-                        }, start: sectionAddr, end: sectionEnd),
-                    Utilities.GetFileVersion, "EA CdKey Registration Module"),
-
-                    // E + (char)0x00 + A + (char)0x00 +   + (char)0x00 + D + (char)0x00 + R + (char)0x00 + M + (char)0x00 +   + (char)0x00 + H + (char)0x00 + e + (char)0x00 + l + (char)0x00 + p + (char)0x00 + e + (char)0x00 + r + (char)0x00
-                    new ContentMatchSet(
-                        new ContentMatch(new byte?[]
-                        {
-                            0x45, 0x00, 0x41, 0x00, 0x20, 0x00, 0x44, 0x00,
-                            0x52, 0x00, 0x4D, 0x00, 0x20, 0x00, 0x48, 0x00,
-                            0x65, 0x00, 0x6C, 0x00, 0x70, 0x00, 0x65, 0x00,
-                            0x72, 0x00
-                        }, start: sectionAddr, end: sectionEnd),
-                    "EA DRM Protection"),
                 };
 
                 string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);

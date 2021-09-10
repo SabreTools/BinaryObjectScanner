@@ -17,29 +17,20 @@ namespace BurnOutSharp.ProtectionType
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
         {
-            // TODO: Implement resource finding instead of using the built in methods
-            // Assembly information lives in the .rsrc section
-            // I need to find out how to navigate the resources in general
-            // as well as figure out the specific resources for both
-            // file info and MUI (XML) info. Once I figure this out,
-            // that also opens the doors to easier assembly XML checks.
-
-            var fvinfo = Utilities.GetFileVersionInfo(file);
-
-            string name = fvinfo?.LegalCopyright?.Trim();
-            if (!string.IsNullOrWhiteSpace(name) && name.Contains("Protection Technology"))
-                return $"StarForce {Utilities.GetFileVersion(fileContent)}";
-
-            // TODO: Find what fvinfo field actually maps to this
-            name = fvinfo?.FileDescription?.Trim();
-            if (!string.IsNullOrWhiteSpace(name) && name.Contains("Protected Module"))
-                return $"StarForce 5";
-
             // Get the sections from the executable, if possible
             PortableExecutable pex = PortableExecutable.Deserialize(fileContent, 0);
             var sections = pex?.SectionTable;
             if (sections == null)
                 return null;
+
+            string name = Utilities.GetLegalCopyright(pex);
+            if (!string.IsNullOrWhiteSpace(name) && name.Contains("Protection Technology"))
+                return $"StarForce {Utilities.GetFileVersion(pex)}";
+
+            // TODO: Find what fvinfo field actually maps to this
+            name = Utilities.GetFileDescription(pex).Trim();
+            if (!string.IsNullOrWhiteSpace(name) && name.Contains("Protected Module"))
+                return $"StarForce 5";
 
             // Get the .rsrc section, if it exists
             var rsrcSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".rsrc"));
@@ -49,19 +40,6 @@ namespace BurnOutSharp.ProtectionType
                 int sectionEnd = sectionAddr + (int)rsrcSection.VirtualSize;
                 var matchers = new List<ContentMatchSet>
                 {
-                    // P + (char)0x00 + r + (char)0x00 + o + (char)0x00 + t + (char)0x00 + e + (char)0x00 + c + (char)0x00 + t + (char)0x00 + i + (char)0x00 + o + (char)0x00 + n + (char)0x00 +   + (char)0x00 + T + (char)0x00 + e + (char)0x00 + c + (char)0x00 + h + (char)0x00 + n + (char)0x00 + o + (char)0x00 + l + (char)0x00 + o + (char)0x00 + g + (char)0x00 + y + (char)0x00
-                    new ContentMatchSet(
-                        new ContentMatch(new byte?[]
-                        {
-                            0x50, 0x00, 0x72, 0x00, 0x6F, 0x00, 0x74, 0x00,
-                            0x65, 0x00, 0x63, 0x00, 0x74, 0x00, 0x69, 0x00,
-                            0x6F, 0x00, 0x6E, 0x00, 0x20, 0x00, 0x54, 0x00,
-                            0x65, 0x00, 0x63, 0x00, 0x68, 0x00, 0x6E, 0x00,
-                            0x6F, 0x00, 0x6C, 0x00, 0x6F, 0x00, 0x67, 0x00,
-                            0x79, 0x00
-                        }, start: sectionAddr, end: sectionEnd),
-                    Utilities.GetFileVersion, "StarForce"),
-
                     // P + (char)0x00 + r + (char)0x00 + o + (char)0x00 + t + (char)0x00 + e + (char)0x00 + c + (char)0x00 + t + (char)0x00 + e + (char)0x00 + d + (char)0x00 +   + (char)0x00 + M + (char)0x00 + o + (char)0x00 + d + (char)0x00 + u + (char)0x00 + l + (char)0x00 + e + (char)0x00
                     new ContentMatchSet(
                         new ContentMatch(new byte?[]
@@ -153,9 +131,9 @@ namespace BurnOutSharp.ProtectionType
             return null;
         }
     
-        public static string GetVersion(string file, byte[] fileContent, List<int> positions)
-        {
-            return $"{Utilities.GetFileVersion(fileContent)} ({fileContent.Skip(positions[1] + 22).TakeWhile(c => c != 0x00)})";
-        }
+        // public static string GetVersion(string file, byte[] fileContent, List<int> positions)
+        // {
+        //     return $"{Utilities.GetFileVersion(fileContent)} ({fileContent.Skip(positions[1] + 22).TakeWhile(c => c != 0x00)})";
+        // }
     }
 }

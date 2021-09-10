@@ -22,40 +22,19 @@ namespace BurnOutSharp.PackerType
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
         {
-            // TODO: Implement resource finding instead of using the built in methods
-            // Assembly information lives in the .rsrc section
-            // I need to find out how to navigate the resources in general
-            // as well as figure out the specific resources for both
-            // file info and MUI (XML) info. Once I figure this out,
-            // that also opens the doors to easier assembly XML checks.
-
-            var fvinfo = Utilities.GetFileVersionInfo(file);
-
-            string name = fvinfo?.InternalName?.Trim();
-            if (!string.IsNullOrWhiteSpace(name) && name.Equals("Wextract", StringComparison.OrdinalIgnoreCase))
-            {
-                string version = GetVersion(file, fileContent, null);
-                if (!string.IsNullOrWhiteSpace(version))
-                    return $"Microsoft CAB SFX v{Utilities.GetFileVersion(fileContent)}";
-
-                return "Microsoft CAB SFX";
-            }
-
-            name = fvinfo?.OriginalFilename?.Trim();
-            if (!string.IsNullOrWhiteSpace(name) && name.Equals("WEXTRACT.EXE", StringComparison.OrdinalIgnoreCase))
-            {
-                string version = GetVersion(file, fileContent, null);
-                if (!string.IsNullOrWhiteSpace(version))
-                    return $"Microsoft CAB SFX v{Utilities.GetFileVersion(fileContent)}";
-
-                return "Microsoft CAB SFX";
-            }
-
             // Get the sections from the executable, if possible
             PortableExecutable pex = PortableExecutable.Deserialize(fileContent, 0);
             var sections = pex?.SectionTable;
             if (sections == null)
                 return null;
+
+            string name = Utilities.GetInternalName(pex);
+            if (!string.IsNullOrWhiteSpace(name) && name.Equals("Wextract", StringComparison.OrdinalIgnoreCase))
+                return $"Microsoft CAB SFX v{Utilities.GetFileVersion(pex)}".TrimEnd('v');
+
+            name = Utilities.GetOriginalFileName(pex);
+            if (!string.IsNullOrWhiteSpace(name) && name.Equals("WEXTRACT.EXE", StringComparison.OrdinalIgnoreCase))
+                return $"Microsoft CAB SFX v{Utilities.GetFileVersion(pex)}".TrimEnd('v');
 
             // Get the .data section, if it exists
             var dataSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".data"));
@@ -80,39 +59,6 @@ namespace BurnOutSharp.PackerType
                     return match;
             }
             
-            // Get the .rsrc section, if it exists
-            var rsrcSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".rsrc"));
-            if (rsrcSection != null)
-            {
-                int sectionAddr = (int)rsrcSection.PointerToRawData;
-                int sectionEnd = sectionAddr + (int)rsrcSection.VirtualSize;
-                var matchers = new List<ContentMatchSet>
-                {
-                    // W + (char)0x00 + e + (char)0x00 + x + (char)0x00 + t + (char)0x00 + r + (char)0x00 + a + (char)0x00 + c + (char)0x00 + t + (char)0x00
-                    new ContentMatchSet(
-                        new ContentMatch(new byte?[]
-                        {
-                            0x57, 0x00, 0x65, 0x00, 0x78, 0x00, 0x74, 0x00, 
-                            0x72, 0x00, 0x61, 0x00, 0x63, 0x00, 0x74, 0x00,
-                        }, start: sectionAddr, end: sectionEnd),
-                    GetVersion, "Microsoft CAB SFX"),
-
-                    // W + (char)0x00 + E + (char)0x00 + X + (char)0x00 + T + (char)0x00 + R + (char)0x00 + A + (char)0x00 + C + (char)0x00 + T + (char)0x00 + . + (char)0x00 + E + (char)0x00 + X + (char)0x00 + E + (char)0x00
-                    new ContentMatchSet(
-                        new ContentMatch(new byte?[]
-                        {
-                            0x57, 0x00, 0x45, 0x00, 0x58, 0x00, 0x54, 0x00,
-                            0x52, 0x00, 0x41, 0x00, 0x43, 0x00, 0x54, 0x00,
-                            0x2E, 0x00, 0x45, 0x00, 0x58, 0x00, 0x45, 0x00,
-                        }, start: sectionAddr, end: sectionEnd),
-                    GetVersion, "Microsoft CAB SFX"),
-                };
-
-                string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
-                    return match;
-            }
-
             // Get the .text section, if it exists
             var textSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".text"));
             if (textSection != null)

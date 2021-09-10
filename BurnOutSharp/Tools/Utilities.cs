@@ -10,7 +10,6 @@ using BurnOutSharp.ExecutableType.Microsoft.Entries;
 using BurnOutSharp.ExecutableType.Microsoft.Resources;
 using BurnOutSharp.ExecutableType.Microsoft.Sections;
 using BurnOutSharp.ExecutableType.Microsoft.Tables;
-using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.Tools
 {
@@ -185,53 +184,30 @@ namespace BurnOutSharp.Tools
         #region Protection
 
         /// <summary>
-        /// Get the file version info object related to a path, if possible
+        /// Get the company name as reported by the filesystem
         /// </summary>
-        /// <param name="file">File to get information for</param>
-        /// <returns>FileVersionInfo object on success, null on error</returns>
-        public static FileVersionInfo GetFileVersionInfo(string file)
-        {
-            if (file == null || !File.Exists(file))
-                return null;
-
-            try
-            {
-                return FileVersionInfo.GetVersionInfo(file);
-            }
-            catch
-            {
-                return null;
-            }
-        }
+        /// <param name="pex">PortableExecutable representing the file contents</param>
+        /// <returns>Company name string, null on error</returns>
+        public static string GetCompanyName(PortableExecutable pex) => GetResourceString(pex, "CompanyName");
 
         /// <summary>
-        /// Get the file version info object related to file contents, if possible
+        /// Get the file description as reported by the filesystem
+        /// </summary>
+        /// <param name="pex">PortableExecutable representing the file contents</param>
+        /// <returns>Description string, null on error</returns>
+        public static string GetFileDescription(PortableExecutable pex) => GetResourceString(pex, "FileDescription");
+
+        /// <summary>
+        /// Get the file version as reported by the filesystem
         /// </summary>
         /// <param name="fileContent">Byte array representing the file contents</param>
-        /// <returns>FileVersionInfo object on success, null on error</returns>
-        public static VersionInfo GetVersionInfo(byte[] fileContent)
+        /// <returns>Version string, null on error</returns>
+        public static string GetFileVersion(byte[] fileContent)
         {
             if (fileContent == null || !fileContent.Any())
                 return null;
 
-            // If we don't have a PE executable, just return null
-            PortableExecutable pex = PortableExecutable.Deserialize(fileContent, 0);
-            var resourceSection = pex?.ResourceSection;
-            if (resourceSection == null)
-                return null;
-
-            var resource = FindResourceInSection(resourceSection, dataContains: "V\0S\0_\0V\0E\0R\0S\0I\0O\0N\0_\0I\0N\0F\0O\0");
-
-            try
-            {
-                int index = 0;
-                return VersionInfo.Deserialize(resource.Data, ref index);
-            }
-            catch (Exception ex)
-            {
-                // Console.WriteLine(ex);
-                return null;
-            }
+            return GetFileVersion(PortableExecutable.Deserialize(fileContent, 0));
         }
 
         /// <summary>
@@ -253,22 +229,17 @@ namespace BurnOutSharp.Tools
         /// <summary>
         /// Get the file version as reported by the filesystem
         /// </summary>
-        /// <param name="fileContent">Byte array representing the file contents</param>
+        /// <param name="pex">PortableExecutable representing the file contents</param>
         /// <returns>Version string, null on error</returns>
-        /// TODO: Add override that takes an existing PE
-        public static string GetFileVersion(byte[] fileContent)
+        public static string GetFileVersion(PortableExecutable pex)
         {
-            var resourceStrings = GetVersionInfo(fileContent)?.ChildrenStringFileInfo?.Children?.Children;
-            if (resourceStrings == null)
-                return null;
-            
-            var fileVersion = resourceStrings.FirstOrDefault(s => s.Key == "FileVersion");
-            if (!string.IsNullOrWhiteSpace(fileVersion?.Value))
-                return fileVersion.Value.Replace(", ", ".");
+            string version = GetResourceString(pex, "FileVersion");
+            if (!string.IsNullOrWhiteSpace(version))
+                return version.Replace(", ", ".");
 
-            var productVersion = resourceStrings.FirstOrDefault(s => s.Key == "ProductVersion");
-            if (!string.IsNullOrWhiteSpace(productVersion?.Value))
-                return productVersion.Value.Replace(", ", ".");
+            version = GetResourceString(pex, "ProductVersion");
+            if (!string.IsNullOrWhiteSpace(version))
+                return version.Replace(", ", ".");
 
             return null;
         }
@@ -291,14 +262,65 @@ namespace BurnOutSharp.Tools
         public static string GetFileVersion(string firstMatchedString, IEnumerable<string> files) => GetFileVersion(firstMatchedString);
 
         /// <summary>
+        /// Get the internal name as reported by the filesystem
+        /// </summary>
+        /// <param name="pex">PortableExecutable representing the file contents</param>
+        /// <returns>Internal name string, null on error</returns>
+        public static string GetInternalName(PortableExecutable pex) => GetResourceString(pex, "InternalName");
+
+        /// <summary>
+        /// Get the legal copyright as reported by the filesystem
+        /// </summary>
+        /// <param name="pex">PortableExecutable representing the file contents</param>
+        /// <returns>Legal copyright string, null on error</returns>
+        public static string GetLegalCopyright(PortableExecutable pex) => GetResourceString(pex, "LegalCopyright");
+
+        /// <summary>
         /// Get the assembly version as determined by an embedded assembly manifest
         /// </summary>
         /// <param name="fileContent">Byte array representing the file contents</param>
         /// <returns>Version string, null on error</returns>
-        public static string GetManifestVersion(byte[] fileContent)
+        public static string GetManifestDescription(PortableExecutable pex)
         {
             // If we don't have a PE executable, just return null
-            PortableExecutable pex = PortableExecutable.Deserialize(fileContent, 0);
+            var resourceSection = pex?.ResourceSection;
+            if (resourceSection == null)
+                return null;
+            
+            // Read in the manifest to a string
+            string manifestString = FindAssemblyManifest(pex.ResourceSection);
+            if (string.IsNullOrWhiteSpace(manifestString))
+                return null;
+
+            // Try to read the XML in from the string
+            try
+            {
+                // Try to read the assembly
+                var assemblyNode = GetAssemblyNode(manifestString);
+                if (assemblyNode == null)
+                    return null;
+
+                // Return the content of the description node, if possible
+                var descriptionNode = assemblyNode["description"];
+                if (descriptionNode == null)
+                    return null;
+                    
+                return descriptionNode.InnerXml;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Get the assembly version as determined by an embedded assembly manifest
+        /// </summary>
+        /// <param name="pex">PortableExecutable representing the file contents</param>
+        /// <returns>Version string, null on error</returns>
+        public static string GetManifestVersion(PortableExecutable pex)
+        {
+            // If we don't have a PE executable, just return null
             var resourceSection = pex?.ResourceSection;
             if (resourceSection == null)
                 return null;
@@ -331,43 +353,18 @@ namespace BurnOutSharp.Tools
         }
 
         /// <summary>
-        /// Get the assembly version as determined by an embedded assembly manifest
+        /// Get the original filename as reported by the filesystem
         /// </summary>
-        /// <param name="fileContent">Byte array representing the file contents</param>
-        /// <returns>Version string, null on error</returns>
-        public static string GetManifestDescription(byte[] fileContent)
-        {
-            // If we don't have a PE executable, just return null
-            PortableExecutable pex = PortableExecutable.Deserialize(fileContent, 0);
-            var resourceSection = pex?.ResourceSection;
-            if (resourceSection == null)
-                return null;
-            
-            // Read in the manifest to a string
-            string manifestString = FindAssemblyManifest(pex.ResourceSection);
-            if (string.IsNullOrWhiteSpace(manifestString))
-                return null;
+        /// <param name="pex">PortableExecutable representing the file contents</param>
+        /// <returns>Original filename string, null on error</returns>
+        public static string GetOriginalFileName(PortableExecutable pex) => GetResourceString(pex, "OriginalFileName");
 
-            // Try to read the XML in from the string
-            try
-            {
-                // Try to read the assembly
-                var assemblyNode = GetAssemblyNode(manifestString);
-                if (assemblyNode == null)
-                    return null;
-
-                // Return the content of the description node, if possible
-                var descriptionNode = assemblyNode["description"];
-                if (descriptionNode == null)
-                    return null;
-                    
-                return descriptionNode.InnerXml;
-            }
-            catch
-            {
-                return null;
-            }
-        }
+        /// <summary>
+        /// Get the product name as reported by the filesystem
+        /// </summary>
+        /// <param name="pex">PortableExecutable representing the file contents</param>
+        /// <returns>Product name string, null on error</returns>
+        public static string GetProductName(PortableExecutable pex) => GetResourceString(pex, "ProductName");
 
         /// <summary>
         /// Find resource data in a ResourceSection, if possible
@@ -466,6 +463,70 @@ namespace BurnOutSharp.Tools
             }
             catch (Exception ex)
             {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Get the file version info object related to a path, if possible
+        /// </summary>
+        /// <param name="file">File to get information for</param>
+        /// <returns>FileVersionInfo object on success, null on error</returns>
+        private static FileVersionInfo GetFileVersionInfo(string file)
+        {
+            if (file == null || !File.Exists(file))
+                return null;
+
+            try
+            {
+                return FileVersionInfo.GetVersionInfo(file);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Get a resource string from the version info
+        /// </summary>
+        /// <param name="pex">PortableExecutable representing the file contents</param>
+        /// <returns>Original filename string, null on error</returns>
+        private static string GetResourceString(PortableExecutable pex, string key)
+        {
+            var resourceStrings = GetVersionInfo(pex)?.ChildrenStringFileInfo?.Children?.Children;
+            if (resourceStrings == null)
+                return null;
+            
+            var value = resourceStrings.FirstOrDefault(s => s.Key == key);
+            if (!string.IsNullOrWhiteSpace(value?.Value))
+                return value.Value.Trim();
+
+            return null;
+        }
+
+        /// <summary>
+        /// Get the version info object related to file contents, if possible
+        /// </summary>
+        /// <param name="pex">PortableExecutable representing the file contents</param>
+        /// <returns>VersionInfo object on success, null on error</returns>
+        private static VersionInfo GetVersionInfo(PortableExecutable pex)
+        {
+            // If we don't have a PE executable, just return null
+            var resourceSection = pex?.ResourceSection;
+            if (resourceSection == null)
+                return null;
+
+            var resource = FindResourceInSection(resourceSection, dataContains: "V\0S\0_\0V\0E\0R\0S\0I\0O\0N\0_\0I\0N\0F\0O\0");
+
+            try
+            {
+                int index = 0;
+                return VersionInfo.Deserialize(resource.Data, ref index);
+            }
+            catch (Exception ex)
+            {
+                // Console.WriteLine(ex);
                 return null;
             }
         }
