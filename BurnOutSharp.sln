@@ -13,6 +13,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WixToolset", "WixToolset", "{09D405CA-CF15-4929-8408-C970F0656C62}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{182E02A8-5E8E-4140-9C9B-61049C33E921}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WixToolset.Dtf.WindowsInstaller", "WixToolset\src\WixToolset.Dtf.WindowsInstaller\WixToolset.Dtf.WindowsInstaller.csproj", "{B3537EB7-CEF6-4D90-A041-47626442A656}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,11 +33,19 @@ Global
 		{88735BA2-778D-4192-8EB2-FFF6843719E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{88735BA2-778D-4192-8EB2-FFF6843719E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{88735BA2-778D-4192-8EB2-FFF6843719E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B3537EB7-CEF6-4D90-A041-47626442A656}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3537EB7-CEF6-4D90-A041-47626442A656}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3537EB7-CEF6-4D90-A041-47626442A656}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3537EB7-CEF6-4D90-A041-47626442A656}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0B343DD2-8852-47B0-9647-DFCFBEDF933C}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{182E02A8-5E8E-4140-9C9B-61049C33E921} = {09D405CA-CF15-4929-8408-C970F0656C62}
+		{B3537EB7-CEF6-4D90-A041-47626442A656} = {182E02A8-5E8E-4140-9C9B-61049C33E921}
 	EndGlobalSection
 EndGlobal
