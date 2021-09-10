@@ -500,7 +500,7 @@ namespace BurnOutSharp.Tools
             
             var value = resourceStrings.FirstOrDefault(s => s.Key == key);
             if (!string.IsNullOrWhiteSpace(value?.Value))
-                return value.Value.Trim();
+                return value.Value.Trim(' ', '\0');
 
             return null;
         }
