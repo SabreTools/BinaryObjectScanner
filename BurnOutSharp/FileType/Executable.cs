@@ -89,6 +89,12 @@ namespace BurnOutSharp.FileType
             if (stream.CanSeek)
                 stream.Seek(0, SeekOrigin.Begin);
 
+            // TODO: Start moving toward reading from the stream directly. In theory,
+            // deserialization can be done at this point, and if all of the sections are populated
+            // properly, nearly all of the content checks can be dealt with without having
+            // to take up as much memory as it does right now reading into the fileContent
+            // byte array
+
             // Create PortableExecutable and NewExecutable objects for use in the checks
             PortableExecutable pex = PortableExecutable.Deserialize(fileContent, 0);
             NewExecutable nex = NewExecutable.Deserialize(fileContent, 0);
