@@ -382,24 +382,28 @@ namespace BurnOutSharp.Tools
         }
 
         /// <summary>
-        /// Find the assembly manifest from a resource section, if possible
+        /// Find resource data in a ResourceSection, if possible
         /// </summary>
         /// <param name="rs">ResourceSection from the executable</param>
-        /// <returns>Full assembly manifest, null on error</returns>
-        private static string FindAssemblyManifest(ResourceSection rs)
+        /// <param name="dataStart">String to use if checking for data starting with a string</param>
+        /// <param name="dataContains">String to use if checking for data contains a string</param>
+        /// <returns>Full encoded resource data, null on error</returns>
+        private static string FindResourceInSection(ResourceSection rs, string dataStart = null, string dataContains = null)
         {
             if (rs == null)
                 return null;
 
-            return FindAssemblyManifest(rs.ResourceDirectoryTable);
+            return FindResourceInTable(rs.ResourceDirectoryTable, dataStart, dataContains);
         }
 
         /// <summary>
-        /// Find the assembly manifest from a resource directory table, if possible
+        /// Find resource data in a ResourceDirectoryTable, if possible
         /// </summary>
         /// <param name="rdt">ResourceDirectoryTable representing a layer</param>
-        /// <returns>Full assembly manifest, null on error</returns>
-        private static string FindAssemblyManifest(ResourceDirectoryTable rdt)
+        /// <param name="dataStart">String to use if checking for data starting with a string</param>
+        /// <param name="dataContains">String to use if checking for data contains a string</param>
+        /// <returns>Full encoded resource data, null on error</returns>
+        private static string FindResourceInTable(ResourceDirectoryTable rdt, string dataStart, string dataContains)
         {
             if (rdt == null)
                 return null;
@@ -408,12 +412,14 @@ namespace BurnOutSharp.Tools
             {
                 if (rdte.IsResourceDataEntry() && rdte.DataEntry != null)
                 {
-                    if (rdte.DataEntry.EncodedData.StartsWith("<assembly"))
+                    if (dataStart != null && rdte.DataEntry.EncodedData.StartsWith(dataStart))
+                        return rdte.DataEntry.EncodedData;
+                    else if (dataContains != null && rdte.DataEntry.EncodedData.Contains(dataContains))
                         return rdte.DataEntry.EncodedData;
                 }
                 else
                 {
-                    string manifest = FindAssemblyManifest(rdte.Subdirectory);
+                    string manifest = FindResourceInTable(rdte.Subdirectory, dataStart, dataContains);
                     if (!string.IsNullOrWhiteSpace(manifest))
                         return manifest;
                 }
@@ -423,12 +429,14 @@ namespace BurnOutSharp.Tools
             {
                 if (rdte.IsResourceDataEntry() && rdte.DataEntry != null)
                 {
-                    if (rdte.DataEntry.EncodedData.StartsWith("<assembly"))
+                    if (dataStart != null && rdte.DataEntry.EncodedData.StartsWith(dataStart))
+                        return rdte.DataEntry.EncodedData;
+                    else if (dataContains != null && rdte.DataEntry.EncodedData.Contains(dataContains))
                         return rdte.DataEntry.EncodedData;
                 }
                 else
                 {
-                    string manifest = FindAssemblyManifest(rdte.Subdirectory);
+                    string manifest = FindResourceInTable(rdte.Subdirectory, dataStart, dataContains);
                     if (!string.IsNullOrWhiteSpace(manifest))
                         return manifest;
                 }
@@ -436,6 +444,13 @@ namespace BurnOutSharp.Tools
 
             return null;
         }
+
+        /// <summary>
+        /// Find the assembly manifest from a resource section, if possible
+        /// </summary>
+        /// <param name="rs">ResourceSection from the executable</param>
+        /// <returns>Full assembly manifest, null on error</returns>
+        private static string FindAssemblyManifest(ResourceSection rs) => FindResourceInSection(rs, dataStart: "<assembly");
 
         /// <summary>
         /// Get the assembly identity node from an embedded manifest
