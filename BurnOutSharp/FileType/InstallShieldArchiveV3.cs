@@ -8,7 +8,7 @@ using UnshieldSharp.Archive;
 
 namespace BurnOutSharp.FileType
 {
-    internal class InstallShieldArchiveV3 : IScannable
+    public class InstallShieldArchiveV3 : IScannable
     {
         /// <inheritdoc/>
         public bool ShouldScan(byte[] magic)

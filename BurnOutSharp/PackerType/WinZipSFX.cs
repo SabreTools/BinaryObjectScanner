@@ -19,10 +19,9 @@ namespace BurnOutSharp.PackerType
         public bool ShouldScan(byte[] magic) => true;
 
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
         {
             // Try to read the contents as a PE executable
-            PortableExecutable pex = PortableExecutable.Deserialize(fileContent, 0);
             if (pex != null)
             {
                 var sections = pex?.SectionTable;
@@ -111,7 +110,6 @@ namespace BurnOutSharp.PackerType
             }
 
             // Try to read the contents as an NE executable
-            NewExecutable nex = NewExecutable.Deserialize(fileContent, 0);
             if (nex != null)
             {
                 string version = GetNEHeaderVersion(nex);

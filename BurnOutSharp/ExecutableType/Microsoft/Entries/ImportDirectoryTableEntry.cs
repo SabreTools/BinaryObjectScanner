@@ -8,7 +8,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
     /// Each import directory entry has the following format
     /// </summary>
     /// <remarks>https://docs.microsoft.com/en-us/windows/win32/debug/pe-format#import-directory-table</remarks>
-    internal class ImportDirectoryTableEntry
+    public class ImportDirectoryTableEntry
     {
         /// <summary>
         /// The RVA of the import lookup table.

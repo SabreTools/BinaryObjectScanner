@@ -4,7 +4,7 @@ using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ExecutableType.Microsoft.Resources
 {
-    internal class StringStruct : Resource
+    public class StringStruct : Resource
     {
         /// <summary>
         /// Typically contains a list of languages that the application or DLL supports.

@@ -2,7 +2,7 @@ using System.IO;
 
 namespace BurnOutSharp.ExecutableType.Microsoft.Resources
 {
-    internal class VersionInfo : Resource
+    public class VersionInfo : Resource
     {
         /// <summary>
         /// Arbitrary data associated with this VS_VERSIONINFO structure.

@@ -18,7 +18,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Headers
     /// a particular data directory entry goes beyond the optional header.
     /// In addition, it is important to validate the optional header magic number for format compatibility.
     /// </summary>
-    internal class OptionalHeader
+    public class OptionalHeader
     {
         #region Standard Fields
 

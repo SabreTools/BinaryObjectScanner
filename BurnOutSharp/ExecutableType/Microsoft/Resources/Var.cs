@@ -2,7 +2,7 @@ using System.IO;
 
 namespace BurnOutSharp.ExecutableType.Microsoft.Resources
 {
-    internal class Var : Resource
+    public class Var : Resource
     {
         /// <summary>
         /// An array of one or more values that are language and code page identifier pairs.

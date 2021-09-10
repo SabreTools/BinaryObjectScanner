@@ -8,7 +8,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft
     /// The WIN-NE executable format, designed for Windows 3.x, was the "NE", or "New Executable" format.
     /// Again, a 16bit format, it alleviated the maximum size restrictions that the MZ format had.
     /// </summary>
-    internal class NewExecutable
+    public class NewExecutable
     {
         #region Headers
 

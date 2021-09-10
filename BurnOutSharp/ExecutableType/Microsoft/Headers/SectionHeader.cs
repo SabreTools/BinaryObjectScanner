@@ -11,7 +11,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Headers
     /// Instead, the location of the section table is determined by calculating the location of the first byte after the headers.
     /// Make sure to use the size of the optional header as specified in the file header.
     /// </summary>
-    internal class SectionHeader
+    public class SectionHeader
     {
         /// <summary>
         /// An 8-byte, null-padded UTF-8 encoded string.

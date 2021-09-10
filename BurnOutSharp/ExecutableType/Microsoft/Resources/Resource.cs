@@ -6,7 +6,7 @@ using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ExecutableType.Microsoft.Resources
 {
-    internal class Resource
+    public class Resource
     {
         /// <summary>
         /// The length, in bytes, of the resource structure.

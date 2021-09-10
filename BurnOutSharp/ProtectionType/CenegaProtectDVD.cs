@@ -1,29 +1,15 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Text;
 using BurnOutSharp.ExecutableType.Microsoft;
-using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
 {
     public class CengaProtectDVD : IContentCheck
     {
         /// <inheritdoc/>
-        private List<ContentMatchSet> GetContentMatchSets() => null;
-        // {
-        //     // TODO: Remove this if the below section check is proven
-        //     return new List<ContentMatchSet>
-        //     {
-        //         // .cenega
-        //         new ContentMatchSet(new byte?[] { 0x2E, 0x63, 0x65, 0x6E, 0x65, 0x67, 0x61 }, "Cenega ProtectDVD"),
-        //     };
-        // }
-
-        /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
         {
             // Get the sections from the executable, if possible
-            PortableExecutable pex = PortableExecutable.Deserialize(fileContent, 0);
             var sections = pex?.SectionTable;
             if (sections == null)
                 return null;
@@ -32,10 +18,6 @@ namespace BurnOutSharp.ProtectionType
             var cenegaSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".cenega"));
             if (cenegaSection != null)
                 return "Cenega ProtectDVD";
-
-            var contentMatchSets = GetContentMatchSets();
-            if (contentMatchSets != null && contentMatchSets.Any())
-                return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
 
             return null;
         }

@@ -10,7 +10,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
     /// Otherwise, the field is a forwarder RVA, which names a symbol in another DLL.
     /// </summary>
     /// <remarks>https://docs.microsoft.com/en-us/windows/win32/debug/pe-format#export-address-table</remarks>
-    internal class ExportAddressTableEntry
+    public class ExportAddressTableEntry
     {
         /// <summary>
         /// The address of the exported symbol when loaded into memory, relative to the image base.

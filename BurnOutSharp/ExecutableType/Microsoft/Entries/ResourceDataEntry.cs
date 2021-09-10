@@ -10,7 +10,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
     /// <summary>
     /// Each Resource Data entry describes an actual unit of raw data in the Resource Data area.
     /// </summary>
-    internal class ResourceDataEntry
+    public class ResourceDataEntry
     {
         /// <summary>
         /// The address of a unit of resource data in the Resource Data area.

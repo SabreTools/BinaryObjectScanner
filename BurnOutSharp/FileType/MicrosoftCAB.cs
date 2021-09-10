@@ -7,7 +7,7 @@ using LibMSPackN;
 namespace BurnOutSharp.FileType
 {
     // Specification available at http://download.microsoft.com/download/5/0/1/501ED102-E53F-4CE0-AA6B-B0F93629DDC6/Exchange/%5BMS-CAB%5D.pdf
-    internal class MicrosoftCAB : IScannable
+    public class MicrosoftCAB : IScannable
     {
         /// <inheritdoc/>
         public bool ShouldScan(byte[] magic)

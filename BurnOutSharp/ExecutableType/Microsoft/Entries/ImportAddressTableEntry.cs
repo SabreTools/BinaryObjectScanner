@@ -8,7 +8,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
     /// Each import address entry has the following format
     /// </summary>
     /// <remarks>https://docs.microsoft.com/en-us/windows/win32/debug/pe-format#import-address-table</remarks>
-    internal class ImportAddressTableEntry
+    public class ImportAddressTableEntry
     {
         /// <summary>
         /// The RVA of the import lookup table.

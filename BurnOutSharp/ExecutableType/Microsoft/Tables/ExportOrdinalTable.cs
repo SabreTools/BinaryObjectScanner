@@ -10,7 +10,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Tables
     /// In other words, the ordinal base must be subtracted from the ordinals to obtain true indexes into the export address table.
     /// </summary>
     /// <remarks>https://docs.microsoft.com/en-us/windows/win32/debug/pe-format#export-ordinal-table</remarks>
-    internal class ExportOrdinalTable
+    public class ExportOrdinalTable
     {
         /// <remarks>Number of entries is defined externally</remarks>
         public ushort[] Entries;

@@ -9,7 +9,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Tables
     /// The export directory table contains address information that is used to resolve imports to the entry points within this image.
     /// </summary>
     /// <remarks>https://docs.microsoft.com/en-us/windows/win32/debug/pe-format#export-directory-table</remarks>
-    internal class ExportDirectoryTable
+    public class ExportDirectoryTable
     {
         /// <summary>
         /// Reserved, must be 0.

@@ -13,7 +13,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Tables
     /// The last entry is set to zero (NULL) to indicate the end of the table.
     /// </summary>
     /// <remarks>https://docs.microsoft.com/en-us/windows/win32/debug/pe-format#import-lookup-table</remarks>
-    internal class ImportLookupTable
+    public class ImportLookupTable
     {
         /// <remarks>Number of entries is known after parsing</remarks>
         public uint[] EntriesPE32;

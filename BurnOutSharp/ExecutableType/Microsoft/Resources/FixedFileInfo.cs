@@ -4,7 +4,7 @@ using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ExecutableType.Microsoft.Resources
 {
-    internal class FixedFileInfo
+    public class FixedFileInfo
     {
         /// <summary>
         /// Contains the value 0xFEEF04BD.

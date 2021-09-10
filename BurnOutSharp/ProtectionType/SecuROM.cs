@@ -11,13 +11,13 @@ namespace BurnOutSharp.ProtectionType
 {
     // TODO: Investigate why White Label v8 doesn't get detected - http://redump.org/disc/48997/
     // TODO: Does the ".shr" section in the code have anything to do with this?
+    // TODO: Investigate SecuROM for Macintosh
     public class SecuROM : IContentCheck, IPathCheck
     {
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
         {
             // Get the sections from the executable, if possible
-            PortableExecutable pex = PortableExecutable.Deserialize(fileContent, 0);
             var sections = pex?.SectionTable;
             if (sections == null)
                 return null;

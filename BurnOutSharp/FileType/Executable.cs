@@ -6,11 +6,12 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using BurnOutSharp.ExecutableType.Microsoft;
 using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.FileType
 {
-    internal class Executable : IScannable
+    public class Executable : IScannable
     {
         /// <summary>
         /// Cache for all IContentCheck types
@@ -88,8 +89,9 @@ namespace BurnOutSharp.FileType
             if (stream.CanSeek)
                 stream.Seek(0, SeekOrigin.Begin);
 
-            // TODO: Find a way to combine the outputs of GetContentMatchSet to make this more efficient
-            // If they can be combined, we can have it do a Unique check per file
+            // Create PortableExecutable and NewExecutable objects for use in the checks
+            PortableExecutable pex = PortableExecutable.Deserialize(fileContent, 0);
+            NewExecutable nex = NewExecutable.Deserialize(fileContent, 0);
 
             // Iterate through all content checks
             Parallel.ForEach(contentCheckClasses, contentCheckClass =>
@@ -98,7 +100,7 @@ namespace BurnOutSharp.FileType
                 bool foundProtection = false;
 
                 // Check using custom content checks first
-                string protection = contentCheckClass.CheckContents(file, fileContent, scanner.IncludeDebug);
+                string protection = contentCheckClass.CheckContents(file, fileContent, scanner.IncludeDebug, pex, nex);
                 foundProtection |= !string.IsNullOrWhiteSpace(protection);
                 if (ShouldAddProtection(contentCheckClass, scanner, protection))
                     Utilities.AppendToDictionary(protections, file, protection);

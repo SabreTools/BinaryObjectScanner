@@ -6,7 +6,7 @@ using StormLibSharp;
 
 namespace BurnOutSharp.FileType
 {
-    internal class MPQ : IScannable
+    public class MPQ : IScannable
     {
         /// <inheritdoc/>
         public bool ShouldScan(byte[] magic)

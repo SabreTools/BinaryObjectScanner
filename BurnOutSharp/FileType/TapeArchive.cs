@@ -7,7 +7,7 @@ using SharpCompress.Archives.Tar;
 
 namespace BurnOutSharp.FileType
 {
-    internal class TapeArchive : IScannable
+    public class TapeArchive : IScannable
     {
         /// <inheritdoc/>
         public bool ShouldScan(byte[] magic)

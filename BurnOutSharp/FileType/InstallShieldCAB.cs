@@ -7,7 +7,7 @@ using UnshieldSharp.Cabinet;
 
 namespace BurnOutSharp.FileType
 {
-    internal class InstallShieldCAB : IScannable
+    public class InstallShieldCAB : IScannable
     {
         /// <inheritdoc/>
         public bool ShouldScan(byte[] magic)

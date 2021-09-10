@@ -6,7 +6,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Tables
     /// These public export names are not necessarily the same as the private symbol names that the symbols have in their own image file and source code, although they can be.
     /// </summary>
     /// <remarks>https://docs.microsoft.com/en-us/windows/win32/debug/pe-format#export-ordinal-table</remarks>
-    internal class ExportNameTable
+    public class ExportNameTable
     {
         /// <remarks>Number of entries is defined externally</remarks>
         public string[] Entries;

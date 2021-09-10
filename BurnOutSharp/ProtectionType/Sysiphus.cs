@@ -10,10 +10,9 @@ namespace BurnOutSharp.ProtectionType
     public class Sysiphus : IContentCheck
     {
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
         {
             // Get the sections from the executable, if possible
-            PortableExecutable pex = PortableExecutable.Deserialize(fileContent, 0);
             var sections = pex?.SectionTable;
             if (sections == null)
                 return null;

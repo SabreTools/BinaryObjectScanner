@@ -9,7 +9,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Sections
     /// The target platform determines which of the three function table entry format variations described below is used.
     /// </summary>
     /// <remarks>https://docs.microsoft.com/en-us/windows/win32/debug/pe-format#the-edata-section-image-only</remarks>
-    internal class ExceptionHandlingSection
+    public class ExceptionHandlingSection
     {
         /// <summary>
         /// Array of function table entries that are used for exception handling

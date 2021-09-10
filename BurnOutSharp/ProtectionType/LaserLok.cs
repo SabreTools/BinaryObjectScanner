@@ -14,7 +14,7 @@ namespace BurnOutSharp.ProtectionType
     public class LaserLok : IContentCheck, IPathCheck
     {
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
         {
             // TODO: Additional checks that may or may not be useful with the below
             //
@@ -48,7 +48,6 @@ namespace BurnOutSharp.ProtectionType
             // }, "LaserLok 5"),
 
             // Get the sections from the executable, if possible
-            PortableExecutable pex = PortableExecutable.Deserialize(fileContent, 0);
             var sections = pex?.SectionTable;
             if (sections == null)
                 return null;

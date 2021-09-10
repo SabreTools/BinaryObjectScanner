@@ -10,7 +10,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Tables
     /// The pointers are ordered lexically to allow binary searches.
     /// </summary>
     /// <remarks>https://docs.microsoft.com/en-us/windows/win32/debug/pe-format#export-name-pointer-table</remarks>
-    internal class ExportNamePointerTable
+    public class ExportNamePointerTable
     {
         /// <remarks>Number of entries is defined externally</remarks>
         public uint[] Entries;

@@ -16,7 +16,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Tables
     /// resource. It also defines the location and size of the resource.
     /// </summary>
     /// <remarks>http://bytepointer.com/resources/win16_ne_exe_format_win3.0.htm</remarks>
-    internal class NEResourceTable
+    public class NEResourceTable
     {
         /// <summary>
         /// Alignment shift count for resource data.

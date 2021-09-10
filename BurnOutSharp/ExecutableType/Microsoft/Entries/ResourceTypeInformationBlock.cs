@@ -7,7 +7,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
     /// <summary>
     /// Resource type information block
     /// </summary>
-    internal class ResourceTypeInformationBlock
+    public class ResourceTypeInformationBlock
     {
         /// <summary>
         /// Type ID. This is an integer type if the high-order bit is

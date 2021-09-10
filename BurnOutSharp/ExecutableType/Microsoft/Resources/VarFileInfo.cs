@@ -2,7 +2,7 @@ using System.IO;
 
 namespace BurnOutSharp.ExecutableType.Microsoft.Resources
 {
-    internal class VarFileInfo : Resource
+    public class VarFileInfo : Resource
     {
         /// <summary>
         /// Typically contains a list of languages that the application or DLL supports.

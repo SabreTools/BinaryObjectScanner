@@ -2,7 +2,7 @@ using System.IO;
 
 namespace BurnOutSharp.ExecutableType.Microsoft.Resources
 {
-    internal class StringFileInfo : Resource
+    public class StringFileInfo : Resource
     {
         /// <summary>
         /// An array of one or more StringTable structures.

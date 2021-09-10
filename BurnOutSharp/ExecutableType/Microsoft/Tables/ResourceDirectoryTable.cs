@@ -11,7 +11,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Tables
     /// This data structure should be considered the heading of a table
     /// because the table actually consists of directory entries and this structure
     /// </summary>
-    internal class ResourceDirectoryTable
+    public class ResourceDirectoryTable
     {
         /// <summary>
         /// Resource flags.

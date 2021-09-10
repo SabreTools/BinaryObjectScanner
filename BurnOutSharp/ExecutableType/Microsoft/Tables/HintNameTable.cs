@@ -7,7 +7,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Tables
     /// One hint/name table suffices for the entire import section.
     /// </summary>
     /// <remarks>https://docs.microsoft.com/en-us/windows/win32/debug/pe-format#hintname-table</remarks>
-    internal class HintNameTable
+    public class HintNameTable
     {
         /// <remarks>Number of entries is defined externally</remarks>
         public HintNameTableEntry[] Entries;

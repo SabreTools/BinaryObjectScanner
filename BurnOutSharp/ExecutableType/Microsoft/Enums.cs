@@ -2,7 +2,7 @@ using System;
 
 namespace BurnOutSharp.ExecutableType.Microsoft
 {
-    internal enum ExecutableType
+    public enum ExecutableType
     {
         Unknown,
         NE,
@@ -11,7 +11,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft
 
     // https://docs.microsoft.com/en-us/windows/win32/debug/pe-format#dll-characteristics
     [Flags]
-    internal enum DllCharacteristics : ushort
+    public enum DllCharacteristics : ushort
     {
         /// <summary>
         /// Reserved, must be zero.
@@ -91,7 +91,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft
     }
 
     // https://docs.microsoft.com/en-us/windows/win32/debug/pe-format#optional-header-data-directories-image-only
-    internal enum ImageDirectory : byte
+    public enum ImageDirectory : byte
     {
         /// <summary>
         /// The export table address and size. (.edata)
@@ -177,7 +177,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft
 
     // https://docs.microsoft.com/en-us/windows/win32/debug/pe-format#characteristics
     [Flags]
-    internal enum ImageObjectCharacteristics : ushort
+    public enum ImageObjectCharacteristics : ushort
     {
         /// <summary>
         /// Image only, Windows CE, and Microsoft Windows NT and later.
@@ -276,7 +276,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft
     }
 
     // https://docs.microsoft.com/en-us/windows/win32/debug/pe-format#machine-types
-    internal enum MachineType : ushort
+    public enum MachineType : ushort
     {
         /// <summary>
         /// The content of this field is assumed to be applicable to any machine type
@@ -423,7 +423,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft
     ///                s    Solo data
     /// </summary>
     [Flags]
-    internal enum NeFlags : ushort
+    public enum NeFlags : ushort
     {
         /// <summary>
         /// Not a process
@@ -509,7 +509,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft
     ///        rr    Reference type
     /// </summary>
     [Flags]
-    internal enum NrFlags : byte
+    public enum NrFlags : byte
     {
         /// <summary>
         /// Additive fixup
@@ -550,7 +550,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft
     ////
     /// </summary>
     [Flags]
-    internal enum NrStype : byte
+    public enum NrStype : byte
     {
         /// <summary>
         /// Source type mask
@@ -589,7 +589,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft
     }
 
     // https://docs.microsoft.com/en-us/windows/win32/debug/pe-format#optional-header-image-only
-    internal enum OptionalHeaderType : ushort
+    public enum OptionalHeaderType : ushort
     {
         /// <summary>
         /// ROM image
@@ -609,7 +609,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft
 
     /// http://bytepointer.com/resources/win16_ne_exe_format_win3.0.htm
     [Flags]
-    internal enum ResourceTableEntryFlags : ushort
+    public enum ResourceTableEntryFlags : ushort
     {
         /// <summary>
         /// Resource is not fixed.
@@ -630,7 +630,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft
     /// <summary>
     /// Predefined Resource Types
     /// </summary>
-    internal enum ResourceTypes : ushort
+    public enum ResourceTypes : ushort
     {
         RT_CURSOR = 1,
         RT_BITMAP = 2,
@@ -662,7 +662,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft
 
     // https://docs.microsoft.com/en-us/windows/win32/debug/pe-format#section-flags
     [Flags]
-    internal enum SectionCharacteristics : uint
+    public enum SectionCharacteristics : uint
     {
         /// <summary>
         /// Reserved for future use.
@@ -878,7 +878,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft
     
     /// http://bytepointer.com/resources/win16_ne_exe_format_win3.0.htm
     [Flags]
-    internal enum SegmentTableEntryFlags : ushort
+    public enum SegmentTableEntryFlags : ushort
     {
         /// <summary>
         /// Segment-type field.
@@ -962,7 +962,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft
     }
 
     [Flags]
-    internal enum TargetOperatingSystems : byte
+    public enum TargetOperatingSystems : byte
     {
         /// <summary>
         /// Unknown (any "new-format" OS)
@@ -991,7 +991,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft
     }
 
     // https://docs.microsoft.com/en-us/windows/win32/debug/pe-format#windows-subsystem
-    internal enum WindowsSubsystem : ushort
+    public enum WindowsSubsystem : ushort
     {
         /// <summary>
         /// An unknown subsystem

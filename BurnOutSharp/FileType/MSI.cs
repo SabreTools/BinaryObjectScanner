@@ -6,7 +6,7 @@ using WixToolset.Dtf.WindowsInstaller;
 
 namespace BurnOutSharp.FileType
 {
-    internal class MSI : IScannable
+    public class MSI : IScannable
     {
         /// <inheritdoc/>
         public bool ShouldScan(byte[] magic)

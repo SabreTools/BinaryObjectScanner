@@ -6,10 +6,9 @@ namespace BurnOutSharp.ProtectionType
     public class SVKProtector : IContentCheck
     {
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
         {
-            // Get the sections from the executable, if possible
-            PortableExecutable pex = PortableExecutable.Deserialize(fileContent, 0);
+            // Get the image file header from the executable, if possible
             if (pex?.ImageFileHeader == null)
                 return null;
             

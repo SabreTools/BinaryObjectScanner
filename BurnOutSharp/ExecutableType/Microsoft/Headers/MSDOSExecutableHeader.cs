@@ -13,7 +13,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Headers
     /// and PE executables, usually as stubs so that when they are ran under DOS, they display a warning.
     /// </summary>
     /// <remarks>https://wiki.osdev.org/MZ</remarks>
-    internal class MSDOSExecutableHeader
+    public class MSDOSExecutableHeader
     {
         #region Standard Fields
 

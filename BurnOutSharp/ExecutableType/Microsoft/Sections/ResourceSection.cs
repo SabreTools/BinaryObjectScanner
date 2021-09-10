@@ -13,7 +13,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Sections
     // then that table lists directory entries at the next level down
     /// </summary>
     /// <remarks>https://docs.microsoft.com/en-us/windows/win32/debug/pe-format#the-rsrc-section</remarks>
-    internal class ResourceSection
+    public class ResourceSection
     {
         /// <summary>
         /// A table with just one row (unlike the debug directory).

@@ -10,7 +10,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
     /// EXE header. The first entry in the segment table is segment number 1.
     /// The following is the structure of a segment table entry.
     /// </summary>
-    internal class NESegmentTableEntry
+    public class NESegmentTableEntry
     {
         /// <summary>
         /// Logical-sector offset (n byte) to the contents of the segment

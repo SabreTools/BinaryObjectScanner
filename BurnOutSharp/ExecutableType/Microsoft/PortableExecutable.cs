@@ -12,7 +12,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft
     /// A COFF object file header consists of a COFF file header and an optional header.
     /// In both cases, the file headers are followed immediately by section headers.
     /// </summary>
-    internal class PortableExecutable
+    public class PortableExecutable
     {
         #region Headers
 

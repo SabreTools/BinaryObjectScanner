@@ -7,7 +7,7 @@ using SharpCompress.Compressors.BZip2;
 
 namespace BurnOutSharp.FileType
 {
-    internal class BZip2 : IScannable
+    public class BZip2 : IScannable
     {
         /// <inheritdoc/>
         public bool ShouldScan(byte[] magic)

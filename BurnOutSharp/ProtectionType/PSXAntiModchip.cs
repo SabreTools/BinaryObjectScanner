@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using BurnOutSharp.ExecutableType.Microsoft;
 using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
@@ -46,7 +47,7 @@ namespace BurnOutSharp.ProtectionType
         // For now, this means that the CheckContents check is redundant for external
         // use through other programs
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
         {
             return MatchUtil.GetFirstMatch(file, fileContent, GetContentMatchSets(), includeDebug);
         }

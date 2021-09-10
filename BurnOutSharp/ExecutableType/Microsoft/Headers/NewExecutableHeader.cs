@@ -9,7 +9,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Headers
     /// Because of the age of the format some items are unclear in meaning.
     /// </summary>
     /// <remarks>http://bytepointer.com/resources/win16_ne_exe_format_win3.0.htm</remarks>
-    internal class NewExecutableHeader
+    public class NewExecutableHeader
     {
         /// <summary>
         /// Signature word. [00]

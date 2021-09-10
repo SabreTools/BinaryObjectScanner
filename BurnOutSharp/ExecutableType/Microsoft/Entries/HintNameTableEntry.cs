@@ -8,7 +8,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
     /// Each entry in the hint/name table has the following format
     /// </summary>
     /// <remarks>https://docs.microsoft.com/en-us/windows/win32/debug/pe-format#hintname-table</remarks>
-    internal class HintNameTableEntry
+    public class HintNameTableEntry
     {
         /// <summary>
         /// An index into the export name pointer table.

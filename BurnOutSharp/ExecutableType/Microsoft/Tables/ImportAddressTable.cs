@@ -11,7 +11,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Tables
     /// The loader typically processes the binding.
     /// </summary>
     /// <remarks>https://docs.microsoft.com/en-us/windows/win32/debug/pe-format#import-address-table</remarks>
-    internal class ImportAddressTable
+    public class ImportAddressTable
     {
         /// <remarks>Number of entries is known after parsing</remarks>
         public ImportAddressTableEntry[] Entries;

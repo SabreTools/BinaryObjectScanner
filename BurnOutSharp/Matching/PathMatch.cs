@@ -6,7 +6,7 @@ namespace BurnOutSharp.Matching
     /// <summary>
     /// Path matching criteria
     /// </summary>
-    internal class PathMatch : IMatch<string>
+    public class PathMatch : IMatch<string>
     {
         /// <summary>
         /// String to match

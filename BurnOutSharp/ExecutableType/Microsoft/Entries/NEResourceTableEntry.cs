@@ -7,7 +7,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
     /// <summary>
     /// A table of resources for this type
     /// </summary>
-    internal class NEResourceTableEntry
+    public class NEResourceTableEntry
     {
         /// <summary>
         /// File offset to the contents of the resource data,

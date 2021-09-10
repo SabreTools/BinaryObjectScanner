@@ -11,7 +11,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Resources
     /// Either high-order or low-order word can be zero, indicating that the file is language or code page independent.
     /// If the Var structure is omitted, the file will be interpreted as both language and code page independent.
     /// </summary>
-    internal class LanguageCodePage
+    public class LanguageCodePage
     {
         /// <summary>
         /// The low-order word of each DWORD must contain a Microsoft language identifier

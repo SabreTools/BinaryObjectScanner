@@ -29,10 +29,9 @@ namespace BurnOutSharp.PackerType
         }
 
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
         {
             // Get the sections from the executable, if possible
-            PortableExecutable pex = PortableExecutable.Deserialize(fileContent, 0);
             var sections = pex?.SectionTable;
             if (sections == null)
             {
@@ -56,10 +55,6 @@ namespace BurnOutSharp.PackerType
                         new ContentMatch(new byte?[] { 0x57, 0x69, 0x73, 0x65, 0x4D, 0x61, 0x69, 0x6E }, start: sectionAddr, end: sectionEnd),
                         "Wise Installation Wizard Module"),
                 };
-
-                string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
-                    return match;
             }
 
             // Get the .rdata section, if it exists

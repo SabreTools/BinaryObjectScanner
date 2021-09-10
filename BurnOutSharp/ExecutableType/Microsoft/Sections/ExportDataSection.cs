@@ -8,7 +8,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Sections
     /// Exported symbols are generally found in DLLs, but DLLs can also import symbols.
     /// </summary>
     /// <remarks>https://docs.microsoft.com/en-us/windows/win32/debug/pe-format#the-edata-section-image-only</remarks>
-    internal class ExportDataSection
+    public class ExportDataSection
     {
         /// <summary>
         /// A table with just one row (unlike the debug directory).

@@ -11,7 +11,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Tables
     /// The last directory entry is empty (filled with null values), which indicates the end of the directory table.
     /// </summary>
     /// <remarks>https://docs.microsoft.com/en-us/windows/win32/debug/pe-format#import-directory-table</remarks>
-    internal class ImportDirectoryTable
+    public class ImportDirectoryTable
     {
         /// <remarks>Number of entries is known after parsing</remarks>
         public ImportDirectoryTableEntry[] Entries;

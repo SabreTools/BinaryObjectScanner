@@ -44,10 +44,9 @@ namespace BurnOutSharp.ProtectionType
         }
 
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
         {
             // Get the sections from the executable, if possible
-            PortableExecutable pex = PortableExecutable.Deserialize(fileContent, 0);
             var sections = pex?.SectionTable;
             if (sections == null)
                 return null;
@@ -120,7 +119,7 @@ namespace BurnOutSharp.ProtectionType
             // Search the last two available sections
             for (int i = sections.Length - 2; i < sections.Length; i++)
             {
-                var nthSection = sections[i];
+                var nthSection = i < 0 ? null : sections[i];
                 if (nthSection != null)
                 {
                     int sectionAddr = (int)nthSection.PointerToRawData;

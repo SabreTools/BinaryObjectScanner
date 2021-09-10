@@ -18,7 +18,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
     /// Offsets are relative to the address in the IMAGE_DIRECTORY_ENTRY_RESOURCE DataDirectory.
     /// </summary>
     /// <remarks>https://docs.microsoft.com/en-us/windows/win32/debug/pe-format#resource-directory-entries</remarks>
-    internal class ResourceDirectoryTableEntry
+    public class ResourceDirectoryTableEntry
     {
         /// <summary>
         /// The offset of a string that gives the Type, Name, or Language ID entry, depending on level of table.

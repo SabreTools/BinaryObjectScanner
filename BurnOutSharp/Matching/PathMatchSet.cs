@@ -7,7 +7,7 @@ namespace BurnOutSharp.Matching
     /// <summary>
     /// A set of path matches that work together
     /// </summary>
-    internal class PathMatchSet : MatchSet<PathMatch, string>
+    public class PathMatchSet : MatchSet<PathMatch, string>
     {
         /// <summary>
         /// Function to get a path version for this Matcher

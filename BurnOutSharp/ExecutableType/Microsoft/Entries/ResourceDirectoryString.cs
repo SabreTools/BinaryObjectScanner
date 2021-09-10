@@ -10,7 +10,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
     /// These strings are stored together after the last Resource Directory entry and before the first Resource Data entry.
     /// This minimizes the impact of these variable-length strings on the alignment of the fixed-size directory entries.
     /// </summary>
-    internal class ResourceDirectoryString
+    public class ResourceDirectoryString
     {
         /// <summary>
         /// The size of the string, not including length field itself.

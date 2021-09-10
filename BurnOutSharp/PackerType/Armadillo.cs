@@ -10,21 +10,9 @@ namespace BurnOutSharp.PackerType
     public class Armadillo : IContentCheck
     {
         /// <inheritdoc/>
-        private List<ContentMatchSet> GetContentMatchSets() => null;
-        // {
-        //     // TODO: Remove this if the below section check is proven
-        //     return new List<ContentMatchSet>
-        //     {
-        //         // .nicode + (char)0x00
-        //         new ContentMatchSet(new byte?[] { 0x2E, 0x6E, 0x69, 0x63, 0x6F, 0x64, 0x65, 0x00 }, "Armadillo"),
-        //     };
-        // }
-
-        /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
         {
             // Get the sections from the executable, if possible
-            PortableExecutable pex = PortableExecutable.Deserialize(fileContent, 0);
             var sections = pex?.SectionTable;
             if (sections == null)
                 return null;
@@ -51,10 +39,6 @@ namespace BurnOutSharp.PackerType
                 if (!string.IsNullOrWhiteSpace(match))
                     return match;
             }
-
-            var contentMatchSets = GetContentMatchSets();
-            if (contentMatchSets != null && contentMatchSets.Any())
-                return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
 
             return null;
         }

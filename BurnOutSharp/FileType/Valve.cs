@@ -7,7 +7,7 @@ using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.FileType
 {
-    internal class Valve : IScannable
+    public class Valve : IScannable
     {
         /// <inheritdoc/>
         public bool ShouldScan(byte[] magic)

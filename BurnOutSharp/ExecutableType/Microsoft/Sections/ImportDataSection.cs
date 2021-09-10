@@ -18,7 +18,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Sections
     ///     Hint-Name Table
     /// </summary>
     /// <remarks>https://docs.microsoft.com/en-us/windows/win32/debug/pe-format#the-idata-section</remarks>
-    internal class ImportDataSection
+    public class ImportDataSection
     {
         /// <summary>
         /// Import directory table

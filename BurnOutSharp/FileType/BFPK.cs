@@ -8,7 +8,7 @@ using SharpCompress.Compressors.Deflate;
 
 namespace BurnOutSharp.FileType
 {
-    internal class BFPK : IScannable
+    public class BFPK : IScannable
     {
         /// <inheritdoc/>
         public bool ShouldScan(byte[] magic)

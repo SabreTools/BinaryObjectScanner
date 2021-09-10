@@ -4,7 +4,7 @@ using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ExecutableType.Microsoft.Headers
 {
-    internal class DataDirectoryHeader
+    public class DataDirectoryHeader
     {
         /// <summary>
         /// The first field, VirtualAddress, is actually the RVA of the table.

@@ -7,7 +7,7 @@ using SharpCompress.Archives.Zip;
 
 namespace BurnOutSharp.FileType
 {
-    internal class PKZIP : IScannable
+    public class PKZIP : IScannable
     {
         /// <inheritdoc/>
         public bool ShouldScan(byte[] magic)

@@ -6,7 +6,7 @@ using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.FileType
 {
-    internal class Textfile : IScannable
+    public class Textfile : IScannable
     {
         /// <inheritdoc/>
         public bool ShouldScan(byte[] magic)

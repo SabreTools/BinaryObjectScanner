@@ -8,7 +8,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Tables
     /// An ordinal number is used as an index into the export address table.
     /// </summary>
     /// <remarks>https://docs.microsoft.com/en-us/windows/win32/debug/pe-format#export-address-table</remarks>
-    internal class ExportAddressTable
+    public class ExportAddressTable
     {
         /// <remarks>Number of entries is defined externally</remarks>
         public ExportAddressTableEntry[] Entries;

@@ -7,7 +7,7 @@ using SharpCompress.Archives.Rar;
 
 namespace BurnOutSharp.FileType
 {
-    internal class RAR : IScannable
+    public class RAR : IScannable
     {
         /// <inheritdoc/>
         public bool ShouldScan(byte[] magic)

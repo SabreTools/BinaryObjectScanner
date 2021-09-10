@@ -6,7 +6,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
     /// Otherwise, the field is a forwarder RVA, which names a symbol in another DLL.
     /// </summary>
     /// <remarks>https://docs.microsoft.com/en-us/windows/win32/debug/pe-format#the-pdata-section</remarks>
-    internal class FunctionTableEntry
+    public class FunctionTableEntry
     {
         #region 32-bit MIPS
 

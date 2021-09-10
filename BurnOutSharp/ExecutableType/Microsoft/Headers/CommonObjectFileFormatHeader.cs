@@ -4,7 +4,7 @@ using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ExecutableType.Microsoft.Headers
 {
-    internal class CommonObjectFileFormatHeader
+    public class CommonObjectFileFormatHeader
     {
         /// <summary>
         /// After the MS-DOS stub, at the file offset specified at offset 0x3c, is a 4-byte signature that identifies the file as a PE format image file.

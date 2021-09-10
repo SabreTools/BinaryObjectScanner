@@ -7,7 +7,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
     /// <summary>
     /// Resource type and name strings
     /// </summary>
-    internal class NEResourceNameString
+    public class NEResourceNameString
     {
         /// <summary>
         /// Length of the type or name string that follows. A zero value

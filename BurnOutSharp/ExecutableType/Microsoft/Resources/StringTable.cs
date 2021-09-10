@@ -3,7 +3,7 @@ using System.IO;
 
 namespace BurnOutSharp.ExecutableType.Microsoft.Resources
 {
-    internal class StringTable : Resource
+    public class StringTable : Resource
     {
         /// <summary>
         /// An array of one or more String structures.
