@@ -28,7 +28,7 @@ namespace BurnOutSharp.ProtectionType
                 return $"StarForce {Utilities.GetFileVersion(pex)}";
 
             // TODO: Find what fvinfo field actually maps to this
-            name = Utilities.GetFileDescription(pex).Trim();
+            name = Utilities.GetFileDescription(pex);
             if (!string.IsNullOrWhiteSpace(name) && name.Contains("Protected Module"))
                 return $"StarForce 5";
 

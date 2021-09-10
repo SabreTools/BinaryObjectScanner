@@ -413,7 +413,7 @@ namespace BurnOutSharp
                     #endregion
                 }
             }
-            catch
+            catch (Exception ex)
             {
                 Utilities.AppendToDictionary(protections, file, "[Exception opening file, please try again]");
             }
