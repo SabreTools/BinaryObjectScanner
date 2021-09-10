@@ -9,7 +9,7 @@ namespace BurnOutSharp.ProtectionType
     public class CodeLock : IContentCheck
     {
         /// <inheritdoc/>
-        public List<ContentMatchSet> GetContentMatchSets()
+        private List<ContentMatchSet> GetContentMatchSets()
         {
             // TODO: Obtain a sample to find where this string is in a typical executable
             return new List<ContentMatchSet>
@@ -30,13 +30,23 @@ namespace BurnOutSharp.ProtectionType
             PortableExecutable pex = PortableExecutable.Deserialize(fileContent, 0);
             var sections = pex?.SectionTable;
             if (sections == null)
+            {
+                var neMatchSets = GetContentMatchSets();
+                if (neMatchSets != null && neMatchSets.Any())
+                    return MatchUtil.GetFirstMatch(file, fileContent, neMatchSets, includeDebug);
+
                 return null;
+            }
             
             // If there are more than 2 icd-prefixed sections, then we have a match
             int icdSectionCount = sections.Count(s => Encoding.ASCII.GetString(s.Name).StartsWith("icd"));
             if (icdSectionCount >= 2)
                 return "CodeLock";
             
+            var contentMatchSets = GetContentMatchSets();
+            if (contentMatchSets != null && contentMatchSets.Any())
+                return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
+
             return null;
         }
     }

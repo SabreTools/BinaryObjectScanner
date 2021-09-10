@@ -14,9 +14,6 @@ namespace BurnOutSharp.ProtectionType
     public class LaserLok : IContentCheck, IPathCheck
     {
         /// <inheritdoc/>
-        public List<ContentMatchSet> GetContentMatchSets() => null;
-
-        /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
         {
             // TODO: Additional checks that may or may not be useful with the below

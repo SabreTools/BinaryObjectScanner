@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.PackerType
@@ -13,8 +14,9 @@ namespace BurnOutSharp.PackerType
         public bool ShouldScan(byte[] magic) => true;
         
         /// <inheritdoc/>
-        public List<ContentMatchSet> GetContentMatchSets()
+        private List<ContentMatchSet> GetContentMatchSets()
         {
+            // TODO: Obtain a sample to find where this string is in a typical executable
             return new List<ContentMatchSet>
             {
                 // %Wo�a6.�a6.�a6.�a6.�{6.�.).�f6.��).�`6.��0.�`6.�
@@ -32,7 +34,14 @@ namespace BurnOutSharp.PackerType
         }
 
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false) => null;
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
+        {
+            var contentMatchSets = GetContentMatchSets();
+            if (contentMatchSets != null && contentMatchSets.Any())
+                return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
+
+            return null;
+        }
 
         /// <inheritdoc/>
         public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, string file)

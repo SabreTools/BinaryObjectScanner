@@ -74,7 +74,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
             rde.Reserved = stream.ReadUInt32();
 
             int realOffsetToData = (int)PortableExecutable.ConvertVirtualAddress(rde.OffsetToData, sections);
-            if (realOffsetToData > -1 && realOffsetToData < stream.Length)
+            if (realOffsetToData > -1 && realOffsetToData < stream.Length && (int)rde.Size > 0 && realOffsetToData + (int)rde.Size < stream.Length)
             {
                 long lastPosition = stream.Position;
                 stream.Seek(realOffsetToData, SeekOrigin.Begin);
@@ -95,7 +95,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
             rde.Reserved = BitConverter.ToUInt32(content, offset); offset += 4;
 
             int realOffsetToData = (int)PortableExecutable.ConvertVirtualAddress(rde.OffsetToData, sections);
-            if (realOffsetToData > -1 && realOffsetToData < content.Length)
+            if (realOffsetToData > -1 && realOffsetToData < content.Length && (int)rde.Size > 0 && realOffsetToData + (int)rde.Size < content.Length)
                 rde.Data = new ArraySegment<byte>(content, realOffsetToData, (int)rde.Size).ToArray();
 
             return rde;

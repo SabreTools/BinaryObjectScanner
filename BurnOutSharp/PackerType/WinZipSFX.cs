@@ -19,9 +19,6 @@ namespace BurnOutSharp.PackerType
         public bool ShouldScan(byte[] magic) => true;
 
         /// <inheritdoc/>
-        public List<ContentMatchSet> GetContentMatchSets() => null;
-
-        /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
         {
             // Try to read the contents as a PE executable

@@ -10,9 +10,6 @@ namespace BurnOutSharp.ProtectionType
     public class Sysiphus : IContentCheck
     {
         /// <inheritdoc/>
-        public List<ContentMatchSet> GetContentMatchSets() => null;
-
-        /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
         {
             // Get the sections from the executable, if possible

@@ -6,7 +6,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using BurnOutSharp.Matching;
 using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.FileType
@@ -103,19 +102,6 @@ namespace BurnOutSharp.FileType
                 foundProtection |= !string.IsNullOrWhiteSpace(protection);
                 if (ShouldAddProtection(contentCheckClass, scanner, protection))
                     Utilities.AppendToDictionary(protections, file, protection);
-
-                // If we didn't find anything in a custom check, use the content match sets
-                if (!foundProtection)
-                {
-                    var contentMatchSets = contentCheckClass.GetContentMatchSets();
-                    if (contentMatchSets != null && contentMatchSets.Any())
-                    {
-                        protection = MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, scanner.IncludeDebug);
-                        foundProtection |= !string.IsNullOrWhiteSpace(protection);
-                        if (ShouldAddProtection(contentCheckClass, scanner, protection))
-                            Utilities.AppendToDictionary(protections, file, protection);
-                    }
-                }
 
                 // If we have an IScannable implementation
                 if (contentCheckClass is IScannable scannable)

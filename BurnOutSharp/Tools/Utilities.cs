@@ -181,7 +181,7 @@ namespace BurnOutSharp.Tools
 
         #endregion
 
-        #region Protection
+        #region Executable Information
 
         /// <summary>
         /// Get the company name as reported by the filesystem
@@ -373,7 +373,7 @@ namespace BurnOutSharp.Tools
         /// <param name="dataStart">String to use if checking for data starting with a string</param>
         /// <param name="dataContains">String to use if checking for data contains a string</param>
         /// <returns>Full encoded resource data, null on error</returns>
-        private static ResourceDataEntry FindResourceInSection(ResourceSection rs, string dataStart = null, string dataContains = null)
+        public static ResourceDataEntry FindResourceInSection(ResourceSection rs, string dataStart = null, string dataContains = null)
         {
             if (rs == null)
                 return null;
@@ -435,7 +435,7 @@ namespace BurnOutSharp.Tools
         /// </summary>
         /// <param name="rs">ResourceSection from the executable</param>
         /// <returns>Full assembly manifest, null on error</returns>
-        private static string FindAssemblyManifest(ResourceSection rs) => FindResourceInSection(rs, dataStart: "<assembly").DataAsUTF8String;
+        private static string FindAssemblyManifest(ResourceSection rs) => FindResourceInSection(rs, dataStart: "<assembly")?.DataAsUTF8String;
 
         /// <summary>
         /// Get the assembly identity node from an embedded manifest

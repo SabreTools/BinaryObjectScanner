@@ -53,6 +53,10 @@ namespace BurnOutSharp.ProtectionType
                     return match;
             }
 
+            var contentMatchSets = GetContentMatchSets();
+            if (contentMatchSets != null && contentMatchSets.Any())
+                return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
+
             return null;
         }
 

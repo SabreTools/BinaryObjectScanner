@@ -27,6 +27,9 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
             var rds = new ResourceDirectoryString();
 
             rds.Length = stream.ReadUInt16();
+            if (rds.Length + stream.Position > stream.Length)
+                return null;
+
             rds.UnicodeString = new string(stream.ReadChars(rds.Length, Encoding.Unicode));
 
             return rds;
@@ -37,6 +40,9 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
             var rds = new ResourceDirectoryString();
 
             rds.Length = BitConverter.ToUInt16(content, offset); offset += 2;
+            if (rds.Length + offset > content.Length)
+                return null;
+
             rds.UnicodeString = Encoding.Unicode.GetString(content, offset, rds.Length); offset += rds.Length;
 
             return rds;

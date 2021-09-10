@@ -25,7 +25,7 @@ namespace BurnOutSharp.ProtectionType
         };
 
         /// <inheritdoc/>
-        public List<ContentMatchSet> GetContentMatchSets()
+        private List<ContentMatchSet> GetContentMatchSets()
         {
             // TODO: Obtain a sample to find where this string is in a typical executable
             return new List<ContentMatchSet>
@@ -92,6 +92,7 @@ namespace BurnOutSharp.ProtectionType
                     return match;
             }
 
+            // TODO: Find this inside of the .rsrc section using the executable header
             // Get the .rsrc section, if it exists
             var rsrcSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".rsrc"));
             if (rsrcSection != null)
@@ -141,6 +142,10 @@ namespace BurnOutSharp.ProtectionType
                         return match;
                 }
             }
+
+            var contentMatchSets = GetContentMatchSets();
+            if (contentMatchSets != null && contentMatchSets.Any())
+                return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
 
             return null;
         }

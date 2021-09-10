@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Text;
 using BurnOutSharp.ExecutableType.Microsoft;
-using BurnOutSharp.Matching;
 
 
 namespace BurnOutSharp.PackerType
@@ -11,9 +8,6 @@ namespace BurnOutSharp.PackerType
     // TODO: Add extraction and better version detection
     public class PECompact : IContentCheck
     {
-        /// <inheritdoc/>
-        public List<ContentMatchSet> GetContentMatchSets() => null;
-
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
         {

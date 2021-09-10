@@ -12,7 +12,7 @@ namespace BurnOutSharp.ProtectionType
     public class CactusDataShield : IContentCheck, IPathCheck
     {
         /// <inheritdoc/>
-        public List<ContentMatchSet> GetContentMatchSets()
+        private List<ContentMatchSet> GetContentMatchSets()
         {
             // TODO: Both of these are found in Mac binaries
             return new List<ContentMatchSet>
@@ -57,6 +57,10 @@ namespace BurnOutSharp.ProtectionType
                 if (!string.IsNullOrWhiteSpace(match))
                     return match;
             }
+
+            var contentMatchSets = GetContentMatchSets();
+            if (contentMatchSets != null && contentMatchSets.Any())
+                return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
 
             return null;
         }

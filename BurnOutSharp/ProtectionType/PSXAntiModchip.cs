@@ -6,7 +6,7 @@ namespace BurnOutSharp.ProtectionType
     public class PSXAntiModchip : IContentCheck
     {
         /// <inheritdoc/>
-        public List<ContentMatchSet> GetContentMatchSets()
+        private List<ContentMatchSet> GetContentMatchSets()
         {
             // TODO: Detect Red Hand protection
             return new List<ContentMatchSet>

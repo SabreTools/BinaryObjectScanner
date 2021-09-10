@@ -1,6 +1,4 @@
-using System;
 using System.IO;
-using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ExecutableType.Microsoft.Resources
 {

@@ -13,9 +13,6 @@ namespace BurnOutSharp.PackerType
         /// <inheritdoc/>
         public bool ShouldScan(byte[] magic) => true;
 
-        /// <inheritdoc/>
-        public List<ContentMatchSet> GetContentMatchSets() => null;
-
         //TODO: Add exact version detection for Windows builds, make sure versions before 3.X are detected as well, and detect the Mac builds.
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)

@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using BurnOutSharp.ExecutableType.Microsoft;
 using BurnOutSharp.Matching;
-using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ProtectionType
 {
     public class ThreeTwoOneStudios : IContentCheck
     {
-        /// <inheritdoc/>
-        public List<ContentMatchSet> GetContentMatchSets() => null;
-
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
         {
@@ -21,7 +16,8 @@ namespace BurnOutSharp.ProtectionType
             var sections = pex?.SectionTable;
             if (sections == null)
                 return null;
-            
+
+            // TODO: Find this inside of the .rsrc section using the executable header
             // Get the .rsrc section, if it exists
             var rsrcSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".rsrc"));
             if (rsrcSection != null)

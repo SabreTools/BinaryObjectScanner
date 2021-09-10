@@ -17,7 +17,7 @@ namespace BurnOutSharp.PackerType
         public bool ShouldScan(byte[] magic) => true;
 
         /// <inheritdoc/>
-        public List<ContentMatchSet> GetContentMatchSets()
+        private List<ContentMatchSet> GetContentMatchSets()
         {
             // TODO: Keep this around until it can be confirmed with NE checks as well
             // TODO: This _may_ actually over-match. See msvbvm50.exe for an example
@@ -35,7 +35,13 @@ namespace BurnOutSharp.PackerType
             PortableExecutable pex = PortableExecutable.Deserialize(fileContent, 0);
             var sections = pex?.SectionTable;
             if (sections == null)
+            {
+                var neMatchSets = GetContentMatchSets();
+                if (neMatchSets != null && neMatchSets.Any())
+                    return MatchUtil.GetFirstMatch(file, fileContent, neMatchSets, includeDebug);
+
                 return null;
+            }
 
             // Get the .data section, if it exists
             var dataSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".data"));
@@ -74,6 +80,10 @@ namespace BurnOutSharp.PackerType
                 if (!string.IsNullOrWhiteSpace(match))
                     return match;
             }
+
+            var contentMatchSets = GetContentMatchSets();
+            if (contentMatchSets != null && contentMatchSets.Any())
+                return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
 
             return null;
         }

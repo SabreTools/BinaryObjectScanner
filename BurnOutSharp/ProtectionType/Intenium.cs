@@ -25,9 +25,6 @@ namespace BurnOutSharp.ProtectionType
          */
 
         /// <inheritdoc/>
-        public List<ContentMatchSet> GetContentMatchSets() => null;
-
-        /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
         {
             // Get the sections from the executable, if possible
@@ -36,6 +33,7 @@ namespace BurnOutSharp.ProtectionType
             if (sections == null)
                 return null;
 
+            // TODO: Find this inside of the .rsrc section using the executable header
             // Get the .rsrc section, if it exists
             var rsrcSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".rsrc"));
             if (rsrcSection != null)

@@ -1,9 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using BurnOutSharp.ExecutableType.Microsoft;
-using BurnOutSharp.Matching;
 using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.PackerType
@@ -11,9 +7,6 @@ namespace BurnOutSharp.PackerType
     // TODO: Add extraction, seems to primarily use MSZip compression.
     public class IntelInstallationFramework : IContentCheck
     {
-        /// <inheritdoc/>
-        public List<ContentMatchSet> GetContentMatchSets() => null;
-
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
         {

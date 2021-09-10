@@ -10,7 +10,7 @@ namespace BurnOutSharp.PackerType
     public class Armadillo : IContentCheck
     {
         /// <inheritdoc/>
-        public List<ContentMatchSet> GetContentMatchSets() => null;
+        private List<ContentMatchSet> GetContentMatchSets() => null;
         // {
         //     // TODO: Remove this if the below section check is proven
         //     return new List<ContentMatchSet>
@@ -51,6 +51,10 @@ namespace BurnOutSharp.PackerType
                 if (!string.IsNullOrWhiteSpace(match))
                     return match;
             }
+
+            var contentMatchSets = GetContentMatchSets();
+            if (contentMatchSets != null && contentMatchSets.Any())
+                return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
 
             return null;
         }

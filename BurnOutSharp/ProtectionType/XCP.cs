@@ -14,7 +14,7 @@ namespace BurnOutSharp.ProtectionType
     public class XCP : IContentCheck, IPathCheck
     {
         /// <inheritdoc/>
-        public List<ContentMatchSet> GetContentMatchSets()
+        private List<ContentMatchSet> GetContentMatchSets()
         {
             // TODO: Obtain a sample to find where this string is in a typical executable
             return new List<ContentMatchSet>
@@ -72,6 +72,10 @@ namespace BurnOutSharp.ProtectionType
                 if (!string.IsNullOrWhiteSpace(match))
                     return match;
             }
+
+            var contentMatchSets = GetContentMatchSets();
+            if (contentMatchSets != null && contentMatchSets.Any())
+                return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
 
             return null;
         }

@@ -100,12 +100,12 @@ namespace BurnOutSharp.ExecutableType.Microsoft
         }
 
         /// <summary>
-        /// Get the section based on name, if possible
+        /// Get the first section based on name, if possible
         /// </summary>
         /// <param name="sectionName">Name of the section to check for</param>
         /// <param name="exact">True to enable exact matching of names, false for starts-with</param>
         /// <returns>Section data on success, null on error</returns>
-        public SectionHeader GetSection(string sectionName, bool exact = false)
+        public SectionHeader GetFirstSection(string sectionName, bool exact = false)
         {
             // If we have no sections, we can't do anything
             if (SectionTable == null || !SectionTable.Any())
@@ -118,6 +118,27 @@ namespace BurnOutSharp.ExecutableType.Microsoft
             // Otherwise, check if section name starts with the value
             else
                 return SectionTable.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).Trim('\0').StartsWith(sectionName));
+        }
+
+        /// <summary>
+        /// Get the last section based on name, if possible
+        /// </summary>
+        /// <param name="sectionName">Name of the section to check for</param>
+        /// <param name="exact">True to enable exact matching of names, false for starts-with</param>
+        /// <returns>Section data on success, null on error</returns>
+        public SectionHeader GetLastSection(string sectionName, bool exact = false)
+        {
+            // If we have no sections, we can't do anything
+            if (SectionTable == null || !SectionTable.Any())
+                return null;
+            
+            // If we're checking exactly, return only exact matches (with nulls trimmed)
+            if (exact)
+                return SectionTable.LastOrDefault(s => Encoding.ASCII.GetString(s.Name).Trim('\0').Equals(sectionName));
+            
+            // Otherwise, check if section name starts with the value
+            else
+                return SectionTable.LastOrDefault(s => Encoding.ASCII.GetString(s.Name).Trim('\0').StartsWith(sectionName));
         }
 
         /// <summary>
@@ -210,11 +231,10 @@ namespace BurnOutSharp.ExecutableType.Microsoft
                 // }
 
                 // Resource Table
-                var table = pex.GetSection(".rsrc", true);
+                var table = pex.GetLastSection(".rsrc", true);
                 if (table != null && table.VirtualSize > 0)
                 {
-                    int tableAddress = (int)ConvertVirtualAddress(table.VirtualAddress, pex.SectionTable);
-                    stream.Seek(tableAddress, SeekOrigin.Begin);
+                    int tableAddress = (int)table.PointerToRawData;
                     pex.ResourceSection = ResourceSection.Deserialize(stream, pex.SectionTable);
                 }
             }
@@ -276,10 +296,10 @@ namespace BurnOutSharp.ExecutableType.Microsoft
                 // }
 
                 // Resource Table
-                var table = pex.GetSection(".rsrc", true);
+                var table = pex.GetLastSection(".rsrc", true);
                 if (table != null && table.VirtualSize > 0)
                 {
-                    int tableAddress = (int)ConvertVirtualAddress(table.VirtualAddress, pex.SectionTable);
+                    int tableAddress = (int)table.PointerToRawData;
                     pex.ResourceSection = ResourceSection.Deserialize(content, ref tableAddress, pex.SectionTable);
                 }
             }
@@ -307,10 +327,14 @@ namespace BurnOutSharp.ExecutableType.Microsoft
                 if (sections[i] == null)
                     continue;
 
+                // If the section "starts" at 0, just skip it
+                if (sections[i].PointerToRawData == 0)
+                    continue;
+
                 // Attempt to derive the physical address from the current section
                 var section = sections[i];
                 if (virtualAddress >= section.VirtualAddress && virtualAddress <= section.VirtualAddress + section.VirtualSize)
-                    return section.PointerToRawData + virtualAddress - section.VirtualAddress;
+                   return section.PointerToRawData + virtualAddress - section.VirtualAddress;
             }
 
             return 0;

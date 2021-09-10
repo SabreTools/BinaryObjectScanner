@@ -10,27 +10,15 @@ namespace BurnOutSharp.PackerType
     public class NSIS : IContentCheck
     {
         /// <inheritdoc/>
-        public List<ContentMatchSet> GetContentMatchSets() => null;
-
-        /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)
         {
-            // TODO: Implement resource finding instead of using the built in methods
-            // Assembly information lives in the .rsrc section
-            // I need to find out how to navigate the resources in general
-            // as well as figure out the specific resources for both
-            // file info and MUI (XML) info. Once I figure this out,
-            // that also opens the doors to easier assembly XML checks.
-
-            // TODO: Use this instead of the seek inside of `.rsrc` when that's fixed
-            //string description = Utilities.GetManifestDescription(fileContent);
-
             // Get the sections from the executable, if possible
             PortableExecutable pex = PortableExecutable.Deserialize(fileContent, 0);
             var sections = pex?.SectionTable;
             if (sections == null)
                 return null;
 
+            // TODO: Find this inside of the .rsrc section using the executable header
             // Get the .rsrc section, if it exists
             var rsrcSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".rsrc"));
             if (rsrcSection != null)

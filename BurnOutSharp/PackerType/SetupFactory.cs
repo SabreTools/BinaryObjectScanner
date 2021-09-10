@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using BurnOutSharp.ExecutableType.Microsoft;
-using BurnOutSharp.Matching;
 using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.PackerType
@@ -14,9 +10,6 @@ namespace BurnOutSharp.PackerType
     {
         /// <inheritdoc/>
         public bool ShouldScan(byte[] magic) => true;
-
-        /// <inheritdoc/>
-        public List<ContentMatchSet> GetContentMatchSets() => null;
 
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includeDebug = false)

@@ -9,7 +9,7 @@ namespace BurnOutSharp.ProtectionType
     public class CengaProtectDVD : IContentCheck
     {
         /// <inheritdoc/>
-        public List<ContentMatchSet> GetContentMatchSets() => null;
+        private List<ContentMatchSet> GetContentMatchSets() => null;
         // {
         //     // TODO: Remove this if the below section check is proven
         //     return new List<ContentMatchSet>
@@ -32,6 +32,10 @@ namespace BurnOutSharp.ProtectionType
             var cenegaSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".cenega"));
             if (cenegaSection != null)
                 return "Cenega ProtectDVD";
+
+            var contentMatchSets = GetContentMatchSets();
+            if (contentMatchSets != null && contentMatchSets.Any())
+                return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
 
             return null;
         }
