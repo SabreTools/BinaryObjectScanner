@@ -58,7 +58,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Tables
             return ilt;
         }
 
-        public static ImportLookupTable Deserialize(byte[] content, int offset, bool pe32plus)
+        public static ImportLookupTable Deserialize(byte[] content, ref int offset, bool pe32plus)
         {
             var ilt = new ImportLookupTable();
 

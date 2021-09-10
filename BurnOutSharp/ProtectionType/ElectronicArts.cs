@@ -47,13 +47,13 @@ namespace BurnOutSharp.ProtectionType
 
             string name = fvinfo?.FileDescription?.Trim();
             if (!string.IsNullOrWhiteSpace(name) && name.Contains("Registration code installer program"))
-                return $"EA CdKey Registration Module {Utilities.GetFileVersion(file)}";
+                return $"EA CdKey Registration Module {Utilities.GetFileVersion(fileContent)}";
             else if (!string.IsNullOrWhiteSpace(name) && name.Equals("EA DRM Helper", StringComparison.OrdinalIgnoreCase))
-                return $"EA DRM Protection {Utilities.GetFileVersion(file)}";
+                return $"EA DRM Protection {Utilities.GetFileVersion(fileContent)}";
 
             name = fvinfo?.InternalName?.Trim();
             if (!string.IsNullOrWhiteSpace(name) && name.Equals("CDCode", StringComparison.Ordinal))
-                return $"EA CdKey Registration Module {Utilities.GetFileVersion(file)}";
+                return $"EA CdKey Registration Module {Utilities.GetFileVersion(fileContent)}";
 
             // Get the sections from the executable, if possible
             PortableExecutable pex = PortableExecutable.Deserialize(fileContent, 0);

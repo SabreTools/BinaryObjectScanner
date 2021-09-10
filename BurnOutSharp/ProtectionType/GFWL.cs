@@ -28,9 +28,9 @@ namespace BurnOutSharp.ProtectionType
 
             string name = fvinfo?.FileDescription?.Trim();
             if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Games for Windows - LIVE Zero Day Piracy Protection", StringComparison.OrdinalIgnoreCase))
-                return $"Games for Windows LIVE - Zero Day Piracy Protection Module {Utilities.GetFileVersion(file)}";
+                return $"Games for Windows LIVE - Zero Day Piracy Protection Module {Utilities.GetFileVersion(fileContent)}";
             else if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Games for Windows", StringComparison.OrdinalIgnoreCase))
-                return $"Games for Windows LIVE {Utilities.GetFileVersion(file)}";
+                return $"Games for Windows LIVE {Utilities.GetFileVersion(fileContent)}";
 
             // Get the sections from the executable, if possible
             PortableExecutable pex = PortableExecutable.Deserialize(fileContent, 0);

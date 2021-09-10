@@ -1,5 +1,4 @@
 using System.IO;
-using System.Runtime.InteropServices;
 using BurnOutSharp.ExecutableType.Microsoft.Headers;
 using BurnOutSharp.ExecutableType.Microsoft.Tables;
 
@@ -32,15 +31,12 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Sections
             return rs;
         }
 
-        public static ResourceSection Deserialize(byte[] content, int offset, SectionHeader[] sections)
+        public static ResourceSection Deserialize(byte[] content, ref int offset, SectionHeader[] sections)
         {
             var rs = new ResourceSection();
 
-            unsafe
-            {
-                long sectionStart = offset;
-                rs.ResourceDirectoryTable = ResourceDirectoryTable.Deserialize(content, offset, sectionStart, sections); offset += Marshal.SizeOf(rs.ResourceDirectoryTable);
-            }
+            long sectionStart = offset;
+            rs.ResourceDirectoryTable = ResourceDirectoryTable.Deserialize(content, ref offset, sectionStart, sections);
 
             return rs;
         }

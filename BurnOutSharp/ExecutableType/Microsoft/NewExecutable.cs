@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Runtime.InteropServices;
 using BurnOutSharp.ExecutableType.Microsoft.Headers;
 
 namespace BurnOutSharp.ExecutableType.Microsoft
@@ -41,7 +40,8 @@ namespace BurnOutSharp.ExecutableType.Microsoft
             try
             {
                 // Attempt to read the DOS header first
-                nex.DOSStubHeader = MSDOSExecutableHeader.Deserialize(stream); stream.Seek(nex.DOSStubHeader.NewExeHeaderAddr, SeekOrigin.Begin);
+                nex.DOSStubHeader = MSDOSExecutableHeader.Deserialize(stream);
+                stream.Seek(nex.DOSStubHeader.NewExeHeaderAddr, SeekOrigin.Begin);
                 if (nex.DOSStubHeader.Magic != Constants.IMAGE_DOS_SIGNATURE)
                     return null;
                 
@@ -70,22 +70,20 @@ namespace BurnOutSharp.ExecutableType.Microsoft
 
             try
             {
-                unsafe
-                {
-                    // Attempt to read the DOS header first
-                    nex.DOSStubHeader = MSDOSExecutableHeader.Deserialize(content, offset); offset = nex.DOSStubHeader.NewExeHeaderAddr;
-                    if (nex.DOSStubHeader.Magic != Constants.IMAGE_DOS_SIGNATURE)
-                        return null;
+                // Attempt to read the DOS header first
+                nex.DOSStubHeader = MSDOSExecutableHeader.Deserialize(content, ref offset);
+                offset = nex.DOSStubHeader.NewExeHeaderAddr;
+                if (nex.DOSStubHeader.Magic != Constants.IMAGE_DOS_SIGNATURE)
+                    return null;
 
-                    // If the new header address is invalid for the file, it's not a PE
-                    if (nex.DOSStubHeader.NewExeHeaderAddr >= content.Length)
-                        return null;
+                // If the new header address is invalid for the file, it's not a PE
+                if (nex.DOSStubHeader.NewExeHeaderAddr >= content.Length)
+                    return null;
 
-                    // Then attempt to read the NE header
-                    nex.NewExecutableHeader = NewExecutableHeader.Deserialize(content, offset); offset += Marshal.SizeOf(nex.NewExecutableHeader);
-                    if (nex.NewExecutableHeader.Magic != Constants.IMAGE_OS2_SIGNATURE)
-                        return null;
-                }
+                // Then attempt to read the NE header
+                nex.NewExecutableHeader = NewExecutableHeader.Deserialize(content, ref offset);
+                if (nex.NewExecutableHeader.Magic != Constants.IMAGE_OS2_SIGNATURE)
+                    return null;
             }
             catch (Exception ex)
             {

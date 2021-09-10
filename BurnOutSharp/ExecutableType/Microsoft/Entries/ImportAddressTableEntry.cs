@@ -66,7 +66,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
             return iate;
         }
 
-        public static ImportAddressTableEntry Deserialize(byte[] content, int offset)
+        public static ImportAddressTableEntry Deserialize(byte[] content, ref int offset)
         {
             var iate = new ImportAddressTableEntry();
 

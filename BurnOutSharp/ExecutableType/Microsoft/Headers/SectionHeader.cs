@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Runtime.InteropServices;
 using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ExecutableType.Microsoft.Headers
@@ -12,7 +11,6 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Headers
     /// Instead, the location of the section table is determined by calculating the location of the first byte after the headers.
     /// Make sure to use the size of the optional header as specified in the file header.
     /// </summary>
-    [StructLayout(LayoutKind.Sequential)]
     internal class SectionHeader
     {
         /// <summary>
@@ -23,7 +21,6 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Headers
         /// Executable images do not use a string table and do not support section names longer than 8 characters.
         /// Long names in object files are truncated if they are emitted to an executable file.
         /// </summary>
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = Constants.IMAGE_SIZEOF_SHORT_NAME)]
         public byte[] Name;
         
         /// <summary>
@@ -110,7 +107,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Headers
             return ish;
         }
 
-        public static SectionHeader Deserialize(byte[] content, int offset)
+        public static SectionHeader Deserialize(byte[] content, ref int offset)
         {
             var ish = new SectionHeader();
 

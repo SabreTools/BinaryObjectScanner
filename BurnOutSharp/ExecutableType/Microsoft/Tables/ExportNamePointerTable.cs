@@ -28,7 +28,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Tables
             return enpt;
         }
 
-        public static ExportNamePointerTable Deserialize(byte[] content, int offset, int count)
+        public static ExportNamePointerTable Deserialize(byte[] content, ref int offset, int count)
         {
             var enpt = new ExportNamePointerTable();
 

@@ -90,7 +90,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Tables
             return edt;
         }
 
-        public static ExportDirectoryTable Deserialize(byte[] content, int offset)
+        public static ExportDirectoryTable Deserialize(byte[] content, ref int offset)
         {
             var edt = new ExportDirectoryTable();
 

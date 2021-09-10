@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
 using BurnOutSharp.ExecutableType.Microsoft.Headers;
 using BurnOutSharp.ExecutableType.Microsoft.Sections;
@@ -234,59 +233,54 @@ namespace BurnOutSharp.ExecutableType.Microsoft
 
             try
             {
-                unsafe
+                // Attempt to read the DOS header first
+                pex.DOSStubHeader = MSDOSExecutableHeader.Deserialize(content, ref offset);
+                offset = pex.DOSStubHeader.NewExeHeaderAddr;
+                if (pex.DOSStubHeader.Magic != Constants.IMAGE_DOS_SIGNATURE)
+                    return null;
+
+                // If the new header address is invalid for the file, it's not a PE
+                if (pex.DOSStubHeader.NewExeHeaderAddr >= content.Length)
+                    return null;
+
+                // Then attempt to read the PE header
+                pex.ImageFileHeader = CommonObjectFileFormatHeader.Deserialize(content, ref offset);
+                if (pex.ImageFileHeader.Signature != Constants.IMAGE_NT_SIGNATURE)
+                    return null;
+
+                // If the optional header is supposed to exist, read that as well
+                if (pex.ImageFileHeader.SizeOfOptionalHeader > 0)
+                    pex.OptionalHeader = OptionalHeader.Deserialize(content, ref offset);
+
+                // Then read in the section table
+                pex.SectionTable = new SectionHeader[pex.ImageFileHeader.NumberOfSections];
+                for (int i = 0; i < pex.ImageFileHeader.NumberOfSections; i++)
                 {
-                    // Attempt to read the DOS header first
-                    pex.DOSStubHeader = MSDOSExecutableHeader.Deserialize(content, offset); offset = pex.DOSStubHeader.NewExeHeaderAddr;
-                    if (pex.DOSStubHeader.Magic != Constants.IMAGE_DOS_SIGNATURE)
-                        return null;
+                    pex.SectionTable[i] = SectionHeader.Deserialize(content, ref offset);
+                }
 
-                    // If the new header address is invalid for the file, it's not a PE
-                    if (pex.DOSStubHeader.NewExeHeaderAddr >= content.Length)
-                        return null;
+                // // Export Table
+                // var table = pex.GetSection(".edata", true);
+                // if (table != null && table.VirtualSize > 0)
+                // {
+                //     int tableAddress = (int)ConvertVirtualAddress(table.VirtualAddress, pex.SectionTable);
+                //     pex.ExportTable = ExportDataSection.Deserialize(content, tableAddress);
+                // }
 
-                    // Then attempt to read the PE header
-                    pex.ImageFileHeader = CommonObjectFileFormatHeader.Deserialize(content, offset); offset += Marshal.SizeOf(pex.ImageFileHeader);
-                    if (pex.ImageFileHeader.Signature != Constants.IMAGE_NT_SIGNATURE)
-                        return null;
+                // // Import Table
+                // table = pex.GetSection(".idata", true);
+                // if (table != null && table.VirtualSize > 0)
+                // {
+                //     int tableAddress = (int)ConvertVirtualAddress(table.VirtualAddress, pex.SectionTable);
+                //     pex.ImportTable = ImportDataSection.Deserialize(content, tableAddress, pex.OptionalHeader.Magic == OptionalHeaderType.PE32Plus, hintCount: 0);
+                // }
 
-                    // If the optional header is supposed to exist, read that as well
-                    if (pex.ImageFileHeader.SizeOfOptionalHeader > 0)
-                    {
-                        pex.OptionalHeader = OptionalHeader.Deserialize(content, offset);
-                        offset += pex.ImageFileHeader.SizeOfOptionalHeader;
-                    }
-
-                    // Then read in the section table
-                    pex.SectionTable = new SectionHeader[pex.ImageFileHeader.NumberOfSections];
-                    for (int i = 0; i < pex.ImageFileHeader.NumberOfSections; i++)
-                    {
-                        pex.SectionTable[i] = SectionHeader.Deserialize(content, offset); offset += 40;
-                    }
-
-                    // // Export Table
-                    // var table = pex.GetSection(".edata", true);
-                    // if (table != null && table.VirtualSize > 0)
-                    // {
-                    //     int tableAddress = (int)ConvertVirtualAddress(table.VirtualAddress, pex.SectionTable);
-                    //     pex.ExportTable = ExportDataSection.Deserialize(content, tableAddress);
-                    // }
-
-                    // // Import Table
-                    // table = pex.GetSection(".idata", true);
-                    // if (table != null && table.VirtualSize > 0)
-                    // {
-                    //     int tableAddress = (int)ConvertVirtualAddress(table.VirtualAddress, pex.SectionTable);
-                    //     pex.ImportTable = ImportDataSection.Deserialize(content, tableAddress, pex.OptionalHeader.Magic == OptionalHeaderType.PE32Plus, hintCount: 0);
-                    // }
-
-                    // Resource Table
-                    var table = pex.GetSection(".rsrc", true);
-                    if (table != null && table.VirtualSize > 0)
-                    {
-                        int tableAddress = (int)ConvertVirtualAddress(table.VirtualAddress, pex.SectionTable);
-                        pex.ResourceSection = ResourceSection.Deserialize(content, tableAddress, pex.SectionTable);
-                    }
+                // Resource Table
+                var table = pex.GetSection(".rsrc", true);
+                if (table != null && table.VirtualSize > 0)
+                {
+                    int tableAddress = (int)ConvertVirtualAddress(table.VirtualAddress, pex.SectionTable);
+                    pex.ResourceSection = ResourceSection.Deserialize(content, ref tableAddress, pex.SectionTable);
                 }
             }
             catch (Exception ex)

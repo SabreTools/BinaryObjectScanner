@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Runtime.InteropServices;
 using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ExecutableType.Microsoft.Headers
@@ -14,7 +13,6 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Headers
     /// and PE executables, usually as stubs so that when they are ran under DOS, they display a warning.
     /// </summary>
     /// <remarks>https://wiki.osdev.org/MZ</remarks>
-    [StructLayout(LayoutKind.Sequential)]
     internal class MSDOSExecutableHeader
     {
         #region Standard Fields
@@ -102,7 +100,6 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Headers
         /// <summary>
         /// Reserved words [1C]
         /// </summary>
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = Constants.ERES1WDS)]
         public ushort[] Reserved1;
         
         /// <summary>
@@ -118,7 +115,6 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Headers
         /// <summary>
         /// Reserved words [28]
         /// </summary>
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = Constants.ERES2WDS)]
         public ushort[] Reserved2;
         
         /// <summary>
@@ -168,7 +164,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Headers
             return idh;
         }
 
-        public static MSDOSExecutableHeader Deserialize(byte[] content, int offset, bool asStub = true)
+        public static MSDOSExecutableHeader Deserialize(byte[] content, ref int offset, bool asStub = true)
         {
             MSDOSExecutableHeader idh = new MSDOSExecutableHeader();
 

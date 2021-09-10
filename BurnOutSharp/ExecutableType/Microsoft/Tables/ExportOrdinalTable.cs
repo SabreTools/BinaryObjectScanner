@@ -28,7 +28,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Tables
             return edt;
         }
 
-        public static ExportOrdinalTable Deserialize(byte[] content, int offset, int count)
+        public static ExportOrdinalTable Deserialize(byte[] content, ref int offset, int count)
         {
             var edt = new ExportOrdinalTable();
 

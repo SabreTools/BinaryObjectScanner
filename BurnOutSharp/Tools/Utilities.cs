@@ -6,6 +6,8 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using BurnOutSharp.ExecutableType.Microsoft;
+using BurnOutSharp.ExecutableType.Microsoft.Entries;
+using BurnOutSharp.ExecutableType.Microsoft.Resources;
 using BurnOutSharp.ExecutableType.Microsoft.Sections;
 using BurnOutSharp.ExecutableType.Microsoft.Tables;
 using BurnOutSharp.Matching;
@@ -180,73 +182,6 @@ namespace BurnOutSharp.Tools
 
         #endregion
 
-        #region Byte Arrays
-
-        /// <summary>
-        /// Find all positions of one array in another, if possible, if possible
-        /// </summary>
-        public static List<int> FindAllPositions(this byte[] stack, byte?[] needle, int start = 0, int end = -1)
-        {
-            // Get the outgoing list
-            List<int> positions = new List<int>();
-
-            // Initialize the loop variables
-            bool found = true;
-            int lastPosition = start;
-            var matcher = new ContentMatch(needle, end: end);
-
-            // Loop over and get all positions
-            while (found)
-            {
-                matcher.Start = lastPosition;
-                (found, lastPosition) = matcher.Match(stack, false);
-                if (found)
-                    positions.Add(lastPosition);
-            }
-
-            return positions;
-        }
-
-        /// <summary>
-        /// Find the first position of one array in another, if possible
-        /// </summary>
-        public static bool FirstPosition(this byte[] stack, byte?[] needle, out int position, int start = 0, int end = -1)
-        {
-            var matcher = new ContentMatch(needle, start, end);
-            (bool found, int foundPosition) = matcher.Match(stack, false);
-            position = foundPosition;
-            return found;
-        }
-
-        /// <summary>
-        /// Find the last position of one array in another, if possible
-        /// </summary>
-        public static bool LastPosition(this byte[] stack, byte?[] needle, out int position, int start = 0, int end = -1)
-        {
-            var matcher = new ContentMatch(needle, start, end);
-            (bool found, int foundPosition) = matcher.Match(stack, true);
-            position = foundPosition;
-            return found;
-        }
-
-        /// <summary>
-        /// See if a byte array starts with another
-        /// </summary>
-        public static bool StartsWith(this byte[] stack, byte?[] needle)
-        {
-            return stack.FirstPosition(needle, out int _, start: 0, end: 1);
-        }
-
-        /// <summary>
-        /// See if a byte array ends with another
-        /// </summary>
-        public static bool EndsWith(this byte[] stack, byte?[] needle)
-        {
-            return stack.FirstPosition(needle, out int _, start: stack.Length - needle.Length);
-        }
-
-        #endregion
-
         #region Protection
 
         /// <summary>
@@ -270,6 +205,36 @@ namespace BurnOutSharp.Tools
         }
 
         /// <summary>
+        /// Get the file version info object related to file contents, if possible
+        /// </summary>
+        /// <param name="fileContent">Byte array representing the file contents</param>
+        /// <returns>FileVersionInfo object on success, null on error</returns>
+        public static VersionInfo GetVersionInfo(byte[] fileContent)
+        {
+            if (fileContent == null || !fileContent.Any())
+                return null;
+
+            // If we don't have a PE executable, just return null
+            PortableExecutable pex = PortableExecutable.Deserialize(fileContent, 0);
+            var resourceSection = pex?.ResourceSection;
+            if (resourceSection == null)
+                return null;
+
+            var resource = FindResourceInSection(resourceSection, dataContains: "V\0S\0_\0V\0E\0R\0S\0I\0O\0N\0_\0I\0N\0F\0O\0");
+
+            try
+            {
+                int index = 0;
+                return VersionInfo.Deserialize(resource.Data, ref index);
+            }
+            catch (Exception ex)
+            {
+                // Console.WriteLine(ex);
+                return null;
+            }
+        }
+
+        /// <summary>
         /// Get the file version as reported by the filesystem
         /// </summary>
         /// <param name="file">File to check for version</param>
@@ -284,6 +249,29 @@ namespace BurnOutSharp.Tools
             else
                 return fvinfo.ProductVersion.Replace(", ", ".");
         }
+        
+        /// <summary>
+        /// Get the file version as reported by the filesystem
+        /// </summary>
+        /// <param name="fileContent">Byte array representing the file contents</param>
+        /// <returns>Version string, null on error</returns>
+        /// TODO: Add override that takes an existing PE
+        public static string GetFileVersion(byte[] fileContent)
+        {
+            var resourceStrings = GetVersionInfo(fileContent)?.ChildrenStringFileInfo?.Children?.Children;
+            if (resourceStrings == null)
+                return null;
+            
+            var fileVersion = resourceStrings.FirstOrDefault(s => s.Key == "FileVersion");
+            if (!string.IsNullOrWhiteSpace(fileVersion?.Value))
+                return fileVersion.Value.Replace(", ", ".");
+
+            var productVersion = resourceStrings.FirstOrDefault(s => s.Key == "ProductVersion");
+            if (!string.IsNullOrWhiteSpace(productVersion?.Value))
+                return productVersion.Value.Replace(", ", ".");
+
+            return null;
+        }
 
         /// <summary>
         /// Wrapper for GetFileVersion for use in content matching
@@ -292,7 +280,7 @@ namespace BurnOutSharp.Tools
         /// <param name="fileContent">Byte array representing the file contents</param>
         /// <param name="positions">Last matched positions in the contents</param>
         /// <returns>Version string, null on error</returns>
-        public static string GetFileVersion(string file, byte[] fileContent, List<int> positions) => GetFileVersion(file);
+        public static string GetFileVersion(string file, byte[] fileContent, List<int> positions) => GetFileVersion(fileContent);
 
         /// <summary>
         /// Wrapper for GetFileVersion for use in path matching
@@ -388,7 +376,7 @@ namespace BurnOutSharp.Tools
         /// <param name="dataStart">String to use if checking for data starting with a string</param>
         /// <param name="dataContains">String to use if checking for data contains a string</param>
         /// <returns>Full encoded resource data, null on error</returns>
-        private static string FindResourceInSection(ResourceSection rs, string dataStart = null, string dataContains = null)
+        private static ResourceDataEntry FindResourceInSection(ResourceSection rs, string dataStart = null, string dataContains = null)
         {
             if (rs == null)
                 return null;
@@ -403,7 +391,7 @@ namespace BurnOutSharp.Tools
         /// <param name="dataStart">String to use if checking for data starting with a string</param>
         /// <param name="dataContains">String to use if checking for data contains a string</param>
         /// <returns>Full encoded resource data, null on error</returns>
-        private static string FindResourceInTable(ResourceDirectoryTable rdt, string dataStart, string dataContains)
+        private static ResourceDataEntry FindResourceInTable(ResourceDirectoryTable rdt, string dataStart, string dataContains)
         {
             if (rdt == null)
                 return null;
@@ -412,15 +400,15 @@ namespace BurnOutSharp.Tools
             {
                 if (rdte.IsResourceDataEntry() && rdte.DataEntry != null)
                 {
-                    if (dataStart != null && rdte.DataEntry.EncodedData.StartsWith(dataStart))
-                        return rdte.DataEntry.EncodedData;
-                    else if (dataContains != null && rdte.DataEntry.EncodedData.Contains(dataContains))
-                        return rdte.DataEntry.EncodedData;
+                    if (dataStart != null && rdte.DataEntry.DataAsUTF8String.StartsWith(dataStart))
+                        return rdte.DataEntry;
+                    else if (dataContains != null && rdte.DataEntry.DataAsUTF8String.Contains(dataContains))
+                        return rdte.DataEntry;
                 }
                 else
                 {
-                    string manifest = FindResourceInTable(rdte.Subdirectory, dataStart, dataContains);
-                    if (!string.IsNullOrWhiteSpace(manifest))
+                    var manifest = FindResourceInTable(rdte.Subdirectory, dataStart, dataContains);
+                    if (manifest != null)
                         return manifest;
                 }
             }
@@ -429,15 +417,15 @@ namespace BurnOutSharp.Tools
             {
                 if (rdte.IsResourceDataEntry() && rdte.DataEntry != null)
                 {
-                    if (dataStart != null && rdte.DataEntry.EncodedData.StartsWith(dataStart))
-                        return rdte.DataEntry.EncodedData;
-                    else if (dataContains != null && rdte.DataEntry.EncodedData.Contains(dataContains))
-                        return rdte.DataEntry.EncodedData;
+                    if (dataStart != null && rdte.DataEntry.DataAsUTF8String.StartsWith(dataStart))
+                        return rdte.DataEntry;
+                    else if (dataContains != null && rdte.DataEntry.DataAsUTF8String.Contains(dataContains))
+                        return rdte.DataEntry;
                 }
                 else
                 {
-                    string manifest = FindResourceInTable(rdte.Subdirectory, dataStart, dataContains);
-                    if (!string.IsNullOrWhiteSpace(manifest))
+                    var manifest = FindResourceInTable(rdte.Subdirectory, dataStart, dataContains);
+                    if (manifest != null)
                         return manifest;
                 }
             }
@@ -450,7 +438,7 @@ namespace BurnOutSharp.Tools
         /// </summary>
         /// <param name="rs">ResourceSection from the executable</param>
         /// <returns>Full assembly manifest, null on error</returns>
-        private static string FindAssemblyManifest(ResourceSection rs) => FindResourceInSection(rs, dataStart: "<assembly");
+        private static string FindAssemblyManifest(ResourceSection rs) => FindResourceInSection(rs, dataStart: "<assembly").DataAsUTF8String;
 
         /// <summary>
         /// Get the assembly identity node from an embedded manifest

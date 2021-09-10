@@ -31,7 +31,7 @@ namespace BurnOutSharp.PackerType
                 && (name.Equals("Intel(R) Installation Framework", StringComparison.OrdinalIgnoreCase)
                 || name.Equals("Intel Installation Framework", StringComparison.OrdinalIgnoreCase)))
             {
-                return $"Intel Installation Framework {Utilities.GetFileVersion(file)}";
+                return $"Intel Installation Framework {Utilities.GetFileVersion(fileContent)}";
             }
 
             name = fvinfo?.ProductName?.Trim();
@@ -39,7 +39,7 @@ namespace BurnOutSharp.PackerType
                 && (name.Equals("Intel(R) Installation Framework", StringComparison.OrdinalIgnoreCase)
                 || name.Equals("Intel Installation Framework", StringComparison.OrdinalIgnoreCase)))
             {
-                return $"Intel Installation Framework {Utilities.GetFileVersion(file)}";
+                return $"Intel Installation Framework {Utilities.GetFileVersion(fileContent)}";
             }
 
             // Get the sections from the executable, if possible

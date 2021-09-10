@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.InteropServices;
 using BurnOutSharp.ExecutableType.Microsoft.Entries;
 using BurnOutSharp.Tools;
 
@@ -17,7 +16,6 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Tables
     /// resource. It also defines the location and size of the resource.
     /// </summary>
     /// <remarks>http://bytepointer.com/resources/win16_ne_exe_format_win3.0.htm</remarks>
-    [StructLayout(LayoutKind.Sequential)]
     internal class NEResourceTable
     {
         /// <summary>
@@ -69,22 +67,19 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Tables
             return nrt;
         }
 
-        public static NEResourceTable Deserialize(byte[] contents, int offset)
+        public static NEResourceTable Deserialize(byte[] content, ref int offset)
         {
             var nrt = new NEResourceTable();
 
-            nrt.AlignmentShiftCount = BitConverter.ToUInt16(contents, offset); offset += 2;
+            nrt.AlignmentShiftCount = BitConverter.ToUInt16(content, offset); offset += 2;
             var typeInformationBlocks = new List<ResourceTypeInformationBlock>();
             while (true)
             {
-                unsafe
-                {
-                    var block = ResourceTypeInformationBlock.Deserialize(contents, offset); offset += Marshal.SizeOf(block);
-                    if (block.TypeID == 0)
-                        break;
-                    
-                    typeInformationBlocks.Add(block);
-                }
+                var block = ResourceTypeInformationBlock.Deserialize(content, ref offset);
+                if (block.TypeID == 0)
+                    break;
+
+                typeInformationBlocks.Add(block);
             }
 
             nrt.TypeInformationBlocks = typeInformationBlocks.ToArray();
@@ -92,14 +87,11 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Tables
             var typeAndNameStrings = new List<NEResourceNameString>();
             while (true)
             {
-                unsafe
-                {
-                    var str = NEResourceNameString.Deserialize(contents, offset); offset += Marshal.SizeOf(str);
-                    if (str.Length == 0)
-                        break;
+                var str = NEResourceNameString.Deserialize(content, ref offset);
+                if (str.Length == 0)
+                    break;
                     
-                    typeAndNameStrings.Add(str);
-                }
+                typeAndNameStrings.Add(str);
             }
 
             nrt.TypeAndNameStrings = typeAndNameStrings.ToArray();

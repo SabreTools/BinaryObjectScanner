@@ -58,7 +58,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
             return hnte;
         }
 
-        public static HintNameTableEntry Deserialize(byte[] content, int offset)
+        public static HintNameTableEntry Deserialize(byte[] content, ref int offset)
         {
             var hnte = new HintNameTableEntry();
 

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Text;
 using BurnOutSharp.Tools;
 
@@ -11,7 +10,6 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
     /// These strings are stored together after the last Resource Directory entry and before the first Resource Data entry.
     /// This minimizes the impact of these variable-length strings on the alignment of the fixed-size directory entries.
     /// </summary>
-    [StructLayout(LayoutKind.Sequential)]
     internal class ResourceDirectoryString
     {
         /// <summary>
@@ -34,12 +32,12 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
             return rds;
         }
 
-        public static ResourceDirectoryString Deserialize(byte[] content, int offset)
+        public static ResourceDirectoryString Deserialize(byte[] content, ref int offset)
         {
             var rds = new ResourceDirectoryString();
 
             rds.Length = BitConverter.ToUInt16(content, offset); offset += 2;
-            rds.UnicodeString = Encoding.Unicode.GetString(content, offset, rds.Length);
+            rds.UnicodeString = Encoding.Unicode.GetString(content, offset, rds.Length); offset += rds.Length;
 
             return rds;
         }

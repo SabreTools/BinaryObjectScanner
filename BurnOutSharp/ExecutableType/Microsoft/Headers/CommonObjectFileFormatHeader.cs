@@ -1,11 +1,9 @@
 using System;
 using System.IO;
-using System.Runtime.InteropServices;
 using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ExecutableType.Microsoft.Headers
 {
-    [StructLayout(LayoutKind.Sequential)]
     internal class CommonObjectFileFormatHeader
     {
         /// <summary>
@@ -71,7 +69,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Headers
             return ifh;
         }
 
-        public static CommonObjectFileFormatHeader Deserialize(byte[] content, int offset)
+        public static CommonObjectFileFormatHeader Deserialize(byte[] content, ref int offset)
         {
             var ifh = new CommonObjectFileFormatHeader();
 

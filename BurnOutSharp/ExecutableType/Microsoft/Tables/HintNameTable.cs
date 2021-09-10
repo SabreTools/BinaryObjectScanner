@@ -25,14 +25,14 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Tables
             return hnt;
         }
 
-        public static HintNameTable Deserialize(byte[] content, int offset, int count)
+        public static HintNameTable Deserialize(byte[] content, ref int offset, int count)
         {
             var hnt = new HintNameTable();
 
             hnt.Entries = new HintNameTableEntry[count];
             for (int i = 0; i < count; i++)
             {
-                hnt.Entries[i] = HintNameTableEntry.Deserialize(content, offset);
+                hnt.Entries[i] = HintNameTableEntry.Deserialize(content, ref offset);
                 offset += 2 + hnt.Entries[i].Name.Length + hnt.Entries[i].Pad;
             }
 

@@ -111,7 +111,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
             return rdte;
         }
 
-        public static ResourceDirectoryTableEntry Deserialize(byte[] content, int offset, long sectionStart, SectionHeader[] sections)
+        public static ResourceDirectoryTableEntry Deserialize(byte[] content, ref int offset, long sectionStart, SectionHeader[] sections)
         {
             var rdte = new ResourceDirectoryTableEntry();
 
@@ -120,7 +120,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
             {
                 int nameAddress = (int)(rdte.NameOffset + sectionStart);
                 if (nameAddress >= 0 && nameAddress < content.Length)
-                    rdte.Name = ResourceDirectoryString.Deserialize(content, nameAddress);
+                    rdte.Name = ResourceDirectoryString.Deserialize(content, ref nameAddress);
             }
 
             rdte.DataEntryOffset = BitConverter.ToUInt32(content, offset); offset += 4;
@@ -128,13 +128,13 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
             {
                 int dataEntryAddress = (int)(rdte.DataEntryOffset + sectionStart);
                 if (dataEntryAddress > 0 && dataEntryAddress < content.Length)
-                    rdte.DataEntry = ResourceDataEntry.Deserialize(content, dataEntryAddress, sections);
+                    rdte.DataEntry = ResourceDataEntry.Deserialize(content, ref dataEntryAddress, sections);
             }
             else
             {
                 int subdirectoryAddress = (int)(rdte.SubdirectoryOffset + sectionStart);
                 if (subdirectoryAddress > 0 && subdirectoryAddress < content.Length)
-                    rdte.Subdirectory = ResourceDirectoryTable.Deserialize(content, subdirectoryAddress, sectionStart, sections);
+                    rdte.Subdirectory = ResourceDirectoryTable.Deserialize(content, ref subdirectoryAddress, sectionStart, sections);
             }
 
             // TODO: Add parsing for further directory table entries in the tree

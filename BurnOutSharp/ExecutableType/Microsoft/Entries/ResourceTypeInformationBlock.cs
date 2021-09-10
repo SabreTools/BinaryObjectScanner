@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Runtime.InteropServices;
 using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ExecutableType.Microsoft.Entries
@@ -8,7 +7,6 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
     /// <summary>
     /// Resource type information block
     /// </summary>
-    [StructLayout(LayoutKind.Sequential)]
     internal class ResourceTypeInformationBlock
     {
         /// <summary>
@@ -52,18 +50,18 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
             return rtib;
         }
 
-        public static ResourceTypeInformationBlock Deserialize(byte[] contents, int offset)
+        public static ResourceTypeInformationBlock Deserialize(byte[] content, ref int offset)
         {
             var rtib = new ResourceTypeInformationBlock();
 
-            rtib.TypeID = BitConverter.ToUInt16(contents, offset); offset += 2;
-            rtib.ResourceCount = BitConverter.ToUInt16(contents, offset); offset += 2;
-            rtib.Reserved = BitConverter.ToUInt32(contents, offset); offset += 4;
+            rtib.TypeID = BitConverter.ToUInt16(content, offset); offset += 2;
+            rtib.ResourceCount = BitConverter.ToUInt16(content, offset); offset += 2;
+            rtib.Reserved = BitConverter.ToUInt32(content, offset); offset += 4;
 
             rtib.ResourceTable = new NEResourceTableEntry[rtib.ResourceCount];
             for (int i = 0; i < rtib.ResourceCount; i++)
             {
-                rtib.ResourceTable[i] = NEResourceTableEntry.Deserialize(contents, offset); offset += 12;
+                rtib.ResourceTable[i] = NEResourceTableEntry.Deserialize(content, ref offset);
             }
 
             return rtib;

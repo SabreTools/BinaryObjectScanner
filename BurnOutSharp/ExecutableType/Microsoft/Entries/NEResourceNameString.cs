@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using System.Runtime.InteropServices;
 using System.Text;
 using BurnOutSharp.Tools;
 
@@ -8,7 +7,6 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
     /// <summary>
     /// Resource type and name strings
     /// </summary>
-    [StructLayout(LayoutKind.Sequential)]
     internal class NEResourceNameString
     {
         /// <summary>
@@ -33,12 +31,12 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
             return rds;
         }
 
-        public static NEResourceNameString Deserialize(byte[] contents, int offset)
+        public static NEResourceNameString Deserialize(byte[] content, ref int offset)
         {
             var rds = new NEResourceNameString();
 
-            rds.Length = contents[offset++];
-            rds.Value = Encoding.ASCII.GetChars(contents, offset, rds.Length);
+            rds.Length = content[offset++];
+            rds.Value = Encoding.ASCII.GetChars(content, offset, rds.Length); offset += rds.Length;
 
             return rds;
         }

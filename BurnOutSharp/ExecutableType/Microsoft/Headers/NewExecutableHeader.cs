@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Runtime.InteropServices;
 using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ExecutableType.Microsoft.Headers
@@ -10,7 +9,6 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Headers
     /// Because of the age of the format some items are unclear in meaning.
     /// </summary>
     /// <remarks>http://bytepointer.com/resources/win16_ne_exe_format_win3.0.htm</remarks>
-    [StructLayout(LayoutKind.Sequential)]
     internal class NewExecutableHeader
     {
         /// <summary>
@@ -216,42 +214,42 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Headers
             return neh;
         }
 
-        public static NewExecutableHeader Deserialize(byte[] contents, int offset)
+        public static NewExecutableHeader Deserialize(byte[] content, ref int offset)
         {
             var neh = new NewExecutableHeader();
 
-            neh.Magic = BitConverter.ToUInt16(contents, offset); offset += 2;
-            neh.LinkerVersion = contents[offset++];
-            neh.LinkerRevision = contents[offset++];
-            neh.EntryTableOffset = BitConverter.ToUInt16(contents, offset); offset += 2;
-            neh.EntryTableSize = BitConverter.ToUInt16(contents, offset); offset += 2;
-            neh.CrcChecksum = BitConverter.ToUInt32(contents, offset); offset += 4;
-            neh.ProgramFlags = contents[offset++];
-            neh.ApplicationFlags = contents[offset++];
-            neh.Autodata = BitConverter.ToUInt16(contents, offset); offset += 2;
-            neh.InitialHeapAlloc = BitConverter.ToUInt16(contents, offset); offset += 2;
-            neh.InitialStackAlloc = BitConverter.ToUInt16(contents, offset); offset += 2;
-            neh.InitialCSIPSetting = BitConverter.ToUInt32(contents, offset); offset += 4;
-            neh.InitialSSSPSetting = BitConverter.ToUInt32(contents, offset); offset += 4;
-            neh.FileSegmentCount = BitConverter.ToUInt16(contents, offset); offset += 2;
-            neh.ModuleReferenceTableSize = BitConverter.ToUInt16(contents, offset); offset += 2;
-            neh.NonResidentNameTableSize = BitConverter.ToUInt16(contents, offset); offset += 2;
-            neh.SegmentTableOffset = BitConverter.ToUInt16(contents, offset); offset += 2;
-            neh.ResourceTableOffset = BitConverter.ToUInt16(contents, offset); offset += 2;
-            neh.ResidentNameTableOffset = BitConverter.ToUInt16(contents, offset); offset += 2;
-            neh.ModuleReferenceTableOffset = BitConverter.ToUInt16(contents, offset); offset += 2;
-            neh.ImportedNamesTableOffset = BitConverter.ToUInt16(contents, offset); offset += 2;
-            neh.NonResidentNamesTableOffset = BitConverter.ToUInt32(contents, offset); offset += 4;
-            neh.MovableEntriesCount = BitConverter.ToUInt16(contents, offset); offset += 2;
-            neh.SegmentAlignmentShiftCount = BitConverter.ToUInt16(contents, offset); offset += 2;
-            neh.ResourceEntriesCount = BitConverter.ToUInt16(contents, offset); offset += 2;
-            neh.TargetOperatingSystem = contents[offset++];
-            neh.AdditionalFlags = contents[offset++];
-            neh.ReturnThunkOffset = BitConverter.ToUInt16(contents, offset); offset += 2;
-            neh.SegmentReferenceThunkOffset = BitConverter.ToUInt16(contents, offset); offset += 2;
-            neh.MinCodeSwapAreaSize = BitConverter.ToUInt16(contents, offset); offset += 2;
-            neh.WindowsSDKRevision = contents[offset++];
-            neh.WindowsSDKVersion = contents[offset++];
+            neh.Magic = BitConverter.ToUInt16(content, offset); offset += 2;
+            neh.LinkerVersion = content[offset++];
+            neh.LinkerRevision = content[offset++];
+            neh.EntryTableOffset = BitConverter.ToUInt16(content, offset); offset += 2;
+            neh.EntryTableSize = BitConverter.ToUInt16(content, offset); offset += 2;
+            neh.CrcChecksum = BitConverter.ToUInt32(content, offset); offset += 4;
+            neh.ProgramFlags = content[offset++];
+            neh.ApplicationFlags = content[offset++];
+            neh.Autodata = BitConverter.ToUInt16(content, offset); offset += 2;
+            neh.InitialHeapAlloc = BitConverter.ToUInt16(content, offset); offset += 2;
+            neh.InitialStackAlloc = BitConverter.ToUInt16(content, offset); offset += 2;
+            neh.InitialCSIPSetting = BitConverter.ToUInt32(content, offset); offset += 4;
+            neh.InitialSSSPSetting = BitConverter.ToUInt32(content, offset); offset += 4;
+            neh.FileSegmentCount = BitConverter.ToUInt16(content, offset); offset += 2;
+            neh.ModuleReferenceTableSize = BitConverter.ToUInt16(content, offset); offset += 2;
+            neh.NonResidentNameTableSize = BitConverter.ToUInt16(content, offset); offset += 2;
+            neh.SegmentTableOffset = BitConverter.ToUInt16(content, offset); offset += 2;
+            neh.ResourceTableOffset = BitConverter.ToUInt16(content, offset); offset += 2;
+            neh.ResidentNameTableOffset = BitConverter.ToUInt16(content, offset); offset += 2;
+            neh.ModuleReferenceTableOffset = BitConverter.ToUInt16(content, offset); offset += 2;
+            neh.ImportedNamesTableOffset = BitConverter.ToUInt16(content, offset); offset += 2;
+            neh.NonResidentNamesTableOffset = BitConverter.ToUInt32(content, offset); offset += 4;
+            neh.MovableEntriesCount = BitConverter.ToUInt16(content, offset); offset += 2;
+            neh.SegmentAlignmentShiftCount = BitConverter.ToUInt16(content, offset); offset += 2;
+            neh.ResourceEntriesCount = BitConverter.ToUInt16(content, offset); offset += 2;
+            neh.TargetOperatingSystem = content[offset++];
+            neh.AdditionalFlags = content[offset++];
+            neh.ReturnThunkOffset = BitConverter.ToUInt16(content, offset); offset += 2;
+            neh.SegmentReferenceThunkOffset = BitConverter.ToUInt16(content, offset); offset += 2;
+            neh.MinCodeSwapAreaSize = BitConverter.ToUInt16(content, offset); offset += 2;
+            neh.WindowsSDKRevision = content[offset++];
+            neh.WindowsSDKVersion = content[offset++];
 
             return neh;
         }

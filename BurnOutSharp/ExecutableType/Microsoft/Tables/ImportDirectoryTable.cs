@@ -33,14 +33,14 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Tables
             return idt;
         }
 
-        public static ImportDirectoryTable Deserialize(byte[] content, int offset)
+        public static ImportDirectoryTable Deserialize(byte[] content, ref int offset)
         {
             var idt = new ImportDirectoryTable();
 
             List<ImportDirectoryTableEntry> tempEntries = new List<ImportDirectoryTableEntry>();
             while (true)
             {
-                var entry = ImportDirectoryTableEntry.Deserialize(content, offset); offset += 20;
+                var entry = ImportDirectoryTableEntry.Deserialize(content, ref offset);
                 tempEntries.Add(entry);
                 if (entry.IsNull())
                     break;

@@ -66,7 +66,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
             return idte;
         }
 
-        public static ImportDirectoryTableEntry Deserialize(byte[] content, int offset)
+        public static ImportDirectoryTableEntry Deserialize(byte[] content, ref int offset)
         {
             var idte = new ImportDirectoryTableEntry();
 

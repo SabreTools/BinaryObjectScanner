@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Runtime.InteropServices;
 using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ExecutableType.Microsoft.Entries
@@ -8,7 +7,6 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
     /// <summary>
     /// A table of resources for this type
     /// </summary>
-    [StructLayout(LayoutKind.Sequential)]
     internal class NEResourceTableEntry
     {
         /// <summary>
@@ -61,16 +59,16 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
             return ni;
         }
 
-        public static NEResourceTableEntry Deserialize(byte[] contents, int offset)
+        public static NEResourceTableEntry Deserialize(byte[] content, ref int offset)
         {
             var ni = new NEResourceTableEntry();
 
-            ni.Offset = BitConverter.ToUInt16(contents, offset); offset += 2;
-            ni.Length = BitConverter.ToUInt16(contents, offset); offset += 2;
-            ni.Flags = (ResourceTableEntryFlags)BitConverter.ToUInt16(contents, offset); offset += 2;
-            ni.ResourceID = BitConverter.ToUInt16(contents, offset); offset += 2;
-            ni.Handle = BitConverter.ToUInt16(contents, offset); offset += 2;
-            ni.Usage = BitConverter.ToUInt16(contents, offset); offset += 2;
+            ni.Offset = BitConverter.ToUInt16(content, offset); offset += 2;
+            ni.Length = BitConverter.ToUInt16(content, offset); offset += 2;
+            ni.Flags = (ResourceTableEntryFlags)BitConverter.ToUInt16(content, offset); offset += 2;
+            ni.ResourceID = BitConverter.ToUInt16(content, offset); offset += 2;
+            ni.Handle = BitConverter.ToUInt16(content, offset); offset += 2;
+            ni.Usage = BitConverter.ToUInt16(content, offset); offset += 2;
 
             return ni;
         }

@@ -33,14 +33,14 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Tables
             return iat;
         }
 
-        public static ImportAddressTable Deserialize(byte[] content, int offset)
+        public static ImportAddressTable Deserialize(byte[] content, ref int offset)
         {
             var iat = new ImportAddressTable();
 
             List<ImportAddressTableEntry> tempEntries = new List<ImportAddressTableEntry>();
             while (true)
             {
-                var entry = ImportAddressTableEntry.Deserialize(content, offset); offset += 20;
+                var entry = ImportAddressTableEntry.Deserialize(content, ref offset);
                 tempEntries.Add(entry);
                 if (entry.IsNull())
                     break;

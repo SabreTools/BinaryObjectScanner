@@ -1,11 +1,9 @@
 using System;
 using System.IO;
-using System.Runtime.InteropServices;
 using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ExecutableType.Microsoft.Headers
 {
-    [StructLayout(LayoutKind.Sequential)]
     internal class DataDirectoryHeader
     {
         /// <summary>
@@ -29,7 +27,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Headers
             return ddh;
         }
 
-        public static DataDirectoryHeader Deserialize(byte[] content, int offset)
+        public static DataDirectoryHeader Deserialize(byte[] content, ref int offset)
         {
             var ddh = new DataDirectoryHeader();
 

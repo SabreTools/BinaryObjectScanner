@@ -57,28 +57,24 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Sections
             return ids;
         }
 
-        public static ImportDataSection Deserialize(byte[] content, int offset,  bool pe32plus, int hintCount)
+        public static ImportDataSection Deserialize(byte[] content, ref int offset,  bool pe32plus, int hintCount)
         {
             var ids = new ImportDataSection();
 
-            ids.ImportDirectoryTable = ImportDirectoryTable.Deserialize(content, offset); offset += 20 * ids.ImportDirectoryTable.Entries.Length;
+            ids.ImportDirectoryTable = ImportDirectoryTable.Deserialize(content, ref offset);
 
             List<ImportLookupTable> tempLookupTables = new List<ImportLookupTable>();
             while (true)
             {
-                var tempLookupTable = ImportLookupTable.Deserialize(content, offset, pe32plus);
-                if (tempLookupTable.EntriesPE32 != null)
-                    offset += 4 * tempLookupTable.EntriesPE32.Length;
-                else if (tempLookupTable.EntriesPE32Plus != null)
-                    offset += 8 * tempLookupTable.EntriesPE32Plus.Length;
-                else
+                var tempLookupTable = ImportLookupTable.Deserialize(content, ref offset, pe32plus);
+                if (tempLookupTable.EntriesPE32 == null && tempLookupTable.EntriesPE32Plus == null)
                     break;
 
                 tempLookupTables.Add(tempLookupTable);
             }
 
             // TODO: Update the offset, if possible
-            ids.HintNameTable = HintNameTable.Deserialize(content, offset, hintCount);
+            ids.HintNameTable = HintNameTable.Deserialize(content, ref offset, hintCount);
 
             return ids;
         }

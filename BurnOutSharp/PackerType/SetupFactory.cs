@@ -122,7 +122,7 @@ namespace BurnOutSharp.PackerType
                 return version;
             
             // Then check the file version
-            version = Utilities.GetFileVersion(file);
+            version = Utilities.GetFileVersion(fileContent);
             if (!string.IsNullOrEmpty(version))
                 return version;
 

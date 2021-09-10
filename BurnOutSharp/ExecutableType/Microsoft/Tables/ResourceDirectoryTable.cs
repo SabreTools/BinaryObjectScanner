@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Runtime.InteropServices;
 using BurnOutSharp.ExecutableType.Microsoft.Entries;
 using BurnOutSharp.ExecutableType.Microsoft.Headers;
 using BurnOutSharp.Tools;
@@ -12,7 +11,6 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Tables
     /// This data structure should be considered the heading of a table
     /// because the table actually consists of directory entries and this structure
     /// </summary>
-    [StructLayout(LayoutKind.Sequential)]
     internal class ResourceDirectoryTable
     {
         /// <summary>
@@ -94,7 +92,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Tables
             return rdt;
         }
 
-        public static ResourceDirectoryTable Deserialize(byte[] content, int offset, long sectionStart, SectionHeader[] sections)
+        public static ResourceDirectoryTable Deserialize(byte[] content, ref int offset, long sectionStart, SectionHeader[] sections)
         {
             var rdt = new ResourceDirectoryTable();
 
@@ -108,13 +106,13 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Tables
             rdt.NamedEntries = new ResourceDirectoryTableEntry[rdt.NumberOfNamedEntries];
             for (int i = 0; i < rdt.NumberOfNamedEntries; i++)
             {
-                rdt.NamedEntries[i] = ResourceDirectoryTableEntry.Deserialize(content, offset, sectionStart, sections); offset += 8;
+                rdt.NamedEntries[i] = ResourceDirectoryTableEntry.Deserialize(content, ref offset, sectionStart, sections);
             }
 
             rdt.IdEntries = new ResourceDirectoryTableEntry[rdt.NumberOfIdEntries];
             for (int i = 0; i < rdt.NumberOfIdEntries; i++)
             {
-                rdt.IdEntries[i] = ResourceDirectoryTableEntry.Deserialize(content, offset, sectionStart, sections); offset += 8;
+                rdt.IdEntries[i] = ResourceDirectoryTableEntry.Deserialize(content, ref offset, sectionStart, sections);
             }
 
             return rdt;

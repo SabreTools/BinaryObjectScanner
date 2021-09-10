@@ -57,17 +57,17 @@ namespace BurnOutSharp.ProtectionType
 
             string name = fvinfo?.FileDescription?.Trim();
             if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("DVM Library", StringComparison.OrdinalIgnoreCase))
-                return $"SolidShield {Utilities.GetFileVersion(file)}";
+                return $"SolidShield {Utilities.GetFileVersion(fileContent)}";
             else if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Solidshield Activation Library", StringComparison.OrdinalIgnoreCase))
-                return $"SolidShield Core.dll {Utilities.GetFileVersion(file)}";
+                return $"SolidShield Core.dll {Utilities.GetFileVersion(fileContent)}";
             else if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Activation Manager", StringComparison.OrdinalIgnoreCase))
                 return $"SolidShield Activation Manager Module {GetFileVersion(file, fileContent, null)}";
 
             name = fvinfo?.ProductName?.Trim();
             if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Solidshield Activation Library", StringComparison.OrdinalIgnoreCase))
-                return $"SolidShield Core.dll {Utilities.GetFileVersion(file)}";
+                return $"SolidShield Core.dll {Utilities.GetFileVersion(fileContent)}";
             else if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Solidshield Library", StringComparison.OrdinalIgnoreCase))
-                return $"SolidShield Core.dll {Utilities.GetFileVersion(file)}";
+                return $"SolidShield Core.dll {Utilities.GetFileVersion(fileContent)}";
             else if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Activation Manager", StringComparison.OrdinalIgnoreCase))
                 return $"SolidShield Activation Manager Module {GetFileVersion(file, fileContent, null)}";
 
@@ -224,7 +224,7 @@ namespace BurnOutSharp.ProtectionType
         {
             string companyName = Utilities.GetFileVersionInfo(file)?.CompanyName.ToLowerInvariant();
             if (!string.IsNullOrWhiteSpace(companyName) && (companyName.Contains("solidshield") || companyName.Contains("tages")))
-                return Utilities.GetFileVersion(file);
+                return Utilities.GetFileVersion(fileContent);
             
             return null;
         }

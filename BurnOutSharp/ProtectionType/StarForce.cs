@@ -28,7 +28,7 @@ namespace BurnOutSharp.ProtectionType
 
             string name = fvinfo?.LegalCopyright?.Trim();
             if (!string.IsNullOrWhiteSpace(name) && name.Contains("Protection Technology"))
-                return $"StarForce {Utilities.GetFileVersion(file)}";
+                return $"StarForce {Utilities.GetFileVersion(fileContent)}";
 
             // TODO: Find what fvinfo field actually maps to this
             name = fvinfo?.FileDescription?.Trim();
@@ -155,7 +155,7 @@ namespace BurnOutSharp.ProtectionType
     
         public static string GetVersion(string file, byte[] fileContent, List<int> positions)
         {
-            return $"{Utilities.GetFileVersion(file)} ({fileContent.Skip(positions[1] + 22).TakeWhile(c => c != 0x00)})";
+            return $"{Utilities.GetFileVersion(fileContent)} ({fileContent.Skip(positions[1] + 22).TakeWhile(c => c != 0x00)})";
         }
     }
 }

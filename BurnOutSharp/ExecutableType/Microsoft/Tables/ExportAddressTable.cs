@@ -26,14 +26,14 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Tables
             return eat;
         }
 
-        public static ExportAddressTable Deserialize(byte[] content, int offset, int count)
+        public static ExportAddressTable Deserialize(byte[] content, ref int offset, int count)
         {
             var eat = new ExportAddressTable();
 
             eat.Entries = new ExportAddressTableEntry[count];
             for (int i = 0; i < count; i++)
             {
-                eat.Entries[i] = ExportAddressTableEntry.Deserialize(content, offset); offset += 4;
+                eat.Entries[i] = ExportAddressTableEntry.Deserialize(content, ref offset);
             }
 
             return eat;

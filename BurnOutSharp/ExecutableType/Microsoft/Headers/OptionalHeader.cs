@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Runtime.InteropServices;
 using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ExecutableType.Microsoft.Headers
@@ -19,7 +18,6 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Headers
     /// a particular data directory entry goes beyond the optional header.
     /// In addition, it is important to validate the optional header magic number for format compatibility.
     /// </summary>
-    [StructLayout(LayoutKind.Sequential)]
     internal class OptionalHeader
     {
         #region Standard Fields
@@ -231,7 +229,6 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Headers
         /// <summary>
         /// Data-directory entries following the optional header
         /// </summary>
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = Constants.IMAGE_NUMBEROF_DIRECTORY_ENTRIES)]
         public DataDirectoryHeader[] DataDirectories;
 
         #endregion
@@ -301,7 +298,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Headers
             return ioh;
         }
 
-        public static OptionalHeader Deserialize(byte[] content, int offset)
+        public static OptionalHeader Deserialize(byte[] content, ref int offset)
         {
             var ioh = new OptionalHeader();
 
@@ -364,7 +361,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Headers
             ioh.DataDirectories = new DataDirectoryHeader[Constants.IMAGE_NUMBEROF_DIRECTORY_ENTRIES];
             for (int i = 0; i < Constants.IMAGE_NUMBEROF_DIRECTORY_ENTRIES; i++)
             {
-                ioh.DataDirectories[i] = DataDirectoryHeader.Deserialize(content, offset); offset += 8;
+                ioh.DataDirectories[i] = DataDirectoryHeader.Deserialize(content, ref offset);
             }
 
             return ioh;

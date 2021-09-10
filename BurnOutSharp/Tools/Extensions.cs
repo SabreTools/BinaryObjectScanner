@@ -1,11 +1,84 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
+using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.Tools
 {
-    internal static class BufferExtensions
+    internal static class Extensions
     {
+        // TODO: Add extensions for BitConverter.ToX(); offset += x;
+        #region Byte Arrays
+
+        /// <summary>
+        /// Find all positions of one array in another, if possible, if possible
+        /// </summary>
+        public static List<int> FindAllPositions(this byte[] stack, byte?[] needle, int start = 0, int end = -1)
+        {
+            // Get the outgoing list
+            List<int> positions = new List<int>();
+
+            // Initialize the loop variables
+            bool found = true;
+            int lastPosition = start;
+            var matcher = new ContentMatch(needle, end: end);
+
+            // Loop over and get all positions
+            while (found)
+            {
+                matcher.Start = lastPosition;
+                (found, lastPosition) = matcher.Match(stack, false);
+                if (found)
+                    positions.Add(lastPosition);
+            }
+
+            return positions;
+        }
+
+        /// <summary>
+        /// Find the first position of one array in another, if possible
+        /// </summary>
+        public static bool FirstPosition(this byte[] stack, byte?[] needle, out int position, int start = 0, int end = -1)
+        {
+            var matcher = new ContentMatch(needle, start, end);
+            (bool found, int foundPosition) = matcher.Match(stack, false);
+            position = foundPosition;
+            return found;
+        }
+
+        /// <summary>
+        /// Find the last position of one array in another, if possible
+        /// </summary>
+        public static bool LastPosition(this byte[] stack, byte?[] needle, out int position, int start = 0, int end = -1)
+        {
+            var matcher = new ContentMatch(needle, start, end);
+            (bool found, int foundPosition) = matcher.Match(stack, true);
+            position = foundPosition;
+            return found;
+        }
+
+        /// <summary>
+        /// See if a byte array starts with another
+        /// </summary>
+        public static bool StartsWith(this byte[] stack, byte?[] needle)
+        {
+            return stack.FirstPosition(needle, out int _, start: 0, end: 1);
+        }
+
+        /// <summary>
+        /// See if a byte array ends with another
+        /// </summary>
+        public static bool EndsWith(this byte[] stack, byte?[] needle)
+        {
+            return stack.FirstPosition(needle, out int _, start: stack.Length - needle.Length);
+        }
+
+        #endregion
+
+        #region Streams
+
         /// <summary>
         /// Read a byte from the stream
         /// </summary>
@@ -109,6 +182,32 @@ namespace BurnOutSharp.Tools
             byte[] buffer = new byte[8];
             stream.Read(buffer, 0, 8);
             return BitConverter.ToUInt64(buffer, 0);
-        }    
+        }
+
+        /// <summary>
+        /// Read a null-terminated string from the stream
+        /// </summary>
+        public static string ReadString(this Stream stream) => stream.ReadString(Encoding.Default);
+
+        /// <summary>
+        /// Read a null-terminated string from the stream
+        /// </summary>
+        public static string ReadString(this Stream stream, Encoding encoding)
+        {
+            byte[] nullTerminator = encoding.GetBytes(new char[] { '\0' });
+            int charWidth = nullTerminator.Length;
+
+            List<byte> tempBuffer = new List<byte>();
+
+            byte[] buffer = new byte[charWidth];
+            while (stream.Read(buffer, 0, charWidth) != 0 && buffer.SequenceEqual(nullTerminator))
+            {
+                tempBuffer.AddRange(buffer);
+            }
+
+            return encoding.GetString(tempBuffer.ToArray());
+        }
+
+        #endregion
     }
 }

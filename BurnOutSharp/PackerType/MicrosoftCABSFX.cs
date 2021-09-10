@@ -36,7 +36,7 @@ namespace BurnOutSharp.PackerType
             {
                 string version = GetVersion(file, fileContent, null);
                 if (!string.IsNullOrWhiteSpace(version))
-                    return $"Microsoft CAB SFX v{Utilities.GetFileVersion(file)}";
+                    return $"Microsoft CAB SFX v{Utilities.GetFileVersion(fileContent)}";
 
                 return "Microsoft CAB SFX";
             }
@@ -46,7 +46,7 @@ namespace BurnOutSharp.PackerType
             {
                 string version = GetVersion(file, fileContent, null);
                 if (!string.IsNullOrWhiteSpace(version))
-                    return $"Microsoft CAB SFX v{Utilities.GetFileVersion(file)}";
+                    return $"Microsoft CAB SFX v{Utilities.GetFileVersion(fileContent)}";
 
                 return "Microsoft CAB SFX";
             }
@@ -158,7 +158,7 @@ namespace BurnOutSharp.PackerType
         // This method of version detection is suboptimal because the version is sometimes the version of the included software, not the SFX itself.
         public static string GetVersion(string file, byte[] fileContent, List<int> positions)
         {
-            string version = Utilities.GetFileVersion(file);
+            string version = Utilities.GetFileVersion(fileContent);
             if (!string.IsNullOrWhiteSpace(version))
                 return $"v{version}";
 

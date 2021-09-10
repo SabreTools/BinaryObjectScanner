@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
 using BurnOutSharp.ExecutableType.Microsoft.Headers;
 using BurnOutSharp.Tools;
@@ -11,7 +10,6 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
     /// <summary>
     /// Each Resource Data entry describes an actual unit of raw data in the Resource Data area.
     /// </summary>
-    [StructLayout(LayoutKind.Sequential)]
     internal class ResourceDataEntry
     {
         /// <summary>
@@ -27,7 +25,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
         /// <summary>
         /// A unit of resource data in the Resource Data area.
         /// </summary>
-        public string EncodedData
+        public string DataAsUTF8String
         {
             get
             {
@@ -38,7 +36,9 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
                 try
                 {
                     Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-                    return Encoding.GetEncoding(codePage).GetString(Data);
+                    var originalEncoding = Encoding.GetEncoding(codePage);
+                    byte[] convertedData = Encoding.Convert(originalEncoding, Encoding.UTF8, Data);
+                    return Encoding.UTF8.GetString(convertedData);
                 }
                 catch (Exception ex)
                 {
@@ -85,7 +85,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
             return rde;
         }
 
-        public static ResourceDataEntry Deserialize(byte[] content, int offset, SectionHeader[] sections)
+        public static ResourceDataEntry Deserialize(byte[] content, ref int offset, SectionHeader[] sections)
         {
             var rde = new ResourceDataEntry();
 

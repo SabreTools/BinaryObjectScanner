@@ -1,5 +1,4 @@
 using System.IO;
-using System.Runtime.InteropServices;
 using BurnOutSharp.ExecutableType.Microsoft.Tables;
 
 namespace BurnOutSharp.ExecutableType.Microsoft.Sections
@@ -56,18 +55,15 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Sections
             return eds;
         }
 
-        public static ExportDataSection Deserialize(byte[] content, int offset)
+        public static ExportDataSection Deserialize(byte[] content, ref int offset)
         {
             var eds = new ExportDataSection();
 
-            unsafe
-            {
-                eds.ExportDirectoryTable = ExportDirectoryTable.Deserialize(content, offset); offset += Marshal.SizeOf(eds.ExportDirectoryTable);
-                // eds.ExportAddressTable = ExportAddressTable.Deserialize(content, offset, count: 0); offset += Marshal.SizeOf(eds.ExportAddressTable); // TODO: Figure out where this count comes from
-                // eds.NamePointerTable = ExportNamePointerTable.Deserialize(content, offset, count: 0); offset += Marshal.SizeOf(eds.NamePointerTable); // TODO: Figure out where this count comes from
-                // eds.OrdinalTable = ExportOrdinalTable.Deserialize(content, offset, count: 0); offset += Marshal.SizeOf(eds.OrdinalTable); // TODO: Figure out where this count comes from
-                // eds.ExportNameTable = ExportNameTable.Deserialize(stream); offset += Marshal.SizeOf(eds.ExportAddressTable); // TODO: set this table based on the NamePointerTable value
-            }
+            eds.ExportDirectoryTable = ExportDirectoryTable.Deserialize(content, ref offset);
+            // eds.ExportAddressTable = ExportAddressTable.Deserialize(content, ref offset, count: 0); // TODO: Figure out where this count comes from
+            // eds.NamePointerTable = ExportNamePointerTable.Deserialize(content, ref offset, count: 0); // TODO: Figure out where this count comes from
+            // eds.OrdinalTable = ExportOrdinalTable.Deserialize(content, ref offset, count: 0); // TODO: Figure out where this count comes from
+            // eds.ExportNameTable = ExportNameTable.Deserialize(content, ref offset); // TODO: set this table based on the NamePointerTable value
 
             return eds;
         }

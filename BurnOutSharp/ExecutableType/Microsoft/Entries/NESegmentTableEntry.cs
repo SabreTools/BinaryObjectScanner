@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Runtime.InteropServices;
 using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ExecutableType.Microsoft.Entries
@@ -11,7 +10,6 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
     /// EXE header. The first entry in the segment table is segment number 1.
     /// The following is the structure of a segment table entry.
     /// </summary>
-    [StructLayout(LayoutKind.Sequential)]
     internal class NESegmentTableEntry
     {
         /// <summary>
@@ -49,7 +47,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
             return nste;
         }
 
-        public static NESegmentTableEntry Deserialize(byte[] content, int offset)
+        public static NESegmentTableEntry Deserialize(byte[] content, ref int offset)
         {
             var nste = new NESegmentTableEntry();
 

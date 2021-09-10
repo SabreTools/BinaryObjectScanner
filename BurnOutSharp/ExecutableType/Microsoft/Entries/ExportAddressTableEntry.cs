@@ -35,7 +35,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
             return eate;
         }
 
-        public static ExportAddressTableEntry Deserialize(byte[] content, int offset)
+        public static ExportAddressTableEntry Deserialize(byte[] content, ref int offset)
         {
             var eate = new ExportAddressTableEntry();
 
