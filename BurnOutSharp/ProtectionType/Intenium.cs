@@ -1,8 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using BurnOutSharp.ExecutableType.Microsoft;
-using BurnOutSharp.Matching;
+﻿using BurnOutSharp.ExecutableType.Microsoft;
+using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -32,30 +29,9 @@ namespace BurnOutSharp.ProtectionType
             if (sections == null)
                 return null;
 
-            // TODO: This isn't working for some reason. Look into it a bit more
-            // var resource = Utilities.FindResourceInSection(pex.ResourceSection, dataContains: "Trial\0P");
-            // if (resource != null)
-            //     return "INTENIUM Trial & Buy Protection";
-
-            // TODO: Find this inside of the .rsrc section using the executable header
-            // Get the .rsrc section, if it exists
-            var rsrcSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".rsrc"));
-            if (rsrcSection != null)
-            {
-                int sectionAddr = (int)rsrcSection.PointerToRawData;
-                int sectionEnd = sectionAddr + (int)rsrcSection.VirtualSize;
-                var matchers = new List<ContentMatchSet>
-                {
-                    // Trial + (char)0x00 + P
-                    new ContentMatchSet(
-                        new ContentMatch(new byte?[] { 0x54, 0x72, 0x69, 0x61, 0x6C, 0x00, 0x50 }, start: sectionAddr, end: sectionEnd),
-                    "INTENIUM Trial & Buy Protection"),
-                };
-
-                string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
-                    return match;
-            }
+            var fileNameResource = Utilities.FindResourceInSection(pex.ResourceSection, dataContains: $"NO NESTED PRMS SUPPORTED");
+            if (fileNameResource != null)
+                return "ITENIUM Trial & Buy Protection";
 
             return null;
         }

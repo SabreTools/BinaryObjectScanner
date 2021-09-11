@@ -372,13 +372,14 @@ namespace BurnOutSharp.Tools
         /// <param name="rs">ResourceSection from the executable</param>
         /// <param name="dataStart">String to use if checking for data starting with a string</param>
         /// <param name="dataContains">String to use if checking for data contains a string</param>
+        /// <param name="dataEnd">String to use if checking for data ending with a string</param>
         /// <returns>Full encoded resource data, null on error</returns>
-        public static ResourceDataEntry FindResourceInSection(ResourceSection rs, string dataStart = null, string dataContains = null)
+        public static ResourceDataEntry FindResourceInSection(ResourceSection rs, string dataStart = null, string dataContains = null, string dataEnd = null)
         {
             if (rs == null)
                 return null;
 
-            return FindResourceInTable(rs.ResourceDirectoryTable, dataStart, dataContains);
+            return FindResourceInTable(rs.ResourceDirectoryTable, dataStart, dataContains, dataEnd);
         }
 
         /// <summary>
@@ -387,8 +388,9 @@ namespace BurnOutSharp.Tools
         /// <param name="rdt">ResourceDirectoryTable representing a layer</param>
         /// <param name="dataStart">String to use if checking for data starting with a string</param>
         /// <param name="dataContains">String to use if checking for data contains a string</param>
+        /// <param name="dataEnd">String to use if checking for data ending with a string</param>
         /// <returns>Full encoded resource data, null on error</returns>
-        private static ResourceDataEntry FindResourceInTable(ResourceDirectoryTable rdt, string dataStart, string dataContains)
+        private static ResourceDataEntry FindResourceInTable(ResourceDirectoryTable rdt, string dataStart, string dataContains, string dataEnd)
         {
             if (rdt == null)
                 return null;
@@ -401,10 +403,12 @@ namespace BurnOutSharp.Tools
                         return rdte.DataEntry;
                     else if (dataContains != null && rdte.DataEntry.DataAsUTF8String.Contains(dataContains))
                         return rdte.DataEntry;
+                    else if (dataEnd != null && rdte.DataEntry.DataAsUTF8String.EndsWith(dataStart))
+                        return rdte.DataEntry;
                 }
                 else
                 {
-                    var manifest = FindResourceInTable(rdte.Subdirectory, dataStart, dataContains);
+                    var manifest = FindResourceInTable(rdte.Subdirectory, dataStart, dataContains, dataEnd);
                     if (manifest != null)
                         return manifest;
                 }
@@ -418,10 +422,12 @@ namespace BurnOutSharp.Tools
                         return rdte.DataEntry;
                     else if (dataContains != null && rdte.DataEntry.DataAsUTF8String.Contains(dataContains))
                         return rdte.DataEntry;
+                    else if (dataEnd != null && rdte.DataEntry.DataAsUTF8String.EndsWith(dataStart))
+                        return rdte.DataEntry;
                 }
                 else
                 {
-                    var manifest = FindResourceInTable(rdte.Subdirectory, dataStart, dataContains);
+                    var manifest = FindResourceInTable(rdte.Subdirectory, dataStart, dataContains, dataEnd);
                     if (manifest != null)
                         return manifest;
                 }

@@ -127,8 +127,6 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
                 int dataEntryAddress = (int)(rdte.DataEntryOffset + sectionStart);
                 if (dataEntryAddress > 0 && dataEntryAddress < content.Length)
                     rdte.DataEntry = ResourceDataEntry.Deserialize(content, ref dataEntryAddress, sections);
-
-                //Console.WriteLine($"At {dataEntryAddress}: {rdte.DataEntry.DataAsUTF8String}");
             }
             else
             {

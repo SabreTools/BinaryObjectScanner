@@ -15,11 +15,10 @@ namespace BurnOutSharp.PackerType
             var sections = pex?.SectionTable;
             if (sections == null)
                 return null;
-            
-            // TODO: Do something with this information -
-            // PE Compact 1 uses the symbol table pointer in the file header to store the value 1329808720 / 50 45 43 4F / PECO
-            // Console.WriteLine($"{file} symbol table pointer: {pex.ImageFileHeader.PointerToSymbolTable}");
-            // Console.WriteLine($"{file} ptr as string: {Encoding.ASCII.GetString(BitConverter.GetBytes(pex.ImageFileHeader.PointerToSymbolTable))}");
+
+            // 0x4F434550 is "PECO"
+            if (pex.ImageFileHeader.PointerToSymbolTable == 0x4F434550)
+                return "PE Compact v1.x";
 
             // TODO: Get more granular version detection. PiD is somehow able to detect version ranges based
             // on the data in the file. This may be related to information in other fields

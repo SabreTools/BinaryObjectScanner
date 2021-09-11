@@ -158,7 +158,6 @@ namespace BurnOutSharp.ProtectionType
             return MatchUtil.GetFirstMatch(path, pathMatchers, any: true);
         }
 
-        // TODO: Try to find a file that this actually triggers for
         public static string Get320to4xVersion(string file, byte[] fileContent, List<int> positions) => "3.20-4.xx (version removed)";
 
         public static string GetVersion(string file, byte[] fileContent, List<int> positions)

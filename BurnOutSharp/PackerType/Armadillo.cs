@@ -17,7 +17,7 @@ namespace BurnOutSharp.PackerType
             if (sections == null)
                 return null;
 
-            // Get the .nicode section, if it exists -- TODO: Confirm this check with a real disc
+            // Get the .nicode section, if it exists
             var nicodeSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".nicode"));
             if (nicodeSection != null)
                 return "Armadillo";

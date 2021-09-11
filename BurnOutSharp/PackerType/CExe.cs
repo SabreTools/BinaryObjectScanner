@@ -37,6 +37,11 @@ namespace BurnOutSharp.PackerType
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
         {
+            // Get the sections from the executable, if possible
+            var sections = pex?.SectionTable;
+            if (sections == null)
+                return null;
+
             var contentMatchSets = GetContentMatchSets();
             if (contentMatchSets != null && contentMatchSets.Any())
                 return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);

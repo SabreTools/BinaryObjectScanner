@@ -14,6 +14,9 @@ namespace BurnOutSharp.ProtectionType
         // TODO: Do more research into the Cucko protection:
         //      - Reference to `EASTL` and `EAStdC` are standard for EA products and does not indicate Cucko by itself
         //      - There's little information outside of PiD detection that actually knows about Cucko
+        //      - Look into `ccinstall`, `Services/EACOM`, `TSLHost`, `SIGS/UploadThread/exchangeAuthToken`,
+        //          `blazeURL`, `psapi.dll`, `DasmX86Dll.dll`, `NVCPL.dll`, `iphlpapi.dll`, `dbghelp.dll`,
+        //          `WS2_32.dll`, 
         /// <inheritdoc/>
         private List<ContentMatchSet> GetContentMatchSets()
         {
