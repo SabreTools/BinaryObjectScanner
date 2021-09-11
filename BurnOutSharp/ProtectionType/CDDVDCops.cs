@@ -8,8 +8,7 @@ using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
 {
-    // TODO: Can this be combined with DVD-Cops?
-    public class CDCops : IContentCheck, IPathCheck
+    public class CDDVDCops : IContentCheck, IPathCheck
     {
         /// <inheritdoc/>
         private List<ContentMatchSet> GetContentMatchSets()
@@ -23,6 +22,13 @@ namespace BurnOutSharp.ProtectionType
                     0x43, 0x44, 0x2D, 0x43, 0x6F, 0x70, 0x73, 0x2C,
                     0x20, 0x20, 0x76, 0x65, 0x72, 0x2E, 0x20
                 }, GetVersion, "CD-Cops"),
+
+                // DVD-Cops,  ver. 
+                new ContentMatchSet(new byte?[]
+                {
+                    0x44, 0x56, 0x44, 0x2D, 0x43, 0x6F, 0x70, 0x73,
+                    0x2C, 0x20, 0x20, 0x76, 0x65, 0x72, 0x2E, 0x20
+                }, GetVersion, "DVD-Cops"),
             };
         }
 
@@ -50,6 +56,15 @@ namespace BurnOutSharp.ProtectionType
                             0x20, 0x20, 0x76, 0x65, 0x72, 0x2E, 0x20
                         }, start: sectionAddr, end: sectionEnd),
                     GetVersion, "CD-Cops"),
+
+                    // DVD-Cops,  ver. 
+                    new ContentMatchSet(
+                        new ContentMatch(new byte?[]
+                        {
+                            0x44, 0x56, 0x44, 0x2D, 0x43, 0x6F, 0x70, 0x73,
+                            0x2C, 0x20, 0x20, 0x76, 0x65, 0x72, 0x2E, 0x20
+                        }, start: sectionAddr, end: sectionEnd),
+                    GetVersion, "DVD-Cops"),
                 };
 
                 string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);

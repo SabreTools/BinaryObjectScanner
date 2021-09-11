@@ -93,7 +93,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft
         // 
         // Here is a list of non-standard sections whose contents are read by various protections:
         //          - CODE          *1 protection       WTM CD Protect
-        //          - .grand        2 protections?      CD-Cops / DVD-Cops(?)
+        //          - .grand        *1 protection       CD-Cops / DVD-Cops
         //          - .init         *1 protection       SolidShield
         //          - .NOS0         *1 protection       UPX (NOS Variant)
         //          - .NOS1         *1 protection       UPX (NOS Variant)
