@@ -51,6 +51,10 @@ namespace BurnOutSharp.ProtectionType
             if (!string.IsNullOrWhiteSpace(name) && name.Equals("CDCode", StringComparison.Ordinal))
                 return $"EA CdKey Registration Module {Utilities.GetFileVersion(pex)}";
 
+            var resource = Utilities.FindResourceInSection(pex.ResourceSection, dataContains: "A\0b\0o\0u\0t\0 \0C\0D\0K\0e\0y");
+            if (resource != null)
+                return $"EA CdKey Registration Module {Utilities.GetFileVersion(pex)}";
+
             // Get the .data section, if it exists
             var dataSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".data"));
             if (dataSection != null)
@@ -65,31 +69,6 @@ namespace BurnOutSharp.ProtectionType
                         {
                             0x45, 0x52, 0x65, 0x67, 0x20, 0x43, 0x6F, 0x6E,
                             0x66, 0x69, 0x67, 0x20, 0x46, 0x6F, 0x72, 0x6D
-                        }, start: sectionAddr, end: sectionEnd),
-                    Utilities.GetFileVersion, "EA CdKey Registration Module"),
-                };
-
-                string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
-                    return match;
-            }
-
-            // TODO: Find this inside of the .rsrc section using the executable header
-            // Get the .rsrc section, if it exists
-            var rsrcSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".rsrc"));
-            if (rsrcSection != null)
-            {
-                int sectionAddr = (int)rsrcSection.PointerToRawData;
-                int sectionEnd = sectionAddr + (int)rsrcSection.VirtualSize;
-                var matchers = new List<ContentMatchSet>
-                {
-                    // A + (char)0x00 + b + (char)0x00 + o + (char)0x00 + u + (char)0x00 + t + (char)0x00 +   + (char)0x00 + C + (char)0x00 + D + (char)0x00 + K + (char)0x00 + e + (char)0x00 + y + (char)0x00
-                    new ContentMatchSet(
-                        new ContentMatch(new byte?[]
-                        {
-                            0x41, 0x00, 0x62, 0x00, 0x6F, 0x00, 0x75, 0x00,
-                            0x74, 0x00, 0x20, 0x00, 0x43, 0x00, 0x44, 0x00,
-                            0x4B, 0x00, 0x65, 0x00, 0x79, 0x00
                         }, start: sectionAddr, end: sectionEnd),
                     Utilities.GetFileVersion, "EA CdKey Registration Module"),
                 };
