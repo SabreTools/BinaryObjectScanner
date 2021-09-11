@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using BurnOutSharp.ExecutableType.Microsoft;
 using BurnOutSharp.Matching;
+using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -16,6 +17,10 @@ namespace BurnOutSharp.ProtectionType
             var sections = pex?.SectionTable;
             if (sections == null)
                 return null;
+
+            var resource = Utilities.FindResourceInSection(pex.ResourceSection, dataContains: "Cd3Ctl");
+            if (resource != null)
+                return $"MediaMax CD-3";
 
             // Get the .rdata section, if it exists
             var rdataSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".rdata"));
@@ -32,26 +37,6 @@ namespace BurnOutSharp.ProtectionType
                             0x44, 0x6C, 0x6C, 0x49, 0x6E, 0x73, 0x74, 0x61,
                             0x6C, 0x6C, 0x53, 0x62, 0x63, 0x70
                         }, start: sectionAddr, end: sectionEnd),
-                    "MediaMax CD-3"),
-                };
-
-                string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
-                    return match;
-            }
-
-            // TODO: Find this inside of the .rsrc section using the executable header
-            // Get the .rsrc section, if it exists
-            var rsrcSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".rsrc"));
-            if (rsrcSection != null)
-            {
-                int sectionAddr = (int)rsrcSection.PointerToRawData;
-                int sectionEnd = sectionAddr + (int)rsrcSection.VirtualSize;
-                var matchers = new List<ContentMatchSet>
-                {
-                    // Cd3Ctl
-                    new ContentMatchSet(
-                        new ContentMatch(new byte?[] { 0x43, 0x64, 0x33, 0x43, 0x74, 0x6C }, start: sectionAddr, end: sectionEnd),
                     "MediaMax CD-3"),
                 };
 
