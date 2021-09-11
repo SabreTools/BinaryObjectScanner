@@ -91,31 +91,6 @@ namespace BurnOutSharp.ProtectionType
                     return match;
             }
 
-            // TODO: Find this inside of the .rsrc section using the executable header
-            // Get the .rsrc section, if it exists
-            var rsrcSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".rsrc"));
-            if (rsrcSection != null)
-            {
-                int sectionAddr = (int)rsrcSection.PointerToRawData;
-                int sectionEnd = sectionAddr + (int)rsrcSection.VirtualSize;
-                var matchers = new List<ContentMatchSet>
-                {
-                    // D + (char)0x00 + V + (char)0x00 + M + (char)0x00 +   + (char)0x00 + L + (char)0x00 + i + (char)0x00 + b + (char)0x00 + r + (char)0x00 + a + (char)0x00 + r + (char)0x00 + y + (char)0x00
-                    new ContentMatchSet(
-                        new ContentMatch(new byte?[]
-                        {
-                            0x44, 0x00, 0x56, 0x00, 0x4D, 0x00, 0x20, 0x00,
-                            0x4C, 0x00, 0x69, 0x00, 0x62, 0x00, 0x72, 0x00,
-                            0x61, 0x00, 0x72, 0x00, 0x79, 0x00
-                        }, start: sectionAddr, end: sectionEnd),
-                    Utilities.GetFileVersion, "SolidShield"),
-                };
-
-                string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
-                    return match;
-            }
-
             // Search the last two available sections
             for (int i = sections.Length - 2; i < sections.Length; i++)
             {
