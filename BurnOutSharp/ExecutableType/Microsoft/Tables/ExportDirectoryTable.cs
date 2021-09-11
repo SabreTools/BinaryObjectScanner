@@ -35,7 +35,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Tables
         /// The address of the ASCII string that contains the name of the DLL.
         /// This address is relative to the image base.
         /// </summary>
-        public uint NameRVA;
+        public uint NameRVA; // TODO: Read this into a separate field
 
         /// <summary>
         /// The starting ordinal number for exports in this image.

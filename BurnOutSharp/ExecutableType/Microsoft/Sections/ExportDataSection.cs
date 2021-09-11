@@ -1,5 +1,8 @@
 using System.IO;
+using BurnOutSharp.ExecutableType.Microsoft.Entries;
+using BurnOutSharp.ExecutableType.Microsoft.Headers;
 using BurnOutSharp.ExecutableType.Microsoft.Tables;
+using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ExecutableType.Microsoft.Sections
 {
@@ -21,12 +24,12 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Sections
         /// These are the actual addresses of the exported functions and data within the executable code and data sections.
         /// Other image files can import a symbol by using an index to this table (an ordinal) or, optionally, by using the public name that corresponds to the ordinal if a public name is defined.
         /// </summary>
-        public ExportAddressTable ExportAddressTable;
+        public ExportAddressTableEntry[] ExportAddressTable;
 
         /// <summary>
         /// An array of pointers to the public export names, sorted in ascending order.
         /// </summary>
-        public ExportNamePointerTable NamePointerTable;
+        public uint[] ExportNamePointerTable;
 
         /// <summary>
         /// An array of the ordinals that correspond to members of the name pointer table.
@@ -35,35 +38,56 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Sections
         /// </summary>
         public ExportOrdinalTable OrdinalTable;
 
-        /// <summary>
-        /// A series of null-terminated ASCII strings.
-        /// Members of the name pointer table point into this area.
-        /// These names are the public names through which the symbols are imported and exported; they are not necessarily the same as the private names that are used within the image file.
-        /// </summary>
-        public ExportNameTable ExportNameTable;
-
-        public static ExportDataSection Deserialize(Stream stream)
+        public static ExportDataSection Deserialize(Stream stream, SectionHeader[] sections)
         {
+            long originalPosition = stream.Position;
             var eds = new ExportDataSection();
 
             eds.ExportDirectoryTable = ExportDirectoryTable.Deserialize(stream);
-            // eds.ExportAddressTable = ExportAddressTable.Deserialize(stream, count: 0); // TODO: Figure out where this count comes from
-            // eds.NamePointerTable = ExportNamePointerTable.Deserialize(stream, count: 0); // TODO: Figure out where this count comes from
+
+            stream.Seek((int)PortableExecutable.ConvertVirtualAddress(eds.ExportDirectoryTable.ExportAddressTableRVA, sections), SeekOrigin.Begin);
+            eds.ExportAddressTable = new ExportAddressTableEntry[(int)eds.ExportDirectoryTable.AddressTableEntries];
+            for (int i = 0; i < eds.ExportAddressTable.Length; i++)
+            {
+                eds.ExportAddressTable[i] = ExportAddressTableEntry.Deserialize(stream, sections);
+            }
+
+            stream.Seek((int)PortableExecutable.ConvertVirtualAddress(eds.ExportDirectoryTable.NamePointerRVA, sections), SeekOrigin.Begin);
+            eds.ExportNamePointerTable = new uint[(int)eds.ExportDirectoryTable.NumberOfNamePointers];
+            for (int i = 0; i < eds.ExportNamePointerTable.Length; i++)
+            {
+                eds.ExportNamePointerTable[i] = stream.ReadUInt32();
+            }
+
+            stream.Seek((int)PortableExecutable.ConvertVirtualAddress(eds.ExportDirectoryTable.OrdinalTableRVA, sections), SeekOrigin.Begin);
             // eds.OrdinalTable = ExportOrdinalTable.Deserialize(stream, count: 0); // TODO: Figure out where this count comes from
-            // eds.ExportNameTable = ExportNameTable.Deserialize(stream); // TODO: set this table based on the NamePointerTable value
 
             return eds;
         }
 
-        public static ExportDataSection Deserialize(byte[] content, ref int offset)
+        public static ExportDataSection Deserialize(byte[] content, ref int offset, SectionHeader[] sections)
         {
+            int originalPosition = offset;
             var eds = new ExportDataSection();
 
             eds.ExportDirectoryTable = ExportDirectoryTable.Deserialize(content, ref offset);
-            // eds.ExportAddressTable = ExportAddressTable.Deserialize(content, ref offset, count: 0); // TODO: Figure out where this count comes from
-            // eds.NamePointerTable = ExportNamePointerTable.Deserialize(content, ref offset, count: 0); // TODO: Figure out where this count comes from
+
+            offset = (int)PortableExecutable.ConvertVirtualAddress(eds.ExportDirectoryTable.ExportAddressTableRVA, sections);
+            eds.ExportAddressTable = new ExportAddressTableEntry[(int)eds.ExportDirectoryTable.AddressTableEntries];
+            for (int i = 0; i < eds.ExportAddressTable.Length; i++)
+            {
+                eds.ExportAddressTable[i] = ExportAddressTableEntry.Deserialize(content, ref offset, sections);
+            }
+
+            offset = (int)PortableExecutable.ConvertVirtualAddress(eds.ExportDirectoryTable.NamePointerRVA, sections);
+            eds.ExportNamePointerTable = new uint[(int)eds.ExportDirectoryTable.NumberOfNamePointers];
+            for (int i = 0; i < eds.ExportNamePointerTable.Length; i++)
+            {
+                eds.ExportNamePointerTable[i] = content.ReadUInt32(ref offset);
+            }
+
+            offset = (int)PortableExecutable.ConvertVirtualAddress(eds.ExportDirectoryTable.OrdinalTableRVA, sections);
             // eds.OrdinalTable = ExportOrdinalTable.Deserialize(content, ref offset, count: 0); // TODO: Figure out where this count comes from
-            // eds.ExportNameTable = ExportNameTable.Deserialize(content, ref offset); // TODO: set this table based on the NamePointerTable value
 
             return eds;
         }

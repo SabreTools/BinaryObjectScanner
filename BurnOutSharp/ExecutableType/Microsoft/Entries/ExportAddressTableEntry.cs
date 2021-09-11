@@ -1,6 +1,7 @@
-using System;
 using System.IO;
+using System.Text;
 using BurnOutSharp.Tools;
+using BurnOutSharp.ExecutableType.Microsoft.Headers;
 
 namespace BurnOutSharp.ExecutableType.Microsoft.Entries
 {
@@ -23,24 +24,44 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
         /// This string must be within the range that is given by the export table data directory entry.
         /// This string gives the DLL name and the name of the export (for example, "MYDLL.expfunc") or the DLL name and the ordinal number of the export (for example, "MYDLL.#27").
         /// </summary>
-        public uint ForwarderRVA;
+        public uint ForwarderRVA; // TODO: Read this into a separate field
 
-        public static ExportAddressTableEntry Deserialize(Stream stream)
+        /// <summary>
+        /// A null-terminated ASCII string in the export section.
+        /// This string must be within the range that is given by the export table data directory entry.
+        /// This string gives the DLL name and the name of the export (for example, "MYDLL.expfunc") or the DLL name and the ordinal number of the export (for example, "MYDLL.#27").
+        /// </summary>
+        public string Forwarder;
+
+        public static ExportAddressTableEntry Deserialize(Stream stream, SectionHeader[] sections)
         {
             var eate = new ExportAddressTableEntry();
 
             eate.ExportRVA = stream.ReadUInt32();
             eate.ForwarderRVA = eate.ExportRVA;
 
+            int forwarderAddress = (int)PortableExecutable.ConvertVirtualAddress(eate.ForwarderRVA, sections);
+            if (forwarderAddress > -1 && forwarderAddress < stream.Length)
+            {
+                long originalPosition = stream.Position;
+                stream.Seek(forwarderAddress, SeekOrigin.Begin);
+                eate.Forwarder = stream.ReadString(Encoding.ASCII);
+                stream.Seek(originalPosition, SeekOrigin.Begin);
+            }
+
             return eate;
         }
 
-        public static ExportAddressTableEntry Deserialize(byte[] content, ref int offset)
+        public static ExportAddressTableEntry Deserialize(byte[] content, ref int offset, SectionHeader[] sections)
         {
             var eate = new ExportAddressTableEntry();
 
             eate.ExportRVA = content.ReadUInt32(ref offset);
             eate.ForwarderRVA = eate.ExportRVA;
+
+            int forwarderAddress = (int)PortableExecutable.ConvertVirtualAddress(eate.ForwarderRVA, sections);
+            if (forwarderAddress > -1 && forwarderAddress < content.Length)
+                eate.Forwarder = content.ReadString(ref forwarderAddress, Encoding.ASCII);
 
             return eate;
         }
