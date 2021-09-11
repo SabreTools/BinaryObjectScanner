@@ -32,6 +32,11 @@ namespace BurnOutSharp.ProtectionType
             if (sections == null)
                 return null;
 
+            // TODO: This isn't working for some reason. Look into it a bit more
+            // var resource = Utilities.FindResourceInSection(pex.ResourceSection, dataContains: "Trial\0P");
+            // if (resource != null)
+            //     return "INTENIUM Trial & Buy Protection";
+
             // TODO: Find this inside of the .rsrc section using the executable header
             // Get the .rsrc section, if it exists
             var rsrcSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".rsrc"));
