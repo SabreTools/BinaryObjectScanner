@@ -224,8 +224,15 @@ namespace BurnOutSharp.ExecutableType.Microsoft
             if (section == null)
                 return null;
 
-            stream.Seek((int)section.PointerToRawData, SeekOrigin.Begin);
-            return stream.ReadBytes((int)section.VirtualSize);
+            lock (stream)
+            {
+                long originalPosition = stream.Position;
+                stream.Seek((int)section.PointerToRawData, SeekOrigin.Begin);
+                byte[] sectionData = stream.ReadBytes((int)section.VirtualSize);
+                stream.Seek(originalPosition, SeekOrigin.Begin);
+                return sectionData;
+            }
+            
         }
 
         /// <summary>
