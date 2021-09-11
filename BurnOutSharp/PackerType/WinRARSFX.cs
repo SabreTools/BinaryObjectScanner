@@ -2,8 +2,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using BurnOutSharp.ExecutableType.Microsoft;
 using BurnOutSharp.Matching;
 using BurnOutSharp.Tools;
@@ -26,11 +24,8 @@ namespace BurnOutSharp.PackerType
                 return null;
 
             // Get the .data section, if it exists
-            var dataSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).Trim('\0').StartsWith(".data"));
-            if (dataSection != null)
+            if (pex.DataSectionRaw != null)
             {
-                int sectionAddr = (int)dataSection.PointerToRawData;
-                int sectionEnd = sectionAddr + (int)dataSection.VirtualSize;
                 var matchers = new List<ContentMatchSet>
                 {
                     // Software\WinRAR SFX
@@ -42,7 +37,7 @@ namespace BurnOutSharp.PackerType
                     }, "WinRAR SFX"),
                 };
 
-                string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
+                string match = MatchUtil.GetFirstMatch(file, pex.DataSectionRaw, matchers, includeDebug);
                 if (!string.IsNullOrWhiteSpace(match))
                     return match;
             }

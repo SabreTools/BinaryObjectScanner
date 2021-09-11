@@ -1,8 +1,6 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using BurnOutSharp.ExecutableType.Microsoft;
 using BurnOutSharp.Matching;
 
@@ -23,23 +21,15 @@ namespace BurnOutSharp.PackerType
                 return null;
 
             // Get the DATA/.data section, if it exists
-            var dataSection = sections.FirstOrDefault(s => {
-                string name = Encoding.ASCII.GetString(s.Name).Trim('\0');
-                return name.StartsWith("DATA") || name.StartsWith(".data");
-            });
-            if (dataSection != null)
+            if (pex.DataSectionRaw != null)
             {
-                int sectionAddr = (int)dataSection.PointerToRawData;
-                int sectionEnd = sectionAddr + (int)dataSection.VirtualSize;
                 var matchers = new List<ContentMatchSet>
                 {
                     // ViseMain
-                    new ContentMatchSet(
-                        new ContentMatch(new byte?[] { 0x56, 0x69, 0x73, 0x65, 0x4D, 0x61, 0x69, 0x6E }, start: sectionAddr, end: sectionEnd),
-                        "Installer VISE"),
+                    new ContentMatchSet(new byte?[] { 0x56, 0x69, 0x73, 0x65, 0x4D, 0x61, 0x69, 0x6E }, "Installer VISE"),
                 };
 
-                return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
+                return MatchUtil.GetFirstMatch(file, pex.DataSectionRaw, matchers, includeDebug);
             }
             
             return null;

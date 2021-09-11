@@ -41,37 +41,30 @@ namespace BurnOutSharp.ProtectionType
             }
 
             // Get the .text section, if it exists
-            var textSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".text"));
-            if (textSection != null)
+            if (pex.TextSectionRaw != null)
             {
-                int sectionAddr = (int)textSection.PointerToRawData;
-                int sectionEnd = sectionAddr + (int)textSection.VirtualSize;
                 var matchers = new List<ContentMatchSet>
                 {
                     // WTM DIGITAL Photo Protect
-                    new ContentMatchSet(
-                        new ContentMatch(new byte?[]
-                        {
-                            0x57, 0x54, 0x4D, 0x20, 0x44, 0x49, 0x47, 0x49,
-                            0x54, 0x41, 0x4C, 0x20, 0x50, 0x68, 0x6F, 0x74,
-                            0x6F, 0x20, 0x50, 0x72, 0x6F, 0x74, 0x65, 0x63,
-                            0x74
-                        }, start: sectionAddr, end: sectionEnd),
-                    "WTM Protection Viewer"),
+                    new ContentMatchSet(new byte?[]
+                    {
+                        0x57, 0x54, 0x4D, 0x20, 0x44, 0x49, 0x47, 0x49,
+                        0x54, 0x41, 0x4C, 0x20, 0x50, 0x68, 0x6F, 0x74,
+                        0x6F, 0x20, 0x50, 0x72, 0x6F, 0x74, 0x65, 0x63,
+                        0x74
+                    }, "WTM Protection Viewer"),
 
                     // WTM Copy Protection Viewer
-                    new ContentMatchSet(
-                        new ContentMatch(new byte?[]
-                        {
-                            0x57, 0x54, 0x4D, 0x20, 0x43, 0x6F, 0x70, 0x79,
-                            0x20, 0x50, 0x72, 0x6F, 0x74, 0x65, 0x63, 0x74,
-                            0x69, 0x6F, 0x6E, 0x20, 0x56, 0x69, 0x65, 0x77,
-                            0x65, 0x72
-                        }, start: sectionAddr, end: sectionEnd),
-                    "WTM Protection Viewer"),
+                    new ContentMatchSet(new byte?[]
+                    {
+                        0x57, 0x54, 0x4D, 0x20, 0x43, 0x6F, 0x70, 0x79,
+                        0x20, 0x50, 0x72, 0x6F, 0x74, 0x65, 0x63, 0x74,
+                        0x69, 0x6F, 0x6E, 0x20, 0x56, 0x69, 0x65, 0x77,
+                        0x65, 0x72
+                    }, "WTM Protection Viewer"),
                 };
 
-                string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
+                string match = MatchUtil.GetFirstMatch(file, pex.TextSectionRaw, matchers, includeDebug);
                 if (!string.IsNullOrWhiteSpace(match))
                     return match;
             }

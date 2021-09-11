@@ -8,6 +8,7 @@ using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
 {
+    // TODO: Can this be combined with DVD-Cops?
     public class CDCops : IContentCheck, IPathCheck
     {
         /// <inheritdoc/>

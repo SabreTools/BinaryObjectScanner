@@ -2,8 +2,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using BurnOutSharp.ExecutableType.Microsoft;
 using BurnOutSharp.Matching;
 using BurnOutSharp.Tools;
@@ -33,45 +31,35 @@ namespace BurnOutSharp.PackerType
                 return $"Microsoft CAB SFX v{Utilities.GetFileVersion(pex)}".TrimEnd('v');
 
             // Get the .data section, if it exists
-            var dataSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".data"));
-            if (dataSection != null)
+            if (pex.DataSectionRaw != null)
             {
-                int sectionAddr = (int)dataSection.PointerToRawData;
-                int sectionEnd = sectionAddr + (int)dataSection.VirtualSize;
                 var matchers = new List<ContentMatchSet>
                 {
                     // wextract_cleanup
-                    new ContentMatchSet(
-                        new ContentMatch(new byte?[]
-                        {
-                            0x77, 0x65, 0x78, 0x74, 0x72, 0x61, 0x63, 0x74, 
-                            0x5F, 0x63, 0x6C, 0x65, 0x61, 0x6E, 0x75, 0x70,
-                        }, start: sectionAddr, end: sectionEnd),
-                    GetVersion, "Microsoft CAB SFX"),
+                    new ContentMatchSet(new byte?[]
+                    {
+                        0x77, 0x65, 0x78, 0x74, 0x72, 0x61, 0x63, 0x74, 
+                        0x5F, 0x63, 0x6C, 0x65, 0x61, 0x6E, 0x75, 0x70,
+                    }, GetVersion, "Microsoft CAB SFX"),
                 };
 
-                string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
+                string match = MatchUtil.GetFirstMatch(file, pex.DataSectionRaw, matchers, includeDebug);
                 if (!string.IsNullOrWhiteSpace(match))
                     return match;
             }
             
             // Get the .text section, if it exists
-            var textSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".text"));
-            if (textSection != null)
+            if (pex.TextSectionRaw != null)
             {
-                int sectionAddr = (int)textSection.PointerToRawData;
-                int sectionEnd = sectionAddr + (int)textSection.VirtualSize;
                 var matchers = new List<ContentMatchSet>
                 {
                     /* This detects a different but similar type of SFX that uses Microsoft CAB files.
                        Further research is needed to see if it's just a different version or entirely separate. */
                     // MSCFu
-                    new ContentMatchSet(
-                        new ContentMatch(new byte?[] { 0x4D, 0x53, 0x43, 0x46, 0x75 }, start: sectionAddr, end: sectionEnd),
-                    GetVersion, "Microsoft CAB SFX"),
+                    new ContentMatchSet(new byte?[] { 0x4D, 0x53, 0x43, 0x46, 0x75 }, GetVersion, "Microsoft CAB SFX"),
                 };
 
-                string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
+                string match = MatchUtil.GetFirstMatch(file, pex.TextSectionRaw, matchers, includeDebug);
                 if (!string.IsNullOrWhiteSpace(match))
                     return match;
             }

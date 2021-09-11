@@ -3,9 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using BurnOutSharp.ExecutableType.Microsoft;
-using BurnOutSharp.ExecutableType.Microsoft.Headers;
 using BurnOutSharp.Matching;
 using BurnOutSharp.Tools;
 
@@ -70,12 +68,8 @@ namespace BurnOutSharp.ProtectionType
             int position2 = -1;
 
             // Get the .text section, if it exists
-            var textSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".text"));
-            if (textSection != null)
+            if (pex.TextSectionRaw != null)
             {
-                int sectionAddr = (int)textSection.PointerToRawData;
-                int sectionEnd = sectionAddr + (int)textSection.VirtualSize;
-
                 // GetModuleHandleA + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00 + GetProcAddress + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00 + LoadLibraryA + (char)0x00 + (char)0x00 + KERNEL32.dll + (char)0x00 + ëy + (char)0x01 + SNIF/MPVI
                 byte?[] check2 = new byte?[]
                 {
@@ -89,15 +83,15 @@ namespace BurnOutSharp.ProtectionType
                     0x45, 0x4C, 0x33, 0x32, 0x2E, 0x64, 0x6C, 0x6C,
                     0x00, 0xEB, 0x79, 0x01, null, null, null, null,
                 };
-                containsCheck2 = fileContent.FirstPosition(check2, out position2, start: sectionAddr, end: sectionEnd);
+                containsCheck2 = pex.TextSectionRaw.FirstPosition(check2, out position2);
             }
 
             if (containsCheck && containsCheck2)
-                return $"LaserLok {GetVersion(fileContent, position2)} {GetBuild(sections, fileContent, true)}" + (includeDebug ? $" (Index {position}, {position2})" : string.Empty);
+                return $"LaserLok {GetVersion(fileContent, position2)} {GetBuild(pex.TextSectionRaw, true)}" + (includeDebug ? $" (Index {position}, {position2})" : string.Empty);
             else if (containsCheck && !containsCheck2)
-                return $"LaserLok Marathon {GetBuild(sections, fileContent, false)}" + (includeDebug ? $" (Index {position})" : string.Empty);
+                return $"LaserLok Marathon {GetBuild(pex.TextSectionRaw, false)}" + (includeDebug ? $" (Index {position})" : string.Empty);
             else if (!containsCheck && containsCheck2)
-                return $"LaserLok {GetVersion(fileContent, --position2)} {GetBuild(sections, fileContent, false)}" + (includeDebug ? $" (Index {position2})" : string.Empty);
+                return $"LaserLok {GetVersion(fileContent, --position2)} {GetBuild(pex.TextSectionRaw, false)}" + (includeDebug ? $" (Index {position2})" : string.Empty);
 
             return null;
         }
@@ -143,14 +137,10 @@ namespace BurnOutSharp.ProtectionType
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
 
-        private static string GetBuild(SectionHeader[] sections, byte[] fileContent, bool versionTwo)
+        private static string GetBuild(byte[] sectionContent, bool versionTwo)
         {
-            var textSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".text"));
-            if (textSection == null)
+            if (sectionContent == null)
                 return "(Build unknown)";
-
-            int sectionAddr = (int)textSection.PointerToRawData;
-            int sectionEnd = sectionAddr + (int)textSection.VirtualSize;
 
             // Unkown + (char)0x00 + Unkown
             byte?[] check = new byte?[]
@@ -158,27 +148,27 @@ namespace BurnOutSharp.ProtectionType
                 0x55, 0x6E, 0x6B, 0x6F, 0x77, 0x6E, 0x00, 0x55,
                 0x6E, 0x6B, 0x6F, 0x77, 0x6E
             };
-            if (!fileContent.FirstPosition(check, out int position, start: sectionAddr, end: sectionEnd))
+            if (!sectionContent.FirstPosition(check, out int position))
                 return "(Build unknown)";
 
             string year, month, day;
             if (versionTwo)
             {
                 int index = position + 14;
-                day = new string(new ArraySegment<byte>(fileContent, index, 2).Select(b => (char)b).ToArray());
+                day = new string(new ArraySegment<byte>(sectionContent, index, 2).Select(b => (char)b).ToArray());
                 index += 3;
-                month = new string(new ArraySegment<byte>(fileContent, index, 2).Select(b => (char)b).ToArray());
+                month = new string(new ArraySegment<byte>(sectionContent, index, 2).Select(b => (char)b).ToArray());
                 index += 3;
-                year = "20" + new string(new ArraySegment<byte>(fileContent, index, 2).Select(b => (char)b).ToArray());
+                year = "20" + new string(new ArraySegment<byte>(sectionContent, index, 2).Select(b => (char)b).ToArray());
             }
             else
             {
                 int index = position + 13;
-                day = new string(new ArraySegment<byte>(fileContent, index, 2).Select(b => (char)b).ToArray());
+                day = new string(new ArraySegment<byte>(sectionContent, index, 2).Select(b => (char)b).ToArray());
                 index += 3;
-                month = new string(new ArraySegment<byte>(fileContent, index, 2).Select(b => (char)b).ToArray());
+                month = new string(new ArraySegment<byte>(sectionContent, index, 2).Select(b => (char)b).ToArray());
                 index += 3;
-                year = "20" + new string(new ArraySegment<byte>(fileContent, index, 2).Select(b => (char)b).ToArray());
+                year = "20" + new string(new ArraySegment<byte>(sectionContent, index, 2).Select(b => (char)b).ToArray());
             }
 
             return $"(Build {year}-{month}-{day})";

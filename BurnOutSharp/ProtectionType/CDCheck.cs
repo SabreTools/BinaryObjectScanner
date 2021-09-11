@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using BurnOutSharp.ExecutableType.Microsoft;
 using BurnOutSharp.Matching;
 
@@ -30,24 +29,19 @@ namespace BurnOutSharp.ProtectionType
                 return null;
 
             // Get the .rdata section, if it exists
-            var rdataSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".rdata"));
-            if (rdataSection != null)
+            if (pex.ResourceDataSectionRaw != null)
             {
-                int sectionAddr = (int)rdataSection.PointerToRawData;
-                int sectionEnd = sectionAddr + (int)rdataSection.VirtualSize;
                 var matchers = new List<ContentMatchSet>
                 {
                     // MGS CDCheck
-                    new ContentMatchSet(
-                        new ContentMatch(new byte?[]
-                        {
-                            0x4D, 0x47, 0x53, 0x20, 0x43, 0x44, 0x43, 0x68,
-                            0x65, 0x63, 0x6B
-                        }, start: sectionAddr, end: sectionEnd),
-                    "Microsoft Game Studios CD Check"),
+                    new ContentMatchSet(new byte?[]
+                    {
+                        0x4D, 0x47, 0x53, 0x20, 0x43, 0x44, 0x43, 0x68,
+                        0x65, 0x63, 0x6B
+                    }, "Microsoft Game Studios CD Check"),
                 };
 
-                string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
+                string match = MatchUtil.GetFirstMatch(file, pex.ResourceDataSectionRaw, matchers, includeDebug);
                 if (!string.IsNullOrWhiteSpace(match))
                     return match;
             }

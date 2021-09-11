@@ -70,42 +70,35 @@ namespace BurnOutSharp.ProtectionType
             }
 
             // Get the .rdata section, if it exists
-            var rdataSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".rdata"));
-            if (rdataSection != null)
+            if (pex.ResourceDataSectionRaw != null)
             {
-                int sectionAddr = (int)rdataSection.PointerToRawData;
-                int sectionEnd = sectionAddr + (int)rdataSection.VirtualSize;
                 var matchers = new List<ContentMatchSet>
                 {
                     // drm_pagui_doit -- shortened from "_and_play.dll + (char)0x00 + drm_pagui_doit"
-                    new ContentMatchSet(
-                        new ContentMatch(new byte?[]
-                        {
-                            0x64, 0x72, 0x6D, 0x5F, 0x70, 0x61, 0x67, 0x75,
-                            0x69, 0x5F, 0x64, 0x6F, 0x69, 0x74
-                        }, start: sectionAddr, end: sectionEnd),
-                    Utilities.GetFileVersion, "SecuROM Product Activation"),
+                    new ContentMatchSet(new byte?[]
+                    {
+                        0x64, 0x72, 0x6D, 0x5F, 0x70, 0x61, 0x67, 0x75,
+                        0x69, 0x5F, 0x64, 0x6F, 0x69, 0x74
+                    }, Utilities.GetFileVersion, "SecuROM Product Activation"),
 
                     // TODO: Re-enable this one if the above undermatches somehow
                     // // S + (char)0x00 + e + (char)0x00 + c + (char)0x00 + u + (char)0x00 + R + (char)0x00 + O + (char)0x00 + M + (char)0x00 +   + (char)0x00 + P + (char)0x00 + A + (char)0x00
-                    // new ContentMatchSet(
-                    //     new ContentMatch(new byte?[]
-                    //     {
-                    //         0x53, 0x00, 0x65, 0x00, 0x63, 0x00, 0x75, 0x00,
-                    //         0x52, 0x00, 0x4F, 0x00, 0x4D, 0x00, 0x20, 0x00,
-                    //         0x50, 0x00, 0x41, 0x00
-                    //     }, start: sectionAddr, end: sectionEnd),
-                    // Utilities.GetFileVersion, "SecuROM Product Activation"),
+                    // new ContentMatchSet(new byte?[]
+                    // {
+                    //     0x53, 0x00, 0x65, 0x00, 0x63, 0x00, 0x75, 0x00,
+                    //     0x52, 0x00, 0x4F, 0x00, 0x4D, 0x00, 0x20, 0x00,
+                    //     0x50, 0x00, 0x41, 0x00
+                    // }, Utilities.GetFileVersion, "SecuROM Product Activation"),
                 };
 
-                string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
+                string match = MatchUtil.GetFirstMatch(file, pex.ResourceDataSectionRaw, matchers, includeDebug);
                 if (!string.IsNullOrWhiteSpace(match))
                     return match;
             }
 
             // Get the .cms_d and .cms_t sections, if they exist -- TODO: Confirm if both are needed or either/or is fine
-            var cmsdSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".cms_d"));
-            var cmstSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".cms_t"));
+            var cmsdSection = pex.GetFirstSection(".cmd_d", true);
+            var cmstSection = pex.GetFirstSection(".cms_t", true);
             if (cmsdSection != null || cmstSection != null)
                 return $"SecuROM 1-3";
 

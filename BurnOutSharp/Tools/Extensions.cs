@@ -20,6 +20,17 @@ namespace BurnOutSharp.Tools
         }
 
         /// <summary>
+        /// Read a byte array and increment the pointer to an array
+        /// </summary>
+        public static byte[] ReadBytes(this byte[] content, ref int offset, int count)
+        {
+            byte[] buffer = new byte[count];
+            Array.Copy(content, offset, buffer, 0, count);
+            offset += count;
+            return buffer;
+        }
+
+        /// <summary>
         /// Read a char and increment the pointer to an array
         /// </summary>
         public static char ReadChar(this byte[] content, ref int offset)

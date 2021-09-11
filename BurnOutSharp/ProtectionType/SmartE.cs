@@ -32,8 +32,7 @@ namespace BurnOutSharp.ProtectionType
                 return match;
 
             // Get the .rdata section, if it exists
-            var rdataSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".rdata"));
-            match = GetMatchForSection(rdataSection, file, fileContent, includeDebug);
+            match = GetMatchForSection(file, pex.ResourceDataSectionRaw, includeDebug);
             if (!string.IsNullOrWhiteSpace(match))
                 return match;
 
@@ -92,6 +91,23 @@ namespace BurnOutSharp.ProtectionType
             };
 
             return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
+        }
+
+        /// <summary>
+        /// Check a section for the SmartE string(s)
+        /// </summary>
+        private string GetMatchForSection(string file, byte[] sectionContent, bool includeDebug)
+        {
+            if (sectionContent == null)
+                return null;
+
+            var matchers = new List<ContentMatchSet>
+            {
+                // BITARTS
+                new ContentMatchSet(new byte?[] { 0x42, 0x49, 0x54, 0x41, 0x52, 0x54, 0x53 }, "SmartE"),
+            };
+
+            return MatchUtil.GetFirstMatch(file, sectionContent, matchers, includeDebug);
         }
     }
 }

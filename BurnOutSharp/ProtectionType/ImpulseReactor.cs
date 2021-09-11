@@ -1,7 +1,5 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using BurnOutSharp.ExecutableType.Microsoft;
 using BurnOutSharp.Matching;
 using BurnOutSharp.Tools;
@@ -21,12 +19,8 @@ namespace BurnOutSharp.ProtectionType
                 return null;
 
             // Get the .rdata section, if it exists
-            var rdataSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".rdata"));
-            if (rdataSection != null)
+            if (pex.ResourceDataSectionRaw != null)
             {
-                int sectionAddr = (int)rdataSection.PointerToRawData;
-                int sectionEnd = sectionAddr + (int)rdataSection.VirtualSize;
-
                 // CVPInitializeClient
                 byte?[] check = new byte?[]
                 {
@@ -34,7 +28,7 @@ namespace BurnOutSharp.ProtectionType
                     0x61, 0x6C, 0x69, 0x7A, 0x65, 0x43, 0x6C, 0x69,
                     0x65, 0x6E, 0x74
                 };
-                bool containsCheck = fileContent.FirstPosition(check, out int position, start: sectionAddr, end: sectionEnd);
+                bool containsCheck = pex.ResourceDataSectionRaw.FirstPosition(check, out int position);
 
                 // A + (char)0x00 + T + (char)0x00 + T + (char)0x00 + L + (char)0x00 + I + (char)0x00 + S + (char)0x00 + T + (char)0x00 + (char)0x00 + (char)0x00 + E + (char)0x00 + L + (char)0x00 + E + (char)0x00 + M + (char)0x00 + E + (char)0x00 + N + (char)0x00 + T + (char)0x00 + (char)0x00 + (char)0x00 + N + (char)0x00 + O + (char)0x00 + T + (char)0x00 + A + (char)0x00 + T + (char)0x00 + I + (char)0x00 + O + (char)0x00 + N + (char)0x00
                 byte?[] check2 = new byte?[]
@@ -46,10 +40,10 @@ namespace BurnOutSharp.ProtectionType
                     0x4E, 0x00, 0x4F, 0x00, 0x54, 0x00, 0x41, 0x00,
                     0x54, 0x00, 0x49, 0x00, 0x4F, 0x00, 0x4E
                 };
-                bool containsCheck2 = fileContent.FirstPosition(check2, out int position2, start: sectionAddr, end: sectionEnd);
+                bool containsCheck2 = pex.ResourceDataSectionRaw.FirstPosition(check2, out int position2);
 
                 if (containsCheck && containsCheck2)
-                    return $"Impulse Reactor Core Module {Utilities.GetFileVersion(file, fileContent, new List<int> { position, position2 })}" + (includeDebug ? $" (Index {position}, {position2})" : string.Empty);
+                    return $"Impulse Reactor Core Module {Utilities.GetFileVersion(pex)}" + (includeDebug ? $" (Index {position}, {position2})" : string.Empty);
                 else if (containsCheck && !containsCheck2)
                     return $"Impulse Reactor" + (includeDebug ? $" (Index {position})" : string.Empty);
             }

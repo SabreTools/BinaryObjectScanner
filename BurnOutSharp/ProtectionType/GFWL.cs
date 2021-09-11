@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using BurnOutSharp.ExecutableType.Microsoft;
 using BurnOutSharp.Matching;
 using BurnOutSharp.Tools;
@@ -26,20 +24,15 @@ namespace BurnOutSharp.ProtectionType
                 return $"Games for Windows LIVE {Utilities.GetFileVersion(pex)}";
 
             // Get the .rdata section, if it exists
-            var rdataSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".rdata"));
-            if (rdataSection != null)
+            if (pex.ResourceDataSectionRaw != null)
             {
-                int sectionAddr = (int)rdataSection.PointerToRawData;
-                int sectionEnd = sectionAddr + (int)rdataSection.VirtualSize;
                 var matchers = new List<ContentMatchSet>
                 {
                     // xlive.dll
-                    new ContentMatchSet(
-                        new ContentMatch(new byte?[] { 0x78, 0x6C, 0x69, 0x76, 0x65, 0x2E, 0x64, 0x6C, 0x6C }, start: sectionAddr, end: sectionEnd),
-                    "Games for Windows LIVE"),
+                    new ContentMatchSet(new byte?[] { 0x78, 0x6C, 0x69, 0x76, 0x65, 0x2E, 0x64, 0x6C, 0x6C }, "Games for Windows LIVE"),
                 };
 
-                string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
+                string match = MatchUtil.GetFirstMatch(file, pex.ResourceDataSectionRaw, matchers, includeDebug);
                 if (!string.IsNullOrWhiteSpace(match))
                     return match;
             }

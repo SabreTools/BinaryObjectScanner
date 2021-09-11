@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using  BurnOutSharp.ExecutableType.Microsoft; 
 using BurnOutSharp.Matching;
 
@@ -18,24 +17,19 @@ namespace BurnOutSharp.ProtectionType
                 return null;
 
             // Get the .data section, if it exists
-            var dataSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".data"));
-            if (dataSection != null)
+            if (pex.DataSectionRaw != null)
             {
-                int sectionAddr = (int)dataSection.PointerToRawData;
-                int sectionEnd = sectionAddr + (int)dataSection.VirtualSize;
                 var matchers = new List<ContentMatchSet>
                 {
                     // V SUHPISYS
-                    new ContentMatchSet(
-                        new ContentMatch(new byte?[]
-                        {
-                            0x56, 0x20, 0x53, 0x55, 0x48, 0x50, 0x49, 0x53,
-                            0x59, 0x53
-                        }, start: sectionAddr, end: sectionEnd),
-                    GetVersion, "Sysiphus"),
+                    new ContentMatchSet(new byte?[]
+                    {
+                        0x56, 0x20, 0x53, 0x55, 0x48, 0x50, 0x49, 0x53,
+                        0x59, 0x53
+                    }, GetVersion, "Sysiphus"),
                 };
 
-                string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
+                string match = MatchUtil.GetFirstMatch(file, pex.DataSectionRaw, matchers, includeDebug);
                 if (!string.IsNullOrWhiteSpace(match))
                     return match;
             }

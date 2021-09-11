@@ -28,7 +28,7 @@ namespace BurnOutSharp.PackerType
             if (pec1Section != null)
                 return "PE Compact v1.x";
 
-            // Get the PEC2 section, if it exists
+            // Get the PEC2 section, if it exists -- TODO: Verify this comment since it's pulling the .text section
             var textSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".text"));
             if (textSection != null && textSection.PointerToRelocations == 0x32434550)
             {

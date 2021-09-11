@@ -34,25 +34,18 @@ namespace BurnOutSharp.ProtectionType
                 return null;
 
             // Get the .data section, if it exists
-            var dataSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".data"));
-            if (dataSection != null)
+            if (pex.DataSectionRaw != null)
             {
-                int sectionAddr = (int)dataSection.PointerToRawData;
-                int sectionEnd = sectionAddr + (int)dataSection.VirtualSize;
                 var matchers = new List<ContentMatchSet>
                 {
                     // \*.CDS
-                    new ContentMatchSet(
-                        new ContentMatch(new byte?[] { 0x5C, 0x2A, 0x2E, 0x43, 0x44, 0x53 }, start: sectionAddr, end: sectionEnd),
-                        "Cactus Data Shield 200"),
+                    new ContentMatchSet(new byte?[] { 0x5C, 0x2A, 0x2E, 0x43, 0x44, 0x53 }, "Cactus Data Shield 200"),
                     
                     // DATA.CDS
-                    new ContentMatchSet(
-                        new ContentMatch(new byte?[] { 0x44, 0x41, 0x54, 0x41, 0x2E, 0x43, 0x44, 0x53 }, start: sectionAddr, end: sectionEnd),
-                        "Cactus Data Shield 200"),
+                    new ContentMatchSet(new byte?[] { 0x44, 0x41, 0x54, 0x41, 0x2E, 0x43, 0x44, 0x53 }, "Cactus Data Shield 200"),
                 };
 
-                string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
+                string match = MatchUtil.GetFirstMatch(file, pex.DataSectionRaw, matchers, includeDebug);
                 if (!string.IsNullOrWhiteSpace(match))
                     return match;
             }

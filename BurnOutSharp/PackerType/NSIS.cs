@@ -1,7 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using BurnOutSharp.ExecutableType.Microsoft;
 using BurnOutSharp.Matching;
 using BurnOutSharp.Tools;
@@ -23,24 +20,19 @@ namespace BurnOutSharp.PackerType
                 return $"NSIS {description.Substring("Nullsoft Install System".Length).Trim()}";
 
             // Get the .data section, if it exists
-            var dataSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".data"));
-            if (dataSection != null)
+            if (pex.DataSectionRaw != null)
             {
-                int sectionAddr = (int)dataSection.PointerToRawData;
-                int sectionEnd = sectionAddr + (int)dataSection.VirtualSize;
                 var matchers = new List<ContentMatchSet>
                 {
                     // NullsoftInst
-                    new ContentMatchSet(
-                        new ContentMatch(new byte?[]
-                        {
-                            0x4E, 0x75, 0x6C, 0x6C, 0x73, 0x6F, 0x66, 0x74,
-                            0x49, 0x6E, 0x73, 0x74
-                        }, start: sectionAddr, end: sectionEnd),
-                    "NSIS"),
+                    new ContentMatchSet(new byte?[]
+                    {
+                        0x4E, 0x75, 0x6C, 0x6C, 0x73, 0x6F, 0x66, 0x74,
+                        0x49, 0x6E, 0x73, 0x74
+                    }, "NSIS"),
                 };
 
-                string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
+                string match = MatchUtil.GetFirstMatch(file, pex.DataSectionRaw, matchers, includeDebug);
                 if (!string.IsNullOrWhiteSpace(match))
                     return match;
             }

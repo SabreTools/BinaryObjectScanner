@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using BurnOutSharp.ExecutableType.Microsoft.Headers;
 using BurnOutSharp.ExecutableType.Microsoft.Sections;
+using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ExecutableType.Microsoft
 {
@@ -57,38 +58,86 @@ namespace BurnOutSharp.ExecutableType.Microsoft
         /// <summary>
         /// The export data section, named .edata, contains information about symbols that other images can access through dynamic linking.
         /// Exported symbols are generally found in DLLs, but DLLs can also import symbols.
-        // </summary>
+        /// </summary>
         public ExportDataSection ExportTable;
 
         /// <summary>
         /// All image files that import symbols, including virtually all executable (EXE) files, have an .idata section.
-        // </summary>
+        /// </summary>
         public ImportDataSection ImportTable;
 
         /// <summary>
         /// Resources are indexed by a multiple-level binary-sorted tree structure.
-        // The general design can incorporate 2**31 levels.
-        // By convention, however, Windows uses three levels
-        // </summary>
+        /// The general design can incorporate 2**31 levels.
+        /// By convention, however, Windows uses three levels
+        /// </summary>
         public ResourceSection ResourceSection;
-
-        #endregion
 
         // TODO: Add more and more parts of a standard PE executable, not just the header
         // TODO: Add data directory table information here instead of in IMAGE_OPTIONAL_HEADER
 
+        #endregion
+
+        #region Raw Section Data
+
         // https://docs.microsoft.com/en-us/windows/win32/debug/pe-format#special-sections
-        // TODO: Here is a list of standard sections that are used in various protections:
-        //          - .bss          1 protection        Uninitialized data (free format)
+        // Here is a list of standard sections that are used in various protections:
+        //          - .bss          *1 protection       Uninitialized data (free format)
         //          - .data         14 protections      Initialized data (free format)
-        //          - .edata        1 protection        Export tables
+        //          - .edata        *1 protection       Export tables
         //          - .idata        2 protections       Import tables
         //          - .rdata        11 protections      Read-only initialized data
-        //          - .rsrc         1 protection        Resource directory [Mostly taken care of, last protection needs research]
+        //          - .rsrc         *1 protection       Resource directory [Mostly taken care of, last protection needs research]
         //          - .text         6 protections       Executable code (free format)
-        //          - .tls          1 protection        Thread-local storage (object only)
-        // Concentrate on adding these to the parsing first, based on how many protections use each
-        // if and only if it is reasonable to have it parsed into something
+        //          - .tls          *1 protection       Thread-local storage (object only)
+        // 
+        // Here is a list of non-standard sections whose contents are read by various protections:
+        //          - CODE          *1 protection       WTM CD Protect
+        //          - .grand        2 protections?      CD-Cops / DVD-Cops(?)
+        //          - .init         *1 protection       SolidShield
+        //          - .NOS0         *1 protection       UPX (NOS Variant)
+        //          - .NOS1         *1 protection       UPX (NOS Variant)
+        //          - .pec2         *1 protection       PE Compact [Unconfirmed]
+        //          - .txt2         *1 protection       SafeDisc
+        //          - .UPX0         *1 protection       UPX
+        //          - .UPX1         *1 protection       UPX
+        // 
+        // Here is a list of non-standard sections whose existence are checked by various protections:
+        //          - .brick        1 protection        StarForce
+        //          - .cenega       1 protection        Cenega ProtectDVD
+        //          - .icd*         1 protection        CodeLock
+        //          - .ldr          1 protection        3PLock
+        //          - .ldt          1 protection        3PLock
+        //          - .nicode       1 protection        Armadillo
+        //          - .pec1         1 protection        PE Compact
+        //          - .securom      1 protection        SecuROM
+        //          - .sforce       1 protection        StarForce
+        //          - .stxt371      1 protection        SafeDisc
+        //          - .stxt774      1 protection        SafeDisc
+        //          - .vob.pcd      1 protection        VOB ProtectCD
+        //          - _winzip_      1 protection        WinZip SFX
+        //
+        // *    => Only used by 1 protection so it may be read in by that protection specifically
+
+        /// <summary>
+        /// .data/DATA - Initialized data (free format)
+        // </summary>
+        public byte[] DataSectionRaw;
+
+        /// <summary>
+        /// .rdata - Read-only initialized data
+        // </summary>
+        public byte[] ResourceDataSectionRaw;
+
+        /// <summary>
+        /// .text - Executable code (free format)
+        /// </summary>
+        /// <remarks>TODO: To accomodate SecuROM, can this also include a bit of data before the section as well?</remarks>
+        public byte[] TextSectionRaw;
+
+        #endregion
+
+        #region Helpers
 
         /// <summary>
         /// Determine if a section is contained within the section table
@@ -166,6 +215,62 @@ namespace BurnOutSharp.ExecutableType.Microsoft
             return SectionTable.Select(s => Encoding.ASCII.GetString(s.Name)).ToArray();
         }
 
+        /// <summary>
+        /// Get the raw bytes from a section, if possible
+        /// </summary>
+        public byte[] ReadRawSection(Stream stream, string sectionName, bool first = true)
+        {
+            var section = first ? GetFirstSection(sectionName, true) : GetLastSection(sectionName, true);
+            if (section == null)
+                return null;
+
+            stream.Seek((int)section.PointerToRawData, SeekOrigin.Begin);
+            return stream.ReadBytes((int)section.VirtualSize);
+        }
+
+        /// <summary>
+        /// Get the raw bytes from a section, if possible
+        /// </summary>
+        public byte[] ReadRawSection(byte[] content, ref int offset, string sectionName, bool first = true)
+        {
+            var section = first ? GetFirstSection(sectionName, true) : GetLastSection(sectionName, true);
+            if (section == null)
+                return null;
+
+            offset = (int)section.PointerToRawData;
+            return content.ReadBytes(ref offset, (int)section.VirtualSize);
+        }
+
+        /// <summary>
+        /// Convert a virtual address to a physical one
+        /// </summary>
+        /// <param name="virtualAddress">Virtual address to convert</param>
+        /// <param name="sections">Array of sections to check against</param>
+        /// <returns>Physical address, 0 on error</returns>
+        public static uint ConvertVirtualAddress(uint virtualAddress, SectionHeader[] sections)
+        {
+            // Loop through all of the sections
+            for (int i = 0; i < sections.Length; i++)
+            {
+                // If the section is invalid, just skip it
+                if (sections[i] == null)
+                    continue;
+
+                // If the section "starts" at 0, just skip it
+                if (sections[i].PointerToRawData == 0)
+                    continue;
+
+                // Attempt to derive the physical address from the current section
+                var section = sections[i];
+                if (virtualAddress >= section.VirtualAddress && virtualAddress <= section.VirtualAddress + section.VirtualSize)
+                   return section.PointerToRawData + virtualAddress - section.VirtualAddress;
+            }
+
+            return 0;
+        }
+
+        #endregion
+
         public static PortableExecutable Deserialize(Stream stream)
         {
             PortableExecutable pex = new PortableExecutable();
@@ -197,6 +302,8 @@ namespace BurnOutSharp.ExecutableType.Microsoft
                     pex.SectionTable[i] = SectionHeader.Deserialize(stream);
                 }
 
+                #region Structured Tables
+
                 // // Export Table
                 // var table = pex.GetLastSection(".edata", true);
                 // if (table != null && table.VirtualSize > 0)
@@ -220,6 +327,21 @@ namespace BurnOutSharp.ExecutableType.Microsoft
                     stream.Seek((int)table.PointerToRawData, SeekOrigin.Begin);
                     pex.ResourceSection = ResourceSection.Deserialize(stream, pex.SectionTable);
                 }
+
+                #endregion
+
+                #region Freeform Sections
+
+                // Data Section
+                pex.DataSectionRaw = pex.ReadRawSection(stream, ".data", true) ?? pex.ReadRawSection(stream, "DATA", true);
+
+                // Resource Data Section
+                pex.ResourceDataSectionRaw = pex.ReadRawSection(stream, ".rdata", true);
+
+                // Text Section
+                pex.TextSectionRaw = pex.ReadRawSection(stream, ".text", true);
+
+                #endregion
             }
             catch (Exception ex)
             {
@@ -262,6 +384,8 @@ namespace BurnOutSharp.ExecutableType.Microsoft
                     pex.SectionTable[i] = SectionHeader.Deserialize(content, ref offset);
                 }
 
+                #region Structured Tables
+
                 // // Export Table
                 // var table = pex.GetLastSection(".edata", true);
                 // if (table != null && table.VirtualSize > 0)
@@ -285,6 +409,21 @@ namespace BurnOutSharp.ExecutableType.Microsoft
                     int tableAddress = (int)table.PointerToRawData;
                     pex.ResourceSection = ResourceSection.Deserialize(content, ref tableAddress, pex.SectionTable);
                 }
+
+                #endregion
+
+                #region Freeform Sections
+
+                // Data Section
+                pex.DataSectionRaw = pex.ReadRawSection(content, ref offset, ".data", true) ?? pex.ReadRawSection(content, ref offset, "DATA", true);
+
+                // Resource Data Section
+                pex.ResourceDataSectionRaw = pex.ReadRawSection(content, ref offset, ".rdata", true);
+
+                // Text Section
+                pex.TextSectionRaw = pex.ReadRawSection(content, ref offset, ".text", true);
+
+                #endregion
             }
             catch (Exception ex)
             {
@@ -293,34 +432,6 @@ namespace BurnOutSharp.ExecutableType.Microsoft
             }
 
             return pex;
-        }
-
-        /// <summary>
-        /// Convert a virtual address to a physical one
-        /// </summary>
-        /// <param name="virtualAddress">Virtual address to convert</param>
-        /// <param name="sections">Array of sections to check against</param>
-        /// <returns>Physical address, 0 on error</returns>
-        public static uint ConvertVirtualAddress(uint virtualAddress, SectionHeader[] sections)
-        {
-            // Loop through all of the sections
-            for (int i = 0; i < sections.Length; i++)
-            {
-                // If the section is invalid, just skip it
-                if (sections[i] == null)
-                    continue;
-
-                // If the section "starts" at 0, just skip it
-                if (sections[i].PointerToRawData == 0)
-                    continue;
-
-                // Attempt to derive the physical address from the current section
-                var section = sections[i];
-                if (virtualAddress >= section.VirtualAddress && virtualAddress <= section.VirtualAddress + section.VirtualSize)
-                   return section.PointerToRawData + virtualAddress - section.VirtualAddress;
-            }
-
-            return 0;
         }
     }
 }
