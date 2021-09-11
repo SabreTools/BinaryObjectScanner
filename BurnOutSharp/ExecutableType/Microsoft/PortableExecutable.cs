@@ -77,6 +77,19 @@ namespace BurnOutSharp.ExecutableType.Microsoft
         // TODO: Add more and more parts of a standard PE executable, not just the header
         // TODO: Add data directory table information here instead of in IMAGE_OPTIONAL_HEADER
 
+        // https://docs.microsoft.com/en-us/windows/win32/debug/pe-format#special-sections
+        // TODO: Here is a list of standard sections that are used in various protections:
+        //          - .bss          1 protection        Uninitialized data (free format)
+        //          - .data         14 protections      Initialized data (free format)
+        //          - .edata        1 protection        Export tables
+        //          - .idata        2 protections       Import tables
+        //          - .rdata        11 protections      Read-only initialized data
+        //          - .rsrc         1 protection        Resource directory [Mostly taken care of, last protection needs research]
+        //          - .text         6 protections       Executable code (free format)
+        //          - .tls          1 protection        Thread-local storage (object only)
+        // Concentrate on adding these to the parsing first, based on how many protections use each
+        // if and only if it is reasonable to have it parsed into something
+
         /// <summary>
         /// Determine if a section is contained within the section table
         /// </summary>
