@@ -9,8 +9,128 @@ namespace BurnOutSharp.Tools
 {
     internal static class Extensions
     {
-        // TODO: Add extensions for BitConverter.ToX(); offset += x;
         #region Byte Arrays
+
+        /// <summary>
+        /// Read a byte and increment the pointer to an array
+        /// </summary>
+        public static byte ReadByte(this byte[] content, ref int offset)
+        {
+            return content[offset++];
+        }
+
+        /// <summary>
+        /// Read a char and increment the pointer to an array
+        /// </summary>
+        public static char ReadChar(this byte[] content, ref int offset)
+        {
+            return (char)content[offset++];
+        }
+
+        /// <summary>
+        /// Read a character array and increment the pointer to an array
+        /// </summary>
+        public static char[] ReadChars(this byte[] content, ref int offset, int count) => content.ReadChars(ref offset, count, Encoding.Default);
+
+        /// <summary>
+        /// Read a character array and increment the pointer to an array
+        /// </summary>
+        public static char[] ReadChars(this byte[] content, ref int offset, int count, Encoding encoding)
+        {
+            // TODO: Fix the code below to make it work with byte arrays and not streams
+            return null;
+
+            // byte[] buffer = new byte[count];
+            // stream.Read(buffer, 0, count);
+            // return encoding.GetString(buffer).ToCharArray();
+        }
+
+        /// <summary>
+        /// Read a short and increment the pointer to an array
+        /// </summary>
+        public static short ReadInt16(this byte[] content, ref int offset)
+        {
+            short value = BitConverter.ToInt16(content, offset);
+            offset += 2;
+            return value;
+        }
+
+        /// <summary>
+        /// Read a ushort and increment the pointer to an array
+        /// </summary>
+        public static ushort ReadUInt16(this byte[] content, ref int offset)
+        {
+            ushort value = BitConverter.ToUInt16(content, offset);
+            offset += 2;
+            return value;
+        }
+
+        /// <summary>
+        /// Read a int and increment the pointer to an array
+        /// </summary>
+        public static int ReadInt32(this byte[] content, ref int offset)
+        {
+            int value = BitConverter.ToInt32(content, offset);
+            offset += 4;
+            return value;
+        }
+
+        /// <summary>
+        /// Read a uint and increment the pointer to an array
+        /// </summary>
+        public static uint ReadUInt32(this byte[] content, ref int offset)
+        {
+            uint value = BitConverter.ToUInt32(content, offset);
+            offset += 4;
+            return value;
+        }
+
+        /// <summary>
+        /// Read a long and increment the pointer to an array
+        /// </summary>
+        public static long ReadInt64(this byte[] content, ref int offset)
+        {
+            long value = BitConverter.ToInt64(content, offset);
+            offset += 8;
+            return value;
+        }
+
+        /// <summary>
+        /// Read a ulong and increment the pointer to an array
+        /// </summary>
+        public static ulong ReadUInt64(this byte[] content, ref int offset)
+        {
+            ulong value = BitConverter.ToUInt64(content, offset);
+            offset += 8;
+            return value;
+        }
+
+        /// <summary>
+        /// Read a null-terminated string from the stream
+        /// </summary>
+        public static string ReadString(this byte[] content, ref int offset) => content.ReadString(ref offset, Encoding.Default);
+
+        /// <summary>
+        /// Read a null-terminated string from the stream
+        /// </summary>
+        public static string ReadString(this byte[] content, ref int offset, Encoding encoding)
+        {
+            // TODO: Fix the code below to make it work with byte arrays and not streams
+            return null;
+
+            // byte[] nullTerminator = encoding.GetBytes(new char[] { '\0' });
+            // int charWidth = nullTerminator.Length;
+
+            // List<byte> tempBuffer = new List<byte>();
+
+            // byte[] buffer = new byte[charWidth];
+            // while (stream.Read(buffer, 0, charWidth) != 0 && buffer.SequenceEqual(nullTerminator))
+            // {
+            //     tempBuffer.AddRange(buffer);
+            // }
+
+            // return encoding.GetString(tempBuffer.ToArray());
+        }
 
         /// <summary>
         /// Find all positions of one array in another, if possible, if possible

@@ -302,62 +302,62 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Headers
         {
             var ioh = new OptionalHeader();
 
-            ioh.Magic = (OptionalHeaderType)BitConverter.ToUInt16(content, offset); offset += 2;
+            ioh.Magic = (OptionalHeaderType)content.ReadUInt16(ref offset);
             ioh.MajorLinkerVersion = content[offset]; offset++;
             ioh.MinorLinkerVersion = content[offset]; offset++;
-            ioh.SizeOfCode = BitConverter.ToUInt32(content, offset); offset += 4;
-            ioh.SizeOfInitializedData = BitConverter.ToUInt32(content, offset); offset += 4;
-            ioh.SizeOfUninitializedData = BitConverter.ToUInt32(content, offset); offset += 4;
-            ioh.AddressOfEntryPoint = BitConverter.ToUInt32(content, offset); offset += 4;
-            ioh.BaseOfCode = BitConverter.ToUInt32(content, offset); offset += 4;
+            ioh.SizeOfCode = content.ReadUInt32(ref offset);
+            ioh.SizeOfInitializedData = content.ReadUInt32(ref offset);
+            ioh.SizeOfUninitializedData = content.ReadUInt32(ref offset);
+            ioh.AddressOfEntryPoint = content.ReadUInt32(ref offset);
+            ioh.BaseOfCode = content.ReadUInt32(ref offset);
 
             // Only standard PE32 has this value
             if (ioh.Magic == OptionalHeaderType.PE32)
-                ioh.BaseOfData = BitConverter.ToUInt32(content, offset); offset += 4;
+                ioh.BaseOfData = content.ReadUInt32(ref offset);
 
             // PE32+ has an 8-bit value here
             if (ioh.Magic == OptionalHeaderType.PE32Plus)
             {
-                ioh.ImageBasePE32Plus = BitConverter.ToUInt64(content, offset); offset += 8;
+                ioh.ImageBasePE32Plus = content.ReadUInt64(ref offset);
             }
             else
             {
-                ioh.ImageBasePE32 = BitConverter.ToUInt32(content, offset); offset += 4;
+                ioh.ImageBasePE32 = content.ReadUInt32(ref offset);
             }
             
-            ioh.SectionAlignment = BitConverter.ToUInt32(content, offset); offset += 4;
-            ioh.FileAlignment = BitConverter.ToUInt32(content, offset); offset += 4;
-            ioh.MajorOperatingSystemVersion = BitConverter.ToUInt16(content, offset); offset += 2;
-            ioh.MinorOperatingSystemVersion = BitConverter.ToUInt16(content, offset); offset += 2;
-            ioh.MajorImageVersion = BitConverter.ToUInt16(content, offset); offset += 2;
-            ioh.MinorImageVersion = BitConverter.ToUInt16(content, offset); offset += 2;
-            ioh.MajorSubsystemVersion = BitConverter.ToUInt16(content, offset); offset += 2;
-            ioh.MinorSubsystemVersion = BitConverter.ToUInt16(content, offset); offset += 2;
-            ioh.Reserved1 = BitConverter.ToUInt32(content, offset); offset += 4;
-            ioh.SizeOfImage = BitConverter.ToUInt32(content, offset); offset += 4;
-            ioh.SizeOfHeaders = BitConverter.ToUInt32(content, offset); offset += 4;
-            ioh.CheckSum = BitConverter.ToUInt32(content, offset); offset += 4;
-            ioh.Subsystem = (WindowsSubsystem)BitConverter.ToUInt16(content, offset); offset += 2;
-            ioh.DllCharacteristics = (DllCharacteristics)BitConverter.ToUInt16(content, offset); offset += 2;
+            ioh.SectionAlignment = content.ReadUInt32(ref offset);
+            ioh.FileAlignment = content.ReadUInt32(ref offset);
+            ioh.MajorOperatingSystemVersion = content.ReadUInt16(ref offset);
+            ioh.MinorOperatingSystemVersion = content.ReadUInt16(ref offset);
+            ioh.MajorImageVersion = content.ReadUInt16(ref offset);
+            ioh.MinorImageVersion = content.ReadUInt16(ref offset);
+            ioh.MajorSubsystemVersion = content.ReadUInt16(ref offset);
+            ioh.MinorSubsystemVersion = content.ReadUInt16(ref offset);
+            ioh.Reserved1 = content.ReadUInt32(ref offset);
+            ioh.SizeOfImage = content.ReadUInt32(ref offset);
+            ioh.SizeOfHeaders = content.ReadUInt32(ref offset);
+            ioh.CheckSum = content.ReadUInt32(ref offset);
+            ioh.Subsystem = (WindowsSubsystem)content.ReadUInt16(ref offset);
+            ioh.DllCharacteristics = (DllCharacteristics)content.ReadUInt16(ref offset);
 
             // PE32+ uses 8-byte values
             if (ioh.Magic == OptionalHeaderType.PE32Plus)
             {
-                ioh.SizeOfStackReservePE32Plus = BitConverter.ToUInt64(content, offset); offset += 8;
-                ioh.SizeOfStackCommitPE32Plus = BitConverter.ToUInt64(content, offset); offset += 8;
-                ioh.SizeOfHeapReservePE32Plus = BitConverter.ToUInt64(content, offset); offset += 8;
-                ioh.SizeOfHeapCommitPE32Plus = BitConverter.ToUInt64(content, offset); offset += 8;
+                ioh.SizeOfStackReservePE32Plus = content.ReadUInt64(ref offset);
+                ioh.SizeOfStackCommitPE32Plus = content.ReadUInt64(ref offset);
+                ioh.SizeOfHeapReservePE32Plus = content.ReadUInt64(ref offset);
+                ioh.SizeOfHeapCommitPE32Plus = content.ReadUInt64(ref offset);
             }
             else
             {
-                ioh.SizeOfStackReservePE32 = BitConverter.ToUInt32(content, offset); offset += 4;
-                ioh.SizeOfStackCommitPE32 = BitConverter.ToUInt32(content, offset); offset += 4;
-                ioh.SizeOfHeapReservePE32 = BitConverter.ToUInt32(content, offset); offset += 4;
-                ioh.SizeOfHeapCommitPE32 = BitConverter.ToUInt32(content, offset); offset += 4;
+                ioh.SizeOfStackReservePE32 = content.ReadUInt32(ref offset);
+                ioh.SizeOfStackCommitPE32 = content.ReadUInt32(ref offset);
+                ioh.SizeOfHeapReservePE32 = content.ReadUInt32(ref offset);
+                ioh.SizeOfHeapCommitPE32 = content.ReadUInt32(ref offset);
             }
 
-            ioh.LoaderFlags = BitConverter.ToUInt32(content, offset); offset += 4;
-            ioh.NumberOfRvaAndSizes = BitConverter.ToUInt32(content, offset); offset += 4;
+            ioh.LoaderFlags = content.ReadUInt32(ref offset);
+            ioh.NumberOfRvaAndSizes = content.ReadUInt32(ref offset);
             ioh.DataDirectories = new DataDirectoryHeader[Constants.IMAGE_NUMBEROF_DIRECTORY_ENTRIES];
             for (int i = 0; i < Constants.IMAGE_NUMBEROF_DIRECTORY_ENTRIES; i++)
             {

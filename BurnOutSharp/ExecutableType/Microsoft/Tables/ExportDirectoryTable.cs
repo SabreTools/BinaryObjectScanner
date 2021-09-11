@@ -94,17 +94,17 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Tables
         {
             var edt = new ExportDirectoryTable();
 
-            edt.ExportFlags = BitConverter.ToUInt32(content, offset); offset += 4;
-            edt.TimeDateStamp = BitConverter.ToUInt32(content, offset); offset += 4;
-            edt.MajorVersion = BitConverter.ToUInt16(content, offset); offset += 2;
-            edt.MinorVersion = BitConverter.ToUInt16(content, offset); offset += 2;
-            edt.NameRVA = BitConverter.ToUInt32(content, offset); offset += 4;
-            edt.OrdinalBase = BitConverter.ToUInt32(content, offset); offset += 4;
-            edt.AddressTableEntries = BitConverter.ToUInt32(content, offset); offset += 4;
-            edt.NumberOfNamePointers = BitConverter.ToUInt32(content, offset); offset += 4;
-            edt.ExportAddressTableRVA = BitConverter.ToUInt32(content, offset); offset += 4;
-            edt.NamePointerRVA = BitConverter.ToUInt32(content, offset); offset += 4;
-            edt.OrdinalTableRVA = BitConverter.ToUInt32(content, offset); offset += 4;
+            edt.ExportFlags = content.ReadUInt32(ref offset);
+            edt.TimeDateStamp = content.ReadUInt32(ref offset);
+            edt.MajorVersion = content.ReadUInt16(ref offset);
+            edt.MinorVersion = content.ReadUInt16(ref offset);
+            edt.NameRVA = content.ReadUInt32(ref offset);
+            edt.OrdinalBase = content.ReadUInt32(ref offset);
+            edt.AddressTableEntries = content.ReadUInt32(ref offset);
+            edt.NumberOfNamePointers = content.ReadUInt32(ref offset);
+            edt.ExportAddressTableRVA = content.ReadUInt32(ref offset);
+            edt.NamePointerRVA = content.ReadUInt32(ref offset);
+            edt.OrdinalTableRVA = content.ReadUInt32(ref offset);
 
             return edt;
         }

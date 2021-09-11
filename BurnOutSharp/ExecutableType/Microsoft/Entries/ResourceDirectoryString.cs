@@ -39,7 +39,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
         {
             var rds = new ResourceDirectoryString();
 
-            rds.Length = BitConverter.ToUInt16(content, offset); offset += 2;
+            rds.Length = content.ReadUInt16(ref offset);
             if (rds.Length + offset > content.Length)
                 return null;
 

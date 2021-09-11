@@ -113,7 +113,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
         {
             var rdte = new ResourceDirectoryTableEntry();
 
-            rdte.IntegerId = BitConverter.ToUInt32(content, offset); offset += 4;
+            rdte.IntegerId = content.ReadUInt32(ref offset);
             if (!rdte.IsIntegerIDEntry())
             {
                 int nameAddress = (int)(rdte.NameOffset + sectionStart);
@@ -121,7 +121,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
                     rdte.Name = ResourceDirectoryString.Deserialize(content, ref nameAddress);
             }
 
-            rdte.DataEntryOffset = BitConverter.ToUInt32(content, offset); offset += 4;
+            rdte.DataEntryOffset = content.ReadUInt32(ref offset);
             if (rdte.IsResourceDataEntry())
             {
                 int dataEntryAddress = (int)(rdte.DataEntryOffset + sectionStart);

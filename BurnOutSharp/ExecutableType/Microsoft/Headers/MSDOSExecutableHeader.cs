@@ -168,20 +168,20 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Headers
         {
             MSDOSExecutableHeader idh = new MSDOSExecutableHeader();
 
-            idh.Magic = BitConverter.ToUInt16(content, offset); offset += 2;
-            idh.LastPageBytes = BitConverter.ToUInt16(content, offset); offset += 2;
-            idh.Pages = BitConverter.ToUInt16(content, offset); offset += 2;
-            idh.Relocations = BitConverter.ToUInt16(content, offset); offset += 2;
-            idh.HeaderParagraphSize = BitConverter.ToUInt16(content, offset); offset += 2;
-            idh.MinimumExtraParagraphs = BitConverter.ToUInt16(content, offset); offset += 2;
-            idh.MaximumExtraParagraphs = BitConverter.ToUInt16(content, offset); offset += 2;
-            idh.InitialSSValue = BitConverter.ToUInt16(content, offset); offset += 2;
-            idh.InitialSPValue = BitConverter.ToUInt16(content, offset); offset += 2;
-            idh.Checksum = BitConverter.ToUInt16(content, offset); offset += 2;
-            idh.InitialIPValue = BitConverter.ToUInt16(content, offset); offset += 2;
-            idh.InitialCSValue = BitConverter.ToUInt16(content, offset); offset += 2;
-            idh.RelocationTableAddr = BitConverter.ToUInt16(content, offset); offset += 2;
-            idh.OverlayNumber = BitConverter.ToUInt16(content, offset); offset += 2;
+            idh.Magic = content.ReadUInt16(ref offset);
+            idh.LastPageBytes = content.ReadUInt16(ref offset);
+            idh.Pages = content.ReadUInt16(ref offset);
+            idh.Relocations = content.ReadUInt16(ref offset);
+            idh.HeaderParagraphSize = content.ReadUInt16(ref offset);
+            idh.MinimumExtraParagraphs = content.ReadUInt16(ref offset);
+            idh.MaximumExtraParagraphs = content.ReadUInt16(ref offset);
+            idh.InitialSSValue = content.ReadUInt16(ref offset);
+            idh.InitialSPValue = content.ReadUInt16(ref offset);
+            idh.Checksum = content.ReadUInt16(ref offset);
+            idh.InitialIPValue = content.ReadUInt16(ref offset);
+            idh.InitialCSValue = content.ReadUInt16(ref offset);
+            idh.RelocationTableAddr = content.ReadUInt16(ref offset);
+            idh.OverlayNumber = content.ReadUInt16(ref offset);
 
             // If we're not reading as a stub, return now
             if (!asStub)
@@ -190,16 +190,16 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Headers
             idh.Reserved1 = new ushort[Constants.ERES1WDS];
             for (int i = 0; i < Constants.ERES1WDS; i++)
             {
-                idh.Reserved1[i] = BitConverter.ToUInt16(content, offset); offset += 2;
+                idh.Reserved1[i] = content.ReadUInt16(ref offset);
             }
-            idh.OEMIdentifier = BitConverter.ToUInt16(content, offset); offset += 2;
-            idh.OEMInformation = BitConverter.ToUInt16(content, offset); offset += 2;
+            idh.OEMIdentifier = content.ReadUInt16(ref offset);
+            idh.OEMInformation = content.ReadUInt16(ref offset);
             idh.Reserved2 = new ushort[Constants.ERES2WDS];
             for (int i = 0; i < Constants.ERES2WDS; i++)
             {
-                idh.Reserved2[i] = BitConverter.ToUInt16(content, offset); offset += 2;
+                idh.Reserved2[i] = content.ReadUInt16(ref offset);
             }
-            idh.NewExeHeaderAddr = BitConverter.ToInt32(content, offset); offset += 4;
+            idh.NewExeHeaderAddr = content.ReadInt32(ref offset);
 
             return idh;
         }

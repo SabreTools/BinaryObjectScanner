@@ -49,14 +49,11 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Resources
         {
             Resource r = new Resource();
 
-            while ((r.Length = BitConverter.ToUInt16(content, offset)) == 0x0000)
-            {
-                offset += 2;
-            }
+            while ((r.Length = content.ReadUInt16(ref offset)) == 0x0000);
 
             offset += 2;
-            r.ValueLength = BitConverter.ToUInt16(content, offset); offset += 2;
-            r.Type = BitConverter.ToUInt16(content, offset); offset += 2;
+            r.ValueLength = content.ReadUInt16(ref offset);
+            r.Type = content.ReadUInt16(ref offset);
 
             List<char> keyChars = new List<char>();
             while (BitConverter.ToUInt16(content, offset) != 0x0000)

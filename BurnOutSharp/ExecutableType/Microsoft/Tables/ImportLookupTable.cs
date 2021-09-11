@@ -68,7 +68,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Tables
                 List<ulong> tempEntries = new List<ulong>();
                 while (true)
                 {
-                    ulong bitfield = BitConverter.ToUInt64(content, offset); offset += 8;
+                    ulong bitfield = content.ReadUInt64(ref offset);
                     tempEntries.Add(bitfield);
                     if (bitfield == 0)
                         break;
@@ -82,7 +82,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Tables
                 List<uint> tempEntries = new List<uint>();
                 while (true)
                 {
-                    uint bitfield = BitConverter.ToUInt32(content, offset); offset += 4;
+                    uint bitfield = content.ReadUInt32(ref offset);
                     tempEntries.Add(bitfield);
                     if (bitfield == 0)
                         break;

@@ -35,7 +35,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
         {
             var rds = new NEResourceNameString();
 
-            rds.Length = content[offset++];
+            rds.Length = content.ReadByte(ref offset);
             rds.Value = Encoding.ASCII.GetChars(content, offset, rds.Length); offset += rds.Length;
 
             return rds;

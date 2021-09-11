@@ -39,7 +39,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
         {
             var eate = new ExportAddressTableEntry();
 
-            eate.ExportRVA = BitConverter.ToUInt32(content, offset); offset += 4;
+            eate.ExportRVA = content.ReadUInt32(ref offset);
             eate.ForwarderRVA = eate.ExportRVA;
 
             return eate;

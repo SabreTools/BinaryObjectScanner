@@ -93,12 +93,12 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Tables
         {
             var rdt = new ResourceDirectoryTable();
 
-            rdt.Characteristics = BitConverter.ToUInt32(content, offset); offset += 4;
-            rdt.TimeDateStamp = BitConverter.ToUInt32(content, offset); offset += 4;
-            rdt.MajorVersion = BitConverter.ToUInt16(content, offset); offset += 2;
-            rdt.MinorVersion = BitConverter.ToUInt16(content, offset); offset += 2;
-            rdt.NumberOfNamedEntries = BitConverter.ToUInt16(content, offset); offset += 2;
-            rdt.NumberOfIdEntries = BitConverter.ToUInt16(content, offset); offset += 2;
+            rdt.Characteristics = content.ReadUInt32(ref offset);
+            rdt.TimeDateStamp = content.ReadUInt32(ref offset);
+            rdt.MajorVersion = content.ReadUInt16(ref offset);
+            rdt.MinorVersion = content.ReadUInt16(ref offset);
+            rdt.NumberOfNamedEntries = content.ReadUInt16(ref offset);
+            rdt.NumberOfIdEntries = content.ReadUInt16(ref offset);
 
             rdt.NamedEntries = new ResourceDirectoryTableEntry[rdt.NumberOfNamedEntries];
             for (int i = 0; i < rdt.NumberOfNamedEntries; i++)

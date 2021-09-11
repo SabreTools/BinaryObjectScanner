@@ -35,7 +35,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Tables
             enpt.Entries = new uint[count];
             for (int i = 0; i < count; i++)
             {
-                enpt.Entries[i] = BitConverter.ToUInt32(content, offset); offset += 4;
+                enpt.Entries[i] = content.ReadUInt32(ref offset);
             }
 
             return enpt;

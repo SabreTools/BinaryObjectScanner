@@ -70,11 +70,11 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
         {
             var iate = new ImportAddressTableEntry();
 
-            iate.ImportLookupTableRVA = BitConverter.ToUInt32(content, offset); offset += 4;
-            iate.TimeDateStamp = BitConverter.ToUInt32(content, offset); offset += 4;
-            iate.ForwarderChain = BitConverter.ToUInt32(content, offset); offset += 4;
-            iate.NameRVA = BitConverter.ToUInt32(content, offset); offset += 4;
-            iate.ImportAddressTableRVA = BitConverter.ToUInt32(content, offset); offset += 4;
+            iate.ImportLookupTableRVA = content.ReadUInt32(ref offset);
+            iate.TimeDateStamp = content.ReadUInt32(ref offset);
+            iate.ForwarderChain = content.ReadUInt32(ref offset);
+            iate.NameRVA = content.ReadUInt32(ref offset);
+            iate.ImportAddressTableRVA = content.ReadUInt32(ref offset);
 
             return iate;
         }

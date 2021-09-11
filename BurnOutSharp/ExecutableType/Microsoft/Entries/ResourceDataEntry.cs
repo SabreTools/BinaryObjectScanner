@@ -89,10 +89,10 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
         {
             var rde = new ResourceDataEntry();
 
-            rde.OffsetToData = BitConverter.ToUInt32(content, offset); offset += 4;
-            rde.Size = BitConverter.ToUInt32(content, offset); offset += 4;
-            rde.CodePage = BitConverter.ToUInt32(content, offset); offset += 4;
-            rde.Reserved = BitConverter.ToUInt32(content, offset); offset += 4;
+            rde.OffsetToData = content.ReadUInt32(ref offset);
+            rde.Size = content.ReadUInt32(ref offset);
+            rde.CodePage = content.ReadUInt32(ref offset);
+            rde.Reserved = content.ReadUInt32(ref offset);
 
             int realOffsetToData = (int)PortableExecutable.ConvertVirtualAddress(rde.OffsetToData, sections);
             if (realOffsetToData > -1 && realOffsetToData < content.Length && (int)rde.Size > 0 && realOffsetToData + (int)rde.Size < content.Length)

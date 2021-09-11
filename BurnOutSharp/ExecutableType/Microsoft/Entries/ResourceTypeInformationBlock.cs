@@ -54,9 +54,9 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
         {
             var rtib = new ResourceTypeInformationBlock();
 
-            rtib.TypeID = BitConverter.ToUInt16(content, offset); offset += 2;
-            rtib.ResourceCount = BitConverter.ToUInt16(content, offset); offset += 2;
-            rtib.Reserved = BitConverter.ToUInt32(content, offset); offset += 4;
+            rtib.TypeID = content.ReadUInt16(ref offset);
+            rtib.ResourceCount = content.ReadUInt16(ref offset);
+            rtib.Reserved = content.ReadUInt32(ref offset);
 
             rtib.ResourceTable = new NEResourceTableEntry[rtib.ResourceCount];
             for (int i = 0; i < rtib.ResourceCount; i++)

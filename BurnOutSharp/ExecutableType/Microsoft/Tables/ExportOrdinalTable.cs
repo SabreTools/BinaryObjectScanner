@@ -35,7 +35,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Tables
             edt.Entries = new ushort[count];
             for (int i = 0; i < count; i++)
             {
-                edt.Entries[i] = BitConverter.ToUInt16(content, offset); offset += 2;
+                edt.Entries[i] = content.ReadUInt16(ref offset);
             }
 
             return edt;

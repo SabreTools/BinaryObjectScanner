@@ -63,12 +63,12 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
         {
             var ni = new NEResourceTableEntry();
 
-            ni.Offset = BitConverter.ToUInt16(content, offset); offset += 2;
-            ni.Length = BitConverter.ToUInt16(content, offset); offset += 2;
-            ni.Flags = (ResourceTableEntryFlags)BitConverter.ToUInt16(content, offset); offset += 2;
-            ni.ResourceID = BitConverter.ToUInt16(content, offset); offset += 2;
-            ni.Handle = BitConverter.ToUInt16(content, offset); offset += 2;
-            ni.Usage = BitConverter.ToUInt16(content, offset); offset += 2;
+            ni.Offset = content.ReadUInt16(ref offset);
+            ni.Length = content.ReadUInt16(ref offset);
+            ni.Flags = (ResourceTableEntryFlags)content.ReadUInt16(ref offset);
+            ni.ResourceID = content.ReadUInt16(ref offset);
+            ni.Handle = content.ReadUInt16(ref offset);
+            ni.Usage = content.ReadUInt16(ref offset);
 
             return ni;
         }

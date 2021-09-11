@@ -31,8 +31,8 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Headers
         {
             var ddh = new DataDirectoryHeader();
 
-            ddh.VirtualAddress = BitConverter.ToUInt32(content, offset); offset += 4;
-            ddh.Size = BitConverter.ToUInt32(content, offset); offset += 4;
+            ddh.VirtualAddress = content.ReadUInt32(ref offset);
+            ddh.Size = content.ReadUInt32(ref offset);
 
             return ddh;
         }

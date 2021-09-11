@@ -71,7 +71,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Tables
         {
             var nrt = new NEResourceTable();
 
-            nrt.AlignmentShiftCount = BitConverter.ToUInt16(content, offset); offset += 2;
+            nrt.AlignmentShiftCount = content.ReadUInt16(ref offset);
             var typeInformationBlocks = new List<ResourceTypeInformationBlock>();
             while (true)
             {

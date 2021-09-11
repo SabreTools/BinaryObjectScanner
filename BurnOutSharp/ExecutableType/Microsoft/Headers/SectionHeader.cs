@@ -113,15 +113,15 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Headers
 
             ish.Name = new byte[Constants.IMAGE_SIZEOF_SHORT_NAME];
             Array.Copy(content, offset, ish.Name, 0, Constants.IMAGE_SIZEOF_SHORT_NAME); offset += Constants.IMAGE_SIZEOF_SHORT_NAME;
-            ish.VirtualSize = BitConverter.ToUInt32(content, offset); offset += 4;
-            ish.VirtualAddress = BitConverter.ToUInt32(content, offset); offset += 4;
-            ish.SizeOfRawData = BitConverter.ToUInt32(content, offset); offset += 4;
-            ish.PointerToRawData = BitConverter.ToUInt32(content, offset); offset += 4;
-            ish.PointerToRelocations = BitConverter.ToUInt32(content, offset); offset += 4;
-            ish.PointerToLinenumbers = BitConverter.ToUInt32(content, offset); offset += 4;
-            ish.NumberOfRelocations = BitConverter.ToUInt16(content, offset); offset += 2;
-            ish.NumberOfLinenumbers = BitConverter.ToUInt16(content, offset); offset += 2;
-            ish.Characteristics = (SectionCharacteristics)BitConverter.ToUInt32(content, offset); offset += 4;
+            ish.VirtualSize = content.ReadUInt32(ref offset);
+            ish.VirtualAddress = content.ReadUInt32(ref offset);
+            ish.SizeOfRawData = content.ReadUInt32(ref offset);
+            ish.PointerToRawData = content.ReadUInt32(ref offset);
+            ish.PointerToRelocations = content.ReadUInt32(ref offset);
+            ish.PointerToLinenumbers = content.ReadUInt32(ref offset);
+            ish.NumberOfRelocations = content.ReadUInt16(ref offset);
+            ish.NumberOfLinenumbers = content.ReadUInt16(ref offset);
+            ish.Characteristics = (SectionCharacteristics)content.ReadUInt32(ref offset);
 
             return ish;
         }

@@ -51,10 +51,10 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
         {
             var nste = new NESegmentTableEntry();
 
-            nste.StartFileSector = BitConverter.ToUInt16(content, offset); offset += 2;
-            nste.BytesInFile = BitConverter.ToUInt16(content, offset); offset += 2;
-            nste.Flags = (SegmentTableEntryFlags)BitConverter.ToUInt16(content, offset); offset += 2;
-            nste.MinimumAllocation = BitConverter.ToUInt16(content, offset); offset += 2;
+            nste.StartFileSector = content.ReadUInt16(ref offset);
+            nste.BytesInFile = content.ReadUInt16(ref offset);
+            nste.Flags = (SegmentTableEntryFlags)content.ReadUInt16(ref offset);
+            nste.MinimumAllocation = content.ReadUInt16(ref offset);
 
             return nste;
         }

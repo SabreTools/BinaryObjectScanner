@@ -120,28 +120,27 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Resources
 
             ushort temp;
             bool padded = false;
-            while ((temp = BitConverter.ToUInt16(content, offset)) == 0x0000)
+            while ((temp = content.ReadUInt16(ref offset)) == 0x0000)
             {
-                offset += 2;
                 padded = true;
             }
 
             if (padded)
                 offset -= 2;
 
-            ffi.Signature = BitConverter.ToUInt32(content, offset); offset += 4;
-            ffi.StrucVersion = BitConverter.ToUInt32(content, offset); offset += 4;
-            ffi.FileVersionMS = BitConverter.ToUInt32(content, offset); offset += 4;
-            ffi.FileVersionLS = BitConverter.ToUInt32(content, offset); offset += 4;
-            ffi.ProductVersionMS = BitConverter.ToUInt32(content, offset); offset += 4;
-            ffi.ProductVersionLS = BitConverter.ToUInt32(content, offset); offset += 4;
-            ffi.FileFlagsMask = BitConverter.ToUInt32(content, offset); offset += 4;
-            ffi.FileFlags = (FileInfoFileFlags)BitConverter.ToUInt32(content, offset); offset += 4;
-            ffi.FileOS = (FileInfoOS)BitConverter.ToUInt32(content, offset); offset += 4;
-            ffi.FileType = (FileInfoFileType)BitConverter.ToUInt32(content, offset); offset += 4;
-            ffi.FileSubtype = (FileInfoFileSubtype)BitConverter.ToUInt32(content, offset); offset += 4;
-            ffi.FileDateMS = BitConverter.ToUInt32(content, offset); offset += 4;
-            ffi.FileDateLS = BitConverter.ToUInt32(content, offset); offset += 4;
+            ffi.Signature = content.ReadUInt32(ref offset);
+            ffi.StrucVersion = content.ReadUInt32(ref offset);
+            ffi.FileVersionMS = content.ReadUInt32(ref offset);
+            ffi.FileVersionLS = content.ReadUInt32(ref offset);
+            ffi.ProductVersionMS = content.ReadUInt32(ref offset);
+            ffi.ProductVersionLS = content.ReadUInt32(ref offset);
+            ffi.FileFlagsMask = content.ReadUInt32(ref offset);
+            ffi.FileFlags = (FileInfoFileFlags)content.ReadUInt32(ref offset);
+            ffi.FileOS = (FileInfoOS)content.ReadUInt32(ref offset);
+            ffi.FileType = (FileInfoFileType)content.ReadUInt32(ref offset);
+            ffi.FileSubtype = (FileInfoFileSubtype)content.ReadUInt32(ref offset);
+            ffi.FileDateMS = content.ReadUInt32(ref offset);
+            ffi.FileDateLS = content.ReadUInt32(ref offset);
 
             return ffi;
         }

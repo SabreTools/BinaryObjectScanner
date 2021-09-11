@@ -73,14 +73,14 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Headers
         {
             var ifh = new CommonObjectFileFormatHeader();
 
-            ifh.Signature = BitConverter.ToUInt32(content, offset); offset += 4;
-            ifh.Machine = (MachineType)BitConverter.ToUInt16(content, offset); offset += 2;
-            ifh.NumberOfSections = BitConverter.ToUInt16(content, offset); offset += 2;
-            ifh.TimeDateStamp = BitConverter.ToUInt32(content, offset); offset += 4;
-            ifh.PointerToSymbolTable = BitConverter.ToUInt32(content, offset); offset += 4;
-            ifh.NumberOfSymbols = BitConverter.ToUInt32(content, offset); offset += 4;
-            ifh.SizeOfOptionalHeader = BitConverter.ToUInt16(content, offset); offset += 2;
-            ifh.Characteristics = (ImageObjectCharacteristics)BitConverter.ToUInt16(content, offset); offset += 2;
+            ifh.Signature = content.ReadUInt32(ref offset);
+            ifh.Machine = (MachineType)content.ReadUInt16(ref offset);
+            ifh.NumberOfSections = content.ReadUInt16(ref offset);
+            ifh.TimeDateStamp = content.ReadUInt32(ref offset);
+            ifh.PointerToSymbolTable = content.ReadUInt32(ref offset);
+            ifh.NumberOfSymbols = content.ReadUInt32(ref offset);
+            ifh.SizeOfOptionalHeader = content.ReadUInt16(ref offset);
+            ifh.Characteristics = (ImageObjectCharacteristics)content.ReadUInt16(ref offset);
 
             return ifh;
         }

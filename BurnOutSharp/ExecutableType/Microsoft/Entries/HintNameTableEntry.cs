@@ -62,7 +62,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
         {
             var hnte = new HintNameTableEntry();
 
-            hnte.Hint = BitConverter.ToUInt16(content, offset); offset += 2;
+            hnte.Hint = content.ReadUInt16(ref offset);
             hnte.Name = string.Empty;
             while (true)
             {

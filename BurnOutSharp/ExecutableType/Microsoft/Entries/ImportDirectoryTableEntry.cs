@@ -70,11 +70,11 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
         {
             var idte = new ImportDirectoryTableEntry();
 
-            idte.ImportLookupTableRVA = BitConverter.ToUInt32(content, offset); offset += 4;
-            idte.TimeDateStamp = BitConverter.ToUInt32(content, offset); offset += 4;
-            idte.ForwarderChain = BitConverter.ToUInt32(content, offset); offset += 4;
-            idte.NameRVA = BitConverter.ToUInt32(content, offset); offset += 4;
-            idte.ImportAddressTableRVA = BitConverter.ToUInt32(content, offset); offset += 4;
+            idte.ImportLookupTableRVA = content.ReadUInt32(ref offset);
+            idte.TimeDateStamp = content.ReadUInt32(ref offset);
+            idte.ForwarderChain = content.ReadUInt32(ref offset);
+            idte.NameRVA = content.ReadUInt32(ref offset);
+            idte.ImportAddressTableRVA = content.ReadUInt32(ref offset);
 
             return idte;
         }

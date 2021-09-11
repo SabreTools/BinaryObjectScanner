@@ -37,8 +37,8 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Resources
         {
             LanguageCodePage lcp = new LanguageCodePage();
 
-            lcp.MicrosoftLanguageIdentifier = BitConverter.ToUInt16(content, offset); offset += 2;
-            lcp.IBMCodePageNumber = BitConverter.ToUInt16(content, offset); offset += 2;
+            lcp.MicrosoftLanguageIdentifier = content.ReadUInt16(ref offset);
+            lcp.IBMCodePageNumber = content.ReadUInt16(ref offset);
 
             return lcp;
         }
