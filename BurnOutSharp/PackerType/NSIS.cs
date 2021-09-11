@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using BurnOutSharp.ExecutableType.Microsoft;
 using BurnOutSharp.Matching;
+using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.PackerType
 {
@@ -17,30 +18,10 @@ namespace BurnOutSharp.PackerType
             if (sections == null)
                 return null;
 
-            // TODO: Find this inside of the .rsrc section using the executable header
-            // Get the .rsrc section, if it exists
-            var rsrcSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".rsrc"));
-            if (rsrcSection != null)
-            {
-                int sectionAddr = (int)rsrcSection.PointerToRawData;
-                int sectionEnd = sectionAddr + (int)rsrcSection.VirtualSize;
-                var matchers = new List<ContentMatchSet>
-                {
-                    // Nullsoft Install System
-                    new ContentMatchSet(
-                        new ContentMatch(new byte?[]
-                        {
-                            0x4e, 0x75, 0x6c, 0x6c, 0x73, 0x6f, 0x66, 0x74,
-                            0x20, 0x49, 0x6e, 0x73, 0x74, 0x61, 0x6c, 0x6c,
-                            0x20, 0x53, 0x79, 0x73, 0x74, 0x65, 0x6d
-                        }, start: sectionAddr, end: sectionEnd),
-                    GetVersion, "NSIS"),
-                };
-
-                string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
-                    return match;
-            }
+            string description = Utilities.GetManifestDescription(pex);
+            Console.WriteLine(description);
+            if (!string.IsNullOrWhiteSpace(description) && description.StartsWith("Nullsoft Install System"))
+                return $"NSIS {description.Substring("Nullsoft Install System".Length).Trim()}";
 
             // Get the .data section, if it exists
             var dataSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".data"));
@@ -66,25 +47,6 @@ namespace BurnOutSharp.PackerType
             }
 
             return null;
-        }
-
-        public static string GetVersion(string file, byte[] fileContent, List<int> positions)
-        {
-            try
-            {
-                int index = positions[0];
-                index += 24;
-                if (fileContent[index] != 'v')
-                    return "(Unknown Version)";
-
-                var versionBytes = new ReadOnlySpan<byte>(fileContent, index, 16).ToArray();
-                var onlyVersion = versionBytes.TakeWhile(b => b != '<').ToArray();
-                return Encoding.ASCII.GetString(onlyVersion);
-            }
-            catch
-            {
-                return "(Unknown Version)";
-            }
         }
     }
 }

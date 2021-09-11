@@ -435,7 +435,7 @@ namespace BurnOutSharp.Tools
         /// </summary>
         /// <param name="rs">ResourceSection from the executable</param>
         /// <returns>Full assembly manifest, null on error</returns>
-        private static string FindAssemblyManifest(ResourceSection rs) => FindResourceInSection(rs, dataStart: "<assembly")?.DataAsUTF8String;
+        private static string FindAssemblyManifest(ResourceSection rs) => FindResourceInSection(rs, dataContains: "<assembly")?.DataAsUTF8String;
 
         /// <summary>
         /// Get the assembly identity node from an embedded manifest
