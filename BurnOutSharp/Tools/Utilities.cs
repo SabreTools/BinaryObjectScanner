@@ -517,7 +517,10 @@ namespace BurnOutSharp.Tools
             if (resourceSection == null)
                 return null;
 
+            // Try to get the matching resource
             var resource = FindResourceInSection(resourceSection, dataContains: "V\0S\0_\0V\0E\0R\0S\0I\0O\0N\0_\0I\0N\0F\0O\0");
+            if (resource?.Data == null)
+                return null;
 
             try
             {
