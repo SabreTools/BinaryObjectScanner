@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 
 namespace BurnOutSharp.ExecutableType.Microsoft.Resources
@@ -17,6 +18,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Resources
 
         public static new Var Deserialize(Stream stream)
         {
+            long originalPosition = stream.Position;
             Var v = new Var();
 
             Resource resource = Resource.Deserialize(stream);
@@ -28,13 +30,20 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Resources
             v.Type = resource.Type;
             v.Key = resource.Key;
 
-            // TODO: Deserialize the Value array
+            var tempValue = new List<LanguageCodePage>();
+            while (stream.Position - originalPosition < v.Length)
+            {
+                tempValue.Add(LanguageCodePage.Deserialize(stream));
+            }
+
+            v.Value = tempValue.ToArray();
 
             return v;
         }
 
         public static new Var Deserialize(byte[] content, ref int offset)
         {
+            int originalPosition = offset;
             Var v = new Var();
 
             Resource resource = Resource.Deserialize(content, ref offset);
@@ -46,7 +55,13 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Resources
             v.Type = resource.Type;
             v.Key = resource.Key;
 
-            // TODO: Deserialize the Value array
+            var tempValue = new List<LanguageCodePage>();
+            while (offset - originalPosition < v.Length)
+            {
+                tempValue.Add(LanguageCodePage.Deserialize(content, ref offset));
+            }
+
+            v.Value = tempValue.ToArray();
 
             return v;
         }

@@ -106,8 +106,6 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
                 }
             }
 
-            // TODO: Add parsing for further directory table entries in the tree
-
             return rdte;
         }
 
@@ -129,6 +127,8 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
                 int dataEntryAddress = (int)(rdte.DataEntryOffset + sectionStart);
                 if (dataEntryAddress > 0 && dataEntryAddress < content.Length)
                     rdte.DataEntry = ResourceDataEntry.Deserialize(content, ref dataEntryAddress, sections);
+
+                //Console.WriteLine($"At {dataEntryAddress}: {rdte.DataEntry.DataAsUTF8String}");
             }
             else
             {
@@ -136,8 +136,6 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
                 if (subdirectoryAddress > 0 && subdirectoryAddress < content.Length)
                     rdte.Subdirectory = ResourceDirectoryTable.Deserialize(content, ref subdirectoryAddress, sectionStart, sections);
             }
-
-            // TODO: Add parsing for further directory table entries in the tree
 
             return rdte;
         }

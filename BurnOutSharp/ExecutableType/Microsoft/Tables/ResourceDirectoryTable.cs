@@ -63,9 +63,6 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Tables
         /// </summary>
         public ResourceDirectoryTableEntry[] IdEntries;
 
-        // TODO: Determine how to store or reference the resource directory strings
-        // that immediately follow the last directory entry but before the data
-
         public static ResourceDirectoryTable Deserialize(Stream stream, long sectionStart, SectionHeader[] sections)
         {
             var rdt = new ResourceDirectoryTable();

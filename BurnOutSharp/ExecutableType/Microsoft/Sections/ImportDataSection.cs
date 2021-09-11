@@ -72,7 +72,6 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Sections
                 tempLookupTables.Add(tempLookupTable);
             }
 
-            // TODO: Update the offset, if possible
             ids.HintNameTable = HintNameTable.Deserialize(content, ref offset, hintCount);
 
             return ids;

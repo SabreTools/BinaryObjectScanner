@@ -12,6 +12,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Resources
 
         public static new StringTable Deserialize(Stream stream)
         {
+            long originalPosition = stream.Position;
             StringTable st = new StringTable();
 
             Resource resource = Resource.Deserialize(stream);
@@ -23,8 +24,13 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Resources
             st.Type = resource.Type;
             st.Key = resource.Key;
 
-            // TODO: Deserialize the Value array
-            stream.Seek(st.Length - 6 - (st.Key.Length * 2), SeekOrigin.Begin);
+            var tempValue = new List<StringStruct>();
+            while (stream.Position - originalPosition < st.Length)
+            {
+                tempValue.Add(StringStruct.Deserialize(stream));
+            }
+
+            st.Children = tempValue.ToArray();
 
             return st;
         }
