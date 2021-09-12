@@ -14,6 +14,7 @@ namespace BurnOutSharp.ProtectionType
             // TODO: Obtain a sample to find where this string is in a typical executable
             return new List<ContentMatchSet>
             {
+                // TODO: This looks like "OriginalFileName"
                 // O + (char)0x00 + r + (char)0x00 + i + (char)0x00 + g + (char)0x00 + i + (char)0x00 + n + (char)0x00 + S + (char)0x00 + e + (char)0x00 + t + (char)0x00 + u + (char)0x00 + p + (char)0x00 + . + (char)0x00 + e + (char)0x00 + x + (char)0x00 + e + (char)0x00
                 new ContentMatchSet(new byte?[]
                 {

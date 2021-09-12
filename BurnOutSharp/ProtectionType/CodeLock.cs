@@ -29,13 +29,7 @@ namespace BurnOutSharp.ProtectionType
             // Get the sections from the executable, if possible
             var sections = pex?.SectionTable;
             if (sections == null)
-            {
-                var neMatchSets = GetContentMatchSets();
-                if (neMatchSets != null && neMatchSets.Any())
-                    return MatchUtil.GetFirstMatch(file, fileContent, neMatchSets, includeDebug);
-
                 return null;
-            }
             
             // If there are more than 2 icd-prefixed sections, then we have a match
             int icdSectionCount = sections.Count(s => Encoding.ASCII.GetString(s.Name).StartsWith("icd"));

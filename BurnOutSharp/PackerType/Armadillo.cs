@@ -22,20 +22,18 @@ namespace BurnOutSharp.PackerType
             if (nicodeSection)
                 return "Armadillo";
 
-            // Loop through all "extension" sections
+            // Loop through all "extension" sections -- usually .data1 or .text1
             foreach (var section in sections.Where(s => s != null && Encoding.ASCII.GetString(s.Name).Trim('\0').EndsWith("1")))
             {
-                int sectionAddr = (int)section.PointerToRawData;
-                int sectionEnd = sectionAddr + (int)section.VirtualSize;
+                string sectionName = Encoding.ASCII.GetString(section.Name).Trim('\0');
+                var sectionRaw = pex.ReadRawSection(fileContent, sectionName);
                 var matchers = new List<ContentMatchSet>
                 {
                     // ARMDEBUG
-                    new ContentMatchSet(
-                        new ContentMatch(new byte?[] { 0x41, 0x52, 0x4D, 0x44, 0x45, 0x42, 0x55, 0x47 }, start: sectionAddr, end: sectionEnd),
-                        "Armadillo"),
+                    new ContentMatchSet(new byte?[] { 0x41, 0x52, 0x4D, 0x44, 0x45, 0x42, 0x55, 0x47 }, $"Armadillo"),
                 };
 
-                string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
+                string match = MatchUtil.GetFirstMatch(file, sectionRaw, matchers, includeDebug);
                 if (!string.IsNullOrWhiteSpace(match))
                     return match;
             }

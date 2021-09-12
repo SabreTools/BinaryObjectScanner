@@ -40,7 +40,7 @@ namespace BurnOutSharp.ProtectionType
             if (sections == null)
                 return null;
 
-            // Get the last section
+            // Get the last section and read after it
             var lastSection = sections.LastOrDefault();
             if (lastSection != null)
             {

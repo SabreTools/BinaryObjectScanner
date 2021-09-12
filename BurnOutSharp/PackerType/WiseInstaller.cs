@@ -34,9 +34,12 @@ namespace BurnOutSharp.PackerType
             var sections = pex?.SectionTable;
             if (sections == null)
             {
-                var neMatchSets = GetContentMatchSets();
-                if (neMatchSets != null && neMatchSets.Any())
-                    return MatchUtil.GetFirstMatch(file, fileContent, neMatchSets, includeDebug);
+                if (nex != null)
+                {
+                    var neMatchSets = GetContentMatchSets();
+                    if (neMatchSets != null && neMatchSets.Any())
+                        return MatchUtil.GetFirstMatch(file, fileContent, neMatchSets, includeDebug);
+                }
 
                 return null;
             }

@@ -8,7 +8,7 @@ namespace BurnOutSharp.ProtectionType
     public class CDCheck : IContentCheck
     {
         /// <inheritdoc/>
-        public List<ContentMatchSet> GetContentMatchSets()
+        private List<ContentMatchSet> GetContentMatchSets()
         {
             // TODO: Obtain a sample to find where this string is in a typical executable
             // TODO: Is this too broad in general? It _does_ indicate a CD check, but there's no real

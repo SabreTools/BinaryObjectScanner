@@ -82,17 +82,18 @@ namespace BurnOutSharp.ExecutableType.Microsoft
 
         // https://docs.microsoft.com/en-us/windows/win32/debug/pe-format#special-sections
         // Here is a list of standard sections that are used in various protections:
-        //          - .bss          *1 protection       Uninitialized data (free format)
+        // Y        - .bss          *1 protection       Uninitialized data (free format)
         // X        - .data         14 protections      Initialized data (free format)
         // X        - .edata        *1 protection       Export tables
         // X        - .idata        *1 protection       Import tables
         // X        - .rdata        11 protections      Read-only initialized data
         //          - .rsrc         *1 protection       Resource directory [Mostly taken care of, last protection needs research]
         // X        - .text         6 protections       Executable code (free format)
-        //          - .tls          *1 protection       Thread-local storage (object only)
+        // Y        - .tls          *1 protection       Thread-local storage (object only)
         // 
         // Here is a list of non-standard sections whose contents are read by various protections:
         // X        - CODE          2 protections       SafeDisc, WTM CD Protect
+        // X        - .dcrtext      *1 protection       JoWood
         // X        - .grand        *1 protection       CD-Cops / DVD-Cops
         // X        - .init         *1 protection       SolidShield
         //          - .pec2         *1 protection       PE Compact [Unconfirmed]
@@ -101,21 +102,24 @@ namespace BurnOutSharp.ExecutableType.Microsoft
         // Here is a list of non-standard sections whose data is not read by various protections:
         //          - .brick        1 protection        StarForce
         //          - .cenega       1 protection        Cenega ProtectDVD
+        //          - .ext          1 protection        JoWood
+        //          - HC09          1 protection        JoWood
         //          - .icd*         1 protection        CodeLock
         //          - .ldr          1 protection        3PLock
         //          - .ldt          1 protection        3PLock
         //          - .nicode       1 protection        Armadillo
-        //          - .NOS0         *1 protection       UPX (NOS Variant) [Used as endpoint]
-        //          - .NOS1         *1 protection       UPX (NOS Variant) [Used as endpoint]
+        //          - .NOS0         1 protection        UPX (NOS Variant) [Used as endpoint]
+        //          - .NOS1         1 protection        UPX (NOS Variant) [Used as endpoint]
         //          - .pec1         1 protection        PE Compact
         //          - .securom      1 protection        SecuROM
         //          - .sforce       1 protection        StarForce
         //          - stxt371       1 protection        SafeDisc
         //          - stxt774       1 protection        SafeDisc
-        //          - .UPX0         *1 protection       UPX [Used as endpoint]
-        //          - .UPX1         *1 protection       UPX [Used as endpoint]
+        //          - .UPX0         1 protection        UPX [Used as endpoint]
+        //          - .UPX1         1 protection        UPX [Used as endpoint]
         //          - .vob.pcd      1 protection        VOB ProtectCD
         //          - _winzip_      1 protection        WinZip SFX
+        //          - XPROT         1 protection        JoWood
         //
         // *    => Only used by 1 protection so it may be read in by that protection specifically
 

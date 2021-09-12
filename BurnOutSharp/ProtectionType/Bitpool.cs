@@ -15,7 +15,7 @@ namespace BurnOutSharp.ProtectionType
     public class Bitpool : IContentCheck, IPathCheck
     {
         /// <inheritdoc/>
-        public List<ContentMatchSet> GetContentMatchSets()
+        private List<ContentMatchSet> GetContentMatchSets()
         {
             // TODO: Obtain a sample to find where this string is in a typical executable
             return new List<ContentMatchSet>

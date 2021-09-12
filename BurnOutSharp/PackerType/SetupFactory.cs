@@ -28,7 +28,7 @@ namespace BurnOutSharp.PackerType
                 return $"Setup Factory {GetVersion(pex)}";
 
             // Longer version of the check that can be used if false positves become an issue:
-            // Setup Factory is a trademark of Indigo Rose Corporation
+            // "Setup Factory is a trademark of Indigo Rose Corporation"
 
             return null;
         }

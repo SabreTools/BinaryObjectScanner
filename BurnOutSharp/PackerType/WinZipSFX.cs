@@ -765,6 +765,7 @@ namespace BurnOutSharp.PackerType
         /// </summary>
         private string GetNEUnknownHeaderVersion(NewExecutable nex, string file, byte[] fileContent, bool includeDebug)
         {
+            // TODO: Like with PE, convert this into a preread in the header code
             int resourceStart = nex.DOSStubHeader.NewExeHeaderAddr + nex.NewExecutableHeader.ResourceTableOffset;
             int resourceEnd = nex.DOSStubHeader.NewExeHeaderAddr + nex.NewExecutableHeader.ModuleReferenceTableOffset;
             var matchers = new List<ContentMatchSet>
