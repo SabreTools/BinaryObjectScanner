@@ -23,8 +23,8 @@ namespace BurnOutSharp.ProtectionType
                 return null;
 
             // Get the .securom section, if it exists
-            var securomSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".securom"));
-            if (securomSection != null)
+            bool securomSection = pex.ContainsSection(".securom", exact: true);
+            if (securomSection)
                 return $"SecuROM {GetV7Version(fileContent)}";
 
             // Search after the last section
@@ -97,9 +97,9 @@ namespace BurnOutSharp.ProtectionType
             }
 
             // Get the .cms_d and .cms_t sections, if they exist -- TODO: Confirm if both are needed or either/or is fine
-            var cmsdSection = pex.GetFirstSection(".cmd_d", true);
-            var cmstSection = pex.GetFirstSection(".cms_t", true);
-            if (cmsdSection != null || cmstSection != null)
+            bool cmsdSection = pex.ContainsSection(".cmd_d", true);
+            bool cmstSection = pex.ContainsSection(".cms_t", true);
+            if (cmsdSection || cmstSection)
                 return $"SecuROM 1-3";
 
             return null;

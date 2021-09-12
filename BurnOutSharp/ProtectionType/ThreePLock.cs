@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using System.Text;
-using BurnOutSharp.ExecutableType.Microsoft;
+﻿using BurnOutSharp.ExecutableType.Microsoft;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -18,9 +16,9 @@ namespace BurnOutSharp.ProtectionType
             //"Y" + (char)0xC3 + "U" + (char)0x8B + (char)0xEC + (char)0x83 + (char)0xEC + "0SVW"
 
             // Get the .ldr and .ldt sections, if they exist -- TODO: Confirm if both are needed or either/or is fine
-            var cmsdSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".ldr"));
-            var cmstSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".ldt"));
-            if (cmsdSection != null || cmstSection != null)
+            bool cmsdSection = pex.ContainsSection(".ldr", exact: true);
+            bool cmstSection = pex.ContainsSection(".ldt", exact: true);
+            if (cmsdSection || cmstSection)
                 return $"3PLock";
 
             return null;

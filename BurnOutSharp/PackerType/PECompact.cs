@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using System.Text;
-using BurnOutSharp.ExecutableType.Microsoft;
+﻿using BurnOutSharp.ExecutableType.Microsoft;
 
 
 namespace BurnOutSharp.PackerType
@@ -24,12 +22,12 @@ namespace BurnOutSharp.PackerType
             // on the data in the file. This may be related to information in other fields
 
             // Get the pec1 section, if it exists
-            var pec1Section = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith("pec1"));
-            if (pec1Section != null)
+            bool pec1Section = pex.ContainsSection("pec1", exact: true);
+            if (pec1Section)
                 return "PE Compact v1.x";
 
             // Get the PEC2 section, if it exists -- TODO: Verify this comment since it's pulling the .text section
-            var textSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".text"));
+            var textSection = pex.GetFirstSection(".text", exact: true);
             if (textSection != null && textSection.PointerToRelocations == 0x32434550)
             {
                 if (textSection.PointerToLinenumbers != 0)

@@ -1,7 +1,5 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using BurnOutSharp.ExecutableType.Microsoft;
 using BurnOutSharp.Matching;
 using BurnOutSharp.Tools;
@@ -29,7 +27,7 @@ namespace BurnOutSharp.ProtectionType
 
             // TODO: Find this inside of the .rsrc section using the executable header
             // Get the .rsrc section, if it exists
-            var rsrcSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".rsrc"));
+            var rsrcSection = pex.GetLastSection(".rsrc", exact: true);
             if (rsrcSection != null)
             {
                 int sectionAddr = (int)rsrcSection.PointerToRawData;
@@ -54,13 +52,13 @@ namespace BurnOutSharp.ProtectionType
             }
 
             // Get the .brick section, if it exists
-            var brickSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".brick"));
-            if (brickSection != null)
+            bool brickSection = pex.ContainsSection(".brick", exact: true);
+            if (brickSection)
                 return "StarForce 3-5";
 
             // Get the .sforce* section, if it exists
-            var sforceSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".sforce"));
-            if (sforceSection != null)
+            bool sforceSection = pex.ContainsSection(".sforce", exact: false);
+            if (sforceSection)
                 return "StarForce 3-5";
 
             return null;

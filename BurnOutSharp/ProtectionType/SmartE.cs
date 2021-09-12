@@ -1,8 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using BurnOutSharp.ExecutableType.Microsoft;
 using BurnOutSharp.ExecutableType.Microsoft.Headers;
 using BurnOutSharp.Matching;
@@ -20,13 +18,13 @@ namespace BurnOutSharp.ProtectionType
                 return null;
 
             // Get the .edata section, if it exists
-            var edataSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".edata"));
+            var edataSection = pex.GetLastSection(".edata", exact: true);
             string match = GetMatchForSection(edataSection, file, fileContent, includeDebug);
             if (!string.IsNullOrWhiteSpace(match))
                 return match;
 
             // Get the .idata section, if it exists
-            var idataSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".idata"));
+            var idataSection = pex.GetLastSection(".idata", exact: true);
             match = GetMatchForSection(idataSection, file, fileContent, includeDebug);
             if (!string.IsNullOrWhiteSpace(match))
                 return match;
@@ -37,7 +35,7 @@ namespace BurnOutSharp.ProtectionType
                 return match;
 
             // Get the .tls section, if it exists
-            var tlsSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".tls"));
+            var tlsSection = pex.GetLastSection(".tls", exact: true);
             match = GetMatchForSection(tlsSection, file, fileContent, includeDebug);
             if (!string.IsNullOrWhiteSpace(match))
                 return match;

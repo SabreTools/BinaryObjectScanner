@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using BurnOutSharp.ExecutableType.Microsoft;
 using BurnOutSharp.Matching;
 
@@ -99,8 +98,8 @@ namespace BurnOutSharp.ProtectionType
             }
 
             // Get the .vob.pcd section, if it exists
-            var vobpcdSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".vob.pcd"));
-            if (vobpcdSection != null)
+            bool vobpcdSection = pex.ContainsSection(".vob.pcd", exact: true);
+            if (vobpcdSection)
                 return "VOB ProtectCD";
 
             return null;

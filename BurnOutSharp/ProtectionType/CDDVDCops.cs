@@ -2,7 +2,6 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using BurnOutSharp.ExecutableType.Microsoft;
 using BurnOutSharp.Matching;
 
@@ -41,33 +40,27 @@ namespace BurnOutSharp.ProtectionType
                 return null;
 
             // Get the .grand section, if it exists
-            var grandSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".grand"));
-            if (grandSection != null)
+            var grandSectionRaw = pex.ReadRawSection(fileContent, ".grand", true);
+            if (grandSectionRaw != null)
             {
-                int sectionAddr = (int)grandSection.PointerToRawData;
-                int sectionEnd = sectionAddr + (int)grandSection.VirtualSize;
                 var matchers = new List<ContentMatchSet>
                 {
                     // CD-Cops,  ver. 
-                    new ContentMatchSet(
-                        new ContentMatch(new byte?[]
-                        {
-                            0x43, 0x44, 0x2D, 0x43, 0x6F, 0x70, 0x73, 0x2C,
-                            0x20, 0x20, 0x76, 0x65, 0x72, 0x2E, 0x20
-                        }, start: sectionAddr, end: sectionEnd),
-                    GetVersion, "CD-Cops"),
+                    new ContentMatchSet(new byte?[]
+                    {
+                        0x43, 0x44, 0x2D, 0x43, 0x6F, 0x70, 0x73, 0x2C,
+                        0x20, 0x20, 0x76, 0x65, 0x72, 0x2E, 0x20
+                    }, GetVersion, "CD-Cops"),
 
                     // DVD-Cops,  ver. 
-                    new ContentMatchSet(
-                        new ContentMatch(new byte?[]
-                        {
-                            0x44, 0x56, 0x44, 0x2D, 0x43, 0x6F, 0x70, 0x73,
-                            0x2C, 0x20, 0x20, 0x76, 0x65, 0x72, 0x2E, 0x20
-                        }, start: sectionAddr, end: sectionEnd),
-                    GetVersion, "DVD-Cops"),
+                    new ContentMatchSet(new byte?[]
+                    {
+                        0x44, 0x56, 0x44, 0x2D, 0x43, 0x6F, 0x70, 0x73,
+                        0x2C, 0x20, 0x20, 0x76, 0x65, 0x72, 0x2E, 0x20
+                    }, GetVersion, "DVD-Cops"),
                 };
 
-                string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
+                string match = MatchUtil.GetFirstMatch(file, grandSectionRaw, matchers, includeDebug);
                 if (!string.IsNullOrWhiteSpace(match))
                     return match;
                 

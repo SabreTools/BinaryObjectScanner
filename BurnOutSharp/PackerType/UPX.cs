@@ -1,8 +1,6 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using BurnOutSharp.ExecutableType.Microsoft;
-using BurnOutSharp.ExecutableType.Microsoft.Headers;
 using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.PackerType
@@ -18,7 +16,7 @@ namespace BurnOutSharp.PackerType
                 return null;
 
             // Standard UPX
-            int foundPosition = FindData(fileContent, sections, "UPX");
+            int foundPosition = FindData(pex, "UPX");
             if (foundPosition > -1)
             {
                 var matchers = new List<ContentMatchSet>
@@ -34,7 +32,7 @@ namespace BurnOutSharp.PackerType
             }
 
             // NOS Variant
-            foundPosition = FindData(fileContent, sections, "NOS");
+            foundPosition = FindData(pex, "NOS");
             if (foundPosition > -1)
             {
                 var matchers = new List<ContentMatchSet>
@@ -84,15 +82,14 @@ namespace BurnOutSharp.PackerType
         /// <summary>
         /// Find the location of the first matched section, if possible
         /// </summary>
-        /// <param name="fileContent">Byte array representing the file contents</param>
-        /// <param name="sections">Array of sections to check against</param>
+        /// <param name="pex">PortableExecutable representing the read-in file</param>
         /// <param name="sectionPrefix">Prefix of the sections to check for</param>
         /// <returns>Real address of the section data, -1 on error</returns>
-        private int FindData(byte[] fileContent, SectionHeader[] sections, string sectionPrefix)
+        private int FindData(PortableExecutable pex, string sectionPrefix)
         {
             // Get the two matching sections, if possible
-            var firstSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith($"{sectionPrefix}0"));
-            var secondSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith($"{sectionPrefix}1"));
+            var firstSection = pex.GetFirstSection($"{sectionPrefix}0", exact: true);
+            var secondSection = pex.GetFirstSection($"{sectionPrefix}1", exact: true);
 
             // If either section is null, we can't do anything
             if (firstSection == null || secondSection == null)

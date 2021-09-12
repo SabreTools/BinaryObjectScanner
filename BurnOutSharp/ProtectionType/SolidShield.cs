@@ -2,7 +2,6 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using BurnOutSharp.ExecutableType.Microsoft;
 using BurnOutSharp.Matching;
 using BurnOutSharp.Tools;
@@ -67,26 +66,20 @@ namespace BurnOutSharp.ProtectionType
             else if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Activation Manager", StringComparison.OrdinalIgnoreCase))
                 return $"SolidShield Activation Manager Module {GetFileVersion(pex)}";
 
-             // Get the .init section, if it exists
-            var initSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".init"));
-            if (initSection != null)
+            // Get the .init section, if it exists
+            var initSectionRaw = pex.ReadRawSection(fileContent, ".init", true);
+            if (initSectionRaw != null)
             {
-                int sectionAddr = (int)initSection.PointerToRawData;
-                int sectionEnd = sectionAddr + (int)initSection.VirtualSize;
                 var matchers = new List<ContentMatchSet>
                 {
                     // (char)0xEF + (char)0xBE + (char)0xAD + (char)0xDE
-                    new ContentMatchSet(
-                        new ContentMatch(new byte?[] { 0xEF, 0xBE, 0xAD, 0xDE }, start: sectionAddr, end: sectionEnd),
-                    GetExeWrapperVersion, "SolidShield EXE Wrapper"),
+                    new ContentMatchSet(new byte?[] { 0xEF, 0xBE, 0xAD, 0xDE }, GetExeWrapperVersion, "SolidShield EXE Wrapper"),
 
                     // dvm.dll
-                    new ContentMatchSet(
-                        new ContentMatch(new byte?[] { 0x64, 0x76, 0x6D, 0x2E, 0x64, 0x6C, 0x6C }, start: sectionAddr, end: sectionEnd),
-                    "SolidShield EXE Wrapper v1"),
+                    new ContentMatchSet(new byte?[] { 0x64, 0x76, 0x6D, 0x2E, 0x64, 0x6C, 0x6C }, "SolidShield EXE Wrapper v1"),
                 };
 
-                string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
+                string match = MatchUtil.GetFirstMatch(file, initSectionRaw, matchers, includeDebug);
                 if (!string.IsNullOrWhiteSpace(match))
                     return match;
             }

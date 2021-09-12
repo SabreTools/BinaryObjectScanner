@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using BurnOutSharp.ExecutableType.Microsoft;
 using BurnOutSharp.Matching;
 
@@ -34,7 +33,7 @@ namespace BurnOutSharp.ProtectionType
                 return null;
 
             // Get the last .bss section, if it exists
-            var bssSection = sections.LastOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".bss"));
+            var bssSection = pex.GetLastSection(".bss", exact: true);
             if (bssSection != null)
             {
                 int sectionAddr = (int)bssSection.PointerToRawData;

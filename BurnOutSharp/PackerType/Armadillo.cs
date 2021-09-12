@@ -18,8 +18,8 @@ namespace BurnOutSharp.PackerType
                 return null;
 
             // Get the .nicode section, if it exists
-            var nicodeSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".nicode"));
-            if (nicodeSection != null)
+            bool nicodeSection = pex.ContainsSection(".nicode", exact: true);
+            if (nicodeSection)
                 return "Armadillo";
 
             // Loop through all "extension" sections

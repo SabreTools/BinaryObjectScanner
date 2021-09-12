@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using System.Text;
-using BurnOutSharp.ExecutableType.Microsoft;
+﻿using BurnOutSharp.ExecutableType.Microsoft;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -15,8 +13,8 @@ namespace BurnOutSharp.ProtectionType
                 return null;
 
             // Get the .cenega section, if it exists
-            var cenegaSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith(".cenega"));
-            if (cenegaSection != null)
+            bool cenegaSection = pex.ContainsSection(".cenega", exact: true);
+            if (cenegaSection)
                 return "Cenega ProtectDVD";
 
             return null;

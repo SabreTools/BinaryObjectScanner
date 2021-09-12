@@ -83,24 +83,24 @@ namespace BurnOutSharp.ExecutableType.Microsoft
         // https://docs.microsoft.com/en-us/windows/win32/debug/pe-format#special-sections
         // Here is a list of standard sections that are used in various protections:
         //          - .bss          *1 protection       Uninitialized data (free format)
-        //          - .data         14 protections      Initialized data (free format)
+        // X        - .data         14 protections      Initialized data (free format)
         //          - .edata        *1 protection       Export tables
         //          - .idata        2 protections       Import tables
-        //          - .rdata        11 protections      Read-only initialized data
+        // X        - .rdata        11 protections      Read-only initialized data
         //          - .rsrc         *1 protection       Resource directory [Mostly taken care of, last protection needs research]
-        //          - .text         6 protections       Executable code (free format)
+        // X        - .text         6 protections       Executable code (free format)
         //          - .tls          *1 protection       Thread-local storage (object only)
         // 
         // Here is a list of non-standard sections whose contents are read by various protections:
-        //          - CODE          *1 protection       WTM CD Protect
-        //          - .grand        *1 protection       CD-Cops / DVD-Cops
-        //          - .init         *1 protection       SolidShield
-        //          - .NOS0         *1 protection       UPX (NOS Variant)
-        //          - .NOS1         *1 protection       UPX (NOS Variant)
+        // X        - CODE          *1 protection       WTM CD Protect
+        // X        - .grand        *1 protection       CD-Cops / DVD-Cops
+        // X        - .init         *1 protection       SolidShield
+        //          - .NOS0         *1 protection       UPX (NOS Variant) [Used as endpoint]
+        //          - .NOS1         *1 protection       UPX (NOS Variant) [Used as endpoint]
         //          - .pec2         *1 protection       PE Compact [Unconfirmed]
-        //          - .txt2         *1 protection       SafeDisc
-        //          - .UPX0         *1 protection       UPX
-        //          - .UPX1         *1 protection       UPX
+        // X        - .txt2         *1 protection       SafeDisc
+        //          - .UPX0         *1 protection       UPX [Used as endpoint]
+        //          - .UPX1         *1 protection       UPX [Used as endpoint]
         // 
         // Here is a list of non-standard sections whose existence are checked by various protections:
         //          - .brick        1 protection        StarForce
@@ -112,8 +112,8 @@ namespace BurnOutSharp.ExecutableType.Microsoft
         //          - .pec1         1 protection        PE Compact
         //          - .securom      1 protection        SecuROM
         //          - .sforce       1 protection        StarForce
-        //          - .stxt371      1 protection        SafeDisc
-        //          - .stxt774      1 protection        SafeDisc
+        //          - stxt371       1 protection        SafeDisc
+        //          - stxt774       1 protection        SafeDisc
         //          - .vob.pcd      1 protection        VOB ProtectCD
         //          - _winzip_      1 protection        WinZip SFX
         //
@@ -238,13 +238,13 @@ namespace BurnOutSharp.ExecutableType.Microsoft
         /// <summary>
         /// Get the raw bytes from a section, if possible
         /// </summary>
-        public byte[] ReadRawSection(byte[] content, ref int offset, string sectionName, bool first = true)
+        public byte[] ReadRawSection(byte[] content, string sectionName, bool first = true)
         {
             var section = first ? GetFirstSection(sectionName, true) : GetLastSection(sectionName, true);
             if (section == null)
                 return null;
 
-            offset = (int)section.PointerToRawData;
+            int offset = (int)section.PointerToRawData;
             return content.ReadBytes(ref offset, (int)section.VirtualSize);
         }
 
@@ -340,13 +340,13 @@ namespace BurnOutSharp.ExecutableType.Microsoft
                 #region Freeform Sections
 
                 // Data Section
-                pex.DataSectionRaw = pex.ReadRawSection(stream, ".data", true) ?? pex.ReadRawSection(stream, "DATA", true);
+                pex.DataSectionRaw = pex.ReadRawSection(stream, ".data", false) ?? pex.ReadRawSection(stream, "DATA", false);
 
                 // Resource Data Section
-                pex.ResourceDataSectionRaw = pex.ReadRawSection(stream, ".rdata", true);
+                pex.ResourceDataSectionRaw = pex.ReadRawSection(stream, ".rdata", false);
 
                 // Text Section
-                pex.TextSectionRaw = pex.ReadRawSection(stream, ".text", true);
+                pex.TextSectionRaw = pex.ReadRawSection(stream, ".text", false);
 
                 #endregion
             }
@@ -422,13 +422,13 @@ namespace BurnOutSharp.ExecutableType.Microsoft
                 #region Freeform Sections
 
                 // Data Section
-                pex.DataSectionRaw = pex.ReadRawSection(content, ref offset, ".data", true) ?? pex.ReadRawSection(content, ref offset, "DATA", true);
+                pex.DataSectionRaw = pex.ReadRawSection(content, ".data", false) ?? pex.ReadRawSection(content, "DATA", false);
 
                 // Resource Data Section
-                pex.ResourceDataSectionRaw = pex.ReadRawSection(content, ref offset, ".rdata", true);
+                pex.ResourceDataSectionRaw = pex.ReadRawSection(content, ".rdata", false);
 
                 // Text Section
-                pex.TextSectionRaw = pex.ReadRawSection(content, ref offset, ".text", true);
+                pex.TextSectionRaw = pex.ReadRawSection(content, ".text", false);
 
                 #endregion
             }

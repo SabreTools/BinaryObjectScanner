@@ -1,7 +1,5 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using BurnOutSharp.ExecutableType.Microsoft;
 using BurnOutSharp.Matching;
 
@@ -18,24 +16,20 @@ namespace BurnOutSharp.ProtectionType
                 return null;
 
             // Get the CODE section, if it exists
-            var codeSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith("CODE"));
-            if (codeSection != null)
+            var codeSectionRaw = pex.ReadRawSection(fileContent, "CODE", true);
+            if (codeSectionRaw != null)
             {
-                int sectionAddr = (int)codeSection.PointerToRawData;
-                int sectionEnd = sectionAddr + (int)codeSection.VirtualSize;
                 var matchers = new List<ContentMatchSet>
                 {
                     // wtmdum.imp
-                    new ContentMatchSet(
-                        new ContentMatch(new byte?[]
-                        {
-                            0x77, 0x74, 0x6D, 0x64, 0x75, 0x6D, 0x2E, 0x69,
-                            0x6D, 0x70
-                        }, start: sectionAddr, end: sectionEnd),
-                    "WTM CD Protect"),
+                    new ContentMatchSet(new byte?[]
+                    {
+                        0x77, 0x74, 0x6D, 0x64, 0x75, 0x6D, 0x2E, 0x69,
+                        0x6D, 0x70
+                    }, "WTM CD Protect"),
                 };
 
-                string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
+                string match = MatchUtil.GetFirstMatch(file, codeSectionRaw, matchers, includeDebug);
                 if (!string.IsNullOrWhiteSpace(match))
                     return match;
             }

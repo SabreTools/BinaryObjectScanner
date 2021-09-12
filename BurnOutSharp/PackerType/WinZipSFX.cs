@@ -2,8 +2,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using BurnOutSharp.ExecutableType.Microsoft;
 using BurnOutSharp.Matching;
 using BurnOutSharp.Tools;
@@ -36,8 +34,8 @@ namespace BurnOutSharp.PackerType
                 }
 
                 // Get the _winzip_ section, if it exists
-                var winzipSection = sections.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).StartsWith("_winzip_"));
-                if (winzipSection != null)
+                bool winzipSection = pex.ContainsSection("_winzip_", exact: true);
+                if (winzipSection)
                 {
                     string version = GetPEHeaderVersion(pex);
                     if (!string.IsNullOrWhiteSpace(version))
