@@ -14,6 +14,7 @@ namespace BurnOutSharp.ProtectionType
             if (sections == null)
                 return null;
 
+            // TODO: Is this too broad in general?
             string name = Utilities.GetInternalName(pex);
             if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("EReg", StringComparison.OrdinalIgnoreCase))
                 return $"Executable-Based Online Registration {Utilities.GetFileVersion(pex)}";

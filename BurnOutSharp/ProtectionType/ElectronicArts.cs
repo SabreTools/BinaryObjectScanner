@@ -1,40 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using BurnOutSharp.ExecutableType.Microsoft;
 using BurnOutSharp.Matching;
 using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ProtectionType
 {
+    // TODO: Do more research into the Cucko protection:
+    //      - Reference to `EASTL` and `EAStdC` are standard for EA products and does not indicate Cucko by itself
+    //      - There's little information outside of PiD detection that actually knows about Cucko
+    //      - Look into `ccinstall`, `Services/EACOM`, `TSLHost`, `SIGS/UploadThread/exchangeAuthToken`,
+    //          `blazeURL`, `psapi.dll`, `DasmX86Dll.dll`, `NVCPL.dll`, `iphlpapi.dll`, `dbghelp.dll`,
+    //          `WS2_32.dll`, 
     public class ElectronicArts : IContentCheck
     {
-        // TODO: Verify this doesn't over-match
-        // TODO: Do more research into the Cucko protection:
-        //      - Reference to `EASTL` and `EAStdC` are standard for EA products and does not indicate Cucko by itself
-        //      - There's little information outside of PiD detection that actually knows about Cucko
-        //      - Look into `ccinstall`, `Services/EACOM`, `TSLHost`, `SIGS/UploadThread/exchangeAuthToken`,
-        //          `blazeURL`, `psapi.dll`, `DasmX86Dll.dll`, `NVCPL.dll`, `iphlpapi.dll`, `dbghelp.dll`,
-        //          `WS2_32.dll`, 
-        /// <inheritdoc/>
-        private List<ContentMatchSet> GetContentMatchSets()
-        {
-            // TODO: Obtain a sample to find where this string is in a typical executable
-            return new List<ContentMatchSet>
-            {
-                // EASTL
-                //new ContentMatchSet(new byte?[] { 0x45, 0x41, 0x53, 0x54, 0x4C }, "Cucko (EA Custom)"),
-
-                // ereg.ea-europe.com
-                new ContentMatchSet(new byte?[]
-                {
-                    0x65, 0x72, 0x65, 0x67, 0x2E, 0x65, 0x61, 0x2D,
-                    0x65, 0x75, 0x72, 0x6F, 0x70, 0x65, 0x2E, 0x63,
-                    0x6F, 0x6D
-                }, Utilities.GetFileVersion, "EA CdKey Registration Module"),
-            };
-        }
-
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
         {
@@ -44,7 +23,9 @@ namespace BurnOutSharp.ProtectionType
                 return null;
 
             string name = Utilities.GetFileDescription(pex);
-            if (!string.IsNullOrWhiteSpace(name) && name.Contains("Registration code installer program"))
+            if (!string.IsNullOrWhiteSpace(name) && name.Contains("EReg MFC Application"))
+                return $"EA CdKey Registration Module {Utilities.GetFileVersion(pex)}";
+            else if (!string.IsNullOrWhiteSpace(name) && name.Contains("Registration code installer program"))
                 return $"EA CdKey Registration Module {Utilities.GetFileVersion(pex)}";
             else if (!string.IsNullOrWhiteSpace(name) && name.Equals("EA DRM Helper", StringComparison.OrdinalIgnoreCase))
                 return $"EA DRM Protection {Utilities.GetFileVersion(pex)}";
@@ -112,10 +93,6 @@ namespace BurnOutSharp.ProtectionType
                 if (!string.IsNullOrWhiteSpace(match))
                     return match;
             }
-
-            var contentMatchSets = GetContentMatchSets();
-            if (contentMatchSets != null && contentMatchSets.Any())
-                return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
 
             return null;
         }
