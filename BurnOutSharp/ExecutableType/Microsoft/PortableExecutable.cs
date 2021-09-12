@@ -92,28 +92,28 @@ namespace BurnOutSharp.ExecutableType.Microsoft
         //          - .tls          *1 protection       Thread-local storage (object only)
         // 
         // Here is a list of non-standard sections whose contents are read by various protections:
-        // X        - CODE          *1 protection       WTM CD Protect
+        // X        - CODE          2 protections       SafeDisc, WTM CD Protect
         // X        - .grand        *1 protection       CD-Cops / DVD-Cops
         // X        - .init         *1 protection       SolidShield
-        //          - .NOS0         *1 protection       UPX (NOS Variant) [Used as endpoint]
-        //          - .NOS1         *1 protection       UPX (NOS Variant) [Used as endpoint]
         //          - .pec2         *1 protection       PE Compact [Unconfirmed]
         // X        - .txt2         *1 protection       SafeDisc
-        //          - .UPX0         *1 protection       UPX [Used as endpoint]
-        //          - .UPX1         *1 protection       UPX [Used as endpoint]
         // 
-        // Here is a list of non-standard sections whose existence are checked by various protections:
+        // Here is a list of non-standard sections whose data is not read by various protections:
         //          - .brick        1 protection        StarForce
         //          - .cenega       1 protection        Cenega ProtectDVD
         //          - .icd*         1 protection        CodeLock
         //          - .ldr          1 protection        3PLock
         //          - .ldt          1 protection        3PLock
         //          - .nicode       1 protection        Armadillo
+        //          - .NOS0         *1 protection       UPX (NOS Variant) [Used as endpoint]
+        //          - .NOS1         *1 protection       UPX (NOS Variant) [Used as endpoint]
         //          - .pec1         1 protection        PE Compact
         //          - .securom      1 protection        SecuROM
         //          - .sforce       1 protection        StarForce
         //          - stxt371       1 protection        SafeDisc
         //          - stxt774       1 protection        SafeDisc
+        //          - .UPX0         *1 protection       UPX [Used as endpoint]
+        //          - .UPX1         *1 protection       UPX [Used as endpoint]
         //          - .vob.pcd      1 protection        VOB ProtectCD
         //          - _winzip_      1 protection        WinZip SFX
         //

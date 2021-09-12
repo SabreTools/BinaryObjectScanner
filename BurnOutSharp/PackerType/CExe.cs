@@ -1,7 +1,6 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using BurnOutSharp.ExecutableType.Microsoft;
 using BurnOutSharp.Matching;
 
@@ -15,36 +14,30 @@ namespace BurnOutSharp.PackerType
         public bool ShouldScan(byte[] magic) => true;
         
         /// <inheritdoc/>
-        private List<ContentMatchSet> GetContentMatchSets()
-        {
-            // TODO: Obtain a sample to find where this string is in a typical executable
-            return new List<ContentMatchSet>
-            {
-                // %Wo�a6.�a6.�a6.�a6.�{6.�.).�f6.��).�`6.��0.�`6.�
-                new ContentMatchSet(
-                    new ContentMatch(new byte?[]
-                    {
-                        0x25, 0x57, 0x6F, 0xC1, 0x61, 0x36, 0x01, 0x92,
-                        0x61, 0x36, 0x01, 0x92, 0x61, 0x36, 0x01, 0x92,
-                        0x61, 0x36, 0x00, 0x92, 0x7B, 0x36, 0x01, 0x92,
-                        0x03, 0x29, 0x12, 0x92, 0x66, 0x36, 0x01, 0x92,
-                        0x89, 0x29, 0x0A, 0x92, 0x60, 0x36, 0x01, 0x92,
-                        0xD9, 0x30, 0x07, 0x92, 0x60, 0x36, 0x01, 0x92
-                    }, end: 200), "CExe"),
-            };
-        }
-
-        /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.SectionTable;
-            if (sections == null)
+            var stub = pex?.DOSStubHeader;
+            if (stub == null)
                 return null;
 
-            var contentMatchSets = GetContentMatchSets();
-            if (contentMatchSets != null && contentMatchSets.Any())
-                return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
+            var matchers = new List<ContentMatchSet>
+            {
+                // %Wo�a6.�a6.�a6.�a6.�{6.�.).�f6.��).�`6.��0.�`6.�
+                new ContentMatchSet(new byte?[]
+                {
+                    0x25, 0x57, 0x6F, 0xC1, 0x61, 0x36, 0x01, 0x92,
+                    0x61, 0x36, 0x01, 0x92, 0x61, 0x36, 0x01, 0x92,
+                    0x61, 0x36, 0x00, 0x92, 0x7B, 0x36, 0x01, 0x92,
+                    0x03, 0x29, 0x12, 0x92, 0x66, 0x36, 0x01, 0x92,
+                    0x89, 0x29, 0x0A, 0x92, 0x60, 0x36, 0x01, 0x92,
+                    0xD9, 0x30, 0x07, 0x92, 0x60, 0x36, 0x01, 0x92
+                }, "CExe")
+            };
+
+            string match = MatchUtil.GetFirstMatch(file, pex.DOSStubHeader.ExecutableData, matchers, includeDebug);
+            if (!string.IsNullOrWhiteSpace(match))
+                return match;
 
             return null;
         }

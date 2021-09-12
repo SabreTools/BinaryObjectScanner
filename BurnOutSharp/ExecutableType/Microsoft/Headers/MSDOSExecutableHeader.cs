@@ -124,6 +124,11 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Headers
 
         #endregion
 
+        /// <summary>
+        /// All data after the last item in the header but before the new EXE header address
+        /// </summary>
+        public byte[] ExecutableData;
+
         public static MSDOSExecutableHeader Deserialize(Stream stream, bool asStub = true)
         {
             MSDOSExecutableHeader idh = new MSDOSExecutableHeader();
@@ -152,6 +157,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Headers
             {
                 idh.Reserved1[i] = stream.ReadUInt16();
             }
+
             idh.OEMIdentifier = stream.ReadUInt16();
             idh.OEMInformation = stream.ReadUInt16();
             idh.Reserved2 = new ushort[Constants.ERES2WDS];
@@ -159,7 +165,9 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Headers
             {
                 idh.Reserved2[i] = stream.ReadUInt16();
             }
+
             idh.NewExeHeaderAddr = stream.ReadInt32();
+            idh.ExecutableData = stream.ReadBytes(idh.NewExeHeaderAddr - (int)stream.Position);
 
             return idh;
         }
@@ -192,6 +200,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Headers
             {
                 idh.Reserved1[i] = content.ReadUInt16(ref offset);
             }
+
             idh.OEMIdentifier = content.ReadUInt16(ref offset);
             idh.OEMInformation = content.ReadUInt16(ref offset);
             idh.Reserved2 = new ushort[Constants.ERES2WDS];
@@ -199,7 +208,9 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Headers
             {
                 idh.Reserved2[i] = content.ReadUInt16(ref offset);
             }
+
             idh.NewExeHeaderAddr = content.ReadInt32(ref offset);
+            idh.ExecutableData = content.ReadBytes(ref offset, idh.NewExeHeaderAddr - offset);
 
             return idh;
         }
