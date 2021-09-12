@@ -61,7 +61,7 @@ namespace BurnOutSharp.ProtectionType
                 0x2E, 0x50, 0x45
             };
             int endDosStub = pex.DOSStubHeader.NewExeHeaderAddr;
-            bool containsCheck = fileContent.FirstPosition(check, out int position, start: 0, end: endDosStub);
+            bool containsCheck = pex.DOSStubHeader.ExecutableData.FirstPosition(check, out int position);
 
             // If the .text section doesn't exist, then the second check can't be found
             bool containsCheck2 = false;
@@ -87,11 +87,11 @@ namespace BurnOutSharp.ProtectionType
             }
 
             if (containsCheck && containsCheck2)
-                return $"LaserLok {GetVersion(fileContent, position2)} {GetBuild(pex.TextSectionRaw, true)}" + (includeDebug ? $" (Index {position}, {position2})" : string.Empty);
+                return $"LaserLok {GetVersion(pex.TextSectionRaw, position2)} {GetBuild(pex.TextSectionRaw, true)}" + (includeDebug ? $" (Index {position}, {position2})" : string.Empty);
             else if (containsCheck && !containsCheck2)
                 return $"LaserLok Marathon {GetBuild(pex.TextSectionRaw, false)}" + (includeDebug ? $" (Index {position})" : string.Empty);
             else if (!containsCheck && containsCheck2)
-                return $"LaserLok {GetVersion(fileContent, --position2)} {GetBuild(pex.TextSectionRaw, false)}" + (includeDebug ? $" (Index {position2})" : string.Empty);
+                return $"LaserLok {GetVersion(pex.TextSectionRaw, --position2)} {GetBuild(pex.TextSectionRaw, false)}" + (includeDebug ? $" (Index {position2})" : string.Empty);
 
             return null;
         }
@@ -174,9 +174,9 @@ namespace BurnOutSharp.ProtectionType
             return $"(Build {year}-{month}-{day})";
         }
 
-        private static string GetVersion(byte[] fileContent, int position)
+        private static string GetVersion(byte[] sectionContent, int position)
         {
-            return new string(new ArraySegment<byte>(fileContent, position + 76, 4).Select(b => (char)b).ToArray());
+            return new string(new ArraySegment<byte>(sectionContent, position + 76, 4).Select(b => (char)b).ToArray());
         }
 
         public static string GetVersion16Bit(string firstMatchedString, IEnumerable<string> files)
