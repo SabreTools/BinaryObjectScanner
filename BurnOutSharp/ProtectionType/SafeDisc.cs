@@ -20,7 +20,7 @@ namespace BurnOutSharp.ProtectionType
                 new PathMatch("CLCD32.DLL", useEndsWith: true),
                 new PathMatch("CLOKSPL.EXE", useEndsWith: true),
                 new PathMatch(".icd", useEndsWith: true),
-            }, "SafeDisc 1"),
+            }, "SafeDisc 1/Lite"),
 
             new PathMatchSet(new List<PathMatch>
             {
@@ -34,6 +34,9 @@ namespace BurnOutSharp.ProtectionType
             new PathMatchSet(new PathMatch("DPLAYERX.DLL", useEndsWith: true), GetDPlayerXVersion, "SafeDisc (dplayerx.dll)"),
             new PathMatchSet(new PathMatch("drvmgt.dll", useEndsWith: true), GetDrvmgtVersion, "SafeDisc (drvmgt.dll)"),
             new PathMatchSet(new PathMatch("secdrv.sys", useEndsWith: true), GetSecdrvVersion, "SafeDisc (secdrv.sys)"),
+            
+            new PathMatchSet(new PathMatch("00000001.LT1", useEndsWith: true), "SafeDisc Lite"),
+            
             new PathMatchSet(".SafeDiscDVD.bundle", "SafeDisc for Macintosh"),
         };
 
