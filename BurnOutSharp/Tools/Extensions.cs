@@ -25,7 +25,7 @@ namespace BurnOutSharp.Tools
         public static byte[] ReadBytes(this byte[] content, ref int offset, int count)
         {
             byte[] buffer = new byte[count];
-            Array.Copy(content, offset, buffer, 0, count);
+            Array.Copy(content, offset, buffer, 0, Math.Min(count, content.Length - offset));
             offset += count;
             return buffer;
         }
