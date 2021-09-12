@@ -17,43 +17,65 @@ namespace BurnOutSharp.PackerType
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
         {
-            // Get the sections from the executable, if possible
-            var sections = pex?.SectionTable;
-            if (sections == null)
-                return null;
-            
-            // Get the DATA/.data section, if it exists
-            if (pex.DataSectionRaw != null)
+            // Try to read the contents as a PE executable
+            if (pex != null)
             {
-                var matchers = new List<ContentMatchSet>
+                var sections = pex?.SectionTable;
+                if (sections == null)
+                    return null;
+                
+                // Get the DATA/.data section, if it exists
+                if (pex.DataSectionRaw != null)
                 {
-                    // Inno Setup Setup Data (
-                    new ContentMatchSet(new byte?[]
+                    var matchers = new List<ContentMatchSet>
                     {
-                        0x49, 0x6E, 0x6E, 0x6F, 0x20, 0x53, 0x65, 0x74,
-                        0x75, 0x70, 0x20, 0x53, 0x65, 0x74, 0x75, 0x70,
-                        0x20, 0x44, 0x61, 0x74, 0x61, 0x20, 0x28
-                    }, GetVersion, "Inno Setup"),
-                };
+                        // Inno Setup Setup Data (
+                        new ContentMatchSet(new byte?[]
+                        {
+                            0x49, 0x6E, 0x6E, 0x6F, 0x20, 0x53, 0x65, 0x74,
+                            0x75, 0x70, 0x20, 0x53, 0x65, 0x74, 0x75, 0x70,
+                            0x20, 0x44, 0x61, 0x74, 0x61, 0x20, 0x28
+                        }, GetVersion, "Inno Setup"),
+                    };
 
-                string match = MatchUtil.GetFirstMatch(file, pex.DataSectionRaw, matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
-                    return match;
+                    string match = MatchUtil.GetFirstMatch(file, pex.DataSectionRaw, matchers, includeDebug);
+                    if (!string.IsNullOrWhiteSpace(match))
+                        return match;
+                }
+
+                // Get the DOS stub from the executable, if possible
+                var stub = pex?.DOSStubHeader;
+                if (stub == null)
+                    return null;
+                
+                // Check for "Inno" in the reserved words
+                if (stub.Reserved2[4] == 0x6E49 && stub.Reserved2[5] == 0x6F6E)
+                {
+                    string version = GetOldVersion(file, fileContent);
+                    if (!string.IsNullOrWhiteSpace(version))
+                        return $"Inno Setup {version}";
+                    
+                    return "Inno Setup (Unknown Version)";
+                }
             }
 
-            // Get the DOS stub from the executable, if possible
-            var stub = pex?.DOSStubHeader;
-            if (stub == null)
-                return null;
-            
-            // Check for "Inno" in the reserved words
-            if (stub.Reserved2[4] == 0x6E49 && stub.Reserved2[5] == 0x6F6E)
+            // Try to read the contents as an NE executable
+            if (nex != null)
             {
-                string version = GetOldVersion(file, fileContent);
-                if (!string.IsNullOrWhiteSpace(version))
-                    return $"Inno Setup {version}";
+                // Get the DOS stub from the executable, if possible
+                var stub = nex?.DOSStubHeader;
+                if (stub == null)
+                    return null;
                 
-                return "Inno Setup (Unknown Version)";
+                // Check for "Inno" in the reserved words
+                if (stub.Reserved2[4] == 0x6E49 && stub.Reserved2[5] == 0x6F6E)
+                {
+                    string version = GetOldVersion(file, fileContent);
+                    if (!string.IsNullOrWhiteSpace(version))
+                        return $"Inno Setup {version}";
+                    
+                    return "Inno Setup (Unknown Version)";
+                }
             }
 
             return null;
@@ -106,7 +128,7 @@ namespace BurnOutSharp.PackerType
 
         private static string GetOldVersion(string file, byte[] fileContent)
         {
-            // TODO: Figure out where this lives in the file
+            // TODO: Obtain a sample to find where this string is in a typical executable
             var matchers = new List<ContentMatchSet>
             {
                 // "rDlPtS02" + (char)0x87 + "eVx"
