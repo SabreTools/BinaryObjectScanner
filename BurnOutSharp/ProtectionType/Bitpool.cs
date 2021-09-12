@@ -1,7 +1,5 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
-using BurnOutSharp.ExecutableType.Microsoft;
 using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
@@ -12,34 +10,8 @@ namespace BurnOutSharp.ProtectionType
     /// The "CD.IDX" appears to purposefully contain bad sectors in most, if not all, cases.
     /// A "bitpool.rsc" file is present in some, but not all Bitpool protected games. The purpose of it is so far unclear.
     /// </summary>
-    public class Bitpool : IContentCheck, IPathCheck
+    public class Bitpool : IPathCheck
     {
-        /// <inheritdoc/>
-        private List<ContentMatchSet> GetContentMatchSets()
-        {
-            // TODO: Obtain a sample to find where this string is in a typical executable
-            return new List<ContentMatchSet>
-            {
-                // Sometimes found in CD.IDX
-                // BITPOOL.RSC
-                new ContentMatchSet(new byte?[]
-                {
-                    0x42, 0x49, 0x54, 0x50, 0x4F, 0x4F, 0x4C, 0x2E,
-                    0x52, 0x53, 0x43
-                }, "Bitpool"),
-            };
-        }
-
-        /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
-        {
-            var contentMatchSets = GetContentMatchSets();
-            if (contentMatchSets != null && contentMatchSets.Any())
-                return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
-
-            return null;
-        }
-
         /// <inheritdoc/>
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string> files)
         {
