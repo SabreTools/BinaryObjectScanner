@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using BurnOutSharp.Tools;
@@ -37,7 +35,6 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Resources
 
             while ((r.Length = stream.ReadUInt16()) == 0x0000);
 
-            r.Length = stream.ReadUInt16();
             r.ValueLength = stream.ReadUInt16();
             r.Type = stream.ReadUInt16();
             r.Key = stream.ReadString(Encoding.Unicode);
@@ -51,18 +48,9 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Resources
 
             while ((r.Length = content.ReadUInt16(ref offset)) == 0x0000);
 
-            offset += 2;
             r.ValueLength = content.ReadUInt16(ref offset);
             r.Type = content.ReadUInt16(ref offset);
-
-            List<char> keyChars = new List<char>();
-            while (BitConverter.ToUInt16(content, offset) != 0x0000)
-            {
-                keyChars.Add(Encoding.Unicode.GetChars(content, offset, 2)[0]); offset += 2;
-            }
-            offset += 2;
-
-            r.Key = new string(keyChars.ToArray());
+            r.Key = content.ReadString(ref offset, Encoding.Unicode);
 
             return r;
         }

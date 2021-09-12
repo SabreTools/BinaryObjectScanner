@@ -126,21 +126,17 @@ namespace BurnOutSharp.Tools
         /// </summary>
         public static string ReadString(this byte[] content, ref int offset, Encoding encoding)
         {
-            // TODO: Fix the code below to make it work with byte arrays and not streams
-            return null;
+            byte[] nullTerminator = encoding.GetBytes(new char[] { '\0' });
+            int charWidth = nullTerminator.Length;
 
-            // byte[] nullTerminator = encoding.GetBytes(new char[] { '\0' });
-            // int charWidth = nullTerminator.Length;
+            List<char> keyChars = new List<char>();
+            while (BitConverter.ToUInt16(content, offset) != 0x0000)
+            {
+                keyChars.Add(encoding.GetChars(content, offset, charWidth)[0]); offset += charWidth;
+            }
+            offset += 2;
 
-            // List<byte> tempBuffer = new List<byte>();
-
-            // byte[] buffer = new byte[charWidth];
-            // while (stream.Read(buffer, 0, charWidth) != 0 && buffer.SequenceEqual(nullTerminator))
-            // {
-            //     tempBuffer.AddRange(buffer);
-            // }
-
-            // return encoding.GetString(tempBuffer.ToArray());
+            return new string(keyChars.ToArray());
         }
 
         /// <summary>

@@ -24,11 +24,11 @@ namespace BurnOutSharp.PackerType
 
             string name = Utilities.GetInternalName(pex);
             if (!string.IsNullOrWhiteSpace(name) && name.Equals("Wextract", StringComparison.OrdinalIgnoreCase))
-                return $"Microsoft CAB SFX v{Utilities.GetFileVersion(pex)}".TrimEnd('v');
+                return $"Microsoft CAB SFX {GetVersion(pex)}";
 
             name = Utilities.GetOriginalFileName(pex);
             if (!string.IsNullOrWhiteSpace(name) && name.Equals("WEXTRACT.EXE", StringComparison.OrdinalIgnoreCase))
-                return $"Microsoft CAB SFX v{Utilities.GetFileVersion(pex)}".TrimEnd('v');
+                return $"Microsoft CAB SFX {GetVersion(pex)}";
 
             // Get the .data section, if it exists
             if (pex.DataSectionRaw != null)
@@ -45,7 +45,7 @@ namespace BurnOutSharp.PackerType
 
                 string match = MatchUtil.GetFirstMatch(file, pex.DataSectionRaw, matchers, includeDebug);
                 if (!string.IsNullOrWhiteSpace(match))
-                    return $"Microsoft CAB SFX v{Utilities.GetFileVersion(pex)}".TrimEnd('v');
+                    return $"Microsoft CAB SFX {GetVersion(pex)}";
             }
             
             // Get the .text section, if it exists
@@ -61,7 +61,7 @@ namespace BurnOutSharp.PackerType
 
                 string match = MatchUtil.GetFirstMatch(file, pex.TextSectionRaw, matchers, includeDebug);
                 if (!string.IsNullOrWhiteSpace(match))
-                    return $"Microsoft CAB SFX v{Utilities.GetFileVersion(pex)}".TrimEnd('v');
+                    return $"Microsoft CAB SFX {GetVersion(pex)}";
             }
 
             return null;
@@ -83,6 +83,19 @@ namespace BurnOutSharp.PackerType
         public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, Stream stream, string file)
         {
             return null;
+        }
+    
+        private string GetVersion(PortableExecutable pex)
+        {
+            string version = Utilities.GetFileVersion(pex);
+            if (!string.IsNullOrWhiteSpace(version))
+                return $"v{version}";
+
+            version = Utilities.GetManifestVersion(pex);
+            if (!string.IsNullOrWhiteSpace(version))
+                return $"v{version}";
+
+            return string.Empty;
         }
     }
 }

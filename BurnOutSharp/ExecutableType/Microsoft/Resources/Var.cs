@@ -16,19 +16,22 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Resources
         /// </summary>
         public LanguageCodePage[] Value;
 
+        public Var(Resource resource)
+        {
+            this.Length = resource?.Length ?? default;
+            this.ValueLength = resource?.ValueLength ?? default;
+            this.Type = resource?.Type ?? default;
+            this.Key = resource?.Key ?? default;
+        }
+
         public static new Var Deserialize(Stream stream)
         {
             long originalPosition = stream.Position;
-            Var v = new Var();
-
             Resource resource = Resource.Deserialize(stream);
             if (resource.Key != "Translation")
                 return null;
 
-            v.Length = resource.Length;
-            v.ValueLength = resource.ValueLength;
-            v.Type = resource.Type;
-            v.Key = resource.Key;
+            Var v = new Var(resource);
 
             var tempValue = new List<LanguageCodePage>();
             while (stream.Position - originalPosition < v.Length)
@@ -44,16 +47,11 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Resources
         public static new Var Deserialize(byte[] content, ref int offset)
         {
             int originalPosition = offset;
-            Var v = new Var();
-
             Resource resource = Resource.Deserialize(content, ref offset);
             if (resource.Key != "Translation")
                 return null;
 
-            v.Length = resource.Length;
-            v.ValueLength = resource.ValueLength;
-            v.Type = resource.Type;
-            v.Key = resource.Key;
+            Var v = new Var(resource);
 
             var tempValue = new List<LanguageCodePage>();
             while (offset - originalPosition < v.Length)

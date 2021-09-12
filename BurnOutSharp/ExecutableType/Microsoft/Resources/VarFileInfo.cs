@@ -9,18 +9,21 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Resources
         /// </summary>
         public Var Children;
 
+        public VarFileInfo(Resource resource)
+        {
+            this.Length = resource?.Length ?? default;
+            this.ValueLength = resource?.ValueLength ?? default;
+            this.Type = resource?.Type ?? default;
+            this.Key = resource?.Key ?? default;
+        }
+
         public static new VarFileInfo Deserialize(Stream stream)
         {
-            VarFileInfo vfi = new VarFileInfo();
-
             Resource resource = Resource.Deserialize(stream);
             if (resource.Key != "VarFileInfo")
                 return null;
 
-            vfi.Length = resource.Length;
-            vfi.ValueLength = resource.ValueLength;
-            vfi.Type = resource.Type;
-            vfi.Key = resource.Key;
+            VarFileInfo vfi = new VarFileInfo(resource);
             vfi.Children = Var.Deserialize(stream);
 
             return vfi;
@@ -28,16 +31,11 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Resources
 
         public static new VarFileInfo Deserialize(byte[] content, ref int offset)
         {
-            VarFileInfo vfi = new VarFileInfo();
-
             Resource resource = Resource.Deserialize(content, ref offset);
             if (resource.Key != "VarFileInfo")
                 return null;
 
-            vfi.Length = resource.Length;
-            vfi.ValueLength = resource.ValueLength;
-            vfi.Type = resource.Type;
-            vfi.Key = resource.Key;
+            VarFileInfo vfi = new VarFileInfo(resource);
             vfi.Children = Var.Deserialize(content, ref offset);
 
             return vfi;

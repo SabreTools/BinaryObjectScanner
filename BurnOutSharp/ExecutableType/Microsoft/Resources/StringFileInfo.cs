@@ -10,18 +10,21 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Resources
         /// </summary>
         public StringTable Children;
 
+        public StringFileInfo(Resource resource)
+        {
+            this.Length = resource?.Length ?? default;
+            this.ValueLength = resource?.ValueLength ?? default;
+            this.Type = resource?.Type ?? default;
+            this.Key = resource?.Key ?? default;
+        }
+
         public static new StringFileInfo Deserialize(Stream stream)
         {
-            StringFileInfo sfi = new StringFileInfo();
-
             Resource resource = Resource.Deserialize(stream);
             if (resource.Key != "StringFileInfo")
                 return null;
 
-            sfi.Length = resource.Length;
-            sfi.ValueLength = resource.ValueLength;
-            sfi.Type = resource.Type;
-            sfi.Key = resource.Key;
+            StringFileInfo sfi = new StringFileInfo(resource);
             sfi.Children = StringTable.Deserialize(stream);
 
             return sfi;
@@ -29,16 +32,11 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Resources
 
         public static new StringFileInfo Deserialize(byte[] content, ref int offset)
         {
-            StringFileInfo sfi = new StringFileInfo();
-            
             Resource resource = Resource.Deserialize(content, ref offset);
             if (resource.Key != "StringFileInfo")
                 return null;
 
-            sfi.Length = resource.Length;
-            sfi.ValueLength = resource.ValueLength;
-            sfi.Type = resource.Type;
-            sfi.Key = resource.Key;
+            StringFileInfo sfi = new StringFileInfo(resource);
             sfi.Children = StringTable.Deserialize(content, ref offset);
 
             return sfi;

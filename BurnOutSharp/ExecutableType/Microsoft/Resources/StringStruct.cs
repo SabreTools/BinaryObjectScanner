@@ -11,16 +11,18 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Resources
         /// </summary>
         public string Value;
 
+        public StringStruct(Resource resource)
+        {
+            this.Length = resource?.Length ?? default;
+            this.ValueLength = resource?.ValueLength ?? default;
+            this.Type = resource?.Type ?? default;
+            this.Key = resource?.Key ?? default;
+        }
+
         public static new StringStruct Deserialize(Stream stream)
         {
-            StringStruct s = new StringStruct();
-
             Resource resource = Resource.Deserialize(stream);
-
-            s.Length = resource.Length;
-            s.ValueLength = resource.ValueLength;
-            s.Type = resource.Type;
-            s.Key = resource.Key;
+            StringStruct s = new StringStruct(resource);
             stream.Seek(stream.Position % 4 == 0 ? 0 : 4 - (stream.Position % 4), SeekOrigin.Current);
             s.Value = new string(stream.ReadChars(s.ValueLength));
 
@@ -29,14 +31,8 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Resources
 
         public static new StringStruct Deserialize(byte[] content, ref int offset)
         {
-            StringStruct s = new StringStruct();
-
             Resource resource = Resource.Deserialize(content, ref offset);
-
-            s.Length = resource.Length;
-            s.ValueLength = resource.ValueLength;
-            s.Type = resource.Type;
-            s.Key = resource.Key;
+            StringStruct s = new StringStruct(resource);
             offset += offset % 4 == 0 ? 0 : 4 - (offset % 4);
             s.Value = Encoding.Unicode.GetString(content, offset, s.ValueLength * 2); offset += s.ValueLength * 2;
             

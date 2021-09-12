@@ -23,19 +23,22 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Resources
         /// </summary>
         public VarFileInfo ChildrenVarFileInfo;
 
+        public VersionInfo(Resource resource)
+        {
+            this.Length = resource?.Length ?? default;
+            this.ValueLength = resource?.ValueLength ?? default;
+            this.Type = resource?.Type ?? default;
+            this.Key = resource?.Key ?? default;
+        }
+
         public static new VersionInfo Deserialize(Stream stream)
         {
             long originalPosition = stream.Position;
-
-            VersionInfo vi = new VersionInfo();
             Resource resource = Resource.Deserialize(stream);
             if (resource.Key != "VS_VERSION_INFO")
                 return null;
-            
-            vi.Length = resource.Length;
-            vi.ValueLength = resource.ValueLength;
-            vi.Type = resource.Type;
-            vi.Key = resource.Key;
+
+            VersionInfo vi = new VersionInfo(resource);
 
             if (vi.ValueLength > 0)
                 vi.Value = FixedFileInfo.Deserialize(stream);
@@ -78,16 +81,11 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Resources
         public static new VersionInfo Deserialize(byte[] content, ref int offset)
         {
             int originalOffset = offset;
-
-            VersionInfo vi = new VersionInfo();
             Resource resource = Resource.Deserialize(content, ref offset);
             if (resource.Key != "VS_VERSION_INFO")
                 return null;
             
-            vi.Length = resource.Length;
-            vi.ValueLength = resource.ValueLength;
-            vi.Type = resource.Type;
-            vi.Key = resource.Key;
+            VersionInfo vi = new VersionInfo(resource);
             
             if (vi.ValueLength > 0)
                 vi.Value = FixedFileInfo.Deserialize(content, ref offset);
