@@ -128,7 +128,7 @@ namespace BurnOutSharp.PackerType
 
         private static string GetOldVersion(string file, byte[] fileContent)
         {
-            // TODO: Obtain a sample to find where this string is in a typical executable
+            // TODO: Only sample is an NE executable - verify if this is in PE as well or where in the NE this lives
             var matchers = new List<ContentMatchSet>
             {
                 // "rDlPtS02" + (char)0x87 + "eVx"
