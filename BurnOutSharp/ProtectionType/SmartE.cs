@@ -18,14 +18,12 @@ namespace BurnOutSharp.ProtectionType
                 return null;
 
             // Get the .edata section, if it exists
-            var edataSection = pex.GetLastSection(".edata", exact: true);
-            string match = GetMatchForSection(edataSection, file, fileContent, includeDebug);
+            string match = GetMatchForSection(file, pex.ExportDataSectionRaw, includeDebug);
             if (!string.IsNullOrWhiteSpace(match))
                 return match;
 
             // Get the .idata section, if it exists
-            var idataSection = pex.GetLastSection(".idata", exact: true);
-            match = GetMatchForSection(idataSection, file, fileContent, includeDebug);
+            match = GetMatchForSection(file, pex.ImportDataSectionRaw, includeDebug);
             if (!string.IsNullOrWhiteSpace(match))
                 return match;
 

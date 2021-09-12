@@ -84,8 +84,8 @@ namespace BurnOutSharp.ExecutableType.Microsoft
         // Here is a list of standard sections that are used in various protections:
         //          - .bss          *1 protection       Uninitialized data (free format)
         // X        - .data         14 protections      Initialized data (free format)
-        //          - .edata        *1 protection       Export tables
-        //          - .idata        2 protections       Import tables
+        // X        - .edata        *1 protection       Export tables
+        // X        - .idata        *1 protection       Import tables
         // X        - .rdata        11 protections      Read-only initialized data
         //          - .rsrc         *1 protection       Resource directory [Mostly taken care of, last protection needs research]
         // X        - .text         6 protections       Executable code (free format)
@@ -121,18 +121,29 @@ namespace BurnOutSharp.ExecutableType.Microsoft
 
         /// <summary>
         /// .data/DATA - Initialized data (free format)
-        // </summary>
+        /// </summary>
         public byte[] DataSectionRaw;
 
         /// <summary>
+        /// .edata - Export tables
+        /// </summary>
+        /// <remarks>Replace with ExportDataSection</remarks>
+        public byte[] ExportDataSectionRaw;
+
+        /// <summary>
+        /// .idata - Import tables
+        /// </summary>
+        /// <remarks>Replace with ImportDataSection</remarks>
+        public byte[] ImportDataSectionRaw;
+
+        /// <summary>
         /// .rdata - Read-only initialized data
-        // </summary>
+        /// </summary>
         public byte[] ResourceDataSectionRaw;
 
         /// <summary>
         /// .text - Executable code (free format)
         /// </summary>
-        /// <remarks>TODO: To accomodate SecuROM, can this also include a bit of data before the section as well?</remarks>
         public byte[] TextSectionRaw;
 
         #endregion
@@ -342,6 +353,12 @@ namespace BurnOutSharp.ExecutableType.Microsoft
                 // Data Section
                 pex.DataSectionRaw = pex.ReadRawSection(stream, ".data", false) ?? pex.ReadRawSection(stream, "DATA", false);
 
+                // Export Table
+                pex.ImportDataSectionRaw = pex.ReadRawSection(stream, ".edata", false);
+
+                // Import Table
+                pex.ImportDataSectionRaw = pex.ReadRawSection(stream, ".idata", false);
+
                 // Resource Data Section
                 pex.ResourceDataSectionRaw = pex.ReadRawSection(stream, ".rdata", false);
 
@@ -423,6 +440,12 @@ namespace BurnOutSharp.ExecutableType.Microsoft
 
                 // Data Section
                 pex.DataSectionRaw = pex.ReadRawSection(content, ".data", false) ?? pex.ReadRawSection(content, "DATA", false);
+
+                // Export Table
+                pex.ImportDataSectionRaw = pex.ReadRawSection(content, ".edata", false);
+
+                // Import Table
+                pex.ImportDataSectionRaw = pex.ReadRawSection(content, ".idata", false);
 
                 // Resource Data Section
                 pex.ResourceDataSectionRaw = pex.ReadRawSection(content, ".rdata", false);
