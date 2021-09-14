@@ -233,17 +233,38 @@ namespace BurnOutSharp.ExecutableType.Microsoft
         /// <summary>
         /// Get the raw bytes from a section, if possible
         /// </summary>
-        public byte[] ReadRawSection(Stream stream, string sectionName, bool first = true)
+        public byte[] ReadRawSection(Stream stream, string sectionName, bool first = true, int offset = 0)
         {
+            // Special cases for non-offset data
+            if (offset == 0)
+            {
+                switch (sectionName)
+                {
+                    case ".data":
+                        return DataSectionRaw;
+                    case ".edata":
+                        return ExportDataSectionRaw;
+                    case ".idata":
+                        return ImportDataSectionRaw;
+                    case ".rdata":
+                        return ResourceDataSectionRaw;
+                    case ".text":
+                        return TextSectionRaw;
+                }
+            }
+
             var section = first ? GetFirstSection(sectionName, true) : GetLastSection(sectionName, true);
             if (section == null)
                 return null;
 
             lock (stream)
             {
+                int startingIndex = (int)Math.Max(section.PointerToRawData + offset, 0);
+                int readLength = (int)Math.Min(section.VirtualSize - offset, stream.Length);
+
                 long originalPosition = stream.Position;
-                stream.Seek((int)section.PointerToRawData, SeekOrigin.Begin);
-                byte[] sectionData = stream.ReadBytes((int)section.VirtualSize);
+                stream.Seek(startingIndex, SeekOrigin.Begin);
+                byte[] sectionData = stream.ReadBytes(readLength);
                 stream.Seek(originalPosition, SeekOrigin.Begin);
                 return sectionData;
             }
@@ -253,14 +274,34 @@ namespace BurnOutSharp.ExecutableType.Microsoft
         /// <summary>
         /// Get the raw bytes from a section, if possible
         /// </summary>
-        public byte[] ReadRawSection(byte[] content, string sectionName, bool first = true)
+        public byte[] ReadRawSection(byte[] content, string sectionName, bool first = true, int offset = 0)
         {
+            // Special cases for non-offset data
+            if (offset == 0)
+            {
+                switch (sectionName)
+                {
+                    case ".data":
+                        return DataSectionRaw;
+                    case ".edata":
+                        return ExportDataSectionRaw;
+                    case ".idata":
+                        return ImportDataSectionRaw;
+                    case ".rdata":
+                        return ResourceDataSectionRaw;
+                    case ".text":
+                        return TextSectionRaw;
+                }
+            }
+
             var section = first ? GetFirstSection(sectionName, true) : GetLastSection(sectionName, true);
             if (section == null)
                 return null;
 
-            int offset = (int)section.PointerToRawData;
-            return content.ReadBytes(ref offset, (int)section.VirtualSize);
+            int startingIndex = (int)Math.Max(section.PointerToRawData + offset, 0);
+            int readLength = (int)Math.Min(section.VirtualSize - offset, content.Length);
+
+            return content.ReadBytes(ref startingIndex, readLength);
         }
 
         /// <summary>
@@ -358,7 +399,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft
                 pex.DataSectionRaw = pex.ReadRawSection(stream, ".data", false) ?? pex.ReadRawSection(stream, "DATA", false);
 
                 // Export Table
-                pex.ImportDataSectionRaw = pex.ReadRawSection(stream, ".edata", false);
+                pex.ExportDataSectionRaw = pex.ReadRawSection(stream, ".edata", false);
 
                 // Import Table
                 pex.ImportDataSectionRaw = pex.ReadRawSection(stream, ".idata", false);
@@ -446,7 +487,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft
                 pex.DataSectionRaw = pex.ReadRawSection(content, ".data", false) ?? pex.ReadRawSection(content, "DATA", false);
 
                 // Export Table
-                pex.ImportDataSectionRaw = pex.ReadRawSection(content, ".edata", false);
+                pex.ExportDataSectionRaw = pex.ReadRawSection(content, ".edata", false);
 
                 // Import Table
                 pex.ImportDataSectionRaw = pex.ReadRawSection(content, ".idata", false);

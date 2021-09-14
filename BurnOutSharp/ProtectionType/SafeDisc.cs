@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using BurnOutSharp.ExecutableType.Microsoft;
@@ -7,6 +8,8 @@ using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ProtectionType
 {
+    // TODO: Figure out how to properly distinguish SafeDisc and SafeCast since both use
+    // the same generic BoG_ string. The current combination check doesn't seem consistent
     public class SafeDisc : IContentCheck, IPathCheck
     {
         /// <summary>
@@ -38,6 +41,9 @@ namespace BurnOutSharp.ProtectionType
             new PathMatchSet(new PathMatch("00000001.LT1", useEndsWith: true), "SafeDisc Lite"),
             
             new PathMatchSet(".SafeDiscDVD.bundle", "SafeDisc for Macintosh"),
+
+            new PathMatchSet(new PathMatch("cdac11ba.exe", useEndsWith: true), "SafeCast"),
+            new PathMatchSet(new PathMatch("cdac14ba.dll", useEndsWith: true), "SafeCast"),
         };
 
         /// <inheritdoc/>
@@ -48,117 +54,29 @@ namespace BurnOutSharp.ProtectionType
             if (sections == null)
                 return null;
 
-            // Get the .text section, if it exists -- TODO: Figure out how to capture this automatically
-            var textSection = pex.GetFirstSection(".text", exact: true);
-            if (textSection != null)
-            {
-                // This subtract is needed because BoG_ starts before the .text section
-                int sectionAddr = (int)textSection.PointerToRawData - 64;
-                int sectionEnd = sectionAddr + (int)textSection.VirtualSize;
-                var matchers = new List<ContentMatchSet>
-                {
-                    // BoG_ *90.0&!!  Yy>
-                    new ContentMatchSet(
-                        new ContentMatch(new byte?[]
-                        {
-                            0x42, 0x6F, 0x47, 0x5F, 0x20, 0x2A, 0x39, 0x30,
-                            0x2E, 0x30, 0x26, 0x21, 0x21, 0x20, 0x20, 0x59,
-                            0x79, 0x3E
-                        }, start: sectionAddr, end: sectionEnd),
-                    GetVersion, "SafeDisc"),
+            string name = Utilities.GetFileDescription(pex);
+            if (!string.IsNullOrWhiteSpace(name) && name.Equals("SafeCast2", StringComparison.OrdinalIgnoreCase))
+                return $"SafeCast";
 
-                    // (char)0x00 + (char)0x00 + BoG_
-                    new ContentMatchSet(
-                        new ContentMatch(new byte?[] { 0x00, 0x00, 0x42, 0x6F, 0x47, 0x5F }, start: sectionAddr, end: sectionEnd),
-                    Get320to4xVersion, "SafeDisc"),
-                };
-
-                string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
-                    return match;
-            }
+            // Get the .text section, if it exists
+            string match = CheckSectionForProtection(file, fileContent, includeDebug, pex, ".text");
+            if (!string.IsNullOrWhiteSpace(match))
+                return match;
 
             // Get the .txt2 section, if it exists
-            var txt2Section = pex.GetFirstSection(".txt2", exact: true);
-            if (txt2Section != null)
-            {
-                // This subtract is needed because BoG_ starts before the .txt2 section
-                int sectionAddr = (int)txt2Section.PointerToRawData - 64;
-                int sectionEnd = sectionAddr + (int)txt2Section.VirtualSize;
-                var matchers = new List<ContentMatchSet>
-                {
-                    // BoG_ *90.0&!!  Yy>
-                    new ContentMatchSet(
-                        new ContentMatch(new byte?[]
-                        {
-                            0x42, 0x6F, 0x47, 0x5F, 0x20, 0x2A, 0x39, 0x30,
-                            0x2E, 0x30, 0x26, 0x21, 0x21, 0x20, 0x20, 0x59,
-                            0x79, 0x3E
-                        }, start: sectionAddr, end: sectionEnd),
-                    GetVersion, "SafeDisc"),
-
-                    // (char)0x00 + (char)0x00 + BoG_
-                    new ContentMatchSet(
-                        new ContentMatch(new byte?[] { 0x00, 0x00, 0x42, 0x6F, 0x47, 0x5F }, start: sectionAddr, end: sectionEnd),
-                    Get320to4xVersion, "SafeDisc"),
-                };
-
-                string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
-                    return match;
-            }
+            match = CheckSectionForProtection(file, fileContent, includeDebug, pex, ".txt2");
+            if (!string.IsNullOrWhiteSpace(match))
+                return match;
 
             // Get the CODE section, if it exists
-            var codeSection = pex.GetFirstSection("CODE", exact: true);
-            if (codeSection != null)
-            {
-                // This subtract is needed because BoG_ starts before the CODE section
-                int sectionAddr = (int)codeSection.PointerToRawData - 64;
-                int sectionEnd = sectionAddr + (int)codeSection.VirtualSize;
-                var matchers = new List<ContentMatchSet>
-                {
-                    // BoG_ *90.0&!!  Yy>
-                    new ContentMatchSet(
-                        new ContentMatch(new byte?[]
-                        {
-                            0x42, 0x6F, 0x47, 0x5F, 0x20, 0x2A, 0x39, 0x30,
-                            0x2E, 0x30, 0x26, 0x21, 0x21, 0x20, 0x20, 0x59,
-                            0x79, 0x3E
-                        }, start: sectionAddr, end: sectionEnd),
-                    GetVersion, "SafeDisc"),
-
-                    // (char)0x00 + (char)0x00 + BoG_
-                    new ContentMatchSet(
-                        new ContentMatch(new byte?[] { 0x00, 0x00, 0x42, 0x6F, 0x47, 0x5F }, start: sectionAddr, end: sectionEnd),
-                    Get320to4xVersion, "SafeDisc"),
-                };
-
-                string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
-                    return match;
-            }
+            match = CheckSectionForProtection(file, fileContent, includeDebug, pex, "CODE");
+            if (!string.IsNullOrWhiteSpace(match))
+                return match;
 
             // Get the .data section, if it exists
-            if (pex.DataSectionRaw != null)
-            {
-                var matchers = new List<ContentMatchSet>
-                {
-                    // BoG_ *90.0&!!  Yy>
-                    new ContentMatchSet(new byte?[]
-                    {
-                        0x42, 0x6F, 0x47, 0x5F, 0x20, 0x2A, 0x39, 0x30,
-                        0x2E, 0x30, 0x26, 0x21, 0x21, 0x20, 0x20, 0x59,
-                        0x79, 0x3E
-                    }, GetVersion, "SafeDisc"),
-
-                    // (char)0x00 + (char)0x00 + BoG_
-                    new ContentMatchSet(new byte?[] { 0x00, 0x00, 0x42, 0x6F, 0x47, 0x5F }, Get320to4xVersion, "SafeDisc"),
-                };
-
-                string match = MatchUtil.GetFirstMatch(file, pex.DataSectionRaw, matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
-                    return match;
-            }
+            match = CheckSectionForProtection(file, fileContent, includeDebug, pex, ".data");
+            if (!string.IsNullOrWhiteSpace(match))
+                return match;
 
             // Get the stxt371 and stxt774 sections, if they exist -- TODO: Confirm if both are needed or either/or is fine
             bool stxt371Section = pex.ContainsSection("stxt371", exact: true);
@@ -349,6 +267,52 @@ namespace BurnOutSharp.ProtectionType
             // fc6fedacc21a7244975b8f410ff8673285374cc2 - 163644 - Bundled with 4.00.002, 4.60.000
             else
                 return "1-4";
+        }
+    
+        private string CheckSectionForProtection(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, string sectionName)
+        {
+            // This subtract is needed because BoG_ starts before the section
+            var sectionRaw = pex.ReadRawSection(fileContent, sectionName, first: true, offset: -64);
+            if (sectionRaw != null)
+            {
+                var matchers = new List<ContentMatchSet>
+                {
+                    new ContentMatchSet(new List<byte?[]>
+                    {
+                        // BoG_ *90.0&!!  Yy>
+                        new byte?[]
+                        {
+                            0x42, 0x6F, 0x47, 0x5F, 0x20, 0x2A, 0x39, 0x30,
+                            0x2E, 0x30, 0x26, 0x21, 0x21, 0x20, 0x20, 0x59,
+                            0x79, 0x3E
+                        },
+
+                        // product activation library
+                        new byte?[]
+                        {
+                            0x70, 0x72, 0x6F, 0x64, 0x75, 0x63, 0x74, 0x20,
+                            0x61, 0x63, 0x74, 0x69, 0x76, 0x61, 0x74, 0x69,
+                            0x6F, 0x6E, 0x20, 0x6C, 0x69, 0x62, 0x72, 0x61,
+                            0x72, 0x79
+                        },
+                    }, GetVersion, "SafeCast"),
+
+                    // BoG_ *90.0&!!  Yy>
+                    new ContentMatchSet(new byte?[]
+                    {
+                        0x42, 0x6F, 0x47, 0x5F, 0x20, 0x2A, 0x39, 0x30,
+                        0x2E, 0x30, 0x26, 0x21, 0x21, 0x20, 0x20, 0x59,
+                        0x79, 0x3E
+                    }, GetVersion, "SafeDisc"),
+
+                    // (char)0x00 + (char)0x00 + BoG_
+                    new ContentMatchSet(new byte?[] { 0x00, 0x00, 0x42, 0x6F, 0x47, 0x5F }, Get320to4xVersion, "SafeDisc"),
+                };
+
+                return MatchUtil.GetFirstMatch(file, sectionRaw, matchers, includeDebug);
+            }
+
+            return null;
         }
     }
 }
