@@ -8,19 +8,6 @@ namespace BurnOutSharp.ProtectionType
     public class CDCheck : IContentCheck
     {
         /// <inheritdoc/>
-        private List<ContentMatchSet> GetContentMatchSets()
-        {
-            // TODO: Obtain a sample to find where this string is in a typical executable
-            // TODO: Is this too broad in general? It _does_ indicate a CD check, but there's no real
-            // way of knowing how consistent it is
-            return new List<ContentMatchSet>
-            {
-                // CDCheck
-                new ContentMatchSet(new byte?[] { 0x43, 0x44, 0x43, 0x68, 0x65, 0x63, 0x6B }, "Executable-Based CD Check"),
-            };
-        }
-
-        /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
         {
             // Get the sections from the executable, if possible
@@ -46,7 +33,15 @@ namespace BurnOutSharp.ProtectionType
                     return match;
             }
 
-            var contentMatchSets = GetContentMatchSets();
+            // TODO: Obtain a sample to find where this string is in a typical executable
+            // TODO: Is this too broad in general? It _does_ indicate a CD check, but there's no real
+            // way of knowing how consistent it is
+            var contentMatchSets = new List<ContentMatchSet>
+            {
+                // // CDCheck
+                // new ContentMatchSet(new byte?[] { 0x43, 0x44, 0x43, 0x68, 0x65, 0x63, 0x6B }, "Executable-Based CD Check"),
+            };
+
             if (contentMatchSets != null && contentMatchSets.Any())
                 return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
 
