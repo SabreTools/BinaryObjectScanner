@@ -29,7 +29,7 @@ namespace BurnOutSharp.ProtectionType
                     new ContentMatchSet(new byte?[] { 0x58, 0x43, 0x50, 0x2E, 0x44, 0x41, 0x54 }, "XCP"),
 
                     // xcpdrive
-                    new ContentMatchSet(new byte?[] { 0x78, 0x63,  0x70, 0x64, 0x72, 0x69, 0x76, 0x65 }, "XCP"),
+                    new ContentMatchSet(new byte?[] { 0x78, 0x63, 0x70, 0x64, 0x72, 0x69, 0x76, 0x65 }, "XCP"),
 
                     // XCPPlugins.dll
                     new ContentMatchSet(new byte?[]

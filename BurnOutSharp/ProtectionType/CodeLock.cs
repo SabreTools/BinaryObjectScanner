@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using BurnOutSharp.ExecutableType.Microsoft;
 using BurnOutSharp.Matching;
 
@@ -17,7 +16,7 @@ namespace BurnOutSharp.ProtectionType
                 return null;
             
             // If there are more than 2 icd-prefixed sections, then we have a match
-            int icdSectionCount = sections.Count(s => Encoding.ASCII.GetString(s.Name).StartsWith("icd"));
+            int icdSectionCount = pex.GetSectionNames().Count(s => s.StartsWith("icd"));
             if (icdSectionCount >= 2)
                 return "CodeLock";
             
