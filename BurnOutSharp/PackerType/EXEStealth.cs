@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using BurnOutSharp.ExecutableType.Microsoft;
 using BurnOutSharp.Matching;
 
@@ -8,10 +7,10 @@ namespace BurnOutSharp.PackerType
     public class EXEStealth : IContentCheck
     {
         /// <inheritdoc/>
-        private List<ContentMatchSet> GetContentMatchSets()
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
         {
             // TODO: Obtain a sample to find where this string is in a typical executable
-            return new List<ContentMatchSet>
+            var contentMatchSets = new List<ContentMatchSet>
             {
                 // ??[[__[[_ + (char)0x00 + {{ + (char)0x0 + (char)0x00 + {{ + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x0 + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00 + ?;??;??
                 new ContentMatchSet(new byte?[]
@@ -23,16 +22,8 @@ namespace BurnOutSharp.PackerType
                     0x3F
                 }, "EXE Stealth"),
             };
-        }
-
-        /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
-        {
-            var contentMatchSets = GetContentMatchSets();
-            if (contentMatchSets != null && contentMatchSets.Any())
-                return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
-
-            return null;
+            
+            return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
         }
     }
 }

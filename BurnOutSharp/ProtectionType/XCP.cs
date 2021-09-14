@@ -13,20 +13,6 @@ namespace BurnOutSharp.ProtectionType
     public class XCP : IContentCheck, IPathCheck
     {
         /// <inheritdoc/>
-        private List<ContentMatchSet> GetContentMatchSets()
-        {
-            // TODO: Obtain a sample to find where this string is in a typical executable
-            return new List<ContentMatchSet>
-            {
-                // xcpdrive
-                new ContentMatchSet(new byte?[]
-                {
-                    0x78, 0x63,  0x70, 0x64, 0x72, 0x69, 0x76, 0x65
-                }, "XCP"),
-            };
-        }
-
-        /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
         {
             // Get the sections from the executable, if possible
@@ -62,11 +48,14 @@ namespace BurnOutSharp.ProtectionType
                     return match;
             }
 
-            var contentMatchSets = GetContentMatchSets();
-            if (contentMatchSets != null && contentMatchSets.Any())
-                return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
-
-            return null;
+            // TODO: Obtain a sample to find where this string is in a typical executable
+            var contentMatchSets = new List<ContentMatchSet>
+            {
+                // xcpdrive
+                new ContentMatchSet(new byte?[] { 0x78, 0x63,  0x70, 0x64, 0x72, 0x69, 0x76, 0x65 }, "XCP"),
+            };
+            
+            return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
         }
 
         /// <inheritdoc/>

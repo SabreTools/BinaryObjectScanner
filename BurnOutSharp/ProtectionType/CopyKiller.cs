@@ -1,6 +1,5 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using BurnOutSharp.ExecutableType.Microsoft;
 using BurnOutSharp.Matching;
 
@@ -9,10 +8,10 @@ namespace BurnOutSharp.ProtectionType
     public class CopyKiller : IContentCheck, IPathCheck
     {
         /// <inheritdoc/>
-        private List<ContentMatchSet> GetContentMatchSets()
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
         {
             // TODO: Obtain a sample to find where this string is in a typical executable
-            return new List<ContentMatchSet>
+            var contentMatchSets = new List<ContentMatchSet>
             {
                 // Tom Commander
                 new ContentMatchSet(new byte?[]
@@ -21,16 +20,8 @@ namespace BurnOutSharp.ProtectionType
                     0x61, 0x6E, 0x64, 0x65, 0x72
                 }, "CopyKiller"),
             };
-        }
-
-        /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
-        {
-            var contentMatchSets = GetContentMatchSets();
-            if (contentMatchSets != null && contentMatchSets.Any())
-                return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
-
-            return null;
+            
+            return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
         }
 
         /// <inheritdoc/>

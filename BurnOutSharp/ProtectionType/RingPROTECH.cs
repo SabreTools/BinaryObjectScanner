@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using BurnOutSharp.ExecutableType.Microsoft;
 using BurnOutSharp.Matching;
 
@@ -8,10 +7,10 @@ namespace BurnOutSharp.ProtectionType
     public class RingPROTECH : IContentCheck
     {
         /// <inheritdoc/>
-        private List<ContentMatchSet> GetContentMatchSets()
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
         {
             // TODO: Obtain a sample to find where this string is in a typical executable
-            return new List<ContentMatchSet>
+            var contentMatchSets = new List<ContentMatchSet>
             {
                 // (char)0x00 + Allocator + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00
                 new ContentMatchSet(new byte?[]
@@ -20,16 +19,8 @@ namespace BurnOutSharp.ProtectionType
                     0x6F, 0x72, 0x00, 0x00, 0x00, 0x00
                 }, "Ring PROTECH [Check disc for physical ring]"),
             };
-        }
-
-        /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
-        {
-            var contentMatchSets = GetContentMatchSets();
-            if (contentMatchSets != null && contentMatchSets.Any())
-                return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
-
-            return null;
+            
+            return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
         }
     }
 }

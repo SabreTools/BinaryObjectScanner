@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using BurnOutSharp.ExecutableType.Microsoft;
 using BurnOutSharp.Matching;
 
@@ -8,10 +7,10 @@ namespace BurnOutSharp.ProtectionType
     public class KeyLock : IContentCheck
     {
         /// <inheritdoc/>
-        private List<ContentMatchSet> GetContentMatchSets()
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
         {
             // TODO: Obtain a sample to find where this string is in a typical executable
-            return new List<ContentMatchSet>
+            var contentMatchSets = new List<ContentMatchSet>
             {
                 // KEY-LOCK COMMAND
                 new ContentMatchSet(new byte?[]
@@ -20,16 +19,8 @@ namespace BurnOutSharp.ProtectionType
                     0x20, 0x43, 0x4F, 0x4D, 0x4D, 0x41, 0x4E, 0x44
                 }, "Key-Lock (Dongle)"),
             };
-        }
-
-        /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
-        {
-            var contentMatchSets = GetContentMatchSets();
-            if (contentMatchSets != null && contentMatchSets.Any())
-                return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
-
-            return null;
+            
+            return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
         }
     }
 }

@@ -10,28 +10,6 @@ namespace BurnOutSharp.ProtectionType
     public class CDDVDCops : IContentCheck, IPathCheck
     {
         /// <inheritdoc/>
-        private List<ContentMatchSet> GetContentMatchSets()
-        {
-            // TODO: Obtain a sample to find where this string is in a typical executable
-            return new List<ContentMatchSet>
-            {
-                // CD-Cops,  ver. 
-                new ContentMatchSet(new byte?[]
-                {
-                    0x43, 0x44, 0x2D, 0x43, 0x6F, 0x70, 0x73, 0x2C,
-                    0x20, 0x20, 0x76, 0x65, 0x72, 0x2E, 0x20
-                }, GetVersion, "CD-Cops"),
-
-                // DVD-Cops,  ver. 
-                new ContentMatchSet(new byte?[]
-                {
-                    0x44, 0x56, 0x44, 0x2D, 0x43, 0x6F, 0x70, 0x73,
-                    0x2C, 0x20, 0x20, 0x76, 0x65, 0x72, 0x2E, 0x20
-                }, GetVersion, "DVD-Cops"),
-            };
-        }
-
-        /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
         {
             // Get the sections from the executable, if possible
@@ -67,11 +45,25 @@ namespace BurnOutSharp.ProtectionType
                 // return "CD-Cops (Unknown Version)";
             }
 
-            var contentMatchSets = GetContentMatchSets();
-            if (contentMatchSets != null && contentMatchSets.Any())
-                return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
+            // TODO: Obtain a sample to find where this string is in a typical executable
+            var contentMatchSets = new List<ContentMatchSet>
+            {
+                // CD-Cops,  ver. 
+                new ContentMatchSet(new byte?[]
+                {
+                    0x43, 0x44, 0x2D, 0x43, 0x6F, 0x70, 0x73, 0x2C,
+                    0x20, 0x20, 0x76, 0x65, 0x72, 0x2E, 0x20
+                }, GetVersion, "CD-Cops"),
 
-            return null;
+                // DVD-Cops,  ver. 
+                new ContentMatchSet(new byte?[]
+                {
+                    0x44, 0x56, 0x44, 0x2D, 0x43, 0x6F, 0x70, 0x73,
+                    0x2C, 0x20, 0x20, 0x76, 0x65, 0x72, 0x2E, 0x20
+                }, GetVersion, "DVD-Cops"),
+            };
+            
+            return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
         }
 
         /// <inheritdoc/>

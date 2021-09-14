@@ -24,25 +24,6 @@ namespace BurnOutSharp.ProtectionType
         };
 
         /// <inheritdoc/>
-        private List<ContentMatchSet> GetContentMatchSets()
-        {
-            // TODO: Obtain a sample to find where this string is in a typical executable
-            return new List<ContentMatchSet>
-            {
-                // (char)0xAD + (char)0xDE + (char)0xFE + (char)0xCA
-                new ContentMatchSet(new byte?[] { 0xAD, 0xDE, 0xFE, 0xCA }, GetVersionPlusTages, "SolidShield"),
-
-                // B + (char)0x00 + I + (char)0x00 + N + (char)0x00 + (char)0x7 + (char)0x00 + I + (char)0x00 + D + (char)0x00 + R + (char)0x00 + _ + (char)0x00 + S + (char)0x00 + G + (char)0x00 + T + (char)0x00
-                new ContentMatchSet(new byte?[]
-                {
-                    0x42, 0x00, 0x49, 0x00, 0x4E, 0x00, 0x07, 0x00,
-                    0x49, 0x00, 0x44, 0x00, 0x52, 0x00, 0x5F, 0x00,
-                    0x53, 0x00, 0x47, 0x00, 0x54, 0x00
-                }, "SolidShield [ContentMatchSet]"),
-            };
-        }
-
-        /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
         {
             // Get the sections from the executable, if possible
@@ -110,11 +91,22 @@ namespace BurnOutSharp.ProtectionType
                 }
             }
 
-            var contentMatchSets = GetContentMatchSets();
-            if (contentMatchSets != null && contentMatchSets.Any())
-                return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
+            // TODO: Obtain a sample to find where this string is in a typical executable
+            var contentMatchSets = new List<ContentMatchSet>
+            {
+                // (char)0xAD + (char)0xDE + (char)0xFE + (char)0xCA
+                new ContentMatchSet(new byte?[] { 0xAD, 0xDE, 0xFE, 0xCA }, GetVersionPlusTages, "SolidShield"),
 
-            return null;
+                // B + (char)0x00 + I + (char)0x00 + N + (char)0x00 + (char)0x7 + (char)0x00 + I + (char)0x00 + D + (char)0x00 + R + (char)0x00 + _ + (char)0x00 + S + (char)0x00 + G + (char)0x00 + T + (char)0x00
+                new ContentMatchSet(new byte?[]
+                {
+                    0x42, 0x00, 0x49, 0x00, 0x4E, 0x00, 0x07, 0x00,
+                    0x49, 0x00, 0x44, 0x00, 0x52, 0x00, 0x5F, 0x00,
+                    0x53, 0x00, 0x47, 0x00, 0x54, 0x00
+                }, "SolidShield"),
+            };
+            
+            return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
         }
 
         /// <inheritdoc/>

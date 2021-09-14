@@ -9,21 +9,6 @@ namespace BurnOutSharp.ProtectionType
     public class CodeLock : IContentCheck
     {
         /// <inheritdoc/>
-        private List<ContentMatchSet> GetContentMatchSets()
-        {
-            // TODO: Obtain a sample to find where this string is in a typical executable
-            return new List<ContentMatchSet>
-            {
-                // CODE-LOCK.OCX
-                new ContentMatchSet(new byte?[]
-                {
-                    0x43, 0x4F, 0x44, 0x45, 0x2D, 0x4C, 0x4F, 0x43,
-                    0x4B, 0x2E, 0x4F, 0x43, 0x58
-                }, "CodeLock"),
-            };
-        }
-
-        /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
         {
             // Get the sections from the executable, if possible
@@ -36,11 +21,18 @@ namespace BurnOutSharp.ProtectionType
             if (icdSectionCount >= 2)
                 return "CodeLock";
             
-            var contentMatchSets = GetContentMatchSets();
-            if (contentMatchSets != null && contentMatchSets.Any())
-                return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
-
-            return null;
+            // TODO: Obtain a sample to find where this string is in a typical executable
+            var contentMatchSets = new List<ContentMatchSet>
+            {
+                // CODE-LOCK.OCX
+                new ContentMatchSet(new byte?[]
+                {
+                    0x43, 0x4F, 0x44, 0x45, 0x2D, 0x4C, 0x4F, 0x43,
+                    0x4B, 0x2E, 0x4F, 0x43, 0x58
+                }, "CodeLock"),
+            };
+            
+            return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
         }
     }
 }
