@@ -53,6 +53,9 @@ namespace BurnOutSharp.ProtectionType
             {
                 var matchers = new List<ContentMatchSet>
                 {
+                    // (char)0xAD + (char)0xDE + (char)0xFE + (char)0xCA
+                    new ContentMatchSet(new byte?[] { 0xAD, 0xDE, 0xFE, 0xCA }, GetVersionPlusTages, "SolidShield"),
+
                     // (char)0xEF + (char)0xBE + (char)0xAD + (char)0xDE
                     new ContentMatchSet(new byte?[] { 0xEF, 0xBE, 0xAD, 0xDE }, GetExeWrapperVersion, "SolidShield EXE Wrapper"),
 
@@ -65,48 +68,35 @@ namespace BurnOutSharp.ProtectionType
                     return match;
             }
 
+            // Get the wrapper resource, if it exists
+            var resource = Utilities.FindResourceInSection(pex.ResourceSection, dataContains: "B\0I\0N\0" + (char)0x07 + "\0I\0D\0R\0_\0S\0G\0T\0");
+            if (resource != null)
+                return "SolidShield EXE Wrapper v1";
+
             // Search the last two available sections
-            for (int i = sections.Length - 2; i < sections.Length; i++)
+            var sectionNames = pex.GetSectionNames();
+            for (int i = sectionNames.Length - 2; i < sectionNames.Length; i++)
             {
-                var nthSection = i < 0 ? null : sections[i];
-                if (nthSection != null)
+                var nthSectionRaw = pex.ReadRawSection(fileContent, sectionNames[i], first: false);
+                if (nthSectionRaw != null)
                 {
-                    int sectionAddr = (int)nthSection.PointerToRawData;
-                    int sectionEnd = sectionAddr + (int)nthSection.VirtualSize;
                     var matchers = new List<ContentMatchSet>
                     {
                         // Solidshield
-                        new ContentMatchSet(
-                            new ContentMatch(new byte?[]
-                            {
-                                0x53, 0x6F, 0x6C, 0x69, 0x64, 0x73, 0x68, 0x69,
-                                0x65, 0x6C, 0x64
-                            }, start: sectionAddr, end: sectionEnd),
-                        GetVersion, "SolidShield EXE Wrapper"),
+                        new ContentMatchSet(new byte?[]
+                        {
+                            0x53, 0x6F, 0x6C, 0x69, 0x64, 0x73, 0x68, 0x69,
+                            0x65, 0x6C, 0x64
+                        }, GetVersion, "SolidShield EXE Wrapper"),
                     };
 
-                    string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
+                    string match = MatchUtil.GetFirstMatch(file, nthSectionRaw, matchers, includeDebug);
                     if (!string.IsNullOrWhiteSpace(match))
                         return match;
                 }
             }
 
-            // TODO: Obtain a sample to find where this string is in a typical executable
-            var contentMatchSets = new List<ContentMatchSet>
-            {
-                // (char)0xAD + (char)0xDE + (char)0xFE + (char)0xCA
-                new ContentMatchSet(new byte?[] { 0xAD, 0xDE, 0xFE, 0xCA }, GetVersionPlusTages, "SolidShield"),
-
-                // B + (char)0x00 + I + (char)0x00 + N + (char)0x00 + (char)0x7 + (char)0x00 + I + (char)0x00 + D + (char)0x00 + R + (char)0x00 + _ + (char)0x00 + S + (char)0x00 + G + (char)0x00 + T + (char)0x00
-                new ContentMatchSet(new byte?[]
-                {
-                    0x42, 0x00, 0x49, 0x00, 0x4E, 0x00, 0x07, 0x00,
-                    0x49, 0x00, 0x44, 0x00, 0x52, 0x00, 0x5F, 0x00,
-                    0x53, 0x00, 0x47, 0x00, 0x54, 0x00
-                }, "SolidShield"),
-            };
-            
-            return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
+            return null;
         }
 
         /// <inheritdoc/>
