@@ -81,7 +81,7 @@ namespace BurnOutSharp.FileType
             }
             catch
             {
-                Utilities.AppendToDictionary(protections, file, "[File too large to be scanned]");
+                Utilities.AppendToDictionary(protections, file, "[Out of memory attempting to open]");
                 return protections;
             }
 

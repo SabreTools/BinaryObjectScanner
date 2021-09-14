@@ -266,7 +266,7 @@ namespace BurnOutSharp
                     try
                     {
                         fs.Read(magic, 0, 16);
-                        fs.Seek(-16, SeekOrigin.Current);
+                        fs.Seek(0, SeekOrigin.Begin);
                     }
                     catch
                     {
