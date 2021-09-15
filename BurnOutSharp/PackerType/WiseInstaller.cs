@@ -2,7 +2,6 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using BurnOutSharp.ExecutableType.Microsoft;
 using BurnOutSharp.Matching;
 using BurnOutSharp.Tools;
@@ -16,18 +15,6 @@ namespace BurnOutSharp.PackerType
         public bool ShouldScan(byte[] magic) => true;
 
         /// <inheritdoc/>
-        private List<ContentMatchSet> GetContentMatchSets()
-        {
-            // TODO: Keep this around until it can be confirmed with NE checks as well
-            // TODO: This _may_ actually over-match. See msvbvm50.exe for an example
-            return new List<ContentMatchSet>
-            {
-                // WiseMain
-                new ContentMatchSet(new byte?[] { 0x57, 0x69, 0x73, 0x65, 0x4D, 0x61, 0x69, 0x6E }, "Wise Installation Wizard Module"),
-            };
-        }
-
-        /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
         {
             // Get the sections from the executable, if possible
@@ -36,9 +23,15 @@ namespace BurnOutSharp.PackerType
             {
                 if (nex != null)
                 {
-                    var neMatchSets = GetContentMatchSets();
-                    if (neMatchSets != null && neMatchSets.Any())
-                        return MatchUtil.GetFirstMatch(file, fileContent, neMatchSets, includeDebug);
+                    // TODO: Keep this around until it can be confirmed with NE checks as well
+                    // TODO: This _may_ actually over-match. See msvbvm50.exe for an example
+                    var neMatchSets = new List<ContentMatchSet>
+                    {
+                        // WiseMain
+                        new ContentMatchSet(new byte?[] { 0x57, 0x69, 0x73, 0x65, 0x4D, 0x61, 0x69, 0x6E }, "Wise Installation Wizard Module"),
+                    };
+                    
+                    return MatchUtil.GetFirstMatch(file, fileContent, neMatchSets, includeDebug);
                 }
 
                 return null;
@@ -71,10 +64,6 @@ namespace BurnOutSharp.PackerType
                 if (!string.IsNullOrWhiteSpace(match))
                     return match;
             }
-
-            var contentMatchSets = GetContentMatchSets();
-            if (contentMatchSets != null && contentMatchSets.Any())
-                return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
 
             return null;
         }
