@@ -18,7 +18,7 @@ namespace BurnOutSharp.ProtectionType
                 return null;
 
             // Get the .grand section, if it exists
-            var grandSectionRaw = pex.ReadRawSection(fileContent, ".grand", true);
+            var grandSectionRaw = pex.ReadRawSection(fileContent, ".grand", first: true);
             if (grandSectionRaw != null)
             {
                 var matchers = new List<ContentMatchSet>

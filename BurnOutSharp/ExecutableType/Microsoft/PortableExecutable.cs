@@ -177,6 +177,34 @@ namespace BurnOutSharp.ExecutableType.Microsoft
         }
 
         /// <summary>
+        /// Convert a virtual address to a physical one
+        /// </summary>
+        /// <param name="virtualAddress">Virtual address to convert</param>
+        /// <param name="sections">Array of sections to check against</param>
+        /// <returns>Physical address, 0 on error</returns>
+        public static uint ConvertVirtualAddress(uint virtualAddress, SectionHeader[] sections)
+        {
+            // Loop through all of the sections
+            for (int i = 0; i < sections.Length; i++)
+            {
+                // If the section is invalid, just skip it
+                if (sections[i] == null)
+                    continue;
+
+                // If the section "starts" at 0, just skip it
+                if (sections[i].PointerToRawData == 0)
+                    continue;
+
+                // Attempt to derive the physical address from the current section
+                var section = sections[i];
+                if (virtualAddress >= section.VirtualAddress && virtualAddress <= section.VirtualAddress + section.VirtualSize)
+                   return section.PointerToRawData + virtualAddress - section.VirtualAddress;
+            }
+
+            return 0;
+        }
+
+        /// <summary>
         /// Get the first section based on name, if possible
         /// </summary>
         /// <param name="sectionName">Name of the section to check for</param>
@@ -231,12 +259,26 @@ namespace BurnOutSharp.ExecutableType.Microsoft
         }
 
         /// <summary>
+        /// Print all sections, including their start and end addresses
+        /// </summary>
+        public void PrintAllSections()
+        {
+            foreach (var section in SectionTable)
+            {
+                string sectionName = Encoding.ASCII.GetString(section.Name).Trim('\0');
+                int sectionAddr = (int)section.PointerToRawData;
+                int sectionEnd = sectionAddr + (int)section.VirtualSize;
+                Console.WriteLine($"{sectionName}: {sectionAddr} -> {sectionEnd}");
+            }
+        }
+
+        /// <summary>
         /// Get the raw bytes from a section, if possible
         /// </summary>
-        public byte[] ReadRawSection(Stream stream, string sectionName, bool first = true, int offset = 0)
+        public byte[] ReadRawSection(Stream stream, string sectionName, bool force = false, bool first = true, int offset = 0)
         {
-            // Special cases for non-offset data
-            if (offset == 0)
+            // Special cases for non-forced, non-offset data
+            if (!force && offset == 0)
             {
                 switch (sectionName)
                 {
@@ -274,10 +316,10 @@ namespace BurnOutSharp.ExecutableType.Microsoft
         /// <summary>
         /// Get the raw bytes from a section, if possible
         /// </summary>
-        public byte[] ReadRawSection(byte[] content, string sectionName, bool first = true, int offset = 0)
+        public byte[] ReadRawSection(byte[] content, string sectionName, bool force = false, bool first = true, int offset = 0)
         {
-            // Special cases for non-offset data
-            if (offset == 0)
+            // Special cases for non-forced, non-offset data
+            if (!force && offset == 0)
             {
                 switch (sectionName)
                 {
@@ -302,34 +344,6 @@ namespace BurnOutSharp.ExecutableType.Microsoft
             int readLength = (int)Math.Min(section.VirtualSize - offset, content.Length);
 
             return content.ReadBytes(ref startingIndex, readLength);
-        }
-
-        /// <summary>
-        /// Convert a virtual address to a physical one
-        /// </summary>
-        /// <param name="virtualAddress">Virtual address to convert</param>
-        /// <param name="sections">Array of sections to check against</param>
-        /// <returns>Physical address, 0 on error</returns>
-        public static uint ConvertVirtualAddress(uint virtualAddress, SectionHeader[] sections)
-        {
-            // Loop through all of the sections
-            for (int i = 0; i < sections.Length; i++)
-            {
-                // If the section is invalid, just skip it
-                if (sections[i] == null)
-                    continue;
-
-                // If the section "starts" at 0, just skip it
-                if (sections[i].PointerToRawData == 0)
-                    continue;
-
-                // Attempt to derive the physical address from the current section
-                var section = sections[i];
-                if (virtualAddress >= section.VirtualAddress && virtualAddress <= section.VirtualAddress + section.VirtualSize)
-                   return section.PointerToRawData + virtualAddress - section.VirtualAddress;
-            }
-
-            return 0;
         }
 
         #endregion
@@ -396,19 +410,19 @@ namespace BurnOutSharp.ExecutableType.Microsoft
                 #region Freeform Sections
 
                 // Data Section
-                pex.DataSectionRaw = pex.ReadRawSection(stream, ".data", false) ?? pex.ReadRawSection(stream, "DATA", false);
+                pex.DataSectionRaw = pex.ReadRawSection(stream, ".data", force: true, first: false) ?? pex.ReadRawSection(stream, "DATA", force: true, first: false);
 
                 // Export Table
-                pex.ExportDataSectionRaw = pex.ReadRawSection(stream, ".edata", false);
+                pex.ExportDataSectionRaw = pex.ReadRawSection(stream, ".edata", force: true, first: false);
 
                 // Import Table
-                pex.ImportDataSectionRaw = pex.ReadRawSection(stream, ".idata", false);
+                pex.ImportDataSectionRaw = pex.ReadRawSection(stream, ".idata", force: true, first: false);
 
                 // Resource Data Section
-                pex.ResourceDataSectionRaw = pex.ReadRawSection(stream, ".rdata", false);
+                pex.ResourceDataSectionRaw = pex.ReadRawSection(stream, ".rdata", force: true, first: false);
 
                 // Text Section
-                pex.TextSectionRaw = pex.ReadRawSection(stream, ".text", false);
+                pex.TextSectionRaw = pex.ReadRawSection(stream, ".text", force: true, first: false);
 
                 #endregion
             }
@@ -484,19 +498,19 @@ namespace BurnOutSharp.ExecutableType.Microsoft
                 #region Freeform Sections
 
                 // Data Section
-                pex.DataSectionRaw = pex.ReadRawSection(content, ".data", false) ?? pex.ReadRawSection(content, "DATA", false);
+                pex.DataSectionRaw = pex.ReadRawSection(content, ".data", force: true, first: false) ?? pex.ReadRawSection(content, "DATA", force: true, first: false);
 
                 // Export Table
-                pex.ExportDataSectionRaw = pex.ReadRawSection(content, ".edata", false);
+                pex.ExportDataSectionRaw = pex.ReadRawSection(content, ".edata", force: true, first: false);
 
                 // Import Table
-                pex.ImportDataSectionRaw = pex.ReadRawSection(content, ".idata", false);
+                pex.ImportDataSectionRaw = pex.ReadRawSection(content, ".idata", force: true, first: false);
 
                 // Resource Data Section
-                pex.ResourceDataSectionRaw = pex.ReadRawSection(content, ".rdata", false);
+                pex.ResourceDataSectionRaw = pex.ReadRawSection(content, ".rdata", force: true, first: false);
 
                 // Text Section
-                pex.TextSectionRaw = pex.ReadRawSection(content, ".text", false);
+                pex.TextSectionRaw = pex.ReadRawSection(content, ".text", force: true, first: false);
 
                 #endregion
             }

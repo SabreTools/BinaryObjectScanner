@@ -16,7 +16,7 @@ namespace BurnOutSharp.ProtectionType
                 return null;
 
             // Get the CODE section, if it exists
-            var codeSectionRaw = pex.ReadRawSection(fileContent, "CODE", true);
+            var codeSectionRaw = pex.ReadRawSection(fileContent, "CODE", first: true);
             if (codeSectionRaw != null)
             {
                 var matchers = new List<ContentMatchSet>

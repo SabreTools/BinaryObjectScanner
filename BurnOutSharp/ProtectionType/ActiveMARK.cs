@@ -16,7 +16,7 @@ namespace BurnOutSharp.ProtectionType
                 return null;
 
             // Get the last .bss section, if it exists
-            var bssSectionRaw = pex.ReadRawSection(fileContent, ".bss", true);
+            var bssSectionRaw = pex.ReadRawSection(fileContent, ".bss", first: false);
             if (bssSectionRaw != null)
             {
                 var matchers = new List<ContentMatchSet>

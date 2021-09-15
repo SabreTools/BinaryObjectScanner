@@ -48,7 +48,7 @@ namespace BurnOutSharp.ProtectionType
                 return $"SolidShield Activation Manager Module {GetFileVersion(pex)}";
 
             // Get the .init section, if it exists
-            var initSectionRaw = pex.ReadRawSection(fileContent, ".init", true);
+            var initSectionRaw = pex.ReadRawSection(fileContent, ".init", first: true);
             if (initSectionRaw != null)
             {
                 var matchers = new List<ContentMatchSet>
