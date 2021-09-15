@@ -4,6 +4,7 @@ using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
 {
+    // Renamed to ProRing at some point
     public class RingPROTECH : IContentCheck
     {
         /// <inheritdoc/>
@@ -17,7 +18,7 @@ namespace BurnOutSharp.ProtectionType
                 {
                     0x00, 0x41, 0x6C, 0x6C, 0x6F, 0x63, 0x61, 0x74,
                     0x6F, 0x72, 0x00, 0x00, 0x00, 0x00
-                }, "Ring PROTECH [Check disc for physical ring]"),
+                }, "Ring PROTECH / ProRing [Check disc for physical ring]"),
             };
             
             return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
