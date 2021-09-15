@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using BurnOutSharp.ExecutableType.Microsoft;
-using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
 {
+    // CodeLock / CodeLok / CopyLok
     public class CodeLock : IContentCheck
     {
         /// <inheritdoc/>
@@ -18,20 +17,22 @@ namespace BurnOutSharp.ProtectionType
             // If there are more than 2 icd-prefixed sections, then we have a match
             int icdSectionCount = pex.GetSectionNames().Count(s => s.StartsWith("icd"));
             if (icdSectionCount >= 2)
-                return "CodeLock";
+                return "CodeLock / CodeLok / CopyLok";
+
+            return null;
             
-            // TODO: Obtain a sample to find where this string is in a typical executable
-            var contentMatchSets = new List<ContentMatchSet>
-            {
-                // CODE-LOCK.OCX
-                new ContentMatchSet(new byte?[]
-                {
-                    0x43, 0x4F, 0x44, 0x45, 0x2D, 0x4C, 0x4F, 0x43,
-                    0x4B, 0x2E, 0x4F, 0x43, 0x58
-                }, "CodeLock"),
-            };
+            // TODO: Could not be confirmed with any sample, so disabling for now
+            // var contentMatchSets = new List<ContentMatchSet>
+            // {
+            //     // CODE-LOCK.OCX
+            //     new ContentMatchSet(new byte?[]
+            //     {
+            //         0x43, 0x4F, 0x44, 0x45, 0x2D, 0x4C, 0x4F, 0x43,
+            //         0x4B, 0x2E, 0x4F, 0x43, 0x58
+            //     }, "CodeLock / CodeLok / CopyLok"),
+            // };
             
-            return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
+            // return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
         }
     }
 }
