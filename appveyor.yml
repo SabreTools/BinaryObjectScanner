@@ -40,6 +40,14 @@ after_build:
 - 7z a BurnOutSharp_netcoreapp3.1.zip netcoreapp3.1\*
 - 7z a BurnOutSharp_net5.0.zip net5.0\*
 
+# success/failure tracking
+on_success:
+  - ps: Invoke-RestMethod https://raw.githubusercontent.com/DiscordHooks/appveyor-discord-webhook/master/send.ps1 -o send.ps1
+  - ps: ./send.ps1 success $env:WEBHOOK_URL
+on_failure:
+  - ps: Invoke-RestMethod https://raw.githubusercontent.com/DiscordHooks/appveyor-discord-webhook/master/send.ps1 -o send.ps1
+  - ps: ./send.ps1 failure $env:WEBHOOK_URL
+
 # artifact linking
 artifacts:
 - path: Test\bin\Debug\BurnOutSharp_net48.zip
