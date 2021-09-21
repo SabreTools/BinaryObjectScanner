@@ -17,93 +17,122 @@ In addition to the original BurnOut code, the following libraries (or ports ther
 
 ## Protections Detected
 
-Below is a list of the protections that can be detected using this code:
+Below is a list of protections detected by BurnOutSharp. The two columns explain what sort of checks are performed to determine how the protection is detected. Generally speaking, it's better to have a content check than a path check.
 
-- 3PLock
-- 321Studios Online Activation
-- AACS
-- ActiveMARK / ActiveMARK 5
-- Alpha-DVD
-- Alpha-ROM
-- BD+
-- Bitpool
-- ByteShield
-- Cactus Data Shield
-- CD-Cops
-- CD-Lock
-- CD-Protector
-- CD-X
-- CDSHiELD SE
-- Cenga ProtectDVD
-- Code Lock
-- CopyKiller
-- DiscGuard
-- DVD-Cops
-- DVD-Movie-PROTECT
-- DVD Crypt
-- EA Protections (Including ~~Cucko~~, EA CDKey, and EA DRM)
-- Freelock
-- Games for Windows - Live
-- Generic CD Check
-- Generic Online Registration
-- Hexalock Autolock
-- Impulse Reactor
-- IndyVCD
-- JoWooD X-Prot (v1/v2)
-- Key2Audio XS
-- Key-Lock (Dongle)
-- LibCrypt (Separate subfile scan only)
-- LaserLock
-- MediaCloQ
-- MediaMax CD3
-- Origin (partial)
-- ProtectDisc
-- Protect DVD-Video
-- PlayStation Anti-modchip (En/Jp, not "Red Hand")
-- Ring PROTECH
-- SafeCast
-- SafeDisc (all versions)
-- SafeLock
-- SecuROM (all versions)
-- SmartE
-- SolidShield (mostly complete)
-- SoftLock
-- StarForce
-- Steam (partial)
-- SVK Protector
-- Sysiphus / Sysiphus DVD
-- TAGES (mostly complete)
-- Tivola Ring Protection
-- TZCopyProtector
-- Uplay (partial)
-- VOB ProtectCD/DVD
-- Winlock
-- WTM CD Protect
-- WTM Copy Protection
-- XCP
-- Xtreme-Protector
-- Zzxzz
+| Protection Name | Content Check | Path Check | Notes |
+| --------------- | ------------- | ---------- | ----- |
+| 3PLock | True | False | |
+| 321Studios Online Activation | True | False | |
+| AACS | False | True | BluRay and HD-DVD variants detected |
+| ActiveMARK | True | False | Version 5 unconfirmed²; version finding incomplete |
+| Alpha-DVD | False | True | Unconfirmed¹ |
+| Alpha-ROM | True | False | Unconfirmed¹ |
+| BD+ | False | True | |
+| Bitpool | False | True | |
+| ByteShield | False | True | Unconfirmed¹ |
+| Cactus Data Shield | True | True | |
+| CD-Cops / DVD-Cops | True | True | Partially unconfirmed² |
+| CD-Lock | True | True | Unconfirmed¹ |
+| CD-Protector | False | True | Unconfirmed¹ |
+| CD-X | False | True | Unconfirmed¹ |
+| CDSHiELD SE | True | False | |
+| Cenga ProtectDVD | True | False | |
+| CodeLock / CodeLok / CopyLok | True | False | Partially unconfirmed² |
+| CopyKiller | True | True | Unconfirmed¹ |
+| DiscGuard | False | True | Unconfirmed¹ |
+| DVD-Movie-PROTECT | False | True | Unconfirmed¹ |
+| DVD Crypt | False | True | Unconfirmed¹ |
+| EA Protections | True | False | Including EA CDKey and EA DRM. Cucko has been disabled due to invalid checks |
+| ~~Executable-Based CD Check~~ | True | False | Disabled due to overly-broad checks |
+| Executable-Based Online Registration | True | False | Possibly too broad |
+| Freelock | False | True | Unconfirmed¹ |
+| Games for Windows - Live | True | True | |
+| Hexalock Autolock | False | True | Unconfirmed¹ |
+| Impulse Reactor / Stardock Product Activation | True | True | |
+| IndyVCD | False | True | Unconfirmed¹ |
+| ITENIUM Trial & Buy Protection | True | False | |
+| JoWood X-Prot (v1/v2) / Xtreme-Protector | True | False | |
+| Key2Audio XS | False | True | |
+| Key-Lock (Dongle) | True | False | Unconfirmed¹ |
+| LibCrypt | True | False | Separate subfile scan only |
+| LaserLok | True | True | |
+| MediaCloQ | False | True | Unconfirmed¹ |
+| MediaMax CD3 | True | True | |
+| Origin | True | True | |
+| ProtectDISC / VOB ProtectCD/DVD | True | False | |
+| Protect DVD-Video | False | True | Unconfirmed¹ |
+| PlayStation Anti-modchip | True | False | En/Jp, not "Red Hand"; PSX executables only |
+| Ring PROTECH / ProRing | True | False | Unconfirmed¹ |
+| SafeDisc / SafeCast | True | True | Can't distinguish between some versions of SafeDisc and SafeCast |
+| SafeLock | True | True | Unconfirmed¹ |
+| SecuROM | True | True | v8.x and White Label detected incorrectly² |
+| SmartE | True | True | |
+| SoftLock | False | True | Unconfirmed¹ |
+| SolidShield | True | True | Some Wrapper v1 not detected² |
+| StarForce | True | True | Partially unconfirmed² |
+| Steam | False | True | |
+| SVKP (Slovak Protector) | True | False | |
+| Sysiphus / Sysiphus DVD | True | False | |
+| TAGES | True | True | Partially unconfirmed² |
+| Tivola Ring Protection | False | True | |
+| TZCopyProtector | False | True | Unconfirmed¹ |
+| Uplay | False | True | |
+| Winlock | False | True | Unconfirmed¹ |
+| WTM CD Protect | True | True | |
+| XCP | True | True | |
+| Zzxzz | False | True | |
+
+**Notes**
+
+¹ - This means that I have not obtained one or more samples to ensure that either the original check from BurnOut or information found online is correct.
+
+² - This is the same as ¹, but only for a subset of the checks.
+
+## Unimplemented Protections
+
+Below is a list of protections that have been identified but have not yet been implemented. Assistance on these would be greatly appreciated. See the source code for more details, where available.
+
+- Alcatraz
+- Alpha-Audio
+- CrypKey
+- DBB
+- FADE
+- LockBlocks
+- MusicGuard
+- Phenoprotect
+- Roxxe
+- SAFEAUDIO
+- The Bongle
+- The Copy Protected CD
 
 ## Executable Packers Detected
 
-Below is a list of the executable packers that can be detected using this code:
+Below is a list of executable packers detected by BurnOutSharp. The three columns explain what sort of checks are performed to determine how the protection is detected as well as if the contents can be extracted.
 
-- Advanced Installer
-- Armadillo
-- CExe
-- dotFuscator
-- EXE Stealth
-- Inno Setup
-- Installer VISE
-- Intel Installation Framework
-- Microsoft CAB SFX
-- NSIS
-- PECompact
-- Setup Factory
-- UPX and UPX (NOS Variant)
-- WinRAR SFX
-- WinZip SFX
-- WISE Installer
+| Protection Name | Content Check | Path Check | Extractable |
+| --------------- | ------------- | ---------- | ----------- |
+| Advanced Installer / Caphyon Advanced Installer | Yes | No | No |
+| Armadillo | Yes | No | No |
+| CExe | Yes | No | No |
+| dotFuscator | Yes | No | No |
+| EXE Stealth | Yes | No | No |
+| Inno Setup | Yes | No | No |
+| Installer VISE | Yes | No | No |
+| Intel Installation Framework | Yes | No | No |
+| Microsoft CAB SFX | Yes | No | No |
+| NSIS | Yes | No | No |
+| PECompact | Yes | No | No |
+| Setup Factory | Yes | No | No |
+| UPX and UPX (NOS Variant) | Yes | No | No |
+| WinRAR SFX | Yes | No | Yes |
+| WinZip SFX | Yes | No | Yes |
+| WISE Installer | Yes | No | Yes |
+
+## Unimplemented Packers
+
+Below is a list of packers that have been identified but have not yet been implemented. Assistance on these would be greatly appreciated. See the source code for more details, where available.
+
+- PEtite
 
 ## Archive Formats
 
@@ -121,7 +150,7 @@ Below is a list of archive or archive-like formats that can be extracted and hav
 - PKZIP and derived files
 - RAR
 - TAR
-- Valve archive formats
+- ~~Valve archive formats~~ Disabled for the forseeable future
 - XZ
 
 ## Contributions

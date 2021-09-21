@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using  BurnOutSharp.ExecutableType.Microsoft; 
+using BurnOutSharp.ExecutableType.Microsoft; 
 using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
