@@ -19,8 +19,6 @@ namespace BurnOutSharp.ProtectionType
                 if (sections == null)
                     return null;
 
-                pex.PrintAllSections();
-
                 // Get the .grand section, if it exists -- TODO: Confirm is this is in DVD-Cops as well
                 bool grandSection = pex.ContainsSection(".grand", exact: true);
                 if (grandSection)
