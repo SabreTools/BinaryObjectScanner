@@ -1,10 +1,23 @@
-﻿namespace BurnOutSharp.PackerType
+﻿using BurnOutSharp.ExecutableType.Microsoft;
+
+namespace BurnOutSharp.PackerType
 {
-    public class Petite
+    public class PEtite : IContentCheck
     {
-        /*
-         * Possible strings for PEtite Win32 Executable Compressor (Unknown how to get version)
-         * - petite - 40 70 65 74 69 74 65 (Made with Version 2.4, Compression Level 1-9)
-         */
+        /// <inheritdoc/>
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
+        {
+            // Get the sections from the executable, if possible
+            var sections = pex?.SectionTable;
+            if (sections == null)
+                return null;
+
+            // Get the .petite section, if it exists -- TODO: Is there a version number that can be found?
+            bool nicodeSection = pex.ContainsSection(".petite", exact: true);
+            if (nicodeSection)
+                return "PEtite";
+
+            return null;
+        }
     }
 }
