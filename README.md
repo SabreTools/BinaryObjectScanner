@@ -122,6 +122,7 @@ Below is a list of executable packers detected by BurnOutSharp. The three column
 | Microsoft CAB SFX | Yes | No | No |
 | NSIS | Yes | No | No |
 | PECompact | Yes | No | No |
+| PEtite | Yes | No | No |
 | Setup Factory | Yes | No | No |
 | UPX and UPX (NOS Variant) | Yes | No | No |
 | WinRAR SFX | Yes | No | Yes |
@@ -132,7 +133,7 @@ Below is a list of executable packers detected by BurnOutSharp. The three column
 
 Below is a list of packers that have been identified but have not yet been implemented. Assistance on these would be greatly appreciated. See the source code for more details, where available.
 
-- PEtite
+- N/A
 
 ## Archive Formats
 
