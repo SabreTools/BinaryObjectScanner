@@ -19,6 +19,8 @@ namespace BurnOutSharp.ProtectionType
                 if (sections == null)
                     return null;
 
+                pex.PrintAllSections();
+
                 // Get the .grand section, if it exists -- TODO: Confirm is this is in DVD-Cops as well
                 bool grandSection = pex.ContainsSection(".grand", exact: true);
                 if (grandSection)
@@ -31,11 +33,25 @@ namespace BurnOutSharp.ProtectionType
                 // TODO: Do something with these strings in the NE header(?)
                 // - CDCOPS
                 // - CDcops assembly-language DLL
+
+                // TODO: Figure out what NE section this lives in
+                var neMatchSets = new List<ContentMatchSet>
+                {
+                    // CD-Cops,  ver. 
+                    new ContentMatchSet(new byte?[]
+                    {
+                        0x43, 0x44, 0x2D, 0x43, 0x6F, 0x70, 0x73, 0x2C,
+                        0x20, 0x20, 0x76, 0x65, 0x72, 0x2E, 0x20
+                    }, GetVersion, "CD-Cops"),
+                };
+                
+                return MatchUtil.GetFirstMatch(file, fileContent, neMatchSets, includeDebug);
             }
 
             // TODO: Obtain a sample to find where this string is in a typical executable
             var contentMatchSets = new List<ContentMatchSet>
             {
+                // TODO: Remove from here once it's confirmed that no PE executables contain this string
                 // CD-Cops,  ver. 
                 new ContentMatchSet(new byte?[]
                 {
@@ -43,7 +59,7 @@ namespace BurnOutSharp.ProtectionType
                     0x20, 0x20, 0x76, 0x65, 0x72, 0x2E, 0x20
                 }, GetVersion, "CD-Cops"),
 
-                // DVD-Cops,  ver. 
+                // // DVD-Cops,  ver. 
                 new ContentMatchSet(new byte?[]
                 {
                     0x44, 0x56, 0x44, 0x2D, 0x43, 0x6F, 0x70, 0x73,
