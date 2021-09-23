@@ -50,12 +50,12 @@ namespace BurnOutSharp.ProtectionType
             var contentMatchSets = new List<ContentMatchSet>
             {
                 // TODO: Remove from here once it's confirmed that no PE executables contain this string
-                // CD-Cops,  ver. 
-                new ContentMatchSet(new byte?[]
-                {
-                    0x43, 0x44, 0x2D, 0x43, 0x6F, 0x70, 0x73, 0x2C,
-                    0x20, 0x20, 0x76, 0x65, 0x72, 0x2E, 0x20
-                }, GetVersion, "CD-Cops"),
+                // // CD-Cops,  ver. 
+                // new ContentMatchSet(new byte?[]
+                // {
+                //     0x43, 0x44, 0x2D, 0x43, 0x6F, 0x70, 0x73, 0x2C,
+                //     0x20, 0x20, 0x76, 0x65, 0x72, 0x2E, 0x20
+                // }, GetVersion, "CD-Cops"),
 
                 // // DVD-Cops,  ver. 
                 new ContentMatchSet(new byte?[]
