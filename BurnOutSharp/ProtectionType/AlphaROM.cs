@@ -4,19 +4,39 @@ using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
 {
+    // TODO: Confirm this with more than one sample, if possible
+    // TODO: Alternative string possibilities:
+    //      - \AlphaDiscLog.txt
+    //      - \SETTEC
+    //      - AlphaROM
+    //      - SETTEC0000SETTEC1111
+    //      - SOFTWARE\SETTEC
+    // TODO: Are there version numbers?
     public class AlphaROM : IContentCheck
     {
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
         {
-            // TODO: Obtain a sample to find where this string is in a typical executable
-            var contentMatchSets = new List<ContentMatchSet>
+            // Get the sections from the executable, if possible
+            var sections = pex?.SectionTable;
+            if (sections == null)
+                return null;
+
+            // Get the .data section, if it exists
+            if (pex.DataSectionRaw != null)
             {
-                // SETTEC
-                new ContentMatchSet(new byte?[] { 0x53, 0x45, 0x54, 0x54, 0x45, 0x43 }, "Alpha-ROM"),
-            };
-            
-            return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
+                var matchers = new List<ContentMatchSet>
+                {
+                    // SETTEC
+                    new ContentMatchSet(new byte?[] { 0x53, 0x45, 0x54, 0x54, 0x45, 0x43 }, "Alpha-ROM"),
+                };
+
+                string match = MatchUtil.GetFirstMatch(file, pex.DataSectionRaw, matchers, includeDebug);
+                if (!string.IsNullOrWhiteSpace(match))
+                    return match;
+            }
+
+            return null;
         }
     }
 }
