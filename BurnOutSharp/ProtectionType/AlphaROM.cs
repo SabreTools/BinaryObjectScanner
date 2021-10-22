@@ -4,7 +4,6 @@ using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
 {
-    // TODO: Confirm this with more than one sample, if possible
     // TODO: Alternative string possibilities:
     //      - \AlphaDiscLog.txt
     //      - \SETTEC
