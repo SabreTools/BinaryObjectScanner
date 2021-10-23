@@ -117,6 +117,7 @@ Below is a list of executable packers detected by BurnOutSharp. The three column
 | dotFuscator | Yes | No | No |
 | EXE Stealth | Yes | No | No |
 | Inno Setup | Yes | No | No |
+| InstallAnywhere | Yes | No | No |
 | Installer VISE | Yes | No | No |
 | Intel Installation Framework | Yes | No | No |
 | Microsoft CAB SFX | Yes | No | No |
