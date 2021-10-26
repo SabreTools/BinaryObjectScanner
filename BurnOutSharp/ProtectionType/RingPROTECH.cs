@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 using BurnOutSharp.ExecutableType.Microsoft;
 using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
 {
     // Renamed to ProRing at some point
-    public class RingPROTECH : IContentCheck
+    public class RingPROTECH : IContentCheck, IPathCheck
     {
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
@@ -22,6 +23,30 @@ namespace BurnOutSharp.ProtectionType
             };
             
             return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
+        }
+
+        // TODO: Confirm if these checks are only for ProRing or if they are also for older Ring PROTECH
+
+        /// <inheritdoc/>
+        public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string> files)
+        {
+            var matchers = new List<PathMatchSet>
+            {
+                new PathMatchSet(new PathMatch("protect.pro", useEndsWith: true), "Ring PROTECH / ProRing [Check disc for physical ring]"),
+            };
+
+            return MatchUtil.GetAllMatches(files, matchers, any: true);
+        }
+
+        /// <inheritdoc/>
+        public string CheckFilePath(string path)
+        {
+            var matchers = new List<PathMatchSet>
+            {
+                new PathMatchSet(new PathMatch("protect.pro", useEndsWith: true), "Ring PROTECH / ProRing [Check disc for physical ring]"),
+            };
+
+            return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
     }
 }
