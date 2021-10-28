@@ -68,9 +68,8 @@ namespace BurnOutSharp.ProtectionType
         {
             var protections = new ConcurrentQueue<string>();
 
-            // TODO: Verify if these are OR or AND
-            if (files.Any(f => Path.GetFileName(f).Equals("Tages.dll", StringComparison.OrdinalIgnoreCase))
-                || files.Any(f => Path.GetFileName(f).Equals("Wave.aif", StringComparison.OrdinalIgnoreCase)))
+            // "Wave.aif" was a former check here, but it over-matched
+            if (files.Any(f => Path.GetFileName(f).Equals("Tages.dll", StringComparison.OrdinalIgnoreCase)))
             {
                 protections.Enqueue("TAGES");
             }
@@ -99,8 +98,8 @@ namespace BurnOutSharp.ProtectionType
         /// <inheritdoc/>
         public string CheckFilePath(string path)
         {
-            if (Path.GetFileName(path).Equals("Tages.dll", StringComparison.OrdinalIgnoreCase)
-                || Path.GetFileName(path).Equals("Wave.aif", StringComparison.OrdinalIgnoreCase))
+            // "Wave.aif" was a former check here, but it over-matched
+            if (Path.GetFileName(path).Equals("Tages.dll", StringComparison.OrdinalIgnoreCase))
             {
                 return "TAGES";
             }
