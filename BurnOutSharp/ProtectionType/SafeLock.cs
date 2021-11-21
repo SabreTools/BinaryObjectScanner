@@ -11,13 +11,15 @@ namespace BurnOutSharp.ProtectionType
         public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
         {
             // TODO: Obtain a sample to find where this string is in a typical executable
-            var contentMatchSets = new List<ContentMatchSet>
-            {
-                // SafeLock
-                new ContentMatchSet(new byte?[] { 0x53, 0x61, 0x66, 0x65, 0x4C, 0x6F, 0x63, 0x6B }, "SafeLock"),
-            };
+            // TODO: Re-enable when there's a more accurate version of this
+            // var contentMatchSets = new List<ContentMatchSet>
+            // {
+            //     // SafeLock
+            //     new ContentMatchSet(new byte?[] { 0x53, 0x61, 0x66, 0x65, 0x4C, 0x6F, 0x63, 0x6B }, "SafeLock"),
+            // };
             
-            return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
+            // return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
+            return null;
         }
 
         /// <inheritdoc/>
