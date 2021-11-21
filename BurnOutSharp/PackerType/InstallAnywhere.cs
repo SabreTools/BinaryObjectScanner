@@ -21,11 +21,11 @@ namespace BurnOutSharp.PackerType
 
             string name = Utilities.GetFileDescription(pex);
             if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("InstallAnywhere Self Extractor", StringComparison.OrdinalIgnoreCase))
-                return $"Setup Factory {GetVersion(pex)}";
+                return $"InstallAnywhere {GetVersion(pex)}";
 
             name = Utilities.GetProductName(pex);
             if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("InstallAnywhere", StringComparison.OrdinalIgnoreCase))
-                return $"Setup Factory {GetVersion(pex)}";
+                return $"InstallAnywhere {GetVersion(pex)}";
 
             return null;
         }
@@ -51,13 +51,13 @@ namespace BurnOutSharp.PackerType
 
         private string GetVersion(PortableExecutable pex)
         {
-            // Check the manifest version first
-            string version = Utilities.GetManifestVersion(pex);
+			// Check the file version
+            string version = Utilities.GetFileVersion(pex);
             if (!string.IsNullOrEmpty(version))
                 return version;
-
-            // Then check the file version
-            version = Utilities.GetFileVersion(pex);
+			
+            // Then check the manifest version
+            version = Utilities.GetManifestVersion(pex);
             if (!string.IsNullOrEmpty(version))
                 return version;
 
