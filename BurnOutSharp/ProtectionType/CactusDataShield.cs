@@ -67,7 +67,6 @@ namespace BurnOutSharp.ProtectionType
                 new PathMatchSet(new PathMatch("CDSPlayer.app", useEndsWith: true), GetVersion, "Cactus Data Shield"),
                 new PathMatchSet(new PathMatch("PJSTREAM.DLL", useEndsWith: true), GetVersion, "Cactus Data Shield"),
                 new PathMatchSet(new PathMatch("wmmp.exe", useEndsWith: true), GetVersion, "Cactus Data Shield"),
-                new PathMatchSet(new PathMatch(".cds", useEndsWith: true), GetVersion, "Cactus Data Shield"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);
@@ -82,7 +81,6 @@ namespace BurnOutSharp.ProtectionType
                 new PathMatchSet(new PathMatch("CDSPlayer.app", useEndsWith: true), "Cactus Data Shield 200"),
                 new PathMatchSet(new PathMatch("PJSTREAM.DLL", useEndsWith: true), "Cactus Data Shield 200"),
                 new PathMatchSet(new PathMatch("wmmp.exe", useEndsWith: true), "Cactus Data Shield 200"),
-                new PathMatchSet(new PathMatch(".cds", useEndsWith: true), "Cactus Data Shield 200"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
