@@ -11,6 +11,7 @@ namespace BurnOutSharp.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
+                new PathMatchSet(new PathMatch("UbisoftGameLauncherInstaller.exe", useEndsWith: true), "Uplay"),
                 new PathMatchSet(new PathMatch("UplayInstaller.exe", useEndsWith: true), "Uplay"),
             };
 
@@ -22,6 +23,7 @@ namespace BurnOutSharp.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
+                new PathMatchSet(new PathMatch("UbisoftGameLauncherInstaller.exe", useEndsWith: true), "Uplay"),
                 new PathMatchSet(new PathMatch("UplayInstaller.exe", useEndsWith: true), "Uplay"),
             };
 
