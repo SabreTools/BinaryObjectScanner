@@ -67,13 +67,16 @@ namespace BurnOutSharp.ProtectionType
         /// <inheritdoc/>
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string> files)
         {
-            var matchers = new List<PathMatchSet>
-            {
-                new PathMatchSet(new PathMatch("protect.dll", useEndsWith: true), "StarForce"),
-                new PathMatchSet(new PathMatch("protect.exe", useEndsWith: true), "StarForce"),
-            };
+            // These have too high of a chance of over-matching by themselves
+            // var matchers = new List<PathMatchSet>
+            // {
+            //     // TODO: Re-consolidate these once path matching is improved
+            //     new PathMatchSet(new PathMatch("/protect.dll", useEndsWith: true), "StarForce"),
+            //     new PathMatchSet(new PathMatch("/protect.exe", useEndsWith: true), "StarForce"),
+            // };
 
-            return MatchUtil.GetAllMatches(files, matchers, any: false);
+            // return MatchUtil.GetAllMatches(files, matchers, any: false);
+            return null;
         }
 
         /// <inheritdoc/>
