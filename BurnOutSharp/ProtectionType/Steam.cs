@@ -12,6 +12,8 @@ namespace BurnOutSharp.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
+                new PathMatchSet(new PathMatch("steam_api.dll", useEndsWith: true), "Steam"),
+                new PathMatchSet(new PathMatch("steam_api64.dll", useEndsWith: true), "Steam"),
                 new PathMatchSet(new PathMatch("SteamInstall.bom", useEndsWith: true), "Steam"),
                 new PathMatchSet(new PathMatch("SteamInstall.exe", useEndsWith: true), "Steam"),
                 new PathMatchSet(new PathMatch("SteamInstall.info", useEndsWith: true), "Steam"),
@@ -42,6 +44,8 @@ namespace BurnOutSharp.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
+                new PathMatchSet(new PathMatch("steam_api.dll", useEndsWith: true), "Steam"),
+                new PathMatchSet(new PathMatch("steam_api64.dll", useEndsWith: true), "Steam"),
                 new PathMatchSet(new PathMatch("SteamInstall.bom", useEndsWith: true), "Steam"),
                 new PathMatchSet(new PathMatch("SteamInstall.exe", useEndsWith: true), "Steam"),
                 new PathMatchSet(new PathMatch("SteamInstall.info", useEndsWith: true), "Steam"),
