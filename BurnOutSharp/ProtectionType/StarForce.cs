@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using BurnOutSharp.ExecutableType.Microsoft;
 using BurnOutSharp.Matching;
@@ -17,7 +18,13 @@ namespace BurnOutSharp.ProtectionType
                 return null;
 
             string name = Utilities.GetLegalCopyright(pex);
-            if (!string.IsNullOrWhiteSpace(name) && name.Contains("Protection Technology"))
+            if (!string.IsNullOrWhiteSpace(name) && name.Contains("Protection Technology")) // Protection Technology (StarForce)?
+                return $"StarForce {Utilities.GetFileVersion(pex)}";
+
+            name = Utilities.GetInternalName(pex);
+            if (!string.IsNullOrWhiteSpace(name) && name.Equals("CORE.EXE", StringComparison.Ordinal))
+                return $"StarForce {Utilities.GetFileVersion(pex)}";
+            else if (!string.IsNullOrWhiteSpace(name) && name.Equals("protect.exe", StringComparison.Ordinal))
                 return $"StarForce {Utilities.GetFileVersion(pex)}";
 
             // TODO: Find what fvinfo field actually maps to this
