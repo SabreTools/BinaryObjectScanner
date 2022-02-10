@@ -343,7 +343,16 @@ namespace BurnOutSharp.ExecutableType.Microsoft
             int startingIndex = (int)Math.Max(section.PointerToRawData + offset, 0);
             int readLength = (int)Math.Min(section.VirtualSize - offset, content.Length);
 
-            return content.ReadBytes(ref startingIndex, readLength);
+            try
+            {
+                return content.ReadBytes(ref startingIndex, readLength);
+            }
+            catch
+            {
+                // Just absorb errors for now
+                // TODO: Investigate why and when this would be hit
+                return null;
+            }
         }
 
         #endregion

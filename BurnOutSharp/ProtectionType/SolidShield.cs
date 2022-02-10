@@ -75,7 +75,7 @@ namespace BurnOutSharp.ProtectionType
 
             // Search the last two available sections
             var sectionNames = pex.GetSectionNames();
-            for (int i = sectionNames.Length - 2; i < sectionNames.Length; i++)
+            for (int i = (sectionNames.Length >= 2 ? sectionNames.Length - 2 : 0); i < sectionNames.Length; i++)
             {
                 var nthSectionRaw = pex.ReadRawSection(fileContent, sectionNames[i], first: false);
                 if (nthSectionRaw != null)
