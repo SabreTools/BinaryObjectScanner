@@ -33,6 +33,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
                 if (Data == null || codePage < 0)
                     return string.Empty;
 
+                // Try to convert to UTF-8 first
                 try
                 {
                     Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
@@ -40,11 +41,17 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Entries
                     byte[] convertedData = Encoding.Convert(originalEncoding, Encoding.UTF8, Data);
                     return Encoding.UTF8.GetString(convertedData);
                 }
-                catch (Exception ex)
+                catch { }
+
+                // Then try to read direct as ASCII
+                try
                 {
                     return Encoding.ASCII.GetString(Data);
                 }
-                
+                catch { }
+
+                // If both encodings fail, then just return an empty string
+                return string.Empty;
             }
         }
 

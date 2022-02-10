@@ -395,43 +395,47 @@ namespace BurnOutSharp.Tools
             if (rdt == null)
                 return null;
 
-            foreach (var rdte in rdt.NamedEntries)
+            try
             {
-                if (rdte.IsResourceDataEntry() && rdte.DataEntry != null)
+                foreach (var rdte in rdt.NamedEntries)
                 {
-                    if (dataStart != null && rdte.DataEntry.DataAsUTF8String.StartsWith(dataStart))
-                        return rdte.DataEntry;
-                    else if (dataContains != null && rdte.DataEntry.DataAsUTF8String.Contains(dataContains))
-                        return rdte.DataEntry;
-                    else if (dataEnd != null && rdte.DataEntry.DataAsUTF8String.EndsWith(dataStart))
-                        return rdte.DataEntry;
+                    if (rdte.IsResourceDataEntry() && rdte.DataEntry != null)
+                    {
+                        if (dataStart != null && rdte.DataEntry.DataAsUTF8String.StartsWith(dataStart))
+                            return rdte.DataEntry;
+                        else if (dataContains != null && rdte.DataEntry.DataAsUTF8String.Contains(dataContains))
+                            return rdte.DataEntry;
+                        else if (dataEnd != null && rdte.DataEntry.DataAsUTF8String.EndsWith(dataStart))
+                            return rdte.DataEntry;
+                    }
+                    else
+                    {
+                        var manifest = FindResourceInTable(rdte.Subdirectory, dataStart, dataContains, dataEnd);
+                        if (manifest != null)
+                            return manifest;
+                    }
                 }
-                else
-                {
-                    var manifest = FindResourceInTable(rdte.Subdirectory, dataStart, dataContains, dataEnd);
-                    if (manifest != null)
-                        return manifest;
-                }
-            }
 
-            foreach (var rdte in rdt.IdEntries)
-            {
-                if (rdte.IsResourceDataEntry() && rdte.DataEntry != null)
+                foreach (var rdte in rdt.IdEntries)
                 {
-                    if (dataStart != null && rdte.DataEntry.DataAsUTF8String.StartsWith(dataStart))
-                        return rdte.DataEntry;
-                    else if (dataContains != null && rdte.DataEntry.DataAsUTF8String.Contains(dataContains))
-                        return rdte.DataEntry;
-                    else if (dataEnd != null && rdte.DataEntry.DataAsUTF8String.EndsWith(dataStart))
-                        return rdte.DataEntry;
-                }
-                else
-                {
-                    var manifest = FindResourceInTable(rdte.Subdirectory, dataStart, dataContains, dataEnd);
-                    if (manifest != null)
-                        return manifest;
+                    if (rdte.IsResourceDataEntry() && rdte.DataEntry != null)
+                    {
+                        if (dataStart != null && rdte.DataEntry.DataAsUTF8String.StartsWith(dataStart))
+                            return rdte.DataEntry;
+                        else if (dataContains != null && rdte.DataEntry.DataAsUTF8String.Contains(dataContains))
+                            return rdte.DataEntry;
+                        else if (dataEnd != null && rdte.DataEntry.DataAsUTF8String.EndsWith(dataStart))
+                            return rdte.DataEntry;
+                    }
+                    else
+                    {
+                        var manifest = FindResourceInTable(rdte.Subdirectory, dataStart, dataContains, dataEnd);
+                        if (manifest != null)
+                            return manifest;
+                    }
                 }
             }
+            catch { }
 
             return null;
         }
