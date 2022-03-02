@@ -25,6 +25,10 @@ namespace BurnOutSharp
         /// <summary>
         /// Determines whether all files are scanned or just executables are
         /// </summary>
+        /// <remarks>
+        /// With the improvements to executable scannning, this should probably be removed in
+        /// a future update.
+        /// </remarks>
         public bool ScanAllFiles { get; set; } = false;
 
         /// <summary>

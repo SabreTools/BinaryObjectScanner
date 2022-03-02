@@ -14,23 +14,98 @@ namespace Test
             var p = new Progress<ProtectionProgress>();
             p.ProgressChanged += Changed;
 
+            // Set initial values for scanner flags
+            bool debug = false, allFiles = false, archives = true, packers = true;
+
+            // Loop through the arguments to get the flags
+            int start;
+            for (start = 0; start < args.Length; start++)
+            {
+                bool breakout = false;
+
+                switch (args[start])
+                {
+                    case "-?":
+                    case "-h":
+                    case "--help":
+                        DisplayHelp();
+                        Console.WriteLine("Press enter to close the program...");
+                        Console.ReadLine();
+                        return;
+
+                    case "-d":
+                    case "--debug":
+                        debug = true;
+                        break;
+
+                    case "-a":
+                    case "--all-files":
+                        allFiles = true;
+                        break;
+
+                    case "-na":
+                    case "--no-archives":
+                        archives = false;
+                        break;
+
+                    case "-np":
+                    case "--no-packers":
+                        packers = false;
+                        break;
+
+                    default:
+                        breakout = true;
+                        break;
+                }
+
+                // If we're breaking out of the loop, do so
+                if (breakout)
+                    break;
+            }
+
+            // If we have no arguments, show the help
+            if (start >= args.Length - 1)
+            {
+                DisplayHelp();
+                Console.WriteLine("Press enter to close the program...");
+                Console.ReadLine();
+                return;
+            }
+
             // Create scanner for all paths
             var scanner = new Scanner(p)
             {
-                IncludeDebug = true,
-                ScanAllFiles = false,
-                ScanArchives = true,
-                ScanPackers = true,
+                IncludeDebug = debug,
+                ScanAllFiles = allFiles,
+                ScanArchives = archives,
+                ScanPackers = packers,
             };
 
             // Loop through the input paths
-            foreach (string arg in args)
+            for (int i = start; i < args.Length; i++)
             {
-                GetAndWriteProtections(scanner, arg);
+                GetAndWriteProtections(scanner, args[i]);
             }
 
             Console.WriteLine("Press enter to close the program...");
             Console.ReadLine();
+        }
+
+        /// <summary>
+        /// Display help text
+        /// </summary>
+        private static void DisplayHelp()
+        {
+            Console.WriteLine("BurnOutSharp Test Program");
+            Console.WriteLine();
+            Console.WriteLine("test.exe <options> file|directory ...");
+            Console.WriteLine();
+            Console.WriteLine("Possible options:");
+            Console.WriteLine("-?, -h, --help       Display this help text and quit");
+            Console.WriteLine("-d, --debug          Enable debug mode");
+            Console.WriteLine("-a, --all-files      Force scanning all files");
+            Console.WriteLine("-na, --no-archives   Disable scanning archives");
+            Console.WriteLine("-np, --no-packers    Disable scanning for packers");
         }
 
         /// <summary>
