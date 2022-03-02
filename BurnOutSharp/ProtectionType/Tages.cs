@@ -45,22 +45,27 @@ namespace BurnOutSharp.ProtectionType
             }
 
             // TODO: Obtain a sample to find where this string is in a typical executable
-            var contentMatchSets = new List<ContentMatchSet>
+            if (includeDebug)
             {
-                // protected-tages-runtime.exe
-                new ContentMatchSet(new byte?[]
+                var contentMatchSets = new List<ContentMatchSet>
                 {
-                    0x70, 0x72, 0x6F, 0x74, 0x65, 0x63, 0x74, 0x65,
-                    0x64, 0x2D, 0x74, 0x61, 0x67, 0x65, 0x73, 0x2D,
-                    0x72, 0x75, 0x6E, 0x74, 0x69, 0x6D, 0x65, 0x2E,
-                    0x65, 0x78, 0x65
-                }, Utilities.GetFileVersion, "TAGES"),
+                    // protected-tages-runtime.exe
+                    new ContentMatchSet(new byte?[]
+                    {
+                        0x70, 0x72, 0x6F, 0x74, 0x65, 0x63, 0x74, 0x65,
+                        0x64, 0x2D, 0x74, 0x61, 0x67, 0x65, 0x73, 0x2D,
+                        0x72, 0x75, 0x6E, 0x74, 0x69, 0x6D, 0x65, 0x2E,
+                        0x65, 0x78, 0x65
+                    }, Utilities.GetFileVersion, "TAGES"),
 
-                // (char)0xE8 + u + (char)0x00 + (char)0x00 + (char)0x00 + (char)0xE8
-                new ContentMatchSet(new byte?[] { 0xE8, 0x75, 0x00, 0x00, 0x00, 0xE8 }, GetVersion, "TAGES"),
-            };
-            
-            return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
+                    // (char)0xE8 + u + (char)0x00 + (char)0x00 + (char)0x00 + (char)0xE8
+                    new ContentMatchSet(new byte?[] { 0xE8, 0x75, 0x00, 0x00, 0x00, 0xE8 }, GetVersion, "TAGES"),
+                };
+
+                return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
+            }
+
+            return null;
         }
 
         /// <inheritdoc/>

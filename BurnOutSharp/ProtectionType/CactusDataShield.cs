@@ -50,9 +50,14 @@ namespace BurnOutSharp.ProtectionType
                     return match;
             }
 
-            var contentMatchSets = GetContentMatchSets();
-            if (contentMatchSets != null && contentMatchSets.Any())
-                return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
+            // TODO: Limit these checks to Mac binaries
+            // TODO: Obtain a sample to find where this string is in a typical executable
+            if (includeDebug)
+            {
+                var contentMatchSets = GetContentMatchSets();
+                if (contentMatchSets != null && contentMatchSets.Any())
+                    return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
+            }
 
             return null;
         }

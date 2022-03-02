@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using BurnOutSharp.ExecutableType.Microsoft;
+using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -19,20 +21,23 @@ namespace BurnOutSharp.ProtectionType
             if (icdSectionCount >= 2)
                 return "CodeLock / CodeLok / CopyLok";
 
+            // TODO: Obtain a sample to find where this string is in a typical executable
+            if (includeDebug)
+            {
+                var contentMatchSets = new List<ContentMatchSet>
+                 {
+                     // CODE-LOCK.OCX
+                     new ContentMatchSet(new byte?[]
+                     {
+                         0x43, 0x4F, 0x44, 0x45, 0x2D, 0x4C, 0x4F, 0x43,
+                         0x4B, 0x2E, 0x4F, 0x43, 0x58
+                     }, "CodeLock / CodeLok / CopyLok"),
+                 };
+
+                return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
+            }
+
             return null;
-            
-            // TODO: Could not be confirmed with any sample, so disabling for now
-            // var contentMatchSets = new List<ContentMatchSet>
-            // {
-            //     // CODE-LOCK.OCX
-            //     new ContentMatchSet(new byte?[]
-            //     {
-            //         0x43, 0x4F, 0x44, 0x45, 0x2D, 0x4C, 0x4F, 0x43,
-            //         0x4B, 0x2E, 0x4F, 0x43, 0x58
-            //     }, "CodeLock / CodeLok / CopyLok"),
-            // };
-            
-            // return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
         }
     }
 }

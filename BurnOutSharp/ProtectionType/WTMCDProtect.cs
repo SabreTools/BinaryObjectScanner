@@ -84,7 +84,7 @@ namespace BurnOutSharp.ProtectionType
         /// <inheritdoc/>
         public string CheckFilePath(string path)
         {
-            // TODO: Add ImageX.imp as a wildcard, if possilbe
+            // TODO: Add ImageX.imp as a wildcard, if possible
             var matchers = new List<PathMatchSet>
             {
                 new PathMatchSet(new PathMatch("Image.imp", useEndsWith: true), "WTM CD Protect"),
