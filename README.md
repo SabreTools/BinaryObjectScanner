@@ -62,7 +62,7 @@ Below is a list of protections detected by BurnOutSharp. The two columns explain
 | ProtectDISC / VOB ProtectCD/DVD | True | False | |
 | Protect DVD-Video | False | True | Unconfirmed¹ |
 | PlayStation Anti-modchip | True | False | En/Jp, not "Red Hand"; PSX executables only |
-| Ring PROTECH / ProRing | False | True | Unconfirmed¹, Commented out over-matching content check |
+| Ring PROTECH / ProRing | True | True | Unconfirmed¹ |
 | SafeDisc / SafeCast | True | True | Can't distinguish between some versions of SafeDisc and SafeCast |
 | SafeLock | False | True | Unconfirmed¹ |
 | SecuROM | True | True | v8.x and White Label detected incorrectly² |
