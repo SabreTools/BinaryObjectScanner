@@ -64,7 +64,7 @@ namespace Test
             }
 
             // If we have no arguments, show the help
-            if (start >= args.Length - 1)
+            if (start >= args.Length)
             {
                 DisplayHelp();
                 Console.WriteLine("Press enter to close the program...");
