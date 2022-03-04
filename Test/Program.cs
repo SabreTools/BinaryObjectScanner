@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using BurnOutSharp;
@@ -16,14 +17,12 @@ namespace Test
 
             // Set initial values for scanner flags
             bool debug = false, allFiles = false, archives = true, packers = true;
+            var inputPaths = new List<string>();
 
             // Loop through the arguments to get the flags
-            int start;
-            for (start = 0; start < args.Length; start++)
+            foreach (string arg in args)
             {
-                bool breakout = false;
-
-                switch (args[start])
+                switch (arg)
                 {
                     case "-?":
                     case "-h":
@@ -54,17 +53,13 @@ namespace Test
                         break;
 
                     default:
-                        breakout = true;
+                        inputPaths.Add(arg);
                         break;
                 }
-
-                // If we're breaking out of the loop, do so
-                if (breakout)
-                    break;
             }
 
             // If we have no arguments, show the help
-            if (start >= args.Length)
+            if (inputPaths.Count == 0)
             {
                 DisplayHelp();
                 Console.WriteLine("Press enter to close the program...");
@@ -82,9 +77,9 @@ namespace Test
             };
 
             // Loop through the input paths
-            for (int i = start; i < args.Length; i++)
+            foreach (string inputPath in inputPaths)
             {
-                GetAndWriteProtections(scanner, args[i]);
+                GetAndWriteProtections(scanner, inputPath);
             }
 
             Console.WriteLine("Press enter to close the program...");
