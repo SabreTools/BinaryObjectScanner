@@ -87,11 +87,11 @@ namespace BurnOutSharp.ProtectionType
             }
 
             if (containsCheck && containsCheck2)
-                return $"LaserLok {GetVersion(pex.TextSectionRaw, position2)} {GetBuild(pex.TextSectionRaw, true)}" + (includeDebug ? $" (Index {position}, {position2})" : string.Empty);
+                return $"LaserLok {GetVersion(pex.TextSectionRaw, position2)} {GetBuild(pex.TextSectionRaw, true)} [Check disc for physical ring]" + (includeDebug ? $" (Index {position}, {position2})" : string.Empty);
             else if (containsCheck && !containsCheck2)
-                return $"LaserLok Marathon {GetBuild(pex.TextSectionRaw, false)}" + (includeDebug ? $" (Index {position})" : string.Empty);
+                return $"LaserLok Marathon {GetBuild(pex.TextSectionRaw, false)} [Check disc for physical ring]" + (includeDebug ? $" (Index {position})" : string.Empty);
             else if (!containsCheck && containsCheck2)
-                return $"LaserLok {GetVersion(pex.TextSectionRaw, --position2)} {GetBuild(pex.TextSectionRaw, false)}" + (includeDebug ? $" (Index {position2})" : string.Empty);
+                return $"LaserLok {GetVersion(pex.TextSectionRaw, --position2)} {GetBuild(pex.TextSectionRaw, false)} [Check disc for physical ring]" + (includeDebug ? $" (Index {position2})" : string.Empty);
 
             return null;
         }
@@ -101,17 +101,17 @@ namespace BurnOutSharp.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet($"LASERLOK{Path.DirectorySeparatorChar}", "LaserLok"),
+                new PathMatchSet($"LASERLOK{Path.DirectorySeparatorChar}", "LaserLok [Check disc for physical ring]"),
 
                 // TODO: Verify if these are OR or AND
-                new PathMatchSet(new PathMatch("NOMOUSE.SP", useEndsWith: true), GetVersion16Bit, "LaserLok"),
-                new PathMatchSet(new PathMatch("NOMOUSE.COM", useEndsWith: true), "LaserLok"),
-                new PathMatchSet(new PathMatch("l16dll.dll", useEndsWith: true), "LaserLok"),
-                new PathMatchSet(new PathMatch("laserlok.in", useEndsWith: true), "LaserLok"),
-                new PathMatchSet(new PathMatch("laserlok.o10", useEndsWith: true), "LaserLok"),
-                new PathMatchSet(new PathMatch("laserlok.o11", useEndsWith: true), "LaserLok"),
-                new PathMatchSet(new PathMatch("laserlok.o12", useEndsWith: true), "LaserLok"),
-                new PathMatchSet(new PathMatch("laserlok.out", useEndsWith: true), "LaserLok"),
+                new PathMatchSet(new PathMatch("NOMOUSE.SP", useEndsWith: true), GetVersion16Bit, "LaserLok [Check disc for physical ring]"),
+                new PathMatchSet(new PathMatch("NOMOUSE.COM", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
+                new PathMatchSet(new PathMatch("l16dll.dll", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
+                new PathMatchSet(new PathMatch("laserlok.in", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
+                new PathMatchSet(new PathMatch("laserlok.o10", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
+                new PathMatchSet(new PathMatch("laserlok.o11", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
+                new PathMatchSet(new PathMatch("laserlok.o12", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
+                new PathMatchSet(new PathMatch("laserlok.out", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);
@@ -122,16 +122,16 @@ namespace BurnOutSharp.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new PathMatch("NOMOUSE.SP", useEndsWith: true), GetVersion16Bit, "LaserLok"),
+                new PathMatchSet(new PathMatch("NOMOUSE.SP", useEndsWith: true), GetVersion16Bit, "LaserLok [Check disc for physical ring]"),
 
                 // TODO: Verify if these are OR or AND
-                new PathMatchSet(new PathMatch("NOMOUSE.COM", useEndsWith: true), "LaserLok"),
-                new PathMatchSet(new PathMatch("l16dll.dll", useEndsWith: true), "LaserLok"),
-                new PathMatchSet(new PathMatch("laserlok.in", useEndsWith: true), "LaserLok"),
-                new PathMatchSet(new PathMatch("laserlok.o10", useEndsWith: true), "LaserLok"),
-                new PathMatchSet(new PathMatch("laserlok.o11", useEndsWith: true), "LaserLok"),
-                new PathMatchSet(new PathMatch("laserlok.o12", useEndsWith: true), "LaserLok"),
-                new PathMatchSet(new PathMatch("laserlok.out", useEndsWith: true), "LaserLok"),
+                new PathMatchSet(new PathMatch("NOMOUSE.COM", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
+                new PathMatchSet(new PathMatch("l16dll.dll", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
+                new PathMatchSet(new PathMatch("laserlok.in", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
+                new PathMatchSet(new PathMatch("laserlok.o10", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
+                new PathMatchSet(new PathMatch("laserlok.o11", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
+                new PathMatchSet(new PathMatch("laserlok.o12", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
+                new PathMatchSet(new PathMatch("laserlok.out", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
