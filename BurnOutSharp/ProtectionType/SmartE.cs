@@ -71,7 +71,7 @@ namespace BurnOutSharp.ProtectionType
         /// <summary>
         /// Check a section for the SmartE string(s)
         /// </summary>
-        private string GetMatchForSection(SectionHeader section, string file, byte[] fileContent, bool includeDebug)
+        private string GetMatchForSection(SectionHeader section, string file, byte[] sectionContent, bool includeDebug)
         {
             if (section == null)
                 return null;
@@ -86,7 +86,7 @@ namespace BurnOutSharp.ProtectionType
                 "SmartE"),
             };
 
-            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
+            return MatchUtil.GetFirstMatch(file, sectionContent, matchers, includeDebug);
         }
 
         /// <summary>
