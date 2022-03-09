@@ -15,6 +15,21 @@ namespace BurnOutSharp.ExecutableType.Microsoft
     /// </summary>
     public class PortableExecutable
     {
+        /// <summary>
+        /// Value determining if the executable is initialized or not
+        /// </summary>
+        public bool Initialized { get; } = false;
+
+        /// <summary>
+        /// Source array that the executable was parsed from
+        /// </summary>
+        public byte[] SourceArray { get; } = null;
+
+        /// <summary>
+        /// Source stream that the executable was parsed from
+        /// </summary>
+        public Stream SourceStream { get; } = null;
+
         #region Headers
 
         /// <summary>
@@ -25,7 +40,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft
         /// At location 0x3c, the stub has the file offset to the PE signature.
         /// This information enables Windows to properly execute the image file, even though it has an MS-DOS stub.
         /// This file offset is placed at location 0x3c during linking.
-        // </summary>
+        /// </summary>
         public MSDOSExecutableHeader DOSStubHeader;
 
         /// <summary>
@@ -149,6 +164,220 @@ namespace BurnOutSharp.ExecutableType.Microsoft
         /// .text - Executable code (free format)
         /// </summary>
         public byte[] TextSectionRaw;
+
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// Create a PortableExecutable object from a stream
+        /// </summary>
+        /// <param name="stream">Stream representing a file</param>
+        /// <remarks>
+        /// This constructor assumes that the stream is already in the correct position to start parsing
+        /// </remarks>
+        public PortableExecutable(Stream stream)
+        {
+            if (stream == null || !stream.CanRead || !stream.CanSeek)
+                return;
+
+            this.Initialized = Deserialize(stream);
+            this.SourceStream = stream;
+        }
+
+        /// <summary>
+        /// Create a PortableExecutable object from a byte array
+        /// </summary>
+        /// <param name="fileContent">Byte array representing a file</param>
+        /// <param name="offset">Positive offset representing the current position in the array</param>
+        public PortableExecutable(byte[] fileContent, int offset)
+        {
+            if (fileContent == null || fileContent.Length == 0 || offset < 0)
+                return;
+
+            this.Initialized = Deserialize(fileContent, offset);
+            this.SourceArray = fileContent;
+        }
+
+        /// <summary>
+        /// Deserialize a PortableExecutable object from a stream
+        /// </summary>
+        /// <param name="stream">Stream representing a file</param>
+        private bool Deserialize(Stream stream)
+        {
+            try
+            {
+                // Attempt to read the DOS header first
+                this.DOSStubHeader = MSDOSExecutableHeader.Deserialize(stream); stream.Seek(this.DOSStubHeader.NewExeHeaderAddr, SeekOrigin.Begin);
+                if (this.DOSStubHeader.Magic != Constants.IMAGE_DOS_SIGNATURE)
+                    return false;
+                
+                // If the new header address is invalid for the file, it's not a PE
+                if (this.DOSStubHeader.NewExeHeaderAddr >= stream.Length)
+                    return false;
+
+                // Then attempt to read the PE header
+                this.ImageFileHeader = CommonObjectFileFormatHeader.Deserialize(stream);
+                if (this.ImageFileHeader.Signature != Constants.IMAGE_NT_SIGNATURE)
+                    return false;
+
+                // If the optional header is supposed to exist, read that as well
+                if (this.ImageFileHeader.SizeOfOptionalHeader > 0)
+                    this.OptionalHeader = OptionalHeader.Deserialize(stream);
+                
+                // Then read in the section table
+                this.SectionTable = new SectionHeader[this.ImageFileHeader.NumberOfSections];
+                for (int i = 0; i < this.ImageFileHeader.NumberOfSections; i++)
+                {
+                    this.SectionTable[i] = SectionHeader.Deserialize(stream);
+                }
+
+                #region Structured Tables
+
+                // // Export Table
+                // var table = this.GetLastSection(".edata", true);
+                // if (table != null && table.VirtualSize > 0)
+                // {
+                //     stream.Seek((int)table.PointerToRawData, SeekOrigin.Begin);
+                //     this.ExportTable = ExportDataSection.Deserialize(stream, this.SectionTable);
+                // }
+
+                // // Import Table
+                // table = this.GetSection(".idata", true);
+                // if (table != null && table.VirtualSize > 0)
+                // {
+                //     stream.Seek((int)table.PointerToRawData, SeekOrigin.Begin);
+                //     this.ImportTable = ImportDataSection.Deserialize(stream, this.OptionalHeader.Magic == OptionalHeaderType.PE32Plus, hintCount: 0);
+                // }
+
+                // Resource Table
+                var table = this.GetLastSection(".rsrc", true);
+                if (table != null && table.VirtualSize > 0)
+                {
+                    stream.Seek((int)table.PointerToRawData, SeekOrigin.Begin);
+                    this.ResourceSection = ResourceSection.Deserialize(stream, this.SectionTable);
+                }
+
+                #endregion
+
+                #region Freeform Sections
+
+                // Data Section
+                this.DataSectionRaw = this.ReadRawSection(stream, ".data", force: true, first: false) ?? this.ReadRawSection(stream, "DATA", force: true, first: false);
+
+                // Export Table
+                this.ExportDataSectionRaw = this.ReadRawSection(stream, ".edata", force: true, first: false);
+
+                // Import Table
+                this.ImportDataSectionRaw = this.ReadRawSection(stream, ".idata", force: true, first: false);
+
+                // Resource Data Section
+                this.ResourceDataSectionRaw = this.ReadRawSection(stream, ".rdata", force: true, first: false);
+
+                // Text Section
+                this.TextSectionRaw = this.ReadRawSection(stream, ".text", force: true, first: false);
+
+                #endregion
+            }
+            catch (Exception ex)
+            {
+                //Console.WriteLine($"Errored out on a file: {ex}");
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Deserialize a PortableExecutable object from a byte array
+        /// </summary>
+        /// <param name="fileContent">Byte array representing a file</param>
+        /// <param name="offset">Positive offset representing the current position in the array</param>
+        private bool Deserialize(byte[] content, int offset)
+        {
+            try
+            {
+                // Attempt to read the DOS header first
+                this.DOSStubHeader = MSDOSExecutableHeader.Deserialize(content, ref offset);
+                offset = this.DOSStubHeader.NewExeHeaderAddr;
+                if (this.DOSStubHeader.Magic != Constants.IMAGE_DOS_SIGNATURE)
+                    return false;
+
+                // If the new header address is invalid for the file, it's not a PE
+                if (this.DOSStubHeader.NewExeHeaderAddr >= content.Length)
+                    return false;
+
+                // Then attempt to read the PE header
+                this.ImageFileHeader = CommonObjectFileFormatHeader.Deserialize(content, ref offset);
+                if (this.ImageFileHeader.Signature != Constants.IMAGE_NT_SIGNATURE)
+                    return false;
+
+                // If the optional header is supposed to exist, read that as well
+                if (this.ImageFileHeader.SizeOfOptionalHeader > 0)
+                    this.OptionalHeader = OptionalHeader.Deserialize(content, ref offset);
+
+                // Then read in the section table
+                this.SectionTable = new SectionHeader[this.ImageFileHeader.NumberOfSections];
+                for (int i = 0; i < this.ImageFileHeader.NumberOfSections; i++)
+                {
+                    this.SectionTable[i] = SectionHeader.Deserialize(content, ref offset);
+                }
+
+                #region Structured Tables
+
+                // // Export Table
+                // var table = this.GetLastSection(".edata", true);
+                // if (table != null && table.VirtualSize > 0)
+                // {
+                //     int tableAddress = (int)table.PointerToRawData;
+                //     this.ExportTable = ExportDataSection.Deserialize(content, ref tableAddress, this.SectionTable);
+                // }
+
+                // // Import Table
+                // table = this.GetSection(".idata", true);
+                // if (table != null && table.VirtualSize > 0)
+                // {
+                //     int tableAddress = (int)table.PointerToRawData;
+                //     this.ImportTable = ImportDataSection.Deserialize(content, tableAddress, this.OptionalHeader.Magic == OptionalHeaderType.PE32Plus, hintCount: 0);
+                // }
+
+                // Resource Table
+                var table = this.GetLastSection(".rsrc", true);
+                if (table != null && table.VirtualSize > 0)
+                {
+                    int tableAddress = (int)table.PointerToRawData;
+                    this.ResourceSection = ResourceSection.Deserialize(content, ref tableAddress, this.SectionTable);
+                }
+
+                #endregion
+
+                #region Freeform Sections
+
+                // Data Section
+                this.DataSectionRaw = this.ReadRawSection(content, ".data", force: true, first: false) ?? this.ReadRawSection(content, "DATA", force: true, first: false);
+
+                // Export Table
+                this.ExportDataSectionRaw = this.ReadRawSection(content, ".edata", force: true, first: false);
+
+                // Import Table
+                this.ImportDataSectionRaw = this.ReadRawSection(content, ".idata", force: true, first: false);
+
+                // Resource Data Section
+                this.ResourceDataSectionRaw = this.ReadRawSection(content, ".rdata", force: true, first: false);
+
+                // Text Section
+                this.TextSectionRaw = this.ReadRawSection(content, ".text", force: true, first: false);
+
+                #endregion
+            }
+            catch (Exception ex)
+            {
+                //Console.WriteLine($"Errored out on a file: {ex}");
+                return false;
+            }
+
+            return true;
+        }
 
         #endregion
 
@@ -356,180 +585,5 @@ namespace BurnOutSharp.ExecutableType.Microsoft
         }
 
         #endregion
-
-        public static PortableExecutable Deserialize(Stream stream)
-        {
-            PortableExecutable pex = new PortableExecutable();
-
-            try
-            {
-                // Attempt to read the DOS header first
-                pex.DOSStubHeader = MSDOSExecutableHeader.Deserialize(stream); stream.Seek(pex.DOSStubHeader.NewExeHeaderAddr, SeekOrigin.Begin);
-                if (pex.DOSStubHeader.Magic != Constants.IMAGE_DOS_SIGNATURE)
-                    return null;
-                
-                // If the new header address is invalid for the file, it's not a PE
-                if (pex.DOSStubHeader.NewExeHeaderAddr >= stream.Length)
-                    return null;
-
-                // Then attempt to read the PE header
-                pex.ImageFileHeader = CommonObjectFileFormatHeader.Deserialize(stream);
-                if (pex.ImageFileHeader.Signature != Constants.IMAGE_NT_SIGNATURE)
-                    return null;
-
-                // If the optional header is supposed to exist, read that as well
-                if (pex.ImageFileHeader.SizeOfOptionalHeader > 0)
-                    pex.OptionalHeader = OptionalHeader.Deserialize(stream);
-                
-                // Then read in the section table
-                pex.SectionTable = new SectionHeader[pex.ImageFileHeader.NumberOfSections];
-                for (int i = 0; i < pex.ImageFileHeader.NumberOfSections; i++)
-                {
-                    pex.SectionTable[i] = SectionHeader.Deserialize(stream);
-                }
-
-                #region Structured Tables
-
-                // // Export Table
-                // var table = pex.GetLastSection(".edata", true);
-                // if (table != null && table.VirtualSize > 0)
-                // {
-                //     stream.Seek((int)table.PointerToRawData, SeekOrigin.Begin);
-                //     pex.ExportTable = ExportDataSection.Deserialize(stream, pex.SectionTable);
-                // }
-
-                // // Import Table
-                // table = pex.GetSection(".idata", true);
-                // if (table != null && table.VirtualSize > 0)
-                // {
-                //     stream.Seek((int)table.PointerToRawData, SeekOrigin.Begin);
-                //     pex.ImportTable = ImportDataSection.Deserialize(stream, pex.OptionalHeader.Magic == OptionalHeaderType.PE32Plus, hintCount: 0);
-                // }
-
-                // Resource Table
-                var table = pex.GetLastSection(".rsrc", true);
-                if (table != null && table.VirtualSize > 0)
-                {
-                    stream.Seek((int)table.PointerToRawData, SeekOrigin.Begin);
-                    pex.ResourceSection = ResourceSection.Deserialize(stream, pex.SectionTable);
-                }
-
-                #endregion
-
-                #region Freeform Sections
-
-                // Data Section
-                pex.DataSectionRaw = pex.ReadRawSection(stream, ".data", force: true, first: false) ?? pex.ReadRawSection(stream, "DATA", force: true, first: false);
-
-                // Export Table
-                pex.ExportDataSectionRaw = pex.ReadRawSection(stream, ".edata", force: true, first: false);
-
-                // Import Table
-                pex.ImportDataSectionRaw = pex.ReadRawSection(stream, ".idata", force: true, first: false);
-
-                // Resource Data Section
-                pex.ResourceDataSectionRaw = pex.ReadRawSection(stream, ".rdata", force: true, first: false);
-
-                // Text Section
-                pex.TextSectionRaw = pex.ReadRawSection(stream, ".text", force: true, first: false);
-
-                #endregion
-            }
-            catch (Exception ex)
-            {
-                //Console.WriteLine($"Errored out on a file: {ex}");
-                return null;
-            }
-
-            return pex;
-        }
-
-        public static PortableExecutable Deserialize(byte[] content, int offset)
-        {
-            PortableExecutable pex = new PortableExecutable();
-
-            try
-            {
-                // Attempt to read the DOS header first
-                pex.DOSStubHeader = MSDOSExecutableHeader.Deserialize(content, ref offset);
-                offset = pex.DOSStubHeader.NewExeHeaderAddr;
-                if (pex.DOSStubHeader.Magic != Constants.IMAGE_DOS_SIGNATURE)
-                    return null;
-
-                // If the new header address is invalid for the file, it's not a PE
-                if (pex.DOSStubHeader.NewExeHeaderAddr >= content.Length)
-                    return null;
-
-                // Then attempt to read the PE header
-                pex.ImageFileHeader = CommonObjectFileFormatHeader.Deserialize(content, ref offset);
-                if (pex.ImageFileHeader.Signature != Constants.IMAGE_NT_SIGNATURE)
-                    return null;
-
-                // If the optional header is supposed to exist, read that as well
-                if (pex.ImageFileHeader.SizeOfOptionalHeader > 0)
-                    pex.OptionalHeader = OptionalHeader.Deserialize(content, ref offset);
-
-                // Then read in the section table
-                pex.SectionTable = new SectionHeader[pex.ImageFileHeader.NumberOfSections];
-                for (int i = 0; i < pex.ImageFileHeader.NumberOfSections; i++)
-                {
-                    pex.SectionTable[i] = SectionHeader.Deserialize(content, ref offset);
-                }
-
-                #region Structured Tables
-
-                // // Export Table
-                // var table = pex.GetLastSection(".edata", true);
-                // if (table != null && table.VirtualSize > 0)
-                // {
-                //     int tableAddress = (int)table.PointerToRawData;
-                //     pex.ExportTable = ExportDataSection.Deserialize(content, ref tableAddress, pex.SectionTable);
-                // }
-
-                // // Import Table
-                // table = pex.GetSection(".idata", true);
-                // if (table != null && table.VirtualSize > 0)
-                // {
-                //     int tableAddress = (int)table.PointerToRawData;
-                //     pex.ImportTable = ImportDataSection.Deserialize(content, tableAddress, pex.OptionalHeader.Magic == OptionalHeaderType.PE32Plus, hintCount: 0);
-                // }
-
-                // Resource Table
-                var table = pex.GetLastSection(".rsrc", true);
-                if (table != null && table.VirtualSize > 0)
-                {
-                    int tableAddress = (int)table.PointerToRawData;
-                    pex.ResourceSection = ResourceSection.Deserialize(content, ref tableAddress, pex.SectionTable);
-                }
-
-                #endregion
-
-                #region Freeform Sections
-
-                // Data Section
-                pex.DataSectionRaw = pex.ReadRawSection(content, ".data", force: true, first: false) ?? pex.ReadRawSection(content, "DATA", force: true, first: false);
-
-                // Export Table
-                pex.ExportDataSectionRaw = pex.ReadRawSection(content, ".edata", force: true, first: false);
-
-                // Import Table
-                pex.ImportDataSectionRaw = pex.ReadRawSection(content, ".idata", force: true, first: false);
-
-                // Resource Data Section
-                pex.ResourceDataSectionRaw = pex.ReadRawSection(content, ".rdata", force: true, first: false);
-
-                // Text Section
-                pex.TextSectionRaw = pex.ReadRawSection(content, ".text", force: true, first: false);
-
-                #endregion
-            }
-            catch (Exception ex)
-            {
-                //Console.WriteLine($"Errored out on a file: {ex}");
-                return null;
-            }
-
-            return pex;
-        }
     }
 }

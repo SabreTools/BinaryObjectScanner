@@ -93,13 +93,13 @@ namespace BurnOutSharp.FileType
 
             // Create PortableExecutable and NewExecutable objects for use in the checks
             stream.Seek(0, SeekOrigin.Begin);
-            PortableExecutable pex = PortableExecutable.Deserialize(fileContent, 0);
-            NewExecutable nex = NewExecutable.Deserialize(fileContent, 0);
+            PortableExecutable pex = new PortableExecutable(fileContent, 0);
+            NewExecutable nex = new NewExecutable(fileContent, 0);
 
             // Create PortableExecutable and NewExecutable objects for use in the checks
-            // PortableExecutable pex = PortableExecutable.Deserialize(stream);
+            // PortableExecutable pex = new PortableExecutable(stream);
             // stream.Seek(0, SeekOrigin.Begin);
-            // NewExecutable nex = NewExecutable.Deserialize(stream);
+            // NewExecutable nex = new NewExecutable(stream);
             // stream.Seek(0, SeekOrigin.Begin);
 
             // Iterate through all content checks

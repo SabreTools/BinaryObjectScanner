@@ -207,7 +207,7 @@ namespace BurnOutSharp.Tools
             if (fileContent == null || !fileContent.Any())
                 return null;
 
-            return GetFileVersion(PortableExecutable.Deserialize(fileContent, 0));
+            return GetFileVersion(new PortableExecutable(fileContent, 0));
         }
 
         /// <summary>
