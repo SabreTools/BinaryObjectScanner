@@ -6,11 +6,14 @@ namespace BurnOutSharp.ProtectionType
 {
     public class PSXAntiModchip : IContentCheck
     {
+        // TODO: Figure out PSX binary header so this can be checked explicitly.
+        // For now, this means that the CheckContents check is redundant for external
+        // use through other programs
         /// <inheritdoc/>
-        private List<ContentMatchSet> GetContentMatchSets()
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
         {
             // TODO: Detect Red Hand protection
-            return new List<ContentMatchSet>
+            var contentMatchSets = new List<ContentMatchSet>
             {
                 //      SOFTWARE TERMINATED\nCONSOLE MAY HAVE BEEN MODIFIED\n     CALL 1-888-780-7690
                 new ContentMatchSet(new byte?[]
@@ -41,15 +44,8 @@ namespace BurnOutSharp.ProtectionType
                     0x30, 0x59, 0x30, 0x02
                 }, "PlayStation Anti-modchip (Japanese)"),
             };
-        }
 
-        // TODO: Figure out PSX binary header so this can be checked explicitly.
-        // For now, this means that the CheckContents check is redundant for external
-        // use through other programs
-        /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
-        {
-            return MatchUtil.GetFirstMatch(file, fileContent, GetContentMatchSets(), includeDebug);
+            return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
         }
     }
 }
