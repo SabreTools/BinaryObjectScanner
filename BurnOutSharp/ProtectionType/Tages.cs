@@ -9,7 +9,6 @@ using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ProtectionType
 {
-    // TODO: Figure out how to use path check framework here
     public class TAGES : IContentCheck, IPathCheck
     {
         /// <inheritdoc/>
@@ -20,17 +19,16 @@ namespace BurnOutSharp.ProtectionType
             if (sections == null)
                 return null;
 
-            /* 
-                Expected files to contain "TagesSetup"/"Application TagesSetup":
-                DrvSetup.exe
-                DrvSetup_x64.exe
-                TagesSetup.exe
-                TagesSetup_x64.exe
-             
-                Expected files to contain "Tages activation client"/"T@GES":
-                TagesClient.exe
-                (There is generally a TagesClient.dat accompanying the TagesClient.exe.)
-            */
+            // Known TAGES Driver Setup filenames:
+            // - DrvSetup.exe
+            // - DrvSetup_x64.exe
+            // - TagesSetup.exe
+            // - TagesSetup_x64.exe
+
+            // Known TAGES Activation Client filenames:
+            // - TagesClient.exe
+            // - TagesClient.dat (Does not always exist)
+
             string name = Utilities.GetFileDescription(pex);
             if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("TagesSetup", StringComparison.OrdinalIgnoreCase))
                 return $"TAGES Driver Setup {GetVersion(pex)}";
@@ -43,9 +41,9 @@ namespace BurnOutSharp.ProtectionType
             else if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("T@GES", StringComparison.OrdinalIgnoreCase))
                 return $"TAGES Activation Client {GetVersion(pex)}";
 
+            // TODO: Obtain a sample to find where this string is in a typical executable
             if (includeDebug)
             {
-                // TODO: Obtain a sample to find where this string is in a typical executable
                 var contentMatchSets = new List<ContentMatchSet>
                 {
                     // protected-tages-runtime.exe
@@ -72,54 +70,69 @@ namespace BurnOutSharp.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
-                /*
-                    So far, only known to exist in early versions of "Moto Racer 3".
-                    Expected information about these checks (all of these are expected to be found together):
-                    ./sys/Devx.sys (d37f70489207014d7d0fbaa43b081a93e8030498)
-                    ./sys/VtPr.sys (a0acbc2f8e321e4f30c913c095e28af444058249)
-                    ./Wave.aif (SHA-1 is variable, file size is 81,920 bytes)
-                    ./Wave.alf (f82339d797be6da92f5d9dadeae9025385159057)
-                    ./Wave.apt (0351d0f3d4166362a1a9d838c9390a3d92945a44)
-                    ./Wave.axt (SHA-1 is variable, file size is 61,440 bytes)
-                */
-                new PathMatchSet(new List<string>
+                // So far, only known to exist in early versions of "Moto Racer 3".
+                new PathMatchSet(new List<PathMatch>
                 {
-                    Path.Combine("Sys", "Devx.sys").Replace("\\", "/"),
-                    Path.Combine("Sys", "VtPr.sys").Replace("\\", "/"),
-                    "Wave.aif",
-                    "Wave.alf",
-                    "Wave.apt",
-                    "Wave.axt",
+                    // d37f70489207014d7d0fbaa43b081a93e8030498
+                    new PathMatch(Path.Combine("Sys", "Devx.sys").Replace("\\", "/"), useEndsWith: true),
+
+                    // a0acbc2f8e321e4f30c913c095e28af444058249
+                    new PathMatch(Path.Combine("Sys", "VtPr.sys").Replace("\\", "/"), useEndsWith: true),
+
+                    // SHA-1 is variable, file size is 81,920 bytes
+                    new PathMatch("Wave.aif", useEndsWith: true),
+
+                    // f82339d797be6da92f5d9dadeae9025385159057
+                    new PathMatch("Wave.alf", useEndsWith: true),
+
+                    // 0351d0f3d4166362a1a9d838c9390a3d92945a44
+                    new PathMatch("Wave.apt", useEndsWith: true),
+
+                    // SHA-1 is variable, file size is 61,440 bytes
+                    new PathMatch("Wave.axt", useEndsWith: true),
                 }, "TAGES"),
 
                 // Currently only known to exist in "XIII" and (presumably) "Beyond Good & Evil".
-                new PathMatchSet(new List<string>
+                new PathMatchSet(new List<PathMatch>
                 {
-                    "enodpl.sys",
-                    "ENODPL.VXD",
-                    "tandpl.sys",
-                    "TANDPL.VXD",
+                    new PathMatch("enodpl.sys", useEndsWith: true),
+                    new PathMatch("ENODPL.VXD", useEndsWith: true),
+                    new PathMatch("tandpl.sys", useEndsWith: true),
+                    new PathMatch("TANDPL.VXD", useEndsWith: true),
                 }, "TAGES"),
 
-                /*
-                    The directory of these files has been seen to be named two different things, with two different accompanying executables in the root of the directory.
-                    In the example where the directory is named "Drivers", the executable is named "Silent.exe".
-                    In the example where the directory is named "ELBdrivers", the executable is name "ELBDrivers.exe".
-
-                    Expected information about these checks (all of these are expected to be found together):
-                    ./9x/hwpsgt.vxd (40826e95f3ad8031b6debe15aca052c701288e04)
-                    ./9x/lemsgt.vxd (f82339d797be6da92f5d9dadeae9025385159057)
-                    ./NT/hwpsgt.sys (43f407ecdc0d87a3713126b757ccaad07ade285f)
-                    ./NT/lemsgt.sys (548dd6359abbcc8c84ce346d078664eeedc716f7)
-                    (The name and file size of the included executable vary, but there should always be one here.)
-                */
-                new PathMatchSet(new List<string>
+                // The directory of these files has been seen to be named two different things, with two different accompanying executables in the root of the directory.
+                // In the example where the directory is named "Drivers", the executable is named "Silent.exe".
+                // In the example where the directory is named "ELBdrivers", the executable is name "ELBDrivers.exe".
+                // The name and file size of the included executable vary, but there should always be one here.
+                new PathMatchSet(new List<PathMatch>
                 {
-                    Path.Combine("9x", "hwpsgt.vxd").Replace("\\", "/"),
-                    Path.Combine("9x", "lemsgt.vxd").Replace("\\", "/"),
-                    Path.Combine("NT", "hwpsgt.sys").Replace("\\", "/"),
-                    Path.Combine("NT", "lemsgt.sys").Replace("\\", "/"),
+                    // 40826e95f3ad8031b6debe15aca052c701288e04
+                    new PathMatch(Path.Combine("9x", "hwpsgt.vxd").Replace("\\", "/"), useEndsWith: true),
+
+                    // f82339d797be6da92f5d9dadeae9025385159057
+                    new PathMatch(Path.Combine("9x", "lemsgt.vxd").Replace("\\", "/"), useEndsWith: true),
+
+                    // 43f407ecdc0d87a3713126b757ccaad07ade285f
+                    new PathMatch(Path.Combine("NT", "hwpsgt.sys").Replace("\\", "/"), useEndsWith: true),
+
+                    // 548dd6359abbcc8c84ce346d078664eeedc716f7
+                    new PathMatch(Path.Combine("NT", "lemsgt.sys").Replace("\\", "/"), useEndsWith: true),
                 }, "TAGES"),
+
+                // The following files are supposed to only be found inside the driver setup executables.
+                new PathMatchSet(new PathMatch("ithsgt.sys", useEndsWith: true), "TAGES Driver"),
+                new PathMatchSet(new PathMatch("lilsgt.sys", useEndsWith: true), "TAGES Driver"),
+                new PathMatchSet(new PathMatch("atksgt.sys", useEndsWith: true), "TAGES Driver"),
+                new PathMatchSet(new PathMatch("lirsgt.sys", useEndsWith: true), "TAGES Driver"),
+
+                // The following files appear to be container formats for TAGES, but little is currently known about them.
+                new PathMatchSet(new PathMatch("GameModule.elb", useEndsWith: true), "TAGES/SolidShield Game Executable Container"),
+                new PathMatchSet(new PathMatch("InstallModule.elb", useEndsWith: true), "TAGES/SolidShield Installer Container"),
+
+                // Not much is known about this file, but it seems to be related to what PiD reports as "protection level: Tages BASIC".
+                // Seems to always be found with other KWN files.
+                new PathMatchSet(new PathMatch("GAME.KWN", useEndsWith: true), "TAGES (BASIC?)"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);
@@ -130,13 +143,26 @@ namespace BurnOutSharp.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
-                // There are Wave.XXX files associated with the Devx.sys and VtPr.sys drivers, but the names over-match too easily in a file path check.
+                // So far, only known to exist in early versions of "Moto Racer 3".
                 new PathMatchSet(new PathMatch("Devx.sys", useEndsWith: true), "TAGES Driver"),
                 new PathMatchSet(new PathMatch("VtPr.sys", useEndsWith: true), "TAGES Driver"),
-                new PathMatchSet(new PathMatch("ENODPL.VXD", useEndsWith: true), "TAGES 9x Driver"),
-                new PathMatchSet(new PathMatch("TANDPL.VXD", useEndsWith: true), "TAGES 9x Driver"),
+
+                // These are removed because they can potentially overmatch
+                // new PathMatchSet(new PathMatch("Wave.aif", useEndsWith: true), "TAGES Driver"),
+                // new PathMatchSet(new PathMatch("Wave.alf", useEndsWith: true), "TAGES Driver"),
+                // new PathMatchSet(new PathMatch("Wave.apt", useEndsWith: true), "TAGES Driver"),
+                // new PathMatchSet(new PathMatch("Wave.axt", useEndsWith: true), "TAGES Driver"),
+
+                // Currently only known to exist in "XIII" and (presumably) "Beyond Good & Evil".
                 new PathMatchSet(new PathMatch("enodpl.sys", useEndsWith: true), "TAGES NT Driver"),
+                new PathMatchSet(new PathMatch("ENODPL.VXD", useEndsWith: true), "TAGES 9x Driver"),
                 new PathMatchSet(new PathMatch("tandpl.sys", useEndsWith: true), "TAGES NT Driver"),
+                new PathMatchSet(new PathMatch("TANDPL.VXD", useEndsWith: true), "TAGES 9x Driver"),
+
+                // The directory of these files has been seen to be named two different things, with two different accompanying executables in the root of the directory.
+                // In the example where the directory is named "Drivers", the executable is named "Silent.exe".
+                // In the example where the directory is named "ELBdrivers", the executable is name "ELBDrivers.exe".
+                // The name and file size of the included executable vary, but there should always be one here.
                 new PathMatchSet(new PathMatch("hwpsgt.vxd", useEndsWith: true), "TAGES 9x Driver"),
                 new PathMatchSet(new PathMatch("lemsgt.vxd", useEndsWith: true), "TAGES 9x Driver"),
                 new PathMatchSet(new PathMatch("hwpsgt.sys", useEndsWith: true), "TAGES NT Driver"),
@@ -152,7 +178,8 @@ namespace BurnOutSharp.ProtectionType
                 new PathMatchSet(new PathMatch("GameModule.elb", useEndsWith: true), "TAGES/SolidShield Game Executable Container"),
                 new PathMatchSet(new PathMatch("InstallModule.elb", useEndsWith: true), "TAGES/SolidShield Installer Container"),
 
-                // Not much is known about this file, but it seems to be related to what PiD reports as "protection level: Tages BASIC". Seems to always be found with other KWN files.
+                // Not much is known about this file, but it seems to be related to what PiD reports as "protection level: Tages BASIC".
+                // Seems to always be found with other KWN files.
                 new PathMatchSet(new PathMatch("GAME.KWN", useEndsWith: true), "TAGES (BASIC?)"),
             };
 
