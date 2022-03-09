@@ -66,7 +66,7 @@ namespace BurnOutSharp.ProtectionType
 
             return null;
         }
-        
+
         /// <inheritdoc/>
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string> files)
         {
@@ -92,9 +92,7 @@ namespace BurnOutSharp.ProtectionType
                     "Wave.axt",
                 }, "TAGES"),
 
-                /*
-                    Currently only known to exist in "XIII" and (presumably) "Beyond Good & Evil".
-                */
+                // Currently only known to exist in "XIII" and (presumably) "Beyond Good & Evil".
                 new PathMatchSet(new List<string>
                 {
                     "enodpl.sys",
@@ -132,6 +130,7 @@ namespace BurnOutSharp.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
+                // There are Wave.XXX files associated with the Devx.sys and VtPr.sys drivers, but the names over-match too easily in a file path check.
                 new PathMatchSet(new PathMatch("Devx.sys", useEndsWith: true), "TAGES Driver"),
                 new PathMatchSet(new PathMatch("VtPr.sys", useEndsWith: true), "TAGES Driver"),
                 new PathMatchSet(new PathMatch("ENODPL.VXD", useEndsWith: true), "TAGES 9x Driver"),
@@ -154,16 +153,10 @@ namespace BurnOutSharp.ProtectionType
                 new PathMatchSet(new PathMatch("InstallModule.elb", useEndsWith: true), "TAGES/SolidShield Installer Container"),
 
                 // Not much is known about this file, but it seems to be related to what PiD reports as "protection level: Tages BASIC". Seems to always be found with other KWN files.
-                new PathMatchSet(new PathMatch("InstallModule.elb", useEndsWith: true), "TAGES (BASIC?)"),
+                new PathMatchSet(new PathMatch("GAME.KWN", useEndsWith: true), "TAGES (BASIC?)"),
             };
 
-
-            else if (Path.GetFileName(path).Equals("GAME.KWN", StringComparison.OrdinalIgnoreCase))
-            {
-                return "TAGES (BASIC?)";
-            }
-
-            return null;
+            return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
 
         private string GetVersion(PortableExecutable pex)
