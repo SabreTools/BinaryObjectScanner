@@ -72,6 +72,13 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
         #region Tables
 
         /// <summary>
+        /// The .debug section is used in object files to contain compiler-generated debug information and in image files to contain
+        /// all of the debug information that is generated.
+        /// This section describes the packaging of debug information in object and image files.
+        /// </summary>
+        public DebugSection DebugDirectory;
+
+        /// <summary>
         /// The export data section, named .edata, contains information about symbols that other images can access through dynamic linking.
         /// Exported symbols are generally found in DLLs, but DLLs can also import symbols.
         /// </summary>
@@ -235,6 +242,14 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
 
                 #region Structured Tables
 
+                // // Debug Section
+                // var table = this.GetLastSection(".debug", true);
+                // if (table != null && table.VirtualSize > 0)
+                // {
+                //     stream.Seek((int)table.PointerToRawData, SeekOrigin.Begin);
+                //     this.DebugSection = DebugSection.Deserialize(stream, this.SectionTable);
+                // }
+
                 // // Export Table
                 // var table = this.GetLastSection(".edata", true);
                 // if (table != null && table.VirtualSize > 0)
@@ -325,6 +340,14 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
                 }
 
                 #region Structured Tables
+
+                // // Debug Section
+                // var table = this.GetLastSection(".debug", true);
+                // if (table != null && table.VirtualSize > 0)
+                // {
+                //     int tableAddress = (int)table.PointerToRawData;
+                //     this.DebugSection = DebugSection.Deserialize(content, ref tableAddress, this.SectionTable);
+                // }
 
                 // // Export Table
                 // var table = this.GetLastSection(".edata", true);

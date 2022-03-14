@@ -2,6 +2,83 @@ using System;
 
 namespace BurnOutSharp.ExecutableType.Microsoft
 {
+    // https://docs.microsoft.com/en-us/windows/win32/debug/pe-format#debug-type
+    public enum DebugType : uint
+    {
+        /// <summary>
+        /// An unknown value that is ignored by all tools.
+        /// </summary>
+        IMAGE_DEBUG_TYPE_UNKNOWN                = 0,
+
+        /// <summary>
+        /// The COFF debug information (line numbers, symbol table, and string table).
+        /// This type of debug information is also pointed to by fields in the file headers.
+        /// </summary>
+        IMAGE_DEBUG_TYPE_COFF                   = 1,
+
+        /// <summary>
+        /// The Visual C++ debug information.
+        /// </summary>
+        IMAGE_DEBUG_TYPE_CODEVIEW               = 2,
+
+        /// <summary>
+        /// The frame pointer omission (FPO) information.
+        /// This information tells the debugger how to interpret nonstandard stack frames,
+        /// which use the EBP register for a purpose other than as a frame pointer.
+        /// </summary>
+        IMAGE_DEBUG_TYPE_FPO                    = 3,
+
+        /// <summary>
+        /// The location of DBG file.
+        /// </summary>
+        IMAGE_DEBUG_TYPE_MISC                   = 4,
+
+        /// <summary>
+        /// A copy of .pdata section.
+        /// </summary>
+        IMAGE_DEBUG_TYPE_EXCEPTION              = 5,
+
+        /// <summary>
+        /// Reserved.
+        /// </summary>
+        IMAGE_DEBUG_TYPE_FIXUP                  = 6,
+
+        /// <summary>
+        /// The mapping from an RVA in image to an RVA in source image.
+        /// </summary>
+        IMAGE_DEBUG_TYPE_OMAP_TO_SRC            = 7,
+
+        /// <summary>
+        /// The mapping from an RVA in source image to an RVA in image.
+        /// </summary>
+        IMAGE_DEBUG_TYPE_OMAP_FROM_SRC          = 8,
+
+        /// <summary>
+        /// Reserved for Borland.
+        /// </summary>
+        IMAGE_DEBUG_TYPE_BORLAND                = 9,
+
+        /// <summary>
+        /// Reserved.
+        /// </summary>
+        IMAGE_DEBUG_TYPE_RESERVED10             = 10,
+
+        /// <summary>
+        /// Reserved.
+        /// </summary>
+        IMAGE_DEBUG_TYPE_CLSID                  = 11,
+
+        /// <summary>
+        /// PE determinism or reproducibility.
+        /// </summary>
+        IMAGE_DEBUG_TYPE_REPRO                  = 16,
+
+        /// <summary>
+        /// Extended DLL characteristics bits.
+        /// </summary>
+        IMAGE_DEBUG_TYPE_EX_DLLCHARACTERISTICS  = 20,
+    }
+
     // https://docs.microsoft.com/en-us/windows/win32/debug/pe-format#dll-characteristics
     [Flags]
     public enum DllCharacteristics : ushort
