@@ -5,11 +5,11 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Xml;
-using BurnOutSharp.ExecutableType.Microsoft;
-using BurnOutSharp.ExecutableType.Microsoft.Entries;
+using BurnOutSharp.ExecutableType.Microsoft.PE;
+using BurnOutSharp.ExecutableType.Microsoft.PE.Entries;
+using BurnOutSharp.ExecutableType.Microsoft.PE.Sections;
+using BurnOutSharp.ExecutableType.Microsoft.PE.Tables;
 using BurnOutSharp.ExecutableType.Microsoft.Resources;
-using BurnOutSharp.ExecutableType.Microsoft.Sections;
-using BurnOutSharp.ExecutableType.Microsoft.Tables;
 
 namespace BurnOutSharp.Tools
 {

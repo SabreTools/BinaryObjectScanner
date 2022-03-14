@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Concurrent;
 using System.IO;
-using BurnOutSharp.ExecutableType.Microsoft;
+using BurnOutSharp.ExecutableType.Microsoft.NE;
+using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.PackerType

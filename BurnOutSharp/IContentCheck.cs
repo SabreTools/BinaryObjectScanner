@@ -1,9 +1,11 @@
-﻿using BurnOutSharp.ExecutableType.Microsoft;
+﻿using BurnOutSharp.ExecutableType.Microsoft.NE;
+using BurnOutSharp.ExecutableType.Microsoft.PE;
 
 namespace BurnOutSharp
 {
     // TODO: This should either include an override that takes a Stream instead of the byte[]
     // OR have a completely separate check for when it's an executable specifically
+    // TODO: Separate CheckContents into a separate check for each executalbe type; separate interfaces?
     internal interface IContentCheck
     {
         /// <summary>
