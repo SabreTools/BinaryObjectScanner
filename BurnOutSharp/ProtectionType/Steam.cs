@@ -33,7 +33,8 @@ namespace BurnOutSharp.ProtectionType
                 new PathMatchSet(new PathMatch("SteamRetailInstaller", useEndsWith: true), "Steam"),
                 new PathMatchSet(new PathMatch("SteamRetailInstaller.dmg", useEndsWith: true), "Steam"),
                 new PathMatchSet(new PathMatch("SteamService.exe", useEndsWith: true), "Steam"),
-                new PathMatchSet(new PathMatch("SteamSetup.exe", useEndsWith: true), "Steam"), 
+                new PathMatchSet(new PathMatch("SteamSetup.exe", useEndsWith: true), "Steam"),
+                new PathMatchSet(new PathMatch("steamxboxutil64.exe", useEndsWith: true), "Steam"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);
@@ -66,6 +67,7 @@ namespace BurnOutSharp.ProtectionType
                 new PathMatchSet(new PathMatch("SteamRetailInstaller.dmg", useEndsWith: true), "Steam"),
                 new PathMatchSet(new PathMatch("SteamService.exe", useEndsWith: true), "Steam"),
                 new PathMatchSet(new PathMatch("SteamSetup.exe", useEndsWith: true), "Steam"),
+                new PathMatchSet(new PathMatch("steamxboxutil64.exe", useEndsWith: true), "Steam"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
