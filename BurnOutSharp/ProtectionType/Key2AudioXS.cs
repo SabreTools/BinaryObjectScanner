@@ -1,11 +1,30 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
+using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Matching;
+using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ProtectionType
 {
-    public class Key2AudioXS : IPathCheck
+    public class Key2AudioXS : IPEContentCheck
     {
+        /// <inheritdoc/>
+        public string CheckPEContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex)
+        {
+            // Get the sections from the executable, if possible
+            var sections = pex?.SectionTable;
+            if (sections == null)
+                return null;
+
+            string name = Utilities.GetFileDescription(pex);
+            if (!string.IsNullOrWhiteSpace(name) && name.Contains("SDKHM (KEEP)"))
+                return "key2AudioXS";
+            else if (!string.IsNullOrWhiteSpace(name) && name.Contains("SDKHM (KEPT)"))
+                return "key2AudioXS";
+
+            return null;
+        }
+
         /// <inheritdoc/>
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string> files)
         {

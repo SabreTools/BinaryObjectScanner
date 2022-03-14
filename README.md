@@ -52,7 +52,7 @@ Below is a list of protections detected by BurnOutSharp. The two columns explain
 | IndyVCD | False | True | Unconfirmed¹ |
 | ITENIUM Trial & Buy Protection | True | False | |
 | JoWood X-Prot (v1/v2) / Xtreme-Protector | True | False | |
-| Key2Audio XS | False | True | |
+| Key2Audio XS | True | True | |
 | Key-Lock (Dongle) | True | False | Unconfirmed¹ |
 | LibCrypt | True | False | Separate subfile scan only |
 | LaserLok | True | True | |
