@@ -76,7 +76,7 @@ Below is a list of protections detected by BurnOutSharp. The two columns explain
 | TAGES | True | True | Partially unconfirmed² |
 | Tivola Ring Protection | False | True | |
 | TZCopyProtector | False | True | Unconfirmed¹ |
-| Uplay | False | True | |
+| Uplay | True | True | |
 | Winlock | False | True | Unconfirmed¹ |
 | WTM CD Protect | True | True | |
 | XCP | True | True | |
