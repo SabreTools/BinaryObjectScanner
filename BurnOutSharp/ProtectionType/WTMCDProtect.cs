@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Matching;
+using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -14,6 +15,14 @@ namespace BurnOutSharp.ProtectionType
             var sections = pex?.SectionTable;
             if (sections == null)
                 return null;
+
+            string name = Utilities.GetFileDescription(pex);
+            if (!string.IsNullOrEmpty(name) && name.Contains("Copy Protection Viewer"))
+                return "WTM Protection Viewer";
+
+            name = Utilities.GetProductName(pex);
+            if (!string.IsNullOrEmpty(name) && name.Contains("WTM Copy Protection Viewer"))
+                return "WTM Protection Viewer";
 
             // Get the CODE section, if it exists
             var codeSectionRaw = pex.ReadRawSection(fileContent, "CODE", first: true);
