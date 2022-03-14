@@ -12,17 +12,6 @@ namespace BurnOutSharp.ProtectionType
     // TODO: Not matching all SolidShield Wrapper v1 (See NFS11)
     public class SolidShield : IPEContentCheck, IPathCheck
     {
-        /// <summary>
-        /// Set of all PathMatchSets for this protection
-        /// </summary>
-        private static readonly List<PathMatchSet> pathMatchers = new List<PathMatchSet>
-        {
-            new PathMatchSet(new PathMatch("dvm.dll", useEndsWith: true), "SolidShield"),
-            new PathMatchSet(new PathMatch("hc.dll", useEndsWith: true), "SolidShield"),
-            new PathMatchSet(new PathMatch("solidshield-cd.dll", useEndsWith: true), "SolidShield"),
-            new PathMatchSet(new PathMatch("c11prot.dll", useEndsWith: true), "SolidShield"),
-        };
-
         /// <inheritdoc/>
         public string CheckPEContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex)
         {
@@ -102,14 +91,30 @@ namespace BurnOutSharp.ProtectionType
         /// <inheritdoc/>
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string> files)
         {
+            var matchers = new List<PathMatchSet>
+            {
+                new PathMatchSet(new PathMatch("dvm.dll", useEndsWith: true), "SolidShield"),
+                new PathMatchSet(new PathMatch("hc.dll", useEndsWith: true), "SolidShield"),
+                new PathMatchSet(new PathMatch("solidshield-cd.dll", useEndsWith: true), "SolidShield"),
+                new PathMatchSet(new PathMatch("c11prot.dll", useEndsWith: true), "SolidShield"),
+            };
+
             // TODO: Verify if these are OR or AND
-            return MatchUtil.GetAllMatches(files, pathMatchers, any: true);
+            return MatchUtil.GetAllMatches(files, matchers, any: true);
         }
 
         /// <inheritdoc/>
         public string CheckFilePath(string path)
         {
-            return MatchUtil.GetFirstMatch(path, pathMatchers, any: true);
+            var matchers = new List<PathMatchSet>
+            {
+                new PathMatchSet(new PathMatch("dvm.dll", useEndsWith: true), "SolidShield"),
+                new PathMatchSet(new PathMatch("hc.dll", useEndsWith: true), "SolidShield"),
+                new PathMatchSet(new PathMatch("solidshield-cd.dll", useEndsWith: true), "SolidShield"),
+                new PathMatchSet(new PathMatch("c11prot.dll", useEndsWith: true), "SolidShield"),
+            };
+
+            return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
 
         public static string GetExeWrapperVersion(string file, byte[] fileContent, List<int> positions)
