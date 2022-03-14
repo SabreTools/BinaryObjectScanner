@@ -70,7 +70,7 @@ Below is a list of protections detected by BurnOutSharp. The two columns explain
 | SoftLock | False | True | Unconfirmed¹ |
 | SolidShield | True | True | Some Wrapper v1 not detected² |
 | StarForce | True | False | Partially unconfirmed², commented out issue with `protect.exe` false positives |
-| Steam | False | True | |
+| Steam | True | True | |
 | SVKP (Slovak Protector) | True | False | |
 | Sysiphus / Sysiphus DVD | True | False | |
 | TAGES | True | True | Partially unconfirmed² |

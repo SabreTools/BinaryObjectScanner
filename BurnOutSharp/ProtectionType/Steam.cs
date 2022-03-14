@@ -1,12 +1,40 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
+using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Matching;
+using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ProtectionType
 {
-    // TODO: Investigate what content checks can be done here
-    public class Steam : IPathCheck
+    public class Steam : IPEContentCheck, IPathCheck
     {
+        /// <inheritdoc/>
+        public string CheckPEContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex)
+        {
+            // Get the sections from the executable, if possible
+            var sections = pex?.SectionTable;
+            if (sections == null)
+                return null;
+
+            string name = Utilities.GetFileDescription(pex);
+            if (!string.IsNullOrEmpty(name) && name.Contains("Steam Autorun Setup"))
+                return "Steam";
+            else if (!string.IsNullOrEmpty(name) && name.Contains("Steam Client API"))
+                return "Steam";
+            else if (!string.IsNullOrEmpty(name) && name.Contains("Steam Client Service"))
+                return "Steam";
+
+            name = Utilities.GetProductName(pex);
+            if (!string.IsNullOrEmpty(name) && name.Contains("Steam Autorun Setup"))
+                return "Steam";
+            else if (!string.IsNullOrEmpty(name) && name.Contains("Steam Client API"))
+                return "Steam";
+            else if (!string.IsNullOrEmpty(name) && name.Contains("Steam Client Service"))
+                return "Steam";
+
+            return null;
+        }
+
         /// <inheritdoc/>
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string> files)
         {
