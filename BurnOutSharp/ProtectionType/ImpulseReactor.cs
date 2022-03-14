@@ -18,6 +18,18 @@ namespace BurnOutSharp.ProtectionType
             if (sections == null)
                 return null;
 
+            string name = Utilities.GetFileDescription(pex);
+            if (!string.IsNullOrWhiteSpace(name) && name.Contains("ImpulseReactor Dynamic Link Library"))
+                return $"Impulse Reactor Core Module {Utilities.GetFileVersion(pex)}";
+
+            name = Utilities.GetProductName(pex);
+            if (!string.IsNullOrWhiteSpace(name) && name.Contains("ImpulseReactor Dynamic Link Library"))
+                return $"Impulse Reactor Core Module {Utilities.GetFileVersion(pex)}";
+
+            name = Utilities.GetOriginalFileName(pex);
+            if (!string.IsNullOrWhiteSpace(name) && name.Contains("ReactorActivate.exe"))
+                return $"Stardock Product Activation {Utilities.GetFileVersion(pex)}";
+
             // Get the .rdata section, if it exists
             if (pex.ResourceDataSectionRaw != null)
             {
@@ -30,6 +42,7 @@ namespace BurnOutSharp.ProtectionType
                 };
                 bool containsCheck = pex.ResourceDataSectionRaw.FirstPosition(check, out int position);
 
+                // TODO: Find what resource this is in
                 // A + (char)0x00 + T + (char)0x00 + T + (char)0x00 + L + (char)0x00 + I + (char)0x00 + S + (char)0x00 + T + (char)0x00 + (char)0x00 + (char)0x00 + E + (char)0x00 + L + (char)0x00 + E + (char)0x00 + M + (char)0x00 + E + (char)0x00 + N + (char)0x00 + T + (char)0x00 + (char)0x00 + (char)0x00 + N + (char)0x00 + O + (char)0x00 + T + (char)0x00 + A + (char)0x00 + T + (char)0x00 + I + (char)0x00 + O + (char)0x00 + N + (char)0x00
                 byte?[] check2 = new byte?[]
                 {
@@ -54,7 +67,6 @@ namespace BurnOutSharp.ProtectionType
         /// <inheritdoc/>
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string> files)
         {
-            // TODO: Verify if these are AND or OR
             var matchers = new List<PathMatchSet>
             {
                 new PathMatchSet(new PathMatch("ImpulseReactor.dll", useEndsWith: true), Utilities.GetFileVersion, "Impulse Reactor Core Module"),
@@ -67,7 +79,6 @@ namespace BurnOutSharp.ProtectionType
         /// <inheritdoc/>
         public string CheckFilePath(string path)
         {
-            // TODO: Verify if these are AND or OR
             var matchers = new List<PathMatchSet>
             {
                 new PathMatchSet(new PathMatch("ImpulseReactor.dll", useEndsWith: true), Utilities.GetFileVersion, "Impulse Reactor Core Module"),
