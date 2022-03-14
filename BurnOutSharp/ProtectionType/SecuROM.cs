@@ -121,6 +121,14 @@ namespace BurnOutSharp.ProtectionType
                 new PathMatchSet(new PathMatch("SINTF32.DLL", useEndsWith: true), "SecuROM New"),
                 new PathMatchSet(new PathMatch("SINTF16.DLL", useEndsWith: true), "SecuROM New"),
                 new PathMatchSet(new PathMatch("SINTFNT.DLL", useEndsWith: true), "SecuROM New"),
+
+                // TODO: Find more samples of this for different versions
+                new PathMatchSet(new List<PathMatch>
+                {
+                    new PathMatch("securom_v7_01.bak", useEndsWith: true),
+                    new PathMatch("securom_v7_01.dat", useEndsWith: true),
+                    new PathMatch("securom_v7_01.tmp", useEndsWith: true),
+                }, "SecuROM 7.01"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);
@@ -140,6 +148,10 @@ namespace BurnOutSharp.ProtectionType
                 new PathMatchSet(new PathMatch("SINTF32.DLL", useEndsWith: true), "SecuROM New"),
                 new PathMatchSet(new PathMatch("SINTF16.DLL", useEndsWith: true), "SecuROM New"),
                 new PathMatchSet(new PathMatch("SINTFNT.DLL", useEndsWith: true), "SecuROM New"),
+
+                new PathMatchSet(new PathMatch("securom_v7_01.bak", useEndsWith: true), "SecuROM 7.01"),
+                new PathMatchSet(new PathMatch("securom_v7_01.dat", useEndsWith: true), "SecuROM 7.01"),
+                new PathMatchSet(new PathMatch("securom_v7_01.tmp", useEndsWith: true), "SecuROM 7.01"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

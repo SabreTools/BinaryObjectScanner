@@ -82,6 +82,16 @@ namespace BurnOutSharp.FileType
                 if (fileContent.Contains("MediaMax technology"))
                     Utilities.AppendToDictionary(protections, file, "MediaMax CD-3");
 
+                // The full line from a sample is as follows:
+                //
+                // The files securom_v7_01.dat and securom_v7_01.bak have been created during the installation of a SecuROM protected application.
+                //
+                // TODO: Use the filenames in this line to get the version out of it
+
+                // SecuROM
+                if (fileContent.Contains("SecuROM protected application"))
+                    Utilities.AppendToDictionary(protections, file, "SecuROM");
+
                 // XCP
                 if (fileContent.Contains("http://cp.sonybmg.com/xcp/"))
                     Utilities.AppendToDictionary(protections, file, "XCP");
