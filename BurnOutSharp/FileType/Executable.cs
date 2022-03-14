@@ -138,7 +138,7 @@ namespace BurnOutSharp.FileType
             });
 
             // If we have a NE executable, iterate through all NE content checks
-            if (nex != null)
+            if (nex?.DOSStubHeader != null)
             {
                 Parallel.ForEach(neContentCheckClasses, contentCheckClass =>
                 {
@@ -165,7 +165,7 @@ namespace BurnOutSharp.FileType
             }
 
             // If we have a PE executable, iterate through all PE content checks
-            if (pex != null)
+            if (pex?.SectionTable != null)
             {
                 Parallel.ForEach(peContentCheckClasses, contentCheckClass =>
                 {
