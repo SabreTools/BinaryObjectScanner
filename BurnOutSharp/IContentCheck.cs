@@ -15,6 +15,7 @@ namespace BurnOutSharp
         /// <param name="fileContent">Byte array representing the file contents</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
         /// <returns>String containing any protections found in the file</returns>
+        /// <remarks>This still includes PE and NE because this is primarily used for debug testing</remarks>
         string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex);
     }
 }
