@@ -10,73 +10,71 @@ using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.PackerType
 {
-    public class InnoSetup : IContentCheck, IScannable
+    public class InnoSetup : INEContentCheck, IPEContentCheck, IScannable
     {
         /// <inheritdoc/>
         public bool ShouldScan(byte[] magic) => true;
 
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
+        public string CheckNEContents(string file, byte[] fileContent, bool includeDebug, NewExecutable nex)
         {
-            // Try to read the contents as a PE executable
-            if (pex != null)
+            // Get the DOS stub from the executable, if possible
+            var stub = nex?.DOSStubHeader;
+            if (stub == null)
+                return null;
+            
+            // Check for "Inno" in the reserved words
+            if (stub.Reserved2[4] == 0x6E49 && stub.Reserved2[5] == 0x6F6E)
             {
-                var sections = pex?.SectionTable;
-                if (sections == null)
-                    return null;
+                string version = GetOldVersion(file, fileContent);
+                if (!string.IsNullOrWhiteSpace(version))
+                    return $"Inno Setup {version}";
                 
-                // Get the DATA/.data section, if it exists
-                if (pex.DataSectionRaw != null)
-                {
-                    var matchers = new List<ContentMatchSet>
-                    {
-                        // Inno Setup Setup Data (
-                        new ContentMatchSet(new byte?[]
-                        {
-                            0x49, 0x6E, 0x6E, 0x6F, 0x20, 0x53, 0x65, 0x74,
-                            0x75, 0x70, 0x20, 0x53, 0x65, 0x74, 0x75, 0x70,
-                            0x20, 0x44, 0x61, 0x74, 0x61, 0x20, 0x28
-                        }, GetVersion, "Inno Setup"),
-                    };
-
-                    string match = MatchUtil.GetFirstMatch(file, pex.DataSectionRaw, matchers, includeDebug);
-                    if (!string.IsNullOrWhiteSpace(match))
-                        return match;
-                }
-
-                // Get the DOS stub from the executable, if possible
-                var stub = pex?.DOSStubHeader;
-                if (stub == null)
-                    return null;
-                
-                // Check for "Inno" in the reserved words
-                if (stub.Reserved2[4] == 0x6E49 && stub.Reserved2[5] == 0x6F6E)
-                {
-                    string version = GetOldVersion(file, fileContent);
-                    if (!string.IsNullOrWhiteSpace(version))
-                        return $"Inno Setup {version}";
-                    
-                    return "Inno Setup (Unknown Version)";
-                }
+                return "Inno Setup (Unknown Version)";
             }
 
-            // Try to read the contents as an NE executable
-            if (nex != null)
+            return null;
+        }
+
+        /// <inheritdoc/>
+        public string CheckPEContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex)
+        {
+            var sections = pex?.SectionTable;
+            if (sections == null)
+                return null;
+            
+            // Get the DATA/.data section, if it exists
+            if (pex.DataSectionRaw != null)
             {
-                // Get the DOS stub from the executable, if possible
-                var stub = nex?.DOSStubHeader;
-                if (stub == null)
-                    return null;
-                
-                // Check for "Inno" in the reserved words
-                if (stub.Reserved2[4] == 0x6E49 && stub.Reserved2[5] == 0x6F6E)
+                var matchers = new List<ContentMatchSet>
                 {
-                    string version = GetOldVersion(file, fileContent);
-                    if (!string.IsNullOrWhiteSpace(version))
-                        return $"Inno Setup {version}";
-                    
-                    return "Inno Setup (Unknown Version)";
-                }
+                    // Inno Setup Setup Data (
+                    new ContentMatchSet(new byte?[]
+                    {
+                        0x49, 0x6E, 0x6E, 0x6F, 0x20, 0x53, 0x65, 0x74,
+                        0x75, 0x70, 0x20, 0x53, 0x65, 0x74, 0x75, 0x70,
+                        0x20, 0x44, 0x61, 0x74, 0x61, 0x20, 0x28
+                    }, GetVersion, "Inno Setup"),
+                };
+
+                string match = MatchUtil.GetFirstMatch(file, pex.DataSectionRaw, matchers, includeDebug);
+                if (!string.IsNullOrWhiteSpace(match))
+                    return match;
+            }
+
+            // Get the DOS stub from the executable, if possible
+            var stub = pex?.DOSStubHeader;
+            if (stub == null)
+                return null;
+            
+            // Check for "Inno" in the reserved words
+            if (stub.Reserved2[4] == 0x6E49 && stub.Reserved2[5] == 0x6F6E)
+            {
+                string version = GetOldVersion(file, fileContent);
+                if (!string.IsNullOrWhiteSpace(version))
+                    return $"Inno Setup {version}";
+                
+                return "Inno Setup (Unknown Version)";
             }
 
             return null;

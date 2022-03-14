@@ -12,105 +12,108 @@ using SharpCompress.Archives.Zip;
 
 namespace BurnOutSharp.PackerType
 {
-    public class WinZipSFX : IContentCheck, IScannable
+    public class WinZipSFX : INEContentCheck, IPEContentCheck, IScannable
     {
         /// <inheritdoc/>
         public bool ShouldScan(byte[] magic) => true;
 
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
+        public string CheckNEContents(string file, byte[] fileContent, bool includeDebug, NewExecutable nex)
         {
-            // Try to read the contents as a PE executable
-            if (pex != null)
+            // Get the DOS stub from the executable, if possible
+            var stub = nex?.DOSStubHeader;
+            if (stub == null)
+                return null;
+
+            string version = GetNEHeaderVersion(nex);
+            if (!string.IsNullOrWhiteSpace(version))
+                return $"WinZip SFX {version}";
+
+            version = GetNEUnknownHeaderVersion(nex, file, fileContent, includeDebug);
+            if (!string.IsNullOrWhiteSpace(version))
+                return $"WinZip SFX {version}";
+
+            return null;
+        }
+
+        /// <inheritdoc/>
+        public string CheckPEContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex)
+        {
+            var sections = pex?.SectionTable;
+            if (sections == null)
+                return null;
+
+            // Get the .rdata section, if it exists
+            if (pex.ResourceDataSectionRaw != null)
             {
-                var sections = pex?.SectionTable;
-                if (sections == null)
-                    return null;
-
-                // Get the .rdata section, if it exists
-                if (pex.ResourceDataSectionRaw != null)
-                {
-                    string version = GetSFXSectionDataVersion(file, pex.ResourceDataSectionRaw, includeDebug);
-                    if (!string.IsNullOrWhiteSpace(version))
-                        return $"WinZip SFX {version}";
-                }
-
-                // Get the _winzip_ section, if it exists
-                bool winzipSection = pex.ContainsSection("_winzip_", exact: true);
-                if (winzipSection)
-                {
-                    string version = GetPEHeaderVersion(pex);
-                    if (!string.IsNullOrWhiteSpace(version))
-                        return $"WinZip SFX {version}";
-
-                    version = GetAdjustedManifestVersion(pex);
-                    if (!string.IsNullOrWhiteSpace(version))
-                        return $"WinZip SFX {version}";
-                    
-                    return "WinZip SFX Unknown Version (32-bit)";
-                }
-
-                #region Unknown Version checks
-
-                // Get the .rdata section, if it exists
-                if (pex.ResourceDataSectionRaw != null)
-                {
-                    string version = GetSFXSectionDataUnknownVersion(file, pex.ResourceDataSectionRaw, includeDebug);
-                    if (!string.IsNullOrWhiteSpace(version))
-                        return $"WinZip SFX {version}";
-                }
-
-                // Get the .data section, if it exists
-                if (pex.DataSectionRaw != null)
-                {
-                    var matchers = new List<ContentMatchSet>
-                    {
-                        // WinZip Self-Extractor header corrupt.
-                        new ContentMatchSet(new byte?[]
-                        {
-                            0x57, 0x69, 0x6E, 0x5A, 0x69, 0x70, 0x20, 0x53, 
-                            0x65, 0x6C, 0x66, 0x2D, 0x45, 0x78, 0x74, 0x72, 
-                            0x61, 0x63, 0x74, 0x6F, 0x72, 0x20, 0x68, 0x65,
-                            0x61, 0x64, 0x65, 0x72, 0x20, 0x63, 0x6F, 0x72, 
-                            0x72, 0x75, 0x70, 0x74, 0x2E, 
-                        }, "Unknown Version (32-bit)"),
-
-                        // winzip\shell\open\command
-                        new ContentMatchSet(new byte?[]
-                        {
-                            0x77, 0x69, 0x6E, 0x7A, 0x69, 0x70, 0x5C, 0x73, 
-                            0x68, 0x65, 0x6C, 0x6C, 0x5C, 0x6F, 0x70, 0x65, 
-                            0x6E, 0x5C, 0x63, 0x6F, 0x6D, 0x6D, 0x61, 0x6E,
-                            0x64,
-                        }, "Unknown Version (32-bit)"),
-                    };
-
-                    string version = MatchUtil.GetFirstMatch(file, pex.DataSectionRaw, matchers, false);
-                    if (!string.IsNullOrWhiteSpace(version))
-                    {
-                        // Try to grab the value from the manifest, if possible
-                        string manifestVersion = GetAdjustedManifestVersion(pex);
-                        if (!string.IsNullOrWhiteSpace(manifestVersion))
-                            return $"WinZip SFX {manifestVersion}";
-
-                        return $"WinZip SFX {version}";
-                    }
-                }
-
-                #endregion
-            }
-
-            // Try to read the contents as an NE executable
-            if (nex != null)
-            {
-                string version = GetNEHeaderVersion(nex);
-                if (!string.IsNullOrWhiteSpace(version))
-                    return $"WinZip SFX {version}";
-
-                version = GetNEUnknownHeaderVersion(nex, file, fileContent, includeDebug);
+                string version = GetSFXSectionDataVersion(file, pex.ResourceDataSectionRaw, includeDebug);
                 if (!string.IsNullOrWhiteSpace(version))
                     return $"WinZip SFX {version}";
             }
+
+            // Get the _winzip_ section, if it exists
+            bool winzipSection = pex.ContainsSection("_winzip_", exact: true);
+            if (winzipSection)
+            {
+                string version = GetPEHeaderVersion(pex);
+                if (!string.IsNullOrWhiteSpace(version))
+                    return $"WinZip SFX {version}";
+
+                version = GetAdjustedManifestVersion(pex);
+                if (!string.IsNullOrWhiteSpace(version))
+                    return $"WinZip SFX {version}";
+                
+                return "WinZip SFX Unknown Version (32-bit)";
+            }
+
+            #region Unknown Version checks
+
+            // Get the .rdata section, if it exists
+            if (pex.ResourceDataSectionRaw != null)
+            {
+                string version = GetSFXSectionDataUnknownVersion(file, pex.ResourceDataSectionRaw, includeDebug);
+                if (!string.IsNullOrWhiteSpace(version))
+                    return $"WinZip SFX {version}";
+            }
+
+            // Get the .data section, if it exists
+            if (pex.DataSectionRaw != null)
+            {
+                var matchers = new List<ContentMatchSet>
+                {
+                    // WinZip Self-Extractor header corrupt.
+                    new ContentMatchSet(new byte?[]
+                    {
+                        0x57, 0x69, 0x6E, 0x5A, 0x69, 0x70, 0x20, 0x53, 
+                        0x65, 0x6C, 0x66, 0x2D, 0x45, 0x78, 0x74, 0x72, 
+                        0x61, 0x63, 0x74, 0x6F, 0x72, 0x20, 0x68, 0x65,
+                        0x61, 0x64, 0x65, 0x72, 0x20, 0x63, 0x6F, 0x72, 
+                        0x72, 0x75, 0x70, 0x74, 0x2E, 
+                    }, "Unknown Version (32-bit)"),
+
+                    // winzip\shell\open\command
+                    new ContentMatchSet(new byte?[]
+                    {
+                        0x77, 0x69, 0x6E, 0x7A, 0x69, 0x70, 0x5C, 0x73, 
+                        0x68, 0x65, 0x6C, 0x6C, 0x5C, 0x6F, 0x70, 0x65, 
+                        0x6E, 0x5C, 0x63, 0x6F, 0x6D, 0x6D, 0x61, 0x6E,
+                        0x64,
+                    }, "Unknown Version (32-bit)"),
+                };
+
+                string version = MatchUtil.GetFirstMatch(file, pex.DataSectionRaw, matchers, false);
+                if (!string.IsNullOrWhiteSpace(version))
+                {
+                    // Try to grab the value from the manifest, if possible
+                    string manifestVersion = GetAdjustedManifestVersion(pex);
+                    if (!string.IsNullOrWhiteSpace(manifestVersion))
+                        return $"WinZip SFX {manifestVersion}";
+
+                    return $"WinZip SFX {version}";
+                }
+            }
+
+            #endregion
 
             return null;
         }

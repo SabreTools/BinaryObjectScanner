@@ -10,33 +10,36 @@ using Wise = WiseUnpacker.WiseUnpacker;
 
 namespace BurnOutSharp.PackerType
 {
-    public class WiseInstaller : IContentCheck, IScannable
+    public class WiseInstaller : INEContentCheck, IPEContentCheck, IScannable
     {
         /// <inheritdoc/>
         public bool ShouldScan(byte[] magic) => true;
 
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
+        public string CheckNEContents(string file, byte[] fileContent, bool includeDebug, NewExecutable nex)
         {
-            // Get the sections from the executable, if possible
+            // Get the DOS stub from the executable, if possible
+            var stub = nex?.DOSStubHeader;
+            if (stub == null)
+                return null;
+
+            // TODO: Keep this around until it can be confirmed with NE checks as well
+            // TODO: This _may_ actually over-match. See msvbvm50.exe for an example
+            var neMatchSets = new List<ContentMatchSet>
+            {
+                // WiseMain
+                new ContentMatchSet(new byte?[] { 0x57, 0x69, 0x73, 0x65, 0x4D, 0x61, 0x69, 0x6E }, "Wise Installation Wizard Module"),
+            };
+            
+            return MatchUtil.GetFirstMatch(file, fileContent, neMatchSets, includeDebug);
+        }
+
+        /// <inheritdoc/>
+        public string CheckPEContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex)
+        {
             var sections = pex?.SectionTable;
             if (sections == null)
-            {
-                if (nex != null)
-                {
-                    // TODO: Keep this around until it can be confirmed with NE checks as well
-                    // TODO: This _may_ actually over-match. See msvbvm50.exe for an example
-                    var neMatchSets = new List<ContentMatchSet>
-                    {
-                        // WiseMain
-                        new ContentMatchSet(new byte?[] { 0x57, 0x69, 0x73, 0x65, 0x4D, 0x61, 0x69, 0x6E }, "Wise Installation Wizard Module"),
-                    };
-                    
-                    return MatchUtil.GetFirstMatch(file, fileContent, neMatchSets, includeDebug);
-                }
-
                 return null;
-            }
 
             // Get the .data section, if it exists
             if (pex.DataSectionRaw != null)
