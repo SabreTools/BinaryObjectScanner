@@ -37,6 +37,7 @@ namespace BurnOutSharp.PackerType
         /// <inheritdoc/>
         public string CheckPEContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex)
         {
+            // Get the sections from the executable, if possible
             var sections = pex?.SectionTable;
             if (sections == null)
                 return null;

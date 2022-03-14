@@ -1,17 +1,16 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using BurnOutSharp.ExecutableType.Microsoft.NE;
 using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.ExecutableType.Microsoft.PE.Headers;
 using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
 {
-    public class SmartE : IContentCheck, IPathCheck
+    public class SmartE : IPEContentCheck, IPathCheck
     {
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
+        public string CheckPEContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex)
         {
             // Get the sections from the executable, if possible
             var sections = pex?.SectionTable;

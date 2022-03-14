@@ -10,7 +10,7 @@ using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
 {
-    public class CactusDataShield : IContentCheck, IPathCheck
+    public class CactusDataShield : IContentCheck, IPEContentCheck, IPathCheck
     {
         /// <inheritdoc/>
         private List<ContentMatchSet> GetContentMatchSets()
@@ -28,6 +28,21 @@ namespace BurnOutSharp.ProtectionType
 
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
+        {
+            // TODO: Limit these checks to Mac binaries
+            // TODO: Obtain a sample to find where this string is in a typical executable
+            if (includeDebug)
+            {
+                var contentMatchSets = GetContentMatchSets();
+                if (contentMatchSets != null && contentMatchSets.Any())
+                    return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
+            }
+
+            return null;
+        }
+
+        /// <inheritdoc/>
+        public string CheckPEContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex)
         {
             // Get the sections from the executable, if possible
             var sections = pex?.SectionTable;
@@ -49,15 +64,6 @@ namespace BurnOutSharp.ProtectionType
                 string match = MatchUtil.GetFirstMatch(file, pex.DataSectionRaw, matchers, includeDebug);
                 if (!string.IsNullOrWhiteSpace(match))
                     return match;
-            }
-
-            // TODO: Limit these checks to Mac binaries
-            // TODO: Obtain a sample to find where this string is in a typical executable
-            if (includeDebug)
-            {
-                var contentMatchSets = GetContentMatchSets();
-                if (contentMatchSets != null && contentMatchSets.Any())
-                    return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
             }
 
             return null;

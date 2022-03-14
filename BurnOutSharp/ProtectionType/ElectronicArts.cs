@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using BurnOutSharp.ExecutableType.Microsoft.NE;
 using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Matching;
 using BurnOutSharp.Tools;
@@ -13,10 +12,10 @@ namespace BurnOutSharp.ProtectionType
     //      - Look into `ccinstall`, `Services/EACOM`, `TSLHost`, `SIGS/UploadThread/exchangeAuthToken`,
     //          `blazeURL`, `psapi.dll`, `DasmX86Dll.dll`, `NVCPL.dll`, `iphlpapi.dll`, `dbghelp.dll`,
     //          `WS2_32.dll`, 
-    public class ElectronicArts : IContentCheck
+    public class ElectronicArts : IPEContentCheck
     {
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
+        public string CheckPEContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex)
         {
             // Get the sections from the executable, if possible
             var sections = pex?.SectionTable;

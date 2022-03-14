@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using BurnOutSharp.ExecutableType.Microsoft.NE;
 using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.FileType;
 using BurnOutSharp.Matching;
@@ -11,10 +10,10 @@ using BurnOutSharp.Matching;
 namespace BurnOutSharp.ProtectionType
 {
     // TODO: Figure out how to use path check framework here
-    public class XCP : IContentCheck, IPathCheck
+    public class XCP : IPEContentCheck, IPathCheck
     {
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
+        public string CheckPEContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex)
         {
             // Get the sections from the executable, if possible
             var sections = pex?.SectionTable;

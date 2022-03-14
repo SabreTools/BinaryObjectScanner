@@ -10,10 +10,37 @@ using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ProtectionType
 {
-    public class TAGES : IContentCheck, IPathCheck
+    public class TAGES : IPEContentCheck, IPathCheck
     {
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
+        {
+            // TODO: Obtain a sample to find where this string is in a typical executable
+            if (includeDebug)
+            {
+                var contentMatchSets = new List<ContentMatchSet>
+                {
+                    // protected-tages-runtime.exe
+                    new ContentMatchSet(new byte?[]
+                    {
+                        0x70, 0x72, 0x6F, 0x74, 0x65, 0x63, 0x74, 0x65,
+                        0x64, 0x2D, 0x74, 0x61, 0x67, 0x65, 0x73, 0x2D,
+                        0x72, 0x75, 0x6E, 0x74, 0x69, 0x6D, 0x65, 0x2E,
+                        0x65, 0x78, 0x65
+                    }, Utilities.GetFileVersion, "TAGES [DEBUG]"),
+
+                    // This check seems to currently be broken, as files that appear to have this string aren't being detected.
+                    // (char)0xE8 + u + (char)0x00 + (char)0x00 + (char)0x00 + (char)0xE8
+                    new ContentMatchSet(new byte?[] { 0xE8, 0x75, 0x00, 0x00, 0x00, 0xE8 }, GetVersion, "TAGES [DEBUG]"),
+                };
+                return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
+            }
+
+            return null;
+        }
+
+        /// <inheritdoc/>
+        public string CheckPEContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex)
         {
             // Get the sections from the executable, if possible
             var sections = pex?.SectionTable;
@@ -41,27 +68,6 @@ namespace BurnOutSharp.ProtectionType
                 return $"TAGES Driver Setup {GetVersion(pex)}";
             else if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("T@GES", StringComparison.OrdinalIgnoreCase))
                 return $"TAGES Activation Client {GetVersion(pex)}";
-
-            // TODO: Obtain a sample to find where this string is in a typical executable
-            if (includeDebug)
-            {
-                var contentMatchSets = new List<ContentMatchSet>
-                {
-                    // protected-tages-runtime.exe
-                    new ContentMatchSet(new byte?[]
-                    {
-                        0x70, 0x72, 0x6F, 0x74, 0x65, 0x63, 0x74, 0x65,
-                        0x64, 0x2D, 0x74, 0x61, 0x67, 0x65, 0x73, 0x2D,
-                        0x72, 0x75, 0x6E, 0x74, 0x69, 0x6D, 0x65, 0x2E,
-                        0x65, 0x78, 0x65
-                    }, Utilities.GetFileVersion, "TAGES [DEBUG]"),
-
-                    // This check seems to currently be broken, as files that appear to have this string aren't being detected.
-                    // (char)0xE8 + u + (char)0x00 + (char)0x00 + (char)0x00 + (char)0xE8
-                    new ContentMatchSet(new byte?[] { 0xE8, 0x75, 0x00, 0x00, 0x00, 0xE8 }, GetVersion, "TAGES [DEBUG]"),
-                };
-                return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
-            }
 
             return null;
         }

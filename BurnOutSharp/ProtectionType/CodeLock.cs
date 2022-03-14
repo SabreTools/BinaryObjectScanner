@@ -7,21 +7,11 @@ using BurnOutSharp.Matching;
 namespace BurnOutSharp.ProtectionType
 {
     // CodeLock / CodeLok / CopyLok
-    public class CodeLock : IContentCheck
+    public class CodeLock : IContentCheck, IPEContentCheck
     {
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
         {
-            // Get the sections from the executable, if possible
-            var sections = pex?.SectionTable;
-            if (sections == null)
-                return null;
-            
-            // If there are more than 2 icd-prefixed sections, then we have a match
-            int icdSectionCount = pex.GetSectionNames().Count(s => s.StartsWith("icd"));
-            if (icdSectionCount >= 2)
-                return "CodeLock / CodeLok / CopyLok";
-
             // TODO: Obtain a sample to find where this string is in a typical executable
             if (includeDebug)
             {
@@ -37,6 +27,22 @@ namespace BurnOutSharp.ProtectionType
 
                 return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
             }
+
+            return null;
+        }
+
+        /// <inheritdoc/>
+        public string CheckPEContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex)
+        {
+            // Get the sections from the executable, if possible
+            var sections = pex?.SectionTable;
+            if (sections == null)
+                return null;
+            
+            // If there are more than 2 icd-prefixed sections, then we have a match
+            int icdSectionCount = pex.GetSectionNames().Count(s => s.StartsWith("icd"));
+            if (icdSectionCount >= 2)
+                return "CodeLock / CodeLok / CopyLok";
 
             return null;
         }

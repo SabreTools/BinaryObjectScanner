@@ -1,6 +1,5 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
-using BurnOutSharp.ExecutableType.Microsoft.NE;
 using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Matching;
 using BurnOutSharp.Tools;
@@ -9,10 +8,10 @@ namespace BurnOutSharp.ProtectionType
 {
     // Note that this set of checks also contains "Stardock Product Activation"
     // This is intentional, as that protection is highly related to Impulse Reactor
-    public class ImpulseReactor : IContentCheck, IPathCheck
+    public class ImpulseReactor : IPEContentCheck, IPathCheck
     {
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
+        public string CheckPEContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex)
         {
             // Get the sections from the executable, if possible
             var sections = pex?.SectionTable;

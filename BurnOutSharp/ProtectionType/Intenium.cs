@@ -1,10 +1,9 @@
-﻿using BurnOutSharp.ExecutableType.Microsoft.NE;
-using BurnOutSharp.ExecutableType.Microsoft.PE;
+﻿using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ProtectionType
 {
-    public class Intenium : IContentCheck
+    public class Intenium : IPEContentCheck
     {
         /*
          * Possible strings for finding INTENIUM Trial & Buy Protection
@@ -23,7 +22,7 @@ namespace BurnOutSharp.ProtectionType
          */
 
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
+        public string CheckPEContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex)
         {
             // Get the sections from the executable, if possible
             var sections = pex?.SectionTable;

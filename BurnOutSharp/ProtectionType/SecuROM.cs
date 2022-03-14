@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using BurnOutSharp.ExecutableType.Microsoft.NE;
 using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Matching;
 using BurnOutSharp.Tools;
@@ -13,10 +12,10 @@ namespace BurnOutSharp.ProtectionType
     // TODO: Investigate why White Label v8 doesn't get detected - http://redump.org/disc/48997/
     // TODO: Does the ".shr" section in the code have anything to do with this?
     // TODO: Investigate SecuROM for Macintosh
-    public class SecuROM : IContentCheck, IPathCheck
+    public class SecuROM : IPEContentCheck, IPathCheck
     {
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
+        public string CheckPEContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex)
         {
             // Get the sections from the executable, if possible
             var sections = pex?.SectionTable;

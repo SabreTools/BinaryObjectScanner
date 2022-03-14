@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using BurnOutSharp.ExecutableType.Microsoft.NE;
 using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Matching;
 
@@ -12,10 +11,10 @@ namespace BurnOutSharp.ProtectionType
     //      - SETTEC0000SETTEC1111
     //      - SOFTWARE\SETTEC
     // TODO: Are there version numbers?
-    public class AlphaROM : IContentCheck
+    public class AlphaROM : IPEContentCheck
     {
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
+        public string CheckPEContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex)
         {
             // Get the sections from the executable, if possible
             var sections = pex?.SectionTable;

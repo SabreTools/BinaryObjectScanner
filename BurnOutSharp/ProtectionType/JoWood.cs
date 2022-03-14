@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using BurnOutSharp.ExecutableType.Microsoft.NE;
 using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Matching;
 
@@ -10,10 +9,10 @@ namespace BurnOutSharp.ProtectionType
     // Interesting note: the former protection "Xtreme-Protector" was found to be a
     // subset of the JoWood X-Prot checks, more specifically the XPROT section check
     // that now outputs a version of v1.4+.
-    public class JoWood : IContentCheck
+    public class JoWood : IPEContentCheck
     {
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
+        public string CheckPEContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex)
         {
             // Get the sections from the executable, if possible
             var sections = pex?.SectionTable;

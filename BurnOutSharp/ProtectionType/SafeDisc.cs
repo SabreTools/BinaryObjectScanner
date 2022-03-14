@@ -2,7 +2,6 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using BurnOutSharp.ExecutableType.Microsoft.NE;
 using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Matching;
 using BurnOutSharp.Tools;
@@ -11,7 +10,7 @@ namespace BurnOutSharp.ProtectionType
 {
     // TODO: Figure out how to properly distinguish SafeDisc and SafeCast since both use
     // the same generic BoG_ string. The current combination check doesn't seem consistent
-    public class SafeDisc : IContentCheck, IPathCheck
+    public class SafeDisc : IPEContentCheck, IPathCheck
     {
         /// <summary>
         /// Set of all PathMatchSets for this protection
@@ -48,7 +47,7 @@ namespace BurnOutSharp.ProtectionType
         };
 
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
+        public string CheckPEContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex)
         {
             // Get the sections from the executable, if possible
             var sections = pex?.SectionTable;
