@@ -28,9 +28,12 @@ namespace BurnOutSharp.ProtectionType
                 return "Uplay / Ubisoft Connect";
             else if (!string.IsNullOrEmpty(name) && name.Contains("Ubisoft Game Launcher"))
                 return "Uplay / Ubisoft Connect";
+            else if (!string.IsNullOrEmpty(name) && name.Contains("Ubisoft Uplay Installer"))
+                return "Uplay / Ubisoft Connect";
             else if (!string.IsNullOrEmpty(name) && name.Contains("Uplay launcher"))
                 return "Uplay / Ubisoft Connect";
 
+            // There's also a variant that looks like "Uplay <version> installer"
             name = Utilities.GetProductName(pex);
             if (!string.IsNullOrEmpty(name) && name.Contains("Ubisoft Connect"))
                 return "Uplay / Ubisoft Connect";
