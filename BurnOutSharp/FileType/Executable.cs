@@ -19,6 +19,16 @@ namespace BurnOutSharp.FileType
         /// </summary>
         private static readonly IEnumerable<IContentCheck> contentCheckClasses = InitContentCheckClasses();
 
+        /// <summary>
+        /// Cache for all INEContentCheck types
+        /// </summary>
+        private static readonly IEnumerable<INEContentCheck> neContentCheckClasses = InitNEContentCheckClasses();
+
+        /// <summary>
+        /// Cache for all IPEContentCheck types
+        /// </summary>
+        private static readonly IEnumerable<IPEContentCheck> peContentCheckClasses = InitPEContentCheckClasses();
+
         /// <inheritdoc/>
         public bool ShouldScan(byte[] magic)
         {
@@ -138,6 +148,26 @@ namespace BurnOutSharp.FileType
             return Assembly.GetExecutingAssembly().GetTypes()
                 .Where(t => t.IsClass && t.GetInterface(nameof(IContentCheck)) != null)
                 .Select(t => Activator.CreateInstance(t) as IContentCheck);
+        }
+
+        /// <summary>
+        /// Initialize all INEContentCheck implementations
+        /// </summary>
+        private static IEnumerable<INEContentCheck> InitNEContentCheckClasses()
+        {
+            return Assembly.GetExecutingAssembly().GetTypes()
+                .Where(t => t.IsClass && t.GetInterface(nameof(INEContentCheck)) != null)
+                .Select(t => Activator.CreateInstance(t) as INEContentCheck);
+        }
+
+        /// <summary>
+        /// Initialize all IPEContentCheck implementations
+        /// </summary>
+        private static IEnumerable<IPEContentCheck> InitPEContentCheckClasses()
+        {
+            return Assembly.GetExecutingAssembly().GetTypes()
+                .Where(t => t.IsClass && t.GetInterface(nameof(IPEContentCheck)) != null)
+                .Select(t => Activator.CreateInstance(t) as IPEContentCheck);
         }
     
         /// <summary>
