@@ -113,7 +113,7 @@ namespace BurnOutSharp.FileType
             // NewExecutable nex = new NewExecutable(stream);
             // stream.Seek(0, SeekOrigin.Begin);
 
-            // Iterate through all content checks
+            // Iterate through all generic content checks
             Parallel.ForEach(contentCheckClasses, contentCheckClass =>
             {
                 // Track if any protection is found
@@ -137,8 +137,64 @@ namespace BurnOutSharp.FileType
                 }
             });
 
+            // If we have a NE executable, iterate through all NE content checks
+            if (nex != null)
+            {
+                Parallel.ForEach(neContentCheckClasses, contentCheckClass =>
+                {
+                    // Track if any protection is found
+                    bool foundProtection = false;
+
+                    // Check using custom content checks first
+                    string protection = contentCheckClass.CheckNEContents(file, fileContent, scanner.IncludeDebug, nex);
+                    foundProtection |= !string.IsNullOrWhiteSpace(protection);
+                    if (ShouldAddProtection(contentCheckClass, scanner, protection))
+                        Utilities.AppendToDictionary(protections, file, protection);
+
+                    // If we have an IScannable implementation
+                    if (contentCheckClass is IScannable scannable)
+                    {
+                        if (file != null && !string.IsNullOrEmpty(protection))
+                        {
+                            var subProtections = scannable.Scan(scanner, null, file);
+                            Utilities.PrependToKeys(subProtections, file);
+                            Utilities.AppendToDictionary(protections, subProtections);
+                        }
+                    }
+                });
+            }
+
+            // If we have a PE executable, iterate through all PE content checks
+            if (pex != null)
+            {
+                Parallel.ForEach(peContentCheckClasses, contentCheckClass =>
+                {
+                    // Track if any protection is found
+                    bool foundProtection = false;
+
+                    // Check using custom content checks first
+                    string protection = contentCheckClass.CheckPEContents(file, fileContent, scanner.IncludeDebug, pex);
+                    foundProtection |= !string.IsNullOrWhiteSpace(protection);
+                    if (ShouldAddProtection(contentCheckClass, scanner, protection))
+                        Utilities.AppendToDictionary(protections, file, protection);
+
+                    // If we have an IScannable implementation
+                    if (contentCheckClass is IScannable scannable)
+                    {
+                        if (file != null && !string.IsNullOrEmpty(protection))
+                        {
+                            var subProtections = scannable.Scan(scanner, null, file);
+                            Utilities.PrependToKeys(subProtections, file);
+                            Utilities.AppendToDictionary(protections, subProtections);
+                        }
+                    }
+                });
+            }
+
             return protections;
         }
+
+        #region Helpers
 
         /// <summary>
         /// Initialize all IContentCheck implementations
@@ -187,5 +243,43 @@ namespace BurnOutSharp.FileType
 
             return false;
         }
+
+        /// <summary>
+        /// Check to see if a protection should be added or not
+        /// </summary>
+        /// <param name="neContentCheckClass">Class that was last used to check</param>
+        /// <param name="scanner">Scanner object for state tracking</param>
+        /// <param name="protection">The protection result to be checked</param>
+        private bool ShouldAddProtection(INEContentCheck neContentCheckClass, Scanner scanner, string protection)
+        {
+            // If we have a valid content check based on settings
+            if (!neContentCheckClass.GetType().Namespace.ToLowerInvariant().Contains("packertype") || scanner.ScanPackers)
+            {
+                if (!string.IsNullOrWhiteSpace(protection))
+                    return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Check to see if a protection should be added or not
+        /// </summary>
+        /// <param name="peContentCheckClass">Class that was last used to check</param>
+        /// <param name="scanner">Scanner object for state tracking</param>
+        /// <param name="protection">The protection result to be checked</param>
+        private bool ShouldAddProtection(IPEContentCheck peContentCheckClass, Scanner scanner, string protection)
+        {
+            // If we have a valid content check based on settings
+            if (!peContentCheckClass.GetType().Namespace.ToLowerInvariant().Contains("packertype") || scanner.ScanPackers)
+            {
+                if (!string.IsNullOrWhiteSpace(protection))
+                    return true;
+            }
+
+            return false;
+        }
+
+        #endregion
     }
 }
