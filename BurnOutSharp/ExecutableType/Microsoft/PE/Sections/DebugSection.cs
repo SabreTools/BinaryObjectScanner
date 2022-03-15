@@ -1,5 +1,4 @@
 using System.IO;
-using BurnOutSharp.ExecutableType.Microsoft.PE.Headers;
 using BurnOutSharp.ExecutableType.Microsoft.PE.Tables;
 
 namespace BurnOutSharp.ExecutableType.Microsoft.PE.Sections

@@ -90,6 +90,12 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
         public ImportDataSection ImportTable;
 
         /// <summary>
+        /// The base relocation table contains entries for all base relocations in the image.
+        /// The Base Relocation Table field in the optional header data directories gives the number of bytes in the base relocation table.
+        /// </summary>
+        public RelocationSection RelocationTable;
+
+        /// <summary>
         /// Resources are indexed by a multiple-level binary-sorted tree structure.
         /// The general design can incorporate 2**31 levels.
         /// By convention, however, Windows uses three levels
@@ -110,7 +116,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
         // X        - .edata        *1 protection       Export tables
         // X        - .idata        *1 protection       Import tables
         // X        - .rdata        11 protections      Read-only initialized data
-        //          - .rsrc         *1 protection       Resource directory [Mostly taken care of, last protection needs research]
+        //          - .rsrc         *1 protection       Resource directory [TODO: Mostly taken care of, last protection needs research]
         // X        - .text         6 protections       Executable code (free format)
         // Y        - .tls          *1 protection       Thread-local storage (object only)
         // 
@@ -120,7 +126,11 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
         // X        - .grand        *1 protection       CD-Cops / DVD-Cops
         // X        - .init         *1 protection       SolidShield
         //          - .pec2         *1 protection       PE Compact [Unconfirmed]
+        //          - .NOS0         *1 protection        UPX (NOS Variant)
+        //          - .NOS1         *1 protection        UPX (NOS Variant)
         // X        - .txt2         *1 protection       SafeDisc
+        //          - .UPX0         *1 protection        UPX
+        //          - .UPX1         *1 protection        UPX
         // 
         // Here is a list of non-standard sections whose data is not read by various protections:
         //          - .brick        1 protection        StarForce
@@ -131,15 +141,11 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
         //          - .ldr          1 protection        3PLock
         //          - .ldt          1 protection        3PLock
         //          - .nicode       1 protection        Armadillo
-        //          - .NOS0         1 protection        UPX (NOS Variant) [Used as endpoint]
-        //          - .NOS1         1 protection        UPX (NOS Variant) [Used as endpoint]
         //          - .pec1         1 protection        PE Compact
         //          - .securom      1 protection        SecuROM
         //          - .sforce       1 protection        StarForce
         //          - stxt371       1 protection        SafeDisc
         //          - stxt774       1 protection        SafeDisc
-        //          - .UPX0         1 protection        UPX [Used as endpoint]
-        //          - .UPX1         1 protection        UPX [Used as endpoint]
         //          - .vob.pcd      1 protection        VOB ProtectCD
         //          - _winzip_      1 protection        WinZip SFX
         //          - XPROT         1 protection        JoWood
@@ -266,6 +272,14 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
                 //     this.ImportTable = ImportDataSection.Deserialize(stream, this.OptionalHeader.Magic == OptionalHeaderType.PE32Plus, hintCount: 0);
                 // }
 
+                // // Relocation Section
+                // var table = this.GetLastSection(".reloc", true);
+                // if (table != null && table.VirtualSize > 0)
+                // {
+                //     stream.Seek((int)table.PointerToRawData, SeekOrigin.Begin);
+                //     this.RelocationTable = RelocationSection.Deserialize(stream);
+                // }
+
                 // Resource Table
                 var table = this.GetLastSection(".rsrc", true);
                 if (table != null && table.VirtualSize > 0)
@@ -362,7 +376,15 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
                 // if (table != null && table.VirtualSize > 0)
                 // {
                 //     int tableAddress = (int)table.PointerToRawData;
-                //     this.ImportTable = ImportDataSection.Deserialize(content, tableAddress, this.OptionalHeader.Magic == OptionalHeaderType.PE32Plus, hintCount: 0);
+                //     this.ImportTable = ImportDataSection.Deserialize(content, ref tableAddress, this.OptionalHeader.Magic == OptionalHeaderType.PE32Plus, hintCount: 0);
+                // }
+
+                // // Relocation Section
+                // var table = this.GetLastSection(".reloc", true);
+                // if (table != null && table.VirtualSize > 0)
+                // {
+                //     int tableAddress = (int)table.PointerToRawData;
+                //     this.RelocationTable = RelocationSection.Deserialize(content, ref tableAddress);
                 // }
 
                 // Resource Table
@@ -420,13 +442,13 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
             if (sectionNames == null)
                 return false;
             
-            // If we're checking exactly, return only exact matches (with nulls trimmed)
+            // If we're checking exactly, return only exact matches
             if (exact)
-                return sectionNames.Any(n => n.Trim('\0').Equals(sectionName));
+                return sectionNames.Any(n => n.Equals(sectionName));
             
             // Otherwise, check if section name starts with the value
             else
-                return sectionNames.Any(n => n.Trim('\0').StartsWith(sectionName));
+                return sectionNames.Any(n => n.StartsWith(sectionName));
         }
 
         /// <summary>
