@@ -15,38 +15,30 @@ namespace BurnOutSharp.PackerType
             if (sections == null)
                 return null;
 
-            // TODO: Figure out how to more reasonably search before the sections
-
             // Standard UPX
-            int foundPosition = FindData(pex, "UPX");
-            if (foundPosition > -1)
+            var sectionData = FindData(pex, "UPX");
+            if (sectionData != null)
             {
                 var matchers = new List<ContentMatchSet>
                 {
                     // UPX!
-                    new ContentMatchSet(
-                        new ContentMatch(new byte?[] { 0x55, 0x50, 0x58, 0x21 }, end: foundPosition),
-                        GetVersion,
-                        "UPX"),
+                    new ContentMatchSet(new byte?[] { 0x55, 0x50, 0x58, 0x21 }, GetVersion, "UPX"),
                 };
 
-                return MatchUtil.GetFirstMatch(file, pex.SourceArray, matchers, includeDebug);
+                return MatchUtil.GetFirstMatch(file, sectionData, matchers, includeDebug);
             }
 
             // NOS Variant
-            foundPosition = FindData(pex, "NOS");
-            if (foundPosition > -1)
+            sectionData = FindData(pex, "NOS");
+            if (sectionData != null)
             {
                 var matchers = new List<ContentMatchSet>
                 {
                     // NOS 
-                    new ContentMatchSet(
-                        new ContentMatch(new byte?[] { 0x4E, 0x4F, 0x53, 0x20 }, end: foundPosition),
-                        GetVersion,
-                        "UPX (NOS Variant)"),
+                    new ContentMatchSet(new byte?[] { 0x4E, 0x4F, 0x53, 0x20 }, GetVersion, "UPX (NOS Variant)"),
                 };
 
-                return MatchUtil.GetFirstMatch(file, pex.SourceArray, matchers, includeDebug);
+                return MatchUtil.GetFirstMatch(file, sectionData, matchers, includeDebug);
             }
 
             return null;
@@ -86,8 +78,8 @@ namespace BurnOutSharp.PackerType
         /// </summary>
         /// <param name="pex">PortableExecutable representing the read-in file</param>
         /// <param name="sectionPrefix">Prefix of the sections to check for</param>
-        /// <returns>Real address of the section data, -1 on error</returns>
-        private int FindData(PortableExecutable pex, string sectionPrefix)
+        /// <returns>Section data, null on error</returns>
+        private byte[] FindData(PortableExecutable pex, string sectionPrefix)
         {
             // Get the two matching sections, if possible
             var firstSection = pex.GetFirstSection($"{sectionPrefix}0", exact: true);
@@ -95,10 +87,10 @@ namespace BurnOutSharp.PackerType
 
             // If either section is null, we can't do anything
             if (firstSection == null || secondSection == null)
-                return -1;
+                return null;
 
-            // Return the first section address
-            return (int)firstSection.PointerToRawData;
+            // This subtract is needed because the version is before the section
+            return pex.ReadRawSection($"{sectionPrefix}0", first: true, offset: -128);
         }
     }
 }
