@@ -25,7 +25,7 @@ namespace BurnOutSharp.ProtectionType
             // Get the .securom section, if it exists
             bool securomSection = pex.ContainsSection(".securom", exact: true);
             if (securomSection)
-                return $"SecuROM {GetV7Version(pex.SourceArray)}";
+                return $"SecuROM {GetV7Version(pex)}";
 
             // Search after the last section
             // TODO: Figure out how to do this in a more reasonable way
@@ -211,11 +211,11 @@ namespace BurnOutSharp.ProtectionType
             return $"{version}.{subVersion[0]}{subVersion[1]}.{subSubVersion[0]}{subSubVersion[1]}.{subSubSubVersion[0]}{subSubSubVersion[1]}{subSubSubVersion[2]}{subSubSubVersion[3]}";
         }
 
-        // TODO: Figure out where this sits in an actual executable
-        private static string GetV7Version(byte[] fileContent)
+        // These live in the MS-DOS stub, for some reason
+        private static string GetV7Version(PortableExecutable pex)
         {
-            int index = 236;
-            byte[] bytes = new ReadOnlySpan<byte>(fileContent, index, 4).ToArray();
+            int index = 172; // 64 bytes for DOS stub, 236 bytes in total
+            byte[] bytes = new ReadOnlySpan<byte>(pex.DOSStubHeader.ExecutableData, index, 4).ToArray();
             
             //SecuROM 7 new and 8
             if (bytes[3] == 0x5C) // if (bytes[0] == 0xED && bytes[3] == 0x5C {
@@ -226,8 +226,8 @@ namespace BurnOutSharp.ProtectionType
             // SecuROM 7 old
             else
             {
-                index = 122;
-                bytes = new ReadOnlySpan<byte>(fileContent, index, 2).ToArray();
+                index = 58; // 64 bytes for DOS stub, 122 bytes in total
+                bytes = new ReadOnlySpan<byte>(pex.DOSStubHeader.ExecutableData, index, 2).ToArray();
                 return $"7.{bytes[0] ^ 0x10:00}.{bytes[1] ^ 0x10:0000}"; //return "7.01-7.10"
             }
         }
