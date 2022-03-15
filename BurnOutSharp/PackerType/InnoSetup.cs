@@ -26,7 +26,7 @@ namespace BurnOutSharp.PackerType
             // Check for "Inno" in the reserved words
             if (stub.Reserved2[4] == 0x6E49 && stub.Reserved2[5] == 0x6F6E)
             {
-                string version = GetOldVersion(file, nex.SourceArray);
+                string version = GetOldVersion(file, nex);
                 if (!string.IsNullOrWhiteSpace(version))
                     return $"Inno Setup {version}";
                 
@@ -111,16 +111,22 @@ namespace BurnOutSharp.PackerType
             }
         }
 
-        private static string GetOldVersion(string file, byte[] fileContent)
+        private static string GetOldVersion(string file, NewExecutable nex)
         {
-            var matchers = new List<ContentMatchSet>
+            // TODO: Only 64 bytes at the end of the file is needed
+            var data = nex.ReadArbitraryRange();
+            if (data != null)
             {
-                // "rDlPtS02" + (char)0x87 + "eVx"
-                new ContentMatchSet(new byte?[] { 0x72, 0x44, 0x6C, 0x50, 0x74, 0x53, 0x30, 0x32, 0x87, 0x65, 0x56, 0x78 }, "1.2.16 or earlier"),
-            };
+                var matchers = new List<ContentMatchSet>
+                {
+                    // "rDlPtS02" + (char)0x87 + "eVx"
+                    new ContentMatchSet(new byte?[] { 0x72, 0x44, 0x6C, 0x50, 0x74, 0x53, 0x30, 0x32, 0x87, 0x65, 0x56, 0x78 }, "1.2.16 or earlier"),
+                };
 
-            string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, false);
-            return match ?? "Unknown 1.X"; 
+                return MatchUtil.GetFirstMatch(file, data, matchers, false) ?? "Unknown 1.X";
+            }
+            
+            return "Unknown 1.X"; 
         }
     }
 }
