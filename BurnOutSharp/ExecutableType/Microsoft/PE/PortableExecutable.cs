@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Linq;
-using System.Text;
 using BurnOutSharp.ExecutableType.Microsoft.MZ.Headers;
 using BurnOutSharp.ExecutableType.Microsoft.PE.Headers;
 using BurnOutSharp.ExecutableType.Microsoft.PE.Sections;

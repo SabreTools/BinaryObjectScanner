@@ -69,6 +69,7 @@ namespace BurnOutSharp.PackerType
                 return null;
             
             // Check for "Inno" in the reserved words
+            // TODO: Is this check needed for PE executables? The version check suggests otherwise
             if (stub.Reserved2[4] == 0x6E49 && stub.Reserved2[5] == 0x6F6E)
             {
                 string version = GetOldVersion(file, pex.SourceArray);

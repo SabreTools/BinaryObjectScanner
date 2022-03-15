@@ -28,6 +28,7 @@ namespace BurnOutSharp.ProtectionType
                 return $"SecuROM {GetV7Version(pex.SourceArray)}";
 
             // Search after the last section
+            // TODO: Figure out how to do this in a more reasonable way
             var lastSection = sections.LastOrDefault();
             if (lastSection != null)
             {
@@ -210,6 +211,7 @@ namespace BurnOutSharp.ProtectionType
             return $"{version}.{subVersion[0]}{subVersion[1]}.{subSubVersion[0]}{subSubVersion[1]}.{subSubSubVersion[0]}{subSubSubVersion[1]}{subSubSubVersion[2]}{subSubSubVersion[3]}";
         }
 
+        // TODO: Figure out where this sits in an actual executable
         private static string GetV7Version(byte[] fileContent)
         {
             int index = 236;

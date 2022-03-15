@@ -15,6 +15,8 @@ namespace BurnOutSharp.PackerType
             if (sections == null)
                 return null;
 
+            // TODO: Figure out how to more reasonably search before the sections
+
             // Standard UPX
             int foundPosition = FindData(pex, "UPX");
             if (foundPosition > -1)
