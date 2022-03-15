@@ -548,6 +548,70 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
         }
 
         /// <summary>
+        /// Read an arbitrary range from the source
+        /// </summary>
+        /// <param name="rangeStart">The start of where to read data from, -1 means start of source</param>
+        /// <param name="rangeEnd">The end of where to read data from (exclusive), -1 means end of source</param>
+        /// <returns></returns>
+        public byte[] ReadArbitraryRange(int rangeStart = -1, int rangeEnd = -1)
+        {
+            // If we have a source stream, use that
+            if (this.SourceStream != null)
+                return ReadArbitraryRangeFromSourceStream(rangeStart, rangeEnd);
+
+            // If we have a source array, use that
+            if (this.SourceArray != null)
+                return ReadArbitraryRangeFromSourceArray(rangeStart, rangeEnd);
+
+            // Otherwise, return null
+            return null;
+        }
+
+        /// <summary>
+        /// Read an arbitrary range from the stream source, if possible
+        /// </summary>
+        /// <param name="rangeStart">The start of where to read data from, -1 means start of source</param>
+        /// <param name="rangeEnd">The end of where to read data from (exclusive), -1 means end of source</param>
+        /// <returns></returns>
+        private byte[] ReadArbitraryRangeFromSourceStream(int rangeStart, int rangeEnd)
+        {
+            lock (this.SourceStream)
+            {
+                int startingIndex = (int)Math.Max(rangeStart, 0);
+                int readLength = (int)Math.Min(rangeEnd, this.SourceStream.Length);
+
+                long originalPosition = this.SourceStream.Position;
+                this.SourceStream.Seek(startingIndex, SeekOrigin.Begin);
+                byte[] sectionData = this.SourceStream.ReadBytes(readLength);
+                this.SourceStream.Seek(originalPosition, SeekOrigin.Begin);
+                return sectionData;
+            }
+        }
+
+        /// <summary>
+        /// Read an arbitrary range from the array source, if possible
+        /// </summary>
+        /// <param name="rangeStart">The start of where to read data from, -1 means start of source</param>
+        /// <param name="rangeEnd">The end of where to read data from (exclusive), -1 means end of source</param>
+        /// <returns></returns>
+        private byte[] ReadArbitraryRangeFromSourceArray(int rangeStart, int rangeEnd)
+        {
+            int startingIndex = (int)Math.Max(rangeStart, 0);
+            int readLength = (int)Math.Min(rangeEnd, this.SourceArray.Length);
+
+            try
+            {
+                return this.SourceArray.ReadBytes(ref startingIndex, readLength);
+            }
+            catch
+            {
+                // Just absorb errors for now
+                // TODO: Investigate why and when this would be hit
+                return null;
+            }
+        }
+
+        /// <summary>
         /// Get the raw bytes from a section, if possible
         /// </summary>
         /// <param name="sectionName">The name of the section to attempt to read</param>
@@ -574,68 +638,15 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
                 }
             }
 
-            // If we have a source stream, use that
-            if (this.SourceStream != null)
-                return ReadRawSectionFromSourceStream(sectionName, first, offset);
-
-            // If we have a source array, use that
-            if (this.SourceArray != null)
-                return ReadRawSectionFromSourceArray(sectionName, first, offset);
-
-            // Otherwise, return null
-            return null;
-        }
-
-        /// <summary>
-        /// Get the raw bytes from a section, if possible
-        /// </summary>
-        /// <param name="sectionName">The name of the section to attempt to read</param>
-        /// <param name="first">True to use the first section with a matching name, false to use the last section</param>
-        /// <param name="sectionName"></param>
-        private byte[] ReadRawSectionFromSourceStream(string sectionName, bool first, int offset)
-        {
+            // Get the section, if possible
             var section = first ? GetFirstSection(sectionName, true) : GetLastSection(sectionName, true);
             if (section == null)
                 return null;
 
-            lock (this.SourceStream)
-            {
-                int startingIndex = (int)Math.Max(section.PointerToRawData + offset, 0);
-                int readLength = (int)Math.Min(section.VirtualSize - offset, this.SourceStream.Length);
-
-                long originalPosition = this.SourceStream.Position;
-                this.SourceStream.Seek(startingIndex, SeekOrigin.Begin);
-                byte[] sectionData = this.SourceStream.ReadBytes(readLength);
-                this.SourceStream.Seek(originalPosition, SeekOrigin.Begin);
-                return sectionData;
-            }
-        }
-
-        /// <summary>
-        /// Get the raw bytes from a section, if possible
-        /// </summary>
-        /// <param name="sectionName">The name of the section to attempt to read</param>
-        /// <param name="first">True to use the first section with a matching name, false to use the last section</param>
-        /// <param name="offset">Offset to start reading at, default is 0</param>
-        private byte[] ReadRawSectionFromSourceArray(string sectionName, bool first, int offset)
-        {
-            var section = first ? GetFirstSection(sectionName, true) : GetLastSection(sectionName, true);
-            if (section == null)
-                return null;
-
-            int startingIndex = (int)Math.Max(section.PointerToRawData + offset, 0);
-            int readLength = (int)Math.Min(section.VirtualSize - offset, this.SourceArray.Length);
-
-            try
-            {
-                return this.SourceArray.ReadBytes(ref startingIndex, readLength);
-            }
-            catch
-            {
-                // Just absorb errors for now
-                // TODO: Investigate why and when this would be hit
-                return null;
-            }
+            // Return the raw data from that section
+            int rangeStart = (int)(section.PointerToRawData + offset);
+            int rangeEnd = (int)(section.VirtualSize - offset);
+            return ReadArbitraryRange(rangeStart, rangeEnd);
         }
 
         #endregion
