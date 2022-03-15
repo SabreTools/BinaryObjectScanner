@@ -107,10 +107,10 @@ namespace BurnOutSharp.FileType
             stream.Seek(0, SeekOrigin.Begin);
 
             // Iterate through all generic content checks
-            Parallel.ForEach(contentCheckClasses, contentCheckClass =>
+            // Check using custom content checks first
+            if (fileContent != null)
             {
-                // Check using custom content checks first
-                if (fileContent != null)
+                Parallel.ForEach(contentCheckClasses, contentCheckClass =>
                 {
                     string protection = contentCheckClass.CheckContents(file, fileContent, scanner.IncludeDebug, pex, nex);
                     if (ShouldAddProtection(contentCheckClass, scanner, protection))
@@ -126,8 +126,8 @@ namespace BurnOutSharp.FileType
                             Utilities.AppendToDictionary(protections, subProtections);
                         }
                     }
-                }
-            });
+                });
+            }
 
             // If we have a NE executable, iterate through all NE content checks
             if (nex?.Initialized == true)
