@@ -81,73 +81,61 @@ namespace BurnOutSharp.FileType
             // Files can be protected in multiple ways
             var protections = new ConcurrentDictionary<string, ConcurrentQueue<string>>();
 
-            // Load the current file content
+            // Load the current file content for debug only
             byte[] fileContent = null;
-            try
+            if (scanner.IncludeDebug)
             {
-                using (BinaryReader br = new BinaryReader(stream, Encoding.Default, true))
+                try
                 {
-                    fileContent = br.ReadBytes((int)stream.Length);
+                    using (BinaryReader br = new BinaryReader(stream, Encoding.Default, true))
+                    {
+                        fileContent = br.ReadBytes((int)stream.Length);
+                    }
+                }
+                catch
+                {
+                    Utilities.AppendToDictionary(protections, file, "[Out of memory attempting to open]");
+                    return protections;
                 }
             }
-            catch
-            {
-                Utilities.AppendToDictionary(protections, file, "[Out of memory attempting to open]");
-                return protections;
-            }
-
-            // TODO: Start moving toward reading from the stream directly. In theory,
-            // deserialization can be done at this point, and if all of the sections are populated
-            // properly, nearly all of the content checks can be dealt with without having
-            // to take up as much memory as it does right now reading into the fileContent
-            // byte array
 
             // Create PortableExecutable and NewExecutable objects for use in the checks
             stream.Seek(0, SeekOrigin.Begin);
-            PortableExecutable pex = new PortableExecutable(fileContent, 0);
-            NewExecutable nex = new NewExecutable(fileContent, 0);
-
-            // Create PortableExecutable and NewExecutable objects for use in the checks
-            // PortableExecutable pex = new PortableExecutable(stream);
-            // stream.Seek(0, SeekOrigin.Begin);
-            // NewExecutable nex = new NewExecutable(stream);
-            // stream.Seek(0, SeekOrigin.Begin);
+            PortableExecutable pex = new PortableExecutable(stream);
+            stream.Seek(0, SeekOrigin.Begin);
+            NewExecutable nex = new NewExecutable(stream);
+            stream.Seek(0, SeekOrigin.Begin);
 
             // Iterate through all generic content checks
             Parallel.ForEach(contentCheckClasses, contentCheckClass =>
             {
-                // Track if any protection is found
-                bool foundProtection = false;
-
                 // Check using custom content checks first
-                string protection = contentCheckClass.CheckContents(file, fileContent, scanner.IncludeDebug, pex, nex);
-                foundProtection |= !string.IsNullOrWhiteSpace(protection);
-                if (ShouldAddProtection(contentCheckClass, scanner, protection))
-                    Utilities.AppendToDictionary(protections, file, protection);
-
-                // If we have an IScannable implementation
-                if (contentCheckClass is IScannable scannable)
+                if (fileContent != null)
                 {
-                    if (file != null && !string.IsNullOrEmpty(protection))
+                    string protection = contentCheckClass.CheckContents(file, fileContent, scanner.IncludeDebug, pex, nex);
+                    if (ShouldAddProtection(contentCheckClass, scanner, protection))
+                        Utilities.AppendToDictionary(protections, file, protection);
+
+                    // If we have an IScannable implementation
+                    if (contentCheckClass is IScannable scannable)
                     {
-                        var subProtections = scannable.Scan(scanner, null, file);
-                        Utilities.PrependToKeys(subProtections, file);
-                        Utilities.AppendToDictionary(protections, subProtections);
+                        if (file != null && !string.IsNullOrEmpty(protection))
+                        {
+                            var subProtections = scannable.Scan(scanner, null, file);
+                            Utilities.PrependToKeys(subProtections, file);
+                            Utilities.AppendToDictionary(protections, subProtections);
+                        }
                     }
                 }
             });
 
             // If we have a NE executable, iterate through all NE content checks
-            if (nex?.DOSStubHeader != null)
+            if (nex?.Initialized == true)
             {
                 Parallel.ForEach(neContentCheckClasses, contentCheckClass =>
                 {
-                    // Track if any protection is found
-                    bool foundProtection = false;
-
                     // Check using custom content checks first
                     string protection = contentCheckClass.CheckNEContents(file, nex, scanner.IncludeDebug);
-                    foundProtection |= !string.IsNullOrWhiteSpace(protection);
                     if (ShouldAddProtection(contentCheckClass, scanner, protection))
                         Utilities.AppendToDictionary(protections, file, protection);
 
@@ -165,16 +153,12 @@ namespace BurnOutSharp.FileType
             }
 
             // If we have a PE executable, iterate through all PE content checks
-            if (pex?.SectionTable != null)
+            if (pex?.Initialized == true)
             {
                 Parallel.ForEach(peContentCheckClasses, contentCheckClass =>
                 {
-                    // Track if any protection is found
-                    bool foundProtection = false;
-
                     // Check using custom content checks first
                     string protection = contentCheckClass.CheckPEContents(file, pex, scanner.IncludeDebug);
-                    foundProtection |= !string.IsNullOrWhiteSpace(protection);
                     if (ShouldAddProtection(contentCheckClass, scanner, protection))
                         Utilities.AppendToDictionary(protections, file, protection);
 
