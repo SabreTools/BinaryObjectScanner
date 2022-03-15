@@ -8,7 +8,7 @@ namespace BurnOutSharp.PackerType
     public class UPX : IPEContentCheck
     {
         /// <inheritdoc/>
-        public string CheckPEContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex)
+        public string CheckPEContents(string file, bool includeDebug, PortableExecutable pex)
         {
             // Get the sections from the executable, if possible
             var sections = pex?.SectionTable;
@@ -28,7 +28,7 @@ namespace BurnOutSharp.PackerType
                         "UPX"),
                 };
 
-                return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
+                return MatchUtil.GetFirstMatch(file, pex.SourceArray, matchers, includeDebug);
             }
 
             // NOS Variant
@@ -44,7 +44,7 @@ namespace BurnOutSharp.PackerType
                         "UPX (NOS Variant)"),
                 };
 
-                return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
+                return MatchUtil.GetFirstMatch(file, pex.SourceArray, matchers, includeDebug);
             }
 
             return null;

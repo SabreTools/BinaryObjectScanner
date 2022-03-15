@@ -47,7 +47,7 @@ namespace BurnOutSharp.ProtectionType
         };
 
         /// <inheritdoc/>
-        public string CheckPEContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex)
+        public string CheckPEContents(string file, bool includeDebug, PortableExecutable pex)
         {
             // Get the sections from the executable, if possible
             var sections = pex?.SectionTable;
@@ -59,22 +59,22 @@ namespace BurnOutSharp.ProtectionType
                 return $"SafeCast";
 
             // Get the .text section, if it exists
-            string match = CheckSectionForProtection(file, fileContent, includeDebug, pex, ".text");
+            string match = CheckSectionForProtection(file, pex.SourceArray, includeDebug, pex, ".text");
             if (!string.IsNullOrWhiteSpace(match))
                 return match;
 
             // Get the .txt2 section, if it exists
-            match = CheckSectionForProtection(file, fileContent, includeDebug, pex, ".txt2");
+            match = CheckSectionForProtection(file, pex.SourceArray, includeDebug, pex, ".txt2");
             if (!string.IsNullOrWhiteSpace(match))
                 return match;
 
             // Get the CODE section, if it exists
-            match = CheckSectionForProtection(file, fileContent, includeDebug, pex, "CODE");
+            match = CheckSectionForProtection(file, pex.SourceArray, includeDebug, pex, "CODE");
             if (!string.IsNullOrWhiteSpace(match))
                 return match;
 
             // Get the .data section, if it exists
-            match = CheckSectionForProtection(file, fileContent, includeDebug, pex, ".data");
+            match = CheckSectionForProtection(file, pex.SourceArray, includeDebug, pex, ".data");
             if (!string.IsNullOrWhiteSpace(match))
                 return match;
 
@@ -82,7 +82,7 @@ namespace BurnOutSharp.ProtectionType
             bool stxt371Section = pex.ContainsSection("stxt371", exact: true);
             bool stxt774Section = pex.ContainsSection("stxt774", exact: true);
             if (stxt371Section || stxt774Section)
-                return $"SafeDisc {Get320to4xVersion(file, fileContent, null)}";
+                return $"SafeDisc {Get320to4xVersion(file, pex.SourceArray, null)}";
 
             return null;
         }

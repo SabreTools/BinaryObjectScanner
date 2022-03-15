@@ -7,7 +7,7 @@ namespace BurnOutSharp.ProtectionType
     public class CDSHiELDSE : IPEContentCheck
     {
         /// <inheritdoc/>
-        public string CheckPEContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex)
+        public string CheckPEContents(string file, bool includeDebug, PortableExecutable pex)
         {
             // Get the sections from the executable, if possible
             var sections = pex?.SectionTable;
@@ -15,7 +15,7 @@ namespace BurnOutSharp.ProtectionType
                 return null;
 
             // Get the code/CODE section, if it exists
-            var codeSectionRaw = pex.ReadRawSection(fileContent, "code", first: true) ?? pex.ReadRawSection(fileContent, "CODE", first: true);
+            var codeSectionRaw = pex.ReadRawSection(pex.SourceArray, "code", first: true) ?? pex.ReadRawSection(pex.SourceArray, "CODE", first: true);
             if (codeSectionRaw != null)
             {
                 var matchers = new List<ContentMatchSet>

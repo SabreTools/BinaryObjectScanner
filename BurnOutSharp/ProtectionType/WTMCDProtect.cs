@@ -9,7 +9,7 @@ namespace BurnOutSharp.ProtectionType
     public class WTMCDProtect : IPEContentCheck, IPathCheck
     {
         /// <inheritdoc/>
-        public string CheckPEContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex)
+        public string CheckPEContents(string file, bool includeDebug, PortableExecutable pex)
         {
             // Get the sections from the executable, if possible
             var sections = pex?.SectionTable;
@@ -25,7 +25,7 @@ namespace BurnOutSharp.ProtectionType
                 return "WTM Protection Viewer";
 
             // Get the CODE section, if it exists
-            var codeSectionRaw = pex.ReadRawSection(fileContent, "CODE", first: true);
+            var codeSectionRaw = pex.ReadRawSection(pex.SourceArray, "CODE", first: true);
             if (codeSectionRaw != null)
             {
                 var matchers = new List<ContentMatchSet>

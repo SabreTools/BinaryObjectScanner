@@ -528,6 +528,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
         /// <summary>
         /// Get the raw bytes from a section, if possible
         /// </summary>
+        /// <remarks>TODO: These can be combined and use SourceArray and SourceStream instead</remarks>
         public byte[] ReadRawSection(Stream stream, string sectionName, bool force = false, bool first = true, int offset = 0)
         {
             // Special cases for non-forced, non-offset data
@@ -569,6 +570,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
         /// <summary>
         /// Get the raw bytes from a section, if possible
         /// </summary>
+        /// <remarks>TODO: These can be combined and use SourceArray and SourceStream instead</remarks>
         public byte[] ReadRawSection(byte[] content, string sectionName, bool force = false, bool first = true, int offset = 0)
         {
             // Special cases for non-forced, non-offset data

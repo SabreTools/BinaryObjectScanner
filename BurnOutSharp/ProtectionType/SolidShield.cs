@@ -13,7 +13,7 @@ namespace BurnOutSharp.ProtectionType
     public class SolidShield : IPEContentCheck, IPathCheck
     {
         /// <inheritdoc/>
-        public string CheckPEContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex)
+        public string CheckPEContents(string file, bool includeDebug, PortableExecutable pex)
         {
             // Get the sections from the executable, if possible
             var sections = pex?.SectionTable;
@@ -37,7 +37,7 @@ namespace BurnOutSharp.ProtectionType
                 return $"SolidShield Activation Manager Module {GetFileVersion(pex)}";
 
             // Get the .init section, if it exists
-            var initSectionRaw = pex.ReadRawSection(fileContent, ".init", first: true);
+            var initSectionRaw = pex.ReadRawSection(pex.SourceArray, ".init", first: true);
             if (initSectionRaw != null)
             {
                 var matchers = new List<ContentMatchSet>
@@ -66,7 +66,7 @@ namespace BurnOutSharp.ProtectionType
             var sectionNames = pex.GetSectionNames();
             for (int i = (sectionNames.Length >= 2 ? sectionNames.Length - 2 : 0); i < sectionNames.Length; i++)
             {
-                var nthSectionRaw = pex.ReadRawSection(fileContent, sectionNames[i], first: false);
+                var nthSectionRaw = pex.ReadRawSection(pex.SourceArray, sectionNames[i], first: false);
                 if (nthSectionRaw != null)
                 {
                     var matchers = new List<ContentMatchSet>

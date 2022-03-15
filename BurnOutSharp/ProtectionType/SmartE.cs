@@ -10,7 +10,7 @@ namespace BurnOutSharp.ProtectionType
     public class SmartE : IPEContentCheck, IPathCheck
     {
         /// <inheritdoc/>
-        public string CheckPEContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex)
+        public string CheckPEContents(string file, bool includeDebug, PortableExecutable pex)
         {
             // Get the sections from the executable, if possible
             var sections = pex?.SectionTable;
@@ -33,7 +33,7 @@ namespace BurnOutSharp.ProtectionType
                 return match;
 
             // Get the .tls section, if it exists
-            var tlsSectionRaw = pex.ReadRawSection(fileContent, ".tls", first: false);
+            var tlsSectionRaw = pex.ReadRawSection(pex.SourceArray, ".tls", first: false);
             match = GetMatchForSection(file, tlsSectionRaw, includeDebug);
             if (!string.IsNullOrWhiteSpace(match))
                 return match;

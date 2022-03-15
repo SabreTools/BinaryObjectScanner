@@ -10,7 +10,7 @@ namespace BurnOutSharp.ProtectionType
     public class ProtectDISC : IPEContentCheck
     {
         /// <inheritdoc/>
-        public string CheckPEContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex)
+        public string CheckPEContents(string file, bool includeDebug, PortableExecutable pex)
         {
             // Get the sections from the executable, if possible
             var sections = pex?.SectionTable;
@@ -31,7 +31,7 @@ namespace BurnOutSharp.ProtectionType
                     GetVersion6till8, "ProtectDISC"),
                 };
 
-                string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
+                string match = MatchUtil.GetFirstMatch(file, pex.SourceArray, matchers, includeDebug);
                 if (!string.IsNullOrWhiteSpace(match))
                     return match;
             }
@@ -68,7 +68,7 @@ namespace BurnOutSharp.ProtectionType
                     GetOldVersion, "VOB ProtectCD/DVD"),
                 };
 
-                string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
+                string match = MatchUtil.GetFirstMatch(file, pex.SourceArray, matchers, includeDebug);
                 if (!string.IsNullOrWhiteSpace(match))
                     return match;
             }
@@ -92,7 +92,7 @@ namespace BurnOutSharp.ProtectionType
                     GetVersion3till6, "VOB ProtectCD/DVD"),
                 };
 
-                string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
+                string match = MatchUtil.GetFirstMatch(file, pex.SourceArray, matchers, includeDebug);
                 if (!string.IsNullOrWhiteSpace(match))
                     return match;
             }

@@ -15,7 +15,7 @@ namespace BurnOutSharp.ProtectionType
     public class SecuROM : IPEContentCheck, IPathCheck
     {
         /// <inheritdoc/>
-        public string CheckPEContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex)
+        public string CheckPEContents(string file, bool includeDebug, PortableExecutable pex)
         {
             // Get the sections from the executable, if possible
             var sections = pex?.SectionTable;
@@ -25,7 +25,7 @@ namespace BurnOutSharp.ProtectionType
             // Get the .securom section, if it exists
             bool securomSection = pex.ContainsSection(".securom", exact: true);
             if (securomSection)
-                return $"SecuROM {GetV7Version(fileContent)}";
+                return $"SecuROM {GetV7Version(pex.SourceArray)}";
 
             // Search after the last section
             var lastSection = sections.LastOrDefault();
@@ -41,7 +41,7 @@ namespace BurnOutSharp.ProtectionType
                     GetV4Version, "SecuROM"),
                 };
 
-                string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
+                string match = MatchUtil.GetFirstMatch(file, pex.SourceArray, matchers, includeDebug);
                 if (!string.IsNullOrWhiteSpace(match))
                     return match;
             }
@@ -63,7 +63,7 @@ namespace BurnOutSharp.ProtectionType
                         GetV5Version, "SecuROM"),
                     };
 
-                    string match = MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
+                    string match = MatchUtil.GetFirstMatch(file, pex.SourceArray, matchers, includeDebug);
                     if (!string.IsNullOrWhiteSpace(match))
                         return match;
                 }

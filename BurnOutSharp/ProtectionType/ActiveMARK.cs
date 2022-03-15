@@ -32,7 +32,7 @@ namespace BurnOutSharp.ProtectionType
         }
 
         /// <inheritdoc/>
-        public string CheckPEContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex)
+        public string CheckPEContents(string file, bool includeDebug, PortableExecutable pex)
         {
             // Get the sections from the executable, if possible
             var sections = pex?.SectionTable;
@@ -40,7 +40,7 @@ namespace BurnOutSharp.ProtectionType
                 return null;
 
             // Get the last .bss section, if it exists
-            var bssSectionRaw = pex.ReadRawSection(fileContent, ".bss", first: false);
+            var bssSectionRaw = pex.ReadRawSection(pex.SourceArray, ".bss", first: false);
             if (bssSectionRaw != null)
             {
                 var matchers = new List<ContentMatchSet>

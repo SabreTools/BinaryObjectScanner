@@ -173,7 +173,7 @@ namespace BurnOutSharp.FileType
                     bool foundProtection = false;
 
                     // Check using custom content checks first
-                    string protection = contentCheckClass.CheckPEContents(file, fileContent, scanner.IncludeDebug, pex);
+                    string protection = contentCheckClass.CheckPEContents(file, scanner.IncludeDebug, pex);
                     foundProtection |= !string.IsNullOrWhiteSpace(protection);
                     if (ShouldAddProtection(contentCheckClass, scanner, protection))
                         Utilities.AppendToDictionary(protections, file, protection);

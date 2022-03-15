@@ -12,7 +12,7 @@ namespace BurnOutSharp.ProtectionType
     public class JoWood : IPEContentCheck
     {
         /// <inheritdoc/>
-        public string CheckPEContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex)
+        public string CheckPEContents(string file, bool includeDebug, PortableExecutable pex)
         {
             // Get the sections from the executable, if possible
             var sections = pex?.SectionTable;
@@ -24,7 +24,7 @@ namespace BurnOutSharp.ProtectionType
             if (extSection)
             {
                 // Get the .dcrtext section, if it exists
-                var dcrtextSectionRaw = pex.ReadRawSection(fileContent, ".dcrtext");
+                var dcrtextSectionRaw = pex.ReadRawSection(pex.SourceArray, ".dcrtext");
                 if (dcrtextSectionRaw != null)
                 {
                     var matchers = new List<ContentMatchSet>

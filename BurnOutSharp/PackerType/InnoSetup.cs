@@ -37,7 +37,7 @@ namespace BurnOutSharp.PackerType
         }
 
         /// <inheritdoc/>
-        public string CheckPEContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex)
+        public string CheckPEContents(string file, bool includeDebug, PortableExecutable pex)
         {
             // Get the sections from the executable, if possible
             var sections = pex?.SectionTable;
@@ -71,7 +71,7 @@ namespace BurnOutSharp.PackerType
             // Check for "Inno" in the reserved words
             if (stub.Reserved2[4] == 0x6E49 && stub.Reserved2[5] == 0x6F6E)
             {
-                string version = GetOldVersion(file, fileContent);
+                string version = GetOldVersion(file, pex.SourceArray);
                 if (!string.IsNullOrWhiteSpace(version))
                     return $"Inno Setup {version}";
                 

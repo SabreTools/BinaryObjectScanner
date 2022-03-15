@@ -10,7 +10,7 @@ namespace BurnOutSharp.PackerType
     public class Armadillo : IPEContentCheck
     {
         /// <inheritdoc/>
-        public string CheckPEContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex)
+        public string CheckPEContents(string file, bool includeDebug, PortableExecutable pex)
         {
             // Get the sections from the executable, if possible
             var sections = pex?.SectionTable;
@@ -26,7 +26,7 @@ namespace BurnOutSharp.PackerType
             foreach (var section in sections.Where(s => s != null && Encoding.ASCII.GetString(s.Name).Trim('\0').EndsWith("1")))
             {
                 string sectionName = Encoding.ASCII.GetString(section.Name).Trim('\0');
-                var sectionRaw = pex.ReadRawSection(fileContent, sectionName);
+                var sectionRaw = pex.ReadRawSection(pex.SourceArray, sectionName);
                 var matchers = new List<ContentMatchSet>
                 {
                     // ARMDEBUG
