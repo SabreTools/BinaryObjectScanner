@@ -10,7 +10,7 @@ using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ProtectionType
 {
-    public class TAGES : IPEContentCheck, IPathCheck
+    public class TAGES : IContentCheck, IPEContentCheck, IPathCheck
     {
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
@@ -28,10 +28,6 @@ namespace BurnOutSharp.ProtectionType
                         0x72, 0x75, 0x6E, 0x74, 0x69, 0x6D, 0x65, 0x2E,
                         0x65, 0x78, 0x65
                     }, Utilities.GetFileVersion, "TAGES [DEBUG]"),
-
-                    // This check seems to currently be broken, as files that appear to have this string aren't being detected.
-                    // (char)0xE8 + u + (char)0x00 + (char)0x00 + (char)0x00 + (char)0xE8
-                    new ContentMatchSet(new byte?[] { 0xE8, 0x75, 0x00, 0x00, 0x00, 0xE8 }, GetVersion, "TAGES [DEBUG]"),
                 };
                 return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
             }
@@ -68,6 +64,20 @@ namespace BurnOutSharp.ProtectionType
                 return $"TAGES Driver Setup {GetVersion(pex)}";
             else if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("T@GES", StringComparison.OrdinalIgnoreCase))
                 return $"TAGES Activation Client {GetVersion(pex)}";
+
+            // Get the .data section, if it exists
+            if (pex.DataSectionRaw != null)
+            {
+                var matchers = new List<ContentMatchSet>
+                {
+                    // (char)0xE8 + u + (char)0x00 + (char)0x00 + (char)0x00 + (char)0xE8
+                    new ContentMatchSet(new byte?[] { 0xE8, 0x75, 0x00, 0x00, 0x00, 0xE8 }, GetVersion, "TAGES"),
+                };
+
+                string match = MatchUtil.GetFirstMatch(file, pex.DataSectionRaw, matchers, includeDebug);
+                if (!string.IsNullOrWhiteSpace(match))
+                    return match;
+            }
 
             return null;
         }
@@ -211,7 +221,7 @@ namespace BurnOutSharp.ProtectionType
         public static string GetVersion(string file, byte[] fileContent, List<int> positions)
         {
             // (char)0xFF + (char)0xFF + "h"
-            if (new ArraySegment<byte>(fileContent, --positions[0] + 8, 3).SequenceEqual(new byte[] { 0xFF, 0xFF, 0x68 })) // TODO: Verify this subtract
+            if (new ArraySegment<byte>(fileContent, positions[0] + 8, 3).SequenceEqual(new byte[] { 0xFF, 0xFF, 0x68 }))
                 return GetVersion(fileContent, positions[0]);
                 
             return null;
