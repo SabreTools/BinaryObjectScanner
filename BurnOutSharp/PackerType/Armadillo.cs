@@ -26,7 +26,7 @@ namespace BurnOutSharp.PackerType
             foreach (var section in sections.Where(s => s != null && Encoding.ASCII.GetString(s.Name).Trim('\0').EndsWith("1")))
             {
                 string sectionName = Encoding.ASCII.GetString(section.Name).Trim('\0');
-                var sectionRaw = pex.ReadRawSection(pex.SourceArray, sectionName);
+                var sectionRaw = pex.ReadRawSection(sectionName);
                 var matchers = new List<ContentMatchSet>
                 {
                     // ARMDEBUG

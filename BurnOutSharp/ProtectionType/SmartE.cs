@@ -33,7 +33,7 @@ namespace BurnOutSharp.ProtectionType
                 return match;
 
             // Get the .tls section, if it exists
-            var tlsSectionRaw = pex.ReadRawSection(pex.SourceArray, ".tls", first: false);
+            var tlsSectionRaw = pex.ReadRawSection(".tls", first: false);
             match = GetMatchForSection(file, tlsSectionRaw, includeDebug);
             if (!string.IsNullOrWhiteSpace(match))
                 return match;

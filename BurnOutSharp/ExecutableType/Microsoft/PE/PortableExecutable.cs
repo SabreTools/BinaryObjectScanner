@@ -189,8 +189,8 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
             if (stream == null || !stream.CanRead || !stream.CanSeek)
                 return;
 
-            this.Initialized = Deserialize(stream);
             this.SourceStream = stream;
+            this.Initialized = Deserialize(stream);
         }
 
         /// <summary>
@@ -203,8 +203,8 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
             if (fileContent == null || fileContent.Length == 0 || offset < 0)
                 return;
 
-            this.Initialized = Deserialize(fileContent, offset);
             this.SourceArray = fileContent;
+            this.Initialized = Deserialize(fileContent, offset);
         }
 
         /// <summary>
@@ -279,19 +279,19 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
                 #region Freeform Sections
 
                 // Data Section
-                this.DataSectionRaw = this.ReadRawSection(stream, ".data", force: true, first: false) ?? this.ReadRawSection(stream, "DATA", force: true, first: false);
+                this.DataSectionRaw = this.ReadRawSection(".data", force: true, first: false) ?? this.ReadRawSection("DATA", force: true, first: false);
 
                 // Export Table
-                this.ExportDataSectionRaw = this.ReadRawSection(stream, ".edata", force: true, first: false);
+                this.ExportDataSectionRaw = this.ReadRawSection(".edata", force: true, first: false);
 
                 // Import Table
-                this.ImportDataSectionRaw = this.ReadRawSection(stream, ".idata", force: true, first: false);
+                this.ImportDataSectionRaw = this.ReadRawSection(".idata", force: true, first: false);
 
                 // Resource Data Section
-                this.ResourceDataSectionRaw = this.ReadRawSection(stream, ".rdata", force: true, first: false);
+                this.ResourceDataSectionRaw = this.ReadRawSection(".rdata", force: true, first: false);
 
                 // Text Section
-                this.TextSectionRaw = this.ReadRawSection(stream, ".text", force: true, first: false);
+                this.TextSectionRaw = this.ReadRawSection(".text", force: true, first: false);
 
                 #endregion
             }
@@ -378,19 +378,19 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
                 #region Freeform Sections
 
                 // Data Section
-                this.DataSectionRaw = this.ReadRawSection(content, ".data", force: true, first: false) ?? this.ReadRawSection(content, "DATA", force: true, first: false);
+                this.DataSectionRaw = this.ReadRawSection(".data", force: true, first: false) ?? this.ReadRawSection("DATA", force: true, first: false);
 
                 // Export Table
-                this.ExportDataSectionRaw = this.ReadRawSection(content, ".edata", force: true, first: false);
+                this.ExportDataSectionRaw = this.ReadRawSection(".edata", force: true, first: false);
 
                 // Import Table
-                this.ImportDataSectionRaw = this.ReadRawSection(content, ".idata", force: true, first: false);
+                this.ImportDataSectionRaw = this.ReadRawSection(".idata", force: true, first: false);
 
                 // Resource Data Section
-                this.ResourceDataSectionRaw = this.ReadRawSection(content, ".rdata", force: true, first: false);
+                this.ResourceDataSectionRaw = this.ReadRawSection(".rdata", force: true, first: false);
 
                 // Text Section
-                this.TextSectionRaw = this.ReadRawSection(content, ".text", force: true, first: false);
+                this.TextSectionRaw = this.ReadRawSection(".text", force: true, first: false);
 
                 #endregion
             }
@@ -528,8 +528,11 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
         /// <summary>
         /// Get the raw bytes from a section, if possible
         /// </summary>
-        /// <remarks>TODO: These can be combined and use SourceArray and SourceStream instead</remarks>
-        public byte[] ReadRawSection(Stream stream, string sectionName, bool force = false, bool first = true, int offset = 0)
+        /// <param name="sectionName">The name of the section to attempt to read</param>
+        /// <param name="force">True to force reading the section from the underlying source, false to use cached values, if possible</param>
+        /// <param name="first">True to use the first section with a matching name, false to use the last section</param>
+        /// <param name="offset">Offset to start reading at, default is 0</param>
+        public byte[] ReadRawSection(string sectionName, bool force = false, bool first = true, int offset = 0)
         {
             // Special cases for non-forced, non-offset data
             if (!force && offset == 0)
@@ -549,58 +552,61 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
                 }
             }
 
-            var section = first ? GetFirstSection(sectionName, true) : GetLastSection(sectionName, true);
-            if (section == null)
-                return null;
+            // If we have a source stream, use that
+            if (this.SourceStream != null)
+                return ReadRawSectionFromSourceStream(sectionName, first, offset);
 
-            lock (stream)
-            {
-                int startingIndex = (int)Math.Max(section.PointerToRawData + offset, 0);
-                int readLength = (int)Math.Min(section.VirtualSize - offset, stream.Length);
+            // If we have a source array, use that
+            if (this.SourceArray != null)
+                return ReadRawSectionFromSourceArray(sectionName, first, offset);
 
-                long originalPosition = stream.Position;
-                stream.Seek(startingIndex, SeekOrigin.Begin);
-                byte[] sectionData = stream.ReadBytes(readLength);
-                stream.Seek(originalPosition, SeekOrigin.Begin);
-                return sectionData;
-            }
-            
+            // Otherwise, return null
+            return null;
         }
 
         /// <summary>
         /// Get the raw bytes from a section, if possible
         /// </summary>
-        /// <remarks>TODO: These can be combined and use SourceArray and SourceStream instead</remarks>
-        public byte[] ReadRawSection(byte[] content, string sectionName, bool force = false, bool first = true, int offset = 0)
+        /// <param name="sectionName">The name of the section to attempt to read</param>
+        /// <param name="first">True to use the first section with a matching name, false to use the last section</param>
+        /// <param name="sectionName"></param>
+        private byte[] ReadRawSectionFromSourceStream(string sectionName, bool first, int offset)
         {
-            // Special cases for non-forced, non-offset data
-            if (!force && offset == 0)
-            {
-                switch (sectionName)
-                {
-                    case ".data":
-                        return DataSectionRaw;
-                    case ".edata":
-                        return ExportDataSectionRaw;
-                    case ".idata":
-                        return ImportDataSectionRaw;
-                    case ".rdata":
-                        return ResourceDataSectionRaw;
-                    case ".text":
-                        return TextSectionRaw;
-                }
-            }
+            var section = first ? GetFirstSection(sectionName, true) : GetLastSection(sectionName, true);
+            if (section == null)
+                return null;
 
+            lock (this.SourceStream)
+            {
+                int startingIndex = (int)Math.Max(section.PointerToRawData + offset, 0);
+                int readLength = (int)Math.Min(section.VirtualSize - offset, this.SourceStream.Length);
+
+                long originalPosition = this.SourceStream.Position;
+                this.SourceStream.Seek(startingIndex, SeekOrigin.Begin);
+                byte[] sectionData = this.SourceStream.ReadBytes(readLength);
+                this.SourceStream.Seek(originalPosition, SeekOrigin.Begin);
+                return sectionData;
+            }
+        }
+
+        /// <summary>
+        /// Get the raw bytes from a section, if possible
+        /// </summary>
+        /// <param name="sectionName">The name of the section to attempt to read</param>
+        /// <param name="first">True to use the first section with a matching name, false to use the last section</param>
+        /// <param name="offset">Offset to start reading at, default is 0</param>
+        private byte[] ReadRawSectionFromSourceArray(string sectionName, bool first, int offset)
+        {
             var section = first ? GetFirstSection(sectionName, true) : GetLastSection(sectionName, true);
             if (section == null)
                 return null;
 
             int startingIndex = (int)Math.Max(section.PointerToRawData + offset, 0);
-            int readLength = (int)Math.Min(section.VirtualSize - offset, content.Length);
+            int readLength = (int)Math.Min(section.VirtualSize - offset, this.SourceArray.Length);
 
             try
             {
-                return content.ReadBytes(ref startingIndex, readLength);
+                return this.SourceArray.ReadBytes(ref startingIndex, readLength);
             }
             catch
             {

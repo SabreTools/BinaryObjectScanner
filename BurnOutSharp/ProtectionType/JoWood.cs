@@ -24,7 +24,7 @@ namespace BurnOutSharp.ProtectionType
             if (extSection)
             {
                 // Get the .dcrtext section, if it exists
-                var dcrtextSectionRaw = pex.ReadRawSection(pex.SourceArray, ".dcrtext");
+                var dcrtextSectionRaw = pex.ReadRawSection(".dcrtext");
                 if (dcrtextSectionRaw != null)
                 {
                     var matchers = new List<ContentMatchSet>

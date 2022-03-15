@@ -25,7 +25,7 @@ namespace BurnOutSharp.ProtectionType
                 return "WTM Protection Viewer";
 
             // Get the CODE section, if it exists
-            var codeSectionRaw = pex.ReadRawSection(pex.SourceArray, "CODE", first: true);
+            var codeSectionRaw = pex.ReadRawSection("CODE", first: true);
             if (codeSectionRaw != null)
             {
                 var matchers = new List<ContentMatchSet>

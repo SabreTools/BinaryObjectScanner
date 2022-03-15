@@ -272,7 +272,7 @@ namespace BurnOutSharp.ProtectionType
         private string CheckSectionForProtection(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, string sectionName)
         {
             // This subtract is needed because BoG_ starts before the section
-            var sectionRaw = pex.ReadRawSection(fileContent, sectionName, first: true, offset: -64);
+            var sectionRaw = pex.ReadRawSection(sectionName, first: true, offset: -64);
             if (sectionRaw != null)
             {
                 var matchers = new List<ContentMatchSet>
