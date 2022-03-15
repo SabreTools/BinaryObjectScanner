@@ -25,7 +25,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.NE
         /// <summary>
         /// Source stream that the executable was parsed from
         /// </summary>
-        public Stream SourceStream { get; } = null;
+        private readonly Stream _sourceStream = null;
 
         #region Headers
 
@@ -69,7 +69,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.NE
                 return;
 
             this.Initialized = Deserialize(stream);
-            this.SourceStream = stream;
+            this._sourceStream = stream;
         }
 
         /// <summary>
@@ -165,7 +165,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.NE
         public byte[] ReadArbitraryRange(int rangeStart = -1, int length = -1)
         {
             // If we have a source stream, use that
-            if (this.SourceStream != null)
+            if (this._sourceStream != null)
                 return ReadArbitraryRangeFromSourceStream(rangeStart, length);
 
             // If we have a source array, use that
@@ -184,15 +184,15 @@ namespace BurnOutSharp.ExecutableType.Microsoft.NE
         /// <returns></returns>
         private byte[] ReadArbitraryRangeFromSourceStream(int rangeStart, int length)
         {
-            lock (this.SourceStream)
+            lock (this._sourceStream)
             {
                 int startingIndex = (int)Math.Max(rangeStart, 0);
-                int readLength = (int)Math.Min(length == -1 ? length = Int32.MaxValue : length, this.SourceStream.Length);
+                int readLength = (int)Math.Min(length == -1 ? length = Int32.MaxValue : length, this._sourceStream.Length);
 
-                long originalPosition = this.SourceStream.Position;
-                this.SourceStream.Seek(startingIndex, SeekOrigin.Begin);
-                byte[] sectionData = this.SourceStream.ReadBytes(readLength);
-                this.SourceStream.Seek(originalPosition, SeekOrigin.Begin);
+                long originalPosition = this._sourceStream.Position;
+                this._sourceStream.Seek(startingIndex, SeekOrigin.Begin);
+                byte[] sectionData = this._sourceStream.ReadBytes(readLength);
+                this._sourceStream.Seek(originalPosition, SeekOrigin.Begin);
                 return sectionData;
             }
         }
