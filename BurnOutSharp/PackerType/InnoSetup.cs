@@ -63,22 +63,6 @@ namespace BurnOutSharp.PackerType
                     return match;
             }
 
-            // Get the DOS stub from the executable, if possible
-            var stub = pex?.DOSStubHeader;
-            if (stub == null)
-                return null;
-            
-            // Check for "Inno" in the reserved words
-            // TODO: Is this check needed for PE executables? The version check suggests otherwise
-            if (stub.Reserved2[4] == 0x6E49 && stub.Reserved2[5] == 0x6F6E)
-            {
-                string version = GetOldVersion(file, pex.SourceArray);
-                if (!string.IsNullOrWhiteSpace(version))
-                    return $"Inno Setup {version}";
-                
-                return "Inno Setup (Unknown Version)";
-            }
-
             return null;
         }
 
@@ -129,7 +113,6 @@ namespace BurnOutSharp.PackerType
 
         private static string GetOldVersion(string file, byte[] fileContent)
         {
-            // TODO: Only sample is an NE executable - verify if this is in PE as well or where in the NE this lives
             var matchers = new List<ContentMatchSet>
             {
                 // "rDlPtS02" + (char)0x87 + "eVx"
