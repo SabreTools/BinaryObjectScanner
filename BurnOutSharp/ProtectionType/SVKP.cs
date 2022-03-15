@@ -1,13 +1,12 @@
-﻿using BurnOutSharp.ExecutableType.Microsoft.NE;
-using BurnOutSharp.ExecutableType.Microsoft.PE;
+﻿using BurnOutSharp.ExecutableType.Microsoft.PE;
 
 namespace BurnOutSharp.ProtectionType
 {
     // TODO: Figure out how versions/version ranges work for this protection
-    public class SVKProtector : IContentCheck
+    public class SVKProtector : IPEContentCheck
     {
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
+        public string CheckPEContents(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the image file header from the executable, if possible
             if (pex?.ImageFileHeader == null)
