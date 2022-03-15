@@ -113,6 +113,7 @@ namespace BurnOutSharp.PackerType
 
         private static string GetOldVersion(string file, NewExecutable nex)
         {
+            // TODO: Don't read entire file
             // TODO: Only 64 bytes at the end of the file is needed
             var data = nex.ReadArbitraryRange();
             if (data != null)

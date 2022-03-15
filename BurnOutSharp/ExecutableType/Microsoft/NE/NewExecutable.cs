@@ -20,7 +20,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.NE
         /// <summary>
         /// Source array that the executable was parsed from
         /// </summary>
-        public byte[] SourceArray { get; } = null;
+        private readonly byte[] _sourceArray = null;
 
         /// <summary>
         /// Source stream that the executable was parsed from
@@ -83,7 +83,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.NE
                 return;
 
             this.Initialized = Deserialize(fileContent, offset);
-            this.SourceArray = fileContent;
+            this._sourceArray = fileContent;
         }
 
         /// <summary>
@@ -169,7 +169,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.NE
                 return ReadArbitraryRangeFromSourceStream(rangeStart, length);
 
             // If we have a source array, use that
-            if (this.SourceArray != null)
+            if (this._sourceArray != null)
                 return ReadArbitraryRangeFromSourceArray(rangeStart, length);
 
             // Otherwise, return null
@@ -206,11 +206,11 @@ namespace BurnOutSharp.ExecutableType.Microsoft.NE
         private byte[] ReadArbitraryRangeFromSourceArray(int rangeStart, int length)
         {
             int startingIndex = (int)Math.Max(rangeStart, 0);
-            int readLength = (int)Math.Min(length == -1 ? length = Int32.MaxValue : length, this.SourceArray.Length);
+            int readLength = (int)Math.Min(length == -1 ? length = Int32.MaxValue : length, this._sourceArray.Length);
 
             try
             {
-                return this.SourceArray.ReadBytes(ref startingIndex, readLength);
+                return this._sourceArray.ReadBytes(ref startingIndex, readLength);
             }
             catch
             {

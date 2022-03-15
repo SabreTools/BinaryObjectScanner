@@ -23,6 +23,11 @@ namespace BurnOutSharp.PackerType
             if (stub == null)
                 return null;
 
+            // TODO: Don't read entire file
+            var data = nex.ReadArbitraryRange();
+            if (data == null)
+                return null;
+
             // TODO: Keep this around until it can be confirmed with NE checks as well
             // TODO: This _may_ actually over-match. See msvbvm50.exe for an example
             var neMatchSets = new List<ContentMatchSet>
@@ -31,7 +36,7 @@ namespace BurnOutSharp.PackerType
                 new ContentMatchSet(new byte?[] { 0x57, 0x69, 0x73, 0x65, 0x4D, 0x61, 0x69, 0x6E }, "Wise Installation Wizard Module"),
             };
             
-            return MatchUtil.GetFirstMatch(file, nex.SourceArray, neMatchSets, includeDebug);
+            return MatchUtil.GetFirstMatch(file, data, neMatchSets, includeDebug);
         }
 
         /// <inheritdoc/>

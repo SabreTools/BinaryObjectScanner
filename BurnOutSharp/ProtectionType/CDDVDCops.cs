@@ -48,6 +48,11 @@ namespace BurnOutSharp.ProtectionType
             if (stub == null)
                 return null;
 
+            // TODO: Don't read entire file
+            var data = nex.ReadArbitraryRange();
+            if (data == null)
+                return null;
+
             // TODO: Do something with these strings in the NE header(?)
             // - CDCOPS
             // - CDcops assembly-language DLL
@@ -63,7 +68,7 @@ namespace BurnOutSharp.ProtectionType
                 }, GetVersion, "CD-Cops"),
             };
             
-            return MatchUtil.GetFirstMatch(file, nex.SourceArray, neMatchSets, includeDebug);
+            return MatchUtil.GetFirstMatch(file, data, neMatchSets, includeDebug);
         }
 
         /// <inheritdoc/>
