@@ -18,7 +18,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE.Sections
         /// </summary>
         public DebugDirectory DebugDirectory;
 
-        public static DebugSection Deserialize(Stream stream, SectionHeader[] sections)
+        public static DebugSection Deserialize(Stream stream)
         {
             long originalPosition = stream.Position;
             var ds = new DebugSection();
@@ -27,10 +27,11 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE.Sections
             
             // TODO: Read in raw debug data
 
+            stream.Seek(originalPosition, SeekOrigin.Begin);
             return ds;
         }
 
-        public static DebugSection Deserialize(byte[] content, ref int offset, SectionHeader[] sections)
+        public static DebugSection Deserialize(byte[] content, ref int offset)
         {
             int originalPosition = offset;
             var ds = new DebugSection();
@@ -39,6 +40,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE.Sections
 
             // TODO: Read in raw debug data
 
+            offset = originalPosition;
             return ds;
         }
     }
