@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Matching;
 
@@ -21,19 +22,19 @@ namespace BurnOutSharp.ProtectionType
             var fourthSection = sections.Length < 4 ? null : sections[3];
             if (fourthSection != null)
             {
-                int sectionAddr = (int)fourthSection.PointerToRawData;
-                int sectionEnd = sectionAddr + (int)fourthSection.VirtualSize;
-                var matchers = new List<ContentMatchSet>
+                var fourthSectionData = pex.ReadRawSection(Encoding.ASCII.GetString(fourthSection.Name).Trim('\0'), first: true);
+                if (fourthSectionData != null)
                 {
-                    // ACE-PCD
-                    new ContentMatchSet(
-                        new ContentMatch(new byte?[] { 0x41, 0x43, 0x45, 0x2D, 0x50, 0x43, 0x44 }, start: sectionAddr, end: sectionEnd),
-                    GetVersion6till8, "ProtectDISC"),
-                };
+                    var matchers = new List<ContentMatchSet>
+                    {
+                        // ACE-PCD
+                        new ContentMatchSet(new byte?[] { 0x41, 0x43, 0x45, 0x2D, 0x50, 0x43, 0x44 }, GetVersion6till8, "ProtectDISC"),
+                    };
 
-                string match = MatchUtil.GetFirstMatch(file, pex.SourceArray, matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
-                    return match;
+                    string match = MatchUtil.GetFirstMatch(file, fourthSectionData, matchers, includeDebug);
+                    if (!string.IsNullOrWhiteSpace(match))
+                        return match;
+                }
             }
 
             // Get the .data section, if it exists
@@ -54,47 +55,48 @@ namespace BurnOutSharp.ProtectionType
             var secondToLastSection = sections.Length > 1 ? sections[sections.Length - 2] : null;
             if (secondToLastSection != null)
             {
-                int sectionAddr = (int)secondToLastSection.PointerToRawData;
-                int sectionEnd = sectionAddr + (int)secondToLastSection.VirtualSize;
-                var matchers = new List<ContentMatchSet>
+                var secondToLastSectionData = pex.ReadRawSection(Encoding.ASCII.GetString(secondToLastSection.Name).Trim('\0'), first: true);
+                if (secondToLastSectionData != null)
                 {
-                    // VOB ProtectCD
-                    new ContentMatchSet(
-                        new ContentMatch(new byte?[]
-                        {
-                            0x56, 0x4F, 0x42, 0x20, 0x50, 0x72, 0x6F, 0x74,
-                            0x65, 0x63, 0x74, 0x43, 0x44
-                        }, start: sectionAddr, end: sectionEnd),
-                    GetOldVersion, "VOB ProtectCD/DVD"),
-                };
+                    var matchers = new List<ContentMatchSet>
+                    {
+                        // VOB ProtectCD
+                        new ContentMatchSet(
+                            new byte?[]
+                            {
+                                0x56, 0x4F, 0x42, 0x20, 0x50, 0x72, 0x6F, 0x74,
+                                0x65, 0x63, 0x74, 0x43, 0x44
+                            },
+                            GetOldVersion,
+                            "VOB ProtectCD/DVD"),
+                    };
 
-                string match = MatchUtil.GetFirstMatch(file, pex.SourceArray, matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
-                    return match;
+                    string match = MatchUtil.GetFirstMatch(file, secondToLastSectionData, matchers, includeDebug);
+                    if (!string.IsNullOrWhiteSpace(match))
+                        return match;
+                }
             }
 
             // Get the last section (example names: ACE5, akxpxgcv, and piofinqb)
             var lastSection = sections.LastOrDefault();
             if (lastSection != null)
             {
-                int sectionAddr = (int)lastSection.PointerToRawData;
-                int sectionEnd = sectionAddr + (int)lastSection.VirtualSize;
-                var matchers = new List<ContentMatchSet>
+                var lastSectionData = pex.ReadRawSection(Encoding.ASCII.GetString(lastSection.Name).Trim('\0'), first: true);
+                if (lastSectionData != null)
                 {
-                    // HúMETINF
-                    new ContentMatchSet(
-                        new ContentMatch(new byte?[] { 0x48, 0xFA, 0x4D, 0x45, 0x54, 0x49, 0x4E, 0x46 }, start: sectionAddr, end: sectionEnd),
-                    GetVersion76till10, "ProtectDISC"),
+                    var matchers = new List<ContentMatchSet>
+                    {
+                        // HúMETINF
+                        new ContentMatchSet(new byte?[] { 0x48, 0xFA, 0x4D, 0x45, 0x54, 0x49, 0x4E, 0x46 }, GetVersion76till10, "ProtectDISC"),
 
-                    // DCP-BOV + (char)0x00 + (char)0x00
-                    new ContentMatchSet(
-                        new ContentMatch(new byte?[] { 0x44, 0x43, 0x50, 0x2D, 0x42, 0x4F, 0x56, 0x00, 0x00 }, start: sectionAddr, end: sectionEnd),
-                    GetVersion3till6, "VOB ProtectCD/DVD"),
-                };
+                        // DCP-BOV + (char)0x00 + (char)0x00
+                        new ContentMatchSet(new byte?[] { 0x44, 0x43, 0x50, 0x2D, 0x42, 0x4F, 0x56, 0x00, 0x00 }, GetVersion3till6, "VOB ProtectCD/DVD"),
+                    };
 
-                string match = MatchUtil.GetFirstMatch(file, pex.SourceArray, matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
-                    return match;
+                    string match = MatchUtil.GetFirstMatch(file, lastSectionData, matchers, includeDebug);
+                    if (!string.IsNullOrWhiteSpace(match))
+                        return match;
+                }
             }
 
             // Get the .vob.pcd section, if it exists

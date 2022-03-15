@@ -59,22 +59,22 @@ namespace BurnOutSharp.ProtectionType
                 return $"SafeCast";
 
             // Get the .text section, if it exists
-            string match = CheckSectionForProtection(file, pex.SourceArray, includeDebug, pex, ".text");
+            string match = CheckSectionForProtection(file, includeDebug, pex, ".text");
             if (!string.IsNullOrWhiteSpace(match))
                 return match;
 
             // Get the .txt2 section, if it exists
-            match = CheckSectionForProtection(file, pex.SourceArray, includeDebug, pex, ".txt2");
+            match = CheckSectionForProtection(file, includeDebug, pex, ".txt2");
             if (!string.IsNullOrWhiteSpace(match))
                 return match;
 
             // Get the CODE section, if it exists
-            match = CheckSectionForProtection(file, pex.SourceArray, includeDebug, pex, "CODE");
+            match = CheckSectionForProtection(file, includeDebug, pex, "CODE");
             if (!string.IsNullOrWhiteSpace(match))
                 return match;
 
             // Get the .data section, if it exists
-            match = CheckSectionForProtection(file, pex.SourceArray, includeDebug, pex, ".data");
+            match = CheckSectionForProtection(file, includeDebug, pex, ".data");
             if (!string.IsNullOrWhiteSpace(match))
                 return match;
 
@@ -82,7 +82,7 @@ namespace BurnOutSharp.ProtectionType
             bool stxt371Section = pex.ContainsSection("stxt371", exact: true);
             bool stxt774Section = pex.ContainsSection("stxt774", exact: true);
             if (stxt371Section || stxt774Section)
-                return $"SafeDisc {Get320to4xVersion(file, pex.SourceArray, null)}";
+                return $"SafeDisc {Get320to4xVersion(null, null, null)}";
 
             return null;
         }
@@ -269,7 +269,7 @@ namespace BurnOutSharp.ProtectionType
                 return "1-4";
         }
     
-        private string CheckSectionForProtection(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, string sectionName)
+        private string CheckSectionForProtection(string file, bool includeDebug, PortableExecutable pex, string sectionName)
         {
             // This subtract is needed because BoG_ starts before the section
             var sectionRaw = pex.ReadRawSection(sectionName, first: true, offset: -64);

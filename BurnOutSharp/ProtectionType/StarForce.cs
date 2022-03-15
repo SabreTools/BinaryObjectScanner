@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Text;
 using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Matching;
 using BurnOutSharp.Tools;
@@ -37,25 +38,27 @@ namespace BurnOutSharp.ProtectionType
             var rsrcSection = pex.GetLastSection(".rsrc", exact: true);
             if (rsrcSection != null)
             {
-                int sectionAddr = (int)rsrcSection.PointerToRawData;
-                int sectionEnd = sectionAddr + (int)rsrcSection.VirtualSize;
-                var matchers = new List<ContentMatchSet>
+                var rsrcSectionData = pex.ReadRawSection(Encoding.ASCII.GetString(rsrcSection.Name).Trim('\0'), first: true);
+                if (rsrcSectionData != null)
                 {
-                    // P + (char)0x00 + r + (char)0x00 + o + (char)0x00 + t + (char)0x00 + e + (char)0x00 + c + (char)0x00 + t + (char)0x00 + e + (char)0x00 + d + (char)0x00 +   + (char)0x00 + M + (char)0x00 + o + (char)0x00 + d + (char)0x00 + u + (char)0x00 + l + (char)0x00 + e + (char)0x00
-                    new ContentMatchSet(
-                        new ContentMatch(new byte?[]
-                        {
-                            0x50, 0x00, 0x72, 0x00, 0x6f, 0x00, 0x74, 0x00,
-                            0x65, 0x00, 0x63, 0x00, 0x74, 0x00, 0x65, 0x00,
-                            0x64, 0x00, 0x20, 0x00, 0x4d, 0x00, 0x6f, 0x00,
-                            0x64, 0x00, 0x75, 0x00, 0x6c, 0x00, 0x65, 0x00
-                        }, start: sectionAddr, end: sectionEnd),
-                    "StarForce 5 [Protected Module]"),
-                };
+                    var matchers = new List<ContentMatchSet>
+                    {
+                        // P + (char)0x00 + r + (char)0x00 + o + (char)0x00 + t + (char)0x00 + e + (char)0x00 + c + (char)0x00 + t + (char)0x00 + e + (char)0x00 + d + (char)0x00 +   + (char)0x00 + M + (char)0x00 + o + (char)0x00 + d + (char)0x00 + u + (char)0x00 + l + (char)0x00 + e + (char)0x00
+                        new ContentMatchSet(
+                            new byte?[]
+                            {
+                                0x50, 0x00, 0x72, 0x00, 0x6f, 0x00, 0x74, 0x00,
+                                0x65, 0x00, 0x63, 0x00, 0x74, 0x00, 0x65, 0x00,
+                                0x64, 0x00, 0x20, 0x00, 0x4d, 0x00, 0x6f, 0x00,
+                                0x64, 0x00, 0x75, 0x00, 0x6c, 0x00, 0x65, 0x00
+                            },
+                            "StarForce 5 [Protected Module]"),
+                    };
 
-                string match = MatchUtil.GetFirstMatch(file, pex.SourceArray, matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
-                    return match;
+                    string match = MatchUtil.GetFirstMatch(file, rsrcSectionData, matchers, includeDebug);
+                    if (!string.IsNullOrWhiteSpace(match))
+                        return match;
+                }
             }
 
             // Get the .brick section, if it exists

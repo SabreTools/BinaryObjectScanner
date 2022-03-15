@@ -24,6 +24,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
         /// <summary>
         /// Source array that the executable was parsed from
         /// </summary>
+        /// <remarks>TODO: Find every place this is used and try to remove usage</remarks>
         public byte[] SourceArray { get; } = null;
 
         /// <summary>

@@ -21,6 +21,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE.Headers
         /// Executable images do not use a string table and do not support section names longer than 8 characters.
         /// Long names in object files are truncated if they are emitted to an executable file.
         /// </summary>
+        /// <remarks>TODO: Add AsString method for this</remarks>
         public byte[] Name;
         
         /// <summary>

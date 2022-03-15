@@ -53,19 +53,19 @@ namespace BurnOutSharp.ProtectionType
                 string nthSectionName = Encoding.ASCII.GetString(nthSection.Name).Trim('\0');
                 if (nthSection != null && nthSectionName != ".idata" && nthSectionName != ".rsrc")
                 {
-                    int sectionAddr = (int)nthSection.PointerToRawData;
-                    int sectionEnd = sectionAddr + (int)nthSection.VirtualSize;
-                    var matchers = new List<ContentMatchSet>
+                    var nthSectionData = pex.ReadRawSection(Encoding.ASCII.GetString(nthSection.Name).Trim('\0'), first: true);
+                    if (nthSectionData != null)
                     {
-                        // (char)0xCA + (char)0xDD + (char)0xDD + (char)0xAC + (char)0x03
-                        new ContentMatchSet(
-                            new ContentMatch(new byte?[] { 0xCA, 0xDD, 0xDD, 0xAC, 0x03 }, start: sectionAddr, end: sectionEnd),
-                        GetV5Version, "SecuROM"),
-                    };
+                        var matchers = new List<ContentMatchSet>
+                        {
+                            // (char)0xCA + (char)0xDD + (char)0xDD + (char)0xAC + (char)0x03
+                            new ContentMatchSet(new byte?[] { 0xCA, 0xDD, 0xDD, 0xAC, 0x03 }, GetV5Version, "SecuROM"),
+                        };
 
-                    string match = MatchUtil.GetFirstMatch(file, pex.SourceArray, matchers, includeDebug);
-                    if (!string.IsNullOrWhiteSpace(match))
-                        return match;
+                        string match = MatchUtil.GetFirstMatch(file, nthSectionData, matchers, includeDebug);
+                        if (!string.IsNullOrWhiteSpace(match))
+                            return match;
+                    }
                 }
             }
 
