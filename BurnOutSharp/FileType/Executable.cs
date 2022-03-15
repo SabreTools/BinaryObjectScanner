@@ -107,7 +107,6 @@ namespace BurnOutSharp.FileType
             stream.Seek(0, SeekOrigin.Begin);
 
             // Iterate through all generic content checks
-            // Check using custom content checks first
             if (fileContent != null)
             {
                 Parallel.ForEach(contentCheckClasses, contentCheckClass =>
