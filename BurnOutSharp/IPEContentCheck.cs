@@ -12,6 +12,6 @@ namespace BurnOutSharp
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
         /// <param name="pex">PortableExecutable representing the read-in file</param>
         /// <returns>String containing any protections found in the file</returns>
-        string CheckPEContents(string file, bool includeDebug, PortableExecutable pex);
+        string CheckPEContents(string file, PortableExecutable pex, bool includeDebug);
     }
 }

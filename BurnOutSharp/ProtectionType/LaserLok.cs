@@ -12,7 +12,7 @@ namespace BurnOutSharp.ProtectionType
     public class LaserLok : IPEContentCheck, IPathCheck
     {
         /// <inheritdoc/>
-        public string CheckPEContents(string file, bool includeDebug, PortableExecutable pex)
+        public string CheckPEContents(string file, PortableExecutable pex, bool includeDebug)
         {
             // TODO: Additional checks that may or may not be useful with the below
             //

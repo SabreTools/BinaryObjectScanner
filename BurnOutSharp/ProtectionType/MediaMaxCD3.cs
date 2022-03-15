@@ -9,7 +9,7 @@ namespace BurnOutSharp.ProtectionType
     public class MediaMaxCD3 : IPEContentCheck, IPathCheck
     {
         /// <inheritdoc/>
-        public string CheckPEContents(string file, bool includeDebug, PortableExecutable pex)
+        public string CheckPEContents(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex?.SectionTable;

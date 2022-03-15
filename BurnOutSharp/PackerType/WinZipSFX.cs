@@ -18,7 +18,7 @@ namespace BurnOutSharp.PackerType
         public bool ShouldScan(byte[] magic) => true;
 
         /// <inheritdoc/>
-        public string CheckNEContents(string file, bool includeDebug, NewExecutable nex)
+        public string CheckNEContents(string file, NewExecutable nex, bool includeDebug)
         {
             // Get the DOS stub from the executable, if possible
             var stub = nex?.DOSStubHeader;
@@ -37,7 +37,7 @@ namespace BurnOutSharp.PackerType
         }
 
         /// <inheritdoc/>
-        public string CheckPEContents(string file, bool includeDebug, PortableExecutable pex)
+        public string CheckPEContents(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex?.SectionTable;
