@@ -29,7 +29,7 @@ namespace BurnOutSharp.PackerType
             if (!string.IsNullOrWhiteSpace(version))
                 return $"WinZip SFX {version}";
 
-            version = GetNEUnknownHeaderVersion(nex, file, nex.SourceArray, includeDebug);
+            version = GetNEUnknownHeaderVersion(nex, file, includeDebug);
             if (!string.IsNullOrWhiteSpace(version))
                 return $"WinZip SFX {version}";
 
@@ -769,23 +769,31 @@ namespace BurnOutSharp.PackerType
         /// <summary>
         /// Get the unknown version from the NE header value combinations
         /// </summary>
-        private string GetNEUnknownHeaderVersion(NewExecutable nex, string file, byte[] fileContent, bool includeDebug)
+        private string GetNEUnknownHeaderVersion(NewExecutable nex, string file, bool includeDebug)
         {
             // TODO: Like with PE, convert this into a preread in the header code
             int resourceStart = nex.DOSStubHeader.NewExeHeaderAddr + nex.NewExecutableHeader.ResourceTableOffset;
             int resourceEnd = nex.DOSStubHeader.NewExeHeaderAddr + nex.NewExecutableHeader.ModuleReferenceTableOffset;
-            var matchers = new List<ContentMatchSet>
-            {
-                // WZ-SE-01
-                new ContentMatchSet(
-                    new ContentMatch(new byte?[]
-                    {
-                        0x57, 0x5A, 0x2D, 0x53, 0x45, 0x2D, 0x30, 0x31
-                    }, start: resourceStart, end: resourceEnd),
-                "Unknown Version (16-bit)"),
-            };
+            int resourceLength = resourceEnd - resourceStart;
 
-            return MatchUtil.GetFirstMatch(file, fileContent, matchers, includeDebug);
+            var resourceData = nex.ReadArbitraryRange(resourceStart, resourceLength);
+            if (resourceData != null)
+            {
+                var matchers = new List<ContentMatchSet>
+                {
+                    // WZ-SE-01
+                    new ContentMatchSet(
+                        new ContentMatch(new byte?[]
+                        {
+                            0x57, 0x5A, 0x2D, 0x53, 0x45, 0x2D, 0x30, 0x31
+                        }, start: resourceStart, end: resourceEnd),
+                        "Unknown Version (16-bit)"),
+                };
+
+                return MatchUtil.GetFirstMatch(file, resourceData, matchers, includeDebug);
+            }
+
+            return null;
         }
 
         /// <summary>
