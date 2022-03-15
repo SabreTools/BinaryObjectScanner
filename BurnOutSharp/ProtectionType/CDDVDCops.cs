@@ -41,7 +41,7 @@ namespace BurnOutSharp.ProtectionType
         }
 
         /// <inheritdoc/>
-        public string CheckNEContents(string file, byte[] fileContent, bool includeDebug, NewExecutable nex)
+        public string CheckNEContents(string file, bool includeDebug, NewExecutable nex)
         {
             // Get the DOS stub from the executable, if possible
             var stub = nex?.DOSStubHeader;
@@ -63,7 +63,7 @@ namespace BurnOutSharp.ProtectionType
                 }, GetVersion, "CD-Cops"),
             };
             
-            return MatchUtil.GetFirstMatch(file, fileContent, neMatchSets, includeDebug);
+            return MatchUtil.GetFirstMatch(file, nex.SourceArray, neMatchSets, includeDebug);
         }
 
         /// <inheritdoc/>

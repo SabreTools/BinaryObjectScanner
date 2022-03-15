@@ -16,7 +16,7 @@ namespace BurnOutSharp.PackerType
         public bool ShouldScan(byte[] magic) => true;
 
         /// <inheritdoc/>
-        public string CheckNEContents(string file, byte[] fileContent, bool includeDebug, NewExecutable nex)
+        public string CheckNEContents(string file, bool includeDebug, NewExecutable nex)
         {
             // Get the DOS stub from the executable, if possible
             var stub = nex?.DOSStubHeader;
@@ -26,7 +26,7 @@ namespace BurnOutSharp.PackerType
             // Check for "Inno" in the reserved words
             if (stub.Reserved2[4] == 0x6E49 && stub.Reserved2[5] == 0x6F6E)
             {
-                string version = GetOldVersion(file, fileContent);
+                string version = GetOldVersion(file, nex.SourceArray);
                 if (!string.IsNullOrWhiteSpace(version))
                     return $"Inno Setup {version}";
                 

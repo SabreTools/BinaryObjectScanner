@@ -18,7 +18,7 @@ namespace BurnOutSharp.PackerType
         public bool ShouldScan(byte[] magic) => true;
 
         /// <inheritdoc/>
-        public string CheckNEContents(string file, byte[] fileContent, bool includeDebug, NewExecutable nex)
+        public string CheckNEContents(string file, bool includeDebug, NewExecutable nex)
         {
             // Get the DOS stub from the executable, if possible
             var stub = nex?.DOSStubHeader;
@@ -29,7 +29,7 @@ namespace BurnOutSharp.PackerType
             if (!string.IsNullOrWhiteSpace(version))
                 return $"WinZip SFX {version}";
 
-            version = GetNEUnknownHeaderVersion(nex, file, fileContent, includeDebug);
+            version = GetNEUnknownHeaderVersion(nex, file, nex.SourceArray, includeDebug);
             if (!string.IsNullOrWhiteSpace(version))
                 return $"WinZip SFX {version}";
 
