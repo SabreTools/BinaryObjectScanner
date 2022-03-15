@@ -1,7 +1,6 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using BurnOutSharp.ExecutableType.Microsoft.NE;
 using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Matching;
 
@@ -9,13 +8,13 @@ namespace BurnOutSharp.PackerType
 {
     // The official website for CExe also includes the source code (which does have to be retrieved by the Wayback Machine)
     // http://www.scottlu.com/Content/CExe.html
-    public class CExe : IContentCheck, IScannable
+    public class CExe : IPEContentCheck, IScannable
     {
         /// <inheritdoc/>
         public bool ShouldScan(byte[] magic) => true;
         
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
+        public string CheckPEContents(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var stub = pex?.DOSStubHeader;
