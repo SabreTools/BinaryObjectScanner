@@ -23,13 +23,12 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
         /// <summary>
         /// Source array that the executable was parsed from
         /// </summary>
-        /// <remarks>TODO: Find every place this is used and try to remove usage</remarks>
-        public byte[] SourceArray { get; } = null;
+        private readonly byte[] _sourceArray = null;
 
         /// <summary>
         /// Source stream that the executable was parsed from
         /// </summary>
-        public Stream SourceStream { get; } = null;
+        private readonly Stream _sourceStream = null;
 
         #region Headers
 
@@ -195,7 +194,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
             if (stream == null || !stream.CanRead || !stream.CanSeek)
                 return;
 
-            this.SourceStream = stream;
+            this._sourceStream = stream;
             this.Initialized = Deserialize(stream);
         }
 
@@ -209,7 +208,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
             if (fileContent == null || fileContent.Length == 0 || offset < 0)
                 return;
 
-            this.SourceArray = fileContent;
+            this._sourceArray = fileContent;
             this.Initialized = Deserialize(fileContent, offset);
         }
 
@@ -551,17 +550,17 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
         /// Read an arbitrary range from the source
         /// </summary>
         /// <param name="rangeStart">The start of where to read data from, -1 means start of source</param>
-        /// <param name="rangeEnd">The end of where to read data from (exclusive), -1 means end of source</param>
+        /// <param name="length">How many bytes to read, -1 means read until end</param>
         /// <returns></returns>
-        public byte[] ReadArbitraryRange(int rangeStart = -1, int rangeEnd = -1)
+        public byte[] ReadArbitraryRange(int rangeStart = -1, int length = -1)
         {
             // If we have a source stream, use that
-            if (this.SourceStream != null)
-                return ReadArbitraryRangeFromSourceStream(rangeStart, rangeEnd);
+            if (this._sourceStream != null)
+                return ReadArbitraryRangeFromSourceStream(rangeStart, length);
 
             // If we have a source array, use that
-            if (this.SourceArray != null)
-                return ReadArbitraryRangeFromSourceArray(rangeStart, rangeEnd);
+            if (this._sourceArray != null)
+                return ReadArbitraryRangeFromSourceArray(rangeStart, length);
 
             // Otherwise, return null
             return null;
@@ -571,19 +570,19 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
         /// Read an arbitrary range from the stream source, if possible
         /// </summary>
         /// <param name="rangeStart">The start of where to read data from, -1 means start of source</param>
-        /// <param name="rangeEnd">The end of where to read data from (exclusive), -1 means end of source</param>
+        /// <param name="length">How many bytes to read, -1 means read until end</param>
         /// <returns></returns>
-        private byte[] ReadArbitraryRangeFromSourceStream(int rangeStart, int rangeEnd)
+        private byte[] ReadArbitraryRangeFromSourceStream(int rangeStart, int length)
         {
-            lock (this.SourceStream)
+            lock (this._sourceStream)
             {
                 int startingIndex = (int)Math.Max(rangeStart, 0);
-                int readLength = (int)Math.Min(rangeEnd, this.SourceStream.Length);
+                int readLength = (int)Math.Min(length == -1 ? length = Int32.MaxValue : length, this._sourceStream.Length);
 
-                long originalPosition = this.SourceStream.Position;
-                this.SourceStream.Seek(startingIndex, SeekOrigin.Begin);
-                byte[] sectionData = this.SourceStream.ReadBytes(readLength);
-                this.SourceStream.Seek(originalPosition, SeekOrigin.Begin);
+                long originalPosition = this._sourceStream.Position;
+                this._sourceStream.Seek(startingIndex, SeekOrigin.Begin);
+                byte[] sectionData = this._sourceStream.ReadBytes(readLength);
+                this._sourceStream.Seek(originalPosition, SeekOrigin.Begin);
                 return sectionData;
             }
         }
@@ -592,16 +591,16 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
         /// Read an arbitrary range from the array source, if possible
         /// </summary>
         /// <param name="rangeStart">The start of where to read data from, -1 means start of source</param>
-        /// <param name="rangeEnd">The end of where to read data from (exclusive), -1 means end of source</param>
+        /// <param name="length">How many bytes to read, -1 means read until end</param>
         /// <returns></returns>
-        private byte[] ReadArbitraryRangeFromSourceArray(int rangeStart, int rangeEnd)
+        private byte[] ReadArbitraryRangeFromSourceArray(int rangeStart, int length)
         {
             int startingIndex = (int)Math.Max(rangeStart, 0);
-            int readLength = (int)Math.Min(rangeEnd, this.SourceArray.Length);
+            int readLength = (int)Math.Min(length == -1 ? length = Int32.MaxValue : length, this._sourceArray.Length);
 
             try
             {
-                return this.SourceArray.ReadBytes(ref startingIndex, readLength);
+                return this._sourceArray.ReadBytes(ref startingIndex, readLength);
             }
             catch
             {

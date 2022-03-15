@@ -34,17 +34,20 @@ namespace BurnOutSharp.ProtectionType
             {
                 int sectionAddr = (int)lastSection.PointerToRawData;
                 int sectionEnd = sectionAddr + (int)lastSection.VirtualSize;
-                var matchers = new List<ContentMatchSet>
-                {
-                    // AddD + (char)0x03 + (char)0x00 + (char)0x00 + (char)0x00)
-                    new ContentMatchSet(
-                        new ContentMatch(new byte?[] { 0x41, 0x64, 0x64, 0x44, 0x03, 0x00, 0x00, 0x00 }, start: sectionEnd),
-                    GetV4Version, "SecuROM"),
-                };
 
-                string match = MatchUtil.GetFirstMatch(file, pex.SourceArray, matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
-                    return match;
+                var postLastSectionData = pex.ReadArbitraryRange(rangeStart: sectionEnd);
+                if (postLastSectionData != null)
+                {
+                    var matchers = new List<ContentMatchSet>
+                    {
+                        // AddD + (char)0x03 + (char)0x00 + (char)0x00 + (char)0x00)
+                        new ContentMatchSet(new byte?[] { 0x41, 0x64, 0x64, 0x44, 0x03, 0x00, 0x00, 0x00 }, GetV4Version, "SecuROM"),
+                    };
+
+                    string match = MatchUtil.GetFirstMatch(file, postLastSectionData, matchers, includeDebug);
+                    if (!string.IsNullOrWhiteSpace(match))
+                        return match;
+                }
             }
 
             // Get the sections 5+, if they exist (example names: .fmqyrx, .vcltz, .iywiak)
