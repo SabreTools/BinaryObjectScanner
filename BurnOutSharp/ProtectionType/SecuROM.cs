@@ -50,10 +50,10 @@ namespace BurnOutSharp.ProtectionType
             for (int i = 4; i < sections.Length; i++)
             {
                 var nthSection = sections[i];
-                string nthSectionName = Encoding.ASCII.GetString(nthSection.Name).Trim('\0');
+                string nthSectionName = nthSection.NameString;
                 if (nthSection != null && nthSectionName != ".idata" && nthSectionName != ".rsrc")
                 {
-                    var nthSectionData = pex.ReadRawSection(Encoding.ASCII.GetString(nthSection.Name).Trim('\0'), first: true);
+                    var nthSectionData = pex.ReadRawSection(nthSectionName, first: true);
                     if (nthSectionData != null)
                     {
                         var matchers = new List<ContentMatchSet>

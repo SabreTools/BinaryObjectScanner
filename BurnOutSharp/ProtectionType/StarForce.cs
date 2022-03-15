@@ -38,7 +38,7 @@ namespace BurnOutSharp.ProtectionType
             var rsrcSection = pex.GetLastSection(".rsrc", exact: true);
             if (rsrcSection != null)
             {
-                var rsrcSectionData = pex.ReadRawSection(Encoding.ASCII.GetString(rsrcSection.Name).Trim('\0'), first: true);
+                var rsrcSectionData = pex.ReadRawSection(".rsrc", first: true);
                 if (rsrcSectionData != null)
                 {
                     var matchers = new List<ContentMatchSet>

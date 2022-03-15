@@ -470,13 +470,13 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
             if (SectionTable == null || !SectionTable.Any())
                 return null;
             
-            // If we're checking exactly, return only exact matches (with nulls trimmed)
+            // If we're checking exactly, return only exact matches
             if (exact)
-                return SectionTable.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).Trim('\0').Equals(sectionName));
+                return SectionTable.FirstOrDefault(s => s.NameString.Equals(sectionName));
             
             // Otherwise, check if section name starts with the value
             else
-                return SectionTable.FirstOrDefault(s => Encoding.ASCII.GetString(s.Name).Trim('\0').StartsWith(sectionName));
+                return SectionTable.FirstOrDefault(s => s.NameString.StartsWith(sectionName));
         }
 
         /// <summary>
@@ -493,11 +493,11 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
             
             // If we're checking exactly, return only exact matches (with nulls trimmed)
             if (exact)
-                return SectionTable.LastOrDefault(s => Encoding.ASCII.GetString(s.Name).Trim('\0').Equals(sectionName));
+                return SectionTable.LastOrDefault(s => s.NameString.Equals(sectionName));
             
             // Otherwise, check if section name starts with the value
             else
-                return SectionTable.LastOrDefault(s => Encoding.ASCII.GetString(s.Name).Trim('\0').StartsWith(sectionName));
+                return SectionTable.LastOrDefault(s => s.NameString.StartsWith(sectionName));
         }
 
         /// <summary>
@@ -509,7 +509,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
             if (SectionTable == null || SectionTable.Length == 0)
                 return null;
             
-            return SectionTable.Select(s => Encoding.ASCII.GetString(s.Name)).ToArray();
+            return SectionTable.Select(s => s.NameString).ToArray();
         }
 
         /// <summary>
@@ -519,7 +519,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
         {
             foreach (var section in SectionTable)
             {
-                string sectionName = Encoding.ASCII.GetString(section.Name).Trim('\0');
+                string sectionName = section.NameString;
                 int sectionAddr = (int)section.PointerToRawData;
                 int sectionEnd = sectionAddr + (int)section.VirtualSize;
                 Console.WriteLine($"{sectionName}: {sectionAddr} -> {sectionEnd}");

@@ -22,7 +22,7 @@ namespace BurnOutSharp.ProtectionType
             var fourthSection = sections.Length < 4 ? null : sections[3];
             if (fourthSection != null)
             {
-                var fourthSectionData = pex.ReadRawSection(Encoding.ASCII.GetString(fourthSection.Name).Trim('\0'), first: true);
+                var fourthSectionData = pex.ReadRawSection(fourthSection.NameString, first: true);
                 if (fourthSectionData != null)
                 {
                     var matchers = new List<ContentMatchSet>
@@ -55,7 +55,7 @@ namespace BurnOutSharp.ProtectionType
             var secondToLastSection = sections.Length > 1 ? sections[sections.Length - 2] : null;
             if (secondToLastSection != null)
             {
-                var secondToLastSectionData = pex.ReadRawSection(Encoding.ASCII.GetString(secondToLastSection.Name).Trim('\0'), first: true);
+                var secondToLastSectionData = pex.ReadRawSection(secondToLastSection.NameString, first: true);
                 if (secondToLastSectionData != null)
                 {
                     var matchers = new List<ContentMatchSet>
@@ -81,7 +81,7 @@ namespace BurnOutSharp.ProtectionType
             var lastSection = sections.LastOrDefault();
             if (lastSection != null)
             {
-                var lastSectionData = pex.ReadRawSection(Encoding.ASCII.GetString(lastSection.Name).Trim('\0'), first: true);
+                var lastSectionData = pex.ReadRawSection(lastSection.NameString, first: true);
                 if (lastSectionData != null)
                 {
                     var matchers = new List<ContentMatchSet>

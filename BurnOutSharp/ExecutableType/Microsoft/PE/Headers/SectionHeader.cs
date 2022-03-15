@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Text;
 using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ExecutableType.Microsoft.PE.Headers
@@ -21,8 +22,36 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE.Headers
         /// Executable images do not use a string table and do not support section names longer than 8 characters.
         /// Long names in object files are truncated if they are emitted to an executable file.
         /// </summary>
-        /// <remarks>TODO: Add AsString method for this</remarks>
         public byte[] Name;
+
+        /// <summary>
+        /// Section name as a string, trimming any trailing null bytes
+        /// </summary>
+        public string NameString
+        {
+            get
+            {
+                if (this.Name == null || this.Name.Length == 0)
+                    return null;
+
+                // First try decoding as UTF-8
+                try
+                {
+                    return Encoding.UTF8.GetString(this.Name).TrimEnd('\0');
+                }
+                catch { }
+
+                // Then try decoding as ASCII
+                try
+                {
+                    return Encoding.ASCII.GetString(this.Name).TrimEnd('\0');
+                }
+                catch { }
+
+                // If it fails, return null
+                return null;
+            }
+        }
         
         /// <summary>
         /// The total size of the section when loaded into memory.
