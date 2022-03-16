@@ -65,7 +65,7 @@ Below is a list of protections detected by BurnOutSharp. The two columns explain
 | Ring PROTECH / ProRing | True | True | Unconfirmed¹ |
 | SafeDisc / SafeCast | True | True | Can't distinguish between some versions of SafeDisc and SafeCast |
 | SafeLock | False | True | Unconfirmed¹ |
-| SecuROM | True | True | v8.x and White Label detected incorrectly² |
+| SecuROM | True | True | v8.x and White Label detected partially² |
 | SmartE | True | True | |
 | SoftLock | False | True | Unconfirmed¹ |
 | SolidShield | True | True | Some Wrapper v1 not detected² |
@@ -116,6 +116,7 @@ Below is a list of executable packers detected by BurnOutSharp. The three column
 | CExe | Yes | No | No |
 | dotFuscator | Yes | No | No |
 | EXE Stealth | Yes | No | No |
+| Gentee Installer | Yes | No | No |
 | Inno Setup | Yes | No | No |
 | InstallAnywhere | Yes | No | No |
 | Installer VISE | Yes | No | No |
