@@ -21,6 +21,8 @@ namespace BurnOutSharp.ProtectionType
                 return "Steam";
             else if (!string.IsNullOrEmpty(name) && name.Contains("Steam Client API"))
                 return "Steam";
+            else if (!string.IsNullOrEmpty(name) && name.Contains("Steam Client Engine"))
+                return $"Steam Client Engine {Utilities.GetFileVersion(pex)}";
             else if (!string.IsNullOrEmpty(name) && name.Contains("Steam Client Service"))
                 return "Steam";
 
