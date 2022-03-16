@@ -207,11 +207,13 @@ namespace BurnOutSharp.ProtectionType
         {
             switch (fileContent[position + 7])
             {
+                case 0x1E:
+                    return "5.2";
                 case 0x1B:
                     return "5.3-5.4";
                 case 0x14:
                     return "5.5.0";
-                case 0x4:
+                case 0x04:
                     return "5.5.2";
                 default:
                     return string.Empty;
