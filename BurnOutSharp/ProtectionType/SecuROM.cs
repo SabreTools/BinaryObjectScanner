@@ -40,7 +40,7 @@ namespace BurnOutSharp.ProtectionType
             if (shrSection)
                 return $"SecuROM 8 (White Label)";
 
-            // Get the .shr section, if it exists
+            // Get the .sll section, if it exists
             bool sllSection = pex.ContainsSection(".sll", exact: true);
             if (sllSection)
                 return $"SecuROM SLL Protected (for SecuROM v8.x)";
