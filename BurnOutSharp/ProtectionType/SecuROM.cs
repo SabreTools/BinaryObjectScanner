@@ -9,8 +9,6 @@ using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ProtectionType
 {
-    // TODO: Investigate why White Label v8 doesn't get detected - http://redump.org/disc/48997/
-    // TODO: Does the ".shr" section in the code have anything to do with this?
     // TODO: Investigate SecuROM for Macintosh
     public class SecuROM : IPEContentCheck, IPathCheck
     {
@@ -22,10 +20,32 @@ namespace BurnOutSharp.ProtectionType
             if (sections == null)
                 return null;
 
+            //pex.PrintAllSections();
+
+            string name = Utilities.GetFileDescription(pex);
+            if (!string.IsNullOrWhiteSpace(name) && name.Contains("SecuROM PA"))
+                return $"SecuROM PA v{Utilities.GetFileVersion(pex)}";
+
+            // Get the matrosch section, if it exists
+            bool matroschSection = pex.ContainsSection("matrosch", exact: true);
+            if (matroschSection)
+                return $"SecuROM Matroschka Package";
+
             // Get the .securom section, if it exists
             bool securomSection = pex.ContainsSection(".securom", exact: true);
             if (securomSection)
                 return $"SecuROM {GetV7Version(pex)}";
+
+            // TODO: This needs a lot of verification, including version
+            // Get the .shr section, if it exists
+            bool shrSection = pex.ContainsSection(".shr", exact: true);
+            if (shrSection)
+                return $"SecuROM 8 (White Label)";
+
+            // Get the .shr section, if it exists
+            bool sllSection = pex.ContainsSection(".sll", exact: true);
+            if (sllSection)
+                return $"SecuROM SLL Protected (for SecuROM v8.x)";
 
             // Search after the last section
             // TODO: Figure out how to do this in a more reasonable way
