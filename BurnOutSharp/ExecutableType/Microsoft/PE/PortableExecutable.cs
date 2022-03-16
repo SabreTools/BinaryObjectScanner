@@ -554,16 +554,24 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
         /// <returns></returns>
         public byte[] ReadArbitraryRange(int rangeStart = -1, int length = -1)
         {
-            // If we have a source stream, use that
-            if (this._sourceStream != null)
-                return ReadArbitraryRangeFromSourceStream(rangeStart, length);
+            try
+            {
+                // If we have a source stream, use that
+                if (this._sourceStream != null)
+                    return ReadArbitraryRangeFromSourceStream(rangeStart, length);
 
-            // If we have a source array, use that
-            if (this._sourceArray != null)
-                return ReadArbitraryRangeFromSourceArray(rangeStart, length);
+                // If we have a source array, use that
+                if (this._sourceArray != null)
+                    return ReadArbitraryRangeFromSourceArray(rangeStart, length);
 
-            // Otherwise, return null
-            return null;
+                // Otherwise, return null
+                return null;
+            }
+            catch (Exception ex)
+            {
+                // TODO: How to handle this differently?
+                return null;
+            }
         }
 
         /// <summary>

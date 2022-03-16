@@ -254,7 +254,7 @@ namespace BurnOutSharp
             if (!File.Exists(file))
                 return null;
 
-            // Initialze the protections found
+            // Initialize the protections found
             var protections = new ConcurrentDictionary<string, ConcurrentQueue<string>>();
 
             // Get the extension for certain checks
