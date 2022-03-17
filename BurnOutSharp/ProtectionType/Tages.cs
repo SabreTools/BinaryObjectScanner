@@ -84,7 +84,7 @@ namespace BurnOutSharp.ProtectionType
                     new PathMatch("Wave.axt", useEndsWith: true),
                 }, "TAGES"),
 
-                // Currently only known to exist in "XIII" and (presumably) "Beyond Good & Evil".
+                // Currently only known to exist in "XIII" and "Beyond Good & Evil".
                 new PathMatchSet(new List<PathMatch>
                 {
                     new PathMatch("enodpl.sys", useEndsWith: true),
@@ -145,7 +145,7 @@ namespace BurnOutSharp.ProtectionType
                 // new PathMatchSet(new PathMatch("Wave.apt", useEndsWith: true), "TAGES Driver"),
                 // new PathMatchSet(new PathMatch("Wave.axt", useEndsWith: true), "TAGES Driver"),
 
-                // Currently only known to exist in "XIII" and (presumably) "Beyond Good & Evil".
+                // Currently only known to exist in "XIII" and "Beyond Good & Evil".
                 new PathMatchSet(new PathMatch("enodpl.sys", useEndsWith: true), "TAGES NT Driver"),
                 new PathMatchSet(new PathMatch("ENODPL.VXD", useEndsWith: true), "TAGES 9x Driver"),
                 new PathMatchSet(new PathMatch("tandpl.sys", useEndsWith: true), "TAGES NT Driver"),
