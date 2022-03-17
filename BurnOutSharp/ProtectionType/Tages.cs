@@ -195,7 +195,11 @@ namespace BurnOutSharp.ProtectionType
 
         public static string GetVersion(string file, byte[] fileContent, List<int> positions)
         {
-            switch (fileContent[positions[0] + 7])
+            // TODO: Determine difference between API and BASIC
+            byte typeByte = fileContent[positions[0] + 6];
+            byte versionByte = fileContent[positions[0] + 7];
+
+            switch (versionByte)
             {
                 case 0x1E:
                     return "5.2";
