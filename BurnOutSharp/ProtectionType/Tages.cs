@@ -2,7 +2,6 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Matching;
 using BurnOutSharp.Tools;
@@ -46,8 +45,8 @@ namespace BurnOutSharp.ProtectionType
             {
                 var matchers = new List<ContentMatchSet>
                 {
-                    // (char)0xE8 + u + (char)0x00 + (char)0x00 + (char)0x00 + (char)0xE8
-                    new ContentMatchSet(new byte?[] { 0xE8, 0x75, 0x00, 0x00, 0x00, 0xE8 }, GetVersion, "TAGES"),
+                    // (char)0xE8 + u + (char)0x00 + (char)0x00 + (char)0x00 + (char)0xE8 + ?? + ?? + (char)0xFF + (char)0xFF + "h"
+                    new ContentMatchSet(new byte?[] { 0xE8, 0x75, 0x00, 0x00, 0x00, 0xE8, null, null, 0xFF, 0xFF, 0x68 }, GetVersion, "TAGES"),
                 };
 
                 string match = MatchUtil.GetFirstMatch(file, pex.DataSectionRaw, matchers, includeDebug);
@@ -196,16 +195,7 @@ namespace BurnOutSharp.ProtectionType
 
         public static string GetVersion(string file, byte[] fileContent, List<int> positions)
         {
-            // (char)0xFF + (char)0xFF + "h"
-            if (new ArraySegment<byte>(fileContent, positions[0] + 8, 3).SequenceEqual(new byte[] { 0xFF, 0xFF, 0x68 }))
-                return GetVersion(fileContent, positions[0]);
-                
-            return null;
-        }
-
-        private static string GetVersion(byte[] fileContent, int position)
-        {
-            switch (fileContent[position + 7])
+            switch (fileContent[positions[0] + 7])
             {
                 case 0x1E:
                     return "5.2";
