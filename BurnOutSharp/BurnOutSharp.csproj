@@ -8,12 +8,12 @@
     <Description>Port of BurnOut to C#, with additions</Description>
     <Authors>Matt Nadareski;Gernot Knippen</Authors>
     <Product>BurnOutSharp</Product>
-    <Copyright>Copyright (c)2005-2010 Gernot Knippen, Copyright (c)2018-2021 Matt Nadareski</Copyright>
+    <Copyright>Copyright (c)2005-2010 Gernot Knippen, Copyright (c)2018-2022 Matt Nadareski</Copyright>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
     <RepositoryUrl>https://github.com/mnadareski/BurnOutSharp</RepositoryUrl>
-    <Version>1.8.0</Version>
-    <AssemblyVersion>1.8.0</AssemblyVersion>
-    <FileVersion>1.8.0</FileVersion>
+    <Version>2.0.0</Version>
+    <AssemblyVersion>2.0.0</AssemblyVersion>
+    <FileVersion>2.0.0</FileVersion>
     <IncludeSource>true</IncludeSource>
     <IncludeSymbols>true</IncludeSymbols>
   </PropertyGroup>
