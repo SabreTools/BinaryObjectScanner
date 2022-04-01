@@ -18,6 +18,7 @@ namespace BurnOutSharp.PackerType
             var sections = pex?.SectionTable;
             if (sections == null)
                 return null;
+
             // Known to detect versions 7.0.5.1 - 9.1.0.0
             string name = Utilities.GetLegalCopyright(pex);
             if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Setup Engine", StringComparison.OrdinalIgnoreCase))
@@ -64,7 +65,12 @@ namespace BurnOutSharp.PackerType
             string version = Utilities.GetProductVersion(pex);
             if (!string.IsNullOrEmpty(version))
                 return version;
-            
+
+            // Then check the file version
+            version = Utilities.GetFileVersion(pex);
+            if (!string.IsNullOrEmpty(version))
+                return version;
+
             // Then check the manifest version
             version = Utilities.GetManifestVersion(pex);
             if (!string.IsNullOrEmpty(version))

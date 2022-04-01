@@ -365,7 +365,7 @@ namespace BurnOutSharp.Tools
         /// <param name="pex">PortableExecutable representing the file contents</param>
         /// <returns>Product name string, null on error</returns>
         public static string GetProductName(PortableExecutable pex) => GetResourceString(pex, "ProductName");
-		
+
 		/// <summary>
         /// Get the product name as reported by the filesystem
         /// </summary>
