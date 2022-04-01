@@ -237,9 +237,9 @@ namespace BurnOutSharp.Tools
             if (!string.IsNullOrWhiteSpace(version))
                 return version.Replace(", ", ".");
 
-            version = GetResourceString(pex, "ProductVersion");
+            version = GetProductVersion(pex);
             if (!string.IsNullOrWhiteSpace(version))
-                return version.Replace(", ", ".");
+                return version;
 
             return null;
         }
@@ -365,6 +365,13 @@ namespace BurnOutSharp.Tools
         /// <param name="pex">PortableExecutable representing the file contents</param>
         /// <returns>Product name string, null on error</returns>
         public static string GetProductName(PortableExecutable pex) => GetResourceString(pex, "ProductName");
+		
+		/// <summary>
+        /// Get the product name as reported by the filesystem
+        /// </summary>
+        /// <param name="pex">PortableExecutable representing the file contents</param>
+        /// <returns>Product version string, null on error</returns>
+        public static string GetProductVersion(PortableExecutable pex) => GetResourceString(pex, "ProductVersion")?.Replace(", ", ".");
 
         /// <summary>
         /// Find resource data in a ResourceSection, if possible
