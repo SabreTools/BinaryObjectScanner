@@ -19,11 +19,17 @@ namespace BurnOutSharp.PackerType
             if (sections == null)
                 return null;
 
+            // Known to detect versions 7.0.5.1 - 9.1.0.0
             string name = Utilities.GetLegalCopyright(pex);
-            if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Setup Factory", StringComparison.OrdinalIgnoreCase))
+            if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Setup Engine", StringComparison.OrdinalIgnoreCase))
                 return $"Setup Factory {GetVersion(pex)}";
 
             name = Utilities.GetProductName(pex);
+            if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Setup Factory", StringComparison.OrdinalIgnoreCase))
+                return $"Setup Factory {GetVersion(pex)}";
+
+            // Known to detect version 5.0.1 - 6.0.1.3
+            name = Utilities.GetFileDescription(pex);
             if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Setup Factory", StringComparison.OrdinalIgnoreCase))
                 return $"Setup Factory {GetVersion(pex)}";
 
@@ -55,13 +61,18 @@ namespace BurnOutSharp.PackerType
     
         private string GetVersion(PortableExecutable pex)
         {
-            // Check the manifest version first
-            string version = Utilities.GetManifestVersion(pex);
+            // Check the product version first
+            string version = Utilities.GetProductVersion(pex);
             if (!string.IsNullOrEmpty(version))
                 return version;
-            
+
             // Then check the file version
             version = Utilities.GetFileVersion(pex);
+            if (!string.IsNullOrEmpty(version))
+                return version;
+
+            // Then check the manifest version
+            version = Utilities.GetManifestVersion(pex);
             if (!string.IsNullOrEmpty(version))
                 return version;
 
