@@ -61,18 +61,13 @@ namespace BurnOutSharp.PackerType
     
         private string GetVersion(PortableExecutable pex)
         {
-            // Check the product version first
+            // Check the product version explicitly
             string version = Utilities.GetProductVersion(pex);
             if (!string.IsNullOrEmpty(version))
                 return version;
 
-            // Then check the file version
-            version = Utilities.GetFileVersion(pex);
-            if (!string.IsNullOrEmpty(version))
-                return version;
-
-            // Then check the manifest version
-            version = Utilities.GetManifestVersion(pex);
+            // Check the internal versions
+            version = Utilities.GetInternalVersion(pex);
             if (!string.IsNullOrEmpty(version))
                 return version;
 

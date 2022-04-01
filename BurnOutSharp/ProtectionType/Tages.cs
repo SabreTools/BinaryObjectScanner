@@ -180,13 +180,8 @@ namespace BurnOutSharp.ProtectionType
 
         private string GetVersion(PortableExecutable pex)
         {
-            // Check the file version first
-            string version = Utilities.GetFileVersion(pex);
-            if (!string.IsNullOrEmpty(version))
-                return version;
-
-            // Then check the manifest version
-            version = Utilities.GetManifestVersion(pex);
+            // Check the internal versions
+            string version = Utilities.GetInternalVersion(pex);
             if (!string.IsNullOrEmpty(version))
                 return version;
 

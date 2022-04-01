@@ -22,19 +22,19 @@ namespace BurnOutSharp.ProtectionType
 
             string name = Utilities.GetFileDescription(pex);
             if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("DVM Library", StringComparison.OrdinalIgnoreCase))
-                return $"SolidShield {Utilities.GetFileVersion(pex)}";
+                return $"SolidShield {Utilities.GetInternalVersion(pex)}";
             else if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Solidshield Activation Library", StringComparison.OrdinalIgnoreCase))
-                return $"SolidShield Core.dll {Utilities.GetFileVersion(pex)}";
+                return $"SolidShield Core.dll {Utilities.GetInternalVersion(pex)}";
             else if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Activation Manager", StringComparison.OrdinalIgnoreCase))
-                return $"SolidShield Activation Manager Module {GetFileVersion(pex)}";
+                return $"SolidShield Activation Manager Module {GetInternalVersion(pex)}";
 
            name = Utilities.GetProductName(pex);
             if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Solidshield Activation Library", StringComparison.OrdinalIgnoreCase))
-                return $"SolidShield Core.dll {Utilities.GetFileVersion(pex)}";
+                return $"SolidShield Core.dll {Utilities.GetInternalVersion(pex)}";
             else if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Solidshield Library", StringComparison.OrdinalIgnoreCase))
-                return $"SolidShield Core.dll {Utilities.GetFileVersion(pex)}";
+                return $"SolidShield Core.dll {Utilities.GetInternalVersion(pex)}";
             else if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Activation Manager", StringComparison.OrdinalIgnoreCase))
-                return $"SolidShield Activation Manager Module {GetFileVersion(pex)}";
+                return $"SolidShield Activation Manager Module {GetInternalVersion(pex)}";
 
             // Get the .init section, if it exists
             var initSectionRaw = pex.ReadRawSection(".init", first: true);
@@ -188,11 +188,11 @@ namespace BurnOutSharp.ProtectionType
             return null;
         }
     
-        private static string GetFileVersion(PortableExecutable pex)
+        private static string GetInternalVersion(PortableExecutable pex)
         {
             string companyName = Utilities.GetCompanyName(pex)?.ToLowerInvariant();
             if (!string.IsNullOrWhiteSpace(companyName) && (companyName.Contains("solidshield") || companyName.Contains("tages")))
-                return Utilities.GetFileVersion(pex);
+                return Utilities.GetInternalVersion(pex);
             
             return null;
         }

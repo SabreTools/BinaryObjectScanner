@@ -19,9 +19,9 @@ namespace BurnOutSharp.ProtectionType
 
             string name = Utilities.GetFileDescription(pex);
             if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Games for Windows - LIVE Zero Day Piracy Protection", StringComparison.OrdinalIgnoreCase))
-                return $"Games for Windows LIVE - Zero Day Piracy Protection Module {Utilities.GetFileVersion(pex)}";
+                return $"Games for Windows LIVE - Zero Day Piracy Protection Module {Utilities.GetInternalVersion(pex)}";
             else if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Games for Windows", StringComparison.OrdinalIgnoreCase))
-                return $"Games for Windows LIVE {Utilities.GetFileVersion(pex)}";
+                return $"Games for Windows LIVE {Utilities.GetInternalVersion(pex)}";
 
             // Get the .rdata section, if it exists
             if (pex.ResourceDataSectionRaw != null)

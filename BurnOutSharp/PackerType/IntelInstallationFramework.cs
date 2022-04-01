@@ -20,7 +20,7 @@ namespace BurnOutSharp.PackerType
                 && (name.Equals("Intel(R) Installation Framework", StringComparison.OrdinalIgnoreCase)
                 || name.Equals("Intel Installation Framework", StringComparison.OrdinalIgnoreCase)))
             {
-                return $"Intel Installation Framework {Utilities.GetFileVersion(pex)}";
+                return $"Intel Installation Framework {Utilities.GetInternalVersion(pex)}";
             }
 
             name = Utilities.GetProductName(pex);
@@ -28,7 +28,7 @@ namespace BurnOutSharp.PackerType
                 && (name.Equals("Intel(R) Installation Framework", StringComparison.OrdinalIgnoreCase)
                 || name.Equals("Intel Installation Framework", StringComparison.OrdinalIgnoreCase)))
             {
-                return $"Intel Installation Framework {Utilities.GetFileVersion(pex)}";
+                return $"Intel Installation Framework {Utilities.GetInternalVersion(pex)}";
             }
 
             return null;

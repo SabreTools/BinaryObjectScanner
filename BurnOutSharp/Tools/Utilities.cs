@@ -181,41 +181,49 @@ namespace BurnOutSharp.Tools
 
         #endregion
 
-        #region Executable Information
+        #region Processed Executable Information
 
         /// <summary>
-        /// Get the company name as reported by the filesystem
-        /// </summary>
-        /// <param name="pex">PortableExecutable representing the file contents</param>
-        /// <returns>Company name string, null on error</returns>
-        public static string GetCompanyName(PortableExecutable pex) => GetResourceString(pex, "CompanyName");
-
-        /// <summary>
-        /// Get the file description as reported by the filesystem
-        /// </summary>
-        /// <param name="pex">PortableExecutable representing the file contents</param>
-        /// <returns>Description string, null on error</returns>
-        public static string GetFileDescription(PortableExecutable pex) => GetResourceString(pex, "FileDescription");
-
-        /// <summary>
-        /// Get the file version as reported by the filesystem
+        /// Get the internal version as reported by the resources
         /// </summary>
         /// <param name="fileContent">Byte array representing the file contents</param>
         /// <returns>Version string, null on error</returns>
-        public static string GetFileVersion(byte[] fileContent)
+        public static string GetInternalVersion(byte[] fileContent)
         {
             if (fileContent == null || !fileContent.Any())
                 return null;
 
-            return GetFileVersion(new PortableExecutable(fileContent, 0));
+            return GetInternalVersion(new PortableExecutable(fileContent, 0));
         }
 
         /// <summary>
-        /// Get the file version as reported by the filesystem
+        /// Get the internal version as reported by the resources
+        /// </summary>
+        /// <param name="pex">PortableExecutable representing the file contents</param>
+        /// <returns>Version string, null on error</returns>
+        public static string GetInternalVersion(PortableExecutable pex)
+        {
+            string version = GetFileVersion(pex);
+            if (!string.IsNullOrWhiteSpace(version))
+                return version;
+
+            version = GetProductVersion(pex);
+            if (!string.IsNullOrWhiteSpace(version))
+                return version;
+
+            version = GetManifestVersion(pex);
+            if (!string.IsNullOrWhiteSpace(version))
+                return version;
+
+            return null;
+        }
+
+        /// <summary>
+        /// Get the internal version as reported by the filesystem
         /// </summary>
         /// <param name="file">File to check for version</param>
         /// <returns>Version string, null on error</returns>
-        public static string GetFileVersion(string file)
+        public static string GetInternalVersion(string file)
         {
             var fvinfo = GetFileVersionInfo(file);
             if (fvinfo?.FileVersion == null)
@@ -225,51 +233,41 @@ namespace BurnOutSharp.Tools
             else
                 return fvinfo.ProductVersion.Replace(", ", ".");
         }
-        
+
+        #endregion
+
+        #region Executable Information
+
         /// <summary>
-        /// Get the file version as reported by the filesystem
+        /// Get the company name as reported by the resources
         /// </summary>
         /// <param name="pex">PortableExecutable representing the file contents</param>
-        /// <returns>Version string, null on error</returns>
-        public static string GetFileVersion(PortableExecutable pex)
-        {
-            string version = GetResourceString(pex, "FileVersion");
-            if (!string.IsNullOrWhiteSpace(version))
-                return version.Replace(", ", ".");
-
-            version = GetProductVersion(pex);
-            if (!string.IsNullOrWhiteSpace(version))
-                return version;
-
-            return null;
-        }
+        /// <returns>Company name string, null on error</returns>
+        public static string GetCompanyName(PortableExecutable pex) => GetResourceString(pex, "CompanyName");
 
         /// <summary>
-        /// Wrapper for GetFileVersion for use in content matching
+        /// Get the file description as reported by the resources
         /// </summary>
-        /// <param name="file">File to check for version</param>
-        /// <param name="fileContent">Byte array representing the file contents</param>
-        /// <param name="positions">Last matched positions in the contents</param>
-        /// <returns>Version string, null on error</returns>
-        public static string GetFileVersion(string file, byte[] fileContent, List<int> positions) => GetFileVersion(fileContent);
+        /// <param name="pex">PortableExecutable representing the file contents</param>
+        /// <returns>Description string, null on error</returns>
+        public static string GetFileDescription(PortableExecutable pex) => GetResourceString(pex, "FileDescription");
 
         /// <summary>
-        /// Wrapper for GetFileVersion for use in path matching
+        /// Get the file version as reported by the resources
         /// </summary>
-        /// <param name="firstMatchedString">File to check for version</param>
-        /// <param name="files">Full list of input paths</param>
-        /// <returns>Version string, null on error</returns>
-        public static string GetFileVersion(string firstMatchedString, IEnumerable<string> files) => GetFileVersion(firstMatchedString);
+        /// <param name="pex">PortableExecutable representing the file contents</param>
+        /// <returns>File version string, null on error</returns>
+        public static string GetFileVersion(PortableExecutable pex) => GetResourceString(pex, "FileVersion")?.Replace(", ", ".");
 
         /// <summary>
-        /// Get the internal name as reported by the filesystem
+        /// Get the internal name as reported by the resources
         /// </summary>
         /// <param name="pex">PortableExecutable representing the file contents</param>
         /// <returns>Internal name string, null on error</returns>
         public static string GetInternalName(PortableExecutable pex) => GetResourceString(pex, "InternalName");
 
         /// <summary>
-        /// Get the legal copyright as reported by the filesystem
+        /// Get the legal copyright as reported by the resources
         /// </summary>
         /// <param name="pex">PortableExecutable representing the file contents</param>
         /// <returns>Legal copyright string, null on error</returns>
@@ -353,21 +351,21 @@ namespace BurnOutSharp.Tools
         }
 
         /// <summary>
-        /// Get the original filename as reported by the filesystem
+        /// Get the original filename as reported by the resources
         /// </summary>
         /// <param name="pex">PortableExecutable representing the file contents</param>
         /// <returns>Original filename string, null on error</returns>
         public static string GetOriginalFileName(PortableExecutable pex) => GetResourceString(pex, "OriginalFileName");
 
         /// <summary>
-        /// Get the product name as reported by the filesystem
+        /// Get the product name as reported by the resources
         /// </summary>
         /// <param name="pex">PortableExecutable representing the file contents</param>
         /// <returns>Product name string, null on error</returns>
         public static string GetProductName(PortableExecutable pex) => GetResourceString(pex, "ProductName");
 
         /// <summary>
-        /// Get the product name as reported by the filesystem
+        /// Get the product name as reported by the resources
         /// </summary>
         /// <param name="pex">PortableExecutable representing the file contents</param>
         /// <returns>Product version string, null on error</returns>
@@ -550,6 +548,27 @@ namespace BurnOutSharp.Tools
                 return null;
             }
         }
+
+        #endregion
+
+        #region Wrappers for Matchers
+
+        /// <summary>
+        /// Wrapper for GetInternalVersion for use in content matching
+        /// </summary>
+        /// <param name="file">File to check for version</param>
+        /// <param name="fileContent">Byte array representing the file contents</param>
+        /// <param name="positions">Last matched positions in the contents</param>
+        /// <returns>Version string, null on error</returns>
+        public static string GetInternalVersion(string file, byte[] fileContent, List<int> positions) => GetInternalVersion(fileContent);
+
+        /// <summary>
+        /// Wrapper for GetInternalVersion for use in path matching
+        /// </summary>
+        /// <param name="firstMatchedString">File to check for version</param>
+        /// <param name="files">Full list of input paths</param>
+        /// <returns>Version string, null on error</returns>
+        public static string GetInternalVersion(string firstMatchedString, IEnumerable<string> files) => GetInternalVersion(firstMatchedString);
 
         #endregion
     }

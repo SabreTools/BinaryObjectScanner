@@ -24,19 +24,19 @@ namespace BurnOutSharp.ProtectionType
 
             string name = Utilities.GetFileDescription(pex);
             if (!string.IsNullOrWhiteSpace(name) && name.Contains("EReg MFC Application"))
-                return $"EA CdKey Registration Module {Utilities.GetFileVersion(pex)}";
+                return $"EA CdKey Registration Module {Utilities.GetInternalVersion(pex)}";
             else if (!string.IsNullOrWhiteSpace(name) && name.Contains("Registration code installer program"))
-                return $"EA CdKey Registration Module {Utilities.GetFileVersion(pex)}";
+                return $"EA CdKey Registration Module {Utilities.GetInternalVersion(pex)}";
             else if (!string.IsNullOrWhiteSpace(name) && name.Equals("EA DRM Helper", StringComparison.OrdinalIgnoreCase))
-                return $"EA DRM Protection {Utilities.GetFileVersion(pex)}";
+                return $"EA DRM Protection {Utilities.GetInternalVersion(pex)}";
 
             name = Utilities.GetInternalName(pex);
             if (!string.IsNullOrWhiteSpace(name) && name.Equals("CDCode", StringComparison.Ordinal))
-                return $"EA CdKey Registration Module {Utilities.GetFileVersion(pex)}";
+                return $"EA CdKey Registration Module {Utilities.GetInternalVersion(pex)}";
 
             var resource = Utilities.FindResourceInSection(pex.ResourceSection, dataContains: "A\0b\0o\0u\0t\0 \0C\0D\0K\0e\0y");
             if (resource != null)
-                return $"EA CdKey Registration Module {Utilities.GetFileVersion(pex)}";
+                return $"EA CdKey Registration Module {Utilities.GetInternalVersion(pex)}";
 
             // Get the .data section, if it exists
             if (pex.DataSectionRaw != null)
@@ -48,7 +48,7 @@ namespace BurnOutSharp.ProtectionType
                     {
                         0x45, 0x52, 0x65, 0x67, 0x20, 0x43, 0x6F, 0x6E,
                         0x66, 0x69, 0x67, 0x20, 0x46, 0x6F, 0x72, 0x6D
-                    }, Utilities.GetFileVersion, "EA CdKey Registration Module"),
+                    }, Utilities.GetInternalVersion, "EA CdKey Registration Module"),
                 };
 
                 string match = MatchUtil.GetFirstMatch(file, pex.DataSectionRaw, matchers, includeDebug);

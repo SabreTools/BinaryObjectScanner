@@ -22,7 +22,7 @@ namespace BurnOutSharp.ProtectionType
 
             string name = Utilities.GetFileDescription(pex);
             if (!string.IsNullOrWhiteSpace(name) && name.Contains("SecuROM PA"))
-                return $"SecuROM PA v{Utilities.GetFileVersion(pex)}";
+                return $"SecuROM PA v{Utilities.GetInternalVersion(pex)}";
 
             // Get the matrosch section, if it exists
             bool matroschSection = pex.ContainsSection("matrosch", exact: true);
@@ -101,7 +101,7 @@ namespace BurnOutSharp.ProtectionType
                     {
                         0x64, 0x72, 0x6D, 0x5F, 0x70, 0x61, 0x67, 0x75,
                         0x69, 0x5F, 0x64, 0x6F, 0x69, 0x74
-                    }, Utilities.GetFileVersion, "SecuROM Product Activation"),
+                    }, Utilities.GetInternalVersion, "SecuROM Product Activation"),
 
                     // TODO: Re-enable this one if the above undermatches somehow
                     // // S + (char)0x00 + e + (char)0x00 + c + (char)0x00 + u + (char)0x00 + R + (char)0x00 + O + (char)0x00 + M + (char)0x00 +   + (char)0x00 + P + (char)0x00 + A + (char)0x00
@@ -110,7 +110,7 @@ namespace BurnOutSharp.ProtectionType
                     //     0x53, 0x00, 0x65, 0x00, 0x63, 0x00, 0x75, 0x00,
                     //     0x52, 0x00, 0x4F, 0x00, 0x4D, 0x00, 0x20, 0x00,
                     //     0x50, 0x00, 0x41, 0x00
-                    // }, Utilities.GetFileVersion, "SecuROM Product Activation"),
+                    // }, Utilities.GetInternalVersion, "SecuROM Product Activation"),
                 };
 
                 string match = MatchUtil.GetFirstMatch(file, pex.ResourceDataSectionRaw, matchers, includeDebug);

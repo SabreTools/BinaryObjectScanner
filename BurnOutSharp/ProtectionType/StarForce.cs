@@ -20,13 +20,13 @@ namespace BurnOutSharp.ProtectionType
 
             string name = Utilities.GetLegalCopyright(pex);
             if (!string.IsNullOrWhiteSpace(name) && name.Contains("Protection Technology")) // Protection Technology (StarForce)?
-                return $"StarForce {Utilities.GetFileVersion(pex)}";
+                return $"StarForce {Utilities.GetInternalVersion(pex)}";
 
             name = Utilities.GetInternalName(pex);
             if (!string.IsNullOrWhiteSpace(name) && name.Equals("CORE.EXE", StringComparison.Ordinal))
-                return $"StarForce {Utilities.GetFileVersion(pex)}";
+                return $"StarForce {Utilities.GetInternalVersion(pex)}";
             else if (!string.IsNullOrWhiteSpace(name) && name.Equals("protect.exe", StringComparison.Ordinal))
-                return $"StarForce {Utilities.GetFileVersion(pex)}";
+                return $"StarForce {Utilities.GetInternalVersion(pex)}";
 
             // TODO: Find what fvinfo field actually maps to this
             name = Utilities.GetFileDescription(pex);
@@ -139,7 +139,7 @@ namespace BurnOutSharp.ProtectionType
         // }, GetVersion, "StarForce"),
         // public static string GetVersion(string file, byte[] fileContent, List<int> positions)
         // {
-        //     return $"{Utilities.GetFileVersion(fileContent)} ({fileContent.Skip(positions[1] + 22).TakeWhile(c => c != 0x00)})";
+        //     return $"{Utilities.GetInternalVersion(fileContent)} ({fileContent.Skip(positions[1] + 22).TakeWhile(c => c != 0x00)})";
         // }
     }
 }
