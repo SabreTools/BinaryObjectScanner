@@ -14,7 +14,7 @@ namespace BurnOutSharp.PackerType
             if (sections == null)
                 return null;
 
-            string description = pex.GetManifestDescription();
+            string description = pex.ManifestDescription;
             if (!string.IsNullOrWhiteSpace(description) && description.StartsWith("Nullsoft Install System"))
                 return $"NSIS {description.Substring("Nullsoft Install System".Length).Trim()}";
 

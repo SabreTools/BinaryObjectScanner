@@ -18,15 +18,15 @@ namespace BurnOutSharp.ProtectionType
             if (sections == null)
                 return null;
 
-            string name = pex.GetFileDescription();
+            string name = pex.FileDescription;
             if (!string.IsNullOrWhiteSpace(name) && name.Contains("ImpulseReactor Dynamic Link Library"))
                 return $"Impulse Reactor Core Module {Utilities.GetInternalVersion(pex)}";
 
-            name = pex.GetProductName();
+            name = pex.ProductName;
             if (!string.IsNullOrWhiteSpace(name) && name.Contains("ImpulseReactor Dynamic Link Library"))
                 return $"Impulse Reactor Core Module {Utilities.GetInternalVersion(pex)}";
 
-            name = pex.GetOriginalFileName();
+            name = pex.OriginalFileName;
             if (!string.IsNullOrWhiteSpace(name) && name.Contains("ReactorActivate.exe"))
                 return $"Stardock Product Activation {Utilities.GetInternalVersion(pex)}";
 

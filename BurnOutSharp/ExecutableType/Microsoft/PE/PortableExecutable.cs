@@ -184,6 +184,60 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
 
         #endregion
 
+        #region Resources
+
+        /// <summary>
+        /// Company name resource string
+        /// </summary>
+        public string CompanyName { get; private set; }
+
+        /// <summary>
+        /// File description resource string
+        /// </summary>
+        public string FileDescription { get; private set; }
+
+        /// <summary>
+        /// File version resource string
+        /// </summary>
+        public string FileVersion { get; private set; }
+
+        /// <summary>
+        /// Internal name resource string
+        /// </summary>
+        public string InternalName { get; private set; }
+
+        /// <summary>
+        /// Legal copyright resource string
+        /// </summary>
+        public string LegalCopyright { get; private set; }
+
+        /// <summary>
+        /// Description manifest string
+        /// </summary>
+        public string ManifestDescription { get; private set; }
+
+        /// <summary>
+        /// Version manifest string
+        /// </summary>
+        public string ManifestVersion { get; private set; }
+
+        /// <summary>
+        /// Original filename resource string
+        /// </summary>
+        public string OriginalFileName { get; private set; }
+
+        /// <summary>
+        /// Product name resource string
+        /// </summary>
+        public string ProductName { get; private set; }
+
+        /// <summary>
+        /// Product version resource string
+        /// </summary>
+        public string ProductVersion { get; private set; }
+
+        #endregion
+
         #region Constructors
 
         /// <summary>
@@ -311,6 +365,9 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
                 this.TextSectionRaw = this.ReadRawSection(".text", force: true, first: false);
 
                 #endregion
+
+                // Populate resources, if possible
+                PopulateResourceStrings();
             }
             catch (Exception ex)
             {
@@ -418,6 +475,9 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
                 this.TextSectionRaw = this.ReadRawSection(".text", force: true, first: false);
 
                 #endregion
+
+                // Populate resources, if possible
+                PopulateResourceStrings();
             }
             catch (Exception ex)
             {
@@ -430,7 +490,6 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
 
         #endregion
 
-        // TODO: This entire section needs to have caching
         #region Resource Helpers
 
         /// <summary>
@@ -447,127 +506,6 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
 
             return FindResourceInTable(this.ResourceSection.ResourceDirectoryTable, dataStart, dataContains, dataEnd);
         }
-
-        /// <summary>
-        /// Get the company name as reported by the resources
-        /// </summary>
-        /// <returns>Company name string, null on error</returns>
-        public string GetCompanyName() => GetResourceString("CompanyName");
-
-        /// <summary>
-        /// Get the file description as reported by the resources
-        /// </summary>
-        /// <returns>Description string, null on error</returns>
-        public string GetFileDescription() => GetResourceString("FileDescription");
-
-        /// <summary>
-        /// Get the file version as reported by the resources
-        /// </summary>
-        /// <returns>File version string, null on error</returns>
-        public string GetFileVersion() => GetResourceString("FileVersion")?.Replace(", ", ".");
-
-        /// <summary>
-        /// Get the internal name as reported by the resources
-        /// </summary>
-        /// <returns>Internal name string, null on error</returns>
-        public string GetInternalName() => GetResourceString("InternalName");
-
-        /// <summary>
-        /// Get the legal copyright as reported by the resources
-        /// </summary>
-        /// <returns>Legal copyright string, null on error</returns>
-        public string GetLegalCopyright() => GetResourceString("LegalCopyright");
-
-        /// <summary>
-        /// Get the assembly version as determined by an embedded assembly manifest
-        /// </summary>
-        /// <returns>Description string, null on error</returns>
-        public string GetManifestDescription()
-        {
-            // If we don't have a complete PE executable, just return null
-            if (this.ResourceSection == null)
-                return null;
-            
-            // Read in the manifest to a string
-            string manifestString = FindAssemblyManifest();
-            if (string.IsNullOrWhiteSpace(manifestString))
-                return null;
-
-            // Try to read the XML in from the string
-            try
-            {
-                // Try to read the assembly
-                var assemblyNode = GetAssemblyNode(manifestString);
-                if (assemblyNode == null)
-                    return null;
-
-                // Return the content of the description node, if possible
-                var descriptionNode = assemblyNode["description"];
-                if (descriptionNode == null)
-                    return null;
-                    
-                return descriptionNode.InnerXml;
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Get the assembly version as determined by an embedded assembly manifest
-        /// </summary>
-        /// <returns>Version string, null on error</returns>
-        public string GetManifestVersion()
-        {
-            // If we don't have a complete PE executable, just return null
-            if (this.ResourceSection == null)
-                return null;
-            
-            // Read in the manifest to a string
-            string manifestString = FindAssemblyManifest();
-            if (string.IsNullOrWhiteSpace(manifestString))
-                return null;
-
-            // Try to read the XML in from the string
-            try
-            {
-                // Try to read the assembly
-                var assemblyNode = GetAssemblyNode(manifestString);
-                if (assemblyNode == null)
-                    return null;
-
-                // Try to read the assemblyIdentity
-                var assemblyIdentityNode = assemblyNode["assemblyIdentity"];
-                if (assemblyIdentityNode == null)
-                    return null;
-                
-                // Return the version attribute, if possible
-                return assemblyIdentityNode.GetAttribute("version");
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Get the original filename as reported by the resources
-        /// </summary>
-        /// <returns>Original filename string, null on error</returns>
-        public string GetOriginalFileName() => GetResourceString("OriginalFileName");
-
-        /// <summary>
-        /// Get the product name as reported by the resources
-        /// </summary>
-        /// <returns>Product name string, null on error</returns>
-        public string GetProductName() => GetResourceString("ProductName");
-
-        /// <summary>
-        /// Get the product name as reported by the resources
-        /// </summary>
-        /// <returns>Product version string, null on error</returns>
-        public string GetProductVersion() => GetResourceString("ProductVersion")?.Replace(", ", ".");
 
         /// <summary>
         /// Get the assembly identity node from an embedded manifest
@@ -664,6 +602,79 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
         }
 
         /// <summary>
+        /// Get the assembly version as determined by an embedded assembly manifest
+        /// </summary>
+        /// <returns>Description string, null on error</returns>
+        private string GetManifestDescription()
+        {
+            // If we don't have a complete PE executable, just return null
+            if (this.ResourceSection == null)
+                return null;
+            
+            // Read in the manifest to a string
+            string manifestString = FindAssemblyManifest();
+            if (string.IsNullOrWhiteSpace(manifestString))
+                return null;
+
+            // Try to read the XML in from the string
+            try
+            {
+                // Try to read the assembly
+                var assemblyNode = GetAssemblyNode(manifestString);
+                if (assemblyNode == null)
+                    return null;
+
+                // Return the content of the description node, if possible
+                var descriptionNode = assemblyNode["description"];
+                if (descriptionNode == null)
+                    return null;
+                    
+                return descriptionNode.InnerXml;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Get the assembly version as determined by an embedded assembly manifest
+        /// </summary>
+        /// <returns>Version string, null on error</returns>
+        private string GetManifestVersion()
+        {
+            // If we don't have a complete PE executable, just return null
+            if (this.ResourceSection == null)
+                return null;
+            
+            // Read in the manifest to a string
+            string manifestString = FindAssemblyManifest();
+            if (string.IsNullOrWhiteSpace(manifestString))
+                return null;
+
+            // Try to read the XML in from the string
+            try
+            {
+                // Try to read the assembly
+                var assemblyNode = GetAssemblyNode(manifestString);
+                if (assemblyNode == null)
+                    return null;
+
+                // Try to read the assemblyIdentity
+                var assemblyIdentityNode = assemblyNode["assemblyIdentity"];
+                if (assemblyIdentityNode == null)
+                    return null;
+                
+                // Return the version attribute, if possible
+                return assemblyIdentityNode.GetAttribute("version");
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
         /// Get a resource string from the version info
         /// </summary>
         /// <returns>Original filename string, null on error</returns>
@@ -683,7 +694,6 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
         /// <summary>
         /// Get the version info object related to file contents, if possible
         /// </summary>
-        /// <param name="pex">PortableExecutable representing the file contents</param>
         /// <returns>VersionInfo object on success, null on error</returns>
         private VersionInfo GetVersionInfo()
         {
@@ -706,6 +716,27 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
                 // Console.WriteLine(ex);
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Populate all resource strings
+        /// </summary>
+        private void PopulateResourceStrings()
+        {
+            // Standalone resource strings
+            this.CompanyName = GetResourceString("CompanyName");
+            this.FileDescription = GetResourceString("FileDescription");
+            this.FileVersion = GetResourceString("FileVersion")?.Replace(", ", ".");
+            this.InternalName = GetResourceString("InternalName");
+            this.LegalCopyright = GetResourceString("LegalCopyright");
+            this.OriginalFileName = GetResourceString("OriginalFileName");
+            this.ProductName = GetResourceString("ProductName");
+            this.ProductVersion = GetResourceString("ProductVersion")?.Replace(", ", ".");
+
+            // TODO: Make these combined calls more efficient
+            // Manifest resource strings
+            this.ManifestDescription = GetManifestDescription();
+            this.ManifestVersion = GetManifestVersion();
         }
 
         #endregion

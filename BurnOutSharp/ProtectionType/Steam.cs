@@ -16,7 +16,7 @@ namespace BurnOutSharp.ProtectionType
             if (sections == null)
                 return null;
 
-            string name = pex.GetFileDescription();
+            string name = pex.FileDescription;
             if (!string.IsNullOrEmpty(name) && name.Contains("Steam Autorun Setup"))
                 return "Steam";
             else if (!string.IsNullOrEmpty(name) && name.Contains("Steam Client API"))
@@ -26,7 +26,7 @@ namespace BurnOutSharp.ProtectionType
             else if (!string.IsNullOrEmpty(name) && name.Contains("Steam Client Service"))
                 return "Steam";
 
-            name = pex.GetProductName();
+            name = pex.ProductName;
             if (!string.IsNullOrEmpty(name) && name.Contains("Steam Autorun Setup"))
                 return "Steam";
             else if (!string.IsNullOrEmpty(name) && name.Contains("Steam Client API"))

@@ -15,7 +15,7 @@ namespace BurnOutSharp.ProtectionType
             if (sections == null)
                 return null;
 
-            string name = pex.GetFileDescription();
+            string name = pex.FileDescription;
             if (!string.IsNullOrWhiteSpace(name) && name.Contains("SDKHM (KEEP)"))
                 return "key2AudioXS";
             else if (!string.IsNullOrWhiteSpace(name) && name.Contains("SDKHM (KEPT)"))

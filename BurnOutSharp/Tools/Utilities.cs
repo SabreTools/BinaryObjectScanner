@@ -4,11 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Xml;
 using BurnOutSharp.ExecutableType.Microsoft.PE;
-using BurnOutSharp.ExecutableType.Microsoft.PE.Entries;
-using BurnOutSharp.ExecutableType.Microsoft.PE.Sections;
-using BurnOutSharp.ExecutableType.Microsoft.PE.Tables;
 
 namespace BurnOutSharp.Tools
 {
@@ -202,15 +198,15 @@ namespace BurnOutSharp.Tools
         /// <returns>Version string, null on error</returns>
         public static string GetInternalVersion(PortableExecutable pex)
         {
-            string version = pex.GetFileVersion();
+            string version = pex.FileVersion;
             if (!string.IsNullOrWhiteSpace(version))
                 return version;
 
-            version = pex.GetProductVersion();
+            version = pex.ProductVersion;
             if (!string.IsNullOrWhiteSpace(version))
                 return version;
 
-            version = pex.GetManifestVersion();
+            version = pex.ManifestVersion;
             if (!string.IsNullOrWhiteSpace(version))
                 return version;
 

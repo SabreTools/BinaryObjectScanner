@@ -20,7 +20,7 @@ namespace BurnOutSharp.ProtectionType
             if (sections == null)
                 return null;
 
-            string name = pex.GetFileDescription();
+            string name = pex.FileDescription;
             if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("DVM Library", StringComparison.OrdinalIgnoreCase))
                 return $"SolidShield {Utilities.GetInternalVersion(pex)}";
             else if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Solidshield Activation Library", StringComparison.OrdinalIgnoreCase))
@@ -28,7 +28,7 @@ namespace BurnOutSharp.ProtectionType
             else if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Activation Manager", StringComparison.OrdinalIgnoreCase))
                 return $"SolidShield Activation Manager Module {GetInternalVersion(pex)}";
 
-           name = pex.GetProductName();
+           name = pex.ProductName;
             if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Solidshield Activation Library", StringComparison.OrdinalIgnoreCase))
                 return $"SolidShield Core.dll {Utilities.GetInternalVersion(pex)}";
             else if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Solidshield Library", StringComparison.OrdinalIgnoreCase))
@@ -190,7 +190,7 @@ namespace BurnOutSharp.ProtectionType
     
         private static string GetInternalVersion(PortableExecutable pex)
         {
-            string companyName = pex.GetCompanyName()?.ToLowerInvariant();
+            string companyName = pex.CompanyName?.ToLowerInvariant();
             if (!string.IsNullOrWhiteSpace(companyName) && (companyName.Contains("solidshield") || companyName.Contains("tages")))
                 return Utilities.GetInternalVersion(pex);
             

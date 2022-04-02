@@ -15,11 +15,11 @@ namespace BurnOutSharp.ProtectionType
             if (sections == null)
                 return null;
 
-            string name = pex.GetFileDescription();
+            string name = pex.FileDescription;
             if (!string.IsNullOrEmpty(name) && name.Contains("Copy Protection Viewer"))
                 return "WTM Protection Viewer";
 
-            name = pex.GetProductName();
+            name = pex.ProductName;
             if (!string.IsNullOrEmpty(name) && name.Contains("WTM Copy Protection Viewer"))
                 return "WTM Protection Viewer";
 

@@ -22,7 +22,7 @@ namespace BurnOutSharp.ProtectionType
             if (sections == null)
                 return null;
 
-            string name = pex.GetFileDescription();
+            string name = pex.FileDescription;
             if (!string.IsNullOrWhiteSpace(name) && name.Contains("EReg MFC Application"))
                 return $"EA CdKey Registration Module {Utilities.GetInternalVersion(pex)}";
             else if (!string.IsNullOrWhiteSpace(name) && name.Contains("Registration code installer program"))
@@ -30,7 +30,7 @@ namespace BurnOutSharp.ProtectionType
             else if (!string.IsNullOrWhiteSpace(name) && name.Equals("EA DRM Helper", StringComparison.OrdinalIgnoreCase))
                 return $"EA DRM Protection {Utilities.GetInternalVersion(pex)}";
 
-            name = pex.GetInternalName();
+            name = pex.InternalName;
             if (!string.IsNullOrWhiteSpace(name) && name.Equals("CDCode", StringComparison.Ordinal))
                 return $"EA CdKey Registration Module {Utilities.GetInternalVersion(pex)}";
 

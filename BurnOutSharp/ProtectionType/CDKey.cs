@@ -13,7 +13,7 @@ namespace BurnOutSharp.ProtectionType
             if (sections == null)
                 return null;
 
-            string name = pex.GetInternalName();
+            string name = pex.InternalName;
             if (!string.IsNullOrWhiteSpace(name) && name.Equals("CDKey", StringComparison.OrdinalIgnoreCase))
                 return "CD-Key / Serial";
 

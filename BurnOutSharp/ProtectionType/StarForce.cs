@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Text;
 using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Matching;
 using BurnOutSharp.Tools;
@@ -18,18 +17,18 @@ namespace BurnOutSharp.ProtectionType
             if (sections == null)
                 return null;
 
-            string name = pex.GetLegalCopyright();
+            string name = pex.LegalCopyright;
             if (!string.IsNullOrWhiteSpace(name) && name.Contains("Protection Technology")) // Protection Technology (StarForce)?
                 return $"StarForce {Utilities.GetInternalVersion(pex)}";
 
-            name = pex.GetInternalName();
+            name = pex.InternalName;
             if (!string.IsNullOrWhiteSpace(name) && name.Equals("CORE.EXE", StringComparison.Ordinal))
                 return $"StarForce {Utilities.GetInternalVersion(pex)}";
             else if (!string.IsNullOrWhiteSpace(name) && name.Equals("protect.exe", StringComparison.Ordinal))
                 return $"StarForce {Utilities.GetInternalVersion(pex)}";
 
             // TODO: Find what fvinfo field actually maps to this
-            name = pex.GetFileDescription();
+            name = pex.FileDescription;
             if (!string.IsNullOrWhiteSpace(name) && name.Contains("Protected Module"))
                 return $"StarForce 5";
 

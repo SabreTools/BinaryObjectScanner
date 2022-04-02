@@ -15,7 +15,7 @@ namespace BurnOutSharp.PackerType
             if (sections == null)
                 return null;
 
-            string name = pex.GetFileDescription();
+            string name = pex.FileDescription;
             if (!string.IsNullOrWhiteSpace(name)
                 && (name.Equals("Intel(R) Installation Framework", StringComparison.OrdinalIgnoreCase)
                 || name.Equals("Intel Installation Framework", StringComparison.OrdinalIgnoreCase)))
@@ -23,7 +23,7 @@ namespace BurnOutSharp.PackerType
                 return $"Intel Installation Framework {Utilities.GetInternalVersion(pex)}";
             }
 
-            name = pex.GetProductName();
+            name = pex.ProductName;
             if (!string.IsNullOrWhiteSpace(name)
                 && (name.Equals("Intel(R) Installation Framework", StringComparison.OrdinalIgnoreCase)
                 || name.Equals("Intel Installation Framework", StringComparison.OrdinalIgnoreCase)))
