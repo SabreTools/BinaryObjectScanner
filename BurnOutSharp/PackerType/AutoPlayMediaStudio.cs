@@ -27,9 +27,11 @@ namespace BurnOutSharp.PackerType
                 return $"AutoPlay Media Studio {GetVersion(pex)}";
 
             // Currently too vague, may be re-enabled in the future
-            /*  = Utilities.GetLegalCopyright(pex);
+            /*
+            name  = Utilities.GetLegalCopyright(pex);
             if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Runtime Engine", StringComparison.OrdinalIgnoreCase))
-                return $"AutoPlay Media Studio {GetVersion(pex)}"; */
+                return $"AutoPlay Media Studio {GetVersion(pex)}";
+                */
 
             return null;
         }
