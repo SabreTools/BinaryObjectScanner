@@ -113,6 +113,7 @@ Below is a list of executable packers detected by BurnOutSharp. The three column
 | --------------- | ------------- | ---------- | ----------- |
 | Advanced Installer / Caphyon Advanced Installer | Yes | No | No |
 | Armadillo | Yes | No | No |
+| AutoPlay Media Studio | Yes | No | No |
 | CExe | Yes | No | No |
 | dotFuscator | Yes | No | No |
 | EXE Stealth | Yes | No | No |
