@@ -22,13 +22,14 @@ namespace BurnOutSharp.PackerType
                 return null;
 
             // Known to detect versions 5.0.0.3 - 8.1.0.0
-            string name = Utilities.GetLegalCopyright(pex);
-            if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Runtime Engine", StringComparison.OrdinalIgnoreCase))
-                return $"AutoPlay Media Studio {GetVersion(pex)}";
-
-            name = Utilities.GetProductName(pex);
+            string name = Utilities.GetProductName(pex);
             if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("AutoPlay Media Studio", StringComparison.OrdinalIgnoreCase))
                 return $"AutoPlay Media Studio {GetVersion(pex)}";
+
+            // Currently too vague, may be re-enabled in the future
+            /*  = Utilities.GetLegalCopyright(pex);
+            if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Runtime Engine", StringComparison.OrdinalIgnoreCase))
+                return $"AutoPlay Media Studio {GetVersion(pex)}"; */
 
             return null;
         }
