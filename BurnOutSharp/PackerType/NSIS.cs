@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Matching;
-using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.PackerType
 {
@@ -15,7 +14,7 @@ namespace BurnOutSharp.PackerType
             if (sections == null)
                 return null;
 
-            string description = Utilities.GetManifestDescription(pex);
+            string description = pex.GetManifestDescription();
             if (!string.IsNullOrWhiteSpace(description) && description.StartsWith("Nullsoft Install System"))
                 return $"NSIS {description.Substring("Nullsoft Install System".Length).Trim()}";
 

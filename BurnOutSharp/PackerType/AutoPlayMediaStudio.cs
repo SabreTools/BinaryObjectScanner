@@ -22,7 +22,7 @@ namespace BurnOutSharp.PackerType
                 return null;
 
             // Known to detect versions 5.0.0.3 - 8.1.0.0
-            string name = Utilities.GetProductName(pex);
+            string name = pex.GetProductName();
             if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("AutoPlay Media Studio", StringComparison.OrdinalIgnoreCase))
                 return $"AutoPlay Media Studio {GetVersion(pex)}";
 
@@ -57,7 +57,7 @@ namespace BurnOutSharp.PackerType
         private string GetVersion(PortableExecutable pex)
         {
             // Check the product version explicitly
-            string version = Utilities.GetProductVersion(pex);
+            string version = pex.GetProductVersion();
             if (!string.IsNullOrEmpty(version))
                 return version;
 

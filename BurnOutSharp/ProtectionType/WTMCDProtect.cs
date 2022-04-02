@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Matching;
-using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -16,11 +15,11 @@ namespace BurnOutSharp.ProtectionType
             if (sections == null)
                 return null;
 
-            string name = Utilities.GetFileDescription(pex);
+            string name = pex.GetFileDescription();
             if (!string.IsNullOrEmpty(name) && name.Contains("Copy Protection Viewer"))
                 return "WTM Protection Viewer";
 
-            name = Utilities.GetProductName(pex);
+            name = pex.GetProductName();
             if (!string.IsNullOrEmpty(name) && name.Contains("WTM Copy Protection Viewer"))
                 return "WTM Protection Viewer";
 

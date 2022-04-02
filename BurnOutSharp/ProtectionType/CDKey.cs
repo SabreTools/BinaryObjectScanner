@@ -1,6 +1,5 @@
 ﻿using System;
 using BurnOutSharp.ExecutableType.Microsoft.PE;
-using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -14,7 +13,7 @@ namespace BurnOutSharp.ProtectionType
             if (sections == null)
                 return null;
 
-            string name = Utilities.GetInternalName(pex);
+            string name = pex.GetInternalName();
             if (!string.IsNullOrWhiteSpace(name) && name.Equals("CDKey", StringComparison.OrdinalIgnoreCase))
                 return "CD-Key / Serial";
 

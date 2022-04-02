@@ -1,9 +1,13 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Xml;
 using BurnOutSharp.ExecutableType.Microsoft.MZ.Headers;
+using BurnOutSharp.ExecutableType.Microsoft.PE.Entries;
 using BurnOutSharp.ExecutableType.Microsoft.PE.Headers;
 using BurnOutSharp.ExecutableType.Microsoft.PE.Sections;
+using BurnOutSharp.ExecutableType.Microsoft.PE.Tables;
+using BurnOutSharp.ExecutableType.Microsoft.Resources;
 using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ExecutableType.Microsoft.PE
@@ -426,7 +430,287 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
 
         #endregion
 
-        #region Helpers
+        // TODO: This entire section needs to have caching
+        #region Resource Helpers
+
+        /// <summary>
+        /// Find resource data in a ResourceSection, if possible
+        /// </summary>
+        /// <param name="dataStart">String to use if checking for data starting with a string</param>
+        /// <param name="dataContains">String to use if checking for data contains a string</param>
+        /// <param name="dataEnd">String to use if checking for data ending with a string</param>
+        /// <returns>Full encoded resource data, null on error</returns>
+        public ResourceDataEntry FindResource(string dataStart = null, string dataContains = null, string dataEnd = null)
+        {
+            if (this.ResourceSection == null)
+                return null;
+
+            return FindResourceInTable(this.ResourceSection.ResourceDirectoryTable, dataStart, dataContains, dataEnd);
+        }
+
+        /// <summary>
+        /// Get the company name as reported by the resources
+        /// </summary>
+        /// <returns>Company name string, null on error</returns>
+        public string GetCompanyName() => GetResourceString("CompanyName");
+
+        /// <summary>
+        /// Get the file description as reported by the resources
+        /// </summary>
+        /// <returns>Description string, null on error</returns>
+        public string GetFileDescription() => GetResourceString("FileDescription");
+
+        /// <summary>
+        /// Get the file version as reported by the resources
+        /// </summary>
+        /// <returns>File version string, null on error</returns>
+        public string GetFileVersion() => GetResourceString("FileVersion")?.Replace(", ", ".");
+
+        /// <summary>
+        /// Get the internal name as reported by the resources
+        /// </summary>
+        /// <returns>Internal name string, null on error</returns>
+        public string GetInternalName() => GetResourceString("InternalName");
+
+        /// <summary>
+        /// Get the legal copyright as reported by the resources
+        /// </summary>
+        /// <returns>Legal copyright string, null on error</returns>
+        public string GetLegalCopyright() => GetResourceString("LegalCopyright");
+
+        /// <summary>
+        /// Get the assembly version as determined by an embedded assembly manifest
+        /// </summary>
+        /// <returns>Description string, null on error</returns>
+        public string GetManifestDescription()
+        {
+            // If we don't have a complete PE executable, just return null
+            if (this.ResourceSection == null)
+                return null;
+            
+            // Read in the manifest to a string
+            string manifestString = FindAssemblyManifest();
+            if (string.IsNullOrWhiteSpace(manifestString))
+                return null;
+
+            // Try to read the XML in from the string
+            try
+            {
+                // Try to read the assembly
+                var assemblyNode = GetAssemblyNode(manifestString);
+                if (assemblyNode == null)
+                    return null;
+
+                // Return the content of the description node, if possible
+                var descriptionNode = assemblyNode["description"];
+                if (descriptionNode == null)
+                    return null;
+                    
+                return descriptionNode.InnerXml;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Get the assembly version as determined by an embedded assembly manifest
+        /// </summary>
+        /// <returns>Version string, null on error</returns>
+        public string GetManifestVersion()
+        {
+            // If we don't have a complete PE executable, just return null
+            if (this.ResourceSection == null)
+                return null;
+            
+            // Read in the manifest to a string
+            string manifestString = FindAssemblyManifest();
+            if (string.IsNullOrWhiteSpace(manifestString))
+                return null;
+
+            // Try to read the XML in from the string
+            try
+            {
+                // Try to read the assembly
+                var assemblyNode = GetAssemblyNode(manifestString);
+                if (assemblyNode == null)
+                    return null;
+
+                // Try to read the assemblyIdentity
+                var assemblyIdentityNode = assemblyNode["assemblyIdentity"];
+                if (assemblyIdentityNode == null)
+                    return null;
+                
+                // Return the version attribute, if possible
+                return assemblyIdentityNode.GetAttribute("version");
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Get the original filename as reported by the resources
+        /// </summary>
+        /// <returns>Original filename string, null on error</returns>
+        public string GetOriginalFileName() => GetResourceString("OriginalFileName");
+
+        /// <summary>
+        /// Get the product name as reported by the resources
+        /// </summary>
+        /// <returns>Product name string, null on error</returns>
+        public string GetProductName() => GetResourceString("ProductName");
+
+        /// <summary>
+        /// Get the product name as reported by the resources
+        /// </summary>
+        /// <returns>Product version string, null on error</returns>
+        public string GetProductVersion() => GetResourceString("ProductVersion")?.Replace(", ", ".");
+
+        /// <summary>
+        /// Get the assembly identity node from an embedded manifest
+        /// </summary>
+        /// <param name="manifestString">String representing the XML document</param>
+        /// <returns>Assembly identity node, if possible</returns>
+        private XmlElement GetAssemblyNode(string manifestString)
+        {
+            // An invalid string means we can't read it
+            if (string.IsNullOrWhiteSpace(manifestString))
+                return null;
+
+            try
+            {
+                // Load the XML string as a document
+                var manifestDoc = new XmlDocument();
+                manifestDoc.LoadXml(manifestString);
+
+                // If the XML has no children, it's invalid
+                if (!manifestDoc.HasChildNodes)
+                    return null;
+
+                // Try to read the assembly node
+                return manifestDoc["assembly"];
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Find the assembly manifest from a resource section, if possible
+        /// </summary>
+        /// <returns>Full assembly manifest, null on error</returns>
+        private string FindAssemblyManifest() => FindResource(dataContains: "<assembly")?.DataAsUTF8String;
+
+        /// <summary>
+        /// Find resource data in a ResourceDirectoryTable, if possible
+        /// </summary>
+        /// <param name="rdt">ResourceDirectoryTable representing a layer</param>
+        /// <param name="dataStart">String to use if checking for data starting with a string</param>
+        /// <param name="dataContains">String to use if checking for data contains a string</param>
+        /// <param name="dataEnd">String to use if checking for data ending with a string</param>
+        /// <returns>Full encoded resource data, null on error</returns>
+        private ResourceDataEntry FindResourceInTable(ResourceDirectoryTable rdt, string dataStart, string dataContains, string dataEnd)
+        {
+            if (rdt == null)
+                return null;
+
+            try
+            {
+                foreach (var rdte in rdt.NamedEntries)
+                {
+                    if (rdte.IsResourceDataEntry() && rdte.DataEntry != null)
+                    {
+                        if (dataStart != null && rdte.DataEntry.DataAsUTF8String.StartsWith(dataStart))
+                            return rdte.DataEntry;
+                        else if (dataContains != null && rdte.DataEntry.DataAsUTF8String.Contains(dataContains))
+                            return rdte.DataEntry;
+                        else if (dataEnd != null && rdte.DataEntry.DataAsUTF8String.EndsWith(dataStart))
+                            return rdte.DataEntry;
+                    }
+                    else
+                    {
+                        var manifest = FindResourceInTable(rdte.Subdirectory, dataStart, dataContains, dataEnd);
+                        if (manifest != null)
+                            return manifest;
+                    }
+                }
+
+                foreach (var rdte in rdt.IdEntries)
+                {
+                    if (rdte.IsResourceDataEntry() && rdte.DataEntry != null)
+                    {
+                        if (dataStart != null && rdte.DataEntry.DataAsUTF8String.StartsWith(dataStart))
+                            return rdte.DataEntry;
+                        else if (dataContains != null && rdte.DataEntry.DataAsUTF8String.Contains(dataContains))
+                            return rdte.DataEntry;
+                        else if (dataEnd != null && rdte.DataEntry.DataAsUTF8String.EndsWith(dataStart))
+                            return rdte.DataEntry;
+                    }
+                    else
+                    {
+                        var manifest = FindResourceInTable(rdte.Subdirectory, dataStart, dataContains, dataEnd);
+                        if (manifest != null)
+                            return manifest;
+                    }
+                }
+            }
+            catch { }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Get a resource string from the version info
+        /// </summary>
+        /// <returns>Original filename string, null on error</returns>
+        private string GetResourceString(string key)
+        {
+            var resourceStrings = GetVersionInfo()?.ChildrenStringFileInfo?.Children?.Children;
+            if (resourceStrings == null)
+                return null;
+            
+            var value = resourceStrings.FirstOrDefault(s => s.Key == key);
+            if (!string.IsNullOrWhiteSpace(value?.Value))
+                return value.Value.Trim(' ', '\0');
+
+            return null;
+        }
+
+        /// <summary>
+        /// Get the version info object related to file contents, if possible
+        /// </summary>
+        /// <param name="pex">PortableExecutable representing the file contents</param>
+        /// <returns>VersionInfo object on success, null on error</returns>
+        private VersionInfo GetVersionInfo()
+        {
+            // If we don't have a complete PE executable, just return null
+            if (this.ResourceSection == null)
+                return null;
+
+            // Try to get the matching resource
+            var resource = FindResource(dataContains: "V\0S\0_\0V\0E\0R\0S\0I\0O\0N\0_\0I\0N\0F\0O\0");
+            if (resource?.Data == null)
+                return null;
+
+            try
+            {
+                int index = 0;
+                return VersionInfo.Deserialize(resource.Data, ref index);
+            }
+            catch (Exception ex)
+            {
+                // Console.WriteLine(ex);
+                return null;
+            }
+        }
+
+        #endregion
+
+        #region Section Helpers
 
         /// <summary>
         /// Determine if a section is contained within the section table

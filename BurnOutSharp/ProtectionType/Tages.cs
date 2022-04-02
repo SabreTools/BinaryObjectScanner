@@ -28,13 +28,13 @@ namespace BurnOutSharp.ProtectionType
             // - TagesClient.exe
             // - TagesClient.dat (Does not always exist)
 
-            string name = Utilities.GetFileDescription(pex);
+            string name = pex.GetFileDescription();
             if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("TagesSetup", StringComparison.OrdinalIgnoreCase))
                 return $"TAGES Driver Setup {GetVersion(pex)}";
             else if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Tagès activation client", StringComparison.OrdinalIgnoreCase))
                 return $"TAGES Activation Client {GetVersion(pex)}";
 
-            name = Utilities.GetProductName(pex);
+            name = pex.GetProductName();
             if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Application TagesSetup", StringComparison.OrdinalIgnoreCase))
                 return $"TAGES Driver Setup {GetVersion(pex)}";
             else if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("T@GES", StringComparison.OrdinalIgnoreCase))

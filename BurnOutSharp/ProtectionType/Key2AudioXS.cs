@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Matching;
-using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -16,7 +15,7 @@ namespace BurnOutSharp.ProtectionType
             if (sections == null)
                 return null;
 
-            string name = Utilities.GetFileDescription(pex);
+            string name = pex.GetFileDescription();
             if (!string.IsNullOrWhiteSpace(name) && name.Contains("SDKHM (KEEP)"))
                 return "key2AudioXS";
             else if (!string.IsNullOrWhiteSpace(name) && name.Contains("SDKHM (KEPT)"))

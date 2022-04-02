@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Matching;
-using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -17,11 +16,11 @@ namespace BurnOutSharp.ProtectionType
             if (sections == null)
                 return null;
 
-            string name = Utilities.GetFileDescription(pex);
+            string name = pex.GetFileDescription();
             if (!string.IsNullOrWhiteSpace(name) && name.Equals("Origin", StringComparison.OrdinalIgnoreCase))
                 return "Origin";
 
-            name = Utilities.GetProductName(pex);
+            name = pex.GetProductName();
             if (!string.IsNullOrWhiteSpace(name) && name.Equals("Origin", StringComparison.OrdinalIgnoreCase))
                 return "Origin";
 

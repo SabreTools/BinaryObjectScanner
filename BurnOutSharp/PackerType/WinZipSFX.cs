@@ -187,8 +187,8 @@ namespace BurnOutSharp.PackerType
         private static string GetAdjustedManifestVersion(PortableExecutable pex)
         {
             // Get the manifest information, if possible
-            string description = Utilities.GetManifestDescription(pex);
-            string version = Utilities.GetManifestVersion(pex);
+            string description = pex.GetManifestDescription();
+            string version = pex.GetManifestVersion();
 
             // Either an incorrect description or empty version mean we can't match
             if (description != "WinZip Self-Extractor")

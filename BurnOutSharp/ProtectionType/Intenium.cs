@@ -1,5 +1,4 @@
 ﻿using BurnOutSharp.ExecutableType.Microsoft.PE;
-using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -29,7 +28,7 @@ namespace BurnOutSharp.ProtectionType
             if (sections == null)
                 return null;
 
-            var fileNameResource = Utilities.FindResourceInSection(pex.ResourceSection, dataContains: $"NO NESTED PRMS SUPPORTED");
+            var fileNameResource = pex.FindResource(dataContains: $"NO NESTED PRMS SUPPORTED");
             if (fileNameResource != null)
                 return "ITENIUM Trial & Buy Protection";
 

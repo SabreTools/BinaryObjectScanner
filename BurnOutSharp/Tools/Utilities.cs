@@ -9,7 +9,6 @@ using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.ExecutableType.Microsoft.PE.Entries;
 using BurnOutSharp.ExecutableType.Microsoft.PE.Sections;
 using BurnOutSharp.ExecutableType.Microsoft.PE.Tables;
-using BurnOutSharp.ExecutableType.Microsoft.Resources;
 
 namespace BurnOutSharp.Tools
 {
@@ -203,15 +202,15 @@ namespace BurnOutSharp.Tools
         /// <returns>Version string, null on error</returns>
         public static string GetInternalVersion(PortableExecutable pex)
         {
-            string version = GetFileVersion(pex);
+            string version = pex.GetFileVersion();
             if (!string.IsNullOrWhiteSpace(version))
                 return version;
 
-            version = GetProductVersion(pex);
+            version = pex.GetProductVersion();
             if (!string.IsNullOrWhiteSpace(version))
                 return version;
 
-            version = GetManifestVersion(pex);
+            version = pex.GetManifestVersion();
             if (!string.IsNullOrWhiteSpace(version))
                 return version;
 
@@ -239,250 +238,6 @@ namespace BurnOutSharp.Tools
         #region Executable Information
 
         /// <summary>
-        /// Get the company name as reported by the resources
-        /// </summary>
-        /// <param name="pex">PortableExecutable representing the file contents</param>
-        /// <returns>Company name string, null on error</returns>
-        public static string GetCompanyName(PortableExecutable pex) => GetResourceString(pex, "CompanyName");
-
-        /// <summary>
-        /// Get the file description as reported by the resources
-        /// </summary>
-        /// <param name="pex">PortableExecutable representing the file contents</param>
-        /// <returns>Description string, null on error</returns>
-        public static string GetFileDescription(PortableExecutable pex) => GetResourceString(pex, "FileDescription");
-
-        /// <summary>
-        /// Get the file version as reported by the resources
-        /// </summary>
-        /// <param name="pex">PortableExecutable representing the file contents</param>
-        /// <returns>File version string, null on error</returns>
-        public static string GetFileVersion(PortableExecutable pex) => GetResourceString(pex, "FileVersion")?.Replace(", ", ".");
-
-        /// <summary>
-        /// Get the internal name as reported by the resources
-        /// </summary>
-        /// <param name="pex">PortableExecutable representing the file contents</param>
-        /// <returns>Internal name string, null on error</returns>
-        public static string GetInternalName(PortableExecutable pex) => GetResourceString(pex, "InternalName");
-
-        /// <summary>
-        /// Get the legal copyright as reported by the resources
-        /// </summary>
-        /// <param name="pex">PortableExecutable representing the file contents</param>
-        /// <returns>Legal copyright string, null on error</returns>
-        public static string GetLegalCopyright(PortableExecutable pex) => GetResourceString(pex, "LegalCopyright");
-
-        /// <summary>
-        /// Get the assembly version as determined by an embedded assembly manifest
-        /// </summary>
-        /// <param name="fileContent">Byte array representing the file contents</param>
-        /// <returns>Version string, null on error</returns>
-        public static string GetManifestDescription(PortableExecutable pex)
-        {
-            // If we don't have a PE executable, just return null
-            var resourceSection = pex?.ResourceSection;
-            if (resourceSection == null)
-                return null;
-            
-            // Read in the manifest to a string
-            string manifestString = FindAssemblyManifest(pex.ResourceSection);
-            if (string.IsNullOrWhiteSpace(manifestString))
-                return null;
-
-            // Try to read the XML in from the string
-            try
-            {
-                // Try to read the assembly
-                var assemblyNode = GetAssemblyNode(manifestString);
-                if (assemblyNode == null)
-                    return null;
-
-                // Return the content of the description node, if possible
-                var descriptionNode = assemblyNode["description"];
-                if (descriptionNode == null)
-                    return null;
-                    
-                return descriptionNode.InnerXml;
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Get the assembly version as determined by an embedded assembly manifest
-        /// </summary>
-        /// <param name="pex">PortableExecutable representing the file contents</param>
-        /// <returns>Version string, null on error</returns>
-        public static string GetManifestVersion(PortableExecutable pex)
-        {
-            // If we don't have a PE executable, just return null
-            var resourceSection = pex?.ResourceSection;
-            if (resourceSection == null)
-                return null;
-            
-            // Read in the manifest to a string
-            string manifestString = FindAssemblyManifest(pex.ResourceSection);
-            if (string.IsNullOrWhiteSpace(manifestString))
-                return null;
-
-            // Try to read the XML in from the string
-            try
-            {
-                // Try to read the assembly
-                var assemblyNode = GetAssemblyNode(manifestString);
-                if (assemblyNode == null)
-                    return null;
-
-                // Try to read the assemblyIdentity
-                var assemblyIdentityNode = assemblyNode["assemblyIdentity"];
-                if (assemblyIdentityNode == null)
-                    return null;
-                
-                // Return the version attribute, if possible
-                return assemblyIdentityNode.GetAttribute("version");
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Get the original filename as reported by the resources
-        /// </summary>
-        /// <param name="pex">PortableExecutable representing the file contents</param>
-        /// <returns>Original filename string, null on error</returns>
-        public static string GetOriginalFileName(PortableExecutable pex) => GetResourceString(pex, "OriginalFileName");
-
-        /// <summary>
-        /// Get the product name as reported by the resources
-        /// </summary>
-        /// <param name="pex">PortableExecutable representing the file contents</param>
-        /// <returns>Product name string, null on error</returns>
-        public static string GetProductName(PortableExecutable pex) => GetResourceString(pex, "ProductName");
-
-        /// <summary>
-        /// Get the product name as reported by the resources
-        /// </summary>
-        /// <param name="pex">PortableExecutable representing the file contents</param>
-        /// <returns>Product version string, null on error</returns>
-        public static string GetProductVersion(PortableExecutable pex) => GetResourceString(pex, "ProductVersion")?.Replace(", ", ".");
-
-        /// <summary>
-        /// Find resource data in a ResourceSection, if possible
-        /// </summary>
-        /// <param name="rs">ResourceSection from the executable</param>
-        /// <param name="dataStart">String to use if checking for data starting with a string</param>
-        /// <param name="dataContains">String to use if checking for data contains a string</param>
-        /// <param name="dataEnd">String to use if checking for data ending with a string</param>
-        /// <returns>Full encoded resource data, null on error</returns>
-        public static ResourceDataEntry FindResourceInSection(ResourceSection rs, string dataStart = null, string dataContains = null, string dataEnd = null)
-        {
-            if (rs == null)
-                return null;
-
-            return FindResourceInTable(rs.ResourceDirectoryTable, dataStart, dataContains, dataEnd);
-        }
-
-        /// <summary>
-        /// Find resource data in a ResourceDirectoryTable, if possible
-        /// </summary>
-        /// <param name="rdt">ResourceDirectoryTable representing a layer</param>
-        /// <param name="dataStart">String to use if checking for data starting with a string</param>
-        /// <param name="dataContains">String to use if checking for data contains a string</param>
-        /// <param name="dataEnd">String to use if checking for data ending with a string</param>
-        /// <returns>Full encoded resource data, null on error</returns>
-        private static ResourceDataEntry FindResourceInTable(ResourceDirectoryTable rdt, string dataStart, string dataContains, string dataEnd)
-        {
-            if (rdt == null)
-                return null;
-
-            try
-            {
-                foreach (var rdte in rdt.NamedEntries)
-                {
-                    if (rdte.IsResourceDataEntry() && rdte.DataEntry != null)
-                    {
-                        if (dataStart != null && rdte.DataEntry.DataAsUTF8String.StartsWith(dataStart))
-                            return rdte.DataEntry;
-                        else if (dataContains != null && rdte.DataEntry.DataAsUTF8String.Contains(dataContains))
-                            return rdte.DataEntry;
-                        else if (dataEnd != null && rdte.DataEntry.DataAsUTF8String.EndsWith(dataStart))
-                            return rdte.DataEntry;
-                    }
-                    else
-                    {
-                        var manifest = FindResourceInTable(rdte.Subdirectory, dataStart, dataContains, dataEnd);
-                        if (manifest != null)
-                            return manifest;
-                    }
-                }
-
-                foreach (var rdte in rdt.IdEntries)
-                {
-                    if (rdte.IsResourceDataEntry() && rdte.DataEntry != null)
-                    {
-                        if (dataStart != null && rdte.DataEntry.DataAsUTF8String.StartsWith(dataStart))
-                            return rdte.DataEntry;
-                        else if (dataContains != null && rdte.DataEntry.DataAsUTF8String.Contains(dataContains))
-                            return rdte.DataEntry;
-                        else if (dataEnd != null && rdte.DataEntry.DataAsUTF8String.EndsWith(dataStart))
-                            return rdte.DataEntry;
-                    }
-                    else
-                    {
-                        var manifest = FindResourceInTable(rdte.Subdirectory, dataStart, dataContains, dataEnd);
-                        if (manifest != null)
-                            return manifest;
-                    }
-                }
-            }
-            catch { }
-
-            return null;
-        }
-
-        /// <summary>
-        /// Find the assembly manifest from a resource section, if possible
-        /// </summary>
-        /// <param name="rs">ResourceSection from the executable</param>
-        /// <returns>Full assembly manifest, null on error</returns>
-        private static string FindAssemblyManifest(ResourceSection rs) => FindResourceInSection(rs, dataContains: "<assembly")?.DataAsUTF8String;
-
-        /// <summary>
-        /// Get the assembly identity node from an embedded manifest
-        /// </summary>
-        /// <param name="manifestString">String representing the XML document</param>
-        /// <returns>Assembly identity node, if possible</returns>
-        private static XmlElement GetAssemblyNode(string manifestString)
-        {
-            // An invalid string means we can't read it
-            if (string.IsNullOrWhiteSpace(manifestString))
-                return null;
-
-            try
-            {
-                // Load the XML string as a document
-                var manifestDoc = new XmlDocument();
-                manifestDoc.LoadXml(manifestString);
-
-                // If the XML has no children, it's invalid
-                if (!manifestDoc.HasChildNodes)
-                    return null;
-
-                // Try to read the assembly node
-                return manifestDoc["assembly"];
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
         /// Get the file version info object related to a path, if possible
         /// </summary>
         /// <param name="file">File to get information for</param>
@@ -498,53 +253,6 @@ namespace BurnOutSharp.Tools
             }
             catch
             {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Get a resource string from the version info
-        /// </summary>
-        /// <param name="pex">PortableExecutable representing the file contents</param>
-        /// <returns>Original filename string, null on error</returns>
-        private static string GetResourceString(PortableExecutable pex, string key)
-        {
-            var resourceStrings = GetVersionInfo(pex)?.ChildrenStringFileInfo?.Children?.Children;
-            if (resourceStrings == null)
-                return null;
-            
-            var value = resourceStrings.FirstOrDefault(s => s.Key == key);
-            if (!string.IsNullOrWhiteSpace(value?.Value))
-                return value.Value.Trim(' ', '\0');
-
-            return null;
-        }
-
-        /// <summary>
-        /// Get the version info object related to file contents, if possible
-        /// </summary>
-        /// <param name="pex">PortableExecutable representing the file contents</param>
-        /// <returns>VersionInfo object on success, null on error</returns>
-        private static VersionInfo GetVersionInfo(PortableExecutable pex)
-        {
-            // If we don't have a PE executable, just return null
-            var resourceSection = pex?.ResourceSection;
-            if (resourceSection == null)
-                return null;
-
-            // Try to get the matching resource
-            var resource = FindResourceInSection(resourceSection, dataContains: "V\0S\0_\0V\0E\0R\0S\0I\0O\0N\0_\0I\0N\0F\0O\0");
-            if (resource?.Data == null)
-                return null;
-
-            try
-            {
-                int index = 0;
-                return VersionInfo.Deserialize(resource.Data, ref index);
-            }
-            catch (Exception ex)
-            {
-                // Console.WriteLine(ex);
                 return null;
             }
         }

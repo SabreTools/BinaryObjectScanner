@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Matching;
-using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -17,7 +16,7 @@ namespace BurnOutSharp.ProtectionType
             if (sections == null)
                 return null;
 
-            string name = Utilities.GetFileDescription(pex);
+            string name = pex.GetFileDescription();
             if (!string.IsNullOrEmpty(name) && name.Contains("Ubisoft Connect Installer"))
                 return "Uplay / Ubisoft Connect";
             else if (!string.IsNullOrEmpty(name) && name.Contains("Ubisoft Connect Service"))
@@ -34,7 +33,7 @@ namespace BurnOutSharp.ProtectionType
                 return "Uplay / Ubisoft Connect";
 
             // There's also a variant that looks like "Uplay <version> installer"
-            name = Utilities.GetProductName(pex);
+            name = pex.GetProductName();
             if (!string.IsNullOrEmpty(name) && name.Contains("Ubisoft Connect"))
                 return "Uplay / Ubisoft Connect";
             else if (!string.IsNullOrEmpty(name) && name.Contains("Uplay"))

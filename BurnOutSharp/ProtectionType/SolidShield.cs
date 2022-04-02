@@ -20,7 +20,7 @@ namespace BurnOutSharp.ProtectionType
             if (sections == null)
                 return null;
 
-            string name = Utilities.GetFileDescription(pex);
+            string name = pex.GetFileDescription();
             if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("DVM Library", StringComparison.OrdinalIgnoreCase))
                 return $"SolidShield {Utilities.GetInternalVersion(pex)}";
             else if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Solidshield Activation Library", StringComparison.OrdinalIgnoreCase))
@@ -28,7 +28,7 @@ namespace BurnOutSharp.ProtectionType
             else if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Activation Manager", StringComparison.OrdinalIgnoreCase))
                 return $"SolidShield Activation Manager Module {GetInternalVersion(pex)}";
 
-           name = Utilities.GetProductName(pex);
+           name = pex.GetProductName();
             if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Solidshield Activation Library", StringComparison.OrdinalIgnoreCase))
                 return $"SolidShield Core.dll {Utilities.GetInternalVersion(pex)}";
             else if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Solidshield Library", StringComparison.OrdinalIgnoreCase))
@@ -58,7 +58,7 @@ namespace BurnOutSharp.ProtectionType
             }
 
             // Get the wrapper resource, if it exists
-            var resource = Utilities.FindResourceInSection(pex.ResourceSection, dataContains: "B\0I\0N\0" + (char)0x07 + "\0I\0D\0R\0_\0S\0G\0T\0");
+            var resource = pex.FindResource(dataContains: "B\0I\0N\0" + (char)0x07 + "\0I\0D\0R\0_\0S\0G\0T\0");
             if (resource != null)
                 return "SolidShield EXE Wrapper v1";
 
@@ -190,7 +190,7 @@ namespace BurnOutSharp.ProtectionType
     
         private static string GetInternalVersion(PortableExecutable pex)
         {
-            string companyName = Utilities.GetCompanyName(pex)?.ToLowerInvariant();
+            string companyName = pex.GetCompanyName()?.ToLowerInvariant();
             if (!string.IsNullOrWhiteSpace(companyName) && (companyName.Contains("solidshield") || companyName.Contains("tages")))
                 return Utilities.GetInternalVersion(pex);
             

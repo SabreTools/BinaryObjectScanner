@@ -20,7 +20,7 @@ namespace BurnOutSharp.ProtectionType
             if (sections == null)
                 return null;
 
-            string name = Utilities.GetFileDescription(pex);
+            string name = pex.GetFileDescription();
             if (!string.IsNullOrWhiteSpace(name) && name.Contains("SecuROM PA"))
                 return $"SecuROM PA v{Utilities.GetInternalVersion(pex)}";
 

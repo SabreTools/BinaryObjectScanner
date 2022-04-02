@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Matching;
-using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -16,7 +15,7 @@ namespace BurnOutSharp.ProtectionType
             if (sections == null)
                 return null;
 
-            var resource = Utilities.FindResourceInSection(pex.ResourceSection, dataContains: "Cd3Ctl");
+            var resource = pex.FindResource(dataContains: "Cd3Ctl");
             if (resource != null)
                 return $"MediaMax CD-3";
 

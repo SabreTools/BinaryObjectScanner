@@ -22,11 +22,11 @@ namespace BurnOutSharp.PackerType
             if (sections == null)
                 return null;
 
-            string name = Utilities.GetInternalName(pex);
+            string name = pex.GetInternalName();
             if (!string.IsNullOrWhiteSpace(name) && name.Equals("Wextract", StringComparison.OrdinalIgnoreCase))
                 return $"Microsoft CAB SFX {GetVersion(pex)}";
 
-            name = Utilities.GetOriginalFileName(pex);
+            name = pex.GetOriginalFileName();
             if (!string.IsNullOrWhiteSpace(name) && name.Equals("WEXTRACT.EXE", StringComparison.OrdinalIgnoreCase))
                 return $"Microsoft CAB SFX {GetVersion(pex)}";
 
