@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System.IO;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using BurnOutSharp.Matching;
 
@@ -24,7 +25,7 @@ namespace BurnOutSharp.ProtectionType
             // Technically all need to exist but some might be renamed
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new PathMatch("SafeLock.DAT", useEndsWith: true), "SafeLock"),
+                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}SafeLock.DAT", useEndsWith: true), "SafeLock"),
                 new PathMatchSet(new PathMatch("SafeLock.001", useEndsWith: true), "SafeLock"),
                 new PathMatchSet(new PathMatch("SafeLock.002", useEndsWith: true), "SafeLock"),
                 new PathMatchSet(new PathMatch("SafeLock.128", useEndsWith: true), "SafeLock"),
@@ -39,7 +40,7 @@ namespace BurnOutSharp.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new PathMatch("SafeLock.DAT", useEndsWith: true), "SafeLock"),
+                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}SafeLock.DAT", useEndsWith: true), "SafeLock"),
                 new PathMatchSet(new PathMatch("SafeLock.001", useEndsWith: true), "SafeLock"),
                 new PathMatchSet(new PathMatch("SafeLock.002", useEndsWith: true), "SafeLock"),
                 new PathMatchSet(new PathMatch("SafeLock.128", useEndsWith: true), "SafeLock"),
