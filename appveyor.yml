@@ -39,6 +39,7 @@ after_build:
 - 7z a BurnOutSharp_net48.zip net48\*
 - 7z a BurnOutSharp_netcoreapp3.1.zip netcoreapp3.1\*
 - 7z a BurnOutSharp_net5.0.zip net5.0\*
+- 7z a BurnOutSharp_net6.0.zip net6.0\*
 
 # success/failure tracking
 on_success:
@@ -56,3 +57,5 @@ artifacts:
   name: BurnOutSharp (.NET Core 3.1)
 - path: Test\bin\Debug\BurnOutSharp_net5.0.zip
   name: BurnOutSharp (.NET 5.0)
+- path: Test\bin\Debug\BurnOutSharp_net6.0.zip
+  name: BurnOutSharp (.NET 6.0)
