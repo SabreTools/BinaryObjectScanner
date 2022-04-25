@@ -12,40 +12,6 @@ namespace BurnOutSharp.ProtectionType
     // the same generic BoG_ string. The current combination check doesn't seem consistent
     public class SafeDisc : IPEContentCheck, IPathCheck
     {
-        /// <summary>
-        /// Set of all PathMatchSets for this protection
-        /// </summary>
-        private static readonly List<PathMatchSet> pathMatchers = new List<PathMatchSet>
-        {
-            new PathMatchSet(new List<PathMatch>
-            {
-                new PathMatch("CLCD16.DLL", useEndsWith: true),
-                new PathMatch("CLCD32.DLL", useEndsWith: true),
-                new PathMatch("CLOKSPL.EXE", useEndsWith: true),
-                //new PathMatch(".icd", useEndsWith: true), // Over-matches in a very specific case
-            }, "SafeDisc 1/Lite"),
-
-            new PathMatchSet(new List<PathMatch>
-            {
-                new PathMatch("00000001.TMP", useEndsWith: true),
-                //new PathMatch(".016", useEndsWith: true), // Potentially over-matching
-                //new PathMatch(".256", useEndsWith: true), // Potentially over-matching
-            }, "SafeDisc 1-3"),
-
-            new PathMatchSet(new PathMatch("00000002.TMP", useEndsWith: true), "SafeDisc 2"),
-
-            new PathMatchSet(new PathMatch("DPLAYERX.DLL", useEndsWith: true), GetDPlayerXVersion, "SafeDisc (dplayerx.dll)"),
-            new PathMatchSet(new PathMatch("drvmgt.dll", useEndsWith: true), GetDrvmgtVersion, "SafeDisc (drvmgt.dll)"),
-            new PathMatchSet(new PathMatch("secdrv.sys", useEndsWith: true), GetSecdrvVersion, "SafeDisc (secdrv.sys)"),
-            
-            new PathMatchSet(new PathMatch("00000001.LT1", useEndsWith: true), "SafeDisc Lite"),
-            
-            new PathMatchSet(".SafeDiscDVD.bundle", "SafeDisc for Macintosh"),
-
-            new PathMatchSet(new PathMatch("cdac11ba.exe", useEndsWith: true), "SafeCast"),
-            new PathMatchSet(new PathMatch("cdac14ba.dll", useEndsWith: true), "SafeCast"),
-        };
-
         /// <inheritdoc/>
         public string CheckPEContents(string file, PortableExecutable pex, bool includeDebug)
         {
@@ -90,13 +56,72 @@ namespace BurnOutSharp.ProtectionType
         /// <inheritdoc/>
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string> files)
         {
-            return MatchUtil.GetAllMatches(files, pathMatchers, any: false);
+            var matchers = new List<PathMatchSet>
+            {
+                new PathMatchSet(new List<PathMatch>
+                {
+                    new PathMatch("CLCD16.DLL", useEndsWith: true),
+                    new PathMatch("CLCD32.DLL", useEndsWith: true),
+                    new PathMatch("CLOKSPL.EXE", useEndsWith: true),
+                    new PathMatch(".icd", useEndsWith: true),
+                }, "SafeDisc 1/Lite"),
+
+                new PathMatchSet(new List<PathMatch>
+                {
+                    new PathMatch("00000001.TMP", useEndsWith: true),
+                    new PathMatch(".016", useEndsWith: true),
+                    new PathMatch(".256", useEndsWith: true),
+                }, "SafeDisc 1-3"),
+
+                new PathMatchSet(new PathMatch("00000002.TMP", useEndsWith: true), "SafeDisc 2"),
+
+                new PathMatchSet(new PathMatch("DPLAYERX.DLL", useEndsWith: true), GetDPlayerXVersion, "SafeDisc (dplayerx.dll)"),
+                new PathMatchSet(new PathMatch("drvmgt.dll", useEndsWith: true), GetDrvmgtVersion, "SafeDisc (drvmgt.dll)"),
+                new PathMatchSet(new PathMatch("secdrv.sys", useEndsWith: true), GetSecdrvVersion, "SafeDisc (secdrv.sys)"),
+
+                new PathMatchSet(new PathMatch("00000001.LT1", useEndsWith: true), "SafeDisc Lite"),
+
+                new PathMatchSet(".SafeDiscDVD.bundle", "SafeDisc for Macintosh"),
+
+                new PathMatchSet(new PathMatch("cdac11ba.exe", useEndsWith: true), "SafeCast"),
+                new PathMatchSet(new PathMatch("cdac14ba.dll", useEndsWith: true), "SafeCast"),
+            };
+
+            return MatchUtil.GetAllMatches(files, matchers, any: false);
         }
 
         /// <inheritdoc/>
         public string CheckFilePath(string path)
         {
-            return MatchUtil.GetFirstMatch(path, pathMatchers, any: true);
+            var matchers = new List<PathMatchSet>
+            {
+                new PathMatchSet(new List<PathMatch>
+                {
+                    new PathMatch("CLCD16.DLL", useEndsWith: true),
+                    new PathMatch("CLCD32.DLL", useEndsWith: true),
+                    new PathMatch("CLOKSPL.EXE", useEndsWith: true),
+                }, "SafeDisc 1/Lite"),
+
+                new PathMatchSet(new List<PathMatch>
+                {
+                    new PathMatch("00000001.TMP", useEndsWith: true),
+                }, "SafeDisc 1-3"),
+
+                new PathMatchSet(new PathMatch("00000002.TMP", useEndsWith: true), "SafeDisc 2"),
+
+                new PathMatchSet(new PathMatch("DPLAYERX.DLL", useEndsWith: true), GetDPlayerXVersion, "SafeDisc (dplayerx.dll)"),
+                new PathMatchSet(new PathMatch("drvmgt.dll", useEndsWith: true), GetDrvmgtVersion, "SafeDisc (drvmgt.dll)"),
+                new PathMatchSet(new PathMatch("secdrv.sys", useEndsWith: true), GetSecdrvVersion, "SafeDisc (secdrv.sys)"),
+
+                new PathMatchSet(new PathMatch("00000001.LT1", useEndsWith: true), "SafeDisc Lite"),
+
+                new PathMatchSet(".SafeDiscDVD.bundle", "SafeDisc for Macintosh"),
+
+                new PathMatchSet(new PathMatch("cdac11ba.exe", useEndsWith: true), "SafeCast"),
+                new PathMatchSet(new PathMatch("cdac14ba.dll", useEndsWith: true), "SafeCast"),
+            };
+
+            return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
 
         public static string Get320to4xVersion(string file, byte[] fileContent, List<int> positions) => "3.20-4.xx (version removed)";
