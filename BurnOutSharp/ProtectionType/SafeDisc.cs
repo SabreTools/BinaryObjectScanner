@@ -22,7 +22,7 @@ namespace BurnOutSharp.ProtectionType
                 new PathMatch("CLCD16.DLL", useEndsWith: true),
                 new PathMatch("CLCD32.DLL", useEndsWith: true),
                 new PathMatch("CLOKSPL.EXE", useEndsWith: true),
-                new PathMatch(".icd", useEndsWith: true),
+                //new PathMatch(".icd", useEndsWith: true), // Over-matches in a very specific case
             }, "SafeDisc 1/Lite"),
 
             new PathMatchSet(new List<PathMatch>
