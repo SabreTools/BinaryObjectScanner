@@ -63,12 +63,7 @@ namespace Test
             }
 
             // Create scanner for all paths
-            var scanner = new Scanner(p)
-            {
-                IncludeDebug = debug,
-                ScanArchives = archives,
-                ScanPackers = packers,
-            };
+            var scanner = new Scanner(archives, packers, debug, p);
 
             // Loop through the input paths
             foreach (string inputPath in inputPaths)

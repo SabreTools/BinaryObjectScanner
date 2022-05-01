@@ -13,24 +13,24 @@ namespace BurnOutSharp
     public class Scanner
     {
         /// <summary>
-        /// Optional progress callback during scanning
-        /// </summary>
-        public IProgress<ProtectionProgress> FileProgress { get; set; }
-
-        /// <summary>
-        /// Determines if debug information is output or not
-        /// </summary>
-        public bool IncludeDebug { get; set; }
-
-        /// <summary>
         /// Determines whether archives are decompressed and scanned
         /// </summary>
-        public bool ScanArchives { get; set; }
+        public bool ScanArchives { get; private set; }
 
         /// <summary>
         /// Determines if packers are counted as detected protections or not
         /// </summary>
-        public bool ScanPackers { get; set; }
+        public bool ScanPackers { get; private set; }
+
+        /// <summary>
+        /// Determines if debug information is output or not
+        /// </summary>
+        public bool IncludeDebug { get; private set; }
+
+        /// <summary>
+        /// Optional progress callback during scanning
+        /// </summary>
+        public IProgress<ProtectionProgress> FileProgress { get; private set; }
 
         /// <summary>
         /// Cache for all IPathCheck types
@@ -40,9 +40,15 @@ namespace BurnOutSharp
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="scanArchives">Enable scanning archive contents</param>
+        /// <param name="scanPackers">Enable including packers in output</param>
+        /// <param name="includeDebug">Enable including debug information</param>
         /// <param name="fileProgress">Optional progress callback</param>
-        public Scanner(IProgress<ProtectionProgress> fileProgress = null)
+        public Scanner(bool scanArchives, bool scanPackers, bool includeDebug, IProgress<ProtectionProgress> fileProgress = null)
         {
+            ScanArchives = scanArchives;
+            ScanPackers = scanPackers;
+            IncludeDebug = includeDebug;
             FileProgress = fileProgress;
         }
 
