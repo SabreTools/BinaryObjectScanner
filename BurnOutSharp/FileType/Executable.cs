@@ -189,13 +189,15 @@ namespace BurnOutSharp.FileType
         /// <param name="protection">The protection result to be checked</param>
         private bool ShouldAddProtection(object checkClass, bool scanPackers, string protection)
         {
+            // If we have an invalid protection
+            if (string.IsNullOrWhiteSpace(protection))
+                return false;
+
             // If we have a valid content check based on settings
             if (scanPackers || !checkClass.GetType().Namespace.ToLowerInvariant().Contains("packertype"))
-            {
-                if (!string.IsNullOrWhiteSpace(protection))
-                    return true;
-            }
+                return true;
 
+            // Everything else fails
             return false;
         }
 
