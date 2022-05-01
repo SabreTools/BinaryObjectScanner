@@ -23,15 +23,6 @@ namespace BurnOutSharp
         public bool IncludeDebug { get; set; } = false;
 
         /// <summary>
-        /// Determines whether all files are scanned or just executables are
-        /// </summary>
-        /// <remarks>
-        /// With the improvements to executable scannning, this should probably be removed in
-        /// a future update.
-        /// </remarks>
-        public bool ScanAllFiles { get; set; } = false;
-
-        /// <summary>
         /// Determines whether archives are decompressed and scanned
         /// </summary>
         public bool ScanArchives { get; set; } = true;
@@ -281,14 +272,14 @@ namespace BurnOutSharp
                     #region Non-Archive File Types
 
                     // Executable
-                    if (ScanAllFiles || new Executable().ShouldScan(magic))
+                    if (new Executable().ShouldScan(magic))
                     {
                         var subProtections = new Executable().Scan(this, fs, file);
                         Utilities.AppendToDictionary(protections, subProtections);
                     }
 
                     // Text-based files
-                    if (ScanAllFiles || new Textfile().ShouldScan(magic, extension))
+                    if (new Textfile().ShouldScan(magic, extension))
                     {
                         var subProtections = new Textfile().Scan(this, fs, file);
                         Utilities.AppendToDictionary(protections, subProtections);

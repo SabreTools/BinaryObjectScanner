@@ -16,7 +16,7 @@ namespace Test
             p.ProgressChanged += Changed;
 
             // Set initial values for scanner flags
-            bool debug = false, allFiles = false, archives = true, packers = true;
+            bool debug = false, archives = true, packers = true;
             var inputPaths = new List<string>();
 
             // Loop through the arguments to get the flags
@@ -35,11 +35,6 @@ namespace Test
                     case "-d":
                     case "--debug":
                         debug = true;
-                        break;
-
-                    case "-a":
-                    case "--all-files":
-                        allFiles = true;
                         break;
 
                     case "-na":
@@ -71,7 +66,6 @@ namespace Test
             var scanner = new Scanner(p)
             {
                 IncludeDebug = debug,
-                ScanAllFiles = allFiles,
                 ScanArchives = archives,
                 ScanPackers = packers,
             };
@@ -98,7 +92,6 @@ namespace Test
             Console.WriteLine("Possible options:");
             Console.WriteLine("-?, -h, --help       Display this help text and quit");
             Console.WriteLine("-d, --debug          Enable debug mode");
-            Console.WriteLine("-a, --all-files      Force scanning all files");
             Console.WriteLine("-na, --no-archives   Disable scanning archives");
             Console.WriteLine("-np, --no-packers    Disable scanning for packers");
         }
