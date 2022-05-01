@@ -20,17 +20,17 @@ namespace BurnOutSharp
         /// <summary>
         /// Determines if debug information is output or not
         /// </summary>
-        public bool IncludeDebug { get; set; } = false;
+        public bool IncludeDebug { get; set; }
 
         /// <summary>
         /// Determines whether archives are decompressed and scanned
         /// </summary>
-        public bool ScanArchives { get; set; } = true;
+        public bool ScanArchives { get; set; }
 
         /// <summary>
         /// Determines if packers are counted as detected protections or not
         /// </summary>
-        public bool ScanPackers { get; set; } = false;
+        public bool ScanPackers { get; set; }
 
         /// <summary>
         /// Cache for all IPathCheck types
