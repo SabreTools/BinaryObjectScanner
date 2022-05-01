@@ -114,7 +114,7 @@ namespace BurnOutSharp.FileType
                 Parallel.ForEach(contentCheckClasses, contentCheckClass =>
                 {
                     string protection = contentCheckClass.CheckContents(file, fileContent, scanner.IncludeDebug, pex, nex);
-                    if (ShouldAddProtection(contentCheckClass, scanner, protection))
+                    if (ShouldAddProtection(contentCheckClass, scanner.ScanPackers, protection))
                         Utilities.AppendToDictionary(protections, file, protection);
 
                     // If we have an IScannable implementation
@@ -137,7 +137,7 @@ namespace BurnOutSharp.FileType
                 {
                     // Check using custom content checks first
                     string protection = contentCheckClass.CheckNEContents(file, nex, scanner.IncludeDebug);
-                    if (ShouldAddProtection(contentCheckClass, scanner, protection))
+                    if (ShouldAddProtection(contentCheckClass, scanner.ScanPackers, protection))
                         Utilities.AppendToDictionary(protections, file, protection);
 
                     // If we have an IScannable implementation
@@ -160,7 +160,7 @@ namespace BurnOutSharp.FileType
                 {
                     // Check using custom content checks first
                     string protection = contentCheckClass.CheckPEContents(file, pex, scanner.IncludeDebug);
-                    if (ShouldAddProtection(contentCheckClass, scanner, protection))
+                    if (ShouldAddProtection(contentCheckClass, scanner.ScanPackers, protection))
                         Utilities.AppendToDictionary(protections, file, protection);
 
                     // If we have an IScannable implementation
@@ -185,12 +185,12 @@ namespace BurnOutSharp.FileType
         /// Check to see if a protection should be added or not
         /// </summary>
         /// <param name="checkClass">Class that was last used to check</param>
-        /// <param name="scanner">Scanner object for state tracking</param>
+        /// <param name="scanPackers">Determines if packers should be included in the output</param>
         /// <param name="protection">The protection result to be checked</param>
-        private bool ShouldAddProtection(object checkClass, Scanner scanner, string protection)
+        private bool ShouldAddProtection(object checkClass, bool scanPackers, string protection)
         {
             // If we have a valid content check based on settings
-            if (!checkClass.GetType().Namespace.ToLowerInvariant().Contains("packertype") || scanner.ScanPackers)
+            if (scanPackers || !checkClass.GetType().Namespace.ToLowerInvariant().Contains("packertype"))
             {
                 if (!string.IsNullOrWhiteSpace(protection))
                     return true;
