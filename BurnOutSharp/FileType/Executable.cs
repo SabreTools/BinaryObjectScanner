@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,25 +11,6 @@ namespace BurnOutSharp.FileType
 {
     public class Executable : IScannable
     {
-        #region Checking Class Instances
-
-        /// <summary>
-        /// Cache for all IContentCheck types
-        /// </summary>
-        private static readonly IEnumerable<IContentCheck> contentCheckClasses = Initializer.InitContentCheckClasses();
-
-        /// <summary>
-        /// Cache for all INEContentCheck types
-        /// </summary>
-        private static readonly IEnumerable<INEContentCheck> neContentCheckClasses = Initializer.InitNEContentCheckClasses();
-
-        /// <summary>
-        /// Cache for all IPEContentCheck types
-        /// </summary>
-        private static readonly IEnumerable<IPEContentCheck> peContentCheckClasses = Initializer.InitPEContentCheckClasses();
-
-        #endregion
-
         /// <inheritdoc/>
         public bool ShouldScan(byte[] magic)
         {
@@ -111,7 +91,7 @@ namespace BurnOutSharp.FileType
             // Iterate through all generic content checks
             if (fileContent != null)
             {
-                Parallel.ForEach(contentCheckClasses, contentCheckClass =>
+                Parallel.ForEach(ScanningClasses.ContentCheckClasses, contentCheckClass =>
                 {
                     string protection = contentCheckClass.CheckContents(file, fileContent, scanner.IncludeDebug, pex, nex);
                     if (ShouldAddProtection(contentCheckClass, scanner.ScanPackers, protection))
@@ -133,7 +113,7 @@ namespace BurnOutSharp.FileType
             // If we have a NE executable, iterate through all NE content checks
             if (nex?.Initialized == true)
             {
-                Parallel.ForEach(neContentCheckClasses, contentCheckClass =>
+                Parallel.ForEach(ScanningClasses.NEContentCheckClasses, contentCheckClass =>
                 {
                     // Check using custom content checks first
                     string protection = contentCheckClass.CheckNEContents(file, nex, scanner.IncludeDebug);
@@ -156,7 +136,7 @@ namespace BurnOutSharp.FileType
             // If we have a PE executable, iterate through all PE content checks
             if (pex?.Initialized == true)
             {
-                Parallel.ForEach(peContentCheckClasses, contentCheckClass =>
+                Parallel.ForEach(ScanningClasses.PEContentCheckClasses, contentCheckClass =>
                 {
                     // Check using custom content checks first
                     string protection = contentCheckClass.CheckPEContents(file, pex, scanner.IncludeDebug);

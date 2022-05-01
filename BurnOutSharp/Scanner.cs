@@ -35,15 +35,6 @@ namespace BurnOutSharp
 
         #endregion
 
-        #region Checking Class Instances
-
-        /// <summary>
-        /// Cache for all IPathCheck types
-        /// </summary>
-        private static readonly IEnumerable<IPathCheck> pathCheckClasses = Initializer.InitPathCheckClasses();
-
-        #endregion
-
         /// <summary>
         /// Constructor
         /// </summary>
@@ -210,7 +201,7 @@ namespace BurnOutSharp
             files = files.Select(f => f.Replace('\\', '/')).ToList();
 
             // Iterate through all path checks
-            Parallel.ForEach(pathCheckClasses, pathCheckClass =>
+            Parallel.ForEach(ScanningClasses.PathCheckClasses, pathCheckClass =>
             {
                 ConcurrentQueue<string> protection = pathCheckClass.CheckDirectoryPath(path, files);
                 if (protection != null)
@@ -235,7 +226,7 @@ namespace BurnOutSharp
             var protections = new ConcurrentQueue<string>();
 
             // Iterate through all path checks
-            Parallel.ForEach(pathCheckClasses, pathCheckClass =>
+            Parallel.ForEach(ScanningClasses.PathCheckClasses, pathCheckClass =>
             {
                 string protection = pathCheckClass.CheckFilePath(path.Replace("\\", "/"));
                 if (!string.IsNullOrWhiteSpace(protection))
