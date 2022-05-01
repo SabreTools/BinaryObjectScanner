@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using BurnOutSharp.FileType;
 using BurnOutSharp.Tools;
@@ -12,6 +11,8 @@ namespace BurnOutSharp
 {
     public class Scanner
     {
+        #region Options
+
         /// <summary>
         /// Determines whether archives are decompressed and scanned
         /// </summary>
@@ -32,10 +33,16 @@ namespace BurnOutSharp
         /// </summary>
         public IProgress<ProtectionProgress> FileProgress { get; private set; }
 
+        #endregion
+
+        #region Checking Class Instances
+
         /// <summary>
         /// Cache for all IPathCheck types
         /// </summary>
-        private static readonly IEnumerable<IPathCheck> pathCheckClasses = InitPathCheckClasses();
+        private static readonly IEnumerable<IPathCheck> pathCheckClasses = Initializer.InitPathCheckClasses();
+
+        #endregion
 
         /// <summary>
         /// Constructor
@@ -51,6 +58,8 @@ namespace BurnOutSharp
             IncludeDebug = includeDebug;
             FileProgress = fileProgress;
         }
+
+        #region Scanning
 
         /// <summary>
         /// Scan a single path and get all found protections
@@ -425,15 +434,7 @@ namespace BurnOutSharp
 
             return protections;
         }
-    
-        /// <summary>
-        /// Initialize all IPathCheck implementations
-        /// </summary>
-        private static IEnumerable<IPathCheck> InitPathCheckClasses()
-        {
-            return Assembly.GetExecutingAssembly().GetTypes()
-                .Where(t => t.IsClass && t.GetInterface(nameof(IPathCheck)) != null)
-                .Select(t => Activator.CreateInstance(t) as IPathCheck);
-        }
+
+        #endregion
     }
 }

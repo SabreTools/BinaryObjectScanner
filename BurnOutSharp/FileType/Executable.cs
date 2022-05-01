@@ -2,8 +2,6 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using BurnOutSharp.ExecutableType.Microsoft.NE;
@@ -14,20 +12,24 @@ namespace BurnOutSharp.FileType
 {
     public class Executable : IScannable
     {
+        #region Checking Class Instances
+
         /// <summary>
         /// Cache for all IContentCheck types
         /// </summary>
-        private static readonly IEnumerable<IContentCheck> contentCheckClasses = InitContentCheckClasses();
+        private static readonly IEnumerable<IContentCheck> contentCheckClasses = Initializer.InitContentCheckClasses();
 
         /// <summary>
         /// Cache for all INEContentCheck types
         /// </summary>
-        private static readonly IEnumerable<INEContentCheck> neContentCheckClasses = InitNEContentCheckClasses();
+        private static readonly IEnumerable<INEContentCheck> neContentCheckClasses = Initializer.InitNEContentCheckClasses();
 
         /// <summary>
         /// Cache for all IPEContentCheck types
         /// </summary>
-        private static readonly IEnumerable<IPEContentCheck> peContentCheckClasses = InitPEContentCheckClasses();
+        private static readonly IEnumerable<IPEContentCheck> peContentCheckClasses = Initializer.InitPEContentCheckClasses();
+
+        #endregion
 
         /// <inheritdoc/>
         public bool ShouldScan(byte[] magic)
@@ -179,36 +181,6 @@ namespace BurnOutSharp.FileType
 
         #region Helpers
 
-        /// <summary>
-        /// Initialize all IContentCheck implementations
-        /// </summary>
-        private static IEnumerable<IContentCheck> InitContentCheckClasses()
-        {
-            return Assembly.GetExecutingAssembly().GetTypes()
-                .Where(t => t.IsClass && t.GetInterface(nameof(IContentCheck)) != null)
-                .Select(t => Activator.CreateInstance(t) as IContentCheck);
-        }
-
-        /// <summary>
-        /// Initialize all INEContentCheck implementations
-        /// </summary>
-        private static IEnumerable<INEContentCheck> InitNEContentCheckClasses()
-        {
-            return Assembly.GetExecutingAssembly().GetTypes()
-                .Where(t => t.IsClass && t.GetInterface(nameof(INEContentCheck)) != null)
-                .Select(t => Activator.CreateInstance(t) as INEContentCheck);
-        }
-
-        /// <summary>
-        /// Initialize all IPEContentCheck implementations
-        /// </summary>
-        private static IEnumerable<IPEContentCheck> InitPEContentCheckClasses()
-        {
-            return Assembly.GetExecutingAssembly().GetTypes()
-                .Where(t => t.IsClass && t.GetInterface(nameof(IPEContentCheck)) != null)
-                .Select(t => Activator.CreateInstance(t) as IPEContentCheck);
-        }
-    
         /// <summary>
         /// Check to see if a protection should be added or not
         /// </summary>
