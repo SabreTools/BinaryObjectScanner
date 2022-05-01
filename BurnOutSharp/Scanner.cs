@@ -28,12 +28,12 @@ namespace BurnOutSharp
         /// </summary>
         public bool IncludeDebug { get; private set; }
 
+        #endregion
+
         /// <summary>
         /// Optional progress callback during scanning
         /// </summary>
-        public IProgress<ProtectionProgress> FileProgress { get; private set; }
-
-        #endregion
+        private readonly IProgress<ProtectionProgress> fileProgress;
 
         /// <summary>
         /// Constructor
@@ -47,7 +47,7 @@ namespace BurnOutSharp
             ScanArchives = scanArchives;
             ScanPackers = scanPackers;
             IncludeDebug = includeDebug;
-            FileProgress = fileProgress;
+            this.fileProgress = fileProgress;
         }
 
         #region Scanning
@@ -76,7 +76,7 @@ namespace BurnOutSharp
             DateTime startTime = DateTime.UtcNow;
 
             // Checkpoint
-            FileProgress?.Report(new ProtectionProgress(null, 0, null));
+            this.fileProgress?.Report(new ProtectionProgress(null, 0, null));
 
             // Temp variables for reporting
             string tempFilePath = Path.GetTempPath();
@@ -108,7 +108,7 @@ namespace BurnOutSharp
                             reportableFileName = reportableFileName.Substring(tempFilePathWithGuid.Length);
 
                         // Checkpoint
-                        FileProgress?.Report(new ProtectionProgress(reportableFileName, i / (float)files.Count, "Checking file" + (file != reportableFileName ? " from archive" : string.Empty)));
+                        this.fileProgress?.Report(new ProtectionProgress(reportableFileName, i / (float)files.Count, "Checking file" + (file != reportableFileName ? " from archive" : string.Empty)));
 
                         // Scan for path-detectable protections
                         var filePathProtections = GetFilePathProtections(file);
@@ -130,7 +130,7 @@ namespace BurnOutSharp
                         // Checkpoint
                         protections.TryGetValue(file, out ConcurrentQueue<string> fullProtectionList);
                         string fullProtection = (fullProtectionList != null && fullProtectionList.Any() ? string.Join(", ", fullProtectionList) : null);
-                        FileProgress?.Report(new ProtectionProgress(reportableFileName, (i + 1) / (float)files.Count, fullProtection ?? string.Empty));
+                        this.fileProgress?.Report(new ProtectionProgress(reportableFileName, (i + 1) / (float)files.Count, fullProtection ?? string.Empty));
                     }
                 }
 
@@ -143,7 +143,7 @@ namespace BurnOutSharp
                         reportableFileName = reportableFileName.Substring(tempFilePathWithGuid.Length);
 
                     // Checkpoint
-                    FileProgress?.Report(new ProtectionProgress(reportableFileName, 0, "Checking file" + (path != reportableFileName ? " from archive" : string.Empty)));
+                    this.fileProgress?.Report(new ProtectionProgress(reportableFileName, 0, "Checking file" + (path != reportableFileName ? " from archive" : string.Empty)));
 
                     // Scan for path-detectable protections
                     var filePathProtections = GetFilePathProtections(path);
@@ -165,7 +165,7 @@ namespace BurnOutSharp
                     // Checkpoint
                     protections.TryGetValue(path, out ConcurrentQueue<string> fullProtectionList);
                     string fullProtection = (fullProtectionList != null && fullProtectionList.Any() ? string.Join(", ", fullProtectionList) : null);
-                    FileProgress?.Report(new ProtectionProgress(reportableFileName, 1, fullProtection ?? string.Empty));
+                    this.fileProgress?.Report(new ProtectionProgress(reportableFileName, 1, fullProtection ?? string.Empty));
                 }
 
                 // Throw on an invalid path
