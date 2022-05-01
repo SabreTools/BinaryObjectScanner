@@ -15,7 +15,7 @@ namespace BurnOutSharp
         /// <summary>
         /// Optional progress callback during scanning
         /// </summary>
-        public IProgress<ProtectionProgress> FileProgress { get; set; } = null;
+        public IProgress<ProtectionProgress> FileProgress { get; set; }
 
         /// <summary>
         /// Determines if debug information is output or not
