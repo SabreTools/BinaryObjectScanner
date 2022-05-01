@@ -184,49 +184,13 @@ namespace BurnOutSharp.FileType
         /// <summary>
         /// Check to see if a protection should be added or not
         /// </summary>
-        /// <param name="contentCheckClass">Class that was last used to check</param>
+        /// <param name="checkClass">Class that was last used to check</param>
         /// <param name="scanner">Scanner object for state tracking</param>
         /// <param name="protection">The protection result to be checked</param>
-        private bool ShouldAddProtection(IContentCheck contentCheckClass, Scanner scanner, string protection)
+        private bool ShouldAddProtection(object checkClass, Scanner scanner, string protection)
         {
             // If we have a valid content check based on settings
-            if (!contentCheckClass.GetType().Namespace.ToLowerInvariant().Contains("packertype") || scanner.ScanPackers)
-            {
-                if (!string.IsNullOrWhiteSpace(protection))
-                    return true;
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        /// Check to see if a protection should be added or not
-        /// </summary>
-        /// <param name="neContentCheckClass">Class that was last used to check</param>
-        /// <param name="scanner">Scanner object for state tracking</param>
-        /// <param name="protection">The protection result to be checked</param>
-        private bool ShouldAddProtection(INEContentCheck neContentCheckClass, Scanner scanner, string protection)
-        {
-            // If we have a valid content check based on settings
-            if (!neContentCheckClass.GetType().Namespace.ToLowerInvariant().Contains("packertype") || scanner.ScanPackers)
-            {
-                if (!string.IsNullOrWhiteSpace(protection))
-                    return true;
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        /// Check to see if a protection should be added or not
-        /// </summary>
-        /// <param name="peContentCheckClass">Class that was last used to check</param>
-        /// <param name="scanner">Scanner object for state tracking</param>
-        /// <param name="protection">The protection result to be checked</param>
-        private bool ShouldAddProtection(IPEContentCheck peContentCheckClass, Scanner scanner, string protection)
-        {
-            // If we have a valid content check based on settings
-            if (!peContentCheckClass.GetType().Namespace.ToLowerInvariant().Contains("packertype") || scanner.ScanPackers)
+            if (!checkClass.GetType().Namespace.ToLowerInvariant().Contains("packertype") || scanner.ScanPackers)
             {
                 if (!string.IsNullOrWhiteSpace(protection))
                     return true;
