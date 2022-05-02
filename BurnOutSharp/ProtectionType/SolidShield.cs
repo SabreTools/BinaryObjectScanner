@@ -10,10 +10,10 @@ namespace BurnOutSharp.ProtectionType
 {
     // TODO: Not matching all SolidShield Wrapper v1 (See JackKeane)
     // TODO: Not matching all SolidShield Wrapper v1 (See NFS11)
-    public class SolidShield : IPEContentCheck, IPathCheck
+    public class SolidShield : IPortableExecutableCheck, IPathCheck
     {
         /// <inheritdoc/>
-        public string CheckPEContents(string file, PortableExecutable pex, bool includeDebug)
+        public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex?.SectionTable;

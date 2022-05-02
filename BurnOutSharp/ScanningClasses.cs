@@ -27,16 +27,16 @@ namespace BurnOutSharp
         }
 
         /// <summary>
-        /// Cache for all INEContentCheck types
+        /// Cache for all INewExecutableCheck types
         /// </summary>
-        public static IEnumerable<INEContentCheck> NEContentCheckClasses
+        public static IEnumerable<INewExecutableCheck> NewExecutableCheckClasses
         {
             get
             {
-                if (neContentCheckClasses == null)
-                    neContentCheckClasses = InitCheckClasses<INEContentCheck>();
+                if (newExecutableCheckClasses == null)
+                    newExecutableCheckClasses = InitCheckClasses<INewExecutableCheck>();
 
-                return neContentCheckClasses;
+                return newExecutableCheckClasses;
             }
         }
 
@@ -55,16 +55,16 @@ namespace BurnOutSharp
         }
 
         /// <summary>
-        /// Cache for all IPEContentCheck types
+        /// Cache for all IPortableExecutableCheck types
         /// </summary>
-        public static IEnumerable<IPEContentCheck> PEContentCheckClasses
+        public static IEnumerable<IPortableExecutableCheck> PortableExecutableCheckClasses
         {
             get
             {
-                if (peContentCheckClasses == null)
-                    peContentCheckClasses = InitCheckClasses<IPEContentCheck>();
+                if (portableExecutableCheckClasses == null)
+                    portableExecutableCheckClasses = InitCheckClasses<IPortableExecutableCheck>();
 
-                return peContentCheckClasses;
+                return portableExecutableCheckClasses;
             }
         }
 
@@ -80,7 +80,7 @@ namespace BurnOutSharp
         /// <summary>
         /// Cache for all INEContentCheck types
         /// </summary>
-        private static IEnumerable<INEContentCheck> neContentCheckClasses;
+        private static IEnumerable<INewExecutableCheck> newExecutableCheckClasses;
 
         /// <summary>
         /// Cache for all IPathCheck types
@@ -90,7 +90,7 @@ namespace BurnOutSharp
         /// <summary>
         /// Cache for all IPEContentCheck types
         /// </summary>
-        private static IEnumerable<IPEContentCheck> peContentCheckClasses;
+        private static IEnumerable<IPortableExecutableCheck> portableExecutableCheckClasses;
 
         #endregion
 

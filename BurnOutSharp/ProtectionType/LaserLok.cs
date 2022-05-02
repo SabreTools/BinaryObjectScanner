@@ -9,10 +9,10 @@ using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ProtectionType
 {
-    public class LaserLok : IPEContentCheck, IPathCheck
+    public class LaserLok : IPortableExecutableCheck, IPathCheck
     {
         /// <inheritdoc/>
-        public string CheckPEContents(string file, PortableExecutable pex, bool includeDebug)
+        public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // TODO: Additional checks that may or may not be useful with the below
             //

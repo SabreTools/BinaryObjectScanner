@@ -4,10 +4,10 @@ using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ProtectionType
 {
-    public class OnlineRegistration : IPEContentCheck
+    public class OnlineRegistration : IPortableExecutableCheck
     {
         /// <inheritdoc/>
-        public string CheckPEContents(string file, PortableExecutable pex, bool includeDebug)
+        public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex?.SectionTable;

@@ -9,13 +9,13 @@ using BurnOutSharp.Tools;
 namespace BurnOutSharp.PackerType
 {
     // TODO: Add extraction, which should be possible with LibMSPackN, but it refuses to extract due to SFX files lacking the typical CAB identifiers.
-    public class MicrosoftCABSFX : IPEContentCheck, IScannable
+    public class MicrosoftCABSFX : IPortableExecutableCheck, IScannable
     {
         /// <inheritdoc/>
         public bool ShouldScan(byte[] magic) => true;
 
         /// <inheritdoc/>
-        public string CheckPEContents(string file, PortableExecutable pex, bool includeDebug)
+        public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex?.SectionTable;

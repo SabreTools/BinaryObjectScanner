@@ -12,10 +12,10 @@ namespace BurnOutSharp.ProtectionType
     //      - Look into `ccinstall`, `Services/EACOM`, `TSLHost`, `SIGS/UploadThread/exchangeAuthToken`,
     //          `blazeURL`, `psapi.dll`, `DasmX86Dll.dll`, `NVCPL.dll`, `iphlpapi.dll`, `dbghelp.dll`,
     //          `WS2_32.dll`, 
-    public class ElectronicArts : IPEContentCheck
+    public class ElectronicArts : IPortableExecutableCheck
     {
         /// <inheritdoc/>
-        public string CheckPEContents(string file, PortableExecutable pex, bool includeDebug)
+        public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex?.SectionTable;

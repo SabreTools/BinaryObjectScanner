@@ -10,10 +10,10 @@ namespace BurnOutSharp.ProtectionType
 {
     // TODO: Figure out how to properly distinguish SafeDisc and SafeCast since both use
     // the same generic BoG_ string. The current combination check doesn't seem consistent
-    public class SafeDisc : IPEContentCheck, IPathCheck
+    public class SafeDisc : IPortableExecutableCheck, IPathCheck
     {
         /// <inheritdoc/>
-        public string CheckPEContents(string file, PortableExecutable pex, bool includeDebug)
+        public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex?.SectionTable;

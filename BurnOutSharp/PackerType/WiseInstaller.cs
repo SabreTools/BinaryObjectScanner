@@ -10,13 +10,13 @@ using Wise = WiseUnpacker.WiseUnpacker;
 
 namespace BurnOutSharp.PackerType
 {
-    public class WiseInstaller : INEContentCheck, IPEContentCheck, IScannable
+    public class WiseInstaller : INewExecutableCheck, IPortableExecutableCheck, IScannable
     {
         /// <inheritdoc/>
         public bool ShouldScan(byte[] magic) => true;
 
         /// <inheritdoc/>
-        public string CheckNEContents(string file, NewExecutable nex, bool includeDebug)
+        public string CheckNewExecutable(string file, NewExecutable nex, bool includeDebug)
         {
             // Get the DOS stub from the executable, if possible
             var stub = nex?.DOSStubHeader;
@@ -40,7 +40,7 @@ namespace BurnOutSharp.PackerType
         }
 
         /// <inheritdoc/>
-        public string CheckPEContents(string file, PortableExecutable pex, bool includeDebug)
+        public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex?.SectionTable;

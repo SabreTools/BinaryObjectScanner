@@ -6,13 +6,13 @@ using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.PackerType
 {
-    public class SetupFactory : IPEContentCheck, IScannable
+    public class SetupFactory : IPortableExecutableCheck, IScannable
     {
         /// <inheritdoc/>
         public bool ShouldScan(byte[] magic) => true;
 
         /// <inheritdoc/>
-        public string CheckPEContents(string file, PortableExecutable pex, bool includeDebug)
+        public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex?.SectionTable;

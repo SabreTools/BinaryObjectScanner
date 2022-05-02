@@ -1,7 +1,5 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
-using BurnOutSharp.ExecutableType.Microsoft.NE;
-using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
@@ -9,7 +7,7 @@ namespace BurnOutSharp.ProtectionType
     public class CopyKiller : IContentCheck, IPathCheck
     {
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug)
         {
             // TODO: Obtain a sample to find where this string is in a typical executable
             if (includeDebug)

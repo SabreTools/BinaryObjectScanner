@@ -6,14 +6,14 @@ using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.PackerType
 {
-    public class InstallerVISE : IPEContentCheck, IScannable
+    public class InstallerVISE : IPortableExecutableCheck, IScannable
     {
         /// <inheritdoc/>
         public bool ShouldScan(byte[] magic) => true;
 
         //TODO: Add exact version detection for Windows builds, make sure versions before 3.X are detected as well, and detect the Mac builds.
         /// <inheritdoc/>
-        public string CheckPEContents(string file, PortableExecutable pex, bool includeDebug)
+        public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex?.SectionTable;

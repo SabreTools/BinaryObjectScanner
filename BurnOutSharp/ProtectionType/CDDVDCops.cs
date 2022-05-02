@@ -8,10 +8,10 @@ using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
 {
-    public class CDDVDCops : IContentCheck, INEContentCheck, IPEContentCheck, IPathCheck
+    public class CDDVDCops : IContentCheck, INewExecutableCheck, IPortableExecutableCheck, IPathCheck
     {
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug)
         {
             // TODO: Obtain a sample to find where this string is in a typical executable
             if (includeDebug)
@@ -41,7 +41,7 @@ namespace BurnOutSharp.ProtectionType
         }
 
         /// <inheritdoc/>
-        public string CheckNEContents(string file, NewExecutable nex, bool includeDebug)
+        public string CheckNewExecutable(string file, NewExecutable nex, bool includeDebug)
         {
             // Get the DOS stub from the executable, if possible
             var stub = nex?.DOSStubHeader;
@@ -72,7 +72,7 @@ namespace BurnOutSharp.ProtectionType
         }
 
         /// <inheritdoc/>
-        public string CheckPEContents(string file, PortableExecutable pex, bool includeDebug)
+        public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex?.SectionTable;

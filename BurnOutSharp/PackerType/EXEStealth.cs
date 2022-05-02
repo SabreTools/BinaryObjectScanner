@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using BurnOutSharp.ExecutableType.Microsoft.NE;
 using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Matching;
 
@@ -8,10 +7,10 @@ namespace BurnOutSharp.PackerType
     // TODO: Figure out how to more granularly determine versions like PiD,
     // at least for the 2.41 -> 2.75 range
     // TODO: Detect 3.15 and up (maybe looking for `Metamorphism`)
-    public class EXEStealth : IContentCheck, IPEContentCheck
+    public class EXEStealth : IContentCheck, IPortableExecutableCheck
     {
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug)
         {
             // TODO: Obtain a sample to find where this string is in a typical executable
             if (includeDebug)
@@ -36,7 +35,7 @@ namespace BurnOutSharp.PackerType
         }
 
         /// <inheritdoc/>
-        public string CheckPEContents(string file, PortableExecutable pex, bool includeDebug)
+        public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex?.SectionTable;

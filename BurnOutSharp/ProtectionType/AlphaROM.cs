@@ -11,10 +11,10 @@ namespace BurnOutSharp.ProtectionType
     //      - SETTEC0000SETTEC1111
     //      - SOFTWARE\SETTEC
     // TODO: Are there version numbers?
-    public class AlphaROM : IPEContentCheck
+    public class AlphaROM : IPortableExecutableCheck
     {
         /// <inheritdoc/>
-        public string CheckPEContents(string file, PortableExecutable pex, bool includeDebug)
+        public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex?.SectionTable;

@@ -93,7 +93,7 @@ namespace BurnOutSharp.FileType
             {
                 Parallel.ForEach(ScanningClasses.ContentCheckClasses, contentCheckClass =>
                 {
-                    string protection = contentCheckClass.CheckContents(file, fileContent, scanner.IncludeDebug, pex, nex);
+                    string protection = contentCheckClass.CheckContents(file, fileContent, scanner.IncludeDebug);
                     if (ShouldAddProtection(contentCheckClass, scanner.ScanPackers, protection))
                         Utilities.AppendToDictionary(protections, file, protection);
 
@@ -113,10 +113,10 @@ namespace BurnOutSharp.FileType
             // If we have a NE executable, iterate through all NE content checks
             if (nex?.Initialized == true)
             {
-                Parallel.ForEach(ScanningClasses.NEContentCheckClasses, contentCheckClass =>
+                Parallel.ForEach(ScanningClasses.NewExecutableCheckClasses, contentCheckClass =>
                 {
                     // Check using custom content checks first
-                    string protection = contentCheckClass.CheckNEContents(file, nex, scanner.IncludeDebug);
+                    string protection = contentCheckClass.CheckNewExecutable(file, nex, scanner.IncludeDebug);
                     if (ShouldAddProtection(contentCheckClass, scanner.ScanPackers, protection))
                         Utilities.AppendToDictionary(protections, file, protection);
 
@@ -136,10 +136,10 @@ namespace BurnOutSharp.FileType
             // If we have a PE executable, iterate through all PE content checks
             if (pex?.Initialized == true)
             {
-                Parallel.ForEach(ScanningClasses.PEContentCheckClasses, contentCheckClass =>
+                Parallel.ForEach(ScanningClasses.PortableExecutableCheckClasses, contentCheckClass =>
                 {
                     // Check using custom content checks first
-                    string protection = contentCheckClass.CheckPEContents(file, pex, scanner.IncludeDebug);
+                    string protection = contentCheckClass.CheckPortableExecutable(file, pex, scanner.IncludeDebug);
                     if (ShouldAddProtection(contentCheckClass, scanner.ScanPackers, protection))
                         Utilities.AppendToDictionary(protections, file, protection);
 

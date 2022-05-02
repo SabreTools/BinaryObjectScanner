@@ -10,10 +10,10 @@ using BurnOutSharp.Tools;
 namespace BurnOutSharp.ProtectionType
 {
     // TODO: Investigate SecuROM for Macintosh
-    public class SecuROM : IPEContentCheck, IPathCheck
+    public class SecuROM : IPortableExecutableCheck, IPathCheck
     {
         /// <inheritdoc/>
-        public string CheckPEContents(string file, PortableExecutable pex, bool includeDebug)
+        public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex?.SectionTable;

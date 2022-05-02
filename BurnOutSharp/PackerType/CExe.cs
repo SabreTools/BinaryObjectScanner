@@ -8,13 +8,13 @@ namespace BurnOutSharp.PackerType
 {
     // The official website for CExe also includes the source code (which does have to be retrieved by the Wayback Machine)
     // http://www.scottlu.com/Content/CExe.html
-    public class CExe : IPEContentCheck, IScannable
+    public class CExe : IPortableExecutableCheck, IScannable
     {
         /// <inheritdoc/>
         public bool ShouldScan(byte[] magic) => true;
         
         /// <inheritdoc/>
-        public string CheckPEContents(string file, PortableExecutable pex, bool includeDebug)
+        public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var stub = pex?.DOSStubHeader;

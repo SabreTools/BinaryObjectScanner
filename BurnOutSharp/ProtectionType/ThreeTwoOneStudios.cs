@@ -2,10 +2,10 @@
 
 namespace BurnOutSharp.ProtectionType
 {
-    public class ThreeTwoOneStudios : IPEContentCheck
+    public class ThreeTwoOneStudios : IPortableExecutableCheck
     {
         /// <inheritdoc/>
-        public string CheckPEContents(string file, PortableExecutable pex, bool includeDebug)
+        public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex?.SectionTable;

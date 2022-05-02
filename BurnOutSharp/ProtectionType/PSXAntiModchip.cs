@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using BurnOutSharp.ExecutableType.Microsoft.NE;
-using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
@@ -11,7 +9,7 @@ namespace BurnOutSharp.ProtectionType
         // For now, this means that the CheckContents check is redundant for external
         // use through other programs
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug)
         {
             // TODO: Detect Red Hand protection
             var contentMatchSets = new List<ContentMatchSet>

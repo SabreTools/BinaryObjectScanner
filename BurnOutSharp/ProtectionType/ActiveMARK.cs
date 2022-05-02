@@ -1,15 +1,14 @@
 ﻿using System.Collections.Generic;
-using BurnOutSharp.ExecutableType.Microsoft.NE;
 using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
 {
     // TODO: Figure out how to get version numbers
-    public class ActiveMARK : IContentCheck, IPEContentCheck
+    public class ActiveMARK : IContentCheck, IPortableExecutableCheck
     {
         /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug, PortableExecutable pex, NewExecutable nex)
+        public string CheckContents(string file, byte[] fileContent, bool includeDebug)
         {
             // TODO: Obtain a sample to find where this string is in a typical executable
             if (includeDebug)
@@ -32,7 +31,7 @@ namespace BurnOutSharp.ProtectionType
         }
 
         /// <inheritdoc/>
-        public string CheckPEContents(string file, PortableExecutable pex, bool includeDebug)
+        public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex?.SectionTable;

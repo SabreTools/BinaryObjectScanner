@@ -6,10 +6,10 @@ using BurnOutSharp.Matching;
 namespace BurnOutSharp.ProtectionType
 {
     // Got renamed to Ubisoft Connect / Ubisoft Game Launcher
-    public class Uplay : IPEContentCheck, IPathCheck
+    public class Uplay : IPortableExecutableCheck, IPathCheck
     {
         /// <inheritdoc/>
-        public string CheckPEContents(string file, PortableExecutable pex, bool includeDebug)
+        public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex?.SectionTable;

@@ -10,10 +10,10 @@ using BurnOutSharp.Matching;
 namespace BurnOutSharp.ProtectionType
 {
     // TODO: Figure out how to use path check framework here
-    public class XCP : IPEContentCheck, IPathCheck
+    public class XCP : IPortableExecutableCheck, IPathCheck
     {
         /// <inheritdoc/>
-        public string CheckPEContents(string file, PortableExecutable pex, bool includeDebug)
+        public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex?.SectionTable;

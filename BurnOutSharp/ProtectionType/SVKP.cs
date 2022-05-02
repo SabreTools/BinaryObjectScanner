@@ -3,10 +3,10 @@
 namespace BurnOutSharp.ProtectionType
 {
     // TODO: Figure out how versions/version ranges work for this protection
-    public class SVKProtector : IPEContentCheck
+    public class SVKProtector : IPortableExecutableCheck
     {
         /// <inheritdoc/>
-        public string CheckPEContents(string file, PortableExecutable pex, bool includeDebug)
+        public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the image file header from the executable, if possible
             if (pex?.ImageFileHeader == null)

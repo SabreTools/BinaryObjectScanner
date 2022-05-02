@@ -5,10 +5,10 @@ using BurnOutSharp.Matching;
 namespace BurnOutSharp.PackerType
 {
     // TODO: Add extraction and verify that all versions are detected
-    public class AdvancedInstaller : IPEContentCheck
+    public class AdvancedInstaller : IPortableExecutableCheck
     {
         /// <inheritdoc/>
-        public string CheckPEContents(string file, PortableExecutable pex, bool includeDebug)
+        public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex?.SectionTable;
