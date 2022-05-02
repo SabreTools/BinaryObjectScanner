@@ -251,174 +251,200 @@ namespace BurnOutSharp
             if (!File.Exists(file))
                 return null;
 
-            // Initialize the protections found
-            var protections = new ConcurrentDictionary<string, ConcurrentQueue<string>>();
-
-            // Get the extension for certain checks
-            string extension = Path.GetExtension(file).ToLower().TrimStart('.');
-
             // Open the file and begin scanning
             try
             {
                 using (FileStream fs = File.OpenRead(file))
                 {
-                    // Get the first 16 bytes for matching
-                    byte[] magic = new byte[16];
-                    try
-                    {
-                        fs.Read(magic, 0, 16);
-                        fs.Seek(0, SeekOrigin.Begin);
-                    }
-                    catch
-                    {
-                        // We don't care what the issue was, we can't read or seek the file
-                        return null;
-                    }
-
-                    #region Non-Archive File Types
-
-                    // Executable
-                    if (new Executable().ShouldScan(magic))
-                    {
-                        var subProtections = new Executable().Scan(this, fs, file);
-                        Utilities.AppendToDictionary(protections, subProtections);
-                    }
-
-                    // Text-based files
-                    if (new Textfile().ShouldScan(magic, extension))
-                    {
-                        var subProtections = new Textfile().Scan(this, fs, file);
-                        Utilities.AppendToDictionary(protections, subProtections);
-                    }
-
-                    #endregion
-
-                    #region Archive File Types
-
-                    // If we're scanning archives, we have a few to try out
-                    if (ScanArchives)
-                    {
-                        // 7-Zip archive
-                        if (new SevenZip().ShouldScan(magic))
-                        {
-                            var subProtections = new SevenZip().Scan(this, fs, file);
-                            Utilities.PrependToKeys(subProtections, file);
-                            Utilities.AppendToDictionary(protections, subProtections);
-                        }
-
-                        // BFPK archive
-                        if (new BFPK().ShouldScan(magic))
-                        {
-                            var subProtections = new BFPK().Scan(this, fs, file);
-                            Utilities.PrependToKeys(subProtections, file);
-                            Utilities.AppendToDictionary(protections, subProtections);
-                        }
-
-                        // BZip2
-                        if (new BZip2().ShouldScan(magic))
-                        {
-                            var subProtections = new BZip2().Scan(this, fs, file);
-                            Utilities.PrependToKeys(subProtections, file);
-                            Utilities.AppendToDictionary(protections, subProtections);
-                        }
-
-                        // GZIP
-                        if (new GZIP().ShouldScan(magic))
-                        {
-                            var subProtections = new GZIP().Scan(this, fs, file);
-                            Utilities.PrependToKeys(subProtections, file);
-                            Utilities.AppendToDictionary(protections, subProtections);
-                        }
-
-                        // InstallShield Archive V3 (Z)
-                        if (file != null && new InstallShieldArchiveV3().ShouldScan(magic))
-                        {
-                            var subProtections = new InstallShieldArchiveV3().Scan(this, file);
-                            Utilities.PrependToKeys(subProtections, file);
-                            Utilities.AppendToDictionary(protections, subProtections);
-                        }
-
-                        // InstallShield Cabinet
-                        if (file != null && new InstallShieldCAB().ShouldScan(magic))
-                        {
-                            var subProtections = new InstallShieldCAB().Scan(this, file);
-                            Utilities.PrependToKeys(subProtections, file);
-                            Utilities.AppendToDictionary(protections, subProtections);
-                        }
-
-                        // Microsoft Cabinet
-                        if (file != null && new MicrosoftCAB().ShouldScan(magic))
-                        {
-                            var subProtections = new MicrosoftCAB().Scan(this, file);
-                            Utilities.PrependToKeys(subProtections, file);
-                            Utilities.AppendToDictionary(protections, subProtections);
-                        }
-
-                        // MSI
-                        if (file != null && new MSI().ShouldScan(magic))
-                        {
-                            var subProtections = new MSI().Scan(this, file);
-                            Utilities.PrependToKeys(subProtections, file);
-                            Utilities.AppendToDictionary(protections, subProtections);
-                        }
-
-                        // MPQ archive
-                        if (file != null && new MPQ().ShouldScan(magic))
-                        {
-                            var subProtections = new MPQ().Scan(this, file);
-                            Utilities.PrependToKeys(subProtections, file);
-                            Utilities.AppendToDictionary(protections, subProtections);
-                        }
-
-                        // PKZIP archive (and derivatives)
-                        if (new PKZIP().ShouldScan(magic))
-                        {
-                            var subProtections = new PKZIP().Scan(this, fs, file);
-                            Utilities.PrependToKeys(subProtections, file);
-                            Utilities.AppendToDictionary(protections, subProtections);
-                        }
-
-                        // RAR archive
-                        if (new RAR().ShouldScan(magic))
-                        {
-                            var subProtections = new RAR().Scan(this, fs, file);
-                            Utilities.PrependToKeys(subProtections, file);
-                            Utilities.AppendToDictionary(protections, subProtections);
-                        }
-
-                        // Tape Archive
-                        if (new TapeArchive().ShouldScan(magic))
-                        {
-                            var subProtections = new TapeArchive().Scan(this, fs, file);
-                            Utilities.PrependToKeys(subProtections, file);
-                            Utilities.AppendToDictionary(protections, subProtections);
-                        }
-
-                        // Valve archive formats
-                        if (file != null && new Valve().ShouldScan(magic))
-                        {
-                            var subProtections = new Valve().Scan(this, file);
-                            Utilities.PrependToKeys(subProtections, file);
-                            Utilities.AppendToDictionary(protections, subProtections);
-                        }
-
-                        // XZ
-                        if (new XZ().ShouldScan(magic))
-                        {
-                            var subProtections = new XZ().Scan(this, fs, file);
-                            Utilities.PrependToKeys(subProtections, file);
-                            Utilities.AppendToDictionary(protections, subProtections);
-                        }
-                    }
-
-                    #endregion
+                    return GetInternalProtections(file, fs);
                 }
             }
             catch (Exception ex)
             {
+                var protections = new ConcurrentDictionary<string, ConcurrentQueue<string>>();
                 Utilities.AppendToDictionary(protections, file, "[Exception opening file, please try again]");
+                Utilities.ClearEmptyKeys(protections);
+                return protections;
             }
-            
+        }
+
+        /// <summary>
+        /// Get the content-detectable protections associated with a single path
+        /// </summary>
+        /// <param name="fileName">Name of the source file of the stream, for tracking</param>
+        /// <param name="stream">Stream to scan the contents of</param>
+        /// <returns>Dictionary of list of strings representing the found protections</returns>
+        private ConcurrentDictionary<string, ConcurrentQueue<string>> GetInternalProtections(string fileName, Stream stream)
+        {
+            // Quick sanity check before continuing
+            if (stream == null || !stream.CanRead || !stream.CanSeek)
+                return null;
+
+            // Initialize the protections found
+            var protections = new ConcurrentDictionary<string, ConcurrentQueue<string>>();
+
+            // Get the extension for certain checks
+            string extension = Path.GetExtension(fileName).ToLower().TrimStart('.');
+
+            // Open the file and begin scanning
+            try
+            {
+                // Get the first 16 bytes for matching
+                byte[] magic = new byte[16];
+                try
+                {
+                    stream.Read(magic, 0, 16);
+                    stream.Seek(0, SeekOrigin.Begin);
+                }
+                catch
+                {
+                    // We don't care what the issue was, we can't read or seek the file
+                    return null;
+                }
+
+                #region Non-Archive File Types
+
+                // Executable
+                if (new Executable().ShouldScan(magic))
+                {
+                    var subProtections = new Executable().Scan(this, stream, fileName);
+                    Utilities.AppendToDictionary(protections, subProtections);
+                }
+
+                // Text-based files
+                if (new Textfile().ShouldScan(magic, extension))
+                {
+                    var subProtections = new Textfile().Scan(this, stream, fileName);
+                    Utilities.AppendToDictionary(protections, subProtections);
+                }
+
+                #endregion
+
+                #region Archive File Types
+
+                // If we're scanning archives, we have a few to try out
+                if (ScanArchives)
+                {
+                    // 7-Zip archive
+                    if (new SevenZip().ShouldScan(magic))
+                    {
+                        var subProtections = new SevenZip().Scan(this, stream, fileName);
+                        Utilities.PrependToKeys(subProtections, fileName);
+                        Utilities.AppendToDictionary(protections, subProtections);
+                    }
+
+                    // BFPK archive
+                    if (new BFPK().ShouldScan(magic))
+                    {
+                        var subProtections = new BFPK().Scan(this, stream, fileName);
+                        Utilities.PrependToKeys(subProtections, fileName);
+                        Utilities.AppendToDictionary(protections, subProtections);
+                    }
+
+                    // BZip2
+                    if (new BZip2().ShouldScan(magic))
+                    {
+                        var subProtections = new BZip2().Scan(this, stream, fileName);
+                        Utilities.PrependToKeys(subProtections, fileName);
+                        Utilities.AppendToDictionary(protections, subProtections);
+                    }
+
+                    // GZIP
+                    if (new GZIP().ShouldScan(magic))
+                    {
+                        var subProtections = new GZIP().Scan(this, stream, fileName);
+                        Utilities.PrependToKeys(subProtections, fileName);
+                        Utilities.AppendToDictionary(protections, subProtections);
+                    }
+
+                    // InstallShield Archive V3 (Z)
+                    if (fileName != null && new InstallShieldArchiveV3().ShouldScan(magic))
+                    {
+                        var subProtections = new InstallShieldArchiveV3().Scan(this, fileName);
+                        Utilities.PrependToKeys(subProtections, fileName);
+                        Utilities.AppendToDictionary(protections, subProtections);
+                    }
+
+                    // InstallShield Cabinet
+                    if (fileName != null && new InstallShieldCAB().ShouldScan(magic))
+                    {
+                        var subProtections = new InstallShieldCAB().Scan(this, fileName);
+                        Utilities.PrependToKeys(subProtections, fileName);
+                        Utilities.AppendToDictionary(protections, subProtections);
+                    }
+
+                    // Microsoft Cabinet
+                    if (fileName != null && new MicrosoftCAB().ShouldScan(magic))
+                    {
+                        var subProtections = new MicrosoftCAB().Scan(this, fileName);
+                        Utilities.PrependToKeys(subProtections, fileName);
+                        Utilities.AppendToDictionary(protections, subProtections);
+                    }
+
+                    // MSI
+                    if (fileName != null && new MSI().ShouldScan(magic))
+                    {
+                        var subProtections = new MSI().Scan(this, fileName);
+                        Utilities.PrependToKeys(subProtections, fileName);
+                        Utilities.AppendToDictionary(protections, subProtections);
+                    }
+
+                    // MPQ archive
+                    if (fileName != null && new MPQ().ShouldScan(magic))
+                    {
+                        var subProtections = new MPQ().Scan(this, fileName);
+                        Utilities.PrependToKeys(subProtections, fileName);
+                        Utilities.AppendToDictionary(protections, subProtections);
+                    }
+
+                    // PKZIP archive (and derivatives)
+                    if (new PKZIP().ShouldScan(magic))
+                    {
+                        var subProtections = new PKZIP().Scan(this, stream, fileName);
+                        Utilities.PrependToKeys(subProtections, fileName);
+                        Utilities.AppendToDictionary(protections, subProtections);
+                    }
+
+                    // RAR archive
+                    if (new RAR().ShouldScan(magic))
+                    {
+                        var subProtections = new RAR().Scan(this, stream, fileName);
+                        Utilities.PrependToKeys(subProtections, fileName);
+                        Utilities.AppendToDictionary(protections, subProtections);
+                    }
+
+                    // Tape Archive
+                    if (new TapeArchive().ShouldScan(magic))
+                    {
+                        var subProtections = new TapeArchive().Scan(this, stream, fileName);
+                        Utilities.PrependToKeys(subProtections, fileName);
+                        Utilities.AppendToDictionary(protections, subProtections);
+                    }
+
+                    // Valve archive formats
+                    if (fileName != null && new Valve().ShouldScan(magic))
+                    {
+                        var subProtections = new Valve().Scan(this, fileName);
+                        Utilities.PrependToKeys(subProtections, fileName);
+                        Utilities.AppendToDictionary(protections, subProtections);
+                    }
+
+                    // XZ
+                    if (new XZ().ShouldScan(magic))
+                    {
+                        var subProtections = new XZ().Scan(this, stream, fileName);
+                        Utilities.PrependToKeys(subProtections, fileName);
+                        Utilities.AppendToDictionary(protections, subProtections);
+                    }
+                }
+
+                #endregion
+            }
+            catch (Exception ex)
+            {
+                //Utilities.AppendToDictionary(protections, fileName, ex.ToString());
+                Utilities.AppendToDictionary(protections, fileName, "[Exception opening file, please try again]");
+            }
 
             // Clear out any empty keys
             Utilities.ClearEmptyKeys(protections);
