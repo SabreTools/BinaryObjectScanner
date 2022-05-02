@@ -3,6 +3,9 @@ using System.IO;
 
 namespace BurnOutSharp.Interfaces
 {
+    /// <summary>
+    /// Mark a file type as extractable
+    /// </summary>
     internal interface IScannable
     {
         /// <summary>

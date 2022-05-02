@@ -3,6 +3,12 @@ using System.Collections.Generic;
 
 namespace BurnOutSharp.Interfaces
 {
+    /// <summary>
+    /// Check a file or directory path for protection
+    /// </summary>
+    /// <remarks>
+    /// These checks rely primarily on filenames and paths, not file contents
+    /// </remarks>
     internal interface IPathCheck
     {
         /// <summary>

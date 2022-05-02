@@ -1,5 +1,8 @@
 ﻿namespace BurnOutSharp.Interfaces
 {
+    /// <summary>
+    /// Check a generic file for protection
+    /// </summary>
     internal interface IContentCheck
     {
         /// <summary>

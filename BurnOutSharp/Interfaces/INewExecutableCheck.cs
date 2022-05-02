@@ -2,6 +2,9 @@
 
 namespace BurnOutSharp.Interfaces
 {
+    /// <summary>
+    /// Check a New Executable (NE) for protection
+    /// </summary>
     internal interface INewExecutableCheck
     {
         /// <summary>

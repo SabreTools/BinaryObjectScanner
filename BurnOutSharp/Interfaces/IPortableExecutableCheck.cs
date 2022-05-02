@@ -2,6 +2,9 @@
 
 namespace BurnOutSharp.Interfaces
 {
+    /// <summary>
+    /// Check a Portable Executable (PE) for protection
+    /// </summary>
     internal interface IPortableExecutableCheck
     {
         /// <summary>
