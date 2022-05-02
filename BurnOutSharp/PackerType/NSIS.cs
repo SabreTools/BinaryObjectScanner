@@ -1,12 +1,18 @@
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.PackerType
 {
-    public class NSIS : IPortableExecutableCheck
+    // TODO: Add extraction
+    public class NSIS : IPortableExecutableCheck, IScannable
     {
+        /// <inheritdoc/>
+        public bool ShouldScan(byte[] magic) => true;
+
         /// <inheritdoc/>
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
@@ -37,6 +43,24 @@ namespace BurnOutSharp.PackerType
                     return match;
             }
 
+            return null;
+        }
+        
+        /// <inheritdoc/>
+        public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, string file)
+        {
+            if (!File.Exists(file))
+                return null;
+
+            using (var fs = File.OpenRead(file))
+            {
+                return Scan(scanner, fs, file);
+            }
+        }
+
+        /// <inheritdoc/>
+        public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, Stream stream, string file)
+        {
             return null;
         }
     }

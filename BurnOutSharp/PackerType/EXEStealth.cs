@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.IO;
 using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
@@ -8,8 +10,12 @@ namespace BurnOutSharp.PackerType
     // TODO: Figure out how to more granularly determine versions like PiD,
     // at least for the 2.41 -> 2.75 range
     // TODO: Detect 3.15 and up (maybe looking for `Metamorphism`)
-    public class EXEStealth : IContentCheck, IPortableExecutableCheck
+    // TODO: Add extraction
+    public class EXEStealth : IContentCheck, IPortableExecutableCheck, IScannable
     {
+        /// <inheritdoc/>
+        public bool ShouldScan(byte[] magic) => true;
+
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includeDebug)
         {
@@ -58,6 +64,24 @@ namespace BurnOutSharp.PackerType
             if (rsrrSection)
                 return "EXE Stealth 2.76";
 
+            return null;
+        }
+
+        /// <inheritdoc/>
+        public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, string file)
+        {
+            if (!File.Exists(file))
+                return null;
+
+            using (var fs = File.OpenRead(file))
+            {
+                return Scan(scanner, fs, file);
+            }
+        }
+
+        /// <inheritdoc/>
+        public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, Stream stream, string file)
+        {
             return null;
         }
     }

@@ -9,6 +9,7 @@ namespace BurnOutSharp.PackerType
 {
     // The official website for CExe also includes the source code (which does have to be retrieved by the Wayback Machine)
     // http://www.scottlu.com/Content/CExe.html
+    // TODO: Add extraction
     public class CExe : IPortableExecutableCheck, IScannable
     {
         /// <inheritdoc/>
@@ -56,7 +57,6 @@ namespace BurnOutSharp.PackerType
         }
 
         /// <inheritdoc/>
-        // TODO: Add extraction if viable
         public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, Stream stream, string file)
         {
             return null;

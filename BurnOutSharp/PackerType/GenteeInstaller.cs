@@ -60,7 +60,6 @@ namespace BurnOutSharp.PackerType
         }
 
         /// <inheritdoc/>
-        // TODO: Add extraction if viable
         public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, Stream stream, string file)
         {
             return null;

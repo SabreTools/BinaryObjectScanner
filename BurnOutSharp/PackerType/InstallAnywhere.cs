@@ -7,6 +7,7 @@ using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.PackerType
 {
+    // TODO: Add extraction, which may be possible with the current libraries but needs to be investigated further.
     public class InstallAnywhere : IPortableExecutableCheck, IScannable
     {
         /// <inheritdoc/>
@@ -44,7 +45,6 @@ namespace BurnOutSharp.PackerType
         }
 
         /// <inheritdoc/>
-        // TODO: Add extraction, which may be possible with the current libraries but needs to be investigated further.
         public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, Stream stream, string file)
         {
             return null;

@@ -11,6 +11,7 @@ using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.PackerType
 {
+    // TODO: Add extraction - https://github.com/dscharrer/InnoExtract
     public class InnoSetup : INewExecutableCheck, IPortableExecutableCheck, IScannable
     {
         /// <inheritdoc/>
@@ -79,8 +80,6 @@ namespace BurnOutSharp.PackerType
             }
         }
 
-        // TOOO: Add Inno Setup extraction
-        // https://github.com/dscharrer/InnoExtract
         /// <inheritdoc/>
         public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, Stream stream, string file)
         {

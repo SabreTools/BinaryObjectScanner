@@ -7,6 +7,8 @@ using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.PackerType
 {
+    // TODO: Add extraction, which is possible but the only tools available that can
+    // do this seem to be Universal Extractor 2 and InstallExplorer (https://totalcmd.net/plugring/InstallExplorer.html)
     public class SetupFactory : IPortableExecutableCheck, IScannable
     {
         /// <inheritdoc/>
@@ -53,8 +55,6 @@ namespace BurnOutSharp.PackerType
         }
 
         /// <inheritdoc/>
-        // TODO: Add extraction, which is possible but the only tools available that can
-        // do this seem to be Universal Extractor 2 and InstallExplorer (https://totalcmd.net/plugring/InstallExplorer.html)
         public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, Stream stream, string file)
         {
             return null;

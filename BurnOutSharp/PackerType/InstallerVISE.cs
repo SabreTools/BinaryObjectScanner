@@ -7,6 +7,7 @@ using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.PackerType
 {
+    // TODO: Add extraction - https://github.com/Bioruebe/UniExtract2
     public class InstallerVISE : IPortableExecutableCheck, IScannable
     {
         /// <inheritdoc/>
@@ -36,8 +37,6 @@ namespace BurnOutSharp.PackerType
             return null;
         }
 
-        // TODO: Add Installer VISE extraction
-        // https://github.com/Bioruebe/UniExtract2
         /// <inheritdoc/>
         public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, string file)
         {

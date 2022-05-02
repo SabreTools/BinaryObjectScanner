@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Interfaces;
@@ -6,9 +8,13 @@ using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.PackerType
 {
+    // TODO: Add extraction
     // TODO: Add version checking, if possible
-    public class Armadillo : IPortableExecutableCheck
+    public class Armadillo : IPortableExecutableCheck, IScannable
     {
+        /// <inheritdoc/>
+        public bool ShouldScan(byte[] magic) => true;
+
         /// <inheritdoc/>
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
@@ -40,6 +46,24 @@ namespace BurnOutSharp.PackerType
                 }
             }
 
+            return null;
+        }
+
+        /// <inheritdoc/>
+        public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, string file)
+        {
+            if (!File.Exists(file))
+                return null;
+
+            using (var fs = File.OpenRead(file))
+            {
+                return Scan(scanner, fs, file);
+            }
+        }
+
+        /// <inheritdoc/>
+        public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, Stream stream, string file)
+        {
             return null;
         }
     }
