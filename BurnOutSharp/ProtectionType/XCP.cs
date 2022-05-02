@@ -10,7 +10,7 @@ using BurnOutSharp.Matching;
 namespace BurnOutSharp.ProtectionType
 {
     // TODO: Figure out how to use path check framework here
-    public class XCP : IPortableExecutableCheck, IPathCheck
+    public class XCP : IPathCheck, IPortableExecutableCheck
     {
         /// <inheritdoc/>
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)

@@ -9,7 +9,7 @@ using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ProtectionType
 {
-    public class LaserLok : IPortableExecutableCheck, IPathCheck
+    public class LaserLok : IPathCheck, IPortableExecutableCheck
     {
         /// <inheritdoc/>
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)

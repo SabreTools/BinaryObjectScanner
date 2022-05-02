@@ -5,7 +5,7 @@ using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
 {
-    public class WTMCDProtect : IPortableExecutableCheck, IPathCheck
+    public class WTMCDProtect : IPathCheck, IPortableExecutableCheck
     {
         /// <inheritdoc/>
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)

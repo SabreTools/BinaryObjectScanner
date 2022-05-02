@@ -8,7 +8,7 @@ using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ProtectionType
 {
-    public class TAGES : IPortableExecutableCheck, IPathCheck
+    public class TAGES : IPathCheck, IPortableExecutableCheck
     {
         /// <inheritdoc/>
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)

@@ -6,7 +6,7 @@ using BurnOutSharp.Matching;
 namespace BurnOutSharp.ProtectionType
 {
     // Got renamed to Ubisoft Connect / Ubisoft Game Launcher
-    public class Uplay : IPortableExecutableCheck, IPathCheck
+    public class Uplay : IPathCheck, IPortableExecutableCheck
     {
         /// <inheritdoc/>
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)

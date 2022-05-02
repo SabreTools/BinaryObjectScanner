@@ -10,7 +10,7 @@ using BurnOutSharp.Tools;
 namespace BurnOutSharp.ProtectionType
 {
     // TODO: Investigate SecuROM for Macintosh
-    public class SecuROM : IPortableExecutableCheck, IPathCheck
+    public class SecuROM : IPathCheck, IPortableExecutableCheck
     {
         /// <inheritdoc/>
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)

@@ -7,7 +7,7 @@ using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ProtectionType
 {
-    public class StarForce : IPortableExecutableCheck, IPathCheck
+    public class StarForce : IPathCheck, IPortableExecutableCheck
     {
         /// <inheritdoc/>
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)

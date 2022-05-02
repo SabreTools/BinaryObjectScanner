@@ -8,7 +8,7 @@ using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
 {
-    public class CDDVDCops : IContentCheck, INewExecutableCheck, IPortableExecutableCheck, IPathCheck
+    public class CDDVDCops : IContentCheck, INewExecutableCheck, IPathCheck, IPortableExecutableCheck
     {
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includeDebug)

@@ -6,7 +6,7 @@ using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
 {
-    public class Origin : IPortableExecutableCheck, IPathCheck
+    public class Origin : IPathCheck, IPortableExecutableCheck
     {
         /// <inheritdoc/>
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)

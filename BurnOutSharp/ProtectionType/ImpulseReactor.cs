@@ -8,7 +8,7 @@ namespace BurnOutSharp.ProtectionType
 {
     // Note that this set of checks also contains "Stardock Product Activation"
     // This is intentional, as that protection is highly related to Impulse Reactor
-    public class ImpulseReactor : IPortableExecutableCheck, IPathCheck
+    public class ImpulseReactor : IPathCheck, IPortableExecutableCheck
     {
         /// <inheritdoc/>
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)

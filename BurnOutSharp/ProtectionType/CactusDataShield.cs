@@ -9,7 +9,7 @@ using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
 {
-    public class CactusDataShield : IContentCheck, IPortableExecutableCheck, IPathCheck
+    public class CactusDataShield : IContentCheck, IPathCheck, IPortableExecutableCheck
     {
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includeDebug)

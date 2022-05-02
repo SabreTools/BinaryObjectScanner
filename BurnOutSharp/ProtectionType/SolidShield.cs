@@ -10,7 +10,7 @@ namespace BurnOutSharp.ProtectionType
 {
     // TODO: Not matching all SolidShield Wrapper v1 (See JackKeane)
     // TODO: Not matching all SolidShield Wrapper v1 (See NFS11)
-    public class SolidShield : IPortableExecutableCheck, IPathCheck
+    public class SolidShield : IPathCheck, IPortableExecutableCheck
     {
         /// <inheritdoc/>
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
