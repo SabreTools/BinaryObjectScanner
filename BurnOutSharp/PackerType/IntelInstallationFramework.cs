@@ -1,5 +1,6 @@
 using System;
 using BurnOutSharp.ExecutableType.Microsoft.PE;
+using BurnOutSharp.Interfaces;
 using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.PackerType

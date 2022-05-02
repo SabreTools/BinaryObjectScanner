@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.FileType;
+using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.IO;
 
-namespace BurnOutSharp
+namespace BurnOutSharp.Interfaces
 {
     internal interface IScannable
     {

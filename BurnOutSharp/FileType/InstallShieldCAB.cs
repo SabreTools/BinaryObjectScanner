@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.IO;
 using System.Text.RegularExpressions;
+using BurnOutSharp.Interfaces;
 using BurnOutSharp.Tools;
 using UnshieldSharp.Cabinet;
 

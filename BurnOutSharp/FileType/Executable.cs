@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BurnOutSharp.ExecutableType.Microsoft.NE;
 using BurnOutSharp.ExecutableType.Microsoft.PE;
+using BurnOutSharp.Interfaces;
 using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.FileType

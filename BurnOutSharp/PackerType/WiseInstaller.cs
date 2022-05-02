@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using BurnOutSharp.ExecutableType.Microsoft.NE;
 using BurnOutSharp.ExecutableType.Microsoft.PE;
+using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
 using BurnOutSharp.Tools;
 using Wise = WiseUnpacker.WiseUnpacker;

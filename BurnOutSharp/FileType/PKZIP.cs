@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.IO;
+using BurnOutSharp.Interfaces;
 using BurnOutSharp.Tools;
 using SharpCompress.Archives;
 using SharpCompress.Archives.Zip;

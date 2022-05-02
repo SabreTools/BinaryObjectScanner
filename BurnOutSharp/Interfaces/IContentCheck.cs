@@ -1,4 +1,4 @@
-﻿namespace BurnOutSharp
+﻿namespace BurnOutSharp.Interfaces
 {
     internal interface IContentCheck
     {

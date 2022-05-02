@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType

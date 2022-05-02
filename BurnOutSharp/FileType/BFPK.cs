@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.IO;
 using System.Text;
+using BurnOutSharp.Interfaces;
 using BurnOutSharp.Tools;
 using SharpCompress.Compressors;
 using SharpCompress.Compressors.Deflate;

@@ -1,6 +1,5 @@
-using System.Collections.Generic;
 using BurnOutSharp.ExecutableType.Microsoft.PE;
-using BurnOutSharp.Matching;
+using BurnOutSharp.Interfaces;
 
 namespace BurnOutSharp.PackerType
 {

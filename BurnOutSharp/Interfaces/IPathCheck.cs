@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
 
-namespace BurnOutSharp
+namespace BurnOutSharp.Interfaces
 {
     internal interface IPathCheck
     {

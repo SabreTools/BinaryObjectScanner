@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using BurnOutSharp.Interfaces;
 
 namespace BurnOutSharp.ProtectionType
 {

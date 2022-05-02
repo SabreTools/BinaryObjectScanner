@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.ExecutableType.Microsoft.PE.Headers;
+using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
