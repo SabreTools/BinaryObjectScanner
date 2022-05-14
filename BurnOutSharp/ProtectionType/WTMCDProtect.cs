@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
@@ -82,8 +83,8 @@ namespace BurnOutSharp.ProtectionType
             {
                 new PathMatchSet(new List<PathMatch>
                 {
-                    new PathMatch("wtmfiles.dat", useEndsWith: true),
-                    new PathMatch("Viewer.exe", useEndsWith: true),
+                    new PathMatch($"{Path.DirectorySeparatorChar}wtmfiles.dat", useEndsWith: true),
+                    new PathMatch($"{Path.DirectorySeparatorChar}Viewer.exe", useEndsWith: true),
                 }, "WTM Protection Viewer"),
             };
 
@@ -96,10 +97,10 @@ namespace BurnOutSharp.ProtectionType
             // TODO: Add ImageX.imp as a wildcard, if possible
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new PathMatch("Image.imp", useEndsWith: true), "WTM CD Protect"),
-                new PathMatchSet(new PathMatch("Image1.imp", useEndsWith: true), "WTM CD Protect"),
-                new PathMatchSet(new PathMatch("imp.dat", useEndsWith: true), "WTM CD Protect"),
-                new PathMatchSet(new PathMatch("wtmfiles.dat", useEndsWith: true), "WTM Protection Viewer"),
+                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}Image.imp", useEndsWith: true), "WTM CD Protect"),
+                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}Image1.imp", useEndsWith: true), "WTM CD Protect"),
+                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}imp.dat", useEndsWith: true), "WTM CD Protect"),
+                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}wtmfiles.dat", useEndsWith: true), "WTM Protection Viewer"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
