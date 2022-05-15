@@ -1,9 +1,9 @@
-[submodule "BurnOutSharp/External/hllib"]
-	path = BurnOutSharp/External/hllib
-	url = https://github.com/RavuAlHemio/hllib.git
 [submodule "BurnOutSharp/External/stormlibsharp"]
 	path = BurnOutSharp/External/stormlibsharp
 	url = https://github.com/robpaveza/stormlibsharp.git
 [submodule "BurnOutSharp/External/WixToolset"]
 	path = WixToolset
 	url = https://github.com/wixtoolset/Dtf.git
+[submodule "HLLibSharp"]
+	path = HLLibSharp
+	url = https://github.com/mnadareski/HLLibSharp
