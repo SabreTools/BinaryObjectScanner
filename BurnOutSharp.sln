@@ -20,6 +20,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{182E02A8-5E8
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WixToolset.Dtf.WindowsInstaller", "WixToolset\src\WixToolset.Dtf.WindowsInstaller\WixToolset.Dtf.WindowsInstaller.csproj", "{B3537EB7-CEF6-4D90-A041-47626442A656}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WixToolset.Dtf.Compression", "WixToolset\src\WixToolset.Dtf.Compression\WixToolset.Dtf.Compression.csproj", "{CC76B5EC-976E-4063-8561-1CD50693A034}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WixToolset.Dtf.Compression.Cab", "WixToolset\src\WixToolset.Dtf.Compression.Cab\WixToolset.Dtf.Compression.Cab.csproj", "{AD836467-FC28-46A7-966D-4FDD0F72019B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -38,6 +42,14 @@ Global
 		{B3537EB7-CEF6-4D90-A041-47626442A656}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B3537EB7-CEF6-4D90-A041-47626442A656}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B3537EB7-CEF6-4D90-A041-47626442A656}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC76B5EC-976E-4063-8561-1CD50693A034}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC76B5EC-976E-4063-8561-1CD50693A034}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC76B5EC-976E-4063-8561-1CD50693A034}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC76B5EC-976E-4063-8561-1CD50693A034}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD836467-FC28-46A7-966D-4FDD0F72019B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD836467-FC28-46A7-966D-4FDD0F72019B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD836467-FC28-46A7-966D-4FDD0F72019B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD836467-FC28-46A7-966D-4FDD0F72019B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -45,6 +57,8 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{182E02A8-5E8E-4140-9C9B-61049C33E921} = {09D405CA-CF15-4929-8408-C970F0656C62}
 		{B3537EB7-CEF6-4D90-A041-47626442A656} = {182E02A8-5E8E-4140-9C9B-61049C33E921}
+		{CC76B5EC-976E-4063-8561-1CD50693A034} = {182E02A8-5E8E-4140-9C9B-61049C33E921}
+		{AD836467-FC28-46A7-966D-4FDD0F72019B} = {182E02A8-5E8E-4140-9C9B-61049C33E921}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0B343DD2-8852-47B0-9647-DFCFBEDF933C}

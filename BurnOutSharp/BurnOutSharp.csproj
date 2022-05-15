@@ -40,9 +40,6 @@
       External\hllib\HLExtract\**\*;
       External\hllib\HLExtract.Net\Program.cs;
       External\hllib\HLLib\**\*;
-      External\LessIO\src\LessIO.Tests\**\*;
-      External\libmspack4n\lib\**\*;
-      External\libmspack4n\libmspack4ntest\**\*;
       External\stormlibsharp\lib\**;
       External\stormlibsharp\TestConsole\**
     </DefaultItemExcludes>
@@ -61,6 +58,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\WixToolset\src\WixToolset.Dtf.Compression.Cab\WixToolset.Dtf.Compression.Cab.csproj" />
+    <ProjectReference Include="..\WixToolset\src\WixToolset.Dtf.Compression\WixToolset.Dtf.Compression.csproj" />
     <ProjectReference Include="..\WixToolset\src\WixToolset.Dtf.WindowsInstaller\WixToolset.Dtf.WindowsInstaller.csproj">
       <PrivateAssets>all</PrivateAssets>
     </ProjectReference>

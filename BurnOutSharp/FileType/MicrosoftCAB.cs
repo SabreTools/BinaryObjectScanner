@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.IO;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Tools;
-using LibMSPackN;
+using WixToolset.Dtf.Compression.Cab;
 
 namespace BurnOutSharp.FileType
 {
@@ -41,19 +41,17 @@ namespace BurnOutSharp.FileType
                 string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
                 Directory.CreateDirectory(tempPath);
 
-                using (MSCabinet cabfile = new MSCabinet(file))
+                CabInfo cabfile = new CabInfo(file);
+                foreach (var sub in cabfile.GetFiles())
                 {
-                    foreach (var sub in cabfile.GetFiles())
+                    // If an individual entry fails
+                    try
                     {
-                        // If an individual entry fails
-                        try
-                        {
-                            // The trim here is for some very odd and stubborn files
-                            string tempFile = Path.Combine(tempPath, sub.Filename.TrimEnd('.'));
-                            sub.ExtractTo(tempFile);
-                        }
-                        catch { }
+                        // The trim here is for some very odd and stubborn files
+                        string tempFile = Path.Combine(tempPath, sub.Name.TrimEnd('.'));
+                        sub.CopyTo(tempFile);
                     }
+                    catch { }
                 }
 
                 // Collect and format all found protections
