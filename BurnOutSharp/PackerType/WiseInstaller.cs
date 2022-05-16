@@ -111,14 +111,20 @@ namespace BurnOutSharp.PackerType
                 {
                     Directory.Delete(tempPath, true);
                 }
-                catch { }
+                catch (Exception ex)
+                {
+                    if (scanner.IncludeDebug) Console.WriteLine(ex);
+                }
 
                 // Remove temporary path references
                 Utilities.StripFromKeys(protections, tempPath);
 
                 return protections;
             }
-            catch { }
+            catch (Exception ex)
+            {
+                if (scanner.IncludeDebug) Console.WriteLine(ex);
+            }
 
             return null;
         }

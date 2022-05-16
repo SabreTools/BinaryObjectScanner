@@ -261,6 +261,8 @@ namespace BurnOutSharp
             }
             catch (Exception ex)
             {
+                if (IncludeDebug) Console.WriteLine(ex);
+
                 var protections = new ConcurrentDictionary<string, ConcurrentQueue<string>>();
                 Utilities.AppendToDictionary(protections, file, "[Exception opening file, please try again]");
                 Utilities.ClearEmptyKeys(protections);
@@ -296,9 +298,10 @@ namespace BurnOutSharp
                     stream.Read(magic, 0, 16);
                     stream.Seek(0, SeekOrigin.Begin);
                 }
-                catch
+                catch (Exception ex)
                 {
-                    // We don't care what the issue was, we can't read or seek the file
+                    if (IncludeDebug) Console.WriteLine(ex);
+
                     return null;
                 }
 
@@ -442,7 +445,8 @@ namespace BurnOutSharp
             }
             catch (Exception ex)
             {
-                //Utilities.AppendToDictionary(protections, fileName, ex.ToString());
+                if (IncludeDebug) Console.WriteLine(ex);
+
                 Utilities.AppendToDictionary(protections, fileName, "[Exception opening file, please try again]");
             }
 

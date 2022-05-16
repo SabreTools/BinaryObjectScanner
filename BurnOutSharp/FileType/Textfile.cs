@@ -97,9 +97,9 @@ namespace BurnOutSharp.FileType
                 if (fileContent.Contains("http://cp.sonybmg.com/xcp/"))
                     Utilities.AppendToDictionary(protections, file, "XCP");
             }
-            catch
+            catch (Exception ex)
             {
-                // We don't care what the error was
+                if (scanner.IncludeDebug) Console.WriteLine(ex);
             }
 
             return protections;

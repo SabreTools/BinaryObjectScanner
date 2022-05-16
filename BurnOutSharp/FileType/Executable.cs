@@ -75,8 +75,10 @@ namespace BurnOutSharp.FileType
                         fileContent = br.ReadBytes((int)stream.Length);
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
+                    if (scanner.IncludeDebug) Console.WriteLine(ex);
+
                     Utilities.AppendToDictionary(protections, file, "[Out of memory attempting to open]");
                     return protections;
                 }

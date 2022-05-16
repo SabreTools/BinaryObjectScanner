@@ -63,7 +63,7 @@ namespace BurnOutSharp.FileType
 
                         br.BaseStream.Seek(offset, SeekOrigin.Begin);
                         uint compressedSize = br.ReadUInt32();
-                        
+
                         // Some files can lack the length prefix
                         if (compressedSize > br.BaseStream.Length)
                         {
@@ -102,8 +102,11 @@ namespace BurnOutSharp.FileType
                                 }
                             }
                         }
-                        catch { }
-                        
+                        catch (Exception ex)
+                        {
+                            if (scanner.IncludeDebug) Console.WriteLine(ex);
+                        }
+
                         br.BaseStream.Seek(current, SeekOrigin.Begin);
                     }
                 }
@@ -116,14 +119,20 @@ namespace BurnOutSharp.FileType
                 {
                     Directory.Delete(tempPath, true);
                 }
-                catch { }
+                catch (Exception ex)
+                {
+                    if (scanner.IncludeDebug) Console.WriteLine(ex);
+                }
 
                 // Remove temporary path references
                 Utilities.StripFromKeys(protections, tempPath);
 
                 return protections;
             }
-            catch { }
+            catch (Exception ex)
+            {
+                if (scanner.IncludeDebug) Console.WriteLine(ex);
+            }
 
             return null;
         }

@@ -51,7 +51,10 @@ namespace BurnOutSharp.FileType
                             bz2File.CopyTo(fs);
                         }
                     }
-                    catch { }
+                    catch (Exception ex)
+                    {
+                        if (scanner.IncludeDebug) Console.WriteLine(ex);
+                    }
                 }
 
                 // Collect and format all found protections
@@ -62,14 +65,20 @@ namespace BurnOutSharp.FileType
                 {
                     Directory.Delete(tempPath, true);
                 }
-                catch { }
+                catch (Exception ex)
+                {
+                    if (scanner.IncludeDebug) Console.WriteLine(ex);
+                }
 
                 // Remove temporary path references
                 Utilities.StripFromKeys(protections, tempPath);
 
                 return protections;
             }
-            catch { }
+            catch (Exception ex)
+            {
+                if (scanner.IncludeDebug) Console.WriteLine(ex);
+            }
 
             return null;
         }
