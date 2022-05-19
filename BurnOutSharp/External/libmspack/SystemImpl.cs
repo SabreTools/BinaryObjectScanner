@@ -285,14 +285,14 @@ namespace LibMSPackSharp
 
         private static void DefaultClose(object file)
         {
-            DefaultFileImpl self = (DefaultFileImpl)file;
+            DefaultFileImpl self = file as DefaultFileImpl;
             if (self != null)
                 self.FileHandle.Close();
         }
 
         private static int DefaultRead(object file, byte[] buffer, int pointer, int bytes)
         {
-            DefaultFileImpl self = (DefaultFileImpl)file;
+            DefaultFileImpl self = file as DefaultFileImpl;
             if (self != null && buffer != null && bytes >= 0)
             {
                 try { return self.FileHandle.Read(buffer, pointer, bytes); }
@@ -304,7 +304,7 @@ namespace LibMSPackSharp
 
         private static int DefaultWrite(object file, byte[] buffer, int pointer, int bytes)
         {
-            DefaultFileImpl self = (DefaultFileImpl)file;
+            DefaultFileImpl self = file as DefaultFileImpl;
             if (self != null && buffer != null && bytes >= 0)
             {
                 try { self.FileHandle.Write(buffer, pointer, bytes); }
@@ -316,7 +316,7 @@ namespace LibMSPackSharp
 
         private static bool DefaultSeek(object file, long offset, SeekMode mode)
         {
-            DefaultFileImpl self = (DefaultFileImpl)file;
+            DefaultFileImpl self = file as DefaultFileImpl;
             if (self != null)
             {
                 switch (mode)
@@ -343,14 +343,14 @@ namespace LibMSPackSharp
 
         private static long DefaultTell(object file)
         {
-            DefaultFileImpl self = (DefaultFileImpl)file;
+            DefaultFileImpl self = file as DefaultFileImpl;
             return (self != null ? (int)self.FileHandle.Position : 0);
         }
 
         private static void DefaultMessage(object file, string format)
         {
             if (file != null)
-                Console.Error.Write($"{((DefaultFileImpl)file).Name}: ");
+                Console.Error.Write($"{(file as DefaultFileImpl)?.Name}: ");
 
             Console.Error.Write($"{format}\n");
         }
