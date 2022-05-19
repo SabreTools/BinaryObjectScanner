@@ -426,7 +426,7 @@ namespace LibMSPackSharp.Compression
         /// <returns>an error code, or MSPACK_ERR_OK if successful</returns>
         public static Error Decompress(object o, long outBytes)
         {
-            LZXDStream lzx = (LZXDStream)o;
+            LZXDStream lzx = o as LZXDStream;
             if (lzx == null)
                 return Error.MSPACK_ERR_ARGS;
 
@@ -1055,8 +1055,9 @@ namespace LibMSPackSharp.Compression
         /// system.free() using the system pointer given in lzxd_init().
         /// </summary>
         /// <param name="lzx">LZX decompression state to free.</param>
-        public static void Free(LZXDStream lzx)
+        public static void Free(object s)
         {
+            LZXDStream lzx = s as LZXDStream;
             if (lzx != null)
             {
                 SystemImpl sys = lzx.Sys;

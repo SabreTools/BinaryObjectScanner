@@ -27,7 +27,7 @@ namespace LibMSPackSharp.SZDD
         /// </summary>
         public static Header Open(Decompressor d, string filename)
         {
-            DecompressorImpl self = (DecompressorImpl)d;
+            DecompressorImpl self = d as DecompressorImpl;
             if (self == null)
                 return null;
 
@@ -69,10 +69,10 @@ namespace LibMSPackSharp.SZDD
         /// </summary>
         public static void Close(Decompressor d, Header hdr)
         {
-            DecompressorImpl self = (DecompressorImpl)d;
-            HeaderImpl hdr_p = (HeaderImpl)hdr;
+            DecompressorImpl self = d as DecompressorImpl;
+            HeaderImpl hdr_p = hdr as HeaderImpl;
 
-            if (self == null || self.System == null)
+            if (self?.System == null || hdr == null)
                 return;
 
             // Close the file handle associated
@@ -150,7 +150,7 @@ namespace LibMSPackSharp.SZDD
         /// </summary>
         public static Error Extract(Decompressor d, Header hdr, string filename)
         {
-            DecompressorImpl self = (DecompressorImpl)d;
+            DecompressorImpl self = d as DecompressorImpl;
             if (self == null)
                 return Error.MSPACK_ERR_ARGS;
             if (hdr == null)
@@ -158,7 +158,9 @@ namespace LibMSPackSharp.SZDD
 
             SystemImpl sys = self.System;
 
-            object fh = ((HeaderImpl)hdr).FileHandle;
+            object fh = (hdr as HeaderImpl)?.FileHandle;
+            if (fh == null)
+                return Error.MSPACK_ERR_ARGS;
 
             // Seek to the compressed data
             long dataOffset = (hdr.Format == Format.MSSZDD_FMT_NORMAL) ? 14 : 12;
@@ -195,7 +197,7 @@ namespace LibMSPackSharp.SZDD
         /// </summary>
         public static Error Decompress(Decompressor d, string input, string output)
         {
-            DecompressorImpl self = (DecompressorImpl)d;
+            DecompressorImpl self = d as DecompressorImpl;
             if (self == null)
                 return Error.MSPACK_ERR_ARGS;
 
@@ -217,7 +219,7 @@ namespace LibMSPackSharp.SZDD
         /// </summary>
         public static Error LastError(Decompressor d)
         {
-            DecompressorImpl self = (DecompressorImpl)d;
+            DecompressorImpl self = d as DecompressorImpl;
             return (self != null) ? self.Error : Error.MSPACK_ERR_ARGS;
         }
 

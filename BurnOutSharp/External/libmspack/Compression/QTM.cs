@@ -171,7 +171,7 @@ namespace LibMSPackSharp.Compression
         /// </summary>
         public static Error Decompress(object o, long out_bytes)
         {
-            QTMDStream qtm = (QTMDStream)o;
+            QTMDStream qtm = o as QTMDStream;
             if (qtm == null)
                 return Error.MSPACK_ERR_ARGS;
 
@@ -466,8 +466,9 @@ namespace LibMSPackSharp.Compression
         /// Frees all state associated with a Quantum data stream
         /// - calls system.free() using the system pointer given in qtmd_init()
         /// </summary>
-        public static void Free(QTMDStream qtm)
+        public static void Free(object s)
         {
+            QTMDStream qtm = s as QTMDStream;
             if (qtm != null)
             {
                 SystemImpl sys = qtm.Sys;
@@ -489,28 +490,28 @@ namespace LibMSPackSharp.Compression
             ref int i_ptr, ref int i_end, ref uint bit_buffer, ref uint bits_left)
         {
             range = (uint)(((high - low) & 0xFFFF) + 1);
-            symf = (ushort)(((((current - low + 1) * model.Syms[0].CumFreq) - 1) / range) & 0xFFFF);
+            symf = (ushort)(((((current - low + 1) * model.Syms[0].CumulativeFrequency) - 1) / range) & 0xFFFF);
 
             int i;
             for (i = 1; i < model.Entries; i++)
             {
-                if (model.Syms[i].CumFreq <= symf)
+                if (model.Syms[i].CumulativeFrequency <= symf)
                     break;
             }
 
             var = model.Syms[i - 1].Sym;
 
             range = (ushort)((high - low) + 1);
-            symf = model.Syms[0].CumFreq;
-            high = (ushort)(low + ((model.Syms[i - 1].CumFreq * range) / symf) - 1);
-            low = (ushort)(low + ((model.Syms[i].CumFreq * range) / symf));
+            symf = model.Syms[0].CumulativeFrequency;
+            high = (ushort)(low + ((model.Syms[i - 1].CumulativeFrequency * range) / symf) - 1);
+            low = (ushort)(low + ((model.Syms[i].CumulativeFrequency * range) / symf));
 
             do
             {
-                model.Syms[--i].CumFreq += 8;
+                model.Syms[--i].CumulativeFrequency += 8;
             } while (i > 0);
 
-            if (model.Syms[0].CumFreq > 3800)
+            if (model.Syms[0].CumulativeFrequency > 3800)
                 UpdateModel(model);
 
             while (true)
@@ -548,10 +549,10 @@ namespace LibMSPackSharp.Compression
                 for (i = model.Entries - 1; i >= 0; i--)
                 {
                     /* -1, not -2; the 0 entry saves this */
-                    model.Syms[i].CumFreq >>= 1;
-                    if (model.Syms[i].CumFreq <= model.Syms[i + 1].CumFreq)
+                    model.Syms[i].CumulativeFrequency >>= 1;
+                    if (model.Syms[i].CumulativeFrequency <= model.Syms[i + 1].CumulativeFrequency)
                     {
-                        model.Syms[i].CumFreq = (ushort)(model.Syms[i + 1].CumFreq + 1);
+                        model.Syms[i].CumulativeFrequency = (ushort)(model.Syms[i + 1].CumulativeFrequency + 1);
                     }
                 }
             }
@@ -563,9 +564,9 @@ namespace LibMSPackSharp.Compression
                     // No -1, want to include the 0 entry
 
                     // This converts CumFreqs into frequencies, then shifts right
-                    model.Syms[i].CumFreq -= model.Syms[i + 1].CumFreq;
-                    model.Syms[i].CumFreq++; // Avoid losing things entirely
-                    model.Syms[i].CumFreq >>= 1;
+                    model.Syms[i].CumulativeFrequency -= model.Syms[i + 1].CumulativeFrequency;
+                    model.Syms[i].CumulativeFrequency++; // Avoid losing things entirely
+                    model.Syms[i].CumulativeFrequency >>= 1;
                 }
 
                 // Now sort by frequencies, decreasing order -- this must be an
@@ -575,7 +576,7 @@ namespace LibMSPackSharp.Compression
                 {
                     for (j = i + 1; j < model.Entries; j++)
                     {
-                        if (model.Syms[i].CumFreq < model.Syms[j].CumFreq)
+                        if (model.Syms[i].CumulativeFrequency < model.Syms[j].CumulativeFrequency)
                         {
                             tmp = model.Syms[i];
                             model.Syms[i] = model.Syms[j];
@@ -587,7 +588,7 @@ namespace LibMSPackSharp.Compression
                 // Then convert frequencies back to CumFreq
                 for (i = model.Entries - 1; i >= 0; i--)
                 {
-                    model.Syms[i].CumFreq += model.Syms[i + 1].CumFreq;
+                    model.Syms[i].CumulativeFrequency += model.Syms[i + 1].CumulativeFrequency;
                 }
             }
         }
@@ -604,7 +605,7 @@ namespace LibMSPackSharp.Compression
                 syms[i].Sym = (ushort)(start + i);
 
                 // Current frequency of that symbol
-                syms[i].CumFreq = (ushort)(len - i);
+                syms[i].CumulativeFrequency = (ushort)(len - i);
             }
         }
     }

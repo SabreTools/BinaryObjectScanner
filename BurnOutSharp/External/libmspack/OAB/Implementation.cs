@@ -62,7 +62,10 @@ namespace LibMSPackSharp.OAB
 
         private static int SysRead(object baseFile, byte[] buf, int pointer, int size)
         {
-            InternalFile file = (InternalFile)baseFile;
+            InternalFile file = baseFile as InternalFile;
+            if (file == null)
+                return 0;
+
             int bytes_read;
 
             if (size > file.Available)
@@ -82,7 +85,10 @@ namespace LibMSPackSharp.OAB
 
         private static int SysWrite(object baseFile, byte[] buf, int pointer, int size)
         {
-            InternalFile file = (InternalFile)baseFile;
+            InternalFile file = baseFile as InternalFile;
+            if (file == null)
+                return 0;
+
             int bytes_written = file.OrigSys.Write(file.OrigFile, buf, pointer, size);
 
             if (bytes_written > 0)
@@ -97,7 +103,7 @@ namespace LibMSPackSharp.OAB
 
         public static Error Decompress(Decompressor d, string input, string output)
         {
-            DecompressorImpl self = (DecompressorImpl)d;
+            DecompressorImpl self = d as DecompressorImpl;
             byte[] hdrbuf = new byte[oabhead_SIZEOF];
             LZXDStream lzx = null;
             Error ret = Error.MSPACK_ERR_OK;
@@ -332,7 +338,7 @@ namespace LibMSPackSharp.OAB
 
         public static Error DecompressIncremental(Decompressor d, string input, string basePath, string output)
         {
-            DecompressorImpl self = (DecompressorImpl)d;
+            DecompressorImpl self = d as DecompressorImpl;
             byte[] hdrbuf = new byte[patchhead_SIZEOF];
             LZXDStream lzx = null;
             int window_bits;
@@ -604,7 +610,7 @@ namespace LibMSPackSharp.OAB
 
         public static Error Param(Decompressor d, Parameters param, int value)
         {
-            DecompressorImpl self = (DecompressorImpl)d;
+            DecompressorImpl self = d as DecompressorImpl;
             if (self != null && param == Parameters.MSOABD_PARAM_DECOMPBUF && value >= 16)
             {
                 // must be at least 16 bytes (patchblk_SIZEOF, oabblk_SIZEOF)

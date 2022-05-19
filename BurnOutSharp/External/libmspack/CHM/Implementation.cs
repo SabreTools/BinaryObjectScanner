@@ -144,7 +144,7 @@ namespace LibMSPackSharp.CHM
         /// </summary>
         private static Header RealOpen(Decompressor d, string filename, bool entire)
         {
-            DecompressorImpl self = (DecompressorImpl)d;
+            DecompressorImpl self = d as DecompressorImpl;
             Header chm = null;
 
             if (d == null)
@@ -194,7 +194,7 @@ namespace LibMSPackSharp.CHM
         /// </summary>
         public static void Close(Decompressor d, Header chm)
         {
-            DecompressorImpl self = (DecompressorImpl)d;
+            DecompressorImpl self = d as DecompressorImpl;
             DecompressFile fi, nfi;
             uint i;
 
@@ -529,7 +529,7 @@ namespace LibMSPackSharp.CHM
 
                     fi.Next = null;
                     fi.Filename = Encoding.UTF8.GetString(chunk, name, (int)nameLen) + "\0";
-                    fi.Section = (section == 0) ? (Section)chm.Sec0 : (Section)chm.Sec1;
+                    fi.Section = (section == 0) ? chm.Sec0 as Section : chm.Sec1 as Section;
                     fi.Offset = offset;
                     fi.Length = length;
 
@@ -590,7 +590,7 @@ namespace LibMSPackSharp.CHM
         /// </summary>
         public static Error FastFind(Decompressor d, Header chm, string filename, DecompressFile f_ptr)
         {
-            DecompressorImpl self = (DecompressorImpl)d;
+            DecompressorImpl self = d as DecompressorImpl;
             SystemImpl sys;
             object fh;
 
@@ -682,7 +682,7 @@ namespace LibMSPackSharp.CHM
                     sec = (uint)((sec << 7) | (chunk[p] & 0x7F));
                 } while ((chunk[p++] & 0x80) != 0);
 
-                f_ptr.Section = (sec == 0) ? (Section)chm.Sec0 : (Section)chm.Sec1;
+                f_ptr.Section = sec == 0 ? chm.Sec0 as Section : chm.Sec1 as Section;
 
                 // READ_ENCINT(f_ptr.Offset)
                 f_ptr.Offset = 0;
@@ -996,7 +996,7 @@ namespace LibMSPackSharp.CHM
         /// </summary>
         public static Error Extract(Decompressor d, DecompressFile file, string filename)
         {
-            DecompressorImpl self = (DecompressorImpl)d;
+            DecompressorImpl self = d as DecompressorImpl;
             if (self == null)
                 return Error.MSPACK_ERR_ARGS;
 
@@ -1154,7 +1154,7 @@ namespace LibMSPackSharp.CHM
         /// </summary>
         private static int SysWrite(object file, byte[] buffer, int offset, int bytes)
         {
-            DecompressorImpl self = (DecompressorImpl)file;
+            DecompressorImpl self = file as DecompressorImpl;
             self.State.Offset += bytes;
             if (self.State.OutputFileHandle != null)
                 return self.System.Write(self.State.OutputFileHandle, buffer, offset, bytes);
@@ -1175,10 +1175,9 @@ namespace LibMSPackSharp.CHM
         {
             int window_size, window_bits, reset_interval, entry;
             SystemImpl sys = self.System;
-            MSCompressedSection sec;
             byte[] data;
 
-            sec = (MSCompressedSection)file.Section;
+            MSCompressedSection sec = file.Section as MSCompressedSection;
 
             // Ensure we have a mscompressed content section
             DecompressFile contentFile = null;
@@ -1531,7 +1530,7 @@ namespace LibMSPackSharp.CHM
         /// <returns></returns>
         public static Error LastError(Decompressor d)
         {
-            DecompressorImpl self = (DecompressorImpl)d;
+            DecompressorImpl self = d as DecompressorImpl;
             return (self != null ? self.Error : Error.MSPACK_ERR_ARGS);
         }
 

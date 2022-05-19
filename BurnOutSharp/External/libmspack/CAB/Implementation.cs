@@ -142,7 +142,7 @@ namespace LibMSPackSharp.CAB
         /// </summary>
         public static CabinetImpl Open(Decompressor d, string filename)
         {
-            DecompressorImpl self = (DecompressorImpl)d;
+            DecompressorImpl self = d as DecompressorImpl;
             CabinetImpl cab = null;
 
             if (self == null)
@@ -181,7 +181,7 @@ namespace LibMSPackSharp.CAB
         /// </summary>
         public static void Close(Decompressor d, Cabinet origcab)
         {
-            DecompressorImpl self = (DecompressorImpl)d;
+            DecompressorImpl self = d as DecompressorImpl;
 
             FolderData dat, ndat;
             Cabinet cab, ncab;
@@ -222,7 +222,7 @@ namespace LibMSPackSharp.CAB
                     }
 
                     // Free folder data segments
-                    for (dat = ((FolderImpl)fol).Data.Next; dat != null; dat = ndat)
+                    for (dat = (fol as FolderImpl).Data.Next; dat != null; dat = ndat)
                     {
                         ndat = dat.Next;
                         sys.Free(dat);
@@ -472,7 +472,7 @@ namespace LibMSPackSharp.CAB
                         file.Folder = ifol;
 
                         // Set "merge next" pointer
-                        fol = (FolderImpl)ifol;
+                        fol = ifol as FolderImpl;
                         if (fol.MergeNext == null)
                             fol.MergeNext = file;
                     }
@@ -483,7 +483,7 @@ namespace LibMSPackSharp.CAB
                         file.Folder = cab.Folders;
 
                         // Set "merge prev" pointer
-                        fol = (FolderImpl)file.Folder;
+                        fol = file.Folder as FolderImpl;
                         if (fol.MergePrev == null)
                             fol.MergePrev = file;
                     }
@@ -594,7 +594,7 @@ namespace LibMSPackSharp.CAB
         /// </summary>
         public static Cabinet Search(Decompressor d, string filename)
         {
-            DecompressorImpl self = (DecompressorImpl)d;
+            DecompressorImpl self = d as DecompressorImpl;
 
             if (self == null)
                 return null;
@@ -839,7 +839,7 @@ namespace LibMSPackSharp.CAB
         /// </summary>
         public static Error Merge(Decompressor d, Cabinet lcab, Cabinet rcab)
         {
-            DecompressorImpl self = (DecompressorImpl)d;
+            DecompressorImpl self = d as DecompressorImpl;
 
             FolderData data, ndata;
             FolderImpl lfol, rfol;
@@ -891,11 +891,11 @@ namespace LibMSPackSharp.CAB
                 sys.Message(null, "WARNING; merged cabinets with odd order.");
 
             // Merging the last folder in lcab with the first folder in rcab
-            lfol = (FolderImpl)lcab.Folders;
-            rfol = (FolderImpl)rcab.Folders;
+            lfol = lcab.Folders as FolderImpl;
+            rfol = rcab.Folders as FolderImpl;
             while (lfol.Next != null)
             {
-                lfol = (FolderImpl)lfol.Next;
+                lfol = lfol.Next as FolderImpl;
             }
 
             // Do we need to merge folders?
@@ -1086,7 +1086,7 @@ namespace LibMSPackSharp.CAB
         /// </summary>
         public static Error Extract(Decompressor d, InternalFile file, string filename)
         {
-            DecompressorImpl self = (DecompressorImpl)d;
+            DecompressorImpl self = d as DecompressorImpl;
             object fh;
 
             if (self == null)
@@ -1095,7 +1095,7 @@ namespace LibMSPackSharp.CAB
                 return self.Error = Error.MSPACK_ERR_ARGS;
 
             SystemImpl sys = self.System;
-            FolderImpl fol = (FolderImpl)file.Folder;
+            FolderImpl fol = file.Folder as FolderImpl;
 
             // If offset is beyond 2GB, nothing can be extracted
             if (file.Offset > CAB_LENGTHMAX)
@@ -1278,19 +1278,19 @@ namespace LibMSPackSharp.CAB
             switch (self.State.CompressionType & CompressionType.COMPTYPE_MASK)
             {
                 case CompressionType.COMPTYPE_NONE:
-                    NoneFree((NoneState)self.State.DecompressorState);
+                    NoneFree(self.State.DecompressorState);
                     break;
 
                 case CompressionType.COMPTYPE_MSZIP:
-                    MSZIP.Free((MSZIPDStream)self.State.DecompressorState);
+                    MSZIP.Free(self.State.DecompressorState);
                     break;
 
                 case CompressionType.COMPTYPE_QUANTUM:
-                    QTM.Free((QTMDStream)self.State.DecompressorState);
+                    QTM.Free(self.State.DecompressorState);
                     break;
 
                 case CompressionType.COMPTYPE_LZX:
-                    LZX.Free((LZXDStream)self.State.DecompressorState);
+                    LZX.Free(self.State.DecompressorState);
                     break;
             }
 
@@ -1309,7 +1309,7 @@ namespace LibMSPackSharp.CAB
         /// </summary>
         private static int SysRead(object file, byte[] buffer, int pointer, int bytes)
         {
-            DecompressorImpl self = (DecompressorImpl)file;
+            DecompressorImpl self = file as DecompressorImpl;
             SystemImpl sys = self.System;
             int avail, todo, outlen = 0;
 
@@ -1370,7 +1370,7 @@ namespace LibMSPackSharp.CAB
                         {
                             // Special LZX hack -- on the last block, inform LZX of the
                             // size of the output data stream.
-                            LZX.SetOutputLength((LZXDStream)self.State.DecompressorState, self.State.Outlen);
+                            LZX.SetOutputLength(self.State.DecompressorState as LZXDStream, self.State.Outlen);
                         }
                     }
                 }
@@ -1387,7 +1387,7 @@ namespace LibMSPackSharp.CAB
         /// </summary>
         private static int SysWrite(object file, byte[] buffer, int pointer, int bytes)
         {
-            DecompressorImpl self = (DecompressorImpl)file;
+            DecompressorImpl self = file as DecompressorImpl;
             self.State.Offset += (uint)bytes;
             if (self.State.OutputFileHandle != null)
                 return self.System.Write(self.State.OutputFileHandle, buffer, pointer, bytes);
@@ -1576,7 +1576,7 @@ namespace LibMSPackSharp.CAB
 
         internal static void NoneFree(object s)
         {
-            NoneState state = (NoneState)s;
+            NoneState state = s as NoneState;
             if (state != null)
             {
                 SystemImpl sys = state.Sys;
@@ -1594,7 +1594,7 @@ namespace LibMSPackSharp.CAB
         /// </summary>
         public static Error Param(Decompressor d, Parameters param, int value)
         {
-            DecompressorImpl self = (DecompressorImpl)d;
+            DecompressorImpl self = d as DecompressorImpl;
             if (self == null)
                 return Error.MSPACK_ERR_ARGS;
 
@@ -1638,7 +1638,7 @@ namespace LibMSPackSharp.CAB
         /// </summary>
         public static Error LastError(Decompressor d)
         {
-            DecompressorImpl self = (DecompressorImpl)d;
+            DecompressorImpl self = d as DecompressorImpl;
             return (self != null) ? self.Error : Error.MSPACK_ERR_ARGS;
         }
 

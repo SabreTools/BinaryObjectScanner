@@ -9,7 +9,7 @@
 
 namespace LibMSPackSharp.Compression
 {
-    public class des
+    public class DES
     {
     }
 }

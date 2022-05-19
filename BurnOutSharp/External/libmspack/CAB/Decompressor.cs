@@ -23,8 +23,8 @@ namespace LibMSPackSharp.CAB
     /// 
     /// All fields are READ ONLY.
     /// </summary>
-    /// <see cref="mspack_create_cab_decompressor()"/>
-    /// <see cref="mspack_destroy_cab_decompressor()"/>
+    /// <see cref="Library.CreateCABDecompressor(SystemImpl)"/>
+    /// <see cref="Library.DestroyCABDecompressor(Decompressor)"/>
     public class Decompressor
     {
         /// <summary>

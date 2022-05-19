@@ -261,19 +261,19 @@ namespace LibMSPackSharp
             switch (mode)
             {
                 case OpenMode.MSPACK_SYS_OPEN_READ:
-                    fileHandle.FileHandle = File.Open(filename, FileMode.Open, FileAccess.Read);
+                    fileHandle.FileHandle = File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                     break;
 
                 case OpenMode.MSPACK_SYS_OPEN_WRITE:
-                    fileHandle.FileHandle = File.Open(filename, FileMode.Open, FileAccess.Write);
+                    fileHandle.FileHandle = File.Open(filename, FileMode.OpenOrCreate, FileAccess.Write, FileShare.ReadWrite);
                     break;
 
                 case OpenMode.MSPACK_SYS_OPEN_UPDATE:
-                    fileHandle.FileHandle = File.Open(filename, FileMode.Open, FileAccess.ReadWrite);
+                    fileHandle.FileHandle = File.Open(filename, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
                     break;
 
                 case OpenMode.MSPACK_SYS_OPEN_APPEND:
-                    fileHandle.FileHandle = File.Open(filename, FileMode.Append);
+                    fileHandle.FileHandle = File.Open(filename, FileMode.Append, FileAccess.ReadWrite, FileShare.ReadWrite);
                     break;
 
                 default:

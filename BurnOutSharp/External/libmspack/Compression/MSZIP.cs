@@ -162,7 +162,7 @@ namespace LibMSPackSharp.Compression
         /// </summary>
         public static Error Decompress(object o, long out_bytes)
         {
-            MSZIPDStream zip = (MSZIPDStream)o;
+            MSZIPDStream zip = o as MSZIPDStream;
             if (zip == null)
                 return Error.MSPACK_ERR_ARGS;
 
@@ -328,8 +328,9 @@ namespace LibMSPackSharp.Compression
         /// 
         /// - calls system.free() using the system pointer given in mszipd_init()
         /// </summary>
-        public static void Free(MSZIPDStream zip)
+        public static void Free(object s)
         {
+            MSZIPDStream zip = s as MSZIPDStream;
             if (zip != null)
             {
                 SystemImpl sys = zip.Sys;

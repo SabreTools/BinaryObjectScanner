@@ -16,6 +16,6 @@ namespace LibMSPackSharp.Compression
     {
         public ushort Sym { get; set; }
 
-        public ushort CumFreq { get; set; }
+        public ushort CumulativeFrequency { get; set; }
     }
 }

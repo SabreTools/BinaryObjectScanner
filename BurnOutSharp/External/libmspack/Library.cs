@@ -196,7 +196,7 @@ namespace LibMSPackSharp
         /// <param name="d">the <see cref="CAB.Decompressor"/> to destroy</param>
         public static void DestroyCABDecompressor(CAB.Decompressor d)
         {
-            CAB.DecompressorImpl self = (CAB.DecompressorImpl)d;
+            CAB.DecompressorImpl self = d as CAB.DecompressorImpl;
             if (self != null)
             {
                 SystemImpl sys = self.System;
@@ -269,7 +269,7 @@ namespace LibMSPackSharp
         /// <param name="d">the <see cref="CHM.Decompressor"/> to destroy</param>
         public static void DestroyCHMDecompressor(CHM.Decompressor d)
         {
-            CHM.DecompressorImpl self = (CHM.DecompressorImpl)d;
+            CHM.DecompressorImpl self = d as CHM.DecompressorImpl;
             if (self != null)
             {
                 SystemImpl sys = self.System;
@@ -429,7 +429,7 @@ namespace LibMSPackSharp
         /// <param name="d">the <see cref="SZDD.Decompressor"/> to destroy</param>
         public static void DestroySZDDDecompressor(SZDD.Decompressor d)
         {
-            SZDD.DecompressorImpl self = (SZDD.DecompressorImpl)d;
+            SZDD.DecompressorImpl self = d as SZDD.DecompressorImpl;
             if (self != null)
             {
                 SystemImpl sys = self.System;
@@ -491,7 +491,7 @@ namespace LibMSPackSharp
         /// <param name="d">the <see cref="KWAJ.Decompressor"/> to destroy</param>
         public static void DestroyKWAJDecompressor(KWAJ.Decompressor d)
         {
-            KWAJ.DecompressorImpl self = (KWAJ.DecompressorImpl)d;
+            KWAJ.DecompressorImpl self = d as KWAJ.DecompressorImpl;
             if (self != null)
             {
                 SystemImpl sys = self.System;
@@ -551,7 +551,7 @@ namespace LibMSPackSharp
         /// <param name="d">the <see cref="OAB.Decompressor"/> to destroy</param>
         public static void DestroyOABDecompressor(OAB.Decompressor d)
         {
-            OAB.DecompressorImpl self = (OAB.DecompressorImpl)d;
+            OAB.DecompressorImpl self = d as OAB.DecompressorImpl;
             if (self != null)
             {
                 SystemImpl sys = self.System;
