@@ -133,7 +133,7 @@ using LibMSPackSharp.Compression;
 
 namespace LibMSPackSharp
 {
-    public partial class Library
+    public static class Library
     {
         #region CAB
 
@@ -142,7 +142,7 @@ namespace LibMSPackSharp
         /// </summary>
         /// <param name="sys">a custom SystemImpl structure, or null to use the default</param>
         /// <returns>a <see cref="CAB.Compressor"/> or null</returns>
-        public CAB.Compressor CreateCABCompressor(SystemImpl sys)
+        public static CAB.Compressor CreateCABCompressor(SystemImpl sys)
         {
             // TODO
             return null;
@@ -153,7 +153,7 @@ namespace LibMSPackSharp
         /// </summary>
         /// <param name="sys">a custom SystemImpl structure, or null to use the default</param>
         /// <returns>a <see cref="CAB.Decompressor"/> or null</returns>
-        public CAB.Decompressor CreateCABDecompressor(SystemImpl sys)
+        public static CAB.Decompressor CreateCABDecompressor(SystemImpl sys)
         {
             if (sys == null)
                 sys = SystemImpl.DefaultSystem;
@@ -185,7 +185,7 @@ namespace LibMSPackSharp
         /// Destroys an existing CAB compressor.
         /// </summary>
         /// <param name="c">the <see cref="CAB.Compressor"/> to destroy</param>
-        public void DestroyCABCompressor(CAB.Compressor c)
+        public static void DestroyCABCompressor(CAB.Compressor c)
         {
             // TODO
         }
@@ -194,7 +194,7 @@ namespace LibMSPackSharp
         /// Destroys an existing CAB decompressor.
         /// </summary>
         /// <param name="d">the <see cref="CAB.Decompressor"/> to destroy</param>
-        public void DestroyCABDecompressor(CAB.Decompressor d)
+        public static void DestroyCABDecompressor(CAB.Decompressor d)
         {
             CAB.DecompressorImpl self = (CAB.DecompressorImpl)d;
             if (self != null)
@@ -222,7 +222,7 @@ namespace LibMSPackSharp
         /// </summary>
         /// <param name="sys">a custom SystemImpl structure, or null to use the default</param>
         /// <returns>a <see cref="CHM.Compressor"/> or null</returns>
-        public CHM.Compressor CreateCHMCompressor(SystemImpl sys)
+        public static CHM.Compressor CreateCHMCompressor(SystemImpl sys)
         {
             // TODO
             return null;
@@ -233,7 +233,7 @@ namespace LibMSPackSharp
         /// </summary>
         /// <param name="sys">a custom SystemImpl structure, or null to use the default</param>
         /// <returns>a <see cref="CHM.Decompressor"/> or null</returns>
-        public CHM.Decompressor CreateCHMDecompressor(SystemImpl sys)
+        public static CHM.Decompressor CreateCHMDecompressor(SystemImpl sys)
         {
             if (sys == null)
                 sys = SystemImpl.DefaultSystem;
@@ -258,7 +258,7 @@ namespace LibMSPackSharp
         /// Destroys an existing CHM compressor.
         /// </summary>
         /// <param name="c">the <see cref="CHM.Compressor"/> to destroy</param>
-        public void DestroyCHMCompressor(CHM.Compressor c)
+        public static void DestroyCHMCompressor(CHM.Compressor c)
         {
             // TODO
         }
@@ -267,7 +267,7 @@ namespace LibMSPackSharp
         /// Destroys an existing CHM decompressor.
         /// </summary>
         /// <param name="d">the <see cref="CHM.Decompressor"/> to destroy</param>
-        public void DestroyCHMDecompressor(CHM.Decompressor d)
+        public static void DestroyCHMDecompressor(CHM.Decompressor d)
         {
             CHM.DecompressorImpl self = (CHM.DecompressorImpl)d;
             if (self != null)
@@ -296,7 +296,7 @@ namespace LibMSPackSharp
         /// </summary>
         /// <param name="sys">a custom SystemImpl structure, or null to use the default</param>
         /// <returns>a <see cref="LIT.Compressor"/> or null</returns>
-        public LIT.Compressor CreateLITCompressor(SystemImpl sys)
+        public static LIT.Compressor CreateLITCompressor(SystemImpl sys)
         {
             // TODO
             return null;
@@ -307,7 +307,7 @@ namespace LibMSPackSharp
         /// </summary>
         /// <param name="sys">a custom SystemImpl structure, or null to use the default</param>
         /// <returns>a <see cref="LIT.Decompressor"/> or null</returns>
-        public LIT.Decompressor CreateLITDecompressor(SystemImpl sys)
+        public static LIT.Decompressor CreateLITDecompressor(SystemImpl sys)
         {
             // TODO
             return null;
@@ -317,7 +317,7 @@ namespace LibMSPackSharp
         /// Destroys an existing LIT compressor.
         /// </summary>
         /// <param name="c">the <see cref="LIT.Compressor"/> to destroy</param>
-        public void DestroyLITCompressor(LIT.Compressor c)
+        public static void DestroyLITCompressor(LIT.Compressor c)
         {
             // TODO
         }
@@ -326,7 +326,7 @@ namespace LibMSPackSharp
         /// Destroys an existing LIT decompressor.
         /// </summary>
         /// <param name="d">the <see cref="LIT.Decompressor"/> to destroy</param>
-        public void DestroyLITDecompressor(LIT.Decompressor d)
+        public static void DestroyLITDecompressor(LIT.Decompressor d)
         {
             // TODO
         }
@@ -340,7 +340,7 @@ namespace LibMSPackSharp
         /// </summary>
         /// <param name="sys">a custom SystemImpl structure, or null to use the default</param>
         /// <returns>a <see cref="HLP.Compressor"/> or null</returns>
-        public HLP.Compressor CreateHLPCompressor(SystemImpl sys)
+        public static HLP.Compressor CreateHLPCompressor(SystemImpl sys)
         {
             // TODO
             return null;
@@ -351,7 +351,7 @@ namespace LibMSPackSharp
         /// </summary>
         /// <param name="sys">a custom SystemImpl structure, or null to use the default</param>
         /// <returns>a <see cref="HLP.Decompressor"/> or null</returns>
-        public HLP.Decompressor CreateHLPDecompressor(SystemImpl sys)
+        public static HLP.Decompressor CreateHLPDecompressor(SystemImpl sys)
         {
             // TODO
             return null;
@@ -361,7 +361,7 @@ namespace LibMSPackSharp
         /// Destroys an existing HLP compressor.
         /// </summary>
         /// <param name="c">the <see cref="HLP.Compressor"/> to destroy</param>
-        public void DestroyHLPCompressor(HLP.Compressor c)
+        public static void DestroyHLPCompressor(HLP.Compressor c)
         {
             // TODO
         }
@@ -370,7 +370,7 @@ namespace LibMSPackSharp
         /// Destroys an existing HLP decompressor.
         /// </summary>
         /// <param name="d">the <see cref="HLP.Decompressor"/> to destroy</param>
-        public void DestroyHLPDecompressor(HLP.Decompressor d)
+        public static void DestroyHLPDecompressor(HLP.Decompressor d)
         {
             // TODO
         }
@@ -384,7 +384,7 @@ namespace LibMSPackSharp
         /// </summary>
         /// <param name="sys">a custom SystemImpl structure, or null to use the default</param>
         /// <returns>a <see cref="SZDD.Compressor"/> or null</returns>
-        public SZDD.Compressor CreateSZDDCompressor(SystemImpl sys)
+        public static SZDD.Compressor CreateSZDDCompressor(SystemImpl sys)
         {
             // TODO
             return null;
@@ -395,7 +395,7 @@ namespace LibMSPackSharp
         /// </summary>
         /// <param name="sys">a custom SystemImpl structure, or null to use the default</param>
         /// <returns>a <see cref="SZDD.Decompressor"/> or null</returns>
-        public SZDD.Decompressor CreateSZDDDecompressor(SystemImpl sys)
+        public static SZDD.Decompressor CreateSZDDDecompressor(SystemImpl sys)
         {
             if (sys == null)
                 sys = SystemImpl.DefaultSystem;
@@ -418,7 +418,7 @@ namespace LibMSPackSharp
         /// Destroys an existing SZDD compressor.
         /// </summary>
         /// <param name="c">the <see cref="SZDD.Compressor"/> to destroy</param>
-        public void DestroySZDDCompressor(SZDD.Compressor c)
+        public static void DestroySZDDCompressor(SZDD.Compressor c)
         {
             // TODO
         }
@@ -427,7 +427,7 @@ namespace LibMSPackSharp
         /// Destroys an existing SZDD decompressor.
         /// </summary>
         /// <param name="d">the <see cref="SZDD.Decompressor"/> to destroy</param>
-        public void DestroySZDDDecompressor(SZDD.Decompressor d)
+        public static void DestroySZDDDecompressor(SZDD.Decompressor d)
         {
             SZDD.DecompressorImpl self = (SZDD.DecompressorImpl)d;
             if (self != null)
@@ -446,7 +446,7 @@ namespace LibMSPackSharp
         /// </summary>
         /// <param name="sys">a custom SystemImpl structure, or null to use the default</param>
         /// <returns>a <see cref="KWAJ.Compressor"/> or null</returns>
-        public KWAJ.Compressor CreateKWAJCompressor(SystemImpl sys)
+        public static KWAJ.Compressor CreateKWAJCompressor(SystemImpl sys)
         {
             // TODO
             return null;
@@ -457,7 +457,7 @@ namespace LibMSPackSharp
         /// </summary>
         /// <param name="sys">a custom SystemImpl structure, or null to use the default</param>
         /// <returns>a <see cref="KWAJ.Decompressor"/> or null</returns>
-        public KWAJ.Decompressor CreateKWAJDecompressor(SystemImpl sys)
+        public static KWAJ.Decompressor CreateKWAJDecompressor(SystemImpl sys)
         {
             if (sys == null)
                 sys = SystemImpl.DefaultSystem;
@@ -480,7 +480,7 @@ namespace LibMSPackSharp
         /// Destroys an existing KWAJ compressor.
         /// </summary>
         /// <param name="c">the <see cref="KWAJ.Compressor"/> to destroy</param>
-        public void DestroyKWAJCompressor(KWAJ.Compressor c)
+        public static void DestroyKWAJCompressor(KWAJ.Compressor c)
         {
             // TODO
         }
@@ -489,7 +489,7 @@ namespace LibMSPackSharp
         /// Destroys an existing KWAJ decompressor.
         /// </summary>
         /// <param name="d">the <see cref="KWAJ.Decompressor"/> to destroy</param>
-        public void DestroyKWAJDecompressor(KWAJ.Decompressor d)
+        public static void DestroyKWAJDecompressor(KWAJ.Decompressor d)
         {
             KWAJ.DecompressorImpl self = (KWAJ.DecompressorImpl)d;
             if (self != null)
@@ -508,7 +508,7 @@ namespace LibMSPackSharp
         /// </summary>
         /// <param name="sys">a custom SystemImpl structure, or null to use the default</param>
         /// <returns>a <see cref="OAB.Compressor"/> or null</returns>
-        public OAB.Compressor CreateOABCompressor(SystemImpl sys)
+        public static OAB.Compressor CreateOABCompressor(SystemImpl sys)
         {
             // TODO
             return null;
@@ -519,7 +519,7 @@ namespace LibMSPackSharp
         /// </summary>
         /// <param name="sys">a custom SystemImpl structure, or null to use the default</param>
         /// <returns>a <see cref="OAB.Decompressor"/> or null</returns>
-        public OAB.Decompressor CreateOABDecompressor(SystemImpl sys)
+        public static OAB.Decompressor CreateOABDecompressor(SystemImpl sys)
         {
             if (sys == null)
                 sys = SystemImpl.DefaultSystem;
@@ -540,7 +540,7 @@ namespace LibMSPackSharp
         /// Destroys an existing OAB compressor.
         /// </summary>
         /// <param name="c">the <see cref="OAB.Compressor"/> to destroy</param>
-        public void DestroyOABCompressor(OAB.Compressor c)
+        public static void DestroyOABCompressor(OAB.Compressor c)
         {
             // TODO
         }
@@ -549,7 +549,7 @@ namespace LibMSPackSharp
         /// Destroys an existing OAB decompressor.
         /// </summary>
         /// <param name="d">the <see cref="OAB.Decompressor"/> to destroy</param>
-        public void DestroyOABDecompressor(OAB.Decompressor d)
+        public static void DestroyOABDecompressor(OAB.Decompressor d)
         {
             OAB.DecompressorImpl self = (OAB.DecompressorImpl)d;
             if (self != null)
