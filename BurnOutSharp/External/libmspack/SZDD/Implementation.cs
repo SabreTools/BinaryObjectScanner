@@ -33,7 +33,7 @@ namespace LibMSPackSharp.SZDD
 
             SystemImpl sys = self.System;
 
-            object fh = sys.Open(sys, filename, OpenMode.MSPACK_SYS_OPEN_READ);
+            DefaultFileImpl fh = sys.Open(filename, OpenMode.MSPACK_SYS_OPEN_READ);
             HeaderImpl hdr = new HeaderImpl();
             if (fh != null && hdr != null)
             {
@@ -53,7 +53,6 @@ namespace LibMSPackSharp.SZDD
                 if (fh != null)
                     sys.Close(fh);
 
-                sys.Free(hdr);
                 hdr = null;
             }
 
@@ -77,9 +76,6 @@ namespace LibMSPackSharp.SZDD
 
             // Close the file handle associated
             self.System.Close(hdr_p.FileHandle);
-
-            // Free the memory associated
-            self.System.Free(hdr);
 
             self.Error = Error.MSPACK_ERR_OK;
         }
@@ -158,7 +154,7 @@ namespace LibMSPackSharp.SZDD
 
             SystemImpl sys = self.System;
 
-            object fh = (hdr as HeaderImpl)?.FileHandle;
+            DefaultFileImpl fh = (hdr as HeaderImpl)?.FileHandle;
             if (fh == null)
                 return Error.MSPACK_ERR_ARGS;
 
@@ -168,8 +164,8 @@ namespace LibMSPackSharp.SZDD
                 return self.Error = Error.MSPACK_ERR_SEEK;
 
             // Open file for output
-            object outfh;
-            if ((outfh = sys.Open(sys, filename, OpenMode.MSPACK_SYS_OPEN_WRITE)) == null)
+            DefaultFileImpl outfh;
+            if ((outfh = sys.Open(filename, OpenMode.MSPACK_SYS_OPEN_WRITE)) == null)
                 return self.Error = Error.MSPACK_ERR_OPEN;
 
             // Decompress the data

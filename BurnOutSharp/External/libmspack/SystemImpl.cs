@@ -43,13 +43,6 @@ namespace LibMSPackSharp
         /// <summary>
         /// Opens a file for reading, writing, appending or updating.
         /// </summary>
-        /// <param name="self">
-        /// a self-referential pointer to the SystemImpl
-        /// structure whose Open() method is being called. If
-        /// this pointer is required by Close(), Read(), Write(),
-        /// Seek() or Tell(), it should be stored in the result
-        /// structure at this time.
-        /// </param>
         /// <param name="filename">
         /// the file to be opened. It is passed directly from the
         /// library caller without being modified, so it is up to
@@ -57,21 +50,55 @@ namespace LibMSPackSharp
         /// </param>
         /// <param name="mode">One of the <see cref="OpenMode"/> values</param>
         /// <returns>
-        /// a pointer to a mspack_file structure. This structure officially
+        /// A pointer to a DefaultFileImpl structure. This structure officially
         /// contains no members, its true contents are up to the
         /// SystemImpl implementor. It should contain whatever is needed
         /// for other SystemImpl methods to operate. Returning the null
         /// pointer indicates an error condition.
         /// </returns>
-        public Func<SystemImpl, string, OpenMode, object> Open;
+        public DefaultFileImpl Open(string filename, OpenMode mode)
+        {
+            try
+            {
+                DefaultFileImpl fileHandle = new DefaultFileImpl();
+                switch (mode)
+                {
+                    case OpenMode.MSPACK_SYS_OPEN_READ:
+                        fileHandle.FileHandle = File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                        break;
+
+                    case OpenMode.MSPACK_SYS_OPEN_WRITE:
+                        fileHandle.FileHandle = File.Open(filename, FileMode.OpenOrCreate, FileAccess.Write, FileShare.ReadWrite);
+                        break;
+
+                    case OpenMode.MSPACK_SYS_OPEN_UPDATE:
+                        fileHandle.FileHandle = File.Open(filename, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+                        break;
+
+                    case OpenMode.MSPACK_SYS_OPEN_APPEND:
+                        fileHandle.FileHandle = File.Open(filename, FileMode.Append, FileAccess.ReadWrite, FileShare.ReadWrite);
+                        break;
+
+                    default:
+                        return null;
+                }
+
+                return fileHandle;
+            }
+            catch (Exception ex)
+            {
+                Message(null, $"Could not open {filename}: {ex}");
+                return null;
+            }
+        }
 
         /// <summary>
         /// Closes a previously opened file. If any memory was allocated for this
         /// particular file handle, it should be freed at this time.
         /// </summary>
         /// <param name="file">the file to close</param>
-        /// <see cref="Open"/>
-        public Action<object> Close;
+        /// <see cref="Open(string, OpenMode)"/>
+        public void Close(DefaultFileImpl file) => file?.FileHandle?.Close();
 
         /// <summary>
         /// Reads a given number of bytes from an open file.
@@ -86,7 +113,7 @@ namespace LibMSPackSharp
         /// reads and assumes short reads are due to EOF, so you should
         /// avoid returning short reads because of transient errors.
         /// </returns>
-        /// <see cref="Open"/>
+        /// <see cref="Open(string, OpenMode)"/>
         /// <see cref="Write"/>
         public Func<object, byte[], int, int, int> Read;
 
@@ -103,7 +130,7 @@ namespace LibMSPackSharp
         /// bytes were written than requested are considered by the library
         /// to be an error.
         /// </returns>
-        /// <see cref="Open"/>
+        /// <see cref="Open(string, OpenMode)"/>
         /// <see cref="Read"/>
         public Func<object, byte[], int, int, int> Write;
 
@@ -124,18 +151,40 @@ namespace LibMSPackSharp
         /// <param name="offset">an offset to seek, measured in bytes</param>
         /// <param name="mode">One of the <see cref="SeekMode"/> values</param>
         /// <returns>zero for success, non-zero for an error</returns>
-        /// <see cref="Open"/>
-        /// <see cref="Tell"/>
-        public Func<object, long, SeekMode, bool> Seek;
+        /// <see cref="Open(string, OpenMode)"/>
+        /// <see cref="Tell(DefaultFileImpl)"/>
+        public bool Seek(DefaultFileImpl self, long offset, SeekMode mode)
+        {
+            if (self == null)
+                return false;
+
+            switch (mode)
+            {
+                case SeekMode.MSPACK_SYS_SEEK_START:
+                    try { self.FileHandle.Seek(offset, SeekOrigin.Begin); return true; }
+                    catch { return false; }
+
+                case SeekMode.MSPACK_SYS_SEEK_CUR:
+                    try { self.FileHandle.Seek(offset, SeekOrigin.Current); return true; }
+                    catch { return false; }
+
+                case SeekMode.MSPACK_SYS_SEEK_END:
+                    try { self.FileHandle.Seek(offset, SeekOrigin.End); return true; }
+                    catch { return false; }
+
+                default:
+                    return false;
+            }
+        }
 
         /// <summary>
         /// Returns the current file position (in bytes) of the given file.
         /// </summary>
         /// <param name="file">the file whose file position is wanted</param>
         /// <returns>the current file position of the file</returns>
-        /// <see cref="Open"/>
-        /// <see cref="Seek"/>
-        public Func<object, long> Tell;
+        /// <see cref="Open(string, OpenMode)"/>
+        /// <see cref="Seek(DefaultFileImpl, long, SeekMode)"/>
+        public long Tell(DefaultFileImpl self) => (self != null ? self.FileHandle.Position : 0);
 
         /// <summary>
         /// Used to send messages from the library to the user.
@@ -150,80 +199,32 @@ namespace LibMSPackSharp
         /// a specific file.
         /// </param>
         /// <param name="format">a printf() style format string. It does NOT include a trailing newline.</param>
-        /// <see cref="Open"/>
-        public Action<object, string> Message;
+        /// <see cref="Open(string, OpenMode)"/>
+        public void Message(DefaultFileImpl file, string format)
+        {
+            if (file != null)
+                Console.Error.Write($"{file.Name}: ");
 
-        /// <summary>
-        /// Allocates memory.
-        /// </summary>
-        /// <param name="self">
-        /// a self-referential pointer to the SystemImpl
-        /// structure whose Alloc() method is being called.
-        /// </param>
-        /// <param name="bytes">the number of bytes to allocate</param>
-        /// <returns>
-        /// a pointer to the requested number of bytes, or null if
-        /// not enough memory is available
-        /// </returns>
-        /// <see cref="Free"/>
-        public Func<SystemImpl, int, byte[]> Alloc;
-
-        /// <summary>
-        /// Frees memory.
-        /// </summary>
-        /// <param name="ptr">the memory to be freed. null is accepted and ignored.</param>
-        /// <see cref="Alloc"/>
-        public Action<object> Free;
-
-        /// <summary>
-        /// Copies from one region of memory to another.
-        /// 
-        /// The regions of memory are guaranteed not to overlap, are usually less
-        /// than 256 bytes, and may not be aligned. Please note that the source
-        /// parameter comes before the destination parameter, unlike the standard
-        /// C function memcpy().
-        /// </summary>
-        /// <param name="src">the region of memory to copy from</param>
-        /// <param name="dest">the region of memory to copy to</param>
-        /// <param name="bytes">the size of the memory region, in bytes</param>
-        public Action<byte[], int, byte[], int, int> Copy;
-
-        /// <summary>
-        /// A null pointer to mark the end of SystemImpl. It must equal null.
-        /// 
-        /// Should the SystemImpl structure extend in the future, this null
-        /// will be seen, rather than have an invalid method pointer called.
-        /// </summary>
-        public readonly object NullPtr = null;
+            Console.Error.Write($"{format}\n");
+        }
 
         #region Helpers
 
         /// <summary>
         /// Returns the length of a file opened for reading
         /// </summary>
-        public static Error GetFileLength(SystemImpl system, object file, out long length)
+        public Error GetFileLength(DefaultFileImpl file, out long length)
         {
-            length = 0;
-            long current;
-
-            if (system == null || file == null)
-                return Error.MSPACK_ERR_OPEN;
-
-            // Get current offset
-            current = system.Tell(file);
-
-            // Seek to end of file
-            if (!system.Seek(file, 0, SeekMode.MSPACK_SYS_SEEK_END))
+            try
+            {
+                length = file?.FileHandle?.Length ?? 0;
+                return Error.MSPACK_ERR_OK;
+            }
+            catch
+            {
+                length = 0;
                 return Error.MSPACK_ERR_SEEK;
-
-            // Get offset of end of file
-            length = system.Tell(file);
-
-            // Seek back to original offset
-            if (!system.Seek(file, current, SeekMode.MSPACK_SYS_SEEK_START))
-                return Error.MSPACK_ERR_SEEK;
-
-            return Error.MSPACK_ERR_OK;
+            }
         }
 
         /// <summary>
@@ -231,10 +232,7 @@ namespace LibMSPackSharp
         /// </summary>
         public static bool ValidSystem(SystemImpl sys)
         {
-            return (sys != null) && (sys.Open != null) && (sys.Close != null) &&
-                (sys.Read != null) && (sys.Write != null) && (sys.Seek != null) &&
-                (sys.Tell != null) && (sys.Message != null) && (sys.Alloc != null) &&
-                (sys.Free != null) && (sys.Copy != null) && (sys.NullPtr == null);
+            return (sys != null) && (sys.Read != null) && (sys.Write != null);
         }
 
         #endregion
@@ -243,52 +241,9 @@ namespace LibMSPackSharp
 
         public static SystemImpl DefaultSystem => new SystemImpl()
         {
-            Open = DefaultOpen,
-            Close = DefaultClose,
             Read = DefaultRead,
             Write = DefaultWrite,
-            Seek = DefaultSeek,
-            Tell = DefaultTell,
-            Message = DefaultMessage,
-            Alloc = DefaultAlloc,
-            Free = DefaultFree,
-            Copy = DefaultCopy,
         };
-
-        private static object DefaultOpen(SystemImpl self, string filename, OpenMode mode)
-        {
-            DefaultFileImpl fileHandle = new DefaultFileImpl();
-            switch (mode)
-            {
-                case OpenMode.MSPACK_SYS_OPEN_READ:
-                    fileHandle.FileHandle = File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                    break;
-
-                case OpenMode.MSPACK_SYS_OPEN_WRITE:
-                    fileHandle.FileHandle = File.Open(filename, FileMode.OpenOrCreate, FileAccess.Write, FileShare.ReadWrite);
-                    break;
-
-                case OpenMode.MSPACK_SYS_OPEN_UPDATE:
-                    fileHandle.FileHandle = File.Open(filename, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
-                    break;
-
-                case OpenMode.MSPACK_SYS_OPEN_APPEND:
-                    fileHandle.FileHandle = File.Open(filename, FileMode.Append, FileAccess.ReadWrite, FileShare.ReadWrite);
-                    break;
-
-                default:
-                    return null;
-            }
-
-            return fileHandle;
-        }
-
-        private static void DefaultClose(object file)
-        {
-            DefaultFileImpl self = file as DefaultFileImpl;
-            if (self != null)
-                self.FileHandle.Close();
-        }
 
         private static int DefaultRead(object file, byte[] buffer, int pointer, int bytes)
         {
@@ -312,62 +267,6 @@ namespace LibMSPackSharp
                 return bytes;
             }
             return -1;
-        }
-
-        private static bool DefaultSeek(object file, long offset, SeekMode mode)
-        {
-            DefaultFileImpl self = file as DefaultFileImpl;
-            if (self != null)
-            {
-                switch (mode)
-                {
-                    case SeekMode.MSPACK_SYS_SEEK_START:
-                        try { self.FileHandle.Seek(offset, SeekOrigin.Begin); return true; }
-                        catch { return false; }
-
-                    case SeekMode.MSPACK_SYS_SEEK_CUR:
-                        try { self.FileHandle.Seek(offset, SeekOrigin.Current); return true; }
-                        catch { return false; }
-
-                    case SeekMode.MSPACK_SYS_SEEK_END:
-                        try { self.FileHandle.Seek(offset, SeekOrigin.End); return true; }
-                        catch { return false; }
-
-                    default:
-                        return false;
-                }
-            }
-
-            return false;
-        }
-
-        private static long DefaultTell(object file)
-        {
-            DefaultFileImpl self = file as DefaultFileImpl;
-            return (self != null ? (int)self.FileHandle.Position : 0);
-        }
-
-        private static void DefaultMessage(object file, string format)
-        {
-            if (file != null)
-                Console.Error.Write($"{(file as DefaultFileImpl)?.Name}: ");
-
-            Console.Error.Write($"{format}\n");
-        }
-
-        private static byte[] DefaultAlloc(SystemImpl self, int bytes)
-        {
-            return new byte[bytes];
-        }
-
-        private static void DefaultFree(object buffer)
-        {
-            buffer = null;
-        }
-
-        private static void DefaultCopy(byte[] src, int srcPtr, byte[] dest, int destPtr, int bytes)
-        {
-            Array.Copy(src, srcPtr, dest, destPtr, bytes);
         }
 
         #endregion

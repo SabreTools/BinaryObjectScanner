@@ -129,8 +129,6 @@
  *   use of extract(), and any other methods, with the mutex
  */
 
-using LibMSPackSharp.Compression;
-
 namespace LibMSPackSharp
 {
     public static class Library
@@ -160,16 +158,8 @@ namespace LibMSPackSharp
             if (!SystemImpl.ValidSystem(sys))
                 return null;
 
-            return new CAB.DecompressorImpl()
+            return new CAB.Decompressor()
             {
-                Open = CAB.Implementation.Open,
-                Close = CAB.Implementation.Close,
-                Search = CAB.Implementation.Search,
-                Extract = CAB.Implementation.Extract,
-                Prepend = CAB.Implementation.Prepend,
-                Append = CAB.Implementation.Append,
-                SetParam = CAB.Implementation.Param,
-                LastError = CAB.Implementation.LastError,
                 System = sys,
                 State = null,
                 Error = Error.MSPACK_ERR_OK,
@@ -184,8 +174,8 @@ namespace LibMSPackSharp
         /// <summary>
         /// Destroys an existing CAB compressor.
         /// </summary>
-        /// <param name="c">the <see cref="CAB.Compressor"/> to destroy</param>
-        public static void DestroyCABCompressor(CAB.Compressor c)
+        /// <param name="self">the <see cref="CAB.Compressor"/> to destroy</param>
+        public static void DestroyCABCompressor(CAB.Compressor self)
         {
             // TODO
         }
@@ -193,10 +183,9 @@ namespace LibMSPackSharp
         /// <summary>
         /// Destroys an existing CAB decompressor.
         /// </summary>
-        /// <param name="d">the <see cref="CAB.Decompressor"/> to destroy</param>
-        public static void DestroyCABDecompressor(CAB.Decompressor d)
+        /// <param name="self">the <see cref="CAB.Decompressor"/> to destroy</param>
+        public static void DestroyCABDecompressor(CAB.Decompressor self)
         {
-            CAB.DecompressorImpl self = d as CAB.DecompressorImpl;
             if (self != null)
             {
                 SystemImpl sys = self.System;
@@ -205,11 +194,8 @@ namespace LibMSPackSharp
                     if (self.State.InputFileHandle != null)
                         sys.Close(self.State.InputFileHandle);
 
-                    CAB.Implementation.FreeDecompressionState(self);
-                    sys.Free(self.State);
+                    self.FreeDecompressionState();
                 }
-
-                sys.Free(self);
             }
         }
 
@@ -277,13 +263,7 @@ namespace LibMSPackSharp
                 {
                     if (self.State.InputFileHandle != null)
                         sys.Close(self.State.InputFileHandle);
-
-                    if (self.State.State != null)
-                        LZX.Free(self.State.State);
-
-                    sys.Free(self.State);
                 }
-                sys.Free(self);
             }
         }
 
@@ -427,15 +407,7 @@ namespace LibMSPackSharp
         /// Destroys an existing SZDD decompressor.
         /// </summary>
         /// <param name="d">the <see cref="SZDD.Decompressor"/> to destroy</param>
-        public static void DestroySZDDDecompressor(SZDD.Decompressor d)
-        {
-            SZDD.DecompressorImpl self = d as SZDD.DecompressorImpl;
-            if (self != null)
-            {
-                SystemImpl sys = self.System;
-                sys.Free(self);
-            }
-        }
+        public static void DestroySZDDDecompressor(SZDD.Decompressor d) { }
 
         #endregion
 
@@ -489,15 +461,7 @@ namespace LibMSPackSharp
         /// Destroys an existing KWAJ decompressor.
         /// </summary>
         /// <param name="d">the <see cref="KWAJ.Decompressor"/> to destroy</param>
-        public static void DestroyKWAJDecompressor(KWAJ.Decompressor d)
-        {
-            KWAJ.DecompressorImpl self = d as KWAJ.DecompressorImpl;
-            if (self != null)
-            {
-                SystemImpl sys = self.System;
-                sys.Free(self);
-            }
-        }
+        public static void DestroyKWAJDecompressor(KWAJ.Decompressor d) { }
 
         #endregion
 
@@ -549,15 +513,7 @@ namespace LibMSPackSharp
         /// Destroys an existing OAB decompressor.
         /// </summary>
         /// <param name="d">the <see cref="OAB.Decompressor"/> to destroy</param>
-        public static void DestroyOABDecompressor(OAB.Decompressor d)
-        {
-            OAB.DecompressorImpl self = d as OAB.DecompressorImpl;
-            if (self != null)
-            {
-                SystemImpl sys = self.System;
-                sys.Free(self);
-            }
-        }
+        public static void DestroyOABDecompressor(OAB.Decompressor d) { }
 
         #endregion
     }

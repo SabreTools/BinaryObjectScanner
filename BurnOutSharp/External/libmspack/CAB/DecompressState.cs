@@ -66,12 +66,12 @@ namespace LibMSPackSharp.CAB
         /// <summary>
         /// Input file handle
         /// </summary>
-        public object InputFileHandle { get; set; }
+        public DefaultFileImpl InputFileHandle { get; set; }
 
         /// <summary>
         /// Output file handle
         /// </summary>
-        public object OutputFileHandle { get; set; }
+        public DefaultFileImpl OutputFileHandle { get; set; }
 
         /// <summary>
         /// Input data consumed
@@ -86,6 +86,6 @@ namespace LibMSPackSharp.CAB
         /// <summary>
         /// One input block of data
         /// </summary>
-        public byte[] Input { get; set; } = new byte[Implementation.CAB_INPUTBUF];
+        public byte[] Input { get; set; } = new byte[Constants.CAB_INPUTBUF];
     }
 }

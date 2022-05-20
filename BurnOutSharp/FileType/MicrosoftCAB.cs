@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.IO;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Tools;
-using WixToolset.Dtf.Compression.Cab;
+using LibMSPackSharp;
 
 namespace BurnOutSharp.FileType
 {
@@ -41,20 +41,32 @@ namespace BurnOutSharp.FileType
                 string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
                 Directory.CreateDirectory(tempPath);
 
-                CabInfo cabfile = new CabInfo(file);
-                foreach (var sub in cabfile.GetFiles())
+                var decompressor = Library.CreateCABDecompressor(null);
+                //decompressor.SetParam(LibMSPackSharp.CAB.Parameters.MSCABD_PARAM_FIXMSZIP, 1);
+                //decompressor.SetParam(LibMSPackSharp.CAB.Parameters.MSCABD_PARAM_SALVAGE, 1);
+
+                var cabFile = decompressor.Open(file);
+
+                var sub = cabFile.Files;
+                while (sub != null)
                 {
                     // If an individual entry fails
                     try
                     {
                         // The trim here is for some very odd and stubborn files
-                        string tempFile = Path.Combine(tempPath, sub.Name.TrimEnd('.'));
-                        sub.CopyTo(tempFile);
+                        string tempFile = Path.Combine(tempPath, sub.Filename.TrimEnd('\0', ' ', '.'));
+                        Error error = decompressor.Extract(sub, tempFile);
+                        if (error != Error.MSPACK_ERR_OK)
+                        {
+                            if (scanner.IncludeDebug) Console.WriteLine($"Error occurred during extraction of '{sub.Filename}': {error}");
+                        }
                     }
                     catch (Exception ex)
                     {
                         if (scanner.IncludeDebug) Console.WriteLine(ex);
                     }
+
+                    sub = sub.Next;
                 }
 
                 // Collect and format all found protections

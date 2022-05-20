@@ -118,12 +118,10 @@ namespace LibMSPackSharp.OAB
 
             SystemImpl sys = self.System;
 
-            object infh = sys.Open(sys, input, OpenMode.MSPACK_SYS_OPEN_READ);
+            DefaultFileImpl infh = sys.Open(input, OpenMode.MSPACK_SYS_OPEN_READ);
             if (infh == null)
             {
                 ret = Error.MSPACK_ERR_OPEN;
-                if (lzx != null)
-                    LZX.Free(lzx);
                 if (infh != null)
                     sys.Close(infh);
 
@@ -133,8 +131,6 @@ namespace LibMSPackSharp.OAB
             if (sys.Read(infh, hdrbuf, 0, oabhead_SIZEOF) != oabhead_SIZEOF)
             {
                 ret = Error.MSPACK_ERR_READ;
-                if (lzx != null)
-                    LZX.Free(lzx);
                 if (infh != null)
                     sys.Close(infh);
 
@@ -145,8 +141,6 @@ namespace LibMSPackSharp.OAB
                 BitConverter.ToUInt32(hdrbuf, oabhead_VersionLo) != 1)
             {
                 ret = Error.MSPACK_ERR_SIGNATURE;
-                if (lzx != null)
-                    LZX.Free(lzx);
                 if (infh != null)
                     sys.Close(infh);
 
@@ -156,12 +150,10 @@ namespace LibMSPackSharp.OAB
             uint block_max = BitConverter.ToUInt32(hdrbuf, oabhead_BlockMax);
             uint target_size = BitConverter.ToUInt32(hdrbuf, oabhead_TargetSize);
 
-            object outfh = sys.Open(sys, output, OpenMode.MSPACK_SYS_OPEN_WRITE);
+            DefaultFileImpl outfh = sys.Open(output, OpenMode.MSPACK_SYS_OPEN_WRITE);
             if (outfh == null)
             {
                 ret = Error.MSPACK_ERR_OPEN;
-                if (lzx != null)
-                    LZX.Free(lzx);
                 if (outfh != null)
                     sys.Close(outfh);
                 if (infh != null)
@@ -189,14 +181,11 @@ namespace LibMSPackSharp.OAB
                 if (sys.Read(infh, buf, 0, oabblk_SIZEOF) != oabblk_SIZEOF)
                 {
                     ret = Error.MSPACK_ERR_READ;
-                    if (lzx != null)
-                        LZX.Free(lzx);
                     if (outfh != null)
                         sys.Close(outfh);
                     if (infh != null)
                         sys.Close(infh);
 
-                    sys.Free(buf);
                     return ret;
                 }
 
@@ -208,14 +197,11 @@ namespace LibMSPackSharp.OAB
                 if (blk_dsize > block_max || blk_dsize > target_size || blk_flags > 1)
                 {
                     ret = Error.MSPACK_ERR_DATAFORMAT;
-                    if (lzx != null)
-                        LZX.Free(lzx);
                     if (outfh != null)
                         sys.Close(outfh);
                     if (infh != null)
                         sys.Close(infh);
 
-                    sys.Free(buf);
                     return ret;
                 }
 
@@ -225,28 +211,22 @@ namespace LibMSPackSharp.OAB
                     if (blk_dsize != blk_csize)
                     {
                         ret = Error.MSPACK_ERR_DATAFORMAT;
-                        if (lzx != null)
-                            LZX.Free(lzx);
                         if (outfh != null)
                             sys.Close(outfh);
                         if (infh != null)
                             sys.Close(infh);
 
-                        sys.Free(buf);
                         return ret;
                     }
 
                     ret = CopyFileHandle(sys, infh, outfh, (int)blk_dsize, buf, self.BufferSize);
                     if (ret != Error.MSPACK_ERR_OK)
                     {
-                        if (lzx != null)
-                            LZX.Free(lzx);
                         if (outfh != null)
                             sys.Close(outfh);
                         if (infh != null)
                             sys.Close(infh);
 
-                        sys.Free(buf);
                         return ret;
                     }
                 }
@@ -272,53 +252,42 @@ namespace LibMSPackSharp.OAB
                         if (infh != null)
                             sys.Close(infh);
 
-                        sys.Free(buf);
                         return ret;
                     }
 
                     ret = LZX.Decompress(lzx, blk_dsize);
                     if (ret != Error.MSPACK_ERR_OK)
                     {
-                        if (lzx != null)
-                            LZX.Free(lzx);
                         if (outfh != null)
                             sys.Close(outfh);
                         if (infh != null)
                             sys.Close(infh);
 
-                        sys.Free(buf);
                         return ret;
                     }
 
-                    LZX.Free(lzx);
                     lzx = null;
 
                     // Consume any trailing padding bytes before the next block
                     ret = CopyFileHandle(sys, infh, null, in_ofh.Available, buf, self.BufferSize);
                     if (ret != Error.MSPACK_ERR_OK)
                     {
-                        if (lzx != null)
-                            LZX.Free(lzx);
                         if (outfh != null)
                             sys.Close(outfh);
                         if (infh != null)
                             sys.Close(infh);
 
-                        sys.Free(buf);
                         return ret;
                     }
 
                     if (out_ofh.CRC != blk_crc)
                     {
                         ret = Error.MSPACK_ERR_CHECKSUM;
-                        if (lzx != null)
-                            LZX.Free(lzx);
                         if (outfh != null)
                             sys.Close(outfh);
                         if (infh != null)
                             sys.Close(infh);
 
-                        sys.Free(buf);
                         return ret;
                     }
                 }
@@ -326,14 +295,11 @@ namespace LibMSPackSharp.OAB
                 target_size -= blk_dsize;
             }
 
-            if (lzx != null)
-                LZX.Free(lzx);
             if (outfh != null)
                 sys.Close(outfh);
             if (infh != null)
                 sys.Close(infh);
 
-            sys.Free(buf);
             return ret;
         }
 
@@ -355,12 +321,10 @@ namespace LibMSPackSharp.OAB
 
             SystemImpl sys = self.System;
 
-            object infh = sys.Open(sys, input, OpenMode.MSPACK_SYS_OPEN_READ);
+            DefaultFileImpl infh = sys.Open(input, OpenMode.MSPACK_SYS_OPEN_READ);
             if (infh == null)
             {
                 ret = Error.MSPACK_ERR_OPEN;
-                if (lzx != null)
-                    LZX.Free(lzx);
                 if (infh != null)
                     sys.Close(infh);
 
@@ -370,8 +334,6 @@ namespace LibMSPackSharp.OAB
             if (sys.Read(infh, hdrbuf, 0, patchhead_SIZEOF) != patchhead_SIZEOF)
             {
                 ret = Error.MSPACK_ERR_READ;
-                if (lzx != null)
-                    LZX.Free(lzx);
                 if (infh != null)
                     sys.Close(infh);
 
@@ -382,8 +344,6 @@ namespace LibMSPackSharp.OAB
                 BitConverter.ToUInt32(hdrbuf, patchhead_VersionLo) != 2)
             {
                 ret = Error.MSPACK_ERR_SIGNATURE;
-                if (lzx != null)
-                    LZX.Free(lzx);
                 if (infh != null)
                     sys.Close(infh);
 
@@ -397,12 +357,10 @@ namespace LibMSPackSharp.OAB
             if (block_max < patchblk_SIZEOF)
                 block_max = patchblk_SIZEOF;
 
-            object basefh = sys.Open(sys, basePath, OpenMode.MSPACK_SYS_OPEN_READ);
+            DefaultFileImpl basefh = sys.Open(basePath, OpenMode.MSPACK_SYS_OPEN_READ);
             if (basefh == null)
             {
                 ret = Error.MSPACK_ERR_OPEN;
-                if (lzx != null)
-                    LZX.Free(lzx);
                 if (basefh != null)
                     sys.Close(basefh);
                 if (infh != null)
@@ -411,12 +369,10 @@ namespace LibMSPackSharp.OAB
                 return ret;
             }
 
-            object outfh = sys.Open(sys, output, OpenMode.MSPACK_SYS_OPEN_WRITE);
+            DefaultFileImpl outfh = sys.Open(output, OpenMode.MSPACK_SYS_OPEN_WRITE);
             if (outfh == null)
             {
                 ret = Error.MSPACK_ERR_OPEN;
-                if (lzx != null)
-                    LZX.Free(lzx);
                 if (outfh != null)
                     sys.Close(outfh);
                 if (basefh != null)
@@ -446,8 +402,6 @@ namespace LibMSPackSharp.OAB
                 if (sys.Read(infh, buf, 0, patchblk_SIZEOF) != patchblk_SIZEOF)
                 {
                     ret = Error.MSPACK_ERR_READ;
-                    if (lzx != null)
-                        LZX.Free(lzx);
                     if (outfh != null)
                         sys.Close(outfh);
                     if (basefh != null)
@@ -455,7 +409,6 @@ namespace LibMSPackSharp.OAB
                     if (infh != null)
                         sys.Close(infh);
 
-                    sys.Free(buf);
                     return ret;
                 }
 
@@ -467,8 +420,6 @@ namespace LibMSPackSharp.OAB
                 if (blk_dsize > block_max || blk_dsize > target_size || blk_ssize > block_max)
                 {
                     ret = Error.MSPACK_ERR_DATAFORMAT;
-                    if (lzx != null)
-                        LZX.Free(lzx);
                     if (outfh != null)
                         sys.Close(outfh);
                     if (basefh != null)
@@ -476,7 +427,6 @@ namespace LibMSPackSharp.OAB
                     if (infh != null)
                         sys.Close(infh);
 
-                    sys.Free(buf);
                     return ret;
                 }
 
@@ -501,15 +451,12 @@ namespace LibMSPackSharp.OAB
                     if (infh != null)
                         sys.Close(infh);
 
-                    sys.Free(buf);
                     return ret;
                 }
 
                 ret = LZX.SetReferenceData(lzx, sys, basefh, blk_ssize);
                 if (ret != Error.MSPACK_ERR_OK)
                 {
-                    if (lzx != null)
-                        LZX.Free(lzx);
                     if (outfh != null)
                         sys.Close(outfh);
                     if (basefh != null)
@@ -517,15 +464,12 @@ namespace LibMSPackSharp.OAB
                     if (infh != null)
                         sys.Close(infh);
 
-                    sys.Free(buf);
                     return ret;
                 }
 
                 ret = LZX.Decompress(lzx, blk_dsize);
                 if (ret != Error.MSPACK_ERR_OK)
                 {
-                    if (lzx != null)
-                        LZX.Free(lzx);
                     if (outfh != null)
                         sys.Close(outfh);
                     if (basefh != null)
@@ -533,19 +477,15 @@ namespace LibMSPackSharp.OAB
                     if (infh != null)
                         sys.Close(infh);
 
-                    sys.Free(buf);
                     return ret;
                 }
 
-                LZX.Free(lzx);
                 lzx = null;
 
                 // Consume any trailing padding bytes before the next block
                 ret = CopyFileHandle(sys, infh, null, in_ofh.Available, buf, self.BufferSize);
                 if (ret != Error.MSPACK_ERR_OK)
                 {
-                    if (lzx != null)
-                        LZX.Free(lzx);
                     if (outfh != null)
                         sys.Close(outfh);
                     if (basefh != null)
@@ -553,15 +493,12 @@ namespace LibMSPackSharp.OAB
                     if (infh != null)
                         sys.Close(infh);
 
-                    sys.Free(buf);
                     return ret;
                 }
 
                 if (out_ofh.CRC != blk_crc)
                 {
                     ret = Error.MSPACK_ERR_CHECKSUM;
-                    if (lzx != null)
-                        LZX.Free(lzx);
                     if (outfh != null)
                         sys.Close(outfh);
                     if (basefh != null)
@@ -569,15 +506,12 @@ namespace LibMSPackSharp.OAB
                     if (infh != null)
                         sys.Close(infh);
 
-                    sys.Free(buf);
                     return ret;
                 }
 
                 target_size -= blk_dsize;
             }
 
-            if (lzx != null)
-                LZX.Free(lzx);
             if (outfh != null)
                 sys.Close(outfh);
             if (basefh != null)
@@ -585,7 +519,6 @@ namespace LibMSPackSharp.OAB
             if (infh != null)
                 sys.Close(infh);
 
-            sys.Free(buf);
             return ret;
         }
 

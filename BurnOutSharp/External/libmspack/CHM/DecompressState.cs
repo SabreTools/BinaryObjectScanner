@@ -41,11 +41,11 @@ namespace LibMSPackSharp.CHM
         /// <summary>
         /// Input file handle
         /// </summary>
-        public object InputFileHandle { get; set; }
+        public DefaultFileImpl InputFileHandle { get; set; }
 
         /// <summary>
         /// Output file handle
         /// </summary>
-        public object OutputFileHandle { get; set; }
+        public DefaultFileImpl OutputFileHandle { get; set; }
     }
 }

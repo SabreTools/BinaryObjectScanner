@@ -152,8 +152,8 @@ namespace LibMSPackSharp.CHM
 
             SystemImpl sys = self.System;
 
-            object fh;
-            if ((fh = sys.Open(sys, filename, OpenMode.MSPACK_SYS_OPEN_READ)) != null)
+            DefaultFileImpl fh;
+            if ((fh = sys.Open(filename, OpenMode.MSPACK_SYS_OPEN_READ)) != null)
             {
                 chm = new Header();
                 chm.Filename = filename;
@@ -209,12 +209,11 @@ namespace LibMSPackSharp.CHM
             for (fi = chm.Files; fi != null; fi = nfi)
             {
                 nfi = fi.Next;
-                sys.Free(fi);
             }
+
             for (fi = chm.SysFiles; fi != null; fi = nfi)
             {
                 nfi = fi.Next;
-                sys.Free(fi);
             }
 
             // If this CHM was being decompressed, free decompression state
@@ -223,25 +222,8 @@ namespace LibMSPackSharp.CHM
                 if (self.State.InputFileHandle != null)
                     sys.Close(self.State.InputFileHandle);
 
-                if (self.State.State != null)
-                    LZX.Free(self.State.State);
-
-                sys.Free(self.State);
                 self.State = null;
             }
-
-            // If this CHM had a chunk cache, free it and contents
-            if (chm.ChunkCache != null)
-            {
-                for (i = 0; i < chm.NumChunks; i++)
-                {
-                    sys.Free(chm.ChunkCache[i]);
-                }
-
-                sys.Free(chm.ChunkCache);
-            }
-
-            sys.Free(chm);
         }
 
         #endregion
@@ -267,10 +249,10 @@ namespace LibMSPackSharp.CHM
         /// non-zero, all file entries will also be read. fills out a pre-existing
         /// mschmd_header structure, allocates memory for files as necessary
         /// </summary>
-        public static Error ReadHeaders(SystemImpl sys, object fh, Header chm, bool entire)
+        public static Error ReadHeaders(SystemImpl sys, DefaultFileImpl fh, Header chm, bool entire)
         {
             uint section, nameLen, x, errors, numChunks;
-            byte[] buf = new byte[0x54], chunk = null;
+            byte[] buf = new byte[0x54];
             int name, p, end;
             DecompressFile fi, link = null;
             long offset, length;
@@ -431,8 +413,7 @@ namespace LibMSPackSharp.CHM
 
             numChunks = chm.LastPMGL - x + 1;
 
-            if ((chunk = sys.Alloc(sys, (int)chm.ChunkSize)) == null)
-                return Error.MSPACK_ERR_NOMEMORY;
+            byte[] chunk = new byte[chm.ChunkSize];
 
             // Read and process all chunks from FirstPMGL to LastPMGL
             errors = 0;
@@ -440,10 +421,7 @@ namespace LibMSPackSharp.CHM
             {
                 // Read next chunk
                 if (sys.Read(fh, chunk, 0, (int)chm.ChunkSize) != (int)chm.ChunkSize)
-                {
-                    sys.Free(chunk);
                     return Error.MSPACK_ERR_READ;
-                }
 
                 // Process only directory (PMGL) chunks
                 if (BitConverter.ToUInt32(chunk, pmgl_Signature) != 0x4C474D50)
@@ -573,7 +551,6 @@ namespace LibMSPackSharp.CHM
                 }
             }
 
-            sys.Free(chunk);
             return (errors > 0) ? Error.MSPACK_ERR_DATAFORMAT : Error.MSPACK_ERR_OK;
         }
 
@@ -592,7 +569,7 @@ namespace LibMSPackSharp.CHM
         {
             DecompressorImpl self = d as DecompressorImpl;
             SystemImpl sys;
-            object fh;
+            DefaultFileImpl fh;
 
             // p and end are initialised to prevent MSVC warning about "potentially"
             // uninitialised usage. This is provably untrue, but MS won't fix:
@@ -610,7 +587,7 @@ namespace LibMSPackSharp.CHM
             // Clear the results structure
             f_ptr = new DecompressFile();
 
-            if ((fh = sys.Open(sys, chm.Filename, OpenMode.MSPACK_SYS_OPEN_READ)) == null)
+            if ((fh = sys.Open(chm.Filename, OpenMode.MSPACK_SYS_OPEN_READ)) == null)
                 return Error.MSPACK_ERR_OPEN;
 
             // Go through PMGI chunk hierarchy to reach PMGL chunk
@@ -722,10 +699,9 @@ namespace LibMSPackSharp.CHM
         /// Reads the given chunk into memory, storing it in a chunk cache
         /// so it doesn't need to be read from disk more than once
         /// </summary>
-        public static byte[] ReadChunk(DecompressorImpl self, Header chm, object fh, uint chunkNum)
+        public static byte[] ReadChunk(DecompressorImpl self, Header chm, DefaultFileImpl fh, uint chunkNum)
         {
             SystemImpl sys = self.System;
-            byte[] buf;
 
             // Check arguments - most are already checked by chmd_fast_find
             if (chunkNum >= chm.NumChunks)
@@ -740,24 +716,18 @@ namespace LibMSPackSharp.CHM
                 return chm.ChunkCache[chunkNum];
 
             // Need to read chunk - allocate memory for it
-            if ((buf = sys.Alloc(sys, (int)chm.ChunkSize)) == null)
-            {
-                self.Error = Error.MSPACK_ERR_NOMEMORY;
-                return null;
-            }
+            byte[] buf = new byte[chm.ChunkSize];
 
             // Seek to block and read it
             if (!sys.Seek(fh, (chm.DirOffset + (chunkNum * chm.ChunkSize)), SeekMode.MSPACK_SYS_SEEK_START))
             {
                 self.Error = Error.MSPACK_ERR_SEEK;
-                sys.Free(buf);
                 return null;
             }
 
             if (sys.Read(fh, buf, 0, (int)chm.ChunkSize) != (int)chm.ChunkSize)
             {
                 self.Error = Error.MSPACK_ERR_READ;
-                sys.Free(buf);
                 return null;
             }
 
@@ -765,7 +735,6 @@ namespace LibMSPackSharp.CHM
             if (!((buf[0] == 0x50) && (buf[1] == 0x4D) && (buf[2] == 0x47) && ((buf[3] == 0x4C) || (buf[3] == 0x49))))
             {
                 self.Error = Error.MSPACK_ERR_SEEK;
-                sys.Free(buf);
                 return null;
             }
 
@@ -1025,20 +994,17 @@ namespace LibMSPackSharp.CHM
                 if (self.State.InputFileHandle != null)
                     sys.Close(self.State.InputFileHandle);
 
-                if (self.State.State != null)
-                    LZX.Free(self.State.State);
-
                 self.State.Header = chm;
                 self.State.Offset = 0;
                 self.State.State = null;
-                self.State.InputFileHandle = sys.Open(sys, chm.Filename, OpenMode.MSPACK_SYS_OPEN_READ);
+                self.State.InputFileHandle = sys.Open(chm.Filename, OpenMode.MSPACK_SYS_OPEN_READ);
                 if (self.State.InputFileHandle == null)
                     return self.Error = Error.MSPACK_ERR_OPEN;
             }
 
             // Open file for output
-            object fh;
-            if ((fh = sys.Open(sys, filename, OpenMode.MSPACK_SYS_OPEN_WRITE)) == null)
+            DefaultFileImpl fh;
+            if ((fh = sys.Open(filename, OpenMode.MSPACK_SYS_OPEN_WRITE)) == null)
                 return self.Error = Error.MSPACK_ERR_OPEN;
 
             // If file is empty, simply creating it is enough
@@ -1093,10 +1059,7 @@ namespace LibMSPackSharp.CHM
                     if (self.State.State == null || (file.Offset < self.State.Offset))
                     {
                         if (self.State.State != null)
-                        {
-                            LZX.Free(self.State.State);
                             self.State.State = null;
-                        }
 
                         if (InitDecompressor(self, file) != Error.MSPACK_ERR_OK)
                             break;
@@ -1128,12 +1091,7 @@ namespace LibMSPackSharp.CHM
 
                     // If an LZX error occured, the LZX decompressor is now useless
                     if (self.Error != Error.MSPACK_ERR_OK)
-                    {
-                        if (self.State.State != null)
-                            LZX.Free(self.State.State);
-
                         self.State.State = null;
-                    }
 
                     break;
             }
@@ -1220,7 +1178,6 @@ namespace LibMSPackSharp.CHM
             // Check LZXC signature
             if (BitConverter.ToUInt32(data, lzxcd_Signature) != 0x43585A4C)
             {
-                sys.Free(data);
                 return self.Error = Error.MSPACK_ERR_SIGNATURE;
             }
 
@@ -1237,12 +1194,8 @@ namespace LibMSPackSharp.CHM
                     break;
                 default:
                     Console.WriteLine("bad controldata version");
-                    sys.Free(data);
                     return self.Error = Error.MSPACK_ERR_DATAFORMAT;
             }
-
-            // Free ControlData
-            sys.Free(data);
 
             // Find window_bits from window_size
             switch (window_size)
@@ -1304,7 +1257,7 @@ namespace LibMSPackSharp.CHM
             length -= self.State.Offset;
 
             // Initialise LZX stream
-            self.State.State = LZX.Init(self.State.Sys, self.State.InputFileHandle, self, window_bits, reset_interval / LZX.LZX_FRAME_SIZE, 4096, length, false);
+            self.State.State = LZX.Init(self.State.Sys, self.State.InputFileHandle, self.State.OutputFileHandle, window_bits, reset_interval / LZX.LZX_FRAME_SIZE, 4096, length, false);
 
             if (self.State.State == null)
                 self.Error = Error.MSPACK_ERR_NOMEMORY;
@@ -1359,16 +1312,12 @@ namespace LibMSPackSharp.CHM
             if (BitConverter.ToUInt32(data, lzxrt_FrameLen) != LZX.LZX_FRAME_SIZE)
             {
                 Console.WriteLine(("bad reset table frame length"));
-                sys.Free(data);
                 return false;
             }
 
             // Get the uncompressed length of the LZX stream
             if ((length_ptr = BitConverter.ToInt64(data, lzxrt_UncompLen)) == 0)
-            {
-                sys.Free(data);
                 return false;
-            }
 
             uint entrysize = BitConverter.ToUInt32(data, lzxrt_EntrySize);
             uint pos = BitConverter.ToUInt32(data, lzxrt_TableOffset) + (entry * entrysize);
@@ -1396,9 +1345,6 @@ namespace LibMSPackSharp.CHM
                 Console.WriteLine("bad reset interval");
                 err = Error.MSPACK_ERR_ARGS;
             }
-
-            // Free the reset table
-            sys.Free(data);
 
             // Return success
             return (err == Error.MSPACK_ERR_OK);
@@ -1442,10 +1388,6 @@ namespace LibMSPackSharp.CHM
 
             // Get the uncompressed length of the LZX stream
             length_ptr = BitConverter.ToInt64(data, 0);
-            sys.Free(data);
-            if (err != Error.MSPACK_ERR_OK)
-                return Error.MSPACK_ERR_DATAFORMAT;
-
             if (length_ptr <= 0)
             {
                 Console.WriteLine("output length is invalid");
@@ -1514,14 +1456,12 @@ namespace LibMSPackSharp.CHM
             if (sys.Seek(self.State.InputFileHandle, file.Section.Header.Sec0.Offset + file.Offset, SeekMode.MSPACK_SYS_SEEK_START))
             {
                 self.Error = Error.MSPACK_ERR_SEEK;
-                sys.Free(data);
                 return null;
             }
 
             if (sys.Read(self.State.InputFileHandle, data, 0, len) != len)
             {
                 self.Error = Error.MSPACK_ERR_READ;
-                sys.Free(data);
                 return null;
             }
 

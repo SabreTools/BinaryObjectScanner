@@ -16,7 +16,7 @@
 
 namespace LibMSPackSharp.OAB
 {
-    public class InternalFile
+    public class InternalFile : DefaultFileImpl
     {
         public SystemImpl OrigSys { get; set; }
 

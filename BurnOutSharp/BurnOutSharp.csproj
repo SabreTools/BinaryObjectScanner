@@ -66,4 +66,8 @@
     </ProjectReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="External\cabextract\" />
+  </ItemGroup>
+
 </Project>

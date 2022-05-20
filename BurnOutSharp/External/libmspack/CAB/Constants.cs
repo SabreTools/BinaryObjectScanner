@@ -61,85 +61,31 @@
 
 namespace LibMSPackSharp.CAB
 {
-    /// <summary>
-    /// A structure which represents a single cabinet file.
-    ///
-    /// All fields are READ ONLY.
-    ///
-    /// If this cabinet is part of a merged cabinet set, the #files and #folders
-    /// fields are common to all cabinets in the set, and will be identical.
-    /// </summary>
-    /// <see cref="Decompressor.Open(string)"/>
-    /// <see cref="Decompressor.Close(Cabinet)"/>
-    /// <see cref="Decompressor.Search(string)"/>
-    public class Cabinet
+    public static class Constants
     {
-        #region Internal
+        // CAB data blocks are <= 32768 bytes in uncompressed form.Uncompressed
+        // blocks have zero growth. MSZIP guarantees that it won't grow above
+        // uncompressed size by more than 12 bytes.LZX guarantees it won't grow
+        // more than 6144 bytes.Quantum has no documentation, but the largest
+        // block seen in the wild is 337 bytes above uncompressed size.
 
-        /// <summary>
-        /// Cabinet header information
-        /// </summary>
-        internal _CabinetHeader Header { get; set; }
+        public const int CAB_BLOCKMAX = 32768;
+        public const int CAB_INPUTMAX = CAB_BLOCKMAX + 6144;
 
-        #endregion
+        // input buffer needs to be CAB_INPUTMAX + 1 byte to allow for max-sized block
+        // plus 1 trailer byte added by cabd_sys_read_block() for Quantum alignment.
+        // 
+        // When MSCABD_PARAM_SALVAGE is set, block size is not checked so can be
+        // up to 65535 bytes, so max input buffer size needed is 65535 + 1
 
-        /// <summary>
-        /// The next cabinet in a chained list, if this cabinet was opened with
-        /// mscab_decompressor::search(). May be NULL to mark the end of the
-        /// list.
-        /// </summary>
-        public Cabinet Next { get; set; }
+        public const int CAB_INPUTMAX_SALVAGE = 65535;
+        public const int CAB_INPUTBUF = CAB_INPUTMAX_SALVAGE + 1;
 
-        /// <summary>
-        /// The filename of the cabinet. More correctly, the filename of the
-        /// physical file that the cabinet resides in. This is given by the
-        /// library user and may be in any format.
-        /// </summary>
-        public string Filename { get; set; }
+        // There are no more than 65535 data blocks per folder, so a folder cannot
+        // be more than 32768*65535 bytes in length.As files cannot span more than
+        // one folder, this is also their max offset, length and offset+length limit.
 
-        /// <summary>
-        /// The file offset of cabinet within the physical file it resides in.
-        /// </summary>
-        public long BaseOffset { get; set; }
-
-        /// <summary>
-        /// The previous cabinet in a cabinet set, or NULL.
-        /// </summary>
-        public Cabinet PreviousCabinet { get; set; }
-
-        /// <summary>
-        /// The next cabinet in a cabinet set, or NULL.
-        /// </summary>
-        public Cabinet NextCabinet { get; set; }
-
-        /// <summary>
-        /// The filename of the previous cabinet in a cabinet set, or NULL.
-        /// </summary>
-        public string PreviousName { get; set; }
-
-        /// <summary>
-        /// The filename of the next cabinet in a cabinet set, or NULL.
-        /// </summary>
-        public string NextName { get; set; }
-
-        /// <summary>
-        /// The name of the disk containing the previous cabinet in a cabinet, or NULL.
-        /// </summary>
-        public string PreviousInfo { get; set; }
-
-        /// <summary>
-        /// The name of the disk containing the next cabinet in a cabinet set, or NULL.
-        /// </summary>
-        public string NextInfo { get; set; }
-
-        /// <summary>
-        /// A list of all files in the cabinet or cabinet set.
-        /// </summary>
-        public InternalFile Files { get; set; }
-
-        /// <summary>
-        /// A list of all folders in the cabinet or cabinet set.
-        /// </summary>
-        public Folder Folders { get; set; }
+        public const int CAB_FOLDERMAX = 65535;
+        public const int CAB_LENGTHMAX = CAB_BLOCKMAX * CAB_FOLDERMAX;
     }
 }

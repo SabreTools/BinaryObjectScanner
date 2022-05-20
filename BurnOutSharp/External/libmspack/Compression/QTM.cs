@@ -91,7 +91,7 @@ namespace LibMSPackSharp.Compression
         ///  - window_bits is the size of the Quantum window, from 1Kb(10) to 2Mb(21).
         ///  - input_buffer_size is the number of bytes to use to store bitstream data.
         /// </summary>
-        public static QTMDStream Init(SystemImpl system, object input, object output, int window_bits, int input_buffer_size)
+        public static QTMDStream Init(SystemImpl system, DefaultFileImpl input, DefaultFileImpl output, int window_bits, int input_buffer_size)
         {
             uint window_size = (uint)(1 << window_bits);
 
@@ -472,22 +472,6 @@ namespace LibMSPackSharp.Compression
             qtm.Current = (ushort)current;
 
             return Error.MSPACK_ERR_OK;
-        }
-
-        /// <summary>
-        /// Frees all state associated with a Quantum data stream
-        /// - calls system.free() using the system pointer given in qtmd_init()
-        /// </summary>
-        public static void Free(object s)
-        {
-            QTMDStream qtm = s as QTMDStream;
-            if (qtm != null)
-            {
-                SystemImpl sys = qtm.Sys;
-                sys.Free(qtm.Window);
-                sys.Free(qtm.InputBuffer);
-                sys.Free(qtm);
-            }
         }
 
         /// <summary>

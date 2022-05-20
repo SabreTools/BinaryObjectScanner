@@ -93,7 +93,7 @@ namespace LibMSPackSharp.Compression
         ///   and 'holes' left will be filled with zero bytes. This allows at least
         ///   a partial recovery of erroneous data.
         /// </summary>
-        public static MSZIPDStream Init(SystemImpl system, object input, object output, int input_buffer_size, bool repair_mode)
+        public static MSZIPDStream Init(SystemImpl system, DefaultFileImpl input, DefaultFileImpl output, int input_buffer_size, bool repair_mode)
         {
             if (system == null)
                 return null;
@@ -329,22 +329,6 @@ namespace LibMSPackSharp.Compression
             return Error.MSPACK_ERR_OK;
         }
 
-        /// <summary>
-        /// Frees all stream associated with an MS-ZIP data stream
-        /// 
-        /// - calls system.free() using the system pointer given in mszipd_init()
-        /// </summary>
-        public static void Free(object s)
-        {
-            MSZIPDStream zip = s as MSZIPDStream;
-            if (zip != null)
-            {
-                SystemImpl sys = zip.Sys;
-                sys.Free(zip.InputBuffer);
-                sys.Free(zip);
-            }
-        }
-
         private static InflateErrorCode ReadLens(MSZIPDStream zip)
         {
             // For the bit buffer and huffman decoding
@@ -467,14 +451,14 @@ namespace LibMSPackSharp.Compression
 
             // Copy LITERAL code lengths and clear any remaining
             i = lit_codes;
-            zip.Sys.Copy(lens, 0, zip.LITERAL_len, 0, i);
+            Array.Copy(lens, 0, zip.LITERAL_len, 0, i);
             while (i < MSZIP_LITERAL_MAXSYMBOLS)
             {
                 zip.LITERAL_len[i++] = 0;
             }
 
             i = dist_codes;
-            zip.Sys.Copy(lens, lit_codes, zip.DISTANCE_len, 0, i);
+            Array.Copy(lens, lit_codes, zip.DISTANCE_len, 0, i);
             while (i < MSZIP_DISTANCE_MAXSYMBOLS)
             {
                 zip.DISTANCE_len[i++] = 0;
@@ -561,7 +545,7 @@ namespace LibMSPackSharp.Compression
                         if (this_run > (MSZIP_FRAME_SIZE - zip.WindowPosition))
                             this_run = (int)(MSZIP_FRAME_SIZE - zip.WindowPosition);
 
-                        zip.Sys.Copy(zip.InputBuffer, i_ptr, zip.Window, (int)zip.WindowPosition, this_run);
+                        Array.Copy(zip.InputBuffer, i_ptr, zip.Window, (int)zip.WindowPosition, this_run);
                         zip.WindowPosition += (uint)this_run;
                         i_ptr += this_run;
                         length -= this_run;

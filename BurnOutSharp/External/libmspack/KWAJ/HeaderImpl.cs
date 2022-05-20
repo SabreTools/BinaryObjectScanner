@@ -11,6 +11,6 @@ namespace LibMSPackSharp.KWAJ
 {
     public class HeaderImpl : Header
     {
-        public object FileHandle { get; set; }
+        public DefaultFileImpl FileHandle { get; set; }
     }
 }

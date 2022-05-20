@@ -267,7 +267,7 @@ namespace LibMSPackSharp.Compression
         /// a pointer to an initialised LZXDStream structure, or null if
         /// there was not enough memory or parameters to the function were wrong.
         /// </returns>
-        public static LZXDStream Init(SystemImpl system, object input, object output, int windowBits, int resetInterval, int inputBufferSize, long outputLength, bool isDelta)
+        public static LZXDStream Init(SystemImpl system, DefaultFileImpl input, DefaultFileImpl output, int windowBits, int resetInterval, int inputBufferSize, long outputLength, bool isDelta)
         {
             uint windowSize = (uint)(1 << windowBits);
 
@@ -984,7 +984,7 @@ namespace LibMSPackSharp.Compression
                                     if (i > this_run)
                                         i = this_run;
 
-                                    lzx.Sys.Copy(lzx.InputBuffer, i_ptr, window, rundest, i);
+                                    Array.Copy(lzx.InputBuffer, i_ptr, window, rundest, i);
                                     rundest += i;
                                     i_ptr += i;
                                     this_run -= i;
@@ -1044,7 +1044,7 @@ namespace LibMSPackSharp.Compression
                     int abs_off, rel_off;
 
                     lzx.OutputPointer = data;
-                    lzx.Sys.Copy(lzx.Window, (int)lzx.FramePosition, lzx.e8_buf, data, (int)frame_size);
+                    Array.Copy(lzx.Window, (int)lzx.FramePosition, lzx.e8_buf, data, (int)frame_size);
 
                     while (data < dataend)
                     {
@@ -1110,23 +1110,6 @@ namespace LibMSPackSharp.Compression
             lzx.R2 = R2;
 
             return Error.MSPACK_ERR_OK;
-        }
-
-        /// <summary>
-        /// Frees all state associated with an LZX data stream. This will call
-        /// system.free() using the system pointer given in lzxd_init().
-        /// </summary>
-        /// <param name="lzx">LZX decompression state to free.</param>
-        public static void Free(object s)
-        {
-            LZXDStream lzx = s as LZXDStream;
-            if (lzx != null)
-            {
-                SystemImpl sys = lzx.Sys;
-                sys.Free(lzx.InputBuffer);
-                sys.Free(lzx.Window);
-                sys.Free(lzx);
-            }
         }
 
         private static Error ReadLens(LZXDStream lzx, byte[] lens, uint first, uint last)

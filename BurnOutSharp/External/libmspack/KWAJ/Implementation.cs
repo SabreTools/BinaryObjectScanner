@@ -76,7 +76,7 @@ namespace LibMSPackSharp.KWAJ
 
             SystemImpl sys = self.System;
 
-            object fh = sys.Open(sys, filename, OpenMode.MSPACK_SYS_OPEN_READ);
+            DefaultFileImpl fh = sys.Open(filename, OpenMode.MSPACK_SYS_OPEN_READ);
             HeaderImpl hdr = new HeaderImpl();
             if (fh != null && hdr != null)
             {
@@ -96,7 +96,6 @@ namespace LibMSPackSharp.KWAJ
                 if (fh != null)
                     sys.Close(fh);
 
-                sys.Free(hdr);
                 hdr = null;
             }
 
@@ -121,9 +120,6 @@ namespace LibMSPackSharp.KWAJ
             // Close the file handle associated
             self.System.Close(hdr_p.FileHandle);
 
-            // Free the memory associated
-            self.System.Free(hdr);
-
             self.Error = Error.MSPACK_ERR_OK;
         }
 
@@ -134,7 +130,7 @@ namespace LibMSPackSharp.KWAJ
         /// <summary>
         /// Reads the headers of a KWAJ format file
         /// </summary>
-        public static Error ReadHeaders(SystemImpl sys, object fh, Header hdr)
+        public static Error ReadHeaders(SystemImpl sys, DefaultFileImpl fh, Header hdr)
         {
             int i;
 
@@ -287,7 +283,7 @@ namespace LibMSPackSharp.KWAJ
                 return self.Error = Error.MSPACK_ERR_ARGS;
 
             SystemImpl sys = self.System;
-            object fh = (hdr as HeaderImpl)?.FileHandle;
+            DefaultFileImpl fh = (hdr as HeaderImpl)?.FileHandle;
             if (fh == null)
                 return Error.MSPACK_ERR_ARGS;
 
@@ -296,8 +292,8 @@ namespace LibMSPackSharp.KWAJ
                 return self.Error = Error.MSPACK_ERR_SEEK;
 
             // Open file for output
-            object outfh;
-            if ((outfh = sys.Open(sys, filename, OpenMode.MSPACK_SYS_OPEN_WRITE)) == null)
+            DefaultFileImpl outfh;
+            if ((outfh = sys.Open(filename, OpenMode.MSPACK_SYS_OPEN_WRITE)) == null)
                 return self.Error = Error.MSPACK_ERR_OPEN;
 
             self.Error = Error.MSPACK_ERR_OK;
@@ -329,8 +325,6 @@ namespace LibMSPackSharp.KWAJ
 
                 if (read < 0)
                     self.Error = Error.MSPACK_ERR_READ;
-
-                sys.Free(buf);
             }
             else if (hdr.CompressionType == CompressionType.MSKWAJ_COMP_SZDD)
             {
@@ -340,13 +334,11 @@ namespace LibMSPackSharp.KWAJ
             {
                 InternalStream lzh = LZHInit(sys, fh, outfh);
                 self.Error = (lzh != null) ? LZHDecompress(lzh) : Error.MSPACK_ERR_NOMEMORY;
-                LZHFree(lzh);
             }
             else if (hdr.CompressionType == CompressionType.MSKWAJ_COMP_MSZIP)
             {
                 MSZIPDStream zip = MSZIP.Init(sys, fh, outfh, KWAJ_INPUT_SIZE, false);
                 self.Error = (zip != null) ? MSZIP.DecompressKWAJ(zip) : Error.MSPACK_ERR_NOMEMORY;
-                MSZIP.Free(zip);
             }
             else
             {
@@ -586,15 +578,6 @@ namespace LibMSPackSharp.KWAJ
             }
 
             return Error.MSPACK_ERR_OK;
-        }
-
-        private static void LZHFree(InternalStream lzh)
-        {
-            if (lzh == null || lzh.Sys == null)
-                return;
-
-            SystemImpl sys = lzh.Sys;
-            sys.Free(lzh);
         }
 
         public static Error LZHReadLens(InternalStream lzh, uint type, uint numsyms, byte[] lens)
