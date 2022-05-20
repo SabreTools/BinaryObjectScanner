@@ -33,7 +33,7 @@ namespace LibMSPackSharp.KWAJ
 
         public byte[] Window { get; set; } = new byte[LZSS.LZSS_WINDOW_SIZE];
 
-        public override void READ_BYTES(ref int i_ptr, ref int i_end, ref uint bitsLeft, ref uint bitBuffer, bool msb)
+        public override void READ_BYTES(ref int i_ptr, ref int i_end, ref int bits_left, ref uint bit_buffer, bool msb)
         {
             if (i_ptr >= i_end)
             {
@@ -44,7 +44,7 @@ namespace LibMSPackSharp.KWAJ
                 i_end = InputLength;
             }
 
-            INJECT_BITS(InputBuffer[i_ptr++], 8, ref bitsLeft, ref bitBuffer, msb);
+            INJECT_BITS(InputBuffer[i_ptr++], 8, ref bits_left, ref bit_buffer, msb);
             Error = Error.MSPACK_ERR_OK;
         }
 

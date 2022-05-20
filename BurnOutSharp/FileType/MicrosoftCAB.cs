@@ -42,9 +42,6 @@ namespace BurnOutSharp.FileType
                 Directory.CreateDirectory(tempPath);
 
                 var decompressor = Library.CreateCABDecompressor(null);
-                //decompressor.SetParam(LibMSPackSharp.CAB.Parameters.MSCABD_PARAM_FIXMSZIP, 1);
-                //decompressor.SetParam(LibMSPackSharp.CAB.Parameters.MSCABD_PARAM_SALVAGE, 1);
-
                 var cabFile = decompressor.Open(file);
 
                 var sub = cabFile.Files;

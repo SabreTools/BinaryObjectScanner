@@ -54,7 +54,7 @@ namespace LibMSPackSharp.Compression
 
         public uint BitBuffer { get; set; }
 
-        public uint BitsLeft { get; set; }
+        public int BitsLeft { get; set; }
 
         /// <summary>
         /// Have we reached the end of input?
@@ -141,7 +141,7 @@ namespace LibMSPackSharp.Compression
             InputEnd = 0;
         }
 
-        public void STORE_BITS(int inputPointer, int inputLength, uint bit_buffer, uint bits_left)
+        public void STORE_BITS(int inputPointer, int inputLength, uint bit_buffer, int bits_left)
         {
             InputPointer = inputPointer;
             InputLength = inputLength;
@@ -149,7 +149,7 @@ namespace LibMSPackSharp.Compression
             BitsLeft = bits_left;
         }
 
-        public void RESTORE_BITS(ref int inputPointer, ref int inputLength, ref uint bit_buffer, ref uint bits_left)
+        public void RESTORE_BITS(ref int inputPointer, ref int inputLength, ref uint bit_buffer, ref int bits_left)
         {
             inputPointer = InputPointer;
             inputLength = InputLength;
@@ -157,7 +157,7 @@ namespace LibMSPackSharp.Compression
             bits_left = BitsLeft;
         }
 
-        public void ENSURE_BITS(int nbits, ref int i_ptr, ref int i_end, ref uint bits_left, ref uint bit_buffer, bool msb)
+        public void ENSURE_BITS(int nbits, ref int i_ptr, ref int i_end, ref int bits_left, ref uint bit_buffer, bool msb)
         {
             while (bits_left < nbits)
             {
@@ -169,7 +169,7 @@ namespace LibMSPackSharp.Compression
             Error = Error.MSPACK_ERR_OK;
         }
 
-        public void READ_BITS(ref int val, int nbits, ref int i_ptr, ref int i_end, ref uint bits_left, ref uint bit_buffer, bool msb)
+        public void READ_BITS(ref int val, int nbits, ref int i_ptr, ref int i_end, ref int bits_left, ref uint bit_buffer, bool msb)
         {
             ENSURE_BITS(nbits, ref i_ptr, ref i_end, ref bits_left, ref bit_buffer, msb);
             if (Error != Error.MSPACK_ERR_OK)
@@ -180,7 +180,7 @@ namespace LibMSPackSharp.Compression
             Error = Error.MSPACK_ERR_OK;
         }
 
-        public void READ_MANY_BITS(ref uint val, byte bits, ref int i_ptr, ref int i_end, ref uint bits_left, ref uint bit_buffer, bool msb)
+        public void READ_MANY_BITS(ref uint val, byte bits, ref int i_ptr, ref int i_end, ref int bits_left, ref uint bit_buffer, bool msb)
         {
             byte needed = bits, bitrun;
             val = 0;
@@ -210,35 +210,35 @@ namespace LibMSPackSharp.Compression
                 return (int)(bit_buffer & ((1 << (nbits)) - 1));
         }
 
-        public void REMOVE_BITS(int nbits, ref uint bits_left, ref uint bit_buffer, bool msb)
+        public void REMOVE_BITS(int nbits, ref int bits_left, ref uint bit_buffer, bool msb)
         {
             if (msb)
             {
                 bit_buffer <<= nbits;
-                bits_left -= (uint)nbits;
+                bits_left -= nbits;
             }
             else
             {
                 bit_buffer >>= nbits;
-                bits_left -= (uint)nbits;
+                bits_left -= nbits;
             }
         }
 
-        public void INJECT_BITS(uint bitdata, int nbits, ref uint bits_left, ref uint bit_buffer, bool msb)
+        public void INJECT_BITS(uint bitdata, int nbits, ref int bits_left, ref uint bit_buffer, bool msb)
         {
             if (msb)
             {
                 bit_buffer |= bitdata << (int)bits_left;
-                bits_left += (uint)nbits;
+                bits_left += nbits;
             }
             else
             {
                 bit_buffer |= bitdata << (int)bits_left;
-                bits_left += (uint)nbits;
+                bits_left += nbits;
             }
         }
 
-        public abstract void READ_BYTES(ref int i_ptr, ref int i_end, ref uint bits_left, ref uint bit_buffer, bool msb);
+        public abstract void READ_BYTES(ref int i_ptr, ref int i_end, ref int bits_left, ref uint bit_buffer, bool msb);
 
         // lsb_bit_mask[n] = (1 << n) - 1 */
         private static readonly ushort[] lsb_bit_mask = new ushort[17]
@@ -252,7 +252,7 @@ namespace LibMSPackSharp.Compression
             return (int)(BitBuffer & lsb_bit_mask[nbits]);
         }
 
-        public void READ_BITS_T(ref int val, int nbits, ref int i_ptr, ref int i_end, ref uint bits_left, ref uint bit_buffer, bool msb)
+        public void READ_BITS_T(ref int val, int nbits, ref int i_ptr, ref int i_end, ref int bits_left, ref uint bit_buffer, bool msb)
         {
             ENSURE_BITS(nbits, ref i_ptr, ref i_end, ref bits_left, ref bit_buffer, msb);
             if (Error != Error.MSPACK_ERR_OK)
@@ -278,14 +278,11 @@ namespace LibMSPackSharp.Compression
             Error = Error.MSPACK_ERR_OK;
         }
 
-        private void ReadInput()
+        public Error ReadInput()
         {
             int read = Sys.Read(Input, InputBuffer, 0, (int)InputBufferSize);
             if (read < 0)
-            {
-                Error = Error.MSPACK_ERR_READ;
-                return;
-            }
+                return Error = Error.MSPACK_ERR_READ;
 
             // We might overrun the input stream by asking for bits we don't use,
             // so fake 2 more bytes at the end of input
@@ -294,8 +291,7 @@ namespace LibMSPackSharp.Compression
                 if (InputEnd != 0)
                 {
                     Console.WriteLine("out of input bytes");
-                    Error = Error.MSPACK_ERR_READ;
-                    return;
+                    return Error = Error.MSPACK_ERR_READ;
                 }
                 else
                 {
@@ -308,7 +304,7 @@ namespace LibMSPackSharp.Compression
             // Update i_ptr and i_end
             InputPointer = 0;
             InputLength = read;
-            Error = Error.MSPACK_ERR_OK;
+            return Error = Error.MSPACK_ERR_OK;
         }
 
         #endregion
@@ -321,7 +317,7 @@ namespace LibMSPackSharp.Compression
         /// Decodes the next huffman symbol from the input bitstream into var.
         /// Do not use this macro on a table unless build_decode_table() succeeded.
         /// </summary>
-        public int READ_HUFFSYM(ushort[] decodingTable, ref uint var, int tablebits, byte[] lengthTable, int maxsymbols, ref int i, ref int i_ptr, ref int i_end, ref uint bits_left, ref uint bit_buffer, bool msb)
+        public int READ_HUFFSYM(ushort[] decodingTable, ref uint var, int tablebits, byte[] lengthTable, int maxsymbols, ref int i, ref int i_ptr, ref int i_end, ref int bits_left, ref uint bit_buffer, bool msb)
         {
             ENSURE_BITS(HUFF_MAXBITS, ref i_ptr, ref i_end, ref bits_left, ref bit_buffer, msb);
             if (Error != Error.MSPACK_ERR_OK)

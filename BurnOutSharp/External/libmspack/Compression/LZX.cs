@@ -432,7 +432,8 @@ namespace LibMSPackSharp.Compression
                 return Error.MSPACK_ERR_ARGS;
 
             // Bitstream and huffman reading variables
-            uint bit_buffer = 0, bits_left = 0;
+            uint bit_buffer = 0;
+            int bits_left = 0;
             int i_ptr = 0, i_end = 0;
 
             int match_length, extra, verbatim_bits = 0, bytes_todo;
@@ -1116,7 +1117,8 @@ namespace LibMSPackSharp.Compression
         private static Error ReadLens(LZXDStream lzx, byte[] lens, uint first, uint last)
         {
             // Bit buffer and huffman symbol decode variables
-            uint bit_buffer = 0, bits_left = 0;
+            uint bit_buffer = 0;
+            int bits_left = 0;
             int i = 0;
             int i_ptr = 0, i_end = 0;
 
@@ -1128,7 +1130,7 @@ namespace LibMSPackSharp.Compression
             // Read lengths for pretree (20 symbols, lengths stored in fixed 4 bits)
             for (x = 0; x < 20; x++)
             {
-                lzx.READ_BITS(ref y, 4, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left, msb: true);
+                lzx.READ_BITS(ref y, 4, ref i_ptr, ref i_end, ref bits_left, ref bit_buffer, msb: true);
                 if (lzx.Error != Error.MSPACK_ERR_OK)
                     return lzx.Error;
 
@@ -1150,7 +1152,7 @@ namespace LibMSPackSharp.Compression
                 if (z == 17)
                 {
                     // Code = 17, run of ([read 4 bits]+4) zeros
-                    lzx.READ_BITS(ref y, 4, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left, msb: true);
+                    lzx.READ_BITS(ref y, 4, ref i_ptr, ref i_end, ref bits_left, ref bit_buffer, msb: true);
                     if (lzx.Error != Error.MSPACK_ERR_OK)
                         return lzx.Error;
 
@@ -1163,7 +1165,7 @@ namespace LibMSPackSharp.Compression
                 else if (z == 18)
                 {
                     // Code = 18, run of ([read 5 bits]+20) zeros
-                    lzx.READ_BITS(ref y, 5, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left, msb: true);
+                    lzx.READ_BITS(ref y, 5, ref i_ptr, ref i_end, ref bits_left, ref bit_buffer, msb: true);
                     if (lzx.Error != Error.MSPACK_ERR_OK)
                         return lzx.Error;
 
@@ -1176,7 +1178,7 @@ namespace LibMSPackSharp.Compression
                 else if (z == 19)
                 {
                     // Code = 19, run of ([read 1 bit]+4) [read huffman symbol]
-                    lzx.READ_BITS(ref y, 1, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left, msb: true);
+                    lzx.READ_BITS(ref y, 1, ref i_ptr, ref i_end, ref bits_left, ref bit_buffer, msb: true);
                     if (lzx.Error != Error.MSPACK_ERR_OK)
                         return lzx.Error;
 

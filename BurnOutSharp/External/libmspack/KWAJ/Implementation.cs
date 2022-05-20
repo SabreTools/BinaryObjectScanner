@@ -417,8 +417,8 @@ namespace LibMSPackSharp.KWAJ
 
         private static Error LZHDecompress(InternalStream lzh)
         {
-            uint bit_buffer = 0, bits_left = 0, len = 0, j = 0;
-            int i;
+            uint bit_buffer = 0, len = 0, j = 0;
+            int i, bits_left = 0;
             int i_ptr = 0, i_end = 0;
             bool lit_run = false;
             int pos = 0, offset;
@@ -436,7 +436,7 @@ namespace LibMSPackSharp.KWAJ
             for (i = 0; i < 6; i++)
             {
                 //READ_BITS_SAFE(val, n)
-                lzh.READ_BITS(ref types[i], 4, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left, msb: true);
+                lzh.READ_BITS(ref types[i], 4, ref i_ptr, ref i_end, ref bits_left, ref bit_buffer, msb: true);
                 if (lzh.Error != Error.MSPACK_ERR_OK)
                     return lzh.Error;
                 if (lzh.InputEnd != 0 && bits_left < lzh.InputEnd)
@@ -529,7 +529,7 @@ namespace LibMSPackSharp.KWAJ
 
                     //READ_BITS_SAFE(val, n)
                     int tempj = (int)j;
-                    lzh.READ_BITS(ref tempj, 6, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left, msb: true);
+                    lzh.READ_BITS(ref tempj, 6, ref i_ptr, ref i_end, ref bits_left, ref bit_buffer, msb: true);
                     if (lzh.Error != Error.MSPACK_ERR_OK)
                         return lzh.Error;
                     if (lzh.InputEnd != 0 && bits_left < lzh.InputEnd)
@@ -583,7 +583,8 @@ namespace LibMSPackSharp.KWAJ
 
         public static Error LZHReadLens(InternalStream lzh, uint type, uint numsyms, byte[] lens)
         {
-            uint bit_buffer = 0, bits_left = 0;
+            uint bit_buffer = 0;
+            int bits_left = 0;
             int i_ptr = 0, i_end = 0;
             uint i;
             int c = 0, sel = 0;
@@ -603,7 +604,7 @@ namespace LibMSPackSharp.KWAJ
 
                 case 1:
                     //READ_BITS_SAFE(val, n)
-                    lzh.READ_BITS(ref c, 4, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left, msb: true);
+                    lzh.READ_BITS(ref c, 4, ref i_ptr, ref i_end, ref bits_left, ref bit_buffer, msb: true);
                     if (lzh.InputEnd != 0 && bits_left < lzh.InputEnd)
                         return Error.MSPACK_ERR_OK;
 
@@ -611,7 +612,7 @@ namespace LibMSPackSharp.KWAJ
                     for (i = 1; i < numsyms; i++)
                     {
                         //READ_BITS_SAFE(val, n)
-                        lzh.READ_BITS(ref sel, 1, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left, msb: true);
+                        lzh.READ_BITS(ref sel, 1, ref i_ptr, ref i_end, ref bits_left, ref bit_buffer, msb: true);
                         if (lzh.InputEnd != 0 && bits_left < lzh.InputEnd)
                             return Error.MSPACK_ERR_OK;
 
@@ -622,7 +623,7 @@ namespace LibMSPackSharp.KWAJ
                         else
                         {
                             //READ_BITS_SAFE(val, n)
-                            lzh.READ_BITS(ref sel, 1, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left, msb: true);
+                            lzh.READ_BITS(ref sel, 1, ref i_ptr, ref i_end, ref bits_left, ref bit_buffer, msb: true);
                             if (lzh.InputEnd != 0 && bits_left < lzh.InputEnd)
                                 return Error.MSPACK_ERR_OK;
 
@@ -633,7 +634,7 @@ namespace LibMSPackSharp.KWAJ
                             else
                             {
                                 //READ_BITS_SAFE(val, n)
-                                lzh.READ_BITS(ref c, 4, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left, msb: true);
+                                lzh.READ_BITS(ref c, 4, ref i_ptr, ref i_end, ref bits_left, ref bit_buffer, msb: true);
                                 if (lzh.InputEnd != 0 && bits_left < lzh.InputEnd)
                                     return Error.MSPACK_ERR_OK;
 
@@ -645,7 +646,7 @@ namespace LibMSPackSharp.KWAJ
 
                 case 2:
                     //READ_BITS_SAFE(val, n)
-                    lzh.READ_BITS(ref c, 4, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left, msb: true);
+                    lzh.READ_BITS(ref c, 4, ref i_ptr, ref i_end, ref bits_left, ref bit_buffer, msb: true);
                     if (lzh.InputEnd != 0 && bits_left < lzh.InputEnd)
                         return Error.MSPACK_ERR_OK;
 
@@ -653,14 +654,14 @@ namespace LibMSPackSharp.KWAJ
                     for (i = 1; i < numsyms; i++)
                     {
                         //READ_BITS_SAFE(val, n)
-                        lzh.READ_BITS(ref sel, 2, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left, msb: true);
+                        lzh.READ_BITS(ref sel, 2, ref i_ptr, ref i_end, ref bits_left, ref bit_buffer, msb: true);
                         if (lzh.InputEnd != 0 && bits_left < lzh.InputEnd)
                             return Error.MSPACK_ERR_OK;
 
                         if (sel == 3)
                         {
                             //READ_BITS_SAFE(val, n)
-                            lzh.READ_BITS(ref c, 4, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left, msb: true);
+                            lzh.READ_BITS(ref c, 4, ref i_ptr, ref i_end, ref bits_left, ref bit_buffer, msb: true);
                             if (lzh.InputEnd != 0 && bits_left < lzh.InputEnd)
                                 return Error.MSPACK_ERR_OK;
                         }
@@ -678,7 +679,7 @@ namespace LibMSPackSharp.KWAJ
                     for (i = 0; i < numsyms; i++)
                     {
                         //READ_BITS_SAFE(val, n)
-                        lzh.READ_BITS(ref c, 4, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left, msb: true);
+                        lzh.READ_BITS(ref c, 4, ref i_ptr, ref i_end, ref bits_left, ref bit_buffer, msb: true);
                         if (lzh.InputEnd != 0 && bits_left < lzh.InputEnd)
                             return Error.MSPACK_ERR_OK;
 
