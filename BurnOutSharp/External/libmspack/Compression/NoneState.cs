@@ -7,6 +7,8 @@
  * For further details, see the file COPYING.LIB distributed with libmspack
  */
 
+using System.IO;
+
 namespace LibMSPackSharp.Compression
 {
     /// <summary>
@@ -16,9 +18,9 @@ namespace LibMSPackSharp.Compression
     {
         public SystemImpl Sys { get; set; }
 
-        public object Input { get; set; }
+        public FileStream Input { get; set; }
 
-        public object Output { get; set; }
+        public FileStream Output { get; set; }
 
         public byte[] Buffer { get; set; }
 

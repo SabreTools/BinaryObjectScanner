@@ -14,13 +14,15 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+using System.IO;
+
 namespace LibMSPackSharp.OAB
 {
-    public class InternalFile : DefaultFileImpl
+    public class InternalFile
     {
         public SystemImpl OrigSys { get; set; }
 
-        public object OrigFile { get; set; }
+        public FileStream OrigFile { get; set; }
 
         public uint CRC { get; set; }
 

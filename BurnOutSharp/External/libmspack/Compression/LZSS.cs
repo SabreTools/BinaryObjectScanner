@@ -11,6 +11,8 @@
  * For further details, see the file COPYING.LIB distributed with libmspack
  */
 
+using System.IO;
+
 namespace LibMSPackSharp.Compression
 {
     public class LZSS
@@ -54,7 +56,7 @@ namespace LibMSPackSharp.Compression
         /// </param>
         /// <param name="mode">one of LZSSMode values</param>
         /// <returns>an error code, or MSPACK_ERR_OK if successful</returns>
-        public static Error Decompress(SystemImpl system, object input, object output, int inputBufferSize, LZSSMode mode)
+        public static Error Decompress(SystemImpl system, FileStream input, FileStream output, int inputBufferSize, LZSSMode mode)
         {
             uint i, c, mpos, len;
             int read;

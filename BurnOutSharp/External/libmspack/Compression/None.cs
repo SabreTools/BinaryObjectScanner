@@ -7,28 +7,22 @@
  * For further details, see the file COPYING.LIB distributed with libmspack
  */
 
+using System.IO;
+
 namespace LibMSPackSharp.Compression
 {
     public class None
     {
-        public static NoneState Init(SystemImpl sys, DefaultFileImpl input, DefaultFileImpl output, int bufsize)
+        public static NoneState Init(SystemImpl sys, FileStream input, FileStream output, int bufsize)
         {
-            NoneState state = new NoneState();
-            byte[] buf = new byte[bufsize];
-            if (state != null && buf != null)
+            return new NoneState()
             {
-                state.Sys = sys;
-                state.Input = input;
-                state.Output = output;
-                state.Buffer = buf;
-                state.BufferSize = bufsize;
-            }
-            else
-            {
-                state = null;
-            }
-
-            return state;
+                Sys = sys,
+                Input = input,
+                Output = output,
+                Buffer = new byte[bufsize],
+                BufferSize = bufsize,
+            };
         }
 
         public static Error Decompress(object s, long bytes)

@@ -21,6 +21,7 @@
  */
 
 using System;
+using System.IO;
 using LibMSPackSharp.Compression;
 
 namespace LibMSPackSharp.OAB
@@ -93,7 +94,7 @@ namespace LibMSPackSharp.OAB
 
                 return bytes_written;
             }
-            else if (baseFile is DefaultFileImpl impl)
+            else if (baseFile is FileStream impl)
             {
                 return SystemImpl.DefaultSystem.Write(impl, buf, pointer, size);
             }
@@ -118,7 +119,7 @@ namespace LibMSPackSharp.OAB
 
             SystemImpl sys = self.System;
 
-            DefaultFileImpl infh = sys.Open(input, OpenMode.MSPACK_SYS_OPEN_READ);
+            FileStream infh = sys.Open(input, OpenMode.MSPACK_SYS_OPEN_READ);
             if (infh == null)
             {
                 ret = Error.MSPACK_ERR_OPEN;
@@ -150,7 +151,7 @@ namespace LibMSPackSharp.OAB
             uint block_max = BitConverter.ToUInt32(hdrbuf, oabhead_BlockMax);
             uint target_size = BitConverter.ToUInt32(hdrbuf, oabhead_TargetSize);
 
-            DefaultFileImpl outfh = sys.Open(output, OpenMode.MSPACK_SYS_OPEN_WRITE);
+            FileStream outfh = sys.Open(output, OpenMode.MSPACK_SYS_OPEN_WRITE);
             if (outfh == null)
             {
                 ret = Error.MSPACK_ERR_OPEN;
@@ -243,7 +244,7 @@ namespace LibMSPackSharp.OAB
                     in_ofh.Available = (int)blk_csize;
                     out_ofh.CRC = 0xffffffff;
 
-                    lzx = LZX.Init(oabd_sys, in_ofh, out_ofh, window_bits, 0, self.BufferSize, blk_dsize, true);
+                    lzx = LZX.Init(oabd_sys, in_ofh.OrigFile, out_ofh.OrigFile, window_bits, 0, self.BufferSize, blk_dsize, true);
                     if (lzx == null)
                     {
                         ret = Error.MSPACK_ERR_NOMEMORY;
@@ -321,7 +322,7 @@ namespace LibMSPackSharp.OAB
 
             SystemImpl sys = self.System;
 
-            DefaultFileImpl infh = sys.Open(input, OpenMode.MSPACK_SYS_OPEN_READ);
+            FileStream infh = sys.Open(input, OpenMode.MSPACK_SYS_OPEN_READ);
             if (infh == null)
             {
                 ret = Error.MSPACK_ERR_OPEN;
@@ -357,7 +358,7 @@ namespace LibMSPackSharp.OAB
             if (block_max < patchblk_SIZEOF)
                 block_max = patchblk_SIZEOF;
 
-            DefaultFileImpl basefh = sys.Open(basePath, OpenMode.MSPACK_SYS_OPEN_READ);
+            FileStream basefh = sys.Open(basePath, OpenMode.MSPACK_SYS_OPEN_READ);
             if (basefh == null)
             {
                 ret = Error.MSPACK_ERR_OPEN;
@@ -369,7 +370,7 @@ namespace LibMSPackSharp.OAB
                 return ret;
             }
 
-            DefaultFileImpl outfh = sys.Open(output, OpenMode.MSPACK_SYS_OPEN_WRITE);
+            FileStream outfh = sys.Open(output, OpenMode.MSPACK_SYS_OPEN_WRITE);
             if (outfh == null)
             {
                 ret = Error.MSPACK_ERR_OPEN;
@@ -440,7 +441,7 @@ namespace LibMSPackSharp.OAB
                 in_ofh.Available = (int)blk_csize;
                 out_ofh.CRC = 0xffffffff;
 
-                lzx = LZX.Init(oabd_sys, in_ofh, out_ofh, window_bits, 0, 4096, blk_dsize, true);
+                lzx = LZX.Init(oabd_sys, in_ofh.OrigFile, out_ofh.OrigFile, window_bits, 0, 4096, blk_dsize, true);
                 if (lzx == null)
                 {
                     ret = Error.MSPACK_ERR_NOMEMORY;
@@ -522,7 +523,7 @@ namespace LibMSPackSharp.OAB
             return ret;
         }
 
-        private static Error CopyFileHandle(SystemImpl sys, object infh, object outfh, int bytes_to_copy, byte[] buf, int buf_size)
+        private static Error CopyFileHandle(SystemImpl sys, FileStream infh, FileStream outfh, int bytes_to_copy, byte[] buf, int buf_size)
         {
             while (bytes_to_copy != 0)
             {

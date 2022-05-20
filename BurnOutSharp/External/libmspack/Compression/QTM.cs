@@ -21,6 +21,7 @@
  */
 
 using System;
+using System.IO;
 
 namespace LibMSPackSharp.Compression
 {
@@ -91,7 +92,7 @@ namespace LibMSPackSharp.Compression
         ///  - window_bits is the size of the Quantum window, from 1Kb(10) to 2Mb(21).
         ///  - input_buffer_size is the number of bytes to use to store bitstream data.
         /// </summary>
-        public static QTMDStream Init(SystemImpl system, DefaultFileImpl input, DefaultFileImpl output, int window_bits, int input_buffer_size)
+        public static QTMDStream Init(SystemImpl system, FileStream input, FileStream output, int window_bits, int input_buffer_size)
         {
             uint window_size = (uint)(1 << window_bits);
 

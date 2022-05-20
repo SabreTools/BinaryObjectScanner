@@ -50,40 +50,33 @@ namespace LibMSPackSharp
         /// </param>
         /// <param name="mode">One of the <see cref="OpenMode"/> values</param>
         /// <returns>
-        /// A pointer to a DefaultFileImpl structure. This structure officially
+        /// A pointer to a FileStream structure. This structure officially
         /// contains no members, its true contents are up to the
         /// SystemImpl implementor. It should contain whatever is needed
         /// for other SystemImpl methods to operate. Returning the null
         /// pointer indicates an error condition.
         /// </returns>
-        public DefaultFileImpl Open(string filename, OpenMode mode)
+        public FileStream Open(string filename, OpenMode mode)
         {
             try
             {
-                DefaultFileImpl fileHandle = new DefaultFileImpl();
                 switch (mode)
                 {
                     case OpenMode.MSPACK_SYS_OPEN_READ:
-                        fileHandle.FileHandle = File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                        break;
+                        return File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
 
                     case OpenMode.MSPACK_SYS_OPEN_WRITE:
-                        fileHandle.FileHandle = File.Open(filename, FileMode.OpenOrCreate, FileAccess.Write, FileShare.ReadWrite);
-                        break;
+                        return File.Open(filename, FileMode.OpenOrCreate, FileAccess.Write, FileShare.ReadWrite);
 
                     case OpenMode.MSPACK_SYS_OPEN_UPDATE:
-                        fileHandle.FileHandle = File.Open(filename, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
-                        break;
+                        return File.Open(filename, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
 
                     case OpenMode.MSPACK_SYS_OPEN_APPEND:
-                        fileHandle.FileHandle = File.Open(filename, FileMode.Append, FileAccess.ReadWrite, FileShare.ReadWrite);
-                        break;
+                        return File.Open(filename, FileMode.Append, FileAccess.ReadWrite, FileShare.ReadWrite);
 
                     default:
                         return null;
                 }
-
-                return fileHandle;
             }
             catch (Exception ex)
             {
@@ -98,7 +91,7 @@ namespace LibMSPackSharp
         /// </summary>
         /// <param name="file">the file to close</param>
         /// <see cref="Open(string, OpenMode)"/>
-        public void Close(DefaultFileImpl file) => file?.FileHandle?.Close();
+        public void Close(FileStream file) => file?.Close();
 
         /// <summary>
         /// Reads a given number of bytes from an open file.
@@ -115,7 +108,7 @@ namespace LibMSPackSharp
         /// </returns>
         /// <see cref="Open(string, OpenMode)"/>
         /// <see cref="Write"/>
-        public Func<object, byte[], int, int, int> Read;
+        public Func<FileStream, byte[], int, int, int> Read;
 
         /// <summary>
         /// Writes a given number of bytes to an open file.
@@ -132,7 +125,7 @@ namespace LibMSPackSharp
         /// </returns>
         /// <see cref="Open(string, OpenMode)"/>
         /// <see cref="Read"/>
-        public Func<object, byte[], int, int, int> Write;
+        public Func<FileStream, byte[], int, int, int> Write;
 
         /// <summary>
         /// Seeks to a specific file offset within an open file.
@@ -152,8 +145,8 @@ namespace LibMSPackSharp
         /// <param name="mode">One of the <see cref="SeekMode"/> values</param>
         /// <returns>zero for success, non-zero for an error</returns>
         /// <see cref="Open(string, OpenMode)"/>
-        /// <see cref="Tell(DefaultFileImpl)"/>
-        public bool Seek(DefaultFileImpl self, long offset, SeekMode mode)
+        /// <see cref="Tell(FileStream)"/>
+        public bool Seek(FileStream self, long offset, SeekMode mode)
         {
             if (self == null)
                 return false;
@@ -161,15 +154,15 @@ namespace LibMSPackSharp
             switch (mode)
             {
                 case SeekMode.MSPACK_SYS_SEEK_START:
-                    try { self.FileHandle.Seek(offset, SeekOrigin.Begin); return true; }
+                    try { self.Seek(offset, SeekOrigin.Begin); return true; }
                     catch { return false; }
 
                 case SeekMode.MSPACK_SYS_SEEK_CUR:
-                    try { self.FileHandle.Seek(offset, SeekOrigin.Current); return true; }
+                    try { self.Seek(offset, SeekOrigin.Current); return true; }
                     catch { return false; }
 
                 case SeekMode.MSPACK_SYS_SEEK_END:
-                    try { self.FileHandle.Seek(offset, SeekOrigin.End); return true; }
+                    try { self.Seek(offset, SeekOrigin.End); return true; }
                     catch { return false; }
 
                 default:
@@ -183,8 +176,8 @@ namespace LibMSPackSharp
         /// <param name="file">the file whose file position is wanted</param>
         /// <returns>the current file position of the file</returns>
         /// <see cref="Open(string, OpenMode)"/>
-        /// <see cref="Seek(DefaultFileImpl, long, SeekMode)"/>
-        public long Tell(DefaultFileImpl self) => (self != null ? self.FileHandle.Position : 0);
+        /// <see cref="Seek(FileStream, long, SeekMode)"/>
+        public long Tell(FileStream self) => self?.Position ?? 0;
 
         /// <summary>
         /// Used to send messages from the library to the user.
@@ -200,7 +193,7 @@ namespace LibMSPackSharp
         /// </param>
         /// <param name="format">a printf() style format string. It does NOT include a trailing newline.</param>
         /// <see cref="Open(string, OpenMode)"/>
-        public void Message(DefaultFileImpl file, string format)
+        public void Message(FileStream file, string format)
         {
             if (file != null)
                 Console.Error.Write($"{file.Name}: ");
@@ -213,11 +206,11 @@ namespace LibMSPackSharp
         /// <summary>
         /// Returns the length of a file opened for reading
         /// </summary>
-        public Error GetFileLength(DefaultFileImpl file, out long length)
+        public Error GetFileLength(FileStream file, out long length)
         {
             try
             {
-                length = file?.FileHandle?.Length ?? 0;
+                length = file?.Length ?? 0;
                 return Error.MSPACK_ERR_OK;
             }
             catch
@@ -247,10 +240,10 @@ namespace LibMSPackSharp
 
         private static int DefaultRead(object file, byte[] buffer, int pointer, int bytes)
         {
-            DefaultFileImpl self = file as DefaultFileImpl;
+            FileStream self = file as FileStream;
             if (self != null && buffer != null && bytes >= 0)
             {
-                try { return self.FileHandle.Read(buffer, pointer, bytes); }
+                try { return self.Read(buffer, pointer, bytes); }
                 catch { }
             }
 
@@ -259,10 +252,10 @@ namespace LibMSPackSharp
 
         private static int DefaultWrite(object file, byte[] buffer, int pointer, int bytes)
         {
-            DefaultFileImpl self = file as DefaultFileImpl;
+            FileStream self = file as FileStream;
             if (self != null && buffer != null && bytes >= 0)
             {
-                try { self.FileHandle.Write(buffer, pointer, bytes); }
+                try { self.Write(buffer, pointer, bytes); }
                 catch { return -1; }
                 return bytes;
             }

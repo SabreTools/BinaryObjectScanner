@@ -11,6 +11,7 @@
  */
 
 using System;
+using System.IO;
 
 namespace LibMSPackSharp.Compression
 {
@@ -28,12 +29,12 @@ namespace LibMSPackSharp.Compression
         /// <summary>
         /// Input file handle
         /// </summary>
-        public object Input { get; set; }
+        public FileStream Input { get; set; }
 
         /// <summary>
         /// Output file handle
         /// </summary>
-        public object Output { get; set; }
+        public FileStream Output { get; set; }
 
         public Error Error { get; set; }
 

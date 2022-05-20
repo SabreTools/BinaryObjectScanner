@@ -8,6 +8,7 @@
  */
 
 using System;
+using System.IO;
 using System.Linq;
 using System.Text;
 using LibMSPackSharp.Compression;
@@ -152,7 +153,7 @@ namespace LibMSPackSharp.CHM
 
             SystemImpl sys = self.System;
 
-            DefaultFileImpl fh;
+            FileStream fh;
             if ((fh = sys.Open(filename, OpenMode.MSPACK_SYS_OPEN_READ)) != null)
             {
                 chm = new Header();
@@ -249,7 +250,7 @@ namespace LibMSPackSharp.CHM
         /// non-zero, all file entries will also be read. fills out a pre-existing
         /// mschmd_header structure, allocates memory for files as necessary
         /// </summary>
-        public static Error ReadHeaders(SystemImpl sys, DefaultFileImpl fh, Header chm, bool entire)
+        public static Error ReadHeaders(SystemImpl sys, FileStream fh, Header chm, bool entire)
         {
             uint section, nameLen, x, errors, numChunks;
             byte[] buf = new byte[0x54];
@@ -569,7 +570,7 @@ namespace LibMSPackSharp.CHM
         {
             DecompressorImpl self = d as DecompressorImpl;
             SystemImpl sys;
-            DefaultFileImpl fh;
+            FileStream fh;
 
             // p and end are initialised to prevent MSVC warning about "potentially"
             // uninitialised usage. This is provably untrue, but MS won't fix:
@@ -699,7 +700,7 @@ namespace LibMSPackSharp.CHM
         /// Reads the given chunk into memory, storing it in a chunk cache
         /// so it doesn't need to be read from disk more than once
         /// </summary>
-        public static byte[] ReadChunk(DecompressorImpl self, Header chm, DefaultFileImpl fh, uint chunkNum)
+        public static byte[] ReadChunk(DecompressorImpl self, Header chm, FileStream fh, uint chunkNum)
         {
             SystemImpl sys = self.System;
 
@@ -1003,7 +1004,7 @@ namespace LibMSPackSharp.CHM
             }
 
             // Open file for output
-            DefaultFileImpl fh;
+            FileStream fh;
             if ((fh = sys.Open(filename, OpenMode.MSPACK_SYS_OPEN_WRITE)) == null)
                 return self.Error = Error.MSPACK_ERR_OPEN;
 
@@ -1120,9 +1121,9 @@ namespace LibMSPackSharp.CHM
 
                 return bytes;
             }
-            else if (file is DefaultFileImpl impl)
+            else if (file is FileStream impl)
             {
-                return SystemImpl.DefaultSystem.Write(file, buffer, offset, bytes);
+                return SystemImpl.DefaultSystem.Write(impl, buffer, offset, bytes);
             }
 
             // Unknown file to write to

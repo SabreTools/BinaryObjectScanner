@@ -8,6 +8,7 @@
  */
 
 using System;
+using System.IO;
 using System.Linq;
 using LibMSPackSharp.Compression;
 
@@ -33,7 +34,7 @@ namespace LibMSPackSharp.SZDD
 
             SystemImpl sys = self.System;
 
-            DefaultFileImpl fh = sys.Open(filename, OpenMode.MSPACK_SYS_OPEN_READ);
+            FileStream fh = sys.Open(filename, OpenMode.MSPACK_SYS_OPEN_READ);
             HeaderImpl hdr = new HeaderImpl();
             if (fh != null && hdr != null)
             {
@@ -97,7 +98,7 @@ namespace LibMSPackSharp.SZDD
         /// <summary>
         /// Reads the headers of an SZDD format file
         /// </summary>
-        public static Error ReadHeaders(SystemImpl sys, object fh, Header hdr)
+        public static Error ReadHeaders(SystemImpl sys, FileStream fh, Header hdr)
         {
             // Read and check signature
             byte[] buf = new byte[8];
@@ -154,7 +155,7 @@ namespace LibMSPackSharp.SZDD
 
             SystemImpl sys = self.System;
 
-            DefaultFileImpl fh = (hdr as HeaderImpl)?.FileHandle;
+            FileStream fh = (hdr as HeaderImpl)?.FileHandle;
             if (fh == null)
                 return Error.MSPACK_ERR_ARGS;
 
@@ -164,7 +165,7 @@ namespace LibMSPackSharp.SZDD
                 return self.Error = Error.MSPACK_ERR_SEEK;
 
             // Open file for output
-            DefaultFileImpl outfh;
+            FileStream outfh;
             if ((outfh = sys.Open(filename, OpenMode.MSPACK_SYS_OPEN_WRITE)) == null)
                 return self.Error = Error.MSPACK_ERR_OPEN;
 

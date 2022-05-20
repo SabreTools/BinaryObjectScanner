@@ -7,6 +7,7 @@
  * For further details, see the file COPYING.LIB distributed with libmspack
  */
 
+using System.IO;
 using LibMSPackSharp.Compression;
 
 namespace LibMSPackSharp.CHM
@@ -41,11 +42,11 @@ namespace LibMSPackSharp.CHM
         /// <summary>
         /// Input file handle
         /// </summary>
-        public DefaultFileImpl InputFileHandle { get; set; }
+        public FileStream InputFileHandle { get; set; }
 
         /// <summary>
         /// Output file handle
         /// </summary>
-        public DefaultFileImpl OutputFileHandle { get; set; }
+        public FileStream OutputFileHandle { get; set; }
     }
 }

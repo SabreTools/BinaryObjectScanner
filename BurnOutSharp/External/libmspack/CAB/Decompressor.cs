@@ -15,6 +15,7 @@
  */
 
 using System;
+using System.IO;
 using System.Text;
 using LibMSPackSharp.Compression;
 using static LibMSPackSharp.CAB.Constants;
@@ -72,7 +73,7 @@ namespace LibMSPackSharp.CAB
         /// <see cref="Error"/>
         public Cabinet Open(string filename)
         {
-            DefaultFileImpl fileHandle = System.Open(filename, OpenMode.MSPACK_SYS_OPEN_READ);
+            FileStream fileHandle = System.Open(filename, OpenMode.MSPACK_SYS_OPEN_READ);
             if (fileHandle == null)
             {
                 Error = Error.MSPACK_ERR_OPEN;
@@ -211,7 +212,7 @@ namespace LibMSPackSharp.CAB
             }
 
             // Open file and get its full file length
-            DefaultFileImpl fh; Cabinet cab = null;
+            FileStream fh; Cabinet cab = null;
             if ((fh = System.Open(filename, OpenMode.MSPACK_SYS_OPEN_READ)) != null)
             {
                 long firstlen = 0;
@@ -402,7 +403,7 @@ namespace LibMSPackSharp.CAB
             }
 
             // Open file for output
-            DefaultFileImpl fh = System.Open(filename, OpenMode.MSPACK_SYS_OPEN_WRITE);
+            FileStream fh = System.Open(filename, OpenMode.MSPACK_SYS_OPEN_WRITE);
             if (fh == null)
                 return Error = Error.MSPACK_ERR_OPEN;
 
@@ -634,9 +635,9 @@ namespace LibMSPackSharp.CAB
 
                 return bytes - todo;
             }
-            else if (file is DefaultFileImpl impl)
+            else if (file is FileStream impl)
             {
-                return SystemImpl.DefaultSystem.Read(file, buffer, pointer, bytes);
+                return SystemImpl.DefaultSystem.Read(impl, buffer, pointer, bytes);
             }
 
             return -1;
@@ -658,9 +659,9 @@ namespace LibMSPackSharp.CAB
 
                 return bytes;
             }
-            else if (file is DefaultFileImpl impl)
+            else if (file is FileStream impl)
             {
-                return SystemImpl.DefaultSystem.Write(file, buffer, pointer, bytes);
+                return SystemImpl.DefaultSystem.Write(impl, buffer, pointer, bytes);
             }
 
             // Unknown file to write to
@@ -870,7 +871,7 @@ namespace LibMSPackSharp.CAB
         /// The inner loop of <see cref="Search(Decompressor, string)"/>, to make it easier to
         /// break out of the loop and be sure that all resources are freed
         /// </summary>
-        private Error Find(byte[] buf, DefaultFileImpl fh, string filename, long flen, ref long firstlen, out Cabinet firstcab)
+        private Error Find(byte[] buf, FileStream fh, string filename, long flen, ref long firstlen, out Cabinet firstcab)
         {
             firstcab = null;
             Cabinet cab, link = null;
@@ -1213,7 +1214,7 @@ namespace LibMSPackSharp.CAB
         /// Fills out a pre-existing Cabinet structure, allocates memory
         /// for folders and files as necessary
         /// </summary>
-        private Error ReadHeaders(DefaultFileImpl fh, Cabinet cab, long offset, bool salvage, bool quiet)
+        private Error ReadHeaders(FileStream fh, Cabinet cab, long offset, bool salvage, bool quiet)
         {
             Error err = Error.MSPACK_ERR_OK;
             Folder fol, linkfol = null;
@@ -1436,7 +1437,7 @@ namespace LibMSPackSharp.CAB
             return Error.MSPACK_ERR_OK;
         }
 
-        private string ReadString(DefaultFileImpl fh, bool permitEmpty, ref Error error)
+        private string ReadString(FileStream fh, bool permitEmpty, ref Error error)
         {
             long position = System.Tell(fh);
             byte[] buf = new byte[256];

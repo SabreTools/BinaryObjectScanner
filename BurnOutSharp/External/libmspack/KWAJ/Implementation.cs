@@ -8,6 +8,7 @@
  */
 
 using System;
+using System.IO;
 using System.Text;
 using LibMSPackSharp.Compression;
 
@@ -76,7 +77,7 @@ namespace LibMSPackSharp.KWAJ
 
             SystemImpl sys = self.System;
 
-            DefaultFileImpl fh = sys.Open(filename, OpenMode.MSPACK_SYS_OPEN_READ);
+            FileStream fh = sys.Open(filename, OpenMode.MSPACK_SYS_OPEN_READ);
             HeaderImpl hdr = new HeaderImpl();
             if (fh != null && hdr != null)
             {
@@ -130,7 +131,7 @@ namespace LibMSPackSharp.KWAJ
         /// <summary>
         /// Reads the headers of a KWAJ format file
         /// </summary>
-        public static Error ReadHeaders(SystemImpl sys, DefaultFileImpl fh, Header hdr)
+        public static Error ReadHeaders(SystemImpl sys, FileStream fh, Header hdr)
         {
             int i;
 
@@ -283,7 +284,7 @@ namespace LibMSPackSharp.KWAJ
                 return self.Error = Error.MSPACK_ERR_ARGS;
 
             SystemImpl sys = self.System;
-            DefaultFileImpl fh = (hdr as HeaderImpl)?.FileHandle;
+            FileStream fh = (hdr as HeaderImpl)?.FileHandle;
             if (fh == null)
                 return Error.MSPACK_ERR_ARGS;
 
@@ -292,7 +293,7 @@ namespace LibMSPackSharp.KWAJ
                 return self.Error = Error.MSPACK_ERR_SEEK;
 
             // Open file for output
-            DefaultFileImpl outfh;
+            FileStream outfh;
             if ((outfh = sys.Open(filename, OpenMode.MSPACK_SYS_OPEN_WRITE)) == null)
                 return self.Error = Error.MSPACK_ERR_OPEN;
 
@@ -401,7 +402,7 @@ namespace LibMSPackSharp.KWAJ
          * 2 fake bytes in then stops), so we implement our own.
          */
 
-        private static InternalStream LZHInit(SystemImpl sys, object input, object output)
+        private static InternalStream LZHInit(SystemImpl sys, FileStream input, FileStream output)
         {
             if (sys == null || input == null || output == null)
                 return null;

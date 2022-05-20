@@ -75,6 +75,7 @@
  */
 
 using System;
+using System.IO;
 
 namespace LibMSPackSharp.Compression
 {
@@ -267,7 +268,7 @@ namespace LibMSPackSharp.Compression
         /// a pointer to an initialised LZXDStream structure, or null if
         /// there was not enough memory or parameters to the function were wrong.
         /// </returns>
-        public static LZXDStream Init(SystemImpl system, DefaultFileImpl input, DefaultFileImpl output, int windowBits, int resetInterval, int inputBufferSize, long outputLength, bool isDelta)
+        public static LZXDStream Init(SystemImpl system, FileStream input, FileStream output, int windowBits, int resetInterval, int inputBufferSize, long outputLength, bool isDelta)
         {
             uint windowSize = (uint)(1 << windowBits);
 
@@ -354,7 +355,7 @@ namespace LibMSPackSharp.Compression
         /// than the LZX window size.
         /// </param>
         /// <returns>an error code, or MSPACK_ERR_OK if successful</returns>
-        public static Error SetReferenceData(LZXDStream lzx, SystemImpl system, object input, uint length)
+        public static Error SetReferenceData(LZXDStream lzx, SystemImpl system, FileStream input, uint length)
         {
             if (lzx == null)
                 return Error.MSPACK_ERR_ARGS;

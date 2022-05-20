@@ -8,6 +8,7 @@
  */
 
 using System;
+using System.IO;
 
 namespace LibMSPackSharp.CAB
 {
@@ -66,12 +67,12 @@ namespace LibMSPackSharp.CAB
         /// <summary>
         /// Input file handle
         /// </summary>
-        public DefaultFileImpl InputFileHandle { get; set; }
+        public FileStream InputFileHandle { get; set; }
 
         /// <summary>
         /// Output file handle
         /// </summary>
-        public DefaultFileImpl OutputFileHandle { get; set; }
+        public FileStream OutputFileHandle { get; set; }
 
         /// <summary>
         /// Input data consumed

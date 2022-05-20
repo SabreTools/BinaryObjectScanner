@@ -11,6 +11,7 @@
  */
 
 using System;
+using System.IO;
 
 namespace LibMSPackSharp.Compression
 {
@@ -93,7 +94,7 @@ namespace LibMSPackSharp.Compression
         ///   and 'holes' left will be filled with zero bytes. This allows at least
         ///   a partial recovery of erroneous data.
         /// </summary>
-        public static MSZIPDStream Init(SystemImpl system, DefaultFileImpl input, DefaultFileImpl output, int input_buffer_size, bool repair_mode)
+        public static MSZIPDStream Init(SystemImpl system, FileStream input, FileStream output, int input_buffer_size, bool repair_mode)
         {
             if (system == null)
                 return null;
@@ -237,7 +238,7 @@ namespace LibMSPackSharp.Compression
 
                 // Write a frame
                 i = (out_bytes < zip.BytesOutput) ? (int)out_bytes : zip.BytesOutput;
-                if (zip.Output is DefaultFileImpl)
+                if (zip.Output is FileStream)
                 {
                     if (SystemImpl.DefaultSystem.Write(zip.Output, zip.Window, zip.OutputPointer, i) != i)
                         return zip.Error = Error.MSPACK_ERR_WRITE;

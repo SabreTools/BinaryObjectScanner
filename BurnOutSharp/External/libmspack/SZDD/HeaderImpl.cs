@@ -7,10 +7,12 @@
  * For further details, see the file COPYING.LIB distributed with libmspack
  */
 
+using System.IO;
+
 namespace LibMSPackSharp.SZDD
 {
     public class HeaderImpl : Header
     {
-        public DefaultFileImpl FileHandle { get; set; }
+        public FileStream FileHandle { get; set; }
     }
 }
