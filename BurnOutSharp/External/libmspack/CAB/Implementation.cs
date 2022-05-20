@@ -69,15 +69,6 @@ namespace LibMSPackSharp.CAB
     {
         #region Generic CAB Definitions
 
-        #region Structure Offsets
-
-        private const int cfdata_CheckSum = (0x00);
-        private const int cfdata_CompressedSize = (0x04);
-        private const int cfdata_UncompressedSize = (0x06);
-        private const int cfdata_SIZEOF = (0x08);
-
-        #endregion
-
         // CAB data blocks are <= 32768 bytes in uncompressed form.Uncompressed
         // blocks have zero growth. MSZIP guarantees that it won't grow above
         // uncompressed size by more than 12 bytes.LZX guarantees it won't grow
@@ -1350,9 +1341,8 @@ namespace LibMSPackSharp.CAB
         /// </summary>
         private static Error SysReadBlock(SystemImpl sys, DecompressState d, ref int output, bool ignore_cksum, bool ignore_blocksize)
         {
-            byte[] hdr = new byte[cfdata_SIZEOF];
-            uint cksum;
-            int len, full_len;
+            byte[] hdr = new byte[_DataBlockHeader.Size];
+            int full_len;
 
             // Reset the input block pointer and end of block pointer
             d.InputPointer = d.InputEnd = 0;
@@ -1360,19 +1350,23 @@ namespace LibMSPackSharp.CAB
             do
             {
                 // Read the block header
-                if (SystemImpl.DefaultSystem.Read(d.InputFileHandle, hdr, 0, cfdata_SIZEOF) != cfdata_SIZEOF)
+                if (SystemImpl.DefaultSystem.Read(d.InputFileHandle, hdr, 0, _DataBlockHeader.Size) != _DataBlockHeader.Size)
                     return Error.MSPACK_ERR_READ;
 
                 // Skip any reserved block headers
                 if (d.Data.Cab.Header.HeaderReserved != 0 && !sys.Seek(d.InputFileHandle, d.Data.Cab.Header.HeaderReserved, SeekMode.MSPACK_SYS_SEEK_CUR))
                     return Error.MSPACK_ERR_SEEK;
 
+                // Create a block header from the data
+                Error err = _DataBlockHeader.Create(hdr, out _DataBlockHeader dataBlockHeader);
+                if (err != Error.MSPACK_ERR_OK)
+                    return err;
+
                 // Blocks must not be over CAB_INPUTMAX in size
-                len = BitConverter.ToUInt16(hdr, cfdata_CompressedSize);
-                full_len = (d.InputEnd - d.InputPointer) + len; // Include cab-spanning blocks
+                full_len = (d.InputEnd - d.InputPointer) + dataBlockHeader.CompressedSize; // Include cab-spanning blocks
                 if (full_len > CAB_INPUTMAX)
                 {
-                    Console.WriteLine($"block size {full_len} > CAB_INPUTMAX");
+                    Console.WriteLine($"Block size {full_len} > CAB_INPUTMAX");
 
                     // In salvage mode, blocks can be 65535 bytes but no more than that
                     if (!ignore_blocksize || full_len > CAB_INPUTMAX_SALVAGE)
@@ -1380,7 +1374,7 @@ namespace LibMSPackSharp.CAB
                 }
 
                 // Blocks must not expand to more than CAB_BLOCKMAX 
-                if (BitConverter.ToUInt16(hdr, cfdata_UncompressedSize) > CAB_BLOCKMAX)
+                if (dataBlockHeader.UncompressedSize > CAB_BLOCKMAX)
                 {
                     Console.WriteLine("block size > CAB_BLOCKMAX");
                     if (!ignore_blocksize)
@@ -1388,14 +1382,14 @@ namespace LibMSPackSharp.CAB
                 }
 
                 // Read the block data
-                if (SystemImpl.DefaultSystem.Read(d.InputFileHandle, d.Input, d.InputEnd, len) != len)
+                if (SystemImpl.DefaultSystem.Read(d.InputFileHandle, d.Input, d.InputEnd, dataBlockHeader.CompressedSize) != dataBlockHeader.CompressedSize)
                     return Error.MSPACK_ERR_READ;
 
                 // Perform checksum test on the block (if one is stored)
-                if ((cksum = BitConverter.ToUInt32(hdr, cfdata_CheckSum)) != 0)
+                if (dataBlockHeader.CheckSum != 0)
                 {
-                    uint sum2 = Checksum(d.Input, d.InputEnd, (uint)len, 0);
-                    if (Checksum(hdr, 4, 4, sum2) != cksum)
+                    uint sum2 = Checksum(d.Input, d.InputEnd, dataBlockHeader.CompressedSize, 0);
+                    if (Checksum(hdr, 4, 4, sum2) != dataBlockHeader.CheckSum)
                     {
                         if (!ignore_cksum)
                             return Error.MSPACK_ERR_CHECKSUM;
@@ -1405,7 +1399,7 @@ namespace LibMSPackSharp.CAB
                 }
 
                 // Advance end of block pointer to include newly read data
-                d.InputEnd += len;
+                d.InputEnd += dataBlockHeader.CompressedSize;
 
                 // Uncompressed size == 0 means this block was part of a split block
                 // and it continues as the first block of the next cabinet in the set.
@@ -1413,7 +1407,7 @@ namespace LibMSPackSharp.CAB
                 // reading needs to be done.
 
                 // EXIT POINT OF LOOP -- uncompressed size != 0
-                if ((output = BitConverter.ToUInt16(hdr, cfdata_UncompressedSize)) != 0)
+                if ((output = dataBlockHeader.UncompressedSize) != 0)
                     return Error.MSPACK_ERR_OK;
 
                 // Otherwise, advance to next cabinet

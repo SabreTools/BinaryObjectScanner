@@ -88,7 +88,7 @@ namespace LibMSPackSharp.CAB
         private _FileHeader() { }
 
         /// <summary>
-        /// Create a _Folder from a byte array, if possible
+        /// Create a _FileHeader from a byte array, if possible
         /// </summary>
         public static Error Create(byte[] buffer, out _FileHeader header)
         {
