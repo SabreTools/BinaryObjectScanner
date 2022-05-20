@@ -85,16 +85,21 @@ namespace LibMSPackSharp.OAB
 
         private static int SysWrite(object baseFile, byte[] buf, int pointer, int size)
         {
-            InternalFile file = baseFile as InternalFile;
-            if (file == null)
-                return 0;
+            if (baseFile is InternalFile file)
+            {
+                int bytes_written = file.OrigSys.Write(file.OrigFile, buf, pointer, size);
+                if (bytes_written > 0)
+                    file.CRC = Checksum.CRC32(buf, 0, bytes_written, file.CRC);
 
-            int bytes_written = file.OrigSys.Write(file.OrigFile, buf, pointer, size);
+                return bytes_written;
+            }
+            else if (baseFile is DefaultFileImpl impl)
+            {
+                return SystemImpl.DefaultSystem.Write(impl, buf, pointer, size);
+            }
 
-            if (bytes_written > 0)
-                file.CRC = Checksum.CRC32(buf, 0, bytes_written, file.CRC);
-
-            return bytes_written;
+            // Unknown file to write to
+            return 0;
         }
 
         #endregion

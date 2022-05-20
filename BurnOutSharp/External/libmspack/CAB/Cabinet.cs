@@ -74,6 +74,15 @@ namespace LibMSPackSharp.CAB
     /// <see cref="Decompressor.Search"/>
     public class Cabinet
     {
+        #region Internal
+
+        /// <summary>
+        /// Cabinet header information
+        /// </summary>
+        internal _CabinetHeader Header { get; set; }
+
+        #endregion
+
         /// <summary>
         /// The next cabinet in a chained list, if this cabinet was opened with
         /// mscab_decompressor::search(). May be NULL to mark the end of the
@@ -92,11 +101,6 @@ namespace LibMSPackSharp.CAB
         /// The file offset of cabinet within the physical file it resides in.
         /// </summary>
         public long BaseOffset { get; set; }
-
-        /// <summary>
-        /// The length of the cabinet file in bytes.
-        /// </summary>
-        public uint Length { get; set; }
 
         /// <summary>
         /// The previous cabinet in a cabinet set, or NULL.
@@ -137,39 +141,5 @@ namespace LibMSPackSharp.CAB
         /// A list of all folders in the cabinet or cabinet set.
         /// </summary>
         public Folder Folders { get; set; }
-
-        /// <summary>
-        /// The set ID of the cabinet. All cabinets in the same set should have
-        /// the same set ID.
-        /// </summary>
-        public ushort SetID { get; set; }
-
-        /// <summary>
-        /// The index number of the cabinet within the set. Numbering should
-        /// start from 0 for the first cabinet in the set, and increment by 1 for
-        /// each following cabinet.
-        /// </summary>
-        public ushort SetIndex { get; set; }
-
-        /// <summary>
-        /// The number of bytes reserved in the header area of the cabinet.
-        /// 
-        /// If this is non-zero and flags has MSCAB_HDR_RESV set, this data can
-        /// be read by the calling application. It is of the given length,
-        /// located at offset (base_offset + MSCAB_HDR_RESV_OFFSET) in the
-        /// cabinet file.
-        /// </summary>
-        /// <see cref="Flags"/>
-        public ushort HeaderResv { get; set; }
-
-        /// <summary>
-        /// Header flags.
-        /// </summary>
-        /// <see cref="PreviousName"/>
-        /// <see cref="PreviousInfo"/>
-        /// <see cref="NextName"/>
-        /// <see cref="NextInfo"/>
-        /// <see cref="HeaderResv"/>
-        public HeaderFlags Flags { get; set; }
     }
 }

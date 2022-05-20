@@ -46,7 +46,7 @@ namespace LibMSPackSharp.CAB
         /// <see cref="Close"/>
         /// <see cref="Search"/>
         /// <see cref="LastError"/>
-        public Func<Decompressor, string, CabinetImpl> Open;
+        public Func<Decompressor, string, Cabinet> Open;
 
         /// <summary>
         /// Closes a previously opened cabinet or cabinet set.

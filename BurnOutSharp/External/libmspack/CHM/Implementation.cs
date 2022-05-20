@@ -1154,12 +1154,21 @@ namespace LibMSPackSharp.CHM
         /// </summary>
         private static int SysWrite(object file, byte[] buffer, int offset, int bytes)
         {
-            DecompressorImpl self = file as DecompressorImpl;
-            self.State.Offset += bytes;
-            if (self.State.OutputFileHandle != null)
-                return self.System.Write(self.State.OutputFileHandle, buffer, offset, bytes);
+            if (file is DecompressorImpl self)
+            {
+                self.State.Offset += (uint)bytes;
+                if (self.State.OutputFileHandle != null)
+                    return self.System.Write(self.State.OutputFileHandle, buffer, offset, bytes);
 
-            return bytes;
+                return bytes;
+            }
+            else if (file is DefaultFileImpl impl)
+            {
+                return SystemImpl.DefaultSystem.Write(file, buffer, offset, bytes);
+            }
+
+            // Unknown file to write to
+            return 0;
         }
 
         #endregion

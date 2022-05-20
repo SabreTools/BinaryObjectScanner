@@ -45,60 +45,21 @@ namespace LibMSPackSharp.KWAJ
         // Define decoding table sizes
 
         public const int KWAJ_TABLESIZE = (1 << KWAJ_TABLEBITS);
-        public static int KWAJ_MATCHLEN1_TBLSIZE
-        {
-            get
-            {
-                if (KWAJ_TABLESIZE < (KWAJ_MATCHLEN1_SYMS * 2))
-                    return (KWAJ_MATCHLEN1_SYMS * 4);
-                else
-                    return (KWAJ_TABLESIZE + (KWAJ_MATCHLEN1_SYMS * 2));
-            }
-        }
 
-        public static int KWAJ_MATCHLEN2_TBLSIZE
-        {
-            get
-            {
-                if (KWAJ_TABLESIZE < (KWAJ_MATCHLEN2_SYMS * 2))
-                    return (KWAJ_MATCHLEN2_SYMS * 4);
-                else
-                    return (KWAJ_TABLESIZE + (KWAJ_MATCHLEN2_SYMS * 2));
-            }
-        }
+        //public const int KWAJ_MATCHLEN1_TBLSIZE = (KWAJ_MATCHLEN1_SYMS * 4);
+        public const int KWAJ_MATCHLEN1_TBLSIZE = (KWAJ_TABLESIZE + (KWAJ_MATCHLEN1_SYMS * 2));
 
-        public static int KWAJ_LITLEN_TBLSIZE
-        {
-            get
-            {
-                if (KWAJ_TABLESIZE < (KWAJ_LITLEN_SYMS * 2))
-                    return (KWAJ_LITLEN_SYMS * 4);
-                else
-                    return (KWAJ_TABLESIZE + (KWAJ_LITLEN_SYMS * 2));
-            }
-        }
+        //public const int KWAJ_MATCHLEN2_TBLSIZE = (KWAJ_MATCHLEN2_SYMS * 4);
+        public const int KWAJ_MATCHLEN2_TBLSIZE = (KWAJ_TABLESIZE + (KWAJ_MATCHLEN2_SYMS * 2));
 
-        public static int KWAJ_OFFSET_TBLSIZE
-        {
-            get
-            {
-                if (KWAJ_TABLESIZE < (KWAJ_OFFSET_SYMS * 2))
-                    return (KWAJ_OFFSET_SYMS * 4);
-                else
-                    return (KWAJ_TABLESIZE + (KWAJ_OFFSET_SYMS * 2));
-            }
-        }
+        //public const int KWAJ_LITLEN_TBLSIZE = (KWAJ_LITLEN_SYMS * 4);
+        public const int KWAJ_LITLEN_TBLSIZE = (KWAJ_TABLESIZE + (KWAJ_LITLEN_SYMS * 2));
 
-        public static int KWAJ_LITERAL_TBLSIZE
-        {
-            get
-            {
-                if (KWAJ_TABLESIZE < (KWAJ_LITERAL_SYMS * 2))
-                    return (KWAJ_LITERAL_SYMS * 4);
-                else
-                    return (KWAJ_TABLESIZE + (KWAJ_LITERAL_SYMS * 2));
-            }
-        }
+        //public const int KWAJ_OFFSET_TBLSIZE = (KWAJ_OFFSET_SYMS * 4);
+        public const int KWAJ_OFFSET_TBLSIZE = (KWAJ_TABLESIZE + (KWAJ_OFFSET_SYMS * 2));
+
+        //public const int KWAJ_LITERAL_TBLSIZE = (KWAJ_LITERAL_SYMS * 4);
+        public const int KWAJ_LITERAL_TBLSIZE = (KWAJ_TABLESIZE + (KWAJ_LITERAL_SYMS * 2));
 
         #endregion
 
@@ -465,7 +426,6 @@ namespace LibMSPackSharp.KWAJ
         {
             uint bit_buffer = 0, bits_left = 0, len = 0, j = 0;
             int i;
-            ushort sym = 0;
             int i_ptr = 0, i_end = 0;
             bool lit_run = false;
             int pos = 0, offset;
@@ -483,7 +443,9 @@ namespace LibMSPackSharp.KWAJ
             for (i = 0; i < 6; i++)
             {
                 //READ_BITS_SAFE(val, n)
-                lzh.READ_BITS(ref types[i], 4, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+                lzh.READ_BITS(ref types[i], 4, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left, msb: true);
+                if (lzh.Error != Error.MSPACK_ERR_OK)
+                    return lzh.Error;
                 if (lzh.InputEnd != 0 && bits_left < lzh.InputEnd)
                     return Error.MSPACK_ERR_OK;
             }
@@ -497,7 +459,7 @@ namespace LibMSPackSharp.KWAJ
                 return err;
 
             lzh.RESTORE_BITS(ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
-            if (InternalStream.MakeDecodeTable(KWAJ_MATCHLEN1_SYMS, (uint)KWAJ_MATCHLEN1_TBLSIZE, lzh.MATCHLEN1_len, lzh.MATCHLEN1_table) != 0)
+            if (!InternalStream.MakeDecodeTable(KWAJ_MATCHLEN1_SYMS, KWAJ_MATCHLEN1_TBLSIZE, lzh.MATCHLEN1_len, lzh.MATCHLEN1_table, msb: true))
                 return Error.MSPACK_ERR_DATAFORMAT;
 
             //BUILD_TREE(tbl, type)
@@ -507,7 +469,7 @@ namespace LibMSPackSharp.KWAJ
                 return err;
 
             lzh.RESTORE_BITS(ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
-            if (InternalStream.MakeDecodeTable(KWAJ_MATCHLEN2_SYMS, (uint)KWAJ_MATCHLEN2_TBLSIZE, lzh.MATCHLEN2_len, lzh.MATCHLEN2_table) != 0)
+            if (!InternalStream.MakeDecodeTable(KWAJ_MATCHLEN2_SYMS, KWAJ_MATCHLEN2_TBLSIZE, lzh.MATCHLEN2_len, lzh.MATCHLEN2_table, msb: true))
                 return Error.MSPACK_ERR_DATAFORMAT;
 
             //BUILD_TREE(tbl, type)
@@ -517,7 +479,7 @@ namespace LibMSPackSharp.KWAJ
                 return err;
 
             lzh.RESTORE_BITS(ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
-            if (InternalStream.MakeDecodeTable(KWAJ_LITLEN_SYMS, (uint)KWAJ_LITLEN_TBLSIZE, lzh.LITLEN_len, lzh.LITLEN_table) != 0)
+            if (!InternalStream.MakeDecodeTable(KWAJ_LITLEN_SYMS, KWAJ_LITLEN_TBLSIZE, lzh.LITLEN_len, lzh.LITLEN_table, msb: true))
                 return Error.MSPACK_ERR_DATAFORMAT;
 
             //BUILD_TREE(tbl, type)
@@ -527,7 +489,7 @@ namespace LibMSPackSharp.KWAJ
                 return err;
 
             lzh.RESTORE_BITS(ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
-            if (InternalStream.MakeDecodeTable(KWAJ_OFFSET_SYMS, (uint)KWAJ_OFFSET_TBLSIZE, lzh.OFFSET_len, lzh.OFFSET_table) != 0)
+            if (!InternalStream.MakeDecodeTable(KWAJ_OFFSET_SYMS, KWAJ_OFFSET_TBLSIZE, lzh.OFFSET_len, lzh.OFFSET_table, msb: true))
                 return Error.MSPACK_ERR_DATAFORMAT;
 
             //BUILD_TREE(tbl, type)
@@ -537,7 +499,7 @@ namespace LibMSPackSharp.KWAJ
                 return err;
 
             lzh.RESTORE_BITS(ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
-            if (InternalStream.MakeDecodeTable(KWAJ_LITERAL_SYMS, (uint)KWAJ_LITERAL_TBLSIZE, lzh.LITERAL_len, lzh.LITERAL_table) != 0)
+            if (!InternalStream.MakeDecodeTable(KWAJ_LITERAL_SYMS, KWAJ_LITERAL_TBLSIZE, lzh.LITERAL_len, lzh.LITERAL_table, msb: true))
                 return Error.MSPACK_ERR_DATAFORMAT;
 
             while (lzh.InputEnd == 0)
@@ -545,14 +507,16 @@ namespace LibMSPackSharp.KWAJ
                 if (lit_run)
                 {
                     //READ_HUFFSYM_SAFE(tbl, val)
-                    lzh.READ_HUFFSYM(lzh.MATCHLEN2_table, ref len, KWAJ_MATCHLEN2_TBLSIZE, lzh.MATCHLEN2_len, KWAJ_MATCHLEN2_SYMS, ref i, ref sym, ref i_ptr, ref i_end, ref bits_left, ref bit_buffer);
+                    if (lzh.READ_HUFFSYM(lzh.MATCHLEN2_table, ref len, KWAJ_MATCHLEN2_TBLSIZE, lzh.MATCHLEN2_len, KWAJ_MATCHLEN2_SYMS, ref i, ref i_ptr, ref i_end, ref bits_left, ref bit_buffer, msb: true) != 0)
+                        return Error.MSPACK_ERR_DECRUNCH;
                     if (lzh.InputEnd != 0 && bits_left < lzh.InputEnd)
                         return Error.MSPACK_ERR_OK;
                 }
                 else
                 {
                     //READ_HUFFSYM_SAFE(tbl, val)
-                    lzh.READ_HUFFSYM(lzh.MATCHLEN1_table, ref len, KWAJ_MATCHLEN1_TBLSIZE, lzh.MATCHLEN1_len, KWAJ_MATCHLEN1_SYMS, ref i, ref sym, ref i_ptr, ref i_end, ref bits_left, ref bit_buffer);
+                    if (lzh.READ_HUFFSYM(lzh.MATCHLEN1_table, ref len, KWAJ_MATCHLEN1_TBLSIZE, lzh.MATCHLEN1_len, KWAJ_MATCHLEN1_SYMS, ref i, ref i_ptr, ref i_end, ref bits_left, ref bit_buffer, msb: true) != 0)
+                        return Error.MSPACK_ERR_DECRUNCH;
                     if (lzh.InputEnd != 0 && bits_left < lzh.InputEnd)
                         return Error.MSPACK_ERR_OK;
                 }
@@ -563,7 +527,8 @@ namespace LibMSPackSharp.KWAJ
                     lit_run = false; // Not the end of a literal run
 
                     //READ_HUFFSYM_SAFE(tbl, val)
-                    lzh.READ_HUFFSYM(lzh.OFFSET_table, ref j, KWAJ_OFFSET_TBLSIZE, lzh.OFFSET_len, KWAJ_OFFSET_SYMS, ref i, ref sym, ref i_ptr, ref i_end, ref bits_left, ref bit_buffer);
+                    if (lzh.READ_HUFFSYM(lzh.OFFSET_table, ref j, KWAJ_OFFSET_TBLSIZE, lzh.OFFSET_len, KWAJ_OFFSET_SYMS, ref i, ref i_ptr, ref i_end, ref bits_left, ref bit_buffer, msb: true) != 0)
+                        return Error.MSPACK_ERR_DECRUNCH;
                     if (lzh.InputEnd != 0 && bits_left < lzh.InputEnd)
                         return Error.MSPACK_ERR_OK;
 
@@ -571,7 +536,9 @@ namespace LibMSPackSharp.KWAJ
 
                     //READ_BITS_SAFE(val, n)
                     int tempj = (int)j;
-                    lzh.READ_BITS(ref tempj, 6, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+                    lzh.READ_BITS(ref tempj, 6, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left, msb: true);
+                    if (lzh.Error != Error.MSPACK_ERR_OK)
+                        return lzh.Error;
                     if (lzh.InputEnd != 0 && bits_left < lzh.InputEnd)
                         return Error.MSPACK_ERR_OK;
 
@@ -591,7 +558,8 @@ namespace LibMSPackSharp.KWAJ
                 else
                 {
                     //READ_HUFFSYM_SAFE(tbl, val)
-                    lzh.READ_HUFFSYM(lzh.LITLEN_table, ref len, KWAJ_LITLEN_TBLSIZE, lzh.LITLEN_len, KWAJ_LITLEN_SYMS, ref i, ref sym, ref i_ptr, ref i_end, ref bits_left, ref bit_buffer);
+                    if (lzh.READ_HUFFSYM(lzh.LITLEN_table, ref len, KWAJ_LITLEN_TBLSIZE, lzh.LITLEN_len, KWAJ_LITLEN_SYMS, ref i, ref i_ptr, ref i_end, ref bits_left, ref bit_buffer, msb: true) != 0)
+                        return Error.MSPACK_ERR_DECRUNCH;
                     if (lzh.InputEnd != 0 && bits_left < lzh.InputEnd)
                         return Error.MSPACK_ERR_OK;
 
@@ -601,7 +569,8 @@ namespace LibMSPackSharp.KWAJ
                     while (len-- > 0)
                     {
                         //READ_HUFFSYM_SAFE(tbl, val)
-                        lzh.READ_HUFFSYM(lzh.LITERAL_table, ref j, KWAJ_LITERAL_TBLSIZE, lzh.LITERAL_len, KWAJ_LITERAL_SYMS, ref i, ref sym, ref i_ptr, ref i_end, ref bits_left, ref bit_buffer);
+                        if (lzh.READ_HUFFSYM(lzh.LITERAL_table, ref j, KWAJ_LITERAL_TBLSIZE, lzh.LITERAL_len, KWAJ_LITERAL_SYMS, ref i, ref i_ptr, ref i_end, ref bits_left, ref bit_buffer, msb: true) != 0)
+                            return Error.MSPACK_ERR_DECRUNCH;
                         if (lzh.InputEnd != 0 && bits_left < lzh.InputEnd)
                             return Error.MSPACK_ERR_OK;
 
@@ -650,7 +619,7 @@ namespace LibMSPackSharp.KWAJ
 
                 case 1:
                     //READ_BITS_SAFE(val, n)
-                    lzh.READ_BITS(ref c, 4, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+                    lzh.READ_BITS(ref c, 4, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left, msb: true);
                     if (lzh.InputEnd != 0 && bits_left < lzh.InputEnd)
                         return Error.MSPACK_ERR_OK;
 
@@ -658,7 +627,7 @@ namespace LibMSPackSharp.KWAJ
                     for (i = 1; i < numsyms; i++)
                     {
                         //READ_BITS_SAFE(val, n)
-                        lzh.READ_BITS(ref sel, 1, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+                        lzh.READ_BITS(ref sel, 1, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left, msb: true);
                         if (lzh.InputEnd != 0 && bits_left < lzh.InputEnd)
                             return Error.MSPACK_ERR_OK;
 
@@ -669,7 +638,7 @@ namespace LibMSPackSharp.KWAJ
                         else
                         {
                             //READ_BITS_SAFE(val, n)
-                            lzh.READ_BITS(ref sel, 1, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+                            lzh.READ_BITS(ref sel, 1, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left, msb: true);
                             if (lzh.InputEnd != 0 && bits_left < lzh.InputEnd)
                                 return Error.MSPACK_ERR_OK;
 
@@ -680,7 +649,7 @@ namespace LibMSPackSharp.KWAJ
                             else
                             {
                                 //READ_BITS_SAFE(val, n)
-                                lzh.READ_BITS(ref c, 4, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+                                lzh.READ_BITS(ref c, 4, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left, msb: true);
                                 if (lzh.InputEnd != 0 && bits_left < lzh.InputEnd)
                                     return Error.MSPACK_ERR_OK;
 
@@ -692,7 +661,7 @@ namespace LibMSPackSharp.KWAJ
 
                 case 2:
                     //READ_BITS_SAFE(val, n)
-                    lzh.READ_BITS(ref c, 4, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+                    lzh.READ_BITS(ref c, 4, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left, msb: true);
                     if (lzh.InputEnd != 0 && bits_left < lzh.InputEnd)
                         return Error.MSPACK_ERR_OK;
 
@@ -700,14 +669,14 @@ namespace LibMSPackSharp.KWAJ
                     for (i = 1; i < numsyms; i++)
                     {
                         //READ_BITS_SAFE(val, n)
-                        lzh.READ_BITS(ref sel, 2, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+                        lzh.READ_BITS(ref sel, 2, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left, msb: true);
                         if (lzh.InputEnd != 0 && bits_left < lzh.InputEnd)
                             return Error.MSPACK_ERR_OK;
 
                         if (sel == 3)
                         {
                             //READ_BITS_SAFE(val, n)
-                            lzh.READ_BITS(ref c, 4, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+                            lzh.READ_BITS(ref c, 4, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left, msb: true);
                             if (lzh.InputEnd != 0 && bits_left < lzh.InputEnd)
                                 return Error.MSPACK_ERR_OK;
                         }
@@ -725,7 +694,7 @@ namespace LibMSPackSharp.KWAJ
                     for (i = 0; i < numsyms; i++)
                     {
                         //READ_BITS_SAFE(val, n)
-                        lzh.READ_BITS(ref c, 4, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+                        lzh.READ_BITS(ref c, 4, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left, msb: true);
                         if (lzh.InputEnd != 0 && bits_left < lzh.InputEnd)
                             return Error.MSPACK_ERR_OK;
 

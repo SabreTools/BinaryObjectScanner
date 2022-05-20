@@ -23,6 +23,15 @@ namespace LibMSPackSharp.CAB
     /// </summary>
     public class InternalFile
     {
+        #region Internal
+
+        /// <summary>
+        /// File header information
+        /// </summary>
+        internal _FileHeader Header { get; set; }
+
+        #endregion
+
         /// <summary>
         /// The next file in the cabinet or cabinet set, or NULL if this is the final file.
         /// </summary>
@@ -34,57 +43,12 @@ namespace LibMSPackSharp.CAB
         /// A null terminated string of up to 255 bytes in length, it may be in
         /// either ISO-8859-1 or UTF8 format, depending on the file attributes.
         /// </summary>
-        /// <see cref="Attributes"/>
+        /// <see cref="_FileHeader.Attributes"/>
         public string Filename { get; set; }
-
-        /// <summary>
-        /// The uncompressed length of the file, in bytes.
-        /// </summary>
-        public uint Length { get; set; }
-
-        /// <summary>
-        /// File attributes.
-        /// </summary>
-        public FileAttributes Attributes { get; set; }
-
-        /// <summary>
-        /// File's last modified time, hour field.
-        /// </summary>
-        public byte LastModifiedTimeHour { get; set; }
-
-        /// <summary>
-        /// File's last modified time, minute field.
-        /// </summary>
-        public byte LastModifiedTimeMinute { get; set; }
-
-        /// <summary>
-        /// File's last modified time, second field.
-        /// </summary>
-        public byte LastModifiedTimeSecond { get; set; }
-
-        /// <summary>
-        /// File's last modified date, day field.
-        /// </summary>
-        public byte LastModifiedDateDay { get; set; }
-
-        /// <summary>
-        /// File's last modified date, month field.
-        /// </summary>
-        public byte LastModifiedDateMonth { get; set; }
-
-        /// <summary>
-        /// File's last modified date, year field.
-        /// </summary>
-        public int LastModifiedDateYear { get; set; }
 
         /// <summary>
         /// A pointer to the folder that contains this file.
         /// </summary>
         public Folder Folder { get; set; }
-
-        /// <summary>
-        /// The uncompressed offset of this file in its folder.
-        /// </summary>
-        public uint Offset { get; set; }
     }
 }

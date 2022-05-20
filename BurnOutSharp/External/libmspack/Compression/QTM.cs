@@ -225,7 +225,7 @@ namespace LibMSPackSharp.Compression
                     high = 0xFFFF;
                     low = 0;
                     int tempCurrent = current;
-                    qtm.READ_BITS(ref tempCurrent, 16, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+                    qtm.READ_BITS(ref tempCurrent, 16, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left, msb: true);
                     current = (ushort)tempCurrent;
                     qtm.HeaderRead = 1;
                 }
@@ -266,7 +266,10 @@ namespace LibMSPackSharp.Compression
                             // Selector 4 = fixed length match (3 bytes)
                             case 4:
                                 GET_SYMBOL(qtm, qtm.Model4, ref sym, ref range, ref symf, ref high, ref low, ref current, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
-                                qtm.READ_MANY_BITS(ref extra, extra_bits[sym], ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+                                qtm.READ_MANY_BITS(ref extra, extra_bits[sym], ref i_ptr, ref i_end, ref bit_buffer, ref bits_left, msb: true);
+                                if (qtm.Error != Error.MSPACK_ERR_OK)
+                                    return qtm.Error;
+
                                 match_offset = position_base[sym] + extra + 1;
                                 match_length = 3;
                                 break;
@@ -274,7 +277,10 @@ namespace LibMSPackSharp.Compression
                             // Selector 5 = fixed length match (4 bytes)
                             case 5:
                                 GET_SYMBOL(qtm, qtm.Model5, ref sym, ref range, ref symf, ref high, ref low, ref current, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
-                                qtm.READ_MANY_BITS(ref extra, extra_bits[sym], ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+                                qtm.READ_MANY_BITS(ref extra, extra_bits[sym], ref i_ptr, ref i_end, ref bit_buffer, ref bits_left, msb: true);
+                                if (qtm.Error != Error.MSPACK_ERR_OK)
+                                    return qtm.Error;
+
                                 match_offset = position_base[sym] + extra + 1;
                                 match_length = 4;
                                 break;
@@ -282,11 +288,17 @@ namespace LibMSPackSharp.Compression
                             // Selector 6 = variable length match
                             case 6:
                                 GET_SYMBOL(qtm, qtm.Model6Len, ref sym, ref range, ref symf, ref high, ref low, ref current, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
-                                qtm.READ_MANY_BITS(ref extra, length_extra[sym], ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+                                qtm.READ_MANY_BITS(ref extra, length_extra[sym], ref i_ptr, ref i_end, ref bit_buffer, ref bits_left, msb: true);
+                                if (qtm.Error != Error.MSPACK_ERR_OK)
+                                    return qtm.Error;
+
                                 match_length = (int)(length_base[sym] + extra + 5);
 
                                 GET_SYMBOL(qtm, qtm.Model6, ref sym, ref range, ref symf, ref high, ref low, ref current, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
-                                qtm.READ_MANY_BITS(ref extra, extra_bits[sym], ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+                                qtm.READ_MANY_BITS(ref extra, extra_bits[sym], ref i_ptr, ref i_end, ref bit_buffer, ref bits_left, msb: true);
+                                if (qtm.Error != Error.MSPACK_ERR_OK)
+                                    return qtm.Error;
+
                                 match_offset = position_base[sym] + extra + 1;
                                 break;
 
@@ -407,14 +419,14 @@ namespace LibMSPackSharp.Compression
                 {
                     // Re-align input
                     if ((bits_left & 7) != 0)
-                        qtm.REMOVE_BITS((int)bits_left & 7, ref bits_left, ref bit_buffer);
+                        qtm.REMOVE_BITS((int)bits_left & 7, ref bits_left, ref bit_buffer, msb: true);
 
                     // Special Quantum hack -- cabd.c injects a trailer byte to allow the
                     // decompressor to realign itself. CAB Quantum blocks, unlike LZX
                     // blocks, can have anything from 0 to 4 trailing null bytes. */
                     do
                     {
-                        qtm.READ_BITS(ref i, 8, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+                        qtm.READ_BITS(ref i, 8, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left, msb: true);
                     } while (i != 0xFF);
 
                     qtm.HeaderRead = 0;
@@ -533,9 +545,13 @@ namespace LibMSPackSharp.Compression
 
                 low <<= 1;
                 high = (ushort)((high << 1) | 1);
-                qtm.ENSURE_BITS(1, ref i_ptr, ref i_end, ref bits_left, ref bit_buffer);
-                current = (ushort)((current << 1) | qtm.PEEK_BITS(1, bit_buffer));
-                qtm.REMOVE_BITS(1, ref bits_left, ref bit_buffer);
+
+                qtm.ENSURE_BITS(1, ref i_ptr, ref i_end, ref bits_left, ref bit_buffer, msb: true);
+                if (qtm.Error != Error.MSPACK_ERR_OK)
+                    return;
+
+                current = (ushort)((current << 1) | qtm.PEEK_BITS(1, bit_buffer, msb: true));
+                qtm.REMOVE_BITS(1, ref bits_left, ref bit_buffer, msb: true);
             }
         }
 

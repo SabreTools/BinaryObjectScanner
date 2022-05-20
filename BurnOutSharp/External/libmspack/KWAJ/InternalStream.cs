@@ -33,20 +33,19 @@ namespace LibMSPackSharp.KWAJ
 
         public byte[] Window { get; set; } = new byte[LZSS.LZSS_WINDOW_SIZE];
 
-        public override Error READ_BYTES(ref int i_ptr, ref int i_end, ref uint bitsLeft, ref uint bitBuffer)
+        public override void READ_BYTES(ref int i_ptr, ref int i_end, ref uint bitsLeft, ref uint bitBuffer, bool msb)
         {
-            Error error = Error.MSPACK_ERR_OK;
             if (i_ptr >= i_end)
             {
-                if ((error = Implementation.LZHReadInput(this)) != Error.MSPACK_ERR_OK)
-                    return error;
+                if ((Error = Implementation.LZHReadInput(this)) != Error.MSPACK_ERR_OK)
+                    return;
 
                 i_ptr = InputPointer;
                 i_end = InputLength;
             }
 
-            INJECT_BITS(InputBuffer[i_ptr++], 8, ref bitsLeft, ref bitBuffer);
-            return error;
+            INJECT_BITS(InputBuffer[i_ptr++], 8, ref bitsLeft, ref bitBuffer, msb);
+            Error = Error.MSPACK_ERR_OK;
         }
 
         public override int HUFF_ERROR() => (int)Error.MSPACK_ERR_DATAFORMAT;

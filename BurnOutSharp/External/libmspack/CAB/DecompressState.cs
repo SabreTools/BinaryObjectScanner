@@ -76,12 +76,12 @@ namespace LibMSPackSharp.CAB
         /// <summary>
         /// Input data consumed
         /// </summary>
-        public int IPtr { get; set; }
+        public int InputPointer { get; set; }
 
         /// <summary>
         /// Input data end
         /// </summary>
-        public int IEnd { get; set; }
+        public int InputEnd { get; set; }
 
         /// <summary>
         /// One input block of data

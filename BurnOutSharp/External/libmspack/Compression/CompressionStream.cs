@@ -140,77 +140,104 @@ namespace LibMSPackSharp.Compression
             InputEnd = 0;
         }
 
-        public void STORE_BITS(int inputPointer, int inputLength, uint bitBuffer, uint bitsLeft)
+        public void STORE_BITS(int inputPointer, int inputLength, uint bit_buffer, uint bits_left)
         {
             InputPointer = inputPointer;
             InputLength = inputLength;
-            BitBuffer = bitBuffer;
-            BitsLeft = bitsLeft;
+            BitBuffer = bit_buffer;
+            BitsLeft = bits_left;
         }
 
-        public void RESTORE_BITS(ref int inputPointer, ref int inputLength, ref uint bitBuffer, ref uint bitsLeft)
+        public void RESTORE_BITS(ref int inputPointer, ref int inputLength, ref uint bit_buffer, ref uint bits_left)
         {
             inputPointer = InputPointer;
             inputLength = InputLength;
-            bitBuffer = BitBuffer;
-            bitsLeft = BitsLeft;
+            bit_buffer = BitBuffer;
+            bits_left = BitsLeft;
         }
 
-        public void ENSURE_BITS(int nbits, ref int i_ptr, ref int i_end, ref uint bitsLeft, ref uint bitBuffer)
+        public void ENSURE_BITS(int nbits, ref int i_ptr, ref int i_end, ref uint bits_left, ref uint bit_buffer, bool msb)
         {
-            while (bitsLeft < nbits)
+            while (bits_left < nbits)
             {
-                READ_BYTES(ref i_ptr, ref i_end, ref bitsLeft, ref bitBuffer);
+                READ_BYTES(ref i_ptr, ref i_end, ref bits_left, ref bit_buffer, msb);
+                if (Error != Error.MSPACK_ERR_OK)
+                    return;
             }
+
+            Error = Error.MSPACK_ERR_OK;
         }
 
-        public void READ_BITS(ref int val, int nbits, ref int i_ptr, ref int i_end, ref uint bitsLeft, ref uint bitBuffer)
+        public void READ_BITS(ref int val, int nbits, ref int i_ptr, ref int i_end, ref uint bits_left, ref uint bit_buffer, bool msb)
         {
-            ENSURE_BITS(nbits, ref i_ptr, ref i_end, ref bitsLeft, ref bitBuffer);
-            val = PEEK_BITS(nbits, bitBuffer);
-            REMOVE_BITS(nbits, ref bitsLeft, ref bitBuffer);
+            ENSURE_BITS(nbits, ref i_ptr, ref i_end, ref bits_left, ref bit_buffer, msb);
+            if (Error != Error.MSPACK_ERR_OK)
+                return;
+
+            val = PEEK_BITS(nbits, bit_buffer, msb);
+            REMOVE_BITS(nbits, ref bits_left, ref bit_buffer, msb);
+            Error = Error.MSPACK_ERR_OK;
         }
 
-        public Error READ_MANY_BITS(ref uint val, byte bits, ref int i_ptr, ref int i_end, ref uint bitsLeft, ref uint bitBuffer)
+        public void READ_MANY_BITS(ref uint val, byte bits, ref int i_ptr, ref int i_end, ref uint bits_left, ref uint bit_buffer, bool msb)
         {
             byte needed = bits, bitrun;
             val = 0;
             while (needed > 0)
             {
-                if (bitsLeft <= (BITBUF_WIDTH - 16))
+                if (bits_left <= (BITBUF_WIDTH - 16))
                 {
-                    Error error = READ_BYTES(ref i_ptr, ref i_end, ref bitsLeft, ref bitBuffer);
-                    if (error != Error.MSPACK_ERR_OK)
-                        return error;
+                    READ_BYTES(ref i_ptr, ref i_end, ref bits_left, ref bit_buffer, msb);
+                    if (Error != Error.MSPACK_ERR_OK)
+                        return;
                 }
 
-                bitrun = (byte)((bitsLeft < needed) ? bitsLeft : needed);
-                val = (uint)((val << bitrun) | PEEK_BITS(bitrun, bitBuffer));
-                REMOVE_BITS(bitrun, ref bitsLeft, ref bitBuffer);
+                bitrun = (byte)((bits_left < needed) ? bits_left : needed);
+                val = (uint)((val << bitrun) | PEEK_BITS(bitrun, bit_buffer, msb));
+                REMOVE_BITS(bitrun, ref bits_left, ref bit_buffer, msb);
                 needed -= bitrun;
             }
 
-            return Error.MSPACK_ERR_OK;
+            Error = Error.MSPACK_ERR_OK;
         }
 
-        public int PEEK_BITS(int nbits, uint bitBuffer)
+        public int PEEK_BITS(int nbits, uint bit_buffer, bool msb)
         {
-            return (int)(bitBuffer & ((1 << (nbits)) - 1));
+            if (msb)
+                return (int)(bit_buffer >> (BITBUF_WIDTH - (nbits)));
+            else
+                return (int)(bit_buffer & ((1 << (nbits)) - 1));
         }
 
-        public void REMOVE_BITS(int nbits, ref uint bitsLeft, ref uint bitBuffer)
+        public void REMOVE_BITS(int nbits, ref uint bits_left, ref uint bit_buffer, bool msb)
         {
-            bitBuffer >>= nbits;
-            bitsLeft -= (uint)nbits;
+            if (msb)
+            {
+                bit_buffer <<= nbits;
+                bits_left -= (uint)nbits;
+            }
+            else
+            {
+                bit_buffer >>= nbits;
+                bits_left -= (uint)nbits;
+            }
         }
 
-        public void INJECT_BITS(uint bitdata, int nbits, ref uint bitsLeft, ref uint bitBuffer)
+        public void INJECT_BITS(uint bitdata, int nbits, ref uint bits_left, ref uint bit_buffer, bool msb)
         {
-            bitBuffer |= bitdata << (int)bitsLeft;
-            bitsLeft += (uint)nbits;
+            if (msb)
+            {
+                bit_buffer |= bitdata << (int)bits_left;
+                bits_left += (uint)nbits;
+            }
+            else
+            {
+                bit_buffer |= bitdata << (int)bits_left;
+                bits_left += (uint)nbits;
+            }
         }
 
-        public abstract Error READ_BYTES(ref int i_ptr, ref int i_end, ref uint bitsLeft, ref uint bitBuffer);
+        public abstract void READ_BYTES(ref int i_ptr, ref int i_end, ref uint bits_left, ref uint bit_buffer, bool msb);
 
         // lsb_bit_mask[n] = (1 << n) - 1 */
         private static readonly ushort[] lsb_bit_mask = new ushort[17]
@@ -224,54 +251,63 @@ namespace LibMSPackSharp.Compression
             return (int)(BitBuffer & lsb_bit_mask[nbits]);
         }
 
-        public void READ_BITS_T(ref int val, int nbits, ref int i_ptr, ref int i_end, ref uint bitsLeft, ref uint bitBuffer)
+        public void READ_BITS_T(ref int val, int nbits, ref int i_ptr, ref int i_end, ref uint bits_left, ref uint bit_buffer, bool msb)
         {
-            ENSURE_BITS(nbits, ref i_ptr, ref i_end, ref bitsLeft, ref bitBuffer);
+            ENSURE_BITS(nbits, ref i_ptr, ref i_end, ref bits_left, ref bit_buffer, msb);
+            if (Error != Error.MSPACK_ERR_OK)
+                return;
+
             val = PEEK_BITS_T(nbits);
-            REMOVE_BITS(nbits, ref bitsLeft, ref bitBuffer);
+            REMOVE_BITS(nbits, ref bits_left, ref bit_buffer, msb);
+            Error = Error.MSPACK_ERR_OK;
         }
 
-        public Error READ_IF_NEEDED(ref int iPtr, ref int iEnd)
+        public void READ_IF_NEEDED(ref int i_ptr, ref int i_end)
         {
-            if (iPtr >= iEnd)
+            if (i_ptr >= i_end)
             {
-                if (ReadInput(this) != Error.MSPACK_ERR_OK)
-                    return Error;
+                ReadInput();
+                if (Error != Error.MSPACK_ERR_OK)
+                    return;
 
-                iPtr = InputPointer;
-                iEnd = InputLength;
+                i_ptr = InputPointer;
+                i_end = InputLength;
             }
 
-            return Error.MSPACK_ERR_OK;
+            Error = Error.MSPACK_ERR_OK;
         }
 
-        private static Error ReadInput(CompressionStream p)
+        private void ReadInput()
         {
-            int read = p.Sys.Read(p.Input, p.InputBuffer, 0, (int)p.InputBufferSize);
+            int read = Sys.Read(Input, InputBuffer, 0, (int)InputBufferSize);
             if (read < 0)
-                return p.Error = Error.MSPACK_ERR_READ;
+            {
+                Error = Error.MSPACK_ERR_READ;
+                return;
+            }
 
             // We might overrun the input stream by asking for bits we don't use,
             // so fake 2 more bytes at the end of input
             if (read == 0)
             {
-                if (p.InputEnd != 0)
+                if (InputEnd != 0)
                 {
                     Console.WriteLine("out of input bytes");
-                    return p.Error = Error.MSPACK_ERR_READ;
+                    Error = Error.MSPACK_ERR_READ;
+                    return;
                 }
                 else
                 {
                     read = 2;
-                    p.InputBuffer[0] = p.InputBuffer[1] = 0;
-                    p.InputEnd = 1;
+                    InputBuffer[0] = InputBuffer[1] = 0;
+                    InputEnd = 1;
                 }
             }
 
             // Update i_ptr and i_end
-            p.InputPointer = 0;
-            p.InputLength = read;
-            return Error.MSPACK_ERR_OK;
+            InputPointer = 0;
+            InputLength = read;
+            Error = Error.MSPACK_ERR_OK;
         }
 
         #endregion
@@ -284,33 +320,50 @@ namespace LibMSPackSharp.Compression
         /// Decodes the next huffman symbol from the input bitstream into var.
         /// Do not use this macro on a table unless build_decode_table() succeeded.
         /// </summary>
-        public int READ_HUFFSYM(ushort[] decodingTable, ref uint var, int tablebits, byte[] lengthTable, int maxsymbols, ref int i, ref ushort sym, ref int i_ptr, ref int i_end, ref uint bitsLeft, ref uint bitBuffer)
+        public int READ_HUFFSYM(ushort[] decodingTable, ref uint var, int tablebits, byte[] lengthTable, int maxsymbols, ref int i, ref int i_ptr, ref int i_end, ref uint bits_left, ref uint bit_buffer, bool msb)
         {
-            ENSURE_BITS(HUFF_MAXBITS, ref i_ptr, ref i_end, ref bitsLeft, ref bitBuffer);
-            sym = decodingTable[PEEK_BITS(tablebits, bitBuffer)];
+            ENSURE_BITS(HUFF_MAXBITS, ref i_ptr, ref i_end, ref bits_left, ref bit_buffer, msb);
+            if (Error != Error.MSPACK_ERR_OK)
+                return (int)Error;
+
+            ushort sym = decodingTable[PEEK_BITS(tablebits, bit_buffer, msb)];
             if (sym >= maxsymbols)
             {
-                int ret = HUFF_TRAVERSE(decodingTable, tablebits, maxsymbols, ref i, ref sym, bitBuffer);
+                int ret = HUFF_TRAVERSE(decodingTable, tablebits, maxsymbols, ref i, ref sym, bit_buffer, msb);
                 if (ret != 0)
                     return ret;
             }
 
             var = sym;
             i = lengthTable[sym];
-            REMOVE_BITS(i, ref bitsLeft, ref bitBuffer);
+            REMOVE_BITS(i, ref bits_left, ref bit_buffer, msb);
             return (int)Error.MSPACK_ERR_OK;
         }
 
-        public int HUFF_TRAVERSE(ushort[] decodingTable, int tablebits, int maxsymbols, ref int i, ref ushort sym, uint bitBuffer)
+        public int HUFF_TRAVERSE(ushort[] decodingTable, int tablebits, int maxsymbols, ref int i, ref ushort sym, uint bit_buffer, bool msb)
         {
-            i = tablebits - 1;
-            do
+            if (msb)
             {
-                if (i++ > HUFF_MAXBITS)
-                    return HUFF_ERROR();
+                i = 1 << (BITBUF_WIDTH - tablebits);
+                do
+                {
+                    if ((i >>= 1) == 0)
+                        return HUFF_ERROR();
 
-                sym = decodingTable[(sym << 1) | ((bitBuffer >> i) & 1)];
-            } while (sym >= maxsymbols);
+                    sym = decodingTable[(sym << 1) | ((bit_buffer & i) != 0 ? 1 : 0)];
+                } while (sym >= maxsymbols);
+            }
+            else
+            {
+                i = tablebits - 1;
+                do
+                {
+                    if (i++ > HUFF_MAXBITS)
+                        return HUFF_ERROR();
+
+                    try { sym = decodingTable[(sym << 1) | ((bit_buffer >> i) & 1)]; } catch { }
+                } while (sym >= maxsymbols);
+            }
 
             return (int)Error.MSPACK_ERR_OK;
         }
@@ -330,94 +383,84 @@ namespace LibMSPackSharp.Compression
         /// The table to fill up with decoded symbols and pointers.
         /// Should be ((1<<nbits) + (nsyms*2)) in length.
         /// </param>
-        /// <returns>0 for OK or 1 for error</returns>
-        public static int MakeDecodeTable(uint nsyms, uint nbits, byte[] length, ushort[] table)
+        /// <returns>true for OK or false for error</returns>
+        public static bool MakeDecodeTable(int nsyms, int nbits, byte[] length, ushort[] table, bool msb)
         {
-            ushort sym, next_symbol;
-            uint leaf, fill;
-            uint reverse;
-            byte bit_num;
-            uint pos = 0; // The current position in the decode table
-            uint table_mask = (uint)(1 << (int)nbits);
-            uint bit_mask = table_mask >> 1; // Don't do 0 length codes
+            int next_symbol;
+            long leaf, fill;
+            long reverse; // Only used when !msb
+            long pos = 0; // The current position in the decode table
+            int table_mask = 1 << nbits;
+            long bit_mask = table_mask >> 1; // Don't do 0 length codes
 
             // Fill entries for codes short enough for a direct mapping
-            for (bit_num = 1; bit_num <= nbits; bit_num++)
+            for (byte bit_num = 1; bit_num <= nbits; bit_num++)
             {
-                for (sym = 0; sym < nsyms; sym++)
+                for (ushort sym = 0; sym < nsyms; sym++)
                 {
                     if (length[sym] != bit_num)
                         continue;
 
-                    // Reverse the significant bits
-                    fill = length[sym];
-                    reverse = pos >> (int)(nbits - fill);
-                    leaf = 0;
-
-                    do
+                    if (msb)
                     {
-                        leaf <<= 1;
-                        leaf |= reverse & 1;
-                        reverse >>= 1;
-                    } while (--fill != 0);
+                        leaf = pos;
+                    }
+                    else
+                    {
+                        // Reverse the significant bits
+                        fill = length[sym];
+                        reverse = pos >> (nbits - (byte)fill);
+                        leaf = 0;
+
+                        do
+                        {
+                            leaf <<= 1;
+                            leaf |= reverse & 1;
+                            reverse >>= 1;
+                        } while (--fill != 0);
+                    }
 
                     if ((pos += bit_mask) > table_mask)
-                        return 1; // Table overrun
+                        return false; // Table overrun
 
                     // Fill all possible lookups of this symbol with the symbol itself
-                    fill = bit_mask;
-                    next_symbol = (ushort)(1 << bit_num);
-
-                    do
+                    if (msb)
                     {
-                        table[leaf] = sym;
-                        leaf += next_symbol;
-                    } while (--fill != 0);
+                        for (fill = bit_mask; fill-- > 0;)
+                        {
+                            table[leaf++] = sym;
+                        }
+                    }
+                    else
+                    {
+                        fill = bit_mask;
+                        next_symbol = 1 << bit_num;
+
+                        do
+                        {
+                            table[leaf] = sym;
+                            leaf += next_symbol;
+                        } while (--fill != 0);
+                    }
                 }
+
                 bit_mask >>= 1;
             }
 
             // Exit with success if table is now complete
             if (pos == table_mask)
-                return 0;
+                return true;
 
             // Mark all remaining table entries as unused
-            for (sym = (ushort)pos; sym < table_mask; sym++)
+            for (long sym = pos; sym < table_mask; sym++)
             {
-                reverse = sym;
-                leaf = 0;
-                fill = nbits;
-
-                do
+                if (msb)
                 {
-                    leaf <<= 1;
-                    leaf |= reverse & 1;
-                    reverse >>= 1;
-                } while (--fill != 0);
-
-                table[leaf] = 0xFFFF;
-            }
-
-            // next_symbol = base of allocation for long codes
-            next_symbol = (ushort)(((table_mask >> 1) < nsyms) ? nsyms : (table_mask >> 1));
-
-            // Give ourselves room for codes to grow by up to 16 more bits.
-            // codes now start at bit nbits+16 and end at (nbits+16-codelength)
-            pos <<= 16;
-            table_mask <<= 16;
-            bit_mask = 1 << 15;
-
-            for (bit_num = (byte)(nbits + 1); bit_num <= HUFF_MAXBITS; bit_num++)
-            {
-                for (sym = 0; sym < nsyms; sym++)
+                    table[sym] = 0xFFFF;
+                }
+                else
                 {
-                    if (length[sym] != bit_num)
-                        continue;
-                    if (pos >= table_mask)
-                        return 1; // Table overflow
-
-                    // Leaf = the first nbits of the code, reversed
-                    reverse = pos >> 16;
+                    reverse = sym;
                     leaf = 0;
                     fill = nbits;
 
@@ -428,19 +471,60 @@ namespace LibMSPackSharp.Compression
                         reverse >>= 1;
                     } while (--fill != 0);
 
+                    table[leaf] = 0xFFFF;
+                }
+            }
+
+            // next_symbol = base of allocation for long codes
+            next_symbol = ((table_mask >> 1) < nsyms) ? nsyms : (table_mask >> 1);
+
+            // Give ourselves room for codes to grow by up to 16 more bits.
+            // codes now start at bit nbits+16 and end at (nbits+16-codelength)
+            pos <<= 16;
+            table_mask <<= 16;
+            bit_mask = 1 << 15;
+
+            for (int bit_num = nbits + 1; bit_num <= HUFF_MAXBITS; bit_num++)
+            {
+                for (ushort sym = 0; sym < nsyms; sym++)
+                {
+                    if (length[sym] != bit_num)
+                        continue;
+                    if (pos >= table_mask)
+                        return false; // Table overflow
+
+                    if (msb)
+                    {
+                        leaf = pos >> 16;
+                    }
+                    else
+                    {
+                        // leaf = the first nbits of the code, reversed
+                        reverse = pos >> 16;
+                        leaf = 0;
+                        fill = nbits;
+
+                        do
+                        {
+                            leaf <<= 1;
+                            leaf |= reverse & 1;
+                            reverse >>= 1;
+                        } while (--fill != 0);
+                    }
+
                     for (fill = 0; fill < (bit_num - nbits); fill++)
                     {
-                        // Ff this path hasn't been taken yet, 'allocate' two entries
+                        // If this path hasn't been taken yet, 'allocate' two entries
                         if (table[leaf] == 0xFFFF)
                         {
                             table[(next_symbol << 1)] = 0xFFFF;
                             table[(next_symbol << 1) + 1] = 0xFFFF;
-                            table[leaf] = next_symbol++;
+                            table[leaf] = (ushort)next_symbol++;
                         }
 
                         // Follow the path and select either left or right for next bit
-                        leaf = (uint)(table[leaf] << 1);
-                        if (((pos >> (int)(15 - fill)) & 1) != 0)
+                        leaf = table[leaf] << 1;
+                        if (((pos >> (15 - (int)fill)) & 1) != 0)
                             leaf++;
                     }
 
@@ -452,7 +536,7 @@ namespace LibMSPackSharp.Compression
             }
 
             // Full table?
-            return (pos == table_mask) ? 0 : 1;
+            return pos == table_mask;
         }
 
         #endregion

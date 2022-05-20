@@ -27,6 +27,15 @@ namespace LibMSPackSharp.CAB
     /// </summary>
     public class Folder
     {
+        #region Internal
+
+        /// <summary>
+        /// Folder header information
+        /// </summary>
+        internal _FolderHeader Header { get; set; }
+
+        #endregion
+
         /// <summary>
         /// A pointer to the next folder in this cabinet or cabinet set, or NULL
         /// if this is the final folder.
@@ -34,28 +43,18 @@ namespace LibMSPackSharp.CAB
         public Folder Next { get; set; }
 
         /// <summary>
-        /// The compression format used by this folder.
-        /// 
-        /// The macro MSCABD_COMP_METHOD() should be used on this field to get
-        /// the algorithm used. The macro MSCABD_COMP_LEVEL() should be used to get
-        /// the "compression level".
+        /// Where are the data blocks?
         /// </summary>
-        /// <see cref="MSCABD_COMP_METHOD()"/>
-        /// <see cref="MSCABD_COMP_LEVEL()"/>
-        public CompressionType CompressionType { get; set; }
+        public FolderData Data { get; set; }
 
         /// <summary>
-        /// The total number of data blocks used by this folder. This includes
-        /// data blocks present in other files, if this folder spans more than
-        /// one cabinet.
+        /// First file needing backwards merge
         /// </summary>
-        public ushort NumBlocks { get; set; }
+        public InternalFile MergePrev { get; set; }
 
         /// <summary>
-        /// Returns the compression method used by a folder.
+        /// First file needing forwards merge
         /// </summary>
-        /// <param name="compType">a <see cref="CompressionType"/> value</param>
-        /// <returns>a <see cref="CompressionType"/> value</returns>
-        public CompressionType MSCABD_COMP_LEVEL(CompressionType compType) => (CompressionType)((((ushort)compType) >> 8) & 0x1F);
+        public InternalFile MergeNext { get; set; }
     }
 }
