@@ -56,115 +56,116 @@ namespace LibMSPackSharp.Compression
         /// </param>
         /// <param name="mode">one of LZSSMode values</param>
         /// <returns>an error code, or MSPACK_ERR_OK if successful</returns>
-        public static Error Decompress(SystemImpl system, FileStream input, FileStream output, int inputBufferSize, LZSSMode mode)
+        public static Error Decompress(SystemImpl system, FileStream input, FileStream output, int input_buffer_size, LZSSMode mode)
         {
-            uint i, c, mpos, len;
-            int read;
-
             // Check parameters
-            if (system == null
-                || inputBufferSize < 1
-                || (mode != LZSSMode.LZSS_MODE_EXPAND && mode != LZSSMode.LZSS_MODE_MSHELP && mode != LZSSMode.LZSS_MODE_QBASIC))
-            {
+            if (system == null || input_buffer_size < 1 || (mode != LZSSMode.LZSS_MODE_EXPAND && mode != LZSSMode.LZSS_MODE_MSHELP && mode != LZSSMode.LZSS_MODE_QBASIC))
                 return Error.MSPACK_ERR_ARGS;
-            }
 
             // Allocate memory
-            byte[] window = new byte[LZSS_WINDOW_SIZE + inputBufferSize];
+            byte[] window = new byte[LZSS_WINDOW_SIZE + input_buffer_size];
 
             // Initialise decompression
             int inbuf = LZSS_WINDOW_SIZE;
-            for (i = 0; i < LZSS_WINDOW_SIZE; i++)
+            for (int j = inbuf; j < window.Length; j++)
             {
-                window[i] = LZSS_WINDOW_FILL;
+                window[j] = LZSS_WINDOW_FILL;
             }
 
             uint pos = LZSS_WINDOW_SIZE - (uint)((mode == LZSSMode.LZSS_MODE_QBASIC) ? 18 : 16);
             uint invert = (uint)((mode == LZSSMode.LZSS_MODE_MSHELP) ? ~0 : 0);
-            int i_ptr = 0, i_end = 0;
+            int i_ptr = 0, i_end = 0, read;
 
             // Loop forever; exit condition is in ENSURE_BYTES macro
             for (; ; )
             {
                 //ENSURE_BYTES
-                if (i_ptr >= i_end)
                 {
-                    read = system.Read(input, window, inbuf, inputBufferSize);
-                    if (read <= 0)
-                        return (read < 0) ? Error.MSPACK_ERR_READ : Error.MSPACK_ERR_OK;
+                    if (i_ptr >= i_end)
+                    {
+                        read = input.Read(window, inbuf, input_buffer_size);
+                        if (read <= 0)
+                            return (read < 0) ? Error.MSPACK_ERR_READ : Error.MSPACK_ERR_OK;
 
-                    i_ptr = 0;
-                    i_end = read;
+                        i_ptr = inbuf;
+                        i_end = read;
+                    }
                 }
 
-                c = window[i_ptr++] ^ invert;
-                for (i = 0x01; (i & 0xFF) != 0; i <<= 1)
+                uint c = window[i_ptr++] ^ invert;
+                for (uint i = 0x01; (i & 0xFF) != 0; i <<= 1)
                 {
+                    // Literal
                     if (c != 0 & i != 0)
                     {
-                        // Literal
                         //ENSURE_BYTES
-                        if (i_ptr >= i_end)
                         {
-                            read = system.Read(input, window, inbuf, inputBufferSize);
-                            if (read <= 0)
-                                return (read < 0) ? Error.MSPACK_ERR_READ : Error.MSPACK_ERR_OK;
+                            if (i_ptr >= i_end)
+                            {
+                                read = input.Read(window, inbuf, input_buffer_size);
+                                if (read <= 0)
+                                    return (read < 0) ? Error.MSPACK_ERR_READ : Error.MSPACK_ERR_OK;
 
-                            i_ptr = 0;
-                            i_end = read;
+                                i_ptr = inbuf;
+                                i_end = read;
+                            }
                         }
 
                         window[pos] = window[i_ptr++];
 
-                        //ENSURE_BYTES
-                        if (i_ptr >= i_end)
+                        //WRITE_BYTE
                         {
-                            read = system.Read(input, window, inbuf, inputBufferSize);
-                            if (read <= 0)
-                                return (read < 0) ? Error.MSPACK_ERR_READ : Error.MSPACK_ERR_OK;
-
-                            i_ptr = 0;
-                            i_end = read;
+                            try { output.Write(window, (int)pos, 1); }
+                            catch { return Error.MSPACK_ERR_WRITE; }
                         }
 
-                        pos++; pos &= LZSS_WINDOW_SIZE - 1;
+                        pos++;
+                        pos &= LZSS_WINDOW_SIZE - 1;
                     }
+
+                    // Match
                     else
                     {
-                        // Match
                         //ENSURE_BYTES
-                        if (i_ptr >= i_end)
                         {
-                            read = system.Read(input, window, inbuf, inputBufferSize);
-                            if (read <= 0)
-                                return (read < 0) ? Error.MSPACK_ERR_READ : Error.MSPACK_ERR_OK;
+                            if (i_ptr >= i_end)
+                            {
+                                read = input.Read(window, inbuf, input_buffer_size);
+                                if (read <= 0)
+                                    return (read < 0) ? Error.MSPACK_ERR_READ : Error.MSPACK_ERR_OK;
 
-                            i_ptr = 0;
-                            i_end = read;
+                                i_ptr = inbuf;
+                                i_end = read;
+                            }
                         }
 
-                        mpos = window[i_ptr++];
+                        uint mpos = window[i_ptr++];
 
                         //ENSURE_BYTES
-                        if (i_ptr >= i_end)
                         {
-                            read = system.Read(input, window, inbuf, inputBufferSize);
-                            if (read <= 0)
-                                return (read < 0) ? Error.MSPACK_ERR_READ : Error.MSPACK_ERR_OK;
+                            if (i_ptr >= i_end)
+                            {
+                                read = input.Read(window, inbuf, input_buffer_size);
+                                if (read <= 0)
+                                    return (read < 0) ? Error.MSPACK_ERR_READ : Error.MSPACK_ERR_OK;
 
-                            i_ptr = 0;
-                            i_end = read;
+                                i_ptr = inbuf;
+                                i_end = read;
+                            }
                         }
 
                         mpos |= (uint)(window[i_ptr] & 0xF0) << 4;
-                        len = (uint)(window[i_ptr++] & 0x0F) + 3;
+                        uint len = (uint)(window[i_ptr++] & 0x0F) + 3;
+
                         while (len-- != 0)
                         {
                             window[pos] = window[mpos];
 
-                            //WRITE_BYTE;
-                            if (system.Write(output, window, (int)pos, 1) != 1)
-                                return Error.MSPACK_ERR_WRITE;
+                            //WRITE_BYTE
+                            {
+                                try { output.Write(window, (int)pos, 1); }
+                                catch { return Error.MSPACK_ERR_WRITE; }
+                            }
 
                             pos++;
                             pos &= LZSS_WINDOW_SIZE - 1;
@@ -174,6 +175,9 @@ namespace LibMSPackSharp.Compression
                     }
                 }
             }
+
+            /* not reached */
+            return Error.MSPACK_ERR_OK;
         }
     }
 }

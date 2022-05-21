@@ -137,23 +137,6 @@ namespace LibMSPackSharp.Compression
         // This is used purely for doing the intel E8 transform
         public byte[] e8_buf { get; set; } = new byte[LZX.LZX_FRAME_SIZE];
 
-        public override void READ_BYTES(ref int i_ptr, ref int i_end, ref int bits_left, ref uint bit_buffer, bool msb)
-        {
-            READ_IF_NEEDED(ref i_ptr, ref i_end);
-            if (Error != Error.MSPACK_ERR_OK)
-                return;
-
-            byte b0 = InputBuffer[i_ptr++];
-
-            READ_IF_NEEDED(ref i_ptr, ref i_end);
-            if (Error != Error.MSPACK_ERR_OK)
-                return;
-
-            byte b1 = InputBuffer[i_ptr++];
-            INJECT_BITS((uint)((b1 << 8) | b0), 16, ref bits_left, ref bit_buffer, msb);
-            Error = Error.MSPACK_ERR_OK;
-        }
-
         public override int HUFF_ERROR() => (int)(Error = Error.MSPACK_ERR_DECRUNCH);
     }
 }

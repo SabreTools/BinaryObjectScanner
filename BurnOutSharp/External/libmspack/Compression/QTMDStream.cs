@@ -120,23 +120,6 @@ namespace LibMSPackSharp.Compression
 
         public QTMDModelSym[] Model7Symbols { get; set; } = new QTMDModelSym[7 + 1];
 
-        public override void READ_BYTES(ref int i_ptr, ref int i_end, ref int bits_left, ref uint bit_buffer, bool msb)
-        {
-            READ_IF_NEEDED(ref i_ptr, ref i_end);
-            if (Error != Error.MSPACK_ERR_OK)
-                return;
-
-            byte b0 = InputBuffer[i_ptr++];
-
-            READ_IF_NEEDED(ref i_ptr, ref i_end);
-            if (Error != Error.MSPACK_ERR_OK)
-                return;
-
-            byte b1 = InputBuffer[i_ptr++];
-            INJECT_BITS((uint)((b0 << 8) | b1), 16, ref bits_left, ref bit_buffer, msb);
-            Error = Error.MSPACK_ERR_OK;
-        }
-
         public override int HUFF_ERROR() => (int)Error.MSPACK_ERR_OK;
     }
 }

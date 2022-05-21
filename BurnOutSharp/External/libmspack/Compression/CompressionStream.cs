@@ -19,7 +19,7 @@ namespace LibMSPackSharp.Compression
     {
         private const int CHAR_BIT = 8;
 
-        private const int BITBUF_WIDTH = 4 * CHAR_BIT;
+        public const int BITBUF_WIDTH = 4 * CHAR_BIT;
 
         /// <summary>
         /// I/O routines
@@ -132,150 +132,39 @@ namespace LibMSPackSharp.Compression
          * to the bit buffer when the bit buffer already has 1 to 15 bits left.
          */
 
-        public void INIT_BITS()
+        public void READ_BITS_MSB(ref int val, int nbits, ref int i_ptr, ref int i_end, ref int bits_left, ref uint bit_buffer)
         {
-            InputPointer = 0;
-            InputLength = 0;
-            BitBuffer = 0;
-            BitsLeft = 0;
-            InputEnd = 0;
-        }
-
-        public void STORE_BITS(int inputPointer, int inputLength, uint bit_buffer, int bits_left)
-        {
-            InputPointer = inputPointer;
-            InputLength = inputLength;
-            BitBuffer = bit_buffer;
-            BitsLeft = bits_left;
-        }
-
-        public void RESTORE_BITS(ref int inputPointer, ref int inputLength, ref uint bit_buffer, ref int bits_left)
-        {
-            inputPointer = InputPointer;
-            inputLength = InputLength;
-            bit_buffer = BitBuffer;
-            bits_left = BitsLeft;
-        }
-
-        public void ENSURE_BITS(int nbits, ref int i_ptr, ref int i_end, ref int bits_left, ref uint bit_buffer, bool msb)
-        {
-            while (bits_left < nbits)
+            //READ_BITS(val, nbits)
             {
-                READ_BYTES(ref i_ptr, ref i_end, ref bits_left, ref bit_buffer, msb);
-                if (Error != Error.MSPACK_ERR_OK)
-                    return;
-            }
-
-            Error = Error.MSPACK_ERR_OK;
-        }
-
-        public void READ_BITS(ref int val, int nbits, ref int i_ptr, ref int i_end, ref int bits_left, ref uint bit_buffer, bool msb)
-        {
-            ENSURE_BITS(nbits, ref i_ptr, ref i_end, ref bits_left, ref bit_buffer, msb);
-            if (Error != Error.MSPACK_ERR_OK)
-                return;
-
-            val = PEEK_BITS(nbits, bit_buffer, msb);
-            REMOVE_BITS(nbits, ref bits_left, ref bit_buffer, msb);
-            Error = Error.MSPACK_ERR_OK;
-        }
-
-        public void READ_MANY_BITS(ref uint val, byte bits, ref int i_ptr, ref int i_end, ref int bits_left, ref uint bit_buffer, bool msb)
-        {
-            byte needed = bits, bitrun;
-            val = 0;
-            while (needed > 0)
-            {
-                if (bits_left <= (BITBUF_WIDTH - 16))
+                //ENSURE_BITS(nbits)
+                while (bits_left < (nbits))
                 {
-                    READ_BYTES(ref i_ptr, ref i_end, ref bits_left, ref bit_buffer, msb);
-                    if (Error != Error.MSPACK_ERR_OK)
-                        return;
+                    READ_BYTES;
                 }
 
-                bitrun = (byte)((bits_left < needed) ? bits_left : needed);
-                val = (uint)((val << bitrun) | PEEK_BITS(bitrun, bit_buffer, msb));
-                REMOVE_BITS(bitrun, ref bits_left, ref bit_buffer, msb);
-                needed -= bitrun;
+                val = (int)(bit_buffer >> (BITBUF_WIDTH - (nbits)));
+
+                // REMOVE_BITS(nbits);
+                bit_buffer <<= (nbits);
+                bits_left -= (nbits);
             }
-
-            Error = Error.MSPACK_ERR_OK;
         }
 
-        public int PEEK_BITS(int nbits, uint bit_buffer, bool msb)
+        public void READ_BITS_LSB(ref int val, int nbits, ref int i_ptr, ref int i_end, ref int bits_left, ref uint bit_buffer)
         {
-            if (msb)
-                return (int)(bit_buffer >> (BITBUF_WIDTH - (nbits)));
-            else
-                return (int)(bit_buffer & ((1 << (nbits)) - 1));
-        }
+            //READ_BITS(val, nbits)
 
-        public void REMOVE_BITS(int nbits, ref int bits_left, ref uint bit_buffer, bool msb)
-        {
-            if (msb)
+            //ENSURE_BITS(nbits)
+            while (bits_left < nbits)
             {
-                bit_buffer <<= nbits;
-                bits_left -= nbits;
-            }
-            else
-            {
-                bit_buffer >>= nbits;
-                bits_left -= nbits;
-            }
-        }
-
-        public void INJECT_BITS(uint bitdata, int nbits, ref int bits_left, ref uint bit_buffer, bool msb)
-        {
-            if (msb)
-            {
-                bit_buffer |= bitdata << (int)bits_left;
-                bits_left += nbits;
-            }
-            else
-            {
-                bit_buffer |= bitdata << (int)bits_left;
-                bits_left += nbits;
-            }
-        }
-
-        public abstract void READ_BYTES(ref int i_ptr, ref int i_end, ref int bits_left, ref uint bit_buffer, bool msb);
-
-        // lsb_bit_mask[n] = (1 << n) - 1 */
-        private static readonly ushort[] lsb_bit_mask = new ushort[17]
-        {
-            0x0000, 0x0001, 0x0003, 0x0007, 0x000f, 0x001f, 0x003f, 0x007f, 0x00ff,
-            0x01ff, 0x03ff, 0x07ff, 0x0fff, 0x1fff, 0x3fff, 0x7fff, 0xffff
-        };
-
-        public int PEEK_BITS_T(int nbits)
-        {
-            return (int)(BitBuffer & lsb_bit_mask[nbits]);
-        }
-
-        public void READ_BITS_T(ref int val, int nbits, ref int i_ptr, ref int i_end, ref int bits_left, ref uint bit_buffer, bool msb)
-        {
-            ENSURE_BITS(nbits, ref i_ptr, ref i_end, ref bits_left, ref bit_buffer, msb);
-            if (Error != Error.MSPACK_ERR_OK)
-                return;
-
-            val = PEEK_BITS_T(nbits);
-            REMOVE_BITS(nbits, ref bits_left, ref bit_buffer, msb);
-            Error = Error.MSPACK_ERR_OK;
-        }
-
-        public void READ_IF_NEEDED(ref int i_ptr, ref int i_end)
-        {
-            if (i_ptr >= i_end)
-            {
-                ReadInput();
-                if (Error != Error.MSPACK_ERR_OK)
-                    return;
-
-                i_ptr = InputPointer;
-                i_end = InputLength;
+                READ_BYTES;
             }
 
-            Error = Error.MSPACK_ERR_OK;
+            val = (int)(bit_buffer & ((1 << (nbits)) - 1));
+
+            //REMOVE_BITS(nbits);
+            bit_buffer >>= (nbits);
+            bits_left -= (nbits);
         }
 
         public Error ReadInput()
@@ -319,11 +208,22 @@ namespace LibMSPackSharp.Compression
         /// </summary>
         public int READ_HUFFSYM(ushort[] decodingTable, ref uint var, int tablebits, byte[] lengthTable, int maxsymbols, ref int i, ref int i_ptr, ref int i_end, ref int bits_left, ref uint bit_buffer, bool msb)
         {
-            ENSURE_BITS(HUFF_MAXBITS, ref i_ptr, ref i_end, ref bits_left, ref bit_buffer, msb);
+            // ENSURE_BITS(HUFF_MAXBITS)
+            while (bits_left < HUFF_MAXBITS)
+            {
+                READ_BYTES;
+            }
+
             if (Error != Error.MSPACK_ERR_OK)
                 return (int)Error;
 
-            ushort sym = decodingTable[PEEK_BITS(tablebits, bit_buffer, msb)];
+            int peek;
+            if (msb)
+                peek = (int)(bit_buffer >> (BITBUF_WIDTH - (tablebits)));
+            else
+                peek = (int)(bit_buffer & ((1 << (tablebits)) - 1));
+
+            ushort sym = decodingTable[peek];
             if (sym >= maxsymbols)
             {
                 int ret = HUFF_TRAVERSE(decodingTable, tablebits, maxsymbols, ref i, ref sym, bit_buffer, msb);
@@ -333,7 +233,19 @@ namespace LibMSPackSharp.Compression
 
             var = sym;
             i = lengthTable[sym];
-            REMOVE_BITS(i, ref bits_left, ref bit_buffer, msb);
+
+            // REMOVE_BITS(i);
+            if (msb)
+            {
+                bit_buffer <<= i;
+                bits_left -= i;
+            }
+            else
+            {
+                bit_buffer >>= i;
+                bits_left -= i;
+            }
+
             return (int)Error.MSPACK_ERR_OK;
         }
 

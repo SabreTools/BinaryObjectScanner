@@ -209,7 +209,13 @@ namespace LibMSPackSharp.Compression
                 return Error.MSPACK_ERR_OK;
 
             // Restore local state
-            qtm.RESTORE_BITS(ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+
+            //RESTORE_BITS
+            i_ptr = qtm.InputPointer;
+            i_end = qtm.InputLength;
+            bit_buffer = qtm.BitBuffer;
+            bits_left = qtm.BitsLeft;
+
             byte[] window = qtm.Window;
             uint window_posn = qtm.WindowPosition;
             uint frame_todo = qtm.FrameTODO;
@@ -226,9 +232,22 @@ namespace LibMSPackSharp.Compression
                 {
                     high = 0xFFFF;
                     low = 0;
-                    int tempCurrent = current;
-                    qtm.READ_BITS(ref tempCurrent, 16, ref i_ptr, ref i_end, ref bits_left, ref bit_buffer, msb: true);
-                    current = (ushort)tempCurrent;
+
+                    //READ_BITS(i, 16)
+                    {
+                        //ENSURE_BITS(16)
+                        while (bits_left < (16))
+                        {
+                            READ_BYTES;
+                        }
+
+                        i = (int)(bit_buffer >> (BITBUF_WIDTH - (16)));
+
+                        // REMOVE_BITS(16);
+                        bit_buffer <<= (16);
+                        bits_left -= (16);
+                    }
+
                     qtm.HeaderRead = 1;
                 }
 
@@ -263,14 +282,35 @@ namespace LibMSPackSharp.Compression
                     else
                     {
                         // Match repeated string
+                        byte needed, bitrun;
                         switch (selector)
                         {
                             // Selector 4 = fixed length match (3 bytes)
                             case 4:
                                 GET_SYMBOL(qtm, qtm.Model4, ref sym, ref range, ref symf, ref high, ref low, ref current, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
-                                qtm.READ_MANY_BITS(ref extra, extra_bits[sym], ref i_ptr, ref i_end, ref bits_left, ref bit_buffer, msb: true);
-                                if (qtm.Error != Error.MSPACK_ERR_OK)
-                                    return qtm.Error;
+
+                                // READ_MANY_BITS(extra, extra_bits[sym])
+                                needed = extra_bits[sym];
+                                extra = 0;
+                                while (needed > 0)
+                                {
+                                    if (bits_left <= (QTMDStream.BITBUF_WIDTH - 16))
+                                    {
+                                        READ_BYTES;
+                                    }
+
+                                    bitrun = (byte)((bits_left < needed) ? bits_left : needed);
+
+                                    int peek = (int)(bit_buffer >> (QTMDStream.BITBUF_WIDTH - (bitrun)));
+
+                                    extra = (uint)((extra << bitrun) | peek);
+
+                                    // REMOVE_BITS(bitrun);
+                                    bit_buffer <<= bitrun;
+                                    bits_left -= bitrun;
+
+                                    needed -= bitrun;
+                                }
 
                                 match_offset = position_base[sym] + extra + 1;
                                 match_length = 3;
@@ -279,9 +319,29 @@ namespace LibMSPackSharp.Compression
                             // Selector 5 = fixed length match (4 bytes)
                             case 5:
                                 GET_SYMBOL(qtm, qtm.Model5, ref sym, ref range, ref symf, ref high, ref low, ref current, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
-                                qtm.READ_MANY_BITS(ref extra, extra_bits[sym], ref i_ptr, ref i_end, ref bits_left, ref bit_buffer, msb: true);
-                                if (qtm.Error != Error.MSPACK_ERR_OK)
-                                    return qtm.Error;
+
+                                // READ_MANY_BITS(extra, extra_bits[sym])
+                                needed = extra_bits[sym];
+                                extra = 0;
+                                while (needed > 0)
+                                {
+                                    if (bits_left <= (QTMDStream.BITBUF_WIDTH - 16))
+                                    {
+                                        READ_BYTES;
+                                    }
+
+                                    bitrun = (byte)((bits_left < needed) ? bits_left : needed);
+
+                                    int peek = (int)(bit_buffer >> (QTMDStream.BITBUF_WIDTH - (bitrun)));
+
+                                    extra = (uint)((extra << bitrun) | peek);
+
+                                    // REMOVE_BITS(bitrun);
+                                    bit_buffer <<= bitrun;
+                                    bits_left -= bitrun;
+
+                                    needed -= bitrun;
+                                }
 
                                 match_offset = position_base[sym] + extra + 1;
                                 match_length = 4;
@@ -290,16 +350,56 @@ namespace LibMSPackSharp.Compression
                             // Selector 6 = variable length match
                             case 6:
                                 GET_SYMBOL(qtm, qtm.Model6Len, ref sym, ref range, ref symf, ref high, ref low, ref current, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
-                                qtm.READ_MANY_BITS(ref extra, length_extra[sym], ref i_ptr, ref i_end, ref bits_left, ref bit_buffer, msb: true);
-                                if (qtm.Error != Error.MSPACK_ERR_OK)
-                                    return qtm.Error;
+
+                                // READ_MANY_BITS(extra, length_extra[sym])
+                                needed = length_extra[sym];
+                                extra = 0;
+                                while (needed > 0)
+                                {
+                                    if (bits_left <= (QTMDStream.BITBUF_WIDTH - 16))
+                                    {
+                                        READ_BYTES;
+                                    }
+
+                                    bitrun = (byte)((bits_left < needed) ? bits_left : needed);
+
+                                    int peek = (int)(bit_buffer >> (QTMDStream.BITBUF_WIDTH - (bitrun)));
+
+                                    extra = (uint)((extra << bitrun) | peek);
+
+                                    // REMOVE_BITS(bitrun);
+                                    bit_buffer <<= bitrun;
+                                    bits_left -= bitrun;
+
+                                    needed -= bitrun;
+                                }
 
                                 match_length = (int)(length_base[sym] + extra + 5);
 
                                 GET_SYMBOL(qtm, qtm.Model6, ref sym, ref range, ref symf, ref high, ref low, ref current, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
-                                qtm.READ_MANY_BITS(ref extra, extra_bits[sym], ref i_ptr, ref i_end, ref bits_left, ref bit_buffer, msb: true);
-                                if (qtm.Error != Error.MSPACK_ERR_OK)
-                                    return qtm.Error;
+
+                                // READ_MANY_BITS(extra, extra_bits[sym])
+                                needed = extra_bits[sym];
+                                extra = 0;
+                                while (needed > 0)
+                                {
+                                    if (bits_left <= (QTMDStream.BITBUF_WIDTH - 16))
+                                    {
+                                        READ_BYTES;
+                                    }
+
+                                    bitrun = (byte)((bits_left < needed) ? bits_left : needed);
+
+                                    int peek = (int)(bit_buffer >> (QTMDStream.BITBUF_WIDTH - (bitrun)));
+
+                                    extra = (uint)((extra << bitrun) | peek);
+
+                                    // REMOVE_BITS(bitrun);
+                                    bit_buffer <<= bitrun;
+                                    bits_left -= bitrun;
+
+                                    needed -= bitrun;
+                                }
 
                                 match_offset = position_base[sym] + extra + 1;
                                 break;
@@ -421,14 +521,31 @@ namespace LibMSPackSharp.Compression
                 {
                     // Re-align input
                     if ((bits_left & 7) != 0)
-                        qtm.REMOVE_BITS(bits_left & 7, ref bits_left, ref bit_buffer, msb: true);
+                    {
+                        //REMOVE_BITS(bits_left & 7);
+                        bit_buffer <<= bits_left & 7;
+                        bits_left -= bits_left & 7;
+                    }
 
                     // Special Quantum hack -- cabd.c injects a trailer byte to allow the
                     // decompressor to realign itself. CAB Quantum blocks, unlike LZX
                     // blocks, can have anything from 0 to 4 trailing null bytes. */
                     do
                     {
-                        qtm.READ_BITS(ref i, 8, ref i_ptr, ref i_end, ref bits_left, ref bit_buffer, msb: true);
+                        //READ_BITS(i, 8)
+                        {
+                            //ENSURE_BITS(8)
+                            while (bits_left < (8))
+                            {
+                                READ_BYTES;
+                            }
+
+                            i = (int)(bit_buffer >> (BITBUF_WIDTH - (8)));
+
+                            // REMOVE_BITS(8);
+                            bit_buffer <<= (8);
+                            bits_left -= (8);
+                        }
                     } while (i != 0xFF);
 
                     qtm.HeaderRead = 0;
@@ -466,7 +583,13 @@ namespace LibMSPackSharp.Compression
             }
 
             // Store local state
-            qtm.STORE_BITS(i_ptr, i_end, bit_buffer, bits_left);
+
+            //STORE_BITS
+            qtm.InputPointer = i_ptr;
+            qtm.InputLength = i_end;
+            qtm.BitBuffer = bit_buffer;
+            qtm.BitsLeft = bits_left;
+
             qtm.WindowPosition = window_posn;
             qtm.FrameTODO = frame_todo;
             qtm.High = high;
@@ -532,12 +655,20 @@ namespace LibMSPackSharp.Compression
                 low <<= 1;
                 high = (ushort)((high << 1) | 1);
 
-                qtm.ENSURE_BITS(1, ref i_ptr, ref i_end, ref bits_left, ref bit_buffer, msb: true);
+                // ENSURE_BITS(1)
+                while (bits_left < 1)
+                {
+                    READ_BYTES;
+                }
+
                 if (qtm.Error != Error.MSPACK_ERR_OK)
                     return;
 
-                current = (ushort)((current << 1) | qtm.PEEK_BITS(1, bit_buffer, msb: true));
-                qtm.REMOVE_BITS(1, ref bits_left, ref bit_buffer, msb: true);
+                current = (ushort)((current << 1) | (bit_buffer >> (LZXDStream.BITBUF_WIDTH - (1))));  //PEEK_BITS(1)
+
+                //REMOVE_BITS(1);
+                bit_buffer <<= (1);
+                bits_left -= (1);
             }
         }
 

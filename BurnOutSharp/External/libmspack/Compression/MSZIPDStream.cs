@@ -49,16 +49,6 @@ namespace LibMSPackSharp.Compression
 
         #endregion
 
-        public override void READ_BYTES(ref int i_ptr, ref int i_end, ref int bits_left, ref uint bit_buffer, bool msb)
-        {
-            READ_IF_NEEDED(ref i_ptr, ref i_end);
-            if (Error != Error.MSPACK_ERR_OK)
-                return;
-
-            INJECT_BITS(InputBuffer[i_ptr++], 8, ref bits_left, ref bit_buffer, msb);
-            Error = Error.MSPACK_ERR_OK;
-        }
-
         public override int HUFF_ERROR() => (int)InflateErrorCode.INF_ERR_HUFFSYM;
     }
 }
