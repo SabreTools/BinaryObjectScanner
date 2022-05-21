@@ -29,7 +29,7 @@ namespace LibMSPackSharp.Compression
         /// <summary>
         /// inflate() will call this whenever the window should be emptied.
         /// </summary>
-        public Func<MSZIPDStream, uint, Error> FlushWindow;
+        public Func<MSZIPDStream, uint, LibMSPackSharp.Error> FlushWindow;
 
         public bool RepairMode { get; set; }
 
@@ -49,6 +49,6 @@ namespace LibMSPackSharp.Compression
 
         #endregion
 
-        public override int HUFF_ERROR() => (int)InflateErrorCode.INF_ERR_HUFFSYM;
+        public override int HUFF_ERROR() => (int)Error.INF_ERR_HUFFSYM;
     }
 }

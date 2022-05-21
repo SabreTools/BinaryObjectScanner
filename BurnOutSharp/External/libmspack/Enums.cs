@@ -24,6 +24,8 @@ namespace LibMSPackSharp
     /// </summary>
     public enum Error
     {
+        #region MSPACK Errors
+
         /// <summary>
         /// Used to indicate success.
         /// This error code is defined as zero, all other code are non-zero.
@@ -84,6 +86,82 @@ namespace LibMSPackSharp
         /// Error during decompression
         /// </summary>
         MSPACK_ERR_DECRUNCH = 11,
+
+        #endregion
+
+        #region Inflate Errors
+
+        /// <summary>
+        /// Unknown block type
+        /// </summary>
+        INF_ERR_BLOCKTYPE = -1,
+
+        /// <summary>
+        /// Block size complement mismatch
+        /// </summary>
+        INF_ERR_COMPLEMENT = -2,
+
+        /// <summary>
+        /// Error from flush_window callback
+        /// </summary>
+        INF_ERR_FLUSH = -3,
+
+        /// <summary>
+        /// Too many bits in bit buffer
+        /// </summary>
+        INF_ERR_BITBUF = -4,
+
+        /// <summary>
+        /// Too many symbols in blocktype 2 header
+        /// </summary>
+        INF_ERR_SYMLENS = -5,
+
+        /// <summary>
+        /// Failed to build bitlens huffman table
+        /// </summary>
+        INF_ERR_BITLENTBL = -6,
+
+        /// <summary>
+        /// Failed to build literals huffman table
+        /// </summary>
+        INF_ERR_LITERALTBL = -7,
+
+        /// <summary>
+        /// Failed to build distance huffman table
+        /// </summary>
+        INF_ERR_DISTANCETBL = -8,
+
+        /// <summary>
+        /// Bitlen RLE code goes over table size
+        /// </summary>
+        INF_ERR_BITOVERRUN = -9,
+
+        /// <summary>
+        /// Invalid bit-length code
+        /// </summary>
+        INF_ERR_BADBITLEN = -10,
+
+        /// <summary>
+        /// Out-of-range literal code
+        /// </summary>
+        INF_ERR_LITCODE = -11,
+
+        /// <summary>
+        /// Out-of-range distance code
+        /// </summary>
+        INF_ERR_DISTCODE = -12,
+
+        /// <summary>
+        /// Somehow, distance is beyond 32k
+        /// </summary>
+        INF_ERR_DISTANCE = -13,
+
+        /// <summary>
+        /// Out of bits decoding huffman symbol
+        /// </summary>
+        INF_ERR_HUFFSYM = -14,
+
+        #endregion
     }
 
     /// <summary>

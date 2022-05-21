@@ -123,7 +123,7 @@ namespace LibMSPackSharp.Compression
             qtm.WindowPosition = 0;
             qtm.FrameTODO = QTM_FRAME_SIZE;
             qtm.HeaderRead = 0;
-            qtm.Error = Error.MSPACK_ERR_OK;
+            qtm.Error = LibMSPackSharp.Error.MSPACK_ERR_OK;
 
             qtm.InputPointer = qtm.InputLength = 0;
             qtm.OutputPointer = qtm.OutputLength = 0;
@@ -170,11 +170,11 @@ namespace LibMSPackSharp.Compression
         ///   qtmd_init(). This will continue until system.read() returns 0 bytes,
         ///   or an error.
         /// </summary>
-        public static Error Decompress(object o, long out_bytes)
+        public static LibMSPackSharp.Error Decompress(object o, long out_bytes)
         {
             QTMDStream qtm = o as QTMDStream;
             if (qtm == null)
-                return Error.MSPACK_ERR_ARGS;
+                return LibMSPackSharp.Error.MSPACK_ERR_ARGS;
 
             uint frame_end, match_offset, range = 0, extra = 0;
             int i_ptr = 0, i_end = 0, runsrc, rundest;
@@ -186,9 +186,9 @@ namespace LibMSPackSharp.Compression
 
             // Easy answers
             if (qtm == null || (out_bytes < 0))
-                return Error.MSPACK_ERR_ARGS;
+                return LibMSPackSharp.Error.MSPACK_ERR_ARGS;
 
-            if (qtm.Error != Error.MSPACK_ERR_OK)
+            if (qtm.Error != LibMSPackSharp.Error.MSPACK_ERR_OK)
                 return qtm.Error;
 
             // Flush out any stored-up bytes before we begin
@@ -199,14 +199,14 @@ namespace LibMSPackSharp.Compression
             if (i != 0)
             {
                 if (qtm.Sys.Write(qtm.Output, qtm.Window, qtm.OutputPointer, i) != i)
-                    return qtm.Error = Error.MSPACK_ERR_WRITE;
+                    return qtm.Error = LibMSPackSharp.Error.MSPACK_ERR_WRITE;
 
                 qtm.OutputPointer += i;
                 out_bytes -= i;
             }
 
             if (out_bytes == 0)
-                return Error.MSPACK_ERR_OK;
+                return LibMSPackSharp.Error.MSPACK_ERR_OK;
 
             // Restore local state
 
@@ -407,7 +407,7 @@ namespace LibMSPackSharp.Compression
                             default:
                                 // Should be impossible, model7 can only return 0-6
                                 Console.WriteLine("got %d from selector", selector);
-                                return qtm.Error = Error.MSPACK_ERR_DECRUNCH;
+                                return qtm.Error = LibMSPackSharp.Error.MSPACK_ERR_DECRUNCH;
                         }
 
                         rundest = (int)window_posn;
@@ -436,11 +436,11 @@ namespace LibMSPackSharp.Compression
                             if (i > out_bytes)
                             {
                                 Console.WriteLine($"during window-wrap match; {i} bytes to flush but only need {out_bytes}");
-                                return qtm.Error = Error.MSPACK_ERR_DECRUNCH;
+                                return qtm.Error = LibMSPackSharp.Error.MSPACK_ERR_DECRUNCH;
                             }
 
                             if (qtm.Sys.Write(qtm.Output, qtm.Window, qtm.OutputPointer, i) != i)
-                                return qtm.Error = Error.MSPACK_ERR_WRITE;
+                                return qtm.Error = LibMSPackSharp.Error.MSPACK_ERR_WRITE;
 
                             out_bytes -= i;
                             qtm.OutputPointer = 0;
@@ -471,7 +471,7 @@ namespace LibMSPackSharp.Compression
                                 if (j > (int)qtm.WindowSize)
                                 {
                                     Console.WriteLine("match offset beyond window boundaries");
-                                    return qtm.Error = Error.MSPACK_ERR_DECRUNCH;
+                                    return qtm.Error = LibMSPackSharp.Error.MSPACK_ERR_DECRUNCH;
                                 }
 
                                 runsrc = (int)(qtm.WindowSize - j);
@@ -513,7 +513,7 @@ namespace LibMSPackSharp.Compression
                 if (frame_todo > QTM_FRAME_SIZE)
                 {
                     Console.WriteLine("overshot frame alignment");
-                    return qtm.Error = Error.MSPACK_ERR_DECRUNCH;
+                    return qtm.Error = LibMSPackSharp.Error.MSPACK_ERR_DECRUNCH;
                 }
 
                 // Another frame completed?
@@ -564,7 +564,7 @@ namespace LibMSPackSharp.Compression
                         break;
 
                     if (qtm.Sys.Write(qtm.Output, qtm.Window, qtm.OutputPointer, i) != i)
-                        return qtm.Error = Error.MSPACK_ERR_WRITE;
+                        return qtm.Error = LibMSPackSharp.Error.MSPACK_ERR_WRITE;
 
                     out_bytes -= i;
                     qtm.OutputPointer = 0;
@@ -577,7 +577,7 @@ namespace LibMSPackSharp.Compression
             {
                 i = (int)out_bytes;
                 if (qtm.Sys.Write(qtm.Output, qtm.Window, qtm.OutputPointer, i) != i)
-                    return qtm.Error = Error.MSPACK_ERR_WRITE;
+                    return qtm.Error = LibMSPackSharp.Error.MSPACK_ERR_WRITE;
 
                 qtm.OutputPointer += i;
             }
@@ -596,7 +596,7 @@ namespace LibMSPackSharp.Compression
             qtm.Low = low;
             qtm.Current = (ushort)current;
 
-            return Error.MSPACK_ERR_OK;
+            return LibMSPackSharp.Error.MSPACK_ERR_OK;
         }
 
         /// <summary>
@@ -661,7 +661,7 @@ namespace LibMSPackSharp.Compression
                     READ_BYTES;
                 }
 
-                if (qtm.Error != Error.MSPACK_ERR_OK)
+                if (qtm.Error != LibMSPackSharp.Error.MSPACK_ERR_OK)
                     return;
 
                 current = (ushort)((current << 1) | (bit_buffer >> (LZXDStream.BITBUF_WIDTH - (1))));  //PEEK_BITS(1)

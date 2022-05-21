@@ -156,16 +156,16 @@ namespace LibMSPackSharp.Compression
                 return Error.MSPACK_ERR_ARGS;
 
             // For the bit buffer
-            uint bit_buffer = 0;
-            int bits_left = 0;
-            int i_ptr = 0, i_end = 0;
+            uint bit_buffer;
+            int bits_left;
+            int i_ptr, i_end;
 
-            int i, state, error;
+            int i, state;
+            Error error;
 
             // Easy answers
             if (zip == null || (out_bytes < 0))
                 return Error.MSPACK_ERR_ARGS;
-
             if (zip.Error != Error.MSPACK_ERR_OK)
                 return zip.Error;
 
@@ -190,48 +190,65 @@ namespace LibMSPackSharp.Compression
             {
                 // Unpack another block
 
-                //RESTORE_BITS;
-                i_ptr = zip.InputPointer;
-                i_end = zip.InputLength;
-                bit_buffer = zip.BitBuffer;
-                bits_left = zip.BitsLeft;
+                //RESTORE_BITS
+                {
+                    i_ptr = zip.InputPointer;
+                    i_end = zip.InputLength;
+                    bit_buffer = zip.BitBuffer;
+                    bits_left = zip.BitsLeft;
+                }
 
                 // Skip to next read 'CK' header
                 i = bits_left & 7;
 
-                //REMOVE_BITS(i);
-                bit_buffer >>= (i);
-                bits_left -= (i); 
+                // Align to bytestream
+
+                //REMOVE_BITS(i)
+                {
+                    bit_buffer >>= (i);
+                    bits_left -= (i);
+                }
 
                 state = 0;
-
                 do
                 {
-                    //READ_BITS(i, 8);
-
-                    //ENSURE_BITS(8);
-                    while (bits_left < 8)
+                    //READ_BITS(i, 8)
                     {
-                        //READ_BYTES;
-
-                        //READ_IF_NEEDED;
-                        if (i_ptr >= i_end)
+                        //ENSURE_BITS(8)
                         {
-                            if (zip.ReadInput() != Error.MSPACK_ERR_OK)
-                                return zip.Error;
+                            while (bits_left < (8))
+                            {
+                                //READ_BYTES
+                                {
+                                    //READ_IF_NEEDED
+                                    {
+                                        if (i_ptr >= i_end)
+                                        {
+                                            if (zip.ReadInput() != Error.MSPACK_ERR_OK)
+                                                return zip.Error;
 
-                            i_ptr = zip.InputPointer;
-                            i_end = zip.InputLength;
+                                            i_ptr = zip.InputPointer;
+                                            i_end = zip.InputLength;
+                                        }
+                                    }
+
+                                    //INJECT_BITS(zip.InputBuffer[i_ptr++], 8)
+                                    {
+                                        bit_buffer |= (uint)((zip.InputBuffer[i_ptr++]) << bits_left);
+                                        bits_left += (8);
+                                    }
+                                }
+                            }
                         }
 
-                        bit_buffer |= (uint)(zip.InputBuffer[i_ptr++]) << bits_left; bits_left += (8); // INJECT_BITS(zip.InputBuffer[i_ptr++], 8);
+                        (i) = (int)(bit_buffer & ((1 << (8)) - 1)); //PEEK_BITS(8)
+
+                        //REMOVE_BITS(8)
+                        {
+                            bit_buffer >>= (8);
+                            bits_left -= (8);
+                        }
                     }
-
-                    i = (int)(bit_buffer & ((1 << (8)) - 1)); //PEEK_BITS(8);
-
-                    //REMOVE_BITS(8);
-                    bit_buffer >>= (8);
-                    bits_left -= (8);
 
                     if (i == 'C')
                         state = 1;
@@ -245,15 +262,17 @@ namespace LibMSPackSharp.Compression
                 zip.WindowPosition = 0;
                 zip.BytesOutput = 0;
 
-                //STORE_BITS;
-                zip.InputPointer = i_ptr;
-                zip.InputLength = i_end;
-                zip.BitBuffer = bit_buffer;
-                zip.BitsLeft = bits_left;
-
-                if ((error = (int)Inflate(zip)) != 0)
+                //STORE_BITS
                 {
-                    Console.WriteLine($"Inflate error {(InflateErrorCode)error}");
+                    zip.InputPointer = i_ptr;
+                    zip.InputLength = i_end;
+                    zip.BitBuffer = bit_buffer;
+                    zip.BitsLeft = bits_left;
+                }
+
+                if ((error = Inflate(zip)) != Error.MSPACK_ERR_OK)
+                {
+                    Console.WriteLine($"Inflate error {error}");
                     if (zip.RepairMode)
                     {
                         // Recover partially-inflated buffers
@@ -270,28 +289,21 @@ namespace LibMSPackSharp.Compression
                     }
                     else
                     {
-                        return zip.Error = (error > 0) ? (Error)error : Error.MSPACK_ERR_DECRUNCH;
+                        return zip.Error = (error > 0) ? error : Error.MSPACK_ERR_DECRUNCH;
                     }
                 }
+
                 zip.OutputPointer = 0;
                 zip.OutputLength = zip.BytesOutput;
 
                 // Write a frame
                 i = (out_bytes < zip.BytesOutput) ? (int)out_bytes : zip.BytesOutput;
-                if (zip.Output is FileStream)
-                {
-                    if (SystemImpl.DefaultSystem.Write(zip.Output, zip.Window, zip.OutputPointer, i) != i)
-                        return zip.Error = Error.MSPACK_ERR_WRITE;
-                }
-                else
-                {
-                    if (zip.Sys.Write(zip.Output, zip.Window, zip.OutputPointer, i) != i)
-                        return zip.Error = Error.MSPACK_ERR_WRITE;
-                }
+                if (zip.Sys.Write(zip.Output, zip.Window, zip.OutputPointer, i) != i)
+                    return zip.Error = Error.MSPACK_ERR_WRITE;
 
                 // mspack errors (i.e. read errors) are fatal and can't be recovered
-                if (error > 0 && zip.RepairMode)
-                    return (Error)error;
+                if ((error > 0) && zip.RepairMode)
+                    return error;
 
                 zip.OutputPointer += i;
                 out_bytes -= i;
@@ -317,76 +329,105 @@ namespace LibMSPackSharp.Compression
             int bits_left;
             int i_ptr, i_end;
 
-            int i, error, block_len;
+            int i, block_len;
+            Error error;
 
             // Unpack blocks until block_len == 0
             for (; ; )
             {
-                //RESTORE_BITS;
-                i_ptr = zip.InputPointer;
-                i_end = zip.InputLength;
-                bit_buffer = zip.BitBuffer;
-                bits_left = zip.BitsLeft;
+                //RESTORE_BITS
+                {
+                    i_ptr = zip.InputPointer;
+                    i_end = zip.InputLength;
+                    bit_buffer = zip.BitBuffer;
+                    bits_left = zip.BitsLeft;
+                }
 
                 // Align to bytestream, read block_len
-                i = (int)(bits_left & 7);
+                i = bits_left & 7;
 
-                //REMOVE_BITS(i);
-                bit_buffer >>= (i);
-                bits_left -= (i); 
-
-                //READ_BITS(block_len, 8);
-
-                //ENSURE_BITS(8);
-                while (bits_left < 8)
+                //REMOVE_BITS(i)
                 {
-                    //READ_BYTES;
-
-                    //READ_IF_NEEDED;
-                    if (i_ptr >= i_end)
-                    {
-                        if (zip.ReadInput() != Error.MSPACK_ERR_OK)
-                            return zip.Error;
-
-                        i_ptr = zip.InputPointer;
-                        i_end = zip.InputLength;
-                    }
-
-                    bit_buffer |= (uint)(zip.InputBuffer[i_ptr++]) << bits_left; bits_left += (8); // INJECT_BITS(zip.InputBuffer[i_ptr++], 8);
+                    bit_buffer >>= (i);
+                    bits_left -= (i);
                 }
 
-                block_len = (int)(bit_buffer & ((1 << (8)) - 1)); //PEEK_BITS(8);
-
-                //REMOVE_BITS(8);
-                bit_buffer >>= (8);
-                bits_left -= (8); 
-
-                // READ_BITS(i, 8);
-
-                //ENSURE_BITS(8);
-                while (bits_left < 8)
+                //READ_BITS(block_len, 8)
                 {
-                    //READ_BYTES;
-
-                    //READ_IF_NEEDED;
-                    if (i_ptr >= i_end)
+                    //ENSURE_BITS(8)
                     {
-                        if (zip.ReadInput() != Error.MSPACK_ERR_OK)
-                            return zip.Error;
+                        while (bits_left < (8))
+                        {
+                            //READ_BYTES
+                            {
+                                //READ_IF_NEEDED
+                                {
+                                    if (i_ptr >= i_end)
+                                    {
+                                        if (zip.ReadInput() != Error.MSPACK_ERR_OK)
+                                            return zip.Error;
 
-                        i_ptr = zip.InputPointer;
-                        i_end = zip.InputLength;
+                                        i_ptr = zip.InputPointer;
+                                        i_end = zip.InputLength;
+                                    }
+                                }
+
+                                //INJECT_BITS(zip.InputBuffer[i_ptr++], 8)
+                                {
+                                    bit_buffer |= (uint)((zip.InputBuffer[i_ptr++]) << bits_left);
+                                    bits_left += (8);
+                                }
+                            }
+                        }
                     }
 
-                    bit_buffer |= (uint)(zip.InputBuffer[i_ptr++]) << bits_left; bits_left += (8); // INJECT_BITS(zip.InputBuffer[i_ptr++], 8);
+                    (block_len) = (int)(bit_buffer & ((1 << (8)) - 1)); //PEEK_BITS(8)
+
+                    //REMOVE_BITS(8)
+                    {
+                        bit_buffer >>= (8);
+                        bits_left -= (8);
+                    }
                 }
 
-                i = (int)(bit_buffer & ((1 << (8)) - 1)); //PEEK_BITS(8);
+                //READ_BITS(i, 8)
+                {
+                    //ENSURE_BITS(8)
+                    {
+                        while (bits_left < (8))
+                        {
+                            //READ_BYTES
+                            {
+                                //READ_IF_NEEDED
+                                {
+                                    if (i_ptr >= i_end)
+                                    {
+                                        if (zip.ReadInput() != Error.MSPACK_ERR_OK)
+                                            return zip.Error;
 
-                //REMOVE_BITS(8);
-                bit_buffer >>= (8);
-                bits_left -= (8);
+                                        i_ptr = zip.InputPointer;
+                                        i_end = zip.InputLength;
+                                    }
+                                }
 
+                                //INJECT_BITS(zip.InputBuffer[i_ptr++], 8)
+                                {
+                                    bit_buffer |= (uint)((zip.InputBuffer[i_ptr++]) << bits_left);
+                                    bits_left += (8);
+                                }
+                            }
+                        }
+                    }
+
+                    (i) = (int)(bit_buffer & ((1 << (8)) - 1)); //PEEK_BITS(8)
+
+                    //REMOVE_BITS(8)
+                    {
+                        bit_buffer >>= (8);
+                        bits_left -= (8);
+                    }
+                }
+                
                 block_len |= i << 8;
 
                 if (block_len == 0)
@@ -394,60 +435,84 @@ namespace LibMSPackSharp.Compression
 
                 // Read "CK" header
 
-                // READ_BITS(i, 8);
-
-                //ENSURE_BITS(8);
-                while (bits_left < 8)
+                //READ_BITS(i, 8)
                 {
-                    //READ_BYTES;
-
-                    //READ_IF_NEEDED;
-                    if (i_ptr >= i_end)
+                    //ENSURE_BITS(8)
                     {
-                        if (zip.ReadInput() != Error.MSPACK_ERR_OK)
-                            return zip.Error;
+                        while (bits_left < (8))
+                        {
+                            //READ_BYTES
+                            {
+                                //READ_IF_NEEDED
+                                {
+                                    if (i_ptr >= i_end)
+                                    {
+                                        if (zip.ReadInput() != Error.MSPACK_ERR_OK)
+                                            return zip.Error;
 
-                        i_ptr = zip.InputPointer;
-                        i_end = zip.InputLength;
+                                        i_ptr = zip.InputPointer;
+                                        i_end = zip.InputLength;
+                                    }
+                                }
+
+                                //INJECT_BITS(zip.InputBuffer[i_ptr++], 8)
+                                {
+                                    bit_buffer |= (uint)((zip.InputBuffer[i_ptr++]) << bits_left);
+                                    bits_left += (8);
+                                }
+                            }
+                        }
                     }
 
-                    bit_buffer |= (uint)(zip.InputBuffer[i_ptr++]) << bits_left; bits_left += (8); // INJECT_BITS(zip.InputBuffer[i_ptr++], 8);
+                    (i) = (int)(bit_buffer & ((1 << (8)) - 1)); //PEEK_BITS(8)
+
+                    //REMOVE_BITS(8)
+                    {
+                        bit_buffer >>= (8);
+                        bits_left -= (8);
+                    }
                 }
-
-                i = (int)(bit_buffer & ((1 << (8)) - 1)); //PEEK_BITS(8);
-
-                //REMOVE_BITS(8);
-                bit_buffer >>= (8);
-                bits_left -= (8);
 
                 if (i != 'C')
                     return Error.MSPACK_ERR_DATAFORMAT;
 
-                // READ_BITS(i, 8);
-
-                //ENSURE_BITS(8);
-                while (bits_left < 8)
+                //READ_BITS(i, 8)
                 {
-                    //READ_BYTES;
-
-                    //READ_IF_NEEDED;
-                    if (i_ptr >= i_end)
+                    //ENSURE_BITS(8)
                     {
-                        if (zip.ReadInput() != Error.MSPACK_ERR_OK)
-                            return zip.Error;
+                        while (bits_left < (8))
+                        {
+                            //READ_BYTES
+                            {
+                                //READ_IF_NEEDED
+                                {
+                                    if (i_ptr >= i_end)
+                                    {
+                                        if (zip.ReadInput() != Error.MSPACK_ERR_OK)
+                                            return zip.Error;
 
-                        i_ptr = zip.InputPointer;
-                        i_end = zip.InputLength;
+                                        i_ptr = zip.InputPointer;
+                                        i_end = zip.InputLength;
+                                    }
+                                }
+
+                                //INJECT_BITS(zip.InputBuffer[i_ptr++], 8)
+                                {
+                                    bit_buffer |= (uint)((zip.InputBuffer[i_ptr++]) << bits_left);
+                                    bits_left += (8);
+                                }
+                            }
+                        }
                     }
 
-                    bit_buffer |= (uint)(zip.InputBuffer[i_ptr++]) << bits_left; bits_left += (8); // INJECT_BITS(zip.InputBuffer[i_ptr++], 8);
+                    (i) = (int)(bit_buffer & ((1 << (8)) - 1)); //PEEK_BITS(8)
+
+                    //REMOVE_BITS(nbits)
+                    {
+                        bit_buffer >>= (8);
+                        bits_left -= (8);
+                    }
                 }
-
-                i = (int)(bit_buffer & ((1 << (8)) - 1)); //PEEK_BITS(8);
-
-                //REMOVE_BITS(8);
-                bit_buffer >>= (8);
-                bits_left -= (8);
 
                 if (i != 'K')
                     return Error.MSPACK_ERR_DATAFORMAT;
@@ -456,27 +521,29 @@ namespace LibMSPackSharp.Compression
                 zip.WindowPosition = 0;
                 zip.BytesOutput = 0;
 
-                //STORE_BITS;
-                zip.InputPointer = i_ptr;
-                zip.InputLength = i_end;
-                zip.BitBuffer = bit_buffer;
-                zip.BitsLeft = bits_left;
-
-                if ((error = (int)Inflate(zip)) != 0)
+                //STORE_BITS
                 {
-                    Console.WriteLine($"inflate error {(InflateErrorCode)error}");
-                    return zip.Error = (error > 0) ? (Error)error : Error.MSPACK_ERR_DECRUNCH;
+                    zip.InputPointer = i_ptr;
+                    zip.InputLength = i_end;
+                    zip.BitBuffer = bit_buffer;
+                    zip.BitsLeft = bits_left;
+                }
+
+                if ((error = Inflate(zip)) != Error.MSPACK_ERR_OK)
+                {
+                    Console.WriteLine($"Inflate error {error}");
+                    return zip.Error = (error > 0) ? error : Error.MSPACK_ERR_DECRUNCH;
                 }
 
                 // Write inflated block
-                if (zip.Sys.Write(zip.Output, zip.Window, 0, zip.BytesOutput) != zip.BytesOutput)
-                    return zip.Error = Error.MSPACK_ERR_WRITE;
+                try { zip.Sys.Write(zip.Output, zip.Window, 0, zip.BytesOutput); }
+                catch { return zip.Error = Error.MSPACK_ERR_WRITE; }
             }
 
             return Error.MSPACK_ERR_OK;
         }
 
-        private static InflateErrorCode ReadLens(MSZIPDStream zip)
+        private static Error ReadLens(MSZIPDStream zip)
         {
             // For the bit buffer and huffman decoding
             uint bit_buffer;
@@ -484,175 +551,233 @@ namespace LibMSPackSharp.Compression
             int i_ptr, i_end;
 
             // bitlen Huffman codes -- immediate lookup, 7 bit max code length
-            ushort[] bl_table = new ushort[1 << 7];
+            ushort[] bl_table = new ushort[(1 << 7)];
             byte[] bl_len = new byte[19];
 
             byte[] lens = new byte[MSZIP_LITERAL_MAXSYMBOLS + MSZIP_DISTANCE_MAXSYMBOLS];
             uint lit_codes, dist_codes, code, last_code = 0, bitlen_codes, i, run;
 
-            //RESTORE_BITS;
-            i_ptr = zip.InputPointer;
-            i_end = zip.InputLength;
-            bit_buffer = zip.BitBuffer;
-            bits_left = zip.BitsLeft;
+            //RESTORE_BITS
+            {
+                i_ptr = zip.InputPointer;
+                i_end = zip.InputLength;
+                bit_buffer = zip.BitBuffer;
+                bits_left = zip.BitsLeft;
+            }
 
             // Read the number of codes
 
-            // READ_BITS(lit_codes, 5);
-
-            //ENSURE_BITS(5);
-            while (bits_left < 5)
+            //READ_BITS(lit_codes, 5)
             {
-                //READ_BYTES;
-
-                //READ_IF_NEEDED;
-                if (i_ptr >= i_end)
+                //ENSURE_BITS(5)
                 {
-                    if (zip.ReadInput() != Error.MSPACK_ERR_OK)
-                        return (InflateErrorCode)zip.Error;
+                    while (bits_left < (5))
+                    {
+                        //READ_BYTES
+                        {
+                            //READ_IF_NEEDED
+                            {
+                                if (i_ptr >= i_end)
+                                {
+                                    if (zip.ReadInput() != Error.MSPACK_ERR_OK)
+                                        return zip.Error;
 
-                    i_ptr = zip.InputPointer;
-                    i_end = zip.InputLength;
+                                    i_ptr = zip.InputPointer;
+                                    i_end = zip.InputLength;
+                                }
+                            }
+
+                            //INJECT_BITS(zip.InputBuffer[i_ptr++], 8)
+                            {
+                                bit_buffer |= (uint)((zip.InputBuffer[i_ptr++]) << bits_left);
+                                bits_left += (8);
+                            }
+                        }
+                    }
                 }
 
-                bit_buffer |= (uint)(zip.InputBuffer[i_ptr++]) << bits_left; bits_left += (8); // INJECT_BITS(zip.InputBuffer[i_ptr++], 8);
+                (lit_codes) = (bit_buffer & ((1 << (5)) - 1)); //PEEK_BITS(5)
+
+                //REMOVE_BITS(5)
+                {
+                    bit_buffer >>= (5);
+                    bits_left -= (5);
+                }
             }
-
-            lit_codes = (bit_buffer & ((1 << (5)) - 1)); //PEEK_BITS(5);
-
-            //REMOVE_BITS(5);
-            bit_buffer >>= (5);
-            bits_left -= (5);
 
             lit_codes += 257;
 
-            // READ_BITS(dist_codes, 5);
-
-            //ENSURE_BITS(5);
-            while (bits_left < 5)
+            //READ_BITS_T(dist_codes, 5)
             {
-                //READ_BYTES;
-
-                //READ_IF_NEEDED;
-                if (i_ptr >= i_end)
+                //ENSURE_BITS(5)
                 {
-                    if (zip.ReadInput() != Error.MSPACK_ERR_OK)
-                        return (InflateErrorCode)zip.Error;
+                    while (bits_left < (5))
+                    {
+                        //READ_BYTES
+                        {
+                            //READ_IF_NEEDED
+                            {
+                                if (i_ptr >= i_end)
+                                {
+                                    if (zip.ReadInput() != Error.MSPACK_ERR_OK)
+                                        return zip.Error;
 
-                    i_ptr = zip.InputPointer;
-                    i_end = zip.InputLength;
+                                    i_ptr = zip.InputPointer;
+                                    i_end = zip.InputLength;
+                                }
+                            }
+
+                            //INJECT_BITS(zip.InputBuffer[i_ptr++], 8)
+                            {
+                                bit_buffer |= (uint)((zip.InputBuffer[i_ptr++]) << bits_left);
+                                bits_left += (8);
+                            }
+                        }
+                    }
                 }
 
-                bit_buffer |= (uint)(zip.InputBuffer[i_ptr++]) << bits_left; bits_left += (8); // INJECT_BITS(zip.InputBuffer[i_ptr++], 8);
+                (dist_codes) = (bit_buffer & lsb_bit_mask[(5)]); //PEEK_BITS_T(5)
+
+                //REMOVE_BITS(5)
+                {
+                    bit_buffer >>= (5);
+                    bits_left -= (5);
+                }
             }
-
-            dist_codes = (bit_buffer & ((1 << (5)) - 1)); //PEEK_BITS(5);
-
-            //REMOVE_BITS(5);
-            bit_buffer >>= (5);
-            bits_left -= (5);
 
             dist_codes += 1;
 
-            // READ_BITS(bitlen_codes, 4);
-
-            //ENSURE_BITS(4);
-            while (bits_left < 4)
+            //READ_BITS(bitlen_codes, 4)
             {
-                //READ_BYTES;
-
-                //READ_IF_NEEDED;
-                if (i_ptr >= i_end)
+                //ENSURE_BITS(4)
                 {
-                    if (zip.ReadInput() != Error.MSPACK_ERR_OK)
-                        return (InflateErrorCode)zip.Error;
+                    while (bits_left < (4))
+                    {
+                        //READ_BYTES
+                        {
+                            //READ_IF_NEEDED
+                            {
+                                if (i_ptr >= i_end)
+                                {
+                                    if (zip.ReadInput() != Error.MSPACK_ERR_OK)
+                                        return zip.Error;
 
-                    i_ptr = zip.InputPointer;
-                    i_end = zip.InputLength;
+                                    i_ptr = zip.InputPointer;
+                                    i_end = zip.InputLength;
+                                }
+                            }
+
+                            //INJECT_BITS(zip.InputBuffer[i_ptr++], 8)
+                            {
+                                bit_buffer |= (uint)((zip.InputBuffer[i_ptr++]) << bits_left);
+                                bits_left += (8);
+                            }
+                        }
+                    }
                 }
 
-                bit_buffer |= (uint)(zip.InputBuffer[i_ptr++]) << bits_left; bits_left += (8); // INJECT_BITS(zip.InputBuffer[i_ptr++], 8);
+                (bitlen_codes) = (bit_buffer & ((1 << (4)) - 1)); //PEEK_BITS(4)
+
+                //REMOVE_BITS(nbits)
+                {
+                    bit_buffer >>= (4);
+                    bits_left -= (4);
+                }
             }
-
-            bitlen_codes = (bit_buffer & ((1 << (8)) - 1)); //PEEK_BITS(4);
-
-            //REMOVE_BITS(4);
-            bit_buffer >>= (4);
-            bits_left -= (4);
 
             bitlen_codes += 4;
             if (lit_codes > MSZIP_LITERAL_MAXSYMBOLS)
-                return InflateErrorCode.INF_ERR_SYMLENS;
+                return Error.INF_ERR_SYMLENS;
             if (dist_codes > MSZIP_DISTANCE_MAXSYMBOLS)
-                return InflateErrorCode.INF_ERR_SYMLENS;
+                return Error.INF_ERR_SYMLENS;
 
             // Read in the bit lengths in their unusual order
             for (i = 0; i < bitlen_codes; i++)
             {
-                // READ_BITS(bl_len[bitlen_order[i]], 3);
-
-                //ENSURE_BITS(3);
-                while (bits_left < 3)
+                //READ_BITS(bl_len[bitlen_order[i]], 3)
                 {
-                    //READ_BYTES;
-
-                    //READ_IF_NEEDED;
-                    if (i_ptr >= i_end)
+                    //ENSURE_BITS(3)
                     {
-                        if (zip.ReadInput() != Error.MSPACK_ERR_OK)
-                            return (InflateErrorCode)zip.Error;
+                        while (bits_left < (3))
+                        {
+                            //READ_BYTES
+                            {
+                                //READ_IF_NEEDED
+                                {
+                                    if (i_ptr >= i_end)
+                                    {
+                                        if (zip.ReadInput() != Error.MSPACK_ERR_OK)
+                                            return zip.Error;
 
-                        i_ptr = zip.InputPointer;
-                        i_end = zip.InputLength;
+                                        i_ptr = zip.InputPointer;
+                                        i_end = zip.InputLength;
+                                    }
+                                }
+
+                                //INJECT_BITS(zip.InputBuffer[i_ptr++], 8)
+                                {
+                                    bit_buffer |= (uint)((zip.InputBuffer[i_ptr++]) << bits_left);
+                                    bits_left += (8);
+                                }
+                            }
+                        }
                     }
 
-                    bit_buffer |= (uint)(zip.InputBuffer[i_ptr++]) << bits_left; bits_left += (8); // INJECT_BITS(zip.InputBuffer[i_ptr++], 8);
+                    (bl_len[bitlen_order[i]]) = (byte)(bit_buffer & ((1 << (3)) - 1)); //PEEK_BITS(3)
+
+                    //REMOVE_BITS(3)
+                    {
+                        bit_buffer >>= (3);
+                        bits_left -= (3);
+                    }
                 }
-
-                bl_len[bitlen_order[i]] = (byte)(bit_buffer & ((1 << (3)) - 1)); //PEEK_BITS(3);
-
-                //REMOVE_BITS(3);
-                bit_buffer >>= (3);
-                bits_left -= (3);
             }
 
-            while (i < 19)
-            {
-                bl_len[bitlen_order[i++]] = 0;
-            }
+            while (i < 19) bl_len[bitlen_order[i++]] = 0;
 
             // Create decoding table with an immediate lookup
-            if (MSZIPDStream.MakeDecodeTable(19, 7, bl_len, bl_table, msb: false))
-                return InflateErrorCode.INF_ERR_BITLENTBL;
+            if (CompressionStream.MakeDecodeTable(19, 7, bl_len, bl_table, msb: false))
+                return Error.INF_ERR_BITLENTBL;
 
-            // Read literal / distance code lengths
+            // Read literal / distance code lengths */
             for (i = 0; i < (lit_codes + dist_codes); i++)
             {
                 // Single-level huffman lookup
 
-                //ENSURE_BITS(7);
-                while (bits_left < 7)
+                //ENSURE_BITS(7)
                 {
-                    //READ_BYTES;
-
-                    //READ_IF_NEEDED;
-                    if (i_ptr >= i_end)
+                    while (bits_left < (7))
                     {
-                        if (zip.ReadInput() != Error.MSPACK_ERR_OK)
-                            return (InflateErrorCode)zip.Error;
+                        //READ_BYTES
+                        {
+                            //READ_IF_NEEDED
+                            {
+                                if (i_ptr >= i_end)
+                                {
+                                    if (zip.ReadInput() != Error.MSPACK_ERR_OK)
+                                        return zip.Error;
 
-                        i_ptr = zip.InputPointer;
-                        i_end = zip.InputLength;
+                                    i_ptr = zip.InputPointer;
+                                    i_end = zip.InputLength;
+                                }
+                            }
+
+                            //INJECT_BITS(zip.InputBuffer[i_ptr++], 8)
+                            {
+                                bit_buffer |= (uint)((zip.InputBuffer[i_ptr++]) << bits_left);
+                                bits_left += (8);
+                            }
+                        }
                     }
-
-                    bit_buffer |= (uint)(zip.InputBuffer[i_ptr++]) << bits_left; bits_left += (8); // INJECT_BITS(zip.InputBuffer[i_ptr++], 8);
                 }
 
-                code = bl_table[(bit_buffer & ((1 << (7)) - 1))]; //PEEK_BITS(7);
+                code = bl_table[(bit_buffer & ((1 << (7)) - 1))]; //PEEK_BITS(7)
 
-                //REMOVE_BITS(bl_len[code]);
-                bit_buffer >>= (bl_len[code]);
-                bits_left -= (bl_len[code]);
+                //REMOVE_BITS(bl_len[code])
+                {
+                    bit_buffer >>= (bl_len[code]);
+                    bits_left -= (bl_len[code]);
+                }
 
                 if (code < 16)
                 {
@@ -666,16 +791,39 @@ namespace LibMSPackSharp.Compression
                             //READ_BITS(run, 2)
                             {
                                 //ENSURE_BITS(2)
-                                while (bits_left < (2))
                                 {
-                                    READ_BYTES;
+                                    while (bits_left < (2))
+                                    {
+                                        //READ_BYTES
+                                        {
+                                            //READ_IF_NEEDED
+                                            {
+                                                if (i_ptr >= i_end)
+                                                {
+                                                    if (zip.ReadInput() != Error.MSPACK_ERR_OK)
+                                                        return zip.Error;
+
+                                                    i_ptr = zip.InputPointer;
+                                                    i_end = zip.InputLength;
+                                                }
+                                            }
+
+                                            //INJECT_BITS(zip.InputBuffer[i_ptr++], 8)
+                                            {
+                                                bit_buffer |= (uint)((zip.InputBuffer[i_ptr++]) << bits_left);
+                                                bits_left += (8);
+                                            }
+                                        }
+                                    }
                                 }
 
-                                run = (int)(bit_buffer >> (BITBUF_WIDTH - (2)));
+                                (run) = (bit_buffer & ((1 << (2)) - 1)); //PEEK_BITS(2)
 
-                                // REMOVE_BITS(2);
-                                bit_buffer <<= (2);
-                                bits_left -= (2);
+                                //REMOVE_BITS(2)
+                                {
+                                    bit_buffer >>= (2);
+                                    bits_left -= (2);
+                                }
                             }
 
                             run += 3;
@@ -686,18 +834,40 @@ namespace LibMSPackSharp.Compression
                             //READ_BITS(run, 3)
                             {
                                 //ENSURE_BITS(3)
-                                while (bits_left < (3))
                                 {
-                                    READ_BYTES;
+                                    while (bits_left < (3))
+                                    {
+                                        //READ_BYTES
+                                        {
+                                            //READ_IF_NEEDED
+                                            {
+                                                if (i_ptr >= i_end)
+                                                {
+                                                    if (zip.ReadInput() != Error.MSPACK_ERR_OK)
+                                                        return zip.Error;
+
+                                                    i_ptr = zip.InputPointer;
+                                                    i_end = zip.InputLength;
+                                                }
+                                            }
+
+                                            //INJECT_BITS(zip.InputBuffer[i_ptr++], 8)
+                                            {
+                                                bit_buffer |= (uint)((zip.InputBuffer[i_ptr++]) << bits_left);
+                                                bits_left += (8);
+                                            }
+                                        }
+                                    }
                                 }
 
-                                run = (int)(bit_buffer >> (BITBUF_WIDTH - (3)));
+                                (run) = (bit_buffer & ((1 << (3)) - 1)); //PEEK_BITS(3)
 
-                                // REMOVE_BITS(3);
-                                bit_buffer <<= (3);
-                                bits_left -= (3);
+                                //REMOVE_BITS(3)
+                                {
+                                    bit_buffer >>= (3);
+                                    bits_left -= (3);
+                                }
                             }
-
 
                             run += 3;
                             code = 0;
@@ -707,16 +877,39 @@ namespace LibMSPackSharp.Compression
                             //READ_BITS(run, 7)
                             {
                                 //ENSURE_BITS(7)
-                                while (bits_left < (7))
                                 {
-                                    READ_BYTES;
+                                    while (bits_left < (7))
+                                    {
+                                        //READ_BYTES
+                                        {
+                                            //READ_IF_NEEDED
+                                            {
+                                                if (i_ptr >= i_end)
+                                                {
+                                                    if (zip.ReadInput() != Error.MSPACK_ERR_OK)
+                                                        return zip.Error;
+
+                                                    i_ptr = zip.InputPointer;
+                                                    i_end = zip.InputLength;
+                                                }
+                                            }
+
+                                            //INJECT_BITS(zip.InputBuffer[i_ptr++], 8)
+                                            {
+                                                bit_buffer |= (uint)((zip.InputBuffer[i_ptr++]) << bits_left);
+                                                bits_left += (8);
+                                            }
+                                        }
+                                    }
                                 }
 
-                                run = (int)(bit_buffer >> (BITBUF_WIDTH - (7)));
+                                (run) = (bit_buffer & ((1 << (7)) - 1)); //PEEK_BITS(7)
 
-                                // REMOVE_BITS(7);
-                                bit_buffer <<= (7);
-                                bits_left -= (7);
+                                //REMOVE_BITS(7)
+                                {
+                                    bit_buffer >>= (7);
+                                    bits_left -= (7);
+                                }
                             }
 
                             run += 11;
@@ -725,11 +918,11 @@ namespace LibMSPackSharp.Compression
 
                         default:
                             Console.WriteLine($"Bad code!: {code}");
-                            return InflateErrorCode.INF_ERR_BADBITLEN;
+                            return Error.INF_ERR_BADBITLEN;
                     }
 
                     if ((i + run) > (lit_codes + dist_codes))
-                        return InflateErrorCode.INF_ERR_BITOVERRUN;
+                        return Error.INF_ERR_BITOVERRUN;
 
                     while (run-- != 0)
                     {
@@ -755,11 +948,13 @@ namespace LibMSPackSharp.Compression
                 zip.DISTANCE_len[i++] = 0;
             }
 
-            //STORE_BITS;
-            zip.InputPointer = i_ptr;
-            zip.InputLength = i_end;
-            zip.BitBuffer = bit_buffer;
-            zip.BitsLeft = bits_left;
+            //STORE_BITS
+            {
+                zip.InputPointer = i_ptr;
+                zip.InputLength = i_end;
+                zip.BitBuffer = bit_buffer;
+                zip.BitsLeft = bits_left;
+            }
 
             return 0;
         }
@@ -767,21 +962,25 @@ namespace LibMSPackSharp.Compression
         /// <summary>
         /// A clean implementation of RFC 1951 / inflate
         /// </summary>
-        private static InflateErrorCode Inflate(MSZIPDStream zip)
+        // TODO: Huffman tree implementation
+        private static Error Inflate(MSZIPDStream zip)
         {
-            int last_block, block_type, distance = 0, length = 0, this_run, i;
+            uint last_block, block_type, distance, length, this_run, i;
+            Error err;
 
             // For the bit buffer and huffman decoding
             uint bit_buffer;
             int bits_left;
+            ushort sym;
             int i_ptr, i_end;
-            InflateErrorCode err;
 
-            //RESTORE_BITS;
-            i_ptr = zip.InputPointer;
-            i_end = zip.InputLength;
-            bit_buffer = zip.BitBuffer;
-            bits_left = zip.BitsLeft;
+            //RESTORE_BITS
+            {
+                i_ptr = zip.InputPointer;
+                i_end = zip.InputLength;
+                bit_buffer = zip.BitBuffer;
+                bits_left = zip.BitsLeft;
+            }
 
             do
             {
@@ -790,16 +989,39 @@ namespace LibMSPackSharp.Compression
                 //READ_BITS(last_block, 1)
                 {
                     //ENSURE_BITS(1)
-                    while (bits_left < (1))
                     {
-                        READ_BYTES;
+                        while (bits_left < (1))
+                        {
+                            //READ_BYTES
+                            {
+                                //READ_IF_NEEDED
+                                {
+                                    if (i_ptr >= i_end)
+                                    {
+                                        if (zip.ReadInput() != Error.MSPACK_ERR_OK)
+                                            return zip.Error;
+
+                                        i_ptr = zip.InputPointer;
+                                        i_end = zip.InputLength;
+                                    }
+                                }
+
+                                //INJECT_BITS(zip.InputBuffer[i_ptr++], 8)
+                                {
+                                    bit_buffer |= (uint)((zip.InputBuffer[i_ptr++]) << bits_left);
+                                    bits_left += (8);
+                                }
+                            }
+                        }
                     }
 
-                    last_block = (int)(bit_buffer >> (BITBUF_WIDTH - (1)));
+                    (last_block) = (bit_buffer & ((1 << (1)) - 1)); //PEEK_BITS(1)
 
-                    // REMOVE_BITS(1);
-                    bit_buffer <<= (1);
-                    bits_left -= (1);
+                    //REMOVE_BITS(1)
+                    {
+                        bit_buffer >>= (1);
+                        bits_left -= (1);
+                    }
                 }
 
                 // Read in block type
@@ -807,110 +1029,144 @@ namespace LibMSPackSharp.Compression
                 //READ_BITS(block_type, 2)
                 {
                     //ENSURE_BITS(2)
-                    while (bits_left < (2))
                     {
-                        READ_BYTES;
+                        while (bits_left < (2))
+                        {
+                            //READ_BYTES
+                            {
+                                //READ_IF_NEEDED
+                                {
+                                    if (i_ptr >= i_end)
+                                    {
+                                        if (zip.ReadInput() != Error.MSPACK_ERR_OK)
+                                            return zip.Error;
+
+                                        i_ptr = zip.InputPointer;
+                                        i_end = zip.InputLength;
+                                    }
+                                }
+
+                                //INJECT_BITS(zip.InputBuffer[i_ptr++], 8)
+                                {
+                                    bit_buffer |= (uint)((zip.InputBuffer[i_ptr++]) << bits_left);
+                                    bits_left += (8);
+                                }
+                            }
+                        }
                     }
 
-                    block_type = (int)(bit_buffer >> (BITBUF_WIDTH - (2)));
+                    (block_type) = (bit_buffer & ((1 << (2)) - 1)); //PEEK_BITS(2)
 
-                    // REMOVE_BITS(2);
-                    bit_buffer <<= (2);
-                    bits_left -= (2);
+                    //REMOVE_BITS(2)
+                    {
+                        bit_buffer >>= (2);
+                        bits_left -= (2);
+                    }
                 }
 
-                // Uncompressed block
                 if (block_type == 0)
                 {
+                    // Uncompressed block
                     byte[] lens_buf = new byte[4];
 
                     // Go to byte boundary
-                    i = bits_left & 7;
+                    i = (uint)(bits_left & 7);
 
-                    //REMOVE_BITS(i);
-                    bit_buffer >>= (i);
-                    bits_left -= (i);
+                    //REMOVE_BITS(i)
+                    {
+                        bit_buffer >>= (int)(i);
+                        bits_left -= (int)(i);
+                    }
 
                     // Read 4 bytes of data, emptying the bit-buffer if necessary
                     for (i = 0; (bits_left >= 8); i++)
                     {
                         if (i == 4)
-                            return InflateErrorCode.INF_ERR_BITBUF;
+                            return Error.INF_ERR_BITBUF;
 
-                        lens_buf[i] = (byte)(bit_buffer & ((1 << (8)) - 1)); //PEEK_BITS(8);
+                        lens_buf[i] = (byte)(bit_buffer & ((1 << (8)) - 1)); //PEEK_BITS(8)
 
-                        //REMOVE_BITS(8);
-                        bit_buffer >>= (8);
-                        bits_left -= (8);
+                        //REMOVE_BITS(8)
+                        {
+                            bit_buffer >>= (8);
+                            bits_left -= (8);
+                        }
                     }
 
                     if (bits_left != 0)
-                        return InflateErrorCode.INF_ERR_BITBUF;
+                        return Error.INF_ERR_BITBUF;
 
                     while (i < 4)
                     {
-                        //READ_IF_NEEDED;
-                        if (i_ptr >= i_end)
+                        //READ_IF_NEEDED
                         {
-                            if (zip.ReadInput() != Error.MSPACK_ERR_OK)
-                                return (InflateErrorCode)zip.Error;
+                            if (i_ptr >= i_end)
+                            {
+                                if (zip.ReadInput() != Error.MSPACK_ERR_OK)
+                                    return zip.Error;
 
-                            i_ptr = zip.InputPointer;
-                            i_end = zip.InputLength;
+                                i_ptr = zip.InputPointer;
+                                i_end = zip.InputLength;
+                            }
                         }
 
                         lens_buf[i++] = zip.InputBuffer[i_ptr++];
                     }
 
                     // Get the length and its complement
-                    length = lens_buf[0] | (lens_buf[1] << 8);
-                    i = lens_buf[2] | (lens_buf[3] << 8);
+                    length = (uint)(lens_buf[0] | (lens_buf[1] << 8));
+                    i = (uint)(lens_buf[2] | (lens_buf[3] << 8));
                     if (length != (~i & 0xFFFF))
-                        return InflateErrorCode.INF_ERR_COMPLEMENT;
+                        return Error.INF_ERR_COMPLEMENT;
 
                     // Read and copy the uncompressed data into the window
                     while (length > 0)
                     {
-                        //READ_IF_NEEDED;
-                        if (i_ptr >= i_end)
+                        //READ_IF_NEEDED
                         {
-                            if (zip.ReadInput() != Error.MSPACK_ERR_OK)
-                                return (InflateErrorCode)zip.Error;
+                            if (i_ptr >= i_end)
+                            {
+                                if (zip.ReadInput() != Error.MSPACK_ERR_OK)
+                                    return zip.Error;
 
-                            i_ptr = zip.InputPointer;
-                            i_end = zip.InputLength;
+                                i_ptr = zip.InputPointer;
+                                i_end = zip.InputLength;
+                            }
                         }
 
                         this_run = length;
                         if (this_run > (uint)(i_end - i_ptr))
-                            this_run = i_end - i_ptr;
+                            this_run = (uint)(i_end - i_ptr);
 
                         if (this_run > (MSZIP_FRAME_SIZE - zip.WindowPosition))
-                            this_run = (int)(MSZIP_FRAME_SIZE - zip.WindowPosition);
+                            this_run = MSZIP_FRAME_SIZE - zip.WindowPosition;
 
-                        Array.Copy(zip.InputBuffer, i_ptr, zip.Window, (int)zip.WindowPosition, this_run);
-                        zip.WindowPosition += (uint)this_run;
-                        i_ptr += this_run;
+                        Array.Copy(zip.InputBuffer, i_ptr, zip.Window, zip.WindowPosition, this_run);
+
+                        zip.WindowPosition += this_run;
+                        i_ptr += (int)this_run;
                         length -= this_run;
 
-                        // FLUSH_IF_NEEDED
-                        if (zip.WindowPosition == MSZIP_FRAME_SIZE)
+                        //FLUSH_IF_NEEDED
                         {
-                            if (zip.FlushWindow(zip, MSZIP_FRAME_SIZE) != Error.MSPACK_ERR_OK)
-                                return InflateErrorCode.INF_ERR_FLUSH;
+                            if (zip.WindowPosition == MSZIP_FRAME_SIZE)
+                            {
+                                if (zip.FlushWindow(zip, MSZIP_FRAME_SIZE) != Error.MSPACK_ERR_OK)
+                                    return Error.INF_ERR_FLUSH;
 
-                            zip.WindowPosition = 0;
+                                zip.WindowPosition = 0;
+                            }
                         }
                     }
                 }
                 else if ((block_type == 1) || (block_type == 2))
                 {
                     // Huffman-compressed LZ77 block
-                    uint match_posn, code = 0;
+                    uint match_posn, code;
 
-                    // Block with fixed Huffman codes
                     if (block_type == 1)
                     {
+                        // Block with fixed Huffman codes
                         i = 0;
                         while (i < 144)
                         {
@@ -937,51 +1193,56 @@ namespace LibMSPackSharp.Compression
                             zip.DISTANCE_len[i] = 5;
                         }
                     }
-
-                    // Block with dynamic Huffman codes
                     else
                     {
-                        //STORE_BITS;
-                        zip.InputPointer = i_ptr;
-                        zip.InputLength = i_end;
-                        zip.BitBuffer = bit_buffer;
-                        zip.BitsLeft = bits_left;
+                        // Block with dynamic Huffman codes
 
-                        if ((i = (int)ReadLens(zip)) != 0)
-                            return (InflateErrorCode)i;
+                        //STORE_BITS
+                        {
+                            zip.InputPointer = i_ptr;
+                            zip.InputLength = i_end;
+                            zip.BitBuffer = bit_buffer;
+                            zip.BitsLeft = bits_left;
+                        }
 
-                        //RESTORE_BITS;
-                        i_ptr = zip.InputPointer;
-                        i_end = zip.InputLength;
-                        bit_buffer = zip.BitBuffer;
-                        bits_left = zip.BitsLeft;
+                        if ((err = ReadLens(zip)) != Error.MSPACK_ERR_OK)
+                            return err;
+
+                        //RESTORE_BITS
+                        {
+                            i_ptr = zip.InputPointer;
+                            i_end = zip.InputLength;
+                            bit_buffer = zip.BitBuffer;
+                            bits_left = zip.BitsLeft;
+                        }
                     }
 
                     // Now huffman lengths are read for either kind of block, 
                     // create huffman decoding tables
-                    if (!MSZIPDStream.MakeDecodeTable(MSZIP_LITERAL_MAXSYMBOLS, MSZIP_LITERAL_TABLEBITS, zip.LITERAL_len, zip.LITERAL_table, msb: false))
-                        return InflateErrorCode.INF_ERR_LITERALTBL;
+                    if (CompressionStream.MakeDecodeTable(MSZIP_LITERAL_MAXSYMBOLS, MSZIP_LITERAL_TABLEBITS, zip.LITERAL_len, zip.LITERAL_table, msb: false))
+                        return Error.INF_ERR_LITERALTBL;
 
-                    if (!MSZIPDStream.MakeDecodeTable(MSZIP_DISTANCE_MAXSYMBOLS, MSZIP_DISTANCE_TABLEBITS, zip.DISTANCE_len, zip.DISTANCE_table, msb: false))
-                        return InflateErrorCode.INF_ERR_DISTANCETBL;
+                    if (CompressionStream.MakeDecodeTable(MSZIP_DISTANCE_MAXSYMBOLS, MSZIP_DISTANCE_TABLEBITS, zip.DISTANCE_len, zip.DISTANCE_table, msb: false))
+                        return Error.INF_ERR_DISTANCETBL;
 
                     // Decode forever until end of block code
                     for (; ; )
                     {
-                        if ((err = (InflateErrorCode)zip.READ_HUFFSYM(zip.LITERAL_table, ref code, MSZIP_LITERAL_TABLEBITS, zip.LITERAL_len, MSZIP_LITERAL_MAXSYMBOLS, ref i, ref i_ptr, ref i_end, ref bits_left, ref bit_buffer, msb: false)) != InflateErrorCode.INF_ERR_OK)
-                            return err;
+                        READ_HUFFSYM(LITERAL, code);
 
                         if (code < 256)
                         {
                             zip.Window[zip.WindowPosition++] = (byte)code;
 
-                            // FLUSH_IF_NEEDED
-                            if (zip.WindowPosition == MSZIP_FRAME_SIZE)
+                            //FLUSH_IF_NEEDED
                             {
-                                if (zip.FlushWindow(zip, MSZIP_FRAME_SIZE) != Error.MSPACK_ERR_OK)
-                                    return InflateErrorCode.INF_ERR_FLUSH;
+                                if (zip.WindowPosition == MSZIP_FRAME_SIZE)
+                                {
+                                    if (zip.FlushWindow(zip, MSZIP_FRAME_SIZE) != Error.MSPACK_ERR_OK)
+                                        return Error.INF_ERR_FLUSH;
 
-                                zip.WindowPosition = 0;
+                                    zip.WindowPosition = 0;
+                                }
                             }
                         }
                         else if (code == 256)
@@ -993,74 +1254,97 @@ namespace LibMSPackSharp.Compression
                         {
                             code -= 257; // Codes 257-285 are matches
                             if (code >= 29)
-                                return InflateErrorCode.INF_ERR_LITCODE; // Codes 286-287 are illegal
+                                return Error.INF_ERR_LITCODE; // Codes 286-287 are illegal
 
                             //READ_BITS_T(length, lit_extrabits[code])
-
-                            //ENSURE_BITS(lit_extrabits[code]);
-                            while (bits_left < lit_extrabits[code])
                             {
-                                //READ_BYTES;
-
-                                //READ_IF_NEEDED;
-                                if (i_ptr >= i_end)
+                                //ENSURE_BITS(lit_extrabits[code])
                                 {
-                                    if (zip.ReadInput() != Error.MSPACK_ERR_OK)
-                                        return (InflateErrorCode)zip.Error;
+                                    while (bits_left < (lit_extrabits[code]))
+                                    {
+                                        //READ_BYTES
+                                        {
+                                            //READ_IF_NEEDED
+                                            {
+                                                if (i_ptr >= i_end)
+                                                {
+                                                    if (zip.ReadInput() != Error.MSPACK_ERR_OK)
+                                                        return zip.Error;
 
-                                    i_ptr = zip.InputPointer;
-                                    i_end = zip.InputLength;
+                                                    i_ptr = zip.InputPointer;
+                                                    i_end = zip.InputLength;
+                                                }
+                                            }
+
+                                            //INJECT_BITS(zip.InputBuffer[i_ptr++], 8)
+                                            {
+                                                bit_buffer |= (uint)((zip.InputBuffer[i_ptr++]) << bits_left);
+                                                bits_left += (8);
+                                            }
+                                        }
+                                    }
                                 }
 
-                                bit_buffer |= (uint)(zip.InputBuffer[i_ptr++]) << bits_left; bits_left += (8); // INJECT_BITS(zip.InputBuffer[i_ptr++], 8);
+                                (length) = (bit_buffer & lsb_bit_mask[(lit_extrabits[code])]); //PEEK_BITS_T(lit_extrabits[code])
+
+                                //REMOVE_BITS(lit_extrabits[code])
+                                {
+                                    bit_buffer >>= (lit_extrabits[code]);
+                                    bits_left -= (lit_extrabits[code]);
+                                }
                             }
-
-                            (length) = (int)(bit_buffer & lsb_bit_mask[(lit_extrabits[code])]); //PEEK_BITS_T(lit_extrabits[code]);
-
-                            //REMOVE_BITS(lit_extrabits[code]);
-                            bit_buffer >>= (lit_extrabits[code]);
-                            bits_left -= (lit_extrabits[code]);
 
                             length += lit_lengths[code];
 
-                            if ((err = (InflateErrorCode)zip.READ_HUFFSYM(zip.DISTANCE_table, ref code, MSZIP_DISTANCE_TABLEBITS, zip.DISTANCE_len, MSZIP_DISTANCE_MAXSYMBOLS, ref i, ref i_ptr, ref i_end, ref bits_left, ref bit_buffer, msb: false)) != 0)
-                                return err;
+                            READ_HUFFSYM(DISTANCE, code);
 
                             if (code >= 30)
-                                return InflateErrorCode.INF_ERR_DISTCODE;
+                                return Error.INF_ERR_DISTCODE;
 
                             //READ_BITS_T(distance, dist_extrabits[code])
-
-                            //ENSURE_BITS(dist_extrabits[code]);
-                            while (bits_left < dist_extrabits[code])
                             {
-                                //READ_BYTES;
-
-                                //READ_IF_NEEDED;
-                                if (i_ptr >= i_end)
+                                //ENSURE_BITS(dist_extrabits[code])
                                 {
-                                    if (zip.ReadInput() != Error.MSPACK_ERR_OK)
-                                        return (InflateErrorCode)zip.Error;
+                                    while (bits_left < (dist_extrabits[code]))
+                                    {
+                                        //READ_BYTES
+                                        {
+                                            //READ_IF_NEEDED
+                                            {
+                                                if (i_ptr >= i_end)
+                                                {
+                                                    if (zip.ReadInput() != Error.MSPACK_ERR_OK)
+                                                        return zip.Error;
 
-                                    i_ptr = zip.InputPointer;
-                                    i_end = zip.InputLength;
+                                                    i_ptr = zip.InputPointer;
+                                                    i_end = zip.InputLength;
+                                                }
+                                            }
+
+                                            //INJECT_BITS(zip.InputBuffer[i_ptr++], 8)
+                                            {
+                                                bit_buffer |= (uint)((zip.InputBuffer[i_ptr++]) << bits_left);
+                                                bits_left += (8);
+                                            }
+                                        }
+                                    }
                                 }
 
-                                bit_buffer |= (uint)(zip.InputBuffer[i_ptr++]) << bits_left; bits_left += (8); // INJECT_BITS(zip.InputBuffer[i_ptr++], 8);
+                                (distance) = (bit_buffer & lsb_bit_mask[(dist_extrabits[code])]); //PEEK_BITS_T(dist_extrabits[code])
+
+                                //REMOVE_BITS(dist_extrabits[code])
+                                {
+                                    bit_buffer >>= (dist_extrabits[code]);
+                                    bits_left -= (dist_extrabits[code]);
+                                }
                             }
-
-                            (distance) = (int)(bit_buffer & lsb_bit_mask[(dist_extrabits[code])]); //PEEK_BITS_T(dist_extrabits[code]);
-
-                            //REMOVE_BITS(lit_extrabits[code]);
-                            bit_buffer >>= (dist_extrabits[code]);
-                            bits_left -= (dist_extrabits[code]);
 
                             distance += dist_offsets[code];
 
                             // Match position is window position minus distance. If distance
                             // is more than window position numerically, it must 'wrap
                             // around' the frame size.
-                            match_posn = (uint)(((distance > zip.WindowPosition) ? MSZIP_FRAME_SIZE : 0) + zip.WindowPosition - distance);
+                            match_posn = (uint)((distance > zip.WindowPosition) ? MSZIP_FRAME_SIZE : 0) + zip.WindowPosition - distance;
 
                             // Copy match
                             if (length < 12)
@@ -1071,35 +1355,35 @@ namespace LibMSPackSharp.Compression
                                     zip.Window[zip.WindowPosition++] = zip.Window[match_posn++];
                                     match_posn &= MSZIP_FRAME_SIZE - 1;
 
-                                    // FLUSH_IF_NEEDED
-                                    if (zip.WindowPosition == MSZIP_FRAME_SIZE)
+                                    //FLUSH_IF_NEEDED
                                     {
-                                        if (zip.FlushWindow(zip, MSZIP_FRAME_SIZE) != Error.MSPACK_ERR_OK)
-                                            return InflateErrorCode.INF_ERR_FLUSH;
+                                        if (zip.WindowPosition == MSZIP_FRAME_SIZE)
+                                        {
+                                            if (zip.FlushWindow(zip, MSZIP_FRAME_SIZE) != Error.MSPACK_ERR_OK)
+                                                return Error.INF_ERR_FLUSH;
 
-                                        zip.WindowPosition = 0;
+                                            zip.WindowPosition = 0;
+                                        }
                                     }
                                 }
                             }
                             else
                             {
-                                // Longer match, use faster loop but with setup expense
+                                // Longer match, use faster loop but with setup expense */
                                 int runsrc, rundest;
                                 do
                                 {
                                     this_run = length;
                                     if ((match_posn + this_run) > MSZIP_FRAME_SIZE)
-                                        this_run = MSZIP_FRAME_SIZE - (int)match_posn;
-
+                                        this_run = MSZIP_FRAME_SIZE - match_posn;
                                     if ((zip.WindowPosition + this_run) > MSZIP_FRAME_SIZE)
-                                        this_run = MSZIP_FRAME_SIZE - (int)zip.WindowPosition;
+                                        this_run = MSZIP_FRAME_SIZE - zip.WindowPosition;
 
                                     rundest = (int)zip.WindowPosition;
-                                    zip.WindowPosition += (uint)this_run;
+                                    zip.WindowPosition += this_run;
                                     runsrc = (int)match_posn;
-                                    match_posn += (uint)this_run;
+                                    match_posn += this_run;
                                     length -= this_run;
-
                                     while (this_run-- != 0)
                                     {
                                         zip.Window[rundest++] = zip.Window[runsrc++];
@@ -1108,23 +1392,27 @@ namespace LibMSPackSharp.Compression
                                     if (match_posn == MSZIP_FRAME_SIZE)
                                         match_posn = 0;
 
-                                    // FLUSH_IF_NEEDED
-                                    if (zip.WindowPosition == MSZIP_FRAME_SIZE)
+                                    //FLUSH_IF_NEEDED
                                     {
-                                        if (zip.FlushWindow(zip, MSZIP_FRAME_SIZE) != Error.MSPACK_ERR_OK)
-                                            return InflateErrorCode.INF_ERR_FLUSH;
+                                        if (zip.WindowPosition == MSZIP_FRAME_SIZE)
+                                        {
+                                            if (zip.FlushWindow(zip, MSZIP_FRAME_SIZE) != Error.MSPACK_ERR_OK)
+                                                return Error.INF_ERR_FLUSH;
 
-                                        zip.WindowPosition = 0;
+                                            zip.WindowPosition = 0;
+                                        }
                                     }
                                 } while (length > 0);
                             }
+
                         }
+
                     }
                 }
                 else
                 {
                     // block_type == 3 -- bad block type
-                    return InflateErrorCode.INF_ERR_BLOCKTYPE;
+                    return Error.INF_ERR_BLOCKTYPE;
                 }
             } while (last_block == 0);
 
@@ -1132,17 +1420,19 @@ namespace LibMSPackSharp.Compression
             if (zip.WindowPosition != 0)
             {
                 if (zip.FlushWindow(zip, zip.WindowPosition) != Error.MSPACK_ERR_OK)
-                    return InflateErrorCode.INF_ERR_FLUSH;
+                    return Error.INF_ERR_FLUSH;
             }
 
-            //STORE_BITS;
-            zip.InputPointer = i_ptr;
-            zip.InputLength = i_end;
-            zip.BitBuffer = bit_buffer;
-            zip.BitsLeft = bits_left;
+            //STORE_BITS
+            {
+                zip.InputPointer = i_ptr;
+                zip.InputLength = i_end;
+                zip.BitBuffer = bit_buffer;
+                zip.BitsLeft = bits_left;
+            }
 
             // Return success
-            return InflateErrorCode.INF_ERR_OK;
+            return Error.MSPACK_ERR_OK;
         }
 
         /// <summary>
