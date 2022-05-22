@@ -447,7 +447,7 @@ namespace LibMSPackSharp.Compression
 
             // Bitstream and huffman reading variables
             uint bit_buffer;
-            int bits_left, i = 0;
+            int bits_left, i;
             int i_ptr, i_end;
             ushort sym;
 
@@ -455,7 +455,7 @@ namespace LibMSPackSharp.Compression
             int this_run, main_element, aligned_bits, j, warned = 0;
             byte[] window, buf = new byte[12];
             int runsrc, rundest;
-            uint frame_size = 0, end_frame, match_offset, window_posn;
+            uint frame_size, end_frame, match_offset, window_posn;
             uint R0, R1, R2;
 
             // Easy answers
@@ -472,7 +472,7 @@ namespace LibMSPackSharp.Compression
 
             if (i != 0)
             {
-                try { lzx.Output.Write(lzx.e8_buf, lzx.OutputPointer, i); }
+                try { lzx.Sys.Write(lzx.Output, lzx.e8_buf, lzx.OutputPointer, i); }
                 catch { return lzx.Error = Error.MSPACK_ERR_WRITE; }
 
                 lzx.OutputPointer += i;
@@ -580,7 +580,7 @@ namespace LibMSPackSharp.Compression
                 // Read header if necessary
                 if (lzx.HeaderRead == 0)
                 {
-                    // Read 1 bit. if bit=0, intel filesize = 0.
+                    // Read 1 bit. if bit=0, intel_filesize = 0.
                     // if bit=1, read intel filesize (32 bits)
                     j = 0;
 
@@ -950,7 +950,7 @@ namespace LibMSPackSharp.Compression
                         }
 
                         lzx.BlockRemaining = lzx.BlockLength = (uint)((i << 8) | j);
-                        // Console.WriteLine($"New block t{lzx.BlockType} len {lzx.BlockLength}");
+                        // Console.WriteLine($"New block t {lzx.BlockType} len {lzx.BlockLength}");
 
                         // Read individual block headers
                         switch (lzx.BlockType)
@@ -1883,7 +1883,7 @@ namespace LibMSPackSharp.Compression
                                     // LZX DELTA uses max match length to signal even longer match
                                     if (match_length == LZX_MAX_MATCH && lzx.IsDelta)
                                     {
-                                        int extra_len = 0;
+                                        int extra_len;
 
                                         // 4 entry huffman tree
 
@@ -1995,7 +1995,7 @@ namespace LibMSPackSharp.Compression
                                         }
 
                                         // '10' . 10 extra length bits + 0x100
-                                        if ((bit_buffer >> (CompressionStream.BITBUF_WIDTH - (2))) == 2) //PEEK_BITS(2)
+                                        else if ((bit_buffer >> (CompressionStream.BITBUF_WIDTH - (2))) == 2) //PEEK_BITS(2)
                                         {
                                             //REMOVE_BITS(2)
                                             {
@@ -2061,7 +2061,7 @@ namespace LibMSPackSharp.Compression
                                         }
 
                                         // '110' . 12 extra length bits + 0x500
-                                        if ((bit_buffer >> (CompressionStream.BITBUF_WIDTH - (3))) == 6) //PEEK_BITS(3)
+                                        else if ((bit_buffer >> (CompressionStream.BITBUF_WIDTH - (3))) == 6) //PEEK_BITS(3)
                                         {
                                             //REMOVE_BITS(3)
                                             {
