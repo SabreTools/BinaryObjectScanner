@@ -252,6 +252,12 @@ namespace LibMSPackSharp
 
         private static int DefaultWrite(object file, byte[] buffer, int pointer, int bytes)
         {
+            // Null output file means skip those bytes
+            if (file == null)
+            {
+                return bytes;
+            }
+
             FileStream self = file as FileStream;
             if (self != null && buffer != null && bytes >= 0)
             {

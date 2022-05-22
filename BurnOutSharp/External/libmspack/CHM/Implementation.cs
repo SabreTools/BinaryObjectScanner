@@ -1113,7 +1113,12 @@ namespace LibMSPackSharp.CHM
         /// </summary>
         private static int SysWrite(object file, byte[] buffer, int offset, int bytes)
         {
-            if (file is DecompressorImpl self)
+            // Null output file means skip those bytes
+            if (file == null)
+            {
+                return bytes;
+            }
+            else if (file is DecompressorImpl self)
             {
                 self.State.Offset += (uint)bytes;
                 if (self.State.OutputFileHandle != null)

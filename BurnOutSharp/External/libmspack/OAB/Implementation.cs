@@ -86,7 +86,12 @@ namespace LibMSPackSharp.OAB
 
         private static int SysWrite(object baseFile, byte[] buf, int pointer, int size)
         {
-            if (baseFile is InternalFile file)
+            // Null output file means skip those bytes
+            if (baseFile == null)
+            {
+                return size;
+            }
+            else if (baseFile is InternalFile file)
             {
                 int bytes_written = file.OrigSys.Write(file.OrigFile, buf, pointer, size);
                 if (bytes_written > 0)
@@ -100,7 +105,7 @@ namespace LibMSPackSharp.OAB
             }
 
             // Unknown file to write to
-            return 0;
+            return -1;
         }
 
         #endregion
