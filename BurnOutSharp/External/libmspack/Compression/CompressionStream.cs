@@ -36,7 +36,7 @@ namespace LibMSPackSharp.Compression
         /// </summary>
         public FileStream Output { get; set; }
 
-        public LibMSPackSharp.Error Error { get; set; }
+        public Error Error { get; set; }
 
         #region I/O buffering
 
@@ -133,46 +133,11 @@ namespace LibMSPackSharp.Compression
          * to the bit buffer when the bit buffer already has 1 to 15 bits left.
          */
 
-        public void READ_BITS_MSB(ref int val, int nbits, ref int i_ptr, ref int i_end, ref int bits_left, ref uint bit_buffer)
-        {
-            //READ_BITS(val, nbits)
-            {
-                //ENSURE_BITS(nbits)
-                while (bits_left < (nbits))
-                {
-                    READ_BYTES;
-                }
-
-                val = (int)(bit_buffer >> (BITBUF_WIDTH - (nbits)));
-
-                // REMOVE_BITS(nbits);
-                bit_buffer <<= (nbits);
-                bits_left -= (nbits);
-            }
-        }
-
-        public void READ_BITS_LSB(ref int val, int nbits, ref int i_ptr, ref int i_end, ref int bits_left, ref uint bit_buffer)
-        {
-            //READ_BITS(val, nbits)
-
-            //ENSURE_BITS(nbits)
-            while (bits_left < nbits)
-            {
-                READ_BYTES;
-            }
-
-            val = (int)(bit_buffer & ((1 << (nbits)) - 1));
-
-            //REMOVE_BITS(nbits);
-            bit_buffer >>= (nbits);
-            bits_left -= (nbits);
-        }
-
-        public LibMSPackSharp.Error ReadInput()
+        public Error ReadInput()
         {
             int read = Sys.Read(Input, InputBuffer, 0, (int)InputBufferSize);
             if (read < 0)
-                return Error = LibMSPackSharp.Error.MSPACK_ERR_READ;
+                return Error = Error.MSPACK_ERR_READ;
 
             // We might overrun the input stream by asking for bits we don't use,
             // so fake 2 more bytes at the end of input
@@ -181,7 +146,7 @@ namespace LibMSPackSharp.Compression
                 if (InputEnd != 0)
                 {
                     Console.WriteLine("out of input bytes");
-                    return Error = LibMSPackSharp.Error.MSPACK_ERR_READ;
+                    return Error = Error.MSPACK_ERR_READ;
                 }
                 else
                 {
@@ -194,7 +159,7 @@ namespace LibMSPackSharp.Compression
             // Update i_ptr and i_end
             InputPointer = 0;
             InputLength = read;
-            return Error = LibMSPackSharp.Error.MSPACK_ERR_OK;
+            return Error = Error.MSPACK_ERR_OK;
         }
 
         #endregion
@@ -216,7 +181,7 @@ namespace LibMSPackSharp.Compression
                 READ_BYTES;
             }
 
-            if (Error != LibMSPackSharp.Error.MSPACK_ERR_OK)
+            if (Error != Error.MSPACK_ERR_OK)
                 return (int)Error;
 
             int peek;
@@ -248,7 +213,7 @@ namespace LibMSPackSharp.Compression
                 bits_left -= i;
             }
 
-            return (int)LibMSPackSharp.Error.MSPACK_ERR_OK;
+            return (int)Error.MSPACK_ERR_OK;
         }
 
         public int HUFF_TRAVERSE(ushort[] decodingTable, int tablebits, int maxsymbols, ref int i, ref ushort sym, uint bit_buffer, bool msb)
@@ -276,7 +241,7 @@ namespace LibMSPackSharp.Compression
                 } while (sym >= maxsymbols);
             }
 
-            return (int)LibMSPackSharp.Error.MSPACK_ERR_OK;
+            return (int)Error.MSPACK_ERR_OK;
         }
 
         public abstract int HUFF_ERROR();

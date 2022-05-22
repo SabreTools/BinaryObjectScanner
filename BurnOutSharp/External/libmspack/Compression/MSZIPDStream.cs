@@ -29,7 +29,7 @@ namespace LibMSPackSharp.Compression
         /// <summary>
         /// inflate() will call this whenever the window should be emptied.
         /// </summary>
-        public Func<MSZIPDStream, uint, LibMSPackSharp.Error> FlushWindow;
+        public Func<MSZIPDStream, uint, Error> FlushWindow;
 
         public bool RepairMode { get; set; }
 

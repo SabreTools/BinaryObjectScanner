@@ -120,6 +120,6 @@ namespace LibMSPackSharp.Compression
 
         public QTMDModelSym[] Model7Symbols { get; set; } = new QTMDModelSym[7 + 1];
 
-        public override int HUFF_ERROR() => (int)LibMSPackSharp.Error.MSPACK_ERR_OK;
+        public override int HUFF_ERROR() => (int)Error.MSPACK_ERR_OK;
     }
 }

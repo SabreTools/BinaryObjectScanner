@@ -25,11 +25,11 @@ namespace LibMSPackSharp.Compression
             };
         }
 
-        public static LibMSPackSharp.Error Decompress(object s, long bytes)
+        public static Error Decompress(object s, long bytes)
         {
             NoneState state = (NoneState)s;
             if (state == null)
-                return LibMSPackSharp.Error.MSPACK_ERR_ARGS;
+                return Error.MSPACK_ERR_ARGS;
 
             int run;
             while (bytes > 0)
@@ -37,14 +37,14 @@ namespace LibMSPackSharp.Compression
                 run = (bytes > state.BufferSize) ? state.BufferSize : (int)bytes;
 
                 if (state.Sys.Read(state.Input, state.Buffer, 0, run) != run)
-                    return LibMSPackSharp.Error.MSPACK_ERR_READ;
+                    return Error.MSPACK_ERR_READ;
 
                 if (state.Sys.Write(state.Output, state.Buffer, 0, run) != run)
-                    return LibMSPackSharp.Error.MSPACK_ERR_WRITE;
+                    return Error.MSPACK_ERR_WRITE;
 
                 bytes -= run;
             }
-            return LibMSPackSharp.Error.MSPACK_ERR_OK;
+            return Error.MSPACK_ERR_OK;
         }
     }
 }

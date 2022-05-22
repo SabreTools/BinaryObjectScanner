@@ -137,6 +137,6 @@ namespace LibMSPackSharp.Compression
         // This is used purely for doing the intel E8 transform
         public byte[] e8_buf { get; set; } = new byte[LZX.LZX_FRAME_SIZE];
 
-        public override int HUFF_ERROR() => (int)(Error = LibMSPackSharp.Error.MSPACK_ERR_DECRUNCH);
+        public override int HUFF_ERROR() => (int)(Error = Error.MSPACK_ERR_DECRUNCH);
     }
 }

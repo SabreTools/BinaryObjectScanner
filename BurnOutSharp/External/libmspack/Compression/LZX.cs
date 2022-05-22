@@ -322,7 +322,7 @@ namespace LibMSPackSharp.Compression
                 ResetInterval = (uint)reset_interval,
                 IntelFileSize = 0,
                 IntelStarted = false,
-                Error = LibMSPackSharp.Error.MSPACK_ERR_OK,
+                Error = Error.MSPACK_ERR_OK,
                 NumOffsets = position_slots[window_bits - 15] << 3,
                 IsDelta = is_delta,
 
@@ -362,33 +362,33 @@ namespace LibMSPackSharp.Compression
         /// than the LZX window size.
         /// </param>
         /// <returns>an error code, or MSPACK_ERR_OK if successful</returns>
-        public static LibMSPackSharp.Error SetReferenceData(LZXDStream lzx, SystemImpl system, FileStream input, uint length)
+        public static Error SetReferenceData(LZXDStream lzx, SystemImpl system, FileStream input, uint length)
         {
             if (lzx == null)
-                return LibMSPackSharp.Error.MSPACK_ERR_ARGS;
+                return Error.MSPACK_ERR_ARGS;
 
             if (!lzx.IsDelta)
             {
                 Console.WriteLine("Only LZX DELTA streams support reference data");
-                return LibMSPackSharp.Error.MSPACK_ERR_ARGS;
+                return Error.MSPACK_ERR_ARGS;
             }
 
             if (lzx.Offset != 0)
             {
                 Console.WriteLine("Too late to set reference data after decoding starts");
-                return LibMSPackSharp.Error.MSPACK_ERR_ARGS;
+                return Error.MSPACK_ERR_ARGS;
             }
 
             if (length > lzx.WindowSize)
             {
                 Console.WriteLine($"Reference length ({length}) is longer than the window");
-                return LibMSPackSharp.Error.MSPACK_ERR_ARGS;
+                return Error.MSPACK_ERR_ARGS;
             }
 
             if (length > 0 && (system == null || input == null))
             {
                 Console.WriteLine("Length > 0 but no system or input");
-                return LibMSPackSharp.Error.MSPACK_ERR_ARGS;
+                return Error.MSPACK_ERR_ARGS;
             }
 
             lzx.ReferenceDataSize = length;
@@ -400,11 +400,11 @@ namespace LibMSPackSharp.Compression
 
                 // Length can't be more than 2^25, so no signedness problem
                 if (bytes < (int)length)
-                    return LibMSPackSharp.Error.MSPACK_ERR_READ;
+                    return Error.MSPACK_ERR_READ;
             }
 
             lzx.ReferenceDataSize = length;
-            return LibMSPackSharp.Error.MSPACK_ERR_OK;
+            return Error.MSPACK_ERR_OK;
         }
 
         // See description of outputLength in lzxd_init()
@@ -440,11 +440,11 @@ namespace LibMSPackSharp.Compression
         /// <param name="out_bytes">the number of bytes of data to decompress.</param>
         /// <returns>an error code, or MSPACK_ERR_OK if successful</returns>
         // TODO: Huffman tree implementation
-        public static LibMSPackSharp.Error Decompress(object o, long out_bytes)
+        public static Error Decompress(object o, long out_bytes)
         {
             LZXDStream lzx = o as LZXDStream;
             if (lzx == null)
-                return LibMSPackSharp.Error.MSPACK_ERR_ARGS;
+                return Error.MSPACK_ERR_ARGS;
 
             // Bitstream and huffman reading variables
             uint bit_buffer;
@@ -461,9 +461,9 @@ namespace LibMSPackSharp.Compression
 
             // Easy answers
             if (lzx == null || (out_bytes < 0))
-                return LibMSPackSharp.Error.MSPACK_ERR_ARGS;
+                return Error.MSPACK_ERR_ARGS;
 
-            if (lzx.Error != LibMSPackSharp.Error.MSPACK_ERR_OK)
+            if (lzx.Error != Error.MSPACK_ERR_OK)
                 return lzx.Error;
 
             // Flush out any stored-up bytes before we begin
@@ -474,7 +474,7 @@ namespace LibMSPackSharp.Compression
             if (i != 0)
             {
                 try { lzx.Output.Write(lzx.e8_buf, lzx.OutputPointer, i); }
-                catch { return lzx.Error = LibMSPackSharp.Error.MSPACK_ERR_WRITE; }
+                catch { return lzx.Error = Error.MSPACK_ERR_WRITE; }
 
                 lzx.OutputPointer += i;
                 lzx.Offset += i;
@@ -482,7 +482,7 @@ namespace LibMSPackSharp.Compression
             }
 
             if (out_bytes == 0)
-                return LibMSPackSharp.Error.MSPACK_ERR_OK;
+                return Error.MSPACK_ERR_OK;
 
             // Restore local state
 
@@ -538,7 +538,7 @@ namespace LibMSPackSharp.Compression
                                 {
                                     if (i_ptr >= i_end)
                                     {
-                                        if (lzx.ReadInput() != LibMSPackSharp.Error.MSPACK_ERR_OK)
+                                        if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
                                             return lzx.Error;
 
                                         i_ptr = lzx.InputPointer;
@@ -552,7 +552,7 @@ namespace LibMSPackSharp.Compression
                                 {
                                     if (i_ptr >= i_end)
                                     {
-                                        if (lzx.ReadInput() != LibMSPackSharp.Error.MSPACK_ERR_OK)
+                                        if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
                                             return lzx.Error;
 
                                         i_ptr = lzx.InputPointer;
@@ -597,7 +597,7 @@ namespace LibMSPackSharp.Compression
                                     {
                                         if (i_ptr >= i_end)
                                         {
-                                            if (lzx.ReadInput() != LibMSPackSharp.Error.MSPACK_ERR_OK)
+                                            if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
                                                 return lzx.Error;
 
                                             i_ptr = lzx.InputPointer;
@@ -611,7 +611,7 @@ namespace LibMSPackSharp.Compression
                                     {
                                         if (i_ptr >= i_end)
                                         {
-                                            if (lzx.ReadInput() != LibMSPackSharp.Error.MSPACK_ERR_OK)
+                                            if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
                                                 return lzx.Error;
 
                                             i_ptr = lzx.InputPointer;
@@ -653,7 +653,7 @@ namespace LibMSPackSharp.Compression
                                         {
                                             if (i_ptr >= i_end)
                                             {
-                                                if (lzx.ReadInput() != LibMSPackSharp.Error.MSPACK_ERR_OK)
+                                                if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
                                                     return lzx.Error;
 
                                                 i_ptr = lzx.InputPointer;
@@ -667,7 +667,7 @@ namespace LibMSPackSharp.Compression
                                         {
                                             if (i_ptr >= i_end)
                                             {
-                                                if (lzx.ReadInput() != LibMSPackSharp.Error.MSPACK_ERR_OK)
+                                                if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
                                                     return lzx.Error;
 
                                                 i_ptr = lzx.InputPointer;
@@ -707,7 +707,7 @@ namespace LibMSPackSharp.Compression
                                         {
                                             if (i_ptr >= i_end)
                                             {
-                                                if (lzx.ReadInput() != LibMSPackSharp.Error.MSPACK_ERR_OK)
+                                                if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
                                                     return lzx.Error;
 
                                                 i_ptr = lzx.InputPointer;
@@ -721,7 +721,7 @@ namespace LibMSPackSharp.Compression
                                         {
                                             if (i_ptr >= i_end)
                                             {
-                                                if (lzx.ReadInput() != LibMSPackSharp.Error.MSPACK_ERR_OK)
+                                                if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
                                                     return lzx.Error;
 
                                                 i_ptr = lzx.InputPointer;
@@ -775,7 +775,7 @@ namespace LibMSPackSharp.Compression
                             {
                                 if (i_ptr >= i_end)
                                 {
-                                    if (lzx.ReadInput() != LibMSPackSharp.Error.MSPACK_ERR_OK)
+                                    if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
                                         return lzx.Error;
 
                                     i_ptr = lzx.InputPointer;
@@ -800,7 +800,7 @@ namespace LibMSPackSharp.Compression
                                         {
                                             if (i_ptr >= i_end)
                                             {
-                                                if (lzx.ReadInput() != LibMSPackSharp.Error.MSPACK_ERR_OK)
+                                                if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
                                                     return lzx.Error;
 
                                                 i_ptr = lzx.InputPointer;
@@ -814,7 +814,7 @@ namespace LibMSPackSharp.Compression
                                         {
                                             if (i_ptr >= i_end)
                                             {
-                                                if (lzx.ReadInput() != LibMSPackSharp.Error.MSPACK_ERR_OK)
+                                                if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
                                                     return lzx.Error;
 
                                                 i_ptr = lzx.InputPointer;
@@ -854,7 +854,7 @@ namespace LibMSPackSharp.Compression
                                         {
                                             if (i_ptr >= i_end)
                                             {
-                                                if (lzx.ReadInput() != LibMSPackSharp.Error.MSPACK_ERR_OK)
+                                                if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
                                                     return lzx.Error;
 
                                                 i_ptr = lzx.InputPointer;
@@ -868,7 +868,7 @@ namespace LibMSPackSharp.Compression
                                         {
                                             if (i_ptr >= i_end)
                                             {
-                                                if (lzx.ReadInput() != LibMSPackSharp.Error.MSPACK_ERR_OK)
+                                                if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
                                                     return lzx.Error;
 
                                                 i_ptr = lzx.InputPointer;
@@ -908,7 +908,7 @@ namespace LibMSPackSharp.Compression
                                         {
                                             if (i_ptr >= i_end)
                                             {
-                                                if (lzx.ReadInput() != LibMSPackSharp.Error.MSPACK_ERR_OK)
+                                                if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
                                                     return lzx.Error;
 
                                                 i_ptr = lzx.InputPointer;
@@ -922,7 +922,7 @@ namespace LibMSPackSharp.Compression
                                         {
                                             if (i_ptr >= i_end)
                                             {
-                                                if (lzx.ReadInput() != LibMSPackSharp.Error.MSPACK_ERR_OK)
+                                                if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
                                                     return lzx.Error;
 
                                                 i_ptr = lzx.InputPointer;
@@ -972,7 +972,7 @@ namespace LibMSPackSharp.Compression
                                                     {
                                                         if (i_ptr >= i_end)
                                                         {
-                                                            if (lzx.ReadInput() != LibMSPackSharp.Error.MSPACK_ERR_OK)
+                                                            if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
                                                                 return lzx.Error;
 
                                                             i_ptr = lzx.InputPointer;
@@ -986,7 +986,7 @@ namespace LibMSPackSharp.Compression
                                                     {
                                                         if (i_ptr >= i_end)
                                                         {
-                                                            if (lzx.ReadInput() != LibMSPackSharp.Error.MSPACK_ERR_OK)
+                                                            if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
                                                                 return lzx.Error;
 
                                                             i_ptr = lzx.InputPointer;
@@ -1067,7 +1067,7 @@ namespace LibMSPackSharp.Compression
                                                 {
                                                     if (i_ptr >= i_end)
                                                     {
-                                                        if (lzx.ReadInput() != LibMSPackSharp.Error.MSPACK_ERR_OK)
+                                                        if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
                                                             return lzx.Error;
 
                                                         i_ptr = lzx.InputPointer;
@@ -1081,7 +1081,7 @@ namespace LibMSPackSharp.Compression
                                                 {
                                                     if (i_ptr >= i_end)
                                                     {
-                                                        if (lzx.ReadInput() != LibMSPackSharp.Error.MSPACK_ERR_OK)
+                                                        if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
                                                             return lzx.Error;
 
                                                         i_ptr = lzx.InputPointer;
@@ -1110,7 +1110,7 @@ namespace LibMSPackSharp.Compression
                                     {
                                         if (i_ptr >= i_end)
                                         {
-                                            if (lzx.ReadInput() != LibMSPackSharp.Error.MSPACK_ERR_OK)
+                                            if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
                                                 return lzx.Error;
 
                                             i_ptr = lzx.InputPointer;
@@ -1129,7 +1129,7 @@ namespace LibMSPackSharp.Compression
 
                             default:
                                 Console.WriteLine("Bad block type");
-                                return lzx.Error = LibMSPackSharp.Error.MSPACK_ERR_DECRUNCH;
+                                return lzx.Error = Error.MSPACK_ERR_DECRUNCH;
                         }
                     }
 
@@ -1170,7 +1170,7 @@ namespace LibMSPackSharp.Compression
                                         if (lzx.LENGTH_empty != 0)
                                         {
                                             Console.WriteLine("LENGTH symbol needed but tree is empty");
-                                            return lzx.Error = LibMSPackSharp.Error.MSPACK_ERR_DECRUNCH;
+                                            return lzx.Error = Error.MSPACK_ERR_DECRUNCH;
                                         }
 
                                         READ_HUFFSYM(LENGTH, length_footer);
@@ -1222,7 +1222,7 @@ namespace LibMSPackSharp.Compression
                                                                     {
                                                                         if (i_ptr >= i_end)
                                                                         {
-                                                                            if (lzx.ReadInput() != LibMSPackSharp.Error.MSPACK_ERR_OK)
+                                                                            if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
                                                                                 return lzx.Error;
 
                                                                             i_ptr = lzx.InputPointer;
@@ -1236,7 +1236,7 @@ namespace LibMSPackSharp.Compression
                                                                     {
                                                                         if (i_ptr >= i_end)
                                                                         {
-                                                                            if (lzx.ReadInput() != LibMSPackSharp.Error.MSPACK_ERR_OK)
+                                                                            if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
                                                                                 return lzx.Error;
 
                                                                             i_ptr = lzx.InputPointer;
@@ -1291,7 +1291,7 @@ namespace LibMSPackSharp.Compression
                                                                     {
                                                                         if (i_ptr >= i_end)
                                                                         {
-                                                                            if (lzx.ReadInput() != LibMSPackSharp.Error.MSPACK_ERR_OK)
+                                                                            if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
                                                                                 return lzx.Error;
 
                                                                             i_ptr = lzx.InputPointer;
@@ -1305,7 +1305,7 @@ namespace LibMSPackSharp.Compression
                                                                     {
                                                                         if (i_ptr >= i_end)
                                                                         {
-                                                                            if (lzx.ReadInput() != LibMSPackSharp.Error.MSPACK_ERR_OK)
+                                                                            if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
                                                                                 return lzx.Error;
 
                                                                             i_ptr = lzx.InputPointer;
@@ -1363,7 +1363,7 @@ namespace LibMSPackSharp.Compression
                                                                     {
                                                                         if (i_ptr >= i_end)
                                                                         {
-                                                                            if (lzx.ReadInput() != LibMSPackSharp.Error.MSPACK_ERR_OK)
+                                                                            if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
                                                                                 return lzx.Error;
 
                                                                             i_ptr = lzx.InputPointer;
@@ -1377,7 +1377,7 @@ namespace LibMSPackSharp.Compression
                                                                     {
                                                                         if (i_ptr >= i_end)
                                                                         {
-                                                                            if (lzx.ReadInput() != LibMSPackSharp.Error.MSPACK_ERR_OK)
+                                                                            if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
                                                                                 return lzx.Error;
 
                                                                             i_ptr = lzx.InputPointer;
@@ -1437,7 +1437,7 @@ namespace LibMSPackSharp.Compression
                                                     {
                                                         if (i_ptr >= i_end)
                                                         {
-                                                            if (lzx.ReadInput() != LibMSPackSharp.Error.MSPACK_ERR_OK)
+                                                            if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
                                                                 return lzx.Error;
 
                                                             i_ptr = lzx.InputPointer;
@@ -1451,7 +1451,7 @@ namespace LibMSPackSharp.Compression
                                                     {
                                                         if (i_ptr >= i_end)
                                                         {
-                                                            if (lzx.ReadInput() != LibMSPackSharp.Error.MSPACK_ERR_OK)
+                                                            if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
                                                                 return lzx.Error;
 
                                                             i_ptr = lzx.InputPointer;
@@ -1491,7 +1491,7 @@ namespace LibMSPackSharp.Compression
                                                             {
                                                                 if (i_ptr >= i_end)
                                                                 {
-                                                                    if (lzx.ReadInput() != LibMSPackSharp.Error.MSPACK_ERR_OK)
+                                                                    if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
                                                                         return lzx.Error;
 
                                                                     i_ptr = lzx.InputPointer;
@@ -1505,7 +1505,7 @@ namespace LibMSPackSharp.Compression
                                                             {
                                                                 if (i_ptr >= i_end)
                                                                 {
-                                                                    if (lzx.ReadInput() != LibMSPackSharp.Error.MSPACK_ERR_OK)
+                                                                    if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
                                                                         return lzx.Error;
 
                                                                     i_ptr = lzx.InputPointer;
@@ -1555,7 +1555,7 @@ namespace LibMSPackSharp.Compression
                                                             {
                                                                 if (i_ptr >= i_end)
                                                                 {
-                                                                    if (lzx.ReadInput() != LibMSPackSharp.Error.MSPACK_ERR_OK)
+                                                                    if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
                                                                         return lzx.Error;
 
                                                                     i_ptr = lzx.InputPointer;
@@ -1569,7 +1569,7 @@ namespace LibMSPackSharp.Compression
                                                             {
                                                                 if (i_ptr >= i_end)
                                                                 {
-                                                                    if (lzx.ReadInput() != LibMSPackSharp.Error.MSPACK_ERR_OK)
+                                                                    if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
                                                                         return lzx.Error;
 
                                                                     i_ptr = lzx.InputPointer;
@@ -1621,7 +1621,7 @@ namespace LibMSPackSharp.Compression
                                                             {
                                                                 if (i_ptr >= i_end)
                                                                 {
-                                                                    if (lzx.ReadInput() != LibMSPackSharp.Error.MSPACK_ERR_OK)
+                                                                    if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
                                                                         return lzx.Error;
 
                                                                     i_ptr = lzx.InputPointer;
@@ -1635,7 +1635,7 @@ namespace LibMSPackSharp.Compression
                                                             {
                                                                 if (i_ptr >= i_end)
                                                                 {
-                                                                    if (lzx.ReadInput() != LibMSPackSharp.Error.MSPACK_ERR_OK)
+                                                                    if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
                                                                         return lzx.Error;
 
                                                                     i_ptr = lzx.InputPointer;
@@ -1687,7 +1687,7 @@ namespace LibMSPackSharp.Compression
                                                             {
                                                                 if (i_ptr >= i_end)
                                                                 {
-                                                                    if (lzx.ReadInput() != LibMSPackSharp.Error.MSPACK_ERR_OK)
+                                                                    if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
                                                                         return lzx.Error;
 
                                                                     i_ptr = lzx.InputPointer;
@@ -1701,7 +1701,7 @@ namespace LibMSPackSharp.Compression
                                                             {
                                                                 if (i_ptr >= i_end)
                                                                 {
-                                                                    if (lzx.ReadInput() != LibMSPackSharp.Error.MSPACK_ERR_OK)
+                                                                    if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
                                                                         return lzx.Error;
 
                                                                     i_ptr = lzx.InputPointer;
@@ -1736,7 +1736,7 @@ namespace LibMSPackSharp.Compression
                                     if ((window_posn + match_length) > lzx.WindowSize)
                                     {
                                         Console.WriteLine("Match ran over window wrap");
-                                        return lzx.Error = LibMSPackSharp.Error.MSPACK_ERR_DECRUNCH;
+                                        return lzx.Error = Error.MSPACK_ERR_DECRUNCH;
                                     }
 
                                     // Copy match
@@ -1749,7 +1749,7 @@ namespace LibMSPackSharp.Compression
                                         if (match_offset > lzx.Offset && (match_offset - window_posn) > lzx.ReferenceDataSize)
                                         {
                                             Console.WriteLine("Match offset beyond LZX stream");
-                                            return lzx.Error = LibMSPackSharp.Error.MSPACK_ERR_DECRUNCH;
+                                            return lzx.Error = Error.MSPACK_ERR_DECRUNCH;
                                         }
 
                                         // j = length from match offset to end of window
@@ -1757,7 +1757,7 @@ namespace LibMSPackSharp.Compression
                                         if (j > (int)lzx.WindowSize)
                                         {
                                             Console.WriteLine("Match offset beyond window boundaries");
-                                            return lzx.Error = LibMSPackSharp.Error.MSPACK_ERR_DECRUNCH;
+                                            return lzx.Error = Error.MSPACK_ERR_DECRUNCH;
                                         }
 
                                         runsrc = (int)(lzx.WindowSize - j);
@@ -1807,7 +1807,7 @@ namespace LibMSPackSharp.Compression
                                     {
                                         if (i_ptr >= i_end)
                                         {
-                                            if (lzx.ReadInput() != LibMSPackSharp.Error.MSPACK_ERR_OK)
+                                            if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
                                                 return lzx.Error;
 
                                             i_ptr = lzx.InputPointer;
@@ -1830,7 +1830,7 @@ namespace LibMSPackSharp.Compression
                             break;
 
                         default:
-                            return lzx.Error = LibMSPackSharp.Error.MSPACK_ERR_DECRUNCH; // Might as well
+                            return lzx.Error = Error.MSPACK_ERR_DECRUNCH; // Might as well
                     }
 
                     // Did the final match overrun our desired this_run length?
@@ -1839,7 +1839,7 @@ namespace LibMSPackSharp.Compression
                         if ((uint)(-this_run) > lzx.BlockRemaining)
                         {
                             Console.WriteLine($"Overrun went past end of block by {-this_run} ({lzx.BlockRemaining} remaining)");
-                            return lzx.Error = LibMSPackSharp.Error.MSPACK_ERR_DECRUNCH;
+                            return lzx.Error = Error.MSPACK_ERR_DECRUNCH;
                         }
 
                         lzx.BlockRemaining -= (uint)-this_run;
@@ -1850,7 +1850,7 @@ namespace LibMSPackSharp.Compression
                 if ((window_posn - lzx.FramePosition) != frame_size)
                 {
                     Console.WriteLine($"Decode beyond output frame limits! {window_posn - lzx.FramePosition} != {frame_size}");
-                    return lzx.Error = LibMSPackSharp.Error.MSPACK_ERR_DECRUNCH;
+                    return lzx.Error = Error.MSPACK_ERR_DECRUNCH;
                 }
 
                 // Re-align input bitstream
@@ -1866,7 +1866,7 @@ namespace LibMSPackSharp.Compression
                                 {
                                     if (i_ptr >= i_end)
                                     {
-                                        if (lzx.ReadInput() != LibMSPackSharp.Error.MSPACK_ERR_OK)
+                                        if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
                                             return lzx.Error;
 
                                         i_ptr = lzx.InputPointer;
@@ -1880,7 +1880,7 @@ namespace LibMSPackSharp.Compression
                                 {
                                     if (i_ptr >= i_end)
                                     {
-                                        if (lzx.ReadInput() != LibMSPackSharp.Error.MSPACK_ERR_OK)
+                                        if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
                                             return lzx.Error;
 
                                         i_ptr = lzx.InputPointer;
@@ -1913,7 +1913,7 @@ namespace LibMSPackSharp.Compression
                 if (lzx.OutputPointer != lzx.OutputLength)
                 {
                     Console.WriteLine($"{lzx.OutputLength - lzx.OutputPointer} avail bytes, new {frame_size} frame");
-                    return lzx.Error = LibMSPackSharp.Error.MSPACK_ERR_DECRUNCH;
+                    return lzx.Error = Error.MSPACK_ERR_DECRUNCH;
                 }
 
                 // Does this intel block _really_ need decoding?
@@ -1956,7 +1956,7 @@ namespace LibMSPackSharp.Compression
                     // Write a frame
                     i = (int)((out_bytes < frame_size) ? out_bytes : frame_size);
                     try { lzx.Output.Write(lzx.e8_buf, lzx.OutputPointer, i); }
-                    catch { return lzx.Error = LibMSPackSharp.Error.MSPACK_ERR_WRITE; }
+                    catch { return lzx.Error = Error.MSPACK_ERR_WRITE; }
                 }
                 else
                 {
@@ -1966,7 +1966,7 @@ namespace LibMSPackSharp.Compression
                     // Write a frame
                     i = (int)((out_bytes < frame_size) ? out_bytes : frame_size);
                     try { lzx.Output.Write(lzx.Window, lzx.OutputPointer, i); }
-                    catch { return lzx.Error = LibMSPackSharp.Error.MSPACK_ERR_WRITE; }
+                    catch { return lzx.Error = Error.MSPACK_ERR_WRITE; }
                 }
 
                 lzx.OutputPointer += i;
@@ -1988,7 +1988,7 @@ namespace LibMSPackSharp.Compression
             if (out_bytes != 0)
             {
                 Console.WriteLine("Bytes left to output");
-                return lzx.Error = LibMSPackSharp.Error.MSPACK_ERR_DECRUNCH;
+                return lzx.Error = Error.MSPACK_ERR_DECRUNCH;
             }
 
             // Store local state
@@ -2006,11 +2006,11 @@ namespace LibMSPackSharp.Compression
             lzx.R1 = R1;
             lzx.R2 = R2;
 
-            return LibMSPackSharp.Error.MSPACK_ERR_OK;
+            return Error.MSPACK_ERR_OK;
         }
 
         // TODO: Huffman tree implementation
-        private static LibMSPackSharp.Error ReadLens(LZXDStream lzx, byte[] lens, uint first, uint last)
+        private static Error ReadLens(LZXDStream lzx, byte[] lens, uint first, uint last)
         {
             // Bit buffer and huffman symbol decode variables
             uint bit_buffer;
@@ -2044,7 +2044,7 @@ namespace LibMSPackSharp.Compression
                                 {
                                     if (i_ptr >= i_end)
                                     {
-                                        if (lzx.ReadInput() != LibMSPackSharp.Error.MSPACK_ERR_OK)
+                                        if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
                                             return lzx.Error;
 
                                         i_ptr = lzx.InputPointer;
@@ -2058,7 +2058,7 @@ namespace LibMSPackSharp.Compression
                                 {
                                     if (i_ptr >= i_end)
                                     {
-                                        if (lzx.ReadInput() != LibMSPackSharp.Error.MSPACK_ERR_OK)
+                                        if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
                                             return lzx.Error;
 
                                         i_ptr = lzx.InputPointer;
@@ -2110,7 +2110,7 @@ namespace LibMSPackSharp.Compression
                                     {
                                         if (i_ptr >= i_end)
                                         {
-                                            if (lzx.ReadInput() != LibMSPackSharp.Error.MSPACK_ERR_OK)
+                                            if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
                                                 return lzx.Error;
 
                                             i_ptr = lzx.InputPointer;
@@ -2124,7 +2124,7 @@ namespace LibMSPackSharp.Compression
                                     {
                                         if (i_ptr >= i_end)
                                         {
-                                            if (lzx.ReadInput() != LibMSPackSharp.Error.MSPACK_ERR_OK)
+                                            if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
                                                 return lzx.Error;
 
                                             i_ptr = lzx.InputPointer;
@@ -2174,7 +2174,7 @@ namespace LibMSPackSharp.Compression
                                     {
                                         if (i_ptr >= i_end)
                                         {
-                                            if (lzx.ReadInput() != LibMSPackSharp.Error.MSPACK_ERR_OK)
+                                            if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
                                                 return lzx.Error;
 
                                             i_ptr = lzx.InputPointer;
@@ -2188,7 +2188,7 @@ namespace LibMSPackSharp.Compression
                                     {
                                         if (i_ptr >= i_end)
                                         {
-                                            if (lzx.ReadInput() != LibMSPackSharp.Error.MSPACK_ERR_OK)
+                                            if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
                                                 return lzx.Error;
 
                                             i_ptr = lzx.InputPointer;
@@ -2238,7 +2238,7 @@ namespace LibMSPackSharp.Compression
                                     {
                                         if (i_ptr >= i_end)
                                         {
-                                            if (lzx.ReadInput() != LibMSPackSharp.Error.MSPACK_ERR_OK)
+                                            if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
                                                 return lzx.Error;
 
                                             i_ptr = lzx.InputPointer;
@@ -2252,7 +2252,7 @@ namespace LibMSPackSharp.Compression
                                     {
                                         if (i_ptr >= i_end)
                                         {
-                                            if (lzx.ReadInput() != LibMSPackSharp.Error.MSPACK_ERR_OK)
+                                            if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
                                                 return lzx.Error;
 
                                             i_ptr = lzx.InputPointer;
@@ -2313,7 +2313,7 @@ namespace LibMSPackSharp.Compression
                 lzx.BitsLeft = bits_left;
             }
 
-            return LibMSPackSharp.Error.MSPACK_ERR_OK;
+            return Error.MSPACK_ERR_OK;
         }
     }
 }

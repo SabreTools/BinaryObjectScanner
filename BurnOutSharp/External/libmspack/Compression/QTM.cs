@@ -105,31 +105,35 @@ namespace LibMSPackSharp.Compression
 
             // Round up input buffer size to multiple of two
             input_buffer_size = (input_buffer_size + 1) & -2;
-            if (input_buffer_size < 2) return null;
+            if (input_buffer_size < 2)
+                return null;
 
             // Allocate decompression state
-            QTMDStream qtm = new QTMDStream();
+            QTMDStream qtm = new QTMDStream()
+            {
+                // Allocate decompression window and input buffer
+                Window = new byte[window_size],
+                InputBuffer = new byte[input_buffer_size],
 
-            // Allocate decompression window and input buffer
-            qtm.Window = new byte[window_size];
-            qtm.InputBuffer = new byte[input_buffer_size];
+                // Initialise decompression state
+                Sys = system,
+                Input = input,
+                Output = output,
+                InputBufferSize = (uint)input_buffer_size,
+                WindowSize = window_size,
+                WindowPosition = 0,
+                FrameTODO = QTM_FRAME_SIZE,
+                HeaderRead = 0,
+                Error = Error.MSPACK_ERR_OK,
 
-            // Initialise decompression state
-            qtm.Sys = system;
-            qtm.Input = input;
-            qtm.Output = output;
-            qtm.InputBufferSize = (uint)input_buffer_size;
-            qtm.WindowSize = window_size;
-            qtm.WindowPosition = 0;
-            qtm.FrameTODO = QTM_FRAME_SIZE;
-            qtm.HeaderRead = 0;
-            qtm.Error = LibMSPackSharp.Error.MSPACK_ERR_OK;
-
-            qtm.InputPointer = qtm.InputLength = 0;
-            qtm.OutputPointer = qtm.OutputLength = 0;
-            qtm.InputEnd = 0;
-            qtm.BitsLeft = 0;
-            qtm.BitBuffer = 0;
+                InputPointer = 0,
+                InputLength = 0,
+                OutputPointer = 0,
+                OutputLength = 0,
+                InputEnd = 0,
+                BitsLeft = 0,
+                BitBuffer = 0,
+            };
 
             // Initialise arithmetic coding models
             // - model 4    depends on window size, ranges from 20 to 24
@@ -170,25 +174,26 @@ namespace LibMSPackSharp.Compression
         ///   qtmd_init(). This will continue until system.read() returns 0 bytes,
         ///   or an error.
         /// </summary>
-        public static LibMSPackSharp.Error Decompress(object o, long out_bytes)
+        public static Error Decompress(object o, long out_bytes)
         {
             QTMDStream qtm = o as QTMDStream;
             if (qtm == null)
-                return LibMSPackSharp.Error.MSPACK_ERR_ARGS;
+                return Error.MSPACK_ERR_ARGS;
 
-            uint frame_end, match_offset, range = 0, extra = 0;
-            int i_ptr = 0, i_end = 0, runsrc, rundest;
-            int i, j, selector = 0, sym = 0, match_length;
-            ushort symf = 0;
+            uint frame_todo, frame_end, window_posn, match_offset, range;
+            byte[] window;
+            int i_ptr, i_end, runsrc, rundest;
+            int i, j, selector, extra, sym, match_length;
+            ushort H, L, C, symf;
 
-            uint bit_buffer = 0;
-            int bits_left = 0;
+            uint bit_buffer;
+            int bits_left;
 
             // Easy answers
             if (qtm == null || (out_bytes < 0))
-                return LibMSPackSharp.Error.MSPACK_ERR_ARGS;
+                return Error.MSPACK_ERR_ARGS;
 
-            if (qtm.Error != LibMSPackSharp.Error.MSPACK_ERR_OK)
+            if (qtm.Error != Error.MSPACK_ERR_OK)
                 return qtm.Error;
 
             // Flush out any stored-up bytes before we begin
@@ -199,53 +204,93 @@ namespace LibMSPackSharp.Compression
             if (i != 0)
             {
                 if (qtm.Sys.Write(qtm.Output, qtm.Window, qtm.OutputPointer, i) != i)
-                    return qtm.Error = LibMSPackSharp.Error.MSPACK_ERR_WRITE;
+                    return qtm.Error = Error.MSPACK_ERR_WRITE;
 
                 qtm.OutputPointer += i;
                 out_bytes -= i;
             }
 
             if (out_bytes == 0)
-                return LibMSPackSharp.Error.MSPACK_ERR_OK;
+                return Error.MSPACK_ERR_OK;
 
             // Restore local state
 
             //RESTORE_BITS
-            i_ptr = qtm.InputPointer;
-            i_end = qtm.InputLength;
-            bit_buffer = qtm.BitBuffer;
-            bits_left = qtm.BitsLeft;
+            {
+                i_ptr = qtm.InputPointer;
+                i_end = qtm.InputLength;
+                bit_buffer = qtm.BitBuffer;
+                bits_left = qtm.BitsLeft;
+            }
 
-            byte[] window = qtm.Window;
-            uint window_posn = qtm.WindowPosition;
-            uint frame_todo = qtm.FrameTODO;
+            window = qtm.Window;
+            window_posn = qtm.WindowPosition;
+            frame_todo = qtm.FrameTODO;
+            H = qtm.High;
+            L = qtm.Low;
+            C = qtm.Current;
 
-            ushort high = qtm.High;
-            ushort low = qtm.Low;
-            ushort current = qtm.Current;
-
-            // While we do not have enough decoded bytes in reserve:
+            // While we do not have enough decoded bytes in reserve
             while ((qtm.OutputLength - qtm.OutputPointer) < out_bytes)
             {
                 // Read header if necessary. Initialises H, L and C
-                if (qtm.HeaderRead == 0)
+                if (qtm.HeaderRead != 0)
                 {
-                    high = 0xFFFF;
-                    low = 0;
+                    H = 0xFFFF;
+                    L = 0;
 
-                    //READ_BITS(i, 16)
+                    //READ_BITS(C, 16)
                     {
                         //ENSURE_BITS(16)
-                        while (bits_left < (16))
                         {
-                            READ_BYTES;
+                            while (bits_left < (16))
+                            {
+                                //READ_BYTES
+                                {
+                                    //READ_IF_NEEDED
+                                    {
+                                        if (i_ptr >= i_end)
+                                        {
+                                            if (qtm.ReadInput() != Error.MSPACK_ERR_OK)
+                                                return qtm.Error;
+
+                                            i_ptr = qtm.InputPointer;
+                                            i_end = qtm.InputLength;
+                                        }
+                                    }
+
+                                    byte b0 = qtm.InputBuffer[i_ptr++];
+
+                                    //READ_IF_NEEDED
+                                    {
+                                        if (i_ptr >= i_end)
+                                        {
+                                            if (qtm.ReadInput() != Error.MSPACK_ERR_OK)
+                                                return qtm.Error;
+
+                                            i_ptr = qtm.InputPointer;
+                                            i_end = qtm.InputLength;
+                                        }
+                                    }
+
+                                    byte b1 = qtm.InputBuffer[i_ptr++];
+
+                                    //INJECT_BITS(bitdata, 16)
+                                    {
+                                        bit_buffer |= (uint)((b0 << 8) | b1) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
+                                        bits_left += (16);
+                                    }
+                                }
+                            }
                         }
 
-                        i = (int)(bit_buffer >> (BITBUF_WIDTH - (16)));
+                        (C) = (ushort)(bit_buffer >> (CompressionStream.BITBUF_WIDTH - (16))); //PEEK_BITS(16)
 
-                        // REMOVE_BITS(16);
-                        bit_buffer <<= (16);
-                        bits_left -= (16);
+                        //REMOVE_BITS(16)
+                        {
+                            bit_buffer <<= (16);
+                            bits_left -= (16);
+                        }
                     }
 
                     qtm.HeaderRead = 1;
@@ -256,158 +301,896 @@ namespace LibMSPackSharp.Compression
                 frame_end = (uint)(window_posn + (out_bytes - (qtm.OutputLength - qtm.OutputPointer)));
                 if ((window_posn + frame_todo) < frame_end)
                     frame_end = window_posn + frame_todo;
-
                 if (frame_end > qtm.WindowSize)
                     frame_end = qtm.WindowSize;
 
                 while (window_posn < frame_end)
                 {
-                    GET_SYMBOL(qtm, qtm.Model7, ref selector, ref range, ref symf, ref high, ref low, ref current, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+                    //GET_SYMBOL(qtm.Model7, var)
+                    {
+                        range = (uint)((H - L) & 0xFFFF) + 1;
+                        symf = (ushort)(((((C - L + 1) * qtm.Model7.Syms[0].CumulativeFrequency) - 1) / range) & 0xFFFF);
+
+                        for (i = 1; i < qtm.Model7.Entries; i++)
+                        {
+                            if (qtm.Model7.Syms[i].CumulativeFrequency <= symf)
+                                break;
+                        }
+
+                        (selector) = qtm.Model7.Syms[i - 1].Sym;
+
+                        range = (uint)(H - L) + 1;
+                        symf = qtm.Model7.Syms[0].CumulativeFrequency;
+                        H = (ushort)(L + ((qtm.Model7.Syms[i - 1].CumulativeFrequency * range) / symf) - 1);
+                        L = (ushort)(L + ((qtm.Model7.Syms[i].CumulativeFrequency * range) / symf));
+
+                        do
+                        {
+                            qtm.Model7.Syms[--i].CumulativeFrequency += 8;
+                        } while (i > 0);
+
+                        if (qtm.Model7.Syms[0].CumulativeFrequency > 3800)
+                            UpdateModel(qtm.Model7);
+
+                        while (true)
+                        {
+                            if ((L & 0x8000) != (H & 0x8000))
+                            {
+                                if ((L & 0x4000) != 0 && (H & 0x4000) == 0)
+                                {
+                                    // Underflow case
+                                    C ^= 0x4000;
+                                    L &= 0x3FFF;
+                                    H |= 0x4000;
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                            }
+
+                            L <<= 1;
+                            H = (ushort)((H << 1) | 1);
+
+                            //ENSURE_BITS(1)
+                            {
+                                while (bits_left < (1))
+                                {
+                                    //READ_BYTES
+                                    {
+                                        //READ_IF_NEEDED
+                                        {
+                                            if (i_ptr >= i_end)
+                                            {
+                                                if (qtm.ReadInput() != Error.MSPACK_ERR_OK)
+                                                    return qtm.Error;
+
+                                                i_ptr = qtm.InputPointer;
+                                                i_end = qtm.InputLength;
+                                            }
+                                        }
+
+                                        byte b0 = qtm.InputBuffer[i_ptr++];
+
+                                        //READ_IF_NEEDED
+                                        {
+                                            if (i_ptr >= i_end)
+                                            {
+                                                if (qtm.ReadInput() != Error.MSPACK_ERR_OK)
+                                                    return qtm.Error;
+
+                                                i_ptr = qtm.InputPointer;
+                                                i_end = qtm.InputLength;
+                                            }
+                                        }
+
+                                        byte b1 = qtm.InputBuffer[i_ptr++];
+
+                                        //INJECT_BITS(bitdata, 16)
+                                        {
+                                            bit_buffer |= (uint)((b0 << 8) | b1) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
+                                            bits_left += (16);
+                                        }
+                                    }
+                                }
+                            }
+
+                            C = (ushort)((C << 1) | (bit_buffer >> (CompressionStream.BITBUF_WIDTH - (1)))); //PEEK_BITS(1)
+
+                            //REMOVE_BITS(1)
+                            {
+                                bit_buffer <<= (1);
+                                bits_left -= (1);
+                            }
+                        }
+                    }
+
                     if (selector < 4)
                     {
                         // Literal byte
                         QTMDModel mdl;
                         switch (selector)
                         {
-                            case 0: mdl = qtm.Model0; break;
-                            case 1: mdl = qtm.Model1; break;
-                            case 2: mdl = qtm.Model2; break;
-                            default: mdl = qtm.Model3; break;
+                            case 0:
+                                mdl = qtm.Model0;
+                                break;
+
+                            case 1:
+                                mdl = qtm.Model1;
+                                break;
+
+                            case 2:
+                                mdl = qtm.Model2;
+                                break;
+
+                            case 3:
+                            default:
+                                mdl = qtm.Model3;
+                                break;
                         }
 
-                        GET_SYMBOL(qtm, mdl, ref sym, ref range, ref symf, ref high, ref low, ref current, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+                        //GET_SYMBOL(mdl, sym)
+                        {
+                            range = (uint)((H - L) & 0xFFFF) + 1;
+                            symf = (ushort)(((((C - L + 1) * mdl.Syms[0].CumulativeFrequency) - 1) / range) & 0xFFFF);
+
+                            for (i = 1; i < mdl.Entries; i++)
+                            {
+                                if (mdl.Syms[i].CumulativeFrequency <= symf)
+                                    break;
+                            }
+
+                            (sym) = mdl.Syms[i - 1].Sym;
+
+                            range = (uint)(H - L) + 1;
+                            symf = mdl.Syms[0].CumulativeFrequency;
+                            H = (ushort)(L + ((mdl.Syms[i - 1].CumulativeFrequency * range) / symf) - 1);
+                            L = (ushort)(L + ((mdl.Syms[i].CumulativeFrequency * range) / symf));
+
+                            do
+                            {
+                                mdl.Syms[--i].CumulativeFrequency += 8;
+                            } while (i > 0);
+
+                            if (mdl.Syms[0].CumulativeFrequency > 3800)
+                                UpdateModel(mdl);
+
+                            while (true)
+                            {
+                                if ((L & 0x8000) != (H & 0x8000))
+                                {
+                                    if ((L & 0x4000) != 0 && (H & 0x4000) == 0)
+                                    {
+                                        // Underflow case
+                                        C ^= 0x4000;
+                                        L &= 0x3FFF;
+                                        H |= 0x4000;
+                                    }
+                                    else
+                                    {
+                                        break;
+                                    }
+                                }
+
+                                L <<= 1;
+                                H = (ushort)((H << 1) | 1);
+
+                                //ENSURE_BITS(1)
+                                {
+                                    while (bits_left < (1))
+                                    {
+                                        //READ_BYTES
+                                        {
+                                            //READ_IF_NEEDED
+                                            {
+                                                if (i_ptr >= i_end)
+                                                {
+                                                    if (qtm.ReadInput() != Error.MSPACK_ERR_OK)
+                                                        return qtm.Error;
+
+                                                    i_ptr = qtm.InputPointer;
+                                                    i_end = qtm.InputLength;
+                                                }
+                                            }
+
+                                            byte b0 = qtm.InputBuffer[i_ptr++];
+
+                                            //READ_IF_NEEDED
+                                            {
+                                                if (i_ptr >= i_end)
+                                                {
+                                                    if (qtm.ReadInput() != Error.MSPACK_ERR_OK)
+                                                        return qtm.Error;
+
+                                                    i_ptr = qtm.InputPointer;
+                                                    i_end = qtm.InputLength;
+                                                }
+                                            }
+
+                                            byte b1 = qtm.InputBuffer[i_ptr++];
+
+                                            //INJECT_BITS(bitdata, 16)
+                                            {
+                                                bit_buffer |= (uint)((b0 << 8) | b1) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
+                                                bits_left += (16);
+                                            }
+                                        }
+                                    }
+                                }
+
+                                C = (ushort)((C << 1) | (bit_buffer >> (CompressionStream.BITBUF_WIDTH - (1)))); //PEEK_BITS(1)
+
+                                //REMOVE_BITS(1)
+                                {
+                                    bit_buffer <<= (1);
+                                    bits_left -= (1);
+                                }
+                            }
+                        }
+
                         window[window_posn++] = (byte)sym;
                         frame_todo--;
                     }
                     else
                     {
                         // Match repeated string
-                        byte needed, bitrun;
                         switch (selector)
                         {
                             // Selector 4 = fixed length match (3 bytes)
                             case 4:
-                                GET_SYMBOL(qtm, qtm.Model4, ref sym, ref range, ref symf, ref high, ref low, ref current, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
-
-                                // READ_MANY_BITS(extra, extra_bits[sym])
-                                needed = extra_bits[sym];
-                                extra = 0;
-                                while (needed > 0)
+                                //GET_SYMBOL(qtm.Model4, sym)
                                 {
-                                    if (bits_left <= (QTMDStream.BITBUF_WIDTH - 16))
+                                    range = (uint)((H - L) & 0xFFFF) + 1;
+                                    symf = (ushort)(((((C - L + 1) * qtm.Model4.Syms[0].CumulativeFrequency) - 1) / range) & 0xFFFF);
+
+                                    for (i = 1; i < qtm.Model4.Entries; i++)
                                     {
-                                        READ_BYTES;
+                                        if (qtm.Model4.Syms[i].CumulativeFrequency <= symf)
+                                            break;
                                     }
 
-                                    bitrun = (byte)((bits_left < needed) ? bits_left : needed);
+                                    (sym) = qtm.Model4.Syms[i - 1].Sym;
 
-                                    int peek = (int)(bit_buffer >> (QTMDStream.BITBUF_WIDTH - (bitrun)));
+                                    range = (uint)(H - L) + 1;
+                                    symf = qtm.Model4.Syms[0].CumulativeFrequency;
+                                    H = (ushort)(L + ((qtm.Model4.Syms[i - 1].CumulativeFrequency * range) / symf) - 1);
+                                    L = (ushort)(L + ((qtm.Model4.Syms[i].CumulativeFrequency * range) / symf));
 
-                                    extra = (uint)((extra << bitrun) | peek);
+                                    do
+                                    {
+                                        qtm.Model4.Syms[--i].CumulativeFrequency += 8;
+                                    } while (i > 0);
 
-                                    // REMOVE_BITS(bitrun);
-                                    bit_buffer <<= bitrun;
-                                    bits_left -= bitrun;
+                                    if (qtm.Model4.Syms[0].CumulativeFrequency > 3800)
+                                        UpdateModel(qtm.Model4);
 
-                                    needed -= bitrun;
+                                    while (true)
+                                    {
+                                        if ((L & 0x8000) != (H & 0x8000))
+                                        {
+                                            if ((L & 0x4000) != 0 && (H & 0x4000) == 0)
+                                            {
+                                                // Underflow case
+                                                C ^= 0x4000;
+                                                L &= 0x3FFF;
+                                                H |= 0x4000;
+                                            }
+                                            else
+                                            {
+                                                break;
+                                            }
+                                        }
+
+                                        L <<= 1;
+                                        H = (ushort)((H << 1) | 1);
+
+                                        //ENSURE_BITS(1)
+                                        {
+                                            while (bits_left < (1))
+                                            {
+                                                //READ_BYTES
+                                                {
+                                                    //READ_IF_NEEDED
+                                                    {
+                                                        if (i_ptr >= i_end)
+                                                        {
+                                                            if (qtm.ReadInput() != Error.MSPACK_ERR_OK)
+                                                                return qtm.Error;
+
+                                                            i_ptr = qtm.InputPointer;
+                                                            i_end = qtm.InputLength;
+                                                        }
+                                                    }
+
+                                                    byte b0 = qtm.InputBuffer[i_ptr++];
+
+                                                    //READ_IF_NEEDED
+                                                    {
+                                                        if (i_ptr >= i_end)
+                                                        {
+                                                            if (qtm.ReadInput() != Error.MSPACK_ERR_OK)
+                                                                return qtm.Error;
+
+                                                            i_ptr = qtm.InputPointer;
+                                                            i_end = qtm.InputLength;
+                                                        }
+                                                    }
+
+                                                    byte b1 = qtm.InputBuffer[i_ptr++];
+
+                                                    //INJECT_BITS(bitdata, 16)
+                                                    {
+                                                        bit_buffer |= (uint)((b0 << 8) | b1) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
+                                                        bits_left += (16);
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        C = (ushort)((C << 1) | (bit_buffer >> (CompressionStream.BITBUF_WIDTH - (1)))); //PEEK_BITS(1)
+
+                                        //REMOVE_BITS(1)
+                                        {
+                                            bit_buffer <<= (1);
+                                            bits_left -= (1);
+                                        }
+                                    }
                                 }
 
-                                match_offset = position_base[sym] + extra + 1;
+                                //READ_MANY_BITS(extra, extra_bits[sym])
+                                {
+                                    byte needed = (byte)(extra_bits[sym]), bitrun;
+                                    (extra) = 0;
+                                    while (needed > 0)
+                                    {
+                                        if ((bits_left) <= (CompressionStream.BITBUF_WIDTH - 16))
+                                        {
+                                            //READ_BYTES
+                                            {
+                                                //READ_IF_NEEDED
+                                                {
+                                                    if (i_ptr >= i_end)
+                                                    {
+                                                        if (qtm.ReadInput() != Error.MSPACK_ERR_OK)
+                                                            return qtm.Error;
+
+                                                        i_ptr = qtm.InputPointer;
+                                                        i_end = qtm.InputLength;
+                                                    }
+                                                }
+
+                                                byte b0 = qtm.InputBuffer[i_ptr++];
+
+                                                //READ_IF_NEEDED
+                                                {
+                                                    if (i_ptr >= i_end)
+                                                    {
+                                                        if (qtm.ReadInput() != Error.MSPACK_ERR_OK)
+                                                            return qtm.Error;
+
+                                                        i_ptr = qtm.InputPointer;
+                                                        i_end = qtm.InputLength;
+                                                    }
+                                                }
+
+                                                byte b1 = qtm.InputBuffer[i_ptr++];
+
+                                                //INJECT_BITS(bitdata, 16)
+                                                {
+                                                    bit_buffer |= (uint)((b0 << 8) | b1) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
+                                                    bits_left += (16);
+                                                }
+                                            }
+                                        }
+
+                                        bitrun = (byte)((bits_left < needed) ? bits_left : needed);
+                                        (extra) = (int)(((extra) << bitrun) | (bit_buffer >> (CompressionStream.BITBUF_WIDTH - (bitrun)))); //PEEK_BITS(bitrun)
+
+                                        //REMOVE_BITS(bitrun)
+                                        {
+                                            bit_buffer <<= (bitrun);
+                                            bits_left -= (bitrun);
+                                        }
+
+                                        needed -= bitrun;
+                                    }
+                                }
+
+                                match_offset = (uint)(position_base[sym] + extra + 1);
                                 match_length = 3;
                                 break;
 
                             // Selector 5 = fixed length match (4 bytes)
                             case 5:
-                                GET_SYMBOL(qtm, qtm.Model5, ref sym, ref range, ref symf, ref high, ref low, ref current, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
-
-                                // READ_MANY_BITS(extra, extra_bits[sym])
-                                needed = extra_bits[sym];
-                                extra = 0;
-                                while (needed > 0)
+                                //GET_SYMBOL(qtm.Model5, sym)
                                 {
-                                    if (bits_left <= (QTMDStream.BITBUF_WIDTH - 16))
+                                    range = (uint)((H - L) & 0xFFFF) + 1;
+                                    symf = (ushort)(((((C - L + 1) * qtm.Model5.Syms[0].CumulativeFrequency) - 1) / range) & 0xFFFF);
+
+                                    for (i = 1; i < qtm.Model5.Entries; i++)
                                     {
-                                        READ_BYTES;
+                                        if (qtm.Model5.Syms[i].CumulativeFrequency <= symf)
+                                            break;
                                     }
 
-                                    bitrun = (byte)((bits_left < needed) ? bits_left : needed);
+                                    (sym) = qtm.Model5.Syms[i - 1].Sym;
 
-                                    int peek = (int)(bit_buffer >> (QTMDStream.BITBUF_WIDTH - (bitrun)));
+                                    range = (uint)(H - L) + 1;
+                                    symf = qtm.Model5.Syms[0].CumulativeFrequency;
+                                    H = (ushort)(L + ((qtm.Model5.Syms[i - 1].CumulativeFrequency * range) / symf) - 1);
+                                    L = (ushort)(L + ((qtm.Model5.Syms[i].CumulativeFrequency * range) / symf));
 
-                                    extra = (uint)((extra << bitrun) | peek);
+                                    do
+                                    {
+                                        qtm.Model5.Syms[--i].CumulativeFrequency += 8;
+                                    } while (i > 0);
 
-                                    // REMOVE_BITS(bitrun);
-                                    bit_buffer <<= bitrun;
-                                    bits_left -= bitrun;
+                                    if (qtm.Model5.Syms[0].CumulativeFrequency > 3800)
+                                        UpdateModel(qtm.Model5);
 
-                                    needed -= bitrun;
+                                    while (true)
+                                    {
+                                        if ((L & 0x8000) != (H & 0x8000))
+                                        {
+                                            if ((L & 0x4000) != 0 && (H & 0x4000) == 0)
+                                            {
+                                                // Underflow case
+                                                C ^= 0x4000;
+                                                L &= 0x3FFF;
+                                                H |= 0x4000;
+                                            }
+                                            else
+                                            {
+                                                break;
+                                            }
+                                        }
+
+                                        L <<= 1;
+                                        H = (ushort)((H << 1) | 1);
+
+                                        //ENSURE_BITS(1)
+                                        {
+                                            while (bits_left < (1))
+                                            {
+                                                //READ_BYTES
+                                                {
+                                                    //READ_IF_NEEDED
+                                                    {
+                                                        if (i_ptr >= i_end)
+                                                        {
+                                                            if (qtm.ReadInput() != Error.MSPACK_ERR_OK)
+                                                                return qtm.Error;
+
+                                                            i_ptr = qtm.InputPointer;
+                                                            i_end = qtm.InputLength;
+                                                        }
+                                                    }
+
+                                                    byte b0 = qtm.InputBuffer[i_ptr++];
+
+                                                    //READ_IF_NEEDED
+                                                    {
+                                                        if (i_ptr >= i_end)
+                                                        {
+                                                            if (qtm.ReadInput() != Error.MSPACK_ERR_OK)
+                                                                return qtm.Error;
+
+                                                            i_ptr = qtm.InputPointer;
+                                                            i_end = qtm.InputLength;
+                                                        }
+                                                    }
+
+                                                    byte b1 = qtm.InputBuffer[i_ptr++];
+
+                                                    //INJECT_BITS(bitdata, 16)
+                                                    {
+                                                        bit_buffer |= (uint)((b0 << 8) | b1) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
+                                                        bits_left += (16);
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        C = (ushort)((C << 1) | (bit_buffer >> (CompressionStream.BITBUF_WIDTH - (1)))); //PEEK_BITS(1)
+
+                                        //REMOVE_BITS(1)
+                                        {
+                                            bit_buffer <<= (1);
+                                            bits_left -= (1);
+                                        }
+                                    }
                                 }
 
-                                match_offset = position_base[sym] + extra + 1;
+                                //READ_MANY_BITS(extra, extra_bits[sym])
+                                {
+                                    byte needed = (byte)(extra_bits[sym]), bitrun;
+                                    (extra) = 0;
+                                    while (needed > 0)
+                                    {
+                                        if ((bits_left) <= (CompressionStream.BITBUF_WIDTH - 16))
+                                        {
+                                            //READ_BYTES
+                                            {
+                                                //READ_IF_NEEDED
+                                                {
+                                                    if (i_ptr >= i_end)
+                                                    {
+                                                        if (qtm.ReadInput() != Error.MSPACK_ERR_OK)
+                                                            return qtm.Error;
+
+                                                        i_ptr = qtm.InputPointer;
+                                                        i_end = qtm.InputLength;
+                                                    }
+                                                }
+
+                                                byte b0 = qtm.InputBuffer[i_ptr++];
+
+                                                //READ_IF_NEEDED
+                                                {
+                                                    if (i_ptr >= i_end)
+                                                    {
+                                                        if (qtm.ReadInput() != Error.MSPACK_ERR_OK)
+                                                            return qtm.Error;
+
+                                                        i_ptr = qtm.InputPointer;
+                                                        i_end = qtm.InputLength;
+                                                    }
+                                                }
+
+                                                byte b1 = qtm.InputBuffer[i_ptr++];
+
+                                                //INJECT_BITS(bitdata, 16)
+                                                {
+                                                    bit_buffer |= (uint)((b0 << 8) | b1) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
+                                                    bits_left += (16);
+                                                }
+                                            }
+                                        }
+
+                                        bitrun = (byte)((bits_left < needed) ? bits_left : needed);
+                                        (extra) = (int)(((extra) << bitrun) | (bit_buffer >> (CompressionStream.BITBUF_WIDTH - (bitrun)))); //PEEK_BITS(bitrun)
+
+                                        //REMOVE_BITS(bitrun)
+                                        {
+                                            bit_buffer <<= (bitrun);
+                                            bits_left -= (bitrun);
+                                        }
+
+                                        needed -= bitrun;
+                                    }
+                                }
+
+                                match_offset = (uint)(position_base[sym] + extra + 1);
                                 match_length = 4;
                                 break;
 
                             // Selector 6 = variable length match
                             case 6:
-                                GET_SYMBOL(qtm, qtm.Model6Len, ref sym, ref range, ref symf, ref high, ref low, ref current, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
-
-                                // READ_MANY_BITS(extra, length_extra[sym])
-                                needed = length_extra[sym];
-                                extra = 0;
-                                while (needed > 0)
+                                //GET_SYMBOL(qtm.Model6Len, sym)
                                 {
-                                    if (bits_left <= (QTMDStream.BITBUF_WIDTH - 16))
+                                    range = (uint)((H - L) & 0xFFFF) + 1;
+                                    symf = (ushort)(((((C - L + 1) * qtm.Model6Len.Syms[0].CumulativeFrequency) - 1) / range) & 0xFFFF);
+
+                                    for (i = 1; i < qtm.Model6Len.Entries; i++)
                                     {
-                                        READ_BYTES;
+                                        if (qtm.Model6Len.Syms[i].CumulativeFrequency <= symf)
+                                            break;
                                     }
 
-                                    bitrun = (byte)((bits_left < needed) ? bits_left : needed);
+                                    (sym) = qtm.Model6Len.Syms[i - 1].Sym;
 
-                                    int peek = (int)(bit_buffer >> (QTMDStream.BITBUF_WIDTH - (bitrun)));
+                                    range = (uint)(H - L) + 1;
+                                    symf = qtm.Model6Len.Syms[0].CumulativeFrequency;
+                                    H = (ushort)(L + ((qtm.Model6Len.Syms[i - 1].CumulativeFrequency * range) / symf) - 1);
+                                    L = (ushort)(L + ((qtm.Model6Len.Syms[i].CumulativeFrequency * range) / symf));
 
-                                    extra = (uint)((extra << bitrun) | peek);
+                                    do
+                                    {
+                                        qtm.Model6Len.Syms[--i].CumulativeFrequency += 8;
+                                    } while (i > 0);
 
-                                    // REMOVE_BITS(bitrun);
-                                    bit_buffer <<= bitrun;
-                                    bits_left -= bitrun;
+                                    if (qtm.Model6Len.Syms[0].CumulativeFrequency > 3800)
+                                        UpdateModel(qtm.Model6Len);
 
-                                    needed -= bitrun;
+                                    while (true)
+                                    {
+                                        if ((L & 0x8000) != (H & 0x8000))
+                                        {
+                                            if ((L & 0x4000) != 0 && (H & 0x4000) == 0)
+                                            {
+                                                // Underflow case
+                                                C ^= 0x4000;
+                                                L &= 0x3FFF;
+                                                H |= 0x4000;
+                                            }
+                                            else
+                                            {
+                                                break;
+                                            }
+                                        }
+
+                                        L <<= 1;
+                                        H = (ushort)((H << 1) | 1);
+
+                                        //ENSURE_BITS(1)
+                                        {
+                                            while (bits_left < (1))
+                                            {
+                                                //READ_BYTES
+                                                {
+                                                    //READ_IF_NEEDED
+                                                    {
+                                                        if (i_ptr >= i_end)
+                                                        {
+                                                            if (qtm.ReadInput() != Error.MSPACK_ERR_OK)
+                                                                return qtm.Error;
+
+                                                            i_ptr = qtm.InputPointer;
+                                                            i_end = qtm.InputLength;
+                                                        }
+                                                    }
+
+                                                    byte b0 = qtm.InputBuffer[i_ptr++];
+
+                                                    //READ_IF_NEEDED
+                                                    {
+                                                        if (i_ptr >= i_end)
+                                                        {
+                                                            if (qtm.ReadInput() != Error.MSPACK_ERR_OK)
+                                                                return qtm.Error;
+
+                                                            i_ptr = qtm.InputPointer;
+                                                            i_end = qtm.InputLength;
+                                                        }
+                                                    }
+
+                                                    byte b1 = qtm.InputBuffer[i_ptr++];
+
+                                                    //INJECT_BITS(bitdata, 16)
+                                                    {
+                                                        bit_buffer |= (uint)((b0 << 8) | b1) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
+                                                        bits_left += (16);
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        C = (ushort)((C << 1) | (bit_buffer >> (CompressionStream.BITBUF_WIDTH - (1)))); //PEEK_BITS(1)
+
+                                        //REMOVE_BITS(1)
+                                        {
+                                            bit_buffer <<= (1);
+                                            bits_left -= (1);
+                                        }
+                                    }
                                 }
 
-                                match_length = (int)(length_base[sym] + extra + 5);
-
-                                GET_SYMBOL(qtm, qtm.Model6, ref sym, ref range, ref symf, ref high, ref low, ref current, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
-
-                                // READ_MANY_BITS(extra, extra_bits[sym])
-                                needed = extra_bits[sym];
-                                extra = 0;
-                                while (needed > 0)
+                                //READ_MANY_BITS(extra, length_extra[sym])
                                 {
-                                    if (bits_left <= (QTMDStream.BITBUF_WIDTH - 16))
+                                    byte needed = (byte)(length_extra[sym]), bitrun;
+                                    (extra) = 0;
+                                    while (needed > 0)
                                     {
-                                        READ_BYTES;
+                                        if ((bits_left) <= (CompressionStream.BITBUF_WIDTH - 16))
+                                        {
+                                            //READ_BYTES
+                                            {
+                                                //READ_IF_NEEDED
+                                                {
+                                                    if (i_ptr >= i_end)
+                                                    {
+                                                        if (qtm.ReadInput() != Error.MSPACK_ERR_OK)
+                                                            return qtm.Error;
+
+                                                        i_ptr = qtm.InputPointer;
+                                                        i_end = qtm.InputLength;
+                                                    }
+                                                }
+
+                                                byte b0 = qtm.InputBuffer[i_ptr++];
+
+                                                //READ_IF_NEEDED
+                                                {
+                                                    if (i_ptr >= i_end)
+                                                    {
+                                                        if (qtm.ReadInput() != Error.MSPACK_ERR_OK)
+                                                            return qtm.Error;
+
+                                                        i_ptr = qtm.InputPointer;
+                                                        i_end = qtm.InputLength;
+                                                    }
+                                                }
+
+                                                byte b1 = qtm.InputBuffer[i_ptr++];
+
+                                                //INJECT_BITS(bitdata, 16)
+                                                {
+                                                    bit_buffer |= (uint)((b0 << 8) | b1) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
+                                                    bits_left += (16);
+                                                }
+                                            }
+                                        }
+
+                                        bitrun = (byte)((bits_left < needed) ? bits_left : needed);
+                                        (extra) = (int)(((extra) << bitrun) | (bit_buffer >> (CompressionStream.BITBUF_WIDTH - (bitrun)))); //PEEK_BITS(bitrun)
+
+                                        //REMOVE_BITS(bitrun)
+                                        {
+                                            bit_buffer <<= (bitrun);
+                                            bits_left -= (bitrun);
+                                        }
+
+                                        needed -= bitrun;
+                                    }
+                                }
+
+                                match_length = length_base[sym] + extra + 5;
+
+                                //GET_SYMBOL(qtm.Model6, sym)
+                                {
+                                    range = (uint)((H - L) & 0xFFFF) + 1;
+                                    symf = (ushort)(((((C - L + 1) * qtm.Model6.Syms[0].CumulativeFrequency) - 1) / range) & 0xFFFF);
+
+                                    for (i = 1; i < qtm.Model6.Entries; i++)
+                                    {
+                                        if (qtm.Model6.Syms[i].CumulativeFrequency <= symf)
+                                            break;
                                     }
 
-                                    bitrun = (byte)((bits_left < needed) ? bits_left : needed);
+                                    (sym) = qtm.Model6.Syms[i - 1].Sym;
 
-                                    int peek = (int)(bit_buffer >> (QTMDStream.BITBUF_WIDTH - (bitrun)));
+                                    range = (uint)(H - L) + 1;
+                                    symf = qtm.Model6.Syms[0].CumulativeFrequency;
+                                    H = (ushort)(L + ((qtm.Model6.Syms[i - 1].CumulativeFrequency * range) / symf) - 1);
+                                    L = (ushort)(L + ((qtm.Model6.Syms[i].CumulativeFrequency * range) / symf));
 
-                                    extra = (uint)((extra << bitrun) | peek);
+                                    do
+                                    {
+                                        qtm.Model6.Syms[--i].CumulativeFrequency += 8;
+                                    } while (i > 0);
 
-                                    // REMOVE_BITS(bitrun);
-                                    bit_buffer <<= bitrun;
-                                    bits_left -= bitrun;
+                                    if (qtm.Model6.Syms[0].CumulativeFrequency > 3800)
+                                        UpdateModel(qtm.Model6);
 
-                                    needed -= bitrun;
+                                    while (true)
+                                    {
+                                        if ((L & 0x8000) != (H & 0x8000))
+                                        {
+                                            if ((L & 0x4000) != 0 && (H & 0x4000) == 0)
+                                            {
+                                                // Underflow case
+                                                C ^= 0x4000;
+                                                L &= 0x3FFF;
+                                                H |= 0x4000;
+                                            }
+                                            else
+                                            {
+                                                break;
+                                            }
+                                        }
+
+                                        L <<= 1;
+                                        H = (ushort)((H << 1) | 1);
+
+                                        //ENSURE_BITS(1)
+                                        {
+                                            while (bits_left < (1))
+                                            {
+                                                //READ_BYTES
+                                                {
+                                                    //READ_IF_NEEDED
+                                                    {
+                                                        if (i_ptr >= i_end)
+                                                        {
+                                                            if (qtm.ReadInput() != Error.MSPACK_ERR_OK)
+                                                                return qtm.Error;
+
+                                                            i_ptr = qtm.InputPointer;
+                                                            i_end = qtm.InputLength;
+                                                        }
+                                                    }
+
+                                                    byte b0 = qtm.InputBuffer[i_ptr++];
+
+                                                    //READ_IF_NEEDED
+                                                    {
+                                                        if (i_ptr >= i_end)
+                                                        {
+                                                            if (qtm.ReadInput() != Error.MSPACK_ERR_OK)
+                                                                return qtm.Error;
+
+                                                            i_ptr = qtm.InputPointer;
+                                                            i_end = qtm.InputLength;
+                                                        }
+                                                    }
+
+                                                    byte b1 = qtm.InputBuffer[i_ptr++];
+
+                                                    //INJECT_BITS(bitdata, 16)
+                                                    {
+                                                        bit_buffer |= (uint)((b0 << 8) | b1) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
+                                                        bits_left += (16);
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        C = (ushort)((C << 1) | (bit_buffer >> (CompressionStream.BITBUF_WIDTH - (1)))); //PEEK_BITS(1)
+
+                                        //REMOVE_BITS(1)
+                                        {
+                                            bit_buffer <<= (1);
+                                            bits_left -= (1);
+                                        }
+                                    }
                                 }
 
-                                match_offset = position_base[sym] + extra + 1;
+                                //READ_MANY_BITS(extra, extra_bits[sym])
+                                {
+                                    byte needed = (byte)(extra_bits[sym]), bitrun;
+                                    (extra) = 0;
+                                    while (needed > 0)
+                                    {
+                                        if ((bits_left) <= (CompressionStream.BITBUF_WIDTH - 16))
+                                        {
+                                            //READ_BYTES
+                                            {
+                                                //READ_IF_NEEDED
+                                                {
+                                                    if (i_ptr >= i_end)
+                                                    {
+                                                        if (qtm.ReadInput() != Error.MSPACK_ERR_OK)
+                                                            return qtm.Error;
+
+                                                        i_ptr = qtm.InputPointer;
+                                                        i_end = qtm.InputLength;
+                                                    }
+                                                }
+
+                                                byte b0 = qtm.InputBuffer[i_ptr++];
+
+                                                //READ_IF_NEEDED
+                                                {
+                                                    if (i_ptr >= i_end)
+                                                    {
+                                                        if (qtm.ReadInput() != Error.MSPACK_ERR_OK)
+                                                            return qtm.Error;
+
+                                                        i_ptr = qtm.InputPointer;
+                                                        i_end = qtm.InputLength;
+                                                    }
+                                                }
+
+                                                byte b1 = qtm.InputBuffer[i_ptr++];
+
+                                                //INJECT_BITS(bitdata, 16)
+                                                {
+                                                    bit_buffer |= (uint)((b0 << 8) | b1) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
+                                                    bits_left += (16);
+                                                }
+                                            }
+                                        }
+
+                                        bitrun = (byte)((bits_left < needed) ? bits_left : needed);
+                                        (extra) = (int)(((extra) << bitrun) | (bit_buffer >> (CompressionStream.BITBUF_WIDTH - (bitrun)))); //PEEK_BITS(bitrun)
+
+                                        //REMOVE_BITS(bitrun)
+                                        {
+                                            bit_buffer <<= (bitrun);
+                                            bits_left -= (bitrun);
+                                        }
+
+                                        needed -= bitrun;
+                                    }
+                                }
+
+                                match_offset = (uint)(position_base[sym] + extra + 1);
                                 break;
 
                             default:
                                 // Should be impossible, model7 can only return 0-6
-                                Console.WriteLine("got %d from selector", selector);
-                                return qtm.Error = LibMSPackSharp.Error.MSPACK_ERR_DECRUNCH;
+                                Console.WriteLine($"Got {selector} from selector");
+                                return qtm.Error = Error.MSPACK_ERR_DECRUNCH;
                         }
 
                         rundest = (int)window_posn;
@@ -415,12 +1198,13 @@ namespace LibMSPackSharp.Compression
 
                         // Does match destination wrap the window? This situation is possible
                         // where the window size is less than the 32k frame size, but matches
-                        // must not go beyond a frame boundary */
+                        // must not go beyond a frame boundary
                         if ((window_posn + match_length) > qtm.WindowSize)
                         {
-                            /* copy first part of match, before window end */
+                            // Copy first part of match, before window end
                             i = (int)(qtm.WindowSize - window_posn);
                             j = (int)(window_posn - match_offset);
+
                             while (i-- != 0)
                             {
                                 window[rundest++] = window[j++ & (qtm.WindowSize - 1)];
@@ -432,15 +1216,15 @@ namespace LibMSPackSharp.Compression
                             // This should not happen, but if it does then this code
                             // can't handle the situation (can't flush up to the end of
                             // the window, but can't break out either because we haven't
-                            // finished writing the match). bail out in this case */
+                            // finished writing the match). Bail out in this case
                             if (i > out_bytes)
                             {
-                                Console.WriteLine($"during window-wrap match; {i} bytes to flush but only need {out_bytes}");
-                                return qtm.Error = LibMSPackSharp.Error.MSPACK_ERR_DECRUNCH;
+                                Console.WriteLine($"During window-wrap match; {i} bytes to flush but only need {out_bytes}");
+                                return qtm.Error = Error.MSPACK_ERR_DECRUNCH;
                             }
 
-                            if (qtm.Sys.Write(qtm.Output, qtm.Window, qtm.OutputPointer, i) != i)
-                                return qtm.Error = LibMSPackSharp.Error.MSPACK_ERR_WRITE;
+                            if (qtm.Sys.Write(qtm.Output, window, qtm.OutputPointer, i) != i)
+                                return qtm.Error = Error.MSPACK_ERR_WRITE;
 
                             out_bytes -= i;
                             qtm.OutputPointer = 0;
@@ -470,8 +1254,8 @@ namespace LibMSPackSharp.Compression
                                 j = (int)(match_offset - window_posn);
                                 if (j > (int)qtm.WindowSize)
                                 {
-                                    Console.WriteLine("match offset beyond window boundaries");
-                                    return qtm.Error = LibMSPackSharp.Error.MSPACK_ERR_DECRUNCH;
+                                    Console.WriteLine("Match offset beyond window boundaries");
+                                    return qtm.Error = Error.MSPACK_ERR_DECRUNCH;
                                 }
 
                                 runsrc = (int)(qtm.WindowSize - j);
@@ -509,11 +1293,11 @@ namespace LibMSPackSharp.Compression
                 qtm.OutputLength = (int)window_posn;
 
                 // If we subtracted too much from frame_todo, it will
-                // wrap around past zero and go above its max value */
+                // wrap around past zero and go above its max value
                 if (frame_todo > QTM_FRAME_SIZE)
                 {
-                    Console.WriteLine("overshot frame alignment");
-                    return qtm.Error = LibMSPackSharp.Error.MSPACK_ERR_DECRUNCH;
+                    Console.WriteLine("Overshot frame alignment");
+                    return qtm.Error = Error.MSPACK_ERR_DECRUNCH;
                 }
 
                 // Another frame completed?
@@ -522,29 +1306,70 @@ namespace LibMSPackSharp.Compression
                     // Re-align input
                     if ((bits_left & 7) != 0)
                     {
-                        //REMOVE_BITS(bits_left & 7);
-                        bit_buffer <<= bits_left & 7;
-                        bits_left -= bits_left & 7;
+                        //REMOVE_BITS(bits_left & 7)
+                        {
+                            bit_buffer <<= (bits_left & 7);
+                            bits_left -= (bits_left & 7);
+                        }
                     }
 
                     // Special Quantum hack -- cabd.c injects a trailer byte to allow the
                     // decompressor to realign itself. CAB Quantum blocks, unlike LZX
-                    // blocks, can have anything from 0 to 4 trailing null bytes. */
+                    // blocks, can have anything from 0 to 4 trailing null bytes.
                     do
                     {
                         //READ_BITS(i, 8)
                         {
                             //ENSURE_BITS(8)
-                            while (bits_left < (8))
                             {
-                                READ_BYTES;
+                                while (bits_left < (8))
+                                {
+                                    //READ_BYTES
+                                    {
+                                        //READ_IF_NEEDED
+                                        {
+                                            if (i_ptr >= i_end)
+                                            {
+                                                if (qtm.ReadInput() != Error.MSPACK_ERR_OK)
+                                                    return qtm.Error;
+
+                                                i_ptr = qtm.InputPointer;
+                                                i_end = qtm.InputLength;
+                                            }
+                                        }
+
+                                        byte b0 = qtm.InputBuffer[i_ptr++];
+
+                                        //READ_IF_NEEDED
+                                        {
+                                            if (i_ptr >= i_end)
+                                            {
+                                                if (qtm.ReadInput() != Error.MSPACK_ERR_OK)
+                                                    return qtm.Error;
+
+                                                i_ptr = qtm.InputPointer;
+                                                i_end = qtm.InputLength;
+                                            }
+                                        }
+
+                                        byte b1 = qtm.InputBuffer[i_ptr++];
+
+                                        //INJECT_BITS(bitdata, 16)
+                                        {
+                                            bit_buffer |= (uint)((b0 << 8) | b1) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
+                                            bits_left += (16);
+                                        }
+                                    }
+                                }
                             }
 
-                            i = (int)(bit_buffer >> (BITBUF_WIDTH - (8)));
+                            (i) = (int)(bit_buffer >> (CompressionStream.BITBUF_WIDTH - (8))); //PEEK_BITS(8)
 
-                            // REMOVE_BITS(8);
-                            bit_buffer <<= (8);
-                            bits_left -= (8);
+                            //REMOVE_BITS(8)
+                            {
+                                bit_buffer <<= (8);
+                                bits_left -= (8);
+                            }
                         }
                     } while (i != 0xFF);
 
@@ -563,21 +1388,23 @@ namespace LibMSPackSharp.Compression
                     if (i >= out_bytes)
                         break;
 
-                    if (qtm.Sys.Write(qtm.Output, qtm.Window, qtm.OutputPointer, i) != i)
-                        return qtm.Error = LibMSPackSharp.Error.MSPACK_ERR_WRITE;
+                    if (qtm.Sys.Write(qtm.Output, window, qtm.OutputPointer, i) != i)
+                        return qtm.Error = Error.MSPACK_ERR_WRITE;
 
                     out_bytes -= i;
                     qtm.OutputPointer = 0;
                     qtm.OutputLength = 0;
                     window_posn = 0;
                 }
+
             }
 
             if (out_bytes != 0)
             {
                 i = (int)out_bytes;
-                if (qtm.Sys.Write(qtm.Output, qtm.Window, qtm.OutputPointer, i) != i)
-                    return qtm.Error = LibMSPackSharp.Error.MSPACK_ERR_WRITE;
+
+                if (qtm.Sys.Write(qtm.Output, window, qtm.OutputPointer, i) != i)
+                    return qtm.Error = Error.MSPACK_ERR_WRITE;
 
                 qtm.OutputPointer += i;
             }
@@ -585,91 +1412,20 @@ namespace LibMSPackSharp.Compression
             // Store local state
 
             //STORE_BITS
-            qtm.InputPointer = i_ptr;
-            qtm.InputLength = i_end;
-            qtm.BitBuffer = bit_buffer;
-            qtm.BitsLeft = bits_left;
+            {
+                qtm.InputPointer = i_ptr;
+                qtm.InputLength = i_end;
+                qtm.BitBuffer = bit_buffer;
+                qtm.BitsLeft = bits_left;
+            }
 
             qtm.WindowPosition = window_posn;
             qtm.FrameTODO = frame_todo;
-            qtm.High = high;
-            qtm.Low = low;
-            qtm.Current = (ushort)current;
+            qtm.High = H;
+            qtm.Low = L;
+            qtm.Current = C;
 
-            return LibMSPackSharp.Error.MSPACK_ERR_OK;
-        }
-
-        /// <summary>
-        /// Arithmetic decoder:
-        /// 
-        /// GET_SYMBOL(model, var) fetches the next symbol from the stated model
-        /// and puts it in var.
-        /// 
-        /// If necessary, qtmd_update_model() is called.
-        /// </summary>
-        private static void GET_SYMBOL(QTMDStream qtm, QTMDModel model, ref int var, ref uint range, ref ushort symf, ref ushort high, ref ushort low, ref ushort current,
-            ref int i_ptr, ref int i_end, ref uint bit_buffer, ref int bits_left)
-        {
-            range = (uint)(((high - low) & 0xFFFF) + 1);
-            symf = (ushort)(((((current - low + 1) * model.Syms[0].CumulativeFrequency) - 1) / range) & 0xFFFF);
-
-            int i;
-            for (i = 1; i < model.Entries; i++)
-            {
-                if (model.Syms[i].CumulativeFrequency <= symf)
-                    break;
-            }
-
-            var = model.Syms[i - 1].Sym;
-
-            range = (ushort)((high - low) + 1);
-            symf = model.Syms[0].CumulativeFrequency;
-            high = (ushort)(low + ((model.Syms[i - 1].CumulativeFrequency * range) / symf) - 1);
-            low = (ushort)(low + ((model.Syms[i].CumulativeFrequency * range) / symf));
-
-            do
-            {
-                model.Syms[--i].CumulativeFrequency += 8;
-            } while (i > 0);
-
-            if (model.Syms[0].CumulativeFrequency > 3800)
-                UpdateModel(model);
-
-            while (true)
-            {
-                if ((low & 0x8000) != (high & 0x8000))
-                {
-                    // Underflow case
-                    if ((low & 0x4000) != 0 && (high & 0x4000) == 0)
-                    {
-                        current ^= 0x4000;
-                        low &= 0x3FFF;
-                        high |= 0x4000;
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-
-                low <<= 1;
-                high = (ushort)((high << 1) | 1);
-
-                // ENSURE_BITS(1)
-                while (bits_left < 1)
-                {
-                    READ_BYTES;
-                }
-
-                if (qtm.Error != LibMSPackSharp.Error.MSPACK_ERR_OK)
-                    return;
-
-                current = (ushort)((current << 1) | (bit_buffer >> (LZXDStream.BITBUF_WIDTH - (1))));  //PEEK_BITS(1)
-
-                //REMOVE_BITS(1);
-                bit_buffer <<= (1);
-                bits_left -= (1);
-            }
+            return Error.MSPACK_ERR_OK;
         }
 
         private static void UpdateModel(QTMDModel model)
@@ -681,12 +1437,10 @@ namespace LibMSPackSharp.Compression
             {
                 for (i = model.Entries - 1; i >= 0; i--)
                 {
-                    /* -1, not -2; the 0 entry saves this */
+                    // -1, not -2; the 0 entry saves this
                     model.Syms[i].CumulativeFrequency >>= 1;
                     if (model.Syms[i].CumulativeFrequency <= model.Syms[i + 1].CumulativeFrequency)
-                    {
                         model.Syms[i].CumulativeFrequency = (ushort)(model.Syms[i + 1].CumulativeFrequency + 1);
-                    }
                 }
             }
             else

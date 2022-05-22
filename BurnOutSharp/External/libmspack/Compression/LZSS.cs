@@ -56,11 +56,11 @@ namespace LibMSPackSharp.Compression
         /// </param>
         /// <param name="mode">one of LZSSMode values</param>
         /// <returns>an error code, or MSPACK_ERR_OK if successful</returns>
-        public static LibMSPackSharp.Error Decompress(SystemImpl system, FileStream input, FileStream output, int input_buffer_size, LZSSMode mode)
+        public static Error Decompress(SystemImpl system, FileStream input, FileStream output, int input_buffer_size, LZSSMode mode)
         {
             // Check parameters
             if (system == null || input_buffer_size < 1 || (mode != LZSSMode.LZSS_MODE_EXPAND && mode != LZSSMode.LZSS_MODE_MSHELP && mode != LZSSMode.LZSS_MODE_QBASIC))
-                return LibMSPackSharp.Error.MSPACK_ERR_ARGS;
+                return Error.MSPACK_ERR_ARGS;
 
             // Allocate memory
             byte[] window = new byte[LZSS_WINDOW_SIZE + input_buffer_size];
@@ -85,7 +85,7 @@ namespace LibMSPackSharp.Compression
                     {
                         read = input.Read(window, inbuf, input_buffer_size);
                         if (read <= 0)
-                            return (read < 0) ? LibMSPackSharp.Error.MSPACK_ERR_READ : LibMSPackSharp.Error.MSPACK_ERR_OK;
+                            return (read < 0) ? Error.MSPACK_ERR_READ : Error.MSPACK_ERR_OK;
 
                         i_ptr = inbuf;
                         i_end = read;
@@ -104,7 +104,7 @@ namespace LibMSPackSharp.Compression
                             {
                                 read = input.Read(window, inbuf, input_buffer_size);
                                 if (read <= 0)
-                                    return (read < 0) ? LibMSPackSharp.Error.MSPACK_ERR_READ : LibMSPackSharp.Error.MSPACK_ERR_OK;
+                                    return (read < 0) ? Error.MSPACK_ERR_READ : Error.MSPACK_ERR_OK;
 
                                 i_ptr = inbuf;
                                 i_end = read;
@@ -116,7 +116,7 @@ namespace LibMSPackSharp.Compression
                         //WRITE_BYTE
                         {
                             try { output.Write(window, (int)pos, 1); }
-                            catch { return LibMSPackSharp.Error.MSPACK_ERR_WRITE; }
+                            catch { return Error.MSPACK_ERR_WRITE; }
                         }
 
                         pos++;
@@ -132,7 +132,7 @@ namespace LibMSPackSharp.Compression
                             {
                                 read = input.Read(window, inbuf, input_buffer_size);
                                 if (read <= 0)
-                                    return (read < 0) ? LibMSPackSharp.Error.MSPACK_ERR_READ : LibMSPackSharp.Error.MSPACK_ERR_OK;
+                                    return (read < 0) ? Error.MSPACK_ERR_READ : Error.MSPACK_ERR_OK;
 
                                 i_ptr = inbuf;
                                 i_end = read;
@@ -147,7 +147,7 @@ namespace LibMSPackSharp.Compression
                             {
                                 read = input.Read(window, inbuf, input_buffer_size);
                                 if (read <= 0)
-                                    return (read < 0) ? LibMSPackSharp.Error.MSPACK_ERR_READ : LibMSPackSharp.Error.MSPACK_ERR_OK;
+                                    return (read < 0) ? Error.MSPACK_ERR_READ : Error.MSPACK_ERR_OK;
 
                                 i_ptr = inbuf;
                                 i_end = read;
@@ -164,7 +164,7 @@ namespace LibMSPackSharp.Compression
                             //WRITE_BYTE
                             {
                                 try { output.Write(window, (int)pos, 1); }
-                                catch { return LibMSPackSharp.Error.MSPACK_ERR_WRITE; }
+                                catch { return Error.MSPACK_ERR_WRITE; }
                             }
 
                             pos++;
@@ -177,7 +177,7 @@ namespace LibMSPackSharp.Compression
             }
 
             /* not reached */
-            return LibMSPackSharp.Error.MSPACK_ERR_OK;
+            return Error.MSPACK_ERR_OK;
         }
     }
 }
