@@ -962,7 +962,6 @@ namespace LibMSPackSharp.Compression
         /// <summary>
         /// A clean implementation of RFC 1951 / inflate
         /// </summary>
-        // TODO: Huffman tree implementation
         private static Error Inflate(MSZIPDStream zip)
         {
             uint last_block, block_type, distance, length, this_run, i;
@@ -1228,7 +1227,60 @@ namespace LibMSPackSharp.Compression
                     // Decode forever until end of block code
                     for (; ; )
                     {
-                        READ_HUFFSYM(LITERAL, code);
+                        //READ_HUFFSYM(LITERAL, code)
+                        {
+                            //ENSURE_BITS(CompressionStream.HUFF_MAXBITS)
+                            {
+                                while (bits_left < (CompressionStream.HUFF_MAXBITS))
+                                {
+                                    //READ_BYTES
+                                    {
+                                        //READ_IF_NEEDED
+                                        {
+                                            if (i_ptr >= i_end)
+                                            {
+                                                if (zip.ReadInput() != Error.MSPACK_ERR_OK)
+                                                    return zip.Error;
+
+                                                i_ptr = zip.InputPointer;
+                                                i_end = zip.InputLength;
+                                            }
+                                        }
+
+                                        //INJECT_BITS(zip.InputBuffer[i_ptr++], 8)
+                                        {
+                                            bit_buffer |= (uint)((zip.InputBuffer[i_ptr++]) << bits_left);
+                                            bits_left += (8);
+                                        }
+                                    }
+                                }
+                            }
+
+                            sym = zip.LITERAL_table[(bit_buffer & ((1 << (MSZIP_LITERAL_TABLEBITS)) - 1))]; //PEEK_BITS(TABLEBITS(LITERAL))
+                            if (sym >= MSZIP_LITERAL_MAXSYMBOLS)
+                            {
+                                //HUFF_TRAVERSE(LITERAL)
+                                {
+                                    i = MSZIP_LITERAL_TABLEBITS - 1;
+                                    do
+                                    {
+                                        if (i++ > CompressionStream.HUFF_MAXBITS)
+                                            return Error.INF_ERR_HUFFSYM;
+
+                                        sym = zip.LITERAL_table[(sym << 1) | ((bit_buffer >> (int)i) & 1)];
+                                    } while (sym >= MSZIP_LITERAL_MAXSYMBOLS);
+                                }
+                            }
+
+                            (code) = sym;
+                            i = zip.LITERAL_len[sym];
+
+                            //REMOVE_BITS(i)
+                            {
+                                bit_buffer >>= (int)(i);
+                                bits_left -= (int)(i);
+                            }
+                        }
 
                         if (code < 256)
                         {
@@ -1296,7 +1348,60 @@ namespace LibMSPackSharp.Compression
 
                             length += lit_lengths[code];
 
-                            READ_HUFFSYM(DISTANCE, code);
+                            //READ_HUFFSYM(DISTANCE, var)
+                            {
+                                //ENSURE_BITS(CompressionStream.HUFF_MAXBITS)
+                                {
+                                    while (bits_left < (CompressionStream.HUFF_MAXBITS))
+                                    {
+                                        //READ_BYTES
+                                        {
+                                            //READ_IF_NEEDED
+                                            {
+                                                if (i_ptr >= i_end)
+                                                {
+                                                    if (zip.ReadInput() != Error.MSPACK_ERR_OK)
+                                                        return zip.Error;
+
+                                                    i_ptr = zip.InputPointer;
+                                                    i_end = zip.InputLength;
+                                                }
+                                            }
+
+                                            //INJECT_BITS(zip.InputBuffer[i_ptr++], 8)
+                                            {
+                                                bit_buffer |= (uint)((zip.InputBuffer[i_ptr++]) << bits_left);
+                                                bits_left += (8);
+                                            }
+                                        }
+                                    }
+                                }
+
+                                sym = zip.DISTANCE_table[(bit_buffer & ((1 << (MSZIP_DISTANCE_TABLEBITS)) - 1))]; //PEEK_BITS(TABLEBITS(DISTANCE))
+                                if (sym >= MSZIP_DISTANCE_MAXSYMBOLS)
+                                {
+                                    //HUFF_TRAVERSE(DISTANCE)
+                                    {
+                                        i = MSZIP_DISTANCE_TABLEBITS - 1;
+                                        do
+                                        {
+                                            if (i++ > CompressionStream.HUFF_MAXBITS)
+                                                return Error.INF_ERR_HUFFSYM;
+
+                                            sym = zip.DISTANCE_table[(sym << 1) | ((bit_buffer >> (int)i) & 1)];
+                                        } while (sym >= MSZIP_DISTANCE_MAXSYMBOLS);
+                                    }
+                                }
+
+                                (code) = sym;
+                                i = zip.DISTANCE_len[sym];
+
+                                //REMOVE_BITS(i)
+                                {
+                                    bit_buffer >>= (int)(i);
+                                    bits_left -= (int)(i);
+                                }
+                            }
 
                             if (code >= 30)
                                 return Error.INF_ERR_DISTCODE;
