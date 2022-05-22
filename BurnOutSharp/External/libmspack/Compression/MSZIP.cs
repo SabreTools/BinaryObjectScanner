@@ -311,7 +311,7 @@ namespace LibMSPackSharp.Compression
 
             if (out_bytes != 0)
             {
-                Console.WriteLine("bytes left to output");
+                Console.WriteLine($"Bytes left to output: {out_bytes}");
                 return zip.Error = Error.MSPACK_ERR_DECRUNCH;
             }
 
@@ -607,7 +607,7 @@ namespace LibMSPackSharp.Compression
 
             lit_codes += 257;
 
-            //READ_BITS_T(dist_codes, 5)
+            //READ_BITS(dist_codes, 5)
             {
                 //ENSURE_BITS(5)
                 {
@@ -636,7 +636,7 @@ namespace LibMSPackSharp.Compression
                     }
                 }
 
-                (dist_codes) = (bit_buffer & lsb_bit_mask[(5)]); //PEEK_BITS_T(5)
+                (dist_codes) = (bit_buffer & ((1 << (5)) - 1)); //PEEK_BITS(5)
 
                 //REMOVE_BITS(5)
                 {
@@ -678,7 +678,7 @@ namespace LibMSPackSharp.Compression
 
                 (bitlen_codes) = (bit_buffer & ((1 << (4)) - 1)); //PEEK_BITS(4)
 
-                //REMOVE_BITS(nbits)
+                //REMOVE_BITS(4)
                 {
                     bit_buffer >>= (4);
                     bits_left -= (4);
@@ -1353,7 +1353,7 @@ namespace LibMSPackSharp.Compression
 
                             length += lit_lengths[code];
 
-                            //READ_HUFFSYM(DISTANCE, var)
+                            //READ_HUFFSYM(DISTANCE, code)
                             {
                                 //ENSURE_BITS(CompressionStream.HUFF_MAXBITS)
                                 {
