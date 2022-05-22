@@ -48,7 +48,5 @@ namespace LibMSPackSharp.Compression
         public ushort[] DISTANCE_table { get; set; } = new ushort[MSZIP.MSZIP_DISTANCE_TABLESIZE];
 
         #endregion
-
-        public override int HUFF_ERROR() => (int)Error.INF_ERR_HUFFSYM;
     }
 }

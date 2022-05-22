@@ -119,7 +119,5 @@ namespace LibMSPackSharp.Compression
         public QTMDModelSym[] Model6LenSymbols { get; set; } = new QTMDModelSym[27 + 1];
 
         public QTMDModelSym[] Model7Symbols { get; set; } = new QTMDModelSym[7 + 1];
-
-        public override int HUFF_ERROR() => (int)Error.MSPACK_ERR_OK;
     }
 }

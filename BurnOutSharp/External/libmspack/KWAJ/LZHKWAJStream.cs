@@ -32,7 +32,5 @@ namespace LibMSPackSharp.KWAJ
         // History window
 
         public byte[] Window { get; set; } = new byte[LZSS.LZSS_WINDOW_SIZE];
-
-        public override int HUFF_ERROR() => (int)Error.MSPACK_ERR_DATAFORMAT;
     }
 }
