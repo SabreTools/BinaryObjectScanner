@@ -44,8 +44,15 @@ namespace BurnOutSharp.FileType
                 // Create the decompressor
                 var decompressor = Library.CreateCABDecompressor(null);
 
+                // Open the cab file
                 var cabFile = decompressor.Open(file);
+                if (cabFile == null)
+                {
+                    if (scanner.IncludeDebug) Console.WriteLine($"Error occurred opening of '{file}': {decompressor.Error}");
+                    return null;
+                }
 
+                // Loop through the found internal files
                 var sub = cabFile.Files;
                 while (sub != null)
                 {

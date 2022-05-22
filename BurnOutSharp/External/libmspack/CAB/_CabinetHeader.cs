@@ -196,9 +196,9 @@ namespace LibMSPackSharp.CAB
                 return;
 
             // Expect less than 60,000, but don't validate
-            HeaderReserved = BitConverter.ToUInt16(buffer, 0x24);
-            FolderReserved = buffer[0x26];
-            DataReserved = buffer[0x27];
+            HeaderReserved = BitConverter.ToUInt16(buffer, 0x00);
+            FolderReserved = buffer[0x02];
+            DataReserved = buffer[0x03];
         }
     }
 }
