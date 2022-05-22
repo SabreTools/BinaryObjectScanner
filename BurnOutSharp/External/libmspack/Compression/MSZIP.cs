@@ -289,7 +289,7 @@ namespace LibMSPackSharp.Compression
                     }
                     else
                     {
-                        return zip.Error = (error > 0) ? error : Error.MSPACK_ERR_DECRUNCH;
+                        return zip.Error = error;
                     }
                 }
 
@@ -733,10 +733,13 @@ namespace LibMSPackSharp.Compression
                 }
             }
 
-            while (i < 19) bl_len[bitlen_order[i++]] = 0;
+            while (i < 19)
+            {
+                bl_len[bitlen_order[i++]] = 0;
+            }
 
             // Create decoding table with an immediate lookup
-            if (CompressionStream.MakeDecodeTable(19, 7, bl_len, bl_table, msb: false))
+            if (!CompressionStream.MakeDecodeTable(19, 7, bl_len, bl_table, msb: false))
                 return Error.INF_ERR_BITLENTBL;
 
             // Read literal / distance code lengths */
@@ -1113,9 +1116,11 @@ namespace LibMSPackSharp.Compression
                     }
 
                     // Get the length and its complement
-                    length = (uint)(lens_buf[0] | (lens_buf[1] << 8));
-                    i = (uint)(lens_buf[2] | (lens_buf[3] << 8));
-                    if (length != (~i & 0xFFFF))
+                    length = (ushort)(lens_buf[0] | (lens_buf[1] << 8));
+                    i = (ushort)(lens_buf[2] | (lens_buf[3] << 8));
+
+                    ushort compl = (ushort)(~i & 0xFFFF);
+                    if (length != compl)
                         return Error.INF_ERR_COMPLEMENT;
 
                     // Read and copy the uncompressed data into the window
@@ -1218,10 +1223,10 @@ namespace LibMSPackSharp.Compression
 
                     // Now huffman lengths are read for either kind of block, 
                     // create huffman decoding tables
-                    if (CompressionStream.MakeDecodeTable(MSZIP_LITERAL_MAXSYMBOLS, MSZIP_LITERAL_TABLEBITS, zip.LITERAL_len, zip.LITERAL_table, msb: false))
+                    if (!CompressionStream.MakeDecodeTable(MSZIP_LITERAL_MAXSYMBOLS, MSZIP_LITERAL_TABLEBITS, zip.LITERAL_len, zip.LITERAL_table, msb: false))
                         return Error.INF_ERR_LITERALTBL;
 
-                    if (CompressionStream.MakeDecodeTable(MSZIP_DISTANCE_MAXSYMBOLS, MSZIP_DISTANCE_TABLEBITS, zip.DISTANCE_len, zip.DISTANCE_table, msb: false))
+                    if (!CompressionStream.MakeDecodeTable(MSZIP_DISTANCE_MAXSYMBOLS, MSZIP_DISTANCE_TABLEBITS, zip.DISTANCE_len, zip.DISTANCE_table, msb: false))
                         return Error.INF_ERR_DISTANCETBL;
 
                     // Decode forever until end of block code

@@ -185,17 +185,18 @@ namespace LibMSPackSharp.Compression
         /// <returns>true for OK or false for error</returns>
         public static bool MakeDecodeTable(int nsyms, int nbits, byte[] length, ushort[] table, bool msb)
         {
-            int next_symbol;
-            long leaf, fill;
-            long reverse; // Only used when !msb
-            long pos = 0; // The current position in the decode table
-            int table_mask = 1 << nbits;
-            long bit_mask = table_mask >> 1; // Don't do 0 length codes
+            ushort sym, next_symbol;
+            uint leaf, fill;
+            uint reverse; // Only used when !msb
+            byte bit_num;
+            uint pos = 0; // The current position in the decode table
+            uint table_mask = (uint)1 << nbits;
+            uint bit_mask = table_mask >> 1; // Don't do 0 length codes
 
             // Fill entries for codes short enough for a direct mapping
-            for (byte bit_num = 1; bit_num <= nbits; bit_num++)
+            for (bit_num = 1; bit_num <= nbits; bit_num++)
             {
-                for (ushort sym = 0; sym < nsyms; sym++)
+                for (sym = 0; sym < nsyms; sym++)
                 {
                     if (length[sym] != bit_num)
                         continue;
@@ -233,7 +234,7 @@ namespace LibMSPackSharp.Compression
                     else
                     {
                         fill = bit_mask;
-                        next_symbol = 1 << bit_num;
+                        next_symbol = (ushort)(1 << bit_num);
 
                         do
                         {
@@ -251,7 +252,7 @@ namespace LibMSPackSharp.Compression
                 return true;
 
             // Mark all remaining table entries as unused
-            for (long sym = pos; sym < table_mask; sym++)
+            for (sym = (ushort)pos; sym < table_mask; sym++)
             {
                 if (msb)
                 {
@@ -261,7 +262,7 @@ namespace LibMSPackSharp.Compression
                 {
                     reverse = sym;
                     leaf = 0;
-                    fill = nbits;
+                    fill = (uint)nbits;
 
                     do
                     {
@@ -275,7 +276,7 @@ namespace LibMSPackSharp.Compression
             }
 
             // next_symbol = base of allocation for long codes
-            next_symbol = ((table_mask >> 1) < nsyms) ? nsyms : (table_mask >> 1);
+            next_symbol = ((table_mask >> 1) < nsyms) ? (ushort)nsyms : (ushort)(table_mask >> 1);
 
             // Give ourselves room for codes to grow by up to 16 more bits.
             // codes now start at bit nbits+16 and end at (nbits+16-codelength)
@@ -283,9 +284,9 @@ namespace LibMSPackSharp.Compression
             table_mask <<= 16;
             bit_mask = 1 << 15;
 
-            for (int bit_num = nbits + 1; bit_num <= HUFF_MAXBITS; bit_num++)
+            for (bit_num = (byte)(nbits + 1); bit_num <= HUFF_MAXBITS; bit_num++)
             {
-                for (ushort sym = 0; sym < nsyms; sym++)
+                for (sym = 0; sym < nsyms; sym++)
                 {
                     if (length[sym] != bit_num)
                         continue;
@@ -301,7 +302,7 @@ namespace LibMSPackSharp.Compression
                         // leaf = the first nbits of the code, reversed
                         reverse = pos >> 16;
                         leaf = 0;
-                        fill = nbits;
+                        fill = (uint)nbits;
 
                         do
                         {
@@ -322,7 +323,7 @@ namespace LibMSPackSharp.Compression
                         }
 
                         // Follow the path and select either left or right for next bit
-                        leaf = table[leaf] << 1;
+                        leaf = (uint)(table[leaf] << 1);
                         if (((pos >> (15 - (int)fill)) & 1) != 0)
                             leaf++;
                     }

@@ -123,18 +123,14 @@ namespace LibMSPackSharp.OAB
             if (infh == null)
             {
                 ret = Error.MSPACK_ERR_OPEN;
-                if (infh != null)
-                    sys.Close(infh);
-
+                sys.Close(infh);
                 return ret;
             }
 
             if (sys.Read(infh, hdrbuf, 0, oabhead_SIZEOF) != oabhead_SIZEOF)
             {
                 ret = Error.MSPACK_ERR_READ;
-                if (infh != null)
-                    sys.Close(infh);
-
+                sys.Close(infh);
                 return ret;
             }
 
@@ -142,9 +138,7 @@ namespace LibMSPackSharp.OAB
                 BitConverter.ToUInt32(hdrbuf, oabhead_VersionLo) != 1)
             {
                 ret = Error.MSPACK_ERR_SIGNATURE;
-                if (infh != null)
-                    sys.Close(infh);
-
+                sys.Close(infh);
                 return ret;
             }
 
@@ -155,11 +149,8 @@ namespace LibMSPackSharp.OAB
             if (outfh == null)
             {
                 ret = Error.MSPACK_ERR_OPEN;
-                if (outfh != null)
-                    sys.Close(outfh);
-                if (infh != null)
-                    sys.Close(infh);
-
+                sys.Close(outfh);
+                sys.Close(infh);
                 return ret;
             }
 
@@ -182,11 +173,8 @@ namespace LibMSPackSharp.OAB
                 if (sys.Read(infh, buf, 0, oabblk_SIZEOF) != oabblk_SIZEOF)
                 {
                     ret = Error.MSPACK_ERR_READ;
-                    if (outfh != null)
-                        sys.Close(outfh);
-                    if (infh != null)
-                        sys.Close(infh);
-
+                    sys.Close(outfh);
+                    sys.Close(infh);
                     return ret;
                 }
 
@@ -198,11 +186,8 @@ namespace LibMSPackSharp.OAB
                 if (blk_dsize > block_max || blk_dsize > target_size || blk_flags > 1)
                 {
                     ret = Error.MSPACK_ERR_DATAFORMAT;
-                    if (outfh != null)
-                        sys.Close(outfh);
-                    if (infh != null)
-                        sys.Close(infh);
-
+                    sys.Close(outfh);
+                    sys.Close(infh);
                     return ret;
                 }
 
@@ -212,22 +197,16 @@ namespace LibMSPackSharp.OAB
                     if (blk_dsize != blk_csize)
                     {
                         ret = Error.MSPACK_ERR_DATAFORMAT;
-                        if (outfh != null)
-                            sys.Close(outfh);
-                        if (infh != null)
-                            sys.Close(infh);
-
+                        sys.Close(outfh);
+                        sys.Close(infh);
                         return ret;
                     }
 
                     ret = CopyFileHandle(sys, infh, outfh, (int)blk_dsize, buf, self.BufferSize);
                     if (ret != Error.MSPACK_ERR_OK)
                     {
-                        if (outfh != null)
-                            sys.Close(outfh);
-                        if (infh != null)
-                            sys.Close(infh);
-
+                        sys.Close(outfh);
+                        sys.Close(infh);
                         return ret;
                     }
                 }
@@ -248,22 +227,16 @@ namespace LibMSPackSharp.OAB
                     if (lzx == null)
                     {
                         ret = Error.MSPACK_ERR_NOMEMORY;
-                        if (outfh != null)
-                            sys.Close(outfh);
-                        if (infh != null)
-                            sys.Close(infh);
-
+                        sys.Close(outfh);
+                        sys.Close(infh);
                         return ret;
                     }
 
                     ret = LZX.Decompress(lzx, blk_dsize);
                     if (ret != Error.MSPACK_ERR_OK)
                     {
-                        if (outfh != null)
-                            sys.Close(outfh);
-                        if (infh != null)
-                            sys.Close(infh);
-
+                        sys.Close(outfh);
+                        sys.Close(infh);
                         return ret;
                     }
 
@@ -273,22 +246,16 @@ namespace LibMSPackSharp.OAB
                     ret = CopyFileHandle(sys, infh, null, in_ofh.Available, buf, self.BufferSize);
                     if (ret != Error.MSPACK_ERR_OK)
                     {
-                        if (outfh != null)
-                            sys.Close(outfh);
-                        if (infh != null)
-                            sys.Close(infh);
-
+                        sys.Close(outfh);
+                        sys.Close(infh);
                         return ret;
                     }
 
                     if (out_ofh.CRC != blk_crc)
                     {
                         ret = Error.MSPACK_ERR_CHECKSUM;
-                        if (outfh != null)
-                            sys.Close(outfh);
-                        if (infh != null)
-                            sys.Close(infh);
-
+                        sys.Close(outfh);
+                        sys.Close(infh);
                         return ret;
                     }
                 }
@@ -296,10 +263,8 @@ namespace LibMSPackSharp.OAB
                 target_size -= blk_dsize;
             }
 
-            if (outfh != null)
-                sys.Close(outfh);
-            if (infh != null)
-                sys.Close(infh);
+            sys.Close(outfh);
+            sys.Close(infh);
 
             return ret;
         }
@@ -326,18 +291,14 @@ namespace LibMSPackSharp.OAB
             if (infh == null)
             {
                 ret = Error.MSPACK_ERR_OPEN;
-                if (infh != null)
-                    sys.Close(infh);
-
+                sys.Close(infh);
                 return ret;
             }
 
             if (sys.Read(infh, hdrbuf, 0, patchhead_SIZEOF) != patchhead_SIZEOF)
             {
                 ret = Error.MSPACK_ERR_READ;
-                if (infh != null)
-                    sys.Close(infh);
-
+                sys.Close(infh);
                 return ret;
             }
 
@@ -345,9 +306,7 @@ namespace LibMSPackSharp.OAB
                 BitConverter.ToUInt32(hdrbuf, patchhead_VersionLo) != 2)
             {
                 ret = Error.MSPACK_ERR_SIGNATURE;
-                if (infh != null)
-                    sys.Close(infh);
-
+                sys.Close(infh);
                 return ret;
             }
 
@@ -362,11 +321,8 @@ namespace LibMSPackSharp.OAB
             if (basefh == null)
             {
                 ret = Error.MSPACK_ERR_OPEN;
-                if (basefh != null)
-                    sys.Close(basefh);
-                if (infh != null)
-                    sys.Close(infh);
-
+                sys.Close(basefh);
+                sys.Close(infh);
                 return ret;
             }
 
@@ -374,13 +330,9 @@ namespace LibMSPackSharp.OAB
             if (outfh == null)
             {
                 ret = Error.MSPACK_ERR_OPEN;
-                if (outfh != null)
-                    sys.Close(outfh);
-                if (basefh != null)
-                    sys.Close(basefh);
-                if (infh != null)
-                    sys.Close(infh);
-
+                sys.Close(outfh);
+                sys.Close(basefh);
+                sys.Close(infh);
                 return ret;
             }
 
@@ -403,13 +355,9 @@ namespace LibMSPackSharp.OAB
                 if (sys.Read(infh, buf, 0, patchblk_SIZEOF) != patchblk_SIZEOF)
                 {
                     ret = Error.MSPACK_ERR_READ;
-                    if (outfh != null)
-                        sys.Close(outfh);
-                    if (basefh != null)
-                        sys.Close(basefh);
-                    if (infh != null)
-                        sys.Close(infh);
-
+                    sys.Close(outfh);
+                    sys.Close(basefh);
+                    sys.Close(infh);
                     return ret;
                 }
 
@@ -421,13 +369,9 @@ namespace LibMSPackSharp.OAB
                 if (blk_dsize > block_max || blk_dsize > target_size || blk_ssize > block_max)
                 {
                     ret = Error.MSPACK_ERR_DATAFORMAT;
-                    if (outfh != null)
-                        sys.Close(outfh);
-                    if (basefh != null)
-                        sys.Close(basefh);
-                    if (infh != null)
-                        sys.Close(infh);
-
+                    sys.Close(outfh);
+                    sys.Close(basefh);
+                    sys.Close(infh);
                     return ret;
                 }
 
@@ -445,39 +389,27 @@ namespace LibMSPackSharp.OAB
                 if (lzx == null)
                 {
                     ret = Error.MSPACK_ERR_NOMEMORY;
-                    if (outfh != null)
-                        sys.Close(outfh);
-                    if (basefh != null)
-                        sys.Close(basefh);
-                    if (infh != null)
-                        sys.Close(infh);
-
+                    sys.Close(outfh);
+                    sys.Close(basefh);
+                    sys.Close(infh);
                     return ret;
                 }
 
                 ret = LZX.SetReferenceData(lzx, sys, basefh, blk_ssize);
                 if (ret != Error.MSPACK_ERR_OK)
                 {
-                    if (outfh != null)
-                        sys.Close(outfh);
-                    if (basefh != null)
-                        sys.Close(basefh);
-                    if (infh != null)
-                        sys.Close(infh);
-
+                    sys.Close(outfh);
+                    sys.Close(basefh);
+                    sys.Close(infh);
                     return ret;
                 }
 
                 ret = LZX.Decompress(lzx, blk_dsize);
                 if (ret != Error.MSPACK_ERR_OK)
                 {
-                    if (outfh != null)
-                        sys.Close(outfh);
-                    if (basefh != null)
-                        sys.Close(basefh);
-                    if (infh != null)
-                        sys.Close(infh);
-
+                    sys.Close(outfh);
+                    sys.Close(basefh);
+                    sys.Close(infh);
                     return ret;
                 }
 
@@ -487,38 +419,27 @@ namespace LibMSPackSharp.OAB
                 ret = CopyFileHandle(sys, infh, null, in_ofh.Available, buf, self.BufferSize);
                 if (ret != Error.MSPACK_ERR_OK)
                 {
-                    if (outfh != null)
-                        sys.Close(outfh);
-                    if (basefh != null)
-                        sys.Close(basefh);
-                    if (infh != null)
-                        sys.Close(infh);
-
+                    sys.Close(outfh);
+                    sys.Close(basefh);
+                    sys.Close(infh);
                     return ret;
                 }
 
                 if (out_ofh.CRC != blk_crc)
                 {
                     ret = Error.MSPACK_ERR_CHECKSUM;
-                    if (outfh != null)
-                        sys.Close(outfh);
-                    if (basefh != null)
-                        sys.Close(basefh);
-                    if (infh != null)
-                        sys.Close(infh);
-
+                    sys.Close(outfh);
+                    sys.Close(basefh);
+                    sys.Close(infh);
                     return ret;
                 }
 
                 target_size -= blk_dsize;
             }
 
-            if (outfh != null)
-                sys.Close(outfh);
-            if (basefh != null)
-                sys.Close(basefh);
-            if (infh != null)
-                sys.Close(infh);
+            sys.Close(outfh);
+            sys.Close(basefh);
+            sys.Close(infh);
 
             return ret;
         }

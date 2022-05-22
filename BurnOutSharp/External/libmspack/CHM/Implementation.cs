@@ -220,8 +220,8 @@ namespace LibMSPackSharp.CHM
             // If this CHM was being decompressed, free decompression state
             if (self.State != null && (self.State.Header == chm))
             {
-                if (self.State.InputFileHandle != null)
-                    sys.Close(self.State.InputFileHandle);
+                sys.Close(self.State.InputFileHandle);
+                sys.Close(self.State.OutputFileHandle);
 
                 self.State = null;
             }
@@ -992,8 +992,8 @@ namespace LibMSPackSharp.CHM
             // Open input chm file if not open, or the open one is a different chm
             if (self.State.InputFileHandle == null || (self.State.Header != chm))
             {
-                if (self.State.InputFileHandle != null)
-                    sys.Close(self.State.InputFileHandle);
+                sys.Close(self.State.InputFileHandle);
+                sys.Close(self.State.OutputFileHandle);
 
                 self.State.Header = chm;
                 self.State.Offset = 0;

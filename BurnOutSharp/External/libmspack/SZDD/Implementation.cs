@@ -51,9 +51,7 @@ namespace LibMSPackSharp.SZDD
 
             if (self.Error != Error.MSPACK_ERR_OK)
             {
-                if (fh != null)
-                    sys.Close(fh);
-
+                sys.Close(fh);
                 hdr = null;
             }
 

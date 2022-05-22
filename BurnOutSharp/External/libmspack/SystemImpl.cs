@@ -259,6 +259,7 @@ namespace LibMSPackSharp
                 catch { return -1; }
                 return bytes;
             }
+
             return -1;
         }
 

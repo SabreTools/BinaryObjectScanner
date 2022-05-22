@@ -61,6 +61,7 @@ namespace BurnOutSharp.FileType
                                 continue;
 
                             string tempFile = Path.Combine(tempPath, entry.Key);
+                            Directory.CreateDirectory(Path.GetDirectoryName(tempFile));
                             entry.WriteToFile(tempFile);
                         }
                         catch (Exception ex)

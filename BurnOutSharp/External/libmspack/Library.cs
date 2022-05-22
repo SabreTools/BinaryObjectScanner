@@ -191,9 +191,8 @@ namespace LibMSPackSharp
                 SystemImpl sys = self.System;
                 if (self.State != null)
                 {
-                    if (self.State.InputFileHandle != null)
-                        sys.Close(self.State.InputFileHandle);
-
+                    sys.Close(self.State.InputFileHandle);
+                    sys.Close(self.State.OutputFileHandle);
                     self.FreeDecompressionState();
                 }
             }
@@ -261,8 +260,8 @@ namespace LibMSPackSharp
                 SystemImpl sys = self.System;
                 if (self.State != null)
                 {
-                    if (self.State.InputFileHandle != null)
-                        sys.Close(self.State.InputFileHandle);
+                    sys.Close(self.State.InputFileHandle);
+                    sys.Close(self.State.OutputFileHandle);
                 }
             }
         }

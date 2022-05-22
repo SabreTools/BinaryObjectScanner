@@ -147,8 +147,8 @@ namespace LibMSPackSharp.CAB
                     // Free folder decompression state if it has been decompressed
                     if (State != null && (State.Folder == fol))
                     {
-                        if (State.InputFileHandle != null)
-                            System.Close(State.InputFileHandle);
+                        System.Close(State.InputFileHandle);
+                        System.Close(State.OutputFileHandle);
 
                         FreeDecompressionState();
                         State = null;
@@ -373,8 +373,8 @@ namespace LibMSPackSharp.CAB
                 if (State.InputFileHandle == null || (fol.Data.Cab != State.InputCabinet))
                 {
                     // Close previous file handle if from a different cab
-                    if (State.InputFileHandle != null)
-                        System.Close(State.InputFileHandle);
+                    System.Close(State.InputFileHandle);
+                    System.Close(State.OutputFileHandle);
 
                     State.InputCabinet = fol.Data.Cab;
                     State.InputFileHandle = System.Open(fol.Data.Cab.Filename, OpenMode.MSPACK_SYS_OPEN_READ);
@@ -422,6 +422,9 @@ namespace LibMSPackSharp.CAB
                 State.OutputFileHandle = null;
                 if ((bytes = file.Header.FolderOffset - State.Offset) != 0)
                 {
+                    State.OutputFileHandle = fh;
+                    InitDecompressionState(fol.Header.CompType);
+
                     error = State.Decompress(State.DecompressorState, bytes);
                     Error = (error == Error.MSPACK_ERR_READ) ? ReadError : error;
                 }
@@ -439,7 +442,7 @@ namespace LibMSPackSharp.CAB
 
             // Close output file
             System.Close(fh);
-            State.OutputFileHandle = null;
+            System.Close(State.OutputFileHandle);
 
             return Error;
         }

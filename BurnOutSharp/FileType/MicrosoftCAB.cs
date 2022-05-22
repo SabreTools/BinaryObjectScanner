@@ -41,7 +41,9 @@ namespace BurnOutSharp.FileType
                 string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
                 Directory.CreateDirectory(tempPath);
 
+                // Create the decompressor
                 var decompressor = Library.CreateCABDecompressor(null);
+
                 var cabFile = decompressor.Open(file);
 
                 var sub = cabFile.Files;
@@ -65,6 +67,9 @@ namespace BurnOutSharp.FileType
 
                     sub = sub.Next;
                 }
+
+                // Destroy the decompressor
+                Library.DestroyCABDecompressor(decompressor);
 
                 // Collect and format all found protections
                 var protections = scanner.GetProtections(tempPath);
