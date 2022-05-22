@@ -439,7 +439,6 @@ namespace LibMSPackSharp.Compression
         /// <param name="o">LZX decompression state, as allocated by lzxd_init().</param>
         /// <param name="out_bytes">the number of bytes of data to decompress.</param>
         /// <returns>an error code, or MSPACK_ERR_OK if successful</returns>
-        // TODO: Huffman tree implementation
         public static Error Decompress(object o, long out_bytes)
         {
             LZXDStream lzx = o as LZXDStream;
@@ -1017,36 +1016,221 @@ namespace LibMSPackSharp.Compression
                                     lzx.ALIGNED_len[i] = (byte)j;
                                 }
 
-                                BUILD_TABLE(ALIGNED);
+                                //BUILD_TABLE(ALIGNED)
+                                {
+                                    if (!CompressionStream.MakeDecodeTable(LZX_ALIGNED_MAXSYMBOLS, LZX_ALIGNED_TABLEBITS, lzx.ALIGNED_len, lzx.ALIGNED_table, msb: true))
+                                    {
+                                        Console.WriteLine($"Failed to build ALIGNED table");
+                                        return lzx.Error = Error.MSPACK_ERR_DECRUNCH;
+                                    }
+                                }
 
                                 // Read lengths of and build main huffman decoding tree
-                                READ_LENGTHS(MAINTREE, 0, 256);
-                                READ_LENGTHS(MAINTREE, 256, LZX_NUM_CHARS + lzx.NumOffsets);
-                                BUILD_TABLE(MAINTREE);
+
+                                //READ_LENGTHS(MAINTREE, 0, 256)
+                                {
+                                    //STORE_BITS
+                                    {
+                                        lzx.InputPointer = i_ptr;
+                                        lzx.InputLength = i_end;
+                                        lzx.BitBuffer = bit_buffer;
+                                        lzx.BitsLeft = bits_left;
+                                    }
+
+                                    if (ReadLens(lzx, lzx.MAINTREE_len, (0), (uint)(256)) != Error.MSPACK_ERR_OK)
+                                        return lzx.Error;
+
+                                    //RESTORE_BITS
+                                    {
+                                        i_ptr = lzx.InputPointer;
+                                        i_end = lzx.InputLength;
+                                        bit_buffer = lzx.BitBuffer;
+                                        bits_left = lzx.BitsLeft;
+                                    }
+                                }
+
+                                //READ_LENGTHS(MAINTREE, 256, LZX_NUM_CHARS + lzx.NumOffsets)
+                                {
+                                    //STORE_BITS
+                                    {
+                                        lzx.InputPointer = i_ptr;
+                                        lzx.InputLength = i_end;
+                                        lzx.BitBuffer = bit_buffer;
+                                        lzx.BitsLeft = bits_left;
+                                    }
+
+                                    if (ReadLens(lzx, lzx.MAINTREE_len, (256), (uint)(LZX_NUM_CHARS + lzx.NumOffsets)) != Error.MSPACK_ERR_OK)
+                                        return lzx.Error;
+
+                                    //RESTORE_BITS
+                                    {
+                                        i_ptr = lzx.InputPointer;
+                                        i_end = lzx.InputLength;
+                                        bit_buffer = lzx.BitBuffer;
+                                        bits_left = lzx.BitsLeft;
+                                    }
+                                }
+
+                                //BUILD_TABLE(MAINTREE)
+                                {
+                                    if (!CompressionStream.MakeDecodeTable(LZX_MAINTREE_MAXSYMBOLS, LZX_MAINTREE_TABLEBITS, lzx.MAINTREE_len, lzx.MAINTREE_table, msb: true))
+                                    {
+                                        Console.WriteLine($"Failed to build MAINTREE table");
+                                        return lzx.Error = Error.MSPACK_ERR_DECRUNCH;
+                                    }
+                                }
 
                                 // If the literal 0xE8 is anywhere in the block...
                                 if (lzx.MAINTREE_len[0xE8] != 0)
                                     lzx.IntelStarted = true;
 
                                 // Read lengths of and build lengths huffman decoding tree
-                                READ_LENGTHS(LENGTH, 0, LZX_NUM_SECONDARY_LENGTHS);
-                                BUILD_TABLE_MAYBE_EMPTY(LENGTH);
+
+                                //READ_LENGTHS(LENGTH, 0, LZX_NUM_SECONDARY_LENGTHS)
+                                {
+                                    //STORE_BITS
+                                    {
+                                        lzx.InputPointer = i_ptr;
+                                        lzx.InputLength = i_end;
+                                        lzx.BitBuffer = bit_buffer;
+                                        lzx.BitsLeft = bits_left;
+                                    }
+
+                                    if (ReadLens(lzx, lzx.LENGTH_len, (0), (uint)(LZX_NUM_SECONDARY_LENGTHS)) != Error.MSPACK_ERR_OK)
+                                        return lzx.Error;
+
+                                    //RESTORE_BITS
+                                    {
+                                        i_ptr = lzx.InputPointer;
+                                        i_end = lzx.InputLength;
+                                        bit_buffer = lzx.BitBuffer;
+                                        bits_left = lzx.BitsLeft;
+                                    }
+                                }
+
+                                //BUILD_TABLE_MAYBE_EMPTY(LENGTH)
+                                {
+                                    lzx.LENGTH_empty = 0;
+                                    if (!CompressionStream.MakeDecodeTable(LZX_LENGTH_MAXSYMBOLS, LZX_LENGTH_TABLEBITS, lzx.LENGTH_len, lzx.LENGTH_table, msb: true))
+                                    {
+                                        for (i = 0; i < LZX_LENGTH_MAXSYMBOLS; i++)
+                                        {
+                                            if (lzx.LENGTH_len[i] > 0)
+                                            {
+                                                Console.WriteLine("Failed to build TBL table");
+                                                return lzx.Error = Error.MSPACK_ERR_DECRUNCH;
+                                            }
+                                        }
+
+                                        // Empty tree - allow it, but don't decode symbols with it
+                                        lzx.LENGTH_empty = 1;
+                                    }
+                                }
 
                                 break;
 
                             case LZXBlockType.LZX_BLOCKTYPE_VERBATIM:
                                 // Read lengths of and build main huffman decoding tree
-                                READ_LENGTHS(MAINTREE, 0, 256);
-                                READ_LENGTHS(MAINTREE, 256, LZX_NUM_CHARS + lzx.NumOffsets);
-                                BUILD_TABLE(MAINTREE);
+
+                                //READ_LENGTHS(MAINTREE, 0, 256)
+                                {
+                                    //STORE_BITS
+                                    {
+                                        lzx.InputPointer = i_ptr;
+                                        lzx.InputLength = i_end;
+                                        lzx.BitBuffer = bit_buffer;
+                                        lzx.BitsLeft = bits_left;
+                                    }
+
+                                    if (ReadLens(lzx, lzx.MAINTREE_len, (0), (uint)(256)) != Error.MSPACK_ERR_OK)
+                                        return lzx.Error;
+
+                                    //RESTORE_BITS
+                                    {
+                                        i_ptr = lzx.InputPointer;
+                                        i_end = lzx.InputLength;
+                                        bit_buffer = lzx.BitBuffer;
+                                        bits_left = lzx.BitsLeft;
+                                    }
+                                }
+
+                                //READ_LENGTHS(MAINTREE, 256, LZX_NUM_CHARS + lzx.NumOffsets)
+                                {
+                                    //STORE_BITS
+                                    {
+                                        lzx.InputPointer = i_ptr;
+                                        lzx.InputLength = i_end;
+                                        lzx.BitBuffer = bit_buffer;
+                                        lzx.BitsLeft = bits_left;
+                                    }
+
+                                    if (ReadLens(lzx, lzx.MAINTREE_len, (256), (uint)(LZX_NUM_CHARS + lzx.NumOffsets)) != Error.MSPACK_ERR_OK)
+                                        return lzx.Error;
+
+                                    //RESTORE_BITS
+                                    {
+                                        i_ptr = lzx.InputPointer;
+                                        i_end = lzx.InputLength;
+                                        bit_buffer = lzx.BitBuffer;
+                                        bits_left = lzx.BitsLeft;
+                                    }
+                                }
+
+                                //BUILD_TABLE(MAINTREE)
+                                {
+                                    if (!CompressionStream.MakeDecodeTable(LZX_MAINTREE_MAXSYMBOLS, LZX_MAINTREE_TABLEBITS, lzx.MAINTREE_len, lzx.MAINTREE_table, msb: true))
+                                    {
+                                        Console.WriteLine($"Failed to build MAINTREE table");
+                                        return lzx.Error = Error.MSPACK_ERR_DECRUNCH;
+                                    }
+                                }
 
                                 // If the literal 0xE8 is anywhere in the block...
                                 if (lzx.MAINTREE_len[0xE8] != 0)
                                     lzx.IntelStarted = true;
 
                                 // Read lengths of and build lengths huffman decoding tree
-                                READ_LENGTHS(LENGTH, 0, LZX_NUM_SECONDARY_LENGTHS);
-                                BUILD_TABLE_MAYBE_EMPTY(LENGTH);
+
+                                //READ_LENGTHS(LENGTH, 0, LZX_NUM_SECONDARY_LENGTHS)
+                                {
+                                    //STORE_BITS
+                                    {
+                                        lzx.InputPointer = i_ptr;
+                                        lzx.InputLength = i_end;
+                                        lzx.BitBuffer = bit_buffer;
+                                        lzx.BitsLeft = bits_left;
+                                    }
+
+                                    if (ReadLens(lzx, lzx.LENGTH_len, (0), (uint)(LZX_NUM_SECONDARY_LENGTHS)) != Error.MSPACK_ERR_OK)
+                                        return lzx.Error;
+
+                                    //RESTORE_BITS
+                                    {
+                                        i_ptr = lzx.InputPointer;
+                                        i_end = lzx.InputLength;
+                                        bit_buffer = lzx.BitBuffer;
+                                        bits_left = lzx.BitsLeft;
+                                    }
+                                }
+
+                                //BUILD_TABLE_MAYBE_EMPTY(LENGTH)
+                                {
+                                    lzx.LENGTH_empty = 0;
+                                    if (!CompressionStream.MakeDecodeTable(LZX_LENGTH_MAXSYMBOLS, LZX_LENGTH_TABLEBITS, lzx.LENGTH_len, lzx.LENGTH_table, msb: true))
+                                    {
+                                        for (i = 0; i < LZX_LENGTH_MAXSYMBOLS; i++)
+                                        {
+                                            if (lzx.LENGTH_len[i] > 0)
+                                            {
+                                                Console.WriteLine("Failed to build TBL table");
+                                                return lzx.Error = Error.MSPACK_ERR_DECRUNCH;
+                                            }
+                                        }
+
+                                        // Empty tree - allow it, but don't decode symbols with it
+                                        lzx.LENGTH_empty = 1;
+                                    }
+                                }
 
                                 break;
 
@@ -1150,7 +1334,76 @@ namespace LibMSPackSharp.Compression
                         case LZXBlockType.LZX_BLOCKTYPE_VERBATIM:
                             while (this_run > 0)
                             {
-                                READ_HUFFSYM(MAINTREE, main_element);
+                                //READ_HUFFSYM(MAINTREE, main_element)
+                                {
+                                    //ENSURE_BITS(CompressionStream.HUFF_MAXBITS)
+                                    {
+                                        while (bits_left < (CompressionStream.HUFF_MAXBITS))
+                                        {
+                                            //READ_BYTES
+                                            {
+                                                //READ_IF_NEEDED
+                                                {
+                                                    if (i_ptr >= i_end)
+                                                    {
+                                                        if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
+                                                            return lzx.Error;
+
+                                                        i_ptr = lzx.InputPointer;
+                                                        i_end = lzx.InputLength;
+                                                    }
+                                                }
+
+                                                byte b0 = lzx.InputBuffer[i_ptr++];
+
+                                                //READ_IF_NEEDED
+                                                {
+                                                    if (i_ptr >= i_end)
+                                                    {
+                                                        if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
+                                                            return lzx.Error;
+
+                                                        i_ptr = lzx.InputPointer;
+                                                        i_end = lzx.InputLength;
+                                                    }
+                                                }
+
+                                                byte b1 = lzx.InputBuffer[i_ptr++];
+
+                                                //INJECT_BITS(bitdata, 16)
+                                                {
+                                                    bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
+                                                    bits_left += (16);
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    sym = lzx.MAINTREE_table[(bit_buffer >> (CompressionStream.BITBUF_WIDTH - (LZX_MAINTREE_TABLEBITS)))]; //PEEK_BITS(TABLEBITS(MAINTREE))
+                                    if (sym >= LZX_MAINTREE_MAXSYMBOLS)
+                                    {
+                                        //HUFF_TRAVERSE(tbl)
+                                        {
+                                            i = 1 << (CompressionStream.BITBUF_WIDTH - LZX_MAINTREE_TABLEBITS);
+                                            do
+                                            {
+                                                if ((i >>= 1) == 0)
+                                                    return lzx.Error = Error.MSPACK_ERR_DECRUNCH;
+
+                                                sym = lzx.MAINTREE_table[(sym << 1) | ((bit_buffer & i) != 0 ? 1 : 0)];
+                                            } while (sym >= LZX_MAINTREE_MAXSYMBOLS);
+                                        }
+                                    }
+
+                                    (main_element) = sym;
+                                    i = lzx.MAINTREE_len[sym];
+
+                                    //REMOVE_BITS(i)
+                                    {
+                                        bit_buffer <<= (i);
+                                        bits_left -= (i);
+                                    }
+                                }
 
                                 if (main_element < LZX_NUM_CHARS)
                                 {
@@ -1173,7 +1426,76 @@ namespace LibMSPackSharp.Compression
                                             return lzx.Error = Error.MSPACK_ERR_DECRUNCH;
                                         }
 
-                                        READ_HUFFSYM(LENGTH, length_footer);
+                                        //READ_HUFFSYM(LENGTH, length_footer)
+                                        {
+                                            //ENSURE_BITS(CompressionStream.HUFF_MAXBITS)
+                                            {
+                                                while (bits_left < (CompressionStream.HUFF_MAXBITS))
+                                                {
+                                                    //READ_BYTES
+                                                    {
+                                                        //READ_IF_NEEDED
+                                                        {
+                                                            if (i_ptr >= i_end)
+                                                            {
+                                                                if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
+                                                                    return lzx.Error;
+
+                                                                i_ptr = lzx.InputPointer;
+                                                                i_end = lzx.InputLength;
+                                                            }
+                                                        }
+
+                                                        byte b0 = lzx.InputBuffer[i_ptr++];
+
+                                                        //READ_IF_NEEDED
+                                                        {
+                                                            if (i_ptr >= i_end)
+                                                            {
+                                                                if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
+                                                                    return lzx.Error;
+
+                                                                i_ptr = lzx.InputPointer;
+                                                                i_end = lzx.InputLength;
+                                                            }
+                                                        }
+
+                                                        byte b1 = lzx.InputBuffer[i_ptr++];
+
+                                                        //INJECT_BITS(bitdata, 16)
+                                                        {
+                                                            bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
+                                                            bits_left += (16);
+                                                        }
+                                                    }
+                                                }
+                                            }
+
+                                            sym = lzx.LENGTH_table[(bit_buffer >> (CompressionStream.BITBUF_WIDTH - (LZX_LENGTH_TABLEBITS)))]; //PEEK_BITS(TABLEBITS(LENGTH))
+                                            if (sym >= LZX_LENGTH_MAXSYMBOLS)
+                                            {
+                                                //HUFF_TRAVERSE(LENGTH)
+                                                {
+                                                    i = 1 << (CompressionStream.BITBUF_WIDTH - LZX_LENGTH_TABLEBITS);
+                                                    do
+                                                    {
+                                                        if ((i >>= 1) == 0)
+                                                            return lzx.Error = Error.MSPACK_ERR_DECRUNCH;
+
+                                                        sym = lzx.LENGTH_table[(sym << 1) | ((bit_buffer & i) != 0 ? 1 : 0)];
+                                                    } while (sym >= LZX_LENGTH_MAXSYMBOLS);
+                                                }
+                                            }
+
+                                            (length_footer) = sym;
+                                            i = lzx.LENGTH_len[sym];
+
+                                            //REMOVE_BITS(i)
+                                            {
+                                                bit_buffer <<= (i);
+                                                bits_left -= (i);
+                                            }
+                                        }
 
                                         match_length += length_footer;
                                     }
@@ -1335,7 +1657,76 @@ namespace LibMSPackSharp.Compression
 
                                                     match_offset += (uint)(verbatim_bits << 3);
 
-                                                    READ_HUFFSYM(ALIGNED, aligned_bits);
+                                                    //READ_HUFFSYM(ALIGNED, aligned_bits)
+                                                    {
+                                                        //ENSURE_BITS(CompressionStream.HUFF_MAXBITS)
+                                                        {
+                                                            while (bits_left < (CompressionStream.HUFF_MAXBITS))
+                                                            {
+                                                                //READ_BYTES
+                                                                {
+                                                                    //READ_IF_NEEDED
+                                                                    {
+                                                                        if (i_ptr >= i_end)
+                                                                        {
+                                                                            if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
+                                                                                return lzx.Error;
+
+                                                                            i_ptr = lzx.InputPointer;
+                                                                            i_end = lzx.InputLength;
+                                                                        }
+                                                                    }
+
+                                                                    byte b0 = lzx.InputBuffer[i_ptr++];
+
+                                                                    //READ_IF_NEEDED
+                                                                    {
+                                                                        if (i_ptr >= i_end)
+                                                                        {
+                                                                            if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
+                                                                                return lzx.Error;
+
+                                                                            i_ptr = lzx.InputPointer;
+                                                                            i_end = lzx.InputLength;
+                                                                        }
+                                                                    }
+
+                                                                    byte b1 = lzx.InputBuffer[i_ptr++];
+
+                                                                    //INJECT_BITS(bitdata, 16)
+                                                                    {
+                                                                        bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
+                                                                        bits_left += (16);
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+
+                                                        sym = lzx.ALIGNED_table[(bit_buffer >> (CompressionStream.BITBUF_WIDTH - (LZX_ALIGNED_TABLEBITS)))]; //PEEK_BITS(TABLEBITS(ALIGNED))
+                                                        if (sym >= LZX_ALIGNED_MAXSYMBOLS)
+                                                        {
+                                                            //HUFF_TRAVERSE(ALIGNED)
+                                                            {
+                                                                i = 1 << (CompressionStream.BITBUF_WIDTH - LZX_ALIGNED_TABLEBITS);
+                                                                do
+                                                                {
+                                                                    if ((i >>= 1) == 0)
+                                                                        return lzx.Error = Error.MSPACK_ERR_DECRUNCH;
+
+                                                                    sym = lzx.ALIGNED_table[(sym << 1) | ((bit_buffer & i) != 0 ? 1 : 0)];
+                                                                } while (sym >= LZX_ALIGNED_MAXSYMBOLS);
+                                                            }
+                                                        }
+
+                                                        (aligned_bits) = sym;
+                                                        i = lzx.ALIGNED_len[sym];
+
+                                                        //REMOVE_BITS(i)
+                                                        {
+                                                            bit_buffer <<= (i);
+                                                            bits_left -= (i);
+                                                        }
+                                                    }
 
                                                     match_offset += (uint)aligned_bits;
                                                 }
@@ -1343,7 +1734,76 @@ namespace LibMSPackSharp.Compression
                                                 // 3: aligned bits only
                                                 else if (extra == 3)
                                                 {
-                                                    READ_HUFFSYM(ALIGNED, aligned_bits);
+                                                    //READ_HUFFSYM(ALIGNED, aligned_bits)
+                                                    {
+                                                        //ENSURE_BITS(CompressionStream.HUFF_MAXBITS)
+                                                        {
+                                                            while (bits_left < (CompressionStream.HUFF_MAXBITS))
+                                                            {
+                                                                //READ_BYTES
+                                                                {
+                                                                    //READ_IF_NEEDED
+                                                                    {
+                                                                        if (i_ptr >= i_end)
+                                                                        {
+                                                                            if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
+                                                                                return lzx.Error;
+
+                                                                            i_ptr = lzx.InputPointer;
+                                                                            i_end = lzx.InputLength;
+                                                                        }
+                                                                    }
+
+                                                                    byte b0 = lzx.InputBuffer[i_ptr++];
+
+                                                                    //READ_IF_NEEDED
+                                                                    {
+                                                                        if (i_ptr >= i_end)
+                                                                        {
+                                                                            if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
+                                                                                return lzx.Error;
+
+                                                                            i_ptr = lzx.InputPointer;
+                                                                            i_end = lzx.InputLength;
+                                                                        }
+                                                                    }
+
+                                                                    byte b1 = lzx.InputBuffer[i_ptr++];
+
+                                                                    //INJECT_BITS(bitdata, 16)
+                                                                    {
+                                                                        bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
+                                                                        bits_left += (16);
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+
+                                                        sym = lzx.ALIGNED_table[(bit_buffer >> (CompressionStream.BITBUF_WIDTH - (LZX_ALIGNED_TABLEBITS)))]; //PEEK_BITS(TABLEBITS(ALIGNED))
+                                                        if (sym >= LZX_ALIGNED_MAXSYMBOLS)
+                                                        {
+                                                            //HUFF_TRAVERSE(ALIGNED)
+                                                            {
+                                                                i = 1 << (CompressionStream.BITBUF_WIDTH - LZX_ALIGNED_TABLEBITS);
+                                                                do
+                                                                {
+                                                                    if ((i >>= 1) == 0)
+                                                                        return lzx.Error = Error.MSPACK_ERR_DECRUNCH;
+
+                                                                    sym = lzx.ALIGNED_table[(sym << 1) | ((bit_buffer & i) != 0 ? 1 : 0)];
+                                                                } while (sym >= LZX_ALIGNED_MAXSYMBOLS);
+                                                            }
+                                                        }
+
+                                                        (aligned_bits) = sym;
+                                                        i = lzx.ALIGNED_len[sym];
+
+                                                        //REMOVE_BITS(i)
+                                                        {
+                                                            bit_buffer <<= (i);
+                                                            bits_left -= (i);
+                                                        }
+                                                    }
 
                                                     match_offset += (uint)aligned_bits;
                                                 }
@@ -2009,7 +2469,6 @@ namespace LibMSPackSharp.Compression
             return Error.MSPACK_ERR_OK;
         }
 
-        // TODO: Huffman tree implementation
         private static Error ReadLens(LZXDStream lzx, byte[] lens, uint first, uint last)
         {
             // Bit buffer and huffman symbol decode variables
@@ -2089,11 +2548,87 @@ namespace LibMSPackSharp.Compression
                 lzx.PRETREE_len[x] = (byte)y;
             }
 
-            BUILD_TABLE(PRETREE);
+            //BUILD_TABLE(PRETREE)
+            {
+                if (!CompressionStream.MakeDecodeTable(LZX_PRETREE_MAXSYMBOLS, LZX_PRETREE_TABLEBITS, lzx.PRETREE_len, lzx.PRETREE_table, msb: true))
+                {
+                    Console.WriteLine($"failed to build PRETREE table");
+                    return lzx.Error = Error.MSPACK_ERR_DECRUNCH;
+                }
+            }
 
             for (x = first; x < last;)
             {
-                READ_HUFFSYM(PRETREE, z);
+                //READ_HUFFSYM(PRETREE, z)
+                {
+                    //ENSURE_BITS(CompressionStream.HUFF_MAXBITS)
+                    {
+                        while (bits_left < (CompressionStream.HUFF_MAXBITS))
+                        {
+                            //READ_BYTES
+                            {
+                                //READ_IF_NEEDED
+                                {
+                                    if (i_ptr >= i_end)
+                                    {
+                                        if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
+                                            return lzx.Error;
+
+                                        i_ptr = lzx.InputPointer;
+                                        i_end = lzx.InputLength;
+                                    }
+                                }
+
+                                byte b0 = lzx.InputBuffer[i_ptr++];
+
+                                //READ_IF_NEEDED
+                                {
+                                    if (i_ptr >= i_end)
+                                    {
+                                        if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
+                                            return lzx.Error;
+
+                                        i_ptr = lzx.InputPointer;
+                                        i_end = lzx.InputLength;
+                                    }
+                                }
+
+                                byte b1 = lzx.InputBuffer[i_ptr++];
+
+                                //INJECT_BITS(bitdata, 16)
+                                {
+                                    bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
+                                    bits_left += (16);
+                                }
+                            }
+                        }
+                    }
+
+                    sym = lzx.PRETREE_table[(bit_buffer >> (CompressionStream.BITBUF_WIDTH - (LZX_PRETREE_TABLEBITS)))]; //PEEK_BITS(TABLEBITS(PRETREE))
+                    if (sym >= LZX_PRETREE_MAXSYMBOLS)
+                    {
+                        //HUFF_TRAVERSE(PRETREE)
+                        {
+                            i = 1 << (CompressionStream.BITBUF_WIDTH - LZX_PRETREE_TABLEBITS);
+                            do
+                            {
+                                if ((i >>= 1) == 0)
+                                    return lzx.Error = Error.MSPACK_ERR_DECRUNCH;
+
+                                sym = lzx.PRETREE_table[(sym << 1) | ((bit_buffer & i) != 0 ? 1 : 0)];
+                            } while (sym >= LZX_PRETREE_MAXSYMBOLS);
+                        }
+                    }
+
+                    (z) = sym;
+                    i = lzx.PRETREE_len[sym];
+
+                    //REMOVE_BITS(i)
+                    {
+                        bit_buffer <<= (i);
+                        bits_left -= (i);
+                    }
+                }
 
                 // Code = 17, run of ([read 4 bits]+4) zeros
                 if (z == 17)
@@ -2282,7 +2817,76 @@ namespace LibMSPackSharp.Compression
 
                     y += 4;
 
-                    READ_HUFFSYM(PRETREE, z);
+                    //READ_HUFFSYM(PRETREE, z)
+                    {
+                        //ENSURE_BITS(CompressionStream.HUFF_MAXBITS)
+                        {
+                            while (bits_left < (CompressionStream.HUFF_MAXBITS))
+                            {
+                                //READ_BYTES
+                                {
+                                    //READ_IF_NEEDED
+                                    {
+                                        if (i_ptr >= i_end)
+                                        {
+                                            if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
+                                                return lzx.Error;
+
+                                            i_ptr = lzx.InputPointer;
+                                            i_end = lzx.InputLength;
+                                        }
+                                    }
+
+                                    byte b0 = lzx.InputBuffer[i_ptr++];
+
+                                    //READ_IF_NEEDED
+                                    {
+                                        if (i_ptr >= i_end)
+                                        {
+                                            if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
+                                                return lzx.Error;
+
+                                            i_ptr = lzx.InputPointer;
+                                            i_end = lzx.InputLength;
+                                        }
+                                    }
+
+                                    byte b1 = lzx.InputBuffer[i_ptr++];
+
+                                    //INJECT_BITS(bitdata, 16)
+                                    {
+                                        bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
+                                        bits_left += (16);
+                                    }
+                                }
+                            }
+                        }
+
+                        sym = lzx.PRETREE_table[(bit_buffer >> (CompressionStream.BITBUF_WIDTH - (LZX_PRETREE_TABLEBITS)))]; //PEEK_BITS(TABLEBITS(PRETREE))
+                        if (sym >= LZX_PRETREE_MAXSYMBOLS)
+                        {
+                            //HUFF_TRAVERSE(PRETREE)
+                            {
+                                i = 1 << (CompressionStream.BITBUF_WIDTH - LZX_PRETREE_TABLEBITS);
+                                do
+                                {
+                                    if ((i >>= 1) == 0)
+                                        return lzx.Error = Error.MSPACK_ERR_DECRUNCH;
+
+                                    sym = lzx.PRETREE_table[(sym << 1) | ((bit_buffer & i) != 0 ? 1 : 0)];
+                                } while (sym >= LZX_PRETREE_MAXSYMBOLS);
+                            }
+                        }
+
+                        (z) = sym;
+                        i = lzx.PRETREE_len[sym];
+
+                        //REMOVE_BITS(i)
+                        {
+                            bit_buffer <<= (i);
+                            bits_left -= (i);
+                        }
+                    }
 
                     z = lens[x] - z;
                     if (z < 0)
