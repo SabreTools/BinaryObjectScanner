@@ -333,7 +333,7 @@ namespace LibMSPackSharp.KWAJ
             }
             else if (hdr.CompressionType == CompressionType.MSKWAJ_COMP_LZH)
             {
-                InternalStream lzh = LZHInit(sys, fh, outfh);
+                LZHKWAJStream lzh = LZHInit(sys, fh, outfh);
                 self.Error = (lzh != null) ? LZHDecompress(lzh) : Error.MSPACK_ERR_NOMEMORY;
             }
             else if (hdr.CompressionType == CompressionType.MSKWAJ_COMP_MSZIP)
@@ -402,12 +402,12 @@ namespace LibMSPackSharp.KWAJ
          * 2 fake bytes in then stops), so we implement our own.
          */
 
-        private static InternalStream LZHInit(SystemImpl sys, FileStream input, FileStream output)
+        private static LZHKWAJStream LZHInit(SystemImpl sys, FileStream input, FileStream output)
         {
             if (sys == null || input == null || output == null)
                 return null;
 
-            return new InternalStream()
+            return new LZHKWAJStream()
             {
                 Sys = sys,
                 Input = input,
@@ -415,29 +415,35 @@ namespace LibMSPackSharp.KWAJ
             };
         }
 
-        private static Error LZHDecompress(InternalStream lzh)
+        // TODO: Huffman tree implementation
+        private static Error LZHDecompress(LZHKWAJStream lzh)
         {
-            uint bit_buffer, len = 0, j = 0;
-            int i, bits_left;
-            int i_ptr, i_end;
-            bool lit_run = false;
-            int pos = 0, offset;
-            int[] types = new int[6];
+            uint bit_buffer;
+            int bits_left, i;
+            ushort sym;
+            int i_ptr, i_end, lit_run = 0;
+            int j, pos = 0, len, offset;
+            Error err;
+            uint[] types = new uint[6];
 
             // Reset global state
 
             //INIT_BITS
-            lzh.InputPointer = 0;
-            lzh.InputLength = 0;
-            lzh.BitBuffer = 0;
-            lzh.BitsLeft = 0;
-            lzh.InputEnd = 0;
+            {
+                lzh.InputPointer = 0;
+                lzh.InputLength = 0;
+                lzh.BitBuffer = 0;
+                lzh.BitsLeft = 0;
+                lzh.InputEnd = 0;
+            }
 
             //RESTORE_BITS
-            i_ptr = lzh.InputPointer;
-            i_end = lzh.InputLength;
-            bit_buffer = lzh.BitBuffer;
-            bits_left = lzh.BitsLeft;
+            {
+                i_ptr = lzh.InputPointer;
+                i_end = lzh.InputLength;
+                bit_buffer = lzh.BitBuffer;
+                bits_left = lzh.BitsLeft;
+            }
 
             for (i = 0; i < LZSS.LZSS_WINDOW_SIZE; i++)
             {
@@ -448,184 +454,118 @@ namespace LibMSPackSharp.KWAJ
             for (i = 0; i < 6; i++)
             {
                 //READ_BITS_SAFE(types[i], 4)
-
-                //READ_BITS(types[i], 4)
                 {
-                    //ENSURE_BITS(nbits)
-                    while (bits_left < (4))
+                    //READ_BITS(types[i], 4)
                     {
-                        READ_BYTES;
+                        //ENSURE_BITS(nbits)
+                        {
+                            while (bits_left < (4))
+                            {
+                                //READ_BYTES
+                                {
+                                    if (i_ptr >= i_end)
+                                    {
+                                        if ((err = LZHReadInput(lzh)) != Error.MSPACK_ERR_OK)
+                                            return err;
+
+                                        i_ptr = lzh.InputPointer;
+                                        i_end = lzh.InputLength;
+                                    }
+
+                                    //INJECT_BITS(lzh.InputBuffer[i_ptr++], 8)
+                                    {
+                                        bit_buffer |= (uint)(lzh.InputBuffer[i_ptr++]) << (CompressionStream.BITBUF_WIDTH - (8) - bits_left);
+                                        bits_left += (8);
+                                    }
+                                }
+                            }
+                        }
+
+                        (types[i]) = (bit_buffer >> (CompressionStream.BITBUF_WIDTH - (4))); //PEEK_BITS(4)
+
+                        //REMOVE_BITS(4)
+                        {
+                            bit_buffer <<= (4);
+                            bits_left -= (4);
+                        }
                     }
 
-                    types[i] = (int)(bit_buffer >> (BITBUF_WIDTH - (4)));
-
-                    // REMOVE_BITS(4);
-                    bit_buffer <<= (4);
-                    bits_left -= (4);
+                    if (lzh.InputEnd != 0 && bits_left < lzh.InputEnd)
+                        return Error.MSPACK_ERR_OK;
                 }
-
-                if (lzh.InputEnd != 0 && bits_left < lzh.InputEnd)
-                    return Error.MSPACK_ERR_OK;
             }
 
             // Read huffman table symbol lengths and build huffman trees
+            BUILD_TREE(MATCHLEN1, types[0]);
 
-            //BUILD_TREE(tbl, type)
+            BUILD_TREE(MATCHLEN2, types[1]);
 
-            //STORE_BITS
-            lzh.InputPointer = i_ptr;
-            lzh.InputLength = i_end;
-            lzh.BitBuffer = bit_buffer;
-            lzh.BitsLeft = bits_left;
+            BUILD_TREE(LITLEN, types[2]);
 
-            Error err = LZHReadLens(lzh, (uint)types[0], KWAJ_MATCHLEN1_SYMS, lzh.MATCHLEN1_len);
-            if (err != Error.MSPACK_ERR_OK)
-                return err;
+            BUILD_TREE(OFFSET, types[3]);
 
-            //RESTORE_BITS
-            i_ptr = lzh.InputPointer;
-            i_end = lzh.InputLength;
-            bit_buffer = lzh.BitBuffer;
-            bits_left = lzh.BitsLeft;
-
-            if (!InternalStream.MakeDecodeTable(KWAJ_MATCHLEN1_SYMS, KWAJ_MATCHLEN1_TBLSIZE, lzh.MATCHLEN1_len, lzh.MATCHLEN1_table, msb: true))
-                return Error.MSPACK_ERR_DATAFORMAT;
-
-            //BUILD_TREE(tbl, type)
-
-            //STORE_BITS
-            lzh.InputPointer = i_ptr;
-            lzh.InputLength = i_end;
-            lzh.BitBuffer = bit_buffer;
-            lzh.BitsLeft = bits_left;
-
-            err = LZHReadLens(lzh, (uint)types[1], KWAJ_MATCHLEN2_SYMS, lzh.MATCHLEN2_len);
-            if (err != Error.MSPACK_ERR_OK)
-                return err;
-
-            //RESTORE_BITS
-            i_ptr = lzh.InputPointer;
-            i_end = lzh.InputLength;
-            bit_buffer = lzh.BitBuffer;
-            bits_left = lzh.BitsLeft;
-
-            if (!InternalStream.MakeDecodeTable(KWAJ_MATCHLEN2_SYMS, KWAJ_MATCHLEN2_TBLSIZE, lzh.MATCHLEN2_len, lzh.MATCHLEN2_table, msb: true))
-                return Error.MSPACK_ERR_DATAFORMAT;
-
-            //BUILD_TREE(tbl, type)
-
-            //STORE_BITS
-            lzh.InputPointer = i_ptr;
-            lzh.InputLength = i_end;
-            lzh.BitBuffer = bit_buffer;
-            lzh.BitsLeft = bits_left;
-
-            err = LZHReadLens(lzh, (uint)types[2], KWAJ_LITLEN_SYMS, lzh.LITLEN_len);
-            if (err != Error.MSPACK_ERR_OK)
-                return err;
-
-            //RESTORE_BITS
-            i_ptr = lzh.InputPointer;
-            i_end = lzh.InputLength;
-            bit_buffer = lzh.BitBuffer;
-            bits_left = lzh.BitsLeft;
-
-            if (!InternalStream.MakeDecodeTable(KWAJ_LITLEN_SYMS, KWAJ_LITLEN_TBLSIZE, lzh.LITLEN_len, lzh.LITLEN_table, msb: true))
-                return Error.MSPACK_ERR_DATAFORMAT;
-
-            //BUILD_TREE(tbl, type)
-
-            //STORE_BITS
-            lzh.InputPointer = i_ptr;
-            lzh.InputLength = i_end;
-            lzh.BitBuffer = bit_buffer;
-            lzh.BitsLeft = bits_left;
-
-            err = LZHReadLens(lzh, (uint)types[3], KWAJ_OFFSET_SYMS, lzh.OFFSET_len);
-            if (err != Error.MSPACK_ERR_OK)
-                return err;
-
-            //RESTORE_BITS
-            i_ptr = lzh.InputPointer;
-            i_end = lzh.InputLength;
-            bit_buffer = lzh.BitBuffer;
-            bits_left = lzh.BitsLeft;
-
-            if (!InternalStream.MakeDecodeTable(KWAJ_OFFSET_SYMS, KWAJ_OFFSET_TBLSIZE, lzh.OFFSET_len, lzh.OFFSET_table, msb: true))
-                return Error.MSPACK_ERR_DATAFORMAT;
-
-            //BUILD_TREE(tbl, type)
-
-            //STORE_BITS
-            lzh.InputPointer = i_ptr;
-            lzh.InputLength = i_end;
-            lzh.BitBuffer = bit_buffer;
-            lzh.BitsLeft = bits_left;
-
-            err = LZHReadLens(lzh, (uint)types[4], KWAJ_LITERAL_SYMS, lzh.LITERAL_len);
-            if (err != Error.MSPACK_ERR_OK)
-                return err;
-
-            //RESTORE_BITS
-            i_ptr = lzh.InputPointer;
-            i_end = lzh.InputLength;
-            bit_buffer = lzh.BitBuffer;
-            bits_left = lzh.BitsLeft;
-
-            if (!InternalStream.MakeDecodeTable(KWAJ_LITERAL_SYMS, KWAJ_LITERAL_TBLSIZE, lzh.LITERAL_len, lzh.LITERAL_table, msb: true))
-                return Error.MSPACK_ERR_DATAFORMAT;
+            BUILD_TREE(LITERAL, types[4]);
 
             while (lzh.InputEnd == 0)
             {
-                if (lit_run)
+                if (lit_run != 0)
                 {
-                    //READ_HUFFSYM_SAFE(tbl, val)
-                    if (lzh.READ_HUFFSYM(lzh.MATCHLEN2_table, ref len, KWAJ_MATCHLEN2_TBLSIZE, lzh.MATCHLEN2_len, KWAJ_MATCHLEN2_SYMS, ref i, ref i_ptr, ref i_end, ref bits_left, ref bit_buffer, msb: true) != 0)
-                        return Error.MSPACK_ERR_DECRUNCH;
-                    if (lzh.InputEnd != 0 && bits_left < lzh.InputEnd)
-                        return Error.MSPACK_ERR_OK;
+                    READ_HUFFSYM_SAFE(MATCHLEN2, len);
                 }
                 else
                 {
-                    //READ_HUFFSYM_SAFE(tbl, val)
-                    if (lzh.READ_HUFFSYM(lzh.MATCHLEN1_table, ref len, KWAJ_MATCHLEN1_TBLSIZE, lzh.MATCHLEN1_len, KWAJ_MATCHLEN1_SYMS, ref i, ref i_ptr, ref i_end, ref bits_left, ref bit_buffer, msb: true) != 0)
-                        return Error.MSPACK_ERR_DECRUNCH;
-                    if (lzh.InputEnd != 0 && bits_left < lzh.InputEnd)
-                        return Error.MSPACK_ERR_OK;
+                    READ_HUFFSYM_SAFE(MATCHLEN1, len);
                 }
 
                 if (len > 0)
                 {
                     len += 2;
-                    lit_run = false; // Not the end of a literal run
+                    lit_run = 0; // Not the end of a literal run
 
-                    //READ_HUFFSYM_SAFE(tbl, val)
-                    if (lzh.READ_HUFFSYM(lzh.OFFSET_table, ref j, KWAJ_OFFSET_TBLSIZE, lzh.OFFSET_len, KWAJ_OFFSET_SYMS, ref i, ref i_ptr, ref i_end, ref bits_left, ref bit_buffer, msb: true) != 0)
-                        return Error.MSPACK_ERR_DECRUNCH;
-                    if (lzh.InputEnd != 0 && bits_left < lzh.InputEnd)
-                        return Error.MSPACK_ERR_OK;
-
-                    offset = (int)(j << 6);
+                    READ_HUFFSYM_SAFE(OFFSET, j);
+                    
+                    offset = j << 6;
 
                     //READ_BITS_SAFE(j, 6)
-
-                    //READ_BITS(j, 6)
                     {
-                        //ENSURE_BITS(6)
-                        while (bits_left < (6))
+                        //READ_BITS(j, 6)
                         {
-                            READ_BYTES;
+                            //ENSURE_BITS(6)
+                            {
+                                while (bits_left < (6))
+                                {
+                                    //READ_BYTES
+                                    {
+                                        if (i_ptr >= i_end)
+                                        {
+                                            if ((err = LZHReadInput(lzh)) != Error.MSPACK_ERR_OK)
+                                                return err;
+
+                                            i_ptr = lzh.InputPointer;
+                                            i_end = lzh.InputLength;
+                                        }
+
+                                        //INJECT_BITS(lzh.InputBuffer[i_ptr++], 8)
+                                        {
+                                            bit_buffer |= (uint)(lzh.InputBuffer[i_ptr++]) << (CompressionStream.BITBUF_WIDTH - (8) - bits_left);
+                                            bits_left += (8);
+                                        }
+                                    }
+                                }
+                            }
+
+                            (j) = (int)(bit_buffer >> (CompressionStream.BITBUF_WIDTH - (6))); //PEEK_BITS(6)
+
+                            //REMOVE_BITS(6)
+                            {
+                                bit_buffer <<= (6);
+                                bits_left -= (6);
+                            }
                         }
 
-                        j = (int)(bit_buffer >> (BITBUF_WIDTH - (6)));
-
-                        // REMOVE_BITS(6);
-                        bit_buffer <<= (6);
-                        bits_left -= (6);
+                        if (lzh.InputEnd != 0 && bits_left < lzh.InputEnd)
+                            return Error.MSPACK_ERR_OK;
                     }
-
-                    if (lzh.InputEnd != 0 && bits_left < lzh.InputEnd)
-                        return Error.MSPACK_ERR_OK;
 
                     offset |= j;
 
@@ -633,64 +573,64 @@ namespace LibMSPackSharp.KWAJ
                     while (len-- > 0)
                     {
                         lzh.Window[pos] = lzh.Window[(pos + 4096 - offset) & 4095];
-                        if (lzh.Sys.Write(lzh.Output, lzh.Window, pos, 1) != 1)
-                            return Error.MSPACK_ERR_WRITE;
 
-                        pos++; pos &= 4095;
-                    }
-                }
-                else
-                {
-                    //READ_HUFFSYM_SAFE(tbl, val)
-                    if (lzh.READ_HUFFSYM(lzh.LITLEN_table, ref len, KWAJ_LITLEN_TBLSIZE, lzh.LITLEN_len, KWAJ_LITLEN_SYMS, ref i, ref i_ptr, ref i_end, ref bits_left, ref bit_buffer, msb: true) != 0)
-                        return Error.MSPACK_ERR_DECRUNCH;
-                    if (lzh.InputEnd != 0 && bits_left < lzh.InputEnd)
-                        return Error.MSPACK_ERR_OK;
-
-                    len++;
-
-                    lit_run = (len == 32) ? false : true; // End of a literal run?
-                    while (len-- > 0)
-                    {
-                        //READ_HUFFSYM_SAFE(tbl, val)
-                        if (lzh.READ_HUFFSYM(lzh.LITERAL_table, ref j, KWAJ_LITERAL_TBLSIZE, lzh.LITERAL_len, KWAJ_LITERAL_SYMS, ref i, ref i_ptr, ref i_end, ref bits_left, ref bit_buffer, msb: true) != 0)
-                            return Error.MSPACK_ERR_DECRUNCH;
-                        if (lzh.InputEnd != 0 && bits_left < lzh.InputEnd)
-                            return Error.MSPACK_ERR_OK;
-
-                        // Copy as output and into the ring buffer
-                        lzh.Window[pos] = (byte)j;
-                        if (lzh.Sys.Write(lzh.Output, lzh.Window, pos, 1) != 1)
-                            return Error.MSPACK_ERR_WRITE;
+                        //WRITE_BYTE 
+                        {
+                            if (lzh.Sys.Write(lzh.Output, lzh.Window, pos, 1) != 1)
+                                return Error.MSPACK_ERR_WRITE;
+                        }
 
                         pos++;
                         pos &= 4095;
                     }
                 }
-            }
+                else
+                {
+                    READ_HUFFSYM_SAFE(LITLEN, len);
+                    
+                    len++;
+                    lit_run = (len == 32) ? 0 : 1; // End of a literal run?
+                    while (len-- > 0)
+                    {
+                        READ_HUFFSYM_SAFE(LITERAL, j);
 
+                        // Copy as output and into the ring buffer
+                        lzh.Window[pos] = (byte)j;
+
+                        //WRITE_BYTE 
+                        {
+                            if (lzh.Sys.Write(lzh.Output, lzh.Window, pos, 1) != 1)
+                                return Error.MSPACK_ERR_WRITE;
+                        }
+
+                        pos++; pos &= 4095;
+                    }
+                }
+            }
             return Error.MSPACK_ERR_OK;
         }
 
-        public static Error LZHReadLens(InternalStream lzh, uint type, uint numsyms, byte[] lens)
+        public static Error LZHReadLens(LZHKWAJStream lzh, uint type, uint numsyms, byte[] lens)
         {
             uint bit_buffer;
             int bits_left;
             int i_ptr, i_end;
-            uint i;
-            int c = 0, sel = 0;
+            uint i, c, sel;
+            Error err;
 
             //RESTORE_BITS
-            i_ptr = lzh.InputPointer;
-            i_end = lzh.InputLength;
-            bit_buffer = lzh.BitBuffer;
-            bits_left = lzh.BitsLeft;
+            {
+                i_ptr = lzh.InputPointer;
+                i_end = lzh.InputLength;
+                bit_buffer = lzh.BitBuffer;
+                bits_left = lzh.BitsLeft;
+            }
 
             switch (type)
             {
                 case 0:
                     i = numsyms;
-                    c = (i == 16) ? 4 : (i == 32) ? 5 : (i == 64) ? 6 : (i == 256) ? 8 : 0;
+                    c = (uint)((i == 16) ? 4 : (i == 32) ? 5 : (i == 64) ? 6 : (i == 256) ? 8 : 0);
                     for (i = 0; i < numsyms; i++)
                     {
                         lens[i] = (byte)c;
@@ -700,47 +640,89 @@ namespace LibMSPackSharp.KWAJ
 
                 case 1:
                     //READ_BITS_SAFE(c, 4)
-
-                    //READ_BITS(c, 4)
                     {
-                        //ENSURE_BITS(4)
-                        while (bits_left < (4))
+                        //READ_BITS(val, 4)
                         {
-                            READ_BYTES;
+                            //ENSURE_BITS(4)
+                            {
+                                while (bits_left < (4))
+                                {
+                                    //READ_BYTES
+                                    {
+                                        if (i_ptr >= i_end)
+                                        {
+                                            if ((err = LZHReadInput(lzh)) != Error.MSPACK_ERR_OK)
+                                                return err;
+
+                                            i_ptr = lzh.InputPointer;
+                                            i_end = lzh.InputLength;
+                                        }
+
+                                        //INJECT_BITS(lzh.InputBuffer[i_ptr++], 8)
+                                        {
+                                            bit_buffer |= (uint)(lzh.InputBuffer[i_ptr++]) << (CompressionStream.BITBUF_WIDTH - (8) - bits_left);
+                                            bits_left += (8);
+                                        }
+                                    }
+                                }
+                            }
+
+                            (c) = (bit_buffer >> (CompressionStream.BITBUF_WIDTH - (4))); //PEEK_BITS(4)
+
+                            //REMOVE_BITS(4)
+                            {
+                                bit_buffer <<= (4);
+                                bits_left -= (4);
+                            }
                         }
 
-                        c = (int)(bit_buffer >> (BITBUF_WIDTH - (4)));
-
-                        // REMOVE_BITS(4);
-                        bit_buffer <<= (4);
-                        bits_left -= (4);
+                        if (lzh.InputEnd != 0 && bits_left < lzh.InputEnd)
+                            return Error.MSPACK_ERR_OK;
                     }
-
-                    if (lzh.InputEnd != 0 && bits_left < lzh.InputEnd)
-                        return Error.MSPACK_ERR_OK;
 
                     lens[0] = (byte)c;
                     for (i = 1; i < numsyms; i++)
                     {
                         //READ_BITS_SAFE(sel, 1)
-
-                        //READ_BITS(sel, 1)
                         {
-                            //ENSURE_BITS(1)
-                            while (bits_left < (1))
+                            //READ_BITS(val, 1)
                             {
-                                READ_BYTES;
+                                //ENSURE_BITS(1)
+                                {
+                                    while (bits_left < (1))
+                                    {
+                                        //READ_BYTES
+                                        {
+                                            if (i_ptr >= i_end)
+                                            {
+                                                if ((err = LZHReadInput(lzh)) != Error.MSPACK_ERR_OK)
+                                                    return err;
+
+                                                i_ptr = lzh.InputPointer;
+                                                i_end = lzh.InputLength;
+                                            }
+
+                                            //INJECT_BITS(lzh.InputBuffer[i_ptr++], 8)
+                                            {
+                                                bit_buffer |= (uint)(lzh.InputBuffer[i_ptr++]) << (CompressionStream.BITBUF_WIDTH - (8) - bits_left);
+                                                bits_left += (8);
+                                            }
+                                        }
+                                    }
+                                }
+
+                                (sel) = (bit_buffer >> (CompressionStream.BITBUF_WIDTH - (1))); //PEEK_BITS(1)
+
+                                //REMOVE_BITS(1)
+                                {
+                                    bit_buffer <<= (1);
+                                    bits_left -= (1);
+                                }
                             }
 
-                            sel = (int)(bit_buffer >> (BITBUF_WIDTH - (1)));
-
-                            // REMOVE_BITS(1);
-                            bit_buffer <<= (1);
-                            bits_left -= (1);
+                            if (lzh.InputEnd != 0 && bits_left < lzh.InputEnd)
+                                return Error.MSPACK_ERR_OK;
                         }
-
-                        if (lzh.InputEnd != 0 && bits_left < lzh.InputEnd)
-                            return Error.MSPACK_ERR_OK;
 
                         if (sel == 0)
                         {
@@ -749,24 +731,45 @@ namespace LibMSPackSharp.KWAJ
                         else
                         {
                             //READ_BITS_SAFE(sel, 1)
-
-                            //READ_BITS(sel, 1)
                             {
-                                //ENSURE_BITS(1)
-                                while (bits_left < (1))
+                                //READ_BITS(val, 1)
                                 {
-                                    READ_BYTES;
+                                    //ENSURE_BITS(1)
+                                    {
+                                        while (bits_left < (1))
+                                        {
+                                            //READ_BYTES
+                                            {
+                                                if (i_ptr >= i_end)
+                                                {
+                                                    if ((err = LZHReadInput(lzh)) != Error.MSPACK_ERR_OK)
+                                                        return err;
+
+                                                    i_ptr = lzh.InputPointer;
+                                                    i_end = lzh.InputLength;
+                                                }
+
+                                                //INJECT_BITS(lzh.InputBuffer[i_ptr++], 8)
+                                                {
+                                                    bit_buffer |= (uint)(lzh.InputBuffer[i_ptr++]) << (CompressionStream.BITBUF_WIDTH - (8) - bits_left);
+                                                    bits_left += (8);
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    (sel) = (bit_buffer >> (CompressionStream.BITBUF_WIDTH - (1))); //PEEK_BITS(1)
+
+                                    //REMOVE_BITS(1)
+                                    {
+                                        bit_buffer <<= (1);
+                                        bits_left -= (1);
+                                    }
                                 }
 
-                                sel = (int)(bit_buffer >> (BITBUF_WIDTH - (1)));
-
-                                // REMOVE_BITS(1);
-                                bit_buffer <<= (1);
-                                bits_left -= (1);
+                                if (lzh.InputEnd != 0 && bits_left < lzh.InputEnd)
+                                    return Error.MSPACK_ERR_OK;
                             }
-
-                            if (lzh.InputEnd != 0 && bits_left < lzh.InputEnd)
-                                return Error.MSPACK_ERR_OK;
 
                             if (sel == 0)
                             {
@@ -775,100 +778,185 @@ namespace LibMSPackSharp.KWAJ
                             else
                             {
                                 //READ_BITS_SAFE(c, 4)
-
-                                //READ_BITS(c, 4)
                                 {
-                                    //ENSURE_BITS(nbits)
-                                    while (bits_left < (4))
+                                    //READ_BITS(val, 4)
                                     {
-                                        READ_BYTES;
+                                        //ENSURE_BITS(4)
+                                        {
+                                            while (bits_left < (4))
+                                            {
+                                                //READ_BYTES
+                                                {
+                                                    if (i_ptr >= i_end)
+                                                    {
+                                                        if ((err = LZHReadInput(lzh)) != Error.MSPACK_ERR_OK)
+                                                            return err;
+
+                                                        i_ptr = lzh.InputPointer;
+                                                        i_end = lzh.InputLength;
+                                                    }
+
+                                                    //INJECT_BITS(lzh.InputBuffer[i_ptr++], 8)
+                                                    {
+                                                        bit_buffer |= (uint)(lzh.InputBuffer[i_ptr++]) << (CompressionStream.BITBUF_WIDTH - (8) - bits_left);
+                                                        bits_left += (8);
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        (c) = (bit_buffer >> (CompressionStream.BITBUF_WIDTH - (4))); //PEEK_BITS(4)
+
+                                        //REMOVE_BITS(4)
+                                        {
+                                            bit_buffer <<= (4);
+                                            bits_left -= (4);
+                                        }
                                     }
 
-                                    c = (int)(bit_buffer >> (BITBUF_WIDTH - (4)));
-
-                                    // REMOVE_BITS(4);
-                                    bit_buffer <<= (4);
-                                    bits_left -= (4);
+                                    if (lzh.InputEnd != 0 && bits_left < lzh.InputEnd)
+                                        return Error.MSPACK_ERR_OK;
                                 }
-
-                                if (lzh.InputEnd != 0 && bits_left < lzh.InputEnd)
-                                    return Error.MSPACK_ERR_OK;
 
                                 lens[i] = (byte)c;
                             }
                         }
                     }
+
                     break;
 
                 case 2:
                     //READ_BITS_SAFE(c, 4)
-
-                    //READ_BITS(c, 4)
                     {
-                        //ENSURE_BITS(4)
-                        while (bits_left < (4))
+                        //READ_BITS(val, 4)
                         {
-                            READ_BYTES;
+                            //ENSURE_BITS(4)
+                            {
+                                while (bits_left < (4))
+                                {
+                                    //READ_BYTES
+                                    {
+                                        if (i_ptr >= i_end)
+                                        {
+                                            if ((err = LZHReadInput(lzh)) != Error.MSPACK_ERR_OK)
+                                                return err;
+
+                                            i_ptr = lzh.InputPointer;
+                                            i_end = lzh.InputLength;
+                                        }
+
+                                        //INJECT_BITS(lzh.InputBuffer[i_ptr++], 8)
+                                        {
+                                            bit_buffer |= (uint)(lzh.InputBuffer[i_ptr++]) << (CompressionStream.BITBUF_WIDTH - (8) - bits_left);
+                                            bits_left += (8);
+                                        }
+                                    }
+                                }
+                            }
+
+                            (c) = (bit_buffer >> (CompressionStream.BITBUF_WIDTH - (4))); //PEEK_BITS(4)
+
+                            //REMOVE_BITS(4)
+                            {
+                                bit_buffer <<= (4);
+                                bits_left -= (4);
+                            }
                         }
 
-                        c = (int)(bit_buffer >> (BITBUF_WIDTH - (4)));
-
-                        // REMOVE_BITS(4);
-                        bit_buffer <<= (4);
-                        bits_left -= (4);
+                        if (lzh.InputEnd != 0 && bits_left < lzh.InputEnd)
+                            return Error.MSPACK_ERR_OK;
                     }
-
-                    if (lzh.InputEnd != 0 && bits_left < lzh.InputEnd)
-                        return Error.MSPACK_ERR_OK;
 
                     lens[0] = (byte)c;
                     for (i = 1; i < numsyms; i++)
                     {
                         //READ_BITS_SAFE(sel, 2)
-
-                        //READ_BITS(sel, 2)
                         {
-                            //ENSURE_BITS(2)
-                            while (bits_left < (2))
+                            //READ_BITS(sel, 2)
                             {
-                                READ_BYTES;
-                            }
-
-                            sel = (int)(bit_buffer >> (BITBUF_WIDTH - (2)));
-
-                            // REMOVE_BITS(2);
-                            bit_buffer <<= (2);
-                            bits_left -= (2);
-                        }
-
-                        if (lzh.InputEnd != 0 && bits_left < lzh.InputEnd)
-                            return Error.MSPACK_ERR_OK;
-
-                        if (sel == 3)
-                        {
-                            //READ_BITS_SAFE(c, 4)
-
-                            //READ_BITS(c, 4)
-                            {
-                                //ENSURE_BITS(4)
-                                while (bits_left < (4))
+                                //ENSURE_BITS(2)
                                 {
-                                    READ_BYTES;
+                                    while (bits_left < (2))
+                                    {
+                                        //READ_BYTES
+                                        {
+                                            if (i_ptr >= i_end)
+                                            {
+                                                if ((err = LZHReadInput(lzh)) != Error.MSPACK_ERR_OK)
+                                                    return err;
+
+                                                i_ptr = lzh.InputPointer;
+                                                i_end = lzh.InputLength;
+                                            }
+
+                                            //INJECT_BITS(lzh.InputBuffer[i_ptr++], 8)
+                                            {
+                                                bit_buffer |= (uint)(lzh.InputBuffer[i_ptr++]) << (CompressionStream.BITBUF_WIDTH - (8) - bits_left);
+                                                bits_left += (8);
+                                            }
+                                        }
+                                    }
                                 }
 
-                                c = (int)(bit_buffer >> (BITBUF_WIDTH - (4)));
+                                (sel) = (bit_buffer >> (CompressionStream.BITBUF_WIDTH - (2))); //PEEK_BITS(2)
 
-                                // REMOVE_BITS(4);
-                                bit_buffer <<= (4);
-                                bits_left -= (4);
+                                //REMOVE_BITS(2)
+                                {
+                                    bit_buffer <<= (2);
+                                    bits_left -= (2);
+                                }
                             }
 
                             if (lzh.InputEnd != 0 && bits_left < lzh.InputEnd)
                                 return Error.MSPACK_ERR_OK;
                         }
+
+                        if (sel == 3)
+                        {
+                            //READ_BITS_SAFE(c, 4)
+                            {
+                                //READ_BITS(c, 4)
+                                {
+                                    //ENSURE_BITS(4)
+                                    {
+                                        while (bits_left < (4))
+                                        {
+                                            //READ_BYTES
+                                            {
+                                                if (i_ptr >= i_end)
+                                                {
+                                                    if ((err = LZHReadInput(lzh)) != Error.MSPACK_ERR_OK)
+                                                        return err;
+
+                                                    i_ptr = lzh.InputPointer;
+                                                    i_end = lzh.InputLength;
+                                                }
+
+                                                //INJECT_BITS(lzh.InputBuffer[i_ptr++], 8)
+                                                {
+                                                    bit_buffer |= (uint)(lzh.InputBuffer[i_ptr++]) << (CompressionStream.BITBUF_WIDTH - (8) - bits_left);
+                                                    bits_left += (8);
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    (c) = (bit_buffer >> (CompressionStream.BITBUF_WIDTH - (4))); //PEEK_BITS(4)
+
+                                    //REMOVE_BITS(4)
+                                    {
+                                        bit_buffer <<= (4);
+                                        bits_left -= (4);
+                                    }
+                                }
+
+                                if (lzh.InputEnd != 0 && bits_left < lzh.InputEnd)
+                                    return Error.MSPACK_ERR_OK;
+                            }
+                        }
                         else
                         {
-                            c += (char)sel - 1;
+                            c += (uint)((byte)sel - 1);
                         }
 
                         lens[i] = (byte)c;
@@ -880,24 +968,45 @@ namespace LibMSPackSharp.KWAJ
                     for (i = 0; i < numsyms; i++)
                     {
                         //READ_BITS_SAFE(c, 4)
-
-                        //READ_BITS(c, 4)
                         {
-                            //ENSURE_BITS(4)
-                            while (bits_left < (4))
+                            //READ_BITS(c, 4)
                             {
-                                READ_BYTES;
+                                //ENSURE_BITS(4)
+                                {
+                                    while (bits_left < (4))
+                                    {
+                                        //READ_BYTES
+                                        {
+                                            if (i_ptr >= i_end)
+                                            {
+                                                if ((err = LZHReadInput(lzh)) != Error.MSPACK_ERR_OK)
+                                                    return err;
+
+                                                i_ptr = lzh.InputPointer;
+                                                i_end = lzh.InputLength;
+                                            }
+
+                                            //INJECT_BITS(lzh.InputBuffer[i_ptr++], 8)
+                                            {
+                                                bit_buffer |= (uint)(lzh.InputBuffer[i_ptr++]) << (CompressionStream.BITBUF_WIDTH - (8) - bits_left);
+                                                bits_left += (8);
+                                            }
+                                        }
+                                    }
+                                }
+
+                                (c) = (bit_buffer >> (CompressionStream.BITBUF_WIDTH - (4))); //PEEK_BITS(4)
+
+                                //REMOVE_BITS(4)
+                                {
+                                    bit_buffer <<= (4);
+                                    bits_left -= (4);
+                                }
                             }
 
-                            c = (int)(bit_buffer >> (BITBUF_WIDTH - (4)));
-
-                            // REMOVE_BITS(4);
-                            bit_buffer <<= (4);
-                            bits_left -= (4);
+                            if (lzh.InputEnd != 0 && bits_left < lzh.InputEnd)
+                                return Error.MSPACK_ERR_OK;
                         }
-
-                        if (lzh.InputEnd != 0 && bits_left < lzh.InputEnd)
-                            return Error.MSPACK_ERR_OK;
 
                         lens[i] = (byte)c;
                     }
@@ -906,15 +1015,17 @@ namespace LibMSPackSharp.KWAJ
             }
 
             //STORE_BITS
-            lzh.InputPointer = i_ptr;
-            lzh.InputLength = i_end;
-            lzh.BitBuffer = bit_buffer;
-            lzh.BitsLeft = bits_left;
+            {
+                lzh.InputPointer = i_ptr;
+                lzh.InputLength = i_end;
+                lzh.BitBuffer = bit_buffer;
+                lzh.BitsLeft = bits_left;
+            }
 
             return Error.MSPACK_ERR_OK;
         }
 
-        public static Error LZHReadInput(InternalStream lzh)
+        public static Error LZHReadInput(LZHKWAJStream lzh)
         {
             int read;
             if (lzh.InputEnd != 0)

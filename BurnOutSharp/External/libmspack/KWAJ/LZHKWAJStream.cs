@@ -11,7 +11,7 @@ using LibMSPackSharp.Compression;
 
 namespace LibMSPackSharp.KWAJ
 {
-    public class InternalStream : CompressionStream
+    public class LZHKWAJStream : CompressionStream
     {
         // Huffman code lengths
 
