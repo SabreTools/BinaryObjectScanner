@@ -354,59 +354,44 @@ namespace LibMSPackSharp.CAB
                 }
             }
 
+            // Close existing file handles
+            System.Close(State?.InputFileHandle);
+            System.Close(State?.OutputFileHandle);
+
             // Allocate generic decompression state
-            if (State == null)
+            State = new DecompressState()
             {
-                State = new DecompressState() { Sys = System };
+                Folder = fol,
+                Data = fol.Data,
+                Offset = 0,
+                Block = 0,
+                Outlen = 0,
 
-                State.Sys.Read = SysRead;
-                State.Sys.Write = SysWrite;
-            }
+                Sys = System,
 
-            // Do we need to change folder or reset the current folder?
-            if ((State.Folder != fol) || (State.Offset > file.Header.FolderOffset) || State.DecompressorState == null)
-            {
-                // Free any existing decompressor
-                FreeDecompressionState();
+                InputCabinet = fol.Data.Cab,
+                InputFileHandle = System.Open(fol.Data.Cab.Filename, OpenMode.MSPACK_SYS_OPEN_READ),
+                OutputFileHandle = null, // Required for skipping existing data
+                InputPointer = 0,
+                InputEnd = 0,
+            };
 
-                // Do we need to open a new cab file?
-                if (State.InputFileHandle == null || (fol.Data.Cab != State.InputCabinet))
-                {
-                    // Close previous file handle if from a different cab
-                    System.Close(State.InputFileHandle);
-                    System.Close(State.OutputFileHandle);
+            State.Sys.Read = SysRead;
+            State.Sys.Write = SysWrite;
 
-                    State.InputCabinet = fol.Data.Cab;
-                    State.InputFileHandle = System.Open(fol.Data.Cab.Filename, OpenMode.MSPACK_SYS_OPEN_READ);
-                    if (State.InputFileHandle == null)
-                        return Error = Error.MSPACK_ERR_OPEN;
-                }
-
-                // Seek to start of data blocks
-                if (!System.Seek(State.InputFileHandle, fol.Data.Offset, SeekMode.MSPACK_SYS_SEEK_START))
-                    return Error = Error.MSPACK_ERR_SEEK;
-
-                // Set up decompressor
-                if (InitDecompressionState(fol.Header.CompType) != Error.MSPACK_ERR_OK)
-                    return Error;
-
-                // Initialise new folder state
-                State.Folder = fol;
-                State.Data = fol.Data;
-                State.Offset = 0;
-                State.Block = 0;
-                State.Outlen = 0;
-                State.InputPointer = State.InputEnd = 0;
-
-                // Read_error lasts for the lifetime of a decompressor
-                ReadError = Error.MSPACK_ERR_OK;
-            }
-
-            // Open file for output
-            FileStream fh = System.Open(filename, OpenMode.MSPACK_SYS_OPEN_WRITE);
-            if (fh == null)
+            if (State.InputFileHandle == null)
                 return Error = Error.MSPACK_ERR_OPEN;
 
+            // Seek to start of data blocks
+            if (!System.Seek(State.InputFileHandle, fol.Data.Offset, SeekMode.MSPACK_SYS_SEEK_START))
+                return Error = Error.MSPACK_ERR_SEEK;
+
+            // Set up decompressor
+            if (InitDecompressionState(fol.Header.CompType) != Error.MSPACK_ERR_OK)
+                return Error;
+
+            // ReadError lasts for the lifetime of a decompressor
+            ReadError = Error.MSPACK_ERR_OK;
             Error = Error.MSPACK_ERR_OK;
 
             // If file has more than 0 bytes
@@ -417,31 +402,29 @@ namespace LibMSPackSharp.CAB
 
                 // Get to correct offset.
                 // - use null fh to say 'no writing' to cabd_sys_write()
-                // - if cabd_sys_read() has an error, it will set self.ReadError
+                // - if SysRead() has an error, it will set self.ReadError
                 //   and pass back MSPACK_ERR_READ
-                State.OutputFileHandle = null;
                 if ((bytes = file.Header.FolderOffset - State.Offset) != 0)
                 {
-                    State.OutputFileHandle = fh;
-                    InitDecompressionState(fol.Header.CompType);
-
                     error = State.Decompress(State.DecompressorState, bytes);
                     Error = (error == Error.MSPACK_ERR_READ) ? ReadError : error;
                 }
 
+                // Open the output file handle
+                State.OutputFileHandle = System.Open(filename, OpenMode.MSPACK_SYS_OPEN_WRITE);
+                if (State.OutputFileHandle == null)
+                    return Error = Error.MSPACK_ERR_OPEN;
+
                 // If getting to the correct offset was error free, unpack file
                 if (Error == Error.MSPACK_ERR_OK)
                 {
-                    State.OutputFileHandle = fh;
-                    InitDecompressionState(fol.Header.CompType);
-
+                    UpdateDecompressionState();
                     error = State.Decompress(State.DecompressorState, filelen);
                     Error = (error == Error.MSPACK_ERR_READ) ? ReadError : error;
                 }
             }
 
             // Close output file
-            System.Close(fh);
             System.Close(State.OutputFileHandle);
 
             return Error;
@@ -534,6 +517,36 @@ namespace LibMSPackSharp.CAB
                 case CompressionType.COMPTYPE_LZX:
                     State.Decompress = LZX.Decompress;
                     State.DecompressorState = LZX.Init(State.Sys, State.InputFileHandle, State.OutputFileHandle, ((ushort)ct >> 8) & 0x1f, 0, BufferSize, 0, false);
+                    break;
+
+                default:
+                    return Error = Error.MSPACK_ERR_DATAFORMAT;
+            }
+
+            return Error = (State.DecompressorState != null) ? Error.MSPACK_ERR_OK : Error.MSPACK_ERR_NOMEMORY;
+        }
+
+        /// <summary>
+        /// Updates the decompression state with a new output
+        /// </summary>
+        internal Error UpdateDecompressionState()
+        {
+            switch (State.CompressionType & CompressionType.COMPTYPE_MASK)
+            {
+                case CompressionType.COMPTYPE_NONE:
+                    (State.DecompressorState as NoneState).Output = State.OutputFileHandle;
+                    break;
+
+                case CompressionType.COMPTYPE_MSZIP:
+                    (State.DecompressorState as MSZIPDStream).Output = State.OutputFileHandle;
+                    break;
+
+                case CompressionType.COMPTYPE_QUANTUM:
+                    (State.DecompressorState as QTMDStream).Output = State.OutputFileHandle;
+                    break;
+
+                case CompressionType.COMPTYPE_LZX:
+                    (State.DecompressorState as LZXDStream).Output = State.OutputFileHandle;
                     break;
 
                 default:
@@ -654,7 +667,12 @@ namespace LibMSPackSharp.CAB
         /// </summary>
         internal static int SysWrite(object file, byte[] buffer, int pointer, int bytes)
         {
-            if (file is Decompressor self)
+            // Null output file means skip those bytes
+            if (file == null)
+            {
+                return bytes;
+            }
+            else if (file is Decompressor self)
             {
                 self.State.Offset += (uint)bytes;
                 if (self.State.OutputFileHandle != null)

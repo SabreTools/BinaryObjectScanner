@@ -742,7 +742,7 @@ namespace LibMSPackSharp.Compression
             if (!CompressionStream.MakeDecodeTable(19, 7, bl_len, bl_table, msb: false))
                 return Error.INF_ERR_BITLENTBL;
 
-            // Read literal / distance code lengths */
+            // Read literal / distance code lengths
             for (i = 0; i < (lit_codes + dist_codes); i++)
             {
                 // Single-level huffman lookup
