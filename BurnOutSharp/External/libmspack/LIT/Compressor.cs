@@ -19,6 +19,6 @@ namespace LibMSPackSharp.LIT
     // TODO
     public class Compressor
     {
-        public int Dummy { get; set; }
+        public SystemImpl System { get; set; }
     }
 }

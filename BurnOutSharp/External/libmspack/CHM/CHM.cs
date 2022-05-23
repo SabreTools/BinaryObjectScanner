@@ -21,7 +21,7 @@ namespace LibMSPackSharp.CHM
     /// 
     /// All fields are READ ONLY.
     /// </summary>
-    public class CHM
+    public class CHM : BaseHeader
     {
         #region Internal
 

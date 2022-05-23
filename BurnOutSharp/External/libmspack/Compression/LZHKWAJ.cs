@@ -7,415 +7,39 @@
  * For further details, see the file COPYING.LIB distributed with libmspack
  */
 
-using System;
 using System.IO;
-using System.Text;
-using LibMSPackSharp.Compression;
+using LibMSPackSharp.KWAJ;
+using static LibMSPackSharp.Constants;
 
-namespace LibMSPackSharp.KWAJ
+namespace LibMSPackSharp.Compression
 {
-    public class Implementation
+    /// <summary>
+    /// In the KWAJ LZH format, there is no special 'eof' marker, it just
+    /// ends. Depending on how many bits are left in the final byte when
+    /// the stream ends, that might be enough to start another literal or
+    /// match. The only easy way to detect that we've come to an end is to
+    /// guard all bit-reading. We allow fake bits to be read once we reach
+    /// the end of the stream, but we check if we then consumed any of
+    /// those fake bits, after doing the READ_BITS / READ_HUFFSYM. This
+    /// isn't how the default ReadInput works (it simply lets
+    /// 2 fake bytes in then stops), so we implement our own.
+    /// </summary>
+    public class LZHKWAJ
     {
-        #region Generic KWAJ Definitions
-
-        private const byte kwajh_Signature1 = 0x00;
-        private const byte kwajh_Signature2 = 0x04;
-        private const byte kwajh_CompMethod = 0x08;
-        private const byte kwajh_DataOffset = 0x0a;
-        private const byte kwajh_Flags = 0x0c;
-        private const byte kwajh_SIZEOF = 0x0e;
-
-        #endregion
-
-        #region KWAJ Decompression Definitions
-
-        // Input buffer size during decompression - not worth parameterising IMHO
-        private const int KWAJ_INPUT_SIZE = (2048);
-
-        // Huffman codes that are 9 bits or less are decoded immediately
-        public const int KWAJ_TABLEBITS = (9);
-
-        // Number of codes in each huffman table
-
-        public const int KWAJ_MATCHLEN1_SYMS = (16);
-        public const int KWAJ_MATCHLEN2_SYMS = (16);
-        public const int KWAJ_LITLEN_SYMS = (32);
-        public const int KWAJ_OFFSET_SYMS = (64);
-        public const int KWAJ_LITERAL_SYMS = (256);
-
-        // Define decoding table sizes
-
-        public const int KWAJ_TABLESIZE = (1 << KWAJ_TABLEBITS);
-
-        //public const int KWAJ_MATCHLEN1_TBLSIZE = (KWAJ_MATCHLEN1_SYMS * 4);
-        public const int KWAJ_MATCHLEN1_TBLSIZE = (KWAJ_TABLESIZE + (KWAJ_MATCHLEN1_SYMS * 2));
-
-        //public const int KWAJ_MATCHLEN2_TBLSIZE = (KWAJ_MATCHLEN2_SYMS * 4);
-        public const int KWAJ_MATCHLEN2_TBLSIZE = (KWAJ_TABLESIZE + (KWAJ_MATCHLEN2_SYMS * 2));
-
-        //public const int KWAJ_LITLEN_TBLSIZE = (KWAJ_LITLEN_SYMS * 4);
-        public const int KWAJ_LITLEN_TBLSIZE = (KWAJ_TABLESIZE + (KWAJ_LITLEN_SYMS * 2));
-
-        //public const int KWAJ_OFFSET_TBLSIZE = (KWAJ_OFFSET_SYMS * 4);
-        public const int KWAJ_OFFSET_TBLSIZE = (KWAJ_TABLESIZE + (KWAJ_OFFSET_SYMS * 2));
-
-        //public const int KWAJ_LITERAL_TBLSIZE = (KWAJ_LITERAL_SYMS * 4);
-        public const int KWAJ_LITERAL_TBLSIZE = (KWAJ_TABLESIZE + (KWAJ_LITERAL_SYMS * 2));
-
-        #endregion
-
-        #region KWAJD_OPEN
-
-        /// <summary>
-        /// Opens a KWAJ file without decompressing, reads header
-        /// </summary>
-        public static Header Open(Decompressor d, string filename)
-        {
-            DecompressorImpl self = d as DecompressorImpl;
-            if (self == null)
-                return null;
-
-            SystemImpl sys = self.System;
-
-            FileStream fh = sys.Open(filename, OpenMode.MSPACK_SYS_OPEN_READ);
-            HeaderImpl hdr = new HeaderImpl();
-            if (fh != null && hdr != null)
-            {
-                hdr.FileHandle = fh;
-                self.Error = ReadHeaders(sys, fh, hdr);
-            }
-            else
-            {
-                if (fh == null)
-                    self.Error = Error.MSPACK_ERR_OPEN;
-                if (hdr == null)
-                    self.Error = Error.MSPACK_ERR_NOMEMORY;
-            }
-
-            if (self.Error != Error.MSPACK_ERR_OK)
-            {
-                if (fh != null)
-                    sys.Close(fh);
-
-                hdr = null;
-            }
-
-            return hdr;
-        }
-
-        #endregion
-
-        #region KWAJD_CLOSE
-
-        /// <summary>
-        /// Closes a KWAJ file
-        /// </summary>
-        public static void Close(Decompressor d, Header hdr)
-        {
-            DecompressorImpl self = d as DecompressorImpl;
-            HeaderImpl hdr_p = hdr as HeaderImpl;
-
-            if (self?.System == null || hdr_p == null)
-                return;
-
-            // Close the file handle associated
-            self.System.Close(hdr_p.FileHandle);
-
-            self.Error = Error.MSPACK_ERR_OK;
-        }
-
-        #endregion
-
-        #region KWAJD_READ_HEADERS
-
-        /// <summary>
-        /// Reads the headers of a KWAJ format file
-        /// </summary>
-        public static Error ReadHeaders(SystemImpl sys, FileStream fh, Header hdr)
-        {
-            int i;
-
-            // Read in the header
-            byte[] buf = new byte[16];
-            if (sys.Read(fh, buf, 0, kwajh_SIZEOF) != kwajh_SIZEOF)
-            {
-                return Error.MSPACK_ERR_READ;
-            }
-
-            // Check for "KWAJ" signature
-            if ((BitConverter.ToUInt32(buf, kwajh_Signature1) != 0x4A41574B) ||
-                (BitConverter.ToUInt32(buf, kwajh_Signature2) != 0xD127F088))
-            {
-                return Error.MSPACK_ERR_SIGNATURE;
-            }
-
-            // Basic header fields
-            hdr.CompressionType = (CompressionType)BitConverter.ToUInt16(buf, kwajh_CompMethod);
-            hdr.DataOffset = BitConverter.ToUInt16(buf, kwajh_DataOffset);
-            hdr.Headers = (OptionalHeaderFlag)BitConverter.ToUInt16(buf, kwajh_Flags);
-            hdr.Length = 0;
-            hdr.Filename = null;
-            hdr.Extra = null;
-            hdr.ExtraLength = 0;
-
-            // Optional headers
-
-            // 4 bytes: length of unpacked file
-            if (hdr.Headers.HasFlag(OptionalHeaderFlag.MSKWAJ_HDR_HASLENGTH))
-            {
-                if (sys.Read(fh, buf, 0, 4) != 4)
-                    return Error.MSPACK_ERR_READ;
-
-                hdr.Length = BitConverter.ToUInt32(buf, 0);
-            }
-
-            // 2 bytes: unknown purpose
-            if (hdr.Headers.HasFlag(OptionalHeaderFlag.MSKWAJ_HDR_HASUNKNOWN1))
-            {
-                if (sys.Read(fh, buf, 0, 2) != 2)
-                    return Error.MSPACK_ERR_READ;
-            }
-
-            // 2 bytes: length of section, then [length] bytes: unknown purpose
-            if (hdr.Headers.HasFlag(OptionalHeaderFlag.MSKWAJ_HDR_HASUNKNOWN2))
-            {
-                if (sys.Read(fh, buf, 0, 2) != 2)
-                    return Error.MSPACK_ERR_READ;
-
-                i = BitConverter.ToUInt16(buf, 0);
-                if (sys.Seek(fh, i, SeekMode.MSPACK_SYS_SEEK_CUR))
-                    return Error.MSPACK_ERR_SEEK;
-            }
-
-            // Filename and extension
-            if (hdr.Headers.HasFlag(OptionalHeaderFlag.MSKWAJ_HDR_HASFILENAME) || hdr.Headers.HasFlag(OptionalHeaderFlag.MSKWAJ_HDR_HASFILEEXT))
-            {
-                int len;
-
-                // Allocate memory for maximum length filename
-                char[] fn = new char[13];
-                int fnPtr = 0;
-
-                // Copy filename if present
-                if (hdr.Headers.HasFlag(OptionalHeaderFlag.MSKWAJ_HDR_HASFILENAME))
-                {
-                    // Read and copy up to 9 bytes of a null terminated string
-                    if ((len = sys.Read(fh, buf, 0, 9)) < 2)
-                        return Error.MSPACK_ERR_READ;
-
-                    for (i = 0; i < len; i++)
-                    {
-                        if ((fn[fnPtr++] = (char)buf[i]) == '\0')
-                            break;
-                    }
-
-                    // If string was 9 bytes with no null terminator, reject it
-                    if (i == 9 && buf[8] != '\0')
-                        return Error.MSPACK_ERR_DATAFORMAT;
-
-                    // Seek to byte after string ended in file
-                    if (sys.Seek(fh, i + 1 - len, SeekMode.MSPACK_SYS_SEEK_CUR))
-                        return Error.MSPACK_ERR_SEEK;
-
-                    fnPtr--; // Remove the null terminator
-                }
-
-                // Copy extension if present
-                if (hdr.Headers.HasFlag(OptionalHeaderFlag.MSKWAJ_HDR_HASFILEEXT))
-                {
-                    fn[fnPtr++] = '.';
-
-                    // Read and copy up to 4 bytes of a null terminated string
-                    if ((len = sys.Read(fh, buf, 0, 4)) < 2)
-                        return Error.MSPACK_ERR_READ;
-
-                    for (i = 0; i < len; i++)
-                    {
-                        if ((fn[fnPtr++] = (char)buf[i]) == '\0')
-                            break;
-                    }
-
-                    // If string was 4 bytes with no null terminator, reject it
-                    if (i == 4 && buf[3] != '\0')
-                        return Error.MSPACK_ERR_DATAFORMAT;
-
-                    // Seek to byte after string ended in file
-                    if (sys.Seek(fh, i + 1 - len, SeekMode.MSPACK_SYS_SEEK_CUR))
-                        return Error.MSPACK_ERR_SEEK;
-
-                    fnPtr--; // Remove the null terminator
-                }
-
-                fn[fnPtr] = '\0';
-            }
-
-            // 2 bytes: extra text length then [length] bytes of extra text data
-            if (hdr.Headers.HasFlag(OptionalHeaderFlag.MSKWAJ_HDR_HASEXTRATEXT))
-            {
-                if (sys.Read(fh, buf, 0, 2) != 2)
-                    return Error.MSPACK_ERR_READ;
-
-                i = BitConverter.ToUInt16(buf, 0);
-                byte[] extra = new byte[i + 1];
-                if (sys.Read(fh, extra, 0, i) != i)
-                    return Error.MSPACK_ERR_READ;
-
-                extra[i] = 0x00;
-                hdr.Extra = Encoding.ASCII.GetString(extra, 0, extra.Length);
-                hdr.ExtraLength = (ushort)i;
-            }
-
-            return Error.MSPACK_ERR_OK;
-        }
-
-        #endregion
-
-        #region KWAJD_EXTRACT
-
-        /// <summary>
-        /// Decompresses a KWAJ file
-        /// </summary>
-        public static Error Extract(Decompressor d, Header hdr, string filename)
-        {
-            DecompressorImpl self = d as DecompressorImpl;
-            if (self == null)
-                return Error.MSPACK_ERR_ARGS;
-            if (hdr == null)
-                return self.Error = Error.MSPACK_ERR_ARGS;
-
-            SystemImpl sys = self.System;
-            FileStream fh = (hdr as HeaderImpl)?.FileHandle;
-            if (fh == null)
-                return Error.MSPACK_ERR_ARGS;
-
-            // Seek to the compressed data
-            if (sys.Seek(fh, hdr.DataOffset, SeekMode.MSPACK_SYS_SEEK_START))
-                return self.Error = Error.MSPACK_ERR_SEEK;
-
-            // Open file for output
-            FileStream outfh;
-            if ((outfh = sys.Open(filename, OpenMode.MSPACK_SYS_OPEN_WRITE)) == null)
-                return self.Error = Error.MSPACK_ERR_OPEN;
-
-            self.Error = Error.MSPACK_ERR_OK;
-
-            // Decompress based on format
-            if (hdr.CompressionType == CompressionType.MSKWAJ_COMP_NONE ||
-                hdr.CompressionType == CompressionType.MSKWAJ_COMP_XOR)
-            {
-                // NONE is a straight copy. XOR is a copy xored with 0xFF
-                byte[] buf = new byte[KWAJ_INPUT_SIZE];
-
-                int read, i;
-                while ((read = sys.Read(fh, buf, 0, KWAJ_INPUT_SIZE)) > 0)
-                {
-                    if (hdr.CompressionType == CompressionType.MSKWAJ_COMP_XOR)
-                    {
-                        for (i = 0; i < read; i++)
-                        {
-                            buf[i] ^= 0xFF;
-                        }
-                    }
-
-                    if (sys.Write(outfh, buf, 0, read) != read)
-                    {
-                        self.Error = Error.MSPACK_ERR_WRITE;
-                        break;
-                    }
-                }
-
-                if (read < 0)
-                    self.Error = Error.MSPACK_ERR_READ;
-            }
-            else if (hdr.CompressionType == CompressionType.MSKWAJ_COMP_SZDD)
-            {
-                self.Error = LZSS.Decompress(sys, fh, outfh, KWAJ_INPUT_SIZE, LZSSMode.LZSS_MODE_EXPAND);
-            }
-            else if (hdr.CompressionType == CompressionType.MSKWAJ_COMP_LZH)
-            {
-                LZHKWAJStream lzh = LZHInit(sys, fh, outfh);
-                self.Error = (lzh != null) ? LZHDecompress(lzh) : Error.MSPACK_ERR_NOMEMORY;
-            }
-            else if (hdr.CompressionType == CompressionType.MSKWAJ_COMP_MSZIP)
-            {
-                MSZIPDStream zip = MSZIP.Init(sys, fh, outfh, KWAJ_INPUT_SIZE, false);
-                self.Error = (zip != null) ? MSZIP.DecompressKWAJ(zip) : Error.MSPACK_ERR_NOMEMORY;
-            }
-            else
-            {
-                self.Error = Error.MSPACK_ERR_DATAFORMAT;
-            }
-
-            // Close output file 
-            sys.Close(outfh);
-
-            return self.Error;
-        }
-
-        #endregion
-
-        #region KWAJD_DECOMPRESS
-
-        /// <summary>
-        /// Unpacks directly from input to output
-        /// </summary>
-        public static Error Decompress(Decompressor d, string input, string output)
-        {
-            DecompressorImpl self = d as DecompressorImpl;
-            if (self == null)
-                return Error.MSPACK_ERR_ARGS;
-
-            Header hdr;
-            if ((hdr = Open(d, input)) == null)
-                return self.Error;
-
-            Error error = Extract(d, hdr, output);
-            Close(d, hdr);
-            return self.Error = error;
-        }
-
-        #endregion
-
-        #region KWAJD_ERROR
-
-        /// <summary>
-        /// Returns the last error that occurred
-        /// </summary>
-        public static Error LastError(Decompressor d)
-        {
-            DecompressorImpl self = d as DecompressorImpl;
-            return (self != null) ? self.Error : Error.MSPACK_ERR_ARGS;
-        }
-
-        #endregion
-
-        #region LZH_INIT, LZH_DECOMPRESS, LZH_FREE
-
-        /* In the KWAJ LZH format, there is no special 'eof' marker, it just
-         * ends. Depending on how many bits are left in the final byte when
-         * the stream ends, that might be enough to start another literal or
-         * match. The only easy way to detect that we've come to an end is to
-         * guard all bit-reading. We allow fake bits to be read once we reach
-         * the end of the stream, but we check if we then consumed any of
-         * those fake bits, after doing the READ_BITS / READ_HUFFSYM. This
-         * isn't how the default readbits.h read_input() works (it simply lets
-         * 2 fake bytes in then stops), so we implement our own.
-         */
-
-        private static LZHKWAJStream LZHInit(SystemImpl sys, FileStream input, FileStream output)
+        public static LZHKWAJStream Init(SystemImpl sys, FileStream input, FileStream output)
         {
             if (sys == null || input == null || output == null)
                 return null;
 
             return new LZHKWAJStream()
             {
-                Sys = sys,
-                Input = input,
-                Output = output,
+                System = sys,
+                InputFileHandle = input,
+                OutputFileHandle = output,
             };
         }
 
-        private static Error LZHDecompress(LZHKWAJStream lzh)
+        public static Error Decompress(LZHKWAJStream lzh)
         {
             uint bit_buffer;
             int bits_left, i;
@@ -464,7 +88,7 @@ namespace LibMSPackSharp.KWAJ
                                 {
                                     if (i_ptr >= i_end)
                                     {
-                                        if ((err = LZHReadInput(lzh)) != Error.MSPACK_ERR_OK)
+                                        if ((err = ReadInput(lzh)) != Error.MSPACK_ERR_OK)
                                             return err;
 
                                         i_ptr = lzh.InputPointer;
@@ -506,7 +130,7 @@ namespace LibMSPackSharp.KWAJ
                     lzh.BitsLeft = bits_left;
                 }
 
-                err = LZHReadLens(lzh, types[0], KWAJ_MATCHLEN1_SYMS, lzh.MATCHLEN1_len);
+                err = ReadLens(lzh, types[0], KWAJ_MATCHLEN1_SYMS, lzh.MATCHLEN1_len);
                 if (err != Error.MSPACK_ERR_OK)
                     return err;
 
@@ -532,7 +156,7 @@ namespace LibMSPackSharp.KWAJ
                     lzh.BitsLeft = bits_left;
                 }
 
-                err = LZHReadLens(lzh, types[1], KWAJ_MATCHLEN2_SYMS, lzh.MATCHLEN2_len);
+                err = ReadLens(lzh, types[1], KWAJ_MATCHLEN2_SYMS, lzh.MATCHLEN2_len);
                 if (err != Error.MSPACK_ERR_OK)
                     return err;
 
@@ -558,7 +182,7 @@ namespace LibMSPackSharp.KWAJ
                     lzh.BitsLeft = bits_left;
                 }
 
-                err = LZHReadLens(lzh, types[2], KWAJ_LITLEN_SYMS, lzh.LITLEN_len);
+                err = ReadLens(lzh, types[2], KWAJ_LITLEN_SYMS, lzh.LITLEN_len);
                 if (err != Error.MSPACK_ERR_OK)
                     return err;
 
@@ -584,7 +208,7 @@ namespace LibMSPackSharp.KWAJ
                     lzh.BitsLeft = bits_left;
                 }
 
-                err = LZHReadLens(lzh, types[3], KWAJ_OFFSET_SYMS, lzh.OFFSET_len);
+                err = ReadLens(lzh, types[3], KWAJ_OFFSET_SYMS, lzh.OFFSET_len);
                 if (err != Error.MSPACK_ERR_OK)
                     return err;
 
@@ -610,7 +234,7 @@ namespace LibMSPackSharp.KWAJ
                     lzh.BitsLeft = bits_left;
                 }
 
-                err = LZHReadLens(lzh, types[4], KWAJ_LITERAL_SYMS, lzh.LITERAL_len);
+                err = ReadLens(lzh, types[4], KWAJ_LITERAL_SYMS, lzh.LITERAL_len);
                 if (err != Error.MSPACK_ERR_OK)
                     return err;
 
@@ -642,7 +266,7 @@ namespace LibMSPackSharp.KWAJ
                                     {
                                         if (i_ptr >= i_end)
                                         {
-                                            if ((err = LZHReadInput(lzh)) != Error.MSPACK_ERR_OK)
+                                            if ((err = ReadInput(lzh)) != Error.MSPACK_ERR_OK)
                                                 return err;
 
                                             i_ptr = lzh.InputPointer;
@@ -702,7 +326,7 @@ namespace LibMSPackSharp.KWAJ
                                     {
                                         if (i_ptr >= i_end)
                                         {
-                                            if ((err = LZHReadInput(lzh)) != Error.MSPACK_ERR_OK)
+                                            if ((err = ReadInput(lzh)) != Error.MSPACK_ERR_OK)
                                                 return err;
 
                                             i_ptr = lzh.InputPointer;
@@ -766,7 +390,7 @@ namespace LibMSPackSharp.KWAJ
                                     {
                                         if (i_ptr >= i_end)
                                         {
-                                            if ((err = LZHReadInput(lzh)) != Error.MSPACK_ERR_OK)
+                                            if ((err = ReadInput(lzh)) != Error.MSPACK_ERR_OK)
                                                 return err;
 
                                             i_ptr = lzh.InputPointer;
@@ -826,7 +450,7 @@ namespace LibMSPackSharp.KWAJ
                                     {
                                         if (i_ptr >= i_end)
                                         {
-                                            if ((err = LZHReadInput(lzh)) != Error.MSPACK_ERR_OK)
+                                            if ((err = ReadInput(lzh)) != Error.MSPACK_ERR_OK)
                                                 return err;
 
                                             i_ptr = lzh.InputPointer;
@@ -864,7 +488,7 @@ namespace LibMSPackSharp.KWAJ
 
                         //WRITE_BYTE 
                         {
-                            if (lzh.Sys.Write(lzh.Output, lzh.Window, pos, 1) != 1)
+                            if (lzh.System.Write(lzh.OutputFileHandle, lzh.Window, pos, 1) != 1)
                                 return Error.MSPACK_ERR_WRITE;
                         }
 
@@ -886,7 +510,7 @@ namespace LibMSPackSharp.KWAJ
                                     {
                                         if (i_ptr >= i_end)
                                         {
-                                            if ((err = LZHReadInput(lzh)) != Error.MSPACK_ERR_OK)
+                                            if ((err = ReadInput(lzh)) != Error.MSPACK_ERR_OK)
                                                 return err;
 
                                             i_ptr = lzh.InputPointer;
@@ -948,7 +572,7 @@ namespace LibMSPackSharp.KWAJ
                                         {
                                             if (i_ptr >= i_end)
                                             {
-                                                if ((err = LZHReadInput(lzh)) != Error.MSPACK_ERR_OK)
+                                                if ((err = ReadInput(lzh)) != Error.MSPACK_ERR_OK)
                                                     return err;
 
                                                 i_ptr = lzh.InputPointer;
@@ -999,7 +623,7 @@ namespace LibMSPackSharp.KWAJ
 
                         //WRITE_BYTE 
                         {
-                            if (lzh.Sys.Write(lzh.Output, lzh.Window, pos, 1) != 1)
+                            if (lzh.System.Write(lzh.OutputFileHandle, lzh.Window, pos, 1) != 1)
                                 return Error.MSPACK_ERR_WRITE;
                         }
 
@@ -1011,7 +635,7 @@ namespace LibMSPackSharp.KWAJ
             return Error.MSPACK_ERR_OK;
         }
 
-        public static Error LZHReadLens(LZHKWAJStream lzh, uint type, uint numsyms, byte[] lens)
+        private static Error ReadLens(LZHKWAJStream lzh, uint type, uint numsyms, byte[] lens)
         {
             uint bit_buffer;
             int bits_left;
@@ -1052,7 +676,7 @@ namespace LibMSPackSharp.KWAJ
                                     {
                                         if (i_ptr >= i_end)
                                         {
-                                            if ((err = LZHReadInput(lzh)) != Error.MSPACK_ERR_OK)
+                                            if ((err = ReadInput(lzh)) != Error.MSPACK_ERR_OK)
                                                 return err;
 
                                             i_ptr = lzh.InputPointer;
@@ -1096,7 +720,7 @@ namespace LibMSPackSharp.KWAJ
                                         {
                                             if (i_ptr >= i_end)
                                             {
-                                                if ((err = LZHReadInput(lzh)) != Error.MSPACK_ERR_OK)
+                                                if ((err = ReadInput(lzh)) != Error.MSPACK_ERR_OK)
                                                     return err;
 
                                                 i_ptr = lzh.InputPointer;
@@ -1143,7 +767,7 @@ namespace LibMSPackSharp.KWAJ
                                             {
                                                 if (i_ptr >= i_end)
                                                 {
-                                                    if ((err = LZHReadInput(lzh)) != Error.MSPACK_ERR_OK)
+                                                    if ((err = ReadInput(lzh)) != Error.MSPACK_ERR_OK)
                                                         return err;
 
                                                     i_ptr = lzh.InputPointer;
@@ -1190,7 +814,7 @@ namespace LibMSPackSharp.KWAJ
                                                 {
                                                     if (i_ptr >= i_end)
                                                     {
-                                                        if ((err = LZHReadInput(lzh)) != Error.MSPACK_ERR_OK)
+                                                        if ((err = ReadInput(lzh)) != Error.MSPACK_ERR_OK)
                                                             return err;
 
                                                         i_ptr = lzh.InputPointer;
@@ -1239,7 +863,7 @@ namespace LibMSPackSharp.KWAJ
                                     {
                                         if (i_ptr >= i_end)
                                         {
-                                            if ((err = LZHReadInput(lzh)) != Error.MSPACK_ERR_OK)
+                                            if ((err = ReadInput(lzh)) != Error.MSPACK_ERR_OK)
                                                 return err;
 
                                             i_ptr = lzh.InputPointer;
@@ -1283,7 +907,7 @@ namespace LibMSPackSharp.KWAJ
                                         {
                                             if (i_ptr >= i_end)
                                             {
-                                                if ((err = LZHReadInput(lzh)) != Error.MSPACK_ERR_OK)
+                                                if ((err = ReadInput(lzh)) != Error.MSPACK_ERR_OK)
                                                     return err;
 
                                                 i_ptr = lzh.InputPointer;
@@ -1326,7 +950,7 @@ namespace LibMSPackSharp.KWAJ
                                             {
                                                 if (i_ptr >= i_end)
                                                 {
-                                                    if ((err = LZHReadInput(lzh)) != Error.MSPACK_ERR_OK)
+                                                    if ((err = ReadInput(lzh)) != Error.MSPACK_ERR_OK)
                                                         return err;
 
                                                     i_ptr = lzh.InputPointer;
@@ -1380,7 +1004,7 @@ namespace LibMSPackSharp.KWAJ
                                         {
                                             if (i_ptr >= i_end)
                                             {
-                                                if ((err = LZHReadInput(lzh)) != Error.MSPACK_ERR_OK)
+                                                if ((err = ReadInput(lzh)) != Error.MSPACK_ERR_OK)
                                                     return err;
 
                                                 i_ptr = lzh.InputPointer;
@@ -1426,7 +1050,7 @@ namespace LibMSPackSharp.KWAJ
             return Error.MSPACK_ERR_OK;
         }
 
-        public static Error LZHReadInput(LZHKWAJStream lzh)
+        private static Error ReadInput(LZHKWAJStream lzh)
         {
             int read;
             if (lzh.InputEnd != 0)
@@ -1437,7 +1061,7 @@ namespace LibMSPackSharp.KWAJ
             }
             else
             {
-                read = lzh.Sys.Read(lzh.Input, lzh.InputBuffer, 0, KWAJ_INPUT_SIZE);
+                read = lzh.System.Read(lzh.InputFileHandle, lzh.InputBuffer, 0, KWAJ_INPUT_SIZE);
                 if (read < 0)
                     return Error.MSPACK_ERR_READ;
 
@@ -1454,7 +1078,5 @@ namespace LibMSPackSharp.KWAJ
             lzh.InputLength = read;
             return Error.MSPACK_ERR_OK;
         }
-
-        #endregion
     }
 }

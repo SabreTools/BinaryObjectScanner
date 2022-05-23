@@ -7,21 +7,13 @@
  * For further details, see the file COPYING.LIB distributed with libmspack
  */
 
-using System.IO;
-
 namespace LibMSPackSharp.Compression
 {
     /// <summary>
     /// The "not compressed" method decompressor
     /// </summary>
-    public class NoneState
+    public class NoneState : BaseDecompressState
     {
-        public SystemImpl Sys { get; set; }
-
-        public FileStream Input { get; set; }
-
-        public FileStream Output { get; set; }
-
         public byte[] Buffer { get; set; }
 
         public int BufferSize { get; set; }

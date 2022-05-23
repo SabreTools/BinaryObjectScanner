@@ -8,11 +8,10 @@
  */
 
 using System;
-using System.IO;
 
 namespace LibMSPackSharp.CAB
 {
-    public class DecompressState
+    public class DecompressState : BaseDecompressState
     {
         /// <summary>
         /// Current folder we're extracting from
@@ -40,11 +39,6 @@ namespace LibMSPackSharp.CAB
         public long Outlen { get; set; }
 
         /// <summary>
-        /// Special I/O code for decompressor
-        /// </summary>
-        public SystemImpl Sys { get; set; }
-
-        /// <summary>
         /// Type of compression used by folder
         /// </summary>
         public CompressionType CompressionType { get; set; }
@@ -57,22 +51,12 @@ namespace LibMSPackSharp.CAB
         /// <summary>
         /// Decompressor state
         /// </summary>
-        public object DecompressorState { get; set; }
+        public BaseDecompressState DecompressorState { get; set; }
 
         /// <summary>
         /// Cabinet where input data comes from
         /// </summary>
         public Cabinet InputCabinet { get; set; }
-
-        /// <summary>
-        /// Input file handle
-        /// </summary>
-        public FileStream InputFileHandle { get; set; }
-
-        /// <summary>
-        /// Output file handle
-        /// </summary>
-        public FileStream OutputFileHandle { get; set; }
 
         /// <summary>
         /// Input data consumed

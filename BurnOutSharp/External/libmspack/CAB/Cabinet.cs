@@ -72,7 +72,7 @@ namespace LibMSPackSharp.CAB
     /// <see cref="Decompressor.Open(string)"/>
     /// <see cref="Decompressor.Close(Cabinet)"/>
     /// <see cref="Decompressor.Search(string)"/>
-    public class Cabinet
+    public class Cabinet : BaseHeader
     {
         #region Internal
 

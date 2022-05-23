@@ -27,6 +27,14 @@ namespace LibMSPackSharp.SZDD
     /// <see cref="Library.DestroySZDDCompressor(Compressor)"/>
     public class Compressor
     {
+        #region Fields
+
+        public SystemImpl System { get; set; }
+
+        public Error Error { get; set; }
+
+        #endregion
+
         /// <summary>
         /// Reads an input file and creates a compressed output file in the
         /// SZDD compressed file format. The SZDD compression format is quick

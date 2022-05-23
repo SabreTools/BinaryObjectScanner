@@ -18,7 +18,7 @@ using System;
 using System.IO;
 using System.Text;
 using LibMSPackSharp.Compression;
-using static LibMSPackSharp.CHM.Constants;
+using static LibMSPackSharp.Constants;
 
 namespace LibMSPackSharp.CHM
 {
@@ -29,15 +29,11 @@ namespace LibMSPackSharp.CHM
     /// </summary>
     /// <see cref="Library.CreateCHMDecompressor(SystemImpl)"/>
     /// <see cref="Library.DestroyCHMDecompressor(Decompressor)"/>
-    public class Decompressor
+    public class Decompressor : BaseDecompressor
     {
         #region Fields
 
-        public SystemImpl System { get; set; }
-
         public DecompressState State { get; set; }
-
-        public Error Error { get; set; }
 
         #endregion
 
@@ -62,10 +58,7 @@ namespace LibMSPackSharp.CHM
         /// </param>
         /// <returns>a pointer to a mschmd_header structure, or NULL on failure</returns>
         /// <see cref="Close(CHM)"/>
-        public CHM Open(string filename)
-        {
-            return RealOpen(filename, true);
-        }
+        public CHM Open(string filename) => RealOpen(filename, true);
 
         /// <summary>
         /// Closes a previously opened CHM helpfile.
@@ -137,8 +130,8 @@ namespace LibMSPackSharp.CHM
                 State.Header = chm;
                 State.Offset = 0;
                 State.State = null;
-                State.Sys = System;
-                State.Sys.Write = SysWrite;
+                State.System = System;
+                State.System.Write = SysWrite;
                 State.InputFileHandle = null;
                 State.OutputFileHandle = null;
             }
@@ -279,10 +272,7 @@ namespace LibMSPackSharp.CHM
         /// <see cref="Close(CHM)"/>
         /// <see cref="FastFind(CHM, string, DecompressFile)"/>
         /// <see cref="Extract(DecompressFile, string)"/>
-        public CHM FastOpen(string filename)
-        {
-            return RealOpen(filename, false);
-        }
+        public CHM FastOpen(string filename) => RealOpen(filename, false);
 
         /// <summary>
         /// Finds file details quickly.
@@ -587,7 +577,7 @@ namespace LibMSPackSharp.CHM
             length -= State.Offset;
 
             // Initialise LZX stream
-            State.State = LZX.Init(State.Sys, State.InputFileHandle, State.OutputFileHandle, window_bits, reset_interval / LZX.LZX_FRAME_SIZE, 4096, length, false);
+            State.State = LZX.Init(State.System, State.InputFileHandle, State.OutputFileHandle, window_bits, reset_interval / LZX.LZX_FRAME_SIZE, 4096, length, false);
 
             if (State.State == null)
                 Error = Error.MSPACK_ERR_NOMEMORY;

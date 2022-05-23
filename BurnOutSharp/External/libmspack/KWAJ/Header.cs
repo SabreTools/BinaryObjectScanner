@@ -14,6 +14,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+using System.IO;
+
 namespace LibMSPackSharp.KWAJ
 {
     /// <summary>
@@ -21,7 +23,7 @@ namespace LibMSPackSharp.KWAJ
     /// 
     /// All fields are READ ONLY.
     /// </summary>
-    public class Header
+    public class Header : BaseHeader
     {
         /// <summary>
         /// The compression type
@@ -58,5 +60,7 @@ namespace LibMSPackSharp.KWAJ
         /// Length of extra uncompressed data in the header
         /// </summary>
         public ushort ExtraLength { get; set; }
+
+        public FileStream FileHandle { get; set; }
     }
 }

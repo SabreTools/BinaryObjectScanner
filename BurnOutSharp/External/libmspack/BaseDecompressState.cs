@@ -7,30 +7,30 @@
  * For further details, see the file COPYING.LIB distributed with libmspack
  */
 
-using LibMSPackSharp.Compression;
+using System.IO;
 
-namespace LibMSPackSharp.CHM
+namespace LibMSPackSharp
 {
-    public class DecompressState : BaseDecompressState
+    public abstract class BaseDecompressState
     {
         /// <summary>
-        /// CHM file being decompressed
+        /// System wrapper for I/O operations
         /// </summary>
-        public CHM Header { get; set; }
+        public SystemImpl System { get; set; }
 
         /// <summary>
-        /// Uncompressed offset within folder
+        /// Persistent error state of the state
         /// </summary>
-        public long Offset { get; set; }
+        public Error Error { get; set; }
 
         /// <summary>
-        /// Offset in input file
+        /// Input file handle
         /// </summary>
-        public long InOffset { get; set; }
+        public FileStream InputFileHandle { get; set; }
 
         /// <summary>
-        /// LZX decompressor state
+        /// Output file handle
         /// </summary>
-        public LZXDStream State { get; set; }
+        public FileStream OutputFileHandle { get; set; }
     }
 }

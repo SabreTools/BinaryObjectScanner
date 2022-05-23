@@ -16,9 +16,8 @@
 
 namespace LibMSPackSharp.LIT
 {
-    // TODO
-    public class Decompressor
+    public class Decompressor : BaseDecompressor
     {
-        public int Dummy { get; set; }
+        // TODO
     }
 }

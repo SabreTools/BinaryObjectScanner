@@ -374,13 +374,8 @@ namespace LibMSPackSharp
             if (!SystemImpl.ValidSystem(sys))
                 return null;
 
-            return new SZDD.DecompressorImpl()
+            return new SZDD.Decompressor()
             {
-                Open = SZDD.Implementation.Open,
-                Close = SZDD.Implementation.Close,
-                Extract = SZDD.Implementation.Extract,
-                Decompress = SZDD.Implementation.Decompress,
-                LastError = SZDD.Implementation.LastError,
                 System = sys,
                 Error = Error.MSPACK_ERR_OK,
             };
@@ -428,13 +423,8 @@ namespace LibMSPackSharp
             if (!SystemImpl.ValidSystem(sys))
                 return null;
 
-            return new KWAJ.DecompressorImpl()
+            return new KWAJ.Decompressor()
             {
-                Open = KWAJ.Implementation.Open,
-                Close = KWAJ.Implementation.Close,
-                Extract = KWAJ.Implementation.Extract,
-                Decompress = KWAJ.Implementation.Decompress,
-                LastError = KWAJ.Implementation.LastError,
                 System = sys,
                 Error = Error.MSPACK_ERR_OK,
             };
@@ -482,11 +472,8 @@ namespace LibMSPackSharp
             if (!SystemImpl.ValidSystem(sys))
                 return null;
 
-            return new OAB.DecompressorImpl()
+            return new OAB.Decompressor()
             {
-                Decompress = OAB.Implementation.Decompress,
-                DecompressIncremental = OAB.Implementation.DecompressIncremental,
-                SetParam = OAB.Implementation.Param,
                 System = sys,
                 BufferSize = 4096,
             };

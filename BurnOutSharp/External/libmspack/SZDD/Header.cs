@@ -14,6 +14,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+using System.IO;
+
 namespace LibMSPackSharp.SZDD
 {
     /// <summary>
@@ -21,7 +23,7 @@ namespace LibMSPackSharp.SZDD
     /// 
     /// All fields are READ ONLY.
     /// </summary>
-    public class Header
+    public class Header : BaseHeader
     {
         /// <summary>
         /// The file format
@@ -41,5 +43,7 @@ namespace LibMSPackSharp.SZDD
         /// an MS-DOS filename (except ".") are valid.
         /// </summary>
         public char MissingChar { get; set; }
+
+        public FileStream FileHandle { get; set; }
     }
 }

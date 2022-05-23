@@ -18,7 +18,7 @@ using System;
 using System.IO;
 using System.Text;
 using LibMSPackSharp.Compression;
-using static LibMSPackSharp.CAB.Constants;
+using static LibMSPackSharp.Constants;
 
 namespace LibMSPackSharp.CAB
 {
@@ -29,23 +29,17 @@ namespace LibMSPackSharp.CAB
     /// </summary>
     /// <see cref="Library.CreateCABDecompressor(SystemImpl)"/>
     /// <see cref="Library.DestroyCABDecompressor(Decompressor)"/>
-    public class Decompressor
+    public class Decompressor : BaseDecompressor
     {
         #region Fields
 
         public DecompressState State { get; set; }
-
-        public SystemImpl System { get; set; }
-
-        public int BufferSize { get; set; }
 
         public int SearchBufferSize { get; set; }
 
         public bool FixMSZip { get; set; }
 
         public bool Salvage { get; set; }
-
-        public Error Error { get; set; }
 
         public Error ReadError { get; set; }
 
@@ -295,6 +289,7 @@ namespace LibMSPackSharp.CAB
         public Error Prepend(Cabinet cab, Cabinet prevcab) => Merge(prevcab, cab);
 
         /// <summary>
+        /// <summary>
         /// Extracts a file from a cabinet or cabinet set.
         /// 
         /// This extracts a compressed file in a cabinet and writes it to the given
@@ -367,7 +362,7 @@ namespace LibMSPackSharp.CAB
                 Block = 0,
                 Outlen = 0,
 
-                Sys = System,
+                System = System,
 
                 InputCabinet = fol.Data.Cab,
                 InputFileHandle = System.Open(fol.Data.Cab.Filename, OpenMode.MSPACK_SYS_OPEN_READ),
@@ -376,8 +371,8 @@ namespace LibMSPackSharp.CAB
                 InputEnd = 0,
             };
 
-            State.Sys.Read = SysRead;
-            State.Sys.Write = SysWrite;
+            State.System.Read = SysRead;
+            State.System.Write = SysWrite;
 
             if (State.InputFileHandle == null)
                 return Error = Error.MSPACK_ERR_OPEN;
@@ -501,22 +496,22 @@ namespace LibMSPackSharp.CAB
             {
                 case CompressionType.COMPTYPE_NONE:
                     State.Decompress = None.Decompress;
-                    State.DecompressorState = None.Init(State.Sys, State.InputFileHandle, State.OutputFileHandle, BufferSize);
+                    State.DecompressorState = None.Init(State.System, State.InputFileHandle, State.OutputFileHandle, BufferSize);
                     break;
 
                 case CompressionType.COMPTYPE_MSZIP:
                     State.Decompress = MSZIP.Decompress;
-                    State.DecompressorState = MSZIP.Init(State.Sys, State.InputFileHandle, State.OutputFileHandle, BufferSize, FixMSZip);
+                    State.DecompressorState = MSZIP.Init(State.System, State.InputFileHandle, State.OutputFileHandle, BufferSize, FixMSZip);
                     break;
 
                 case CompressionType.COMPTYPE_QUANTUM:
                     State.Decompress = QTM.Decompress;
-                    State.DecompressorState = QTM.Init(State.Sys, State.InputFileHandle, State.OutputFileHandle, ((ushort)ct >> 8) & 0x1f, BufferSize);
+                    State.DecompressorState = QTM.Init(State.System, State.InputFileHandle, State.OutputFileHandle, ((ushort)ct >> 8) & 0x1f, BufferSize);
                     break;
 
                 case CompressionType.COMPTYPE_LZX:
                     State.Decompress = LZX.Decompress;
-                    State.DecompressorState = LZX.Init(State.Sys, State.InputFileHandle, State.OutputFileHandle, ((ushort)ct >> 8) & 0x1f, 0, BufferSize, 0, false);
+                    State.DecompressorState = LZX.Init(State.System, State.InputFileHandle, State.OutputFileHandle, ((ushort)ct >> 8) & 0x1f, 0, BufferSize, 0, false);
                     break;
 
                 default:
@@ -534,19 +529,10 @@ namespace LibMSPackSharp.CAB
             switch (State.CompressionType & CompressionType.COMPTYPE_MASK)
             {
                 case CompressionType.COMPTYPE_NONE:
-                    (State.DecompressorState as NoneState).Output = State.OutputFileHandle;
-                    break;
-
                 case CompressionType.COMPTYPE_MSZIP:
-                    (State.DecompressorState as MSZIPDStream).Output = State.OutputFileHandle;
-                    break;
-
                 case CompressionType.COMPTYPE_QUANTUM:
-                    (State.DecompressorState as QTMDStream).Output = State.OutputFileHandle;
-                    break;
-
                 case CompressionType.COMPTYPE_LZX:
-                    (State.DecompressorState as LZXDStream).Output = State.OutputFileHandle;
+                    State.DecompressorState.OutputFileHandle = State.OutputFileHandle;
                     break;
 
                 default:

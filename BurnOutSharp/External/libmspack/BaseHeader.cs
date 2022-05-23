@@ -7,9 +7,10 @@
  * For further details, see the file COPYING.LIB distributed with libmspack
  */
 
-namespace LibMSPackSharp.LIT
+namespace LibMSPackSharp
 {
-    public class Implementation
-    {
-    }
+    /// <summary>
+    /// Base class for decompressor-used objects
+    /// </summary>
+    public abstract class BaseHeader { }
 }

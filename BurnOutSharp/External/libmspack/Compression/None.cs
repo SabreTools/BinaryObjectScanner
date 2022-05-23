@@ -17,9 +17,9 @@ namespace LibMSPackSharp.Compression
         {
             return new NoneState()
             {
-                Sys = sys,
-                Input = input,
-                Output = output,
+                System = sys,
+                InputFileHandle = input,
+                OutputFileHandle = output,
                 Buffer = new byte[bufsize],
                 BufferSize = bufsize,
             };
@@ -36,10 +36,10 @@ namespace LibMSPackSharp.Compression
             {
                 run = (bytes > state.BufferSize) ? state.BufferSize : (int)bytes;
 
-                if (state.Sys.Read(state.Input, state.Buffer, 0, run) != run)
+                if (state.System.Read(state.InputFileHandle, state.Buffer, 0, run) != run)
                     return Error.MSPACK_ERR_READ;
 
-                if (state.Sys.Write(state.Output, state.Buffer, 0, run) != run)
+                if (state.System.Write(state.OutputFileHandle, state.Buffer, 0, run) != run)
                     return Error.MSPACK_ERR_WRITE;
 
                 bytes -= run;

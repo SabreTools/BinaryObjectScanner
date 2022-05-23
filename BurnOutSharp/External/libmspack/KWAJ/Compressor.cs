@@ -27,6 +27,19 @@ namespace LibMSPackSharp.KWAJ
     /// <see cref="Library.DestroyKWAJCompressor(Compressor)"/>
     public class Compressor
     {
+        #region Fields
+
+        public SystemImpl System { get; set; }
+
+        /// <remarks>
+        /// !!! MATCH THIS TO NUM OF PARAMS IN MSPACK.H !!!
+        /// </remarks>
+        public int[] Param { get; set; } = new int[2];
+
+        public Error Error { get; set; }
+
+        #endregion
+
         /// <summary>
         /// Reads an input file and creates a compressed output file in the
         /// KWAJ compressed file format.The KWAJ compression format is quick

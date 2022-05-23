@@ -27,6 +27,12 @@ namespace LibMSPackSharp.OAB
     /// <see cref="Library.DestroyOABCompressor(Compressor)"/>
     public class Compressor
     {
+        #region Fields
+
+        public SystemImpl System { get; set; }
+
+        #endregion
+
         /// <summary>
         /// Compress a full OAB file.
         ///

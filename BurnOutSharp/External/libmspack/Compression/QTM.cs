@@ -116,9 +116,9 @@ namespace LibMSPackSharp.Compression
                 InputBuffer = new byte[input_buffer_size],
 
                 // Initialise decompression state
-                Sys = system,
-                Input = input,
-                Output = output,
+                System = system,
+                InputFileHandle = input,
+                OutputFileHandle = output,
                 InputBufferSize = (uint)input_buffer_size,
                 WindowSize = window_size,
                 WindowPosition = 0,
@@ -203,7 +203,7 @@ namespace LibMSPackSharp.Compression
 
             if (i != 0)
             {
-                if (qtm.Sys.Write(qtm.Output, qtm.Window, qtm.OutputPointer, i) != i)
+                if (qtm.System.Write(qtm.OutputFileHandle, qtm.Window, qtm.OutputPointer, i) != i)
                     return qtm.Error = Error.MSPACK_ERR_WRITE;
 
                 qtm.OutputPointer += i;
@@ -1223,7 +1223,7 @@ namespace LibMSPackSharp.Compression
                                 return qtm.Error = Error.MSPACK_ERR_DECRUNCH;
                             }
 
-                            if (qtm.Sys.Write(qtm.Output, window, qtm.OutputPointer, i) != i)
+                            if (qtm.System.Write(qtm.OutputFileHandle, window, qtm.OutputPointer, i) != i)
                                 return qtm.Error = Error.MSPACK_ERR_WRITE;
 
                             out_bytes -= i;
@@ -1388,7 +1388,7 @@ namespace LibMSPackSharp.Compression
                     if (i >= out_bytes)
                         break;
 
-                    if (qtm.Sys.Write(qtm.Output, window, qtm.OutputPointer, i) != i)
+                    if (qtm.System.Write(qtm.OutputFileHandle, window, qtm.OutputPointer, i) != i)
                         return qtm.Error = Error.MSPACK_ERR_WRITE;
 
                     out_bytes -= i;
@@ -1403,7 +1403,7 @@ namespace LibMSPackSharp.Compression
             {
                 i = (int)out_bytes;
 
-                if (qtm.Sys.Write(qtm.Output, window, qtm.OutputPointer, i) != i)
+                if (qtm.System.Write(qtm.OutputFileHandle, window, qtm.OutputPointer, i) != i)
                     return qtm.Error = Error.MSPACK_ERR_WRITE;
 
                 qtm.OutputPointer += i;

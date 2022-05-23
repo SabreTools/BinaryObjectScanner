@@ -11,32 +11,14 @@
  */
 
 using System;
-using System.IO;
 
 namespace LibMSPackSharp.Compression
 {
-    public abstract class CompressionStream
+    public abstract class CompressionStream : BaseDecompressState
     {
         private const int CHAR_BIT = 8;
 
         public const int BITBUF_WIDTH = 4 * CHAR_BIT;
-
-        /// <summary>
-        /// I/O routines
-        /// </summary>
-        public SystemImpl Sys { get; set; }
-
-        /// <summary>
-        /// Input file handle
-        /// </summary>
-        public FileStream Input { get; set; }
-
-        /// <summary>
-        /// Output file handle
-        /// </summary>
-        public FileStream Output { get; set; }
-
-        public Error Error { get; set; }
 
         #region I/O buffering
 
@@ -135,7 +117,7 @@ namespace LibMSPackSharp.Compression
 
         public Error ReadInput()
         {
-            int read = Sys.Read(Input, InputBuffer, 0, (int)InputBufferSize);
+            int read = System.Read(InputFileHandle, InputBuffer, 0, (int)InputBufferSize);
             if (read < 0)
                 return Error = Error.MSPACK_ERR_READ;
 

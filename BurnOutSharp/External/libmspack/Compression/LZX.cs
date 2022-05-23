@@ -191,8 +191,6 @@ namespace LibMSPackSharp.Compression
 
         private static void ResetState(LZXDStream lzx)
         {
-            int i;
-
             lzx.R0 = 1;
             lzx.R1 = 1;
             lzx.R2 = 1;
@@ -201,12 +199,12 @@ namespace LibMSPackSharp.Compression
             lzx.BlockType = LZXBlockType.LZX_BLOCKTYPE_INVALID0;
 
             // Initialise tables to 0 (because deltas will be applied to them)
-            for (i = 0; i < LZX_MAINTREE_MAXSYMBOLS; i++)
+            for (int i = 0; i < LZX_MAINTREE_MAXSYMBOLS; i++)
             {
                 lzx.MAINTREE_len[i] = 0;
             }
 
-            for (i = 0; i < LZX_LENGTH_MAXSYMBOLS; i++)
+            for (int i = 0; i < LZX_LENGTH_MAXSYMBOLS; i++)
             {
                 lzx.LENGTH_len[i] = 0;
             }
@@ -307,9 +305,9 @@ namespace LibMSPackSharp.Compression
                 Window = new byte[window_size],
                 InputBuffer = new byte[input_buffer_size],
 
-                Sys = system,
-                Input = input,
-                Output = output,
+                System = system,
+                InputFileHandle = input,
+                OutputFileHandle = output,
                 Offset = 0,
                 Length = output_length,
 
@@ -472,7 +470,7 @@ namespace LibMSPackSharp.Compression
 
             if (i != 0)
             {
-                try { lzx.Sys.Write(lzx.Output, lzx.e8_buf, lzx.OutputPointer, i); }
+                try { lzx.System.Write(lzx.OutputFileHandle, lzx.e8_buf, lzx.OutputPointer, i); }
                 catch { return lzx.Error = Error.MSPACK_ERR_WRITE; }
 
                 lzx.OutputPointer += i;
@@ -512,7 +510,7 @@ namespace LibMSPackSharp.Compression
                         Console.WriteLine($"{lzx.BlockRemaining} bytes remaining at reset interval");
                         if (warned == 0)
                         {
-                            lzx.Sys.Message(null, "WARNING; invalid reset interval detected during LZX decompression");
+                            lzx.System.Message(null, "WARNING; invalid reset interval detected during LZX decompression");
                             warned++;
                         }
                     }
@@ -577,182 +575,6 @@ namespace LibMSPackSharp.Compression
                     }
                 }
 
-                // Read header if necessary
-                if (lzx.HeaderRead == 0)
-                {
-                    // Read 1 bit. if bit=0, intel_filesize = 0.
-                    // if bit=1, read intel filesize (32 bits)
-                    j = 0;
-
-                    //READ_BITS(i, 1)
-                    {
-                        //ENSURE_BITS(1)
-                        {
-                            while (bits_left < (1))
-                            {
-                                //READ_BYTES
-                                {
-                                    //READ_IF_NEEDED
-                                    {
-                                        if (i_ptr >= i_end)
-                                        {
-                                            if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                return lzx.Error;
-
-                                            i_ptr = lzx.InputPointer;
-                                            i_end = lzx.InputLength;
-                                        }
-                                    }
-
-                                    byte b0 = lzx.InputBuffer[i_ptr++];
-
-                                    //READ_IF_NEEDED
-                                    {
-                                        if (i_ptr >= i_end)
-                                        {
-                                            if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                return lzx.Error;
-
-                                            i_ptr = lzx.InputPointer;
-                                            i_end = lzx.InputLength;
-                                        }
-                                    }
-
-                                    byte b1 = lzx.InputBuffer[i_ptr++];
-
-                                    //INJECT_BITS((b1 << 8) | b0, 16)
-                                    {
-                                        bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
-                                        bits_left += (16);
-                                    }
-                                }
-                            }
-                        }
-
-                        (i) = (int)(bit_buffer >> (CompressionStream.BITBUF_WIDTH - (1))); //PEEK_BITS(1)
-
-                        //REMOVE_BITS(1)
-                        {
-                            bit_buffer <<= (1);
-                            bits_left -= (1);
-                        }
-                    }
-
-                    if (i != 0)
-                    {
-                        //READ_BITS(i, 16)
-                        {
-                            //ENSURE_BITS(16)
-                            {
-                                while (bits_left < (16))
-                                {
-                                    //READ_BYTES
-                                    {
-                                        //READ_IF_NEEDED
-                                        {
-                                            if (i_ptr >= i_end)
-                                            {
-                                                if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                    return lzx.Error;
-
-                                                i_ptr = lzx.InputPointer;
-                                                i_end = lzx.InputLength;
-                                            }
-                                        }
-
-                                        byte b0 = lzx.InputBuffer[i_ptr++];
-
-                                        //READ_IF_NEEDED
-                                        {
-                                            if (i_ptr >= i_end)
-                                            {
-                                                if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                    return lzx.Error;
-
-                                                i_ptr = lzx.InputPointer;
-                                                i_end = lzx.InputLength;
-                                            }
-                                        }
-
-                                        byte b1 = lzx.InputBuffer[i_ptr++];
-
-                                        //INJECT_BITS((b1 << 8) | b0, 16)
-                                        {
-                                            bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
-                                            bits_left += (16);
-                                        }
-                                    }
-                                }
-                            }
-
-                            (i) = (int)(bit_buffer >> (CompressionStream.BITBUF_WIDTH - (16))); //PEEK_BITS(16)
-
-                            //REMOVE_BITS(16)
-                            {
-                                bit_buffer <<= (16);
-                                bits_left -= (16);
-                            }
-                        }
-
-                        //READ_BITS(j, 16)
-                        {
-                            //ENSURE_BITS(16)
-                            {
-                                while (bits_left < (16))
-                                {
-                                    //READ_BYTES
-                                    {
-                                        //READ_IF_NEEDED
-                                        {
-                                            if (i_ptr >= i_end)
-                                            {
-                                                if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                    return lzx.Error;
-
-                                                i_ptr = lzx.InputPointer;
-                                                i_end = lzx.InputLength;
-                                            }
-                                        }
-
-                                        byte b0 = lzx.InputBuffer[i_ptr++];
-
-                                        //READ_IF_NEEDED
-                                        {
-                                            if (i_ptr >= i_end)
-                                            {
-                                                if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                    return lzx.Error;
-
-                                                i_ptr = lzx.InputPointer;
-                                                i_end = lzx.InputLength;
-                                            }
-                                        }
-
-                                        byte b1 = lzx.InputBuffer[i_ptr++];
-
-                                        //INJECT_BITS((b1 << 8) | b0, 16)
-                                        {
-                                            bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
-                                            bits_left += (16);
-                                        }
-                                    }
-                                }
-                            }
-
-                            (j) = (int)(bit_buffer >> (CompressionStream.BITBUF_WIDTH - (16))); //PEEK_BITS(16)
-
-                            //REMOVE_BITS(16)
-                            {
-                                bit_buffer <<= (16);
-                                bits_left -= (16);
-                            }
-                        }
-                    }
-
-                    lzx.IntelFileSize = (i << 16) | j;
-                    lzx.HeaderRead = 1;
-                }
-
                 // Calculate size of frame: all frames are 32k except the final frame
                 // which is 32kb or less. this can only be calculated when lzx.Length
                 // has been filled in.
@@ -789,7 +611,7 @@ namespace LibMSPackSharp.Compression
 
                         //READ_BITS(lzx.BlockType, 3)
                         {
-                            //ENSURE_BITS(3)
+                            //ENSURE_BITS(3) // THIS IS NOT 3 BECAUSE OF OTHER CODE I FOUND
                             {
                                 while (bits_left < (3))
                                 {
@@ -839,6 +661,182 @@ namespace LibMSPackSharp.Compression
                                 bit_buffer <<= (3);
                                 bits_left -= (3);
                             }
+                        }
+
+                        // Read header if necessary
+                        if (lzx.HeaderRead == 0)
+                        {
+                            // Read 1 bit. if bit=0, intel_filesize = 0.
+                            // if bit=1, read intel filesize (32 bits)
+                            j = 0;
+
+                            //READ_BITS(i, 1)
+                            {
+                                //ENSURE_BITS(1)
+                                {
+                                    while (bits_left < (1))
+                                    {
+                                        //READ_BYTES
+                                        {
+                                            //READ_IF_NEEDED
+                                            {
+                                                if (i_ptr >= i_end)
+                                                {
+                                                    if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
+                                                        return lzx.Error;
+
+                                                    i_ptr = lzx.InputPointer;
+                                                    i_end = lzx.InputLength;
+                                                }
+                                            }
+
+                                            byte b0 = lzx.InputBuffer[i_ptr++];
+
+                                            //READ_IF_NEEDED
+                                            {
+                                                if (i_ptr >= i_end)
+                                                {
+                                                    if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
+                                                        return lzx.Error;
+
+                                                    i_ptr = lzx.InputPointer;
+                                                    i_end = lzx.InputLength;
+                                                }
+                                            }
+
+                                            byte b1 = lzx.InputBuffer[i_ptr++];
+
+                                            //INJECT_BITS((b1 << 8) | b0, 16)
+                                            {
+                                                bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
+                                                bits_left += (16);
+                                            }
+                                        }
+                                    }
+                                }
+
+                                (i) = (int)(bit_buffer >> (CompressionStream.BITBUF_WIDTH - (1))); //PEEK_BITS(1)
+
+                                //REMOVE_BITS(1)
+                                {
+                                    bit_buffer <<= (1);
+                                    bits_left -= (1);
+                                }
+                            }
+
+                            if (i != 0)
+                            {
+                                //READ_BITS(i, 16)
+                                {
+                                    //ENSURE_BITS(16)
+                                    {
+                                        while (bits_left < (16))
+                                        {
+                                            //READ_BYTES
+                                            {
+                                                //READ_IF_NEEDED
+                                                {
+                                                    if (i_ptr >= i_end)
+                                                    {
+                                                        if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
+                                                            return lzx.Error;
+
+                                                        i_ptr = lzx.InputPointer;
+                                                        i_end = lzx.InputLength;
+                                                    }
+                                                }
+
+                                                byte b0 = lzx.InputBuffer[i_ptr++];
+
+                                                //READ_IF_NEEDED
+                                                {
+                                                    if (i_ptr >= i_end)
+                                                    {
+                                                        if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
+                                                            return lzx.Error;
+
+                                                        i_ptr = lzx.InputPointer;
+                                                        i_end = lzx.InputLength;
+                                                    }
+                                                }
+
+                                                byte b1 = lzx.InputBuffer[i_ptr++];
+
+                                                //INJECT_BITS((b1 << 8) | b0, 16)
+                                                {
+                                                    bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
+                                                    bits_left += (16);
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    (i) = (int)(bit_buffer >> (CompressionStream.BITBUF_WIDTH - (16))); //PEEK_BITS(16)
+
+                                    //REMOVE_BITS(16)
+                                    {
+                                        bit_buffer <<= (16);
+                                        bits_left -= (16);
+                                    }
+                                }
+
+                                //READ_BITS(j, 16)
+                                {
+                                    //ENSURE_BITS(16)
+                                    {
+                                        while (bits_left < (16))
+                                        {
+                                            //READ_BYTES
+                                            {
+                                                //READ_IF_NEEDED
+                                                {
+                                                    if (i_ptr >= i_end)
+                                                    {
+                                                        if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
+                                                            return lzx.Error;
+
+                                                        i_ptr = lzx.InputPointer;
+                                                        i_end = lzx.InputLength;
+                                                    }
+                                                }
+
+                                                byte b0 = lzx.InputBuffer[i_ptr++];
+
+                                                //READ_IF_NEEDED
+                                                {
+                                                    if (i_ptr >= i_end)
+                                                    {
+                                                        if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
+                                                            return lzx.Error;
+
+                                                        i_ptr = lzx.InputPointer;
+                                                        i_end = lzx.InputLength;
+                                                    }
+                                                }
+
+                                                byte b1 = lzx.InputBuffer[i_ptr++];
+
+                                                //INJECT_BITS((b1 << 8) | b0, 16)
+                                                {
+                                                    bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
+                                                    bits_left += (16);
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    (j) = (int)(bit_buffer >> (CompressionStream.BITBUF_WIDTH - (16))); //PEEK_BITS(16)
+
+                                    //REMOVE_BITS(16)
+                                    {
+                                        bit_buffer <<= (16);
+                                        bits_left -= (16);
+                                    }
+                                }
+                            }
+
+                            lzx.IntelFileSize = (i << 16) | j;
+                            lzx.HeaderRead = 1;
                         }
 
                         //READ_BITS(i, 16)
@@ -2415,7 +2413,7 @@ namespace LibMSPackSharp.Compression
 
                     // Write a frame
                     i = (int)((out_bytes < frame_size) ? out_bytes : frame_size);
-                    try { lzx.Output.Write(lzx.e8_buf, lzx.OutputPointer, i); }
+                    try { lzx.System.Write(lzx.OutputFileHandle, lzx.e8_buf, lzx.OutputPointer, i); }
                     catch { return lzx.Error = Error.MSPACK_ERR_WRITE; }
                 }
                 else
@@ -2425,7 +2423,7 @@ namespace LibMSPackSharp.Compression
 
                     // Write a frame
                     i = (int)((out_bytes < frame_size) ? out_bytes : frame_size);
-                    try { lzx.Output.Write(lzx.Window, lzx.OutputPointer, i); }
+                    try { lzx.System.Write(lzx.OutputFileHandle, lzx.Window, lzx.OutputPointer, i); }
                     catch { return lzx.Error = Error.MSPACK_ERR_WRITE; }
                 }
 

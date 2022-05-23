@@ -112,9 +112,9 @@ namespace LibMSPackSharp.Compression
                 InputBuffer = new byte[input_buffer_size],
 
                 // Initialise decompression state
-                Sys = system,
-                Input = input,
-                Output = output,
+                System = system,
+                InputFileHandle = input,
+                OutputFileHandle = output,
                 InputBufferSize = (uint)input_buffer_size,
                 InputEnd = 0,
                 Error = Error.MSPACK_ERR_OK,
@@ -176,7 +176,7 @@ namespace LibMSPackSharp.Compression
 
             if (i != 0)
             {
-                if (zip.Sys.Write(zip.Output, zip.Window, zip.OutputPointer, i) != i)
+                if (zip.System.Write(zip.OutputFileHandle, zip.Window, zip.OutputPointer, i) != i)
                     return zip.Error = Error.MSPACK_ERR_WRITE;
 
                 zip.OutputPointer += i;
@@ -279,7 +279,7 @@ namespace LibMSPackSharp.Compression
                         if (zip.BytesOutput == 0 && zip.WindowPosition > 0)
                             zip.FlushWindow(zip, zip.WindowPosition);
 
-                        zip.Sys.Message(null, $"MSZIP error, {MSZIP_FRAME_SIZE - zip.BytesOutput} bytes of data lost.");
+                        zip.System.Message(null, $"MSZIP error, {MSZIP_FRAME_SIZE - zip.BytesOutput} bytes of data lost.");
                         for (i = zip.BytesOutput; i < MSZIP_FRAME_SIZE; i++)
                         {
                             zip.Window[i] = 0x00;
@@ -298,7 +298,7 @@ namespace LibMSPackSharp.Compression
 
                 // Write a frame
                 i = (out_bytes < zip.BytesOutput) ? (int)out_bytes : zip.BytesOutput;
-                if (zip.Sys.Write(zip.Output, zip.Window, zip.OutputPointer, i) != i)
+                if (zip.System.Write(zip.OutputFileHandle, zip.Window, zip.OutputPointer, i) != i)
                     return zip.Error = Error.MSPACK_ERR_WRITE;
 
                 // mspack errors (i.e. read errors) are fatal and can't be recovered
@@ -536,7 +536,7 @@ namespace LibMSPackSharp.Compression
                 }
 
                 // Write inflated block
-                try { zip.Sys.Write(zip.Output, zip.Window, 0, zip.BytesOutput); }
+                try { zip.System.Write(zip.OutputFileHandle, zip.Window, 0, zip.BytesOutput); }
                 catch { return zip.Error = Error.MSPACK_ERR_WRITE; }
             }
 
