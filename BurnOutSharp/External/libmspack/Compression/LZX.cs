@@ -229,12 +229,12 @@ namespace LibMSPackSharp.Compression
         /// </param>
         /// <param name="input">an input stream with the LZX data.</param>
         /// <param name="output">an output stream to write the decoded data to.</param>
-        /// <param name="windowBits">
+        /// <param name="window_bits">
         /// the size of the decoding window, which must be
         /// between 15 and 21 inclusive for regular LZX
         /// data, or between 17 and 25 inclusive for
         /// LZX DELTA data.</param>
-        /// <param name="resetInterval">
+        /// <param name="reset_interval">
         /// the interval at which the LZX bitstream is
         /// reset, in multiples of LZX frames (32678
         /// bytes), e.g. a value of 2 indicates the input
@@ -242,11 +242,11 @@ namespace LibMSPackSharp.Compression
         /// A value of 0 indicates that the bitstream never
         /// resets, such as in CAB LZX streams.
         /// </param>
-        /// <param name="inputBufferSize">
+        /// <param name="input_buffer_size">
         /// the number of bytes to use as an input
         /// bitstream buffer.
         /// </param>
-        /// <param name="outputLength">
+        /// <param name="output_length">
         /// the length in bytes of the entirely
         /// decompressed output stream, if known in
         /// advance. It is used to correctly perform the
@@ -260,7 +260,7 @@ namespace LibMSPackSharp.Compression
         /// known. If never set, 4 of the final 6 bytes
         /// of the output stream may be incorrect.
         /// </param>
-        /// <param name="isDelta">
+        /// <param name="is_delta">
         /// should be zero for all regular LZX data,
         /// non-zero for LZX DELTA encoded data.
         /// </param>
@@ -561,7 +561,7 @@ namespace LibMSPackSharp.Compression
 
                                 byte b1 = lzx.InputBuffer[i_ptr++];
 
-                                //INJECT_BITS(bitdata, 16)
+                                //INJECT_BITS((b1 << 8) | b0, 16)
                                 {
                                     bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
                                     bits_left += (16);
@@ -620,7 +620,7 @@ namespace LibMSPackSharp.Compression
 
                                     byte b1 = lzx.InputBuffer[i_ptr++];
 
-                                    //INJECT_BITS(bitdata, 16)
+                                    //INJECT_BITS((b1 << 8) | b0, 16)
                                     {
                                         bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
                                         bits_left += (16);
@@ -676,7 +676,7 @@ namespace LibMSPackSharp.Compression
 
                                         byte b1 = lzx.InputBuffer[i_ptr++];
 
-                                        //INJECT_BITS(bitdata, 16)
+                                        //INJECT_BITS((b1 << 8) | b0, 16)
                                         {
                                             bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
                                             bits_left += (16);
@@ -730,7 +730,7 @@ namespace LibMSPackSharp.Compression
 
                                         byte b1 = lzx.InputBuffer[i_ptr++];
 
-                                        //INJECT_BITS(bitdata, 16)
+                                        //INJECT_BITS((b1 << 8) | b0, 16)
                                         {
                                             bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
                                             bits_left += (16);
@@ -823,12 +823,12 @@ namespace LibMSPackSharp.Compression
 
                                         byte b1 = lzx.InputBuffer[i_ptr++];
 
-                                        //INJECT_BITS(bitdata, 16)
+                                        //INJECT_BITS((b1 << 8) | b0, 16)
                                         {
                                             bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
                                             bits_left += (16);
                                         }
-                                    };
+                                    }
                                 }
                             }
 
@@ -877,7 +877,7 @@ namespace LibMSPackSharp.Compression
 
                                         byte b1 = lzx.InputBuffer[i_ptr++];
 
-                                        //INJECT_BITS(bitdata, 16)
+                                        //INJECT_BITS((b1 << 8) | b0, 16)
                                         {
                                             bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
                                             bits_left += (16);
@@ -931,7 +931,7 @@ namespace LibMSPackSharp.Compression
 
                                         byte b1 = lzx.InputBuffer[i_ptr++];
 
-                                        //INJECT_BITS(bitdata, 16)
+                                        //INJECT_BITS((b1 << 8) | b0, 16)
                                         {
                                             bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
                                             bits_left += (16);
@@ -995,12 +995,12 @@ namespace LibMSPackSharp.Compression
 
                                                     byte b1 = lzx.InputBuffer[i_ptr++];
 
-                                                    //INJECT_BITS(bitdata, 16)
+                                                    //INJECT_BITS((b1 << 8) | b0, 16)
                                                     {
                                                         bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
                                                         bits_left += (16);
                                                     }
-                                                };
+                                                }
                                             }
                                         }
 
@@ -1275,7 +1275,7 @@ namespace LibMSPackSharp.Compression
 
                                                 byte b1 = lzx.InputBuffer[i_ptr++];
 
-                                                //INJECT_BITS(bitdata, 16)
+                                                //INJECT_BITS((b1 << 8) | b0, 16)
                                                 {
                                                     bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
                                                     bits_left += (16);
@@ -1370,7 +1370,7 @@ namespace LibMSPackSharp.Compression
 
                                                 byte b1 = lzx.InputBuffer[i_ptr++];
 
-                                                //INJECT_BITS(bitdata, 16)
+                                                //INJECT_BITS((b1 << 8) | b0, 16)
                                                 {
                                                     bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
                                                     bits_left += (16);
@@ -1382,7 +1382,7 @@ namespace LibMSPackSharp.Compression
                                     sym = lzx.MAINTREE_table[(bit_buffer >> (CompressionStream.BITBUF_WIDTH - (LZX_MAINTREE_TABLEBITS)))]; //PEEK_BITS(TABLEBITS(MAINTREE))
                                     if (sym >= LZX_MAINTREE_MAXSYMBOLS)
                                     {
-                                        //HUFF_TRAVERSE(tbl)
+                                        //HUFF_TRAVERSE(MAINTREE)
                                         {
                                             i = 1 << (CompressionStream.BITBUF_WIDTH - LZX_MAINTREE_TABLEBITS);
                                             do
@@ -1462,7 +1462,7 @@ namespace LibMSPackSharp.Compression
 
                                                         byte b1 = lzx.InputBuffer[i_ptr++];
 
-                                                        //INJECT_BITS(bitdata, 16)
+                                                        //INJECT_BITS((b1 << 8) | b0, 16)
                                                         {
                                                             bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
                                                             bits_left += (16);
@@ -1568,7 +1568,7 @@ namespace LibMSPackSharp.Compression
 
                                                                     byte b1 = lzx.InputBuffer[i_ptr++];
 
-                                                                    //INJECT_BITS(bitdata, 16)
+                                                                    //INJECT_BITS((b1 << 8) | b0, 16)
                                                                     {
                                                                         bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
                                                                         bits_left += (16);
@@ -1637,7 +1637,7 @@ namespace LibMSPackSharp.Compression
 
                                                                     byte b1 = lzx.InputBuffer[i_ptr++];
 
-                                                                    //INJECT_BITS(bitdata, 16)
+                                                                    //INJECT_BITS((b1 << 8) | b0, 16)
                                                                     {
                                                                         bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
                                                                         bits_left += (16);
@@ -1693,7 +1693,7 @@ namespace LibMSPackSharp.Compression
 
                                                                     byte b1 = lzx.InputBuffer[i_ptr++];
 
-                                                                    //INJECT_BITS(bitdata, 16)
+                                                                    //INJECT_BITS((b1 << 8) | b0, 16)
                                                                     {
                                                                         bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
                                                                         bits_left += (16);
@@ -1770,7 +1770,7 @@ namespace LibMSPackSharp.Compression
 
                                                                     byte b1 = lzx.InputBuffer[i_ptr++];
 
-                                                                    //INJECT_BITS(bitdata, 16)
+                                                                    //INJECT_BITS((b1 << 8) | b0, 16)
                                                                     {
                                                                         bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
                                                                         bits_left += (16);
@@ -1847,7 +1847,7 @@ namespace LibMSPackSharp.Compression
 
                                                                     byte b1 = lzx.InputBuffer[i_ptr++];
 
-                                                                    //INJECT_BITS(bitdata, 16)
+                                                                    //INJECT_BITS((b1 << 8) | b0, 16)
                                                                     {
                                                                         bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
                                                                         bits_left += (16);
@@ -1921,7 +1921,7 @@ namespace LibMSPackSharp.Compression
 
                                                     byte b1 = lzx.InputBuffer[i_ptr++];
 
-                                                    //INJECT_BITS(bitdata, 16)
+                                                    //INJECT_BITS((b1 << 8) | b0, 16)
                                                     {
                                                         bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
                                                         bits_left += (16);
@@ -1975,7 +1975,7 @@ namespace LibMSPackSharp.Compression
 
                                                             byte b1 = lzx.InputBuffer[i_ptr++];
 
-                                                            //INJECT_BITS(bitdata, 16)
+                                                            //INJECT_BITS((b1 << 8) | b0, 16)
                                                             {
                                                                 bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
                                                                 bits_left += (16);
@@ -1986,7 +1986,7 @@ namespace LibMSPackSharp.Compression
 
                                                 (extra_len) = (int)(bit_buffer >> (CompressionStream.BITBUF_WIDTH - (8))); //PEEK_BITS(8)
 
-                                                //REMOVE_BITS(nbits)
+                                                //REMOVE_BITS(8)
                                                 {
                                                     bit_buffer <<= (8);
                                                     bits_left -= (8);
@@ -2039,7 +2039,7 @@ namespace LibMSPackSharp.Compression
 
                                                             byte b1 = lzx.InputBuffer[i_ptr++];
 
-                                                            //INJECT_BITS(bitdata, 16)
+                                                            //INJECT_BITS((b1 << 8) | b0, 16)
                                                             {
                                                                 bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
                                                                 bits_left += (16);
@@ -2105,7 +2105,7 @@ namespace LibMSPackSharp.Compression
 
                                                             byte b1 = lzx.InputBuffer[i_ptr++];
 
-                                                            //INJECT_BITS(bitdata, 16)
+                                                            //INJECT_BITS((b1 << 8) | b0, 16)
                                                             {
                                                                 bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
                                                                 bits_left += (16);
@@ -2171,7 +2171,7 @@ namespace LibMSPackSharp.Compression
 
                                                             byte b1 = lzx.InputBuffer[i_ptr++];
 
-                                                            //INJECT_BITS(bitdata, 16)
+                                                            //INJECT_BITS((b1 << 8) | b0, 16)
                                                             {
                                                                 bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
                                                                 bits_left += (16);
@@ -2350,7 +2350,7 @@ namespace LibMSPackSharp.Compression
 
                                 byte b1 = lzx.InputBuffer[i_ptr++];
 
-                                //INJECT_BITS(bitdata, 16)
+                                //INJECT_BITS((b1 << 8) | b0, 16)
                                 {
                                     bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
                                     bits_left += (16);
@@ -2527,7 +2527,7 @@ namespace LibMSPackSharp.Compression
 
                                 byte b1 = lzx.InputBuffer[i_ptr++];
 
-                                //INJECT_BITS(bitdata, 16)
+                                //INJECT_BITS((b1 << 8) | b0, 16)
                                 {
                                     bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
                                     bits_left += (16);
@@ -2595,7 +2595,7 @@ namespace LibMSPackSharp.Compression
 
                                 byte b1 = lzx.InputBuffer[i_ptr++];
 
-                                //INJECT_BITS(bitdata, 16)
+                                //INJECT_BITS((b1 << 8) | b0, 16)
                                 {
                                     bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
                                     bits_left += (16);
@@ -2669,7 +2669,7 @@ namespace LibMSPackSharp.Compression
 
                                     byte b1 = lzx.InputBuffer[i_ptr++];
 
-                                    //INJECT_BITS(bitdata, 16)
+                                    //INJECT_BITS((b1 << 8) | b0, 16)
                                     {
                                         bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
                                         bits_left += (16);
@@ -2733,7 +2733,7 @@ namespace LibMSPackSharp.Compression
 
                                     byte b1 = lzx.InputBuffer[i_ptr++];
 
-                                    //INJECT_BITS(bitdata, 16)
+                                    //INJECT_BITS((b1 << 8) | b0, 16)
                                     {
                                         bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
                                         bits_left += (16);
@@ -2797,7 +2797,7 @@ namespace LibMSPackSharp.Compression
 
                                     byte b1 = lzx.InputBuffer[i_ptr++];
 
-                                    //INJECT_BITS(bitdata, 16)
+                                    //INJECT_BITS((b1 << 8) | b0, 16)
                                     {
                                         bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
                                         bits_left += (16);
@@ -2853,7 +2853,7 @@ namespace LibMSPackSharp.Compression
 
                                     byte b1 = lzx.InputBuffer[i_ptr++];
 
-                                    //INJECT_BITS(bitdata, 16)
+                                    //INJECT_BITS((b1 << 8) | b0, 16)
                                     {
                                         bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
                                         bits_left += (16);
