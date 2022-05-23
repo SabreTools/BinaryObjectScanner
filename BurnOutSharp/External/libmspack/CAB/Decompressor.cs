@@ -54,14 +54,14 @@ namespace LibMSPackSharp.CAB
         /// and a Cabinet structure will be returned, with a full list of
         /// folders and files.
         /// 
-        /// In the case of an error occuring, NULL is returned and the error code
+        /// In the case of an error occuring, null is returned and the error code
         /// is available from last_error().
         /// 
         /// The filename pointer should be considered "in use" until close() is
         /// called on the cabinet.
         /// </summary>
         /// <param name="filename">The filename of the cabinet file. This is passed directly to SystemImpl::open().</param>
-        /// <returns>A pointer to a Cabinet structure, or NULL on failure</returns>
+        /// <returns>A pointer to a Cabinet structure, or null on failure</returns>
         /// <see cref="Close(Cabinet)"/>
         /// <see cref="Search(string)"/>
         /// <see cref="Error"/>
@@ -118,26 +118,12 @@ namespace LibMSPackSharp.CAB
         /// <see cref="Prepend(Cabinet, Cabinet)"/>
         public void Close(Cabinet cabinet)
         {
-            FolderData dat, ndat;
-            Cabinet cab;
-            Folder fol, nfol;
-            InternalFile fi, nfi;
-
             Error = Error.MSPACK_ERR_OK;
-
             while (cabinet != null)
             {
-                // Free files
-                for (fi = cabinet.Files; fi != null; fi = nfi)
-                {
-                    nfi = fi.Next;
-                }
-
                 // Free folders
-                for (fol = cabinet.Folders; fol != null; fol = nfol)
+                for (Folder fol = cabinet.Folders; fol != null; fol = fol.Next)
                 {
-                    nfol = fol.Next;
-
                     // Free folder decompression state if it has been decompressed
                     if (State != null && (State.Folder == fol))
                     {
@@ -147,19 +133,10 @@ namespace LibMSPackSharp.CAB
                         FreeDecompressionState();
                         State = null;
                     }
-
-                    // Free folder data segments
-                    for (dat = fol.Data.Next; dat != null; dat = ndat)
-                    {
-                        ndat = dat.Next;
-                    }
                 }
 
-                // Free actual cabinet structure
-                cab = cabinet.Next;
-
                 // Repeat full procedure again with the cab.Next pointer (if set)
-                cabinet = cab;
+                cabinet = cabinet.Next;
             }
         }
 
@@ -178,10 +155,10 @@ namespace LibMSPackSharp.CAB
         /// using the Cabinet::next field.
         /// 
         /// In the case of an error occuring anywhere other than the simulated
-        /// open(), NULL is returned and the error code is available from
+        /// open(), null is returned and the error code is available from
         /// last_error().
         /// 
-        /// If no error occurs, but no cabinets can be found in the file, NULL is
+        /// If no error occurs, but no cabinets can be found in the file, null is
         /// returned and last_error() returns MSPACK_ERR_OK.
         /// 
         /// The filename pointer should be considered in use until close() is
@@ -190,45 +167,42 @@ namespace LibMSPackSharp.CAB
         /// close() should only be called on the result of search(), not on any
         /// subsequent cabinets in the Cabinet::next chain.
         /// </summary>
-        /// <param name="filename">The filename of the file to search for cabinets. This is passed directly to SystemImpl::open().</param>
-        /// <returns>a pointer to a Cabinet structure, or NULL</returns>
+        /// <param name="filename">The filename of the file to search for cabinets. This is passed directly to SystemImpl.Open().</param>
+        /// <returns>A pointer to a Cabinet structure, or null</returns>
         /// <see cref="Close(Cabinet)"/>
         /// <see cref="Open(string)"/>
         /// <see cref="Error"/>
         public Cabinet Search(string filename)
         {
             // Allocate a search buffer
-            byte[] search_buf = new byte[SearchBufferSize];
-            if (search_buf == null)
+            byte[] searchBuffer = new byte[SearchBufferSize];
+
+            // Attempt to open the file
+            FileStream fh = System.Open(filename, OpenMode.MSPACK_SYS_OPEN_READ);
+            if (fh == null)
             {
-                Error = Error.MSPACK_ERR_NOMEMORY;
+                Error = Error.MSPACK_ERR_OPEN;
                 return null;
             }
 
-            // Open file and get its full file length
-            FileStream fh; Cabinet cab = null;
-            if ((fh = System.Open(filename, OpenMode.MSPACK_SYS_OPEN_READ)) != null)
-            {
-                long firstlen = 0;
-                if ((Error = System.GetFileLength(fh, out long filelen)) == Error.MSPACK_ERR_OK)
-                    Error = Find(search_buf, fh, filename, filelen, ref firstlen, out cab);
+            // Get its full file length
+            long firstlen = 0;
+            if ((Error = System.GetFileLength(fh, out long filelen)) != Error.MSPACK_ERR_OK)
+                return null;
 
-                // Truncated / extraneous data warning:
-                if (firstlen != 0 && (firstlen != filelen) && (cab == null || cab.BaseOffset == 0))
-                {
-                    if (firstlen < filelen)
-                        System.Message(fh, $"WARNING; possible {filelen - firstlen} extra bytes at end of file.");
-                    else
-                        System.Message(fh, $"WARNING; file possibly truncated by {firstlen - filelen} bytes.");
-                }
+            // Attempt to to find the cabinet
+            Error = Find(searchBuffer, fh, filename, filelen, ref firstlen, out Cabinet cab);
 
-                System.Close(fh);
-            }
-            else
+            // Truncated / extraneous data warning:
+            if (firstlen != 0 && (firstlen != filelen) && (cab == null || cab.BaseOffset == 0))
             {
-                Error = Error.MSPACK_ERR_OPEN;
+                if (firstlen < filelen)
+                    System.Message(fh, $"WARNING; possible {filelen - firstlen} extra bytes at end of file.");
+                else
+                    System.Message(fh, $"WARNING; file possibly truncated by {firstlen - filelen} bytes.");
             }
 
+            System.Close(fh);
             return cab;
         }
 
@@ -313,8 +287,6 @@ namespace LibMSPackSharp.CAB
             if (file == null)
                 return Error = Error.MSPACK_ERR_ARGS;
 
-            Folder fol = file.Folder;
-
             // If offset is beyond 2GB, nothing can be extracted
             if (file.Header.FolderOffset > CAB_LENGTHMAX)
                 return Error = Error.MSPACK_ERR_DATAFORMAT;
@@ -331,7 +303,7 @@ namespace LibMSPackSharp.CAB
             }
 
             // Extraction impossible if no folder, or folder needs predecessor
-            if (fol == null || fol.MergePrev != null)
+            if (file.Folder == null || file.Folder.MergePrev != null)
             {
                 System.Message(null, $"ERROR; file \"{file.Filename}\" cannot be extracted, cabinet set is incomplete");
                 return Error = Error.MSPACK_ERR_DECRUNCH;
@@ -341,7 +313,7 @@ namespace LibMSPackSharp.CAB
             // In salvage mode, don't assume block sizes, just try decoding
             if (!Salvage)
             {
-                long maxlen = fol.Header.NumBlocks * CAB_BLOCKMAX;
+                long maxlen = file.Folder.Header.NumBlocks * CAB_BLOCKMAX;
                 if ((file.Header.FolderOffset + filelen) > maxlen)
                 {
                     System.Message(null, $"ERROR; file \"{file.Filename}\" cannot be extracted, cabinet set is incomplete");
@@ -356,16 +328,16 @@ namespace LibMSPackSharp.CAB
             // Allocate generic decompression state
             State = new DecompressState()
             {
-                Folder = fol,
-                Data = fol.Data,
+                Folder = file.Folder,
+                Data = file.Folder.Data,
                 Offset = 0,
                 Block = 0,
                 Outlen = 0,
 
                 System = System,
 
-                InputCabinet = fol.Data.Cab,
-                InputFileHandle = System.Open(fol.Data.Cab.Filename, OpenMode.MSPACK_SYS_OPEN_READ),
+                InputCabinet = file.Folder.Data.Cab,
+                InputFileHandle = System.Open(file.Folder.Data.Cab.Filename, OpenMode.MSPACK_SYS_OPEN_READ),
                 OutputFileHandle = null, // Required for skipping existing data
                 InputPointer = 0,
                 InputEnd = 0,
@@ -378,11 +350,11 @@ namespace LibMSPackSharp.CAB
                 return Error = Error.MSPACK_ERR_OPEN;
 
             // Seek to start of data blocks
-            if (!System.Seek(State.InputFileHandle, fol.Data.Offset, SeekMode.MSPACK_SYS_SEEK_START))
+            if (!System.Seek(State.InputFileHandle, file.Folder.Data.Offset, SeekMode.MSPACK_SYS_SEEK_START))
                 return Error = Error.MSPACK_ERR_SEEK;
 
             // Set up decompressor
-            if (InitDecompressionState(fol.Header.CompType) != Error.MSPACK_ERR_OK)
+            if (InitDecompressionState(file.Folder.Header.CompType) != Error.MSPACK_ERR_OK)
                 return Error;
 
             // ReadError lasts for the lifetime of a decompressor
@@ -392,16 +364,14 @@ namespace LibMSPackSharp.CAB
             // If file has more than 0 bytes
             if (filelen != 0)
             {
-                long bytes;
-                Error error;
-
                 // Get to correct offset.
-                // - use null fh to say 'no writing' to cabd_sys_write()
-                // - if SysRead() has an error, it will set self.ReadError
+                // - Use null fh to say 'no writing' to cabd_sys_write()
+                // - If SysRead() has an error, it will set self.ReadError
                 //   and pass back MSPACK_ERR_READ
-                if ((bytes = file.Header.FolderOffset - State.Offset) != 0)
+                long bytes = file.Header.FolderOffset - State.Offset;
+                if (bytes != 0)
                 {
-                    error = State.Decompress(State.DecompressorState, bytes);
+                    Error error = State.Decompress(State.DecompressorState, bytes);
                     Error = (error == Error.MSPACK_ERR_READ) ? ReadError : error;
                 }
 
@@ -414,7 +384,7 @@ namespace LibMSPackSharp.CAB
                 if (Error == Error.MSPACK_ERR_OK)
                 {
                     UpdateDecompressionState();
-                    error = State.Decompress(State.DecompressorState, filelen);
+                    Error error = State.Decompress(State.DecompressorState, filelen);
                     Error = (error == Error.MSPACK_ERR_READ) ? ReadError : error;
                 }
             }
@@ -814,26 +784,30 @@ namespace LibMSPackSharp.CAB
         /// </summary>
         private bool CanMergeFolders(Folder lfol, Folder rfol)
         {
-            InternalFile lfi, rfi, l, r;
             bool matching = true;
 
             // Check that both folders use the same compression method/settings
             if (lfol.Header.CompType != rfol.Header.CompType)
             {
-                Console.WriteLine("folder merge: compression type mismatch");
+                Console.WriteLine("Folder merge: compression type mismatch");
                 return false;
             }
 
             // Check there are not too many data blocks after merging
             if ((lfol.Header.NumBlocks + rfol.Header.NumBlocks) > CAB_FOLDERMAX)
             {
-                Console.WriteLine("folder merge: too many data blocks in merged folders");
+                Console.WriteLine("Folder merge: too many data blocks in merged folders");
                 return false;
             }
 
-            if ((lfi = lfol.MergeNext) == null || (rfi = rfol.MergePrev) == null)
+            // Assign the merge next and previous values
+            InternalFile lfi = lfol.MergeNext;
+            InternalFile rfi = rfol.MergePrev;
+
+            // Check that we can merge the two cabinets
+            if (lfi == null || rfi == null)
             {
-                Console.WriteLine("folder merge: one cabinet has no files to merge");
+                Console.WriteLine("Folder merge: one cabinet has no files to merge");
                 return false;
             }
 
@@ -841,7 +815,7 @@ namespace LibMSPackSharp.CAB
             // only has files to merge), compare them to the files from rfol. They
             // should be identical in number and order. to verify this, check the
             // offset and length of each file. 
-            for (l = lfi, r = rfi; l != null; l = l.Next, r = r.Next)
+            for (InternalFile l = lfi, r = rfi; l != null; l = l.Next, r = r.Next)
             {
                 if (r == null || (l.Header.FolderOffset != r.Header.FolderOffset) || (l.Header.UncompressedSize != r.Header.UncompressedSize))
                 {
@@ -857,12 +831,13 @@ namespace LibMSPackSharp.CAB
             // make a judgement call; if at least ONE file from lfol is in rfol, allow
             // the merge with a warning about missing files.
             matching = false;
-            for (l = lfi; l != null; l = l.Next)
+            for (InternalFile l = lfi; l != null; l = l.Next)
             {
-                for (r = rfi; r != null; r = r.Next)
+                InternalFile r = rfi;
+                for (; r != null; r = r.Next)
                 {
                     if (l.Header.FolderOffset == r.Header.FolderOffset && l.Header.UncompressedSize == r.Header.UncompressedSize)
-                        break;
+                    break;
                 }
 
                 if (r != null)
@@ -1056,9 +1031,7 @@ namespace LibMSPackSharp.CAB
         /// </summary>
         private Error Merge(Cabinet lcab, Cabinet rcab)
         {
-            FolderData data, ndata;
-            Folder lfol, rfol;
-            InternalFile fi, rfi, lfi;
+            InternalFile rfi, lfi;
 
             // Basic args check
             if (lcab == null || rcab == null || (lcab == rcab))
@@ -1075,8 +1048,7 @@ namespace LibMSPackSharp.CAB
             }
 
             // Do not create circular cabinet chains
-            Cabinet cab;
-            for (cab = lcab.PreviousCabinet; cab != null; cab = cab.PreviousCabinet)
+            for (Cabinet cab = lcab.PreviousCabinet; cab != null; cab = cab.PreviousCabinet)
             {
                 if (cab == rcab)
                 {
@@ -1084,7 +1056,8 @@ namespace LibMSPackSharp.CAB
                     return Error = Error.MSPACK_ERR_ARGS;
                 }
             }
-            for (cab = rcab.NextCabinet; cab != null; cab = cab.NextCabinet)
+
+            for (Cabinet cab = rcab.NextCabinet; cab != null; cab = cab.NextCabinet)
             {
                 if (cab == lcab)
                 {
@@ -1101,8 +1074,8 @@ namespace LibMSPackSharp.CAB
                 System.Message(null, "WARNING; merged cabinets with odd order.");
 
             // Merging the last folder in lcab with the first folder in rcab
-            lfol = lcab.Folders;
-            rfol = rcab.Folders;
+            Folder lfol = lcab.Folders;
+            Folder rfol = rcab.Folders;
             while (lfol.Next != null)
             {
                 lfol = lfol.Next;
@@ -1121,7 +1094,7 @@ namespace LibMSPackSharp.CAB
                 lfol.Next = rfol;
 
                 // Attach files
-                fi = lcab.Files;
+                InternalFile fi = lcab.Files;
                 while (fi.Next != null)
                 {
                     fi = fi.Next;
@@ -1136,14 +1109,14 @@ namespace LibMSPackSharp.CAB
                     return Error = Error.MSPACK_ERR_DATAFORMAT;
 
                 // Allocate a new folder data structure
-                data = new FolderData();
+                FolderData data = new FolderData();
 
                 // Attach cabs
                 lcab.NextCabinet = rcab;
                 rcab.PreviousCabinet = lcab;
 
                 // Append rfol's data to lfol
-                ndata = lfol.Data;
+                FolderData ndata = lfol.Data;
                 while (ndata.Next != null)
                 {
                     ndata = ndata.Next;
@@ -1170,7 +1143,7 @@ namespace LibMSPackSharp.CAB
                 lfol.Next = rfol.Next;
 
                 // Attach rfol's files
-                fi = lcab.Files;
+                InternalFile fi = lcab.Files;
                 while (fi.Next != null)
                 {
                     fi = fi.Next;
@@ -1201,13 +1174,13 @@ namespace LibMSPackSharp.CAB
 
             // All done! fix files and folders pointers in alsl cabs so they all
             // point to the same list
-            for (cab = lcab.PreviousCabinet; cab != null; cab = cab.PreviousCabinet)
+            for (Cabinet cab = lcab.PreviousCabinet; cab != null; cab = cab.PreviousCabinet)
             {
                 cab.Files = lcab.Files;
                 cab.Folders = lcab.Folders;
             }
 
-            for (cab = lcab.NextCabinet; cab != null; cab = cab.NextCabinet)
+            for (Cabinet cab = lcab.NextCabinet; cab != null; cab = cab.NextCabinet)
             {
                 cab.Files = lcab.Files;
                 cab.Folders = lcab.Folders;
@@ -1224,9 +1197,8 @@ namespace LibMSPackSharp.CAB
         private Error ReadHeaders(FileStream fh, Cabinet cab, long offset, bool salvage, bool quiet)
         {
             Error err = Error.MSPACK_ERR_OK;
-            Folder fol, linkfol = null;
+            Folder linkfol = null;
             InternalFile linkfile = null;
-            byte[] buf = new byte[64];
 
             // Initialise pointers
             if (cab == null)
@@ -1241,18 +1213,21 @@ namespace LibMSPackSharp.CAB
 
             cab.BaseOffset = offset;
 
+            #region Cabinet Header
+
             // Seek to CFHEADER
             if (!System.Seek(fh, offset, SeekMode.MSPACK_SYS_SEEK_START))
-                return Error.MSPACK_ERR_SEEK;
+                return Error = Error.MSPACK_ERR_SEEK;
 
             // Read in the CFHEADER
+            byte[] buf = new byte[_CabinetHeader.Size];
             if (System.Read(fh, buf, 0, _CabinetHeader.Size) != _CabinetHeader.Size)
-                return Error.MSPACK_ERR_READ;
+                return Error = Error.MSPACK_ERR_READ;
 
             // Create a new header based on that
             err = _CabinetHeader.Create(buf, out _CabinetHeader cabinetHeader);
             if (err != Error.MSPACK_ERR_OK)
-                return err;
+                return Error = err;
 
             // Assign the header
             cab.Header = cabinetHeader;
@@ -1260,8 +1235,9 @@ namespace LibMSPackSharp.CAB
             // Check for the extended header
             if (cab.Header.Flags.HasFlag(HeaderFlags.MSCAB_HDR_RESV))
             {
+                buf = new byte[_CabinetHeader.ExtendedSize];
                 if (System.Read(fh, buf, 0, _CabinetHeader.ExtendedSize) != _CabinetHeader.ExtendedSize)
-                    return Error.MSPACK_ERR_READ;
+                    return Error = Error.MSPACK_ERR_READ;
 
                 // Populate the extended header
                 cabinetHeader.PopulateExtendedHeader(buf);
@@ -1270,7 +1246,7 @@ namespace LibMSPackSharp.CAB
                 if (cab.Header.HeaderReserved != 0)
                 {
                     if (!System.Seek(fh, cab.Header.HeaderReserved, SeekMode.MSPACK_SYS_SEEK_CUR))
-                        return Error.MSPACK_ERR_SEEK;
+                        return Error = Error.MSPACK_ERR_SEEK;
                 }
             }
 
@@ -1279,11 +1255,11 @@ namespace LibMSPackSharp.CAB
             {
                 cab.PreviousName = ReadString(fh, false, ref err);
                 if (err != Error.MSPACK_ERR_OK)
-                    return err;
+                    return Error = err;
 
                 cab.PreviousInfo = ReadString(fh, true, ref err);
                 if (err != Error.MSPACK_ERR_OK)
-                    return err;
+                    return Error = err;
             }
 
             // Read name and info of next cabinet in set, if present
@@ -1291,159 +1267,195 @@ namespace LibMSPackSharp.CAB
             {
                 cab.NextName = ReadString(fh, false, ref err);
                 if (err != Error.MSPACK_ERR_OK)
-                    return err;
+                    return Error = err;
 
                 cab.NextInfo = ReadString(fh, true, ref err);
                 if (err != Error.MSPACK_ERR_OK)
-                    return err;
+                    return Error = err;
             }
+
+            #endregion
+
+            #region Folder and File Pointers
 
             // Read folders
             for (int i = 0; i < cab.Header.NumFolders; i++)
             {
-                // Read in the FOHEADER
-                if (System.Read(fh, buf, 0, _FolderHeader.Size) != _FolderHeader.Size)
-                    return Error.MSPACK_ERR_READ;
-
-                if (cab.Header.FolderReserved != 0)
-                {
-                    if (!System.Seek(fh, cab.Header.FolderReserved, SeekMode.MSPACK_SYS_SEEK_CUR))
-                        return Error.MSPACK_ERR_SEEK;
-                }
-
-                // Create an empty folder
-                fol = new Folder()
-                {
-                    Next = null,
-                    MergePrev = null,
-                    MergeNext = null,
-                };
-
-                // Create a new header based on that
-                err = _FolderHeader.Create(buf, out _FolderHeader folderHeader);
+                err = ReadSingleFolder(fh, cab, offset, ref linkfol);
                 if (err != Error.MSPACK_ERR_OK)
-                    return err;
-
-                // Assign the header
-                fol.Header = folderHeader;
-
-                // Set the folder data fields
-                fol.Data = new FolderData();
-                fol.Data.Next = null;
-                fol.Data.Cab = cab;
-                fol.Data.Offset = offset + fol.Header.DataOffset;
-
-                // Link folder into list of folders
-                if (linkfol == null)
-                    cab.Folders = fol;
-                else
-                    linkfol.Next = fol;
-
-                linkfol = fol;
+                    return Error = err;
             }
 
             // Read files
             for (int i = 0; i < cab.Header.NumFiles; i++)
             {
-                // Read in the FIHEADER
-                if (System.Read(fh, buf, 0, _FileHeader.Size) != _FileHeader.Size)
-                    return Error.MSPACK_ERR_READ;
-
-                InternalFile file = new InternalFile() { Next = null };
-
-                // Create a new header based on that
-                err = _FileHeader.Create(buf, out _FileHeader fileHeader);
+                err = ReadSingleFile(fh, cab, salvage, ref linkfile);
                 if (err != Error.MSPACK_ERR_OK)
-                    return err;
-
-                // Assign the header
-                file.Header = fileHeader;
-
-                // Set folder pointer
-                if (file.Header.FolderIndex < FileFlags.CONTINUED_FROM_PREV)
-                {
-                    // Normal folder index; count up to the correct folder
-                    if ((int)file.Header.FolderIndex < cab.Header.NumFolders)
-                    {
-                        Folder ifol = cab.Folders;
-                        while (file.Header.FolderIndex-- != 0)
-                        {
-                            if (ifol != null)
-                                ifol = ifol.Next;
-                        }
-
-                        file.Folder = ifol;
-                    }
-                    else
-                    {
-                        Console.WriteLine("Invalid folder index");
-                        file.Folder = null;
-                    }
-                }
-                else
-                {
-                    // Either CONTINUED_TO_NEXT, CONTINUED_FROM_PREV or CONTINUED_PREV_AND_NEXT
-                    if (file.Header.FolderIndex == FileFlags.CONTINUED_TO_NEXT || file.Header.FolderIndex == FileFlags.CONTINUED_PREV_AND_NEXT)
-                    {
-                        // Get last folder
-                        Folder ifol = cab.Folders;
-                        while (ifol.Next != null)
-                        {
-                            ifol = ifol.Next;
-                        }
-
-                        file.Folder = ifol;
-
-                        // Set "merge next" pointer
-                        fol = ifol;
-                        if (fol.MergeNext == null)
-                            fol.MergeNext = file;
-                    }
-
-                    if (file.Header.FolderIndex == FileFlags.CONTINUED_FROM_PREV || file.Header.FolderIndex == FileFlags.CONTINUED_PREV_AND_NEXT)
-                    {
-                        // Get first folder
-                        file.Folder = cab.Folders;
-
-                        // Set "merge prev" pointer
-                        fol = file.Folder;
-                        if (fol.MergePrev == null)
-                            fol.MergePrev = file;
-                    }
-                }
-
-                // Get filename
-                file.Filename = ReadString(fh, false, ref err);
-
-                // If folder index or filename are bad, either skip it or fail
-                if (err != Error.MSPACK_ERR_OK || file.Folder == null)
-                {
-                    if (salvage)
-                        continue;
-
-                    return err != Error.MSPACK_ERR_OK ? err : Error.MSPACK_ERR_DATAFORMAT;
-                }
-
-                // Link file entry into file list
-                if (linkfile == null)
-                    cab.Files = file;
-                else
-                    linkfile.Next = file;
-
-                linkfile = file;
+                    return Error = err;
             }
 
             if (cab.Files == null)
             {
                 // We never actually added any files to the file list.  Something went wrong.
-                // The file header may have been invalid */
+                // The file header may have been invalid
                 Console.WriteLine($"No files found, even though header claimed to have {cab.Header.NumFiles} files");
                 return Error.MSPACK_ERR_DATAFORMAT;
             }
 
+            #endregion
+
             return Error.MSPACK_ERR_OK;
         }
 
+        /// <summary>
+        /// Read and process a single file
+        /// </summary>
+        private Error ReadSingleFile(FileStream fh, Cabinet cab, bool salvage, ref InternalFile linkfile)
+        {
+            // Read in the FIHEADER
+            byte[] buf = new byte[64];
+            if (System.Read(fh, buf, 0, _FileHeader.Size) != _FileHeader.Size)
+                return Error.MSPACK_ERR_READ;
+
+            InternalFile file = new InternalFile() { Next = null };
+
+            // Create a new header based on that
+            Error err = _FileHeader.Create(buf, out _FileHeader fileHeader);
+            if (err != Error.MSPACK_ERR_OK)
+                return err;
+
+            // Assign the header
+            file.Header = fileHeader;
+
+            // Set folder pointer
+            if (file.Header.FolderIndex < FileFlags.CONTINUED_FROM_PREV)
+            {
+                // Normal folder index; count up to the correct folder
+                if ((int)file.Header.FolderIndex < cab.Header.NumFolders)
+                {
+                    Folder ifol = cab.Folders;
+                    while (file.Header.FolderIndex-- != 0)
+                    {
+                        if (ifol != null)
+                            ifol = ifol.Next;
+                    }
+
+                    file.Folder = ifol;
+                }
+                else
+                {
+                    Console.WriteLine("Invalid folder index");
+                    file.Folder = null;
+                }
+            }
+            else
+            {
+                // Either CONTINUED_TO_NEXT, CONTINUED_FROM_PREV or CONTINUED_PREV_AND_NEXT
+                if (file.Header.FolderIndex == FileFlags.CONTINUED_TO_NEXT || file.Header.FolderIndex == FileFlags.CONTINUED_PREV_AND_NEXT)
+                {
+                    // Get last folder
+                    Folder ifol = cab.Folders;
+                    while (ifol.Next != null)
+                    {
+                        ifol = ifol.Next;
+                    }
+
+                    file.Folder = ifol;
+
+                    // Set "merge next" pointer
+                    Folder fol = ifol;
+                    if (fol.MergeNext == null)
+                        fol.MergeNext = file;
+                }
+
+                if (file.Header.FolderIndex == FileFlags.CONTINUED_FROM_PREV || file.Header.FolderIndex == FileFlags.CONTINUED_PREV_AND_NEXT)
+                {
+                    // Get first folder
+                    file.Folder = cab.Folders;
+
+                    // Set "merge prev" pointer
+                    Folder fol = file.Folder;
+                    if (fol.MergePrev == null)
+                        fol.MergePrev = file;
+                }
+            }
+
+            // Get filename
+            file.Filename = ReadString(fh, false, ref err);
+
+            // If folder index or filename are bad, either skip it or fail
+            if (err != Error.MSPACK_ERR_OK || file.Folder == null)
+            {
+                if (salvage)
+                    return Error.MSPACK_ERR_OK;
+
+                return err != Error.MSPACK_ERR_OK ? err : Error.MSPACK_ERR_DATAFORMAT;
+            }
+
+            // Link file entry into file list
+            if (linkfile == null)
+                cab.Files = file;
+            else
+                linkfile.Next = file;
+
+            linkfile = file;
+            return Error.MSPACK_ERR_OK;
+        }
+
+        /// <summary>
+        /// Read and process a single folder
+        /// </summary>
+        private Error ReadSingleFolder(FileStream fh, Cabinet cab, long offset, ref Folder linkfol)
+        {
+            // Read in the FOHEADER
+            byte[] buf = new byte[64];
+            if (System.Read(fh, buf, 0, _FolderHeader.Size) != _FolderHeader.Size)
+                return Error.MSPACK_ERR_READ;
+
+            if (cab.Header.FolderReserved != 0)
+            {
+                if (!System.Seek(fh, cab.Header.FolderReserved, SeekMode.MSPACK_SYS_SEEK_CUR))
+                    return Error.MSPACK_ERR_SEEK;
+            }
+
+            // Create an empty folder
+            Folder fol = new Folder()
+            {
+                Next = null,
+                MergePrev = null,
+                MergeNext = null,
+            };
+
+            // Create a new header based on that
+            Error err = _FolderHeader.Create(buf, out _FolderHeader folderHeader);
+            if (err != Error.MSPACK_ERR_OK)
+                return err;
+
+            // Assign the header
+            fol.Header = folderHeader;
+
+            // Set the folder data fields
+            fol.Data = new FolderData()
+            {
+                Next = null,
+                Cab = cab,
+                Offset = offset + fol.Header.DataOffset,
+            };
+
+            // Link folder into list of folders
+            if (linkfol == null)
+                cab.Folders = fol;
+            else
+                linkfol.Next = fol;
+
+            linkfol = fol;
+
+            return Error.MSPACK_ERR_OK;
+        }
+
+        /// <summary>
+        /// Read a possibly empty string from the input
+        /// </summary>
         private string ReadString(FileStream fh, bool permitEmpty, ref Error error)
         {
             long position = System.Tell(fh);

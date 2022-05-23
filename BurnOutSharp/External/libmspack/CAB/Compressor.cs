@@ -16,9 +16,7 @@
 
 namespace LibMSPackSharp.CAB
 {
-    /// <summary>
-    /// TODO
-    /// </summary>
+    // TODO
     public class Compressor
     {
         public SystemImpl System { get; set; }
