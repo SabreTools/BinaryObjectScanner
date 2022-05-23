@@ -225,14 +225,8 @@ namespace LibMSPackSharp
             if (!SystemImpl.ValidSystem(sys))
                 return null;
 
-            return new CHM.DecompressorImpl()
+            return new CHM.Decompressor()
             {
-                Open = CHM.Implementation.Open,
-                Close = CHM.Implementation.Close,
-                Extract = CHM.Implementation.Extract,
-                LastError = CHM.Implementation.LastError,
-                FastOpen = CHM.Implementation.FastOpen,
-                FastFind = CHM.Implementation.FastFind,
                 System = sys,
                 Error = Error.MSPACK_ERR_OK,
                 State = null,
@@ -242,8 +236,8 @@ namespace LibMSPackSharp
         /// <summary>
         /// Destroys an existing CHM compressor.
         /// </summary>
-        /// <param name="c">the <see cref="CHM.Compressor"/> to destroy</param>
-        public static void DestroyCHMCompressor(CHM.Compressor c)
+        /// <param name="self">the <see cref="CHM.Compressor"/> to destroy</param>
+        public static void DestroyCHMCompressor(CHM.Compressor self)
         {
             // TODO
         }
@@ -251,10 +245,9 @@ namespace LibMSPackSharp
         /// <summary>
         /// Destroys an existing CHM decompressor.
         /// </summary>
-        /// <param name="d">the <see cref="CHM.Decompressor"/> to destroy</param>
-        public static void DestroyCHMDecompressor(CHM.Decompressor d)
+        /// <param name="self">the <see cref="CHM.Decompressor"/> to destroy</param>
+        public static void DestroyCHMDecompressor(CHM.Decompressor self)
         {
-            CHM.DecompressorImpl self = d as CHM.DecompressorImpl;
             if (self != null)
             {
                 SystemImpl sys = self.System;

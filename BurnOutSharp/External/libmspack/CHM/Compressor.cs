@@ -27,6 +27,20 @@ namespace LibMSPackSharp.CHM
     /// <see cref="Library.DestroyCHMCompressor(Compressor)"/>
     public class Compressor
     {
+        #region Fields
+
+        public SystemImpl System { get; set; }
+
+        public string TempFile { get; set; }
+
+        public bool UseTempFile { get; set; }
+
+        public Error Error { get; set; }
+
+        #endregion
+
+        #region Public Functionality
+
         /// <summary>
         /// Generates a CHM help file.
         /// 
@@ -43,10 +57,6 @@ namespace LibMSPackSharp.CHM
         /// use one. See use_temporary_file() for the behaviour of generate() in
         /// these two different modes.
         /// </summary>
-        /// <param name="self">
-        /// a self-referential pointer to the mschm_compressor
-        /// instance being called
-        /// </param>
         /// <param name="fileList">
         /// an array of mschmc_file structures, terminated
         /// with an entry whose mschmc_file::section field is
@@ -64,7 +74,7 @@ namespace LibMSPackSharp.CHM
         /// <returns>an error code, or MSPACK_ERR_OK if successful</returns>
         /// <see cref="UseTemporaryFile"/>
         /// <see cref="SetParam"/>
-        public Func<Compressor, CompressFile[], string, Error> Generate;
+        public Func<CompressFile[], string, Error> Generate;
 
         /// <summary>
         /// Specifies whether a temporary file is used during CHM generation.
@@ -108,10 +118,6 @@ namespace LibMSPackSharp.CHM
         /// update, the appropriate sections are seek() ed to and re-written, then
         /// the output file is closed.
         /// </summary>
-        /// <param name="self">
-        /// a self-referential pointer to the mschm_compressor
-        /// instance being called
-        /// </param>
         /// <param name="useTempFile">
         /// non-zero if the temporary file should be used,
         /// zero if the temporary file should not be used.
@@ -124,15 +130,11 @@ namespace LibMSPackSharp.CHM
         /// </param>
         /// <returns>an error code, or MSPACK_ERR_OK if successful</returns>
         /// <see cref="Generate"/>
-        public Func<Compressor, bool, string, Error> UseTemporaryFile;
+        public Func<bool, string, Error> UseTemporaryFile;
 
         /// <summary>
         /// Sets a CHM compression engine parameter.
         /// </summary>
-        /// <param name="self">
-        /// a self-referential pointer to the mschm_compressor
-        /// instance being called
-        /// </param>
         /// <param name="param">the parameter to set</param>
         /// <param name="value">the value to set the parameter to</param>
         /// <returns>
@@ -140,18 +142,8 @@ namespace LibMSPackSharp.CHM
         /// is a problem with either parameter or value.
         /// </returns>
         /// <see cref="Generate"/>
-        public Func<Compressor, Parameters, int, Error> SetParam;
+        public Func<Parameters, int, Error> SetParam;
 
-        /// <summary>
-        /// Returns the error code set by the most recently called method.
-        /// </summary>
-        /// <param name="self">
-        /// a self-referential pointer to the mschm_compressor
-        /// instance being called
-        /// </param>
-        /// <returns>the most recent error code</returns>
-        /// <see cref="SetParam"/>
-        /// <see cref="Generate"/>
-        public Func<Compressor, Error> LastError;
+        #endregion
     }
 }

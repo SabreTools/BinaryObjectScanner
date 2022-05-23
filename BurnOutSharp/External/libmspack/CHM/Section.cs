@@ -29,7 +29,7 @@ namespace LibMSPackSharp.CHM
         /// <summary>
         /// A pointer to the CHM helpfile that contains this section.
         /// </summary>
-        public Header Header { get; set; }
+        public CHM Header { get; set; }
 
         /// <summary>
         /// The section ID. Either 0 for the uncompressed section

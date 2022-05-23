@@ -17,7 +17,7 @@ namespace LibMSPackSharp.CHM
         /// <summary>
         /// CHM file being decompressed
         /// </summary>
-        public Header Header { get; set; }
+        public CHM Header { get; set; }
 
         /// <summary>
         /// Uncompressed offset within folder
