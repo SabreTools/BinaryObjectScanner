@@ -42,37 +42,6 @@ namespace LibMSPackSharp
 
         #region CHM
 
-        // _PMGHeader
-        public const int pmgl_Signature = 0x0000;
-        public const int pmgl_QuickRefSize = 0x0004;
-        public const int pmgl_PMGIEntries = 0x0008; // Unknown1 in PMGL
-        public const int pmgl_PrevChunk = 0x000C; // Not in PMGI
-        public const int pmgl_NextChunk = 0x0010; // Not in PMGI
-        public const int pmgl_PMGLEntries = 0x0014; // Not in PMGI
-        public const int pmgl_headerSIZEOF = 0x0014;
-        public const int pmgi_headerSIZEOF = 0x000C;
-
-        // _LZXControlData
-        public const int lzxcd_Length = 0x0000;
-        public const int lzxcd_Signature = 0x0004;
-        public const int lzxcd_Version = 0x0008;
-        public const int lzxcd_ResetInterval = 0x000C;
-        public const int lzxcd_WindowSize = 0x0010;
-        public const int lzxcd_CacheSize = 0x0014;
-        public const int lzxcd_Unknown1 = 0x0018;
-        public const int lzxcd_SIZEOF = 0x001C;
-
-        // _LZXResetTable
-        public const int lzxrt_Unknown1 = 0x0000;
-        public const int lzxrt_NumEntries = 0x0004;
-        public const int lzxrt_EntrySize = 0x0008;
-        public const int lzxrt_TableOffset = 0x000C;
-        public const int lzxrt_UncompLen = 0x0010;
-        public const int lzxrt_CompLen = 0x0018;
-        public const int lzxrt_FrameLen = 0x0020;
-        public const int lzxrt_Entries = 0x0028;
-        public const int lzxrt_headerSIZEOF = 0x0028;
-
         // Filenames of the system files used for decompression.
         // - Content and ControlData are essential.
         // - ResetTable is preferred, but SpanInfo can be used if not available

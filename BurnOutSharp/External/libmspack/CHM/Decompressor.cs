@@ -373,7 +373,7 @@ namespace LibMSPackSharp.CHM
             else
             {
                 // PMGL chunks only, search from first_pmgl to last_pmgl
-                for (n = chm.HeaderSection1.FirstPMGL; n <= chm.HeaderSection1.LastPMGL; n = BitConverter.ToUInt32(chunk, pmgl_NextChunk))
+                for (n = chm.HeaderSection1.FirstPMGL; n <= chm.HeaderSection1.LastPMGL; n = BitConverter.ToUInt32(chunk, 0x0010))
                 {
                     if ((chunk = ReadChunk(chm, fh, n)) == null)
                     {
@@ -386,7 +386,7 @@ namespace LibMSPackSharp.CHM
                         break;
 
                     // Stop simple infinite loops: can't visit the same chunk twice 
-                    if (n == BitConverter.ToUInt32(chunk, pmgl_NextChunk))
+                    if (n == BitConverter.ToUInt32(chunk, 0x0010))
                         break;
                 }
             }
@@ -458,7 +458,7 @@ namespace LibMSPackSharp.CHM
         /// </summary>
         internal Error InitDecompressor(DecompressFile file)
         {
-            int window_size, window_bits, reset_interval, entry;
+            int entry;
             byte[] data;
 
             MSCompressedSection sec = file.Section as MSCompressedSection;
@@ -480,7 +480,7 @@ namespace LibMSPackSharp.CHM
             sec.Control = controlFile;
 
             // Read ControlData
-            if (sec.Control.Length != lzxcd_SIZEOF)
+            if (sec.Control.Length != _LZXControlData.Size)
             {
                 Console.WriteLine("ControlData file is wrong size");
                 return Error = Error.MSPACK_ERR_DATAFORMAT;
@@ -492,58 +492,28 @@ namespace LibMSPackSharp.CHM
                 return Error;
             }
 
-            //// Create a new control data based on that
-            //err = _LZXControlData.Create(data, out _LZXControlData lzxControlData);
-            //if (err != Error.MSPACK_ERR_OK)
-            //    return err;
-
-            // Check LZXC signature
-            if (BitConverter.ToUInt32(data, lzxcd_Signature) != 0x43585A4C)
-                return Error = Error.MSPACK_ERR_SIGNATURE;
-
-            // Read reset_interval and window_size and validate version number
-            switch (BitConverter.ToUInt32(data, lzxcd_Version))
-            {
-                case 1:
-                    reset_interval = (int)BitConverter.ToUInt32(data, lzxcd_ResetInterval);
-                    window_size = (int)BitConverter.ToUInt32(data, lzxcd_WindowSize);
-                    break;
-                case 2:
-                    reset_interval = (int)BitConverter.ToUInt32(data, lzxcd_ResetInterval) * LZX.LZX_FRAME_SIZE;
-                    window_size = (int)BitConverter.ToUInt32(data, lzxcd_WindowSize) * LZX.LZX_FRAME_SIZE;
-                    break;
-                default:
-                    Console.WriteLine("Bad controldata version");
-                    return Error = Error.MSPACK_ERR_DATAFORMAT;
-            }
+            // Create a new control data based on that
+            err = _LZXControlData.Create(data, out _LZXControlData lzxControlData);
+            if (err != Error.MSPACK_ERR_OK)
+                return Error = err;
 
             // Find window_bits from window_size
-            switch (window_size)
-            {
-                case 0x008000: window_bits = 15; break;
-                case 0x010000: window_bits = 16; break;
-                case 0x020000: window_bits = 17; break;
-                case 0x040000: window_bits = 18; break;
-                case 0x080000: window_bits = 19; break;
-                case 0x100000: window_bits = 20; break;
-                case 0x200000: window_bits = 21; break;
-                default:
-                    Console.WriteLine("Bad controldata window size");
-                    return Error = Error.MSPACK_ERR_DATAFORMAT;
-            }
+            err = lzxControlData.GetWindowBits(out int windowBits);
+            if (err != Error.MSPACK_ERR_OK)
+                return Error = err;
 
             // Validate reset_interval
-            if (reset_interval == 0 || (reset_interval % LZX.LZX_FRAME_SIZE) != 0)
+            if (lzxControlData.ResetInterval == 0 || (lzxControlData.ResetInterval % LZX.LZX_FRAME_SIZE) != 0)
             {
                 Console.WriteLine("Bad controldata reset interval");
                 return Error = Error.MSPACK_ERR_DATAFORMAT;
             }
 
             // Which reset table entry would we like?
-            entry = (int)(file.Offset / reset_interval);
+            entry = (int)(file.Offset / lzxControlData.ResetInterval);
 
             // Convert from reset interval multiple (usually 64k) to 32k frames
-            entry *= reset_interval / LZX.LZX_FRAME_SIZE;
+            entry *= (int)lzxControlData.ResetInterval / LZX.LZX_FRAME_SIZE;
 
             // Read the reset table entry
             if (ReadResetTable(sec, (uint)entry, out long length, out long offset))
@@ -551,8 +521,8 @@ namespace LibMSPackSharp.CHM
                 // The uncompressed length given in the reset table is dishonest.
                 // The uncompressed data is always padded out from the given
                 // uncompressed length up to the next reset interval
-                length += reset_interval - 1;
-                length &= -reset_interval;
+                length += lzxControlData.ResetInterval - 1;
+                length &= -lzxControlData.ResetInterval;
             }
             else
             {
@@ -577,7 +547,7 @@ namespace LibMSPackSharp.CHM
             length -= State.Offset;
 
             // Initialise LZX stream
-            State.State = LZX.Init(State.System, State.InputFileHandle, State.OutputFileHandle, window_bits, reset_interval / LZX.LZX_FRAME_SIZE, 4096, length, false);
+            State.State = LZX.Init(State.System, State.InputFileHandle, State.OutputFileHandle, windowBits, (int)lzxControlData.ResetInterval / LZX.LZX_FRAME_SIZE, 4096, length, false);
 
             if (State.State == null)
                 Error = Error.MSPACK_ERR_NOMEMORY;
@@ -818,7 +788,7 @@ namespace LibMSPackSharp.CHM
 
             // Ensure there are chunks and that chunk size is
             // large enough for signature and num_entries
-            if (chm.HeaderSection1.ChunkSize < (pmgl_PMGLEntries + 2))
+            if (chm.HeaderSection1.ChunkSize < (_PMGHeader.PMGLSize + 2))
             {
                 Console.WriteLine("Chunk size not large enough");
                 return Error.MSPACK_ERR_DATAFORMAT;
@@ -895,22 +865,22 @@ namespace LibMSPackSharp.CHM
                 if (System.Read(fh, chunk, 0, (int)chm.HeaderSection1.ChunkSize) != (int)chm.HeaderSection1.ChunkSize)
                     return Error.MSPACK_ERR_READ;
 
-                //// Create a new header based on that
-                //err = _PMGHeader.Create(buf, out _PMGHeader pmglHeader);
-                //if (err != Error.MSPACK_ERR_OK)
-                //    return err;
+                // Create a new header based on that
+                err = _PMGHeader.Create(buf, out _PMGHeader pmgHeader);
+                if (err != Error.MSPACK_ERR_OK)
+                    return err;
 
                 // Process only directory (PMGL) chunks
-                if (BitConverter.ToUInt32(chunk, pmgl_Signature) != 0x4C474D50)
+                if (!pmgHeader.IsPMGL())
                     continue;
 
-                if (BitConverter.ToUInt32(chunk, pmgl_QuickRefSize) < 2)
+                if (pmgHeader.QuickRefSize < 2)
                     System.Message(fh, "WARNING; PMGL quickref area is too small");
 
-                if (BitConverter.ToUInt32(chunk, pmgl_QuickRefSize) > chm.HeaderSection1.ChunkSize - pmgl_PMGLEntries)
+                if (pmgHeader.QuickRefSize > chm.HeaderSection1.ChunkSize - pmgHeader.PMGLEntries)
                     System.Message(fh, "WARNING; PMGL quickref area is too large");
 
-                p = pmgl_PMGLEntries;
+                p = (int)pmgHeader.PMGLEntries;
                 end = (int)(chm.HeaderSection1.ChunkSize - 2);
                 numEntries = BitConverter.ToUInt16(chunk, end);
 
@@ -1010,13 +980,14 @@ namespace LibMSPackSharp.CHM
                         continue;
                     }
 
-                    fi = new DecompressFile();
-
-                    fi.Next = null;
-                    fi.Filename = Encoding.UTF8.GetString(chunk, name, (int)nameLen) + "\0";
-                    fi.Section = (section == 0) ? chm.Sec0 as Section : chm.Sec1 as Section;
-                    fi.Offset = offset;
-                    fi.Length = length;
+                    fi = new DecompressFile()
+                    {
+                        Next = null,
+                        Filename = Encoding.UTF8.GetString(chunk, name, (int)nameLen) + "\0",
+                        Section = (section == 0) ? chm.Sec0 as Section : chm.Sec1 as Section,
+                        Offset = offset,
+                        Length = length,
+                    };
 
                     if (chunk[name + 0] == ':' && chunk[name + 1] == ':')
                     {
@@ -1054,12 +1025,12 @@ namespace LibMSPackSharp.CHM
 
         /// <summary>
         /// Reads one entry out of the reset table. Also reads the uncompressed
-        /// data length. Writes these to offset_ptr and length_ptr respectively.
+        /// data length. Writes these to offsetPointer and lengthPointer respectively.
         /// Returns non-zero for success, zero for failure.
         /// </summary>
-        private bool ReadResetTable(MSCompressedSection sec, uint entry, out long length_ptr, out long offset_ptr)
+        private bool ReadResetTable(MSCompressedSection sec, uint entry, out long lengthPointer, out long offsetPointer)
         {
-            length_ptr = 0; offset_ptr = 0;
+            lengthPointer = 0; offsetPointer = 0;
             byte[] data;
 
             // Do we have a ResetTable file?
@@ -1071,7 +1042,7 @@ namespace LibMSPackSharp.CHM
             sec.ResetTable = resetTable;
 
             // Read ResetTable file
-            if (sec.ResetTable.Length < lzxrt_headerSIZEOF)
+            if (sec.ResetTable.Length < _LZXResetTable.Size)
             {
                 Console.WriteLine("ResetTable file is too short");
                 return false;
@@ -1090,36 +1061,35 @@ namespace LibMSPackSharp.CHM
                 return false;
             }
 
-            //// Create a new reset data based on that
-            //err = _LZXResetTable.Create(data, out _LZXResetTable lzxResetTable);
-            //if (err != Error.MSPACK_ERR_OK)
-            //    return false;
+            // Create a new reset data based on that
+            err = _LZXResetTable.Create(data, out _LZXResetTable lzxResetTable);
+            if (err != Error.MSPACK_ERR_OK)
+                return false;
 
             // Check sanity of reset table
-            if (BitConverter.ToUInt32(data, lzxrt_FrameLen) != LZX.LZX_FRAME_SIZE)
+            if (lzxResetTable.FrameLength != LZX.LZX_FRAME_SIZE)
             {
                 Console.WriteLine("Bad reset table frame length");
                 return false;
             }
 
             // Get the uncompressed length of the LZX stream
-            if ((length_ptr = BitConverter.ToInt64(data, lzxrt_UncompLen)) == 0)
+            if ((lengthPointer = lzxResetTable.UncompressedLength) == 0)
                 return false;
 
-            uint entrysize = BitConverter.ToUInt32(data, lzxrt_EntrySize);
-            uint pos = BitConverter.ToUInt32(data, lzxrt_TableOffset) + (entry * entrysize);
+            uint pos = lzxResetTable.TableOffset + (entry * lzxResetTable.EntrySize);
 
             // Ensure reset table entry for this offset exists
-            if (entry < BitConverter.ToUInt32(data, lzxrt_NumEntries) && pos <= (sec.ResetTable.Length - entrysize))
+            if (entry < lzxResetTable.NumEntries && pos <= (sec.ResetTable.Length - lzxResetTable.EntrySize))
             {
-                switch (entrysize)
+                switch (lzxResetTable.EntrySize)
                 {
                     case 4:
-                        offset_ptr = BitConverter.ToUInt32(data, (int)pos);
+                        offsetPointer = BitConverter.ToUInt32(data, (int)pos);
                         err = Error.MSPACK_ERR_OK;
                         break;
                     case 8:
-                        offset_ptr = BitConverter.ToInt64(data, (int)pos);
+                        offsetPointer = BitConverter.ToInt64(data, (int)pos);
                         break;
                     default:
                         Console.WriteLine("Reset table entry size neither 4 nor 8");
@@ -1262,22 +1232,22 @@ namespace LibMSPackSharp.CHM
         {
             int p;
             uint nameLen;
-            uint left, right, midpoint, entriesOff;
-            bool is_pmgl;
+            uint left, right, midpoint, entries;
             int cmp;
+
+            // Create a new header based on the chunk
+            Error err = _PMGHeader.Create(chunk, out _PMGHeader pmgHeader);
+            if (err != Error.MSPACK_ERR_OK)
+                return -1;
+
+            // TODO: Figure out what `entriesOff` does. It feels like it's being used wrong
 
             // PMGL chunk or PMGI chunk? (note: read_chunk() has already
             // checked the rest of the characters in the chunk signature)
-            if (chunk[3] == 0x4C)
-            {
-                is_pmgl = true;
-                entriesOff = pmgl_PMGLEntries;
-            }
+            if (pmgHeader.IsPMGL())
+                entries = pmgHeader.PMGLEntries;
             else
-            {
-                is_pmgl = false;
-                entriesOff = pmgl_PMGIEntries;
-            }
+                entries = pmgHeader.PMGIEntries;
 
             // Step 1: binary search first filename of each QR entry
             // - target filename == entry
@@ -1288,7 +1258,7 @@ namespace LibMSPackSharp.CHM
             //   proceed to step 2 using final entry
             // - target filename between two searched entries
             // Proceed to step 2
-            uint qrSize = BitConverter.ToUInt32(chunk, pmgl_QuickRefSize);
+            uint qrSize = pmgHeader.QuickRefSize;
             int start = (int)(chm.HeaderSection1.ChunkSize - 2);
             int end = (int)(chm.HeaderSection1.ChunkSize - qrSize);
             ushort numEntries = BitConverter.ToUInt16(chunk, start);
@@ -1325,7 +1295,7 @@ namespace LibMSPackSharp.CHM
                     midpoint = (left + right) >> 1;
 
                     // Compare filename with entry QR points to
-                    p = (int)(entriesOff + (midpoint != 0 ? BitConverter.ToUInt16(chunk, (int)(start - (midpoint << 1))) : 0));
+                    p = (int)(entries + (midpoint != 0 ? BitConverter.ToUInt16(chunk, (int)(start - (midpoint << 1))) : 0));
 
                     // READ_ENCINT(nameLen)
                     nameLen = 0;
@@ -1376,14 +1346,14 @@ namespace LibMSPackSharp.CHM
                 }
 
                 // Otherwise, read the group of entries for QR entry M
-                p = (int)(entriesOff + (midpoint != 0 ? BitConverter.ToUInt16(chunk, (int)(start - (midpoint << 1))) : 0));
+                p = (int)(entries + (midpoint != 0 ? BitConverter.ToUInt16(chunk, (int)(start - (midpoint << 1))) : 0));
                 numEntries -= (ushort)(midpoint * qrDensity);
                 if (numEntries > qrDensity)
                     numEntries = (ushort)qrDensity;
             }
             else
             {
-                p = (int)entriesOff;
+                p = (int)entries;
             }
 
             // Step 2: linear search through the set of entries reached in step 1.
@@ -1432,7 +1402,7 @@ namespace LibMSPackSharp.CHM
                 }
 
                 // Read and ignore the rest of this entry
-                if (is_pmgl)
+                if (pmgHeader.IsPMGL())
                 {
                     // Skip section, offset, and length
                     for (int i = 0; i < 3; i++)
@@ -1472,7 +1442,7 @@ namespace LibMSPackSharp.CHM
             }
 
             // PMGL? not found. PMGI? maybe found
-            return (is_pmgl) ? 0 : (result != 0 ? 1 : 0);
+            return (pmgHeader.IsPMGL()) ? 0 : (result != 0 ? 1 : 0);
         }
 
         #endregion
