@@ -62,32 +62,7 @@ namespace LibMSPackSharp.Compression
             {
                 //READ_BITS_SAFE(types[i], 4)
                 {
-                    //READ_BITS(types[i], 4)
-                    {
-                        //ENSURE_BITS(nbits)
-                        {
-                            while (bits_left < (4))
-                            {
-                                //READ_BYTES
-                                {
-                                    if (i_ptr >= i_end)
-                                    {
-                                        if ((err = ReadInput(lzh)) != Error.MSPACK_ERR_OK)
-                                            return err;
-
-                                        i_ptr = lzh.InputPointer;
-                                        i_end = lzh.InputEnd;
-                                    }
-
-                                    lzh.INJECT_BITS_MSB(lzh.InputBuffer[i_ptr++], 8, ref bit_buffer, ref bits_left);
-                                }
-                            }
-                        }
-
-                        (types[i]) = (uint)lzh.PEEK_BITS_MSB(4, bit_buffer);
-                        lzh.REMOVE_BITS_MSB(4, ref bit_buffer, ref bits_left);
-                    }
-
+                    types[i] = (uint)lzh.READ_BITS_MSB(4, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
                     if (lzh.EndOfInput != 0 && bits_left < lzh.EndOfInput)
                         return Error.MSPACK_ERR_OK;
                 }
@@ -173,26 +148,7 @@ namespace LibMSPackSharp.Compression
                     {
                         //READ_HUFFSYM(MATCHLEN2, len)
                         {
-                            //ENSURE_BITS(CompressionStream.HUFF_MAXBITS)
-                            {
-                                while (bits_left < (CompressionStream.HUFF_MAXBITS))
-                                {
-                                    //READ_BYTES
-                                    {
-                                        if (i_ptr >= i_end)
-                                        {
-                                            if ((err = ReadInput(lzh)) != Error.MSPACK_ERR_OK)
-                                                return err;
-
-                                            i_ptr = lzh.InputPointer;
-                                            i_end = lzh.InputEnd;
-                                        }
-
-                                        lzh.INJECT_BITS_MSB(lzh.InputBuffer[i_ptr++], 8, ref bit_buffer, ref bits_left);
-                                    }
-                                }
-                            }
-
+                            lzh.ENSURE_BITS(CompressionStream.HUFF_MAXBITS, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
                             sym = lzh.MATCHLEN2_table[lzh.PEEK_BITS_MSB(KWAJ_TABLEBITS, bit_buffer)];
                             if (sym >= KWAJ_MATCHLEN2_SYMS)
                             {
@@ -224,26 +180,7 @@ namespace LibMSPackSharp.Compression
                     {
                         //READ_HUFFSYM(MATCHLEN1, len)
                         {
-                            //ENSURE_BITS(CompressionStream.HUFF_MAXBITS)
-                            {
-                                while (bits_left < (CompressionStream.HUFF_MAXBITS))
-                                {
-                                    //READ_BYTES
-                                    {
-                                        if (i_ptr >= i_end)
-                                        {
-                                            if ((err = ReadInput(lzh)) != Error.MSPACK_ERR_OK)
-                                                return err;
-
-                                            i_ptr = lzh.InputPointer;
-                                            i_end = lzh.InputEnd;
-                                        }
-
-                                        lzh.INJECT_BITS_MSB(lzh.InputBuffer[i_ptr++], 8, ref bit_buffer, ref bits_left);
-                                    }
-                                }
-                            }
-
+                            lzh.ENSURE_BITS(CompressionStream.HUFF_MAXBITS, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
                             sym = lzh.MATCHLEN1_table[lzh.PEEK_BITS_MSB(KWAJ_TABLEBITS, bit_buffer)];
                             if (sym >= KWAJ_MATCHLEN1_SYMS)
                             {
@@ -279,26 +216,7 @@ namespace LibMSPackSharp.Compression
                     {
                         //READ_HUFFSYM(OFFSET, j)
                         {
-                            //ENSURE_BITS(CompressionStream.HUFF_MAXBITS)
-                            {
-                                while (bits_left < (CompressionStream.HUFF_MAXBITS))
-                                {
-                                    //READ_BYTES
-                                    {
-                                        if (i_ptr >= i_end)
-                                        {
-                                            if ((err = ReadInput(lzh)) != Error.MSPACK_ERR_OK)
-                                                return err;
-
-                                            i_ptr = lzh.InputPointer;
-                                            i_end = lzh.InputEnd;
-                                        }
-
-                                        lzh.INJECT_BITS_MSB(lzh.InputBuffer[i_ptr++], 8, ref bit_buffer, ref bits_left);
-                                    }
-                                }
-                            }
-
+                            lzh.ENSURE_BITS(CompressionStream.HUFF_MAXBITS, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
                             sym = lzh.OFFSET_table[lzh.PEEK_BITS_MSB(KWAJ_TABLEBITS, bit_buffer)];
                             if (sym >= KWAJ_OFFSET_SYMS)
                             {
@@ -328,32 +246,7 @@ namespace LibMSPackSharp.Compression
 
                     //READ_BITS_SAFE(j, 6)
                     {
-                        //READ_BITS(j, 6)
-                        {
-                            //ENSURE_BITS(6)
-                            {
-                                while (bits_left < (6))
-                                {
-                                    //READ_BYTES
-                                    {
-                                        if (i_ptr >= i_end)
-                                        {
-                                            if ((err = ReadInput(lzh)) != Error.MSPACK_ERR_OK)
-                                                return err;
-
-                                            i_ptr = lzh.InputPointer;
-                                            i_end = lzh.InputEnd;
-                                        }
-
-                                        lzh.INJECT_BITS_MSB(lzh.InputBuffer[i_ptr++], 8, ref bit_buffer, ref bits_left);
-                                    }
-                                }
-                            }
-
-                            (j) = (int)lzh.PEEK_BITS_MSB(6, bit_buffer);
-                            lzh.REMOVE_BITS_MSB(6, ref bit_buffer, ref bits_left);
-                        }
-
+                        j = (int)lzh.READ_BITS_MSB(6, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
                         if (lzh.EndOfInput != 0 && bits_left < lzh.EndOfInput)
                             return Error.MSPACK_ERR_OK;
                     }
@@ -381,26 +274,7 @@ namespace LibMSPackSharp.Compression
                     {
                         //READ_HUFFSYM(LITLEN, len)
                         {
-                            //ENSURE_BITS(CompressionStream.HUFF_MAXBITS)
-                            {
-                                while (bits_left < (CompressionStream.HUFF_MAXBITS))
-                                {
-                                    //READ_BYTES
-                                    {
-                                        if (i_ptr >= i_end)
-                                        {
-                                            if ((err = ReadInput(lzh)) != Error.MSPACK_ERR_OK)
-                                                return err;
-
-                                            i_ptr = lzh.InputPointer;
-                                            i_end = lzh.InputEnd;
-                                        }
-
-                                        lzh.INJECT_BITS_MSB(lzh.InputBuffer[i_ptr++], 8, ref bit_buffer, ref bits_left);
-                                    }
-                                }
-                            }
-
+                            lzh.ENSURE_BITS(CompressionStream.HUFF_MAXBITS, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
                             sym = lzh.LITLEN_table[lzh.PEEK_BITS_MSB(KWAJ_TABLEBITS, bit_buffer)];
                             if (sym >= KWAJ_LITLEN_SYMS)
                             {
@@ -434,26 +308,7 @@ namespace LibMSPackSharp.Compression
                         {
                             //READ_HUFFSYM(LITERAL, j)
                             {
-                                //ENSURE_BITS(CompressionStream.HUFF_MAXBITS)
-                                {
-                                    while (bits_left < (CompressionStream.HUFF_MAXBITS))
-                                    {
-                                        //READ_BYTES
-                                        {
-                                            if (i_ptr >= i_end)
-                                            {
-                                                if ((err = ReadInput(lzh)) != Error.MSPACK_ERR_OK)
-                                                    return err;
-
-                                                i_ptr = lzh.InputPointer;
-                                                i_end = lzh.InputEnd;
-                                            }
-
-                                            lzh.INJECT_BITS_MSB(lzh.InputBuffer[i_ptr++], 8, ref bit_buffer, ref bits_left);
-                                        }
-                                    }
-                                }
-
+                                lzh.ENSURE_BITS(CompressionStream.HUFF_MAXBITS, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
                                 sym = lzh.LITERAL_table[lzh.PEEK_BITS_MSB(KWAJ_TABLEBITS, bit_buffer)];
                                 if (sym >= KWAJ_LITERAL_SYMS)
                                 {
@@ -521,32 +376,7 @@ namespace LibMSPackSharp.Compression
                 case 1:
                     //READ_BITS_SAFE(c, 4)
                     {
-                        //READ_BITS(val, 4)
-                        {
-                            //ENSURE_BITS(4)
-                            {
-                                while (bits_left < (4))
-                                {
-                                    //READ_BYTES
-                                    {
-                                        if (i_ptr >= i_end)
-                                        {
-                                            if ((err = ReadInput(lzh)) != Error.MSPACK_ERR_OK)
-                                                return err;
-
-                                            i_ptr = lzh.InputPointer;
-                                            i_end = lzh.InputEnd;
-                                        }
-
-                                        lzh.INJECT_BITS_MSB(lzh.InputBuffer[i_ptr++], 8, ref bit_buffer, ref bits_left);
-                                    }
-                                }
-                            }
-
-                            (c) = (uint)lzh.PEEK_BITS_MSB(4, bit_buffer);
-                            lzh.REMOVE_BITS_MSB(4, ref bit_buffer, ref bits_left);
-                        }
-
+                        c = (uint)lzh.READ_BITS_MSB(4, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
                         if (lzh.EndOfInput != 0 && bits_left < lzh.EndOfInput)
                             return Error.MSPACK_ERR_OK;
                     }
@@ -556,32 +386,7 @@ namespace LibMSPackSharp.Compression
                     {
                         //READ_BITS_SAFE(sel, 1)
                         {
-                            //READ_BITS(val, 1)
-                            {
-                                //ENSURE_BITS(1)
-                                {
-                                    while (bits_left < (1))
-                                    {
-                                        //READ_BYTES
-                                        {
-                                            if (i_ptr >= i_end)
-                                            {
-                                                if ((err = ReadInput(lzh)) != Error.MSPACK_ERR_OK)
-                                                    return err;
-
-                                                i_ptr = lzh.InputPointer;
-                                                i_end = lzh.InputEnd;
-                                            }
-
-                                            lzh.INJECT_BITS_MSB(lzh.InputBuffer[i_ptr++], 8, ref bit_buffer, ref bits_left);
-                                        }
-                                    }
-                                }
-
-                                (sel) = (uint)lzh.PEEK_BITS_MSB(1, bit_buffer);
-                                lzh.REMOVE_BITS_MSB(1, ref bit_buffer, ref bits_left);
-                            }
-
+                            sel = (uint)lzh.READ_BITS_MSB(1, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
                             if (lzh.EndOfInput != 0 && bits_left < lzh.EndOfInput)
                                 return Error.MSPACK_ERR_OK;
                         }
@@ -594,32 +399,7 @@ namespace LibMSPackSharp.Compression
                         {
                             //READ_BITS_SAFE(sel, 1)
                             {
-                                //READ_BITS(val, 1)
-                                {
-                                    //ENSURE_BITS(1)
-                                    {
-                                        while (bits_left < (1))
-                                        {
-                                            //READ_BYTES
-                                            {
-                                                if (i_ptr >= i_end)
-                                                {
-                                                    if ((err = ReadInput(lzh)) != Error.MSPACK_ERR_OK)
-                                                        return err;
-
-                                                    i_ptr = lzh.InputPointer;
-                                                    i_end = lzh.InputEnd;
-                                                }
-
-                                                lzh.INJECT_BITS_MSB(lzh.InputBuffer[i_ptr++], 8, ref bit_buffer, ref bits_left);
-                                            }
-                                        }
-                                    }
-
-                                    (sel) = (uint)lzh.PEEK_BITS_MSB(1, bit_buffer);
-                                    lzh.REMOVE_BITS_MSB(1, ref bit_buffer, ref bits_left);
-                                }
-
+                                sel = (uint)lzh.READ_BITS_MSB(1, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
                                 if (lzh.EndOfInput != 0 && bits_left < lzh.EndOfInput)
                                     return Error.MSPACK_ERR_OK;
                             }
@@ -632,32 +412,7 @@ namespace LibMSPackSharp.Compression
                             {
                                 //READ_BITS_SAFE(c, 4)
                                 {
-                                    //READ_BITS(val, 4)
-                                    {
-                                        //ENSURE_BITS(4)
-                                        {
-                                            while (bits_left < (4))
-                                            {
-                                                //READ_BYTES
-                                                {
-                                                    if (i_ptr >= i_end)
-                                                    {
-                                                        if ((err = ReadInput(lzh)) != Error.MSPACK_ERR_OK)
-                                                            return err;
-
-                                                        i_ptr = lzh.InputPointer;
-                                                        i_end = lzh.InputEnd;
-                                                    }
-
-                                                    lzh.INJECT_BITS_MSB(lzh.InputBuffer[i_ptr++], 8, ref bit_buffer, ref bits_left);
-                                                }
-                                            }
-                                        }
-
-                                        (c) = (uint)lzh.PEEK_BITS_MSB(4, bit_buffer);
-                                        lzh.REMOVE_BITS_MSB(4, ref bit_buffer, ref bits_left);
-                                    }
-
+                                    c = (uint)lzh.READ_BITS_MSB(4, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
                                     if (lzh.EndOfInput != 0 && bits_left < lzh.EndOfInput)
                                         return Error.MSPACK_ERR_OK;
                                 }
@@ -672,32 +427,7 @@ namespace LibMSPackSharp.Compression
                 case 2:
                     //READ_BITS_SAFE(c, 4)
                     {
-                        //READ_BITS(val, 4)
-                        {
-                            //ENSURE_BITS(4)
-                            {
-                                while (bits_left < (4))
-                                {
-                                    //READ_BYTES
-                                    {
-                                        if (i_ptr >= i_end)
-                                        {
-                                            if ((err = ReadInput(lzh)) != Error.MSPACK_ERR_OK)
-                                                return err;
-
-                                            i_ptr = lzh.InputPointer;
-                                            i_end = lzh.InputEnd;
-                                        }
-
-                                        lzh.INJECT_BITS_MSB(lzh.InputBuffer[i_ptr++], 8, ref bit_buffer, ref bits_left);
-                                    }
-                                }
-                            }
-
-                            (c) = (uint)lzh.PEEK_BITS_MSB(4, bit_buffer);
-                            lzh.REMOVE_BITS_MSB(4, ref bit_buffer, ref bits_left);
-                        }
-
+                        c = (uint)lzh.READ_BITS_MSB(4, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
                         if (lzh.EndOfInput != 0 && bits_left < lzh.EndOfInput)
                             return Error.MSPACK_ERR_OK;
                     }
@@ -707,32 +437,7 @@ namespace LibMSPackSharp.Compression
                     {
                         //READ_BITS_SAFE(sel, 2)
                         {
-                            //READ_BITS(sel, 2)
-                            {
-                                //ENSURE_BITS(2)
-                                {
-                                    while (bits_left < (2))
-                                    {
-                                        //READ_BYTES
-                                        {
-                                            if (i_ptr >= i_end)
-                                            {
-                                                if ((err = ReadInput(lzh)) != Error.MSPACK_ERR_OK)
-                                                    return err;
-
-                                                i_ptr = lzh.InputPointer;
-                                                i_end = lzh.InputEnd;
-                                            }
-
-                                            lzh.INJECT_BITS_MSB(lzh.InputBuffer[i_ptr++], 8, ref bit_buffer, ref bits_left);
-                                        }
-                                    }
-                                }
-
-                                (sel) = (uint)lzh.PEEK_BITS_MSB(2, bit_buffer);
-                                lzh.REMOVE_BITS_MSB(2, ref bit_buffer, ref bits_left);
-                            }
-
+                            sel = (uint)lzh.READ_BITS_MSB(2, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
                             if (lzh.EndOfInput != 0 && bits_left < lzh.EndOfInput)
                                 return Error.MSPACK_ERR_OK;
                         }
@@ -741,32 +446,7 @@ namespace LibMSPackSharp.Compression
                         {
                             //READ_BITS_SAFE(c, 4)
                             {
-                                //READ_BITS(c, 4)
-                                {
-                                    //ENSURE_BITS(4)
-                                    {
-                                        while (bits_left < (4))
-                                        {
-                                            //READ_BYTES
-                                            {
-                                                if (i_ptr >= i_end)
-                                                {
-                                                    if ((err = ReadInput(lzh)) != Error.MSPACK_ERR_OK)
-                                                        return err;
-
-                                                    i_ptr = lzh.InputPointer;
-                                                    i_end = lzh.InputEnd;
-                                                }
-
-                                                lzh.INJECT_BITS_MSB(lzh.InputBuffer[i_ptr++], 8, ref bit_buffer, ref bits_left);
-                                            }
-                                        }
-                                    }
-
-                                    (c) = (uint)lzh.PEEK_BITS_MSB(4, bit_buffer);
-                                    lzh.REMOVE_BITS_MSB(4, ref bit_buffer, ref bits_left);
-                                }
-
+                                c = (uint)lzh.READ_BITS_MSB(4, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
                                 if (lzh.EndOfInput != 0 && bits_left < lzh.EndOfInput)
                                     return Error.MSPACK_ERR_OK;
                             }
@@ -786,32 +466,7 @@ namespace LibMSPackSharp.Compression
                     {
                         //READ_BITS_SAFE(c, 4)
                         {
-                            //READ_BITS(c, 4)
-                            {
-                                //ENSURE_BITS(4)
-                                {
-                                    while (bits_left < (4))
-                                    {
-                                        //READ_BYTES
-                                        {
-                                            if (i_ptr >= i_end)
-                                            {
-                                                if ((err = ReadInput(lzh)) != Error.MSPACK_ERR_OK)
-                                                    return err;
-
-                                                i_ptr = lzh.InputPointer;
-                                                i_end = lzh.InputEnd;
-                                            }
-
-                                            lzh.INJECT_BITS_MSB(lzh.InputBuffer[i_ptr++], 8, ref bit_buffer, ref bits_left);
-                                        }
-                                    }
-                                }
-
-                                (c) = (uint)lzh.PEEK_BITS_MSB(4, bit_buffer);
-                                lzh.REMOVE_BITS_MSB(4, ref bit_buffer, ref bits_left);
-                            }
-
+                            c = (uint)lzh.READ_BITS_MSB(4, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
                             if (lzh.EndOfInput != 0 && bits_left < lzh.EndOfInput)
                                 return Error.MSPACK_ERR_OK;
                         }
@@ -824,35 +479,6 @@ namespace LibMSPackSharp.Compression
 
             lzh.STORE_BITS(i_ptr, i_end, bit_buffer, bits_left);
 
-            return Error.MSPACK_ERR_OK;
-        }
-
-        private static Error ReadInput(LZHKWAJStream lzh)
-        {
-            int read;
-            if (lzh.EndOfInput != 0)
-            {
-                lzh.EndOfInput += 8;
-                lzh.InputBuffer[0] = 0;
-                read = 1;
-            }
-            else
-            {
-                read = lzh.System.Read(lzh.InputFileHandle, lzh.InputBuffer, 0, KWAJ_INPUT_SIZE);
-                if (read < 0)
-                    return Error.MSPACK_ERR_READ;
-
-                if (read == 0)
-                {
-                    lzh.InputEnd = 8;
-                    lzh.InputBuffer[0] = 0;
-                    read = 1;
-                }
-            }
-
-            // Update InputPointer and InputLength
-            lzh.InputPointer = 0;
-            lzh.InputEnd = read;
             return Error.MSPACK_ERR_OK;
         }
     }

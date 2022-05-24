@@ -159,30 +159,50 @@ namespace LibMSPackSharp.Compression
         }
 
         /// <summary>
+        /// Ensure there are at least N bits in the bit buffer
+        /// </summary>
+        public void ENSURE_BITS(int nbits, ref int i_ptr, ref int i_end, ref uint bit_buffer, ref int bits_left)
+        {
+            while (bits_left < nbits)
+            {
+                READ_BYTES(ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+                if (Error != Error.MSPACK_ERR_OK)
+                    return;
+            }
+        }
+
+        /// <summary>
         /// Read from the input if the buffer is empty
         /// </summary>
-        public Error READ_IF_NEEDED(ref int i_ptr, ref int i_end)
+        public void READ_IF_NEEDED(ref int i_ptr, ref int i_end)
         {
             if (i_ptr >= i_end)
             {
-                if (ReadInput() != Error.MSPACK_ERR_OK)
-                    return Error;
+                ReadInput();
+                if (Error != Error.MSPACK_ERR_OK)
+                    return;
 
                 i_ptr = InputPointer;
                 i_end = InputEnd;
             }
-
-            return Error.MSPACK_ERR_OK;
         }
+
+        /// <summary>
+        /// Read bytes from the input into the bit buffer
+        /// </summary>
+        public abstract void READ_BYTES(ref int i_ptr, ref int i_end, ref uint bit_buffer, ref int bits_left);
 
         /// <summary>
         /// Read an input stream and fill the buffer
         /// </summary>
-        protected Error ReadInput()
+        protected virtual void ReadInput()
         {
             int read = System.Read(InputFileHandle, InputBuffer, 0, (int)InputBufferSize);
             if (read < 0)
-                return Error = Error.MSPACK_ERR_READ;
+            {
+                Error = Error.MSPACK_ERR_READ;
+                return;
+            }
 
             // We might overrun the input stream by asking for bits we don't use,
             // so fake 2 more bytes at the end of input
@@ -191,7 +211,8 @@ namespace LibMSPackSharp.Compression
                 if (EndOfInput != 0)
                 {
                     Console.WriteLine("Out of input bytes");
-                    return Error = Error.MSPACK_ERR_READ;
+                    Error = Error.MSPACK_ERR_READ;
+                    return;
                 }
                 else
                 {
@@ -204,7 +225,6 @@ namespace LibMSPackSharp.Compression
             // Update i_ptr and i_end
             InputPointer = 0;
             InputEnd = read;
-            return Error = Error.MSPACK_ERR_OK;
         }
 
         #endregion
@@ -224,6 +244,46 @@ namespace LibMSPackSharp.Compression
         /// Extracts without removing N bits from the bit buffer
         /// </summary>
         public long PEEK_BITS_MSB(int nbits, uint bit_buffer) => (bit_buffer >> (BITBUF_WIDTH - (nbits)));
+
+        /// <summary>
+        /// Takes N bits from the buffer and puts them in var
+        /// </summary>
+        public long READ_BITS_MSB(int nbits, ref int i_ptr, ref int i_end, ref uint bit_buffer, ref int bits_left)
+        {
+            ENSURE_BITS(nbits, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+            if (Error != Error.MSPACK_ERR_OK)
+                return -1;
+
+            long temp = PEEK_BITS_MSB(nbits, bit_buffer);
+
+            REMOVE_BITS_MSB(nbits, ref bit_buffer, ref bits_left);
+            return temp;
+        }
+
+        /// <summary>
+        /// Read multiple bits and put them in var
+        /// </summary>
+        public long READ_MANY_BITS_MSB(int nbits, ref int i_ptr, ref int i_end, ref uint bit_buffer, ref int bits_left)
+        {
+            byte needed = (byte)(nbits), bitrun;
+            long temp = 0;
+            while (needed > 0)
+            {
+                if (bits_left <= (BITBUF_WIDTH - 16))
+                {
+                    READ_BYTES(ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+                    if (Error != Error.MSPACK_ERR_OK)
+                        return -1;
+                }
+
+                bitrun = (byte)((bits_left < needed) ? bits_left : needed);
+                temp = (temp << bitrun) | PEEK_BITS_MSB(bitrun, bit_buffer);
+                REMOVE_BITS_MSB(bitrun, ref bit_buffer, ref bits_left);
+                needed -= bitrun;
+            }
+
+            return temp;
+        }
 
         /// <summary>
         /// Removes N bits from the bit buffer
@@ -256,6 +316,36 @@ namespace LibMSPackSharp.Compression
         /// Extracts without removing N bits from the bit buffer using a bit mask
         /// </summary>
         public long PEEK_BITS_T_LSB(int nbits, uint bit_buffer) => bit_buffer & lsb_bit_mask[(nbits)];
+
+        /// <summary>
+        /// Takes N bits from the buffer and puts them in var
+        /// </summary>
+        public long READ_BITS_LSB(int nbits, ref int i_ptr, ref int i_end, ref uint bit_buffer, ref int bits_left)
+        {
+            ENSURE_BITS(nbits, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+            if (Error != Error.MSPACK_ERR_OK)
+                return -1;
+
+            long temp = PEEK_BITS_LSB(nbits, bit_buffer);
+
+            REMOVE_BITS_LSB(nbits, ref bit_buffer, ref bits_left);
+            return temp;
+        }
+
+        /// <summary>
+        /// Takes N bits from the buffer and puts them in var using a bit mask
+        /// </summary>
+        public long READ_BITS_T_LSB(int nbits, ref int i_ptr, ref int i_end, ref uint bit_buffer, ref int bits_left)
+        {
+            ENSURE_BITS(nbits, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+            if (Error != Error.MSPACK_ERR_OK)
+                return -1;
+
+            long temp = PEEK_BITS_T_LSB(nbits, bit_buffer);
+
+            REMOVE_BITS_LSB(nbits, ref bit_buffer, ref bits_left);
+            return temp;
+        }
 
         /// <summary>
         /// Removes N bits from the bit buffer

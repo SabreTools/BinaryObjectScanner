@@ -14,6 +14,8 @@ namespace LibMSPackSharp.Compression
 {
     public class QTMDStream : CompressionStream
     {
+        #region Fields
+
         /// <summary>
         /// Decoding window
         /// </summary>
@@ -119,5 +121,24 @@ namespace LibMSPackSharp.Compression
         public QTMDModelSym[] Model6LenSymbols { get; set; } = new QTMDModelSym[27 + 1];
 
         public QTMDModelSym[] Model7Symbols { get; set; } = new QTMDModelSym[7 + 1];
+
+        #endregion
+
+        /// <inheritdoc/>
+        public override void READ_BYTES(ref int i_ptr, ref int i_end, ref uint bit_buffer, ref int bits_left)
+        {
+            READ_IF_NEEDED(ref i_ptr, ref i_end);
+            if (Error != Error.MSPACK_ERR_OK)
+                return;
+
+            byte b0 = InputBuffer[i_ptr++];
+
+            READ_IF_NEEDED(ref i_ptr, ref i_end);
+            if (Error != Error.MSPACK_ERR_OK)
+                return;
+
+            byte b1 = InputBuffer[i_ptr++];
+            INJECT_BITS_MSB((b0 << 8) | b1, 16, ref bit_buffer, ref bits_left);
+        }
     }
 }

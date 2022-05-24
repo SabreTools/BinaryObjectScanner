@@ -16,6 +16,8 @@ namespace LibMSPackSharp.Compression
 {
     public class MSZIPDStream : CompressionStream
     {
+        #region Fields
+
         /// <summary>
         /// 32kb history window
         /// </summary>
@@ -48,5 +50,17 @@ namespace LibMSPackSharp.Compression
         public ushort[] DISTANCE_table { get; set; } = new ushort[MSZIP.MSZIP_DISTANCE_TABLESIZE];
 
         #endregion
+
+        #endregion
+
+        /// <inheritdoc/>
+        public override void READ_BYTES(ref int i_ptr, ref int i_end, ref uint bit_buffer, ref int bits_left)
+        {
+            READ_IF_NEEDED(ref i_ptr, ref i_end);
+            if (Error != Error.MSPACK_ERR_OK)
+                return;
+
+            INJECT_BITS_LSB(InputBuffer[i_ptr++], 8, ref bit_buffer, ref bits_left);
+        }
     }
 }
