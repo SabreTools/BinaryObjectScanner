@@ -20,7 +20,5 @@ namespace LibMSPackSharp.HLP
     public class Compressor
     {
         public SystemImpl System { get; set; }
-
-        public int Dummy { get; set; }
     }
 }

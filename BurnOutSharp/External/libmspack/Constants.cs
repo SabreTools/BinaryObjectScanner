@@ -60,13 +60,6 @@ namespace LibMSPackSharp
 
         #region KWAJ
 
-        public const byte kwajh_Signature1 = 0x00;
-        public const byte kwajh_Signature2 = 0x04;
-        public const byte kwajh_CompMethod = 0x08;
-        public const byte kwajh_DataOffset = 0x0a;
-        public const byte kwajh_Flags = 0x0c;
-        public const byte kwajh_SIZEOF = 0x0e;
-
         // Input buffer size during decompression - not worth parameterising IMHO
         public const int KWAJ_INPUT_SIZE = (2048);
 

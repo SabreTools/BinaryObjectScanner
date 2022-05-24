@@ -54,20 +54,15 @@ namespace LibMSPackSharp.KWAJ
         public Header Open(string filename)
         {
             FileStream fh = System.Open(filename, OpenMode.MSPACK_SYS_OPEN_READ);
-            Header hdr = new Header();
-            if (fh != null && hdr != null)
+            if (fh == null)
             {
-                hdr.FileHandle = fh;
-                Error = ReadHeaders(fh, hdr);
-            }
-            else
-            {
-                if (fh == null)
-                    Error = Error.MSPACK_ERR_OPEN;
-                if (hdr == null)
-                    Error = Error.MSPACK_ERR_NOMEMORY;
+                Error = Error.MSPACK_ERR_OPEN;
+                return null;
             }
 
+            Header hdr = new Header() { FileHandle = fh };
+
+            Error = ReadHeaders(fh, hdr);
             if (Error != Error.MSPACK_ERR_OK)
             {
                 System.Close(fh);
@@ -116,7 +111,7 @@ namespace LibMSPackSharp.KWAJ
                 return Error.MSPACK_ERR_ARGS;
 
             // Seek to the compressed data
-            if (System.Seek(fh, hdr.DataOffset, SeekMode.MSPACK_SYS_SEEK_START))
+            if (System.Seek(fh, hdr.KWAJHeader.DataOffset, SeekMode.MSPACK_SYS_SEEK_START))
                 return Error = Error.MSPACK_ERR_SEEK;
 
             // Open file for output
@@ -127,8 +122,8 @@ namespace LibMSPackSharp.KWAJ
             Error = Error.MSPACK_ERR_OK;
 
             // Decompress based on format
-            if (hdr.CompressionType == CompressionType.MSKWAJ_COMP_NONE ||
-                hdr.CompressionType == CompressionType.MSKWAJ_COMP_XOR)
+            if (hdr.KWAJHeader.CompressionType == CompressionType.MSKWAJ_COMP_NONE ||
+                hdr.KWAJHeader.CompressionType == CompressionType.MSKWAJ_COMP_XOR)
             {
                 // NONE is a straight copy. XOR is a copy xored with 0xFF
                 byte[] buf = new byte[KWAJ_INPUT_SIZE];
@@ -136,7 +131,7 @@ namespace LibMSPackSharp.KWAJ
                 int read, i;
                 while ((read = System.Read(fh, buf, 0, KWAJ_INPUT_SIZE)) > 0)
                 {
-                    if (hdr.CompressionType == CompressionType.MSKWAJ_COMP_XOR)
+                    if (hdr.KWAJHeader.CompressionType == CompressionType.MSKWAJ_COMP_XOR)
                     {
                         for (i = 0; i < read; i++)
                         {
@@ -154,16 +149,16 @@ namespace LibMSPackSharp.KWAJ
                 if (read < 0)
                     Error = Error.MSPACK_ERR_READ;
             }
-            else if (hdr.CompressionType == CompressionType.MSKWAJ_COMP_SZDD)
+            else if (hdr.KWAJHeader.CompressionType == CompressionType.MSKWAJ_COMP_SZDD)
             {
                 Error = LZSS.Decompress(System, fh, outfh, KWAJ_INPUT_SIZE, LZSSMode.LZSS_MODE_EXPAND);
             }
-            else if (hdr.CompressionType == CompressionType.MSKWAJ_COMP_LZH)
+            else if (hdr.KWAJHeader.CompressionType == CompressionType.MSKWAJ_COMP_LZH)
             {
                 LZHKWAJStream lzh = LZHKWAJ.Init(System, fh, outfh);
                 Error = (lzh != null) ? LZHKWAJ.Decompress(lzh) : Error.MSPACK_ERR_NOMEMORY;
             }
-            else if (hdr.CompressionType == CompressionType.MSKWAJ_COMP_MSZIP)
+            else if (hdr.KWAJHeader.CompressionType == CompressionType.MSKWAJ_COMP_MSZIP)
             {
                 MSZIPDStream zip = MSZIP.Init(System, fh, outfh, KWAJ_INPUT_SIZE, false);
                 Error = (zip != null) ? MSZIP.DecompressKWAJ(zip) : Error.MSPACK_ERR_NOMEMORY;
@@ -203,7 +198,7 @@ namespace LibMSPackSharp.KWAJ
         /// <returns>an error code, or MSPACK_ERR_OK if successful</returns>
         public Error Decompress(string input, string output)
         {
-            Header hdr = Open(input) as Header;
+            Header hdr = Open(input);
             if (hdr == null)
                 return Error;
 
@@ -221,24 +216,20 @@ namespace LibMSPackSharp.KWAJ
         /// </summary>
         private Error ReadHeaders(FileStream fh, Header hdr)
         {
-            int i;
-
             // Read in the header
             byte[] buf = new byte[16];
-            if (System.Read(fh, buf, 0, kwajh_SIZEOF) != kwajh_SIZEOF)
+            if (System.Read(fh, buf, 0, _KWAJHeader.Size) != _KWAJHeader.Size)
                 return Error.MSPACK_ERR_READ;
 
-            // Check for "KWAJ" signature
-            if ((BitConverter.ToUInt32(buf, kwajh_Signature1) != 0x4A41574B) ||
-                (BitConverter.ToUInt32(buf, kwajh_Signature2) != 0xD127F088))
-            {
-                return Error.MSPACK_ERR_SIGNATURE;
-            }
+            // Create a new header based on that
+            Error err = _KWAJHeader.Create(buf, out _KWAJHeader kwajHeader);
+            if (err != Error.MSPACK_ERR_OK)
+                return Error = err;
+
+            // Assign the header
+            hdr.KWAJHeader = kwajHeader;
 
             // Basic header fields
-            hdr.CompressionType = (CompressionType)BitConverter.ToUInt16(buf, kwajh_CompMethod);
-            hdr.DataOffset = BitConverter.ToUInt16(buf, kwajh_DataOffset);
-            hdr.Headers = (OptionalHeaderFlag)BitConverter.ToUInt16(buf, kwajh_Flags);
             hdr.Length = 0;
             hdr.Filename = null;
             hdr.Extra = null;
@@ -247,7 +238,7 @@ namespace LibMSPackSharp.KWAJ
             // Optional headers
 
             // 4 bytes: length of unpacked file
-            if (hdr.Headers.HasFlag(OptionalHeaderFlag.MSKWAJ_HDR_HASLENGTH))
+            if (hdr.KWAJHeader.Flags.HasFlag(OptionalHeaderFlag.MSKWAJ_HDR_HASLENGTH))
             {
                 if (System.Read(fh, buf, 0, 4) != 4)
                     return Error.MSPACK_ERR_READ;
@@ -256,25 +247,25 @@ namespace LibMSPackSharp.KWAJ
             }
 
             // 2 bytes: unknown purpose
-            if (hdr.Headers.HasFlag(OptionalHeaderFlag.MSKWAJ_HDR_HASUNKNOWN1))
+            if (hdr.KWAJHeader.Flags.HasFlag(OptionalHeaderFlag.MSKWAJ_HDR_HASUNKNOWN1))
             {
                 if (System.Read(fh, buf, 0, 2) != 2)
                     return Error.MSPACK_ERR_READ;
             }
 
             // 2 bytes: length of section, then [length] bytes: unknown purpose
-            if (hdr.Headers.HasFlag(OptionalHeaderFlag.MSKWAJ_HDR_HASUNKNOWN2))
+            if (hdr.KWAJHeader.Flags.HasFlag(OptionalHeaderFlag.MSKWAJ_HDR_HASUNKNOWN2))
             {
                 if (System.Read(fh, buf, 0, 2) != 2)
                     return Error.MSPACK_ERR_READ;
 
-                i = BitConverter.ToUInt16(buf, 0);
+                int i = BitConverter.ToUInt16(buf, 0);
                 if (System.Seek(fh, i, SeekMode.MSPACK_SYS_SEEK_CUR))
                     return Error.MSPACK_ERR_SEEK;
             }
 
             // Filename and extension
-            if (hdr.Headers.HasFlag(OptionalHeaderFlag.MSKWAJ_HDR_HASFILENAME) || hdr.Headers.HasFlag(OptionalHeaderFlag.MSKWAJ_HDR_HASFILEEXT))
+            if (hdr.KWAJHeader.Flags.HasFlag(OptionalHeaderFlag.MSKWAJ_HDR_HASFILENAME) || hdr.KWAJHeader.Flags.HasFlag(OptionalHeaderFlag.MSKWAJ_HDR_HASFILEEXT))
             {
                 int len;
 
@@ -283,13 +274,14 @@ namespace LibMSPackSharp.KWAJ
                 int fnPtr = 0;
 
                 // Copy filename if present
-                if (hdr.Headers.HasFlag(OptionalHeaderFlag.MSKWAJ_HDR_HASFILENAME))
+                if (hdr.KWAJHeader.Flags.HasFlag(OptionalHeaderFlag.MSKWAJ_HDR_HASFILENAME))
                 {
                     // Read and copy up to 9 bytes of a null terminated string
                     if ((len = System.Read(fh, buf, 0, 9)) < 2)
                         return Error.MSPACK_ERR_READ;
 
-                    for (i = 0; i < len; i++)
+                    int i = 0;
+                    for (; i < len; i++)
                     {
                         if ((fn[fnPtr++] = (char)buf[i]) == '\0')
                             break;
@@ -307,7 +299,7 @@ namespace LibMSPackSharp.KWAJ
                 }
 
                 // Copy extension if present
-                if (hdr.Headers.HasFlag(OptionalHeaderFlag.MSKWAJ_HDR_HASFILEEXT))
+                if (hdr.KWAJHeader.Flags.HasFlag(OptionalHeaderFlag.MSKWAJ_HDR_HASFILEEXT))
                 {
                     fn[fnPtr++] = '.';
 
@@ -315,7 +307,8 @@ namespace LibMSPackSharp.KWAJ
                     if ((len = System.Read(fh, buf, 0, 4)) < 2)
                         return Error.MSPACK_ERR_READ;
 
-                    for (i = 0; i < len; i++)
+                    int i = 0;
+                    for (; i < len; i++)
                     {
                         if ((fn[fnPtr++] = (char)buf[i]) == '\0')
                             break;
@@ -336,12 +329,12 @@ namespace LibMSPackSharp.KWAJ
             }
 
             // 2 bytes: extra text length then [length] bytes of extra text data
-            if (hdr.Headers.HasFlag(OptionalHeaderFlag.MSKWAJ_HDR_HASEXTRATEXT))
+            if (hdr.KWAJHeader.Flags.HasFlag(OptionalHeaderFlag.MSKWAJ_HDR_HASEXTRATEXT))
             {
                 if (System.Read(fh, buf, 0, 2) != 2)
                     return Error.MSPACK_ERR_READ;
 
-                i = BitConverter.ToUInt16(buf, 0);
+                int i = BitConverter.ToUInt16(buf, 0);
                 byte[] extra = new byte[i + 1];
                 if (System.Read(fh, extra, 0, i) != i)
                     return Error.MSPACK_ERR_READ;

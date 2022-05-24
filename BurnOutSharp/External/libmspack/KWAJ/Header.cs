@@ -25,15 +25,14 @@ namespace LibMSPackSharp.KWAJ
     /// </summary>
     public class Header : BaseHeader
     {
-        /// <summary>
-        /// The compression type
-        /// </summary>
-        public CompressionType CompressionType { get; set; }
+        #region Internal
 
         /// <summary>
-        /// The offset in the file where the compressed data stream begins
+        /// KWAJ header information
         /// </summary>
-        public long DataOffset { get; set; }
+        internal _KWAJHeader KWAJHeader { get; set; }
+
+        #endregion
 
         /// <summary>
         /// Flags indicating which optional headers were included.
@@ -61,6 +60,9 @@ namespace LibMSPackSharp.KWAJ
         /// </summary>
         public ushort ExtraLength { get; set; }
 
+        /// <summary>
+        /// Internal file handle
+        /// </summary>
         public FileStream FileHandle { get; set; }
     }
 }
