@@ -61,7 +61,6 @@ namespace LibMSPackSharp.Compression
 
         #endregion
 
-        // TODO: These should be in a separate file
         #region ReadBits Methods
 
         /* This header defines macros that read data streams by
@@ -369,181 +368,9 @@ namespace LibMSPackSharp.Compression
 
         #endregion
 
-        // TODO: These should be in a separate file
         #region ReadHuff Methods
 
         #region Common
-
-        /// <summary>
-        /// This function was originally coded by David Tritscher.
-        /// 
-        /// It builds a fast huffman decoding table from
-        /// a canonical huffman code lengths table.
-        /// </summary>
-        /// <param name="nsyms">total number of symbols in this huffman tree.</param>
-        /// <param name="nbits">any symbols with a code length of nbits or less can be decoded in one lookup of the table.</param>
-        /// <param name="length">A table to get code lengths from [0 to nsyms-1]</param>
-        /// <param name="table">
-        /// The table to fill up with decoded symbols and pointers.
-        /// Should be ((1<<nbits) + (nsyms*2)) in length.
-        /// </param>
-        /// <returns>true for OK or false for error</returns>
-        /// <remarks>TODO: Split into MSB and LSB variants</remarks>
-        public static bool MakeDecodeTable(int nsyms, int nbits, byte[] length, ushort[] table, bool msb)
-        {
-            ushort sym, next_symbol;
-            uint leaf, fill;
-            uint reverse; // Only used when !msb
-            byte bit_num;
-            uint pos = 0; // The current position in the decode table
-            uint table_mask = (uint)1 << nbits;
-            uint bit_mask = table_mask >> 1; // Don't do 0 length codes
-
-            // Fill entries for codes short enough for a direct mapping
-            for (bit_num = 1; bit_num <= nbits; bit_num++)
-            {
-                for (sym = 0; sym < nsyms; sym++)
-                {
-                    if (length[sym] != bit_num)
-                        continue;
-
-                    if (msb)
-                    {
-                        leaf = pos;
-                    }
-                    else
-                    {
-                        // Reverse the significant bits
-                        fill = length[sym];
-                        reverse = pos >> (nbits - (byte)fill);
-                        leaf = 0;
-
-                        do
-                        {
-                            leaf <<= 1;
-                            leaf |= reverse & 1;
-                            reverse >>= 1;
-                        } while (--fill != 0);
-                    }
-
-                    if ((pos += bit_mask) > table_mask)
-                        return false; // Table overrun
-
-                    // Fill all possible lookups of this symbol with the symbol itself
-                    if (msb)
-                    {
-                        for (fill = bit_mask; fill-- > 0;)
-                        {
-                            table[leaf++] = sym;
-                        }
-                    }
-                    else
-                    {
-                        fill = bit_mask;
-                        next_symbol = (ushort)(1 << bit_num);
-
-                        do
-                        {
-                            table[leaf] = sym;
-                            leaf += next_symbol;
-                        } while (--fill != 0);
-                    }
-                }
-
-                bit_mask >>= 1;
-            }
-
-            // Exit with success if table is now complete
-            if (pos == table_mask)
-                return true;
-
-            // Mark all remaining table entries as unused
-            for (sym = (ushort)pos; sym < table_mask; sym++)
-            {
-                if (msb)
-                {
-                    table[sym] = 0xFFFF;
-                }
-                else
-                {
-                    reverse = sym;
-                    leaf = 0;
-                    fill = (uint)nbits;
-
-                    do
-                    {
-                        leaf <<= 1;
-                        leaf |= reverse & 1;
-                        reverse >>= 1;
-                    } while (--fill != 0);
-
-                    table[leaf] = 0xFFFF;
-                }
-            }
-
-            // next_symbol = base of allocation for long codes
-            next_symbol = ((table_mask >> 1) < nsyms) ? (ushort)nsyms : (ushort)(table_mask >> 1);
-
-            // Give ourselves room for codes to grow by up to 16 more bits.
-            // codes now start at bit nbits+16 and end at (nbits+16-codelength)
-            pos <<= 16;
-            table_mask <<= 16;
-            bit_mask = 1 << 15;
-
-            for (bit_num = (byte)(nbits + 1); bit_num <= HUFF_MAXBITS; bit_num++)
-            {
-                for (sym = 0; sym < nsyms; sym++)
-                {
-                    if (length[sym] != bit_num)
-                        continue;
-                    if (pos >= table_mask)
-                        return false; // Table overflow
-
-                    if (msb)
-                    {
-                        leaf = pos >> 16;
-                    }
-                    else
-                    {
-                        // leaf = the first nbits of the code, reversed
-                        reverse = pos >> 16;
-                        leaf = 0;
-                        fill = (uint)nbits;
-
-                        do
-                        {
-                            leaf <<= 1;
-                            leaf |= reverse & 1;
-                            reverse >>= 1;
-                        } while (--fill != 0);
-                    }
-
-                    for (fill = 0; fill < (bit_num - nbits); fill++)
-                    {
-                        // If this path hasn't been taken yet, 'allocate' two entries
-                        if (table[leaf] == 0xFFFF)
-                        {
-                            table[(next_symbol << 1)] = 0xFFFF;
-                            table[(next_symbol << 1) + 1] = 0xFFFF;
-                            table[leaf] = (ushort)next_symbol++;
-                        }
-
-                        // Follow the path and select either left or right for next bit
-                        leaf = (uint)(table[leaf] << 1);
-                        if (((pos >> (15 - (int)fill)) & 1) != 0)
-                            leaf++;
-                    }
-
-                    table[leaf] = sym;
-                    pos += bit_mask;
-                }
-
-                bit_mask >>= 1;
-            }
-
-            // Full table?
-            return pos == table_mask;
-        }
 
         /// <summary>
         /// Per compression error code for decoding failure
@@ -587,6 +414,107 @@ namespace LibMSPackSharp.Compression
             } while (sym >= maxsymbols);
         }
 
+        /// <summary>
+        /// This function was originally coded by David Tritscher.
+        /// 
+        /// It builds a fast huffman decoding table from
+        /// a canonical huffman code lengths table.
+        /// </summary>
+        /// <param name="nsyms">total number of symbols in this huffman tree.</param>
+        /// <param name="nbits">any symbols with a code length of nbits or less can be decoded in one lookup of the table.</param>
+        /// <param name="length">A table to get code lengths from [0 to nsyms-1]</param>
+        /// <param name="table">
+        /// The table to fill up with decoded symbols and pointers.
+        /// Should be ((1<<nbits) + (nsyms*2)) in length.
+        /// </param>
+        /// <returns>True for OK or false for error</returns>
+        public static bool MakeDecodeTableMSB(int nsyms, int nbits, byte[] length, ushort[] table)
+        {
+            ushort sym, next_symbol;
+            uint leaf, fill;
+            byte bit_num;
+            uint pos = 0; // The current position in the decode table
+            uint table_mask = (uint)1 << nbits;
+            uint bit_mask = table_mask >> 1; // Don't do 0 length codes
+
+            // Fill entries for codes short enough for a direct mapping
+            for (bit_num = 1; bit_num <= nbits; bit_num++)
+            {
+                for (sym = 0; sym < nsyms; sym++)
+                {
+                    if (length[sym] != bit_num)
+                        continue;
+
+                    leaf = pos;
+                    if ((pos += bit_mask) > table_mask)
+                        return false; // Table overrun
+
+                    // Fill all possible lookups of this symbol with the symbol itself
+                    for (fill = bit_mask; fill-- > 0;)
+                    {
+                        table[leaf++] = sym;
+                    }
+                }
+
+                bit_mask >>= 1;
+            }
+
+            // Exit with success if table is now complete
+            if (pos == table_mask)
+                return true;
+
+            // Mark all remaining table entries as unused
+            for (sym = (ushort)pos; sym < table_mask; sym++)
+            {
+                table[sym] = 0xFFFF;
+            }
+
+            // next_symbol = base of allocation for long codes
+            next_symbol = ((table_mask >> 1) < nsyms) ? (ushort)nsyms : (ushort)(table_mask >> 1);
+
+            // Give ourselves room for codes to grow by up to 16 more bits.
+            // codes now start at bit nbits+16 and end at (nbits+16-codelength)
+            pos <<= 16;
+            table_mask <<= 16;
+            bit_mask = 1 << 15;
+
+            for (bit_num = (byte)(nbits + 1); bit_num <= HUFF_MAXBITS; bit_num++)
+            {
+                for (sym = 0; sym < nsyms; sym++)
+                {
+                    if (length[sym] != bit_num)
+                        continue;
+                    if (pos >= table_mask)
+                        return false; // Table overflow
+
+                    leaf = pos >> 16;
+                    for (fill = 0; fill < (bit_num - nbits); fill++)
+                    {
+                        // If this path hasn't been taken yet, 'allocate' two entries
+                        if (table[leaf] == 0xFFFF)
+                        {
+                            table[(next_symbol << 1)] = 0xFFFF;
+                            table[(next_symbol << 1) + 1] = 0xFFFF;
+                            table[leaf] = next_symbol++;
+                        }
+
+                        // Follow the path and select either left or right for next bit
+                        leaf = (uint)(table[leaf] << 1);
+                        if (((pos >> (15 - (int)fill)) & 1) != 0)
+                            leaf++;
+                    }
+
+                    table[leaf] = sym;
+                    pos += bit_mask;
+                }
+
+                bit_mask >>= 1;
+            }
+
+            // Full table?
+            return pos == table_mask;
+        }
+
         #endregion
 
         #region LSB
@@ -622,6 +550,145 @@ namespace LibMSPackSharp.Compression
 
                 sym = table[(sym << 1) | ((bit_buffer >> i) & 1)];
             } while (sym >= maxsymbols);
+        }
+
+        /// <summary>
+        /// This function was originally coded by David Tritscher.
+        /// 
+        /// It builds a fast huffman decoding table from
+        /// a canonical huffman code lengths table.
+        /// </summary>
+        /// <param name="nsyms">total number of symbols in this huffman tree.</param>
+        /// <param name="nbits">any symbols with a code length of nbits or less can be decoded in one lookup of the table.</param>
+        /// <param name="length">A table to get code lengths from [0 to nsyms-1]</param>
+        /// <param name="table">
+        /// The table to fill up with decoded symbols and pointers.
+        /// Should be ((1<<nbits) + (nsyms*2)) in length.
+        /// </param>
+        /// <returns>True for OK or false for error</returns>
+        public static bool MakeDecodeTableLSB(int nsyms, int nbits, byte[] length, ushort[] table)
+        {
+            ushort sym, next_symbol;
+            uint leaf, fill;
+            uint reverse;
+            byte bit_num;
+            uint pos = 0; // The current position in the decode table
+            uint table_mask = (uint)1 << nbits;
+            uint bit_mask = table_mask >> 1; // Don't do 0 length codes
+
+            // Fill entries for codes short enough for a direct mapping
+            for (bit_num = 1; bit_num <= nbits; bit_num++)
+            {
+                for (sym = 0; sym < nsyms; sym++)
+                {
+                    if (length[sym] != bit_num)
+                        continue;
+
+                    // Reverse the significant bits
+                    fill = length[sym];
+                    reverse = pos >> (int)(nbits - fill);
+                    leaf = 0;
+
+                    do
+                    {
+                        leaf <<= 1;
+                        leaf |= reverse & 1;
+                        reverse >>= 1;
+                    } while (--fill != 0);
+
+                    if ((pos += bit_mask) > table_mask)
+                        return false; // Table overrun
+
+                    // Fill all possible lookups of this symbol with the symbol itself
+                    fill = bit_mask;
+                    next_symbol = (ushort)(1 << bit_num);
+
+                    do
+                    {
+                        table[leaf] = sym;
+                        leaf += next_symbol;
+                    } while (--fill != 0);
+                }
+
+                bit_mask >>= 1;
+            }
+
+            // Exit with success if table is now complete
+            if (pos == table_mask)
+                return true;
+
+            // Mark all remaining table entries as unused
+            for (sym = (ushort)pos; sym < table_mask; sym++)
+            {
+                reverse = sym;
+                leaf = 0;
+                fill = (uint)nbits;
+
+                do
+                {
+                    leaf <<= 1;
+                    leaf |= reverse & 1;
+                    reverse >>= 1;
+                } while (--fill != 0);
+
+                table[leaf] = 0xFFFF;
+            }
+
+            // next_symbol = base of allocation for long codes
+            next_symbol = ((table_mask >> 1) < nsyms) ? (ushort)nsyms : (ushort)(table_mask >> 1);
+
+            // Give ourselves room for codes to grow by up to 16 more bits.
+            // codes now start at bit nbits+16 and end at (nbits+16-codelength)
+            pos <<= 16;
+            table_mask <<= 16;
+            bit_mask = 1 << 15;
+
+            for (bit_num = (byte)(nbits + 1); bit_num <= HUFF_MAXBITS; bit_num++)
+            {
+                for (sym = 0; sym < nsyms; sym++)
+                {
+                    if (length[sym] != bit_num)
+                        continue;
+                    if (pos >= table_mask)
+                        return false; // Table overflow
+
+                    // leaf = the first nbits of the code, reversed
+                    reverse = pos >> 16;
+                    leaf = 0;
+                    fill = (uint)nbits;
+
+                    do
+                    {
+                        leaf <<= 1;
+                        leaf |= reverse & 1;
+                        reverse >>= 1;
+                    } while (--fill != 0);
+
+                    for (fill = 0; fill < (bit_num - nbits); fill++)
+                    {
+                        // If this path hasn't been taken yet, 'allocate' two entries
+                        if (table[leaf] == 0xFFFF)
+                        {
+                            table[(next_symbol << 1)] = 0xFFFF;
+                            table[(next_symbol << 1) + 1] = 0xFFFF;
+                            table[leaf] = (ushort)next_symbol++;
+                        }
+
+                        // Follow the path and select either left or right for next bit
+                        leaf = (uint)(table[leaf] << 1);
+                        if (((pos >> (15 - (int)fill)) & 1) != 0)
+                            leaf++;
+                    }
+
+                    table[leaf] = sym;
+                    pos += bit_mask;
+                }
+
+                bit_mask >>= 1;
+            }
+
+            // Full table?
+            return pos == table_mask;
         }
 
         #endregion

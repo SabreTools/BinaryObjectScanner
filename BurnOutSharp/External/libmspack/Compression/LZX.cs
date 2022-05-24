@@ -1039,7 +1039,7 @@ namespace LibMSPackSharp.Compression
 
         private static Error BUILD_TABLE(LZXDStream lzx, ushort[] table, byte[] lengths, int tablebits, int maxsymbols)
         {
-            if (!CompressionStream.MakeDecodeTable(maxsymbols, tablebits, lengths, table, msb: true))
+            if (!CompressionStream.MakeDecodeTableMSB(maxsymbols, tablebits, lengths, table))
             {
                 Console.WriteLine($"Failed to build table");
                 return lzx.Error = Error.MSPACK_ERR_DECRUNCH;
@@ -1051,7 +1051,7 @@ namespace LibMSPackSharp.Compression
         private static Error BUILD_TABLE_MAYBE_EMPTY(LZXDStream lzx)
         {
             lzx.LENGTH_empty = 0;
-            if (!CompressionStream.MakeDecodeTable(LZX_LENGTH_MAXSYMBOLS, LZX_LENGTH_TABLEBITS, lzx.LENGTH_len, lzx.LENGTH_table, msb: true))
+            if (!CompressionStream.MakeDecodeTableMSB(LZX_LENGTH_MAXSYMBOLS, LZX_LENGTH_TABLEBITS, lzx.LENGTH_len, lzx.LENGTH_table))
             {
                 for (int i = 0; i < LZX_LENGTH_MAXSYMBOLS; i++)
                 {

@@ -360,7 +360,7 @@ namespace LibMSPackSharp.Compression
             }
 
             // Create decoding table with an immediate lookup
-            if (!CompressionStream.MakeDecodeTable(19, 7, bl_len, bl_table, msb: false))
+            if (!CompressionStream.MakeDecodeTableLSB(19, 7, bl_len, bl_table))
                 return Error.INF_ERR_BITLENTBL;
 
             // Read literal / distance code lengths
@@ -565,10 +565,10 @@ namespace LibMSPackSharp.Compression
 
                     // Now huffman lengths are read for either kind of block, 
                     // create huffman decoding tables
-                    if (!CompressionStream.MakeDecodeTable(MSZIP_LITERAL_MAXSYMBOLS, MSZIP_LITERAL_TABLEBITS, zip.LITERAL_len, zip.LITERAL_table, msb: false))
+                    if (!CompressionStream.MakeDecodeTableLSB(MSZIP_LITERAL_MAXSYMBOLS, MSZIP_LITERAL_TABLEBITS, zip.LITERAL_len, zip.LITERAL_table))
                         return Error.INF_ERR_LITERALTBL;
 
-                    if (!CompressionStream.MakeDecodeTable(MSZIP_DISTANCE_MAXSYMBOLS, MSZIP_DISTANCE_TABLEBITS, zip.DISTANCE_len, zip.DISTANCE_table, msb: false))
+                    if (!CompressionStream.MakeDecodeTableLSB(MSZIP_DISTANCE_MAXSYMBOLS, MSZIP_DISTANCE_TABLEBITS, zip.DISTANCE_len, zip.DISTANCE_table))
                         return Error.INF_ERR_DISTANCETBL;
 
                     // Decode forever until end of block code

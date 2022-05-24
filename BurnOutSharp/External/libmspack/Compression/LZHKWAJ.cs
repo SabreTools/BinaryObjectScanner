@@ -152,7 +152,7 @@ namespace LibMSPackSharp.Compression
 
             lzh.RESTORE_BITS(out i_ptr, out i_end, out bit_buffer, out bits_left);
 
-            if (!CompressionStream.MakeDecodeTable(maxsymbols, tablebits, lengths, table, msb: true))
+            if (!CompressionStream.MakeDecodeTableMSB(maxsymbols, tablebits, lengths, table))
                 return Error.MSPACK_ERR_DATAFORMAT;
 
             return Error.MSPACK_ERR_OK;
