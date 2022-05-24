@@ -17,6 +17,8 @@ namespace LibMSPackSharp.Compression
 {
     public abstract class CompressionStream : BaseDecompressState
     {
+        #region Constants
+
         /// <summary>
         /// Number of bits in a character
         /// </summary>
@@ -26,6 +28,13 @@ namespace LibMSPackSharp.Compression
         /// Bit width of a UInt32 bit buffer
         /// </summary>
         public const int BITBUF_WIDTH = 4 * CHAR_BIT;
+
+        /// <summary>
+        /// Maximum bits in a Huffman code
+        /// </summary>
+        public const int HUFF_MAXBITS = 16;
+
+        #endregion
 
         #region I/O buffering
 
@@ -363,7 +372,7 @@ namespace LibMSPackSharp.Compression
         // TODO: These should be in a separate file
         #region ReadHuff Methods
 
-        public const int HUFF_MAXBITS = 16;
+        #region Common
 
         /// <summary>
         /// This function was originally coded by David Tritscher.
@@ -379,6 +388,7 @@ namespace LibMSPackSharp.Compression
         /// Should be ((1<<nbits) + (nsyms*2)) in length.
         /// </param>
         /// <returns>true for OK or false for error</returns>
+        /// <remarks>TODO: Split into MSB and LSB variants</remarks>
         public static bool MakeDecodeTable(int nsyms, int nbits, byte[] length, ushort[] table, bool msb)
         {
             ushort sym, next_symbol;
@@ -534,6 +544,87 @@ namespace LibMSPackSharp.Compression
             // Full table?
             return pos == table_mask;
         }
+
+        /// <summary>
+        /// Per compression error code for decoding failure
+        /// </summary>
+        public abstract Error HUFF_ERROR();
+
+        #endregion
+
+        #region MSB
+
+        /// <summary>
+        /// Decodes the next huffman symbol from the input bitstream into var.
+        /// Do not use this macro on a table unless build_decode_table() succeeded.
+        /// </summary>
+        public long READ_HUFFSYM_MSB(ushort[] table, byte[] lengths, int tablebits, int maxsymbols, ref int i_ptr, ref int i_end, ref uint bit_buffer, ref int bits_left)
+        {
+            ENSURE_BITS(HUFF_MAXBITS, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+            ushort sym = table[PEEK_BITS_MSB(tablebits, bit_buffer)];
+            if (sym >= maxsymbols)
+                HUFF_TRAVERSE_MSB(ref sym, table, tablebits, maxsymbols, bit_buffer);
+
+            REMOVE_BITS_MSB(lengths[sym], ref bit_buffer, ref bits_left);
+            return sym;
+        }
+
+        /// <summary>
+        /// Traverse for a single symbol
+        /// </summary>
+        private void HUFF_TRAVERSE_MSB(ref ushort sym, ushort[] table, int tablebits, int maxsymbols, uint bit_buffer)
+        {
+            int i = 1 << (BITBUF_WIDTH - tablebits);
+            do
+            {
+                if ((i >>= 1) == 0)
+                {
+                    Error = HUFF_ERROR();
+                    return;
+                }
+
+                sym = table[(sym << 1) | ((bit_buffer & i) != 0 ? 1 : 0)];
+            } while (sym >= maxsymbols);
+        }
+
+        #endregion
+
+        #region LSB
+
+        /// <summary>
+        /// Decodes the next huffman symbol from the input bitstream into var.
+        /// Do not use this macro on a table unless build_decode_table() succeeded.
+        /// </summary>
+        public long READ_HUFFSYM_LSB(ushort[] table, byte[] lengths, int tablebits, int maxsymbols, ref int i_ptr, ref int i_end, ref uint bit_buffer, ref int bits_left)
+        {
+            ENSURE_BITS(HUFF_MAXBITS, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+            ushort sym = table[PEEK_BITS_LSB(tablebits, bit_buffer)];
+            if (sym >= maxsymbols)
+                HUFF_TRAVERSE_LSB(ref sym, table, tablebits, maxsymbols, bit_buffer);
+
+            REMOVE_BITS_LSB(lengths[sym], ref bit_buffer, ref bits_left);
+            return sym;
+        }
+
+        /// <summary>
+        /// Traverse for a single symbol
+        /// </summary>
+        private void HUFF_TRAVERSE_LSB(ref ushort sym, ushort[] table, int tablebits, int maxsymbols, uint bit_buffer)
+        {
+            int i = tablebits - 1;
+            do
+            {
+                if (i++ > HUFF_MAXBITS)
+                {
+                    Error = HUFF_ERROR();
+                    return;
+                }
+
+                sym = table[(sym << 1) | ((bit_buffer >> i) & 1)];
+            } while (sym >= maxsymbols);
+        }
+
+        #endregion
 
         #endregion
     }

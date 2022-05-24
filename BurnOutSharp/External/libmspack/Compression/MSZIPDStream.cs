@@ -54,6 +54,9 @@ namespace LibMSPackSharp.Compression
         #endregion
 
         /// <inheritdoc/>
+        public override Error HUFF_ERROR() => Error.INF_ERR_HUFFSYM;
+
+        /// <inheritdoc/>
         public override void READ_BYTES(ref int i_ptr, ref int i_end, ref uint bit_buffer, ref int bits_left)
         {
             READ_IF_NEEDED(ref i_ptr, ref i_end);

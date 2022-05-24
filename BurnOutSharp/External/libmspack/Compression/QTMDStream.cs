@@ -10,6 +10,8 @@
  * For further details, see the file COPYING.LIB distributed with libmspack
  */
 
+using System;
+
 namespace LibMSPackSharp.Compression
 {
     public class QTMDStream : CompressionStream
@@ -123,6 +125,9 @@ namespace LibMSPackSharp.Compression
         public QTMDModelSym[] Model7Symbols { get; set; } = new QTMDModelSym[7 + 1];
 
         #endregion
+
+        /// <inheritdoc/>
+        public override Error HUFF_ERROR() => throw new NotImplementedException();
 
         /// <inheritdoc/>
         public override void READ_BYTES(ref int i_ptr, ref int i_end, ref uint bit_buffer, ref int bits_left)

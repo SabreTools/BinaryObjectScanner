@@ -12,7 +12,6 @@
 
 using System;
 using System.IO;
-using static LibMSPackSharp.Compression.Constants;
 
 namespace LibMSPackSharp.Compression
 {
@@ -289,7 +288,7 @@ namespace LibMSPackSharp.Compression
 
                 block_len = (int)zip.READ_BITS_LSB(8, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
                 i = (int)zip.READ_BITS_LSB(8, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
-                
+
                 block_len |= i << 8;
                 if (block_len == 0)
                     break;
@@ -514,16 +513,9 @@ namespace LibMSPackSharp.Compression
                         i_ptr += (int)this_run;
                         length -= this_run;
 
-                        //FLUSH_IF_NEEDED
-                        {
-                            if (zip.WindowPosition == MSZIP_FRAME_SIZE)
-                            {
-                                if (zip.FlushWindow(zip, MSZIP_FRAME_SIZE) != Error.MSPACK_ERR_OK)
-                                    return Error.INF_ERR_FLUSH;
-
-                                zip.WindowPosition = 0;
-                            }
-                        }
+                        err = FLUSH_IF_NEEDED(zip);
+                        if (err != Error.MSPACK_ERR_OK)
+                            return err;
                     }
                 }
                 else if ((block_type == 1) || (block_type == 2))
@@ -582,44 +574,14 @@ namespace LibMSPackSharp.Compression
                     // Decode forever until end of block code
                     for (; ; )
                     {
-                        //READ_HUFFSYM(LITERAL, code)
-                        {
-                            zip.ENSURE_BITS(CompressionStream.HUFF_MAXBITS, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
-                            sym = zip.LITERAL_table[zip.PEEK_BITS_LSB(MSZIP_LITERAL_TABLEBITS, bit_buffer)];
-                            if (sym >= MSZIP_LITERAL_MAXSYMBOLS)
-                            {
-                                //HUFF_TRAVERSE(LITERAL)
-                                {
-                                    i = MSZIP_LITERAL_TABLEBITS - 1;
-                                    do
-                                    {
-                                        if (i++ > CompressionStream.HUFF_MAXBITS)
-                                            return Error.INF_ERR_HUFFSYM;
-
-                                        sym = zip.LITERAL_table[(sym << 1) | ((bit_buffer >> (int)i) & 1)];
-                                    } while (sym >= MSZIP_LITERAL_MAXSYMBOLS);
-                                }
-                            }
-
-                            (code) = sym;
-                            i = zip.LITERAL_len[sym];
-                            zip.REMOVE_BITS_LSB((int)i, ref bit_buffer, ref bits_left);
-                        }
+                        code = (uint)zip.READ_HUFFSYM_LSB(zip.LITERAL_table, zip.LITERAL_len, MSZIP_LITERAL_TABLEBITS, MSZIP_LITERAL_MAXSYMBOLS, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
 
                         if (code < 256)
                         {
                             zip.Window[zip.WindowPosition++] = (byte)code;
-
-                            //FLUSH_IF_NEEDED
-                            {
-                                if (zip.WindowPosition == MSZIP_FRAME_SIZE)
-                                {
-                                    if (zip.FlushWindow(zip, MSZIP_FRAME_SIZE) != Error.MSPACK_ERR_OK)
-                                        return Error.INF_ERR_FLUSH;
-
-                                    zip.WindowPosition = 0;
-                                }
-                            }
+                            err = FLUSH_IF_NEEDED(zip);
+                            if (err != Error.MSPACK_ERR_OK)
+                                return err;
                         }
                         else if (code == 256)
                         {
@@ -635,29 +597,7 @@ namespace LibMSPackSharp.Compression
                             length = (uint)zip.READ_BITS_T_LSB(lit_extrabits[code], ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
                             length += lit_lengths[code];
 
-                            //READ_HUFFSYM(DISTANCE, code)
-                            {
-                                zip.ENSURE_BITS(CompressionStream.HUFF_MAXBITS, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
-                                sym = zip.DISTANCE_table[zip.PEEK_BITS_LSB(MSZIP_DISTANCE_TABLEBITS, bit_buffer)];
-                                if (sym >= MSZIP_DISTANCE_MAXSYMBOLS)
-                                {
-                                    //HUFF_TRAVERSE(DISTANCE)
-                                    {
-                                        i = MSZIP_DISTANCE_TABLEBITS - 1;
-                                        do
-                                        {
-                                            if (i++ > CompressionStream.HUFF_MAXBITS)
-                                                return Error.INF_ERR_HUFFSYM;
-
-                                            sym = zip.DISTANCE_table[(sym << 1) | ((bit_buffer >> (int)i) & 1)];
-                                        } while (sym >= MSZIP_DISTANCE_MAXSYMBOLS);
-                                    }
-                                }
-
-                                (code) = sym;
-                                i = zip.DISTANCE_len[sym];
-                                zip.REMOVE_BITS_LSB((int)i, ref bit_buffer, ref bits_left);
-                            }
+                            code = (uint)zip.READ_HUFFSYM_LSB(zip.DISTANCE_table, zip.DISTANCE_len, MSZIP_DISTANCE_TABLEBITS, MSZIP_DISTANCE_MAXSYMBOLS, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
 
                             if (code >= 30)
                                 return Error.INF_ERR_DISTCODE;
@@ -678,17 +618,9 @@ namespace LibMSPackSharp.Compression
                                 {
                                     zip.Window[zip.WindowPosition++] = zip.Window[match_posn++];
                                     match_posn &= MSZIP_FRAME_SIZE - 1;
-
-                                    //FLUSH_IF_NEEDED
-                                    {
-                                        if (zip.WindowPosition == MSZIP_FRAME_SIZE)
-                                        {
-                                            if (zip.FlushWindow(zip, MSZIP_FRAME_SIZE) != Error.MSPACK_ERR_OK)
-                                                return Error.INF_ERR_FLUSH;
-
-                                            zip.WindowPosition = 0;
-                                        }
-                                    }
+                                    err = FLUSH_IF_NEEDED(zip);
+                                    if (err != Error.MSPACK_ERR_OK)
+                                        return err;
                                 }
                             }
                             else
@@ -716,16 +648,9 @@ namespace LibMSPackSharp.Compression
                                     if (match_posn == MSZIP_FRAME_SIZE)
                                         match_posn = 0;
 
-                                    //FLUSH_IF_NEEDED
-                                    {
-                                        if (zip.WindowPosition == MSZIP_FRAME_SIZE)
-                                        {
-                                            if (zip.FlushWindow(zip, MSZIP_FRAME_SIZE) != Error.MSPACK_ERR_OK)
-                                                return Error.INF_ERR_FLUSH;
-
-                                            zip.WindowPosition = 0;
-                                        }
-                                    }
+                                    err = FLUSH_IF_NEEDED(zip);
+                                    if (err != Error.MSPACK_ERR_OK)
+                                        return err;
                                 } while (length > 0);
                             }
 
@@ -750,6 +675,19 @@ namespace LibMSPackSharp.Compression
             zip.STORE_BITS(i_ptr, i_end, bit_buffer, bits_left);
 
             // Return success
+            return Error.MSPACK_ERR_OK;
+        }
+
+        private static Error FLUSH_IF_NEEDED(MSZIPDStream zip)
+        {
+            if (zip.WindowPosition == MSZIP_FRAME_SIZE)
+            {
+                if (zip.FlushWindow(zip, MSZIP_FRAME_SIZE) != Error.MSPACK_ERR_OK)
+                    return Error.INF_ERR_FLUSH;
+
+                zip.WindowPosition = 0;
+            }
+
             return Error.MSPACK_ERR_OK;
         }
 

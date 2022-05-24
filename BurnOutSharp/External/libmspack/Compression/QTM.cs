@@ -244,58 +244,7 @@ namespace LibMSPackSharp.Compression
 
                 while (window_posn < frame_end)
                 {
-                    //GET_SYMBOL(qtm.Model7, var)
-                    {
-                        range = (uint)((H - L) & 0xFFFF) + 1;
-                        symf = (ushort)(((((C - L + 1) * qtm.Model7.Syms[0].CumulativeFrequency) - 1) / range) & 0xFFFF);
-
-                        for (i = 1; i < qtm.Model7.Entries; i++)
-                        {
-                            if (qtm.Model7.Syms[i].CumulativeFrequency <= symf)
-                                break;
-                        }
-
-                        (selector) = qtm.Model7.Syms[i - 1].Sym;
-
-                        range = (uint)(H - L) + 1;
-                        symf = qtm.Model7.Syms[0].CumulativeFrequency;
-                        H = (ushort)(L + ((qtm.Model7.Syms[i - 1].CumulativeFrequency * range) / symf) - 1);
-                        L = (ushort)(L + ((qtm.Model7.Syms[i].CumulativeFrequency * range) / symf));
-
-                        do
-                        {
-                            qtm.Model7.Syms[--i].CumulativeFrequency += 8;
-                        } while (i > 0);
-
-                        if (qtm.Model7.Syms[0].CumulativeFrequency > 3800)
-                            UpdateModel(qtm.Model7);
-
-                        while (true)
-                        {
-                            if ((L & 0x8000) != (H & 0x8000))
-                            {
-                                if ((L & 0x4000) != 0 && (H & 0x4000) == 0)
-                                {
-                                    // Underflow case
-                                    C ^= 0x4000;
-                                    L &= 0x3FFF;
-                                    H |= 0x4000;
-                                }
-                                else
-                                {
-                                    break;
-                                }
-                            }
-
-                            L <<= 1;
-                            H = (ushort)((H << 1) | 1);
-
-                            qtm.ENSURE_BITS(1, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
-                            C = (ushort)((C << 1) | (qtm.PEEK_BITS_MSB(1, bit_buffer)));
-                            qtm.REMOVE_BITS_MSB(1, ref bit_buffer, ref bits_left);
-                        }
-                    }
-
+                    selector = GET_SYMBOL(qtm, qtm.Model7, ref H, ref L, ref C, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
                     if (selector < 4)
                     {
                         // Literal byte
@@ -320,58 +269,7 @@ namespace LibMSPackSharp.Compression
                                 break;
                         }
 
-                        //GET_SYMBOL(mdl, sym)
-                        {
-                            range = (uint)((H - L) & 0xFFFF) + 1;
-                            symf = (ushort)(((((C - L + 1) * mdl.Syms[0].CumulativeFrequency) - 1) / range) & 0xFFFF);
-
-                            for (i = 1; i < mdl.Entries; i++)
-                            {
-                                if (mdl.Syms[i].CumulativeFrequency <= symf)
-                                    break;
-                            }
-
-                            (sym) = mdl.Syms[i - 1].Sym;
-
-                            range = (uint)(H - L) + 1;
-                            symf = mdl.Syms[0].CumulativeFrequency;
-                            H = (ushort)(L + ((mdl.Syms[i - 1].CumulativeFrequency * range) / symf) - 1);
-                            L = (ushort)(L + ((mdl.Syms[i].CumulativeFrequency * range) / symf));
-
-                            do
-                            {
-                                mdl.Syms[--i].CumulativeFrequency += 8;
-                            } while (i > 0);
-
-                            if (mdl.Syms[0].CumulativeFrequency > 3800)
-                                UpdateModel(mdl);
-
-                            while (true)
-                            {
-                                if ((L & 0x8000) != (H & 0x8000))
-                                {
-                                    if ((L & 0x4000) != 0 && (H & 0x4000) == 0)
-                                    {
-                                        // Underflow case
-                                        C ^= 0x4000;
-                                        L &= 0x3FFF;
-                                        H |= 0x4000;
-                                    }
-                                    else
-                                    {
-                                        break;
-                                    }
-                                }
-
-                                L <<= 1;
-                                H = (ushort)((H << 1) | 1);
-
-                                qtm.ENSURE_BITS(1, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
-                                C = (ushort)((C << 1) | (qtm.PEEK_BITS_MSB(1, bit_buffer)));
-                                qtm.REMOVE_BITS_MSB(1, ref bit_buffer, ref bits_left);
-                            }
-                        }
-
+                        sym = GET_SYMBOL(qtm, mdl, ref H, ref L, ref C, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
                         window[window_posn++] = (byte)sym;
                         frame_todo--;
                     }
@@ -382,58 +280,7 @@ namespace LibMSPackSharp.Compression
                         {
                             // Selector 4 = fixed length match (3 bytes)
                             case 4:
-                                //GET_SYMBOL(qtm.Model4, sym)
-                                {
-                                    range = (uint)((H - L) & 0xFFFF) + 1;
-                                    symf = (ushort)(((((C - L + 1) * qtm.Model4.Syms[0].CumulativeFrequency) - 1) / range) & 0xFFFF);
-
-                                    for (i = 1; i < qtm.Model4.Entries; i++)
-                                    {
-                                        if (qtm.Model4.Syms[i].CumulativeFrequency <= symf)
-                                            break;
-                                    }
-
-                                    (sym) = qtm.Model4.Syms[i - 1].Sym;
-
-                                    range = (uint)(H - L) + 1;
-                                    symf = qtm.Model4.Syms[0].CumulativeFrequency;
-                                    H = (ushort)(L + ((qtm.Model4.Syms[i - 1].CumulativeFrequency * range) / symf) - 1);
-                                    L = (ushort)(L + ((qtm.Model4.Syms[i].CumulativeFrequency * range) / symf));
-
-                                    do
-                                    {
-                                        qtm.Model4.Syms[--i].CumulativeFrequency += 8;
-                                    } while (i > 0);
-
-                                    if (qtm.Model4.Syms[0].CumulativeFrequency > 3800)
-                                        UpdateModel(qtm.Model4);
-
-                                    while (true)
-                                    {
-                                        if ((L & 0x8000) != (H & 0x8000))
-                                        {
-                                            if ((L & 0x4000) != 0 && (H & 0x4000) == 0)
-                                            {
-                                                // Underflow case
-                                                C ^= 0x4000;
-                                                L &= 0x3FFF;
-                                                H |= 0x4000;
-                                            }
-                                            else
-                                            {
-                                                break;
-                                            }
-                                        }
-
-                                        L <<= 1;
-                                        H = (ushort)((H << 1) | 1);
-
-                                        qtm.ENSURE_BITS(1, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
-                                        C = (ushort)((C << 1) | (qtm.PEEK_BITS_MSB(1, bit_buffer)));
-                                        qtm.REMOVE_BITS_MSB(1, ref bit_buffer, ref bits_left);
-                                    }
-                                }
-
+                                sym = GET_SYMBOL(qtm, qtm.Model4, ref H, ref L, ref C, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
                                 extra = (int)qtm.READ_MANY_BITS_MSB(extra_bits[sym], ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
                                 match_offset = (uint)(position_base[sym] + extra + 1);
                                 match_length = 3;
@@ -441,58 +288,7 @@ namespace LibMSPackSharp.Compression
 
                             // Selector 5 = fixed length match (4 bytes)
                             case 5:
-                                //GET_SYMBOL(qtm.Model5, sym)
-                                {
-                                    range = (uint)((H - L) & 0xFFFF) + 1;
-                                    symf = (ushort)(((((C - L + 1) * qtm.Model5.Syms[0].CumulativeFrequency) - 1) / range) & 0xFFFF);
-
-                                    for (i = 1; i < qtm.Model5.Entries; i++)
-                                    {
-                                        if (qtm.Model5.Syms[i].CumulativeFrequency <= symf)
-                                            break;
-                                    }
-
-                                    (sym) = qtm.Model5.Syms[i - 1].Sym;
-
-                                    range = (uint)(H - L) + 1;
-                                    symf = qtm.Model5.Syms[0].CumulativeFrequency;
-                                    H = (ushort)(L + ((qtm.Model5.Syms[i - 1].CumulativeFrequency * range) / symf) - 1);
-                                    L = (ushort)(L + ((qtm.Model5.Syms[i].CumulativeFrequency * range) / symf));
-
-                                    do
-                                    {
-                                        qtm.Model5.Syms[--i].CumulativeFrequency += 8;
-                                    } while (i > 0);
-
-                                    if (qtm.Model5.Syms[0].CumulativeFrequency > 3800)
-                                        UpdateModel(qtm.Model5);
-
-                                    while (true)
-                                    {
-                                        if ((L & 0x8000) != (H & 0x8000))
-                                        {
-                                            if ((L & 0x4000) != 0 && (H & 0x4000) == 0)
-                                            {
-                                                // Underflow case
-                                                C ^= 0x4000;
-                                                L &= 0x3FFF;
-                                                H |= 0x4000;
-                                            }
-                                            else
-                                            {
-                                                break;
-                                            }
-                                        }
-
-                                        L <<= 1;
-                                        H = (ushort)((H << 1) | 1);
-
-                                        qtm.ENSURE_BITS(1, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
-                                        C = (ushort)((C << 1) | (qtm.PEEK_BITS_MSB(1, bit_buffer)));
-                                        qtm.REMOVE_BITS_MSB(1, ref bit_buffer, ref bits_left);
-                                    }
-                                }
-
+                                sym = GET_SYMBOL(qtm, qtm.Model5, ref H, ref L, ref C, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
                                 extra = (int)qtm.READ_MANY_BITS_MSB(extra_bits[sym], ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
                                 match_offset = (uint)(position_base[sym] + extra + 1);
                                 match_length = 4;
@@ -500,113 +296,11 @@ namespace LibMSPackSharp.Compression
 
                             // Selector 6 = variable length match
                             case 6:
-                                //GET_SYMBOL(qtm.Model6Len, sym)
-                                {
-                                    range = (uint)((H - L) & 0xFFFF) + 1;
-                                    symf = (ushort)(((((C - L + 1) * qtm.Model6Len.Syms[0].CumulativeFrequency) - 1) / range) & 0xFFFF);
-
-                                    for (i = 1; i < qtm.Model6Len.Entries; i++)
-                                    {
-                                        if (qtm.Model6Len.Syms[i].CumulativeFrequency <= symf)
-                                            break;
-                                    }
-
-                                    (sym) = qtm.Model6Len.Syms[i - 1].Sym;
-
-                                    range = (uint)(H - L) + 1;
-                                    symf = qtm.Model6Len.Syms[0].CumulativeFrequency;
-                                    H = (ushort)(L + ((qtm.Model6Len.Syms[i - 1].CumulativeFrequency * range) / symf) - 1);
-                                    L = (ushort)(L + ((qtm.Model6Len.Syms[i].CumulativeFrequency * range) / symf));
-
-                                    do
-                                    {
-                                        qtm.Model6Len.Syms[--i].CumulativeFrequency += 8;
-                                    } while (i > 0);
-
-                                    if (qtm.Model6Len.Syms[0].CumulativeFrequency > 3800)
-                                        UpdateModel(qtm.Model6Len);
-
-                                    while (true)
-                                    {
-                                        if ((L & 0x8000) != (H & 0x8000))
-                                        {
-                                            if ((L & 0x4000) != 0 && (H & 0x4000) == 0)
-                                            {
-                                                // Underflow case
-                                                C ^= 0x4000;
-                                                L &= 0x3FFF;
-                                                H |= 0x4000;
-                                            }
-                                            else
-                                            {
-                                                break;
-                                            }
-                                        }
-
-                                        L <<= 1;
-                                        H = (ushort)((H << 1) | 1);
-
-                                        qtm.ENSURE_BITS(1, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
-                                        C = (ushort)((C << 1) | (qtm.PEEK_BITS_MSB(1, bit_buffer)));
-                                        qtm.REMOVE_BITS_MSB(1, ref bit_buffer, ref bits_left);
-                                    }
-                                }
-
+                                sym = GET_SYMBOL(qtm, qtm.Model6Len, ref H, ref L, ref C, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
                                 extra = (int)qtm.READ_MANY_BITS_MSB(length_extra[sym], ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
                                 match_length = length_base[sym] + extra + 5;
 
-                                //GET_SYMBOL(qtm.Model6, sym)
-                                {
-                                    range = (uint)((H - L) & 0xFFFF) + 1;
-                                    symf = (ushort)(((((C - L + 1) * qtm.Model6.Syms[0].CumulativeFrequency) - 1) / range) & 0xFFFF);
-
-                                    for (i = 1; i < qtm.Model6.Entries; i++)
-                                    {
-                                        if (qtm.Model6.Syms[i].CumulativeFrequency <= symf)
-                                            break;
-                                    }
-
-                                    (sym) = qtm.Model6.Syms[i - 1].Sym;
-
-                                    range = (uint)(H - L) + 1;
-                                    symf = qtm.Model6.Syms[0].CumulativeFrequency;
-                                    H = (ushort)(L + ((qtm.Model6.Syms[i - 1].CumulativeFrequency * range) / symf) - 1);
-                                    L = (ushort)(L + ((qtm.Model6.Syms[i].CumulativeFrequency * range) / symf));
-
-                                    do
-                                    {
-                                        qtm.Model6.Syms[--i].CumulativeFrequency += 8;
-                                    } while (i > 0);
-
-                                    if (qtm.Model6.Syms[0].CumulativeFrequency > 3800)
-                                        UpdateModel(qtm.Model6);
-
-                                    while (true)
-                                    {
-                                        if ((L & 0x8000) != (H & 0x8000))
-                                        {
-                                            if ((L & 0x4000) != 0 && (H & 0x4000) == 0)
-                                            {
-                                                // Underflow case
-                                                C ^= 0x4000;
-                                                L &= 0x3FFF;
-                                                H |= 0x4000;
-                                            }
-                                            else
-                                            {
-                                                break;
-                                            }
-                                        }
-
-                                        L <<= 1;
-                                        H = (ushort)((H << 1) | 1);
-
-                                        qtm.ENSURE_BITS(1, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
-                                        C = (ushort)((C << 1) | (qtm.PEEK_BITS_MSB(1, bit_buffer)));
-                                        qtm.REMOVE_BITS_MSB(1, ref bit_buffer, ref bits_left);
-                                    }
-                                }
-
+                                sym = GET_SYMBOL(qtm, qtm.Model6, ref H, ref L, ref C, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
                                 extra = (int)qtm.READ_MANY_BITS_MSB(extra_bits[sym], ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
                                 match_offset = (uint)(position_base[sym] + extra + 1);
                                 break;
@@ -784,6 +478,61 @@ namespace LibMSPackSharp.Compression
             qtm.Current = C;
 
             return Error.MSPACK_ERR_OK;
+        }
+
+        private static ushort GET_SYMBOL(QTMDStream qtm, QTMDModel model, ref ushort H, ref ushort L, ref ushort C, ref int i_ptr, ref int i_end, ref uint bit_buffer, ref int bits_left)
+        {
+            uint range = (uint)((H - L) & 0xFFFF) + 1;
+            ushort symf = (ushort)(((((C - L + 1) * model.Syms[0].CumulativeFrequency) - 1) / range) & 0xFFFF);
+
+            int i = 1;
+            for (; i < model.Entries; i++)
+            {
+                if (model.Syms[i].CumulativeFrequency <= symf)
+                    break;
+            }
+
+            ushort temp = model.Syms[i - 1].Sym;
+
+            range = (uint)(H - L) + 1;
+            symf = model.Syms[0].CumulativeFrequency;
+            H = (ushort)(L + ((model.Syms[i - 1].CumulativeFrequency * range) / symf) - 1);
+            L = (ushort)(L + ((model.Syms[i].CumulativeFrequency * range) / symf));
+
+            do
+            {
+                model.Syms[--i].CumulativeFrequency += 8;
+            } while (i > 0);
+
+            if (model.Syms[0].CumulativeFrequency > 3800)
+                UpdateModel(model);
+
+            while (true)
+            {
+                if ((L & 0x8000) != (H & 0x8000))
+                {
+                    if ((L & 0x4000) != 0 && (H & 0x4000) == 0)
+                    {
+                        // Underflow case
+                        C ^= 0x4000;
+                        L &= 0x3FFF;
+                        H |= 0x4000;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+                L <<= 1;
+                H = (ushort)((H << 1) | 1);
+
+                qtm.ENSURE_BITS(1, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+                C = (ushort)((C << 1) | (qtm.PEEK_BITS_MSB(1, bit_buffer)));
+                qtm.REMOVE_BITS_MSB(1, ref bit_buffer, ref bits_left);
+            }
+
+            return temp;
         }
 
         private static void UpdateModel(QTMDModel model)
