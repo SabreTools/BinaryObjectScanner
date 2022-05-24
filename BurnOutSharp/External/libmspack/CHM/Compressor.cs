@@ -74,7 +74,7 @@ namespace LibMSPackSharp.CHM
         /// <returns>an error code, or MSPACK_ERR_OK if successful</returns>
         /// <see cref="UseTemporaryFile"/>
         /// <see cref="SetParam"/>
-        public Func<CompressFile[], string, Error> Generate;
+        public Error Generate(CompressFile[] fileList, string outputFile) => throw new NotImplementedException();
 
         /// <summary>
         /// Specifies whether a temporary file is used during CHM generation.
@@ -130,7 +130,7 @@ namespace LibMSPackSharp.CHM
         /// </param>
         /// <returns>an error code, or MSPACK_ERR_OK if successful</returns>
         /// <see cref="Generate"/>
-        public Func<bool, string, Error> UseTemporaryFile;
+        public Error UseTemporaryFile(bool useTempFile, string tempFile) => throw new NotImplementedException();
 
         /// <summary>
         /// Sets a CHM compression engine parameter.
@@ -142,7 +142,7 @@ namespace LibMSPackSharp.CHM
         /// is a problem with either parameter or value.
         /// </returns>
         /// <see cref="Generate"/>
-        public Func<Parameters, int, Error> SetParam;
+        public Error SetParam(Parameters param, int value) => throw new NotImplementedException();
 
         #endregion
     }

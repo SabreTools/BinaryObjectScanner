@@ -52,11 +52,8 @@ namespace LibMSPackSharp.CHM
         /// The filename pointer should be considered "in use" until close() is
         /// called on the CHM helpfile.
         /// </summary>
-        /// <param name="filename">
-        /// the filename of the CHM helpfile. This is passed
-        /// directly to mspack_system::open().
-        /// </param>
-        /// <returns>a pointer to a mschmd_header structure, or NULL on failure</returns>
+        /// <param name="filename">The filename of the CHM helpfile. This is passed directly to SystemImpl.Open().</param>
+        /// <returns>A pointer to a CHM structure, or NULL on failure</returns>
         /// <see cref="Close(CHM)"/>
         public CHM Open(string filename) => RealOpen(filename, true);
 
@@ -72,24 +69,12 @@ namespace LibMSPackSharp.CHM
         /// mschmd_file pointers referencing that CHM are also now invalid, and
         /// cannot be used again.
         /// </summary>
-        /// <param name="chm">the CHM helpfile to close</param>
+        /// <param name="chm">The CHM helpfile to close</param>
         /// <see cref="Open(string)"/>
         /// <see cref="FastOpen(string)"/>
         public void Close(CHM chm)
         {
             Error = Error.MSPACK_ERR_OK;
-
-            // Free files
-            DecompressFile fi, nfi;
-            for (fi = chm.Files; fi != null; fi = nfi)
-            {
-                nfi = fi.Next;
-            }
-
-            for (fi = chm.SysFiles; fi != null; fi = nfi)
-            {
-                nfi = fi.Next;
-            }
 
             // If this CHM was being decompressed, free decompression state
             if (State != null && (State.Header == chm))
@@ -123,32 +108,27 @@ namespace LibMSPackSharp.CHM
 
             CHM chm = file.Section.Header;
 
-            // Create decompression state if it doesn't exist
-            if (State == null)
+            // Close existing file handles
+            System.Close(State?.InputFileHandle);
+            System.Close(State?.OutputFileHandle);
+
+            // Allocate generic decompression state
+            State = new DecompressState()
             {
-                State = new DecompressState();
-                State.Header = chm;
-                State.Offset = 0;
-                State.State = null;
-                State.System = System;
-                State.System.Write = SysWrite;
-                State.InputFileHandle = null;
-                State.OutputFileHandle = null;
-            }
+                Header = chm,
+                Offset = 0,
+                State = null,
+                System = System,
+                InputFileHandle = null,
+                OutputFileHandle = null,
+            };
+
+            State.System.Write = SysWrite;
 
             // Open input chm file if not open, or the open one is a different chm
-            if (State.InputFileHandle == null || (State.Header != chm))
-            {
-                System.Close(State.InputFileHandle);
-                System.Close(State.OutputFileHandle);
-
-                State.Header = chm;
-                State.Offset = 0;
-                State.State = null;
-                State.InputFileHandle = System.Open(chm.Filename, OpenMode.MSPACK_SYS_OPEN_READ);
-                if (State.InputFileHandle == null)
-                    return Error = Error.MSPACK_ERR_OPEN;
-            }
+            State.InputFileHandle = System.Open(chm.Filename, OpenMode.MSPACK_SYS_OPEN_READ);
+            if (State.InputFileHandle == null)
+                return Error = Error.MSPACK_ERR_OPEN;
 
             // Open file for output
             FileStream fh = System.Open(filename, OpenMode.MSPACK_SYS_OPEN_WRITE);
@@ -164,88 +144,22 @@ namespace LibMSPackSharp.CHM
 
             Error = Error.MSPACK_ERR_OK;
 
+            // Decompress the file based on section ID
             switch (file.Section.ID)
             {
                 // Uncompressed section file
                 case 0:
-                    // Simple seek + copy
-                    if (!System.Seek(State.InputFileHandle, file.Section.Header.Sec0.Offset + file.Offset, SeekMode.MSPACK_SYS_SEEK_START))
-                    {
-                        Error = Error.MSPACK_ERR_SEEK;
-                    }
-                    else
-                    {
-                        byte[] buf = new byte[512];
-                        long length = file.Length;
-                        while (length > 0)
-                        {
-                            int run = 512;
-                            if (run > length)
-                                run = (int)length;
-
-                            if (System.Read(State.InputFileHandle, buf, 0, run) != run)
-                            {
-                                Error = Error.MSPACK_ERR_READ;
-                                break;
-                            }
-
-                            if (System.Write(fh, buf, 0, run) != run)
-                            {
-                                Error = Error.MSPACK_ERR_WRITE;
-                                break;
-                            }
-
-                            length -= run;
-                        }
-                    }
-                    break;
+                    return ExtractSection0File(file, fh);
 
                 // MSCompressed section file
                 case 1:
-                    // (Re)initialise compression state if we it is not yet initialised,
-                    // or we have advanced too far and have to backtrack
-                    if (State.State == null || (file.Offset < State.Offset))
-                    {
-                        if (State.State != null)
-                            State.State = null;
+                    return ExtractSection1File(file, fh);
 
-                        if (InitDecompressor(file) != Error.MSPACK_ERR_OK)
-                            break;
-                    }
-
-                    // Seek to input data
-                    if (!System.Seek(State.InputFileHandle, State.InOffset, SeekMode.MSPACK_SYS_SEEK_START))
-                    {
-                        Error = Error.MSPACK_ERR_SEEK;
-                        break;
-                    }
-
-                    // Get to correct offset.
-                    State.OutputFileHandle = null;
-                    long bytes;
-                    if ((bytes = file.Offset - State.Offset) != 0)
-                        Error = LZX.Decompress(State.State, bytes);
-
-                    // If getting to the correct offset was error free, unpack file
-                    if (Error == Error.MSPACK_ERR_OK)
-                    {
-                        State.OutputFileHandle = fh;
-                        Error = LZX.Decompress(State.State, file.Length);
-                    }
-
-                    // Save offset in input source stream, in case there is a section 0
-                    // file between now and the next section 1 file extracted
-                    State.InOffset = System.Tell(State.InputFileHandle);
-
-                    // If an LZX error occured, the LZX decompressor is now useless
-                    if (Error != Error.MSPACK_ERR_OK)
-                        State.State = null;
-
-                    break;
+                // Should not happen
+                default:
+                    System.Close(fh);
+                    return Error = Error.MSPACK_ERR_ARGS;
             }
-
-            System.Close(fh);
-            return Error;
         }
 
         /// <summary>
@@ -274,179 +188,6 @@ namespace LibMSPackSharp.CHM
         /// <see cref="Extract(DecompressFile, string)"/>
         public CHM FastOpen(string filename) => RealOpen(filename, false);
 
-        /// <summary>
-        /// Finds file details quickly.
-        ///
-        /// Instead of reading all CHM helpfile headers and building a list of
-        /// files, fast_open() and fast_find() are intended for finding file
-        /// details only when they are needed.The CHM file format includes an
-        /// on-disk file index to allow this.
-        ///
-        /// Given a case-sensitive filename, fast_find() will search the on-disk
-        /// index for that file.
-        ///
-        /// If the file was found, the caller-provided mschmd_file structure will
-        /// be filled out like so:
-        /// - section: the correct value for the found file
-        /// - offset: the correct value for the found file
-        /// - length: the correct value for the found file
-        /// - all other structure elements: NULL or 0
-        ///
-        /// If the file was not found, MSPACK_ERR_OK will still be returned as the
-        /// result, but the caller-provided structure will be filled out like so:
-        /// - section: NULL
-        /// - offset: 0
-        /// - length: 0
-        /// - all other structure elements: NULL or 0
-        ///
-        /// This method is intended to be used in conjunction with CHM helpfiles
-        /// opened with fast_open(), but it also works with helpfiles opened
-        /// using the regular open().
-        /// </summary>
-        /// <param name="chm">the CHM helpfile to search for the file</param>
-        /// <param name="filename">the filename of the file to search for</param>
-        /// <param name="f_ptr">a pointer to a caller-provded mschmd_file structure</param>
-        /// <returns>an error code, or MSPACK_ERR_OK if successful</returns>
-        /// <see cref="Open(string)"/>
-        /// <see cref="Close(CHM)"/>
-        /// <see cref="FastOpen(string)"/>
-        /// <see cref="Extract(DecompressFile, string)"/>
-        public Error FastFind(CHM chm, string filename, DecompressFile f_ptr)
-        {
-            // p and end are initialised to prevent MSVC warning about "potentially"
-            // uninitialised usage. This is provably untrue, but MS won't fix:
-            // https://developercommunity.visualstudio.com/content/problem/363489/c4701-false-positive-warning.html
-            byte[] chunk = new byte[0];
-            int p = -1, end = -1, result = -1;
-            Error err = Error.MSPACK_ERR_OK;
-            uint n, sec;
-
-            if (chm == null || f_ptr == null)
-                return Error.MSPACK_ERR_ARGS;
-
-            // Clear the results structure
-            f_ptr = new DecompressFile();
-
-            FileStream fh = System.Open(chm.Filename, OpenMode.MSPACK_SYS_OPEN_READ);
-            if (fh == null)
-                return Error.MSPACK_ERR_OPEN;
-
-            // Go through PMGI chunk hierarchy to reach PMGL chunk
-            if (chm.HeaderSection1.IndexRoot < chm.HeaderSection1.NumChunks)
-            {
-                n = chm.HeaderSection1.IndexRoot;
-                for (; ; )
-                {
-                    if ((chunk = ReadChunk(chm, fh, n)) == null)
-                    {
-                        System.Close(fh);
-                        return Error;
-                    }
-
-                    // Search PMGI/PMGL chunk. exit early if no entry found
-                    if ((result = SearchChunk(chm, chunk, filename, ref p, ref end)) <= 0)
-                        break;
-
-                    // Found result. loop around for next chunk if this is PMGI
-                    if (chunk[3] == 0x4C)
-                    {
-                        break;
-                    }
-                    else
-                    {
-                        // READ_ENCINT(n)
-                        n = 0;
-                        do
-                        {
-                            if (p >= end)
-                            {
-                                Console.WriteLine("Read beyond end of chunk entries");
-                                System.Close(fh);
-                                return Error = Error.MSPACK_ERR_DATAFORMAT;
-                            }
-
-                            n = (uint)((n << 7) | (chunk[p] & 0x7F));
-                        } while ((chunk[p++] & 0x80) != 0);
-                    }
-                }
-            }
-            else
-            {
-                // PMGL chunks only, search from first_pmgl to last_pmgl
-                for (n = chm.HeaderSection1.FirstPMGL; n <= chm.HeaderSection1.LastPMGL; n = BitConverter.ToUInt32(chunk, 0x0010))
-                {
-                    if ((chunk = ReadChunk(chm, fh, n)) == null)
-                    {
-                        err = Error;
-                        break;
-                    }
-
-                    // Search PMGL chunk. exit if file found
-                    if ((result = SearchChunk(chm, chunk, filename, ref p, ref end)) > 0)
-                        break;
-
-                    // Stop simple infinite loops: can't visit the same chunk twice 
-                    if (n == BitConverter.ToUInt32(chunk, 0x0010))
-                        break;
-                }
-            }
-
-            // If we found a file, read it
-            if (result > 0)
-            {
-                // READ_ENCINT(sec)
-                sec = 0;
-                do
-                {
-                    if (p >= end)
-                    {
-                        Console.WriteLine("Read beyond end of chunk entries");
-                        System.Close(fh);
-                        return Error = Error.MSPACK_ERR_DATAFORMAT;
-                    }
-
-                    sec = (uint)((sec << 7) | (chunk[p] & 0x7F));
-                } while ((chunk[p++] & 0x80) != 0);
-
-                f_ptr.Section = sec == 0 ? chm.Sec0 as Section : chm.Sec1 as Section;
-
-                // READ_ENCINT(f_ptr.Offset)
-                f_ptr.Offset = 0;
-                do
-                {
-                    if (p >= end)
-                    {
-                        Console.WriteLine("Read beyond end of chunk entries");
-                        System.Close(fh);
-                        return Error = Error.MSPACK_ERR_DATAFORMAT;
-                    }
-
-                    f_ptr.Offset = (uint)((f_ptr.Offset << 7) | (chunk[p] & 0x7F));
-                } while ((chunk[p++] & 0x80) != 0);
-
-                // READ_ENCINT(f_ptr.Length)
-                f_ptr.Length = 0;
-                do
-                {
-                    if (p >= end)
-                    {
-                        Console.WriteLine("Read beyond end of chunk entries");
-                        System.Close(fh);
-                        return Error = Error.MSPACK_ERR_DATAFORMAT;
-                    }
-
-                    f_ptr.Length = (uint)((f_ptr.Length << 7) | (chunk[p] & 0x7F));
-                } while ((chunk[p++] & 0x80) != 0);
-            }
-            else if (result < 0)
-            {
-                err = Error.MSPACK_ERR_DATAFORMAT;
-            }
-
-            System.Close(fh);
-            return Error = err;
-        }
-
         #endregion
 
         #region Decompress State
@@ -458,9 +199,6 @@ namespace LibMSPackSharp.CHM
         /// </summary>
         internal Error InitDecompressor(DecompressFile file)
         {
-            int entry;
-            byte[] data;
-
             MSCompressedSection sec = file.Section as MSCompressedSection;
 
             // Ensure we have a mscompressed content section
@@ -486,7 +224,8 @@ namespace LibMSPackSharp.CHM
                 return Error = Error.MSPACK_ERR_DATAFORMAT;
             }
 
-            if ((data = ReadSysFile(sec.Control)) == null)
+            byte[] data = ReadSysFile(sec.Control);
+            if (data == null)
             {
                 Console.WriteLine("Can't read mscompressed control data file");
                 return Error;
@@ -510,7 +249,7 @@ namespace LibMSPackSharp.CHM
             }
 
             // Which reset table entry would we like?
-            entry = (int)(file.Offset / lzxControlData.ResetInterval);
+            int entry = (int)(file.Offset / lzxControlData.ResetInterval);
 
             // Convert from reset interval multiple (usually 64k) to 32k frames
             entry *= (int)lzxControlData.ResetInterval / LZX.LZX_FRAME_SIZE;
@@ -521,13 +260,15 @@ namespace LibMSPackSharp.CHM
                 // The uncompressed length given in the reset table is dishonest.
                 // The uncompressed data is always padded out from the given
                 // uncompressed length up to the next reset interval
+
                 length += lzxControlData.ResetInterval - 1;
                 length &= -lzxControlData.ResetInterval;
             }
             else
             {
-                // if we can't read the reset table entry, just start from
+                // If we can't read the reset table entry, just start from
                 // the beginning. Use spaninfo to get the uncompressed length
+
                 entry = 0;
                 offset = 0;
                 err = ReadSpanInfo(sec, out length);
@@ -586,12 +327,285 @@ namespace LibMSPackSharp.CHM
             }
 
             // Unknown file to write to
-            return 0;
+            return -1;
         }
 
         #endregion
 
         #region Helpers
+
+        /// <summary>
+        /// Extract a Section 0 file
+        /// </summary>
+        private Error ExtractSection0File(DecompressFile file, FileStream fh)
+        {
+            // Simple seek + copy
+            if (!System.Seek(State.InputFileHandle, file.Section.Header.Sec0.Offset + file.Offset, SeekMode.MSPACK_SYS_SEEK_START))
+            {
+                System.Close(fh);
+                return Error = Error.MSPACK_ERR_SEEK;
+            }
+
+            byte[] buf = new byte[512];
+            long length = file.Length;
+            while (length > 0)
+            {
+                int run = 512;
+                if (run > length)
+                    run = (int)length;
+
+                if (System.Read(State.InputFileHandle, buf, 0, run) != run)
+                {
+                    System.Close(fh);
+                    return Error = Error.MSPACK_ERR_READ;
+                }
+
+                if (System.Write(fh, buf, 0, run) != run)
+                {
+                    System.Close(fh);
+                    return Error = Error.MSPACK_ERR_WRITE;
+                }
+
+                length -= run;
+            }
+
+            System.Close(fh);
+            return Error = Error.MSPACK_ERR_OK;
+        }
+
+        /// <summary>
+        /// Extract a Section 1 file
+        /// </summary>
+        private Error ExtractSection1File(DecompressFile file, FileStream fh)
+        {
+            // (Re)initialise compression state if we it is not yet initialised,
+            // or we have advanced too far and have to backtrack
+            if (State.State == null || (file.Offset < State.Offset))
+            {
+                if (State.State != null)
+                    State.State = null;
+
+                if (InitDecompressor(file) != Error.MSPACK_ERR_OK)
+                {
+                    System.Close(fh);
+                    return Error;
+                }
+            }
+
+            // Seek to input data
+            if (!System.Seek(State.InputFileHandle, State.InOffset, SeekMode.MSPACK_SYS_SEEK_START))
+            {
+                System.Close(fh);
+                return Error = Error.MSPACK_ERR_SEEK;
+            }
+
+            // Get to correct offset.
+            State.OutputFileHandle = null;
+            long bytes;
+            if ((bytes = file.Offset - State.Offset) != 0)
+                Error = LZX.Decompress(State.State, bytes);
+
+            // If getting to the correct offset was error free, unpack file
+            if (Error == Error.MSPACK_ERR_OK)
+            {
+                State.OutputFileHandle = fh;
+                Error = LZX.Decompress(State.State, file.Length);
+            }
+
+            // Save offset in input source stream, in case there is a section 0
+            // file between now and the next section 1 file extracted
+            State.InOffset = System.Tell(State.InputFileHandle);
+
+            // If an LZX error occured, the LZX decompressor is now useless
+            if (Error != Error.MSPACK_ERR_OK)
+                State.State = null;
+
+            System.Close(fh);
+            return Error;
+        }
+
+        /// <summary>
+        /// Finds file details quickly.
+        ///
+        /// Instead of reading all CHM helpfile headers and building a list of
+        /// files, fast_open() and fast_find() are intended for finding file
+        /// details only when they are needed.The CHM file format includes an
+        /// on-disk file index to allow this.
+        ///
+        /// Given a case-sensitive filename, fast_find() will search the on-disk
+        /// index for that file.
+        ///
+        /// If the file was found, the caller-provided mschmd_file structure will
+        /// be filled out like so:
+        /// - section: the correct value for the found file
+        /// - offset: the correct value for the found file
+        /// - length: the correct value for the found file
+        /// - all other structure elements: NULL or 0
+        ///
+        /// If the file was not found, MSPACK_ERR_OK will still be returned as the
+        /// result, but the caller-provided structure will be filled out like so:
+        /// - section: NULL
+        /// - offset: 0
+        /// - length: 0
+        /// - all other structure elements: NULL or 0
+        ///
+        /// This method is intended to be used in conjunction with CHM helpfiles
+        /// opened with fast_open(), but it also works with helpfiles opened
+        /// using the regular open().
+        /// </summary>
+        /// <param name="chm">the CHM helpfile to search for the file</param>
+        /// <param name="filename">the filename of the file to search for</param>
+        /// <param name="f_ptr">a pointer to a caller-provded mschmd_file structure</param>
+        /// <returns>an error code, or MSPACK_ERR_OK if successful</returns>
+        /// <see cref="Open(string)"/>
+        /// <see cref="Close(CHM)"/>
+        /// <see cref="FastOpen(string)"/>
+        /// <see cref="Extract(DecompressFile, string)"/>
+        private Error FastFind(CHM chm, string filename, DecompressFile f_ptr)
+        {
+            // p and end are initialised to prevent MSVC warning about "potentially"
+            // uninitialised usage. This is provably untrue, but MS won't fix:
+            // https://developercommunity.visualstudio.com/content/problem/363489/c4701-false-positive-warning.html
+            int p = -1, end = -1, result = -1;
+            Error err = Error.MSPACK_ERR_OK;
+            uint n, sec;
+
+            if (chm == null || f_ptr == null)
+                return Error.MSPACK_ERR_ARGS;
+
+            // Clear the results structure
+            f_ptr = new DecompressFile();
+
+            FileStream fh = System.Open(chm.Filename, OpenMode.MSPACK_SYS_OPEN_READ);
+            if (fh == null)
+                return Error.MSPACK_ERR_OPEN;
+
+            // Go through PMGI chunk hierarchy to reach PMGL chunk
+            byte[] chunk = null;
+            if (chm.HeaderSection1.IndexRoot < chm.HeaderSection1.NumChunks)
+            {
+                n = chm.HeaderSection1.IndexRoot;
+                for (; ; )
+                {
+                    chunk = ReadChunk(chm, fh, n);
+                    if (chunk == null)
+                    {
+                        System.Close(fh);
+                        return Error;
+                    }
+
+                    // Search PMGI/PMGL chunk. exit early if no entry found
+                    if ((result = SearchChunk(chm, chunk, filename, ref p, ref end)) <= 0)
+                        break;
+
+                    // Found result. loop around for next chunk if this is PMGI
+                    if (chunk[3] == 0x4C)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        // READ_ENCINT(n)
+                        {
+                            (n) = 0;
+                            do
+                            {
+                                if (p >= end)
+                                {
+                                    Console.WriteLine("Read beyond end of chunk entries");
+                                    System.Close(fh);
+                                    return Error = Error.MSPACK_ERR_DATAFORMAT;
+                                }
+
+                                    (n) = (uint)(((n) << 7) | (chunk[p++] & 0x7F));
+                            } while ((chunk[p++] & 0x80) != 0);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                // PMGL chunks only, search from first_pmgl to last_pmgl
+                for (n = chm.HeaderSection1.FirstPMGL; n <= chm.HeaderSection1.LastPMGL; n = BitConverter.ToUInt32(chunk, 0x0010))
+                {
+                    chunk = ReadChunk(chm, fh, n);
+                    if (chunk == null)
+                    {
+                        err = Error;
+                        break;
+                    }
+
+                    // Search PMGL chunk. exit if file found
+                    if ((result = SearchChunk(chm, chunk, filename, ref p, ref end)) > 0)
+                        break;
+
+                    // Stop simple infinite loops: can't visit the same chunk twice 
+                    if (n == BitConverter.ToUInt32(chunk, 0x0010))
+                        break;
+                }
+            }
+
+            // If we found a file, read it
+            if (result > 0)
+            {
+                // READ_ENCINT(sec)
+                {
+                    (sec) = 0;
+                    do
+                    {
+                        if (p >= end)
+                        {
+                            Console.WriteLine("Read beyond end of chunk entries");
+                            System.Close(fh);
+                            return Error = Error.MSPACK_ERR_DATAFORMAT;
+                        }
+
+                        (sec) = (uint)(((sec) << 7) | (chunk[p++] & 0x7F));
+                    } while ((chunk[p++] & 0x80) != 0);
+                }
+
+                f_ptr.Section = sec == 0 ? chm.Sec0 as Section : chm.Sec1 as Section;
+
+                // READ_ENCINT(f_ptr.Offset)
+                {
+                    (f_ptr.Offset) = 0;
+                    do
+                    {
+                        if (p >= end)
+                        {
+                            Console.WriteLine("Read beyond end of chunk entries");
+                            System.Close(fh);
+                            return Error = Error.MSPACK_ERR_DATAFORMAT;
+                        }
+
+                            (f_ptr.Offset) = (((f_ptr.Offset) << 7) | (chunk[p++] & 0x7F));
+                    } while ((chunk[p++] & 0x80) != 0);
+                }
+
+                // READ_ENCINT(f_ptr.Length)
+                {
+                    (f_ptr.Length) = 0;
+                    do
+                    {
+                        if (p >= end)
+                        {
+                            Console.WriteLine("Read beyond end of chunk entries");
+                            System.Close(fh);
+                            return Error = Error.MSPACK_ERR_DATAFORMAT;
+                        }
+
+                            (f_ptr.Length) = (((f_ptr.Length) << 7) | (chunk[p++] & 0x7F));
+                    } while ((chunk[p++] & 0x80) != 0);
+                }
+            }
+            else if (result < 0)
+            {
+                err = Error.MSPACK_ERR_DATAFORMAT;
+            }
+
+            System.Close(fh);
+            return Error = err;
+        }
 
         /// <summary>
         /// Uses chmd_fast_find to locate a system file, and fills out that system
@@ -610,8 +624,6 @@ namespace LibMSPackSharp.CHM
             // it fails, or successfully doesn't find the file
             if (FastFind(sec.Header, name, result) != Error.MSPACK_ERR_OK || result.Section == null)
                 return Error.MSPACK_ERR_DATAFORMAT;
-
-            f_ptr = new DecompressFile();
 
             // Copy result
             f_ptr = result;
@@ -887,20 +899,20 @@ namespace LibMSPackSharp.CHM
                 while (numEntries-- != 0)
                 {
                     // READ_ENCINT(nameLen)
-                    nameLen = 0;
-                    do
                     {
-                        if (p >= end)
+                        (nameLen) = 0;
+                        do
                         {
-                            if (numEntries >= 0)
+                            if (p >= end)
                             {
-                                Console.WriteLine("Chunk ended before all entries could be read");
-                                errors++;
+                                Console.WriteLine("Read beyond end of chunk entries");
+                                System.Close(fh);
+                                return Error = Error.MSPACK_ERR_DATAFORMAT;
                             }
-                        }
 
-                        nameLen = (uint)((nameLen << 7) | (chunk[p] & 0x7F));
-                    } while ((chunk[p++] & 0x80) != 0);
+                                (nameLen) = (uint)(((nameLen) << 7) | (chunk[p++] & 0x7F));
+                        } while ((chunk[p++] & 0x80) != 0);
+                    }
 
                     if (nameLen > (uint)(end - p))
                     {
@@ -914,52 +926,54 @@ namespace LibMSPackSharp.CHM
                     name = p; p += (int)nameLen;
 
                     // READ_ENCINT(section)
-                    section = 0;
-                    do
                     {
-                        if (p >= end)
+                        (section) = 0;
+                        do
                         {
-                            if (numEntries >= 0)
+                            if (p >= end)
                             {
-                                Console.WriteLine("Chunk ended before all entries could be read");
-                                errors++;
+                                Console.WriteLine("Read beyond end of chunk entries");
+                                System.Close(fh);
+                                return Error = Error.MSPACK_ERR_DATAFORMAT;
                             }
-                        }
 
-                        section = (uint)((section << 7) | (chunk[p] & 0x7F));
-                    } while ((chunk[p++] & 0x80) != 0);
+                                (section) = (uint)(((section) << 7) | (chunk[p++] & 0x7F));
+                        } while ((chunk[p++] & 0x80) != 0);
+                    }
 
                     // READ_ENCINT(offset)
-                    offset = 0;
-                    do
                     {
-                        if (p >= end)
+                        (offset) = 0;
+                        do
                         {
-                            if (numEntries >= 0)
+                            if (p >= end)
                             {
-                                Console.WriteLine("Chunk ended before all entries could be read");
-                                errors++;
+                                Console.WriteLine("Read beyond end of chunk entries");
+                                System.Close(fh);
+                                return Error = Error.MSPACK_ERR_DATAFORMAT;
                             }
-                        }
 
-                        offset = (offset << 7) | (chunk[p] & 0x7F);
-                    } while ((chunk[p++] & 0x80) != 0);
+                                (offset) = (((offset) << 7) | (chunk[p++] & 0x7F));
+                        } while ((chunk[p++] & 0x80) != 0);
+                    }
 
                     // READ_ENCINT(length)
-                    length = 0;
-                    do
                     {
-                        if (p >= end)
+                        (length) = 0;
+                        do
                         {
-                            if (numEntries >= 0)
+                            if (p >= end)
                             {
-                                Console.WriteLine("Chunk ended before all entries could be read");
-                                errors++;
+                                Console.WriteLine("Read beyond end of chunk entries");
+                                System.Close(fh);
+                                return Error = Error.MSPACK_ERR_DATAFORMAT;
                             }
-                        }
 
-                        length = (length << 7) | (chunk[p] & 0x7F);
-                    } while ((chunk[p++] & 0x80) != 0);
+                                (length) = (((length) << 7) | (chunk[p++] & 0x7F));
+                        } while ((chunk[p++] & 0x80) != 0);
+                    }
+
+                    // READ_ENCINT(length)
 
                     // Ignore blank or one-char (e.g. "/") filenames we'd return as blank
                     if (nameLen < 2 || chunk[name + 0] == 0x00 || chunk[name + 1] == 0x00)
@@ -1240,8 +1254,6 @@ namespace LibMSPackSharp.CHM
             if (err != Error.MSPACK_ERR_OK)
                 return -1;
 
-            // TODO: Figure out what `entriesOff` does. It feels like it's being used wrong
-
             // PMGL chunk or PMGI chunk? (note: read_chunk() has already
             // checked the rest of the characters in the chunk signature)
             if (pmgHeader.IsPMGL())
@@ -1267,7 +1279,7 @@ namespace LibMSPackSharp.CHM
 
             if (numEntries == 0)
             {
-                Console.Write("chunk has no entries");
+                Console.Write("Chunk has no entries");
                 return -1;
             }
 
@@ -1298,17 +1310,19 @@ namespace LibMSPackSharp.CHM
                     p = (int)(entries + (midpoint != 0 ? BitConverter.ToUInt16(chunk, (int)(start - (midpoint << 1))) : 0));
 
                     // READ_ENCINT(nameLen)
-                    nameLen = 0;
-                    do
                     {
-                        if (p >= end)
+                        (nameLen) = 0;
+                        do
                         {
-                            Console.WriteLine("reached end of chunk data while searching");
-                            return -1;
-                        }
+                            if (p >= end)
+                            {
+                                Console.WriteLine("Reached end of chunk data while searching");
+                                return -1;
+                            }
 
-                        nameLen = (uint)((nameLen << 7) | (chunk[p] & 0x7F));
-                    } while ((chunk[p++] & 0x80) != 0);
+                                (nameLen) = (uint)(((nameLen) << 7) | (chunk[p++] & 0x7F));
+                        } while ((chunk[p++] & 0x80) != 0);
+                    }
 
                     if (nameLen > (uint)(end - p))
                     {
@@ -1367,17 +1381,19 @@ namespace LibMSPackSharp.CHM
             while (numEntries-- > 0)
             {
                 // READ_ENCINT(nameLen)
-                nameLen = 0;
-                do
                 {
-                    if (p >= end)
+                    (nameLen) = 0;
+                    do
                     {
-                        Console.WriteLine("reached end of chunk data while searching");
-                        return -1;
-                    }
+                        if (p >= end)
+                        {
+                            Console.WriteLine("Reached end of chunk data while searching");
+                            return -1;
+                        }
 
-                    nameLen = (uint)((nameLen << 7) | (chunk[p] & 0x7F));
-                } while ((chunk[p++] & 0x80) != 0);
+                            (nameLen) = (uint)(((nameLen) << 7) | (chunk[p++] & 0x7F));
+                    } while ((chunk[p++] & 0x80) != 0);
+                }
 
                 if (nameLen > (uint)(end - p))
                 {
@@ -1426,18 +1442,21 @@ namespace LibMSPackSharp.CHM
                     result = p; // Store potential final result
 
                     // Skip chunk number
-                    // READ_ENCINT(R)
-                    right = 0;
-                    do
-                    {
-                        if (p >= end)
-                        {
-                            Console.WriteLine("reached end of chunk data while searching");
-                            return -1;
-                        }
 
-                        right = (uint)((right << 7) | (chunk[p] & 0x7F));
-                    } while ((chunk[p++] & 0x80) != 0);
+                    // READ_ENCINT(right)
+                    {
+                        (right) = 0;
+                        do
+                        {
+                            if (p >= end)
+                            {
+                                Console.WriteLine("Reached end of chunk data while searching");
+                                return -1;
+                            }
+
+                                (right) = (uint)(((right) << 7) | (chunk[p++] & 0x7F));
+                        } while ((chunk[p++] & 0x80) != 0);
+                    }
                 }
             }
 
