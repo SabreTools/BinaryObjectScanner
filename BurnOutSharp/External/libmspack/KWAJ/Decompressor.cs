@@ -155,13 +155,13 @@ namespace LibMSPackSharp.KWAJ
             }
             else if (hdr.KWAJHeader.CompressionType == CompressionType.MSKWAJ_COMP_LZH)
             {
-                LZHKWAJStream lzh = LZHKWAJ.Init(System, fh, outfh);
-                Error = (lzh != null) ? LZHKWAJ.Decompress(lzh) : Error.MSPACK_ERR_NOMEMORY;
+                LZHKWAJ lzh = LZHKWAJ.Init(System, fh, outfh);
+                Error = (lzh != null) ? lzh.Decompress() : Error.MSPACK_ERR_NOMEMORY;
             }
             else if (hdr.KWAJHeader.CompressionType == CompressionType.MSKWAJ_COMP_MSZIP)
             {
-                MSZIPDStream zip = MSZIP.Init(System, fh, outfh, KWAJ_INPUT_SIZE, false);
-                Error = (zip != null) ? MSZIP.DecompressKWAJ(zip) : Error.MSPACK_ERR_NOMEMORY;
+                MSZIP zip = MSZIP.Init(System, fh, outfh, KWAJ_INPUT_SIZE, false);
+                Error = (zip != null) ? zip.DecompressKWAJ() : Error.MSPACK_ERR_NOMEMORY;
             }
             else
             {

@@ -51,7 +51,7 @@ namespace LibMSPackSharp.OAB
         public Error Decompress(string input, string output)
         {
             byte[] hdrbuf = new byte[oabhead_SIZEOF];
-            LZXDStream lzx = null;
+            LZX lzx = null;
             Error ret = Error.MSPACK_ERR_OK;
 
             FileStream infh = System.Open(input, OpenMode.MSPACK_SYS_OPEN_READ);
@@ -235,7 +235,7 @@ namespace LibMSPackSharp.OAB
         public Error DecompressIncremental(string input, string basePath, string output)
         {
             byte[] hdrbuf = new byte[patchhead_SIZEOF];
-            LZXDStream lzx = null;
+            LZX lzx = null;
             int window_bits;
             uint window_size;
             Error ret = Error.MSPACK_ERR_OK;
@@ -348,7 +348,7 @@ namespace LibMSPackSharp.OAB
                     return ret;
                 }
 
-                ret = LZX.SetReferenceData(lzx, System, basefh, blk_ssize);
+                ret = lzx.SetReferenceData(System, basefh, blk_ssize);
                 if (ret != Error.MSPACK_ERR_OK)
                 {
                     System.Close(outfh);

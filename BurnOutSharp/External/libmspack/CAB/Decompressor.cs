@@ -599,7 +599,7 @@ namespace LibMSPackSharp.CAB
                             {
                                 // Special LZX hack -- on the last block, inform LZX of the
                                 // size of the output data stream.
-                                LZX.SetOutputLength(self.State.DecompressorState as LZXDStream, self.State.Outlen);
+                                (self.State.DecompressorState as LZX).SetOutputLength(self.State.Outlen);
                             }
                         }
                     }

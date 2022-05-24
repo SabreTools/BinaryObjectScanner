@@ -31,6 +31,6 @@ namespace LibMSPackSharp.CHM
         /// <summary>
         /// LZX decompressor state
         /// </summary>
-        public LZXDStream State { get; set; }
+        public LZX State { get; set; }
     }
 }
