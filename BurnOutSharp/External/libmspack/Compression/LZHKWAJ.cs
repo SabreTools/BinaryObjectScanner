@@ -41,32 +41,16 @@ namespace LibMSPackSharp.Compression
 
         public static Error Decompress(LZHKWAJStream lzh)
         {
-            uint bit_buffer;
-            int bits_left, i;
+            int i;
             ushort sym;
-            int i_ptr, i_end, lit_run = 0;
+            int lit_run = 0;
             int j, pos = 0, len, offset;
             Error err;
             uint[] types = new uint[6];
 
             // Reset global state
-
-            //INIT_BITS
-            {
-                lzh.InputPointer = 0;
-                lzh.InputEnd = 0;
-                lzh.BitBuffer = 0;
-                lzh.BitsLeft = 0;
-                lzh.EndOfInput = 0;
-            }
-
-            //RESTORE_BITS
-            {
-                i_ptr = lzh.InputPointer;
-                i_end = lzh.InputEnd;
-                bit_buffer = lzh.BitBuffer;
-                bits_left = lzh.BitsLeft;
-            }
+            lzh.INIT_BITS();
+            lzh.RESTORE_BITS(out int i_ptr, out int i_end, out uint bit_buffer, out int bits_left);
 
             for (i = 0; i < LZSS.LZSS_WINDOW_SIZE; i++)
             {
@@ -95,22 +79,13 @@ namespace LibMSPackSharp.Compression
                                         i_end = lzh.InputEnd;
                                     }
 
-                                    //INJECT_BITS(lzh.InputBuffer[i_ptr++], 8)
-                                    {
-                                        bit_buffer |= (uint)(lzh.InputBuffer[i_ptr++]) << (CompressionStream.BITBUF_WIDTH - (8) - bits_left);
-                                        bits_left += (8);
-                                    }
+                                    lzh.INJECT_BITS_MSB(lzh.InputBuffer[i_ptr++], 8, ref bit_buffer, ref bits_left);
                                 }
                             }
                         }
 
-                        (types[i]) = (bit_buffer >> (CompressionStream.BITBUF_WIDTH - (4))); //PEEK_BITS(4)
-
-                        //REMOVE_BITS(4)
-                        {
-                            bit_buffer <<= (4);
-                            bits_left -= (4);
-                        }
+                        (types[i]) = (uint)lzh.PEEK_BITS_MSB(4, bit_buffer);
+                        lzh.REMOVE_BITS_MSB(4, ref bit_buffer, ref bits_left);
                     }
 
                     if (lzh.EndOfInput != 0 && bits_left < lzh.EndOfInput)
@@ -122,25 +97,13 @@ namespace LibMSPackSharp.Compression
 
             //BUILD_TREE(MATCHLEN1, types[0])
             {
-                //STORE_BITS
-                {
-                    lzh.InputPointer = i_ptr;
-                    lzh.InputEnd = i_end;
-                    lzh.BitBuffer = bit_buffer;
-                    lzh.BitsLeft = bits_left;
-                }
+                lzh.STORE_BITS(i_ptr, i_end, bit_buffer, bits_left);
 
                 err = ReadLens(lzh, types[0], KWAJ_MATCHLEN1_SYMS, lzh.MATCHLEN1_len);
                 if (err != Error.MSPACK_ERR_OK)
                     return err;
 
-                //RESTORE_BITS
-                {
-                    i_ptr = lzh.InputPointer;
-                    i_end = lzh.InputEnd;
-                    bit_buffer = lzh.BitBuffer;
-                    bits_left = lzh.BitsLeft;
-                }
+                lzh.RESTORE_BITS(out i_ptr, out i_end, out bit_buffer, out bits_left);
 
                 if (!CompressionStream.MakeDecodeTable(KWAJ_MATCHLEN1_SYMS, KWAJ_TABLEBITS, lzh.MATCHLEN1_len, lzh.MATCHLEN1_table, msb: true))
                     return Error.MSPACK_ERR_DATAFORMAT;
@@ -148,25 +111,13 @@ namespace LibMSPackSharp.Compression
 
             //BUILD_TREE(MATCHLEN2, types[1])
             {
-                //STORE_BITS
-                {
-                    lzh.InputPointer = i_ptr;
-                    lzh.InputEnd = i_end;
-                    lzh.BitBuffer = bit_buffer;
-                    lzh.BitsLeft = bits_left;
-                }
+                lzh.STORE_BITS(i_ptr, i_end, bit_buffer, bits_left);
 
                 err = ReadLens(lzh, types[1], KWAJ_MATCHLEN2_SYMS, lzh.MATCHLEN2_len);
                 if (err != Error.MSPACK_ERR_OK)
                     return err;
 
-                //RESTORE_BITS
-                {
-                    i_ptr = lzh.InputPointer;
-                    i_end = lzh.InputEnd;
-                    bit_buffer = lzh.BitBuffer;
-                    bits_left = lzh.BitsLeft;
-                }
+                lzh.RESTORE_BITS(out i_ptr, out i_end, out bit_buffer, out bits_left);
 
                 if (!CompressionStream.MakeDecodeTable(KWAJ_MATCHLEN2_SYMS, KWAJ_TABLEBITS, lzh.MATCHLEN2_len, lzh.MATCHLEN2_table, msb: true))
                     return Error.MSPACK_ERR_DATAFORMAT;
@@ -174,25 +125,13 @@ namespace LibMSPackSharp.Compression
 
             //BUILD_TREE(LITLEN, types[2])
             {
-                //STORE_BITS
-                {
-                    lzh.InputPointer = i_ptr;
-                    lzh.InputEnd = i_end;
-                    lzh.BitBuffer = bit_buffer;
-                    lzh.BitsLeft = bits_left;
-                }
+                lzh.STORE_BITS(i_ptr, i_end, bit_buffer, bits_left);
 
                 err = ReadLens(lzh, types[2], KWAJ_LITLEN_SYMS, lzh.LITLEN_len);
                 if (err != Error.MSPACK_ERR_OK)
                     return err;
 
-                //RESTORE_BITS
-                {
-                    i_ptr = lzh.InputPointer;
-                    i_end = lzh.InputEnd;
-                    bit_buffer = lzh.BitBuffer;
-                    bits_left = lzh.BitsLeft;
-                }
+                lzh.RESTORE_BITS(out i_ptr, out i_end, out bit_buffer, out bits_left);
 
                 if (!CompressionStream.MakeDecodeTable(KWAJ_LITLEN_SYMS, KWAJ_TABLEBITS, lzh.LITLEN_len, lzh.LITLEN_table, msb: true))
                     return Error.MSPACK_ERR_DATAFORMAT;
@@ -200,25 +139,13 @@ namespace LibMSPackSharp.Compression
 
             //BUILD_TREE(OFFSET, types[3])
             {
-                //STORE_BITS
-                {
-                    lzh.InputPointer = i_ptr;
-                    lzh.InputEnd = i_end;
-                    lzh.BitBuffer = bit_buffer;
-                    lzh.BitsLeft = bits_left;
-                }
+                lzh.STORE_BITS(i_ptr, i_end, bit_buffer, bits_left);
 
                 err = ReadLens(lzh, types[3], KWAJ_OFFSET_SYMS, lzh.OFFSET_len);
                 if (err != Error.MSPACK_ERR_OK)
                     return err;
 
-                //RESTORE_BITS
-                {
-                    i_ptr = lzh.InputPointer;
-                    i_end = lzh.InputEnd;
-                    bit_buffer = lzh.BitBuffer;
-                    bits_left = lzh.BitsLeft;
-                }
+                lzh.RESTORE_BITS(out i_ptr, out i_end, out bit_buffer, out bits_left);
 
                 if (!CompressionStream.MakeDecodeTable(KWAJ_OFFSET_SYMS, KWAJ_TABLEBITS, lzh.OFFSET_len, lzh.OFFSET_table, msb: true))
                     return Error.MSPACK_ERR_DATAFORMAT;
@@ -226,25 +153,13 @@ namespace LibMSPackSharp.Compression
 
             //BUILD_TREE(LITERAL, types[4])
             {
-                //STORE_BITS
-                {
-                    lzh.InputPointer = i_ptr;
-                    lzh.InputEnd = i_end;
-                    lzh.BitBuffer = bit_buffer;
-                    lzh.BitsLeft = bits_left;
-                }
+                lzh.STORE_BITS(i_ptr, i_end, bit_buffer, bits_left);
 
                 err = ReadLens(lzh, types[4], KWAJ_LITERAL_SYMS, lzh.LITERAL_len);
                 if (err != Error.MSPACK_ERR_OK)
                     return err;
 
-                //RESTORE_BITS
-                {
-                    i_ptr = lzh.InputPointer;
-                    i_end = lzh.InputEnd;
-                    bit_buffer = lzh.BitBuffer;
-                    bits_left = lzh.BitsLeft;
-                }
+                lzh.RESTORE_BITS(out i_ptr, out i_end, out bit_buffer, out bits_left);
 
                 if (!CompressionStream.MakeDecodeTable(KWAJ_LITERAL_SYMS, KWAJ_TABLEBITS, lzh.LITERAL_len, lzh.LITERAL_table, msb: true))
                     return Error.MSPACK_ERR_DATAFORMAT;
@@ -273,16 +188,12 @@ namespace LibMSPackSharp.Compression
                                             i_end = lzh.InputEnd;
                                         }
 
-                                        //INJECT_BITS(lzh.InputBuffer[i_ptr++], 8)
-                                        {
-                                            bit_buffer |= (uint)(lzh.InputBuffer[i_ptr++]) << (CompressionStream.BITBUF_WIDTH - (8) - bits_left);
-                                            bits_left += (8);
-                                        }
+                                        lzh.INJECT_BITS_MSB(lzh.InputBuffer[i_ptr++], 8, ref bit_buffer, ref bits_left);
                                     }
                                 }
                             }
 
-                            sym = lzh.MATCHLEN2_table[(bit_buffer >> (CompressionStream.BITBUF_WIDTH - (KWAJ_TABLEBITS)))]; //PEEK_BITS(TABLEBITS(MATCHLEN2))
+                            sym = lzh.MATCHLEN2_table[lzh.PEEK_BITS_MSB(KWAJ_TABLEBITS, bit_buffer)];
                             if (sym >= KWAJ_MATCHLEN2_SYMS)
                             {
                                 //HUFF_TRAVERSE(MATCHLEN2)
@@ -300,12 +211,7 @@ namespace LibMSPackSharp.Compression
 
                             (len) = sym;
                             i = lzh.MATCHLEN2_len[sym];
-
-                            //REMOVE_BITS(i)
-                            {
-                                bit_buffer <<= (i);
-                                bits_left -= (i);
-                            }
+                            lzh.REMOVE_BITS_MSB(i, ref bit_buffer, ref bits_left);
                         }
 
                         if (lzh.EndOfInput != 0 && bits_left < lzh.EndOfInput)
@@ -333,16 +239,12 @@ namespace LibMSPackSharp.Compression
                                             i_end = lzh.InputEnd;
                                         }
 
-                                        //INJECT_BITS(lzh.InputBuffer[i_ptr++], 8)
-                                        {
-                                            bit_buffer |= (uint)(lzh.InputBuffer[i_ptr++]) << (CompressionStream.BITBUF_WIDTH - (8) - bits_left);
-                                            bits_left += (8);
-                                        }
+                                        lzh.INJECT_BITS_MSB(lzh.InputBuffer[i_ptr++], 8, ref bit_buffer, ref bits_left);
                                     }
                                 }
                             }
 
-                            sym = lzh.MATCHLEN1_table[(bit_buffer >> (CompressionStream.BITBUF_WIDTH - (KWAJ_TABLEBITS)))]; //PEEK_BITS(TABLEBITS(MATCHLEN1))
+                            sym = lzh.MATCHLEN1_table[lzh.PEEK_BITS_MSB(KWAJ_TABLEBITS, bit_buffer)];
                             if (sym >= KWAJ_MATCHLEN1_SYMS)
                             {
                                 //HUFF_TRAVERSE(MATCHLEN1)
@@ -360,12 +262,7 @@ namespace LibMSPackSharp.Compression
 
                             (len) = sym;
                             i = lzh.MATCHLEN1_len[sym];
-
-                            //REMOVE_BITS(i)
-                            {
-                                bit_buffer <<= (i);
-                                bits_left -= (i);
-                            }
+                            lzh.REMOVE_BITS_MSB(i, ref bit_buffer, ref bits_left);
                         }
 
                         if (lzh.EndOfInput != 0 && bits_left < lzh.EndOfInput)
@@ -397,16 +294,12 @@ namespace LibMSPackSharp.Compression
                                             i_end = lzh.InputEnd;
                                         }
 
-                                        //INJECT_BITS(lzh.InputBuffer[i_ptr++], 8)
-                                        {
-                                            bit_buffer |= (uint)(lzh.InputBuffer[i_ptr++]) << (CompressionStream.BITBUF_WIDTH - (8) - bits_left);
-                                            bits_left += (8);
-                                        }
+                                        lzh.INJECT_BITS_MSB(lzh.InputBuffer[i_ptr++], 8, ref bit_buffer, ref bits_left);
                                     }
                                 }
                             }
 
-                            sym = lzh.OFFSET_table[(bit_buffer >> (CompressionStream.BITBUF_WIDTH - (KWAJ_TABLEBITS)))]; //PEEK_BITS(TABLEBITS(OFFSET))
+                            sym = lzh.OFFSET_table[lzh.PEEK_BITS_MSB(KWAJ_TABLEBITS, bit_buffer)];
                             if (sym >= KWAJ_OFFSET_SYMS)
                             {
                                 //HUFF_TRAVERSE(OFFSET)
@@ -424,12 +317,7 @@ namespace LibMSPackSharp.Compression
 
                             (j) = sym;
                             i = lzh.OFFSET_len[sym];
-
-                            //REMOVE_BITS(i)
-                            {
-                                bit_buffer <<= (i);
-                                bits_left -= (i);
-                            }
+                            lzh.REMOVE_BITS_MSB(i, ref bit_buffer, ref bits_left);
                         }
 
                         if (lzh.EndOfInput != 0 && bits_left < lzh.EndOfInput)
@@ -457,22 +345,13 @@ namespace LibMSPackSharp.Compression
                                             i_end = lzh.InputEnd;
                                         }
 
-                                        //INJECT_BITS(lzh.InputBuffer[i_ptr++], 8)
-                                        {
-                                            bit_buffer |= (uint)(lzh.InputBuffer[i_ptr++]) << (CompressionStream.BITBUF_WIDTH - (8) - bits_left);
-                                            bits_left += (8);
-                                        }
+                                        lzh.INJECT_BITS_MSB(lzh.InputBuffer[i_ptr++], 8, ref bit_buffer, ref bits_left);
                                     }
                                 }
                             }
 
-                            (j) = (int)(bit_buffer >> (CompressionStream.BITBUF_WIDTH - (6))); //PEEK_BITS(6)
-
-                            //REMOVE_BITS(6)
-                            {
-                                bit_buffer <<= (6);
-                                bits_left -= (6);
-                            }
+                            (j) = (int)lzh.PEEK_BITS_MSB(6, bit_buffer);
+                            lzh.REMOVE_BITS_MSB(6, ref bit_buffer, ref bits_left);
                         }
 
                         if (lzh.EndOfInput != 0 && bits_left < lzh.EndOfInput)
@@ -517,16 +396,12 @@ namespace LibMSPackSharp.Compression
                                             i_end = lzh.InputEnd;
                                         }
 
-                                        //INJECT_BITS(lzh.InputBuffer[i_ptr++], 8)
-                                        {
-                                            bit_buffer |= (uint)(lzh.InputBuffer[i_ptr++]) << (CompressionStream.BITBUF_WIDTH - (8) - bits_left);
-                                            bits_left += (8);
-                                        }
+                                        lzh.INJECT_BITS_MSB(lzh.InputBuffer[i_ptr++], 8, ref bit_buffer, ref bits_left);
                                     }
                                 }
                             }
 
-                            sym = lzh.LITLEN_table[(bit_buffer >> (CompressionStream.BITBUF_WIDTH - (KWAJ_TABLEBITS)))]; //PEEK_BITS(TABLEBITS(LITLEN))
+                            sym = lzh.LITLEN_table[lzh.PEEK_BITS_MSB(KWAJ_TABLEBITS, bit_buffer)];
                             if (sym >= KWAJ_LITLEN_SYMS)
                             {
                                 //HUFF_TRAVERSE(tbl)
@@ -544,12 +419,7 @@ namespace LibMSPackSharp.Compression
 
                             (len) = sym;
                             i = lzh.LITLEN_len[sym];
-
-                            //REMOVE_BITS(i)
-                            {
-                                bit_buffer <<= (i);
-                                bits_left -= (i);
-                            }
+                            lzh.REMOVE_BITS_MSB(i, ref bit_buffer, ref bits_left);
                         }
 
                         if (lzh.EndOfInput != 0 && bits_left < lzh.EndOfInput)
@@ -579,16 +449,12 @@ namespace LibMSPackSharp.Compression
                                                 i_end = lzh.InputEnd;
                                             }
 
-                                            //INJECT_BITS(lzh.InputBuffer[i_ptr++], 8)
-                                            {
-                                                bit_buffer |= (uint)(lzh.InputBuffer[i_ptr++]) << (CompressionStream.BITBUF_WIDTH - (8) - bits_left);
-                                                bits_left += (8);
-                                            }
+                                            lzh.INJECT_BITS_MSB(lzh.InputBuffer[i_ptr++], 8, ref bit_buffer, ref bits_left);
                                         }
                                     }
                                 }
 
-                                sym = lzh.LITERAL_table[(bit_buffer >> (CompressionStream.BITBUF_WIDTH - (KWAJ_TABLEBITS)))]; //PEEK_BITS(TABLEBITS(LITERAL))
+                                sym = lzh.LITERAL_table[lzh.PEEK_BITS_MSB(KWAJ_TABLEBITS, bit_buffer)];
                                 if (sym >= KWAJ_LITERAL_SYMS)
                                 {
                                     //HUFF_TRAVERSE(LITERAL)
@@ -606,12 +472,7 @@ namespace LibMSPackSharp.Compression
 
                                 (j) = sym;
                                 i = lzh.LITERAL_len[sym];
-
-                                //REMOVE_BITS(i)
-                                {
-                                    bit_buffer <<= (i);
-                                    bits_left -= (i);
-                                }
+                                lzh.REMOVE_BITS_MSB(i, ref bit_buffer, ref bits_left);
                             }
 
                             if (lzh.EndOfInput != 0 && bits_left < lzh.EndOfInput)
@@ -643,13 +504,7 @@ namespace LibMSPackSharp.Compression
             uint i, c, sel;
             Error err;
 
-            //RESTORE_BITS
-            {
-                i_ptr = lzh.InputPointer;
-                i_end = lzh.InputEnd;
-                bit_buffer = lzh.BitBuffer;
-                bits_left = lzh.BitsLeft;
-            }
+            lzh.RESTORE_BITS(out i_ptr, out i_end, out bit_buffer, out bits_left);
 
             switch (type)
             {
@@ -683,22 +538,13 @@ namespace LibMSPackSharp.Compression
                                             i_end = lzh.InputEnd;
                                         }
 
-                                        //INJECT_BITS(lzh.InputBuffer[i_ptr++], 8)
-                                        {
-                                            bit_buffer |= (uint)(lzh.InputBuffer[i_ptr++]) << (CompressionStream.BITBUF_WIDTH - (8) - bits_left);
-                                            bits_left += (8);
-                                        }
+                                        lzh.INJECT_BITS_MSB(lzh.InputBuffer[i_ptr++], 8, ref bit_buffer, ref bits_left);
                                     }
                                 }
                             }
 
-                            (c) = (bit_buffer >> (CompressionStream.BITBUF_WIDTH - (4))); //PEEK_BITS(4)
-
-                            //REMOVE_BITS(4)
-                            {
-                                bit_buffer <<= (4);
-                                bits_left -= (4);
-                            }
+                            (c) = (uint)lzh.PEEK_BITS_MSB(4, bit_buffer);
+                            lzh.REMOVE_BITS_MSB(4, ref bit_buffer, ref bits_left);
                         }
 
                         if (lzh.EndOfInput != 0 && bits_left < lzh.EndOfInput)
@@ -727,22 +573,13 @@ namespace LibMSPackSharp.Compression
                                                 i_end = lzh.InputEnd;
                                             }
 
-                                            //INJECT_BITS(lzh.InputBuffer[i_ptr++], 8)
-                                            {
-                                                bit_buffer |= (uint)(lzh.InputBuffer[i_ptr++]) << (CompressionStream.BITBUF_WIDTH - (8) - bits_left);
-                                                bits_left += (8);
-                                            }
+                                            lzh.INJECT_BITS_MSB(lzh.InputBuffer[i_ptr++], 8, ref bit_buffer, ref bits_left);
                                         }
                                     }
                                 }
 
-                                (sel) = (bit_buffer >> (CompressionStream.BITBUF_WIDTH - (1))); //PEEK_BITS(1)
-
-                                //REMOVE_BITS(1)
-                                {
-                                    bit_buffer <<= (1);
-                                    bits_left -= (1);
-                                }
+                                (sel) = (uint)lzh.PEEK_BITS_MSB(1, bit_buffer);
+                                lzh.REMOVE_BITS_MSB(1, ref bit_buffer, ref bits_left);
                             }
 
                             if (lzh.EndOfInput != 0 && bits_left < lzh.EndOfInput)
@@ -774,22 +611,13 @@ namespace LibMSPackSharp.Compression
                                                     i_end = lzh.InputEnd;
                                                 }
 
-                                                //INJECT_BITS(lzh.InputBuffer[i_ptr++], 8)
-                                                {
-                                                    bit_buffer |= (uint)(lzh.InputBuffer[i_ptr++]) << (CompressionStream.BITBUF_WIDTH - (8) - bits_left);
-                                                    bits_left += (8);
-                                                }
+                                                lzh.INJECT_BITS_MSB(lzh.InputBuffer[i_ptr++], 8, ref bit_buffer, ref bits_left);
                                             }
                                         }
                                     }
 
-                                    (sel) = (bit_buffer >> (CompressionStream.BITBUF_WIDTH - (1))); //PEEK_BITS(1)
-
-                                    //REMOVE_BITS(1)
-                                    {
-                                        bit_buffer <<= (1);
-                                        bits_left -= (1);
-                                    }
+                                    (sel) = (uint)lzh.PEEK_BITS_MSB(1, bit_buffer);
+                                    lzh.REMOVE_BITS_MSB(1, ref bit_buffer, ref bits_left);
                                 }
 
                                 if (lzh.EndOfInput != 0 && bits_left < lzh.EndOfInput)
@@ -821,22 +649,13 @@ namespace LibMSPackSharp.Compression
                                                         i_end = lzh.InputEnd;
                                                     }
 
-                                                    //INJECT_BITS(lzh.InputBuffer[i_ptr++], 8)
-                                                    {
-                                                        bit_buffer |= (uint)(lzh.InputBuffer[i_ptr++]) << (CompressionStream.BITBUF_WIDTH - (8) - bits_left);
-                                                        bits_left += (8);
-                                                    }
+                                                    lzh.INJECT_BITS_MSB(lzh.InputBuffer[i_ptr++], 8, ref bit_buffer, ref bits_left);
                                                 }
                                             }
                                         }
 
-                                        (c) = (bit_buffer >> (CompressionStream.BITBUF_WIDTH - (4))); //PEEK_BITS(4)
-
-                                        //REMOVE_BITS(4)
-                                        {
-                                            bit_buffer <<= (4);
-                                            bits_left -= (4);
-                                        }
+                                        (c) = (uint)lzh.PEEK_BITS_MSB(4, bit_buffer);
+                                        lzh.REMOVE_BITS_MSB(4, ref bit_buffer, ref bits_left);
                                     }
 
                                     if (lzh.EndOfInput != 0 && bits_left < lzh.EndOfInput)
@@ -870,22 +689,13 @@ namespace LibMSPackSharp.Compression
                                             i_end = lzh.InputEnd;
                                         }
 
-                                        //INJECT_BITS(lzh.InputBuffer[i_ptr++], 8)
-                                        {
-                                            bit_buffer |= (uint)(lzh.InputBuffer[i_ptr++]) << (CompressionStream.BITBUF_WIDTH - (8) - bits_left);
-                                            bits_left += (8);
-                                        }
+                                        lzh.INJECT_BITS_MSB(lzh.InputBuffer[i_ptr++], 8, ref bit_buffer, ref bits_left);
                                     }
                                 }
                             }
 
-                            (c) = (bit_buffer >> (CompressionStream.BITBUF_WIDTH - (4))); //PEEK_BITS(4)
-
-                            //REMOVE_BITS(4)
-                            {
-                                bit_buffer <<= (4);
-                                bits_left -= (4);
-                            }
+                            (c) = (uint)lzh.PEEK_BITS_MSB(4, bit_buffer);
+                            lzh.REMOVE_BITS_MSB(4, ref bit_buffer, ref bits_left);
                         }
 
                         if (lzh.EndOfInput != 0 && bits_left < lzh.EndOfInput)
@@ -914,22 +724,13 @@ namespace LibMSPackSharp.Compression
                                                 i_end = lzh.InputEnd;
                                             }
 
-                                            //INJECT_BITS(lzh.InputBuffer[i_ptr++], 8)
-                                            {
-                                                bit_buffer |= (uint)(lzh.InputBuffer[i_ptr++]) << (CompressionStream.BITBUF_WIDTH - (8) - bits_left);
-                                                bits_left += (8);
-                                            }
+                                            lzh.INJECT_BITS_MSB(lzh.InputBuffer[i_ptr++], 8, ref bit_buffer, ref bits_left);
                                         }
                                     }
                                 }
 
-                                (sel) = (bit_buffer >> (CompressionStream.BITBUF_WIDTH - (2))); //PEEK_BITS(2)
-
-                                //REMOVE_BITS(2)
-                                {
-                                    bit_buffer <<= (2);
-                                    bits_left -= (2);
-                                }
+                                (sel) = (uint)lzh.PEEK_BITS_MSB(2, bit_buffer);
+                                lzh.REMOVE_BITS_MSB(2, ref bit_buffer, ref bits_left);
                             }
 
                             if (lzh.EndOfInput != 0 && bits_left < lzh.EndOfInput)
@@ -957,22 +758,13 @@ namespace LibMSPackSharp.Compression
                                                     i_end = lzh.InputEnd;
                                                 }
 
-                                                //INJECT_BITS(lzh.InputBuffer[i_ptr++], 8)
-                                                {
-                                                    bit_buffer |= (uint)(lzh.InputBuffer[i_ptr++]) << (CompressionStream.BITBUF_WIDTH - (8) - bits_left);
-                                                    bits_left += (8);
-                                                }
+                                                lzh.INJECT_BITS_MSB(lzh.InputBuffer[i_ptr++], 8, ref bit_buffer, ref bits_left);
                                             }
                                         }
                                     }
 
-                                    (c) = (bit_buffer >> (CompressionStream.BITBUF_WIDTH - (4))); //PEEK_BITS(4)
-
-                                    //REMOVE_BITS(4)
-                                    {
-                                        bit_buffer <<= (4);
-                                        bits_left -= (4);
-                                    }
+                                    (c) = (uint)lzh.PEEK_BITS_MSB(4, bit_buffer);
+                                    lzh.REMOVE_BITS_MSB(4, ref bit_buffer, ref bits_left);
                                 }
 
                                 if (lzh.EndOfInput != 0 && bits_left < lzh.EndOfInput)
@@ -1011,22 +803,13 @@ namespace LibMSPackSharp.Compression
                                                 i_end = lzh.InputEnd;
                                             }
 
-                                            //INJECT_BITS(lzh.InputBuffer[i_ptr++], 8)
-                                            {
-                                                bit_buffer |= (uint)(lzh.InputBuffer[i_ptr++]) << (CompressionStream.BITBUF_WIDTH - (8) - bits_left);
-                                                bits_left += (8);
-                                            }
+                                            lzh.INJECT_BITS_MSB(lzh.InputBuffer[i_ptr++], 8, ref bit_buffer, ref bits_left);
                                         }
                                     }
                                 }
 
-                                (c) = (bit_buffer >> (CompressionStream.BITBUF_WIDTH - (4))); //PEEK_BITS(4)
-
-                                //REMOVE_BITS(4)
-                                {
-                                    bit_buffer <<= (4);
-                                    bits_left -= (4);
-                                }
+                                (c) = (uint)lzh.PEEK_BITS_MSB(4, bit_buffer);
+                                lzh.REMOVE_BITS_MSB(4, ref bit_buffer, ref bits_left);
                             }
 
                             if (lzh.EndOfInput != 0 && bits_left < lzh.EndOfInput)
@@ -1039,13 +822,7 @@ namespace LibMSPackSharp.Compression
                     break;
             }
 
-            //STORE_BITS
-            {
-                lzh.InputPointer = i_ptr;
-                lzh.InputEnd = i_end;
-                lzh.BitBuffer = bit_buffer;
-                lzh.BitsLeft = bits_left;
-            }
+            lzh.STORE_BITS(i_ptr, i_end, bit_buffer, bits_left);
 
             return Error.MSPACK_ERR_OK;
         }

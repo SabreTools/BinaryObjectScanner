@@ -330,15 +330,7 @@ namespace LibMSPackSharp.Compression
             };
 
             ResetState(lzx);
-
-            //INIT_BITS
-            {
-                lzx.InputPointer = 0;
-                lzx.InputEnd = 0;
-                lzx.BitBuffer = 0;
-                lzx.BitsLeft = 0;
-                lzx.EndOfInput = 0;
-            }
+            lzx.INIT_BITS();
 
             return lzx;
         }
@@ -482,15 +474,7 @@ namespace LibMSPackSharp.Compression
                 return Error.MSPACK_ERR_OK;
 
             // Restore local state
-
-            //RESTORE_BITS
-            {
-                i_ptr = lzx.InputPointer;
-                i_end = lzx.InputEnd;
-                bit_buffer = lzx.BitBuffer;
-                bits_left = lzx.BitsLeft;
-            }
-
+            lzx.RESTORE_BITS(out i_ptr, out i_end, out bit_buffer, out bits_left);
             window = lzx.Window;
             window_posn = lzx.WindowPosition;
             R0 = lzx.R0;
@@ -531,48 +515,23 @@ namespace LibMSPackSharp.Compression
                         {
                             //READ_BYTES
                             {
-                                //READ_IF_NEEDED
-                                {
-                                    if (i_ptr >= i_end)
-                                    {
-                                        if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                            return lzx.Error;
-
-                                        i_ptr = lzx.InputPointer;
-                                        i_end = lzx.InputEnd;
-                                    }
-                                }
+                                lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                if (lzx.Error != Error.MSPACK_ERR_OK)
+                                    return lzx.Error;
 
                                 byte b0 = lzx.InputBuffer[i_ptr++];
 
-                                //READ_IF_NEEDED
-                                {
-                                    if (i_ptr >= i_end)
-                                    {
-                                        if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                            return lzx.Error;
-
-                                        i_ptr = lzx.InputPointer;
-                                        i_end = lzx.InputEnd;
-                                    }
-                                }
+                                lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                if (lzx.Error != Error.MSPACK_ERR_OK)
+                                    return lzx.Error;
 
                                 byte b1 = lzx.InputBuffer[i_ptr++];
-
-                                //INJECT_BITS((b1 << 8) | b0, 16)
-                                {
-                                    bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
-                                    bits_left += (16);
-                                }
+                                lzx.INJECT_BITS_MSB((b1 << 8) | b0, 16, ref bit_buffer, ref bits_left);
                             }
                         }
                     }
 
-                    //REMOVE_BITS(16)
-                    {
-                        bit_buffer <<= (16);
-                        bits_left -= (16);
-                    }
+                    lzx.REMOVE_BITS_MSB(16, ref bit_buffer, ref bits_left);
                 }
 
                 // Calculate size of frame: all frames are 32k except the final frame
@@ -592,17 +551,9 @@ namespace LibMSPackSharp.Compression
                         // Realign if previous block was an odd-sized UNCOMPRESSED block
                         if ((lzx.BlockType == LZXBlockType.LZX_BLOCKTYPE_UNCOMPRESSED) && (lzx.BlockLength & 1) != 0)
                         {
-                            //READ_IF_NEEDED
-                            {
-                                if (i_ptr >= i_end)
-                                {
-                                    if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                        return lzx.Error;
-
-                                    i_ptr = lzx.InputPointer;
-                                    i_end = lzx.InputEnd;
-                                }
-                            }
+                            lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                            if (lzx.Error != Error.MSPACK_ERR_OK)
+                                return lzx.Error;
 
                             i_ptr++;
                         }
@@ -617,50 +568,24 @@ namespace LibMSPackSharp.Compression
                                 {
                                     //READ_BYTES
                                     {
-                                        //READ_IF_NEEDED
-                                        {
-                                            if (i_ptr >= i_end)
-                                            {
-                                                if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                    return lzx.Error;
-
-                                                i_ptr = lzx.InputPointer;
-                                                i_end = lzx.InputEnd;
-                                            }
-                                        }
+                                        lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                        if (lzx.Error != Error.MSPACK_ERR_OK)
+                                            return lzx.Error;
 
                                         byte b0 = lzx.InputBuffer[i_ptr++];
 
-                                        //READ_IF_NEEDED
-                                        {
-                                            if (i_ptr >= i_end)
-                                            {
-                                                if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                    return lzx.Error;
-
-                                                i_ptr = lzx.InputPointer;
-                                                i_end = lzx.InputEnd;
-                                            }
-                                        }
+                                        lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                        if (lzx.Error != Error.MSPACK_ERR_OK)
+                                            return lzx.Error;
 
                                         byte b1 = lzx.InputBuffer[i_ptr++];
-
-                                        //INJECT_BITS((b1 << 8) | b0, 16)
-                                        {
-                                            bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
-                                            bits_left += (16);
-                                        }
+                                        lzx.INJECT_BITS_MSB((b1 << 8) | b0, 16, ref bit_buffer, ref bits_left);
                                     }
                                 }
                             }
 
-                            (lzx.BlockType) = (LZXBlockType)(bit_buffer >> (CompressionStream.BITBUF_WIDTH - (3))); //PEEK_BITS(3)
-
-                            //REMOVE_BITS(3)
-                            {
-                                bit_buffer <<= (3);
-                                bits_left -= (3);
-                            }
+                            (lzx.BlockType) = (LZXBlockType)lzx.PEEK_BITS_MSB(3, bit_buffer);
+                            lzx.REMOVE_BITS_MSB(3, ref bit_buffer, ref bits_left);
                         }
 
                         // Read header if necessary
@@ -678,50 +603,24 @@ namespace LibMSPackSharp.Compression
                                     {
                                         //READ_BYTES
                                         {
-                                            //READ_IF_NEEDED
-                                            {
-                                                if (i_ptr >= i_end)
-                                                {
-                                                    if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                        return lzx.Error;
-
-                                                    i_ptr = lzx.InputPointer;
-                                                    i_end = lzx.InputEnd;
-                                                }
-                                            }
+                                            lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                            if (lzx.Error != Error.MSPACK_ERR_OK)
+                                                return lzx.Error;
 
                                             byte b0 = lzx.InputBuffer[i_ptr++];
 
-                                            //READ_IF_NEEDED
-                                            {
-                                                if (i_ptr >= i_end)
-                                                {
-                                                    if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                        return lzx.Error;
-
-                                                    i_ptr = lzx.InputPointer;
-                                                    i_end = lzx.InputEnd;
-                                                }
-                                            }
+                                            lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                            if (lzx.Error != Error.MSPACK_ERR_OK)
+                                                return lzx.Error;
 
                                             byte b1 = lzx.InputBuffer[i_ptr++];
-
-                                            //INJECT_BITS((b1 << 8) | b0, 16)
-                                            {
-                                                bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
-                                                bits_left += (16);
-                                            }
+                                            lzx.INJECT_BITS_MSB((b1 << 8) | b0, 16, ref bit_buffer, ref bits_left);
                                         }
                                     }
                                 }
 
-                                (i) = (int)(bit_buffer >> (CompressionStream.BITBUF_WIDTH - (1))); //PEEK_BITS(1)
-
-                                //REMOVE_BITS(1)
-                                {
-                                    bit_buffer <<= (1);
-                                    bits_left -= (1);
-                                }
+                                (i) = (int)lzx.PEEK_BITS_MSB(1, bit_buffer);
+                                lzx.REMOVE_BITS_MSB(1, ref bit_buffer, ref bits_left);
                             }
 
                             if (i != 0)
@@ -734,50 +633,24 @@ namespace LibMSPackSharp.Compression
                                         {
                                             //READ_BYTES
                                             {
-                                                //READ_IF_NEEDED
-                                                {
-                                                    if (i_ptr >= i_end)
-                                                    {
-                                                        if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                            return lzx.Error;
-
-                                                        i_ptr = lzx.InputPointer;
-                                                        i_end = lzx.InputEnd;
-                                                    }
-                                                }
+                                                lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                                if (lzx.Error != Error.MSPACK_ERR_OK)
+                                                    return lzx.Error;
 
                                                 byte b0 = lzx.InputBuffer[i_ptr++];
 
-                                                //READ_IF_NEEDED
-                                                {
-                                                    if (i_ptr >= i_end)
-                                                    {
-                                                        if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                            return lzx.Error;
-
-                                                        i_ptr = lzx.InputPointer;
-                                                        i_end = lzx.InputEnd;
-                                                    }
-                                                }
+                                                lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                                if (lzx.Error != Error.MSPACK_ERR_OK)
+                                                    return lzx.Error;
 
                                                 byte b1 = lzx.InputBuffer[i_ptr++];
-
-                                                //INJECT_BITS((b1 << 8) | b0, 16)
-                                                {
-                                                    bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
-                                                    bits_left += (16);
-                                                }
+                                                lzx.INJECT_BITS_MSB((b1 << 8) | b0, 16, ref bit_buffer, ref bits_left);
                                             }
                                         }
                                     }
 
-                                    (i) = (int)(bit_buffer >> (CompressionStream.BITBUF_WIDTH - (16))); //PEEK_BITS(16)
-
-                                    //REMOVE_BITS(16)
-                                    {
-                                        bit_buffer <<= (16);
-                                        bits_left -= (16);
-                                    }
+                                    (i) = (int)lzx.PEEK_BITS_MSB(16, bit_buffer);
+                                    lzx.REMOVE_BITS_MSB(16, ref bit_buffer, ref bits_left);
                                 }
 
                                 //READ_BITS(j, 16)
@@ -788,50 +661,24 @@ namespace LibMSPackSharp.Compression
                                         {
                                             //READ_BYTES
                                             {
-                                                //READ_IF_NEEDED
-                                                {
-                                                    if (i_ptr >= i_end)
-                                                    {
-                                                        if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                            return lzx.Error;
-
-                                                        i_ptr = lzx.InputPointer;
-                                                        i_end = lzx.InputEnd;
-                                                    }
-                                                }
+                                                lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                                if (lzx.Error != Error.MSPACK_ERR_OK)
+                                                    return lzx.Error;
 
                                                 byte b0 = lzx.InputBuffer[i_ptr++];
 
-                                                //READ_IF_NEEDED
-                                                {
-                                                    if (i_ptr >= i_end)
-                                                    {
-                                                        if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                            return lzx.Error;
-
-                                                        i_ptr = lzx.InputPointer;
-                                                        i_end = lzx.InputEnd;
-                                                    }
-                                                }
+                                                lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                                if (lzx.Error != Error.MSPACK_ERR_OK)
+                                                    return lzx.Error;
 
                                                 byte b1 = lzx.InputBuffer[i_ptr++];
-
-                                                //INJECT_BITS((b1 << 8) | b0, 16)
-                                                {
-                                                    bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
-                                                    bits_left += (16);
-                                                }
+                                                lzx.INJECT_BITS_MSB((b1 << 8) | b0, 16, ref bit_buffer, ref bits_left);
                                             }
                                         }
                                     }
 
-                                    (j) = (int)(bit_buffer >> (CompressionStream.BITBUF_WIDTH - (16))); //PEEK_BITS(16)
-
-                                    //REMOVE_BITS(16)
-                                    {
-                                        bit_buffer <<= (16);
-                                        bits_left -= (16);
-                                    }
+                                    (j) = (int)lzx.PEEK_BITS_MSB(16, bit_buffer);
+                                    lzx.REMOVE_BITS_MSB(16, ref bit_buffer, ref bits_left);
                                 }
                             }
 
@@ -847,50 +694,24 @@ namespace LibMSPackSharp.Compression
                                 {
                                     //READ_BYTES
                                     {
-                                        //READ_IF_NEEDED
-                                        {
-                                            if (i_ptr >= i_end)
-                                            {
-                                                if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                    return lzx.Error;
-
-                                                i_ptr = lzx.InputPointer;
-                                                i_end = lzx.InputEnd;
-                                            }
-                                        }
+                                        lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                        if (lzx.Error != Error.MSPACK_ERR_OK)
+                                            return lzx.Error;
 
                                         byte b0 = lzx.InputBuffer[i_ptr++];
 
-                                        //READ_IF_NEEDED
-                                        {
-                                            if (i_ptr >= i_end)
-                                            {
-                                                if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                    return lzx.Error;
-
-                                                i_ptr = lzx.InputPointer;
-                                                i_end = lzx.InputEnd;
-                                            }
-                                        }
+                                        lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                        if (lzx.Error != Error.MSPACK_ERR_OK)
+                                            return lzx.Error;
 
                                         byte b1 = lzx.InputBuffer[i_ptr++];
-
-                                        //INJECT_BITS((b1 << 8) | b0, 16)
-                                        {
-                                            bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
-                                            bits_left += (16);
-                                        }
+                                        lzx.INJECT_BITS_MSB((b1 << 8) | b0, 16, ref bit_buffer, ref bits_left);
                                     }
                                 }
                             }
 
-                            (i) = (int)(bit_buffer >> (CompressionStream.BITBUF_WIDTH - (16))); //PEEK_BITS(16)
-
-                            //REMOVE_BITS(16)
-                            {
-                                bit_buffer <<= (16);
-                                bits_left -= (16);
-                            }
+                            (i) = (int)lzx.PEEK_BITS_MSB(16, bit_buffer);
+                            lzx.REMOVE_BITS_MSB(16, ref bit_buffer, ref bits_left);
                         }
 
                         //READ_BITS(j, 8)
@@ -901,50 +722,24 @@ namespace LibMSPackSharp.Compression
                                 {
                                     //READ_BYTES
                                     {
-                                        //READ_IF_NEEDED
-                                        {
-                                            if (i_ptr >= i_end)
-                                            {
-                                                if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                    return lzx.Error;
-
-                                                i_ptr = lzx.InputPointer;
-                                                i_end = lzx.InputEnd;
-                                            }
-                                        }
+                                        lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                        if (lzx.Error != Error.MSPACK_ERR_OK)
+                                            return lzx.Error;
 
                                         byte b0 = lzx.InputBuffer[i_ptr++];
 
-                                        //READ_IF_NEEDED
-                                        {
-                                            if (i_ptr >= i_end)
-                                            {
-                                                if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                    return lzx.Error;
-
-                                                i_ptr = lzx.InputPointer;
-                                                i_end = lzx.InputEnd;
-                                            }
-                                        }
+                                        lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                        if (lzx.Error != Error.MSPACK_ERR_OK)
+                                            return lzx.Error;
 
                                         byte b1 = lzx.InputBuffer[i_ptr++];
-
-                                        //INJECT_BITS((b1 << 8) | b0, 16)
-                                        {
-                                            bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
-                                            bits_left += (16);
-                                        }
+                                        lzx.INJECT_BITS_MSB((b1 << 8) | b0, 16, ref bit_buffer, ref bits_left);
                                     }
                                 }
                             }
 
-                            (j) = (int)(bit_buffer >> (CompressionStream.BITBUF_WIDTH - (8))); //PEEK_BITS(8)
-
-                            //REMOVE_BITS(8)
-                            {
-                                bit_buffer <<= (8);
-                                bits_left -= (8);
-                            }
+                            (j) = (int)lzx.PEEK_BITS_MSB(8, bit_buffer);
+                            lzx.REMOVE_BITS_MSB(8, ref bit_buffer, ref bits_left);
                         }
 
                         lzx.BlockRemaining = lzx.BlockLength = (uint)((i << 8) | j);
@@ -965,50 +760,24 @@ namespace LibMSPackSharp.Compression
                                             {
                                                 //READ_BYTES
                                                 {
-                                                    //READ_IF_NEEDED
-                                                    {
-                                                        if (i_ptr >= i_end)
-                                                        {
-                                                            if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                                return lzx.Error;
-
-                                                            i_ptr = lzx.InputPointer;
-                                                            i_end = lzx.InputEnd;
-                                                        }
-                                                    }
+                                                    lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                                    if (lzx.Error != Error.MSPACK_ERR_OK)
+                                                        return lzx.Error;
 
                                                     byte b0 = lzx.InputBuffer[i_ptr++];
 
-                                                    //READ_IF_NEEDED
-                                                    {
-                                                        if (i_ptr >= i_end)
-                                                        {
-                                                            if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                                return lzx.Error;
-
-                                                            i_ptr = lzx.InputPointer;
-                                                            i_end = lzx.InputEnd;
-                                                        }
-                                                    }
+                                                    lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                                    if (lzx.Error != Error.MSPACK_ERR_OK)
+                                                        return lzx.Error;
 
                                                     byte b1 = lzx.InputBuffer[i_ptr++];
-
-                                                    //INJECT_BITS((b1 << 8) | b0, 16)
-                                                    {
-                                                        bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
-                                                        bits_left += (16);
-                                                    }
+                                                    lzx.INJECT_BITS_MSB((b1 << 8) | b0, 16, ref bit_buffer, ref bits_left);
                                                 }
                                             }
                                         }
 
-                                        (j) = (int)(bit_buffer >> (CompressionStream.BITBUF_WIDTH - (3))); //PEEK_BITS(3)
-
-                                        //REMOVE_BITS(3)
-                                        {
-                                            bit_buffer <<= (3);
-                                            bits_left -= (3);
-                                        }
+                                        (j) = (int)lzx.PEEK_BITS_MSB(3, bit_buffer);
+                                        lzx.REMOVE_BITS_MSB(3, ref bit_buffer, ref bits_left);
                                     }
 
                                     lzx.ALIGNED_len[i] = (byte)j;
@@ -1027,46 +796,22 @@ namespace LibMSPackSharp.Compression
 
                                 //READ_LENGTHS(MAINTREE, 0, 256)
                                 {
-                                    //STORE_BITS
-                                    {
-                                        lzx.InputPointer = i_ptr;
-                                        lzx.InputEnd = i_end;
-                                        lzx.BitBuffer = bit_buffer;
-                                        lzx.BitsLeft = bits_left;
-                                    }
+                                    lzx.STORE_BITS(i_ptr, i_end, bit_buffer, bits_left);
 
                                     if (ReadLens(lzx, lzx.MAINTREE_len, (0), (uint)(256)) != Error.MSPACK_ERR_OK)
                                         return lzx.Error;
 
-                                    //RESTORE_BITS
-                                    {
-                                        i_ptr = lzx.InputPointer;
-                                        i_end = lzx.InputEnd;
-                                        bit_buffer = lzx.BitBuffer;
-                                        bits_left = lzx.BitsLeft;
-                                    }
+                                    lzx.RESTORE_BITS(out i_ptr, out i_end, out bit_buffer, out bits_left);
                                 }
 
                                 //READ_LENGTHS(MAINTREE, 256, LZX_NUM_CHARS + lzx.NumOffsets)
                                 {
-                                    //STORE_BITS
-                                    {
-                                        lzx.InputPointer = i_ptr;
-                                        lzx.InputEnd = i_end;
-                                        lzx.BitBuffer = bit_buffer;
-                                        lzx.BitsLeft = bits_left;
-                                    }
+                                    lzx.STORE_BITS(i_ptr, i_end, bit_buffer, bits_left);
 
                                     if (ReadLens(lzx, lzx.MAINTREE_len, (256), (uint)(LZX_NUM_CHARS + lzx.NumOffsets)) != Error.MSPACK_ERR_OK)
                                         return lzx.Error;
 
-                                    //RESTORE_BITS
-                                    {
-                                        i_ptr = lzx.InputPointer;
-                                        i_end = lzx.InputEnd;
-                                        bit_buffer = lzx.BitBuffer;
-                                        bits_left = lzx.BitsLeft;
-                                    }
+                                    lzx.RESTORE_BITS(out i_ptr, out i_end, out bit_buffer, out bits_left);
                                 }
 
                                 //BUILD_TABLE(MAINTREE)
@@ -1086,24 +831,12 @@ namespace LibMSPackSharp.Compression
 
                                 //READ_LENGTHS(LENGTH, 0, LZX_NUM_SECONDARY_LENGTHS)
                                 {
-                                    //STORE_BITS
-                                    {
-                                        lzx.InputPointer = i_ptr;
-                                        lzx.InputEnd = i_end;
-                                        lzx.BitBuffer = bit_buffer;
-                                        lzx.BitsLeft = bits_left;
-                                    }
+                                    lzx.STORE_BITS(i_ptr, i_end, bit_buffer, bits_left);
 
                                     if (ReadLens(lzx, lzx.LENGTH_len, (0), (uint)(LZX_NUM_SECONDARY_LENGTHS)) != Error.MSPACK_ERR_OK)
                                         return lzx.Error;
 
-                                    //RESTORE_BITS
-                                    {
-                                        i_ptr = lzx.InputPointer;
-                                        i_end = lzx.InputEnd;
-                                        bit_buffer = lzx.BitBuffer;
-                                        bits_left = lzx.BitsLeft;
-                                    }
+                                    lzx.RESTORE_BITS(out i_ptr, out i_end, out bit_buffer, out bits_left);
                                 }
 
                                 //BUILD_TABLE_MAYBE_EMPTY(LENGTH)
@@ -1132,46 +865,22 @@ namespace LibMSPackSharp.Compression
 
                                 //READ_LENGTHS(MAINTREE, 0, 256)
                                 {
-                                    //STORE_BITS
-                                    {
-                                        lzx.InputPointer = i_ptr;
-                                        lzx.InputEnd = i_end;
-                                        lzx.BitBuffer = bit_buffer;
-                                        lzx.BitsLeft = bits_left;
-                                    }
+                                    lzx.STORE_BITS(i_ptr, i_end, bit_buffer, bits_left);
 
                                     if (ReadLens(lzx, lzx.MAINTREE_len, (0), (uint)(256)) != Error.MSPACK_ERR_OK)
                                         return lzx.Error;
 
-                                    //RESTORE_BITS
-                                    {
-                                        i_ptr = lzx.InputPointer;
-                                        i_end = lzx.InputEnd;
-                                        bit_buffer = lzx.BitBuffer;
-                                        bits_left = lzx.BitsLeft;
-                                    }
+                                    lzx.RESTORE_BITS(out i_ptr, out i_end, out bit_buffer, out bits_left);
                                 }
 
                                 //READ_LENGTHS(MAINTREE, 256, LZX_NUM_CHARS + lzx.NumOffsets)
                                 {
-                                    //STORE_BITS
-                                    {
-                                        lzx.InputPointer = i_ptr;
-                                        lzx.InputEnd = i_end;
-                                        lzx.BitBuffer = bit_buffer;
-                                        lzx.BitsLeft = bits_left;
-                                    }
+                                    lzx.STORE_BITS(i_ptr, i_end, bit_buffer, bits_left);
 
                                     if (ReadLens(lzx, lzx.MAINTREE_len, (256), (uint)(LZX_NUM_CHARS + lzx.NumOffsets)) != Error.MSPACK_ERR_OK)
                                         return lzx.Error;
 
-                                    //RESTORE_BITS
-                                    {
-                                        i_ptr = lzx.InputPointer;
-                                        i_end = lzx.InputEnd;
-                                        bit_buffer = lzx.BitBuffer;
-                                        bits_left = lzx.BitsLeft;
-                                    }
+                                    lzx.RESTORE_BITS(out i_ptr, out i_end, out bit_buffer, out bits_left);
                                 }
 
                                 //BUILD_TABLE(MAINTREE)
@@ -1191,24 +900,12 @@ namespace LibMSPackSharp.Compression
 
                                 //READ_LENGTHS(LENGTH, 0, LZX_NUM_SECONDARY_LENGTHS)
                                 {
-                                    //STORE_BITS
-                                    {
-                                        lzx.InputPointer = i_ptr;
-                                        lzx.InputEnd = i_end;
-                                        lzx.BitBuffer = bit_buffer;
-                                        lzx.BitsLeft = bits_left;
-                                    }
+                                    lzx.STORE_BITS(i_ptr, i_end, bit_buffer, bits_left);
 
                                     if (ReadLens(lzx, lzx.LENGTH_len, (0), (uint)(LZX_NUM_SECONDARY_LENGTHS)) != Error.MSPACK_ERR_OK)
                                         return lzx.Error;
 
-                                    //RESTORE_BITS
-                                    {
-                                        i_ptr = lzx.InputPointer;
-                                        i_end = lzx.InputEnd;
-                                        bit_buffer = lzx.BitBuffer;
-                                        bits_left = lzx.BitsLeft;
-                                    }
+                                    lzx.RESTORE_BITS(out i_ptr, out i_end, out bit_buffer, out bits_left);
                                 }
 
                                 //BUILD_TABLE_MAYBE_EMPTY(LENGTH)
@@ -1245,39 +942,18 @@ namespace LibMSPackSharp.Compression
                                         {
                                             //READ_BYTES
                                             {
-                                                //READ_IF_NEEDED
-                                                {
-                                                    if (i_ptr >= i_end)
-                                                    {
-                                                        if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                            return lzx.Error;
-
-                                                        i_ptr = lzx.InputPointer;
-                                                        i_end = lzx.InputEnd;
-                                                    }
-                                                }
+                                                lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                                if (lzx.Error != Error.MSPACK_ERR_OK)
+                                                    return lzx.Error;
 
                                                 byte b0 = lzx.InputBuffer[i_ptr++];
 
-                                                //READ_IF_NEEDED
-                                                {
-                                                    if (i_ptr >= i_end)
-                                                    {
-                                                        if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                            return lzx.Error;
-
-                                                        i_ptr = lzx.InputPointer;
-                                                        i_end = lzx.InputEnd;
-                                                    }
-                                                }
+                                                lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                                if (lzx.Error != Error.MSPACK_ERR_OK)
+                                                    return lzx.Error;
 
                                                 byte b1 = lzx.InputBuffer[i_ptr++];
-
-                                                //INJECT_BITS((b1 << 8) | b0, 16)
-                                                {
-                                                    bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
-                                                    bits_left += (16);
-                                                }
+                                                lzx.INJECT_BITS_MSB((b1 << 8) | b0, 16, ref bit_buffer, ref bits_left);
                                             }
                                         }
                                     }
@@ -1288,17 +964,9 @@ namespace LibMSPackSharp.Compression
                                 // Read 12 bytes of stored R0 / R1 / R2 values
                                 for (rundest = 0, i = 0; i < 12; i++)
                                 {
-                                    //READ_IF_NEEDED
-                                    {
-                                        if (i_ptr >= i_end)
-                                        {
-                                            if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                return lzx.Error;
-
-                                            i_ptr = lzx.InputPointer;
-                                            i_end = lzx.InputEnd;
-                                        }
-                                    }
+                                    lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                    if (lzx.Error != Error.MSPACK_ERR_OK)
+                                        return lzx.Error;
 
                                     buf[rundest++] = lzx.InputBuffer[i_ptr++];
                                 }
@@ -1340,44 +1008,23 @@ namespace LibMSPackSharp.Compression
                                         {
                                             //READ_BYTES
                                             {
-                                                //READ_IF_NEEDED
-                                                {
-                                                    if (i_ptr >= i_end)
-                                                    {
-                                                        if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                            return lzx.Error;
-
-                                                        i_ptr = lzx.InputPointer;
-                                                        i_end = lzx.InputEnd;
-                                                    }
-                                                }
+                                                lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                                if (lzx.Error != Error.MSPACK_ERR_OK)
+                                                    return lzx.Error;
 
                                                 byte b0 = lzx.InputBuffer[i_ptr++];
 
-                                                //READ_IF_NEEDED
-                                                {
-                                                    if (i_ptr >= i_end)
-                                                    {
-                                                        if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                            return lzx.Error;
-
-                                                        i_ptr = lzx.InputPointer;
-                                                        i_end = lzx.InputEnd;
-                                                    }
-                                                }
+                                                lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                                if (lzx.Error != Error.MSPACK_ERR_OK)
+                                                    return lzx.Error;
 
                                                 byte b1 = lzx.InputBuffer[i_ptr++];
-
-                                                //INJECT_BITS((b1 << 8) | b0, 16)
-                                                {
-                                                    bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
-                                                    bits_left += (16);
-                                                }
+                                                lzx.INJECT_BITS_MSB((b1 << 8) | b0, 16, ref bit_buffer, ref bits_left);
                                             }
                                         }
                                     }
 
-                                    sym = lzx.MAINTREE_table[(bit_buffer >> (CompressionStream.BITBUF_WIDTH - (LZX_MAINTREE_TABLEBITS)))]; //PEEK_BITS(TABLEBITS(MAINTREE))
+                                    sym = lzx.MAINTREE_table[lzx.PEEK_BITS_MSB(LZX_MAINTREE_TABLEBITS, bit_buffer)];
                                     if (sym >= LZX_MAINTREE_MAXSYMBOLS)
                                     {
                                         //HUFF_TRAVERSE(MAINTREE)
@@ -1395,12 +1042,7 @@ namespace LibMSPackSharp.Compression
 
                                     (main_element) = sym;
                                     i = lzx.MAINTREE_len[sym];
-
-                                    //REMOVE_BITS(i)
-                                    {
-                                        bit_buffer <<= (i);
-                                        bits_left -= (i);
-                                    }
+                                    lzx.REMOVE_BITS_MSB(i, ref bit_buffer, ref bits_left);
                                 }
 
                                 if (main_element < LZX_NUM_CHARS)
@@ -1432,44 +1074,23 @@ namespace LibMSPackSharp.Compression
                                                 {
                                                     //READ_BYTES
                                                     {
-                                                        //READ_IF_NEEDED
-                                                        {
-                                                            if (i_ptr >= i_end)
-                                                            {
-                                                                if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                                    return lzx.Error;
-
-                                                                i_ptr = lzx.InputPointer;
-                                                                i_end = lzx.InputEnd;
-                                                            }
-                                                        }
+                                                        lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                                        if (lzx.Error != Error.MSPACK_ERR_OK)
+                                                            return lzx.Error;
 
                                                         byte b0 = lzx.InputBuffer[i_ptr++];
 
-                                                        //READ_IF_NEEDED
-                                                        {
-                                                            if (i_ptr >= i_end)
-                                                            {
-                                                                if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                                    return lzx.Error;
-
-                                                                i_ptr = lzx.InputPointer;
-                                                                i_end = lzx.InputEnd;
-                                                            }
-                                                        }
+                                                        lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                                        if (lzx.Error != Error.MSPACK_ERR_OK)
+                                                            return lzx.Error;
 
                                                         byte b1 = lzx.InputBuffer[i_ptr++];
-
-                                                        //INJECT_BITS((b1 << 8) | b0, 16)
-                                                        {
-                                                            bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
-                                                            bits_left += (16);
-                                                        }
+                                                        lzx.INJECT_BITS_MSB((b1 << 8) | b0, 16, ref bit_buffer, ref bits_left);
                                                     }
                                                 }
                                             }
 
-                                            sym = lzx.LENGTH_table[(bit_buffer >> (CompressionStream.BITBUF_WIDTH - (LZX_LENGTH_TABLEBITS)))]; //PEEK_BITS(TABLEBITS(LENGTH))
+                                            sym = lzx.LENGTH_table[lzx.PEEK_BITS_MSB(LZX_LENGTH_TABLEBITS, bit_buffer)];
                                             if (sym >= LZX_LENGTH_MAXSYMBOLS)
                                             {
                                                 //HUFF_TRAVERSE(LENGTH)
@@ -1487,12 +1108,7 @@ namespace LibMSPackSharp.Compression
 
                                             (length_footer) = sym;
                                             i = lzx.LENGTH_len[sym];
-
-                                            //REMOVE_BITS(i)
-                                            {
-                                                bit_buffer <<= (i);
-                                                bits_left -= (i);
-                                            }
+                                            lzx.REMOVE_BITS_MSB(i, ref bit_buffer, ref bits_left);
                                         }
 
                                         match_length += length_footer;
@@ -1538,50 +1154,24 @@ namespace LibMSPackSharp.Compression
                                                             {
                                                                 //READ_BYTES
                                                                 {
-                                                                    //READ_IF_NEEDED
-                                                                    {
-                                                                        if (i_ptr >= i_end)
-                                                                        {
-                                                                            if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                                                return lzx.Error;
-
-                                                                            i_ptr = lzx.InputPointer;
-                                                                            i_end = lzx.InputEnd;
-                                                                        }
-                                                                    }
+                                                                    lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                                                    if (lzx.Error != Error.MSPACK_ERR_OK)
+                                                                        return lzx.Error;
 
                                                                     byte b0 = lzx.InputBuffer[i_ptr++];
 
-                                                                    //READ_IF_NEEDED
-                                                                    {
-                                                                        if (i_ptr >= i_end)
-                                                                        {
-                                                                            if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                                                return lzx.Error;
-
-                                                                            i_ptr = lzx.InputPointer;
-                                                                            i_end = lzx.InputEnd;
-                                                                        }
-                                                                    }
+                                                                    lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                                                    if (lzx.Error != Error.MSPACK_ERR_OK)
+                                                                        return lzx.Error;
 
                                                                     byte b1 = lzx.InputBuffer[i_ptr++];
-
-                                                                    //INJECT_BITS((b1 << 8) | b0, 16)
-                                                                    {
-                                                                        bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
-                                                                        bits_left += (16);
-                                                                    }
+                                                                    lzx.INJECT_BITS_MSB((b1 << 8) | b0, 16, ref bit_buffer, ref bits_left);
                                                                 }
                                                             }
                                                         }
 
-                                                        (verbatim_bits) = (int)(bit_buffer >> (CompressionStream.BITBUF_WIDTH - (extra))); //PEEK_BITS(extra)
-
-                                                        //REMOVE_BITS(extra)
-                                                        {
-                                                            bit_buffer <<= (extra);
-                                                            bits_left -= (extra);
-                                                        }
+                                                        (verbatim_bits) = (int)lzx.PEEK_BITS_MSB(extra, bit_buffer);
+                                                        lzx.REMOVE_BITS_MSB(extra, ref bit_buffer, ref bits_left);
                                                     }
 
                                                     match_offset = (uint)(position_base[match_offset] - 2 + verbatim_bits);
@@ -1607,50 +1197,24 @@ namespace LibMSPackSharp.Compression
                                                             {
                                                                 //READ_BYTES
                                                                 {
-                                                                    //READ_IF_NEEDED
-                                                                    {
-                                                                        if (i_ptr >= i_end)
-                                                                        {
-                                                                            if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                                                return lzx.Error;
-
-                                                                            i_ptr = lzx.InputPointer;
-                                                                            i_end = lzx.InputEnd;
-                                                                        }
-                                                                    }
+                                                                    lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                                                    if (lzx.Error != Error.MSPACK_ERR_OK)
+                                                                        return lzx.Error;
 
                                                                     byte b0 = lzx.InputBuffer[i_ptr++];
 
-                                                                    //READ_IF_NEEDED
-                                                                    {
-                                                                        if (i_ptr >= i_end)
-                                                                        {
-                                                                            if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                                                return lzx.Error;
-
-                                                                            i_ptr = lzx.InputPointer;
-                                                                            i_end = lzx.InputEnd;
-                                                                        }
-                                                                    }
+                                                                    lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                                                    if (lzx.Error != Error.MSPACK_ERR_OK)
+                                                                        return lzx.Error;
 
                                                                     byte b1 = lzx.InputBuffer[i_ptr++];
-
-                                                                    //INJECT_BITS((b1 << 8) | b0, 16)
-                                                                    {
-                                                                        bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
-                                                                        bits_left += (16);
-                                                                    }
+                                                                    lzx.INJECT_BITS_MSB((b1 << 8) | b0, 16, ref bit_buffer, ref bits_left);
                                                                 }
                                                             }
                                                         }
 
-                                                        (verbatim_bits) = (int)(bit_buffer >> (CompressionStream.BITBUF_WIDTH - (extra))); //PEEK_BITS(extra)
-
-                                                        //REMOVE_BITS(extra)
-                                                        {
-                                                            bit_buffer <<= (extra);
-                                                            bits_left -= (extra);
-                                                        }
+                                                        (verbatim_bits) = (int)lzx.PEEK_BITS_MSB(extra, bit_buffer);
+                                                        lzx.REMOVE_BITS_MSB(extra, ref bit_buffer, ref bits_left);
                                                     }
 
                                                     match_offset += (uint)(verbatim_bits << 3);
@@ -1663,44 +1227,23 @@ namespace LibMSPackSharp.Compression
                                                             {
                                                                 //READ_BYTES
                                                                 {
-                                                                    //READ_IF_NEEDED
-                                                                    {
-                                                                        if (i_ptr >= i_end)
-                                                                        {
-                                                                            if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                                                return lzx.Error;
-
-                                                                            i_ptr = lzx.InputPointer;
-                                                                            i_end = lzx.InputEnd;
-                                                                        }
-                                                                    }
+                                                                    lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                                                    if (lzx.Error != Error.MSPACK_ERR_OK)
+                                                                        return lzx.Error;
 
                                                                     byte b0 = lzx.InputBuffer[i_ptr++];
 
-                                                                    //READ_IF_NEEDED
-                                                                    {
-                                                                        if (i_ptr >= i_end)
-                                                                        {
-                                                                            if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                                                return lzx.Error;
-
-                                                                            i_ptr = lzx.InputPointer;
-                                                                            i_end = lzx.InputEnd;
-                                                                        }
-                                                                    }
+                                                                    lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                                                    if (lzx.Error != Error.MSPACK_ERR_OK)
+                                                                        return lzx.Error;
 
                                                                     byte b1 = lzx.InputBuffer[i_ptr++];
-
-                                                                    //INJECT_BITS((b1 << 8) | b0, 16)
-                                                                    {
-                                                                        bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
-                                                                        bits_left += (16);
-                                                                    }
+                                                                    lzx.INJECT_BITS_MSB((b1 << 8) | b0, 16, ref bit_buffer, ref bits_left);
                                                                 }
                                                             }
                                                         }
 
-                                                        sym = lzx.ALIGNED_table[(bit_buffer >> (CompressionStream.BITBUF_WIDTH - (LZX_ALIGNED_TABLEBITS)))]; //PEEK_BITS(TABLEBITS(ALIGNED))
+                                                        sym = lzx.ALIGNED_table[lzx.PEEK_BITS_MSB(LZX_ALIGNED_TABLEBITS, bit_buffer)];
                                                         if (sym >= LZX_ALIGNED_MAXSYMBOLS)
                                                         {
                                                             //HUFF_TRAVERSE(ALIGNED)
@@ -1718,12 +1261,7 @@ namespace LibMSPackSharp.Compression
 
                                                         (aligned_bits) = sym;
                                                         i = lzx.ALIGNED_len[sym];
-
-                                                        //REMOVE_BITS(i)
-                                                        {
-                                                            bit_buffer <<= (i);
-                                                            bits_left -= (i);
-                                                        }
+                                                        lzx.REMOVE_BITS_MSB(i, ref bit_buffer, ref bits_left);
                                                     }
 
                                                     match_offset += (uint)aligned_bits;
@@ -1740,44 +1278,23 @@ namespace LibMSPackSharp.Compression
                                                             {
                                                                 //READ_BYTES
                                                                 {
-                                                                    //READ_IF_NEEDED
-                                                                    {
-                                                                        if (i_ptr >= i_end)
-                                                                        {
-                                                                            if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                                                return lzx.Error;
-
-                                                                            i_ptr = lzx.InputPointer;
-                                                                            i_end = lzx.InputEnd;
-                                                                        }
-                                                                    }
+                                                                    lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                                                    if (lzx.Error != Error.MSPACK_ERR_OK)
+                                                                        return lzx.Error;
 
                                                                     byte b0 = lzx.InputBuffer[i_ptr++];
 
-                                                                    //READ_IF_NEEDED
-                                                                    {
-                                                                        if (i_ptr >= i_end)
-                                                                        {
-                                                                            if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                                                return lzx.Error;
-
-                                                                            i_ptr = lzx.InputPointer;
-                                                                            i_end = lzx.InputEnd;
-                                                                        }
-                                                                    }
+                                                                    lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                                                    if (lzx.Error != Error.MSPACK_ERR_OK)
+                                                                        return lzx.Error;
 
                                                                     byte b1 = lzx.InputBuffer[i_ptr++];
-
-                                                                    //INJECT_BITS((b1 << 8) | b0, 16)
-                                                                    {
-                                                                        bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
-                                                                        bits_left += (16);
-                                                                    }
+                                                                    lzx.INJECT_BITS_MSB((b1 << 8) | b0, 16, ref bit_buffer, ref bits_left);
                                                                 }
                                                             }
                                                         }
 
-                                                        sym = lzx.ALIGNED_table[(bit_buffer >> (CompressionStream.BITBUF_WIDTH - (LZX_ALIGNED_TABLEBITS)))]; //PEEK_BITS(TABLEBITS(ALIGNED))
+                                                        sym = lzx.ALIGNED_table[lzx.PEEK_BITS_MSB(LZX_ALIGNED_TABLEBITS, bit_buffer)];
                                                         if (sym >= LZX_ALIGNED_MAXSYMBOLS)
                                                         {
                                                             //HUFF_TRAVERSE(ALIGNED)
@@ -1795,12 +1312,7 @@ namespace LibMSPackSharp.Compression
 
                                                         (aligned_bits) = sym;
                                                         i = lzx.ALIGNED_len[sym];
-
-                                                        //REMOVE_BITS(i)
-                                                        {
-                                                            bit_buffer <<= (i);
-                                                            bits_left -= (i);
-                                                        }
+                                                        lzx.REMOVE_BITS_MSB(i, ref bit_buffer, ref bits_left);
                                                     }
 
                                                     match_offset += (uint)aligned_bits;
@@ -1817,50 +1329,24 @@ namespace LibMSPackSharp.Compression
                                                             {
                                                                 //READ_BYTES
                                                                 {
-                                                                    //READ_IF_NEEDED
-                                                                    {
-                                                                        if (i_ptr >= i_end)
-                                                                        {
-                                                                            if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                                                return lzx.Error;
-
-                                                                            i_ptr = lzx.InputPointer;
-                                                                            i_end = lzx.InputEnd;
-                                                                        }
-                                                                    }
+                                                                    lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                                                    if (lzx.Error != Error.MSPACK_ERR_OK)
+                                                                        return lzx.Error;
 
                                                                     byte b0 = lzx.InputBuffer[i_ptr++];
 
-                                                                    //READ_IF_NEEDED
-                                                                    {
-                                                                        if (i_ptr >= i_end)
-                                                                        {
-                                                                            if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                                                return lzx.Error;
-
-                                                                            i_ptr = lzx.InputPointer;
-                                                                            i_end = lzx.InputEnd;
-                                                                        }
-                                                                    }
+                                                                    lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                                                    if (lzx.Error != Error.MSPACK_ERR_OK)
+                                                                        return lzx.Error;
 
                                                                     byte b1 = lzx.InputBuffer[i_ptr++];
-
-                                                                    //INJECT_BITS((b1 << 8) | b0, 16)
-                                                                    {
-                                                                        bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
-                                                                        bits_left += (16);
-                                                                    }
+                                                                    lzx.INJECT_BITS_MSB((b1 << 8) | b0, 16, ref bit_buffer, ref bits_left);
                                                                 }
                                                             }
                                                         }
 
-                                                        (verbatim_bits) = (int)(bit_buffer >> (CompressionStream.BITBUF_WIDTH - (extra))); //PEEK_BITS(extra)
-
-                                                        //REMOVE_BITS(extra)
-                                                        {
-                                                            bit_buffer <<= (extra);
-                                                            bits_left -= (extra);
-                                                        }
+                                                        (verbatim_bits) = (int)lzx.PEEK_BITS_MSB(extra, bit_buffer);
+                                                        lzx.REMOVE_BITS_MSB(extra, ref bit_buffer, ref bits_left);
                                                     }
 
                                                     match_offset += (uint)verbatim_bits;
@@ -1891,51 +1377,26 @@ namespace LibMSPackSharp.Compression
                                             {
                                                 //READ_BYTES
                                                 {
-                                                    //READ_IF_NEEDED
-                                                    {
-                                                        if (i_ptr >= i_end)
-                                                        {
-                                                            if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                                return lzx.Error;
-
-                                                            i_ptr = lzx.InputPointer;
-                                                            i_end = lzx.InputEnd;
-                                                        }
-                                                    }
+                                                    lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                                    if (lzx.Error != Error.MSPACK_ERR_OK)
+                                                        return lzx.Error;
 
                                                     byte b0 = lzx.InputBuffer[i_ptr++];
 
-                                                    //READ_IF_NEEDED
-                                                    {
-                                                        if (i_ptr >= i_end)
-                                                        {
-                                                            if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                                return lzx.Error;
-
-                                                            i_ptr = lzx.InputPointer;
-                                                            i_end = lzx.InputEnd;
-                                                        }
-                                                    }
+                                                    lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                                    if (lzx.Error != Error.MSPACK_ERR_OK)
+                                                        return lzx.Error;
 
                                                     byte b1 = lzx.InputBuffer[i_ptr++];
-
-                                                    //INJECT_BITS((b1 << 8) | b0, 16)
-                                                    {
-                                                        bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
-                                                        bits_left += (16);
-                                                    }
+                                                    lzx.INJECT_BITS_MSB((b1 << 8) | b0, 16, ref bit_buffer, ref bits_left);
                                                 }
                                             }
                                         }
 
                                         // '0' . 8 extra length bits
-                                        if ((bit_buffer >> (CompressionStream.BITBUF_WIDTH - (1))) == 0) //PEEK_BITS(1)
+                                        if (lzx.PEEK_BITS_MSB(1, bit_buffer) == 0)
                                         {
-                                            //REMOVE_BITS(1)
-                                            {
-                                                bit_buffer <<= (1);
-                                                bits_left -= (1);
-                                            }
+                                            lzx.REMOVE_BITS_MSB(1, ref bit_buffer, ref bits_left);
 
                                             //READ_BITS(extra_len, 8)
                                             {
@@ -1945,61 +1406,31 @@ namespace LibMSPackSharp.Compression
                                                     {
                                                         //READ_BYTES
                                                         {
-                                                            //READ_IF_NEEDED
-                                                            {
-                                                                if (i_ptr >= i_end)
-                                                                {
-                                                                    if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                                        return lzx.Error;
-
-                                                                    i_ptr = lzx.InputPointer;
-                                                                    i_end = lzx.InputEnd;
-                                                                }
-                                                            }
+                                                            lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                                            if (lzx.Error != Error.MSPACK_ERR_OK)
+                                                                return lzx.Error;
 
                                                             byte b0 = lzx.InputBuffer[i_ptr++];
 
-                                                            //READ_IF_NEEDED
-                                                            {
-                                                                if (i_ptr >= i_end)
-                                                                {
-                                                                    if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                                        return lzx.Error;
-
-                                                                    i_ptr = lzx.InputPointer;
-                                                                    i_end = lzx.InputEnd;
-                                                                }
-                                                            }
+                                                            lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                                            if (lzx.Error != Error.MSPACK_ERR_OK)
+                                                                return lzx.Error;
 
                                                             byte b1 = lzx.InputBuffer[i_ptr++];
-
-                                                            //INJECT_BITS((b1 << 8) | b0, 16)
-                                                            {
-                                                                bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
-                                                                bits_left += (16);
-                                                            }
+                                                            lzx.INJECT_BITS_MSB((b1 << 8) | b0, 16, ref bit_buffer, ref bits_left);
                                                         }
                                                     }
                                                 }
 
-                                                (extra_len) = (int)(bit_buffer >> (CompressionStream.BITBUF_WIDTH - (8))); //PEEK_BITS(8)
-
-                                                //REMOVE_BITS(8)
-                                                {
-                                                    bit_buffer <<= (8);
-                                                    bits_left -= (8);
-                                                }
+                                                (extra_len) = (int)lzx.PEEK_BITS_MSB(8, bit_buffer);
+                                                lzx.REMOVE_BITS_MSB(8, ref bit_buffer, ref bits_left);
                                             }
                                         }
 
                                         // '10' . 10 extra length bits + 0x100
-                                        else if ((bit_buffer >> (CompressionStream.BITBUF_WIDTH - (2))) == 2) //PEEK_BITS(2)
+                                        else if (lzx.PEEK_BITS_MSB(2, bit_buffer) == 2)
                                         {
-                                            //REMOVE_BITS(2)
-                                            {
-                                                bit_buffer <<= (2);
-                                                bits_left -= (2);
-                                            }
+                                            lzx.REMOVE_BITS_MSB(2, ref bit_buffer, ref bits_left);
 
                                             //READ_BITS(extra_len, 10)
                                             {
@@ -2009,63 +1440,33 @@ namespace LibMSPackSharp.Compression
                                                     {
                                                         //READ_BYTES
                                                         {
-                                                            //READ_IF_NEEDED
-                                                            {
-                                                                if (i_ptr >= i_end)
-                                                                {
-                                                                    if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                                        return lzx.Error;
-
-                                                                    i_ptr = lzx.InputPointer;
-                                                                    i_end = lzx.InputEnd;
-                                                                }
-                                                            }
+                                                            lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                                            if (lzx.Error != Error.MSPACK_ERR_OK)
+                                                                return lzx.Error;
 
                                                             byte b0 = lzx.InputBuffer[i_ptr++];
 
-                                                            //READ_IF_NEEDED
-                                                            {
-                                                                if (i_ptr >= i_end)
-                                                                {
-                                                                    if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                                        return lzx.Error;
-
-                                                                    i_ptr = lzx.InputPointer;
-                                                                    i_end = lzx.InputEnd;
-                                                                }
-                                                            }
+                                                            lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                                            if (lzx.Error != Error.MSPACK_ERR_OK)
+                                                                return lzx.Error;
 
                                                             byte b1 = lzx.InputBuffer[i_ptr++];
-
-                                                            //INJECT_BITS((b1 << 8) | b0, 16)
-                                                            {
-                                                                bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
-                                                                bits_left += (16);
-                                                            }
+                                                            lzx.INJECT_BITS_MSB((b1 << 8) | b0, 16, ref bit_buffer, ref bits_left);
                                                         }
                                                     }
                                                 }
 
-                                                (extra_len) = (int)(bit_buffer >> (CompressionStream.BITBUF_WIDTH - (10))); //PEEK_BITS(10)
-
-                                                //REMOVE_BITS(10)
-                                                {
-                                                    bit_buffer <<= (10);
-                                                    bits_left -= (10);
-                                                }
+                                                (extra_len) = (int)lzx.PEEK_BITS_MSB(10, bit_buffer);
+                                                lzx.REMOVE_BITS_MSB(10, ref bit_buffer, ref bits_left);
                                             }
 
                                             extra_len += 0x100;
                                         }
 
                                         // '110' . 12 extra length bits + 0x500
-                                        else if ((bit_buffer >> (CompressionStream.BITBUF_WIDTH - (3))) == 6) //PEEK_BITS(3)
+                                        else if (lzx.PEEK_BITS_MSB(3, bit_buffer) == 6)
                                         {
-                                            //REMOVE_BITS(3)
-                                            {
-                                                bit_buffer <<= (3);
-                                                bits_left -= (3);
-                                            }
+                                            lzx.REMOVE_BITS_MSB(3, ref bit_buffer, ref bits_left);
 
                                             //READ_BITS(extra_len, 12)
                                             {
@@ -2075,50 +1476,24 @@ namespace LibMSPackSharp.Compression
                                                     {
                                                         //READ_BYTES
                                                         {
-                                                            //READ_IF_NEEDED
-                                                            {
-                                                                if (i_ptr >= i_end)
-                                                                {
-                                                                    if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                                        return lzx.Error;
-
-                                                                    i_ptr = lzx.InputPointer;
-                                                                    i_end = lzx.InputEnd;
-                                                                }
-                                                            }
+                                                            lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                                            if (lzx.Error != Error.MSPACK_ERR_OK)
+                                                                return lzx.Error;
 
                                                             byte b0 = lzx.InputBuffer[i_ptr++];
 
-                                                            //READ_IF_NEEDED
-                                                            {
-                                                                if (i_ptr >= i_end)
-                                                                {
-                                                                    if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                                        return lzx.Error;
-
-                                                                    i_ptr = lzx.InputPointer;
-                                                                    i_end = lzx.InputEnd;
-                                                                }
-                                                            }
+                                                            lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                                            if (lzx.Error != Error.MSPACK_ERR_OK)
+                                                                return lzx.Error;
 
                                                             byte b1 = lzx.InputBuffer[i_ptr++];
-
-                                                            //INJECT_BITS((b1 << 8) | b0, 16)
-                                                            {
-                                                                bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
-                                                                bits_left += (16);
-                                                            }
+                                                            lzx.INJECT_BITS_MSB((b1 << 8) | b0, 16, ref bit_buffer, ref bits_left);
                                                         }
                                                     }
                                                 }
 
-                                                (extra_len) = (int)(bit_buffer >> (CompressionStream.BITBUF_WIDTH - (12))); //PEEK_BITS(12)
-
-                                                //REMOVE_BITS(12)
-                                                {
-                                                    bit_buffer <<= (12);
-                                                    bits_left -= (12);
-                                                }
+                                                (extra_len) = (int)lzx.PEEK_BITS_MSB(12, bit_buffer);
+                                                lzx.REMOVE_BITS_MSB(12, ref bit_buffer, ref bits_left);
                                             }
 
                                             extra_len += 0x500;
@@ -2127,11 +1502,7 @@ namespace LibMSPackSharp.Compression
                                         // '111' . 15 extra length bits
                                         else
                                         {
-                                            //REMOVE_BITS(3)
-                                            {
-                                                bit_buffer <<= (3);
-                                                bits_left -= (3);
-                                            }
+                                            lzx.REMOVE_BITS_MSB(3, ref bit_buffer, ref bits_left);
 
                                             //READ_BITS(extra_len, 15)
                                             {
@@ -2141,50 +1512,24 @@ namespace LibMSPackSharp.Compression
                                                     {
                                                         //READ_BYTES
                                                         {
-                                                            //READ_IF_NEEDED
-                                                            {
-                                                                if (i_ptr >= i_end)
-                                                                {
-                                                                    if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                                        return lzx.Error;
-
-                                                                    i_ptr = lzx.InputPointer;
-                                                                    i_end = lzx.InputEnd;
-                                                                }
-                                                            }
+                                                            lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                                            if (lzx.Error != Error.MSPACK_ERR_OK)
+                                                                return lzx.Error;
 
                                                             byte b0 = lzx.InputBuffer[i_ptr++];
 
-                                                            //READ_IF_NEEDED
-                                                            {
-                                                                if (i_ptr >= i_end)
-                                                                {
-                                                                    if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                                        return lzx.Error;
-
-                                                                    i_ptr = lzx.InputPointer;
-                                                                    i_end = lzx.InputEnd;
-                                                                }
-                                                            }
+                                                            lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                                            if (lzx.Error != Error.MSPACK_ERR_OK)
+                                                                return lzx.Error;
 
                                                             byte b1 = lzx.InputBuffer[i_ptr++];
-
-                                                            //INJECT_BITS((b1 << 8) | b0, 16)
-                                                            {
-                                                                bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
-                                                                bits_left += (16);
-                                                            }
+                                                            lzx.INJECT_BITS_MSB((b1 << 8) | b0, 16, ref bit_buffer, ref bits_left);
                                                         }
                                                     }
                                                 }
 
-                                                (extra_len) = (int)(bit_buffer >> (CompressionStream.BITBUF_WIDTH - (15))); //PEEK_BITS(15)
-
-                                                //REMOVE_BITS(15)
-                                                {
-                                                    bit_buffer <<= (15);
-                                                    bits_left -= (15);
-                                                }
+                                                (extra_len) = (int)lzx.PEEK_BITS_MSB(15, bit_buffer);
+                                                lzx.REMOVE_BITS_MSB(15, ref bit_buffer, ref bits_left);
                                             }
                                         }
 
@@ -2261,17 +1606,9 @@ namespace LibMSPackSharp.Compression
                             {
                                 if ((i = i_end - i_ptr) == 0)
                                 {
-                                    //READ_IF_NEEDED
-                                    {
-                                        if (i_ptr >= i_end)
-                                        {
-                                            if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                return lzx.Error;
-
-                                            i_ptr = lzx.InputPointer;
-                                            i_end = lzx.InputEnd;
-                                        }
-                                    }
+                                    lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                    if (lzx.Error != Error.MSPACK_ERR_OK)
+                                        return lzx.Error;
                                 }
                                 else
                                 {
@@ -2320,52 +1657,25 @@ namespace LibMSPackSharp.Compression
                         {
                             //READ_BYTES
                             {
-                                //READ_IF_NEEDED
-                                {
-                                    if (i_ptr >= i_end)
-                                    {
-                                        if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                            return lzx.Error;
-
-                                        i_ptr = lzx.InputPointer;
-                                        i_end = lzx.InputEnd;
-                                    }
-                                }
+                                lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                if (lzx.Error != Error.MSPACK_ERR_OK)
+                                    return lzx.Error;
 
                                 byte b0 = lzx.InputBuffer[i_ptr++];
 
-                                //READ_IF_NEEDED
-                                {
-                                    if (i_ptr >= i_end)
-                                    {
-                                        if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                            return lzx.Error;
-
-                                        i_ptr = lzx.InputPointer;
-                                        i_end = lzx.InputEnd;
-                                    }
-                                }
+                                lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                if (lzx.Error != Error.MSPACK_ERR_OK)
+                                    return lzx.Error;
 
                                 byte b1 = lzx.InputBuffer[i_ptr++];
-
-                                //INJECT_BITS((b1 << 8) | b0, 16)
-                                {
-                                    bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
-                                    bits_left += (16);
-                                }
+                                lzx.INJECT_BITS_MSB((b1 << 8) | b0, 16, ref bit_buffer, ref bits_left);
                             }
                         }
                     }
                 }
 
                 if ((bits_left & 15) != 0)
-                {
-                    //REMOVE_BITS(bits_left & 15)
-                    {
-                        bit_buffer <<= (bits_left & 15);
-                        bits_left -= (bits_left & 15);
-                    }
-                }
+                    lzx.REMOVE_BITS_MSB(bits_left & 15, ref bit_buffer, ref bits_left);
 
                 // Check that we've used all of the previous frame first
                 if (lzx.OutputPointer != lzx.OutputEnd)
@@ -2450,15 +1760,7 @@ namespace LibMSPackSharp.Compression
             }
 
             // Store local state
-
-            //STORE_BITS
-            {
-                lzx.InputPointer = i_ptr;
-                lzx.InputEnd = i_end;
-                lzx.BitBuffer = bit_buffer;
-                lzx.BitsLeft = bits_left;
-            }
-
+            lzx.STORE_BITS(i_ptr, i_end, bit_buffer, bits_left);
             lzx.WindowPosition = window_posn;
             lzx.R0 = R0;
             lzx.R1 = R1;
@@ -2478,13 +1780,7 @@ namespace LibMSPackSharp.Compression
             uint x, y;
             int z;
 
-            //RESTORE_BITS
-            {
-                i_ptr = lzx.InputPointer;
-                i_end = lzx.InputEnd;
-                bit_buffer = lzx.BitBuffer;
-                bits_left = lzx.BitsLeft;
-            }
+            lzx.RESTORE_BITS(out i_ptr, out i_end, out bit_buffer, out bits_left);
 
             // Read lengths for pretree (20 symbols, lengths stored in fixed 4 bits) 
             for (x = 0; x < 20; x++)
@@ -2497,50 +1793,24 @@ namespace LibMSPackSharp.Compression
                         {
                             //READ_BYTES
                             {
-                                //READ_IF_NEEDED
-                                {
-                                    if (i_ptr >= i_end)
-                                    {
-                                        if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                            return lzx.Error;
-
-                                        i_ptr = lzx.InputPointer;
-                                        i_end = lzx.InputEnd;
-                                    }
-                                }
+                                lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                if (lzx.Error != Error.MSPACK_ERR_OK)
+                                    return lzx.Error;
 
                                 byte b0 = lzx.InputBuffer[i_ptr++];
 
-                                //READ_IF_NEEDED
-                                {
-                                    if (i_ptr >= i_end)
-                                    {
-                                        if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                            return lzx.Error;
-
-                                        i_ptr = lzx.InputPointer;
-                                        i_end = lzx.InputEnd;
-                                    }
-                                }
+                                lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                if (lzx.Error != Error.MSPACK_ERR_OK)
+                                    return lzx.Error;
 
                                 byte b1 = lzx.InputBuffer[i_ptr++];
-
-                                //INJECT_BITS((b1 << 8) | b0, 16)
-                                {
-                                    bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
-                                    bits_left += (16);
-                                }
+                                lzx.INJECT_BITS_MSB((b1 << 8) | b0, 16, ref bit_buffer, ref bits_left);
                             }
                         }
                     }
 
-                    (y) = (bit_buffer >> (CompressionStream.BITBUF_WIDTH - (4))); //PEEK_BITS(4)
-
-                    //REMOVE_BITS(4)
-                    {
-                        bit_buffer <<= (4);
-                        bits_left -= (4);
-                    }
+                    (y) = (uint)lzx.PEEK_BITS_MSB(4, bit_buffer);
+                    lzx.REMOVE_BITS_MSB(4, ref bit_buffer, ref bits_left);
                 }
 
                 lzx.PRETREE_len[x] = (byte)y;
@@ -2565,44 +1835,23 @@ namespace LibMSPackSharp.Compression
                         {
                             //READ_BYTES
                             {
-                                //READ_IF_NEEDED
-                                {
-                                    if (i_ptr >= i_end)
-                                    {
-                                        if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                            return lzx.Error;
-
-                                        i_ptr = lzx.InputPointer;
-                                        i_end = lzx.InputEnd;
-                                    }
-                                }
+                                lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                if (lzx.Error != Error.MSPACK_ERR_OK)
+                                    return lzx.Error;
 
                                 byte b0 = lzx.InputBuffer[i_ptr++];
 
-                                //READ_IF_NEEDED
-                                {
-                                    if (i_ptr >= i_end)
-                                    {
-                                        if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                            return lzx.Error;
-
-                                        i_ptr = lzx.InputPointer;
-                                        i_end = lzx.InputEnd;
-                                    }
-                                }
+                                lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                if (lzx.Error != Error.MSPACK_ERR_OK)
+                                    return lzx.Error;
 
                                 byte b1 = lzx.InputBuffer[i_ptr++];
-
-                                //INJECT_BITS((b1 << 8) | b0, 16)
-                                {
-                                    bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
-                                    bits_left += (16);
-                                }
+                                lzx.INJECT_BITS_MSB((b1 << 8) | b0, 16, ref bit_buffer, ref bits_left);
                             }
                         }
                     }
 
-                    sym = lzx.PRETREE_table[(bit_buffer >> (CompressionStream.BITBUF_WIDTH - (LZX_PRETREE_TABLEBITS)))]; //PEEK_BITS(TABLEBITS(PRETREE))
+                    sym = lzx.PRETREE_table[lzx.PEEK_BITS_MSB(LZX_PRETREE_TABLEBITS, bit_buffer)];
                     if (sym >= LZX_PRETREE_MAXSYMBOLS)
                     {
                         //HUFF_TRAVERSE(PRETREE)
@@ -2620,12 +1869,7 @@ namespace LibMSPackSharp.Compression
 
                     (z) = sym;
                     i = lzx.PRETREE_len[sym];
-
-                    //REMOVE_BITS(i)
-                    {
-                        bit_buffer <<= (i);
-                        bits_left -= (i);
-                    }
+                    lzx.REMOVE_BITS_MSB(i, ref bit_buffer, ref bits_left);
                 }
 
                 // Code = 17, run of ([read 4 bits]+4) zeros
@@ -2639,50 +1883,24 @@ namespace LibMSPackSharp.Compression
                             {
                                 //READ_BYTES
                                 {
-                                    //READ_IF_NEEDED
-                                    {
-                                        if (i_ptr >= i_end)
-                                        {
-                                            if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                return lzx.Error;
-
-                                            i_ptr = lzx.InputPointer;
-                                            i_end = lzx.InputEnd;
-                                        }
-                                    }
+                                    lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                    if (lzx.Error != Error.MSPACK_ERR_OK)
+                                        return lzx.Error;
 
                                     byte b0 = lzx.InputBuffer[i_ptr++];
 
-                                    //READ_IF_NEEDED
-                                    {
-                                        if (i_ptr >= i_end)
-                                        {
-                                            if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                return lzx.Error;
-
-                                            i_ptr = lzx.InputPointer;
-                                            i_end = lzx.InputEnd;
-                                        }
-                                    }
+                                    lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                    if (lzx.Error != Error.MSPACK_ERR_OK)
+                                        return lzx.Error;
 
                                     byte b1 = lzx.InputBuffer[i_ptr++];
-
-                                    //INJECT_BITS((b1 << 8) | b0, 16)
-                                    {
-                                        bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
-                                        bits_left += (16);
-                                    }
+                                    lzx.INJECT_BITS_MSB((b1 << 8) | b0, 16, ref bit_buffer, ref bits_left);
                                 }
                             }
                         }
 
-                        (y) = (bit_buffer >> (CompressionStream.BITBUF_WIDTH - (4))); //PEEK_BITS(nbits)
-
-                        //REMOVE_BITS(4)
-                        {
-                            bit_buffer <<= (4);
-                            bits_left -= (4);
-                        }
+                        (y) = (uint)lzx.PEEK_BITS_MSB(4, bit_buffer);
+                        lzx.REMOVE_BITS_MSB(4, ref bit_buffer, ref bits_left);
                     }
 
                     y += 4;
@@ -2703,50 +1921,24 @@ namespace LibMSPackSharp.Compression
                             {
                                 //READ_BYTES
                                 {
-                                    //READ_IF_NEEDED
-                                    {
-                                        if (i_ptr >= i_end)
-                                        {
-                                            if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                return lzx.Error;
-
-                                            i_ptr = lzx.InputPointer;
-                                            i_end = lzx.InputEnd;
-                                        }
-                                    }
+                                    lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                    if (lzx.Error != Error.MSPACK_ERR_OK)
+                                        return lzx.Error;
 
                                     byte b0 = lzx.InputBuffer[i_ptr++];
 
-                                    //READ_IF_NEEDED
-                                    {
-                                        if (i_ptr >= i_end)
-                                        {
-                                            if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                return lzx.Error;
-
-                                            i_ptr = lzx.InputPointer;
-                                            i_end = lzx.InputEnd;
-                                        }
-                                    }
+                                    lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                    if (lzx.Error != Error.MSPACK_ERR_OK)
+                                        return lzx.Error;
 
                                     byte b1 = lzx.InputBuffer[i_ptr++];
-
-                                    //INJECT_BITS((b1 << 8) | b0, 16)
-                                    {
-                                        bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
-                                        bits_left += (16);
-                                    }
+                                    lzx.INJECT_BITS_MSB((b1 << 8) | b0, 16, ref bit_buffer, ref bits_left);
                                 }
                             }
                         }
 
-                        (y) = (bit_buffer >> (CompressionStream.BITBUF_WIDTH - (5))); //PEEK_BITS(5)
-
-                        //REMOVE_BITS(5)
-                        {
-                            bit_buffer <<= (5);
-                            bits_left -= (5);
-                        }
+                        (y) = (uint)lzx.PEEK_BITS_MSB(5, bit_buffer);
+                        lzx.REMOVE_BITS_MSB(5, ref bit_buffer, ref bits_left);
                     }
 
                     y += 20;
@@ -2767,50 +1959,24 @@ namespace LibMSPackSharp.Compression
                             {
                                 //READ_BYTES
                                 {
-                                    //READ_IF_NEEDED
-                                    {
-                                        if (i_ptr >= i_end)
-                                        {
-                                            if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                return lzx.Error;
-
-                                            i_ptr = lzx.InputPointer;
-                                            i_end = lzx.InputEnd;
-                                        }
-                                    }
+                                    lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                    if (lzx.Error != Error.MSPACK_ERR_OK)
+                                        return lzx.Error;
 
                                     byte b0 = lzx.InputBuffer[i_ptr++];
 
-                                    //READ_IF_NEEDED
-                                    {
-                                        if (i_ptr >= i_end)
-                                        {
-                                            if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                return lzx.Error;
-
-                                            i_ptr = lzx.InputPointer;
-                                            i_end = lzx.InputEnd;
-                                        }
-                                    }
+                                    lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                    if (lzx.Error != Error.MSPACK_ERR_OK)
+                                        return lzx.Error;
 
                                     byte b1 = lzx.InputBuffer[i_ptr++];
-
-                                    //INJECT_BITS((b1 << 8) | b0, 16)
-                                    {
-                                        bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
-                                        bits_left += (16);
-                                    }
+                                    lzx.INJECT_BITS_MSB((b1 << 8) | b0, 16, ref bit_buffer, ref bits_left);
                                 }
                             }
                         }
 
-                        (y) = (bit_buffer >> (CompressionStream.BITBUF_WIDTH - (1))); //PEEK_BITS(1)
-
-                        //REMOVE_BITS(1)
-                        {
-                            bit_buffer <<= (1);
-                            bits_left -= (1);
-                        }
+                        (y) = (uint)lzx.PEEK_BITS_MSB(1, bit_buffer);
+                        lzx.REMOVE_BITS_MSB(1, ref bit_buffer, ref bits_left);
                     }
 
                     y += 4;
@@ -2823,44 +1989,23 @@ namespace LibMSPackSharp.Compression
                             {
                                 //READ_BYTES
                                 {
-                                    //READ_IF_NEEDED
-                                    {
-                                        if (i_ptr >= i_end)
-                                        {
-                                            if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                return lzx.Error;
-
-                                            i_ptr = lzx.InputPointer;
-                                            i_end = lzx.InputEnd;
-                                        }
-                                    }
+                                    lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                    if (lzx.Error != Error.MSPACK_ERR_OK)
+                                        return lzx.Error;
 
                                     byte b0 = lzx.InputBuffer[i_ptr++];
 
-                                    //READ_IF_NEEDED
-                                    {
-                                        if (i_ptr >= i_end)
-                                        {
-                                            if (lzx.ReadInput() != Error.MSPACK_ERR_OK)
-                                                return lzx.Error;
-
-                                            i_ptr = lzx.InputPointer;
-                                            i_end = lzx.InputEnd;
-                                        }
-                                    }
+                                    lzx.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                    if (lzx.Error != Error.MSPACK_ERR_OK)
+                                        return lzx.Error;
 
                                     byte b1 = lzx.InputBuffer[i_ptr++];
-
-                                    //INJECT_BITS((b1 << 8) | b0, 16)
-                                    {
-                                        bit_buffer |= (uint)((b1 << 8) | b0) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
-                                        bits_left += (16);
-                                    }
+                                    lzx.INJECT_BITS_MSB((b1 << 8) | b0, 16, ref bit_buffer, ref bits_left);
                                 }
                             }
                         }
 
-                        sym = lzx.PRETREE_table[(bit_buffer >> (CompressionStream.BITBUF_WIDTH - (LZX_PRETREE_TABLEBITS)))]; //PEEK_BITS(TABLEBITS(PRETREE))
+                        sym = lzx.PRETREE_table[lzx.PEEK_BITS_MSB(LZX_PRETREE_TABLEBITS, bit_buffer)];
                         if (sym >= LZX_PRETREE_MAXSYMBOLS)
                         {
                             //HUFF_TRAVERSE(PRETREE)
@@ -2878,12 +2023,7 @@ namespace LibMSPackSharp.Compression
 
                         (z) = sym;
                         i = lzx.PRETREE_len[sym];
-
-                        //REMOVE_BITS(i)
-                        {
-                            bit_buffer <<= (i);
-                            bits_left -= (i);
-                        }
+                        lzx.REMOVE_BITS_MSB(i, ref bit_buffer, ref bits_left);
                     }
 
                     z = lens[x] - z;
@@ -2907,13 +2047,7 @@ namespace LibMSPackSharp.Compression
                 }
             }
 
-            //STORE_BITS
-            {
-                lzx.InputPointer = i_ptr;
-                lzx.InputEnd = i_end;
-                lzx.BitBuffer = bit_buffer;
-                lzx.BitsLeft = bits_left;
-            }
+            lzx.STORE_BITS(i_ptr, i_end, bit_buffer, bits_left);
 
             return Error.MSPACK_ERR_OK;
         }

@@ -11,6 +11,7 @@
  */
 
 using System;
+using static LibMSPackSharp.Compression.Constants;
 
 namespace LibMSPackSharp.Compression
 {
@@ -121,7 +122,63 @@ namespace LibMSPackSharp.Compression
          * to the bit buffer when the bit buffer already has 1 to 15 bits left.
          */
 
-        public Error ReadInput()
+        #region Common
+
+        /// <summary>
+        /// Initialises bitstream state in state structure
+        /// </summary>
+        public void INIT_BITS()
+        {
+            InputPointer = 0;
+            InputEnd = 0;
+            BitBuffer = 0;
+            BitsLeft = 0;
+            EndOfInput = 0;
+        }
+
+        /// <summary>
+        /// Stores bitstream state in state structure
+        /// </summary>
+        public void STORE_BITS(int i_ptr, int i_end, uint bit_buffer, int bits_left)
+        {
+            InputPointer = i_ptr;
+            InputEnd = i_end;
+            BitBuffer = bit_buffer;
+            BitsLeft = bits_left;
+        }
+
+        /// <summary>
+        /// Restores bitstream state from state structure
+        /// </summary>
+        public void RESTORE_BITS(out int i_ptr, out int i_end, out uint bit_buffer, out int bits_left)
+        {
+            i_ptr = InputPointer;
+            i_end = InputEnd;
+            bit_buffer = BitBuffer;
+            bits_left = BitsLeft;
+        }
+
+        /// <summary>
+        /// Read from the input if the buffer is empty
+        /// </summary>
+        public Error READ_IF_NEEDED(ref int i_ptr, ref int i_end)
+        {
+            if (i_ptr >= i_end)
+            {
+                if (ReadInput() != Error.MSPACK_ERR_OK)
+                    return Error;
+
+                i_ptr = InputPointer;
+                i_end = InputEnd;
+            }
+
+            return Error.MSPACK_ERR_OK;
+        }
+
+        /// <summary>
+        /// Read an input stream and fill the buffer
+        /// </summary>
+        protected Error ReadInput()
         {
             int read = System.Read(InputFileHandle, InputBuffer, 0, (int)InputBufferSize);
             if (read < 0)
@@ -149,6 +206,67 @@ namespace LibMSPackSharp.Compression
             InputEnd = read;
             return Error = Error.MSPACK_ERR_OK;
         }
+
+        #endregion
+
+        #region MSB
+
+        /// <summary>
+        /// Inject data into the bit buffer
+        /// </summary>
+        public void INJECT_BITS_MSB(int bitdata, int nbits, ref uint bit_buffer, ref int bits_left)
+        {
+            bit_buffer |= (uint)(bitdata << (BITBUF_WIDTH - nbits - bits_left));
+            bits_left += nbits;
+        }
+
+        /// <summary>
+        /// Extracts without removing N bits from the bit buffer
+        /// </summary>
+        public long PEEK_BITS_MSB(int nbits, uint bit_buffer) => (bit_buffer >> (BITBUF_WIDTH - (nbits)));
+
+        /// <summary>
+        /// Removes N bits from the bit buffer
+        /// </summary>
+        public void REMOVE_BITS_MSB(int nbits, ref uint bit_buffer, ref int bits_left)
+        {
+            bit_buffer <<= nbits;
+            bits_left -= nbits;
+        }
+
+        #endregion
+
+        #region LSB
+
+        /// <summary>
+        /// Inject data into the bit buffer
+        /// </summary>
+        public void INJECT_BITS_LSB(int bitdata, int nbits, ref uint bit_buffer, ref int bits_left)
+        {
+            bit_buffer |= (uint)(bitdata << bits_left);
+            bits_left += nbits;
+        }
+
+        /// <summary>
+        /// Extracts without removing N bits from the bit buffer
+        /// </summary>
+        public long PEEK_BITS_LSB(int nbits, uint bit_buffer) => (bit_buffer & ((1 << (nbits)) - 1));
+
+        /// <summary>
+        /// Extracts without removing N bits from the bit buffer using a bit mask
+        /// </summary>
+        public long PEEK_BITS_T_LSB(int nbits, uint bit_buffer) => bit_buffer & lsb_bit_mask[(nbits)];
+
+        /// <summary>
+        /// Removes N bits from the bit buffer
+        /// </summary>
+        public void REMOVE_BITS_LSB(int nbits, ref uint bit_buffer, ref int bits_left)
+        {
+            bit_buffer >>= nbits;
+            bits_left -= nbits;
+        }
+
+        #endregion
 
         #endregion
 

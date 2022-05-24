@@ -214,15 +214,7 @@ namespace LibMSPackSharp.Compression
                 return Error.MSPACK_ERR_OK;
 
             // Restore local state
-
-            //RESTORE_BITS
-            {
-                i_ptr = qtm.InputPointer;
-                i_end = qtm.InputEnd;
-                bit_buffer = qtm.BitBuffer;
-                bits_left = qtm.BitsLeft;
-            }
-
+            qtm.RESTORE_BITS(out i_ptr, out i_end, out bit_buffer, out bits_left);
             window = qtm.Window;
             window_posn = qtm.WindowPosition;
             frame_todo = qtm.FrameTODO;
@@ -247,50 +239,24 @@ namespace LibMSPackSharp.Compression
                             {
                                 //READ_BYTES
                                 {
-                                    //READ_IF_NEEDED
-                                    {
-                                        if (i_ptr >= i_end)
-                                        {
-                                            if (qtm.ReadInput() != Error.MSPACK_ERR_OK)
-                                                return qtm.Error;
-
-                                            i_ptr = qtm.InputPointer;
-                                            i_end = qtm.InputEnd;
-                                        }
-                                    }
+                                    qtm.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                    if (qtm.Error != Error.MSPACK_ERR_OK)
+                                        return qtm.Error;
 
                                     byte b0 = qtm.InputBuffer[i_ptr++];
 
-                                    //READ_IF_NEEDED
-                                    {
-                                        if (i_ptr >= i_end)
-                                        {
-                                            if (qtm.ReadInput() != Error.MSPACK_ERR_OK)
-                                                return qtm.Error;
-
-                                            i_ptr = qtm.InputPointer;
-                                            i_end = qtm.InputEnd;
-                                        }
-                                    }
+                                    qtm.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                    if (qtm.Error != Error.MSPACK_ERR_OK)
+                                        return qtm.Error;
 
                                     byte b1 = qtm.InputBuffer[i_ptr++];
-
-                                    //INJECT_BITS(bitdata, 16)
-                                    {
-                                        bit_buffer |= (uint)((b0 << 8) | b1) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
-                                        bits_left += (16);
-                                    }
+                                    qtm.INJECT_BITS_MSB((b0 << 8) | b1, 16, ref bit_buffer, ref bits_left);
                                 }
                             }
                         }
 
-                        (C) = (ushort)(bit_buffer >> (CompressionStream.BITBUF_WIDTH - (16))); //PEEK_BITS(16)
-
-                        //REMOVE_BITS(16)
-                        {
-                            bit_buffer <<= (16);
-                            bits_left -= (16);
-                        }
+                        (C) = (ushort)qtm.PEEK_BITS_MSB(16, bit_buffer);
+                        qtm.REMOVE_BITS_MSB(16, ref bit_buffer, ref bits_left);
                     }
 
                     qtm.HeaderRead = 1;
@@ -358,50 +324,24 @@ namespace LibMSPackSharp.Compression
                                 {
                                     //READ_BYTES
                                     {
-                                        //READ_IF_NEEDED
-                                        {
-                                            if (i_ptr >= i_end)
-                                            {
-                                                if (qtm.ReadInput() != Error.MSPACK_ERR_OK)
-                                                    return qtm.Error;
-
-                                                i_ptr = qtm.InputPointer;
-                                                i_end = qtm.InputEnd;
-                                            }
-                                        }
+                                        qtm.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                        if (qtm.Error != Error.MSPACK_ERR_OK)
+                                            return qtm.Error;
 
                                         byte b0 = qtm.InputBuffer[i_ptr++];
 
-                                        //READ_IF_NEEDED
-                                        {
-                                            if (i_ptr >= i_end)
-                                            {
-                                                if (qtm.ReadInput() != Error.MSPACK_ERR_OK)
-                                                    return qtm.Error;
-
-                                                i_ptr = qtm.InputPointer;
-                                                i_end = qtm.InputEnd;
-                                            }
-                                        }
+                                        qtm.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                        if (qtm.Error != Error.MSPACK_ERR_OK)
+                                            return qtm.Error;
 
                                         byte b1 = qtm.InputBuffer[i_ptr++];
-
-                                        //INJECT_BITS(bitdata, 16)
-                                        {
-                                            bit_buffer |= (uint)((b0 << 8) | b1) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
-                                            bits_left += (16);
-                                        }
+                                        qtm.INJECT_BITS_MSB((b0 << 8) | b1, 16, ref bit_buffer, ref bits_left);
                                     }
                                 }
                             }
 
-                            C = (ushort)((C << 1) | (bit_buffer >> (CompressionStream.BITBUF_WIDTH - (1)))); //PEEK_BITS(1)
-
-                            //REMOVE_BITS(1)
-                            {
-                                bit_buffer <<= (1);
-                                bits_left -= (1);
-                            }
+                            C = (ushort)((C << 1) | (qtm.PEEK_BITS_MSB(1, bit_buffer)));
+                            qtm.REMOVE_BITS_MSB(1, ref bit_buffer, ref bits_left);
                         }
                     }
 
@@ -481,50 +421,24 @@ namespace LibMSPackSharp.Compression
                                     {
                                         //READ_BYTES
                                         {
-                                            //READ_IF_NEEDED
-                                            {
-                                                if (i_ptr >= i_end)
-                                                {
-                                                    if (qtm.ReadInput() != Error.MSPACK_ERR_OK)
-                                                        return qtm.Error;
-
-                                                    i_ptr = qtm.InputPointer;
-                                                    i_end = qtm.InputEnd;
-                                                }
-                                            }
+                                            qtm.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                            if (qtm.Error != Error.MSPACK_ERR_OK)
+                                                return qtm.Error;
 
                                             byte b0 = qtm.InputBuffer[i_ptr++];
 
-                                            //READ_IF_NEEDED
-                                            {
-                                                if (i_ptr >= i_end)
-                                                {
-                                                    if (qtm.ReadInput() != Error.MSPACK_ERR_OK)
-                                                        return qtm.Error;
-
-                                                    i_ptr = qtm.InputPointer;
-                                                    i_end = qtm.InputEnd;
-                                                }
-                                            }
+                                            qtm.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                            if (qtm.Error != Error.MSPACK_ERR_OK)
+                                                return qtm.Error;
 
                                             byte b1 = qtm.InputBuffer[i_ptr++];
-
-                                            //INJECT_BITS(bitdata, 16)
-                                            {
-                                                bit_buffer |= (uint)((b0 << 8) | b1) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
-                                                bits_left += (16);
-                                            }
+                                            qtm.INJECT_BITS_MSB((b0 << 8) | b1, 16, ref bit_buffer, ref bits_left);
                                         }
                                     }
                                 }
 
-                                C = (ushort)((C << 1) | (bit_buffer >> (CompressionStream.BITBUF_WIDTH - (1)))); //PEEK_BITS(1)
-
-                                //REMOVE_BITS(1)
-                                {
-                                    bit_buffer <<= (1);
-                                    bits_left -= (1);
-                                }
+                                C = (ushort)((C << 1) | (qtm.PEEK_BITS_MSB(1, bit_buffer)));
+                                qtm.REMOVE_BITS_MSB(1, ref bit_buffer, ref bits_left);
                             }
                         }
 
@@ -590,50 +504,24 @@ namespace LibMSPackSharp.Compression
                                             {
                                                 //READ_BYTES
                                                 {
-                                                    //READ_IF_NEEDED
-                                                    {
-                                                        if (i_ptr >= i_end)
-                                                        {
-                                                            if (qtm.ReadInput() != Error.MSPACK_ERR_OK)
-                                                                return qtm.Error;
-
-                                                            i_ptr = qtm.InputPointer;
-                                                            i_end = qtm.InputEnd;
-                                                        }
-                                                    }
+                                                    qtm.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                                    if (qtm.Error != Error.MSPACK_ERR_OK)
+                                                        return qtm.Error;
 
                                                     byte b0 = qtm.InputBuffer[i_ptr++];
 
-                                                    //READ_IF_NEEDED
-                                                    {
-                                                        if (i_ptr >= i_end)
-                                                        {
-                                                            if (qtm.ReadInput() != Error.MSPACK_ERR_OK)
-                                                                return qtm.Error;
-
-                                                            i_ptr = qtm.InputPointer;
-                                                            i_end = qtm.InputEnd;
-                                                        }
-                                                    }
+                                                    qtm.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                                    if (qtm.Error != Error.MSPACK_ERR_OK)
+                                                        return qtm.Error;
 
                                                     byte b1 = qtm.InputBuffer[i_ptr++];
-
-                                                    //INJECT_BITS(bitdata, 16)
-                                                    {
-                                                        bit_buffer |= (uint)((b0 << 8) | b1) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
-                                                        bits_left += (16);
-                                                    }
+                                                    qtm.INJECT_BITS_MSB((b0 << 8) | b1, 16, ref bit_buffer, ref bits_left);
                                                 }
                                             }
                                         }
 
-                                        C = (ushort)((C << 1) | (bit_buffer >> (CompressionStream.BITBUF_WIDTH - (1)))); //PEEK_BITS(1)
-
-                                        //REMOVE_BITS(1)
-                                        {
-                                            bit_buffer <<= (1);
-                                            bits_left -= (1);
-                                        }
+                                        C = (ushort)((C << 1) | (qtm.PEEK_BITS_MSB(1, bit_buffer)));
+                                        qtm.REMOVE_BITS_MSB(1, ref bit_buffer, ref bits_left);
                                     }
                                 }
 
@@ -647,51 +535,24 @@ namespace LibMSPackSharp.Compression
                                         {
                                             //READ_BYTES
                                             {
-                                                //READ_IF_NEEDED
-                                                {
-                                                    if (i_ptr >= i_end)
-                                                    {
-                                                        if (qtm.ReadInput() != Error.MSPACK_ERR_OK)
-                                                            return qtm.Error;
-
-                                                        i_ptr = qtm.InputPointer;
-                                                        i_end = qtm.InputEnd;
-                                                    }
-                                                }
+                                                qtm.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                                if (qtm.Error != Error.MSPACK_ERR_OK)
+                                                    return qtm.Error;
 
                                                 byte b0 = qtm.InputBuffer[i_ptr++];
 
-                                                //READ_IF_NEEDED
-                                                {
-                                                    if (i_ptr >= i_end)
-                                                    {
-                                                        if (qtm.ReadInput() != Error.MSPACK_ERR_OK)
-                                                            return qtm.Error;
-
-                                                        i_ptr = qtm.InputPointer;
-                                                        i_end = qtm.InputEnd;
-                                                    }
-                                                }
+                                                qtm.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                                if (qtm.Error != Error.MSPACK_ERR_OK)
+                                                    return qtm.Error;
 
                                                 byte b1 = qtm.InputBuffer[i_ptr++];
-
-                                                //INJECT_BITS(bitdata, 16)
-                                                {
-                                                    bit_buffer |= (uint)((b0 << 8) | b1) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
-                                                    bits_left += (16);
-                                                }
+                                                qtm.INJECT_BITS_MSB((b0 << 8) | b1, 16, ref bit_buffer, ref bits_left);
                                             }
                                         }
 
                                         bitrun = (byte)((bits_left < needed) ? bits_left : needed);
-                                        (extra) = (int)(((extra) << bitrun) | (bit_buffer >> (CompressionStream.BITBUF_WIDTH - (bitrun)))); //PEEK_BITS(bitrun)
-
-                                        //REMOVE_BITS(bitrun)
-                                        {
-                                            bit_buffer <<= (bitrun);
-                                            bits_left -= (bitrun);
-                                        }
-
+                                        (extra) = (int)(((extra) << bitrun) | (qtm.PEEK_BITS_MSB(bitrun, bit_buffer)));
+                                        qtm.REMOVE_BITS_MSB(bitrun, ref bit_buffer, ref bits_left);
                                         needed -= bitrun;
                                     }
                                 }
@@ -754,50 +615,24 @@ namespace LibMSPackSharp.Compression
                                             {
                                                 //READ_BYTES
                                                 {
-                                                    //READ_IF_NEEDED
-                                                    {
-                                                        if (i_ptr >= i_end)
-                                                        {
-                                                            if (qtm.ReadInput() != Error.MSPACK_ERR_OK)
-                                                                return qtm.Error;
-
-                                                            i_ptr = qtm.InputPointer;
-                                                            i_end = qtm.InputEnd;
-                                                        }
-                                                    }
+                                                    qtm.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                                    if (qtm.Error != Error.MSPACK_ERR_OK)
+                                                        return qtm.Error;
 
                                                     byte b0 = qtm.InputBuffer[i_ptr++];
 
-                                                    //READ_IF_NEEDED
-                                                    {
-                                                        if (i_ptr >= i_end)
-                                                        {
-                                                            if (qtm.ReadInput() != Error.MSPACK_ERR_OK)
-                                                                return qtm.Error;
-
-                                                            i_ptr = qtm.InputPointer;
-                                                            i_end = qtm.InputEnd;
-                                                        }
-                                                    }
+                                                    qtm.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                                    if (qtm.Error != Error.MSPACK_ERR_OK)
+                                                        return qtm.Error;
 
                                                     byte b1 = qtm.InputBuffer[i_ptr++];
-
-                                                    //INJECT_BITS(bitdata, 16)
-                                                    {
-                                                        bit_buffer |= (uint)((b0 << 8) | b1) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
-                                                        bits_left += (16);
-                                                    }
+                                                    qtm.INJECT_BITS_MSB((b0 << 8) | b1, 16, ref bit_buffer, ref bits_left);
                                                 }
                                             }
                                         }
 
-                                        C = (ushort)((C << 1) | (bit_buffer >> (CompressionStream.BITBUF_WIDTH - (1)))); //PEEK_BITS(1)
-
-                                        //REMOVE_BITS(1)
-                                        {
-                                            bit_buffer <<= (1);
-                                            bits_left -= (1);
-                                        }
+                                        C = (ushort)((C << 1) | (qtm.PEEK_BITS_MSB(1, bit_buffer)));
+                                        qtm.REMOVE_BITS_MSB(1, ref bit_buffer, ref bits_left);
                                     }
                                 }
 
@@ -811,51 +646,24 @@ namespace LibMSPackSharp.Compression
                                         {
                                             //READ_BYTES
                                             {
-                                                //READ_IF_NEEDED
-                                                {
-                                                    if (i_ptr >= i_end)
-                                                    {
-                                                        if (qtm.ReadInput() != Error.MSPACK_ERR_OK)
-                                                            return qtm.Error;
-
-                                                        i_ptr = qtm.InputPointer;
-                                                        i_end = qtm.InputEnd;
-                                                    }
-                                                }
+                                                qtm.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                                if (qtm.Error != Error.MSPACK_ERR_OK)
+                                                    return qtm.Error;
 
                                                 byte b0 = qtm.InputBuffer[i_ptr++];
 
-                                                //READ_IF_NEEDED
-                                                {
-                                                    if (i_ptr >= i_end)
-                                                    {
-                                                        if (qtm.ReadInput() != Error.MSPACK_ERR_OK)
-                                                            return qtm.Error;
-
-                                                        i_ptr = qtm.InputPointer;
-                                                        i_end = qtm.InputEnd;
-                                                    }
-                                                }
+                                                qtm.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                                if (qtm.Error != Error.MSPACK_ERR_OK)
+                                                    return qtm.Error;
 
                                                 byte b1 = qtm.InputBuffer[i_ptr++];
-
-                                                //INJECT_BITS(bitdata, 16)
-                                                {
-                                                    bit_buffer |= (uint)((b0 << 8) | b1) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
-                                                    bits_left += (16);
-                                                }
+                                                qtm.INJECT_BITS_MSB((b0 << 8) | b1, 16, ref bit_buffer, ref bits_left);
                                             }
                                         }
 
                                         bitrun = (byte)((bits_left < needed) ? bits_left : needed);
-                                        (extra) = (int)(((extra) << bitrun) | (bit_buffer >> (CompressionStream.BITBUF_WIDTH - (bitrun)))); //PEEK_BITS(bitrun)
-
-                                        //REMOVE_BITS(bitrun)
-                                        {
-                                            bit_buffer <<= (bitrun);
-                                            bits_left -= (bitrun);
-                                        }
-
+                                        (extra) = (int)(((extra) << bitrun) | (qtm.PEEK_BITS_MSB(bitrun, bit_buffer)));
+                                        qtm.REMOVE_BITS_MSB(bitrun, ref bit_buffer, ref bits_left);
                                         needed -= bitrun;
                                     }
                                 }
@@ -918,50 +726,24 @@ namespace LibMSPackSharp.Compression
                                             {
                                                 //READ_BYTES
                                                 {
-                                                    //READ_IF_NEEDED
-                                                    {
-                                                        if (i_ptr >= i_end)
-                                                        {
-                                                            if (qtm.ReadInput() != Error.MSPACK_ERR_OK)
-                                                                return qtm.Error;
-
-                                                            i_ptr = qtm.InputPointer;
-                                                            i_end = qtm.InputEnd;
-                                                        }
-                                                    }
+                                                    qtm.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                                    if (qtm.Error != Error.MSPACK_ERR_OK)
+                                                        return qtm.Error;
 
                                                     byte b0 = qtm.InputBuffer[i_ptr++];
 
-                                                    //READ_IF_NEEDED
-                                                    {
-                                                        if (i_ptr >= i_end)
-                                                        {
-                                                            if (qtm.ReadInput() != Error.MSPACK_ERR_OK)
-                                                                return qtm.Error;
-
-                                                            i_ptr = qtm.InputPointer;
-                                                            i_end = qtm.InputEnd;
-                                                        }
-                                                    }
+                                                    qtm.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                                    if (qtm.Error != Error.MSPACK_ERR_OK)
+                                                        return qtm.Error;
 
                                                     byte b1 = qtm.InputBuffer[i_ptr++];
-
-                                                    //INJECT_BITS(bitdata, 16)
-                                                    {
-                                                        bit_buffer |= (uint)((b0 << 8) | b1) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
-                                                        bits_left += (16);
-                                                    }
+                                                    qtm.INJECT_BITS_MSB((b0 << 8) | b1, 16, ref bit_buffer, ref bits_left);
                                                 }
                                             }
                                         }
 
-                                        C = (ushort)((C << 1) | (bit_buffer >> (CompressionStream.BITBUF_WIDTH - (1)))); //PEEK_BITS(1)
-
-                                        //REMOVE_BITS(1)
-                                        {
-                                            bit_buffer <<= (1);
-                                            bits_left -= (1);
-                                        }
+                                        C = (ushort)((C << 1) | (qtm.PEEK_BITS_MSB(1, bit_buffer)));
+                                        qtm.REMOVE_BITS_MSB(1, ref bit_buffer, ref bits_left);
                                     }
                                 }
 
@@ -975,51 +757,24 @@ namespace LibMSPackSharp.Compression
                                         {
                                             //READ_BYTES
                                             {
-                                                //READ_IF_NEEDED
-                                                {
-                                                    if (i_ptr >= i_end)
-                                                    {
-                                                        if (qtm.ReadInput() != Error.MSPACK_ERR_OK)
-                                                            return qtm.Error;
-
-                                                        i_ptr = qtm.InputPointer;
-                                                        i_end = qtm.InputEnd;
-                                                    }
-                                                }
+                                                qtm.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                                if (qtm.Error != Error.MSPACK_ERR_OK)
+                                                    return qtm.Error;
 
                                                 byte b0 = qtm.InputBuffer[i_ptr++];
 
-                                                //READ_IF_NEEDED
-                                                {
-                                                    if (i_ptr >= i_end)
-                                                    {
-                                                        if (qtm.ReadInput() != Error.MSPACK_ERR_OK)
-                                                            return qtm.Error;
-
-                                                        i_ptr = qtm.InputPointer;
-                                                        i_end = qtm.InputEnd;
-                                                    }
-                                                }
+                                                qtm.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                                if (qtm.Error != Error.MSPACK_ERR_OK)
+                                                    return qtm.Error;
 
                                                 byte b1 = qtm.InputBuffer[i_ptr++];
-
-                                                //INJECT_BITS(bitdata, 16)
-                                                {
-                                                    bit_buffer |= (uint)((b0 << 8) | b1) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
-                                                    bits_left += (16);
-                                                }
+                                                qtm.INJECT_BITS_MSB((b0 << 8) | b1, 16, ref bit_buffer, ref bits_left);
                                             }
                                         }
 
                                         bitrun = (byte)((bits_left < needed) ? bits_left : needed);
-                                        (extra) = (int)(((extra) << bitrun) | (bit_buffer >> (CompressionStream.BITBUF_WIDTH - (bitrun)))); //PEEK_BITS(bitrun)
-
-                                        //REMOVE_BITS(bitrun)
-                                        {
-                                            bit_buffer <<= (bitrun);
-                                            bits_left -= (bitrun);
-                                        }
-
+                                        (extra) = (int)(((extra) << bitrun) | (qtm.PEEK_BITS_MSB(bitrun, bit_buffer)));
+                                        qtm.REMOVE_BITS_MSB(bitrun, ref bit_buffer, ref bits_left);
                                         needed -= bitrun;
                                     }
                                 }
@@ -1078,50 +833,24 @@ namespace LibMSPackSharp.Compression
                                             {
                                                 //READ_BYTES
                                                 {
-                                                    //READ_IF_NEEDED
-                                                    {
-                                                        if (i_ptr >= i_end)
-                                                        {
-                                                            if (qtm.ReadInput() != Error.MSPACK_ERR_OK)
-                                                                return qtm.Error;
-
-                                                            i_ptr = qtm.InputPointer;
-                                                            i_end = qtm.InputEnd;
-                                                        }
-                                                    }
+                                                    qtm.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                                    if (qtm.Error != Error.MSPACK_ERR_OK)
+                                                        return qtm.Error;
 
                                                     byte b0 = qtm.InputBuffer[i_ptr++];
 
-                                                    //READ_IF_NEEDED
-                                                    {
-                                                        if (i_ptr >= i_end)
-                                                        {
-                                                            if (qtm.ReadInput() != Error.MSPACK_ERR_OK)
-                                                                return qtm.Error;
-
-                                                            i_ptr = qtm.InputPointer;
-                                                            i_end = qtm.InputEnd;
-                                                        }
-                                                    }
+                                                    qtm.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                                    if (qtm.Error != Error.MSPACK_ERR_OK)
+                                                        return qtm.Error;
 
                                                     byte b1 = qtm.InputBuffer[i_ptr++];
-
-                                                    //INJECT_BITS(bitdata, 16)
-                                                    {
-                                                        bit_buffer |= (uint)((b0 << 8) | b1) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
-                                                        bits_left += (16);
-                                                    }
+                                                    qtm.INJECT_BITS_MSB((b0 << 8) | b1, 16, ref bit_buffer, ref bits_left);
                                                 }
                                             }
                                         }
 
-                                        C = (ushort)((C << 1) | (bit_buffer >> (CompressionStream.BITBUF_WIDTH - (1)))); //PEEK_BITS(1)
-
-                                        //REMOVE_BITS(1)
-                                        {
-                                            bit_buffer <<= (1);
-                                            bits_left -= (1);
-                                        }
+                                        C = (ushort)((C << 1) | (qtm.PEEK_BITS_MSB(1, bit_buffer)));
+                                        qtm.REMOVE_BITS_MSB(1, ref bit_buffer, ref bits_left);
                                     }
                                 }
 
@@ -1135,51 +864,24 @@ namespace LibMSPackSharp.Compression
                                         {
                                             //READ_BYTES
                                             {
-                                                //READ_IF_NEEDED
-                                                {
-                                                    if (i_ptr >= i_end)
-                                                    {
-                                                        if (qtm.ReadInput() != Error.MSPACK_ERR_OK)
-                                                            return qtm.Error;
-
-                                                        i_ptr = qtm.InputPointer;
-                                                        i_end = qtm.InputEnd;
-                                                    }
-                                                }
+                                                qtm.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                                if (qtm.Error != Error.MSPACK_ERR_OK)
+                                                    return qtm.Error;
 
                                                 byte b0 = qtm.InputBuffer[i_ptr++];
 
-                                                //READ_IF_NEEDED
-                                                {
-                                                    if (i_ptr >= i_end)
-                                                    {
-                                                        if (qtm.ReadInput() != Error.MSPACK_ERR_OK)
-                                                            return qtm.Error;
-
-                                                        i_ptr = qtm.InputPointer;
-                                                        i_end = qtm.InputEnd;
-                                                    }
-                                                }
+                                                qtm.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                                if (qtm.Error != Error.MSPACK_ERR_OK)
+                                                    return qtm.Error;
 
                                                 byte b1 = qtm.InputBuffer[i_ptr++];
-
-                                                //INJECT_BITS(bitdata, 16)
-                                                {
-                                                    bit_buffer |= (uint)((b0 << 8) | b1) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
-                                                    bits_left += (16);
-                                                }
+                                                qtm.INJECT_BITS_MSB((b0 << 8) | b1, 16, ref bit_buffer, ref bits_left);
                                             }
                                         }
 
                                         bitrun = (byte)((bits_left < needed) ? bits_left : needed);
-                                        (extra) = (int)(((extra) << bitrun) | (bit_buffer >> (CompressionStream.BITBUF_WIDTH - (bitrun)))); //PEEK_BITS(bitrun)
-
-                                        //REMOVE_BITS(bitrun)
-                                        {
-                                            bit_buffer <<= (bitrun);
-                                            bits_left -= (bitrun);
-                                        }
-
+                                        (extra) = (int)(((extra) << bitrun) | (qtm.PEEK_BITS_MSB(bitrun, bit_buffer)));
+                                        qtm.REMOVE_BITS_MSB(bitrun, ref bit_buffer, ref bits_left);
                                         needed -= bitrun;
                                     }
                                 }
@@ -1305,13 +1007,7 @@ namespace LibMSPackSharp.Compression
                 {
                     // Re-align input
                     if ((bits_left & 7) != 0)
-                    {
-                        //REMOVE_BITS(bits_left & 7)
-                        {
-                            bit_buffer <<= (bits_left & 7);
-                            bits_left -= (bits_left & 7);
-                        }
-                    }
+                        qtm.REMOVE_BITS_MSB(bits_left & 7, ref bit_buffer, ref bits_left);
 
                     // Special Quantum hack -- cabd.c injects a trailer byte to allow the
                     // decompressor to realign itself. CAB Quantum blocks, unlike LZX
@@ -1326,50 +1022,24 @@ namespace LibMSPackSharp.Compression
                                 {
                                     //READ_BYTES
                                     {
-                                        //READ_IF_NEEDED
-                                        {
-                                            if (i_ptr >= i_end)
-                                            {
-                                                if (qtm.ReadInput() != Error.MSPACK_ERR_OK)
-                                                    return qtm.Error;
-
-                                                i_ptr = qtm.InputPointer;
-                                                i_end = qtm.InputEnd;
-                                            }
-                                        }
+                                        qtm.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                        if (qtm.Error != Error.MSPACK_ERR_OK)
+                                            return qtm.Error;
 
                                         byte b0 = qtm.InputBuffer[i_ptr++];
 
-                                        //READ_IF_NEEDED
-                                        {
-                                            if (i_ptr >= i_end)
-                                            {
-                                                if (qtm.ReadInput() != Error.MSPACK_ERR_OK)
-                                                    return qtm.Error;
-
-                                                i_ptr = qtm.InputPointer;
-                                                i_end = qtm.InputEnd;
-                                            }
-                                        }
+                                        qtm.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                                        if (qtm.Error != Error.MSPACK_ERR_OK)
+                                            return qtm.Error;
 
                                         byte b1 = qtm.InputBuffer[i_ptr++];
-
-                                        //INJECT_BITS(bitdata, 16)
-                                        {
-                                            bit_buffer |= (uint)((b0 << 8) | b1) << (CompressionStream.BITBUF_WIDTH - (16) - bits_left);
-                                            bits_left += (16);
-                                        }
+                                        qtm.INJECT_BITS_MSB((b0 << 8) | b1, 16, ref bit_buffer, ref bits_left);
                                     }
                                 }
                             }
 
-                            (i) = (int)(bit_buffer >> (CompressionStream.BITBUF_WIDTH - (8))); //PEEK_BITS(8)
-
-                            //REMOVE_BITS(8)
-                            {
-                                bit_buffer <<= (8);
-                                bits_left -= (8);
-                            }
+                            (i) = (int)qtm.PEEK_BITS_MSB(8, bit_buffer);
+                            qtm.REMOVE_BITS_MSB(8, ref bit_buffer, ref bits_left);
                         }
                     } while (i != 0xFF);
 
@@ -1410,15 +1080,7 @@ namespace LibMSPackSharp.Compression
             }
 
             // Store local state
-
-            //STORE_BITS
-            {
-                qtm.InputPointer = i_ptr;
-                qtm.InputEnd = i_end;
-                qtm.BitBuffer = bit_buffer;
-                qtm.BitsLeft = bits_left;
-            }
-
+            qtm.STORE_BITS(i_ptr, i_end, bit_buffer, bits_left);
             qtm.WindowPosition = window_posn;
             qtm.FrameTODO = frame_todo;
             qtm.High = H;
