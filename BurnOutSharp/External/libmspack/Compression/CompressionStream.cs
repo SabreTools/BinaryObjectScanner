@@ -16,8 +16,14 @@ namespace LibMSPackSharp.Compression
 {
     public abstract class CompressionStream : BaseDecompressState
     {
+        /// <summary>
+        /// Number of bits in a character
+        /// </summary>
         private const int CHAR_BIT = 8;
 
+        /// <summary>
+        /// Bit width of a UInt32 bit buffer
+        /// </summary>
         public const int BITBUF_WIDTH = 4 * CHAR_BIT;
 
         #region I/O buffering
@@ -28,11 +34,11 @@ namespace LibMSPackSharp.Compression
 
         public int InputPointer { get; set; }
 
-        public int InputLength { get; set; }
+        public int InputEnd { get; set; }
 
         public int OutputPointer { get; set; }
 
-        public int OutputLength { get; set; }
+        public int OutputEnd { get; set; }
 
         public uint BitBuffer { get; set; }
 
@@ -41,7 +47,7 @@ namespace LibMSPackSharp.Compression
         /// <summary>
         /// Have we reached the end of input?
         /// </summary>
-        public int InputEnd { get; set; }
+        public int EndOfInput { get; set; }
 
         #endregion
 
@@ -125,7 +131,7 @@ namespace LibMSPackSharp.Compression
             // so fake 2 more bytes at the end of input
             if (read == 0)
             {
-                if (InputEnd != 0)
+                if (EndOfInput != 0)
                 {
                     Console.WriteLine("Out of input bytes");
                     return Error = Error.MSPACK_ERR_READ;
@@ -134,13 +140,13 @@ namespace LibMSPackSharp.Compression
                 {
                     read = 2;
                     InputBuffer[0] = InputBuffer[1] = 0;
-                    InputEnd = 1;
+                    EndOfInput = 1;
                 }
             }
 
             // Update i_ptr and i_end
             InputPointer = 0;
-            InputLength = read;
+            InputEnd = read;
             return Error = Error.MSPACK_ERR_OK;
         }
 

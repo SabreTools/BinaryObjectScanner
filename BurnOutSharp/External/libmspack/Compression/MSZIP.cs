@@ -116,15 +116,15 @@ namespace LibMSPackSharp.Compression
                 InputFileHandle = input,
                 OutputFileHandle = output,
                 InputBufferSize = (uint)input_buffer_size,
-                InputEnd = 0,
+                EndOfInput = 0,
                 Error = Error.MSPACK_ERR_OK,
                 RepairMode = repair_mode,
                 FlushWindow = FlushWindow,
 
                 InputPointer = 0,
-                InputLength = 0,
+                InputEnd = 0,
                 OutputPointer = 0,
-                OutputLength = 0,
+                OutputEnd = 0,
                 BitBuffer = 0,
                 BitsLeft = 0,
             };
@@ -170,7 +170,7 @@ namespace LibMSPackSharp.Compression
                 return zip.Error;
 
             // Flush out any stored-up bytes before we begin
-            i = zip.OutputLength - zip.OutputPointer;
+            i = zip.OutputEnd - zip.OutputPointer;
             if (i > out_bytes)
                 i = (int)out_bytes;
 
@@ -193,7 +193,7 @@ namespace LibMSPackSharp.Compression
                 //RESTORE_BITS
                 {
                     i_ptr = zip.InputPointer;
-                    i_end = zip.InputLength;
+                    i_end = zip.InputEnd;
                     bit_buffer = zip.BitBuffer;
                     bits_left = zip.BitsLeft;
                 }
@@ -228,7 +228,7 @@ namespace LibMSPackSharp.Compression
                                                 return zip.Error;
 
                                             i_ptr = zip.InputPointer;
-                                            i_end = zip.InputLength;
+                                            i_end = zip.InputEnd;
                                         }
                                     }
 
@@ -265,7 +265,7 @@ namespace LibMSPackSharp.Compression
                 //STORE_BITS
                 {
                     zip.InputPointer = i_ptr;
-                    zip.InputLength = i_end;
+                    zip.InputEnd = i_end;
                     zip.BitBuffer = bit_buffer;
                     zip.BitsLeft = bits_left;
                 }
@@ -294,7 +294,7 @@ namespace LibMSPackSharp.Compression
                 }
 
                 zip.OutputPointer = 0;
-                zip.OutputLength = zip.BytesOutput;
+                zip.OutputEnd = zip.BytesOutput;
 
                 // Write a frame
                 i = (out_bytes < zip.BytesOutput) ? (int)out_bytes : zip.BytesOutput;
@@ -338,7 +338,7 @@ namespace LibMSPackSharp.Compression
                 //RESTORE_BITS
                 {
                     i_ptr = zip.InputPointer;
-                    i_end = zip.InputLength;
+                    i_end = zip.InputEnd;
                     bit_buffer = zip.BitBuffer;
                     bits_left = zip.BitsLeft;
                 }
@@ -368,7 +368,7 @@ namespace LibMSPackSharp.Compression
                                             return zip.Error;
 
                                         i_ptr = zip.InputPointer;
-                                        i_end = zip.InputLength;
+                                        i_end = zip.InputEnd;
                                     }
                                 }
 
@@ -406,7 +406,7 @@ namespace LibMSPackSharp.Compression
                                             return zip.Error;
 
                                         i_ptr = zip.InputPointer;
-                                        i_end = zip.InputLength;
+                                        i_end = zip.InputEnd;
                                     }
                                 }
 
@@ -451,7 +451,7 @@ namespace LibMSPackSharp.Compression
                                             return zip.Error;
 
                                         i_ptr = zip.InputPointer;
-                                        i_end = zip.InputLength;
+                                        i_end = zip.InputEnd;
                                     }
                                 }
 
@@ -492,7 +492,7 @@ namespace LibMSPackSharp.Compression
                                             return zip.Error;
 
                                         i_ptr = zip.InputPointer;
-                                        i_end = zip.InputLength;
+                                        i_end = zip.InputEnd;
                                     }
                                 }
 
@@ -524,7 +524,7 @@ namespace LibMSPackSharp.Compression
                 //STORE_BITS
                 {
                     zip.InputPointer = i_ptr;
-                    zip.InputLength = i_end;
+                    zip.InputEnd = i_end;
                     zip.BitBuffer = bit_buffer;
                     zip.BitsLeft = bits_left;
                 }
@@ -560,7 +560,7 @@ namespace LibMSPackSharp.Compression
             //RESTORE_BITS
             {
                 i_ptr = zip.InputPointer;
-                i_end = zip.InputLength;
+                i_end = zip.InputEnd;
                 bit_buffer = zip.BitBuffer;
                 bits_left = zip.BitsLeft;
             }
@@ -583,7 +583,7 @@ namespace LibMSPackSharp.Compression
                                         return zip.Error;
 
                                     i_ptr = zip.InputPointer;
-                                    i_end = zip.InputLength;
+                                    i_end = zip.InputEnd;
                                 }
                             }
 
@@ -623,7 +623,7 @@ namespace LibMSPackSharp.Compression
                                         return zip.Error;
 
                                     i_ptr = zip.InputPointer;
-                                    i_end = zip.InputLength;
+                                    i_end = zip.InputEnd;
                                 }
                             }
 
@@ -663,7 +663,7 @@ namespace LibMSPackSharp.Compression
                                         return zip.Error;
 
                                     i_ptr = zip.InputPointer;
-                                    i_end = zip.InputLength;
+                                    i_end = zip.InputEnd;
                                 }
                             }
 
@@ -710,7 +710,7 @@ namespace LibMSPackSharp.Compression
                                             return zip.Error;
 
                                         i_ptr = zip.InputPointer;
-                                        i_end = zip.InputLength;
+                                        i_end = zip.InputEnd;
                                     }
                                 }
 
@@ -761,7 +761,7 @@ namespace LibMSPackSharp.Compression
                                         return zip.Error;
 
                                     i_ptr = zip.InputPointer;
-                                    i_end = zip.InputLength;
+                                    i_end = zip.InputEnd;
                                 }
                             }
 
@@ -807,7 +807,7 @@ namespace LibMSPackSharp.Compression
                                                         return zip.Error;
 
                                                     i_ptr = zip.InputPointer;
-                                                    i_end = zip.InputLength;
+                                                    i_end = zip.InputEnd;
                                                 }
                                             }
 
@@ -850,7 +850,7 @@ namespace LibMSPackSharp.Compression
                                                         return zip.Error;
 
                                                     i_ptr = zip.InputPointer;
-                                                    i_end = zip.InputLength;
+                                                    i_end = zip.InputEnd;
                                                 }
                                             }
 
@@ -893,7 +893,7 @@ namespace LibMSPackSharp.Compression
                                                         return zip.Error;
 
                                                     i_ptr = zip.InputPointer;
-                                                    i_end = zip.InputLength;
+                                                    i_end = zip.InputEnd;
                                                 }
                                             }
 
@@ -954,7 +954,7 @@ namespace LibMSPackSharp.Compression
             //STORE_BITS
             {
                 zip.InputPointer = i_ptr;
-                zip.InputLength = i_end;
+                zip.InputEnd = i_end;
                 zip.BitBuffer = bit_buffer;
                 zip.BitsLeft = bits_left;
             }
@@ -979,7 +979,7 @@ namespace LibMSPackSharp.Compression
             //RESTORE_BITS
             {
                 i_ptr = zip.InputPointer;
-                i_end = zip.InputLength;
+                i_end = zip.InputEnd;
                 bit_buffer = zip.BitBuffer;
                 bits_left = zip.BitsLeft;
             }
@@ -1004,7 +1004,7 @@ namespace LibMSPackSharp.Compression
                                             return zip.Error;
 
                                         i_ptr = zip.InputPointer;
-                                        i_end = zip.InputLength;
+                                        i_end = zip.InputEnd;
                                     }
                                 }
 
@@ -1044,7 +1044,7 @@ namespace LibMSPackSharp.Compression
                                             return zip.Error;
 
                                         i_ptr = zip.InputPointer;
-                                        i_end = zip.InputLength;
+                                        i_end = zip.InputEnd;
                                     }
                                 }
 
@@ -1108,7 +1108,7 @@ namespace LibMSPackSharp.Compression
                                     return zip.Error;
 
                                 i_ptr = zip.InputPointer;
-                                i_end = zip.InputLength;
+                                i_end = zip.InputEnd;
                             }
                         }
 
@@ -1134,7 +1134,7 @@ namespace LibMSPackSharp.Compression
                                     return zip.Error;
 
                                 i_ptr = zip.InputPointer;
-                                i_end = zip.InputLength;
+                                i_end = zip.InputEnd;
                             }
                         }
 
@@ -1204,7 +1204,7 @@ namespace LibMSPackSharp.Compression
                         //STORE_BITS
                         {
                             zip.InputPointer = i_ptr;
-                            zip.InputLength = i_end;
+                            zip.InputEnd = i_end;
                             zip.BitBuffer = bit_buffer;
                             zip.BitsLeft = bits_left;
                         }
@@ -1215,7 +1215,7 @@ namespace LibMSPackSharp.Compression
                         //RESTORE_BITS
                         {
                             i_ptr = zip.InputPointer;
-                            i_end = zip.InputLength;
+                            i_end = zip.InputEnd;
                             bit_buffer = zip.BitBuffer;
                             bits_left = zip.BitsLeft;
                         }
@@ -1248,7 +1248,7 @@ namespace LibMSPackSharp.Compression
                                                     return zip.Error;
 
                                                 i_ptr = zip.InputPointer;
-                                                i_end = zip.InputLength;
+                                                i_end = zip.InputEnd;
                                             }
                                         }
 
@@ -1329,7 +1329,7 @@ namespace LibMSPackSharp.Compression
                                                         return zip.Error;
 
                                                     i_ptr = zip.InputPointer;
-                                                    i_end = zip.InputLength;
+                                                    i_end = zip.InputEnd;
                                                 }
                                             }
 
@@ -1369,7 +1369,7 @@ namespace LibMSPackSharp.Compression
                                                         return zip.Error;
 
                                                     i_ptr = zip.InputPointer;
-                                                    i_end = zip.InputLength;
+                                                    i_end = zip.InputEnd;
                                                 }
                                             }
 
@@ -1427,7 +1427,7 @@ namespace LibMSPackSharp.Compression
                                                         return zip.Error;
 
                                                     i_ptr = zip.InputPointer;
-                                                    i_end = zip.InputLength;
+                                                    i_end = zip.InputEnd;
                                                 }
                                             }
 
@@ -1536,7 +1536,7 @@ namespace LibMSPackSharp.Compression
             //STORE_BITS
             {
                 zip.InputPointer = i_ptr;
-                zip.InputLength = i_end;
+                zip.InputEnd = i_end;
                 zip.BitBuffer = bit_buffer;
                 zip.BitsLeft = bits_left;
             }

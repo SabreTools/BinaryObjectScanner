@@ -127,10 +127,10 @@ namespace LibMSPackSharp.Compression
                 Error = Error.MSPACK_ERR_OK,
 
                 InputPointer = 0,
-                InputLength = 0,
-                OutputPointer = 0,
-                OutputLength = 0,
                 InputEnd = 0,
+                OutputPointer = 0,
+                OutputEnd = 0,
+                EndOfInput = 0,
                 BitsLeft = 0,
                 BitBuffer = 0,
             };
@@ -197,7 +197,7 @@ namespace LibMSPackSharp.Compression
                 return qtm.Error;
 
             // Flush out any stored-up bytes before we begin
-            i = qtm.OutputLength - qtm.OutputPointer;
+            i = qtm.OutputEnd - qtm.OutputPointer;
             if (i > out_bytes)
                 i = (int)out_bytes;
 
@@ -218,7 +218,7 @@ namespace LibMSPackSharp.Compression
             //RESTORE_BITS
             {
                 i_ptr = qtm.InputPointer;
-                i_end = qtm.InputLength;
+                i_end = qtm.InputEnd;
                 bit_buffer = qtm.BitBuffer;
                 bits_left = qtm.BitsLeft;
             }
@@ -231,7 +231,7 @@ namespace LibMSPackSharp.Compression
             C = qtm.Current;
 
             // While we do not have enough decoded bytes in reserve
-            while ((qtm.OutputLength - qtm.OutputPointer) < out_bytes)
+            while ((qtm.OutputEnd - qtm.OutputPointer) < out_bytes)
             {
                 // Read header if necessary. Initialises H, L and C
                 if (qtm.HeaderRead != 0)
@@ -255,7 +255,7 @@ namespace LibMSPackSharp.Compression
                                                 return qtm.Error;
 
                                             i_ptr = qtm.InputPointer;
-                                            i_end = qtm.InputLength;
+                                            i_end = qtm.InputEnd;
                                         }
                                     }
 
@@ -269,7 +269,7 @@ namespace LibMSPackSharp.Compression
                                                 return qtm.Error;
 
                                             i_ptr = qtm.InputPointer;
-                                            i_end = qtm.InputLength;
+                                            i_end = qtm.InputEnd;
                                         }
                                     }
 
@@ -298,7 +298,7 @@ namespace LibMSPackSharp.Compression
 
                 // Decode more, up to the number of bytes needed, the frame boundary,
                 // or the window boundary, whichever comes first
-                frame_end = (uint)(window_posn + (out_bytes - (qtm.OutputLength - qtm.OutputPointer)));
+                frame_end = (uint)(window_posn + (out_bytes - (qtm.OutputEnd - qtm.OutputPointer)));
                 if ((window_posn + frame_todo) < frame_end)
                     frame_end = window_posn + frame_todo;
                 if (frame_end > qtm.WindowSize)
@@ -366,7 +366,7 @@ namespace LibMSPackSharp.Compression
                                                     return qtm.Error;
 
                                                 i_ptr = qtm.InputPointer;
-                                                i_end = qtm.InputLength;
+                                                i_end = qtm.InputEnd;
                                             }
                                         }
 
@@ -380,7 +380,7 @@ namespace LibMSPackSharp.Compression
                                                     return qtm.Error;
 
                                                 i_ptr = qtm.InputPointer;
-                                                i_end = qtm.InputLength;
+                                                i_end = qtm.InputEnd;
                                             }
                                         }
 
@@ -489,7 +489,7 @@ namespace LibMSPackSharp.Compression
                                                         return qtm.Error;
 
                                                     i_ptr = qtm.InputPointer;
-                                                    i_end = qtm.InputLength;
+                                                    i_end = qtm.InputEnd;
                                                 }
                                             }
 
@@ -503,7 +503,7 @@ namespace LibMSPackSharp.Compression
                                                         return qtm.Error;
 
                                                     i_ptr = qtm.InputPointer;
-                                                    i_end = qtm.InputLength;
+                                                    i_end = qtm.InputEnd;
                                                 }
                                             }
 
@@ -598,7 +598,7 @@ namespace LibMSPackSharp.Compression
                                                                 return qtm.Error;
 
                                                             i_ptr = qtm.InputPointer;
-                                                            i_end = qtm.InputLength;
+                                                            i_end = qtm.InputEnd;
                                                         }
                                                     }
 
@@ -612,7 +612,7 @@ namespace LibMSPackSharp.Compression
                                                                 return qtm.Error;
 
                                                             i_ptr = qtm.InputPointer;
-                                                            i_end = qtm.InputLength;
+                                                            i_end = qtm.InputEnd;
                                                         }
                                                     }
 
@@ -655,7 +655,7 @@ namespace LibMSPackSharp.Compression
                                                             return qtm.Error;
 
                                                         i_ptr = qtm.InputPointer;
-                                                        i_end = qtm.InputLength;
+                                                        i_end = qtm.InputEnd;
                                                     }
                                                 }
 
@@ -669,7 +669,7 @@ namespace LibMSPackSharp.Compression
                                                             return qtm.Error;
 
                                                         i_ptr = qtm.InputPointer;
-                                                        i_end = qtm.InputLength;
+                                                        i_end = qtm.InputEnd;
                                                     }
                                                 }
 
@@ -762,7 +762,7 @@ namespace LibMSPackSharp.Compression
                                                                 return qtm.Error;
 
                                                             i_ptr = qtm.InputPointer;
-                                                            i_end = qtm.InputLength;
+                                                            i_end = qtm.InputEnd;
                                                         }
                                                     }
 
@@ -776,7 +776,7 @@ namespace LibMSPackSharp.Compression
                                                                 return qtm.Error;
 
                                                             i_ptr = qtm.InputPointer;
-                                                            i_end = qtm.InputLength;
+                                                            i_end = qtm.InputEnd;
                                                         }
                                                     }
 
@@ -819,7 +819,7 @@ namespace LibMSPackSharp.Compression
                                                             return qtm.Error;
 
                                                         i_ptr = qtm.InputPointer;
-                                                        i_end = qtm.InputLength;
+                                                        i_end = qtm.InputEnd;
                                                     }
                                                 }
 
@@ -833,7 +833,7 @@ namespace LibMSPackSharp.Compression
                                                             return qtm.Error;
 
                                                         i_ptr = qtm.InputPointer;
-                                                        i_end = qtm.InputLength;
+                                                        i_end = qtm.InputEnd;
                                                     }
                                                 }
 
@@ -926,7 +926,7 @@ namespace LibMSPackSharp.Compression
                                                                 return qtm.Error;
 
                                                             i_ptr = qtm.InputPointer;
-                                                            i_end = qtm.InputLength;
+                                                            i_end = qtm.InputEnd;
                                                         }
                                                     }
 
@@ -940,7 +940,7 @@ namespace LibMSPackSharp.Compression
                                                                 return qtm.Error;
 
                                                             i_ptr = qtm.InputPointer;
-                                                            i_end = qtm.InputLength;
+                                                            i_end = qtm.InputEnd;
                                                         }
                                                     }
 
@@ -983,7 +983,7 @@ namespace LibMSPackSharp.Compression
                                                             return qtm.Error;
 
                                                         i_ptr = qtm.InputPointer;
-                                                        i_end = qtm.InputLength;
+                                                        i_end = qtm.InputEnd;
                                                     }
                                                 }
 
@@ -997,7 +997,7 @@ namespace LibMSPackSharp.Compression
                                                             return qtm.Error;
 
                                                         i_ptr = qtm.InputPointer;
-                                                        i_end = qtm.InputLength;
+                                                        i_end = qtm.InputEnd;
                                                     }
                                                 }
 
@@ -1086,7 +1086,7 @@ namespace LibMSPackSharp.Compression
                                                                 return qtm.Error;
 
                                                             i_ptr = qtm.InputPointer;
-                                                            i_end = qtm.InputLength;
+                                                            i_end = qtm.InputEnd;
                                                         }
                                                     }
 
@@ -1100,7 +1100,7 @@ namespace LibMSPackSharp.Compression
                                                                 return qtm.Error;
 
                                                             i_ptr = qtm.InputPointer;
-                                                            i_end = qtm.InputLength;
+                                                            i_end = qtm.InputEnd;
                                                         }
                                                     }
 
@@ -1143,7 +1143,7 @@ namespace LibMSPackSharp.Compression
                                                             return qtm.Error;
 
                                                         i_ptr = qtm.InputPointer;
-                                                        i_end = qtm.InputLength;
+                                                        i_end = qtm.InputEnd;
                                                     }
                                                 }
 
@@ -1157,7 +1157,7 @@ namespace LibMSPackSharp.Compression
                                                             return qtm.Error;
 
                                                         i_ptr = qtm.InputPointer;
-                                                        i_end = qtm.InputLength;
+                                                        i_end = qtm.InputEnd;
                                                     }
                                                 }
 
@@ -1228,7 +1228,7 @@ namespace LibMSPackSharp.Compression
 
                             out_bytes -= i;
                             qtm.OutputPointer = 0;
-                            qtm.OutputLength = 0;
+                            qtm.OutputEnd = 0;
 
                             // Copy second part of match, after window wrap
                             rundest = 0;
@@ -1290,7 +1290,7 @@ namespace LibMSPackSharp.Compression
                     }
                 }
 
-                qtm.OutputLength = (int)window_posn;
+                qtm.OutputEnd = (int)window_posn;
 
                 // If we subtracted too much from frame_todo, it will
                 // wrap around past zero and go above its max value
@@ -1334,7 +1334,7 @@ namespace LibMSPackSharp.Compression
                                                     return qtm.Error;
 
                                                 i_ptr = qtm.InputPointer;
-                                                i_end = qtm.InputLength;
+                                                i_end = qtm.InputEnd;
                                             }
                                         }
 
@@ -1348,7 +1348,7 @@ namespace LibMSPackSharp.Compression
                                                     return qtm.Error;
 
                                                 i_ptr = qtm.InputPointer;
-                                                i_end = qtm.InputLength;
+                                                i_end = qtm.InputEnd;
                                             }
                                         }
 
@@ -1382,7 +1382,7 @@ namespace LibMSPackSharp.Compression
                 if (window_posn == qtm.WindowSize)
                 {
                     // Flush all currently stored data
-                    i = (qtm.OutputLength - qtm.OutputPointer);
+                    i = (qtm.OutputEnd - qtm.OutputPointer);
 
                     // Break out if we have more than enough to finish this request
                     if (i >= out_bytes)
@@ -1393,7 +1393,7 @@ namespace LibMSPackSharp.Compression
 
                     out_bytes -= i;
                     qtm.OutputPointer = 0;
-                    qtm.OutputLength = 0;
+                    qtm.OutputEnd = 0;
                     window_posn = 0;
                 }
 
@@ -1414,7 +1414,7 @@ namespace LibMSPackSharp.Compression
             //STORE_BITS
             {
                 qtm.InputPointer = i_ptr;
-                qtm.InputLength = i_end;
+                qtm.InputEnd = i_end;
                 qtm.BitBuffer = bit_buffer;
                 qtm.BitsLeft = bits_left;
             }

@@ -326,7 +326,7 @@ namespace LibMSPackSharp.Compression
 
                 // e8_buf
                 OutputPointer = 0,
-                OutputLength = 0,
+                OutputEnd = 0,
             };
 
             ResetState(lzx);
@@ -334,10 +334,10 @@ namespace LibMSPackSharp.Compression
             //INIT_BITS
             {
                 lzx.InputPointer = 0;
-                lzx.InputLength = 0;
+                lzx.InputEnd = 0;
                 lzx.BitBuffer = 0;
                 lzx.BitsLeft = 0;
-                lzx.InputEnd = 0;
+                lzx.EndOfInput = 0;
             }
 
             return lzx;
@@ -464,7 +464,7 @@ namespace LibMSPackSharp.Compression
                 return lzx.Error;
 
             // Flush out any stored-up bytes before we begin
-            i = lzx.OutputLength - lzx.OutputPointer;
+            i = lzx.OutputEnd - lzx.OutputPointer;
             if (i > out_bytes)
                 i = (int)out_bytes;
 
@@ -486,7 +486,7 @@ namespace LibMSPackSharp.Compression
             //RESTORE_BITS
             {
                 i_ptr = lzx.InputPointer;
-                i_end = lzx.InputLength;
+                i_end = lzx.InputEnd;
                 bit_buffer = lzx.BitBuffer;
                 bits_left = lzx.BitsLeft;
             }
@@ -539,7 +539,7 @@ namespace LibMSPackSharp.Compression
                                             return lzx.Error;
 
                                         i_ptr = lzx.InputPointer;
-                                        i_end = lzx.InputLength;
+                                        i_end = lzx.InputEnd;
                                     }
                                 }
 
@@ -553,7 +553,7 @@ namespace LibMSPackSharp.Compression
                                             return lzx.Error;
 
                                         i_ptr = lzx.InputPointer;
-                                        i_end = lzx.InputLength;
+                                        i_end = lzx.InputEnd;
                                     }
                                 }
 
@@ -600,7 +600,7 @@ namespace LibMSPackSharp.Compression
                                         return lzx.Error;
 
                                     i_ptr = lzx.InputPointer;
-                                    i_end = lzx.InputLength;
+                                    i_end = lzx.InputEnd;
                                 }
                             }
 
@@ -625,7 +625,7 @@ namespace LibMSPackSharp.Compression
                                                     return lzx.Error;
 
                                                 i_ptr = lzx.InputPointer;
-                                                i_end = lzx.InputLength;
+                                                i_end = lzx.InputEnd;
                                             }
                                         }
 
@@ -639,7 +639,7 @@ namespace LibMSPackSharp.Compression
                                                     return lzx.Error;
 
                                                 i_ptr = lzx.InputPointer;
-                                                i_end = lzx.InputLength;
+                                                i_end = lzx.InputEnd;
                                             }
                                         }
 
@@ -686,7 +686,7 @@ namespace LibMSPackSharp.Compression
                                                         return lzx.Error;
 
                                                     i_ptr = lzx.InputPointer;
-                                                    i_end = lzx.InputLength;
+                                                    i_end = lzx.InputEnd;
                                                 }
                                             }
 
@@ -700,7 +700,7 @@ namespace LibMSPackSharp.Compression
                                                         return lzx.Error;
 
                                                     i_ptr = lzx.InputPointer;
-                                                    i_end = lzx.InputLength;
+                                                    i_end = lzx.InputEnd;
                                                 }
                                             }
 
@@ -742,7 +742,7 @@ namespace LibMSPackSharp.Compression
                                                             return lzx.Error;
 
                                                         i_ptr = lzx.InputPointer;
-                                                        i_end = lzx.InputLength;
+                                                        i_end = lzx.InputEnd;
                                                     }
                                                 }
 
@@ -756,7 +756,7 @@ namespace LibMSPackSharp.Compression
                                                             return lzx.Error;
 
                                                         i_ptr = lzx.InputPointer;
-                                                        i_end = lzx.InputLength;
+                                                        i_end = lzx.InputEnd;
                                                     }
                                                 }
 
@@ -796,7 +796,7 @@ namespace LibMSPackSharp.Compression
                                                             return lzx.Error;
 
                                                         i_ptr = lzx.InputPointer;
-                                                        i_end = lzx.InputLength;
+                                                        i_end = lzx.InputEnd;
                                                     }
                                                 }
 
@@ -810,7 +810,7 @@ namespace LibMSPackSharp.Compression
                                                             return lzx.Error;
 
                                                         i_ptr = lzx.InputPointer;
-                                                        i_end = lzx.InputLength;
+                                                        i_end = lzx.InputEnd;
                                                     }
                                                 }
 
@@ -855,7 +855,7 @@ namespace LibMSPackSharp.Compression
                                                     return lzx.Error;
 
                                                 i_ptr = lzx.InputPointer;
-                                                i_end = lzx.InputLength;
+                                                i_end = lzx.InputEnd;
                                             }
                                         }
 
@@ -869,7 +869,7 @@ namespace LibMSPackSharp.Compression
                                                     return lzx.Error;
 
                                                 i_ptr = lzx.InputPointer;
-                                                i_end = lzx.InputLength;
+                                                i_end = lzx.InputEnd;
                                             }
                                         }
 
@@ -909,7 +909,7 @@ namespace LibMSPackSharp.Compression
                                                     return lzx.Error;
 
                                                 i_ptr = lzx.InputPointer;
-                                                i_end = lzx.InputLength;
+                                                i_end = lzx.InputEnd;
                                             }
                                         }
 
@@ -923,7 +923,7 @@ namespace LibMSPackSharp.Compression
                                                     return lzx.Error;
 
                                                 i_ptr = lzx.InputPointer;
-                                                i_end = lzx.InputLength;
+                                                i_end = lzx.InputEnd;
                                             }
                                         }
 
@@ -973,7 +973,7 @@ namespace LibMSPackSharp.Compression
                                                                 return lzx.Error;
 
                                                             i_ptr = lzx.InputPointer;
-                                                            i_end = lzx.InputLength;
+                                                            i_end = lzx.InputEnd;
                                                         }
                                                     }
 
@@ -987,7 +987,7 @@ namespace LibMSPackSharp.Compression
                                                                 return lzx.Error;
 
                                                             i_ptr = lzx.InputPointer;
-                                                            i_end = lzx.InputLength;
+                                                            i_end = lzx.InputEnd;
                                                         }
                                                     }
 
@@ -1030,7 +1030,7 @@ namespace LibMSPackSharp.Compression
                                     //STORE_BITS
                                     {
                                         lzx.InputPointer = i_ptr;
-                                        lzx.InputLength = i_end;
+                                        lzx.InputEnd = i_end;
                                         lzx.BitBuffer = bit_buffer;
                                         lzx.BitsLeft = bits_left;
                                     }
@@ -1041,7 +1041,7 @@ namespace LibMSPackSharp.Compression
                                     //RESTORE_BITS
                                     {
                                         i_ptr = lzx.InputPointer;
-                                        i_end = lzx.InputLength;
+                                        i_end = lzx.InputEnd;
                                         bit_buffer = lzx.BitBuffer;
                                         bits_left = lzx.BitsLeft;
                                     }
@@ -1052,7 +1052,7 @@ namespace LibMSPackSharp.Compression
                                     //STORE_BITS
                                     {
                                         lzx.InputPointer = i_ptr;
-                                        lzx.InputLength = i_end;
+                                        lzx.InputEnd = i_end;
                                         lzx.BitBuffer = bit_buffer;
                                         lzx.BitsLeft = bits_left;
                                     }
@@ -1063,7 +1063,7 @@ namespace LibMSPackSharp.Compression
                                     //RESTORE_BITS
                                     {
                                         i_ptr = lzx.InputPointer;
-                                        i_end = lzx.InputLength;
+                                        i_end = lzx.InputEnd;
                                         bit_buffer = lzx.BitBuffer;
                                         bits_left = lzx.BitsLeft;
                                     }
@@ -1089,7 +1089,7 @@ namespace LibMSPackSharp.Compression
                                     //STORE_BITS
                                     {
                                         lzx.InputPointer = i_ptr;
-                                        lzx.InputLength = i_end;
+                                        lzx.InputEnd = i_end;
                                         lzx.BitBuffer = bit_buffer;
                                         lzx.BitsLeft = bits_left;
                                     }
@@ -1100,7 +1100,7 @@ namespace LibMSPackSharp.Compression
                                     //RESTORE_BITS
                                     {
                                         i_ptr = lzx.InputPointer;
-                                        i_end = lzx.InputLength;
+                                        i_end = lzx.InputEnd;
                                         bit_buffer = lzx.BitBuffer;
                                         bits_left = lzx.BitsLeft;
                                     }
@@ -1135,7 +1135,7 @@ namespace LibMSPackSharp.Compression
                                     //STORE_BITS
                                     {
                                         lzx.InputPointer = i_ptr;
-                                        lzx.InputLength = i_end;
+                                        lzx.InputEnd = i_end;
                                         lzx.BitBuffer = bit_buffer;
                                         lzx.BitsLeft = bits_left;
                                     }
@@ -1146,7 +1146,7 @@ namespace LibMSPackSharp.Compression
                                     //RESTORE_BITS
                                     {
                                         i_ptr = lzx.InputPointer;
-                                        i_end = lzx.InputLength;
+                                        i_end = lzx.InputEnd;
                                         bit_buffer = lzx.BitBuffer;
                                         bits_left = lzx.BitsLeft;
                                     }
@@ -1157,7 +1157,7 @@ namespace LibMSPackSharp.Compression
                                     //STORE_BITS
                                     {
                                         lzx.InputPointer = i_ptr;
-                                        lzx.InputLength = i_end;
+                                        lzx.InputEnd = i_end;
                                         lzx.BitBuffer = bit_buffer;
                                         lzx.BitsLeft = bits_left;
                                     }
@@ -1168,7 +1168,7 @@ namespace LibMSPackSharp.Compression
                                     //RESTORE_BITS
                                     {
                                         i_ptr = lzx.InputPointer;
-                                        i_end = lzx.InputLength;
+                                        i_end = lzx.InputEnd;
                                         bit_buffer = lzx.BitBuffer;
                                         bits_left = lzx.BitsLeft;
                                     }
@@ -1194,7 +1194,7 @@ namespace LibMSPackSharp.Compression
                                     //STORE_BITS
                                     {
                                         lzx.InputPointer = i_ptr;
-                                        lzx.InputLength = i_end;
+                                        lzx.InputEnd = i_end;
                                         lzx.BitBuffer = bit_buffer;
                                         lzx.BitsLeft = bits_left;
                                     }
@@ -1205,7 +1205,7 @@ namespace LibMSPackSharp.Compression
                                     //RESTORE_BITS
                                     {
                                         i_ptr = lzx.InputPointer;
-                                        i_end = lzx.InputLength;
+                                        i_end = lzx.InputEnd;
                                         bit_buffer = lzx.BitBuffer;
                                         bits_left = lzx.BitsLeft;
                                     }
@@ -1253,7 +1253,7 @@ namespace LibMSPackSharp.Compression
                                                             return lzx.Error;
 
                                                         i_ptr = lzx.InputPointer;
-                                                        i_end = lzx.InputLength;
+                                                        i_end = lzx.InputEnd;
                                                     }
                                                 }
 
@@ -1267,7 +1267,7 @@ namespace LibMSPackSharp.Compression
                                                             return lzx.Error;
 
                                                         i_ptr = lzx.InputPointer;
-                                                        i_end = lzx.InputLength;
+                                                        i_end = lzx.InputEnd;
                                                     }
                                                 }
 
@@ -1296,7 +1296,7 @@ namespace LibMSPackSharp.Compression
                                                 return lzx.Error;
 
                                             i_ptr = lzx.InputPointer;
-                                            i_end = lzx.InputLength;
+                                            i_end = lzx.InputEnd;
                                         }
                                     }
 
@@ -1348,7 +1348,7 @@ namespace LibMSPackSharp.Compression
                                                             return lzx.Error;
 
                                                         i_ptr = lzx.InputPointer;
-                                                        i_end = lzx.InputLength;
+                                                        i_end = lzx.InputEnd;
                                                     }
                                                 }
 
@@ -1362,7 +1362,7 @@ namespace LibMSPackSharp.Compression
                                                             return lzx.Error;
 
                                                         i_ptr = lzx.InputPointer;
-                                                        i_end = lzx.InputLength;
+                                                        i_end = lzx.InputEnd;
                                                     }
                                                 }
 
@@ -1440,7 +1440,7 @@ namespace LibMSPackSharp.Compression
                                                                     return lzx.Error;
 
                                                                 i_ptr = lzx.InputPointer;
-                                                                i_end = lzx.InputLength;
+                                                                i_end = lzx.InputEnd;
                                                             }
                                                         }
 
@@ -1454,7 +1454,7 @@ namespace LibMSPackSharp.Compression
                                                                     return lzx.Error;
 
                                                                 i_ptr = lzx.InputPointer;
-                                                                i_end = lzx.InputLength;
+                                                                i_end = lzx.InputEnd;
                                                             }
                                                         }
 
@@ -1546,7 +1546,7 @@ namespace LibMSPackSharp.Compression
                                                                                 return lzx.Error;
 
                                                                             i_ptr = lzx.InputPointer;
-                                                                            i_end = lzx.InputLength;
+                                                                            i_end = lzx.InputEnd;
                                                                         }
                                                                     }
 
@@ -1560,7 +1560,7 @@ namespace LibMSPackSharp.Compression
                                                                                 return lzx.Error;
 
                                                                             i_ptr = lzx.InputPointer;
-                                                                            i_end = lzx.InputLength;
+                                                                            i_end = lzx.InputEnd;
                                                                         }
                                                                     }
 
@@ -1615,7 +1615,7 @@ namespace LibMSPackSharp.Compression
                                                                                 return lzx.Error;
 
                                                                             i_ptr = lzx.InputPointer;
-                                                                            i_end = lzx.InputLength;
+                                                                            i_end = lzx.InputEnd;
                                                                         }
                                                                     }
 
@@ -1629,7 +1629,7 @@ namespace LibMSPackSharp.Compression
                                                                                 return lzx.Error;
 
                                                                             i_ptr = lzx.InputPointer;
-                                                                            i_end = lzx.InputLength;
+                                                                            i_end = lzx.InputEnd;
                                                                         }
                                                                     }
 
@@ -1671,7 +1671,7 @@ namespace LibMSPackSharp.Compression
                                                                                 return lzx.Error;
 
                                                                             i_ptr = lzx.InputPointer;
-                                                                            i_end = lzx.InputLength;
+                                                                            i_end = lzx.InputEnd;
                                                                         }
                                                                     }
 
@@ -1685,7 +1685,7 @@ namespace LibMSPackSharp.Compression
                                                                                 return lzx.Error;
 
                                                                             i_ptr = lzx.InputPointer;
-                                                                            i_end = lzx.InputLength;
+                                                                            i_end = lzx.InputEnd;
                                                                         }
                                                                     }
 
@@ -1748,7 +1748,7 @@ namespace LibMSPackSharp.Compression
                                                                                 return lzx.Error;
 
                                                                             i_ptr = lzx.InputPointer;
-                                                                            i_end = lzx.InputLength;
+                                                                            i_end = lzx.InputEnd;
                                                                         }
                                                                     }
 
@@ -1762,7 +1762,7 @@ namespace LibMSPackSharp.Compression
                                                                                 return lzx.Error;
 
                                                                             i_ptr = lzx.InputPointer;
-                                                                            i_end = lzx.InputLength;
+                                                                            i_end = lzx.InputEnd;
                                                                         }
                                                                     }
 
@@ -1825,7 +1825,7 @@ namespace LibMSPackSharp.Compression
                                                                                 return lzx.Error;
 
                                                                             i_ptr = lzx.InputPointer;
-                                                                            i_end = lzx.InputLength;
+                                                                            i_end = lzx.InputEnd;
                                                                         }
                                                                     }
 
@@ -1839,7 +1839,7 @@ namespace LibMSPackSharp.Compression
                                                                                 return lzx.Error;
 
                                                                             i_ptr = lzx.InputPointer;
-                                                                            i_end = lzx.InputLength;
+                                                                            i_end = lzx.InputEnd;
                                                                         }
                                                                     }
 
@@ -1899,7 +1899,7 @@ namespace LibMSPackSharp.Compression
                                                                 return lzx.Error;
 
                                                             i_ptr = lzx.InputPointer;
-                                                            i_end = lzx.InputLength;
+                                                            i_end = lzx.InputEnd;
                                                         }
                                                     }
 
@@ -1913,7 +1913,7 @@ namespace LibMSPackSharp.Compression
                                                                 return lzx.Error;
 
                                                             i_ptr = lzx.InputPointer;
-                                                            i_end = lzx.InputLength;
+                                                            i_end = lzx.InputEnd;
                                                         }
                                                     }
 
@@ -1953,7 +1953,7 @@ namespace LibMSPackSharp.Compression
                                                                         return lzx.Error;
 
                                                                     i_ptr = lzx.InputPointer;
-                                                                    i_end = lzx.InputLength;
+                                                                    i_end = lzx.InputEnd;
                                                                 }
                                                             }
 
@@ -1967,7 +1967,7 @@ namespace LibMSPackSharp.Compression
                                                                         return lzx.Error;
 
                                                                     i_ptr = lzx.InputPointer;
-                                                                    i_end = lzx.InputLength;
+                                                                    i_end = lzx.InputEnd;
                                                                 }
                                                             }
 
@@ -2017,7 +2017,7 @@ namespace LibMSPackSharp.Compression
                                                                         return lzx.Error;
 
                                                                     i_ptr = lzx.InputPointer;
-                                                                    i_end = lzx.InputLength;
+                                                                    i_end = lzx.InputEnd;
                                                                 }
                                                             }
 
@@ -2031,7 +2031,7 @@ namespace LibMSPackSharp.Compression
                                                                         return lzx.Error;
 
                                                                     i_ptr = lzx.InputPointer;
-                                                                    i_end = lzx.InputLength;
+                                                                    i_end = lzx.InputEnd;
                                                                 }
                                                             }
 
@@ -2083,7 +2083,7 @@ namespace LibMSPackSharp.Compression
                                                                         return lzx.Error;
 
                                                                     i_ptr = lzx.InputPointer;
-                                                                    i_end = lzx.InputLength;
+                                                                    i_end = lzx.InputEnd;
                                                                 }
                                                             }
 
@@ -2097,7 +2097,7 @@ namespace LibMSPackSharp.Compression
                                                                         return lzx.Error;
 
                                                                     i_ptr = lzx.InputPointer;
-                                                                    i_end = lzx.InputLength;
+                                                                    i_end = lzx.InputEnd;
                                                                 }
                                                             }
 
@@ -2149,7 +2149,7 @@ namespace LibMSPackSharp.Compression
                                                                         return lzx.Error;
 
                                                                     i_ptr = lzx.InputPointer;
-                                                                    i_end = lzx.InputLength;
+                                                                    i_end = lzx.InputEnd;
                                                                 }
                                                             }
 
@@ -2163,7 +2163,7 @@ namespace LibMSPackSharp.Compression
                                                                         return lzx.Error;
 
                                                                     i_ptr = lzx.InputPointer;
-                                                                    i_end = lzx.InputLength;
+                                                                    i_end = lzx.InputEnd;
                                                                 }
                                                             }
 
@@ -2269,7 +2269,7 @@ namespace LibMSPackSharp.Compression
                                                 return lzx.Error;
 
                                             i_ptr = lzx.InputPointer;
-                                            i_end = lzx.InputLength;
+                                            i_end = lzx.InputEnd;
                                         }
                                     }
                                 }
@@ -2328,7 +2328,7 @@ namespace LibMSPackSharp.Compression
                                             return lzx.Error;
 
                                         i_ptr = lzx.InputPointer;
-                                        i_end = lzx.InputLength;
+                                        i_end = lzx.InputEnd;
                                     }
                                 }
 
@@ -2342,7 +2342,7 @@ namespace LibMSPackSharp.Compression
                                             return lzx.Error;
 
                                         i_ptr = lzx.InputPointer;
-                                        i_end = lzx.InputLength;
+                                        i_end = lzx.InputEnd;
                                     }
                                 }
 
@@ -2368,9 +2368,9 @@ namespace LibMSPackSharp.Compression
                 }
 
                 // Check that we've used all of the previous frame first
-                if (lzx.OutputPointer != lzx.OutputLength)
+                if (lzx.OutputPointer != lzx.OutputEnd)
                 {
-                    Console.WriteLine($"{lzx.OutputLength - lzx.OutputPointer} avail bytes, new {frame_size} frame");
+                    Console.WriteLine($"{lzx.OutputEnd - lzx.OutputPointer} avail bytes, new {frame_size} frame");
                     return lzx.Error = Error.MSPACK_ERR_DECRUNCH;
                 }
 
@@ -2409,7 +2409,7 @@ namespace LibMSPackSharp.Compression
                         curpos += 5;
                     }
 
-                    lzx.OutputLength = (int)(lzx.OutputPointer + frame_size);
+                    lzx.OutputEnd = (int)(lzx.OutputPointer + frame_size);
 
                     // Write a frame
                     i = (int)((out_bytes < frame_size) ? out_bytes : frame_size);
@@ -2419,7 +2419,7 @@ namespace LibMSPackSharp.Compression
                 else
                 {
                     lzx.OutputPointer = (int)lzx.FramePosition;
-                    lzx.OutputLength = (int)(lzx.OutputPointer + frame_size);
+                    lzx.OutputEnd = (int)(lzx.OutputPointer + frame_size);
 
                     // Write a frame
                     i = (int)((out_bytes < frame_size) ? out_bytes : frame_size);
@@ -2454,7 +2454,7 @@ namespace LibMSPackSharp.Compression
             //STORE_BITS
             {
                 lzx.InputPointer = i_ptr;
-                lzx.InputLength = i_end;
+                lzx.InputEnd = i_end;
                 lzx.BitBuffer = bit_buffer;
                 lzx.BitsLeft = bits_left;
             }
@@ -2481,7 +2481,7 @@ namespace LibMSPackSharp.Compression
             //RESTORE_BITS
             {
                 i_ptr = lzx.InputPointer;
-                i_end = lzx.InputLength;
+                i_end = lzx.InputEnd;
                 bit_buffer = lzx.BitBuffer;
                 bits_left = lzx.BitsLeft;
             }
@@ -2505,7 +2505,7 @@ namespace LibMSPackSharp.Compression
                                             return lzx.Error;
 
                                         i_ptr = lzx.InputPointer;
-                                        i_end = lzx.InputLength;
+                                        i_end = lzx.InputEnd;
                                     }
                                 }
 
@@ -2519,7 +2519,7 @@ namespace LibMSPackSharp.Compression
                                             return lzx.Error;
 
                                         i_ptr = lzx.InputPointer;
-                                        i_end = lzx.InputLength;
+                                        i_end = lzx.InputEnd;
                                     }
                                 }
 
@@ -2573,7 +2573,7 @@ namespace LibMSPackSharp.Compression
                                             return lzx.Error;
 
                                         i_ptr = lzx.InputPointer;
-                                        i_end = lzx.InputLength;
+                                        i_end = lzx.InputEnd;
                                     }
                                 }
 
@@ -2587,7 +2587,7 @@ namespace LibMSPackSharp.Compression
                                             return lzx.Error;
 
                                         i_ptr = lzx.InputPointer;
-                                        i_end = lzx.InputLength;
+                                        i_end = lzx.InputEnd;
                                     }
                                 }
 
@@ -2647,7 +2647,7 @@ namespace LibMSPackSharp.Compression
                                                 return lzx.Error;
 
                                             i_ptr = lzx.InputPointer;
-                                            i_end = lzx.InputLength;
+                                            i_end = lzx.InputEnd;
                                         }
                                     }
 
@@ -2661,7 +2661,7 @@ namespace LibMSPackSharp.Compression
                                                 return lzx.Error;
 
                                             i_ptr = lzx.InputPointer;
-                                            i_end = lzx.InputLength;
+                                            i_end = lzx.InputEnd;
                                         }
                                     }
 
@@ -2711,7 +2711,7 @@ namespace LibMSPackSharp.Compression
                                                 return lzx.Error;
 
                                             i_ptr = lzx.InputPointer;
-                                            i_end = lzx.InputLength;
+                                            i_end = lzx.InputEnd;
                                         }
                                     }
 
@@ -2725,7 +2725,7 @@ namespace LibMSPackSharp.Compression
                                                 return lzx.Error;
 
                                             i_ptr = lzx.InputPointer;
-                                            i_end = lzx.InputLength;
+                                            i_end = lzx.InputEnd;
                                         }
                                     }
 
@@ -2775,7 +2775,7 @@ namespace LibMSPackSharp.Compression
                                                 return lzx.Error;
 
                                             i_ptr = lzx.InputPointer;
-                                            i_end = lzx.InputLength;
+                                            i_end = lzx.InputEnd;
                                         }
                                     }
 
@@ -2789,7 +2789,7 @@ namespace LibMSPackSharp.Compression
                                                 return lzx.Error;
 
                                             i_ptr = lzx.InputPointer;
-                                            i_end = lzx.InputLength;
+                                            i_end = lzx.InputEnd;
                                         }
                                     }
 
@@ -2831,7 +2831,7 @@ namespace LibMSPackSharp.Compression
                                                 return lzx.Error;
 
                                             i_ptr = lzx.InputPointer;
-                                            i_end = lzx.InputLength;
+                                            i_end = lzx.InputEnd;
                                         }
                                     }
 
@@ -2845,7 +2845,7 @@ namespace LibMSPackSharp.Compression
                                                 return lzx.Error;
 
                                             i_ptr = lzx.InputPointer;
-                                            i_end = lzx.InputLength;
+                                            i_end = lzx.InputEnd;
                                         }
                                     }
 
@@ -2910,7 +2910,7 @@ namespace LibMSPackSharp.Compression
             //STORE_BITS
             {
                 lzx.InputPointer = i_ptr;
-                lzx.InputLength = i_end;
+                lzx.InputEnd = i_end;
                 lzx.BitBuffer = bit_buffer;
                 lzx.BitsLeft = bits_left;
             }
