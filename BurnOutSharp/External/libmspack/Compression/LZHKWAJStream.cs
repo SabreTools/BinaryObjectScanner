@@ -8,6 +8,7 @@
  */
 
 using static LibMSPackSharp.Constants;
+using static LibMSPackSharp.Compression.Constants;
 
 namespace LibMSPackSharp.Compression
 {
@@ -33,7 +34,7 @@ namespace LibMSPackSharp.Compression
 
         // History window
 
-        public byte[] Window { get; set; } = new byte[LZSS.LZSS_WINDOW_SIZE];
+        public byte[] Window { get; set; } = new byte[LZSS_WINDOW_SIZE];
 
         #endregion
 
@@ -53,10 +54,10 @@ namespace LibMSPackSharp.Compression
         /// <summary>
         /// Safely read bits from the buffer
         /// </summary>
-        public long READ_BITS_SAFE(int nbits, ref int i_ptr, ref int i_end, ref uint bit_buffer, ref int bits_left)
+        public long READ_BITS_SAFE(int nbits, BufferState state)
         {
-            long val = READ_BITS_MSB(nbits, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
-            if (EndOfInput != 0 && BitsLeft < EndOfInput)
+            long val = READ_BITS_MSB(nbits, state);
+            if (EndOfInput != 0 && BufferState.BitsLeft < EndOfInput)
                 Error = Error.MSPACK_ERR_NOMEMORY;
             else
                 Error = Error.MSPACK_ERR_OK;
@@ -67,10 +68,10 @@ namespace LibMSPackSharp.Compression
         /// <summary>
         /// Safely read a symbol from a Huffman tree
         /// </summary>
-        public long READ_HUFFSYM_SAFE(ushort[] table, byte[] lengths, int tablebits, int maxsymbols, ref int i_ptr, ref int i_end, ref uint bit_buffer, ref int bits_left)
+        public long READ_HUFFSYM_SAFE(ushort[] table, byte[] lengths, int tablebits, int maxsymbols, BufferState state)
         {
-            long val = READ_HUFFSYM_MSB(table, lengths, tablebits, maxsymbols, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
-            if (EndOfInput != 0 && BitsLeft < EndOfInput)
+            long val = READ_HUFFSYM_MSB(table, lengths, tablebits, maxsymbols, state);
+            if (EndOfInput != 0 && BufferState.BitsLeft < EndOfInput)
                 Error = Error.MSPACK_ERR_NOMEMORY;
             else
                 Error = Error.MSPACK_ERR_OK;
@@ -93,19 +94,19 @@ namespace LibMSPackSharp.Compression
         public override Error HUFF_ERROR() => Error.MSPACK_ERR_DATAFORMAT;
 
         /// <inheritdoc/>
-        public override void READ_BYTES(ref int i_ptr, ref int i_end, ref uint bit_buffer, ref int bits_left)
+        public override void READ_BYTES(BufferState state)
         {
-            if (i_ptr >= i_end)
+            if (state.InputPointer >= state.InputEnd)
             {
                 ReadInput();
                 if (Error != Error.MSPACK_ERR_OK)
                     return;
 
-                i_ptr = InputPointer;
-                i_end = InputEnd;
+                state.InputPointer = BufferState.InputPointer;
+                state.InputEnd = BufferState.InputEnd;
             }
 
-            INJECT_BITS_MSB(InputBuffer[i_ptr++], 8, ref bit_buffer, ref bits_left);
+            INJECT_BITS_MSB(InputBuffer[state.InputPointer++], 8, state);
         }
 
         /// <inheritdoc/>
@@ -129,15 +130,15 @@ namespace LibMSPackSharp.Compression
 
                 if (read == 0)
                 {
-                    InputEnd = 8;
+                    BufferState.InputEnd = 8;
                     InputBuffer[0] = 0;
                     read = 1;
                 }
             }
 
             // Update InputPointer and InputLength
-            InputPointer = 0;
-            InputEnd = read;
+            BufferState.InputPointer = 0;
+            BufferState.InputEnd = read;
         }
     }
 }

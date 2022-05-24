@@ -11,6 +11,7 @@
  */
 
 using System;
+using static LibMSPackSharp.Compression.Constants;
 
 namespace LibMSPackSharp.Compression
 {
@@ -21,7 +22,7 @@ namespace LibMSPackSharp.Compression
         /// <summary>
         /// 32kb history window
         /// </summary>
-        public byte[] Window { get; set; } = new byte[MSZIP.MSZIP_FRAME_SIZE];
+        public byte[] Window { get; set; } = new byte[MSZIP_FRAME_SIZE];
 
         /// <summary>
         /// Offset within window
@@ -39,15 +40,15 @@ namespace LibMSPackSharp.Compression
 
         #region Huffman code lengths
 
-        public byte[] LITERAL_len { get; set; } = new byte[MSZIP.MSZIP_LITERAL_MAXSYMBOLS];
-        public byte[] DISTANCE_len { get; set; } = new byte[MSZIP.MSZIP_DISTANCE_MAXSYMBOLS];
+        public byte[] LITERAL_len { get; set; } = new byte[MSZIP_LITERAL_MAXSYMBOLS];
+        public byte[] DISTANCE_len { get; set; } = new byte[MSZIP_DISTANCE_MAXSYMBOLS];
 
         #endregion
 
         #region Huffman decoding tables
 
-        public ushort[] LITERAL_table { get; set; } = new ushort[MSZIP.MSZIP_LITERAL_TABLESIZE];
-        public ushort[] DISTANCE_table { get; set; } = new ushort[MSZIP.MSZIP_DISTANCE_TABLESIZE];
+        public ushort[] LITERAL_table { get; set; } = new ushort[MSZIP_LITERAL_TABLESIZE];
+        public ushort[] DISTANCE_table { get; set; } = new ushort[MSZIP_DISTANCE_TABLESIZE];
 
         #endregion
 
@@ -57,13 +58,13 @@ namespace LibMSPackSharp.Compression
         public override Error HUFF_ERROR() => Error.INF_ERR_HUFFSYM;
 
         /// <inheritdoc/>
-        public override void READ_BYTES(ref int i_ptr, ref int i_end, ref uint bit_buffer, ref int bits_left)
+        public override void READ_BYTES(BufferState state)
         {
-            READ_IF_NEEDED(ref i_ptr, ref i_end);
+            READ_IF_NEEDED(state);
             if (Error != Error.MSPACK_ERR_OK)
                 return;
 
-            INJECT_BITS_LSB(InputBuffer[i_ptr++], 8, ref bit_buffer, ref bits_left);
+            INJECT_BITS_LSB(InputBuffer[state.InputPointer++], 8, state);
         }
     }
 }

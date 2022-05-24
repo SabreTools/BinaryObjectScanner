@@ -19,6 +19,7 @@ using System.IO;
 using System.Text;
 using LibMSPackSharp.Compression;
 using static LibMSPackSharp.Constants;
+using static LibMSPackSharp.Compression.Constants;
 
 namespace LibMSPackSharp.CHM
 {
@@ -242,7 +243,7 @@ namespace LibMSPackSharp.CHM
                 return Error = err;
 
             // Validate reset_interval
-            if (lzxControlData.ResetInterval == 0 || (lzxControlData.ResetInterval % LZX.LZX_FRAME_SIZE) != 0)
+            if (lzxControlData.ResetInterval == 0 || (lzxControlData.ResetInterval % LZX_FRAME_SIZE) != 0)
             {
                 Console.WriteLine("Bad controldata reset interval");
                 return Error = Error.MSPACK_ERR_DATAFORMAT;
@@ -252,7 +253,7 @@ namespace LibMSPackSharp.CHM
             int entry = (int)(file.Offset / lzxControlData.ResetInterval);
 
             // Convert from reset interval multiple (usually 64k) to 32k frames
-            entry *= (int)lzxControlData.ResetInterval / LZX.LZX_FRAME_SIZE;
+            entry *= (int)lzxControlData.ResetInterval / LZX_FRAME_SIZE;
 
             // Read the reset table entry
             if (ReadResetTable(sec, (uint)entry, out long length, out long offset))
@@ -284,11 +285,11 @@ namespace LibMSPackSharp.CHM
             State.InOffset = file.Section.Header.Sec0.Offset + sec.Content.Offset + offset;
 
             // Set start offset and overall remaining stream length
-            State.Offset = entry * LZX.LZX_FRAME_SIZE;
+            State.Offset = entry * LZX_FRAME_SIZE;
             length -= State.Offset;
 
             // Initialise LZX stream
-            State.State = LZX.Init(State.System, State.InputFileHandle, State.OutputFileHandle, windowBits, (int)lzxControlData.ResetInterval / LZX.LZX_FRAME_SIZE, 4096, length, false);
+            State.State = LZX.Init(State.System, State.InputFileHandle, State.OutputFileHandle, windowBits, (int)lzxControlData.ResetInterval / LZX_FRAME_SIZE, 4096, length, false);
 
             if (State.State == null)
                 Error = Error.MSPACK_ERR_NOMEMORY;
@@ -1081,7 +1082,7 @@ namespace LibMSPackSharp.CHM
                 return false;
 
             // Check sanity of reset table
-            if (lzxResetTable.FrameLength != LZX.LZX_FRAME_SIZE)
+            if (lzxResetTable.FrameLength != LZX_FRAME_SIZE)
             {
                 Console.WriteLine("Bad reset table frame length");
                 return false;

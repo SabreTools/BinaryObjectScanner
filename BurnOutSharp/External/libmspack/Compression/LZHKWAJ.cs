@@ -9,6 +9,7 @@
 
 using System.IO;
 using static LibMSPackSharp.Constants;
+using static LibMSPackSharp.Compression.Constants;
 
 namespace LibMSPackSharp.Compression
 {
@@ -47,39 +48,39 @@ namespace LibMSPackSharp.Compression
 
             // Reset global state
             lzh.INIT_BITS();
-            lzh.RESTORE_BITS(out int i_ptr, out int i_end, out uint bit_buffer, out int bits_left);
+            BufferState state = lzh.RESTORE_BITS();
 
-            for (i = 0; i < LZSS.LZSS_WINDOW_SIZE; i++)
+            for (i = 0; i < LZSS_WINDOW_SIZE; i++)
             {
-                lzh.Window[i] = LZSS.LZSS_WINDOW_FILL;
+                lzh.Window[i] = LZSS_WINDOW_FILL;
             }
 
             // Read 6 encoding types (for byte alignment) but only 5 are needed
             for (i = 0; i < 6; i++)
             {
-                types[i] = (uint)lzh.READ_BITS_SAFE(4, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+                types[i] = (uint)lzh.READ_BITS_SAFE(4, state);
                 if (lzh.Error == Error.MSPACK_ERR_NOMEMORY)
                     return Error.MSPACK_ERR_OK;
             }
 
             // Read huffman table symbol lengths and build huffman trees
-            BUILD_TREE(lzh, types[0], lzh.MATCHLEN1_table, lzh.MATCHLEN1_len, KWAJ_TABLEBITS, KWAJ_MATCHLEN1_SYMS, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
-            BUILD_TREE(lzh, types[1], lzh.MATCHLEN2_table, lzh.MATCHLEN2_len, KWAJ_TABLEBITS, KWAJ_MATCHLEN2_SYMS, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
-            BUILD_TREE(lzh, types[2], lzh.LITLEN_table, lzh.LITLEN_len, KWAJ_TABLEBITS, KWAJ_LITLEN_SYMS, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
-            BUILD_TREE(lzh, types[3], lzh.OFFSET_table, lzh.OFFSET_len, KWAJ_TABLEBITS, KWAJ_OFFSET_SYMS, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
-            BUILD_TREE(lzh, types[4], lzh.LITERAL_table, lzh.LITERAL_len, KWAJ_TABLEBITS, KWAJ_LITERAL_SYMS, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+            BUILD_TREE(lzh, types[0], lzh.MATCHLEN1_table, lzh.MATCHLEN1_len, KWAJ_TABLEBITS, KWAJ_MATCHLEN1_SYMS, state);
+            BUILD_TREE(lzh, types[1], lzh.MATCHLEN2_table, lzh.MATCHLEN2_len, KWAJ_TABLEBITS, KWAJ_MATCHLEN2_SYMS, state);
+            BUILD_TREE(lzh, types[2], lzh.LITLEN_table, lzh.LITLEN_len, KWAJ_TABLEBITS, KWAJ_LITLEN_SYMS, state);
+            BUILD_TREE(lzh, types[3], lzh.OFFSET_table, lzh.OFFSET_len, KWAJ_TABLEBITS, KWAJ_OFFSET_SYMS, state);
+            BUILD_TREE(lzh, types[4], lzh.LITERAL_table, lzh.LITERAL_len, KWAJ_TABLEBITS, KWAJ_LITERAL_SYMS, state);
 
             while (lzh.EndOfInput == 0)
             {
                 if (lit_run != 0)
                 {
-                    len = (int)lzh.READ_HUFFSYM_SAFE(lzh.MATCHLEN2_table, lzh.MATCHLEN2_len, KWAJ_MATCHLEN2_TBLSIZE, KWAJ_MATCHLEN2_SYMS, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+                    len = (int)lzh.READ_HUFFSYM_SAFE(lzh.MATCHLEN2_table, lzh.MATCHLEN2_len, KWAJ_MATCHLEN2_TBLSIZE, KWAJ_MATCHLEN2_SYMS, state);
                     if (lzh.Error == Error.MSPACK_ERR_NOMEMORY)
                         return Error.MSPACK_ERR_OK;
                 }
                 else
                 {
-                    len = (int)lzh.READ_HUFFSYM_SAFE(lzh.MATCHLEN1_table, lzh.MATCHLEN1_len, KWAJ_MATCHLEN1_TBLSIZE, KWAJ_MATCHLEN1_SYMS, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+                    len = (int)lzh.READ_HUFFSYM_SAFE(lzh.MATCHLEN1_table, lzh.MATCHLEN1_len, KWAJ_MATCHLEN1_TBLSIZE, KWAJ_MATCHLEN1_SYMS, state);
                     if (lzh.Error == Error.MSPACK_ERR_NOMEMORY)
                         return Error.MSPACK_ERR_OK;
                 }
@@ -89,13 +90,13 @@ namespace LibMSPackSharp.Compression
                     len += 2;
                     lit_run = 0; // Not the end of a literal run
 
-                    j = (int)lzh.READ_HUFFSYM_SAFE(lzh.OFFSET_table, lzh.OFFSET_len, KWAJ_OFFSET_TBLSIZE, KWAJ_OFFSET_SYMS, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+                    j = (int)lzh.READ_HUFFSYM_SAFE(lzh.OFFSET_table, lzh.OFFSET_len, KWAJ_OFFSET_TBLSIZE, KWAJ_OFFSET_SYMS, state);
                     if (lzh.Error == Error.MSPACK_ERR_NOMEMORY)
                         return Error.MSPACK_ERR_OK;
 
                     offset = j << 6;
 
-                    j = (int)lzh.READ_BITS_SAFE(6, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+                    j = (int)lzh.READ_BITS_SAFE(6, state);
                     if (lzh.Error == Error.MSPACK_ERR_NOMEMORY)
                         return Error.MSPACK_ERR_OK;
 
@@ -115,7 +116,7 @@ namespace LibMSPackSharp.Compression
                 }
                 else
                 {
-                    len = (int)lzh.READ_HUFFSYM_SAFE(lzh.LITLEN_table, lzh.LITLEN_len, KWAJ_LITLEN_TBLSIZE, KWAJ_LITLEN_SYMS, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+                    len = (int)lzh.READ_HUFFSYM_SAFE(lzh.LITLEN_table, lzh.LITLEN_len, KWAJ_LITLEN_TBLSIZE, KWAJ_LITLEN_SYMS, state);
                     if (lzh.Error == Error.MSPACK_ERR_NOMEMORY)
                         return Error.MSPACK_ERR_OK;
 
@@ -123,7 +124,7 @@ namespace LibMSPackSharp.Compression
                     lit_run = (len == 32) ? 0 : 1; // End of a literal run?
                     while (len-- > 0)
                     {
-                        j = (int)lzh.READ_HUFFSYM_SAFE(lzh.LITERAL_table, lzh.LITERAL_len, KWAJ_LITERAL_TBLSIZE, KWAJ_LITERAL_SYMS, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+                        j = (int)lzh.READ_HUFFSYM_SAFE(lzh.LITERAL_table, lzh.LITERAL_len, KWAJ_LITERAL_TBLSIZE, KWAJ_LITERAL_SYMS, state);
                         if (lzh.Error == Error.MSPACK_ERR_NOMEMORY)
                             return Error.MSPACK_ERR_OK;
 
@@ -142,15 +143,19 @@ namespace LibMSPackSharp.Compression
             return Error.MSPACK_ERR_OK;
         }
 
-        private static Error BUILD_TREE(LZHKWAJStream lzh, uint type, ushort[] table, byte[] lengths, int tablebits, int maxsymbols, ref int i_ptr, ref int i_end, ref uint bit_buffer, ref int bits_left)
+        private static Error BUILD_TREE(LZHKWAJStream lzh, uint type, ushort[] table, byte[] lengths, int tablebits, int maxsymbols, BufferState state)
         {
-            lzh.STORE_BITS(i_ptr, i_end, bit_buffer, bits_left);
+            lzh.STORE_BITS(state);
 
             Error err = ReadLens(lzh, type, (uint)maxsymbols, lzh.MATCHLEN1_len);
             if (err != Error.MSPACK_ERR_OK)
                 return err;
 
-            lzh.RESTORE_BITS(out i_ptr, out i_end, out bit_buffer, out bits_left);
+            BufferState temp = lzh.RESTORE_BITS();
+            state.InputPointer = temp.InputPointer;
+            state.InputEnd = temp.InputEnd;
+            state.BitBuffer = temp.BitBuffer;
+            state.BitsLeft = temp.BitsLeft;
 
             if (!CompressionStream.MakeDecodeTableMSB(maxsymbols, tablebits, lengths, table))
                 return Error.MSPACK_ERR_DATAFORMAT;
@@ -162,7 +167,7 @@ namespace LibMSPackSharp.Compression
         {
             uint i, c, sel;
 
-            lzh.RESTORE_BITS(out int i_ptr, out int i_end, out uint bit_buffer, out int bits_left);
+            BufferState state = lzh.RESTORE_BITS();
 
             switch (type)
             {
@@ -177,14 +182,14 @@ namespace LibMSPackSharp.Compression
                     break;
 
                 case 1:
-                    c = (uint)lzh.READ_BITS_SAFE(4, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+                    c = (uint)lzh.READ_BITS_SAFE(4, state);
                     if (lzh.Error == Error.MSPACK_ERR_NOMEMORY)
                         return Error.MSPACK_ERR_OK;
 
                     lens[0] = (byte)c;
                     for (i = 1; i < numsyms; i++)
                     {
-                        sel = (uint)lzh.READ_BITS_SAFE(1, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+                        sel = (uint)lzh.READ_BITS_SAFE(1, state);
                         if (lzh.Error == Error.MSPACK_ERR_NOMEMORY)
                             return Error.MSPACK_ERR_OK;
 
@@ -194,7 +199,7 @@ namespace LibMSPackSharp.Compression
                         }
                         else
                         {
-                            sel = (uint)lzh.READ_BITS_SAFE(1, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+                            sel = (uint)lzh.READ_BITS_SAFE(1, state);
                             if (lzh.Error == Error.MSPACK_ERR_NOMEMORY)
                                 return Error.MSPACK_ERR_OK;
 
@@ -204,7 +209,7 @@ namespace LibMSPackSharp.Compression
                             }
                             else
                             {
-                                c = (uint)lzh.READ_BITS_SAFE(4, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+                                c = (uint)lzh.READ_BITS_SAFE(4, state);
                                 if (lzh.Error == Error.MSPACK_ERR_NOMEMORY)
                                     return Error.MSPACK_ERR_OK;
 
@@ -216,20 +221,20 @@ namespace LibMSPackSharp.Compression
                     break;
 
                 case 2:
-                    c = (uint)lzh.READ_BITS_SAFE(4, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+                    c = (uint)lzh.READ_BITS_SAFE(4, state);
                     if (lzh.Error == Error.MSPACK_ERR_NOMEMORY)
                         return Error.MSPACK_ERR_OK;
 
                     lens[0] = (byte)c;
                     for (i = 1; i < numsyms; i++)
                     {
-                        sel = (uint)lzh.READ_BITS_SAFE(2, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+                        sel = (uint)lzh.READ_BITS_SAFE(2, state);
                         if (lzh.Error == Error.MSPACK_ERR_NOMEMORY)
                             return Error.MSPACK_ERR_OK;
 
                         if (sel == 3)
                         {
-                            c = (uint)lzh.READ_BITS_SAFE(4, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+                            c = (uint)lzh.READ_BITS_SAFE(4, state);
                             if (lzh.Error == Error.MSPACK_ERR_NOMEMORY)
                                 return Error.MSPACK_ERR_OK;
                         }
@@ -246,7 +251,7 @@ namespace LibMSPackSharp.Compression
                 case 3:
                     for (i = 0; i < numsyms; i++)
                     {
-                        c = (uint)lzh.READ_BITS_SAFE(4, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+                        c = (uint)lzh.READ_BITS_SAFE(4, state);
                         if (lzh.Error == Error.MSPACK_ERR_NOMEMORY)
                             return Error.MSPACK_ERR_OK;
 
@@ -256,7 +261,7 @@ namespace LibMSPackSharp.Compression
                     break;
             }
 
-            lzh.STORE_BITS(i_ptr, i_end, bit_buffer, bits_left);
+            lzh.STORE_BITS(state);
 
             return Error.MSPACK_ERR_OK;
         }

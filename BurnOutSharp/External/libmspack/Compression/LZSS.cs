@@ -12,18 +12,12 @@
  */
 
 using System.IO;
+using static LibMSPackSharp.Compression.Constants;
 
 namespace LibMSPackSharp.Compression
 {
     public class LZSS
     {
-        #region LZSS compression / decompression definitions
-
-        public const int LZSS_WINDOW_SIZE = 4096;
-        public const byte LZSS_WINDOW_FILL = 0x20;
-
-        #endregion
-
         /// <summary>
         /// Decompresses an LZSS stream.
         /// 

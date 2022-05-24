@@ -8,7 +8,7 @@
  */
 
 using System;
-using LibMSPackSharp.Compression;
+using static LibMSPackSharp.Compression.Constants;
 
 namespace LibMSPackSharp.CHM
 {
@@ -94,8 +94,8 @@ namespace LibMSPackSharp.CHM
                     controlData.WindowSize = BitConverter.ToUInt32(buffer, 0x0010);
                     break;
                 case 2:
-                    controlData.ResetInterval = BitConverter.ToUInt32(buffer, 0x000C) * LZX.LZX_FRAME_SIZE;
-                    controlData.WindowSize = BitConverter.ToUInt32(buffer, 0x0010) * LZX.LZX_FRAME_SIZE;
+                    controlData.ResetInterval = BitConverter.ToUInt32(buffer, 0x000C) * LZX_FRAME_SIZE;
+                    controlData.WindowSize = BitConverter.ToUInt32(buffer, 0x0010) * LZX_FRAME_SIZE;
                     break;
                 default:
                     return Error.MSPACK_ERR_DATAFORMAT;

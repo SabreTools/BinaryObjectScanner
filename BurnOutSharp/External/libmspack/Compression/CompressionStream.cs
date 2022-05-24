@@ -17,42 +17,17 @@ namespace LibMSPackSharp.Compression
 {
     public abstract class CompressionStream : BaseDecompressState
     {
-        #region Constants
-
-        /// <summary>
-        /// Number of bits in a character
-        /// </summary>
-        private const int CHAR_BIT = 8;
-
-        /// <summary>
-        /// Bit width of a UInt32 bit buffer
-        /// </summary>
-        public const int BITBUF_WIDTH = 4 * CHAR_BIT;
-
-        /// <summary>
-        /// Maximum bits in a Huffman code
-        /// </summary>
-        public const int HUFF_MAXBITS = 16;
-
-        #endregion
-
         #region I/O buffering
 
         public byte[] InputBuffer { get; set; }
 
         public uint InputBufferSize { get; set; }
 
-        public int InputPointer { get; set; }
-
-        public int InputEnd { get; set; }
-
         public int OutputPointer { get; set; }
 
         public int OutputEnd { get; set; }
 
-        public uint BitBuffer { get; set; }
-
-        public int BitsLeft { get; set; }
+        internal BufferState BufferState { get; set; }
 
         /// <summary>
         /// Have we reached the end of input?
@@ -137,43 +112,44 @@ namespace LibMSPackSharp.Compression
         /// </summary>
         public void INIT_BITS()
         {
-            InputPointer = 0;
-            InputEnd = 0;
-            BitBuffer = 0;
-            BitsLeft = 0;
+            BufferState = new BufferState();
+            BufferState.Init();
             EndOfInput = 0;
         }
 
         /// <summary>
         /// Stores bitstream state in state structure
         /// </summary>
-        public void STORE_BITS(int i_ptr, int i_end, uint bit_buffer, int bits_left)
+        public void STORE_BITS(BufferState state)
         {
-            InputPointer = i_ptr;
-            InputEnd = i_end;
-            BitBuffer = bit_buffer;
-            BitsLeft = bits_left;
+            BufferState.InputPointer = state.InputPointer;
+            BufferState.InputEnd = state.InputEnd;
+            BufferState.BitBuffer = state.BitBuffer;
+            BufferState.BitsLeft = state.BitsLeft;
         }
 
         /// <summary>
         /// Restores bitstream state from state structure
         /// </summary>
-        public void RESTORE_BITS(out int i_ptr, out int i_end, out uint bit_buffer, out int bits_left)
+        public BufferState RESTORE_BITS()
         {
-            i_ptr = InputPointer;
-            i_end = InputEnd;
-            bit_buffer = BitBuffer;
-            bits_left = BitsLeft;
+            return new BufferState()
+            {
+                InputPointer = BufferState.InputPointer,
+                InputEnd = BufferState.InputEnd,
+                BitBuffer = BufferState.BitBuffer,
+                BitsLeft = BufferState.BitsLeft,
+            };
         }
 
         /// <summary>
         /// Ensure there are at least N bits in the bit buffer
         /// </summary>
-        public void ENSURE_BITS(int nbits, ref int i_ptr, ref int i_end, ref uint bit_buffer, ref int bits_left)
+        public void ENSURE_BITS(int nbits, BufferState state)
         {
-            while (bits_left < nbits)
+            while (state.BitsLeft < nbits)
             {
-                READ_BYTES(ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+                READ_BYTES(state);
                 if (Error != Error.MSPACK_ERR_OK)
                     return;
             }
@@ -182,23 +158,23 @@ namespace LibMSPackSharp.Compression
         /// <summary>
         /// Read from the input if the buffer is empty
         /// </summary>
-        public void READ_IF_NEEDED(ref int i_ptr, ref int i_end)
+        public void READ_IF_NEEDED(BufferState state)
         {
-            if (i_ptr >= i_end)
+            if (state.InputPointer >= state.InputEnd)
             {
                 ReadInput();
                 if (Error != Error.MSPACK_ERR_OK)
                     return;
 
-                i_ptr = InputPointer;
-                i_end = InputEnd;
+                state.InputPointer = BufferState.InputPointer;
+                state.InputEnd = BufferState.InputEnd;
             }
         }
 
         /// <summary>
         /// Read bytes from the input into the bit buffer
         /// </summary>
-        public abstract void READ_BYTES(ref int i_ptr, ref int i_end, ref uint bit_buffer, ref int bits_left);
+        public abstract void READ_BYTES(BufferState state);
 
         /// <summary>
         /// Read an input stream and fill the buffer
@@ -231,8 +207,8 @@ namespace LibMSPackSharp.Compression
             }
 
             // Update i_ptr and i_end
-            InputPointer = 0;
-            InputEnd = read;
+            BufferState.InputPointer = 0;
+            BufferState.InputEnd = read;
         }
 
         #endregion
@@ -242,10 +218,10 @@ namespace LibMSPackSharp.Compression
         /// <summary>
         /// Inject data into the bit buffer
         /// </summary>
-        public void INJECT_BITS_MSB(int bitdata, int nbits, ref uint bit_buffer, ref int bits_left)
+        public void INJECT_BITS_MSB(int bitdata, int nbits, BufferState state)
         {
-            bit_buffer |= (uint)(bitdata << (BITBUF_WIDTH - nbits - bits_left));
-            bits_left += nbits;
+            state.BitBuffer |= (uint)(bitdata << (BITBUF_WIDTH - nbits - state.BitsLeft));
+            state.BitsLeft += nbits;
         }
 
         /// <summary>
@@ -256,50 +232,41 @@ namespace LibMSPackSharp.Compression
         /// <summary>
         /// Takes N bits from the buffer and puts them in var
         /// </summary>
-        public long READ_BITS_MSB(int nbits, ref int i_ptr, ref int i_end, ref uint bit_buffer, ref int bits_left)
+        public long READ_BITS_MSB(int nbits, BufferState state)
         {
-            ENSURE_BITS(nbits, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+            ENSURE_BITS(nbits, state);
             if (Error != Error.MSPACK_ERR_OK)
                 return -1;
 
-            long temp = PEEK_BITS_MSB(nbits, bit_buffer);
+            long temp = PEEK_BITS_MSB(nbits, state.BitBuffer);
 
-            REMOVE_BITS_MSB(nbits, ref bit_buffer, ref bits_left);
+            state.REMOVE_BITS_MSB(nbits);
             return temp;
         }
 
         /// <summary>
         /// Read multiple bits and put them in var
         /// </summary>
-        public long READ_MANY_BITS_MSB(int nbits, ref int i_ptr, ref int i_end, ref uint bit_buffer, ref int bits_left)
+        public long READ_MANY_BITS_MSB(int nbits, BufferState state)
         {
             byte needed = (byte)(nbits), bitrun;
             long temp = 0;
             while (needed > 0)
             {
-                if (bits_left <= (BITBUF_WIDTH - 16))
+                if (state.BitsLeft <= (BITBUF_WIDTH - 16))
                 {
-                    READ_BYTES(ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+                    READ_BYTES(state);
                     if (Error != Error.MSPACK_ERR_OK)
                         return -1;
                 }
 
-                bitrun = (byte)((bits_left < needed) ? bits_left : needed);
-                temp = (temp << bitrun) | PEEK_BITS_MSB(bitrun, bit_buffer);
-                REMOVE_BITS_MSB(bitrun, ref bit_buffer, ref bits_left);
+                bitrun = (byte)((state.BitsLeft < needed) ? state.BitsLeft : needed);
+                temp = (temp << bitrun) | PEEK_BITS_MSB(bitrun, state.BitBuffer);
+                state.REMOVE_BITS_MSB(bitrun);
                 needed -= bitrun;
             }
 
             return temp;
-        }
-
-        /// <summary>
-        /// Removes N bits from the bit buffer
-        /// </summary>
-        public void REMOVE_BITS_MSB(int nbits, ref uint bit_buffer, ref int bits_left)
-        {
-            bit_buffer <<= nbits;
-            bits_left -= nbits;
         }
 
         #endregion
@@ -309,10 +276,10 @@ namespace LibMSPackSharp.Compression
         /// <summary>
         /// Inject data into the bit buffer
         /// </summary>
-        public void INJECT_BITS_LSB(int bitdata, int nbits, ref uint bit_buffer, ref int bits_left)
+        public void INJECT_BITS_LSB(int bitdata, int nbits, BufferState state)
         {
-            bit_buffer |= (uint)(bitdata << bits_left);
-            bits_left += nbits;
+            state.BitBuffer |= (uint)(bitdata << state.BitsLeft);
+            state.BitsLeft += nbits;
         }
 
         /// <summary>
@@ -323,45 +290,36 @@ namespace LibMSPackSharp.Compression
         /// <summary>
         /// Extracts without removing N bits from the bit buffer using a bit mask
         /// </summary>
-        public long PEEK_BITS_T_LSB(int nbits, uint bit_buffer) => bit_buffer & lsb_bit_mask[(nbits)];
+        public long PEEK_BITS_T_LSB(int nbits, uint bit_buffer) => bit_buffer & LSBBitMask[(nbits)];
 
         /// <summary>
         /// Takes N bits from the buffer and puts them in var
         /// </summary>
-        public long READ_BITS_LSB(int nbits, ref int i_ptr, ref int i_end, ref uint bit_buffer, ref int bits_left)
+        public long READ_BITS_LSB(int nbits, BufferState state)
         {
-            ENSURE_BITS(nbits, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+            ENSURE_BITS(nbits, state);
             if (Error != Error.MSPACK_ERR_OK)
                 return -1;
 
-            long temp = PEEK_BITS_LSB(nbits, bit_buffer);
+            long temp = PEEK_BITS_LSB(nbits, state.BitBuffer);
 
-            REMOVE_BITS_LSB(nbits, ref bit_buffer, ref bits_left);
+            state.REMOVE_BITS_LSB(nbits);
             return temp;
         }
 
         /// <summary>
         /// Takes N bits from the buffer and puts them in var using a bit mask
         /// </summary>
-        public long READ_BITS_T_LSB(int nbits, ref int i_ptr, ref int i_end, ref uint bit_buffer, ref int bits_left)
+        public long READ_BITS_T_LSB(int nbits, BufferState state)
         {
-            ENSURE_BITS(nbits, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+            ENSURE_BITS(nbits, state);
             if (Error != Error.MSPACK_ERR_OK)
                 return -1;
 
-            long temp = PEEK_BITS_T_LSB(nbits, bit_buffer);
+            long temp = PEEK_BITS_T_LSB(nbits, state.BitBuffer);
 
-            REMOVE_BITS_LSB(nbits, ref bit_buffer, ref bits_left);
+            state.REMOVE_BITS_LSB(nbits);
             return temp;
-        }
-
-        /// <summary>
-        /// Removes N bits from the bit buffer
-        /// </summary>
-        public void REMOVE_BITS_LSB(int nbits, ref uint bit_buffer, ref int bits_left)
-        {
-            bit_buffer >>= nbits;
-            bits_left -= nbits;
         }
 
         #endregion
@@ -385,14 +343,14 @@ namespace LibMSPackSharp.Compression
         /// Decodes the next huffman symbol from the input bitstream into var.
         /// Do not use this macro on a table unless build_decode_table() succeeded.
         /// </summary>
-        public long READ_HUFFSYM_MSB(ushort[] table, byte[] lengths, int tablebits, int maxsymbols, ref int i_ptr, ref int i_end, ref uint bit_buffer, ref int bits_left)
+        public long READ_HUFFSYM_MSB(ushort[] table, byte[] lengths, int tablebits, int maxsymbols, BufferState state)
         {
-            ENSURE_BITS(HUFF_MAXBITS, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
-            ushort sym = table[PEEK_BITS_MSB(tablebits, bit_buffer)];
+            ENSURE_BITS(HUFF_MAXBITS, state);
+            ushort sym = table[PEEK_BITS_MSB(tablebits, state.BitBuffer)];
             if (sym >= maxsymbols)
-                HUFF_TRAVERSE_MSB(ref sym, table, tablebits, maxsymbols, bit_buffer);
+                HUFF_TRAVERSE_MSB(ref sym, table, tablebits, maxsymbols, state.BitBuffer);
 
-            REMOVE_BITS_MSB(lengths[sym], ref bit_buffer, ref bits_left);
+            state.REMOVE_BITS_MSB(lengths[sym]);
             return sym;
         }
 
@@ -523,14 +481,14 @@ namespace LibMSPackSharp.Compression
         /// Decodes the next huffman symbol from the input bitstream into var.
         /// Do not use this macro on a table unless build_decode_table() succeeded.
         /// </summary>
-        public long READ_HUFFSYM_LSB(ushort[] table, byte[] lengths, int tablebits, int maxsymbols, ref int i_ptr, ref int i_end, ref uint bit_buffer, ref int bits_left)
+        public long READ_HUFFSYM_LSB(ushort[] table, byte[] lengths, int tablebits, int maxsymbols, BufferState state)
         {
-            ENSURE_BITS(HUFF_MAXBITS, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
-            ushort sym = table[PEEK_BITS_LSB(tablebits, bit_buffer)];
+            ENSURE_BITS(HUFF_MAXBITS, state);
+            ushort sym = table[PEEK_BITS_LSB(tablebits, state.BitBuffer)];
             if (sym >= maxsymbols)
-                HUFF_TRAVERSE_LSB(ref sym, table, tablebits, maxsymbols, bit_buffer);
+                HUFF_TRAVERSE_LSB(ref sym, table, tablebits, maxsymbols, state.BitBuffer);
 
-            REMOVE_BITS_LSB(lengths[sym], ref bit_buffer, ref bits_left);
+            state.REMOVE_BITS_LSB(lengths[sym]);
             return sym;
         }
 

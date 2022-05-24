@@ -22,67 +22,12 @@
 
 using System;
 using System.IO;
+using static LibMSPackSharp.Compression.Constants;
 
 namespace LibMSPackSharp.Compression
 {
     public class QTM
     {
-        public const int QTM_FRAME_SIZE = 32768;
-
-        /* Quantum static data tables:
-         *
-         * Quantum uses 'position slots' to represent match offsets.  For every
-         * match, a small 'position slot' number and a small offset from that slot
-         * are encoded instead of one large offset.
-         *
-         * position_base[] is an index to the position slot bases
-         *
-         * extra_bits[] states how many bits of offset-from-base data is needed.
-         *
-         * length_base[] and length_extra[] are equivalent in function, but are
-         * used for encoding selector 6 (variable length match) match lengths,
-         * instead of match offsets.
-         *
-         * They are generated with the following code:
-         *   uint i, offset;
-         *   for (i = 0, offset = 0; i < 42; i++) {
-         *     position_base[i] = offset;
-         *     extra_bits[i] = ((i < 2) ? 0 : (i - 2)) >> 1;
-         *     offset += 1 << extra_bits[i];
-         *   }
-         *   for (i = 0, offset = 0; i < 26; i++) {
-         *     length_base[i] = offset;
-         *     length_extra[i] = (i < 2 ? 0 : i - 2) >> 2;
-         *     offset += 1 << length_extra[i];
-         *   }
-         *   length_base[26] = 254; length_extra[26] = 0;
-         */
-
-        private static readonly uint[] position_base = new uint[42]
-            {
-          0, 1, 2, 3, 4, 6, 8, 12, 16, 24, 32, 48, 64, 96, 128, 192, 256, 384, 512, 768,
-          1024, 1536, 2048, 3072, 4096, 6144, 8192, 12288, 16384, 24576, 32768, 49152,
-          65536, 98304, 131072, 196608, 262144, 393216, 524288, 786432, 1048576, 1572864
-        };
-
-        private static readonly byte[] extra_bits = new byte[42]
-        {
-          0, 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10,
-          11, 11, 12, 12, 13, 13, 14, 14, 15, 15, 16, 16, 17, 17, 18, 18, 19, 19
-        };
-
-        private static readonly byte[] length_base = new byte[27]
-            {
-          0, 1, 2, 3, 4, 5, 6, 8, 10, 12, 14, 18, 22, 26,
-          30, 38, 46, 54, 62, 78, 94, 110, 126, 158, 190, 222, 254
-        };
-
-        private static readonly byte[] length_extra = new byte[27]
-            {
-          0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2,
-          3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 0
-        };
-
         /// <summary>
         /// allocates Quantum decompression state for decoding the given stream.
         /// 
@@ -126,13 +71,17 @@ namespace LibMSPackSharp.Compression
                 HeaderRead = 0,
                 Error = Error.MSPACK_ERR_OK,
 
-                InputPointer = 0,
-                InputEnd = 0,
                 OutputPointer = 0,
                 OutputEnd = 0,
                 EndOfInput = 0,
-                BitsLeft = 0,
-                BitBuffer = 0,
+
+                BufferState = new BufferState()
+                {
+                    InputPointer = 0,
+                    InputEnd = 0,
+                    BitBuffer = 0,
+                    BitsLeft = 0,
+                }
             };
 
             // Initialise arithmetic coding models
@@ -214,7 +163,7 @@ namespace LibMSPackSharp.Compression
                 return Error.MSPACK_ERR_OK;
 
             // Restore local state
-            qtm.RESTORE_BITS(out i_ptr, out i_end, out bit_buffer, out bits_left);
+            BufferState state = qtm.RESTORE_BITS();
             window = qtm.Window;
             window_posn = qtm.WindowPosition;
             frame_todo = qtm.FrameTODO;
@@ -230,7 +179,7 @@ namespace LibMSPackSharp.Compression
                 {
                     H = 0xFFFF;
                     L = 0;
-                    C = (ushort)qtm.READ_BITS_MSB(16, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+                    C = (ushort)qtm.READ_BITS_MSB(16, state);
                     qtm.HeaderRead = 1;
                 }
 
@@ -244,7 +193,7 @@ namespace LibMSPackSharp.Compression
 
                 while (window_posn < frame_end)
                 {
-                    selector = GET_SYMBOL(qtm, qtm.Model7, ref H, ref L, ref C, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+                    selector = GET_SYMBOL(qtm, qtm.Model7, ref H, ref L, ref C, state);
                     if (selector < 4)
                     {
                         // Literal byte
@@ -269,7 +218,7 @@ namespace LibMSPackSharp.Compression
                                 break;
                         }
 
-                        sym = GET_SYMBOL(qtm, mdl, ref H, ref L, ref C, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+                        sym = GET_SYMBOL(qtm, mdl, ref H, ref L, ref C, state);
                         window[window_posn++] = (byte)sym;
                         frame_todo--;
                     }
@@ -280,29 +229,29 @@ namespace LibMSPackSharp.Compression
                         {
                             // Selector 4 = fixed length match (3 bytes)
                             case 4:
-                                sym = GET_SYMBOL(qtm, qtm.Model4, ref H, ref L, ref C, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
-                                extra = (int)qtm.READ_MANY_BITS_MSB(extra_bits[sym], ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
-                                match_offset = (uint)(position_base[sym] + extra + 1);
+                                sym = GET_SYMBOL(qtm, qtm.Model4, ref H, ref L, ref C, state);
+                                extra = (int)qtm.READ_MANY_BITS_MSB(QTMExtraBits[sym], state);
+                                match_offset = (uint)(QTMPositionBase[sym] + extra + 1);
                                 match_length = 3;
                                 break;
 
                             // Selector 5 = fixed length match (4 bytes)
                             case 5:
-                                sym = GET_SYMBOL(qtm, qtm.Model5, ref H, ref L, ref C, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
-                                extra = (int)qtm.READ_MANY_BITS_MSB(extra_bits[sym], ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
-                                match_offset = (uint)(position_base[sym] + extra + 1);
+                                sym = GET_SYMBOL(qtm, qtm.Model5, ref H, ref L, ref C, state);
+                                extra = (int)qtm.READ_MANY_BITS_MSB(QTMExtraBits[sym], state);
+                                match_offset = (uint)(QTMPositionBase[sym] + extra + 1);
                                 match_length = 4;
                                 break;
 
                             // Selector 6 = variable length match
                             case 6:
-                                sym = GET_SYMBOL(qtm, qtm.Model6Len, ref H, ref L, ref C, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
-                                extra = (int)qtm.READ_MANY_BITS_MSB(length_extra[sym], ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
-                                match_length = length_base[sym] + extra + 5;
+                                sym = GET_SYMBOL(qtm, qtm.Model6Len, ref H, ref L, ref C, state);
+                                extra = (int)qtm.READ_MANY_BITS_MSB(QTMLengthExtra[sym], state);
+                                match_length = QTMLengthBase[sym] + extra + 5;
 
-                                sym = GET_SYMBOL(qtm, qtm.Model6, ref H, ref L, ref C, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
-                                extra = (int)qtm.READ_MANY_BITS_MSB(extra_bits[sym], ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
-                                match_offset = (uint)(position_base[sym] + extra + 1);
+                                sym = GET_SYMBOL(qtm, qtm.Model6, ref H, ref L, ref C, state);
+                                extra = (int)qtm.READ_MANY_BITS_MSB(QTMExtraBits[sym], state);
+                                match_offset = (uint)(QTMPositionBase[sym] + extra + 1);
                                 break;
 
                             default:
@@ -422,15 +371,15 @@ namespace LibMSPackSharp.Compression
                 if (frame_todo == 0)
                 {
                     // Re-align input
-                    if ((bits_left & 7) != 0)
-                        qtm.REMOVE_BITS_MSB(bits_left & 7, ref bit_buffer, ref bits_left);
+                    if ((state.BitsLeft & 7) != 0)
+                        state.REMOVE_BITS_MSB(state.BitsLeft & 7);
 
                     // Special Quantum hack -- cabd.c injects a trailer byte to allow the
                     // decompressor to realign itself. CAB Quantum blocks, unlike LZX
                     // blocks, can have anything from 0 to 4 trailing null bytes.
                     do
                     {
-                        i = (int)qtm.READ_BITS_MSB(8, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+                        i = (int)qtm.READ_BITS_MSB(8, state);
                     } while (i != 0xFF);
 
                     qtm.HeaderRead = 0;
@@ -470,7 +419,7 @@ namespace LibMSPackSharp.Compression
             }
 
             // Store local state
-            qtm.STORE_BITS(i_ptr, i_end, bit_buffer, bits_left);
+            qtm.STORE_BITS(state);
             qtm.WindowPosition = window_posn;
             qtm.FrameTODO = frame_todo;
             qtm.High = H;
@@ -480,7 +429,7 @@ namespace LibMSPackSharp.Compression
             return Error.MSPACK_ERR_OK;
         }
 
-        private static ushort GET_SYMBOL(QTMDStream qtm, QTMDModel model, ref ushort H, ref ushort L, ref ushort C, ref int i_ptr, ref int i_end, ref uint bit_buffer, ref int bits_left)
+        private static ushort GET_SYMBOL(QTMDStream qtm, QTMDModel model, ref ushort H, ref ushort L, ref ushort C, BufferState state)
         {
             uint range = (uint)((H - L) & 0xFFFF) + 1;
             ushort symf = (ushort)(((((C - L + 1) * model.Syms[0].CumulativeFrequency) - 1) / range) & 0xFFFF);
@@ -527,9 +476,9 @@ namespace LibMSPackSharp.Compression
                 L <<= 1;
                 H = (ushort)((H << 1) | 1);
 
-                qtm.ENSURE_BITS(1, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
-                C = (ushort)((C << 1) | (qtm.PEEK_BITS_MSB(1, bit_buffer)));
-                qtm.REMOVE_BITS_MSB(1, ref bit_buffer, ref bits_left);
+                qtm.ENSURE_BITS(1, state);
+                C = (ushort)((C << 1) | (qtm.PEEK_BITS_MSB(1, state.BitBuffer)));
+                state.REMOVE_BITS_MSB(1);
             }
 
             return temp;

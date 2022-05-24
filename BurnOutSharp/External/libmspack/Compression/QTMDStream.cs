@@ -130,20 +130,20 @@ namespace LibMSPackSharp.Compression
         public override Error HUFF_ERROR() => throw new NotImplementedException();
 
         /// <inheritdoc/>
-        public override void READ_BYTES(ref int i_ptr, ref int i_end, ref uint bit_buffer, ref int bits_left)
+        public override void READ_BYTES(BufferState state)
         {
-            READ_IF_NEEDED(ref i_ptr, ref i_end);
+            READ_IF_NEEDED(state);
             if (Error != Error.MSPACK_ERR_OK)
                 return;
 
-            byte b0 = InputBuffer[i_ptr++];
+            byte b0 = InputBuffer[state.InputPointer++];
 
-            READ_IF_NEEDED(ref i_ptr, ref i_end);
+            READ_IF_NEEDED(state);
             if (Error != Error.MSPACK_ERR_OK)
                 return;
 
-            byte b1 = InputBuffer[i_ptr++];
-            INJECT_BITS_MSB((b0 << 8) | b1, 16, ref bit_buffer, ref bits_left);
+            byte b1 = InputBuffer[state.InputPointer++];
+            INJECT_BITS_MSB((b0 << 8) | b1, 16, state);
         }
     }
 }

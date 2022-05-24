@@ -12,75 +12,12 @@
 
 using System;
 using System.IO;
+using static LibMSPackSharp.Compression.Constants;
 
 namespace LibMSPackSharp.Compression
 {
     public class MSZIP
     {
-        #region MSZIP (deflate) compression / (inflate) decompression definitions
-
-        public const int MSZIP_FRAME_SIZE = 32768; // Size of LZ history window
-        public const int MSZIP_LITERAL_MAXSYMBOLS = 288; // literal/length huffman tree
-        public const int MSZIP_LITERAL_TABLEBITS = 9;
-        public const int MSZIP_DISTANCE_MAXSYMBOLS = 32; // Distance huffman tree
-        public const int MSZIP_DISTANCE_TABLEBITS = 6;
-
-        // If there are less direct lookup entries than symbols, the longer
-        // code pointers will be <= maxsymbols. This must not happen, or we
-        // will decode entries badly
-
-        //public const int MSZIP_LITERAL_TABLESIZE = (MSZIP_LITERAL_MAXSYMBOLS * 4);
-        public const int MSZIP_LITERAL_TABLESIZE = ((1 << MSZIP_LITERAL_TABLEBITS) + (MSZIP_LITERAL_MAXSYMBOLS * 2));
-
-        //public const int MSZIP_DISTANCE_TABLESIZE = (MSZIP_DISTANCE_MAXSYMBOLS * 4);
-        public const int MSZIP_DISTANCE_TABLESIZE = ((1 << MSZIP_DISTANCE_TABLEBITS) + (MSZIP_DISTANCE_MAXSYMBOLS * 2));
-
-        /// <summary>
-        /// Match lengths for literal codes 257.. 285
-        /// </summary>
-        private static readonly ushort[] lit_lengths = new ushort[29]
-        {
-          3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 19, 23, 27,
-          31, 35, 43, 51, 59, 67, 83, 99, 115, 131, 163, 195, 227, 258
-        };
-
-        /// <summary>
-        /// Match offsets for distance codes 0 .. 29
-        /// </summary>
-        private static readonly ushort[] dist_offsets = new ushort[30]
-        {
-          1, 2, 3, 4, 5, 7, 9, 13, 17, 25, 33, 49, 65, 97, 129, 193, 257, 385,
-          513, 769, 1025, 1537, 2049, 3073, 4097, 6145, 8193, 12289, 16385, 24577
-        };
-
-        /// <summary>
-        /// Extra bits required for literal codes 257.. 285
-        /// </summary>
-        private static readonly byte[] lit_extrabits = new byte[29]
-        {
-          0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2,
-          2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 0
-        };
-
-        /// <summary>
-        /// Extra bits required for distance codes 0 .. 29
-        /// </summary>
-        private static readonly byte[] dist_extrabits = new byte[30]
-        {
-          0, 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6,
-          6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13
-        };
-
-        /// <summary>
-        /// The order of the bit length Huffman code lengths
-        /// </summary>
-        private static readonly byte[] bitlen_order = new byte[19]
-        {
-          16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15
-        };
-
-        #endregion
-
         /// <summary>
         /// Allocates MS-ZIP decompression stream for decoding the given stream.
         /// 
@@ -120,12 +57,16 @@ namespace LibMSPackSharp.Compression
                 RepairMode = repair_mode,
                 FlushWindow = FlushWindow,
 
-                InputPointer = 0,
-                InputEnd = 0,
                 OutputPointer = 0,
                 OutputEnd = 0,
-                BitBuffer = 0,
-                BitsLeft = 0,
+
+                BufferState = new BufferState()
+                {
+                    InputPointer = 0,
+                    InputEnd = 0,
+                    BitBuffer = 0,
+                    BitsLeft = 0,
+                }
             };
         }
 
@@ -159,7 +100,7 @@ namespace LibMSPackSharp.Compression
             int bits_left;
             int i_ptr, i_end;
 
-            int i, state;
+            int i, readState;
             Error error;
 
             // Easy answers
@@ -188,32 +129,32 @@ namespace LibMSPackSharp.Compression
             while (out_bytes > 0)
             {
                 // Unpack another block
-                zip.RESTORE_BITS(out i_ptr, out i_end, out bit_buffer, out bits_left);
+                BufferState state = zip.RESTORE_BITS();
 
                 // Skip to next read 'CK' header
-                i = bits_left & 7;
+                i = state.BitsLeft & 7;
 
                 // Align to bytestream
-                zip.REMOVE_BITS_LSB(i, ref bit_buffer, ref bits_left);
+                state.REMOVE_BITS_LSB(i);
 
-                state = 0;
+                readState = 0;
                 do
                 {
-                    i = (int)zip.READ_BITS_LSB(8, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+                    i = (int)zip.READ_BITS_LSB(8, state);
 
                     if (i == 'C')
-                        state = 1;
-                    else if ((state == 1) && (i == 'K'))
-                        state = 2;
+                        readState = 1;
+                    else if ((readState == 1) && (i == 'K'))
+                        readState = 2;
                     else
-                        state = 0;
-                } while (state != 2);
+                        readState = 0;
+                } while (readState != 2);
 
                 // Inflate a block, repair and realign if necessary
                 zip.WindowPosition = 0;
                 zip.BytesOutput = 0;
 
-                zip.STORE_BITS(i_ptr, i_end, bit_buffer, bits_left);
+                zip.STORE_BITS(state);
 
                 if ((error = Inflate(zip)) != Error.MSPACK_ERR_OK)
                 {
@@ -269,36 +210,31 @@ namespace LibMSPackSharp.Compression
         /// </summary>
         public static Error DecompressKWAJ(MSZIPDStream zip)
         {
-            // For the bit buffer
-            uint bit_buffer;
-            int bits_left;
-            int i_ptr, i_end;
-
             int i, block_len;
             Error error;
 
             // Unpack blocks until block_len == 0
             for (; ; )
             {
-                zip.RESTORE_BITS(out i_ptr, out i_end, out bit_buffer, out bits_left);
+                BufferState state = zip.RESTORE_BITS();
 
                 // Align to bytestream, read block_len
-                i = bits_left & 7;
-                zip.REMOVE_BITS_LSB(i, ref bit_buffer, ref bits_left);
+                i = state.BitsLeft & 7;
+                state.REMOVE_BITS_LSB(i);
 
-                block_len = (int)zip.READ_BITS_LSB(8, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
-                i = (int)zip.READ_BITS_LSB(8, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+                block_len = (int)zip.READ_BITS_LSB(8, state);
+                i = (int)zip.READ_BITS_LSB(8, state);
 
                 block_len |= i << 8;
                 if (block_len == 0)
                     break;
 
                 // Read "CK" header
-                i = (int)zip.READ_BITS_LSB(8, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+                i = (int)zip.READ_BITS_LSB(8, state);
                 if (i != 'C')
                     return Error.MSPACK_ERR_DATAFORMAT;
 
-                i = (int)zip.READ_BITS_LSB(8, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+                i = (int)zip.READ_BITS_LSB(8, state);
                 if (i != 'K')
                     return Error.MSPACK_ERR_DATAFORMAT;
 
@@ -306,7 +242,7 @@ namespace LibMSPackSharp.Compression
                 zip.WindowPosition = 0;
                 zip.BytesOutput = 0;
 
-                zip.STORE_BITS(i_ptr, i_end, bit_buffer, bits_left);
+                zip.STORE_BITS(state);
 
                 if ((error = Inflate(zip)) != Error.MSPACK_ERR_OK)
                 {
@@ -331,16 +267,16 @@ namespace LibMSPackSharp.Compression
             byte[] lens = new byte[MSZIP_LITERAL_MAXSYMBOLS + MSZIP_DISTANCE_MAXSYMBOLS];
             uint lit_codes, dist_codes, code, last_code = 0, bitlen_codes, i, run;
 
-            zip.RESTORE_BITS(out int i_ptr, out int i_end, out uint bit_buffer, out int bits_left);
+            BufferState state = zip.RESTORE_BITS();
 
             // Read the number of codes
-            lit_codes = (uint)zip.READ_BITS_LSB(5, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+            lit_codes = (uint)zip.READ_BITS_LSB(5, state);
             lit_codes += 257;
 
-            dist_codes = (uint)zip.READ_BITS_LSB(5, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+            dist_codes = (uint)zip.READ_BITS_LSB(5, state);
             dist_codes += 1;
 
-            bitlen_codes = (uint)zip.READ_BITS_LSB(5, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+            bitlen_codes = (uint)zip.READ_BITS_LSB(5, state);
             bitlen_codes += 4;
 
             if (lit_codes > MSZIP_LITERAL_MAXSYMBOLS)
@@ -351,12 +287,12 @@ namespace LibMSPackSharp.Compression
             // Read in the bit lengths in their unusual order
             for (i = 0; i < bitlen_codes; i++)
             {
-                bl_len[bitlen_order[i]] = (byte)zip.READ_BITS_LSB(3, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+                bl_len[BitLengthOrder[i]] = (byte)zip.READ_BITS_LSB(3, state);
             }
 
             while (i < 19)
             {
-                bl_len[bitlen_order[i++]] = 0;
+                bl_len[BitLengthOrder[i++]] = 0;
             }
 
             // Create decoding table with an immediate lookup
@@ -368,9 +304,9 @@ namespace LibMSPackSharp.Compression
             {
                 // Single-level huffman lookup
 
-                zip.ENSURE_BITS(7, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
-                code = bl_table[zip.PEEK_BITS_LSB(7, bit_buffer)];
-                zip.REMOVE_BITS_LSB(bl_len[code], ref bit_buffer, ref bits_left);
+                zip.ENSURE_BITS(7, state);
+                code = bl_table[zip.PEEK_BITS_LSB(7, state.BitBuffer)];
+                state.REMOVE_BITS_LSB(bl_len[code]);
 
                 if (code < 16)
                 {
@@ -381,19 +317,19 @@ namespace LibMSPackSharp.Compression
                     switch (code)
                     {
                         case 16:
-                            run = (uint)zip.READ_BITS_LSB(2, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+                            run = (uint)zip.READ_BITS_LSB(2, state);
                             run += 3;
                             code = last_code;
                             break;
 
                         case 17:
-                            run = (uint)zip.READ_BITS_LSB(3, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+                            run = (uint)zip.READ_BITS_LSB(3, state);
                             run += 3;
                             code = 0;
                             break;
 
                         case 18:
-                            run = (uint)zip.READ_BITS_LSB(7, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+                            run = (uint)zip.READ_BITS_LSB(7, state);
                             run += 11;
                             code = 0;
                             break;
@@ -430,7 +366,7 @@ namespace LibMSPackSharp.Compression
                 zip.DISTANCE_len[i++] = 0;
             }
 
-            zip.STORE_BITS(i_ptr, i_end, bit_buffer, bits_left);
+            zip.STORE_BITS(state);
 
             return 0;
         }
@@ -444,15 +380,15 @@ namespace LibMSPackSharp.Compression
             Error err;
             ushort sym;
 
-            zip.RESTORE_BITS(out int i_ptr, out int i_end, out uint bit_buffer, out int bits_left);
+            BufferState state = zip.RESTORE_BITS();
 
             do
             {
                 // Read in last block bit
-                last_block = (uint)zip.READ_BITS_LSB(1, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+                last_block = (uint)zip.READ_BITS_LSB(1, state);
 
                 // Read in block type
-                block_type = (uint)zip.READ_BITS_LSB(2, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+                block_type = (uint)zip.READ_BITS_LSB(2, state);
 
                 if (block_type == 0)
                 {
@@ -460,29 +396,29 @@ namespace LibMSPackSharp.Compression
                     byte[] lens_buf = new byte[4];
 
                     // Go to byte boundary
-                    i = (uint)(bits_left & 7);
-                    zip.REMOVE_BITS_LSB((int)i, ref bit_buffer, ref bits_left);
+                    i = (uint)(state.BitsLeft & 7);
+                    state.REMOVE_BITS_LSB((int)i);
 
                     // Read 4 bytes of data, emptying the bit-buffer if necessary
-                    for (i = 0; (bits_left >= 8); i++)
+                    for (i = 0; (state.BitsLeft >= 8); i++)
                     {
                         if (i == 4)
                             return Error.INF_ERR_BITBUF;
 
-                        lens_buf[i] = (byte)zip.PEEK_BITS_LSB(8, bit_buffer);
-                        zip.REMOVE_BITS_LSB(8, ref bit_buffer, ref bits_left);
+                        lens_buf[i] = (byte)zip.PEEK_BITS_LSB(8, state.BitBuffer);
+                        state.REMOVE_BITS_LSB(8);
                     }
 
-                    if (bits_left != 0)
+                    if (state.BitsLeft != 0)
                         return Error.INF_ERR_BITBUF;
 
                     while (i < 4)
                     {
-                        zip.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                        zip.READ_IF_NEEDED(state);
                         if (zip.Error != Error.MSPACK_ERR_OK)
                             return zip.Error;
 
-                        lens_buf[i++] = zip.InputBuffer[i_ptr++];
+                        lens_buf[i++] = zip.InputBuffer[state.InputPointer++];
                     }
 
                     // Get the length and its complement
@@ -496,21 +432,21 @@ namespace LibMSPackSharp.Compression
                     // Read and copy the uncompressed data into the window
                     while (length > 0)
                     {
-                        zip.READ_IF_NEEDED(ref i_ptr, ref i_end);
+                        zip.READ_IF_NEEDED(state);
                         if (zip.Error != Error.MSPACK_ERR_OK)
                             return zip.Error;
 
                         this_run = length;
-                        if (this_run > (uint)(i_end - i_ptr))
-                            this_run = (uint)(i_end - i_ptr);
+                        if (this_run > (uint)(state.InputEnd - state.InputPointer))
+                            this_run = (uint)(state.InputEnd - state.InputPointer);
 
                         if (this_run > (MSZIP_FRAME_SIZE - zip.WindowPosition))
                             this_run = MSZIP_FRAME_SIZE - zip.WindowPosition;
 
-                        Array.Copy(zip.InputBuffer, i_ptr, zip.Window, zip.WindowPosition, this_run);
+                        Array.Copy(zip.InputBuffer, state.InputPointer, zip.Window, zip.WindowPosition, this_run);
 
                         zip.WindowPosition += this_run;
-                        i_ptr += (int)this_run;
+                        state.InputPointer += (int)this_run;
                         length -= this_run;
 
                         err = FLUSH_IF_NEEDED(zip);
@@ -555,12 +491,12 @@ namespace LibMSPackSharp.Compression
                     else
                     {
                         // Block with dynamic Huffman codes
-                        zip.STORE_BITS(i_ptr, i_end, bit_buffer, bits_left);
+                        zip.STORE_BITS(state);
 
                         if ((err = ReadLens(zip)) != Error.MSPACK_ERR_OK)
                             return err;
 
-                        zip.RESTORE_BITS(out i_ptr, out i_end, out bit_buffer, out bits_left);
+                        state = zip.RESTORE_BITS();
                     }
 
                     // Now huffman lengths are read for either kind of block, 
@@ -574,7 +510,7 @@ namespace LibMSPackSharp.Compression
                     // Decode forever until end of block code
                     for (; ; )
                     {
-                        code = (uint)zip.READ_HUFFSYM_LSB(zip.LITERAL_table, zip.LITERAL_len, MSZIP_LITERAL_TABLEBITS, MSZIP_LITERAL_MAXSYMBOLS, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+                        code = (uint)zip.READ_HUFFSYM_LSB(zip.LITERAL_table, zip.LITERAL_len, MSZIP_LITERAL_TABLEBITS, MSZIP_LITERAL_MAXSYMBOLS, state);
 
                         if (code < 256)
                         {
@@ -594,16 +530,16 @@ namespace LibMSPackSharp.Compression
                             if (code >= 29)
                                 return Error.INF_ERR_LITCODE; // Codes 286-287 are illegal
 
-                            length = (uint)zip.READ_BITS_T_LSB(lit_extrabits[code], ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
-                            length += lit_lengths[code];
+                            length = (uint)zip.READ_BITS_T_LSB(LiteralExtraBits[code], state);
+                            length += LiteralLengths[code];
 
-                            code = (uint)zip.READ_HUFFSYM_LSB(zip.DISTANCE_table, zip.DISTANCE_len, MSZIP_DISTANCE_TABLEBITS, MSZIP_DISTANCE_MAXSYMBOLS, ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
+                            code = (uint)zip.READ_HUFFSYM_LSB(zip.DISTANCE_table, zip.DISTANCE_len, MSZIP_DISTANCE_TABLEBITS, MSZIP_DISTANCE_MAXSYMBOLS, state);
 
                             if (code >= 30)
                                 return Error.INF_ERR_DISTCODE;
 
-                            distance = (uint)zip.READ_BITS_T_LSB(dist_extrabits[code], ref i_ptr, ref i_end, ref bit_buffer, ref bits_left);
-                            distance += dist_offsets[code];
+                            distance = (uint)zip.READ_BITS_T_LSB(DistanceExtraBits[code], state);
+                            distance += DistanceOffsets[code];
 
                             // Match position is window position minus distance. If distance
                             // is more than window position numerically, it must 'wrap
@@ -672,7 +608,7 @@ namespace LibMSPackSharp.Compression
                     return Error.INF_ERR_FLUSH;
             }
 
-            zip.STORE_BITS(i_ptr, i_end, bit_buffer, bits_left);
+            zip.STORE_BITS(state);
 
             // Return success
             return Error.MSPACK_ERR_OK;
