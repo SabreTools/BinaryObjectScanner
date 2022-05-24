@@ -474,21 +474,24 @@ namespace LibMSPackSharp.OAB
 
         #region Helpers
 
-        private Error CopyFileHandle(FileStream infh, FileStream outfh, int bytes_to_copy, byte[] buf, int buf_size)
+        /// <summary>
+        /// Copy between the input and output, if possible
+        /// </summary>
+        private Error CopyFileHandle(FileStream input, FileStream output, int bytesToCopy, byte[] buf, int bufferSize)
         {
-            while (bytes_to_copy != 0)
+            while (bytesToCopy != 0)
             {
-                int run = buf_size;
-                if (run > bytes_to_copy)
-                    run = bytes_to_copy;
+                int run = bufferSize;
+                if (run > bytesToCopy)
+                    run = bytesToCopy;
 
-                if (System.Read(infh, buf, 0, run) != run)
+                if (System.Read(input, buf, 0, run) != run)
                     return Error.MSPACK_ERR_READ;
 
-                if (outfh != null && System.Write(outfh, buf, 0, run) != run)
+                if (output != null && System.Write(output, buf, 0, run) != run)
                     return Error.MSPACK_ERR_WRITE;
 
-                bytes_to_copy -= run;
+                bytesToCopy -= run;
             }
 
             return Error.MSPACK_ERR_OK;

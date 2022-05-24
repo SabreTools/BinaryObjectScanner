@@ -39,20 +39,16 @@ namespace LibMSPackSharp.OAB
         /// The input file will be read and the compressed contents written to the
         /// output file.
         /// </summary>
-        /// <param name="self">
-        /// a self-referential pointer to the msoab_decompressor
-        /// instance being called
-        /// </param>
         /// <param name="input">
-        /// the filename of the input file. This is passed
+        /// The filename of the input file. This is passed
         /// directly to mspack_system::open().
         /// </param>
         /// <param name="output">
-        /// the filename of the output file. This is passed
+        /// The filename of the output file. This is passed
         /// directly to mspack_system::open().
         /// </param>
-        /// <returns>an error code, or MSPACK_ERR_OK if successful</returns>
-        public Func<Compressor, string, string, Error> Compress;
+        /// <returns>An error code, or MSPACK_ERR_OK if successful</returns>
+        public Error Compress(string input, string output) => throw new NotImplementedException();
 
         /// <summary>
         /// Generate a compressed incremental OAB patch file.
@@ -61,26 +57,22 @@ namespace LibMSPackSharp.OAB
         /// incremental patch to generate "input" from "base" will be written to
         /// the output file.
         /// </summary>
-        /// <param name="self">
-        /// a self-referential pointer to the msoab_decompressor
-        /// instance being called
-        /// </param>
         /// <param name="input">
-        /// the filename of the input file containing the new
+        /// The filename of the input file containing the new
         /// version of its contents. This is passed directly
         /// to mspack_system::open().
         /// </param>
-        /// <param name="base">
-        /// the filename of the original base file containing
+        /// <param name="baseFile">
+        /// The filename of the original base file containing
         /// the old version of its contents, against which the
         /// incremental patch shall generated. This is passed
         /// directly to mspack_system::open().
         /// </param>
         /// <param name="output">
-        /// the filename of the output file. This is passed
+        /// The filename of the output file. This is passed
         /// directly to mspack_system::open().
         /// </param>
-        /// <returns>an error code, or MSPACK_ERR_OK if successful</returns>
-        public Func<Compressor, string, string, string, Error> CompressIncremental;
+        /// <returns>An error code, or MSPACK_ERR_OK if successful</returns>
+        public Error CompressIncremental(string input, string baseFile, string output) => throw new NotImplementedException();
     }
 }
