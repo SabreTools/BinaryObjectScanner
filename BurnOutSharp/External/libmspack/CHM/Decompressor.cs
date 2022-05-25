@@ -404,13 +404,13 @@ namespace LibMSPackSharp.CHM
             State.OutputFileHandle = null;
             long bytes;
             if ((bytes = file.Offset - State.Offset) != 0)
-                Error = LZX.Decompress(State.State, bytes);
+                Error = State.State.Decompress(bytes);
 
             // If getting to the correct offset was error free, unpack file
             if (Error == Error.MSPACK_ERR_OK)
             {
                 State.OutputFileHandle = fh;
-                Error = LZX.Decompress(State.State, file.Length);
+                Error = State.State.Decompress(file.Length);
             }
 
             // Save offset in input source stream, in case there is a section 0

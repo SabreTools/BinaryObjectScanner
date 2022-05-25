@@ -84,32 +84,28 @@ namespace LibMSPackSharp.Compression
         ///   mszipd_init(). This will continue until system.read() returns 0 bytes,
         ///   or an error.
         /// </summary>
-        public static Error Decompress(object o, long out_bytes)
+        public Error Decompress(long out_bytes)
         {
-            MSZIP zip = o as MSZIP;
-            if (zip == null)
-                return Error.MSPACK_ERR_ARGS;
-
             int i, readState;
             Error error;
 
             // Easy answers
-            if (zip == null || (out_bytes < 0))
+            if (out_bytes < 0)
                 return Error.MSPACK_ERR_ARGS;
-            if (zip.Error != Error.MSPACK_ERR_OK)
-                return zip.Error;
+            if (Error != Error.MSPACK_ERR_OK)
+                return Error;
 
             // Flush out any stored-up bytes before we begin
-            i = zip.OutputEnd - zip.OutputPointer;
+            i = OutputEnd - OutputPointer;
             if (i > out_bytes)
                 i = (int)out_bytes;
 
             if (i != 0)
             {
-                if (zip.System.Write(zip.OutputFileHandle, zip.Window, zip.OutputPointer, i) != i)
-                    return zip.Error = Error.MSPACK_ERR_WRITE;
+                if (System.Write(OutputFileHandle, Window, OutputPointer, i) != i)
+                    return Error = Error.MSPACK_ERR_WRITE;
 
-                zip.OutputPointer += i;
+                OutputPointer += i;
                 out_bytes -= i;
             }
 
@@ -119,15 +115,15 @@ namespace LibMSPackSharp.Compression
             while (out_bytes > 0)
             {
                 // Skip to next read 'CK' header
-                i = zip.BitsLeft & 7;
+                i = BitsLeft & 7;
 
                 // Align to bytestream
-                zip.REMOVE_BITS_LSB(i);
+                REMOVE_BITS_LSB(i);
 
                 readState = 0;
                 do
                 {
-                    i = (int)zip.READ_BITS_LSB(8);
+                    i = (int)READ_BITS_LSB(8);
 
                     if (i == 'C')
                         readState = 1;
@@ -138,52 +134,52 @@ namespace LibMSPackSharp.Compression
                 } while (readState != 2);
 
                 // Inflate a block, repair and realign if necessary
-                zip.WindowPosition = 0;
-                zip.BytesOutput = 0;
+                WindowPosition = 0;
+                BytesOutput = 0;
 
-                if ((error = zip.Inflate()) != Error.MSPACK_ERR_OK)
+                if ((error = Inflate()) != Error.MSPACK_ERR_OK)
                 {
                     Console.WriteLine($"Inflate error {error}");
-                    if (zip.RepairMode)
+                    if (RepairMode)
                     {
                         // Recover partially-inflated buffers
-                        if (zip.BytesOutput == 0 && zip.WindowPosition > 0)
-                            zip.FlushWindow(zip.WindowPosition);
+                        if (BytesOutput == 0 && WindowPosition > 0)
+                            FlushWindow(WindowPosition);
 
-                        zip.System.Message(null, $"MSZIP error, {MSZIP_FRAME_SIZE - zip.BytesOutput} bytes of data lost.");
-                        for (i = zip.BytesOutput; i < MSZIP_FRAME_SIZE; i++)
+                        System.Message(null, $"MSZIP error, {MSZIP_FRAME_SIZE - BytesOutput} bytes of data lost.");
+                        for (i = BytesOutput; i < MSZIP_FRAME_SIZE; i++)
                         {
-                            zip.Window[i] = 0x00;
+                            Window[i] = 0x00;
                         }
 
-                        zip.BytesOutput = MSZIP_FRAME_SIZE;
+                        BytesOutput = MSZIP_FRAME_SIZE;
                     }
                     else
                     {
-                        return zip.Error = error;
+                        return Error = error;
                     }
                 }
 
-                zip.OutputPointer = 0;
-                zip.OutputEnd = zip.BytesOutput;
+                OutputPointer = 0;
+                OutputEnd = BytesOutput;
 
                 // Write a frame
-                i = (out_bytes < zip.BytesOutput) ? (int)out_bytes : zip.BytesOutput;
-                if (zip.System.Write(zip.OutputFileHandle, zip.Window, zip.OutputPointer, i) != i)
-                    return zip.Error = Error.MSPACK_ERR_WRITE;
+                i = (out_bytes < BytesOutput) ? (int)out_bytes : BytesOutput;
+                if (System.Write(OutputFileHandle, Window, OutputPointer, i) != i)
+                    return Error = Error.MSPACK_ERR_WRITE;
 
                 // mspack errors (i.e. read errors) are fatal and can't be recovered
-                if ((error > 0) && zip.RepairMode)
+                if ((error > 0) && RepairMode)
                     return error;
 
-                zip.OutputPointer += i;
+                OutputPointer += i;
                 out_bytes -= i;
             }
 
             if (out_bytes != 0)
             {
                 Console.WriteLine($"Bytes left to output: {out_bytes}");
-                return zip.Error = Error.MSPACK_ERR_DECRUNCH;
+                return Error = Error.MSPACK_ERR_DECRUNCH;
             }
 
             return Error.MSPACK_ERR_OK;

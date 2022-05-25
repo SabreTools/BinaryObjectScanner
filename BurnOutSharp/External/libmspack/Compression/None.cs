@@ -7,44 +7,15 @@
  * For further details, see the file COPYING.LIB distributed with libmspack
  */
 
-using System.IO;
-
 namespace LibMSPackSharp.Compression
 {
-    public class None
+    /// <summary>
+    /// The "not compressed" method decompressor
+    /// </summary>
+    public partial class None : BaseDecompressState
     {
-        public static NoneState Init(SystemImpl sys, FileStream input, FileStream output, int bufsize)
-        {
-            return new NoneState()
-            {
-                System = sys,
-                InputFileHandle = input,
-                OutputFileHandle = output,
-                Buffer = new byte[bufsize],
-                BufferSize = bufsize,
-            };
-        }
+        public byte[] Buffer { get; set; }
 
-        public static Error Decompress(object s, long bytes)
-        {
-            NoneState state = (NoneState)s;
-            if (state == null)
-                return Error.MSPACK_ERR_ARGS;
-
-            int run;
-            while (bytes > 0)
-            {
-                run = (bytes > state.BufferSize) ? state.BufferSize : (int)bytes;
-
-                if (state.System.Read(state.InputFileHandle, state.Buffer, 0, run) != run)
-                    return Error.MSPACK_ERR_READ;
-
-                if (state.System.Write(state.OutputFileHandle, state.Buffer, 0, run) != run)
-                    return Error.MSPACK_ERR_WRITE;
-
-                bytes -= run;
-            }
-            return Error.MSPACK_ERR_OK;
-        }
+        public int BufferSize { get; set; }
     }
 }

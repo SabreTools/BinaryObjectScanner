@@ -167,7 +167,7 @@ namespace LibMSPackSharp.OAB
                         return ret;
                     }
 
-                    ret = LZX.Decompress(lzx, blk_dsize);
+                    ret = lzx.Decompress(blk_dsize);
                     if (ret != Error.MSPACK_ERR_OK)
                     {
                         System.Close(outfh);
@@ -357,7 +357,7 @@ namespace LibMSPackSharp.OAB
                     return ret;
                 }
 
-                ret = LZX.Decompress(lzx, blk_dsize);
+                ret = lzx.Decompress(blk_dsize);
                 if (ret != Error.MSPACK_ERR_OK)
                 {
                     System.Close(outfh);

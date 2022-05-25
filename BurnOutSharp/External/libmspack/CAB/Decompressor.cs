@@ -465,22 +465,18 @@ namespace LibMSPackSharp.CAB
             switch (ct & CompressionType.COMPTYPE_MASK)
             {
                 case CompressionType.COMPTYPE_NONE:
-                    State.Decompress = None.Decompress;
                     State.DecompressorState = None.Init(State.System, State.InputFileHandle, State.OutputFileHandle, BufferSize);
                     break;
 
                 case CompressionType.COMPTYPE_MSZIP:
-                    State.Decompress = MSZIP.Decompress;
                     State.DecompressorState = MSZIP.Init(State.System, State.InputFileHandle, State.OutputFileHandle, BufferSize, FixMSZip);
                     break;
 
                 case CompressionType.COMPTYPE_QUANTUM:
-                    State.Decompress = QTM.Decompress;
                     State.DecompressorState = QTM.Init(State.System, State.InputFileHandle, State.OutputFileHandle, ((ushort)ct >> 8) & 0x1f, BufferSize);
                     break;
 
                 case CompressionType.COMPTYPE_LZX:
-                    State.Decompress = LZX.Decompress;
                     State.DecompressorState = LZX.Init(State.System, State.InputFileHandle, State.OutputFileHandle, ((ushort)ct >> 8) & 0x1f, 0, BufferSize, 0, false);
                     break;
 
@@ -521,7 +517,6 @@ namespace LibMSPackSharp.CAB
             if (State?.DecompressorState == null)
                 return;
 
-            State.Decompress = null;
             State.DecompressorState = null;
         }
 

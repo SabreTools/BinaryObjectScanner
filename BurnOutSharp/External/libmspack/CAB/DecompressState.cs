@@ -7,7 +7,7 @@
  * For further details, see the file COPYING.LIB distributed with libmspack
  */
 
-using System;
+using LibMSPackSharp.Compression;
 
 namespace LibMSPackSharp.CAB
 {
@@ -44,11 +44,6 @@ namespace LibMSPackSharp.CAB
         public CompressionType CompressionType { get; set; }
 
         /// <summary>
-        /// Decompressor code
-        /// </summary>
-        public Func<object, long, Error> Decompress { get; set; }
-
-        /// <summary>
         /// Decompressor state
         /// </summary>
         public BaseDecompressState DecompressorState { get; set; }
@@ -72,5 +67,29 @@ namespace LibMSPackSharp.CAB
         /// One input block of data
         /// </summary>
         public byte[] Input { get; set; } = new byte[Constants.CAB_INPUTBUF];
+
+        /// <summary>
+        /// Decompressor code
+        /// </summary>
+        public Error Decompress(object o, long bytes)
+        {
+            switch (CompressionType & CompressionType.COMPTYPE_MASK)
+            {
+                case CompressionType.COMPTYPE_NONE:
+                    return (o as None)?.Decompress(bytes) ?? Error.MSPACK_ERR_ARGS;
+
+                case CompressionType.COMPTYPE_MSZIP:
+                    return (o as MSZIP)?.Decompress(bytes) ?? Error.MSPACK_ERR_ARGS;
+
+                case CompressionType.COMPTYPE_QUANTUM:
+                    return (o as QTM)?.Decompress(bytes) ?? Error.MSPACK_ERR_ARGS;
+
+                case CompressionType.COMPTYPE_LZX:
+                    return (o as LZX)?.Decompress(bytes) ?? Error.MSPACK_ERR_ARGS;
+
+                default:
+                    return Error = Error.MSPACK_ERR_DATAFORMAT;
+            }
+        }
     }
 }

@@ -285,241 +285,237 @@ namespace LibMSPackSharp.Compression
         /// <param name="o">LZX decompression state, as allocated by lzxd_init().</param>
         /// <param name="out_bytes">the number of bytes of data to decompress.</param>
         /// <returns>an error code, or MSPACK_ERR_OK if successful</returns>
-        public static Error Decompress(object o, long out_bytes)
+        public Error Decompress(long out_bytes)
         {
-            LZX lzx = o as LZX;
-            if (lzx == null)
-                return Error.MSPACK_ERR_ARGS;
-
             int warned = 0;
             byte[] buf = new byte[12];
 
             // Easy answers
-            if (lzx == null || (out_bytes < 0))
+            if (out_bytes < 0)
                 return Error.MSPACK_ERR_ARGS;
 
-            if (lzx.Error != Error.MSPACK_ERR_OK)
-                return lzx.Error;
+            if (Error != Error.MSPACK_ERR_OK)
+                return Error;
 
             // Flush out any stored-up bytes before we begin
-            int leftover_bytes = lzx.OutputEnd - lzx.OutputPointer;
+            int leftover_bytes = OutputEnd - OutputPointer;
             if (leftover_bytes > out_bytes)
                 leftover_bytes = (int)out_bytes;
 
             if (leftover_bytes != 0)
             {
-                try { lzx.System.Write(lzx.OutputFileHandle, lzx.OutputIsE8 ? lzx.E8Buffer : lzx.Window, lzx.OutputPointer, leftover_bytes); }
-                catch { return lzx.Error = Error.MSPACK_ERR_WRITE; }
+                try { System.Write(OutputFileHandle, OutputIsE8 ? E8Buffer : Window, OutputPointer, leftover_bytes); }
+                catch { return Error = Error.MSPACK_ERR_WRITE; }
 
-                lzx.OutputPointer += leftover_bytes;
-                lzx.Offset += leftover_bytes;
+                OutputPointer += leftover_bytes;
+                Offset += leftover_bytes;
                 out_bytes -= leftover_bytes;
             }
 
             if (out_bytes == 0)
                 return Error.MSPACK_ERR_OK;
 
-            uint end_frame = (uint)((lzx.Offset + out_bytes) / LZX_FRAME_SIZE) + 1;
+            uint end_frame = (uint)((Offset + out_bytes) / LZX_FRAME_SIZE) + 1;
 
-            while (lzx.Frame < end_frame)
+            while (Frame < end_frame)
             {
                 // Have we reached the reset interval? (if there is one?)
-                if (lzx.ResetInterval != 0 && ((lzx.Frame % lzx.ResetInterval) == 0))
+                if (ResetInterval != 0 && ((Frame % ResetInterval) == 0))
                 {
-                    if (lzx.BlockRemaining != 0)
+                    if (BlockRemaining != 0)
                     {
                         // This is a file format error, we can make a best effort to extract what we can
-                        Console.WriteLine($"{lzx.BlockRemaining} bytes remaining at reset interval");
+                        Console.WriteLine($"{BlockRemaining} bytes remaining at reset interval");
                         if (warned == 0)
                         {
-                            lzx.System.Message(null, "WARNING; invalid reset interval detected during LZX decompression");
+                            System.Message(null, "WARNING; invalid reset interval detected during LZX decompression");
                             warned++;
                         }
                     }
 
                     // Re-read the intel header and reset the huffman lengths
-                    lzx.ResetState();
+                    ResetState();
                 }
 
                 // LZX DELTA format has chunk_size, not present in LZX format
-                if (lzx.IsDelta)
+                if (IsDelta)
                 {
-                    lzx.ENSURE_BITS(16);
-                    lzx.REMOVE_BITS_MSB(16);
+                    ENSURE_BITS(16);
+                    REMOVE_BITS_MSB(16);
                 }
 
                 //// Read header if necessary
-                //if (lzx.HeaderRead == 0)
+                //if (HeaderRead == 0)
                 //{
                 //    // Read 1 bit. If bit=0, intel_filesize = 0.
                 //    // If bit=1, read intel filesize (32 bits)
                 //    int j = 0;
-                //    int i = (int)lzx.READ_BITS_MSB(1, state);
+                //    int i = (int)READ_BITS_MSB(1, state);
 
                 //    if (i != 0)
                 //    {
-                //        i = (int)lzx.READ_BITS_MSB(16, state);
-                //        j = (int)lzx.READ_BITS_MSB(16, state);
+                //        i = (int)READ_BITS_MSB(16, state);
+                //        j = (int)READ_BITS_MSB(16, state);
                 //    }
 
-                //    lzx.IntelFileSize = (i << 16) | j;
-                //    lzx.HeaderRead = 1;
+                //    IntelFileSize = (i << 16) | j;
+                //    HeaderRead = 1;
                 //}
 
                 // Calculate size of frame: all frames are 32k except the final frame
-                // which is 32kb or less. this can only be calculated when lzx.Length
+                // which is 32kb or less. this can only be calculated when Length
                 // has been filled in.
                 uint frame_size = LZX_FRAME_SIZE;
-                if (lzx.Length != 0 && (lzx.Length - lzx.Offset) < frame_size)
-                    frame_size = (uint)(lzx.Length - lzx.Offset);
+                if (Length != 0 && (Length - Offset) < frame_size)
+                    frame_size = (uint)(Length - Offset);
 
                 // Decode until one more frame is available
-                int bytes_todo = (int)(lzx.FramePosition + frame_size - lzx.WindowPosition);
+                int bytes_todo = (int)(FramePosition + frame_size - WindowPosition);
                 while (bytes_todo > 0)
                 {
                     // Realign if previous block was an odd-sized UNCOMPRESSED block
-                    if ((lzx.BlockType == LZXBlockType.LZX_BLOCKTYPE_UNCOMPRESSED) && (lzx.BlockLength & 1) != 0)
+                    if ((BlockType == LZXBlockType.LZX_BLOCKTYPE_UNCOMPRESSED) && (BlockLength & 1) != 0)
                     {
-                        lzx.READ_IF_NEEDED();
-                        if (lzx.Error != Error.MSPACK_ERR_OK)
-                            return lzx.Error;
+                        READ_IF_NEEDED();
+                        if (Error != Error.MSPACK_ERR_OK)
+                            return Error;
 
-                        lzx.InputPointer++;
+                        InputPointer++;
                     }
 
-                    lzx.ReadBlockHeader(buf);
-                    if (lzx.Error != Error.MSPACK_ERR_OK)
-                        return lzx.Error;
+                    ReadBlockHeader(buf);
+                    if (Error != Error.MSPACK_ERR_OK)
+                        return Error;
 
                     // Decode more of the block:
-                    int this_run = Math.Min(lzx.BlockRemaining, bytes_todo);
+                    int this_run = Math.Min(BlockRemaining, bytes_todo);
 
                     // Assume we decode exactly this_run bytes, for now
                     bytes_todo -= this_run;
-                    lzx.BlockRemaining -= this_run;
+                    BlockRemaining -= this_run;
 
                     // Decode at least this_run bytes
-                    switch (lzx.BlockType)
+                    switch (BlockType)
                     {
                         case LZXBlockType.LZX_BLOCKTYPE_ALIGNED:
                         case LZXBlockType.LZX_BLOCKTYPE_VERBATIM:
-                            lzx.DecompressBlock(ref this_run);
-                            if (lzx.Error != Error.MSPACK_ERR_OK)
-                                return lzx.Error;
+                            DecompressBlock(ref this_run);
+                            if (Error != Error.MSPACK_ERR_OK)
+                                return Error;
 
                             // If the literal 0xE8 is anywhere in the block...
-                            if (lzx.MAINTREE_len[0xE8] != 0)
-                                lzx.IntelStarted = true;
+                            if (MAINTREE_len[0xE8] != 0)
+                                IntelStarted = true;
 
                             break;
 
                         case LZXBlockType.LZX_BLOCKTYPE_UNCOMPRESSED:
                             // As this_run is limited not to wrap a frame, this also means it
                             // won't wrap the window (as the window is a multiple of 32k)
-                            int rundest = lzx.WindowPosition;
-                            lzx.WindowPosition += this_run;
+                            int rundest = WindowPosition;
+                            WindowPosition += this_run;
                             while (this_run > 0)
                             {
-                                int i = lzx.InputEnd - lzx.InputPointer;
+                                int i = InputEnd - InputPointer;
                                 if (i == 0)
                                 {
-                                    lzx.READ_IF_NEEDED();
-                                    if (lzx.Error != Error.MSPACK_ERR_OK)
-                                        return lzx.Error;
+                                    READ_IF_NEEDED();
+                                    if (Error != Error.MSPACK_ERR_OK)
+                                        return Error;
                                 }
                                 else
                                 {
                                     if (i > this_run)
                                         i = this_run;
 
-                                    Array.Copy(lzx.InputBuffer, lzx.InputPointer, lzx.Window, rundest, i);
+                                    Array.Copy(InputBuffer, InputPointer, Window, rundest, i);
 
                                     rundest += i;
-                                    lzx.InputPointer += i;
+                                    InputPointer += i;
                                     this_run -= i;
                                 }
                             }
 
                             // Because we can't assume otherwise
-                            lzx.IntelStarted = true;
+                            IntelStarted = true;
 
                             break;
 
                         default:
-                            return lzx.Error = Error.MSPACK_ERR_DECRUNCH; // Might as well
+                            return Error = Error.MSPACK_ERR_DECRUNCH; // Might as well
                     }
 
                     // Did the final match overrun our desired this_run length?
                     if (this_run < 0)
                     {
-                        if ((uint)(-this_run) > lzx.BlockRemaining)
+                        if ((uint)(-this_run) > BlockRemaining)
                         {
-                            Console.WriteLine($"Overrun went past end of block by {-this_run} ({lzx.BlockRemaining} remaining)");
-                            return lzx.Error = Error.MSPACK_ERR_DECRUNCH;
+                            Console.WriteLine($"Overrun went past end of block by {-this_run} ({BlockRemaining} remaining)");
+                            return Error = Error.MSPACK_ERR_DECRUNCH;
                         }
 
-                        lzx.BlockRemaining -= -this_run;
+                        BlockRemaining -= -this_run;
                     }
                 }
 
                 // Streams don't extend over frame boundaries
-                if ((lzx.WindowPosition - lzx.FramePosition) != frame_size)
+                if ((WindowPosition - FramePosition) != frame_size)
                 {
-                    Console.WriteLine($"Decode beyond output frame limits! {lzx.WindowPosition - lzx.FramePosition} != {frame_size}");
-                    return lzx.Error = Error.MSPACK_ERR_DECRUNCH;
+                    Console.WriteLine($"Decode beyond output frame limits! {WindowPosition - FramePosition} != {frame_size}");
+                    return Error = Error.MSPACK_ERR_DECRUNCH;
                 }
 
                 // Re-align input bitstream
-                if (lzx.BitsLeft > 0)
-                    lzx.ENSURE_BITS(16);
-                if ((lzx.BitsLeft & 15) != 0)
-                    lzx.REMOVE_BITS_MSB(lzx.BitsLeft & 15);
+                if (BitsLeft > 0)
+                    ENSURE_BITS(16);
+                if ((BitsLeft & 15) != 0)
+                    REMOVE_BITS_MSB(BitsLeft & 15);
 
                 // Check that we've used all of the previous frame first
-                if (lzx.OutputPointer != lzx.OutputEnd)
+                if (OutputPointer != OutputEnd)
                 {
-                    Console.WriteLine($"{lzx.OutputEnd - lzx.OutputPointer} avail bytes, new {frame_size} frame");
-                    return lzx.Error = Error.MSPACK_ERR_DECRUNCH;
+                    Console.WriteLine($"{OutputEnd - OutputPointer} avail bytes, new {frame_size} frame");
+                    return Error = Error.MSPACK_ERR_DECRUNCH;
                 }
 
                 // Does this intel block _really_ need decoding?
-                if (lzx.IntelStarted && lzx.IntelFileSize != 0 && (lzx.Frame < 32768) && (frame_size > 10))
+                if (IntelStarted && IntelFileSize != 0 && (Frame < 32768) && (frame_size > 10))
                 {
-                    lzx.UndoE8Preprocessing(frame_size);
+                    UndoE8Preprocessing(frame_size);
                 }
                 else
                 {
-                    lzx.OutputIsE8 = false;
-                    lzx.OutputPointer = (int)lzx.FramePosition;
+                    OutputIsE8 = false;
+                    OutputPointer = (int)FramePosition;
                 }
 
-                lzx.OutputEnd = (int)(lzx.OutputPointer + frame_size);
+                OutputEnd = (int)(OutputPointer + frame_size);
 
                 // Write a frame
                 int new_out_bytes = (int)((out_bytes < frame_size) ? out_bytes : frame_size);
-                try { lzx.System.Write(lzx.OutputFileHandle, lzx.OutputIsE8 ? lzx.E8Buffer : lzx.Window, lzx.OutputPointer, new_out_bytes); }
-                catch { return lzx.Error = Error.MSPACK_ERR_WRITE; }
+                try { System.Write(OutputFileHandle, OutputIsE8 ? E8Buffer : Window, OutputPointer, new_out_bytes); }
+                catch { return Error = Error.MSPACK_ERR_WRITE; }
 
-                lzx.OutputPointer += new_out_bytes;
-                lzx.Offset += new_out_bytes;
+                OutputPointer += new_out_bytes;
+                Offset += new_out_bytes;
                 out_bytes -= new_out_bytes;
 
                 // Advance frame start position
-                lzx.FramePosition += frame_size;
-                lzx.Frame++;
+                FramePosition += frame_size;
+                Frame++;
 
                 // Wrap window / frame position pointers
-                if (lzx.WindowPosition == lzx.WindowSize)
-                    lzx.WindowPosition = 0;
-                if (lzx.FramePosition == lzx.WindowSize)
-                    lzx.FramePosition = 0;
+                if (WindowPosition == WindowSize)
+                    WindowPosition = 0;
+                if (FramePosition == WindowSize)
+                    FramePosition = 0;
 
             }
 
             if (out_bytes != 0)
             {
                 Console.WriteLine("Bytes left to output");
-                return lzx.Error = Error.MSPACK_ERR_DECRUNCH;
+                return Error = Error.MSPACK_ERR_DECRUNCH;
             }
 
             return Error.MSPACK_ERR_OK;
