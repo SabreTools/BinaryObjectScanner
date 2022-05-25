@@ -344,24 +344,6 @@ namespace LibMSPackSharp.Compression
                     REMOVE_BITS_MSB(16);
                 }
 
-                //// Read header if necessary
-                //if (HeaderRead == 0)
-                //{
-                //    // Read 1 bit. If bit=0, intel_filesize = 0.
-                //    // If bit=1, read intel filesize (32 bits)
-                //    int j = 0;
-                //    int i = (int)READ_BITS_MSB(1, state);
-
-                //    if (i != 0)
-                //    {
-                //        i = (int)READ_BITS_MSB(16, state);
-                //        j = (int)READ_BITS_MSB(16, state);
-                //    }
-
-                //    IntelFileSize = (i << 16) | j;
-                //    HeaderRead = 1;
-                //}
-
                 // Calculate size of frame: all frames are 32k except the final frame
                 // which is 32kb or less. this can only be calculated when Length
                 // has been filled in.
@@ -373,16 +355,6 @@ namespace LibMSPackSharp.Compression
                 int bytes_todo = (int)(FramePosition + frame_size - WindowPosition);
                 while (bytes_todo > 0)
                 {
-                    // Realign if previous block was an odd-sized UNCOMPRESSED block
-                    if ((BlockType == LZXBlockType.LZX_BLOCKTYPE_UNCOMPRESSED) && (BlockLength & 1) != 0)
-                    {
-                        READ_IF_NEEDED();
-                        if (Error != Error.MSPACK_ERR_OK)
-                            return Error;
-
-                        InputPointer++;
-                    }
-
                     ReadBlockHeader(buf);
                     if (Error != Error.MSPACK_ERR_OK)
                         return Error;
@@ -436,6 +408,16 @@ namespace LibMSPackSharp.Compression
                                 }
                             }
 
+                            // Realign if this was an odd-sized UNCOMPRESSED block
+                            if (InputFileHandle.Position != InputFileHandle.Length - 1 && (BlockLength & 1) != 0)
+                            {
+                                READ_IF_NEEDED();
+                                if (Error != Error.MSPACK_ERR_OK)
+                                    return Error;
+
+                                InputPointer++;
+                            }
+
                             // Because we can't assume otherwise
                             IntelStarted = true;
 
@@ -479,7 +461,7 @@ namespace LibMSPackSharp.Compression
                 }
 
                 // Does this intel block _really_ need decoding?
-                if (IntelStarted && IntelFileSize != 0 && (Frame < 32768) && (frame_size > 10))
+                if (IntelStarted)
                 {
                     UndoE8Preprocessing(frame_size);
                 }
@@ -561,6 +543,188 @@ namespace LibMSPackSharp.Compression
             return Error = Error.MSPACK_ERR_OK;
         }
 
+        private Error Copy(uint match_offset, int match_len, ref int this_run)
+        {
+            // Copy match
+            int rundest = WindowPosition;
+
+            // Does match offset wrap the window?
+            if (match_offset > WindowPosition)
+            {
+                if (match_offset > Offset && (match_offset - WindowPosition) > ReferenceDataSize)
+                {
+                    Console.WriteLine("Match offset beyond LZX stream");
+                    return Error = Error.MSPACK_ERR_DECRUNCH;
+                }
+
+                // j = length from match offset to end of window
+                int j = (int)(match_offset - WindowPosition);
+                if (j > (int)WindowSize)
+                {
+                    Console.WriteLine("Match offset beyond window boundaries");
+                    return Error = Error.MSPACK_ERR_DECRUNCH;
+                }
+
+                int runsrc = (int)(WindowSize - j);
+                if (j < match_len)
+                {
+                    // If match goes over the window edge, do two copy runs
+                    Array.Copy(Window, runsrc, Window, rundest, j);
+                    runsrc = 0;
+                }
+
+                Array.Copy(Window, runsrc, Window, rundest, match_len);
+            }
+            else
+            {
+                int runsrc = (int)(rundest - match_offset);
+                Array.Copy(Window, runsrc, Window, rundest, match_len);
+            }
+
+            this_run -= match_len;
+            WindowPosition += match_len;
+            return Error = Error.MSPACK_ERR_OK;
+        }
+
+        private Error DecodeMatch(int main_element, ref int this_run)
+        {
+            // The main element is offset by 256 because values under 256 indicate a
+            // literal value.
+            main_element -= LZX_NUM_CHARS;
+
+            // The length header consists of the lower 3 bits of the main element.
+	        // The position slot is the rest of it.
+            int length_header = main_element & LZX_NUM_PRIMARY_LENGTHS;
+            int position_slot = main_element >> 3;
+
+            // If the length_header is less than LZX_NUM_PRIMARY_LENS (= 7), it
+            // gives the match length as the offset from LZX_MIN_MATCH_LEN.
+            // Otherwise, the length is given by an additional symbol encoded using
+            // the length tree, offset by 9 (LZX_MIN_MATCH_LEN + LZX_NUM_PRIMARY_LENS)
+            int match_len = LZX_MIN_MATCH + length_header;
+            if (length_header == LZX_NUM_PRIMARY_LENGTHS)
+            {
+                if (LENGTH_empty != 0)
+                {
+                    Console.WriteLine("LENGTH symbol needed but tree is empty");
+                    return Error = Error.MSPACK_ERR_DECRUNCH;
+                }
+
+                match_len += (int)READ_HUFFSYM_MSB(LENGTH_table, LENGTH_len, LZX_LENGTH_TABLEBITS, LZX_LENGTH_MAXSYMBOLS);
+            }
+
+            // If the position_slot is 0, 1, or 2, the match offset is retrieved
+            // from the LRU queue.  Otherwise, the match offset is not in the LRU queue.
+            uint match_offset;
+            if (position_slot < 2)
+            {
+                // Note: This isn't a real LRU queue, since using the R2 offset
+                // doesn't bump the R1 offset down to R2.  This quirk allows all
+                // 3 recent offsets to be handled by the same code.  (For R0,
+                // the swap is a no-op.)
+                match_offset = R[position_slot];
+                R[position_slot] = R[0];
+                R[0] = match_offset;
+            }
+            else
+            {
+                // Otherwise, the offset was not encoded as one the offsets in
+                // the queue.  Depending on the position slot, there is a
+                // certain number of extra bits that need to be read to fully
+                // decode the match offset.
+
+                // Look up the number of extra bits that need to be read.
+                int num_extra_bits = LZXExtraBits[position_slot];
+                long verbatim_bits, aligned_bits;
+
+                // For aligned blocks, if there are at least 3 extra bits, the
+                // actual number of extra bits is 3 less, and they encode a
+                // number of 8-byte words that are added to the offset; there
+                // is then an additional symbol read using the aligned tree that
+                // specifies the actual byte alignment.
+                if (BlockType == LZXBlockType.LZX_BLOCKTYPE_ALIGNED && num_extra_bits >= 3)
+                {
+                    // There is an error in the LZX "specification" at this
+                    // point; it indicates that a Huffman symbol is to be
+                    // read only if num_extra_bits is greater than 3, but
+                    // actually it is if num_extra_bits is greater than or
+                    // equal to 3.  (Note that in the case with
+                    // num_extra_bits == 3, the assignment to verbatim_bits
+                    // will just set it to 0. )
+                    verbatim_bits = READ_BITS_MSB(num_extra_bits - 3);
+                    verbatim_bits <<= 3;
+                    aligned_bits = READ_HUFFSYM_MSB(ALIGNED_table, ALIGNED_len, LZX_ALIGNED_TABLEBITS, LZX_ALIGNED_MAXSYMBOLS);
+                }
+                else
+                {
+                    // For non-aligned blocks, or for aligned blocks with
+                    // less than 3 extra bits, the extra bits are added
+                    // directly to the match offset, and the correction for
+                    // the alignment is taken to be 0.
+                    verbatim_bits = READ_BITS_MSB(num_extra_bits);
+                    aligned_bits = 0;
+                }
+
+                // Calculate the match offset.
+                match_offset = (uint)(LZXPositionBase[position_slot] + verbatim_bits + aligned_bits + 2); // LZX_OFFSET_OFFSET
+
+                // Update the LRU queue.
+                R[2] = R[1];
+                R[1] = R[0];
+                R[0] = match_offset;
+            }
+
+            // LZX DELTA uses max match length to signal even longer match
+            if (length_header == LZX_MAX_MATCH && IsDelta)
+            {
+                int extra_len;
+
+                // 4 entry huffman tree
+                ENSURE_BITS(3);
+
+                // '0' . 8 extra length bits
+                if (PEEK_BITS_MSB(1) == 0)
+                {
+                    REMOVE_BITS_MSB(1);
+                    extra_len = (int)READ_BITS_MSB(8);
+                }
+
+                // '10' . 10 extra length bits + 0x100
+                else if (PEEK_BITS_MSB(2) == 2)
+                {
+                    REMOVE_BITS_MSB(2);
+                    extra_len = (int)READ_BITS_MSB(10);
+                    extra_len += 0x100;
+                }
+
+                // '110' . 12 extra length bits + 0x500
+                else if (PEEK_BITS_MSB(3) == 6)
+                {
+                    REMOVE_BITS_MSB(3);
+                    extra_len = (int)READ_BITS_MSB(12);
+                    extra_len += 0x500;
+                }
+
+                // '111' . 15 extra length bits
+                else
+                {
+                    REMOVE_BITS_MSB(3);
+                    extra_len = (int)READ_BITS_MSB(15);
+                }
+
+                length_header += extra_len;
+            }
+
+            if ((WindowPosition + match_len) > WindowSize)
+            {
+                Console.WriteLine("Match ran over window wrap");
+                return Error = Error.MSPACK_ERR_DECRUNCH;
+            }
+
+            Copy(match_offset, match_len, ref this_run);
+            return Error;
+        }
+
         private Error DecompressBlock(ref int this_run)
         {
             while (this_run > 0)
@@ -574,200 +738,9 @@ namespace LibMSPackSharp.Compression
                 }
                 else
                 {
-                    // Match: LZX_NUM_CHARS + ((slot<<3) | length_header (3 bits))
-                    main_element -= LZX_NUM_CHARS;
-
-                    // Get match length
-                    int match_length = main_element & LZX_NUM_PRIMARY_LENGTHS;
-                    if (match_length == LZX_NUM_PRIMARY_LENGTHS)
-                    {
-                        if (LENGTH_empty != 0)
-                        {
-                            Console.WriteLine("LENGTH symbol needed but tree is empty");
-                            return Error = Error.MSPACK_ERR_DECRUNCH;
-                        }
-
-                        int length_footer = (int)READ_HUFFSYM_MSB(LENGTH_table, LENGTH_len, LZX_LENGTH_TABLEBITS, LZX_LENGTH_MAXSYMBOLS);
-                        match_length += length_footer;
-                    }
-
-                    match_length += LZX_MIN_MATCH;
-
-                    // Get match offset
-                    uint match_offset = (uint)(main_element >> 3);
-                    switch (match_offset)
-                    {
-                        case 0:
-                            match_offset = R[0];
-                            break;
-
-                        case 1:
-                            match_offset = R[1];
-                            R[1] = R[0];
-                            R[0] = match_offset;
-                            break;
-
-                        case 2:
-                            match_offset = R[2];
-                            R[2] = R[0];
-                            R[0] = match_offset;
-                            break;
-
-                        default:
-                            if (BlockType == LZXBlockType.LZX_BLOCKTYPE_VERBATIM)
-                            {
-                                if (match_offset == 3)
-                                {
-                                    match_offset = 1;
-                                }
-                                else
-                                {
-                                    int extra = (match_offset >= 36) ? 17 : LZXExtraBits[match_offset];
-                                    int verbatim_bits = (int)READ_BITS_MSB(extra);
-                                    match_offset = (uint)(LZXPositionBase[match_offset] - 2 + verbatim_bits);
-                                }
-                            }
-
-                            // LZX_BLOCKTYPE_ALIGNED
-                            else
-                            {
-                                int extra = (match_offset >= 36) ? 17 : LZXExtraBits[match_offset];
-                                match_offset = LZXPositionBase[match_offset] - 2;
-
-                                // >3: verbatim and aligned bits
-                                if (extra > 3)
-                                {
-                                    extra -= 3;
-                                    int verbatim_bits = (int)READ_BITS_MSB(extra);
-                                    match_offset += (uint)(verbatim_bits << 3);
-
-                                    int aligned_bits = (int)READ_HUFFSYM_MSB(ALIGNED_table, ALIGNED_len, LZX_ALIGNED_TABLEBITS, LZX_ALIGNED_MAXSYMBOLS);
-                                    match_offset += (uint)aligned_bits;
-                                }
-
-                                // 3: aligned bits only
-                                else if (extra == 3)
-                                {
-                                    int aligned_bits = (int)READ_HUFFSYM_MSB(ALIGNED_table, ALIGNED_len, LZX_ALIGNED_TABLEBITS, LZX_ALIGNED_MAXSYMBOLS);
-                                    match_offset += (uint)aligned_bits;
-                                }
-
-                                // 1-2: verbatim bits only
-                                else if (extra > 0)
-                                {
-                                    int verbatim_bits = (int)READ_BITS_MSB(extra);
-                                    match_offset += (uint)verbatim_bits;
-                                }
-
-                                // 0: not defined in LZX specification!
-                                else
-                                {
-                                    match_offset = 1;
-                                }
-                            }
-
-                            // Update repeated offset LRU queue
-                            R[2] = R[1]; R[1] = R[0]; R[0] = match_offset;
-                            break;
-                    }
-
-                    // LZX DELTA uses max match length to signal even longer match
-                    if (match_length == LZX_MAX_MATCH && IsDelta)
-                    {
-                        int extra_len;
-
-                        // 4 entry huffman tree
-                        ENSURE_BITS(3);
-
-                        // '0' . 8 extra length bits
-                        if (PEEK_BITS_MSB(1) == 0)
-                        {
-                            REMOVE_BITS_MSB(1);
-                            extra_len = (int)READ_BITS_MSB(8);
-                        }
-
-                        // '10' . 10 extra length bits + 0x100
-                        else if (PEEK_BITS_MSB(2) == 2)
-                        {
-                            REMOVE_BITS_MSB(2);
-                            extra_len = (int)READ_BITS_MSB(10);
-                            extra_len += 0x100;
-                        }
-
-                        // '110' . 12 extra length bits + 0x500
-                        else if (PEEK_BITS_MSB(3) == 6)
-                        {
-                            REMOVE_BITS_MSB(3);
-                            extra_len = (int)READ_BITS_MSB(12);
-                            extra_len += 0x500;
-                        }
-
-                        // '111' . 15 extra length bits
-                        else
-                        {
-                            REMOVE_BITS_MSB(3);
-                            extra_len = (int)READ_BITS_MSB(15);
-                        }
-
-                        match_length += extra_len;
-                    }
-
-                    if ((WindowPosition + match_length) > WindowSize)
-                    {
-                        Console.WriteLine("Match ran over window wrap");
-                        return Error = Error.MSPACK_ERR_DECRUNCH;
-                    }
-
-                    // Copy match
-                    int rundest = WindowPosition;
-                    int i = match_length;
-
-                    // Does match offset wrap the window?
-                    if (match_offset > WindowPosition)
-                    {
-                        if (match_offset > Offset && (match_offset - WindowPosition) > ReferenceDataSize)
-                        {
-                            Console.WriteLine("Match offset beyond LZX stream");
-                            return Error = Error.MSPACK_ERR_DECRUNCH;
-                        }
-
-                        // j = length from match offset to end of window
-                        int j = (int)(match_offset - WindowPosition);
-                        if (j > (int)WindowSize)
-                        {
-                            Console.WriteLine("Match offset beyond window boundaries");
-                            return Error = Error.MSPACK_ERR_DECRUNCH;
-                        }
-
-                        int runsrc = (int)(WindowSize - j);
-                        if (j < i)
-                        {
-                            // If match goes over the window edge, do two copy runs
-                            i -= j;
-                            while (j-- > 0)
-                            {
-                                Window[rundest++] = Window[runsrc++];
-                            }
-
-                            runsrc = 0;
-                        }
-
-                        while (i-- > 0)
-                        {
-                            Window[rundest++] = Window[runsrc++];
-                        }
-                    }
-                    else
-                    {
-                        int runsrc = (int)(rundest - match_offset);
-                        while (i-- > 0)
-                        {
-                            Window[rundest++] = Window[runsrc++];
-                        }
-                    }
-
-                    this_run -= match_length;
-                    WindowPosition += match_length;
+                    DecodeMatch(main_element, ref this_run);
+                    if (Error != Error.MSPACK_ERR_OK)
+                        return Error;
                 }
             }
 
@@ -1004,6 +977,48 @@ namespace LibMSPackSharp.Compression
 
         private void UndoE8Preprocessing(uint frame_size)
         {
+            if (frame_size > 10)
+            {
+                // Finish any bytes that weren't processed by the vectorized implementation.
+                int start = WindowPosition;
+                int p8_end = (int)(WindowPosition + frame_size - 10);
+                do
+                {
+                    if (Window[WindowPosition] == 0xe8)
+                    {
+                        int abs_offset, rel_offset;
+
+                        // XXX: This assumes unaligned memory accesses are okay.
+                        abs_offset = BitConverter.ToInt32(Window, WindowPosition + 1);
+                        if (abs_offset >= 0)
+                        {
+                            if (abs_offset < 12_000_000)
+                            {
+                                // "good translation"
+                                rel_offset = abs_offset - start;
+                                Array.Copy(BitConverter.GetBytes(rel_offset), 0, Window, WindowPosition + 1, 4);
+                            }
+                        }
+                        else
+                        {
+                            if (abs_offset >= -start)
+                            {
+                                // "compensating translation"
+                                rel_offset = abs_offset + 12_000_000;
+                                Array.Copy(BitConverter.GetBytes(rel_offset), 0, Window, WindowPosition + 1, 4);
+                            }
+                        }
+
+                        WindowPosition += 5;
+                    }
+                    else
+                    {
+                        WindowPosition++;
+                    }
+                } while (WindowPosition < p8_end);
+            }
+
+
             int data = 0;
             int dataend = (int)(frame_size - 10);
             int curpos = (int)Offset;
