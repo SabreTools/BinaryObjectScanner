@@ -109,5 +109,4 @@ namespace LibMSPackSharp.CAB
         /// </summary>
         MSCABD_PARAM_SALVAGE = 3,
     }
-
 }

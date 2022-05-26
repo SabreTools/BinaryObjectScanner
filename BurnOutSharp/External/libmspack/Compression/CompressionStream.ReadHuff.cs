@@ -77,11 +77,11 @@ namespace LibMSPackSharp.Compression
         public static bool MakeDecodeTableMSB(int nsyms, int nbits, byte[] length, ushort[] table)
         {
             ushort sym, next_symbol;
-            uint leaf, fill;
+            long leaf, fill;
             byte bit_num;
-            uint pos = 0; // The current position in the decode table
-            uint table_mask = (uint)1 << nbits;
-            uint bit_mask = table_mask >> 1; // Don't do 0 length codes
+            long pos = 0; // The current position in the decode table
+            long table_mask = 1 << nbits;
+            long bit_mask = table_mask >> 1; // Don't do 0 length codes
 
             // Fill entries for codes short enough for a direct mapping
             for (bit_num = 1; bit_num <= nbits; bit_num++)
@@ -116,7 +116,7 @@ namespace LibMSPackSharp.Compression
             }
 
             // next_symbol = base of allocation for long codes
-            next_symbol = ((table_mask >> 1) < nsyms) ? (ushort)nsyms : (ushort)(table_mask >> 1);
+            next_symbol = (ushort)(((table_mask >> 1) < nsyms) ? nsyms : (table_mask >> 1));
 
             // Give ourselves room for codes to grow by up to 16 more bits.
             // codes now start at bit nbits+16 and end at (nbits+16-codelength)

@@ -126,12 +126,6 @@ namespace LibMSPackSharp.Compression
         
         public byte LENGTH_empty { get; set; }
 
-        // This is used purely for doing the intel E8 transform
         public byte[] E8Buffer { get; set; } = new byte[LZX_FRAME_SIZE];
-
-        /// <summary>
-        /// Is the output pointer referring to E8?
-        /// </summary>
-        public bool OutputIsE8 { get; set; }
     }
 }

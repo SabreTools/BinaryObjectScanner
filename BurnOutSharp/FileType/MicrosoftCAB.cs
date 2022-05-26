@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.IO;
+using System.Text.RegularExpressions;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Tools;
 using LibMSPackSharp;
@@ -50,6 +51,18 @@ namespace BurnOutSharp.FileType
                 {
                     if (scanner.IncludeDebug) Console.WriteLine($"Error occurred opening of '{file}': {decompressor.Error}");
                     return null;
+                }
+
+                // If there are additional previous CABs, add those
+                while (!string.IsNullOrWhiteSpace(cabFile.NextName))
+                {
+                    // TODO: Implement
+                }
+
+                // If there are additional next CABs, add those
+                while (!string.IsNullOrWhiteSpace(cabFile.NextName))
+                {
+                    // TODO: Implement
                 }
 
                 // Loop through the found internal files

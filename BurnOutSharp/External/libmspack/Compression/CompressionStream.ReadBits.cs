@@ -11,6 +11,7 @@
  */
 
 using System;
+using System.Linq;
 using static LibMSPackSharp.Compression.Constants;
 
 namespace LibMSPackSharp.Compression
@@ -168,7 +169,7 @@ namespace LibMSPackSharp.Compression
         /// </summary>
         public void INJECT_BITS_MSB(int bitdata, int nbits)
         {
-            BitBuffer |= (uint)(bitdata << (BITBUF_WIDTH - nbits - BitsLeft));
+            BitBuffer |= ((uint)bitdata << (BITBUF_WIDTH - nbits - BitsLeft));
             BitsLeft += nbits;
         }
 

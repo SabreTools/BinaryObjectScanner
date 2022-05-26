@@ -321,49 +321,72 @@ namespace LibMSPackSharp.CAB
                 }
             }
 
-            // Close existing file handles
-            System.Close(State?.InputFileHandle);
+            // Close existing output file handle in case of error
             System.Close(State?.OutputFileHandle);
 
             // Allocate generic decompression state
-            State = new DecompressState()
+            if (State == null)
             {
-                Folder = file.Folder,
-                Data = file.Folder.Data,
-                Offset = 0,
-                Block = 0,
-                Outlen = 0,
+                State = new DecompressState()
+                {
+                    Folder = null,
+                    Data = null,
+                    System = System,
+                    DecompressorState = null,
+                    InputFileHandle = null,
+                    InputCabinet = null,
+                };
 
-                System = System,
+                State.System.Read = SysRead;
+                State.System.Write = SysWrite;
+            }
 
-                InputCabinet = file.Folder.Data.Cab,
-                InputFileHandle = System.Open(file.Folder.Data.Cab.Filename, OpenMode.MSPACK_SYS_OPEN_READ),
-                OutputFileHandle = null, // Required for skipping existing data
-                InputPointer = 0,
-                InputEnd = 0,
-            };
+            // Do we need to change folder or reset the current folder?
+            if (State.Folder != file.Folder || State.Offset > file.Header.FolderOffset || State.DecompressorState == null)
+            {
+                // Do we need to open a new cab file?
+                if (State.InputFileHandle == null || file.Folder.Data.Cab != State.InputCabinet)
+                {
+                    // Close previous file handle if from a different cab
+                    System.Close(State?.InputFileHandle);
 
-            State.System.Read = SysRead;
-            State.System.Write = SysWrite;
+                    State.InputCabinet = file.Folder.Data.Cab;
+                    State.InputFileHandle = System.Open(file.Folder.Data.Cab.Filename, OpenMode.MSPACK_SYS_OPEN_READ);
+                    if (State.InputFileHandle == null)
+                        return Error = Error.MSPACK_ERR_OPEN;
+                }
 
-            if (State.InputFileHandle == null)
-                return Error = Error.MSPACK_ERR_OPEN;
+                // Seek to start of data blocks
+                // TODO: For LZX, they seem to start 8 bytes after the offset for some reason?
+                if (!System.Seek(State.InputFileHandle, file.Folder.Data.Offset, SeekMode.MSPACK_SYS_SEEK_START))
+                    return Error = Error.MSPACK_ERR_SEEK;
 
-            // Seek to start of data blocks
-            if (!System.Seek(State.InputFileHandle, file.Folder.Data.Offset, SeekMode.MSPACK_SYS_SEEK_START))
-                return Error = Error.MSPACK_ERR_SEEK;
+                // Set up decompressor
+                if (InitDecompressionState(file.Folder.Header.CompType) != Error.MSPACK_ERR_OK)
+                    return Error;
 
-            // Set up decompressor
-            if (InitDecompressionState(file.Folder.Header.CompType) != Error.MSPACK_ERR_OK)
-                return Error;
+                // Initialize new folder state
+                State.Folder = file.Folder;
+                State.Data = file.Folder.Data;
+                State.Offset = 0;
+                State.Block = 0;
+                State.Outlen = 0;
+                State.InputPointer = 0; // State.Input[0]
+                State.InputEnd = 0; // State.Input[0]
 
-            // ReadError lasts for the lifetime of a decompressor
-            ReadError = Error.MSPACK_ERR_OK;
+                // ReadError lasts for the lifetime of a decompressor
+                ReadError = Error.MSPACK_ERR_OK;
+            }
+
             Error = Error.MSPACK_ERR_OK;
 
             // If file has more than 0 bytes
             if (filelen != 0)
             {
+                // Set the output file handle to null
+                State.OutputFileHandle = null;
+                UpdateDecompressionState();
+
                 // Get to correct offset.
                 // - Use null fh to say 'no writing' to cabd_sys_write()
                 // - If SysRead() has an error, it will set self.ReadError
@@ -391,6 +414,7 @@ namespace LibMSPackSharp.CAB
 
             // Close output file
             System.Close(State.OutputFileHandle);
+            State.OutputFileHandle = null;
 
             return Error;
         }
