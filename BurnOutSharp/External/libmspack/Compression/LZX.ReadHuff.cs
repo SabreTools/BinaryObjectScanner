@@ -62,18 +62,8 @@ namespace LibMSPackSharp.Compression
         /// </summary>
         private Error READ_LENGTHS(byte[] lengths, uint first, uint last)
         {
-            int i_ptr = InputPointer;
-            int i_end = InputEnd;
-            uint bit_buffer = BitBuffer;
-            int bits_left = BitsLeft;
-
             if (ReadLens(lengths, first, last) != Error.MSPACK_ERR_OK)
                 return Error;
-
-            InputPointer = i_ptr;
-            InputEnd = i_end;
-            BitBuffer = bit_buffer;
-            BitsLeft = bits_left;
 
             return Error = Error.MSPACK_ERR_OK;
         }

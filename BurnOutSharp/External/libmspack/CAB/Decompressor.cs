@@ -632,7 +632,7 @@ namespace LibMSPackSharp.CAB
         {
             State.Offset += (uint)bytes;
             if (State.OutputFileHandle != null)
-                return System.Write(State.OutputFileHandle, buffer, pointer, bytes);
+                return SystemImpl.DefaultSystem.Write(State.OutputFileHandle, buffer, pointer, bytes);
 
             return bytes;
         }
