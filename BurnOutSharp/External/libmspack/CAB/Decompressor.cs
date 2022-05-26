@@ -357,7 +357,6 @@ namespace LibMSPackSharp.CAB
                 }
 
                 // Seek to start of data blocks
-                // TODO: For LZX, they seem to start 8 bytes after the offset for some reason?
                 if (!System.Seek(State.InputFileHandle, file.Folder.Data.Offset, SeekMode.MSPACK_SYS_SEEK_START))
                     return Error = Error.MSPACK_ERR_SEEK;
 
@@ -553,85 +552,74 @@ namespace LibMSPackSharp.CAB
         /// use. will read data blocks (and merge split blocks) from the cabinet
         /// and serve the read bytes to the decompressors
         /// </summary>
-        internal static int SysRead(object file, byte[] buffer, int pointer, int bytes)
+        internal int SysRead(object file, byte[] buffer, int pointer, int bytes)
         {
-            if (file is Decompressor self)
+            int avail, todo, outlen = 0;
+
+            bool ignore_cksum = Salvage ||
+              (FixMSZip &&
+               ((State.CompressionType & CompressionType.COMPTYPE_MASK) == CompressionType.COMPTYPE_MSZIP));
+            bool ignore_blocksize = Salvage;
+
+            todo = bytes;
+            while (todo > 0)
             {
-                SystemImpl sys = self.System;
+                avail = State.InputEnd - State.InputPointer;
 
-                int avail, todo, outlen = 0;
-
-                bool ignore_cksum = self.Salvage ||
-                  (self.FixMSZip &&
-                   ((self.State.CompressionType & CompressionType.COMPTYPE_MASK) == CompressionType.COMPTYPE_MSZIP));
-                bool ignore_blocksize = self.Salvage;
-
-                todo = bytes;
-                while (todo > 0)
+                // If out of input data, read a new block
+                if (avail != 0)
                 {
-                    avail = self.State.InputEnd - self.State.InputPointer;
+                    // Copy as many input bytes available as possible
+                    if (avail > todo)
+                        avail = todo;
 
-                    // If out of input data, read a new block
-                    if (avail != 0)
+                    Array.Copy(State.Input, State.InputPointer, buffer, pointer, avail);
+                    State.InputPointer += avail;
+                    pointer += avail;
+                    todo -= avail;
+                }
+                else
+                {
+                    // Out of data, read a new block
+
+                    // Check if we're out of input blocks, advance block counter
+                    if (State.Block++ >= State.Folder.Header.NumBlocks)
                     {
-                        // Copy as many input bytes available as possible
-                        if (avail > todo)
-                            avail = todo;
+                        if (!Salvage)
+                            ReadError = Error.MSPACK_ERR_DATAFORMAT;
+                        else
+                            Console.WriteLine("Ran out of CAB input blocks prematurely");
 
-                        Array.Copy(self.State.Input, self.State.InputPointer, buffer, pointer, avail);
-                        self.State.InputPointer += avail;
-                        pointer += avail;
-                        todo -= avail;
+                        break;
                     }
-                    else
+
+                    // Read a block
+                    ReadError = SysReadBlock(ref outlen, ignore_cksum, ignore_blocksize);
+                    if (ReadError != Error.MSPACK_ERR_OK)
+                        return -1;
+
+                    State.Outlen += outlen;
+
+                    // Special Quantum hack -- trailer byte to allow the decompressor
+                    // to realign itself. CAB Quantum blocks, unlike LZX blocks, can have
+                    // anything from 0 to 4 trailing null bytes.
+                    if ((State.CompressionType & CompressionType.COMPTYPE_MASK) == CompressionType.COMPTYPE_QUANTUM)
+                        State.Input[State.InputEnd++] = 0xFF;
+
+                    // Is this the last block?
+                    if (State.Block >= State.Folder.Header.NumBlocks)
                     {
-                        // Out of data, read a new block
-
-                        // Check if we're out of input blocks, advance block counter
-                        if (self.State.Block++ >= self.State.Folder.Header.NumBlocks)
+                        if ((State.CompressionType & CompressionType.COMPTYPE_MASK) == CompressionType.COMPTYPE_LZX)
                         {
-                            if (!self.Salvage)
-                                self.ReadError = Error.MSPACK_ERR_DATAFORMAT;
-                            else
-                                Console.WriteLine("Ran out of CAB input blocks prematurely");
-
-                            break;
-                        }
-
-                        // Read a block
-                        self.ReadError = SysReadBlock(sys, self.State, ref outlen, ignore_cksum, ignore_blocksize);
-                        if (self.ReadError != Error.MSPACK_ERR_OK)
-                            return -1;
-
-                        self.State.Outlen += outlen;
-
-                        // Special Quantum hack -- trailer byte to allow the decompressor
-                        // to realign itself. CAB Quantum blocks, unlike LZX blocks, can have
-                        // anything from 0 to 4 trailing null bytes.
-                        if ((self.State.CompressionType & CompressionType.COMPTYPE_MASK) == CompressionType.COMPTYPE_QUANTUM)
-                            self.State.Input[self.State.InputEnd++] = 0xFF;
-
-                        // Is this the last block?
-                        if (self.State.Block >= self.State.Folder.Header.NumBlocks)
-                        {
-                            if ((self.State.CompressionType & CompressionType.COMPTYPE_MASK) == CompressionType.COMPTYPE_LZX)
-                            {
-                                // Special LZX hack -- on the last block, inform LZX of the
-                                // size of the output data stream.
-                                (self.State.DecompressorState as LZX).SetOutputLength(self.State.Outlen);
-                            }
+                            // Special LZX hack -- on the last block, inform LZX of the
+                            // size of the output data stream.
+                            (State.DecompressorState as LZX).SetOutputLength(State.Outlen);
                         }
                     }
                 }
-
-                return bytes - todo;
-            }
-            else if (file is FileStream impl)
-            {
-                return SystemImpl.DefaultSystem.Read(impl, buffer, pointer, bytes);
             }
 
-            return -1;
+            return bytes - todo;
         }
 
         /// <summary>
@@ -640,50 +628,35 @@ namespace LibMSPackSharp.CAB
         /// sys.write() function, or does nothing with the data when
         /// self.State.OutputFileHandle == null. advances self.State.Offset
         /// </summary>
-        internal static int SysWrite(object file, byte[] buffer, int pointer, int bytes)
+        internal int SysWrite(object file, byte[] buffer, int pointer, int bytes)
         {
-            // Null output file means skip those bytes
-            if (file == null)
-            {
-                return bytes;
-            }
-            else if (file is Decompressor self)
-            {
-                self.State.Offset += (uint)bytes;
-                if (self.State.OutputFileHandle != null)
-                    return self.System.Write(self.State.OutputFileHandle, buffer, pointer, bytes);
+            State.Offset += (uint)bytes;
+            if (State.OutputFileHandle != null)
+                return System.Write(State.OutputFileHandle, buffer, pointer, bytes);
 
-                return bytes;
-            }
-            else if (file is FileStream impl)
-            {
-                return SystemImpl.DefaultSystem.Write(impl, buffer, pointer, bytes);
-            }
-
-            // Unknown file to write to
-            return 0;
+            return bytes;
         }
 
         /// <summary>
         /// Reads a whole data block from a cab file. The block may span more than
         /// one cab file, if it does then the fragments will be reassembled
         /// </summary>
-        private static Error SysReadBlock(SystemImpl sys, DecompressState d, ref int output, bool ignore_cksum, bool ignore_blocksize)
+        private Error SysReadBlock(ref int output, bool ignore_cksum, bool ignore_blocksize)
         {
             byte[] hdr = new byte[_DataBlockHeader.Size];
             int full_len;
 
             // Reset the input block pointer and end of block pointer
-            d.InputPointer = d.InputEnd = 0;
+            State.InputPointer = State.InputEnd = 0;
 
             do
             {
                 // Read the block header
-                if (SystemImpl.DefaultSystem.Read(d.InputFileHandle, hdr, 0, _DataBlockHeader.Size) != _DataBlockHeader.Size)
+                if (SystemImpl.DefaultSystem.Read(State.InputFileHandle, hdr, 0, _DataBlockHeader.Size) != _DataBlockHeader.Size)
                     return Error.MSPACK_ERR_READ;
 
                 // Skip any reserved block headers
-                if (d.Data.Cab.Header.HeaderReserved != 0 && !sys.Seek(d.InputFileHandle, d.Data.Cab.Header.HeaderReserved, SeekMode.MSPACK_SYS_SEEK_CUR))
+                if (State.Data.Cab.Header.DataReserved != 0 && !System.Seek(State.InputFileHandle, State.Data.Cab.Header.DataReserved, SeekMode.MSPACK_SYS_SEEK_CUR))
                     return Error.MSPACK_ERR_SEEK;
 
                 // Create a block header from the data
@@ -692,7 +665,7 @@ namespace LibMSPackSharp.CAB
                     return err;
 
                 // Blocks must not be over CAB_INPUTMAX in size
-                full_len = (d.InputEnd - d.InputPointer) + dataBlockHeader.CompressedSize; // Include cab-spanning blocks
+                full_len = (State.InputEnd - State.InputPointer) + dataBlockHeader.CompressedSize; // Include cab-spanning blocks
                 if (full_len > CAB_INPUTMAX)
                 {
                     Console.WriteLine($"Block size {full_len} > CAB_INPUTMAX");
@@ -711,24 +684,24 @@ namespace LibMSPackSharp.CAB
                 }
 
                 // Read the block data
-                if (SystemImpl.DefaultSystem.Read(d.InputFileHandle, d.Input, d.InputEnd, dataBlockHeader.CompressedSize) != dataBlockHeader.CompressedSize)
+                if (SystemImpl.DefaultSystem.Read(State.InputFileHandle, State.Input, State.InputEnd, dataBlockHeader.CompressedSize) != dataBlockHeader.CompressedSize)
                     return Error.MSPACK_ERR_READ;
 
                 // Perform checksum test on the block (if one is stored)
                 if (dataBlockHeader.CheckSum != 0)
                 {
-                    uint sum2 = Checksum(d.Input, d.InputEnd, dataBlockHeader.CompressedSize, 0);
+                    uint sum2 = Checksum(State.Input, State.InputEnd, dataBlockHeader.CompressedSize, 0);
                     if (Checksum(hdr, 4, 4, sum2) != dataBlockHeader.CheckSum)
                     {
                         if (!ignore_cksum)
                             return Error.MSPACK_ERR_CHECKSUM;
 
-                        sys.Message(d.InputFileHandle, "WARNING; bad block checksum found");
+                        System.Message(State.InputFileHandle, "WARNING; bad block checksum found");
                     }
                 }
 
                 // Advance end of block pointer to include newly read data
-                d.InputEnd += dataBlockHeader.CompressedSize;
+                State.InputEnd += dataBlockHeader.CompressedSize;
 
                 // Uncompressed size == 0 means this block was part of a split block
                 // and it continues as the first block of the next cabinet in the set.
@@ -742,23 +715,23 @@ namespace LibMSPackSharp.CAB
                 // Otherwise, advance to next cabinet
 
                 // Close current file handle
-                sys.Close(d.InputFileHandle);
-                d.InputFileHandle = null;
+                System.Close(State.InputFileHandle);
+                State.InputFileHandle = null;
 
                 // Advance to next member in the cabinet set
-                if ((d.Data = d.Data.Next) == null)
+                if ((State.Data = State.Data.Next) == null)
                 {
-                    sys.Message(d.InputFileHandle, "WARNING; ran out of cabinets in set. Are any missing?");
+                    System.Message(State.InputFileHandle, "WARNING; ran out of cabinets in set. Are any missing?");
                     return Error.MSPACK_ERR_DATAFORMAT;
                 }
 
                 // Open next cab file
-                d.InputCabinet = d.Data.Cab;
-                if ((d.InputFileHandle = sys.Open(d.InputCabinet.Filename, OpenMode.MSPACK_SYS_OPEN_READ)) == null)
+                State.InputCabinet = State.Data.Cab;
+                if ((State.InputFileHandle = System.Open(State.InputCabinet.Filename, OpenMode.MSPACK_SYS_OPEN_READ)) == null)
                     return Error.MSPACK_ERR_OPEN;
 
                 // Seek to start of data blocks
-                if (!sys.Seek(d.InputFileHandle, d.Data.Offset, SeekMode.MSPACK_SYS_SEEK_START))
+                if (!System.Seek(State.InputFileHandle, State.Data.Offset, SeekMode.MSPACK_SYS_SEEK_START))
                     return Error.MSPACK_ERR_SEEK;
             } while (true);
         }

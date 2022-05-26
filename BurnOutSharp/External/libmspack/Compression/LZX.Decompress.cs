@@ -321,7 +321,7 @@ namespace LibMSPackSharp.Compression
             while (Frame < end_frame)
             {
                 // Have we reached the reset interval? (if there is one?)
-                if (ResetInterval != 0 && ((Frame & ResetInterval) == 0))
+                if (ResetInterval != 0 && ((Frame % ResetInterval) == 0))
                 {
                     if (BlockRemaining != 0)
                     {
@@ -800,9 +800,29 @@ namespace LibMSPackSharp.Compression
             return Error.MSPACK_ERR_OK;
         }
 
-        /// <summary>
-        /// Use the cleaned up code for decompression based on wimlib
-        /// </summary>
+        private void ResetState()
+        {
+            R[0] = 1;
+            R[1] = 1;
+            R[2] = 1;
+            HeaderRead = 0;
+            BlockRemaining = 0;
+            BlockType = LZXBlockType.LZX_BLOCKTYPE_INVALID0;
+
+            // Initialise tables to 0 (because deltas will be applied to them)
+            for (int i = 0; i < LZX_MAINTREE_MAXSYMBOLS; i++)
+            {
+                MAINTREE_len[i] = 0;
+            }
+
+            for (int i = 0; i < LZX_LENGTH_MAXSYMBOLS; i++)
+            {
+                LENGTH_len[i] = 0;
+            }
+        }
+
+        #region wimlib
+
         public Error DecompressNew(long out_bytes)
         {
             int warned = 0;
@@ -1010,56 +1030,6 @@ namespace LibMSPackSharp.Compression
             }
 
             return Error.MSPACK_ERR_OK;
-        }
-
-        private Error BUILD_TABLE(ushort[] table, byte[] lengths, int tablebits, int maxsymbols)
-        {
-            if (!MakeDecodeTableMSB(maxsymbols, tablebits, lengths, table))
-            {
-                Console.WriteLine($"Failed to build table");
-                return Error = Error.MSPACK_ERR_DECRUNCH;
-            }
-
-            return Error = Error.MSPACK_ERR_OK;
-        }
-
-        private Error BUILD_TABLE_MAYBE_EMPTY()
-        {
-            LENGTH_empty = 0;
-            if (!MakeDecodeTableMSB(LZX_LENGTH_MAXSYMBOLS, LZX_LENGTH_TABLEBITS, LENGTH_len, LENGTH_table))
-            {
-                for (int i = 0; i < LZX_LENGTH_MAXSYMBOLS; i++)
-                {
-                    if (LENGTH_len[i] > 0)
-                    {
-                        Console.WriteLine("Failed to build table");
-                        return Error = Error.MSPACK_ERR_DECRUNCH;
-                    }
-                }
-
-                // Empty tree - allow it, but don't decode symbols with it
-                LENGTH_empty = 1;
-            }
-
-            return Error = Error.MSPACK_ERR_OK;
-        }
-
-        private Error READ_LENGTHS(byte[] lengths, uint first, uint last)
-        {
-            int i_ptr = InputPointer;
-            int i_end = InputEnd;
-            uint bit_buffer = BitBuffer;
-            int bits_left = BitsLeft;
-
-            if (ReadLens(lengths, first, last) != Error.MSPACK_ERR_OK)
-                return Error;
-
-            InputPointer = i_ptr;
-            InputEnd = i_end;
-            BitBuffer = bit_buffer;
-            BitsLeft = bits_left;
-
-            return Error = Error.MSPACK_ERR_OK;
         }
 
         private Error Copy(uint match_offset, int match_len, ref int this_run)
@@ -1399,101 +1369,6 @@ namespace LibMSPackSharp.Compression
             return Error = Error.MSPACK_ERR_OK;
         }
 
-        private Error ReadLens(byte[] lens, uint first, uint last)
-        {
-            uint x, y;
-            int z;
-
-            // Read lengths for pretree (20 symbols, lengths stored in fixed 4 bits) 
-            for (x = 0; x < LZX_PRETREE_MAXSYMBOLS; x++)
-            {
-                y = (uint)READ_BITS_MSB(4);
-                PRETREE_len[x] = (byte)y;
-            }
-
-            BUILD_TABLE(PRETREE_table, PRETREE_len, LZX_PRETREE_TABLEBITS, LZX_PRETREE_MAXSYMBOLS);
-            if (Error != Error.MSPACK_ERR_OK)
-                return Error;
-
-            for (x = first; x < last;)
-            {
-                z = (int)READ_HUFFSYM_MSB(PRETREE_table, PRETREE_len, LZX_PRETREE_TABLEBITS, LZX_PRETREE_MAXSYMBOLS);
-                switch (z)
-                {
-                    // Code = 17, run of ([read 4 bits]+4) zeros
-                    case 17:
-                        y = (uint)READ_BITS_MSB(4);
-                        y += 4;
-                        while (y-- != 0)
-                        {
-                            lens[x++] = 0;
-                        }
-
-                        break;
-
-                    // Code = 18, run of ([read 5 bits]+20) zeros
-                    case 18:
-                        y = (uint)READ_BITS_MSB(5);
-                        y += 20;
-                        while (y-- != 0)
-                        {
-                            lens[x++] = 0;
-                        }
-
-                        break;
-
-                    // Code = 19, run of ([read 1 bit]+4) [read huffman symbol]
-                    case 19:
-                        y = (uint)READ_BITS_MSB(1);
-                        y += 4;
-
-                        z = (int)READ_HUFFSYM_MSB(PRETREE_table, PRETREE_len, LZX_PRETREE_TABLEBITS, LZX_PRETREE_MAXSYMBOLS);
-                        z = lens[x] - z;
-                        if (z < 0)
-                            z += 17;
-
-                        while (y-- != 0)
-                        {
-                            lens[x++] = (byte)z;
-                        }
-
-                        break;
-
-                    // Code = 0 to 16, delta current length entry
-                    default:
-                        z = lens[x] - z;
-                        if (z < 0)
-                            z += 17;
-
-                        lens[x++] = (byte)z;
-                        break;
-                }
-            }
-
-            return Error.MSPACK_ERR_OK;
-        }
-
-        private void ResetState()
-        {
-            R[0] = 1;
-            R[1] = 1;
-            R[2] = 1;
-            HeaderRead = 0;
-            BlockRemaining = 0;
-            BlockType = LZXBlockType.LZX_BLOCKTYPE_INVALID0;
-
-            // Initialise tables to 0 (because deltas will be applied to them)
-            for (int i = 0; i < LZX_MAINTREE_MAXSYMBOLS; i++)
-            {
-                MAINTREE_len[i] = 0;
-            }
-
-            for (int i = 0; i < LZX_LENGTH_MAXSYMBOLS; i++)
-            {
-                LENGTH_len[i] = 0;
-            }
-        }
-
         private void UndoE8Preprocessing(int data, long out_bytes)
         {
             int p8 = data;
@@ -1540,5 +1415,7 @@ namespace LibMSPackSharp.Compression
                 } while (p8 < p8_end);
             }
         }
+
+        #endregion
     }
 }
