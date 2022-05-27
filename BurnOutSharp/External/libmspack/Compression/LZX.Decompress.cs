@@ -76,7 +76,6 @@
 
 using System;
 using System.IO;
-using System.Linq;
 using static LibMSPackSharp.Compression.Constants;
 
 namespace LibMSPackSharp.Compression
@@ -190,6 +189,7 @@ namespace LibMSPackSharp.Compression
 
                 OutputPointer = 0,
                 OutputEnd = 0,
+                WriteFromE8 = false,
             };
 
             lzx.ResetState();
@@ -305,12 +305,12 @@ namespace LibMSPackSharp.Compression
 
             if (i != 0)
             {
-                if (System.Write(OutputFileHandle, IntelStarted ? E8Buffer : Window, OutputPointer, i) != i)
+                if (System.Write(OutputFileHandle, WriteFromE8 ? E8Buffer : Window, OutputPointer, i) != i)
                     return Error = Error.MSPACK_ERR_WRITE;
 
                 OutputPointer += i;
-                Offset += i;
-                out_bytes -= i;
+                Offset        += i;
+                out_bytes     -= i;
             }
 
             if (out_bytes == 0)
@@ -388,7 +388,7 @@ namespace LibMSPackSharp.Compression
                         i = (int)READ_BITS_MSB(16);
                         j = (int)READ_BITS_MSB(8);
                         BlockRemaining = BlockLength = (i << 8) | j;
-                        Console.WriteLine($"new block t{BlockType} len {BlockLength}");
+                        Console.WriteLine($"New block - type: {BlockType}, length: {BlockLength}");
 
                         // Read individual block headers
                         switch (BlockType)
@@ -404,8 +404,8 @@ namespace LibMSPackSharp.Compression
                                 // Rest of aligned header is same as verbatim
 
                                 // Read lengths of and build main huffman decoding tree
-                                READ_LENGTHS(MAINTREE_len, 0, 256);
-                                READ_LENGTHS(MAINTREE_len, 256, LZX_NUM_CHARS + NumOffsets);
+                                ReadLens(MAINTREE_len, 0, 256);
+                                ReadLens(MAINTREE_len, 256, LZX_NUM_CHARS + NumOffsets);
                                 BUILD_TABLE(MAINTREE_table, MAINTREE_len, LZX_MAINTREE_TABLEBITS, LZX_MAINTREE_MAXSYMBOLS);
 
                                 // If the literal 0xE8 is anywhere in the block...
@@ -413,14 +413,14 @@ namespace LibMSPackSharp.Compression
                                     IntelStarted = true;
 
                                 // Read lengths of and build lengths huffman decoding tree
-                                READ_LENGTHS(LENGTH_len, 0, LZX_NUM_SECONDARY_LENGTHS);
+                                ReadLens(LENGTH_len, 0, LZX_NUM_SECONDARY_LENGTHS);
                                 BUILD_TABLE_MAYBE_EMPTY();
                                 break;
 
                             case LZXBlockType.LZX_BLOCKTYPE_VERBATIM:
                                 // Read lengths of and build main huffman decoding tree
-                                READ_LENGTHS(MAINTREE_len, 0, 256);
-                                READ_LENGTHS(MAINTREE_len, 256, LZX_NUM_CHARS + NumOffsets);
+                                ReadLens(MAINTREE_len, 0, 256);
+                                ReadLens(MAINTREE_len, 256, LZX_NUM_CHARS + NumOffsets);
                                 BUILD_TABLE(MAINTREE_table, MAINTREE_len, LZX_MAINTREE_TABLEBITS, LZX_MAINTREE_MAXSYMBOLS);
 
                                 // If the literal 0xE8 is anywhere in the block...
@@ -428,7 +428,7 @@ namespace LibMSPackSharp.Compression
                                     IntelStarted = true;
 
                                 // Read lengths of and build lengths huffman decoding tree
-                                READ_LENGTHS(LENGTH_len, 0, LZX_NUM_SECONDARY_LENGTHS);
+                                ReadLens(LENGTH_len, 0, LZX_NUM_SECONDARY_LENGTHS);
                                 BUILD_TABLE_MAYBE_EMPTY();
                                 break;
 
@@ -450,8 +450,8 @@ namespace LibMSPackSharp.Compression
                                     buf[rundest++] = InputBuffer[InputPointer++];
                                 }
 
-                                R[0] = (uint)(buf[0] | (buf[1] << 8) | (buf[2] << 16) | (buf[3] << 24));
-                                R[1] = (uint)(buf[4] | (buf[5] << 8) | (buf[6] << 16) | (buf[7] << 24));
+                                R[0] = (uint)(buf[0] | (buf[1] << 8) | (buf[2]  << 16) | (buf[3] << 24));
+                                R[1] = (uint)(buf[4] | (buf[5] << 8) | (buf[6]  << 16) | (buf[7] << 24));
                                 R[2] = (uint)(buf[8] | (buf[9] << 8) | (buf[10] << 16) | (buf[11] << 24));
                                 break;
 
@@ -468,7 +468,7 @@ namespace LibMSPackSharp.Compression
                         this_run = bytes_todo;
 
                     // Assume we decode exactly this_run bytes, for now
-                    bytes_todo -= this_run;
+                    bytes_todo     -= this_run;
                     BlockRemaining -= this_run;
 
                     // Decode at least this_run bytes
@@ -659,7 +659,7 @@ namespace LibMSPackSharp.Compression
                                         }
                                     }
 
-                                    this_run -= match_length;
+                                    this_run       -= match_length;
                                     WindowPosition += match_length;
                                 }
                             }
@@ -683,9 +683,9 @@ namespace LibMSPackSharp.Compression
                                         i = this_run;
 
                                     Array.Copy(InputBuffer, InputPointer, Window, rundest, i);
-                                    rundest += 1;
+                                    rundest      += 1;
                                     InputPointer += i;
-                                    this_run -= i;
+                                    this_run     -= i;
                                 }
                             }
 
@@ -731,14 +731,15 @@ namespace LibMSPackSharp.Compression
                 // Does this intel block _really_ need decoding?
                 if (IntelStarted && IntelFileSize != 0 && Frame < 32768 && frame_size > 10)
                 {
-                    int data = 0;
-                    int dataend = frame_size - 10;
-                    int curpos = (int)Offset;
+                    int data     = 0;
+                    int dataend  = frame_size - 10;
+                    int curpos   = (int)Offset;
                     int filesize = IntelFileSize;
                     int abs_off, rel_off;
 
                     // Copy E8 block to the e8 buffer and tweak if needed
-                    OutputPointer = 0;
+                    WriteFromE8 = true;
+                    OutputPointer = data;
                     Array.Copy(Window, FramePosition, E8Buffer, data, frame_size);
 
                     while (data < dataend)
@@ -765,7 +766,7 @@ namespace LibMSPackSharp.Compression
                 }
                 else
                 {
-                    IntelStarted = false;
+                    WriteFromE8 = false;
                     OutputPointer = (int)FramePosition;
                 }
 
@@ -773,12 +774,12 @@ namespace LibMSPackSharp.Compression
 
                 // Write a frame
                 i = (int)(out_bytes < frame_size ? out_bytes : frame_size);
-                if (System.Write(OutputFileHandle, IntelStarted ? E8Buffer : Window, OutputPointer, i) != i)
+                if (System.Write(OutputFileHandle, WriteFromE8 ? E8Buffer : Window, OutputPointer, i) != i)
                     return Error = Error.MSPACK_ERR_WRITE;
 
                 OutputPointer += i;
-                Offset += i;
-                out_bytes -= i;
+                Offset        += i;
+                out_bytes     -= i;
 
                 // Advance frame start position
                 FramePosition += (uint)frame_size;
@@ -802,12 +803,13 @@ namespace LibMSPackSharp.Compression
 
         private void ResetState()
         {
-            R[0] = 1;
-            R[1] = 1;
-            R[2] = 1;
-            HeaderRead = 0;
+            R[0]           = 1;
+            R[1]           = 1;
+            R[2]           = 1;
+            HeaderRead     = 0;
             BlockRemaining = 0;
             BlockType = LZXBlockType.LZX_BLOCKTYPE_INVALID0;
+            WriteFromE8 = false;
 
             // Initialise tables to 0 (because deltas will be applied to them)
             for (int i = 0; i < LZX_MAINTREE_MAXSYMBOLS; i++)
@@ -817,605 +819,8 @@ namespace LibMSPackSharp.Compression
 
             for (int i = 0; i < LZX_LENGTH_MAXSYMBOLS; i++)
             {
-                LENGTH_len[i] = 0;
+                LENGTH_len[i]   = 0;
             }
         }
-
-        #region wimlib
-
-        public Error DecompressNew(long out_bytes)
-        {
-            int warned = 0;
-
-            // Easy answers
-            if (out_bytes < 0)
-                return Error.MSPACK_ERR_ARGS;
-
-            if (Error != Error.MSPACK_ERR_OK)
-                return Error;
-
-            // Flush out any stored-up bytes before we begin
-            int leftover_bytes = OutputEnd - OutputPointer;
-            if (leftover_bytes > out_bytes)
-                leftover_bytes = (int)out_bytes;
-
-            if (leftover_bytes != 0)
-            {
-                try { System.Write(OutputFileHandle, Window, OutputPointer, leftover_bytes); }
-                catch { return Error = Error.MSPACK_ERR_WRITE; }
-
-                OutputPointer += leftover_bytes;
-                Offset += leftover_bytes;
-                out_bytes -= leftover_bytes;
-            }
-
-            if (out_bytes == 0)
-                return Error.MSPACK_ERR_OK;
-
-            uint end_frame = (uint)((Offset + out_bytes) / LZX_FRAME_SIZE) + 1;
-
-            while (Frame < end_frame)
-            {
-                // Have we reached the reset interval? (if there is one?)
-                if (ResetInterval != 0 && ((Frame % ResetInterval) == 0))
-                {
-                    if (BlockRemaining != 0)
-                    {
-                        // This is a file format error, we can make a best effort to extract what we can
-                        Console.WriteLine($"{BlockRemaining} bytes remaining at reset interval");
-                        if (warned == 0)
-                        {
-                            System.Message(null, "WARNING; invalid reset interval detected during LZX decompression");
-                            warned++;
-                        }
-                    }
-
-                    // Re-read the intel header and reset the huffman lengths
-                    ResetState();
-                }
-
-                // LZX DELTA format has chunk_size, not present in LZX format
-                if (IsDelta)
-                {
-                    ENSURE_BITS(16);
-                    REMOVE_BITS_MSB(16);
-                }
-
-                // Calculate size of frame: all frames are 32k except the final frame
-                // which is 32kb or less. this can only be calculated when Length
-                // has been filled in.
-                uint frame_size = LZX_FRAME_SIZE;
-                if (Length != 0 && (Length - Offset) < frame_size)
-                    frame_size = (uint)(Length - Offset);
-
-                // Decode until one more frame is available
-                int bytes_todo = (int)(FramePosition + frame_size - WindowPosition);
-                while (bytes_todo > 0)
-                {
-                    ReadBlockHeader();
-                    if (Error != Error.MSPACK_ERR_OK)
-                        return Error;
-
-                    // Decode more of the block:
-                    int this_run = Math.Min(BlockRemaining, bytes_todo);
-
-                    // Assume we decode exactly this_run bytes, for now
-                    bytes_todo -= this_run;
-                    BlockRemaining -= this_run;
-
-                    // Decode at least this_run bytes
-                    switch (BlockType)
-                    {
-                        case LZXBlockType.LZX_BLOCKTYPE_ALIGNED:
-                        case LZXBlockType.LZX_BLOCKTYPE_VERBATIM:
-                            DecompressBlock(ref this_run);
-                            if (Error != Error.MSPACK_ERR_OK)
-                                return Error;
-
-                            // If the literal 0xE8 is anywhere in the block...
-                            if (MAINTREE_len[0xE8] != 0)
-                                IntelStarted = true;
-
-                            break;
-
-                        case LZXBlockType.LZX_BLOCKTYPE_UNCOMPRESSED:
-                            // As this_run is limited not to wrap a frame, this also means it
-                            // won't wrap the window (as the window is a multiple of 32k)
-                            int rundest = WindowPosition;
-                            WindowPosition += this_run;
-                            while (this_run > 0)
-                            {
-                                int i = InputEnd - InputPointer;
-                                if (i == 0)
-                                {
-                                    READ_IF_NEEDED();
-                                    if (Error != Error.MSPACK_ERR_OK)
-                                        return Error;
-                                }
-                                else
-                                {
-                                    i = Math.Min(i, this_run);
-                                    Array.Copy(InputBuffer, InputPointer, Window, rundest, i);
-
-                                    rundest += i;
-                                    InputPointer += i;
-                                    this_run -= i;
-                                }
-                            }
-
-                            // Realign if this was an odd-sized UNCOMPRESSED block
-                            if (InputPointer != InputEnd - 1 && (BlockLength & 1) != 0)
-                            {
-                                READ_IF_NEEDED();
-                                if (Error != Error.MSPACK_ERR_OK)
-                                    return Error;
-
-                                InputPointer++;
-                            }
-
-                            // Because we can't assume otherwise
-                            IntelStarted = true;
-
-                            break;
-
-                        default:
-                            return Error = Error.MSPACK_ERR_DECRUNCH; // Might as well
-                    }
-
-                    // Did the final match overrun our desired this_run length?
-                    if (this_run < 0)
-                    {
-                        if ((uint)(-this_run) > BlockRemaining)
-                        {
-                            Console.WriteLine($"Overrun went past end of block by {-this_run} ({BlockRemaining} remaining)");
-                            return Error = Error.MSPACK_ERR_DECRUNCH;
-                        }
-
-                        BlockRemaining -= -this_run;
-                    }
-                }
-
-                // Streams don't extend over frame boundaries
-                if ((WindowPosition - FramePosition) != frame_size)
-                {
-                    Console.WriteLine($"Decode beyond output frame limits! {WindowPosition - FramePosition} != {frame_size}");
-                    return Error = Error.MSPACK_ERR_DECRUNCH;
-                }
-
-                // Re-align input bitstream
-                if (BitsLeft > 0)
-                    ENSURE_BITS(16);
-                if ((BitsLeft & 15) != 0)
-                    REMOVE_BITS_MSB(BitsLeft & 15);
-
-                // Check that we've used all of the previous frame first
-                if (OutputPointer != OutputEnd)
-                {
-                    Console.WriteLine($"{OutputEnd - OutputPointer} avail bytes, new {frame_size} frame");
-                    return Error = Error.MSPACK_ERR_DECRUNCH;
-                }
-
-                // Does this intel block _really_ need decoding?
-                if (IntelStarted)
-                    UndoE8Preprocessing((int)FramePosition, out_bytes);
-
-                OutputPointer = (int)FramePosition;
-                OutputEnd = (int)(OutputPointer + frame_size);
-
-                // Write a frame
-                int new_out_bytes = (int)((out_bytes < frame_size) ? out_bytes : frame_size);
-                try { System.Write(OutputFileHandle, Window, OutputPointer, new_out_bytes); }
-                catch { return Error = Error.MSPACK_ERR_WRITE; }
-
-                OutputPointer += new_out_bytes;
-                Offset += new_out_bytes;
-                out_bytes -= new_out_bytes;
-
-                // Advance frame start position
-                FramePosition += frame_size;
-                Frame++;
-
-                // Wrap window / frame position pointers
-                if (WindowPosition == WindowSize)
-                    WindowPosition = 0;
-                if (FramePosition == WindowSize)
-                    FramePosition = 0;
-
-            }
-
-            if (out_bytes != 0)
-            {
-                Console.WriteLine("Bytes left to output");
-                return Error = Error.MSPACK_ERR_DECRUNCH;
-            }
-
-            return Error.MSPACK_ERR_OK;
-        }
-
-        private Error Copy(uint match_offset, int match_len, ref int this_run)
-        {
-            // Copy match
-            int rundest = WindowPosition;
-
-            // Does match offset wrap the window?
-            if (match_offset > WindowPosition)
-            {
-                if (match_offset > Offset && (match_offset - WindowPosition) > ReferenceDataSize)
-                {
-                    Console.WriteLine("Match offset beyond LZX stream");
-                    return Error = Error.MSPACK_ERR_DECRUNCH;
-                }
-
-                // j = length from match offset to end of window
-                int j = (int)(match_offset - WindowPosition);
-                if (j > (int)WindowSize)
-                {
-                    Console.WriteLine("Match offset beyond window boundaries");
-                    return Error = Error.MSPACK_ERR_DECRUNCH;
-                }
-
-                int runsrc = (int)(WindowSize - j);
-                if (j < match_len)
-                {
-                    // If match goes over the window edge, do two copy runs
-                    Array.Copy(Window, runsrc, Window, rundest, j);
-                    runsrc = 0;
-                }
-
-                Array.Copy(Window, runsrc, Window, rundest, match_len);
-            }
-            else
-            {
-                int runsrc = (int)(rundest - match_offset);
-                Array.Copy(Window, runsrc, Window, rundest, match_len);
-            }
-
-            this_run -= match_len;
-            WindowPosition += match_len;
-            return Error = Error.MSPACK_ERR_OK;
-        }
-
-        private Error DecodeMatch(int main_element, ref int this_run)
-        {
-            // The main element is offset by 256 because values under 256 indicate a
-            // literal value.
-            main_element -= LZX_NUM_CHARS;
-
-            // The length header consists of the lower 3 bits of the main element.
-            // The position slot is the rest of it.
-            int length_header = main_element & LZX_NUM_PRIMARY_LENGTHS;
-            int position_slot = main_element >> 3;
-
-            // If the length_header is less than LZX_NUM_PRIMARY_LENS (= 7), it
-            // gives the match length as the offset from LZX_MIN_MATCH_LEN.
-            // Otherwise, the length is given by an additional symbol encoded using
-            // the length tree, offset by 9 (LZX_MIN_MATCH_LEN + LZX_NUM_PRIMARY_LENS)
-            int match_len = LZX_MIN_MATCH + length_header;
-            if (length_header == LZX_NUM_PRIMARY_LENGTHS)
-            {
-                if (LENGTH_empty != 0)
-                {
-                    Console.WriteLine("LENGTH symbol needed but tree is empty");
-                    return Error = Error.MSPACK_ERR_DECRUNCH;
-                }
-
-                match_len += (int)READ_HUFFSYM_MSB(LENGTH_table, LENGTH_len, LZX_LENGTH_TABLEBITS, LZX_LENGTH_MAXSYMBOLS);
-            }
-
-            // If the position_slot is 0, 1, or 2, the match offset is retrieved
-            // from the LRU queue.  Otherwise, the match offset is not in the LRU queue.
-            uint match_offset;
-            if (position_slot < 2)
-            {
-                // Note: This isn't a real LRU queue, since using the R2 offset
-                // doesn't bump the R1 offset down to R2.  This quirk allows all
-                // 3 recent offsets to be handled by the same code.  (For R0,
-                // the swap is a no-op.)
-                match_offset = R[position_slot];
-                R[position_slot] = R[0];
-                R[0] = match_offset;
-            }
-            else
-            {
-                // Otherwise, the offset was not encoded as one the offsets in
-                // the queue.  Depending on the position slot, there is a
-                // certain number of extra bits that need to be read to fully
-                // decode the match offset.
-
-                // Look up the number of extra bits that need to be read.
-                int num_extra_bits = LZXExtraBits[position_slot];
-                long verbatim_bits, aligned_bits;
-
-                // For aligned blocks, if there are at least 3 extra bits, the
-                // actual number of extra bits is 3 less, and they encode a
-                // number of 8-byte words that are added to the offset; there
-                // is then an additional symbol read using the aligned tree that
-                // specifies the actual byte alignment.
-                if (BlockType == LZXBlockType.LZX_BLOCKTYPE_ALIGNED && num_extra_bits >= 3)
-                {
-                    // There is an error in the LZX "specification" at this
-                    // point; it indicates that a Huffman symbol is to be
-                    // read only if num_extra_bits is greater than 3, but
-                    // actually it is if num_extra_bits is greater than or
-                    // equal to 3.  (Note that in the case with
-                    // num_extra_bits == 3, the assignment to verbatim_bits
-                    // will just set it to 0. )
-                    verbatim_bits = READ_BITS_MSB(num_extra_bits - 3);
-                    verbatim_bits <<= 3;
-                    aligned_bits = READ_HUFFSYM_MSB(ALIGNED_table, ALIGNED_len, LZX_ALIGNED_TABLEBITS, LZX_ALIGNED_MAXSYMBOLS);
-                }
-                else
-                {
-                    // For non-aligned blocks, or for aligned blocks with
-                    // less than 3 extra bits, the extra bits are added
-                    // directly to the match offset, and the correction for
-                    // the alignment is taken to be 0.
-                    verbatim_bits = READ_BITS_MSB(num_extra_bits);
-                    aligned_bits = 0;
-                }
-
-                // Calculate the match offset.
-                match_offset = (uint)(LZXPositionBase[position_slot] + verbatim_bits + aligned_bits + 2); // LZX_OFFSET_OFFSET
-
-                // Update the LRU queue.
-                R[2] = R[1];
-                R[1] = R[0];
-                R[0] = match_offset;
-            }
-
-            // LZX DELTA uses max match length to signal even longer match
-            if (length_header == LZX_MAX_MATCH && IsDelta)
-            {
-                int extra_len;
-
-                // 4 entry huffman tree
-                ENSURE_BITS(3);
-
-                // '0' . 8 extra length bits
-                if (PEEK_BITS_MSB(1) == 0)
-                {
-                    REMOVE_BITS_MSB(1);
-                    extra_len = (int)READ_BITS_MSB(8);
-                }
-
-                // '10' . 10 extra length bits + 0x100
-                else if (PEEK_BITS_MSB(2) == 2)
-                {
-                    REMOVE_BITS_MSB(2);
-                    extra_len = (int)READ_BITS_MSB(10);
-                    extra_len += 0x100;
-                }
-
-                // '110' . 12 extra length bits + 0x500
-                else if (PEEK_BITS_MSB(3) == 6)
-                {
-                    REMOVE_BITS_MSB(3);
-                    extra_len = (int)READ_BITS_MSB(12);
-                    extra_len += 0x500;
-                }
-
-                // '111' . 15 extra length bits
-                else
-                {
-                    REMOVE_BITS_MSB(3);
-                    extra_len = (int)READ_BITS_MSB(15);
-                }
-
-                length_header += extra_len;
-            }
-
-            if ((WindowPosition + match_len) > WindowSize)
-            {
-                Console.WriteLine("Match ran over window wrap");
-                return Error = Error.MSPACK_ERR_DECRUNCH;
-            }
-
-            Copy(match_offset, match_len, ref this_run);
-            return Error;
-        }
-
-        private Error DecompressBlock(ref int this_run)
-        {
-            while (this_run > 0)
-            {
-                int main_element = (int)READ_HUFFSYM_MSB(MAINTREE_table, MAINTREE_len, LZX_MAINTREE_TABLEBITS, LZX_MAINTREE_MAXSYMBOLS);
-                if (main_element < LZX_NUM_CHARS)
-                {
-                    // Literal: 0 to LZX_NUM_CHARS-1
-                    Window[WindowPosition++] = (byte)main_element;
-                    this_run--;
-                }
-                else
-                {
-                    DecodeMatch(main_element, ref this_run);
-                    if (Error != Error.MSPACK_ERR_OK)
-                        return Error;
-                }
-            }
-
-            return Error = Error.MSPACK_ERR_OK;
-        }
-
-        private Error ReadBlockHeader()
-        {
-            ENSURE_BITS(4);
-
-            // Read block type (3 bits) and block length (24 bits)
-            byte block_type = (byte)READ_BITS_MSB(3);
-            BlockType = (LZXBlockType)block_type;
-
-            // Read the block size
-            int block_size;
-            if (READ_BITS_MSB(1) == 1)
-            {
-                block_size = LZX_FRAME_SIZE;
-            }
-            else
-            {
-                uint tmp;
-                block_size = 0;
-
-                tmp = (uint)READ_BITS_MSB(8);
-                block_size |= (int)tmp;
-                tmp = (uint)READ_BITS_MSB(8);
-                block_size <<= 8;
-                block_size |= (int)tmp;
-
-                if (WindowSize >= 65536)
-                {
-                    tmp = (uint)READ_BITS_MSB(8);
-                    block_size <<= 8;
-                    block_size |= (int)tmp;
-                }
-            }
-
-            BlockRemaining = BlockLength = block_size;
-            Console.WriteLine($"New block t {BlockType} len {BlockLength}");
-
-            // Read individual block headers
-            switch (BlockType)
-            {
-                case LZXBlockType.LZX_BLOCKTYPE_ALIGNED:
-                    // Read lengths of and build aligned huffman decoding tree
-                    for (byte i = 0; i < 8; i++)
-                    {
-                        ALIGNED_len[i] = (byte)READ_BITS_MSB(3);
-                    }
-
-                    BUILD_TABLE(ALIGNED_table, ALIGNED_len, LZX_ALIGNED_TABLEBITS, LZX_ALIGNED_MAXSYMBOLS);
-                    if (Error != Error.MSPACK_ERR_OK)
-                        return Error;
-
-                    // Read lengths of and build main huffman decoding tree
-                    READ_LENGTHS(MAINTREE_len, 0, 256);
-                    if (Error != Error.MSPACK_ERR_OK)
-                        return Error;
-
-                    READ_LENGTHS(MAINTREE_len, 256, LZX_NUM_CHARS + NumOffsets);
-                    if (Error != Error.MSPACK_ERR_OK)
-                        return Error;
-
-                    BUILD_TABLE(MAINTREE_table, MAINTREE_len, LZX_MAINTREE_TABLEBITS, LZX_MAINTREE_MAXSYMBOLS);
-                    if (Error != Error.MSPACK_ERR_OK)
-                        return Error;
-
-                    // Read lengths of and build lengths huffman decoding tree
-                    READ_LENGTHS(LENGTH_len, 0, LZX_NUM_SECONDARY_LENGTHS);
-                    if (Error != Error.MSPACK_ERR_OK)
-                        return Error;
-
-                    BUILD_TABLE_MAYBE_EMPTY();
-                    if (Error != Error.MSPACK_ERR_OK)
-                        return Error;
-
-                    break;
-
-                case LZXBlockType.LZX_BLOCKTYPE_VERBATIM:
-                    // Read lengths of and build main huffman decoding tree
-                    READ_LENGTHS(MAINTREE_len, 0, 256);
-                    if (Error != Error.MSPACK_ERR_OK)
-                        return Error;
-
-                    READ_LENGTHS(MAINTREE_len, 256, LZX_NUM_CHARS + NumOffsets);
-                    if (Error != Error.MSPACK_ERR_OK)
-                        return Error;
-
-                    BUILD_TABLE(MAINTREE_table, MAINTREE_len, LZX_MAINTREE_TABLEBITS, LZX_MAINTREE_MAXSYMBOLS);
-                    if (Error != Error.MSPACK_ERR_OK)
-                        return Error;
-
-                    // If the literal 0xE8 is anywhere in the block...
-                    if (MAINTREE_len[0xE8] != 0)
-                        IntelStarted = true;
-
-                    // Read lengths of and build lengths huffman decoding tree
-                    READ_LENGTHS(LENGTH_len, 0, LZX_NUM_SECONDARY_LENGTHS);
-                    if (Error != Error.MSPACK_ERR_OK)
-                        return Error;
-
-                    BUILD_TABLE_MAYBE_EMPTY();
-                    if (Error != Error.MSPACK_ERR_OK)
-                        return Error;
-
-                    break;
-
-                case LZXBlockType.LZX_BLOCKTYPE_UNCOMPRESSED:
-                    if (BitsLeft == 0)
-                    {
-                        ENSURE_BITS(16);
-                        BlockRemaining -= 2;
-                    }
-                    else
-                    {
-                        BitsLeft = 0;
-                        BitBuffer = 0;
-                    }
-
-                    // TODO: uint[] R should be a part of a state object
-                    R[0] = BitConverter.ToUInt32(new Span<byte>(InputBuffer, InputPointer + 0, 4).ToArray().Reverse().ToArray(), 0);
-                    R[1] = BitConverter.ToUInt32(new Span<byte>(InputBuffer, InputPointer + 4, 4).ToArray().Reverse().ToArray(), 0);
-                    R[2] = BitConverter.ToUInt32(new Span<byte>(InputBuffer, InputPointer + 8, 4).ToArray().Reverse().ToArray(), 0);
-
-                    InputPointer += 12;
-                    BlockRemaining -= 12;
-
-                    break;
-
-                default:
-                    Console.WriteLine($"Bad block type: {BlockType}");
-                    return Error = Error.MSPACK_ERR_DECRUNCH;
-            }
-
-            return Error = Error.MSPACK_ERR_OK;
-        }
-
-        private void UndoE8Preprocessing(int data, long out_bytes)
-        {
-            int p8 = data;
-            if (out_bytes > 10)
-            {
-                // Finish any bytes that weren't processed by the vectorized implementation.
-                int p8_end = (int)(out_bytes - 10);
-                do
-                {
-                    if (Window[p8] == 0xe8)
-                    {
-                        int target = p8 + 1;
-                        int input_pos = p8 - data;
-
-                        int abs_offset, rel_offset;
-
-                        // XXX: This assumes unaligned memory accesses are okay.
-                        abs_offset = BitConverter.ToInt32(new Span<byte>(Window, target, 4).ToArray().Reverse().ToArray(), 0);
-                        if (abs_offset >= 0)
-                        {
-                            if (abs_offset < 12_000_000)
-                            {
-                                // "good translation"
-                                rel_offset = abs_offset - input_pos;
-                                Array.Copy(BitConverter.GetBytes(rel_offset).Reverse().ToArray(), 0, Window, target, 4);
-                            }
-                        }
-                        else
-                        {
-                            if (abs_offset >= -input_pos)
-                            {
-                                // "compensating translation"
-                                rel_offset = abs_offset + 12_000_000;
-                                Array.Copy(BitConverter.GetBytes(rel_offset).Reverse().ToArray(), 0, Window, target, 4);
-                            }
-                        }
-
-                        p8 += 5;
-                    }
-                    else
-                    {
-                        p8++;
-                    }
-                } while (p8 < p8_end);
-            }
-        }
-
-        #endregion
     }
 }

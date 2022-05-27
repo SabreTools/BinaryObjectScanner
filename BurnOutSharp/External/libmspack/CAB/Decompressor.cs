@@ -576,7 +576,7 @@ namespace LibMSPackSharp.CAB
                     Array.Copy(State.Input, State.InputPointer, buffer, pointer, avail);
                     State.InputPointer += avail;
                     pointer += avail;
-                    todo -= avail;
+                    todo    -= avail;
                 }
                 else
                 {
@@ -668,7 +668,7 @@ namespace LibMSPackSharp.CAB
                 full_len = (State.InputEnd - State.InputPointer) + dataBlockHeader.CompressedSize; // Include cab-spanning blocks
                 if (full_len > CAB_INPUTMAX)
                 {
-                    Console.WriteLine($"Block size {full_len} > CAB_INPUTMAX");
+                    Console.WriteLine($"Block size ({full_len}) > {CAB_INPUTMAX}");
 
                     // In salvage mode, blocks can be 65535 bytes but no more than that
                     if (!ignore_blocksize || full_len > CAB_INPUTMAX_SALVAGE)
@@ -678,7 +678,7 @@ namespace LibMSPackSharp.CAB
                 // Blocks must not expand to more than CAB_BLOCKMAX 
                 if (dataBlockHeader.UncompressedSize > CAB_BLOCKMAX)
                 {
-                    Console.WriteLine("block size > CAB_BLOCKMAX");
+                    Console.WriteLine($"Block size ({dataBlockHeader.UncompressedSize}) > {CAB_BLOCKMAX}");
                     if (!ignore_blocksize)
                         return Error.MSPACK_ERR_DATAFORMAT;
                 }

@@ -43,7 +43,7 @@ namespace LibMSPackSharp.Compression
                 {
                     if (LENGTH_len[i] > 0)
                     {
-                        Console.WriteLine("Failed to build table");
+                        Console.WriteLine("Failed to build LENGTH table");
                         return Error = Error.MSPACK_ERR_DECRUNCH;
                     }
                 }
@@ -60,14 +60,6 @@ namespace LibMSPackSharp.Compression
         /// first to last in the given table. The code lengths are stored in their
         /// own special LZX way.
         /// </summary>
-        private Error READ_LENGTHS(byte[] lengths, uint first, uint last)
-        {
-            if (ReadLens(lengths, first, last) != Error.MSPACK_ERR_OK)
-                return Error;
-
-            return Error = Error.MSPACK_ERR_OK;
-        }
-
         private Error ReadLens(byte[] lens, uint first, uint last)
         {
             uint x, y;
@@ -87,55 +79,50 @@ namespace LibMSPackSharp.Compression
             for (x = first; x < last;)
             {
                 z = (int)READ_HUFFSYM_MSB(PRETREE_table, PRETREE_len, LZX_PRETREE_TABLEBITS, LZX_PRETREE_MAXSYMBOLS);
-                switch (z)
+                if (z == 17)
                 {
                     // Code = 17, run of ([read 4 bits]+4) zeros
-                    case 17:
-                        y = (uint)READ_BITS_MSB(4);
-                        y += 4;
-                        while (y-- != 0)
-                        {
-                            lens[x++] = 0;
-                        }
-
-                        break;
-
+                    y = (uint)READ_BITS_MSB(4);
+                    y += 4;
+                    while (y-- != 0)
+                    {
+                        lens[x++] = 0;
+                    }
+                }
+                else if (z == 18)
+                {
                     // Code = 18, run of ([read 5 bits]+20) zeros
-                    case 18:
-                        y = (uint)READ_BITS_MSB(5);
-                        y += 20;
-                        while (y-- != 0)
-                        {
-                            lens[x++] = 0;
-                        }
-
-                        break;
-
+                    y = (uint)READ_BITS_MSB(5);
+                    y += 20;
+                    while (y-- != 0)
+                    {
+                        lens[x++] = 0;
+                    }
+                }
+                else if (z == 19)
+                {
                     // Code = 19, run of ([read 1 bit]+4) [read huffman symbol]
-                    case 19:
-                        y = (uint)READ_BITS_MSB(1);
-                        y += 4;
+                    y = (uint)READ_BITS_MSB(1);
+                    y += 4;
 
-                        z = (int)READ_HUFFSYM_MSB(PRETREE_table, PRETREE_len, LZX_PRETREE_TABLEBITS, LZX_PRETREE_MAXSYMBOLS);
-                        z = lens[x] - z;
-                        if (z < 0)
-                            z += 17;
+                    z = (int)READ_HUFFSYM_MSB(PRETREE_table, PRETREE_len, LZX_PRETREE_TABLEBITS, LZX_PRETREE_MAXSYMBOLS);
+                    z = lens[x] - z;
+                    if (z < 0)
+                        z += 17;
 
-                        while (y-- != 0)
-                        {
-                            lens[x++] = (byte)z;
-                        }
-
-                        break;
-
-                    // Code = 0 to 16, delta current length entry
-                    default:
-                        z = lens[x] - z;
-                        if (z < 0)
-                            z += 17;
-
+                    while (y-- != 0)
+                    {
                         lens[x++] = (byte)z;
-                        break;
+                    }
+                }
+                else
+                {
+                    // Code = 0 to 16, delta current length entry
+                    z = lens[x] - z;
+                    if (z < 0)
+                        z += 17;
+
+                    lens[x++] = (byte)z;
                 }
             }
 
