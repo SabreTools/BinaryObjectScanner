@@ -380,7 +380,7 @@ namespace LibMSPackSharp.CAB
             Error = Error.MSPACK_ERR_OK;
 
             // If file has more than 0 bytes
-            if (filelen != 0)
+            if (filelen > 0)
             {
                 // Set the output file handle to null
                 State.OutputFileHandle = null;
@@ -391,7 +391,7 @@ namespace LibMSPackSharp.CAB
                 // - If SysRead() has an error, it will set self.ReadError
                 //   and pass back MSPACK_ERR_READ
                 long bytes = file.Header.FolderOffset - State.Offset;
-                if (bytes != 0)
+                if (bytes > 0)
                 {
                     Error error = State.Decompress(State.DecompressorState, bytes);
                     Error = (error == Error.MSPACK_ERR_READ) ? ReadError : error;
@@ -567,7 +567,7 @@ namespace LibMSPackSharp.CAB
                 avail = State.InputEnd - State.InputPointer;
 
                 // If out of input data, read a new block
-                if (avail != 0)
+                if (avail > 0)
                 {
                     // Copy as many input bytes available as possible
                     if (avail > todo)
@@ -688,7 +688,7 @@ namespace LibMSPackSharp.CAB
                     return Error.MSPACK_ERR_READ;
 
                 // Perform checksum test on the block (if one is stored)
-                if (dataBlockHeader.CheckSum != 0)
+                if (dataBlockHeader.CheckSum > 0)
                 {
                     uint sum2 = Checksum(State.Input, State.InputEnd, dataBlockHeader.CompressedSize, 0);
                     if (Checksum(hdr, 4, 4, sum2) != dataBlockHeader.CheckSum)
@@ -708,8 +708,8 @@ namespace LibMSPackSharp.CAB
                 // Otherwise, this is the last part of the block, and no more block
                 // reading needs to be done.
 
-                // EXIT POINT OF LOOP -- uncompressed size != 0
-                if ((output = dataBlockHeader.UncompressedSize) != 0)
+                // EXIT POINT OF LOOP -- uncompressed size > 0
+                if ((output = dataBlockHeader.UncompressedSize) > 0)
                     return Error.MSPACK_ERR_OK;
 
                 // Otherwise, advance to next cabinet
@@ -1009,7 +1009,7 @@ namespace LibMSPackSharp.CAB
                 }
             }
 
-            if (false_cabs != 0)
+            if (false_cabs > 0)
                 Console.WriteLine($"{false_cabs} false cabinets found");
 
             return Error.MSPACK_ERR_OK;
@@ -1235,7 +1235,7 @@ namespace LibMSPackSharp.CAB
                 cabinetHeader.PopulateExtendedHeader(buf);
 
                 // Skip the reserved header
-                if (cab.Header.HeaderReserved != 0)
+                if (cab.Header.HeaderReserved > 0)
                 {
                     if (!System.Seek(fh, cab.Header.HeaderReserved, SeekMode.MSPACK_SYS_SEEK_CUR))
                         return Error = Error.MSPACK_ERR_SEEK;
@@ -1326,7 +1326,7 @@ namespace LibMSPackSharp.CAB
                 if ((int)file.Header.FolderIndex < cab.Header.NumFolders)
                 {
                     Folder ifol = cab.Folders;
-                    while (file.Header.FolderIndex-- != 0)
+                    while (file.Header.FolderIndex-- > 0)
                     {
                         if (ifol != null)
                             ifol = ifol.Next;
@@ -1404,7 +1404,7 @@ namespace LibMSPackSharp.CAB
             if (System.Read(fh, buf, 0, _FolderHeader.Size) != _FolderHeader.Size)
                 return Error.MSPACK_ERR_READ;
 
-            if (cab.Header.FolderReserved != 0)
+            if (cab.Header.FolderReserved > 0)
             {
                 if (!System.Seek(fh, cab.Header.FolderReserved, SeekMode.MSPACK_SYS_SEEK_CUR))
                     return Error.MSPACK_ERR_SEEK;

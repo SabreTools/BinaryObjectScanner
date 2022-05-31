@@ -240,7 +240,7 @@ namespace LibMSPackSharp.Compression
                         leaf <<= 1;
                         leaf |= reverse & 1;
                         reverse >>= 1;
-                    } while (--fill != 0);
+                    } while (--fill > 0);
 
                     if ((pos += bit_mask) > table_mask)
                         return false; // Table overrun
@@ -253,7 +253,7 @@ namespace LibMSPackSharp.Compression
                     {
                         table[leaf] = sym;
                         leaf += next_symbol;
-                    } while (--fill != 0);
+                    } while (--fill > 0);
                 }
 
                 bit_mask >>= 1;
@@ -275,7 +275,7 @@ namespace LibMSPackSharp.Compression
                     leaf <<= 1;
                     leaf |= reverse & 1;
                     reverse >>= 1;
-                } while (--fill != 0);
+                } while (--fill > 0);
 
                 table[leaf] = 0xFFFF;
             }
@@ -308,7 +308,7 @@ namespace LibMSPackSharp.Compression
                         leaf <<= 1;
                         leaf |= reverse & 1;
                         reverse >>= 1;
-                    } while (--fill != 0);
+                    } while (--fill > 0);
 
                     for (fill = 0; fill < (bit_num - nbits); fill++)
                     {

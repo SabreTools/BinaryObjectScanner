@@ -82,6 +82,8 @@ namespace LibMSPackSharp.Compression
 {
     public partial class LZX
     {
+        #region Public Functionality
+
         /// <summary>
         /// Allocates and initialises LZX decompression state for decoding an LZX
         /// stream.
@@ -91,47 +93,24 @@ namespace LibMSPackSharp.Compression
         /// null is returned.
         /// </summary>
         /// <param name="system">A SystemImpl structure used to read from the input stream and write to the output stream, also to allocate and free memory.</param>
-        /// <param name="input">an input stream with the LZX data.</param>
-        /// <param name="output">an output stream to write the decoded data to.</param>
-        /// <param name="window_bits">
-        /// the size of the decoding window, which must be
-        /// between 15 and 21 inclusive for regular LZX
-        /// data, or between 17 and 25 inclusive for
-        /// LZX DELTA data.</param>
+        /// <param name="input">An input stream with the LZX data.</param>
+        /// <param name="output">An output stream to write the decoded data to.</param>
+        /// <param name="window_bits">The size of the decoding window, which must be between 15 and 21 inclusive for regular LZX data, or between 17 and 25 inclusive for LZX DELTA data.</param>
         /// <param name="reset_interval">
-        /// the interval at which the LZX bitstream is
-        /// reset, in multiples of LZX frames (32678
-        /// bytes), e.g. a value of 2 indicates the input
-        /// stream resets after every 65536 output bytes.
-        /// A value of 0 indicates that the bitstream never
-        /// resets, such as in CAB LZX streams.
+        /// The interval at which the LZX bitstream is reset, in multiples of LZX frames (32678 bytes),
+        /// e.g. a value of 2 indicates the input stream resets after every 65536 output bytes.
+        /// A value of 0 indicates that the bitstream never resets, such as in CAB LZX streams.
         /// </param>
-        /// <param name="input_buffer_size">
-        /// the number of bytes to use as an input
-        /// bitstream buffer.
-        /// </param>
+        /// <param name="input_buffer_size">The number of bytes to use as an input bitstream buffer.</param>
         /// <param name="output_length">
-        /// the length in bytes of the entirely
-        /// decompressed output stream, if known in
-        /// advance. It is used to correctly perform the
-        /// Intel E8 transformation, which must stop 6
-        /// bytes before the very end of the
-        /// decompressed stream. It is not otherwise used
-        /// or adhered to. If the full decompressed
-        /// length is known in advance, set it here.
-        /// If it is NOT known, use the value 0, and call
-        /// lzxd_set_outputLength() once it is
-        /// known. If never set, 4 of the final 6 bytes
-        /// of the output stream may be incorrect.
+        /// The length in bytes of the entirely decompressed output stream, if known in advance.
+        /// It is used to correctly perform the Intel E8 transformation, which must stop 6 bytes before the very end of the decompressed stream.
+        /// It is not otherwise used or adhered to. If the full decompressed length is known in advance, set it here.
+        /// If it is NOT known, use the value 0, and call lzxd_set_outputLength() once it is known.
+        /// If never set, 4 of the final 6 bytes of the output stream may be incorrect
         /// </param>
-        /// <param name="is_delta">
-        /// should be zero for all regular LZX data,
-        /// non-zero for LZX DELTA encoded data.
-        /// </param>
-        /// <returns>
-        /// a pointer to an initialised LZX structure, or null if
-        /// there was not enough memory or parameters to the function were wrong.
-        /// </returns>
+        /// <param name="is_delta">Should be zero for all regular LZX data, non-zero for LZX DELTA encoded data.</param>
+        /// <returns>A pointer to an initialised LZX structure, or null if there was not enough memory or parameters to the function were wrong.</returns>
         public static LZX Init(SystemImpl system, FileStream input, FileStream output, int window_bits, int reset_interval, int input_buffer_size, long output_length, bool is_delta)
         {
             if (system == null)
@@ -204,11 +183,8 @@ namespace LibMSPackSharp.Compression
         ///
         /// Call this before the first call to lzxd_decompress().
         /// </summary>
-        /// <param name="system">
-        /// an mspack_system implementation to use with the
-        /// input param. Only read() will be called.
-        /// </param>
-        /// <param name="input"> an input file handle to read reference data using system.read().</param>
+        /// <param name="system">A SystemImpl structure to use with the input param. Only read() will be called.</param>
+        /// <param name="input">An input file handle to read reference data using system.read().</param>
         /// <param name="length">The length of the reference data. Cannot be longer than the LZX window size.</param>
         /// <returns>An error code, or MSPACK_ERR_OK if successful</returns>
         public Error SetReferenceData(SystemImpl system, FileStream input, uint length)
@@ -219,7 +195,7 @@ namespace LibMSPackSharp.Compression
                 return Error.MSPACK_ERR_ARGS;
             }
 
-            if (Offset != 0)
+            if (Offset > 0)
             {
                 Console.WriteLine("Too late to set reference data after decoding starts");
                 return Error.MSPACK_ERR_ARGS;
@@ -282,7 +258,7 @@ namespace LibMSPackSharp.Compression
         /// should be considered unusable and lzxd_decompress() should not be
         /// called again on this stream.
         /// </summary>
-        /// <param name="out_bytes">the number of bytes of data to decompress.</param>
+        /// <param name="out_bytes">The number of bytes of data to decompress.</param>
         /// <returns>an error code, or MSPACK_ERR_OK if successful</returns>
         public Error Decompress(long out_bytes)
         {
@@ -290,7 +266,7 @@ namespace LibMSPackSharp.Compression
             int this_run, main_element, aligned_bits, j, warned = 0;
             byte[] buf = new byte[12];
             int runsrc, rundest;
-            int frame_size = 0, end_frame, match_offset;
+            uint frame_size = 0, end_frame, match_offset;
 
             // Easy answers
             if (out_bytes < 0)
@@ -303,7 +279,7 @@ namespace LibMSPackSharp.Compression
             if (i > out_bytes)
                 i = (int)out_bytes;
 
-            if (i != 0)
+            if (i > 0)
             {
                 if (System.Write(OutputFileHandle, WriteFromE8 ? E8Buffer : Window, OutputPointer, i) != i)
                     return Error = Error.MSPACK_ERR_WRITE;
@@ -316,14 +292,14 @@ namespace LibMSPackSharp.Compression
             if (out_bytes == 0)
                 return Error.MSPACK_ERR_OK;
 
-            end_frame = (int)((uint)((Offset + out_bytes) / LZX_FRAME_SIZE) + 1);
+            end_frame = (uint)((Offset + out_bytes) / LZX_FRAME_SIZE) + 1;
 
             while (Frame < end_frame)
             {
                 // Have we reached the reset interval? (if there is one?)
                 if (ResetInterval != 0 && ((Frame % ResetInterval) == 0))
                 {
-                    if (BlockRemaining != 0)
+                    if (BlockRemaining > 0)
                     {
                         // This is a file format error, we can make a best effort to extract what we can
                         Console.WriteLine($"{BlockRemaining} bytes remaining at reset interval");
@@ -367,7 +343,7 @@ namespace LibMSPackSharp.Compression
                 // has been filled in.
                 frame_size = LZX_FRAME_SIZE;
                 if (Length != 0 && (Length - Offset) < frame_size)
-                    frame_size = (int)(Length - Offset);
+                    frame_size = (uint)(Length - Offset);
 
                 // Decode until one more frame is available
                 bytes_todo = (int)(FramePosition + frame_size - WindowPosition);
@@ -401,11 +377,13 @@ namespace LibMSPackSharp.Compression
                                     ALIGNED_len[i] = (byte)j;
                                 }
 
+                                BUILD_TABLE(ALIGNED_table, ALIGNED_len, LZX_ALIGNED_TABLEBITS, LZX_ALIGNED_MAXSYMBOLS);
+
                                 // Rest of aligned header is same as verbatim
 
                                 // Read lengths of and build main huffman decoding tree
-                                ReadLens(MAINTREE_len, 0, 256);
-                                ReadLens(MAINTREE_len, 256, LZX_NUM_CHARS + NumOffsets);
+                                ReadLengths(MAINTREE_len, 0, 256);
+                                ReadLengths(MAINTREE_len, 256, LZX_NUM_CHARS + NumOffsets);
                                 BUILD_TABLE(MAINTREE_table, MAINTREE_len, LZX_MAINTREE_TABLEBITS, LZX_MAINTREE_MAXSYMBOLS);
 
                                 // If the literal 0xE8 is anywhere in the block...
@@ -413,14 +391,14 @@ namespace LibMSPackSharp.Compression
                                     IntelStarted = true;
 
                                 // Read lengths of and build lengths huffman decoding tree
-                                ReadLens(LENGTH_len, 0, LZX_NUM_SECONDARY_LENGTHS);
+                                ReadLengths(LENGTH_len, 0, LZX_NUM_SECONDARY_LENGTHS);
                                 BUILD_TABLE_MAYBE_EMPTY();
                                 break;
 
                             case LZXBlockType.LZX_BLOCKTYPE_VERBATIM:
                                 // Read lengths of and build main huffman decoding tree
-                                ReadLens(MAINTREE_len, 0, 256);
-                                ReadLens(MAINTREE_len, 256, LZX_NUM_CHARS + NumOffsets);
+                                ReadLengths(MAINTREE_len, 0, 256);
+                                ReadLengths(MAINTREE_len, 256, LZX_NUM_CHARS + NumOffsets);
                                 BUILD_TABLE(MAINTREE_table, MAINTREE_len, LZX_MAINTREE_TABLEBITS, LZX_MAINTREE_MAXSYMBOLS);
 
                                 // If the literal 0xE8 is anywhere in the block...
@@ -428,7 +406,7 @@ namespace LibMSPackSharp.Compression
                                     IntelStarted = true;
 
                                 // Read lengths of and build lengths huffman decoding tree
-                                ReadLens(LENGTH_len, 0, LZX_NUM_SECONDARY_LENGTHS);
+                                ReadLengths(LENGTH_len, 0, LZX_NUM_SECONDARY_LENGTHS);
                                 BUILD_TABLE_MAYBE_EMPTY();
                                 break;
 
@@ -494,7 +472,7 @@ namespace LibMSPackSharp.Compression
                                     match_length = main_element & LZX_NUM_PRIMARY_LENGTHS;
                                     if (match_length == LZX_NUM_PRIMARY_LENGTHS)
                                     {
-                                        if (LENGTH_empty != 0)
+                                        if (LENGTH_empty)
                                         {
                                             Console.WriteLine("LENGTH symbol needed but tree is empty");
                                             return Error = Error.MSPACK_ERR_DECRUNCH;
@@ -507,22 +485,22 @@ namespace LibMSPackSharp.Compression
                                     match_length += LZX_MIN_MATCH;
 
                                     // Get match offset
-                                    switch ((match_offset = (main_element >> 3)))
+                                    switch ((match_offset = (uint)(main_element >> 3)))
                                     {
                                         case 0:
-                                            match_offset = (int)R[0];
+                                            match_offset = R[0];
                                             break;
 
                                         case 1:
-                                            match_offset = (int)R[1];
+                                            match_offset = R[1];
                                             R[1] = R[0];
-                                            R[0] = (uint)match_offset;
+                                            R[0] = match_offset;
                                             break;
 
                                         case 2:
-                                            match_offset = (int)R[2];
+                                            match_offset = R[2];
                                             R[2] = R[0];
-                                            R[0] = (uint)match_offset;
+                                            R[0] = match_offset;
                                             break;
 
                                         default:
@@ -534,32 +512,32 @@ namespace LibMSPackSharp.Compression
                                                 }
                                                 else
                                                 {
-                                                    extra = (match_offset >= 36) ? 17 : LZXExtraBits[match_offset];
+                                                    extra = ExtraBits(match_offset);
                                                     verbatim_bits = (int)READ_BITS_MSB(extra);
-                                                    match_offset = (int)(LZXPositionBase[match_offset] - 2 + verbatim_bits);
+                                                    match_offset = (uint)(PositionBase(match_offset) - 2 + verbatim_bits);
                                                 }
                                             }
                                             else // LZX_BLOCKTYPE_ALIGNED 
                                             {
-                                                extra = (match_offset >= 36) ? 17 : LZXExtraBits[match_offset];
-                                                match_offset = (int)(LZXPositionBase[match_offset] - 2);
+                                                extra = ExtraBits(match_offset);
+                                                match_offset = (uint)(PositionBase(match_offset) - 2);
                                                 if (extra > 3) // >3: verbatim and aligned bits
                                                 {
                                                     extra -= 3;
                                                     verbatim_bits = (int)READ_BITS_MSB(extra);
-                                                    match_offset += (verbatim_bits << 3);
+                                                    match_offset += (uint)(verbatim_bits << 3);
                                                     aligned_bits = (int)READ_HUFFSYM_MSB(ALIGNED_table, ALIGNED_len, LZX_ALIGNED_TABLEBITS, LZX_ALIGNED_MAXSYMBOLS);
-                                                    match_offset += aligned_bits;
+                                                    match_offset += (uint)aligned_bits;
                                                 }
                                                 else if (extra == 3) // 3: aligned bits only
                                                 {
                                                     aligned_bits = (int)READ_HUFFSYM_MSB(ALIGNED_table, ALIGNED_len, LZX_ALIGNED_TABLEBITS, LZX_ALIGNED_MAXSYMBOLS);
-                                                    match_offset += aligned_bits;
+                                                    match_offset += (uint)aligned_bits;
                                                 }
                                                 else if (extra > 0) // 1-2: verbatim bits only
                                                 {
                                                     verbatim_bits = (int)READ_BITS_MSB(extra);
-                                                    match_offset += verbatim_bits;
+                                                    match_offset += (uint)verbatim_bits;
                                                 }
                                                 else // 0: not defined in LZX specification!
                                                 {
@@ -570,7 +548,7 @@ namespace LibMSPackSharp.Compression
                                             // Update repeated offset LRU queue
                                             R[2] = R[1];
                                             R[1] = R[0];
-                                            R[0] = (uint)match_offset;
+                                            R[0] = match_offset;
                                             break;
                                     }
 
@@ -611,6 +589,10 @@ namespace LibMSPackSharp.Compression
                                         return Error = Error.MSPACK_ERR_DECRUNCH;
                                     }
 
+                                    // TODO: This falls out of sync after (91,3)
+                                    // - Official program goes to (94, 3)
+                                    // - Ours goes to (95, 3)
+
                                     // Copy match
                                     rundest = WindowPosition;
                                     i = match_length;
@@ -625,7 +607,7 @@ namespace LibMSPackSharp.Compression
                                         }
 
                                         // j = length from match offset to end of window
-                                        j = match_offset - WindowPosition;
+                                        j = (int)match_offset - WindowPosition;
                                         if (j > (int)WindowSize)
                                         {
                                             Console.WriteLine("Match offset beyond window boundaries");
@@ -652,7 +634,7 @@ namespace LibMSPackSharp.Compression
                                     }
                                     else
                                     {
-                                        runsrc = rundest - match_offset;
+                                        runsrc = rundest - (int)match_offset;
                                         while (i-- > 0)
                                         {
                                             Window[rundest++] = Window[runsrc++];
@@ -732,7 +714,7 @@ namespace LibMSPackSharp.Compression
                 if (IntelStarted && IntelFileSize != 0 && Frame < 32768 && frame_size > 10)
                 {
                     int data     = 0;
-                    int dataend  = frame_size - 10;
+                    int dataend  = (int)frame_size - 10;
                     int curpos   = (int)Offset;
                     int filesize = IntelFileSize;
                     int abs_off, rel_off;
@@ -770,7 +752,7 @@ namespace LibMSPackSharp.Compression
                     OutputPointer = (int)FramePosition;
                 }
 
-                OutputEnd = frame_size;
+                OutputEnd = (int)frame_size;
 
                 // Write a frame
                 i = (int)(out_bytes < frame_size ? out_bytes : frame_size);
@@ -792,7 +774,7 @@ namespace LibMSPackSharp.Compression
                     FramePosition = 0;
             }
 
-            if (out_bytes != 0)
+            if (out_bytes > 0)
             {
                 Console.WriteLine($"{out_bytes} bytes left to output");
                 return Error = Error.MSPACK_ERR_DECRUNCH;
@@ -801,6 +783,43 @@ namespace LibMSPackSharp.Compression
             return Error.MSPACK_ERR_OK;
         }
 
+        #endregion
+
+        #region Helpers
+
+        /// <summary>
+        /// States how many bits of offset-from-base data is needed.
+        /// </summary>
+        private int ExtraBits(uint offset)
+        {
+            if (offset < 4)
+                return 0;
+            else if (offset >= 4 && offset < 36)
+                return (int)Math.Floor((double)(offset / 2)) - 1;
+            else // offset >= 36
+                return 17;
+        }
+
+        /// <summary>
+        /// An index to the position slot bases
+        /// </summary>
+        private long PositionBase(uint offset)
+        {
+            if (offset < 0 || offset >= 290)
+                return 0;
+
+            return LZXPositionBase[offset];
+
+            // TODO: Replace naieve recursive implementation
+            if (offset == 0)
+                return 0;
+            else
+                return PositionBase(offset - 1) + (1 << ExtraBits(offset - 1));
+        }
+
+        /// <summary>
+        /// Reset the internal state
+        /// </summary>
         private void ResetState()
         {
             R[0]           = 1;
@@ -822,5 +841,7 @@ namespace LibMSPackSharp.Compression
                 LENGTH_len[i]   = 0;
             }
         }
+
+        #endregion
     }
 }

@@ -243,7 +243,7 @@ namespace LibMSPackSharp.CHM
                 return Error = err;
 
             // Validate reset_interval
-            if (lzxControlData.ResetInterval == 0 || (lzxControlData.ResetInterval % LZX_FRAME_SIZE) != 0)
+            if (lzxControlData.ResetInterval == 0 || (lzxControlData.ResetInterval % LZX_FRAME_SIZE) > 0)
             {
                 Console.WriteLine("Bad controldata reset interval");
                 return Error = Error.MSPACK_ERR_DATAFORMAT;
@@ -403,7 +403,7 @@ namespace LibMSPackSharp.CHM
             // Get to correct offset.
             State.OutputFileHandle = null;
             long bytes;
-            if ((bytes = file.Offset - State.Offset) != 0)
+            if ((bytes = file.Offset - State.Offset) > 0)
                 Error = State.State.Decompress(bytes);
 
             // If getting to the correct offset was error free, unpack file
@@ -872,7 +872,7 @@ namespace LibMSPackSharp.CHM
 
             // Read and process all chunks from FirstPMGL to LastPMGL
             errors = 0;
-            while (numChunks-- != 0)
+            while (numChunks-- > 0)
             {
                 // Read next chunk
                 if (System.Read(fh, chunk, 0, (int)chm.HeaderSection1.ChunkSize) != (int)chm.HeaderSection1.ChunkSize)
@@ -897,7 +897,7 @@ namespace LibMSPackSharp.CHM
                 end = (int)(chm.HeaderSection1.ChunkSize - 2);
                 numEntries = BitConverter.ToUInt16(chunk, end);
 
-                while (numEntries-- != 0)
+                while (numEntries-- > 0)
                 {
                     // READ_ENCINT(nameLen)
                     {

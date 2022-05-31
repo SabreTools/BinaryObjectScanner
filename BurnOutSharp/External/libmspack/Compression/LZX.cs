@@ -124,7 +124,7 @@ namespace LibMSPackSharp.Compression
 
         #endregion
         
-        public byte LENGTH_empty { get; set; }
+        public bool LENGTH_empty { get; set; }
 
         public byte[] E8Buffer { get; set; } = new byte[LZX_FRAME_SIZE];
 

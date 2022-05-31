@@ -141,7 +141,7 @@ namespace LibMSPackSharp.Compression
             // so fake 2 more bytes at the end of input
             if (read == 0)
             {
-                if (EndOfInput != 0)
+                if (EndOfInput > 0)
                 {
                     Console.WriteLine("Out of input bytes");
                     Error = Error.MSPACK_ERR_READ;

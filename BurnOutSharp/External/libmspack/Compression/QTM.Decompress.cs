@@ -139,7 +139,7 @@ namespace LibMSPackSharp.Compression
             if (i > out_bytes)
                 i = (int)out_bytes;
 
-            if (i != 0)
+            if (i > 0)
             {
                 if (System.Write(OutputFileHandle, Window, OutputPointer, i) != i)
                     return Error = Error.MSPACK_ERR_WRITE;
@@ -260,7 +260,7 @@ namespace LibMSPackSharp.Compression
                             i = (int)(WindowSize - window_posn);
                             j = (int)(window_posn - match_offset);
 
-                            while (i-- != 0)
+                            while (i-- > 0)
                             {
                                 window[rundest++] = window[j++ & (WindowSize - 1)];
                             }
@@ -288,7 +288,7 @@ namespace LibMSPackSharp.Compression
                             // Copy second part of match, after window wrap
                             rundest = 0;
                             i = (int)(match_length - (WindowSize - window_posn));
-                            while (i-- != 0)
+                            while (i-- > 0)
                             {
                                 window[rundest++] = window[j++ & (WindowSize - 1)];
                             }
@@ -396,7 +396,7 @@ namespace LibMSPackSharp.Compression
 
             }
 
-            if (out_bytes != 0)
+            if (out_bytes > 0)
             {
                 i = (int)out_bytes;
 
@@ -476,7 +476,7 @@ namespace LibMSPackSharp.Compression
             QTMDModelSym tmp;
             int i, j;
 
-            if (--model.ShiftsLeft != 0)
+            if (--model.ShiftsLeft > 0)
             {
                 for (i = model.Entries - 1; i >= 0; i--)
                 {

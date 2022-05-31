@@ -72,7 +72,7 @@ namespace LibMSPackSharp.CHM
             headerSection.Unknown2 = BitConverter.ToUInt32(buffer, 0x0004);
             headerSection.FileLength = BitConverter.ToInt64(buffer, 0x0008);
 
-            // TODO: Is this supposed to be == 0?
+            // TODO: Is this supposed to be <= 0?
             if (headerSection.FileLength != 0)
                 return Error.MSPACK_ERR_DATAFORMAT;
 

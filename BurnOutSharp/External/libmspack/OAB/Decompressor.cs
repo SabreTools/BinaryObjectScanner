@@ -103,7 +103,7 @@ namespace LibMSPackSharp.OAB
             out_ofh.OrigSys = System;
             out_ofh.OrigFile = outfh;
 
-            while (target_size != 0)
+            while (target_size > 0)
             {
                 if (System.Read(infh, buf, 0, oabblk_SIZEOF) != oabblk_SIZEOF)
                 {
@@ -303,7 +303,7 @@ namespace LibMSPackSharp.OAB
             out_ofh.OrigSys = System;
             out_ofh.OrigFile = outfh;
 
-            while (target_size != 0)
+            while (target_size > 0)
             {
                 if (System.Read(infh, buf, 0, patchblk_SIZEOF) != patchblk_SIZEOF)
                 {
@@ -479,7 +479,7 @@ namespace LibMSPackSharp.OAB
         /// </summary>
         private Error CopyFileHandle(FileStream input, FileStream output, int bytesToCopy, byte[] buf, int bufferSize)
         {
-            while (bytesToCopy != 0)
+            while (bytesToCopy > 0)
             {
                 int run = bufferSize;
                 if (run > bytesToCopy)

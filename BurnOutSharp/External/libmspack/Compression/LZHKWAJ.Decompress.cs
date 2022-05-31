@@ -71,7 +71,7 @@ namespace LibMSPackSharp.Compression
 
             while (EndOfInput == 0)
             {
-                if (lit_run != 0)
+                if (lit_run > 0)
                 {
                     len = (int)READ_HUFFSYM_SAFE(MATCHLEN2_table, MATCHLEN2_len, KWAJ_MATCHLEN2_TBLSIZE, KWAJ_MATCHLEN2_SYMS);
                     if (Error == Error.MSPACK_ERR_NOMEMORY)

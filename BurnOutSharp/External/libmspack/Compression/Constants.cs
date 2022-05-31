@@ -83,42 +83,31 @@ namespace LibMSPackSharp.Compression
 
         #region LZX static data tables
 
-        /* LZX static data tables:
-         *
-         * LZX uses 'position slots' to represent match offsets.  For every match,
-         * a small 'position slot' number and a small offset from that slot are
-         * encoded instead of one large offset.
-         *
-         * The number of slots is decided by how many are needed to encode the
-         * largest offset for a given window size. This is easy when the gap between
-         * slots is less than 128Kb, it's a linear relationship. But when extra_bits
-         * reaches its limit of 17 (because LZX can only ensure reading 17 bits of
-         * data at a time), we can only jump 128Kb at a time and have to start
-         * using more and more position slots as each window size doubles.
-         *
-         * position_base[] is an index to the position slot bases
-         *
-         * extra_bits[] states how many bits of offset-from-base data is needed.
-         *
-         * They are calculated as follows:
-         * extra_bits[i] = 0 where i < 4
-         * extra_bits[i] = floor(i/2)-1 where i >= 4 && i < 36
-         * extra_bits[i] = 17 where i >= 36
-         * position_base[0] = 0
-         * position_base[i] = position_base[i-1] + (1 << extra_bits[i-1])
-         */
-
+        /// <summary>
+        /// LZX uses 'position slots' to represent match offsets.  For every match,
+        /// a small 'position slot' number and a small offset from that slot are
+        /// encoded instead of one large offset.
+        /// 
+        /// The number of slots is decided by how many are needed to encode the
+        /// largest offset for a given window size. This is easy when the gap between
+        /// slots is less than 128Kb, it's a linear relationship. But when extra_bits
+        /// reaches its limit of 17 (because LZX can only ensure reading 17 bits of
+        /// data at a time), we can only jump 128Kb at a time and have to start
+        /// using more and more position slots as each window size doubles.
+        /// </summary>
         public static readonly uint[] LZXPositionSlots = new uint[11]
         {
             30, 32, 34, 36, 38, 42, 50, 66, 98, 162, 290
         };
 
-        public static readonly byte[] LZXExtraBits = new byte[36]
-        {
-            0, 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8,
-            9, 9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 15, 15, 16, 16
-        };
-
+        /// <summary>
+        /// An index to the position slot bases
+        /// </summary>
+        /// <remarks>
+        /// Calculated as follows:
+        /// LZXPositionBase[0] = 0
+        /// LZXPositionBase[i] = LZXPositionBase[i - 1] + (1 << ExtraBits(i - 1))
+        /// </remarks>
         public static readonly uint[] LZXPositionBase = new uint[290]
         {
             0, 1, 2, 3, 4, 6, 8, 12, 16, 24, 32, 48, 64, 96, 128, 192, 256, 384, 512,

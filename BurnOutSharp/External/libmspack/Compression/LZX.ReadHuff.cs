@@ -36,7 +36,7 @@ namespace LibMSPackSharp.Compression
 
         private Error BUILD_TABLE_MAYBE_EMPTY()
         {
-            LENGTH_empty = 0;
+            LENGTH_empty = false;
             if (!MakeDecodeTableMSB(LZX_LENGTH_MAXSYMBOLS, LZX_LENGTH_TABLEBITS, LENGTH_len, LENGTH_table))
             {
                 for (int i = 0; i < LZX_LENGTH_MAXSYMBOLS; i++)
@@ -49,7 +49,7 @@ namespace LibMSPackSharp.Compression
                 }
 
                 // Empty tree - allow it, but don't decode symbols with it
-                LENGTH_empty = 1;
+                LENGTH_empty = true;
             }
 
             return Error = Error.MSPACK_ERR_OK;
@@ -60,7 +60,7 @@ namespace LibMSPackSharp.Compression
         /// first to last in the given table. The code lengths are stored in their
         /// own special LZX way.
         /// </summary>
-        private Error ReadLens(byte[] lens, uint first, uint last)
+        private Error ReadLengths(byte[] lens, uint first, uint last)
         {
             uint x, y;
             int z;
@@ -84,7 +84,7 @@ namespace LibMSPackSharp.Compression
                     // Code = 17, run of ([read 4 bits]+4) zeros
                     y = (uint)READ_BITS_MSB(4);
                     y += 4;
-                    while (y-- != 0)
+                    while (y-- > 0)
                     {
                         lens[x++] = 0;
                     }
@@ -94,7 +94,7 @@ namespace LibMSPackSharp.Compression
                     // Code = 18, run of ([read 5 bits]+20) zeros
                     y = (uint)READ_BITS_MSB(5);
                     y += 20;
-                    while (y-- != 0)
+                    while (y-- > 0)
                     {
                         lens[x++] = 0;
                     }
@@ -110,7 +110,7 @@ namespace LibMSPackSharp.Compression
                     if (z < 0)
                         z += 17;
 
-                    while (y-- != 0)
+                    while (y-- > 0)
                     {
                         lens[x++] = (byte)z;
                     }

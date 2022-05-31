@@ -100,7 +100,7 @@ namespace LibMSPackSharp.Compression
             if (i > out_bytes)
                 i = (int)out_bytes;
 
-            if (i != 0)
+            if (i > 0)
             {
                 if (System.Write(OutputFileHandle, Window, OutputPointer, i) != i)
                     return Error = Error.MSPACK_ERR_WRITE;
@@ -176,7 +176,7 @@ namespace LibMSPackSharp.Compression
                 out_bytes -= i;
             }
 
-            if (out_bytes != 0)
+            if (out_bytes > 0)
             {
                 Console.WriteLine($"Bytes left to output: {out_bytes}");
                 return Error = Error.MSPACK_ERR_DECRUNCH;
@@ -317,7 +317,7 @@ namespace LibMSPackSharp.Compression
                     if ((i + run) > (lit_codes + dist_codes))
                         return Error.INF_ERR_BITOVERRUN;
 
-                    while (run-- != 0)
+                    while (run-- > 0)
                     {
                         lens[i++] = (byte)code;
                     }
@@ -517,7 +517,7 @@ namespace LibMSPackSharp.Compression
                             if (length < 12)
                             {
                                 // Short match, use slower loop but no loop setup code
-                                while (length-- != 0)
+                                while (length-- > 0)
                                 {
                                     Window[WindowPosition++] = Window[match_posn++];
                                     match_posn &= MSZIP_FRAME_SIZE - 1;
@@ -543,7 +543,7 @@ namespace LibMSPackSharp.Compression
                                     runsrc = (int)match_posn;
                                     match_posn += this_run;
                                     length -= this_run;
-                                    while (this_run-- != 0)
+                                    while (this_run-- > 0)
                                     {
                                         Window[rundest++] = Window[runsrc++];
                                     }
@@ -569,7 +569,7 @@ namespace LibMSPackSharp.Compression
             } while (last_block == 0);
 
             // Flush the remaining data
-            if (WindowPosition != 0)
+            if (WindowPosition > 0)
             {
                 if (FlushWindow(WindowPosition) != Error.MSPACK_ERR_OK)
                     return Error.INF_ERR_FLUSH;
