@@ -61,20 +61,21 @@ namespace BurnOutSharp.FileType
                 }
 
                 // If there are additional next CABs, add those
-                while (!string.IsNullOrWhiteSpace(cabFile?.NextName))
+                var cabFile1 = cabFile;
+                while (!string.IsNullOrWhiteSpace(cabFile1?.NextName))
                 {
-                    var cabFile2 = decompressor.Open(Path.Combine(directory, cabFile.PreviousName));
-                    Error error = decompressor.Append(cabFile, cabFile2);
+                    var cabFile2 = decompressor.Open(Path.Combine(directory, cabFile1.PreviousName));
+                    Error error = decompressor.Append(cabFile1, cabFile2);
                     if (error != Error.MSPACK_ERR_OK)
                     {
-                        if (scanner.IncludeDebug) Console.WriteLine($"Error occurred appending '{cabFile2.Filename}' to '{cabFile.Filename}': {error}");
+                        if (scanner.IncludeDebug) Console.WriteLine($"Error occurred appending '{cabFile2.Filename}' to '{cabFile1.Filename}': {error}");
 
                         decompressor.FixMSZip = true;
                         decompressor.Salvage = true;
                         break;
                     }
 
-                    cabFile = cabFile2;
+                    cabFile1 = cabFile2;
                 }
 
                 // Loop through the found internal files
