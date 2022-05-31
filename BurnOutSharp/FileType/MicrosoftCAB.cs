@@ -68,6 +68,10 @@ namespace BurnOutSharp.FileType
                     if (error != Error.MSPACK_ERR_OK)
                     {
                         if (scanner.IncludeDebug) Console.WriteLine($"Error occurred appending '{cabFile2.Filename}' to '{cabFile.Filename}': {error}");
+
+                        decompressor.FixMSZip = true;
+                        decompressor.Salvage = true;
+                        break;
                     }
 
                     cabFile = cabFile2;
