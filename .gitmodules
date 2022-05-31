@@ -7,3 +7,6 @@
 [submodule "HLLibSharp"]
 	path = HLLibSharp
 	url = https://github.com/mnadareski/HLLibSharp
+[submodule "LibMSPackSharp"]
+	path = LibMSPackSharp
+	url = https://github.com/mnadareski/LibMSPackSharp.git
