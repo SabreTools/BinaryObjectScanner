@@ -52,16 +52,25 @@ namespace BurnOutSharp.FileType
                     return null;
                 }
 
-                // If there are additional previous CABs, add those
-                while (!string.IsNullOrWhiteSpace(cabFile.NextName))
+                // If we have a previous CAB and it exists, don't try scanning
+                string directory = Path.GetDirectoryName(file);
+                if (!string.IsNullOrWhiteSpace(cabFile.PreviousName))
                 {
-                    // TODO: Implement
+                    if (File.Exists(Path.Combine(directory, cabFile.PreviousName)))
+                        return null;
                 }
 
                 // If there are additional next CABs, add those
-                while (!string.IsNullOrWhiteSpace(cabFile.NextName))
+                while (!string.IsNullOrWhiteSpace(cabFile?.NextName))
                 {
-                    // TODO: Implement
+                    var cabFile2 = decompressor.Open(Path.Combine(directory, cabFile.PreviousName));
+                    Error error = decompressor.Append(cabFile, cabFile2);
+                    if (error != Error.MSPACK_ERR_OK)
+                    {
+                        if (scanner.IncludeDebug) Console.WriteLine($"Error occurred appending '{cabFile2.Filename}' to '{cabFile.Filename}': {error}");
+                    }
+
+                    cabFile = cabFile2;
                 }
 
                 // Loop through the found internal files
