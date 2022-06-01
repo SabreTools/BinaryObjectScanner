@@ -4,6 +4,7 @@ using System.IO;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Tools;
 using LibMSPackSharp;
+using LibMSPackSharp.CABExtract;
 
 namespace BurnOutSharp.FileType
 {
@@ -61,22 +62,8 @@ namespace BurnOutSharp.FileType
                 }
 
                 // If there are additional next CABs, add those
-                var cabFile1 = cabFile;
-                while (!string.IsNullOrWhiteSpace(cabFile1?.NextName))
-                {
-                    var cabFile2 = decompressor.Open(Path.Combine(directory, cabFile1.PreviousName));
-                    Error error = decompressor.Append(cabFile1, cabFile2);
-                    if (error != Error.MSPACK_ERR_OK)
-                    {
-                        if (scanner.IncludeDebug) Console.WriteLine($"Error occurred appending '{cabFile2.Filename}' to '{cabFile1.Filename}': {error}");
-
-                        decompressor.FixMSZip = true;
-                        decompressor.Salvage = true;
-                        break;
-                    }
-
-                    cabFile1 = cabFile2;
-                }
+                string fileName = Path.GetFileName(file);
+                CABExtract.LoadSpanningCabinets(cabFile, fileName);
 
                 // Loop through the found internal files
                 var sub = cabFile.Files;
