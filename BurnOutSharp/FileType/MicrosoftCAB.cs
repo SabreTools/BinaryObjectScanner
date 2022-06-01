@@ -44,6 +44,7 @@ namespace BurnOutSharp.FileType
 
                 // Create the decompressor
                 var decompressor = Library.CreateCABDecompressor(null);
+                decompressor.Debug = scanner.IncludeDebug;
 
                 // Open the cab file
                 var cabFile = decompressor.Open(file);
