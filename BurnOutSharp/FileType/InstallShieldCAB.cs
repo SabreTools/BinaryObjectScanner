@@ -61,7 +61,17 @@ namespace BurnOutSharp.FileType
                         // If an individual entry fails
                         try
                         {
-                            string tempFile = Path.Combine(tempPath, cabfile.FileName(i));
+                            string filename = cabfile.FileName(i);
+                            string tempFile;
+                            try
+                            {
+                                tempFile = Path.Combine(tempPath, filename);
+                            }
+                            catch
+                            {
+                                tempFile = Path.Combine(tempPath, $"BAD_FILENAME{i}");
+                            }
+
                             cabfile.FileSave(i, tempFile);
                         }
                         catch (Exception ex)
