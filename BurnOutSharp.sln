@@ -16,10 +16,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WixToolset.Dtf.WindowsInstaller", "WixToolset\src\WixToolset.Dtf.WindowsInstaller\WixToolset.Dtf.WindowsInstaller.csproj", "{B3537EB7-CEF6-4D90-A041-47626442A656}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WixToolset.Dtf.Compression", "WixToolset\src\WixToolset.Dtf.Compression\WixToolset.Dtf.Compression.csproj", "{CC76B5EC-976E-4063-8561-1CD50693A034}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WixToolset.Dtf.Compression.Cab", "WixToolset\src\WixToolset.Dtf.Compression.Cab\WixToolset.Dtf.Compression.Cab.csproj", "{AD836467-FC28-46A7-966D-4FDD0F72019B}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HLLibSharp", "HLLibSharp\HLLibSharp\HLLibSharp.csproj", "{14E9764A-A8BF-44C0-A1A8-2C95EA307040}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibMSPackSharp", "LibMSPackSharp\LibMSPackSharp\LibMSPackSharp.csproj", "{BD8144B8-4857-47E6-9717-E9F2DB374A89}"
@@ -42,14 +38,6 @@ Global
 		{B3537EB7-CEF6-4D90-A041-47626442A656}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B3537EB7-CEF6-4D90-A041-47626442A656}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B3537EB7-CEF6-4D90-A041-47626442A656}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CC76B5EC-976E-4063-8561-1CD50693A034}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CC76B5EC-976E-4063-8561-1CD50693A034}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CC76B5EC-976E-4063-8561-1CD50693A034}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CC76B5EC-976E-4063-8561-1CD50693A034}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AD836467-FC28-46A7-966D-4FDD0F72019B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AD836467-FC28-46A7-966D-4FDD0F72019B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AD836467-FC28-46A7-966D-4FDD0F72019B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AD836467-FC28-46A7-966D-4FDD0F72019B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{14E9764A-A8BF-44C0-A1A8-2C95EA307040}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{14E9764A-A8BF-44C0-A1A8-2C95EA307040}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{14E9764A-A8BF-44C0-A1A8-2C95EA307040}.Release|Any CPU.ActiveCfg = Release|Any CPU
