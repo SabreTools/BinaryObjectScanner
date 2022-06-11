@@ -22,6 +22,7 @@
 using System;
 using System.IO;
 using System.Net;
+using LibGSF.Output;
 
 namespace LibGSF.Input
 {
