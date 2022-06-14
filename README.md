@@ -60,6 +60,7 @@ Below is a list of protections detected by BurnOutSharp. The two columns explain
 | MediaCloQ | False | True | Unconfirmed¹ |
 | MediaMax CD3 | True | True | |
 | Origin | True | True | |
+| phenoProtect | False | False | Text file check only |
 | ProtectDISC / VOB ProtectCD/DVD | True | False | |
 | Protect DVD-Video | False | True | Unconfirmed¹ |
 | PlayStation Anti-modchip | True | False | En/Jp, not "Red Hand"; PSX executables only |
@@ -100,7 +101,6 @@ Below is a list of protections that have been identified but have not yet been i
 - FADE
 - LockBlocks
 - MusicGuard
-- Phenoprotect
 - Roxxe
 - SAFEAUDIO
 - The Bongle
