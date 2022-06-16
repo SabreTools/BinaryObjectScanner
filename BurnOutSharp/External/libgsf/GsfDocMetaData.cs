@@ -31,6 +31,7 @@ using static LibGSF.GsfUtils;
 
 namespace LibGSF
 {
+    // TODO: Can this be made internal?
     public class GsfDocProp
     {
         #region Properties
@@ -40,7 +41,7 @@ namespace LibGSF
         public object Value { get; set; }
 
         /// <summary>
-        /// Optionally NULL
+        /// Optionally null
         /// </summary>
         public string LinkedTo { get; set; }
 
@@ -104,9 +105,29 @@ namespace LibGSF
             return old_val;
         }
 
+        /// <summary>
+        /// A debugging utility to dump prop as text via Console
+        /// </summary>
+        /// <remarks>New in 1.14.2</remarks>
+        public void Dump()
+        {
+            if (Value is List<GsfDocProp> va)
+            {
+                for (int i = 0; i < va.Count; i++)
+                {
+                    Console.WriteLine($"\t[{i}] = Name: {va[i].Name}, Value: {va[i].Value}, Link: {va[i].LinkedTo}, Ref: {va[i].RefCount}");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"\t= {Value}");
+            }
+        }
+
         #endregion
     }
 
+    // TODO: Can this be made internal?
     public class GsfDocMetaData
     {
         #region Properties
@@ -122,9 +143,7 @@ namespace LibGSF
         /// </summary>
         private GsfDocMetaData() { }
 
-        /// <returns>
-        /// A new metadata property collection
-        /// </returns>
+        /// <returns>A new metadata property collection</returns>
         public static GsfDocMetaData Create() => new GsfDocMetaData();
 
         #endregion
@@ -163,6 +182,84 @@ namespace LibGSF
 
             Table[name] = docProp;
         }
+
+        /// <summary>
+        /// If <paramref name="name"/> does not exist in the collection, do nothing. If @name does exist,
+        /// remove it and its value from the collection
+        /// </summary>
+        /// <param name="name">The non-null string name of the property</param>
+        public void Remove(string name)
+        {
+            if (name == null)
+                return;
+
+            if (!Table.ContainsKey(name))
+                return;
+
+            Table.Remove(name);
+        }
+
+        /// <returns>The property with <paramref name="name"/> in meta.</returns>
+        public GsfDocProp Steal(string name)
+        {
+            if (name == null)
+                return null;
+
+            if (!Table.ContainsKey(name))
+                return null;
+
+            GsfDocProp prop = Table[name];
+            if (prop != null)
+                Table.Remove(name);
+
+            return prop;
+        }
+
+        public void Store(GsfDocProp prop)
+        {
+            if (prop == null)
+                return;
+
+            if (prop != Lookup(prop.Name))
+                return;
+
+            Table[prop.Name] = prop;
+        }
+
+        /// <summary>
+        /// Iterate through each (key, value) pair in this collection
+        /// </summary>
+        /// <param name="func">The function called once for each element in the collection</param>
+        /// <param name="user_data">Any supplied user data</param>
+        public void ForEach(Action<string, GsfDocProp, object> func, object user_data)
+        {
+            if (Table.Count == 0)
+                return;
+
+            // Sort the pairs by property name in order to generate consistent files
+            List<KeyValuePair<string, GsfDocProp>> pairs = Table.ToList();
+            pairs.Sort((a, b) => DerefStrcmp(a.Key, b.Key));
+
+            for (int i = 0; i < pairs.Count; i++)
+            {
+                func(pairs[i].Key, pairs[i].Value, user_data);
+            }
+        }
+
+        /// <returns>The number of items in this collection</returns>
+        public int Size() => Table.Count;
+
+        /// <summary>
+        /// A debugging utility to dump the content of meta via Console
+        /// </summary>
+        public void Dump()
+        {
+            ForEach(PrintProperty, null);
+        }
+
+        #endregion
+
+        #region MS-OLE
 
         /// <summary>
         /// Read a stream formated as a set of MS OLE properties from <paramref name="input"/> and store the
@@ -361,52 +458,6 @@ namespace LibGSF
             return null;
         }
 
-        /// <summary>
-        /// If <paramref name="name"/> does not exist in the collection, do nothing. If @name does exist,
-        /// remove it and its value from the collection
-        /// </summary>
-        /// <param name="name">The non-null string name of the property</param>
-        public void Remove(string name)
-        {
-            if (name == null)
-                return;
-
-            if (!Table.ContainsKey(name))
-                return;
-
-            Table.Remove(name);
-        }
-
-        /// <returns>The property with <paramref name="name"/> in meta.</returns>
-        public GsfDocProp Steal(string name)
-        {
-            if (name == null)
-                return null;
-
-            if (!Table.ContainsKey(name))
-                return null;
-
-            GsfDocProp prop = Table[name];
-            if (prop != null)
-                Table.Remove(name);
-
-            return prop;
-        }
-
-        public void Store(GsfDocProp prop)
-        {
-            if (prop == null)
-                return;
-
-            if (Table.ContainsKey(prop.Name) && Table[prop.Name] == prop)
-                return;
-
-            Table[prop.Name] = prop;
-        }
-
-        /// <returns>The number of items in this collection</returns>
-        public int Size() => Table.Count;
-
         /// <summary></summary>
         /// <param name="doc_not_component">A kludge to differentiate DocumentSummary from Summary</param>
         /// <returns>True on success</returns>
@@ -538,6 +589,18 @@ namespace LibGSF
         #endregion
 
         #region Utilities
+
+        private static int DerefStrcmp(string a, string b) => a.CompareTo(b);
+
+        private static void PrintProperty(string name, GsfDocProp prop, object user_data)
+        {
+            if (prop.LinkedTo != null)
+                Console.WriteLine($"prop '{name}' LINKED TO  -> {prop.LinkedTo}");
+            else
+                Console.WriteLine($"prop '{name}'");
+
+            prop.Dump();
+        }
 
         private int CodePageCharSize(int codepage) => (codepage == 1200 || codepage == 1201 ? 2 : 1);
 

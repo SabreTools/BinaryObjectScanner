@@ -27,6 +27,7 @@ namespace LibGSF
 {
     #region Enums
 
+    // TODO: Can this be made internal?
     public enum GsfClipFormat
     {
         /// <summary>
@@ -66,6 +67,7 @@ namespace LibGSF
         GSF_CLIP_FORMAT_UNKNOWN
     }
 
+    // TODO: Can this be made internal?
     public enum GsfClipFormatWindows
     {
         /// <summary>
@@ -96,6 +98,7 @@ namespace LibGSF
 
     #endregion
 
+    // TODO: Can this be made internal?
     public class GsfClipData
     {
         #region Properties
@@ -156,16 +159,12 @@ namespace LibGSF
         /// <returns>A GsfClipFormatWindows value.</returns>
         public GsfClipFormatWindows GetWindowsClipboardFormat(ref Exception error)
         {
-            GsfClipFormatWindows format;
-
             if (error == null)
                 return GsfClipFormatWindows.GSF_CLIP_FORMAT_WINDOWS_ERROR;
-
             if (Format != GsfClipFormat.GSF_CLIP_FORMAT_WINDOWS_CLIPBOARD)
                 return GsfClipFormatWindows.GSF_CLIP_FORMAT_WINDOWS_ERROR;
 
             long size = DataBlob.Size;
-
             if (size < 4)
             {
                 error = new InvalidDataException("The clip_data is in Windows clipboard format, but it is smaller than the required 4 bytes.");
@@ -173,30 +172,23 @@ namespace LibGSF
             }
 
             byte[] data = DataBlob.Data;
-
             uint value = GSF_LE_GET_GUINT32(data, 0);
 
             switch (value)
             {
                 case (uint)GsfClipFormatWindows.GSF_CLIP_FORMAT_WINDOWS_METAFILE:
-                    format = CheckFormatWindows(GsfClipFormatWindows.GSF_CLIP_FORMAT_WINDOWS_METAFILE, "Windows Metafile format", size, ref error);
-                    break;
+                    return CheckFormatWindows(GsfClipFormatWindows.GSF_CLIP_FORMAT_WINDOWS_METAFILE, "Windows Metafile format", size, ref error);
 
                 case (uint)GsfClipFormatWindows.GSF_CLIP_FORMAT_WINDOWS_DIB:
                 case 2: /* CF_BITMAP */
-                    format = CheckFormatWindows(GsfClipFormatWindows.GSF_CLIP_FORMAT_WINDOWS_DIB, "Windows DIB or BITMAP format", size, ref error);
-                    break;
+                    return CheckFormatWindows(GsfClipFormatWindows.GSF_CLIP_FORMAT_WINDOWS_DIB, "Windows DIB or BITMAP format", size, ref error);
 
                 case (uint)GsfClipFormatWindows.GSF_CLIP_FORMAT_WINDOWS_ENHANCED_METAFILE:
-                    format = CheckFormatWindows(GsfClipFormatWindows.GSF_CLIP_FORMAT_WINDOWS_ENHANCED_METAFILE, "Windows Enhanced Metafile format", size, ref error);
-                    break;
+                    return CheckFormatWindows(GsfClipFormatWindows.GSF_CLIP_FORMAT_WINDOWS_ENHANCED_METAFILE, "Windows Enhanced Metafile format", size, ref error);
 
                 default:
-                    format = GsfClipFormatWindows.GSF_CLIP_FORMAT_WINDOWS_UNKNOWN;
-                    break;
+                    return GsfClipFormatWindows.GSF_CLIP_FORMAT_WINDOWS_UNKNOWN;
             }
-
-            return format;
         }
 
         /// <summary>
@@ -227,7 +219,7 @@ namespace LibGSF
                 if (win_format == GsfClipFormatWindows.GSF_CLIP_FORMAT_WINDOWS_ERROR)
                     return null;
 
-                // gsf_clip_data_get_windows_clipboard_format() already did the size checks for us,
+                // GetWindowsClipboardFormat() already did the size checks for us,
                 // so we can jump to the offset right away without doing extra checks.
 
                 offset = GetWindowsClipboardDataOffset(win_format);
@@ -240,6 +232,10 @@ namespace LibGSF
             ret_size = DataBlob.Size - offset;
             return new ReadOnlySpan<byte>(data, (int)offset, (int)ret_size).ToArray();
         }
+
+        #endregion
+
+        #region Utilities
 
         private static void SetErrorMissingClipboardData(ref Exception error, string format_name, long at_least_size)
         {
@@ -257,11 +253,9 @@ namespace LibGSF
                 // FIXME: does this have a PACKEDMETA in front as well, similar to GSF_CLIP_FORMAT_WINDOWS_METAFILE?
                 new FormatOffsetPair { Format = GsfClipFormatWindows.GSF_CLIP_FORMAT_WINDOWS_ENHANCED_METAFILE, Offset = 4 }
             };
+
             int num_pairs = pairs.Length;
-
-            int i;
-
-            for (i = 0; i < num_pairs; i++)
+            for (int i = 0; i < num_pairs; i++)
             {
                 if (pairs[i].Format == format)
                     return pairs[i].Offset;

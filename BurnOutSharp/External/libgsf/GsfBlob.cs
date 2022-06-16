@@ -23,6 +23,7 @@ using System;
 
 namespace LibGSF
 {
+    // TODO: Can this be made internal?
     public class GsfBlob
     {
         #region Properties
@@ -53,6 +54,8 @@ namespace LibGSF
         public static GsfBlob Create(long size, byte[] data_to_copy, int dataPtr, ref Exception error)
         {
             if (!((size > 0 && data_to_copy != null) || (size == 0 && data_to_copy == null)))
+                return null;
+            if (error != null)
                 return null;
 
             byte[] data;
