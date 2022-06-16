@@ -65,7 +65,7 @@ namespace LibGSF.Input
 
         #endregion
 
-        #region Constructor
+        #region Constructor and Destructor
 
         /// <summary>
         /// Private constructor
@@ -83,13 +83,28 @@ namespace LibGSF.Input
             };
 
             // Find the name offset pairs
-            if (vba.Read(ref err))
+            if (vba.DirectoryRead(ref err))
                 return vba;
 
             if (err != null)
                 err = new Exception("Unable to parse VBA header");
 
             return null;
+        }
+
+        /// <summary>
+        /// Destructor
+        /// </summary>
+        ~GsfInfileMSVBA()
+        {
+            if (Modules != null)
+            {
+                Modules.Clear();
+                Modules = null;
+            }
+
+            if (Source != null)
+                Source = null;
         }
 
         #endregion
@@ -114,15 +129,15 @@ namespace LibGSF.Input
         public static GsfInfileMSVBA FindVBA(GsfInput input, ref Exception err)
         {
             GsfInput vba = null;
-            GsfInfile infile;
 
-            if ((infile = GsfInfileMSOle.Create(input, ref err)) != null)
+            GsfInfile infile = GsfInfileMSOle.Create(input, ref err);
+            if (infile != null)
             {
                 // 1) Try XLS
                 vba = infile.ChildByVariableName("_VBA_PROJECT_CUR", "VBA");
 
                 // 2) DOC
-                if (null == vba)
+                if (vba == null)
                     vba = infile.ChildByVariableName("Macros", "VBA");
 
                 // TODO : PPT is more complex
@@ -162,8 +177,7 @@ namespace LibGSF.Input
             if (module == null)
                 return;
 
-            byte[] code = module.InflateMSVBA(src_offset, out _, false);
-
+            byte[] code = module.InflateMSVBA(src_offset, out int inflatedSize, false);
             if (code != null)
             {
                 if (Modules == null)
@@ -183,7 +197,7 @@ namespace LibGSF.Input
         /// </summary>
         /// <param name="err">Place to store an Exception if anything goes wrong</param>
         /// <returns>false on error setting <paramref name="err"/> if it is supplied.</returns>
-        private bool Read(ref Exception err)
+        private bool DirectoryRead(ref Exception err)
         {
             int element_count = -1;
             string name, elem_stream = null;
@@ -209,7 +223,7 @@ namespace LibGSF.Input
 
             // 2. GUESS : based on several xls with macros and XL8GARY this looks like a
             // series of sized records.  Be _extra_ careful
-            ushort tag = 0;
+            ushort tag;
             do
             {
                 /* I have seen
@@ -248,16 +262,24 @@ namespace LibGSF.Input
 
                 if ((ptr + 6) > end)
                 {
+                    //#ifdef OLD_VBA_DUMP
+                    //puts("</project>");
+                    //#endif
+
                     err = new Exception("VBA project header problem");
                     return false;
                 }
 
-                tag = GSF_LE_GET_GUINT16(inflated_data, ptr);
+                tag      = GSF_LE_GET_GUINT16(inflated_data, ptr);
                 uint len = GSF_LE_GET_GUINT32(inflated_data, ptr + 2);
 
                 ptr += 6;
                 if ((ptr + len) > end)
                 {
+                    //#ifdef OLD_VBA_DUMP
+                    //puts("</project>");
+                    //#endif
+
                     err = new Exception("VBA project header problem");
                     return false;
                 }
@@ -266,6 +288,12 @@ namespace LibGSF.Input
                 {
                     case 4:
                         name = Encoding.UTF8.GetString(inflated_data, ptr, (int)len);
+
+                        //#ifdef OLD_VBA_DUMP
+                        //puts("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+                        //printf("<project name=\"%s\">", name);
+                        //#endif
+
                         break;
 
                     case 9:
@@ -297,12 +325,16 @@ namespace LibGSF.Input
                     case 0x33: break;
                     case 0x3e: break;
                     case 0x16:
+                        //name = g_strndup(ptr, len);
+                        //g_print("Depend Name : '%s'\n", name);
                         break;
 
                     // Elements
                     case 0x47: break;
                     case 0x32: break;
                     case 0x1a:
+                        //name = g_strndup(ptr, len);
+                        //g_print("Element Name : '%s'\n", name);
                         break;
 
                     case 0x19:
@@ -322,6 +354,8 @@ namespace LibGSF.Input
                         break;
 
                     default:
+                        //g_print("tag %hx : len %u\n", tag, len);
+                        //gsf_mem_dump(ptr, len);
                         break;
                 }
 
