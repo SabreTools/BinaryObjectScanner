@@ -91,7 +91,7 @@ namespace LibGSF.Input
             }
             else
             {
-                return src.Skip((int)CurrentOffset).ToArray();
+                return new ReadOnlySpan<byte>(src, (int)CurrentOffset, num_bytes).ToArray();
             }
         }
 
