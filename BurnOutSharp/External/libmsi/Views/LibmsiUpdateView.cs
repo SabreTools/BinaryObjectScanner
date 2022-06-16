@@ -19,7 +19,6 @@
  */
 
 using LibMSI.Internal;
-using static LibMSI.LibmsiRecord;
 
 namespace LibMSI.Views
 {
@@ -116,7 +115,7 @@ namespace LibMSI.Views
                     {
                         for (i = 1; i <= where_count; i++)
                         {
-                            RecordCopyField(record, cols_count + i, where, i);
+                            record.CopyField(cols_count + i, where, i);
                         }
                     }
                 }

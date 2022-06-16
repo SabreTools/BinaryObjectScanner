@@ -19,7 +19,6 @@
  */
 
  using System;
- using static LibMSI.LibmsiRecord;
  using static LibMSI.Internal.LibmsiSQLInput;
  using static LibMSI.Internal.MsiPriv;
 
@@ -201,7 +200,7 @@ namespace LibMSI.Views
                         if (rec == null)
                             return null;
 
-                        RecordCopyField(rec, wildcard_count, merged, i);
+                        rec.CopyField(wildcard_count, merged, i);
                         wildcard_count++;
                         break;
                     default:
@@ -271,7 +270,7 @@ namespace LibMSI.Views
 
                     if (a == b)
                     {
-                        RecordCopyField(values, colidx, padded, i);
+                        values.CopyField(colidx, padded, i);
                         break;
                     }
                 }

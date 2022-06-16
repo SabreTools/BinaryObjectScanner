@@ -23,7 +23,6 @@ using System.Linq;
 using LibGSF.Input;
 using LibMSI.Internal;
 using static LibMSI.LibmsiQuery;
-using static LibMSI.LibmsiRecord;
 using static LibMSI.LibmsiTypes;
 using static LibMSI.Internal.LibmsiTable;
 using static LibMSI.Internal.MsiPriv;
@@ -85,7 +84,7 @@ namespace LibMSI.Views
             tv.Database = db;
             tv.Columns = tv.Table.ColInfo;
             tv.NumCols = tv.Table.ColCount;
-            tv.RowSize = GetRowSize(db, tv.Table.ColInfo, tv.Table.ColCount, LONG_STR_BYTES);
+            tv.RowSize = GetRowSize(tv.Table.ColInfo, tv.Table.ColCount, LONG_STR_BYTES);
             tv.Name = name;
 
             view = tv;
@@ -117,7 +116,7 @@ namespace LibMSI.Views
                 return LibmsiResult.LIBMSI_RESULT_FUNCTION_FAILED;
             }
 
-            int n = BytesPerColumn(Database, Columns[col - 1], LONG_STR_BYTES);
+            int n = BytesPerColumn(Columns[col - 1], LONG_STR_BYTES);
             if (n != 2 && n != 3 && n != 4)
             {
                 Console.Error.WriteLine("oops! what is %d bytes per column?\n", n );
@@ -192,7 +191,7 @@ namespace LibMSI.Views
                         if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                             return LibmsiResult.LIBMSI_RESULT_FUNCTION_FAILED;
 
-                        r = GetGsfInput(rec, i + 1, out GsfInput stm);
+                        r = rec.GetGsfInput(i + 1, out GsfInput stm);
                         if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                             return r;
 
@@ -208,7 +207,7 @@ namespace LibMSI.Views
                     {
                         if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                         {
-                            string sval = RecordGetStringRaw(rec, i + 1);
+                            string sval = rec.GetStringRaw(i + 1);
                             val = Database.Strings.AddString(sval, -1, 1, persistent ? StringPersistence.StringPersistent : StringPersistence.StringNonPersistent );
                         }
                         else
@@ -596,7 +595,7 @@ namespace LibMSI.Views
                     }
                     else
                     {
-                        int n = BytesPerColumn(Database, Columns[i], LONG_STR_BYTES);
+                        int n = BytesPerColumn(Columns[i], LONG_STR_BYTES);
                         switch (n)
                         {
                             case 2:
@@ -645,7 +644,7 @@ namespace LibMSI.Views
 
             Columns[col - 1].HashTable = null;
 
-            int n = BytesPerColumn(Database, Columns[col - 1], LONG_STR_BYTES);
+            int n = BytesPerColumn(Columns[col - 1], LONG_STR_BYTES);
             if (n != 2 && n != 3 && n != 4)
             {
                 Console.Error.WriteLine($"Oops! what is {n} bytes per column?");
@@ -676,7 +675,7 @@ namespace LibMSI.Views
             }
             else if ((columninfo.Type & MSITYPE_STRING) != 0)
             {
-                string sval = RecordGetStringRaw(rec, iField);
+                string sval = rec.GetStringRaw(iField);
                 if (sval != null)
                 {
                     r = Database.Strings.IdFromStringUTF8(sval, out pvalue);
@@ -688,7 +687,7 @@ namespace LibMSI.Views
                     pvalue = 0;
                 }
             }
-            else if (BytesPerColumn(Database, columninfo, LONG_STR_BYTES) == 2)
+            else if (BytesPerColumn(columninfo, LONG_STR_BYTES) == 2)
             {
                 pvalue = 0x8000 + rec.GetInt(iField);
                 if ((pvalue & 0xffff0000) != 0)
@@ -763,7 +762,7 @@ namespace LibMSI.Views
                 }
                 else if ((Columns[i].Type & MSITYPE_STRING) != 0)
                 {
-                    string str = RecordGetStringRaw(rec, i + 1);
+                    string str = rec.GetStringRaw(i + 1);
                     if (str == null || str[0] == 0)
                     {
                         column = i;

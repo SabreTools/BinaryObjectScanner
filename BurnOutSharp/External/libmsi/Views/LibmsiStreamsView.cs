@@ -22,7 +22,6 @@ using System;
 using LibGSF.Input;
 using LibMSI.Internal;
 using static LibMSI.LibmsiQuery;
-using static LibMSI.LibmsiRecord;
 using static LibMSI.Internal.LibmsiTable;
 using static LibMSI.Internal.MsiPriv;
 
@@ -119,7 +118,7 @@ namespace LibMSI.Views
             if (row > NumRows)
                 return LibmsiResult.LIBMSI_RESULT_FUNCTION_FAILED;
 
-            LibmsiResult r = GetGsfInput(rec, 2, out GsfInput stm);
+            LibmsiResult r = rec.GetGsfInput(2, out GsfInput stm);
             if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                 return r;
 
@@ -138,7 +137,7 @@ namespace LibMSI.Views
             }
             else
             {
-                name = RecordGetStringRaw(rec, 1);
+                name = rec.GetStringRaw(1);
                 if (name == null)
                 {
                     Console.Error.WriteLine("Failed to retrieve stream name");

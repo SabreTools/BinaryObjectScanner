@@ -290,6 +290,81 @@ namespace LibMSI
             return r == LibmsiResult.LIBMSI_RESULT_SUCCESS;
         }
 
+        /// <remarks>Adapted from WixToolset</remarks>
+        public bool ExportAll(string path)
+        {
+            if (string.IsNullOrEmpty(path))
+                return false;
+
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+
+
+            // SummaryInfo
+
+            Exception err = null;
+            string summaryInfoPath = System.IO.Path.Combine(path, "_SummaryInformation.idt");
+            using (Stream summaryInfoStream = File.OpenWrite(summaryInfoPath))
+            {
+                Export("_SummaryInformation", summaryInfoStream, ref err);
+            }
+
+            // Tables
+
+            err = null;
+            LibmsiQuery tableQuery = LibmsiQuery.Create(this, $"SELECT `Name` FROM `_Tables`", ref err);
+            tableQuery.Execute(null, ref err);
+
+            LibmsiRecord tableRecord = tableQuery.Fetch(ref err);
+            while (tableRecord != null)
+            {
+                err = null;
+                string table = tableRecord.GetString(1);
+                string tablePath = System.IO.Path.Combine(path, $"{table}.idt");
+                using (Stream tableStream = File.OpenWrite(tablePath))
+                {
+                    Export(table, tableStream, ref err);
+                }
+
+                tableRecord = tableQuery.Fetch(ref err);
+            }
+
+            // Streams
+
+            if (!Directory.Exists(System.IO.Path.Combine(path, "_Streams")))
+                Directory.CreateDirectory(System.IO.Path.Combine(path, "_Streams"));
+
+            err = null;
+            LibmsiQuery streamsQuery = LibmsiQuery.Create(this, $"SELECT `Name`, `Data` FROM `_Streams`", ref err);
+            streamsQuery.Execute(null, ref err);
+
+            LibmsiRecord streamRecord = streamsQuery.Fetch(ref err);
+            while (streamRecord != null)
+            {
+                err = null;
+                string stream = streamRecord.GetString(1);
+                if (stream.EndsWith("SummaryInformation", StringComparison.Ordinal))
+                    continue;
+
+                int i = stream.IndexOf('.');
+                if (i >= 0)
+                {
+                    if (File.Exists(System.IO.Path.Combine(path, stream.Substring(0, i), stream.Substring(i + 1) + ".ibd")))
+                        continue;
+                }
+
+                using (Stream streamRecordStream = streamRecord.GetStream(2))
+                using (Stream streamRecordOutput = File.OpenWrite(System.IO.Path.Combine(path, "_Streams", stream)))
+                {
+                    streamRecordStream.CopyTo(streamRecordOutput);
+                }
+
+                streamRecord = tableQuery.Fetch(ref err);
+            }
+
+            return true;
+        }
+
         /// <summary>
         /// Import a table to the database from file <paramref name="path"/>.
         /// </summary>

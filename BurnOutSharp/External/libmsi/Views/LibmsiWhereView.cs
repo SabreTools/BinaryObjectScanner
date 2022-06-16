@@ -24,7 +24,6 @@ using System.Linq;
 using LibGSF.Input;
 using LibMSI.Internal;
 using static LibMSI.LibmsiQuery;
-using static LibMSI.LibmsiRecord;
 using static LibMSI.Internal.LibmsiSQLInput;
 using static LibMSI.Internal.MsiPriv;
 
@@ -294,7 +293,7 @@ namespace LibMSI.Views
 
                 for (int i = 1; i <= col_count; i++)
                 {
-                    r = RecordCopyField(rec, i + offset, reduced, i);
+                    r = rec.CopyField(i + offset, reduced, i);
                     if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                         break;
                 }
@@ -775,7 +774,7 @@ namespace LibMSI.Views
                     break;
 
                 case EXPR_WILDCARD:
-                    str = RecordGetStringRaw(record, ++RecIndex);
+                    str = record.GetStringRaw(++RecIndex);
                     break;
 
                 default:

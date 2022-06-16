@@ -23,7 +23,6 @@ using System.Collections.Generic;
 using LibGSF.Input;
 using LibMSI.Internal;
 using LibMSI.Views;
-using static LibMSI.LibmsiRecord;
 using static LibMSI.Internal.MsiPriv;
 
 namespace LibMSI
@@ -349,7 +348,7 @@ namespace LibMSI
                 {
                     ret = view.FetchStream(row, i, out GsfInput stm);
                     if ((ret == LibmsiResult.LIBMSI_RESULT_SUCCESS) && stm != null)
-                        RecordSetGsfInput(rec, i, stm);
+                        rec.SetGsfInput(i, stm);
                     else
                         Console.Error.WriteLine("Failed to get stream");
 

@@ -20,7 +20,6 @@
 
 using LibGSF.Input;
 using static LibMSI.LibmsiQuery;
-using static LibMSI.LibmsiRecord;
 using static LibMSI.Internal.MsiPriv;
 
 namespace LibMSI.Views
@@ -158,7 +157,7 @@ namespace LibMSI.Views
             int expanded_mask = 0;
             for (int i = 0; i < NumCols; i++ )
             {
-                r = RecordCopyField(rec, i + 1, expanded, Cols[i]);
+                r = rec.CopyField(i + 1, expanded, Cols[i]);
                 if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                     break;
 
@@ -187,7 +186,7 @@ namespace LibMSI.Views
 
             for (int i = 0; i < NumCols; i++)
             {
-                r = RecordCopyField(record, i + 1, outrec, Cols[i] );
+                r = record.CopyField(i + 1, outrec, Cols[i] );
                 if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                     return r;
             }
