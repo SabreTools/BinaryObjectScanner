@@ -918,7 +918,7 @@ namespace LibGSF.Output
             Content_Dir_RootOrder.Add(child);
         }
 
-        private static int NameCompare(GsfOutfileMSOle a, GsfOutfileMSOle b) => GsfInfileMSOLE.SortingKeyCompare(a.Key, b.Key);
+        private static int NameCompare(GsfOutfileMSOle a, GsfOutfileMSOle b) => GsfInfileMSOle.SortingKeyCompare(a.Key, b.Key);
 
         private void MakeSortingName()
         {

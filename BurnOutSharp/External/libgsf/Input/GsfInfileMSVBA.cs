@@ -115,7 +115,7 @@ namespace LibGSF.Input
             GsfInput vba = null;
             GsfInfile infile;
 
-            if ((infile = GsfInfileMSOLE.Create(input, ref err)) != null)
+            if ((infile = GsfInfileMSOle.Create(input, ref err)) != null)
             {
                 // 1) Try XLS
                 vba = infile.ChildByVariableName("_VBA_PROJECT_CUR", "VBA");
@@ -134,7 +134,7 @@ namespace LibGSF.Input
                     GsfInput vba_stream = main_part.RelationByType("http://schemas.microsoft.com/office/2006/relationships/vbaProject", ref err);
                     if (vba_stream != null)
                     {
-                        GsfInfile ole = GsfInfileMSOLE.Create(vba_stream, ref err);
+                        GsfInfile ole = GsfInfileMSOle.Create(vba_stream, ref err);
                         if (ole != null)
                             vba = ole.ChildByVariableName("VBA");
                     }

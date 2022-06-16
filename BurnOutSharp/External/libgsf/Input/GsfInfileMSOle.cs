@@ -224,7 +224,7 @@ namespace LibGSF.Input
         #endregion
     }
 
-    public class GsfInfileMSOLE : GsfInfile
+    public class GsfInfileMSOle : GsfInfile
     {
         #region Properties
 
@@ -247,7 +247,7 @@ namespace LibGSF.Input
         /// <summary>
         /// Destructor
         /// </summary>
-        ~GsfInfileMSOLE()
+        ~GsfInfileMSOle()
         {
             if (Input != null)
                 Input = null;
@@ -266,7 +266,7 @@ namespace LibGSF.Input
 
         #region Functions
 
-        protected override GsfInput DupImpl(ref Exception err) => (Container as GsfInfileMSOLE).CreateChild(DirectoryEntry, ref err);
+        protected override GsfInput DupImpl(ref Exception err) => (Container as GsfInfileMSOle).CreateChild(DirectoryEntry, ref err);
 
         protected override byte[] ReadImpl(int num_bytes, byte[] optional_buffer, int optional_buffer_ptr)
         {
@@ -402,7 +402,7 @@ namespace LibGSF.Input
         /// <remarks>This adds a reference to <paramref name="source"/>.</remarks>
         public static GsfInfile Create(GsfInput source, ref Exception err)
         {
-            GsfInfileMSOLE ole = new GsfInfileMSOLE
+            GsfInfileMSOle ole = new GsfInfileMSOle
             {
                 Input = source,
                 Size = 0,
@@ -533,7 +533,7 @@ namespace LibGSF.Input
                 return null;
 
             // Avoid creating a circular reference
-            ((GsfInfileMSOLE)Info.SmallBlockFile).Info.Unref();
+            ((GsfInfileMSOle)Info.SmallBlockFile).Info.Unref();
 
             if (Info.SmallBlock.Bat.Block != null)
                 return null;
@@ -554,7 +554,7 @@ namespace LibGSF.Input
 
         private GsfInput CreateChild(MSOLEDirectoryEntry dirent, ref Exception err)
         {
-            GsfInfileMSOLE child = PartiallyDuplicate(ref err);
+            GsfInfileMSOle child = PartiallyDuplicate(ref err);
             if (child == null)
                 return null;
 
@@ -756,7 +756,7 @@ namespace LibGSF.Input
         /// Utility routine to _partially_ replicate a file.  It does NOT copy the bat
         /// blocks, or init the dirent.
         /// </summary>
-        private GsfInfileMSOLE PartiallyDuplicate(ref Exception err)
+        private GsfInfileMSOle PartiallyDuplicate(ref Exception err)
         {
             GsfInput input = Input.Duplicate(ref err);
             if (input == null)
@@ -765,7 +765,7 @@ namespace LibGSF.Input
                 return null;
             }
 
-            GsfInfileMSOLE dst = new GsfInfileMSOLE();
+            GsfInfileMSOle dst = new GsfInfileMSOle();
             dst.Input = input;
             dst.Info = Info.Ref();
             // buf and buf_size are initialized to null
