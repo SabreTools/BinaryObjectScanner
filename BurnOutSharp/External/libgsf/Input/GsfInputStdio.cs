@@ -59,7 +59,7 @@ namespace LibGSF.Input
             while (true)
             {
                 byte[] buf = new byte[4096];
-                int nread = stream.Read(buf, 1, buf.Length);
+                int nread = stream.Read(buf, 0, buf.Length);
 
                 if (nread > 0)
                 {
