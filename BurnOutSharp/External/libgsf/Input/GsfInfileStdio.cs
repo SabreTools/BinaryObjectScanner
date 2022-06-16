@@ -35,7 +35,7 @@ namespace LibGSF.Input
 
         #endregion
 
-        #region Constructor
+        #region Constructor and Destructor
 
         /// <summary>
         /// Private constructor
@@ -64,6 +64,16 @@ namespace LibGSF.Input
             return ifs;
         }
 
+        /// <summary>
+        /// Destructor
+        /// </summary>
+        ~GsfInfileStdio()
+        {
+            Root = null;
+            Children.Clear();
+            Children = null;
+        }
+
         #endregion
 
         #region Functions
@@ -73,7 +83,7 @@ namespace LibGSF.Input
         {
             GsfInfileStdio dst = new GsfInfileStdio
             {
-                Root = this.Root,
+                Root = Root,
             };
 
             dst.Children.AddRange(Children);
@@ -118,9 +128,11 @@ namespace LibGSF.Input
         {
             string path = Path.Combine(Root, name);
 
-            GsfInput child = null;
-            if (Directory.Exists(path) || File.Exists(path))
-                child = Create(path, ref err);
+            GsfInput child;
+            if (Directory.Exists(path))
+                child = GsfInfileStdio.Create(path, ref err);
+            else
+                child = GsfInputStdio.Create(path, ref err);
 
             return child;
         }
