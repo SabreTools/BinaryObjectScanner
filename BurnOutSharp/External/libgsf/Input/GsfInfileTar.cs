@@ -117,7 +117,7 @@ namespace LibGSF.Input
         /// <summary>
         /// Private constructor
         /// </summary>
-        private GsfInfileTar() => InitInfo();
+        private GsfInfileTar() { }
 
         /// <summary>
         /// Opens the root directory of a Tar file.
@@ -133,7 +133,7 @@ namespace LibGSF.Input
 
             GsfInfileTar tar = new GsfInfileTar
             {
-                Source = source,
+                Source = GsfInputProxy.Create(source),
             };
 
             if (tar.Err != null)
@@ -141,6 +141,8 @@ namespace LibGSF.Input
                 err = tar.Err;
                 return null;
             }
+
+            tar.InitInfo();
 
             return tar;
         }
@@ -168,8 +170,10 @@ namespace LibGSF.Input
                 return null;
             }
 
-            GsfInfileTar res = new GsfInfileTar();
-            res.Source = Source;
+            GsfInfileTar res = new GsfInfileTar
+            {
+                Source = Source,
+            };
 
             for (int i = 0; i < Children.Count; i++)
             {
@@ -198,8 +202,7 @@ namespace LibGSF.Input
         /// <inheritdoc/>
         public override GsfInput ChildByIndex(int i, ref Exception error)
         {
-            if (error != null)
-                error = null;
+            error = null;
 
             if (i < 0 || i >= Children.Count)
                 return null;
@@ -287,7 +290,7 @@ namespace LibGSF.Input
                 ModTime = null,
                 Dir = new GsfInfileTar
                 {
-                    Source = this.Source,
+                    Source = Source,
                     Name = name,
                 }
             };
@@ -302,34 +305,34 @@ namespace LibGSF.Input
         private GsfInfileTar DirectoryForFile(string name, bool last)
         {
             GsfInfileTar dir = this;
-            string s = name;
-            int sPtr = 0; // s[0]
+            int s = 0; // name[0]
+
             while (true)
             {
-                int s0 = sPtr;
+                int s0 = s;
 
                 // Find a directory component, if any.
                 while (true)
                 {
-                    if (s[sPtr] == 0)
+                    if (name[s] == 0)
                     {
-                        if (last && sPtr != s0)
+                        if (last && s != s0)
                             break;
                         else
                             return dir;
                     }
 
                     // This is deliberately slash-only.
-                    if (s[sPtr] == '/')
+                    if (name[s] == '/')
                         break;
 
-                    sPtr++;
+                    s++;
                 }
 
-                string dirname = s.Substring(s0, sPtr - s0);
-                while (s[sPtr] == '/')
+                string dirname = name.Substring(s0, s - s0);
+                while (name[s] == '/')
                 {
-                    sPtr++;
+                    s++;
                 }
 
                 if (dirname != ".")
@@ -353,10 +356,10 @@ namespace LibGSF.Input
             long pos0 = Source.CurrentOffset;
             string pending_longname = null;
 
-            TarHeader header = new TarHeader();
+            TarHeader header;
             TarHeader end = new TarHeader();
 
-            byte[] headerBytes = new byte[HEADER_SIZE];
+            byte[] headerBytes;
             byte[] endBytes = new byte[HEADER_SIZE];
 
             while (Err == null && (headerBytes = Source.Read(HEADER_SIZE, null)) != null)
@@ -380,7 +383,7 @@ namespace LibGSF.Input
                 Array.Copy(headerBytes, 345, header.Prefix, 0, 155);
                 Array.Copy(headerBytes, 500, header.Filler, 0, 12);
 
-                if (header.Filler.Length == end.Filler.Length && header.Filler.SequenceEqual(end.Filler))
+                if (header.Filler.Length != end.Filler.Length || !header.Filler.SequenceEqual(end.Filler))
                 {
                     Err = new Exception("Invalid tar header");
                     break;
@@ -411,7 +414,6 @@ namespace LibGSF.Input
                     case 0:
                         {
                             // Regular file.
-                            GsfInfileTar dir;
                             int n = 0, s; // name[0]
 
                             // This is deliberately slash-only.
@@ -429,16 +431,18 @@ namespace LibGSF.Input
                                 Dir = null,
                             };
 
-                            dir = DirectoryForFile(name, false);
+                            GsfInfileTar dir = DirectoryForFile(name, false);
                             dir.Children.Add(c);
                             break;
                         }
+
                     case (byte)'5':
                         {
                             // Directory
                             DirectoryForFile(name, true);
                             break;
                         }
+
                     case (byte)'L':
                         {
                             if (pending_longname != null || name != MAGIC_LONGNAME)
@@ -457,6 +461,7 @@ namespace LibGSF.Input
                             pending_longname = Encoding.UTF8.GetString(n);
                             break;
                         }
+
                     default:
                         // Other -- ignore
                         break;
