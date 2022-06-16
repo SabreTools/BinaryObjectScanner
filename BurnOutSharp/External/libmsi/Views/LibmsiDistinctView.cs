@@ -20,7 +20,7 @@
 
 using System;
 
-namespace LibMSI
+namespace LibMSI.Views
 {
     internal class LibmsiDistinctSet
     {

@@ -21,6 +21,7 @@
 using System;
 using System.IO;
 using LibGSF.Input;
+using LibMSI.Internal;
 using static LibMSI.LibmsiTypes;
 
 namespace LibMSI
@@ -234,7 +235,7 @@ namespace LibMSI
         /// <returns>True on success.</returns>
         public bool LoadStream(int field, string szFilename)
         {
-            LibmsiResult ret = RecordLoadStreamFromFile(this, field, szFilename);
+            LibmsiResult ret = LoadStreamFromFile(field, szFilename);
             return ret == LibmsiResult.LIBMSI_RESULT_SUCCESS;
         }
 
@@ -258,13 +259,13 @@ namespace LibMSI
                 return false;
 
             byte[] data = new byte[count];
-            
+
             int bytes_read = input.Read(data, 0, count);
             if (bytes_read != count)
                 return false;
 
             GsfInput stm = GsfInputMemory.Create(data, count, true);
-            if (RecordLoadStream(this, field, stm) != LibmsiResult.LIBMSI_RESULT_SUCCESS)
+            if (LoadStream(field, stm) != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                 return false;
 
             return true;
@@ -278,7 +279,7 @@ namespace LibMSI
         public Stream GetStream(int field)
         {
             Exception err = null;
-            GsfInput stm = RecordGetStream(this, field, ref err);
+            GsfInput stm = GetStream(field, ref err);
             if (stm == null)
                 return null;
 
@@ -289,17 +290,17 @@ namespace LibMSI
 
         #region Internal Functions
 
-        internal static LibmsiResult RecordCopyField(LibmsiRecord in_rec, int in_n, LibmsiRecord out_rec, int out_n)
+        internal LibmsiResult CopyField(int in_n, LibmsiRecord out_rec, int out_n)
         {
             LibmsiResult r = LibmsiResult.LIBMSI_RESULT_SUCCESS;
 
-            if (in_n > in_rec.Count || out_n > out_rec.Count)
+            if (in_n > Count || out_n > out_rec.Count)
             {
                 r = LibmsiResult.LIBMSI_RESULT_FUNCTION_FAILED;
             }
-            else if (in_rec != out_rec || in_n != out_n)
-            {                
-                LibmsiField input = in_rec.Fields[in_n];
+            else if (this != out_rec || in_n != out_n)
+            {
+                LibmsiField input = Fields[in_n];
                 LibmsiField output = out_rec.Fields[out_n];
 
                 switch (input.Type)
@@ -327,20 +328,20 @@ namespace LibMSI
             return r;
         }
 
-        internal static string RecordGetStringRaw(LibmsiRecord rec, int field)
+        internal string GetStringRaw(int field)
         {
-            if (field > rec.Count)
+            if (field > Count)
                 return null;
 
-            if (rec.Fields[field].Type != LIBMSI_FIELD_TYPE_STR )
+            if (Fields[field].Type != LIBMSI_FIELD_TYPE_STR)
                 return null;
 
-            return rec.Fields[field].szVal;
+            return Fields[field].szVal;
         }
 
-        internal static LibmsiResult RecordGetString(LibmsiRecord rec, int field, out string szValue, ref int pcchValue)
+        internal LibmsiResult GetString(int field, out string szValue, ref int pcchValue)
         {
-            if (field > rec.Count)
+            if (field > Count)
             {
                 if (pcchValue > 0)
                     szValue = "\0";
@@ -352,15 +353,15 @@ namespace LibMSI
             }
 
             int len;
-            switch (rec.Fields[field].Type)
+            switch (Fields[field].Type)
             {
                 case LIBMSI_FIELD_TYPE_INT:
-                    szValue = rec.Fields[field].iVal.ToString();
+                    szValue = Fields[field].iVal.ToString();
                     len = szValue.Length;
                     break;
                 case LIBMSI_FIELD_TYPE_STR:
-                    szValue = rec.Fields[field].szVal;
-                    len = rec.Fields[field].szVal.Length;
+                    szValue = Fields[field].szVal;
+                    len = Fields[field].szVal.Length;
                     break;
                 case LIBMSI_FIELD_TYPE_NULL:
                     if (pcchValue > 0)
@@ -385,32 +386,32 @@ namespace LibMSI
             return ret;
         }
 
-        internal static LibmsiResult RecordLoadStream(LibmsiRecord rec, int field, GsfInput stream)
+        internal LibmsiResult LoadStream(int field, GsfInput stream)
         {
-            if ((field == 0) || (field > rec.Count))
+            if ((field == 0) || (field > Count))
                 return LibmsiResult.LIBMSI_RESULT_INVALID_PARAMETER;
 
-            rec.Fields[field].Type = LIBMSI_FIELD_TYPE_STREAM;
-            rec.Fields[field].Stream = stream;
+            Fields[field].Type = LIBMSI_FIELD_TYPE_STREAM;
+            Fields[field].Stream = stream;
 
             return LibmsiResult.LIBMSI_RESULT_SUCCESS;
         }
 
-        internal static LibmsiResult RecordLoadStreamFromFile(LibmsiRecord rec, int field, string szFilename)
+        internal LibmsiResult LoadStreamFromFile(int field, string szFilename)
         {
             GsfInput stm;
             LibmsiResult r;
 
-            if ((field == 0) || (field > rec.Count) )
+            if ((field == 0) || (field > Count))
                 return LibmsiResult.LIBMSI_RESULT_INVALID_PARAMETER;
 
             // No filename means we should seek back to the start of the stream
             if (szFilename == null)
             {
-                if (rec.Fields[field].Type != LIBMSI_FIELD_TYPE_STREAM)
+                if (Fields[field].Type != LIBMSI_FIELD_TYPE_STREAM)
                     return LibmsiResult.LIBMSI_RESULT_INVALID_FIELD;
 
-                stm = rec.Fields[field].Stream;
+                stm = Fields[field].Stream;
                 if (stm == null)
                     return LibmsiResult.LIBMSI_RESULT_INVALID_FIELD;
 
@@ -424,50 +425,50 @@ namespace LibMSI
                     return r;
 
                 // If all's good, store it in the record
-                RecordLoadStream(rec, field, stm);
+                LoadStream(field, stm);
             }
 
             return LibmsiResult.LIBMSI_RESULT_SUCCESS;
         }
 
-        internal static LibmsiResult RecordSetGsfInput(LibmsiRecord rec, int field, GsfInput stm)
+        internal LibmsiResult SetGsfInput(int field, GsfInput stm)
         {
-            if (field > rec.Count )
+            if (field > Count)
                 return LibmsiResult.LIBMSI_RESULT_INVALID_FIELD;
 
-            rec.Fields[field].Type = LIBMSI_FIELD_TYPE_STREAM;
-            rec.Fields[field].Stream = stm;
+            Fields[field].Type = LIBMSI_FIELD_TYPE_STREAM;
+            Fields[field].Stream = stm;
 
             return LibmsiResult.LIBMSI_RESULT_SUCCESS;
         }
 
-        internal static LibmsiResult RecordGetGsfInput(LibmsiRecord rec, int field, out GsfInput pstm)
+        internal LibmsiResult GetGsfInput(int field, out GsfInput pstm)
         {
             pstm = null;
-            if (field > rec.Count )
+            if (field > Count)
                 return LibmsiResult.LIBMSI_RESULT_INVALID_FIELD;
 
-            if (rec.Fields[field].Type != LIBMSI_FIELD_TYPE_STREAM)
+            if (Fields[field].Type != LIBMSI_FIELD_TYPE_STREAM)
                 return LibmsiResult.LIBMSI_RESULT_INVALID_FIELD;
 
-            pstm = rec.Fields[field].Stream;
+            pstm = Fields[field].Stream;
 
             return LibmsiResult.LIBMSI_RESULT_SUCCESS;
         }
 
-        internal static LibmsiRecord RecordClone(LibmsiRecord rec)
+        internal LibmsiRecord Clone()
         {
-            int count = rec.GetFieldCount();
-            LibmsiRecord clone = LibmsiRecord.Create(count);
+            int count = GetFieldCount();
+            LibmsiRecord clone = Create(count);
             if (clone == null)
                 return null;
 
             for (int i = 0; i <= count; i++)
             {
-                if (rec.Fields[i].Type == LIBMSI_FIELD_TYPE_STREAM)
+                if (Fields[i].Type == LIBMSI_FIELD_TYPE_STREAM)
                 {
                     Exception err = null;
-                    GsfInput stm = rec.Fields[i].Stream.Duplicate(ref err);
+                    GsfInput stm = Fields[i].Stream.Duplicate(ref err);
                     if (stm == null)
                         return null;
 
@@ -476,7 +477,7 @@ namespace LibMSI
                 }
                 else
                 {
-                    LibmsiResult r = RecordCopyField(rec, i, clone, i);
+                    LibmsiResult r = CopyField(i, clone, i);
                     if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                         return null;
                 }
@@ -521,18 +522,18 @@ namespace LibMSI
             return true;
         }
 
-        internal static string MsiDupRecordField(LibmsiRecord rec, int field)
+        internal string DupRecordField(int field)
         {
-            if (rec.IsNull(field))
+            if (IsNull(field))
                 return null;
 
             int sz = 0;
-            LibmsiResult r = RecordGetString(rec, field, out _, ref sz);
+            LibmsiResult r = GetString(field, out _, ref sz);
             if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                 return null;
 
             sz++;
-            r = RecordGetString(rec, field, out string str, ref sz);
+            r = GetString(field, out string str, ref sz);
             if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
             {
                 Console.Error.WriteLine("Failed to get string!");
@@ -554,12 +555,12 @@ namespace LibMSI
             int p = 0; // str[0]
 
             // Skip the minus sign
-            if (str[p] == '-' )
+            if (str[p] == '-')
                 p++;
 
             while (p < str.Length && str[p] != '\0')
             {
-                if( (str[p] < '0') || (str[p] > '9') )
+                if ((str[p] < '0') || (str[p] > '9'))
                     return false;
 
                 x *= 10;
@@ -571,7 +572,7 @@ namespace LibMSI
             if (str[0] == '-')
                 x = -x;
 
-            output = x; 
+            output = x;
 
             return true;
         }
@@ -609,28 +610,27 @@ namespace LibMSI
             return LibmsiResult.LIBMSI_RESULT_SUCCESS;
         }
 
-        private static GsfInput RecordGetStream(LibmsiRecord rec, int field, ref Exception error)
+        private GsfInput GetStream(int field, ref Exception error)
         {
-
-            if (field > rec.Count)
+            if (field > Count)
             {
                 error = new Exception($"LIBMSI_RESULT_ERROR: {LibmsiResult.LIBMSI_RESULT_INVALID_PARAMETER}");
                 return null;
             }
 
-            if (rec.Fields[field].Type == LIBMSI_FIELD_TYPE_NULL)
+            if (Fields[field].Type == LIBMSI_FIELD_TYPE_NULL)
             {
                 error = new Exception($"LIBMSI_RESULT_ERROR: {LibmsiResult.LIBMSI_RESULT_INVALID_DATA}");
                 return null;
             }
 
-            if (rec.Fields[field].Type != LIBMSI_FIELD_TYPE_STREAM)
+            if (Fields[field].Type != LIBMSI_FIELD_TYPE_STREAM)
             {
                 error = new Exception($"LIBMSI_RESULT_ERROR: {LibmsiResult.LIBMSI_RESULT_INVALID_DATATYPE}");
                 return null;
             }
 
-            GsfInput stm = rec.Fields[field].Stream;
+            GsfInput stm = Fields[field].Stream;
             if (stm == null)
             {
                 error = new Exception($"LIBMSI_RESULT_ERROR: {LibmsiResult.LIBMSI_RESULT_INVALID_PARAMETER}");

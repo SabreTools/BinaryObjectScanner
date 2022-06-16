@@ -20,10 +20,10 @@
 
  using System;
  using static LibMSI.LibmsiRecord;
- using static LibMSI.LibmsiSQLInput;
- using static LibMSI.MsiPriv;
+ using static LibMSI.Internal.LibmsiSQLInput;
+ using static LibMSI.Internal.MsiPriv;
 
-namespace LibMSI
+namespace LibMSI.Views
 {
     internal class LibmsiInsertView : LibmsiView
     {

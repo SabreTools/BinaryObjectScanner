@@ -18,10 +18,11 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-using static LibMSI.LibmsiTable;
-using static LibMSI.MsiPriv;
+using LibMSI.Internal;
+using static LibMSI.Internal.LibmsiTable;
+using static LibMSI.Internal.MsiPriv;
 
-namespace LibMSI
+namespace LibMSI.Views
 {
     internal class LibmsiCreateView : LibmsiView
     {
@@ -107,7 +108,7 @@ namespace LibMSI
             if (IsTemp && !Hold)
                 return LibmsiResult.LIBMSI_RESULT_SUCCESS;
 
-            return MsiCreateTable(Database, Name, ColInfo, persist);
+            return CreateTable(Database, Name, ColInfo, persist);
         }
 
         /// <inheritdoc/>

@@ -67,9 +67,10 @@
 
 using System;
 using System.Collections.Generic;
-using static LibMSI.MsiPriv;
+using LibMSI.Views;
+using static LibMSI.Internal.MsiPriv;
 
-namespace LibMSI
+namespace LibMSI.Internal
 {
     #region Generated Enums
 

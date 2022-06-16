@@ -18,7 +18,7 @@
 
 using System.Linq;
 
-namespace LibMSI
+namespace LibMSI.Internal
 {
     /// <summary>
     /// The token value for this keyword

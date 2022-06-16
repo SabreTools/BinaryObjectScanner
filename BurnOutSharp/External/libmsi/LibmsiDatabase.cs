@@ -25,12 +25,14 @@ using System.Linq;
 using System.Text;
 using LibGSF.Input;
 using LibGSF.Output;
+using LibMSI.Internal;
+using LibMSI.Views;
 using static LibMSI.LibmsiQuery;
 using static LibMSI.LibmsiRecord;
 using static LibMSI.LibmsiSummaryInfo;
-using static LibMSI.LibmsiTable;
-using static LibMSI.MsiPriv;
-using static LibMSI.StringTable;
+using static LibMSI.Internal.LibmsiTable;
+using static LibMSI.Internal.MsiPriv;
+using static LibMSI.Internal.StringTable;
 
 namespace LibMSI
 {
@@ -69,7 +71,7 @@ namespace LibMSI
         internal static readonly byte[] clsid_msi_transform = { 0x82, 0x10, 0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0xc0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x46 };
 
         internal static readonly byte[] clsid_msi_database = { 0x84, 0x10, 0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0xc0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x46 };
-        
+
         internal static readonly byte[] clsid_msi_patch = { 0x86, 0x10, 0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0xc0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x46 };
 
         #endregion
@@ -301,7 +303,7 @@ namespace LibMSI
             if (error != null)
                 return false;
 
-            LibmsiResult r = ImportImpl(path);
+            LibmsiResult r = Import(path);
             if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                 error = new Exception($"LIBMSI_RESULT_ERROR: {r}");
 
@@ -376,7 +378,7 @@ namespace LibMSI
             if (conflicts)
                 r = LibmsiResult.LIBMSI_RESULT_FUNCTION_FAILED;
 
-        done:
+            done:
             if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                 error = new Exception($"LIBMSI_RESULT_ERROR: {r}");
 
@@ -403,14 +405,14 @@ namespace LibMSI
                 return r == LibmsiResult.LIBMSI_RESULT_SUCCESS;
             }
 
-            r = MsiEnumDbStorages(CommitStorage, this);
+            r = EnumDbStorages(CommitStorage, this);
             if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
             {
                 error = new Exception($"Failed to save storages r={r}");
                 return r == LibmsiResult.LIBMSI_RESULT_SUCCESS;
             }
 
-            r = MsiEnumDbStreams(CommitStream, this);
+            r = EnumDbStreams(CommitStream, this);
             if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
             {
                 error = new Exception($"Failed to save streams r={r}");
@@ -441,7 +443,7 @@ namespace LibMSI
 
         #region Internal Functions
 
-        internal LibmsiResult MsiOpenStorage(string stname)
+        internal LibmsiResult OpenStorage(string stname)
         {
             LibmsiResult r = LibmsiResult.LIBMSI_RESULT_NOT_ENOUGH_MEMORY;
             foreach (LibmsiStorage stg in Storages)
@@ -465,7 +467,7 @@ namespace LibMSI
             return LibmsiResult.LIBMSI_RESULT_SUCCESS;
         }
 
-        internal LibmsiResult MsiCreateStorage(string stname, GsfInput stm)
+        internal LibmsiResult CreateStorage(string stname, GsfInput stm)
         {
             if (Flags.HasFlag(LibmsiDbFlags.LIBMSI_DB_FLAGS_READONLY))
                 return LibmsiResult.LIBMSI_RESULT_ACCESS_DENIED;
@@ -498,7 +500,7 @@ namespace LibMSI
             return LibmsiResult.LIBMSI_RESULT_SUCCESS;
         }
 
-        internal void MsiDestroyStorage(string stname)
+        internal void DestroyStorage(string stname)
         {
             foreach (LibmsiStorage storage in Storages)
             {
@@ -522,7 +524,7 @@ namespace LibMSI
             {
                 if (stname == stream.Name)
                 {
-                    MsiDestroyStream(stname);
+                    DestroyStream(stname);
                     break;
                 }
             }
@@ -537,7 +539,7 @@ namespace LibMSI
             return ret;
         }
 
-        internal LibmsiResult MsiCreateStream(string stname, GsfInput stm)
+        internal LibmsiResult CreateStream(string stname, GsfInput stm)
         {
             LibmsiResult r = LibmsiResult.LIBMSI_RESULT_FUNCTION_FAILED;
             bool found = false;
@@ -564,7 +566,7 @@ namespace LibMSI
             return r;
         }
 
-        internal LibmsiResult MsiEnumDbStreams(Func<string, GsfInput, object, LibmsiResult> fn, object opaque)
+        internal LibmsiResult EnumDbStreams(Func<string, GsfInput, object, LibmsiResult> fn, object opaque)
         {
             foreach (LibmsiStream stream in Streams)
             {
@@ -577,7 +579,7 @@ namespace LibMSI
             return LibmsiResult.LIBMSI_RESULT_SUCCESS;
         }
 
-        internal LibmsiResult MsiEnumDbStorages(Func<string, GsfInfile, object, LibmsiResult> fn, object opaque)
+        internal LibmsiResult EnumDbStorages(Func<string, GsfInfile, object, LibmsiResult> fn, object opaque)
         {
             foreach (LibmsiStorage storage in Storages)
             {
@@ -590,14 +592,14 @@ namespace LibMSI
             return LibmsiResult.LIBMSI_RESULT_SUCCESS;
         }
 
-        internal LibmsiResult MsiGetRawStream(string stname , out GsfInput stm)
+        internal LibmsiResult GetRawStream(string stname, out GsfInput stm)
         {
             string decoded = DecodeStreamName(stname);
             if (CloneInfileStream(stname, out stm) == LibmsiResult.LIBMSI_RESULT_SUCCESS)
                 return LibmsiResult.LIBMSI_RESULT_SUCCESS;
 
             LibmsiResult ret = LibmsiResult.LIBMSI_RESULT_FUNCTION_FAILED;
-            foreach(LibmsiTransform transform in Transforms)
+            foreach (LibmsiTransform transform in Transforms)
             {
                 Exception err = null;
                 stm = transform.Stg.ChildByName(stname, ref err);
@@ -611,7 +613,7 @@ namespace LibMSI
             return ret;
         }
 
-        internal void MsiDestroyStream(string stname)
+        internal void DestroyStream(string stname)
         {
             foreach (LibmsiStream stream in Streams)
             {
@@ -715,7 +717,7 @@ namespace LibMSI
 
         internal LibmsiResult Open()
         {
-            byte[] uuid = new byte [16];
+            byte[] uuid = new byte[16];
             LibmsiResult ret = LibmsiResult.LIBMSI_RESULT_OPEN_FAILED;
 
             Exception err = null;
@@ -795,7 +797,7 @@ namespace LibMSI
             if (TRACE_ON && stg != null)
                 EnumStreamNames(stg);
 
-            ret = MsiTableApplyTransform(this, stg);
+            ret = LibmsiTable.ApplyTransform(this, stg);
 
         end:
             return ret;
@@ -809,7 +811,7 @@ namespace LibMSI
 
             string sql = $"select * from `_Columns` where `Table` = '{table}'";
             LibmsiResult r = QueryOpen(this, out LibmsiQuery query, sql);
-            if( r != LibmsiResult.LIBMSI_RESULT_SUCCESS )
+            if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                 return r;
 
             // Count the number of primary key records
@@ -820,7 +822,7 @@ namespace LibMSI
             };
 
             int count = 0;
-            r = QueryIterateRecords(query, ref count, MsiPrimaryKeyIterator, info);
+            r = query.IterateRecords(ref count, PrimaryKeyIterator, info);
             if (r == LibmsiResult.LIBMSI_RESULT_SUCCESS)
             {
                 // Allocate a record and fill in the names of the tables
@@ -828,8 +830,8 @@ namespace LibMSI
                 info.N = 0;
 
                 count = 0;
-                r = QueryIterateRecords(query, ref count, MsiPrimaryKeyIterator, info);
-                if( r == LibmsiResult.LIBMSI_RESULT_SUCCESS )
+                r = query.IterateRecords(ref count, PrimaryKeyIterator, info);
+                if (r == LibmsiResult.LIBMSI_RESULT_SUCCESS)
                     prec = info.Rec;
             }
 
@@ -888,7 +890,7 @@ namespace LibMSI
             return LibmsiResult.LIBMSI_RESULT_FUNCTION_FAILED;
         }
 
-        private string MsiReadTextArchive(string path, out int len)
+        private string ReadTextArchive(string path, out int len)
         {
             try
             {
@@ -903,7 +905,7 @@ namespace LibMSI
             }
         }
 
-        private void MsiParseLine(ref string line, ref int linePtr, out string[] entries, out int num_entries, ref int len)
+        private void ParseLine(ref string line, ref int linePtr, out string[] entries, out int num_entries, ref int len)
         {
             int ptr = linePtr;
             int save;
@@ -987,9 +989,9 @@ namespace LibMSI
             num_entries = count;
         }
 
-        private string MsiBuildCreateSQLPrelude(string table) => $"CREATE TABLE `{table}` (";
+        private string BuildCreateSQLPrelude(string table) => $"CREATE TABLE `{table}` (";
 
-        private string MsiBuildCreateSQLColumns(string[] columns_data, string[] types, int num_columns)
+        private string BuildCreateSQLColumns(string[] columns_data, string[] types, int num_columns)
         {
             int sql_size = 1;
             long len;
@@ -1002,12 +1004,12 @@ namespace LibMSI
                     comma = "\0";
                 else
                     comma = ",";
-                
+
                 comma += '\0';
 
                 int ptr = 1; // types[i][1];
                 len = long.Parse(new string(types[i].Skip(1).SkipWhile(c => char.IsWhiteSpace(c)).TakeWhile(c => c == '+' || c == '-' || char.IsDigit(c)).ToArray()));
-                
+
                 string extra = "\0";
                 string type = null;
                 string size = "\0";
@@ -1096,17 +1098,17 @@ namespace LibMSI
             return columns;
         }
 
-        private string MsiBuildCreateSQLPostlude(string[] primary_keys, int num_keys)
+        private string BuildCreateSQLPostlude(string[] primary_keys, int num_keys)
         {
             string keys = string.Join(", ", primary_keys.Select(s => $"`{s}`"));
             return $"PRIMARY KEY {keys})";
         }
 
-        private LibmsiResult MsiAddTableToDb(string[] columns, string[] types, string[] labels, int num_labels, int num_columns)
+        private LibmsiResult AddTableToDb(string[] columns, string[] types, string[] labels, int num_labels, int num_columns)
         {
-            string prelude = MsiBuildCreateSQLPrelude(labels[0]);
-            string columns_sql = MsiBuildCreateSQLColumns(columns, types, num_columns);
-            string postlude = MsiBuildCreateSQLPostlude(labels.Skip(1).ToArray(), num_labels - 1); // Skip over table name
+            string prelude = BuildCreateSQLPrelude(labels[0]);
+            string columns_sql = BuildCreateSQLColumns(columns, types, num_columns);
+            string postlude = BuildCreateSQLPostlude(labels.Skip(1).ToArray(), num_labels - 1); // Skip over table name
 
             if (prelude == null || columns_sql == null || postlude == null)
                 return LibmsiResult.LIBMSI_RESULT_OUTOFMEMORY;
@@ -1125,7 +1127,7 @@ namespace LibMSI
                 return LibmsiResult.LIBMSI_RESULT_OUTOFMEMORY;
             }
 
-            LibmsiResult r = QueryExecute(view, null);
+            LibmsiResult r = view.Execute(null);
             view.Close(ref error);
             if (error != null)
                 Console.Error.WriteLine(error.Message);
@@ -1141,19 +1143,24 @@ namespace LibMSI
             {
                 switch (types[i][0])
                 {
-                    case 'L': case 'l': case 'S': case 's':
+                    case 'L':
+                    case 'l':
+                    case 'S':
+                    case 's':
                         rec.SetString(i + 1, data[i]);
                         break;
-                    case 'I': case 'i':
+                    case 'I':
+                    case 'i':
                         if (data[i] != null)
                             rec.SetInt(i + 1, int.Parse(new string(data[i].Skip(1).SkipWhile(c => char.IsWhiteSpace(c)).TakeWhile(c => c == '+' || c == '-' || char.IsDigit(c)).ToArray())));
 
                         break;
-                    case 'V': case 'v':
+                    case 'V':
+                    case 'v':
                         if (data[i] != null)
                         {
                             string file = System.IO.Path.Combine(name, data[i]);
-                            LibmsiResult r = RecordLoadStreamFromFile(rec, i + 1, file);
+                            LibmsiResult r = rec.LoadStreamFromFile(i + 1, file);
                             if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                                 return LibmsiResult.LIBMSI_RESULT_FUNCTION_FAILED;
                         }
@@ -1169,7 +1176,7 @@ namespace LibMSI
             return LibmsiResult.LIBMSI_RESULT_SUCCESS;
         }
 
-        private LibmsiResult MsiAddRecordsToTable(string[] columns, string[] types, string[] labels, string[][] records, int num_columns, int num_records)
+        private LibmsiResult AddRecordsToTable(string[] columns, string[] types, string[] labels, string[][] records, int num_columns, int num_records)
         {
             LibmsiResult r = LibmsiTableView.Create(this, labels[0], out LibmsiView view);
             if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
@@ -1202,7 +1209,7 @@ namespace LibMSI
             return LibmsiResult.LIBMSI_RESULT_SUCCESS;
         }
 
-        private LibmsiResult ImportImpl(string path)
+        private LibmsiResult Import(string path)
         {
             LibmsiResult r = LibmsiResult.LIBMSI_RESULT_OUTOFMEMORY;
             int num_records = 0;
@@ -1210,14 +1217,14 @@ namespace LibMSI
             string suminfo = "_SummaryInformation";
             string forcecodepage = "_ForceCodepage";
 
-            string data = MsiReadTextArchive(path, out int len);
+            string data = ReadTextArchive(path, out int len);
             if (data == null)
                 return LibmsiResult.LIBMSI_RESULT_OUTOFMEMORY;
 
             int ptr = 0; // data[0]
-            MsiParseLine(ref data, ref ptr, out string[] columns, out int num_columns, ref len);
-            MsiParseLine(ref data, ref ptr, out string[] types, out int num_types, ref len);
-            MsiParseLine(ref data, ref ptr, out string[] labels, out int num_labels, ref len);
+            ParseLine(ref data, ref ptr, out string[] columns, out int num_columns, ref len);
+            ParseLine(ref data, ref ptr, out string[] types, out int num_types, ref len);
+            ParseLine(ref data, ref ptr, out string[] labels, out int num_labels, ref len);
 
             if (num_columns == 1 && columns[0][0] == '\0' && num_labels == 1 && labels[0][0] == '\0' && num_types == 2 && types[1] == forcecodepage)
                 return Strings.SetCodePage(int.Parse(new string(types[0].Skip(1).SkipWhile(c => char.IsWhiteSpace(c)).TakeWhile(c => c == '+' || c == '-' || char.IsDigit(c)).ToArray())));
@@ -1230,14 +1237,14 @@ namespace LibMSI
             // Read in the table records
             while (len != 0)
             {
-                
-                MsiParseLine(ref data, ref ptr, out string[] record, out _, ref len);
+
+                ParseLine(ref data, ref ptr, out string[] record, out _, ref len);
                 records.Add(record);
             }
 
             if (labels[0] == suminfo)
             {
-                r = MsiAddSumInfo(this, records.ToArray(), num_records, num_columns);
+                r = AddSummaryInfo(this, records.ToArray(), num_records, num_columns);
                 if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                     return LibmsiResult.LIBMSI_RESULT_FUNCTION_FAILED;
             }
@@ -1245,18 +1252,18 @@ namespace LibMSI
             {
                 if (!TableViewExists(this, labels[0]))
                 {
-                    r = MsiAddTableToDb(columns, types, labels, num_labels, num_columns);
+                    r = AddTableToDb(columns, types, labels, num_labels, num_columns);
                     if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                         return LibmsiResult.LIBMSI_RESULT_FUNCTION_FAILED;
                 }
 
-                r = MsiAddRecordsToTable(columns, types, labels, records.ToArray(), num_columns, num_records);
+                r = AddRecordsToTable(columns, types, labels, records.ToArray(), num_columns, num_records);
             }
 
             return r;
         }
 
-        private static bool MsiExportStream(GsfInput gsfin, string table_dir, out string str, ref Exception error)
+        private static bool ExportStream(GsfInput gsfin, string table_dir, out string str, ref Exception error)
         {
             str = null;
             if (table_dir == null)
@@ -1292,16 +1299,16 @@ namespace LibMSI
             }
         }
 
-        private static LibmsiResult MsiExportRecord(Stream fd, LibmsiRecord row, int start, string table_dir, ref Exception error)
+        private static LibmsiResult ExportRecord(Stream fd, LibmsiRecord row, int start, string table_dir, ref Exception error)
         {
             int count = row.GetFieldCount();
             for (int i = start; i <= count; i++)
             {
                 string str;
-                RecordGetGsfInput(row, i, out GsfInput input);
+                row.GetGsfInput(i, out GsfInput input);
                 if (input != null)
                 {
-                    if (!MsiExportStream(input, table_dir, out str, ref error))
+                    if (!ExportStream(input, table_dir, out str, ref error))
                         return LibmsiResult.LIBMSI_RESULT_FUNCTION_FAILED;
 
                     input = null;
@@ -1330,16 +1337,17 @@ namespace LibMSI
             return LibmsiResult.LIBMSI_RESULT_SUCCESS;
         }
 
-        private static LibmsiResult MsiExportRow(LibmsiRecord row, object arg)
+        // TODO: Move to LibmsiRecord
+        private static LibmsiResult ExportRowImpl(LibmsiRecord row, object arg)
         {
             ExportRow export = arg as ExportRow;
             Exception err = export.Error;
-            LibmsiResult r = MsiExportRecord(export.FD, row, 1, export.TableDir, ref err);
+            LibmsiResult r = ExportRecord(export.FD, row, 1, export.TableDir, ref err);
             export.Error = err;
             return r;
         }
 
-        private static LibmsiResult MsiExportForceCodePage(Stream fd, int codepage)
+        private static LibmsiResult ExportForceCodePage(Stream fd, int codepage)
         {
             string data = $"\r\n\r\n{codepage}\t_ForceCodepage\r\n\0";
             int sz = data.Length;
@@ -1354,7 +1362,7 @@ namespace LibMSI
             }
         }
 
-        private LibmsiResult MsiExportSummaryInfo(Stream fd, ref Exception error)
+        private LibmsiResult ExportSummaryInfo(Stream fd, ref Exception error)
         {
             LibmsiSummaryInfo si = LibmsiSummaryInfo.Create(this, 0, ref error);
             if (si == null)
@@ -1376,7 +1384,7 @@ namespace LibMSI
             {
                 if (si.Property[i].VariantType != LibmsiOLEVariantType.OLEVT_EMPTY)
                 {
-                    string val = SummaryInfoAsString(si, i);
+                    string val = si.SummaryInfoAsString(i);
                     if (val == null)
                         return LibmsiResult.LIBMSI_RESULT_FUNCTION_FAILED;
 
@@ -1401,11 +1409,11 @@ namespace LibMSI
             if (table == "_ForceCodepage")
             {
                 int codepage = Strings.GetCodePage();
-                return MsiExportForceCodePage(fd, codepage);
+                return ExportForceCodePage(fd, codepage);
             }
             else if (table == "_SummaryInformation")
             {
-                return MsiExportSummaryInfo(fd, ref error);
+                return ExportSummaryInfo(fd, ref error);
             }
 
             string query = $"select * from {table}";
@@ -1413,21 +1421,21 @@ namespace LibMSI
             if (r == LibmsiResult.LIBMSI_RESULT_SUCCESS)
             {
                 // Write out row 1, the column names
-                r = QueryGetColumnInfo(view, LibmsiColInfo.LIBMSI_COL_INFO_NAMES, out LibmsiRecord rec);
+                r = view.GetColumnInfo(LibmsiColInfo.LIBMSI_COL_INFO_NAMES, out LibmsiRecord rec);
                 if (r == LibmsiResult.LIBMSI_RESULT_SUCCESS)
-                    MsiExportRecord(fd, rec, 1, null, ref error);
+                    ExportRecord(fd, rec, 1, null, ref error);
 
                 // Write out row 2, the column types
-                r = QueryGetColumnInfo(view, LibmsiColInfo.LIBMSI_COL_INFO_TYPES, out rec);
+                r = view.GetColumnInfo(LibmsiColInfo.LIBMSI_COL_INFO_TYPES, out rec);
                 if (r == LibmsiResult.LIBMSI_RESULT_SUCCESS)
-                    MsiExportRecord(fd, rec, 1, null, ref error);
+                    ExportRecord(fd, rec, 1, null, ref error);
 
                 // Write out row 3, the table name + keys
                 r = GetPrimaryKeys(table, out rec);
                 if (r == LibmsiResult.LIBMSI_RESULT_SUCCESS)
                 {
                     rec.SetString(0, table);
-                    MsiExportRecord(fd, rec, 0, null, ref error);
+                    ExportRecord(fd, rec, 0, null, ref error);
                 }
 
                 // Write out row 4 onwards, the data
@@ -1439,7 +1447,7 @@ namespace LibMSI
                 };
 
                 int count = 0;
-                r = QueryIterateRecords(view, ref count, MsiExportRow, export);
+                r = view.IterateRecords(ref count, ExportRowImpl, export);
             }
 
             return r;
@@ -1458,43 +1466,42 @@ namespace LibMSI
             return type1 == type2;
         }
 
+        // TODO: Move to LibmsiQuery
         private static LibmsiResult MergeVerifyColnames(LibmsiQuery dbview, LibmsiQuery mergeview)
         {
-            LibmsiResult r = QueryGetColumnInfo(dbview, LibmsiColInfo.LIBMSI_COL_INFO_NAMES, out LibmsiRecord dbrec);
+            LibmsiResult r = dbview.GetColumnInfo(LibmsiColInfo.LIBMSI_COL_INFO_NAMES, out LibmsiRecord dbrec);
             if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                 return r;
 
-            r = QueryGetColumnInfo(mergeview, LibmsiColInfo.LIBMSI_COL_INFO_NAMES, out LibmsiRecord mergerec);
+            r = mergeview.GetColumnInfo(LibmsiColInfo.LIBMSI_COL_INFO_NAMES, out LibmsiRecord mergerec);
             if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                 return r;
 
             int count = dbrec.GetFieldCount();
             for (int i = 1; i <= count; i++)
             {
-                if (RecordGetStringRaw(mergerec, i) == null)
+                if (mergerec.GetStringRaw(i) == null)
                     break;
 
-                if (RecordGetStringRaw(dbrec, i) != RecordGetStringRaw(mergerec, i))
+                if (dbrec.GetStringRaw(i) != mergerec.GetStringRaw(i))
                     return LibmsiResult.LIBMSI_RESULT_DATATYPE_MISMATCH;
             }
 
-            dbrec = mergerec = null;
-
-            r = QueryGetColumnInfo(dbview, LibmsiColInfo.LIBMSI_COL_INFO_TYPES, out dbrec);
+            r = dbview.GetColumnInfo(LibmsiColInfo.LIBMSI_COL_INFO_TYPES, out dbrec);
             if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                 return r;
 
-            r = QueryGetColumnInfo(mergeview, LibmsiColInfo.LIBMSI_COL_INFO_TYPES, out mergerec);
+            r = mergeview.GetColumnInfo(LibmsiColInfo.LIBMSI_COL_INFO_TYPES, out mergerec);
             if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                 return r;
 
             count = dbrec.GetFieldCount();
             for (int i = 1; i <= count; i++)
             {
-                if (RecordGetStringRaw(mergerec, i) == null)
+                if (mergerec.GetStringRaw(i) == null)
                     break;
 
-                if (!MergeTypeMatch(RecordGetStringRaw(dbrec, i), RecordGetStringRaw(mergerec, i)))
+                if (!MergeTypeMatch(dbrec.GetStringRaw(i), mergerec.GetStringRaw(i)))
                 {
                     r = LibmsiResult.LIBMSI_RESULT_DATATYPE_MISMATCH;
                     break;
@@ -1520,16 +1527,17 @@ namespace LibMSI
 
             for (int i = 1; i <= count; i++)
             {
-                if (RecordGetStringRaw(dbrec, i) != RecordGetStringRaw(mergerec, i))
+                if (dbrec.GetStringRaw(i) != mergerec.GetStringRaw(i))
                     return LibmsiResult.LIBMSI_RESULT_DATATYPE_MISMATCH;
             }
 
             return r;
         }
 
+        // TODO: Move to LibmsiRecord
         private static string GetKeyValue(LibmsiQuery view, string key, LibmsiRecord rec)
         {
-            LibmsiResult r = QueryGetColumnInfo(view, LibmsiColInfo.LIBMSI_COL_INFO_NAMES, out LibmsiRecord colnames);
+            LibmsiResult r = view.GetColumnInfo(LibmsiColInfo.LIBMSI_COL_INFO_NAMES, out LibmsiRecord colnames);
             if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                 return null;
 
@@ -1537,7 +1545,7 @@ namespace LibMSI
             bool cmp;
             do
             {
-                string temp = MsiDupRecordField(colnames, ++i);
+                string temp = colnames.DupRecordField(++i);
                 cmp = (key == temp);
             } while (!cmp);
 
@@ -1545,17 +1553,17 @@ namespace LibMSI
             string str;
 
             // Quote string record fields
-            if (RecordGetStringRaw(rec, i) != null)  
-                str = $"{RecordGetStringRaw(rec, i)}";
+            if (rec.GetStringRaw(i) != null)
+                str = $"{rec.GetStringRaw(i)}";
             else
                 str = rec.GetString(i);
 
             return str;
         }
 
-        private static string CreateDiffRowQuery(LibmsiDatabase merge, LibmsiQuery view, string table, LibmsiRecord rec)
+        private string CreateDiffRowQuery(LibmsiQuery view, string table, LibmsiRecord rec)
         {
-            LibmsiResult r = merge.GetPrimaryKeys(table, out LibmsiRecord keys);
+            LibmsiResult r = GetPrimaryKeys(table, out LibmsiRecord keys);
             if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                 return null;
 
@@ -1563,7 +1571,7 @@ namespace LibMSI
             int count = keys.GetFieldCount();
             for (int i = 1; i <= count; i++)
             {
-                string key = RecordGetStringRaw(keys, i);
+                string key = keys.GetStringRaw(i);
                 string val = GetKeyValue(view, key, rec);
 
                 if (i == count)
@@ -1575,6 +1583,7 @@ namespace LibMSI
             return query;
         }
 
+        // TODO: Move to LibmsiRecord
         private static LibmsiResult MergeDiffRow(LibmsiRecord rec, object param)
         {
             MERGEDATA data = param as MERGEDATA;
@@ -1585,7 +1594,7 @@ namespace LibMSI
 
             if (TableViewExists(data.Database, table.Name))
             {
-                string query = CreateDiffRowQuery(data.Merge, data.CurView, table.Name, rec);
+                string query = data.Merge.CreateDiffRowQuery(data.CurView, table.Name, rec);
                 if (query == null)
                     return LibmsiResult.LIBMSI_RESULT_OUTOFMEMORY;
 
@@ -1596,11 +1605,11 @@ namespace LibMSI
                     return r;
                 }
 
-                r = QueryExecute(dbview, null);
+                r = dbview.Execute(null);
                 if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                     return r;
 
-                r = QueryFetch(dbview, out LibmsiRecord row);
+                r = dbview.Fetch(out LibmsiRecord row);
                 if (r == LibmsiResult.LIBMSI_RESULT_SUCCESS && !RecordCompare(rec, row))
                 {
                     table.NumConflicts++;
@@ -1615,18 +1624,18 @@ namespace LibMSI
             }
 
             mergerow = new MERGEROW();
-            mergerow.Data = RecordClone(rec);
+            mergerow.Data = rec.Clone();
             if (mergerow.Data == null)
             {
                 r = LibmsiResult.LIBMSI_RESULT_OUTOFMEMORY;
-                    return r;
+                return r;
             }
 
             table.Rows.AddFirst(mergerow);
             return r;
         }
 
-        private LibmsiResult MsiGetTableLabels(string table, out string[] labels, out int numlabels)
+        private LibmsiResult GetTableLabels(string table, out string[] labels, out int numlabels)
         {
             labels = null; numlabels = 0;
             LibmsiResult r = GetPrimaryKeys(table, out LibmsiRecord prec);
@@ -1640,16 +1649,17 @@ namespace LibMSI
             labels[0] = table;
             for (int i = 1; i <= count; i++)
             {
-                labels[i] = RecordGetStringRaw(prec, i);
+                labels[i] = prec.GetStringRaw(i);
             }
 
             return r;
         }
 
-        private static LibmsiResult MsiGetQueryColumns(LibmsiQuery query, out string[] columns, out int numcolumns)
+        // TODO: Move to LibmsiRecord
+        private static LibmsiResult GetQueryColumns(LibmsiQuery query, out string[] columns, out int numcolumns)
         {
             columns = null; numcolumns = 0;
-            LibmsiResult r = QueryGetColumnInfo(query, LibmsiColInfo.LIBMSI_COL_INFO_NAMES, out LibmsiRecord prec);
+            LibmsiResult r = query.GetColumnInfo(LibmsiColInfo.LIBMSI_COL_INFO_NAMES, out LibmsiRecord prec);
             if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                 return r;
 
@@ -1658,17 +1668,18 @@ namespace LibMSI
 
             for (int i = 1; i <= count; i++)
             {
-                columns[i - 1] = RecordGetStringRaw(prec, i);
+                columns[i - 1] = prec.GetStringRaw(i);
             }
 
             numcolumns = count;
             return r;
         }
 
-        private static LibmsiResult MsiGetQueryTypes(LibmsiQuery query, out string[] types, out int numtypes)
+        // TODO: Move to LibmsiRecord
+        private static LibmsiResult GetQueryTypes(LibmsiQuery query, out string[] types, out int numtypes)
         {
             types = null; numtypes = 0;
-            LibmsiResult r = QueryGetColumnInfo(query, LibmsiColInfo.LIBMSI_COL_INFO_TYPES, out LibmsiRecord prec);
+            LibmsiResult r = query.GetColumnInfo(LibmsiColInfo.LIBMSI_COL_INFO_TYPES, out LibmsiRecord prec);
             if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                 return r;
 
@@ -1677,12 +1688,13 @@ namespace LibMSI
             numtypes = count;
             for (int i = 1; i <= count; i++)
             {
-                types[i - 1] = RecordGetStringRaw(prec, i);
+                types[i - 1] = prec.GetStringRaw(i);
             }
 
             return r;
         }
 
+        // TODO: Move to MERGETABLE
         private static void FreeMergeTable(MERGETABLE table)
         {
             table.Labels = null;
@@ -1692,10 +1704,10 @@ namespace LibMSI
             table.Rows.Clear();
         }
 
-        private LibmsiResult MsiGetMergeTable(string name, out MERGETABLE ptable)
+        private LibmsiResult GetMergeTable(string name, out MERGETABLE ptable)
         {
             MERGETABLE table = new MERGETABLE();
-            LibmsiResult r = MsiGetTableLabels(name, out string[] labels, out int num_labels);
+            LibmsiResult r = GetTableLabels(name, out string[] labels, out int num_labels);
             if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                 goto err;
 
@@ -1707,14 +1719,14 @@ namespace LibMSI
             if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                 goto err;
 
-            r = MsiGetQueryColumns(mergeview, out string[] columns, out int num_columns);
+            r = GetQueryColumns(mergeview, out string[] columns, out int num_columns);
             if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                 goto err;
 
             table.Columns = columns;
             table.NumColumns = num_columns;
 
-            r = MsiGetQueryTypes(mergeview, out string[] types, out int num_types);
+            r = GetQueryTypes(mergeview, out string[] types, out int num_types);
             if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                 goto err;
 
@@ -1735,10 +1747,11 @@ namespace LibMSI
             return r;
         }
 
+        // TODO: Move to LibmsiRecord
         private static LibmsiResult MergeDiffTables(LibmsiRecord rec, object param)
         {
             MERGEDATA data = param as MERGEDATA;
-            string name = RecordGetStringRaw(rec, 1);
+            string name = rec.GetStringRaw(1);
 
             string query = $"SELECT * FROM {name}";
             LibmsiResult r = QueryOpen(data.Merge, out LibmsiQuery mergeview, query);
@@ -1760,7 +1773,7 @@ namespace LibMSI
                     return r;
             }
 
-            r = data.Merge.MsiGetMergeTable(name, out MERGETABLE table);
+            r = data.Merge.GetMergeTable(name, out MERGETABLE table);
             if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                 return r;
 
@@ -1768,7 +1781,7 @@ namespace LibMSI
             data.CurView = mergeview;
 
             int count = 0;
-            r = QueryIterateRecords(mergeview, ref count, MergeDiffRow, data);
+            r = mergeview.IterateRecords(ref count, MergeDiffRow, data);
             if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
             {
                 FreeMergeTable(table);
@@ -1796,7 +1809,7 @@ namespace LibMSI
             data.TableData.AddFirst(tabledata);
 
             int count = 0;
-            r = QueryIterateRecords(view, ref count, MergeDiffTables, data);
+            r = view.IterateRecords(ref count, MergeDiffTables, data);
             return r;
         }
 
@@ -1805,7 +1818,7 @@ namespace LibMSI
             LibmsiResult r;
             if (!TableViewExists(this, table.Name))
             {
-                r = MsiAddTableToDb(table.Columns, table.Types, table.Labels, table.NumLabels, table.NumColumns);
+                r = AddTableToDb(table.Columns, table.Types, table.Labels, table.NumLabels, table.NumColumns);
                 if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                     return LibmsiResult.LIBMSI_RESULT_FUNCTION_FAILED;
             }
@@ -1831,12 +1844,12 @@ namespace LibMSI
             LibmsiResult r;
             if (!TableViewExists(this, error))
             {
-            string create = $"CREATE TABLE `{error}` (`Table` CHAR(255) NOT NULL, `NumRowMergeConflicts` SHORT NOT NULL PRIMARY KEY `Table`)";
+                string create = $"CREATE TABLE `{error}` (`Table` CHAR(255) NOT NULL, `NumRowMergeConflicts` SHORT NOT NULL PRIMARY KEY `Table`)";
                 r = QueryOpen(this, out LibmsiQuery createView, create);
                 if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                     return r;
 
-                r = QueryExecute(createView, null);
+                r = createView.Execute(null);
                 if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                     return r;
             }
@@ -1846,7 +1859,7 @@ namespace LibMSI
             if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                 return r;
 
-            r = QueryExecute(view, null);
+            r = view.Execute(null);
             return r;
         }
 
@@ -1891,7 +1904,7 @@ namespace LibMSI
                 }
                 else
                 {
-                    MsiOpenStorage(name);
+                    OpenStorage(name);
                 }
             }
         }
@@ -1921,6 +1934,7 @@ namespace LibMSI
             return true;
         }
 
+        // TODO: Can we avoid the use of `opaque`?
         private static LibmsiResult CommitStorage(string name, GsfInfile stg, object opaque)
         {
             LibmsiDatabase db = opaque as LibmsiDatabase;
@@ -1938,6 +1952,7 @@ namespace LibMSI
             return LibmsiResult.LIBMSI_RESULT_SUCCESS;
         }
 
+        // TODO: Can we avoid the use of `opaque`?
         private static LibmsiResult CommitStream(string name, GsfInput stm, object opaque)
         {
             LibmsiDatabase db = opaque as LibmsiDatabase;
@@ -1958,7 +1973,8 @@ namespace LibMSI
             return LibmsiResult.LIBMSI_RESULT_SUCCESS;
         }
 
-        private static LibmsiResult MsiPrimaryKeyIterator(LibmsiRecord rec, object param)
+        // TODO: Can we avoid the use of `param`?
+        private static LibmsiResult PrimaryKeyIterator(LibmsiRecord rec, object param)
         {
             MsiPrimaryKeyRecordInfo info = param as MsiPrimaryKeyRecordInfo;
             int type = rec.GetInt(4);
@@ -1969,11 +1985,11 @@ namespace LibMSI
                 {
                     if (info.N == 1)
                     {
-                        string table = RecordGetStringRaw(rec, 1);
+                        string table = rec.GetStringRaw(1);
                         info.Rec.SetString(0, table);
                     }
 
-                    string name = RecordGetStringRaw(rec, 3);
+                    string name = rec.GetStringRaw(3);
                     info.Rec.SetString(info.N, name);
                 }
             }

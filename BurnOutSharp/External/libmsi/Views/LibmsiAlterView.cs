@@ -18,10 +18,10 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
- using LibGSF.Input;
- using static LibMSI.LibmsiQuery;
+using LibGSF.Input;
+using static LibMSI.LibmsiQuery;
 
-namespace LibMSI
+namespace LibMSI.Views
 {
     internal class LibmsiAlterView : LibmsiView
     {
@@ -162,11 +162,11 @@ namespace LibMSI
             if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                 return false;
 
-            r = QueryExecute(view, null);
+            r = view.Execute(null);
             if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                 goto done;
 
-            r = QueryFetch(view, out LibmsiRecord rec);
+            r = view.Fetch(out LibmsiRecord rec);
             if (r == LibmsiResult.LIBMSI_RESULT_SUCCESS)
                 rec = null;
 
@@ -195,7 +195,7 @@ namespace LibMSI
             if (r == LibmsiResult.LIBMSI_RESULT_SUCCESS)
             {
                 int count = 0;
-                r = QueryIterateRecords(view, ref count, CountIter, colnum);
+                r = view.IterateRecords(ref count, CountIter, colnum);
                 view = null;
                 if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                 {

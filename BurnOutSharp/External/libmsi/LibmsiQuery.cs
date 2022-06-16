@@ -21,8 +21,10 @@
 using System;
 using System.Collections.Generic;
 using LibGSF.Input;
+using LibMSI.Internal;
+using LibMSI.Views;
 using static LibMSI.LibmsiRecord;
-using static LibMSI.MsiPriv;
+using static LibMSI.Internal.MsiPriv;
 
 namespace LibMSI
 {
@@ -103,7 +105,7 @@ namespace LibMSI
             if (error != null)
                 return null;
 
-            LibmsiResult ret = QueryFetch(this, out LibmsiRecord record);
+            LibmsiResult ret = Fetch(out LibmsiRecord record);
 
             // FIXME: raise error when it happens
             if (ret != LibmsiResult.LIBMSI_RESULT_SUCCESS && ret != LibmsiResult.NO_MORE_ITEMS)
@@ -123,7 +125,7 @@ namespace LibMSI
             if (error != null)
                 return false;
 
-            LibmsiResult ret = QueryExecute(this, rec);
+            LibmsiResult ret = Execute(rec);
 
             // FIXME: raise error when it happens 
             if (ret != LibmsiResult.LIBMSI_RESULT_SUCCESS)
@@ -193,7 +195,7 @@ namespace LibMSI
             if (error != null)
                 return null;
 
-            LibmsiResult r = QueryGetColumnInfo(this, info,out LibmsiRecord rec);
+            LibmsiResult r = GetColumnInfo(info, out LibmsiRecord rec);
             if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                 error = new Exception($"LIBMSI_RESULT_ERROR: {r}");
 
@@ -204,6 +206,7 @@ namespace LibMSI
 
         #region Internal Functions
 
+        // TODO: Move to LibmsiView
         internal static LibmsiResult ViewFindColumn(LibmsiView table, string name, string table_name, out int n)
         {
             n = 0;
@@ -214,14 +217,14 @@ namespace LibMSI
             for (int i = 1; i <= count; i++)
             {
                 r = table.GetColumnInfo(i, out string col_name, out _, out _, out string haystack_table_name);
-                if( r != LibmsiResult.LIBMSI_RESULT_SUCCESS )
+                if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                     return r;
 
                 bool x = name == col_name;
                 if (table_name != null)
                     x |= table_name == haystack_table_name;
 
-                if( !x )
+                if (!x)
                 {
                     n = i;
                     return LibmsiResult.LIBMSI_RESULT_SUCCESS;
@@ -231,6 +234,7 @@ namespace LibMSI
             return LibmsiResult.LIBMSI_RESULT_INVALID_PARAMETER;
         }
 
+        // TODO: Move to LibmsiDatabase
         internal static LibmsiResult DatabaseOpenQuery(LibmsiDatabase db, string szQuery, out LibmsiQuery pView)
         {
             Exception err = null;
@@ -238,8 +242,9 @@ namespace LibMSI
             return pView != null ? LibmsiResult.LIBMSI_RESULT_SUCCESS : LibmsiResult.LIBMSI_RESULT_BAD_QUERY_SYNTAX;
         }
 
+        // TODO: Move to LibmsiDatabase
         internal static LibmsiResult QueryOpen(LibmsiDatabase db, out LibmsiQuery view, string query)
-        {            
+        {
             Exception err = null;
             view = LibmsiQuery.Create(db, query, ref err);
             if (err != null)
@@ -248,9 +253,9 @@ namespace LibMSI
             return LibmsiResult.LIBMSI_RESULT_SUCCESS;
         }
 
-        internal static LibmsiResult QueryIterateRecords(LibmsiQuery view, ref int count, record_func func, object param)
+        internal LibmsiResult IterateRecords(ref int count, record_func func, object param)
         {
-            LibmsiResult r = QueryExecute(view, null);
+            LibmsiResult r = Execute(null);
             if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                 return r;
 
@@ -262,19 +267,19 @@ namespace LibMSI
             int n = 0;
             for (; (max == 0) || (n < max); n++)
             {
-                r = QueryFetch(view, out LibmsiRecord rec);
+                r = Fetch(out LibmsiRecord rec);
                 if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                     break;
 
                 if (func != null)
-                    r = func( rec, param );
+                    r = func(rec, param);
 
                 if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                     break;
             }
 
             Exception error = null; // FIXME: move error handling to caller
-            view.Close(ref error);
+            Close(ref error);
             if (error != null)
                 Console.Error.WriteLine(error);
 
@@ -288,20 +293,21 @@ namespace LibMSI
         /// <summary>
         /// Return a single record from a query
         /// </summary>
+        // TODO: Move to LibmsiDatabase
         internal static LibmsiRecord QueryGetRecord(LibmsiDatabase db, string query)
         {
             LibmsiResult r = LibmsiResult.LIBMSI_RESULT_SUCCESS;
 
             Exception error = null; // FIXME: move error to caller
-            LibmsiQuery view = LibmsiQuery.Create(db, query, ref error);
+            LibmsiQuery view = Create(db, query, ref error);
             if (error != null)
                 r = LibmsiResult.LIBMSI_RESULT_FUNCTION_FAILED;
 
             error = null;
             if (r == LibmsiResult.LIBMSI_RESULT_SUCCESS)
             {
-                QueryExecute(view, null);
-                QueryFetch(view, out LibmsiRecord rec);
+                view.Execute(null);
+                view.Fetch(out LibmsiRecord rec);
                 view.Close(ref error);
                 if (error != null)
                     Console.Error.WriteLine(error);
@@ -312,6 +318,7 @@ namespace LibMSI
             return null;
         }
 
+        // TODO: Move to LibmsiDatabase
         internal static LibmsiResult MsiViewGetRow(LibmsiDatabase db, LibmsiView view, int row, out LibmsiRecord rec)
         {
             rec = null;
@@ -380,31 +387,28 @@ namespace LibMSI
             return LibmsiResult.LIBMSI_RESULT_SUCCESS;
         }
 
-        internal static LibmsiResult QueryFetch(LibmsiQuery query, out LibmsiRecord prec)
+        internal LibmsiResult Fetch(out LibmsiRecord prec)
         {
             prec = null;
-            LibmsiView view = query.View;
-            if (view == null)
+            if (View == null)
                 return LibmsiResult.LIBMSI_RESULT_FUNCTION_FAILED;
 
-            LibmsiResult r = MsiViewGetRow(query.Database, view, query.Row, out prec);
+            LibmsiResult r = MsiViewGetRow(Database, View, Row, out prec);
             if (r == LibmsiResult.LIBMSI_RESULT_SUCCESS)
-                query.Row++;
+                Row++;
 
             return r;
         }
 
-        internal static LibmsiResult QueryExecute(LibmsiQuery query, LibmsiRecord rec)
+        internal LibmsiResult Execute(LibmsiRecord rec)
         {
-            LibmsiView view = query.View;
-            if (view == null)
+            if (View == null)
                 return LibmsiResult.LIBMSI_RESULT_FUNCTION_FAILED;
 
-            query.Row = 0;
-
+            Row = 0;
             try
             {
-                return view.Execute(rec);
+                return View.Execute(rec);
             }
             catch
             {
@@ -412,19 +416,18 @@ namespace LibMSI
             }
         }
 
-        internal static LibmsiResult QueryGetColumnInfo(LibmsiQuery query, LibmsiColInfo info, out LibmsiRecord prec)
+        internal LibmsiResult GetColumnInfo(LibmsiColInfo info, out LibmsiRecord prec)
         {
-            LibmsiResult r = LibmsiResult.LIBMSI_RESULT_FUNCTION_FAILED;            
-            LibmsiView view = query.View;
+            LibmsiResult r = LibmsiResult.LIBMSI_RESULT_FUNCTION_FAILED;
 
             prec = null;
-            if (view == null)
+            if (View == null)
                 return LibmsiResult.LIBMSI_RESULT_FUNCTION_FAILED;
 
             int count;
             try
             {
-                r = view.GetDimensions(out _, out count);
+                r = View.GetDimensions(out _, out count);
                 if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                     return r;
             }
@@ -440,16 +443,16 @@ namespace LibMSI
             if (rec == null)
                 return LibmsiResult.LIBMSI_RESULT_FUNCTION_FAILED;
 
-            for (int i = 0; i < count; i++ )
+            for (int i = 0; i < count; i++)
             {
-                r = view.GetColumnInfo(i + 1, out string name, out int type, out bool temporary, out _);
-                if( r != LibmsiResult.LIBMSI_RESULT_SUCCESS )
+                r = View.GetColumnInfo(i + 1, out string name, out int type, out bool temporary, out _);
+                if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                     continue;
 
                 if (info == LibmsiColInfo.LIBMSI_COL_INFO_NAMES)
                     rec.SetString(i + 1, name);
                 else
-                    MsiSetRecordTypeString(rec, i+1, type, temporary);
+                    SetRecordTypeString(rec, i + 1, type, temporary);
             }
 
             prec = rec;
@@ -471,7 +474,8 @@ namespace LibMSI
             return r == LibmsiResult.LIBMSI_RESULT_SUCCESS;
         }
 
-        private static void MsiSetRecordTypeString(LibmsiRecord rec, int field, int type, bool temporary)
+        // TODO: Move to LibmsiRecord
+        private static void SetRecordTypeString(LibmsiRecord rec, int field, int type, bool temporary)
         {
             string szType;
             if (MSITYPE_IS_BINARY(type))

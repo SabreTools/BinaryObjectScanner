@@ -20,10 +20,11 @@
 
 using System;
 using LibGSF.Input;
+using LibMSI.Internal;
 using static LibMSI.LibmsiRecord;
-using static LibMSI.MsiPriv;
+using static LibMSI.Internal.MsiPriv;
 
-namespace LibMSI
+namespace LibMSI.Views
 {
     internal class STORAGE
     {
@@ -143,7 +144,7 @@ namespace LibMSI
             if (row > NumRows)
                 return LibmsiResult.LIBMSI_RESULT_FUNCTION_FAILED;
 
-            LibmsiResult r = RecordGetGsfInput(rec, 2, out GsfInput stm);
+            LibmsiResult r = GetGsfInput(rec, 2, out GsfInput stm);
             if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                 return r;
 
@@ -166,7 +167,7 @@ namespace LibMSI
             if (name == null)
                 return LibmsiResult.LIBMSI_RESULT_OUTOFMEMORY;
 
-            Database.MsiCreateStorage(name, stm);
+            Database.CreateStorage(name, stm);
             storage = CreateStorage(name);
             if (storage == null)
                 r = LibmsiResult.LIBMSI_RESULT_FUNCTION_FAILED;
@@ -202,7 +203,7 @@ namespace LibMSI
                 return LibmsiResult.LIBMSI_RESULT_FUNCTION_FAILED;
             }
 
-            Database.MsiDestroyStorage(name);
+            Database.DestroyStorage(name);
 
             // Shift the remaining rows
             for (int i = row + 1; i < NumRows; i++)
@@ -312,7 +313,7 @@ namespace LibMSI
         {
             MaxStorages = 1;
             Storages = new STORAGE[1];
-            return Database.MsiEnumDbStorages(AddStorageToTable, this);
+            return Database.EnumDbStorages(AddStorageToTable, this);
         }
 
         #endregion

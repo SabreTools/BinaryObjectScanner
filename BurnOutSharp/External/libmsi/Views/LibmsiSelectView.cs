@@ -21,9 +21,9 @@
 using LibGSF.Input;
 using static LibMSI.LibmsiQuery;
 using static LibMSI.LibmsiRecord;
-using static LibMSI.MsiPriv;
+using static LibMSI.Internal.MsiPriv;
 
-namespace LibMSI
+namespace LibMSI.Views
 {
     /// <summary>
     /// Below is the query interface to a table

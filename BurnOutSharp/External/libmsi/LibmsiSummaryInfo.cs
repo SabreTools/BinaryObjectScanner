@@ -23,7 +23,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using LibGSF.Input;
-using static LibMSI.MsiPriv;
+using LibMSI.Internal;
+using static LibMSI.Internal.MsiPriv;
 
 namespace LibMSI
 {
@@ -116,9 +117,9 @@ namespace LibMSI
             // Read the stream... if we fail, we'll start with an empty property set
             if (self.Database != null)
             {
-                LibmsiResult r = self.Database.MsiGetRawStream(szSumInfo, out GsfInput stm);
+                LibmsiResult r = self.Database.GetRawStream(szSumInfo, out GsfInput stm);
                 if (r == LibmsiResult.LIBMSI_RESULT_SUCCESS)
-                    LoadSummaryInfo(self, stm);
+                    self.LoadSummaryInfo(stm);
             }
 
             return self;
@@ -179,7 +180,7 @@ namespace LibMSI
             if (error != null)
                 return null;
 
-            SummaryInfoGetProperty(this, prop, out LibmsiPropertyType type, out _, out _, out _, out _, out string val, ref error);
+            GetProperty(prop, out LibmsiPropertyType type, out _, out _, out _, out _, out string val, ref error);
             return val;
         }
 
@@ -191,7 +192,7 @@ namespace LibMSI
             if (error != null)
                 return -1;
 
-            SummaryInfoGetProperty(this, prop, out LibmsiPropertyType type, out int val, out _, out _, out _, out _, ref error);
+            GetProperty(prop, out LibmsiPropertyType type, out int val, out _, out _, out _, out _, ref error);
             return val;
         }
 
@@ -203,7 +204,7 @@ namespace LibMSI
             if (error != null)
                 return 0;
 
-            SummaryInfoGetProperty(this, prop, out LibmsiPropertyType type, out _, out ulong val, out _, out _, out _, ref error);
+            GetProperty(prop, out LibmsiPropertyType type, out _, out ulong val, out _, out _, out _, ref error);
             return val;
         }
 
@@ -225,7 +226,7 @@ namespace LibMSI
                 return false;
             }
 
-            LibmsiResult ret = SummaryInfoSetProperty(this, prop, LibmsiOLEVariantType.OLEVT_LPSTR, 0, 0, value);
+            LibmsiResult ret = SetProperty(prop, LibmsiOLEVariantType.OLEVT_LPSTR, 0, 0, value);
             if (ret != LibmsiResult.LIBMSI_RESULT_SUCCESS)
             {
                 error = new Exception($"LIBMSI_RESULT_ERROR: {ret}");
@@ -254,7 +255,7 @@ namespace LibMSI
                 return false;
             }
 
-            LibmsiResult ret = SummaryInfoSetProperty(this, prop, type, value, 0, null);
+            LibmsiResult ret = SetProperty(prop, type, value, 0, null);
             if (ret != LibmsiResult.LIBMSI_RESULT_SUCCESS)
             {
                 error = new Exception($"LIBMSI_RESULT_ERROR: {ret}");
@@ -282,7 +283,7 @@ namespace LibMSI
                 return false;
             }
 
-            LibmsiResult ret = SummaryInfoSetProperty(this, prop, LibmsiOLEVariantType.OLEVT_FILETIME, 0, value, null);
+            LibmsiResult ret = SetProperty(prop, LibmsiOLEVariantType.OLEVT_FILETIME, 0, value, null);
             if (ret != LibmsiResult.LIBMSI_RESULT_SUCCESS)
             {
                 error = new Exception($"LIBMSI_RESULT_ERROR: {ret}");
@@ -308,7 +309,7 @@ namespace LibMSI
                 return false;
             }
 
-            LibmsiResult ret = SumInfoPersist(this, Database);
+            LibmsiResult ret = Persist(Database);
             if (ret != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                 error = new Exception($"LIBMSI_RESULT_ERROR: {ret}");
 
@@ -328,7 +329,7 @@ namespace LibMSI
             if (error != null)
                 return false;
 
-            LibmsiResult ret = SumInfoPersist(this, db);
+            LibmsiResult ret = Persist(db);
             if (ret != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                 error = new Exception($"LIBMSI_RESULT_ERROR: {ret}");
 
@@ -352,9 +353,9 @@ namespace LibMSI
 
         #region Internal Functions
 
-        internal static string SummaryInfoAsString(LibmsiSummaryInfo si, int uiProperty)
+        internal string SummaryInfoAsString(int uiProperty)
         {
-            LibmsiOLEVariant prop = si.Property[uiProperty];
+            LibmsiOLEVariant prop = Property[uiProperty];
 
             switch (prop.VariantType)
             {
@@ -375,10 +376,11 @@ namespace LibMSI
             return null;
         }
 
-        internal static LibmsiResult MsiAddSumInfo(LibmsiDatabase db, string[][] records, int num_records, int num_columns)
+        // TODO: Move to LibmsiDatabase
+        internal static LibmsiResult AddSummaryInfo(LibmsiDatabase db, string[][] records, int num_records, int num_columns)
         {
             Exception err = null;
-            LibmsiSummaryInfo si = LibmsiSummaryInfo.Create(db, num_records * (num_columns / 2), ref err);
+            LibmsiSummaryInfo si = Create(db, num_records * (num_columns / 2), ref err);
             if (si == null)
             {
                 Console.Error.WriteLine("No summary information!");
@@ -394,19 +396,20 @@ namespace LibMSI
                         return r;
 
                     //assert(GetType(pid) != LibmsiOLEVariantType.OLEVT_EMPTY);
-                    r = SummaryInfoSetProperty(si, pid, GetType(pid), int_value, ft_value, str_value);
+                    r = si.SetProperty(pid, GetType(pid), int_value, ft_value, str_value);
                     if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                         return r;
                 }
             }
 
-            return SumInfoPersist(si, db);
+            return si.Persist(db);
         }
 
         #endregion
 
         #region Utilities
 
+        // TODO: Move to LibmsiOLEVariant
         private static void FreeProp(LibmsiOLEVariant prop)
         {
             prop.VariantType = LibmsiOLEVariantType.OLEVT_EMPTY;
@@ -589,7 +592,7 @@ namespace LibMSI
                 {
                     // No-op
                 }
-                else if( proptype == LibmsiOLEVariantType.OLEVT_LPSTR)
+                else if (proptype == LibmsiOLEVariantType.OLEVT_LPSTR)
                 {
                     if (str == null)
                         return;
@@ -622,7 +625,7 @@ namespace LibMSI
             }
         }
 
-        private static LibmsiResult LoadSummaryInfo(LibmsiSummaryInfo si, GsfInput stm)
+        private LibmsiResult LoadSummaryInfo(GsfInput stm)
         {
             long sz = stm.Size;
             if (sz == 0)
@@ -650,7 +653,7 @@ namespace LibMSI
             // Seek to the location of the section
             ofs += 16;
             int dwOffset = (int)ReadDWORD(data, ref ofs);
-            
+
             // Read the section itself
             ofs = dwOffset;
             int cbSection = (int)ReadDWORD(data, ref ofs);
@@ -663,7 +666,7 @@ namespace LibMSI
             }
 
             // Read all the data in one go 
-            ReadPropertiesFromData(si.Property, data.Skip(dwOffset).ToArray(), cbSection, cProperties);
+            ReadPropertiesFromData(Property, data.Skip(dwOffset).ToArray(), cbSection, cProperties);
             return LibmsiResult.LIBMSI_RESULT_SUCCESS;
         }
 
@@ -708,6 +711,7 @@ namespace LibMSI
             return (7 + len) & ~3;
         }
 
+        // TODO: Move to LibmsiOLEVariant
         private static int WritePropertyToData(LibmsiOLEVariant prop, byte[] data, int ofs)
         {
             int sz = ofs;
@@ -716,7 +720,7 @@ namespace LibMSI
 
             // Add the type
             sz += WriteDWORD(data, sz, (uint)prop.VariantType);
-            switch( prop.VariantType )
+            switch (prop.VariantType)
             {
                 case LibmsiOLEVariantType.OLEVT_I2:
                 case LibmsiOLEVariantType.OLEVT_I4:
@@ -739,14 +743,14 @@ namespace LibMSI
             return sz;
         }
 
-        private static LibmsiResult SumInfoPersist(LibmsiSummaryInfo si, LibmsiDatabase database)
+        private LibmsiResult Persist(LibmsiDatabase database)
         {
             // Add up how much space the data will take and calculate the offsets
-            int cProperties = GetPropertyCount(si.Property);
+            int cProperties = GetPropertyCount(Property);
             int cbSection = 8 + cProperties * 8;
             for (int i = 0; i < MSI_MAX_PROPS; i++)
             {
-                cbSection += WritePropertyToData(si.Property[i], null, 0);
+                cbSection += WritePropertyToData(Property[i], null, 0);
             }
 
             int sz = 28 + 20 + cbSection;
@@ -775,7 +779,7 @@ namespace LibMSI
             int dwOffset = 8 + cProperties * 8;
             for (int i = 0; i < MSI_MAX_PROPS; i++)
             {
-                int propsz = WritePropertyToData(si.Property[i], null, 0);
+                int propsz = WritePropertyToData(Property[i], null, 0);
                 if (propsz == 0)
                     continue;
 
@@ -789,7 +793,7 @@ namespace LibMSI
             // Write out the data
             for (int i = 0; i < MSI_MAX_PROPS; i++)
             {
-                sz += WritePropertyToData(si.Property[i], data, sz);
+                sz += WritePropertyToData(Property[i], data, sz);
             }
 
             //assert(sz == 28 + 20 + cbSection);
@@ -798,8 +802,7 @@ namespace LibMSI
             return r;
         }
 
-        private static void SummaryInfoGetProperty(
-            LibmsiSummaryInfo si,
+        private void GetProperty(
             LibmsiProperty uiProperty,
             out LibmsiPropertyType puiDataType,
             out int pintvalue,
@@ -816,7 +819,7 @@ namespace LibMSI
                 return;
             }
 
-            LibmsiOLEVariant prop = si.Property[(int)uiProperty];
+            LibmsiOLEVariant prop = Property[(int)uiProperty];
             LibmsiPropertyType type;
             switch (prop.VariantType)
             {
@@ -856,13 +859,7 @@ namespace LibMSI
             puiDataType = type;
         }
 
-        private static LibmsiResult SummaryInfoSetProperty(
-            LibmsiSummaryInfo si,
-            LibmsiProperty uiProperty,
-            LibmsiOLEVariantType type,
-            int intvalue,
-            ulong pftValue,
-            string szValue)
+        private LibmsiResult SetProperty(LibmsiProperty uiProperty, LibmsiOLEVariantType type, int intvalue, ulong pftValue, string szValue)
         {
             if (type == LibmsiOLEVariantType.OLEVT_LPSTR && szValue == null)
                 return LibmsiResult.LIBMSI_RESULT_INVALID_PARAMETER;
@@ -870,17 +867,17 @@ namespace LibMSI
             if (type == LibmsiOLEVariantType.OLEVT_FILETIME && pftValue == 0)
                 return LibmsiResult.LIBMSI_RESULT_INVALID_PARAMETER;
 
-            LibmsiOLEVariant prop = si.Property[(int)uiProperty];
+            LibmsiOLEVariant prop = Property[(int)uiProperty];
 
             if (prop.VariantType == LibmsiOLEVariantType.OLEVT_EMPTY)
             {
                 LibmsiResult ret = LibmsiResult.LIBMSI_RESULT_FUNCTION_FAILED;
-                if (si.UpdateCount == 0)
+                if (UpdateCount == 0)
                     return ret;
 
-                si.UpdateCount--;
+                UpdateCount--;
             }
-            else if (prop.VariantType != type )
+            else if (prop.VariantType != type)
             {
                 return LibmsiResult.LIBMSI_RESULT_SUCCESS;
             }
@@ -911,7 +908,7 @@ namespace LibMSI
         {
             pid = (LibmsiProperty)int.Parse(new string(prop.SkipWhile(c => char.IsWhiteSpace(c)).TakeWhile(c => c == '+' || c == '-' || char.IsDigit(c)).ToArray()));
             int_value = 0; ft_value = 0; str_value = null;
-            
+
             switch (pid)
             {
                 case LibmsiProperty.LIBMSI_PROPERTY_CODEPAGE:

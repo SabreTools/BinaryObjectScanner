@@ -20,7 +20,7 @@
 
  using LibGSF.Input;
 
-namespace LibMSI
+namespace LibMSI.Views
 {
     /// <summary>
     /// Code to delete rows from a table.

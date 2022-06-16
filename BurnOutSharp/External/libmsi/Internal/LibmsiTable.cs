@@ -24,13 +24,12 @@ using System.Linq;
 using System.Text;
 using LibGSF.Input;
 using LibGSF.Output;
-using static LibMSI.LibmsiQuery;
-using static LibMSI.LibmsiRecord;
-using static LibMSI.MsiPriv;
+using LibMSI.Views;
 using static LibMSI.LibmsiTypes;
-using static LibMSI.StringTable;
+using static LibMSI.Internal.MsiPriv;
+using static LibMSI.Internal.StringTable;
 
-namespace LibMSI
+namespace LibMSI.Internal
 {
     internal class LibmsiColumnInfo
     {
@@ -160,7 +159,7 @@ namespace LibMSI
 
         #region Functions
 
-        public static int BytesPerColumn(LibmsiDatabase db, LibmsiColumnInfo col, int bytes_per_strref)
+        public static int BytesPerColumn(LibmsiColumnInfo col, int bytes_per_strref)
         {
             if (MSITYPE_IS_BINARY(col.Type))
                 return 2;
@@ -194,7 +193,7 @@ namespace LibMSI
                 output[p++] = 0xe4;
                 output[p++] = 0xa1;
                 output[p++] = 0x80;
-                count --;
+                count--;
             }
 
             int inputPtr = 0; // input[0]
@@ -322,7 +321,7 @@ namespace LibMSI
                 Console.Error.WriteLine("Too big!");
                 return LibmsiResult.LIBMSI_RESULT_FUNCTION_FAILED;
             }
-                
+
             int sz = (int)stm.Size;
             byte[] data;
             if (sz == 0)
@@ -331,7 +330,7 @@ namespace LibMSI
             }
             else
             {
-                data = new byte[sz];                
+                data = new byte[sz];
                 if (stm.Read(sz, data) == null)
                 {
                     Console.Error.WriteLine("Read stream failed");
@@ -344,6 +343,7 @@ namespace LibMSI
             return LibmsiResult.LIBMSI_RESULT_SUCCESS;
         }
 
+        // TODO: Move to LibmsiDatabase
         public static LibmsiResult WriteStreamData(LibmsiDatabase db, string stname, byte[] data, int sz)
         {
             if (db.Outfile == null)
@@ -369,7 +369,8 @@ namespace LibMSI
             return LibmsiResult.LIBMSI_RESULT_SUCCESS;
         }
 
-        public static int MsiTableGetRowSize(LibmsiDatabase db, LibmsiColumnInfo[] cols, int count, int bytes_per_strref)
+        // TODO: Move to LibmsiDatabase
+        public static int GetRowSize(LibmsiColumnInfo[] cols, int count, int bytes_per_strref)
         {
             if (count == 0)
                 return 0;
@@ -379,21 +380,23 @@ namespace LibMSI
                 int size = 0;
                 for (int i = 0; i < count; i++)
                 {
-                    size += BytesPerColumn(db, cols[i], bytes_per_strref);
+                    size += BytesPerColumn(cols[i], bytes_per_strref);
                 }
 
                 return size;
             }
 
             LibmsiColumnInfo last_col = cols[count - 1];
-            return last_col.Offset + BytesPerColumn(db, last_col, bytes_per_strref);
+            return last_col.Offset + BytesPerColumn(last_col, bytes_per_strref);
         }
 
+        // TODO: Move to LibmsiDatabase
         public static void FreeCachedTables(LibmsiDatabase db)
         {
             db.Tables.Clear();
         }
 
+        // TODO: Move to LibmsiDatabase
         public static LibmsiResult OpenTable(LibmsiDatabase db, string name, bool encoded)
         {
             string decname = null;
@@ -418,6 +421,7 @@ namespace LibMSI
             return LibmsiResult.LIBMSI_RESULT_SUCCESS;
         }
 
+        // TODO: Move to LibmsiDatabase
         public static LibmsiResult GetTable(LibmsiDatabase db, string name, out LibmsiTable table_ret)
         {
             table_ret = null;
@@ -467,7 +471,8 @@ namespace LibMSI
             return ret;
         }
 
-        public static LibmsiResult MsiCreateTable(LibmsiDatabase db, string name, column_info col_info, LibmsiCondition persistent)
+        // TODO: Move to LibmsiDatabase
+        public static LibmsiResult CreateTable(LibmsiDatabase db, string name, column_info col_info, LibmsiCondition persistent)
         {
             StringPersistence string_persistence = (persistent != LibmsiCondition.LIBMSI_CONDITION_FALSE) ? StringPersistence.StringPersistent : StringPersistence.StringNonPersistent;
             int nField;
@@ -493,7 +498,7 @@ namespace LibMSI
             };
 
             column_info col = col_info;
-            for (; col != null; col = col.Next )
+            for (; col != null; col = col.Next)
             {
                 table.ColCount++;
             }
@@ -519,7 +524,7 @@ namespace LibMSI
                 };
             }
 
-            TableCalcColumnOffsets(db, table.ColInfo, table.ColCount);
+            CalcColumnOffsets(table.ColInfo, table.ColCount);
 
             LibmsiResult r = LibmsiTableView.Create(db, szTables, out LibmsiView tv);
             if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
@@ -598,7 +603,8 @@ namespace LibMSI
             return r;
         }
 
-        public static void MsiUpdateTableColumns(LibmsiDatabase db, string name)
+        // TODO: Move to LibmsiDatabase
+        public static void UpdateTableColumns(LibmsiDatabase db, string name)
         {
             LibmsiTable table = FindCachedTable(db, name);
             int old_count = table.ColCount;
@@ -611,7 +617,7 @@ namespace LibMSI
             if (table.ColCount == 0)
                 return;
 
-            int size = MsiTableGetRowSize(db, table.ColInfo, table.ColCount, LONG_STR_BYTES);
+            int size = GetRowSize(table.ColInfo, table.ColCount, LONG_STR_BYTES);
             int offset = table.ColInfo[table.ColCount - 1].Offset;
 
             for (int n = 0; n < table.RowCount; n++)
@@ -633,13 +639,14 @@ namespace LibMSI
         /// <summary>
         /// Try to find the table name in the _Tables table
         /// </summary>
+        // TODO: Move to LibmsiDatabase
         public static bool TableViewExists(LibmsiDatabase db, string name)
         {
             if (name == szTables || name == szColumns || name == szStreams || name == szStorages)
                 return true;
 
             LibmsiResult r = db.Strings.IdFromStringUTF8(name, out int table_id);
-            if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS )
+            if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                 return false;
 
             r = GetTable(db, szTables, out LibmsiTable table);
@@ -649,7 +656,7 @@ namespace LibMSI
                 return false;
             }
 
-            for (int i = 0; i < table.RowCount; i++ )
+            for (int i = 0; i < table.RowCount; i++)
             {
                 if (ReadTableInt(table.Data, i, 0, LONG_STR_BYTES) == table_id)
                     return true;
@@ -658,6 +665,7 @@ namespace LibMSI
             return false;
         }
 
+        // TODO: Move to LibmsiDatabase
         public static LibmsiResult AddStream(LibmsiDatabase db, string name, GsfInput data)
         {
             LibmsiRecord rec = LibmsiRecord.Create(2);
@@ -667,16 +675,17 @@ namespace LibMSI
             if (!rec.SetString(1, name))
                 return LibmsiResult.LIBMSI_RESULT_SUCCESS;
 
-            LibmsiResult r = RecordSetGsfInput(rec, 2, data);
-            if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS )
+            LibmsiResult r = rec.SetGsfInput(2, data);
+            if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                 return r;
 
             string insert = "INSERT INTO `_Streams`(`Name`, `Data`) VALUES (?, ?)";
             Exception err = null;
             LibmsiQuery query = LibmsiQuery.Create(db, insert, ref err);
-            return QueryExecute(query, rec);
+            return query.Execute(rec);
         }
 
+        // TODO: Move to LibmsiDatabase
         public static LibmsiResult DatabseCommitTables(LibmsiDatabase db, int bytes_per_strref)
         {
             LibmsiResult r = LibmsiResult.LIBMSI_RESULT_SUCCESS;
@@ -706,6 +715,7 @@ namespace LibMSI
             return r;
         }
 
+        // TODO: Move to LibmsiDatabase
         public static LibmsiCondition IsTablePersistent(LibmsiDatabase db, string table)
         {
             if (table == null)
@@ -718,17 +728,18 @@ namespace LibMSI
             return t.Persistent;
         }
 
-        public static LibmsiResult MsiTableFindRow(LibmsiTableView tv, LibmsiRecord rec, out int row, out int column)
+        // TODO: Move to LibmsiTableView
+        public static LibmsiResult FindRow(LibmsiTableView tv, LibmsiRecord rec, out int row, out int column)
         {
             row = 0; column = 0;
-            int[] data = MsiRecordToRow(tv, rec);
+            int[] data = RecordToRow(tv, rec);
             if (data == null)
                 return LibmsiResult.LIBMSI_RESULT_FUNCTION_FAILED;
 
             LibmsiResult r = LibmsiResult.LIBMSI_RESULT_FUNCTION_FAILED;
             for (int i = 0; i < tv.Table.RowCount; i++)
             {
-                r = MsiRowMatches(tv, i, data, out column);
+                r = RowMatches(tv, i, data, out column);
                 if (r == LibmsiResult.LIBMSI_RESULT_SUCCESS)
                 {
                     row = i;
@@ -742,7 +753,8 @@ namespace LibMSI
         /// <summary>
         /// Enumerate the table transforms in a transform storage and apply each one.
         /// </summary>
-        public static LibmsiResult MsiTableApplyTransform(LibmsiDatabase db, GsfInfile stg)
+        // TODO: Move to LibmsiDatabase
+        public static LibmsiResult ApplyTransform(LibmsiDatabase db, GsfInfile stg)
         {
             TRANSFORMDATA tables = null, columns = null;
             LibmsiResult ret = LibmsiResult.LIBMSI_RESULT_FUNCTION_FAILED;
@@ -795,11 +807,11 @@ namespace LibMSI
 
             // Apply _Tables and _Columns transforms first so that
             // the table metadata is correct, and empty tables exist.
-            ret = MsiTableLoadTransform( db, stg, strings, tables, bytes_per_strref);
+            ret = LoadTransform(db, stg, strings, tables, bytes_per_strref);
             if (ret != LibmsiResult.LIBMSI_RESULT_SUCCESS && ret != LibmsiResult.LIBMSI_RESULT_INVALID_TABLE)
                 goto end;
 
-            ret = MsiTableLoadTransform( db, stg, strings, columns, bytes_per_strref );
+            ret = LoadTransform(db, stg, strings, columns, bytes_per_strref);
             if (ret != LibmsiResult.LIBMSI_RESULT_SUCCESS && ret != LibmsiResult.LIBMSI_RESULT_INVALID_TABLE)
                 goto end;
 
@@ -808,7 +820,7 @@ namespace LibMSI
             foreach (TRANSFORMDATA transform in transforms)
             {
                 if (transform.Name == szColumns && transform.Name == szTables && ret == LibmsiResult.LIBMSI_RESULT_SUCCESS)
-                    ret = MsiTableLoadTransform(db, stg, strings, transform, bytes_per_strref);
+                    ret = LoadTransform(db, stg, strings, transform, bytes_per_strref);
             }
 
             transforms.Clear();
@@ -816,7 +828,7 @@ namespace LibMSI
             if (ret == LibmsiResult.LIBMSI_RESULT_SUCCESS)
                 db.AppendStorageToDb(stg);
 
-        end:
+            end:
             if (strings != null)
                 strings.Destroy();
 
@@ -829,12 +841,12 @@ namespace LibMSI
 
         private static int Utf2Mime(int x)
         {
-            if ((x >= '0') && ( x <= '9'))
+            if ((x >= '0') && (x <= '9'))
                 return x - '0';
             if ((x >= 'A') && (x <= 'Z'))
                 return x - 'A' + 10;
             if ((x >= 'a') && (x <= 'z'))
-                return x- 'a' + 10 + 26;
+                return x - 'a' + 10 + 26;
             if (x == '.')
                 return 10 + 26 + 26;
             if (x == '_')
@@ -850,7 +862,7 @@ namespace LibMSI
                 return x - 10 + 'A';
             if (x < (10 + 26 + 26))
                 return x - 10 - 26 + 'a';
-            if (x == ( 10 + 26 + 26))
+            if (x == (10 + 26 + 26))
                 return '.';
             return '_';
         }
@@ -858,10 +870,11 @@ namespace LibMSI
         /// <summary>
         /// Add this table to the list of cached tables in the database
         /// </summary>
+        // TODO: Move to LibmsiDatabase
         private static LibmsiResult ReadTableFromStorage(LibmsiDatabase db, LibmsiTable t, GsfInfile stg)
         {
-            int row_size = MsiTableGetRowSize(db, t.ColInfo, t.ColCount, db.BytesPerStrref);
-            int row_size_mem = MsiTableGetRowSize(db, t.ColInfo, t.ColCount, LONG_STR_BYTES);
+            int row_size = GetRowSize(t.ColInfo, t.ColCount, db.BytesPerStrref);
+            int row_size_mem = GetRowSize(t.ColInfo, t.ColCount, LONG_STR_BYTES);
 
             // If we can't read the table, just assume that it's empty 
             ReadStreamData(stg, t.Name, out byte[] rawdata, out int rawsize);
@@ -888,8 +901,8 @@ namespace LibMSI
 
                 for (int j = 0; j < t.ColCount; j++)
                 {
-                    int m = BytesPerColumn( db, t.ColInfo[j], LONG_STR_BYTES);
-                    int n = BytesPerColumn( db, t.ColInfo[j], db.BytesPerStrref);
+                    int m = BytesPerColumn(t.ColInfo[j], LONG_STR_BYTES);
+                    int n = BytesPerColumn(t.ColInfo[j], db.BytesPerStrref);
 
                     if (n != 2 && n != 3 && n != 4)
                     {
@@ -924,6 +937,7 @@ namespace LibMSI
         }
 
         // TODO: Move this to the correct section
+        // TODO: Move to LibmsiDatabase
         public static LibmsiTable FindCachedTable(LibmsiDatabase db, string name)
         {
             foreach (LibmsiTable t in db.Tables)
@@ -935,19 +949,20 @@ namespace LibMSI
             return null;
         }
 
-        private static void TableCalcColumnOffsets(LibmsiDatabase db, LibmsiColumnInfo[] colinfo, int count)
+        private static void CalcColumnOffsets(LibmsiColumnInfo[] colinfo, int count)
         {
             for (int i = 0; colinfo[i] != null && i < count; i++)
             {
                 //assert(i + 1 == colinfo[i].number);
                 if (i != 0)
-                    colinfo[i].Offset = colinfo[i - 1].Offset + BytesPerColumn( db, colinfo[i - 1], LONG_STR_BYTES);
+                    colinfo[i].Offset = colinfo[i - 1].Offset + BytesPerColumn(colinfo[i - 1], LONG_STR_BYTES);
                 else
                     colinfo[i].Offset = 0;
             }
         }
 
-        private static LibmsiResult GetDefaultTableColumns(LibmsiDatabase db, string name, LibmsiColumnInfo[] colinfo, ref int sz)
+        // TODO: Move to LibmsiDatabase
+        private static LibmsiResult GetDefaultTableColumns(string name, LibmsiColumnInfo[] colinfo, ref int sz)
         {
             LibmsiColumnInfo[] p;
             int n;
@@ -977,11 +992,12 @@ namespace LibMSI
                     break;
             }
 
-            TableCalcColumnOffsets(db, colinfo, n);
+            CalcColumnOffsets(colinfo, n);
             sz = n;
             return LibmsiResult.LIBMSI_RESULT_SUCCESS;
         }
 
+        // TODO: Move to LibmsiDatabase
         private static LibmsiResult TableGetColumnInfo(LibmsiDatabase db, string name, out LibmsiColumnInfo[] pcols, out int pcount)
         {
             pcols = null; pcount = 0;
@@ -1007,17 +1023,18 @@ namespace LibMSI
             return r;
         }
 
+        // TODO: Move to LibmsiDatabase
         private static LibmsiResult GetTableColumns(LibmsiDatabase db, string szTableName, LibmsiColumnInfo[] colinfo, ref int sz)
         {
             int maxcount = sz;
             int n = 0;
 
             // First check if there is a default table with that name
-            LibmsiResult r = GetDefaultTableColumns(db, szTableName, colinfo, ref sz);
+            LibmsiResult r = GetDefaultTableColumns(szTableName, colinfo, ref sz);
             if (r == LibmsiResult.LIBMSI_RESULT_SUCCESS && sz != 0)
                 return r;
 
-            r = GetTable( db, szColumns, out LibmsiTable table);
+            r = GetTable(db, szColumns, out LibmsiTable table);
             if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
             {
                 Console.Error.WriteLine("Couldn't load _Columns table");
@@ -1081,11 +1098,12 @@ namespace LibMSI
                 return LibmsiResult.LIBMSI_RESULT_FUNCTION_FAILED;
             }
 
-            TableCalcColumnOffsets(db, colinfo, n);
+            CalcColumnOffsets(colinfo, n);
             sz = n;
             return LibmsiResult.LIBMSI_RESULT_SUCCESS;
         }
 
+        // TODO: Move to LibmsiDatabase
         private static LibmsiResult SaveTable(LibmsiDatabase db, LibmsiTable t, int bytes_per_strref)
         {
             // Nothing to do for non-persistent tables
@@ -1098,7 +1116,7 @@ namespace LibMSI
             if (t.RowCount == 0 && t.Name != szTables)
                 return LibmsiResult.LIBMSI_RESULT_SUCCESS;
 
-            int row_size = MsiTableGetRowSize(db, t.ColInfo, t.ColCount, bytes_per_strref);
+            int row_size = GetRowSize(t.ColInfo, t.ColCount, bytes_per_strref);
             int row_count = t.RowCount;
             for (int i = 0; i < t.RowCount; i++)
             {
@@ -1122,8 +1140,8 @@ namespace LibMSI
 
                 for (int j = 0; j < t.ColCount; j++)
                 {
-                    int m = BytesPerColumn(db, t.ColInfo[j], LONG_STR_BYTES);
-                    int n = BytesPerColumn(db, t.ColInfo[j], bytes_per_strref);
+                    int m = BytesPerColumn(t.ColInfo[j], LONG_STR_BYTES);
+                    int n = BytesPerColumn(t.ColInfo[j], bytes_per_strref);
 
                     if (n != 2 && n != 3 && n != 4)
                     {
@@ -1167,7 +1185,8 @@ namespace LibMSI
             return ret;
         }
 
-        private static LibmsiResult MsiRecordEncodedStreamName(LibmsiTableView tv, LibmsiRecord rec, out string pstname)
+        // TODO: Move to LibmsiTableView
+        private static LibmsiResult RecordEncodedStreamName(LibmsiTableView tv, LibmsiRecord rec, out string pstname)
         {
             int len = tv.Name.Length + 1;
             string stname = tv.Name + '\0';
@@ -1177,7 +1196,7 @@ namespace LibMSI
             {
                 if ((tv.Columns[i].Type & MSITYPE_KEY) != 0)
                 {
-                    string sval = MsiDupRecordField(rec, i + 1 );
+                    string sval = rec.DupRecordField(i + 1);
                     if (sval == null)
                     {
                         r = LibmsiResult.LIBMSI_RESULT_OUTOFMEMORY;
@@ -1201,7 +1220,8 @@ namespace LibMSI
             return r;
         }
 
-        private static LibmsiRecord MsiGetTransformRecord(LibmsiTableView tv, StringTable st, GsfInfile stg, byte[] rawdata, int bytes_per_strref)
+        // TODO: Move to LibmsiTableView
+        private static LibmsiRecord GetTransformRecord(LibmsiTableView tv, StringTable st, GsfInfile stg, byte[] rawdata, int bytes_per_strref)
         {
             int val, ofs = 0;
             LibmsiColumnInfo[] columns = tv.Columns;
@@ -1226,9 +1246,9 @@ namespace LibMSI
                 {
                     GsfInput stm = null;
 
-                    ofs += BytesPerColumn(tv.Database, columns[i], bytes_per_strref);
+                    ofs += BytesPerColumn(columns[i], bytes_per_strref);
 
-                    LibmsiResult r = MsiRecordEncodedStreamName(tv, rec, out string encname);
+                    LibmsiResult r = RecordEncodedStreamName(tv, rec, out string encname);
                     if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                         return null;
 
@@ -1237,9 +1257,9 @@ namespace LibMSI
                     if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                         return null;
 
-                    RecordLoadStream(rec, i + 1, stm);
+                    rec.LoadStream(i + 1, stm);
                 }
-                else if((columns[i].Type & MSITYPE_STRING) != 0)
+                else if ((columns[i].Type & MSITYPE_STRING) != 0)
                 {
                     val = ReadRawInt(rawdata, ofs, bytes_per_strref);
                     string sval = st.LookupId(val);
@@ -1248,13 +1268,13 @@ namespace LibMSI
                 }
                 else
                 {
-                    int n = BytesPerColumn(tv.Database, columns[i], bytes_per_strref);
-                    switch( n )
+                    int n = BytesPerColumn(columns[i], bytes_per_strref);
+                    switch (n)
                     {
                         case 2:
                             val = ReadRawInt(rawdata, ofs, n);
                             if (val != 0)
-                                rec.SetInt(i + 1, val - 0x8000 );
+                                rec.SetInt(i + 1, val - 0x8000);
 
                             break;
                         case 4:
@@ -1275,6 +1295,7 @@ namespace LibMSI
             return rec;
         }
 
+        // TODO: Move to LibmsiRecord
         private static void DumpRecord(LibmsiRecord rec)
         {
             int n = rec.GetFieldCount();
@@ -1283,35 +1304,37 @@ namespace LibMSI
                 string sval;
                 if (rec.IsNull(i))
                 {
-                    //TRACE("row . []");
+                    Console.WriteLine("row . []");
                 }
-                else if ((sval = RecordGetStringRaw( rec, i )) != null)
+                else if ((sval = rec.GetStringRaw(i)) != null)
                 {
-                    //TRACE($"row . [{sval}]");
+                    Console.WriteLine($"row . [{sval}]");
                 }
                 else
                 {
-                    //TRACE($"row . [0x{rec.GetInt(i):8x}]");
+                    Console.WriteLine($"row . [0x{rec.GetInt(i):8x}]");
                 }
             }
         }
 
+        // TODO: Move to StringTable
         private static void DumpTable(StringTable st, ushort[] rawdata, int rawsize)
         {
-            for(int i = 0; i < (rawsize / 2); i++)
+            for (int i = 0; i < (rawsize / 2); i++)
             {
                 string sval = st.LookupId(rawdata[i]);
-                //TRACE($" {rawdata[i]:4x} {sval}");
+                Console.WriteLine($" {rawdata[i]:4x} {sval}");
             }
         }
 
-        private static int[] MsiRecordToRow(LibmsiTableView tv, LibmsiRecord rec)
+        // TODO: Move to LibmsiTableView
+        private static int[] RecordToRow(LibmsiTableView tv, LibmsiRecord rec)
         {
             string str;
             LibmsiResult r;
 
             int[] data = new int[tv.NumCols];
-            for(int i = 0; i < tv.NumCols; i++ )
+            for (int i = 0; i < tv.NumCols; i++)
             {
                 data[i] = 0;
 
@@ -1321,7 +1344,7 @@ namespace LibMSI
                 // Turn the transform column value into a row value
                 if ((tv.Columns[i].Type & MSITYPE_STRING) != 0 && !MSITYPE_IS_BINARY(tv.Columns[i].Type))
                 {
-                    str = RecordGetStringRaw(rec, i + 1);
+                    str = rec.GetStringRaw(i + 1);
                     if (str != null)
                     {
                         r = tv.Database.Strings.IdFromStringUTF8(str, out data[i]);
@@ -1351,7 +1374,8 @@ namespace LibMSI
             return data;
         }
 
-        private static LibmsiResult MsiRowMatches(LibmsiTableView tv, int row, int[] data, out int column)
+        // TODO: Move to LibmsiTableView
+        private static LibmsiResult RowMatches(LibmsiTableView tv, int row, int[] data, out int column)
         {
             column = 0;
 
@@ -1383,7 +1407,8 @@ namespace LibMSI
             return ret;
         }
 
-        private static LibmsiResult MsiTableLoadTransform(LibmsiDatabase db, GsfInfile stg, StringTable st, TRANSFORMDATA transform, int bytes_per_strref)
+        // TODO: Move to LibmsiDatabase
+        private static LibmsiResult LoadTransform(LibmsiDatabase db, GsfInfile stg, StringTable st, TRANSFORMDATA transform, int bytes_per_strref)
         {
             int i, colcol = 0;
 
@@ -1444,7 +1469,7 @@ namespace LibMSI
                         if ((tv.Columns[i].Type & MSITYPE_STRING) != 0 && !MSITYPE_IS_BINARY(tv.Columns[i].Type))
                             sz += bytes_per_strref;
                         else
-                            sz += BytesPerColumn(tv.Database, tv.Columns[i], bytes_per_strref);
+                            sz += BytesPerColumn(tv.Columns[i], bytes_per_strref);
                     }
                 }
                 else
@@ -1465,7 +1490,7 @@ namespace LibMSI
                             if ((tv.Columns[i].Type & MSITYPE_STRING) != 0 && !MSITYPE_IS_BINARY(tv.Columns[i].Type))
                                 sz += bytes_per_strref;
                             else
-                                sz += BytesPerColumn(tv.Database, tv.Columns[i], bytes_per_strref);
+                                sz += BytesPerColumn(tv.Columns[i], bytes_per_strref);
                         }
                     }
                 }
@@ -1474,11 +1499,11 @@ namespace LibMSI
                 if (n + sz > rawsize)
                 {
                     Console.Error.WriteLine("Borked.");
-                    DumpTable(st, rawdata.Cast<ushort>().ToArray(), rawsize );
+                    DumpTable(st, rawdata.Cast<ushort>().ToArray(), rawsize);
                     break;
                 }
 
-                LibmsiRecord rec = MsiGetTransformRecord( tv, st, stg, rawdata.Skip(n).ToArray(), bytes_per_strref );
+                LibmsiRecord rec = GetTransformRecord(tv, st, stg, rawdata.Skip(n).ToArray(), bytes_per_strref);
                 if (rec != null)
                 {
                     string table = string.Empty;
@@ -1489,7 +1514,7 @@ namespace LibMSI
                     if (name == szColumns)
                     {
                         int tablesz = 32;
-                        RecordGetString(rec, 1, out table, ref tablesz);
+                        rec.GetString(1, out table, ref tablesz);
                         number = rec.GetInt(2);
 
                         // Native msi seems writes nul into the Number (2nd) column of
@@ -1512,7 +1537,7 @@ namespace LibMSI
                     if (TRACE_ON)
                         DumpRecord(rec);
 
-                    r = MsiTableFindRow(tv, rec, out row, out _);
+                    r = FindRow(tv, rec, out row, out _);
                     if (r == LibmsiResult.LIBMSI_RESULT_SUCCESS)
                     {
                         if (mask == 0)
@@ -1536,13 +1561,13 @@ namespace LibMSI
                     }
                     else
                     {
-                        r = tv.InsertRow(rec, -1, false );
+                        r = tv.InsertRow(rec, -1, false);
                         if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                             Console.Error.WriteLine($"Failed to insert row {r}");
                     }
 
                     if (number != LIBMSI_NULL_INT && name == szColumns)
-                        MsiUpdateTableColumns(db, table);
+                        UpdateTableColumns(db, table);
                 }
 
                 n += sz;

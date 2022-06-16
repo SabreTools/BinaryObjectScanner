@@ -18,7 +18,7 @@ using System;
 using System.IO;
 using LibGSF.Input;
 
-namespace LibMSI
+namespace LibMSI.Internal
 {
     internal class LibmsiIStream : Stream
     {

@@ -18,9 +18,10 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
- using static LibMSI.LibmsiRecord;
+using LibMSI.Internal;
+using static LibMSI.LibmsiRecord;
 
-namespace LibMSI
+namespace LibMSI.Views
 {
     /// <summary>
     /// Below is the query interface to a table

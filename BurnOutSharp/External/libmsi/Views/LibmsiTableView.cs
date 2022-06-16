@@ -21,13 +21,14 @@
 using System;
 using System.Linq;
 using LibGSF.Input;
+using LibMSI.Internal;
 using static LibMSI.LibmsiQuery;
 using static LibMSI.LibmsiRecord;
-using static LibMSI.LibmsiTable;
-using static LibMSI.MsiPriv;
 using static LibMSI.LibmsiTypes;
+using static LibMSI.Internal.LibmsiTable;
+using static LibMSI.Internal.MsiPriv;
 
-namespace LibMSI
+namespace LibMSI.Views
 {
     internal class LibmsiColumnHashEntry
     {
@@ -84,7 +85,7 @@ namespace LibMSI
             tv.Database = db;
             tv.Columns = tv.Table.ColInfo;
             tv.NumCols = tv.Table.ColCount;
-            tv.RowSize = MsiTableGetRowSize(db, tv.Table.ColInfo, tv.Table.ColCount, LONG_STR_BYTES);
+            tv.RowSize = GetRowSize(db, tv.Table.ColInfo, tv.Table.ColCount, LONG_STR_BYTES);
             tv.Name = name;
 
             view = tv;
@@ -141,7 +142,7 @@ namespace LibMSI
             }
 
             string encname = EncodeStreamName(false, full_name);
-            r = Database.MsiGetRawStream(encname, out stm);
+            r = Database.GetRawStream(encname, out stm);
             if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                 Console.Error.WriteLine($"Fetching stream {full_name}, error = {r}");
 
@@ -191,7 +192,7 @@ namespace LibMSI
                         if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                             return LibmsiResult.LIBMSI_RESULT_FUNCTION_FAILED;
 
-                        r = RecordGetGsfInput(rec, i + 1, out GsfInput stm);
+                        r = GetGsfInput(rec, i + 1, out GsfInput stm);
                         if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                             return r;
 
@@ -441,7 +442,7 @@ namespace LibMSI
             if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                 return r;
 
-            r = MsiTableFindRow(columns as LibmsiTableView, rec, out int row, out _);
+            r = FindRow(columns as LibmsiTableView, rec, out int row, out _);
             if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
             {
                 columns.Delete();
@@ -455,7 +456,7 @@ namespace LibMSI
                 return r;
             }
 
-            MsiUpdateTableColumns(Database, table);
+            UpdateTableColumns(Database, table);
             columns.Delete();
             return r;
         }
@@ -504,7 +505,7 @@ namespace LibMSI
             if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                 return r;
 
-            MsiUpdateTableColumns(Database, table);
+            UpdateTableColumns(Database, table);
 
             if (!hold)
                 return r;
@@ -543,7 +544,7 @@ namespace LibMSI
             if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                 return r;
 
-            r = MsiTableFindRow((tables as LibmsiTableView), rec, out int row, out _);
+            r = FindRow((tables as LibmsiTableView), rec, out int row, out _);
             if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
             {
                 tables.Delete();
@@ -781,7 +782,7 @@ namespace LibMSI
             }
 
             // Check there's no duplicate keys
-            LibmsiResult r = MsiTableFindRow(this, rec, out int row, out column);
+            LibmsiResult r = FindRow(this, rec, out int row, out column);
             if (r == LibmsiResult.LIBMSI_RESULT_SUCCESS)
                 return LibmsiResult.LIBMSI_RESULT_FUNCTION_FAILED;
 

@@ -23,10 +23,10 @@
 using System;
 using System.Text;
 using LibGSF.Input;
-using static LibMSI.LibmsiTable;
-using static LibMSI.MsiPriv;
+using static LibMSI.Internal.LibmsiTable;
+using static LibMSI.Internal.MsiPriv;
 
-namespace LibMSI
+namespace LibMSI.Internal
 {
     internal class msistring
     {

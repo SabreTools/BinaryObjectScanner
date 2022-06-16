@@ -20,12 +20,13 @@
 
 using System;
 using LibGSF.Input;
+using LibMSI.Internal;
 using static LibMSI.LibmsiQuery;
 using static LibMSI.LibmsiRecord;
-using static LibMSI.LibmsiTable;
-using static LibMSI.MsiPriv;
+using static LibMSI.Internal.LibmsiTable;
+using static LibMSI.Internal.MsiPriv;
 
-namespace LibMSI
+namespace LibMSI.Views
 {
     internal class STREAM
     {
@@ -118,7 +119,7 @@ namespace LibMSI
             if (row > NumRows)
                 return LibmsiResult.LIBMSI_RESULT_FUNCTION_FAILED;
 
-            LibmsiResult r = RecordGetGsfInput(rec, 2, out GsfInput stm);
+            LibmsiResult r = GetGsfInput(rec, 2, out GsfInput stm);
             if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                 return r;
 
@@ -150,7 +151,7 @@ namespace LibMSI
             if (stream == null)
                 return r;
 
-            r = Database.MsiCreateStream(name, stm);
+            r = Database.CreateStream(name, stm);
             if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
             {
                 Console.Error.WriteLine($"Failed to create stream: {r}");
@@ -196,7 +197,7 @@ namespace LibMSI
             }
 
             encname = EncodeStreamName(false, name);
-            Database.MsiDestroyStream(encname);
+            Database.DestroyStream(encname);
 
             // Shift the remaining rows
             for (int i = row + 1; i < NumRows; i++)
@@ -328,7 +329,7 @@ namespace LibMSI
         {
             MaxStreams = 1;
             Streams = new STREAM[1];
-            return Database.MsiEnumDbStreams(AddStreamToTable, this);
+            return Database.EnumDbStreams(AddStreamToTable, this);
         }
 
         #endregion

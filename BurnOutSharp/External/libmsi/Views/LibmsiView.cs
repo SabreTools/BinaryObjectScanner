@@ -21,8 +21,9 @@
 
 using System;
 using LibGSF.Input;
+using LibMSI.Internal;
 
-namespace LibMSI
+namespace LibMSI.Views
 {
     internal class column_info
     {
@@ -49,7 +50,7 @@ namespace LibMSI
 
         #endregion
 
-        #region Functions
+        #region Virtual Functions
 
         /// <summary>
         /// Reads one integer from {row,col} in the table
