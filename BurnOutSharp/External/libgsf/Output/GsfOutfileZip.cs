@@ -26,6 +26,7 @@ using System.IO;
 using System.Text;
 using ComponentAce.Compression.Libs.zlib;
 using static ComponentAce.Compression.Libs.zlib.zlibConst;
+using static LibGSF.GsfUtils;
 using static LibGSF.GsfZipImpl;
 
 namespace LibGSF.Output
@@ -321,7 +322,7 @@ namespace LibGSF.Output
 
             if (zip64_here)
             {
-                List<byte> tmp = new List<byte>();
+                byte[] tmp = new byte[8];
 
                 // We could unconditionally store the offset here, but
                 // zipinfo has a known bug in which it fails to account
@@ -329,110 +330,119 @@ namespace LibGSF.Output
                 // and the local headers.  So we try to make them the
                 // same.
 
-                tmp.AddRange(BitConverter.GetBytes((ushort)(ExtraFieldTags.ZIP_DIRENT_EXTRA_FIELD_ZIP64)));
-                tmp.AddRange(BitConverter.GetBytes((ushort)((2 + (offset_in_zip64 ? 1 : 0) * 8))));
-                tmp.AddRange(BitConverter.GetBytes((ulong)(dirent.UncompressedSize)));
-                tmp.AddRange(BitConverter.GetBytes((ulong)(dirent.CompressedSize)));
+                GSF_LE_SET_GUINT16(tmp, 0, (ushort)ExtraFieldTags.ZIP_DIRENT_EXTRA_FIELD_ZIP64);
+                GSF_LE_SET_GUINT16(tmp, 2, (ushort)(2 + (offset_in_zip64 ? 1 : 0) * 8));
+                extras.AddRange(new ReadOnlySpan<byte>(tmp, 0, 4).ToArray());
+                GSF_LE_SET_GUINT64(tmp, 0, (ulong)dirent.UncompressedSize);
+                extras.AddRange(new ReadOnlySpan<byte>(tmp, 0, 8).ToArray());
+                GSF_LE_SET_GUINT64(tmp, 0, (ulong)dirent.CompressedSize);
+                extras.AddRange(new ReadOnlySpan<byte>(tmp, 0, 8).ToArray());
                 if (offset_in_zip64)
-                    tmp.AddRange(BitConverter.GetBytes((ulong)(dirent.Offset)));
-
-                extras.AddRange(tmp);
+                {
+                    GSF_LE_SET_GUINT64(tmp, 0, (ulong)dirent.Offset);
+                    extras.AddRange(new ReadOnlySpan<byte>(tmp, 0, 8).ToArray());
+                }
             }
             else if (dirent.Zip64 == null)
             {
-                List<byte> tmp = new List<byte>();
+                byte[] tmp = new byte[8];
 
                 // Match the local header.
-                tmp.AddRange(BitConverter.GetBytes((ushort)(ExtraFieldTags.ZIP_DIRENT_EXTRA_FIELD_IGNORE)));
-                tmp.AddRange(BitConverter.GetBytes((ushort)(2 * 8)));
-                tmp.AddRange(BitConverter.GetBytes((ulong)(0)));
-                tmp.AddRange(BitConverter.GetBytes((ulong)(0)));
-
-                extras.AddRange(tmp);
+                GSF_LE_SET_GUINT16(tmp, 0, (ushort)ExtraFieldTags.ZIP_DIRENT_EXTRA_FIELD_IGNORE);
+                GSF_LE_SET_GUINT16(tmp, 2, 2 * 8);
+                extras.AddRange(new ReadOnlySpan<byte>(tmp, 0, 4).ToArray());
+                GSF_LE_SET_GUINT64(tmp, 0, 0);
+                extras.AddRange(new ReadOnlySpan<byte>(tmp, 0, 8).ToArray());
+                GSF_LE_SET_GUINT64(tmp, 0, 0);
+                extras.AddRange(new ReadOnlySpan<byte>(tmp, 0, 8).ToArray());
             }
 
             if (ZIP_ADD_UNIXTIME_FIELD && dirent.ModifiedTime != null && !SpecialMimetypeDirectoryEntry(dirent))
             {
                 // Clearly a year 2038 problem here.
-                List<byte> tmp = new List<byte>();
+                byte[] tmp = new byte[4];
 
-                tmp.AddRange(BitConverter.GetBytes((ushort)(ExtraFieldTags.ZIP_DIRENT_EXTRA_FIELD_UNIXTIME)));
-                tmp.AddRange(BitConverter.GetBytes((ushort)(5)));
-                tmp.Add(1);
-                tmp.AddRange(BitConverter.GetBytes((uint)(new DateTimeOffset(dirent.ModifiedTime ?? DateTime.UtcNow).ToUnixTimeSeconds())));
-
-                extras.AddRange(tmp);
+                GSF_LE_SET_GUINT16(tmp, 0, (ushort)(ExtraFieldTags.ZIP_DIRENT_EXTRA_FIELD_UNIXTIME));
+                GSF_LE_SET_GUINT16(tmp, 2, 5);
+                extras.AddRange(new ReadOnlySpan<byte>(tmp, 0, 4).ToArray());
+                tmp[0] = 1;
+                extras.AddRange(new ReadOnlySpan<byte>(tmp, 0, 1).ToArray());
+                GSF_LE_SET_GUINT32(tmp, 0, (uint)new DateTimeOffset(dirent.ModifiedTime ?? DateTime.UtcNow).ToUnixTimeSeconds());
+                extras.AddRange(new ReadOnlySpan<byte>(tmp, 0, 4).ToArray());
             }
 
-            List<byte> buf = new List<byte>(ZIP_DIRENT_SIZE);
+            byte[] buf = new byte[ZIP_DIRENT_SIZE];
 
-            buf.AddRange(BitConverter.GetBytes((uint)(ZIP_DIRENT_SIGNATURE)));
-            buf.AddRange(BitConverter.GetBytes((ushort)(((int)OSCodes.ZIP_OS_UNIX << 8) + extract)));
-            buf.AddRange(BitConverter.GetBytes((ushort)(((int)OSCodes.ZIP_OS_MSDOS << 8) + extract)));
-            buf.AddRange(BitConverter.GetBytes((ushort)(dirent.Flags)));
-            buf.AddRange(BitConverter.GetBytes((ushort)(dirent.CompressionMethod)));
-            buf.AddRange(BitConverter.GetBytes((uint)(dirent.DosTime)));
-            buf.AddRange(BitConverter.GetBytes((uint)(dirent.CRC32)));
-            buf.AddRange(BitConverter.GetBytes((uint)(zip64_here ? uint.MaxValue : dirent.CompressedSize)));
-            buf.AddRange(BitConverter.GetBytes((uint)(zip64_here ? uint.MaxValue : dirent.UncompressedSize)));
-            buf.AddRange(BitConverter.GetBytes((ushort)(nlen)));
-            buf.AddRange(BitConverter.GetBytes((ushort)(extras.Count)));
-            buf.AddRange(BitConverter.GetBytes((ushort)(0)));
-            buf.AddRange(BitConverter.GetBytes((ushort)(0)));
-            buf.AddRange(BitConverter.GetBytes((ushort)(0)));
+            GSF_LE_SET_GUINT32(buf, 0, ZIP_DIRENT_SIGNATURE);
+            GSF_LE_SET_GUINT16(buf, ZIP_DIRENT_ENCODER, (ushort)(((int)OSCodes.ZIP_OS_UNIX << 8) + extract));
+            GSF_LE_SET_GUINT16(buf, ZIP_DIRENT_EXTRACT, (ushort)(((int)OSCodes.ZIP_OS_MSDOS << 8) + extract));
+            GSF_LE_SET_GUINT16(buf, ZIP_DIRENT_FLAGS, (ushort)dirent.Flags);
+            GSF_LE_SET_GUINT16(buf, ZIP_DIRENT_COMPR_METHOD, (ushort)dirent.CompressionMethod);
+            GSF_LE_SET_GUINT32(buf, ZIP_DIRENT_DOSTIME, dirent.DosTime);
+            GSF_LE_SET_GUINT32(buf, ZIP_DIRENT_CRC32, dirent.CRC32);
+            GSF_LE_SET_GUINT32(buf, ZIP_DIRENT_CSIZE, (uint)(zip64_here ? uint.MaxValue : dirent.CompressedSize));
+            GSF_LE_SET_GUINT32(buf, ZIP_DIRENT_USIZE, (uint)(zip64_here ? uint.MaxValue : dirent.UncompressedSize));
+            GSF_LE_SET_GUINT16(buf, ZIP_DIRENT_NAME_SIZE, (ushort)nlen);
+            GSF_LE_SET_GUINT16(buf, ZIP_DIRENT_EXTRAS_SIZE, (ushort)extras.Count);
+            GSF_LE_SET_GUINT16(buf, ZIP_DIRENT_COMMENT_SIZE, 0);
+            GSF_LE_SET_GUINT16(buf, ZIP_DIRENT_DISKSTART, 0);
+            GSF_LE_SET_GUINT16(buf, ZIP_DIRENT_FILE_TYPE, 0);
 
             // Hardcode file mode 644
-            buf.AddRange(BitConverter.GetBytes((uint)(0100644u << 16)));
-            buf.AddRange(BitConverter.GetBytes((uint)(offset_in_zip64 ? uint.MaxValue : dirent.Offset)));
+            GSF_LE_SET_GUINT32(buf, ZIP_DIRENT_FILE_MODE, 0100644u << 16);
+            GSF_LE_SET_GUINT32(buf, ZIP_DIRENT_OFFSET, (uint)(offset_in_zip64 ? uint.MaxValue : dirent.Offset));
 
             // Stuff everything into buf so we can do just one write.
-            buf.AddRange(extras);
-            buf.AddRange(Encoding.ASCII.GetBytes(dirent.Name));
+            List<byte> header = new List<byte>();
+            header.AddRange(buf);
+            header.AddRange(extras);
+            header.AddRange(Encoding.ASCII.GetBytes(dirent.Name));
 
-            return Sink.Write(buf.Count, buf.ToArray());
+            return Sink.Write(header.Count, header.ToArray());
         }
 
         private bool TrailerWrite(int entries, long dirpos, long dirsize)
         {
-            List<byte> buf = new List<byte>(ZIP_TRAILER_SIZE);
+            byte[] buf = new byte[ZIP_TRAILER_SIZE];
 
-            buf.AddRange(BitConverter.GetBytes((uint)(ZIP_TRAILER_SIGNATURE)));
-            buf.AddRange(BitConverter.GetBytes((ushort)(Math.Min(entries, ushort.MaxValue))));
-            buf.AddRange(BitConverter.GetBytes((ushort)(Math.Min(dirsize, ushort.MaxValue))));
-            buf.AddRange(BitConverter.GetBytes((ushort)(Math.Min(dirpos, ushort.MaxValue))));
+            GSF_LE_SET_GUINT32(buf, 0, ZIP_TRAILER_SIGNATURE);
+            GSF_LE_SET_GUINT16(buf, ZIP_TRAILER_ENTRIES, (ushort)Math.Min(entries, ushort.MaxValue));
+            GSF_LE_SET_GUINT16(buf, ZIP_TRAILER_TOTAL_ENTRIES, (ushort)Math.Min(entries, ushort.MaxValue));
+            GSF_LE_SET_GUINT32(buf, ZIP_TRAILER_DIR_SIZE, (uint)Math.Min(dirsize, uint.MaxValue));
+            GSF_LE_SET_GUINT32(buf, ZIP_TRAILER_DIR_POS, (uint)Math.Min(dirpos, uint.MaxValue));
 
-            return Sink.Write(buf.Count, buf.ToArray());
+            return Sink.Write(buf.Length, buf);
         }
 
         private bool Trailer64Write(int entries, long dirpos, long dirsize)
         {
-            List<byte> buf = new List<byte>(ZIP_TRAILER64_SIZE);
+            byte[] buf = new byte[ZIP_TRAILER64_SIZE];
             byte extract = 45;
 
-            buf.AddRange(BitConverter.GetBytes((uint)(ZIP_TRAILER64_SIGNATURE)));
-            buf.AddRange(BitConverter.GetBytes((ulong)(ZIP_TRAILER64_SIZE - 12)));
-            buf.AddRange(BitConverter.GetBytes((ushort)(((int)OSCodes.ZIP_OS_UNIX << 8) + extract)));
-            buf.AddRange(BitConverter.GetBytes((ushort)(((int)OSCodes.ZIP_OS_MSDOS << 8) + extract)));
-            buf.AddRange(BitConverter.GetBytes((uint)(0)));
-            buf.AddRange(BitConverter.GetBytes((uint)(0)));
-            buf.AddRange(BitConverter.GetBytes((uint)(entries)));
-            buf.AddRange(BitConverter.GetBytes((uint)(entries)));
-            buf.AddRange(BitConverter.GetBytes((ulong)(dirsize)));
-            buf.AddRange(BitConverter.GetBytes((ulong)(dirpos)));
+            GSF_LE_SET_GUINT32(buf, 0, ZIP_TRAILER64_SIGNATURE);
+            GSF_LE_SET_GUINT64(buf, ZIP_TRAILER64_RECSIZE, ZIP_TRAILER64_SIZE - 12);
+            GSF_LE_SET_GUINT16(buf, ZIP_TRAILER64_ENCODER, (ushort)(((int)OSCodes.ZIP_OS_UNIX << 8) + extract));
+            GSF_LE_SET_GUINT16(buf, ZIP_TRAILER64_EXTRACT, (ushort)(((int)OSCodes.ZIP_OS_MSDOS << 8) + extract));
+            GSF_LE_SET_GUINT32(buf, ZIP_TRAILER64_DISK, 0);
+            GSF_LE_SET_GUINT32(buf, ZIP_TRAILER64_DIR_DISK, 0);
+            GSF_LE_SET_GUINT32(buf, ZIP_TRAILER64_ENTRIES, (uint)entries);
+            GSF_LE_SET_GUINT32(buf, ZIP_TRAILER64_TOTAL_ENTRIES, (uint)entries);
+            GSF_LE_SET_GUINT64(buf, ZIP_TRAILER64_DIR_SIZE, (ulong)dirsize);
+            GSF_LE_SET_GUINT64(buf, ZIP_TRAILER64_DIR_POS, (ulong)dirpos);
 
-            return Sink.Write(buf.Count, buf.ToArray());
+            return Sink.Write(buf.Length, buf);
         }
 
         private bool Zip64LocatorWrite(long trailerpos)
         {
-            List<byte> buf = new List<byte>(ZIP_ZIP64_LOCATOR_SIZE);
+            byte[] buf = new byte[ZIP_ZIP64_LOCATOR_SIZE];
 
-            buf.AddRange(BitConverter.GetBytes((uint)(ZIP_ZIP64_LOCATOR_SIGNATURE)));
-            buf.AddRange(BitConverter.GetBytes((uint)(0)));
-            buf.AddRange(BitConverter.GetBytes((ulong)(trailerpos)));
-            buf.AddRange(BitConverter.GetBytes((uint)(1)));
+            GSF_LE_SET_GUINT32(buf, 0, ZIP_ZIP64_LOCATOR_SIGNATURE);
+            GSF_LE_SET_GUINT32(buf, ZIP_ZIP64_LOCATOR_DISK, 0);
+            GSF_LE_SET_GUINT64(buf, ZIP_TRAILER64_DIR_POS, (ulong)trailerpos);
+            GSF_LE_SET_GUINT32(buf, ZIP_ZIP64_LOCATOR_DISKS, 1);
 
-            return Sink.Write(buf.Count, buf.ToArray());
+            return Sink.Write(buf.Length, buf);
         }
 
         private static int OffsetOrdering(GsfOutfileZip a, GsfOutfileZip b)
@@ -569,13 +579,13 @@ namespace LibGSF.Output
 
         private bool HeaderWrite()
         {
-            List<byte> hbuf = new List<byte>(ZIP_HEADER_SIZE);
+            byte[] hbuf = new byte[ZIP_HEADER_SIZE];
 
             GsfZipDirectoryEntry dirent = VDir.DirectoryEntry;
             string name = dirent.Name;
             int nlen = name.Length;
 
-            hbuf.AddRange(BitConverter.GetBytes((uint)(ZIP_HEADER_SIGNATURE)));
+            GSF_LE_SET_GUINT32(hbuf, 0, ZIP_HEADER_SIGNATURE);
 
             if (SinkIsSeekable == null)
             {
@@ -584,12 +594,12 @@ namespace LibGSF.Output
                 // try to seek back onto it.  If seeking back fails, just
                 // don't rewrite it.
 
-                if (!Sink.Write(4, hbuf.ToArray()))
+                if (!Sink.Write(4, hbuf))
                     return false;
 
                 SinkIsSeekable = Sink.Seek(dirent.Offset, SeekOrigin.Begin);
                 if (SinkIsSeekable == false)
-                    hbuf.Clear();
+                    hbuf = new byte[ZIP_HEADER_SIZE];
             }
 
             // Now figure out if we need a DDESC record.
@@ -633,47 +643,51 @@ namespace LibGSF.Output
             // Auto or forced
             if (dirent.Zip64 != false)
             {
-                List<byte> tmp = new List<byte>();
+                byte[] tmp = new byte[8];
                 ExtraFieldTags typ = real_zip64
                     ? ExtraFieldTags.ZIP_DIRENT_EXTRA_FIELD_ZIP64
                     : ExtraFieldTags.ZIP_DIRENT_EXTRA_FIELD_IGNORE;
 
-                tmp.AddRange(BitConverter.GetBytes((ushort)(typ)));
-                tmp.AddRange(BitConverter.GetBytes((ushort)(2 * 8)));
-                tmp.AddRange(BitConverter.GetBytes((ulong)(usize)));
-                tmp.AddRange(BitConverter.GetBytes((ulong)(csize)));
-
-                extras.AddRange(tmp);
+                GSF_LE_SET_GUINT16(tmp, 0, (ushort)typ);
+                GSF_LE_SET_GUINT16(tmp, 2, 2 * 8);
+                extras.AddRange(new ReadOnlySpan<byte>(tmp, 0, 4).ToArray());
+                GSF_LE_SET_GUINT64(tmp, 0, (ulong)usize);
+                extras.AddRange(new ReadOnlySpan<byte>(tmp, 0, 8).ToArray());
+                GSF_LE_SET_GUINT64(tmp, 0, (ulong)csize);
+                extras.AddRange(new ReadOnlySpan<byte>(tmp, 0, 8).ToArray());
             }
 
             if (ZIP_ADD_UNIXTIME_FIELD && dirent.ModifiedTime != null && !SpecialMimetypeDirectoryEntry(dirent))
             {
-                List<byte> tmp = new List<byte>();
+                byte[] tmp = new byte[4];
 
                 // Clearly a year 2038 problem here.
-                tmp.AddRange(BitConverter.GetBytes((ushort)(ExtraFieldTags.ZIP_DIRENT_EXTRA_FIELD_UNIXTIME)));
-                tmp.AddRange(BitConverter.GetBytes((ushort)(5)));
-                tmp.Add(1);
-                tmp.AddRange(BitConverter.GetBytes((uint)(new DateTimeOffset(dirent.ModifiedTime ?? DateTime.UtcNow).ToUnixTimeSeconds())));
-
-                extras.AddRange(tmp);
+                GSF_LE_SET_GUINT16(tmp, 0, (ushort)ExtraFieldTags.ZIP_DIRENT_EXTRA_FIELD_UNIXTIME);
+                GSF_LE_SET_GUINT16(tmp, 2, 5);
+                extras.AddRange(new ReadOnlySpan<byte>(tmp, 0, 4).ToArray());
+                tmp[0] = 1;
+                extras.AddRange(new ReadOnlySpan<byte>(tmp, 0, 1).ToArray());
+                GSF_LE_SET_GUINT32(tmp, 0, (uint)new DateTimeOffset(dirent.ModifiedTime ?? DateTime.UtcNow).ToUnixTimeSeconds());
+                extras.AddRange(new ReadOnlySpan<byte>(tmp, 0, 4).ToArray());
             }
 
-            hbuf.AddRange(BitConverter.GetBytes((ushort)(((int)OSCodes.ZIP_OS_MSDOS << 8) + extract)));
-            hbuf.AddRange(BitConverter.GetBytes((ushort)(dirent.Flags)));
-            hbuf.AddRange(BitConverter.GetBytes((ushort)(dirent.CompressionMethod)));
-            hbuf.AddRange(BitConverter.GetBytes((uint)(dirent.DosTime)));
-            hbuf.AddRange(BitConverter.GetBytes((uint)(crc32)));
-            hbuf.AddRange(BitConverter.GetBytes((uint)(real_zip64 && !has_ddesc ? uint.MaxValue : csize)));
-            hbuf.AddRange(BitConverter.GetBytes((uint)(real_zip64 && !has_ddesc ? uint.MaxValue : usize)));
-            hbuf.AddRange(BitConverter.GetBytes((ushort)(nlen)));
-            hbuf.AddRange(BitConverter.GetBytes((ushort)(extras.Count)));
+            GSF_LE_SET_GUINT16(hbuf, ZIP_HEADER_EXTRACT, (ushort)(((int)OSCodes.ZIP_OS_MSDOS << 8) + extract));
+            GSF_LE_SET_GUINT16(hbuf, ZIP_HEADER_FLAGS, (ushort)dirent.Flags);
+            GSF_LE_SET_GUINT16(hbuf, ZIP_HEADER_COMP_METHOD, (ushort)dirent.CompressionMethod);
+            GSF_LE_SET_GUINT32(hbuf, ZIP_HEADER_DOSTIME, dirent.DosTime);
+            GSF_LE_SET_GUINT32(hbuf, ZIP_HEADER_CRC32, crc32);
+            GSF_LE_SET_GUINT32(hbuf, ZIP_HEADER_CSIZE, (uint)(real_zip64 && !has_ddesc ? uint.MaxValue : csize));
+            GSF_LE_SET_GUINT32(hbuf, ZIP_HEADER_USIZE, (uint)(real_zip64 && !has_ddesc ? uint.MaxValue : usize));
+            GSF_LE_SET_GUINT16(hbuf, ZIP_HEADER_NAME_SIZE, (ushort)nlen);
+            GSF_LE_SET_GUINT16(hbuf, ZIP_HEADER_EXTRAS_SIZE, (ushort)extras.Count);
 
             // Stuff everything into buf so we can do just one write.
-            hbuf.AddRange(extras);
-            hbuf.AddRange(Encoding.ASCII.GetBytes(name));
+            List<byte> header = new List<byte>();
+            header.AddRange(hbuf);
+            header.AddRange(extras);
+            header.AddRange(Encoding.ASCII.GetBytes(name));
 
-            bool ret = Sink.Write(hbuf.Count, hbuf.ToArray());
+            bool ret = Sink.Write(header.Count, header.ToArray());
             if (real_zip64)
                 dirent.Zip64 = true;
 
@@ -784,7 +798,7 @@ namespace LibGSF.Output
         /// </summary>
         private bool DataDescriptorWrite()
         {
-            List<byte> buf = new List<byte>(Math.Max(ZIP_DDESC_SIZE, ZIP_DDESC64_SIZE));
+            byte[] buf = new byte[Math.Max(ZIP_DDESC_SIZE, ZIP_DDESC64_SIZE)];
             GsfZipDirectoryEntry dirent = VDir.DirectoryEntry;
             int size;
 
@@ -792,22 +806,22 @@ namespace LibGSF.Output
 
             if (dirent.Zip64 != false)
             {
-                buf.AddRange(BitConverter.GetBytes((uint)(ZIP_DDESC64_SIGNATURE)));
-                buf.AddRange(BitConverter.GetBytes((uint)(dirent.CRC32)));
-                buf.AddRange(BitConverter.GetBytes((ulong)(dirent.CompressedSize)));
-                buf.AddRange(BitConverter.GetBytes((ulong)(dirent.UncompressedSize)));
+                GSF_LE_SET_GUINT32(buf, 0, ZIP_DDESC64_SIGNATURE);
+                GSF_LE_SET_GUINT32(buf, ZIP_DDESC64_CRC32, dirent.CRC32);
+                GSF_LE_SET_GUINT64(buf, ZIP_DDESC64_CSIZE, (ulong)dirent.CompressedSize);
+                GSF_LE_SET_GUINT64(buf, ZIP_DDESC64_USIZE, (ulong)dirent.UncompressedSize);
                 size = ZIP_DDESC64_SIZE;
             }
             else
             {
-                buf.AddRange(BitConverter.GetBytes((uint)(ZIP_DDESC_SIGNATURE)));
-                buf.AddRange(BitConverter.GetBytes((uint)(dirent.CRC32)));
-                buf.AddRange(BitConverter.GetBytes((uint)(dirent.CompressedSize)));
-                buf.AddRange(BitConverter.GetBytes((uint)(dirent.UncompressedSize)));
+                GSF_LE_SET_GUINT32(buf, 0, ZIP_DDESC_SIGNATURE);
+                GSF_LE_SET_GUINT32(buf, ZIP_DDESC_CRC32, dirent.CRC32);
+                GSF_LE_SET_GUINT32(buf, ZIP_DDESC_CSIZE, (uint)dirent.CompressedSize);
+                GSF_LE_SET_GUINT32(buf, ZIP_DDESC_USIZE, (uint)dirent.UncompressedSize);
                 size = ZIP_DDESC_SIZE;
             }
 
-            if (!Sink.Write(size, buf.ToArray()))
+            if (!Sink.Write(size, buf))
                 return false;
 
             return true;

@@ -25,6 +25,7 @@ using System.IO;
 using System.Text;
 using ComponentAce.Compression.Libs.zlib;
 using static ComponentAce.Compression.Libs.zlib.zlibConst;
+using static LibGSF.GsfUtils;
 
 namespace LibGSF.Output
 {
@@ -174,11 +175,11 @@ namespace LibGSF.Output
 
                 if (!Raw)
                 {
-                    List<byte> buf = new List<byte>();
+                    byte[] buf = new byte[8];
 
-                    buf.AddRange(BitConverter.GetBytes((uint)(CRC)));
-                    buf.AddRange(BitConverter.GetBytes((uint)(ISize)));
-                    if (!Sink.Write(8, buf.ToArray()))
+                    GSF_LE_SET_GUINT32(buf, 0, CRC);
+                    GSF_LE_SET_GUINT32(buf, 4, (uint)(ISize));
+                    if (!Sink.Write(8, buf))
                         return false;
                 }
             }
@@ -214,7 +215,7 @@ namespace LibGSF.Output
 
         private bool OutputHeader()
         {
-            List<byte> buf = new List<byte>(3 + 1 + 4 + 2);
+            byte[] buf = new byte[3 + 1 + 4 + 2];
 
             DateTime? modtime = ModTime;
             ulong mtime = (ulong)(modtime != null ? new DateTimeOffset(modtime.Value).ToUnixTimeSeconds() : 0);
@@ -223,14 +224,13 @@ namespace LibGSF.Output
             // FIXME: What to do about gz extension ... ?
             int nlen = 0;  // name ? strlen (name) : 0;
 
-            buf.AddRange(new byte[] { 0x1f, 0x8b, 0x08 });
-
+            Array.Copy(new byte[] { 0x1f, 0x8b, 0x08 }, buf, 3);
             if (nlen > 0)
-                buf.Add(GZIP_ORIGINAL_NAME);
+                buf[3] = GZIP_ORIGINAL_NAME;
 
-            buf.AddRange(BitConverter.GetBytes((uint)(mtime)));
-            buf.Add(3); // UNIX
-            bool ret = Sink.Write(buf.Count, buf.ToArray());
+            GSF_LE_SET_GUINT32(buf, 4, (uint)mtime);
+            buf[9] = 3; // UNIX
+            bool ret = Sink.Write(buf.Length, buf);
             if (ret && name != null && nlen > 0)
                 ret = Sink.Write(nlen, Encoding.ASCII.GetBytes(name));
 

@@ -26,6 +26,7 @@ using System.Linq;
 using System.Text;
 using LibGSF.Input;
 using static LibGSF.GsfMSOleImpl;
+using static LibGSF.GsfUtils;
 
 namespace LibGSF.Output
 {
@@ -194,18 +195,12 @@ namespace LibGSF.Output
             byte[] buf = Enumerable.Repeat<byte>(0xFF, OLE_HEADER_SIZE).ToArray();
             Array.Copy(default_header, buf, default_header.Length);
 
-            byte[] temp = BitConverter.GetBytes((ushort)ole.BigBlock.Shift);
-            Array.Copy(temp, 0, buf, OLE_HEADER_BB_SHIFT, temp.Length);
-
-            temp = BitConverter.GetBytes((ushort)ole.SmallBlock.Shift);
-            Array.Copy(temp, 0, buf, OLE_HEADER_SB_SHIFT, temp.Length);
+            GSF_LE_SET_GUINT16(buf, OLE_HEADER_BB_SHIFT, (ushort)ole.BigBlock.Shift);
+            GSF_LE_SET_GUINT16(buf, OLE_HEADER_SB_SHIFT, (ushort)ole.SmallBlock.Shift);
 
             // 4k sector OLE files seen in the wild have version 4
             if (ole.BigBlock.Size == 4096)
-            {
-                BitConverter.GetBytes((ushort)4);
-                Array.Copy(temp, 0, buf, OLE_HEADER_MAJOR_VER, temp.Length);
-            }
+                GSF_LE_SET_GUINT16(buf, OLE_HEADER_MAJOR_VER, 4);
 
             sink.Write(OLE_HEADER_SIZE, buf);
 
@@ -433,7 +428,7 @@ namespace LibGSF.Output
         /// Write <paramref name="clsid"/> to the directory associated with ole.
         /// </summary>
         /// <param name="clsid">Identifier (often a GUID in MS Windows apps)</param>
-        /// <returns>true on success.</returns>
+        /// <returns>True on success.</returns>
         public bool SetClassID(byte[] clsid)
         {
             if (Type != MSOleOutfileType.MSOLE_DIR)
@@ -661,38 +656,28 @@ namespace LibGSF.Output
                     // Be wary about endianness
                     for (int j = 0; j < name_len; j++)
                     {
-                        byte[] nameUtf16Temp = BitConverter.GetBytes((ushort)nameUtf16[j]);
-                        Array.Copy(nameUtf16Temp, 0, buf, j * 2, 2);
+                        GSF_LE_SET_GUINT16(buf, j * 2, nameUtf16[j]);
                     }
 
                     name_len++;
                 }
 
-                byte[] writeTemp = BitConverter.GetBytes((ushort)(name_len * 2));
-                Array.Copy(writeTemp, 0, buf, DIRENT_NAME_LEN, writeTemp.Length);
+                GSF_LE_SET_GUINT16(buf, DIRENT_NAME_LEN, (ushort)(name_len * 2));
 
                 if (child.Root == child)
                 {
-                    buf[DIRENT_TYPE] = DIRENT_TYPE_ROOTDIR;
-
-                    writeTemp = BitConverter.GetBytes((uint)((sb_data_size > 0) ? (uint)sb_data_start : BAT_MAGIC_END_OF_CHAIN));
-                    Array.Copy(writeTemp, 0, buf, DIRENT_FIRSTBLOCK, writeTemp.Length);
-
-                    writeTemp = BitConverter.GetBytes((uint)(sb_data_size));
-                    Array.Copy(writeTemp, 0, buf, DIRENT_FILE_SIZE, writeTemp.Length);
+                    GSF_LE_SET_GUINT8(buf, DIRENT_TYPE, DIRENT_TYPE_ROOTDIR);
+                    GSF_LE_SET_GUINT32(buf, DIRENT_FIRSTBLOCK, (sb_data_size > 0) ? (uint)sb_data_start : BAT_MAGIC_END_OF_CHAIN);
+                    GSF_LE_SET_GUINT32(buf, DIRENT_FILE_SIZE, (uint)sb_data_size);
 
                     // Write the class id
                     Array.Copy(child.ClassID, 0, buf, DIRENT_CLSID, child.ClassID.Length);
                 }
                 else if (child.Type == MSOleOutfileType.MSOLE_DIR)
                 {
-                    buf[DIRENT_TYPE] = DIRENT_TYPE_DIR;
-
-                    writeTemp = BitConverter.GetBytes((uint)(BAT_MAGIC_END_OF_CHAIN));
-                    Array.Copy(writeTemp, 0, buf, DIRENT_FIRSTBLOCK, writeTemp.Length);
-
-                    writeTemp = BitConverter.GetBytes((uint)(0));
-                    Array.Copy(writeTemp, 0, buf, DIRENT_FILE_SIZE, writeTemp.Length);
+                    GSF_LE_SET_GUINT8(buf, DIRENT_TYPE, DIRENT_TYPE_DIR);
+                    GSF_LE_SET_GUINT32(buf, DIRENT_FIRSTBLOCK, BAT_MAGIC_END_OF_CHAIN);
+                    GSF_LE_SET_GUINT32(buf, DIRENT_FILE_SIZE, 0);
 
                     // Write the class id
                     Array.Copy(child.ClassID, 0, buf, DIRENT_CLSID, child.ClassID.Length);
@@ -703,20 +688,15 @@ namespace LibGSF.Output
                     if (size != child.Parent.CurrentSize)
                         Console.Error.WriteLine("File too big");
 
-                    buf[DIRENT_TYPE] = DIRENT_TYPE_FILE;
-
-                    writeTemp = BitConverter.GetBytes((uint)(child.FirstBlock));
-                    Array.Copy(writeTemp, 0, buf, DIRENT_FIRSTBLOCK, writeTemp.Length);
-
-                    writeTemp = BitConverter.GetBytes((uint)(size));
-                    Array.Copy(writeTemp, 0, buf, DIRENT_FILE_SIZE, writeTemp.Length);
+                    GSF_LE_SET_GUINT8(buf, DIRENT_TYPE, DIRENT_TYPE_FILE);
+                    GSF_LE_SET_GUINT32(buf, DIRENT_FIRSTBLOCK, (uint)child.FirstBlock);
+                    GSF_LE_SET_GUINT32(buf, DIRENT_FILE_SIZE, size);
                 }
 
-                writeTemp = BitConverter.GetBytes((ulong)(child.ModTime?.ToFileTime() ?? 0));
-                Array.Copy(writeTemp, 0, buf, DIRENT_MODIFY_TIME, writeTemp.Length);
+                GSF_LE_SET_GUINT64(buf, DIRENT_MODIFY_TIME, (ulong)(child.ModTime?.ToFileTime() ?? 0));
 
                 // Make everything black (red == 0)
-                buf[DIRENT_COLOUR] = 1;
+                GSF_LE_SET_GUINT8(buf, DIRENT_COLOUR, 1);
 
                 GsfOutfileMSOle tmp = child.Container as GsfOutfileMSOle;
                 next = DIRENT_MAGIC_END;
@@ -739,11 +719,8 @@ namespace LibGSF.Output
                 }
 
                 // Make linked list rather than tree, only use next
-                writeTemp = BitConverter.GetBytes((uint)(DIRENT_MAGIC_END));
-                Array.Copy(writeTemp, 0, buf, DIRENT_PREV, writeTemp.Length);
-
-                writeTemp = BitConverter.GetBytes((uint)(next));
-                Array.Copy(writeTemp, 0, buf, DIRENT_NEXT, writeTemp.Length);
+                GSF_LE_SET_GUINT32(buf, DIRENT_PREV, DIRENT_MAGIC_END);
+                GSF_LE_SET_GUINT32(buf, DIRENT_NEXT, next);
 
                 uint child_index = DIRENT_MAGIC_END;
                 if (child.Type == MSOleOutfileType.MSOLE_DIR && child.Content_Dir_Children != null)
@@ -752,8 +729,7 @@ namespace LibGSF.Output
                     child_index = (uint)first.ChildIndex;
                 }
 
-                writeTemp = BitConverter.GetBytes((uint)(child_index));
-                Array.Copy(writeTemp, 0, buf, DIRENT_CHILD, writeTemp.Length);
+                GSF_LE_SET_GUINT32(buf, DIRENT_CHILD, child_index);
 
                 Sink.Write(DIRENT_SIZE, buf);
             }
@@ -830,40 +806,27 @@ namespace LibGSF.Output
             if (BigBlock.Size == 4096)
             {
                 // Set _cSectDir for 4k sector files
-                outerTemp = BitConverter.GetBytes((uint)(num_dirent_blocks));
-                Array.Copy(outerTemp, 0, buf, 0, outerTemp.Length);
-
+                GSF_LE_SET_GUINT32(buf, 0, (uint)num_dirent_blocks);
                 Sink.Seek(OLE_HEADER_CSECTDIR, SeekOrigin.Begin);
                 Sink.Write(4, buf);
             }
 
+            GSF_LE_SET_GUINT32(buf, 0, (uint)num_bat);
+            GSF_LE_SET_GUINT32(buf, 4, (uint)dirent_start);
             Sink.Seek(OLE_HEADER_NUM_BAT, SeekOrigin.Begin);
-            outerTemp = BitConverter.GetBytes((uint)(num_bat));
-            Array.Copy(outerTemp, 0, buf, 0, outerTemp.Length);
-            Sink.Write(4, buf);
-            outerTemp = BitConverter.GetBytes((uint)(dirent_start));
-            Array.Copy(outerTemp, 0, buf, 0, outerTemp.Length);
-            Sink.Write(4, buf);
+            Sink.Write(8, buf);
 
+            GSF_LE_SET_GUINT32(buf, 0x0, (num_sbat > 0) ? (uint)sbat_start : BAT_MAGIC_END_OF_CHAIN);
+            GSF_LE_SET_GUINT32(buf, 0x4, (uint)num_sbat);
+            GSF_LE_SET_GUINT32(buf, 0x8, xbat_pos);
+            GSF_LE_SET_GUINT32(buf, 0xc, (uint)num_xbat);
             Sink.Seek(OLE_HEADER_SBAT_START, SeekOrigin.Begin);
-            outerTemp = BitConverter.GetBytes((uint)((num_sbat > 0) ? (uint)sbat_start : BAT_MAGIC_END_OF_CHAIN));
-            Array.Copy(outerTemp, 0, buf, 0, outerTemp.Length);
-            Sink.Write(4, buf);
-            outerTemp = BitConverter.GetBytes((uint)(num_sbat));
-            Array.Copy(outerTemp, 0, buf, 0, outerTemp.Length);
-            Sink.Write(4, buf);
-            outerTemp = BitConverter.GetBytes((uint)(xbat_pos));
-            Array.Copy(outerTemp, 0, buf, 0, outerTemp.Length);
-            Sink.Write(4, buf);
-            outerTemp = BitConverter.GetBytes((uint)(num_xbat));
-            Array.Copy(outerTemp, 0, buf, 0, outerTemp.Length);
-            Sink.Write(4, buf);
+            Sink.Write(0x10, buf);
 
             // Write initial Meta-BAT
             for (int i = 0; i < blocks; i++)
             {
-                outerTemp = BitConverter.GetBytes((uint)(bat_start + i));
-                Array.Copy(outerTemp, 0, buf, 0, outerTemp.Length);
+                GSF_LE_SET_GUINT32(buf, 0, (uint)(bat_start + i));
                 Sink.Write(BAT_INDEX_SIZE, buf);
             }
 
@@ -878,8 +841,7 @@ namespace LibGSF.Output
                     blocks = (int)((num_bat > metabat_size) ? metabat_size : num_bat);
                     for (int j = 0; j < blocks; j++)
                     {
-                        outerTemp = BitConverter.GetBytes((uint)(bat_start + j));
-                        Array.Copy(outerTemp, 0, buf, 0, outerTemp.Length);
+                        GSF_LE_SET_GUINT32(buf, 0, (uint)(bat_start + j));
                         Sink.Write(BAT_INDEX_SIZE, buf);
                     }
 
@@ -893,8 +855,7 @@ namespace LibGSF.Output
                         xbat_pos++;
                     }
 
-                    outerTemp = BitConverter.GetBytes((uint)(xbat_pos));
-                    Array.Copy(outerTemp, 0, buf, 0, outerTemp.Length);
+                    GSF_LE_SET_GUINT32(buf, 0, xbat_pos);
                     Sink.Write(BAT_INDEX_SIZE, buf);
                 }
             }

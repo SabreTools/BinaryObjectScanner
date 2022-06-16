@@ -28,6 +28,7 @@ using System.Text;
 using LibGSF.Input;
 using LibGSF.Output;
 using static LibGSF.GsfMetaNames;
+using static LibGSF.GsfUtils;
 
 namespace LibGSF
 {
@@ -784,7 +785,7 @@ namespace LibGSF
                 if (!NEED_RECS(4, 1, dataPtr, data_end, ref bytes_needed))
                     return null;
 
-                uint n = BitConverter.ToUInt32(data, dataPtr);
+                uint n = GSF_LE_GET_GUINT32(data, dataPtr);
                 dataPtr += bytes_needed;
 
                 int size1 = PropMinSize(type);
@@ -826,7 +827,7 @@ namespace LibGSF
                     if (!NEED_RECS(2, 1, dataPtr, data_end, ref bytes_needed))
                         return null;
 
-                    res = BitConverter.ToInt16(data, dataPtr);
+                    res = GSF_LE_GET_GINT16(data, dataPtr);
                     dataPtr += bytes_needed;
                     break;
 
@@ -835,7 +836,7 @@ namespace LibGSF
                     if (!NEED_RECS(4, 1, dataPtr, data_end, ref bytes_needed))
                         return null;
 
-                    res = BitConverter.ToInt32(data, dataPtr);
+                    res = GSF_LE_GET_GINT32(data, dataPtr);
                     dataPtr += bytes_needed;
                     break;
 
@@ -844,7 +845,7 @@ namespace LibGSF
                     if (!NEED_RECS(4, 1, dataPtr, data_end, ref bytes_needed))
                         return null;
 
-                    res = BitConverter.ToSingle(data, dataPtr);
+                    res = GSF_LE_GET_FLOAT(data, dataPtr);
                     dataPtr += bytes_needed;
                     break;
 
@@ -853,7 +854,7 @@ namespace LibGSF
                     if (!NEED_RECS(8, 1, dataPtr, data_end, ref bytes_needed))
                         return null;
 
-                    res = BitConverter.ToDouble(data, dataPtr);
+                    res = GSF_LE_GET_DOUBLE(data, dataPtr);
                     dataPtr += bytes_needed;
                     break;
 
@@ -863,7 +864,7 @@ namespace LibGSF
                         return null;
 
                     // CHEAT : just store as an int64 for now
-                    res = BitConverter.ToInt64(data, dataPtr);
+                    res = GSF_LE_GET_GINT64(data, dataPtr);
                     break;
 
                 // 64-bit floating-point number representing the number of days
@@ -905,7 +906,7 @@ namespace LibGSF
                         return null;
 
                     res = null;
-                    type = (GsfMSOLEVariantType)BitConverter.ToUInt32(data, dataPtr);
+                    type = (GsfMSOLEVariantType)GSF_LE_GET_GUINT32(data, dataPtr);
                     dataPtr += bytes_needed;
                     return PropertyParse(type, data, ref dataPtr, data_end);
 
@@ -914,7 +915,7 @@ namespace LibGSF
                     if (!NEED_RECS(1, 1, dataPtr, data_end, ref bytes_needed))
                         return null;
 
-                    res = data[dataPtr];
+                    res = GSF_LE_GET_GUINT8(data, dataPtr);
                     dataPtr += bytes_needed;
                     break;
 
@@ -923,7 +924,7 @@ namespace LibGSF
                     if (!NEED_RECS(1, 1, dataPtr, data_end, ref bytes_needed))
                         return null;
 
-                    res = (sbyte)data[dataPtr];
+                    res = GSF_LE_GET_GINT8(data, dataPtr);
                     dataPtr += bytes_needed;
                     break;
 
@@ -932,7 +933,7 @@ namespace LibGSF
                     if (!NEED_RECS(2, 1, dataPtr, data_end, ref bytes_needed))
                         return null;
 
-                    res = BitConverter.ToUInt16(data, dataPtr);
+                    res = GSF_LE_GET_GUINT16(data, dataPtr);
                     dataPtr += bytes_needed;
                     break;
 
@@ -941,7 +942,7 @@ namespace LibGSF
                     if (!NEED_RECS(4, 1, dataPtr, data_end, ref bytes_needed))
                         return null;
 
-                    res = BitConverter.ToUInt32(data, dataPtr);
+                    res = GSF_LE_GET_GUINT32(data, dataPtr);
                     dataPtr += bytes_needed;
                     break;
 
@@ -950,7 +951,7 @@ namespace LibGSF
                     if (!NEED_RECS(8, 1, dataPtr, data_end, ref bytes_needed))
                         return null;
 
-                    res = BitConverter.ToInt64(data, dataPtr);
+                    res = GSF_LE_GET_GINT64(data, dataPtr);
                     dataPtr += bytes_needed;
                     break;
 
@@ -959,7 +960,7 @@ namespace LibGSF
                     if (!NEED_RECS(8, 1, dataPtr, data_end, ref bytes_needed))
                         return null;
 
-                    res = BitConverter.ToUInt64(data, dataPtr);
+                    res = GSF_LE_GET_GUINT64(data, dataPtr);
                     dataPtr += bytes_needed;
                     break;
 
@@ -972,7 +973,7 @@ namespace LibGSF
                         if (!NEED_RECS(4, 1, dataPtr, data_end, ref bytes_needed))
                             return null;
 
-                        len = BitConverter.ToUInt32(data, dataPtr);
+                        len = GSF_LE_GET_GUINT32(data, dataPtr);
                         dataPtr += bytes_needed;
 
                         if (len >= 0x10000)
@@ -1024,7 +1025,7 @@ namespace LibGSF
                     if (!NEED_RECS(4, 1, dataPtr, data_end, ref bytes_needed))
                         return null;
 
-                    len = BitConverter.ToUInt32(data, dataPtr);
+                    len = GSF_LE_GET_GUINT32(data, dataPtr);
                     dataPtr += bytes_needed;
 
                     if (!NEED_RECS(len, 2, dataPtr, data_end, ref bytes_needed))
@@ -1070,7 +1071,7 @@ namespace LibGSF
                             return null;
 
                         // ft * 100ns since Jan 1 1601
-                        ulong ft = BitConverter.ToUInt64(data, dataPtr);
+                        ulong ft = GSF_LE_GET_GUINT64(data, dataPtr);
                         res = DateTime.FromFileTime((long)ft);
                         dataPtr += bytes_needed;
                         break;
@@ -1206,7 +1207,7 @@ namespace LibGSF
             }
 
             int dataPtr = 0; // data[0]
-            GsfMSOLEVariantType type = (GsfMSOLEVariantType)BitConverter.ToUInt32(data, dataPtr);
+            GsfMSOLEVariantType type = (GsfMSOLEVariantType)GSF_LE_GET_GUINT32(data, dataPtr);
             dataPtr += 4;
 
             // Dictionary is magic
@@ -1228,8 +1229,8 @@ namespace LibGSF
                     if (end - dataPtr < 8)
                         return false;
 
-                    id = BitConverter.ToUInt32(data, dataPtr);
-                    len = BitConverter.ToUInt32(data, dataPtr + 4);
+                    id = GSF_LE_GET_GUINT32(data, dataPtr);
+                    len = GSF_LE_GET_GUINT32(data, dataPtr + 4);
 
                     if (len >= 0x10000)
                         return false;
@@ -1341,7 +1342,7 @@ namespace LibGSF
                 return false;
             }
 
-            uint clip_size = BitConverter.ToUInt32(data, dataPtr);
+            uint clip_size = GSF_LE_GET_GUINT32(data, dataPtr);
 
             if (clip_size < 4)
             {
@@ -1360,7 +1361,7 @@ namespace LibGSF
                 return false;
             }
 
-            GsfClipFormat clip_format = (GsfClipFormat)BitConverter.ToInt32(data, dataPtr);
+            GsfClipFormat clip_format = (GsfClipFormat)GSF_LE_GET_GINT32(data, dataPtr);
             dataPtr += 4;
 
             switch (clip_format)
@@ -1631,7 +1632,8 @@ namespace LibGSF
             long baseOffset = Output.CurrentOffset;
 
             // Skip past the size+count and id/offset pairs
-            byte[] buf = BitConverter.GetBytes((uint)0);
+            byte[] buf = new byte[8];
+            GSF_LE_SET_GUINT32(buf, 0, 0);
             for (int j = 0; j < 1 + 1 + 2 * count; j++)
             {
                 Output.Write(4, buf);
@@ -1647,9 +1649,9 @@ namespace LibGSF
             {
                 offsets[0].Id = 1;
                 offsets[0].Offset = Output.CurrentOffset;
-                buf = BitConverter.GetBytes((uint)GsfMSOLEVariantType.VT_I2);
-                byte[] buf2 = BitConverter.GetBytes(CodePage);
-                Output.Write(4, buf); Output.Write(4, buf2);
+                GSF_LE_SET_GUINT32(buf, 0, (uint)GsfMSOLEVariantType.VT_I2);
+                GSF_LE_SET_GUINT32(buf, 4, (uint)CodePage);
+                Output.Write(8, buf);
                 i++;
             }
 
@@ -1658,7 +1660,7 @@ namespace LibGSF
             {
                 offsets[1].Id = 0;
                 offsets[1].Offset = Output.CurrentOffset;
-                buf = BitConverter.GetBytes((uint)Dict.Count);
+                GSF_LE_SET_GUINT32(buf, 4, (uint)Dict.Count);
                 Output.Write(4, buf);
                 foreach (var kvp in Dict)
                 {
@@ -1722,17 +1724,15 @@ namespace LibGSF
 
             long len = Output.CurrentOffset - baseOffset;
             Output.Seek(baseOffset, SeekOrigin.Begin);
-            buf = BitConverter.GetBytes(len);
-            Output.Write(4, buf);
-            buf = BitConverter.GetBytes(count);
-            Output.Write(4, buf);
+            GSF_LE_SET_GUINT32(buf, 0, (uint)len);
+            GSF_LE_SET_GUINT32(buf, 0, count);
+            Output.Write(8, buf);
 
             for (i = 0; i < count; i++)
             {
-                buf = BitConverter.GetBytes(offsets[i].Id);
-                Output.Write(4, buf);
-                buf = BitConverter.GetBytes(offsets[i].Offset - baseOffset);
-                Output.Write(4, buf);
+                GSF_LE_SET_GUINT32(buf, 0, offsets[i].Id);
+                GSF_LE_SET_GUINT32(buf, 0, (uint)(offsets[i].Offset - baseOffset));
+                Output.Write(8, buf);
             }
 
             return Output.Seek(0, SeekOrigin.End);
@@ -1860,7 +1860,10 @@ namespace LibGSF
 
         private void WriteDictionaryEntry(string name, uint id)
         {
-            byte[] buf = BitConverter.GetBytes(id);
+            byte[] buf = new byte[4];
+
+            // TODO: `id` is a pointer not a value
+            GSF_LE_SET_GUINT32(buf, 0, id);
             Output.Write(4, buf);
             WriteString(name);
         }
@@ -1877,7 +1880,7 @@ namespace LibGSF
             GsfMSOLEVariantType type = ValueToMSOLEVariant(value, map);
             if (!suppress_type)
             {
-                buf = BitConverter.GetBytes((uint)type);
+                GSF_LE_SET_GUINT32(buf, 0, (uint)type);
                 Output.Write(4, buf);
             }
 
@@ -1887,7 +1890,7 @@ namespace LibGSF
                 int n = vector.Length;
                 bool res;
 
-                buf = BitConverter.GetBytes(n);
+                GSF_LE_SET_GINT32(buf, 0, n);
                 res = Output.Write(4, buf);
                 for (int i = 0; i < n; i++)
                 {
@@ -1902,36 +1905,36 @@ namespace LibGSF
             {
                 case GsfMSOLEVariantType.VT_BOOL:
                     if ((bool)value)
-                        buf = BitConverter.GetBytes(0xffffffff);
+                        GSF_LE_SET_GUINT32(buf, 0, 0xffffffff);
                     else
-                        buf = BitConverter.GetBytes(0);
+                        GSF_LE_SET_GINT32(buf, 0, 0);
 
                     return Output.Write(4, buf);
 
                 case GsfMSOLEVariantType.VT_UI1:
-                    buf = BitConverter.GetBytes((int)(byte)value);
+                    GSF_LE_SET_GUINT32(buf, 0, (uint)value);
                     return Output.Write(4, buf);
 
                 case GsfMSOLEVariantType.VT_I2:
-                    buf = BitConverter.GetBytes((short)value);
-                    byte[] buf2 = BitConverter.GetBytes((short)0);
-                    return Output.Write(2, buf) && Output.Write(2, buf2);
+                    GSF_LE_SET_GINT16(buf, 0, (short)value);
+                    GSF_LE_SET_GUINT16(buf, 2, 0);
+                    return Output.Write(4, buf);
 
                 case GsfMSOLEVariantType.VT_I4:
-                    buf = BitConverter.GetBytes((int)value);
+                    GSF_LE_SET_GINT32(buf, 0, (int)value);
                     return Output.Write(4, buf);
 
                 case GsfMSOLEVariantType.VT_UI2:
                 case GsfMSOLEVariantType.VT_UI4:
-                    buf = BitConverter.GetBytes((uint)value);
+                    GSF_LE_SET_GUINT32(buf, 0, (uint)value);
                     return Output.Write(4, buf);
 
                 case GsfMSOLEVariantType.VT_R4:
-                    buf = BitConverter.GetBytes((float)value);
+                    GSF_LE_SET_FLOAT(buf, 0, (float)value);
                     return Output.Write(4, buf);
 
                 case GsfMSOLEVariantType.VT_R8:
-                    buf = BitConverter.GetBytes((double)value);
+                    GSF_LE_SET_DOUBLE(buf, 0, (double)value);
                     return Output.Write(8, buf);
 
                 case GsfMSOLEVariantType.VT_LPSTR:
@@ -1940,8 +1943,7 @@ namespace LibGSF
                 case GsfMSOLEVariantType.VT_FILETIME:
                     {
                         DateTime ts = (DateTime)value;
-                        ulong ft = (ulong)ts.ToFileTime();
-                        buf = BitConverter.GetBytes(ft);
+                        GSF_LE_SET_GUINT64(buf, 0, (ulong)ts.ToFileTime());
                         return Output.Write(8, buf);
                     }
 
@@ -1985,13 +1987,13 @@ namespace LibGSF
             }
 
             // *Bytes*, not characters, including the termination, but not the padding.
-            buf = BitConverter.GetBytes(bytes_written + CharSize);
+            GSF_LE_SET_GUINT32(buf, 0, (uint)(bytes_written + CharSize));
             res = Output.Write(4, buf);
 
             res = res && Output.Write(bytes_written, ctxt);
 
-            buf = BitConverter.GetBytes((uint)0);
-            res = res && Output.Write((int)CharSize, buf);
+            GSF_LE_SET_GUINT32(buf, 0, 0);
+            res = res && Output.Write(CharSize, buf);
 
             if (CharSize > 1)
             {

@@ -134,7 +134,7 @@ namespace LibGSF.Output
             return false;
         }
 
-        /// <returns>true if the wrapping succeeded.</returns>
+        /// <returns>True if the wrapping succeeded.</returns>
         public bool Wrap(object wrapper)
         {
             if (wrapper == null)
@@ -164,7 +164,7 @@ namespace LibGSF.Output
         /// </summary>
         /// <param name="format">The printf-style format string</param>
         /// <param name="va">The arguments for @format</param>
-        /// <returns>true if successful, false if not</returns>
+        /// <returns>True if successful, false if not</returns>
         public bool PrintF(string format, params string[] va) => VPrintF(format, va) >= 0;
 
         /// <summary>

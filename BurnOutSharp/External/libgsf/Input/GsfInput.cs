@@ -26,6 +26,7 @@ using System.Linq;
 using System.Text;
 using LibGSF.Output;
 using static LibGSF.GsfMSOleUtils;
+using static LibGSF.GsfUtils;
 
 namespace LibGSF.Input
 {
@@ -113,7 +114,7 @@ namespace LibGSF.Input
         /// <summary>
         /// Are we at the end of the file?
         /// </summary>
-        /// <returns>true if the input is at the eof.</returns>
+        /// <returns>True if the input is at the eof.</returns>
         public bool EOF() => CurrentOffset >= Size;
 
         /// <summary>
@@ -174,7 +175,7 @@ namespace LibGSF.Input
         /// Determines whether the offset is relative to the beginning or
         /// the end of the stream, or to the current location.
         /// </param>
-        /// <returns>true on error.</returns>
+        /// <returns>True on error.</returns>
         public virtual bool Seek(long offset, SeekOrigin whence)
         {
             long pos = offset;
@@ -203,7 +204,7 @@ namespace LibGSF.Input
         }
 
         /// <param name="filename">The (fs-sys encoded) filename</param>
-        /// <returns>true if the assignment was ok.</returns>
+        /// <returns>True if the assignment was ok.</returns>
         public bool SetNameFromFilename(string filename)
         {
             string name = null;
@@ -222,7 +223,7 @@ namespace LibGSF.Input
         /// Emulate forward seeks by reading.
         /// </summary>
         /// <param name="pos">Absolute position to seek to</param>
-        /// <returns>true if the emulation failed.</returns>
+        /// <returns>True if the emulation failed.</returns>
         public bool SeekEmulate(long pos)
         {
             if (pos < CurrentOffset)
@@ -245,7 +246,7 @@ namespace LibGSF.Input
         /// output.Seek(0, SeekOrigin.Begin) first, if applicable.
         /// </summary>
         /// <param name="output">A non-null GsfOutput</param>
-        /// <returns>true on success</returns>
+        /// <returns>True on success</returns>
         public bool Copy(GsfOutput output)
         {
             if (output == null)
@@ -389,7 +390,7 @@ namespace LibGSF.Input
                                 shift = 4;
                         }
 
-                        ushort token = BitConverter.ToUInt16(tmp, 0);
+                        ushort token = GSF_LE_GET_GUINT16(tmp, 0);
                         ushort len = (ushort)((token & ((1 << (int)shift) - 1)) + 3);
                         uint distance = (uint)(token >> (int)shift);
                         clean = true;
@@ -445,7 +446,6 @@ namespace LibGSF.Input
         /// <summary>
         /// Decompresses VBA stream.
         /// </summary>
-        /// <param name="input">Stream to read from</param>
         /// <param name="offset">Offset into it for start byte of compressed stream</param>
         /// <param name="size">Size of the returned array</param>
         /// <param name="add_null_terminator">Whenever add or not null at the end of array</param>
@@ -470,7 +470,7 @@ namespace LibGSF.Input
                 if (tmp == null)
                     break;
 
-                ushort chunk_hdr = BitConverter.ToUInt16(tmp, 0);
+                ushort chunk_hdr = GSF_LE_GET_GUINT16(tmp, 0);
                 offset += 2;
 
                 GsfInput chunk;

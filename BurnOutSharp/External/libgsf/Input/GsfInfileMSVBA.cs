@@ -30,6 +30,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using static LibGSF.GsfUtils;
 
 namespace LibGSF.Input
 {
@@ -251,8 +252,8 @@ namespace LibGSF.Input
                     return false;
                 }
 
-                tag = BitConverter.ToUInt16(inflated_data, ptr);
-                uint len = BitConverter.ToUInt32(inflated_data, ptr + 2);
+                tag = GSF_LE_GET_GUINT16(inflated_data, ptr);
+                uint len = GSF_LE_GET_GUINT32(inflated_data, ptr + 2);
 
                 ptr += 6;
                 if ((ptr + len) > end)
@@ -286,7 +287,7 @@ namespace LibGSF.Input
                             break;
                         }
 
-                        element_count = BitConverter.ToUInt16(inflated_data, ptr);
+                        element_count = GSF_LE_GET_GUINT16(inflated_data, ptr);
                         break;
 
                     // Dependencies
@@ -315,7 +316,7 @@ namespace LibGSF.Input
                             break;
                         }
 
-                        ExtractModuleSource(elem_stream, BitConverter.ToUInt32(inflated_data, ptr));
+                        ExtractModuleSource(elem_stream, GSF_LE_GET_GUINT32(inflated_data, ptr));
                         elem_stream = null;
                         element_count--;
                         break;

@@ -27,6 +27,7 @@ using System.IO;
 using System.Text;
 using ComponentAce.Compression.Libs.zlib;
 using static ComponentAce.Compression.Libs.zlib.zlibConst;
+using static LibGSF.GsfUtils;
 using static LibGSF.GsfZipImpl;
 
 namespace LibGSF.Input
@@ -394,7 +395,7 @@ namespace LibGSF.Input
 
                 for (int s = (int)(p + maplen - 1); (s >= p); s--, trailer_offset--)
                 {
-                    if (data[s] == sig1 && p + maplen - 1 - s > size - 2 && BitConverter.ToUInt32(data, s) == sig)
+                    if (data[s] == sig1 && p + maplen - 1 - s > size - 2 && GSF_LE_GET_GUINT32(data, s) == sig)
                         return --trailer_offset;
                 }
 
@@ -433,8 +434,8 @@ namespace LibGSF.Input
                     return null;
                 }
 
-                ExtraFieldTags ftyp = (ExtraFieldTags)BitConverter.ToUInt16(extra, extraPtr);
-                uint flen = BitConverter.ToUInt16(extra, extraPtr + 2);
+                ExtraFieldTags ftyp = (ExtraFieldTags)GSF_LE_GET_GUINT16(extra, extraPtr);
+                uint flen = GSF_LE_GET_GUINT16(extra, extraPtr + 2);
                 if (flen > elen - 4)
                 {
                     pflen = 0;
@@ -463,14 +464,14 @@ namespace LibGSF.Input
             byte[] data = header;
             if (Source.Seek(offset, SeekOrigin.Begin)
                 || Source.Read(ZIP_DIRENT_SIZE, header) != null
-                || BitConverter.ToUInt32(data, 0) != ZIP_DIRENT_SIGNATURE)
+                || GSF_LE_GET_GUINT32(data, 0) != ZIP_DIRENT_SIGNATURE)
             {
                 return null;
             }
 
-            ushort name_len = BitConverter.ToUInt16(header, ZIP_DIRENT_NAME_SIZE);
-            ushort extras_len = BitConverter.ToUInt16(header, ZIP_DIRENT_EXTRAS_SIZE);
-            ushort comment_len = BitConverter.ToUInt16(header, ZIP_DIRENT_COMMENT_SIZE);
+            ushort name_len = GSF_LE_GET_GUINT16(header, ZIP_DIRENT_NAME_SIZE);
+            ushort extras_len = GSF_LE_GET_GUINT16(header, ZIP_DIRENT_EXTRAS_SIZE);
+            ushort comment_len = GSF_LE_GET_GUINT16(header, ZIP_DIRENT_COMMENT_SIZE);
             int vlen = name_len + extras_len + comment_len;
 
             // Read variable part
@@ -482,36 +483,36 @@ namespace LibGSF.Input
             int extraPtr = 0; // extra[0];
             bool zip64 = (extra != null);
 
-            uint flags = BitConverter.ToUInt32(header, ZIP_DIRENT_FLAGS);
-            GsfZipCompressionMethod compression_method = (GsfZipCompressionMethod)BitConverter.ToUInt16(header, ZIP_DIRENT_COMPR_METHOD);
-            uint dostime = BitConverter.ToUInt32(header, ZIP_DIRENT_DOSTIME);
-            uint crc32 = BitConverter.ToUInt32(header, ZIP_DIRENT_CRC32);
-            long csize = BitConverter.ToUInt32(header, ZIP_DIRENT_CSIZE);
-            long usize = BitConverter.ToUInt32(header, ZIP_DIRENT_USIZE);
-            long off = BitConverter.ToUInt32(header, ZIP_DIRENT_OFFSET);
-            uint disk_start = BitConverter.ToUInt16(header, ZIP_DIRENT_DISKSTART);
+            uint flags = GSF_LE_GET_GUINT32(header, ZIP_DIRENT_FLAGS);
+            GsfZipCompressionMethod compression_method = (GsfZipCompressionMethod)GSF_LE_GET_GUINT16(header, ZIP_DIRENT_COMPR_METHOD);
+            uint dostime = GSF_LE_GET_GUINT32(header, ZIP_DIRENT_DOSTIME);
+            uint crc32 = GSF_LE_GET_GUINT32(header, ZIP_DIRENT_CRC32);
+            long csize = GSF_LE_GET_GUINT32(header, ZIP_DIRENT_CSIZE);
+            long usize = GSF_LE_GET_GUINT32(header, ZIP_DIRENT_USIZE);
+            long off = GSF_LE_GET_GUINT32(header, ZIP_DIRENT_OFFSET);
+            uint disk_start = GSF_LE_GET_GUINT16(header, ZIP_DIRENT_DISKSTART);
 
             if (usize == 0xffffffffu && elen >= 8)
             {
-                usize = (long)BitConverter.ToUInt64(extra, extraPtr);
+                usize = (long)GSF_LE_GET_GUINT64(extra, extraPtr);
                 extraPtr += 8;
                 elen -= 8;
             }
             if (csize == 0xffffffffu && elen >= 8)
             {
-                csize = (long)BitConverter.ToUInt64(extra, extraPtr);
+                csize = (long)GSF_LE_GET_GUINT64(extra, extraPtr);
                 extraPtr += 8;
                 elen -= 8;
             }
             if (off == 0xffffffffu && elen >= 8)
             {
-                off = (long)BitConverter.ToUInt64(extra, extraPtr);
+                off = (long)GSF_LE_GET_GUINT64(extra, extraPtr);
                 extraPtr += 8;
                 elen -= 8;
             }
             if (disk_start == 0xffffu && elen >= 4)
             {
-                disk_start = BitConverter.ToUInt32(extra, extraPtr);
+                disk_start = GSF_LE_GET_GUINT32(extra, extraPtr);
                 extraPtr += 4;
                 elen -= 4;
             }
@@ -557,7 +558,7 @@ namespace LibGSF.Input
         /// Read zip headers and do some sanity checking
         /// along the way.
         /// </summary>
-        /// <returns>true on error setting Err.</returns>
+        /// <returns>True on error setting Err.</returns>
         private bool ReadDirectoryEntries()
         {
             // Find and check the trailing header
@@ -577,17 +578,17 @@ namespace LibGSF.Input
 
             int data = ZIP_ZIP64_LOCATOR_SIZE; // locator + ZIP_ZIP64_LOCATOR_SIZE
 
-            ulong entries = BitConverter.ToUInt16(locator, data + ZIP_TRAILER_ENTRIES);
-            ulong dir_pos = BitConverter.ToUInt32(locator, data + ZIP_TRAILER_DIR_POS);
+            ulong entries = GSF_LE_GET_GUINT16(locator, data + ZIP_TRAILER_ENTRIES);
+            ulong dir_pos = GSF_LE_GET_GUINT32(locator, data + ZIP_TRAILER_DIR_POS);
 
-            if (BitConverter.ToUInt32(locator, 0) == ZIP_ZIP64_LOCATOR_SIGNATURE)
+            if (GSF_LE_GET_GUINT32(locator, 0) == ZIP_ZIP64_LOCATOR_SIGNATURE)
             {
                 Zip64 = true;
 
                 data = 0; // locator[0]
-                uint disk = BitConverter.ToUInt32(locator, data + ZIP_ZIP64_LOCATOR_DISK);
-                ulong zip64_eod_offset = BitConverter.ToUInt64(locator, data + ZIP_ZIP64_LOCATOR_OFFSET);
-                uint disks = BitConverter.ToUInt32(locator, data + ZIP_ZIP64_LOCATOR_DISKS);
+                uint disk = GSF_LE_GET_GUINT32(locator, data + ZIP_ZIP64_LOCATOR_DISK);
+                ulong zip64_eod_offset = GSF_LE_GET_GUINT64(locator, data + ZIP_ZIP64_LOCATOR_OFFSET);
+                uint disks = GSF_LE_GET_GUINT32(locator, data + ZIP_ZIP64_LOCATOR_DISKS);
 
                 if (disk != 0 || disks != 1)
                 {
@@ -602,14 +603,14 @@ namespace LibGSF.Input
                 }
 
                 locator = Source.Read(ZIP_TRAILER64_SIZE, null);
-                if (locator == null || BitConverter.ToUInt32(locator, data) != ZIP_TRAILER64_SIGNATURE)
+                if (locator == null || GSF_LE_GET_GUINT32(locator, data) != ZIP_TRAILER64_SIGNATURE)
                 {
                     Err = new Exception("Broken zip file structure");
                     return true;
                 }
 
-                entries = BitConverter.ToUInt64(locator, data + ZIP_TRAILER64_ENTRIES);
-                dir_pos = BitConverter.ToUInt64(locator, data + ZIP_TRAILER64_DIR_POS);
+                entries = GSF_LE_GET_GUINT64(locator, data + ZIP_TRAILER64_ENTRIES);
+                dir_pos = GSF_LE_GET_GUINT64(locator, data + ZIP_TRAILER64_DIR_POS);
             }
 
             Info = new ZipInfo()
@@ -651,7 +652,7 @@ namespace LibGSF.Input
         /// Read zip headers and do some sanity checking
         /// along the way.
         /// </summary>
-        /// <returns>true on error setting Err.</returns>
+        /// <returns>True on error setting Err.</returns>
         private bool InitInfo()
         {
             bool ret = ReadDirectoryEntries();
@@ -684,10 +685,10 @@ namespace LibGSF.Input
             {
                 err = "Error reading zip header";
             }
-            else if (BitConverter.ToUInt32(data, 0) != ZIP_HEADER_SIGNATURE)
+            else if (GSF_LE_GET_GUINT32(data, 0) != ZIP_HEADER_SIGNATURE)
             {
                 err = "Error incorrect zip header";
-                Console.Error.WriteLine("Header is 0x%x\n", BitConverter.ToUInt32(data, 0));
+                Console.Error.WriteLine("Header is 0x%x\n", GSF_LE_GET_GUINT32(data, 0));
                 Console.Error.WriteLine("Expected 0x%x\n", ZIP_HEADER_SIGNATURE);
             }
 
@@ -697,11 +698,11 @@ namespace LibGSF.Input
                 return true;
             }
 
-            uint name_len = BitConverter.ToUInt16(data, ZIP_HEADER_NAME_SIZE);
-            uint extras_len = BitConverter.ToUInt16(data, ZIP_HEADER_EXTRAS_SIZE);
+            uint name_len =   GSF_LE_GET_GUINT16(data, ZIP_HEADER_NAME_SIZE);
+            uint extras_len = GSF_LE_GET_GUINT16(data, ZIP_HEADER_EXTRAS_SIZE);
 
             dirent.DataOffset = dirent.Offset + ZIP_HEADER_SIZE + name_len + extras_len;
-            RestLen = dirent.UncompressedSize;
+            RestLen =  dirent.UncompressedSize;
             CRestLen = dirent.CompressedSize;
 
             if (dirent.CompressionMethod != GsfZipCompressionMethod.GSF_ZIP_STORED)

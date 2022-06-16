@@ -183,7 +183,7 @@ namespace LibGSF.Input
         /// Dumps structured blob @blob onto the <paramref name="container"/>.  Will fail if the output is
         /// not an Outfile and blob has multiple streams.
         /// </summary>
-        /// <returns>true on success.</returns>
+        /// <returns>True on success.</returns>
         public bool Write(GsfOutfile container)
         {
             if (container == null)

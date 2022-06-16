@@ -27,6 +27,7 @@ using System.Text;
 using LibGSF.Input;
 using LibGSF.Output;
 using static LibGSF.GsfMSOleUtils;
+using static LibGSF.GsfUtils;
 
 namespace LibGSF
 {
@@ -195,11 +196,11 @@ namespace LibGSF
              *   08 - 23	Class Identifier	Usually Format ID
              *   24 - 27	Section count		Should be at least 1
              */
-            ushort os = BitConverter.ToUInt16(data, 6);
-            ushort version = BitConverter.ToUInt16(data, 2);
+            ushort os = GSF_LE_GET_GUINT16(data, 6);
+            ushort version = GSF_LE_GET_GUINT16(data, 2);
             uint num_sections = BitConverter.ToUInt32(data, 24);
 
-            if (BitConverter.ToUInt16(data, 0) != 0xfffe
+            if (GSF_LE_GET_GUINT16(data, 0) != 0xfffe
                 || (version != 0 && version != 1)
                 || os > 2
                 || num_sections > input.Size / 20
@@ -408,7 +409,7 @@ namespace LibGSF
 
         /// <summary></summary>
         /// <param name="doc_not_component">A kludge to differentiate DocumentSummary from Summary</param>
-        /// <returns>true on success</returns>
+        /// <returns>True on success</returns>
         /// <remarks>Since: 1.14.24</remarks>
         public bool WriteToMSOLE(GsfOutput output, bool doc_not_component)
         {
@@ -466,7 +467,7 @@ namespace LibGSF
             state.CharSize = CodePageCharSize(state.CodePage);
 
             // Write stream header
-            buf = BitConverter.GetBytes((uint)(state.Dict != null ? 2 : 1));
+            GSF_LE_SET_GUINT32(buf, 0, (uint)(state.Dict != null ? 2 : 1));
             if (!output.Write(header.Length, header) || !output.Write(4, buf))
             {
                 state.IConvHandle = null;
@@ -477,7 +478,7 @@ namespace LibGSF
             }
 
             // Write section header(s)
-            buf = BitConverter.GetBytes((uint)(state.Dict != null ? 0x44 : 0x30));
+            GSF_LE_SET_GUINT32(buf, 0, (uint)(state.Dict != null ? 0x44 : 0x30));
             if (!output.Write(16, doc_not_component ? DocumentGUID : ComponentGUID) || !output.Write(4, buf))
             {
                 state.IConvHandle = null;
@@ -489,7 +490,7 @@ namespace LibGSF
 
             if (state.Dict != null)
             {
-                buf = BitConverter.GetBytes((uint)0);
+                GSF_LE_SET_GUINT32(buf, 0, 0);
                 if (!output.Write(UserGUID.Length, UserGUID) || !output.Write(4, buf)) // Bogus position, fix it later
                 {
                     state.IConvHandle = null;
@@ -513,7 +514,7 @@ namespace LibGSF
             if (state.Dict != null)
             {
                 long baseOffset = state.Output.CurrentOffset;
-                buf = BitConverter.GetBytes((uint)baseOffset);
+                GSF_LE_SET_GUINT32(buf, 0, (uint)baseOffset);
                 if (!state.Output.Seek(0x40, SeekOrigin.Begin)
                     || !output.Write(4, buf)
                     || !state.Output.Seek(0, SeekOrigin.End)

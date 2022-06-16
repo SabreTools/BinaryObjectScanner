@@ -24,6 +24,7 @@ using System;
 using System.IO;
 using ComponentAce.Compression.Libs.zlib;
 using static ComponentAce.Compression.Libs.zlib.zlibConst;
+using static LibGSF.GsfUtils;
 
 namespace LibGSF.Input
 {
@@ -334,7 +335,7 @@ namespace LibGSF.Input
                 if (data[2] != Z_DEFLATED)
                     return true;
 
-                uint modutime = BitConverter.ToUInt32(data, 4);
+                uint modutime = GSF_LE_GET_GUINT32(data, 4);
                 if (modutime != 0)
                 {
                     DateTime modtime = DateTimeOffset.FromUnixTimeSeconds(modutime).DateTime;
@@ -352,7 +353,7 @@ namespace LibGSF.Input
                     }
 
                     // FIXME, but how?  The size read here is modulo 2^32.
-                    UncompressedSize = BitConverter.ToUInt32(data, 0);
+                    UncompressedSize = GSF_LE_GET_GUINT32(data, 0);
 
                     if (UncompressedSize / 1000 > Source.Size)
                     {
@@ -369,7 +370,7 @@ namespace LibGSF.Input
                     if ((data = Source.Read(2, null)) == null)
                         return true;
 
-                    len = BitConverter.ToUInt16(data, 0);
+                    len = GSF_LE_GET_GUINT16(data, 0);
                     if (Source.Read((int)len, null) == null)
                         return true;
                 }

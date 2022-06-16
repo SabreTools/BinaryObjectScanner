@@ -21,6 +21,7 @@
 
 using System;
 using System.IO;
+using static LibGSF.GsfUtils;
 
 namespace LibGSF
 {
@@ -173,7 +174,7 @@ namespace LibGSF
 
             byte[] data = DataBlob.Data;
 
-            uint value = BitConverter.ToUInt32(data, 0);
+            uint value = GSF_LE_GET_GUINT32(data, 0);
 
             switch (value)
             {
