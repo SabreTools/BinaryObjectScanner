@@ -63,7 +63,7 @@ namespace BurnOutSharp.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
-                // So far, only known to exist in early versions of "Moto Racer 3".
+                // So far, only known to exist in early versions of "Moto Racer 3" (Redump entries 31578 and 34669).
                 new PathMatchSet(new List<PathMatch>
                 {
                     // d37f70489207014d7d0fbaa43b081a93e8030498
@@ -85,7 +85,24 @@ namespace BurnOutSharp.ProtectionType
                     new PathMatch("Wave.axt", useEndsWith: true),
                 }, "TAGES"),
 
-                // Currently only known to exist in "XIII" and "Beyond Good & Evil".
+                // Currently only found in "Robocop" (Redump entry 35932).
+                // Found in a directory named "System", with an executable named "Setup.exe".
+                new PathMatchSet(new List<PathMatch>
+                {
+                    // f82339d797be6da92f5d9dadeae9025385159057
+                    new PathMatch(Path.Combine("9x", "Tamlx.alf").Replace("\\", "/"), useEndsWith: true),
+
+                    // 933c004d3043863f019f5ffaf63402a30e65026c
+                    new PathMatch(Path.Combine("9x", "Tamlx.apt").Replace("\\", "/"), useEndsWith: true),
+
+                    // d45745fa6b0d23fe0ee12e330ab85d5bf4e0e776
+                    new PathMatch(Path.Combine("NT", "enodpl.sys").Replace("\\", "/"), useEndsWith: true),
+
+                    // f111eba05ca6e9061c557547420847d7fdee657d
+                    new PathMatch(Path.Combine("NT", "litdpl.sys").Replace("\\", "/"), useEndsWith: true),
+                }, "TAGES"),
+
+                // Currently only known to exist in "XIII" and "Beyond Good & Evil" (Redump entries 8774-8776, 45940-45941, 18690-18693, and presumably 21320, 21321, 21323, and 36124).
                 new PathMatchSet(new List<PathMatch>
                 {
                     new PathMatch("enodpl.sys", useEndsWith: true),
@@ -95,8 +112,8 @@ namespace BurnOutSharp.ProtectionType
                 }, "TAGES"),
 
                 // The directory of these files has been seen to be named two different things, with two different accompanying executables in the root of the directory.
-                // In the example where the directory is named "Drivers", the executable is named "Silent.exe".
-                // In the example where the directory is named "ELBdrivers", the executable is name "ELBDrivers.exe".
+                // In the example where the directory is named "Drivers", the executable is named "Silent.exe" (Redump entry 51763).
+                // In the example where the directory is named "ELBdrivers", the executable is name "ELBDrivers.exe" (Redump entry 91090).
                 // The name and file size of the included executable vary, but there should always be one here.
                 new PathMatchSet(new List<PathMatch>
                 {
@@ -113,17 +130,19 @@ namespace BurnOutSharp.ProtectionType
                     new PathMatch(Path.Combine("NT", "lemsgt.sys").Replace("\\", "/"), useEndsWith: true),
                 }, "TAGES"),
 
-                // The following files are supposed to only be found inside the driver setup executables.
+                // The following files are supposed to only be found inside the driver setup executables, and are present in at least version 5.2.0.1 (Redump entry 15976).
                 new PathMatchSet(new PathMatch("ithsgt.sys", useEndsWith: true), "TAGES Driver"),
                 new PathMatchSet(new PathMatch("lilsgt.sys", useEndsWith: true), "TAGES Driver"),
+
+                // The following files are supposed to only be found inside the driver setup executables in versions 5.5.0.1+.
                 new PathMatchSet(new PathMatch("atksgt.sys", useEndsWith: true), "TAGES Driver"),
                 new PathMatchSet(new PathMatch("lirsgt.sys", useEndsWith: true), "TAGES Driver"),
 
-                // The following files appear to be container formats for TAGES, but little is currently known about them.
+                // The following files appear to be container formats for TAGES, but little is currently known about them (Redump entries 85313 and 85315).
                 new PathMatchSet(new PathMatch("GameModule.elb", useEndsWith: true), "TAGES/SolidShield Game Executable Container"),
                 new PathMatchSet(new PathMatch("InstallModule.elb", useEndsWith: true), "TAGES/SolidShield Installer Container"),
 
-                // Not much is known about this file, but it seems to be related to what PiD reports as "protection level: Tages BASIC".
+                // Not much is known about this file, but it seems to be related to what PiD reports as "protection level: Tages BASIC" (Redump entry 85313).
                 // Seems to always be found with other KWN files.
                 new PathMatchSet(new PathMatch("GAME.KWN", useEndsWith: true), "TAGES (BASIC?)"),
             };
@@ -136,7 +155,7 @@ namespace BurnOutSharp.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
-                // So far, only known to exist in early versions of "Moto Racer 3".
+                // So far, only known to exist in early versions of "Moto Racer 3" (Redump entries 31578 and 34669).
                 new PathMatchSet(new PathMatch("Devx.sys", useEndsWith: true), "TAGES Driver"),
                 new PathMatchSet(new PathMatch("VtPr.sys", useEndsWith: true), "TAGES Driver"),
 
@@ -146,32 +165,41 @@ namespace BurnOutSharp.ProtectionType
                 // new PathMatchSet(new PathMatch("Wave.apt", useEndsWith: true), "TAGES Driver"),
                 // new PathMatchSet(new PathMatch("Wave.axt", useEndsWith: true), "TAGES Driver"),
 
-                // Currently only known to exist in "XIII" and "Beyond Good & Evil".
+                // Currently only found in "Robocop" (Redump entry 35932).
+                // Found in a directory named "System", with an executable named "Setup.exe".
+                new PathMatchSet(new PathMatch("Tamlx.apt", useEndsWith: true), "TAGES 9x Driver"),
+                new PathMatchSet(new PathMatch("Tamlx.alf", useEndsWith: true), "TAGES 9x Driver"),
+                new PathMatchSet(new PathMatch("enodpl.sys", useEndsWith: true), "TAGES NT Driver"),
+                new PathMatchSet(new PathMatch("litdpl.sys", useEndsWith: true), "TAGES NT Driver"),
+
+                // Currently only known to exist in "XIII" and "Beyond Good & Evil" (Redump entries 8774-8776, 45940-45941, 18690-18693, and presumably 21320, 21321, 21323, and 36124).
                 new PathMatchSet(new PathMatch("enodpl.sys", useEndsWith: true), "TAGES NT Driver"),
                 new PathMatchSet(new PathMatch("ENODPL.VXD", useEndsWith: true), "TAGES 9x Driver"),
                 new PathMatchSet(new PathMatch("tandpl.sys", useEndsWith: true), "TAGES NT Driver"),
                 new PathMatchSet(new PathMatch("TANDPL.VXD", useEndsWith: true), "TAGES 9x Driver"),
 
                 // The directory of these files has been seen to be named two different things, with two different accompanying executables in the root of the directory.
-                // In the example where the directory is named "Drivers", the executable is named "Silent.exe".
-                // In the example where the directory is named "ELBdrivers", the executable is name "ELBDrivers.exe".
+                // In the example where the directory is named "Drivers", the executable is named "Silent.exe" (Redump entry 51763).
+                // In the example where the directory is named "ELBdrivers", the executable is name "ELBDrivers.exe" (Redump entry 91090).
                 // The name and file size of the included executable vary, but there should always be one here.
                 new PathMatchSet(new PathMatch("hwpsgt.vxd", useEndsWith: true), "TAGES 9x Driver"),
                 new PathMatchSet(new PathMatch("lemsgt.vxd", useEndsWith: true), "TAGES 9x Driver"),
                 new PathMatchSet(new PathMatch("hwpsgt.sys", useEndsWith: true), "TAGES NT Driver"),
                 new PathMatchSet(new PathMatch("lemsgt.sys", useEndsWith: true), "TAGES NT Driver"),
 
-                // The following files are supposed to only be found inside the driver setup executables.
+                // The following files are supposed to only be found inside the driver setup executables, and are present in at least version 5.2.0.1 (Redump entry 15976).
                 new PathMatchSet(new PathMatch("ithsgt.sys", useEndsWith: true), "TAGES Driver"),
                 new PathMatchSet(new PathMatch("lilsgt.sys", useEndsWith: true), "TAGES Driver"),
+
+                // The following files are supposed to only be found inside the driver setup executables in versions 5.5.0.1+.
                 new PathMatchSet(new PathMatch("atksgt.sys", useEndsWith: true), "TAGES Driver"),
                 new PathMatchSet(new PathMatch("lirsgt.sys", useEndsWith: true), "TAGES Driver"),
 
-                // The following files appear to be container formats for TAGES, but little is currently known about them.
+                // The following files appear to be container formats for TAGES, but little is currently known about them (Redump entries 85313 and 85315).
                 new PathMatchSet(new PathMatch("GameModule.elb", useEndsWith: true), "TAGES/SolidShield Game Executable Container"),
                 new PathMatchSet(new PathMatch("InstallModule.elb", useEndsWith: true), "TAGES/SolidShield Installer Container"),
 
-                // Not much is known about this file, but it seems to be related to what PiD reports as "protection level: Tages BASIC".
+                // Not much is known about this file, but it seems to be related to what PiD reports as "protection level: Tages BASIC" (Redump entry 85313).
                 // Seems to always be found with other KWN files.
                 new PathMatchSet(new PathMatch("GAME.KWN", useEndsWith: true), "TAGES (BASIC?)"),
             };
