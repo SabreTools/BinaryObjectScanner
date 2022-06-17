@@ -140,7 +140,7 @@ namespace LibMSI.Views
                 return r;
             }
 
-            string encname = EncodeStreamName(false, full_name);
+            string encname = EncodeStreamName(false, full_name).TrimEnd('\0');
             r = Database.GetRawStream(encname, out stm);
             if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                 Console.Error.WriteLine($"Fetching stream {full_name}, error = {r}");

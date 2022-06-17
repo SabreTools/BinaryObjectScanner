@@ -195,7 +195,7 @@ namespace LibMSI.Views
                 return LibmsiResult.LIBMSI_RESULT_FUNCTION_FAILED;
             }
 
-            encname = EncodeStreamName(false, name);
+            encname = EncodeStreamName(false, name).TrimEnd('\0');
             Database.DestroyStream(encname);
 
             // Shift the remaining rows

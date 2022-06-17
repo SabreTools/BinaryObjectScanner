@@ -622,7 +622,7 @@ namespace LibMSI
             if (Flags.HasFlag(LibmsiDbFlags.LIBMSI_DB_FLAGS_READONLY))
                 return LibmsiResult.LIBMSI_RESULT_ACCESS_DENIED;
 
-            string encname = EncodeStreamName(false, stname);
+            string encname = EncodeStreamName(false, stname).TrimEnd('\0');
             foreach (LibmsiStream stream in Streams)
             {
                 if (encname == stream.Name)
