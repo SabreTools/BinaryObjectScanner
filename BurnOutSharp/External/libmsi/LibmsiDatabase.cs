@@ -157,13 +157,13 @@ namespace LibMSI
 
         internal int MediaTransformDiskId { get; set; }
 
-        internal LinkedList<LibmsiTable> Tables { get; set; }
+        internal LinkedList<LibmsiTable> Tables { get; set; } = new LinkedList<LibmsiTable>();
 
-        internal LinkedList<LibmsiTransform> Transforms { get; set; }
+        internal LinkedList<LibmsiTransform> Transforms { get; set; } = new LinkedList<LibmsiTransform>();
 
-        internal LinkedList<LibmsiStream> Streams { get; set; }
+        internal LinkedList<LibmsiStream> Streams { get; set; } = new LinkedList<LibmsiStream>();
 
-        internal LinkedList<LibmsiStorage> Storages { get; set; }
+        internal LinkedList<LibmsiStorage> Storages { get; set; } = new LinkedList<LibmsiStorage>();
 
         #endregion
 

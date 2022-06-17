@@ -176,7 +176,7 @@ namespace LibGSF.Input
         /// the end of the stream, or to the current location.
         /// </param>
         /// <returns>True on error.</returns>
-        public virtual bool Seek(long offset, SeekOrigin whence)
+        public bool Seek(long offset, SeekOrigin whence)
         {
             long pos = offset;
 
@@ -196,7 +196,7 @@ namespace LibGSF.Input
             if (pos == CurrentOffset)
                 return false;
 
-            if (Seek(offset, whence))
+            if (SeekImpl(offset, whence))
                 return true;
 
             CurrentOffset = pos;
@@ -523,6 +523,8 @@ namespace LibGSF.Input
         protected virtual GsfInput OpenSiblingImpl(string name, ref Exception err) => null;
 
         protected virtual byte[] ReadImpl(int num_bytes, byte[] optional_buffer, int bufferPtr = 0) => null;
+
+        protected virtual bool SeekImpl(long offset, SeekOrigin whence) => false;
 
         #endregion
     }

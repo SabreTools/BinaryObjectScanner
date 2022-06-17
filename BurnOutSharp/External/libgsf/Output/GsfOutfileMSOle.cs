@@ -192,19 +192,20 @@ namespace LibGSF.Output
             ole.RegisterChild(ole);
 
             // Build the header
-            byte[] buf = Enumerable.Repeat<byte>(0xFF, OLE_HEADER_SIZE).ToArray();
-            Array.Copy(default_header, buf, default_header.Length);
+            byte[] buf = Enumerable.Repeat<byte>(0xFF, MSOleHeader.OLE_HEADER_SIZE).ToArray();
 
-            GSF_LE_SET_GUINT16(buf, OLE_HEADER_BB_SHIFT, (ushort)ole.BigBlock.Shift);
-            GSF_LE_SET_GUINT16(buf, OLE_HEADER_SB_SHIFT, (ushort)ole.SmallBlock.Shift);
+            MSOleHeader header = MSOleHeader.CreateDefault();
+            header.BB_SHIFT = (ushort)ole.BigBlock.Shift;
+            header.SB_SHIFT = (ushort)ole.SmallBlock.Shift;
 
             // 4k sector OLE files seen in the wild have version 4
             if (ole.BigBlock.Size == 4096)
-                GSF_LE_SET_GUINT16(buf, OLE_HEADER_MAJOR_VER, 4);
+                header.MAJOR_VER = 4;
 
-            sink.Write(OLE_HEADER_SIZE, buf);
+            header.Write(buf, 0);
+            sink.Write(MSOleHeader.OLE_HEADER_SIZE, buf);
 
-            // Header must be padded out to bb.size with zeros
+            // Header must be padded out to BigBlock.Size with zeros
             ole.PadZero();
 
             return ole;
@@ -476,7 +477,7 @@ namespace LibGSF.Output
         /// pad_zero to move to the start of the next block, then get the block number.
         /// This avoids fence post type problems with partial blocks.
         /// </summary>
-        private int CurrentBlock() => (int)((Sink.CurrentOffset - OLE_HEADER_SIZE) >> BigBlock.Shift);
+        private int CurrentBlock() => (int)((Sink.CurrentOffset - MSOleHeader.OLE_HEADER_SIZE) >> BigBlock.Shift);
 
         private int BytesLeftInBlock()
         {
@@ -534,8 +535,6 @@ namespace LibGSF.Output
 
             if (bufi != 0)
                 sink.Write(bufi * BAT_INDEX_SIZE, buf);
-
-            bufi = 0;
         }
 
         private static void WriteConst(GsfOutput sink, uint value, int n)
@@ -574,7 +573,7 @@ namespace LibGSF.Output
         /// </summary>
         private bool WriteDirectory()
         {
-            byte[] buf = new byte[OLE_HEADER_SIZE];
+            byte[] buf = new byte[MSOleHeader.OLE_HEADER_SIZE];
             uint next;
             uint xbat_pos;
             int metabat_size = BigBlock.Size / BAT_INDEX_SIZE - 1;
@@ -631,15 +630,15 @@ namespace LibGSF.Output
             PadBatUnused(0);
             int num_sbat = CurrentBlock() - sbat_start;
 
-            int name_len = 0;
-
             // Write dirents
             int dirent_start = CurrentBlock();
             for (int i = 0; i < elem.Count; i++)
             {
                 GsfOutfileMSOle child = elem[i];
 
-                buf = Enumerable.Repeat<byte>(0, DIRENT_SIZE).ToArray();
+                buf = Enumerable.Repeat<byte>(0, MSOleDirectoryEntry.DIRENT_SIZE).ToArray();
+
+                MSOleDirectoryEntry directoryEntry = MSOleDirectoryEntry.CreateDefault();
 
                 // Hard code 'Root Entry' for the root
                 if (i == 0 || child.Name != null)
@@ -648,39 +647,27 @@ namespace LibGSF.Output
 
                     byte[] nameUtf16Bytes = Encoding.UTF8.GetBytes(name);
                     nameUtf16Bytes = Encoding.Convert(Encoding.UTF8, Encoding.Unicode, nameUtf16Bytes);
-                    string nameUtf16 = Encoding.Unicode.GetString(nameUtf16Bytes);
-                    name_len = nameUtf16.Length;
-                    if (name_len >= DIRENT_MAX_NAME_SIZE)
-                        name_len = DIRENT_MAX_NAME_SIZE - 1;
+                    ushort name_len = (ushort)nameUtf16Bytes.Length;
+                    if (name_len >= MSOleDirectoryEntry.DIRENT_MAX_NAME_SIZE)
+                        name_len = MSOleDirectoryEntry.DIRENT_MAX_NAME_SIZE - 1;
 
-                    // Be wary about endianness
-                    for (int j = 0; j < name_len; j++)
-                    {
-                        GSF_LE_SET_GUINT16(buf, j * 2, nameUtf16[j]);
-                    }
-
-                    name_len++;
+                    directoryEntry.NAME = nameUtf16Bytes;
+                    directoryEntry.NAME_LEN = (ushort)(name_len + 1);
                 }
-
-                GSF_LE_SET_GUINT16(buf, DIRENT_NAME_LEN, (ushort)(name_len * 2));
 
                 if (child.Root == child)
                 {
-                    GSF_LE_SET_GUINT8(buf, DIRENT_TYPE, DIRENT_TYPE_ROOTDIR);
-                    GSF_LE_SET_GUINT32(buf, DIRENT_FIRSTBLOCK, (sb_data_size > 0) ? (uint)sb_data_start : BAT_MAGIC_END_OF_CHAIN);
-                    GSF_LE_SET_GUINT32(buf, DIRENT_FILE_SIZE, (uint)sb_data_size);
-
-                    // Write the class id
-                    Array.Copy(child.ClassID, 0, buf, DIRENT_CLSID, child.ClassID.Length);
+                    directoryEntry.TYPE_FLAG = DIRENT_TYPE.DIRENT_TYPE_ROOTDIR;
+                    directoryEntry.FIRSTBLOCK = (sb_data_size > 0) ? (uint)sb_data_start : BAT_MAGIC_END_OF_CHAIN;
+                    directoryEntry.FILE_SIZE = (uint)sb_data_size;
+                    directoryEntry.CLSID = child.ClassID;
                 }
                 else if (child.Type == MSOleOutfileType.MSOLE_DIR)
                 {
-                    GSF_LE_SET_GUINT8(buf, DIRENT_TYPE, DIRENT_TYPE_DIR);
-                    GSF_LE_SET_GUINT32(buf, DIRENT_FIRSTBLOCK, BAT_MAGIC_END_OF_CHAIN);
-                    GSF_LE_SET_GUINT32(buf, DIRENT_FILE_SIZE, 0);
-
-                    // Write the class id
-                    Array.Copy(child.ClassID, 0, buf, DIRENT_CLSID, child.ClassID.Length);
+                    directoryEntry.TYPE_FLAG = DIRENT_TYPE.DIRENT_TYPE_DIR;
+                    directoryEntry.FIRSTBLOCK = BAT_MAGIC_END_OF_CHAIN;
+                    directoryEntry.FILE_SIZE = 0;
+                    directoryEntry.CLSID = child.ClassID;
                 }
                 else
                 {
@@ -688,18 +675,19 @@ namespace LibGSF.Output
                     if (size != child.Parent.CurrentSize)
                         Console.Error.WriteLine("File too big");
 
-                    GSF_LE_SET_GUINT8(buf, DIRENT_TYPE, DIRENT_TYPE_FILE);
-                    GSF_LE_SET_GUINT32(buf, DIRENT_FIRSTBLOCK, (uint)child.FirstBlock);
-                    GSF_LE_SET_GUINT32(buf, DIRENT_FILE_SIZE, size);
+                    directoryEntry.TYPE_FLAG = DIRENT_TYPE.DIRENT_TYPE_FILE;
+                    directoryEntry.FIRSTBLOCK = (uint)child.FirstBlock;
+                    directoryEntry.FILE_SIZE = size;
+                    directoryEntry.CLSID = new byte[0x10];
                 }
 
-                GSF_LE_SET_GUINT64(buf, DIRENT_MODIFY_TIME, (ulong)(child.ModTime?.ToFileTime() ?? 0));
+                directoryEntry.MODIFY_TIME = (ulong)(child.ModTime?.ToFileTime() ?? 0);
 
                 // Make everything black (red == 0)
-                GSF_LE_SET_GUINT8(buf, DIRENT_COLOUR, 1);
+                directoryEntry.COLOR = 1;
 
                 GsfOutfileMSOle tmp = child.Container as GsfOutfileMSOle;
-                next = DIRENT_MAGIC_END;
+                next = MSOleDirectoryEntry.DIRENT_MAGIC_END;
                 if (child.Root != child && tmp != null)
                 {
                     for (int j = 0; j < tmp.Content_Dir_Children.Count; j++)
@@ -719,19 +707,20 @@ namespace LibGSF.Output
                 }
 
                 // Make linked list rather than tree, only use next
-                GSF_LE_SET_GUINT32(buf, DIRENT_PREV, DIRENT_MAGIC_END);
-                GSF_LE_SET_GUINT32(buf, DIRENT_NEXT, next);
+                directoryEntry.PREV = MSOleDirectoryEntry.DIRENT_MAGIC_END;
+                directoryEntry.NEXT = next;
 
-                uint child_index = DIRENT_MAGIC_END;
+                uint child_index = MSOleDirectoryEntry.DIRENT_MAGIC_END;
                 if (child.Type == MSOleOutfileType.MSOLE_DIR && child.Content_Dir_Children != null)
                 {
                     GsfOutfileMSOle first = child.Content_Dir_Children[0];
                     child_index = (uint)first.ChildIndex;
                 }
 
-                GSF_LE_SET_GUINT32(buf, DIRENT_CHILD, child_index);
+                directoryEntry.CHILD = child_index;
 
-                Sink.Write(DIRENT_SIZE, buf);
+                directoryEntry.Write(buf, 0);
+                Sink.Write(MSOleDirectoryEntry.DIRENT_SIZE, buf);
             }
 
             PadZero();
@@ -765,7 +754,7 @@ namespace LibGSF.Output
                 // by _tell and .cur_size may be out of sync.  We don't
                 // want to loop forever here.
 
-                long i = ((Sink.CurrentSize + BAT_INDEX_SIZE * (num_bat + num_xbat) - OLE_HEADER_SIZE - 1) >> BigBlock.Shift) + 1;
+                long i = ((Sink.CurrentSize + BAT_INDEX_SIZE * (num_bat + num_xbat) - MSOleHeader.OLE_HEADER_SIZE - 1) >> BigBlock.Shift) + 1;
                 i -= bat_start;
                 if (num_bat != i)
                 {
@@ -799,8 +788,6 @@ namespace LibGSF.Output
                 xbat_pos = BAT_MAGIC_END_OF_CHAIN;
                 blocks = (int)num_bat;
             }
-
-            byte[] outerTemp;
 
             // Fix up the header
             if (BigBlock.Size == 4096)

@@ -199,7 +199,7 @@ namespace LibGSF.Input
         protected override byte[] ReadImpl(int num_bytes, byte[] optional_buffer, int bufferPtr = 0) => null;
 
         /// <inheritdoc/>
-        public override bool Seek(long offset, SeekOrigin whence) => false;
+        protected override bool SeekImpl(long offset, SeekOrigin whence) => false;
 
         /// <inheritdoc/>
         public override GsfInput ChildByIndex(int i, ref Exception error)
