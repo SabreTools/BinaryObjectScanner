@@ -341,7 +341,7 @@ namespace LibGSF.Input
             //if (FALSE && first_block != last_block)
             //    Console.Error.WriteLine($"Check if {first_block}-{last_block} of {Bat.NumBlocks} are contiguous.");
 
-            while (++i <= last_block && ++raw_block == Bat.Block[i]) ;
+            while (++i <= last_block && ++raw_block == Bat.Block[i]);
 
             if (i > last_block)
             {
@@ -362,10 +362,9 @@ namespace LibGSF.Input
                 optional_buffer_ptr = 0;
             }
 
-            byte[] ptr = optional_buffer;
-            int ptrPtr = optional_buffer_ptr; // ptr[optional_buffer_ptr + 0]
+            int ptr = optional_buffer_ptr; // optional_buffer[0]
             int count;
-            for (i = first_block; i <= last_block; i++, ptrPtr += count, num_bytes -= count)
+            for (i = first_block; i <= last_block; i++, ptr += count, num_bytes -= count)
             {
                 count = (int)(Info.BigBlock.Size - offset);
                 if (count > num_bytes)
@@ -374,7 +373,7 @@ namespace LibGSF.Input
                 if (!SeekBlock(Bat.Block[i], offset))
                     return null;
 
-                if (Input.Read(count, ptr, ptrPtr) == null)
+                if (Input.Read(count, optional_buffer, ptr) == null)
                     return null;
 
                 offset = 0;
@@ -679,8 +678,8 @@ namespace LibGSF.Input
             {
                 Input = input,
                 Info = Info.Ref(),
+                Stream = new byte[0],
             };
-            // buf and buf_size are initialized to null
 
             return dst;
         }

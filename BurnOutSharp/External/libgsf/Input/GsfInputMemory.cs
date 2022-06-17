@@ -86,7 +86,7 @@ namespace LibGSF.Input
 
             if (optional_buffer != null)
             {
-                Array.Copy(src, CurrentOffset, optional_buffer, 0, num_bytes);
+                Array.Copy(src, CurrentOffset, optional_buffer, bufferPtr, num_bytes);
                 return optional_buffer;
             }
             else
