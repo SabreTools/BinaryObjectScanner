@@ -31,6 +31,7 @@ using System.Text;
 
 namespace LibGSF.Input
 {
+    // TODO: Can this be made internal?
     public class TarChild
     {
         public string Name { get; set; }
@@ -53,6 +54,7 @@ namespace LibGSF.Input
     /// <summary>
     /// Tar header from POSIX 1003.1-1990.
     /// </summary>
+    // TODO: Can this be made internal?
     public class TarHeader
     {
         public byte[] Name { get; set; } = new byte[100];               /*   0 */

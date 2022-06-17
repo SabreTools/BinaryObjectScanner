@@ -261,21 +261,19 @@ namespace LibGSF
 
         public void Insert(string name, GsfZipDirectoryEntry dirent)
         {
-            GsfZipVDir child;
-
             int p = name.IndexOf(GsfZipImpl.ZIP_NAME_SEPARATOR);
             if (p != -1)
             {
                 // A directory
-                string dirname = name.Substring(p);
-                child = ChildByName(dirname);
+                string dirname = name.Substring(0, p);
+                GsfZipVDir child = ChildByName(dirname);
                 if (child == null)
                 {
                     child = Create(dirname, true, null);
                     AddChild(child);
                 }
 
-                if (name[p + 1] != '\0')
+                if (p + 1 < name.Length && name[p + 1] != '\0')
                 {
                     name = name.Substring(p + 1);
                     child.Insert(name, dirent);
@@ -284,7 +282,7 @@ namespace LibGSF
             else
             {
                 // A simple file name
-                child = Create(name, false, dirent);
+                GsfZipVDir child = Create(name, false, dirent);
                 AddChild(child);
             }
         }
