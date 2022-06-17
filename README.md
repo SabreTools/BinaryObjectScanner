@@ -40,6 +40,7 @@ Below is a list of protections detected by BurnOutSharp. The two columns explain
 | Cenga ProtectDVD | True | False | |
 | CodeLock / CodeLok / CopyLok | True | False | Partially unconfirmed² |
 | CopyKiller | True | True | Unconfirmed¹ |
+| Dinamic Multimedia Protection/LockBlocks | False | True | LockBlocks needs manual confirmation of the presence of 2 rings |
 | DiscGuard | False | True | Unconfirmed¹ |
 | DVD-Movie-PROTECT | False | True | Unconfirmed¹ |
 | DVD Crypt | False | True | Unconfirmed¹ |
@@ -99,7 +100,6 @@ Below is a list of protections that have been identified but have not yet been i
 - CrypKey
 - DBB
 - FADE
-- LockBlocks
 - MusicGuard
 - Roxxe
 - SAFEAUDIO
