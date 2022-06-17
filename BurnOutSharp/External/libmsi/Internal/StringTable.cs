@@ -83,7 +83,7 @@ namespace LibMSI.Internal
             if (string.IsNullOrEmpty(data) || data[0] == '\0')
                 return 0;
 
-            if (IdFromStringUTF8(data, out int n) == LibmsiResult.LIBMSI_RESULT_SUCCESS )
+            if (IdFromStringUTF8(data, out int n) == LibmsiResult.LIBMSI_RESULT_SUCCESS)
             {
                 if (persistence == StringPersistence.StringPersistent)
                     Strings[n].PersistentRefCount += refcount;
@@ -161,12 +161,11 @@ namespace LibMSI.Internal
 
         public static StringTable LoadStringTable(GsfInfile stg, out int bytes_per_strref)
         {
-            int codepage;
-            int count, len;
+            int len;
             ushort refs;
 
             bytes_per_strref = 0;
-            LibmsiResult r = ReadStreamData(stg, szStringPool, out byte[] pool, out int poolsize);
+            LibmsiResult r = ReadStreamData(stg, szStringPool, out byte[] poolBytes, out int poolsize);
             if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                 return null;
 
@@ -174,14 +173,16 @@ namespace LibMSI.Internal
             if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                 return null;
 
-            if ((poolsize > 4) && (BitConverter.ToUInt16(pool, ((1) * 2)) & 0x8000) != 0)
+            if ((poolsize > 4) && (BitConverter.ToUInt16(poolBytes, 2) & 0x8000) != 0)
                 bytes_per_strref = LONG_STR_BYTES;
             else
                 bytes_per_strref = sizeof(ushort);
 
-            count = poolsize / 4;
+            int count = poolsize / 4;
+
+            int codepage;
             if (poolsize > 4)
-                codepage = (int)(BitConverter.ToUInt16(pool, ((0) * 2)) | ( (BitConverter.ToUInt16(pool, ((1) * 2)) & ~0x8000) << 16));
+                codepage = BitConverter.ToUInt16(poolBytes, 0) | ((BitConverter.ToUInt16(poolBytes, 2) & ~0x8000) << 16);
             else
                 codepage = CP_ACP;
 
@@ -195,10 +196,10 @@ namespace LibMSI.Internal
             while (i < count)
             {
                 // The string reference count is always the second word
-                refs = BitConverter.ToUInt16(pool, ((i * 2 + 1) * 2));
+                refs = BitConverter.ToUInt16(poolBytes, ((i * 2 + 1) * 2));
 
                 // Empty entries have two zeros, still have a string id
-                if (BitConverter.ToUInt16(pool, ((i * 2) * 2)) == 0 && refs == 0)
+                if (BitConverter.ToUInt16(poolBytes, ((i * 2) * 2)) == 0 && refs == 0)
                 {
                     i++;
                     n++;
@@ -209,14 +210,14 @@ namespace LibMSI.Internal
                 // and the high word of the length is inserted in the null string's
                 // reference count field.
 
-                if (BitConverter.ToUInt16(pool, ((i * 2) * 2)) == 0)
+                if (BitConverter.ToUInt16(poolBytes, ((i * 2) * 2)) == 0)
                 {
-                    len = (int)((BitConverter.ToUInt16(pool, ((i * 2 + 3 * 2))) << 16) + BitConverter.ToUInt16(pool, ((i * 2 + 2) * 2)));
+                    len = (BitConverter.ToUInt16(poolBytes, ((i * 2 + 3 * 2))) << 16) + BitConverter.ToUInt16(poolBytes, ((i * 2 + 2) * 2));
                     i += 2;
                 }
                 else
                 {
-                    len = (int)BitConverter.ToUInt16(pool,((i * 2) * 2));
+                    len = BitConverter.ToUInt16(poolBytes, ((i * 2) * 2));
                     i += 1;
                 }
 
@@ -226,7 +227,7 @@ namespace LibMSI.Internal
                     break;
                 }
 
-                int s = st.AddString(n, data, offset, len, refs, StringPersistence .StringPersistent);
+                int s = st.AddString(n, data, offset, len, refs, StringPersistence.StringPersistent);
                 if (s != n)
                     Console.Error.WriteLine($"Failed to add string {n}");
 
@@ -266,11 +267,11 @@ namespace LibMSI.Internal
             }
 
             int i = 1;
-            for (int n=1; n < MaxCount; n++ )
+            for (int n = 1; n < MaxCount; n++)
             {
                 if (Strings[n].PersistentRefCount == 0)
                 {
-                    pool[i * 4]     = 0;
+                    pool[i * 4 + 0] = 0;
                     pool[i * 4 + 1] = 0;
                     pool[i * 4 + 2] = 0;
                     pool[i * 4 + 3] = 0;
@@ -291,7 +292,7 @@ namespace LibMSI.Internal
 
                 if (sz == 0)
                 {
-                    pool[i * 4]     = 0;
+                    pool[i * 4 + 0] = 0;
                     pool[i * 4 + 1] = 0;
                     pool[i * 4 + 2] = 0;
                     pool[i * 4 + 3] = 0;
@@ -304,14 +305,14 @@ namespace LibMSI.Internal
                 {
                     // Write a dummy entry, with the high part of the length
                     // in the reference count.
-                    pool[i * 4]     = 0;
+                    pool[i * 4 + 0] = 0;
                     pool[i * 4 + 1] = 0;
                     pool[i * 4 + 2] = (byte)(sz >> 16);
                     pool[i * 4 + 3] = (byte)(sz >> 24);
                     i++;
                 }
 
-                pool[i * 4]     = (byte)sz;
+                pool[i * 4 + 0] = (byte)sz;
                 pool[i * 4 + 1] = (byte)(sz >> 8);
                 pool[i * 4 + 2] = (byte)Strings[n].PersistentRefCount;
                 pool[i * 4 + 3] = (byte)(Strings[n].PersistentRefCount >> 8);
@@ -352,7 +353,7 @@ namespace LibMSI.Internal
                 CodePage = codepage;
                 return LibmsiResult.LIBMSI_RESULT_SUCCESS;
             }
-            
+
             return LibmsiResult.LIBMSI_RESULT_FUNCTION_FAILED;
         }
 
@@ -365,17 +366,70 @@ namespace LibMSI.Internal
             switch (codepage)
             {
                 case CP_ACP:
-                case 37: case 424: case 437: case 500: case 737: case 775: case 850:
-                case 852: case 855: case 856: case 857: case 860: case 861: case 862:
-                case 863: case 864: case 865: case 866: case 869: case 874: case 875:
-                case 878: case 932: case 936: case 949: case 950: case 1006: case 1026:
-                case 1250: case 1251: case 1252: case 1253: case 1254: case 1255:
-                case 1256: case 1257: case 1258: case 1361:
-                case 10000: case 10006: case 10007: case 10029: case 10079: case 10081:
-                case 20127: case 20866: case 20932: case 21866: case 28591: case 28592:
-                case 28593: case 28594: case 28595: case 28596: case 28597: case 28598:
-                case 28599: case 28600: case 28603: case 28604: case 28605: case 28606:
-                case 65000: case 65001:
+                case 37:
+                case 424:
+                case 437:
+                case 500:
+                case 737:
+                case 775:
+                case 850:
+                case 852:
+                case 855:
+                case 856:
+                case 857:
+                case 860:
+                case 861:
+                case 862:
+                case 863:
+                case 864:
+                case 865:
+                case 866:
+                case 869:
+                case 874:
+                case 875:
+                case 878:
+                case 932:
+                case 936:
+                case 949:
+                case 950:
+                case 1006:
+                case 1026:
+                case 1250:
+                case 1251:
+                case 1252:
+                case 1253:
+                case 1254:
+                case 1255:
+                case 1256:
+                case 1257:
+                case 1258:
+                case 1361:
+                case 10000:
+                case 10006:
+                case 10007:
+                case 10029:
+                case 10079:
+                case 10081:
+                case 20127:
+                case 20866:
+                case 20932:
+                case 21866:
+                case 28591:
+                case 28592:
+                case 28593:
+                case 28594:
+                case 28595:
+                case 28596:
+                case 28597:
+                case 28598:
+                case 28599:
+                case 28600:
+                case 28603:
+                case 28604:
+                case 28605:
+                case 28606:
+                case 65000:
+                case 65001:
                     return true;
 
                 default:
@@ -477,6 +531,9 @@ namespace LibMSI.Internal
             if (str == null)
                 return;
 
+            if (Strings[n] == null)
+                Strings[n] = new msistring();
+
             if (persistence == StringPersistence.StringPersistent)
             {
                 Strings[n].PersistentRefCount = refcount;
@@ -519,13 +576,16 @@ namespace LibMSI.Internal
 
             if (n > 0)
             {
-                if (Strings[n].PersistentRefCount != 0 || Strings[n].NonPersistentRefCount != 0)
+                if (Strings[n] != null && (Strings[n].PersistentRefCount != 0 || Strings[n].NonPersistentRefCount != 0))
                     return -1;
             }
             else
             {
                 if (IdFromString(data, offset, out n) == LibmsiResult.LIBMSI_RESULT_SUCCESS)
                 {
+                    if (Strings[n] == null)
+                        Strings[n] = new msistring();
+
                     if (persistence == StringPersistence.StringPersistent)
                         Strings[n].PersistentRefCount += refcount;
                     else
