@@ -39,6 +39,10 @@ namespace BurnOutSharp.FileType
             if (magic.StartsWith(new byte?[] { 0xd0, 0xcf, 0x11, 0xe0, 0xa1, 0xb1, 0x1a, 0xe1 }))
                 return true;
 
+            // InstallShield Compiled Rules
+            if (magic.StartsWith(new byte?[] { 0x61, 0x4C, 0x75, 0x5A }))
+                return true;
+
             // Generic textfile (no header)
             if (string.Equals(extension?.TrimStart('.'), "txt", StringComparison.OrdinalIgnoreCase))
                 return true;
@@ -82,6 +86,10 @@ namespace BurnOutSharp.FileType
                 // MediaMax
                 if (fileContent.Contains("MediaMax technology"))
                     Utilities.AppendToDictionary(protections, file, "MediaMax CD-3");
+
+                // phenoProtect
+                if (fileContent.Contains("phenoProtect"))
+                    Utilities.AppendToDictionary(protections, file, "phenoProtect");
 
                 // The full line from a sample is as follows:
                 //
