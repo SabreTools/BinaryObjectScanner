@@ -163,6 +163,9 @@ namespace LibGSF
         /// <remarks>0x34</remarks>
         public uint TRANSACTING_SIGNATURE { get; set; }
 
+        /// <summary>
+        /// Transition between small and big blocks
+        /// </summary>
         /// <remarks>0x38</remarks>
         public uint THRESHOLD { get; set; }
 
@@ -184,6 +187,11 @@ namespace LibGSF
         #endregion
 
         #region Derived Properties
+
+        /// <summary>
+        /// Indicate if the contents are Intel Little-Endian
+        /// </summary>
+        public bool LITTLE_ENDIAN => BYTE_ORDER == 0xFFFE;
 
         public int BB_SIZE => 1 << BB_SHIFT;
 
@@ -254,6 +262,15 @@ namespace LibGSF
             header.BYTE_ORDER = GSF_LE_GET_GUINT16(data, ptr + OLE_HEADER_BYTE_ORDER);
             header.BB_SHIFT = GSF_LE_GET_GUINT16(data, ptr + OLE_HEADER_BB_SHIFT);
             header.SB_SHIFT = GSF_LE_GET_GUINT16(data, ptr + OLE_HEADER_SB_SHIFT);
+
+            // It makes no sense to have a block larger than 2^31 for now.
+            //    Maybe relax this later, but not much.
+            if (6 > header.BB_SHIFT || header.BB_SHIFT >= 31 || header.SB_SHIFT > header.BB_SHIFT)
+            {
+                err = new ArgumentException("Unreasonable block sizes");
+                return null;
+            }
+
             header.RESERVED = new byte[6];
             Array.Copy(data, ptr + OLE_HEADER_RESERVED, header.RESERVED, 0, 6);
             header.CSECTDIR = GSF_LE_GET_GUINT32(data, ptr + OLE_HEADER_CSECTDIR);
@@ -273,6 +290,13 @@ namespace LibGSF
             header.METABAT_BLOCK = GSF_LE_GET_GUINT32(data, ptr + OLE_HEADER_METABAT_BLOCK);
             header.NUM_METABAT = GSF_LE_GET_GUINT32(data, ptr + OLE_HEADER_NUM_METABAT);
             header.START_BAT = GSF_LE_GET_GUINT32(data, ptr + OLE_HEADER_START_BAT);
+
+            if (header.NUM_SBAT == 0
+                && header.SBAT_START != GsfMSOleImpl.BAT_MAGIC_END_OF_CHAIN
+                && header.SBAT_START != GsfMSOleImpl.BAT_MAGIC_UNUSED)
+            {
+                Console.Error.WriteLine("There are not supposed to be any blocks in the small block allocation table, yet there is a link to some.  Ignoring it.");
+            }
 
             return header;
         }
@@ -385,7 +409,7 @@ namespace LibGSF
         public uint CHILD { get; set; }
 
         /// <summary>
-        /// Only for dirs
+        /// 16 byte GUID used by some apps; Only for dirs
         /// </summary>
         /// <remarks>0x50</remarks>
         public byte[] CLSID { get; set; }
@@ -424,12 +448,15 @@ namespace LibGSF
 
         #region Derived Properties
 
+        /// <summary>
+        /// Directory Entry name as a UTF-8 encoded string
+        /// </summary>
         public string NAME_STRING
         {
             get
             {
                 if (NAME_LEN <= 0 || NAME_LEN > DIRENT_MAX_NAME_SIZE)
-                    return null;
+                    return string.Empty;
 
                 // !#%!@$#^
                 // Sometimes, rarely, people store the stream name as ascii
@@ -441,16 +468,24 @@ namespace LibGSF
                 if (end == -1)
                 {
                     byte[] direntNameBytes = Encoding.Convert(Encoding.ASCII, Encoding.UTF8, NAME);
-                    return Encoding.UTF8.GetString(direntNameBytes);
+                    return Encoding.UTF8.GetString(direntNameBytes).TrimEnd('\0');
                 }
                 else
                 {
                     byte[] direntNameBytes = Encoding.Convert(Encoding.Unicode, Encoding.UTF8, NAME);
-                    return Encoding.UTF8.GetString(direntNameBytes);
+                    return Encoding.UTF8.GetString(direntNameBytes).TrimEnd('\0');
                 }
             }
         }
 
+        /// <summary>
+        /// Last modified time as a nullable DateTime
+        /// </summary>
+        public DateTime? MODIFY_DATETIME => MODIFY_TIME == 0 ? (DateTime?)null : DateTime.FromFileTime((long)MODIFY_TIME);
+
+        /// <summary>
+        /// Determine if this entry is a directory
+        /// </summary>
         public bool IS_DIRECTORY => TYPE_FLAG != DIRENT_TYPE.DIRENT_TYPE_FILE;
 
         #endregion
