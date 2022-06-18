@@ -299,6 +299,14 @@ namespace LibMSI
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
 
+            // _MsiDigitalSignatureEx
+
+            //Exception err = null;
+            //string digitalSignaturePath = System.IO.Path.Combine(path, "_MsiDigitalSignatureEx.idt");
+            //using (Stream digitalSignatureStream = File.OpenWrite(digitalSignaturePath))
+            //{
+            //    Export("_MsiDigitalSignatureEx", digitalSignatureStream, ref err);
+            //}
 
             // SummaryInfo
 
@@ -669,7 +677,6 @@ namespace LibMSI
 
         internal LibmsiResult GetRawStream(string stname, out GsfInput stm)
         {
-            string decoded = DecodeStreamName(stname);
             if (CloneInfileStream(stname, out stm) == LibmsiResult.LIBMSI_RESULT_SUCCESS)
                 return LibmsiResult.LIBMSI_RESULT_SUCCESS;
 
@@ -1457,7 +1464,7 @@ namespace LibMSI
 
             for (int i = 0; i < MSI_MAX_PROPS; i++)
             {
-                if (si.Property[i].VariantType != LibmsiOLEVariantType.OLEVT_EMPTY)
+                if (si.Properties[i] != null && si.Properties[i].VariantType != LibmsiOLEVariantType.OLEVT_EMPTY)
                 {
                     string val = si.SummaryInfoAsString(i);
                     if (val == null)
@@ -1491,7 +1498,7 @@ namespace LibMSI
                 return ExportSummaryInfo(fd, ref error);
             }
 
-            string query = $"select * from {table}";
+            string query = $"SELECT * FROM `{table}`";
             LibmsiResult r = QueryOpen(this, out LibmsiQuery view, query);
             if (r == LibmsiResult.LIBMSI_RESULT_SUCCESS)
             {
@@ -1642,7 +1649,7 @@ namespace LibMSI
             if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                 return null;
 
-            string query = $"SELECT * FROM {table} WHERE ";
+            string query = $"SELECT * FROM `{table}` WHERE ";
             int count = keys.GetFieldCount();
             for (int i = 1; i <= count; i++)
             {
@@ -1789,7 +1796,7 @@ namespace LibMSI
             table.Labels = labels;
             table.NumLabels = num_labels;
 
-            string query = $"SELECT * FROM {name}";
+            string query = $"SELECT * FROM `{name}`";
             r = QueryOpen(this, out LibmsiQuery mergeview, query);
             if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                 goto err;
@@ -1828,7 +1835,7 @@ namespace LibMSI
             MERGEDATA data = param as MERGEDATA;
             string name = rec.GetStringRaw(1);
 
-            string query = $"SELECT * FROM {name}";
+            string query = $"SELECT * FROM `{name}`";
             LibmsiResult r = QueryOpen(data.Merge, out LibmsiQuery mergeview, query);
             if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                 return r;
@@ -1869,7 +1876,7 @@ namespace LibMSI
 
         private LibmsiResult GatherMergeData(LibmsiDatabase merge, MERGETABLE tabledata)
         {
-            string query = "SELECT * FROM _Tables";
+            string query = "SELECT * FROM `_Tables`";
             LibmsiResult r = DatabaseOpenQuery(merge, query, out LibmsiQuery view);
             if (r != LibmsiResult.LIBMSI_RESULT_SUCCESS)
                 return r;
