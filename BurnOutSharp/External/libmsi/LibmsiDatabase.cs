@@ -836,7 +836,7 @@ namespace LibMSI
             }
 
             Infile = stg;
-            CacheInfileStructure();
+            CacheInfileStructure(); // TODO: Investigate caching. Is it reading the right data?
 
             Strings = LoadStringTable(Infile, out int bytes_per_strref);
             if (Strings == null)
@@ -1957,7 +1957,7 @@ namespace LibMSI
                 Exception err = null;
                 GsfInput input = Infile.ChildByIndex(i, ref err);
                 string name = input?.Name;
-                byte[] name8 = Encoding.ASCII.GetBytes(name ?? string.Empty);
+                byte[] name8 = Encoding.UTF8.GetBytes(name ?? string.Empty);
 
                 if (name == null)
                 {
@@ -1971,8 +1971,8 @@ namespace LibMSI
                     // UTF-8 encoding of 0x4840.
                     if (name8[0] == 0xe4 && name8[1] == 0xa1 && name8[2] == 0x80)
                     {
-                        string decname = DecodeStreamName(name + 3);
-                        if (decname == szStringPool || decname == szStringData)
+                        string decname = DecodeStreamName(name.Substring(1)).TrimEnd('\0');
+                        if (decname.StartsWith(szStringPool) || decname.StartsWith(szStringData))
                             continue;
 
                         r = OpenTable(this, decname, false);
