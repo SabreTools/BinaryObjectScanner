@@ -836,7 +836,7 @@ namespace LibMSI
             }
 
             Infile = stg;
-            CacheInfileStructure(); // TODO: Investigate caching. Is it reading the right data?
+            CacheInfileStructure();
 
             Strings = LoadStringTable(Infile, out int bytes_per_strref);
             if (Strings == null)

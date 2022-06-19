@@ -508,7 +508,8 @@ namespace LibGSF.Input
                 return null;
 
             // Avoid creating a circular reference
-            (Info.SmallBlockFile as GsfInfileMSOle)?.Info?.Unref();
+            if (Info.SmallBlockFile is GsfInfileMSOle sbFile)
+                sbFile.Info.Unref();
 
             if (Info.SmallBlockBat.Blocks != null)
                 return null;
@@ -616,7 +617,6 @@ namespace LibGSF.Input
             {
                 Input = input,
                 Info = Info.Ref(),
-                Stream = null,
             };
 
             return dst;
@@ -847,7 +847,7 @@ namespace LibGSF.Input
                         return null;
                     }
 
-                    if (sb_file.Read((int)Math.Min(remaining, Info.Header.SB_SIZE), child.Stream, (int)(i << Info.Header.SB_SHIFT)) == null)
+                    if (sb_file.Read(Math.Min(remaining, Info.Header.SB_SIZE), child.Stream, (int)(i << Info.Header.SB_SHIFT)) == null)
                     {
                         Console.Error.WriteLine($"Failure reading block {i} for '{dirent.Header.NAME_STRING}'");
                         err = new Exception("Failure reading block");
