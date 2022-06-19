@@ -1956,8 +1956,8 @@ namespace LibMSI
             {
                 Exception err = null;
                 GsfInput input = Infile.ChildByIndex(i, ref err);
-                string name = input.Name;
-                byte[] name8 = Encoding.ASCII.GetBytes(name);
+                string name = input?.Name;
+                byte[] name8 = Encoding.ASCII.GetBytes(name ?? string.Empty);
 
                 if (name == null)
                 {

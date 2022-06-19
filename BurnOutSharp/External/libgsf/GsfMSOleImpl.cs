@@ -109,6 +109,9 @@ namespace LibGSF
 
         #region Properties
 
+        /// <summary>
+        /// MS-OLE header signature
+        /// </summary>
         /// <remarks>0x00</remarks>
         public byte[] SIGNATURE { get; set; }
 
@@ -136,9 +139,15 @@ namespace LibGSF
         /// <remarks>0x1C</remarks>
         public ushort BYTE_ORDER { get; set; }
 
+        /// <summary>
+        /// Number of bits to shift to get a big block size
+        /// </summary>
         /// <remarks>0x1E</remarks>
         public ushort BB_SHIFT { get; set; }
 
+        /// <summary>
+        /// Number of bits to shift to get a small block size
+        /// </summary>
         /// <remarks>0x20</remarks>
         public ushort SB_SHIFT { get; set; }
 
@@ -150,10 +159,16 @@ namespace LibGSF
 
         /// <remarks>0x28</remarks>
         public uint CSECTDIR { get; set; }
-
+        
+        /// <summary>
+        /// Reported number of big block BATs in the file
+        /// </summary>
         /// <remarks>0x2C</remarks>
         public uint NUM_BAT { get; set; }
 
+        /// <summary>
+        /// Directory entry start offset
+        /// </summary>
         /// <remarks>0x30</remarks>
         public uint DIRENT_START { get; set; }
 
@@ -164,23 +179,38 @@ namespace LibGSF
         public uint TRANSACTING_SIGNATURE { get; set; }
 
         /// <summary>
-        /// Transition between small and big blocks
+        /// File size transition between small and big blocks
         /// </summary>
         /// <remarks>0x38</remarks>
         public uint THRESHOLD { get; set; }
 
+        /// <summary>
+        /// Offset where small block BATs start
+        /// </summary>
         /// <remarks>0x3C</remarks>
         public uint SBAT_START { get; set; }
 
+        /// <summary>
+        /// Reported number of small block BATs in the file
+        /// </summary>
         /// <remarks>0x40</remarks>
         public uint NUM_SBAT { get; set; }
 
+        /// <summary>
+        /// Block ID of the first MetaBAT block
+        /// </summary>
         /// <remarks>0x44</remarks>
         public uint METABAT_BLOCK { get; set; }
 
+        /// <summary>
+        /// Number of MetaBAT blocks in the file
+        /// </summary>
         /// <remarks>0x48</remarks>
         public uint NUM_METABAT { get; set; }
 
+        /// <summary>
+        /// Block ID of the first BAT block
+        /// </summary>
         /// <remarks>0x4C</remarks>
         public uint START_BAT { get; set; }
 
@@ -193,10 +223,16 @@ namespace LibGSF
         /// </summary>
         public bool LITTLE_ENDIAN => BYTE_ORDER == 0xFFFE;
 
+        /// <summary>
+        /// Size of a big block, in bytes
+        /// </summary>
         public int BB_SIZE => 1 << BB_SHIFT;
 
         public int BB_FILTER => BB_SIZE << 1;
 
+        /// <summary>
+        /// Size of a small block, in bytes
+        /// </summary>
         public int SB_SIZE => 1 << SB_SHIFT;
 
         public int SB_FILTER => SB_SIZE << 1;
@@ -340,12 +376,24 @@ namespace LibGSF
     {
         #region Constants
 
+        /// <summary>
+        /// Maximum length of the entry name including the null terminator, in bytes
+        /// </summary>
         public const int DIRENT_MAX_NAME_SIZE = 0x40;
 
+        /// <summary>
+        /// Size of the non-name parts of directory entry header, in bytes
+        /// </summary>
         public const int DIRENT_DETAILS_SIZE = 0x40;
 
+        /// <summary>
+        /// Total size of the directory entry header
+        /// </summary>
         public const int DIRENT_SIZE = (DIRENT_MAX_NAME_SIZE + DIRENT_DETAILS_SIZE);
 
+        /// <summary>
+        /// Magic number indicating the termination of a node
+        /// </summary>
         public const uint DIRENT_MAGIC_END = 0xffffffff;
 
         #region Offsets
@@ -384,27 +432,42 @@ namespace LibGSF
 
         #region Properties
 
+        /// <summary>
+        /// Name of the entry as a byte array
+        /// </summary>
         /// <remarks>0x00</remarks>
         public byte[] NAME { get; set; }
 
         /// <summary>
-        /// Length in bytes incl 0 terminator
+        /// Length of the entry name including the null terminator, in bytes
         /// </summary>
         /// <remarks>0x40</remarks>
         public ushort NAME_LEN { get; set; }
 
+        /// <summary>
+        /// Indicates the type of directory entry
+        /// </summary>
         /// <remarks>0x42</remarks>
         public DIRENT_TYPE TYPE_FLAG { get; set; }
 
         /// <remarks>0x43</remarks>
         public byte COLOR { get; set; }
 
+        /// <summary>
+        /// Index of the previous item in the linked list, DIRENT_MAGIC_END if none
+        /// </summary>
         /// <remarks>0x44</remarks>
         public uint PREV { get; set; }
 
+        /// <summary>
+        /// Index of the next item in the linked list, DIRENT_MAGIC_END if none
+        /// </summary>
         /// <remarks>0x48</remarks>
         public uint NEXT { get; set; }
 
+        /// <summary>
+        /// Index of the first child directory entry, DIRENT_MAGIC_END if none
+        /// </summary>
         /// <remarks>0x4C</remarks>
         public uint CHILD { get; set; }
 
@@ -421,20 +484,26 @@ namespace LibGSF
         public uint USERFLAGS { get; set; }
 
         /// <summary>
-        /// For files
+        /// Entry creation time; For files
         /// </summary>
         /// <remarks>0x64</remarks>
         public ulong CREATE_TIME { get; set; }
 
         /// <summary>
-        /// For files
+        /// Entry modification time; For files
         /// </summary>
         /// <remarks>0x6C</remarks>
         public ulong MODIFY_TIME { get; set; }
 
+        /// <summary>
+        /// Index of the first block that contains this directory entry
+        /// </summary>
         /// <remarks>0x74</remarks>
         public uint FIRSTBLOCK { get; set; }
 
+        /// <summary>
+        /// Size of the file contained within this directory entry
+        /// </summary>
         /// <remarks>0x78</remarks>
         public uint FILE_SIZE { get; set; }
 

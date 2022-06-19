@@ -32,8 +32,7 @@ using static LibGSF.GsfUtils;
 
 namespace LibGSF.Input
 {
-    // TODO: Can this be made internal?
-    public class MSOleBAT
+    internal class MSOleBAT
     {
         #region Properties
 
@@ -65,9 +64,8 @@ namespace LibGSF.Input
         /// <param name="block">The first block in the list.</param>
         /// <param name="res">Where to store the result.</param>
         /// <returns>True on error.</returns>
-        public static bool Create(MSOleBAT metabat, uint block, out MSOleBAT res)
+        public static bool Create(in MSOleBAT metabat, uint block, out MSOleBAT res)
         {
-            // NOTE : Only use size as a suggestion, sometimes it is wrong
             List<uint> bat = new List<uint>();
             byte[] used = new byte[1 + metabat.NumBlocks / 8];
 
@@ -98,10 +96,14 @@ namespace LibGSF.Input
         #endregion
     }
 
-    // TODO: Can this be made internal?
-    public class MSOleDirent
+    internal class MSOleDirent
     {
         #region Properties
+
+        /// <summary>
+        /// Internal representation of the MS-OLE directory entry header
+        /// </summary>
+        public MSOleDirectoryEntry Header { get; set; }
 
         public GsfMSOleSortingKey Key { get; set; }
 
@@ -110,11 +112,6 @@ namespace LibGSF.Input
         public bool UseSmallBlock { get; set; }
 
         public List<MSOleDirent> Children { get; set; } = new List<MSOleDirent>();
-
-        /// <summary>
-        /// Internal representation of the MS-OLE directory entry header
-        /// </summary>
-        internal MSOleDirectoryEntry Header { get; set; }
 
         #endregion
 
@@ -136,14 +133,23 @@ namespace LibGSF.Input
         #endregion
     }
 
-    // TODO: Can this be made internal?
-    public class MSOleInfo
+    internal class MSOleInfo
     {
         #region Properties
+
+        /// <summary>
+        /// Internal representation of the MS-OLE header
+        /// </summary>
+        public MSOleHeader Header { get; set; }
 
         public MSOleBAT BigBlockBat { get; set; }
 
         public MSOleBAT SmallBlockBat { get; set; }
+
+        /// <summary>
+        /// MetaBAT for all BATs in the file
+        /// </summary>
+        public uint[] MetaBAT { get; set; }
 
         /// <summary>
         /// Maximum number of blocks derived from total input length and block size
@@ -156,11 +162,6 @@ namespace LibGSF.Input
 
         public int RefCount { get; set; }
 
-        /// <summary>
-        /// Internal representation of the MS-OLE header
-        /// </summary>
-        internal MSOleHeader Header { get; set; }
-
         #endregion
 
         #region Functions
@@ -170,6 +171,8 @@ namespace LibGSF.Input
             if (RefCount-- != 1)
                 return;
 
+            Header = null;
+
             if (RootDir != null)
             {
                 RootDir.Free();
@@ -178,8 +181,6 @@ namespace LibGSF.Input
 
             if (SmallBlockFile != null)
                 SmallBlockFile = null;
-
-            Header = null;
         }
 
         public MSOleInfo Ref()
@@ -195,18 +196,18 @@ namespace LibGSF.Input
     {
         #region Properties
 
-        public GsfInput Input { get; private set; } = null;
+        internal GsfInput Input { get; private set; } = null;
 
-        public MSOleInfo Info { get; private set; } = null;
+        internal MSOleInfo Info { get; private set; } = null;
 
-        public MSOleDirent DirectoryEntry { get; private set; }
+        internal MSOleDirent DirectoryEntry { get; private set; }
 
-        public MSOleBAT Bat { get; private set; }
+        internal MSOleBAT Bat { get; private set; }
 
-        public long CurBlock { get; private set; } = BAT_MAGIC_UNUSED;
+        internal long CurBlock { get; private set; } = BAT_MAGIC_UNUSED;
 
         /// <remarks>Actually `{ byte[] Buf, long BufSize }`</remarks>
-        public byte[] Stream { get; private set; }
+        internal byte[] Stream { get; private set; }
 
         #endregion
 
@@ -251,8 +252,7 @@ namespace LibGSF.Input
         /// </summary>
         ~GsfInfileMSOle()
         {
-            if (Input != null)
-                Input = null;
+            Input = null;
 
             if (Info != null && Info.SmallBlockFile != this)
             {
@@ -320,14 +320,11 @@ namespace LibGSF.Input
                 optional_buffer_ptr = 0;
             }
 
-            int ptr = optional_buffer_ptr; // optional_buffer[0]
+            int ptr = optional_buffer_ptr; // optional_buffer[optional_buffer_ptr]
             int count;
             for (i = first_block; i <= last_block; i++, ptr += count, num_bytes -= count)
             {
-                count = (int)(Info.Header.BB_SIZE - offset);
-                if (count > num_bytes)
-                    count = num_bytes;
-
+                count = (int)Math.Min(Info.Header.BB_SIZE - offset, num_bytes);
                 if (!SeekBlock(Bat.Blocks[i], offset))
                     return null;
 
@@ -450,9 +447,9 @@ namespace LibGSF.Input
         /// either from the OLE header, or a meta-bat block.
         /// </summary>
         /// <returns>A pointer to the element after the last position filled</returns>
-        private int? ReadMetabat(uint[] bats, int batsPtr, uint max_bat, uint[] metabat, uint metabat_end)
+        private int? ReadMetabat(uint[] bats, int batsPtr, uint max_bat, in uint[] metabat, int metabatPtr, in uint metabat_end)
         {
-            for (int metabatPtr = 0; metabatPtr < metabat_end; metabatPtr++)
+            for (; metabatPtr < metabat_end; metabatPtr++)
             {
                 if (metabat[metabatPtr] != BAT_MAGIC_UNUSED)
                 {
@@ -477,6 +474,7 @@ namespace LibGSF.Input
                     // 'unused' entries in the metabat.  Let's assume that
                     // corresponds to lots of unused blocks
                     // http://bugzilla.gnome.org/show_bug.cgi?id=336858
+
                     uint i = (uint)(Info.Header.BB_SIZE / BAT_INDEX_SIZE);
                     while (i-- > 0)
                     {
@@ -491,7 +489,7 @@ namespace LibGSF.Input
         /// <summary>
         /// Copy some some raw data into an array of uint.
         /// </summary>
-        private static void GetUnsignedInts(uint[] dst, ref int dstPtr, byte[] src, int srcPtr, int num_bytes)
+        private static void GetUnsignedInts(uint[] dst, int dstPtr, in byte[] src, int srcPtr, int num_bytes)
         {
             for (; (num_bytes -= BAT_INDEX_SIZE) >= 0; srcPtr += BAT_INDEX_SIZE)
             {
@@ -510,8 +508,7 @@ namespace LibGSF.Input
                 return null;
 
             // Avoid creating a circular reference
-            if (Info.SmallBlockFile is GsfInfileMSOle)
-                (Info.SmallBlockFile as GsfInfileMSOle).Info.Unref();
+            (Info.SmallBlockFile as GsfInfileMSOle)?.Info?.Unref();
 
             if (Info.SmallBlockBat.Blocks != null)
                 return null;
@@ -520,14 +517,12 @@ namespace LibGSF.Input
                 return null;
 
             Info.SmallBlockBat.Blocks = new uint[meta_sbat.NumBlocks * (Info.Header.BB_SIZE / BAT_INDEX_SIZE)];
-            ReadMetabat(Info.SmallBlockBat.Blocks, 0, Info.SmallBlockBat.NumBlocks, meta_sbat.Blocks, meta_sbat.NumBlocks);
+            ReadMetabat(Info.SmallBlockBat.Blocks, 0, Info.SmallBlockBat.NumBlocks, meta_sbat.Blocks, 0, meta_sbat.NumBlocks);
 
             return Info.SmallBlockFile;
         }
 
         private static int DirectoryEntryCompare(MSOleDirent a, MSOleDirent b) => SortingKeyCompare(a.Key, b.Key);
-
-        private static DateTime? DateTimeFromFileTime(ulong ft) => ft == 0 ? (DateTime?)null : DateTime.FromFileTime((long)ft);
 
         /// <summary>
         /// Parse dirent number <paramref name="entry"/> and recursively handle its siblings and children.
@@ -540,7 +535,7 @@ namespace LibGSF.Input
             if (entry > uint.MaxValue / MSOleDirectoryEntry.DIRENT_SIZE)
                 return null;
 
-            uint block = ((entry * MSOleDirectoryEntry.DIRENT_SIZE) >> Info.Header.BB_SHIFT);
+            uint block = (entry * MSOleDirectoryEntry.DIRENT_SIZE) >> Info.Header.BB_SHIFT;
             if (block >= Bat.NumBlocks)
                 return null;
 
@@ -577,14 +572,13 @@ namespace LibGSF.Input
 
             MSOleDirent dirent = new MSOleDirent
             {
+                Header = directoryEntry,
                 Key = GsfMSOleSortingKey.Create(directoryEntry.NAME_STRING),
                 Index = entry,
 
                 // Root dir is always big block
                 UseSmallBlock = parent != null && (directoryEntry.FILE_SIZE < Info.Header.THRESHOLD),
                 Children = new List<MSOleDirent>(),
-
-                Header = directoryEntry,
             };
 
             if (parent != null)
@@ -622,7 +616,7 @@ namespace LibGSF.Input
             {
                 Input = input,
                 Info = Info.Ref(),
-                Stream = new byte[0],
+                Stream = null,
             };
 
             return dst;
@@ -665,18 +659,17 @@ namespace LibGSF.Input
 
             Info = new MSOleInfo
             {
+                Header = headerImpl,
                 BigBlockBat = new MSOleBAT(),
                 SmallBlockBat = new MSOleBAT(),
+                MetaBAT = null,
                 MaxBlock = (Input.Size - MSOleHeader.OLE_HEADER_SIZE + headerImpl.BB_SIZE - 1) / headerImpl.BB_SIZE,
                 RootDir = null,
                 SmallBlockFile = null,
                 RefCount = 1,
-
-                Header = headerImpl,
             };
 
-            uint[] metabat = null;
-            int metabatPtr = 0; // metabat[0]
+            int metabatPtr = 0; // MetaBAT[0]
             uint last;
             int? ptr = null;
 
@@ -686,14 +679,13 @@ namespace LibGSF.Input
             {
                 Info.BigBlockBat.Blocks = new uint[num_bat * (headerImpl.BB_SIZE / BAT_INDEX_SIZE)];
 
-                metabat = new uint[Math.Max(headerImpl.BB_SIZE, MSOleHeader.OLE_HEADER_SIZE)];
+                Info.MetaBAT = new uint[Math.Max(headerImpl.BB_SIZE, MSOleHeader.OLE_HEADER_SIZE)];
 
                 // Reading the elements invalidates this memory, make copy
-
-                GetUnsignedInts(metabat, ref metabatPtr, header, OLE_HEADER_START_BAT, MSOleHeader.OLE_HEADER_SIZE - OLE_HEADER_START_BAT);
+                GetUnsignedInts(Info.MetaBAT, metabatPtr, header, OLE_HEADER_START_BAT, MSOleHeader.OLE_HEADER_SIZE - OLE_HEADER_START_BAT);
                 
                 last = Math.Min(num_bat, OLE_HEADER_METABAT_SIZE);
-                ptr = ReadMetabat(Info.BigBlockBat.Blocks, 0, Info.BigBlockBat.NumBlocks, metabat, last); // TODO: Does this need to be offset by metabatPtr?
+                ptr = ReadMetabat(Info.BigBlockBat.Blocks, 0, Info.BigBlockBat.NumBlocks, Info.MetaBAT, metabatPtr, (uint)(metabatPtr + last));
                 num_bat -= last;
             }
 
@@ -703,7 +695,7 @@ namespace LibGSF.Input
             last = (uint)((Info.Header.BB_SIZE - BAT_INDEX_SIZE) / BAT_INDEX_SIZE);
             while (ptr != null && num_metabat-- > 0)
             {
-                byte[] tmp = GetBlock(metabat_block - 1, null);
+                byte[] tmp = GetBlock(metabat_block, null);
                 if (tmp == null)
                 {
                     ptr = null;
@@ -711,7 +703,7 @@ namespace LibGSF.Input
                 }
 
                 // Reading the elements invalidates this memory, make copy
-                GetUnsignedInts(metabat, ref metabatPtr, tmp, 0, Info.Header.BB_SIZE);
+                GetUnsignedInts(Info.MetaBAT, metabatPtr, tmp, 0, Info.Header.BB_SIZE);
 
                 if (num_metabat == 0)
                 {
@@ -726,7 +718,7 @@ namespace LibGSF.Input
                 }
                 else if (num_metabat > 0)
                 {
-                    metabat_block = metabat[last];
+                    metabat_block = Info.MetaBAT[last];
                     if (num_bat < last)
                     {
                         // ::num_bat and ::num_metabat are
@@ -739,7 +731,7 @@ namespace LibGSF.Input
                     num_bat -= last;
                 }
 
-                ptr = ReadMetabat(Info.BigBlockBat.Blocks, ptr.Value, Info.BigBlockBat.NumBlocks, metabat, last);
+                ptr = ReadMetabat(Info.BigBlockBat.Blocks, ptr.Value, Info.BigBlockBat.NumBlocks, Info.MetaBAT, metabatPtr, (uint)(metabatPtr + last));
             }
 
             bool fail = (ptr == null);
@@ -843,13 +835,19 @@ namespace LibGSF.Input
                 if (sb_file == null)
                     return null;
 
-                uint remaining = dirent.Header.FILE_SIZE;
+                int remaining = (int)dirent.Header.FILE_SIZE;
                 child.Stream = new byte[remaining];
 
-                for (uint i = 0; remaining > 0 && i < child.Bat.NumBlocks; i++, remaining -= (uint)Info.Header.SB_SIZE)
+                for (uint i = 0; remaining > 0 && i < child.Bat.NumBlocks; i++, remaining -= Info.Header.SB_SIZE)
                 {
-                    if (sb_file.Seek(child.Bat.Blocks[i] << Info.Header.SB_SHIFT, SeekOrigin.Begin)
-                        || sb_file.Read((int)Math.Min(remaining, Info.Header.SB_SIZE), child.Stream, (int)(i << Info.Header.SB_SHIFT)) == null)
+                    if (sb_file.Seek(child.Bat.Blocks[i] << Info.Header.SB_SHIFT, SeekOrigin.Begin))
+                    {
+                        Console.Error.WriteLine($"Failure seeking to block {i} for '{dirent.Header.NAME_STRING}'");
+                        err = new Exception("Failure seeking block");
+                        return null;
+                    }
+
+                    if (sb_file.Read((int)Math.Min(remaining, Info.Header.SB_SIZE), child.Stream, (int)(i << Info.Header.SB_SHIFT)) == null)
                     {
                         Console.Error.WriteLine($"Failure reading block {i} for '{dirent.Header.NAME_STRING}'");
                         err = new Exception("Failure reading block");
@@ -857,13 +855,12 @@ namespace LibGSF.Input
                     }
                 }
 
-                // TODO: Debug as to why this block would be hit
-                //if (remaining > 0)
-                //{
-                //    err = new Exception("Insufficient blocks");
-                //    Console.Error.WriteLine($"Small-block file '{dirent.Header.NAME_STRING}' has insufficient blocks ({child.Bat.NumBlocks}) for the stated size ({dirent.Header.FILE_SIZE})");
-                //    return null;
-                //}
+                if (remaining > 0)
+                {
+                    err = new Exception("Insufficient blocks");
+                    Console.Error.WriteLine($"Small-block file '{dirent.Header.NAME_STRING}' has insufficient blocks ({child.Bat.NumBlocks}) for the stated size ({dirent.Header.FILE_SIZE})");
+                    return null;
+                }
             }
 
             return child;
