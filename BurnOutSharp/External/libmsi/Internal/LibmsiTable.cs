@@ -258,11 +258,11 @@ namespace LibMSI.Internal
             byte[] inputBytes = Encoding.UTF8.GetBytes(input);
             int p = 0; // inputBytes[0]
 
-            byte[] output = new byte[input.Length + 1];
+            byte[] output = new byte[inputBytes.Length + 1];
             int q = 0; // output[0]
-            while (inputBytes[p] != 0)
+            while (p < inputBytes.Length && inputBytes[p] != 0)
             {
-                byte ch = inputBytes[p];
+                int ch = inputBytes[p];
                 if ((ch == 0xe3 && inputBytes[p + 1] >= 0xa0) || (ch == 0xe4 && inputBytes[p + 1] < 0xa0))
                 {
                     // UTF-8 encoding of 0x3800..0x47ff. 
