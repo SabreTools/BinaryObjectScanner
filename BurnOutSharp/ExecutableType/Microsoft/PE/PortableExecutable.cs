@@ -184,6 +184,15 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
 
         #endregion
 
+        #region Raw Other Data
+
+        /// <summary>
+        /// Data at the entry point of the application
+        /// </summary>
+        public byte[] EntryPointRaw;
+
+        #endregion
+
         #region Resources
 
         /// <summary>
@@ -366,6 +375,16 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
 
                 #endregion
 
+                #region Freeform Data
+
+                if (this.OptionalHeader != null && this.OptionalHeader.AddressOfEntryPoint != 0)
+                {
+                    int entryPointAddress = (int)ConvertVirtualAddress(this.OptionalHeader.AddressOfEntryPoint, SectionTable);
+                    this.EntryPointRaw = this.ReadArbitraryRange(entryPointAddress, 256);
+                }
+
+                #endregion
+
                 // Populate resources, if possible
                 PopulateResourceStrings();
             }
@@ -473,6 +492,13 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
 
                 // Text Section
                 this.TextSectionRaw = this.ReadRawSection(".text", force: true, first: false);
+
+                #endregion
+
+                #region Freeform Data
+
+                if (this.OptionalHeader != null && this.OptionalHeader.AddressOfEntryPoint != 0)
+                    this.EntryPointRaw = this.ReadArbitraryRange((int)this.OptionalHeader.AddressOfEntryPoint, 256);
 
                 #endregion
 

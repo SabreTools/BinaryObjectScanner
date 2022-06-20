@@ -57,7 +57,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE.Headers
         /// The address of the entry point relative to the image base when the executable file is loaded into memory.
         /// For program images, this is the starting address.
         /// For device drivers, this is the address of the initialization function.
-        // An entry point is optional for DLLs.
+        /// An entry point is optional for DLLs.
         /// When no entry point is present, this field must be zero.
         /// </summary>
         public uint AddressOfEntryPoint;
