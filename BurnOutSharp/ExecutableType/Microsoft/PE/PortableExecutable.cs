@@ -191,6 +191,11 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
         /// </summary>
         public byte[] EntryPointRaw;
 
+        /// <summary>
+        /// Data from the overlay of the application
+        /// </summary>
+        public byte[] OverlayRaw;
+
         #endregion
 
         #region Resources
@@ -377,10 +382,23 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
 
                 #region Freeform Data
 
+                // Entry Point Data
                 if (this.OptionalHeader != null && this.OptionalHeader.AddressOfEntryPoint != 0)
                 {
                     int entryPointAddress = (int)ConvertVirtualAddress(this.OptionalHeader.AddressOfEntryPoint, SectionTable);
                     this.EntryPointRaw = this.ReadArbitraryRange(entryPointAddress, 256);
+                }
+
+                // Overlay Data
+                SectionHeader lastSection = this.SectionTable.OrderByDescending(s => s.VirtualAddress).First();
+                uint lastSectionOffset = ConvertVirtualAddress(lastSection.VirtualAddress, SectionTable);
+                uint lastSectionSize = lastSection.VirtualSize;
+                if (lastSectionOffset + lastSectionSize < stream.Length)
+                {
+                    // TODO: https://www.autoitscript.com/forum/topic/153277-pe-file-overlay-extraction/
+                    // The Overlay is the area outside of the sections
+                    // There are a bunch of things that use this, including the signature
+                    // Use the link above to figure out how to read/parse it
                 }
 
                 #endregion
