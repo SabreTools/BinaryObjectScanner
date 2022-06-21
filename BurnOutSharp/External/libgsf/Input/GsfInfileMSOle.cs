@@ -268,7 +268,7 @@ namespace LibGSF.Input
         #region Functions
 
         /// <inheritdoc/>
-        protected override GsfInput DupImpl(ref Exception err) => (Container as GsfInfileMSOle)?.CreateChild(DirectoryEntry, ref err);
+        protected override GsfInput DupImpl(ref Exception err) => (Container as GsfInfileMSOle)?.NewChild(DirectoryEntry, ref err);
 
         /// <inheritdoc/>
         protected override byte[] ReadImpl(int num_bytes, byte[] optional_buffer, int optional_buffer_ptr)
@@ -352,7 +352,7 @@ namespace LibGSF.Input
             foreach (MSOleDirent dirent in DirectoryEntry.Children)
             {
                 if (i-- <= 0)
-                    return CreateChild(dirent, ref error);
+                    return NewChild(dirent, ref error);
             }
 
             return null;
@@ -376,7 +376,7 @@ namespace LibGSF.Input
             foreach (MSOleDirent dirent in DirectoryEntry.Children)
             {
                 if (dirent.Header.NAME_STRING != null && dirent.Header.NAME_STRING == name)
-                    return CreateChild(dirent, ref error);
+                    return NewChild(dirent, ref error);
             }
 
             return null;
@@ -503,7 +503,7 @@ namespace LibGSF.Input
                 return Info.SmallBlockFile;
 
             Exception err = null;
-            Info.SmallBlockFile = CreateChild(Info.RootDir, ref err);
+            Info.SmallBlockFile = NewChild(Info.RootDir, ref err);
             if (Info.SmallBlockFile == null)
                 return null;
 
@@ -781,7 +781,7 @@ namespace LibGSF.Input
             return diff > 0 ? +1 : (diff < 0 ? -1 : 0);
         }
 
-        private GsfInput CreateChild(MSOleDirent dirent, ref Exception err)
+        private GsfInput NewChild(MSOleDirent dirent, ref Exception err)
         {
             GsfInfileMSOle child = PartiallyDuplicate(ref err);
             if (child == null)
@@ -808,12 +808,13 @@ namespace LibGSF.Input
 
             MSOleBAT metabat;
             GsfInput sb_file = null;
+            MSOleInfo info = Info;
 
             // Build the bat
             if (dirent.UseSmallBlock)
             {
-                metabat = Info.SmallBlockBat;
                 sb_file = GetSmallBlockFile();
+                metabat = info.SmallBlockBat;
                 if (sb_file == null)
                 {
                     err = new Exception("Failed to access child");
@@ -822,7 +823,7 @@ namespace LibGSF.Input
             }
             else
             {
-                metabat = Info.BigBlockBat;
+                metabat = info.BigBlockBat;
             }
 
             if (MSOleBAT.Create(metabat, dirent.Header.FIRSTBLOCK, out MSOleBAT tempBat))
@@ -838,16 +839,16 @@ namespace LibGSF.Input
                 int remaining = (int)dirent.Header.FILE_SIZE;
                 child.Stream = new byte[remaining];
 
-                for (uint i = 0; remaining > 0 && i < child.Bat.NumBlocks; i++, remaining -= Info.Header.SB_SIZE)
+                for (uint i = 0; remaining > 0 && i < child.Bat.NumBlocks; i++, remaining -= info.Header.SB_SIZE)
                 {
-                    if (sb_file.Seek(child.Bat.Blocks[i] << Info.Header.SB_SHIFT, SeekOrigin.Begin))
+                    if (sb_file.Seek(child.Bat.Blocks[i] << info.Header.SB_SHIFT, SeekOrigin.Begin))
                     {
                         Console.Error.WriteLine($"Failure seeking to block {i} for '{dirent.Header.NAME_STRING}'");
                         err = new Exception("Failure seeking block");
                         return null;
                     }
 
-                    if (sb_file.Read(Math.Min(remaining, Info.Header.SB_SIZE), child.Stream, (int)(i << Info.Header.SB_SHIFT)) == null)
+                    if (sb_file.Read(Math.Min(remaining, info.Header.SB_SIZE), child.Stream, (int)(i << info.Header.SB_SHIFT)) == null)
                     {
                         Console.Error.WriteLine($"Failure reading block {i} for '{dirent.Header.NAME_STRING}'");
                         err = new Exception("Failure reading block");
