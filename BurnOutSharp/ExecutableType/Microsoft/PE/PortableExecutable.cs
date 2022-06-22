@@ -390,15 +390,16 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
                 }
 
                 // Overlay Data
-                SectionHeader lastSection = this.SectionTable.OrderByDescending(s => s.VirtualAddress).First();
-                uint lastSectionOffset = ConvertVirtualAddress(lastSection.VirtualAddress, SectionTable);
-                uint lastSectionSize = lastSection.VirtualSize;
-                if (lastSectionOffset + lastSectionSize < stream.Length)
+                if (this.SectionTable != null && this.SectionTable.Length > 0)
                 {
-                    // TODO: https://www.autoitscript.com/forum/topic/153277-pe-file-overlay-extraction/
-                    // The Overlay is the area outside of the sections
-                    // There are a bunch of things that use this, including the signature
-                    // Use the link above to figure out how to read/parse it
+                    // TODO: Read certificate data separately
+                    int overlayOffset = this.SectionTable
+                        .Select(sh => (int)(ConvertVirtualAddress(sh.VirtualAddress, SectionTable) + sh.VirtualSize))
+                        .OrderByDescending(o => o)
+                        .First();
+
+                    if (overlayOffset < stream.Length)
+                        this.OverlayRaw = this.ReadArbitraryRange(rangeStart: overlayOffset);
                 }
 
                 #endregion
@@ -515,8 +516,25 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
 
                 #region Freeform Data
 
+                // Entry Point Data
                 if (this.OptionalHeader != null && this.OptionalHeader.AddressOfEntryPoint != 0)
-                    this.EntryPointRaw = this.ReadArbitraryRange((int)this.OptionalHeader.AddressOfEntryPoint, 256);
+                {
+                    int entryPointAddress = (int)ConvertVirtualAddress(this.OptionalHeader.AddressOfEntryPoint, SectionTable);
+                    this.EntryPointRaw = this.ReadArbitraryRange(entryPointAddress, 256);
+                }
+
+                // Overlay Data
+                if (this.SectionTable != null && this.SectionTable.Length > 0)
+                {
+                    // TODO: Read certificate data separately
+                    int overlayOffset = this.SectionTable
+                        .Select(sh => (int)(ConvertVirtualAddress(sh.VirtualAddress, SectionTable) + sh.VirtualSize))
+                        .OrderByDescending(o => o)
+                        .First();
+
+                    if (overlayOffset < content.Length)
+                        this.OverlayRaw = this.ReadArbitraryRange(rangeStart: overlayOffset);
+                }
 
                 #endregion
 
