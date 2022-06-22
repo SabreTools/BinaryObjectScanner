@@ -47,26 +47,17 @@ namespace BurnOutSharp.ProtectionType
                 return $"SecuROM SLL Protected (for SecuROM v8.x)";
 
             // Search after the last section
-            // TODO: Figure out how to do this in a more reasonable way
-            var lastSection = sections.LastOrDefault();
-            if (lastSection != null)
+            if (pex.OverlayRaw != null)
             {
-                int sectionAddr = (int)lastSection.PointerToRawData;
-                int sectionEnd = sectionAddr + (int)lastSection.VirtualSize;
-
-                var postLastSectionData = pex.ReadArbitraryRange(rangeStart: sectionEnd);
-                if (postLastSectionData != null)
+                var matchers = new List<ContentMatchSet>
                 {
-                    var matchers = new List<ContentMatchSet>
-                    {
-                        // AddD + (char)0x03 + (char)0x00 + (char)0x00 + (char)0x00)
-                        new ContentMatchSet(new byte?[] { 0x41, 0x64, 0x64, 0x44, 0x03, 0x00, 0x00, 0x00 }, GetV4Version, "SecuROM"),
-                    };
+                    // AddD + (char)0x03 + (char)0x00 + (char)0x00 + (char)0x00)
+                    new ContentMatchSet(new byte?[] { 0x41, 0x64, 0x64, 0x44, 0x03, 0x00, 0x00, 0x00 }, GetV4Version, "SecuROM"),
+                };
 
-                    string match = MatchUtil.GetFirstMatch(file, postLastSectionData, matchers, includeDebug);
-                    if (!string.IsNullOrWhiteSpace(match))
-                        return match;
-                }
+                string match = MatchUtil.GetFirstMatch(file, pex.OverlayRaw, matchers, includeDebug);
+                if (!string.IsNullOrWhiteSpace(match))
+                    return match;
             }
 
             // Get the sections 5+, if they exist (example names: .fmqyrx, .vcltz, .iywiak)
@@ -238,7 +229,7 @@ namespace BurnOutSharp.ProtectionType
         {
             int index = 172; // 64 bytes for DOS stub, 236 bytes in total
             byte[] bytes = new ReadOnlySpan<byte>(pex.DOSStubHeader.ExecutableData, index, 4).ToArray();
-            
+
             //SecuROM 7 new and 8
             if (bytes[3] == 0x5C) // if (bytes[0] == 0xED && bytes[3] == 0x5C {
             {

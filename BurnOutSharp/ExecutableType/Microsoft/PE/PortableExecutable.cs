@@ -394,7 +394,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
                 {
                     // TODO: Read certificate data separately
                     int overlayOffset = this.SectionTable
-                        .Select(sh => (int)(ConvertVirtualAddress(sh.VirtualAddress, SectionTable) + sh.VirtualSize))
+                        .Select(sh => (int)(sh.PointerToRawData + sh.VirtualSize))
                         .OrderByDescending(o => o)
                         .First();
 
@@ -528,7 +528,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
                 {
                     // TODO: Read certificate data separately
                     int overlayOffset = this.SectionTable
-                        .Select(sh => (int)(ConvertVirtualAddress(sh.VirtualAddress, SectionTable) + sh.VirtualSize))
+                        .Select(sh => (int)(sh.PointerToRawData + sh.VirtualSize))
                         .OrderByDescending(o => o)
                         .First();
 
