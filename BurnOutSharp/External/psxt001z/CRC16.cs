@@ -1,9 +1,9 @@
-﻿namespace BurnOutSharp.External.psxt001z
+﻿namespace psxt001z
 {
     public class CRC16
     {
         // Table of CRC constants - implements x^16+x^12+x^5+1
-        private static ushort[] crc16_tab = new ushort[]
+        private static ushort[] CRC16Table = new ushort[]
         {
             0x0000, 0x1021, 0x2042, 0x3063, 0x4084, 0x50a5, 0x60c6, 0x70e7,
             0x8108, 0x9129, 0xa14a, 0xb16b, 0xc18c, 0xd1ad, 0xe1ce, 0xf1ef,
@@ -44,7 +44,7 @@
             ushort cksum = 0;
             for (int i = 0; i < len; i++)
             {
-                cksum = (ushort)(crc16_tab[((cksum >> 8) ^ buf[bufPtr++]) & 0xFF] ^ (cksum << 8));
+                cksum = (ushort)(CRC16Table[((cksum >> 8) ^ buf[bufPtr++]) & 0xFF] ^ (cksum << 8));
             }
 
             return (ushort)(~cksum);
