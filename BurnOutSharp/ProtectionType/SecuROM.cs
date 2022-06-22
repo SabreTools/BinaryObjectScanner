@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Interfaces;
@@ -29,6 +28,10 @@ namespace BurnOutSharp.ProtectionType
             bool matroschSection = pex.ContainsSection("matrosch", exact: true);
             if (matroschSection)
                 return $"SecuROM Matroschka Package";
+
+            bool dsstextSection = pex.ContainsSection(".dsstext", exact: true);
+            if (dsstextSection)
+                return $"SecuROM 8.03.03+";
 
             // Get the .securom section, if it exists
             bool securomSection = pex.ContainsSection(".securom", exact: true);
