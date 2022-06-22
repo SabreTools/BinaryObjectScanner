@@ -33,6 +33,9 @@ namespace BurnOutSharp.ProtectionType
             if (!string.IsNullOrWhiteSpace(name) && name.Contains("Protected Module"))
                 return $"StarForce 5";
 
+            // TODO: Check to see if there are any missing checks
+            // https://github.com/horsicq/Detect-It-Easy/blob/master/db/PE/StarForce.2.sg
+
             // TODO: Find this inside of the .rsrc section using the executable header
             // Get the .rsrc section, if it exists
             var rsrcSection = pex.GetLastSection(".rsrc", exact: true);
