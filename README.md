@@ -40,6 +40,7 @@ Below is a list of protections detected by BurnOutSharp. The two columns explain
 | Cenga ProtectDVD | True | False | |
 | CodeLock / CodeLok / CopyLok | True | False | Partially unconfirmed² |
 | CopyKiller | True | True | Unconfirmed¹ |
+| Denuvo | True | False | |
 | DiscGuard | False | True | Unconfirmed¹ |
 | DVD-Movie-PROTECT | False | True | Unconfirmed¹ |
 | DVD Crypt | False | True | Unconfirmed¹ |
