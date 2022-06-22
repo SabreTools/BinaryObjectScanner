@@ -41,6 +41,9 @@ namespace BurnOutSharp.ProtectionType
             else if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("T@GES", StringComparison.OrdinalIgnoreCase))
                 return $"TAGES Activation Client {GetVersion(pex)}";
 
+            // TODO: Add entry point check
+            // https://github.com/horsicq/Detect-It-Easy/blob/master/db/PE/Tages.2.sg
+
             // Get the .data section, if it exists
             if (pex.DataSectionRaw != null)
             {

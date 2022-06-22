@@ -39,7 +39,7 @@ namespace LibMSI
 
         internal string Query { get; set; }
 
-        internal LinkedList<object> Mem { get; set; }
+        internal LinkedList<object> Mem { get; set; } = new LinkedList<object>();
 
         #endregion
 
@@ -245,7 +245,7 @@ namespace LibMSI
         internal static LibmsiResult QueryOpen(LibmsiDatabase db, out LibmsiQuery view, string query)
         {
             Exception err = null;
-            view = LibmsiQuery.Create(db, query, ref err);
+            view = Create(db, query, ref err);
             if (err != null)
                 return LibmsiResult.LIBMSI_RESULT_FUNCTION_FAILED;
 

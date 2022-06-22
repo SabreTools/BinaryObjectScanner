@@ -39,6 +39,38 @@ namespace BurnOutSharp.ProtectionType
             if (sections == null)
                 return null;
 
+            // Get the entry point data, if it exists
+            if (pex.EntryPointRaw != null)
+            {
+                var matchers = new List<ContentMatchSet>
+                {
+                    // (char)0x89 + (char)0x25 + * + * + * + * + * + * + * + * + (char)0xEB
+                    new ContentMatchSet(new byte?[]
+                    {
+                        0x89, 0x25, null, null, null, null, null, null,
+                        null, null, 0xEB,
+                    }, "ActiveMARK"),
+                };
+
+                string match = MatchUtil.GetFirstMatch(file, pex.EntryPointRaw, matchers, includeDebug);
+                if (!string.IsNullOrWhiteSpace(match))
+                    return match;
+            }
+
+            // Get the overlay data, if it exists
+            if (pex.OverlayRaw != null)
+            {
+                var matchers = new List<ContentMatchSet>
+                {
+                    // (char)0x00 + TMSAMVOH
+                    new ContentMatchSet(new byte?[] { 0x00, 0x54, 0x4D, 0x53, 0x41, 0x4D, 0x56, 0x4F, 0x48, }, "ActiveMARK"),
+                };
+
+                string match = MatchUtil.GetFirstMatch(file, pex.OverlayRaw, matchers, includeDebug);
+                if (!string.IsNullOrWhiteSpace(match))
+                    return match;
+            }
+
             // Get the last .bss section, if it exists
             var bssSectionRaw = pex.ReadRawSection(".bss", first: false);
             if (bssSectionRaw != null)

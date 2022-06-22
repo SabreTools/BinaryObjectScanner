@@ -35,6 +35,9 @@ namespace BurnOutSharp.ProtectionType
             else if (!string.IsNullOrEmpty(name) && name.Contains("Steam Client Service"))
                 return "Steam";
 
+            /// TODO: Add entry point checks
+            /// https://github.com/horsicq/Detect-It-Easy/blob/master/db/PE/Steam.2.sg
+
             return null;
         }
 

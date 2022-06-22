@@ -206,7 +206,7 @@ namespace LibGSF.Input
         }
 
         /// <inheritdoc/>
-        public override bool Seek(long offset, SeekOrigin whence)
+        protected override bool SeekImpl(long offset, SeekOrigin whence)
         {
             if (File == null)
                 return true;

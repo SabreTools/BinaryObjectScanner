@@ -199,7 +199,7 @@ namespace LibMSI.Internal
             int inputPtr = 0; // input[0]
             while (count-- != 0)
             {
-                int ch = input[inputPtr++];
+                int ch = inputPtr < input.Length ? input[inputPtr++] : 0;
                 if (ch == 0)
                 {
                     output[p] = (byte)ch;
@@ -209,11 +209,19 @@ namespace LibMSI.Internal
                 if ((ch < 0x80) && (Utf2Mime(ch) >= 0))
                 {
                     ch = Utf2Mime(ch);
-                    next = input[inputPtr];
-                    if (next != 0 && (next < 0x80))
-                        next = Utf2Mime(next);
+
+                    if (inputPtr < input.Length)
+                    {
+                        next = input[inputPtr];
+                        if (next != 0 && (next < 0x80))
+                            next = Utf2Mime(next);
+                        else
+                            next = -1;
+                    }
                     else
+                    {
                         next = -1;
+                    }
 
                     if (next == -1)
                     {
@@ -250,11 +258,11 @@ namespace LibMSI.Internal
             byte[] inputBytes = Encoding.UTF8.GetBytes(input);
             int p = 0; // inputBytes[0]
 
-            byte[] output = new byte[input.Length + 1];
+            byte[] output = new byte[inputBytes.Length + 1];
             int q = 0; // output[0]
-            while (inputBytes[p] != 0)
+            while (p < inputBytes.Length && inputBytes[p] != 0)
             {
-                byte ch = inputBytes[p];
+                int ch = inputBytes[p];
                 if ((ch == 0xe3 && inputBytes[p + 1] >= 0xa0) || (ch == 0xe4 && inputBytes[p + 1] < 0xa0))
                 {
                     // UTF-8 encoding of 0x3800..0x47ff. 
@@ -309,7 +317,7 @@ namespace LibMSI.Internal
             if (stg == null)
                 return LibmsiResult.LIBMSI_RESULT_FUNCTION_FAILED;
 
-            string encname = EncodeStreamName(true, stname);
+            string encname = EncodeStreamName(true, stname).TrimEnd('\0');
 
             Exception err = null;
             GsfInput stm = stg.ChildByName(encname, ref err);
@@ -349,7 +357,7 @@ namespace LibMSI.Internal
             if (db.Outfile == null)
                 return LibmsiResult.LIBMSI_RESULT_FUNCTION_FAILED;
 
-            string encname = EncodeStreamName(true, stname);
+            string encname = EncodeStreamName(true, stname).TrimEnd('\0');
             GsfOutput stm = db.Outfile.NewChild(encname, false);
 
             if (stm == null)
@@ -1212,7 +1220,7 @@ namespace LibMSI.Internal
                 }
             }
 
-            pstname = EncodeStreamName(false, stname);
+            pstname = EncodeStreamName(false, stname).TrimEnd('\0');
             return LibmsiResult.LIBMSI_RESULT_SUCCESS;
 
         err:

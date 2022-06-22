@@ -717,7 +717,7 @@ namespace LibMSI.Internal
         /// </summary>
         public LibmsiView View { get; set; }
 
-        public LinkedList<object> Mem { get; set; }
+        public LinkedList<object> Mem { get; set; } = new LinkedList<object>();
 
         #endregion
 
@@ -786,16 +786,16 @@ namespace LibMSI.Internal
             // to reallocate them elsewhere.
 
             // Their size.
-            int yystacksize = YYINITDEPTH;
+            long yystacksize = YYINITDEPTH;
 
             // The state stack: array, bottom, top.
-            List<byte> yyssa = new List<byte>(YYINITDEPTH);
+            byte[] yyssa = new byte[YYINITDEPTH];
             int yyss = 0; // yyssa[0]
             int yyssp = yyss; // yyssa[0]
 
             // The semantic value stack: array, bottom, top.
-            List<SQL_STYPE> yyvsa = new List<SQL_STYPE>(YYINITDEPTH);
-            int  yyvs = 0; // yyvsa[0]
+            SQL_STYPE[] yyvsa = new SQL_STYPE[YYINITDEPTH];
+            int yyvs = 0; // yyvsa[0]
             int yyvsp = 0; // yyvsa[0]
 
             int yyn;
@@ -833,7 +833,7 @@ namespace LibMSI.Internal
         yysetstate:
             //YYDPRINTF ((stderr, "Entering state %d\n", yystate));
             //YY_ASSERT (0 <= yystate && yystate < YYNSTATES);
-            yyssp = (byte)yystate;
+            yyssa[yyssp] = (byte)yystate;
 
             if (yyss + yystacksize - 1 <= yyssp)
             {
@@ -902,6 +902,7 @@ namespace LibMSI.Internal
             else
             {
                 yytoken = YYTRANSLATE(yychar);
+                //YY_SYMBOL_PRINT("Next token is", yytoken, &yylval, &yylloc);
             }
 
             // If the proper action on seeing token YYTOKEN is to reduce or to
@@ -1847,7 +1848,7 @@ namespace LibMSI.Internal
                 len -= 2;
             }
 
-            str = strdata.Data.Substring(p, len) + '\0';
+            str = strdata.Data.Substring(p, len);
             Mem.AddLast(str);
             return LibmsiResult.LIBMSI_RESULT_SUCCESS;
         }

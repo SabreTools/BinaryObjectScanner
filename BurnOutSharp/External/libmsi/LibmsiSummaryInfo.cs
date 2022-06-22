@@ -28,6 +28,7 @@ using static LibMSI.Internal.MsiPriv;
 
 namespace LibMSI
 {
+    // TODO: Make this a proper variant type OR split it meaningfully
     internal class LibmsiOLEVariant
     {
         public LibmsiOLEVariantType VariantType { get; set; }
@@ -70,6 +71,7 @@ namespace LibMSI
         #region Constants
 
         private static readonly string szSumInfo = (char)0x05 + "SummaryInformation";
+
         private static readonly byte[] fmtid_SummaryInformation = new byte[]
             { 0xe0, 0x85, 0x9f, 0xf2, 0xf9, 0x4f, 0x68, 0x10, 0xab, 0x91, 0x08, 0x00, 0x2b, 0x27, 0xb3, 0xd9};
 
@@ -79,9 +81,12 @@ namespace LibMSI
 
         internal LibmsiDatabase Database { get; set; }
 
+        /// <summary>
+        /// Number of changes allowed
+        /// </summary>
         internal int UpdateCount { get; set; }
 
-        internal LibmsiOLEVariant[] Property { get; set; } = new LibmsiOLEVariant[MSI_MAX_PROPS];
+        internal LibmsiOLEVariant[] Properties { get; set; } = new LibmsiOLEVariant[MSI_MAX_PROPS];
 
         #endregion
 
@@ -91,6 +96,8 @@ namespace LibMSI
         /// Private constructor
         /// </summary>
         private LibmsiSummaryInfo() { }
+
+        // TODO: Investigate why Create isn't populating the properties
 
         /// <summary>
         /// If @database is provided, the summary informations will be
@@ -133,7 +140,7 @@ namespace LibMSI
         {
             for (int i = 0; i < MSI_MAX_PROPS; i++)
             {
-                FreeProp(Property[i]);
+                FreeProp(Properties[i]);
             }
         }
 
@@ -155,7 +162,7 @@ namespace LibMSI
                 return LibmsiPropertyType.LIBMSI_PROPERTY_TYPE_EMPTY;
             }
 
-            switch (Property[(int)prop].VariantType)
+            switch (Properties[(int)prop].VariantType)
             {
                 case LibmsiOLEVariantType.OLEVT_I2:
                 case LibmsiOLEVariantType.OLEVT_I4:
@@ -167,7 +174,7 @@ namespace LibMSI
                 case LibmsiOLEVariantType.OLEVT_EMPTY:
                     return LibmsiPropertyType.LIBMSI_PROPERTY_TYPE_EMPTY;
                 default:
-                    error = new Exception($"Unknown type: {Property[(int)prop].VariantType}");
+                    error = new Exception($"Unknown type: {Properties[(int)prop].VariantType}");
                     return LibmsiPropertyType.LIBMSI_PROPERTY_TYPE_EMPTY;
             }
         }
@@ -342,7 +349,7 @@ namespace LibMSI
             List<int> props = new List<int>();
             for (int i = 0; i < MSI_MAX_PROPS; i++)
             {
-                if (Property[i].VariantType != LibmsiOLEVariantType.OLEVT_EMPTY)
+                if (Properties[i].VariantType != LibmsiOLEVariantType.OLEVT_EMPTY)
                     props.Add(i);
             }
 
@@ -355,7 +362,7 @@ namespace LibMSI
 
         internal string SummaryInfoAsString(int uiProperty)
         {
-            LibmsiOLEVariant prop = Property[uiProperty];
+            LibmsiOLEVariant prop = Properties[uiProperty];
 
             switch (prop.VariantType)
             {
@@ -639,7 +646,7 @@ namespace LibMSI
             int ofs = 0;
             if (ReadWORD(data, ref ofs) != 0xfffe)
             {
-                Console.Error.WriteLine("property set not little-endian\n");
+                Console.Error.WriteLine("Property set not little-endian");
                 return LibmsiResult.LIBMSI_RESULT_FUNCTION_FAILED;
             }
 
@@ -647,7 +654,7 @@ namespace LibMSI
 
             // Check the format id is correct
             ofs = 28;
-            if (fmtid_SummaryInformation.SequenceEqual(data.Skip(ofs).Take(16)))
+            if (fmtid_SummaryInformation.SequenceEqual(new ReadOnlySpan<byte>(data, ofs, 16).ToArray()))
                 return LibmsiResult.LIBMSI_RESULT_FUNCTION_FAILED;
 
             // Seek to the location of the section
@@ -666,7 +673,7 @@ namespace LibMSI
             }
 
             // Read all the data in one go 
-            ReadPropertiesFromData(Property, data.Skip(dwOffset).ToArray(), cbSection, cProperties);
+            ReadPropertiesFromData(Properties, data.Skip(dwOffset).ToArray(), cbSection, cProperties);
             return LibmsiResult.LIBMSI_RESULT_SUCCESS;
         }
 
@@ -746,11 +753,11 @@ namespace LibMSI
         private LibmsiResult Persist(LibmsiDatabase database)
         {
             // Add up how much space the data will take and calculate the offsets
-            int cProperties = GetPropertyCount(Property);
+            int cProperties = GetPropertyCount(Properties);
             int cbSection = 8 + cProperties * 8;
             for (int i = 0; i < MSI_MAX_PROPS; i++)
             {
-                cbSection += WritePropertyToData(Property[i], null, 0);
+                cbSection += WritePropertyToData(Properties[i], null, 0);
             }
 
             int sz = 28 + 20 + cbSection;
@@ -779,7 +786,7 @@ namespace LibMSI
             int dwOffset = 8 + cProperties * 8;
             for (int i = 0; i < MSI_MAX_PROPS; i++)
             {
-                int propsz = WritePropertyToData(Property[i], null, 0);
+                int propsz = WritePropertyToData(Properties[i], null, 0);
                 if (propsz == 0)
                     continue;
 
@@ -793,7 +800,7 @@ namespace LibMSI
             // Write out the data
             for (int i = 0; i < MSI_MAX_PROPS; i++)
             {
-                sz += WritePropertyToData(Property[i], data, sz);
+                sz += WritePropertyToData(Properties[i], data, sz);
             }
 
             //assert(sz == 28 + 20 + cbSection);
@@ -819,7 +826,7 @@ namespace LibMSI
                 return;
             }
 
-            LibmsiOLEVariant prop = Property[(int)uiProperty];
+            LibmsiOLEVariant prop = Properties[(int)uiProperty];
             LibmsiPropertyType type;
             switch (prop.VariantType)
             {
@@ -867,7 +874,7 @@ namespace LibMSI
             if (type == LibmsiOLEVariantType.OLEVT_FILETIME && pftValue == 0)
                 return LibmsiResult.LIBMSI_RESULT_INVALID_PARAMETER;
 
-            LibmsiOLEVariant prop = Property[(int)uiProperty];
+            LibmsiOLEVariant prop = Properties[(int)uiProperty];
 
             if (prop.VariantType == LibmsiOLEVariantType.OLEVT_EMPTY)
             {

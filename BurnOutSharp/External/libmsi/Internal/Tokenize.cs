@@ -16,6 +16,7 @@
 ** parser for analysis.
 */
 
+using System;
 using System.Linq;
 
 namespace LibMSI.Internal
@@ -128,24 +129,7 @@ namespace LibMSI.Internal
         /// <summary>
         /// Comparison function for binary search.
         /// </summary>
-        public static int CompareKeyword(string m1, Keyword m2)
-        {
-            int p = 0, q = 0;
-            for (; p < m1.Length && m1[p] != '\0'; p++, q++)
-            {
-                if ((ushort)m1[p] > 127)
-                    return 1;
-
-                char c = m1[p];
-                if (c >= 'a' && c <= 'z')
-                    c ^= (char)('A' ^ 'a');
-
-                if (c != m2.Name[q])
-                    return (int)c - (int)m2.Name[q];
-            }
-
-            return (int)m1[p] - (int)m2.Name[q];
-        }
+        public static int CompareKeyword(string m1, Keyword m2) => string.Compare(m1, m2.Name, StringComparison.OrdinalIgnoreCase);
 
         /// <summary>
         /// This function looks up an identifier to determine if it is a
@@ -157,7 +141,7 @@ namespace LibMSI.Internal
             if (n > MAX_TOKEN_LEN)
                 return sql_tokentype.TK_ID;
 
-            string str = z.Substring(n) + '\0';
+            string str = z.Substring(0, n);
             Keyword r = KeywordTable.FirstOrDefault(k => CompareKeyword(str, k) == 0);
             if (r != default)
                 return r.TokenType;

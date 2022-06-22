@@ -138,7 +138,7 @@ namespace LibGSF.Input
         }
 
         /// <inheritdoc/>
-        public override bool Seek(long offset, SeekOrigin whence) => false;
+        protected override bool SeekImpl(long offset, SeekOrigin whence) => false;
 
         #endregion
 

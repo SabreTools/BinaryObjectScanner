@@ -184,6 +184,20 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
 
         #endregion
 
+        #region Raw Other Data
+
+        /// <summary>
+        /// Data at the entry point of the application
+        /// </summary>
+        public byte[] EntryPointRaw;
+
+        /// <summary>
+        /// Data from the overlay of the application
+        /// </summary>
+        public byte[] OverlayRaw;
+
+        #endregion
+
         #region Resources
 
         /// <summary>
@@ -366,6 +380,30 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
 
                 #endregion
 
+                #region Freeform Data
+
+                // Entry Point Data
+                if (this.OptionalHeader != null && this.OptionalHeader.AddressOfEntryPoint != 0)
+                {
+                    int entryPointAddress = (int)ConvertVirtualAddress(this.OptionalHeader.AddressOfEntryPoint, SectionTable);
+                    this.EntryPointRaw = this.ReadArbitraryRange(entryPointAddress, 256);
+                }
+
+                // Overlay Data
+                if (this.SectionTable != null && this.SectionTable.Length > 0)
+                {
+                    // TODO: Read certificate data separately
+                    int overlayOffset = this.SectionTable
+                        .Select(sh => (int)(sh.PointerToRawData + sh.VirtualSize))
+                        .OrderByDescending(o => o)
+                        .First();
+
+                    if (overlayOffset < stream.Length)
+                        this.OverlayRaw = this.ReadArbitraryRange(rangeStart: overlayOffset);
+                }
+
+                #endregion
+
                 // Populate resources, if possible
                 PopulateResourceStrings();
             }
@@ -473,6 +511,30 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
 
                 // Text Section
                 this.TextSectionRaw = this.ReadRawSection(".text", force: true, first: false);
+
+                #endregion
+
+                #region Freeform Data
+
+                // Entry Point Data
+                if (this.OptionalHeader != null && this.OptionalHeader.AddressOfEntryPoint != 0)
+                {
+                    int entryPointAddress = (int)ConvertVirtualAddress(this.OptionalHeader.AddressOfEntryPoint, SectionTable);
+                    this.EntryPointRaw = this.ReadArbitraryRange(entryPointAddress, 256);
+                }
+
+                // Overlay Data
+                if (this.SectionTable != null && this.SectionTable.Length > 0)
+                {
+                    // TODO: Read certificate data separately
+                    int overlayOffset = this.SectionTable
+                        .Select(sh => (int)(sh.PointerToRawData + sh.VirtualSize))
+                        .OrderByDescending(o => o)
+                        .First();
+
+                    if (overlayOffset < content.Length)
+                        this.OverlayRaw = this.ReadArbitraryRange(rangeStart: overlayOffset);
+                }
 
                 #endregion
 

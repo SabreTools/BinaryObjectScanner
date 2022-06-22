@@ -269,7 +269,7 @@ namespace LibGSF.Input
         private static bool warned = false;
 
         /// <inheritdoc/>
-        public override bool Seek(long offset, SeekOrigin whence)
+        protected override bool SeekImpl(long offset, SeekOrigin whence)
         {
             long pos = offset;
 
