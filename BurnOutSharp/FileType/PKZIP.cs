@@ -13,6 +13,10 @@ namespace BurnOutSharp.FileType
         /// <inheritdoc/>
         public bool ShouldScan(byte[] magic)
         {
+            // PKZIP (Unknown)
+            if (magic.StartsWith(new byte?[] { 0x50, 0x4b, 0x00, 0x00 }))
+                return true;
+
             // PKZIP
             if (magic.StartsWith(new byte?[] { 0x50, 0x4b, 0x03, 0x04 }))
                 return true;
