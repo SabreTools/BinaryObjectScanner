@@ -51,6 +51,9 @@ namespace BurnOutSharp.ProtectionType
             if (stxt371Section || stxt774Section)
                 return $"SafeDisc {Get320to4xVersion(null, null, null)}";
 
+            // TODO: Add entry point check
+            // https://github.com/horsicq/Detect-It-Easy/blob/master/db/PE/Safedisc.2.sg
+
             return null;
         }
 
