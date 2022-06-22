@@ -15,6 +15,9 @@ namespace BurnOutSharp.ProtectionType
         /// <inheritdoc/>
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
+            // TODO: Add entry point check
+            // https://github.com/horsicq/Detect-It-Easy/blob/master/db/PE/Laserlok.2.sg
+
             // TODO: Additional checks that may or may not be useful with the below
             //
             // These two can appear separately
