@@ -13,7 +13,6 @@ namespace BurnOutSharp.ProtectionType
     // Reference: https://news.microsoft.com/2003/01/20/microsoft-releases-new-windows-media-data-session-toolkit-enabling-second-session-creation/
     public class WMDS : IPathCheck, IPortableExecutableCheck
     {
-
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
@@ -28,6 +27,7 @@ namespace BurnOutSharp.ProtectionType
 
             return null;
         }
+
         /// <inheritdoc/>
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string> files)
         {
