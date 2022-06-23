@@ -15,7 +15,7 @@ In addition to the original BurnOut code, the following libraries (or ports ther
 - [UnshieldSharp](https://github.com/mnadareski/UnshieldSharp) - InstallShield CAB extraction
 - [WiseUnpacker](https://github.com/mnadareski/WiseUnpacker) - Wise Installer extraction
 
-Please note that due to current library limitations, the functionality of StormLibSharp and WixToolset.Dtf are locked to Windows only.
+Please note that due to current library limitations, the functionality of StormLibSharp is locked to Windows only.
 
 ## Protections Detected
 

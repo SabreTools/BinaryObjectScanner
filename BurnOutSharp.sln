@@ -14,8 +14,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WixToolset.Dtf.WindowsInstaller", "WixToolset\src\WixToolset.Dtf.WindowsInstaller\WixToolset.Dtf.WindowsInstaller.csproj", "{B3537EB7-CEF6-4D90-A041-47626442A656}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HLLibSharp", "HLLibSharp\HLLibSharp\HLLibSharp.csproj", "{14E9764A-A8BF-44C0-A1A8-2C95EA307040}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibMSPackSharp", "LibMSPackSharp\LibMSPackSharp\LibMSPackSharp.csproj", "{BD8144B8-4857-47E6-9717-E9F2DB374A89}"
@@ -34,10 +32,6 @@ Global
 		{88735BA2-778D-4192-8EB2-FFF6843719E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{88735BA2-778D-4192-8EB2-FFF6843719E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{88735BA2-778D-4192-8EB2-FFF6843719E2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B3537EB7-CEF6-4D90-A041-47626442A656}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B3537EB7-CEF6-4D90-A041-47626442A656}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B3537EB7-CEF6-4D90-A041-47626442A656}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B3537EB7-CEF6-4D90-A041-47626442A656}.Release|Any CPU.Build.0 = Release|Any CPU
 		{14E9764A-A8BF-44C0-A1A8-2C95EA307040}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{14E9764A-A8BF-44C0-A1A8-2C95EA307040}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{14E9764A-A8BF-44C0-A1A8-2C95EA307040}.Release|Any CPU.ActiveCfg = Release|Any CPU
