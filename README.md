@@ -81,6 +81,7 @@ Below is a list of protections detected by BurnOutSharp. The two columns explain
 | Tivola Ring Protection | False | True | |
 | TZCopyProtector | False | True | Unconfirmed¹ |
 | Uplay | True | True | |
+| Windows Media Data Session DRM | True | True | |
 | Winlock | False | True | Unconfirmed¹ |
 | WTM CD Protect | True | True | |
 | XCP | True | True | |

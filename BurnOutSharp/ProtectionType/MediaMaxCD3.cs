@@ -6,6 +6,9 @@ using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
 {
+    // MediaMax CD-3 is a copy protection for audio CDs created by SunnComm, which once installed, restricted users by only allowing a limited number of copies to be made, and only using Windows Media Player.
+    // It appears to accomplish this using the official Windows Media Data Session Toolkit.
+    // TODO: Add support for detecting the Mac version, which is present on "All That I Am" by Santana (Barcode 8 2876-59773-2 6)
     public class MediaMaxCD3 : IPathCheck, IPortableExecutableCheck
     {
         /// <inheritdoc/>
@@ -65,6 +68,15 @@ namespace BurnOutSharp.ProtectionType
             var matchers = new List<PathMatchSet>
             {
                 new PathMatchSet(new PathMatch("LaunchCd.exe", useEndsWith: true), "MediaMax CD-3"),
+
+                // Found on "All That I Am" by Santana (Barcode 8 2876-59773-2 6)
+                new PathMatchSet(new List<PathMatch>
+                {
+                    // TODO: Verify if these are OR or AND
+                    new PathMatch("PlayDisc.exe", useEndsWith: true),
+                    new PathMatch("PlayDisc.xml", useEndsWith: true),
+                }, "MediaMax CD-3"),
+
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);
