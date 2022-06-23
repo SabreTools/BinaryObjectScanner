@@ -51,7 +51,7 @@ namespace BurnOutSharp.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
-                // Found on "All That I Am" by Santana (Barcode 8 2876-59773-2 6)
+                // Found on "All That I Am" by Santana (Barcode 8 2876-59773-2 6). "LicGen.exe" excluded from this check due to the file name being known to be in use by other software, more specifically program cracks.
                 new PathMatchSet(new PathMatch("WMDS.dll", useEndsWith: true), "Windows Media Data Session DRM"),
                 new PathMatchSet(new PathMatch("WMDS.ini", useEndsWith: true), "Windows Media Data Session DRM"),
             };
