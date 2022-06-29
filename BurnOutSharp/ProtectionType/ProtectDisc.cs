@@ -18,7 +18,7 @@ namespace BurnOutSharp.ProtectionType
             if (sections == null)
                 return null;
 
-            // Get the 4th section, if it exists (example names: ACE4)
+            // Get the 4th section, if it exists (example names: ACE4) (Found in Redump entry 94793)
             var fourthSection = sections.Length < 4 ? null : sections[3];
             if (fourthSection != null)
             {
@@ -32,6 +32,25 @@ namespace BurnOutSharp.ProtectionType
                     };
 
                     string match = MatchUtil.GetFirstMatch(file, fourthSectionData, matchers, includeDebug);
+                    if (!string.IsNullOrWhiteSpace(match))
+                        return match;
+                }
+            }
+
+            // Get the 5th section, if it exists (example names: ACE5) (Found in Redump entry 94792)
+            var fifthSection = sections.Length < 5 ? null : sections[4];
+            if (fifthSection != null)
+            {
+                var fifthSectionData = pex.ReadRawSection(fifthSection.NameString, first: true);
+                if (fifthSectionData != null)
+                {
+                    var matchers = new List<ContentMatchSet>
+                    {
+                        // ACE-PCD
+                        new ContentMatchSet(new byte?[] { 0x41, 0x43, 0x45, 0x2D, 0x50, 0x43, 0x44 }, GetVersion6till8, "ProtectDISC"),
+                    };
+
+                    string match = MatchUtil.GetFirstMatch(file, fifthSectionData, matchers, includeDebug);
                     if (!string.IsNullOrWhiteSpace(match))
                         return match;
                 }
