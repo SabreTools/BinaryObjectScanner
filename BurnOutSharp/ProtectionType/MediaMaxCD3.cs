@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Interfaces;
@@ -6,6 +7,10 @@ using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
 {
+    // MediaMax CD-3 is a copy protection for audio CDs created by SunnComm, which once installed, restricted users by only allowing a limited number of copies to be made, and only using Windows Media Player.
+    // It appears to accomplish this using the official Windows Media Data Session Toolkit.
+    // List of discs known to contain MediaMax CD-3: https://en.wikipedia.org/wiki/List_of_compact_discs_sold_with_MediaMax_CD-3
+    // TODO: Add support for detecting the Mac version, which is present on "All That I Am" by Santana (Barcode 8 2876-59773-2 6)
     public class MediaMaxCD3 : IPathCheck, IPortableExecutableCheck
     {
         /// <inheritdoc/>
@@ -15,6 +20,15 @@ namespace BurnOutSharp.ProtectionType
             var sections = pex?.SectionTable;
             if (sections == null)
                 return null;
+
+            // Used to detect "LicGen.exe", found on "All That I Am" by Santana (Barcode 8 2876-59773-2 6)
+            string name = pex.FileDescription;
+            if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("LicGen Module", StringComparison.OrdinalIgnoreCase))
+                return $"MediaMax CD-3";
+
+            name = pex.ProductName;
+            if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("LicGen Module", StringComparison.OrdinalIgnoreCase))
+                return $"MediaMax CD-3";
 
             var resource = pex.FindResource(dataContains: "Cd3Ctl");
             if (resource != null)
@@ -64,7 +78,31 @@ namespace BurnOutSharp.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new PathMatch("LaunchCd.exe", useEndsWith: true), "MediaMax CD-3"),
+                // Found on "All That I Am" by Santana (Barcode 8 2876-59773-2 6)
+                new PathMatchSet(new List<PathMatch>
+                {
+                    // TODO: Verify if these are OR or AND
+                    new PathMatch("PlayDisc.exe", useEndsWith: true),
+                    new PathMatch("PlayDisc.xml", useEndsWith: true),
+                }, "MediaMax CD-3"),
+
+                // Found on "Contraband" by Velvet Revolver (Barcode 8 28766 05242 8)
+                // "SCCD3X01.dll" should already be detected by the content checks, but not "SCCD3X02.dll".
+                new PathMatchSet(new List<PathMatch>
+                {
+                    // TODO: Verify if these are OR or AND
+                    new PathMatch("SCCD3X01.dll", useEndsWith: true),
+                    new PathMatch("SCCD3X02.dll", useEndsWith: true),
+                }, "MediaMax CD-3"),
+
+                // Found on "Contraband" by Velvet Revolver (Barcode 8 28766 05242 8)
+                // "LaunchCD.ini" needs to be confirmed to always be present as well, but it's added along with the exe check to minimize the risk of false positives due to it being a generic name. There is also a "launchcd.xml" that may also be checked for if needed.
+                new PathMatchSet(new List<PathMatch>
+                {
+                    // TODO: Verify if these are OR or AND
+                    new PathMatch("LaunchCD.exe", useEndsWith: true),
+                    new PathMatch("LaunchCD.ini", useEndsWith: true),
+                }, "MediaMax CD-3"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);
@@ -76,6 +114,12 @@ namespace BurnOutSharp.ProtectionType
             var matchers = new List<PathMatchSet>
             {
                 new PathMatchSet(new PathMatch("LaunchCd.exe", useEndsWith: true), "MediaMax CD-3"),
+                new PathMatchSet(new PathMatch("LaunchCd.ini", useEndsWith: true), "MediaMax CD-3"),
+                new PathMatchSet(new PathMatch("LaunchCd.xml", useEndsWith: true), "MediaMax CD-3"),
+
+                // Found on "Contraband" by Velvet Revolver (Barcode 8 28766 05242 8)
+                new PathMatchSet(new PathMatch("SCCD3X01.dll", useEndsWith: true), "MediaMax CD-3"),
+                new PathMatchSet(new PathMatch("SCCD3X02.dll", useEndsWith: true), "MediaMax CD-3"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

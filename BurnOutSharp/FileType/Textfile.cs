@@ -47,6 +47,10 @@ namespace BurnOutSharp.FileType
             if (string.Equals(extension?.TrimStart('.'), "txt", StringComparison.OrdinalIgnoreCase))
                 return true;
 
+            // XML (multiple headers possible)
+            if (string.Equals(extension?.TrimStart('.'), "xml", StringComparison.OrdinalIgnoreCase))
+                return true;
+
             return false;
         }
 
@@ -85,6 +89,12 @@ namespace BurnOutSharp.FileType
 
                 // MediaMax
                 if (fileContent.Contains("MediaMax technology"))
+                    Utilities.AppendToDictionary(protections, file, "MediaMax CD-3");
+                else if (fileContent.Contains("exclusive Cd3 technology"))
+                    Utilities.AppendToDictionary(protections, file, "MediaMax CD-3");
+                else if (fileContent.Contains("<PROTECTION-VENDOR>MediaMAX</PROTECTION-VENDOR>"))
+                    Utilities.AppendToDictionary(protections, file, "MediaMax CD-3");
+                else if (fileContent.Contains("MediaMax(tm)"))
                     Utilities.AppendToDictionary(protections, file, "MediaMax CD-3");
 
                 // phenoProtect
