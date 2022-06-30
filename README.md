@@ -51,7 +51,7 @@ Below is a list of protections detected by BurnOutSharp. The two columns explain
 | Executable-Based Online Registration | True | False | Possibly too broad |
 | Freelock | False | True | Unconfirmed¹ |
 | Games for Windows - Live | True | True | |
-| Hexalock Autolock | False | True | Unconfirmed¹ |
+| Hexalock Autolock | False | True | Partially unconfirmed² |
 | Impulse Reactor / Stardock Product Activation | True | True | |
 | IndyVCD | False | True | Unconfirmed¹ |
 | ITENIUM Trial & Buy Protection | True | False | |
