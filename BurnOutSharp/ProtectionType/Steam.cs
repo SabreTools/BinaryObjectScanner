@@ -46,8 +46,21 @@ namespace BurnOutSharp.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
+                // These checks are grouped together due to the names being generic on their own (Redump entry 91450).
+                new PathMatchSet(new List<PathMatch>
+                {
+                    // TODO: Identify based on "Steam(TM)" being present in "Description" but not in "File Description".
+                    new PathMatch("steam.exe", useEndsWith: true),
+
+                    new PathMatch("steam.ini", useEndsWith: true),
+                    
+                    // TODO: Identify file using MSI property parsing.
+                    new PathMatch("steam.msi", useEndsWith: true),
+                }, "Steam"),
+
                 new PathMatchSet(new PathMatch("steam_api.dll", useEndsWith: true), "Steam"),
                 new PathMatchSet(new PathMatch("steam_api64.dll", useEndsWith: true), "Steam"),
+                new PathMatchSet(new PathMatch("steam_install_agreement.rtf", useEndsWith: true), "Steam"),
                 new PathMatchSet(new PathMatch("SteamInstall.bom", useEndsWith: true), "Steam"),
                 new PathMatchSet(new PathMatch("SteamInstall.exe", useEndsWith: true), "Steam"),
                 new PathMatchSet(new PathMatch("SteamInstall.info", useEndsWith: true), "Steam"),
@@ -81,6 +94,7 @@ namespace BurnOutSharp.ProtectionType
             {
                 new PathMatchSet(new PathMatch("steam_api.dll", useEndsWith: true), "Steam"),
                 new PathMatchSet(new PathMatch("steam_api64.dll", useEndsWith: true), "Steam"),
+                new PathMatchSet(new PathMatch("steam_install_agreement.rtf", useEndsWith: true), "Steam"),
                 new PathMatchSet(new PathMatch("SteamInstall.bom", useEndsWith: true), "Steam"),
                 new PathMatchSet(new PathMatch("SteamInstall.exe", useEndsWith: true), "Steam"),
                 new PathMatchSet(new PathMatch("SteamInstall.info", useEndsWith: true), "Steam"),
