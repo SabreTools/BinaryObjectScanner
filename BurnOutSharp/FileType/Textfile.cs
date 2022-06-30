@@ -111,6 +111,10 @@ namespace BurnOutSharp.FileType
                 if (fileContent.Contains("SecuROM protected application"))
                     Utilities.AppendToDictionary(protections, file, "SecuROM");
 
+                // Steam
+                if (fileContent.Contains("All use of the Program is governed by the terms of the Steam Agreement as described below."))
+                    Utilities.AppendToDictionary(protections, file, "Steam");
+
                 // XCP
                 if (fileContent.Contains("http://cp.sonybmg.com/xcp/"))
                     Utilities.AppendToDictionary(protections, file, "XCP");
