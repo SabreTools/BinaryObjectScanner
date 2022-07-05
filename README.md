@@ -108,6 +108,7 @@ Below is a list of protections that have been identified but have not yet been i
 - SAFEAUDIO
 - The Bongle
 - The Copy Protected CD
+- Themida/WinLicense/Code Virtualizer
 
 ## Executable Packers Detected
 
