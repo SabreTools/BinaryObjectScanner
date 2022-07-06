@@ -56,9 +56,9 @@ namespace BurnOutSharp.FileType
 
                 // If we have a previous CAB and it exists, don't try scanning
                 string directory = Path.GetDirectoryName(file);
-                if (!string.IsNullOrWhiteSpace(cabFile.PreviousName))
+                if (!string.IsNullOrWhiteSpace(cabFile.PreviousCabinetName))
                 {
-                    if (File.Exists(Path.Combine(directory, cabFile.PreviousName)))
+                    if (File.Exists(Path.Combine(directory, cabFile.PreviousCabinetName)))
                         return null;
                 }
 
