@@ -57,6 +57,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Dtf\src\WixToolset.Dtf.Compression.Cab\WixToolset.Dtf.Compression.Cab.csproj" />
     <ProjectReference Include="..\HLLibSharp\HLLibSharp\HLLibSharp.csproj" />
     <ProjectReference Include="..\LibMSPackSharp\LibMSPackSharp\LibMSPackSharp.csproj" />
   </ItemGroup>

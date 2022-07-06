@@ -18,6 +18,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HLLibSharp", "HLLibSharp\HL
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibMSPackSharp", "LibMSPackSharp\LibMSPackSharp\LibMSPackSharp.csproj", "{BD8144B8-4857-47E6-9717-E9F2DB374A89}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WixToolset.Dtf.Compression.Cab", "Dtf\src\WixToolset.Dtf.Compression.Cab\WixToolset.Dtf.Compression.Cab.csproj", "{55B1D2D8-7470-4332-96EE-E18079C8A306}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WixToolset.Dtf.Compression", "Dtf\src\WixToolset.Dtf.Compression\WixToolset.Dtf.Compression.csproj", "{3065BE52-CB56-4557-80CD-E3AC57C242F2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,6 +44,14 @@ Global
 		{BD8144B8-4857-47E6-9717-E9F2DB374A89}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BD8144B8-4857-47E6-9717-E9F2DB374A89}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BD8144B8-4857-47E6-9717-E9F2DB374A89}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55B1D2D8-7470-4332-96EE-E18079C8A306}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55B1D2D8-7470-4332-96EE-E18079C8A306}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55B1D2D8-7470-4332-96EE-E18079C8A306}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55B1D2D8-7470-4332-96EE-E18079C8A306}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3065BE52-CB56-4557-80CD-E3AC57C242F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3065BE52-CB56-4557-80CD-E3AC57C242F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3065BE52-CB56-4557-80CD-E3AC57C242F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3065BE52-CB56-4557-80CD-E3AC57C242F2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

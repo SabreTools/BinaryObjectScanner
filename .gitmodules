@@ -7,3 +7,6 @@
 [submodule "LibMSPackSharp"]
 	path = LibMSPackSharp
 	url = https://github.com/mnadareski/LibMSPackSharp.git
+[submodule "Dtf"]
+	path = Dtf
+	url = https://github.com/wixtoolset/Dtf.git
