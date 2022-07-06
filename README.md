@@ -38,7 +38,7 @@ Below is a list of protections detected by BurnOutSharp. The two columns explain
 | CD-Protector | False | True | Unconfirmed¹ |
 | CD-X | False | True | Unconfirmed¹ |
 | CDSHiELD SE | True | False | |
-| Cenga ProtectDVD | True | False | |
+| Cenga ProtectDVD | True | True | |
 | CodeLock / CodeLok / CopyLok | True | False | Partially unconfirmed² |
 | CopyKiller | True | True | Unconfirmed¹ |
 | Denuvo | True | False | |
