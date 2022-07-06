@@ -763,7 +763,7 @@ namespace BurnOutSharp.FileType
         }
 
         /// <summary>
-        /// lock table contains informations about file sizes and way of their storage within
+        /// Block table contains informations about file sizes and way of their storage within
         /// the archive. It also contains the position of file content in the archive. Size
         /// of block table entry is (like hash table entry). The block table is also encrypted.
         /// </summary>
@@ -853,6 +853,270 @@ namespace BurnOutSharp.FileType
             /// Set if file exists, reset when the file was deleted
             /// </summary>
             MPQ_FILE_EXISTS = 0x80000000,
+        }
+
+        /// <summary>
+        /// This structure contains size of the patch, flags and also MD5 of the patch.
+        /// </summary>
+        internal class MoPaQPatchInfo
+        {
+            #region Properties
+
+            /// <summary>
+            /// Length of patch info header, in bytes
+            /// </summary>
+            public int Length { get; private set; }
+
+            /// <summary>
+            /// Flags. 0x80000000 = MD5 (?)
+            /// </summary>
+            public uint Flags { get; private set; }
+
+            /// <summary>
+            /// Uncompressed size of the patch file
+            /// </summary>
+            public int DataSize { get; private set; }
+
+            /// <summary>
+            /// MD5 of the entire patch file after decompression
+            /// </summary>
+            public byte[] MD5 { get; private set; } = new byte[0x10];
+
+            /// <summary>
+            /// The sector offset table (variable length)
+            /// </summary>
+            public int[] SectorOffsetTable { get; private set; }
+
+            #endregion
+        }
+
+        /// <summary>
+        /// Each incremental patch file in a patch MPQ starts with a header. It is supposed
+        /// to be a structure with variable length.
+        /// </summary>
+        internal class MoPaQPatchHeader
+        {
+            #region Constants
+
+            #region Signatures
+
+            #region Patch Header
+
+            /// <summary>
+            /// Human-readable signature
+            /// </summary>
+            public static readonly string PatchSignatureString = $"PTCH";
+
+            /// <summary>
+            /// Signature as an unsigned Int32 value
+            /// </summary>
+            public const uint PatchSignatureValue = 0x48435450;
+
+            /// <summary>
+            /// Signature as a byte array
+            /// </summary>
+            public static readonly byte[] PatchSignatureBytes = new byte[] { 0x50, 0x54, 0x43, 0x48 };
+
+            #endregion
+
+            #region MD5 Block
+
+            /// <summary>
+            /// Human-readable signature
+            /// </summary>
+            public static readonly string Md5SignatureString = $"MD5_";
+
+            /// <summary>
+            /// Signature as an unsigned Int32 value
+            /// </summary>
+            public const uint Md5SignatureValue = 0x5F35444D;
+
+            /// <summary>
+            /// Signature as a byte array
+            /// </summary>
+            public static readonly byte[] Md5SignatureBytes = new byte[] { 0x4D, 0x44, 0x35, 0x5F };
+
+            #endregion
+
+            #region XFRM Block
+
+            /// <summary>
+            /// Human-readable signature
+            /// </summary>
+            public static readonly string XFRMSignatureString = $"XFRM";
+
+            /// <summary>
+            /// Signature as an unsigned Int32 value
+            /// </summary>
+            public const uint XFRMSignatureValue = 0x4D524658;
+
+            /// <summary>
+            /// Signature as a byte array
+            /// </summary>
+            public static readonly byte[] XFRMSignatureBytes = new byte[] { 0x58, 0x46, 0x52, 0x4D };
+
+            #endregion
+
+            #region BSDIFF Patch Type
+
+            /// <summary>
+            /// Human-readable signature
+            /// </summary>
+            public static readonly string BSDIFF40SignatureString = $"BSDIFF40";
+
+            /// <summary>
+            /// Signature as an unsigned Int64 value
+            /// </summary>
+            public const ulong BSDIFF40SignatureValue = 0x3034464649445342;
+
+            /// <summary>
+            /// Signature as a byte array
+            /// </summary>
+            public static readonly byte[] BSDIFF40SignatureBytes = new byte[] { 0x42, 0x53, 0x44, 0x49, 0x46, 0x46, 0x34, 0x30 };
+
+
+            #endregion
+
+            #endregion
+
+            #endregion
+
+            #region Properties
+
+            #region PATCH Header
+
+            /// <summary>
+            /// 'PTCH'
+            /// </summary>
+            public uint PatchSignature { get; private set; }
+
+            /// <summary>
+            /// Size of the entire patch (decompressed)
+            /// </summary>
+            public int SizeOfPatchData { get; private set; }
+
+            /// <summary>
+            /// Size of the file before patch
+            /// </summary>
+            public int SizeBeforePatch { get; private set; }
+
+            /// <summary>
+            /// Size of file after patch
+            /// </summary>
+            public int SizeAfterPatch { get; private set; }
+
+            #endregion
+
+            #region MD5 Block
+
+            /// <summary>
+            /// 'MD5_'
+            /// </summary>
+            public uint Md5Signature { get; private set; }
+
+            /// <summary>
+            /// Size of the MD5 block, including the signature and size itself
+            /// </summary>
+            public int Md5BlockSize { get; private set; }
+
+            /// <summary>
+            /// MD5 of the original (unpached) file
+            /// </summary>
+            public byte[] Md5BeforePatch { get; private set; } = new byte[0x10];
+
+            /// <summary>
+            /// MD5 of the patched file
+            /// </summary>
+            public byte[] Md5AfterPatch { get; private set; } = new byte[0x10];
+
+            #endregion
+
+            #region XFRM Block
+
+            /// <summary>
+            /// 'XFRM'
+            /// </summary>
+            public uint XfrmSignature { get; private set; }
+
+            /// <summary>
+            /// Size of the XFRM block, includes XFRM header and patch data
+            /// </summary>
+            public int XfrmBlockSize { get; private set; }
+
+            /// <summary>
+            /// Type of patch ('BSD0' or 'COPY')
+            /// </summary>
+            public MoPaQPatchType PatchType { get; private set; }
+
+            #endregion
+
+            #region Patch Data - BSD0
+
+            /// <summary>
+            /// 'BSDIFF40' signature
+            /// </summary>
+            public ulong BsdiffSignature { get; private set; }
+
+            /// <summary>
+            /// Size of CTRL block (in bytes)
+            /// </summary>
+            public long CtrlBlockSize { get; private set; }
+
+            /// <summary>
+            /// Size of DATA block (in bytes)
+            /// </summary>
+            public long DataBlockSize { get; private set; }
+
+            /// <summary>
+            /// Size of file after applying the patch (in bytes)
+            /// </summary>
+            public long NewFileSize { get; private set; }
+
+            // TODO: Fill rest of data from http://zezula.net/en/mpq/patchfiles.html
+            // CTRL block
+            // DATA block
+            // EXTRA block
+
+            #endregion
+
+            #region Patch Data - COPY
+
+            /// <summary>
+            /// File data are simply replaced by the data in the patch.
+            /// </summary>
+            public byte[] PatchDataCopy { get; private set; }
+
+            #endregion
+
+            #endregion
+        }
+
+        internal enum MoPaQPatchType : uint
+        {
+            /// <summary>
+            /// Blizzard-modified version of BSDIFF40 incremental patch
+            /// </summary>
+            BSD0 = 0x30445342,
+
+            /// <summary>
+            /// Unknown
+            /// </summary>
+            BSDP = 0x50445342,
+
+            /// <summary>
+            /// Plain replace
+            /// </summary>
+            COPY = 0x59504F43,
+
+            /// <summary>
+            /// Unknown
+            /// </summary>
+            COUP = 0x50554F43,
+
+            /// <summary>
+            /// Unknown
+            /// </summary>
+            CPOG = 0x474F5043,
         }
 
         #endregion
