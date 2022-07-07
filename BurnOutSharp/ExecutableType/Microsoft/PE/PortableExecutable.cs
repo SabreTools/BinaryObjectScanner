@@ -226,6 +226,11 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
         public string LegalCopyright { get; private set; }
 
         /// <summary>
+        /// Legal trademarks resource string
+        /// </summary>
+        public string LegalTrademarks { get; private set; }
+
+        /// <summary>
         /// Description manifest string
         /// </summary>
         public string ManifestDescription { get; private set; }
@@ -791,6 +796,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
             this.FileVersion = GetResourceString("FileVersion")?.Replace(", ", ".");
             this.InternalName = GetResourceString("InternalName");
             this.LegalCopyright = GetResourceString("LegalCopyright");
+            this.LegalTrademarks = GetResourceString("LegalTrademarks");
             this.OriginalFileName = GetResourceString("OriginalFileName");
             this.ProductName = GetResourceString("ProductName");
             this.ProductVersion = GetResourceString("ProductVersion")?.Replace(", ", ".");
