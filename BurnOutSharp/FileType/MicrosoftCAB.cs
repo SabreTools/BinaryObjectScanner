@@ -215,6 +215,53 @@ namespace BurnOutSharp.FileType
             public CFDATA[] DataBlocks { get; private set; }
 
             #endregion
+
+            #region Serialization
+
+            /// <summary>
+            /// Deserialize <paramref name="data"/> at <paramref name="dataPtr"/> into a MSCABCabinet object
+            /// </summary>
+            public static MSCABCabinet Deserialize(byte[] data, ref int dataPtr)
+            {
+                if (data == null || dataPtr < 0)
+                    return null;
+
+                MSCABCabinet cabinet = new MSCABCabinet();
+
+                // Start with the header
+                cabinet.Header = CFHEADER.Deserialize(data, ref dataPtr);
+                if (cabinet.Header == null)
+                    return null;
+
+                // Then retrieve all folder headers
+                cabinet.Folders = new CFFOLDER[cabinet.Header.FolderCount];
+                for (int i = 0; i < cabinet.Header.FolderCount; i++)
+                {
+                    cabinet.Folders[i] = CFFOLDER.Deserialize(data, ref dataPtr);
+                    if (cabinet.Folders[i] == null)
+                        return null;
+                }
+
+                // TODO: Should we use cabinet.Header.FilesOffset instead of assuming where the data starts?
+                // TODO: Should we use the original value of `dataPtr` to create the real offset?
+
+                // Then retrieve all file headers
+                cabinet.Files = new CFFILE[cabinet.Header.FileCount];
+                for (int i = 0; i < cabinet.Header.FileCount; i++)
+                {
+                    cabinet.Files[i] = CFFILE.Deserialize(data, ref dataPtr);
+                    if (cabinet.Files[i] == null)
+                        return null;
+                }
+
+                // TODO: Should we populate the data blocks here?
+                // TODO: How do we determine the number of data blocks?
+                // TODO: If the data blocks start right after the CFFILE data, should we just store the data block offset?
+
+                return cabinet;
+            }
+
+            #endregion
         }
 
         /// <summary>
