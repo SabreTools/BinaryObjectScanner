@@ -43,16 +43,6 @@ namespace BurnOutSharp.FileType
                 string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
                 Directory.CreateDirectory(tempPath);
 
-                // TEMP SHIT CODE
-
-                byte[] bytes = File.ReadAllBytes(file);
-
-                int index = 0;
-                MSCABCabinet cabinet = MSCABCabinet.Deserialize(bytes, ref index);
-                cabinet?.PrintInfo();
-
-                // END TEMP SHIT CODE
-
                 CabInfo cabInfo = new CabInfo(file);
                 cabInfo.Unpack(tempPath);
 
@@ -357,6 +347,9 @@ namespace BurnOutSharp.FileType
             /// </summary>
             public void PrintInfo()
             {
+                // TODO: Move to CFHEADER
+                #region CFHEADER
+
                 if (Header == null)
                 {
                     Console.WriteLine("There is no header associated with this cabinet.");
@@ -374,7 +367,7 @@ namespace BurnOutSharp.FileType
                 Console.WriteLine($"    Version:            {Header.VersionMajor}.{Header.VersionMinor}");
                 Console.WriteLine($"    FolderCount:        {Header.FolderCount:X4}");
                 Console.WriteLine($"    FileCount:          {Header.FileCount:X4}");
-                Console.WriteLine($"    Flags:              {Header.Flags} ({Header.Flags:X4})");
+                Console.WriteLine($"    Flags:              {Header.Flags} ({(ushort)Header.Flags:X4})");
                 Console.WriteLine($"    SetID:              {Header.SetID:X4}");
                 Console.WriteLine($"    CabinetIndex:       {Header.CabinetIndex:X4}");
 
@@ -398,8 +391,81 @@ namespace BurnOutSharp.FileType
                     Console.WriteLine($"    DiskNext:           {Encoding.ASCII.GetString(Header.DiskNext).TrimEnd('\0')}");
                 }
 
-                // TODO: Add CFFOLDER output
-                // TODO: Add CFFILE output
+                Console.WriteLine();
+
+                #endregion
+
+                // TODO: Move to CFFOLDER
+                #region CFFOLDER
+
+                if (Folders == null || Folders.Length == 0)
+                {
+                    Console.WriteLine("There are no folders associated with this cabinet.");
+                    return;
+                }
+
+                Console.WriteLine("CFFOLDER INFORMATION:");
+                Console.WriteLine("--------------------------------------------");
+                for (int i = 0; i < Folders.Length; i++)
+                {
+                    CFFOLDER folder = Folders[i];
+                    Console.WriteLine($"    CFFOLDER {i:X4}:");
+
+                    if (folder == null)
+                    {
+                        Console.WriteLine($"        Not found or NULL");
+                        Console.WriteLine();
+                        continue;
+                    }
+
+                    Console.WriteLine($"        CabStartOffset:     {folder.CabStartOffset:X8}");
+                    Console.WriteLine($"        DataCount:          {folder.DataCount:X4}");
+                    Console.WriteLine($"        CompressionType:    {folder.CompressionType} ({(ushort)folder.CompressionType:X4})");
+                    // TODO: Output reserved data
+
+                    Console.WriteLine();
+                }
+
+                Console.WriteLine();
+
+                #endregion
+
+                // TODO: Move to CFFILE
+                #region CFFILE
+
+                if (Folders == null || Folders.Length == 0)
+                {
+                    Console.WriteLine("There are no folders associated with this cabinet.");
+                    return;
+                }
+
+                Console.WriteLine("CFFILE INFORMATION:");
+                Console.WriteLine("--------------------------------------------");
+                for (int i = 0; i < Files.Length; i++)
+                {
+                    CFFILE file = Files[i];
+                    Console.WriteLine($"    CFFILE {i:X4}:");
+
+                    if (file == null)
+                    {
+                        Console.WriteLine($"        Not found or NULL");
+                        Console.WriteLine();
+                        continue;
+                    }
+
+                    Console.WriteLine($"        FileSize:           {file.FileSize:X8}");
+                    Console.WriteLine($"        FolderStartOffset:  {file.FolderStartOffset:X4}");
+                    Console.WriteLine($"        FolderIndex:        {file.FolderIndex} ({(ushort)file.FolderIndex:X4})");
+                    Console.WriteLine($"        DateTime:           {file.DateAndTimeAsDateTime} ({file.Date:X4} {file.Time:X4})");
+                    Console.WriteLine($"        Attributes:         {file.Attributes} ({(ushort)file.Attributes:X4})");
+                    Console.WriteLine($"        Name:               {file.NameAsString}");
+
+                    Console.WriteLine();
+                }
+
+                Console.WriteLine();
+
+                #endregion
             }
 
             #endregion
