@@ -230,6 +230,7 @@ namespace BurnOutSharp.FileType
                 if (data == null || dataPtr < 0)
                     return null;
 
+                int basePtr = dataPtr;
                 MSCABCabinet cabinet = new MSCABCabinet();
 
                 // Start with the header
@@ -246,8 +247,8 @@ namespace BurnOutSharp.FileType
                         return null;
                 }
 
-                // TODO: Should we use cabinet.Header.FilesOffset instead of assuming where the data starts?
-                // TODO: Should we use the original value of `dataPtr` to create the real offset?
+                // We need to move to where the file headers are stored
+                dataPtr = basePtr + (int)cabinet.Header.FilesOffset;
 
                 // Then retrieve all file headers
                 cabinet.Files = new CFFILE[cabinet.Header.FileCount];
