@@ -43,6 +43,16 @@ namespace BurnOutSharp.FileType
                 string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
                 Directory.CreateDirectory(tempPath);
 
+                // TEMP SHIT CODE
+
+                byte[] bytes = File.ReadAllBytes(file);
+
+                int index = 0;
+                MSCABCabinet cabinet = MSCABCabinet.Deserialize(bytes, ref index);
+                cabinet?.PrintInfo();
+
+                // END TEMP SHIT CODE
+
                 CabInfo cabInfo = new CabInfo(file);
                 cabInfo.Unpack(tempPath);
 
@@ -242,7 +252,7 @@ namespace BurnOutSharp.FileType
                 cabinet.Folders = new CFFOLDER[cabinet.Header.FolderCount];
                 for (int i = 0; i < cabinet.Header.FolderCount; i++)
                 {
-                    cabinet.Folders[i] = CFFOLDER.Deserialize(data, ref dataPtr);
+                    cabinet.Folders[i] = CFFOLDER.Deserialize(data, ref dataPtr, cabinet.Header.FolderReservedSize);
                     if (cabinet.Folders[i] == null)
                         return null;
                 }
@@ -340,6 +350,56 @@ namespace BurnOutSharp.FileType
                 // TODO: Read and decompress data blocks
 
                 return true;
+            }
+
+            /// <summary>
+            /// Print all info about the cabinet file
+            /// </summary>
+            public void PrintInfo()
+            {
+                if (Header == null)
+                {
+                    Console.WriteLine("There is no header associated with this cabinet.");
+                    return;
+                }
+
+                Console.WriteLine("CFHEADER INFORMATION:");
+                Console.WriteLine("--------------------------------------------");
+                Console.WriteLine($"    Signature:          {Header.Signature:X8}");
+                Console.WriteLine($"    Reserved1:          {Header.Reserved1:X8}");
+                Console.WriteLine($"    CabinetSize:        {Header.CabinetSize:X8}");
+                Console.WriteLine($"    Reserved2:          {Header.Reserved2:X8}");
+                Console.WriteLine($"    FilesOffset:        {Header.FilesOffset:X8}");
+                Console.WriteLine($"    Reserved3:          {Header.Reserved3:X8}");
+                Console.WriteLine($"    Version:            {Header.VersionMajor}.{Header.VersionMinor}");
+                Console.WriteLine($"    FolderCount:        {Header.FolderCount:X4}");
+                Console.WriteLine($"    FileCount:          {Header.FileCount:X4}");
+                Console.WriteLine($"    Flags:              {Header.Flags} ({Header.Flags:X4})");
+                Console.WriteLine($"    SetID:              {Header.SetID:X4}");
+                Console.WriteLine($"    CabinetIndex:       {Header.CabinetIndex:X4}");
+
+                if (Header.Flags.HasFlag(HeaderFlags.RESERVE_PRESENT))
+                {
+                    Console.WriteLine($"    HeaderReservedSize: {Header.HeaderReservedSize:X4}");
+                    Console.WriteLine($"    FolderReservedSize: {Header.FolderReservedSize:X2}");
+                    Console.WriteLine($"    DataReservedSize:   {Header.DataReservedSize:X2}");
+                    // TODO: Output reserved data
+                }
+
+                if (Header.Flags.HasFlag(HeaderFlags.PREV_CABINET))
+                {
+                    Console.WriteLine($"    CabinetPrev:        {Encoding.ASCII.GetString(Header.CabinetPrev).TrimEnd('\0')}");
+                    Console.WriteLine($"    DiskPrev:           {Encoding.ASCII.GetString(Header.DiskPrev).TrimEnd('\0')}");
+                }
+
+                if (Header.Flags.HasFlag(HeaderFlags.NEXT_CABINET))
+                {
+                    Console.WriteLine($"    CabinetNext:        {Encoding.ASCII.GetString(Header.CabinetNext).TrimEnd('\0')}");
+                    Console.WriteLine($"    DiskNext:           {Encoding.ASCII.GetString(Header.DiskNext).TrimEnd('\0')}");
+                }
+
+                // TODO: Add CFFOLDER output
+                // TODO: Add CFFILE output
             }
 
             #endregion
@@ -582,44 +642,44 @@ namespace BurnOutSharp.FileType
                 // TODO: Make string-finding block a helper method
                 if (header.Flags.HasFlag(HeaderFlags.PREV_CABINET))
                 {
-                    int nullIndex = Array.IndexOf(data, 0x00, dataPtr);
+                    int nullIndex = Array.IndexOf<byte>(data, 0x00, dataPtr, 0xFF);
                     int stringSize = nullIndex - dataPtr;
-                    if (stringSize > 255)
+                    if (stringSize < 0 || stringSize > 255)
                         return null;
 
                     header.CabinetPrev = new byte[stringSize];
                     Array.Copy(data, dataPtr, header.CabinetPrev, 0, stringSize);
-                    dataPtr += stringSize;
+                    dataPtr += stringSize + 1;
 
-                    nullIndex = Array.IndexOf(data, 0x00, dataPtr);
+                    nullIndex = Array.IndexOf<byte>(data, 0x00, dataPtr, 0xFF);
                     stringSize = nullIndex - dataPtr;
-                    if (stringSize > 255)
+                    if (stringSize < 0 || stringSize > 255)
                         return null;
 
                     header.DiskPrev = new byte[stringSize];
                     Array.Copy(data, dataPtr, header.DiskPrev, 0, stringSize);
-                    dataPtr += stringSize;
+                    dataPtr += stringSize + 1;
                 }
 
                 if (header.Flags.HasFlag(HeaderFlags.NEXT_CABINET))
                 {
-                    int nullIndex = Array.IndexOf(data, 0x00, dataPtr);
+                    int nullIndex = Array.IndexOf<byte>(data, 0x00, dataPtr, 0xFF);
                     int stringSize = nullIndex - dataPtr;
-                    if (stringSize > 255)
+                    if (stringSize < 0 || stringSize > 255)
                         return null;
 
                     header.CabinetNext = new byte[stringSize];
                     Array.Copy(data, dataPtr, header.CabinetNext, 0, stringSize);
-                    dataPtr += stringSize;
+                    dataPtr += stringSize + 1;
 
-                    nullIndex = Array.IndexOf(data, 0x00, dataPtr);
+                    nullIndex = Array.IndexOf<byte>(data, 0x00, dataPtr, 0xFF);
                     stringSize = nullIndex - dataPtr;
-                    if (stringSize > 255)
+                    if (stringSize < 0 || stringSize > 255)
                         return null;
 
                     header.DiskNext = new byte[stringSize];
                     Array.Copy(data, dataPtr, header.DiskNext, 0, stringSize);
-                    dataPtr += stringSize;
+                    dataPtr += stringSize + 1;
                 }
 
                 return header;
@@ -901,14 +961,14 @@ namespace BurnOutSharp.FileType
                 file.Time = BitConverter.ToUInt16(data, dataPtr); dataPtr += 2;
                 file.Attributes = (FileAttributes)BitConverter.ToUInt16(data, dataPtr); dataPtr += 2;
 
-                int nullIndex = Array.IndexOf(data, 0x00, dataPtr);
+                int nullIndex = Array.IndexOf<byte>(data, 0x00, dataPtr, 0xFF);
                 int stringSize = nullIndex - dataPtr;
-                if (stringSize > 255)
+                if (stringSize < 0 || stringSize > 255)
                     return null;
 
                 file.Name = new byte[stringSize];
                 Array.Copy(data, dataPtr, file.Name, 0, stringSize);
-                dataPtr += stringSize;
+                dataPtr += stringSize + 1;
 
                 return file;
             }
