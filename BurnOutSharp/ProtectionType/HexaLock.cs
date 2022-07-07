@@ -53,7 +53,7 @@ namespace BurnOutSharp.ProtectionType
                 
             };
 
-            return MatchUtil.GetAllMatches(files, matchers, any: true);
+            return MatchUtil.GetAllMatches(files, matchers, any: false);
         }
 
         /// <inheritdoc/>
