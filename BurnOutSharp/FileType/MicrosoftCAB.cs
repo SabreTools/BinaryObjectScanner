@@ -716,20 +716,20 @@ namespace BurnOutSharp.FileType
                 Console.WriteLine($"    Reserved1:          {Reserved1:X8}");
                 Console.WriteLine($"    CabinetSize:        {CabinetSize:X8}");
                 Console.WriteLine($"    Reserved2:          {Reserved2:X8}");
-                Console.WriteLine($"    FilesOffset:        {FilesOffset:X8}");
+                Console.WriteLine($"    FilesOffset:        {FilesOffset} (0x{FilesOffset:X8})");
                 Console.WriteLine($"    Reserved3:          {Reserved3:X8}");
                 Console.WriteLine($"    Version:            {VersionMajor}.{VersionMinor}");
-                Console.WriteLine($"    FolderCount:        {FolderCount:X4}");
-                Console.WriteLine($"    FileCount:          {FileCount:X4}");
-                Console.WriteLine($"    Flags:              {Flags} ({(ushort)Flags:X4})");
-                Console.WriteLine($"    SetID:              {SetID:X4}");
-                Console.WriteLine($"    CabinetIndex:       {CabinetIndex:X4}");
+                Console.WriteLine($"    FolderCount:        {FolderCount} (0x{FolderCount:X4})");
+                Console.WriteLine($"    FileCount:          {FileCount} (0x{FileCount:X4})");
+                Console.WriteLine($"    Flags:              {Flags} (0x{(ushort)Flags:X4})");
+                Console.WriteLine($"    SetID:              {SetID} (0x{SetID:X4})");
+                Console.WriteLine($"    CabinetIndex:       {CabinetIndex} (0x{CabinetIndex:X4})");
 
                 if (Flags.HasFlag(HeaderFlags.RESERVE_PRESENT))
                 {
-                    Console.WriteLine($"    HeaderReservedSize: {HeaderReservedSize:X4}");
-                    Console.WriteLine($"    FolderReservedSize: {FolderReservedSize:X2}");
-                    Console.WriteLine($"    DataReservedSize:   {DataReservedSize:X2}");
+                    Console.WriteLine($"    HeaderReservedSize: {HeaderReservedSize} (0x{HeaderReservedSize:X4})");
+                    Console.WriteLine($"    FolderReservedSize: {FolderReservedSize} (0x{FolderReservedSize:X2})");
+                    Console.WriteLine($"    DataReservedSize:   {DataReservedSize} (0x{DataReservedSize:X2})");
                     // TODO: Output reserved data
                 }
 
@@ -749,7 +749,7 @@ namespace BurnOutSharp.FileType
             }
 
             #endregion
-        }
+            }
 
         [Flags]
         internal enum HeaderFlags : ushort
@@ -862,9 +862,9 @@ namespace BurnOutSharp.FileType
             /// </summary>
             public void PrintInfo()
             {
-                Console.WriteLine($"        CabStartOffset:     {CabStartOffset:X8}");
-                Console.WriteLine($"        DataCount:          {DataCount:X4}");
-                Console.WriteLine($"        CompressionType:    {CompressionType} ({(ushort)CompressionType:X4})");
+                Console.WriteLine($"        CabStartOffset:     {CabStartOffset} (0x{CabStartOffset:X8})");
+                Console.WriteLine($"        DataCount:          {DataCount} (0x{DataCount:X4})");
+                Console.WriteLine($"        CompressionType:    {CompressionType} (0x{(ushort)CompressionType:X4})");
                 // TODO: Output reserved data
 
                 Console.WriteLine();
@@ -1062,11 +1062,11 @@ namespace BurnOutSharp.FileType
             /// </summary>
             public void PrintInfo()
             {
-                Console.WriteLine($"        FileSize:           {FileSize:X8}");
-                Console.WriteLine($"        FolderStartOffset:  {FolderStartOffset:X4}");
-                Console.WriteLine($"        FolderIndex:        {FolderIndex} ({(ushort)FolderIndex:X4})");
-                Console.WriteLine($"        DateTime:           {DateAndTimeAsDateTime} ({Date:X4} {Time:X4})");
-                Console.WriteLine($"        Attributes:         {Attributes} ({(ushort)Attributes:X4})");
+                Console.WriteLine($"        FileSize:           {FileSize} (0x{FileSize:X8})");
+                Console.WriteLine($"        FolderStartOffset:  {FolderStartOffset} (0x{FolderStartOffset:X4})");
+                Console.WriteLine($"        FolderIndex:        {FolderIndex} (0x{(ushort)FolderIndex:X4})");
+                Console.WriteLine($"        DateTime:           {DateAndTimeAsDateTime} (0x{Date:X4} 0x{Time:X4})");
+                Console.WriteLine($"        Attributes:         {Attributes} (0x{(ushort)Attributes:X4})");
                 Console.WriteLine($"        Name:               {NameAsString}");
 
                 Console.WriteLine();
