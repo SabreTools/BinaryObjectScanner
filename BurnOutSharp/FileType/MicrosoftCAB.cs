@@ -347,7 +347,6 @@ namespace BurnOutSharp.FileType
             /// </summary>
             public void PrintInfo()
             {
-                // TODO: Move to CFHEADER
                 #region CFHEADER
 
                 if (Header == null)
@@ -356,46 +355,10 @@ namespace BurnOutSharp.FileType
                     return;
                 }
 
-                Console.WriteLine("CFHEADER INFORMATION:");
-                Console.WriteLine("--------------------------------------------");
-                Console.WriteLine($"    Signature:          {Header.Signature:X8}");
-                Console.WriteLine($"    Reserved1:          {Header.Reserved1:X8}");
-                Console.WriteLine($"    CabinetSize:        {Header.CabinetSize:X8}");
-                Console.WriteLine($"    Reserved2:          {Header.Reserved2:X8}");
-                Console.WriteLine($"    FilesOffset:        {Header.FilesOffset:X8}");
-                Console.WriteLine($"    Reserved3:          {Header.Reserved3:X8}");
-                Console.WriteLine($"    Version:            {Header.VersionMajor}.{Header.VersionMinor}");
-                Console.WriteLine($"    FolderCount:        {Header.FolderCount:X4}");
-                Console.WriteLine($"    FileCount:          {Header.FileCount:X4}");
-                Console.WriteLine($"    Flags:              {Header.Flags} ({(ushort)Header.Flags:X4})");
-                Console.WriteLine($"    SetID:              {Header.SetID:X4}");
-                Console.WriteLine($"    CabinetIndex:       {Header.CabinetIndex:X4}");
-
-                if (Header.Flags.HasFlag(HeaderFlags.RESERVE_PRESENT))
-                {
-                    Console.WriteLine($"    HeaderReservedSize: {Header.HeaderReservedSize:X4}");
-                    Console.WriteLine($"    FolderReservedSize: {Header.FolderReservedSize:X2}");
-                    Console.WriteLine($"    DataReservedSize:   {Header.DataReservedSize:X2}");
-                    // TODO: Output reserved data
-                }
-
-                if (Header.Flags.HasFlag(HeaderFlags.PREV_CABINET))
-                {
-                    Console.WriteLine($"    CabinetPrev:        {Encoding.ASCII.GetString(Header.CabinetPrev).TrimEnd('\0')}");
-                    Console.WriteLine($"    DiskPrev:           {Encoding.ASCII.GetString(Header.DiskPrev).TrimEnd('\0')}");
-                }
-
-                if (Header.Flags.HasFlag(HeaderFlags.NEXT_CABINET))
-                {
-                    Console.WriteLine($"    CabinetNext:        {Encoding.ASCII.GetString(Header.CabinetNext).TrimEnd('\0')}");
-                    Console.WriteLine($"    DiskNext:           {Encoding.ASCII.GetString(Header.DiskNext).TrimEnd('\0')}");
-                }
-
-                Console.WriteLine();
+                Header.PrintInfo();
 
                 #endregion
 
-                // TODO: Move to CFFOLDER
                 #region CFFOLDER
 
                 if (Folders == null || Folders.Length == 0)
@@ -418,24 +381,18 @@ namespace BurnOutSharp.FileType
                         continue;
                     }
 
-                    Console.WriteLine($"        CabStartOffset:     {folder.CabStartOffset:X8}");
-                    Console.WriteLine($"        DataCount:          {folder.DataCount:X4}");
-                    Console.WriteLine($"        CompressionType:    {folder.CompressionType} ({(ushort)folder.CompressionType:X4})");
-                    // TODO: Output reserved data
-
-                    Console.WriteLine();
+                    folder.PrintInfo();
                 }
 
                 Console.WriteLine();
 
                 #endregion
 
-                // TODO: Move to CFFILE
                 #region CFFILE
 
-                if (Folders == null || Folders.Length == 0)
+                if (Files == null || Files.Length == 0)
                 {
-                    Console.WriteLine("There are no folders associated with this cabinet.");
+                    Console.WriteLine("There are no files associated with this cabinet.");
                     return;
                 }
 
@@ -453,14 +410,7 @@ namespace BurnOutSharp.FileType
                         continue;
                     }
 
-                    Console.WriteLine($"        FileSize:           {file.FileSize:X8}");
-                    Console.WriteLine($"        FolderStartOffset:  {file.FolderStartOffset:X4}");
-                    Console.WriteLine($"        FolderIndex:        {file.FolderIndex} ({(ushort)file.FolderIndex:X4})");
-                    Console.WriteLine($"        DateTime:           {file.DateAndTimeAsDateTime} ({file.Date:X4} {file.Time:X4})");
-                    Console.WriteLine($"        Attributes:         {file.Attributes} ({(ushort)file.Attributes:X4})");
-                    Console.WriteLine($"        Name:               {file.NameAsString}");
-
-                    Console.WriteLine();
+                    file.PrintInfo();
                 }
 
                 Console.WriteLine();
@@ -752,6 +702,53 @@ namespace BurnOutSharp.FileType
             }
 
             #endregion
+
+            #region Public Functionality
+
+            /// <summary>
+            /// Print all info about the cabinet file
+            /// </summary>
+            public void PrintInfo()
+            {
+                Console.WriteLine("CFHEADER INFORMATION:");
+                Console.WriteLine("--------------------------------------------");
+                Console.WriteLine($"    Signature:          {Signature:X8}");
+                Console.WriteLine($"    Reserved1:          {Reserved1:X8}");
+                Console.WriteLine($"    CabinetSize:        {CabinetSize:X8}");
+                Console.WriteLine($"    Reserved2:          {Reserved2:X8}");
+                Console.WriteLine($"    FilesOffset:        {FilesOffset:X8}");
+                Console.WriteLine($"    Reserved3:          {Reserved3:X8}");
+                Console.WriteLine($"    Version:            {VersionMajor}.{VersionMinor}");
+                Console.WriteLine($"    FolderCount:        {FolderCount:X4}");
+                Console.WriteLine($"    FileCount:          {FileCount:X4}");
+                Console.WriteLine($"    Flags:              {Flags} ({(ushort)Flags:X4})");
+                Console.WriteLine($"    SetID:              {SetID:X4}");
+                Console.WriteLine($"    CabinetIndex:       {CabinetIndex:X4}");
+
+                if (Flags.HasFlag(HeaderFlags.RESERVE_PRESENT))
+                {
+                    Console.WriteLine($"    HeaderReservedSize: {HeaderReservedSize:X4}");
+                    Console.WriteLine($"    FolderReservedSize: {FolderReservedSize:X2}");
+                    Console.WriteLine($"    DataReservedSize:   {DataReservedSize:X2}");
+                    // TODO: Output reserved data
+                }
+
+                if (Flags.HasFlag(HeaderFlags.PREV_CABINET))
+                {
+                    Console.WriteLine($"    CabinetPrev:        {Encoding.ASCII.GetString(CabinetPrev).TrimEnd('\0')}");
+                    Console.WriteLine($"    DiskPrev:           {Encoding.ASCII.GetString(DiskPrev).TrimEnd('\0')}");
+                }
+
+                if (Flags.HasFlag(HeaderFlags.NEXT_CABINET))
+                {
+                    Console.WriteLine($"    CabinetNext:        {Encoding.ASCII.GetString(CabinetNext).TrimEnd('\0')}");
+                    Console.WriteLine($"    DiskNext:           {Encoding.ASCII.GetString(DiskNext).TrimEnd('\0')}");
+                }
+
+                Console.WriteLine();
+            }
+
+            #endregion
         }
 
         [Flags]
@@ -854,6 +851,23 @@ namespace BurnOutSharp.FileType
                 }
 
                 return folder;
+            }
+
+            #endregion
+
+            #region Public Functionality
+
+            /// <summary>
+            /// Print all info about the cabinet file
+            /// </summary>
+            public void PrintInfo()
+            {
+                Console.WriteLine($"        CabStartOffset:     {CabStartOffset:X8}");
+                Console.WriteLine($"        DataCount:          {DataCount:X4}");
+                Console.WriteLine($"        CompressionType:    {CompressionType} ({(ushort)CompressionType:X4})");
+                // TODO: Output reserved data
+
+                Console.WriteLine();
             }
 
             #endregion
@@ -1037,6 +1051,25 @@ namespace BurnOutSharp.FileType
                 dataPtr += stringSize + 1;
 
                 return file;
+            }
+
+            #endregion
+
+            #region Public Functionality
+
+            /// <summary>
+            /// Print all info about the cabinet file
+            /// </summary>
+            public void PrintInfo()
+            {
+                Console.WriteLine($"        FileSize:           {FileSize:X8}");
+                Console.WriteLine($"        FolderStartOffset:  {FolderStartOffset:X4}");
+                Console.WriteLine($"        FolderIndex:        {FolderIndex} ({(ushort)FolderIndex:X4})");
+                Console.WriteLine($"        DateTime:           {DateAndTimeAsDateTime} ({Date:X4} {Time:X4})");
+                Console.WriteLine($"        Attributes:         {Attributes} ({(ushort)Attributes:X4})");
+                Console.WriteLine($"        Name:               {NameAsString}");
+
+                Console.WriteLine();
             }
 
             #endregion
