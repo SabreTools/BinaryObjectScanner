@@ -1273,6 +1273,8 @@ namespace BurnOutSharp.FileType
             5, 5, 0,
         };
 
+        #endregion
+
         /// <summary>
         /// Number of position slots for (tsize - 10)
         /// </summary>
@@ -1368,8 +1370,6 @@ namespace BurnOutSharp.FileType
 
             public ModelSymbol[] Symbols { get; private set; }
         }
-
-        #endregion
 
         #endregion
 
