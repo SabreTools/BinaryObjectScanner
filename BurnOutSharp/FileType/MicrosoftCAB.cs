@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.IO;
+using System.Text;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Tools;
 using WixToolset.Dtf.Compression.Cab;
@@ -259,6 +260,49 @@ namespace BurnOutSharp.FileType
                 // TODO: If the data blocks start right after the CFFILE data, should we just store the data block offset?
 
                 return cabinet;
+            }
+
+            #endregion
+
+            #region Public Functionality
+
+            /// <summary>
+            /// Extract a single file from the archive to <paramref name="outputDirectory"/>
+            /// </summary>
+            public bool ExtractFile(string filePath, string outputDirectory, bool exact = false)
+            {
+                // Perform sanity checks
+                if (Header == null || Files == null || Files.Length == 0)
+                    return false;
+
+                // Check the file exists
+                int fileIndex = -1;
+                for (int i = 0; i < Files.Length; i++)
+                {
+                    CFFILE tempFile = Files[i];
+                    if (tempFile == null)
+                        continue;
+
+                    // Check for a match
+                    if (exact ? tempFile.NameAsString == filePath : tempFile.NameAsString.EndsWith(filePath, StringComparison.OrdinalIgnoreCase))
+                    {
+                        fileIndex = i;
+                        break;
+                    }
+                }
+
+                // -1 is an invalid file index
+                if (fileIndex == -1)
+                    return false;
+
+                // Get the file to extract
+                CFFILE file = Files[fileIndex];
+                string outputPath = Path.Combine(outputDirectory, file.NameAsString);
+
+                // TODO: We don't check for other cabinets here yet
+                // TODO: Read and decompress data blocks
+
+                return true;
             }
 
             #endregion
@@ -742,6 +786,36 @@ namespace BurnOutSharp.FileType
             /// interpreted according to the current location.
             /// </summary>
             public byte[] Name { get; private set; }
+
+            #endregion
+
+            #region Generated Properties
+
+            /// <summary>
+            /// Name value as a string (not null-terminated)
+            /// </summary>
+            public string NameAsString
+            {
+                get
+                {
+                    // Perform sanity checks
+                    if (Name == null || Name.Length == 0)
+                        return null;
+
+                    // Attempt to respect the attribute flag for UTF-8
+                    if (Attributes.HasFlag(FileAttributes.NAME_IS_UTF))
+                    {
+                        try
+                        {
+                            return Encoding.UTF8.GetString(Name).TrimEnd('\0');
+                        }
+                        catch { }
+                    }
+
+                    // Default case uses local encoding
+                    return Encoding.Default.GetString(Name).TrimEnd('\0');
+                }
+            }
 
             #endregion
 
