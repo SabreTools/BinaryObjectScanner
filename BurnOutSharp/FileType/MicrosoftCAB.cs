@@ -158,5 +158,541 @@ namespace BurnOutSharp.FileType
         //}
 
         #endregion
+
+        #region TEMPORARY AREA FOR MS-CAB FORMAT
+
+        private const uint MSCABMaximumUncompressedFileSize = 0x7FFF8000;
+
+        private const ushort MSCABMaximumFileCount = 0xFFFF;
+
+        private const uint MSCABMaximumCabSize = 0x7FFFFFFF;
+
+        private const ushort MSCABMaximumFolderCount = 0xFFFF;
+
+        private const uint MSCABMaximumUncompressedFolderSize = 0x7FFF8000;
+
+        /// <summary>
+        /// The CFHEADER structure shown in the following packet diagram provides information about this
+        /// cabinet (.cab) file.
+        /// </summary>
+        internal class CFHEADER
+        {
+            #region Constants
+
+            /// <summary>
+            /// Human-readable signature
+            /// </summary>
+            public static readonly string SignatureString = "MSCF";
+
+            /// <summary>
+            /// Signature as an unsigned Int32 value
+            /// </summary>
+            public const uint SignatureValue = 0x4643534D;
+
+            /// <summary>
+            /// Signature as a byte array
+            /// </summary>
+            public static readonly byte[] SignatureBytes = new byte[] { 0x4D, 0x53, 0x43, 0x46 };
+
+            #endregion
+
+            #region Properties
+
+            /// <summary>
+            /// Contains the characters "M", "S", "C", and "F" (bytes 0x4D, 0x53, 0x43,
+            /// 0x46). This field is used to ensure that the file is a cabinet(.cab) file.
+            /// </summary>
+            public uint Signature { get; private set; }
+
+            /// <summary>
+            /// Reserved field; MUST be set to 0 (zero).
+            /// </summary>
+            public uint Reserved1 { get; private set; }
+
+            /// <summary>
+            /// Specifies the total size of the cabinet file, in bytes.
+            /// </summary>
+            public uint CabinetSize { get; private set; }
+
+            /// <summary>
+            /// Reserved field; MUST be set to 0 (zero).
+            /// </summary>
+            public uint Reserved2 { get; private set; }
+
+            /// <summary>
+            /// Specifies the absolute file offset, in bytes, of the first CFFILE field entry.
+            /// </summary>
+            public uint FilesOffset { get; private set; }
+
+            /// <summary>
+            /// Reserved field; MUST be set to 0 (zero).
+            /// </summary>
+            public uint Reserved3 { get; private set; }
+
+            /// <summary>
+            /// Specifies the minor cabinet file format version. This value MUST be set to 3 (three).
+            /// </summary>
+            public byte VersionMinor { get; private set; }
+
+            /// <summary>
+            /// Specifies the major cabinet file format version. This value MUST be set to 1 (one).
+            /// </summary>
+            public byte VersionMajor { get; private set; }
+
+            /// <summary>
+            /// Specifies the number of CFFOLDER field entries in this cabinet file.
+            /// </summary>
+            public ushort FolderCount { get; private set; }
+
+            /// <summary>
+            /// Specifies the number of CFFILE field entries in this cabinet file.
+            /// </summary>
+            public ushort FileCount { get; private set; }
+
+            /// <summary>
+            /// Specifies bit-mapped values that indicate the presence of optional data.
+            /// </summary>
+            public HeaderFlags Flags { get; private set; }
+
+            /// <summary>
+            /// Specifies an arbitrarily derived (random) value that binds a collection of linked cabinet files
+            /// together.All cabinet files in a set will contain the same setID field value.This field is used by
+            /// cabinet file extractors to ensure that cabinet files are not inadvertently mixed.This value has no
+            /// meaning in a cabinet file that is not in a set.
+            /// </summary>
+            public ushort SetID { get; private set; }
+
+            /// <summary>
+            /// Specifies the sequential number of this cabinet in a multicabinet set. The first cabinet has
+            /// iCabinet=0. This field, along with the setID field, is used by cabinet file extractors to ensure that
+            /// this cabinet is the correct continuation cabinet when spanning cabinet files.
+            /// </summary>
+            public ushort CabinetIndex { get; private set; }
+
+            /// <summary>
+            /// If the flags.cfhdrRESERVE_PRESENT field is not set, this field is not
+            /// present, and the value of cbCFHeader field MUST be zero.Indicates the size, in bytes, of the
+            /// abReserve field in this CFHEADER structure.Values for cbCFHeader field MUST be between 0-
+            /// 60,000.
+            /// </summary>
+            public ushort HeaderReservedSize { get; private set; }
+
+            /// <summary>
+            /// If the flags.cfhdrRESERVE_PRESENT field is not set, this field is not
+            /// present, and the value of cbCFFolder field MUST be zero.Indicates the size, in bytes, of the
+            /// abReserve field in each CFFOLDER field entry.Values for fhe cbCFFolder field MUST be between
+            /// 0-255.
+            /// </summary>
+            public byte FolderReservedSize { get; private set; }
+
+            /// <summary>
+            /// If the flags.cfhdrRESERVE_PRESENT field is not set, this field is not
+            /// present, and the value for the cbCFDATA field MUST be zero.The cbCFDATA field indicates the
+            /// size, in bytes, of the abReserve field in each CFDATA field entry. Values for the cbCFDATA field
+            /// MUST be between 0 - 255.
+            /// </summary>
+            public byte DataReservedSize { get; private set; }
+
+            /// <summary>
+            /// If the flags.cfhdrRESERVE_PRESENT field is set and the
+            /// cbCFHeader field is non-zero, this field contains per-cabinet-file application information. This field
+            /// is defined by the application, and is used for application-defined purposes.
+            /// </summary>
+            public byte[] ReservedData { get; private set; }
+
+            /// <summary>
+            /// If the flags.cfhdrPREV_CABINET field is not set, this
+            /// field is not present.This is a NULL-terminated ASCII string that contains the file name of the
+            /// logically previous cabinet file. The string can contain up to 255 bytes, plus the NULL byte. Note that
+            /// this gives the name of the most recently preceding cabinet file that contains the initial instance of a
+            /// file entry.This might not be the immediately previous cabinet file, when the most recent file spans
+            /// multiple cabinet files.If searching in reverse for a specific file entry, or trying to extract a file that is
+            /// reported to begin in the "previous cabinet," the szCabinetPrev field would indicate the name of the
+            /// cabinet to examine.
+            /// </summary>
+            public byte[] CabinetPrev { get; private set; }
+
+            /// <summary>
+            /// If the flags.cfhdrPREV_CABINET field is not set, then this
+            /// field is not present.This is a NULL-terminated ASCII string that contains a descriptive name for the
+            /// media that contains the file named in the szCabinetPrev field, such as the text on the disk label.
+            /// This string can be used when prompting the user to insert a disk. The string can contain up to 255
+            /// bytes, plus the NULL byte.
+            /// </summary>
+            public byte[] DiskPrev { get; private set; }
+
+            /// <summary>
+            /// If the flags.cfhdrNEXT_CABINET field is not set, this
+            /// field is not present.This is a NULL-terminated ASCII string that contains the file name of the next
+            /// cabinet file in a set. The string can contain up to 255 bytes, plus the NULL byte. Files that extend
+            /// beyond the end of the current cabinet file are continued in the named cabinet file.
+            /// </summary>
+            public byte[] CabinetNext { get; private set; }
+
+            /// <summary>
+            /// If the flags.cfhdrNEXT_CABINET field is not set, this field is
+            /// not present.This is a NULL-terminated ASCII string that contains a descriptive name for the media
+            /// that contains the file named in the szCabinetNext field, such as the text on the disk label. The
+            /// string can contain up to 255 bytes, plus the NULL byte. This string can be used when prompting the
+            /// user to insert a disk.
+            /// </summary>
+            public byte[] DiskNext { get; private set; }
+
+            #endregion
+        }
+
+        [Flags]
+        internal enum HeaderFlags : ushort
+        {
+            /// <summary>
+            /// The flag is set if this cabinet file is not the first in a set of cabinet files.
+            /// When this bit is set, the szCabinetPrev and szDiskPrev fields are present in this CFHEADER
+            /// structure. The value is 0x0001.
+            /// </summary>
+            PREV_CABINET = 0x0001,
+
+            /// <summary>
+            /// The flag is set if this cabinet file is not the last in a set of cabinet files.
+            /// When this bit is set, the szCabinetNext and szDiskNext fields are present in this CFHEADER
+            /// structure. The value is 0x0002.
+            /// </summary>
+            NEXT_CABINET = 0x0002,
+
+            /// <summary>
+            /// The flag is set if if this cabinet file contains any reserved fields. When
+            /// this bit is set, the cbCFHeader, cbCFFolder, and cbCFData fields are present in this CFHEADER
+            /// structure. The value is 0x0004.
+            /// </summary>
+            RESERVE_PRESENT = 0x0004,
+        }
+
+        /// <summary>
+        /// Each CFFOLDER structure contains information about one of the folders or partial folders stored in
+        /// this cabinet file, as shown in the following packet diagram.The first CFFOLDER structure entry
+        /// immediately follows the CFHEADER structure entry. The CFHEADER.cFolders field indicates how
+        /// many CFFOLDER structure entries are present.
+        /// 
+        /// Folders can start in one cabinet, and continue on to one or more succeeding cabinets. When the
+        /// cabinet file creator detects that a folder has been continued into another cabinet, it will complete
+        /// that folder as soon as the current file has been completely compressed.Any additional files will be
+        /// placed in the next folder.Generally, this means that a folder would span at most two cabinets, but it
+        /// could span more than two cabinets if the file is large enough.
+        /// 
+        /// CFFOLDER structure entries actually refer to folder fragments, not necessarily complete folders. A
+        /// CFFOLDER structure is the beginning of a folder if the iFolder field value in the first file that
+        /// references the folder does not indicate that the folder is continued from the previous cabinet file.
+        /// 
+        /// The typeCompress field can vary from one folder to the next, unless the folder is continued from a
+        /// previous cabinet file.
+        /// </summary>
+        internal class CFFOLDER
+        {
+            #region Properties
+
+            /// <summary>
+            /// Specifies the absolute file offset of the first CFDATA field block for the folder.
+            /// </summary>
+            public uint CabStartOffset { get; private set; }
+
+            /// <summary>
+            /// Specifies the number of CFDATA structures for this folder that are actually in this cabinet.
+            /// A folder can continue into another cabinet and have more CFDATA structure blocks in that cabinet
+            /// file.A folder can start in a previous cabinet.This number represents only the CFDATA structures for
+            /// this folder that are at least partially recorded in this cabinet.
+            /// </summary>
+            public ushort DataCount { get; private set; }
+
+            /// <summary>
+            /// Indicates the compression method used for all CFDATA structure entries in this
+            /// folder.
+            /// </summary>
+            public CompressionType CompressionType { get; private set; }
+
+            /// <summary>
+            /// If the CFHEADER.flags.cfhdrRESERVE_PRESENT field is set
+            /// and the cbCFFolder field is non-zero, then this field contains per-folder application information.
+            /// This field is defined by the application, and is used for application-defined purposes.
+            /// </summary>
+            public byte[] ReservedData { get; private set; }
+
+            #endregion
+        }
+
+        internal enum CompressionType : ushort
+        {
+            /// <summary>
+            /// Mask for compression type.
+            /// </summary>
+            MASK_TYPE = 0x000F,
+
+            /// <summary>
+            /// No compression.
+            /// </summary>
+            TYPE_NONE = 0x0000,
+
+            /// <summary>
+            /// MSZIP compression.
+            /// </summary>
+            TYPE_MSZIP = 0x0001,
+
+            /// <summary>
+            /// Quantum compression.
+            /// </summary>
+            TYPE_QUANTUM = 0x0002,
+
+            /// <summary>
+            /// LZX compression.
+            /// </summary>
+            TYPE_LZX = 0x0003,
+        }
+
+        /// <summary>
+        /// Each CFFILE structure contains information about one of the files stored (or at least partially
+        /// stored) in this cabinet, as shown in the following packet diagram.The first CFFILE structure entry in
+        /// each cabinet is found at the absolute offset CFHEADER.coffFiles field. CFHEADER.cFiles field
+        /// indicates how many of these entries are in the cabinet. The CFFILE structure entries in a cabinet
+        /// are ordered by iFolder field value, and then by the uoffFolderStart field value.Entries for files
+        /// continued from the previous cabinet will be first, and entries for files continued to the next cabinet
+        /// will be last.
+        /// </summary>
+        internal class CFFILE
+        {
+            #region Properties
+
+            /// <summary>
+            /// Specifies the uncompressed size of this file, in bytes.
+            /// </summary>
+            public uint FileSize { get; private set; }
+
+            /// <summary>
+            /// Specifies the uncompressed offset, in bytes, of the start of this file's data. For the
+            /// first file in each folder, this value will usually be zero. Subsequent files in the folder will have offsets
+            /// that are typically the running sum of the cbFile field values.
+            /// </summary>
+            public uint FolderStartOffset { get; private set; }
+
+            /// <summary>
+            /// Index of the folder that contains this file's data.
+            /// </summary>
+            public FolderIndex FolderIndex { get; private set; }
+
+            /// <summary>
+            /// Date of this file, in the format ((year–1980) << 9)+(month << 5)+(day), where
+            /// month={1..12} and day = { 1..31 }. This "date" is typically considered the "last modified" date in local
+            /// time, but the actual definition is application-defined.
+            /// </summary>
+            public ushort Date { get; private set; }
+
+            /// <summary>
+            /// Time of this file, in the format (hour << 11)+(minute << 5)+(seconds/2), where
+            /// hour={0..23}. This "time" is typically considered the "last modified" time in local time, but the
+            /// actual definition is application-defined.
+            /// </summary>
+            public ushort Time { get; private set; }
+
+            /// <summary>
+            /// Attributes of this file; can be used in any combination.
+            /// </summary>
+            public FileAttributes Attributes { get; private set; }
+
+            /// <summary>
+            /// The NULL-terminated name of this file. Note that this string can include path
+            /// separator characters.The string can contain up to 256 bytes, plus the NULL byte. When the
+            /// _A_NAME_IS_UTF attribute is set, this string can be converted directly to Unicode, avoiding
+            /// locale-specific dependencies. When the _A_NAME_IS_UTF attribute is not set, this string is subject
+            /// to interpretation depending on locale. When a string that contains Unicode characters larger than
+            /// 0x007F is encoded in the szName field, the _A_NAME_IS_UTF attribute SHOULD be included in
+            /// the file's attributes. When no characters larger than 0x007F are in the name, the
+            /// _A_NAME_IS_UTF attribute SHOULD NOT be set. If byte values larger than 0x7F are found in
+            /// CFFILE.szName field, but the _A_NAME_IS_UTF attribute is not set, the characters SHOULD be
+            /// interpreted according to the current location.
+            /// </summary>
+            public byte[] Name { get; private set; }
+
+            #endregion
+        }
+
+        internal enum FolderIndex : ushort
+        {
+            /// <summary>
+            /// A value of zero indicates that this is the
+            /// first folder in this cabinet file.
+            /// </summary>
+            FIRST_FOLDER = 0x0000,
+
+            /// <summary>
+            /// Indicates that the folder index is actually zero, but that
+            /// extraction of this file would have to begin with the cabinet named in the
+            /// CFHEADER.szCabinetPrev field. 
+            /// </summary>
+            CONTINUED_FROM_PREV = 0xFFFD,
+
+            /// <summary>
+            /// Indicates that the folder index
+            /// is actually one less than THE CFHEADER.cFolders field value, and that extraction of this file will
+            /// require continuation to the cabinet named in the CFHEADER.szCabinetNext field.
+            /// </summary>
+            CONTINUED_TO_NEXT = 0xFFFE,
+
+            /// <see cref="CONTINUED_FROM_PREV"/>
+            /// <see cref="CONTINUED_TO_NEXT"/>
+            CONTINUED_PREV_AND_NEXT = 0xFFFF,
+        }
+
+        [Flags]
+        internal enum FileAttributes : ushort
+        {
+            /// <summary>
+            /// File is read-only.
+            /// </summary>
+            RDONLY = 0x0001,
+
+            /// <summary>
+            /// File is hidden.
+            /// </summary>
+            HIDDEN = 0x0002,
+
+            /// <summary>
+            /// File is a system file.
+            /// </summary>
+            SYSTEM = 0x0004,
+
+            /// <summary>
+            /// File has been modified since last backup.
+            /// </summary>
+            ARCH = 0x0040,
+
+            /// <summary>
+            /// File will be run after extraction.
+            /// </summary>
+            EXEC = 0x0080,
+
+            /// <summary>
+            /// The szName field contains UTF.
+            /// </summary>
+            NAME_IS_UTF = 0x0100,
+        }
+
+        /// <summary>
+        /// Each CFDATA structure describes some amount of compressed data, as shown in the following
+        /// packet diagram. The first CFDATA structure entry for each folder is located by using the
+        /// CFFOLDER.coffCabStart field. Subsequent CFDATA structure records for this folder are
+        /// contiguous.
+        /// </summary>
+        internal class CFDATA
+        {
+            #region Properties
+
+            /// <summary>
+            /// Checksum of this CFDATA structure, from the CFDATA.cbData through the
+            /// CFDATA.ab[cbData - 1] fields.It can be set to 0 (zero) if the checksum is not supplied.
+            /// </summary>
+            public uint Checksum { get; private set; }
+
+            /// <summary>
+            /// Number of bytes of compressed data in this CFDATA structure record. When the
+            /// cbUncomp field is zero, this field indicates only the number of bytes that fit into this cabinet file.
+            /// </summary>
+            public ushort CompressedSize { get; private set; }
+
+            /// <summary>
+            /// The uncompressed size of the data in this CFDATA structure entry in bytes. When this
+            /// CFDATA structure entry is continued in the next cabinet file, the cbUncomp field will be zero, and
+            /// the cbUncomp field in the first CFDATA structure entry in the next cabinet file will report the total
+            /// uncompressed size of the data from both CFDATA structure blocks.
+            /// </summary>
+            public ushort UncompressedSize { get; private set; }
+
+            /// <summary>
+            /// If the CFHEADER.flags.cfhdrRESERVE_PRESENT flag is set
+            /// and the cbCFData field value is non-zero, this field contains per-datablock application information.
+            /// This field is defined by the application, and it is used for application-defined purposes.
+            /// </summary>
+            public byte[] ReservedData { get; private set; }
+
+            /// <summary>
+            /// The compressed data bytes, compressed by using the CFFOLDER.typeCompress
+            /// method. When the cbUncomp field value is zero, these data bytes MUST be combined with the data
+            /// bytes from the next cabinet's first CFDATA structure entry before decompression. When the
+            /// CFFOLDER.typeCompress field indicates that the data is not compressed, this field contains the
+            /// uncompressed data bytes. In this case, the cbData and cbUncomp field values will be equal unless
+            /// this CFDATA structure entry crosses a cabinet file boundary.
+            /// </summary>
+            public byte[] CompressedData { get; private set; }
+
+            #endregion
+        }
+
+        /// <summary>
+        /// The computation and verification of checksums found in CFDATA structure entries cabinet files is
+        /// done by using a function described by the following mathematical notation. When checksums are
+        /// not supplied by the cabinet file creating application, the checksum field is set to 0 (zero). Cabinet
+        /// extracting applications do not compute or verify the checksum if the field is set to 0 (zero).
+        /// </summary>
+        internal static class Checksum
+        {
+            // TODO: Implement from `[MS-CAB].pdf`
+            //public static uint ChecksumData(byte[] data)
+            //{
+
+            //}
+        }
+
+        #endregion
+
+        #region TEMPORARY AREA FOR MS-ZIP FORMAT
+
+        /// <summary>
+        /// Each MSZIP block MUST consist of a 2-byte MSZIP signature and one or more RFC 1951 blocks. The
+        /// 2-byte MSZIP signature MUST consist of the bytes 0x43 and 0x4B. The MSZIP signature MUST be
+        /// the first 2 bytes in the MSZIP block.The MSZIP signature is shown in the following packet diagram.       
+        /// </summary>
+        internal class MSZIPBlock
+        {
+            #region Constants
+
+            /// <summary>
+            /// Human-readable signature
+            /// </summary>
+            public static readonly string SignatureString = "CK";
+
+            /// <summary>
+            /// Signature as an unsigned Int16 value
+            /// </summary>
+            public const ushort SignatureValue = 0x4B43;
+
+            /// <summary>
+            /// Signature as a byte array
+            /// </summary>
+            public static readonly byte[] SignatureBytes = new byte[] { 0x43, 0x4B };
+
+            #endregion
+
+            #region Properties
+
+            /// <summary>
+            /// 'CB'
+            /// </summary>
+            public ushort Signature { get; private set; }
+
+            /// <summary>
+            /// Each MSZIP block is the result of a single deflate compression operation, as defined in [RFC1951].
+            /// The compressor that performs the compression operation MUST generate one or more RFC 1951
+            /// blocks, as defined in [RFC1951]. The number, deflation mode, and type of RFC 1951 blocks in each
+            /// MSZIP block is determined by the compressor, as defined in [RFC1951]. The last RFC 1951 block in
+            /// each MSZIP block MUST be marked as the "end" of the stream(1), as defined by[RFC1951]
+            /// section 3.2.3. Decoding trees MUST be discarded after each RFC 1951 block, but the history buffer
+            /// MUST be maintained.Each MSZIP block MUST represent no more than 32 KB of uncompressed data.
+            /// 
+            /// The maximum compressed size of each MSZIP block is 32 KB + 12 bytes.This enables the MSZIP
+            /// block to contain 32 KB of data split between two noncompressed RFC 1951 blocks, each of which
+            /// has a value of BTYPE = 00.
+            /// </summary>
+            public byte[] Data { get; private set; }
+
+            #endregion
+        }
+
+        #endregion
     }
 }
