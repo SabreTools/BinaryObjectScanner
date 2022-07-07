@@ -282,6 +282,27 @@ namespace BurnOutSharp.FileType
             }
 
             /// <summary>
+            /// Extract all files from the archive to <paramref name="outputDirectory"/>
+            /// </summary>
+            public bool ExtractAllFiles(string outputDirectory)
+            {
+                // Perform sanity checks
+                if (Header == null || Files == null || Files.Length == 0)
+                    return false;
+
+                // Loop through and extract all files
+                foreach (CFFILE file in Files)
+                {
+                    string outputPath = Path.Combine(outputDirectory, file.NameAsString);
+                }
+
+                // TODO: We don't check for other cabinets here yet
+                // TODO: Read and decompress data blocks
+
+                return true;
+            }
+
+            /// <summary>
             /// Extract a single file from the archive to <paramref name="outputDirectory"/>
             /// </summary>
             public bool ExtractFile(string filePath, string outputDirectory, bool exact = false)
