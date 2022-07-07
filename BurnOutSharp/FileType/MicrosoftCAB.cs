@@ -817,6 +817,32 @@ namespace BurnOutSharp.FileType
                 }
             }
 
+            /// <summary>
+            /// Convert the internal values into a DateTime object, if possible
+            /// </summary>
+            public DateTime DateAndTimeAsDateTime
+            {
+                get
+                {
+                    // Date property
+                    int year    = (Date >> 9) + 1980;
+                    int month   = (Date >> 5) & 0x0F;
+                    int day     = Date & 0x1F;
+
+                    // Time property
+                    int hour    = Time >> 11;
+                    int minute  = (Time >> 5) & 0x3F;
+                    int second  = (Time << 1) & 0x3E;
+
+                    return new DateTime(year, month, day, hour, minute, second);
+                }
+                set
+                {
+                    Date = (ushort)(((value.Year - 1980) << 9) + (value.Month << 5) + (value.Day));
+                    Time = (ushort)((value.Hour << 11) + (value.Minute << 5) + (value.Second / 2));
+                }
+            }
+
             #endregion
 
             #region Serialization
