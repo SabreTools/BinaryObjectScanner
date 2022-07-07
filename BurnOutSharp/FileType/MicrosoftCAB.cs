@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Text;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Tools;
@@ -1092,6 +1094,61 @@ namespace BurnOutSharp.FileType
             /// has a value of BTYPE = 00.
             /// </summary>
             public byte[] Data { get; private set; }
+
+            #endregion
+
+            #region Serialization
+
+            public static MSZIPBlock Deserialize(byte[] data, ref int dataPtr, int blockSize)
+            {
+                if (data == null || dataPtr < 0 || blockSize <= 0)
+                    return null;
+
+                MSZIPBlock block = new MSZIPBlock();
+
+                block.Signature = BitConverter.ToUInt16(data, dataPtr); dataPtr += 2;
+                if (block.Signature != SignatureValue)
+                    return null;
+
+                block.Data = new byte[blockSize];
+                Array.Copy(data, dataPtr, block.Data, 0, blockSize);
+                dataPtr += blockSize;
+
+                return block;
+            }
+
+            #endregion
+
+            #region Public Functionality
+
+            /// <summary>
+            /// Decompress a single block of MS-ZIP data
+            /// </summary>
+            public byte[] DecompressBlock()
+            {
+                if (Data == null || Data.Length == 0)
+                    return null;
+
+                try
+                {
+                    // Create the input objects
+                    MemoryStream blockStream = new MemoryStream(Data);
+                    DeflateStream deflateStream = new DeflateStream(blockStream, CompressionMode.Decompress);
+
+                    // Create the output object
+                    MemoryStream outputStream = new MemoryStream();
+
+                    // Inflate the data
+                    deflateStream.CopyTo(outputStream);
+
+                    // Return the inflated data
+                    return outputStream.ToArray();
+                }
+                catch
+                {
+                    return null;
+                }
+            }
 
             #endregion
         }
