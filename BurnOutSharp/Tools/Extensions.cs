@@ -167,6 +167,15 @@ namespace BurnOutSharp.Tools
         /// <summary>
         /// Find the first position of one array in another, if possible
         /// </summary>
+        public static bool FirstPosition(this byte[] stack, byte[] needle, out int position, int start = 0, int end = -1)
+        {
+            byte?[] nullableNeedle = needle != null ? needle.Select(b => (byte?)b).ToArray() : null;
+            return stack.FirstPosition(nullableNeedle, out position, start, end);
+        }
+
+        /// <summary>
+        /// Find the first position of one array in another, if possible
+        /// </summary>
         public static bool FirstPosition(this byte[] stack, byte?[] needle, out int position, int start = 0, int end = -1)
         {
             var matcher = new ContentMatch(needle, start, end);

@@ -270,6 +270,18 @@ namespace BurnOutSharp.FileType
             #region Public Functionality
 
             /// <summary>
+            /// Find the start of an MS-CAB cabinet in a set of data, if possible
+            /// </summary>
+            public int FindCabinet(byte[] data)
+            {
+                if (data == null || data.Length < CFHEADER.SignatureBytes.Length)
+                    return -1;
+
+                bool found = data.FirstPosition(CFHEADER.SignatureBytes, out int index);
+                return found ? index : -1;
+            }
+
+            /// <summary>
             /// Extract a single file from the archive to <paramref name="outputDirectory"/>
             /// </summary>
             public bool ExtractFile(string filePath, string outputDirectory, bool exact = false)
