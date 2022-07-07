@@ -162,6 +162,7 @@ namespace BurnOutSharp.FileType
 
         #region TEMPORARY AREA FOR MS-CAB FORMAT
 
+        // TODO: Add multi-cabinet reading
         internal class MSCABCabinet
         {
             #region Constants
