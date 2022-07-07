@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Text;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Tools;
@@ -213,11 +214,6 @@ namespace BurnOutSharp.FileType
             /// </summary>
             public CFFILE[] Files { get; private set; }
 
-            /// <summary>
-            /// The actual compressed file data in CFDATA entries.
-            /// </summary>
-            public CFDATA[] DataBlocks { get; private set; }
-
             #endregion
 
             #region Serialization
@@ -242,7 +238,7 @@ namespace BurnOutSharp.FileType
                 cabinet.Folders = new CFFOLDER[cabinet.Header.FolderCount];
                 for (int i = 0; i < cabinet.Header.FolderCount; i++)
                 {
-                    cabinet.Folders[i] = CFFOLDER.Deserialize(data, ref dataPtr, cabinet.Header.FolderReservedSize);
+                    cabinet.Folders[i] = CFFOLDER.Deserialize(data, ref dataPtr, basePtr, cabinet.Header.FolderReservedSize, cabinet.Header.DataReservedSize);
                     if (cabinet.Folders[i] == null)
                         return null;
                 }
@@ -258,10 +254,6 @@ namespace BurnOutSharp.FileType
                     if (cabinet.Files[i] == null)
                         return null;
                 }
-
-                // TODO: Should we populate the data blocks here?
-                // TODO: How do we determine the number of data blocks?
-                // TODO: If the data blocks start right after the CFFILE data, should we just store the data block offset?
 
                 return cabinet;
             }
@@ -294,11 +286,22 @@ namespace BurnOutSharp.FileType
                 // Loop through and extract all files
                 foreach (CFFILE file in Files)
                 {
+                    // Create the output path
                     string outputPath = Path.Combine(outputDirectory, file.NameAsString);
-                }
 
-                // TODO: We don't check for other cabinets here yet
-                // TODO: Read and decompress data blocks
+                    // Get the associated folder, if possible
+                    CFFOLDER folder = null;
+                    if (file.FolderIndex != FolderIndex.CONTINUED_FROM_PREV && file.FolderIndex != FolderIndex.CONTINUED_TO_NEXT && file.FolderIndex != FolderIndex.CONTINUED_PREV_AND_NEXT)
+                        folder = Folders[(int)file.FolderIndex];
+
+                    // If we don't have a folder, we can't continue
+                    if (folder == null)
+                        return false;
+
+                    // TODO: We don't keep the stream open or accessible here to seek
+                    // TODO: We don't check for other cabinets here yet
+                    // TODO: Read and decompress data blocks
+                }
 
                 return true;
             }
@@ -334,8 +337,20 @@ namespace BurnOutSharp.FileType
 
                 // Get the file to extract
                 CFFILE file = Files[fileIndex];
+
+                // Create the output path
                 string outputPath = Path.Combine(outputDirectory, file.NameAsString);
 
+                // Get the associated folder, if possible
+                CFFOLDER folder = null;
+                if (file.FolderIndex != FolderIndex.CONTINUED_FROM_PREV && file.FolderIndex != FolderIndex.CONTINUED_TO_NEXT && file.FolderIndex != FolderIndex.CONTINUED_PREV_AND_NEXT)
+                    folder = Folders[(int)file.FolderIndex];
+
+                // If we don't have a folder, we can't continue
+                if (folder == null)
+                    return false;
+
+                // TODO: We don't keep the stream open or accessible here to seek
                 // TODO: We don't check for other cabinets here yet
                 // TODO: Read and decompress data blocks
 
@@ -749,7 +764,7 @@ namespace BurnOutSharp.FileType
             }
 
             #endregion
-            }
+        }
 
         [Flags]
         internal enum HeaderFlags : ushort
@@ -825,6 +840,51 @@ namespace BurnOutSharp.FileType
             /// </summary>
             public byte[] ReservedData { get; private set; }
 
+            /// <summary>
+            /// Data blocks associated with this folder
+            /// </summary>
+            public Dictionary<int, CFDATA> DataBlocks { get; private set; } = new Dictionary<int, CFDATA>();
+
+            /// <summary>
+            /// Get the uncompressed data associated with this folder, if possible
+            /// </summary>
+            public byte[] UncompressedData
+            {
+                get
+                {
+                    if (DataBlocks == null || DataBlocks.Count == 0)
+                        return null;
+
+                    List<byte> data = new List<byte>();
+                    foreach (CFDATA dataBlock in DataBlocks.OrderBy(kvp => kvp.Key).Select(kvp => kvp.Value))
+                    {
+                        byte[] decompressed = null;
+                        switch (CompressionType)
+                        {
+                            case CompressionType.TYPE_NONE:
+                                decompressed = dataBlock.CompressedData;
+                                break;
+                            case CompressionType.TYPE_MSZIP:
+                                decompressed = MSZIPBlock.Deserialize(dataBlock.CompressedData).DecompressBlock();
+                                break;
+                            case CompressionType.TYPE_QUANTUM:
+                                // TODO: UNIMPLEMENTED
+                                break;
+                            case CompressionType.TYPE_LZX:
+                                // TODO: UNIMPLEMENTED
+                                break;
+                            default:
+                                return null;
+                        }
+
+                        if (decompressed != null)   
+                            data.AddRange(decompressed);
+                    }
+
+                    return data.ToArray();
+                }
+            }
+
             #endregion
 
             #region Serialization
@@ -832,7 +892,7 @@ namespace BurnOutSharp.FileType
             /// <summary>
             /// Deserialize <paramref name="data"/> at <paramref name="dataPtr"/> into a CFFOLDER object
             /// </summary>
-            public static CFFOLDER Deserialize(byte[] data, ref int dataPtr, byte folderReservedSize = 0)
+            public static CFFOLDER Deserialize(byte[] data, ref int dataPtr, int basePtr, byte folderReservedSize, byte dataReservedSize)
             {
                 if (data == null || dataPtr < 0)
                     return null;
@@ -848,6 +908,22 @@ namespace BurnOutSharp.FileType
                     folder.ReservedData = new byte[folderReservedSize];
                     Array.Copy(data, dataPtr, folder.ReservedData, 0, folderReservedSize);
                     dataPtr += folderReservedSize;
+                }
+
+                // TODO: Fix this - For some reason, when reading the block headers, it's not functioning correctly
+                // In the case of the test file, the compressed size is `942` which is incomplete and ends up
+                // throwing an exception when decompressing to MS-ZIP. This only happens on block 2 of 2. The first
+                // block decompresses to the exact correct size. In the case above, the true block length should
+                // be `10150` instead
+                if (folder.CabStartOffset > 0)
+                {
+                    int blockPtr = basePtr + (int)folder.CabStartOffset;
+                    for (int i = 0; i < folder.DataCount; i++)
+                    {
+                        int offset = blockPtr;
+                        CFDATA dataBlock = CFDATA.Deserialize(data, ref blockPtr, dataReservedSize);
+                        folder.DataBlocks[offset] = dataBlock;
+                    }
                 }
 
                 return folder;
@@ -1201,6 +1277,9 @@ namespace BurnOutSharp.FileType
                 dataBlock.CompressedSize = BitConverter.ToUInt16(data, dataPtr); dataPtr += 2;
                 dataBlock.UncompressedSize = BitConverter.ToUInt16(data, dataPtr); dataPtr += 2;
 
+                if (dataBlock.UncompressedSize != 0 && dataBlock.CompressedSize > dataBlock.UncompressedSize)
+                    return null;
+
                 if (dataReservedSize > 0)
                 {
                     dataBlock.ReservedData = new byte[dataReservedSize];
@@ -1292,20 +1371,21 @@ namespace BurnOutSharp.FileType
 
             #region Serialization
 
-            public static MSZIPBlock Deserialize(byte[] data, ref int dataPtr, int blockSize)
+            public static MSZIPBlock Deserialize(byte[] data)
             {
-                if (data == null || dataPtr < 0 || blockSize <= 0)
+                if (data == null)
                     return null;
 
                 MSZIPBlock block = new MSZIPBlock();
+                int dataPtr = 0;
 
                 block.Signature = BitConverter.ToUInt16(data, dataPtr); dataPtr += 2;
                 if (block.Signature != SignatureValue)
                     return null;
 
-                block.Data = new byte[blockSize];
-                Array.Copy(data, dataPtr, block.Data, 0, blockSize);
-                dataPtr += blockSize;
+                block.Data = new byte[data.Length - 2];
+                Array.Copy(data, dataPtr, block.Data, 0, data.Length - 2);
+                dataPtr += data.Length - 2;
 
                 return block;
             }
