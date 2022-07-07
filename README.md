@@ -57,12 +57,14 @@ Below is a list of protections detected by BurnOutSharp. The two columns explain
 | IndyVCD | False | True | Unconfirmed¹ |
 | ITENIUM Trial & Buy Protection | True | False | |
 | JoWood X-Prot (v1/v2) / Xtreme-Protector | True | False | |
-| Key2Audio XS | True | True | |
+| ~~Key2Audio~~ | True | True | Existing checks found to actually be indicators of OpenMG, not key2Audio specifically. |
 | Key-Lock (Dongle) | True | False | Unconfirmed¹ |
+| LabelGate CD | True | True | Currently only LabelGate CD2 is detected. |
 | LibCrypt | True | False | Separate subfile scan only |
 | LaserLok | True | True | |
 | MediaCloQ | False | True | Unconfirmed¹ |
 | MediaMax CD3 | True | True | |
+| OpenMG | True | True | |
 | Origin | True | True | |
 | phenoProtect | False | False | Text file check only |
 | ProtectDISC / VOB ProtectCD/DVD | True | False | |
