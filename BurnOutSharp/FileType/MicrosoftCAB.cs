@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Tools;
+using ComponentAce.Compression.Libs.zlib;
 using WixToolset.Dtf.Compression.Cab;
 
 namespace BurnOutSharp.FileType
@@ -391,7 +392,7 @@ namespace BurnOutSharp.FileType
 
                     if (folder == null)
                     {
-                        Console.WriteLine($"        Not found or NULL");
+                        Console.WriteLine($"        Not found or null");
                         Console.WriteLine();
                         continue;
                     }
@@ -420,7 +421,7 @@ namespace BurnOutSharp.FileType
 
                     if (file == null)
                     {
-                        Console.WriteLine($"        Not found or NULL");
+                        Console.WriteLine($"        Not found or null");
                         Console.WriteLine();
                         continue;
                     }
@@ -431,6 +432,26 @@ namespace BurnOutSharp.FileType
                 Console.WriteLine();
 
                 #endregion
+            }
+
+            #endregion
+
+            #region Internal Functionality
+
+            /// <summary>
+            /// Get a null-terminated string as a byte array from input data
+            /// </summary>
+            internal static byte[] GetNullTerminatedString(byte[] data, ref int dataPtr)
+            {
+                int nullIndex = Array.IndexOf<byte>(data, 0x00, dataPtr, 0xFF);
+                int stringSize = nullIndex - dataPtr;
+                if (stringSize < 0 || stringSize > 256)
+                    return null;
+
+                byte[] str = new byte[stringSize];
+                Array.Copy(data, dataPtr, str, 0, stringSize);
+                dataPtr += stringSize + 1;
+                return str;
             }
 
             #endregion
@@ -567,8 +588,8 @@ namespace BurnOutSharp.FileType
 
             /// <summary>
             /// If the flags.cfhdrPREV_CABINET field is not set, this
-            /// field is not present.This is a NULL-terminated ASCII string that contains the file name of the
-            /// logically previous cabinet file. The string can contain up to 255 bytes, plus the NULL byte. Note that
+            /// field is not present.This is a null-terminated ASCII string that contains the file name of the
+            /// logically previous cabinet file. The string can contain up to 255 bytes, plus the null byte. Note that
             /// this gives the name of the most recently preceding cabinet file that contains the initial instance of a
             /// file entry.This might not be the immediately previous cabinet file, when the most recent file spans
             /// multiple cabinet files.If searching in reverse for a specific file entry, or trying to extract a file that is
@@ -579,26 +600,26 @@ namespace BurnOutSharp.FileType
 
             /// <summary>
             /// If the flags.cfhdrPREV_CABINET field is not set, then this
-            /// field is not present.This is a NULL-terminated ASCII string that contains a descriptive name for the
+            /// field is not present.This is a null-terminated ASCII string that contains a descriptive name for the
             /// media that contains the file named in the szCabinetPrev field, such as the text on the disk label.
             /// This string can be used when prompting the user to insert a disk. The string can contain up to 255
-            /// bytes, plus the NULL byte.
+            /// bytes, plus the null byte.
             /// </summary>
             public byte[] DiskPrev { get; private set; }
 
             /// <summary>
             /// If the flags.cfhdrNEXT_CABINET field is not set, this
-            /// field is not present.This is a NULL-terminated ASCII string that contains the file name of the next
-            /// cabinet file in a set. The string can contain up to 255 bytes, plus the NULL byte. Files that extend
+            /// field is not present.This is a null-terminated ASCII string that contains the file name of the next
+            /// cabinet file in a set. The string can contain up to 255 bytes, plus the null byte. Files that extend
             /// beyond the end of the current cabinet file are continued in the named cabinet file.
             /// </summary>
             public byte[] CabinetNext { get; private set; }
 
             /// <summary>
             /// If the flags.cfhdrNEXT_CABINET field is not set, this field is
-            /// not present.This is a NULL-terminated ASCII string that contains a descriptive name for the media
+            /// not present.This is a null-terminated ASCII string that contains a descriptive name for the media
             /// that contains the file named in the szCabinetNext field, such as the text on the disk label. The
-            /// string can contain up to 255 bytes, plus the NULL byte. This string can be used when prompting the
+            /// string can contain up to 255 bytes, plus the null byte. This string can be used when prompting the
             /// user to insert a disk.
             /// </summary>
             public byte[] DiskNext { get; private set; }
@@ -659,6 +680,9 @@ namespace BurnOutSharp.FileType
                 if (header.Flags.HasFlag(HeaderFlags.RESERVE_PRESENT))
                 {
                     header.HeaderReservedSize = BitConverter.ToUInt16(data, dataPtr); dataPtr += 2;
+                    if (header.HeaderReservedSize > 60_000)
+                        return null;
+
                     header.FolderReservedSize = data[dataPtr++];
                     header.DataReservedSize = data[dataPtr++];
 
@@ -673,44 +697,32 @@ namespace BurnOutSharp.FileType
                 // TODO: Make string-finding block a helper method
                 if (header.Flags.HasFlag(HeaderFlags.PREV_CABINET))
                 {
-                    int nullIndex = Array.IndexOf<byte>(data, 0x00, dataPtr, 0xFF);
-                    int stringSize = nullIndex - dataPtr;
-                    if (stringSize < 0 || stringSize > 255)
+                    byte[] cabPrev = MSCABCabinet.GetNullTerminatedString(data, ref dataPtr);
+                    if (cabPrev == null)
                         return null;
 
-                    header.CabinetPrev = new byte[stringSize];
-                    Array.Copy(data, dataPtr, header.CabinetPrev, 0, stringSize);
-                    dataPtr += stringSize + 1;
+                    header.CabinetPrev = cabPrev;
 
-                    nullIndex = Array.IndexOf<byte>(data, 0x00, dataPtr, 0xFF);
-                    stringSize = nullIndex - dataPtr;
-                    if (stringSize < 0 || stringSize > 255)
+                    byte[] diskPrev = MSCABCabinet.GetNullTerminatedString(data, ref dataPtr);
+                    if (diskPrev == null)
                         return null;
 
-                    header.DiskPrev = new byte[stringSize];
-                    Array.Copy(data, dataPtr, header.DiskPrev, 0, stringSize);
-                    dataPtr += stringSize + 1;
+                    header.DiskPrev = diskPrev;
                 }
 
                 if (header.Flags.HasFlag(HeaderFlags.NEXT_CABINET))
                 {
-                    int nullIndex = Array.IndexOf<byte>(data, 0x00, dataPtr, 0xFF);
-                    int stringSize = nullIndex - dataPtr;
-                    if (stringSize < 0 || stringSize > 255)
+                    byte[] cabNext = MSCABCabinet.GetNullTerminatedString(data, ref dataPtr);
+                    if (cabNext == null)
                         return null;
 
-                    header.CabinetNext = new byte[stringSize];
-                    Array.Copy(data, dataPtr, header.CabinetNext, 0, stringSize);
-                    dataPtr += stringSize + 1;
+                    header.CabinetNext = cabNext;
 
-                    nullIndex = Array.IndexOf<byte>(data, 0x00, dataPtr, 0xFF);
-                    stringSize = nullIndex - dataPtr;
-                    if (stringSize < 0 || stringSize > 255)
+                    byte[] diskNext = MSCABCabinet.GetNullTerminatedString(data, ref dataPtr);
+                    if (diskNext == null)
                         return null;
 
-                    header.DiskNext = new byte[stringSize];
-                    Array.Copy(data, dataPtr, header.DiskNext, 0, stringSize);
-                    dataPtr += stringSize + 1;
+                    header.DiskNext = diskNext;
                 }
 
                 return header;
@@ -845,6 +857,10 @@ namespace BurnOutSharp.FileType
             /// </summary>
             public Dictionary<int, CFDATA> DataBlocks { get; private set; } = new Dictionary<int, CFDATA>();
 
+            #endregion
+
+            #region Generated Properties
+
             /// <summary>
             /// Get the uncompressed data associated with this folder, if possible
             /// </summary>
@@ -854,6 +870,9 @@ namespace BurnOutSharp.FileType
                 {
                     if (DataBlocks == null || DataBlocks.Count == 0)
                         return null;
+
+                    // Store the last decompressed block for MS-ZIP
+                    byte[] lastDecompressed = null;
 
                     List<byte> data = new List<byte>();
                     foreach (CFDATA dataBlock in DataBlocks.OrderBy(kvp => kvp.Key).Select(kvp => kvp.Value))
@@ -865,7 +884,7 @@ namespace BurnOutSharp.FileType
                                 decompressed = dataBlock.CompressedData;
                                 break;
                             case CompressionType.TYPE_MSZIP:
-                                decompressed = MSZIPBlock.Deserialize(dataBlock.CompressedData).DecompressBlock();
+                                decompressed = MSZIPBlock.Deserialize(dataBlock.CompressedData).DecompressBlock(dataBlock.UncompressedSize, lastDecompressed);
                                 break;
                             case CompressionType.TYPE_QUANTUM:
                                 // TODO: UNIMPLEMENTED
@@ -877,7 +896,8 @@ namespace BurnOutSharp.FileType
                                 return null;
                         }
 
-                        if (decompressed != null)   
+                        lastDecompressed = decompressed;
+                        if (decompressed != null)
                             data.AddRange(decompressed);
                     }
 
@@ -910,11 +930,6 @@ namespace BurnOutSharp.FileType
                     dataPtr += folderReservedSize;
                 }
 
-                // TODO: Fix this - For some reason, when reading the block headers, it's not functioning correctly
-                // In the case of the test file, the compressed size is `942` which is incomplete and ends up
-                // throwing an exception when decompressing to MS-ZIP. This only happens on block 2 of 2. The first
-                // block decompresses to the exact correct size. In the case above, the length to the end of the file
-                // is `10150`, which also seems to be incorrect.
                 if (folder.CabStartOffset > 0)
                 {
                     int blockPtr = basePtr + (int)folder.CabStartOffset;
@@ -1027,8 +1042,8 @@ namespace BurnOutSharp.FileType
             public FileAttributes Attributes { get; private set; }
 
             /// <summary>
-            /// The NULL-terminated name of this file. Note that this string can include path
-            /// separator characters.The string can contain up to 256 bytes, plus the NULL byte. When the
+            /// The null-terminated name of this file. Note that this string can include path
+            /// separator characters.The string can contain up to 256 bytes, plus the null byte. When the
             /// _A_NAME_IS_UTF attribute is set, this string can be converted directly to Unicode, avoiding
             /// locale-specific dependencies. When the _A_NAME_IS_UTF attribute is not set, this string is subject
             /// to interpretation depending on locale. When a string that contains Unicode characters larger than
@@ -1078,14 +1093,14 @@ namespace BurnOutSharp.FileType
                 get
                 {
                     // Date property
-                    int year    = (Date >> 9) + 1980;
-                    int month   = (Date >> 5) & 0x0F;
-                    int day     = Date & 0x1F;
+                    int year = (Date >> 9) + 1980;
+                    int month = (Date >> 5) & 0x0F;
+                    int day = Date & 0x1F;
 
                     // Time property
-                    int hour    = Time >> 11;
-                    int minute  = (Time >> 5) & 0x3F;
-                    int second  = (Time << 1) & 0x3E;
+                    int hour = Time >> 11;
+                    int minute = (Time >> 5) & 0x3F;
+                    int second = (Time << 1) & 0x3E;
 
                     return new DateTime(year, month, day, hour, minute, second);
                 }
@@ -1117,14 +1132,11 @@ namespace BurnOutSharp.FileType
                 file.Time = BitConverter.ToUInt16(data, dataPtr); dataPtr += 2;
                 file.Attributes = (FileAttributes)BitConverter.ToUInt16(data, dataPtr); dataPtr += 2;
 
-                int nullIndex = Array.IndexOf<byte>(data, 0x00, dataPtr, 0xFF);
-                int stringSize = nullIndex - dataPtr;
-                if (stringSize < 0 || stringSize > 255)
+                byte[] name = MSCABCabinet.GetNullTerminatedString(data, ref dataPtr);
+                if (name == null)
                     return null;
 
-                file.Name = new byte[stringSize];
-                Array.Copy(data, dataPtr, file.Name, 0, stringSize);
-                dataPtr += stringSize + 1;
+                file.Name = name;
 
                 return file;
             }
@@ -1215,7 +1227,7 @@ namespace BurnOutSharp.FileType
         /// <summary>
         /// Each CFDATA structure describes some amount of compressed data, as shown in the following
         /// packet diagram. The first CFDATA structure entry for each folder is located by using the
-        /// CFFOLDER.coffCabStart field. Subsequent CFDATA structure records for this folder are
+        /// <see cref="CFFOLDER.CabStartOffset"/> field. Subsequent CFDATA structure records for this folder are
         /// contiguous.
         /// </summary>
         internal class CFDATA
@@ -1223,38 +1235,38 @@ namespace BurnOutSharp.FileType
             #region Properties
 
             /// <summary>
-            /// Checksum of this CFDATA structure, from the CFDATA.cbData through the
-            /// CFDATA.ab[cbData - 1] fields.It can be set to 0 (zero) if the checksum is not supplied.
+            /// Checksum of this CFDATA structure, from the <see cref="CompressedSize"/> through the
+            /// <see cref="CompressedData"/> fields. It can be set to 0 (zero) if the checksum is not supplied.
             /// </summary>
             public uint Checksum { get; private set; }
 
             /// <summary>
             /// Number of bytes of compressed data in this CFDATA structure record. When the
-            /// cbUncomp field is zero, this field indicates only the number of bytes that fit into this cabinet file.
+            /// <see cref="UncompressedSize"/> field is zero, this field indicates only the number of bytes that fit into this cabinet file.
             /// </summary>
             public ushort CompressedSize { get; private set; }
 
             /// <summary>
             /// The uncompressed size of the data in this CFDATA structure entry in bytes. When this
-            /// CFDATA structure entry is continued in the next cabinet file, the cbUncomp field will be zero, and
-            /// the cbUncomp field in the first CFDATA structure entry in the next cabinet file will report the total
+            /// CFDATA structure entry is continued in the next cabinet file, the <see cref="UncompressedSize"/> field will be zero, and
+            /// the <see cref="UncompressedSize"/> field in the first CFDATA structure entry in the next cabinet file will report the total
             /// uncompressed size of the data from both CFDATA structure blocks.
             /// </summary>
             public ushort UncompressedSize { get; private set; }
 
             /// <summary>
-            /// If the CFHEADER.flags.cfhdrRESERVE_PRESENT flag is set
-            /// and the cbCFData field value is non-zero, this field contains per-datablock application information.
+            /// If the <see cref="HeaderFlags.RESERVE_PRESENT"/> flag is set
+            /// and the <see cref="CFHEADER.DataReservedSize"/> field value is non-zero, this field contains per-datablock application information.
             /// This field is defined by the application, and it is used for application-defined purposes.
             /// </summary>
             public byte[] ReservedData { get; private set; }
 
             /// <summary>
-            /// The compressed data bytes, compressed by using the CFFOLDER.typeCompress
-            /// method. When the cbUncomp field value is zero, these data bytes MUST be combined with the data
+            /// The compressed data bytes, compressed by using the <see cref="CFFOLDER.CompressionType"/>
+            /// method. When the <see cref="UncompressedSize"/> field value is zero, these data bytes MUST be combined with the data
             /// bytes from the next cabinet's first CFDATA structure entry before decompression. When the
-            /// CFFOLDER.typeCompress field indicates that the data is not compressed, this field contains the
-            /// uncompressed data bytes. In this case, the cbData and cbUncomp field values will be equal unless
+            ///<see cref="CFFOLDER.CompressionType"/> field indicates that the data is not compressed, this field contains the
+            /// uncompressed data bytes. In this case, the <see cref="CompressedSize"/> and <see cref="UncompressedSize"/> field values will be equal unless
             /// this CFDATA structure entry crosses a cabinet file boundary.
             /// </summary>
             public byte[] CompressedData { get; private set; }
@@ -1369,6 +1381,12 @@ namespace BurnOutSharp.FileType
 
             #endregion
 
+            #region Static Properties
+
+            public static ZStream DecompressionStream { get; set; } = new ZStream();
+
+            #endregion
+
             #region Serialization
 
             public static MSZIPBlock Deserialize(byte[] data)
@@ -1397,25 +1415,49 @@ namespace BurnOutSharp.FileType
             /// <summary>
             /// Decompress a single block of MS-ZIP data
             /// </summary>
-            public byte[] DecompressBlock()
+            public byte[] DecompressBlock(int decompressedSize, byte[] previousBytes = null)
             {
                 if (Data == null || Data.Length == 0)
                     return null;
 
                 try
                 {
-                    // Create the input objects
-                    MemoryStream blockStream = new MemoryStream(Data);
-                    DeflateStream deflateStream = new DeflateStream(blockStream, CompressionMode.Decompress);
+                    // The first block can use DeflateStream since it has no history
+                    if (previousBytes == null)
+                    {
+                        // Setup the input
+                        DecompressionStream = new ZStream();
+                        int initErr = DecompressionStream.inflateInit();
+                        if (initErr != zlibConst.Z_OK)
+                            return null;
+                    }
 
-                    // Create the output object
-                    MemoryStream outputStream = new MemoryStream();
+                    // All n+1 blocks require the previous uncompressed data as a dictionary
+                    else
+                    {
+                        // TODO: We need to force a dictionary setting - at this point, mode is 8 not 6
 
-                    // Inflate the data
-                    deflateStream.CopyTo(outputStream);
+                        // Setup the dictionary
+                        int dictErr = DecompressionStream.inflateSetDictionary(previousBytes, previousBytes.Length);
+                        if (dictErr != zlibConst.Z_OK)
+                            return null;
+                    }
 
-                    // Return the inflated data
-                    return outputStream.ToArray();
+                    // Setup the output
+                    byte[] output = new byte[decompressedSize];
+                    DecompressionStream.next_out = output;
+                    DecompressionStream.avail_out = decompressedSize;
+
+                    // Inflate the data -- 0x78, 0x9C is needed to trick zlib
+                    DecompressionStream.next_in = new byte[] { 0x78, 0x9C }.Concat(Data).ToArray();
+                    DecompressionStream.next_in_index = 0;
+                    DecompressionStream.avail_in = Data.Length + 2;
+
+                    int err = DecompressionStream.inflate(zlibConst.Z_FULL_FLUSH);
+                    if (err != zlibConst.Z_OK)
+                        return null;
+
+                    return output;
                 }
                 catch
                 {
@@ -1479,19 +1521,19 @@ namespace BurnOutSharp.FileType
 
         internal static readonly uint[] PositionBaseTable = new uint[]
         {
-             0x00000,  0x00001, 0x00002, 0x00003, 0x00004, 0x00006, 0x00008, 0x0000c,
-             0x00010,  0x00018, 0x00020, 0x00030, 0x00040, 0x00060, 0x00080, 0x000c0,
-             0x00100,  0x00180, 0x00200, 0x00300, 0x00400, 0x00600, 0x00800, 0x00c00,
-             0x01000,  0x01800, 0x02000, 0x03000, 0x04000, 0x06000, 0x08000, 0x0c000,
-             0x10000,  0x18000, 0x20000, 0x30000, 0x40000, 0x60000, 0x80000, 0xc0000,
+                0x00000,  0x00001, 0x00002, 0x00003, 0x00004, 0x00006, 0x00008, 0x0000c,
+                0x00010,  0x00018, 0x00020, 0x00030, 0x00040, 0x00060, 0x00080, 0x000c0,
+                0x00100,  0x00180, 0x00200, 0x00300, 0x00400, 0x00600, 0x00800, 0x00c00,
+                0x01000,  0x01800, 0x02000, 0x03000, 0x04000, 0x06000, 0x08000, 0x0c000,
+                0x10000,  0x18000, 0x20000, 0x30000, 0x40000, 0x60000, 0x80000, 0xc0000,
             0x100000, 0x180000,
         };
 
         internal static readonly int[] PositionExtraBitsTable = new int[]
         {
-             0,  0,  0,  0,  1,  1,  2,  2,
-             3,  3,  4,  4,  5,  5,  6,  6,
-             7,  7,  8,  8,  9,  9, 10, 10,
+                0,  0,  0,  0,  1,  1,  2,  2,
+                3,  3,  4,  4,  5,  5,  6,  6,
+                7,  7,  8,  8,  9,  9, 10, 10,
             11, 11, 12, 12, 13, 13, 14, 14,
             15, 15, 16, 16, 17, 17, 18, 18,
             19, 19,
