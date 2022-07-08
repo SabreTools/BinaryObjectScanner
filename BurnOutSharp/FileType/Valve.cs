@@ -46,7 +46,7 @@ namespace BurnOutSharp.FileType
 
                 // Create a new package from the file
                 var pkg = Package.CreatePackage(packageType);
-                FileModeFlags mode = FileModeFlags.HL_MODE_READ | FileModeFlags.HL_MODE_WRITE | FileModeFlags.HL_MODE_NO_FILEMAPPING;
+                FileModeFlags mode = FileModeFlags.HL_MODE_READ | FileModeFlags.HL_MODE_WRITE | FileModeFlags.HL_MODE_NO_FILEMAPPING | FileModeFlags.HL_MODE_VOLATILE;
                 bool opened = pkg.Open(file, mode, overwriteFiles: true);
                 if (!opened)
                     return null;
