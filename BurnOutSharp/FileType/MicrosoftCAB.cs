@@ -727,12 +727,12 @@ namespace BurnOutSharp.FileType
             {
                 Console.WriteLine("CFHEADER INFORMATION:");
                 Console.WriteLine("--------------------------------------------");
-                Console.WriteLine($"    Signature:          {Signature:X8}");
-                Console.WriteLine($"    Reserved1:          {Reserved1:X8}");
-                Console.WriteLine($"    CabinetSize:        {CabinetSize:X8}");
-                Console.WriteLine($"    Reserved2:          {Reserved2:X8}");
+                Console.WriteLine($"    Signature:          {Encoding.ASCII.GetString(BitConverter.GetBytes(Signature))} (0x{Signature:X8})");
+                Console.WriteLine($"    Reserved1:          {Reserved1} (0x{Reserved1:X8})");
+                Console.WriteLine($"    CabinetSize:        {CabinetSize} (0x{CabinetSize:X8})");
+                Console.WriteLine($"    Reserved2:          {Reserved2} (0x{Reserved2:X8})");
                 Console.WriteLine($"    FilesOffset:        {FilesOffset} (0x{FilesOffset:X8})");
-                Console.WriteLine($"    Reserved3:          {Reserved3:X8}");
+                Console.WriteLine($"    Reserved3:          {Reserved3} (0x{Reserved3:X8})");
                 Console.WriteLine($"    Version:            {VersionMajor}.{VersionMinor}");
                 Console.WriteLine($"    FolderCount:        {FolderCount} (0x{FolderCount:X4})");
                 Console.WriteLine($"    FileCount:          {FileCount} (0x{FileCount:X4})");
@@ -913,8 +913,8 @@ namespace BurnOutSharp.FileType
                 // TODO: Fix this - For some reason, when reading the block headers, it's not functioning correctly
                 // In the case of the test file, the compressed size is `942` which is incomplete and ends up
                 // throwing an exception when decompressing to MS-ZIP. This only happens on block 2 of 2. The first
-                // block decompresses to the exact correct size. In the case above, the true block length should
-                // be `10150` instead
+                // block decompresses to the exact correct size. In the case above, the length to the end of the file
+                // is `10150`, which also seems to be incorrect.
                 if (folder.CabStartOffset > 0)
                 {
                     int blockPtr = basePtr + (int)folder.CabStartOffset;
