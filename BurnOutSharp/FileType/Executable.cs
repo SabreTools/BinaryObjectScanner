@@ -139,6 +139,10 @@ namespace BurnOutSharp.FileType
             // If we have a PE executable, iterate through all PE content checks
             if (pex?.Initialized == true)
             {
+                // Print the section table for debug
+                if (scanner.IncludeDebug && pex.SectionTable != null)
+                    pex.PrintAllSections();
+
                 Parallel.ForEach(ScanningClasses.PortableExecutableCheckClasses, contentCheckClass =>
                 {
                     // Check using custom content checks first
