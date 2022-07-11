@@ -39,10 +39,12 @@ namespace BurnOutSharp.ProtectionType
                 return $"SecuROM {GetV7Version(pex)}";
 
             // TODO: This needs a lot of verification, including version
-            // Get the .shr section, if it exists
-            bool shrSection = pex.ContainsSection(".shr", exact: true);
-            if (shrSection)
-                return $"SecuROM 8 (White Label)";
+            // Disabled until overmatching can be solved
+
+            //// Get the .shr section, if it exists
+            //bool shrSection = pex.ContainsSection(".shr", exact: true);
+            //if (shrSection)
+            //    return $"SecuROM 8 (White Label)";
 
             // Get the .sll section, if it exists
             bool sllSection = pex.ContainsSection(".sll", exact: true);
