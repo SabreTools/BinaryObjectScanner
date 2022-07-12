@@ -171,3 +171,6 @@ Below is a list of archive or archive-like formats that can be extracted and hav
 
 Contributions to the project are welcome. Please follow the current coding styles and please do not add any keys or legally dubious things to the code. Thank you to all of the testers, particularly from the MPF project who helped get this rolling.
 
+## Special Thanks
+
+I want to give a special thanks to [SilasLaspada](https://github.com/SilasLaspada) who has gone above and beyond helping both fix existing checks as well as add new ones.
