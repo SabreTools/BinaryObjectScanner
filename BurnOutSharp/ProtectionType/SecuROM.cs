@@ -38,14 +38,6 @@ namespace BurnOutSharp.ProtectionType
             if (securomSection)
                 return $"SecuROM {GetV7Version(pex)}";
 
-            // TODO: This needs a lot of verification, including version
-            // Disabled until overmatching can be solved
-
-            //// Get the .shr section, if it exists
-            //bool shrSection = pex.ContainsSection(".shr", exact: true);
-            //if (shrSection)
-            //    return $"SecuROM 8 (White Label)";
-
             // Get the .sll section, if it exists
             bool sllSection = pex.ContainsSection(".sll", exact: true);
             if (sllSection)
@@ -108,11 +100,26 @@ namespace BurnOutSharp.ProtectionType
                     //     0x52, 0x00, 0x4F, 0x00, 0x4D, 0x00, 0x20, 0x00,
                     //     0x50, 0x00, 0x41, 0x00
                     // }, Utilities.GetInternalVersion, "SecuROM Product Activation"),
+
+                    // The following 2 checks are unique:
+                    // Both have the identifier found within `.rdata` but the version is within `.data`
+                    // So, we use the placeholder "WHITELABEL" to see if we got a match
+
+                    // /secuexp
+                    new ContentMatchSet(new byte?[] { 0x2F, 0x73, 0x65, 0x63, 0x75, 0x65, 0x78, 0x70 }, "WHITELABEL"),
+
+                    // SecuExp.exe
+                    new ContentMatchSet(new byte?[] { 0x53, 0x65, 0x63, 0x75, 0x45, 0x78, 0x70 }, "WHITELABEL"),
                 };
 
                 string match = MatchUtil.GetFirstMatch(file, pex.ResourceDataSectionRaw, matchers, includeDebug);
                 if (!string.IsNullOrWhiteSpace(match))
+                {
+                    if (match.StartsWith("WHITELABEL"))
+                        return $"SecuROM {GetV8WhiteLabelVersion(pex)} (White Label)";
+
                     return match;
+                }
             }
 
             // Get the .cms_d and .cms_t sections, if they exist -- TODO: Confirm if both are needed or either/or is fine
@@ -248,6 +255,33 @@ namespace BurnOutSharp.ProtectionType
                 bytes = new ReadOnlySpan<byte>(pex.DOSStubHeader.ExecutableData, index, 2).ToArray();
                 return $"7.{bytes[0] ^ 0x10:00}.{bytes[1] ^ 0x10:0000}"; //return "7.01-7.10"
             }
+        }
+
+        private static string GetV8WhiteLabelVersion(PortableExecutable pex)
+        {
+            // If we don't have a data section, we default to generic
+            if (pex.DataSectionRaw == null)
+                return "8";
+
+            // Search .data for the version indicator
+            var matcher = new ContentMatch(new byte?[]
+            {
+                0x29, null, null, null, null, null, null, null,
+                null, null, null, null, null, null, null, null,
+                null, null, null, null, null, null, null, null,
+                null, null, null, null, null, null, null, null,
+                null, null, null, null, null, null, null, null,
+                0x82, 0xD8, 0x0C, 0xAC
+            });
+
+            (bool success, int position) = matcher.Match(pex.DataSectionRaw);
+
+            // If we can't find the string, we default to generic
+            if (!success)
+                return "8";
+
+            byte[] bytes = new ReadOnlySpan<byte>(pex.DataSectionRaw, position + 0xAC, 3).ToArray();
+            return $"{bytes[0] ^ 0xCA}.{bytes[1] ^ 0x39:00}.{bytes[2] ^ 0x51:0000}";
         }
     }
 }
