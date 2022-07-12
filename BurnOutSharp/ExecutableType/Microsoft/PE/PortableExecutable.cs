@@ -391,7 +391,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
                 if (this.OptionalHeader != null && this.OptionalHeader.AddressOfEntryPoint != 0)
                 {
                     int entryPointAddress = (int)ConvertVirtualAddress(this.OptionalHeader.AddressOfEntryPoint, SectionTable);
-                    this.EntryPointRaw = this.ReadArbitraryRange(entryPointAddress, 256);
+                    this.EntryPointRaw = this.ReadArbitraryRange(entryPointAddress, 1024);
                 }
 
                 // Overlay Data
@@ -525,7 +525,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
                 if (this.OptionalHeader != null && this.OptionalHeader.AddressOfEntryPoint != 0)
                 {
                     int entryPointAddress = (int)ConvertVirtualAddress(this.OptionalHeader.AddressOfEntryPoint, SectionTable);
-                    this.EntryPointRaw = this.ReadArbitraryRange(entryPointAddress, 256);
+                    this.EntryPointRaw = this.ReadArbitraryRange(entryPointAddress, 1024);
                 }
 
                 // Overlay Data
