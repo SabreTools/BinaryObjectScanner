@@ -4,6 +4,7 @@ using BurnOutSharp.Interfaces;
 namespace BurnOutSharp.ProtectionType
 {
     // TODO: Figure out how versions/version ranges work for this protection
+    // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
     public class SVKProtector : IPortableExecutableCheck
     {
         /// <inheritdoc/>
