@@ -10,6 +10,7 @@ namespace BurnOutSharp.PackerType
     // The official website for CExe also includes the source code (which does have to be retrieved by the Wayback Machine)
     // http://www.scottlu.com/Content/CExe.html
     // TODO: Add extraction
+    // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
     public class CExe : IPortableExecutableCheck, IScannable
     {
         /// <inheritdoc/>
@@ -25,7 +26,6 @@ namespace BurnOutSharp.PackerType
 
             var matchers = new List<ContentMatchSet>
             {
-                // %Wo�a6.�a6.�a6.�a6.�{6.�.).�f6.��).�`6.��0.�`6.�
                 new ContentMatchSet(new byte?[]
                 {
                     0x25, 0x57, 0x6F, 0xC1, 0x61, 0x36, 0x01, 0x92,
