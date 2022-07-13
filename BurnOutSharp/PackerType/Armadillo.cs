@@ -10,6 +10,7 @@ namespace BurnOutSharp.PackerType
 {
     // TODO: Add extraction
     // TODO: Add version checking, if possible
+    // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
     public class Armadillo : IPortableExecutableCheck, IScannable
     {
         /// <inheritdoc/>
