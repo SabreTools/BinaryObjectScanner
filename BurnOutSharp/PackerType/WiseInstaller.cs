@@ -11,6 +11,7 @@ using Wise = WiseUnpacker.WiseUnpacker;
 
 namespace BurnOutSharp.PackerType
 {
+    // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
     public class WiseInstaller : INewExecutableCheck, IPortableExecutableCheck, IScannable
     {
         /// <inheritdoc/>
