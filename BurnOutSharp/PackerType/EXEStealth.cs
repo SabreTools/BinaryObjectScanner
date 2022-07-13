@@ -11,6 +11,7 @@ namespace BurnOutSharp.PackerType
     // at least for the 2.41 -> 2.75 range
     // TODO: Detect 3.15 and up (maybe looking for `Metamorphism`)
     // TODO: Add extraction
+    // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
     public class EXEStealth : IContentCheck, IPortableExecutableCheck, IScannable
     {
         /// <inheritdoc/>
