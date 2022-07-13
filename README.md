@@ -7,7 +7,7 @@ C# port of the protection scanning ability of [BurnOut](http://burnout.sourcefor
 In addition to the original BurnOut code, the following libraries (or ports thereof) are used for file handling:
 
 - [HLLibSharp](https://github.com/mnadareski/HLLibSharp) - Various Valve archive format extraction
-- [LibMSPackSharp](https://github.com/mnadareski/LibMSPackSharp) - Microsoft CAB extraction
+- [LibMSPackSharp](https://github.com/mnadareski/LibMSPackSharp) - Microsoft CAB extraction [Currently unused]
 - [openmcdf](https://github.com/ironfede/openmcdf) - MSI extraction
 - [psxt001z](https://github.com/Dremora/psxt001z) - PS1 LibCrypt detection
 - [SharpCompress](https://github.com/adamhathcock/sharpcompress) - 7zip/GZip/RAR/PKZIP extraction
