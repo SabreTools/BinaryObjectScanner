@@ -8,6 +8,7 @@ using BurnOutSharp.Matching;
 namespace BurnOutSharp.PackerType
 {
     // TODO: Add extraction - https://github.com/Bioruebe/UniExtract2
+    // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
     public class InstallerVISE : IPortableExecutableCheck, IScannable
     {
         /// <inheritdoc/>
