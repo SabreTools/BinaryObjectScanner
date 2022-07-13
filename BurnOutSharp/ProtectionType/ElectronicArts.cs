@@ -24,8 +24,6 @@ namespace BurnOutSharp.ProtectionType
             if (sections == null)
                 return null;
 
-            pex.PrintAllSections();
-
             string name = pex.FileDescription;
             if (!string.IsNullOrWhiteSpace(name) && name.Contains("EReg MFC Application"))
                 return $"EA CdKey Registration Module {Utilities.GetInternalVersion(pex)}";
