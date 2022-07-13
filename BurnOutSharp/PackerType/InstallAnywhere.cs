@@ -8,6 +8,7 @@ using BurnOutSharp.Tools;
 namespace BurnOutSharp.PackerType
 {
     // TODO: Add extraction, which may be possible with the current libraries but needs to be investigated further.
+    // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
     public class InstallAnywhere : IPortableExecutableCheck, IScannable
     {
         /// <inheritdoc/>
