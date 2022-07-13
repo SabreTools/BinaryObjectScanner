@@ -42,12 +42,13 @@ Below is a list of protections detected by BurnOutSharp. The two columns explain
 | Cenga ProtectDVD | True | True | |
 | CodeLock / CodeLok / CopyLok | True | False | Partially unconfirmed² |
 | CopyKiller | True | True | Unconfirmed¹ |
+| Cucko (EA Custom) | True | False | Does not detect all known cases |
 | Denuvo | True | False | |
 | Dinamic Multimedia Protection/LockBlocks | False | True | LockBlocks needs manual confirmation of the presence of 2 rings |
 | DiscGuard | False | True | Unconfirmed¹ |
 | DVD-Movie-PROTECT | False | True | Unconfirmed¹ |
 | DVD Crypt | False | True | Unconfirmed¹ |
-| EA Protections | True | False | Including Cucko, EA CDKey and EA DRM. |
+| EA Protections | True | False | Including EA CDKey and EA DRM. |
 | ~~Executable-Based CD Check~~ | True | False | Disabled due to overly-broad checks |
 | Executable-Based Online Registration | True | False | Possibly too broad |
 | Freelock | False | True | Unconfirmed¹ |
