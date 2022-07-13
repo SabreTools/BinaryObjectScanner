@@ -5,7 +5,7 @@ using BurnOutSharp.Interfaces;
 
 namespace BurnOutSharp.PackerType
 {
-    // TODO: Better version detection
+    // TODO: Better version detection - https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
     // TODO: Add extraction
     public class PECompact : IPortableExecutableCheck, IScannable
     {
