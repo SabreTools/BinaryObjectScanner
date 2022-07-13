@@ -9,6 +9,7 @@ namespace BurnOutSharp.PackerType
 {
     // TODO: Add extraction, which is possible but the only tools available that can
     // do this seem to be Universal Extractor 2 and InstallExplorer (https://totalcmd.net/plugring/InstallExplorer.html)
+    // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
     public class SetupFactory : IPortableExecutableCheck, IScannable
     {
         /// <inheritdoc/>
