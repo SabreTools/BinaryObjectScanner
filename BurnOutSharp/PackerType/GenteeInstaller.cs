@@ -8,6 +8,7 @@ using BurnOutSharp.Matching;
 namespace BurnOutSharp.PackerType
 {
     // TODO: Add extraction
+    // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
     public class GenteeInstaller : IPortableExecutableCheck, IScannable
     {
         /// <inheritdoc/>
