@@ -51,13 +51,17 @@ namespace BurnOutSharp.Matching
             if (Needle.Length > stack.Length)
                 return (false, -1);
 
-            // If start or end are not set properly, set them to defaults
-            if (Start < 0)
-                Start = 0;
-            if (End < 0)
-                End = stack.Length - Needle.Length;
+            // Set the default start and end values
+            int start = Start;
+            int end = End;
 
-            for (int i = reverse ? End : Start; reverse ? i > Start : i < End; i += reverse ? -1 : 1)
+            // If start or end are not set properly, set them to defaults
+            if (start < 0)
+                start = 0;
+            if (end < 0)
+                end = stack.Length - Needle.Length;
+
+            for (int i = reverse ? end : start; reverse ? i > start : i < end; i += reverse ? -1 : 1)
             {
                 // If we somehow have an invalid end and we haven't matched, return
                 if (i > stack.Length)
