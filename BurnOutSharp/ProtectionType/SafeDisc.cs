@@ -352,9 +352,8 @@ namespace BurnOutSharp.ProtectionType
                     return "1-4";
             }
         }
-
-            // TODO: Verify these checks and remove any that may not be needed, file version checks should remove the need for any checks for 2.80+.
-            public static string GetSecdrvVersion(string firstMatchedString, IEnumerable<string> files)
+        // TODO: Verify these checks and remove any that may not be needed, file version checks should remove the need for any checks for 2.80+.
+        public static string GetSecdrvVersion(string firstMatchedString, IEnumerable<string> files)
         {
             if (firstMatchedString == null || !File.Exists(firstMatchedString))
                 return string.Empty;
@@ -391,6 +390,54 @@ namespace BurnOutSharp.ProtectionType
                 // 163_644 - Bundled with 4.00.002, 4.60.000
                 default:
                     return "1-4";
+            }
+        }
+
+        private string GetVersionFromSHA1Hash(string sha1Hash)
+        {
+            switch (sha1Hash.ToLowerInvariant())
+            {
+                // dplayerx.dll
+                case "f7a57f83bdc29040e20fd37cd0c6d7e6b2984180":
+                    return "1.00.030";
+                case "a8ed1613d47d1b5064300ff070484528ebb20a3b":
+                    return "1.11.000";
+                case "ed680e9a13f593e7a80a69ee1035d956ab62212b":
+                    return "1.3x";
+                case "66d8589343e00fa3e11bbf462e38c6f502515bea":
+                    return "1.30.010";
+                case "5751ae2ee805d31227cfe7680f3c8be4ab8945a3":
+                    return "1.40";
+
+                // secdrv.sys
+                case "b64ad3ec82f2eb9fb854512cb59c25a771322181":
+                    return "1.11.000";
+                case "ebf69b0a96adfc903b7e486708474dc864cc0c7c":
+                    return "1.40.004";
+                case "f68a1370660f8b94f896bbba8dc6e47644d19092":
+                    return "2.30";
+                case "60bc8c3222081bf76466c521474d63714afd43cd":
+                    return "2.40";
+                case "08ceca66432278d8c4e0f448436b77583c3c61c8":
+                    return "2.50";
+                case "10080eb46bf76ac9cf9ea74372cfa4313727f0ca":
+                    return "2.51";
+                case "832d359a6de191c788b0e61e33f3d01f8d793d3c":
+                    return "2.70";
+                case "afcfaac945a5b47712719a5e6a7eb69e36a5a6e0":
+                case "cb24fbe8aa23a49e95f3c83fb15123ffb01f43f4":
+                    return "2.80";
+                case "0383b69f98d0a9c0383c8130d52d6b431c79ac48":
+                    return "2.90";
+                case "d7c9213cc78ff57f2f655b050c4d5ac065661aa9":
+                    return "3.20";
+                case "fc6fedacc21a7244975b8f410ff8673285374cc2":
+                    return "4.00.002"; // Also 4.60.000, might be a fluke
+                case "2d9f54f35f5bacb8959ef3affdc3e4209a4629cb":
+                    return "1-4";
+
+                default:
+                    return null;
             }
         }
 

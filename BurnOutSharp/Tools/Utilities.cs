@@ -261,37 +261,40 @@ namespace BurnOutSharp.Tools
         /// <returns>SHA1 hash as a string on success, null on error</returns>
         public static string GetFileSHA1(string path)
         {
-            if (path == null)
+            if (string.IsNullOrWhiteSpace(path))
                 return null;
 
             try
             {
-                SHA1Managed sha1 = new SHA1Managed();
-                Stream fileTest = File.OpenRead(path);
-                Byte[] buffer = new Byte[32768];
-                while (true)
+                SHA1 sha1 = SHA1.Create();
+                using (Stream fileStream = File.OpenRead(path))
                 {
-                    int read = fileTest.Read(buffer, 0, 32768);
-                    if (read == 32768)
+                    byte[] buffer = new byte[32768];
+                    while (true)
                     {
-                        sha1.TransformBlock(buffer, 0, read, null, 0);
+                        int bytesRead = fileStream.Read(buffer, 0, 32768);
+                        if (bytesRead == 32768)
+                        {
+                            sha1.TransformBlock(buffer, 0, bytesRead, null, 0);
+                        }
+                        else
+                        {
+                            sha1.TransformFinalBlock(buffer, 0, bytesRead);
+                            break;
+                        }
                     }
 
-                    else
-                    {
-                        sha1.TransformFinalBlock(buffer, 0, read);
-                        break;
-                    }
+                    string hash = BitConverter.ToString(sha1.Hash);
+                    hash = hash.Replace("-", string.Empty);
+                    return hash;
                 }
-                string hash = BitConverter.ToString(sha1.Hash);
-                hash = hash.Replace("-", string.Empty);
-                return hash;
             }
             catch
             {
                 return null;
             }
         }
+
         #endregion
 
         #region Wrappers for Matchers
