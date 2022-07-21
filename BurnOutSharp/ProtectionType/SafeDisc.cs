@@ -91,8 +91,19 @@ namespace BurnOutSharp.ProtectionType
                 // Found in Redump entries 28810 and 30555.
                 new PathMatchSet(new PathMatch("mcp.dll", useEndsWith: true), "SafeDisc (Version 1.45.011-1.50.020)"),
 
+                // Found in Redump entry 58455.
+                // Unknown if it's a game specific file, but it contains the stxt371 and stxt774 sections.
+                new PathMatchSet(new PathMatch("CoreDLL.dll", useEndsWith: true), "SafeDisc"),
+
+                // DIAG.exe is present in some SafeDisc discs between 4.50.000-4.70.000, but is already detected through other checks and properly reports the expected version string.
+                // Incase further detection is needed, it's Product Description is "SafeDisc SRV Tool APP", and the Product version seems to correspond directly to the appropriate SafeDisc version.
+                // "4.50.00.1619 2005/06/08" -> SafeDisc 4.50.000 (Redump entry 58455).
+                // "4.60.00.1702 2005/08/30" -> SafeDisc 4.60.000 (Redump entry 65209).
+                // "4.70.00.1941 2006/04/26" -> SafeDisc 4.70.000 (Redump entry 34783).
+
                 new PathMatchSet(new PathMatch("00000001.LT1", useEndsWith: true), "SafeDisc Lite"),
 
+                // Found on Redump entry 42762.
                 new PathMatchSet(".SafeDiscDVD.bundle", "SafeDisc for Macintosh"),
 
                 new PathMatchSet(new PathMatch("cdac11ba.exe", useEndsWith: true), "SafeCast"),
@@ -107,19 +118,11 @@ namespace BurnOutSharp.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
-                // TODO: Investigate if these DLLs are viable to be hashed to provide a rough version range.
-                new PathMatchSet(new List<PathMatch>
-                {
-                    new PathMatch("CLCD16.DLL", useEndsWith: true),
-                    new PathMatch("CLCD32.DLL", useEndsWith: true),
-                    new PathMatch("CLOKSPL.EXE", useEndsWith: true),
-                }, "SafeDisc 1/Lite"),
+                new PathMatchSet(new PathMatch("CLCD16.DLL", useEndsWith: true), GetCLCD16Version, "SafeDisc"),
+                new PathMatchSet(new PathMatch("CLCD32.DLL", useEndsWith: true), "SafeDisc"),
+                new PathMatchSet(new PathMatch("CLOKSPL.EXE", useEndsWith: true), "SafeDisc"),
 
-                new PathMatchSet(new List<PathMatch>
-                {
-                    new PathMatch("00000001.TMP", useEndsWith: true),
-                }, "SafeDisc"),
-
+                new PathMatchSet(new PathMatch("00000001.TMP", useEndsWith: true), "SafeDisc"),
                 new PathMatchSet(new PathMatch("00000002.TMP", useEndsWith: true), "SafeDisc 2+"),
 
                 new PathMatchSet(new PathMatch("DPLAYERX.DLL", useEndsWith: true), GetDPlayerXVersion, "SafeDisc (dplayerx.dll)"),
@@ -129,13 +132,22 @@ namespace BurnOutSharp.ProtectionType
                 // Found in Redump entries 28810 and 30555.
                 new PathMatchSet(new PathMatch("mcp.dll", useEndsWith: true), "SafeDisc (Version 1.45.011-1.50.020)"),
 
-                // TODO: Add extra detection of DIAG.exe, which is used by versions 4.50.000-4.70.000. This isn't particularly pressing, as it is already detected as a SafeDisc EXE, complete with version string.
+                // Found in Redump entry 58455.
+                // Unknown if it's a game specific file, but it contains the stxt371 and stxt774 sections.
+                new PathMatchSet(new PathMatch("CoreDLL.dll", useEndsWith: true), "SafeDisc"),
+
+                // DIAG.exe is present in some SafeDisc discs between 4.50.000-4.70.000, but is already detected through other checks and properly reports the expected version string.
+                // Incase further detection is needed, it's Product Description is "SafeDisc SRV Tool APP", and the Product version seems to correspond directly to the appropriate SafeDisc version.
+                // "4.50.00.1619 2005/06/08" -> SafeDisc 4.50.000 (Redump entry 58455).
+                // "4.60.00.1702 2005/08/30" -> SafeDisc 4.60.000 (Redump entry 65209).
+                // "4.70.00.1941 2006/04/26" -> SafeDisc 4.70.000 (Redump entry 34783).
 
                 // Found in Redump entry 58990.
                 new PathMatchSet(new PathMatch("SafediskSplash.bmp", useEndsWith: true), "SafeDisc"),
 
                 new PathMatchSet(new PathMatch("00000001.LT1", useEndsWith: true), "SafeDisc Lite"),
 
+                // Found on Redump entry 42762.
                 new PathMatchSet(".SafeDiscDVD.bundle", "SafeDisc for Macintosh"),
 
                 new PathMatchSet(new PathMatch("cdac11ba.exe", useEndsWith: true), "SafeCast"),
@@ -166,6 +178,28 @@ namespace BurnOutSharp.ProtectionType
                 return string.Empty;
 
             return $"{version}.{subVersion:00}.{subsubVersion:000}";
+        }
+
+        public static string GetCLCD16Version(string firstMatchedString, IEnumerable<string> files)
+        {
+            if (firstMatchedString == null || !File.Exists(firstMatchedString))
+                return string.Empty;
+
+            string sha1 = BurnOutSharp.Tools.Utilities.GetFileSHA1(firstMatchedString);
+            switch (sha1)
+            {
+                // Found in Redump entries 61731 and 66005.
+                case "C13493AB753891B8BEE9E4E014896B026C01AC92":
+                    return "1.00.025-1.01.044";
+                // Found in Redump entries 1882 and 30049. 
+                case "2418D791C7B9D4F05BCB01FAF98F770CDF798464":
+                    return "1.00.026";
+                // Found in Redump entries 31149 and 28810.
+                case "848EDF9F45A8437438B7289BB4D2D1BCF752FD4A":
+                    return "1.06.000-1.50.020";
+                default:
+                    return "Unknown Version";
+            }
         }
 
         // TODO: Investigate alternatives to size checks for this file.
@@ -206,6 +240,9 @@ namespace BurnOutSharp.ProtectionType
                 return string.Empty;
 
             // The file "drvmgt.dll" has been found to be incredibly consistent between versions, with the vast majority of files based on hash corresponding 1:1 with the SafeDisc version used according to the EXE.
+            // There are occasionaly inconsistencies, even within the well detected version range. This seems to me to mostly happen with later (3.20+) games, and seems to me to be an example of the SafeDisc distribution becoming more disorganized with time.
+            // Particularly interesting inconsistencies will be noted below:
+            // Redump entry 73786 has an EXE with a scrubbed version, a DIAG.exe with a version of 4.60.000, and a copy of drvmgt.dll belonging to version 3.10.020. This seems like an accidental(?) distribution of older drivers, as this game was released 3 years after the use of 3.10.020.
             string sha1 = BurnOutSharp.Tools.Utilities.GetFileSHA1(firstMatchedString);
             switch (sha1)
             {
@@ -327,7 +364,7 @@ namespace BurnOutSharp.ProtectionType
                 default:
                     return "Unknown Version";
 
-                // File size of drvmgt.dll and others is a commonly used indicator of SafeDisc version, though it has been found ot not be completely consistent, and is completely replaced by hash checks.
+                // File size of drvmgt.dll and others is a commonly used indicator of SafeDisc version, though it has been found to not be completely consistent, and is completely replaced by hash checks.
                 // 34,816 bytes corresponds to SafeDisc 1.0x
                 // 32,256 bytes corresponds to SafeDisc 1.1x-1.3x
                 // 31,744 bytes corresponds to SafeDisc 1.4x
@@ -365,6 +402,7 @@ namespace BurnOutSharp.ProtectionType
                     return "2.70";
                 case 12_464:
                     return "2.80";
+
                 // File size checks for versions 2.90+ are superceded by executable version checks, which are more accurate. For reference, the previously used file sizes are kept as comments.
                 // 12,400 bytes corresponds to SafeDisc 2.90
                 // 12,528 bytes corresponds to SafeDisc 3.10-3.15
@@ -456,6 +494,7 @@ namespace BurnOutSharp.ProtectionType
                     }, GetVersion, "SafeCast"),
 
                     // BoG_ *90.0&!!  Yy>
+                    // TODO: Investiage likely false positive in Redump entry 74384.
                     new ContentMatchSet(new byte?[]
                     {
                         0x42, 0x6F, 0x47, 0x5F, 0x20, 0x2A, 0x39, 0x30,
