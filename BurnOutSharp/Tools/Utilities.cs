@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using BurnOutSharp.ExecutableType.Microsoft.PE;
 
 namespace BurnOutSharp.Tools
@@ -253,6 +254,44 @@ namespace BurnOutSharp.Tools
             }
         }
 
+        /// <summary>
+        /// Get the SHA1 hash of a file, if possible
+        /// </summary>
+        /// <param name="path">Path to the file to be hashed</param>
+        /// <returns>SHA1 hash as a string on success, null on error</returns>
+        public static string GetFileSHA1(string path)
+        {
+            if (path == null)
+                return null;
+
+            try
+            {
+                SHA1Managed sha1 = new SHA1Managed();
+                Stream fileTest = File.OpenRead(path);
+                Byte[] buffer = new Byte[32768];
+                while (true)
+                {
+                    int read = fileTest.Read(buffer, 0, 32768);
+                    if (read == 32768)
+                    {
+                        sha1.TransformBlock(buffer, 0, read, null, 0);
+                    }
+
+                    else
+                    {
+                        sha1.TransformFinalBlock(buffer, 0, read);
+                        break;
+                    }
+                }
+                string hash = BitConverter.ToString(sha1.Hash);
+                hash = hash.Replace("-", string.Empty);
+                return hash;
+            }
+            catch
+            {
+                return null;
+            }
+        }
         #endregion
 
         #region Wrappers for Matchers
