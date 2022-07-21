@@ -283,11 +283,10 @@ namespace BurnOutSharp.Tools
                             break;
                         }
                     }
-
-                    string hash = BitConverter.ToString(sha1.Hash);
-                    hash = hash.Replace("-", string.Empty);
-                    return hash;
                 }
+                string hash = BitConverter.ToString(sha1.Hash);
+                hash = hash.Replace("-", string.Empty);
+                return hash;
             }
             catch
             {

@@ -324,34 +324,22 @@ namespace BurnOutSharp.ProtectionType
                 // Found in Redump entry 56320.
                 case "84480ABCE4676EEB9C43DFF7C5C49F0D574FAC25":
                     return "4.70.000";
-            }
-
-            // TODO: Remove uneeded (preferably all) size checks.
-            FileInfo fi = new FileInfo(firstMatchedString);
-            switch (fi.Length)
-            {
-                case 34_816:
-                    return "1.0x";
-                case 32_256:
-                    return "1.1x-1.3x";
-                case 31_744:
-                    return "1.4x";
-                case 34_304:
-                    return "1.5x-2.40";
-                case 35_840:
-                    return "2.51-2.60";
-                case 40_960:
-                    return "2.70";
-                case 23_552:
-                    return "2.80";
-                case 41_472:
-                    return "2.90-3.10";
-                case 24_064:
-                    return "3.15-3.20";
                 default:
-                    return "1-4";
+                    return "Unknown Version";
+
+                // File size of drvmgt.dll and others is a commonly used indicator of SafeDisc version, though it has been found ot not be completely consistent, and is completely replaced by hash checks.
+                // 34,816 bytes corresponds to SafeDisc 1.0x
+                // 32,256 bytes corresponds to SafeDisc 1.1x-1.3x
+                // 31,744 bytes corresponds to SafeDisc 1.4x
+                // 34,304 bytes corresponds to SafeDisc 1.5x-2.40
+                // 35,840 bytes corresponds to SafeDisc 2.51-2.60
+                // 40,960 bytes corresponds to SafeDisc 2.70
+                // 23,552 bytes corresponds to SafeDisc 2.80
+                // 41,472 bytes corresponds to SafeDisc 2.90-3.10
+                // 24,064 bytes corresponds to SafeDisc 3.15-3.20;
             }
         }
+
         // TODO: Verify these checks and remove any that may not be needed, file version checks should remove the need for any checks for 2.80+.
         public static string GetSecdrvVersion(string firstMatchedString, IEnumerable<string> files)
         {
@@ -377,12 +365,10 @@ namespace BurnOutSharp.ProtectionType
                     return "2.70";
                 case 12_464:
                     return "2.80";
-                case 12_400:
-                    return "2.90";
-                case 12_528:
-                    return "3.10-3.15";
-                case 11_973:
-                    return "3.20";
+                // File size checks for versions 2.90+ are superceded by executable version checks, which are more accurate. For reference, the previously used file sizes are kept as comments.
+                // 12,400 bytes corresponds to SafeDisc 2.90
+                // 12,528 bytes corresponds to SafeDisc 3.10-3.15
+                // 11,973 bytes corresponds to SafeDisc 3.20
 
                 //  14_304 - Bundled wtih 1.11.000
                 //  10_848 - Bundled with 1.40.004
