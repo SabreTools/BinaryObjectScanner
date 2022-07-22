@@ -119,7 +119,7 @@ namespace BurnOutSharp.ProtectionType
             var matchers = new List<PathMatchSet>
             {
                 new PathMatchSet(new PathMatch("CLCD16.DLL", useEndsWith: true), GetCLCD16Version, "SafeDisc"),
-                new PathMatchSet(new PathMatch("CLCD32.DLL", useEndsWith: true), "SafeDisc"),
+                new PathMatchSet(new PathMatch("CLCD32.DLL", useEndsWith: true), GetCLCD32Version, "SafeDisc"),
                 new PathMatchSet(new PathMatch("CLOKSPL.EXE", useEndsWith: true), "SafeDisc"),
 
                 new PathMatchSet(new PathMatch("00000001.TMP", useEndsWith: true), "SafeDisc"),
@@ -185,6 +185,7 @@ namespace BurnOutSharp.ProtectionType
             if (firstMatchedString == null || !File.Exists(firstMatchedString))
                 return string.Empty;
 
+            // The hash of the file CLCD16.dll is able to provide a broad version range that appears to be consistent, but it seems it was rarely updated so these checks are quite broad.
             string sha1 = BurnOutSharp.Tools.Utilities.GetFileSHA1(firstMatchedString);
             switch (sha1)
             {
@@ -192,13 +193,94 @@ namespace BurnOutSharp.ProtectionType
                 case "C13493AB753891B8BEE9E4E014896B026C01AC92":
                     return "1.00.025-1.01.044";
                 // Found in Redump entries 1882 and 30049. 
+                // It is currently unknown why the previous hash covers both the version before this one, and several afterwards, with this one being a consistent outlier between these versions.
                 case "2418D791C7B9D4F05BCB01FAF98F770CDF798464":
                     return "1.00.026";
                 // Found in Redump entries 31149 and 28810.
                 case "848EDF9F45A8437438B7289BB4D2D1BCF752FD4A":
                     return "1.06.000-1.50.020";
                 default:
-                    return "Unknown Version";
+                    return "Unknown Version (Report this to us on GitHub)";
+            }
+        }
+
+        public static string GetCLCD32Version(string firstMatchedString, IEnumerable<string> files)
+        {
+            if (firstMatchedString == null || !File.Exists(firstMatchedString))
+                return string.Empty;
+
+            // The hash of the file CLCD32.dll so far appears to be a solid indicator of version for versions it was used with. It appears to have been updated with every release, unlike it's counterpart, CLCD16.dll.
+            string sha1 = BurnOutSharp.Tools.Utilities.GetFileSHA1(firstMatchedString);
+            switch (sha1)
+            {
+                // Found in Redump entry 66005.
+                case "BAD49BA0DEA041E85EF1CABAA9F0ECD822CE1376":
+                    return "1.00.025";
+                // Found in Redump entries 1882 and 30049.
+                case "AFEFBBF1033EA65C366A1156E21566DB419CFD7B":
+                    return "1.00.026";
+                // Found in Redump entries 31575 and 41923.
+                case "6E54AC24C344E4A132D1B7A6A61B2EC824DE5092":
+                    return "1.00.030";
+                // Found in Redump entries 1883 and 42114.
+                case "23DAA95DAF75732C27CEB133A00F7E10D1D482D3":
+                    return "1.00.032";
+                // Found in Redump entries 36223 and 40771.
+                case "C8F609DDFC3E1CF69FADD60B7AED7A63B4B1DA62":
+                    return "1.00.035";
+                // Found in Redump entries 42155 and 47574.
+                case "39CC3C053702D9F6EFF0DF6535E54F6C78CEA639":
+                    return "1.01.034";
+                // Found in Redump entry 51459.
+                case "BC476F625A4A7A89AE50E2A4CD0F248D6CEB5A84":
+                    return "1.01.038";
+                // Found in Redump entries 34562 and 63304.
+                case "1AB79AA78F706A1A24C02CE2B9398EC78249700B":
+                    return "1.01.043";
+                // Found in Redump entries 61731 and 81619.
+                case "E2326F66EA9C2E5153EC619EEE424D83E2FD4CA4":
+                    return "1.01.044";
+                // Found in Redump entries 29073 and 31149.
+                case "AEDE9939C4B62AC6DCCE3A771919B23A661247B3":
+                    return "1.06.000";
+                // Found in Redump entries 9718 and 46756.
+                case "B5503E2222B3DA387BB5D7150A4A32A47824988F":
+                    return "1.07.000";
+                // Found in Redump entries 12885 and 66210.
+                case "7D33EA7B241245182FFB7A392873079B6183050B":
+                    return "1.09.000";
+                // Found in Redump entries 37523 and 66586.
+                case "61A4A5A758A5CFFB226CE2AE96E55A40AB073AC6":
+                    return "1.11.000";
+                // Found in Redump entries 21154 and 37982.
+                case "14D3267C1D5C925F6DA44F1B19CB14F6DFCA73E3":
+                    return "1.20.000";
+                // Found in Redump entry 37920.
+                case "CB4570F3F37E0FA70D7B9F3211FDC2105864C664":
+                    return "1.20.001";
+                // Found in Redump entries 31526 and 55080.
+                case "1B5FD2D3DFBD89574D602DA9AE317C55F24902F0":
+                    return "1.30.010";
+                // Found in Redump entries 9617 and 49552.
+                case "CC73C219BFC2D729515D25CA1B93D53672153175":
+                    return "1.35.000";
+                // Found in Redump entries 2595 and 30121.
+                case "5825FF56B50114CD5D82BD4667D7097B29973197":
+                    return "1.40.004";
+                // Found in Redump entries 44350 and 63323.
+                case "38DE3C6CF8FA89E5E99C359AA8ABFC65ADE396A5":
+                    return "1.41.000";
+                // Found in Redump entries 37832 and 42091.
+                case "894D38AD949576928F67FF1595DC9C877A34A91C":
+                    return "1.41.001";
+                // Found in Redump entries 30555 and 55078.
+                case "0235E03CA78232417C93FBB5F56B1BE819926B0C":
+                    return "1.45.011";
+                // Found in Redump entries 28810 and 62935.
+                case "331B777A0BA2A358982575EA3FAA2B59ECAEA404":
+                    return "1.50.020";
+                default:
+                    return "Unknown Version (Report this to us on GitHub)";
             }
         }
 
@@ -362,7 +444,7 @@ namespace BurnOutSharp.ProtectionType
                 case "84480ABCE4676EEB9C43DFF7C5C49F0D574FAC25":
                     return "4.70.000";
                 default:
-                    return "Unknown Version";
+                    return "Unknown Version (Report this to us on GitHub)";
 
                 // File size of drvmgt.dll and others is a commonly used indicator of SafeDisc version, though it has been found to not be completely consistent, and is completely replaced by hash checks.
                 // 34,816 bytes corresponds to SafeDisc 1.0x
