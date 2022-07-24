@@ -84,6 +84,7 @@ namespace BurnOutSharp.ProtectionType
                 new PathMatchSet(new List<PathMatch>
                 {
                     // TODO: Verify if these are OR or AND
+					// TODO: Verify that this is directly related to MediaMax CD-3.
                     new PathMatch("PlayDisc.exe", useEndsWith: true),
                     new PathMatch("PlayDisc.xml", useEndsWith: true),
                 }, "MediaMax CD-3"),
@@ -96,15 +97,6 @@ namespace BurnOutSharp.ProtectionType
                     new PathMatch("SCCD3X01.dll", useEndsWith: true),
                     new PathMatch("SCCD3X02.dll", useEndsWith: true),
                 }, "MediaMax CD-3"),
-
-                // Found on "Contraband" by Velvet Revolver (Barcode 8 28766 05242 8)
-                // "LaunchCD.ini" needs to be confirmed to always be present as well, but it's added along with the exe check to minimize the risk of false positives due to it being a generic name. There is also a "launchcd.xml" that may also be checked for if needed.
-                new PathMatchSet(new List<PathMatch>
-                {
-                    // TODO: Verify if these are OR or AND
-                    new PathMatch("LaunchCD.exe", useEndsWith: true),
-                    new PathMatch("LaunchCD.ini", useEndsWith: true),
-                }, "MediaMax CD-3"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: false);
@@ -115,10 +107,6 @@ namespace BurnOutSharp.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new PathMatch("LaunchCd.exe", useEndsWith: true), "MediaMax CD-3"),
-                new PathMatchSet(new PathMatch("LaunchCd.ini", useEndsWith: true), "MediaMax CD-3"),
-                new PathMatchSet(new PathMatch("LaunchCd.xml", useEndsWith: true), "MediaMax CD-3"),
-
                 // Found on "Contraband" by Velvet Revolver (Barcode 8 28766 05242 8)
                 new PathMatchSet(new PathMatch("SCCD3X01.dll", useEndsWith: true), "MediaMax CD-3"),
                 new PathMatchSet(new PathMatch("SCCD3X02.dll", useEndsWith: true), "MediaMax CD-3"),
