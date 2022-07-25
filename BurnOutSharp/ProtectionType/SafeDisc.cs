@@ -25,9 +25,19 @@ namespace BurnOutSharp.ProtectionType
             if (!string.IsNullOrWhiteSpace(name) && name.Equals("SafeCast2", StringComparison.OrdinalIgnoreCase))
                 return $"SafeCast";
 
+            // Present on all "CLOKSPL.EXE" versions before SafeDisc 1.06.000. Found on Redump entries 61731 and 66004. 
+            // Only found so far on SafeDisc 1.00.025-1.01.044, but the report is currently left generic due to the generic nature of the check.
+            if (!string.IsNullOrWhiteSpace(name) && name.Equals("SafeDisc", StringComparison.OrdinalIgnoreCase))
+                return $"SafeDisc";
+
             // TODO: This doesn't properly grab the File Description for secdrv.sys and I'm not sure why.
             if (!string.IsNullOrWhiteSpace(name) && name.Equals("Macrovision SECURITY Driver", StringComparison.OrdinalIgnoreCase))
                 return $"SafeDisc Security Driver {GetSecDrvExecutableVersion(pex)}";
+
+            // Present on all CLOKSPL.DLL versions before SafeDisc 1.06.000. Found on Redump entries 61731 and 66004. 
+            name = pex.ProductName;
+            if (!string.IsNullOrWhiteSpace(name) && name.Equals("SafeDisc CDROM Protection System", StringComparison.OrdinalIgnoreCase))
+                return $"SafeDisc 1.00.025-1.01.044";
 
             // Get the .text section, if it exists
             string match = CheckSectionForProtection(file, includeDebug, pex, ".text");
@@ -120,7 +130,7 @@ namespace BurnOutSharp.ProtectionType
             {
                 new PathMatchSet(new PathMatch("CLCD16.DLL", useEndsWith: true), GetCLCD16Version, "SafeDisc"),
                 new PathMatchSet(new PathMatch("CLCD32.DLL", useEndsWith: true), GetCLCD32Version, "SafeDisc"),
-                new PathMatchSet(new PathMatch("CLOKSPL.EXE", useEndsWith: true), "SafeDisc"),
+                new PathMatchSet(new PathMatch("CLOKSPL.EXE", useEndsWith: true), GetCLOKSPLVersion, "SafeDisc"),
 
                 new PathMatchSet(new PathMatch("00000001.TMP", useEndsWith: true), "SafeDisc"),
                 new PathMatchSet(new PathMatch("00000002.TMP", useEndsWith: true), "SafeDisc 2+"),
@@ -278,6 +288,97 @@ namespace BurnOutSharp.ProtectionType
                     return "1.45.011";
                 // Found in Redump entries 28810 and 62935.
                 case "331B777A0BA2A358982575EA3FAA2B59ECAEA404":
+                    return "1.50.020";
+                default:
+                    return "Unknown Version (Report this to us on GitHub)";
+            }
+        }
+
+        public static string GetCLOKSPLVersion(string firstMatchedString, IEnumerable<string> files)
+        {
+            if (firstMatchedString == null || !File.Exists(firstMatchedString))
+                return string.Empty;
+
+            // Versions of "CLOKSPL.EXE" before SafeDisc 1.06.000 (can be identified by the presence of "SafeDisc CDROM Protection System" as the Product Name) have a human readable Product Version.
+            // This included version doesn't seem to be as accurate as hash checks are, but will be documented here and considered for future use if needed.
+            // "1.0.25 1998/07/30" -> SafeDisc 1.00.025 (Redump entry 66005).
+            // "1.0.26 1998/08/06" -> SafeDisc 1.00.026-1.00.030 (Redump entries 1882 and 31575).
+            // "1.0.32 1998/11/04" -> SafeDisc 1.00.032-1.00.035 (Redump entries 1883 and 36223). 
+            // "1.1.34 1998/11/14" -> SafeDisc 1.01.034 (Redump entries 42155 and 47574).
+            // "1.1.38 1999/01/21" -> SafeDisc 1.01.038 (Redump entry 51459).
+            // "1.1.43 1999/02/25  -> SafeDisc 1.01.043 (Redump entries 34562 and 63304).
+            // "1.1.44 1999/03/08" -> SafeDisc 1.01.044 (Redump entries 61731 and 81619).
+
+
+            // The hash of every "CLOKSPL.EXE" correlates directly to a specific SafeDisc version.
+            string sha1 = BurnOutSharp.Tools.Utilities.GetFileSHA1(firstMatchedString);
+            switch (sha1)
+            {
+                // Found in Redump entry 66005.
+                case "DD131A7B988065764E2A0F20B66C89049B20A7DE":
+                    return "1.00.025";
+                // Found in Redump entries 1882 and 30049.
+                case "D1C19C26DEC7C33825FFC59AD02B0EBA782643FA":
+                    return "1.00.026";
+                // Found in Redump entries 31575 and 41923.
+                case "B7C6C61688B354AB5D4E20CDEB36C992F203289B":
+                    return "1.00.030";
+                // Found in Redump entries 1883 and 42114.
+                case "7445CD9FB49C322D18E92CC457DD880967C2B010":
+                    return "1.00.032";
+                // Found in Redump entries 36223 and 40771.
+                case "50D4466F55BEDB3FE0E262235A6BAC751CA26599":
+                    return "1.00.035";
+                // Found in Redump entries 42155 and 47574.
+                case "8C2F792326856C6D326707F76823FC7430AC86D5":
+                    return "1.01.034";
+                // Found in Redump entry 51459.
+                case "107BF8077255FD4CA0875FB7C306F0B427E66800":
+                    return "1.01.038";
+                // Found in Redump entries 34562 and 63304.
+                case "E8F4BA30376FCDAE00E7B88312300172674ABFA9":
+                    return "1.01.043";
+                // Found in Redump entries 61731 and 81619.
+                case "CAB911C5CFC0A13C822DBFE0F0E1570C09F211FB":
+                    return "1.01.044";
+                // Found in Redump entries 29073 and 31149.
+                case "43C1318B38742E05E7C858A02D64EEA13D9DFB9B":
+                    return "1.06.000";
+                // Found in Redump entries 9718 and 46756.
+                case "451BD4C60AB826C16840815996A5DF03672666A8":
+                    return "1.07.000";
+                // Found in Redump entries 12885 and 66210.
+                case "6C02A20A521112777D4843B8ACD9278F34314A35":
+                    return "1.09.000";
+                // Found in Redump entries 37523 and 66586.
+                case "0548F1B12F60395C9394DDB7BED5E3E65E09D72E":
+                    return "1.11.000";
+                // Found in Redump entries 21154 and 37982.
+                case "64A406FE640F2AC86A0E23F619F6EBE63BFFB8A1":
+                    return "1.20.000";
+                // Found in Redump entry 37920.
+                case "8E874C9AF4CE5A9F1CBE96FCC761AA1C201C6938":
+                    return "1.20.001";
+                // Found in Redump entries 31526 and 55080.
+                case "766EC536A10E68513138D1183705F5F19B9B8091":
+                    return "1.30.010";
+                // Found in Redump entries 9617 and 49552.
+                case "1F1460FD66DD518159CCCDC99C12252EA0B2EEC4":
+                    return "1.35.000";
+                // Found in Redump entries 2595 and 30121.
+                case "B1CF007BA36BA1B207DE334635F7BCEC146F8E35":
+                    return "1.40.004";
+                // Found in Redump entries 44350 and 63323.
+                case "90F92A6DB15387F4C7619C442493791EBFC1041B":
+                    return "1.41.000";
+                // Found in Redump entries 37832 and 42091.
+                case "836D42BF7B7AD719AB67682CF8D6B2D9C07AD218":
+                    return "1.41.001";
+                // Found in Redump entries 30555 and 55078.
+                case "24DE959BC4484CD95DAA26947670C63A161E64AE":
+                    return "1.45.011";
+                // Found in Redump entries 28810 and 62935.
+                case "9758F0637184816D02049A53CD2653F0BFFE92C9":
                     return "1.50.020";
                 default:
                     return "Unknown Version (Report this to us on GitHub)";
