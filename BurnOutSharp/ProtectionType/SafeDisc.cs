@@ -18,6 +18,7 @@ namespace BurnOutSharp.ProtectionType
     /// SafeCast resources: 
     /// https://web.archive.org/web/20010417222834/http://www.macrovision.com/press_rel3_17_99.html
     /// https://www.extremetech.com/computing/53394-turbotax-so-what-do-i-do-now/4
+    /// https://web.archive.org/web/20031013085038/http://www.pestpatrol.com/PestInfo/c/c-dilla.asp
     /// Other protections in the Macrovision "Safe-" family of protections that need further investigation:
     /// SafeScan (https://cdn.loc.gov/copyright/1201/2003/reply/029.pdf).
     /// SafeDisc HD (https://computerizedaccount.tripod.com/computerizedaccountingtraining/id27.html).
@@ -112,7 +113,7 @@ namespace BurnOutSharp.ProtectionType
                 }, "SafeDisc 1.06.000+"),
 
                 // Found to be present in every version of SafeDisc, possibly every single release.
-                new PathMatchSet(new PathMatch("00000001.TMP", useEndsWith: true), "SafeDisc"),
+                new PathMatchSet(new PathMatch("00000001.TMP", useEndsWith: true), Get00000001TMPVersion, "SafeDisc"),
 
                 // Found in many versions of SafeDisc, beginning in 2.05.30 and being used all the way until the final version 4.90.010. It is not always present, even in versions it has been used in. Found in Redump entries 56319 and 72195.
                 new PathMatchSet(new PathMatch("00000002.TMP", useEndsWith: true), "SafeDisc 2+"),
@@ -160,7 +161,7 @@ namespace BurnOutSharp.ProtectionType
                 new PathMatchSet(new PathMatch("CLCD32.DLL", useEndsWith: true), GetCLCD32Version, "SafeDisc"),
                 new PathMatchSet(new PathMatch("CLOKSPL.EXE", useEndsWith: true), GetCLOKSPLVersion, "SafeDisc"),
 
-                new PathMatchSet(new PathMatch("00000001.TMP", useEndsWith: true), "SafeDisc"),
+                new PathMatchSet(new PathMatch("00000001.TMP", useEndsWith: true), Get00000001TMPVersion, "SafeDisc"),
                 new PathMatchSet(new PathMatch("00000002.TMP", useEndsWith: true), "SafeDisc 2+"),
 
                 new PathMatchSet(new PathMatch("DPLAYERX.DLL", useEndsWith: true), GetDPlayerXVersion, "SafeDisc (dplayerx.dll)"),
@@ -294,6 +295,29 @@ namespace BurnOutSharp.ProtectionType
             return $"{version}.{subVersion:00}.{subsubVersion:000}";
         }
 
+        public static string Get00000001TMPVersion(string firstMatchedString, IEnumerable<string> files)
+        {
+            if (firstMatchedString == null || !File.Exists(firstMatchedString))
+                return string.Empty;
+
+            // This file is present in most, if not all, SafeDisc protected discs. It seems to have very consistent file sizes, only being found to use three different file sizes in it's entire run.
+            FileInfo fi = new FileInfo(firstMatchedString);
+            switch (fi.Length)
+            {
+                // Found in Redump entries 37832 and 66005. 
+                case 20:
+                    return "1.00.025-1.41.001";
+                // Found in Redump entries 30555 and 58573.
+                case 2_048:
+                    return "1.45.011+ (CD)";
+                // Found in Redump entries 11347 and 64255.
+                case 20_482_048:
+                    return "3+ (DVD)";
+                default:
+                    return "Unknown Version (Report this to us on GitHub)";
+            }
+        }
+
         public static string GetCLCD16Version(string firstMatchedString, IEnumerable<string> files)
         {
             if (firstMatchedString == null || !File.Exists(firstMatchedString))
@@ -393,6 +417,12 @@ namespace BurnOutSharp.ProtectionType
                 // Found in Redump entries 28810 and 62935.
                 case "331B777A0BA2A358982575EA3FAA2B59ECAEA404":
                     return "1.50.020";
+                // Found in Redump entries 57986 and 63941.
+                case "85A92DC1D9CCBA6349D70F489043E649A8C21F2B":
+                    return "Lite";
+                // Found in Redump entry 14928.
+                case "538351FF5955A3D8438E8C278E9D6D6274CF13AB":
+                    return "Lite";
                 default:
                     return "Unknown Version (Report this to us on GitHub)";
             }
@@ -498,24 +528,25 @@ namespace BurnOutSharp.ProtectionType
             FileInfo fi = new FileInfo(firstMatchedString);
             switch (fi.Length)
             {
-                case  81_408:
+                // File size of "dplayerx.dll" and others is a commonly used indicator of SafeDisc version, though it has been found to not be completely consistent.
+                // Checks for versions 1.2X have been commented out, due to these versions already being detected via more accurate checks.
+                // Examples of "dplayerx.dll" that are detected using these more accurate checks can be found in Redump entries 28810, 30121, and 37982. 
+
+                case 81_408:
                     return "1.0x";
                 case 155_648:
                     return "1.1x";
                 case 156_160:
                     return "1.1x-1.2x";
-                case 163_328:
-                    return "1.3x";
-                case 165_888:
-                    return "1.35";
-                case 172_544:
-                    return "1.40";
-                case 173_568:
-                    return "1.4x";
-                case 136_704:
-                    return "1.4x";
-                case 138_752:
-                    return "1.5x";
+
+                // File size checks for versions 1.2X+ are superceded by executable string checks, which are more accurate. For reference, the previously used file sizes are kept as comments.
+                // 163,382 bytes corresponds to SafeDisc 1.3x.
+                // 165,888 bytes corresponds to SafeDisc 1.35.
+                // 172,544 bytes corresponds to SafeDisc 1.40.
+                // 173,568 bytes corresponds to SafeDisc 1.4x.
+                // 136,704 bytes corresponds to SafeDisc 1.4x.
+                // 136,752 bytes corresponds to SafeDisc 1.5x.
+
                 default:
                     return "1";
             }
