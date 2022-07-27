@@ -25,6 +25,7 @@ namespace BurnOutSharp.ProtectionType
     ///  Patents relating to this protection: 
     ///  https://patentimages.storage.googleapis.com/64/d6/b1/91127b030d3503/US20060259975A1.pdf
     ///  https://patentimages.storage.googleapis.com/52/5b/3a/aee21ff4d987e9/US20060123483A1.pdf
+    ///  Special thanks to Ribshark for looking into this protection and sharing his research on the topic!
     /// </summary>
     public class HexalockAutoLock : IPathCheck, IPortableExecutableCheck
     {
