@@ -9,8 +9,19 @@ using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ProtectionType
 {
-    // TODO: Figure out how to properly distinguish SafeDisc and SafeCast since both use
-    // the same generic BoG_ string. The current combination check doesn't seem consistent
+    /// <summary>
+    /// SafeDisc was an [INSERT REST OF DOCS HERE]
+    /// At least one system other than PC/Mac is known to use SafeDisc as well, this being the "ZAPiT Games Game Wave Family Entertainment System" which seems to use a form of SafeDisc 4 (Redump entry 46269).
+    /// SafeCast is in the same family of protections, and appears to mainly be for license management, and doesn't appear to affect the mastering of the disc in any way.
+    /// Although SafeCast is most commonly used in non-game software, there is one game that comes with both SafeDisc and SafeCast protections (Redump entry 83145).
+    /// Macrovision bought the company C-Dilla and created SafeCast based on C-Dilla's existing products (https://web.archive.org/web/20030212040047/http://www.auditmypc.com/freescan/readingroom/cdilla.asp).
+    /// SafeCast resources: 
+    /// https://web.archive.org/web/20010417222834/http://www.macrovision.com/press_rel3_17_99.html
+    /// https://www.extremetech.com/computing/53394-turbotax-so-what-do-i-do-now/4
+    /// Other protections in the Macrovision "Safe-" family of protections that need further investigation:
+    /// SafeScan (https://cdn.loc.gov/copyright/1201/2003/reply/029.pdf).
+    /// SafeDisc HD (https://computerizedaccount.tripod.com/computerizedaccountingtraining/id27.html).
+    /// </summary>
     public class SafeDisc : IPathCheck, IPortableExecutableCheck
     {
         /// <inheritdoc/>
@@ -76,7 +87,6 @@ namespace BurnOutSharp.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
-                // TODO: Investigate if these DLLs are viable to be hashed to provide a rough version range.
                 new PathMatchSet(new List<PathMatch>
                 {
                     new PathMatch("CLCD16.DLL", useEndsWith: true),
@@ -88,10 +98,23 @@ namespace BurnOutSharp.ProtectionType
                 new PathMatchSet(new List<PathMatch>
                 {
                     new PathMatch("00000001.TMP", useEndsWith: true),
+                    // The .016 and .256 files are banners stored in the BMP image format. The 016 and 256 refers to the color depth of the BMP.
+                    // There are common file names used, such as 00000407.XXX and 00000409.XXX. Further investigation is needed to determine the consistency of these names.
                     new PathMatch(".016", useEndsWith: true),
                     new PathMatch(".256", useEndsWith: true),
-                }, "SafeDisc 1-3"),
+                }, "SafeDisc 1.06.000-3.20.024"),
 
+                new PathMatchSet(new List<PathMatch>
+                {
+                    new PathMatch("00000001.TMP", useEndsWith: true),
+                    // The .016 files stop being used as of 4.00.000, while the .256 remain in fairly consistent use.
+                    new PathMatch(".256", useEndsWith: true),
+                }, "SafeDisc 1.06.000+"),
+
+                // Found to be present in every version of SafeDisc, possibly every single release.
+                new PathMatchSet(new PathMatch("00000001.TMP", useEndsWith: true), "SafeDisc"),
+
+                // Found in many versions of SafeDisc, beginning in 2.05.30 and being used all the way until the final version 4.90.010. It is not always present, even in versions it has been used in. Found in Redump entries 56319 and 72195.
                 new PathMatchSet(new PathMatch("00000002.TMP", useEndsWith: true), "SafeDisc 2+"),
 
                 new PathMatchSet(new PathMatch("DPLAYERX.DLL", useEndsWith: true), GetDPlayerXVersion, "SafeDisc (dplayerx.dll)"),
@@ -103,7 +126,7 @@ namespace BurnOutSharp.ProtectionType
 
                 // Found in Redump entry 58455.
                 // Unknown if it's a game specific file, but it contains the stxt371 and stxt774 sections.
-                new PathMatchSet(new PathMatch("CoreDLL.dll", useEndsWith: true), "SafeDisc"),
+                // new PathMatchSet(new PathMatch("CoreDLL.dll", useEndsWith: true), "SafeDisc"),
 
                 // DIAG.exe is present in some SafeDisc discs between 4.50.000-4.70.000, but is already detected through other checks and properly reports the expected version string.
                 // Incase further detection is needed, it's Product Description is "SafeDisc SRV Tool APP", and the Product version seems to correspond directly to the appropriate SafeDisc version.
@@ -111,13 +134,18 @@ namespace BurnOutSharp.ProtectionType
                 // "4.60.00.1702 2005/08/30" -> SafeDisc 4.60.000 (Redump entry 65209).
                 // "4.70.00.1941 2006/04/26" -> SafeDisc 4.70.000 (Redump entry 34783).
 
+                // Found in seemingly every SafeDisc Lite disc. (CD: Redump entries 25579 and 57986. DVD: Redump entry 63941). 
                 new PathMatchSet(new PathMatch("00000001.LT1", useEndsWith: true), "SafeDisc Lite"),
+                new PathMatchSet(new PathMatch("LTDLL.DLL", useEndsWith: true), "SafeDisc Lite"),
 
                 // Found on Redump entry 42762.
                 new PathMatchSet(".SafeDiscDVD.bundle", "SafeDisc for Macintosh"),
-
-                new PathMatchSet(new PathMatch("cdac11ba.exe", useEndsWith: true), "SafeCast"),
+                
+                // Found in multiple versions of SafeCast, including Redump entry 83145 and IA item "TurboTax_Deluxe_Tax_Year_2002_for_Wndows_2.00R_Intuit_2002_352282".
                 new PathMatchSet(new PathMatch("cdac14ba.dll", useEndsWith: true), "SafeCast"),
+
+                // Found in Redump entry 83145.
+                new PathMatchSet(new PathMatch("CDAC21BA.DLL", useEndsWith: true), "SafeCast"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: false);
@@ -144,7 +172,7 @@ namespace BurnOutSharp.ProtectionType
 
                 // Found in Redump entry 58455.
                 // Unknown if it's a game specific file, but it contains the stxt371 and stxt774 sections.
-                new PathMatchSet(new PathMatch("CoreDLL.dll", useEndsWith: true), "SafeDisc"),
+                // new PathMatchSet(new PathMatch("CoreDLL.dll", useEndsWith: true), "SafeDisc"),
 
                 // DIAG.exe is present in some SafeDisc discs between 4.50.000-4.70.000, but is already detected through other checks and properly reports the expected version string.
                 // Incase further detection is needed, it's Product Description is "SafeDisc SRV Tool APP", and the Product version seems to correspond directly to the appropriate SafeDisc version.
@@ -155,13 +183,20 @@ namespace BurnOutSharp.ProtectionType
                 // Found in Redump entry 58990.
                 new PathMatchSet(new PathMatch("SafediskSplash.bmp", useEndsWith: true), "SafeDisc"),
 
+                // Found in seemingly every SafeDisc Lite disc. (CD: Redump entries 25579 and 57986. DVD: Redump entry 63941). 
                 new PathMatchSet(new PathMatch("00000001.LT1", useEndsWith: true), "SafeDisc Lite"),
+                new PathMatchSet(new PathMatch("LTDLL.DLL", useEndsWith: true), "SafeDisc Lite"),
 
-                // Found on Redump entry 42762.
+                // Found in Redump entry 42762.
                 new PathMatchSet(".SafeDiscDVD.bundle", "SafeDisc for Macintosh"),
 
                 new PathMatchSet(new PathMatch("cdac11ba.exe", useEndsWith: true), "SafeCast"),
+
+                // Found in multiple versions of SafeCast, including Redump entry 83145 and IA item "TurboTax_Deluxe_Tax_Year_2002_for_Wndows_2.00R_Intuit_2002_352282".
                 new PathMatchSet(new PathMatch("cdac14ba.dll", useEndsWith: true), "SafeCast"),
+
+                // Found in Redump entry 83145.
+                new PathMatchSet(new PathMatch("CDAC21BA.DLL", useEndsWith: true), "SafeCast"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
@@ -171,6 +206,75 @@ namespace BurnOutSharp.ProtectionType
 
         public static string GetVersion(string file, byte[] fileContent, List<int> positions)
         {
+            // TODO: Figure out how to properly distinguish SafeDisc and SafeCast since both use
+            // the same generic BoG_ string. The current combination check doesn't seem consistent
+
+            // Known SafeDisc versions:
+            // 1.00.025 (Redump entry 66005).
+            // 1.00.026 (Redump entries 1882 and 30049).
+            // 1.00.030 (Redump entries 31575 and 41923).
+            // 1.00.032 (Redump entries 1883 and 42114).
+            // 1.00.035 (Redump entries 36223 and 40771).
+            // 1.01.034 (Redump entries 42155 and 47574).
+            // 1.01.038 (Redump entry 51459).
+            // 1.01.043 (Redump entries 34562 and 63304).
+            // 1.01.044 (Redump entries 61731 and 81619).
+            // 1.06.000 (Redump entries 29073 and 31149).
+            // 1.07.000 (Redump entries 9718 and 46756).
+            // 1.09.000 (Redump entries 12885 and 66210).
+            // 1.11.000 (Redump entries 37523 and 66586).
+            // 1.20.000 (Redump entries 21154 and 37982).
+            // 1.20.001 (Redump entry 37920).
+            // 1.30.010 (Redump entries 31526 and 55080).
+            // 1.35.000 (Redump entries 9617 and 49552).
+            // 1.40.004 (Redump entries 2595 and 30121).
+            // 1.41.000 (Redump entries 44350 and 63323).
+            // 1.41.001 (Redump entries 37832 and 42091).
+            // 1.45.011 (Redump entries 30555 and 55078).
+            // 1.50.020 (Redump entries 28810 and 62935).
+            // 2.05.030 (Redump entries 72195 and 73502).
+            // 2.10.030 (Redump entries 38541 and 59462 and 81096).
+            // 2.30.030 (Redump entries 55823 and 79476).
+            // 2.30.031 (Redump entries 15312 and 48863).
+            // 2.30.033 (Redump entries 9819 and 53658).
+            // 2.40.010 (Redump entries 9846 and 65642).
+            // 2.40.011 (Redump entries 23786 and 37478).
+            // 2.51.020 (Redump entries 30022 and 75014).
+            // 2.51.021 (Redump entries 31666 and 66852).
+            // 2.60.052 (Redump entries 2064 and 47047).
+            // 2.70.030 (Redump entries 13048 and 35385).
+            // 2.72.000 (Redump entries 48101 and 64198).
+            // 2.80.010 (Redump entries 32783 and 72743).
+            // 2.80.011 (Redump entries 39273 and 59351).
+            // 2.90.040 (Redump entries 52606 and 62505).
+            // 3.10.020 (Redump entries 13230 and 68204).
+            // 3.15.010 (Redump entries 36511 and 74338).
+            // 3.15.011 (Redump entries 15383 and 35512).
+            // 3.20.020 (Redump entries 30404 and 56748).
+            // 3.20.022 (Redump entries 58625 and 91552). 
+            // 3.20.024 (CD: Redump entries 20729 and 63813. DVD: Redump entries 20728 and 64255).
+            // 4.00.000 (CD: Redump entries 35382 and 79729. DVD: Redump entry 74520).
+            // 4.00.001 (CD: Redump entries 8842 and 83017. DVD: Redump entries 15614 and 38143).
+            // 4.00.002 (CD: Redump entries 42034 and 71646. DVD: Redump entries 78980 and 86196).
+            // 4.00.003 (CD: Redump entries 60021 and 68551. DVD: Redump entries 51597 and 83408).
+            // 4.50.000 (CD: Redump entries 58990 and 80776. DVD: Redump entries 65569 and 76813).
+            // 4.60.000 (CD: Redump entries 45686 and 46765. DVD: Redump entries 45469 and 50682).
+            // 4.70.000 (CD: Redump entry 56320. DVD: Redump entries 34783 and 66403).
+            // 4.80.000 (CD: Redump entries 64145 and 78543. DVD: No samples so far).
+            // 4.81.000 (CD: No samples so far. DVD: Redump entries 52523 and 76346).
+            // 4.85.000 (CD: No samples so far. DVD: Redump entries 20434 and 31766).
+            // 4.90.000 (CD: No samples so far. DVD: Redump entries 56319 and 66333).
+            // 4.90.010 (CD: Redump entries 58573 and 78976. DVD: redump entries 11347 and 29069).
+
+            // Known SafeCast versions:
+            // 2.11.010 (Redump entry 83145).
+            // 2.16.050 (IA items "cdrom-turbotax-2002", "TurboTax_Deluxe_Tax_Year_2002_for_Wndows_2.00R_Intuit_2002_352282", and "TurboTax_Premier_Tax_Year_2002_for_Windows_v02.00Z-R_Intuit_352283_2002").
+            // 2.42.000 (found in "Dreamweaver MX 2004 v7.0.1" according to https://web.archive.org/web/20210331144912/https://protectionid.net/).
+            // 2.50.030 (found in "ArcSoft Media Card Companion v1.0" according to https://web.archive.org/web/20210331144912/https://protectionid.net/).
+            // 2.51.000 (found in "Autodesk Inventor Professional v9.0" according to https://web.archive.org/web/20210331144912/https://protectionid.net/).
+            // 2.60.030 (found in "Data Becker Web To Date v3.1" according to https://web.archive.org/web/20210331144912/https://protectionid.net/).
+            // 2.67.010 (found in "Adobe Photoshop CS2" according to https://web.archive.org/web/20210331144912/https://protectionid.net/).
+
             int index = positions[0] + 20; // Begin reading after "BoG_ *90.0&!!  Yy>" for old SafeDisc
             int version = fileContent.ReadInt32(ref index);
             int subVersion = fileContent.ReadInt32(ref index);
@@ -538,7 +642,7 @@ namespace BurnOutSharp.ProtectionType
                 case "A5247EC0EC50B8F470C93BF23E3F2514C402D5AD":
                     return "4.00.002+";
                 // Found in Redump entries 74564 and 80776.
-                // The presence of any drvmgt.dll file at all is notably missing in several games with SafeDisc versions 4.50.000, including Redump entries 58990 and XXXXXXXX
+                // The presence of any drvmgt.dll file at all is notably missing in several games with SafeDisc versions 4.50.000, including Redump entries 58990 and 65569.
                 case "C658E0B4992903D5E8DD9B235C25CB07EE5BFEEB":
                     return "4.50.000";
                 // Found in Redump entry 56320.
@@ -677,7 +781,7 @@ namespace BurnOutSharp.ProtectionType
                     }, GetVersion, "SafeCast"),
 
                     // BoG_ *90.0&!!  Yy>
-                    // TODO: Investiage likely false positive in Redump entry 74384.
+                    // TODO: Investigate likely false positive in Redump entry 74384.
                     new ContentMatchSet(new byte?[]
                     {
                         0x42, 0x6F, 0x47, 0x5F, 0x20, 0x2A, 0x39, 0x30,
