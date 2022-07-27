@@ -48,6 +48,8 @@ namespace BurnOutSharp.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
+                // The file "sunncomm.ico" was previously used a file check, but since it's just an icon of the SunnComm logo, it seems too likely to result in false positives.
+
                 // Found on "Charley Pride - A Tribute to Jim Reeves" (barcode "7 816190222-2 4").
                 new PathMatchSet(new PathMatch("scvfy.exe", useEndsWith: true), "MediaCloQ"),
             };
@@ -60,6 +62,8 @@ namespace BurnOutSharp.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
+                // The file "sunncomm.ico" was previously used a file check, but since it's just an icon of the SunnComm logo, it seems too likely to result in false positives.
+
                 // Found on "Charley Pride - A Tribute to Jim Reeves" (barcode "7 816190222-2 4").
                 new PathMatchSet(new PathMatch("scvfy.exe", useEndsWith: true), "MediaCloQ"),
             };
