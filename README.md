@@ -63,7 +63,7 @@ Below is a list of protections detected by BurnOutSharp. The two columns explain
 | LabelGate CD | True | True | Currently only LabelGate CD2 is detected. |
 | LibCrypt | True | False | Separate subfile scan only |
 | LaserLok | True | True | |
-| MediaCloQ | False | True | Unconfirmed¹ |
+| MediaCloQ | True | True | |
 | MediaMax CD3 | True | True | |
 | OpenMG | True | True | |
 | Origin | True | True | |

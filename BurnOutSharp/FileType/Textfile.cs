@@ -87,6 +87,14 @@ namespace BurnOutSharp.FileType
                 else if (fileContent.Contains("serial number is located"))
                     Utilities.AppendToDictionary(protections, file, "CD-Key / Serial");
 
+                // MediaCloQ
+                if (fileContent.Contains("SunnComm MediaCloQ"))
+                    Utilities.AppendToDictionary(protections, file, "MediaCloQ");
+                else if (fileContent.Contains("http://download.mediacloq.com/"))
+                    Utilities.AppendToDictionary(protections, file, "MediaCloQ");
+                else if (fileContent.Contains("http://www.sunncomm.com/mediacloq/"))
+                    Utilities.AppendToDictionary(protections, file, "MediaCloQ");
+
                 // MediaMax
                 if (fileContent.Contains("MediaMax technology"))
                     Utilities.AppendToDictionary(protections, file, "MediaMax CD-3");
