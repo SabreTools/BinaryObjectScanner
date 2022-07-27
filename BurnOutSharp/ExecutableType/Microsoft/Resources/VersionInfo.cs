@@ -95,12 +95,12 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Resources
 
             int preChildOffset = offset;
             Resource firstChild = Resource.Deserialize(content, ref offset);
-            if (firstChild.Key == "StringFileInfo")
+            if (firstChild.Key == "StringFileInfo" || firstChild.Key == "\u0001StringFileInfo")
             {
                 offset = preChildOffset;
                 vi.ChildrenStringFileInfo = StringFileInfo.Deserialize(content, ref offset);
             }
-            else if (firstChild.Key == "VarFileInfo")
+            else if (firstChild.Key == "VarFileInfo" || firstChild.Key == "\u0001VarFileInfo")
             {
                 offset = preChildOffset;
                 vi.ChildrenVarFileInfo = VarFileInfo.Deserialize(content, ref offset);
@@ -112,12 +112,12 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Resources
 
             preChildOffset = offset;
             Resource secondChild = Resource.Deserialize(content, ref offset);
-            if (secondChild.Key == "StringFileInfo")
+            if (secondChild.Key == "StringFileInfo" || secondChild.Key == "\u0001StringFileInfo")
             {
                 offset = preChildOffset;
                 vi.ChildrenStringFileInfo = StringFileInfo.Deserialize(content, ref offset);
             }
-            else if (secondChild.Key == "VarFileInfo")
+            else if (secondChild.Key == "VarFileInfo" || secondChild.Key == "\u0001VarFileInfo")
             {
                 offset = preChildOffset;
                 vi.ChildrenVarFileInfo = VarFileInfo.Deserialize(content, ref offset);

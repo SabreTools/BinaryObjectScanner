@@ -15,13 +15,13 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Resources
             this.Length = resource?.Length ?? default;
             this.ValueLength = resource?.ValueLength ?? default;
             this.Type = resource?.Type ?? default;
-            this.Key = resource?.Key ?? default;
+            this.Key = resource?.Key?.TrimStart('\u0001') ?? default;
         }
 
         public static new StringFileInfo Deserialize(Stream stream)
         {
             Resource resource = Resource.Deserialize(stream);
-            if (resource.Key != "StringFileInfo")
+            if (resource.Key != "StringFileInfo" && resource.Key != "\u0001StringFileInfo")
                 return null;
 
             StringFileInfo sfi = new StringFileInfo(resource);
@@ -33,7 +33,7 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Resources
         public static new StringFileInfo Deserialize(byte[] content, ref int offset)
         {
             Resource resource = Resource.Deserialize(content, ref offset);
-            if (resource.Key != "StringFileInfo")
+            if (resource.Key != "StringFileInfo" && resource.Key != "\u0001StringFileInfo")
                 return null;
 
             StringFileInfo sfi = new StringFileInfo(resource);
