@@ -629,6 +629,11 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
                 {
                     if (rdte.IsResourceDataEntry() && rdte.DataEntry != null)
                     {
+                        // Ignore if we have a nested executable
+                        // TODO: Support nested executables
+                        if (rdte.DataEntry.DataAsUTF8String.StartsWith("MZ"))
+                            return null;
+
                         if (dataStart != null && rdte.DataEntry.DataAsUTF8String.StartsWith(dataStart))
                             return rdte.DataEntry;
                         else if (dataContains != null && rdte.DataEntry.DataAsUTF8String.Contains(dataContains))
@@ -648,6 +653,11 @@ namespace BurnOutSharp.ExecutableType.Microsoft.PE
                 {
                     if (rdte.IsResourceDataEntry() && rdte.DataEntry != null)
                     {
+                        // Ignore if we have a nested executable
+                        // TODO: Support nested executables
+                        if (rdte.DataEntry.DataAsUTF8String.StartsWith("MZ"))
+                            return null;
+
                         if (dataStart != null && rdte.DataEntry.DataAsUTF8String.StartsWith(dataStart))
                             return rdte.DataEntry;
                         else if (dataContains != null && rdte.DataEntry.DataAsUTF8String.Contains(dataContains))
