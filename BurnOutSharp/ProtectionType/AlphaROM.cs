@@ -70,7 +70,7 @@ namespace BurnOutSharp.ProtectionType
             }
 
             // Get the .rdata section, if it exists
-            if (pex.ResourceDataSectionRaw!= null)
+            if (pex.ResourceDataSectionRaw != null)
             {
                 var matchers = new List<ContentMatchSet>
                 {
@@ -93,7 +93,8 @@ namespace BurnOutSharp.ProtectionType
 
                     // This Game is Japan Only..‚±‚ÌƒQ.[ƒ€‚Í“ú–{.‘“à‚Å‚Ì‚ÝƒvƒŒƒC‰Â”\‚Å‚·.B..“®.ì‚³‚¹‚é‚É‚Í .w “ú–{Œê”ÅWindows
                     // Found in games using the RealLive engine.
-                    new ContentMatchSet(new byte?[] {
+                    new ContentMatchSet(new byte?[] 
+                    {
                         0x54, 0x68, 0x69, 0x73, 0x20, 0x47, 0x61, 0x6D, 0x65, 0x20, 0x69, 0x73,
                         0x20, 0x4A, 0x61, 0x70, 0x61, 0x6E, 0x20, 0x4F, 0x6E, 0x6C, 0x79, 0x0A,
                         0x0A, 0x82, 0xB1, 0x82, 0xCC, 0x83, 0x51, 0x81, 0x5B, 0x83, 0x80, 0x82,
