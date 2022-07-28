@@ -46,6 +46,7 @@ namespace BurnOutSharp.ProtectionType
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // TODO: Add support for detecting Alpha-ROM found in older games made with the RealLive engine. 
+            // TODO: Add version detection for Alpha-ROM.
 
             // Get the sections from the executable, if possible
             var sections = pex?.SectionTable;
@@ -76,7 +77,8 @@ namespace BurnOutSharp.ProtectionType
                 {
                     // T.h.i.s. .G.a.m.e. .i.s. .J.a.p.a.n. .O.n.l.y.....S0n0²0ü0à0o0åe,gýV…Qg0n0.0×0ì0¤0ïSý€g0Y0.0....ÕR\OU0[0‹0k0o0 ..0 .åe,gžŠHrW.i.n.d.o.w.s. ..0 .L0Å_.‰g0Y0.0....²0ü0à0’0B}†NW0~0Y0.0....åe,gžŠHrW.i.n.d.o.w.s
                     // Found in games using the Siglus engine.
-                    new ContentMatchSet(new byte?[] { 
+                    new ContentMatchSet(new byte?[] 
+                    { 
                         0x54, 0x00, 0x68, 0x00, 0x69, 0x00, 0x73, 0x00, 0x20, 0x00, 0x47, 0x00,
                         0x61, 0x00, 0x6D, 0x00, 0x65, 0x00, 0x20, 0x00, 0x69, 0x00, 0x73, 0x00,
                         0x20, 0x00, 0x4A, 0x00, 0x61, 0x00, 0x70, 0x00, 0x61, 0x00, 0x6E, 0x00,
