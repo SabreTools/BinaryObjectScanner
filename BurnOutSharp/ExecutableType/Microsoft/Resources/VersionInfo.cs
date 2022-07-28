@@ -48,12 +48,12 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Resources
 
             long preChildOffset = stream.Position;
             Resource firstChild = Resource.Deserialize(stream);
-            if (firstChild.Key == "StringFileInfo")
+            if (firstChild.Key == "StringFileInfo" || firstChild.Key == "\u0001StringFileInfo")
             {
                 stream.Seek(preChildOffset, SeekOrigin.Begin);
                 vi.ChildrenStringFileInfo = StringFileInfo.Deserialize(stream);
             }
-            else if (firstChild.Key == "VarFileInfo")
+            else if (firstChild.Key == "VarFileInfo" || firstChild.Key == "\u0001VarFileInfo")
             {
                 stream.Seek(preChildOffset, SeekOrigin.Begin);
                 vi.ChildrenVarFileInfo = VarFileInfo.Deserialize(stream);
@@ -64,12 +64,12 @@ namespace BurnOutSharp.ExecutableType.Microsoft.Resources
 
             preChildOffset = stream.Position;
             Resource secondChild = Resource.Deserialize(stream);
-            if (secondChild.Key == "StringFileInfo")
+            if (secondChild.Key == "StringFileInfo" || secondChild.Key == "\u0001StringFileInfo")
             {
                 stream.Seek(preChildOffset, SeekOrigin.Begin);
                 vi.ChildrenStringFileInfo = StringFileInfo.Deserialize(stream);
             }
-            else if (secondChild.Key == "VarFileInfo")
+            else if (secondChild.Key == "VarFileInfo" || secondChild.Key == "\u0001VarFileInfo")
             {
                 stream.Seek(preChildOffset, SeekOrigin.Begin);
                 vi.ChildrenVarFileInfo = VarFileInfo.Deserialize(stream);
