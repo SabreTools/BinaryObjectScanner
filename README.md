@@ -45,7 +45,7 @@ Below is a list of protections detected by BurnOutSharp. The two columns explain
 | Cucko (EA Custom) | True | False | Does not detect all known cases |
 | Denuvo | True | False | |
 | Dinamic Multimedia Protection/LockBlocks | False | True | LockBlocks needs manual confirmation of the presence of 2 rings |
-| DiscGuard | False | True | Unconfirmed¹ |
+| DiscGuard | True | True | Partially unconfirmed² |
 | DVD-Movie-PROTECT | False | True | Unconfirmed¹ |
 | DVD Crypt | False | True | Unconfirmed¹ |
 | EA Protections | True | False | Including EA CDKey and EA DRM. |
@@ -106,6 +106,7 @@ Below is a list of protections that have been identified but have not yet been i
 - Alpha-Audio
 - CrypKey
 - DBB
+- DiscAudit
 - FADE
 - MusicGuard
 - Roxxe
