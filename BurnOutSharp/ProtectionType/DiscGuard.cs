@@ -38,7 +38,22 @@ namespace BurnOutSharp.ProtectionType
             if (sections == null)
                 return null;
 
-            // Get the .vbn, if it exists
+            // Found in "IOSLinksys.dll" (Redump entries 31914, 46743, 46961, 79284, and 79374).
+            string name = pex.FileDescription;
+            if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("IOSLinkNT", StringComparison.OrdinalIgnoreCase))
+                return $"DiscGuard";
+
+            // Found in "T29.dll" (Redump entry 31914).
+            name = pex.ProductName;
+            if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("DiscGuard (tm)", StringComparison.OrdinalIgnoreCase))
+                return $"DiscGuard";
+
+            // Found in "IOSLinksys.dll" (Redump entries 31914, 46743, 46961, 79284, and 79374).
+            name = pex.ProductName;
+            if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("TTR Technologies Ltd. DiscGuard (tm)", StringComparison.OrdinalIgnoreCase))
+                return $"DiscGuard";
+
+            // Get the .vbn section, if it exists
             var DiscGuardSection = pex.ReadRawSection(".vbn");
             if (DiscGuardSection != null)
             {
@@ -96,9 +111,9 @@ namespace BurnOutSharp.ProtectionType
                     return match;
             }
 
-            // Get the .rsrc, if it exists
-            var ResourceSection = pex.ReadRawSection(".rsrc");
-            if (ResourceSection != null)
+            // Get the .rsrc section, if it exists
+            var rsrcSection = pex.ReadRawSection(".rsrc");
+            if (rsrcSection != null)
             {
                 var matchers = new List<ContentMatchSet>
                 {
@@ -115,25 +130,10 @@ namespace BurnOutSharp.ProtectionType
                     }, "DiscGuard"),
                 };
 
-                string match = MatchUtil.GetFirstMatch(file, ResourceSection, matchers, includeDebug);
+                string match = MatchUtil.GetFirstMatch(file, rsrcSection, matchers, includeDebug);
                 if (!string.IsNullOrWhiteSpace(match))
                     return match;
             }
-
-            // Found in "IOSLinksys.dll" (Redump entries 31914, 46743, 46961, 79284, and 79374).
-            string name = pex.FileDescription;
-            if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("IOSLinkNT", StringComparison.OrdinalIgnoreCase))
-                return $"DiscGuard";
-
-            // Found in "T29.dll" (Redump entry 31914).
-            name = pex.ProductName;
-            if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("DiscGuard (tm)", StringComparison.OrdinalIgnoreCase))
-                return $"DiscGuard";
-
-            // Found in "IOSLinksys.dll" (Redump entries 31914, 46743, 46961, 79284, and 79374).
-            name = pex.ProductName;
-            if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("TTR Technologies Ltd. DiscGuard (tm)", StringComparison.OrdinalIgnoreCase))
-                return $"DiscGuard";
 
             return null;
         }
