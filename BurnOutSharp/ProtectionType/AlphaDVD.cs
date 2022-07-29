@@ -5,6 +5,14 @@ using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
 {
+    /// <summary>
+    /// Alpha-DVD is a DVD-Video copy protection created by SETTEC.
+    /// References and further information:
+    /// http://www.gonsuke.co.jp/protect.html
+    /// http://copy2.info/copy_protect.html
+    /// http://s2000.yokinihakarae.com/sub03-10-2(DVD).html
+    /// https://www.cdmediaworld.com/hardware/cdrom/cd_protections_alpha.shtml
+    /// </summary>
     public class AlphaDVD : IPathCheck
     {
         /// <inheritdoc/>
