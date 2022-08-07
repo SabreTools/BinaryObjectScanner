@@ -11,6 +11,8 @@ namespace BurnOutSharp.ProtectionType
     ///  HexaLock AutoLock was a copy protection scheme that requied users to buy so-called "CD-RX" media that contained a special session pre-burned to it in order to burn their protect media.
     ///  Sales page for CD-RX media: http://www.image-src.com/services/hexalock.asp
     ///  Hexalock AutoLock was also able to be used with pressed CD-ROMs (Source: https://web.archive.org/web/20110828214830/http://hexalock.co.il/copyprotection/cdrom).
+    ///  One pressed example has been found so far, though it seems that it may not have been hooked into the protection properly, as the game is able to be run directly from files extracted from the installer (Redump entry 95764/IA item "Nova_Spacebound_USA").
+    ///  Though the protection seems unused in this sample, the final sectors of this disc are unable to be read by some software/drive combinations, which seems likely to be related to the protection.
     ///  It also allowed you to protect multimedia documents, such as documents or pictures. 
     ///  The official website is now dead, but there are a few archives made (https://web.archive.org/web/20110904233743/http://hexalock.co.il/).
     ///  There don't appear to be any archives of the "CD-RX" media available, though it appears that some are still for sale on Amazon:

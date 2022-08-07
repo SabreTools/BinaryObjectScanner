@@ -31,7 +31,7 @@ namespace BurnOutSharp.ProtectionType
 
             var fileNameResource = pex.FindResource(dataContains: $"NO NESTED PRMS SUPPORTED");
             if (fileNameResource != null)
-                return "ITENIUM Trial & Buy Protection";
+                return "INTENIUM Trial & Buy Protection";
 
             return null;
         }

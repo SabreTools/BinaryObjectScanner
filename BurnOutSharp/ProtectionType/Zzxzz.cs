@@ -6,6 +6,7 @@ using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
 {
+    // All current known info: https://web.archive.org/web/20190601101221mp_/https://fileforums.com/showthread.php?t=91941
     public class Zzxzz : IPathCheck
     {
         /// <inheritdoc/>
