@@ -57,7 +57,7 @@ Below is a list of protections detected by BurnOutSharp. The two columns explain
 | Hexalock AutoLock | True | True | |
 | Impulse Reactor / Stardock Product Activation | True | True | |
 | IndyVCD | False | True | Unconfirmed¹ |
-| ITENIUM Trial & Buy Protection | True | False | |
+| INTENIUM Trial & Buy Protection | True | False | |
 | JoWood X-Prot (v1/v2) / Xtreme-Protector | True | False | |
 | ~~Key2Audio~~ | True | True | Existing checks found to actually be indicators of OpenMG, not key2Audio specifically. |
 | Key-Lock (Dongle) | True | False | Unconfirmed¹ |

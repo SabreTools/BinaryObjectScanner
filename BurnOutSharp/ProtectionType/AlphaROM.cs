@@ -61,6 +61,8 @@ namespace BurnOutSharp.ProtectionType
                     // \SETTEC
                     new ContentMatchSet(new byte?[] { 0x5C, 0x53, 0x45, 0x54, 0x54, 0x45, 0x43 }, "Alpha-ROM"),
 
+                    // On Redump entry 84122, this string is found within an executable, but outside the bounds of any section. Thus, it currently remains undetected.
+                    // Worth noting is that all the section names, aside from .text, seem to be purposefully expunged.
                     // SETTEC0000
                     new ContentMatchSet(new byte?[] { 0x53, 0x45, 0x54, 0x54, 0x45, 0x43, 0x30, 0x30, 0x30, 0x30 }, "Alpha-ROM"),
                 };
