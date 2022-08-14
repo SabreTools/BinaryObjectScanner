@@ -28,6 +28,7 @@ Below is a list of protections detected by BurnOutSharp. The two columns explain
 | 321Studios Online Activation | True | False | |
 | AACS | False | True | BluRay and HD-DVD variants detected |
 | ActiveMARK | True | False | Version 5 unconfirmed²; version finding incomplete |
+| AegiSoft License Manager | True | True | |
 | Alpha-DVD | False | True | Unconfirmed¹ |
 | Alpha-ROM | True | False | Unconfirmed¹ |
 | BD+ | False | True | |

@@ -43,6 +43,10 @@ namespace BurnOutSharp.FileType
             if (magic.StartsWith(new byte?[] { 0x61, 0x4C, 0x75, 0x5A }))
                 return true;
 
+            // InstallShield Script
+            if (string.Equals(extension?.TrimStart('.'), "ins", StringComparison.OrdinalIgnoreCase))
+                return true;
+
             // Generic textfile (no header)
             if (string.Equals(extension?.TrimStart('.'), "txt", StringComparison.OrdinalIgnoreCase))
                 return true;
@@ -80,6 +84,11 @@ namespace BurnOutSharp.FileType
                 {
                     fileContent = sr.ReadToEnd();
                 }
+
+                // AegiSoft License Manager
+                // Found in "setup.ins" (Redump entry 73521/IA item "Nova_HoyleCasino99USA").
+                if (fileContent.Contains("Failed to load the AegiSoft License Manager install program."))
+                    Utilities.AppendToDictionary(protections, file, "AegiSoft License Manager");
 
                 // CD-Key
                 if (fileContent.Contains("a valid serial number is required"))
