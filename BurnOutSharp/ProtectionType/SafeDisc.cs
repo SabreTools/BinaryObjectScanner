@@ -112,6 +112,8 @@ namespace BurnOutSharp.ProtectionType
                     new PathMatch(".256", useEndsWith: true),
                 }, "SafeDisc 1.06.000+"),
 
+                // TODO: Research "splash16.bmp" and "splah256.bmp".
+
                 // Found to be present in every version of SafeDisc, possibly every single release.
                 new PathMatchSet(new PathMatch("00000001.TMP", useEndsWith: true), Get00000001TMPVersion, "SafeDisc"),
 
@@ -163,6 +165,8 @@ namespace BurnOutSharp.ProtectionType
 
                 new PathMatchSet(new PathMatch("00000001.TMP", useEndsWith: true), Get00000001TMPVersion, "SafeDisc"),
                 new PathMatchSet(new PathMatch("00000002.TMP", useEndsWith: true), "SafeDisc 2+"),
+
+                // TODO: Research "splash16.bmp" and "splah256.bmp".
 
                 new PathMatchSet(new PathMatch("DPLAYERX.DLL", useEndsWith: true), GetDPlayerXVersion, "SafeDisc (dplayerx.dll)"),
                 new PathMatchSet(new PathMatch("drvmgt.dll", useEndsWith: true), GetDrvmgtVersion, "SafeDisc (drvmgt.dll)"),
@@ -354,9 +358,12 @@ namespace BurnOutSharp.ProtectionType
                 // Found in Redump entry 66005.
                 case "BAD49BA0DEA041E85EF1CABAA9F0ECD822CE1376":
                     return "1.00.025";
+                // Found in Redump entry 34828.
+                case "6137C7E789A329865649FCB8387B963FC8C763C6":
+                    return "1.00.026 (pre-10/1998)";
                 // Found in Redump entries 1882 and 30049.
                 case "AFEFBBF1033EA65C366A1156E21566DB419CFD7B":
-                    return "1.00.026";
+                    return "1.00.026 (post-10/1998)";
                 // Found in Redump entries 31575 and 41923.
                 case "6E54AC24C344E4A132D1B7A6A61B2EC824DE5092":
                     return "1.00.030";
@@ -436,7 +443,7 @@ namespace BurnOutSharp.ProtectionType
             // Versions of "CLOKSPL.EXE" before SafeDisc 1.06.000 (can be identified by the presence of "SafeDisc CDROM Protection System" as the Product Name) have a human readable Product Version.
             // This included version doesn't seem to be as accurate as hash checks are, but will be documented here and considered for future use if needed.
             // "1.0.25 1998/07/30" -> SafeDisc 1.00.025 (Redump entry 66005).
-            // "1.0.26 1998/08/06" -> SafeDisc 1.00.026-1.00.030 (Redump entries 1882 and 31575).
+            // "1.0.26 1998/08/06" -> SafeDisc 1.00.026-1.00.030 (Redump entries 1882, 31575, and 34828).
             // "1.0.32 1998/11/04" -> SafeDisc 1.00.032-1.00.035 (Redump entries 1883 and 36223). 
             // "1.1.34 1998/11/14" -> SafeDisc 1.01.034 (Redump entries 42155 and 47574).
             // "1.1.38 1999/01/21" -> SafeDisc 1.01.038 (Redump entry 51459).
@@ -451,9 +458,12 @@ namespace BurnOutSharp.ProtectionType
                 // Found in Redump entry 66005.
                 case "DD131A7B988065764E2A0F20B66C89049B20A7DE":
                     return "1.00.025";
+                // Found in Redump entry 34828.
+                case "41C8699A6E0F046EB7A21984441B555237DA4758":
+                    return "1.00.026 (pre-10/1998)";
                 // Found in Redump entries 1882 and 30049.
                 case "D1C19C26DEC7C33825FFC59AD02B0EBA782643FA":
-                    return "1.00.026";
+                    return "1.00.026 (post-10/1998)";
                 // Found in Redump entries 31575 and 41923.
                 case "B7C6C61688B354AB5D4E20CDEB36C992F203289B":
                     return "1.00.030";
@@ -532,20 +542,50 @@ namespace BurnOutSharp.ProtectionType
                 // Checks for versions 1.2X have been commented out, due to these versions already being detected via more accurate checks.
                 // Examples of "dplayerx.dll" that are detected using these more accurate checks can be found in Redump entries 28810, 30121, and 37982. 
 
+                // Found in Redump entry 34828.
                 case 81_408:
-                    return "1.0x";
+                    return "1.00.026 (pre-10/1998)";
+
+                // Found in Redump entries 21154, 41923, 42114, and 66005.
+                case 78_848:
+                    return "1.00.025-1.00.032";
+
+                // Found in Redump entries 36223 and 40771.
+                case 77_824:
+                    return "1.00.035";
+
+                // Found in Redump entries 42155 and 47574. 
+                case 115_712:
+                    return "1.01.034";
+
+                // Found in Redump entry 42155.
+                case 116_736:
+                    return "1.01.038";
+
+                // Found in Redump entries 34562 and 63304.
+                case 124_416:
+                    return "1.01.043";
+
+                // Found in Redump entries 61731 and 81619.
+                case 125_952:
+                    return "1.01.044";
+
+                // Found in Redump entries 29073 and 31149.
                 case 155_648:
-                    return "1.1x";
+                    return "1.06.000";
+
+                // Found in Redump entries 9718, 12885, and 37523.
                 case 156_160:
-                    return "1.1x-1.2x";
+                    return "1.07.000-1.11.000";
 
                 // File size checks for versions 1.2X+ are superceded by executable string checks, which are more accurate. For reference, the previously used file sizes are kept as comments.
-                // 163,382 bytes corresponds to SafeDisc 1.3x.
-                // 165,888 bytes corresponds to SafeDisc 1.35.
-                // 172,544 bytes corresponds to SafeDisc 1.40.
-                // 173,568 bytes corresponds to SafeDisc 1.4x.
-                // 136,704 bytes corresponds to SafeDisc 1.4x.
-                // 136,752 bytes corresponds to SafeDisc 1.5x.
+                // 157,184 bytes -> SafeDisc 1.20.000-1.20.001 (Redump entries 21154 and 37920).
+                // 163,382 bytes corresponds to SafeDisc 1.30.010 (Redump entries 31526 and 55080).
+                // 165,888 bytes corresponds to SafeDisc 1.35.000 (Redump entries 9617 and 49552).
+                // 172,544 bytes corresponds to SafeDisc 1.40.004 (Redump entries 2595 and 30121).
+                // 173,568 bytes corresponds to SafeDisc 1.41.000-1.41.001 (Redump entries 37832, and 44350). 
+                // 136,704 bytes corresponds to SafeDisc 1.45.011 (Redump entries 30555 and 55078).
+                // 138,752 bytes corresponds to SafeDisc 1.50.020 (Redump entries 28810 and 62935).
 
                 default:
                     return "1";
