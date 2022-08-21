@@ -10,11 +10,14 @@ using BurnOutSharp.Tools;
 namespace BurnOutSharp.ProtectionType
 {
     /// <summary>
-    /// SafeDisc was an [INSERT REST OF DOCS HERE]
+    /// SafeDisc is an incredibly commonly used copy protection created by Macrovision in 1998.
+    /// It uses several different copy protection mechanisms, such as reading a disc signature dependent on the presence of bad sectors and the attempted prevention of burning copies to CD-R.
+    /// SafeDisc has been most commonly found on PC games and applications, though there a number of Mac discs that contain the protection as well.
     /// At least one system other than PC/Mac is known to use SafeDisc as well, this being the "ZAPiT Games Game Wave Family Entertainment System" which seems to use a form of SafeDisc 4 (Redump entry 46269).
     /// SafeCast is in the same family of protections, and appears to mainly be for license management, and doesn't appear to affect the mastering of the disc in any way.
     /// Although SafeCast is most commonly used in non-game software, there is one game that comes with both SafeDisc and SafeCast protections (Redump entry 83145).
     /// Macrovision bought the company C-Dilla and created SafeCast based on C-Dilla's existing products (https://web.archive.org/web/20030212040047/http://www.auditmypc.com/freescan/readingroom/cdilla.asp).
+    /// That being said, there are references to C-Dilla within SafeDisc protected executables as early as 1.00.025, making the exact relationship between SafeDisc/Macrovision/C-Dilla unclear.
     /// SafeCast resources: 
     /// https://web.archive.org/web/20010417222834/http://www.macrovision.com/press_rel3_17_99.html
     /// https://www.extremetech.com/computing/53394-turbotax-so-what-do-i-do-now/4
@@ -23,6 +26,7 @@ namespace BurnOutSharp.ProtectionType
     /// SafeScan (https://cdn.loc.gov/copyright/1201/2003/reply/029.pdf).
     /// SafeDisc HD (https://computerizedaccount.tripod.com/computerizedaccountingtraining/id27.html).
     /// Additional resources and information:
+    /// https://www.cdmediaworld.com/hardware/cdrom/cd_protections_safedisc.shtml
     /// https://web.archive.org/web/20080604020524/http://www.trymedia.com/safedisc-advanced.html
     /// </summary>
     public class SafeDisc : IPathCheck, IPortableExecutableCheck
@@ -44,11 +48,11 @@ namespace BurnOutSharp.ProtectionType
             if (!string.IsNullOrWhiteSpace(name) && name.Equals("SafeDisc", StringComparison.OrdinalIgnoreCase))
                 return $"SafeDisc";
 
-            // TODO: This doesn't properly grab the File Description for secdrv.sys and I'm not sure why.
+            // Present in "secdrv.sys" files found in SafeDisc 2.80.010+.
             if (!string.IsNullOrWhiteSpace(name) && name.Equals("Macrovision SECURITY Driver", StringComparison.OrdinalIgnoreCase))
                 return $"SafeDisc Security Driver {GetSecDrvExecutableVersion(pex)}";
 
-            // Present on all CLOKSPL.DLL versions before SafeDisc 1.06.000. Found on Redump entries 61731 and 66004. 
+            // Present on all "CLOKSPL.DLL" versions before SafeDisc 1.06.000. Found on Redump entries 61731 and 66004. 
             name = pex.ProductName;
             if (!string.IsNullOrWhiteSpace(name) && name.Equals("SafeDisc CDROM Protection System", StringComparison.OrdinalIgnoreCase))
                 return $"SafeDisc 1.00.025-1.01.044";
@@ -78,6 +82,29 @@ namespace BurnOutSharp.ProtectionType
             bool stxt774Section = pex.ContainsSection("stxt774", exact: true);
             if (stxt371Section || stxt774Section)
                 return $"SafeDisc {Get320to4xVersion(null, null, null)}";
+
+            // Get the BSS section, if it exists
+            var BSSSectionRaw = pex.ReadRawSection("BSS", first: true);
+            if (BSSSectionRaw != null)
+            {
+                var matchers = new List<ContentMatchSet>
+                {
+                    // Present in "mcp.dll", along with several other references to Plextor (Redump entries 28810 and 30555).
+                    // plextor.dll.IsPlextor.PreventLowSpeed
+                    new ContentMatchSet(new byte?[]
+                    {
+                        0x70, 0x6C, 0x65, 0x78, 0x74, 0x6F, 0x72, 0x2E, 
+                        0x64, 0x6C, 0x6C, 0x00, 0x49, 0x73, 0x50, 0x6C, 
+                        0x65, 0x78, 0x74, 0x6F, 0x72, 0x00, 0x50, 0x72,
+                        0x65, 0x76, 0x65, 0x6E, 0x74, 0x4C, 0x6F, 0x77, 
+                        0x53, 0x70, 0x65, 0x65, 0x64
+                    }, "SafeDisc (Version 1.45.011-1.50.020)"),
+                };
+
+                string match1 = MatchUtil.GetFirstMatch(file, BSSSectionRaw, matchers, includeDebug);
+                if (!string.IsNullOrWhiteSpace(match1))
+                    return match1;
+            }
 
             // TODO: Add entry point check
             // https://github.com/horsicq/Detect-It-Easy/blob/master/db/PE/Safedisc.2.sg
@@ -114,7 +141,7 @@ namespace BurnOutSharp.ProtectionType
                     new PathMatch(".256", useEndsWith: true),
                 }, "SafeDisc 1.06.000+"),
 
-                // TODO: Research "splash16.bmp" and "splah256.bmp".
+                // TODO: Research "splash16.bmp" and "splash256.bmp".
 
                 // Found to be present in every version of SafeDisc, possibly every single release.
                 new PathMatchSet(new PathMatch("00000001.TMP", useEndsWith: true), Get00000001TMPVersion, "SafeDisc"),
@@ -122,12 +149,13 @@ namespace BurnOutSharp.ProtectionType
                 // Found in many versions of SafeDisc, beginning in 2.05.030 and being used all the way until the final version 4.90.010. It is not always present, even in versions it has been used in. Found in Redump entries 56319 and 72195.
                 new PathMatchSet(new PathMatch("00000002.TMP", useEndsWith: true), "SafeDisc 2+"),
 
-                new PathMatchSet(new PathMatch("DPLAYERX.DLL", useEndsWith: true), GetDPlayerXVersion, "SafeDisc (dplayerx.dll)"),
-                new PathMatchSet(new PathMatch("drvmgt.dll", useEndsWith: true), GetDrvmgtVersion, "SafeDisc (drvmgt.dll)"),
+                new PathMatchSet(new PathMatch("DPLAYERX.DLL", useEndsWith: true), GetDPlayerXVersion, "SafeDisc"),
+                new PathMatchSet(new PathMatch("drvmgt.dll", useEndsWith: true), GetDrvmgtVersion, "SafeDisc"),
                 new PathMatchSet(new PathMatch("secdrv.sys", useEndsWith: true), GetSecdrvVersion, "SafeDisc Security Driver"),
 
                 // Found in Redump entries 28810 and 30555.
-                new PathMatchSet(new PathMatch("mcp.dll", useEndsWith: true), "SafeDisc (Version 1.45.011-1.50.020)"),
+                // Name check overmatches with a seemingly completely unrelated application, ironically included on at least one SafeDisc game (Redump entry 34828).
+                // new PathMatchSet(new PathMatch("mcp.dll", useEndsWith: true), "SafeDisc (Version 1.45.011-1.50.020)"),
 
                 // Found in Redump entry 58455.
                 // Unknown if it's a game specific file, but it contains the stxt371 and stxt774 sections.
@@ -168,14 +196,15 @@ namespace BurnOutSharp.ProtectionType
                 new PathMatchSet(new PathMatch("00000001.TMP", useEndsWith: true), Get00000001TMPVersion, "SafeDisc"),
                 new PathMatchSet(new PathMatch("00000002.TMP", useEndsWith: true), "SafeDisc 2+"),
 
-                // TODO: Research "splash16.bmp" and "splah256.bmp".
+                // TODO: Research "splash16.bmp" and "splash256.bmp".
 
-                new PathMatchSet(new PathMatch("DPLAYERX.DLL", useEndsWith: true), GetDPlayerXVersion, "SafeDisc (dplayerx.dll)"),
-                new PathMatchSet(new PathMatch("drvmgt.dll", useEndsWith: true), GetDrvmgtVersion, "SafeDisc (drvmgt.dll)"),
+                new PathMatchSet(new PathMatch("DPLAYERX.DLL", useEndsWith: true), GetDPlayerXVersion, "SafeDisc"),
+                new PathMatchSet(new PathMatch("drvmgt.dll", useEndsWith: true), GetDrvmgtVersion, "SafeDisc"),
                 new PathMatchSet(new PathMatch("secdrv.sys", useEndsWith: true), GetSecdrvVersion, "SafeDisc Security Driver"),
 
                 // Found in Redump entries 28810 and 30555.
-                new PathMatchSet(new PathMatch("mcp.dll", useEndsWith: true), "SafeDisc (Version 1.45.011-1.50.020)"),
+                // Name check overmatches with a seemingly completely unrelated application, ironically included on at least one SafeDisc game (Redump entry 34828).
+                // new PathMatchSet(new PathMatch("mcp.dll", useEndsWith: true), "SafeDisc (Version 1.45.011-1.50.020)"),
 
                 // Found in Redump entry 58455.
                 // Unknown if it's a game specific file, but it contains the stxt371 and stxt774 sections.
@@ -315,7 +344,7 @@ namespace BurnOutSharp.ProtectionType
                     return "1.00.025-1.41.001";
                 // Found in Redump entries 30555 and 58573.
                 case 2_048:
-                    return "1.45.011+ (CD)";
+                    return "1.45.011+ (CD) / Cactus Data Shield 300";
                 // Found in Redump entries 11347 and 64255.
                 case 20_482_048:
                     return "3+ (DVD)";
@@ -531,7 +560,6 @@ namespace BurnOutSharp.ProtectionType
             }
         }
 
-        // TODO: Investigate alternatives to size checks for this file.
         public static string GetDPlayerXVersion(string firstMatchedString, IEnumerable<string> files)
         {
             if (firstMatchedString == null || !File.Exists(firstMatchedString))
@@ -581,7 +609,7 @@ namespace BurnOutSharp.ProtectionType
                     return "1.07.000-1.11.000";
 
                 // File size checks for versions 1.2X+ are superceded by executable string checks, which are more accurate. For reference, the previously used file sizes are kept as comments.
-                // 157,184 bytes -> SafeDisc 1.20.000-1.20.001 (Redump entries 21154 and 37920).
+                // 157,184 bytes corresponds to SafeDisc 1.20.000-1.20.001 (Redump entries 21154 and 37920).
                 // 163,382 bytes corresponds to SafeDisc 1.30.010 (Redump entries 31526 and 55080).
                 // 165,888 bytes corresponds to SafeDisc 1.35.000 (Redump entries 9617 and 49552).
                 // 172,544 bytes corresponds to SafeDisc 1.40.004 (Redump entries 2595 and 30121).
@@ -861,8 +889,10 @@ namespace BurnOutSharp.ProtectionType
             var sectionRaw = pex.ReadRawSection(sectionName, first: true, offset: -64);
             if (sectionRaw != null)
             {
+                // TODO: Add more checks to help differentiate between SafeDisc and SafeCast.
                 var matchers = new List<ContentMatchSet>
                 {
+                    // Checks for presence of two different strings to differentiate between SafeDisc and SafeCast.
                     new ContentMatchSet(new List<byte?[]>
                     {
                         // BoG_ *90.0&!!  Yy>
@@ -883,14 +913,15 @@ namespace BurnOutSharp.ProtectionType
                         },
                     }, GetVersion, "SafeCast"),
 
-                    // BoG_ *90.0&!!  Yy>
                     // TODO: Investigate likely false positive in Redump entry 74384.
+                    // Unfortunately, this string is used throughout a wide variety of SafeDisc and SafeCast versions. If no previous checks are able to able to differentiate between them, then a generic result has to be given.
+                    // BoG_ *90.0&!!  Yy>
                     new ContentMatchSet(new byte?[]
                     {
                         0x42, 0x6F, 0x47, 0x5F, 0x20, 0x2A, 0x39, 0x30,
                         0x2E, 0x30, 0x26, 0x21, 0x21, 0x20, 0x20, 0x59,
                         0x79, 0x3E
-                    }, GetVersion, "SafeDisc"),
+                    }, GetVersion, "SafeCast/SafeDisc"),
 
                     // (char)0x00 + (char)0x00 + BoG_
                     new ContentMatchSet(new byte?[] { 0x00, 0x00, 0x42, 0x6F, 0x47, 0x5F }, Get320to4xVersion, "SafeDisc"),
