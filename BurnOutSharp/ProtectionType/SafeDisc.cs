@@ -80,6 +80,7 @@ namespace BurnOutSharp.ProtectionType
 
             // Present on all "CLOKSPL.EXE" versions before SafeDisc 1.06.000. Found on Redump entries 61731 and 66004. 
             // Only found so far on SafeDisc 1.00.025-1.01.044, but the report is currently left generic due to the generic nature of the check.
+            name = pex.FileDescription;
             if (!string.IsNullOrWhiteSpace(name) && name.Equals("SafeDisc", StringComparison.OrdinalIgnoreCase))
                 return $"SafeDisc";
 
