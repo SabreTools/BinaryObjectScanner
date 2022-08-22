@@ -40,17 +40,17 @@ namespace BurnOutSharp.ProtectionType
 
             // Found in "IOSLinksys.dll" (Redump entries 31914, 46743, 46961, 79284, and 79374).
             string name = pex.FileDescription;
-            if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("IOSLinkNT", StringComparison.OrdinalIgnoreCase))
+            if (name?.StartsWith("IOSLinkNT", StringComparison.OrdinalIgnoreCase) == true)
                 return $"DiscGuard";
 
             // Found in "T29.dll" (Redump entry 31914).
             name = pex.ProductName;
-            if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("DiscGuard (tm)", StringComparison.OrdinalIgnoreCase))
+            if (name?.StartsWith("DiscGuard (tm)", StringComparison.OrdinalIgnoreCase) == true)
                 return $"DiscGuard";
 
             // Found in "IOSLinksys.dll" (Redump entries 31914, 46743, 46961, 79284, and 79374).
             name = pex.ProductName;
-            if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("TTR Technologies Ltd. DiscGuard (tm)", StringComparison.OrdinalIgnoreCase))
+            if (name?.StartsWith("TTR Technologies Ltd. DiscGuard (tm)", StringComparison.OrdinalIgnoreCase) == true)
                 return $"DiscGuard";
 
             // Get the .vbn section, if it exists

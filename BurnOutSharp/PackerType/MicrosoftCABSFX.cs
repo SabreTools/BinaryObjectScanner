@@ -25,11 +25,11 @@ namespace BurnOutSharp.PackerType
                 return null;
 
             string name = pex.InternalName;
-            if (!string.IsNullOrWhiteSpace(name) && name.Equals("Wextract", StringComparison.OrdinalIgnoreCase))
+            if (name?.Equals("Wextract", StringComparison.OrdinalIgnoreCase) == true)
                 return $"Microsoft CAB SFX {GetVersion(pex)}";
 
             name = pex.OriginalFileName;
-            if (!string.IsNullOrWhiteSpace(name) && name.Equals("WEXTRACT.EXE", StringComparison.OrdinalIgnoreCase))
+            if (name?.Equals("WEXTRACT.EXE", StringComparison.OrdinalIgnoreCase) == true)
                 return $"Microsoft CAB SFX {GetVersion(pex)}";
 
             // Get the .data section, if it exists

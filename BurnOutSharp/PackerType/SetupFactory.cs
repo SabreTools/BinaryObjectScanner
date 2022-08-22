@@ -25,16 +25,16 @@ namespace BurnOutSharp.PackerType
 
             // Known to detect versions 7.0.5.1 - 9.1.0.0
             string name = pex.LegalCopyright;
-            if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Setup Engine", StringComparison.OrdinalIgnoreCase))
+            if (name?.StartsWith("Setup Engine", StringComparison.OrdinalIgnoreCase) == true)
                 return $"Setup Factory {GetVersion(pex)}";
 
             name = pex.ProductName;
-            if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Setup Factory", StringComparison.OrdinalIgnoreCase))
+            if (name?.StartsWith("Setup Factory", StringComparison.OrdinalIgnoreCase) == true)
                 return $"Setup Factory {GetVersion(pex)}";
 
             // Known to detect version 5.0.1 - 6.0.1.3
             name = pex.FileDescription;
-            if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Setup Factory", StringComparison.OrdinalIgnoreCase))
+            if (name?.StartsWith("Setup Factory", StringComparison.OrdinalIgnoreCase) == true)
                 return $"Setup Factory {GetVersion(pex)}";
 
             // Longer version of the check that can be used if false positves become an issue:

@@ -18,15 +18,15 @@ namespace BurnOutSharp.ProtectionType
                 return null;
 
             string name = pex.FileDescription;
-            if (!string.IsNullOrWhiteSpace(name) && name.Contains("EReg MFC Application"))
+            if (name?.Contains("EReg MFC Application") == true)
                 return $"EA CdKey Registration Module {Utilities.GetInternalVersion(pex)}";
-            else if (!string.IsNullOrWhiteSpace(name) && name.Contains("Registration code installer program"))
+            else if (name?.Contains("Registration code installer program") == true)
                 return $"EA CdKey Registration Module {Utilities.GetInternalVersion(pex)}";
-            else if (!string.IsNullOrWhiteSpace(name) && name.Equals("EA DRM Helper", StringComparison.OrdinalIgnoreCase))
+            else if (name?.Equals("EA DRM Helper", StringComparison.OrdinalIgnoreCase) == true)
                 return $"EA DRM Protection {Utilities.GetInternalVersion(pex)}";
 
             name = pex.InternalName;
-            if (!string.IsNullOrWhiteSpace(name) && name.Equals("CDCode", StringComparison.Ordinal))
+            if (name?.Equals("CDCode", StringComparison.Ordinal) == true)
                 return $"EA CdKey Registration Module {Utilities.GetInternalVersion(pex)}";
 
             var resource = pex.FindResource(dataContains: "A\0b\0o\0u\0t\0 \0C\0D\0K\0e\0y");

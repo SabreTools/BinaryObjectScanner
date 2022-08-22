@@ -30,15 +30,15 @@ namespace BurnOutSharp.ProtectionType
             // - TagesClient.dat (Does not always exist)
 
             string name = pex.FileDescription;
-            if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("TagesSetup", StringComparison.OrdinalIgnoreCase))
+            if (name?.StartsWith("TagesSetup", StringComparison.OrdinalIgnoreCase) == true)
                 return $"TAGES Driver Setup {GetVersion(pex)}";
-            else if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Tagès activation client", StringComparison.OrdinalIgnoreCase))
+            else if (name?.StartsWith("Tagès activation client", StringComparison.OrdinalIgnoreCase) == true)
                 return $"TAGES Activation Client {GetVersion(pex)}";
 
             name = pex.ProductName;
-            if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Application TagesSetup", StringComparison.OrdinalIgnoreCase))
+            if (name?.StartsWith("Application TagesSetup", StringComparison.OrdinalIgnoreCase) == true)
                 return $"TAGES Driver Setup {GetVersion(pex)}";
-            else if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("T@GES", StringComparison.OrdinalIgnoreCase))
+            else if (name?.StartsWith("T@GES", StringComparison.OrdinalIgnoreCase) == true)
                 return $"TAGES Activation Client {GetVersion(pex)}";
 
             // TODO: Add entry point check

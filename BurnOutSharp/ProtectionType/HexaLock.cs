@@ -42,16 +42,16 @@ namespace BurnOutSharp.ProtectionType
             // TODO: Fix the following checks, as this information is visible via Windows Explorer but isn't currently being seen by BOS.
             // Found in "HCPSMng.exe".
             string name = pex.FileDescription;
-            if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("HCPS Manager", StringComparison.OrdinalIgnoreCase))
+            if (name?.StartsWith("HCPS Manager", StringComparison.OrdinalIgnoreCase) == true)
                 return $"Hexalock AutoLock 4.5";
 
             // Found in the file typically named "Start_Here.exe".
-            if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("HCPS Loader", StringComparison.OrdinalIgnoreCase))
+            if (name?.StartsWith("HCPS Loader", StringComparison.OrdinalIgnoreCase) == true)
                 return $"Hexalock AutoLock 4.5";
 
             // Found in both "HCPSMng.exe" and in the file typically named "Start_Here.exe".
             name = pex.ProductName;
-            if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("HCPS", StringComparison.OrdinalIgnoreCase))
+            if (name?.StartsWith("HCPS", StringComparison.OrdinalIgnoreCase) == true)
                 return $"Hexalock AutoLock 4.5";
 
             return null;

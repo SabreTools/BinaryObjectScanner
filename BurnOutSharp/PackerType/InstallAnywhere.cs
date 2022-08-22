@@ -23,11 +23,11 @@ namespace BurnOutSharp.PackerType
                 return null;
 
             string name = pex.FileDescription;
-            if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("InstallAnywhere Self Extractor", StringComparison.OrdinalIgnoreCase))
+            if (name?.StartsWith("InstallAnywhere Self Extractor", StringComparison.OrdinalIgnoreCase) == true)
                 return $"InstallAnywhere {GetVersion(pex)}";
 
             name = pex.ProductName;
-            if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("InstallAnywhere", StringComparison.OrdinalIgnoreCase))
+            if (name?.StartsWith("InstallAnywhere", StringComparison.OrdinalIgnoreCase) == true)
                 return $"InstallAnywhere {GetVersion(pex)}";
 
             return null;

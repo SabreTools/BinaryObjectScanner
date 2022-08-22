@@ -20,15 +20,15 @@ namespace BurnOutSharp.ProtectionType
                 return null;
 
             string name = pex.FileDescription;
-            if (!string.IsNullOrWhiteSpace(name) && name.Contains("ImpulseReactor Dynamic Link Library"))
+            if (name?.Contains("ImpulseReactor Dynamic Link Library") == true)
                 return $"Impulse Reactor Core Module {Utilities.GetInternalVersion(pex)}";
 
             name = pex.ProductName;
-            if (!string.IsNullOrWhiteSpace(name) && name.Contains("ImpulseReactor Dynamic Link Library"))
+            if (name?.Contains("ImpulseReactor Dynamic Link Library") == true)
                 return $"Impulse Reactor Core Module {Utilities.GetInternalVersion(pex)}";
 
             name = pex.OriginalFileName;
-            if (!string.IsNullOrWhiteSpace(name) && name.Contains("ReactorActivate.exe"))
+            if (name?.Contains("ReactorActivate.exe") == true)
                 return $"Stardock Product Activation {Utilities.GetInternalVersion(pex)}";
 
             // Get the .rdata section, if it exists

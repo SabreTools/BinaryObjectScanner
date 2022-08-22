@@ -32,12 +32,12 @@ namespace BurnOutSharp.ProtectionType
 
             // Found in scvfy.exe on "Charley Pride - A Tribute to Jim Reeves" (barcode "7 816190222-2 4").
             string name = pex.FileDescription;
-            if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("scvfy MFC Application", StringComparison.OrdinalIgnoreCase))
+            if (name?.StartsWith("scvfy MFC Application", StringComparison.OrdinalIgnoreCase) == true)
                 return $"MediaCloQ";
 
             // Found in scvfy.exe on "Charley Pride - A Tribute to Jim Reeves" (barcode "7 816190222-2 4").
             name = pex.ProductName;
-            if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("scvfy Application", StringComparison.OrdinalIgnoreCase))
+            if (name?.StartsWith("scvfy Application", StringComparison.OrdinalIgnoreCase) == true)
                 return $"MediaCloQ";
 
             return null;

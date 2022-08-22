@@ -18,11 +18,11 @@ namespace BurnOutSharp.ProtectionType
                 return null;
 
             string name = pex.FileDescription;
-            if (!string.IsNullOrWhiteSpace(name) && name.Equals("Origin", StringComparison.OrdinalIgnoreCase))
+            if (name?.Equals("Origin", StringComparison.OrdinalIgnoreCase) == true)
                 return "Origin";
 
             name = pex.ProductName;
-            if (!string.IsNullOrWhiteSpace(name) && name.Equals("Origin", StringComparison.OrdinalIgnoreCase))
+            if (name?.Equals("Origin", StringComparison.OrdinalIgnoreCase) == true)
                 return "Origin";
 
             return null;

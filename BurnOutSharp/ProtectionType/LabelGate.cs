@@ -27,11 +27,11 @@ namespace BurnOutSharp.ProtectionType
 
             // Should be present on all LabelGate CD2 discs (Redump entry 95010 and product ID SVWC-7185).
             string name = pex.FileDescription;
-            if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("MAGIQLIP2 Installer", StringComparison.OrdinalIgnoreCase))
+            if (name?.StartsWith("MAGIQLIP2 Installer", StringComparison.OrdinalIgnoreCase) == true)
                 return $"LabelGate CD2 Media Player";
 
             name = pex.ProductName;
-            if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("MQSTART", StringComparison.OrdinalIgnoreCase))
+            if (name?.StartsWith("MQSTART", StringComparison.OrdinalIgnoreCase) == true)
                 return $"LabelGate CD2 Media Player";
 
             // Get the .data section, if it exists

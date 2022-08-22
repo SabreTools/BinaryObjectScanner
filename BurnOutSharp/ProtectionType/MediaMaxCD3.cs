@@ -25,11 +25,11 @@ namespace BurnOutSharp.ProtectionType
 
             // Used to detect "LicGen.exe", found on "All That I Am" by Santana (Barcode 8 2876-59773-2 6)
             string name = pex.FileDescription;
-            if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("LicGen Module", StringComparison.OrdinalIgnoreCase))
+            if (name?.StartsWith("LicGen Module", StringComparison.OrdinalIgnoreCase) == true)
                 return $"MediaMax CD-3";
 
             name = pex.ProductName;
-            if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("LicGen Module", StringComparison.OrdinalIgnoreCase))
+            if (name?.StartsWith("LicGen Module", StringComparison.OrdinalIgnoreCase) == true)
                 return $"MediaMax CD-3";
 
             var resource = pex.FindResource(dataContains: "Cd3Ctl");

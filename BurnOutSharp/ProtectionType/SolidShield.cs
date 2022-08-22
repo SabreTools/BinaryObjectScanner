@@ -22,19 +22,19 @@ namespace BurnOutSharp.ProtectionType
                 return null;
 
             string name = pex.FileDescription;
-            if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("DVM Library", StringComparison.OrdinalIgnoreCase))
+            if (name?.StartsWith("DVM Library", StringComparison.OrdinalIgnoreCase) == true)
                 return $"SolidShield {Utilities.GetInternalVersion(pex)}";
-            else if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Solidshield Activation Library", StringComparison.OrdinalIgnoreCase))
+            else if (name?.StartsWith("Solidshield Activation Library", StringComparison.OrdinalIgnoreCase) == true)
                 return $"SolidShield Core.dll {Utilities.GetInternalVersion(pex)}";
-            else if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Activation Manager", StringComparison.OrdinalIgnoreCase))
+            else if (name?.StartsWith("Activation Manager", StringComparison.OrdinalIgnoreCase) == true)
                 return $"SolidShield Activation Manager Module {GetInternalVersion(pex)}";
 
            name = pex.ProductName;
-            if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Solidshield Activation Library", StringComparison.OrdinalIgnoreCase))
+            if (name?.StartsWith("Solidshield Activation Library", StringComparison.OrdinalIgnoreCase) == true)
                 return $"SolidShield Core.dll {Utilities.GetInternalVersion(pex)}";
-            else if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Solidshield Library", StringComparison.OrdinalIgnoreCase))
+            else if (name?.StartsWith("Solidshield Library", StringComparison.OrdinalIgnoreCase) == true)
                 return $"SolidShield Core.dll {Utilities.GetInternalVersion(pex)}";
-            else if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Activation Manager", StringComparison.OrdinalIgnoreCase))
+            else if (name?.StartsWith("Activation Manager", StringComparison.OrdinalIgnoreCase) == true)
                 return $"SolidShield Activation Manager Module {GetInternalVersion(pex)}";
 
             // Get the .init section, if it exists

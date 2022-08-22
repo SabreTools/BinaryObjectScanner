@@ -21,7 +21,7 @@ namespace BurnOutSharp.ProtectionType
                 return null;
 
             string name = pex.FileDescription;
-            if (!string.IsNullOrWhiteSpace(name) && name.Contains("SecuROM PA"))
+            if (name?.Contains("SecuROM PA") == true)
                 return $"SecuROM PA v{Utilities.GetInternalVersion(pex)}";
 
             // Get the matrosch section, if it exists

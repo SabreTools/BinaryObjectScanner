@@ -24,7 +24,7 @@ namespace BurnOutSharp.ProtectionType
 
             // Found on "All That I Am" by Santana (Barcode 8 2876-59773-2 6)
             string name = pex.FileDescription;
-            if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Windows Media Data Session Licensing Engine", StringComparison.OrdinalIgnoreCase))
+            if (name?.StartsWith("Windows Media Data Session Licensing Engine", StringComparison.OrdinalIgnoreCase) == true)
                 return $"Windows Media Data Session DRM";
 
             // Get the .rdata section, if it exists

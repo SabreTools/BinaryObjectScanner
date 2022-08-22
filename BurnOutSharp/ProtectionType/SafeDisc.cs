@@ -40,16 +40,16 @@ namespace BurnOutSharp.ProtectionType
                 return null;
 
             string name = pex.FileDescription;
-            if (!string.IsNullOrWhiteSpace(name) && name.Equals("SafeCast2", StringComparison.OrdinalIgnoreCase))
+            if (name?.Equals("SafeCast2", StringComparison.OrdinalIgnoreCase) == true)
                 return $"SafeCast";
 
             // Present in "secdrv.sys" files found in SafeDisc 2.80.010+.
-            if (!string.IsNullOrWhiteSpace(name) && name.Equals("Macrovision SECURITY Driver", StringComparison.OrdinalIgnoreCase))
+            if (name?.Equals("Macrovision SECURITY Driver", StringComparison.OrdinalIgnoreCase) == true)
                 return $"SafeDisc Security Driver {GetSecDrvExecutableVersion(pex)}";
 
             // Present on all "CLOKSPL.DLL" versions before SafeDisc 1.06.000. Found on Redump entries 61731 and 66004. 
             name = pex.ProductName;
-            if (!string.IsNullOrWhiteSpace(name) && name.Equals("SafeDisc CDROM Protection System", StringComparison.OrdinalIgnoreCase))
+            if (name?.Equals("SafeDisc CDROM Protection System", StringComparison.OrdinalIgnoreCase) == true)
                 return $"SafeDisc 1.00.025-1.01.044";
 
             // Get the .text section, if it exists
@@ -81,7 +81,7 @@ namespace BurnOutSharp.ProtectionType
             // Present on all "CLOKSPL.EXE" versions before SafeDisc 1.06.000. Found on Redump entries 61731 and 66004. 
             // Only found so far on SafeDisc 1.00.025-1.01.044, but the report is currently left generic due to the generic nature of the check.
             name = pex.FileDescription;
-            if (!string.IsNullOrWhiteSpace(name) && name.Equals("SafeDisc", StringComparison.OrdinalIgnoreCase))
+            if (name?.Equals("SafeDisc", StringComparison.OrdinalIgnoreCase) == true)
                 return $"SafeDisc";
 
             // TODO: Add entry point check

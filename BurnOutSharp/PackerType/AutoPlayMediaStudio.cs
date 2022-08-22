@@ -25,13 +25,13 @@ namespace BurnOutSharp.PackerType
 
             // Known to detect versions 5.0.0.3 - 8.1.0.0
             string name = pex.ProductName;
-            if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("AutoPlay Media Studio", StringComparison.OrdinalIgnoreCase))
+            if (name?.StartsWith("AutoPlay Media Studio", StringComparison.OrdinalIgnoreCase) == true)
                 return $"AutoPlay Media Studio {GetVersion(pex)}";
 
             // Currently too vague, may be re-enabled in the future
             /*
             name  = Utilities.GetLegalCopyright(pex);
-            if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("Runtime Engine", StringComparison.OrdinalIgnoreCase))
+            if (name?.StartsWith("Runtime Engine", StringComparison.OrdinalIgnoreCase) == true)
                 return $"AutoPlay Media Studio {GetVersion(pex)}";
                 */
 
