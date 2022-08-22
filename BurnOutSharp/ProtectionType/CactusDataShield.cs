@@ -92,7 +92,7 @@ namespace BurnOutSharp.ProtectionType
                 new PathMatchSet(new PathMatch("wmmp.exe", useEndsWith: true), "Cactus Data Shield 200"),
 
                 // Present on CDS-300, as well as SafeDisc. This is likely due to both protections being created by Macrovision.
-                new PathMatchSet(new PathMatch("00000001.TMP", useEndsWith: true), Get00000001TMPVersion, "Cactus Data Shield 300 (Confirm presence of other CDS-300 files)"),
+                new PathMatchSet(new PathMatch("00000001.TMP", useEndsWith: true), Get00000001TMPVersion, "Cactus Data Shield 300"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
@@ -109,12 +109,11 @@ namespace BurnOutSharp.ProtectionType
             switch (fi.Length)
             {
                 case 2_048:
-                    return "";
+                    return "(Confirm presence of other CDS-300 files)";
                 default:
                     return null;
             }
         }
-
 
         public static string GetVersion(string firstMatchedString, IEnumerable<string> files)
         {
