@@ -43,11 +43,6 @@ namespace BurnOutSharp.ProtectionType
             if (!string.IsNullOrWhiteSpace(name) && name.Equals("SafeCast2", StringComparison.OrdinalIgnoreCase))
                 return $"SafeCast";
 
-            // Present on all "CLOKSPL.EXE" versions before SafeDisc 1.06.000. Found on Redump entries 61731 and 66004. 
-            // Only found so far on SafeDisc 1.00.025-1.01.044, but the report is currently left generic due to the generic nature of the check.
-            if (!string.IsNullOrWhiteSpace(name) && name.Equals("SafeDisc", StringComparison.OrdinalIgnoreCase))
-                return $"SafeDisc";
-
             // Present in "secdrv.sys" files found in SafeDisc 2.80.010+.
             if (!string.IsNullOrWhiteSpace(name) && name.Equals("Macrovision SECURITY Driver", StringComparison.OrdinalIgnoreCase))
                 return $"SafeDisc Security Driver {GetSecDrvExecutableVersion(pex)}";
@@ -83,28 +78,10 @@ namespace BurnOutSharp.ProtectionType
             if (stxt371Section || stxt774Section)
                 return $"SafeDisc {Get320to4xVersion(null, null, null)}";
 
-            // Get the BSS section, if it exists
-            var BSSSectionRaw = pex.ReadRawSection("BSS", first: true);
-            if (BSSSectionRaw != null)
-            {
-                var matchers = new List<ContentMatchSet>
-                {
-                    // Present in "mcp.dll", along with several other references to Plextor (Redump entries 28810 and 30555).
-                    // plextor.dll.IsPlextor.PreventLowSpeed
-                    new ContentMatchSet(new byte?[]
-                    {
-                        0x70, 0x6C, 0x65, 0x78, 0x74, 0x6F, 0x72, 0x2E, 
-                        0x64, 0x6C, 0x6C, 0x00, 0x49, 0x73, 0x50, 0x6C, 
-                        0x65, 0x78, 0x74, 0x6F, 0x72, 0x00, 0x50, 0x72,
-                        0x65, 0x76, 0x65, 0x6E, 0x74, 0x4C, 0x6F, 0x77, 
-                        0x53, 0x70, 0x65, 0x65, 0x64
-                    }, "SafeDisc (Version 1.45.011-1.50.020)"),
-                };
-
-                string match1 = MatchUtil.GetFirstMatch(file, BSSSectionRaw, matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match1))
-                    return match1;
-            }
+            // Present on all "CLOKSPL.EXE" versions before SafeDisc 1.06.000. Found on Redump entries 61731 and 66004. 
+            // Only found so far on SafeDisc 1.00.025-1.01.044, but the report is currently left generic due to the generic nature of the check.
+            if (!string.IsNullOrWhiteSpace(name) && name.Equals("SafeDisc", StringComparison.OrdinalIgnoreCase))
+                return $"SafeDisc";
 
             // TODO: Add entry point check
             // https://github.com/horsicq/Detect-It-Easy/blob/master/db/PE/Safedisc.2.sg
@@ -332,7 +309,7 @@ namespace BurnOutSharp.ProtectionType
 
         public static string Get00000001TMPVersion(string firstMatchedString, IEnumerable<string> files)
         {
-            if (firstMatchedString == null || !File.Exists(firstMatchedString))
+            if (string.IsNullOrEmpty(firstMatchedString) || !File.Exists(firstMatchedString))
                 return string.Empty;
 
             // This file is present in most, if not all, SafeDisc protected discs. It seems to have very consistent file sizes, only being found to use three different file sizes in it's entire run.
@@ -344,7 +321,7 @@ namespace BurnOutSharp.ProtectionType
                     return "1.00.025-1.41.001";
                 // Found in Redump entries 30555 and 58573.
                 case 2_048:
-                    return "1.45.011+ (CD) / Cactus Data Shield 300";
+                    return "1.45.011+ (CD) (Confirm presence of other SafeDisc files)";
                 // Found in Redump entries 11347 and 64255.
                 case 20_482_048:
                     return "3+ (DVD)";
@@ -355,11 +332,11 @@ namespace BurnOutSharp.ProtectionType
 
         public static string GetCLCD16Version(string firstMatchedString, IEnumerable<string> files)
         {
-            if (firstMatchedString == null || !File.Exists(firstMatchedString))
+            if (string.IsNullOrEmpty(firstMatchedString) || !File.Exists(firstMatchedString))
                 return string.Empty;
 
             // The hash of the file CLCD16.dll is able to provide a broad version range that appears to be consistent, but it seems it was rarely updated so these checks are quite broad.
-            string sha1 = BurnOutSharp.Tools.Utilities.GetFileSHA1(firstMatchedString);
+            string sha1 = Utilities.GetFileSHA1(firstMatchedString);
             switch (sha1)
             {
                 // Found in Redump entries 61731 and 66005.
@@ -379,11 +356,11 @@ namespace BurnOutSharp.ProtectionType
 
         public static string GetCLCD32Version(string firstMatchedString, IEnumerable<string> files)
         {
-            if (firstMatchedString == null || !File.Exists(firstMatchedString))
+            if (string.IsNullOrEmpty(firstMatchedString) || !File.Exists(firstMatchedString))
                 return string.Empty;
 
             // The hash of the file CLCD32.dll so far appears to be a solid indicator of version for versions it was used with. It appears to have been updated with every release, unlike it's counterpart, CLCD16.dll.
-            string sha1 = BurnOutSharp.Tools.Utilities.GetFileSHA1(firstMatchedString);
+            string sha1 = Utilities.GetFileSHA1(firstMatchedString);
             switch (sha1)
             {
                 // Found in Redump entry 66005.
@@ -468,7 +445,7 @@ namespace BurnOutSharp.ProtectionType
 
         public static string GetCLOKSPLVersion(string firstMatchedString, IEnumerable<string> files)
         {
-            if (firstMatchedString == null || !File.Exists(firstMatchedString))
+            if (string.IsNullOrEmpty(firstMatchedString) || !File.Exists(firstMatchedString))
                 return string.Empty;
 
             // Versions of "CLOKSPL.EXE" before SafeDisc 1.06.000 (can be identified by the presence of "SafeDisc CDROM Protection System" as the Product Name) have a human readable Product Version.
@@ -483,7 +460,7 @@ namespace BurnOutSharp.ProtectionType
 
 
             // The hash of every "CLOKSPL.EXE" correlates directly to a specific SafeDisc version.
-            string sha1 = BurnOutSharp.Tools.Utilities.GetFileSHA1(firstMatchedString);
+            string sha1 = Utilities.GetFileSHA1(firstMatchedString);
             switch (sha1)
             {
                 // Found in Redump entry 66005.
@@ -562,7 +539,7 @@ namespace BurnOutSharp.ProtectionType
 
         public static string GetDPlayerXVersion(string firstMatchedString, IEnumerable<string> files)
         {
-            if (firstMatchedString == null || !File.Exists(firstMatchedString))
+            if (string.IsNullOrEmpty(firstMatchedString) || !File.Exists(firstMatchedString))
                 return string.Empty;
 
             FileInfo fi = new FileInfo(firstMatchedString);
@@ -624,14 +601,14 @@ namespace BurnOutSharp.ProtectionType
 
         public static string GetDrvmgtVersion(string firstMatchedString, IEnumerable<string> files)
         {
-            if (firstMatchedString == null || !File.Exists(firstMatchedString))
+            if (string.IsNullOrEmpty(firstMatchedString) || !File.Exists(firstMatchedString))
                 return string.Empty;
 
             // The file "drvmgt.dll" has been found to be incredibly consistent between versions, with the vast majority of files based on hash corresponding 1:1 with the SafeDisc version used according to the EXE.
             // There are occasionaly inconsistencies, even within the well detected version range. This seems to me to mostly happen with later (3.20+) games, and seems to me to be an example of the SafeDisc distribution becoming more disorganized with time.
             // Particularly interesting inconsistencies will be noted below:
             // Redump entry 73786 has an EXE with a scrubbed version, a DIAG.exe with a version of 4.60.000, and a copy of drvmgt.dll belonging to version 3.10.020. This seems like an accidental(?) distribution of older drivers, as this game was released 3 years after the use of 3.10.020.
-            string sha1 = BurnOutSharp.Tools.Utilities.GetFileSHA1(firstMatchedString);
+            string sha1 = Utilities.GetFileSHA1(firstMatchedString);
             switch (sha1)
             {
                 // Found in Redump entries 29073 and 31149.
@@ -768,7 +745,7 @@ namespace BurnOutSharp.ProtectionType
         // TODO: Verify these checks and remove any that may not be needed, file version checks should remove the need for any checks for 2.80+.
         public static string GetSecdrvVersion(string firstMatchedString, IEnumerable<string> files)
         {
-            if (firstMatchedString == null || !File.Exists(firstMatchedString))
+            if (string.IsNullOrEmpty(firstMatchedString) || !File.Exists(firstMatchedString))
                 return string.Empty;
 
             FileInfo fi = new FileInfo(firstMatchedString);
@@ -968,7 +945,7 @@ namespace BurnOutSharp.ProtectionType
                     case "4.03.086":
                         return "4.03.086 / Unknown SafeDisc version";
                     default:
-                        return "Unknown Version " + version + " (Report this to us on GitHub)";
+                        return $"Unknown Version {version} (Report this to us on GitHub)";
                 }
             }
 

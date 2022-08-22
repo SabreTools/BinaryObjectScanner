@@ -284,6 +284,7 @@ namespace BurnOutSharp.Tools
                         }
                     }
                 }
+
                 string hash = BitConverter.ToString(sha1.Hash);
                 hash = hash.Replace("-", string.Empty);
                 return hash;
