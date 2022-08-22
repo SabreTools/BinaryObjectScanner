@@ -73,6 +73,9 @@ namespace BurnOutSharp.ProtectionType
                 new PathMatchSet(new PathMatch("CDSPlayer.app", useEndsWith: true), GetVersion, "Cactus Data Shield"),
                 new PathMatchSet(new PathMatch("PJSTREAM.DLL", useEndsWith: true), GetVersion, "Cactus Data Shield"),
                 new PathMatchSet(new PathMatch("wmmp.exe", useEndsWith: true), GetVersion, "Cactus Data Shield"),
+
+                // Present on CDS-300, as well as SafeDisc. This is likely due to both protections being created by Macrovision.
+                new PathMatchSet(new PathMatch("00000001.TMP", useEndsWith: true), Get00000001TMPVersion, "Cactus Data Shield 300 (Confirm presence of other CDS-300 files)"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);
@@ -87,10 +90,31 @@ namespace BurnOutSharp.ProtectionType
                 new PathMatchSet(new PathMatch("CDSPlayer.app", useEndsWith: true), "Cactus Data Shield 200"),
                 new PathMatchSet(new PathMatch("PJSTREAM.DLL", useEndsWith: true), "Cactus Data Shield 200"),
                 new PathMatchSet(new PathMatch("wmmp.exe", useEndsWith: true), "Cactus Data Shield 200"),
+
+                // Present on CDS-300, as well as SafeDisc. This is likely due to both protections being created by Macrovision.
+                new PathMatchSet(new PathMatch("00000001.TMP", useEndsWith: true), Get00000001TMPVersion, "Cactus Data Shield 300 (Confirm presence of other CDS-300 files)"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
+
+        public static string Get00000001TMPVersion(string firstMatchedString, IEnumerable<string> files)
+        {
+            if (string.IsNullOrEmpty(firstMatchedString) || !File.Exists(firstMatchedString))
+                return string.Empty;
+
+            // This file is present on both CDS-300 and SafeDisc.
+            // Only one specific file size appears to be associated with CDS-300, so any files with a differing file size are discarded. If it is the correct file size, return it as valid.
+            FileInfo fi = new FileInfo(firstMatchedString);
+            switch (fi.Length)
+            {
+                case 2_048:
+                    return "";
+                default:
+                    return null;
+            }
+        }
+
 
         public static string GetVersion(string firstMatchedString, IEnumerable<string> files)
         {
