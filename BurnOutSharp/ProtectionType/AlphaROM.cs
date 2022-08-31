@@ -22,10 +22,11 @@ namespace BurnOutSharp.ProtectionType
     /// https://archive.org/details/little-busters-regular-edition-iso-only-2007
     /// Games that may have Alpha-ROM:
     /// http://cpdb.kemuri-net.com/ (Protection database that includes many different protections, including Alpha-ROM).
+    /// https://w.atwiki.jp/tirasinoura/pages/3.html (List of games with Alpha-ROM, and explains some version differences).
     /// https://vndb.org/r?f=fwSiglusEngine- (VNs made with an engine known to use Alpha-ROM).
     /// https://vndb.org/r?f=fwRealLive- (VNs made with an engine known to use Alpha-ROM).
     /// References and further information:
-    /// http://hhg.sakura.ne.jp/cd-dvd/dust/alpha/1_twin_sector.htm
+    /// http://hhg.sakura.ne.jp/cd-dvd/dust/alpha/alpha_index.htm
     /// https://www.weblio.jp/content/Alpha-ROM
     /// https://ameblo.jp/michael-j-fox/entry-10046574609.html
     /// http://s2000.yokinihakarae.com/sub03-10-2(DVD).html
@@ -61,8 +62,6 @@ namespace BurnOutSharp.ProtectionType
                     // \SETTEC
                     new ContentMatchSet(new byte?[] { 0x5C, 0x53, 0x45, 0x54, 0x54, 0x45, 0x43 }, "Alpha-ROM"),
 
-                    // On Redump entry 84122, this string is found within an executable, but outside the bounds of any section. Thus, it currently remains undetected.
-                    // Worth noting is that all the section names, aside from .text, seem to be purposefully expunged.
                     // SETTEC0000
                     new ContentMatchSet(new byte?[] { 0x53, 0x45, 0x54, 0x54, 0x45, 0x43, 0x30, 0x30, 0x30, 0x30 }, "Alpha-ROM"),
                 };
@@ -112,6 +111,21 @@ namespace BurnOutSharp.ProtectionType
                 };
 
                 string match = MatchUtil.GetFirstMatch(file, pex.ResourceDataSectionRaw, matchers, includeDebug);
+                if (!string.IsNullOrWhiteSpace(match))
+                    return match;
+            }
+
+            // Get the overlay data, if it exists
+            if (pex.OverlayRaw != null)
+            {
+                var matchers = new List<ContentMatchSet>
+                {
+                    // Found in Redump entry 84122.
+                    // SETTEC0000
+                    new ContentMatchSet(new byte?[] { 0x53, 0x45, 0x54, 0x54, 0x45, 0x43, 0x30, 0x30, 0x30, 0x30 }, "Alpha-ROM"),
+                };
+
+                string match = MatchUtil.GetFirstMatch(file, pex.OverlayRaw, matchers, includeDebug);
                 if (!string.IsNullOrWhiteSpace(match))
                     return match;
             }
