@@ -119,6 +119,17 @@ namespace BurnOutSharp.ProtectionType
                     new PathMatch(".256", useEndsWith: true),
                 }, "SafeDisc 1.06.000+"),
 
+                // The file "mcp.dll" is known to only be used in a specific version range for SafeDisc, but is currently only used in a grouped file name check with other SafeDisc files to prevent false positives.
+                // Found in Redump entries 28810, 30555, 55078, and 62935.
+                new PathMatchSet(new List<PathMatch>
+                {
+                    new PathMatch("00000001.TMP", useEndsWith: true),
+                    new PathMatch("drvmgt.dll", useEndsWith: true),
+                    new PathMatch("mcp.dll", useEndsWith: true),
+                    new PathMatch("secdrv.sys", useEndsWith: true),
+
+                }, "SafeDisc 1.45.011-1.50.020"),
+
                 // TODO: Research "splash16.bmp" and "splash256.bmp".
 
                 // Found to be present in every version of SafeDisc, possibly every single release.
