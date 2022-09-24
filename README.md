@@ -109,6 +109,7 @@ Below is a list of protections that have been identified but have not yet been i
 - CrypKey
 - DBB
 - DiscAudit
+- Doc.loc
 - FADE
 - MusicGuard
 - Roxxe
@@ -177,4 +178,4 @@ Contributions to the project are welcome. Please follow the current coding style
 
 ## Special Thanks
 
-I want to give a special thanks to [SilasLaspada](https://github.com/SilasLaspada) who has gone above and beyond helping both fix existing checks as well as add new ones.
+I want to give a special thanks to [TheRogueArchivist](https://github.com/TheRogueArchivist) who has gone above and beyond helping both fix existing checks as well as add new ones.
