@@ -314,6 +314,13 @@ namespace BurnOutSharp
                     Utilities.AppendToDictionary(protections, subProtections);
                 }
 
+                // PLJ
+                if (new PLJ().ShouldScan(magic))
+                {
+                    var subProtections = new PLJ().Scan(this, stream, fileName);
+                    Utilities.AppendToDictionary(protections, subProtections);
+                }
+
                 // Text-based files
                 if (new Textfile().ShouldScan(magic, extension))
                 {

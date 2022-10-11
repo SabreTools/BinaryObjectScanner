@@ -70,6 +70,7 @@ Below is a list of protections detected by BurnOutSharp. The two columns explain
 | OpenMG | True | True | |
 | Origin | True | True | |
 | phenoProtect | False | False | Text file check only |
+| PlayJ | True | True | |
 | ProtectDISC / VOB ProtectCD/DVD | True | False | |
 | Protect DVD-Video | False | True | Unconfirmed¹ |
 | PlayStation Anti-modchip | True | False | En/Jp, not "Red Hand"; PSX executables only |
