@@ -40,7 +40,7 @@ namespace BurnOutSharp.ProtectionType
             string name = pex.FileDescription;
             if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("PlayJ Music Player", StringComparison.OrdinalIgnoreCase))
                 return $"PlayJ Music Player";
-            // Found in "PJSTREAM.DLL" "Volumia!" by Puur (Barcode 7 43218 63282 2) (Discogs Release Code [r795427]).
+            // Found in "PJSTREAM.DLL" ("Volumia!" by Puur (Barcode 7 43218 63282 2) (Discogs Release Code [r795427])).
             name = pex.FileDescription;
             if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("EVAUX32 Module", StringComparison.OrdinalIgnoreCase))
                 return $"PlayJ Music Player Component";
