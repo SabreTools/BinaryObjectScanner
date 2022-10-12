@@ -88,7 +88,7 @@ namespace BurnOutSharp.Matching
                 return false;
 
             // If we're too close to the end of the stack, return false
-            if (Needle.Length >= stack.Length - index)
+            if (Needle.Length > stack.Length - index)
                 return false;
 
             for (int i = 0; i < Needle.Length; i++)
