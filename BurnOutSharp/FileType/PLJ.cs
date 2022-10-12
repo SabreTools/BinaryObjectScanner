@@ -35,11 +35,12 @@ namespace BurnOutSharp.FileType
         public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, Stream stream, string file)
         {
             var protections = new ConcurrentDictionary<string, ConcurrentQueue<string>>();
-            byte[] magic = new byte[4];
-            stream.Read(magic, 0, 4);
             try
             {
-                if (magic.SequenceEqual(new byte[] { 0xFF, 0x9D, 0x53, 0x4B }))
+                byte[] magic = new byte[16];
+                stream.Read(magic, 0, 16);
+
+                if (ShouldScan(magic))
                 {
                     Utilities.AppendToDictionary(protections, file, "PlayJ Audio File");
                     return protections;
