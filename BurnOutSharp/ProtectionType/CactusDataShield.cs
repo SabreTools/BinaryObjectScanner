@@ -10,6 +10,23 @@ using BurnOutSharp.Matching;
 
 namespace BurnOutSharp.ProtectionType
 {
+    /// <summary>
+    /// CactusDataShield was a copy protection originally developed by Midbar Technologies, which was then purchased by Macrovision in 2002 (https://variety.com/2002/digital/news/macrovision-acquires-midbar-cuts-ttr-link-1117875824/).
+    /// CDS-100 appears to function by attempting to prevent dumping/ripping the discs protected with it.
+    /// CDS-200+ uses a dedicated audio player to play the music "legitimately".
+    /// Patent relating to CDS-100: https://patents.google.com/patent/US6425098B1/
+    /// Known CDS versions:
+    /// CDS-100 ("The Loveparade Compilation 2001" by various artists (Barcode 74321 86986 2) (Likely Discogs Release Code [r155963]) and "World Of Our Own" (Limited Edition) by Westlife (Barcode 7 43218 98572 0) (Discogs Release Code [r1357706])).
+    /// CDS-200 (PlayJ) (("Volumia!" by Puur (Barcode 7 43218 63282 2) (Discogs Release Code [r795427])) (Confirmed to be CDS-200 from https://www.cdrinfo.com/d7/content/cactus-data-shield-200?page=2).
+    /// CDS200.0.4 - 3.0 build 16a (Redump entry 95036)
+    /// CDS200.0.4 - 3.0 build 16c ("TMF Hitzone 20" by various artists (Barcode 7 31458 37062 8)).
+    /// CDS200.0.4 - 4.1 build 2a ("Ich Habe Einen Traum" by Uwe Busse (Barcode 9 002723 251203)).
+    /// CDS200.0.4 - 4.1 build 2e ("Hallucinations" by David Usher (Barcode 7 24359 30322 2)).
+    /// CDS-300
+    /// Further information:
+    /// https://www.cdrinfo.com/d7/content/cactus-data-shield-200
+    /// https://www.cdmediaworld.com/hardware/cdrom/cd_protections_cactus_data_shield.shtml
+    /// </summary>
     public class CactusDataShield : IContentCheck, IPathCheck, IPortableExecutableCheck
     {
         /// <inheritdoc/>
@@ -60,6 +77,23 @@ namespace BurnOutSharp.ProtectionType
                     return match;
             }
 
+            // Get the .rsrc section, if it exists
+            var rsrcSectionRaw = pex.ReadRawSection(".rsrc", first: false);
+            if (rsrcSectionRaw != null)
+            {
+                var matchers = new List<ContentMatchSet>
+                {
+                    // CactusPJ
+                    // Found in "Volumia!" by Puur (Barcode 7 43218 63282 2) (Discogs Release Code [r795427]).
+                    // Modified version of the PlayJ Music Player specificaly for CDS, as indicated by the About page present when running the executable.
+                    new ContentMatchSet(new byte?[] { 0x43, 0x61, 0x63, 0x74, 0x75, 0x73, 0x50, 0x4A }, "PlayJ Music Player (Cactus Data Shield)"),
+                };
+
+                string match = MatchUtil.GetFirstMatch(file, rsrcSectionRaw, matchers, includeDebug);
+                if (!string.IsNullOrWhiteSpace(match))
+                    return match;
+            }
+			
             return null;
         }
 
@@ -69,10 +103,19 @@ namespace BurnOutSharp.ProtectionType
             // TODO: Verify if these are OR or AND
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new PathMatch("CACTUSPJ.exe", useEndsWith: true), GetVersion, "Cactus Data Shield"),
-                new PathMatchSet(new PathMatch("CDSPlayer.app", useEndsWith: true), GetVersion, "Cactus Data Shield"),
-                new PathMatchSet(new PathMatch("PJSTREAM.DLL", useEndsWith: true), GetVersion, "Cactus Data Shield"),
-                new PathMatchSet(new PathMatch("wmmp.exe", useEndsWith: true), GetVersion, "Cactus Data Shield"),
+                // Found in "Volumia!" by Puur (Barcode 7 43218 63282 2) (Discogs Release Code [r795427]).
+                // Modified version of the PlayJ Music Player specificaly for CDS, as indicated by the About page present when running the executable.
+                // The file "DATA16.BML" is also present on this disc but the name is too generic to check for.
+                new PathMatchSet(new PathMatch("CACTUSPJ.exe", useEndsWith: true), "PlayJ Music Player (Cactus Data Shield)"),
+
+                // Found in "Volumia!" by Puur (Barcode 7 43218 63282 2) (Discogs Release Code [r795427]). 
+                // In "Volumina! - Puur" (7 43218 63282 2), this file is composed of multiple PLJ files combined together.
+                // In later versions, this file is a padded dummy file. ("Ich Habe Einen Traum" by Uwe Busse (Barcode 9 002723 251203)).
+                new PathMatchSet(new PathMatch("YUCCA.CDS", useEndsWith: true), "Cactus Data Shield"),
+
+                // TODO: Find samples of the following: 
+                new PathMatchSet(new PathMatch("CDSPlayer.app", useEndsWith: true), "Cactus Data Shield"),
+                new PathMatchSet(new PathMatch("wmmp.exe", useEndsWith: true), "Cactus Data Shield"),
 
                 // Present on CDS-300, as well as SafeDisc. This is likely due to both protections being created by Macrovision.
                 new PathMatchSet(new PathMatch("00000001.TMP", useEndsWith: true), Get00000001TMPVersion, "Cactus Data Shield 300 (Confirm presence of other CDS-300 files)"),
@@ -86,9 +129,18 @@ namespace BurnOutSharp.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new PathMatch("CACTUSPJ.exe", useEndsWith: true), "Cactus Data Shield 200"),
+                // Found in "Volumia!" by Puur (Barcode 7 43218 63282 2) (Discogs Release Code [r795427]).
+                // Modified version of the PlayJ Music Player specificaly for CDS, as indicated by the About page present when running the executable.
+                // The file "DATA16.BML" is also present on this disc but the name is too generic to check for.
+                new PathMatchSet(new PathMatch("CACTUSPJ.exe", useEndsWith: true), "PlayJ Music Player (Cactus Data Shield)"),
+
+                // Found in "Volumia!" by Puur (Barcode 7 43218 63282 2) (Discogs Release Code [r795427]), 
+                // In "Volumia! - Puur", this file is composed of multiple PLJ files combined together.
+                // In later versions, this file is a padded dummy file. ("Ich Habe Einen Traum" by Uwe Busse (Barcode 9 002723 251203)).
+                new PathMatchSet(new PathMatch("YUCCA.CDS", useEndsWith: true), "Cactus Data Shield"),
+
+                // TODO: Find samples of the following: 
                 new PathMatchSet(new PathMatch("CDSPlayer.app", useEndsWith: true), "Cactus Data Shield 200"),
-                new PathMatchSet(new PathMatch("PJSTREAM.DLL", useEndsWith: true), "Cactus Data Shield 200"),
                 new PathMatchSet(new PathMatch("wmmp.exe", useEndsWith: true), "Cactus Data Shield 200"),
 
                 // Present on CDS-300, as well as SafeDisc. This is likely due to both protections being created by Macrovision.
