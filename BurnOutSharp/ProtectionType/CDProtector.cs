@@ -13,10 +13,10 @@ namespace BurnOutSharp.ProtectionType
             // TODO: Verify if these are OR or AND
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new PathMatch("_cdp16.dat", useEndsWith: true), "CD-Protector"),
-                new PathMatchSet(new PathMatch("_cdp16.dll", useEndsWith: true), "CD-Protector"),
-                new PathMatchSet(new PathMatch("_cdp32.dat", useEndsWith: true), "CD-Protector"),
-                new PathMatchSet(new PathMatch("_cdp32.dll", useEndsWith: true), "CD-Protector"),
+                new PathMatchSet(new PathMatch("_cdp16.dat", useEndsWith: true), "CD-Protector (Unconfirmed - Please report to us on Github)"),
+                new PathMatchSet(new PathMatch("_cdp16.dll", useEndsWith: true), "CD-Protector (Unconfirmed - Please report to us on Github)"),
+                new PathMatchSet(new PathMatch("_cdp32.dat", useEndsWith: true), "CD-Protector (Unconfirmed - Please report to us on Github)"),
+                new PathMatchSet(new PathMatch("_cdp32.dll", useEndsWith: true), "CD-Protector (Unconfirmed - Please report to us on Github)"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);
@@ -27,10 +27,10 @@ namespace BurnOutSharp.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new PathMatch("_cdp16.dat", useEndsWith: true), "CD-Protector"),
-                new PathMatchSet(new PathMatch("_cdp16.dll", useEndsWith: true), "CD-Protector"),
-                new PathMatchSet(new PathMatch("_cdp32.dat", useEndsWith: true), "CD-Protector"),
-                new PathMatchSet(new PathMatch("_cdp32.dll", useEndsWith: true), "CD-Protector"),
+                new PathMatchSet(new PathMatch("_cdp16.dat", useEndsWith: true), "CD-Protector (Unconfirmed - Please report to us on Github)"),
+                new PathMatchSet(new PathMatch("_cdp16.dll", useEndsWith: true), "CD-Protector (Unconfirmed - Please report to us on Github)"),
+                new PathMatchSet(new PathMatch("_cdp32.dat", useEndsWith: true), "CD-Protector (Unconfirmed - Please report to us on Github)"),
+                new PathMatchSet(new PathMatch("_cdp32.dll", useEndsWith: true), "CD-Protector (Unconfirmed - Please report to us on Github)"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

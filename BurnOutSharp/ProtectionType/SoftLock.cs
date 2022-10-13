@@ -13,8 +13,8 @@ namespace BurnOutSharp.ProtectionType
             // TODO: Verify if these are OR or AND
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new PathMatch("SOFTLOCKI.dat", useEndsWith: true), "SoftLock"),
-                new PathMatchSet(new PathMatch("SOFTLOCKC.dat", useEndsWith: true), "SoftLock"),
+                new PathMatchSet(new PathMatch("SOFTLOCKI.dat", useEndsWith: true), "SoftLock (Unconfirmed - Please report to us on Github)"),
+                new PathMatchSet(new PathMatch("SOFTLOCKC.dat", useEndsWith: true), "SoftLock (Unconfirmed - Please report to us on Github)"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);
@@ -25,8 +25,8 @@ namespace BurnOutSharp.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new PathMatch("SOFTLOCKI.dat", useEndsWith: true), "SoftLock"),
-                new PathMatchSet(new PathMatch("SOFTLOCKC.dat", useEndsWith: true), "SoftLock"),
+                new PathMatchSet(new PathMatch("SOFTLOCKI.dat", useEndsWith: true), "SoftLock (Unconfirmed - Please report to us on Github)"),
+                new PathMatchSet(new PathMatch("SOFTLOCKC.dat", useEndsWith: true), "SoftLock (Unconfirmed - Please report to us on Github)"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

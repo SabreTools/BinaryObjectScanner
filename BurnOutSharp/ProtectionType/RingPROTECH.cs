@@ -21,7 +21,7 @@ namespace BurnOutSharp.ProtectionType
                     {
                         0x00, 0x41, 0x6C, 0x6C, 0x6F, 0x63, 0x61, 0x74,
                         0x6F, 0x72, 0x00, 0x00, 0x00, 0x00
-                    }, "Ring PROTECH / ProRing [Check disc for physical ring]"),
+                    }, "Ring PROTECH / ProRing [Check disc for physical ring] (Unconfirmed - Please report to us on Github)"),
                 };
 
                 return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
@@ -37,7 +37,7 @@ namespace BurnOutSharp.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new PathMatch("protect.pro", useEndsWith: true), "Ring PROTECH / ProRing [Check disc for physical ring]"),
+                new PathMatchSet(new PathMatch("protect.pro", useEndsWith: true), "Ring PROTECH / ProRing [Check disc for physical ring] (Unconfirmed - Please report to us on Github)"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);
@@ -48,7 +48,7 @@ namespace BurnOutSharp.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new PathMatch("protect.pro", useEndsWith: true), "Ring PROTECH / ProRing [Check disc for physical ring]"),
+                new PathMatchSet(new PathMatch("protect.pro", useEndsWith: true), "Ring PROTECH / ProRing [Check disc for physical ring] (Unconfirmed - Please report to us on Github)"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

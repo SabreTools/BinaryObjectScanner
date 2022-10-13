@@ -60,9 +60,11 @@ namespace BurnOutSharp.ProtectionType
                 var matchers = new List<ContentMatchSet>
                 {
                     // \SETTEC
+                    // Found in IA item "little-busters-regular-edition-iso-only-2007"
                     new ContentMatchSet(new byte?[] { 0x5C, 0x53, 0x45, 0x54, 0x54, 0x45, 0x43 }, "Alpha-ROM"),
 
                     // SETTEC0000
+                    // Found in IA item "little-busters-regular-edition-iso-only-2007"
                     new ContentMatchSet(new byte?[] { 0x53, 0x45, 0x54, 0x54, 0x45, 0x43, 0x30, 0x30, 0x30, 0x30 }, "Alpha-ROM"),
                 };
 

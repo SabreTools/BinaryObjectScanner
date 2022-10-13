@@ -25,14 +25,14 @@ namespace BurnOutSharp.ProtectionType
                     {
                         0x43, 0x44, 0x2D, 0x43, 0x6F, 0x70, 0x73, 0x2C,
                         0x20, 0x20, 0x76, 0x65, 0x72, 0x2E, 0x20
-                    }, GetVersion, "CD-Cops"),
+                    }, GetVersion, "CD-Cops (Unconfirmed - Please report to us on Github)"),
 
                     // // DVD-Cops,  ver. 
                     new ContentMatchSet(new byte?[]
                     {
                         0x44, 0x56, 0x44, 0x2D, 0x43, 0x6F, 0x70, 0x73,
                         0x2C, 0x20, 0x20, 0x76, 0x65, 0x72, 0x2E, 0x20
-                    }, GetVersion, "DVD-Cops"),
+                    }, GetVersion, "DVD-Cops (Unconfirmed - Please report to us on Github)"),
                 };
 
                 return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
@@ -66,7 +66,7 @@ namespace BurnOutSharp.ProtectionType
                 {
                     0x43, 0x44, 0x2D, 0x43, 0x6F, 0x70, 0x73, 0x2C,
                     0x20, 0x20, 0x76, 0x65, 0x72, 0x2E, 0x20
-                }, GetVersion, "CD-Cops"),
+                }, GetVersion, "CD-Cops (Unconfirmed - Please report to us on Github)"),
             };
             
             return MatchUtil.GetFirstMatch(file, data, neMatchSets, includeDebug);
@@ -81,6 +81,7 @@ namespace BurnOutSharp.ProtectionType
                 return null;
 
             // Get the .grand section, if it exists -- TODO: Confirm is this is in DVD-Cops as well
+            // Found in "AGENTHUG.QZ_" in Redump entry 84517
             bool grandSection = pex.ContainsSection(".grand", exact: true);
             if (grandSection)
                 return "CD-Cops";
@@ -94,11 +95,13 @@ namespace BurnOutSharp.ProtectionType
             // TODO: Original had "CDCOPS.DLL" required and all the rest in a combined OR
             var matchers = new List<PathMatchSet>
             {
+                // Found in Redump entry 84517
                 new PathMatchSet(new PathMatch("CDCOPS.DLL", useEndsWith: true), "CD-Cops"),
-                new PathMatchSet(new PathMatch(".GZ_", useEndsWith: true), "CD-Cops"),
                 new PathMatchSet(new PathMatch(".W_X", useEndsWith: true), "CD-Cops"),
-                new PathMatchSet(new PathMatch(".Qz", useEndsWith: true), "CD-Cops"),
                 new PathMatchSet(new PathMatch(".QZ_", useEndsWith: true), "CD-Cops"),
+
+                new PathMatchSet(new PathMatch(".GZ_", useEndsWith: true), "CD-Cops (Unconfirmed - Please report to us on Github)"),
+                new PathMatchSet(new PathMatch(".Qz", useEndsWith: true), "CD-Cops (Unconfirmed - Please report to us on Github)"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);
@@ -109,11 +112,13 @@ namespace BurnOutSharp.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
+                // Found in Redump entry 84517
                 new PathMatchSet(new PathMatch("CDCOPS.DLL", useEndsWith: true), "CD-Cops"),
-                new PathMatchSet(new PathMatch(".GZ_", useEndsWith: true), "CD-Cops"),
                 new PathMatchSet(new PathMatch(".W_X", useEndsWith: true), "CD-Cops"),
-                new PathMatchSet(new PathMatch(".Qz", useEndsWith: true), "CD-Cops"),
                 new PathMatchSet(new PathMatch(".QZ_", useEndsWith: true), "CD-Cops"),
+
+                new PathMatchSet(new PathMatch(".GZ_", useEndsWith: true), "CD-Cops (Unconfirmed - Please report to us on Github)"),
+                new PathMatchSet(new PathMatch(".Qz", useEndsWith: true), "CD-Cops (Unconfirmed - Please report to us on Github)"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
