@@ -6,6 +6,7 @@ using BurnOutSharp.Matching;
 namespace BurnOutSharp.ProtectionType
 {
     // Renamed to ProRing at some point
+    // TODO: Investigate Redump entry 82475, which PiD detects as having "Optgraph Copy-X / Ring-Protech".
     public class RingPROTECH : IContentCheck, IPathCheck
     {
         /// <inheritdoc/>
@@ -21,7 +22,7 @@ namespace BurnOutSharp.ProtectionType
                     {
                         0x00, 0x41, 0x6C, 0x6C, 0x6F, 0x63, 0x61, 0x74,
                         0x6F, 0x72, 0x00, 0x00, 0x00, 0x00
-                    }, "Ring PROTECH / ProRing [Check disc for physical ring]"),
+                    }, "Ring PROTECH / ProRing [Check disc for physical ring] (Unconfirmed - Please report to us on Github)"),
                 };
 
                 return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
@@ -37,6 +38,7 @@ namespace BurnOutSharp.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
+                // Found in Redump entry 94161
                 new PathMatchSet(new PathMatch("protect.pro", useEndsWith: true), "Ring PROTECH / ProRing [Check disc for physical ring]"),
             };
 
@@ -48,6 +50,7 @@ namespace BurnOutSharp.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
+                // Found in Redump entry 94161
                 new PathMatchSet(new PathMatch("protect.pro", useEndsWith: true), "Ring PROTECH / ProRing [Check disc for physical ring]"),
             };
 

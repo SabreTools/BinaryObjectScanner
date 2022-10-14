@@ -30,7 +30,7 @@ Below is a list of protections detected by BurnOutSharp. The two columns explain
 | ActiveMARK | True | False | Version 5 unconfirmed²; version finding incomplete |
 | AegiSoft License Manager | True | True | |
 | Alpha-DVD | False | True | Unconfirmed¹ |
-| Alpha-ROM | True | False | Unconfirmed¹ |
+| Alpha-ROM | True | False | |
 | BD+ | False | True | |
 | Bitpool | False | True | |
 | ByteShield | False | True | Unconfirmed¹ |
@@ -74,9 +74,9 @@ Below is a list of protections detected by BurnOutSharp. The two columns explain
 | ProtectDISC / VOB ProtectCD/DVD | True | False | |
 | Protect DVD-Video | False | True | Unconfirmed¹ |
 | PlayStation Anti-modchip | True | False | En/Jp, not "Red Hand"; PSX executables only |
-| Ring PROTECH / ProRing | True | True | Unconfirmed¹ |
+| Ring PROTECH / ProRing | True | True | Partially unconfirmed² |
 | SafeDisc / SafeCast | True | True | Can't distinguish between some versions of SafeDisc and SafeCast |
-| SafeLock | False | True | Unconfirmed¹ |
+| SafeLock | False | True | |
 | SecuROM | True | True | v8.x and White Label detected partially² |
 | SmartE | True | True | |
 | SoftLock | False | True | Unconfirmed¹ |

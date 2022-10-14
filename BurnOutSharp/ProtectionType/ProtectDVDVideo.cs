@@ -22,7 +22,7 @@ namespace BurnOutSharp.ProtectionType
                     FileInfo ifofile = new FileInfo(ifofiles[i]);
                     if (ifofile.Length == 0)
                     {
-                        protections.Enqueue("Protect DVD-Video");
+                        protections.Enqueue("Protect DVD-Video (Unconfirmed - Please report to us on Github)");
                         break;
                     }
                 }

@@ -12,7 +12,7 @@ namespace BurnOutSharp.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new PathMatch("_742893.016", useEndsWith: true), "TZCopyProtector"),
+                new PathMatchSet(new PathMatch("_742893.016", useEndsWith: true), "TZCopyProtector (Unconfirmed - Please report to us on Github)"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);
@@ -23,7 +23,7 @@ namespace BurnOutSharp.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new PathMatch("_742893.016", useEndsWith: true), "TZCopyProtector"),
+                new PathMatchSet(new PathMatch("_742893.016", useEndsWith: true), "TZCopyProtector (Unconfirmed - Please report to us on Github)"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

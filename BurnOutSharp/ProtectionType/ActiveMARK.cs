@@ -22,7 +22,7 @@ namespace BurnOutSharp.ProtectionType
                         0x20, 0xC2, 0x16, 0x00, 0xA8, 0xC1, 0x16, 0x00,
                         0xB8, 0xC1, 0x16, 0x00, 0x86, 0xC8, 0x16, 0x00,
                         0x9A, 0xC1, 0x16, 0x00, 0x10, 0xC2, 0x16, 0x00
-                    }, "ActiveMARK 5"),
+                    }, "ActiveMARK 5 (Unconfirmed - Please report to us on Github)"),
                 };
 
                 return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
@@ -44,6 +44,7 @@ namespace BurnOutSharp.ProtectionType
             {
                 var matchers = new List<ContentMatchSet>
                 {
+                    // Checks sourced from https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
                     new ContentMatchSet(new byte?[]
                     {
                         0x79, 0x11, 0x7F, 0xAB, 0x9A, 0x4A, 0x83, 0xB5,
