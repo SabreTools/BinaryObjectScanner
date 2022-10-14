@@ -264,7 +264,7 @@ namespace BurnOutSharp
                 if (IncludeDebug) Console.WriteLine(ex);
 
                 var protections = new ConcurrentDictionary<string, ConcurrentQueue<string>>();
-                Utilities.AppendToDictionary(protections, file, "[Exception opening file, please try again]");
+                Utilities.AppendToDictionary(protections, file, IncludeDebug ? ex.ToString() : "[Exception opening file, please try again]");
                 Utilities.ClearEmptyKeys(protections);
                 return protections;
             }
@@ -454,7 +454,7 @@ namespace BurnOutSharp
             {
                 if (IncludeDebug) Console.WriteLine(ex);
 
-                Utilities.AppendToDictionary(protections, fileName, "[Exception opening file, please try again]");
+                Utilities.AppendToDictionary(protections, fileName, IncludeDebug ? ex.ToString() : "[Exception opening file, please try again]");
             }
 
             // Clear out any empty keys
