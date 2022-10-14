@@ -22,8 +22,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="OpenMcdf" Version="2.2.1.9" />
-    <PackageReference Include="SharpCompress" Version="0.32.1" />
+    <PackageReference Include="OpenMcdf" Version="2.2.1.12" />
+    <PackageReference Include="SharpCompress" Version="0.32.2" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="6.0.0" />
     <PackageReference Include="Teronis.MSBuild.Packaging.ProjectBuildInPackage" Version="1.0.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
