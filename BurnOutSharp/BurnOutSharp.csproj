@@ -10,9 +10,9 @@
     <Copyright>Copyright (c)2005-2010 Gernot Knippen, Copyright (c)2018-2022 Matt Nadareski</Copyright>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
     <RepositoryUrl>https://github.com/mnadareski/BurnOutSharp</RepositoryUrl>
-    <Version>2.3.3</Version>
-    <AssemblyVersion>2.3.3</AssemblyVersion>
-    <FileVersion>2.3.3</FileVersion>
+    <Version>2.3.4</Version>
+    <AssemblyVersion>2.3.4</AssemblyVersion>
+    <FileVersion>2.3.4</FileVersion>
     <IncludeSource>true</IncludeSource>
     <IncludeSymbols>true</IncludeSymbols>
   </PropertyGroup>
