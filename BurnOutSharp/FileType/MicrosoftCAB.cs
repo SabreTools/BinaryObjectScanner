@@ -8,6 +8,7 @@ using System.Text;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Tools;
 using ComponentAce.Compression.Libs.zlib;
+using WixToolset.Dtf.Compression;
 using WixToolset.Dtf.Compression.Cab;
 
 namespace BurnOutSharp.FileType

@@ -57,9 +57,22 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Dtf\src\WixToolset.Dtf.Compression.Cab\WixToolset.Dtf.Compression.Cab.csproj" />
-    <ProjectReference Include="..\HLLibSharp\HLLibSharp\HLLibSharp.csproj" />
-    <ProjectReference Include="..\LibMSPackSharp\LibMSPackSharp\LibMSPackSharp.csproj" />
+    <ProjectReference Include="..\Dtf\src\WixToolset.Dtf.Compression\WixToolset.Dtf.Compression.csproj">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </ProjectReference>
+    <ProjectReference Include="..\Dtf\src\WixToolset.Dtf.Compression.Cab\WixToolset.Dtf.Compression.Cab.csproj">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </ProjectReference>
+    <ProjectReference Include="..\HLLibSharp\HLLibSharp\HLLibSharp.csproj">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </ProjectReference>
+    <ProjectReference Include="..\LibMSPackSharp\LibMSPackSharp\LibMSPackSharp.csproj">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </ProjectReference>
   </ItemGroup>
 
 </Project>
