@@ -7,11 +7,37 @@ using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.ProtectionType
 {
-    // Data sourced from:
-    // https://github.com/horsicq/Detect-It-Easy/blob/master/db/PE/Denuvo%20protector.2.sg
-    // https://github.com/horsicq/Detect-It-Easy/blob/master/db/PE/_denuvoComplete.2.sg
+    /// <summary>
+    /// Denuvo (https://irdeto.com/denuvo/) is a family of DRM originally created in 2014 by Denuvo Software Solutions, which was acquired by Irdeto in 2018 (https://www.gamesindustry.biz/irdeto-acquires-denuvo-in-bid-to-beef-up-security-in-the-games-industry).
+    /// Denuvo Anti-Tamper (https://irdeto.com/denuvo/anti-tamper/) is the most common, preventing game files from being modified and requiring online activation of games.
+    /// Denuvo Anti-Tamper datasheet: https://resources.irdeto.com/video-games/datasheet-anti-tamper
+    /// Lists of games with Denuvo Anti-Tamper:
+    /// https://store.steampowered.com/curator/26095454-Denuvo-Games/
+    /// https://www.pcgamingwiki.com/wiki/Denuvo
+    /// Denuvo Anti-Cheat (https://irdeto.com/denuvo/anti-cheat/) is a form of anti-cheat, though information on what games use it is rather sparse.
+    /// It was used briefly in Doom Eternal Update 1 (https://store.steampowered.com/news/app/782330/view/2187005925152148469), before being completely removed in Update 1.1 (https://store.steampowered.com/news/app/782330/view/2187006557874536446).
+    /// It's somewhat difficult to find other games that may use this, as quite a few sources seem to erroneously refer to Anti-Tamper as Anti-Cheat.
+    /// Announcements for Denuvo Anti-Cheat: 
+    /// https://irdeto.com/news/leveling-the-playing-field-with-denuvo-anti-cheat/
+    /// https://irdeto.com/news/denuvo-anti-cheat-now-available-on-steamworks/
+    /// https://irdeto.com/news/denuvo-joins-exclusive-playstation5-tools-and-middleware-program-to-offer-anti-cheat-technology-to-game-developers/
+    /// Denuvo Anti-Cheat datasheet: https://web.archive.org/web/20190512082146/https://resources.irdeto.com/video-games/datasheet-anti-cheat
+    /// Denuvo also has a number of products available, such as ones targeting mobile games:
+    /// https://irdeto.com/denuvo/mobile-games-protection/
+    /// https://resources.irdeto.com/video-games/datasheet-anti-tamper-and-anti-cheat-technology-for-mobile
+    /// Additional information and resources:
+    /// https://en.wikipedia.org/wiki/Denuvo
+    /// https://www.wired.com/story/empress-drm-cracking-denuvo-video-game-piracy/
+    /// </summary>
+
     public class Denuvo : IPortableExecutableCheck
     {
+        // TODO: Add checks for Denuvo Anti-Cheat.
+        // Possible filename check: https://support.codefusion.technology/anti-cheat
+
+        // TODO: Investigate possible filename checks for Denuvo Anti-Tamper.
+        // https://www.pcgamingwiki.com/wiki/Denuvo#Redeem.exe
+
         /// <inheritdoc/>
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
@@ -19,6 +45,10 @@ namespace BurnOutSharp.ProtectionType
             var sections = pex?.SectionTable;
             if (sections == null)
                 return null;
+
+            // Data sourced from:
+            // https://github.com/horsicq/Detect-It-Easy/blob/master/db/PE/Denuvo%20protector.2.sg
+            // https://github.com/horsicq/Detect-It-Easy/blob/master/db/PE/_denuvoComplete.2.sg
 
             // Denuvo Protector
             if (pex.OptionalHeader.Magic == OptionalHeaderType.PE32Plus && pex.EntryPointRaw != null)
