@@ -12,6 +12,7 @@ namespace BurnOutSharp.ProtectionType
 {
     /// <summary>
     /// CactusDataShield was a copy protection originally developed by Midbar Technologies, which was then purchased by Macrovision in 2002 (https://variety.com/2002/digital/news/macrovision-acquires-midbar-cuts-ttr-link-1117875824/).
+    /// Macrovision's product page for CDS: https://web.archive.org/web/20050215235405/http://www.macrovision.com/products/cds/index.shtml
     /// CDS-100 appears to function by attempting to prevent dumping/ripping the discs protected with it.
     /// CDS-200+ uses a dedicated audio player to play the music "legitimately".
     /// Patent relating to CDS-100: https://patents.google.com/patent/US6425098B1/
