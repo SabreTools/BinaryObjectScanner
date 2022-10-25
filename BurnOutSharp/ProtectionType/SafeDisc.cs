@@ -14,11 +14,16 @@ namespace BurnOutSharp.ProtectionType
     /// It uses several different copy protection mechanisms, such as reading a disc signature dependent on the presence of bad sectors and the attempted prevention of burning copies to CD-R.
     /// SafeDisc has been most commonly found on PC games and applications, though there a number of Mac discs that contain the protection as well.
     /// At least one system other than PC/Mac is known to use SafeDisc as well, this being the "ZAPiT Games Game Wave Family Entertainment System" which seems to use a form of SafeDisc 4 (Redump entry 46269).
+    /// SafeDisc resources:
+    /// https://web.archive.org/web/20031009091909/http://www.macrovision.com/products/safedisc/index.shtml
+    /// https://web.archive.org/web/20041023011150/http://www.macrovision.com/products/safedisc/index.shtml (Marketed as "SafeDisc Advanced")
+    /// https://web.archive.org/web/20041008173722/http://www.macrovision.com/pdfs/safedisc_datasheet.pdf
     /// SafeCast is in the same family of protections, and appears to mainly be for license management, and doesn't appear to affect the mastering of the disc in any way.
     /// Although SafeCast is most commonly used in non-game software, there is one game that comes with both SafeDisc and SafeCast protections (Redump entry 83145).
     /// Macrovision bought the company C-Dilla and created SafeCast based on C-Dilla's existing products (https://web.archive.org/web/20030212040047/http://www.auditmypc.com/freescan/readingroom/cdilla.asp).
     /// That being said, there are references to C-Dilla within SafeDisc protected executables as early as 1.00.025, making the exact relationship between SafeDisc/Macrovision/C-Dilla unclear.
     /// SafeCast resources: 
+    /// https://web.archive.org/web/20031204024544mp_/http://www.macrovision.com/products/safecast/index.shtml
     /// https://web.archive.org/web/20010417222834/http://www.macrovision.com/press_rel3_17_99.html
     /// https://www.extremetech.com/computing/53394-turbotax-so-what-do-i-do-now/4
     /// https://web.archive.org/web/20031013085038/http://www.pestpatrol.com/PestInfo/c/c-dilla.asp
@@ -142,6 +147,12 @@ namespace BurnOutSharp.ProtectionType
                 new PathMatchSet(new PathMatch("drvmgt.dll", useEndsWith: true), GetDrvmgtVersion, "SafeDisc"),
                 new PathMatchSet(new PathMatch("secdrv.sys", useEndsWith: true), GetSecdrvVersion, "SafeDisc Security Driver"),
 
+                // Used to distribute SafeDisc driver updates over the internet. Two distinct versions known to exist, with Microsoft also having distributed the later update as well.
+                // Version 1: https://web.archive.org/web/20040614184055/http://www.macrovision.com:80/products/safedisc/safedisc.exe
+                // Version 2: https://web.archive.org/web/20051104123646/http://www.macrovision.com/products/safedisc/safedisc.exe
+                // Microsoft download page: https://web.archive.org/web/20080204081329/http://www.microsoft.com/downloads/details.aspx?FamilyID=eae20f0f-c41c-44fe-84ce-1df707d7a2e9&DisplayLang=en
+                new PathMatchSet(new PathMatch("safedisc.exe", useEndsWith: true), "SafeDisc Driver Installer"),
+
                 // Found in Redump entries 28810 and 30555.
                 // Name check overmatches with a seemingly completely unrelated application, ironically included on at least one SafeDisc game (Redump entry 34828).
                 // new PathMatchSet(new PathMatch("mcp.dll", useEndsWith: true), "SafeDisc (Version 1.45.011-1.50.020)"),
@@ -207,6 +218,12 @@ namespace BurnOutSharp.ProtectionType
 
                 // Found in Redump entry 58990.
                 new PathMatchSet(new PathMatch("SafediskSplash.bmp", useEndsWith: true), "SafeDisc"),
+                
+                // Used to distribute SafeDisc driver updates over the internet. Two distinct versions known to exist, with Microsoft also having distributed the later update as well.
+                // Version 1: https://web.archive.org/web/20040614184055/http://www.macrovision.com:80/products/safedisc/safedisc.exe
+                // Version 2: https://web.archive.org/web/20051104123646/http://www.macrovision.com/products/safedisc/safedisc.exe
+                // Microsoft download page: https://web.archive.org/web/20080204081329/http://www.microsoft.com/downloads/details.aspx?FamilyID=eae20f0f-c41c-44fe-84ce-1df707d7a2e9&DisplayLang=en
+                new PathMatchSet(new PathMatch("safedisc.exe", useEndsWith: true), "SafeDisc Driver Installer"),
 
                 // Found in seemingly every SafeDisc Lite disc. (CD: Redump entries 25579 and 57986. DVD: Redump entry 63941). 
                 new PathMatchSet(new PathMatch("00000001.LT1", useEndsWith: true), "SafeDisc Lite"),
@@ -244,6 +261,7 @@ namespace BurnOutSharp.ProtectionType
             // 1.01.038 (Redump entry 51459).
             // 1.01.043 (Redump entries 34562 and 63304).
             // 1.01.044 (Redump entries 61731 and 81619).
+            // 1.01.045 (Currently only found in a pirate compilation disc: IA item "cdrom-classic-fond-58").
             // 1.06.000 (Redump entries 29073 and 31149).
             // 1.07.000 (Redump entries 9718 and 46756).
             // 1.09.000 (Redump entries 12885 and 66210).
@@ -738,6 +756,9 @@ namespace BurnOutSharp.ProtectionType
                 // Found in Redump entry 56320.
                 case "84480ABCE4676EEB9C43DFF7C5C49F0D574FAC25":
                     return "4.70.000";
+                // Found distributed in https://web.archive.org/web/20040614184055/http://www.macrovision.com:80/products/safedisc/safedisc.exe, but unknown what version it is associated with.
+                case "8426690FA43076EE466FD1B2D1F2F1267F9CC3EC":
+                    return "Unknown Version (Report this to us on GitHub)";
                 default:
                     return "Unknown Version (Report this to us on GitHub)";
 
