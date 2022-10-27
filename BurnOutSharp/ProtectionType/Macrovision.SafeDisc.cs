@@ -43,11 +43,8 @@ namespace BurnOutSharp.ProtectionType
             if (sections == null)
                 return null;
 
-            string name = pex.FileDescription;
-            if (name?.Equals("SafeCast2", StringComparison.OrdinalIgnoreCase) == true)
-                return $"SafeCast";
-
             // Present in "secdrv.sys" files found in SafeDisc 2.80.010+.
+            string name = pex.FileDescription;
             if (name?.Equals("Macrovision SECURITY Driver", StringComparison.OrdinalIgnoreCase) == true)
                 return $"SafeDisc Security Driver {GetSecDrvExecutableVersion(pex)}";
 
@@ -172,12 +169,6 @@ namespace BurnOutSharp.ProtectionType
 
                 // Found on Redump entry 42762.
                 new PathMatchSet(".SafeDiscDVD.bundle", "SafeDisc for Macintosh"),
-                
-                // Found in multiple versions of SafeCast, including Redump entry 83145 and IA item "TurboTax_Deluxe_Tax_Year_2002_for_Wndows_2.00R_Intuit_2002_352282".
-                new PathMatchSet(new PathMatch("cdac14ba.dll", useEndsWith: true), "SafeCast"),
-
-                // Found in Redump entry 83145.
-                new PathMatchSet(new PathMatch("CDAC21BA.DLL", useEndsWith: true), "SafeCast"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: false);
@@ -230,14 +221,6 @@ namespace BurnOutSharp.ProtectionType
 
                 // Found in Redump entry 42762.
                 new PathMatchSet(".SafeDiscDVD.bundle", "SafeDisc for Macintosh"),
-
-                new PathMatchSet(new PathMatch("cdac11ba.exe", useEndsWith: true), "SafeCast"),
-
-                // Found in multiple versions of SafeCast, including Redump entry 83145 and IA item "TurboTax_Deluxe_Tax_Year_2002_for_Wndows_2.00R_Intuit_2002_352282".
-                new PathMatchSet(new PathMatch("cdac14ba.dll", useEndsWith: true), "SafeCast"),
-
-                // Found in Redump entry 83145.
-                new PathMatchSet(new PathMatch("CDAC21BA.DLL", useEndsWith: true), "SafeCast"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
