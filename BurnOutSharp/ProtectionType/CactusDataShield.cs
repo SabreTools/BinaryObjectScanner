@@ -23,6 +23,7 @@ namespace BurnOutSharp.ProtectionType
     /// CDS200.0.4 - 3.0 build 16c ("TMF Hitzone 20" by various artists (Barcode 7 31458 37062 8)).
     /// CDS200.0.4 - 4.1 build 2a ("Ich Habe Einen Traum" by Uwe Busse (Barcode 9 002723 251203)).
     /// CDS200.0.4 - 4.1 build 2e ("Hallucinations" by David Usher (Barcode 7 24359 30322 2)).
+    /// CDS200.5.11.90 - 5.10.090 ("Finn 5 Fel!" by Gyllene Tider (Barcode 7 24357 10922 2)).
     /// CDS-300
     /// Further information:
     /// https://www.cdrinfo.com/d7/content/cactus-data-shield-200
@@ -168,6 +169,7 @@ namespace BurnOutSharp.ProtectionType
             }
         }
 
+        // TODO: Simplify version checking.
         public static string GetVersion(string firstMatchedString, IEnumerable<string> files)
         {
             // Find the version.txt file first
