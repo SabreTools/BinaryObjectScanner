@@ -10,29 +10,20 @@ using BurnOutSharp.Tools;
 namespace BurnOutSharp.ProtectionType
 {
     /// <summary>
-    /// SafeDisc is an incredibly commonly used copy protection created by Macrovision in 1998.
+    /// SafeDisc is an incredibly commonly used copy protection created by Macrovision and C-Dilla in 1998 (https://www.thefreelibrary.com/MACROVISION+ACQUIRES+C-DILLA+CD-ROM+TECHNOLOGIES+DEVELOPER-a055217923).
     /// It uses several different copy protection mechanisms, such as reading a disc signature dependent on the presence of bad sectors and the attempted prevention of burning copies to CD-R.
     /// SafeDisc has been most commonly found on PC games and applications, though there a number of Mac discs that contain the protection as well.
     /// At least one system other than PC/Mac is known to use SafeDisc as well, this being the "ZAPiT Games Game Wave Family Entertainment System" which seems to use a form of SafeDisc 4 (Redump entry 46269).
     /// SafeDisc resources:
     /// https://web.archive.org/web/20031009091909/http://www.macrovision.com/products/safedisc/index.shtml
     /// https://web.archive.org/web/20041023011150/http://www.macrovision.com/products/safedisc/index.shtml (Marketed as "SafeDisc Advanced")
+    /// https://web.archive.org/web/20080604020524/http://www.trymedia.com/safedisc-advanced.html
     /// https://web.archive.org/web/20041008173722/http://www.macrovision.com/pdfs/safedisc_datasheet.pdf
-    /// SafeCast is in the same family of protections, and appears to mainly be for license management, and doesn't appear to affect the mastering of the disc in any way.
-    /// Although SafeCast is most commonly used in non-game software, there is one game that comes with both SafeDisc and SafeCast protections (Redump entry 83145).
-    /// Macrovision bought the company C-Dilla and created SafeCast based on C-Dilla's existing products (https://web.archive.org/web/20030212040047/http://www.auditmypc.com/freescan/readingroom/cdilla.asp).
-    /// That being said, there are references to C-Dilla within SafeDisc protected executables as early as 1.00.025, making the exact relationship between SafeDisc/Macrovision/C-Dilla unclear.
-    /// SafeCast resources: 
-    /// https://web.archive.org/web/20031204024544mp_/http://www.macrovision.com/products/safecast/index.shtml
-    /// https://web.archive.org/web/20010417222834/http://www.macrovision.com/press_rel3_17_99.html
-    /// https://www.extremetech.com/computing/53394-turbotax-so-what-do-i-do-now/4
-    /// https://web.archive.org/web/20031013085038/http://www.pestpatrol.com/PestInfo/c/c-dilla.asp
+    /// https://www.cdmediaworld.com/hardware/cdrom/cd_protections_safedisc.shtml
     /// Other protections in the Macrovision "Safe-" family of protections that need further investigation:
     /// SafeScan (https://cdn.loc.gov/copyright/1201/2003/reply/029.pdf).
     /// SafeDisc HD (https://computerizedaccount.tripod.com/computerizedaccountingtraining/id27.html).
-    /// Additional resources and information:
-    /// https://www.cdmediaworld.com/hardware/cdrom/cd_protections_safedisc.shtml
-    /// https://web.archive.org/web/20080604020524/http://www.trymedia.com/safedisc-advanced.html
+    /// SafeAuthenticate (https://web.archive.org/web/20041020010136/http://www.ttrtech.com/pdf/SafeAudioFAQ.pdf)
     /// </summary>
     public partial class Macrovision
     {
@@ -52,26 +43,6 @@ namespace BurnOutSharp.ProtectionType
             name = pex.ProductName;
             if (name?.Equals("SafeDisc CDROM Protection System", StringComparison.OrdinalIgnoreCase) == true)
                 return $"SafeDisc 1.00.025-1.01.044";
-
-            // Get the .text section, if it exists
-            string match = CheckSectionForProtection(file, includeDebug, pex, ".text");
-            if (!string.IsNullOrWhiteSpace(match))
-                return match;
-
-            // Get the .txt2 section, if it exists
-            match = CheckSectionForProtection(file, includeDebug, pex, ".txt2");
-            if (!string.IsNullOrWhiteSpace(match))
-                return match;
-
-            // Get the CODE section, if it exists
-            match = CheckSectionForProtection(file, includeDebug, pex, "CODE");
-            if (!string.IsNullOrWhiteSpace(match))
-                return match;
-
-            // Get the .data section, if it exists
-            match = CheckSectionForProtection(file, includeDebug, pex, ".data");
-            if (!string.IsNullOrWhiteSpace(match))
-                return match;
 
             // Get the stxt371 and stxt774 sections, if they exist -- TODO: Confirm if both are needed or either/or is fine
             bool stxt371Section = pex.ContainsSection("stxt371", exact: true);
@@ -873,56 +844,6 @@ namespace BurnOutSharp.ProtectionType
                 default:
                     return null;
             }
-        }
-
-        private string CheckSectionForProtection(string file, bool includeDebug, PortableExecutable pex, string sectionName)
-        {
-            // This subtract is needed because BoG_ starts before the section
-            var sectionRaw = pex.ReadRawSection(sectionName, first: true, offset: -64);
-            if (sectionRaw != null)
-            {
-                // TODO: Add more checks to help differentiate between SafeDisc and SafeCast.
-                var matchers = new List<ContentMatchSet>
-                {
-                    // Checks for presence of two different strings to differentiate between SafeDisc and SafeCast.
-                    new ContentMatchSet(new List<byte?[]>
-                    {
-                        // BoG_ *90.0&!!  Yy>
-                        new byte?[]
-                        {
-                            0x42, 0x6F, 0x47, 0x5F, 0x20, 0x2A, 0x39, 0x30,
-                            0x2E, 0x30, 0x26, 0x21, 0x21, 0x20, 0x20, 0x59,
-                            0x79, 0x3E
-                        },
-
-                        // product activation library
-                        new byte?[]
-                        {
-                            0x70, 0x72, 0x6F, 0x64, 0x75, 0x63, 0x74, 0x20,
-                            0x61, 0x63, 0x74, 0x69, 0x76, 0x61, 0x74, 0x69,
-                            0x6F, 0x6E, 0x20, 0x6C, 0x69, 0x62, 0x72, 0x61,
-                            0x72, 0x79
-                        },
-                    }, GetSafeDiscVersion, "SafeCast"),
-
-                    // TODO: Investigate likely false positive in Redump entry 74384.
-                    // Unfortunately, this string is used throughout a wide variety of SafeDisc and SafeCast versions. If no previous checks are able to able to differentiate between them, then a generic result has to be given.
-                    // BoG_ *90.0&!!  Yy>
-                    new ContentMatchSet(new byte?[]
-                    {
-                        0x42, 0x6F, 0x47, 0x5F, 0x20, 0x2A, 0x39, 0x30,
-                        0x2E, 0x30, 0x26, 0x21, 0x21, 0x20, 0x20, 0x59,
-                        0x79, 0x3E
-                    }, GetSafeDiscVersion, "SafeCast/SafeDisc"),
-
-                    // (char)0x00 + (char)0x00 + BoG_
-                    new ContentMatchSet(new byte?[] { 0x00, 0x00, 0x42, 0x6F, 0x47, 0x5F }, GetSafeDisc320to4xVersion, "SafeDisc"),
-                };
-
-                return MatchUtil.GetFirstMatch(file, sectionRaw, matchers, includeDebug);
-            }
-
-            return null;
         }
 
         private string GetSecDrvExecutableVersion(PortableExecutable pex)

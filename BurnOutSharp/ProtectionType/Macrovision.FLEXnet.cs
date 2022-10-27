@@ -14,6 +14,19 @@ namespace BurnOutSharp.ProtectionType
     /// </summary>
     public partial class Macrovision
     {
-        // TODO: Add methods for specific PE, path, and version checks here
+        internal string FLEXnetCheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        {
+            // Get the sections from the executable, if possible
+            var sections = pex?.SectionTable;
+            if (sections == null)
+                return null;
+
+            // Found in "IsSvcInstDanceEJay7.dll" in IA item "computer200709dvd" (Dance eJay 7).
+            string name = pex.ProductName;
+            if (name?.Equals("FLEXnet Activation Toolkit", StringComparison.OrdinalIgnoreCase) == true)
+                return $"FLEXnet";
+
+            return null;
+        }
     }
 }
