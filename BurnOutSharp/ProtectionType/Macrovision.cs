@@ -48,19 +48,19 @@ namespace BurnOutSharp.ProtectionType
             // Check for specific indications for individual Macrovision protections.
 
             // Run SafeCast PE checks
-            string SafeCast = SafeCastCheckPortableExecutable(file, pex, includeDebug);
-            if (!string.IsNullOrWhiteSpace(SafeCast))
-                return SafeCast;
+            string safeCast = SafeCastCheckPortableExecutable(file, pex, includeDebug);
+            if (!string.IsNullOrWhiteSpace(safeCast))
+                return safeCast;
 
             // Run SafeDisc PE checks
-            string SafeDisc = SafeDiscCheckPortableExecutable(file, pex, includeDebug);
-            if (!string.IsNullOrWhiteSpace(SafeDisc))
-                return SafeDisc;
+            string safeDisc = SafeDiscCheckPortableExecutable(file, pex, includeDebug);
+            if (!string.IsNullOrWhiteSpace(safeDisc))
+                return safeDisc;
 
             // Run FLEXnet PE checks
-            string FLEXnet = FLEXnetCheckPortableExecutable(file, pex, includeDebug);
-            if (!string.IsNullOrWhiteSpace(FLEXnet))
-                return FLEXnet;
+            string flexnet = FLEXnetCheckPortableExecutable(file, pex, includeDebug);
+            if (!string.IsNullOrWhiteSpace(flexnet))
+                return flexnet;
 
             return null;
         }
@@ -70,13 +70,13 @@ namespace BurnOutSharp.ProtectionType
         {
             // TODO: Add all common Macrovision directory path checks here
 
-            var SafeCast = SafeCastCheckDirectoryPath(path, files);
-            if (SafeCast != null && !SafeCast.IsEmpty)
-                return SafeCast;
+            var safeCast = SafeCastCheckDirectoryPath(path, files);
+            if (safeCast != null && !safeCast.IsEmpty)
+                return safeCast;
 
-            var SafeDisc = SafeDiscCheckDirectoryPath(path, files);
-            if (SafeDisc != null && !SafeDisc.IsEmpty)
-                return SafeDisc;
+            var safeDisc = SafeDiscCheckDirectoryPath(path, files);
+            if (safeDisc != null && !safeDisc.IsEmpty)
+                return safeDisc;
 
             return MatchUtil.GetAllMatches(files, null, any: false);
         }
@@ -86,16 +86,17 @@ namespace BurnOutSharp.ProtectionType
         {
             // TODO: Add all common Macrovision file path checks here
 
-            string SafeCast = SafeCastCheckFilePath(path);
-            if (!string.IsNullOrWhiteSpace(SafeCast))
-                return SafeCast;
+            string safeCast = SafeCastCheckFilePath(path);
+            if (!string.IsNullOrWhiteSpace(safeCast))
+                return safeCast;
 
-            string SafeDisc = SafeDiscCheckFilePath(path);
-            if (!string.IsNullOrWhiteSpace(SafeDisc))
-                return SafeDisc;
+            string safeDisc = SafeDiscCheckFilePath(path);
+            if (!string.IsNullOrWhiteSpace(safeDisc))
+                return safeDisc;
 
             return MatchUtil.GetFirstMatch(path, null, any: true);
         }
+
         static string GetMacrovisionVersion(string file, byte[] fileContent, List<int> positions)
         {
             int index = positions[0] + 20; // Begin reading after "BoG_ *90.0&!!  Yy>" for old SafeDisc
@@ -116,6 +117,7 @@ namespace BurnOutSharp.ProtectionType
 
             return $"{version}.{subVersion:00}.{subsubVersion:000}";
         }
+
         private string CheckSectionForProtection(string file, bool includeDebug, PortableExecutable pex, string sectionName)
         {
             // This subtract is needed because BoG_ starts before the section

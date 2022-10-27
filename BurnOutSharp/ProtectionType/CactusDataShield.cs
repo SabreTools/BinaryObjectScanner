@@ -168,6 +168,7 @@ namespace BurnOutSharp.ProtectionType
                     return null;
             }
         }
+
         // TODO: Simplify version checking.
         public static string GetVersion(string firstMatchedString, IEnumerable<string> files)
         {

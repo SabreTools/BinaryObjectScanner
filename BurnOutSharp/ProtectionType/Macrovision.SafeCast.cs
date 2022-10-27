@@ -55,6 +55,9 @@ namespace BurnOutSharp.ProtectionType
 
                 // Found in Redump entry 83145.
                 new PathMatchSet(new PathMatch("CDAC21BA.DLL", useEndsWith: true), "SafeCast"),
+
+                // Shown in multiple sources (such as https://groups.google.com/g/alt.english.usage/c/kcBzeqXgE-M) to be associated with SafeCast, but no samples have been found as of yet.
+                new PathMatchSet(new PathMatch("SCRfrsh.exe", useEndsWith: true), "SafeCast (Unconfirmed - Please report to us on Github)"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: false);
