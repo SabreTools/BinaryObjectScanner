@@ -6,6 +6,7 @@ using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
 using BurnOutSharp.Tools;
+using static System.Net.WebRequestMethods;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -24,6 +25,11 @@ namespace BurnOutSharp.ProtectionType
 
             // TODO: Add all common Macrovision PE checks here
 
+            // Example: SafeDisc invocation
+            //string safeDisc = SafeDiscCheckPortableExecutable(file, pex, includeDebug);
+            //if (!string.IsNullOrWhiteSpace(safeDisc))
+            //    return safeDisc;
+
             return null;
         }
 
@@ -31,6 +37,12 @@ namespace BurnOutSharp.ProtectionType
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string> files)
         {
             // TODO: Add all common Macrovision directory path checks here
+
+            // Example: SafeDisc invocation
+            //var safeDisc = SafeDiscCheckDirectoryPath(path, files);
+            //if (safeDisc != null && !safeDisc.IsEmpty)
+            //    return safeDisc;
+
             return MatchUtil.GetAllMatches(files, null, any: false);
         }
 
@@ -38,6 +50,12 @@ namespace BurnOutSharp.ProtectionType
         public string CheckFilePath(string path)
         {
             // TODO: Add all common Macrovision file path checks here
+
+            // Example: SafeDisc invocation
+            //string safeDisc = SafeDiscCheckFilePath(path);
+            //if (!string.IsNullOrWhiteSpace(safeDisc))
+            //    return safeDisc;
+
             return MatchUtil.GetFirstMatch(path, null, any: true);
         }
     }
