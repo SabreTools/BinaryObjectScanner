@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using BurnOutSharp.ExecutableType.Microsoft;
 using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Interfaces;
@@ -17,6 +19,7 @@ namespace BurnOutSharp.ProtectionType
     /// Denuvo Anti-Cheat (https://irdeto.com/denuvo/anti-cheat/) is a form of anti-cheat, though information on what games use it is rather sparse.
     /// It was used briefly in Doom Eternal Update 1 (https://store.steampowered.com/news/app/782330/view/2187005925152148469), before being completely removed in Update 1.1 (https://store.steampowered.com/news/app/782330/view/2187006557874536446).
     /// It's somewhat difficult to find other games that may use this, as quite a few sources seem to erroneously refer to Anti-Tamper as Anti-Cheat.
+    /// Support page for Denuvo Anti-Cheat: https://support.codefusion.technology/anti-cheat
     /// Announcements for Denuvo Anti-Cheat: 
     /// https://irdeto.com/news/leveling-the-playing-field-with-denuvo-anti-cheat/
     /// https://irdeto.com/news/denuvo-anti-cheat-now-available-on-steamworks/
@@ -30,10 +33,8 @@ namespace BurnOutSharp.ProtectionType
     /// https://www.wired.com/story/empress-drm-cracking-denuvo-video-game-piracy/
     /// </summary>
 
-    public class Denuvo : IPortableExecutableCheck
+    public class Denuvo : IPathCheck, IPortableExecutableCheck
     {
-        // TODO: Add checks for Denuvo Anti-Cheat.
-        // Possible filename check: https://support.codefusion.technology/anti-cheat
 
         // TODO: Investigate possible filename checks for Denuvo Anti-Tamper.
         // https://www.pcgamingwiki.com/wiki/Denuvo#Redeem.exe
@@ -45,6 +46,21 @@ namespace BurnOutSharp.ProtectionType
             var sections = pex?.SectionTable;
             if (sections == null)
                 return null;
+
+            // All current checks for Denuvo Anti-Cheat come from Doom Eternal Update 1 (Steam Depot 782332, Manifest 7064393210727378308).
+
+            // Found in "denuvo-anti-cheat.sys".
+            string name = pex.FileDescription;
+            if (name?.Equals("Denuvo Anti-Cheat Driver", StringComparison.OrdinalIgnoreCase) == true)
+                return $"Denuvo Anti-Cheat";
+
+            // Found in "denuvo-anti-cheat-update-service.exe"/"Denuvo Anti-Cheat Installer.exe".
+            if (name?.Equals("Denuvo Anti-Cheat Update Service", StringComparison.OrdinalIgnoreCase) == true)
+                return $"Denuvo Anti-Cheat";
+
+            // Found in "denuvo-anti-cheat-runtime.dll".
+            if (name?.Equals("Denuvo Anti-Cheat Runtime", StringComparison.OrdinalIgnoreCase) == true)
+                return $"Denuvo Anti-Cheat";
 
             // Data sourced from:
             // https://github.com/horsicq/Detect-It-Easy/blob/master/db/PE/Denuvo%20protector.2.sg
@@ -243,6 +259,43 @@ namespace BurnOutSharp.ProtectionType
             }
 
             return null;
+        }
+        /// <inheritdoc/>
+        public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string> files)
+        {
+            var matchers = new List<PathMatchSet>
+            {
+                // Found in Doom Eternal Update 1 (Steam Depot 782332, Manifest 7064393210727378308).
+
+                // These files are automatically installed into an "Denuvo Anti-Cheat" folder when the game is installed. 
+                new PathMatchSet(new PathMatch("denuvo-anti-cheat.sys", useEndsWith: true), "Denuvo Anti-Cheat"),
+                new PathMatchSet(new PathMatch("denuvo-anti-cheat-update-service.exe", useEndsWith: true), "Denuvo Anti-Cheat"),
+                new PathMatchSet(new PathMatch("denuvo-anti-cheat-runtime.dll", useEndsWith: true), "Denuvo Anti-Cheat"),
+
+                // This file is a renamed copy of "denuvo-anti-cheat-update-service.exe" which is only seen in the folder of the main game executable after it has been run, but before Denuvo Anti-Cheat is finished installing.
+                new PathMatchSet(new PathMatch("Denuvo Anti-Cheat Installer.exe", useEndsWith: true), "Denuvo Anti-Cheat"),
+            };
+
+            return MatchUtil.GetAllMatches(files, matchers, any: false);
+        }
+
+        /// <inheritdoc/>
+        public string CheckFilePath(string path)
+        {
+            var matchers = new List<PathMatchSet>
+            {
+                // Found in Doom Eternal Update 1 (Steam Depot 782332, Manifest 7064393210727378308).
+
+                // These files are automatically installed into an "Denuvo Anti-Cheat" folder when the game is installed. 
+                new PathMatchSet(new PathMatch("denuvo-anti-cheat.sys", useEndsWith: true), "Denuvo Anti-Cheat"),
+                new PathMatchSet(new PathMatch("denuvo-anti-cheat-update-service.exe", useEndsWith: true), "Denuvo Anti-Cheat"),
+                new PathMatchSet(new PathMatch("denuvo-anti-cheat-runtime.dll", useEndsWith: true), "Denuvo Anti-Cheat"),
+
+                // This file is a renamed copy of "denuvo-anti-cheat-update-service.exe" which is only seen in the folder of the main game executable after it has been run, but before Denuvo Anti-Cheat is finished installing.
+                new PathMatchSet(new PathMatch("Denuvo Anti-Cheat Installer.exe", useEndsWith: true), "Denuvo Anti-Cheat"),
+            };
+
+            return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
     }
 }
