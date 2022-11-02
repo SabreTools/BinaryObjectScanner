@@ -10,10 +10,13 @@ using BurnOutSharp.Tools;
 namespace BurnOutSharp.ProtectionType
 {
     /// <summary>
-    /// SafeCast is in the same family of protections, and appears to mainly be for license management, and doesn't appear to affect the mastering of the disc in any way.
+    /// SafeCast is in the same family of protections as SafeDisc, and appears to mainly be for license management, and doesn't appear to affect the mastering of the disc in any way.
     /// Although SafeCast is most commonly used in non-game software, there is one game that comes with both SafeDisc and SafeCast protections (Redump entry 83145).
     /// Macrovision bought the company C-Dilla and created SafeCast based on C-Dilla's existing products (https://web.archive.org/web/20030212040047/http://www.auditmypc.com/freescan/readingroom/cdilla.asp).
-    /// That being said, there are references to C-Dilla within SafeDisc protected executables as early as 1.00.025, making the exact relationship between SafeDisc/Macrovision/C-Dilla unclear.
+    /// There are multiple different versions of SafeCast out there.
+    /// SafeCast ESD: https://web.archive.org/web/20000306044246/http://www.macrovision.com/safecast_ESD.html
+    /// SafeCast Gold: https://web.archive.org/web/20000129071444/http://www.macrovision.com/scp_gold.html
+    /// SafeCast LM: https://web.archive.org/web/20000128224337/http://www.macrovision.com/safecast_LM.html
     /// SafeCast UNSORTED samples:
     /// https://www.virustotal.com/gui/file/220b8eec64d43fd854a48f28efa915c158a06f3675cbf0ef52796750984d9e1c/details
     /// https://groups.google.com/g/alt.english.usage/c/kcBzeqXgE-M
@@ -22,6 +25,7 @@ namespace BurnOutSharp.ProtectionType
     /// https://archive.org/details/ejay_nestle_trial
     /// https://archive.org/details/eJayXtremeSoundtraxx
     /// SafeCast resources: 
+    /// https://web.archive.org/web/20000129013431/http://www.macrovision.com/safecast_faq.html (SafeCast FAQ)
     /// https://web.archive.org/web/20031204024544mp_/http://www.macrovision.com/products/safecast/index.shtml
     /// https://web.archive.org/web/20010417222834/http://www.macrovision.com/press_rel3_17_99.html
     /// https://www.extremetech.com/computing/53394-turbotax-so-what-do-i-do-now/4
