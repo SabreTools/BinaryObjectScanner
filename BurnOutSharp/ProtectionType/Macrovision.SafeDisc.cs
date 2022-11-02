@@ -15,14 +15,16 @@ namespace BurnOutSharp.ProtectionType
     /// SafeDisc has been most commonly found on PC games and applications, though there a number of Mac discs that contain the protection as well.
     /// At least one system other than PC/Mac is known to use SafeDisc as well, this being the "ZAPiT Games Game Wave Family Entertainment System" which seems to use a form of SafeDisc 4 (Redump entry 46269).
     /// SafeDisc resources:
+    /// https://web.archive.org/web/20000307003925/http://www.macrovision.com/scp_faq.html (SafeDisc FAQ)
     /// https://web.archive.org/web/20031009091909/http://www.macrovision.com/products/safedisc/index.shtml
     /// https://web.archive.org/web/20041023011150/http://www.macrovision.com/products/safedisc/index.shtml (Marketed as "SafeDisc Advanced")
     /// https://web.archive.org/web/20080604020524/http://www.trymedia.com/safedisc-advanced.html
     /// https://web.archive.org/web/20041008173722/http://www.macrovision.com/pdfs/safedisc_datasheet.pdf
     /// https://www.cdmediaworld.com/hardware/cdrom/cd_protections_safedisc.shtml
+    /// https://computerizedaccount.tripod.com/computerizedaccountingtraining/id27.html
     /// Other protections in the Macrovision "Safe-" family of protections that need further investigation:
     /// SafeScan (https://cdn.loc.gov/copyright/1201/2003/reply/029.pdf).
-    /// SafeDisc HD (https://computerizedaccount.tripod.com/computerizedaccountingtraining/id27.html).
+    /// SafeDisc HD (https://web.archive.org/web/20000129100449/http://www.macrovision.com/scp_hd.html).
     /// SafeAuthenticate (https://web.archive.org/web/20041020010136/http://www.ttrtech.com/pdf/SafeAudioFAQ.pdf)
     /// </summary>
     public partial class Macrovision
