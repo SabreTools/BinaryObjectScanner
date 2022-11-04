@@ -54,6 +54,8 @@ namespace BurnOutSharp.ProtectionType
             // Product Name "C-Dilla License Management System" in "CdUnin16.exe" from CD-Secure/CD-Compress version 1.31.34.
             // Product Name "CD-Secure/CD-Compress" in "CDILLA05.DLL"/"CDILLA10.EXE" from CD-Secure/CD-Compress version 1.31.34.
 
+            // File Description "16-bit C-Dilla DLL" in "cdilla51.dll" from C-Dilla LMS version 3.24.010.
+
             // File Description "C-Dilla 16-bit DLL" in "CDILLA40.DLL" from C-Dilla LMS version 3.27.000 for Windows 3.1/95/NT (This file specifically is known to report as version 3.15.000).
             // File Description "C-Dilla Windows 3.1x RTS" in "CDILLA05.DLL"/"CDILLA10.EXE" from C-Dilla LMS version 3.27.000 for Windows 3.1.
             // File Description "C-Dilla Windows 95 RTS" in "CDILLA05.DLL"/"CDILLA10.EXE" from C-Dilla LMS version 3.27.000 for Windows 95.
@@ -89,6 +91,10 @@ namespace BurnOutSharp.ProtectionType
             }
 
             string name = pex.FileDescription;
+
+            // Found in in "cdilla52.dll" from C-Dilla LMS version 3.24.010.
+            if (name?.Equals("32-bit C-Dilla DLL", StringComparison.OrdinalIgnoreCase) == true)
+                return $"C-Dilla License Management System";
 
             // Found in "CdaIns32.dll" and "CdSet32.exe" from version 3.27.000 of C-Dilla LMS.
             if (name?.Equals("C-Dilla Windows 32-Bit RTS Installer", StringComparison.OrdinalIgnoreCase) == true)
@@ -132,6 +138,12 @@ namespace BurnOutSharp.ProtectionType
                 new PathMatchSet(new PathMatch("CDILLA10.EXE", useEndsWith: true), "C-Dilla License Management System"),
                 new PathMatchSet(new PathMatch("CDILLA40.DLL", useEndsWith: true), "C-Dilla License Management System"),
 
+                // Found in C-Dilla LMS version 3.24.010 (IA item "ejay_nestle_trial").
+                // TODO: Verify that all of these are exclusively part of LMS, and not SafeCast.
+                new PathMatchSet(new PathMatch("CdaLMS.exe", useEndsWith: true), "C-Dilla License Management System"),
+                new PathMatchSet(new PathMatch("cdilla51.dll", useEndsWith: true), "C-Dilla License Management System"),
+                new PathMatchSet(new PathMatch("cdilla52.dll", useEndsWith: true), "C-Dilla License Management System"),
+
                 // Found in the installer C-Dilla LMS version 3.27.000.
                 // The files "CdRemove.exe", "CdSet32.exe", "CdSet32.ini", "CdSetup.exe", "CdSetup.ini", and "CdUnin16.exe" are found there as well, but aren't currently checked for due to possibly being too generic.
                 // TODO: Add grouped check for "CdRemove.exe", "CdSet32.exe", "CdSet32.ini", "CdSetup.exe", "CdSetup.ini", and "CdUnin16.exe".
@@ -168,6 +180,12 @@ namespace BurnOutSharp.ProtectionType
                 new PathMatchSet(new PathMatch("CDILLA05.DLL", useEndsWith: true), "C-Dilla License Management System"),
                 new PathMatchSet(new PathMatch("CDILLA10.EXE", useEndsWith: true), "C-Dilla License Management System"),
                 new PathMatchSet(new PathMatch("CDILLA40.DLL", useEndsWith: true), "C-Dilla License Management System"),
+
+                // Found in C-Dilla LMS version 3.24.010 (IA item "ejay_nestle_trial").
+                // TODO: Verify that all of these are exclusively part of LMS, and not SafeCast.
+                new PathMatchSet(new PathMatch("CdaLMS.exe", useEndsWith: true), "C-Dilla License Management System"),
+                new PathMatchSet(new PathMatch("cdilla51.dll", useEndsWith: true), "C-Dilla License Management System"),
+                new PathMatchSet(new PathMatch("cdilla52.dll", useEndsWith: true), "C-Dilla License Management System"),
 
                 // Found in the installer C-Dilla LMS version 3.27.000.
                 // The files "CdRemove.exe", "CdSet32.exe", "CdSet32.ini", "CdSetup.exe", "CdSetup.ini", and "CdUnin16.exe" are found there as well, but aren't currently checked for due to possibly being too generic.

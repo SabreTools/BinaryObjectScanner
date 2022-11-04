@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using BurnOutSharp.ExecutableType.Microsoft.NE;
 using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
@@ -33,6 +34,23 @@ namespace BurnOutSharp.ProtectionType
     /// </summary>
     public partial class Macrovision
     {
+        /// <inheritdoc/>
+        public string SafeCastCheckNewExecutable(string file, NewExecutable nex, bool includeDebug)
+        {
+            // Get the DOS stub from the executable, if possible
+            var stub = nex?.DOSStubHeader;
+            if (stub == null)
+                return null;
+
+            // TODO: Implement the following NE checks:
+
+            // File Description "CdaC01A" in "cdac01aa.dll" from IA item "ejay_nestle_trial".
+            // File Description "CdaC01BA" in "cdac01ba.dll" from IA item "ejay_nestle_trial".
+            // Product name "SafeCas" in "cdac01aa.dll" from IA item "ejay_nestle_trial".
+            // Product name "SafeCast" in "cdac01ba.dll" from IA item "ejay_nestle_trial".
+
+            return null;
+        }
         internal string SafeCastCheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
@@ -73,6 +91,10 @@ namespace BurnOutSharp.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
+                // Found in IA item "ejay_nestle_trial".
+                new PathMatchSet(new PathMatch("cdac01aa.dll", useEndsWith: true), "SafeCast"),
+                new PathMatchSet(new PathMatch("cdac01ba.dll", useEndsWith: true), "SafeCast"),
+
                 // Found in multiple versions of SafeCast, including Redump entry 83145 and IA item "TurboTax_Deluxe_Tax_Year_2002_for_Wndows_2.00R_Intuit_2002_352282".
                 new PathMatchSet(new PathMatch("cdac14ba.dll", useEndsWith: true), "SafeCast"),
 
@@ -91,6 +113,10 @@ namespace BurnOutSharp.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
+                // Found in IA item "ejay_nestle_trial".
+                new PathMatchSet(new PathMatch("cdac01aa.dll", useEndsWith: true), "SafeCast"),
+                new PathMatchSet(new PathMatch("cdac01ba.dll", useEndsWith: true), "SafeCast"),
+
                 new PathMatchSet(new PathMatch("cdac11ba.exe", useEndsWith: true), "SafeCast"),
 
                 // Found in multiple versions of SafeCast, including Redump entry 83145 and IA item "TurboTax_Deluxe_Tax_Year_2002_for_Wndows_2.00R_Intuit_2002_352282".
