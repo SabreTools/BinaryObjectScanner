@@ -14,5 +14,27 @@ namespace BurnOutSharp.Models.LinearExecutable
         /// MS-DOS executable header
         /// </summary>
         public MSDOS.ExecutableHeader Stub { get; set; }
+
+        /// <summary>
+        /// Information block
+        /// </summary>
+        public InformationBlock InformationBlock { get; set; }
+
+        // TODO: Object table
+        // TODO: Object page map table
+        // TODO: Object iterate data map table
+        // TODO: Resource table
+        // TODO: Resident-names table
+        // TODO: Entry table
+        // TODO: Module directives table
+        // TODO: Fix-up page table
+        // TODO: Fix-up record table
+        // TODO: Imported modules name table
+        // TODO: Imported procedures name table
+        // TODO: Per-page checksum table
+
+        // TODO: Code or Data Segment X
+
+        // TODO: Non-resident table
     }
 }
