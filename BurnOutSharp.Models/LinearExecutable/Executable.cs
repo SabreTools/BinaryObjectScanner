@@ -25,7 +25,11 @@ namespace BurnOutSharp.Models.LinearExecutable
         /// </summary>
         public ObjectTableEntry[] ObjectTable { get; set; }
 
-        // TODO: Object page map table
+        /// <summary>
+        /// Object page table
+        /// </summary>
+        public ObjectPageTableEntry[] ObjectPageTable { get; set; }
+
         // TODO: Object iterate data map table
         // TODO: Resource table
         // TODO: Resident-names table

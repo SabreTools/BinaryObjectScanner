@@ -313,6 +313,35 @@ namespace BurnOutSharp.Models.LinearExecutable
         PrivilegeLevel = 0x8000,
     }
 
+    [Flags]
+    public enum ObjectPageFlags : ushort
+    {
+        /// <summary>
+        /// Legal Physical Page in the module (Offset from Preload Page Section).
+        /// </summary>
+        LegalPhysicalPage = 0x0000,
+
+        /// <summary>
+        /// Iterated Data Page (Offset from Iterated Data Pages Section).
+        /// </summary>
+        IteratedDataPage = 0x0001,
+
+        /// <summary>
+        /// Invalid Page (zero).
+        /// </summary>
+        InvalidPage = 0x0002,
+
+        /// <summary>
+        /// Zero Filled Page (zero).
+        /// </summary>
+        ZeroFilledPage = 0x0003,
+
+        /// <summary>
+        /// Range of Pages.
+        /// </summary>
+        RangeOfPages = 0x0004,
+    }
+
     public enum OperatingSystem : ushort
     {
         /// <summary>
