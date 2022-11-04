@@ -26,7 +26,10 @@ namespace BurnOutSharp.Models.NewExecutable
         /// </summary>
         public SegmentTableEntry[] SegmentTable { get; set; }
 
-        // TODO: NE Resource Table
+        /// <summary>
+        /// Resource table
+        /// </summary>
+        public ResourceTable ResourceTable { get; set; }
 
         /// <summary>
         /// Resident-Name table

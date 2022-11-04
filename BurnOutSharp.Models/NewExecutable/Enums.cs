@@ -151,6 +151,25 @@ namespace BurnOutSharp.Models.NewExecutable
     }
 
     [Flags]
+    public enum ResourceTypeResourceFlag : ushort
+    {
+        /// <summary>
+        /// Resource is not fixed.
+        /// </summary>
+        MOVEABLE = 0x0010,
+
+        /// <summary>
+        /// Resource can be shared.
+        /// </summary>
+        PURE = 0x0020,
+
+        /// <summary>
+        /// Resource is preloaded.
+        /// </summary>
+        PRELOAD = 0x0040,
+    }
+
+    [Flags]
     public enum SegmentTableEntryFlag : ushort
     {
         /// <summary>
