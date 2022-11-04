@@ -26,12 +26,30 @@ namespace BurnOutSharp.Models.NewExecutable
         /// </summary>
         public SegmentTableEntry[] SegmentTable { get; set; }
 
-        // TODO: Resource Table
-        // TODO: Resident-Name Table
-        // TODO: Module-Reference Table
-        // TODO: Imported-Name Table
+        // TODO: NE Resource Table
+
+        /// <summary>
+        /// Resident-Name table
+        /// </summary>
+        public ResidentNameTableEntry[] ResidentNameTable { get; set; }
+
+        /// <summary>
+        /// Module-Reference table
+        /// </summary>
+        public ModuleReferenceTableEntry[] ModuleReferenceTable { get; set; }
+
+        /// <summary>
+        /// Imported-Name table
+        /// </summary>
+        public ImportedNameTableEntry[] ImportedNameTable { get; set; }
+
         // TODO: Entry Table
-        // TODO: Nonresident-Name Table
+
+        /// <summary>
+        /// Nonresident-Name table
+        /// </summary>
+        public NonResidentNameTableEntry[] NonResidentNameTable { get; set; }
+
         // TODO: Per Segment Data
     }
 }
