@@ -5,6 +5,8 @@ namespace BurnOutSharp.Models.NewExecutable
     [Flags]
     public enum HeaderFlag : ushort
     {
+        #region Program Flags
+
         NOAUTODATA = 0x0000,
 
         /// <summary>
@@ -18,9 +20,73 @@ namespace BurnOutSharp.Models.NewExecutable
         MULTIPLEDATA = 0x0002,
 
         /// <summary>
+        /// Global initialization
+        /// </summary>
+        GlobalInitialization = 0x0004,
+
+        /// <summary>
+        /// Protected mode only
+        /// </summary>
+        ProtectedModeOnly = 0x0008,
+
+        /// <summary>
+        /// 8086 instructions
+        /// </summary>
+        Instructions8086 = 0x0010,
+
+        /// <summary>
+        /// 80286 instructions
+        /// </summary>
+        Instructions80286 = 0x0020,
+
+        /// <summary>
+        /// 80386 instructions
+        /// </summary>
+        Instructions80386 = 0x0040,
+
+        /// <summary>
+        /// 80x87 instructions
+        /// </summary>
+        Instructions80x87 = 0x0080,
+
+        #endregion
+
+        #region Application Flags
+
+        /// <summary>
+        /// Full screen (not aware of Windows/P.M. API)
+        /// </summary>
+        FullScreen = 0x0100,
+
+        /// <summary>
+        /// Compatible with Windows/P.M. API
+        /// </summary>
+        WindowsPMCompatible = 0x0200,
+
+        /// <summary>
+        /// Uses Windows/P.M. API
+        /// </summary>
+        WindowsPM = 0x0400,
+
+        /// <summary>
+        /// OS/2 family application
+        /// </summary>
+        OS2FamilyApplication = 0x0800,
+
+        /// <summary>
+        /// Unknown (Reserved?)
+        /// </summary>
+        UnknownReserved = 0x1000,
+
+        /// <summary>
         /// Errors detected at link time, module will not load
         /// </summary>
         ErrorsDetectedAtLinkTime = 0x2000,
+
+        /// <summary>
+        /// Unknown (non-conforming program)
+        /// </summary>
+        UnknownNonConforming = 0x4000,
 
         /// <summary>
         /// Library module.
@@ -42,6 +108,8 @@ namespace BurnOutSharp.Models.NewExecutable
         /// dynamic-link to another program.
         /// </remarks>
         LibraryModule = 0x8000,
+
+        #endregion
     }
 
     public enum OperatingSystem : byte
