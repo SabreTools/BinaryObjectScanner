@@ -46,7 +46,11 @@ namespace BurnOutSharp.Models.NewExecutable
 
     public enum OperatingSystem : byte
     {
+        OS2 = 0x01,
         WINDOWS = 0x02,
+        EU_MSDOS4 = 0x03,
+        WINDOWS_386 = 0x04,
+        BOSS = 0x05,
     }
 
     [Flags]
