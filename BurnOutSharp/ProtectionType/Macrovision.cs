@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using BurnOutSharp.ExecutableType.Microsoft.NE;
 using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Interfaces;
@@ -63,25 +64,30 @@ namespace BurnOutSharp.ProtectionType
 
             // Check for specific indications for individual Macrovision protections.
 
+            List<string> resultsList = new List<string>();
+
             // Run C-Dilla PE checks
             string cDilla = CDillaCheckPortableExecutable(file, pex, includeDebug);
             if (!string.IsNullOrWhiteSpace(cDilla))
-                return cDilla;
+                resultsList.Add(cDilla);
 
             // Run SafeCast PE checks
             string safeCast = SafeCastCheckPortableExecutable(file, pex, includeDebug);
             if (!string.IsNullOrWhiteSpace(safeCast))
-                return safeCast;
+                resultsList.Add(safeCast);
 
             // Run SafeDisc PE checks
             string safeDisc = SafeDiscCheckPortableExecutable(file, pex, includeDebug);
             if (!string.IsNullOrWhiteSpace(safeDisc))
-                return safeDisc;
+                resultsList.Add(safeDisc);
 
             // Run FLEXnet PE checks
             string flexnet = FLEXnetCheckPortableExecutable(file, pex, includeDebug);
             if (!string.IsNullOrWhiteSpace(flexnet))
-                return flexnet;
+                resultsList.Add(flexnet);
+
+            if (resultsList != null && resultsList.Count > 0)
+                return string.Join(", ", resultsList);
 
             return null;
         }

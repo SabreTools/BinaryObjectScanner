@@ -70,6 +70,24 @@ namespace BurnOutSharp.ProtectionType
             if (sections == null)
                 return null;
 
+            // Get the .data section, if it exists
+            if (pex.DataSectionRaw != null)
+            {
+                var matchers = new List<ContentMatchSet>
+                {
+                    // SOFTWARE\C-Dilla\RTS
+                    // Found in "DJMixStation\DJMixStation.exe" in IA item "ejay_nestle_trial".
+                    new ContentMatchSet(new byte?[] { 
+                        0x53, 0x4F, 0x46, 0x54, 0x57, 0x41, 0x52, 0x45, 
+                        0x5C, 0x43, 0x2D, 0x44, 0x69, 0x6C, 0x6C, 0x61, 
+                        0x5C, 0x52, 0x54, 0x53 }, "C-Dilla License Management System"),
+                };
+
+                string match = MatchUtil.GetFirstMatch(file, pex.DataSectionRaw, matchers, includeDebug);
+                if (!string.IsNullOrWhiteSpace(match))
+                    return match;
+            }
+
             string name = pex.FileDescription;
 
             // Found in "CdaIns32.dll" and "CdSet32.exe" from version 3.27.000 of C-Dilla LMS.

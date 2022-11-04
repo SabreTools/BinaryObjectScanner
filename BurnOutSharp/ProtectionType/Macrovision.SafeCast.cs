@@ -40,6 +40,25 @@ namespace BurnOutSharp.ProtectionType
             if (sections == null)
                 return null;
 
+            // Get the .data section, if it exists
+            if (pex.DataSectionRaw != null)
+            {
+                var matchers = new List<ContentMatchSet>
+                {
+                    // SOFTWARE\C-Dilla\SafeCast
+                    // Found in "DJMixStation\DJMixStation.exe" in IA item "ejay_nestle_trial".
+                    new ContentMatchSet(new byte?[] {
+                        0x53, 0x4F, 0x46, 0x54, 0x57, 0x41, 0x52, 0x45, 
+                        0x5C, 0x43, 0x2D, 0x44, 0x69, 0x6C, 0x6C, 0x61, 
+                        0x5C, 0x53, 0x61, 0x66, 0x65, 0x43, 0x61, 0x73,
+                        0x74 }, "SafeCast"),
+                };
+
+                string match = MatchUtil.GetFirstMatch(file, pex.DataSectionRaw, matchers, includeDebug);
+                if (!string.IsNullOrWhiteSpace(match))
+                    return match;
+            }
+
             string name = pex.FileDescription;
             if (name?.Equals("SafeCast2", StringComparison.OrdinalIgnoreCase) == true)
                 return $"SafeCast";
