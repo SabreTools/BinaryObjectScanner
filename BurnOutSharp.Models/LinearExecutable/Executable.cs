@@ -49,8 +49,13 @@ namespace BurnOutSharp.Models.LinearExecutable
         /// </summary>
         public ModuleFormatDirectivesTableEntry[] ModuleFormatDirectivesTable { get; set; }
 
-        // TODO: Resident directives data
-        // TODO: Per-page checksum table
+        // TODO: Verify Record directives table
+
+        /// <summary>
+        /// Per-Page checksum table
+        /// </summary>
+        public PerPageChecksumTableEntry[] PerPageChecksumTable { get; set; }
+
         // TODO: Fix-up page table
         // TODO: Fix-up record table
         // TODO: Imported modules name table
