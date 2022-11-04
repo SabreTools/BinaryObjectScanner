@@ -64,6 +64,42 @@ namespace BurnOutSharp.Models.LinearExecutable
         MIPSMarkIII = 0x42,
     }
 
+    public enum DirectiveNumber : ushort
+    {
+        /// <summary>
+        /// Resident Flag Mask.
+        /// </summary>
+        /// <remarks>
+        /// Directive numbers with this bit set indicate that the directive data
+        /// is in the resident area and will be kept resident in memory when the
+        /// module is loaded.
+        /// </remarks>
+        ResidentFlagMask = 0x8000,
+
+        /// <summary>
+        /// Verify Record Directive. (Verify record is a resident table.)
+        /// </summary>
+        VerifyRecordDirective = 0x8001,
+
+        /// <summary>
+        /// Language Information Directive. (This is a non-resident table.)
+        /// </summary>
+        LanguageInformationDirective = 0x0002,
+
+        /// <summary>
+        /// Co-Processor Required Support Table.
+        /// </summary>
+        CoProcessorRequiredSupportTable = 0x0003,
+
+        /// <summary>
+        /// Thread State Initialization Directive.
+        /// </summary>
+        ThreadStateInitializationDirective = 0x0004,
+
+        // Additional directives can be added as needed in the future, as long as
+        // they do not overlap previously defined directive numbers.
+    }
+
     [Flags]
     public enum ModuleFlags : uint
     {
