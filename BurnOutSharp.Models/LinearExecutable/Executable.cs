@@ -37,17 +37,30 @@ namespace BurnOutSharp.Models.LinearExecutable
         /// </summary>
         public ResourceTableEntry[] ResourceTable { get; set; }
 
-        // TODO: Resident-names table
+        /// <summary>
+        /// Resident Name table
+        /// </summary>
+        public ResidentNameTableEntry[] ResidentNameTable { get; set; }
+
         // TODO: Entry table
-        // TODO: Module directives table
+        // TODO: Module format directives table
+        // TODO: Resident directives data
+        // TODO: Per-page checksum table
         // TODO: Fix-up page table
         // TODO: Fix-up record table
         // TODO: Imported modules name table
         // TODO: Imported procedures name table
-        // TODO: Per-page checksum table
 
-        // TODO: Code or Data Segment X
+        // TODO: Preload Pages
+        // TODO: Demand Load Pages
+        // TODO: Iterated Pages
 
-        // TODO: Non-resident table
+        /// <summary>
+        /// Non-Resident Name table
+        /// </summary>
+        public NonResidentNameTableEntry[] NonResidentNameTable { get; set; }
+
+        // TODO: Non-resident directives data
+        // TODO: Debug Info
     }
 }
