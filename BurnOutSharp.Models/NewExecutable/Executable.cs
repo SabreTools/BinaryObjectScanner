@@ -55,7 +55,5 @@ namespace BurnOutSharp.Models.NewExecutable
         /// Nonresident-Name table
         /// </summary>
         public NonResidentNameTableEntry[] NonResidentNameTable { get; set; }
-
-        // TODO: Per Segment Data
     }
 }

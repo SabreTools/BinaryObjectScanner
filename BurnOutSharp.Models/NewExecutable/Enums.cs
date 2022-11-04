@@ -184,6 +184,65 @@ namespace BurnOutSharp.Models.NewExecutable
         Unknown = 0xF0,
     }
 
+    public enum OSFixupType : ushort
+    {
+        /// <summary>
+        /// FIARQQ, FJARQQ
+        /// </summary>
+        FIARQQ = 0x0001,
+
+        /// <summary>
+        /// FISRQQ, FJSRQQ
+        /// </summary>
+        FISRQQ = 0x0002,
+
+        /// <summary>
+        /// FICRQQ, FJCRQQ
+        /// </summary>
+        FICRQQ = 0x0003,
+
+        FIERQQ = 0x0004,
+
+        FIDRQQ = 0x0005,
+
+        FIWRQQ = 0x0006,
+    }
+
+    [Flags]
+    public enum RelocationRecordFlag : byte
+    {
+        TARGET_MASK = 0x03,
+
+        INTERNALREF = 0x00,
+
+        IMPORTORDINAL = 0x01,
+
+        IMPORTNAME = 0x02,
+
+        OSFIXUP = 0x03,
+
+        ADDITIVE = 0x04,
+    }
+
+    public enum RelocationRecordSourceType : byte
+    {
+        SOURCE_MASK = 0x0F,
+
+        LOBYTE = 0x00,
+
+        SEGMENT = 0x02,
+
+        /// <summary>
+        /// 32-bit pointer
+        /// </summary>
+        FAR_ADDR = 0x03,
+
+        /// <summary>
+        /// 16-bit offset
+        /// </summary>
+        OFFSET = 0x05,
+    }
+
     [Flags]
     public enum ResourceTypeResourceFlag : ushort
     {
