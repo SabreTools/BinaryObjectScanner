@@ -2,7 +2,7 @@
 
 namespace BurnOutSharp.Models.LinearExecutable
 {
-    // TODO: Should this be a flag?
+    [Flags]
     public enum BundleType : byte
     {
         /// <summary>
@@ -159,6 +159,157 @@ namespace BurnOutSharp.Models.LinearExecutable
 
         // Additional directives can be added as needed in the future, as long as
         // they do not overlap previously defined directive numbers.
+    }
+
+    [Flags]
+    public enum FixupRecordSourceType : byte
+    {
+        /// <summary>
+        /// Source mask.
+        /// </summary>
+        SourceMask = 0x0F,
+
+        /// <summary>
+        /// Byte fixup (8-bits).
+        /// </summary>
+        ByteFixup = 0x00,
+
+        /// <summary>
+        /// (undefined).
+        /// </summary>
+        Undefined1 = 0x01,
+
+        /// <summary>
+        /// 16-bit Selector fixup (16-bits).
+        /// </summary>
+        SixteenBitSelectorFixup = 0x02,
+
+        /// <summary>
+        /// 16:16 Pointer fixup (32-bits).
+        /// </summary>
+        SixteenSixteenPointerFixup = 0x03,
+
+        /// <summary>
+        /// (undefined).
+        /// </summary>
+        Undefined4 = 0x04,
+
+        /// <summary>
+        /// 16-bit Offset fixup (16-bits).
+        /// </summary>
+        SixteenBitOffsetFixup = 0x05,
+
+        /// <summary>
+        /// 16:32 Pointer fixup (48-bits).
+        /// </summary>
+        SixteenThirtyTwoPointerFixup = 0x06,
+
+        /// <summary>
+        /// 32-bit Offset fixup (32-bits).
+        /// </summary>
+        ThirtyTwoBitOffsetFixup = 0x07,
+
+        /// <summary>
+        /// 32-bit Self-relative offset fixup (32-bits).
+        /// </summary>
+        ThirtyTwoBitSelfRelativeOffsetFixup = 0x08,
+
+        /// <summary>
+        /// Fixup to Alias Flag.
+        /// </summary>
+        /// <remarks>
+        /// When the 'Fixup to Alias' Flag is  set, the source fixup refers to
+        /// the 16:16 alias for the object. This is only valid for source types
+        /// of 2, 3, and 6. For fixups such as this, the linker and loader will
+        /// be required to perform additional checks such as ensuring that the
+        /// target offset for this fixup is less than 64K.
+        /// </remarks>
+        FixupToAliasFlag = 0x10,
+
+        /// <summary>
+        /// Source List Flag.
+        /// </summary>
+        /// <remarks>
+        /// When  the 'Source  List' Flag is set, the SRCOFF field is compressed
+        /// to a byte and contains the number of source offsets, and a list of source
+        /// offsets follows the end of fixup record (after the optional additive value).
+        /// </remarks>
+        SourceListFlag = 0x20,
+    }
+
+    [Flags]
+    public enum FixupRecordTargetFlags : byte
+    {
+        /// <summary>
+        /// Fixup target type mask.
+        /// </summary>
+        FixupTargetTypeMask = 0x03,
+
+        /// <summary>
+        /// Internal reference.
+        /// </summary>
+        InternalReference = 0x00,
+
+        /// <summary>
+        /// Imported reference by ordinal.
+        /// </summary>
+        ImportedReferenceByOrdinal = 0x01,
+
+        /// <summary>
+        /// Imported reference by name.
+        /// </summary>
+        ImportedReferenceByName = 0x02,
+
+        /// <summary>
+        /// Internal reference via entry table.
+        /// </summary>
+        InternalReferenceViaEntryTable = 0x03,
+
+        /// <summary>
+        /// Additive Fixup Flag.
+        /// </summary>
+        /// <remarks>
+        /// When set, an additive value trails the fixup record (before the optional
+        /// source offset list).
+        /// </remarks>
+        AdditiveFixupFlag = 0x04,
+
+        /// <summary>
+        /// Reserved.  Must be zero.
+        /// </summary>
+        Reserved = 0x08,
+
+        /// <summary>
+        /// 32-bit Target Offset Flag.
+        /// </summary>
+        /// <remarks>
+        /// When set, the target offset is 32-bits, otherwise it is 16-bits.
+        /// </remarks>
+        ThirtyTwoBitTargetOffsetFlag = 0x10,
+
+        /// <summary>
+        /// 32-bit Additive Fixup Flag.
+        /// </summary>
+        /// When set, the additive value is 32-bits, otherwise it is 16-bits.
+        /// </remarks>
+        ThirtyTwoBitAdditiveFixupFlag = 0x20,
+
+        /// <summary>
+        /// 16-bit Object Number/Module Ordinal Flag.
+        /// </summary>
+        /// <remarks>
+        /// When  set, the object number or module ordinal number is 16-bits,
+        /// otherwise it is 8-bits.
+        /// </remarks>
+        SixteenBitObjectNumberModuleOrdinalFlag = 0x40,
+
+        /// <summary>
+        /// 8-bit Ordinal Flag.
+        /// </summary>
+        /// <remarks>
+        /// When set, the ordinal number is 8-bits, otherwise it is 16-bits.
+        /// </remarks>
+        EightBitOrdinalFlag = 0x80,
     }
 
     [Flags]
