@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using BurnOutSharp.ExecutableType.Microsoft.NE;
 using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
@@ -13,8 +14,23 @@ namespace BurnOutSharp.ProtectionType
     /// <summary>
     /// This is a placeholder for all Macrovision-based protections. See partial classes for more details
     /// </summary>
-    public partial class Macrovision : IPathCheck, IPortableExecutableCheck
+    public partial class Macrovision : IPathCheck, INewExecutableCheck, IPortableExecutableCheck
     {
+        /// <inheritdoc/>
+        public string CheckNewExecutable(string file, NewExecutable nex, bool includeDebug)
+        {
+            // Get the DOS stub from the executable, if possible
+            var stub = nex?.DOSStubHeader;
+            if (stub == null)
+                return null;
+
+            string cDilla = CDillaCheckNewExecutable(file, nex, includeDebug);
+            if (!string.IsNullOrWhiteSpace(cDilla))
+                return cDilla;
+
+            return null;
+        }
+
         /// <inheritdoc/>
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {

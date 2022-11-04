@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using BurnOutSharp.ExecutableType.Microsoft.NE;
 using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
@@ -23,7 +24,7 @@ namespace BurnOutSharp.ProtectionType
     /// 
     /// It seems that C-Dilla License Management System is a newer name for their CD-Secure product, based on this URL (https://web.archive.org/web/20050211004709/http://www.macrovision.com/products/cdsecure/downloads.shtml) leading to a download of LMS.
     /// Known versions:
-    /// 1.31.34 (https://archive.org/details/PCDDec1995).
+    /// 1.31.34 (1.37.00?) (https://archive.org/details/PCDDec1995).
     /// 3.23.000 (https://archive.org/details/3ds-max-4.2original).
     /// 3.24.010 (https://archive.org/details/ejay_nestle_trial).
     /// 3.27.000 (https://download.autodesk.com/mne/web/support/3dstudio/C-Dilla3.27.zip).
@@ -34,6 +35,34 @@ namespace BurnOutSharp.ProtectionType
     /// </summary>
     public partial class Macrovision
     {
+        /// <inheritdoc/>
+        public string CDillaCheckNewExecutable(string file, NewExecutable nex, bool includeDebug)
+        {
+            // Get the DOS stub from the executable, if possible
+            var stub = nex?.DOSStubHeader;
+            if (stub == null)
+                return null;
+
+            // TODO: Implement NE checks for "CDILLA05", "CDILLA10", "CDILLA16", and "CDILLA40".
+
+            // TODO: Implement the following NE checks:
+
+            // File Description "C-Dilla LMS Uninstaller" in "CdUnin16.exe" from CD-Secure/CD-Compress version 1.31.34.
+            // File Description "C-Dilla RTS DLL" in "CDILLA05.DLL" from CD-Secure/CD-Compress version 1.31.34.
+            // File Description "C-Dilla RTS TASK" in "CDILLA10.DLL" from CD-Secure/CD-Compress version 1.31.34.
+            // File Description "C-Dilla Shell dialogs DLL" in "CDILLA40.DLL" from CD-Secure/CD-Compress version 1.31.34.
+            // Product Name "C-Dilla License Management System" in "CdUnin16.exe" from CD-Secure/CD-Compress version 1.31.34.
+            // Product Name "CD-Secure/CD-Compress" in "CDILLA05.DLL"/"CDILLA10.EXE" from CD-Secure/CD-Compress version 1.31.34.
+
+            // File Description "C-Dilla 16-bit DLL" in "CDILLA40.DLL" from C-Dilla LMS version 3.27.000 for Windows 3.1/95/NT (This file specifically is known to report as version 3.15.000).
+            // File Description "C-Dilla Windows 3.1x RTS" in "CDILLA05.DLL"/"CDILLA10.EXE" from C-Dilla LMS version 3.27.000 for Windows 3.1.
+            // File Description "C-Dilla Windows 95 RTS" in "CDILLA05.DLL"/"CDILLA10.EXE" from C-Dilla LMS version 3.27.000 for Windows 95.
+            // File Description "C-Dilla Windows NT RTS" in "CDILLA05.DLL"/"CDILLA10.EXE"/"CDILLA16.EXE" from C-Dilla LMS version 3.27.000 for Windows NT.
+            // File Description "C-Dilla Windows 16-Bit RTS Installer" in "CdaIns16.dll"/"CdSetup.exe" from C-Dilla LMS version 3.27.000.
+
+
+            return null;
+        }
         internal string CDillaCheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         { 
             // Get the sections from the executable, if possible
@@ -43,33 +72,19 @@ namespace BurnOutSharp.ProtectionType
 
             string name = pex.FileDescription;
 
-            // Found in "CdaIns16.dll" and "CdSetup.exe" from version 3.27.000 of C-Dilla LMS.
-            if (name?.Equals("C-Dilla Windows 16-Bit RTS Installer", StringComparison.OrdinalIgnoreCase) == true)
-                return $"C-Dilla License Management System Version {pex.ProductVersion}";
-
             // Found in "CdaIns32.dll" and "CdSet32.exe" from version 3.27.000 of C-Dilla LMS.
             if (name?.Equals("C-Dilla Windows 32-Bit RTS Installer", StringComparison.OrdinalIgnoreCase) == true)
                 return $"C-Dilla License Management System Version {pex.ProductVersion}";
 
-            // Found in "CdUnin16.exe" from version 3.27.000 of C-Dilla LMS.
-            if (name?.Equals("C-Dilla LMS Uninstaller", StringComparison.OrdinalIgnoreCase) == true)
-                return $"C-Dilla License Management System Version {pex.ProductVersion}";
-
-            // Found in "CDILLA05.DLL"/"CDILLA10.EXE"/"CDILLA32.DLL"/"CDILLA64.EXE" from C-Dilla LMS version 3.27.000 for Windows 3.1.
+            // Found in "CDILLA32.DLL"/"CDILLA64.EXE" from C-Dilla LMS version 3.27.000 for Windows 3.1.
             if (name?.Equals("C-Dilla Windows 3.1x RTS", StringComparison.OrdinalIgnoreCase) == true)
                 return $"C-Dilla License Management System Version {pex.ProductVersion}";
-            
-            // TODO: Implement check properly once NE checks are supported.
-            // Found in "CDILLA40.DLL" from C-Dilla LMS version 3.27.000 for Windows 3.1/95/NT.
-            // This file specifically is known to stop at version 3.15.000, even when included in newer versions of C-Dilla LMS.
-            //    if (name?.Equals("C-Dilla 16-bit DLL", StringComparison.OrdinalIgnoreCase) == true)
-            //        return $"C-Dilla License Management System Version {pex.ProductVersion}"; 
 
-            // Found in "CDILLA05.DLL"/"CDILLA10.EXE"/"CDILLA13.DLL"/"CDILLA32.DLL"/"CDILLA64.EXE" from C-Dilla LMS version 3.27.000 for Windows 95.
+            // Found in "CDILLA13.DLL"/"CDILLA32.DLL"/"CDILLA64.EXE" from C-Dilla LMS version 3.27.000 for Windows 95.
             if (name?.Equals("C-Dilla Windows 95 RTS", StringComparison.OrdinalIgnoreCase) == true)
                 return $"C-Dilla License Management System Version {pex.ProductVersion}";
 
-            // Found in "CDANT.SYS"/"CDILLA05.DLL"/"CDILLA10.EXE"/"CDILLA13.DLL"/"CDILLA16.EXE"/"CDILLA32.DLL"/"CDILLA64.EXE" from C-Dilla LMSversion 3.27.000 for Windows NT.
+            // Found in "CDANT.SYS"/"CDILLA13.DLL"/"CDILLA32.DLL"/"CDILLA64.EXE" from C-Dilla LMSversion 3.27.000 for Windows NT.
             if (name?.Equals("C-Dilla Windows NT RTS", StringComparison.OrdinalIgnoreCase) == true)
                 return $"C-Dilla License Management System Version {pex.ProductVersion}";
 
@@ -78,10 +93,6 @@ namespace BurnOutSharp.ProtectionType
                 return $"C-Dilla License Management System Version {pex.ProductVersion}";
 
             name = pex.ProductName;
-
-            // Found in "CdUnin16.exe" from version 3.27.000 of C-Dilla LMS.
-            if (name?.Equals("C-Dilla License Management System", StringComparison.OrdinalIgnoreCase) == true)
-                return $"C-Dilla License Management System Version {pex.ProductVersion}";
 
             // Found in "CDANTSRV.EXE" from version 3.27.000 of C-Dilla LMS.
             if (name?.Equals("CD-Secure/CD-Compress Windows NT", StringComparison.OrdinalIgnoreCase) == true)
@@ -97,6 +108,12 @@ namespace BurnOutSharp.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
+                // Found in C-Dilla CD-Secure/CD-Compress 1.31.34.
+                new PathMatchSet(new PathMatch("CDANT.DLL", useEndsWith: true), "C-Dilla License Management System"),
+                new PathMatchSet(new PathMatch("CDILLA05.DLL", useEndsWith: true), "C-Dilla License Management System"),
+                new PathMatchSet(new PathMatch("CDILLA10.EXE", useEndsWith: true), "C-Dilla License Management System"),
+                new PathMatchSet(new PathMatch("CDILLA40.DLL", useEndsWith: true), "C-Dilla License Management System"),
+
                 // Found in the installer C-Dilla LMS version 3.27.000.
                 // The files "CdRemove.exe", "CdSet32.exe", "CdSet32.ini", "CdSetup.exe", "CdSetup.ini", and "CdUnin16.exe" are found there as well, but aren't currently checked for due to possibly being too generic.
                 // TODO: Add grouped check for "CdRemove.exe", "CdSet32.exe", "CdSet32.ini", "CdSetup.exe", "CdSetup.ini", and "CdUnin16.exe".
@@ -104,11 +121,9 @@ namespace BurnOutSharp.ProtectionType
                 new PathMatchSet(new PathMatch("CdaIns32.dll", useEndsWith: true), "C-Dilla License Management System"),
 
                 // Found installed in C-Dilla LMS version 3.27.000 for Windows 3.1.
+                // The files "CDILLA05.DLL", "CDILLA10.EXE", and "CDILLA40.DLL" are included as well.
                 // TODO: Check into what file "CDAW31X.38_" gets installed as. I wasn't able to find what it gets installed to.
-                new PathMatchSet(new PathMatch("CDILLA05.DLL", useEndsWith: true), "C-Dilla License Management System"),
-                new PathMatchSet(new PathMatch("CDILLA10.EXE", useEndsWith: true), "C-Dilla License Management System"),
                 new PathMatchSet(new PathMatch("CDILLA32.DLL", useEndsWith: true), "C-Dilla License Management System"),
-                new PathMatchSet(new PathMatch("CDILLA40.DLL", useEndsWith: true), "C-Dilla License Management System"),
                 new PathMatchSet(new PathMatch("CDILLA64.EXE", useEndsWith: true), "C-Dilla License Management System"),
 
                 // Found installed in C-Dilla LMS version 3.27.000 for Windows 95. All the files installed for Windows 3.1 are also installed for 95.
@@ -130,17 +145,22 @@ namespace BurnOutSharp.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
+                // Found in C-Dilla CD-Secure/CD-Compress 1.31.34.
+                new PathMatchSet(new PathMatch("CDANT.DLL", useEndsWith: true), "C-Dilla License Management System"),
+                new PathMatchSet(new PathMatch("CDILLA05.DLL", useEndsWith: true), "C-Dilla License Management System"),
+                new PathMatchSet(new PathMatch("CDILLA10.EXE", useEndsWith: true), "C-Dilla License Management System"),
+                new PathMatchSet(new PathMatch("CDILLA40.DLL", useEndsWith: true), "C-Dilla License Management System"),
+
                 // Found in the installer C-Dilla LMS version 3.27.000.
                 // The files "CdRemove.exe", "CdSet32.exe", "CdSet32.ini", "CdSetup.exe", "CdSetup.ini", and "CdUnin16.exe" are found there as well, but aren't currently checked for due to possibly being too generic.
+                // TODO: Add grouped check for "CdRemove.exe", "CdSet32.exe", "CdSet32.ini", "CdSetup.exe", "CdSetup.ini", and "CdUnin16.exe".
                 new PathMatchSet(new PathMatch("CdaIns16.dll", useEndsWith: true), "C-Dilla License Management System"),
                 new PathMatchSet(new PathMatch("CdaIns32.dll", useEndsWith: true), "C-Dilla License Management System"),
 
                 // Found installed in C-Dilla LMS version 3.27.000 for Windows 3.1.
+                // The files "CDILLA05.DLL", "CDILLA10.EXE", and "CDILLA40.DLL" are included as well.
                 // TODO: Check into what file "CDAW31X.38_" gets installed as. I wasn't able to find what it gets installed to.
-                new PathMatchSet(new PathMatch("CDILLA05.DLL", useEndsWith: true), "C-Dilla License Management System"),
-                new PathMatchSet(new PathMatch("CDILLA10.EXE", useEndsWith: true), "C-Dilla License Management System"),
                 new PathMatchSet(new PathMatch("CDILLA32.DLL", useEndsWith: true), "C-Dilla License Management System"),
-                new PathMatchSet(new PathMatch("CDILLA40.DLL", useEndsWith: true), "C-Dilla License Management System"),
                 new PathMatchSet(new PathMatch("CDILLA64.EXE", useEndsWith: true), "C-Dilla License Management System"),
 
                 // Found installed in C-Dilla LMS version 3.27.000 for Windows 95. All the files installed for Windows 3.1 are also installed for 95.
