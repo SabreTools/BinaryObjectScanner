@@ -51,6 +51,7 @@ namespace BurnOutSharp.ProtectionType
 
             return null;
         }
+
         internal string SafeCastCheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible

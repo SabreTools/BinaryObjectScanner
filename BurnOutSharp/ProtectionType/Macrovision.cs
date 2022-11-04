@@ -25,9 +25,20 @@ namespace BurnOutSharp.ProtectionType
             if (stub == null)
                 return null;
 
+            List<string> resultsList = new List<string>();
+
+            // Run C-Dilla NE checks
             string cDilla = CDillaCheckNewExecutable(file, nex, includeDebug);
             if (!string.IsNullOrWhiteSpace(cDilla))
-                return cDilla;
+                resultsList.Add(cDilla);
+
+            // Run SafeCast NE checks
+            string safeCast = SafeCastCheckNewExecutable(file, nex, includeDebug);
+            if (!string.IsNullOrWhiteSpace(safeCast))
+                resultsList.Add(safeCast);
+
+            if (resultsList != null && resultsList.Count > 0)
+                return string.Join(", ", resultsList);
 
             return null;
         }
@@ -97,20 +108,25 @@ namespace BurnOutSharp.ProtectionType
         {
             // TODO: Add all common Macrovision directory path checks here
 
+            ConcurrentQueue<string> results = new ConcurrentQueue<string>();
+
             // Run C-Dilla directory checks
             var cDilla = CDillaCheckDirectoryPath(path, files);
             if (cDilla != null && !cDilla.IsEmpty)
-                return cDilla;
+                results.AddRange(cDilla);
 
             // Run SafeCast directory checks
             var safeCast = SafeCastCheckDirectoryPath(path, files);
             if (safeCast != null && !safeCast.IsEmpty)
-                return safeCast;
+                results.AddRange(safeCast);
 
             // Run SafeDisc directory checks
             var safeDisc = SafeDiscCheckDirectoryPath(path, files);
             if (safeDisc != null && !safeDisc.IsEmpty)
-                return safeDisc;
+                results.AddRange(safeDisc);
+
+            if (results != null && results.Count > 0)
+                return results;
 
             return MatchUtil.GetAllMatches(files, null, any: false);
         }
@@ -120,20 +136,25 @@ namespace BurnOutSharp.ProtectionType
         {
             // TODO: Add all common Macrovision file path checks here
 
+            List<string> resultsList = new List<string>();
+
             // Run C-Dilla file checks
             string cDilla = CDillaCheckFilePath(path);
             if (!string.IsNullOrWhiteSpace(cDilla))
-                return cDilla;
+                resultsList.Add(cDilla);
 
             // Run SafeCast file checks
             string safeCast = SafeCastCheckFilePath(path);
             if (!string.IsNullOrWhiteSpace(safeCast))
-                return safeCast;
+                resultsList.Add(safeCast);
 
             // Run SafeDisc file checks
             string safeDisc = SafeDiscCheckFilePath(path);
             if (!string.IsNullOrWhiteSpace(safeDisc))
-                return safeDisc;
+                resultsList.Add(safeDisc);
+
+            if (resultsList != null && resultsList.Count > 0)
+                return string.Join(", ", resultsList);
 
             return MatchUtil.GetFirstMatch(path, null, any: true);
         }

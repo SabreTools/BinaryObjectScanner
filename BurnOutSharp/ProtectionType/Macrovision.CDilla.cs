@@ -65,6 +65,7 @@ namespace BurnOutSharp.ProtectionType
 
             return null;
         }
+
         internal string CDillaCheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         { 
             // Get the sections from the executable, if possible
