@@ -59,7 +59,11 @@ namespace BurnOutSharp.Models.LinearExecutable
         /// </summary>
         public PerPageChecksumTableEntry[] PerPageChecksumTable { get; set; }
 
-        // TODO: Fix-up page table
+        /// <summary>
+        /// Fix-up page table
+        /// </summary>
+        public FixupPageTableEntry[] FixupPageTable { get; set; }
+
         // TODO: Fix-up record table
 
         /// <summary>
@@ -81,7 +85,7 @@ namespace BurnOutSharp.Models.LinearExecutable
         /// </summary>
         public NonResidentNameTableEntry[] NonResidentNameTable { get; set; }
 
-        // TODO: Non-resident directives data
+        // TODO: Non-resident directives data (Undefined)
 
         /// <summary>
         /// Debug information
