@@ -47,6 +47,11 @@ namespace BurnOutSharp.ProtectionType
 
             // Check for specific indications for individual Macrovision protections.
 
+            // Run C-Dilla PE checks
+            string cDilla = CDillaCheckPortableExecutable(file, pex, includeDebug);
+            if (!string.IsNullOrWhiteSpace(cDilla))
+                return cDilla;
+
             // Run SafeCast PE checks
             string safeCast = SafeCastCheckPortableExecutable(file, pex, includeDebug);
             if (!string.IsNullOrWhiteSpace(safeCast))
@@ -70,10 +75,17 @@ namespace BurnOutSharp.ProtectionType
         {
             // TODO: Add all common Macrovision directory path checks here
 
+            // Run C-Dilla directory checks
+            var cDilla = CDillaCheckDirectoryPath(path, files);
+            if (cDilla != null && !cDilla.IsEmpty)
+                return cDilla;
+
+            // Run SafeCast directory checks
             var safeCast = SafeCastCheckDirectoryPath(path, files);
             if (safeCast != null && !safeCast.IsEmpty)
                 return safeCast;
 
+            // Run SafeDisc directory checks
             var safeDisc = SafeDiscCheckDirectoryPath(path, files);
             if (safeDisc != null && !safeDisc.IsEmpty)
                 return safeDisc;
@@ -86,10 +98,17 @@ namespace BurnOutSharp.ProtectionType
         {
             // TODO: Add all common Macrovision file path checks here
 
+            // Run C-Dilla file checks
+            string cDilla = CDillaCheckFilePath(path);
+            if (!string.IsNullOrWhiteSpace(cDilla))
+                return cDilla;
+
+            // Run SafeCast file checks
             string safeCast = SafeCastCheckFilePath(path);
             if (!string.IsNullOrWhiteSpace(safeCast))
                 return safeCast;
 
+            // Run SafeDisc file checks
             string safeDisc = SafeDiscCheckFilePath(path);
             if (!string.IsNullOrWhiteSpace(safeDisc))
                 return safeDisc;

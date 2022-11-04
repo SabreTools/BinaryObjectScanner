@@ -34,6 +34,7 @@ Below is a list of protections detected by BurnOutSharp. The two columns explain
 | BD+ | False | True | |
 | Bitpool | False | True | |
 | ByteShield | False | True | Unconfirmed¹ |
+| C-Dilla License Management Solution / CD-Secure / CD-Compress | True | True | |
 | Cactus Data Shield | True | True | |
 | CD-Cops / DVD-Cops | True | True | Partially unconfirmed² |
 | CD-Lock | True | True | |
