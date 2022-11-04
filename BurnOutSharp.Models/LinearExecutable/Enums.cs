@@ -65,49 +65,263 @@ namespace BurnOutSharp.Models.LinearExecutable
     }
 
     [Flags]
-    public enum InformationBlockFlag : uint
+    public enum ModuleFlags : uint
     {
         /// <summary>
-        /// Initialization (Only for DLL):
-        /// 0 	Global
-        /// 1 	Per-Process
+        /// Reserved for system use.
         /// </summary>
-        Initialization = 1 << 2,
+        Reserved0 = 0x00000001,
 
         /// <summary>
-        /// No internal fixup in exe image
+        /// Reserved for system use.
         /// </summary>
-        NoInternalFixup = 1 << 4,
+        Reserved1 = 0x00000002,
 
         /// <summary>
-        /// No internal fixup in exe image
+        /// Per-Process Library Initialization.
         /// </summary>
-        NoExternalFixup = 1 << 5,
-
-        // TODO: Figure out this block of flags
-        // 8, 9, 10 all have the same note:
-        // 0 	Unknown
-        // 1 	Incompatible with PM windowing
-        // 2 	Compatible with PM windowing
-        // 3 	Uses PM windowing API
+        /// <remarks>
+        /// The setting of this bit requires the EIP Object # and EIP fields
+        /// to have valid values. If the EIP Object # and EIP fields are
+        /// valid and this bit is NOT set, then Global Library Initialization
+        /// is assumed. Setting this bit for an EXE file is invalid. 
+        /// </remarks>
+        Initialization = 0x00000004,
 
         /// <summary>
-        /// Module not loadable
+        /// Reserved for system use.
         /// </summary>
-        ModuleNotLoadable = 1 << 13,
+        Reserved3 = 0x00000008,
 
         /// <summary>
-        /// Module is DLL rather then program
+        /// Internal fixups for the module have been applied. 
         /// </summary>
-        IsDLL = 1 << 15,
+        /// <remarks>
+        /// The setting of this bit in a Linear Executable Module indicates that
+        /// each object of the module has a preferred load address specified in
+        /// the Object Table Reloc Base Addr. If the module's objects can not be
+        /// loaded at these preferred addresses, then the relocation records that
+        /// have been retained in the file data will be applied. 
+        /// </remarks>
+        InternalFixupsApplied = 0x00000010,
 
-        // Bits 16-31 are all reserved
+        /// <summary>
+        /// External fixups for the module have been applied.
+        /// </summary>
+        ExternalFixupsApplied = 0x00000020,
+
+        /// <summary>
+        /// Reserved for system use.
+        /// </summary>
+        Reserved6 = 0x00000040,
+
+        /// <summary>
+        /// Reserved for system use.
+        /// </summary>
+        Reserved7 = 0x00000080,
+
+        /// <summary>
+        /// Incompatible with PM windowing.
+        /// </summary>
+        IncompatibleWithPMWindowing = 0x00000100,
+
+        /// <summary>
+        /// Incompatible with PM windowing.
+        /// </summary>
+        CompatibleWithPMWindowing = 0x00000200,
+
+        /// <summary>
+        /// Uses PM windowing API.
+        /// </summary>
+        UsesPMWindowing = 0x00000300,
+
+        /// <summary>
+        /// Reserved for system use.
+        /// </summary>
+        Reserved10 = 0x00000400,
+
+        /// <summary>
+        /// Reserved for system use.
+        /// </summary>
+        Reserved11 = 0x00000800,
+
+        /// <summary>
+        /// Reserved for system use.
+        /// </summary>
+        Reserved12 = 0x00001000,
+
+        /// <summary>
+        /// Module is not loadable.
+        /// </summary>
+        /// <remarks>
+        /// When the 'Module is not loadable' flag is set, it indicates that
+        /// either errors were detected at link time or that the module is
+        /// being incrementally linked and therefore can't be loaded. 
+        /// </remarks>
+        ModuleNotLoadable = 0x00002000,
+
+        /// <summary>
+        /// Reserved for system use.
+        /// </summary>
+        Reserved14 = 0x00004000,
+
+        /// <summary>
+        /// Module type mask.
+        /// </summary>
+        ModuleTypeMask = 0x00038000,
+
+        /// <summary>
+        /// Program module.
+        /// </summary>
+        /// <remarks>
+        /// A module can not contain dynamic links to other modules that have
+        /// the 'program module' type. 
+        /// </remarks>
+        ProgramModule = 0x00000000,
+
+        /// <summary>
+        /// Library module.
+        /// </summary>
+        LibraryModule = 0x00008000,
+
+        /// <summary>
+        /// Protected Memory Library module.
+        /// </summary>
+        ProtectedMemoryLibraryModule = 0x00018000,
+
+        /// <summary>
+        /// Physical Device Driver module.
+        /// </summary>
+        PhysicalDeviceDriverModule = 0x00020000,
+
+        /// <summary>
+        /// Virtual Device Driver module.
+        /// </summary>
+        VirtualDeviceDriverModule = 0x00028000,
+
+        /// <summary>
+        /// Per-process Library Termination.
+        /// </summary>
+        /// <remarks>
+        /// The setting of this bit requires the EIP Object # and EIP fields
+        /// to have valid values. If the EIP Object # and EIP fields are
+        /// valid and this bit is NOT set, then Global Library Termination
+        /// is assumed. Setting this bit for an EXE file is invalid. 
+        /// </remarks>
+        PerProcessLibraryTermination = 0x40000000,
+    }
+
+    [Flags]
+    public enum ObjectFlags : ushort
+    {
+        /// <summary>
+        /// Readable Object.
+        /// </summary>
+        ReadableObject = 0x0001,
+
+        /// <summary>
+        /// Writable Object.
+        /// </summary>
+        WritableObject = 0x0002,
+
+        /// <summary>
+        /// Executable Object.
+        /// </summary>
+        ExecutableObject = 0x0004,
+
+        // The readable, writable and executable flags provide support for all possible
+        // protections. In systems where all of these protections are not supported,
+        // the loader will be responsible for making the appropriate protection match
+        // for the system. 
+
+        /// <summary>
+        /// Resource Object.
+        /// </summary>
+        ResourceObject = 0x0008,
+
+        /// <summary>
+        /// Discardable Object.
+        /// </summary>
+        DiscardableObject = 0x0010,
+
+        /// <summary>
+        /// Object is Shared.
+        /// </summary>
+        Shared = 0x0020,
+
+        /// <summary>
+        /// Object has Preload Pages.
+        /// </summary>
+        HasPreloadPages = 0x0040,
+
+        /// <summary>
+        /// Object has Invalid Pages.
+        /// </summary>
+        HasInvalidPages = 0x0080,
+
+        /// <summary>
+        /// Object has Zero Filled Pages.
+        /// </summary>
+        HasZeroFilledPages = 0x0100,
+
+        /// <summary>
+        /// Object is Resident (valid for VDDs, PDDs only).
+        /// </summary>
+        Resident = 0x0200,
+
+        /// <summary>
+        /// Object is Resident & Contiguous (VDDs, PDDs only).
+        /// </summary>
+        ResidentAndContiguous = 0x0300,
+
+        /// <summary>
+        /// Object is Resident & 'long-lockable' (VDDs, PDDs only).
+        /// </summary>
+        ResidentAndLongLockable = 0x0400,
+
+        /// <summary>
+        /// Reserved for system use.
+        /// </summary>
+        Reserved = 0x0800,
+
+        /// <summary>
+        /// 16:16 Alias Required (80x86 Specific).
+        /// </summary>
+        AliasRequired = 0x1000,
+
+        /// <summary>
+        /// Big/Default Bit Setting (80x86 Specific).
+        /// </summary>
+        BitSetting = 0x2000,
+
+        // The 'big/default' bit, for data segments, controls the setting of the
+        // Big bit in the segment descriptor. (The Big bit, or B-bit, determines
+        // whether ESP or SP is used as the stack pointer.) For code segments,
+        // this bit controls the setting of the Default bit in the segment
+        // descriptor. (The Default bit, or D-bit, determines whether the default
+        // word size is 32-bits or 16-bits. It also affects the interpretation of
+        // the instruction stream.) 
+
+        /// <summary>
+        /// Object is conforming for code (80x86 Specific).
+        /// </summary>
+        Conforming = 0x4000,
+
+        /// <summary>
+        /// Object I/O privilege level (80x86 Specific). Only used for 16:16 Alias Objects.
+        /// </summary>
+        PrivilegeLevel = 0x8000,
     }
 
     public enum OperatingSystem : ushort
     {
         /// <summary>
-        /// OS/2
+        /// Unknown (any "new-format" OS) 
+        /// </summary>
+        Unknown = 0x00,
+
+        /// <summary>
+        /// OS/2 (default)
         /// </summary>
         OS2 = 0x01,
 
