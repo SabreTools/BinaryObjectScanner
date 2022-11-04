@@ -58,7 +58,12 @@ namespace BurnOutSharp.Models.LinearExecutable
 
         // TODO: Fix-up page table
         // TODO: Fix-up record table
-        // TODO: Imported modules name table
+
+        /// <summary>
+        /// Imported module name table
+        /// </summary>
+        public ImportModuleNameTableEntry[] ImportModuleNameTable { get; set; }
+
         // TODO: Imported procedures name table
 
         // TODO: Preload Pages
