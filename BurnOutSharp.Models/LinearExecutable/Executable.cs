@@ -82,6 +82,10 @@ namespace BurnOutSharp.Models.LinearExecutable
         public NonResidentNameTableEntry[] NonResidentNameTable { get; set; }
 
         // TODO: Non-resident directives data
-        // TODO: Debug Info
+
+        /// <summary>
+        /// Debug information
+        /// </summary>
+        public DebugInformation DebugInformation { get; set; }
     }
 }

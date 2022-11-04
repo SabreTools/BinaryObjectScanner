@@ -102,6 +102,29 @@ namespace BurnOutSharp.Models.LinearExecutable
         MIPSMarkIII = 0x42,
     }
 
+    public enum DebugFormatType : byte
+    {
+        /// <summary>
+        /// 32-bit CodeView debugger format.
+        /// </summary>
+        CodeView32Bit = 0x00,
+
+        /// <summary>
+        /// AIX debugger format.
+        /// </summary>
+        AIXDebugger = 0x01,
+
+        /// <summary>
+        /// 16-bit CodeView debugger format.
+        /// </summary>
+        CodeView16Bit = 0x02,
+
+        /// <summary>
+        /// 32-bit OS/2 PM debugger (IBM) format.
+        /// </summary>
+        OS2PM32Bit = 0x04,
+    }
+
     public enum DirectiveNumber : ushort
     {
         /// <summary>
