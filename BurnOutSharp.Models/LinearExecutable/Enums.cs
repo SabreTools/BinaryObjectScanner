@@ -162,6 +162,20 @@ namespace BurnOutSharp.Models.LinearExecutable
     }
 
     [Flags]
+    public enum EntryFlags : byte
+    {
+        /// <summary>
+        /// Exported entry flag.
+        /// </summary>
+        ExportedEntry = 0x01,
+
+        /// <summary>
+        /// Parameter word count mask.
+        /// </summary>
+        ParameterWordCountMask = 0xF8,
+    }
+
+    [Flags]
     public enum FixupRecordSourceType : byte
     {
         /// <summary>
@@ -310,6 +324,20 @@ namespace BurnOutSharp.Models.LinearExecutable
         /// When set, the ordinal number is 8-bits, otherwise it is 16-bits.
         /// </remarks>
         EightBitOrdinalFlag = 0x80,
+    }
+
+    [Flags]
+    public enum ForwarderFlags : byte
+    {
+        /// <summary>
+        /// Import by ordinal.
+        /// </summary>
+        ImportByOrdinal = 0x01,
+
+        /// <summary>
+        /// Reserved for future use; should be zero.
+        /// </summary>
+        Reserved = 0xF7,
     }
 
     [Flags]

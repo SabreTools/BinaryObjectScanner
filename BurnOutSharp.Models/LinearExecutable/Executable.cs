@@ -42,7 +42,10 @@ namespace BurnOutSharp.Models.LinearExecutable
         /// </summary>
         public ResidentNameTableEntry[] ResidentNameTable { get; set; }
 
-        // TODO: Entry table
+        /// <summary>
+        /// Entry table
+        /// </summary>
+        public EntryTableEntry[] EntryTable { get; set; }
 
         /// <summary>
         /// Module format directives table (optional)
