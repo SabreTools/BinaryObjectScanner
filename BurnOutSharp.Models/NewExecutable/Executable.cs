@@ -21,7 +21,11 @@ namespace BurnOutSharp.Models.NewExecutable
         /// </summary>
         public ExecutableHeader Header { get; set; }
 
-        // TODO: Segment Table
+        /// <summary>
+        /// Segment table
+        /// </summary>
+        public SegmentTableEntry[] SegmentTable { get; set; }
+
         // TODO: Resource Table
         // TODO: Resident-Name Table
         // TODO: Module-Reference Table

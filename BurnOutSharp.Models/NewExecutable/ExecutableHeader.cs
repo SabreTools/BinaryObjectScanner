@@ -1,4 +1,3 @@
-using System.IO;
 using System.Runtime.InteropServices;
 
 namespace BurnOutSharp.Models.NewExecutable

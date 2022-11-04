@@ -48,4 +48,43 @@ namespace BurnOutSharp.Models.NewExecutable
     {
         WINDOWS = 0x02,
     }
+
+    [Flags]
+    public enum SegmentTableEntryFlag : ushort
+    {
+        /// <summary>
+        /// Segment-type field.
+        /// </summary>
+        TYPE_MASK = 0x0007,
+
+        /// <summary>
+        /// Code-segment type.
+        /// </summary>
+        CODE = 0x0000,
+
+        /// <summary>
+        /// Data-segment type.
+        /// </summary>
+        DATA = 0x0001,
+
+        /// <summary>
+        /// Segment is not fixed.
+        /// </summary>
+        MOVEABLE = 0x0010,
+
+        /// <summary>
+        /// Segment will be preloaded; read-only if this is a data segment.
+        /// </summary>
+        PRELOAD = 0x0040,
+
+        /// <summary>
+        /// Set if segment has relocation records.
+        /// </summary>
+        RELOCINFO = 0x0100,
+
+        /// <summary>
+        /// Discard priority.
+        /// </summary>
+        DISCARD = 0xF000,
+    }
 }
