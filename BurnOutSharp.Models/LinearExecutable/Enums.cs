@@ -2,6 +2,44 @@
 
 namespace BurnOutSharp.Models.LinearExecutable
 {
+    // TODO: Should this be a flag?
+    public enum BundleType : byte
+    {
+        /// <summary>
+        /// Unused Entry.
+        /// </summary>
+        UnusedEntry = 0x00,
+
+        /// <summary>
+        /// 16-bit Entry.
+        /// </summary>
+        SixteenBitEntry = 0x01,
+
+        /// <summary>
+        /// 286 Call Gate Entry.
+        /// </summary>
+        TwoEightySixCallGateEntry = 0x02,
+
+        /// <summary>
+        /// 32-bit Entry.
+        /// </summary>
+        ThirtyTwoBitEntry = 0x03,
+
+        /// <summary>
+        /// Forwarder Entry.
+        /// </summary>
+        ForwarderEntry = 0x04,
+
+        /// <summary>
+        /// Parameter Typing Information Present.
+        /// </summary>
+        /// <remarks>
+        /// This bit signifies that additional information is contained in the
+        /// linear EXE module and will be used in the future for parameter type checking.
+        /// </remarks>
+        ParameterTypingInformationPresent = 0x80,
+    }
+
     public enum ByteOrder : byte
     {
         /// <summary>
