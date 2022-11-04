@@ -46,7 +46,10 @@ namespace BurnOutSharp.Models.NewExecutable
         /// </summary>
         public ImportedNameTableEntry[] ImportedNameTable { get; set; }
 
-        // TODO: Entry Table
+        /// <summary>
+        /// Entry table
+        /// </summary>
+        public EntryTableBundle[] EntryTable { get; set; }
 
         /// <summary>
         /// Nonresident-Name table

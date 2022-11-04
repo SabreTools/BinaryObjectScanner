@@ -3,6 +3,26 @@
 namespace BurnOutSharp.Models.NewExecutable
 {
     [Flags]
+    public enum FixedSegmentEntryFlag : byte
+    {
+        /// <summary>
+        /// Set if the entry is exported.
+        /// </summary>
+        Exported = 0x01,
+
+        /// <summary>
+        /// Set if the entry uses a global (shared) data segments.
+        /// </summary>
+        /// <remarks>
+        /// The first assembly-language instruction in the
+        /// entry point prologue must be "MOV AX,data
+        /// segment number". This may be set only for
+        /// SINGLEDATA library modules.
+        /// </remarks>
+        Global = 0x02,
+    }
+
+    [Flags]
     public enum HeaderFlag : ushort
     {
         #region Program Flags
@@ -110,6 +130,20 @@ namespace BurnOutSharp.Models.NewExecutable
         LibraryModule = 0x8000,
 
         #endregion
+    }
+
+    [Flags]
+    public enum MoveableSegmentEntryFlag : byte
+    {
+        /// <summary>
+        /// Set if the entry is exported.
+        /// </summary>
+        Exported = 0x01,
+
+        /// <summary>
+        /// Set if the entry uses a global (shared) data segments.
+        /// </summary>
+        Global = 0x02,
     }
 
     public enum OperatingSystem : byte
