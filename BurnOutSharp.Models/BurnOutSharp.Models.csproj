@@ -21,7 +21,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="LinearExecutable\" />
     <Folder Include="PortableExecutable\" />
   </ItemGroup>
 
