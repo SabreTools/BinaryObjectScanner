@@ -49,7 +49,10 @@ namespace BurnOutSharp.Models.LinearExecutable
         /// </summary>
         public ModuleFormatDirectivesTableEntry[] ModuleFormatDirectivesTable { get; set; }
 
-        // TODO: Verify Record directives table
+        /// <summary>
+        /// Verify record directive table (optional)
+        /// </summary>
+        public VerifyRecordDirectiveTableEntry[] VerifyRecordDirectiveTable { get; set; }
 
         /// <summary>
         /// Per-Page checksum table
