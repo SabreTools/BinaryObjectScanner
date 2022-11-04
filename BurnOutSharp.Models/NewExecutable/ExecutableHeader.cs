@@ -168,7 +168,7 @@ namespace BurnOutSharp.Models.NewExecutable
         /// <summary>
         /// Other OS/2 flags
         /// </summary>
-        public byte AdditionalFlags;
+        public OS2Flag AdditionalFlags;
         
         /// <summary>
         /// Offset to return thunks or start of gangload area

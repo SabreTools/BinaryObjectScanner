@@ -122,6 +122,35 @@ namespace BurnOutSharp.Models.NewExecutable
     }
 
     [Flags]
+    public enum OS2Flag : byte
+    {
+        /// <summary>
+        /// Long filename support
+        /// </summary>
+        LongFilenameSupport = 0x01,
+
+        /// <summary>
+        /// 2.x protected mode
+        /// </summary>
+        ProtectedMode = 0x02,
+
+        /// <summary>
+        /// 2.x proportional fonts
+        /// </summary>
+        ProportionalFonts = 0x04,
+
+        /// <summary>
+        /// Executable has gangload area
+        /// </summary>
+        HasGangload = 0x08,
+
+        /// <summary>
+        /// Unknown
+        /// </summary>
+        Unknown = 0xF0,
+    }
+
+    [Flags]
     public enum SegmentTableEntryFlag : ushort
     {
         /// <summary>
