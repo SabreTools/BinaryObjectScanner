@@ -13,7 +13,7 @@ namespace BurnOutSharp.Models.LinearExecutable
     /// </summary>
     /// <see href="https://faydoc.tripod.com/formats/exe-LE.htm"/>
     /// <see href="http://www.edm2.com/index.php/LX_-_Linear_eXecutable_Module_Format_Description"/>
-    [StructLayout(LayoutKind.Sequential)]
+    [StructLayout(LayoutKind.Explicit)]
     public class FixupRecordTableEntry
     {
         /// <summary>
@@ -23,7 +23,7 @@ namespace BurnOutSharp.Models.LinearExecutable
         /// The source type specifies the size and type of the fixup to be performed
         /// on the fixup source.
         /// </remarks>
-        public FixupRecordSourceType SourceType;
+        [FieldOffset(0)] public FixupRecordSourceType SourceType;
 
         /// <summary>
         /// Target Flags.
@@ -31,9 +31,58 @@ namespace BurnOutSharp.Models.LinearExecutable
         /// <remarks>
         /// The target flags specify how the target information is interpreted.
         /// </remarks>
-        public FixupRecordTargetFlags TargetFlags;
+        [FieldOffset(1)] public FixupRecordTargetFlags TargetFlags;
 
-        // TODO: The shape of the data relies on the source and flags from here
-        // SRCOFF = DW/CNT = DB Source offset or source offset list count.
+        #region Source List Flag Set
+
+        /// <summary>
+        /// Source offset.
+        /// </summary>
+        /// <remarks>
+        /// This field contains either an offset or a count depending on the Source
+        /// List Flag. If the Source List Flag is set, a list of source offsets
+        /// follows the additive field and this field contains the count of the
+        /// entries in the source offset list. Otherwise, this is the single source
+        /// offset for the fixup. Source offsets are relative to the beginning of
+        /// the page where the fixup is to be made.
+        /// 
+        /// Note that for fixups that cross page boundaries, a separate fixup record
+        /// is specified for each page. An offset is still used for the 2nd page but
+        /// it now becomes a negative offset since the fixup originated on the
+        /// preceding page. (For example, if only the last one byte of a 32-bit
+        /// address is on the page to be fixed up, then the offset would have a value
+        /// of -3.)
+        /// </remarks>
+        [FieldOffset(2)] public ushort SourceOffset;
+
+        // TODO: Field offsets branch out from here based on other flags
+
+        #endregion
+
+        #region Source List Flag Unset
+
+        /// <summary>
+        /// Source offset list count.
+        /// </summary>
+        /// <remarks>
+        /// This field contains either an offset or a count depending on the Source
+        /// List Flag. If the Source List Flag is set, a list of source offsets
+        /// follows the additive field and this field contains the count of the
+        /// entries in the source offset list. Otherwise, this is the single source
+        /// offset for the fixup. Source offsets are relative to the beginning of
+        /// the page where the fixup is to be made.
+        /// 
+        /// Note that for fixups that cross page boundaries, a separate fixup record
+        /// is specified for each page. An offset is still used for the 2nd page but
+        /// it now becomes a negative offset since the fixup originated on the
+        /// preceding page. (For example, if only the last one byte of a 32-bit
+        /// address is on the page to be fixed up, then the offset would have a value
+        /// of -3.)
+        /// </remarks>
+        [FieldOffset(2)] public byte SourceOffsetListCount;
+
+        // TODO: Field offsets branch out from here based on other flags
+
+        #endregion
     }
 }
