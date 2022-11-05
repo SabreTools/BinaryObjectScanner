@@ -41,6 +41,11 @@ namespace BurnOutSharp.Models.PortableExecutable
         /// </summary>
         public COFFSymbolTableEntry[] COFFSymbolTable { get; set; }
 
-        // TODO: Left off at "COFF String Table"
+        /// <summary>
+        /// COFF string table
+        /// </summary>
+        public COFFStringTable COFFStringTable { get; set; }
+
+        // TODO: Left off at "The Attribute Certificate Table (Image Only)"
     }
 }
