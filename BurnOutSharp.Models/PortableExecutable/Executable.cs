@@ -29,6 +29,13 @@ namespace BurnOutSharp.Models.PortableExecutable
         /// <summary>
         /// Optional header
         /// </summary>
-        public OptionalHeader Optionalheader { get; set; }
+        public OptionalHeader OptionalHeader { get; set; }
+
+        /// <summary>
+        /// Section table
+        /// </summary>
+        public SectionHeader[] SectionTable { get; set; }
+
+        // TODO: Left off at "COFF Relocations (Object Only)"
     }
 }
