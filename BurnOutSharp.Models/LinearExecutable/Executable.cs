@@ -11,9 +11,9 @@ namespace BurnOutSharp.Models.LinearExecutable
     public class Executable
     {
         /// <summary>
-        /// MS-DOS executable header
+        /// MS-DOS executable stub
         /// </summary>
-        public MSDOS.ExecutableHeader Stub { get; set; }
+        public MSDOS.Executable Stub { get; set; }
 
         /// <summary>
         /// Information block

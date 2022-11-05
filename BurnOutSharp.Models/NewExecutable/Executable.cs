@@ -12,9 +12,9 @@ namespace BurnOutSharp.Models.NewExecutable
     public class Executable
     {
         /// <summary>
-        /// MS-DOS executable header
+        /// MS-DOS executable stub
         /// </summary>
-        public MSDOS.ExecutableHeader Stub { get; set; }
+        public MSDOS.Executable Stub { get; set; }
 
         /// <summary>
         /// New Executable header

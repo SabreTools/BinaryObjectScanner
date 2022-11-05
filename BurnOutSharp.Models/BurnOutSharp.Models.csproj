@@ -20,8 +20,4 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="PortableExecutable\" />
-  </ItemGroup>
-
 </Project>
