@@ -105,5 +105,10 @@ namespace BurnOutSharp.Models.PortableExecutable
         /// COFF Relocations (Object Only)
         /// </summary>
         public COFFRelocation[] COFFRelocations;
+
+        /// <summary>
+        /// COFF Line Numbers (Deprecated)
+        /// </summary>
+        public COFFLineNumber[] COFFLineNumbers;
     }
 }

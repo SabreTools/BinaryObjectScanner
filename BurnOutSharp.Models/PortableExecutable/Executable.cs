@@ -36,6 +36,6 @@ namespace BurnOutSharp.Models.PortableExecutable
         /// </summary>
         public SectionHeader[] SectionTable { get; set; }
 
-        // TODO: Left off at "COFF Relocations (Object Only)"
+        // TODO: Left off at "COFF Symbol Table"
     }
 }

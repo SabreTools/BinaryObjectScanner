@@ -7,7 +7,7 @@ namespace BurnOutSharp.Models.PortableExecutable
     /// should be modified when placed in the image file and subsequently loaded
     /// into memory.
     /// 
-    /// mage files do not contain COFF relocations, because all referenced symbols
+    /// Image files do not contain COFF relocations, because all referenced symbols
     /// have already been assigned addresses in a flat address space. An image
     /// contains relocation information in the form of base relocations in the
     /// .reloc section (unless the image has the IMAGE_FILE_RELOCS_STRIPPED attribute).
