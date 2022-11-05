@@ -13,7 +13,6 @@ namespace BurnOutSharp.Models.LinearExecutable
     /// </summary>
     /// <see href="https://faydoc.tripod.com/formats/exe-LE.htm"/>
     /// <see href="http://www.edm2.com/index.php/LX_-_Linear_eXecutable_Module_Format_Description"/>
-    [StructLayout(LayoutKind.Explicit)]
     public class FixupRecordTableEntry
     {
         /// <summary>
@@ -23,7 +22,7 @@ namespace BurnOutSharp.Models.LinearExecutable
         /// The source type specifies the size and type of the fixup to be performed
         /// on the fixup source.
         /// </remarks>
-        [FieldOffset(0)] public FixupRecordSourceType SourceType;
+        public FixupRecordSourceType SourceType;
 
         /// <summary>
         /// Target Flags.
@@ -31,9 +30,11 @@ namespace BurnOutSharp.Models.LinearExecutable
         /// <remarks>
         /// The target flags specify how the target information is interpreted.
         /// </remarks>
-        [FieldOffset(1)] public FixupRecordTargetFlags TargetFlags;
+        public FixupRecordTargetFlags TargetFlags;
 
-        #region Source List Flag Set
+        #region Source List Flag
+
+        #region Set
 
         /// <summary>
         /// Source offset.
@@ -53,13 +54,11 @@ namespace BurnOutSharp.Models.LinearExecutable
         /// address is on the page to be fixed up, then the offset would have a value
         /// of -3.)
         /// </remarks>
-        [FieldOffset(2)] public ushort SourceOffset;
-
-        // TODO: Field offsets branch out from here based on other flags
+        public ushort SourceOffset;
 
         #endregion
 
-        #region Source List Flag Unset
+        #region Unset
 
         /// <summary>
         /// Source offset list count.
@@ -79,10 +78,227 @@ namespace BurnOutSharp.Models.LinearExecutable
         /// address is on the page to be fixed up, then the offset would have a value
         /// of -3.)
         /// </remarks>
-        [FieldOffset(2)] public byte SourceOffsetListCount;
-
-        // TODO: Field offsets branch out from here based on other flags
+        public byte SourceOffsetListCount;
 
         #endregion
+
+        #endregion
+
+        #region OBJECT / TRGOFF
+
+        #region 16-bit Object Number/Module Ordinal Flag
+
+        #region Set
+
+        /// <summary>
+        /// Target object number.
+        /// </summary>
+        /// <remarks>
+        /// This field is an index into the current module's Object Table to specify
+        /// the target Object. It is a Byte value when the '16-bit Object Number/Module
+        /// Ordinal Flag' bit in the target flags field is clear and a Word value when
+        /// the bit is set.
+        /// </remarks>
+        public ushort TargetObjectNumberWORD;
+
+        #endregion
+
+        #region Unset
+
+        /// <summary>
+        /// Target object number.
+        /// </summary>
+        /// <remarks>
+        /// This field is an index into the current module's Object Table to specify
+        /// the target Object. It is a Byte value when the '16-bit Object Number/Module
+        /// Ordinal Flag' bit in the target flags field is clear and a Word value when
+        /// the bit is set.
+        /// </remarks>
+        public byte TargetObjectNumberByte;
+
+        #endregion
+
+        #endregion
+
+        #region 32-bit Target Offset Flag
+
+        #region Set
+
+        /// <summary>
+        /// Target offset.
+        /// </summary>
+        /// <remarks>
+        /// This field is an offset into the specified target Object. It is not
+        /// present when the Source Type specifies a 16-bit Selector fixup. It
+        /// is a Word value when the '32-bit Target Offset Flag' bit in the target
+        /// flags field is clear and a Dword value when the bit is set.
+        /// </remarks>
+        public uint TargetOffsetDWORD;
+
+        #endregion
+
+        #region Unset
+
+        /// <summary>
+        /// Target offset.
+        /// </summary>
+        /// <remarks>
+        /// This field is an offset into the specified target Object. It is not
+        /// present when the Source Type specifies a 16-bit Selector fixup. It
+        /// is a Word value when the '32-bit Target Offset Flag' bit in the target
+        /// flags field is clear and a Dword value when the bit is set.
+        /// </remarks>
+        public ushort TargetOffsetWORD;
+
+        #endregion
+
+        #endregion
+
+        #endregion
+
+        #region 16-bit Object Number/Module Ordinal Flag [Incompatible with OBJECT / TRGOFF]
+
+        #region Set
+
+        /// <summary>
+        /// Ordinal index into the Import Module Name Table.
+        /// </summary>
+        /// <remarks>
+        /// This value is an ordered index in to the Import Module Name Table for
+        /// the module containing the procedure entry point. It is a Byte value
+        /// when the '16-bit Object Number/Module Ordinal' Flag bit in the target
+        /// flags field is clear and a Word value when the bit is set. The loader
+        /// creates a table of pointers with each pointer in the table corresponds
+        /// to the modules named in the Import Module Name Table. This value is used
+        /// by the loader to index into this table created by the loader to locate
+        /// the referenced module.
+        /// </remarks>
+        public ushort OrdinalIndexImportModuleNameTableWORD;
+
+        #endregion
+
+        #region Unset
+
+        /// <summary>
+        /// Ordinal index into the Import Module Name Table.
+        /// </summary>
+        /// <remarks>
+        /// This value is an ordered index in to the Import Module Name Table for
+        /// the module containing the procedure entry point. It is a Byte value
+        /// when the '16-bit Object Number/Module Ordinal' Flag bit in the target
+        /// flags field is clear and a Word value when the bit is set. The loader
+        /// creates a table of pointers with each pointer in the table corresponds
+        /// to the modules named in the Import Module Name Table. This value is used
+        /// by the loader to index into this table created by the loader to locate
+        /// the referenced module.
+        /// </remarks>
+        public byte OrdinalIndexImportModuleNameTableByte;
+
+        #endregion
+
+        #endregion
+
+        #region MOD ORD# / PROCEDURE NAME OFFSET / ADDITIVE
+
+        #region 32-bit Target Offset Flag
+
+        #region Set
+
+        /// <summary>
+        /// Offset into the Import Procedure Name Table.
+        /// </summary>
+        /// <remarks>
+        /// This field is an offset into the Import Procedure Name Table. It is
+        /// a Word value when the '32-bit Target Offset Flag' bit in the target
+        /// flags field is clear and a Dword value when the bit is set. 
+        /// </remarks>
+        public uint OffsetImportProcedureNameTableDWORD;
+
+        #endregion
+
+        #region Unset
+
+        /// <summary>
+        /// Offset into the Import Procedure Name Table.
+        /// </summary>
+        /// <remarks>
+        /// This field is an offset into the Import Procedure Name Table. It is
+        /// a Word value when the '32-bit Target Offset Flag' bit in the target
+        /// flags field is clear and a Dword value when the bit is set. 
+        /// </remarks>
+        public ushort OffsetImportProcedureNameTableWORD;
+
+        #endregion
+
+        #endregion
+
+        #endregion
+
+        #region MOD ORD# / IMPORT ORD / ADDITIVE
+
+        /*
+        TODO: Implement IMPORT ORD
+        IMPORT ORD = D[B|W|D] Imported ordinal number.
+            This is the imported procedure's ordinal number. It is a Byte value when the
+            '8-bit Ordinal' bit in the target flags field is set. Otherwise it is a Word value
+            when the '32-bit Target Offset Flag' bit in the target flags field is clear and a
+            Dword value when the bit is set. 
+        */
+
+        #endregion
+
+        #region Additive Fixup Flag [Incompatible with OBJECT / TRGOFF]
+
+        #region Set
+
+        #region 32-bit Additive Fixup Flag
+
+        #region Set
+
+        /// <summary>
+        /// Additive fixup value.
+        /// </summary>
+        /// <remarks>
+        /// This field exists in the fixup record only when the 'Additive Fixup Flag'
+        /// bit in the target flags field is set. When the 'Additive Fixup Flag' is
+        /// clear the fixup record does not contain this field and is immediately
+        /// followed by the next fixup record (or by the source offset list for this
+        /// fixup record).
+        /// 
+        /// This value is added to the address derived from the target entry point.
+        /// This field is a Word value when the '32-bit Additive Flag' bit in the
+        /// target flags field is clear and a Dword value when the bit is set.
+        /// </remarks>
+        public uint AdditiveFixupValueDWORD;
+
+        #endregion
+
+        #region Unset
+
+        /// <summary>
+        /// Additive fixup value.
+        /// </summary>
+        /// <remarks>
+        /// This field exists in the fixup record only when the 'Additive Fixup Flag'
+        /// bit in the target flags field is set. When the 'Additive Fixup Flag' is
+        /// clear the fixup record does not contain this field and is immediately
+        /// followed by the next fixup record (or by the source offset list for this
+        /// fixup record).
+        /// 
+        /// This value is added to the address derived from the target entry point.
+        /// This field is a Word value when the '32-bit Additive Flag' bit in the
+        /// target flags field is clear and a Dword value when the bit is set.
+        /// </remarks>
+        public ushort AdditiveFixupValueWORD;
+
+        #endregion
+
+        #endregion
+
+        #endregion
+
+        #endregion
+
+        // TODO: Implement SRCOFFn
     }
 }

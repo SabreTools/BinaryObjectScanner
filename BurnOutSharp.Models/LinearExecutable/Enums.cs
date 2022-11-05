@@ -289,7 +289,7 @@ namespace BurnOutSharp.Models.LinearExecutable
         AdditiveFixupFlag = 0x04,
 
         /// <summary>
-        /// Reserved.  Must be zero.
+        /// Reserved. Must be zero.
         /// </summary>
         Reserved = 0x08,
 
