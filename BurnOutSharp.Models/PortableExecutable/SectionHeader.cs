@@ -100,5 +100,10 @@ namespace BurnOutSharp.Models.PortableExecutable
         /// The flags that describe the characteristics of the section.
         /// </summary>
         public SectionFlags Characteristics;
+
+        /// <summary>
+        /// COFF Relocations (Object Only)
+        /// </summary>
+        public COFFRelocation[] COFFRelocations;
     }
 }
