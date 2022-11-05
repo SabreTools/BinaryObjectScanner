@@ -41,6 +41,6 @@ namespace BurnOutSharp.Models.PortableExecutable
         /// </summary>
         public COFFSymbolTableEntry[] COFFSymbolTable { get; set; }
 
-        // TODO: Left off at https://learn.microsoft.com/en-us/windows/win32/debug/pe-format#section-number-values
+        // TODO: Left off at "Auxiliary Symbol Records"
     }
 }
