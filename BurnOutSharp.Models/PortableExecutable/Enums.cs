@@ -636,6 +636,8 @@ namespace BurnOutSharp.Models.PortableExecutable
 
     public enum OptionalHeaderMagicNumber : ushort
     {
+        ROMImage = 0x0107,
+
         PE32 = 0x010B,
 
         PE32Plus = 0x020B,

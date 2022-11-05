@@ -25,5 +25,10 @@ namespace BurnOutSharp.Models.PortableExecutable
         /// COFF file header
         /// </summary>
         public COFFFileHeader COFFFileHeader { get; set; }
+
+        /// <summary>
+        /// Optional header
+        /// </summary>
+        public OptionalHeader Optionalheader { get; set; }
     }
 }
