@@ -496,7 +496,7 @@ namespace BurnOutSharp.Models.PortableExecutable
         IMPORT_NAME_UNDECORATE = 3,
     }
 
-    public enum MachineTypes : ushort
+    public enum MachineType : ushort
     {
         /// <summary>
         /// The content of this field is assumed to be applicable to any machine type

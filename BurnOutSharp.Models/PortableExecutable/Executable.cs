@@ -13,5 +13,17 @@ namespace BurnOutSharp.Models.PortableExecutable
         /// MS-DOS executable stub
         /// </summary>
         public MSDOS.Executable Stub { get; set; }
+
+        /// <summary>
+        /// After the MS-DOS stub, at the file offset specified at offset 0x3c, is a 4-byte
+        /// signature that identifies the file as a PE format image file. This signature is "PE\0\0"
+        /// (the letters "P" and "E" followed by two null bytes).
+        /// </summary>
+        public byte[] Signature { get; set; }
+
+        /// <summary>
+        /// COFF file header
+        /// </summary>
+        public COFFFileHeader COFFFileHeader { get; set; }
     }
 }
