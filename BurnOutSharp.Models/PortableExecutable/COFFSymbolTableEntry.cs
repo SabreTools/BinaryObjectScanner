@@ -274,8 +274,39 @@ namespace BurnOutSharp.Models.PortableExecutable
         /// </summary>
         [FieldOffset(14)] public byte AuxFormat5Selection;
 
+        /// <summary>
+        /// Unused
+        /// </summary>
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
         [FieldOffset(15)] public byte[] AuxFormat5Unused;
+
+        #endregion
+
+        #region Auxiliary Format 6: CLR Token Definition (Object Only)
+
+        // This auxiliary symbol generally follows the IMAGE_SYM_CLASS_CLR_TOKEN. It is
+        // used to associate a token with the COFF symbol table's namespace.
+
+        /// <summary>
+        /// Must be IMAGE_AUX_SYMBOL_TYPE_TOKEN_DEF (1).
+        /// </summary>
+        [FieldOffset(0)] public byte AuxFormat6AuxType;
+
+        /// <summary>
+        /// Reserved, must be zero.
+        /// </summary>
+        [FieldOffset(1)] public byte AuxFormat6Reserved1;
+
+        /// <summary>
+        /// The symbol index of the COFF symbol to which this CLR token definition refers.
+        /// </summary>
+        [FieldOffset(2)] public uint AuxFormat6SymbolTableIndex;
+
+        /// <summary>
+        /// Reserved, must be zero.
+        /// </summary>
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 12)]
+        [FieldOffset(6)] public byte[] AuxFormat6Reserved2;
 
         #endregion
 

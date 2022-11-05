@@ -41,6 +41,6 @@ namespace BurnOutSharp.Models.PortableExecutable
         /// </summary>
         public COFFSymbolTableEntry[] COFFSymbolTable { get; set; }
 
-        // TODO: Left off at "COMDAT Sections (Object Only)"
+        // TODO: Left off at "COFF String Table"
     }
 }
