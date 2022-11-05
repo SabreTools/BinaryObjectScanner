@@ -1,6 +1,4 @@
-﻿using System.Runtime.InteropServices;
-
-namespace BurnOutSharp.Models.LinearExecutable
+﻿namespace BurnOutSharp.Models.LinearExecutable
 {
     /// <summary>
     /// The Fixup Record Table contains entries for all fixups in the linear EXE module.
@@ -236,14 +234,62 @@ namespace BurnOutSharp.Models.LinearExecutable
 
         #region MOD ORD# / IMPORT ORD / ADDITIVE
 
-        /*
-        TODO: Implement IMPORT ORD
-        IMPORT ORD = D[B|W|D] Imported ordinal number.
-            This is the imported procedure's ordinal number. It is a Byte value when the
-            '8-bit Ordinal' bit in the target flags field is set. Otherwise it is a Word value
-            when the '32-bit Target Offset Flag' bit in the target flags field is clear and a
-            Dword value when the bit is set. 
-        */
+        #region 8-bit Ordinal Flag
+
+        #region Set
+
+        /// <summary>
+        /// Imported ordinal number.
+        /// </summary>
+        /// <remarks>
+        /// This is the imported procedure's ordinal number. It is a Byte value when the
+        /// '8-bit Ordinal' bit in the target flags field is set. Otherwise it is a Word value
+        /// when the '32-bit Target Offset Flag' bit in the target flags field is clear and a
+        /// Dword value when the bit is set. 
+        /// </remarks>
+        public byte ImportedOrdinalNumberByte;
+
+        #endregion
+
+        #region Unset
+
+        #region 32-bit Target Offset Flag
+
+        #region Set
+
+        /// <summary>
+        /// Imported ordinal number.
+        /// </summary>
+        /// <remarks>
+        /// This is the imported procedure's ordinal number. It is a Byte value when the
+        /// '8-bit Ordinal' bit in the target flags field is set. Otherwise it is a Word value
+        /// when the '32-bit Target Offset Flag' bit in the target flags field is clear and a
+        /// Dword value when the bit is set. 
+        /// </remarks>
+        public uint ImportedOrdinalNumberDWORD;
+
+        #endregion
+
+        #region Unset
+
+        /// <summary>
+        /// Imported ordinal number.
+        /// </summary>
+        /// <remarks>
+        /// This is the imported procedure's ordinal number. It is a Byte value when the
+        /// '8-bit Ordinal' bit in the target flags field is set. Otherwise it is a Word value
+        /// when the '32-bit Target Offset Flag' bit in the target flags field is clear and a
+        /// Dword value when the bit is set. 
+        /// </remarks>
+        public uint ImportedOrdinalNumberWORD;
+
+        #endregion
+
+        #endregion
+
+        #endregion
+
+        #endregion
 
         #endregion
 
@@ -299,6 +345,19 @@ namespace BurnOutSharp.Models.LinearExecutable
 
         #endregion
 
-        // TODO: Implement SRCOFFn
+        #region SCROFFn
+
+        /// <summary>
+        /// Source offset list.
+        /// </summary>
+        /// <remarks>
+        /// This list is present if the Source List Flag is set in the Target Flags field.
+        /// The number of entries in the source offset list is defined in the SRCOFF/CNT
+        /// field. The source offsets are relative to the beginning of the page where the
+        /// fixups are to be made.
+        /// </remarks>
+        public ushort[] SourceOffsetList;
+
+        #endregion
     }
 }

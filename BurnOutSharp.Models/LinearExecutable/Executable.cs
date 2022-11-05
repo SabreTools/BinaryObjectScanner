@@ -67,7 +67,10 @@ namespace BurnOutSharp.Models.LinearExecutable
         /// </summary>
         public FixupPageTableEntry[] FixupPageTable { get; set; }
 
-        // TODO: Fix-up record table
+        /// <summary>
+        /// Fix-up record table
+        /// </summary>
+        public FixupRecordTableEntry[] FixupRecordTable { get; set; }
 
         /// <summary>
         /// Import module name table
