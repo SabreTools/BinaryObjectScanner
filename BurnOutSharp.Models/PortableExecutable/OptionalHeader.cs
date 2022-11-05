@@ -271,5 +271,90 @@
         public uint NumberOfRvaAndSizes;
 
         #endregion
+
+        #region Data Directories (Image Only)
+
+        /// <summary>
+        /// The export table address and size.
+        /// </summary>
+        public DataDirectory ExportTable;
+
+        /// <summary>
+        /// The import table address and size.
+        /// </summary>
+        public DataDirectory ImportTable;
+
+        /// <summary>
+        /// The resource table address and size.
+        /// </summary>
+        public DataDirectory ResourceTable;
+
+        /// <summary>
+        /// The exception table address and size.
+        /// </summary>
+        public DataDirectory ExceptionTable;
+
+        /// <summary>
+        /// The attribute certificate table address and size.
+        /// </summary>
+        public DataDirectory CertificateTable;
+
+        /// <summary>
+        /// The base relocation table address and size.
+        /// </summary>
+        public DataDirectory BaseRelocationTable;
+
+        /// <summary>
+        /// The debug data starting address and size.
+        /// </summary>
+        public DataDirectory Debug;
+
+        /// <summary>
+        /// Reserved, must be 0
+        /// </summary>
+        public ulong Architecture;
+
+        /// <summary>
+        /// The RVA of the value to be stored in the global pointer register.
+        /// The size member of this structure must be set to zero.
+        /// </summary>
+        public DataDirectory GlobalPtr;
+
+        /// <summary>
+        /// The thread local storage (TLS) table address and size.
+        /// </summary>
+        public DataDirectory TLSTable;
+
+        /// <summary>
+        /// The load configuration table address and size.
+        /// </summary>
+        public DataDirectory LoadConfigTable;
+
+        /// <summary>
+        /// The bound import table address and size.
+        /// </summary>
+        public DataDirectory BoundImport;
+
+        /// <summary>
+        /// The import address table address and size
+        /// </summary>
+        public DataDirectory IAT;
+
+        /// <summary>
+        /// The delay import descriptor address and size.
+        /// </summary>
+        public DataDirectory DelayImportDescriptor;
+
+        /// <summary>
+        /// The CLR runtime header address and size.
+        /// </summary>
+        public DataDirectory CLRRuntimeHeader;
+
+        /// <summary>
+        /// Reserved, must be zero
+        /// </summary>
+        public ulong Reserved;
+
+        #endregion
     }
 }
