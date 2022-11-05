@@ -36,6 +36,11 @@ namespace BurnOutSharp.Models.PortableExecutable
         /// </summary>
         public SectionHeader[] SectionTable { get; set; }
 
-        // TODO: Left off at "COFF Symbol Table"
+        /// <summary>
+        /// COFF symbol table
+        /// </summary>
+        public COFFSymbolTableEntry[] COFFSymbolTable { get; set; }
+
+        // TODO: Left off at https://learn.microsoft.com/en-us/windows/win32/debug/pe-format#section-number-values
     }
 }
