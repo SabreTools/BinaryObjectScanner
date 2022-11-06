@@ -57,5 +57,27 @@ namespace BurnOutSharp.Models.PortableExecutable
         public DelayLoadDirectoryTableEntry[] DelayLoadDirectoryTable { get; set; }
 
         // TODO: Left off at "The .pdata Section"
+
+        // TODO: Implement and/or document the following non-modeled parts:
+        // - Grouped Sections (Object Only)
+        // - Certificate Data
+        // - Delay Import Address Table
+        // - Delay Import Name Table
+        // - Delay Bound Import Address Table
+        // - Delay Unload Import Address Table
+        // - The .debug Section
+        // - IMAGE_DEBUG_TYPE_FPO
+        // - .debug$F (Object Only)
+        // - .debug$S (Object Only)
+        // - .debug$P (Object Only)
+        // - .debug$T (Object Only)
+        // - The .drectve Section (Object Only)
+        // - The .edata Section (Image Only)
+        // - Export Name Pointer Table
+        // - Export Ordinal Table
+        // - Export Name Table
+        // - The .idata Section
+        // - Import Lookup Table [has model, but bit-based]
+        // - Import Address Table
     }
 }
