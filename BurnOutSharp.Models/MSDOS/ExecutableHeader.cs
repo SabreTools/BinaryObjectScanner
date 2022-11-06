@@ -123,7 +123,7 @@ namespace BurnOutSharp.Models.MSDOS
         /// <summary>
         /// Starting address of the PE header
         /// </summary>
-        public int NewExeHeaderAddr;
+        public uint NewExeHeaderAddr;
 
         #endregion
     }

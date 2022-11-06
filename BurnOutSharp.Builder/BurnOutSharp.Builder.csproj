@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <Title>BurnOutSharp.Executable</Title>
+    <AssemblyName>BurnOutSharp.Executable</AssemblyName>
+    <Authors>Matt Nadareski;Gernot Knippen</Authors>
+    <Product>BurnOutSharp</Product>
+    <Copyright>Copyright (c)2005-2010 Gernot Knippen, Copyright (c)2018-2022 Matt Nadareski</Copyright>
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+    <RepositoryUrl>https://github.com/mnadareski/BurnOutSharp</RepositoryUrl>
+    <Version>2.3.4</Version>
+    <AssemblyVersion>2.3.4</AssemblyVersion>
+    <FileVersion>2.3.4</FileVersion>
+    <IncludeSource>true</IncludeSource>
+    <IncludeSymbols>true</IncludeSymbols>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BurnOutSharp.Models\BurnOutSharp.Models.csproj" />
+  </ItemGroup>
+
+</Project>

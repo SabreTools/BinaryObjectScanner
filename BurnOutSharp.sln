@@ -22,7 +22,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WixToolset.Dtf.Compression.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WixToolset.Dtf.Compression", "Dtf\src\WixToolset.Dtf.Compression\WixToolset.Dtf.Compression.csproj", "{3065BE52-CB56-4557-80CD-E3AC57C242F2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BurnOutSharp.Models", "BurnOutSharp.Models\BurnOutSharp.Models.csproj", "{44939210-BDC2-4250-BC0F-0AB8F316F09D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BurnOutSharp.Models", "BurnOutSharp.Models\BurnOutSharp.Models.csproj", "{44939210-BDC2-4250-BC0F-0AB8F316F09D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BurnOutSharp.Builder", "BurnOutSharp.Builder\BurnOutSharp.Builder.csproj", "{7577733A-CC8D-4E7C-8B6D-FFC7EC1B3D07}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -58,6 +60,10 @@ Global
 		{44939210-BDC2-4250-BC0F-0AB8F316F09D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{44939210-BDC2-4250-BC0F-0AB8F316F09D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{44939210-BDC2-4250-BC0F-0AB8F316F09D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7577733A-CC8D-4E7C-8B6D-FFC7EC1B3D07}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7577733A-CC8D-4E7C-8B6D-FFC7EC1B3D07}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7577733A-CC8D-4E7C-8B6D-FFC7EC1B3D07}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7577733A-CC8D-4E7C-8B6D-FFC7EC1B3D07}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
