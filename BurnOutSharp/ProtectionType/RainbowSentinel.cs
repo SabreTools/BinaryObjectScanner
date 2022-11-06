@@ -50,7 +50,7 @@ namespace BurnOutSharp.ProtectionType
                 {
                     // SENTINEL.VXD
                     // Found in "ACLT.HWL" in BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]", folder "\aclt\DRV\W95LOCK".
-                    // TODO: Add version for this check based on PEX Product Version.
+                    // Found in "ACAD.HWL" in BA entry "Autodesk AutoCAD r14 (1997)" and IA item "auto-cad-r14-cdrom".
                     new ContentMatchSet(new byte?[]
                     {
                         0x53, 0x45, 0x4E, 0x54, 0x49, 0x4E, 0x45, 0x4C, 0x2E, 0x56, 0x58, 0x44
@@ -94,7 +94,7 @@ namespace BurnOutSharp.ProtectionType
 
             name = pex.ProductName;
 
-            // Found in multiple files i, BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]", including "RNBOVTMP.DLL", "SENTTEMP.DLL", and "SNTI386.DLL".
+            // Found in multiple files in BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]", including "RNBOVTMP.DLL", "SENTTEMP.DLL", and "SNTI386.DLL".
             if (name?.Equals("Rainbow Technologies Sentinel", StringComparison.OrdinalIgnoreCase) == true)
                 return $"Rainbow Sentinel {pex.ProductVersion}";
 
@@ -110,22 +110,22 @@ namespace BurnOutSharp.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
-                // Found in BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]", folder "\aclt\DRV\W95LOCK".
+                // Found in BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]" and IA item "auto-cad-r14-cdrom".
                 new PathMatchSet(new PathMatch("SENTINEL.VXD", useEndsWith: true), "Rainbow Sentinel"),
                 new PathMatchSet(new PathMatch("SENTSTRT.EXE", useEndsWith: true), "Rainbow Sentinel"),
                 new PathMatchSet(new PathMatch("SENTW95.DLL", useEndsWith: true), "Rainbow Sentinel"),
                 new PathMatchSet(new PathMatch("SENTW95.EXE", useEndsWith: true), "Rainbow Sentinel"),
                 new PathMatchSet(new PathMatch("SENTW95.HLP", useEndsWith: true), "Rainbow Sentinel"),
 
-                // Found in BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]", folder "\aclt\DRV\NTLOCK".
+                // Found in BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]" and in IA item "auto-cad-r14-cdrom".
                 new PathMatchSet(new PathMatch("SNTI386.DLL", useEndsWith: true), "Rainbow Sentinel"),
 
-                // Found in BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]", folder "\aclt\DRV\NTLOCK\I386".
+                // Found in BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]" and in IA item "auto-cad-r14-cdrom".
                 new PathMatchSet(new PathMatch("RNBOVTMP.DLL", useEndsWith: true), "Rainbow Sentinel"),
                 new PathMatchSet(new PathMatch("SENTINEL.HLP", useEndsWith: true), "Rainbow Sentinel"),
                 new PathMatchSet(new PathMatch("SENTTEMP.SYS", useEndsWith: true), "Rainbow Sentinel"),
 
-                // Found in BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]", folder "\data".
+                // Found in BA entries "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]" and "Autodesk AutoCAD r14 (1997)", and IA item "auto-cad-r14-cdrom".
                 new PathMatchSet(new PathMatch("RAINB95.Z", useEndsWith: true), "Rainbow Sentinel"),
                 new PathMatchSet(new PathMatch("RAINBNT.Z", useEndsWith: true), "Rainbow Sentinel"),
             };
