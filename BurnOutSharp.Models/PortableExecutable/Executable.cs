@@ -82,5 +82,9 @@ namespace BurnOutSharp.Models.PortableExecutable
         // - The .pdata Section [Multiple formats per entry]
         // - TLS Callback Functions
         // - The .rsrc Section
+        // - The .cormeta Section (Object Only)
+        // - The .sxdata Section
+
+        // TODO: Determine if "Archive (Library) File Format" is worth modelling
     }
 }
