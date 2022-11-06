@@ -160,7 +160,7 @@ namespace BurnOutSharp.Builder
         #region Stream Data
 
         /// <summary>
-        /// Parse a byte array into an MS-DOS executable
+        /// Parse a Stream into an MS-DOS executable
         /// </summary>
         /// <param name="data">Stream to parse</param>
         /// <returns>Filled executable on success, null on error</returns>
@@ -207,7 +207,7 @@ namespace BurnOutSharp.Builder
         }
 
         /// <summary>
-        /// Parse a byte array into an MS-DOS executable header
+        /// Parse a Stream into an MS-DOS executable header
         /// </summary>
         /// <param name="data">Stream to parse</param>
         /// <returns>Filled executable header on success, null on error</returns>
@@ -276,7 +276,7 @@ namespace BurnOutSharp.Builder
         }
 
         /// <summary>
-        /// Parse a byte array into a relocation table
+        /// Parse a Stream into a relocation table
         /// </summary>
         /// <param name="data">Stream to parse</param>
         /// <returns>Filled executable header on success, null on error</returns>
