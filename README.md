@@ -38,7 +38,7 @@ Below is a list of protections detected by BurnOutSharp. The two columns explain
 | Cactus Data Shield | True | True | |
 | CD-Cops / DVD-Cops | True | True | Partially unconfirmed² |
 | CD-Lock | True | True | |
-| CD-Protector | False | True | Unconfirmed¹ |
+| CD-Protector | False | True | |
 | CD-X | False | True | Unconfirmed¹ |
 | CDSHiELD SE | True | False | |
 | Cenga ProtectDVD | True | True | |
