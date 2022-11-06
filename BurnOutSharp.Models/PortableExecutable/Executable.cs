@@ -51,6 +51,11 @@ namespace BurnOutSharp.Models.PortableExecutable
         /// </summary>
         public AttributeCertificateTableEntry[] AttributeCertificateTable { get; set; }
 
-        // TODO: Left off at "Delay-Load Import Tables (Image Only)"
+        /// <summary>
+        /// Delay-load directory table
+        /// </summary>
+        public DelayLoadDirectoryTableEntry[] DelayLoadDirectoryTable { get; set; }
+
+        // TODO: Left off at "Special Sections"
     }
 }
