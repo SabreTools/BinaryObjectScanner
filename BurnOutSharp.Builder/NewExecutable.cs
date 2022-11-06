@@ -42,6 +42,18 @@ namespace BurnOutSharp.Builder
             return null;
         }
 
+        /// <summary>
+        /// Parse a byte array into a New Executable header
+        /// </summary>
+        /// <param name="data">Byte array to parse</param>
+        /// <param name="offset">Offset into the byte array</param>
+        /// <returns>Filled executable header on success, null on error</returns>
+        private static ExecutableHeader ParseExecutableHeader(byte[] data, int offset)
+        {
+            // TODO: Implement NE header parsing
+            return null;
+        }
+
         #endregion
 
         #region Stream Data
@@ -68,6 +80,17 @@ namespace BurnOutSharp.Builder
             var executable = new Executable();
 
             // TODO: Implement NE parsing
+            return null;
+        }
+
+        /// <summary>
+        /// Parse a Stream into a New Executable header
+        /// </summary>
+        /// <param name="data">Stream to parse</param>
+        /// <returns>Filled executable header on success, null on error</returns>
+        private static ExecutableHeader ParseExecutableHeader(Stream data)
+        {
+            // TODO: Implement NE header parsing
             return null;
         }
 

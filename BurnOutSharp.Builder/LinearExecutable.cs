@@ -42,6 +42,18 @@ namespace BurnOutSharp.Builder
             return null;
         }
 
+        /// <summary>
+        /// Parse a byte array into a Linear Executable information block
+        /// </summary>
+        /// <param name="data">Byte array to parse</param>
+        /// <param name="offset">Offset into the byte array</param>
+        /// <returns>Filled information block on success, null on error</returns>
+        private static InformationBlock ParseInformationBlock(byte[] data, int offset)
+        {
+            // TODO: Implement LE/LX information block parsing
+            return null;
+        }
+
         #endregion
 
         #region Stream Data
@@ -68,6 +80,17 @@ namespace BurnOutSharp.Builder
             var executable = new Executable();
 
             // TODO: Implement LE/LX parsing
+            return null;
+        }
+
+        /// <summary>
+        /// Parse a Stream into a Linear Executable information block
+        /// </summary>
+        /// <param name="data">Stream to parse</param>
+        /// <returns>Filled executable header on success, null on error</returns>
+        private static InformationBlock ParseInformationBlock(Stream data)
+        {
+            // TODO: Implement LE/LX information block parsing
             return null;
         }
 

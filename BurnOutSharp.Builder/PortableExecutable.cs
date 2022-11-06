@@ -42,6 +42,18 @@ namespace BurnOutSharp.Builder
             return null;
         }
 
+        /// <summary>
+        /// Parse a byte array into a Portable Executable COFF file header
+        /// </summary>
+        /// <param name="data">Byte array to parse</param>
+        /// <param name="offset">Offset into the byte array</param>
+        /// <returns>Filled COFF file header on success, null on error</returns>
+        private static COFFFileHeader ParseCOFFFileHeader(byte[] data, int offset)
+        {
+            // TODO: Implement PE COFF file header parsing
+            return null;
+        }
+
         #endregion
 
         #region Stream Data
@@ -68,6 +80,17 @@ namespace BurnOutSharp.Builder
             var executable = new Executable();
 
             // TODO: Implement PE parsing
+            return null;
+        }
+
+        /// <summary>
+        /// Parse a Stream into a Portable Executable COFF file header
+        /// </summary>
+        /// <param name="data">Stream to parse</param>
+        /// <returns>Filled executable header on success, null on error</returns>
+        private static COFFFileHeader ParseCOFFFileHeader(Stream data)
+        {
+            // TODO: Implement PE COFF file header parsing
             return null;
         }
 
