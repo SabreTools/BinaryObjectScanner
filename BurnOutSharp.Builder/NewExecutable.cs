@@ -30,6 +30,14 @@ namespace BurnOutSharp.Builder
             // Create a new executable to fill
             var executable = new Executable();
 
+            // Parse the MS-DOS stub
+            var stub = MSDOS.ParseExecutable(data, offset);
+            if (stub?.Header == null || stub.Header.NewExeHeaderAddr == 0)
+                return null;
+
+            // Set the MS-DOS stub
+            executable.Stub = stub;
+
             // TODO: Implement NE parsing
             return null;
         }
