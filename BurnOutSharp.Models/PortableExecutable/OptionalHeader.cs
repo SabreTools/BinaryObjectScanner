@@ -103,8 +103,7 @@
         /// for Windows CE EXEs is 0x00010000. The default for Windows NT, Windows 2000,
         /// Windows XP, Windows 95, Windows 98, and Windows Me is 0x00400000.
         /// </summary>
-        /// <remarks>PE32</remarks>
-        public uint ImageBasePE32;
+        public uint ImageBase_PE32;
 
         /// <summary>
         /// The preferred address of the first byte of image when loaded into memory;
@@ -112,8 +111,7 @@
         /// for Windows CE EXEs is 0x00010000. The default for Windows NT, Windows 2000,
         /// Windows XP, Windows 95, Windows 98, and Windows Me is 0x00400000.
         /// </summary>
-        /// <remarks>PE32+</remarks>
-        public ulong ImageBasePE32Plus;
+        public ulong ImageBase_PE32Plus;
 
         #endregion
 
@@ -203,13 +201,13 @@
         /// The size of the stack to reserve. Only SizeOfStackCommit is committed; the rest
         /// is made available one page at a time until the reserve size is reached.
         /// </summary>
-        public uint SizeOfStackReservePE32;
+        public uint SizeOfStackReserve_PE32;
 
         /// <summary>
         /// The size of the stack to reserve. Only SizeOfStackCommit is committed; the rest
         /// is made available one page at a time until the reserve size is reached.
         /// </summary>
-        public ulong SizeOfStackReservePE32Plus;
+        public ulong SizeOfStackReserve_PE32Plus;
 
         #endregion
 
@@ -218,12 +216,12 @@
         /// <summary>
         /// The size of the stack to commit. 
         /// </summary>
-        public uint SizeOfStackCommitPE32;
+        public uint SizeOfStackCommit_PE32;
 
         /// <summary>
         /// The size of the stack to commit. 
         /// </summary>
-        public ulong SizeOfStackCommitPE32Plus;
+        public ulong SizeOfStackCommit_PE32Plus;
 
         #endregion
 
@@ -234,14 +232,14 @@
         /// committed; the rest is made available one page at a time until the reserve
         /// size is reached.
         /// </summary>
-        public uint SizeOfHeapReservePE32;
+        public uint SizeOfHeapReserve_PE32;
 
         /// <summary>
         /// The size of the local heap space to reserve. Only SizeOfHeapCommit is
         /// committed; the rest is made available one page at a time until the reserve
         /// size is reached.
         /// </summary>
-        public ulong SizeOfHeapReservePE32Plus;
+        public ulong SizeOfHeapReserve_PE32Plus;
 
         #endregion
 
@@ -250,12 +248,12 @@
         /// <summary>
         /// The size of the local heap space to commit.
         /// </summary>
-        public uint SizeOfHeapCommitPE32;
+        public uint SizeOfHeapCommit_PE32;
 
         /// <summary>
         /// The size of the local heap space to commit.
         /// </summary>
-        public ulong SizeOfHeapCommitPE32Plus;
+        public ulong SizeOfHeapCommit_PE32Plus;
 
         #endregion
 

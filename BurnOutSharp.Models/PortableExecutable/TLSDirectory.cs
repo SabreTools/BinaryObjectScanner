@@ -12,7 +12,7 @@
         /// address is not an RVA; it is an address for which there should be a base
         /// relocation in the .reloc section.
         /// </summary>
-        public uint RawDataStartVAPE32;
+        public uint RawDataStartVA_PE32;
 
         /// <summary>
         /// The starting address of the TLS template. The template is a block of data
@@ -21,7 +21,7 @@
         /// address is not an RVA; it is an address for which there should be a base
         /// relocation in the .reloc section.
         /// </summary>
-        public ulong RawDataStartVAPE32Plus;
+        public ulong RawDataStartVA_PE32Plus;
 
         #endregion
 
@@ -31,13 +31,13 @@
         /// The address of the last byte of the TLS, except for the zero fill. As
         /// with the Raw Data Start VA field, this is a VA, not an RVA.
         /// </summary>
-        public uint RawDataEndVAPE32;
+        public uint RawDataEndVA_PE32;
 
         /// <summary>
         /// The address of the last byte of the TLS, except for the zero fill. As
         /// with the Raw Data Start VA field, this is a VA, not an RVA.
         /// </summary>
-        public ulong RawDataEndVAPE32Plus;
+        public ulong RawDataEndVA_PE32Plus;
 
         #endregion
 
@@ -48,14 +48,14 @@
         /// location is in an ordinary data section, so it can be given a symbolic
         /// name that is accessible to the program.
         /// </summary>
-        public uint AddressOfIndexPE32;
+        public uint AddressOfIndex_PE32;
 
         /// <summary>
         /// The location to receive the TLS index, which the loader assigns. This
         /// location is in an ordinary data section, so it can be given a symbolic
         /// name that is accessible to the program.
         /// </summary>
-        public ulong AddressOfIndexPE32Plus;
+        public ulong AddressOfIndex_PE32Plus;
 
         #endregion
 
@@ -66,14 +66,14 @@
         /// null-terminated, so if no callback function is supported, this field
         /// points to 4 bytes set to zero.
         /// </summary>
-        public uint AddressOfCallbacksPE32;
+        public uint AddressOfCallbacks_PE32;
 
         /// <summary>
         /// The pointer to an array of TLS callback functions. The array is
         /// null-terminated, so if no callback function is supported, this field
         /// points to 4 bytes set to zero.
         /// </summary>
-        public ulong AddressOfCallbacksPE32Plus;
+        public ulong AddressOfCallbacks_PE32Plus;
 
         #endregion
 

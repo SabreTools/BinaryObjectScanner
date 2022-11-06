@@ -56,7 +56,7 @@ namespace BurnOutSharp.Models.PortableExecutable
         /// </summary>
         public DelayLoadDirectoryTableEntry[] DelayLoadDirectoryTable { get; set; }
 
-        // TODO: Left off at "The Load Configuration Structure (Image Only)"
+        // TODO: Left off at "The .rsrc Section"
 
         // TODO: Implement and/or document the following non-modeled parts:
         // - Grouped Sections (Object Only)
@@ -81,6 +81,5 @@ namespace BurnOutSharp.Models.PortableExecutable
         // - Import Address Table
         // - The .pdata Section [Multiple formats per entry]
         // - TLS Callback Functions
-        // 
     }
 }
