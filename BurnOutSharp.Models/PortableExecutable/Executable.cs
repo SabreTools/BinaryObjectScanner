@@ -46,6 +46,11 @@ namespace BurnOutSharp.Models.PortableExecutable
         /// </summary>
         public COFFStringTable COFFStringTable { get; set; }
 
-        // TODO: Left off at "The Attribute Certificate Table (Image Only)"
+        /// <summary>
+        /// Attribute certificate table
+        /// </summary>
+        public AttributeCertificateTableEntry[] AttributeCertificateTable { get; set; }
+
+        // TODO: Left off at "Delay-Load Import Tables (Image Only)"
     }
 }
