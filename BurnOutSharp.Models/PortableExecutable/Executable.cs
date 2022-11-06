@@ -56,6 +56,6 @@ namespace BurnOutSharp.Models.PortableExecutable
         /// </summary>
         public DelayLoadDirectoryTableEntry[] DelayLoadDirectoryTable { get; set; }
 
-        // TODO: Left off at "Import Lookup Table"
+        // TODO: Left off at "The .pdata Section"
     }
 }
