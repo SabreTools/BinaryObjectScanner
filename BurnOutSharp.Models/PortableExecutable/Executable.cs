@@ -56,7 +56,7 @@ namespace BurnOutSharp.Models.PortableExecutable
         /// </summary>
         public DelayLoadDirectoryTableEntry[] DelayLoadDirectoryTable { get; set; }
 
-        // TODO: Left off at "The .pdata Section"
+        // TODO: Left off at "The .tls Section"
 
         // TODO: Implement and/or document the following non-modeled parts:
         // - Grouped Sections (Object Only)
@@ -79,5 +79,6 @@ namespace BurnOutSharp.Models.PortableExecutable
         // - The .idata Section
         // - Import Lookup Table [has model, but bit-based]
         // - Import Address Table
+        // - The .pdata Section [Multiple formats per entry]
     }
 }
