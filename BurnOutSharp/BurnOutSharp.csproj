@@ -75,4 +75,9 @@
     </ProjectReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ExecutableType\Apple\" />
+    <Folder Include="ExecutableType\ELF\" />
+  </ItemGroup>
+
 </Project>

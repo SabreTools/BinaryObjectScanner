@@ -1,0 +1,19 @@
+﻿using BurnOutSharp.ExecutableType.Microsoft.LE;
+
+namespace BurnOutSharp.Interfaces
+{
+    /// <summary>
+    /// Check a Linear Executable (LE) for protection
+    /// </summary>
+    internal interface ILinearExecutableCheck
+    {
+        /// <summary>
+        /// Check a path for protections based on file contents
+        /// </summary>
+        /// <param name="file">File to check for protection indicators</param>
+        /// <param name="lex">LinearExecutable representing the read-in file</param>
+        /// <param name="includeDebug">True to include debug data, false otherwise</param>
+        /// <returns>String containing any protections found in the file</returns>
+        string CheckNewExecutable(string file, LinearExecutable lex, bool includeDebug);
+    }
+}
