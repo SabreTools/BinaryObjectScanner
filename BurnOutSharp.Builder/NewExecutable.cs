@@ -16,6 +16,20 @@ namespace BurnOutSharp.Builder
         /// <returns>Filled executable on success, null on error</returns>
         public static Executable ParseExecutable(byte[] data, int offset)
         {
+            // If the data is invalid
+            if (data == null)
+                return null;
+
+            // If the offset is out of bounds
+            if (offset < 0 || offset >= data.Length)
+                return null;
+
+            // Cache the current offset
+            int initialOffset = offset;
+
+            // Create a new executable to fill
+            var executable = new Executable();
+
             // TODO: Implement NE parsing
             return null;
         }
@@ -31,6 +45,20 @@ namespace BurnOutSharp.Builder
         /// <returns>Filled executable on success, null on error</returns>
         public static Executable ParseExecutable(Stream data)
         {
+            // If the data is invalid
+            if (data == null)
+                return null;
+
+            // If the offset is out of bounds
+            if (data.Position < 0 || data.Position >= data.Length)
+                return null;
+
+            // Cache the current offset
+            int initialOffset = (int)data.Position;
+
+            // Create a new executable to fill
+            var executable = new Executable();
+
             // TODO: Implement NE parsing
             return null;
         }
