@@ -272,5 +272,39 @@ namespace BurnOutSharp.Builder
         }
 
         #endregion
+
+        #region New Executable
+
+        /// <summary>
+        /// Determine if a resource type information entry is an integer or offset
+        /// </summary>
+        /// <param name="entry">Resource type information entry to check</param>
+        /// <returns>True if the entry is an integer type, false if an offset, null on error</returns>
+        public static bool? IsIntegerType(this Models.NewExecutable.ResourceTypeInformationEntry entry)
+        {
+            // We can't do anything with an invalid entry
+            if (entry == null)
+                return null;
+
+            // If the highest order bit is set, it's an integer type
+            return (entry.TypeID & 0x8000) != 0;
+        }
+
+        /// <summary>
+        /// Determine if a resource type resource entry is an integer or offset
+        /// </summary>
+        /// <param name="entry">Resource type resource entry to check</param>
+        /// <returns>True if the entry is an integer type, false if an offset, null on error</returns>
+        public static bool? IsIntegerType(this Models.NewExecutable.ResourceTypeResourceEntry entry)
+        {
+            // We can't do anything with an invalid entry
+            if (entry == null)
+                return null;
+
+            // If the highest order bit is set, it's an integer type
+            return (entry.ResourceID & 0x8000) != 0;
+        }
+
+        #endregion
     }
 }
