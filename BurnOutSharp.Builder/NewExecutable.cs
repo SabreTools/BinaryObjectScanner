@@ -57,7 +57,9 @@ namespace BurnOutSharp.Builder
             #region Segment Table
 
             // If the offset for the segment table doesn't exist
-            int tableAddress = initialOffset + executableHeader.SegmentTableOffset;
+            int tableAddress = initialOffset
+                + (int)stub.Header.NewExeHeaderAddr
+                + executableHeader.SegmentTableOffset;
             if (tableAddress >= data.Length)
                 return executable;
 
@@ -219,7 +221,9 @@ namespace BurnOutSharp.Builder
             #region Segment Table
 
             // If the offset for the segment table doesn't exist
-            int tableAddress = initialOffset + executableHeader.SegmentTableOffset;
+            int tableAddress = initialOffset
+                + (int)stub.Header.NewExeHeaderAddr
+                + executableHeader.SegmentTableOffset;
             if (tableAddress >= data.Length)
                 return executable;
 
