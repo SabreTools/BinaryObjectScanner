@@ -47,6 +47,10 @@ namespace BurnOutSharp.FileType
             if (magic.StartsWith(new byte?[] { 0x3F, 0x5F, 0x03, 0x00 }))
                 return true;
 
+            // "Description in Zip"
+            if (string.Equals(extension?.TrimStart('.'), "diz", StringComparison.OrdinalIgnoreCase))
+                return true;
+
             // Setup information
             if (string.Equals(extension?.TrimStart('.'), "inf", StringComparison.OrdinalIgnoreCase))
                 return true;
@@ -103,6 +107,19 @@ namespace BurnOutSharp.FileType
                     Utilities.AppendToDictionary(protections, file, "CD-Key / Serial");
                 else if (fileContent.Contains("serial number is located"))
                     Utilities.AppendToDictionary(protections, file, "CD-Key / Serial");
+
+                // Freelock
+                // Found in "FILE_ID.DIZ" distributed with Freelock.
+                if (fileContent.Contains("FREELOCK 1.0"))
+                    Utilities.AppendToDictionary(protections, file, "Freelock 1.0");
+                else if (fileContent.Contains("FREELOCK 1.2"))
+                    Utilities.AppendToDictionary(protections, file, "Freelock 1.2");
+                else if (fileContent.Contains("FREELOCK 1.2a"))
+                    Utilities.AppendToDictionary(protections, file, "Freelock 1.2a");
+                else if (fileContent.Contains("FREELOCK 1.3"))
+                    Utilities.AppendToDictionary(protections, file, "Freelock 1.3");
+                else if (fileContent.Contains("FREELOCK"))
+                    Utilities.AppendToDictionary(protections, file, "Freelock");
 
                 // MediaCloQ
                 if (fileContent.Contains("SunnComm MediaCloQ"))
