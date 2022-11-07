@@ -79,7 +79,7 @@ namespace BurnOutSharp.Builder
             header.Magic = new char[2];
             for (int i = 0; i < header.Magic.Length; i++)
             {
-                header.Magic[i] = (char)data[offset]; offset++;
+                header.Magic[i] = data.ReadChar(ref offset);
             }
             if (header.Magic[0] != 'M' || header.Magic[1] != 'Z')
                 return null;

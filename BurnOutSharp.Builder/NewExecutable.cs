@@ -38,6 +38,14 @@ namespace BurnOutSharp.Builder
             // Set the MS-DOS stub
             executable.Stub = stub;
 
+            // Try to parse the executable header
+            var executableHeader = ParseExecutableHeader(data, offset);
+            if (executableHeader == null)
+                return null;
+
+            // Set the executable header
+            executable.Header = executableHeader;
+
             // TODO: Implement NE parsing
             return null;
         }
@@ -50,8 +58,57 @@ namespace BurnOutSharp.Builder
         /// <returns>Filled executable header on success, null on error</returns>
         private static ExecutableHeader ParseExecutableHeader(byte[] data, int offset)
         {
-            // TODO: Implement NE header parsing
-            return null;
+            // If we don't have enough data
+            if (data.Length < 0x40)
+                return null;
+
+            // If the offset means we don't have enough data
+            if (data.Length - offset < 0x40)
+                return null;
+
+            // TODO: Use marshalling here instead of building
+            var header = new ExecutableHeader();
+
+            header.Magic = new char[2];
+            for (int i = 0; i < header.Magic.Length; i++)
+            {
+                header.Magic[i] = data.ReadChar(ref offset);
+            }
+            if (header.Magic[0] != 'N' || header.Magic[1] != 'E')
+                return null;
+
+            header.LinkerVersion = data.ReadByte(ref offset);
+            header.LinkerRevision = data.ReadByte(ref offset);
+            header.EntryTableOffset = data.ReadUInt16(ref offset);
+            header.EntryTableSize = data.ReadUInt16(ref offset);
+            header.CrcChecksum = data.ReadUInt32(ref offset);
+            header.FlagWord = (HeaderFlag)data.ReadUInt16(ref offset);
+            header.AutomaticDataSegmentNumber = data.ReadUInt16(ref offset);
+            header.InitialHeapAlloc = data.ReadUInt16(ref offset);
+            header.InitialStackAlloc = data.ReadUInt16(ref offset);
+            header.InitialCSIPSetting = data.ReadUInt32(ref offset);
+            header.InitialSSSPSetting = data.ReadUInt32(ref offset);
+            header.FileSegmentCount = data.ReadUInt16(ref offset);
+            header.ModuleReferenceTableSize = data.ReadUInt16(ref offset);
+            header.NonResidentNameTableSize = data.ReadUInt16(ref offset);
+            header.SegmentTableOffset = data.ReadUInt16(ref offset);
+            header.ResourceTableOffset = data.ReadUInt16(ref offset);
+            header.ResidentNameTableOffset = data.ReadUInt16(ref offset);
+            header.ModuleReferenceTableOffset = data.ReadUInt16(ref offset);
+            header.ImportedNamesTableOffset = data.ReadUInt16(ref offset);
+            header.NonResidentNamesTableOffset = data.ReadUInt32(ref offset);
+            header.MovableEntriesCount = data.ReadUInt16(ref offset);
+            header.SegmentAlignmentShiftCount = data.ReadUInt16(ref offset);
+            header.ResourceEntriesCount = data.ReadUInt16(ref offset);
+            header.TargetOperatingSystem = (OperatingSystem)data.ReadByte(ref offset);
+            header.AdditionalFlags = (OS2Flag)data.ReadByte(ref offset);
+            header.ReturnThunkOffset = data.ReadUInt16(ref offset);
+            header.SegmentReferenceThunkOffset = data.ReadUInt16(ref offset);
+            header.MinCodeSwapAreaSize = data.ReadUInt16(ref offset);
+            header.WindowsSDKRevision = data.ReadByte(ref offset);
+            header.WindowsSDKVersion = data.ReadByte(ref offset);
+
+            return header;
         }
 
         #endregion
@@ -87,6 +144,14 @@ namespace BurnOutSharp.Builder
             // Set the MS-DOS stub
             executable.Stub = stub;
 
+            // Try to parse the executable header
+            var executableHeader = ParseExecutableHeader(data);
+            if (executableHeader == null)
+                return null;
+
+            // Set the executable header
+            executable.Header = executableHeader;
+
             // TODO: Implement NE parsing
             return null;
         }
@@ -98,8 +163,57 @@ namespace BurnOutSharp.Builder
         /// <returns>Filled executable header on success, null on error</returns>
         private static ExecutableHeader ParseExecutableHeader(Stream data)
         {
-            // TODO: Implement NE header parsing
-            return null;
+            // If we don't have enough data
+            if (data.Length < 0x40)
+                return null;
+
+            // If the offset means we don't have enough data
+            if (data.Length - data.Position < 0x40)
+                return null;
+
+            // TODO: Use marshalling here instead of building
+            var header = new ExecutableHeader();
+
+            header.Magic = new char[2];
+            for (int i = 0; i < header.Magic.Length; i++)
+            {
+                header.Magic[i] = data.ReadChar();
+            }
+            if (header.Magic[0] != 'N' || header.Magic[1] != 'E')
+                return null;
+
+            header.LinkerVersion = data.ReadByteValue();
+            header.LinkerRevision = data.ReadByteValue();
+            header.EntryTableOffset = data.ReadUInt16();
+            header.EntryTableSize = data.ReadUInt16();
+            header.CrcChecksum = data.ReadUInt32();
+            header.FlagWord = (HeaderFlag)data.ReadUInt16();
+            header.AutomaticDataSegmentNumber = data.ReadUInt16();
+            header.InitialHeapAlloc = data.ReadUInt16();
+            header.InitialStackAlloc = data.ReadUInt16();
+            header.InitialCSIPSetting = data.ReadUInt32();
+            header.InitialSSSPSetting = data.ReadUInt32();
+            header.FileSegmentCount = data.ReadUInt16();
+            header.ModuleReferenceTableSize = data.ReadUInt16();
+            header.NonResidentNameTableSize = data.ReadUInt16();
+            header.SegmentTableOffset = data.ReadUInt16();
+            header.ResourceTableOffset = data.ReadUInt16();
+            header.ResidentNameTableOffset = data.ReadUInt16();
+            header.ModuleReferenceTableOffset = data.ReadUInt16();
+            header.ImportedNamesTableOffset = data.ReadUInt16();
+            header.NonResidentNamesTableOffset = data.ReadUInt32();
+            header.MovableEntriesCount = data.ReadUInt16();
+            header.SegmentAlignmentShiftCount = data.ReadUInt16();
+            header.ResourceEntriesCount = data.ReadUInt16();
+            header.TargetOperatingSystem = (OperatingSystem)data.ReadByteValue();
+            header.AdditionalFlags = (OS2Flag)data.ReadByteValue();
+            header.ReturnThunkOffset = data.ReadUInt16();
+            header.SegmentReferenceThunkOffset = data.ReadUInt16();
+            header.MinCodeSwapAreaSize = data.ReadUInt16();
+            header.WindowsSDKRevision = data.ReadByteValue();
+            header.WindowsSDKVersion = data.ReadByteValue();
+
+            return header;
         }
 
         #endregion
