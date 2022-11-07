@@ -43,6 +43,14 @@ namespace BurnOutSharp.FileType
             if (magic.StartsWith(new byte?[] { 0x61, 0x4C, 0x75, 0x5A }))
                 return true;
 
+            // Windows Help File
+            if (magic.StartsWith(new byte?[] { 0x3F, 0x5F, 0x03, 0x00 }))
+                return true;
+
+            // Setup information
+            if (string.Equals(extension?.TrimStart('.'), "inf", StringComparison.OrdinalIgnoreCase))
+                return true;
+
             // InstallShield Script
             if (string.Equals(extension?.TrimStart('.'), "ins", StringComparison.OrdinalIgnoreCase))
                 return true;
@@ -117,6 +125,15 @@ namespace BurnOutSharp.FileType
                 // phenoProtect
                 if (fileContent.Contains("phenoProtect"))
                     Utilities.AppendToDictionary(protections, file, "phenoProtect");
+
+                // Rainbow Sentinel
+                // Found in "SENTW95.HLP" and "SENTINEL.HLP" in BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]".
+                if (fileContent.Contains("Rainbow Sentinel Driver Help"))
+                    Utilities.AppendToDictionary(protections, file, "Rainbow Sentinel");
+
+                // Found in "OEMSETUP.INF" in BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]".
+                if (fileContent.Contains("Sentinel Driver Disk"))
+                    Utilities.AppendToDictionary(protections, file, "Rainbow Sentinel");
 
                 // The full line from a sample is as follows:
                 //
