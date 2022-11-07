@@ -30,6 +30,8 @@ namespace BurnOutSharp.Builder
             // Create a new executable to fill
             var executable = new Executable();
 
+            #region Executable Header
+
             // Try to parse the executable header
             var executableHeader = ParseExecutableHeader(data, offset);
             if (executableHeader == null)
@@ -37,6 +39,10 @@ namespace BurnOutSharp.Builder
 
             // Set the executable header
             executable.Header = executableHeader;
+
+            #endregion
+
+            #region Relocation Table
 
             // If the offset for the relocation table doesn't exist
             int tableAddress = initialOffset + executableHeader.RelocationTableAddr;
@@ -50,6 +56,8 @@ namespace BurnOutSharp.Builder
 
             // Set the relocation table
             executable.RelocationTable = relocationTable;
+
+            #endregion
 
             // Return the executable
             return executable;
@@ -165,6 +173,8 @@ namespace BurnOutSharp.Builder
             // Create a new executable to fill
             var executable = new Executable();
 
+            #region Executable Header
+
             // Try to parse the executable header
             var executableHeader = ParseExecutableHeader(data);
             if (executableHeader == null)
@@ -172,6 +182,10 @@ namespace BurnOutSharp.Builder
 
             // Set the executable header
             executable.Header = executableHeader;
+
+            #endregion
+
+            #region Relocation Table
 
             // If the offset for the relocation table doesn't exist
             int tableAddress = initialOffset + executableHeader.RelocationTableAddr;
@@ -186,6 +200,8 @@ namespace BurnOutSharp.Builder
 
             // Set the relocation table
             executable.RelocationTable = relocationTable;
+
+            #endregion
 
             // Return the executable
             return executable;

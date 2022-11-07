@@ -30,6 +30,8 @@ namespace BurnOutSharp.Builder
             // Create a new executable to fill
             var executable = new Executable();
 
+            #region MS-DOS Stub
+
             // Parse the MS-DOS stub
             var stub = MSDOS.ParseExecutable(data, offset);
             if (stub?.Header == null || stub.Header.NewExeHeaderAddr == 0)
@@ -38,6 +40,10 @@ namespace BurnOutSharp.Builder
             // Set the MS-DOS stub
             executable.Stub = stub;
 
+            #endregion
+
+            #region Executable Header
+
             // Try to parse the executable header
             var executableHeader = ParseExecutableHeader(data, offset);
             if (executableHeader == null)
@@ -45,6 +51,10 @@ namespace BurnOutSharp.Builder
 
             // Set the executable header
             executable.Header = executableHeader;
+
+            #endregion
+
+            #region Segment Table
 
             // If the offset for the segment table doesn't exist
             int tableAddress = initialOffset + executableHeader.SegmentTableOffset;
@@ -58,6 +68,8 @@ namespace BurnOutSharp.Builder
 
             // Set the segment table
             executable.SegmentTable = relocationTable;
+
+            #endregion
 
             // TODO: Implement NE parsing
             return null;
@@ -166,6 +178,8 @@ namespace BurnOutSharp.Builder
             // Create a new executable to fill
             var executable = new Executable();
 
+            #region MS-DOS Stub
+
             // Parse the MS-DOS stub
             var stub = MSDOS.ParseExecutable(data);
             if (stub?.Header == null || stub.Header.NewExeHeaderAddr == 0)
@@ -174,6 +188,10 @@ namespace BurnOutSharp.Builder
             // Set the MS-DOS stub
             executable.Stub = stub;
 
+            #endregion
+
+            #region Executable Header
+
             // Try to parse the executable header
             var executableHeader = ParseExecutableHeader(data);
             if (executableHeader == null)
@@ -181,6 +199,10 @@ namespace BurnOutSharp.Builder
 
             // Set the executable header
             executable.Header = executableHeader;
+
+            #endregion
+
+            #region Segment Table
 
             // If the offset for the segment table doesn't exist
             int tableAddress = initialOffset + executableHeader.SegmentTableOffset;
@@ -195,6 +217,8 @@ namespace BurnOutSharp.Builder
 
             // Set the segment table
             executable.SegmentTable = relocationTable;
+
+            #endregion
 
             // TODO: Implement NE parsing
             return null;
