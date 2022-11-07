@@ -38,7 +38,7 @@ Below is a list of protections detected by BurnOutSharp. The two columns explain
 | Cactus Data Shield | True | True | |
 | CD-Cops / DVD-Cops | True | True | Partially unconfirmed² |
 | CD-Lock | True | True | |
-| CD-Protector | False | True | Unconfirmed¹ |
+| CD-Protector | False | True | |
 | CD-X | False | True | Unconfirmed¹ |
 | CDSHiELD SE | True | False | |
 | Cenga ProtectDVD | True | True | |
@@ -75,6 +75,7 @@ Below is a list of protections detected by BurnOutSharp. The two columns explain
 | ProtectDISC / VOB ProtectCD/DVD | True | False | |
 | Protect DVD-Video | False | True | Unconfirmed¹ |
 | PlayStation Anti-modchip | True | False | En/Jp, not "Red Hand"; PSX executables only |
+| Rainbow Sentinel | True | True | |
 | Ring PROTECH / ProRing | True | True | Partially unconfirmed² |
 | SafeDisc / SafeCast | True | True | Can't distinguish between some versions of SafeDisc and SafeCast |
 | SafeLock | False | True | |
@@ -88,7 +89,7 @@ Below is a list of protections detected by BurnOutSharp. The two columns explain
 | Sysiphus / Sysiphus DVD | True | False | |
 | TAGES | True | True | Partially unconfirmed² |
 | Tivola Ring Protection | False | True | |
-| TZCopyProtector | False | True | Unconfirmed¹ |
+| TZCopyProtection | False | True | Partially unconfirmed² |
 | Uplay | True | True | |
 | Windows Media Data Session DRM | True | True | |
 | Winlock | False | True | Unconfirmed¹ |
