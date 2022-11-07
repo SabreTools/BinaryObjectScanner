@@ -153,6 +153,20 @@ namespace BurnOutSharp.Builder
             return segmentTable;
         }
 
+        /// <summary>
+        /// Parse a byte array into a resource table
+        /// </summary>
+        /// <param name="data">Byte array to parse</param>
+        /// <param name="offset">Offset into the byte array</param>
+        /// <param name="count">Number of resource table entries to read</param>
+        /// <returns>Filled resource table on success, null on error</returns>
+        private static ResourceTable ParseResourceTable(byte[] data, int offset, int count)
+        {
+            // TODO: Use marshalling here instead of building
+            // TODO: Write NE resource table parsing
+            return null;
+        }
+
         #endregion
 
         #region Stream Data
@@ -298,6 +312,19 @@ namespace BurnOutSharp.Builder
             }
 
             return segmentTable;
+        }
+
+        /// <summary>
+        /// Parse a Stream into a resource table
+        /// </summary>
+        /// <param name="data">Stream to parse</param>
+        /// <param name="count">Number of resource table entries to read</param>
+        /// <returns>Filled resource table on success, null on error</returns>
+        private static ResourceTable ParseResourceTable(Stream data, int count)
+        {
+            // TODO: Use marshalling here instead of building
+            // TODO: Write NE resource table parsing
+            return null;
         }
 
         #endregion
