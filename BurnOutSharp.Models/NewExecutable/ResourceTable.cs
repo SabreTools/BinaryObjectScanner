@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace BurnOutSharp.Models.NewExecutable
 {
@@ -30,6 +31,6 @@ namespace BurnOutSharp.Models.NewExecutable
         /// Resource type and name strings are stored at the end of the
         /// resource table.
         /// </summary>
-        public ResourceTypeAndNameString[] TypeAndNameStrings;
+        public Dictionary<ushort, ResourceTypeAndNameString> TypeAndNameStrings;
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Linq;
 using BurnOutSharp.Models.NewExecutable;
 
 namespace BurnOutSharp.Builder
@@ -183,6 +184,8 @@ namespace BurnOutSharp.Builder
         /// <returns>Filled resource table on success, null on error</returns>
         private static ResourceTable ParseResourceTable(byte[] data, int offset, int count)
         {
+            int initialOffset = offset;
+
             // TODO: Use marshalling here instead of building
             var resourceTable = new ResourceTable();
 
@@ -197,6 +200,7 @@ namespace BurnOutSharp.Builder
                 entry.Resources = new ResourceTypeResourceEntry[entry.ResourceCount];
                 for (int j = 0; j < entry.ResourceCount; j++)
                 {
+                    // TODO: Should we read and store the resource data?
                     var resource = new ResourceTypeResourceEntry();
                     resource.Offset = data.ReadUInt16(ref offset);
                     resource.Length = data.ReadUInt16(ref offset);
@@ -208,13 +212,27 @@ namespace BurnOutSharp.Builder
                 resourceTable.ResourceTypes[i] = entry;
             }
 
-            // TODO: Implement string table parsing
-            // Taking the list of offsets from the entries and taking the unique
-            // values should allow for reading all necessary resource strings.
-            // This may lead to each resource getting the string built-in
-            // instead of it being a reference OR it will lead to a dictionary
-            // that maps offset to string object. The latter seems like
-            // it is more accurate
+            // Get the full list of unique string offsets
+            var stringOffsets = resourceTable.ResourceTypes
+                .Where(rt => rt.IsIntegerType() == false)
+                .Select(rt => rt.TypeID)
+                .Union(resourceTable.ResourceTypes
+                    .SelectMany(rt => rt.Resources)
+                    .Where(r => r.IsIntegerType() == false)
+                    .Select(r => r.ResourceID))
+                .Distinct()
+                .OrderBy(o => o)
+                .ToList();
+
+            // Populate the type and name string dictionary
+            for (int i = 0; i < stringOffsets.Count; i++)
+            {
+                int stringOffset = stringOffsets[i] + initialOffset;
+                var str = new ResourceTypeAndNameString();
+                str.Length = data.ReadByte(ref stringOffset);
+                str.Text = data.ReadBytes(ref stringOffset, str.Length);
+                resourceTable.TypeAndNameStrings[stringOffsets[i]] = str;
+            }
 
             return resourceTable;
         }
@@ -396,6 +414,8 @@ namespace BurnOutSharp.Builder
         /// <returns>Filled resource table on success, null on error</returns>
         private static ResourceTable ParseResourceTable(Stream data, int count)
         {
+            long initialOffset = data.Position;
+
             // TODO: Use marshalling here instead of building
             var resourceTable = new ResourceTable();
 
@@ -410,6 +430,7 @@ namespace BurnOutSharp.Builder
                 entry.Resources = new ResourceTypeResourceEntry[entry.ResourceCount];
                 for (int j = 0; j < entry.ResourceCount; j++)
                 {
+                    // TODO: Should we read and store the resource data?
                     var resource = new ResourceTypeResourceEntry();
                     resource.Offset = data.ReadUInt16();
                     resource.Length = data.ReadUInt16();
@@ -421,13 +442,28 @@ namespace BurnOutSharp.Builder
                 resourceTable.ResourceTypes[i] = entry;
             }
 
-            // TODO: Implement string table parsing
-            // Taking the list of offsets from the entries and taking the unique
-            // values should allow for reading all necessary resource strings.
-            // This may lead to each resource getting the string built-in
-            // instead of it being a reference OR it will lead to a dictionary
-            // that maps offset to string object. The latter seems like
-            // it is more accurate
+            // Get the full list of unique string offsets
+            var stringOffsets = resourceTable.ResourceTypes
+                .Where(rt => rt.IsIntegerType() == false)
+                .Select(rt => rt.TypeID)
+                .Union(resourceTable.ResourceTypes
+                    .SelectMany(rt => rt.Resources)
+                    .Where(r => r.IsIntegerType() == false)
+                    .Select(r => r.ResourceID))
+                .Distinct()
+                .OrderBy(o => o)
+                .ToList();
+
+            // Populate the type and name string dictionary
+            for (int i = 0; i < stringOffsets.Count; i++)
+            {
+                int stringOffset = (int)(stringOffsets[i] + initialOffset);
+                data.Seek(stringOffset, SeekOrigin.Begin);
+                var str = new ResourceTypeAndNameString();
+                str.Length = data.ReadByteValue();
+                str.Text = data.ReadBytes(str.Length);
+                resourceTable.TypeAndNameStrings[stringOffsets[i]] = str;
+            }
 
             return resourceTable;
         }
