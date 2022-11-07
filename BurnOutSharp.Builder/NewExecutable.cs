@@ -132,6 +132,25 @@ namespace BurnOutSharp.Builder
 
             #endregion
 
+            #region Imported-Name Table
+
+            // If the offset for the imported-name table doesn't exist
+            tableAddress = initialOffset
+                + (int)stub.Header.NewExeHeaderAddr
+                + executableHeader.ImportedNamesTableOffset;
+            if (tableAddress >= data.Length)
+                return executable;
+
+            // Try to parse the imported-name table
+            var importedNameTable = ParseImportedNameTable(data, tableAddress, executableHeader.EntryTableOffset);
+            if (moduleReferenceTable == null)
+                return null;
+
+            // Set the imported-name table
+            executable.ImportedNameTable = importedNameTable;
+
+            #endregion
+
             // TODO: Complete NE parsing
             return executable;
         }
@@ -322,6 +341,30 @@ namespace BurnOutSharp.Builder
             return moduleReferenceTable;
         }
 
+        /// <summary>
+        /// Parse a byte array into an imported-name table
+        /// </summary>
+        /// <param name="data">Byte array to parse</param>
+        /// <param name="offset">Offset into the byte array</param>
+        /// <param name="endOffset">First address not part of the imported-name table</param>
+        /// <returns>Filled imported-name table on success, null on error</returns>
+        private static Dictionary<ushort, ImportedNameTableEntry> ParseImportedNameTable(byte[] data, int offset, ushort endOffset)
+        {
+            // TODO: Use marshalling here instead of building
+            var importedNameTable = new Dictionary<ushort, ImportedNameTableEntry>();
+
+            while (offset < endOffset)
+            {
+                ushort currentOffset = (ushort)offset;
+                var entry = new ImportedNameTableEntry();
+                entry.Length = data.ReadByte(ref offset);
+                entry.NameString = data.ReadBytes(ref offset, entry.Length);
+                importedNameTable[currentOffset] = entry;
+            }
+
+            return importedNameTable;
+        }
+
         #endregion
 
         #region Stream Data
@@ -448,6 +491,26 @@ namespace BurnOutSharp.Builder
 
             // Set the module-reference table
             executable.ModuleReferenceTable = moduleReferenceTable;
+
+            #endregion
+
+            #region Imported-Name Table
+
+            // If the offset for the imported-name table doesn't exist
+            tableAddress = initialOffset
+                + (int)stub.Header.NewExeHeaderAddr
+                + executableHeader.ResidentNameTableOffset;
+            if (tableAddress >= data.Length)
+                return executable;
+
+            // Try to parse the imported-name table
+            data.Seek(tableAddress, SeekOrigin.Begin);
+            var importedNameTable = ParseImportedNameTable(data, executableHeader.EntryTableOffset);
+            if (importedNameTable == null)
+                return null;
+
+            // Set the imported-name table
+            executable.ImportedNameTable = importedNameTable;
 
             #endregion
 
@@ -635,6 +698,29 @@ namespace BurnOutSharp.Builder
             }
 
             return moduleReferenceTable;
+        }
+
+        /// <summary>
+        /// Parse a byte array into an imported-name table
+        /// </summary>
+        /// <param name="data">Stream to parse</param>
+        /// <param name="endOffset">First address not part of the imported-name table</param>
+        /// <returns>Filled imported-name table on success, null on error</returns>
+        private static Dictionary<ushort, ImportedNameTableEntry> ParseImportedNameTable(Stream data, ushort endOffset)
+        {
+            // TODO: Use marshalling here instead of building
+            var importedNameTable = new Dictionary<ushort, ImportedNameTableEntry>();
+
+            while (data.Position < endOffset)
+            {
+                ushort currentOffset = (ushort)data.Position;
+                var entry = new ImportedNameTableEntry();
+                entry.Length = data.ReadByteValue();
+                entry.NameString = data.ReadBytes(entry.Length);
+                importedNameTable[currentOffset] = entry;
+            }
+
+            return importedNameTable;
         }
 
         #endregion
