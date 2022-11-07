@@ -46,6 +46,19 @@ namespace BurnOutSharp.Builder
             // Set the executable header
             executable.Header = executableHeader;
 
+            // If the offset for the segment table doesn't exist
+            int tableAddress = initialOffset + executableHeader.SegmentTableOffset;
+            if (tableAddress >= data.Length)
+                return executable;
+
+            // Try to parse the segment table
+            var relocationTable = ParseSegmentTable(data, tableAddress, executableHeader.FileSegmentCount);
+            if (relocationTable == null)
+                return null;
+
+            // Set the segment table
+            executable.SegmentTable = relocationTable;
+
             // TODO: Implement NE parsing
             return null;
         }
@@ -112,8 +125,20 @@ namespace BurnOutSharp.Builder
         /// <returns>Filled segment table on success, null on error</returns>
         private static SegmentTableEntry[] ParseSegmentTable(byte[] data, int offset, int count)
         {
-            // TODO: Implement segment table reading
-            return null;
+            // TODO: Use marshalling here instead of building
+            var segmentTable = new SegmentTableEntry[count];
+            
+            for (int i = 0; i < count; i++)
+            {
+                var entry = new SegmentTableEntry();
+                entry.Offset = data.ReadUInt16(ref offset);
+                entry.Length = data.ReadUInt16(ref offset);
+                entry.FlagWord = (SegmentTableEntryFlag)data.ReadUInt16(ref offset);
+                entry.MinimumAllocationSize = data.ReadUInt16(ref offset);
+                segmentTable[i] = entry;
+            }
+
+            return segmentTable;
         }
 
         #endregion
@@ -156,6 +181,20 @@ namespace BurnOutSharp.Builder
 
             // Set the executable header
             executable.Header = executableHeader;
+
+            // If the offset for the segment table doesn't exist
+            int tableAddress = initialOffset + executableHeader.SegmentTableOffset;
+            if (tableAddress >= data.Length)
+                return executable;
+
+            // Try to parse the segment table
+            data.Seek(tableAddress, SeekOrigin.Begin);
+            var relocationTable = ParseSegmentTable(data, executableHeader.FileSegmentCount);
+            if (relocationTable == null)
+                return null;
+
+            // Set the segment table
+            executable.SegmentTable = relocationTable;
 
             // TODO: Implement NE parsing
             return null;
@@ -221,8 +260,20 @@ namespace BurnOutSharp.Builder
         /// <returns>Filled segment table on success, null on error</returns>
         private static SegmentTableEntry[] ParseSegmentTable(Stream data, int count)
         {
-            // TODO: Implement segment table reading
-            return null;
+            // TODO: Use marshalling here instead of building
+            var segmentTable = new SegmentTableEntry[count];
+
+            for (int i = 0; i < count; i++)
+            {
+                var entry = new SegmentTableEntry();
+                entry.Offset = data.ReadUInt16();
+                entry.Length = data.ReadUInt16();
+                entry.FlagWord = (SegmentTableEntryFlag)data.ReadUInt16();
+                entry.MinimumAllocationSize = data.ReadUInt16();
+                segmentTable[i] = entry;
+            }
+
+            return segmentTable;
         }
 
         #endregion
