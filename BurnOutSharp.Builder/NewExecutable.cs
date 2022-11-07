@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using BurnOutSharp.Models.NewExecutable;
 
@@ -103,12 +104,31 @@ namespace BurnOutSharp.Builder
                 return executable;
 
             // Try to parse the resident-name table
-            var residentNameTable = ParseResidentNameTable(data, tableAddress, executableHeader.FileSegmentCount);
+            var residentNameTable = ParseResidentNameTable(data, tableAddress, executableHeader.ModuleReferenceTableOffset);
             if (residentNameTable == null)
                 return null;
 
             // Set the resident-name table
             executable.ResidentNameTable = residentNameTable;
+
+            #endregion
+
+            #region Module-Reference Table
+
+            // If the offset for the module-reference table doesn't exist
+            tableAddress = initialOffset
+                + (int)stub.Header.NewExeHeaderAddr
+                + executableHeader.ModuleReferenceTableOffset;
+            if (tableAddress >= data.Length)
+                return executable;
+
+            // Try to parse the module-reference table
+            var moduleReferenceTable = ParseModuleReferenceTable(data, tableAddress, executableHeader.ModuleReferenceTableSize);
+            if (moduleReferenceTable == null)
+                return null;
+
+            // Set the module-reference table
+            executable.ModuleReferenceTable = moduleReferenceTable;
 
             #endregion
 
@@ -261,23 +281,45 @@ namespace BurnOutSharp.Builder
         /// </summary>
         /// <param name="data">Byte array to parse</param>
         /// <param name="offset">Offset into the byte array</param>
-        /// <param name="count">Number of resident-name table entries to read</param>
+        /// <param name="endOffset">First address not part of the resident-name table</param>
         /// <returns>Filled resident-name table on success, null on error</returns>
-        private static ResidentNameTableEntry[] ParseResidentNameTable(byte[] data, int offset, int count)
+        private static ResidentNameTableEntry[] ParseResidentNameTable(byte[] data, int offset, ushort endOffset)
         {
             // TODO: Use marshalling here instead of building
-            var residentNameTable = new ResidentNameTableEntry[count];
+            var residentNameTable = new List<ResidentNameTableEntry>();
 
-            for (int i = 0; i < count; i++)
+            while (offset < endOffset)
             {
                 var entry = new ResidentNameTableEntry();
                 entry.Length = data.ReadByte(ref offset);
                 entry.NameString = data.ReadBytes(ref offset, entry.Length);
                 entry.OrdinalNumber = data.ReadUInt16(ref offset);
-                residentNameTable[i] = entry;
+                residentNameTable.Add(entry);
             }
 
-            return residentNameTable;
+            return residentNameTable.ToArray();
+        }
+
+        /// <summary>
+        /// Parse a byte array into a module-reference table
+        /// </summary>
+        /// <param name="data">Byte array to parse</param>
+        /// <param name="offset">Offset into the byte array</param>
+        /// <param name="count">Number of module-reference table entries to read</param>
+        /// <returns>Filled module-reference table on success, null on error</returns>
+        private static ModuleReferenceTableEntry[] ParseModuleReferenceTable(byte[] data, int offset, int count)
+        {
+            // TODO: Use marshalling here instead of building
+            var moduleReferenceTable = new ModuleReferenceTableEntry[count];
+
+            for (int i = 0; i < count; i++)
+            {
+                var entry = new ModuleReferenceTableEntry();
+                entry.Offset = data.ReadUInt16(ref offset);
+                moduleReferenceTable[i] = entry;
+            }
+
+            return moduleReferenceTable;
         }
 
         #endregion
@@ -380,12 +422,32 @@ namespace BurnOutSharp.Builder
 
             // Try to parse the resident-name table
             data.Seek(tableAddress, SeekOrigin.Begin);
-            var residentNameTable = ParseResidentNameTable(data, executableHeader.FileSegmentCount);
+            var residentNameTable = ParseResidentNameTable(data, executableHeader.ModuleReferenceTableOffset);
             if (residentNameTable == null)
                 return null;
 
             // Set the resident-name table
             executable.ResidentNameTable = residentNameTable;
+
+            #endregion
+
+            #region Module-Reference Table
+
+            // If the offset for the module-reference table doesn't exist
+            tableAddress = initialOffset
+                + (int)stub.Header.NewExeHeaderAddr
+                + executableHeader.ModuleReferenceTableOffset;
+            if (tableAddress >= data.Length)
+                return executable;
+
+            // Try to parse the module-reference table
+            data.Seek(tableAddress, SeekOrigin.Begin);
+            var moduleReferenceTable = ParseModuleReferenceTable(data, executableHeader.ModuleReferenceTableSize);
+            if (moduleReferenceTable == null)
+                return null;
+
+            // Set the module-reference table
+            executable.ModuleReferenceTable = moduleReferenceTable;
 
             #endregion
 
@@ -535,23 +597,44 @@ namespace BurnOutSharp.Builder
         /// Parse a byte array into a resident-name table
         /// </summary>
         /// <param name="data">Stream to parse</param>
-        /// <param name="count">Number of resident-name table entries to read</param>
+        /// <param name="endOffset">First address not part of the resident-name table</param>
         /// <returns>Filled resident-name table on success, null on error</returns>
-        private static ResidentNameTableEntry[] ParseResidentNameTable(Stream data, int count)
+        private static ResidentNameTableEntry[] ParseResidentNameTable(Stream data, ushort endOffset)
         {
             // TODO: Use marshalling here instead of building
-            var residentNameTable = new ResidentNameTableEntry[count];
+            var residentNameTable = new List<ResidentNameTableEntry>();
 
-            for (int i = 0; i < count; i++)
+            while (data.Position < endOffset)
             {
                 var entry = new ResidentNameTableEntry();
                 entry.Length = data.ReadByteValue();
                 entry.NameString = data.ReadBytes(entry.Length);
                 entry.OrdinalNumber = data.ReadUInt16();
-                residentNameTable[i] = entry;
+                residentNameTable.Add(entry);
             }
 
-            return residentNameTable;
+            return residentNameTable.ToArray();
+        }
+
+        /// <summary>
+        /// Parse a byte array into a module-reference table
+        /// </summary>
+        /// <param name="data">Stream to parse</param>
+        /// <param name="count">Number of module-reference table entries to read</param>
+        /// <returns>Filled module-reference table on success, null on error</returns>
+        private static ModuleReferenceTableEntry[] ParseModuleReferenceTable(Stream data, int count)
+        {
+            // TODO: Use marshalling here instead of building
+            var moduleReferenceTable = new ModuleReferenceTableEntry[count];
+
+            for (int i = 0; i < count; i++)
+            {
+                var entry = new ModuleReferenceTableEntry();
+                entry.Offset = data.ReadUInt16();
+                moduleReferenceTable[i] = entry;
+            }
+
+            return moduleReferenceTable;
         }
 
         #endregion
