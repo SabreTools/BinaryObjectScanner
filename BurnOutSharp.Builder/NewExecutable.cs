@@ -71,8 +71,8 @@ namespace BurnOutSharp.Builder
 
             #endregion
 
-            // TODO: Implement NE parsing
-            return null;
+            // TODO: Complete NE parsing
+            return executable;
         }
 
         /// <summary>
@@ -220,8 +220,8 @@ namespace BurnOutSharp.Builder
 
             #endregion
 
-            // TODO: Implement NE parsing
-            return null;
+            // TODO: Complete NE parsing
+            return executable;
         }
 
         /// <summary>
