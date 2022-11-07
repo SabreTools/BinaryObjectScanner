@@ -42,13 +42,14 @@ namespace BurnOutSharp.FileType
             // InstallShield Compiled Rules
             if (magic.StartsWith(new byte?[] { 0x61, 0x4C, 0x75, 0x5A }))
                 return true;
-            
+
             // Windows Help File
             if (magic.StartsWith(new byte?[] { 0x3F, 0x5F, 0x03, 0x00 }))
                 return true;
-                
+
             // "Description in Zip"
             if (string.Equals(extension?.TrimStart('.'), "diz", StringComparison.OrdinalIgnoreCase))
+                return true;
 
             // Setup information
             if (string.Equals(extension?.TrimStart('.'), "inf", StringComparison.OrdinalIgnoreCase))
