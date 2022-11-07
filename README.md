@@ -54,7 +54,7 @@ Below is a list of protections detected by BurnOutSharp. The two columns explain
 | Easy Anti-Cheat | True | True | |
 | ~~Executable-Based CD Check~~ | True | False | Disabled due to overly-broad checks |
 | Executable-Based Online Registration | True | False | Possibly too broad |
-| Freelock | False | True | Unconfirmed¹ |
+| Freelock | False | True | |
 | Games for Windows - Live | True | True | |
 | Hexalock AutoLock | True | True | |
 | Impulse Reactor / Stardock Product Activation | True | True | |
