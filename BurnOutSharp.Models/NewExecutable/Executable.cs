@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace BurnOutSharp.Models.NewExecutable
 {
     /// <summary>
@@ -44,7 +46,7 @@ namespace BurnOutSharp.Models.NewExecutable
         /// <summary>
         /// Imported-Name table
         /// </summary>
-        public ImportedNameTableEntry[] ImportedNameTable { get; set; }
+        public Dictionary<ushort, ImportedNameTableEntry> ImportedNameTable { get; set; }
 
         /// <summary>
         /// Entry table
