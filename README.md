@@ -92,7 +92,7 @@ Below is a list of protections detected by BurnOutSharp. The two columns explain
 | TZCopyProtection | False | True | Partially unconfirmed² |
 | Uplay | True | True | |
 | Windows Media Data Session DRM | True | True | |
-| Winlock | False | True | Unconfirmed¹ |
+| Winlock | False | True | |
 | WTM CD Protect | True | True | |
 | XCP | True | True | |
 | Zzxzz | False | True | |
