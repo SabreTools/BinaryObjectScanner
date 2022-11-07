@@ -63,14 +63,6 @@ namespace BurnOutSharp.Builder
         /// <returns>Filled executable header on success, null on error</returns>
         private static ExecutableHeader ParseExecutableHeader(byte[] data, int offset)
         {
-            // If we don't have enough data
-            if (data.Length < 28)
-                return null;
-
-            // If the offset means we don't have enough data
-            if (data.Length - offset < 28)
-                return null;
-
             // TODO: Use marshalling here instead of building
             var header = new ExecutableHeader();
 
@@ -134,14 +126,6 @@ namespace BurnOutSharp.Builder
         /// <returns>Filled relocation table on success, null on error</returns>
         private static RelocationEntry[] ParseRelocationTable(byte[] data, int offset, int count)
         {
-            // If we don't have enough data
-            if (data.Length < (count * 4))
-                return null;
-
-            // If the offset means we don't have enough data
-            if (data.Length - offset < (count * 4))
-                return null;
-
             // TODO: Use marshalling here instead of building
             var relocationTable = new RelocationEntry[count];
 
@@ -214,14 +198,6 @@ namespace BurnOutSharp.Builder
         /// <returns>Filled executable header on success, null on error</returns>
         private static ExecutableHeader ParseExecutableHeader(Stream data)
         {
-            // If we don't have enough data
-            if (data.Length < 28)
-                return null;
-
-            // If the offset means we don't have enough data
-            if (data.Length - data.Position < 28)
-                return null;
-
             // TODO: Use marshalling here instead of building
             var header = new ExecutableHeader();
 
@@ -284,14 +260,6 @@ namespace BurnOutSharp.Builder
         /// <returns>Filled relocation table on success, null on error</returns>
         private static RelocationEntry[] ParseRelocationTable(Stream data, int count)
         {
-            // If we don't have enough data
-            if (data.Length < (count * 4))
-                return null;
-
-            // If the offset means we don't have enough data
-            if (data.Length - data.Position < (count * 4))
-                return null;
-
             // TODO: Use marshalling here instead of building
             var relocationTable = new RelocationEntry[count];
 

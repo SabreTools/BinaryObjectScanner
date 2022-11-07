@@ -58,14 +58,6 @@ namespace BurnOutSharp.Builder
         /// <returns>Filled executable header on success, null on error</returns>
         private static ExecutableHeader ParseExecutableHeader(byte[] data, int offset)
         {
-            // If we don't have enough data
-            if (data.Length < 0x40)
-                return null;
-
-            // If the offset means we don't have enough data
-            if (data.Length - offset < 0x40)
-                return null;
-
             // TODO: Use marshalling here instead of building
             var header = new ExecutableHeader();
 
@@ -176,14 +168,6 @@ namespace BurnOutSharp.Builder
         /// <returns>Filled executable header on success, null on error</returns>
         private static ExecutableHeader ParseExecutableHeader(Stream data)
         {
-            // If we don't have enough data
-            if (data.Length < 0x40)
-                return null;
-
-            // If the offset means we don't have enough data
-            if (data.Length - data.Position < 0x40)
-                return null;
-
             // TODO: Use marshalling here instead of building
             var header = new ExecutableHeader();
 
