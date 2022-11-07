@@ -85,6 +85,7 @@ namespace BurnOutSharp.Builder
                 return null;
 
             // Set the MS-DOS stub
+            executable.Stub = stub;
 
             // TODO: Implement PE parsing
             return null;
