@@ -75,6 +75,7 @@ Below is a list of protections detected by BurnOutSharp. The two columns explain
 | ProtectDISC / VOB ProtectCD/DVD | True | False | |
 | Protect DVD-Video | False | True | Unconfirmed¹ |
 | PlayStation Anti-modchip | True | False | En/Jp, not "Red Hand"; PSX executables only |
+| Rainbow Sentinel | True | True | |
 | Ring PROTECH / ProRing | True | True | Partially unconfirmed² |
 | SafeDisc / SafeCast | True | True | Can't distinguish between some versions of SafeDisc and SafeCast |
 | SafeLock | False | True | |
