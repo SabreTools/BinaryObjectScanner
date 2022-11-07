@@ -88,7 +88,7 @@ Below is a list of protections detected by BurnOutSharp. The two columns explain
 | Sysiphus / Sysiphus DVD | True | False | |
 | TAGES | True | True | Partially unconfirmed² |
 | Tivola Ring Protection | False | True | |
-| TZCopyProtector | False | True | Unconfirmed¹ |
+| TZCopyProtection | False | True | Partially unconfirmed² |
 | Uplay | True | True | |
 | Windows Media Data Session DRM | True | True | |
 | Winlock | False | True | Unconfirmed¹ |
