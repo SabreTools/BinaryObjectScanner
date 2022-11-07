@@ -93,6 +93,25 @@ namespace BurnOutSharp.Builder
 
             #endregion
 
+            #region Resident-Name Table
+
+            // If the offset for the resident-name table doesn't exist
+            tableAddress = initialOffset
+                + (int)stub.Header.NewExeHeaderAddr
+                + executableHeader.ResidentNameTableOffset;
+            if (tableAddress >= data.Length)
+                return executable;
+
+            // Try to parse the resident-name table
+            var residentNameTable = ParseResidentNameTable(data, tableAddress, executableHeader.FileSegmentCount);
+            if (residentNameTable == null)
+                return null;
+
+            // Set the resident-name table
+            executable.ResidentNameTable = residentNameTable;
+
+            #endregion
+
             // TODO: Complete NE parsing
             return executable;
         }
@@ -237,6 +256,30 @@ namespace BurnOutSharp.Builder
             return resourceTable;
         }
 
+        /// <summary>
+        /// Parse a byte array into a resident-name table
+        /// </summary>
+        /// <param name="data">Byte array to parse</param>
+        /// <param name="offset">Offset into the byte array</param>
+        /// <param name="count">Number of resident-name table entries to read</param>
+        /// <returns>Filled resident-name table on success, null on error</returns>
+        private static ResidentNameTableEntry[] ParseResidentNameTable(byte[] data, int offset, int count)
+        {
+            // TODO: Use marshalling here instead of building
+            var residentNameTable = new ResidentNameTableEntry[count];
+
+            for (int i = 0; i < count; i++)
+            {
+                var entry = new ResidentNameTableEntry();
+                entry.Length = data.ReadByte(ref offset);
+                entry.NameString = data.ReadBytes(ref offset, entry.Length);
+                entry.OrdinalNumber = data.ReadUInt16(ref offset);
+                residentNameTable[i] = entry;
+            }
+
+            return residentNameTable;
+        }
+
         #endregion
 
         #region Stream Data
@@ -323,6 +366,26 @@ namespace BurnOutSharp.Builder
 
             // Set the resource table
             executable.ResourceTable = resourceTable;
+
+            #endregion
+
+            #region Resident-Name Table
+
+            // If the offset for the resident-name table doesn't exist
+            tableAddress = initialOffset
+                + (int)stub.Header.NewExeHeaderAddr
+                + executableHeader.ResidentNameTableOffset;
+            if (tableAddress >= data.Length)
+                return executable;
+
+            // Try to parse the resident-name table
+            data.Seek(tableAddress, SeekOrigin.Begin);
+            var residentNameTable = ParseResidentNameTable(data, executableHeader.FileSegmentCount);
+            if (residentNameTable == null)
+                return null;
+
+            // Set the resident-name table
+            executable.ResidentNameTable = residentNameTable;
 
             #endregion
 
@@ -466,6 +529,29 @@ namespace BurnOutSharp.Builder
             }
 
             return resourceTable;
+        }
+
+        /// <summary>
+        /// Parse a byte array into a resident-name table
+        /// </summary>
+        /// <param name="data">Stream to parse</param>
+        /// <param name="count">Number of resident-name table entries to read</param>
+        /// <returns>Filled resident-name table on success, null on error</returns>
+        private static ResidentNameTableEntry[] ParseResidentNameTable(Stream data, int count)
+        {
+            // TODO: Use marshalling here instead of building
+            var residentNameTable = new ResidentNameTableEntry[count];
+
+            for (int i = 0; i < count; i++)
+            {
+                var entry = new ResidentNameTableEntry();
+                entry.Length = data.ReadByteValue();
+                entry.NameString = data.ReadBytes(entry.Length);
+                entry.OrdinalNumber = data.ReadUInt16();
+                residentNameTable[i] = entry;
+            }
+
+            return residentNameTable;
         }
 
         #endregion
