@@ -111,6 +111,19 @@ namespace BurnOutSharp.Builder
             return header;
         }
 
+        /// <summary>
+        /// Parse a byte array into a segment table
+        /// </summary>
+        /// <param name="data">Byte array to parse</param>
+        /// <param name="offset">Offset into the byte array</param>
+        /// <param name="count">Number of segment table entries to read</param>
+        /// <returns>Filled segment table on success, null on error</returns>
+        private static SegmentTableEntry[] ParseSegmentTable(byte[] data, int offset, int count)
+        {
+            // TODO: Implement segment table reading
+            return null;
+        }
+
         #endregion
 
         #region Stream Data
@@ -214,6 +227,18 @@ namespace BurnOutSharp.Builder
             header.WindowsSDKVersion = data.ReadByteValue();
 
             return header;
+        }
+
+        /// <summary>
+        /// Parse a Stream into a segment table
+        /// </summary>
+        /// <param name="data">Stream to parse</param>
+        /// <param name="count">Number of segment table entries to read</param>
+        /// <returns>Filled segment table on success, null on error</returns>
+        private static SegmentTableEntry[] ParseSegmentTable(Stream data, int count)
+        {
+            // TODO: Implement segment table reading
+            return null;
         }
 
         #endregion

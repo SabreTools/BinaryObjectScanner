@@ -130,7 +130,8 @@ namespace BurnOutSharp.Builder
         /// </summary>
         /// <param name="data">Byte array to parse</param>
         /// <param name="offset">Offset into the byte array</param>
-        /// <returns>Filled executable header on success, null on error</returns>
+        /// <param name="count">Number of relocation table entries to read</param>
+        /// <returns>Filled relocation table on success, null on error</returns>
         private static RelocationEntry[] ParseRelocationTable(byte[] data, int offset, int count)
         {
             // If we don't have enough data
@@ -279,7 +280,8 @@ namespace BurnOutSharp.Builder
         /// Parse a Stream into a relocation table
         /// </summary>
         /// <param name="data">Stream to parse</param>
-        /// <returns>Filled executable header on success, null on error</returns>
+        /// <param name="count">Number of relocation table entries to read</param>
+        /// <returns>Filled relocation table on success, null on error</returns>
         private static RelocationEntry[] ParseRelocationTable(Stream data, int count)
         {
             // If we don't have enough data
