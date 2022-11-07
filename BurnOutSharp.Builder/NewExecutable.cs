@@ -64,12 +64,31 @@ namespace BurnOutSharp.Builder
                 return executable;
 
             // Try to parse the segment table
-            var relocationTable = ParseSegmentTable(data, tableAddress, executableHeader.FileSegmentCount);
-            if (relocationTable == null)
+            var segmentTable = ParseSegmentTable(data, tableAddress, executableHeader.FileSegmentCount);
+            if (segmentTable == null)
                 return null;
 
             // Set the segment table
-            executable.SegmentTable = relocationTable;
+            executable.SegmentTable = segmentTable;
+
+            #endregion
+
+            #region Resource Table
+
+            // If the offset for the segment table doesn't exist
+            tableAddress = initialOffset
+                + (int)stub.Header.NewExeHeaderAddr
+                + executableHeader.SegmentTableOffset;
+            if (tableAddress >= data.Length)
+                return executable;
+
+            // Try to parse the resource table
+            var resourceTable = ParseResourceTable(data, tableAddress, executableHeader.FileSegmentCount);
+            if (resourceTable == null)
+                return null;
+
+            // Set the resource table
+            executable.ResourceTable = resourceTable;
 
             #endregion
 
@@ -165,8 +184,39 @@ namespace BurnOutSharp.Builder
         private static ResourceTable ParseResourceTable(byte[] data, int offset, int count)
         {
             // TODO: Use marshalling here instead of building
-            // TODO: Write NE resource table parsing
-            return null;
+            var resourceTable = new ResourceTable();
+
+            resourceTable.AlignmentShiftCount = data.ReadUInt16(ref offset);
+            resourceTable.ResourceTypes = new ResourceTypeInformationEntry[count];
+            for (int i = 0; i < resourceTable.ResourceTypes.Length; i++)
+            {
+                var entry = new ResourceTypeInformationEntry();
+                entry.TypeID = data.ReadUInt16(ref offset);
+                entry.ResourceCount = data.ReadUInt16(ref offset);
+                entry.Reserved = data.ReadUInt32(ref offset);
+                entry.Resources = new ResourceTypeResourceEntry[entry.ResourceCount];
+                for (int j = 0; j < entry.ResourceCount; j++)
+                {
+                    var resource = new ResourceTypeResourceEntry();
+                    resource.Offset = data.ReadUInt16(ref offset);
+                    resource.Length = data.ReadUInt16(ref offset);
+                    resource.FlagWord = (ResourceTypeResourceFlag)data.ReadUInt16(ref offset);
+                    resource.ResourceID = data.ReadUInt16(ref offset);
+                    resource.Reserved = data.ReadUInt32(ref offset);
+                    entry.Resources[j] = resource;
+                }
+                resourceTable.ResourceTypes[i] = entry;
+            }
+
+            // TODO: Implement string table parsing
+            // Taking the list of offsets from the entries and taking the unique
+            // values should allow for reading all necessary resource strings.
+            // This may lead to each resource getting the string built-in
+            // instead of it being a reference OR it will lead to a dictionary
+            // that maps offset to string object. The latter seems like
+            // it is more accurate
+
+            return resourceTable;
         }
 
         #endregion
@@ -229,12 +279,32 @@ namespace BurnOutSharp.Builder
 
             // Try to parse the segment table
             data.Seek(tableAddress, SeekOrigin.Begin);
-            var relocationTable = ParseSegmentTable(data, executableHeader.FileSegmentCount);
-            if (relocationTable == null)
+            var segmentTable = ParseSegmentTable(data, executableHeader.FileSegmentCount);
+            if (segmentTable == null)
                 return null;
 
             // Set the segment table
-            executable.SegmentTable = relocationTable;
+            executable.SegmentTable = segmentTable;
+
+            #endregion
+
+            #region Resource Table
+
+            // If the offset for the segment table doesn't exist
+            tableAddress = initialOffset
+                + (int)stub.Header.NewExeHeaderAddr
+                + executableHeader.SegmentTableOffset;
+            if (tableAddress >= data.Length)
+                return executable;
+
+            // Try to parse the resource table
+            data.Seek(tableAddress, SeekOrigin.Begin);
+            var resourceTable = ParseResourceTable(data, executableHeader.FileSegmentCount);
+            if (resourceTable == null)
+                return null;
+
+            // Set the resource table
+            executable.ResourceTable = resourceTable;
 
             #endregion
 
@@ -327,8 +397,39 @@ namespace BurnOutSharp.Builder
         private static ResourceTable ParseResourceTable(Stream data, int count)
         {
             // TODO: Use marshalling here instead of building
-            // TODO: Write NE resource table parsing
-            return null;
+            var resourceTable = new ResourceTable();
+
+            resourceTable.AlignmentShiftCount = data.ReadUInt16();
+            resourceTable.ResourceTypes = new ResourceTypeInformationEntry[count];
+            for (int i = 0; i < resourceTable.ResourceTypes.Length; i++)
+            {
+                var entry = new ResourceTypeInformationEntry();
+                entry.TypeID = data.ReadUInt16();
+                entry.ResourceCount = data.ReadUInt16();
+                entry.Reserved = data.ReadUInt32();
+                entry.Resources = new ResourceTypeResourceEntry[entry.ResourceCount];
+                for (int j = 0; j < entry.ResourceCount; j++)
+                {
+                    var resource = new ResourceTypeResourceEntry();
+                    resource.Offset = data.ReadUInt16();
+                    resource.Length = data.ReadUInt16();
+                    resource.FlagWord = (ResourceTypeResourceFlag)data.ReadUInt16();
+                    resource.ResourceID = data.ReadUInt16();
+                    resource.Reserved = data.ReadUInt32();
+                    entry.Resources[j] = resource;
+                }
+                resourceTable.ResourceTypes[i] = entry;
+            }
+
+            // TODO: Implement string table parsing
+            // Taking the list of offsets from the entries and taking the unique
+            // values should allow for reading all necessary resource strings.
+            // This may lead to each resource getting the string built-in
+            // instead of it being a reference OR it will lead to a dictionary
+            // that maps offset to string object. The latter seems like
+            // it is more accurate
+
+            return resourceTable;
         }
 
         #endregion
