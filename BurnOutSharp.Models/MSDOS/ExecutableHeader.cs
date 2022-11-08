@@ -17,7 +17,7 @@ namespace BurnOutSharp.Models.MSDOS
         /// 0x5A4D (ASCII for 'M' and 'Z')
         /// </summary>
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]
-        public char[] Magic;
+        public byte[] Magic;
 
         /// <summary>
         /// Number of bytes in the last page.

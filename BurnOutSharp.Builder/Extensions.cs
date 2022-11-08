@@ -6,7 +6,7 @@ using System.Text;
 
 namespace BurnOutSharp.Builder
 {
-    internal static class Extensions
+    public static class Extensions
     {
         #region Byte Arrays
 

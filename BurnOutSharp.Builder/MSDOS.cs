@@ -76,10 +76,10 @@ namespace BurnOutSharp.Builder
 
             #region Standard Fields
 
-            header.Magic = new char[2];
+            header.Magic = new byte[2];
             for (int i = 0; i < header.Magic.Length; i++)
             {
-                header.Magic[i] = data.ReadChar(ref offset);
+                header.Magic[i] = data.ReadByte(ref offset);
             }
             if (header.Magic[0] != 'M' || header.Magic[1] != 'Z')
                 return null;
@@ -114,7 +114,7 @@ namespace BurnOutSharp.Builder
             header.OEMIdentifier = data.ReadUInt16(ref offset);
             header.OEMInformation = data.ReadUInt16(ref offset);
             header.Reserved2 = new ushort[10];
-            for (int i = 0; i < header.Reserved1.Length; i++)
+            for (int i = 0; i < header.Reserved2.Length; i++)
             {
                 header.Reserved2[i] = data.ReadUInt16(ref offset);
             }
@@ -219,10 +219,10 @@ namespace BurnOutSharp.Builder
 
             #region Standard Fields
 
-            header.Magic = new char[2];
+            header.Magic = new byte[2];
             for (int i = 0; i < header.Magic.Length; i++)
             {
-                header.Magic[i] = data.ReadChar();
+                header.Magic[i] = data.ReadByteValue();
             }
             if (header.Magic[0] != 'M' || header.Magic[1] != 'Z')
                 return null;
@@ -257,7 +257,7 @@ namespace BurnOutSharp.Builder
             header.OEMIdentifier = data.ReadUInt16();
             header.OEMInformation = data.ReadUInt16();
             header.Reserved2 = new ushort[10];
-            for (int i = 0; i < header.Reserved1.Length; i++)
+            for (int i = 0; i < header.Reserved2.Length; i++)
             {
                 header.Reserved2[i] = data.ReadUInt16();
             }
