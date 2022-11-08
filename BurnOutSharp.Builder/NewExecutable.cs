@@ -101,11 +101,14 @@ namespace BurnOutSharp.Builder
             tableAddress = initialOffset
                 + (int)stub.Header.NewExeHeaderAddr
                 + executableHeader.ResidentNameTableOffset;
+            int endOffset = initialOffset
+                + (int)stub.Header.NewExeHeaderAddr
+                + executableHeader.ModuleReferenceTableOffset;
             if (tableAddress >= data.Length)
                 return executable;
 
             // Try to parse the resident-name table
-            var residentNameTable = ParseResidentNameTable(data, tableAddress, executableHeader.ModuleReferenceTableOffset);
+            var residentNameTable = ParseResidentNameTable(data, tableAddress, endOffset);
             if (residentNameTable == null)
                 return null;
 
@@ -139,11 +142,14 @@ namespace BurnOutSharp.Builder
             tableAddress = initialOffset
                 + (int)stub.Header.NewExeHeaderAddr
                 + executableHeader.ImportedNamesTableOffset;
+            endOffset = initialOffset
+                + (int)stub.Header.NewExeHeaderAddr
+                + executableHeader.EntryTableOffset;
             if (tableAddress >= data.Length)
                 return executable;
 
             // Try to parse the imported-name table
-            var importedNameTable = ParseImportedNameTable(data, tableAddress, executableHeader.EntryTableOffset);
+            var importedNameTable = ParseImportedNameTable(data, tableAddress, endOffset);
             if (importedNameTable == null)
                 return null;
 
@@ -158,11 +164,15 @@ namespace BurnOutSharp.Builder
             tableAddress = initialOffset
                 + (int)stub.Header.NewExeHeaderAddr
                 + executableHeader.EntryTableOffset;
+            endOffset = initialOffset
+                + (int)stub.Header.NewExeHeaderAddr
+                + executableHeader.EntryTableOffset
+                + executableHeader.EntryTableSize;
             if (tableAddress >= data.Length)
                 return executable;
 
             // Try to parse the entry table
-            var entryTable = ParseEntryTable(data, tableAddress, (ushort)(executableHeader.EntryTableOffset + executableHeader.EntryTableSize));
+            var entryTable = ParseEntryTable(data, tableAddress, endOffset);
             if (entryTable == null)
                 return null;
 
@@ -177,11 +187,15 @@ namespace BurnOutSharp.Builder
             tableAddress = initialOffset
                 + (int)stub.Header.NewExeHeaderAddr
                 + (int)executableHeader.NonResidentNamesTableOffset;
+            endOffset = initialOffset
+                + (int)stub.Header.NewExeHeaderAddr
+                + (int)executableHeader.NonResidentNamesTableOffset
+                + executableHeader.NonResidentNameTableSize;
             if (tableAddress >= data.Length)
                 return executable;
 
             // Try to parse the nonresident-name table
-            var nonResidentNameTable = ParseNonResidentNameTable(data, tableAddress, (ushort)(executableHeader.NonResidentNamesTableOffset + executableHeader.NonResidentNameTableSize));
+            var nonResidentNameTable = ParseNonResidentNameTable(data, tableAddress, endOffset);
             if (nonResidentNameTable == null)
                 return null;
 
@@ -341,7 +355,7 @@ namespace BurnOutSharp.Builder
         /// <param name="offset">Offset into the byte array</param>
         /// <param name="endOffset">First address not part of the resident-name table</param>
         /// <returns>Filled resident-name table on success, null on error</returns>
-        private static ResidentNameTableEntry[] ParseResidentNameTable(byte[] data, int offset, ushort endOffset)
+        private static ResidentNameTableEntry[] ParseResidentNameTable(byte[] data, int offset, int endOffset)
         {
             // TODO: Use marshalling here instead of building
             var residentNameTable = new List<ResidentNameTableEntry>();
@@ -387,7 +401,7 @@ namespace BurnOutSharp.Builder
         /// <param name="offset">Offset into the byte array</param>
         /// <param name="endOffset">First address not part of the imported-name table</param>
         /// <returns>Filled imported-name table on success, null on error</returns>
-        private static Dictionary<ushort, ImportedNameTableEntry> ParseImportedNameTable(byte[] data, int offset, ushort endOffset)
+        private static Dictionary<ushort, ImportedNameTableEntry> ParseImportedNameTable(byte[] data, int offset, int endOffset)
         {
             // TODO: Use marshalling here instead of building
             var importedNameTable = new Dictionary<ushort, ImportedNameTableEntry>();
@@ -411,7 +425,7 @@ namespace BurnOutSharp.Builder
         /// <param name="offset">Offset into the byte array</param>
         /// <param name="endOffset">First address not part of the entry table</param>
         /// <returns>Filled entry table on success, null on error</returns>
-        private static EntryTableBundle[] ParseEntryTable(byte[] data, int offset, ushort endOffset)
+        private static EntryTableBundle[] ParseEntryTable(byte[] data, int offset, int endOffset)
         {
             // TODO: Use marshalling here instead of building
             var entryTable = new List<EntryTableBundle>();
@@ -451,7 +465,7 @@ namespace BurnOutSharp.Builder
         /// <param name="offset">Offset into the byte array</param>
         /// <param name="endOffset">First address not part of the nonresident-name table</param>
         /// <returns>Filled nonresident-name table on success, null on error</returns>
-        private static NonResidentNameTableEntry[] ParseNonResidentNameTable(byte[] data, int offset, ushort endOffset)
+        private static NonResidentNameTableEntry[] ParseNonResidentNameTable(byte[] data, int offset, int endOffset)
         {
             // TODO: Use marshalling here instead of building
             var residentNameTable = new List<NonResidentNameTableEntry>();
@@ -564,12 +578,15 @@ namespace BurnOutSharp.Builder
             tableAddress = initialOffset
                 + (int)stub.Header.NewExeHeaderAddr
                 + executableHeader.ResidentNameTableOffset;
+            int endOffset = initialOffset
+                + (int)stub.Header.NewExeHeaderAddr
+                + executableHeader.ModuleReferenceTableOffset;
             if (tableAddress >= data.Length)
                 return executable;
 
             // Try to parse the resident-name table
             data.Seek(tableAddress, SeekOrigin.Begin);
-            var residentNameTable = ParseResidentNameTable(data, executableHeader.ModuleReferenceTableOffset);
+            var residentNameTable = ParseResidentNameTable(data, endOffset);
             if (residentNameTable == null)
                 return null;
 
@@ -604,12 +621,15 @@ namespace BurnOutSharp.Builder
             tableAddress = initialOffset
                 + (int)stub.Header.NewExeHeaderAddr
                 + executableHeader.ImportedNamesTableOffset;
+            endOffset = initialOffset
+                + (int)stub.Header.NewExeHeaderAddr
+                + executableHeader.EntryTableOffset;
             if (tableAddress >= data.Length)
                 return executable;
 
             // Try to parse the imported-name table
             data.Seek(tableAddress, SeekOrigin.Begin);
-            var importedNameTable = ParseImportedNameTable(data, executableHeader.EntryTableOffset);
+            var importedNameTable = ParseImportedNameTable(data, endOffset);
             if (importedNameTable == null)
                 return null;
 
@@ -624,12 +644,16 @@ namespace BurnOutSharp.Builder
             tableAddress = initialOffset
                 + (int)stub.Header.NewExeHeaderAddr
                 + executableHeader.EntryTableOffset;
+            endOffset = initialOffset
+                + (int)stub.Header.NewExeHeaderAddr
+                + executableHeader.EntryTableOffset
+                + executableHeader.EntryTableSize;
             if (tableAddress >= data.Length)
                 return executable;
 
             // Try to parse the imported-name table
             data.Seek(tableAddress, SeekOrigin.Begin);
-            var entryTable = ParseEntryTable(data, (ushort)(executableHeader.EntryTableOffset + executableHeader.EntryTableSize));
+            var entryTable = ParseEntryTable(data, endOffset);
             if (entryTable == null)
                 return null;
 
@@ -644,12 +668,16 @@ namespace BurnOutSharp.Builder
             tableAddress = initialOffset
                 + (int)stub.Header.NewExeHeaderAddr
                 + (int)executableHeader.NonResidentNamesTableOffset;
+            endOffset = initialOffset
+                + (int)stub.Header.NewExeHeaderAddr
+                + (int)executableHeader.NonResidentNamesTableOffset
+                + executableHeader.NonResidentNameTableSize;
             if (tableAddress >= data.Length)
                 return executable;
 
             // Try to parse the nonresident-name table
             data.Seek(tableAddress, SeekOrigin.Begin);
-            var nonResidentNameTable = ParseNonResidentNameTable(data, (ushort)(executableHeader.NonResidentNamesTableOffset + executableHeader.NonResidentNameTableSize));
+            var nonResidentNameTable = ParseNonResidentNameTable(data, endOffset);
             if (nonResidentNameTable == null)
                 return null;
 
@@ -806,7 +834,7 @@ namespace BurnOutSharp.Builder
         /// <param name="data">Stream to parse</param>
         /// <param name="endOffset">First address not part of the resident-name table</param>
         /// <returns>Filled resident-name table on success, null on error</returns>
-        private static ResidentNameTableEntry[] ParseResidentNameTable(Stream data, ushort endOffset)
+        private static ResidentNameTableEntry[] ParseResidentNameTable(Stream data, int endOffset)
         {
             // TODO: Use marshalling here instead of building
             var residentNameTable = new List<ResidentNameTableEntry>();
@@ -850,7 +878,7 @@ namespace BurnOutSharp.Builder
         /// <param name="data">Stream to parse</param>
         /// <param name="endOffset">First address not part of the imported-name table</param>
         /// <returns>Filled imported-name table on success, null on error</returns>
-        private static Dictionary<ushort, ImportedNameTableEntry> ParseImportedNameTable(Stream data, ushort endOffset)
+        private static Dictionary<ushort, ImportedNameTableEntry> ParseImportedNameTable(Stream data, int endOffset)
         {
             // TODO: Use marshalling here instead of building
             var importedNameTable = new Dictionary<ushort, ImportedNameTableEntry>();
@@ -873,7 +901,7 @@ namespace BurnOutSharp.Builder
         /// <param name="data">Stream to parse</param>
         /// <param name="endOffset">First address not part of the entry table</param>
         /// <returns>Filled entry table on success, null on error</returns>
-        private static EntryTableBundle[] ParseEntryTable(Stream data, ushort endOffset)
+        private static EntryTableBundle[] ParseEntryTable(Stream data, int endOffset)
         {
             // TODO: Use marshalling here instead of building
             var entryTable = new List<EntryTableBundle>();
@@ -912,7 +940,7 @@ namespace BurnOutSharp.Builder
         /// <param name="data">Stream to parse</param>
         /// <param name="endOffset">First address not part of the nonresident-name table</param>
         /// <returns>Filled nonresident-name table on success, null on error</returns>
-        private static NonResidentNameTableEntry[] ParseNonResidentNameTable(Stream data, ushort endOffset)
+        private static NonResidentNameTableEntry[] ParseNonResidentNameTable(Stream data, int endOffset)
         {
             // TODO: Use marshalling here instead of building
             var residentNameTable = new List<NonResidentNameTableEntry>();
