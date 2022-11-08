@@ -79,8 +79,8 @@ namespace BurnOutSharp.Builder
 
             #endregion
 
-            // TODO: Implement PE parsing
-            return null;
+            // TODO: Finish implementing PE parsing
+            return executable;
         }
 
         /// <summary>
@@ -349,8 +349,8 @@ namespace BurnOutSharp.Builder
 
             #endregion
 
-            // TODO: Implement PE parsing
-            return null;
+            // TODO: Finish implementing PE parsing
+            return executable;
         }
 
         /// <summary>

@@ -1,5 +1,4 @@
-﻿using System.Security.Cryptography;
-using System.Text;
+﻿using System.Text;
 using BurnOutSharp.Builder;
 
 namespace ExecutableTest
@@ -94,9 +93,17 @@ namespace ExecutableTest
                     // Portable Executable
                     else if (magic[0] == 'P' && magic[1] == 'E' && magic[2] == '\0' && magic[3] == '\0')
                     {
-                        Console.WriteLine($"Portable executable found. No parsing currently available.");
-                        Console.WriteLine();
-                        continue;
+                        stream.Seek(0, SeekOrigin.Begin);
+                        var portableExecutable = PortableExecutable.ParseExecutable(stream);
+                        if (portableExecutable == null)
+                        {
+                            Console.WriteLine("Something went wrong parsing Portable Executable");
+                            Console.WriteLine();
+                            continue;
+                        }
+
+                        // Print the executable info to screen
+                        PrintPortableExecutable(portableExecutable);
                     }
 
                     // Unknown
