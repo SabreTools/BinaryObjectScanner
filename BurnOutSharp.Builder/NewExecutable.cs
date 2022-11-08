@@ -86,7 +86,7 @@ namespace BurnOutSharp.Builder
                 return executable;
 
             // Try to parse the resource table
-            var resourceTable = ParseResourceTable(data, tableAddress, executableHeader.FileSegmentCount);
+            var resourceTable = ParseResourceTable(data, tableAddress, executableHeader.ResourceEntriesCount);
             if (resourceTable == null)
                 return null;
 
@@ -549,7 +549,7 @@ namespace BurnOutSharp.Builder
 
             // Try to parse the resource table
             data.Seek(tableAddress, SeekOrigin.Begin);
-            var resourceTable = ParseResourceTable(data, executableHeader.FileSegmentCount);
+            var resourceTable = ParseResourceTable(data, executableHeader.ResourceEntriesCount);
             if (resourceTable == null)
                 return null;
 
