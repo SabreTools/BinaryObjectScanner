@@ -143,11 +143,30 @@ namespace BurnOutSharp.Builder
 
             // Try to parse the imported-name table
             var importedNameTable = ParseImportedNameTable(data, tableAddress, executableHeader.EntryTableOffset);
-            if (moduleReferenceTable == null)
+            if (importedNameTable == null)
                 return null;
 
             // Set the imported-name table
             executable.ImportedNameTable = importedNameTable;
+
+            #endregion
+
+            #region Entry Table
+
+            // If the offset for the entry table doesn't exist
+            tableAddress = initialOffset
+                + (int)stub.Header.NewExeHeaderAddr
+                + executableHeader.EntryTableOffset;
+            if (tableAddress >= data.Length)
+                return executable;
+
+            // Try to parse the entry table
+            var entryTable = ParseEntryTable(data, tableAddress, (ushort)(executableHeader.EntryTableOffset + executableHeader.EntryTableSize));
+            if (entryTable == null)
+                return null;
+
+            // Set the entry table
+            executable.EntryTable = entryTable;
 
             #endregion
 
@@ -365,6 +384,46 @@ namespace BurnOutSharp.Builder
             return importedNameTable;
         }
 
+        /// <summary>
+        /// Parse a byte array into an entry table
+        /// </summary>
+        /// <param name="data">Byte array to parse</param>
+        /// <param name="offset">Offset into the byte array</param>
+        /// <param name="endOffset">First address not part of the entry table</param>
+        /// <returns>Filled entry table on success, null on error</returns>
+        private static EntryTableBundle[] ParseEntryTable(byte[] data, int offset, ushort endOffset)
+        {
+            // TODO: Use marshalling here instead of building
+            var entryTable = new List<EntryTableBundle>();
+
+            while (offset < endOffset)
+            {
+                var entry = new EntryTableBundle();
+                entry.EntryCount = data.ReadByte(ref offset);
+                entry.SegmentIndicator = data.ReadByte(ref offset);
+                switch (entry.GetEntryType())
+                {
+                    case SegmentEntryType.Unused:
+                        break;
+
+                    case SegmentEntryType.FixedSegment:
+                        entry.FixedFlagWord = (FixedSegmentEntryFlag)data.ReadByte(ref offset);
+                        entry.FixedOffset = data.ReadUInt16(ref offset);
+                        break;
+
+                    case SegmentEntryType.MoveableSegment:
+                        entry.MoveableFlagWord = (MoveableSegmentEntryFlag)data.ReadByte(ref offset);
+                        entry.MoveableReserved = data.ReadUInt16(ref offset);
+                        entry.MoveableSegmentNumber = data.ReadByte(ref offset);
+                        entry.MoveableOffset = data.ReadUInt16(ref offset);
+                        break;
+                }
+                entryTable.Add(entry);
+            }
+
+            return entryTable.ToArray();
+        }
+
         #endregion
 
         #region Stream Data
@@ -499,7 +558,7 @@ namespace BurnOutSharp.Builder
             // If the offset for the imported-name table doesn't exist
             tableAddress = initialOffset
                 + (int)stub.Header.NewExeHeaderAddr
-                + executableHeader.ResidentNameTableOffset;
+                + executableHeader.ImportedNamesTableOffset;
             if (tableAddress >= data.Length)
                 return executable;
 
@@ -511,6 +570,26 @@ namespace BurnOutSharp.Builder
 
             // Set the imported-name table
             executable.ImportedNameTable = importedNameTable;
+
+            #endregion
+
+            #region Entry Table
+
+            // If the offset for the imported-name table doesn't exist
+            tableAddress = initialOffset
+                + (int)stub.Header.NewExeHeaderAddr
+                + executableHeader.EntryTableOffset;
+            if (tableAddress >= data.Length)
+                return executable;
+
+            // Try to parse the imported-name table
+            data.Seek(tableAddress, SeekOrigin.Begin);
+            var entryTable = ParseEntryTable(data, (ushort)(executableHeader.EntryTableOffset + executableHeader.EntryTableSize));
+            if (entryTable == null)
+                return null;
+
+            // Set the entry table
+            executable.EntryTable = entryTable;
 
             #endregion
 
@@ -657,7 +736,7 @@ namespace BurnOutSharp.Builder
         }
 
         /// <summary>
-        /// Parse a byte array into a resident-name table
+        /// Parse a Stream into a resident-name table
         /// </summary>
         /// <param name="data">Stream to parse</param>
         /// <param name="endOffset">First address not part of the resident-name table</param>
@@ -680,7 +759,7 @@ namespace BurnOutSharp.Builder
         }
 
         /// <summary>
-        /// Parse a byte array into a module-reference table
+        /// Parse a Stream into a module-reference table
         /// </summary>
         /// <param name="data">Stream to parse</param>
         /// <param name="count">Number of module-reference table entries to read</param>
@@ -701,7 +780,7 @@ namespace BurnOutSharp.Builder
         }
 
         /// <summary>
-        /// Parse a byte array into an imported-name table
+        /// Parse a Stream into an imported-name table
         /// </summary>
         /// <param name="data">Stream to parse</param>
         /// <param name="endOffset">First address not part of the imported-name table</param>
@@ -721,6 +800,45 @@ namespace BurnOutSharp.Builder
             }
 
             return importedNameTable;
+        }
+
+        /// <summary>
+        /// Parse a Stream into an entry table
+        /// </summary>
+        /// <param name="data">Stream to parse</param>
+        /// <param name="endOffset">First address not part of the entry table</param>
+        /// <returns>Filled entry table on success, null on error</returns>
+        private static EntryTableBundle[] ParseEntryTable(Stream data, ushort endOffset)
+        {
+            // TODO: Use marshalling here instead of building
+            var entryTable = new List<EntryTableBundle>();
+
+            while (data.Position < endOffset)
+            {
+                var entry = new EntryTableBundle();
+                entry.EntryCount = data.ReadByteValue();
+                entry.SegmentIndicator = data.ReadByteValue();
+                switch (entry.GetEntryType())
+                {
+                    case SegmentEntryType.Unused:
+                        break;
+
+                    case SegmentEntryType.FixedSegment:
+                        entry.FixedFlagWord = (FixedSegmentEntryFlag)data.ReadByteValue();
+                        entry.FixedOffset = data.ReadUInt16();
+                        break;
+
+                    case SegmentEntryType.MoveableSegment:
+                        entry.MoveableFlagWord = (MoveableSegmentEntryFlag)data.ReadByteValue();
+                        entry.MoveableReserved = data.ReadUInt16();
+                        entry.MoveableSegmentNumber = data.ReadByteValue();
+                        entry.MoveableOffset = data.ReadUInt16();
+                        break;
+                }
+                entryTable.Add(entry);
+            }
+
+            return entryTable.ToArray();
         }
 
         #endregion
