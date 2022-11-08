@@ -342,7 +342,36 @@ namespace ExecutableTest
             }
             Console.WriteLine();
 
-            // TODO: Add table printing
+            Console.WriteLine("  Entry Table Information:");
+            Console.WriteLine("  -------------------------");
+            if (executable.Header.EntryTableSize == 0 || executable.EntryTable.Length == 0)
+            {
+                Console.WriteLine("  No entry table items");
+            }
+            else
+            {
+                for (int i = 0; i < executable.EntryTable.Length; i++)
+                {
+                    var entry = executable.EntryTable[i];
+                    Console.WriteLine($"  Entry Table Entry {i}");
+                    Console.WriteLine($"    Entry count = {entry.EntryCount}");
+                    Console.WriteLine($"    Segment indicator = {entry.SegmentIndicator} ({entry.GetEntryType()})");
+                    switch (entry.GetEntryType())
+                    {
+                        case BurnOutSharp.Models.NewExecutable.SegmentEntryType.FixedSegment:
+                            Console.WriteLine($"    Flag word = {entry.FixedFlagWord}");
+                            Console.WriteLine($"    Offset = {entry.FixedOffset}");
+                            break;
+                        case BurnOutSharp.Models.NewExecutable.SegmentEntryType.MoveableSegment:
+                            Console.WriteLine($"    Flag word = {entry.MoveableFlagWord}");
+                            Console.WriteLine($"    Reserved = {entry.MoveableReserved}");
+                            Console.WriteLine($"    Segment number = {entry.MoveableSegmentNumber}");
+                            Console.WriteLine($"    Offset = {entry.MoveableOffset}");
+                            break;
+                    }
+                }
+            }
+            Console.WriteLine();
         }
     }
 }
