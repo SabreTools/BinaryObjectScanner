@@ -30,6 +30,8 @@ namespace BurnOutSharp.Builder
             // Create a new executable to fill
             var executable = new Executable();
 
+            #region MS-DOS Stub
+
             // Parse the MS-DOS stub
             var stub = MSDOS.ParseExecutable(data, offset);
             if (stub?.Header == null || stub.Header.NewExeHeaderAddr == 0)
@@ -37,6 +39,21 @@ namespace BurnOutSharp.Builder
 
             // Set the MS-DOS stub
             executable.Stub = stub;
+
+            #endregion
+
+            #region Signature
+
+            offset = (int)(initialOffset + stub.Header.NewExeHeaderAddr);
+            executable.Signature = new byte[4];
+            for (int i = 0; i < executable.Signature.Length; i++)
+            {
+                executable.Signature[i] = data.ReadByte(ref offset);
+            }
+            if (executable.Signature[0] != 'P' || executable.Signature[1] != 'E' || executable.Signature[2] != '\0' || executable.Signature[3] != '\0')
+                return null;
+
+            #endregion
 
             // TODO: Implement PE parsing
             return null;
@@ -79,6 +96,8 @@ namespace BurnOutSharp.Builder
             // Create a new executable to fill
             var executable = new Executable();
 
+            #region MS-DOS Stub
+
             // Parse the MS-DOS stub
             var stub = MSDOS.ParseExecutable(data);
             if (stub?.Header == null || stub.Header.NewExeHeaderAddr == 0)
@@ -86,6 +105,21 @@ namespace BurnOutSharp.Builder
 
             // Set the MS-DOS stub
             executable.Stub = stub;
+
+            #endregion
+
+            #region Signature
+
+            data.Seek(initialOffset + stub.Header.NewExeHeaderAddr, SeekOrigin.Begin);
+            executable.Signature = new byte[4];
+            for (int i = 0; i < executable.Signature.Length; i++)
+            {
+                executable.Signature[i] = data.ReadByteValue();
+            }
+            if (executable.Signature[0] != 'P' || executable.Signature[1] != 'E' || executable.Signature[2] != '\0' || executable.Signature[3] != '\0')
+                return null;
+
+            #endregion
 
             // TODO: Implement PE parsing
             return null;
