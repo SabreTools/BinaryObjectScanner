@@ -17,7 +17,7 @@ namespace BurnOutSharp.Models.NewExecutable
         /// "E" is high-order byte.
         /// </summary>
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]
-        public char[] Magic;
+        public byte[] Magic;
 
         /// <summary>
         /// Version number of the linker.

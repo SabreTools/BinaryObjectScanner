@@ -47,6 +47,7 @@ namespace BurnOutSharp.Builder
             #region Executable Header
 
             // Try to parse the executable header
+            offset = (int)(initialOffset + stub.Header.NewExeHeaderAddr);
             var executableHeader = ParseExecutableHeader(data, offset);
             if (executableHeader == null)
                 return null;
@@ -203,10 +204,10 @@ namespace BurnOutSharp.Builder
             // TODO: Use marshalling here instead of building
             var header = new ExecutableHeader();
 
-            header.Magic = new char[2];
+            header.Magic = new byte[2];
             for (int i = 0; i < header.Magic.Length; i++)
             {
-                header.Magic[i] = data.ReadChar(ref offset);
+                header.Magic[i] = data.ReadByte(ref offset);
             }
             if (header.Magic[0] != 'N' || header.Magic[1] != 'E')
                 return null;
@@ -320,6 +321,7 @@ namespace BurnOutSharp.Builder
                 .ToList();
 
             // Populate the type and name string dictionary
+            resourceTable.TypeAndNameStrings = new Dictionary<ushort, ResourceTypeAndNameString>();
             for (int i = 0; i < stringOffsets.Count; i++)
             {
                 int stringOffset = stringOffsets[i] + initialOffset;
@@ -506,6 +508,7 @@ namespace BurnOutSharp.Builder
             #region Executable Header
 
             // Try to parse the executable header
+            data.Seek(initialOffset + stub.Header.NewExeHeaderAddr, SeekOrigin.Begin);
             var executableHeader = ParseExecutableHeader(data);
             if (executableHeader == null)
                 return null;
@@ -668,10 +671,10 @@ namespace BurnOutSharp.Builder
             // TODO: Use marshalling here instead of building
             var header = new ExecutableHeader();
 
-            header.Magic = new char[2];
+            header.Magic = new byte[2];
             for (int i = 0; i < header.Magic.Length; i++)
             {
-                header.Magic[i] = data.ReadChar();
+                header.Magic[i] = data.ReadByteValue();
             }
             if (header.Magic[0] != 'N' || header.Magic[1] != 'E')
                 return null;
@@ -783,6 +786,7 @@ namespace BurnOutSharp.Builder
                 .ToList();
 
             // Populate the type and name string dictionary
+            resourceTable.TypeAndNameStrings = new Dictionary<ushort, ResourceTypeAndNameString>();
             for (int i = 0; i < stringOffsets.Count; i++)
             {
                 int stringOffset = (int)(stringOffsets[i] + initialOffset);
