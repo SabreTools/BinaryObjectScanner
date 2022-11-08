@@ -55,6 +55,18 @@ namespace BurnOutSharp.Builder
 
             #endregion
 
+            #region COFF File Header
+
+            // Try to parse the COFF file header
+            var coffFileHeader = ParseCOFFFileHeader(data, ref offset);
+            if (coffFileHeader == null)
+                return null;
+
+            // Set the COFF file header
+            executable.COFFFileHeader = coffFileHeader;
+
+            #endregion
+
             // TODO: Implement PE parsing
             return null;
         }
@@ -65,10 +77,20 @@ namespace BurnOutSharp.Builder
         /// <param name="data">Byte array to parse</param>
         /// <param name="offset">Offset into the byte array</param>
         /// <returns>Filled COFF file header on success, null on error</returns>
-        private static COFFFileHeader ParseCOFFFileHeader(byte[] data, int offset)
+        private static COFFFileHeader ParseCOFFFileHeader(byte[] data, ref int offset)
         {
-            // TODO: Implement PE COFF file header parsing
-            return null;
+            // TODO: Use marshalling here instead of building
+            var fileHeader = new COFFFileHeader();
+
+            fileHeader.Machine = (MachineType)data.ReadUInt16(ref offset);
+            fileHeader.NumberOfSections = data.ReadUInt16(ref offset);
+            fileHeader.TimeDateStamp = data.ReadUInt32(ref offset);
+            fileHeader.PointerToSymbolTable = data.ReadUInt32(ref offset);
+            fileHeader.NumberOfSymbols = data.ReadUInt32(ref offset);
+            fileHeader.SizeOfOptionalHeader = data.ReadUInt16(ref offset);
+            fileHeader.Characteristics = (Characteristics)data.ReadUInt16(ref offset);
+
+            return fileHeader;
         }
 
         #endregion
@@ -121,6 +143,18 @@ namespace BurnOutSharp.Builder
 
             #endregion
 
+            #region COFF File Header
+
+            // Try to parse the COFF file header
+            var coffFileHeader = ParseCOFFFileHeader(data);
+            if (coffFileHeader == null)
+                return null;
+
+            // Set the COFF file header
+            executable.COFFFileHeader = coffFileHeader;
+
+            #endregion
+
             // TODO: Implement PE parsing
             return null;
         }
@@ -132,8 +166,18 @@ namespace BurnOutSharp.Builder
         /// <returns>Filled executable header on success, null on error</returns>
         private static COFFFileHeader ParseCOFFFileHeader(Stream data)
         {
-            // TODO: Implement PE COFF file header parsing
-            return null;
+            // TODO: Use marshalling here instead of building
+            var fileHeader = new COFFFileHeader();
+
+            fileHeader.Machine = (MachineType)data.ReadUInt16();
+            fileHeader.NumberOfSections = data.ReadUInt16();
+            fileHeader.TimeDateStamp = data.ReadUInt32();
+            fileHeader.PointerToSymbolTable = data.ReadUInt32();
+            fileHeader.NumberOfSymbols = data.ReadUInt32();
+            fileHeader.SizeOfOptionalHeader = data.ReadUInt16();
+            fileHeader.Characteristics = (Characteristics)data.ReadUInt16();
+
+            return fileHeader;
         }
 
         #endregion
