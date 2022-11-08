@@ -320,7 +320,24 @@ namespace ExecutableTest
                     // TODO: Read the imported names table and print value here
                     var entry = executable.ModuleReferenceTable[i];
                     Console.WriteLine($"  Module-Reference Table Entry {i}");
-                    Console.WriteLine($"    Offset = {entry.Offset}");
+                    Console.WriteLine($"    Offset = {entry.Offset} (adjusted to be {entry.Offset + executable.Stub.Header.NewExeHeaderAddr + executable.Header.ImportedNamesTableOffset})");
+                }
+            }
+            Console.WriteLine();
+
+            Console.WriteLine("  Imported-Name Table Information:");
+            Console.WriteLine("  -------------------------");
+            if (executable.Header.ImportedNamesTableOffset == 0 || executable.ImportedNameTable.Count == 0)
+            {
+                Console.WriteLine("  No imported-name table items");
+            }
+            else
+            {
+                foreach (var entry in executable.ImportedNameTable)
+                {
+                    Console.WriteLine($"  Imported-Name Table at Offset {entry.Key}");
+                    Console.WriteLine($"    Length = {entry.Value.Length}");
+                    Console.WriteLine($"    Name string = {Encoding.ASCII.GetString(entry.Value.NameString)}");
                 }
             }
             Console.WriteLine();
