@@ -287,6 +287,25 @@ namespace ExecutableTest
             }
             Console.WriteLine();
 
+            Console.WriteLine("  Resident-Name Table Information:");
+            Console.WriteLine("  -------------------------");
+            if (executable.Header.ResidentNameTableOffset == 0 || executable.ResidentNameTable.Length == 0)
+            {
+                Console.WriteLine("  No resident-name table items");
+            }
+            else
+            {
+                for (int i = 0; i < executable.ResidentNameTable.Length; i++)
+                {
+                    var entry = executable.ResidentNameTable[i];
+                    Console.WriteLine($"  Resident-Name Table Entry {i}");
+                    Console.WriteLine($"    Length = {entry.Length}");
+                    Console.WriteLine($"    Name string = {Encoding.ASCII.GetString(entry.NameString)}");
+                    Console.WriteLine($"    Ordinal number = {entry.OrdinalNumber}");
+                }
+            }
+            Console.WriteLine();
+
             // TODO: Add table printing
         }
     }
