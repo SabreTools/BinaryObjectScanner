@@ -1,4 +1,5 @@
-﻿using BurnOutSharp.Builder;
+﻿using System.Text;
+using BurnOutSharp.Builder;
 
 namespace ExecutableTest
 {
@@ -267,6 +268,21 @@ namespace ExecutableTest
                             Console.WriteLine($"        Reserved = {resource.Reserved}");
                         }
                     }
+                }
+            }
+
+
+            if (executable.ResourceTable.TypeAndNameStrings.Count == 0)
+            {
+                Console.WriteLine("  No resource table type/name strings");
+            }
+            else
+            {
+                foreach (var typeAndNameString in executable.ResourceTable.TypeAndNameStrings)
+                {
+                    Console.WriteLine($"  Resource Type/Name Offset {typeAndNameString.Key}");
+                    Console.WriteLine($"    Length = {typeAndNameString.Value.Length}");
+                    Console.WriteLine($"    Text = {Encoding.ASCII.GetString(typeAndNameString.Value.Text)}");
                 }
             }
             Console.WriteLine();
