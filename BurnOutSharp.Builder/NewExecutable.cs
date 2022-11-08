@@ -185,10 +185,8 @@ namespace BurnOutSharp.Builder
 
             // If the offset for the nonresident-name table doesn't exist
             tableAddress = initialOffset
-                + (int)stub.Header.NewExeHeaderAddr
                 + (int)executableHeader.NonResidentNamesTableOffset;
             endOffset = initialOffset
-                + (int)stub.Header.NewExeHeaderAddr
                 + (int)executableHeader.NonResidentNamesTableOffset
                 + executableHeader.NonResidentNameTableSize;
             if (tableAddress >= data.Length)
@@ -666,10 +664,8 @@ namespace BurnOutSharp.Builder
 
             // If the offset for the nonresident-name table doesn't exist
             tableAddress = initialOffset
-                + (int)stub.Header.NewExeHeaderAddr
                 + (int)executableHeader.NonResidentNamesTableOffset;
             endOffset = initialOffset
-                + (int)stub.Header.NewExeHeaderAddr
                 + (int)executableHeader.NonResidentNamesTableOffset
                 + executableHeader.NonResidentNameTableSize;
             if (tableAddress >= data.Length)
