@@ -67,6 +67,18 @@ namespace BurnOutSharp.Builder
 
             #endregion
 
+            #region Optional Header
+
+            // Try to parse the optional header
+            var optionalHeader = ParseOptionalHeader(data, offset, coffFileHeader.SizeOfOptionalHeader);
+            if (optionalHeader == null)
+                return null;
+
+            // Set the optional header
+            executable.OptionalHeader = optionalHeader;
+
+            #endregion
+
             // TODO: Implement PE parsing
             return null;
         }
@@ -91,6 +103,176 @@ namespace BurnOutSharp.Builder
             fileHeader.Characteristics = (Characteristics)data.ReadUInt16(ref offset);
 
             return fileHeader;
+        }
+
+        /// <summary>
+        /// Parse a byte array into an optional header
+        /// </summary>
+        /// <param name="data">Byte array to parse</param>
+        /// <param name="offset">Offset into the byte array</param>
+        /// <param name="optionalSize">Size of the optional header</param>
+        /// <returns>Filled optional header on success, null on error</returns>
+        private static OptionalHeader ParseOptionalHeader(byte[] data, int offset, int optionalSize)
+        {
+            int initialOffset = offset;
+
+            // TODO: Use marshalling here instead of building
+            var optionalHeader = new OptionalHeader();
+
+            #region Standard Fields
+
+            optionalHeader.Magic = (OptionalHeaderMagicNumber)data.ReadUInt16(ref offset);
+            optionalHeader.MajorLinkerVersion = data.ReadByte(ref offset);
+            optionalHeader.MinorLinkerVersion = data.ReadByte(ref offset);
+            optionalHeader.SizeOfCode = data.ReadUInt32(ref offset);
+            optionalHeader.SizeOfInitializedData = data.ReadUInt32(ref offset);
+            optionalHeader.SizeOfUninitializedData = data.ReadUInt32(ref offset);
+            optionalHeader.AddressOfEntryPoint = data.ReadUInt32(ref offset);
+            optionalHeader.BaseOfCode = data.ReadUInt32(ref offset);
+
+            if (optionalHeader.Magic == OptionalHeaderMagicNumber.PE32)
+                optionalHeader.BaseOfData = data.ReadUInt32(ref offset);
+
+            #endregion
+
+            #region Windows-Specific Fields
+
+            if (optionalHeader.Magic == OptionalHeaderMagicNumber.PE32)
+                optionalHeader.ImageBase_PE32 = data.ReadUInt32(ref offset);
+            else if (optionalHeader.Magic == OptionalHeaderMagicNumber.PE32Plus)
+                optionalHeader.ImageBase_PE32Plus = data.ReadUInt64(ref offset);
+            optionalHeader.FileAlignment = data.ReadUInt32(ref offset);
+            optionalHeader.MajorOperatingSystemVersion = data.ReadUInt16(ref offset);
+            optionalHeader.MinorOperatingSystemVersion = data.ReadUInt16(ref offset);
+            optionalHeader.MajorImageVersion = data.ReadUInt16(ref offset);
+            optionalHeader.MinorImageVersion = data.ReadUInt16(ref offset);
+            optionalHeader.MajorSubsystemVersion = data.ReadUInt16(ref offset);
+            optionalHeader.MinorSubsystemVersion = data.ReadUInt16(ref offset);
+            optionalHeader.Win32VersionValue = data.ReadUInt32(ref offset);
+            optionalHeader.SizeOfImage = data.ReadUInt32(ref offset);
+            optionalHeader.SizeOfHeaders = data.ReadUInt32(ref offset);
+            optionalHeader.CheckSum = data.ReadUInt32(ref offset);
+            optionalHeader.Subsystem = (WindowsSubsystem)data.ReadUInt16(ref offset);
+            optionalHeader.DllCharacteristics = (DllCharacteristics)data.ReadUInt16(ref offset);
+            if (optionalHeader.Magic == OptionalHeaderMagicNumber.PE32)
+                optionalHeader.SizeOfStackReserve_PE32 = data.ReadUInt32(ref offset);
+            else if (optionalHeader.Magic == OptionalHeaderMagicNumber.PE32Plus)
+                optionalHeader.SizeOfStackReserve_PE32Plus = data.ReadUInt64(ref offset);
+            if (optionalHeader.Magic == OptionalHeaderMagicNumber.PE32)
+                optionalHeader.SizeOfStackCommit_PE32 = data.ReadUInt32(ref offset);
+            else if (optionalHeader.Magic == OptionalHeaderMagicNumber.PE32Plus)
+                optionalHeader.SizeOfStackCommit_PE32Plus = data.ReadUInt64(ref offset);
+            if (optionalHeader.Magic == OptionalHeaderMagicNumber.PE32)
+                optionalHeader.SizeOfHeapReserve_PE32 = data.ReadUInt32(ref offset);
+            else if (optionalHeader.Magic == OptionalHeaderMagicNumber.PE32Plus)
+                optionalHeader.SizeOfHeapReserve_PE32Plus = data.ReadUInt64(ref offset);
+            if (optionalHeader.Magic == OptionalHeaderMagicNumber.PE32)
+                optionalHeader.SizeOfHeapCommit_PE32 = data.ReadUInt32(ref offset);
+            else if (optionalHeader.Magic == OptionalHeaderMagicNumber.PE32Plus)
+                optionalHeader.SizeOfHeapCommit_PE32Plus = data.ReadUInt64(ref offset);
+            optionalHeader.LoaderFlags = data.ReadUInt32(ref offset);
+            optionalHeader.NumberOfRvaAndSizes = data.ReadUInt32(ref offset);
+
+            #endregion
+
+            #region Data Directories
+
+            if (offset - initialOffset < optionalSize)
+            {
+                optionalHeader.ExportTable = new DataDirectory();
+                optionalHeader.ExportTable.VirtualAddress = data.ReadUInt32(ref offset);
+                optionalHeader.ExportTable.Size = data.ReadUInt32(ref offset);
+            }
+            if (offset - initialOffset < optionalSize)
+            {
+                optionalHeader.ImportTable = new DataDirectory();
+                optionalHeader.ImportTable.VirtualAddress = data.ReadUInt32(ref offset);
+                optionalHeader.ImportTable.Size = data.ReadUInt32(ref offset);
+            }
+            if (offset - initialOffset < optionalSize)
+            {
+                optionalHeader.ResourceTable = new DataDirectory();
+                optionalHeader.ResourceTable.VirtualAddress = data.ReadUInt32(ref offset);
+                optionalHeader.ResourceTable.Size = data.ReadUInt32(ref offset);
+            }
+            if (offset - initialOffset < optionalSize)
+            {
+                optionalHeader.ExceptionTable = new DataDirectory();
+                optionalHeader.ExceptionTable.VirtualAddress = data.ReadUInt32(ref offset);
+                optionalHeader.ExceptionTable.Size = data.ReadUInt32(ref offset);
+            }
+            if (offset - initialOffset < optionalSize)
+            {
+                optionalHeader.CertificateTable = new DataDirectory();
+                optionalHeader.CertificateTable.VirtualAddress = data.ReadUInt32(ref offset);
+                optionalHeader.CertificateTable.Size = data.ReadUInt32(ref offset);
+            }
+            if (offset - initialOffset < optionalSize)
+            {
+                optionalHeader.BaseRelocationTable = new DataDirectory();
+                optionalHeader.BaseRelocationTable.VirtualAddress = data.ReadUInt32(ref offset);
+                optionalHeader.BaseRelocationTable.Size = data.ReadUInt32(ref offset);
+            }
+            if (offset - initialOffset < optionalSize)
+            {
+                optionalHeader.Debug = new DataDirectory();
+                optionalHeader.Debug.VirtualAddress = data.ReadUInt32(ref offset);
+                optionalHeader.Debug.Size = data.ReadUInt32(ref offset);
+            }
+            if (offset - initialOffset < optionalSize)
+            {
+                optionalHeader.Architecture = data.ReadUInt64(ref offset);
+            }
+            if (offset - initialOffset < optionalSize)
+            {
+                optionalHeader.GlobalPtr = new DataDirectory();
+                optionalHeader.GlobalPtr.VirtualAddress = data.ReadUInt32(ref offset);
+                optionalHeader.GlobalPtr.Size = data.ReadUInt32(ref offset);
+            }
+            if (offset - initialOffset < optionalSize)
+            {
+                optionalHeader.TLSTable = new DataDirectory();
+                optionalHeader.TLSTable.VirtualAddress = data.ReadUInt32(ref offset);
+                optionalHeader.TLSTable.Size = data.ReadUInt32(ref offset);
+            }
+            if (offset - initialOffset < optionalSize)
+            {
+                optionalHeader.LoadConfigTable = new DataDirectory();
+                optionalHeader.LoadConfigTable.VirtualAddress = data.ReadUInt32(ref offset);
+                optionalHeader.LoadConfigTable.Size = data.ReadUInt32(ref offset);
+            }
+            if (offset - initialOffset < optionalSize)
+            {
+                optionalHeader.BoundImport = new DataDirectory();
+                optionalHeader.BoundImport.VirtualAddress = data.ReadUInt32(ref offset);
+                optionalHeader.BoundImport.Size = data.ReadUInt32(ref offset);
+            }
+            if (offset - initialOffset < optionalSize)
+            {
+                optionalHeader.IAT = new DataDirectory();
+                optionalHeader.IAT.VirtualAddress = data.ReadUInt32(ref offset);
+                optionalHeader.IAT.Size = data.ReadUInt32(ref offset);
+            }
+            if (offset - initialOffset < optionalSize)
+            {
+                optionalHeader.DelayImportDescriptor = new DataDirectory();
+                optionalHeader.DelayImportDescriptor.VirtualAddress = data.ReadUInt32(ref offset);
+                optionalHeader.DelayImportDescriptor.Size = data.ReadUInt32(ref offset);
+            }
+            if (offset - initialOffset < optionalSize)
+            {
+                optionalHeader.CLRRuntimeHeader = new DataDirectory();
+                optionalHeader.CLRRuntimeHeader.VirtualAddress = data.ReadUInt32(ref offset);
+                optionalHeader.CLRRuntimeHeader.Size = data.ReadUInt32(ref offset);
+            }
+            if (offset - initialOffset < optionalSize)
+            {
+                optionalHeader.Reserved = data.ReadUInt64(ref offset);
+            }
+
+            #endregion
+
+            return optionalHeader;
         }
 
         #endregion
@@ -155,6 +337,18 @@ namespace BurnOutSharp.Builder
 
             #endregion
 
+            #region Optional Header
+
+            // Try to parse the optional header
+            var optionalHeader = ParseOptionalHeader(data, coffFileHeader.SizeOfOptionalHeader);
+            if (optionalHeader == null)
+                return null;
+
+            // Set the optional header
+            executable.OptionalHeader = optionalHeader;
+
+            #endregion
+
             // TODO: Implement PE parsing
             return null;
         }
@@ -178,6 +372,175 @@ namespace BurnOutSharp.Builder
             fileHeader.Characteristics = (Characteristics)data.ReadUInt16();
 
             return fileHeader;
+        }
+
+        /// <summary>
+        /// Parse a Stream into an optional header
+        /// </summary>
+        /// <param name="data">Stream to parse</param>
+        /// <param name="optionalSize">Size of the optional header</param>
+        /// <returns>Filled optional header on success, null on error</returns>
+        private static OptionalHeader ParseOptionalHeader(Stream data, int optionalSize)
+        {
+            long initialOffset = data.Position;
+
+            // TODO: Use marshalling here instead of building
+            var optionalHeader = new OptionalHeader();
+
+            #region Standard Fields
+
+            optionalHeader.Magic = (OptionalHeaderMagicNumber)data.ReadUInt16();
+            optionalHeader.MajorLinkerVersion = data.ReadByteValue();
+            optionalHeader.MinorLinkerVersion = data.ReadByteValue();
+            optionalHeader.SizeOfCode = data.ReadUInt32();
+            optionalHeader.SizeOfInitializedData = data.ReadUInt32();
+            optionalHeader.SizeOfUninitializedData = data.ReadUInt32();
+            optionalHeader.AddressOfEntryPoint = data.ReadUInt32();
+            optionalHeader.BaseOfCode = data.ReadUInt32();
+
+            if (optionalHeader.Magic == OptionalHeaderMagicNumber.PE32)
+                optionalHeader.BaseOfData = data.ReadUInt32();
+
+            #endregion
+
+            #region Windows-Specific Fields
+
+            if (optionalHeader.Magic == OptionalHeaderMagicNumber.PE32)
+                optionalHeader.ImageBase_PE32 = data.ReadUInt32();
+            else if (optionalHeader.Magic == OptionalHeaderMagicNumber.PE32Plus)
+                optionalHeader.ImageBase_PE32Plus = data.ReadUInt64();
+            optionalHeader.FileAlignment = data.ReadUInt32();
+            optionalHeader.MajorOperatingSystemVersion = data.ReadUInt16();
+            optionalHeader.MinorOperatingSystemVersion = data.ReadUInt16();
+            optionalHeader.MajorImageVersion = data.ReadUInt16();
+            optionalHeader.MinorImageVersion = data.ReadUInt16();
+            optionalHeader.MajorSubsystemVersion = data.ReadUInt16();
+            optionalHeader.MinorSubsystemVersion = data.ReadUInt16();
+            optionalHeader.Win32VersionValue = data.ReadUInt32();
+            optionalHeader.SizeOfImage = data.ReadUInt32();
+            optionalHeader.SizeOfHeaders = data.ReadUInt32();
+            optionalHeader.CheckSum = data.ReadUInt32();
+            optionalHeader.Subsystem = (WindowsSubsystem)data.ReadUInt16();
+            optionalHeader.DllCharacteristics = (DllCharacteristics)data.ReadUInt16();
+            if (optionalHeader.Magic == OptionalHeaderMagicNumber.PE32)
+                optionalHeader.SizeOfStackReserve_PE32 = data.ReadUInt32();
+            else if (optionalHeader.Magic == OptionalHeaderMagicNumber.PE32Plus)
+                optionalHeader.SizeOfStackReserve_PE32Plus = data.ReadUInt64();
+            if (optionalHeader.Magic == OptionalHeaderMagicNumber.PE32)
+                optionalHeader.SizeOfStackCommit_PE32 = data.ReadUInt32();
+            else if (optionalHeader.Magic == OptionalHeaderMagicNumber.PE32Plus)
+                optionalHeader.SizeOfStackCommit_PE32Plus = data.ReadUInt64();
+            if (optionalHeader.Magic == OptionalHeaderMagicNumber.PE32)
+                optionalHeader.SizeOfHeapReserve_PE32 = data.ReadUInt32();
+            else if (optionalHeader.Magic == OptionalHeaderMagicNumber.PE32Plus)
+                optionalHeader.SizeOfHeapReserve_PE32Plus = data.ReadUInt64();
+            if (optionalHeader.Magic == OptionalHeaderMagicNumber.PE32)
+                optionalHeader.SizeOfHeapCommit_PE32 = data.ReadUInt32();
+            else if (optionalHeader.Magic == OptionalHeaderMagicNumber.PE32Plus)
+                optionalHeader.SizeOfHeapCommit_PE32Plus = data.ReadUInt64();
+            optionalHeader.LoaderFlags = data.ReadUInt32();
+            optionalHeader.NumberOfRvaAndSizes = data.ReadUInt32();
+
+            #endregion
+
+            #region Data Directories
+
+            if (data.Position - initialOffset < optionalSize)
+            {
+                optionalHeader.ExportTable = new DataDirectory();
+                optionalHeader.ExportTable.VirtualAddress = data.ReadUInt32();
+                optionalHeader.ExportTable.Size = data.ReadUInt32();
+            }
+            if (data.Position - initialOffset < optionalSize)
+            {
+                optionalHeader.ImportTable = new DataDirectory();
+                optionalHeader.ImportTable.VirtualAddress = data.ReadUInt32();
+                optionalHeader.ImportTable.Size = data.ReadUInt32();
+            }
+            if (data.Position - initialOffset < optionalSize)
+            {
+                optionalHeader.ResourceTable = new DataDirectory();
+                optionalHeader.ResourceTable.VirtualAddress = data.ReadUInt32();
+                optionalHeader.ResourceTable.Size = data.ReadUInt32();
+            }
+            if (data.Position - initialOffset < optionalSize)
+            {
+                optionalHeader.ExceptionTable = new DataDirectory();
+                optionalHeader.ExceptionTable.VirtualAddress = data.ReadUInt32();
+                optionalHeader.ExceptionTable.Size = data.ReadUInt32();
+            }
+            if (data.Position - initialOffset < optionalSize)
+            {
+                optionalHeader.CertificateTable = new DataDirectory();
+                optionalHeader.CertificateTable.VirtualAddress = data.ReadUInt32();
+                optionalHeader.CertificateTable.Size = data.ReadUInt32();
+            }
+            if (data.Position - initialOffset < optionalSize)
+            {
+                optionalHeader.BaseRelocationTable = new DataDirectory();
+                optionalHeader.BaseRelocationTable.VirtualAddress = data.ReadUInt32();
+                optionalHeader.BaseRelocationTable.Size = data.ReadUInt32();
+            }
+            if (data.Position - initialOffset < optionalSize)
+            {
+                optionalHeader.Debug = new DataDirectory();
+                optionalHeader.Debug.VirtualAddress = data.ReadUInt32();
+                optionalHeader.Debug.Size = data.ReadUInt32();
+            }
+            if (data.Position - initialOffset < optionalSize)
+            {
+                optionalHeader.Architecture = data.ReadUInt64();
+            }
+            if (data.Position - initialOffset < optionalSize)
+            {
+                optionalHeader.GlobalPtr = new DataDirectory();
+                optionalHeader.GlobalPtr.VirtualAddress = data.ReadUInt32();
+                optionalHeader.GlobalPtr.Size = data.ReadUInt32();
+            }
+            if (data.Position - initialOffset < optionalSize)
+            {
+                optionalHeader.TLSTable = new DataDirectory();
+                optionalHeader.TLSTable.VirtualAddress = data.ReadUInt32();
+                optionalHeader.TLSTable.Size = data.ReadUInt32();
+            }
+            if (data.Position - initialOffset < optionalSize)
+            {
+                optionalHeader.LoadConfigTable = new DataDirectory();
+                optionalHeader.LoadConfigTable.VirtualAddress = data.ReadUInt32();
+                optionalHeader.LoadConfigTable.Size = data.ReadUInt32();
+            }
+            if (data.Position - initialOffset < optionalSize)
+            {
+                optionalHeader.BoundImport = new DataDirectory();
+                optionalHeader.BoundImport.VirtualAddress = data.ReadUInt32();
+                optionalHeader.BoundImport.Size = data.ReadUInt32();
+            }
+            if (data.Position - initialOffset < optionalSize)
+            {
+                optionalHeader.IAT = new DataDirectory();
+                optionalHeader.IAT.VirtualAddress = data.ReadUInt32();
+                optionalHeader.IAT.Size = data.ReadUInt32();
+            }
+            if (data.Position - initialOffset < optionalSize)
+            {
+                optionalHeader.DelayImportDescriptor = new DataDirectory();
+                optionalHeader.DelayImportDescriptor.VirtualAddress = data.ReadUInt32();
+                optionalHeader.DelayImportDescriptor.Size = data.ReadUInt32();
+            }
+            if (data.Position - initialOffset < optionalSize)
+            {
+                optionalHeader.CLRRuntimeHeader = new DataDirectory();
+                optionalHeader.CLRRuntimeHeader.VirtualAddress = data.ReadUInt32();
+                optionalHeader.CLRRuntimeHeader.Size = data.ReadUInt32();
+            }
+            if (data.Position - initialOffset < optionalSize)
+            {
+                optionalHeader.Reserved = data.ReadUInt64();
+            }
+
+            #endregion
+
+            return optionalHeader;
         }
 
         #endregion
