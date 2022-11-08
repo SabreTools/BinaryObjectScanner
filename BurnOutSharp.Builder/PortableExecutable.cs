@@ -177,95 +177,95 @@ namespace BurnOutSharp.Builder
 
             #region Data Directories
 
-            if (offset - initialOffset < optionalSize)
+            if (optionalHeader.NumberOfRvaAndSizes >= 1 && offset - initialOffset < optionalSize)
             {
                 optionalHeader.ExportTable = new DataDirectory();
                 optionalHeader.ExportTable.VirtualAddress = data.ReadUInt32(ref offset);
                 optionalHeader.ExportTable.Size = data.ReadUInt32(ref offset);
             }
-            if (offset - initialOffset < optionalSize)
+            if (optionalHeader.NumberOfRvaAndSizes >= 2 && offset - initialOffset < optionalSize)
             {
                 optionalHeader.ImportTable = new DataDirectory();
                 optionalHeader.ImportTable.VirtualAddress = data.ReadUInt32(ref offset);
                 optionalHeader.ImportTable.Size = data.ReadUInt32(ref offset);
             }
-            if (offset - initialOffset < optionalSize)
+            if (optionalHeader.NumberOfRvaAndSizes >= 3 && offset - initialOffset < optionalSize)
             {
                 optionalHeader.ResourceTable = new DataDirectory();
                 optionalHeader.ResourceTable.VirtualAddress = data.ReadUInt32(ref offset);
                 optionalHeader.ResourceTable.Size = data.ReadUInt32(ref offset);
             }
-            if (offset - initialOffset < optionalSize)
+            if (optionalHeader.NumberOfRvaAndSizes >= 4 && offset - initialOffset < optionalSize)
             {
                 optionalHeader.ExceptionTable = new DataDirectory();
                 optionalHeader.ExceptionTable.VirtualAddress = data.ReadUInt32(ref offset);
                 optionalHeader.ExceptionTable.Size = data.ReadUInt32(ref offset);
             }
-            if (offset - initialOffset < optionalSize)
+            if (optionalHeader.NumberOfRvaAndSizes >= 5 && offset - initialOffset < optionalSize)
             {
                 optionalHeader.CertificateTable = new DataDirectory();
                 optionalHeader.CertificateTable.VirtualAddress = data.ReadUInt32(ref offset);
                 optionalHeader.CertificateTable.Size = data.ReadUInt32(ref offset);
             }
-            if (offset - initialOffset < optionalSize)
+            if (optionalHeader.NumberOfRvaAndSizes >= 6 && offset - initialOffset < optionalSize)
             {
                 optionalHeader.BaseRelocationTable = new DataDirectory();
                 optionalHeader.BaseRelocationTable.VirtualAddress = data.ReadUInt32(ref offset);
                 optionalHeader.BaseRelocationTable.Size = data.ReadUInt32(ref offset);
             }
-            if (offset - initialOffset < optionalSize)
+            if (optionalHeader.NumberOfRvaAndSizes >= 7 && offset - initialOffset < optionalSize)
             {
                 optionalHeader.Debug = new DataDirectory();
                 optionalHeader.Debug.VirtualAddress = data.ReadUInt32(ref offset);
                 optionalHeader.Debug.Size = data.ReadUInt32(ref offset);
             }
-            if (offset - initialOffset < optionalSize)
+            if (optionalHeader.NumberOfRvaAndSizes >= 8 && offset - initialOffset < optionalSize)
             {
                 optionalHeader.Architecture = data.ReadUInt64(ref offset);
             }
-            if (offset - initialOffset < optionalSize)
+            if (optionalHeader.NumberOfRvaAndSizes >= 9 && offset - initialOffset < optionalSize)
             {
                 optionalHeader.GlobalPtr = new DataDirectory();
                 optionalHeader.GlobalPtr.VirtualAddress = data.ReadUInt32(ref offset);
                 optionalHeader.GlobalPtr.Size = data.ReadUInt32(ref offset);
             }
-            if (offset - initialOffset < optionalSize)
+            if (optionalHeader.NumberOfRvaAndSizes >= 10 && offset - initialOffset < optionalSize)
             {
-                optionalHeader.TLSTable = new DataDirectory();
-                optionalHeader.TLSTable.VirtualAddress = data.ReadUInt32(ref offset);
-                optionalHeader.TLSTable.Size = data.ReadUInt32(ref offset);
+                optionalHeader.ThreadLocalStorageTable = new DataDirectory();
+                optionalHeader.ThreadLocalStorageTable.VirtualAddress = data.ReadUInt32(ref offset);
+                optionalHeader.ThreadLocalStorageTable.Size = data.ReadUInt32(ref offset);
             }
-            if (offset - initialOffset < optionalSize)
+            if (optionalHeader.NumberOfRvaAndSizes >= 11 && offset - initialOffset < optionalSize)
             {
                 optionalHeader.LoadConfigTable = new DataDirectory();
                 optionalHeader.LoadConfigTable.VirtualAddress = data.ReadUInt32(ref offset);
                 optionalHeader.LoadConfigTable.Size = data.ReadUInt32(ref offset);
             }
-            if (offset - initialOffset < optionalSize)
+            if (optionalHeader.NumberOfRvaAndSizes >= 12 && offset - initialOffset < optionalSize)
             {
                 optionalHeader.BoundImport = new DataDirectory();
                 optionalHeader.BoundImport.VirtualAddress = data.ReadUInt32(ref offset);
                 optionalHeader.BoundImport.Size = data.ReadUInt32(ref offset);
             }
-            if (offset - initialOffset < optionalSize)
+            if (optionalHeader.NumberOfRvaAndSizes >= 13 && offset - initialOffset < optionalSize)
             {
-                optionalHeader.IAT = new DataDirectory();
-                optionalHeader.IAT.VirtualAddress = data.ReadUInt32(ref offset);
-                optionalHeader.IAT.Size = data.ReadUInt32(ref offset);
+                optionalHeader.ImportAddressTable = new DataDirectory();
+                optionalHeader.ImportAddressTable.VirtualAddress = data.ReadUInt32(ref offset);
+                optionalHeader.ImportAddressTable.Size = data.ReadUInt32(ref offset);
             }
-            if (offset - initialOffset < optionalSize)
+            if (optionalHeader.NumberOfRvaAndSizes >= 14 && offset - initialOffset < optionalSize)
             {
                 optionalHeader.DelayImportDescriptor = new DataDirectory();
                 optionalHeader.DelayImportDescriptor.VirtualAddress = data.ReadUInt32(ref offset);
                 optionalHeader.DelayImportDescriptor.Size = data.ReadUInt32(ref offset);
             }
-            if (offset - initialOffset < optionalSize)
+            if (optionalHeader.NumberOfRvaAndSizes >= 15 && offset - initialOffset < optionalSize)
             {
                 optionalHeader.CLRRuntimeHeader = new DataDirectory();
                 optionalHeader.CLRRuntimeHeader.VirtualAddress = data.ReadUInt32(ref offset);
                 optionalHeader.CLRRuntimeHeader.Size = data.ReadUInt32(ref offset);
             }
-            if (offset - initialOffset < optionalSize)
+            if (optionalHeader.NumberOfRvaAndSizes >= 16 && offset - initialOffset < optionalSize)
             {
                 optionalHeader.Reserved = data.ReadUInt64(ref offset);
             }
@@ -445,95 +445,95 @@ namespace BurnOutSharp.Builder
 
             #region Data Directories
 
-            if (data.Position - initialOffset < optionalSize)
+            if (optionalHeader.NumberOfRvaAndSizes >= 1 && data.Position - initialOffset < optionalSize)
             {
                 optionalHeader.ExportTable = new DataDirectory();
                 optionalHeader.ExportTable.VirtualAddress = data.ReadUInt32();
                 optionalHeader.ExportTable.Size = data.ReadUInt32();
             }
-            if (data.Position - initialOffset < optionalSize)
+            if (optionalHeader.NumberOfRvaAndSizes >= 2 && data.Position - initialOffset < optionalSize)
             {
                 optionalHeader.ImportTable = new DataDirectory();
                 optionalHeader.ImportTable.VirtualAddress = data.ReadUInt32();
                 optionalHeader.ImportTable.Size = data.ReadUInt32();
             }
-            if (data.Position - initialOffset < optionalSize)
+            if (optionalHeader.NumberOfRvaAndSizes >= 3 && data.Position - initialOffset < optionalSize)
             {
                 optionalHeader.ResourceTable = new DataDirectory();
                 optionalHeader.ResourceTable.VirtualAddress = data.ReadUInt32();
                 optionalHeader.ResourceTable.Size = data.ReadUInt32();
             }
-            if (data.Position - initialOffset < optionalSize)
+            if (optionalHeader.NumberOfRvaAndSizes >= 4 && data.Position - initialOffset < optionalSize)
             {
                 optionalHeader.ExceptionTable = new DataDirectory();
                 optionalHeader.ExceptionTable.VirtualAddress = data.ReadUInt32();
                 optionalHeader.ExceptionTable.Size = data.ReadUInt32();
             }
-            if (data.Position - initialOffset < optionalSize)
+            if (optionalHeader.NumberOfRvaAndSizes >= 5 && data.Position - initialOffset < optionalSize)
             {
                 optionalHeader.CertificateTable = new DataDirectory();
                 optionalHeader.CertificateTable.VirtualAddress = data.ReadUInt32();
                 optionalHeader.CertificateTable.Size = data.ReadUInt32();
             }
-            if (data.Position - initialOffset < optionalSize)
+            if (optionalHeader.NumberOfRvaAndSizes >= 6 && data.Position - initialOffset < optionalSize)
             {
                 optionalHeader.BaseRelocationTable = new DataDirectory();
                 optionalHeader.BaseRelocationTable.VirtualAddress = data.ReadUInt32();
                 optionalHeader.BaseRelocationTable.Size = data.ReadUInt32();
             }
-            if (data.Position - initialOffset < optionalSize)
+            if (optionalHeader.NumberOfRvaAndSizes >= 7 && data.Position - initialOffset < optionalSize)
             {
                 optionalHeader.Debug = new DataDirectory();
                 optionalHeader.Debug.VirtualAddress = data.ReadUInt32();
                 optionalHeader.Debug.Size = data.ReadUInt32();
             }
-            if (data.Position - initialOffset < optionalSize)
+            if (optionalHeader.NumberOfRvaAndSizes >= 8 && data.Position - initialOffset < optionalSize)
             {
                 optionalHeader.Architecture = data.ReadUInt64();
             }
-            if (data.Position - initialOffset < optionalSize)
+            if (optionalHeader.NumberOfRvaAndSizes >= 9 && data.Position - initialOffset < optionalSize)
             {
                 optionalHeader.GlobalPtr = new DataDirectory();
                 optionalHeader.GlobalPtr.VirtualAddress = data.ReadUInt32();
                 optionalHeader.GlobalPtr.Size = data.ReadUInt32();
             }
-            if (data.Position - initialOffset < optionalSize)
+            if (optionalHeader.NumberOfRvaAndSizes >= 10 && data.Position - initialOffset < optionalSize)
             {
-                optionalHeader.TLSTable = new DataDirectory();
-                optionalHeader.TLSTable.VirtualAddress = data.ReadUInt32();
-                optionalHeader.TLSTable.Size = data.ReadUInt32();
+                optionalHeader.ThreadLocalStorageTable = new DataDirectory();
+                optionalHeader.ThreadLocalStorageTable.VirtualAddress = data.ReadUInt32();
+                optionalHeader.ThreadLocalStorageTable.Size = data.ReadUInt32();
             }
-            if (data.Position - initialOffset < optionalSize)
+            if (optionalHeader.NumberOfRvaAndSizes >= 11 && data.Position - initialOffset < optionalSize)
             {
                 optionalHeader.LoadConfigTable = new DataDirectory();
                 optionalHeader.LoadConfigTable.VirtualAddress = data.ReadUInt32();
                 optionalHeader.LoadConfigTable.Size = data.ReadUInt32();
             }
-            if (data.Position - initialOffset < optionalSize)
+            if (optionalHeader.NumberOfRvaAndSizes >= 12 && data.Position - initialOffset < optionalSize)
             {
                 optionalHeader.BoundImport = new DataDirectory();
                 optionalHeader.BoundImport.VirtualAddress = data.ReadUInt32();
                 optionalHeader.BoundImport.Size = data.ReadUInt32();
             }
-            if (data.Position - initialOffset < optionalSize)
+            if (optionalHeader.NumberOfRvaAndSizes >= 13 && data.Position - initialOffset < optionalSize)
             {
-                optionalHeader.IAT = new DataDirectory();
-                optionalHeader.IAT.VirtualAddress = data.ReadUInt32();
-                optionalHeader.IAT.Size = data.ReadUInt32();
+                optionalHeader.ImportAddressTable = new DataDirectory();
+                optionalHeader.ImportAddressTable.VirtualAddress = data.ReadUInt32();
+                optionalHeader.ImportAddressTable.Size = data.ReadUInt32();
             }
-            if (data.Position - initialOffset < optionalSize)
+            if (optionalHeader.NumberOfRvaAndSizes >= 14 && data.Position - initialOffset < optionalSize)
             {
                 optionalHeader.DelayImportDescriptor = new DataDirectory();
                 optionalHeader.DelayImportDescriptor.VirtualAddress = data.ReadUInt32();
                 optionalHeader.DelayImportDescriptor.Size = data.ReadUInt32();
             }
-            if (data.Position - initialOffset < optionalSize)
+            if (optionalHeader.NumberOfRvaAndSizes >= 15 && data.Position - initialOffset < optionalSize)
             {
                 optionalHeader.CLRRuntimeHeader = new DataDirectory();
                 optionalHeader.CLRRuntimeHeader.VirtualAddress = data.ReadUInt32();
                 optionalHeader.CLRRuntimeHeader.Size = data.ReadUInt32();
             }
-            if (data.Position - initialOffset < optionalSize)
+            if (optionalHeader.NumberOfRvaAndSizes >= 16 && data.Position - initialOffset < optionalSize)
             {
                 optionalHeader.Reserved = data.ReadUInt64();
             }

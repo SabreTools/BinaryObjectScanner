@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Security.Cryptography;
+using System.Text;
 using BurnOutSharp.Builder;
 
 namespace ExecutableTest
@@ -388,6 +389,188 @@ namespace ExecutableTest
                     Console.WriteLine($"    Length = {entry.Length}");
                     Console.WriteLine($"    Name string = {Encoding.ASCII.GetString(entry.NameString)}");
                     Console.WriteLine($"    Ordinal number = {entry.OrdinalNumber}");
+                }
+            }
+            Console.WriteLine();
+        }
+
+        /// <summary>
+        /// Pretty print the Portable Executable information
+        /// </summary>
+        private static void PrintPortableExecutable(BurnOutSharp.Models.PortableExecutable.Executable executable)
+        {
+            Console.WriteLine("Portable Executable Information:");
+            Console.WriteLine("-------------------------");
+            Console.WriteLine();
+
+            Console.WriteLine("  MS-DOS Stub Information:");
+            Console.WriteLine("  -------------------------");
+            Console.WriteLine("  See 'MS-DOS Executable Information' for details");
+            Console.WriteLine();
+
+            Console.WriteLine("  COFF File Header Information:");
+            Console.WriteLine("  -------------------------");
+            Console.WriteLine($"  Signature: {BitConverter.ToString(executable.Signature).Replace("-", string.Empty)}");
+            Console.WriteLine($"  Machine: {executable.COFFFileHeader.Machine}");
+            Console.WriteLine($"  Number of sections: {executable.COFFFileHeader.NumberOfSections}");
+            Console.WriteLine($"  Time/Date stamp: {executable.COFFFileHeader.TimeDateStamp}");
+            Console.WriteLine($"  Pointer to symbol table: {executable.COFFFileHeader.PointerToSymbolTable}");
+            Console.WriteLine($"  Number of symbols: {executable.COFFFileHeader.NumberOfSymbols}");
+            Console.WriteLine($"  Size of optional header: {executable.COFFFileHeader.SizeOfOptionalHeader}");
+            Console.WriteLine($"  Characteristics: {executable.COFFFileHeader.Characteristics}");
+            Console.WriteLine();
+
+            Console.WriteLine("  Optional Header Information:");
+            Console.WriteLine("  -------------------------");
+            if (executable.COFFFileHeader.SizeOfOptionalHeader == 0 || executable.OptionalHeader == null)
+            {
+                Console.WriteLine("  No optional header present");
+            }
+            else
+            {
+                Console.WriteLine($"  Magic: {executable.OptionalHeader.Magic}");
+                Console.WriteLine($"  Major linker version: {executable.OptionalHeader.MajorLinkerVersion}");
+                Console.WriteLine($"  Minor linker version: {executable.OptionalHeader.MinorLinkerVersion}");
+                Console.WriteLine($"  Size of code section: {executable.OptionalHeader.SizeOfCode}");
+                Console.WriteLine($"  Size of initialized data: {executable.OptionalHeader.SizeOfInitializedData}");
+                Console.WriteLine($"  Size of uninitialized data: {executable.OptionalHeader.SizeOfUninitializedData}");
+                Console.WriteLine($"  Address of entry point: {executable.OptionalHeader.AddressOfEntryPoint}");
+                Console.WriteLine($"  Base of code: {executable.OptionalHeader.BaseOfCode}");
+                if (executable.OptionalHeader.Magic == BurnOutSharp.Models.PortableExecutable.OptionalHeaderMagicNumber.PE32)
+                    Console.WriteLine($"  Base of data: {executable.OptionalHeader.BaseOfData}");
+
+                if (executable.OptionalHeader.Magic == BurnOutSharp.Models.PortableExecutable.OptionalHeaderMagicNumber.PE32)
+                    Console.WriteLine($"  Image base: {executable.OptionalHeader.ImageBase_PE32}");
+                else if (executable.OptionalHeader.Magic == BurnOutSharp.Models.PortableExecutable.OptionalHeaderMagicNumber.PE32Plus)
+                    Console.WriteLine($"  Image base: {executable.OptionalHeader.ImageBase_PE32Plus}");
+                Console.WriteLine($"  Section alignment: {executable.OptionalHeader.SectionAlignment}");
+                Console.WriteLine($"  File alignment: {executable.OptionalHeader.FileAlignment}");
+                Console.WriteLine($"  Major operating system version: {executable.OptionalHeader.MajorOperatingSystemVersion}");
+                Console.WriteLine($"  Minor operating system version: {executable.OptionalHeader.MinorOperatingSystemVersion}");
+                Console.WriteLine($"  Major image version: {executable.OptionalHeader.MajorImageVersion}");
+                Console.WriteLine($"  Minor image version: {executable.OptionalHeader.MinorImageVersion}");
+                Console.WriteLine($"  Major subsystem version: {executable.OptionalHeader.MajorSubsystemVersion}");
+                Console.WriteLine($"  Minor subsystem version: {executable.OptionalHeader.MinorSubsystemVersion}");
+                Console.WriteLine($"  Win32 version value: {executable.OptionalHeader.Win32VersionValue}");
+                Console.WriteLine($"  Size of image: {executable.OptionalHeader.SizeOfImage}");
+                Console.WriteLine($"  Size of headers: {executable.OptionalHeader.SizeOfHeaders}");
+                Console.WriteLine($"  Checksum: {executable.OptionalHeader.CheckSum}");
+                Console.WriteLine($"  Subsystem: {executable.OptionalHeader.Subsystem}");
+                Console.WriteLine($"  DLL characteristics: {executable.OptionalHeader.DllCharacteristics}");
+                if (executable.OptionalHeader.Magic == BurnOutSharp.Models.PortableExecutable.OptionalHeaderMagicNumber.PE32)
+                    Console.WriteLine($"  Size of stack reserve: {executable.OptionalHeader.SizeOfStackReserve_PE32}");
+                else if (executable.OptionalHeader.Magic == BurnOutSharp.Models.PortableExecutable.OptionalHeaderMagicNumber.PE32Plus)
+                    Console.WriteLine($"  Size of stack reserve: {executable.OptionalHeader.SizeOfStackReserve_PE32Plus}");
+                if (executable.OptionalHeader.Magic == BurnOutSharp.Models.PortableExecutable.OptionalHeaderMagicNumber.PE32)
+                    Console.WriteLine($"  Size of stack commit: {executable.OptionalHeader.SizeOfStackCommit_PE32}");
+                else if (executable.OptionalHeader.Magic == BurnOutSharp.Models.PortableExecutable.OptionalHeaderMagicNumber.PE32Plus)
+                    Console.WriteLine($"  Size of stack commit: {executable.OptionalHeader.SizeOfStackCommit_PE32Plus}");
+                if (executable.OptionalHeader.Magic == BurnOutSharp.Models.PortableExecutable.OptionalHeaderMagicNumber.PE32)
+                    Console.WriteLine($"  Size of heap reserve: {executable.OptionalHeader.SizeOfHeapReserve_PE32}");
+                else if (executable.OptionalHeader.Magic == BurnOutSharp.Models.PortableExecutable.OptionalHeaderMagicNumber.PE32Plus)
+                    Console.WriteLine($"  Size of heap reserve: {executable.OptionalHeader.SizeOfHeapReserve_PE32Plus}");
+                if (executable.OptionalHeader.Magic == BurnOutSharp.Models.PortableExecutable.OptionalHeaderMagicNumber.PE32)
+                    Console.WriteLine($"  Size of heap commit: {executable.OptionalHeader.SizeOfHeapCommit_PE32}");
+                else if (executable.OptionalHeader.Magic == BurnOutSharp.Models.PortableExecutable.OptionalHeaderMagicNumber.PE32Plus)
+                    Console.WriteLine($"  Size of heap commit: {executable.OptionalHeader.SizeOfHeapCommit_PE32Plus}");
+                Console.WriteLine($"  Loader flags: {executable.OptionalHeader.LoaderFlags}");
+                Console.WriteLine($"  Number of data-directory entries: {executable.OptionalHeader.NumberOfRvaAndSizes}");
+            
+                if (executable.OptionalHeader.ExportTable != null)
+                {
+                    Console.WriteLine("  Export Table (1)");
+                    Console.WriteLine($"    Virtual address: {executable.OptionalHeader.ExportTable.VirtualAddress}");
+                    Console.WriteLine($"    Size: {executable.OptionalHeader.ExportTable.Size}");
+                }
+                if (executable.OptionalHeader.ImportTable != null)
+                {
+                    Console.WriteLine("  Import Table (2)");
+                    Console.WriteLine($"    Virtual address: {executable.OptionalHeader.ImportTable.VirtualAddress}");
+                    Console.WriteLine($"    Size: {executable.OptionalHeader.ImportTable.Size}");
+                }
+                if (executable.OptionalHeader.ResourceTable != null)
+                {
+                    Console.WriteLine("  Resource Table (3)");
+                    Console.WriteLine($"    Virtual address: {executable.OptionalHeader.ResourceTable.VirtualAddress}");
+                    Console.WriteLine($"    Size: {executable.OptionalHeader.ResourceTable.Size}");
+                }
+                if (executable.OptionalHeader.ExceptionTable != null)
+                {
+                    Console.WriteLine("  Exception Table (4)");
+                    Console.WriteLine($"    Virtual address: {executable.OptionalHeader.ExceptionTable.VirtualAddress}");
+                    Console.WriteLine($"    Size: {executable.OptionalHeader.ExceptionTable.Size}");
+                }
+                if (executable.OptionalHeader.CertificateTable != null)
+                {
+                    Console.WriteLine("  Certificate Table (5)");
+                    Console.WriteLine($"    Virtual address: {executable.OptionalHeader.CertificateTable.VirtualAddress}");
+                    Console.WriteLine($"    Size: {executable.OptionalHeader.CertificateTable.Size}");
+                }
+                if (executable.OptionalHeader.BaseRelocationTable != null)
+                {
+                    Console.WriteLine("  Base Relocation Table (6)");
+                    Console.WriteLine($"    Virtual address: {executable.OptionalHeader.BaseRelocationTable.VirtualAddress}");
+                    Console.WriteLine($"    Size: {executable.OptionalHeader.BaseRelocationTable.Size}");
+                }
+                if (executable.OptionalHeader.Debug != null)
+                {
+                    Console.WriteLine("  Debug Table (7)");
+                    Console.WriteLine($"    Virtual address: {executable.OptionalHeader.Debug.VirtualAddress}");
+                    Console.WriteLine($"    Size: {executable.OptionalHeader.Debug.Size}");
+                }
+                if (executable.OptionalHeader.NumberOfRvaAndSizes >= 8)
+                {
+                    Console.WriteLine("  Architecture Table (8)");
+                    Console.WriteLine($"    Virtual address: 0");
+                    Console.WriteLine($"    Size: 0");
+                }
+                if (executable.OptionalHeader.GlobalPtr != null)
+                {
+                    Console.WriteLine("  Global Pointer Register (9)");
+                    Console.WriteLine($"    Virtual address: {executable.OptionalHeader.GlobalPtr.VirtualAddress}");
+                    Console.WriteLine($"    Size: {executable.OptionalHeader.GlobalPtr.Size}");
+                }
+                if (executable.OptionalHeader.ThreadLocalStorageTable != null)
+                {
+                    Console.WriteLine("  Thread Local Storage (TLS) Table (10)");
+                    Console.WriteLine($"    Virtual address: {executable.OptionalHeader.ThreadLocalStorageTable.VirtualAddress}");
+                    Console.WriteLine($"    Size: {executable.OptionalHeader.ThreadLocalStorageTable.Size}");
+                }
+                if (executable.OptionalHeader.LoadConfigTable != null)
+                {
+                    Console.WriteLine("  Load Config Table (11)");
+                    Console.WriteLine($"    Virtual address: {executable.OptionalHeader.LoadConfigTable.VirtualAddress}");
+                    Console.WriteLine($"    Size: {executable.OptionalHeader.LoadConfigTable.Size}");
+                }
+                if (executable.OptionalHeader.BoundImport != null)
+                {
+                    Console.WriteLine("  Bound Import Table (12)");
+                    Console.WriteLine($"    Virtual address: {executable.OptionalHeader.BoundImport.VirtualAddress}");
+                    Console.WriteLine($"    Size: {executable.OptionalHeader.BoundImport.Size}");
+                }
+                if (executable.OptionalHeader.ImportAddressTable != null)
+                {
+                    Console.WriteLine("  Import Address Table (13)");
+                    Console.WriteLine($"    Virtual address: {executable.OptionalHeader.ImportAddressTable.VirtualAddress}");
+                    Console.WriteLine($"    Size: {executable.OptionalHeader.ImportAddressTable.Size}");
+                }
+                if (executable.OptionalHeader.DelayImportDescriptor != null)
+                {
+                    Console.WriteLine("  Delay Import Descriptior (14)");
+                    Console.WriteLine($"    Virtual address: {executable.OptionalHeader.DelayImportDescriptor.VirtualAddress}");
+                    Console.WriteLine($"    Size: {executable.OptionalHeader.DelayImportDescriptor.Size}");
+                }
+                if (executable.OptionalHeader.CLRRuntimeHeader != null)
+                {
+                    Console.WriteLine("  CLR Runtime Header (15)");
+                    Console.WriteLine($"    Virtual address: {executable.OptionalHeader.CLRRuntimeHeader.VirtualAddress}");
+                    Console.WriteLine($"    Size: {executable.OptionalHeader.CLRRuntimeHeader.Size}");
+                }
+                if (executable.OptionalHeader.NumberOfRvaAndSizes >= 16)
+                {
+                    Console.WriteLine("  Reserved (16)");
+                    Console.WriteLine($"    Virtual address: 0");
+                    Console.WriteLine($"    Size: 0");
                 }
             }
             Console.WriteLine();

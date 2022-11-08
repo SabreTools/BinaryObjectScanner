@@ -321,7 +321,7 @@
         /// <summary>
         /// The thread local storage (TLS) table address and size.
         /// </summary>
-        public DataDirectory TLSTable;
+        public DataDirectory ThreadLocalStorageTable;
 
         /// <summary>
         /// The load configuration table address and size.
@@ -336,7 +336,7 @@
         /// <summary>
         /// The import address table address and size
         /// </summary>
-        public DataDirectory IAT;
+        public DataDirectory ImportAddressTable;
 
         /// <summary>
         /// The delay import descriptor address and size.
