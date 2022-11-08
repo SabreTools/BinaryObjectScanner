@@ -170,7 +170,25 @@ namespace BurnOutSharp.Builder
 
             #endregion
 
-            // TODO: Complete NE parsing
+            #region Nonresident-Name Table
+
+            // If the offset for the nonresident-name table doesn't exist
+            tableAddress = initialOffset
+                + (int)stub.Header.NewExeHeaderAddr
+                + (int)executableHeader.NonResidentNamesTableOffset;
+            if (tableAddress >= data.Length)
+                return executable;
+
+            // Try to parse the nonresident-name table
+            var nonResidentNameTable = ParseNonResidentNameTable(data, tableAddress, (ushort)(executableHeader.NonResidentNamesTableOffset + executableHeader.NonResidentNameTableSize));
+            if (nonResidentNameTable == null)
+                return null;
+
+            // Set the nonresident-name table
+            executable.NonResidentNameTable = nonResidentNameTable;
+
+            #endregion
+
             return executable;
         }
 
@@ -424,6 +442,30 @@ namespace BurnOutSharp.Builder
             return entryTable.ToArray();
         }
 
+        /// <summary>
+        /// Parse a byte array into a nonresident-name table
+        /// </summary>
+        /// <param name="data">Byte array to parse</param>
+        /// <param name="offset">Offset into the byte array</param>
+        /// <param name="endOffset">First address not part of the nonresident-name table</param>
+        /// <returns>Filled nonresident-name table on success, null on error</returns>
+        private static NonResidentNameTableEntry[] ParseNonResidentNameTable(byte[] data, int offset, ushort endOffset)
+        {
+            // TODO: Use marshalling here instead of building
+            var residentNameTable = new List<NonResidentNameTableEntry>();
+
+            while (offset < endOffset)
+            {
+                var entry = new NonResidentNameTableEntry();
+                entry.Length = data.ReadByte(ref offset);
+                entry.NameString = data.ReadBytes(ref offset, entry.Length);
+                entry.OrdinalNumber = data.ReadUInt16(ref offset);
+                residentNameTable.Add(entry);
+            }
+
+            return residentNameTable.ToArray();
+        }
+
         #endregion
 
         #region Stream Data
@@ -593,7 +635,26 @@ namespace BurnOutSharp.Builder
 
             #endregion
 
-            // TODO: Complete NE parsing
+            #region Nonresident-Name Table
+
+            // If the offset for the nonresident-name table doesn't exist
+            tableAddress = initialOffset
+                + (int)stub.Header.NewExeHeaderAddr
+                + (int)executableHeader.NonResidentNamesTableOffset;
+            if (tableAddress >= data.Length)
+                return executable;
+
+            // Try to parse the nonresident-name table
+            data.Seek(tableAddress, SeekOrigin.Begin);
+            var nonResidentNameTable = ParseNonResidentNameTable(data, (ushort)(executableHeader.NonResidentNamesTableOffset + executableHeader.NonResidentNameTableSize));
+            if (nonResidentNameTable == null)
+                return null;
+
+            // Set the nonresident-name table
+            executable.NonResidentNameTable = nonResidentNameTable;
+
+            #endregion
+
             return executable;
         }
 
@@ -839,6 +900,29 @@ namespace BurnOutSharp.Builder
             }
 
             return entryTable.ToArray();
+        }
+
+        /// <summary>
+        /// Parse a Stream into a nonresident-name table
+        /// </summary>
+        /// <param name="data">Stream to parse</param>
+        /// <param name="endOffset">First address not part of the nonresident-name table</param>
+        /// <returns>Filled nonresident-name table on success, null on error</returns>
+        private static NonResidentNameTableEntry[] ParseNonResidentNameTable(Stream data, ushort endOffset)
+        {
+            // TODO: Use marshalling here instead of building
+            var residentNameTable = new List<NonResidentNameTableEntry>();
+
+            while (data.Position < endOffset)
+            {
+                var entry = new NonResidentNameTableEntry();
+                entry.Length = data.ReadByteValue();
+                entry.NameString = data.ReadBytes(entry.Length);
+                entry.OrdinalNumber = data.ReadUInt16();
+                residentNameTable.Add(entry);
+            }
+
+            return residentNameTable.ToArray();
         }
 
         #endregion
