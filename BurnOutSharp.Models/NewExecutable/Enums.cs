@@ -262,6 +262,27 @@ namespace BurnOutSharp.Models.NewExecutable
         PRELOAD = 0x0040,
     }
 
+    public enum SegmentEntryType
+    {
+        /// <summary>
+        /// 000h - There is no entry data in an unused bundle. The next bundle
+        /// follows this field. This is used by the linker to skip ordinal numbers.
+        /// </summary>
+        Unused,
+
+        /// <summary>
+        /// 001h-0FEh - Segment number for fixed segment entries. A fixed segment
+        /// entry is 3 bytes long.
+        /// </summary>
+        FixedSegment,
+
+        /// <summary>
+        /// 0FFH - Moveable segment entries. The entry data contains the segment
+        /// number for the entry points. A moveable segment entry is 6 bytes long.
+        /// </summary>
+        MoveableSegment,
+    }
+
     [Flags]
     public enum SegmentTableEntryFlag : ushort
     {

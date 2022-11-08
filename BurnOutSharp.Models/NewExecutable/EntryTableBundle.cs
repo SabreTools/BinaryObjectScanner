@@ -43,16 +43,42 @@
         /// </summary>
         public byte SegmentIndicator;
 
-        /// <summary>
-        /// Fixed segment entry
-        /// </summary>
-        /// <remarks>Must be <c>NULL</c> if <see cref="MoveableSegmentEntry"/> is used.</remarks>
-        public FixedSegmentEntry FixedSegmentEntry;
+        #region Fixed Segment Entry
 
         /// <summary>
-        /// Moveable segment entry
+        /// Flag word.
         /// </summary>
-        /// <remarks>Must be <c>NULL</c> if <see cref="FixedSegmentEntry"/> is used.</remarks>
-        public MoveableSegmentEntry MoveableSegmentEntry;
+        public FixedSegmentEntryFlag FixedFlagWord;
+
+        /// <summary>
+        /// Offset within segment to entry point.
+        /// </summary>
+        public ushort FixedOffset;
+
+        #endregion
+
+        #region Moveable Segment Entry
+
+        /// <summary>
+        /// Flag word.
+        /// </summary>
+        public MoveableSegmentEntryFlag MoveableFlagWord;
+
+        /// <summary>
+        /// INT 3FH.
+        /// </summary>
+        public ushort MoveableReserved;
+
+        /// <summary>
+        /// Segment number.
+        /// </summary>
+        public byte MoveableSegmentNumber;
+
+        /// <summary>
+        /// Offset within segment to entry point.
+        /// </summary>
+        public ushort MoveableOffset;
+
+        #endregion
     }
 }

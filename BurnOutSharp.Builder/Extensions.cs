@@ -305,6 +305,29 @@ namespace BurnOutSharp.Builder
             return (entry.ResourceID & 0x8000) != 0;
         }
 
+        /// <summary>
+        /// Get the segment entry type for an entry table bundle
+        /// </summary>
+        /// <param name="entry">Entry table bundle to check</param>
+        /// <returns>SegmentEntryType corresponding to the type</returns>
+        public static Models.NewExecutable.SegmentEntryType GetEntryType(this Models.NewExecutable.EntryTableBundle entry)
+        {
+            // We can't do anything with an invalid entry
+            if (entry == null)
+                return Models.NewExecutable.SegmentEntryType.Unused;
+
+            // Determine the entry type based on segment indicator
+            if (entry.SegmentIndicator == 0x00)
+                return Models.NewExecutable.SegmentEntryType.Unused;
+            else if (entry.SegmentIndicator >= 0x01 && entry.SegmentIndicator <= 0xFE)
+                return Models.NewExecutable.SegmentEntryType.FixedSegment;
+            else if (entry.SegmentIndicator == 0xFF)
+                return Models.NewExecutable.SegmentEntryType.MoveableSegment;
+
+            // We should never get here
+            return Models.NewExecutable.SegmentEntryType.Unused;
+        }
+
         #endregion
     }
 }
