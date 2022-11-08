@@ -259,6 +259,7 @@ namespace ExecutableTest
                     {
                         for (int j = 0; j < entry.Resources.Length; j++)
                         {
+                            // TODO: If not integer type, print out name
                             var resource = entry.Resources[j];
                             Console.WriteLine($"      Resource Entry {i}");
                             Console.WriteLine($"        Offset = {resource.Offset}");
@@ -302,6 +303,24 @@ namespace ExecutableTest
                     Console.WriteLine($"    Length = {entry.Length}");
                     Console.WriteLine($"    Name string = {Encoding.ASCII.GetString(entry.NameString)}");
                     Console.WriteLine($"    Ordinal number = {entry.OrdinalNumber}");
+                }
+            }
+            Console.WriteLine();
+
+            Console.WriteLine("  Module-Reference Table Information:");
+            Console.WriteLine("  -------------------------");
+            if (executable.Header.ModuleReferenceTableSize == 0 || executable.ModuleReferenceTable.Length == 0)
+            {
+                Console.WriteLine("  No module-reference table items");
+            }
+            else
+            {
+                for (int i = 0; i < executable.ModuleReferenceTable.Length; i++)
+                {
+                    // TODO: Read the imported names table and print value here
+                    var entry = executable.ModuleReferenceTable[i];
+                    Console.WriteLine($"  Module-Reference Table Entry {i}");
+                    Console.WriteLine($"    Offset = {entry.Offset}");
                 }
             }
             Console.WriteLine();
