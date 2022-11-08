@@ -372,6 +372,25 @@ namespace ExecutableTest
                 }
             }
             Console.WriteLine();
+
+            Console.WriteLine("  Nonresident-Name Table Information:");
+            Console.WriteLine("  -------------------------");
+            if (executable.Header.NonResidentNameTableSize == 0 || executable.NonResidentNameTable.Length == 0)
+            {
+                Console.WriteLine("  No nonresident-name table items");
+            }
+            else
+            {
+                for (int i = 0; i < executable.NonResidentNameTable.Length; i++)
+                {
+                    var entry = executable.NonResidentNameTable[i];
+                    Console.WriteLine($"  Nonresident-Name Table Entry {i}");
+                    Console.WriteLine($"    Length = {entry.Length}");
+                    Console.WriteLine($"    Name string = {Encoding.ASCII.GetString(entry.NameString)}");
+                    Console.WriteLine($"    Ordinal number = {entry.OrdinalNumber}");
+                }
+            }
+            Console.WriteLine();
         }
     }
 }
