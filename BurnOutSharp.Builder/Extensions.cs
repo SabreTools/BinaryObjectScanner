@@ -329,5 +329,37 @@ namespace BurnOutSharp.Builder
         }
 
         #endregion
+
+        #region Portable Executable
+
+        /// <summary>
+        /// Convert a virtual address to a physical one
+        /// </summary>
+        /// <param name="virtualAddress">Virtual address to convert</param>
+        /// <param name="sections">Array of sections to check against</param>
+        /// <returns>Physical address, 0 on error</returns>
+        public static uint ConvertVirtualAddress(this uint virtualAddress, Models.PortableExecutable.SectionHeader[] sections)
+        {
+            // Loop through all of the sections
+            for (int i = 0; i < sections.Length; i++)
+            {
+                // If the section is invalid, just skip it
+                if (sections[i] == null)
+                    continue;
+
+                // If the section "starts" at 0, just skip it
+                if (sections[i].PointerToRawData == 0)
+                    continue;
+
+                // Attempt to derive the physical address from the current section
+                var section = sections[i];
+                if (virtualAddress >= section.VirtualAddress && virtualAddress <= section.VirtualAddress + section.VirtualSize)
+                    return section.PointerToRawData + virtualAddress - section.VirtualAddress;
+            }
+
+            return 0;
+        }
+
+        #endregion
     }
 }

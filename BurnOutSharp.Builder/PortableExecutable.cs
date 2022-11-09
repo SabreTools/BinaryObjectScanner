@@ -94,13 +94,12 @@ namespace BurnOutSharp.Builder
 
             #region COFF Symbol Table
 
-            // TODO: Validate that this is correct
+            // TODO: Validate that this is correct with an "old" PE
             if (coffFileHeader.PointerToSymbolTable != 0)
             {
                 // If the offset for the COFF symbol table doesn't exist
                 int tableAddress = initialOffset
-                    + (int)stub.Header.NewExeHeaderAddr
-                    + (int)coffFileHeader.PointerToSymbolTable;
+                    + (int)coffFileHeader.PointerToSymbolTable.ConvertVirtualAddress(executable.SectionTable);
                 if (tableAddress >= data.Length)
                     return executable;
 
@@ -596,13 +595,12 @@ namespace BurnOutSharp.Builder
 
             #region COFF Symbol Table
 
-            // TODO: Validate that this is correct
+            // TODO: Validate that this is correct with an "old" PE
             if (coffFileHeader.PointerToSymbolTable != 0)
             {
                 // If the offset for the COFF symbol table doesn't exist
                 int tableAddress = initialOffset
-                    + (int)stub.Header.NewExeHeaderAddr
-                    + (int)coffFileHeader.PointerToSymbolTable;
+                    + (int)coffFileHeader.PointerToSymbolTable.ConvertVirtualAddress(executable.SectionTable);
                 if (tableAddress >= data.Length)
                     return executable;
 
