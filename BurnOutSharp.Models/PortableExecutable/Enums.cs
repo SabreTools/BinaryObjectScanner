@@ -2,6 +2,46 @@
 
 namespace BurnOutSharp.Models.PortableExecutable
 {
+    [Flags]
+    public enum AcceleratorTableFlags : ushort
+    {
+        /// <summary>
+        /// The accelerator key is a virtual-key code. If this flag is not specified,
+        /// the accelerator key is assumed to specify an ASCII character code. 
+        /// </summary>
+        FVIRTKEY = 0x01,
+
+        /// <summary>
+        /// A menu item on the menu bar is not highlighted when an accelerator is used.
+        /// This attribute is obsolete and retained only for backward compatibility with
+        /// resource files designed for 16-bit Windows.
+        /// </summary>
+        FNOINVERT = 0x02,
+
+        /// <summary>
+        /// The accelerator is activated only if the user presses the SHIFT key. This flag
+        /// applies only to virtual keys. 
+        /// </summary>
+        FSHIFT = 0x04,
+
+        /// <summary>
+        /// The accelerator is activated only if the user presses the CTRL key. This flag
+        /// applies only to virtual keys. 
+        /// </summary>
+        FCONTROL = 0x08,
+
+        /// <summary>
+        /// The accelerator is activated only if the user presses the ALT key. This flag
+        /// applies only to virtual keys. 
+        /// </summary>
+        FALT = 0x10,
+
+        /// <summary>
+        /// The entry is last in an accelerator table.
+        /// </summary>
+        LastEntry = 0x80,
+    }
+
     public enum BaseRelocationTypes : uint
     {
         /// <summary>
