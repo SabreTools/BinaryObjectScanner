@@ -394,7 +394,7 @@ namespace BurnOutSharp.Builder
         /// <param name="data">Data to parse into an accelerator table resource</param>
         /// <param name="offset">Offset into the byte array</param>
         /// <returns>A filled accelerator table resource on success, null on error</returns>
-        public static Models.PortableExecutable.AcceleratorTableEntryResource[] AsAcceleratorTableResource(this byte[] data, ref int offset)
+        public static Models.PortableExecutable.AcceleratorTableEntry[] AsAcceleratorTableResource(this byte[] data, ref int offset)
         {
             // If we have data that's invalid for this resource type, we can't do anything
             if (data == null || data.Length % 8 != 0)
@@ -404,10 +404,10 @@ namespace BurnOutSharp.Builder
             int count = data.Length / 8;
 
             // Read in the table
-            var table = new Models.PortableExecutable.AcceleratorTableEntryResource[count];
+            var table = new Models.PortableExecutable.AcceleratorTableEntry[count];
             for (int i = 0; i < count; i++)
             {
-                var entry = new Models.PortableExecutable.AcceleratorTableEntryResource();
+                var entry = new Models.PortableExecutable.AcceleratorTableEntry();
                 entry.Flags = (Models.PortableExecutable.AcceleratorTableFlags)data.ReadUInt16(ref offset);
                 entry.Ansi = data.ReadUInt16(ref offset);
                 entry.Id = data.ReadUInt16(ref offset);

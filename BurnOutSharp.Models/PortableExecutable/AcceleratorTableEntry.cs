@@ -8,7 +8,7 @@ namespace BurnOutSharp.Models.PortableExecutable
     /// </summary>
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/menurc/acceltableentry"/>
     [StructLayout(LayoutKind.Sequential)]
-    public class AcceleratorTableEntryResource
+    public class AcceleratorTableEntry
     {
         /// <summary>
         /// Describes keyboard accelerator characteristics.
