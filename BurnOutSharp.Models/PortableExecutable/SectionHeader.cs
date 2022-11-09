@@ -82,7 +82,7 @@ namespace BurnOutSharp.Models.PortableExecutable
         /// is set to zero if there are no COFF line numbers. This value should be zero for
         /// an image because COFF debugging information is deprecated. 
         /// </summary>
-        public int PointerToLinenumbers;
+        public uint PointerToLinenumbers;
 
         /// <summary>
         /// The number of relocation entries for the section. This is set to zero for
