@@ -70,12 +70,24 @@ namespace BurnOutSharp.Builder
             #region Optional Header
 
             // Try to parse the optional header
-            var optionalHeader = ParseOptionalHeader(data, offset, coffFileHeader.SizeOfOptionalHeader);
+            var optionalHeader = ParseOptionalHeader(data, ref offset, coffFileHeader.SizeOfOptionalHeader);
             if (optionalHeader == null)
                 return null;
 
             // Set the optional header
             executable.OptionalHeader = optionalHeader;
+
+            #endregion
+
+            #region Section Table
+
+            // Try to parse the section table
+            var sectionTable = ParseSectionTable(data, offset, coffFileHeader.NumberOfSections);
+            if (sectionTable == null)
+                return null;
+
+            // Set the section table
+            executable.SectionTable = sectionTable;
 
             #endregion
 
@@ -112,7 +124,7 @@ namespace BurnOutSharp.Builder
         /// <param name="offset">Offset into the byte array</param>
         /// <param name="optionalSize">Size of the optional header</param>
         /// <returns>Filled optional header on success, null on error</returns>
-        private static OptionalHeader ParseOptionalHeader(byte[] data, int offset, int optionalSize)
+        private static OptionalHeader ParseOptionalHeader(byte[] data, ref int offset, int optionalSize)
         {
             int initialOffset = offset;
 
@@ -141,6 +153,7 @@ namespace BurnOutSharp.Builder
                 optionalHeader.ImageBase_PE32 = data.ReadUInt32(ref offset);
             else if (optionalHeader.Magic == OptionalHeaderMagicNumber.PE32Plus)
                 optionalHeader.ImageBase_PE32Plus = data.ReadUInt64(ref offset);
+            optionalHeader.SectionAlignment = data.ReadUInt32(ref offset);
             optionalHeader.FileAlignment = data.ReadUInt32(ref offset);
             optionalHeader.MajorOperatingSystemVersion = data.ReadUInt16(ref offset);
             optionalHeader.MinorOperatingSystemVersion = data.ReadUInt16(ref offset);
@@ -275,6 +288,47 @@ namespace BurnOutSharp.Builder
             return optionalHeader;
         }
 
+        /// <summary>
+        /// Parse a byte array into a section table
+        /// </summary>
+        /// <param name="data">Byte array to parse</param>
+        /// <param name="offset">Offset into the byte array</param>
+        /// <param name="count">Number of section table entries to read</param>
+        /// <returns>Filled section table on success, null on error</returns>
+        private static SectionHeader[] ParseSectionTable(byte[] data, int offset, int count)
+        {
+            // TODO: Use marshalling here instead of building
+            var sectionTable = new SectionHeader[count];
+
+            for (int i = 0; i < count; i++)
+            {
+                var entry = new SectionHeader();
+                entry.Name = data.ReadBytes(ref offset, 8);
+                entry.VirtualSize = data.ReadUInt32(ref offset);
+                entry.VirtualAddress = data.ReadUInt32(ref offset);
+                entry.SizeOfRawData = data.ReadUInt32(ref offset);
+                entry.PointerToRawData = data.ReadUInt32(ref offset);
+                entry.PointerToRelocations = data.ReadUInt32(ref offset);
+                entry.PointerToLinenumbers = data.ReadUInt32(ref offset);
+                entry.NumberOfRelocations = data.ReadUInt16(ref offset);
+                entry.NumberOfLinenumbers = data.ReadUInt16(ref offset);
+                entry.Characteristics = (SectionFlags)data.ReadUInt32(ref offset);
+                entry.COFFRelocations = new COFFRelocation[entry.NumberOfRelocations];
+                for (int j = 0; i < entry.NumberOfRelocations; j++)
+                {
+                    // TODO: Seek to correct location and read data
+                }
+                entry.COFFLineNumbers = new COFFLineNumber[entry.NumberOfRelocations];
+                for (int j = 0; i < entry.NumberOfRelocations; j++)
+                {
+                    // TODO: Seek to correct location and read data
+                }
+                sectionTable[i] = entry;
+            }
+
+            return sectionTable;
+        }
+
         #endregion
 
         #region Stream Data
@@ -349,6 +403,18 @@ namespace BurnOutSharp.Builder
 
             #endregion
 
+            #region Section Table
+
+            // Try to parse the section table
+            var sectionTable = ParseSectionTable(data, coffFileHeader.NumberOfSections);
+            if (sectionTable == null)
+                return null;
+
+            // Set the section table
+            executable.SectionTable = sectionTable;
+
+            #endregion
+
             // TODO: Finish implementing PE parsing
             return executable;
         }
@@ -409,6 +475,7 @@ namespace BurnOutSharp.Builder
                 optionalHeader.ImageBase_PE32 = data.ReadUInt32();
             else if (optionalHeader.Magic == OptionalHeaderMagicNumber.PE32Plus)
                 optionalHeader.ImageBase_PE32Plus = data.ReadUInt64();
+            optionalHeader.SectionAlignment = data.ReadUInt32();
             optionalHeader.FileAlignment = data.ReadUInt32();
             optionalHeader.MajorOperatingSystemVersion = data.ReadUInt16();
             optionalHeader.MinorOperatingSystemVersion = data.ReadUInt16();
@@ -541,6 +608,46 @@ namespace BurnOutSharp.Builder
             #endregion
 
             return optionalHeader;
+        }
+
+        /// <summary>
+        /// Parse a Stream into a section table
+        /// </summary>
+        /// <param name="data">Stream to parse</param>
+        /// <param name="count">Number of section table entries to read</param>
+        /// <returns>Filled section table on success, null on error</returns>
+        private static SectionHeader[] ParseSectionTable(Stream data, int count)
+        {
+            // TODO: Use marshalling here instead of building
+            var sectionTable = new SectionHeader[count];
+
+            for (int i = 0; i < count; i++)
+            {
+                var entry = new SectionHeader();
+                entry.Name = data.ReadBytes(8);
+                entry.VirtualSize = data.ReadUInt32();
+                entry.VirtualAddress = data.ReadUInt32();
+                entry.SizeOfRawData = data.ReadUInt32();
+                entry.PointerToRawData = data.ReadUInt32();
+                entry.PointerToRelocations = data.ReadUInt32();
+                entry.PointerToLinenumbers = data.ReadUInt32();
+                entry.NumberOfRelocations = data.ReadUInt16();
+                entry.NumberOfLinenumbers = data.ReadUInt16();
+                entry.Characteristics = (SectionFlags)data.ReadUInt32();
+                entry.COFFRelocations = new COFFRelocation[entry.NumberOfRelocations];
+                for (int j = 0; j < entry.NumberOfRelocations; j++)
+                {
+                    // TODO: Seek to correct location and read data
+                }
+                entry.COFFLineNumbers = new COFFLineNumber[entry.NumberOfLinenumbers];
+                for (int j = 0; j < entry.NumberOfLinenumbers; j++)
+                {
+                    // TODO: Seek to correct location and read data
+                }
+                sectionTable[i] = entry;
+            }
+
+            return sectionTable;
         }
 
         #endregion

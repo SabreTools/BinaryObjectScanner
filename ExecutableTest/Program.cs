@@ -485,99 +485,127 @@ namespace ExecutableTest
             
                 if (executable.OptionalHeader.ExportTable != null)
                 {
-                    Console.WriteLine("  Export Table (1)");
-                    Console.WriteLine($"    Virtual address: {executable.OptionalHeader.ExportTable.VirtualAddress}");
-                    Console.WriteLine($"    Size: {executable.OptionalHeader.ExportTable.Size}");
+                    Console.WriteLine("    Export Table (1)");
+                    Console.WriteLine($"      Virtual address: {executable.OptionalHeader.ExportTable.VirtualAddress}");
+                    Console.WriteLine($"      Size: {executable.OptionalHeader.ExportTable.Size}");
                 }
                 if (executable.OptionalHeader.ImportTable != null)
                 {
-                    Console.WriteLine("  Import Table (2)");
-                    Console.WriteLine($"    Virtual address: {executable.OptionalHeader.ImportTable.VirtualAddress}");
-                    Console.WriteLine($"    Size: {executable.OptionalHeader.ImportTable.Size}");
+                    Console.WriteLine("    Import Table (2)");
+                    Console.WriteLine($"      Virtual address: {executable.OptionalHeader.ImportTable.VirtualAddress}");
+                    Console.WriteLine($"      Size: {executable.OptionalHeader.ImportTable.Size}");
                 }
                 if (executable.OptionalHeader.ResourceTable != null)
                 {
-                    Console.WriteLine("  Resource Table (3)");
-                    Console.WriteLine($"    Virtual address: {executable.OptionalHeader.ResourceTable.VirtualAddress}");
-                    Console.WriteLine($"    Size: {executable.OptionalHeader.ResourceTable.Size}");
+                    Console.WriteLine("    Resource Table (3)");
+                    Console.WriteLine($"      Virtual address: {executable.OptionalHeader.ResourceTable.VirtualAddress}");
+                    Console.WriteLine($"      Size: {executable.OptionalHeader.ResourceTable.Size}");
                 }
                 if (executable.OptionalHeader.ExceptionTable != null)
                 {
-                    Console.WriteLine("  Exception Table (4)");
-                    Console.WriteLine($"    Virtual address: {executable.OptionalHeader.ExceptionTable.VirtualAddress}");
-                    Console.WriteLine($"    Size: {executable.OptionalHeader.ExceptionTable.Size}");
+                    Console.WriteLine("    Exception Table (4)");
+                    Console.WriteLine($"      Virtual address: {executable.OptionalHeader.ExceptionTable.VirtualAddress}");
+                    Console.WriteLine($"      Size: {executable.OptionalHeader.ExceptionTable.Size}");
                 }
                 if (executable.OptionalHeader.CertificateTable != null)
                 {
-                    Console.WriteLine("  Certificate Table (5)");
-                    Console.WriteLine($"    Virtual address: {executable.OptionalHeader.CertificateTable.VirtualAddress}");
-                    Console.WriteLine($"    Size: {executable.OptionalHeader.CertificateTable.Size}");
+                    Console.WriteLine("    Certificate Table (5)");
+                    Console.WriteLine($"      Virtual address: {executable.OptionalHeader.CertificateTable.VirtualAddress}");
+                    Console.WriteLine($"      Size: {executable.OptionalHeader.CertificateTable.Size}");
                 }
                 if (executable.OptionalHeader.BaseRelocationTable != null)
                 {
-                    Console.WriteLine("  Base Relocation Table (6)");
-                    Console.WriteLine($"    Virtual address: {executable.OptionalHeader.BaseRelocationTable.VirtualAddress}");
-                    Console.WriteLine($"    Size: {executable.OptionalHeader.BaseRelocationTable.Size}");
+                    Console.WriteLine("    Base Relocation Table (6)");
+                    Console.WriteLine($"      Virtual address: {executable.OptionalHeader.BaseRelocationTable.VirtualAddress}");
+                    Console.WriteLine($"      Size: {executable.OptionalHeader.BaseRelocationTable.Size}");
                 }
                 if (executable.OptionalHeader.Debug != null)
                 {
-                    Console.WriteLine("  Debug Table (7)");
-                    Console.WriteLine($"    Virtual address: {executable.OptionalHeader.Debug.VirtualAddress}");
-                    Console.WriteLine($"    Size: {executable.OptionalHeader.Debug.Size}");
+                    Console.WriteLine("    Debug Table (7)");
+                    Console.WriteLine($"      Virtual address: {executable.OptionalHeader.Debug.VirtualAddress}");
+                    Console.WriteLine($"      Size: {executable.OptionalHeader.Debug.Size}");
                 }
                 if (executable.OptionalHeader.NumberOfRvaAndSizes >= 8)
                 {
-                    Console.WriteLine("  Architecture Table (8)");
-                    Console.WriteLine($"    Virtual address: 0");
-                    Console.WriteLine($"    Size: 0");
+                    Console.WriteLine("    Architecture Table (8)");
+                    Console.WriteLine($"      Virtual address: 0");
+                    Console.WriteLine($"      Size: 0");
                 }
                 if (executable.OptionalHeader.GlobalPtr != null)
                 {
-                    Console.WriteLine("  Global Pointer Register (9)");
-                    Console.WriteLine($"    Virtual address: {executable.OptionalHeader.GlobalPtr.VirtualAddress}");
-                    Console.WriteLine($"    Size: {executable.OptionalHeader.GlobalPtr.Size}");
+                    Console.WriteLine("    Global Pointer Register (9)");
+                    Console.WriteLine($"      Virtual address: {executable.OptionalHeader.GlobalPtr.VirtualAddress}");
+                    Console.WriteLine($"      Size: {executable.OptionalHeader.GlobalPtr.Size}");
                 }
                 if (executable.OptionalHeader.ThreadLocalStorageTable != null)
                 {
-                    Console.WriteLine("  Thread Local Storage (TLS) Table (10)");
-                    Console.WriteLine($"    Virtual address: {executable.OptionalHeader.ThreadLocalStorageTable.VirtualAddress}");
-                    Console.WriteLine($"    Size: {executable.OptionalHeader.ThreadLocalStorageTable.Size}");
+                    Console.WriteLine("    Thread Local Storage (TLS) Table (10)");
+                    Console.WriteLine($"      Virtual address: {executable.OptionalHeader.ThreadLocalStorageTable.VirtualAddress}");
+                    Console.WriteLine($"      Size: {executable.OptionalHeader.ThreadLocalStorageTable.Size}");
                 }
                 if (executable.OptionalHeader.LoadConfigTable != null)
                 {
-                    Console.WriteLine("  Load Config Table (11)");
-                    Console.WriteLine($"    Virtual address: {executable.OptionalHeader.LoadConfigTable.VirtualAddress}");
-                    Console.WriteLine($"    Size: {executable.OptionalHeader.LoadConfigTable.Size}");
+                    Console.WriteLine("    Load Config Table (11)");
+                    Console.WriteLine($"      Virtual address: {executable.OptionalHeader.LoadConfigTable.VirtualAddress}");
+                    Console.WriteLine($"      Size: {executable.OptionalHeader.LoadConfigTable.Size}");
                 }
                 if (executable.OptionalHeader.BoundImport != null)
                 {
-                    Console.WriteLine("  Bound Import Table (12)");
-                    Console.WriteLine($"    Virtual address: {executable.OptionalHeader.BoundImport.VirtualAddress}");
-                    Console.WriteLine($"    Size: {executable.OptionalHeader.BoundImport.Size}");
+                    Console.WriteLine("    Bound Import Table (12)");
+                    Console.WriteLine($"      Virtual address: {executable.OptionalHeader.BoundImport.VirtualAddress}");
+                    Console.WriteLine($"      Size: {executable.OptionalHeader.BoundImport.Size}");
                 }
                 if (executable.OptionalHeader.ImportAddressTable != null)
                 {
-                    Console.WriteLine("  Import Address Table (13)");
-                    Console.WriteLine($"    Virtual address: {executable.OptionalHeader.ImportAddressTable.VirtualAddress}");
-                    Console.WriteLine($"    Size: {executable.OptionalHeader.ImportAddressTable.Size}");
+                    Console.WriteLine("    Import Address Table (13)");
+                    Console.WriteLine($"      Virtual address: {executable.OptionalHeader.ImportAddressTable.VirtualAddress}");
+                    Console.WriteLine($"      Size: {executable.OptionalHeader.ImportAddressTable.Size}");
                 }
                 if (executable.OptionalHeader.DelayImportDescriptor != null)
                 {
-                    Console.WriteLine("  Delay Import Descriptior (14)");
-                    Console.WriteLine($"    Virtual address: {executable.OptionalHeader.DelayImportDescriptor.VirtualAddress}");
-                    Console.WriteLine($"    Size: {executable.OptionalHeader.DelayImportDescriptor.Size}");
+                    Console.WriteLine("    Delay Import Descriptior (14)");
+                    Console.WriteLine($"      Virtual address: {executable.OptionalHeader.DelayImportDescriptor.VirtualAddress}");
+                    Console.WriteLine($"      Size: {executable.OptionalHeader.DelayImportDescriptor.Size}");
                 }
                 if (executable.OptionalHeader.CLRRuntimeHeader != null)
                 {
-                    Console.WriteLine("  CLR Runtime Header (15)");
-                    Console.WriteLine($"    Virtual address: {executable.OptionalHeader.CLRRuntimeHeader.VirtualAddress}");
-                    Console.WriteLine($"    Size: {executable.OptionalHeader.CLRRuntimeHeader.Size}");
+                    Console.WriteLine("    CLR Runtime Header (15)");
+                    Console.WriteLine($"      Virtual address: {executable.OptionalHeader.CLRRuntimeHeader.VirtualAddress}");
+                    Console.WriteLine($"      Size: {executable.OptionalHeader.CLRRuntimeHeader.Size}");
                 }
                 if (executable.OptionalHeader.NumberOfRvaAndSizes >= 16)
                 {
-                    Console.WriteLine("  Reserved (16)");
-                    Console.WriteLine($"    Virtual address: 0");
-                    Console.WriteLine($"    Size: 0");
+                    Console.WriteLine("    Reserved (16)");
+                    Console.WriteLine($"      Virtual address: 0");
+                    Console.WriteLine($"      Size: 0");
+                }
+            }
+            Console.WriteLine();
+
+            Console.WriteLine("  Section Table Information:");
+            Console.WriteLine("  -------------------------");
+            if (executable.COFFFileHeader.NumberOfSections == 0 || executable.SectionTable.Length == 0)
+            {
+                Console.WriteLine("  No section table items");
+            }
+            else
+            {
+                for (int i = 0; i < executable.SectionTable.Length; i++)
+                {
+                    var entry = executable.SectionTable[i];
+                    Console.WriteLine($"  Segment Table Entry {i}");
+                    Console.WriteLine($"    Name = {Encoding.UTF8.GetString(entry.Name)}");
+                    Console.WriteLine($"    Virtual size = {entry.VirtualSize}");
+                    Console.WriteLine($"    Virtual address = {entry.VirtualAddress}");
+                    Console.WriteLine($"    Size of raw data = {entry.SizeOfRawData}");
+                    Console.WriteLine($"    Pointer to raw data = {entry.PointerToRawData}");
+                    Console.WriteLine($"    Pointer to relocations = {entry.PointerToRelocations}");
+                    Console.WriteLine($"    Pointer to linenumbers = {entry.PointerToLinenumbers}");
+                    Console.WriteLine($"    Number of relocations = {entry.NumberOfRelocations}");
+                    Console.WriteLine($"    Number of linenumbers = {entry.NumberOfLinenumbers}");
+                    Console.WriteLine($"    Characteristics = {entry.Characteristics}");
+                    // TODO: Add COFFRelocations
+                    // TODO: Add COFFLineNumbers
                 }
             }
             Console.WriteLine();
