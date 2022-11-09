@@ -2079,7 +2079,7 @@ namespace BurnOutSharp.Models.PortableExecutable
         IMAGE_SYM_CLASS_CLR_TOKEN = 0x6A,
     }
 
-    public enum SymbolType : byte
+    public enum SymbolType : ushort
     {
         /// <summary>
         /// No type information or unknown base type. Microsoft tools use this setting
@@ -2160,6 +2160,11 @@ namespace BurnOutSharp.Models.PortableExecutable
         /// An unsigned 4-byte integer
         /// </summary>
         IMAGE_SYM_TYPE_DWORD = 0x0F,
+
+        /// <summary>
+        /// A function pointer
+        /// </summary>
+        IMAGE_SYM_TYPE_FUNC = 0x20,
     }
 
     public enum SymbolDerivedType : byte

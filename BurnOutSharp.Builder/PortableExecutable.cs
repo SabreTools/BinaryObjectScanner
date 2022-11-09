@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using BurnOutSharp.Models.PortableExecutable;
 
 namespace BurnOutSharp.Builder
@@ -88,6 +89,29 @@ namespace BurnOutSharp.Builder
 
             // Set the section table
             executable.SectionTable = sectionTable;
+
+            #endregion
+
+            #region COFF Symbol Table
+
+            // TODO: Validate that this is correct
+            if (coffFileHeader.PointerToSymbolTable != 0)
+            {
+                // If the offset for the COFF symbol table doesn't exist
+                int tableAddress = initialOffset
+                    + (int)stub.Header.NewExeHeaderAddr
+                    + (int)coffFileHeader.PointerToSymbolTable;
+                if (tableAddress >= data.Length)
+                    return executable;
+
+                // Try to parse the COFF symbol table
+                var coffSymbolTable = ParseCOFFSymbolTable(data, tableAddress, coffFileHeader.NumberOfSymbols);
+                if (coffSymbolTable == null)
+                    return null;
+
+                // Set the COFF symbol table
+                executable.COFFSymbolTable = coffSymbolTable;
+            }
 
             #endregion
 
@@ -329,6 +353,161 @@ namespace BurnOutSharp.Builder
             return sectionTable;
         }
 
+        /// <summary>
+        /// Parse a byte array into a COFF symbol table
+        /// </summary>
+        /// <param name="data">Byte array to parse</param>
+        /// <param name="offset">Offset into the byte array</param>
+        /// <param name="count">Number of COFF symbol table entries to read</param>
+        /// <returns>Filled COFF symbol table on success, null on error</returns>
+        private static COFFSymbolTableEntry[] ParseCOFFSymbolTable(byte[] data, int offset, uint count)
+        {
+            // TODO: Use marshalling here instead of building
+            var coffSymbolTable = new COFFSymbolTableEntry[count];
+
+            int auxSymbolsRemaining = 0;
+            int currentSymbolType = 0;
+
+            for (int i = 0; i < count; i++)
+            {
+                // Standard COFF Symbol Table Entry
+                if (currentSymbolType == 0)
+                {
+                    var entry = new COFFSymbolTableEntry();
+                    entry.ShortName = data.ReadBytes(ref offset, 8);
+                    entry.Zeroes = BitConverter.ToUInt32(entry.ShortName, 0);
+                    if (entry.Zeroes == 0)
+                    {
+                        entry.Offset = BitConverter.ToUInt32(entry.ShortName, 4);
+                        entry.ShortName = null;
+                    }
+                    entry.Value = data.ReadUInt32(ref offset);
+                    entry.SectionNumber = data.ReadUInt16(ref offset);
+                    entry.SymbolType = (SymbolType)data.ReadUInt16(ref offset);
+                    entry.StorageClass = (StorageClass)data.ReadByte(ref offset);
+                    entry.NumberOfAuxSymbols = data.ReadByte(ref offset);
+                    coffSymbolTable[i] = entry;
+
+                    auxSymbolsRemaining = entry.NumberOfAuxSymbols;
+                    if (auxSymbolsRemaining == 0)
+                        continue;
+
+                    if (entry.StorageClass == StorageClass.IMAGE_SYM_CLASS_EXTERNAL
+                        && entry.SymbolType == SymbolType.IMAGE_SYM_TYPE_FUNC
+                        && entry.SectionNumber > 0)
+                    {
+                        currentSymbolType = 1;
+                    }
+                    else if (entry.StorageClass == StorageClass.IMAGE_SYM_CLASS_FUNCTION
+                        && entry.ShortName != null
+                        && ((entry.ShortName[0] == 0x2E && entry.ShortName[1] == 0x62 && entry.ShortName[2] == 0x66)  // .bf
+                            || (entry.ShortName[0] == 0x2E && entry.ShortName[1] == 0x65 && entry.ShortName[2] == 0x66))) // .ef
+                    {
+                        currentSymbolType = 2;
+                    }
+                    else if (entry.StorageClass == StorageClass.IMAGE_SYM_CLASS_EXTERNAL
+                        && entry.SectionNumber == (ushort)SectionNumber.IMAGE_SYM_UNDEFINED
+                        && entry.Value == 0)
+                    {
+                        currentSymbolType = 3;
+                    }
+                    else if (entry.StorageClass == StorageClass.IMAGE_SYM_CLASS_FILE)
+                    {
+                        // TODO: Symbol name should be ".file"
+                        currentSymbolType = 4;
+                    }
+                    else if (entry.StorageClass == StorageClass.IMAGE_SYM_CLASS_STATIC)
+                    {
+                        // TODO: Should have the name of a section (like ".text")
+                        currentSymbolType = 5;
+                    }
+                    else if (entry.StorageClass == StorageClass.IMAGE_SYM_CLASS_CLR_TOKEN)
+                    {
+                        currentSymbolType = 6;
+                    }
+                }
+
+                // Auxiliary Format 1: Function Definitions
+                else if (currentSymbolType == 1)
+                {
+                    var entry = new COFFSymbolTableEntry();
+                    entry.AuxFormat1TagIndex = data.ReadUInt32(ref offset);
+                    entry.AuxFormat1TotalSize = data.ReadUInt32(ref offset);
+                    entry.AuxFormat1PointerToLinenumber = data.ReadUInt32(ref offset);
+                    entry.AuxFormat1PointerToNextFunction = data.ReadUInt32(ref offset);
+                    entry.AuxFormat1Unused = data.ReadUInt16(ref offset);
+                    coffSymbolTable[i] = entry;
+                    auxSymbolsRemaining--;
+                }
+
+                // Auxiliary Format 2: .bf and .ef Symbols
+                else if (currentSymbolType == 2)
+                {
+                    var entry = new COFFSymbolTableEntry();
+                    entry.AuxFormat2Unused1 = data.ReadUInt32(ref offset);
+                    entry.AuxFormat2Linenumber = data.ReadUInt16(ref offset);
+                    entry.AuxFormat2Unused2 = data.ReadBytes(ref offset, 6);
+                    entry.AuxFormat2PointerToNextFunction = data.ReadUInt32(ref offset);
+                    entry.AuxFormat2Unused3 = data.ReadUInt16(ref offset);
+                    coffSymbolTable[i] = entry;
+                    auxSymbolsRemaining--;
+                }
+
+                // Auxiliary Format 3: Weak Externals
+                else if (currentSymbolType == 3)
+                {
+                    var entry = new COFFSymbolTableEntry();
+                    entry.AuxFormat3TagIndex = data.ReadUInt32(ref offset);
+                    entry.AuxFormat3Characteristics = data.ReadUInt32(ref offset);
+                    entry.AuxFormat3Unused = data.ReadBytes(ref offset, 10);
+                    coffSymbolTable[i] = entry;
+                    auxSymbolsRemaining--;
+                }
+
+                // Auxiliary Format 4: Files
+                else if (currentSymbolType == 4)
+                {
+                    var entry = new COFFSymbolTableEntry();
+                    entry.AuxFormat4FileName = data.ReadBytes(ref offset, 18);
+                    coffSymbolTable[i] = entry;
+                    auxSymbolsRemaining--;
+                }
+
+                // Auxiliary Format 5: Section Definitions
+                else if (currentSymbolType == 5)
+                {
+                    var entry = new COFFSymbolTableEntry();
+                    entry.AuxFormat5Length = data.ReadUInt32(ref offset);
+                    entry.AuxFormat5NumberOfRelocations = data.ReadUInt16(ref offset);
+                    entry.AuxFormat5NumberOfLinenumbers = data.ReadUInt16(ref offset);
+                    entry.AuxFormat5CheckSum = data.ReadUInt32(ref offset);
+                    entry.AuxFormat5Number = data.ReadUInt16(ref offset);
+                    entry.AuxFormat5Selection = data.ReadByte(ref offset);
+                    entry.AuxFormat5Unused = data.ReadBytes(ref offset, 3);
+                    coffSymbolTable[i] = entry;
+                    auxSymbolsRemaining--;
+                }
+
+                // Auxiliary Format 6: CLR Token Definition
+                else if (currentSymbolType == 6)
+                {
+                    var entry = new COFFSymbolTableEntry();
+                    entry.AuxFormat6AuxType = data.ReadByte(ref offset);
+                    entry.AuxFormat6Reserved1 = data.ReadByte(ref offset);
+                    entry.AuxFormat6SymbolTableIndex = data.ReadUInt32(ref offset);
+                    entry.AuxFormat6Reserved2 = data.ReadBytes(ref offset, 12);
+                    coffSymbolTable[i] = entry;
+                    auxSymbolsRemaining--;
+                }
+
+                // If we hit the last aux symbol, go back to normal format
+                if (auxSymbolsRemaining == 0)
+                    currentSymbolType = 0;
+            }
+
+            return coffSymbolTable;
+        }
+
         #endregion
 
         #region Stream Data
@@ -412,6 +591,30 @@ namespace BurnOutSharp.Builder
 
             // Set the section table
             executable.SectionTable = sectionTable;
+
+            #endregion
+
+            #region COFF Symbol Table
+
+            // TODO: Validate that this is correct
+            if (coffFileHeader.PointerToSymbolTable != 0)
+            {
+                // If the offset for the COFF symbol table doesn't exist
+                int tableAddress = initialOffset
+                    + (int)stub.Header.NewExeHeaderAddr
+                    + (int)coffFileHeader.PointerToSymbolTable;
+                if (tableAddress >= data.Length)
+                    return executable;
+
+                // Try to parse the COFF symbol table
+                data.Seek(tableAddress, SeekOrigin.Begin);
+                var coffSymbolTable = ParseCOFFSymbolTable(data, coffFileHeader.NumberOfSymbols);
+                if (coffSymbolTable == null)
+                    return null;
+
+                // Set the COFF symbol table
+                executable.COFFSymbolTable = coffSymbolTable;
+            }
 
             #endregion
 
@@ -648,6 +851,160 @@ namespace BurnOutSharp.Builder
             }
 
             return sectionTable;
+        }
+
+        /// <summary>
+        /// Parse a Stream into a COFF symbol table
+        /// </summary>
+        /// <param name="data">Stream to parse</param>
+        /// <param name="count">Number of COFF symbol table entries to read</param>
+        /// <returns>Filled COFF symbol table on success, null on error</returns>
+        private static COFFSymbolTableEntry[] ParseCOFFSymbolTable(Stream data, uint count)
+        {
+            // TODO: Use marshalling here instead of building
+            var coffSymbolTable = new COFFSymbolTableEntry[count];
+
+            int auxSymbolsRemaining = 0;
+            int currentSymbolType = 0;
+
+            for (int i = 0; i < count; i++)
+            {
+                // Standard COFF Symbol Table Entry
+                if (currentSymbolType == 0)
+                {
+                    var entry = new COFFSymbolTableEntry();
+                    entry.ShortName = data.ReadBytes(8);
+                    entry.Zeroes = BitConverter.ToUInt32(entry.ShortName, 0);
+                    if (entry.Zeroes == 0)
+                    {
+                        entry.Offset = BitConverter.ToUInt32(entry.ShortName, 4);
+                        entry.ShortName = null;
+                    }
+                    entry.Value = data.ReadUInt32();
+                    entry.SectionNumber = data.ReadUInt16();
+                    entry.SymbolType = (SymbolType)data.ReadUInt16();
+                    entry.StorageClass = (StorageClass)data.ReadByte();
+                    entry.NumberOfAuxSymbols = data.ReadByteValue();
+                    coffSymbolTable[i] = entry;
+
+                    auxSymbolsRemaining = entry.NumberOfAuxSymbols;
+                    if (auxSymbolsRemaining == 0)
+                        continue;
+
+                    if (entry.StorageClass == StorageClass.IMAGE_SYM_CLASS_EXTERNAL
+                        && entry.SymbolType == SymbolType.IMAGE_SYM_TYPE_FUNC
+                        && entry.SectionNumber > 0)
+                    {
+                        currentSymbolType = 1;
+                    }
+                    else if (entry.StorageClass == StorageClass.IMAGE_SYM_CLASS_FUNCTION
+                        && entry.ShortName != null
+                        && ((entry.ShortName[0] == 0x2E && entry.ShortName[1] == 0x62 && entry.ShortName[2] == 0x66)  // .bf
+                            || (entry.ShortName[0] == 0x2E && entry.ShortName[1] == 0x65 && entry.ShortName[2] == 0x66))) // .ef
+                    {
+                        currentSymbolType = 2;
+                    }
+                    else if (entry.StorageClass == StorageClass.IMAGE_SYM_CLASS_EXTERNAL
+                        && entry.SectionNumber == (ushort)SectionNumber.IMAGE_SYM_UNDEFINED
+                        && entry.Value == 0)
+                    {
+                        currentSymbolType = 3;
+                    }
+                    else if (entry.StorageClass == StorageClass.IMAGE_SYM_CLASS_FILE)
+                    {
+                        // TODO: Symbol name should be ".file"
+                        currentSymbolType = 4;
+                    }
+                    else if (entry.StorageClass == StorageClass.IMAGE_SYM_CLASS_STATIC)
+                    {
+                        // TODO: Should have the name of a section (like ".text")
+                        currentSymbolType = 5;
+                    }
+                    else if (entry.StorageClass == StorageClass.IMAGE_SYM_CLASS_CLR_TOKEN)
+                    {
+                        currentSymbolType = 6;
+                    }
+                }
+
+                // Auxiliary Format 1: Function Definitions
+                else if (currentSymbolType == 1)
+                {
+                    var entry = new COFFSymbolTableEntry();
+                    entry.AuxFormat1TagIndex = data.ReadUInt32();
+                    entry.AuxFormat1TotalSize = data.ReadUInt32();
+                    entry.AuxFormat1PointerToLinenumber = data.ReadUInt32();
+                    entry.AuxFormat1PointerToNextFunction = data.ReadUInt32();
+                    entry.AuxFormat1Unused = data.ReadUInt16();
+                    coffSymbolTable[i] = entry;
+                    auxSymbolsRemaining--;
+                }
+
+                // Auxiliary Format 2: .bf and .ef Symbols
+                else if (currentSymbolType == 2)
+                {
+                    var entry = new COFFSymbolTableEntry();
+                    entry.AuxFormat2Unused1 = data.ReadUInt32();
+                    entry.AuxFormat2Linenumber = data.ReadUInt16();
+                    entry.AuxFormat2Unused2 = data.ReadBytes(6);
+                    entry.AuxFormat2PointerToNextFunction = data.ReadUInt32();
+                    entry.AuxFormat2Unused3 = data.ReadUInt16();
+                    coffSymbolTable[i] = entry;
+                    auxSymbolsRemaining--;
+                }
+
+                // Auxiliary Format 3: Weak Externals
+                else if (currentSymbolType == 3)
+                {
+                    var entry = new COFFSymbolTableEntry();
+                    entry.AuxFormat3TagIndex = data.ReadUInt32();
+                    entry.AuxFormat3Characteristics = data.ReadUInt32();
+                    entry.AuxFormat3Unused = data.ReadBytes(10);
+                    coffSymbolTable[i] = entry;
+                    auxSymbolsRemaining--;
+                }
+
+                // Auxiliary Format 4: Files
+                else if (currentSymbolType == 4)
+                {
+                    var entry = new COFFSymbolTableEntry();
+                    entry.AuxFormat4FileName = data.ReadBytes(18);
+                    coffSymbolTable[i] = entry;
+                    auxSymbolsRemaining--;
+                }
+
+                // Auxiliary Format 5: Section Definitions
+                else if (currentSymbolType == 5)
+                {
+                    var entry = new COFFSymbolTableEntry();
+                    entry.AuxFormat5Length = data.ReadUInt32();
+                    entry.AuxFormat5NumberOfRelocations = data.ReadUInt16();
+                    entry.AuxFormat5NumberOfLinenumbers = data.ReadUInt16();
+                    entry.AuxFormat5CheckSum = data.ReadUInt32();
+                    entry.AuxFormat5Number = data.ReadUInt16();
+                    entry.AuxFormat5Selection = data.ReadByteValue();
+                    entry.AuxFormat5Unused = data.ReadBytes(3);
+                    coffSymbolTable[i] = entry;
+                    auxSymbolsRemaining--;
+                }
+
+                // Auxiliary Format 6: CLR Token Definition
+                else if (currentSymbolType == 6)
+                {
+                    var entry = new COFFSymbolTableEntry();
+                    entry.AuxFormat6AuxType = data.ReadByteValue();
+                    entry.AuxFormat6Reserved1 = data.ReadByteValue();
+                    entry.AuxFormat6SymbolTableIndex = data.ReadUInt32();
+                    entry.AuxFormat6Reserved2 = data.ReadBytes(12);
+                    coffSymbolTable[i] = entry;
+                    auxSymbolsRemaining--;
+                }
+
+                // If we hit the last aux symbol, go back to normal format
+                if (auxSymbolsRemaining == 0)
+                    currentSymbolType = 0;
+            }
+
+            return coffSymbolTable;
         }
 
         #endregion

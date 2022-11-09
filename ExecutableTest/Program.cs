@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using BurnOutSharp.Builder;
+using BurnOutSharp.Models.PortableExecutable;
 
 namespace ExecutableTest
 {
@@ -606,6 +607,135 @@ namespace ExecutableTest
                     Console.WriteLine($"    Characteristics = {entry.Characteristics}");
                     // TODO: Add COFFRelocations
                     // TODO: Add COFFLineNumbers
+                }
+            }
+            Console.WriteLine();
+
+            Console.WriteLine("  COFF Symbol Table Information:");
+            Console.WriteLine("  -------------------------");
+            if (executable.COFFFileHeader.PointerToSymbolTable == 0
+                || executable.COFFFileHeader.NumberOfSymbols == 0
+                || executable.COFFSymbolTable.Length == 0)
+            {
+                Console.WriteLine("  No COFF symbol table items");
+            }
+            else
+            {
+                int auxSymbolsRemaining = 0;
+                int currentSymbolType = 0;
+
+                for (int i = 0; i < executable.COFFSymbolTable.Length; i++)
+                {
+                    var entry = executable.COFFSymbolTable[i];
+                    Console.WriteLine($"  COFF Symbol Table Entry {i} (Subtype {currentSymbolType})");
+                    if (currentSymbolType == 0)
+                    {
+                        if (entry.ShortName != null)
+                        {
+                            Console.WriteLine($"    Short name = {Encoding.UTF8.GetString(entry.ShortName)}");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"    Zeroes = {entry.Zeroes}");
+                            Console.WriteLine($"    Offset = {entry.Offset}");
+                        }
+                        Console.WriteLine($"    Value = {entry.Value}");
+                        Console.WriteLine($"    Section number = {entry.SectionNumber}");
+                        Console.WriteLine($"    Symbol type = {entry.SymbolType}");
+                        Console.WriteLine($"    Storage class = {entry.StorageClass}");
+                        Console.WriteLine($"    Number of aux symbols = {entry.NumberOfAuxSymbols}");
+
+                        auxSymbolsRemaining = entry.NumberOfAuxSymbols;
+                        if (auxSymbolsRemaining == 0)
+                            continue;
+
+                        if (entry.StorageClass == StorageClass.IMAGE_SYM_CLASS_EXTERNAL
+                        && entry.SymbolType == SymbolType.IMAGE_SYM_TYPE_FUNC
+                        && entry.SectionNumber > 0)
+                        {
+                            currentSymbolType = 1;
+                        }
+                        else if (entry.StorageClass == StorageClass.IMAGE_SYM_CLASS_FUNCTION
+                            && entry.ShortName != null
+                            && ((entry.ShortName[0] == 0x2E && entry.ShortName[1] == 0x62 && entry.ShortName[2] == 0x66)  // .bf
+                                || (entry.ShortName[0] == 0x2E && entry.ShortName[1] == 0x65 && entry.ShortName[2] == 0x66))) // .ef
+                        {
+                            currentSymbolType = 2;
+                        }
+                        else if (entry.StorageClass == StorageClass.IMAGE_SYM_CLASS_EXTERNAL
+                            && entry.SectionNumber == (ushort)SectionNumber.IMAGE_SYM_UNDEFINED
+                            && entry.Value == 0)
+                        {
+                            currentSymbolType = 3;
+                        }
+                        else if (entry.StorageClass == StorageClass.IMAGE_SYM_CLASS_FILE)
+                        {
+                            // TODO: Symbol name should be ".file"
+                            currentSymbolType = 4;
+                        }
+                        else if (entry.StorageClass == StorageClass.IMAGE_SYM_CLASS_STATIC)
+                        {
+                            // TODO: Should have the name of a section (like ".text")
+                            currentSymbolType = 5;
+                        }
+                        else if (entry.StorageClass == StorageClass.IMAGE_SYM_CLASS_CLR_TOKEN)
+                        {
+                            currentSymbolType = 6;
+                        }
+                    }
+                    else if (currentSymbolType == 1)
+                    {
+                        Console.WriteLine($"    Tag index = {entry.AuxFormat1TagIndex}");
+                        Console.WriteLine($"    Total size = {entry.AuxFormat1TotalSize}");
+                        Console.WriteLine($"    Pointer to linenumber = {entry.AuxFormat1PointerToLinenumber}");
+                        Console.WriteLine($"    Pointer to next function = {entry.AuxFormat1PointerToNextFunction}");
+                        Console.WriteLine($"    Unused = {entry.AuxFormat1Unused}");
+                        auxSymbolsRemaining--;
+                    }
+                    else if (currentSymbolType == 2)
+                    {
+                        Console.WriteLine($"    Unused = {entry.AuxFormat2Unused1}");
+                        Console.WriteLine($"    Linenumber = {entry.AuxFormat2Linenumber}");
+                        Console.WriteLine($"    Unused = {entry.AuxFormat2Unused2}");
+                        Console.WriteLine($"    Pointer to next function = {entry.AuxFormat2PointerToNextFunction}");
+                        Console.WriteLine($"    Unused = {entry.AuxFormat2Unused3}");
+                        auxSymbolsRemaining--;
+                    }
+                    else if (currentSymbolType == 3)
+                    {
+                        Console.WriteLine($"    Tag index = {entry.AuxFormat3TagIndex}");
+                        Console.WriteLine($"    Characteristics = {entry.AuxFormat3Characteristics}");
+                        Console.WriteLine($"    Unused = {BitConverter.ToString(entry.AuxFormat3Unused).Replace("-", string.Empty)}");
+                        auxSymbolsRemaining--;
+                    }
+                    else if (currentSymbolType == 4)
+                    {
+                        Console.WriteLine($"    File name = {Encoding.ASCII.GetString(entry.AuxFormat4FileName)}");
+                        auxSymbolsRemaining--;
+                    }
+                    else if (currentSymbolType == 5)
+                    {
+                        Console.WriteLine($"    Length = {entry.AuxFormat5Length}");
+                        Console.WriteLine($"    Number of relocations = {entry.AuxFormat5NumberOfRelocations}");
+                        Console.WriteLine($"    Number of linenumbers = {entry.AuxFormat5NumberOfLinenumbers}");
+                        Console.WriteLine($"    Checksum = {entry.AuxFormat5CheckSum}");
+                        Console.WriteLine($"    Number = {entry.AuxFormat5Number}");
+                        Console.WriteLine($"    Selection = {entry.AuxFormat5Selection}");
+                        Console.WriteLine($"    Unused = {BitConverter.ToString(entry.AuxFormat5Unused).Replace("-", string.Empty)}");
+                        auxSymbolsRemaining--;
+                    }
+                    else if (currentSymbolType == 6)
+                    {
+                        Console.WriteLine($"    Aux type = {entry.AuxFormat6AuxType}");
+                        Console.WriteLine($"    Reserved = {entry.AuxFormat6Reserved1}");
+                        Console.WriteLine($"    Symbol table index = {entry.AuxFormat6SymbolTableIndex}");
+                        Console.WriteLine($"    Reserved = {BitConverter.ToString(entry.AuxFormat6Reserved2).Replace("-", string.Empty)}");
+                        auxSymbolsRemaining--;
+                    }
+
+                    // If we hit the last aux symbol, go back to normal format
+                    if (auxSymbolsRemaining == 0)
+                        currentSymbolType = 0;
                 }
             }
             Console.WriteLine();

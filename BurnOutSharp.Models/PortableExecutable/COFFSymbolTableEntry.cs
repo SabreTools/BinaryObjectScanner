@@ -102,7 +102,7 @@ namespace BurnOutSharp.Models.PortableExecutable
         /// The symbol-table index of the corresponding .bf (begin function)
         /// symbol record.
         /// </summary>
-                [FieldOffset(0)] public uint AuxFormat1TagIndex;
+        [FieldOffset(0)] public uint AuxFormat1TagIndex;
 
         /// <summary>
         /// The size of the executable code for the function itself. If the function
@@ -136,15 +136,15 @@ namespace BurnOutSharp.Models.PortableExecutable
         // the beginning, ending, and number of lines. Each of these symbols has
         // storage class FUNCTION (101):
         // 
-        // A symbol record named.bf(begin function). The Value field is unused.
+        // A symbol record named .bf (begin function). The Value field is unused.
         // 
-        // A symbol record named.lf(lines in function). The Value field gives the
+        // A symbol record named .lf (lines in function). The Value field gives the
         // number of lines in the function.
         //
-        // A symbol record named.ef (end of function). The Value field has the same
+        // A symbol record named .ef (end of function). The Value field has the same
         // number as the Total Size field in the function-definition symbol record.
         //
-        // The.bf and.ef symbol records (but not .lf records) are followed by an
+        // The .bf and .ef symbol records (but not .lf records) are followed by an
         // auxiliary record with the following format:
 
         /// <summary>
