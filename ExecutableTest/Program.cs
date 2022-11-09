@@ -880,22 +880,16 @@ namespace ExecutableTest
                         Console.WriteLine($"{padding}Dialog box found, not parsed yet");
                         break;
                     case BurnOutSharp.Models.PortableExecutable.ResourceType.RT_STRING:
-                        int stringIndex = 0;
-                        Encoding stringEncoding = (entry.Codepage != 0 ? Encoding.GetEncoding((int)entry.Codepage) : Encoding.Unicode);
-                        while (offset < entry.Data.Length)
+                        var stringTable = entry.AsStringTable();
+                        if (stringTable == null)
                         {
-                            ushort stringLength = entry.Data.ReadUInt16(ref offset);
-                            if (stringLength == 0)
+                            Console.WriteLine($"{padding}String table resource found, but malformed");
+                        }
+                        else
+                        {
+                            foreach ((int index, string stringValue) in stringTable)
                             {
-                                Console.WriteLine($"{padding}String entry {stringIndex++} ({stringLength}): [EMPTY]");
-                            }
-                            else
-                            {
-                                string fullEncodedString = stringEncoding.GetString(entry.Data, offset, entry.Data.Length - offset);
-                                string stringValue = fullEncodedString.Substring(0, stringLength);
-                                offset += stringEncoding.GetByteCount(stringValue);
-                                stringValue = stringValue.Replace("\n", "\\n").Replace("\r", "\\r");
-                                Console.WriteLine($"{padding}String entry {stringIndex++} ({stringLength}): {stringValue}");
+                                Console.WriteLine($"{padding}String entry {index}: {stringValue}");
                             }
                         }
                         break;
@@ -907,7 +901,11 @@ namespace ExecutableTest
                         break;
                     case BurnOutSharp.Models.PortableExecutable.ResourceType.RT_ACCELERATOR:
                         var acceleratorTable = entry.Data.AsAcceleratorTableResource(ref offset);
-                        if (acceleratorTable != null)
+                        if (acceleratorTable == null)
+                        {
+                            Console.WriteLine($"{padding}Accelerator table resource found, but malformed");
+                        }
+                        else
                         {
                             for (int i = 0; i < acceleratorTable.Length; i++)
                             {

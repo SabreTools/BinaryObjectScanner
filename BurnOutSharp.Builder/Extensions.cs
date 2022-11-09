@@ -418,6 +418,47 @@ namespace BurnOutSharp.Builder
             return table;
         }
 
+        /// <summary>
+        /// Read resource data as a string table resource
+        /// </summary>
+        /// <param name="data">Resource data entry to parse into a string table resource</param>
+        /// <returns>A filled string table resource on success, null on error</returns>
+        public static Dictionary<int, string> AsStringTable(this Models.PortableExecutable.ResourceDataEntry entry)
+        {
+            // If we have an invalid entry, just skip
+            if (entry?.Data == null)
+                return null;
+
+            // Initialize the iterators
+            int offset = 0, stringIndex = 0;
+
+            // Create the output table
+            var stringTable = new Dictionary<int, string>();
+
+            // Create the string encoding
+            Encoding stringEncoding = (entry.Codepage != 0 ? Encoding.GetEncoding((int)entry.Codepage) : Encoding.Unicode);
+            
+            // Loop through and add 
+            while (offset < entry.Data.Length)
+            {
+                ushort stringLength = entry.Data.ReadUInt16(ref offset);
+                if (stringLength == 0)
+                {
+                    stringTable[stringIndex++] = "[EMPTY]";
+                }
+                else
+                {
+                    string fullEncodedString = stringEncoding.GetString(entry.Data, offset, entry.Data.Length - offset);
+                    string stringValue = fullEncodedString.Substring(0, stringLength);
+                    offset += stringEncoding.GetByteCount(stringValue);
+                    stringValue = stringValue.Replace("\n", "\\n").Replace("\r", "\\r");
+                    stringTable[stringIndex++] = stringValue;
+                }
+            }
+
+            return stringTable;
+        }
+
         #endregion
     }
 }
