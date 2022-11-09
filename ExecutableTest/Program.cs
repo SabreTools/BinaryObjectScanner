@@ -753,14 +753,14 @@ namespace ExecutableTest
             }
             else
             {
-                PrintPortableExecutableResourceDirectoryTable(executable.ResourceDirectoryTable, level: 0);
+                PrintPortableExecutableResourceDirectoryTable(executable.ResourceDirectoryTable, level: 0, types: new List<object>());
             }
         }
 
         /// <summary>
         /// Pretty print the Portable Executable resource directory table information
         /// </summary>
-        private static void PrintPortableExecutableResourceDirectoryTable(BurnOutSharp.Models.PortableExecutable.ResourceDirectoryTable table, int level)
+        private static void PrintPortableExecutableResourceDirectoryTable(BurnOutSharp.Models.PortableExecutable.ResourceDirectoryTable table, int level, List<object> types)
         {
             string padding = new string(' ', (level + 1) * 2);
 
@@ -785,7 +785,9 @@ namespace ExecutableTest
                 for (int i = 0; i < table.NumberOfNameEntries; i++)
                 {
                     var entry = table.NameEntries[i];
-                    PrintPortableExecutableNameResourceDirectoryEntry(entry, level + 1);
+                    var newTypes = new List<object>(types);
+                    newTypes.Add(Encoding.UTF8.GetString(entry.Name.UnicodeString));
+                    PrintPortableExecutableNameResourceDirectoryEntry(entry, level + 1, newTypes);
                 }
             }
 
@@ -802,7 +804,9 @@ namespace ExecutableTest
                 for (int i = 0; i < table.NumberOfIDEntries; i++)
                 {
                     var entry = table.IDEntries[i];
-                    PrintPortableExecutableIDResourceDirectoryEntry(entry, level + 1);
+                    var newTypes = new List<object>(types);
+                    newTypes.Add(entry.IntegerID);
+                    PrintPortableExecutableIDResourceDirectoryEntry(entry, level + 1, newTypes);
                 }
             }
         }
@@ -810,7 +814,7 @@ namespace ExecutableTest
         /// <summary>
         /// Pretty print the Portable Executable name resource directory entry information
         /// </summary>
-        private static void PrintPortableExecutableNameResourceDirectoryEntry(BurnOutSharp.Models.PortableExecutable.ResourceDirectoryEntry entry, int level)
+        private static void PrintPortableExecutableNameResourceDirectoryEntry(BurnOutSharp.Models.PortableExecutable.ResourceDirectoryEntry entry, int level, List<object> types)
         {
             string padding = new string(' ', (level + 1) * 2);
 
@@ -818,40 +822,46 @@ namespace ExecutableTest
             Console.WriteLine($"{padding}Name offset: {entry.NameOffset}");
             Console.WriteLine($"{padding}Name ({entry.Name.Length}): {Encoding.UTF8.GetString(entry.Name.UnicodeString)}");
             if (entry.DataEntry != null)
-                PrintPortableExecutableResourceDataEntry(entry.DataEntry, level: level + 1);
+                PrintPortableExecutableResourceDataEntry(entry.DataEntry, level: level + 1, types);
             else if (entry.Subdirectory != null)
-                PrintPortableExecutableResourceDirectoryTable(entry.Subdirectory, level: level + 1);
+                PrintPortableExecutableResourceDirectoryTable(entry.Subdirectory, level: level + 1, types);
         }
 
         /// <summary>
         /// Pretty print the Portable Executable ID resource directory entry information
         /// </summary>
-        private static void PrintPortableExecutableIDResourceDirectoryEntry(BurnOutSharp.Models.PortableExecutable.ResourceDirectoryEntry entry, int level)
+        private static void PrintPortableExecutableIDResourceDirectoryEntry(BurnOutSharp.Models.PortableExecutable.ResourceDirectoryEntry entry, int level, List<object> types)
         {
             string padding = new string(' ', (level + 1) * 2);
 
             Console.WriteLine($"{padding}Item level: {level}");
             Console.WriteLine($"{padding}Integer ID: {entry.IntegerID}");
             if (entry.DataEntry != null)
-                PrintPortableExecutableResourceDataEntry(entry.DataEntry, level: level + 1);
+                PrintPortableExecutableResourceDataEntry(entry.DataEntry, level: level + 1, types);
             else if (entry.Subdirectory != null)
-                PrintPortableExecutableResourceDirectoryTable(entry.Subdirectory, level: level + 1);
+                PrintPortableExecutableResourceDirectoryTable(entry.Subdirectory, level: level + 1, types);
         }
 
         /// <summary>
         /// Pretty print the Portable Executable resource data entry information
         /// </summary>
-        private static void PrintPortableExecutableResourceDataEntry(BurnOutSharp.Models.PortableExecutable.ResourceDataEntry entry, int level)
+        private static void PrintPortableExecutableResourceDataEntry(BurnOutSharp.Models.PortableExecutable.ResourceDataEntry entry, int level, List<object> types)
         {
             string padding = new string(' ', (level + 1) * 2);
+
+            // TODO: Use ordered list of base types to determine the shape of the data
+            //Console.WriteLine($"{padding}Base types: {string.Join(", ", types)}");
 
             Console.WriteLine($"{padding}Entry level: {level}");
             Console.WriteLine($"{padding}Data RVA: {entry.DataRVA}");
             Console.WriteLine($"{padding}Size: {entry.DataRVA}");
-            //Console.WriteLine($"{padding}Data: {BitConverter.ToString(entry.Data).Replace("-", string.Empty)}");
-            //Console.WriteLine($"{padding}Data: {Encoding.Unicode.GetString(entry.Data)}");
             Console.WriteLine($"{padding}Codepage: {entry.Codepage}");
             Console.WriteLine($"{padding}Reserved: {entry.Reserved}");
+
+            // TODO: Print out per-type data
+            //Console.WriteLine($"{padding}Data: {BitConverter.ToString(entry.Data).Replace("-", string.Empty)}");
+            //Console.WriteLine($"{padding}Data: {Encoding.Unicode.GetString(entry.Data)}");
+
             Console.WriteLine();
         }
     }
