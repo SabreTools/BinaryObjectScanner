@@ -1,6 +1,5 @@
 ﻿using System.Text;
 using BurnOutSharp.Builder;
-using BurnOutSharp.Models.PortableExecutable;
 
 namespace ExecutableTest
 {
@@ -649,36 +648,36 @@ namespace ExecutableTest
                         if (auxSymbolsRemaining == 0)
                             continue;
 
-                        if (entry.StorageClass == StorageClass.IMAGE_SYM_CLASS_EXTERNAL
-                        && entry.SymbolType == SymbolType.IMAGE_SYM_TYPE_FUNC
+                        if (entry.StorageClass == BurnOutSharp.Models.PortableExecutable.StorageClass.IMAGE_SYM_CLASS_EXTERNAL
+                        && entry.SymbolType == BurnOutSharp.Models.PortableExecutable.SymbolType.IMAGE_SYM_TYPE_FUNC
                         && entry.SectionNumber > 0)
                         {
                             currentSymbolType = 1;
                         }
-                        else if (entry.StorageClass == StorageClass.IMAGE_SYM_CLASS_FUNCTION
+                        else if (entry.StorageClass == BurnOutSharp.Models.PortableExecutable.StorageClass.IMAGE_SYM_CLASS_FUNCTION
                             && entry.ShortName != null
                             && ((entry.ShortName[0] == 0x2E && entry.ShortName[1] == 0x62 && entry.ShortName[2] == 0x66)  // .bf
                                 || (entry.ShortName[0] == 0x2E && entry.ShortName[1] == 0x65 && entry.ShortName[2] == 0x66))) // .ef
                         {
                             currentSymbolType = 2;
                         }
-                        else if (entry.StorageClass == StorageClass.IMAGE_SYM_CLASS_EXTERNAL
-                            && entry.SectionNumber == (ushort)SectionNumber.IMAGE_SYM_UNDEFINED
+                        else if (entry.StorageClass == BurnOutSharp.Models.PortableExecutable.StorageClass.IMAGE_SYM_CLASS_EXTERNAL
+                            && entry.SectionNumber == (ushort)BurnOutSharp.Models.PortableExecutable.SectionNumber.IMAGE_SYM_UNDEFINED
                             && entry.Value == 0)
                         {
                             currentSymbolType = 3;
                         }
-                        else if (entry.StorageClass == StorageClass.IMAGE_SYM_CLASS_FILE)
+                        else if (entry.StorageClass == BurnOutSharp.Models.PortableExecutable.StorageClass.IMAGE_SYM_CLASS_FILE)
                         {
                             // TODO: Symbol name should be ".file"
                             currentSymbolType = 4;
                         }
-                        else if (entry.StorageClass == StorageClass.IMAGE_SYM_CLASS_STATIC)
+                        else if (entry.StorageClass == BurnOutSharp.Models.PortableExecutable.StorageClass.IMAGE_SYM_CLASS_STATIC)
                         {
                             // TODO: Should have the name of a section (like ".text")
                             currentSymbolType = 5;
                         }
-                        else if (entry.StorageClass == StorageClass.IMAGE_SYM_CLASS_CLR_TOKEN)
+                        else if (entry.StorageClass == BurnOutSharp.Models.PortableExecutable.StorageClass.IMAGE_SYM_CLASS_CLR_TOKEN)
                         {
                             currentSymbolType = 6;
                         }
@@ -739,6 +738,137 @@ namespace ExecutableTest
                 }
             }
             Console.WriteLine();
+
+            // TODO: COFFStringTable (Only if COFFSymbolTable?)
+            // TODO: AttributeCertificateTable
+            // TODO: DelayLoadDirectoryTable
+
+            Console.WriteLine("  Resource Directory Table Information:");
+            Console.WriteLine("  -------------------------");
+            if (executable.OptionalHeader?.ResourceTable == null
+                || executable.OptionalHeader.ResourceTable.VirtualAddress == 0
+                || executable.ResourceDirectoryTable == null)
+            {
+                Console.WriteLine("  No resource directory table items");
+            }
+            else
+            {
+                PrintPortableExecutableResourceDirectoryTable(executable.ResourceDirectoryTable, level: 0);
+            }
+        }
+
+        /// <summary>
+        /// Pretty print the Portable Executable resource directory table information
+        /// </summary>
+        private static void PrintPortableExecutableResourceDirectoryTable(BurnOutSharp.Models.PortableExecutable.ResourceDirectoryTable table, int level)
+        {
+            string padding = new string(' ', (level + 1) * 2);
+
+            Console.WriteLine($"{padding}Table level: {level}");
+            Console.WriteLine($"{padding}Characteristics: {table.Characteristics}");
+            Console.WriteLine($"{padding}Time/Date stamp: {table.TimeDateStamp}");
+            Console.WriteLine($"{padding}Major version: {table.MajorVersion}");
+            Console.WriteLine($"{padding}Minor version: {table.MinorVersion}");
+            Console.WriteLine($"{padding}Number of name entries: {table.NumberOfNameEntries}");
+            Console.WriteLine($"{padding}Number of ID entries: {table.NumberOfIDEntries}");
+            Console.WriteLine();
+
+            Console.WriteLine($"{padding}Name entries");
+            Console.WriteLine($"{padding}-------------------------");
+            if (table.NumberOfNameEntries == 0)
+            {
+                Console.WriteLine($"{padding}No named entries");
+                Console.WriteLine();
+            }
+            else
+            {
+                for (int i = 0; i < table.NumberOfNameEntries; i++)
+                {
+                    var entry = table.NameEntries[i];
+                    PrintPortableExecutableNameResourceDirectoryEntry(entry, level + 1);
+                }
+            }
+
+            Console.WriteLine($"{padding}ID entries");
+            Console.WriteLine($"{padding}-------------------------");
+            if (table.NumberOfIDEntries == 0)
+            {
+                Console.WriteLine($"{padding}No ID entries");
+                Console.WriteLine();
+            }
+            else
+            {
+
+                for (int i = 0; i < table.NumberOfIDEntries; i++)
+                {
+                    var entry = table.IDEntries[i];
+                    PrintPortableExecutableIDResourceDirectoryEntry(entry, level + 1);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Pretty print the Portable Executable name resource directory entry information
+        /// </summary>
+        private static void PrintPortableExecutableNameResourceDirectoryEntry(BurnOutSharp.Models.PortableExecutable.ResourceDirectoryEntry entry, int level)
+        {
+            string padding = new string(' ', (level + 1) * 2);
+
+            Console.WriteLine($"{padding}Item level: {level}");
+            Console.WriteLine($"{padding}Name offset: {entry.NameOffset}");
+            Console.WriteLine($"{padding}Name ({entry.Name.Length}): {Encoding.UTF8.GetString(entry.Name.UnicodeString)}");
+            if (entry.DataEntry != null)
+                PrintPortableExecutableResourceDataEntry(entry.DataEntry, level: level + 1);
+            else if (entry.Subdirectory != null)
+                PrintPortableExecutableResourceDirectoryTable(entry.Subdirectory, level: level + 1);
+        }
+
+        /// <summary>
+        /// Pretty print the Portable Executable ID resource directory entry information
+        /// </summary>
+        private static void PrintPortableExecutableIDResourceDirectoryEntry(BurnOutSharp.Models.PortableExecutable.ResourceDirectoryEntry entry, int level)
+        {
+            string padding = new string(' ', (level + 1) * 2);
+
+            Console.WriteLine($"{padding}Item level: {level}");
+            Console.WriteLine($"{padding}Integer ID: {entry.IntegerID}");
+            if (entry.DataEntry != null)
+                PrintPortableExecutableResourceDataEntry(entry.DataEntry, level: level + 1);
+            else if (entry.Subdirectory != null)
+                PrintPortableExecutableResourceDirectoryTable(entry.Subdirectory, level: level + 1);
+        }
+
+        /// <summary>
+        /// Pretty print the Portable Executable resource data entry information
+        /// </summary>
+        private static void PrintPortableExecutableResourceDataEntry(BurnOutSharp.Models.PortableExecutable.ResourceDataEntry entry, int level)
+        {
+            string padding = new string(' ', (level + 1) * 2);
+
+            Console.WriteLine($"{padding}Entry level: {level}");
+            Console.WriteLine($"{padding}Data RVA: {entry.DataRVA}");
+            Console.WriteLine($"{padding}Size: {entry.DataRVA}");
+            //Console.WriteLine($"{padding}Data: {BitConverter.ToString(entry.Data).Replace("-", string.Empty)}");
+            Console.WriteLine($"{padding}Codepage: {entry.Codepage}");
+            Console.WriteLine($"{padding}Reserved: {entry.Reserved}");
+            Console.WriteLine();
+
+            if (entry.Size >= 32)
+            {
+                // TODO: Print out formatted resource data
+                int offset = 0;
+                var resourceHeader = entry.Data.AsResourceHeader(ref offset);
+                Console.WriteLine($"{padding}[Header] Data size: {resourceHeader.DataSize}");
+                Console.WriteLine($"{padding}[Header] Header size: {resourceHeader.HeaderSize}");
+                Console.WriteLine($"{padding}[Header] Resource type: {resourceHeader.ResourceType}");
+                Console.WriteLine($"{padding}[Header] Name: {resourceHeader.Name}");
+                Console.WriteLine($"{padding}[Header] Data version: {resourceHeader.DataVersion}");
+                Console.WriteLine($"{padding}[Header] Memory flags: {resourceHeader.MemoryFlags}");
+                Console.WriteLine($"{padding}[Header] Language ID: {resourceHeader.LanguageId}");
+                Console.WriteLine($"{padding}[Header] Version: {resourceHeader.Version}");
+                Console.WriteLine($"{padding}[Header] Characteristics: {resourceHeader.Characteristics}");
+                Console.WriteLine();
+            }
         }
     }
 }

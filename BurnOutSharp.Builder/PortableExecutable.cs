@@ -118,7 +118,6 @@ namespace BurnOutSharp.Builder
             // TODO: AttributeCertificateTable
             // TODO: DelayLoadDirectoryTable
 
-            // TODO: Port to byte once done
             #region Resource Directory Table
 
             // Should also be in the '.rsrc' section
@@ -787,7 +786,6 @@ namespace BurnOutSharp.Builder
             // TODO: AttributeCertificateTable
             // TODO: DelayLoadDirectoryTable
             
-            // TODO: Port to byte once done
             #region Resource Directory Table
 
             // Should also be in the '.rsrc' section
