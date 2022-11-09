@@ -21,56 +21,59 @@ namespace BurnOutSharp.Models.PortableExecutable
     /// defines a symbol or name.
     /// </summary>
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/debug/pe-format"/>
-    [StructLayout(LayoutKind.Explicit)]
     public class COFFSymbolTableEntry
     {
         #region Standard COFF Symbol Table Entry
+
+        #region Symbol Name
 
         /// <summary>
         /// An array of 8 bytes. This array is padded with nulls on the right if
         /// the name is less than 8 bytes long.
         /// </summary>
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
-        [FieldOffset(0)] public byte[] ShortName;
+        public byte[] ShortName;
 
         /// <summary>
         /// A field that is set to all zeros if the name is longer than 8 bytes.
         /// </summary>
-        [FieldOffset(0)] public uint Zeroes;
+        public uint Zeroes;
 
         /// <summary>
         /// An offset into the string table.
         /// </summary>
-        [FieldOffset(4)] public uint Offset;
+        public uint Offset;
+
+        #endregion
 
         /// <summary>
         /// The value that is associated with the symbol. The interpretation of this
         /// field depends on SectionNumber and StorageClass. A typical meaning is the
         /// relocatable address.
         /// </summary>
-        [FieldOffset(8)] public uint Value;
+        public uint Value;
 
         /// <summary>
         /// The signed integer that identifies the section, using a one-based index
         /// into the section table. Some values have special meaning.
         /// </summary>
-        [FieldOffset(12)] public ushort SectionNumber;
+        public ushort SectionNumber;
 
         /// <summary>
         /// A number that represents type. Microsoft tools set this field to 0x20
         /// (function) or 0x0 (not a function).
         /// </summary>
-        [FieldOffset(14)] public SymbolType SymbolType;
+        public SymbolType SymbolType;
 
         /// <summary>
         /// An enumerated value that represents storage class.
         /// </summary>
-        [FieldOffset(16)] public StorageClass StorageClass;
+        public StorageClass StorageClass;
 
         /// <summary>
         /// The number of auxiliary symbol table entries that follow this record.
         /// </summary>
-        [FieldOffset(17)] public byte NumberOfAuxSymbols;
+        public byte NumberOfAuxSymbols;
 
         #endregion
 
@@ -102,31 +105,31 @@ namespace BurnOutSharp.Models.PortableExecutable
         /// The symbol-table index of the corresponding .bf (begin function)
         /// symbol record.
         /// </summary>
-        [FieldOffset(0)] public uint AuxFormat1TagIndex;
+        public uint AuxFormat1TagIndex;
 
         /// <summary>
         /// The size of the executable code for the function itself. If the function
         /// is in its own section, the SizeOfRawData in the section header is greater
         /// or equal to this field, depending on alignment considerations.
         /// </summary>
-        [FieldOffset(4)] public uint AuxFormat1TotalSize;
+        public uint AuxFormat1TotalSize;
 
         /// <summary>
         /// The file offset of the first COFF line-number entry for the function, or
         /// zero if none exists.
         /// </summary>
-        [FieldOffset(8)] public uint AuxFormat1PointerToLinenumber;
+        public uint AuxFormat1PointerToLinenumber;
 
         /// <summary>
         /// The symbol-table index of the record for the next function. If the function
         /// is the last in the symbol table, this field is set to zero.
         /// </summary>
-        [FieldOffset(12)] public uint AuxFormat1PointerToNextFunction;
+        public uint AuxFormat1PointerToNextFunction;
 
         /// <summary>
         /// Unused
         /// </summary>
-        [FieldOffset(16)] public ushort AuxFormat1Unused;
+        public ushort AuxFormat1Unused;
 
         #endregion
 
@@ -150,31 +153,31 @@ namespace BurnOutSharp.Models.PortableExecutable
         /// <summary>
         /// Unused
         /// </summary>
-        [FieldOffset(0)] public uint AuxFormat2Unused1;
+        public uint AuxFormat2Unused1;
 
         /// <summary>
         /// The actual ordinal line number (1, 2, 3, and so on) within the source file,
         /// corresponding to the .bf or .ef record.
         /// </summary>
-        [FieldOffset(4)] public ushort AuxFormat2Linenumber;
+        public ushort AuxFormat2Linenumber;
 
         /// <summary>
         /// Unused
         /// </summary>
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 6)]
-        [FieldOffset(6)] public byte[] AuxFormat2Unused2;
+        public byte[] AuxFormat2Unused2;
 
         /// <summary>
         /// The symbol-table index of the next .bf symbol record. If the function is the
         /// last in the symbol table, this field is set to zero. It is not used for
         /// .ef records.
         /// </summary>
-        [FieldOffset(12)] public uint AuxFormat2PointerToNextFunction;
+        public uint AuxFormat2PointerToNextFunction;
 
         /// <summary>
         /// Unused
         /// </summary>
-        [FieldOffset(12)] public ushort AuxFormat2Unused3;
+        public ushort AuxFormat2Unused3;
 
         #endregion
 
@@ -199,7 +202,7 @@ namespace BurnOutSharp.Models.PortableExecutable
         /// <summary>
         /// The symbol-table index of sym2, the symbol to be linked if sym1 is not found. 
         /// </summary>
-        [FieldOffset(0)] public uint AuxFormat3TagIndex;
+        public uint AuxFormat3TagIndex;
 
         /// <summary>
         /// A value of IMAGE_WEAK_EXTERN_SEARCH_NOLIBRARY indicates that no library search
@@ -208,13 +211,13 @@ namespace BurnOutSharp.Models.PortableExecutable
         /// sym1 should be performed.
         /// A value of IMAGE_WEAK_EXTERN_SEARCH_ALIAS indicates that sym1 is an alias for sym2.
         /// </summary>
-        [FieldOffset(4)] public uint AuxFormat3Characteristics;
+        public uint AuxFormat3Characteristics;
 
         /// <summary>
         /// Unused
         /// </summary>
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 10)]
-        [FieldOffset(8)] public byte[] AuxFormat3Unused;
+        public byte[] AuxFormat3Unused;
 
         #endregion
 
@@ -229,7 +232,7 @@ namespace BurnOutSharp.Models.PortableExecutable
         /// with nulls if it is less than the maximum length.
         /// </summary>
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 18)]
-        [FieldOffset(0)] public byte[] AuxFormat4FileName;
+        public byte[] AuxFormat4FileName;
 
         #endregion
 
@@ -244,41 +247,41 @@ namespace BurnOutSharp.Models.PortableExecutable
         /// <summary>
         /// The size of section data; the same as SizeOfRawData in the section header.
         /// </summary>
-        [FieldOffset(0)] public uint AuxFormat5Length;
+        public uint AuxFormat5Length;
 
         /// <summary>
         /// The number of relocation entries for the section.
         /// </summary>
-        [FieldOffset(4)] public ushort AuxFormat5NumberOfRelocations;
+        public ushort AuxFormat5NumberOfRelocations;
 
         /// <summary>
         /// The number of line-number entries for the section.
         /// </summary>
-        [FieldOffset(6)] public ushort AuxFormat5NumberOfLinenumbers;
+        public ushort AuxFormat5NumberOfLinenumbers;
 
         /// <summary>
         /// The checksum for communal data. It is applicable if the IMAGE_SCN_LNK_COMDAT
         /// flag is set in the section header.
         /// </summary>
-        [FieldOffset(8)] public uint AuxFormat5CheckSum;
+        public uint AuxFormat5CheckSum;
 
         /// <summary>
         /// One-based index into the section table for the associated section. This is
         /// used when the COMDAT selection setting is 5.
         /// </summary>
-        [FieldOffset(12)] public ushort AuxFormat5Number;
+        public ushort AuxFormat5Number;
 
         /// <summary>
         /// The COMDAT selection number. This is applicable if the section is a
         /// COMDAT section.
         /// </summary>
-        [FieldOffset(14)] public byte AuxFormat5Selection;
+        public byte AuxFormat5Selection;
 
         /// <summary>
         /// Unused
         /// </summary>
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
-        [FieldOffset(15)] public byte[] AuxFormat5Unused;
+        public byte[] AuxFormat5Unused;
 
         #endregion
 
@@ -290,23 +293,23 @@ namespace BurnOutSharp.Models.PortableExecutable
         /// <summary>
         /// Must be IMAGE_AUX_SYMBOL_TYPE_TOKEN_DEF (1).
         /// </summary>
-        [FieldOffset(0)] public byte AuxFormat6AuxType;
+        public byte AuxFormat6AuxType;
 
         /// <summary>
         /// Reserved, must be zero.
         /// </summary>
-        [FieldOffset(1)] public byte AuxFormat6Reserved1;
+        public byte AuxFormat6Reserved1;
 
         /// <summary>
         /// The symbol index of the COFF symbol to which this CLR token definition refers.
         /// </summary>
-        [FieldOffset(2)] public uint AuxFormat6SymbolTableIndex;
+        public uint AuxFormat6SymbolTableIndex;
 
         /// <summary>
         /// Reserved, must be zero.
         /// </summary>
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 12)]
-        [FieldOffset(6)] public byte[] AuxFormat6Reserved2;
+        public byte[] AuxFormat6Reserved2;
 
         #endregion
 
