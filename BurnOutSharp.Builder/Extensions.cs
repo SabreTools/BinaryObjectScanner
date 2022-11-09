@@ -330,15 +330,16 @@ namespace BurnOutSharp.Builder
 
         #endregion
 
+        // TODO: Write extension to parse resource data
         #region Portable Executable
 
         /// <summary>
-        /// Convert a virtual address to a physical one
+        /// Convert a relative virtual address to a physical one
         /// </summary>
-        /// <param name="virtualAddress">Virtual address to convert</param>
+        /// <param name="rva">Relative virtual address to convert</param>
         /// <param name="sections">Array of sections to check against</param>
         /// <returns>Physical address, 0 on error</returns>
-        public static uint ConvertVirtualAddress(this uint virtualAddress, Models.PortableExecutable.SectionHeader[] sections)
+        public static uint ConvertVirtualAddress(this uint rva, Models.PortableExecutable.SectionHeader[] sections)
         {
             // Loop through all of the sections
             for (int i = 0; i < sections.Length; i++)
@@ -353,8 +354,8 @@ namespace BurnOutSharp.Builder
 
                 // Attempt to derive the physical address from the current section
                 var section = sections[i];
-                if (virtualAddress >= section.VirtualAddress && virtualAddress <= section.VirtualAddress + section.VirtualSize)
-                    return section.PointerToRawData + virtualAddress - section.VirtualAddress;
+                if (rva >= section.VirtualAddress && rva <= section.VirtualAddress + section.VirtualSize)
+                    return rva - section.VirtualAddress + section.PointerToRawData;
             }
 
             return 0;

@@ -56,7 +56,14 @@ namespace BurnOutSharp.Models.PortableExecutable
         /// </summary>
         public DelayLoadDirectoryTableEntry[] DelayLoadDirectoryTable { get; set; }
 
-        // TODO: Left off at "The .cormeta Section (Object Only)"
+        #region Named Sections
+
+        /// <summary>
+        /// Resource directory table (.rsrc)
+        /// </summary>
+        public ResourceDirectoryTable ResourceDirectoryTable { get; set; }
+
+        #endregion
 
         // TODO: Implement and/or document the following non-modeled parts:
         // - Grouped Sections (Object Only)

@@ -25,6 +25,11 @@ namespace BurnOutSharp.Models.PortableExecutable
         public uint Size;
 
         /// <summary>
+        /// The resource data that is pointed to by the Data RVA field.
+        /// </summary>
+        public byte[] Data;
+
+        /// <summary>
         /// The code page that is used to decode code point values within the
         /// resource data. Typically, the code page would be the Unicode code page.
         /// </summary>

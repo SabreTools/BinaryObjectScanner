@@ -1,6 +1,4 @@
-﻿using System.Runtime.InteropServices;
-
-namespace BurnOutSharp.Models.PortableExecutable
+﻿namespace BurnOutSharp.Models.PortableExecutable
 {
     /// <summary>
     /// A leaf's Type, Name, and Language IDs are determined by the path that is
@@ -19,29 +17,52 @@ namespace BurnOutSharp.Models.PortableExecutable
     /// IMAGE_DIRECTORY_ENTRY_RESOURCE DataDirectory.
     /// </summary>
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/debug/pe-format"/>
-    [StructLayout(LayoutKind.Explicit)]
     public class ResourceDirectoryEntry
     {
+        #region Offset 0x00
+
         /// <summary>
         /// The offset of a string that gives the Type, Name, or Language ID entry,
         /// depending on level of table.
         /// </summary>
-        [FieldOffset(0)] public uint NameOffset;
+        public uint NameOffset;
+
+        /// <summary>
+        /// A string that gives the Type, Name, or Language ID entry, depending on
+        /// level of table.
+        /// </summary>
+        public ResourceDirectoryString Name;
 
         /// <summary>
         /// A 32-bit integer that identifies the Type, Name, or Language ID entry.
         /// </summary>
-        [FieldOffset(0)] public uint IntegerID;
+        public uint IntegerID;
+
+        #endregion
+
+        #region Offset 0x04
 
         /// <summary>
         /// High bit 0. Address of a Resource Data entry (a leaf).
         /// </summary>
-        [FieldOffset(4)] public uint DataEntryOffset;
+        public uint DataEntryOffset;
+
+        /// <summary>
+        /// Resource data entry (a leaf).
+        /// </summary>
+        public ResourceDataEntry DataEntry;
 
         /// <summary>
         /// High bit 1. The lower 31 bits are the address of another resource
         /// directory table (the next level down).
         /// </summary>
-        [FieldOffset(4)] public uint SubdirectoryOffset;
+        public uint SubdirectoryOffset;
+
+        /// <summary>
+        /// Another resource directory table (the next level down).
+        /// </summary>
+        public ResourceDirectoryTable Subdirectory;
+
+        #endregion
     }
 }

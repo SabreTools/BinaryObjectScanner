@@ -1693,6 +1693,30 @@ namespace BurnOutSharp.Models.PortableExecutable
         #endregion
     }
 
+    public enum ResourceType : uint
+    {
+        RT_NEWRESOURCE = 0x2000,
+        RT_ERROR = 0x7FFF,
+
+        RT_CURSOR = 1,
+        RT_BITMAP = 2,
+        RT_ICON = 3,
+        RT_MENU = 4,
+        RT_DIALOG = 5,
+        RT_STRING = 6,
+        RT_FONTDIR = 7,
+        RT_FONT = 8,
+        RT_ACCELERATORS = 9,
+        RT_RCDATA = 10,
+        RT_MESSAGETABLE = 11,
+        RT_GROUP_CURSOR = 12,
+        RT_GROUP_ICON = 14,
+        RT_VERSION = 16,
+        RT_NEWBITMAP = (RT_BITMAP | RT_NEWRESOURCE),
+        RT_NEWMENU = (RT_MENU | RT_NEWRESOURCE),
+        RT_NEWDIALOG = (RT_DIALOG | RT_NEWRESOURCE),
+    }
+
     [Flags]
     public enum SectionFlags : uint
     {

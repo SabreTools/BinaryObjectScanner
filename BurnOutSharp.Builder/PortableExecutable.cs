@@ -114,6 +114,33 @@ namespace BurnOutSharp.Builder
 
             #endregion
 
+            // TODO: COFFStringTable (Only if COFFSymbolTable?)
+            // TODO: AttributeCertificateTable
+            // TODO: DelayLoadDirectoryTable
+
+            // TODO: Port to byte once done
+            #region Resource Directory Table
+
+            // Should also be in the '.rsrc' section
+            if (optionalHeader.ResourceTable != null && optionalHeader.ResourceTable.VirtualAddress != 0)
+            {
+                // If the offset for the resource directory table doesn't exist
+                int tableAddress = initialOffset
+                    + (int)optionalHeader.ResourceTable.VirtualAddress.ConvertVirtualAddress(executable.SectionTable);
+                if (tableAddress >= data.Length)
+                    return executable;
+
+                // Try to parse the resource directory table
+                var resourceDirectoryTable = ParseResourceDirectoryTable(data, tableAddress, tableAddress, executable.SectionTable);
+                if (resourceDirectoryTable == null)
+                    return null;
+
+                // Set the resource directory table
+                executable.ResourceDirectoryTable = resourceDirectoryTable;
+            }
+
+            #endregion
+
             // TODO: Finish implementing PE parsing
             return executable;
         }
@@ -507,6 +534,146 @@ namespace BurnOutSharp.Builder
             return coffSymbolTable;
         }
 
+        /// <summary>
+        /// Parse a byte array into a resource directory table
+        /// </summary>
+        /// <param name="data">Byte array to parse</param>
+        /// <param name="offset">Offset into the byte array</param>
+        /// <param name="initialOffset">Initial offset to use in address comparisons</param>
+        /// <param name="sections">Section table to use for virtual address translation</param>
+        /// <returns>Filled resource directory table on success, null on error</returns>
+        private static ResourceDirectoryTable ParseResourceDirectoryTable(byte[] data, int offset, long initialOffset, SectionHeader[] sections)
+        {
+            // TODO: Use marshalling here instead of building
+            var resourceDirectoryTable = new ResourceDirectoryTable();
+
+            resourceDirectoryTable.Characteristics = data.ReadUInt32(ref offset);
+            resourceDirectoryTable.TimeDateStamp = data.ReadUInt32(ref offset);
+            resourceDirectoryTable.MajorVersion = data.ReadUInt16(ref offset);
+            resourceDirectoryTable.MinorVersion = data.ReadUInt16(ref offset);
+            resourceDirectoryTable.NumberOfNameEntries = data.ReadUInt16(ref offset);
+            resourceDirectoryTable.NumberOfIDEntries = data.ReadUInt16(ref offset);
+
+            // Perform top-level pass of data
+            if (resourceDirectoryTable.NumberOfNameEntries > 0)
+            {
+                resourceDirectoryTable.NameEntries = new ResourceDirectoryEntry[resourceDirectoryTable.NumberOfNameEntries];
+                for (int i = 0; i < resourceDirectoryTable.NumberOfNameEntries; i++)
+                {
+                    var entry = new ResourceDirectoryEntry();
+                    entry.NameOffset = data.ReadUInt32(ref offset);
+
+                    uint newOffset = data.ReadUInt32(ref offset);
+                    if ((newOffset & 0xF0000000) != 0)
+                        entry.SubdirectoryOffset = newOffset & ~0xF0000000;
+                    else
+                        entry.DataEntryOffset = newOffset;
+
+                    // Read the name from the offset
+                    int currentOffset = offset;
+                    offset = (int)(entry.NameOffset + initialOffset);
+                    var resourceDirectoryString = new ResourceDirectoryString();
+                    resourceDirectoryString.Length = data.ReadUInt16(ref offset);
+                    resourceDirectoryString.UnicodeString = data.ReadBytes(ref offset, resourceDirectoryString.Length);
+                    entry.Name = resourceDirectoryString;
+                    offset = currentOffset;
+
+                    resourceDirectoryTable.NameEntries[i] = entry;
+                }
+            }
+            if (resourceDirectoryTable.NumberOfIDEntries > 0)
+            {
+                resourceDirectoryTable.IDEntries = new ResourceDirectoryEntry[resourceDirectoryTable.NumberOfIDEntries];
+                for (int i = 0; i < resourceDirectoryTable.NumberOfIDEntries; i++)
+                {
+                    var entry = new ResourceDirectoryEntry();
+                    entry.IntegerID = data.ReadUInt32(ref offset);
+
+                    uint newOffset = data.ReadUInt32(ref offset);
+                    if ((newOffset & 0xF0000000) != 0)
+                        entry.SubdirectoryOffset = newOffset & ~0xF0000000;
+                    else
+                        entry.DataEntryOffset = newOffset;
+
+                    resourceDirectoryTable.IDEntries[i] = entry;
+                }
+            }
+
+            // Read all leaves at this level
+            if (resourceDirectoryTable.NumberOfNameEntries > 0)
+            {
+                foreach (var entry in resourceDirectoryTable.NameEntries)
+                {
+                    if (entry.SubdirectoryOffset != 0)
+                        continue;
+
+                    int newOffset = (int)(entry.DataEntryOffset + initialOffset);
+
+                    var resourceDataEntry = new ResourceDataEntry();
+                    resourceDataEntry.DataRVA = data.ReadUInt32(ref newOffset);
+                    resourceDataEntry.Size = data.ReadUInt32(ref newOffset);
+                    resourceDataEntry.Codepage = data.ReadUInt32(ref offset);
+                    resourceDataEntry.Reserved = data.ReadUInt32(ref offset);
+
+                    // Read the data from the offset
+                    newOffset = (int)resourceDataEntry.DataRVA.ConvertVirtualAddress(sections);
+                    if (newOffset > 0)
+                        resourceDataEntry.Data = data.ReadBytes(ref newOffset, (int)resourceDataEntry.Size);
+
+                    entry.DataEntry = resourceDataEntry;
+                }
+            }
+            if (resourceDirectoryTable.NumberOfIDEntries > 0)
+            {
+                foreach (var entry in resourceDirectoryTable.IDEntries)
+                {
+                    if (entry.SubdirectoryOffset != 0)
+                        continue;
+
+                    int newOffset = (int)(entry.DataEntryOffset + initialOffset);
+
+                    var resourceDataEntry = new ResourceDataEntry();
+                    resourceDataEntry.DataRVA = data.ReadUInt32(ref newOffset);
+                    resourceDataEntry.Size = data.ReadUInt32(ref newOffset);
+                    resourceDataEntry.Codepage = data.ReadUInt32(ref newOffset);
+                    resourceDataEntry.Reserved = data.ReadUInt32(ref newOffset);
+
+                    // Read the data from the offset
+                    newOffset = (int)resourceDataEntry.DataRVA.ConvertVirtualAddress(sections);
+                    if (newOffset > 0)
+                        resourceDataEntry.Data = data.ReadBytes(ref newOffset, (int)resourceDataEntry.Size);
+
+                    entry.DataEntry = resourceDataEntry;
+                }
+            }
+
+            // Now go one level lower
+            if (resourceDirectoryTable.NumberOfNameEntries > 0)
+            {
+                foreach (var entry in resourceDirectoryTable.NameEntries)
+                {
+                    if (entry.DataEntryOffset != 0)
+                        continue;
+
+                    int newOffset = (int)(entry.SubdirectoryOffset + initialOffset);
+                    entry.Subdirectory = ParseResourceDirectoryTable(data, newOffset, initialOffset, sections);
+                }
+            }
+            if (resourceDirectoryTable.NumberOfIDEntries > 0)
+            {
+                foreach (var entry in resourceDirectoryTable.IDEntries)
+                {
+                    if (entry.DataEntryOffset != 0)
+                        continue;
+
+                    int newOffset = (int)(entry.SubdirectoryOffset + initialOffset);
+                    entry.Subdirectory = ParseResourceDirectoryTable(data, newOffset, initialOffset, sections);
+                }
+            }
+
+            return resourceDirectoryTable;
+        }
+
         #endregion
 
         #region Stream Data
@@ -612,6 +779,34 @@ namespace BurnOutSharp.Builder
 
                 // Set the COFF symbol table
                 executable.COFFSymbolTable = coffSymbolTable;
+            }
+
+            #endregion
+
+            // TODO: COFFStringTable (Only if COFFSymbolTable?)
+            // TODO: AttributeCertificateTable
+            // TODO: DelayLoadDirectoryTable
+            
+            // TODO: Port to byte once done
+            #region Resource Directory Table
+
+            // Should also be in the '.rsrc' section
+            if (optionalHeader.ResourceTable != null && optionalHeader.ResourceTable.VirtualAddress != 0)
+            {
+                // If the offset for the resource directory table doesn't exist
+                int tableAddress = initialOffset
+                    + (int)optionalHeader.ResourceTable.VirtualAddress.ConvertVirtualAddress(executable.SectionTable);
+                if (tableAddress >= data.Length)
+                    return executable;
+
+                // Try to parse the resource directory table
+                data.Seek(tableAddress, SeekOrigin.Begin);
+                var resourceDirectoryTable = ParseResourceDirectoryTable(data, data.Position, executable.SectionTable);
+                if (resourceDirectoryTable == null)
+                    return null;
+
+                // Set the resource directory table
+                executable.ResourceDirectoryTable = resourceDirectoryTable;
             }
 
             #endregion
@@ -1003,6 +1198,156 @@ namespace BurnOutSharp.Builder
             }
 
             return coffSymbolTable;
+        }
+
+        /// <summary>
+        /// Parse a Stream into a resource directory table
+        /// </summary>
+        /// <param name="data">Stream to parse</param>
+        /// <param name="initialOffset">Initial offset to use in address comparisons</param>
+        /// <param name="sections">Section table to use for virtual address translation</param>
+        /// <returns>Filled resource directory table on success, null on error</returns>
+        private static ResourceDirectoryTable ParseResourceDirectoryTable(Stream data, long initialOffset, SectionHeader[] sections)
+        {
+            // TODO: Use marshalling here instead of building
+            var resourceDirectoryTable = new ResourceDirectoryTable();
+
+            resourceDirectoryTable.Characteristics = data.ReadUInt32();
+            resourceDirectoryTable.TimeDateStamp = data.ReadUInt32();
+            resourceDirectoryTable.MajorVersion = data.ReadUInt16();
+            resourceDirectoryTable.MinorVersion = data.ReadUInt16();
+            resourceDirectoryTable.NumberOfNameEntries = data.ReadUInt16();
+            resourceDirectoryTable.NumberOfIDEntries = data.ReadUInt16();
+
+            // Perform top-level pass of data
+            if (resourceDirectoryTable.NumberOfNameEntries > 0)
+            {
+                resourceDirectoryTable.NameEntries = new ResourceDirectoryEntry[resourceDirectoryTable.NumberOfNameEntries];
+                for (int i = 0; i < resourceDirectoryTable.NumberOfNameEntries; i++)
+                {
+                    var entry = new ResourceDirectoryEntry();
+                    entry.NameOffset = data.ReadUInt32();
+
+                    uint offset = data.ReadUInt32();
+                    if ((offset & 0xF0000000) != 0)
+                        entry.SubdirectoryOffset = offset & ~0xF0000000;
+                    else
+                        entry.DataEntryOffset = offset;
+
+                    // Read the name from the offset
+                    long currentOffset = data.Position;
+                    offset = entry.NameOffset + (uint)initialOffset;
+                    data.Seek(offset, SeekOrigin.Begin);
+                    var resourceDirectoryString = new ResourceDirectoryString();
+                    resourceDirectoryString.Length = data.ReadUInt16();
+                    resourceDirectoryString.UnicodeString = data.ReadBytes(resourceDirectoryString.Length);
+                    entry.Name = resourceDirectoryString;
+                    data.Seek(currentOffset, SeekOrigin.Begin);
+
+                    resourceDirectoryTable.NameEntries[i] = entry;
+                }
+            }
+            if (resourceDirectoryTable.NumberOfIDEntries > 0)
+            {
+                resourceDirectoryTable.IDEntries = new ResourceDirectoryEntry[resourceDirectoryTable.NumberOfIDEntries];
+                for (int i = 0; i < resourceDirectoryTable.NumberOfIDEntries; i++)
+                {
+                    var entry = new ResourceDirectoryEntry();
+                    entry.IntegerID = data.ReadUInt32();
+
+                    uint offset = data.ReadUInt32();
+                    if ((offset & 0xF0000000) != 0)
+                        entry.SubdirectoryOffset = offset & ~0xF0000000;
+                    else
+                        entry.DataEntryOffset = offset;
+
+                    resourceDirectoryTable.IDEntries[i] = entry;
+                }
+            }
+
+            // Read all leaves at this level
+            if (resourceDirectoryTable.NumberOfNameEntries > 0)
+            {
+                foreach (var entry in resourceDirectoryTable.NameEntries)
+                {
+                    if (entry.SubdirectoryOffset != 0)
+                        continue;
+
+                    uint offset = entry.DataEntryOffset + (uint)initialOffset;
+                    data.Seek(offset, SeekOrigin.Begin);
+
+                    var resourceDataEntry = new ResourceDataEntry();
+                    resourceDataEntry.DataRVA = data.ReadUInt32();
+                    resourceDataEntry.Size = data.ReadUInt32();
+                    resourceDataEntry.Codepage = data.ReadUInt32();
+                    resourceDataEntry.Reserved = data.ReadUInt32();
+
+                    // Read the data from the offset
+                    offset = resourceDataEntry.DataRVA.ConvertVirtualAddress(sections);
+                    if (offset > 0)
+                    {
+                        data.Seek(offset, SeekOrigin.Begin);
+                        resourceDataEntry.Data = data.ReadBytes((int)resourceDataEntry.Size);
+                    }
+
+                    entry.DataEntry = resourceDataEntry;
+                }
+            }
+            if (resourceDirectoryTable.NumberOfIDEntries > 0)
+            {
+                foreach (var entry in resourceDirectoryTable.IDEntries)
+                {
+                    if (entry.SubdirectoryOffset != 0)
+                        continue;
+
+                    uint offset = entry.DataEntryOffset + (uint)initialOffset;
+                    data.Seek(offset, SeekOrigin.Begin);
+
+                    var resourceDataEntry = new ResourceDataEntry();
+                    resourceDataEntry.DataRVA = data.ReadUInt32();
+                    resourceDataEntry.Size = data.ReadUInt32();
+                    resourceDataEntry.Codepage = data.ReadUInt32();
+                    resourceDataEntry.Reserved = data.ReadUInt32();
+
+                    // Read the data from the offset
+                    offset = resourceDataEntry.DataRVA.ConvertVirtualAddress(sections);
+                    if (offset > 0)
+                    {
+                        data.Seek(offset, SeekOrigin.Begin);
+                        resourceDataEntry.Data = data.ReadBytes((int)resourceDataEntry.Size);
+                    }
+
+                    entry.DataEntry = resourceDataEntry;
+                }
+            }
+
+            // Now go one level lower
+            if (resourceDirectoryTable.NumberOfNameEntries > 0)
+            {
+                foreach (var entry in resourceDirectoryTable.NameEntries)
+                {
+                    if (entry.DataEntryOffset != 0)
+                        continue;
+
+                    uint offset = entry.SubdirectoryOffset + (uint)initialOffset;
+                    data.Seek(offset, SeekOrigin.Begin);
+                    entry.Subdirectory = ParseResourceDirectoryTable(data, initialOffset, sections);
+                }
+            }
+            if (resourceDirectoryTable.NumberOfIDEntries > 0)
+            {
+                foreach (var entry in resourceDirectoryTable.IDEntries)
+                {
+                    if (entry.DataEntryOffset != 0)
+                        continue;
+
+                    uint offset = entry.SubdirectoryOffset + (uint)initialOffset;
+                    data.Seek(offset, SeekOrigin.Begin);
+                    entry.Subdirectory = ParseResourceDirectoryTable(data, initialOffset, sections);
+                }
+            }
+
+            return resourceDirectoryTable;
         }
 
         #endregion
