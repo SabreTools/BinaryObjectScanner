@@ -489,6 +489,225 @@ namespace BurnOutSharp.Models.PortableExecutable
         IMAGE_DLLCHARACTERISTICS_EX_CET_COMPAT = 0x0001,
     }
 
+    public enum FixedFileInfoFileSubtype : uint
+    {
+        /// <summary>
+        /// The driver type is unknown by the system.
+        /// The font type is unknown by the system.
+        /// </summary>
+        VFT2_UNKNOWN = 0x00000000,
+
+        #region VFT_DRV
+
+        /// <summary>
+        /// The file contains a printer driver.
+        /// </summary>
+        VFT2_DRV_PRINTER = 0x00000001,
+
+        /// <summary>
+        /// The file contains a keyboard driver.
+        /// </summary>
+        VFT2_DRV_KEYBOARD = 0x00000002,
+
+        /// <summary>
+        /// The file contains a language driver.
+        /// </summary>
+        VFT2_DRV_LANGUAGE = 0x00000003,
+
+        /// <summary>
+        /// The file contains a display driver.
+        /// </summary>
+        VFT2_DRV_DISPLAY = 0x00000004,
+
+        /// <summary>
+        /// The file contains a mouse driver.
+        /// </summary>
+        VFT2_DRV_MOUSE = 0x00000005,
+
+        /// <summary>
+        /// The file contains a network driver.
+        /// </summary>
+        VFT2_DRV_NETWORK = 0x00000006,
+
+        /// <summary>
+        /// The file contains a system driver.
+        /// </summary>
+        VFT2_DRV_SYSTEM = 0x00000007,
+
+        /// <summary>
+        /// The file contains an installable driver.
+        /// </summary>
+        VFT2_DRV_INSTALLABLE = 0x00000008,
+
+        /// <summary>
+        /// The file contains a sound driver.
+        /// </summary>
+        VFT2_DRV_SOUND = 0x00000009,
+
+        /// <summary>
+        /// The file contains a communications driver.
+        /// </summary>
+        VFT2_DRV_COMM = 0x0000000A,
+
+        /// <summary>
+        /// The file contains a versioned printer driver.
+        /// </summary>
+        VFT2_DRV_VERSIONED_PRINTER = 0x0000000C,
+
+        #endregion
+
+        #region VFT_FONT
+
+        /// <summary>
+        /// The file contains a raster font.
+        /// </summary>
+        VFT2_FONT_RASTER = 0x00000001,
+
+        /// <summary>
+        /// The file contains a vector font.
+        /// </summary>
+        VFT2_FONT_VECTOR = 0x00000002,
+
+        /// <summary>
+        /// The file contains a TrueType font.
+        /// </summary>
+        VFT2_FONT_TRUETYPE = 0x00000003,
+
+        #endregion
+    }
+
+    public enum FixedFileInfoFileType : uint
+    {
+        /// <summary>
+        /// The file type is unknown to the system.
+        /// </summary>
+        VFT_UNKNOWN = 0x00000000,
+
+        /// <summary>
+        /// The file contains an application.
+        /// </summary>
+        VFT_APP = 0x00000001,
+
+        /// <summary>
+        /// The file contains a DLL.
+        /// </summary>
+        VFT_DLL = 0x00000002,
+
+        /// <summary>
+        /// The file contains a device driver. If FileType is VFT_DRV, FileSubtype
+        /// contains a more specific description of the driver.
+        /// </summary>
+        VFT_DRV = 0x00000003,
+
+        /// <summary>
+        /// The file contains a font. If FileType is VFT_FONT, FileSubtype contains
+        /// a more specific description of the font file.
+        /// </summary>
+        VFT_FONT = 0x00000004,
+
+        /// <summary>
+        /// The file contains a virtual device.
+        /// </summary>
+        VFT_VXD = 0x00000005,
+
+        /// <summary>
+        /// The file contains a static-link library.
+        /// </summary>
+        VFT_STATIC_LIB = 0x00000007,
+    }
+
+    [Flags]
+    public enum FixedFileInfoFlags : uint
+    {
+        /// <summary>
+        /// The file contains debugging information or is compiled with debugging
+        /// features enabled.
+        /// </summary>
+        VS_FF_DEBUG = 0x00000001,
+
+        /// <summary>
+        /// The file is a development version, not a commercially released product.
+        /// </summary>
+        VS_FF_PRERELEASE = 0x00000002,
+
+        /// <summary>
+        /// The file has been modified and is not identical to the original shipping
+        /// file of the same version number.
+        /// </summary>
+        VS_FF_PATCHED = 0x00000004,
+
+        /// <summary>
+        /// The file was not built using standard release procedures. If this flag is
+        /// set, the StringFileInfo structure should contain a PrivateBuild entry.
+        /// </summary>
+        VS_FF_PRIVATEBUILD = 0x00000008,
+
+        /// <summary>
+        /// The file's version structure was created dynamically; therefore, some
+        /// of the members in this structure may be empty or incorrect. This flag
+        /// should never be set in a file's VS_VERSIONINFO data. 
+        /// </summary>
+        VS_FF_INFOINFERRED = 0x00000010,
+
+        /// <summary>
+        /// The file was built by the original company using standard release
+        /// procedures but is a variation of the normal file of the same version number.
+        /// If this flag is set, the StringFileInfo structure should contain a SpecialBuild
+        /// entry.
+        /// </summary>
+        VS_FF_SPECIALBUILD = 0x00000020,
+    }
+
+    [Flags]
+    public enum FixedFileInfoOS : uint
+    {
+        /// <summary>
+        /// The operating system for which the file was designed is
+        /// unknown to the system.
+        /// </summary>
+        VOS_UNKNOWN = 0x00000000,
+
+        /// <summary>
+        /// The file was designed for 16-bit Windows.
+        /// </summary>
+        VOS__WINDOWS16 = 0x00000001,
+
+        /// <summary>
+        /// The file was designed for 16-bit Presentation Manager.
+        /// </summary>
+        VOS__PM16 = 0x00000002,
+
+        /// <summary>
+        /// The file was designed for 32-bit Presentation Manager.
+        /// </summary>
+        VOS__PM32 = 0x00000003,
+
+        /// <summary>
+        /// The file was designed for 32-bit Windows.
+        /// </summary>
+        VOS__WINDOWS32 = 0x00000004,
+
+        /// <summary>
+        /// The file was designed for MS-DOS.
+        /// </summary>
+        VOS_DOS = 0x00010000,
+
+        /// <summary>
+        /// The file was designed for 16-bit OS/2.
+        /// </summary>
+        VOS_OS216 = 0x00020000,
+
+        /// <summary>
+        /// The file was designed for 32-bit OS/2.
+        /// </summary>
+        VOS_OS232 = 0x00030000,
+
+        /// <summary>
+        /// The file was designed for Windows NT.
+        /// </summary>
+        VOS_NT = 0x00040000,
+    }
+
     [Flags]
     public enum GuardFlags : uint
     {
@@ -2362,6 +2581,12 @@ namespace BurnOutSharp.Models.PortableExecutable
         /// The symbol is an array of base type.
         /// </summary>
         IMAGE_SYM_DTYPE_ARRAY = 0x03,
+    }
+
+    public enum VersionResourceType : ushort
+    {
+        BinaryData = 0,
+        TextData = 1,
     }
 
     public enum WindowsCertificateRevision : ushort
