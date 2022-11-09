@@ -849,26 +849,10 @@ namespace ExecutableTest
             Console.WriteLine($"{padding}Data RVA: {entry.DataRVA}");
             Console.WriteLine($"{padding}Size: {entry.DataRVA}");
             //Console.WriteLine($"{padding}Data: {BitConverter.ToString(entry.Data).Replace("-", string.Empty)}");
+            //Console.WriteLine($"{padding}Data: {Encoding.Unicode.GetString(entry.Data)}");
             Console.WriteLine($"{padding}Codepage: {entry.Codepage}");
             Console.WriteLine($"{padding}Reserved: {entry.Reserved}");
             Console.WriteLine();
-
-            if (entry.Size >= 32)
-            {
-                // TODO: Print out formatted resource data
-                int offset = 0;
-                var resourceHeader = entry.Data.AsResourceHeader(ref offset);
-                Console.WriteLine($"{padding}[Header] Data size: {resourceHeader.DataSize}");
-                Console.WriteLine($"{padding}[Header] Header size: {resourceHeader.HeaderSize}");
-                Console.WriteLine($"{padding}[Header] Resource type: {resourceHeader.ResourceType}");
-                Console.WriteLine($"{padding}[Header] Name: {resourceHeader.Name}");
-                Console.WriteLine($"{padding}[Header] Data version: {resourceHeader.DataVersion}");
-                Console.WriteLine($"{padding}[Header] Memory flags: {resourceHeader.MemoryFlags}");
-                Console.WriteLine($"{padding}[Header] Language ID: {resourceHeader.LanguageId}");
-                Console.WriteLine($"{padding}[Header] Version: {resourceHeader.Version}");
-                Console.WriteLine($"{padding}[Header] Characteristics: {resourceHeader.Characteristics}");
-                Console.WriteLine();
-            }
         }
     }
 }
