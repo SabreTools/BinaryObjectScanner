@@ -931,6 +931,15 @@ namespace ExecutableTest
                         break;
                     case BurnOutSharp.Models.PortableExecutable.ResourceType.RT_VERSION:
                         Console.WriteLine($"{padding}Version resource found, not parsed yet");
+                        var versionInfo = entry.AsVersionInfo();
+                        if (versionInfo == null)
+                        {
+                            Console.WriteLine($"{padding}Version info resource found, but malformed");
+                        }
+                        else
+                        {
+                            // TODO: Add pretty-printing for version info
+                        }
                         break;
                     case BurnOutSharp.Models.PortableExecutable.ResourceType.RT_DLGINCLUDE:
                         Console.WriteLine($"{padding}External header resource found, not parsed yet");
