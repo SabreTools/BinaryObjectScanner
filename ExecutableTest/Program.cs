@@ -859,8 +859,115 @@ namespace ExecutableTest
             Console.WriteLine($"{padding}Reserved: {entry.Reserved}");
 
             // TODO: Print out per-type data
-            //Console.WriteLine($"{padding}Data: {BitConverter.ToString(entry.Data).Replace("-", string.Empty)}");
-            //Console.WriteLine($"{padding}Data: {Encoding.Unicode.GetString(entry.Data)}");
+            if (types != null && types.Count > 0 && types[0] is uint resourceType)
+            {
+                int offset = 0;
+                switch ((BurnOutSharp.Models.PortableExecutable.ResourceType)resourceType)
+                {
+                    case BurnOutSharp.Models.PortableExecutable.ResourceType.RT_CURSOR:
+                        Console.WriteLine($"{padding}Hardware-dependent cursor resource found, not parsed yet");
+                        break;
+                    case BurnOutSharp.Models.PortableExecutable.ResourceType.RT_BITMAP:
+                        Console.WriteLine($"{padding}Bitmap resource found, not parsed yet");
+                        break;
+                    case BurnOutSharp.Models.PortableExecutable.ResourceType.RT_ICON:
+                        Console.WriteLine($"{padding}Hardware-dependent icon resource found, not parsed yet");
+                        break;
+                    case BurnOutSharp.Models.PortableExecutable.ResourceType.RT_MENU:
+                        Console.WriteLine($"{padding}Menu resource found, not parsed yet");
+                        break;
+                    case BurnOutSharp.Models.PortableExecutable.ResourceType.RT_DIALOG:
+                        Console.WriteLine($"{padding}Dialog box found, not parsed yet");
+                        break;
+                    case BurnOutSharp.Models.PortableExecutable.ResourceType.RT_STRING:
+                        int stringIndex = 0;
+                        Encoding stringEncoding = (entry.Codepage != 0 ? Encoding.GetEncoding((int)entry.Codepage) : Encoding.Unicode);
+                        while (offset < entry.Data.Length)
+                        {
+                            ushort stringLength = entry.Data.ReadUInt16(ref offset);
+                            if (stringLength == 0)
+                            {
+                                Console.WriteLine($"{padding}String entry {stringIndex++} ({stringLength}): [EMPTY]");
+                            }
+                            else
+                            {
+                                string fullEncodedString = stringEncoding.GetString(entry.Data, offset, entry.Data.Length - offset);
+                                string stringValue = fullEncodedString.Substring(0, stringLength);
+                                offset += stringEncoding.GetByteCount(stringValue);
+                                stringValue = stringValue.Replace("\n", "\\n").Replace("\r", "\\r");
+                                Console.WriteLine($"{padding}String entry {stringIndex++} ({stringLength}): {stringValue}");
+                            }
+                        }
+                        break;
+                    case BurnOutSharp.Models.PortableExecutable.ResourceType.RT_FONTDIR:
+                        Console.WriteLine($"{padding}Font directory resource found, not parsed yet");
+                        break;
+                    case BurnOutSharp.Models.PortableExecutable.ResourceType.RT_FONT:
+                        Console.WriteLine($"{padding}Font resource found, not parsed yet");
+                        break;
+                    case BurnOutSharp.Models.PortableExecutable.ResourceType.RT_ACCELERATOR:
+                        var acceleratorTable = entry.Data.AsAcceleratorTableResource(ref offset);
+                        if (acceleratorTable != null)
+                        {
+                            for (int i = 0; i < acceleratorTable.Length; i++)
+                            {
+                                var acceleratorTableEntry = acceleratorTable[i];
+                                Console.WriteLine($"{padding}Flags: {acceleratorTableEntry.Flags}");
+                                Console.WriteLine($"{padding}Ansi: {acceleratorTableEntry.Ansi}");
+                                Console.WriteLine($"{padding}Id: {acceleratorTableEntry.Id}");
+                                Console.WriteLine($"{padding}Padding: {acceleratorTableEntry.Padding}");
+                            }
+                        }
+                        break;
+                    case BurnOutSharp.Models.PortableExecutable.ResourceType.RT_RCDATA:
+                        Console.WriteLine($"{padding}Application-defined resource found, not parsed yet");
+                        break;
+                    case BurnOutSharp.Models.PortableExecutable.ResourceType.RT_MESSAGETABLE:
+                        Console.WriteLine($"{padding}Message-table entry found, not parsed yet");
+                        break;
+                    case BurnOutSharp.Models.PortableExecutable.ResourceType.RT_GROUP_CURSOR:
+                        Console.WriteLine($"{padding}Hardware-independent cursor resource found, not parsed yet");
+                        break;
+                    case BurnOutSharp.Models.PortableExecutable.ResourceType.RT_GROUP_ICON:
+                        Console.WriteLine($"{padding}Hardware-independent icon resource found, not parsed yet");
+                        break;
+                    case BurnOutSharp.Models.PortableExecutable.ResourceType.RT_VERSION:
+                        Console.WriteLine($"{padding}Version resource found, not parsed yet");
+                        break;
+                    case BurnOutSharp.Models.PortableExecutable.ResourceType.RT_DLGINCLUDE:
+                        Console.WriteLine($"{padding}External header resource found, not parsed yet");
+                        break;
+                    case BurnOutSharp.Models.PortableExecutable.ResourceType.RT_PLUGPLAY:
+                        Console.WriteLine($"{padding}Plug and Play resource found, not parsed yet");
+                        break;
+                    case BurnOutSharp.Models.PortableExecutable.ResourceType.RT_VXD:
+                        Console.WriteLine($"{padding}VXD found, not parsed yet");
+                        break;
+                    case BurnOutSharp.Models.PortableExecutable.ResourceType.RT_ANICURSOR:
+                        Console.WriteLine($"{padding}Animated cursor found, not parsed yet");
+                        break;
+                    case BurnOutSharp.Models.PortableExecutable.ResourceType.RT_ANIICON:
+                        Console.WriteLine($"{padding}Animated icon found, not parsed yet");
+                        break;
+                    case BurnOutSharp.Models.PortableExecutable.ResourceType.RT_HTML:
+                        Console.WriteLine($"{padding}HTML resource found, not parsed yet");
+                        break;
+                    case BurnOutSharp.Models.PortableExecutable.ResourceType.RT_MANIFEST:
+                        Console.WriteLine($"{padding}Side-by-Side Assembly Manifest found, not parsed yet");
+                        break;
+                    default:
+                        Console.WriteLine($"{padding}Type {(BurnOutSharp.Models.PortableExecutable.ResourceType)resourceType} found, not parsed yet");
+                        //Console.WriteLine($"{padding}Data: {BitConverter.ToString(entry.Data).Replace("-", string.Empty)}");
+                        //Console.WriteLine($"{padding}Data: {Encoding.Unicode.GetString(entry.Data)}");
+                        break;
+                }
+            }
+            else if (types != null && types.Count > 0 && types[0] is string resourceString)
+            {
+                Console.WriteLine($"{padding}Custom data type: {resourceString}");
+                //Console.WriteLine($"{padding}Data: {BitConverter.ToString(entry.Data).Replace("-", string.Empty)}");
+                //Console.WriteLine($"{padding}Data: {Encoding.Unicode.GetString(entry.Data)}");
+            }
 
             Console.WriteLine();
         }
