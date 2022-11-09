@@ -604,6 +604,22 @@ namespace BurnOutSharp.Models.PortableExecutable
         IMPORT_NAME_UNDECORATE = 3,
     }
 
+    [Flags]
+    public enum MemoryFlags : ushort
+    {
+        // TODO: Validate the ~ statements
+        MOVEABLE = 0x0010,
+        FIXED = 0xFFEF, // ~MOVEABLE
+
+        PURE = 0x0020,
+        IMPURE = 0xFFDF, // ~PURE
+
+        PRELOAD = 0x0040,
+        LOADONCALL = 0xFFBF, // ~PRELOAD
+
+        DISCARDABLE = 0x1000,
+    }
+
     public enum MachineType : ushort
     {
         /// <summary>
