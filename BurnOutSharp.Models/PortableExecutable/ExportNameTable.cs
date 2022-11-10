@@ -22,6 +22,6 @@
         /// <summary>
         /// A series of null-terminated ASCII strings of variable length.
         /// </summary>
-        public string[] Indexes;
+        public string[] Strings;
     }
 }

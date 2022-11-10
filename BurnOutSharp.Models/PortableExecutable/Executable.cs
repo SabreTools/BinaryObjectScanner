@@ -65,6 +65,11 @@ namespace BurnOutSharp.Models.PortableExecutable
         #region Named Sections
 
         /// <summary>
+        /// Export table (.edata);
+        /// </summary>
+        public ExportTable ExportTable { get; set; }
+
+        /// <summary>
         /// Resource directory table (.rsrc)
         /// </summary>
         public ResourceDirectoryTable ResourceDirectoryTable { get; set; }
@@ -86,8 +91,8 @@ namespace BurnOutSharp.Models.PortableExecutable
         //      - [Export Ordinal Table]
         //      - [Export Name Table]
         // - The .idata Section
-        // - Import Lookup Table [has model, but bit-based]
-        // - Import Address Table
+        //      - Import Lookup Table [has model, but bit-based]
+        //      - Import Address Table
         // - The .pdata Section [Multiple formats per entry]
         // - TLS Callback Functions
         // - The .cormeta Section (Object Only)

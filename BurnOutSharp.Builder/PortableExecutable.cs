@@ -173,6 +173,28 @@ namespace BurnOutSharp.Builder
 
             #endregion
 
+            #region Export Table
+
+            // Should also be in the '.rsrc' section
+            if (optionalHeader.ExportTable != null && optionalHeader.ExportTable.VirtualAddress != 0)
+            {
+                // If the offset for the export table doesn't exist
+                int tableAddress = initialOffset
+                    + (int)optionalHeader.ExportTable.VirtualAddress.ConvertVirtualAddress(executable.SectionTable);
+                if (tableAddress >= data.Length)
+                    return executable;
+
+                // Try to parse the export table
+                var exportTable = ParseExportTable(data, tableAddress, executable.SectionTable);
+                if (exportTable == null)
+                    return null;
+
+                // Set the export table
+                executable.ExportTable = exportTable;
+            }
+
+            #endregion
+
             #region Resource Directory Table
 
             // Should also be in the '.rsrc' section
@@ -670,6 +692,113 @@ namespace BurnOutSharp.Builder
         }
 
         /// <summary>
+        /// Parse a byte array into a export directory table
+        /// </summary>
+        /// <param name="data">Byte array to parse</param>
+        /// <param name="offset">Offset into the byte array</param>
+        /// <param name="sections">Section table to use for virtual address translation</param>
+        /// <returns>Filled export directory table on success, null on error</returns>
+        private static ExportTable ParseExportTable(byte[] data, int offset, SectionHeader[] sections)
+        {
+            // TODO: Use marshalling here instead of building
+            var exportTable = new ExportTable();
+
+            var exportDirectoryTable = new ExportDirectoryTable();
+
+            exportDirectoryTable.ExportFlags = data.ReadUInt32(ref offset);
+            exportDirectoryTable.TimeDateStamp = data.ReadUInt32(ref offset);
+            exportDirectoryTable.MajorVersion = data.ReadUInt16(ref offset);
+            exportDirectoryTable.MinorVersion = data.ReadUInt16(ref offset);
+            exportDirectoryTable.NameRVA = data.ReadUInt32(ref offset);
+            exportDirectoryTable.OrdinalBase = data.ReadUInt32(ref offset);
+            exportDirectoryTable.AddressTableEntries = data.ReadUInt32(ref offset);
+            exportDirectoryTable.NumberOfNamePointers = data.ReadUInt32(ref offset);
+            exportDirectoryTable.ExportAddressTableRVA = data.ReadUInt32(ref offset);
+            exportDirectoryTable.NamePointerRVA = data.ReadUInt32(ref offset);
+            exportDirectoryTable.OrdinalTableRVA = data.ReadUInt32(ref offset);
+
+            exportTable.ExportDirectoryTable = exportDirectoryTable;
+
+            // Name
+            if (exportDirectoryTable.NameRVA != 0)
+            {
+                offset = (int)exportDirectoryTable.NameRVA.ConvertVirtualAddress(sections);
+                string name = data.ReadString(ref offset, System.Text.Encoding.ASCII);
+                exportDirectoryTable.Name = name;
+            }
+
+            // Address table
+            if (exportDirectoryTable.AddressTableEntries != 0 && exportDirectoryTable.ExportAddressTableRVA != 0)
+            {
+                offset = (int)exportDirectoryTable.ExportAddressTableRVA.ConvertVirtualAddress(sections);
+                var exportAddressTable = new ExportAddressTableEntry[exportDirectoryTable.AddressTableEntries];
+
+                for (int i = 0; i < exportDirectoryTable.AddressTableEntries; i++)
+                {
+                    var addressTableEntry = new ExportAddressTableEntry();
+
+                    // TODO: Use the optional header address and length to determine if export or forwarder
+                    addressTableEntry.ExportRVA = data.ReadUInt32(ref offset);
+                    addressTableEntry.ForwarderRVA = addressTableEntry.ExportRVA;
+
+                    exportAddressTable[i] = addressTableEntry;
+                }
+
+                exportTable.ExportAddressTable = exportAddressTable;
+            }
+
+            // Name pointer table
+            if (exportDirectoryTable.NumberOfNamePointers != 0 && exportDirectoryTable.NamePointerRVA != 0)
+            {
+                offset = (int)exportDirectoryTable.NamePointerRVA.ConvertVirtualAddress(sections);
+                var namePointerTable = new ExportNamePointerTable();
+
+                namePointerTable.Pointers = new uint[exportDirectoryTable.NumberOfNamePointers];
+                for (int i = 0; i < exportDirectoryTable.NumberOfNamePointers; i++)
+                {
+                    uint pointer = data.ReadUInt32(ref offset);
+                    namePointerTable.Pointers[i] = pointer;
+                }
+
+                exportTable.NamePointerTable = namePointerTable;
+            }
+
+            // Ordinal table
+            if (exportDirectoryTable.NumberOfNamePointers != 0 && exportDirectoryTable.OrdinalTableRVA != 0)
+            {
+                offset = (int)exportDirectoryTable.OrdinalTableRVA.ConvertVirtualAddress(sections);
+                var exportOrdinalTable = new ExportOrdinalTable();
+
+                exportOrdinalTable.Indexes = new ushort[exportDirectoryTable.NumberOfNamePointers];
+                for (int i = 0; i < exportDirectoryTable.NumberOfNamePointers; i++)
+                {
+                    ushort pointer = data.ReadUInt16(ref offset);
+                    exportOrdinalTable.Indexes[i] = pointer;
+                }
+
+                exportTable.OrdinalTable = exportOrdinalTable;
+            }
+
+            // Name table
+            if (exportDirectoryTable.NumberOfNamePointers != 0 && exportDirectoryTable.NameRVA != 0)
+            {
+                offset = (int)exportDirectoryTable.NameRVA.ConvertVirtualAddress(sections);
+                var exportNameTable = new ExportNameTable();
+
+                exportNameTable.Strings = new string[exportDirectoryTable.NumberOfNamePointers];
+                for (int i = 0; i < exportDirectoryTable.NumberOfNamePointers; i++)
+                {
+                    string str = data.ReadString(ref offset, System.Text.Encoding.ASCII);
+                    exportNameTable.Strings[i] = str;
+                }
+
+                exportTable.ExportNameTable = exportNameTable;
+            }
+
+            return exportTable;
+        }
+
+        /// <summary>
         /// Parse a byte array into a resource directory table
         /// </summary>
         /// <param name="data">Byte array to parse</param>
@@ -967,6 +1096,29 @@ namespace BurnOutSharp.Builder
 
                 // Set the delay-load directory table
                 executable.DelayLoadDirectoryTable = delayLoadDirectoryTable;
+            }
+
+            #endregion
+
+            #region Export Table
+
+            // Should also be in the '.edata' section
+            if (optionalHeader.ExportTable != null && optionalHeader.ExportTable.VirtualAddress != 0)
+            {
+                // If the offset for the export table doesn't exist
+                int exportTableAddress = initialOffset
+                    + (int)optionalHeader.ExportTable.VirtualAddress.ConvertVirtualAddress(executable.SectionTable);
+                if (exportTableAddress >= data.Length)
+                    return executable;
+
+                // Try to parse the export table
+                data.Seek(exportTableAddress, SeekOrigin.Begin);
+                var exportTable = ParseExportTable(data, executable.SectionTable);
+                if (exportTable == null)
+                    return null;
+
+                // Set the export table
+                executable.ExportTable = exportTable;
             }
 
             #endregion
@@ -1459,6 +1611,122 @@ namespace BurnOutSharp.Builder
             delayLoadDirectoryTable.TimeStamp = data.ReadUInt32();
 
             return delayLoadDirectoryTable;
+        }
+
+        /// <summary>
+        /// Parse a Stream into a export directory table
+        /// </summary>
+        /// <param name="data">Stream to parse</param>
+        /// <param name="sections">Section table to use for virtual address translation</param>
+        /// <returns>Filled export directory table on success, null on error</returns>
+        private static ExportTable ParseExportTable(Stream data, SectionHeader[] sections)
+        {
+            // TODO: Use marshalling here instead of building
+            var exportTable = new ExportTable();
+
+            var exportDirectoryTable = new ExportDirectoryTable();
+
+            exportDirectoryTable.ExportFlags = data.ReadUInt32();
+            exportDirectoryTable.TimeDateStamp = data.ReadUInt32();
+            exportDirectoryTable.MajorVersion = data.ReadUInt16();
+            exportDirectoryTable.MinorVersion = data.ReadUInt16();
+            exportDirectoryTable.NameRVA = data.ReadUInt32();
+            exportDirectoryTable.OrdinalBase = data.ReadUInt32();
+            exportDirectoryTable.AddressTableEntries = data.ReadUInt32();
+            exportDirectoryTable.NumberOfNamePointers = data.ReadUInt32();
+            exportDirectoryTable.ExportAddressTableRVA = data.ReadUInt32();
+            exportDirectoryTable.NamePointerRVA = data.ReadUInt32();
+            exportDirectoryTable.OrdinalTableRVA = data.ReadUInt32();
+
+            exportTable.ExportDirectoryTable = exportDirectoryTable;
+
+            // Name
+            if (exportDirectoryTable.NameRVA != 0)
+            {
+                uint nameAddress = exportDirectoryTable.NameRVA.ConvertVirtualAddress(sections);
+                data.Seek(nameAddress, SeekOrigin.Begin);
+
+                string name = data.ReadString(System.Text.Encoding.ASCII);
+                exportDirectoryTable.Name = name;
+            }
+
+            // Address table
+            if (exportDirectoryTable.AddressTableEntries != 0 && exportDirectoryTable.ExportAddressTableRVA != 0)
+            {
+                uint exportAddressTableAddress = exportDirectoryTable.ExportAddressTableRVA.ConvertVirtualAddress(sections);
+                data.Seek(exportAddressTableAddress, SeekOrigin.Begin);
+
+                var exportAddressTable = new ExportAddressTableEntry[exportDirectoryTable.AddressTableEntries];
+
+                for (int i = 0; i < exportDirectoryTable.AddressTableEntries; i++)
+                {
+                    var addressTableEntry = new ExportAddressTableEntry();
+
+                    // TODO: Use the optional header address and length to determine if export or forwarder
+                    addressTableEntry.ExportRVA = data.ReadUInt32();
+                    addressTableEntry.ForwarderRVA = addressTableEntry.ExportRVA;
+
+                    exportAddressTable[i] = addressTableEntry;
+                }
+
+                exportTable.ExportAddressTable = exportAddressTable;
+            }
+
+            // Name pointer table
+            if (exportDirectoryTable.NumberOfNamePointers != 0 && exportDirectoryTable.NamePointerRVA != 0)
+            {
+                uint namePointerTableAddress = exportDirectoryTable.NamePointerRVA.ConvertVirtualAddress(sections);
+                data.Seek(namePointerTableAddress, SeekOrigin.Begin);
+
+                var namePointerTable = new ExportNamePointerTable();
+
+                namePointerTable.Pointers = new uint[exportDirectoryTable.NumberOfNamePointers];
+                for (int i = 0; i < exportDirectoryTable.NumberOfNamePointers; i++)
+                {
+                    uint pointer = data.ReadUInt32();
+                    namePointerTable.Pointers[i] = pointer;
+                }
+
+                exportTable.NamePointerTable = namePointerTable;
+            }
+
+            // Ordinal table
+            if (exportDirectoryTable.NumberOfNamePointers != 0 && exportDirectoryTable.OrdinalTableRVA != 0)
+            {
+                uint ordinalTableAddress = exportDirectoryTable.OrdinalTableRVA.ConvertVirtualAddress(sections);
+                data.Seek(ordinalTableAddress, SeekOrigin.Begin);
+
+                var exportOrdinalTable = new ExportOrdinalTable();
+
+                exportOrdinalTable.Indexes = new ushort[exportDirectoryTable.NumberOfNamePointers];
+                for (int i = 0; i < exportDirectoryTable.NumberOfNamePointers; i++)
+                {
+                    ushort pointer = data.ReadUInt16();
+                    exportOrdinalTable.Indexes[i] = pointer;
+                }
+
+                exportTable.OrdinalTable = exportOrdinalTable;
+            }
+
+            // Name table
+            if (exportDirectoryTable.NumberOfNamePointers != 0 && exportDirectoryTable.NameRVA != 0)
+            {
+                uint nameTableAddress = exportDirectoryTable.NameRVA.ConvertVirtualAddress(sections);
+                data.Seek(nameTableAddress, SeekOrigin.Begin);
+
+                var exportNameTable = new ExportNameTable();
+
+                exportNameTable.Strings = new string[exportDirectoryTable.NumberOfNamePointers];
+                for (int i = 0; i < exportDirectoryTable.NumberOfNamePointers; i++)
+                {
+                    string str = data.ReadString();
+                    exportNameTable.Strings[i] = str;
+                }
+
+                exportTable.ExportNameTable = exportNameTable;
+            }
+
+            return exportTable;
         }
 
         /// <summary>

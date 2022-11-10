@@ -40,6 +40,11 @@ namespace BurnOutSharp.Models.PortableExecutable
         public uint NameRVA;
 
         /// <summary>
+        /// ASCII string that contains the name of the DLL.
+        /// </summary>
+        public string Name;
+
+        /// <summary>
         /// The starting ordinal number for exports in this image. This field specifies
         /// the starting ordinal number for the export address table. It is usually set
         /// to 1.
