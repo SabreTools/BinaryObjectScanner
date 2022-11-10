@@ -331,7 +331,6 @@ namespace BurnOutSharp.Builder
 
         #endregion
 
-        // TODO: Write extension to parse resource data
         #region Portable Executable
 
         /// <summary>
