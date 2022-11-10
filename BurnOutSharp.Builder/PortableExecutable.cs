@@ -109,13 +109,26 @@ namespace BurnOutSharp.Builder
                 if (coffSymbolTable == null)
                     return null;
 
+                // If the offset for the COFF string table doesn't exist
+                tableAddress = initialOffset
+                    + (int)coffFileHeader.PointerToSymbolTable.ConvertVirtualAddress(executable.SectionTable)
+                    + (coffSymbolTable.Length * 18 /* sizeof(COFFSymbolTableEntry) */);
+                if (tableAddress >= data.Length)
+                    return executable;
+
                 // Set the COFF symbol table
                 executable.COFFSymbolTable = coffSymbolTable;
+
+                // Try to parse the COFF string table
+                var coffStringTable = ParseCOFFStringTable(data, tableAddress);
+                if (coffStringTable == null)
+                    return null;
+
+                // Set the COFF string table
+                executable.COFFStringTable = coffStringTable;
             }
 
             #endregion
-
-            // TODO: COFFStringTable (Only if COFFSymbolTable?)
 
             #region Attribute Certificate Table
 
@@ -584,6 +597,37 @@ namespace BurnOutSharp.Builder
         }
 
         /// <summary>
+        /// Parse a Stream into a COFF string table
+        /// </summary>
+        /// <param name="data">Byte array to parse</param>
+        /// <param name="offset">Offset into the byte array</param>
+        /// <returns>Filled COFF string table on success, null on error</returns>
+        private static COFFStringTable ParseCOFFStringTable(byte[] data, int offset)
+        {
+            // TODO: Use marshalling here instead of building
+            var coffStringTable = new COFFStringTable();
+
+            coffStringTable.TotalSize = data.ReadUInt32(ref offset);
+
+            var strings = new List<string>();
+            if (coffStringTable.TotalSize > 4)
+            {
+                uint totalSize = coffStringTable.TotalSize;
+                while (totalSize > 0)
+                {
+                    int initialPosition = offset;
+                    string str = data.ReadString(ref offset);
+                    strings.Add(str);
+                    totalSize -= (uint)(offset - initialPosition);
+                }
+            }
+
+            coffStringTable.Strings = strings.ToArray();
+
+            return coffStringTable;
+        }
+
+        /// <summary>
         /// Parse a byte array into a resource directory table
         /// </summary>
         /// <param name="data">Byte array to parse</param>
@@ -828,11 +872,17 @@ namespace BurnOutSharp.Builder
 
                 // Set the COFF symbol table
                 executable.COFFSymbolTable = coffSymbolTable;
+
+                // Try to parse the COFF string table
+                var coffStringTable = ParseCOFFStringTable(data);
+                if (coffStringTable == null)
+                    return null;
+
+                // Set the COFF string table
+                executable.COFFStringTable = coffStringTable;
             }
 
             #endregion
-
-            // TODO: COFFStringTable (Only if COFFSymbolTable?)
 
             #region Attribute Certificate Table
 
@@ -1269,6 +1319,36 @@ namespace BurnOutSharp.Builder
             }
 
             return coffSymbolTable;
+        }
+
+        /// <summary>
+        /// Parse a Stream into a COFF string table
+        /// </summary>
+        /// <param name="data">Stream to parse</param>
+        /// <returns>Filled COFF string table on success, null on error</returns>
+        private static COFFStringTable ParseCOFFStringTable(Stream data)
+        {
+            // TODO: Use marshalling here instead of building
+            var coffStringTable = new COFFStringTable();
+
+            coffStringTable.TotalSize = data.ReadUInt32();
+
+            var strings = new List<string>();
+            if (coffStringTable.TotalSize > 4)
+            {
+                uint totalSize = coffStringTable.TotalSize;
+                while (totalSize > 0)
+                {
+                    long initialPosition = data.Position;
+                    string str = data.ReadString();
+                    strings.Add(str);
+                    totalSize -= (uint)(data.Position - initialPosition);
+                }
+            }
+
+            coffStringTable.Strings = strings.ToArray();
+
+            return coffStringTable;
         }
 
         /// <summary>
