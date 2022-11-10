@@ -828,8 +828,8 @@ namespace BurnOutSharp.Builder
                     entry.NameOffset = data.ReadUInt32(ref offset);
 
                     uint newOffset = data.ReadUInt32(ref offset);
-                    if ((newOffset & 0xF0000000) != 0)
-                        entry.SubdirectoryOffset = newOffset & ~0xF0000000;
+                    if ((newOffset & 0x80000000) != 0)
+                        entry.SubdirectoryOffset = newOffset & ~0x80000000;
                     else
                         entry.DataEntryOffset = newOffset;
 
@@ -854,8 +854,8 @@ namespace BurnOutSharp.Builder
                     entry.IntegerID = data.ReadUInt32(ref offset);
 
                     uint newOffset = data.ReadUInt32(ref offset);
-                    if ((newOffset & 0xF0000000) != 0)
-                        entry.SubdirectoryOffset = newOffset & ~0xF0000000;
+                    if ((newOffset & 0x80000000) != 0)
+                        entry.SubdirectoryOffset = newOffset & ~0x80000000;
                     else
                         entry.DataEntryOffset = newOffset;
 
@@ -1758,8 +1758,8 @@ namespace BurnOutSharp.Builder
                     entry.NameOffset = data.ReadUInt32();
 
                     uint offset = data.ReadUInt32();
-                    if ((offset & 0xF0000000) != 0)
-                        entry.SubdirectoryOffset = offset & ~0xF0000000;
+                    if ((offset & 0x80000000) != 0)
+                        entry.SubdirectoryOffset = offset & ~0x80000000;
                     else
                         entry.DataEntryOffset = offset;
 
@@ -1785,8 +1785,8 @@ namespace BurnOutSharp.Builder
                     entry.IntegerID = data.ReadUInt32();
 
                     uint offset = data.ReadUInt32();
-                    if ((offset & 0xF0000000) != 0)
-                        entry.SubdirectoryOffset = offset & ~0xF0000000;
+                    if ((offset & 0x80000000) != 0)
+                        entry.SubdirectoryOffset = offset & ~0x80000000;
                     else
                         entry.DataEntryOffset = offset;
 
