@@ -84,12 +84,6 @@ namespace BurnOutSharp.Models.PortableExecutable
         // - The .debug Section
         // - .debug$F (Object Only) / IMAGE_DEBUG_TYPE_FPO
         // - The .drectve Section (Object Only)
-        // - The .edata Section (Image Only)
-        //      - [Export directory table]
-        //      - [Export address table]
-        //      - [Export Name Pointer Table]
-        //      - [Export Ordinal Table]
-        //      - [Export Name Table]
         // - The .idata Section
         //      - Import Lookup Table [has model, but bit-based]
         //      - Import Address Table

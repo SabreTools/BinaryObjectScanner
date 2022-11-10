@@ -807,6 +807,102 @@ namespace ExecutableTest
             }
             Console.WriteLine();
 
+            Console.WriteLine("  Export Table Information:");
+            Console.WriteLine("  -------------------------");
+            if (executable.OptionalHeader?.ExportTable == null
+                || executable.OptionalHeader.ExportTable.VirtualAddress == 0
+                || executable.ExportTable == null)
+            {
+                Console.WriteLine("  No export table items");
+            }
+            else
+            {
+                Console.WriteLine();
+                Console.WriteLine("    Export Directory Table Information:");
+                Console.WriteLine("    -------------------------");
+                Console.WriteLine($"    Export flags: {executable.ExportTable.ExportDirectoryTable.ExportFlags}");
+                Console.WriteLine($"    Time/Date stamp: {executable.ExportTable.ExportDirectoryTable.TimeDateStamp}");
+                Console.WriteLine($"    Major version: {executable.ExportTable.ExportDirectoryTable.MajorVersion}");
+                Console.WriteLine($"    Minor version: {executable.ExportTable.ExportDirectoryTable.MinorVersion}");
+                Console.WriteLine($"    Name RVA: {executable.ExportTable.ExportDirectoryTable.NameRVA}");
+                Console.WriteLine($"    Name: {executable.ExportTable.ExportDirectoryTable.Name}");
+                Console.WriteLine($"    Ordinal base: {executable.ExportTable.ExportDirectoryTable.OrdinalBase}");
+                Console.WriteLine($"    Address table entries: {executable.ExportTable.ExportDirectoryTable.AddressTableEntries}");
+                Console.WriteLine($"    Number of name pointers: {executable.ExportTable.ExportDirectoryTable.NumberOfNamePointers}");
+                Console.WriteLine($"    Export address table RVA: {executable.ExportTable.ExportDirectoryTable.ExportAddressTableRVA}");
+                Console.WriteLine($"    Name pointer table RVA: {executable.ExportTable.ExportDirectoryTable.NamePointerRVA}");
+                Console.WriteLine($"    Ordinal table RVA: {executable.ExportTable.ExportDirectoryTable.OrdinalTableRVA}");
+                Console.WriteLine();
+
+                Console.WriteLine("    Export Address Table Information:");
+                Console.WriteLine("    -------------------------");
+                if (executable.ExportTable.ExportAddressTable == null || executable.ExportTable.ExportAddressTable.Length == 0)
+                {
+                    Console.WriteLine("    No export address table items");
+                }
+                else
+                {
+                    for (int i = 0; i < executable.ExportTable.ExportAddressTable.Length; i++)
+                    {
+                        var exportAddressTableEntry = executable.ExportTable.ExportAddressTable[i];
+                        Console.WriteLine($"    Export Address Table Entry {i}");
+                        Console.WriteLine($"      Export RVA / Forwarder RVA: {exportAddressTableEntry.ExportRVA}");
+                    }
+                }
+                Console.WriteLine();
+
+                Console.WriteLine("    Name Pointer Table Information:");
+                Console.WriteLine("    -------------------------");
+                if (executable.ExportTable.NamePointerTable?.Pointers == null || executable.ExportTable.NamePointerTable.Pointers.Length == 0)
+                {
+                    Console.WriteLine("    No name pointer table items");
+                }
+                else
+                {
+                    for (int i = 0; i < executable.ExportTable.NamePointerTable.Pointers.Length; i++)
+                    {
+                        var namePointerTableEntry = executable.ExportTable.NamePointerTable.Pointers[i];
+                        Console.WriteLine($"    Name Pointer Table Entry {i}");
+                        Console.WriteLine($"      Pointer: {namePointerTableEntry}");
+                    }
+                }
+                Console.WriteLine();
+
+                Console.WriteLine("    Ordinal Table Information:");
+                Console.WriteLine("    -------------------------");
+                if (executable.ExportTable.OrdinalTable?.Indexes == null || executable.ExportTable.OrdinalTable.Indexes.Length == 0)
+                {
+                    Console.WriteLine("    No ordinal table items");
+                }
+                else
+                {
+                    for (int i = 0; i < executable.ExportTable.OrdinalTable.Indexes.Length; i++)
+                    {
+                        var ordinalTableEntry = executable.ExportTable.OrdinalTable.Indexes[i];
+                        Console.WriteLine($"    Ordinal Table Entry {i}");
+                        Console.WriteLine($"      Index: {ordinalTableEntry}");
+                    }
+                }
+                Console.WriteLine();
+
+                Console.WriteLine("    Export Name Table Information:");
+                Console.WriteLine("    -------------------------");
+                if (executable.ExportTable.ExportNameTable?.Strings == null || executable.ExportTable.ExportNameTable.Strings.Length == 0)
+                {
+                    Console.WriteLine("    No export name table items");
+                }
+                else
+                {
+                    for (int i = 0; i < executable.ExportTable.ExportNameTable.Strings.Length; i++)
+                    {
+                        var exportNameTableEntry = executable.ExportTable.ExportNameTable.Strings[i];
+                        Console.WriteLine($"    Export Name Table Entry {i}");
+                        Console.WriteLine($"      String: {exportNameTableEntry}");
+                    }
+                }
+            }
+            Console.WriteLine();
+
             Console.WriteLine("  Resource Directory Table Information:");
             Console.WriteLine("  -------------------------");
             if (executable.OptionalHeader?.ResourceTable == null
@@ -819,6 +915,7 @@ namespace ExecutableTest
             {
                 PrintPortableExecutableResourceDirectoryTable(executable.ResourceDirectoryTable, level: 0, types: new List<object>());
             }
+            Console.WriteLine();
         }
 
         /// <summary>
