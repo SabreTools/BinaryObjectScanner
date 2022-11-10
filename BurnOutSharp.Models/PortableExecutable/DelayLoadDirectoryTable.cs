@@ -9,7 +9,7 @@ namespace BurnOutSharp.Models.PortableExecutable
     /// </summary>
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/debug/pe-format"/>
     [StructLayout(LayoutKind.Sequential)]
-    public class DelayLoadDirectoryTableEntry
+    public class DelayLoadDirectoryTable
     {
         /// <summary>
         /// Must be zero.

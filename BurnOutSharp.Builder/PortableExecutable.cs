@@ -163,8 +163,7 @@ namespace BurnOutSharp.Builder
                     return executable;
 
                 // Try to parse the delay-load directory table
-                int endOffset = (int)(delayLoadDirectoryTableAddress + optionalHeader.DelayImportDescriptor.Size);
-                var delayLoadDirectoryTable = ParseDelayLoadDirectoryTable(data, delayLoadDirectoryTableAddress, endOffset);
+                var delayLoadDirectoryTable = ParseDelayLoadDirectoryTable(data, delayLoadDirectoryTableAddress);
                 if (delayLoadDirectoryTable == null)
                     return null;
 
@@ -652,30 +651,22 @@ namespace BurnOutSharp.Builder
         /// </summary>
         /// <param name="data">Byte array to parse</param>
         /// <param name="offset">Offset into the byte array</param>
-        /// <param name="endOffset">First address not part of the delay-load directory table</param>
         /// <returns>Filled delay-load directory table on success, null on error</returns>
-        private static DelayLoadDirectoryTableEntry[] ParseDelayLoadDirectoryTable(byte[] data, int offset, int endOffset)
+        private static DelayLoadDirectoryTable ParseDelayLoadDirectoryTable(byte[] data, int offset)
         {
             // TODO: Use marshalling here instead of building
-            var delayLoadDirectoryTable = new List<DelayLoadDirectoryTableEntry>();
+            var delayLoadDirectoryTable = new DelayLoadDirectoryTable();
 
-            while (offset < endOffset)
-            {
-                var entry = new DelayLoadDirectoryTableEntry();
+            delayLoadDirectoryTable.Attributes = data.ReadUInt32(ref offset);
+            delayLoadDirectoryTable.Name = data.ReadUInt32(ref offset);
+            delayLoadDirectoryTable.ModuleHandle = data.ReadUInt32(ref offset);
+            delayLoadDirectoryTable.DelayImportAddressTable = data.ReadUInt32(ref offset);
+            delayLoadDirectoryTable.DelayImportNameTable = data.ReadUInt32(ref offset);
+            delayLoadDirectoryTable.BoundDelayImportTable = data.ReadUInt32(ref offset);
+            delayLoadDirectoryTable.UnloadDelayImportTable = data.ReadUInt32(ref offset);
+            delayLoadDirectoryTable.TimeStamp = data.ReadUInt32(ref offset);
 
-                entry.Attributes = data.ReadUInt32(ref offset);
-                entry.Name = data.ReadUInt32(ref offset);
-                entry.ModuleHandle = data.ReadUInt32(ref offset);
-                entry.DelayImportAddressTable = data.ReadUInt32(ref offset);
-                entry.DelayImportNameTable = data.ReadUInt32(ref offset);
-                entry.BoundDelayImportTable = data.ReadUInt32(ref offset);
-                entry.UnloadDelayImportTable = data.ReadUInt32(ref offset);
-                entry.TimeStamp = data.ReadUInt32(ref offset);
-
-                delayLoadDirectoryTable.Add(entry);
-            }
-
-            return delayLoadDirectoryTable.ToArray();
+            return delayLoadDirectoryTable;
         }
 
         /// <summary>
@@ -970,8 +961,7 @@ namespace BurnOutSharp.Builder
 
                 // Try to parse the delay-load directory table
                 data.Seek(delayLoadDirectoryTableAddress, SeekOrigin.Begin);
-                int endOffset = (int)(delayLoadDirectoryTableAddress + optionalHeader.DelayImportDescriptor.Size);
-                var delayLoadDirectoryTable = ParseDelayLoadDirectoryTable(data, endOffset);
+                var delayLoadDirectoryTable = ParseDelayLoadDirectoryTable(data);
                 if (delayLoadDirectoryTable == null)
                     return null;
 
@@ -1453,30 +1443,22 @@ namespace BurnOutSharp.Builder
         /// Parse a byte array into a delay-load directory table
         /// </summary>
         /// <param name="data">Stream to parse</param>
-        /// <param name="endOffset">First address not part of the delay-load directory table</param>
         /// <returns>Filled delay-load directory table on success, null on error</returns>
-        private static DelayLoadDirectoryTableEntry[] ParseDelayLoadDirectoryTable(Stream data, int endOffset)
+        private static DelayLoadDirectoryTable ParseDelayLoadDirectoryTable(Stream data)
         {
             // TODO: Use marshalling here instead of building
-            var delayLoadDirectoryTable = new List<DelayLoadDirectoryTableEntry>();
+            var delayLoadDirectoryTable = new DelayLoadDirectoryTable();
 
-            while (data.Position < endOffset)
-            {
-                var entry = new DelayLoadDirectoryTableEntry();
+            delayLoadDirectoryTable.Attributes = data.ReadUInt32();
+            delayLoadDirectoryTable.Name = data.ReadUInt32();
+            delayLoadDirectoryTable.ModuleHandle = data.ReadUInt32();
+            delayLoadDirectoryTable.DelayImportAddressTable = data.ReadUInt32();
+            delayLoadDirectoryTable.DelayImportNameTable = data.ReadUInt32();
+            delayLoadDirectoryTable.BoundDelayImportTable = data.ReadUInt32();
+            delayLoadDirectoryTable.UnloadDelayImportTable = data.ReadUInt32();
+            delayLoadDirectoryTable.TimeStamp = data.ReadUInt32();
 
-                entry.Attributes = data.ReadUInt32();
-                entry.Name = data.ReadUInt32();
-                entry.ModuleHandle = data.ReadUInt32();
-                entry.DelayImportAddressTable = data.ReadUInt32();
-                entry.DelayImportNameTable = data.ReadUInt32();
-                entry.BoundDelayImportTable = data.ReadUInt32();
-                entry.UnloadDelayImportTable = data.ReadUInt32();
-                entry.TimeStamp = data.ReadUInt32();
-
-                delayLoadDirectoryTable.Add(entry);
-            }
-
-            return delayLoadDirectoryTable.ToArray();
+            return delayLoadDirectoryTable;
         }
 
         /// <summary>

@@ -60,7 +60,7 @@ namespace BurnOutSharp.Models.PortableExecutable
         /// <summary>
         /// Delay-load directory table
         /// </summary>
-        public DelayLoadDirectoryTableEntry[] DelayLoadDirectoryTable { get; set; }
+        public DelayLoadDirectoryTable DelayLoadDirectoryTable { get; set; }
 
         #region Named Sections
 
