@@ -1049,7 +1049,142 @@ namespace ExecutableTest
                         Console.WriteLine($"{padding}HTML resource found, not parsed yet");
                         break;
                     case BurnOutSharp.Models.PortableExecutable.ResourceType.RT_MANIFEST:
-                        Console.WriteLine($"{padding}Side-by-Side Assembly Manifest found, not parsed yet");
+                        var assemblyManifest = entry.AsAssemblyManifest();
+                        if (assemblyManifest == null)
+                        {
+                            Console.WriteLine($"{padding}Assembly manifest found, but malformed");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"{padding}Manifest version: {assemblyManifest.ManifestVersion}");
+                            if (assemblyManifest.AssemblyIdentities != null && assemblyManifest.AssemblyIdentities.Length > 0)
+                            {
+                                for (int i = 0; i < assemblyManifest.AssemblyIdentities.Length; i++)
+                                {
+                                    var assemblyIdentity = assemblyManifest.AssemblyIdentities[i];
+                                    Console.WriteLine($"{padding}[Assembly Identity {i}] Name: {assemblyIdentity.Name}");
+                                    Console.WriteLine($"{padding}[Assembly Identity {i}] Version: {assemblyIdentity.Version}");
+                                    Console.WriteLine($"{padding}[Assembly Identity {i}] Type: {assemblyIdentity.Type}");
+                                    Console.WriteLine($"{padding}[Assembly Identity {i}] Processor architecture: {assemblyIdentity.ProcessorArchitecture}");
+                                    Console.WriteLine($"{padding}[Assembly Identity {i}] Public key token: {assemblyIdentity.PublicKeyToken}");
+                                    Console.WriteLine($"{padding}[Assembly Identity {i}] Language: {assemblyIdentity.Language}");
+                                }
+                            }
+                            if (assemblyManifest.Description != null)
+                            {
+                                Console.WriteLine($"{padding}[Assembly Description] Value: {assemblyManifest.Description.Value}");
+                            }
+                            if (assemblyManifest.COMInterfaceExternalProxyStub != null && assemblyManifest.COMInterfaceExternalProxyStub.Length > 0)
+                            {
+                                for (int i = 0; i < assemblyManifest.COMInterfaceExternalProxyStub.Length; i++)
+                                {
+                                    var comInterfaceExternalProxyStub = assemblyManifest.COMInterfaceExternalProxyStub[i];
+                                    Console.WriteLine($"{padding}[COM Interface External Proxy Stub {i}] IID: {comInterfaceExternalProxyStub.IID}");
+                                    Console.WriteLine($"{padding}[COM Interface External Proxy Stub {i}] Name: {comInterfaceExternalProxyStub.Name}");
+                                    Console.WriteLine($"{padding}[COM Interface External Proxy Stub {i}] TLBID: {comInterfaceExternalProxyStub.TLBID}");
+                                    Console.WriteLine($"{padding}[COM Interface External Proxy Stub {i}] Number of methods: {comInterfaceExternalProxyStub.NumMethods}");
+                                    Console.WriteLine($"{padding}[COM Interface External Proxy Stub {i}] Proxy stub (CLSID32): {comInterfaceExternalProxyStub.ProxyStubClsid32}");
+                                    Console.WriteLine($"{padding}[COM Interface External Proxy Stub {i}] Base interface: {comInterfaceExternalProxyStub.BaseInterface}");
+                                }
+                            }
+                            if (assemblyManifest.Dependency != null && assemblyManifest.Dependency.Length > 0)
+                            {
+                                for (int i = 0; i < assemblyManifest.Dependency.Length; i++)
+                                {
+                                    var dependency = assemblyManifest.Dependency[i];
+                                    if (dependency.DependentAssembly != null)
+                                    {
+                                        if (dependency.DependentAssembly.AssemblyIdentity != null)
+                                        {
+                                            Console.WriteLine($"{padding}[Dependency {i} Assembly Identity] Name: {dependency.DependentAssembly.AssemblyIdentity.Name}");
+                                            Console.WriteLine($"{padding}[Dependency {i} Assembly Identity] Version: {dependency.DependentAssembly.AssemblyIdentity.Version}");
+                                            Console.WriteLine($"{padding}[Dependency {i} Assembly Identity] Type: {dependency.DependentAssembly.AssemblyIdentity.Type}");
+                                            Console.WriteLine($"{padding}[Dependency {i} Assembly Identity] Processor architecture: {dependency.DependentAssembly.AssemblyIdentity.ProcessorArchitecture}");
+                                            Console.WriteLine($"{padding}[Dependency {i} Assembly Identity] Public key token: {dependency.DependentAssembly.AssemblyIdentity.PublicKeyToken}");
+                                            Console.WriteLine($"{padding}[Dependency {i} Assembly Identity] Language: {dependency.DependentAssembly.AssemblyIdentity.Language}");
+                                        }
+                                        if (dependency.DependentAssembly.BindingRedirect != null && dependency.DependentAssembly.BindingRedirect.Length > 0)
+                                        {
+                                            for (int j = 0; j < dependency.DependentAssembly.BindingRedirect.Length; j++)
+                                            {
+                                                var bindingRedirect = dependency.DependentAssembly.BindingRedirect[j];
+                                                Console.WriteLine($"{padding}[Dependency {i} Binding Redirect {j}] Old version: {bindingRedirect.OldVersion}");
+                                                Console.WriteLine($"{padding}[Dependency {i} Binding Redirect {j}] New version: {bindingRedirect.NewVersion}");
+                                            }
+                                        }
+                                    }
+
+                                    Console.WriteLine($"{padding}[Dependency {i}] Optional: {dependency.Optional}");
+                                }
+                            }
+                            if (assemblyManifest.File != null && assemblyManifest.File.Length > 0)
+                            {
+                                for (int i = 0; i < assemblyManifest.File.Length; i++)
+                                {
+                                    var file = assemblyManifest.File[i];
+                                    Console.WriteLine($"{padding}[File {i}] Name: {file.Name}");
+                                    Console.WriteLine($"{padding}[File {i}] Hash: {file.Hash}");
+                                    Console.WriteLine($"{padding}[File {i}] Hash algorithm: {file.HashAlgorithm}");
+                                    Console.WriteLine($"{padding}[File {i}] Size: {file.Size}");
+
+                                    if (file.COMClass != null && file.COMClass.Length > 0)
+                                    {
+                                        for (int j = 0; j < file.COMClass.Length; j++)
+                                        {
+                                            var comClass = file.COMClass[j];
+                                            Console.WriteLine($"{padding}[File {i} COM Class {j}] CLSID: {comClass.CLSID}");
+                                            Console.WriteLine($"{padding}[File {i} COM Class {j}] Threading model: {comClass.ThreadingModel}");
+                                            Console.WriteLine($"{padding}[File {i} COM Class {j}] Prog ID: {comClass.ProgID}");
+                                            Console.WriteLine($"{padding}[File {i} COM Class {j}] TLBID: {comClass.TLBID}");
+                                            Console.WriteLine($"{padding}[File {i} COM Class {j}] Description: {comClass.Description}");
+
+                                            if (comClass.ProgIDs != null && comClass.ProgIDs.Length > 0)
+                                            {
+                                                for (int k = 0; k < comClass.ProgIDs.Length; k++)
+                                                {
+                                                    var progId = comClass.ProgIDs[k];
+                                                    Console.WriteLine($"{padding}[File {i} COM Class {j} Prog ID {k}] Value: {progId.Value}");
+                                                }
+                                            }
+                                        }
+                                    }
+                                    if (file.COMInterfaceProxyStub != null && file.COMInterfaceProxyStub.Length > 0)
+                                    {
+                                        for (int j = 0; j < file.COMInterfaceProxyStub.Length; j++)
+                                        {
+                                            var comInterfaceProxyStub = file.COMInterfaceProxyStub[j];
+                                            Console.WriteLine($"{padding}[File {i} COM Interface Proxy Stub {j}] IID: {comInterfaceProxyStub.IID}");
+                                            Console.WriteLine($"{padding}[File {i} COM Interface Proxy Stub {j}] Name: {comInterfaceProxyStub.Name}");
+                                            Console.WriteLine($"{padding}[File {i} COM Interface Proxy Stub {j}] TLBID: {comInterfaceProxyStub.TLBID}");
+                                            Console.WriteLine($"{padding}[File {i} COM Interface Proxy Stub {j}] Number of methods: {comInterfaceProxyStub.NumMethods}");
+                                            Console.WriteLine($"{padding}[File {i} COM Interface Proxy Stub {j}] Proxy stub (CLSID32): {comInterfaceProxyStub.ProxyStubClsid32}");
+                                            Console.WriteLine($"{padding}[File {i} COM Interface Proxy Stub {j}] Base interface: {comInterfaceProxyStub.BaseInterface}");
+                                        }
+                                    }
+                                    if (file.Typelib != null && file.Typelib.Length > 0)
+                                    {
+                                        for (int j = 0; j < file.Typelib.Length; j++)
+                                        {
+                                            var typeLib = file.Typelib[j];
+                                            Console.WriteLine($"{padding}[File {i} Type Lib {j}] TLBID: {typeLib.TLBID}");
+                                            Console.WriteLine($"{padding}[File {i} Type Lib {j}] Version: {typeLib.Version}");
+                                            Console.WriteLine($"{padding}[File {i} Type Lib {j}] Help directory: {typeLib.HelpDir}");
+                                            Console.WriteLine($"{padding}[File {i} Type Lib {j}] Resource ID: {typeLib.ResourceID}");
+                                            Console.WriteLine($"{padding}[File {i} Type Lib {j}] Flags: {typeLib.Flags}");
+                                        }
+                                    }
+                                    if (file.WindowClass != null && file.WindowClass.Length > 0)
+                                    {
+                                        for (int j = 0; j < file.WindowClass.Length; j++)
+                                        {
+                                            var windowClass = file.WindowClass[j];
+                                            Console.WriteLine($"{padding}[File {i} Window Class {j}] Versioned: {windowClass.Versioned}");
+                                            Console.WriteLine($"{padding}[File {i} Window Class {j}] Value: {windowClass.Value}");
+                                        }
+                                    }
+                                }
+                            }
+                        }
                         break;
                     default:
                         Console.WriteLine($"{padding}Type {(BurnOutSharp.Models.PortableExecutable.ResourceType)resourceType} found, not parsed yet");

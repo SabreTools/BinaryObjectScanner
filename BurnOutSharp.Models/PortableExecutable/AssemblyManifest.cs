@@ -71,7 +71,7 @@ namespace BurnOutSharp.Models.PortableExecutable
         public string ThreadingModel;
 
         [XmlAttribute("progid")]
-        public string Progid;
+        public string ProgID;
 
         [XmlAttribute("tlbid")]
         public string TLBID;
@@ -295,11 +295,11 @@ namespace BurnOutSharp.Models.PortableExecutable
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/sbscs/manifest-file-schema"/>
     public class AssemblyWindowClass
     {
-        [XmlText]
-        public string Value;
-
         [XmlAttribute("versioned")]
         public string Versioned;
+
+        [XmlText]
+        public string Value;
     }
 
     // TODO: Left off at <ElementType name="progid" />
