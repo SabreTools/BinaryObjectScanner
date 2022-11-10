@@ -331,6 +331,7 @@ namespace BurnOutSharp.Builder
 
         #endregion
 
+        // TODO: Implement other resource types from https://learn.microsoft.com/en-us/windows/win32/menurc/resource-file-formats
         #region Portable Executable
 
         /// <summary>
