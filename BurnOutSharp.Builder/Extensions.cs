@@ -541,6 +541,12 @@ namespace BurnOutSharp.Builder
                 else
                 {
                     string fullEncodedString = stringEncoding.GetString(entry.Data, offset, entry.Data.Length - offset);
+                    if (stringLength > fullEncodedString.Length)
+                    {
+                        // TODO: Print to console or return an error?
+                        stringLength = (ushort)fullEncodedString.Length;
+                    }
+
                     string stringValue = fullEncodedString.Substring(0, stringLength);
                     offset += stringEncoding.GetByteCount(stringValue);
                     stringValue = stringValue.Replace("\n", "\\n").Replace("\r", "\\r");
