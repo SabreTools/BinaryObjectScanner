@@ -64,6 +64,10 @@ namespace BurnOutSharp.Models.PortableExecutable
 
         #region Named Sections
 
+        // .cormeta - CLR metadata is stored in this section. It is used to indicate that
+        // the object file contains managed code. The format of the metadata is not
+        // documented, but can be handed to the CLR interfaces for handling metadata.
+
         /// <summary>
         /// Export table (.edata)
         /// </summary>
@@ -91,7 +95,6 @@ namespace BurnOutSharp.Models.PortableExecutable
         // - The .drectve Section (Object Only)
         // - The .pdata Section [Multiple formats per entry]
         // - TLS Callback Functions
-        // - The .cormeta Section (Object Only)
         // - The .sxdata Section
 
         // TODO: Determine if "Archive (Library) File Format" is worth modelling
