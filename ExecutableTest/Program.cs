@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using System.Xml;
 using BurnOutSharp.Builder;
 
 namespace ExecutableTest
@@ -1181,6 +1182,21 @@ namespace ExecutableTest
                                             Console.WriteLine($"{padding}[File {i} Window Class {j}] Versioned: {windowClass.Versioned}");
                                             Console.WriteLine($"{padding}[File {i} Window Class {j}] Value: {windowClass.Value}");
                                         }
+                                    }
+                                }
+                            }
+                            if (assemblyManifest.EverythingElse != null && assemblyManifest.EverythingElse.Length > 0)
+                            {
+                                for (int i = 0; i < assemblyManifest.EverythingElse.Length; i++)
+                                {
+                                    var thing = assemblyManifest.EverythingElse[i];
+                                    if (thing is XmlElement element)
+                                    {
+                                        Console.WriteLine($"{padding}Unparsed XML Element {i}: {element.OuterXml}");
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine($"{padding}Unparsed Item {i}: {thing}");
                                     }
                                 }
                             }
