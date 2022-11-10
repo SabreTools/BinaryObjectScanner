@@ -264,7 +264,7 @@ namespace BurnOutSharp.Builder
             List<byte> tempBuffer = new List<byte>();
 
             byte[] buffer = new byte[charWidth];
-            while (stream.Read(buffer, 0, charWidth) != 0 && buffer.SequenceEqual(nullTerminator))
+            while (stream.Read(buffer, 0, charWidth) != 0 && !buffer.SequenceEqual(nullTerminator))
             {
                 tempBuffer.AddRange(buffer);
             }
