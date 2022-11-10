@@ -394,28 +394,34 @@ namespace BurnOutSharp.Builder
         /// <summary>
         /// Read resource data as an accelerator table resource
         /// </summary>
-        /// <param name="data">Data to parse into an accelerator table resource</param>
-        /// <param name="offset">Offset into the byte array</param>
+        /// <param name="data">Resource data entry to parse into an accelerator table resource</param>
         /// <returns>A filled accelerator table resource on success, null on error</returns>
-        public static Models.PortableExecutable.AcceleratorTableEntry[] AsAcceleratorTableResource(this byte[] data, ref int offset)
+        public static Models.PortableExecutable.AcceleratorTableEntry[] AsAcceleratorTableResource(this Models.PortableExecutable.ResourceDataEntry entry)
         {
             // If we have data that's invalid for this resource type, we can't do anything
-            if (data == null || data.Length % 8 != 0)
+            if (entry?.Data == null || entry.Data.Length % 8 != 0)
                 return null;
 
             // Get the number of entries
-            int count = data.Length / 8;
+            int count = entry.Data.Length / 8;
+
+            // Initialize the iterator
+            int offset = 0;
+
+            // Create the output object
+            var table = new Models.PortableExecutable.AcceleratorTableEntry[count];
 
             // Read in the table
-            var table = new Models.PortableExecutable.AcceleratorTableEntry[count];
             for (int i = 0; i < count; i++)
             {
-                var entry = new Models.PortableExecutable.AcceleratorTableEntry();
-                entry.Flags = (Models.PortableExecutable.AcceleratorTableFlags)data.ReadUInt16(ref offset);
-                entry.Ansi = data.ReadUInt16(ref offset);
-                entry.Id = data.ReadUInt16(ref offset);
-                entry.Padding = data.ReadUInt16(ref offset);
-                table[i] = entry;
+                var acceleratorTableEntry = new Models.PortableExecutable.AcceleratorTableEntry();
+
+                acceleratorTableEntry.Flags = (Models.PortableExecutable.AcceleratorTableFlags)entry.Data.ReadUInt16(ref offset);
+                acceleratorTableEntry.Ansi = entry.Data.ReadUInt16(ref offset);
+                acceleratorTableEntry.Id = entry.Data.ReadUInt16(ref offset);
+                acceleratorTableEntry.Padding = entry.Data.ReadUInt16(ref offset);
+
+                table[i] = acceleratorTableEntry;
             }
 
             return table;

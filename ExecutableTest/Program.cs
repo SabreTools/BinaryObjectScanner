@@ -1147,7 +1147,6 @@ namespace ExecutableTest
             // TODO: Print out per-type data
             if (types != null && types.Count > 0 && types[0] is uint resourceType)
             {
-                int offset = 0;
                 switch ((BurnOutSharp.Models.PortableExecutable.ResourceType)resourceType)
                 {
                     case BurnOutSharp.Models.PortableExecutable.ResourceType.RT_CURSOR:
@@ -1186,7 +1185,7 @@ namespace ExecutableTest
                         Console.WriteLine($"{padding}Font resource found, not parsed yet");
                         break;
                     case BurnOutSharp.Models.PortableExecutable.ResourceType.RT_ACCELERATOR:
-                        var acceleratorTable = entry.Data.AsAcceleratorTableResource(ref offset);
+                        var acceleratorTable = entry.AsAcceleratorTableResource();
                         if (acceleratorTable == null)
                         {
                             Console.WriteLine($"{padding}Accelerator table resource found, but malformed");
