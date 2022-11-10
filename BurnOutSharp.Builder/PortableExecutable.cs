@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using BurnOutSharp.Models.PortableExecutable;
 
@@ -115,7 +116,29 @@ namespace BurnOutSharp.Builder
             #endregion
 
             // TODO: COFFStringTable (Only if COFFSymbolTable?)
-            // TODO: AttributeCertificateTable
+
+            #region Attribute Certificate Table
+
+            if (optionalHeader.CertificateTable != null && optionalHeader.CertificateTable.VirtualAddress != 0)
+            {
+                // If the offset for the COFF symbol table doesn't exist
+                int certificateTableAddress = initialOffset
+                    + (int)optionalHeader.CertificateTable.VirtualAddress;
+                if (certificateTableAddress >= data.Length)
+                    return executable;
+
+                // Try to parse the attribute certificate table
+                int endOffset = (int)(certificateTableAddress + optionalHeader.CertificateTable.Size);
+                var attributeCertificateTable = ParseAttributeCertificateTable(data, certificateTableAddress, endOffset);
+                if (attributeCertificateTable == null)
+                    return null;
+
+                // Set the attribute certificate table
+                executable.AttributeCertificateTable = attributeCertificateTable;
+            }
+
+            #endregion
+
             // TODO: DelayLoadDirectoryTable
 
             #region Resource Directory Table
@@ -534,6 +557,33 @@ namespace BurnOutSharp.Builder
         }
 
         /// <summary>
+        /// Parse a byte array into an attribute certificate table
+        /// </summary>
+        /// <param name="data">Byte array to parse</param>
+        /// <param name="offset">Offset into the byte array</param>
+        /// <param name="endOffset">First address not part of the attribute certificate table</param>
+        /// <returns>Filled attribute certificate on success, null on error</returns>
+        private static AttributeCertificateTableEntry[] ParseAttributeCertificateTable(byte[] data, int offset, int endOffset)
+        {
+            var attributeCertificateTable = new List<AttributeCertificateTableEntry>();
+
+            while (offset < endOffset)
+            {
+                var entry = new AttributeCertificateTableEntry();
+
+                entry.Length = data.ReadUInt32(ref offset);
+                entry.Revision = (WindowsCertificateRevision)data.ReadUInt16(ref offset);
+                entry.CertificateType = (WindowsCertificateType)data.ReadUInt16(ref offset);
+                if (entry.Length > 0)
+                    entry.Certificate = data.ReadBytes(ref offset, (int)entry.Length);
+
+                attributeCertificateTable.Add(entry);
+            }
+
+            return attributeCertificateTable.ToArray();
+        }
+
+        /// <summary>
         /// Parse a byte array into a resource directory table
         /// </summary>
         /// <param name="data">Byte array to parse</param>
@@ -765,13 +815,13 @@ namespace BurnOutSharp.Builder
             if (coffFileHeader.PointerToSymbolTable != 0)
             {
                 // If the offset for the COFF symbol table doesn't exist
-                int tableAddress = initialOffset
+                int symbolTableAddress = initialOffset
                     + (int)coffFileHeader.PointerToSymbolTable.ConvertVirtualAddress(executable.SectionTable);
-                if (tableAddress >= data.Length)
+                if (symbolTableAddress >= data.Length)
                     return executable;
 
                 // Try to parse the COFF symbol table
-                data.Seek(tableAddress, SeekOrigin.Begin);
+                data.Seek(symbolTableAddress, SeekOrigin.Begin);
                 var coffSymbolTable = ParseCOFFSymbolTable(data, coffFileHeader.NumberOfSymbols);
                 if (coffSymbolTable == null)
                     return null;
@@ -783,22 +833,45 @@ namespace BurnOutSharp.Builder
             #endregion
 
             // TODO: COFFStringTable (Only if COFFSymbolTable?)
-            // TODO: AttributeCertificateTable
+
+            #region Attribute Certificate Table
+
+            if (optionalHeader.CertificateTable != null && optionalHeader.CertificateTable.VirtualAddress != 0)
+            {
+                // If the offset for the attribute certificate table doesn't exist
+                int certificateTableAddress = initialOffset
+                    + (int)optionalHeader.CertificateTable.VirtualAddress;
+                 if (certificateTableAddress >= data.Length)
+                        return executable;
+
+                // Try to parse the attribute certificate table
+                data.Seek(certificateTableAddress, SeekOrigin.Begin);
+                int endOffset = (int)(certificateTableAddress + optionalHeader.CertificateTable.Size);
+                var attributeCertificateTable = ParseAttributeCertificateTable(data, endOffset);
+                if (attributeCertificateTable == null)
+                    return null;
+
+                // Set the attribute certificate table
+                executable.AttributeCertificateTable = attributeCertificateTable;
+            }
+
+            #endregion
+
             // TODO: DelayLoadDirectoryTable
-            
+
             #region Resource Directory Table
 
             // Should also be in the '.rsrc' section
             if (optionalHeader.ResourceTable != null && optionalHeader.ResourceTable.VirtualAddress != 0)
             {
                 // If the offset for the resource directory table doesn't exist
-                int tableAddress = initialOffset
+                int resourceTableAddress = initialOffset
                     + (int)optionalHeader.ResourceTable.VirtualAddress.ConvertVirtualAddress(executable.SectionTable);
-                if (tableAddress >= data.Length)
+                if (resourceTableAddress >= data.Length)
                     return executable;
 
                 // Try to parse the resource directory table
-                data.Seek(tableAddress, SeekOrigin.Begin);
+                data.Seek(resourceTableAddress, SeekOrigin.Begin);
                 var resourceDirectoryTable = ParseResourceDirectoryTable(data, data.Position, executable.SectionTable);
                 if (resourceDirectoryTable == null)
                     return null;
@@ -1196,6 +1269,32 @@ namespace BurnOutSharp.Builder
             }
 
             return coffSymbolTable;
+        }
+
+        /// <summary>
+        /// Parse a Stream into an attribute certificate table
+        /// </summary>
+        /// <param name="data">Stream to parse</param>
+        /// <param name="endOffset">First address not part of the attribute certificate table</param>
+        /// <returns>Filled attribute certificate on success, null on error</returns>
+        private static AttributeCertificateTableEntry[] ParseAttributeCertificateTable(Stream data, int endOffset)
+        {
+            var attributeCertificateTable = new List<AttributeCertificateTableEntry>();
+
+            while (data.Position < endOffset)
+            {
+                var entry = new AttributeCertificateTableEntry();
+
+                entry.Length = data.ReadUInt32();
+                entry.Revision = (WindowsCertificateRevision)data.ReadUInt16();
+                entry.CertificateType = (WindowsCertificateType)data.ReadUInt16();
+                if (entry.Length > 0)
+                    entry.Certificate = data.ReadBytes((int)entry.Length);
+
+                attributeCertificateTable.Add(entry);
+            }
+
+            return attributeCertificateTable.ToArray();
         }
 
         /// <summary>
