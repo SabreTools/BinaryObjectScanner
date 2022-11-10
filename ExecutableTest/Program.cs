@@ -16,6 +16,9 @@ namespace ExecutableTest
                 return;
             }
 
+            // Register the codepages
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
             // Loop through the args
             foreach (string arg in args)
             {
