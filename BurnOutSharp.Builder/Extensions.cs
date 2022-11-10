@@ -355,7 +355,9 @@ namespace BurnOutSharp.Builder
 
                 // Attempt to derive the physical address from the current section
                 var section = sections[i];
-                if (rva >= section.VirtualAddress && rva <= section.VirtualAddress + section.VirtualSize)
+                if (rva >= section.VirtualAddress
+                    && (rva <= section.VirtualAddress + section.SizeOfRawData
+                        || rva <= section.VirtualAddress + section.VirtualSize))
                     return rva - section.VirtualAddress + section.PointerToRawData;
             }
 
