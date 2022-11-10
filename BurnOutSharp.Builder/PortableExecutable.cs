@@ -152,7 +152,27 @@ namespace BurnOutSharp.Builder
 
             #endregion
 
-            // TODO: DelayLoadDirectoryTable
+            #region Delay-Load Directory Table
+
+            if (optionalHeader.DelayImportDescriptor != null && optionalHeader.DelayImportDescriptor.VirtualAddress != 0)
+            {
+                // If the offset for the delay-load directory table doesn't exist
+                int delayLoadDirectoryTableAddress = initialOffset
+                    + (int)optionalHeader.DelayImportDescriptor.VirtualAddress.ConvertVirtualAddress(executable.SectionTable);
+                if (delayLoadDirectoryTableAddress >= data.Length)
+                    return executable;
+
+                // Try to parse the delay-load directory table
+                int endOffset = (int)(delayLoadDirectoryTableAddress + optionalHeader.DelayImportDescriptor.Size);
+                var delayLoadDirectoryTable = ParseDelayLoadDirectoryTable(data, delayLoadDirectoryTableAddress, endOffset);
+                if (delayLoadDirectoryTable == null)
+                    return null;
+
+                // Set the delay-load directory table
+                executable.DelayLoadDirectoryTable = delayLoadDirectoryTable;
+            }
+
+            #endregion
 
             #region Resource Directory Table
 
@@ -628,6 +648,37 @@ namespace BurnOutSharp.Builder
         }
 
         /// <summary>
+        /// Parse a byte array into a delay-load directory table
+        /// </summary>
+        /// <param name="data">Byte array to parse</param>
+        /// <param name="offset">Offset into the byte array</param>
+        /// <param name="endOffset">First address not part of the delay-load directory table</param>
+        /// <returns>Filled delay-load directory table on success, null on error</returns>
+        private static DelayLoadDirectoryTableEntry[] ParseDelayLoadDirectoryTable(byte[] data, int offset, int endOffset)
+        {
+            // TODO: Use marshalling here instead of building
+            var delayLoadDirectoryTable = new List<DelayLoadDirectoryTableEntry>();
+
+            while (offset < endOffset)
+            {
+                var entry = new DelayLoadDirectoryTableEntry();
+
+                entry.Attributes = data.ReadUInt32(ref offset);
+                entry.Name = data.ReadUInt32(ref offset);
+                entry.ModuleHandle = data.ReadUInt32(ref offset);
+                entry.DelayImportAddressTable = data.ReadUInt32(ref offset);
+                entry.DelayImportNameTable = data.ReadUInt32(ref offset);
+                entry.BoundDelayImportTable = data.ReadUInt32(ref offset);
+                entry.UnloadDelayImportTable = data.ReadUInt32(ref offset);
+                entry.TimeStamp = data.ReadUInt32(ref offset);
+
+                delayLoadDirectoryTable.Add(entry);
+            }
+
+            return delayLoadDirectoryTable.ToArray();
+        }
+
+        /// <summary>
         /// Parse a byte array into a resource directory table
         /// </summary>
         /// <param name="data">Byte array to parse</param>
@@ -907,7 +958,28 @@ namespace BurnOutSharp.Builder
 
             #endregion
 
-            // TODO: DelayLoadDirectoryTable
+            #region Delay-Load Directory Table
+
+            if (optionalHeader.DelayImportDescriptor != null && optionalHeader.DelayImportDescriptor.VirtualAddress != 0)
+            {
+                // If the offset for the delay-load directory table doesn't exist
+                int delayLoadDirectoryTableAddress = initialOffset
+                    + (int)optionalHeader.DelayImportDescriptor.VirtualAddress.ConvertVirtualAddress(executable.SectionTable);
+                if (delayLoadDirectoryTableAddress >= data.Length)
+                    return executable;
+
+                // Try to parse the delay-load directory table
+                data.Seek(delayLoadDirectoryTableAddress, SeekOrigin.Begin);
+                int endOffset = (int)(delayLoadDirectoryTableAddress + optionalHeader.DelayImportDescriptor.Size);
+                var delayLoadDirectoryTable = ParseDelayLoadDirectoryTable(data, endOffset);
+                if (delayLoadDirectoryTable == null)
+                    return null;
+
+                // Set the delay-load directory table
+                executable.DelayLoadDirectoryTable = delayLoadDirectoryTable;
+            }
+
+            #endregion
 
             #region Resource Directory Table
 
@@ -1375,6 +1447,36 @@ namespace BurnOutSharp.Builder
             }
 
             return attributeCertificateTable.ToArray();
+        }
+
+        /// <summary>
+        /// Parse a byte array into a delay-load directory table
+        /// </summary>
+        /// <param name="data">Stream to parse</param>
+        /// <param name="endOffset">First address not part of the delay-load directory table</param>
+        /// <returns>Filled delay-load directory table on success, null on error</returns>
+        private static DelayLoadDirectoryTableEntry[] ParseDelayLoadDirectoryTable(Stream data, int endOffset)
+        {
+            // TODO: Use marshalling here instead of building
+            var delayLoadDirectoryTable = new List<DelayLoadDirectoryTableEntry>();
+
+            while (data.Position < endOffset)
+            {
+                var entry = new DelayLoadDirectoryTableEntry();
+
+                entry.Attributes = data.ReadUInt32();
+                entry.Name = data.ReadUInt32();
+                entry.ModuleHandle = data.ReadUInt32();
+                entry.DelayImportAddressTable = data.ReadUInt32();
+                entry.DelayImportNameTable = data.ReadUInt32();
+                entry.BoundDelayImportTable = data.ReadUInt32();
+                entry.UnloadDelayImportTable = data.ReadUInt32();
+                entry.TimeStamp = data.ReadUInt32();
+
+                delayLoadDirectoryTable.Add(entry);
+            }
+
+            return delayLoadDirectoryTable.ToArray();
         }
 
         /// <summary>
