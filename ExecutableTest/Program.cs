@@ -931,7 +931,6 @@ namespace ExecutableTest
                         Console.WriteLine($"{padding}Hardware-independent icon resource found, not parsed yet");
                         break;
                     case BurnOutSharp.Models.PortableExecutable.ResourceType.RT_VERSION:
-                        Console.WriteLine($"{padding}Version resource found, not parsed yet");
                         var versionInfo = entry.AsVersionInfo();
                         if (versionInfo == null)
                         {
