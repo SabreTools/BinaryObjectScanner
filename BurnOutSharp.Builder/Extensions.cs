@@ -442,6 +442,75 @@ namespace BurnOutSharp.Builder
         }
 
         /// <summary>
+        /// Read resource data as a font group
+        /// </summary>
+        /// <param name="data">Resource data entry to parse into a font group</param>
+        /// <returns>A filled font group on success, null on error</returns>
+        public static Models.PortableExecutable.FontGroupHeader AsFontGroup(this Models.PortableExecutable.ResourceDataEntry entry)
+        {
+            // If we have an invalid entry, just skip
+            if (entry?.Data == null)
+                return null;
+
+            // Initialize the iterator
+            int offset = 0;
+
+            // Create the output object
+            var fontGroupHeader = new Models.PortableExecutable.FontGroupHeader();
+
+            fontGroupHeader.NumberOfFonts = entry.Data.ReadUInt16(ref offset);
+            if (fontGroupHeader.NumberOfFonts > 0)
+            {
+                fontGroupHeader.DE = new Models.PortableExecutable.DirEntry[fontGroupHeader.NumberOfFonts];
+                for (int i = 0; i < fontGroupHeader.NumberOfFonts; i++)
+                {
+                    var dirEntry = new Models.PortableExecutable.DirEntry();
+
+                    dirEntry.FontOrdinal = entry.Data.ReadUInt16(ref offset);
+
+                    dirEntry.Entry = new Models.PortableExecutable.FontDirEntry();
+                    dirEntry.Entry.Version = entry.Data.ReadUInt16(ref offset);
+                    dirEntry.Entry.Size = entry.Data.ReadUInt32(ref offset);
+                    dirEntry.Entry.Copyright = entry.Data.ReadBytes(ref offset, 60);
+                    dirEntry.Entry.Type = entry.Data.ReadUInt16(ref offset);
+                    dirEntry.Entry.Points = entry.Data.ReadUInt16(ref offset);
+                    dirEntry.Entry.VertRes = entry.Data.ReadUInt16(ref offset);
+                    dirEntry.Entry.HorizRes = entry.Data.ReadUInt16(ref offset);
+                    dirEntry.Entry.Ascent = entry.Data.ReadUInt16(ref offset);
+                    dirEntry.Entry.InternalLeading = entry.Data.ReadUInt16(ref offset);
+                    dirEntry.Entry.ExternalLeading = entry.Data.ReadUInt16(ref offset);
+                    dirEntry.Entry.Italic = entry.Data.ReadByte(ref offset);
+                    dirEntry.Entry.Underline = entry.Data.ReadByte(ref offset);
+                    dirEntry.Entry.StrikeOut = entry.Data.ReadByte(ref offset);
+                    dirEntry.Entry.Weight = entry.Data.ReadUInt16(ref offset);
+                    dirEntry.Entry.CharSet = entry.Data.ReadByte(ref offset);
+                    dirEntry.Entry.PixWidth = entry.Data.ReadUInt16(ref offset);
+                    dirEntry.Entry.PixHeight = entry.Data.ReadUInt16(ref offset);
+                    dirEntry.Entry.PitchAndFamily = entry.Data.ReadByte(ref offset);
+                    dirEntry.Entry.AvgWidth = entry.Data.ReadUInt16(ref offset);
+                    dirEntry.Entry.MaxWidth = entry.Data.ReadUInt16(ref offset);
+                    dirEntry.Entry.FirstChar = entry.Data.ReadByte(ref offset);
+                    dirEntry.Entry.LastChar = entry.Data.ReadByte(ref offset);
+                    dirEntry.Entry.DefaultChar = entry.Data.ReadByte(ref offset);
+                    dirEntry.Entry.BreakChar = entry.Data.ReadByte(ref offset);
+                    dirEntry.Entry.WidthBytes = entry.Data.ReadUInt16(ref offset);
+                    dirEntry.Entry.Device = entry.Data.ReadUInt32(ref offset);
+                    dirEntry.Entry.Face = entry.Data.ReadUInt32(ref offset);
+                    dirEntry.Entry.Reserved = entry.Data.ReadUInt32(ref offset);
+                
+                    // TODO: Determine how to read these two? Immediately after?
+                    dirEntry.Entry.DeviceName = entry.Data.ReadString(ref offset);
+                    dirEntry.Entry.FaceName = entry.Data.ReadString(ref offset);
+
+                    fontGroupHeader.DE[i] = dirEntry;
+                }
+            }
+
+            // TODO: Implement entry parsing
+            return null;
+        }
+
+        /// <summary>
         /// Read resource data as a string table resource
         /// </summary>
         /// <param name="data">Resource data entry to parse into a string table resource</param>
