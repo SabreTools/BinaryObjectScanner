@@ -903,6 +903,131 @@ namespace ExecutableTest
             }
             Console.WriteLine();
 
+            Console.WriteLine("  Import Table Information:");
+            Console.WriteLine("  -------------------------");
+            if (executable.OptionalHeader?.ImportTable == null
+                || executable.OptionalHeader.ImportTable.VirtualAddress == 0
+                || executable.ImportTable == null)
+            {
+                Console.WriteLine("  No import table items");
+            }
+            else
+            {
+                Console.WriteLine();
+                Console.WriteLine("    Import Directory Table Information:");
+                Console.WriteLine("    -------------------------");
+                if (executable.ImportTable.ImportDirectoryTable == null || executable.ImportTable.ImportDirectoryTable.Length == 0)
+                {
+                    Console.WriteLine("    No import directory table items");
+                }
+                else
+                {
+                    for (int i = 0; i < executable.ImportTable.ImportDirectoryTable.Length; i++)
+                    {
+                        var importDirectoryTableEntry = executable.ImportTable.ImportDirectoryTable[i];
+                        Console.WriteLine($"    Import Directory Table Entry {i}");
+                        Console.WriteLine($"      Import lookup table RVA: {importDirectoryTableEntry.ImportLookupTableRVA}");
+                        Console.WriteLine($"      Time/Date stamp: {importDirectoryTableEntry.TimeDateStamp}");
+                        Console.WriteLine($"      Forwarder chain: {importDirectoryTableEntry.ForwarderChain}");
+                        Console.WriteLine($"      Name RVA: {importDirectoryTableEntry.NameRVA}");
+                        Console.WriteLine($"      Name: {importDirectoryTableEntry.Name}");
+                        Console.WriteLine($"      Import address table RVA: {importDirectoryTableEntry.ImportAddressTableRVA}");
+                    }
+                }
+                Console.WriteLine();
+
+                Console.WriteLine("    Import Lookup Tables Information:");
+                Console.WriteLine("    -------------------------");
+                if (executable.ImportTable.ImportLookupTables == null || executable.ImportTable.ImportLookupTables.Count == 0)
+                {
+                    Console.WriteLine("    No import lookup tables");
+                }
+                else
+                {
+                    foreach (var kvp in executable.ImportTable.ImportLookupTables)
+                    {
+                        int index = kvp.Key;
+                        var importLookupTable = kvp.Value;
+
+                        Console.WriteLine();
+                        Console.WriteLine($"      Import Lookup Table {index} Information:");
+                        Console.WriteLine("      -------------------------");
+                        if (importLookupTable == null || importLookupTable.Length == 0)
+                        {
+                            Console.WriteLine("      No import lookup table items");
+                        }
+                        else
+                        {
+                            for (int i = 0; i < importLookupTable.Length; i++)
+                            {
+                                var importLookupTableEntry = importLookupTable[i];
+                                Console.WriteLine($"      Import Lookup Table {index} Entry {i}");
+                                Console.WriteLine($"        Ordinal/Name flag: {importLookupTableEntry.OrdinalNameFlag}");
+                                if (importLookupTableEntry.OrdinalNameFlag)
+                                    Console.WriteLine($"        Ordinal number: {importLookupTableEntry.OrdinalNumber}");
+                                else
+                                    Console.WriteLine($"        Hint/Name table RVA: {importLookupTableEntry.HintNameTableRVA}");
+                            }
+                        }
+                    }
+                }
+                Console.WriteLine();
+
+                Console.WriteLine("    Import Address Tables Information:");
+                Console.WriteLine("    -------------------------");
+                if (executable.ImportTable.ImportAddressTables == null || executable.ImportTable.ImportAddressTables.Count == 0)
+                {
+                    Console.WriteLine("    No import address tables");
+                }
+                else
+                {
+                    foreach (var kvp in executable.ImportTable.ImportAddressTables)
+                    {
+                        int index = kvp.Key;
+                        var importAddressTable = kvp.Value;
+
+                        Console.WriteLine();
+                        Console.WriteLine($"      Import Address Table {index} Information:");
+                        Console.WriteLine("      -------------------------");
+                        if (importAddressTable == null || importAddressTable.Length == 0)
+                        {
+                            Console.WriteLine("      No import address table items");
+                        }
+                        else
+                        {
+                            for (int i = 0; i < importAddressTable.Length; i++)
+                            {
+                                var importLookupTableEntry = importAddressTable[i];
+                                Console.WriteLine($"      Import Address Table {index} Entry {i}");
+                                if (executable.OptionalHeader.Magic == BurnOutSharp.Models.PortableExecutable.OptionalHeaderMagicNumber.PE32)
+                                    Console.WriteLine($"        Address: {importLookupTableEntry.Address_PE32}");
+                                else
+                                    Console.WriteLine($"        Address: {importLookupTableEntry.Address_PE32Plus}");
+                            }
+                        }
+                    }
+                }
+                Console.WriteLine();
+
+                Console.WriteLine("    Hint/Name Table Information:");
+                Console.WriteLine("    -------------------------");
+                if (executable.ImportTable.HintNameTable == null || executable.ImportTable.HintNameTable.Length == 0)
+                {
+                    Console.WriteLine("    No hint/name table items");
+                }
+                else
+                {
+                    for (int i = 0; i < executable.ImportTable.HintNameTable.Length; i++)
+                    {
+                        var hintNameTableEntry = executable.ImportTable.HintNameTable[i];
+                        Console.WriteLine($"    Hint/Name Table Entry {i}");
+                        Console.WriteLine($"      Hint: {hintNameTableEntry.Hint}");
+                        Console.WriteLine($"      Name: {hintNameTableEntry.Name}");
+                    }
+                }
+            }
+            Console.WriteLine();
+
             Console.WriteLine("  Resource Directory Table Information:");
             Console.WriteLine("  -------------------------");
             if (executable.OptionalHeader?.ResourceTable == null
