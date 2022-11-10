@@ -566,6 +566,10 @@ namespace BurnOutSharp.Builder
 
                             stringData.Value = entry.Data.ReadString(ref offset, Encoding.Unicode);
 
+                            // TODO: Is this necessary?
+                            while ((offset % 4) != 0)
+                                _ = entry.Data.ReadUInt16(ref offset);
+
                             stringTableChildren.Add(stringData);
                         }
 
@@ -676,6 +680,10 @@ namespace BurnOutSharp.Builder
                                 stringData.Padding = entry.Data.ReadUInt16(ref offset);
 
                             stringData.Value = entry.Data.ReadString(ref offset, Encoding.Unicode);
+
+                            // TODO: Is this necessary?
+                            while ((offset % 4) != 0)
+                                _ = entry.Data.ReadUInt16(ref offset);
 
                             stringTableChildren.Add(stringData);
                         }

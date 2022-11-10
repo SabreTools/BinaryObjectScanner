@@ -938,7 +938,96 @@ namespace ExecutableTest
                         }
                         else
                         {
-                            // TODO: Add pretty-printing for version info
+                            Console.WriteLine($"{padding}Length: {versionInfo.Length}");
+                            Console.WriteLine($"{padding}Value length: {versionInfo.ValueLength}");
+                            Console.WriteLine($"{padding}Resource type: {versionInfo.ResourceType}");
+                            Console.WriteLine($"{padding}Key: {versionInfo.Key}");
+                            if (versionInfo.ValueLength != 0 && versionInfo.Value != null)
+                            {
+                                Console.WriteLine($"{padding}[Fixed File Info] Signature: {versionInfo.Value.Signature}");
+                                Console.WriteLine($"{padding}[Fixed File Info] Struct version: {versionInfo.Value.StrucVersion}");
+                                Console.WriteLine($"{padding}[Fixed File Info] File version (MS): {versionInfo.Value.FileVersionMS}");
+                                Console.WriteLine($"{padding}[Fixed File Info] File version (LS): {versionInfo.Value.FileVersionLS}");
+                                Console.WriteLine($"{padding}[Fixed File Info] Product version (MS): {versionInfo.Value.ProductVersionMS}");
+                                Console.WriteLine($"{padding}[Fixed File Info] Product version (LS): {versionInfo.Value.ProductVersionLS}");
+                                Console.WriteLine($"{padding}[Fixed File Info] File flags mask: {versionInfo.Value.FileFlagsMask}");
+                                Console.WriteLine($"{padding}[Fixed File Info] File flags: {versionInfo.Value.FileFlags}");
+                                Console.WriteLine($"{padding}[Fixed File Info] File OS: {versionInfo.Value.FileOS}");
+                                Console.WriteLine($"{padding}[Fixed File Info] Type: {versionInfo.Value.FileType}");
+                                Console.WriteLine($"{padding}[Fixed File Info] Subtype: {versionInfo.Value.FileSubtype}");
+                                Console.WriteLine($"{padding}[Fixed File Info] File date (MS): {versionInfo.Value.FileDateMS}");
+                                Console.WriteLine($"{padding}[Fixed File Info] File date (LS): {versionInfo.Value.FileDateLS}");
+                            }
+                            if (versionInfo.StringFileInfo != null)
+                            {
+                                Console.WriteLine($"{padding}[String File Info] Length: {versionInfo.StringFileInfo.Length}");
+                                Console.WriteLine($"{padding}[String File Info] Value length: {versionInfo.StringFileInfo.ValueLength}");
+                                Console.WriteLine($"{padding}[String File Info] Resource type: {versionInfo.StringFileInfo.ResourceType}");
+                                Console.WriteLine($"{padding}[String File Info] Key: {versionInfo.StringFileInfo.Key}");
+                                Console.WriteLine($"{padding}Children:");
+                                Console.WriteLine($"{padding}-------------------------");
+                                if (versionInfo.StringFileInfo.Children == null || versionInfo.StringFileInfo.Children.Length == 0)
+                                {
+                                    Console.WriteLine($"{padding}No string file info children");
+                                }
+                                else
+                                {
+                                    for (int i = 0; i < versionInfo.StringFileInfo.Children.Length; i++)
+                                    {
+                                        var stringFileInfoChildEntry = versionInfo.StringFileInfo.Children[i];
+
+                                        Console.WriteLine($"{padding}  [String Table {i}] Length: {stringFileInfoChildEntry.Length}");
+                                        Console.WriteLine($"{padding}  [String Table {i}] Value length: {stringFileInfoChildEntry.ValueLength}");
+                                        Console.WriteLine($"{padding}  [String Table {i}] ResourceType: {stringFileInfoChildEntry.ResourceType}");
+                                        Console.WriteLine($"{padding}  [String Table {i}] Key: {stringFileInfoChildEntry.Key}");
+                                        Console.WriteLine($"{padding}  [String Table {i}] Children:");
+                                        Console.WriteLine($"{padding}  -------------------------");
+                                        if (stringFileInfoChildEntry.Children == null || stringFileInfoChildEntry.Children.Length == 0)
+                                        {
+                                            Console.WriteLine($"{padding}  No string table {i} children");
+                                        }
+                                        else
+                                        {
+                                            for (int j = 0; j < stringFileInfoChildEntry.Children.Length; j++)
+                                            {
+                                                var stringDataEntry = stringFileInfoChildEntry.Children[j];
+
+                                                Console.WriteLine($"{padding}    [String Data {j}] Length: {stringDataEntry.Length}");
+                                                Console.WriteLine($"{padding}    [String Data {j}] Value length: {stringDataEntry.ValueLength}");
+                                                Console.WriteLine($"{padding}    [String Data {j}] ResourceType: {stringDataEntry.ResourceType}");
+                                                Console.WriteLine($"{padding}    [String Data {j}] Key: {stringDataEntry.Key}");
+                                                Console.WriteLine($"{padding}    [String Data {j}] Value: {stringDataEntry.Value}");
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            if (versionInfo.VarFileInfo != null)
+                            {
+                                Console.WriteLine($"{padding}[Var File Info] Length: {versionInfo.VarFileInfo.Length}");
+                                Console.WriteLine($"{padding}[Var File Info] Value length: {versionInfo.VarFileInfo.ValueLength}");
+                                Console.WriteLine($"{padding}[Var File Info] Resource type: {versionInfo.VarFileInfo.ResourceType}");
+                                Console.WriteLine($"{padding}[Var File Info] Key: {versionInfo.VarFileInfo.Key}");
+                                Console.WriteLine($"{padding}Children:");
+                                Console.WriteLine($"{padding}-------------------------");
+                                if (versionInfo.VarFileInfo.Children == null || versionInfo.VarFileInfo.Children.Length == 0)
+                                {
+                                    Console.WriteLine($"{padding}No var file info children");
+                                }
+                                else
+                                {
+                                    for (int i = 0; i < versionInfo.VarFileInfo.Children.Length; i++)
+                                    {
+                                        var varFileInfoChildEntry = versionInfo.VarFileInfo.Children[i];
+
+                                        Console.WriteLine($"{padding}  [String Table {i}] Length: {varFileInfoChildEntry.Length}");
+                                        Console.WriteLine($"{padding}  [String Table {i}] Value length: {varFileInfoChildEntry.ValueLength}");
+                                        Console.WriteLine($"{padding}  [String Table {i}] ResourceType: {varFileInfoChildEntry.ResourceType}");
+                                        Console.WriteLine($"{padding}  [String Table {i}] Key: {varFileInfoChildEntry.Key}");
+                                        Console.WriteLine($"{padding}  [String Table {i}] Value: {string.Join(",", varFileInfoChildEntry.Value)}");
+                                    }
+                                }
+                            }
                         }
                         break;
                     case BurnOutSharp.Models.PortableExecutable.ResourceType.RT_DLGINCLUDE:
