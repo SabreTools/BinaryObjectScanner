@@ -31,6 +31,12 @@ namespace BurnOutSharp.Models.PortableExecutable
         /// </summary>
         public OptionalHeader OptionalHeader { get; set; }
 
+        // TODO: Support grouped sections in section reading and parsing
+        // https://learn.microsoft.com/en-us/windows/win32/debug/pe-format#grouped-sections-object-only
+        // Grouped sections are ordered and mean that the data in the sections contributes
+        // to the "base" section (the one without the "$X" suffix). This may negatively impact
+        // the use of some of the different types of executables.
+
         /// <summary>
         /// Section table
         /// </summary>
@@ -66,7 +72,6 @@ namespace BurnOutSharp.Models.PortableExecutable
         #endregion
 
         // TODO: Implement and/or document the following non-modeled parts:
-        // - Grouped Sections (Object Only)
         // - Certificate Data
         // - Delay Import Address Table
         // - Delay Import Name Table
