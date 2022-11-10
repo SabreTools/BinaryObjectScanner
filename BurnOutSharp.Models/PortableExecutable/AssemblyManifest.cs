@@ -52,6 +52,20 @@ namespace BurnOutSharp.Models.PortableExecutable
     }
 
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/sbscs/manifest-file-schema"/>
+    public class AssemblyActiveCodePage
+    {
+        [XmlText]
+        public string Value;
+    }
+
+    /// <see href="https://learn.microsoft.com/en-us/windows/win32/sbscs/manifest-file-schema"/>
+    public class AssemblyAutoElevate
+    {
+        [XmlText]
+        public string Value;
+    }
+
+    /// <see href="https://learn.microsoft.com/en-us/windows/win32/sbscs/manifest-file-schema"/>
     public class AssemblyBindingRedirect
     {
         [XmlAttribute("oldVersion")]
@@ -196,6 +210,34 @@ namespace BurnOutSharp.Models.PortableExecutable
     }
 
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/sbscs/manifest-file-schema"/>
+    public class AssemblyDisableTheming
+    {
+        [XmlText]
+        public string Value;
+    }
+
+    /// <see href="https://learn.microsoft.com/en-us/windows/win32/sbscs/manifest-file-schema"/>
+    public class AssemblyDisableWindowFiltering
+    {
+        [XmlText]
+        public string Value;
+    }
+
+    /// <see href="https://learn.microsoft.com/en-us/windows/win32/sbscs/manifest-file-schema"/>
+    public class AssemblyDPIAware
+    {
+        [XmlText]
+        public string Value;
+    }
+
+    /// <see href="https://learn.microsoft.com/en-us/windows/win32/sbscs/manifest-file-schema"/>
+    public class AssemblyDPIAwareness
+    {
+        [XmlText]
+        public string Value;
+    }
+
+    /// <see href="https://learn.microsoft.com/en-us/windows/win32/sbscs/manifest-file-schema"/>
     public class AssemblyFile
     {
         [XmlAttribute("name")]
@@ -228,6 +270,27 @@ namespace BurnOutSharp.Models.PortableExecutable
     }
 
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/sbscs/manifest-file-schema"/>
+    public class AssemblyGDIScaling
+    {
+        [XmlText]
+        public string Value;
+    }
+
+    /// <see href="https://learn.microsoft.com/en-us/windows/win32/sbscs/manifest-file-schema"/>
+    public class AssemblyHeapType
+    {
+        [XmlText]
+        public string Value;
+    }
+
+    /// <see href="https://learn.microsoft.com/en-us/windows/win32/sbscs/manifest-file-schema"/>
+    public class AssemblyHighResolutionScrollingAware
+    {
+        [XmlText]
+        public string Value;
+    }
+
+    /// <see href="https://learn.microsoft.com/en-us/windows/win32/sbscs/manifest-file-schema"/>
     public class AssemblyIdentity
     {
         [XmlAttribute("name")]
@@ -250,6 +313,13 @@ namespace BurnOutSharp.Models.PortableExecutable
     }
 
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/sbscs/manifest-file-schema"/>
+    public class AssemblyLongPathAware
+    {
+        [XmlText]
+        public string Value;
+    }
+
+    /// <see href="https://learn.microsoft.com/en-us/windows/win32/sbscs/manifest-file-schema"/>
     public class AssemblyNoInherit
     {
     }
@@ -257,6 +327,13 @@ namespace BurnOutSharp.Models.PortableExecutable
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/sbscs/manifest-file-schema"/>
     public class AssemblyNoInheritable
     {
+    }
+
+    /// <see href="https://learn.microsoft.com/en-us/windows/win32/sbscs/manifest-file-schema"/>
+    public class AssemblyPrinterDriverIsolation
+    {
+        [XmlText]
+        public string Value;
     }
 
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/sbscs/manifest-file-schema"/>
@@ -290,6 +367,13 @@ namespace BurnOutSharp.Models.PortableExecutable
 
         [XmlElement("flags")]
         public string Flags;
+    }
+
+    /// <see href="https://learn.microsoft.com/en-us/windows/win32/sbscs/manifest-file-schema"/>
+    public class AssemblyUltraHighResolutionScrollingAware
+    {
+        [XmlText]
+        public string Value;
     }
 
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/sbscs/manifest-file-schema"/>
