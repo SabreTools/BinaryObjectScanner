@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Xml.Serialization;
 
 namespace BurnOutSharp.Builder
 {
@@ -416,6 +417,28 @@ namespace BurnOutSharp.Builder
             }
 
             return table;
+        }
+
+        /// <summary>
+        /// Read resource data as a side-by-side assembly manifest
+        /// </summary>
+        /// <param name="data">Resource data entry to parse into a side-by-side assembly manifest</param>
+        /// <returns>A filled side-by-side assembly manifest on success, null on error</returns>
+        public static Models.PortableExecutable.AssemblyManifest AsAssemblyManifest(this Models.PortableExecutable.ResourceDataEntry entry)
+        {
+            // If we have an invalid entry, just skip
+            if (entry?.Data == null)
+                return null;
+
+            try
+            {
+                XmlSerializer serializer = new XmlSerializer(typeof(Models.PortableExecutable.AssemblyManifest));
+                return serializer.Deserialize(new MemoryStream(entry.Data)) as Models.PortableExecutable.AssemblyManifest;
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         /// <summary>
