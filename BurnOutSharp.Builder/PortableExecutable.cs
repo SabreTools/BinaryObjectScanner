@@ -179,18 +179,40 @@ namespace BurnOutSharp.Builder
             if (optionalHeader.ExportTable != null && optionalHeader.ExportTable.VirtualAddress != 0)
             {
                 // If the offset for the export table doesn't exist
-                int tableAddress = initialOffset
+                int exportTableAddress = initialOffset
                     + (int)optionalHeader.ExportTable.VirtualAddress.ConvertVirtualAddress(executable.SectionTable);
-                if (tableAddress >= data.Length)
+                if (exportTableAddress >= data.Length)
                     return executable;
 
                 // Try to parse the export table
-                var exportTable = ParseExportTable(data, tableAddress, executable.SectionTable);
+                var exportTable = ParseExportTable(data, exportTableAddress, executable.SectionTable);
                 if (exportTable == null)
                     return null;
 
                 // Set the export table
                 executable.ExportTable = exportTable;
+            }
+
+            #endregion
+
+            #region Import Table
+
+            // Should also be in the '.idata' section
+            if (optionalHeader.ImportTable != null && optionalHeader.ImportTable.VirtualAddress != 0)
+            {
+                // If the offset for the import table doesn't exist
+                int importTableAddress = initialOffset
+                    + (int)optionalHeader.ImportTable.VirtualAddress.ConvertVirtualAddress(executable.SectionTable);
+                if (importTableAddress >= data.Length)
+                    return executable;
+
+                // Try to parse the import table
+                var importTable = ParseImportTable(data, importTableAddress, optionalHeader.Magic, executable.SectionTable);
+                if (importTable == null)
+                    return null;
+
+                // Set the import table
+                executable.ImportTable = importTable;
             }
 
             #endregion
@@ -692,12 +714,12 @@ namespace BurnOutSharp.Builder
         }
 
         /// <summary>
-        /// Parse a byte array into a export directory table
+        /// Parse a byte array into a export table
         /// </summary>
         /// <param name="data">Byte array to parse</param>
         /// <param name="offset">Offset into the byte array</param>
         /// <param name="sections">Section table to use for virtual address translation</param>
-        /// <returns>Filled export directory table on success, null on error</returns>
+        /// <returns>Filled export table on success, null on error</returns>
         private static ExportTable ParseExportTable(byte[] data, int offset, SectionHeader[] sections)
         {
             // TODO: Use marshalling here instead of building
@@ -796,6 +818,152 @@ namespace BurnOutSharp.Builder
             }
 
             return exportTable;
+        }
+
+        /// <summary>
+        /// Parse a byte array into a import table
+        /// </summary>
+        /// <param name="data">Byte array to parse</param>
+        /// <param name="offset">Offset into the byte array</param>
+        /// <param name="magic">Optional header magic number indicating PE32 or PE32+</param>
+        /// <param name="sections">Section table to use for virtual address translation</param>
+        /// <returns>Filled import table on success, null on error</returns>
+        private static ImportTable ParseImportTable(byte[] data, int offset, OptionalHeaderMagicNumber magic, SectionHeader[] sections)
+        {
+            // TODO: Use marshalling here instead of building
+            var importTable = new ImportTable();
+
+            // Import directory table
+            var importDirectoryTable = new List<ImportDirectoryTableEntry>();
+
+            // Loop until the last item (all nulls) are found
+            while (true)
+            {
+                var importDirectoryTableEntry = new ImportDirectoryTableEntry();
+
+                importDirectoryTableEntry.ImportLookupTableRVA = data.ReadUInt32(ref offset);
+                importDirectoryTableEntry.TimeDateStamp = data.ReadUInt32(ref offset);
+                importDirectoryTableEntry.ForwarderChain = data.ReadUInt32(ref offset);
+                importDirectoryTableEntry.NameRVA = data.ReadUInt32(ref offset);
+                importDirectoryTableEntry.ImportAddressTableRVA = data.ReadUInt32(ref offset);
+
+                importDirectoryTable.Add(importDirectoryTableEntry);
+
+                // All zero values means the last entry
+                if (importDirectoryTableEntry.ImportLookupTableRVA == 0
+                    && importDirectoryTableEntry.TimeDateStamp == 0
+                    && importDirectoryTableEntry.ForwarderChain == 0
+                    && importDirectoryTableEntry.NameRVA == 0
+                    && importDirectoryTableEntry.ImportAddressTableRVA == 0)
+                    break;
+            }
+
+            importTable.ImportDirectoryTable = importDirectoryTable.ToArray();
+
+            // Names
+            for (int i = 0; i < importTable.ImportDirectoryTable.Length; i++)
+            {
+                var importDirectoryTableEntry = importTable.ImportDirectoryTable[i];
+                if (importDirectoryTableEntry.NameRVA != 0)
+                {
+                    int nameAddress = (int)importDirectoryTableEntry.NameRVA.ConvertVirtualAddress(sections);
+                    string name = data.ReadString(ref nameAddress, System.Text.Encoding.ASCII);
+                    importDirectoryTableEntry.Name = name;
+                }
+            }
+
+            // Lookup tables
+            for (int i = 0; i < importTable.ImportDirectoryTable.Length; i++)
+            {
+                var importLookupTable = new Dictionary<int, ImportLookupTableEntry[]>();
+
+                var importDirectoryTableEntry = importTable.ImportDirectoryTable[i];
+                if (importDirectoryTableEntry.ImportLookupTableRVA != 0)
+                {
+                    int tableAddress = (int)importDirectoryTableEntry.ImportLookupTableRVA.ConvertVirtualAddress(sections);
+                    var entryLookupTable = new List<ImportLookupTableEntry>();
+
+                    while (true)
+                    {
+                        var entryLookupTableEntry = new ImportLookupTableEntry();
+
+                        if (magic == OptionalHeaderMagicNumber.PE32)
+                        {
+                            uint entryValue = data.ReadUInt32(ref tableAddress);
+                            entryLookupTableEntry.OrdinalNameFlag = (entryValue & 0x80000000) != 0;
+                            if (entryLookupTableEntry.OrdinalNameFlag)
+                                entryLookupTableEntry.OrdinalNumber = (ushort)(entryValue & ~0x80000000);
+                            else
+                                entryLookupTableEntry.HintNameTableRVA = (uint)(entryValue & ~0x80000000);
+                        }
+                        else if (magic == OptionalHeaderMagicNumber.PE32Plus)
+                        {
+                            ulong entryValue = data.ReadUInt64(ref tableAddress);
+                            entryLookupTableEntry.OrdinalNameFlag = (entryValue & 0x8000000000000000) != 0;
+                            if (entryLookupTableEntry.OrdinalNameFlag)
+                                entryLookupTableEntry.OrdinalNumber = (ushort)(entryValue & ~0x8000000000000000);
+                            else
+                                entryLookupTableEntry.HintNameTableRVA = (uint)(entryValue & ~0x8000000000000000);
+                        }
+
+                        entryLookupTable.Add(entryLookupTableEntry);
+
+                        // All zero values means the last entry
+                        if (entryLookupTableEntry.OrdinalNameFlag == false
+                            && entryLookupTableEntry.OrdinalNumber == 0
+                            && entryLookupTableEntry.HintNameTableRVA == 0)
+                            break;
+                    }
+
+                    importLookupTable[i] = entryLookupTable.ToArray();
+                }
+
+                importTable.ImportLookupTables = importLookupTable;
+            }
+
+            // Address tables
+            for (int i = 0; i < importTable.ImportDirectoryTable.Length; i++)
+            {
+                var importLookupTable = new Dictionary<int, ImportAddressTableEntry[]>();
+
+                var importDirectoryTableEntry = importTable.ImportDirectoryTable[i];
+                if (importDirectoryTableEntry.ImportAddressTableRVA != 0)
+                {
+                    int tableAddress = (int)importDirectoryTableEntry.ImportAddressTableRVA.ConvertVirtualAddress(sections);
+                    var entryAddressTable = new List<ImportAddressTableEntry>();
+
+                    while (true)
+                    {
+                        var entryLookupTableEntry = new ImportAddressTableEntry();
+
+                        if (magic == OptionalHeaderMagicNumber.PE32)
+                        {
+                            uint entryValue = data.ReadUInt32(ref tableAddress);
+                            entryLookupTableEntry.Address_PE32 = entryValue;
+                        }
+                        else if (magic == OptionalHeaderMagicNumber.PE32Plus)
+                        {
+                            ulong entryValue = data.ReadUInt64(ref tableAddress);
+                            entryLookupTableEntry.Address_PE32Plus = entryValue;
+                        }
+
+                        entryAddressTable.Add(entryLookupTableEntry);
+
+                        // All zero values means the last entry
+                        if (entryLookupTableEntry.Address_PE32 == 0
+                            && entryLookupTableEntry.Address_PE32Plus == 0)
+                            break;
+                    }
+
+                    importLookupTable[i] = entryAddressTable.ToArray();
+                }
+
+                importTable.ImportAddressTables = importLookupTable;
+            }
+
+            // TODO: Figure out how to find the hint/name table
+
+            return importTable;
         }
 
         /// <summary>
@@ -1119,6 +1287,29 @@ namespace BurnOutSharp.Builder
 
                 // Set the export table
                 executable.ExportTable = exportTable;
+            }
+
+            #endregion
+
+            #region Import Table
+
+            // Should also be in the '.idata' section
+            if (optionalHeader.ImportTable != null && optionalHeader.ImportTable.VirtualAddress != 0)
+            {
+                // If the offset for the import table doesn't exist
+                int importTableAddress = initialOffset
+                    + (int)optionalHeader.ImportTable.VirtualAddress.ConvertVirtualAddress(executable.SectionTable);
+                if (importTableAddress >= data.Length)
+                    return executable;
+
+                // Try to parse the import table
+                data.Seek(importTableAddress, SeekOrigin.Begin);
+                var importTable = ParseImportTable(data, optionalHeader.Magic, executable.SectionTable);
+                if (importTable == null)
+                    return null;
+
+                // Set the import table
+                executable.ImportTable = importTable;
             }
 
             #endregion
@@ -1614,11 +1805,11 @@ namespace BurnOutSharp.Builder
         }
 
         /// <summary>
-        /// Parse a Stream into a export directory table
+        /// Parse a Stream into a export table
         /// </summary>
         /// <param name="data">Stream to parse</param>
         /// <param name="sections">Section table to use for virtual address translation</param>
-        /// <returns>Filled export directory table on success, null on error</returns>
+        /// <returns>Filled export table on success, null on error</returns>
         private static ExportTable ParseExportTable(Stream data, SectionHeader[] sections)
         {
             // TODO: Use marshalling here instead of building
@@ -1727,6 +1918,157 @@ namespace BurnOutSharp.Builder
             }
 
             return exportTable;
+        }
+
+        /// <summary>
+        /// Parse a Stream into a import table
+        /// </summary>
+        /// <param name="data">Stream to parse</param>
+        /// <param name="magic">Optional header magic number indicating PE32 or PE32+</param>
+        /// <param name="sections">Section table to use for virtual address translation</param>
+        /// <returns>Filled import table on success, null on error</returns>
+        private static ImportTable ParseImportTable(Stream data, OptionalHeaderMagicNumber magic, SectionHeader[] sections)
+        {
+            // TODO: Use marshalling here instead of building
+            var importTable = new ImportTable();
+
+            // Import directory table
+            var importDirectoryTable = new List<ImportDirectoryTableEntry>();
+
+            // Loop until the last item (all nulls) are found
+            while (true)
+            {
+                var importDirectoryTableEntry = new ImportDirectoryTableEntry();
+
+                importDirectoryTableEntry.ImportLookupTableRVA = data.ReadUInt32();
+                importDirectoryTableEntry.TimeDateStamp = data.ReadUInt32();
+                importDirectoryTableEntry.ForwarderChain = data.ReadUInt32();
+                importDirectoryTableEntry.NameRVA = data.ReadUInt32();
+                importDirectoryTableEntry.ImportAddressTableRVA = data.ReadUInt32();
+
+                importDirectoryTable.Add(importDirectoryTableEntry);
+
+                // All zero values means the last entry
+                if (importDirectoryTableEntry.ImportLookupTableRVA == 0
+                    && importDirectoryTableEntry.TimeDateStamp == 0
+                    && importDirectoryTableEntry.ForwarderChain == 0
+                    && importDirectoryTableEntry.NameRVA == 0
+                    && importDirectoryTableEntry.ImportAddressTableRVA == 0)
+                    break;
+            }
+
+            importTable.ImportDirectoryTable = importDirectoryTable.ToArray();
+
+            // Names
+            for (int i = 0; i < importTable.ImportDirectoryTable.Length; i++)
+            {
+                var importDirectoryTableEntry = importTable.ImportDirectoryTable[i];
+                if (importDirectoryTableEntry.NameRVA != 0)
+                {
+                    uint nameAddress = importDirectoryTableEntry.NameRVA.ConvertVirtualAddress(sections);
+                    data.Seek(nameAddress, SeekOrigin.Begin);
+
+                    string name = data.ReadString(System.Text.Encoding.ASCII);
+                    importDirectoryTableEntry.Name = name;
+                }
+            }
+
+            // Lookup tables
+            for (int i = 0; i < importTable.ImportDirectoryTable.Length; i++)
+            {
+                var importLookupTable = new Dictionary<int, ImportLookupTableEntry[]>();
+
+                var importDirectoryTableEntry = importTable.ImportDirectoryTable[i];
+                if (importDirectoryTableEntry.ImportLookupTableRVA != 0)
+                {
+                    uint tableAddress = importDirectoryTableEntry.ImportLookupTableRVA.ConvertVirtualAddress(sections);
+                    data.Seek(tableAddress, SeekOrigin.Begin);
+
+                    var entryLookupTable = new List<ImportLookupTableEntry>();
+
+                    while (true)
+                    {
+                        var entryLookupTableEntry = new ImportLookupTableEntry();
+
+                        if (magic == OptionalHeaderMagicNumber.PE32)
+                        {
+                            uint entryValue = data.ReadUInt32();
+                            entryLookupTableEntry.OrdinalNameFlag = (entryValue & 0x80000000) != 0;
+                            if (entryLookupTableEntry.OrdinalNameFlag)
+                                entryLookupTableEntry.OrdinalNumber = (ushort)(entryValue & ~0x80000000);
+                            else
+                                entryLookupTableEntry.HintNameTableRVA = (uint)(entryValue & ~0x80000000);
+                        }
+                        else if (magic == OptionalHeaderMagicNumber.PE32Plus)
+                        {
+                            ulong entryValue = data.ReadUInt64();
+                            entryLookupTableEntry.OrdinalNameFlag = (entryValue & 0x8000000000000000) != 0;
+                            if (entryLookupTableEntry.OrdinalNameFlag)
+                                entryLookupTableEntry.OrdinalNumber = (ushort)(entryValue & ~0x8000000000000000);
+                            else
+                                entryLookupTableEntry.HintNameTableRVA = (uint)(entryValue & ~0x8000000000000000);
+                        }
+
+                        entryLookupTable.Add(entryLookupTableEntry);
+
+                        // All zero values means the last entry
+                        if (entryLookupTableEntry.OrdinalNameFlag == false
+                            && entryLookupTableEntry.OrdinalNumber == 0
+                            && entryLookupTableEntry.HintNameTableRVA == 0)
+                            break;
+                    }
+
+                    importLookupTable[i] = entryLookupTable.ToArray();
+                }
+
+                importTable.ImportLookupTables = importLookupTable;
+            }
+
+            // Address tables
+            for (int i = 0; i < importTable.ImportDirectoryTable.Length; i++)
+            {
+                var importLookupTable = new Dictionary<int, ImportAddressTableEntry[]>();
+
+                var importDirectoryTableEntry = importTable.ImportDirectoryTable[i];
+                if (importDirectoryTableEntry.ImportAddressTableRVA != 0)
+                {
+                    uint tableAddress = importDirectoryTableEntry.ImportAddressTableRVA.ConvertVirtualAddress(sections);
+                    data.Seek(tableAddress, SeekOrigin.Begin);
+
+                    var entryAddressTable = new List<ImportAddressTableEntry>();
+
+                    while (true)
+                    {
+                        var entryLookupTableEntry = new ImportAddressTableEntry();
+
+                        if (magic == OptionalHeaderMagicNumber.PE32)
+                        {
+                            uint entryValue = data.ReadUInt32();
+                            entryLookupTableEntry.Address_PE32 = entryValue;
+                        }
+                        else if (magic == OptionalHeaderMagicNumber.PE32Plus)
+                        {
+                            ulong entryValue = data.ReadUInt64();
+                            entryLookupTableEntry.Address_PE32Plus = entryValue;
+                        }
+
+                        entryAddressTable.Add(entryLookupTableEntry);
+
+                        // All zero values means the last entry
+                        if (entryLookupTableEntry.Address_PE32 == 0
+                            && entryLookupTableEntry.Address_PE32Plus == 0)
+                            break;
+                    }
+
+                    importLookupTable[i] = entryAddressTable.ToArray();
+                }
+
+                importTable.ImportAddressTables = importLookupTable;
+            }
+
+            // TODO: Figure out how to find the hint/name table
+
+            return importTable;
         }
 
         /// <summary>

@@ -40,9 +40,14 @@ namespace BurnOutSharp.Models.PortableExecutable
         public uint NameRVA;
 
         /// <summary>
+        /// ASCII string that contains the name of the DLL.
+        /// </summary>
+        public string Name;
+
+        /// <summary>
         /// The RVA of the import address table. The contents of this table are identical
         /// to the contents of the import lookup table until the image is bound.
         /// </summary>
-        public uint ImportAddressTableRVAThunkTable;
+        public uint ImportAddressTableRVA;
     }
 }
