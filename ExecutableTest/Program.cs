@@ -741,7 +741,30 @@ namespace ExecutableTest
             Console.WriteLine();
 
             // TODO: COFFStringTable (Only if COFFSymbolTable?)
-            // TODO: AttributeCertificateTable
+
+            Console.WriteLine("  Attribute Certificate Table Information:");
+            Console.WriteLine("  -------------------------");
+            if (executable.OptionalHeader?.CertificateTable == null
+                || executable.OptionalHeader.CertificateTable.VirtualAddress == 0
+                || executable.AttributeCertificateTable.Length == 0)
+            {
+                Console.WriteLine("  No attribute certificate table items");
+            }
+            else
+            {
+                for (int i = 0; i < executable.AttributeCertificateTable.Length; i++)
+                {
+                    var entry = executable.AttributeCertificateTable[i];
+                    Console.WriteLine($"  Attribute Certificate Table Entry {i}");
+                    Console.WriteLine($"    Length = {entry.Length}");
+                    Console.WriteLine($"    Revision = {entry.Revision}");
+                    Console.WriteLine($"    Certificate type = {entry.CertificateType}");
+                    Console.WriteLine($"    Certificate = {BitConverter.ToString(entry.Certificate).Replace("-", string.Empty)}");
+                    // TODO: Add certificate type parsing
+                }
+            }
+            Console.WriteLine();
+
             // TODO: DelayLoadDirectoryTable
 
             Console.WriteLine("  Resource Directory Table Information:");
