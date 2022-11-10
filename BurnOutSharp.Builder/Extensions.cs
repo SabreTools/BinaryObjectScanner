@@ -665,7 +665,6 @@ namespace BurnOutSharp.Builder
 
                             stringData.Value = entry.Data.ReadString(ref offset, Encoding.Unicode);
 
-                            // TODO: Is this necessary?
                             while ((offset % 4) != 0)
                                 _ = entry.Data.ReadUInt16(ref offset);
 
@@ -780,7 +779,6 @@ namespace BurnOutSharp.Builder
 
                             stringData.Value = entry.Data.ReadString(ref offset, Encoding.Unicode);
 
-                            // TODO: Is this necessary?
                             while ((offset % 4) != 0)
                                 _ = entry.Data.ReadUInt16(ref offset);
 

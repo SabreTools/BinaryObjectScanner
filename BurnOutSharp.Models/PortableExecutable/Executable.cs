@@ -72,28 +72,24 @@ namespace BurnOutSharp.Models.PortableExecutable
         #endregion
 
         // TODO: Implement and/or document the following non-modeled parts:
-        // - Certificate Data
         // - Delay Import Address Table
         // - Delay Import Name Table
         // - Delay Bound Import Address Table
         // - Delay Unload Import Address Table
         // - The .debug Section
-        // - IMAGE_DEBUG_TYPE_FPO
-        // - .debug$F (Object Only)
-        // - .debug$S (Object Only)
-        // - .debug$P (Object Only)
-        // - .debug$T (Object Only)
+        // - .debug$F (Object Only) / IMAGE_DEBUG_TYPE_FPO
         // - The .drectve Section (Object Only)
         // - The .edata Section (Image Only)
-        // - Export Name Pointer Table
-        // - Export Ordinal Table
-        // - Export Name Table
+        //      - [Export directory table]
+        //      - [Export address table]
+        //      - [Export Name Pointer Table]
+        //      - [Export Ordinal Table]
+        //      - [Export Name Table]
         // - The .idata Section
         // - Import Lookup Table [has model, but bit-based]
         // - Import Address Table
         // - The .pdata Section [Multiple formats per entry]
         // - TLS Callback Functions
-        // - The .rsrc Section
         // - The .cormeta Section (Object Only)
         // - The .sxdata Section
 
