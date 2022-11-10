@@ -83,6 +83,17 @@ namespace BurnOutSharp.Models.PortableExecutable
         /// </summary>
         public ResourceDirectoryTable ResourceDirectoryTable { get; set; }
 
+        // .sxdata - The valid exception handlers of an object are listed in the .sxdata
+        // section of that object. The section is marked IMAGE_SCN_LNK_INFO. It contains
+        // the COFF symbol index of each valid handler, using 4 bytes per index.
+        //
+        // Additionally, the compiler marks a COFF object as registered SEH by emitting
+        // the absolute symbol "@feat.00" with the LSB of the value field set to 1. A
+        // COFF object with no registered SEH handlers would have the "@feat.00" symbol,
+        // but no .sxdata section.
+        //
+        // TODO: Can we implement reading/parsing the .sxdata section?
+
         #endregion
 
         // TODO: Implement and/or document the following non-modeled parts:
@@ -95,7 +106,6 @@ namespace BurnOutSharp.Models.PortableExecutable
         // - The .drectve Section (Object Only)
         // - The .pdata Section [Multiple formats per entry]
         // - TLS Callback Functions
-        // - The .sxdata Section
 
         // TODO: Determine if "Archive (Library) File Format" is worth modelling
     }
