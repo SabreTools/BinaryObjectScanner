@@ -65,9 +65,14 @@ namespace BurnOutSharp.Models.PortableExecutable
         #region Named Sections
 
         /// <summary>
-        /// Export table (.edata);
+        /// Export table (.edata)
         /// </summary>
         public ExportTable ExportTable { get; set; }
+
+        /// <summary>
+        /// Import table (.idata)
+        /// </summary>
+        public ImportTable ImportTable { get; set; }
 
         /// <summary>
         /// Resource directory table (.rsrc)
@@ -84,9 +89,6 @@ namespace BurnOutSharp.Models.PortableExecutable
         // - The .debug Section
         // - .debug$F (Object Only) / IMAGE_DEBUG_TYPE_FPO
         // - The .drectve Section (Object Only)
-        // - The .idata Section
-        //      - Import Lookup Table [has model, but bit-based]
-        //      - Import Address Table
         // - The .pdata Section [Multiple formats per entry]
         // - TLS Callback Functions
         // - The .cormeta Section (Object Only)
