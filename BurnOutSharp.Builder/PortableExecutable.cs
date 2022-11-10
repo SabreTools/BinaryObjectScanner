@@ -93,7 +93,7 @@ namespace BurnOutSharp.Builder
 
             #endregion
 
-            #region COFF Symbol Table
+            #region COFF Symbol Table and COFF String Table
 
             // TODO: Validate that this is correct with an "old" PE
             if (coffFileHeader.PointerToSymbolTable != 0)
@@ -570,33 +570,6 @@ namespace BurnOutSharp.Builder
         }
 
         /// <summary>
-        /// Parse a byte array into an attribute certificate table
-        /// </summary>
-        /// <param name="data">Byte array to parse</param>
-        /// <param name="offset">Offset into the byte array</param>
-        /// <param name="endOffset">First address not part of the attribute certificate table</param>
-        /// <returns>Filled attribute certificate on success, null on error</returns>
-        private static AttributeCertificateTableEntry[] ParseAttributeCertificateTable(byte[] data, int offset, int endOffset)
-        {
-            var attributeCertificateTable = new List<AttributeCertificateTableEntry>();
-
-            while (offset < endOffset)
-            {
-                var entry = new AttributeCertificateTableEntry();
-
-                entry.Length = data.ReadUInt32(ref offset);
-                entry.Revision = (WindowsCertificateRevision)data.ReadUInt16(ref offset);
-                entry.CertificateType = (WindowsCertificateType)data.ReadUInt16(ref offset);
-                if (entry.Length > 0)
-                    entry.Certificate = data.ReadBytes(ref offset, (int)entry.Length);
-
-                attributeCertificateTable.Add(entry);
-            }
-
-            return attributeCertificateTable.ToArray();
-        }
-
-        /// <summary>
         /// Parse a Stream into a COFF string table
         /// </summary>
         /// <param name="data">Byte array to parse</param>
@@ -625,6 +598,33 @@ namespace BurnOutSharp.Builder
             coffStringTable.Strings = strings.ToArray();
 
             return coffStringTable;
+        }
+
+        /// <summary>
+        /// Parse a byte array into an attribute certificate table
+        /// </summary>
+        /// <param name="data">Byte array to parse</param>
+        /// <param name="offset">Offset into the byte array</param>
+        /// <param name="endOffset">First address not part of the attribute certificate table</param>
+        /// <returns>Filled attribute certificate on success, null on error</returns>
+        private static AttributeCertificateTableEntry[] ParseAttributeCertificateTable(byte[] data, int offset, int endOffset)
+        {
+            var attributeCertificateTable = new List<AttributeCertificateTableEntry>();
+
+            while (offset < endOffset)
+            {
+                var entry = new AttributeCertificateTableEntry();
+
+                entry.Length = data.ReadUInt32(ref offset);
+                entry.Revision = (WindowsCertificateRevision)data.ReadUInt16(ref offset);
+                entry.CertificateType = (WindowsCertificateType)data.ReadUInt16(ref offset);
+                if (entry.Length > 0)
+                    entry.Certificate = data.ReadBytes(ref offset, (int)entry.Length);
+
+                attributeCertificateTable.Add(entry);
+            }
+
+            return attributeCertificateTable.ToArray();
         }
 
         /// <summary>
@@ -853,7 +853,7 @@ namespace BurnOutSharp.Builder
 
             #endregion
 
-            #region COFF Symbol Table
+            #region COFF Symbol Table and COFF String Table
 
             // TODO: Validate that this is correct with an "old" PE
             if (coffFileHeader.PointerToSymbolTable != 0)

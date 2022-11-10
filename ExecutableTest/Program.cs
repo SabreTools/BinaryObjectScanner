@@ -740,10 +740,28 @@ namespace ExecutableTest
                     if (auxSymbolsRemaining == 0)
                         currentSymbolType = 0;
                 }
+
+                Console.WriteLine();
+                Console.WriteLine("  COFF String Table Information:");
+                Console.WriteLine("  -------------------------");
+                if (executable.COFFStringTable == null
+                    || executable.COFFStringTable.Strings == null
+                    || executable.COFFStringTable.Strings.Length == 0)
+                {
+                    Console.WriteLine("  No COFF string table items");
+                }
+                else
+                {
+                    Console.WriteLine($"  Total size: {executable.COFFStringTable.TotalSize}");
+                    for (int i = 0; i < executable.COFFStringTable.Strings.Length; i++)
+                    {
+                        string entry = executable.COFFStringTable.Strings[i];
+                        Console.WriteLine($"  COFF String Table Entry {i})");
+                        Console.WriteLine($"    Value = {entry}");
+                    }
+                }
             }
             Console.WriteLine();
-
-            // TODO: COFFStringTable (Only if COFFSymbolTable?)
 
             Console.WriteLine("  Attribute Certificate Table Information:");
             Console.WriteLine("  -------------------------");
