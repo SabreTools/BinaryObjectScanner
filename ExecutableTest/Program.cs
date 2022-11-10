@@ -786,7 +786,31 @@ namespace ExecutableTest
             }
             Console.WriteLine();
 
-            // TODO: DelayLoadDirectoryTable
+            Console.WriteLine("  Delay-Load Directory Table Information:");
+            Console.WriteLine("  -------------------------");
+            if (executable.OptionalHeader?.DelayImportDescriptor == null
+                || executable.OptionalHeader.DelayImportDescriptor.VirtualAddress == 0
+                || executable.DelayLoadDirectoryTable.Length == 0)
+            {
+                Console.WriteLine("  No delay-load directory table items");
+            }
+            else
+            {
+                for (int i = 0; i < executable.DelayLoadDirectoryTable.Length; i++)
+                {
+                    var entry = executable.DelayLoadDirectoryTable[i];
+                    Console.WriteLine($"  Delay-Load Directory Table Entry {i}");
+                    Console.WriteLine($"    Attributes = {entry.Attributes}");
+                    Console.WriteLine($"    Name RVA = {entry.Name}");
+                    Console.WriteLine($"    Module handle = {entry.ModuleHandle}");
+                    Console.WriteLine($"    Delay import address table RVA = {entry.DelayImportAddressTable}");
+                    Console.WriteLine($"    Delay import name table RVA = {entry.DelayImportNameTable}");
+                    Console.WriteLine($"    Bound delay import table RVA = {entry.BoundDelayImportTable}");
+                    Console.WriteLine($"    Unload delay import table RVA = {entry.UnloadDelayImportTable}");
+                    Console.WriteLine($"    Timestamp = {entry.TimeStamp}");
+                }
+            }
+            Console.WriteLine();
 
             Console.WriteLine("  Resource Directory Table Information:");
             Console.WriteLine("  -------------------------");
