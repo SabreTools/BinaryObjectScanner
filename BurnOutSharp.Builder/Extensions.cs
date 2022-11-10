@@ -543,7 +543,8 @@ namespace BurnOutSharp.Builder
                     string fullEncodedString = stringEncoding.GetString(entry.Data, offset, entry.Data.Length - offset);
                     if (stringLength > fullEncodedString.Length)
                     {
-                        // TODO: Print to console or return an error?
+                        // TODO: Do something better than print to console
+                        Console.WriteLine($"Requested {stringLength} but only have {fullEncodedString.Length} remaining, truncating...");
                         stringLength = (ushort)fullEncodedString.Length;
                     }
 
