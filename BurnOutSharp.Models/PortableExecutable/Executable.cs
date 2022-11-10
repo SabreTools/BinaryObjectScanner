@@ -102,7 +102,8 @@ namespace BurnOutSharp.Models.PortableExecutable
         // - Delay Bound Import Address Table
         // - Delay Unload Import Address Table
         // - The .debug Section
-        // - .debug$F (Object Only) / IMAGE_DEBUG_TYPE_FPO
+        //      - [Debug Directory Entry]
+        //      - .debug$F (Object Only) / IMAGE_DEBUG_TYPE_FPO
         // - The .drectve Section (Object Only)
         // - The .pdata Section [Multiple formats per entry]
         // - TLS Callback Functions
