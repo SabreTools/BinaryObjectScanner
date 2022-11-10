@@ -18,6 +18,6 @@
         /// must be matched to the public name in the DLL. This string is case sensitive
         /// and terminated by a null byte.
         /// </summary>
-        public byte[] Name;
+        public string Name;
     }
 }

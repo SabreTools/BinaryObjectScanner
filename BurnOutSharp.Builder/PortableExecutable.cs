@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using BurnOutSharp.Models.PortableExecutable;
 
 namespace BurnOutSharp.Builder
@@ -873,10 +874,10 @@ namespace BurnOutSharp.Builder
             }
 
             // Lookup tables
+            var importLookupTables = new Dictionary<int, ImportLookupTableEntry[]>();
+
             for (int i = 0; i < importTable.ImportDirectoryTable.Length; i++)
             {
-                var importLookupTable = new Dictionary<int, ImportLookupTableEntry[]>();
-
                 var importDirectoryTableEntry = importTable.ImportDirectoryTable[i];
                 if (importDirectoryTableEntry.ImportLookupTableRVA != 0)
                 {
@@ -915,17 +916,17 @@ namespace BurnOutSharp.Builder
                             break;
                     }
 
-                    importLookupTable[i] = entryLookupTable.ToArray();
+                    importLookupTables[i] = entryLookupTable.ToArray();
                 }
-
-                importTable.ImportLookupTables = importLookupTable;
             }
 
+            importTable.ImportLookupTables = importLookupTables;
+
             // Address tables
+            var importAddressTables = new Dictionary<int, ImportAddressTableEntry[]>();
+
             for (int i = 0; i < importTable.ImportDirectoryTable.Length; i++)
             {
-                var importLookupTable = new Dictionary<int, ImportAddressTableEntry[]>();
-
                 var importDirectoryTableEntry = importTable.ImportDirectoryTable[i];
                 if (importDirectoryTableEntry.ImportAddressTableRVA != 0)
                 {
@@ -955,13 +956,42 @@ namespace BurnOutSharp.Builder
                             break;
                     }
 
-                    importLookupTable[i] = entryAddressTable.ToArray();
+                    importAddressTables[i] = entryAddressTable.ToArray();
                 }
-
-                importTable.ImportAddressTables = importLookupTable;
             }
 
-            // TODO: Figure out how to find the hint/name table
+            importTable.ImportAddressTables = importAddressTables;
+
+            // Hint/Name table
+            if (importTable.ImportLookupTables != null && importTable.ImportLookupTables.Count > 0)
+            {
+                var importHintNameTable = new List<HintNameTableEntry>();
+
+                // Get the addresses of the hint/name table entries
+                List<int> hintNameTableEntryAddresses = importTable.ImportLookupTables
+                    .SelectMany(kvp => kvp.Value)
+                    .Select(ilte => (int)ilte.HintNameTableRVA.ConvertVirtualAddress(sections))
+                    .Distinct()
+                    .OrderBy(a => a)
+                    .ToList();
+
+                // If we have any addresses, add them to the table
+                if (hintNameTableEntryAddresses.Any())
+                {
+                    for (int i = 0; i < hintNameTableEntryAddresses.Count; i++)
+                    {
+                        int hintNameTableEntryAddress = hintNameTableEntryAddresses[i];
+                        var hintNameTableEntry = new HintNameTableEntry();
+
+                        hintNameTableEntry.Hint = data.ReadUInt16(ref hintNameTableEntryAddress);
+                        hintNameTableEntry.Name = data.ReadString(ref hintNameTableEntryAddress, System.Text.Encoding.ASCII);
+
+                        importHintNameTable.Add(hintNameTableEntry);
+                    }
+                }
+
+                importTable.HintNameTable = importHintNameTable.ToArray();
+            }
 
             return importTable;
         }
@@ -1974,10 +2004,10 @@ namespace BurnOutSharp.Builder
             }
 
             // Lookup tables
+            var importLookupTables = new Dictionary<int, ImportLookupTableEntry[]>();
+
             for (int i = 0; i < importTable.ImportDirectoryTable.Length; i++)
             {
-                var importLookupTable = new Dictionary<int, ImportLookupTableEntry[]>();
-
                 var importDirectoryTableEntry = importTable.ImportDirectoryTable[i];
                 if (importDirectoryTableEntry.ImportLookupTableRVA != 0)
                 {
@@ -2018,17 +2048,17 @@ namespace BurnOutSharp.Builder
                             break;
                     }
 
-                    importLookupTable[i] = entryLookupTable.ToArray();
+                    importLookupTables[i] = entryLookupTable.ToArray();
                 }
-
-                importTable.ImportLookupTables = importLookupTable;
             }
 
+            importTable.ImportLookupTables = importLookupTables;
+
             // Address tables
+            var importAddressTables = new Dictionary<int, ImportAddressTableEntry[]>();
+
             for (int i = 0; i < importTable.ImportDirectoryTable.Length; i++)
             {
-                var importLookupTable = new Dictionary<int, ImportAddressTableEntry[]>();
-
                 var importDirectoryTableEntry = importTable.ImportDirectoryTable[i];
                 if (importDirectoryTableEntry.ImportAddressTableRVA != 0)
                 {
@@ -2060,13 +2090,44 @@ namespace BurnOutSharp.Builder
                             break;
                     }
 
-                    importLookupTable[i] = entryAddressTable.ToArray();
+                    importAddressTables[i] = entryAddressTable.ToArray();
                 }
-
-                importTable.ImportAddressTables = importLookupTable;
             }
 
-            // TODO: Figure out how to find the hint/name table
+            importTable.ImportAddressTables = importAddressTables;
+
+            // Hint/Name table
+            if (importTable.ImportLookupTables != null && importTable.ImportLookupTables.Count > 0)
+            {
+                var importHintNameTable = new List<HintNameTableEntry>();
+
+                // Get the addresses of the hint/name table entries
+                List<int> hintNameTableEntryAddresses = importTable.ImportLookupTables
+                    .SelectMany(kvp => kvp.Value)
+                    .Select(ilte => (int)ilte.HintNameTableRVA.ConvertVirtualAddress(sections))
+                    .Distinct()
+                    .OrderBy(a => a)
+                    .ToList();
+
+                // If we have any addresses, add them to the table
+                if (hintNameTableEntryAddresses.Any())
+                {
+                    for (int i = 0; i < hintNameTableEntryAddresses.Count; i++)
+                    {
+                        int hintNameTableEntryAddress = hintNameTableEntryAddresses[i];
+                        data.Seek(hintNameTableEntryAddress, SeekOrigin.Begin);
+
+                        var hintNameTableEntry = new HintNameTableEntry();
+
+                        hintNameTableEntry.Hint = data.ReadUInt16();
+                        hintNameTableEntry.Name = data.ReadString(System.Text.Encoding.ASCII);
+
+                        importHintNameTable.Add(hintNameTableEntry);
+                    }
+                }
+
+                importTable.HintNameTable = importHintNameTable.ToArray();
+            }
 
             return importTable;
         }
