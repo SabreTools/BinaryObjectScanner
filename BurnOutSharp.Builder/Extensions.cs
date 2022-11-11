@@ -1128,6 +1128,73 @@ namespace BurnOutSharp.Builder
         }
 
         /// <summary>
+        /// Read resource data as a message table resource
+        /// </summary>
+        /// <param name="entry">Resource data entry to parse into a message table resource</param>
+        /// <returns>A filled message table resource on success, null on error</returns>
+        public static Models.PortableExecutable.MessageResourceData AsMessageResourceData(this Models.PortableExecutable.ResourceDataEntry entry)
+        {
+            // If we have an invalid entry, just skip
+            if (entry?.Data == null)
+                return null;
+
+            // Initialize the iterator
+            int offset = 0;
+
+            // Create the output object
+            var messageResourceData = new Models.PortableExecutable.MessageResourceData();
+
+            // Message resource blocks
+            messageResourceData.NumberOfBlocks = entry.Data.ReadUInt32(ref offset);
+            if (messageResourceData.NumberOfBlocks > 0)
+            {
+                var messageResourceBlocks = new List<Models.PortableExecutable.MessageResourceBlock>();
+
+                for (int i = 0; i < messageResourceData.NumberOfBlocks; i++)
+                {
+                    var messageResourceBlock = new Models.PortableExecutable.MessageResourceBlock();
+
+                    messageResourceBlock.LowId = entry.Data.ReadUInt32(ref offset);
+                    messageResourceBlock.HighId = entry.Data.ReadUInt32(ref offset);
+                    messageResourceBlock.OffsetToEntries = entry.Data.ReadUInt32(ref offset);
+
+                    messageResourceBlocks.Add(messageResourceBlock);
+                }
+
+                messageResourceData.Blocks = messageResourceBlocks.ToArray();
+            }
+
+            // Message resource entries
+            if (messageResourceData.Blocks != null && messageResourceData.Blocks.Length != 0)
+            {
+                var messageResourceEntries = new List<Models.PortableExecutable.MessageResourceEntry>();
+
+                for (int i = 0; i < messageResourceData.Blocks.Length; i++)
+                {
+                    var messageResourceBlock = messageResourceData.Blocks[i];
+                    offset = (int)messageResourceBlock.OffsetToEntries;
+
+                    for (uint j = messageResourceBlock.LowId; j <= messageResourceBlock.HighId; j++)
+                    {
+                        var messageResourceEntry = new Models.PortableExecutable.MessageResourceEntry();
+
+                        messageResourceEntry.Length = entry.Data.ReadUInt16(ref offset);
+                        messageResourceEntry.Flags = entry.Data.ReadUInt16(ref offset);
+
+                        Encoding textEncoding = messageResourceEntry.Flags == 0x0001 ? Encoding.Unicode : Encoding.ASCII;
+                        messageResourceEntry.Text = entry.Data.ReadString(ref offset, textEncoding);
+
+                        messageResourceEntries.Add(messageResourceEntry);
+                    }
+                }
+
+                messageResourceData.Entries = messageResourceEntries.ToArray();
+            }
+
+            return messageResourceData;
+        }
+
+        /// <summary>
         /// Read resource data as a string table resource
         /// </summary>
         /// <param name="entry">Resource data entry to parse into a string table resource</param>
