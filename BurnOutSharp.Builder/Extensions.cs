@@ -1004,7 +1004,6 @@ namespace BurnOutSharp.Builder
             return fontGroupHeader;
         }
 
-
         /// <summary>
         /// Read resource data as a menu
         /// </summary>
