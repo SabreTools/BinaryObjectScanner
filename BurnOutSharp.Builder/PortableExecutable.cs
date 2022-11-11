@@ -202,7 +202,7 @@ namespace BurnOutSharp.Builder
                 if (debugTableAddress != 0)
                 {
                     // Try to parse the debug table
-                    int endOffset = (int)(debugTableAddress + optionalHeader.CertificateTable.Size);
+                    int endOffset = (int)(debugTableAddress + optionalHeader.Debug.Size);
                     var debugTable = ParseDebugTable(data, debugTableAddress, endOffset, executable.SectionTable);
                     if (debugTable == null)
                         return null;
@@ -1419,7 +1419,7 @@ namespace BurnOutSharp.Builder
 
                 // Try to parse the debug table
                 data.Seek(debugTableAddress, SeekOrigin.Begin);
-                int endOffset = (int)(debugTableAddress + optionalHeader.CertificateTable.Size);
+                int endOffset = (int)(debugTableAddress + optionalHeader.Debug.Size);
                 var debugTable = ParseDebugTable(data, endOffset, executable.SectionTable);
                 if (debugTable == null)
                     return null;
