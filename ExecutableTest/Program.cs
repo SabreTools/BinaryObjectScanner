@@ -1187,7 +1187,82 @@ namespace ExecutableTest
                         Console.WriteLine($"{padding}Hardware-dependent icon resource found, not parsed yet");
                         break;
                     case BurnOutSharp.Models.PortableExecutable.ResourceType.RT_MENU:
-                        Console.WriteLine($"{padding}Menu resource found, not parsed yet");
+                        var menu = entry.AsMenu();
+                        if (menu == null)
+                        {
+                            Console.WriteLine($"{padding}Menu resource found, but malformed");
+                        }
+                        else
+                        {
+                            if (menu.MenuHeader != null)
+                            {
+                                Console.WriteLine($"{padding}Version: {menu.MenuHeader.Version}");
+                                Console.WriteLine($"{padding}Header size: {menu.MenuHeader.HeaderSize}");
+                                Console.WriteLine();
+                                Console.WriteLine($"{padding}Menu items");
+                                Console.WriteLine($"{padding}-------------------------");
+                                if (menu.MenuItems == null
+                                    || menu.MenuItems.Length == 0)
+                                {
+                                    Console.WriteLine($"{padding}No menu items");
+                                }
+                                else
+                                {
+                                    for (int i = 0; i < menu.MenuItems.Length; i++)
+                                    {
+                                        var menuItem = menu.MenuItems[i];
+
+                                        Console.WriteLine($"{padding}Menu item {i}");
+                                        if (menuItem.NormalMenuText != null)
+                                        {
+                                            Console.WriteLine($"{padding}  Resource info: {menuItem.NormalResInfo}");
+                                            Console.WriteLine($"{padding}  Menu text: {menuItem.NormalMenuText}");
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine($"{padding}  Item type: {menuItem.PopupItemType}");
+                                            Console.WriteLine($"{padding}  State: {menuItem.PopupState}");
+                                            Console.WriteLine($"{padding}  ID: {menuItem.PopupID}");
+                                            Console.WriteLine($"{padding}  Resource info: {menuItem.PopupResInfo}");
+                                            Console.WriteLine($"{padding}  Menu text: {menuItem.PopupMenuText}");
+                                        }
+                                    }
+                                }
+                            }
+                            else if (menu.ExtendedMenuHeader != null)
+                            {
+                                Console.WriteLine($"{padding}Version: {menu.ExtendedMenuHeader.Version}");
+                                Console.WriteLine($"{padding}Offset: {menu.ExtendedMenuHeader.Offset}");
+                                Console.WriteLine($"{padding}Help ID: {menu.ExtendedMenuHeader.HelpID}");
+                                Console.WriteLine();
+                                Console.WriteLine($"{padding}Menu items");
+                                Console.WriteLine($"{padding}-------------------------");
+                                if (menu.ExtendedMenuHeader.Offset == 0
+                                    || menu.ExtendedMenuItems == null
+                                    || menu.ExtendedMenuItems.Length == 0)
+                                {
+                                    Console.WriteLine($"{padding}No menu items");
+                                }
+                                else
+                                {
+                                    for (int i = 0; i < menu.ExtendedMenuItems.Length; i++)
+                                    {
+                                        var menuItem = menu.ExtendedMenuItems[i];
+
+                                        Console.WriteLine($"{padding}Dialog item template {i}");
+                                        Console.WriteLine($"{padding}  Item type: {menuItem.ItemType}");
+                                        Console.WriteLine($"{padding}  State: {menuItem.State}");
+                                        Console.WriteLine($"{padding}  ID: {menuItem.ID}");
+                                        Console.WriteLine($"{padding}  Flags: {menuItem.Flags}");
+                                        Console.WriteLine($"{padding}  Menu text: {menuItem.MenuText}");
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine($"{padding}Menu resource found, but malformed");
+                            }
+                        }
                         break;
                     case BurnOutSharp.Models.PortableExecutable.ResourceType.RT_DIALOG:
                         var dialogBox = entry.AsDialogBox();

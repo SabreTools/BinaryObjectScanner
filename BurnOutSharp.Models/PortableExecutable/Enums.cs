@@ -1036,22 +1036,6 @@ namespace BurnOutSharp.Models.PortableExecutable
         IMPORT_NAME_UNDECORATE = 3,
     }
 
-    [Flags]
-    public enum MemoryFlags : ushort
-    {
-        // TODO: Validate the ~ statements
-        MOVEABLE = 0x0010,
-        FIXED = 0xFFEF, // ~MOVEABLE
-
-        PURE = 0x0020,
-        IMPURE = 0xFFDF, // ~PURE
-
-        PRELOAD = 0x0040,
-        LOADONCALL = 0xFFBF, // ~PRELOAD
-
-        DISCARDABLE = 0x1000,
-    }
-
     public enum MachineType : ushort
     {
         /// <summary>
@@ -1188,6 +1172,83 @@ namespace BurnOutSharp.Models.PortableExecutable
         /// MIPS little-endian WCE v2
         /// </summary>
         IMAGE_FILE_MACHINE_WCEMIPSV2 = 0x0169,
+    }
+
+    [Flags]
+    public enum MemoryFlags : ushort
+    {
+        // TODO: Validate the ~ statements
+        MOVEABLE = 0x0010,
+        FIXED = 0xFFEF, // ~MOVEABLE
+
+        PURE = 0x0020,
+        IMPURE = 0xFFDF, // ~PURE
+
+        PRELOAD = 0x0040,
+        LOADONCALL = 0xFFBF, // ~PRELOAD
+
+        DISCARDABLE = 0x1000,
+    }
+
+    [Flags]
+    public enum MenuFlags : uint
+    {
+        MF_INSERT = 0x00000000,
+        MF_CHANGE = 0x00000080,
+        MF_APPEND = 0x00000100,
+        MF_DELETE = 0x00000200,
+        MF_REMOVE = 0x00001000,
+
+        MF_BYCOMMAND = 0x00000000,
+        MF_BYPOSITION = 0x00000400,
+
+        MF_SEPARATOR = 0x00000800,
+
+        MF_ENABLED = 0x00000000,
+        MF_GRAYED = 0x00000001,
+        MF_DISABLED = 0x00000002,
+
+        MF_UNCHECKED = 0x00000000,
+        MF_CHECKED = 0x00000008,
+        MF_USECHECKBITMAPS = 0x00000200,
+
+        MF_STRING = 0x00000000,
+        MF_BITMAP = 0x00000004,
+        MF_OWNERDRAW = 0x00000100,
+
+        MF_POPUP = 0x00000010,
+        MF_MENUBARBREAK = 0x00000020,
+        MF_MENUBREAK = 0x00000040,
+
+        MF_UNHILITE = 0x00000000,
+        MF_HILITE = 0x00000080,
+
+        MF_DEFAULT = 0x00001000,
+        MF_SYSMENU = 0x00002000,
+        MF_HELP = 0x00004000,
+        MF_RIGHTJUSTIFY = 0x00004000,
+
+        MF_MOUSESELECT = 0x00008000,
+        MF_END = 0x00000080,
+
+        MFT_STRING = MF_STRING,
+        MFT_BITMAP = MF_BITMAP,
+        MFT_MENUBARBREAK = MF_MENUBARBREAK,
+        MFT_MENUBREAK = MF_MENUBREAK,
+        MFT_OWNERDRAW = MF_OWNERDRAW,
+        MFT_RADIOCHECK = 0x00000200,
+        MFT_SEPARATOR = MF_SEPARATOR,
+        MFT_RIGHTORDER = 0x00002000,
+        MFT_RIGHTJUSTIFY = MF_RIGHTJUSTIFY,
+
+        MFS_GRAYED = 0x00000003,
+        MFS_DISABLED = MFS_GRAYED,
+        MFS_CHECKED = MF_CHECKED,
+        MFS_HILITE = MF_HILITE,
+        MFS_ENABLED = MF_ENABLED,
+        MFS_UNCHECKED = MF_UNCHECKED,
+        MFS_UNHILITE = MF_UNHILITE,
+        MFS_DEFAULT = MF_DEFAULT,
     }
 
     public enum OptionalHeaderMagicNumber : ushort

@@ -465,7 +465,7 @@ namespace BurnOutSharp.Builder
         /// <summary>
         /// Read resource data as a dialog box
         /// </summary>
-        /// <param name="entry">Resource data entry to parse into a font group</param>
+        /// <param name="entry">Resource data entry to parse into a dialog box</param>
         /// <returns>A filled dialog box on success, null on error</returns>
         public static Models.PortableExecutable.DialogBoxResource AsDialogBox(this Models.PortableExecutable.ResourceDataEntry entry)
         {
@@ -1002,6 +1002,130 @@ namespace BurnOutSharp.Builder
 
             // TODO: Implement entry parsing
             return fontGroupHeader;
+        }
+
+
+        /// <summary>
+        /// Read resource data as a menu
+        /// </summary>
+        /// <param name="entry">Resource data entry to parse into a menu</param>
+        /// <returns>A filled menu on success, null on error</returns>
+        public static Models.PortableExecutable.MenuResource AsMenu(this Models.PortableExecutable.ResourceDataEntry entry)
+        {
+            // If we have an invalid entry, just skip
+            if (entry?.Data == null)
+                return null;
+
+            // Initialize the iterator
+            int offset = 0;
+
+            // Create the output object
+            var menuResource = new Models.PortableExecutable.MenuResource();
+
+            // Try to read the version for an extended header
+            int versionOffset = 0;
+            int possibleVersion = entry.Data.ReadUInt16(ref versionOffset);
+            if (possibleVersion == 0x0001)
+            {
+                #region Extended menu header
+
+                var menuHeaderExtended = new Models.PortableExecutable.MenuHeaderExtended();
+
+                menuHeaderExtended.Version = entry.Data.ReadUInt16(ref offset);
+                menuHeaderExtended.Offset = entry.Data.ReadUInt16(ref offset);
+                menuHeaderExtended.HelpID = entry.Data.ReadUInt32(ref offset);
+
+                menuResource.ExtendedMenuHeader = menuHeaderExtended;
+
+                #endregion
+
+                #region Extended dialog item templates
+
+                var extendedMenuItems = new List<Models.PortableExecutable.MenuItemExtended>();
+
+                if (offset != 0)
+                {
+                    offset = menuHeaderExtended.Offset;
+
+                    while (offset < entry.Data.Length)
+                    {
+                        var extendedMenuItem = new Models.PortableExecutable.MenuItemExtended();
+
+                        extendedMenuItem.ItemType = (Models.PortableExecutable.MenuFlags)entry.Data.ReadUInt32(ref offset);
+                        extendedMenuItem.State = (Models.PortableExecutable.MenuFlags)entry.Data.ReadUInt32(ref offset);
+                        extendedMenuItem.ID = entry.Data.ReadUInt32(ref offset);
+                        extendedMenuItem.Flags = (Models.PortableExecutable.MenuFlags)entry.Data.ReadUInt32(ref offset);
+                        extendedMenuItem.MenuText = entry.Data.ReadString(ref offset, Encoding.Unicode);
+
+                        // Align to the DWORD boundary if we're not at the end
+                        if (offset != entry.Data.Length)
+                        {
+                            while ((offset % 4) != 0)
+                                _ = entry.Data.ReadByte(ref offset);
+                        }
+
+                        extendedMenuItems.Add(extendedMenuItem);
+                    }
+                }
+
+                menuResource.ExtendedMenuItems = extendedMenuItems.ToArray();
+
+                #endregion
+            }
+            else
+            {
+                #region Menu header
+
+                var menuHeader = new Models.PortableExecutable.MenuHeader();
+
+                menuHeader.Version = entry.Data.ReadUInt16(ref offset);
+                menuHeader.HeaderSize = entry.Data.ReadUInt16(ref offset);
+
+                menuResource.MenuHeader = menuHeader;
+
+                #endregion
+
+                #region Menu items
+
+                var menuItems = new List<Models.PortableExecutable.MenuItem>();
+
+                while (offset < entry.Data.Length)
+                {
+                    var menuItem = new Models.PortableExecutable.MenuItem();
+
+                    // Determine if this is a popup
+                    int flagsOffset = offset;
+                    var initialFlags = (Models.PortableExecutable.MenuFlags)entry.Data.ReadUInt16(ref flagsOffset);
+                    if (initialFlags.HasFlag(Models.PortableExecutable.MenuFlags.MF_POPUP))
+                    {
+                        menuItem.PopupItemType = (Models.PortableExecutable.MenuFlags)entry.Data.ReadUInt32(ref offset);
+                        menuItem.PopupState = (Models.PortableExecutable.MenuFlags)entry.Data.ReadUInt32(ref offset);
+                        menuItem.PopupID = entry.Data.ReadUInt32(ref offset);
+                        menuItem.PopupResInfo = (Models.PortableExecutable.MenuFlags)entry.Data.ReadUInt32(ref offset);
+                        menuItem.PopupMenuText = entry.Data.ReadString(ref offset, Encoding.Unicode);
+                    }
+                    else
+                    {
+                        menuItem.NormalResInfo = (Models.PortableExecutable.MenuFlags)entry.Data.ReadUInt16(ref offset);
+                        menuItem.NormalMenuText = entry.Data.ReadString(ref offset, Encoding.Unicode);
+                    }
+
+                    // Align to the DWORD boundary if we're not at the end
+                    if (offset != entry.Data.Length)
+                    {
+                        while ((offset % 4) != 0)
+                            _ = entry.Data.ReadByte(ref offset);
+                    }
+
+                    menuItems.Add(menuItem);
+                }
+
+                menuResource.MenuItems = menuItems.ToArray();
+
+                #endregion
+            }
+
+            return menuResource;
         }
 
         /// <summary>
