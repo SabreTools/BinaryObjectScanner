@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using BurnOutSharp.Models.PortableExecutable;
 
 namespace BurnOutSharp.Builder
@@ -246,9 +247,15 @@ namespace BurnOutSharp.Builder
             // Should also be in the '.rsrc' section
             if (optionalHeader.ResourceTable != null && optionalHeader.ResourceTable.VirtualAddress != 0)
             {
+                // If the optional header and `.rsrc` section disagree, use the `.rsrc` section
+                var resourceSection = sectionTable.FirstOrDefault(sh => Encoding.ASCII.GetString(sh.Name).TrimEnd('\0') == ".rsrc");
+                uint resourceTableRVA = optionalHeader.ResourceTable.VirtualAddress;
+                if (resourceSection != null)
+                    resourceTableRVA = resourceSection.VirtualAddress;
+
                 // If the offset for the resource directory table doesn't exist
                 int tableAddress = initialOffset
-                    + (int)optionalHeader.ResourceTable.VirtualAddress.ConvertVirtualAddress(executable.SectionTable);
+                    + (int)resourceTableRVA.ConvertVirtualAddress(executable.SectionTable);
                 if (tableAddress >= data.Length)
                     return executable;
 
@@ -1072,6 +1079,9 @@ namespace BurnOutSharp.Builder
             var resourceDirectoryTable = new ResourceDirectoryTable();
 
             resourceDirectoryTable.Characteristics = data.ReadUInt32(ref offset);
+            if (resourceDirectoryTable.Characteristics != 0)
+                return null;
+
             resourceDirectoryTable.TimeDateStamp = data.ReadUInt32(ref offset);
             resourceDirectoryTable.MajorVersion = data.ReadUInt16(ref offset);
             resourceDirectoryTable.MinorVersion = data.ReadUInt16(ref offset);
@@ -1435,9 +1445,15 @@ namespace BurnOutSharp.Builder
             // Should also be in the '.rsrc' section
             if (optionalHeader.ResourceTable != null && optionalHeader.ResourceTable.VirtualAddress != 0)
             {
+                // If the optional header and `.rsrc` section disagree, use the `.rsrc` section
+                var resourceSection = sectionTable.FirstOrDefault(sh => Encoding.ASCII.GetString(sh.Name).TrimEnd('\0') == ".rsrc");
+                uint resourceTableRVA = optionalHeader.ResourceTable.VirtualAddress;
+                if (resourceSection != null)
+                    resourceTableRVA = resourceSection.VirtualAddress;
+
                 // If the offset for the resource directory table doesn't exist
                 int resourceTableAddress = initialOffset
-                    + (int)optionalHeader.ResourceTable.VirtualAddress.ConvertVirtualAddress(executable.SectionTable);
+                    + (int)resourceTableRVA.ConvertVirtualAddress(executable.SectionTable);
                 if (resourceTableAddress >= data.Length)
                     return executable;
 
@@ -2269,6 +2285,9 @@ namespace BurnOutSharp.Builder
             var resourceDirectoryTable = new ResourceDirectoryTable();
 
             resourceDirectoryTable.Characteristics = data.ReadUInt32();
+            if (resourceDirectoryTable.Characteristics != 0)
+                return null;
+
             resourceDirectoryTable.TimeDateStamp = data.ReadUInt32();
             resourceDirectoryTable.MajorVersion = data.ReadUInt16();
             resourceDirectoryTable.MinorVersion = data.ReadUInt16();

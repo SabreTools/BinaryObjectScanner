@@ -342,6 +342,15 @@ namespace BurnOutSharp.Builder
         /// <returns>Physical address, 0 on error</returns>
         public static uint ConvertVirtualAddress(this uint rva, Models.PortableExecutable.SectionHeader[] sections)
         {
+            // If we have an invalid section table, we can't do anything
+            if (sections == null || sections.Length == 0)
+                return 0;
+
+            // If the RVA matches a section start exactly, use that
+            var matchingSection = sections.FirstOrDefault(s => s.VirtualAddress == rva);
+            if (matchingSection != null)
+                return rva - matchingSection.VirtualAddress + matchingSection.PointerToRawData;
+
             // Loop through all of the sections
             for (int i = 0; i < sections.Length; i++)
             {
@@ -355,9 +364,9 @@ namespace BurnOutSharp.Builder
 
                 // Attempt to derive the physical address from the current section
                 var section = sections[i];
-                if (rva >= section.VirtualAddress
-                    && (rva <= section.VirtualAddress + section.SizeOfRawData
-                        || rva <= section.VirtualAddress + section.VirtualSize))
+                if (rva >= section.VirtualAddress && section.VirtualSize != 0 && rva <= section.VirtualAddress + section.VirtualSize)
+                    return rva - section.VirtualAddress + section.PointerToRawData;
+                else if (rva >= section.VirtualAddress && section.SizeOfRawData != 0 && rva <= section.VirtualAddress + section.SizeOfRawData)
                     return rva - section.VirtualAddress + section.PointerToRawData;
             }
 
