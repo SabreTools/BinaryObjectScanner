@@ -101,33 +101,37 @@ namespace BurnOutSharp.Builder
             if (coffFileHeader.PointerToSymbolTable != 0)
             {
                 // If the offset for the COFF symbol table doesn't exist
-                int tableAddress = initialOffset
+                int coffSymbolTableAddress = initialOffset
                     + (int)coffFileHeader.PointerToSymbolTable.ConvertVirtualAddress(executable.SectionTable);
-                if (tableAddress >= data.Length)
+                if (coffSymbolTableAddress >= data.Length)
                     return executable;
 
-                // Try to parse the COFF symbol table
-                var coffSymbolTable = ParseCOFFSymbolTable(data, tableAddress, coffFileHeader.NumberOfSymbols);
-                if (coffSymbolTable == null)
-                    return null;
+                // If we have a valid address
+                if (coffSymbolTableAddress != 0)
+                {
+                    // Try to parse the COFF symbol table
+                    var coffSymbolTable = ParseCOFFSymbolTable(data, coffSymbolTableAddress, coffFileHeader.NumberOfSymbols);
+                    if (coffSymbolTable == null)
+                        return null;
 
-                // If the offset for the COFF string table doesn't exist
-                tableAddress = initialOffset
-                    + (int)coffFileHeader.PointerToSymbolTable.ConvertVirtualAddress(executable.SectionTable)
-                    + (coffSymbolTable.Length * 18 /* sizeof(COFFSymbolTableEntry) */);
-                if (tableAddress >= data.Length)
-                    return executable;
+                    // If the offset for the COFF string table doesn't exist
+                    coffSymbolTableAddress = initialOffset
+                        + (int)coffFileHeader.PointerToSymbolTable.ConvertVirtualAddress(executable.SectionTable)
+                        + (coffSymbolTable.Length * 18 /* sizeof(COFFSymbolTableEntry) */);
+                    if (coffSymbolTableAddress >= data.Length)
+                        return executable;
 
-                // Set the COFF symbol table
-                executable.COFFSymbolTable = coffSymbolTable;
+                    // Set the COFF symbol table
+                    executable.COFFSymbolTable = coffSymbolTable;
 
-                // Try to parse the COFF string table
-                var coffStringTable = ParseCOFFStringTable(data, tableAddress);
-                if (coffStringTable == null)
-                    return null;
+                    // Try to parse the COFF string table
+                    var coffStringTable = ParseCOFFStringTable(data, coffSymbolTableAddress);
+                    if (coffStringTable == null)
+                        return null;
 
-                // Set the COFF string table
-                executable.COFFStringTable = coffStringTable;
+                    // Set the COFF string table
+                    executable.COFFStringTable = coffStringTable;
+                }
             }
 
             #endregion
@@ -142,14 +146,18 @@ namespace BurnOutSharp.Builder
                 if (certificateTableAddress >= data.Length)
                     return executable;
 
-                // Try to parse the attribute certificate table
-                int endOffset = (int)(certificateTableAddress + optionalHeader.CertificateTable.Size);
-                var attributeCertificateTable = ParseAttributeCertificateTable(data, certificateTableAddress, endOffset);
-                if (attributeCertificateTable == null)
-                    return null;
+                // If we have a valid address
+                if (certificateTableAddress != 0)
+                {
+                    // Try to parse the attribute certificate table
+                    int endOffset = (int)(certificateTableAddress + optionalHeader.CertificateTable.Size);
+                    var attributeCertificateTable = ParseAttributeCertificateTable(data, certificateTableAddress, endOffset);
+                    if (attributeCertificateTable == null)
+                        return null;
 
-                // Set the attribute certificate table
-                executable.AttributeCertificateTable = attributeCertificateTable;
+                    // Set the attribute certificate table
+                    executable.AttributeCertificateTable = attributeCertificateTable;
+                }
             }
 
             #endregion
@@ -164,13 +172,17 @@ namespace BurnOutSharp.Builder
                 if (delayLoadDirectoryTableAddress >= data.Length)
                     return executable;
 
-                // Try to parse the delay-load directory table
-                var delayLoadDirectoryTable = ParseDelayLoadDirectoryTable(data, delayLoadDirectoryTableAddress);
-                if (delayLoadDirectoryTable == null)
-                    return null;
+                // If we have a valid address
+                if (delayLoadDirectoryTableAddress != 0)
+                {
+                    // Try to parse the delay-load directory table
+                    var delayLoadDirectoryTable = ParseDelayLoadDirectoryTable(data, delayLoadDirectoryTableAddress);
+                    if (delayLoadDirectoryTable == null)
+                        return null;
 
-                // Set the delay-load directory table
-                executable.DelayLoadDirectoryTable = delayLoadDirectoryTable;
+                    // Set the delay-load directory table
+                    executable.DelayLoadDirectoryTable = delayLoadDirectoryTable;
+                }
             }
 
             #endregion
@@ -186,14 +198,18 @@ namespace BurnOutSharp.Builder
                 if (debugTableAddress >= data.Length)
                     return executable;
 
-                // Try to parse the debug table
-                int endOffset = (int)(debugTableAddress + optionalHeader.CertificateTable.Size);
-                var debugTable = ParseDebugTable(data, debugTableAddress, endOffset, executable.SectionTable);
-                if (debugTable == null)
-                    return null;
+                // If we have a valid address
+                if (debugTableAddress != 0)
+                {
+                    // Try to parse the debug table
+                    int endOffset = (int)(debugTableAddress + optionalHeader.CertificateTable.Size);
+                    var debugTable = ParseDebugTable(data, debugTableAddress, endOffset, executable.SectionTable);
+                    if (debugTable == null)
+                        return null;
 
-                // Set the debug table
-                executable.DebugTable = debugTable;
+                    // Set the debug table
+                    executable.DebugTable = debugTable;
+                }
             }
 
             #endregion
@@ -209,13 +225,17 @@ namespace BurnOutSharp.Builder
                 if (exportTableAddress >= data.Length)
                     return executable;
 
-                // Try to parse the export table
-                var exportTable = ParseExportTable(data, exportTableAddress, executable.SectionTable);
-                if (exportTable == null)
-                    return null;
+                // If we have a valid address
+                if (exportTableAddress != 0)
+                {
+                    // Try to parse the export table
+                    var exportTable = ParseExportTable(data, exportTableAddress, executable.SectionTable);
+                    if (exportTable == null)
+                        return null;
 
-                // Set the export table
-                executable.ExportTable = exportTable;
+                    // Set the export table
+                    executable.ExportTable = exportTable;
+                }
             }
 
             #endregion
@@ -231,13 +251,17 @@ namespace BurnOutSharp.Builder
                 if (importTableAddress >= data.Length)
                     return executable;
 
-                // Try to parse the import table
-                var importTable = ParseImportTable(data, importTableAddress, optionalHeader.Magic, executable.SectionTable);
-                if (importTable == null)
-                    return null;
+                // If we have a valid address
+                if (importTableAddress != 0)
+                {
+                    // Try to parse the import table
+                    var importTable = ParseImportTable(data, importTableAddress, optionalHeader.Magic, executable.SectionTable);
+                    if (importTable == null)
+                        return null;
 
-                // Set the import table
-                executable.ImportTable = importTable;
+                    // Set the import table
+                    executable.ImportTable = importTable;
+                }
             }
 
             #endregion
@@ -254,18 +278,22 @@ namespace BurnOutSharp.Builder
                     resourceTableRVA = resourceSection.VirtualAddress;
 
                 // If the offset for the resource directory table doesn't exist
-                int tableAddress = initialOffset
+                int resourceTableAddress = initialOffset
                     + (int)resourceTableRVA.ConvertVirtualAddress(executable.SectionTable);
-                if (tableAddress >= data.Length)
+                if (resourceTableAddress >= data.Length)
                     return executable;
 
-                // Try to parse the resource directory table
-                var resourceDirectoryTable = ParseResourceDirectoryTable(data, tableAddress, tableAddress, executable.SectionTable);
-                if (resourceDirectoryTable == null)
-                    return null;
+                // If we have a valid address
+                if (resourceTableAddress != 0)
+                {
+                    // Try to parse the resource directory table
+                    var resourceDirectoryTable = ParseResourceDirectoryTable(data, resourceTableAddress, resourceTableAddress, executable.SectionTable);
+                    if (resourceDirectoryTable == null)
+                        return null;
 
-                // Set the resource directory table
-                executable.ResourceDirectoryTable = resourceDirectoryTable;
+                    // Set the resource directory table
+                    executable.ResourceDirectoryTable = resourceDirectoryTable;
+                }
             }
 
             #endregion
@@ -1305,22 +1333,26 @@ namespace BurnOutSharp.Builder
                 if (symbolTableAddress >= data.Length)
                     return executable;
 
-                // Try to parse the COFF symbol table
-                data.Seek(symbolTableAddress, SeekOrigin.Begin);
-                var coffSymbolTable = ParseCOFFSymbolTable(data, coffFileHeader.NumberOfSymbols);
-                if (coffSymbolTable == null)
-                    return null;
+                // If we have a valid address
+                if (symbolTableAddress != 0)
+                {
+                    // Try to parse the COFF symbol table
+                    data.Seek(symbolTableAddress, SeekOrigin.Begin);
+                    var coffSymbolTable = ParseCOFFSymbolTable(data, coffFileHeader.NumberOfSymbols);
+                    if (coffSymbolTable == null)
+                        return null;
 
-                // Set the COFF symbol table
-                executable.COFFSymbolTable = coffSymbolTable;
+                    // Set the COFF symbol table
+                    executable.COFFSymbolTable = coffSymbolTable;
 
-                // Try to parse the COFF string table
-                var coffStringTable = ParseCOFFStringTable(data);
-                if (coffStringTable == null)
-                    return null;
+                    // Try to parse the COFF string table
+                    var coffStringTable = ParseCOFFStringTable(data);
+                    if (coffStringTable == null)
+                        return null;
 
-                // Set the COFF string table
-                executable.COFFStringTable = coffStringTable;
+                    // Set the COFF string table
+                    executable.COFFStringTable = coffStringTable;
+                }
             }
 
             #endregion
@@ -1332,18 +1364,22 @@ namespace BurnOutSharp.Builder
                 // If the offset for the attribute certificate table doesn't exist
                 int certificateTableAddress = initialOffset
                     + (int)optionalHeader.CertificateTable.VirtualAddress;
-                 if (certificateTableAddress >= data.Length)
-                        return executable;
+                if (certificateTableAddress >= data.Length)
+                    return executable;
 
-                // Try to parse the attribute certificate table
-                data.Seek(certificateTableAddress, SeekOrigin.Begin);
-                int endOffset = (int)(certificateTableAddress + optionalHeader.CertificateTable.Size);
-                var attributeCertificateTable = ParseAttributeCertificateTable(data, endOffset);
-                if (attributeCertificateTable == null)
-                    return null;
+                // If we have a valid address
+                if (certificateTableAddress != 0)
+                {
+                    // Try to parse the attribute certificate table
+                    data.Seek(certificateTableAddress, SeekOrigin.Begin);
+                    int endOffset = (int)(certificateTableAddress + optionalHeader.CertificateTable.Size);
+                    var attributeCertificateTable = ParseAttributeCertificateTable(data, endOffset);
+                    if (attributeCertificateTable == null)
+                        return null;
 
-                // Set the attribute certificate table
-                executable.AttributeCertificateTable = attributeCertificateTable;
+                    // Set the attribute certificate table
+                    executable.AttributeCertificateTable = attributeCertificateTable;
+                }
             }
 
             #endregion
@@ -1428,14 +1464,18 @@ namespace BurnOutSharp.Builder
                 if (importTableAddress >= data.Length)
                     return executable;
 
-                // Try to parse the import table
-                data.Seek(importTableAddress, SeekOrigin.Begin);
-                var importTable = ParseImportTable(data, optionalHeader.Magic, executable.SectionTable);
-                if (importTable == null)
-                    return null;
+                // If we have a valid address
+                if (importTableAddress != 0)
+                {
+                    // Try to parse the import table
+                    data.Seek(importTableAddress, SeekOrigin.Begin);
+                    var importTable = ParseImportTable(data, optionalHeader.Magic, executable.SectionTable);
+                    if (importTable == null)
+                        return null;
 
-                // Set the import table
-                executable.ImportTable = importTable;
+                    // Set the import table
+                    executable.ImportTable = importTable;
+                }
             }
 
             #endregion
@@ -1457,14 +1497,18 @@ namespace BurnOutSharp.Builder
                 if (resourceTableAddress >= data.Length)
                     return executable;
 
-                // Try to parse the resource directory table
-                data.Seek(resourceTableAddress, SeekOrigin.Begin);
-                var resourceDirectoryTable = ParseResourceDirectoryTable(data, data.Position, executable.SectionTable);
-                if (resourceDirectoryTable == null)
-                    return null;
+                // If we have a valid address
+                if (resourceTableAddress != 0)
+                {
+                    // Try to parse the resource directory table
+                    data.Seek(resourceTableAddress, SeekOrigin.Begin);
+                    var resourceDirectoryTable = ParseResourceDirectoryTable(data, data.Position, executable.SectionTable);
+                    if (resourceDirectoryTable == null)
+                        return null;
 
-                // Set the resource directory table
-                executable.ResourceDirectoryTable = resourceDirectoryTable;
+                    // Set the resource directory table
+                    executable.ResourceDirectoryTable = resourceDirectoryTable;
+                }
             }
 
             #endregion
