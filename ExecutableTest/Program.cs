@@ -597,7 +597,7 @@ namespace ExecutableTest
                 for (int i = 0; i < executable.SectionTable.Length; i++)
                 {
                     var entry = executable.SectionTable[i];
-                    Console.WriteLine($"  Segment Table Entry {i}");
+                    Console.WriteLine($"  Section Table Entry {i}");
                     Console.WriteLine($"    Name = {Encoding.UTF8.GetString(entry.Name)}");
                     Console.WriteLine($"    Virtual size = {entry.VirtualSize}");
                     Console.WriteLine($"    Virtual address = {entry.VirtualAddress}");
