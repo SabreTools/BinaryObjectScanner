@@ -12,6 +12,13 @@ namespace BurnOutSharp.ProtectionType
     /// Rainbow Sentinel SuperPro: https://www.rainbow.com.my/superpro.php
     /// TODO: Investigate other versions/products.
     /// TODO: See if this is at all related to https://cpl.thalesgroup.com/software-monetization/all-products/sentinel-hl.
+    /// 
+    /// Versions: 
+    /// Rainbow Sentinel PD-15: IA items "ASMEsMechanicalEngineeringToolkit1997December" and "aplicaciones-windows".
+    /// Rainbow Sentinel PD-30: BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]" and IA item "auto-cad-r14-cdrom".
+    /// Rainbow Sentinel PD-31: BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]" and IA item "auto-cad-r14-cdrom".
+    /// 
+    /// Rainbow Sentinel SuperPro 5.1: IA items "ASMEsMechanicalEngineeringToolkit1997December" and "aplicaciones-windows".
     /// </summary>
     public class RainbowSentinel : IPathCheck, IPortableExecutableCheck
     {
@@ -72,7 +79,7 @@ namespace BurnOutSharp.ProtectionType
                     return match;
             }
 
-            // TODO: Figure out why resources for "RNBOVTMP.DLL", "SENTTEMP.DLL", and "SNTI386.DLL" aren't getting read properly, causing checks for these files to not work.
+            // TODO: Figure out why resources for "RNBOVTMP.DLL", "SENTTEMP.DLL", "SNTI386.DLL", and "SX32W.DL_"/"SX32W.DLL" aren't getting read properly, causing checks for these files to not work.
 
             string name = pex.FileDescription;
 
@@ -92,6 +99,10 @@ namespace BurnOutSharp.ProtectionType
             if (name?.Equals("Install, Setup - Sentinel Driver", StringComparison.OrdinalIgnoreCase) == true)
                 return $"Rainbow Sentinel {pex.ProductVersion}";
 
+            // Found in "wd126.zip/WDSHARE.EXE/SX32W.DL_" in IA item "ASMEsMechanicalEngineeringToolkit1997December" and "WDSHARE.ZIP/WDSHARE.EXE/SX32W.DL_" in IA item "aplicaciones-windows".
+            if (name?.Equals("Rainbow Technologies SentinelSuperPro WIN32 DLL", StringComparison.OrdinalIgnoreCase) == true)
+                return $"Rainbow Sentinel SuperPro {pex.ProductVersion}";
+
             name = pex.ProductName;
 
             // Found in multiple files in BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]", including "RNBOVTMP.DLL", "SENTTEMP.DLL", and "SNTI386.DLL".
@@ -101,6 +112,10 @@ namespace BurnOutSharp.ProtectionType
             // Found in "SETUPX86.EXE"/"SENTW95.EXE" in BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]".
             if (name?.Equals("Sentinel Driver Setup", StringComparison.OrdinalIgnoreCase) == true)
                 return $"Rainbow Sentinel {pex.ProductVersion}";
+
+            // Found in "wd126.zip/WDSHARE.EXE/SX32W.DL_" in IA item "ASMEsMechanicalEngineeringToolkit1997December" and "WDSHARE.ZIP/WDSHARE.EXE/SX32W.DL_" in IA item "aplicaciones-windows".
+            if (name?.Equals("Rainbow Technologies SentinelSuperPro WIN32 DLL", StringComparison.OrdinalIgnoreCase) == true)
+                return $"Rainbow Sentinel SuperPro {pex.ProductVersion}";
 
             return null;
         }
@@ -128,6 +143,11 @@ namespace BurnOutSharp.ProtectionType
                 // Found in BA entries "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]" and "Autodesk AutoCAD r14 (1997)", and IA item "auto-cad-r14-cdrom".
                 new PathMatchSet(new PathMatch("RAINB95.Z", useEndsWith: true), "Rainbow Sentinel"),
                 new PathMatchSet(new PathMatch("RAINBNT.Z", useEndsWith: true), "Rainbow Sentinel"),
+
+                // Found in "wd126.zip/WDSHARE.EXE" in IA item "ASMEsMechanicalEngineeringToolkit1997December" and "WDSHARE.ZIP/WDSHARE.EXE/SX32W.DL_" in IA item "aplicaciones-windows".
+                 new PathMatchSet(new PathMatch("RainbowSentinel.386", useEndsWith: true), "Rainbow Sentinel"),
+                 new PathMatchSet(new PathMatch("SX32W.DL_", useEndsWith: true), "Rainbow Sentinel"),
+                 new PathMatchSet(new PathMatch("SX32W.DLL", useEndsWith: true), "Rainbow Sentinel"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);
@@ -138,24 +158,29 @@ namespace BurnOutSharp.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
-                // Found in BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]", folder "\aclt\DRV\W95LOCK".
+                // Found in BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]" and IA item "auto-cad-r14-cdrom".
                 new PathMatchSet(new PathMatch("SENTINEL.VXD", useEndsWith: true), "Rainbow Sentinel"),
                 new PathMatchSet(new PathMatch("SENTSTRT.EXE", useEndsWith: true), "Rainbow Sentinel"),
                 new PathMatchSet(new PathMatch("SENTW95.DLL", useEndsWith: true), "Rainbow Sentinel"),
                 new PathMatchSet(new PathMatch("SENTW95.EXE", useEndsWith: true), "Rainbow Sentinel"),
                 new PathMatchSet(new PathMatch("SENTW95.HLP", useEndsWith: true), "Rainbow Sentinel"),
 
-                // Found in BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]", folder "\aclt\DRV\NTLOCK".
+                // Found in BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]" and in IA item "auto-cad-r14-cdrom".
                 new PathMatchSet(new PathMatch("SNTI386.DLL", useEndsWith: true), "Rainbow Sentinel"),
 
-                // Found in BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]", folder "\aclt\DRV\NTLOCK\I386".
+                // Found in BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]" and in IA item "auto-cad-r14-cdrom".
                 new PathMatchSet(new PathMatch("RNBOVTMP.DLL", useEndsWith: true), "Rainbow Sentinel"),
                 new PathMatchSet(new PathMatch("SENTINEL.HLP", useEndsWith: true), "Rainbow Sentinel"),
                 new PathMatchSet(new PathMatch("SENTTEMP.SYS", useEndsWith: true), "Rainbow Sentinel"),
 
-                // Found in BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]", folder "\data".
+                // Found in BA entries "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]" and "Autodesk AutoCAD r14 (1997)", and IA item "auto-cad-r14-cdrom".
                 new PathMatchSet(new PathMatch("RAINB95.Z", useEndsWith: true), "Rainbow Sentinel"),
                 new PathMatchSet(new PathMatch("RAINBNT.Z", useEndsWith: true), "Rainbow Sentinel"),
+
+                // Found in "wd126.zip/WDSHARE.EXE" in IA item "ASMEsMechanicalEngineeringToolkit1997December" and "WDSHARE.ZIP/WDSHARE.EXE/SX32W.DL_" in IA item "aplicaciones-windows".
+                 new PathMatchSet(new PathMatch("RainbowSentinel.386", useEndsWith: true), "Rainbow Sentinel"),
+                 new PathMatchSet(new PathMatch("SX32W.DL_", useEndsWith: true), "Rainbow Sentinel"),
+                 new PathMatchSet(new PathMatch("SX32W.DLL", useEndsWith: true), "Rainbow Sentinel"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
