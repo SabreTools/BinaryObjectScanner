@@ -216,7 +216,7 @@ namespace BurnOutSharp.Builder
 
             #region Export Table
 
-            // Should also be in the '.rsrc' section
+            // Should also be in the '.edata' section
             if (optionalHeader.ExportTable != null && optionalHeader.ExportTable.VirtualAddress != 0)
             {
                 // If the offset for the export table doesn't exist
@@ -271,15 +271,9 @@ namespace BurnOutSharp.Builder
             // Should also be in the '.rsrc' section
             if (optionalHeader.ResourceTable != null && optionalHeader.ResourceTable.VirtualAddress != 0)
             {
-                // If the optional header and `.rsrc` section disagree, use the `.rsrc` section
-                var resourceSection = sectionTable.FirstOrDefault(sh => Encoding.ASCII.GetString(sh.Name).TrimEnd('\0') == ".rsrc");
-                uint resourceTableRVA = optionalHeader.ResourceTable.VirtualAddress;
-                if (resourceSection != null)
-                    resourceTableRVA = resourceSection.VirtualAddress;
-
                 // If the offset for the resource directory table doesn't exist
                 int resourceTableAddress = initialOffset
-                    + (int)resourceTableRVA.ConvertVirtualAddress(executable.SectionTable);
+                    + (int)optionalHeader.ResourceTable.VirtualAddress.ConvertVirtualAddress(executable.SectionTable);
                 if (resourceTableAddress >= data.Length)
                     return executable;
 
@@ -1512,15 +1506,9 @@ namespace BurnOutSharp.Builder
             // Should also be in the '.rsrc' section
             if (optionalHeader.ResourceTable != null && optionalHeader.ResourceTable.VirtualAddress != 0)
             {
-                // If the optional header and `.rsrc` section disagree, use the `.rsrc` section
-                var resourceSection = sectionTable.FirstOrDefault(sh => Encoding.ASCII.GetString(sh.Name).TrimEnd('\0') == ".rsrc");
-                uint resourceTableRVA = optionalHeader.ResourceTable.VirtualAddress;
-                if (resourceSection != null)
-                    resourceTableRVA = resourceSection.VirtualAddress;
-
                 // If the offset for the resource directory table doesn't exist
                 int resourceTableAddress = initialOffset
-                    + (int)resourceTableRVA.ConvertVirtualAddress(executable.SectionTable);
+                    + (int)optionalHeader.ResourceTable.VirtualAddress.ConvertVirtualAddress(executable.SectionTable);
                 if (resourceTableAddress >= data.Length)
                     return executable;
 
