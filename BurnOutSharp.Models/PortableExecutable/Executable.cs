@@ -118,10 +118,12 @@ namespace BurnOutSharp.Models.PortableExecutable
         #endregion
 
         // TODO: Implement and/or document the following non-modeled parts:
-        // - Delay Import Address Table
-        // - Delay Import Name Table
-        // - Delay Bound Import Address Table
-        // - Delay Unload Import Address Table
+        // - Delay-Load Import Tables
+        //      - [The Delay-Load Directory Table]
+        //      - Delay Import Address Table
+        //      - Delay Import Name Table
+        //      - Delay Bound Import Address Table
+        //      - Delay Unload Import Address Table
         // - The .pdata Section [Multiple formats per entry]
         // - The .reloc Section (Image Only)
         // - The .tls Section
