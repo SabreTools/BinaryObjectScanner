@@ -73,6 +73,22 @@ namespace BurnOutSharp.Models.PortableExecutable
         /// </summary>
         public DebugTable DebugTable { get; set; }
 
+        // .drectve - A section is a directive section if it has the IMAGE_SCN_LNK_INFO
+        // flag set in the section header and has the .drectve section name. The linker
+        // removes a .drectve section after processing the information, so the section
+        // does not appear in the image file that is being linked.
+        //
+        // A .drectve section consists of a string of text that can be encoded as ANSI
+        // or UTF-8. If the UTF-8 byte order marker (BOM, a three-byte prefix that
+        // consists of 0xEF, 0xBB, and 0xBF) is not present, the directive string is
+        // interpreted as ANSI. The directive string is a series of linker options that
+        // are separated by spaces. Each option contains a hyphen, the option name, and
+        // any appropriate attribute. If an option contains spaces, the option must be
+        // enclosed in quotes. The .drectve section must not have relocations or line
+        // numbers.
+        //
+        // TODO: Can we implement reading/parsing the .drectve section?
+
         /// <summary>
         /// Export table (.edata)
         /// </summary>
@@ -106,7 +122,6 @@ namespace BurnOutSharp.Models.PortableExecutable
         // - Delay Import Name Table
         // - Delay Bound Import Address Table
         // - Delay Unload Import Address Table
-        // - The .drectve Section (Object Only)
         // - The .pdata Section [Multiple formats per entry]
         // - TLS Callback Functions
 
