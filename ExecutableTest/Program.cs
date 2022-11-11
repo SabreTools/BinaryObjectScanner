@@ -1178,6 +1178,7 @@ namespace ExecutableTest
                 {
                     case BurnOutSharp.Models.PortableExecutable.ResourceType.RT_CURSOR:
                         Console.WriteLine($"{padding}Hardware-dependent cursor resource found, not parsed yet");
+                        Console.WriteLine($"{padding}Data: {BitConverter.ToString(entry.Data).Replace("-", string.Empty)}");
                         break;
                     case BurnOutSharp.Models.PortableExecutable.ResourceType.RT_BITMAP:
                         Console.WriteLine($"{padding}Bitmap resource found, not parsed yet");

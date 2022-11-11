@@ -670,17 +670,18 @@ namespace BurnOutSharp.Builder
 
             coffStringTable.TotalSize = data.ReadUInt32(ref offset);
 
+            if (coffStringTable.TotalSize <= 4)
+                return coffStringTable;
+
             var strings = new List<string>();
-            if (coffStringTable.TotalSize > 4)
+
+            uint totalSize = coffStringTable.TotalSize;
+            while (totalSize > 0)
             {
-                uint totalSize = coffStringTable.TotalSize;
-                while (totalSize > 0)
-                {
-                    int initialPosition = offset;
-                    string str = data.ReadString(ref offset);
-                    strings.Add(str);
-                    totalSize -= (uint)(offset - initialPosition);
-                }
+                int initialPosition = offset;
+                string str = data.ReadString(ref offset);
+                strings.Add(str);
+                totalSize -= (uint)(offset - initialPosition);
             }
 
             coffStringTable.Strings = strings.ToArray();
@@ -928,12 +929,12 @@ namespace BurnOutSharp.Builder
             for (int i = 0; i < importTable.ImportDirectoryTable.Length; i++)
             {
                 var importDirectoryTableEntry = importTable.ImportDirectoryTable[i];
-                if (importDirectoryTableEntry.NameRVA.ConvertVirtualAddress(sections) != 0)
-                {
-                    int nameAddress = (int)importDirectoryTableEntry.NameRVA.ConvertVirtualAddress(sections);
-                    string name = data.ReadString(ref nameAddress, Encoding.ASCII);
-                    importDirectoryTableEntry.Name = name;
-                }
+                if (importDirectoryTableEntry.NameRVA.ConvertVirtualAddress(sections) == 0)
+                    continue;
+
+                int nameAddress = (int)importDirectoryTableEntry.NameRVA.ConvertVirtualAddress(sections);
+                string name = data.ReadString(ref nameAddress, Encoding.ASCII);
+                importDirectoryTableEntry.Name = name;
             }
 
             // Lookup tables
@@ -942,45 +943,45 @@ namespace BurnOutSharp.Builder
             for (int i = 0; i < importTable.ImportDirectoryTable.Length; i++)
             {
                 var importDirectoryTableEntry = importTable.ImportDirectoryTable[i];
-                if (importDirectoryTableEntry.ImportLookupTableRVA.ConvertVirtualAddress(sections) != 0)
+                if (importDirectoryTableEntry.ImportLookupTableRVA.ConvertVirtualAddress(sections) == 0)
+                    continue;
+
+                int tableAddress = (int)importDirectoryTableEntry.ImportLookupTableRVA.ConvertVirtualAddress(sections);
+                var entryLookupTable = new List<ImportLookupTableEntry>();
+
+                while (true)
                 {
-                    int tableAddress = (int)importDirectoryTableEntry.ImportLookupTableRVA.ConvertVirtualAddress(sections);
-                    var entryLookupTable = new List<ImportLookupTableEntry>();
+                    var entryLookupTableEntry = new ImportLookupTableEntry();
 
-                    while (true)
+                    if (magic == OptionalHeaderMagicNumber.PE32)
                     {
-                        var entryLookupTableEntry = new ImportLookupTableEntry();
-
-                        if (magic == OptionalHeaderMagicNumber.PE32)
-                        {
-                            uint entryValue = data.ReadUInt32(ref tableAddress);
-                            entryLookupTableEntry.OrdinalNameFlag = (entryValue & 0x80000000) != 0;
-                            if (entryLookupTableEntry.OrdinalNameFlag)
-                                entryLookupTableEntry.OrdinalNumber = (ushort)(entryValue & ~0x80000000);
-                            else
-                                entryLookupTableEntry.HintNameTableRVA = (uint)(entryValue & ~0x80000000);
-                        }
-                        else if (magic == OptionalHeaderMagicNumber.PE32Plus)
-                        {
-                            ulong entryValue = data.ReadUInt64(ref tableAddress);
-                            entryLookupTableEntry.OrdinalNameFlag = (entryValue & 0x8000000000000000) != 0;
-                            if (entryLookupTableEntry.OrdinalNameFlag)
-                                entryLookupTableEntry.OrdinalNumber = (ushort)(entryValue & ~0x8000000000000000);
-                            else
-                                entryLookupTableEntry.HintNameTableRVA = (uint)(entryValue & ~0x8000000000000000);
-                        }
-
-                        entryLookupTable.Add(entryLookupTableEntry);
-
-                        // All zero values means the last entry
-                        if (entryLookupTableEntry.OrdinalNameFlag == false
-                            && entryLookupTableEntry.OrdinalNumber == 0
-                            && entryLookupTableEntry.HintNameTableRVA == 0)
-                            break;
+                        uint entryValue = data.ReadUInt32(ref tableAddress);
+                        entryLookupTableEntry.OrdinalNameFlag = (entryValue & 0x80000000) != 0;
+                        if (entryLookupTableEntry.OrdinalNameFlag)
+                            entryLookupTableEntry.OrdinalNumber = (ushort)(entryValue & ~0x80000000);
+                        else
+                            entryLookupTableEntry.HintNameTableRVA = (uint)(entryValue & ~0x80000000);
+                    }
+                    else if (magic == OptionalHeaderMagicNumber.PE32Plus)
+                    {
+                        ulong entryValue = data.ReadUInt64(ref tableAddress);
+                        entryLookupTableEntry.OrdinalNameFlag = (entryValue & 0x8000000000000000) != 0;
+                        if (entryLookupTableEntry.OrdinalNameFlag)
+                            entryLookupTableEntry.OrdinalNumber = (ushort)(entryValue & ~0x8000000000000000);
+                        else
+                            entryLookupTableEntry.HintNameTableRVA = (uint)(entryValue & ~0x8000000000000000);
                     }
 
-                    importLookupTables[i] = entryLookupTable.ToArray();
+                    entryLookupTable.Add(entryLookupTableEntry);
+
+                    // All zero values means the last entry
+                    if (entryLookupTableEntry.OrdinalNameFlag == false
+                        && entryLookupTableEntry.OrdinalNumber == 0
+                        && entryLookupTableEntry.HintNameTableRVA == 0)
+                        break;
                 }
+
+                importLookupTables[i] = entryLookupTable.ToArray();
             }
 
             importTable.ImportLookupTables = importLookupTables;
@@ -992,35 +993,35 @@ namespace BurnOutSharp.Builder
             {
                 var importDirectoryTableEntry = importTable.ImportDirectoryTable[i];
                 if (importDirectoryTableEntry.ImportAddressTableRVA.ConvertVirtualAddress(sections) == 0)
+                    continue;
+
+                int tableAddress = (int)importDirectoryTableEntry.ImportAddressTableRVA.ConvertVirtualAddress(sections);
+                var entryAddressTable = new List<ImportAddressTableEntry>();
+
+                while (true)
                 {
-                    int tableAddress = (int)importDirectoryTableEntry.ImportAddressTableRVA.ConvertVirtualAddress(sections);
-                    var entryAddressTable = new List<ImportAddressTableEntry>();
+                    var entryLookupTableEntry = new ImportAddressTableEntry();
 
-                    while (true)
+                    if (magic == OptionalHeaderMagicNumber.PE32)
                     {
-                        var entryLookupTableEntry = new ImportAddressTableEntry();
-
-                        if (magic == OptionalHeaderMagicNumber.PE32)
-                        {
-                            uint entryValue = data.ReadUInt32(ref tableAddress);
-                            entryLookupTableEntry.Address_PE32 = entryValue;
-                        }
-                        else if (magic == OptionalHeaderMagicNumber.PE32Plus)
-                        {
-                            ulong entryValue = data.ReadUInt64(ref tableAddress);
-                            entryLookupTableEntry.Address_PE32Plus = entryValue;
-                        }
-
-                        entryAddressTable.Add(entryLookupTableEntry);
-
-                        // All zero values means the last entry
-                        if (entryLookupTableEntry.Address_PE32 == 0
-                            && entryLookupTableEntry.Address_PE32Plus == 0)
-                            break;
+                        uint entryValue = data.ReadUInt32(ref tableAddress);
+                        entryLookupTableEntry.Address_PE32 = entryValue;
+                    }
+                    else if (magic == OptionalHeaderMagicNumber.PE32Plus)
+                    {
+                        ulong entryValue = data.ReadUInt64(ref tableAddress);
+                        entryLookupTableEntry.Address_PE32Plus = entryValue;
                     }
 
-                    importAddressTables[i] = entryAddressTable.ToArray();
+                    entryAddressTable.Add(entryLookupTableEntry);
+
+                    // All zero values means the last entry
+                    if (entryLookupTableEntry.Address_PE32 == 0
+                        && entryLookupTableEntry.Address_PE32Plus == 0)
+                        break;
                 }
+
+                importAddressTables[i] = entryAddressTable.ToArray();
             }
 
             importTable.ImportAddressTables = importAddressTables;
@@ -1858,18 +1859,18 @@ namespace BurnOutSharp.Builder
             var coffStringTable = new COFFStringTable();
 
             coffStringTable.TotalSize = data.ReadUInt32();
+            if (coffStringTable.TotalSize <= 4)
+                return coffStringTable;
 
             var strings = new List<string>();
-            if (coffStringTable.TotalSize > 4)
+
+            uint totalSize = coffStringTable.TotalSize;
+            while (totalSize > 0)
             {
-                uint totalSize = coffStringTable.TotalSize;
-                while (totalSize > 0)
-                {
-                    long initialPosition = data.Position;
-                    string str = data.ReadString();
-                    strings.Add(str);
-                    totalSize -= (uint)(data.Position - initialPosition);
-                }
+                long initialPosition = data.Position;
+                string str = data.ReadString();
+                strings.Add(str);
+                totalSize -= (uint)(data.Position - initialPosition);
             }
 
             coffStringTable.Strings = strings.ToArray();
@@ -2122,14 +2123,14 @@ namespace BurnOutSharp.Builder
             for (int i = 0; i < importTable.ImportDirectoryTable.Length; i++)
             {
                 var importDirectoryTableEntry = importTable.ImportDirectoryTable[i];
-                if (importDirectoryTableEntry.NameRVA.ConvertVirtualAddress(sections) != 0)
-                {
-                    uint nameAddress = importDirectoryTableEntry.NameRVA.ConvertVirtualAddress(sections);
-                    data.Seek(nameAddress, SeekOrigin.Begin);
+                if (importDirectoryTableEntry.NameRVA.ConvertVirtualAddress(sections) == 0)
+                    continue;
 
-                    string name = data.ReadString(Encoding.ASCII);
-                    importDirectoryTableEntry.Name = name;
-                }
+                uint nameAddress = importDirectoryTableEntry.NameRVA.ConvertVirtualAddress(sections);
+                data.Seek(nameAddress, SeekOrigin.Begin);
+
+                string name = data.ReadString(Encoding.ASCII);
+                importDirectoryTableEntry.Name = name;
             }
 
             // Lookup tables
@@ -2138,47 +2139,47 @@ namespace BurnOutSharp.Builder
             for (int i = 0; i < importTable.ImportDirectoryTable.Length; i++)
             {
                 var importDirectoryTableEntry = importTable.ImportDirectoryTable[i];
-                if (importDirectoryTableEntry.ImportLookupTableRVA.ConvertVirtualAddress(sections) != 0)
+                if (importDirectoryTableEntry.ImportLookupTableRVA.ConvertVirtualAddress(sections) == 0)
+                    continue;
+
+                uint tableAddress = importDirectoryTableEntry.ImportLookupTableRVA.ConvertVirtualAddress(sections);
+                data.Seek(tableAddress, SeekOrigin.Begin);
+
+                var entryLookupTable = new List<ImportLookupTableEntry>();
+
+                while (true)
                 {
-                    uint tableAddress = importDirectoryTableEntry.ImportLookupTableRVA.ConvertVirtualAddress(sections);
-                    data.Seek(tableAddress, SeekOrigin.Begin);
+                    var entryLookupTableEntry = new ImportLookupTableEntry();
 
-                    var entryLookupTable = new List<ImportLookupTableEntry>();
-
-                    while (true)
+                    if (magic == OptionalHeaderMagicNumber.PE32)
                     {
-                        var entryLookupTableEntry = new ImportLookupTableEntry();
-
-                        if (magic == OptionalHeaderMagicNumber.PE32)
-                        {
-                            uint entryValue = data.ReadUInt32();
-                            entryLookupTableEntry.OrdinalNameFlag = (entryValue & 0x80000000) != 0;
-                            if (entryLookupTableEntry.OrdinalNameFlag)
-                                entryLookupTableEntry.OrdinalNumber = (ushort)(entryValue & ~0x80000000);
-                            else
-                                entryLookupTableEntry.HintNameTableRVA = (uint)(entryValue & ~0x80000000);
-                        }
-                        else if (magic == OptionalHeaderMagicNumber.PE32Plus)
-                        {
-                            ulong entryValue = data.ReadUInt64();
-                            entryLookupTableEntry.OrdinalNameFlag = (entryValue & 0x8000000000000000) != 0;
-                            if (entryLookupTableEntry.OrdinalNameFlag)
-                                entryLookupTableEntry.OrdinalNumber = (ushort)(entryValue & ~0x8000000000000000);
-                            else
-                                entryLookupTableEntry.HintNameTableRVA = (uint)(entryValue & ~0x8000000000000000);
-                        }
-
-                        entryLookupTable.Add(entryLookupTableEntry);
-
-                        // All zero values means the last entry
-                        if (entryLookupTableEntry.OrdinalNameFlag == false
-                            && entryLookupTableEntry.OrdinalNumber == 0
-                            && entryLookupTableEntry.HintNameTableRVA == 0)
-                            break;
+                        uint entryValue = data.ReadUInt32();
+                        entryLookupTableEntry.OrdinalNameFlag = (entryValue & 0x80000000) != 0;
+                        if (entryLookupTableEntry.OrdinalNameFlag)
+                            entryLookupTableEntry.OrdinalNumber = (ushort)(entryValue & ~0x80000000);
+                        else
+                            entryLookupTableEntry.HintNameTableRVA = (uint)(entryValue & ~0x80000000);
+                    }
+                    else if (magic == OptionalHeaderMagicNumber.PE32Plus)
+                    {
+                        ulong entryValue = data.ReadUInt64();
+                        entryLookupTableEntry.OrdinalNameFlag = (entryValue & 0x8000000000000000) != 0;
+                        if (entryLookupTableEntry.OrdinalNameFlag)
+                            entryLookupTableEntry.OrdinalNumber = (ushort)(entryValue & ~0x8000000000000000);
+                        else
+                            entryLookupTableEntry.HintNameTableRVA = (uint)(entryValue & ~0x8000000000000000);
                     }
 
-                    importLookupTables[i] = entryLookupTable.ToArray();
+                    entryLookupTable.Add(entryLookupTableEntry);
+
+                    // All zero values means the last entry
+                    if (entryLookupTableEntry.OrdinalNameFlag == false
+                        && entryLookupTableEntry.OrdinalNumber == 0
+                        && entryLookupTableEntry.HintNameTableRVA == 0)
+                        break;
                 }
+
+                importLookupTables[i] = entryLookupTable.ToArray();
             }
 
             importTable.ImportLookupTables = importLookupTables;
@@ -2189,38 +2190,38 @@ namespace BurnOutSharp.Builder
             for (int i = 0; i < importTable.ImportDirectoryTable.Length; i++)
             {
                 var importDirectoryTableEntry = importTable.ImportDirectoryTable[i];
-                if (importDirectoryTableEntry.ImportAddressTableRVA.ConvertVirtualAddress(sections) != 0)
+                if (importDirectoryTableEntry.ImportAddressTableRVA.ConvertVirtualAddress(sections) == 0)
+                    continue;
+
+                uint tableAddress = importDirectoryTableEntry.ImportAddressTableRVA.ConvertVirtualAddress(sections);
+                data.Seek(tableAddress, SeekOrigin.Begin);
+
+                var entryAddressTable = new List<ImportAddressTableEntry>();
+
+                while (true)
                 {
-                    uint tableAddress = importDirectoryTableEntry.ImportAddressTableRVA.ConvertVirtualAddress(sections);
-                    data.Seek(tableAddress, SeekOrigin.Begin);
+                    var entryLookupTableEntry = new ImportAddressTableEntry();
 
-                    var entryAddressTable = new List<ImportAddressTableEntry>();
-
-                    while (true)
+                    if (magic == OptionalHeaderMagicNumber.PE32)
                     {
-                        var entryLookupTableEntry = new ImportAddressTableEntry();
-
-                        if (magic == OptionalHeaderMagicNumber.PE32)
-                        {
-                            uint entryValue = data.ReadUInt32();
-                            entryLookupTableEntry.Address_PE32 = entryValue;
-                        }
-                        else if (magic == OptionalHeaderMagicNumber.PE32Plus)
-                        {
-                            ulong entryValue = data.ReadUInt64();
-                            entryLookupTableEntry.Address_PE32Plus = entryValue;
-                        }
-
-                        entryAddressTable.Add(entryLookupTableEntry);
-
-                        // All zero values means the last entry
-                        if (entryLookupTableEntry.Address_PE32 == 0
-                            && entryLookupTableEntry.Address_PE32Plus == 0)
-                            break;
+                        uint entryValue = data.ReadUInt32();
+                        entryLookupTableEntry.Address_PE32 = entryValue;
+                    }
+                    else if (magic == OptionalHeaderMagicNumber.PE32Plus)
+                    {
+                        ulong entryValue = data.ReadUInt64();
+                        entryLookupTableEntry.Address_PE32Plus = entryValue;
                     }
 
-                    importAddressTables[i] = entryAddressTable.ToArray();
+                    entryAddressTable.Add(entryLookupTableEntry);
+
+                    // All zero values means the last entry
+                    if (entryLookupTableEntry.Address_PE32 == 0
+                        && entryLookupTableEntry.Address_PE32Plus == 0)
+                        break;
                 }
+
+                importAddressTables[i] = entryAddressTable.ToArray();
             }
 
             importTable.ImportAddressTables = importAddressTables;
