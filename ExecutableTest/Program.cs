@@ -1167,7 +1167,7 @@ namespace ExecutableTest
 
             Console.WriteLine($"{padding}Entry level: {level}");
             Console.WriteLine($"{padding}Data RVA: {entry.DataRVA}");
-            Console.WriteLine($"{padding}Size: {entry.DataRVA}");
+            Console.WriteLine($"{padding}Size: {entry.Size}");
             Console.WriteLine($"{padding}Codepage: {entry.Codepage}");
             Console.WriteLine($"{padding}Reserved: {entry.Reserved}");
 
