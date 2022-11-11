@@ -807,6 +807,33 @@ namespace ExecutableTest
             }
             Console.WriteLine();
 
+            Console.WriteLine("  Debug Table Information:");
+            Console.WriteLine("  -------------------------");
+            if (executable.OptionalHeader?.Debug == null
+                || executable.OptionalHeader.Debug.VirtualAddress == 0
+                || executable.DebugTable == null)
+            {
+                Console.WriteLine("  No debug table items");
+            }
+            else
+            {
+                // TODO: If more sections added, model this after the Export Table
+                for (int i = 0; i < executable.DebugTable.DebugDirectoryTable.Length; i++)
+                {
+                    var debugDirectoryEntry = executable.DebugTable.DebugDirectoryTable[i];
+                    Console.WriteLine($"  Debug Directory Table Entry {i}");
+                    Console.WriteLine($"    Characteristics: {debugDirectoryEntry.Characteristics}");
+                    Console.WriteLine($"    Time/Date stamp: {debugDirectoryEntry.TimeDateStamp}");
+                    Console.WriteLine($"    Major version: {debugDirectoryEntry.MajorVersion}");
+                    Console.WriteLine($"    Minor version: {debugDirectoryEntry.MinorVersion}");
+                    Console.WriteLine($"    Debug type: {debugDirectoryEntry.DebugType}");
+                    Console.WriteLine($"    Size of data: {debugDirectoryEntry.SizeOfData}");
+                    Console.WriteLine($"    Address of raw data: {debugDirectoryEntry.AddressOfRawData}");
+                    Console.WriteLine($"    Pointer to raw data: {debugDirectoryEntry.PointerToRawData}");
+                }
+            }
+            Console.WriteLine();
+
             Console.WriteLine("  Export Table Information:");
             Console.WriteLine("  -------------------------");
             if (executable.OptionalHeader?.ExportTable == null
