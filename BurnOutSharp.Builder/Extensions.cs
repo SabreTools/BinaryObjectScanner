@@ -407,7 +407,7 @@ namespace BurnOutSharp.Builder
         /// <summary>
         /// Read resource data as an accelerator table resource
         /// </summary>
-        /// <param name="data">Resource data entry to parse into an accelerator table resource</param>
+        /// <param name="entry">Resource data entry to parse into an accelerator table resource</param>
         /// <returns>A filled accelerator table resource on success, null on error</returns>
         public static Models.PortableExecutable.AcceleratorTableEntry[] AsAcceleratorTableResource(this Models.PortableExecutable.ResourceDataEntry entry)
         {
@@ -443,7 +443,7 @@ namespace BurnOutSharp.Builder
         /// <summary>
         /// Read resource data as a side-by-side assembly manifest
         /// </summary>
-        /// <param name="data">Resource data entry to parse into a side-by-side assembly manifest</param>
+        /// <param name="entry">Resource data entry to parse into a side-by-side assembly manifest</param>
         /// <returns>A filled side-by-side assembly manifest on success, null on error</returns>
         public static Models.PortableExecutable.AssemblyManifest AsAssemblyManifest(this Models.PortableExecutable.ResourceDataEntry entry)
         {
@@ -463,9 +463,271 @@ namespace BurnOutSharp.Builder
         }
 
         /// <summary>
+        /// Read resource data as a dialog box
+        /// </summary>
+        /// <param name="entry">Resource data entry to parse into a font group</param>
+        /// <returns>A filled dialog box on success, null on error</returns>
+        public static Models.PortableExecutable.DialogBoxResource AsDialogBox(this Models.PortableExecutable.ResourceDataEntry entry)
+        {
+            // If we have an invalid entry, just skip
+            if (entry?.Data == null)
+                return null;
+
+            // Initialize the iterator
+            int offset = 0;
+
+            // Create the output object
+            var dialogBoxResource = new Models.PortableExecutable.DialogBoxResource();
+
+            // Try to read the signature for an extended dialog box template
+            int signatureOffset = sizeof(ushort);
+            int possibleSignature = entry.Data.ReadUInt16(ref signatureOffset);
+            if (possibleSignature == 0xFFFF)
+            {
+                Console.WriteLine("Extended dialog box template found, but not implemented");
+
+                #region Extended dialog template
+
+                // TODO: Implement extended dialog template
+
+                #endregion
+
+                #region Extended dialog item templates
+
+                // TODO: Implement extended dialog item templates
+
+                #endregion
+            }
+            else
+            {
+                #region Dialog template
+
+                var dialogTemplate = new Models.PortableExecutable.DialogTemplate();
+
+                dialogTemplate.Style = (Models.PortableExecutable.WindowStyles)entry.Data.ReadUInt32(ref offset);
+                dialogTemplate.ExtendedStyle = (Models.PortableExecutable.ExtendedWindowStyles)entry.Data.ReadUInt32(ref offset);
+                dialogTemplate.ItemCount = entry.Data.ReadUInt16(ref offset);
+                dialogTemplate.PositionX = entry.Data.ReadInt16(ref offset);
+                dialogTemplate.PositionY = entry.Data.ReadInt16(ref offset);
+                dialogTemplate.WidthX = entry.Data.ReadInt16(ref offset);
+                dialogTemplate.HeightY = entry.Data.ReadInt16(ref offset);
+
+                #region Menu resource
+
+                int currentOffset = offset;
+                ushort menuResourceIdentifier = entry.Data.ReadUInt16(ref offset);
+                offset = currentOffset;
+
+                // 0x0000 means no elements
+                if (menuResourceIdentifier == 0x0000)
+                {
+                    // Increment the pointer if it was empty
+                    offset += sizeof(ushort);
+                }
+                else
+                {
+                    // Flag if there's an ordinal at the end
+                    bool menuResourceHasOrdinal = menuResourceIdentifier == 0xFFFF;
+                    if (menuResourceHasOrdinal)
+                        offset += sizeof(ushort);
+
+                    // Read the menu resource as a string
+                    dialogTemplate.MenuResource = entry.Data.ReadString(ref offset, Encoding.Unicode);
+
+                    // Align to the WORD boundary
+                    while ((offset % 2) != 0)
+                        _ = entry.Data.ReadByte(ref offset);
+
+                    // Read the ordinal if we have the flag set
+                    if (menuResourceHasOrdinal)
+                        dialogTemplate.MenuResourceOrdinal = entry.Data.ReadUInt16(ref offset);
+                }
+
+                #endregion
+
+                #region Class resource
+
+                currentOffset = offset;
+                ushort classResourceIdentifier = entry.Data.ReadUInt16(ref offset);
+                offset = currentOffset;
+
+                // 0x0000 means no elements
+                if (classResourceIdentifier == 0x0000)
+                {
+                    // Increment the pointer if it was empty
+                    offset += sizeof(ushort);
+                }
+                else
+                {
+                    // Flag if there's an ordinal at the end
+                    bool classResourcehasOrdinal = classResourceIdentifier == 0xFFFF;
+                    if (classResourcehasOrdinal)
+                        offset += sizeof(ushort);
+
+                    // Read the class resource as a string
+                    dialogTemplate.ClassResource = entry.Data.ReadString(ref offset, Encoding.Unicode);
+
+                    // Align to the WORD boundary
+                    while ((offset % 2) != 0)
+                        _ = entry.Data.ReadByte(ref offset);
+
+                    // Read the ordinal if we have the flag set
+                    if (classResourcehasOrdinal)
+                        dialogTemplate.ClassResourceOrdinal = entry.Data.ReadUInt16(ref offset);
+                }
+
+                #endregion
+
+                #region Title resource
+
+                currentOffset = offset;
+                ushort titleResourceIdentifier = entry.Data.ReadUInt16(ref offset);
+                offset = currentOffset;
+
+                // 0x0000 means no elements
+                if (titleResourceIdentifier == 0x0000)
+                {
+                    // Increment the pointer if it was empty
+                    offset += sizeof(ushort);
+                }
+                else
+                {
+                    // Read the title resource as a string
+                    dialogTemplate.TitleResource = entry.Data.ReadString(ref offset, Encoding.Unicode);
+
+                    // Align to the WORD boundary
+                    while ((offset % 2) != 0)
+                        _ = entry.Data.ReadByte(ref offset);
+                }
+
+                #endregion
+
+                #region Point size and typeface
+
+                // Only if DS_SETFONT is set are the values here used
+                if (dialogTemplate.Style.HasFlag(Models.PortableExecutable.WindowStyles.DS_SETFONT))
+                {
+                    dialogTemplate.PointSizeValue = entry.Data.ReadUInt16(ref offset);
+
+                    // Read the font name as a string
+                    dialogTemplate.Typeface = entry.Data.ReadString(ref offset, Encoding.Unicode);
+                }
+
+                // Align to the DWORD boundary
+                while ((offset % 4) != 0)
+                    _ = entry.Data.ReadByte(ref offset);
+
+                #endregion
+
+                dialogBoxResource.DialogTemplate = dialogTemplate;
+
+                #endregion
+
+                #region Dialog Item Templates
+
+                var dialogItemTemplates = new List<Models.PortableExecutable.DialogItemTemplate>();
+
+                for (int i = 0; i < dialogTemplate.ItemCount; i++)
+                {
+                    var dialogItemTemplate = new Models.PortableExecutable.DialogItemTemplate();
+
+                    dialogItemTemplate.Style = (Models.PortableExecutable.WindowStyles)entry.Data.ReadUInt32(ref offset);
+                    dialogItemTemplate.ExtendedStyle = (Models.PortableExecutable.ExtendedWindowStyles)entry.Data.ReadUInt32(ref offset);
+                    dialogItemTemplate.PositionX = entry.Data.ReadInt16(ref offset);
+                    dialogItemTemplate.PositionY = entry.Data.ReadInt16(ref offset);
+                    dialogItemTemplate.WidthX = entry.Data.ReadInt16(ref offset);
+                    dialogItemTemplate.HeightY = entry.Data.ReadInt16(ref offset);
+                    dialogItemTemplate.ID = entry.Data.ReadUInt16(ref offset);
+
+                    #region Class resource
+
+                    currentOffset = offset;
+                    ushort itemClassResourceIdentifier = entry.Data.ReadUInt16(ref offset);
+                    offset = currentOffset;
+
+                    // 0xFFFF means ordinal only
+                    if (itemClassResourceIdentifier == 0xFFFF)
+                    {
+                        // Increment the pointer
+                        _ = entry.Data.ReadUInt16(ref offset);
+
+                        // Read the ordinal
+                        dialogItemTemplate.ClassResourceOrdinal = (Models.PortableExecutable.DialogItemTemplateOrdinal)entry.Data.ReadUInt16(ref offset);
+                    }
+                    else
+                    {
+                        // Flag if there's an ordinal at the end
+                        bool classResourcehasOrdinal = itemClassResourceIdentifier == 0xFFFF;
+                        if (classResourcehasOrdinal)
+                            offset += sizeof(ushort);
+
+                        // Read the class resource as a string
+                        dialogItemTemplate.ClassResource = entry.Data.ReadString(ref offset, Encoding.Unicode);
+
+                        // Align to the WORD boundary
+                        while ((offset % 2) != 0)
+                            _ = entry.Data.ReadByte(ref offset);
+                    }
+
+                    #endregion
+
+                    #region Title resource
+
+                    currentOffset = offset;
+                    ushort itemTitleResourceIdentifier = entry.Data.ReadUInt16(ref offset);
+                    offset = currentOffset;
+
+                    // 0xFFFF means ordinal only
+                    if (itemTitleResourceIdentifier == 0xFFFF)
+                    {
+                        // Increment the pointer
+                        _ = entry.Data.ReadUInt16(ref offset);
+
+                        // Read the ordinal
+                        dialogItemTemplate.TitleResourceOrdinal = entry.Data.ReadUInt16(ref offset);
+                    }
+                    else
+                    {
+                        // Read the title resource as a string
+                        dialogItemTemplate.TitleResource = entry.Data.ReadString(ref offset, Encoding.Unicode);
+
+                        // Align to the WORD boundary
+                        while ((offset % 2) != 0)
+                            _ = entry.Data.ReadByte(ref offset);
+                    }
+
+                    #endregion
+
+                    #region Creation data
+
+                    dialogItemTemplate.CreationDataSize = entry.Data.ReadUInt16(ref offset);
+                    if (dialogItemTemplate.CreationDataSize != 0)
+                        dialogItemTemplate.CreationData = entry.Data.ReadBytes(ref offset, dialogItemTemplate.CreationDataSize);
+
+                    #endregion
+
+                    // Align to the DWORD boundary if we're not at the end
+                    if (offset != entry.Data.Length)
+                    {
+                        while ((offset % 4) != 0)
+                            _ = entry.Data.ReadByte(ref offset);
+                    }
+
+                    dialogItemTemplates.Add(dialogItemTemplate);
+                }
+
+                dialogBoxResource.DialogItemTemplates = dialogItemTemplates.ToArray();
+
+                #endregion
+            }
+
+            return dialogBoxResource;
+        }
+
+        /// <summary>
         /// Read resource data as a font group
         /// </summary>
-        /// <param name="data">Resource data entry to parse into a font group</param>
+        /// <param name="entry">Resource data entry to parse into a font group</param>
         /// <returns>A filled font group on success, null on error</returns>
         public static Models.PortableExecutable.FontGroupHeader AsFontGroup(this Models.PortableExecutable.ResourceDataEntry entry)
         {
@@ -528,13 +790,13 @@ namespace BurnOutSharp.Builder
             }
 
             // TODO: Implement entry parsing
-            return null;
+            return fontGroupHeader;
         }
 
         /// <summary>
         /// Read resource data as a string table resource
         /// </summary>
-        /// <param name="data">Resource data entry to parse into a string table resource</param>
+        /// <param name="entry">Resource data entry to parse into a string table resource</param>
         /// <returns>A filled string table resource on success, null on error</returns>
         public static Dictionary<int, string> AsStringTable(this Models.PortableExecutable.ResourceDataEntry entry)
         {
@@ -582,7 +844,7 @@ namespace BurnOutSharp.Builder
         /// <summary>
         /// Read resource data as a version info resource
         /// </summary>
-        /// <param name="data">Resource data entry to parse into a version info resource</param>
+        /// <param name="entry">Resource data entry to parse into a version info resource</param>
         /// <returns>A filled version info resource on success, null on error</returns>
         public static Models.PortableExecutable.VersionInfo AsVersionInfo(this Models.PortableExecutable.ResourceDataEntry entry)
         {

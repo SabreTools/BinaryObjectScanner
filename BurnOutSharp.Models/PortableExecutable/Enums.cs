@@ -400,6 +400,16 @@ namespace BurnOutSharp.Models.PortableExecutable
         IMAGE_DEBUG_TYPE_EX_DLLCHARACTERISTICS = 20,
     }
 
+    public enum DialogItemTemplateOrdinal : ushort
+    {
+        Button = 0x0080,
+        Edit = 0x0081,
+        Static = 0x0082,
+        ListBox = 0x0083,
+        ScrollBar = 0x0084,
+        ComboBox = 0x0085,
+    }
+
     [Flags]
     public enum DllCharacteristics : ushort
     {
@@ -487,6 +497,209 @@ namespace BurnOutSharp.Models.PortableExecutable
         /// Image is CET compatible.
         /// </summary>
         IMAGE_DLLCHARACTERISTICS_EX_CET_COMPAT = 0x0001,
+    }
+
+    [Flags]
+    public enum ExtendedWindowStyles : uint
+    {
+        /// <summary>
+        /// The window has generic left-aligned properties. This is the default.
+        /// </summary>
+        WS_EX_LEFT = 0x00000000,
+
+        /// <summary>
+        /// The window text is displayed using left-to-right reading-order properties.
+        /// This is the default.
+        /// </summary>
+        WS_EX_LTRREADING = 0x00000000,
+
+        /// <summary>
+        /// The vertical scroll bar (if present) is to the right of the client area.
+        /// This is the default.
+        /// </summary>
+        WS_EX_RIGHTSCROLLBAR = 0x00000000,
+
+        /// <summary>
+        /// The window has a double border; the window can, optionally, be created with
+        /// a title bar by specifying the WS_CAPTION style in the dwStyle parameter.
+        /// </summary>
+        WS_EX_DLGMODALFRAME = 0x00000001,
+
+        /// <summary>
+        /// The child window created with this style does not send the WM_PARENTNOTIFY
+        /// message to its parent window when it is created or destroyed.
+        /// </summary>
+        WS_EX_NOPARENTNOTIFY = 0x00000004,
+
+        /// <summary>
+        /// The window should be placed above all non-topmost windows and should stay above them,
+        /// even when the window is deactivated. To add or remove this style, use the
+        /// SetWindowPos function.
+        /// </summary>
+        WS_EX_TOPMOST = 0x00000008,
+
+        /// <summary>
+        /// The window accepts drag-drop files.
+        /// </summary>
+        WS_EX_ACCEPTFILES = 0x00000010,
+
+        /// <summary>
+        /// The window should not be painted until siblings beneath the window (that were created
+        /// by the same thread) have been painted. The window appears transparent because the bits
+        /// of underlying sibling windows have already been painted.
+        /// 
+        /// To achieve transparency without these restrictions, use the SetWindowRgn function.
+        /// </summary>
+        WS_EX_TRANSPARENT = 0x00000020,
+
+        /// <summary>
+        /// The window is a MDI child window.
+        /// </summary>
+        WS_EX_MDICHILD = 0x00000040,
+
+        /// <summary>
+        /// The window is intended to be used as a floating toolbar. A tool window has a title
+        /// bar that is shorter than a normal title bar, and the window title is drawn using a
+        /// smaller font. A tool window does not appear in the taskbar or in the dialog that
+        /// appears when the user presses ALT+TAB. If a tool window has a system menu, its icon
+        /// is not displayed on the title bar. However, you can display the system menu by
+        /// right-clicking or by typing ALT+SPACE. 
+        /// </summary>
+        WS_EX_TOOLWINDOW = 0x00000080,
+
+        /// <summary>
+        /// The window has a border with a raised edge.
+        /// </summary>
+        WS_EX_WINDOWEDGE = 0x00000100,
+
+        /// <summary>
+        /// The window has a border with a sunken edge.
+        /// </summary>
+        WS_EX_CLIENTEDGE = 0x00000200,
+
+        /// <summary>
+        /// The title bar of the window includes a question mark. When the user clicks
+        /// the question mark, the cursor changes to a question mark with a pointer. If
+        /// the user then clicks a child window, the child receives a WM_HELP message.
+        /// The child window should pass the message to the parent window procedure,
+        /// which should call the WinHelp function using the HELP_WM_HELP command. The
+        /// Help application displays a pop-up window that typically contains help for
+        /// the child window.
+        /// 
+        /// WS_EX_CONTEXTHELP cannot be used with the WS_MAXIMIZEBOX or WS_MINIMIZEBOX
+        /// styles.
+        /// </summary>
+        WS_EX_CONTEXTHELP = 0x00000400,
+
+        /// <summary>
+        /// The window has generic "right-aligned" properties. This depends on the window class.
+        /// This style has an effect only if the shell language is Hebrew, Arabic, or another
+        /// language that supports reading-order alignment; otherwise, the style is ignored.
+        /// 
+        /// Using the WS_EX_RIGHT style for static or edit controls has the same effect as using
+        /// the SS_RIGHT or ES_RIGHT style, respectively. Using this style with button controls
+        /// has the same effect as using BS_RIGHT and BS_RIGHTBUTTON styles. 
+        /// </summary>
+        WS_EX_RIGHT = 0x00001000,
+
+        /// <summary>
+        /// If the shell language is Hebrew, Arabic, or another language that supports reading-order
+        /// alignment, the window text is displayed using right-to-left reading-order properties.
+        /// For other languages, the style is ignored.
+        /// </summary>
+        WS_EX_RTLREADING = 0x00002000,
+
+        /// <summary>
+        /// If the shell language is Hebrew, Arabic, or another language that supports
+        /// reading order alignment, the vertical scroll bar (if present) is to the left
+        /// of the client area. For other languages, the style is ignored.
+        /// </summary>
+        WS_EX_LEFTSCROLLBAR = 0x00004000,
+
+        /// <summary>
+        /// The window itself contains child windows that should take part in dialog box
+        /// navigation. If this style is specified, the dialog manager recurses into
+        /// children of this window when performing navigation operations such as handling
+        /// the TAB key, an arrow key, or a keyboard mnemonic.
+        /// </summary>
+        WS_EX_CONTROLPARENT = 0x00010000,
+
+        /// <summary>
+        /// The window has a three-dimensional border style intended to be used for items that do
+        /// not accept user input.
+        /// </summary>
+        WS_EX_STATICEDGE = 0x00020000,
+
+        /// <summary>
+        /// Forces a top-level window onto the taskbar when the window is visible.
+        /// </summary>
+        WS_EX_APPWINDOW = 0x00040000,
+
+        /// <summary>
+        /// The window is a layered window. This style cannot be used if the window has a
+        /// class style of either CS_OWNDC or CS_CLASSDC.
+        /// 
+        /// Windows 8: The WS_EX_LAYERED style is supported for top-level windows and child
+        /// windows. Previous Windows versions support WS_EX_LAYERED only for top-level windows.
+        /// </summary>
+        WS_EX_LAYERED = 0x00080000,
+
+        /// <summary>
+        /// The window does not pass its window layout to its child windows.
+        /// </summary>
+        WS_EX_NOINHERITLAYOUT = 0x00100000,
+
+        /// <summary>
+        /// The window does not render to a redirection surface. This is for windows that do not
+        /// have visible content or that use mechanisms other than surfaces to provide their visual.
+        /// </summary>
+        WS_EX_NOREDIRECTIONBITMAP = 0x00200000,
+
+        /// <summary>
+        /// If the shell language is Hebrew, Arabic, or another language that supports reading
+        /// order alignment, the horizontal origin of the window is on the right edge.
+        /// Increasing horizontal values advance to the left.
+        /// </summary>
+        WS_EX_LAYOUTRTL = 0x00400000,
+
+        /// <summary>
+        /// Paints all descendants of a window in bottom-to-top painting order using
+        /// double-buffering. Bottom-to-top painting order allows a descendent window
+        /// to have translucency (alpha) and transparency (color-key) effects, but only
+        /// if the descendent window also has the WS_EX_TRANSPARENT bit set.
+        /// Double-buffering allows the window and its descendents to be painted without
+        /// flicker. This cannot be used if the window has a class style of either
+        /// CS_OWNDC or CS_CLASSDC.
+        /// 
+        /// Windows 2000: This style is not supported.
+        /// </summary>
+        WS_EX_COMPOSITED = 0x02000000,
+
+        /// <summary>
+        /// A top-level window created with this style does not become the foreground window when
+        /// the user clicks it. The system does not bring this window to the foreground when the
+        /// user minimizes or closes the foreground window.
+        /// 
+        /// The window should not be activated through programmatic access or via keyboard
+        /// navigation by accessible technology, such as Narrator.
+        /// 
+        /// To activate the window, use the SetActiveWindow or SetForegroundWindow function.
+        /// 
+        /// The window does not appear on the taskbar by default. To force the window to appear on
+        /// the taskbar, use the WS_EX_APPWINDOW style.
+        /// </summary>
+        WS_EX_NOACTIVATE = 0x08000000,
+
+        /// <summary>
+        /// The window is an overlapped window.
+        /// </summary>
+        WS_EX_OVERLAPPEDWINDOW = WS_EX_WINDOWEDGE | WS_EX_CLIENTEDGE,
+
+        /// <summary>
+        /// The window is palette window, which is a modeless dialog box that presents an array of
+        /// commands.
+        /// </summary>
+        WS_EX_PALETTEWINDOW = WS_EX_WINDOWEDGE | WS_EX_TOOLWINDOW | WS_EX_TOPMOST,
     }
 
     public enum FixedFileInfoFileSubtype : uint
@@ -2587,6 +2800,398 @@ namespace BurnOutSharp.Models.PortableExecutable
     {
         BinaryData = 0,
         TextData = 1,
+    }
+
+    [Flags]
+    public enum WindowStyles : uint
+    {
+        #region Standard Styles
+
+        /// <summary>
+        /// The window is an overlapped window. An overlapped window has a title
+        /// bar and a border. Same as the WS_TILED style.
+        /// </summary>
+        WS_OVERLAPPED = 0x00000000,
+
+        /// <summary>
+        /// The window is an overlapped window. An overlapped window has a title bar
+        /// and a border. Same as the WS_OVERLAPPED style.
+        /// </summary>
+        WS_TILED = 0x00000000,
+
+        /// <summary>
+        /// The window has a maximize button. Cannot be combined with the
+        /// WS_EX_CONTEXTHELP style. The WS_SYSMENU style must also be specified.
+        /// </summary>
+        WS_MAXIMIZEBOX = 0x00010000,
+
+        /// <summary>
+        /// The window is a control that can receive the keyboard focus when the user
+        /// presses the TAB key. Pressing the TAB key changes the keyboard focus to
+        /// the next control with the WS_TABSTOP style.
+        /// 
+        /// You can turn this style on and off to change dialog box navigation. To
+        /// change this style after a window has been created, use the SetWindowLong
+        /// function. For user-created windows and modeless dialogs to work with tab
+        /// stops, alter the message loop to call the IsDialogMessage function.
+        /// </summary>
+        WS_TABSTOP = 0x00010000,
+
+        /// <summary>
+        /// The window has a minimize button. Cannot be combined with the
+        /// WS_EX_CONTEXTHELP style. The WS_SYSMENU style must also be specified.
+        /// </summary>
+        WS_MINIMIZEBOX = 0x00020000,
+
+        /// <summary>
+        /// The window is the first control of a group of controls. The group consists
+        /// of this first control and all controls defined after it, up to the next
+        /// control with the WS_GROUP style. The first control in each group usually
+        /// has the WS_TABSTOP style so that the user can move from group to group.
+        /// The user can subsequently change the keyboard focus from one control in
+        /// the group to the next control in the group by using the direction keys.
+        /// 
+        /// You can turn this style on and off to change dialog box navigation. To
+        /// change this style after a window has been created, use the SetWindowLong
+        /// function.
+        /// </summary>
+        WS_GROUP = 0x00020000,
+
+        /// <summary>
+        /// The window has a sizing border. Same as the WS_THICKFRAME style.
+        /// </summary>
+        WS_SIZEBOX = 0x00040000,
+
+        /// <summary>
+        /// The window has a sizing border. Same as the WS_SIZEBOX style.
+        /// </summary>
+        WS_THICKFRAME = 0x00040000,
+
+        /// <summary>
+        /// The window has a window menu on its title bar. The WS_CAPTION style must
+        /// also be specified.
+        /// </summary>
+        WS_SYSMENU = 0x00080000,
+
+        /// <summary>
+        /// The window has a horizontal scroll bar.
+        /// </summary>
+        WS_HSCROLL = 0x00100000,
+
+        /// <summary>
+        /// The window has a vertical scroll bar.
+        /// </summary>
+        WS_VSCROLL = 0x00200000,
+
+        /// <summary>
+        /// The window has a border of a style typically used with dialog boxes. A
+        /// window with this style cannot have a title bar.
+        /// </summary>
+        WS_DLGFRAME = 0x00400000,
+
+        /// <summary>
+        /// The window has a thin-line border
+        /// </summary>
+        WS_BORDER = 0x00800000,
+
+        /// <summary>
+        /// The window has a title bar
+        /// </summary>
+        WS_CAPTION = 0x00C00000,
+
+        /// <summary>
+        /// The window is initially maximized.
+        /// </summary>
+        WS_MAXIMIZE = 0x01000000,
+
+        /// <summary>
+        /// Excludes the area occupied by child windows when drawing occurs within the
+        /// parent window. This style is used when creating the parent window.
+        /// </summary>
+        WS_CLIPCHILDREN = 0x02000000,
+
+        /// <summary>
+        /// Clips child windows relative to each other; that is, when a particular child
+        /// window receives a WM_PAINT message, the WS_CLIPSIBLINGS style clips all other
+        /// overlapping child windows out of the region of the child window to be updated.
+        /// If WS_CLIPSIBLINGS is not specified and child windows overlap, it is possible,
+        /// when drawing within the client area of a child window, to draw within the
+        /// client area of a neighboring child window.
+        /// </summary>
+        WS_CLIPSIBLINGS = 0x04000000,
+
+        /// <summary>
+        /// The window is initially disabled. A disabled window cannot receive input from
+        /// the user. To change this after a window has been created, use the EnableWindow
+        /// function.
+        /// </summary>
+        WS_DISABLED = 0x08000000,
+
+        /// <summary>
+        /// The window is initially visible.
+        /// This style can be turned on and off by using the ShowWindow or SetWindowPos
+        /// function.
+        /// </summary>
+        WS_VISIBLE = 0x10000000,
+
+        /// <summary>
+        /// The window is initially minimized. Same as the WS_MINIMIZE style.
+        /// </summary>
+        WS_ICONIC = 0x20000000,
+
+        /// <summary>
+        /// The window is initially minimized. Same as the WS_ICONIC style.
+        /// </summary>
+        WS_MINIMIZE = 0x20000000,
+
+        /// <summary>
+        /// The window is a child window. A window with this style cannot have a menu
+        /// bar. This style cannot be used with the WS_POPUP style.
+        /// </summary>
+        WS_CHILD = 0x40000000,
+
+        /// <summary>
+        /// Same as the WS_CHILD style.
+        /// </summary>
+        WS_CHILDWINDOW = 0x40000000,
+
+        /// <summary>
+        /// The window is a pop-up window. This style cannot be used with the WS_CHILD style.
+        /// </summary>
+        WS_POPUP = 0x80000000,
+
+        /// <summary>
+        /// The window is an overlapped window. Same as the WS_TILEDWINDOW style.
+        /// </summary>
+        WS_OVERLAPPEDWINDOW = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX,
+
+        /// <summary>
+        /// The window is a pop-up window. The WS_CAPTION and WS_POPUPWINDOW styles must be
+        /// combined to make the window menu visible.
+        /// </summary>
+        WS_POPUPWINDOW = WS_POPUP | WS_BORDER | WS_SYSMENU,
+
+        /// <summary>
+        /// The window is an overlapped window. Same as the WS_OVERLAPPEDWINDOW style.
+        /// </summary>
+        WS_TILEDWINDOW = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX,
+
+        #endregion
+
+        #region Common Control Styles
+
+        /// <summary>
+        /// Causes the control to position itself at the top of the parent window's
+        /// client area and sets the width to be the same as the parent window's width.
+        /// Toolbars have this style by default. 
+        /// </summary>
+        CCS_TOP = 0x00000001,
+
+        /// <summary>
+        /// Causes the control to resize and move itself horizontally, but not vertically,
+        /// in response to a WM_SIZE message. If CCS_NORESIZE is used, this style does not
+        /// apply. Header windows have this style by default.
+        /// </summary>
+        CCS_NOMOVEY = 0x00000002,
+
+        /// <summary>
+        /// Causes the control to position itself at the bottom of the parent window's
+        /// client area and sets the width to be the same as the parent window's width.
+        /// Status windows have this style by default.
+        /// </summary>
+        CCS_BOTTOM = 0x00000003,
+
+        /// <summary>
+        /// Prevents the control from using the default width and height when setting its
+        /// initial size or a new size. Instead, the control uses the width and height
+        /// specified in the request for creation or sizing.
+        /// </summary>
+        CCS_NORESIZE = 0x00000004,
+
+        /// <summary>
+        /// Prevents the control from automatically moving to the top or bottom of the parent
+        /// window. Instead, the control keeps its position within the parent window despite
+        /// changes to the size of the parent. If CCS_TOP or CCS_BOTTOM is also used, the
+        /// height is adjusted to the default, but the position and width remain unchanged. 
+        /// </summary>
+        CCS_NOPARENTALIGN = 0x00000008,
+
+        /// <summary>
+        /// Enables a toolbar's built-in customization features, which let the user to drag a
+        /// button to a new position or to remove a button by dragging it off the toolbar.
+        /// In addition, the user can double-click the toolbar to display the Customize Toolbar
+        /// dialog box, which enables the user to add, delete, and rearrange toolbar buttons.
+        /// </summary>
+        CCS_ADJUSTABLE = 0x00000020,
+
+        /// <summary>
+        /// Prevents a two-pixel highlight from being drawn at the top of the control.
+        /// </summary>
+        CCS_NODIVIDER = 0x00000040,
+
+        /// <summary>
+        /// Version 4.70. Causes the control to be displayed vertically.
+        /// </summary>
+        CCS_VERT = 0x00000080,
+
+        /// <summary>
+        /// Version 4.70. Causes the control to be displayed vertically on the left side of the
+        /// parent window.
+        /// </summary>
+        CCS_LEFT = CCS_VERT | CCS_TOP,
+
+        /// <summary>
+        /// Version 4.70. Causes the control to be displayed vertically on the right side of the
+        /// parent window.
+        /// </summary>
+        CCS_RIGHT = CCS_VERT | CCS_BOTTOM,
+
+        /// <summary>
+        /// Version 4.70. Causes the control to resize and move itself vertically, but not
+        /// horizontally, in response to a WM_SIZE message. If CCS_NORESIZE is used, this style
+        /// does not apply.
+        /// </summary>
+        CCS_NOMOVEX = CCS_VERT | CCS_NOMOVEY,
+
+        #endregion
+
+        #region Dialog Box Styles
+
+        /// <summary>
+        /// Indicates that the coordinates of the dialog box are screen coordinates.
+        /// If this style is not specified, the coordinates are client coordinates.
+        /// </summary>
+        DS_ABSALIGN = 0x00000001,
+
+        /// <summary>
+        /// This style is obsolete and is included for compatibility with 16-bit versions
+        /// of Windows. If you specify this style, the system creates the dialog box with
+        /// the WS_EX_TOPMOST style. This style does not prevent the user from accessing
+        /// other windows on the desktop.
+        /// 
+        /// Do not combine this style with the DS_CONTROL style.
+        /// </summary>
+        DS_SYSMODAL = 0x00000002,
+
+        /// <summary>
+        /// Obsolete. The system automatically applies the three-dimensional look to dialog
+        /// boxes created by applications.
+        /// </summary>
+        DS_3DLOOK = 0x00000004,
+
+        /// <summary>
+        /// Causes the dialog box to use the SYSTEM_FIXED_FONT instead of the default
+        /// SYSTEM_FONT. This is a monospace font compatible with the System font in 16-bit
+        /// versions of Windows earlier than 3.0.
+        /// </summary>
+        DS_FIXEDSYS = 0x00000008,
+
+        /// <summary>
+        /// Creates the dialog box even if errors occur for example, if a child window cannot
+        /// be created or if the system cannot create a special data segment for an edit control.
+        /// </summary>
+        DS_NOFAILCREATE = 0x00000010,
+
+        /// <summary>
+        /// Applies to 16-bit applications only. This style directs edit controls in the
+        /// dialog box to allocate memory from the application's data segment. Otherwise,
+        /// edit controls allocate storage from a global memory object.
+        /// </summary>
+        DS_LOCALEDIT = 0x00000020,
+
+        /// <summary>
+        /// Indicates that the header of the dialog box template (either standard or extended)
+        /// contains additional data specifying the font to use for text in the client area
+        /// and controls of the dialog box. If possible, the system selects a font according
+        /// to the specified font data. The system passes a handle to the font to the dialog
+        /// box and to each control by sending them the WM_SETFONT message. For descriptions
+        /// of the format of this font data, see DLGTEMPLATE and DLGTEMPLATEEX.
+        /// 
+        /// If neither DS_SETFONT nor DS_SHELLFONT is specified, the dialog box template does
+        /// not include the font data.
+        /// </summary>
+        DS_SETFONT = 0x00000040,
+
+        /// <summary>
+        /// Creates a dialog box with a modal dialog-box frame that can be combined with a
+        /// title bar and window menu by specifying the WS_CAPTION and WS_SYSMENU styles.
+        /// </summary>
+        DS_MODALFRAME = 0x00000080,
+
+        /// <summary>
+        /// Suppresses WM_ENTERIDLE messages that the system would otherwise send to the owner
+        /// of the dialog box while the dialog box is displayed.
+        /// </summary>
+        DS_NOIDLEMSG = 0x00000100,
+
+        /// <summary>
+        /// Causes the system to use the SetForegroundWindow function to bring the dialog box
+        /// to the foreground. This style is useful for modal dialog boxes that require immediate
+        /// attention from the user regardless of whether the owner window is the foreground
+        /// window.
+        /// 
+        /// The system restricts which processes can set the foreground window. For more
+        /// information, see Foreground and Background Windows.
+        /// </summary>
+        DS_SETFOREGROUND = 0x00000200,
+
+        /// <summary>
+        /// Creates a dialog box that works well as a child window of another dialog box, much like
+        /// a page in a property sheet. This style allows the user to tab among the control windows
+        /// of a child dialog box, use its accelerator keys, and so on.
+        /// </summary>
+        DS_CONTROL = 0x00000400,
+
+        /// <summary>
+        /// Centers the dialog box in the working area of the monitor that contains the owner window.
+        /// If no owner window is specified, the dialog box is centered in the working area of a
+        /// monitor determined by the system. The working area is the area not obscured by the taskbar
+        /// or any appbars.
+        /// </summary>
+        DS_CENTER = 0x00000800,
+
+        /// <summary>
+        /// Centers the dialog box on the mouse cursor.
+        /// </summary>
+        DS_CENTERMOUSE = 0x00001000,
+
+        /// <summary>
+        /// Includes a question mark in the title bar of the dialog box. When the user clicks the
+        /// question mark, the cursor changes to a question mark with a pointer. If the user then clicks
+        /// a control in the dialog box, the control receives a WM_HELP message. The control should pass
+        /// the message to the dialog box procedure, which should call the function using the
+        /// HELP_WM_HELP command. The help application displays a pop-up window that typically contains
+        /// help for the control.
+        /// 
+        /// Note that DS_CONTEXTHELP is only a placeholder. When the dialog box is created, the system
+        /// checks for DS_CONTEXTHELP and, if it is there, adds WS_EX_CONTEXTHELP to the extended style
+        /// of the dialog box. WS_EX_CONTEXTHELP cannot be used with the WS_MAXIMIZEBOX or WS_MINIMIZEBOX
+        /// styles.
+        /// </summary>
+        DS_CONTEXTHELP = 0x00002000,
+
+        /// <remarks>
+        /// Windows CE Version 5.0 and later
+        /// </remarks>
+        DS_USEPIXELS = 0x00008000,
+
+        /// <summary>
+        /// Indicates that the dialog box should use the system font. The typeface member of the extended
+        /// dialog box template must be set to MS Shell Dlg. Otherwise, this style has no effect. It is
+        /// also recommended that you use the DIALOGEX Resource, rather than the DIALOG Resource. For
+        /// more information, see Dialog Box Fonts.
+        /// 
+        /// The system selects a font using the font data specified in the pointsize, weight, and italic
+        /// members. The system passes a handle to the font to the dialog box and to each control by
+        /// sending them the WM_SETFONT message. For descriptions of the format of this font data, see
+        /// DLGTEMPLATEEX. 
+        /// 
+        /// If neither DS_SHELLFONT nor DS_SETFONT is specified, the extended dialog box template does
+        /// not include the font data.
+        /// </summary>
+        DS_SHELLFONT = DS_SETFONT | DS_FIXEDSYS,
+
+        #endregion
     }
 
     public enum WindowsCertificateRevision : ushort

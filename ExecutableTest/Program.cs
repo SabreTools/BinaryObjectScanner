@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using System.Xml;
 using BurnOutSharp.Builder;
 
@@ -1178,7 +1179,6 @@ namespace ExecutableTest
                 {
                     case BurnOutSharp.Models.PortableExecutable.ResourceType.RT_CURSOR:
                         Console.WriteLine($"{padding}Hardware-dependent cursor resource found, not parsed yet");
-                        Console.WriteLine($"{padding}Data: {BitConverter.ToString(entry.Data).Replace("-", string.Empty)}");
                         break;
                     case BurnOutSharp.Models.PortableExecutable.ResourceType.RT_BITMAP:
                         Console.WriteLine($"{padding}Bitmap resource found, not parsed yet");
@@ -1190,7 +1190,69 @@ namespace ExecutableTest
                         Console.WriteLine($"{padding}Menu resource found, not parsed yet");
                         break;
                     case BurnOutSharp.Models.PortableExecutable.ResourceType.RT_DIALOG:
-                        Console.WriteLine($"{padding}Dialog box found, not parsed yet");
+                        var dialogBox = entry.AsDialogBox();
+                        if (dialogBox == null)
+                        {
+                            Console.WriteLine($"{padding}Dialog box resource found, but malformed");
+                        }
+                        else
+                        {
+                            if (dialogBox.DialogTemplate != null)
+                            {
+                                Console.WriteLine($"{padding}Style: {dialogBox.DialogTemplate.Style}");
+                                Console.WriteLine($"{padding}Extended style: {dialogBox.DialogTemplate.ExtendedStyle}");
+                                Console.WriteLine($"{padding}Item count: {dialogBox.DialogTemplate.ItemCount}");
+                                Console.WriteLine($"{padding}X-coordinate of upper-left corner: {dialogBox.DialogTemplate.PositionX}");
+                                Console.WriteLine($"{padding}Y-coordinate of upper-left corner: {dialogBox.DialogTemplate.PositionY}");
+                                Console.WriteLine($"{padding}Width of the dialog box: {dialogBox.DialogTemplate.WidthX}");
+                                Console.WriteLine($"{padding}Height of the dialog box: {dialogBox.DialogTemplate.HeightY}");
+                                Console.WriteLine($"{padding}Menu resource: {dialogBox.DialogTemplate.MenuResource ?? "[EMPTY]"}");
+                                Console.WriteLine($"{padding}Menu resource ordinal: {dialogBox.DialogTemplate.MenuResourceOrdinal}");
+                                Console.WriteLine($"{padding}Class resource: {dialogBox.DialogTemplate.ClassResource ?? "[EMPTY]"}");
+                                Console.WriteLine($"{padding}Class resource ordinal: {dialogBox.DialogTemplate.ClassResourceOrdinal}");
+                                Console.WriteLine($"{padding}Title resource: {dialogBox.DialogTemplate.TitleResource ?? "[EMPTY]"}");
+                                Console.WriteLine($"{padding}Point size value: {dialogBox.DialogTemplate.PointSizeValue}");
+                                Console.WriteLine($"{padding}Typeface: {dialogBox.DialogTemplate.Typeface ?? "[EMPTY]"}");
+                                Console.WriteLine();
+                                Console.WriteLine($"{padding}Dialog item templates");
+                                Console.WriteLine($"{padding}-------------------------");
+                                if (dialogBox.DialogTemplate.ItemCount == 0
+                                    || dialogBox.DialogItemTemplates == null
+                                    || dialogBox.DialogItemTemplates.Length == 0)
+                                {
+                                    Console.WriteLine($"{padding}No dialog item templates");
+                                }
+                                else
+                                {
+                                    for (int i = 0; i < dialogBox.DialogItemTemplates.Length; i++)
+                                    {
+                                        var dialogItemTemplate = dialogBox.DialogItemTemplates[i];
+
+                                        Console.WriteLine($"{padding}Dialog item template {i}");
+                                        Console.WriteLine($"{padding}  Style: {dialogItemTemplate.Style}");
+                                        Console.WriteLine($"{padding}  Extended style: {dialogItemTemplate.ExtendedStyle}");
+                                        Console.WriteLine($"{padding}  X-coordinate of upper-left corner: {dialogItemTemplate.PositionX}");
+                                        Console.WriteLine($"{padding}  Y-coordinate of upper-left corner: {dialogItemTemplate.PositionY}");
+                                        Console.WriteLine($"{padding}  Width of the control: {dialogItemTemplate.WidthX}");
+                                        Console.WriteLine($"{padding}  Height of the control: {dialogItemTemplate.HeightY}");
+                                        Console.WriteLine($"{padding}  ID: {dialogItemTemplate.ID}");
+                                        Console.WriteLine($"{padding}  Class resource: {dialogItemTemplate.ClassResource ?? "[EMPTY]"}");
+                                        Console.WriteLine($"{padding}  Class resource ordinal: {dialogItemTemplate.ClassResourceOrdinal}");
+                                        Console.WriteLine($"{padding}  Title resource: {dialogItemTemplate.TitleResource ?? "[EMPTY]"}");
+                                        Console.WriteLine($"{padding}  Title resource ordinal: {dialogItemTemplate.TitleResourceOrdinal}");
+                                        Console.WriteLine($"{padding}  Creation data size: {dialogItemTemplate.CreationDataSize}");
+                                        if (dialogItemTemplate.CreationData != null && dialogItemTemplate.CreationData.Length != 0)
+                                            Console.WriteLine($"{padding}  Creation data: {BitConverter.ToString(dialogItemTemplate.CreationData).Replace("-", string.Empty)}");
+                                        else
+                                            Console.WriteLine($"{padding}  Creation data: [EMPTY]");
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine($"{padding}Dialog box resource found, but malformed");
+                            }
+                        }
                         break;
                     case BurnOutSharp.Models.PortableExecutable.ResourceType.RT_STRING:
                         var stringTable = entry.AsStringTable();
