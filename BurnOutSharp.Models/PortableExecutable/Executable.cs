@@ -69,6 +69,11 @@ namespace BurnOutSharp.Models.PortableExecutable
         // documented, but can be handed to the CLR interfaces for handling metadata.
 
         /// <summary>
+        /// Debug table (.debug*)
+        /// </summary>
+        public DebugTable DebugTable { get; set; }
+
+        /// <summary>
         /// Export table (.edata)
         /// </summary>
         public ExportTable ExportTable { get; set; }
@@ -101,9 +106,6 @@ namespace BurnOutSharp.Models.PortableExecutable
         // - Delay Import Name Table
         // - Delay Bound Import Address Table
         // - Delay Unload Import Address Table
-        // - The .debug Section
-        //      - [Debug Directory Entry]
-        //      - .debug$F (Object Only) / IMAGE_DEBUG_TYPE_FPO
         // - The .drectve Section (Object Only)
         // - The .pdata Section [Multiple formats per entry]
         // - TLS Callback Functions

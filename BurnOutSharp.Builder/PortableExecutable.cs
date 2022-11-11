@@ -174,6 +174,29 @@ namespace BurnOutSharp.Builder
 
             #endregion
 
+            #region Debug Table
+
+            // Should also be in the '.debug' section
+            if (optionalHeader.Debug != null && optionalHeader.Debug.VirtualAddress != 0)
+            {
+                // If the offset for the debug table doesn't exist
+                int debugTableAddress = initialOffset
+                    + (int)optionalHeader.Debug.VirtualAddress.ConvertVirtualAddress(executable.SectionTable);
+                if (debugTableAddress >= data.Length)
+                    return executable;
+
+                // Try to parse the debug table
+                int endOffset = (int)(debugTableAddress + optionalHeader.CertificateTable.Size);
+                var debugTable = ParseDebugTable(data, debugTableAddress, endOffset, executable.SectionTable);
+                if (debugTable == null)
+                    return null;
+
+                // Set the debug table
+                executable.DebugTable = debugTable;
+            }
+
+            #endregion
+
             #region Export Table
 
             // Should also be in the '.rsrc' section
@@ -712,6 +735,45 @@ namespace BurnOutSharp.Builder
             delayLoadDirectoryTable.TimeStamp = data.ReadUInt32(ref offset);
 
             return delayLoadDirectoryTable;
+        }
+
+        /// <summary>
+        /// Parse a Stream into a debug table
+        /// </summary>
+        /// <param name="data">Byte array to parse</param>
+        /// <param name="offset">Offset into the byte array</param>
+        /// <param name="endOffset">First address not part of the debug table</param>
+        /// <param name="sections">Section table to use for virtual address translation</param>
+        /// <returns>Filled debug table on success, null on error</returns>
+        private static DebugTable ParseDebugTable(byte[] data, int offset, int endOffset, SectionHeader[] sections)
+        {
+            // TODO: Use marshalling here instead of building
+            var debugTable = new DebugTable();
+
+            var debugDirectoryTable = new List<DebugDirectoryEntry>();
+
+            while (offset < endOffset)
+            {
+                var debugDirectoryEntry = new DebugDirectoryEntry();
+
+                debugDirectoryEntry.Characteristics = data.ReadUInt32(ref offset);
+                debugDirectoryEntry.TimeDateStamp = data.ReadUInt32(ref offset);
+                debugDirectoryEntry.MajorVersion = data.ReadUInt16(ref offset);
+                debugDirectoryEntry.MinorVersion = data.ReadUInt16(ref offset);
+                debugDirectoryEntry.DebugType = (DebugType)data.ReadUInt32(ref offset);
+                debugDirectoryEntry.SizeOfData = data.ReadUInt32(ref offset);
+                debugDirectoryEntry.AddressOfRawData = data.ReadUInt32(ref offset);
+                debugDirectoryEntry.PointerToRawData = data.ReadUInt32(ref offset);
+
+                debugDirectoryTable.Add(debugDirectoryEntry);
+            }
+
+            debugTable.DebugDirectoryTable = debugDirectoryTable.ToArray();
+
+            // TODO: Should we read the debug data in? Most of it is unformatted or undocumented
+            // TODO: Implement .debug$F (Object Only) / IMAGE_DEBUG_TYPE_FPO
+
+            return debugTable;
         }
 
         /// <summary>
@@ -1298,6 +1360,30 @@ namespace BurnOutSharp.Builder
 
             #endregion
 
+            #region Debug Table
+
+            // Should also be in the '.debug' section
+            if (optionalHeader.Debug != null && optionalHeader.Debug.VirtualAddress != 0)
+            {
+                // If the offset for the debug table doesn't exist
+                int debugTableAddress = initialOffset
+                    + (int)optionalHeader.Debug.VirtualAddress.ConvertVirtualAddress(executable.SectionTable);
+                if (debugTableAddress >= data.Length)
+                    return executable;
+
+                // Try to parse the debug table
+                data.Seek(debugTableAddress, SeekOrigin.Begin);
+                int endOffset = (int)(debugTableAddress + optionalHeader.CertificateTable.Size);
+                var debugTable = ParseDebugTable(data, endOffset, executable.SectionTable);
+                if (debugTable == null)
+                    return null;
+
+                // Set the debug table
+                executable.DebugTable = debugTable;
+            }
+
+            #endregion
+
             #region Export Table
 
             // Should also be in the '.edata' section
@@ -1832,6 +1918,44 @@ namespace BurnOutSharp.Builder
             delayLoadDirectoryTable.TimeStamp = data.ReadUInt32();
 
             return delayLoadDirectoryTable;
+        }
+
+        /// <summary>
+        /// Parse a Stream into a debug table
+        /// </summary>
+        /// <param name="data">Stream to parse</param>
+        /// <param name="endOffset">First address not part of the debug table</param>
+        /// <param name="sections">Section table to use for virtual address translation</param>
+        /// <returns>Filled debug table on success, null on error</returns>
+        private static DebugTable ParseDebugTable(Stream data, int endOffset, SectionHeader[] sections)
+        {
+            // TODO: Use marshalling here instead of building
+            var debugTable = new DebugTable();
+
+            var debugDirectoryTable = new List<DebugDirectoryEntry>();
+
+            while (data.Position < endOffset)
+            {
+                var debugDirectoryEntry = new DebugDirectoryEntry();
+
+                debugDirectoryEntry.Characteristics = data.ReadUInt32();
+                debugDirectoryEntry.TimeDateStamp = data.ReadUInt32();
+                debugDirectoryEntry.MajorVersion = data.ReadUInt16();
+                debugDirectoryEntry.MinorVersion = data.ReadUInt16();
+                debugDirectoryEntry.DebugType = (DebugType)data.ReadUInt32();
+                debugDirectoryEntry.SizeOfData = data.ReadUInt32();
+                debugDirectoryEntry.AddressOfRawData = data.ReadUInt32();
+                debugDirectoryEntry.PointerToRawData = data.ReadUInt32();
+
+                debugDirectoryTable.Add(debugDirectoryEntry);
+            }
+
+            debugTable.DebugDirectoryTable = debugDirectoryTable.ToArray();
+
+            // TODO: Should we read the debug data in? Most of it is unformatted or undocumented
+            // TODO: Implement .debug$F (Object Only) / IMAGE_DEBUG_TYPE_FPO
+
+            return debugTable;
         }
 
         /// <summary>
