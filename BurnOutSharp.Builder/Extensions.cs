@@ -484,11 +484,130 @@ namespace BurnOutSharp.Builder
             int possibleSignature = entry.Data.ReadUInt16(ref signatureOffset);
             if (possibleSignature == 0xFFFF)
             {
-                Console.WriteLine("Extended dialog box template found, but not implemented");
-
                 #region Extended dialog template
 
-                // TODO: Implement extended dialog template
+                var dialogTemplateExtended = new Models.PortableExecutable.DialogTemplateExtended();
+
+                dialogTemplateExtended.Version = entry.Data.ReadUInt16(ref offset);
+                dialogTemplateExtended.Signature = entry.Data.ReadUInt16(ref offset);
+                dialogTemplateExtended.HelpID = entry.Data.ReadUInt32(ref offset);
+                dialogTemplateExtended.ExtendedStyle = (Models.PortableExecutable.ExtendedWindowStyles)entry.Data.ReadUInt32(ref offset);
+                dialogTemplateExtended.Style = (Models.PortableExecutable.WindowStyles)entry.Data.ReadUInt32(ref offset);
+                dialogTemplateExtended.DialogItems = entry.Data.ReadUInt16(ref offset);
+                dialogTemplateExtended.PositionX = entry.Data.ReadInt16(ref offset);
+                dialogTemplateExtended.PositionY = entry.Data.ReadInt16(ref offset);
+                dialogTemplateExtended.WidthX = entry.Data.ReadInt16(ref offset);
+                dialogTemplateExtended.HeightY = entry.Data.ReadInt16(ref offset);
+
+                #region Menu resource
+
+                int currentOffset = offset;
+                ushort menuResourceIdentifier = entry.Data.ReadUInt16(ref offset);
+                offset = currentOffset;
+
+                // 0x0000 means no elements
+                if (menuResourceIdentifier == 0x0000)
+                {
+                    // Increment the pointer if it was empty
+                    offset += sizeof(ushort);
+                }
+                else
+                {
+                    // Flag if there's an ordinal at the end
+                    bool menuResourceHasOrdinal = menuResourceIdentifier == 0xFFFF;
+                    if (menuResourceHasOrdinal)
+                        offset += sizeof(ushort);
+
+                    // Read the menu resource as a string
+                    dialogTemplateExtended.MenuResource = entry.Data.ReadString(ref offset, Encoding.Unicode);
+
+                    // Align to the WORD boundary
+                    while ((offset % 2) != 0)
+                        _ = entry.Data.ReadByte(ref offset);
+
+                    // Read the ordinal if we have the flag set
+                    if (menuResourceHasOrdinal)
+                        dialogTemplateExtended.MenuResourceOrdinal = entry.Data.ReadUInt16(ref offset);
+                }
+
+                #endregion
+
+                #region Class resource
+
+                currentOffset = offset;
+                ushort classResourceIdentifier = entry.Data.ReadUInt16(ref offset);
+                offset = currentOffset;
+
+                // 0x0000 means no elements
+                if (classResourceIdentifier == 0x0000)
+                {
+                    // Increment the pointer if it was empty
+                    offset += sizeof(ushort);
+                }
+                else
+                {
+                    // Flag if there's an ordinal at the end
+                    bool classResourcehasOrdinal = classResourceIdentifier == 0xFFFF;
+                    if (classResourcehasOrdinal)
+                        offset += sizeof(ushort);
+
+                    // Read the class resource as a string
+                    dialogTemplateExtended.ClassResource = entry.Data.ReadString(ref offset, Encoding.Unicode);
+
+                    // Align to the WORD boundary
+                    while ((offset % 2) != 0)
+                        _ = entry.Data.ReadByte(ref offset);
+
+                    // Read the ordinal if we have the flag set
+                    if (classResourcehasOrdinal)
+                        dialogTemplateExtended.ClassResourceOrdinal = entry.Data.ReadUInt16(ref offset);
+                }
+
+                #endregion
+
+                #region Title resource
+
+                currentOffset = offset;
+                ushort titleResourceIdentifier = entry.Data.ReadUInt16(ref offset);
+                offset = currentOffset;
+
+                // 0x0000 means no elements
+                if (titleResourceIdentifier == 0x0000)
+                {
+                    // Increment the pointer if it was empty
+                    offset += sizeof(ushort);
+                }
+                else
+                {
+                    // Read the title resource as a string
+                    dialogTemplateExtended.TitleResource = entry.Data.ReadString(ref offset, Encoding.Unicode);
+
+                    // Align to the WORD boundary
+                    while ((offset % 2) != 0)
+                        _ = entry.Data.ReadByte(ref offset);
+                }
+
+                #endregion
+
+                #region Point size and typeface
+
+                // Only if DS_SETFONT is set are the values here used
+                if (dialogTemplateExtended.Style.HasFlag(Models.PortableExecutable.WindowStyles.DS_SETFONT))
+                {
+                    dialogTemplateExtended.PointSize = entry.Data.ReadUInt16(ref offset);
+                    dialogTemplateExtended.Weight = entry.Data.ReadUInt16(ref offset);
+                    dialogTemplateExtended.Italic = entry.Data.ReadByte(ref offset);
+                    dialogTemplateExtended.CharSet = entry.Data.ReadByte(ref offset);
+                    dialogTemplateExtended.Typeface = entry.Data.ReadString(ref offset, Encoding.Unicode);
+                }
+
+                // Align to the DWORD boundary
+                while ((offset % 4) != 0)
+                    _ = entry.Data.ReadByte(ref offset);
+
+                #endregion
+
+                dialogBoxResource.DialogTemplateExtended = dialogTemplateExtended;
 
                 #endregion
 

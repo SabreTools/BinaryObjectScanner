@@ -1248,6 +1248,63 @@ namespace ExecutableTest
                                     }
                                 }
                             }
+                            else if (dialogBox.DialogTemplateExtended != null)
+                            {
+                                Console.WriteLine($"{padding}Version: {dialogBox.DialogTemplateExtended.Version}");
+                                Console.WriteLine($"{padding}Signature: {dialogBox.DialogTemplateExtended.Signature}");
+                                Console.WriteLine($"{padding}Help ID: {dialogBox.DialogTemplateExtended.HelpID}");
+                                Console.WriteLine($"{padding}Extended style: {dialogBox.DialogTemplateExtended.ExtendedStyle}");
+                                Console.WriteLine($"{padding}Style: {dialogBox.DialogTemplateExtended.Style}");
+                                Console.WriteLine($"{padding}Item count: {dialogBox.DialogTemplateExtended.DialogItems}");
+                                Console.WriteLine($"{padding}X-coordinate of upper-left corner: {dialogBox.DialogTemplateExtended.PositionX}");
+                                Console.WriteLine($"{padding}Y-coordinate of upper-left corner: {dialogBox.DialogTemplateExtended.PositionY}");
+                                Console.WriteLine($"{padding}Width of the dialog box: {dialogBox.DialogTemplateExtended.WidthX}");
+                                Console.WriteLine($"{padding}Height of the dialog box: {dialogBox.DialogTemplateExtended.HeightY}");
+                                Console.WriteLine($"{padding}Menu resource: {dialogBox.DialogTemplateExtended.MenuResource ?? "[EMPTY]"}");
+                                Console.WriteLine($"{padding}Menu resource ordinal: {dialogBox.DialogTemplateExtended.MenuResourceOrdinal}");
+                                Console.WriteLine($"{padding}Class resource: {dialogBox.DialogTemplateExtended.ClassResource ?? "[EMPTY]"}");
+                                Console.WriteLine($"{padding}Class resource ordinal: {dialogBox.DialogTemplateExtended.ClassResourceOrdinal}");
+                                Console.WriteLine($"{padding}Title resource: {dialogBox.DialogTemplateExtended.TitleResource ?? "[EMPTY]"}");
+                                Console.WriteLine($"{padding}Point size: {dialogBox.DialogTemplateExtended.PointSize}");
+                                Console.WriteLine($"{padding}Weight: {dialogBox.DialogTemplateExtended.Weight}");
+                                Console.WriteLine($"{padding}Italic: {dialogBox.DialogTemplateExtended.Italic}");
+                                Console.WriteLine($"{padding}Character set: {dialogBox.DialogTemplateExtended.CharSet}");
+                                Console.WriteLine($"{padding}Typeface: {dialogBox.DialogTemplateExtended.Typeface ?? "[EMPTY]"}");
+                                Console.WriteLine();
+                                //Console.WriteLine($"{padding}Dialog item templates");
+                                //Console.WriteLine($"{padding}-------------------------");
+                                //if (dialogBox.DialogTemplate.ItemCount == 0
+                                //    || dialogBox.DialogItemTemplates == null
+                                //    || dialogBox.DialogItemTemplates.Length == 0)
+                                //{
+                                //    Console.WriteLine($"{padding}No dialog item templates");
+                                //}
+                                //else
+                                //{
+                                //    for (int i = 0; i < dialogBox.DialogItemTemplates.Length; i++)
+                                //    {
+                                //        var dialogItemTemplate = dialogBox.DialogItemTemplates[i];
+
+                                //        Console.WriteLine($"{padding}Dialog item template {i}");
+                                //        Console.WriteLine($"{padding}  Style: {dialogItemTemplate.Style}");
+                                //        Console.WriteLine($"{padding}  Extended style: {dialogItemTemplate.ExtendedStyle}");
+                                //        Console.WriteLine($"{padding}  X-coordinate of upper-left corner: {dialogItemTemplate.PositionX}");
+                                //        Console.WriteLine($"{padding}  Y-coordinate of upper-left corner: {dialogItemTemplate.PositionY}");
+                                //        Console.WriteLine($"{padding}  Width of the control: {dialogItemTemplate.WidthX}");
+                                //        Console.WriteLine($"{padding}  Height of the control: {dialogItemTemplate.HeightY}");
+                                //        Console.WriteLine($"{padding}  ID: {dialogItemTemplate.ID}");
+                                //        Console.WriteLine($"{padding}  Class resource: {dialogItemTemplate.ClassResource ?? "[EMPTY]"}");
+                                //        Console.WriteLine($"{padding}  Class resource ordinal: {dialogItemTemplate.ClassResourceOrdinal}");
+                                //        Console.WriteLine($"{padding}  Title resource: {dialogItemTemplate.TitleResource ?? "[EMPTY]"}");
+                                //        Console.WriteLine($"{padding}  Title resource ordinal: {dialogItemTemplate.TitleResourceOrdinal}");
+                                //        Console.WriteLine($"{padding}  Creation data size: {dialogItemTemplate.CreationDataSize}");
+                                //        if (dialogItemTemplate.CreationData != null && dialogItemTemplate.CreationData.Length != 0)
+                                //            Console.WriteLine($"{padding}  Creation data: {BitConverter.ToString(dialogItemTemplate.CreationData).Replace("-", string.Empty)}");
+                                //        else
+                                //            Console.WriteLine($"{padding}  Creation data: [EMPTY]");
+                                //    }
+                                //}
+                            }
                             else
                             {
                                 Console.WriteLine($"{padding}Dialog box resource found, but malformed");

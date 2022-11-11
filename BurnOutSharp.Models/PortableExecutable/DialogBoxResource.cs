@@ -9,10 +9,21 @@
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/menurc/resource-file-formats"/>
     public class DialogBoxResource
     {
+        #region Dialog template
+
         /// <summary>
         /// Dialog box header structure
         /// </summary>
         public DialogTemplate DialogTemplate;
+
+        /// <summary>
+        /// Dialog box extended header structure
+        /// </summary>
+        public DialogTemplateExtended DialogTemplateExtended;
+
+        #endregion
+
+        #region Dialog item templates
 
         /// <summary>
         /// Following the DLGTEMPLATE header in a standard dialog box template are one or more
@@ -21,5 +32,7 @@
         /// These DLGITEMTEMPLATE structures must be aligned on DWORD boundaries.
         /// </summary>
         public DialogItemTemplate[] DialogItemTemplates;
+
+        #endregion
     }
 }
