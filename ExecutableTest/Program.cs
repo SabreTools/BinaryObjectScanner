@@ -1248,62 +1248,63 @@ namespace ExecutableTest
                                     }
                                 }
                             }
-                            else if (dialogBox.DialogTemplateExtended != null)
+                            else if (dialogBox.ExtendedDialogTemplate != null)
                             {
-                                Console.WriteLine($"{padding}Version: {dialogBox.DialogTemplateExtended.Version}");
-                                Console.WriteLine($"{padding}Signature: {dialogBox.DialogTemplateExtended.Signature}");
-                                Console.WriteLine($"{padding}Help ID: {dialogBox.DialogTemplateExtended.HelpID}");
-                                Console.WriteLine($"{padding}Extended style: {dialogBox.DialogTemplateExtended.ExtendedStyle}");
-                                Console.WriteLine($"{padding}Style: {dialogBox.DialogTemplateExtended.Style}");
-                                Console.WriteLine($"{padding}Item count: {dialogBox.DialogTemplateExtended.DialogItems}");
-                                Console.WriteLine($"{padding}X-coordinate of upper-left corner: {dialogBox.DialogTemplateExtended.PositionX}");
-                                Console.WriteLine($"{padding}Y-coordinate of upper-left corner: {dialogBox.DialogTemplateExtended.PositionY}");
-                                Console.WriteLine($"{padding}Width of the dialog box: {dialogBox.DialogTemplateExtended.WidthX}");
-                                Console.WriteLine($"{padding}Height of the dialog box: {dialogBox.DialogTemplateExtended.HeightY}");
-                                Console.WriteLine($"{padding}Menu resource: {dialogBox.DialogTemplateExtended.MenuResource ?? "[EMPTY]"}");
-                                Console.WriteLine($"{padding}Menu resource ordinal: {dialogBox.DialogTemplateExtended.MenuResourceOrdinal}");
-                                Console.WriteLine($"{padding}Class resource: {dialogBox.DialogTemplateExtended.ClassResource ?? "[EMPTY]"}");
-                                Console.WriteLine($"{padding}Class resource ordinal: {dialogBox.DialogTemplateExtended.ClassResourceOrdinal}");
-                                Console.WriteLine($"{padding}Title resource: {dialogBox.DialogTemplateExtended.TitleResource ?? "[EMPTY]"}");
-                                Console.WriteLine($"{padding}Point size: {dialogBox.DialogTemplateExtended.PointSize}");
-                                Console.WriteLine($"{padding}Weight: {dialogBox.DialogTemplateExtended.Weight}");
-                                Console.WriteLine($"{padding}Italic: {dialogBox.DialogTemplateExtended.Italic}");
-                                Console.WriteLine($"{padding}Character set: {dialogBox.DialogTemplateExtended.CharSet}");
-                                Console.WriteLine($"{padding}Typeface: {dialogBox.DialogTemplateExtended.Typeface ?? "[EMPTY]"}");
+                                Console.WriteLine($"{padding}Version: {dialogBox.ExtendedDialogTemplate.Version}");
+                                Console.WriteLine($"{padding}Signature: {dialogBox.ExtendedDialogTemplate.Signature}");
+                                Console.WriteLine($"{padding}Help ID: {dialogBox.ExtendedDialogTemplate.HelpID}");
+                                Console.WriteLine($"{padding}Extended style: {dialogBox.ExtendedDialogTemplate.ExtendedStyle}");
+                                Console.WriteLine($"{padding}Style: {dialogBox.ExtendedDialogTemplate.Style}");
+                                Console.WriteLine($"{padding}Item count: {dialogBox.ExtendedDialogTemplate.DialogItems}");
+                                Console.WriteLine($"{padding}X-coordinate of upper-left corner: {dialogBox.ExtendedDialogTemplate.PositionX}");
+                                Console.WriteLine($"{padding}Y-coordinate of upper-left corner: {dialogBox.ExtendedDialogTemplate.PositionY}");
+                                Console.WriteLine($"{padding}Width of the dialog box: {dialogBox.ExtendedDialogTemplate.WidthX}");
+                                Console.WriteLine($"{padding}Height of the dialog box: {dialogBox.ExtendedDialogTemplate.HeightY}");
+                                Console.WriteLine($"{padding}Menu resource: {dialogBox.ExtendedDialogTemplate.MenuResource ?? "[EMPTY]"}");
+                                Console.WriteLine($"{padding}Menu resource ordinal: {dialogBox.ExtendedDialogTemplate.MenuResourceOrdinal}");
+                                Console.WriteLine($"{padding}Class resource: {dialogBox.ExtendedDialogTemplate.ClassResource ?? "[EMPTY]"}");
+                                Console.WriteLine($"{padding}Class resource ordinal: {dialogBox.ExtendedDialogTemplate.ClassResourceOrdinal}");
+                                Console.WriteLine($"{padding}Title resource: {dialogBox.ExtendedDialogTemplate.TitleResource ?? "[EMPTY]"}");
+                                Console.WriteLine($"{padding}Point size: {dialogBox.ExtendedDialogTemplate.PointSize}");
+                                Console.WriteLine($"{padding}Weight: {dialogBox.ExtendedDialogTemplate.Weight}");
+                                Console.WriteLine($"{padding}Italic: {dialogBox.ExtendedDialogTemplate.Italic}");
+                                Console.WriteLine($"{padding}Character set: {dialogBox.ExtendedDialogTemplate.CharSet}");
+                                Console.WriteLine($"{padding}Typeface: {dialogBox.ExtendedDialogTemplate.Typeface ?? "[EMPTY]"}");
                                 Console.WriteLine();
-                                //Console.WriteLine($"{padding}Dialog item templates");
-                                //Console.WriteLine($"{padding}-------------------------");
-                                //if (dialogBox.DialogTemplate.ItemCount == 0
-                                //    || dialogBox.DialogItemTemplates == null
-                                //    || dialogBox.DialogItemTemplates.Length == 0)
-                                //{
-                                //    Console.WriteLine($"{padding}No dialog item templates");
-                                //}
-                                //else
-                                //{
-                                //    for (int i = 0; i < dialogBox.DialogItemTemplates.Length; i++)
-                                //    {
-                                //        var dialogItemTemplate = dialogBox.DialogItemTemplates[i];
+                                Console.WriteLine($"{padding}Dialog item templates");
+                                Console.WriteLine($"{padding}-------------------------");
+                                if (dialogBox.ExtendedDialogTemplate.DialogItems == 0
+                                    || dialogBox.ExtendedDialogItemTemplates == null
+                                    || dialogBox.ExtendedDialogItemTemplates.Length == 0)
+                                {
+                                    Console.WriteLine($"{padding}No dialog item templates");
+                                }
+                                else
+                                {
+                                    for (int i = 0; i < dialogBox.ExtendedDialogItemTemplates.Length; i++)
+                                    {
+                                        var dialogItemTemplate = dialogBox.ExtendedDialogItemTemplates[i];
 
-                                //        Console.WriteLine($"{padding}Dialog item template {i}");
-                                //        Console.WriteLine($"{padding}  Style: {dialogItemTemplate.Style}");
-                                //        Console.WriteLine($"{padding}  Extended style: {dialogItemTemplate.ExtendedStyle}");
-                                //        Console.WriteLine($"{padding}  X-coordinate of upper-left corner: {dialogItemTemplate.PositionX}");
-                                //        Console.WriteLine($"{padding}  Y-coordinate of upper-left corner: {dialogItemTemplate.PositionY}");
-                                //        Console.WriteLine($"{padding}  Width of the control: {dialogItemTemplate.WidthX}");
-                                //        Console.WriteLine($"{padding}  Height of the control: {dialogItemTemplate.HeightY}");
-                                //        Console.WriteLine($"{padding}  ID: {dialogItemTemplate.ID}");
-                                //        Console.WriteLine($"{padding}  Class resource: {dialogItemTemplate.ClassResource ?? "[EMPTY]"}");
-                                //        Console.WriteLine($"{padding}  Class resource ordinal: {dialogItemTemplate.ClassResourceOrdinal}");
-                                //        Console.WriteLine($"{padding}  Title resource: {dialogItemTemplate.TitleResource ?? "[EMPTY]"}");
-                                //        Console.WriteLine($"{padding}  Title resource ordinal: {dialogItemTemplate.TitleResourceOrdinal}");
-                                //        Console.WriteLine($"{padding}  Creation data size: {dialogItemTemplate.CreationDataSize}");
-                                //        if (dialogItemTemplate.CreationData != null && dialogItemTemplate.CreationData.Length != 0)
-                                //            Console.WriteLine($"{padding}  Creation data: {BitConverter.ToString(dialogItemTemplate.CreationData).Replace("-", string.Empty)}");
-                                //        else
-                                //            Console.WriteLine($"{padding}  Creation data: [EMPTY]");
-                                //    }
-                                //}
+                                        Console.WriteLine($"{padding}Dialog item template {i}");
+                                        Console.WriteLine($"{padding}  Help ID: {dialogItemTemplate.HelpID}");
+                                        Console.WriteLine($"{padding}  Extended style: {dialogItemTemplate.ExtendedStyle}");
+                                        Console.WriteLine($"{padding}  Style: {dialogItemTemplate.Style}");
+                                        Console.WriteLine($"{padding}  X-coordinate of upper-left corner: {dialogItemTemplate.PositionX}");
+                                        Console.WriteLine($"{padding}  Y-coordinate of upper-left corner: {dialogItemTemplate.PositionY}");
+                                        Console.WriteLine($"{padding}  Width of the control: {dialogItemTemplate.WidthX}");
+                                        Console.WriteLine($"{padding}  Height of the control: {dialogItemTemplate.HeightY}");
+                                        Console.WriteLine($"{padding}  ID: {dialogItemTemplate.ID}");
+                                        Console.WriteLine($"{padding}  Class resource: {dialogItemTemplate.ClassResource ?? "[EMPTY]"}");
+                                        Console.WriteLine($"{padding}  Class resource ordinal: {dialogItemTemplate.ClassResourceOrdinal}");
+                                        Console.WriteLine($"{padding}  Title resource: {dialogItemTemplate.TitleResource ?? "[EMPTY]"}");
+                                        Console.WriteLine($"{padding}  Title resource ordinal: {dialogItemTemplate.TitleResourceOrdinal}");
+                                        Console.WriteLine($"{padding}  Creation data size: {dialogItemTemplate.CreationDataSize}");
+                                        if (dialogItemTemplate.CreationData != null && dialogItemTemplate.CreationData.Length != 0)
+                                            Console.WriteLine($"{padding}  Creation data: {BitConverter.ToString(dialogItemTemplate.CreationData).Replace("-", string.Empty)}");
+                                        else
+                                            Console.WriteLine($"{padding}  Creation data: [EMPTY]");
+                                    }
+                                }
                             }
                             else
                             {

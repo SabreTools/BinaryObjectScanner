@@ -607,13 +607,105 @@ namespace BurnOutSharp.Builder
 
                 #endregion
 
-                dialogBoxResource.DialogTemplateExtended = dialogTemplateExtended;
+                dialogBoxResource.ExtendedDialogTemplate = dialogTemplateExtended;
 
                 #endregion
 
                 #region Extended dialog item templates
 
-                // TODO: Implement extended dialog item templates
+                var dialogItemExtendedTemplates = new List<Models.PortableExecutable.DialogItemTemplateExtended>();
+
+                for (int i = 0; i < dialogTemplateExtended.DialogItems; i++)
+                {
+                    var dialogItemTemplate = new Models.PortableExecutable.DialogItemTemplateExtended();
+
+                    dialogItemTemplate.HelpID = entry.Data.ReadUInt32(ref offset);
+                    dialogItemTemplate.ExtendedStyle = (Models.PortableExecutable.ExtendedWindowStyles)entry.Data.ReadUInt32(ref offset);
+                    dialogItemTemplate.Style = (Models.PortableExecutable.WindowStyles)entry.Data.ReadUInt32(ref offset);
+                    dialogItemTemplate.PositionX = entry.Data.ReadInt16(ref offset);
+                    dialogItemTemplate.PositionY = entry.Data.ReadInt16(ref offset);
+                    dialogItemTemplate.WidthX = entry.Data.ReadInt16(ref offset);
+                    dialogItemTemplate.HeightY = entry.Data.ReadInt16(ref offset);
+                    dialogItemTemplate.ID = entry.Data.ReadUInt16(ref offset);
+
+                    #region Class resource
+
+                    currentOffset = offset;
+                    ushort itemClassResourceIdentifier = entry.Data.ReadUInt16(ref offset);
+                    offset = currentOffset;
+
+                    // 0xFFFF means ordinal only
+                    if (itemClassResourceIdentifier == 0xFFFF)
+                    {
+                        // Increment the pointer
+                        _ = entry.Data.ReadUInt16(ref offset);
+
+                        // Read the ordinal
+                        dialogItemTemplate.ClassResourceOrdinal = (Models.PortableExecutable.DialogItemTemplateOrdinal)entry.Data.ReadUInt16(ref offset);
+                    }
+                    else
+                    {
+                        // Flag if there's an ordinal at the end
+                        bool classResourcehasOrdinal = itemClassResourceIdentifier == 0xFFFF;
+                        if (classResourcehasOrdinal)
+                            offset += sizeof(ushort);
+
+                        // Read the class resource as a string
+                        dialogItemTemplate.ClassResource = entry.Data.ReadString(ref offset, Encoding.Unicode);
+
+                        // Align to the WORD boundary
+                        while ((offset % 2) != 0)
+                            _ = entry.Data.ReadByte(ref offset);
+                    }
+
+                    #endregion
+
+                    #region Title resource
+
+                    currentOffset = offset;
+                    ushort itemTitleResourceIdentifier = entry.Data.ReadUInt16(ref offset);
+                    offset = currentOffset;
+
+                    // 0xFFFF means ordinal only
+                    if (itemTitleResourceIdentifier == 0xFFFF)
+                    {
+                        // Increment the pointer
+                        _ = entry.Data.ReadUInt16(ref offset);
+
+                        // Read the ordinal
+                        dialogItemTemplate.TitleResourceOrdinal = entry.Data.ReadUInt16(ref offset);
+                    }
+                    else
+                    {
+                        // Read the title resource as a string
+                        dialogItemTemplate.TitleResource = entry.Data.ReadString(ref offset, Encoding.Unicode);
+
+                        // Align to the WORD boundary
+                        while ((offset % 2) != 0)
+                            _ = entry.Data.ReadByte(ref offset);
+                    }
+
+                    #endregion
+
+                    #region Creation data
+
+                    dialogItemTemplate.CreationDataSize = entry.Data.ReadUInt16(ref offset);
+                    if (dialogItemTemplate.CreationDataSize != 0)
+                        dialogItemTemplate.CreationData = entry.Data.ReadBytes(ref offset, dialogItemTemplate.CreationDataSize);
+
+                    #endregion
+
+                    // Align to the DWORD boundary if we're not at the end
+                    if (offset != entry.Data.Length)
+                    {
+                        while ((offset % 4) != 0)
+                            _ = entry.Data.ReadByte(ref offset);
+                    }
+
+                    dialogItemExtendedTemplates.Add(dialogItemTemplate);
+                }
+
+                dialogBoxResource.ExtendedDialogItemTemplates = dialogItemExtendedTemplates.ToArray();
 
                 #endregion
             }
@@ -742,7 +834,7 @@ namespace BurnOutSharp.Builder
 
                 #endregion
 
-                #region Dialog Item Templates
+                #region Dialog item templates
 
                 var dialogItemTemplates = new List<Models.PortableExecutable.DialogItemTemplate>();
 

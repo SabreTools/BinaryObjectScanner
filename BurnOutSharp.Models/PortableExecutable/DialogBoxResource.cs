@@ -19,7 +19,7 @@
         /// <summary>
         /// Dialog box extended header structure
         /// </summary>
-        public DialogTemplateExtended DialogTemplateExtended;
+        public DialogTemplateExtended ExtendedDialogTemplate;
 
         #endregion
 
@@ -32,6 +32,14 @@
         /// These DLGITEMTEMPLATE structures must be aligned on DWORD boundaries.
         /// </summary>
         public DialogItemTemplate[] DialogItemTemplates;
+
+        /// <summary>
+        /// Following the DLGTEMPLATEEX header in an extended dialog box template is one or more
+        /// DLGITEMTEMPLATEEX structures that describe the controls of the dialog box. The cDlgItems
+        /// member of the DLGITEMTEMPLATEEX structure specifies the number of DLGITEMTEMPLATEEX
+        /// structures that follow in the template.
+        /// </summary>
+        public DialogItemTemplateExtended[] ExtendedDialogItemTemplates;
 
         #endregion
     }

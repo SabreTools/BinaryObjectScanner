@@ -106,6 +106,10 @@ namespace BurnOutSharp.Models.PortableExecutable
         /// any other value, the system treats the array as a null-terminated Unicode string that specifies
         /// the name of a menu resource in an executable file.
         /// </summary>
+        /// <remarks>
+        /// If you specify character strings in the class and title arrays, you must use Unicode strings. Use the
+        /// MultiByteToWideChar function to generate Unicode strings from ANSI strings.
+        /// </remarks>
         public string MenuResource;
 
         /// <summary>
@@ -120,6 +124,10 @@ namespace BurnOutSharp.Models.PortableExecutable
         /// window class. If the first element has any other value, the system treats the array as a
         /// null-terminated Unicode string that specifies the name of a registered window class.
         /// </summary>
+        /// <remarks>
+        /// If you specify character strings in the class and title arrays, you must use Unicode strings. Use the
+        /// MultiByteToWideChar function to generate Unicode strings from ANSI strings.
+        /// </remarks>
         public string ClassResource;
 
         /// <summary>
@@ -131,6 +139,10 @@ namespace BurnOutSharp.Models.PortableExecutable
         /// The title of the dialog box. If the first element of this array is 0x0000, the dialog box has no
         /// title and the array has no other elements.
         /// </summary>
+        /// <remarks>
+        /// If you specify character strings in the class and title arrays, you must use Unicode strings. Use the
+        /// MultiByteToWideChar function to generate Unicode strings from ANSI strings.
+        /// </remarks>
         public string TitleResource;
 
         /// <summary>
@@ -167,6 +179,10 @@ namespace BurnOutSharp.Models.PortableExecutable
         /// 
         /// This member is present only if the style member specifies DS_SETFONT or DS_SHELLFONT.
         /// </summary>
+        /// <remarks>
+        /// If you specify character strings in the class and title arrays, you must use Unicode strings. Use the
+        /// MultiByteToWideChar function to generate Unicode strings from ANSI strings.
+        /// </remarks>
         public string Typeface;
     }
 }
