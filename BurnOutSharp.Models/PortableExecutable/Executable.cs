@@ -123,7 +123,10 @@ namespace BurnOutSharp.Models.PortableExecutable
         // - Delay Bound Import Address Table
         // - Delay Unload Import Address Table
         // - The .pdata Section [Multiple formats per entry]
-        // - TLS Callback Functions
+        // - The .reloc Section (Image Only)
+        // - The .tls Section
+        //      - TLS Callback Functions
+        // - [The Load Configuration Structure (Image Only)]
 
         // TODO: Determine if "Archive (Library) File Format" is worth modelling
     }
