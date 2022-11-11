@@ -98,7 +98,7 @@ namespace BurnOutSharp.Builder
             #region COFF Symbol Table and COFF String Table
 
             // TODO: Validate that this is correct with an "old" PE
-            if (coffFileHeader.PointerToSymbolTable != 0)
+            if (coffFileHeader.PointerToSymbolTable.ConvertVirtualAddress(executable.SectionTable) != 0)
             {
                 // If the offset for the COFF symbol table doesn't exist
                 int coffSymbolTableAddress = initialOffset
@@ -106,39 +106,35 @@ namespace BurnOutSharp.Builder
                 if (coffSymbolTableAddress >= data.Length)
                     return executable;
 
-                // If we have a valid address
-                if (coffSymbolTableAddress != 0)
-                {
-                    // Try to parse the COFF symbol table
-                    var coffSymbolTable = ParseCOFFSymbolTable(data, coffSymbolTableAddress, coffFileHeader.NumberOfSymbols);
-                    if (coffSymbolTable == null)
-                        return null;
+                // Try to parse the COFF symbol table
+                var coffSymbolTable = ParseCOFFSymbolTable(data, coffSymbolTableAddress, coffFileHeader.NumberOfSymbols);
+                if (coffSymbolTable == null)
+                    return null;
 
-                    // If the offset for the COFF string table doesn't exist
-                    coffSymbolTableAddress = initialOffset
-                        + (int)coffFileHeader.PointerToSymbolTable.ConvertVirtualAddress(executable.SectionTable)
-                        + (coffSymbolTable.Length * 18 /* sizeof(COFFSymbolTableEntry) */);
-                    if (coffSymbolTableAddress >= data.Length)
-                        return executable;
+                // If the offset for the COFF string table doesn't exist
+                coffSymbolTableAddress = initialOffset
+                    + (int)coffFileHeader.PointerToSymbolTable.ConvertVirtualAddress(executable.SectionTable)
+                    + (coffSymbolTable.Length * 18 /* sizeof(COFFSymbolTableEntry) */);
+                if (coffSymbolTableAddress >= data.Length)
+                    return executable;
 
-                    // Set the COFF symbol table
-                    executable.COFFSymbolTable = coffSymbolTable;
+                // Set the COFF symbol table
+                executable.COFFSymbolTable = coffSymbolTable;
 
-                    // Try to parse the COFF string table
-                    var coffStringTable = ParseCOFFStringTable(data, coffSymbolTableAddress);
-                    if (coffStringTable == null)
-                        return null;
+                // Try to parse the COFF string table
+                var coffStringTable = ParseCOFFStringTable(data, coffSymbolTableAddress);
+                if (coffStringTable == null)
+                    return null;
 
-                    // Set the COFF string table
-                    executable.COFFStringTable = coffStringTable;
-                }
+                // Set the COFF string table
+                executable.COFFStringTable = coffStringTable;
             }
 
             #endregion
 
             #region Attribute Certificate Table
 
-            if (optionalHeader.CertificateTable != null && optionalHeader.CertificateTable.VirtualAddress != 0)
+            if (optionalHeader.CertificateTable != null && optionalHeader.CertificateTable.VirtualAddress.ConvertVirtualAddress(executable.SectionTable) != 0)
             {
                 // If the offset for the COFF symbol table doesn't exist
                 int certificateTableAddress = initialOffset
@@ -146,25 +142,21 @@ namespace BurnOutSharp.Builder
                 if (certificateTableAddress >= data.Length)
                     return executable;
 
-                // If we have a valid address
-                if (certificateTableAddress != 0)
-                {
-                    // Try to parse the attribute certificate table
-                    int endOffset = (int)(certificateTableAddress + optionalHeader.CertificateTable.Size);
-                    var attributeCertificateTable = ParseAttributeCertificateTable(data, certificateTableAddress, endOffset);
-                    if (attributeCertificateTable == null)
-                        return null;
+                // Try to parse the attribute certificate table
+                int endOffset = (int)(certificateTableAddress + optionalHeader.CertificateTable.Size);
+                var attributeCertificateTable = ParseAttributeCertificateTable(data, certificateTableAddress, endOffset);
+                if (attributeCertificateTable == null)
+                    return null;
 
-                    // Set the attribute certificate table
-                    executable.AttributeCertificateTable = attributeCertificateTable;
-                }
+                // Set the attribute certificate table
+                executable.AttributeCertificateTable = attributeCertificateTable;
             }
 
             #endregion
 
             #region Delay-Load Directory Table
 
-            if (optionalHeader.DelayImportDescriptor != null && optionalHeader.DelayImportDescriptor.VirtualAddress != 0)
+            if (optionalHeader.DelayImportDescriptor != null && optionalHeader.DelayImportDescriptor.VirtualAddress.ConvertVirtualAddress(executable.SectionTable) != 0)
             {
                 // If the offset for the delay-load directory table doesn't exist
                 int delayLoadDirectoryTableAddress = initialOffset
@@ -172,25 +164,21 @@ namespace BurnOutSharp.Builder
                 if (delayLoadDirectoryTableAddress >= data.Length)
                     return executable;
 
-                // If we have a valid address
-                if (delayLoadDirectoryTableAddress != 0)
-                {
-                    // Try to parse the delay-load directory table
-                    var delayLoadDirectoryTable = ParseDelayLoadDirectoryTable(data, delayLoadDirectoryTableAddress);
-                    if (delayLoadDirectoryTable == null)
-                        return null;
+                // Try to parse the delay-load directory table
+                var delayLoadDirectoryTable = ParseDelayLoadDirectoryTable(data, delayLoadDirectoryTableAddress);
+                if (delayLoadDirectoryTable == null)
+                    return null;
 
-                    // Set the delay-load directory table
-                    executable.DelayLoadDirectoryTable = delayLoadDirectoryTable;
-                }
+                // Set the delay-load directory table
+                executable.DelayLoadDirectoryTable = delayLoadDirectoryTable;
             }
 
             #endregion
 
             #region Debug Table
 
-            // Should also be in the '.debug' section
-            if (optionalHeader.Debug != null && optionalHeader.Debug.VirtualAddress != 0)
+            // Should also be in a '.debug' section
+            if (optionalHeader.Debug != null && optionalHeader.Debug.VirtualAddress.ConvertVirtualAddress(executable.SectionTable) != 0)
             {
                 // If the offset for the debug table doesn't exist
                 int debugTableAddress = initialOffset
@@ -198,26 +186,22 @@ namespace BurnOutSharp.Builder
                 if (debugTableAddress >= data.Length)
                     return executable;
 
-                // If we have a valid address
-                if (debugTableAddress != 0)
-                {
-                    // Try to parse the debug table
-                    int endOffset = (int)(debugTableAddress + optionalHeader.Debug.Size);
-                    var debugTable = ParseDebugTable(data, debugTableAddress, endOffset, executable.SectionTable);
-                    if (debugTable == null)
-                        return null;
+                // Try to parse the debug table
+                int endOffset = (int)(debugTableAddress + optionalHeader.Debug.Size);
+                var debugTable = ParseDebugTable(data, debugTableAddress, endOffset, executable.SectionTable);
+                if (debugTable == null)
+                    return null;
 
-                    // Set the debug table
-                    executable.DebugTable = debugTable;
-                }
+                // Set the debug table
+                executable.DebugTable = debugTable;
             }
 
             #endregion
 
             #region Export Table
 
-            // Should also be in the '.edata' section
-            if (optionalHeader.ExportTable != null && optionalHeader.ExportTable.VirtualAddress != 0)
+            // Should also be in a '.edata' section
+            if (optionalHeader.ExportTable != null && optionalHeader.ExportTable.VirtualAddress.ConvertVirtualAddress(executable.SectionTable) != 0)
             {
                 // If the offset for the export table doesn't exist
                 int exportTableAddress = initialOffset
@@ -225,25 +209,21 @@ namespace BurnOutSharp.Builder
                 if (exportTableAddress >= data.Length)
                     return executable;
 
-                // If we have a valid address
-                if (exportTableAddress != 0)
-                {
-                    // Try to parse the export table
-                    var exportTable = ParseExportTable(data, exportTableAddress, executable.SectionTable);
-                    if (exportTable == null)
-                        return null;
+                // Try to parse the export table
+                var exportTable = ParseExportTable(data, exportTableAddress, executable.SectionTable);
+                if (exportTable == null)
+                    return null;
 
-                    // Set the export table
-                    executable.ExportTable = exportTable;
-                }
+                // Set the export table
+                executable.ExportTable = exportTable;
             }
 
             #endregion
 
             #region Import Table
 
-            // Should also be in the '.idata' section
-            if (optionalHeader.ImportTable != null && optionalHeader.ImportTable.VirtualAddress != 0)
+            // Should also be in a '.idata' section
+            if (optionalHeader.ImportTable != null && optionalHeader.ImportTable.VirtualAddress.ConvertVirtualAddress(executable.SectionTable) != 0)
             {
                 // If the offset for the import table doesn't exist
                 int importTableAddress = initialOffset
@@ -251,25 +231,21 @@ namespace BurnOutSharp.Builder
                 if (importTableAddress >= data.Length)
                     return executable;
 
-                // If we have a valid address
-                if (importTableAddress != 0)
-                {
-                    // Try to parse the import table
-                    var importTable = ParseImportTable(data, importTableAddress, optionalHeader.Magic, executable.SectionTable);
-                    if (importTable == null)
-                        return null;
+                // Try to parse the import table
+                var importTable = ParseImportTable(data, importTableAddress, optionalHeader.Magic, executable.SectionTable);
+                if (importTable == null)
+                    return null;
 
-                    // Set the import table
-                    executable.ImportTable = importTable;
-                }
+                // Set the import table
+                executable.ImportTable = importTable;
             }
 
             #endregion
 
             #region Resource Directory Table
 
-            // Should also be in the '.rsrc' section
-            if (optionalHeader.ResourceTable != null && optionalHeader.ResourceTable.VirtualAddress != 0)
+            // Should also be in a '.rsrc' section
+            if (optionalHeader.ResourceTable != null && optionalHeader.ResourceTable.VirtualAddress.ConvertVirtualAddress(executable.SectionTable) != 0)
             {
                 // If the offset for the resource directory table doesn't exist
                 int resourceTableAddress = initialOffset
@@ -277,17 +253,13 @@ namespace BurnOutSharp.Builder
                 if (resourceTableAddress >= data.Length)
                     return executable;
 
-                // If we have a valid address
-                if (resourceTableAddress != 0)
-                {
-                    // Try to parse the resource directory table
-                    var resourceDirectoryTable = ParseResourceDirectoryTable(data, resourceTableAddress, resourceTableAddress, executable.SectionTable);
-                    if (resourceDirectoryTable == null)
-                        return null;
+                // Try to parse the resource directory table
+                var resourceDirectoryTable = ParseResourceDirectoryTable(data, resourceTableAddress, resourceTableAddress, executable.SectionTable);
+                if (resourceDirectoryTable == null)
+                    return null;
 
-                    // Set the resource directory table
-                    executable.ResourceDirectoryTable = resourceDirectoryTable;
-                }
+                // Set the resource directory table
+                executable.ResourceDirectoryTable = resourceDirectoryTable;
             }
 
             #endregion
@@ -834,94 +806,79 @@ namespace BurnOutSharp.Builder
             exportTable.ExportDirectoryTable = exportDirectoryTable;
 
             // Name
-            if (exportDirectoryTable.NameRVA != 0)
+            if (exportDirectoryTable.NameRVA.ConvertVirtualAddress(sections) != 0)
             {
                 offset = (int)exportDirectoryTable.NameRVA.ConvertVirtualAddress(sections);
-                if (offset != 0)
-                {
-                    string name = data.ReadString(ref offset, Encoding.ASCII);
-                    exportDirectoryTable.Name = name;
-                }
+                string name = data.ReadString(ref offset, Encoding.ASCII);
+                exportDirectoryTable.Name = name;
             }
 
             // Address table
-            if (exportDirectoryTable.AddressTableEntries != 0 && exportDirectoryTable.ExportAddressTableRVA != 0)
+            if (exportDirectoryTable.AddressTableEntries != 0 && exportDirectoryTable.ExportAddressTableRVA.ConvertVirtualAddress(sections) != 0)
             {
                 offset = (int)exportDirectoryTable.ExportAddressTableRVA.ConvertVirtualAddress(sections);
-                if (offset != 0)
+                var exportAddressTable = new ExportAddressTableEntry[exportDirectoryTable.AddressTableEntries];
+
+                for (int i = 0; i < exportDirectoryTable.AddressTableEntries; i++)
                 {
-                    var exportAddressTable = new ExportAddressTableEntry[exportDirectoryTable.AddressTableEntries];
+                    var addressTableEntry = new ExportAddressTableEntry();
 
-                    for (int i = 0; i < exportDirectoryTable.AddressTableEntries; i++)
-                    {
-                        var addressTableEntry = new ExportAddressTableEntry();
+                    // TODO: Use the optional header address and length to determine if export or forwarder
+                    addressTableEntry.ExportRVA = data.ReadUInt32(ref offset);
+                    addressTableEntry.ForwarderRVA = addressTableEntry.ExportRVA;
 
-                        // TODO: Use the optional header address and length to determine if export or forwarder
-                        addressTableEntry.ExportRVA = data.ReadUInt32(ref offset);
-                        addressTableEntry.ForwarderRVA = addressTableEntry.ExportRVA;
-
-                        exportAddressTable[i] = addressTableEntry;
-                    }
-
-                    exportTable.ExportAddressTable = exportAddressTable;
+                    exportAddressTable[i] = addressTableEntry;
                 }
+
+                exportTable.ExportAddressTable = exportAddressTable;
             }
 
             // Name pointer table
-            if (exportDirectoryTable.NumberOfNamePointers != 0 && exportDirectoryTable.NamePointerRVA != 0)
+            if (exportDirectoryTable.NumberOfNamePointers != 0 && exportDirectoryTable.NamePointerRVA.ConvertVirtualAddress(sections) != 0)
             {
                 offset = (int)exportDirectoryTable.NamePointerRVA.ConvertVirtualAddress(sections);
-                if (offset != 0)
+                var namePointerTable = new ExportNamePointerTable();
+
+                namePointerTable.Pointers = new uint[exportDirectoryTable.NumberOfNamePointers];
+                for (int i = 0; i < exportDirectoryTable.NumberOfNamePointers; i++)
                 {
-                    var namePointerTable = new ExportNamePointerTable();
-
-                    namePointerTable.Pointers = new uint[exportDirectoryTable.NumberOfNamePointers];
-                    for (int i = 0; i < exportDirectoryTable.NumberOfNamePointers; i++)
-                    {
-                        uint pointer = data.ReadUInt32(ref offset);
-                        namePointerTable.Pointers[i] = pointer;
-                    }
-
-                    exportTable.NamePointerTable = namePointerTable;
+                    uint pointer = data.ReadUInt32(ref offset);
+                    namePointerTable.Pointers[i] = pointer;
                 }
+
+                exportTable.NamePointerTable = namePointerTable;
             }
 
             // Ordinal table
-            if (exportDirectoryTable.NumberOfNamePointers != 0 && exportDirectoryTable.OrdinalTableRVA != 0)
+            if (exportDirectoryTable.NumberOfNamePointers != 0 && exportDirectoryTable.OrdinalTableRVA.ConvertVirtualAddress(sections) != 0)
             {
                 offset = (int)exportDirectoryTable.OrdinalTableRVA.ConvertVirtualAddress(sections);
-                if (offset != 0)
+                var exportOrdinalTable = new ExportOrdinalTable();
+
+                exportOrdinalTable.Indexes = new ushort[exportDirectoryTable.NumberOfNamePointers];
+                for (int i = 0; i < exportDirectoryTable.NumberOfNamePointers; i++)
                 {
-                    var exportOrdinalTable = new ExportOrdinalTable();
-
-                    exportOrdinalTable.Indexes = new ushort[exportDirectoryTable.NumberOfNamePointers];
-                    for (int i = 0; i < exportDirectoryTable.NumberOfNamePointers; i++)
-                    {
-                        ushort pointer = data.ReadUInt16(ref offset);
-                        exportOrdinalTable.Indexes[i] = pointer;
-                    }
-
-                    exportTable.OrdinalTable = exportOrdinalTable;
+                    ushort pointer = data.ReadUInt16(ref offset);
+                    exportOrdinalTable.Indexes[i] = pointer;
                 }
+
+                exportTable.OrdinalTable = exportOrdinalTable;
             }
 
             // Name table
-            if (exportDirectoryTable.NumberOfNamePointers != 0 && exportDirectoryTable.NameRVA != 0)
+            if (exportDirectoryTable.NumberOfNamePointers != 0 && exportDirectoryTable.NameRVA.ConvertVirtualAddress(sections) != 0)
             {
                 offset = (int)exportDirectoryTable.NameRVA.ConvertVirtualAddress(sections);
-                if (offset != 0)
+                var exportNameTable = new ExportNameTable();
+
+                exportNameTable.Strings = new string[exportDirectoryTable.NumberOfNamePointers];
+                for (int i = 0; i < exportDirectoryTable.NumberOfNamePointers; i++)
                 {
-                    var exportNameTable = new ExportNameTable();
-
-                    exportNameTable.Strings = new string[exportDirectoryTable.NumberOfNamePointers];
-                    for (int i = 0; i < exportDirectoryTable.NumberOfNamePointers; i++)
-                    {
-                        string str = data.ReadString(ref offset, Encoding.ASCII);
-                        exportNameTable.Strings[i] = str;
-                    }
-
-                    exportTable.ExportNameTable = exportNameTable;
+                    string str = data.ReadString(ref offset, Encoding.ASCII);
+                    exportNameTable.Strings[i] = str;
                 }
+
+                exportTable.ExportNameTable = exportNameTable;
             }
 
             return exportTable;
@@ -971,14 +928,11 @@ namespace BurnOutSharp.Builder
             for (int i = 0; i < importTable.ImportDirectoryTable.Length; i++)
             {
                 var importDirectoryTableEntry = importTable.ImportDirectoryTable[i];
-                if (importDirectoryTableEntry.NameRVA != 0)
+                if (importDirectoryTableEntry.NameRVA.ConvertVirtualAddress(sections) != 0)
                 {
                     int nameAddress = (int)importDirectoryTableEntry.NameRVA.ConvertVirtualAddress(sections);
-                    if (nameAddress != 0)
-                    {
-                        string name = data.ReadString(ref nameAddress, Encoding.ASCII);
-                        importDirectoryTableEntry.Name = name;
-                    }
+                    string name = data.ReadString(ref nameAddress, Encoding.ASCII);
+                    importDirectoryTableEntry.Name = name;
                 }
             }
 
@@ -988,47 +942,44 @@ namespace BurnOutSharp.Builder
             for (int i = 0; i < importTable.ImportDirectoryTable.Length; i++)
             {
                 var importDirectoryTableEntry = importTable.ImportDirectoryTable[i];
-                if (importDirectoryTableEntry.ImportLookupTableRVA != 0)
+                if (importDirectoryTableEntry.ImportLookupTableRVA.ConvertVirtualAddress(sections) != 0)
                 {
                     int tableAddress = (int)importDirectoryTableEntry.ImportLookupTableRVA.ConvertVirtualAddress(sections);
-                    if (tableAddress != 0)
+                    var entryLookupTable = new List<ImportLookupTableEntry>();
+
+                    while (true)
                     {
-                        var entryLookupTable = new List<ImportLookupTableEntry>();
+                        var entryLookupTableEntry = new ImportLookupTableEntry();
 
-                        while (true)
+                        if (magic == OptionalHeaderMagicNumber.PE32)
                         {
-                            var entryLookupTableEntry = new ImportLookupTableEntry();
-
-                            if (magic == OptionalHeaderMagicNumber.PE32)
-                            {
-                                uint entryValue = data.ReadUInt32(ref tableAddress);
-                                entryLookupTableEntry.OrdinalNameFlag = (entryValue & 0x80000000) != 0;
-                                if (entryLookupTableEntry.OrdinalNameFlag)
-                                    entryLookupTableEntry.OrdinalNumber = (ushort)(entryValue & ~0x80000000);
-                                else
-                                    entryLookupTableEntry.HintNameTableRVA = (uint)(entryValue & ~0x80000000);
-                            }
-                            else if (magic == OptionalHeaderMagicNumber.PE32Plus)
-                            {
-                                ulong entryValue = data.ReadUInt64(ref tableAddress);
-                                entryLookupTableEntry.OrdinalNameFlag = (entryValue & 0x8000000000000000) != 0;
-                                if (entryLookupTableEntry.OrdinalNameFlag)
-                                    entryLookupTableEntry.OrdinalNumber = (ushort)(entryValue & ~0x8000000000000000);
-                                else
-                                    entryLookupTableEntry.HintNameTableRVA = (uint)(entryValue & ~0x8000000000000000);
-                            }
-
-                            entryLookupTable.Add(entryLookupTableEntry);
-
-                            // All zero values means the last entry
-                            if (entryLookupTableEntry.OrdinalNameFlag == false
-                                && entryLookupTableEntry.OrdinalNumber == 0
-                                && entryLookupTableEntry.HintNameTableRVA == 0)
-                                break;
+                            uint entryValue = data.ReadUInt32(ref tableAddress);
+                            entryLookupTableEntry.OrdinalNameFlag = (entryValue & 0x80000000) != 0;
+                            if (entryLookupTableEntry.OrdinalNameFlag)
+                                entryLookupTableEntry.OrdinalNumber = (ushort)(entryValue & ~0x80000000);
+                            else
+                                entryLookupTableEntry.HintNameTableRVA = (uint)(entryValue & ~0x80000000);
+                        }
+                        else if (magic == OptionalHeaderMagicNumber.PE32Plus)
+                        {
+                            ulong entryValue = data.ReadUInt64(ref tableAddress);
+                            entryLookupTableEntry.OrdinalNameFlag = (entryValue & 0x8000000000000000) != 0;
+                            if (entryLookupTableEntry.OrdinalNameFlag)
+                                entryLookupTableEntry.OrdinalNumber = (ushort)(entryValue & ~0x8000000000000000);
+                            else
+                                entryLookupTableEntry.HintNameTableRVA = (uint)(entryValue & ~0x8000000000000000);
                         }
 
-                        importLookupTables[i] = entryLookupTable.ToArray();
+                        entryLookupTable.Add(entryLookupTableEntry);
+
+                        // All zero values means the last entry
+                        if (entryLookupTableEntry.OrdinalNameFlag == false
+                            && entryLookupTableEntry.OrdinalNumber == 0
+                            && entryLookupTableEntry.HintNameTableRVA == 0)
+                            break;
                     }
+
+                    importLookupTables[i] = entryLookupTable.ToArray();
                 }
             }
 
@@ -1040,38 +991,35 @@ namespace BurnOutSharp.Builder
             for (int i = 0; i < importTable.ImportDirectoryTable.Length; i++)
             {
                 var importDirectoryTableEntry = importTable.ImportDirectoryTable[i];
-                if (importDirectoryTableEntry.ImportAddressTableRVA != 0)
+                if (importDirectoryTableEntry.ImportAddressTableRVA.ConvertVirtualAddress(sections) == 0)
                 {
                     int tableAddress = (int)importDirectoryTableEntry.ImportAddressTableRVA.ConvertVirtualAddress(sections);
-                    if (tableAddress != 0)
+                    var entryAddressTable = new List<ImportAddressTableEntry>();
+
+                    while (true)
                     {
-                        var entryAddressTable = new List<ImportAddressTableEntry>();
+                        var entryLookupTableEntry = new ImportAddressTableEntry();
 
-                        while (true)
+                        if (magic == OptionalHeaderMagicNumber.PE32)
                         {
-                            var entryLookupTableEntry = new ImportAddressTableEntry();
-
-                            if (magic == OptionalHeaderMagicNumber.PE32)
-                            {
-                                uint entryValue = data.ReadUInt32(ref tableAddress);
-                                entryLookupTableEntry.Address_PE32 = entryValue;
-                            }
-                            else if (magic == OptionalHeaderMagicNumber.PE32Plus)
-                            {
-                                ulong entryValue = data.ReadUInt64(ref tableAddress);
-                                entryLookupTableEntry.Address_PE32Plus = entryValue;
-                            }
-
-                            entryAddressTable.Add(entryLookupTableEntry);
-
-                            // All zero values means the last entry
-                            if (entryLookupTableEntry.Address_PE32 == 0
-                                && entryLookupTableEntry.Address_PE32Plus == 0)
-                                break;
+                            uint entryValue = data.ReadUInt32(ref tableAddress);
+                            entryLookupTableEntry.Address_PE32 = entryValue;
+                        }
+                        else if (magic == OptionalHeaderMagicNumber.PE32Plus)
+                        {
+                            ulong entryValue = data.ReadUInt64(ref tableAddress);
+                            entryLookupTableEntry.Address_PE32Plus = entryValue;
                         }
 
-                        importAddressTables[i] = entryAddressTable.ToArray();
+                        entryAddressTable.Add(entryLookupTableEntry);
+
+                        // All zero values means the last entry
+                        if (entryLookupTableEntry.Address_PE32 == 0
+                            && entryLookupTableEntry.Address_PE32Plus == 0)
+                            break;
                     }
+
+                    importAddressTables[i] = entryAddressTable.ToArray();
                 }
             }
 
@@ -1086,6 +1034,7 @@ namespace BurnOutSharp.Builder
                 List<int> hintNameTableEntryAddresses = importTable.ImportLookupTables
                     .SelectMany(kvp => kvp.Value)
                     .Select(ilte => (int)ilte.HintNameTableRVA.ConvertVirtualAddress(sections))
+                    .Where(addr => addr != 0)
                     .Distinct()
                     .OrderBy(a => a)
                     .ToList();
@@ -1096,9 +1045,6 @@ namespace BurnOutSharp.Builder
                     for (int i = 0; i < hintNameTableEntryAddresses.Count; i++)
                     {
                         int hintNameTableEntryAddress = hintNameTableEntryAddresses[i];
-                        if (hintNameTableEntryAddress == 0)
-                            continue;
-
                         var hintNameTableEntry = new HintNameTableEntry();
 
                         hintNameTableEntry.Hint = data.ReadUInt16(ref hintNameTableEntryAddress);
@@ -1346,7 +1292,7 @@ namespace BurnOutSharp.Builder
             #region COFF Symbol Table and COFF String Table
 
             // TODO: Validate that this is correct with an "old" PE
-            if (coffFileHeader.PointerToSymbolTable != 0)
+            if (coffFileHeader.PointerToSymbolTable.ConvertVirtualAddress(executable.SectionTable) != 0)
             {
                 // If the offset for the COFF symbol table doesn't exist
                 int symbolTableAddress = initialOffset
@@ -1354,26 +1300,22 @@ namespace BurnOutSharp.Builder
                 if (symbolTableAddress >= data.Length)
                     return executable;
 
-                // If we have a valid address
-                if (symbolTableAddress != 0)
-                {
-                    // Try to parse the COFF symbol table
-                    data.Seek(symbolTableAddress, SeekOrigin.Begin);
-                    var coffSymbolTable = ParseCOFFSymbolTable(data, coffFileHeader.NumberOfSymbols);
-                    if (coffSymbolTable == null)
-                        return null;
+                // Try to parse the COFF symbol table
+                data.Seek(symbolTableAddress, SeekOrigin.Begin);
+                var coffSymbolTable = ParseCOFFSymbolTable(data, coffFileHeader.NumberOfSymbols);
+                if (coffSymbolTable == null)
+                    return null;
 
-                    // Set the COFF symbol table
-                    executable.COFFSymbolTable = coffSymbolTable;
+                // Set the COFF symbol table
+                executable.COFFSymbolTable = coffSymbolTable;
 
-                    // Try to parse the COFF string table
-                    var coffStringTable = ParseCOFFStringTable(data);
-                    if (coffStringTable == null)
-                        return null;
+                // Try to parse the COFF string table
+                var coffStringTable = ParseCOFFStringTable(data);
+                if (coffStringTable == null)
+                    return null;
 
-                    // Set the COFF string table
-                    executable.COFFStringTable = coffStringTable;
-                }
+                // Set the COFF string table
+                executable.COFFStringTable = coffStringTable;
             }
 
             #endregion
@@ -1388,26 +1330,22 @@ namespace BurnOutSharp.Builder
                 if (certificateTableAddress >= data.Length)
                     return executable;
 
-                // If we have a valid address
-                if (certificateTableAddress != 0)
-                {
-                    // Try to parse the attribute certificate table
-                    data.Seek(certificateTableAddress, SeekOrigin.Begin);
-                    int endOffset = (int)(certificateTableAddress + optionalHeader.CertificateTable.Size);
-                    var attributeCertificateTable = ParseAttributeCertificateTable(data, endOffset);
-                    if (attributeCertificateTable == null)
-                        return null;
+                // Try to parse the attribute certificate table
+                data.Seek(certificateTableAddress, SeekOrigin.Begin);
+                int endOffset = (int)(certificateTableAddress + optionalHeader.CertificateTable.Size);
+                var attributeCertificateTable = ParseAttributeCertificateTable(data, endOffset);
+                if (attributeCertificateTable == null)
+                    return null;
 
-                    // Set the attribute certificate table
-                    executable.AttributeCertificateTable = attributeCertificateTable;
-                }
+                // Set the attribute certificate table
+                executable.AttributeCertificateTable = attributeCertificateTable;
             }
 
             #endregion
 
             #region Delay-Load Directory Table
 
-            if (optionalHeader.DelayImportDescriptor != null && optionalHeader.DelayImportDescriptor.VirtualAddress != 0)
+            if (optionalHeader.DelayImportDescriptor != null && optionalHeader.DelayImportDescriptor.VirtualAddress.ConvertVirtualAddress(executable.SectionTable) != 0)
             {
                 // If the offset for the delay-load directory table doesn't exist
                 int delayLoadDirectoryTableAddress = initialOffset
@@ -1429,8 +1367,8 @@ namespace BurnOutSharp.Builder
 
             #region Debug Table
 
-            // Should also be in the '.debug' section
-            if (optionalHeader.Debug != null && optionalHeader.Debug.VirtualAddress != 0)
+            // Should also be in a '.debug' section
+            if (optionalHeader.Debug != null && optionalHeader.Debug.VirtualAddress.ConvertVirtualAddress(executable.SectionTable) != 0)
             {
                 // If the offset for the debug table doesn't exist
                 int debugTableAddress = initialOffset
@@ -1453,8 +1391,8 @@ namespace BurnOutSharp.Builder
 
             #region Export Table
 
-            // Should also be in the '.edata' section
-            if (optionalHeader.ExportTable != null && optionalHeader.ExportTable.VirtualAddress != 0)
+            // Should also be in a '.edata' section
+            if (optionalHeader.ExportTable != null && optionalHeader.ExportTable.VirtualAddress.ConvertVirtualAddress(executable.SectionTable) != 0)
             {
                 // If the offset for the export table doesn't exist
                 int exportTableAddress = initialOffset
@@ -1476,8 +1414,8 @@ namespace BurnOutSharp.Builder
 
             #region Import Table
 
-            // Should also be in the '.idata' section
-            if (optionalHeader.ImportTable != null && optionalHeader.ImportTable.VirtualAddress != 0)
+            // Should also be in a '.idata' section
+            if (optionalHeader.ImportTable != null && optionalHeader.ImportTable.VirtualAddress.ConvertVirtualAddress(executable.SectionTable) != 0)
             {
                 // If the offset for the import table doesn't exist
                 int importTableAddress = initialOffset
@@ -1485,26 +1423,22 @@ namespace BurnOutSharp.Builder
                 if (importTableAddress >= data.Length)
                     return executable;
 
-                // If we have a valid address
-                if (importTableAddress != 0)
-                {
-                    // Try to parse the import table
-                    data.Seek(importTableAddress, SeekOrigin.Begin);
-                    var importTable = ParseImportTable(data, optionalHeader.Magic, executable.SectionTable);
-                    if (importTable == null)
-                        return null;
+                // Try to parse the import table
+                data.Seek(importTableAddress, SeekOrigin.Begin);
+                var importTable = ParseImportTable(data, optionalHeader.Magic, executable.SectionTable);
+                if (importTable == null)
+                    return null;
 
-                    // Set the import table
-                    executable.ImportTable = importTable;
-                }
+                // Set the import table
+                executable.ImportTable = importTable;
             }
 
             #endregion
 
             #region Resource Directory Table
 
-            // Should also be in the '.rsrc' section
-            if (optionalHeader.ResourceTable != null && optionalHeader.ResourceTable.VirtualAddress != 0)
+            // Should also be in a '.rsrc' section
+            if (optionalHeader.ResourceTable != null && optionalHeader.ResourceTable.VirtualAddress.ConvertVirtualAddress(executable.SectionTable) != 0)
             {
                 // If the offset for the resource directory table doesn't exist
                 int resourceTableAddress = initialOffset
@@ -1512,18 +1446,14 @@ namespace BurnOutSharp.Builder
                 if (resourceTableAddress >= data.Length)
                     return executable;
 
-                // If we have a valid address
-                if (resourceTableAddress != 0)
-                {
-                    // Try to parse the resource directory table
-                    data.Seek(resourceTableAddress, SeekOrigin.Begin);
-                    var resourceDirectoryTable = ParseResourceDirectoryTable(data, data.Position, executable.SectionTable);
-                    if (resourceDirectoryTable == null)
-                        return null;
+                // Try to parse the resource directory table
+                data.Seek(resourceTableAddress, SeekOrigin.Begin);
+                var resourceDirectoryTable = ParseResourceDirectoryTable(data, data.Position, executable.SectionTable);
+                if (resourceDirectoryTable == null)
+                    return null;
 
-                    // Set the resource directory table
-                    executable.ResourceDirectoryTable = resourceDirectoryTable;
-                }
+                // Set the resource directory table
+                executable.ResourceDirectoryTable = resourceDirectoryTable;
             }
 
             #endregion
@@ -2061,104 +1991,89 @@ namespace BurnOutSharp.Builder
             exportTable.ExportDirectoryTable = exportDirectoryTable;
 
             // Name
-            if (exportDirectoryTable.NameRVA != 0)
+            if (exportDirectoryTable.NameRVA.ConvertVirtualAddress(sections) != 0)
             {
                 uint nameAddress = exportDirectoryTable.NameRVA.ConvertVirtualAddress(sections);
-                if (nameAddress != 0)
-                {
-                    data.Seek(nameAddress, SeekOrigin.Begin);
+                data.Seek(nameAddress, SeekOrigin.Begin);
 
-                    string name = data.ReadString(Encoding.ASCII);
-                    exportDirectoryTable.Name = name;
-                }
+                string name = data.ReadString(Encoding.ASCII);
+                exportDirectoryTable.Name = name;
             }
 
             // Address table
-            if (exportDirectoryTable.AddressTableEntries != 0 && exportDirectoryTable.ExportAddressTableRVA != 0)
+            if (exportDirectoryTable.AddressTableEntries != 0 && exportDirectoryTable.ExportAddressTableRVA.ConvertVirtualAddress(sections) != 0)
             {
                 uint exportAddressTableAddress = exportDirectoryTable.ExportAddressTableRVA.ConvertVirtualAddress(sections);
-                if (exportAddressTableAddress != 0)
+                data.Seek(exportAddressTableAddress, SeekOrigin.Begin);
+
+                var exportAddressTable = new ExportAddressTableEntry[exportDirectoryTable.AddressTableEntries];
+
+                for (int i = 0; i < exportDirectoryTable.AddressTableEntries; i++)
                 {
-                    data.Seek(exportAddressTableAddress, SeekOrigin.Begin);
+                    var addressTableEntry = new ExportAddressTableEntry();
 
-                    var exportAddressTable = new ExportAddressTableEntry[exportDirectoryTable.AddressTableEntries];
+                    // TODO: Use the optional header address and length to determine if export or forwarder
+                    addressTableEntry.ExportRVA = data.ReadUInt32();
+                    addressTableEntry.ForwarderRVA = addressTableEntry.ExportRVA;
 
-                    for (int i = 0; i < exportDirectoryTable.AddressTableEntries; i++)
-                    {
-                        var addressTableEntry = new ExportAddressTableEntry();
-
-                        // TODO: Use the optional header address and length to determine if export or forwarder
-                        addressTableEntry.ExportRVA = data.ReadUInt32();
-                        addressTableEntry.ForwarderRVA = addressTableEntry.ExportRVA;
-
-                        exportAddressTable[i] = addressTableEntry;
-                    }
-
-                    exportTable.ExportAddressTable = exportAddressTable;
+                    exportAddressTable[i] = addressTableEntry;
                 }
+
+                exportTable.ExportAddressTable = exportAddressTable;
             }
 
             // Name pointer table
-            if (exportDirectoryTable.NumberOfNamePointers != 0 && exportDirectoryTable.NamePointerRVA != 0)
+            if (exportDirectoryTable.NumberOfNamePointers != 0 && exportDirectoryTable.NamePointerRVA.ConvertVirtualAddress(sections) != 0)
             {
                 uint namePointerTableAddress = exportDirectoryTable.NamePointerRVA.ConvertVirtualAddress(sections);
-                if (namePointerTableAddress != 0)
+                data.Seek(namePointerTableAddress, SeekOrigin.Begin);
+
+                var namePointerTable = new ExportNamePointerTable();
+
+                namePointerTable.Pointers = new uint[exportDirectoryTable.NumberOfNamePointers];
+                for (int i = 0; i < exportDirectoryTable.NumberOfNamePointers; i++)
                 {
-                    data.Seek(namePointerTableAddress, SeekOrigin.Begin);
-
-                    var namePointerTable = new ExportNamePointerTable();
-
-                    namePointerTable.Pointers = new uint[exportDirectoryTable.NumberOfNamePointers];
-                    for (int i = 0; i < exportDirectoryTable.NumberOfNamePointers; i++)
-                    {
-                        uint pointer = data.ReadUInt32();
-                        namePointerTable.Pointers[i] = pointer;
-                    }
-
-                    exportTable.NamePointerTable = namePointerTable;
+                    uint pointer = data.ReadUInt32();
+                    namePointerTable.Pointers[i] = pointer;
                 }
+
+                exportTable.NamePointerTable = namePointerTable;
             }
 
             // Ordinal table
-            if (exportDirectoryTable.NumberOfNamePointers != 0 && exportDirectoryTable.OrdinalTableRVA != 0)
+            if (exportDirectoryTable.NumberOfNamePointers != 0 && exportDirectoryTable.OrdinalTableRVA.ConvertVirtualAddress(sections) != 0)
             {
                 uint ordinalTableAddress = exportDirectoryTable.OrdinalTableRVA.ConvertVirtualAddress(sections);
-                if (ordinalTableAddress != 0)
+                data.Seek(ordinalTableAddress, SeekOrigin.Begin);
+
+                var exportOrdinalTable = new ExportOrdinalTable();
+
+                exportOrdinalTable.Indexes = new ushort[exportDirectoryTable.NumberOfNamePointers];
+                for (int i = 0; i < exportDirectoryTable.NumberOfNamePointers; i++)
                 {
-                    data.Seek(ordinalTableAddress, SeekOrigin.Begin);
-
-                    var exportOrdinalTable = new ExportOrdinalTable();
-
-                    exportOrdinalTable.Indexes = new ushort[exportDirectoryTable.NumberOfNamePointers];
-                    for (int i = 0; i < exportDirectoryTable.NumberOfNamePointers; i++)
-                    {
-                        ushort pointer = data.ReadUInt16();
-                        exportOrdinalTable.Indexes[i] = pointer;
-                    }
-
-                    exportTable.OrdinalTable = exportOrdinalTable;
+                    ushort pointer = data.ReadUInt16();
+                    exportOrdinalTable.Indexes[i] = pointer;
                 }
+
+                exportTable.OrdinalTable = exportOrdinalTable;
             }
 
             // Name table
-            if (exportDirectoryTable.NumberOfNamePointers != 0 && exportDirectoryTable.NameRVA != 0)
+            if (exportDirectoryTable.NumberOfNamePointers != 0 && exportDirectoryTable.NameRVA.ConvertVirtualAddress(sections) != 0)
             {
                 uint nameTableAddress = exportDirectoryTable.NameRVA.ConvertVirtualAddress(sections);
-                if (nameTableAddress != 0)
+                data.Seek(nameTableAddress, SeekOrigin.Begin);
+
+                var exportNameTable = new ExportNameTable();
+
+                exportNameTable.Strings = new string[exportDirectoryTable.NumberOfNamePointers];
+                for (int i = 0; i < exportDirectoryTable.NumberOfNamePointers; i++)
                 {
-                    data.Seek(nameTableAddress, SeekOrigin.Begin);
-
-                    var exportNameTable = new ExportNameTable();
-
-                    exportNameTable.Strings = new string[exportDirectoryTable.NumberOfNamePointers];
-                    for (int i = 0; i < exportDirectoryTable.NumberOfNamePointers; i++)
-                    {
-                        string str = data.ReadString();
-                        exportNameTable.Strings[i] = str;
-                    }
-
-                    exportTable.ExportNameTable = exportNameTable;
+                    string str = data.ReadString();
+                    exportNameTable.Strings[i] = str;
                 }
+
+                exportTable.ExportNameTable = exportNameTable;
             }
 
             return exportTable;
@@ -2207,7 +2122,7 @@ namespace BurnOutSharp.Builder
             for (int i = 0; i < importTable.ImportDirectoryTable.Length; i++)
             {
                 var importDirectoryTableEntry = importTable.ImportDirectoryTable[i];
-                if (importDirectoryTableEntry.NameRVA != 0)
+                if (importDirectoryTableEntry.NameRVA.ConvertVirtualAddress(sections) != 0)
                 {
                     uint nameAddress = importDirectoryTableEntry.NameRVA.ConvertVirtualAddress(sections);
                     data.Seek(nameAddress, SeekOrigin.Begin);
@@ -2223,7 +2138,7 @@ namespace BurnOutSharp.Builder
             for (int i = 0; i < importTable.ImportDirectoryTable.Length; i++)
             {
                 var importDirectoryTableEntry = importTable.ImportDirectoryTable[i];
-                if (importDirectoryTableEntry.ImportLookupTableRVA != 0)
+                if (importDirectoryTableEntry.ImportLookupTableRVA.ConvertVirtualAddress(sections) != 0)
                 {
                     uint tableAddress = importDirectoryTableEntry.ImportLookupTableRVA.ConvertVirtualAddress(sections);
                     data.Seek(tableAddress, SeekOrigin.Begin);
@@ -2274,7 +2189,7 @@ namespace BurnOutSharp.Builder
             for (int i = 0; i < importTable.ImportDirectoryTable.Length; i++)
             {
                 var importDirectoryTableEntry = importTable.ImportDirectoryTable[i];
-                if (importDirectoryTableEntry.ImportAddressTableRVA != 0)
+                if (importDirectoryTableEntry.ImportAddressTableRVA.ConvertVirtualAddress(sections) != 0)
                 {
                     uint tableAddress = importDirectoryTableEntry.ImportAddressTableRVA.ConvertVirtualAddress(sections);
                     data.Seek(tableAddress, SeekOrigin.Begin);
@@ -2319,6 +2234,7 @@ namespace BurnOutSharp.Builder
                 List<int> hintNameTableEntryAddresses = importTable.ImportLookupTables
                     .SelectMany(kvp => kvp.Value)
                     .Select(ilte => (int)ilte.HintNameTableRVA.ConvertVirtualAddress(sections))
+                    .Where(addr => addr != 0)
                     .Distinct()
                     .OrderBy(a => a)
                     .ToList();

@@ -346,6 +346,10 @@ namespace BurnOutSharp.Builder
             if (sections == null || sections.Length == 0)
                 return 0;
 
+            // If the RVA is 0, we just return 0 because it's invalid
+            if (rva == 0)
+                return 0;
+
             // If the RVA matches a section start exactly, use that
             var matchingSection = sections.FirstOrDefault(s => s.VirtualAddress == rva);
             if (matchingSection != null)
