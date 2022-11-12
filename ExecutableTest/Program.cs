@@ -781,7 +781,7 @@ namespace ExecutableTest
                     Console.WriteLine($"    Length = {entry.Length}");
                     Console.WriteLine($"    Revision = {entry.Revision}");
                     Console.WriteLine($"    Certificate type = {entry.CertificateType}");
-                    Console.WriteLine($"    Certificate = {BitConverter.ToString(entry.Certificate).Replace("-", string.Empty)}");
+                    //Console.WriteLine($"    Certificate = {BitConverter.ToString(entry.Certificate).Replace("-", string.Empty)}");
                     // TODO: Add certificate type parsing
                 }
             }
