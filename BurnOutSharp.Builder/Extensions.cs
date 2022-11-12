@@ -1167,7 +1167,7 @@ namespace BurnOutSharp.Builder
             // Message resource entries
             if (messageResourceData.Blocks != null && messageResourceData.Blocks.Length != 0)
             {
-                var messageResourceEntries = new List<Models.PortableExecutable.MessageResourceEntry>();
+                var messageResourceEntries = new Dictionary<uint, Models.PortableExecutable.MessageResourceEntry>();
 
                 for (int i = 0; i < messageResourceData.Blocks.Length; i++)
                 {
@@ -1182,13 +1182,14 @@ namespace BurnOutSharp.Builder
                         messageResourceEntry.Flags = entry.Data.ReadUInt16(ref offset);
 
                         Encoding textEncoding = messageResourceEntry.Flags == 0x0001 ? Encoding.Unicode : Encoding.ASCII;
-                        messageResourceEntry.Text = entry.Data.ReadString(ref offset, textEncoding);
+                        byte[] textArray = entry.Data.ReadBytes(ref offset, messageResourceEntry.Length - 4);
+                        messageResourceEntry.Text = textEncoding.GetString(textArray);
 
-                        messageResourceEntries.Add(messageResourceEntry);
+                        messageResourceEntries[j] = messageResourceEntry;
                     }
                 }
 
-                messageResourceData.Entries = messageResourceEntries.ToArray();
+                messageResourceData.Entries = messageResourceEntries;
             }
 
             return messageResourceData;

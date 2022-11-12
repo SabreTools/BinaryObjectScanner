@@ -1,4 +1,6 @@
-﻿namespace BurnOutSharp.Models.PortableExecutable
+﻿using System.Collections.Generic;
+
+namespace BurnOutSharp.Models.PortableExecutable
 {
     /// <summary>
     /// Contains information about formatted text for display as an error message or in a message
@@ -20,6 +22,6 @@
         /// <summary>
         /// Message resource entries
         /// </summary>
-        public MessageResourceEntry[] Entries;
+        public Dictionary<uint, MessageResourceEntry> Entries;
     }
 }

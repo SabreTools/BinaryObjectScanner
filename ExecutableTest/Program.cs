@@ -1429,7 +1429,58 @@ namespace ExecutableTest
                         Console.WriteLine($"{padding}Application-defined resource found, not parsed yet");
                         break;
                     case BurnOutSharp.Models.PortableExecutable.ResourceType.RT_MESSAGETABLE:
-                        Console.WriteLine($"{padding}Message-table entry found, not parsed yet");
+                        var messageTable = entry.AsMessageResourceData();
+                        if (messageTable == null)
+                        {
+                            Console.WriteLine($"{padding}Message resource data found, but malformed");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"{padding}Number of blocks: {messageTable.NumberOfBlocks}");
+                            Console.WriteLine();
+                            Console.WriteLine($"{padding}Message resource blocks");
+                            Console.WriteLine($"{padding}-------------------------");
+                            if (messageTable.NumberOfBlocks == 0
+                                || messageTable.Blocks == null
+                                || messageTable.Blocks.Length == 0)
+                            {
+                                Console.WriteLine($"{padding}No message resource blocks");
+                            }
+                            else
+                            {
+                                for (int i = 0; i < messageTable.Blocks.Length; i++)
+                                {
+                                    var messageResourceBlock = messageTable.Blocks[i];
+
+                                    Console.WriteLine($"{padding}Message resource block {i}");
+                                    Console.WriteLine($"{padding}  Low ID: {messageResourceBlock.LowId}");
+                                    Console.WriteLine($"{padding}  High ID: {messageResourceBlock.HighId}");
+                                    Console.WriteLine($"{padding}  Offset to entries: {messageResourceBlock.OffsetToEntries}");
+                                }
+                            }
+                            Console.WriteLine();
+
+                            Console.WriteLine($"{padding}Message resource entries");
+                            Console.WriteLine($"{padding}-------------------------");
+                            if (messageTable.Entries == null
+                                || messageTable.Entries.Count == 0)
+                            {
+                                Console.WriteLine($"{padding}No message resource entries");
+                            }
+                            else
+                            {
+                                foreach (var kvp in messageTable.Entries)
+                                {
+                                    uint index = kvp.Key;
+                                    var messageResourceEntry = kvp.Value;
+
+                                    Console.WriteLine($"{padding}Message resource entry {index}");
+                                    Console.WriteLine($"{padding}  Length: {messageResourceEntry.Length}");
+                                    Console.WriteLine($"{padding}  Flags: {messageResourceEntry.Flags}");
+                                    Console.WriteLine($"{padding}  Text: {messageResourceEntry.Text}");
+                                }
+                            }
+                        }
                         break;
                     case BurnOutSharp.Models.PortableExecutable.ResourceType.RT_GROUP_CURSOR:
                         Console.WriteLine($"{padding}Hardware-independent cursor resource found, not parsed yet");
