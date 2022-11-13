@@ -144,7 +144,7 @@ namespace BurnOutSharp.Builder
         /// <summary>
         /// Format the TLV as a string
         /// </summary>
-        /// <param name="paddingLevel">[UNUSED] Padding level of the item when formatting</param>
+        /// <param name="paddingLevel">Padding level of the item when formatting</param>
         /// <returns>String representing the TLV, if possible</returns>
         public string Format(int paddingLevel = 0)
         {
@@ -231,60 +231,13 @@ namespace BurnOutSharp.Builder
                 /// <see href="https://learn.microsoft.com/en-us/windows/win32/seccertenroll/about-object-identifier"/>
                 /// <see cref="http://snmpsharpnet.com/index.php/2009/03/02/ber-encoding-and-decoding-oid-values/"/>
                 case ASN1Type.V_ASN1_OBJECT:
-                    // The first byte contains nodes 1 and 2
-                    int firstNode = Math.DivRem(valueAsByteArray[0], 40, out int secondNode);
+                    // Derive array of values
+                    ulong[] objectNodes = ObjectIdentifier.ParseDERIntoArray(valueAsByteArray, this.Length);
 
-                    // If there are only 2 nodes
-                    if (this.Length == 1)
-                    {
-                        formatBuilder.Append($", Value: {firstNode}.{secondNode}");
-                        break;
-                    }
-
-                    // Create a list for all remaining nodes
-                    List<ulong> objectNodes = new List<ulong>();
-
-                    // All other nodes are encoded uniquely
-                    int objectValueOffset = 1;
-                    while (objectValueOffset < (long)this.Length)
-                    {
-                        // If bit 7 is not set
-                        if ((valueAsByteArray[objectValueOffset] & 0x80) == 0)
-                        {
-                            objectNodes.Add(valueAsByteArray[objectValueOffset]);
-                            objectValueOffset++;
-                            continue;
-                        }
-
-                        // Otherwise, read the encoded value in a loop
-                        ulong dotValue = 0;
-                        bool doneProcessing = false;
-
-                        do
-                        {
-                            // Shift the current encoded value
-                            dotValue <<= 7;
-
-                            // If we have a leading zero byte, we're at the end
-                            if ((valueAsByteArray[objectValueOffset] & 0x80) == 0)
-                                doneProcessing = true;
-
-                            // Clear the top byte
-                            unchecked { valueAsByteArray[objectValueOffset] &= (byte)~0x80; }
-
-                            // Add the new value to the result
-                            dotValue |= valueAsByteArray[objectValueOffset];
-
-                            // Increment the offset
-                            objectValueOffset++;
-                        } while (objectValueOffset < valueAsByteArray.Length && !doneProcessing);
-
-                        // Add the parsed value to the output
-                        objectNodes.Add(dotValue);
-                    }
-
-                    // TODO: Add dot form decoding to this
-                    formatBuilder.Append($", Value: {firstNode}.{secondNode}.{string.Join(".", objectNodes)}");
+                    // Append the dot and modified OID-IRI notations
+                    string dotNotationString = ObjectIdentifier.ParseOIDToDotNotation(objectNodes);
+                    string oidIriString = ObjectIdentifier.ParseOIDToOIDIRINotation(objectNodes);
+                    formatBuilder.Append($", Value: {dotNotationString} ({oidIriString})");
                     break;
 
                 /// <see href="https://learn.microsoft.com/en-us/windows/win32/seccertenroll/about-utf8string"/>

@@ -5,12 +5,25 @@
    "version": "0.2.0",
    "configurations": [
         {
-            "name": ".NET Core Launch (console)",
+            "name": ".NET Core Launch (Test)",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
             "program": "${workspaceFolder}/Test/bin/Debug/netcoreapp3.1/Test.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/Test",
+            // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
+            "console": "internalConsole",
+            "stopAtEntry": false
+        },
+        {
+            "name": ".NET Core Launch (ExecutableTest)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            // If you have changed target frameworks, make sure to update the program path.
+            "program": "${workspaceFolder}/ExecutableTest/bin/Debug/net6.0/ExecutableTest.dll",
             "args": [],
             "cwd": "${workspaceFolder}/Test",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console

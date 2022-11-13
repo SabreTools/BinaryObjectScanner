@@ -634,7 +634,7 @@ namespace BurnOutSharp.Builder
                     dialogItemTemplate.PositionY = entry.Data.ReadInt16(ref offset);
                     dialogItemTemplate.WidthX = entry.Data.ReadInt16(ref offset);
                     dialogItemTemplate.HeightY = entry.Data.ReadInt16(ref offset);
-                    dialogItemTemplate.ID = entry.Data.ReadUInt16(ref offset);
+                    dialogItemTemplate.ID = entry.Data.ReadUInt32(ref offset);
 
                     #region Class resource
 
