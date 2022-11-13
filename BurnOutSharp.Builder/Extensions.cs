@@ -24,6 +24,10 @@ namespace BurnOutSharp.Builder
         /// </summary>
         public static byte[] ReadBytes(this byte[] content, ref int offset, int count)
         {
+            // If there's an invalid byte count, don't do anything
+            if (count == 0)
+                return null;
+
             byte[] buffer = new byte[count];
             Array.Copy(content, offset, buffer, 0, Math.Min(count, content.Length - offset));
             offset += count;
@@ -158,6 +162,10 @@ namespace BurnOutSharp.Builder
         /// </summary>
         public static byte[] ReadBytes(this Stream stream, int count)
         {
+            // If there's an invalid byte count, don't do anything
+            if (count == 0)
+                return null;
+
             byte[] buffer = new byte[count];
             stream.Read(buffer, 0, count);
             return buffer;

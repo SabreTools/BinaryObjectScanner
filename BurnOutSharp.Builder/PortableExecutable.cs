@@ -708,9 +708,13 @@ namespace BurnOutSharp.Builder
                 entry.Revision = (WindowsCertificateRevision)data.ReadUInt16(ref offset);
                 entry.CertificateType = (WindowsCertificateType)data.ReadUInt16(ref offset);
                 if (entry.Length > 0)
-                    entry.Certificate = data.ReadBytes(ref offset, (int)entry.Length);
+                    entry.Certificate = data.ReadBytes(ref offset, (int)entry.Length - 8);
 
                 attributeCertificateTable.Add(entry);
+
+                // Align to the 8-byte boundary
+                while ((offset % 8) != 0)
+                    _ = data.ReadByte(ref offset);
             }
 
             return attributeCertificateTable.ToArray();
@@ -1896,9 +1900,13 @@ namespace BurnOutSharp.Builder
                 entry.Revision = (WindowsCertificateRevision)data.ReadUInt16();
                 entry.CertificateType = (WindowsCertificateType)data.ReadUInt16();
                 if (entry.Length > 0)
-                    entry.Certificate = data.ReadBytes((int)entry.Length);
+                    entry.Certificate = data.ReadBytes((int)entry.Length - 8);
 
                 attributeCertificateTable.Add(entry);
+
+                // Align to the 8-byte boundary
+                while ((data.Position % 8) != 0)
+                    _ = data.ReadByteValue();
             }
 
             return attributeCertificateTable.ToArray();

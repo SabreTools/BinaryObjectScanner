@@ -285,7 +285,6 @@ namespace ExecutableTest
                 }
             }
 
-
             if (executable.ResourceTable.TypeAndNameStrings.Count == 0)
             {
                 Console.WriteLine("  No resource table type/name strings");
@@ -781,8 +780,34 @@ namespace ExecutableTest
                     Console.WriteLine($"    Length = {entry.Length}");
                     Console.WriteLine($"    Revision = {entry.Revision}");
                     Console.WriteLine($"    Certificate type = {entry.CertificateType}");
-                    //Console.WriteLine($"    Certificate = {BitConverter.ToString(entry.Certificate).Replace("-", string.Empty)}");
-                    // TODO: Add certificate type parsing
+                    Console.WriteLine();
+                    if (entry.CertificateType == BurnOutSharp.Models.PortableExecutable.WindowsCertificateType.WIN_CERT_TYPE_PKCS_SIGNED_DATA)
+                    {
+                        Console.WriteLine($"    Certificate Data [Formatted]");
+                        Console.WriteLine("  -------------------------");
+                        var topLevelValues = AbstractSyntaxNotationOne.Parse(entry.Certificate, pointer: 0);
+                        if (topLevelValues == null)
+                        {
+                            Console.WriteLine("    INVALID DATA FOUND");
+                            Console.WriteLine($"    {BitConverter.ToString(entry.Certificate).Replace("-", string.Empty)}");
+                        }
+                        else
+                        {
+                            foreach (ASN1TypeLengthValue tlv in topLevelValues)
+                            {
+                                string tlvString = tlv.Format(paddingLevel: 4);
+                                Console.WriteLine(tlvString);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine($"    Certificate Data [Binary]");
+                        Console.WriteLine("  -------------------------");
+                        Console.WriteLine($"    {BitConverter.ToString(entry.Certificate).Replace("-", string.Empty)}");
+                    }
+
+                    Console.WriteLine();
                 }
             }
             Console.WriteLine();
