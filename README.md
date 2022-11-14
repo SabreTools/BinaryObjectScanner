@@ -88,6 +88,7 @@ Below is a list of protections detected by BurnOutSharp. The two columns explain
 | SVKP (Slovak Protector) | True | False | |
 | Sysiphus / Sysiphus DVD | True | False | |
 | TAGES | True | True | Partially unconfirmed² |
+| Themida/WinLicense/Code Virtualizer | True | False | Only certain products/versions currently detected |
 | Tivola Ring Protection | False | True | |
 | TZCopyProtection | False | True | Partially unconfirmed² |
 | Uplay | True | True | |
@@ -119,7 +120,6 @@ Below is a list of protections that have been identified but have not yet been i
 - SAFEAUDIO
 - The Bongle
 - The Copy Protected CD
-- Themida/WinLicense/Code Virtualizer
 
 ## Executable Packers Detected
 
