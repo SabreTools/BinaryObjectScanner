@@ -783,8 +783,8 @@ namespace ExecutableTest
                     Console.WriteLine();
                     if (entry.CertificateType == BurnOutSharp.Models.PortableExecutable.WindowsCertificateType.WIN_CERT_TYPE_PKCS_SIGNED_DATA)
                     {
-                        Console.WriteLine($"    Certificate Data [Formatted]");
-                        Console.WriteLine("  -------------------------");
+                        Console.WriteLine("    Certificate Data [Formatted]");
+                        Console.WriteLine("    -------------------------");
                         var topLevelValues = AbstractSyntaxNotationOne.Parse(entry.Certificate, pointer: 0);
                         if (topLevelValues == null)
                         {
