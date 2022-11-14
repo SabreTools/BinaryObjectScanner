@@ -73,7 +73,7 @@ namespace BurnOutSharp.Models.PortableExecutable
         /// <summary>
         /// The control identifier.
         /// </summary>
-        public ushort ID;
+        public uint ID;
 
         /// <summary>
         /// A variable-length array of 16-bit elements that specifies the window class of the control. If
