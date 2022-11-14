@@ -421,7 +421,7 @@ namespace BurnOutSharp.Builder
         /// <returns>OID-IRI formatted string, id possible</returns>
         /// <remarks>
         /// If a value does not have a fully-descriptive value, some parts may be replaced
-        /// with the set of ASN.1 values encclosed in square brwckets.
+        /// with the set of ASN.1 values encclosed in square brackets.
         /// </remarks>
         /// <see href="http://<www.oid-info.com/index.htm"/>
         private static string ParseOID(List<ulong> values, ref int index)
@@ -453,15 +453,16 @@ namespace BurnOutSharp.Builder
 
         oid_0:
 
+            if (index == values.Count) return "/ITU-T";
             switch (values[index++])
             {
                 case 0: goto oid_0_0;
                 case 1: return "/ITU-T/1/[question]";
                 case 2: goto oid_0_2;
                 case 3: goto oid_0_3;
-                // TODO: case 4: goto oid_0_4;
+                case 4: goto oid_0_4;
                 case 5: return "/ITU-R/R-Recommendation";
-                // TODO: case 9: goto oid_0_9;
+                case 9: goto oid_0_9;
                 default: return $"/ITU-T/INVALID_{index}";
             };
 
@@ -470,6 +471,7 @@ namespace BurnOutSharp.Builder
 
         oid_0_0:
 
+            if (index == values.Count) return "/ITU-T/Recommendation";
             switch (values[index++])
             {
                 case 1: return "/ITU-T/Recommendation/A";
@@ -509,6 +511,7 @@ namespace BurnOutSharp.Builder
 
         oid_0_2:
 
+            if (index == values.Count) return "/ITU-T/Administration";
             switch (values[index++])
             {
                 case 202: return "/ITU-T/Administration/[Greece]";
@@ -776,6 +779,7 @@ namespace BurnOutSharp.Builder
 
         oid_0_3:
 
+            if (index == values.Count) return "/ITU-T/Network-Operator";
             switch (values[index++])
             {
                 case 1111: return "/ITU-T/Network-Operator/[INMARSAT: Atlantic Ocean-East]";
@@ -1088,9 +1092,230 @@ namespace BurnOutSharp.Builder
                 case 3745: return "/ITU-T/Network-Operator/[Trinidad and Tobago: DATANETT]";
                 case 3763:
                 case 3764: return "/ITU-T/Network-Operator/[Turks and Caicos Islands: Cable and wireless packet switched node]";
-
-                // TODO: Left off at http://www.oid-info.com/get/0.3.4001
+                case 4001: return "/ITU-T/Network-Operator/[Azerbaijan: AZPAK (AZerbaijan public PAcKet switched data network)]";
+                case 4002: return "/ITU-T/Network-Operator/[Azerbaijan: \"AzEuroTel\" Joint Venture]";
+                case 4010: return "/ITU-T/Network-Operator/[Kazakhstan: KazNet X.25]";
+                case 4011: return "/ITU-T/Network-Operator/[Kazakhstan: BankNet X.25]";
+                case 4041: return "/ITU-T/Network-Operator/[India: \"RABMN\"]";
+                case 4042: return "/ITU-T/Network-Operator/[India: International Gateway Packet Switching System (GPSS)]";
+                case 4043: return "/ITU-T/Network-Operator/[India: \"INET\" (Packet Switched Public Data Network)]";
+                case 4045: return "/ITU-T/Network-Operator/[India: HVnet]";
+                case 4046: return "/ITU-T/Network-Operator/[India: Shared Data Network Identification Code (DNIC) for \"VSAT\" based private data networks]";
+                case 4101: return "/ITU-T/Network-Operator/[Pakistan: TRANSLINK]";
+                case 4132: return "/ITU-T/Network-Operator/[Sri Lanka: Lanka Communication Services (Pvt) Limited]";
+                case 4133: return "/ITU-T/Network-Operator/[Sri Lanka: Electroteks (Pvt) Limited]";
+                case 4141: return "/ITU-T/Network-Operator/[Myanmar: MYANMARP]";
+                case 4155: return "/ITU-T/Network-Operator/[Lebanon: Reseau public de transmission de donnees par paquets]";
+                case 4195: return "/ITU-T/Network-Operator/[Kuwait: Qualitynet]";
+                case 4201: return "/ITU-T/Network-Operator/[Saudi Arabia: ALWASEET - Public Packet Switched Data Network]";
+                case 4241: return "/ITU-T/Network-Operator/[United Arab Emirates: \"EMDAN\" Teletex Network]";
+                case 4243: return "/ITU-T/Network-Operator/[United Arab Emirates: \"EMDAN\" X.25 and X.28 Terminals]";
+                case 4251: return "/ITU-T/Network-Operator/[Israel: ISRANET]";
+                case 4260: return "/ITU-T/Network-Operator/[Bahrain: Batelco Global System for Mobile communications (GSM) Service]";
+                case 4262: return "/ITU-T/Network-Operator/[Bahrain: Bahrain MAnaged DAta Network (MADAN)]";
+                case 4263: return "/ITU-T/Network-Operator/[Bahrain: Batelco Packet Switched Node]";
+                case 4271: return "/ITU-T/Network-Operator/[Qatar: \"DOHPAK\"]";
+                case 4290: return "/ITU-T/Network-Operator/[Nepal: NEPal PAcKet switched public data network (NEPPAK)]";
+                case 4321: return "/ITU-T/Network-Operator/[Islamic Republic of Iran: IranPac]";
+                case 4341: return "/ITU-T/Network-Operator/[Uzbekistan: UzPAK]";
+                case 4400: return "/ITU-T/Network-Operator/[Japan: GLOBALNET (Network of the Global \"VAN\" Japan Incorporation)]";
+                // TODO: case 4401: goto oid_0_3_4401;
+                case 4402: return "/ITU-T/Network-Operator/[Japan: NEC-NET (NEC Corporation)]";
+                case 4403: return "/ITU-T/Network-Operator/[Japan: \"JENSNET\" (\"JENS Corporation\")]";
+                case 4404: return "/ITU-T/Network-Operator/[Japan: JAIS-NET (Japan Research Institute Ltd.)]";
+                case 4405: return "/ITU-T/Network-Operator/[Japan: NCC-VAN (NRI Co., Ltd.)]";
+                case 4406: return "/ITU-T/Network-Operator/[Japan: TYMNET-Japan (Japan TELECOM COMMUNICATIONS SERVICES CO., LTD.)]";
+                case 4407: return "/ITU-T/Network-Operator/[Japan: International High Speed Switched Data Transmission Network (\"KDDI\") (code canceled)]";
+                case 4408: return "/ITU-T/Network-Operator/[Japan: International Packet Switched Data Transmission Network (\"KDDI\") (code canceled)]";
+                case 4412: return "/ITU-T/Network-Operator/[Japan: Sprintnet (Global One Communications, INC.)]";
+                case 4413: return "/ITU-T/Network-Operator/[Japan: \"KYODO NET\" (\"UNITED NET\" Corp)]";
+                case 4415: return "/ITU-T/Network-Operator/[Japan: \"FENICS\" (Fujitsu Limited)]";
+                case 4416: return "/ITU-T/Network-Operator/[Japan: \"HINET\" (Hitachi Information Network, Ltd.)]";
+                case 4417: return "/ITU-T/Network-Operator/[Japan: TIS-Net (TOYO Information Systems Co., Ltd.)]";
+                case 4418: return "/ITU-T/Network-Operator/[Japan: TG-VAN (TOSHIBA Corporation)]";
+                case 4420: return "/ITU-T/Network-Operator/[Japan: Pana-Net (Matsushita Electric Industrial Co. Ltd.)]";
+                case 4421: return "/ITU-T/Network-Operator/[Japan: \"DDX-P\" (Nippon Telegraph and Telephone (NTT) Communications Corporation) (code canceled)]";
+                case 4422: return "/ITU-T/Network-Operator/[Japan: CTC-P (CHUBU TELECOMMUNICATIONS CO., INC.)]";
+                case 4423: return "/ITU-T/Network-Operator/[Japan: \"JENSNET\" (\"JENS Corporation\")]";
+                case 4424: return "/ITU-T/Network-Operator/[Japan: \"SITA\" Network]";
+                case 4425: return "/ITU-T/Network-Operator/[Japan: Global Managed Data Service (Cable & Wireless IDC-Si)]";
+                case 4426: return "/ITU-T/Network-Operator/[Japan: \"ECHO-NET\" (Hitachi Information Systems Ltd.)]";
+                case 4427: return "/ITU-T/Network-Operator/[Japan: U-net (Nihon Unysys Information Systems Ltd.)]";
+                case 4500: return "/ITU-T/Network-Operator/[Republic of Korea: HiNET-P (Korea Telecom)]";
+                case 4501: return "/ITU-T/Network-Operator/[Republic of Korea: DACOM-NET]";
+                case 4502: return "/ITU-T/Network-Operator/[Republic of Korea: \"CSDN\" (only assigned to Teletex)]";
+                case 4538: return "/ITU-T/Network-Operator/[Hong Kong, China: Cable & Wireless Regional Businesses (Hong Kong) Limited]";
+                case 4540: return "/ITU-T/Network-Operator/[Hong Kong, China: Public Switched Document Transfer Service]";
+                case 4541: return "/ITU-T/Network-Operator/[Hong Kong, China: Hutchison Global Crossing Limited]";
+                case 4542: return "/ITU-T/Network-Operator/[Hong Kong, China: INTELPAK (code canceled)]";
+                case 4543: return "/ITU-T/Network-Operator/[Hong Kong, China: New T&T]";
+                case 4545: return "/ITU-T/Network-Operator/[Hong Kong, China: Datapak]";
+                case 4546: return "/ITU-T/Network-Operator/[Hong Kong, China: iAsiaWorks (Hong Kong) Service]";
+                case 4547: return "/ITU-T/Network-Operator/[Hong Kong, China: New World Telephone Limited]";
+                case 4548: return "/ITU-T/Network-Operator/[Hong Kong, China: \"KDD\" Telecomet Hong Kong Ltd.]";
+                case 4550: return "/ITU-T/Network-Operator/[Macau: \"MACAUPAC\"]";
+                case 4601: return "/ITU-T/Network-Operator/[China: Teletex and low speed data network]";
+                case 4603: return "/ITU-T/Network-Operator/[China: \"CHINAPAC\"]";
+                case 4604: return "/ITU-T/Network-Operator/[China: Reserved for public mobile data service]";
+                case 4605: return "/ITU-T/Network-Operator/[China: Public data network]";
+                case 4606:
+                case 4607:
+                case 4608: return "/ITU-T/Network-Operator/[China: Dedicated network]";
+                case 4609: return "/ITU-T/Network-Operator/[China: China Railcom \"PAC\"]";
+                case 4720: return "/ITU-T/Network-Operator/[Maldives: DATANET (Maldives Packet Switching Service)]";
+                case 5020: return "/ITU-T/Network-Operator/[Malaysia: \"COINS\" Global Frame Relay]";
+                case 5021: return "/ITU-T/Network-Operator/[Malaysia: Malaysian Public Packet Switched Public Data Network (\"MAYPAC\")]";
+                case 5023: return "/ITU-T/Network-Operator/[Malaysia: Corporate Information Networks]";
+                case 5024: return "/ITU-T/Network-Operator/[Malaysia: ACASIA-ASEAN Managed Overlay Network]";
+                case 5026: return "/ITU-T/Network-Operator/[Malaysia: Mutiara Frame Relay Network]";
+                case 5027: return "/ITU-T/Network-Operator/[Malaysia: Mobile Public Data Network (WAVENET)]";
+                case 5028: return "/ITU-T/Network-Operator/[Malaysia: Global Management Data Services (GMDS)]";
+                case 5052: return "/ITU-T/Network-Operator/[Australia: Telstra Corporation Ltd. - AUSTPAC packet switching network]";
+                case 5053: return "/ITU-T/Network-Operator/[Australia: Telstra Corporation Ltd. - AUSTPAC International]";
+                case 5057: return "/ITU-T/Network-Operator/[Australia: Australian Private Networks]";
+                case 5101: return "/ITU-T/Network-Operator/[Indonesia: Sambungan Komunikasi Data Paket (SKDP) Packet Switched Service]";
+                case 5151: return "/ITU-T/Network-Operator/[Philippines: \"CWI DATANET\" - Capitol Wireless, Inc. (CAPWIRE)]";
+                case 5152: return "/ITU-T/Network-Operator/[Philippines: Philippine Global Communications, Inc. (PHILCOM)]";
+                case 5154: return "/ITU-T/Network-Operator/[Philippines: Globe-Mackay Cable and Radio corp. (GMCR)]";
+                case 5156: return "/ITU-T/Network-Operator/[Philippines: Eastern Telecommunications Philippines, Inc. (ETPI)]";
+                case 5157: return "/ITU-T/Network-Operator/[Philippines: DATAPAC]";
+                case 5202: return "/ITU-T/Network-Operator/[Thailand: THAIPAK 2 - Value Added Public Packet Switched Data Network]";
+                case 5203: return "/ITU-T/Network-Operator/[Thailand: \"CAT\" Store and Forward Fax Network]";
+                case 5209: return "/ITU-T/Network-Operator/[Thailand: \"TOT\" Integrated Services Digital Network (ISDN)]";
+                case 5250: return "/ITU-T/Network-Operator/[Singapore: International telephone prefix]";
+                case 5251: return "/ITU-T/Network-Operator/[Singapore: Inmarsat service]";
+                case 5252: return "/ITU-T/Network-Operator/[Singapore: TELEPAC (Public Packet Switching Data Network)]";
+                case 5253: return "/ITU-T/Network-Operator/[Singapore: High speed data/long packet service]";
+                case 5254:
+                case 5255: return "/ITU-T/Network-Operator/[Singapore: Public Data Network]";
+                case 5257: return "/ITU-T/Network-Operator/[Singapore: Integrated Services Digital Network (ISDN) packet switching service]";
+                case 5258: return "/ITU-T/Network-Operator/[Singapore: Telex]";
+                case 5259: return "/ITU-T/Network-Operator/[Singapore: Public Switched Telephone Network (PSTN) access (dial-in/out)]";
+                case 5301: return "/ITU-T/Network-Operator/[New Zealand: \"PACNET\" Packet Switching Network]";
+                case 5351: return "/ITU-T/Network-Operator/[Guam: The Pacific Connection, Inc. - Pacnet Public Packet Switching Service]";
+                case 5390: return "/ITU-T/Network-Operator/[Tonga: TONGAPAK]";
+                case 5400: return "/ITU-T/Network-Operator/[Solomon Islands: Datanet]";
+                case 5410: return "/ITU-T/Network-Operator/[Vanuatu: Vanuatu International Access for PACkets (VIAPAC)]";
+                case 5420: return "/ITU-T/Network-Operator/[Fiji: \"FIJPAK\"]";
+                case 5421: return "/ITU-T/Network-Operator/[Fiji: FIJINET]";
+                case 5460: return "/ITU-T/Network-Operator/[New Caledonia: Transpac - Nouvelle Calédonie et opérateur public local]";
+                case 5470: return "/ITU-T/Network-Operator/[French Polynesia: Transpac - Polynésie et opérateur public local]";
+                case 5501: return "/ITU-T/Network-Operator/[Micronesia: \"FSMTC\" Packet Switched Network]";
+                case 6026: return "/ITU-T/Network-Operator/[Egypt: \"EGYPTNET\"]";
+                case 6030: return "/ITU-T/Network-Operator/[Algeria: \"DZ PAC\" (Réseau public de données à commutation par paquets)]";
+                case 6041: return "/ITU-T/Network-Operator/[Morocco: MAGHRIPAC]";
+                case 6042: return "/ITU-T/Network-Operator/[Morocco: MAGHRIPAC X.32]";
+                case 6049: return "/ITU-T/Network-Operator/[Morocco: MAGHRIPAC \"RTC PAD\"]";
+                case 6070: return "/ITU-T/Network-Operator/[Gambia: \"GAMNET\"]";
+                case 6081: return "/ITU-T/Network-Operator/[Senegal: \"SENPAC\"]";
+                case 6122: return "/ITU-T/Network-Operator/[Côte d'Ivoire: SYTRANPAC]";
+                case 6132: return "/ITU-T/Network-Operator/[Burkina Faso: FASOPAC]";
+                case 6202: return "/ITU-T/Network-Operator/[Ghana: DATATEL]";
+                case 6222: return "/ITU-T/Network-Operator/[Chad: TCHADPAC]";
+                case 6242: return "/ITU-T/Network-Operator/[Cameroon: \"CAMPAC\"]";
+                case 6255: return "/ITU-T/Network-Operator/[Cape Verde: \"CVDATA\"]";
+                case 6280: return "/ITU-T/Network-Operator/[Gabon: GABONPAC (Réseau de transmission de données à commutation par paquets)]";
+                case 6282: return "/ITU-T/Network-Operator/[Gabon: GABONPAC2]";
+                case 6315: return "/ITU-T/Network-Operator/[Angola: ANGOPAC]";
+                case 6331: return "/ITU-T/Network-Operator/[Seychelles: Infolink]";
+                case 6390: return "/ITU-T/Network-Operator/[Kenya: \"KENPAC\" - Telkom Kenya Ltd.]";
+                case 6435: return "/ITU-T/Network-Operator/[Mozambique: \"COMPAC\" (Packet Switching Public Data Network)]";
+                case 6451: return "/ITU-T/Network-Operator/[Zambia: \"ZAMPAK\"]";
+                case 6460: return "/ITU-T/Network-Operator/[Madagascar: INFOPAC]";
+                case 6484: return "/ITU-T/Network-Operator/[Zimbabwe: \"ZIMNET\"]";
+                case 6490: return "/ITU-T/Network-Operator/[Namibia: \"SWANET\" (Public Packet Switched Network)]";
+                case 6550: return "/ITU-T/Network-Operator/[South Africa: Saponet - P]";
+                case 7080: return "/ITU-T/Network-Operator/[Honduras: HONDUPAQ]";
+                case 7100: return "/ITU-T/Network-Operator/[Nicaragua: NicaPac]";
+                case 7120: return "/ITU-T/Network-Operator/[Costa Rica: RACSADATOS]";
+                case 7141: return "/ITU-T/Network-Operator/[Panama: Red de transmision de datos con conmutacion de paquetes (INTELPAQ)]";
+                case 7144: return "/ITU-T/Network-Operator/[Panama: \"CWP\" data network]";
+                case 7160: return "/ITU-T/Network-Operator/[Peru: \"MEGANET\" (\"PERUNET\")]";
+                case 7161: return "/ITU-T/Network-Operator/[Peru: \"MEGANET\"]";
+                case 7221: return "/ITU-T/Network-Operator/[Argentina: Nodo Internacional de Datos - TELINTAR]";
+                case 7222: return "/ITU-T/Network-Operator/[Argentina: \"ARPAC\" (\"ENTEL\")]";
+                case 7223: return "/ITU-T/Network-Operator/[Argentina: EASYGATE (\"ATT\")]";
+                case 7240: return "/ITU-T/Network-Operator/[Brazil: International Packet Switching Data Communication Service (INTERDATA)]";
+                case 7241: return "/ITU-T/Network-Operator/[Brazil: National Packet Switching Data Communication Service (\"RENPAC\")]";
+                case 7242: return "/ITU-T/Network-Operator/[Brazil: \"RIOPAC\"]";
+                case 7243: return "/ITU-T/Network-Operator/[Brazil: MINASPAC]";
+                case 7244: return "/ITU-T/Network-Operator/[Brazil: TRANSPAC]";
+                case 7245: return "/ITU-T/Network-Operator/[Brazil: Fac Simile Service (DATA FAX)]";
+                case 7246: return "/ITU-T/Network-Operator/[Brazil: Brazilian private networks]";
+                case 7247: return "/ITU-T/Network-Operator/[Brazil: \"DATASAT BI\"]";
+                case 7251: return "/ITU-T/Network-Operator/[Brazil: S.PPAC]";
+                case 7252: return "/ITU-T/Network-Operator/[Brazil: \"TELEST\" Public packet data network]";
+                case 7253: return "/ITU-T/Network-Operator/[Brazil: TELEMIG Public Switched Packet Data Network]";
+                case 7254: return "/ITU-T/Network-Operator/[Brazil: \"PACPAR\"]";
+                case 7255: return "/ITU-T/Network-Operator/[Brazil: CRT/CTMR]";
+                case 7256: return "/ITU-T/Network-Operator/[Brazil: Western and Midwestern Public Switched Packet Data Network]";
+                case 7257: return "/ITU-T/Network-Operator/[Brazil: TELEBAHIA and TELERGIPE Public Switched Packet Data Network]";
+                case 7258: return "/ITU-T/Network-Operator/[Brazil: Northeastern Public Switched Packet Data Network]";
+                case 7259: return "/ITU-T/Network-Operator/[Brazil: Northern Public Switched Packet Data Network]";
+                case 7302: return "/ITU-T/Network-Operator/[Chile: Red nacional de transmision de datos]";
+                case 7321: return "/ITU-T/Network-Operator/[Colombia: Red de Alta Velocidad]";
+                case 7380: return "/ITU-T/Network-Operator/[Guyana: \"GT&T PAC\"]";
+                case 7440: return "/ITU-T/Network-Operator/[Paraguay: PARABAN]";
+                case 7447: return "/ITU-T/Network-Operator/[Paraguay: ANTELPAC]";
+                case 7448: return "/ITU-T/Network-Operator/[Paraguay: PARAPAQ]";
+                case 7482: return "/ITU-T/Network-Operator/[Uruguay: \"URUPAC\" - Servicio publico de transmision de datos con conmutacion de paquetes]";
+                case 7488: return "/ITU-T/Network-Operator/[Uruguay: URUPAC - Interfuncionamiento con la red telex]";
+                case 7489: return "/ITU-T/Network-Operator/[Uruguay: URUPAC - Interfuncionamiento con la red telefonica]";
+                case 23030: return "/ITU-T/Network-Operator/[Czech Republic: \"G-NET\" (code canceled)]";
+                case 23040:
+                case 23041:
+                case 23042:
+                case 23043:
+                case 23044: return "/ITU-T/Network-Operator/[Czech Republic: RadioNET]";
+                case 41362: return "/ITU-T/Network-Operator/[Sri Lanka: \"MTT\" Network (Pvt) Limited]";
+                case 41363: return "/ITU-T/Network-Operator/[Sri Lanka: \"DPMC\" Electronics (Pvt) Limited]";
+                case 260621: return "/ITU-T/Network-Operator/[Poland: DATACOM]";
+                case 260622: return "/ITU-T/Network-Operator/[Poland: \"MNI\"]";
+                case 260641: return "/ITU-T/Network-Operator/[Poland: \"PAGI\"]";
+                case 260642: return "/ITU-T/Network-Operator/[Poland: Crowley Data Poland]";
+                case 260651: return "/ITU-T/Network-Operator/[Poland: MEDIATEL]";
+                case 260661: return "/ITU-T/Network-Operator/[Poland: \"KOLPAK\"]";
+                case 260662: return "/ITU-T/Network-Operator/[Poland: Energis Polska]";
+                case 260672: return "/ITU-T/Network-Operator/[Poland: Virtual Private Network (VPN) Service]";
+                case 260681: return "/ITU-T/Network-Operator/[Poland: Exatel]";
+                case 260691: return "/ITU-T/Network-Operator/[Poland: \"NETIA\"]";
+                case 460200:
+                case 460201:
+                case 460202:
+                case 460203:
+                case 460204:
+                case 460205:
+                case 460206:
+                case 460207: return "/ITU-T/Network-Operator/[China: \"CAAC\" privileged data network]";
                 default: return $"/ITU-T/Network-Operator/INVALID_{index}";
+            }
+
+        #endregion
+
+        // identified-organization
+        #region 0.4.*
+
+        oid_0_4:
+
+            if (index == values.Count) return "/ITU-T/Identified-Organization";
+            switch (values[index++])
+            {
+                // TODO: case 0: goto oid_0_4_0;
+                default: return $"/ITU-T/Identified-Organization/INVALID_{index}";
+            }
+
+        #endregion
+
+        // data
+        #region 0.9.*
+
+        oid_0_9:
+
+            if (index == values.Count) return "/ITU-T/Data";
+            switch (values[index++])
+            {
+                // TODO: case 0: goto oid_0_9_0;
+                default: return $"/ITU-T/Data/INVALID_{index}";
             }
 
         #endregion
@@ -1102,15 +1327,73 @@ namespace BurnOutSharp.Builder
 
         oid_1:
 
+            if (index == values.Count) return "/ISO";
             switch (values[index++])
             {
-                // TODO: case 0: goto oid_1_0;
+                case 0: goto oid_1_0;
                 // TODO: case 1: goto oid_1_1;
                 // TODO: case 2: goto oid_1_2;
                 // TODO: case 3: goto oid_1_3;
                 default: return $"/ISO/INVALID_{index}";
             }
 
+        #region 1.0.*
+
+        oid_1_0:
+
+            if (index == values.Count) return "/ISO/Standard";
+            switch (values[index++])
+            {
+                // TODO: case 639: goto oid_1_0_639;
+                // TODO: case 1087: goto oid_1_0_1087;
+                // TODO: case 2022: goto oid_1_0_2022;
+                // TODO: case 2382: goto oid_1_0_2382;
+                // TODO: case 3166: goto oid_1_0_3166;
+                case 4217: return "/ISO/Standard/[Currency Codes]";
+                // TODO: case 4426: goto oid_1_0_4426;
+                // TODO: case 4922: goto oid_1_0_4922;
+                case 5218: return "/ISO/Standard/[Information technology -- Codes for the representation of human sexes]";
+                case 6523: return "/ISO/Standard/[Information technology -- Structure for the identification of organizations and organization parts]";
+                // TODO: case 7498: goto oid_1_0_7498;
+                // TODO: case 7816: goto oid_1_0_7816;
+                // TODO: case 8571: goto oid_1_0_8571;
+                case 8601: return "/ISO/Standard/[Data elements and interchange formats -- Information interchange -- Representation of dates and times]";
+                // TODO: case 8802: goto oid_1_0_8802;
+                // TODO: case 9040: goto oid_1_0_9040;
+                // TODO: case 9041: goto oid_1_0_9041;
+                // TODO: case 9069: goto oid_1_0_9069;
+                case 9362: return "/ISO/Standard/[Banking -- Banking telecommunication messages -- Business Identifier Code (BIC)]";
+                // TODO: case 9506: goto oid_1_0_9506;
+                // TODO: case 9596: goto oid_1_0_9596;
+                // TODO: case 9796: goto oid_1_0_9796;
+                // TODO: case 9797: goto oid_1_0_9797;
+                // TODO: case 9798: goto oid_1_0_9798;
+                // TODO: case 9834: goto oid_1_0_9834;
+                // TODO: case 9979: goto oid_1_0_9979;
+                // TODO: case 9992: goto oid_1_0_9992;
+                // TODO: case 10021: goto oid_1_0_10021;
+                // TODO: case 10116: goto oid_1_0_10116;
+                // TODO: case 10118: goto oid_1_0_10118;
+                // TODO: case 10161: goto oid_1_0_10161;
+                // TODO: case 10166: goto oid_1_0_10166;
+                case 10374: return "/ISO/Standard/[Freight containers -- Automatic identification]";
+                // TODO: case 10646: goto oid_1_0_10646;
+                // TODO: case 10746: goto oid_1_0_10746;
+                case 10891: return "/ISO/Standard/[Freight containers -- Radio frequency identification (RFID) -- Licence plate tag]";
+                // TODO: case 11188: goto oid_1_0_11188;
+                case 11404: return "/ISO/Standard/[Information technology -- Programming languages, their environments and system software interfaces -- Language-independent datatypes]";
+                // TODO: case 11578: goto oid_1_0_11578;
+                // TODO: case 11582: goto oid_1_0_11582;
+                // TODO: case 11770: goto oid_1_0_11770;
+                // TODO: case 12813: goto oid_1_0_12813;
+                // TODO: case 12855: goto oid_1_0_12855;
+                // TODO: case 13141: goto oid_1_0_13141;
+                case 13616: return "/ISO/Standard/[Financial services -- International Bank Account Number (IBAN)]";
+                // TODO: LEFT OFF AT http://www.oid-info.com/get/1.0.13868
+                default: return $"/ISO/Standard/INVALID_{index}";
+            }
+
+        #endregion
 
         #endregion
 
@@ -1119,6 +1402,7 @@ namespace BurnOutSharp.Builder
 
         oid_2:
 
+            if (index == values.Count) return "/Joint-ISO-ITU-T";
             switch (values[index++])
             {
                 case 0: return "/Joint-ISO-ITU-T/[presentation]";
