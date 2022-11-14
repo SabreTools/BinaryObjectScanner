@@ -421,7 +421,7 @@ namespace BurnOutSharp.Builder
                     nameBuilder.Append("/ITU-T/1/[question]");
                     goto oid_end;
                 case 2: goto oid_0_2;
-                // TODO: case 3: goto oid_0_3;
+                case 3: goto oid_0_3;
                 // TODO: case 4: goto oid_0_4;
                 case 5:
                     nameBuilder.Append("/ITU-R/R-Recommendation");
@@ -941,8 +941,373 @@ namespace BurnOutSharp.Builder
                 case 536:
                     nameBuilder.Append("/ITU-T/Administration/[Republic of Nauru]");
                     break;
+                case 537:
+                    nameBuilder.Append("/ITU-T/Administration/[Papua New Guinea]");
+                    break;
+                case 539:
+                    nameBuilder.Append("/ITU-T/Administration/[Kingdom of Tonga]");
+                    break;
+                case 540:
+                    nameBuilder.Append("/ITU-T/Administration/[Solomon Islands]");
+                    break;
+                case 541:
+                    nameBuilder.Append("/ITU-T/Administration/[Republic of Vanuatu]");
+                    break;
+                case 542:
+                    nameBuilder.Append("/ITU-T/Administration/[Republic of Fiji]");
+                    break;
+                case 543:
+                    nameBuilder.Append("/ITU-T/Administration/[Wallis and Futuna (French Overseas Territory)]");
+                    break;
+                case 544:
+                    nameBuilder.Append("/ITU-T/Administration/[American Samoa]");
+                    break;
+                case 545:
+                    nameBuilder.Append("/ITU-T/Administration/[Republic of Kiribati]");
+                    break;
+                case 546:
+                    nameBuilder.Append("/ITU-T/Administration/[New Caledonia (French Overseas Territory)]");
+                    break;
+                case 547:
+                    nameBuilder.Append("/ITU-T/Administration/[French Polynesia (French Overseas Territory)]");
+                    break;
+                case 548:
+                    nameBuilder.Append("/ITU-T/Administration/[Cook Islands]");
+                    break;
+                case 549:
+                    nameBuilder.Append("/ITU-T/Administration/[Independent State of Samoa]");
+                    break;
+                case 550:
+                    nameBuilder.Append("/ITU-T/Administration/[Federated States of Micronesia]");
+                    break;
+                case 602:
+                    nameBuilder.Append("/ITU-T/Administration/[Arab Republic of Egypt]");
+                    break;
+                case 603:
+                    nameBuilder.Append("/ITU-T/Administration/[People's Democratic Republic of Algeria]");
+                    break;
+                case 604:
+                    nameBuilder.Append("/ITU-T/Administration/[Kingdom of Morocco]");
+                    break;
+                case 605:
+                    nameBuilder.Append("/ITU-T/Administration/[Tunisia]");
+                    break;
+                case 606:
+                    nameBuilder.Append("/ITU-T/Administration/[Socialist People's Libyan Arab Jamahiriya]");
+                    break;
+                case 607:
+                    nameBuilder.Append("/ITU-T/Administration/[The Republic of the Gambia]");
+                    break;
+                case 608:
+                    nameBuilder.Append("/ITU-T/Administration/[Republic of Senegal]");
+                    break;
+                case 609:
+                    nameBuilder.Append("/ITU-T/Administration/[Islamic Republic of Mauritania]");
+                    break;
+                case 610:
+                    nameBuilder.Append("/ITU-T/Administration/[Republic of Mali]");
+                    break;
+                case 611:
+                    nameBuilder.Append("/ITU-T/Administration/[Republic of Guinea]");
+                    break;
+                case 612:
+                    nameBuilder.Append("/ITU-T/Administration/[Republic of Côte d'Ivoire]");
+                    break;
+                case 613:
+                    nameBuilder.Append("/ITU-T/Administration/[Burkina Faso]");
+                    break;
+                case 614:
+                    nameBuilder.Append("/ITU-T/Administration/[Republic of the Niger]");
+                    break;
+                case 615:
+                    nameBuilder.Append("/ITU-T/Administration/[Togolese Republic]");
+                    break;
+                case 616:
+                    nameBuilder.Append("/ITU-T/Administration/[Republic of Benin]");
+                    break;
+                case 617:
+                    nameBuilder.Append("/ITU-T/Administration/[Republic of Mauritius]");
+                    break;
+                case 618:
+                    nameBuilder.Append("/ITU-T/Administration/[Republic of Liberia]");
+                    break;
+                case 619:
+                    nameBuilder.Append("/ITU-T/Administration/[Sierra Leone]");
+                    break;
+                case 620:
+                    nameBuilder.Append("/ITU-T/Administration/[Ghana]");
+                    break;
+                case 621:
+                    nameBuilder.Append("/ITU-T/Administration/[Federal Republic of Nigeria]");
+                    break;
+                case 622:
+                    nameBuilder.Append("/ITU-T/Administration/[Republic of Chad]");
+                    break;
+                case 623:
+                    nameBuilder.Append("/ITU-T/Administration/[Central African Republic]");
+                    break;
+                case 624:
+                    nameBuilder.Append("/ITU-T/Administration/[Republic of Cameroon]");
+                    break;
+                case 625:
+                    nameBuilder.Append("/ITU-T/Administration/[Republic of Cape Verde]");
+                    break;
+                case 626:
+                    nameBuilder.Append("/ITU-T/Administration/[Democratic Republic of Sao Tome and Principe]");
+                    break;
+                case 627:
+                    nameBuilder.Append("/ITU-T/Administration/[Equatorial Guinea]");
+                    break;
+                case 628:
+                    nameBuilder.Append("/ITU-T/Administration/[Gabon]");
+                    break;
+                case 629:
+                    nameBuilder.Append("/ITU-T/Administration/[Republic of the Congo]");
+                    break;
+                case 630:
+                    nameBuilder.Append("/ITU-T/Administration/[Democratic Republic of the Congo]");
+                    break;
+                case 631:
+                    nameBuilder.Append("/ITU-T/Administration/[Republic of Angola]");
+                    break;
+                case 632:
+                    nameBuilder.Append("/ITU-T/Administration/[Republic of Guinea-Bissau]");
+                    break;
+                case 633:
+                    nameBuilder.Append("/ITU-T/Administration/[Republic of Seychelles]");
+                    break;
+                case 634:
+                    nameBuilder.Append("/ITU-T/Administration/[Republic of the Sudan]");
+                    break;
+                case 635:
+                    nameBuilder.Append("/ITU-T/Administration/[Republic of Rwanda]");
+                    break;
+                case 636:
+                    nameBuilder.Append("/ITU-T/Administration/[Federal Democratic Republic of Ethiopia]");
+                    break;
+                case 637:
+                    nameBuilder.Append("/ITU-T/Administration/[Somali Democratic Republic]");
+                    break;
+                case 638:
+                    nameBuilder.Append("/ITU-T/Administration/[Republic of Djibouti]");
+                    break;
+                case 639:
+                    nameBuilder.Append("/ITU-T/Administration/[Republic of Kenya]");
+                    break;
+                case 640:
+                    nameBuilder.Append("/ITU-T/Administration/[United Republic of Tanzania]");
+                    break;
+                case 641:
+                    nameBuilder.Append("/ITU-T/Administration/[Republic of Uganda]");
+                    break;
+                case 642:
+                    nameBuilder.Append("/ITU-T/Administration/[Republic of Burundi]");
+                    break;
+                case 643:
+                    nameBuilder.Append("/ITU-T/Administration/[Republic of Mozambique]");
+                    break;
+                case 645:
+                    nameBuilder.Append("/ITU-T/Administration/[Republic of Zambia]");
+                    break;
+                case 646:
+                    nameBuilder.Append("/ITU-T/Administration/[Republic of Madagascar]");
+                    break;
+                case 647:
+                    nameBuilder.Append("/ITU-T/Administration/[French Departments and Territories in the Indian Ocean]");
+                    break;
+                case 648:
+                    nameBuilder.Append("/ITU-T/Administration/[Republic of Zimbabwe]");
+                    break;
+                case 649:
+                    nameBuilder.Append("/ITU-T/Administration/[Republic of Namibia]");
+                    break;
+                case 650:
+                    nameBuilder.Append("/ITU-T/Administration/[Malawi]");
+                    break;
+                case 651:
+                    nameBuilder.Append("/ITU-T/Administration/[Kingdom of Lesotho]");
+                    break;
+                case 652:
+                    nameBuilder.Append("/ITU-T/Administration/[Republic of Botswana]");
+                    break;
+                case 653:
+                    nameBuilder.Append("/ITU-T/Administration/[Eswatini (formerly, Kingdom of Swaziland)]");
+                    break;
+                case 654:
+                    nameBuilder.Append("/ITU-T/Administration/[Union of the Comoros]");
+                    break;
+                case 655:
+                    nameBuilder.Append("/ITU-T/Administration/[Republic of South Africa]");
+                    break;
+                case 658:
+                    nameBuilder.Append("/ITU-T/Administration/[Eritrea]");
+                    break;
+                case 702:
+                    nameBuilder.Append("/ITU-T/Administration/[Belize]");
+                    break;
+                case 704:
+                    nameBuilder.Append("/ITU-T/Administration/[Republic of Guatemala]");
+                    break;
+                case 706:
+                    nameBuilder.Append("/ITU-T/Administration/[Republic of El Salvador]");
+                    break;
+                case 708:
+                    nameBuilder.Append("/ITU-T/Administration/[Republic of Honduras]");
+                    break;
+                case 710:
+                    nameBuilder.Append("/ITU-T/Administration/[Nicaragua]");
+                    break;
+                case 712:
+                    nameBuilder.Append("/ITU-T/Administration/[Costa Rica]");
+                    break;
+                case 714:
+                    nameBuilder.Append("/ITU-T/Administration/[Republic of Panama]");
+                    break;
+                case 716:
+                    nameBuilder.Append("/ITU-T/Administration/[Peru]");
+                    break;
+                case 722:
+                    nameBuilder.Append("/ITU-T/Administration/[ARGENTINE Republic]");
+                    break;
+                case 724:
+                case 725:
+                    nameBuilder.Append("/ITU-T/Administration/[Federative Republic of Brazil]");
+                    break;
+                case 730:
+                    nameBuilder.Append("/ITU-T/Administration/[Chile]");
+                    break;
+                case 732:
+                    nameBuilder.Append("/ITU-T/Administration/[Republic of Colombia]");
+                    break;
+                case 734:
+                    nameBuilder.Append("/ITU-T/Administration/[Bolivarian Republic of Venezuela]");
+                    break;
+                case 736:
+                    nameBuilder.Append("/ITU-T/Administration/[Republic of Bolivia]");
+                    break;
+                case 738:
+                    nameBuilder.Append("/ITU-T/Administration/[Guyana]");
+                    break;
+                case 740:
+                    nameBuilder.Append("/ITU-T/Administration/[Ecuador]");
+                    break;
+                case 742:
+                    nameBuilder.Append("/ITU-T/Administration/[French Department of Guiana]");
+                    break;
+                case 744:
+                    nameBuilder.Append("/ITU-T/Administration/[Republic of PARAGUAY]");
+                    break;
+                case 746:
+                    nameBuilder.Append("/ITU-T/Administration/[Republic of Suriname]");
+                    break;
+                case 748:
+                    nameBuilder.Append("/ITU-T/Administration/[Eastern Republic of Uruguay]");
+                    break;
 
-                // LEFT OFF AT http://www.oid-info.com/get/0.2.537
+                default: return null;
+            }
+
+        #endregion
+
+        // network-operator
+        #region 0.3.*
+
+        oid_0_3:
+
+            switch (values[index++])
+            {
+                case 1111:
+                    nameBuilder.Append("/ITU-T/Network-Operator/[INMARSAT, Atlantic Ocean-East]");
+                    goto oid_end;
+                case 1112:
+                    nameBuilder.Append("/ITU-T/Network-Operator/[INMARSAT, Pacific Ocean]");
+                    goto oid_end;
+                case 1113:
+                    nameBuilder.Append("/ITU-T/Network-Operator/[INMARSAT, Indian Ocean]");
+                    goto oid_end;
+                case 1114:
+                    nameBuilder.Append("/ITU-T/Network-Operator/[INMARSAT, Atlantic Ocean-West]");
+                    goto oid_end;
+                case 2023:
+                    nameBuilder.Append("/ITU-T/Network-Operator/[Greece, Packet Switched Public Data Network (HELLASPAC)]");
+                    goto oid_end;
+                case 2027:
+                    nameBuilder.Append("/ITU-T/Network-Operator/[Greece, LAN-NET]");
+                    goto oid_end;
+                case 2041:
+                    nameBuilder.Append("/ITU-T/Network-Operator/[Netherlands, Datanet 1 X.25 access]");
+                    goto oid_end;
+                case 2044:
+                    nameBuilder.Append("/ITU-T/Network-Operator/[Netherlands, Unisource / Unidata]");
+                    goto oid_end;
+                case 2046:
+                    nameBuilder.Append("/ITU-T/Network-Operator/[Netherlands, Unisource / \"VPNS\"]");
+                    goto oid_end;
+                case 2052:
+                    nameBuilder.Append("/ITU-T/Network-Operator/[Netherlands, Naamloze Vennootschap (NV) CasTel]");
+                    goto oid_end;
+                case 2053:
+                    nameBuilder.Append("/ITU-T/Network-Operator/[Netherlands, Global One Communications BV]");
+                    goto oid_end;
+                case 2055:
+                    nameBuilder.Append("/ITU-T/Network-Operator/[Netherlands, Rabofacet BV]");
+                    goto oid_end;
+                case 2057:
+                    nameBuilder.Append("/ITU-T/Network-Operator/[Netherlands, Trionet v.o.f.]");
+                    goto oid_end;
+                case 2062:
+                    nameBuilder.Append("/ITU-T/Network-Operator/[Belgium, Réseau de transmission de données à commutation par paquets, Data Communication Service (DCS)]");
+                    goto oid_end;
+                case 2064:
+                    nameBuilder.Append("/ITU-T/Network-Operator/[Belgium, CODENET]");
+                    goto oid_end;
+                case 2065:
+                    nameBuilder.Append("/ITU-T/Network-Operator/[Belgium, Code utilisé au niveau national pour le réseau Data Communication Service (DCS)]");
+                    goto oid_end;
+                case 2066:
+                    nameBuilder.Append("/ITU-T/Network-Operator/[Belgium, Unisource Belgium X.25 Service (code canceled)]");
+                    goto oid_end;
+                case 2067:
+                    nameBuilder.Append("/ITU-T/Network-Operator/[Belgium, MOBISTAR]");
+                    goto oid_end;
+                case 2068:
+                    nameBuilder.Append("/ITU-T/Network-Operator/[Belgium, Accès au réseau Data Communication Service (DCS) via le réseau telex commuté national]");
+                    goto oid_end;
+                case 2069:
+                    nameBuilder.Append("/ITU-T/Network-Operator/[Belgium, Acces au reseau DCS via le reseau telephonique commute national]");
+                    goto oid_end;
+                case 2080:
+                    nameBuilder.Append("/ITU-T/Network-Operator/[France, Réseau de transmission de données à commutation par paquets \"TRANSPAC\"]");
+                    goto oid_end;
+                case 2081:
+                    nameBuilder.Append("/ITU-T/Network-Operator/[France, Noeud de transit international]");
+                    goto oid_end;
+                case 2082:
+                    nameBuilder.Append("/ITU-T/Network-Operator/[France, Grands services publics]");
+                    goto oid_end;
+                case 2083:
+                    nameBuilder.Append("/ITU-T/Network-Operator/[France, Administrations]");
+                    goto oid_end;
+                case 2084:
+                    nameBuilder.Append("/ITU-T/Network-Operator/[France, Air France]");
+                    goto oid_end;
+                case 2085:
+                    nameBuilder.Append("/ITU-T/Network-Operator/[France, \"SIRIS\"]");
+                    goto oid_end;
+                case 2086:
+                    nameBuilder.Append("/ITU-T/Network-Operator/[France, BT France]");
+                    goto oid_end;
+                case 2089:
+                    nameBuilder.Append("/ITU-T/Network-Operator/[France, Interconnexion entre le réseau public de transmission de données Transpac et d'autres réseaux publics français, pour des services offerts en mode synchrone]");
+                    goto oid_end;
+                case 2135:
+                    nameBuilder.Append("/ITU-T/Network-Operator/[Andorra, ANDORPAC]");
+                    goto oid_end;
+                case 2140:
+                    nameBuilder.Append("/ITU-T/Network-Operator/[Spain, Administracion Publica]");
+                    goto oid_end;
+
+                // TODO: Left off at http://www.oid-info.com/get/0.3.2141
                 default: return null;
             }
 
