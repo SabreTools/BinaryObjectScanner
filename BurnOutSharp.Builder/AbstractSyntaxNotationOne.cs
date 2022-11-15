@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Numerics;
 using System.Text;
 
@@ -232,54 +231,13 @@ namespace BurnOutSharp.Builder
                 /// <see href="https://learn.microsoft.com/en-us/windows/win32/seccertenroll/about-object-identifier"/>
                 /// <see cref="http://snmpsharpnet.com/index.php/2009/03/02/ber-encoding-and-decoding-oid-values/"/>
                 case ASN1Type.V_ASN1_OBJECT:
-                    // The first byte contains nodes 1 and 2
-                    int firstNode = Math.DivRem(valueAsByteArray[0], 40, out int secondNode);
+                    // Derive array of values
+                    ulong[] objectNodes = ParseOIDIntoArray(valueAsByteArray, this.Length);
 
-                    // Create a list for all nodes
-                    List<ulong> objectNodes = new List<ulong> { (ulong)firstNode, (ulong)secondNode };
-
-                    // All other nodes are encoded uniquely
-                    int objectValueOffset = 1;
-                    while (objectValueOffset < (long)this.Length)
-                    {
-                        // If bit 7 is not set
-                        if ((valueAsByteArray[objectValueOffset] & 0x80) == 0)
-                        {
-                            objectNodes.Add(valueAsByteArray[objectValueOffset]);
-                            objectValueOffset++;
-                            continue;
-                        }
-
-                        // Otherwise, read the encoded value in a loop
-                        ulong dotValue = 0;
-                        bool doneProcessing = false;
-
-                        do
-                        {
-                            // Shift the current encoded value
-                            dotValue <<= 7;
-
-                            // If we have a leading zero byte, we're at the end
-                            if ((valueAsByteArray[objectValueOffset] & 0x80) == 0)
-                                doneProcessing = true;
-
-                            // Clear the top byte
-                            unchecked { valueAsByteArray[objectValueOffset] &= (byte)~0x80; }
-
-                            // Add the new value to the result
-                            dotValue |= valueAsByteArray[objectValueOffset];
-
-                            // Increment the offset
-                            objectValueOffset++;
-                        } while (objectValueOffset < valueAsByteArray.Length && !doneProcessing);
-
-                        // Add the parsed value to the output
-                        objectNodes.Add(dotValue);
-                    }
-
-                    // Append the dot notation and human-readable values
-                    string objectNodesReadable = ParseObjectValues(objectNodes);
-                    formatBuilder.Append($", Value: {string.Join(".", objectNodes)} ({objectNodesReadable})");
+                    // Append the dot and modified OID-IRI notations
+                    string dotNotationString = ParseOIDToDotNotation(objectNodes);
+                    string oidIriString = ParseObjectValues(objectNodes);
+                    formatBuilder.Append($", Value: {dotNotationString} ({oidIriString})");
                     break;
 
                 /// <see href="https://learn.microsoft.com/en-us/windows/win32/seccertenroll/about-utf8string"/>
@@ -378,15 +336,71 @@ namespace BurnOutSharp.Builder
         #region Object Identifier Parsing
 
         /// <summary>
+        /// Parse an OID in DER-encoded byte notation into a list of values
+        /// </summary>
+        /// <param name="data">Byte array representing the data to read</param>
+        /// <param name="length">Total length of the data according to the DER TLV</param>
+        /// <returns>Array of values representing the OID</returns>
+        private static ulong[] ParseOIDIntoArray(byte[] data, ulong length)
+        {
+            // The first byte contains nodes 1 and 2
+            int firstNode = Math.DivRem(data[0], 40, out int secondNode);
+
+            // Create a list for all nodes
+            List<ulong> nodes = new List<ulong> { (ulong)firstNode, (ulong)secondNode };
+
+            // All other nodes are encoded uniquely
+            int offset = 1;
+            while (offset < (long)length)
+            {
+                // If bit 7 is not set
+                if ((data[offset] & 0x80) == 0)
+                {
+                    nodes.Add(data[offset]);
+                    offset++;
+                    continue;
+                }
+
+                // Otherwise, read the encoded value in a loop
+                ulong dotValue = 0;
+                bool doneProcessing = false;
+
+                do
+                {
+                    // Shift the current encoded value
+                    dotValue <<= 7;
+
+                    // If we have a leading zero byte, we're at the end
+                    if ((data[offset] & 0x80) == 0)
+                        doneProcessing = true;
+
+                    // Clear the top byte
+                    unchecked { data[offset] &= (byte)~0x80; }
+
+                    // Add the new value to the result
+                    dotValue |= data[offset];
+
+                    // Increment the offset
+                    offset++;
+                } while (offset < data.Length && !doneProcessing);
+
+                // Add the parsed value to the output
+                nodes.Add(dotValue);
+            }
+
+            return nodes.ToArray();
+        }
+
+        /// <summary>
         /// Create a human-readable version of a list of OID values
         /// </summary>
         /// <param name="values">List of values to check against</param>
         /// <returns>Human-readable string on success, null on error</returns>
         /// <see href="http://www.oid-info.com/index.htm"/>
-        private static string ParseObjectValues(List<ulong> values)
+        private static string ParseObjectValues(ulong[] values)
         {
             // If we have an invalid set of values, we can't do anything
-            if (values == null || values.Count == 0)
+            if (values == null || values.Length == 0)
                 return null;
 
             // Set the initial index
@@ -396,7 +410,7 @@ namespace BurnOutSharp.Builder
             var nameBuilder = new StringBuilder();
 
             // Try to parse the standard value
-            string standard = ParseOID(values, ref index);
+            string standard = ParseOIDToModifiedOIDIRI(values, ref index);
             if (standard == null)
                 return null;
 
@@ -404,7 +418,7 @@ namespace BurnOutSharp.Builder
             nameBuilder.Append(standard);
 
             // If we have no more items
-            if (index == values.Count)
+            if (index == values.Length)
                 return nameBuilder.ToString();
 
             // Add trailing items as just values
@@ -416,24 +430,60 @@ namespace BurnOutSharp.Builder
         }
 
         /// <summary>
+        /// Parse an OID in separated-value notation into ASN.1 notation
+        /// </summary>
+        /// <param name="values">List of values to check against</param>
+        /// <param name="index">Current index into the list</param>
+        /// <returns>ASN.1 formatted string, if possible</returns>
+        /// <remarks>
+        private static string ParseOIDToASN1Notation(ulong[] values, ref int index)
+        {
+            // TODO: Once the modified OID-IRI formatting is done, make an ASN.1 notation version
+            return null;
+        }
+
+        /// <summary>
+        /// Parse an OID in separated-value notation into dot notation
+        /// </summary>
+        /// <param name="values">List of values to check against</param>
+        /// <returns>List of values representing the dot notation</returns>
+        private static string ParseOIDToDotNotation(ulong[] values)
+        {
+            return string.Join(".", values);
+        }
+
+        /// <summary>
         /// Parse an OID in dot notation into OID-IRI notation
         /// </summary>
         /// <param name="values">List of values to check against</param>
         /// <param name="index">Current index into the list</param>
-        /// <returns>OID-IRI formatted string, id possible</returns>
+        /// <returns>OID-IRI formatted string, if possible</returns>
         /// <remarks>
-        /// If a value does not have a fully-descriptive value, some parts may be replaced
-        /// with the set of ASN.1 values encclosed in square brackets.
+        private static string ParseOIDToOIDIRINotation(ulong[] values, ref int index)
+        {
+            // TODO: Once the modified OID-IRI formatting is done, make a compliant version
+            return null;
+        }
+
+        /// <summary>
+        /// Parse an OID in dot notation into modified OID-IRI notation
+        /// </summary>
+        /// <param name="values">List of values to check against</param>
+        /// <param name="index">Current index into the list</param>
+        /// <returns>OID-IRI formatted string, if possible</returns>
+        /// <remarks>
+        /// If a value does not have a fully-descriptive name, it may be replaced by
+        /// a string from the official description. As such, the output of this is
+        /// not considered to be fully OID-IRI compliant.
         /// </remarks>
-        /// <see href="http://<www.oid-info.com/index.htm"/>
-        private static string ParseOID(List<ulong> values, ref int index)
+        private static string ParseOIDToModifiedOIDIRI(ulong[] values, ref int index)
         {
             // If we have an invalid set of values, we can't do anything
-            if (values == null || values.Count == 0)
+            if (values == null || values.Length == 0)
                 return null;
 
             // If we have an invalid index, we can't do anything
-            if (index < 0 || index >= values.Count)
+            if (index < 0 || index >= values.Length)
                 return null;
 
             #region Start
@@ -455,7 +505,7 @@ namespace BurnOutSharp.Builder
 
         oid_0:
 
-            if (index == values.Count) return "/ITU-T";
+            if (index == values.Length) return "/ITU-T";
             switch (values[index++])
             {
                 case 0: goto oid_0_0;
@@ -473,7 +523,7 @@ namespace BurnOutSharp.Builder
 
         oid_0_0:
 
-            if (index == values.Count) return "/ITU-T/Recommendation";
+            if (index == values.Length) return "/ITU-T/Recommendation";
             switch (values[index++])
             {
                 case 1: return "/ITU-T/Recommendation/A";
@@ -483,22 +533,22 @@ namespace BurnOutSharp.Builder
                 case 5: goto oid_0_0_5;
                 case 6: return "/ITU-T/Recommendation/F";
                 case 7: goto oid_0_0_7;
-                // TODO: case 8: goto oid_0_0_8;
-                // TODO: case 9: goto oid_0_0_9;
+                case 8: goto oid_0_0_8;
+                case 9: goto oid_0_0_9;
                 case 10: return "/ITU-T/Recommendation/J";
                 case 11: return "/ITU-T/Recommendation/K";
                 case 12: return "/ITU-T/Recommendation/L";
-                // TODO: case 13: goto oid_0_0_13;
+                case 13: goto oid_0_0_13;
                 case 14: return "/ITU-T/Recommendation/N";
                 case 15: return "/ITU-T/Recommendation/O";
                 case 16: return "/ITU-T/Recommendation/P";
-                // TODO: case 17: goto oid_0_0_17;
+                case 17: goto oid_0_0_17;
                 case 18: return "/ITU-T/Recommendation/R";
                 case 19: return "/ITU-T/Recommendation/S";
-                // TODO: case 20: goto oid_0_0_20;
+                case 20: goto oid_0_0_20;
                 case 21: return "/ITU-T/Recommendation/U";
-                // TODO: case 22: goto oid_0_0_22;
-                // TODO: case 24: goto oid_0_0_24;
+                case 22: goto oid_0_0_22;
+                case 24: goto oid_0_0_24;
                 case 25: return "/ITU-T/Recommendation/Y";
                 case 26: return "/ITU-T/Recommendation/Z";
                 case 59: return "/ITU-T/Recommendation/[xcmJobZeroDummy]";
@@ -511,7 +561,7 @@ namespace BurnOutSharp.Builder
 
         oid_0_0_5:
 
-            if (index == values.Count) return "/ITU-T/Recommendation/E";
+            if (index == values.Length) return "/ITU-T/Recommendation/E";
             switch (values[index++])
             {
                 case 115: goto oid_0_0_5_115;
@@ -522,7 +572,7 @@ namespace BurnOutSharp.Builder
 
         oid_0_0_5_115:
 
-            if (index == values.Count) return "/ITU-T/Recommendation/E/[Computerized directory assistance]";
+            if (index == values.Length) return "/ITU-T/Recommendation/E/[Computerized directory assistance]";
             switch (values[index++])
             {
                 case 1: goto oid_0_0_5_115_1;
@@ -534,7 +584,7 @@ namespace BurnOutSharp.Builder
 
         oid_0_0_5_115_1:
 
-            if (index == values.Count) return "/ITU-T/Recommendation/E/[Computerized directory assistance]/[E115v1]";
+            if (index == values.Length) return "/ITU-T/Recommendation/E/[Computerized directory assistance]/[E115v1]";
             switch (values[index++])
             {
                 case 0: return "/ITU-T/Recommendation/E/[Computerized directory assistance]/[E115v1]/[Version 1.00]";
@@ -547,7 +597,7 @@ namespace BurnOutSharp.Builder
 
         oid_0_0_5_115_2:
 
-            if (index == values.Count) return "/ITU-T/Recommendation/E/[Computerized directory assistance]/[E115v2]";
+            if (index == values.Length) return "/ITU-T/Recommendation/E/[Computerized directory assistance]/[E115v2]";
             switch (values[index++])
             {
                 case 0: return "/ITU-T/Recommendation/E/[Computerized directory assistance]/[E115v2]/[Version 2.00]";
@@ -567,32 +617,503 @@ namespace BurnOutSharp.Builder
 
         oid_0_0_7:
 
-            if (index == values.Count) return "/ITU-T/Recommendation/G";
+            if (index == values.Length) return "/ITU-T/Recommendation/G";
             switch (values[index++])
             {
                 case 711: goto oid_0_0_7_711;
-                // TODO: case 719: goto oid_0_0_7_719;
-                // TODO: case 726: goto oid_0_0_7_726;
-                // TODO: case 774: goto oid_0_0_7_774;
-                // TODO: case 7221: goto oid_0_0_7_7221;
-                // TODO: case 7222: goto oid_0_0_7_7222;
-                // TODO: case 7761: goto oid_0_0_7_7761;
-                // TODO: case 85501: goto oid_0_0_7_85501;
+                case 719: goto oid_0_0_7_719;
+                case 726: goto oid_0_0_7_726;
+                case 774: goto oid_0_0_7_774;
+                case 7221: goto oid_0_0_7_7221;
+                case 7222: goto oid_0_0_7_7222;
+                case 7761: goto oid_0_0_7_7761;
+                case 85501: goto oid_0_0_7_85501;
                 default: return $"/ITU-T/Recommendation/G/{index}";
             }
 
+        // g711
         #region 0.0.7.711.*
 
         oid_0_0_7_711:
 
-            if (index == values.Count) return "/ITU-T/Recommendation/G/[G.711 series]";
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[G.711 series]";
             switch (values[index++])
             {
-                // TODO: case 1: goto oid_0_0_7_711_1;
+                case 1: goto oid_0_0_7_711_1;
                 default: return $"/ITU-T/Recommendation/G/[G.711 series]/{index}";
             }
 
+        // dot
+        #region 0.0.7.711.1.*
+
+        oid_0_0_7_711_1:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[G.711 series]/[G.711.x series of Recommendations]";
+            switch (values[index++])
+            {
+                case 1: goto oid_0_0_7_711_1_1;
+                default: return $"/ITU-T/Recommendation/G/[G.711 series]/[G.711.x series of Recommendations]/{index}";
+            }
+
+        // part1
+        #region 0.0.7.711.1.1.*
+
+        oid_0_0_7_711_1_1:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[G.711 series]/[G.711.x series of Recommendations]/[Wideband embedded extension for G.711 pulse code modulation]";
+            switch (values[index++])
+            {
+                case 1: goto oid_0_0_7_711_1_1_1;
+                default: return $"/ITU-T/Recommendation/G/[G.711 series]/[G.711.x series of Recommendations]/[Wideband embedded extension for G.711 pulse code modulation]/{index}";
+            }
+
+        // generic-capabilities
+        #region 0.0.7.711.1.1.1.*
+
+        oid_0_0_7_711_1_1_1:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[G.711 series]/[G.711.x series of Recommendations]/[Wideband embedded extension for G.711 pulse code modulation]/[Generic capabilities]";
+            switch (values[index++])
+            {
+                case 0: goto oid_0_0_7_711_1_1_1_0;
+                case 1: goto oid_0_0_7_711_1_1_1_1;
+                default: return $"/ITU-T/Recommendation/G/[G.711 series]/[G.711.x series of Recommendations]/[Wideband embedded extension for G.711 pulse code modulation]/[Generic capabilities]/{index}";
+            }
+
+        // u-law
+        #region 0.0.7.711.1.1.1.0.*
+
+        oid_0_0_7_711_1_1_1_0:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[G.711 series]/[G.711.x series of Recommendations]/[Wideband embedded extension for G.711 pulse code modulation]/[Generic capabilities]/[μ-law capability identifier]";
+            switch (values[index++])
+            {
+                case 0: return "/ITU-T/Recommendation/G/[G.711 series]/[G.711.x series of Recommendations]/[Wideband embedded extension for G.711 pulse code modulation]/[Generic capabilities]/[μ-law capability identifier]/[μ-law core capability identifier]";
+                default: return $"/ITU-T/Recommendation/G/[G.711 series]/[G.711.x series of Recommendations]/[Wideband embedded extension for G.711 pulse code modulation]/[Generic capabilities]/[μ-law capability identifier]/{index}";
+            }
+
         #endregion
+
+        // a-law
+        #region 0.0.7.711.1.1.1.1.*
+
+        oid_0_0_7_711_1_1_1_1:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[G.711 series]/[G.711.x series of Recommendations]/[Wideband embedded extension for G.711 pulse code modulation]/[Generic capabilities]/[a-law]";
+            switch (values[index++])
+            {
+                case 0: return "/ITU-T/Recommendation/G/[G.711 series]/[G.711.x series of Recommendations]/[Wideband embedded extension for G.711 pulse code modulation]/[Generic capabilities]/[a-law]/[a-law core capability identifier]";
+                default: return $"/ITU-T/Recommendation/G/[G.711 series]/[G.711.x series of Recommendations]/[Wideband embedded extension for G.711 pulse code modulation]/[Generic capabilities]/[a-law]/{index}";
+            }
+
+        #endregion
+
+        #endregion
+
+        #endregion
+
+        #endregion
+
+        #endregion
+
+        // 719
+        #region 0.0.7.719.*
+
+        oid_0_0_7_719:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Low-complexity, full-band audio coding for high-quality, conversational applications]";
+            switch (values[index++])
+            {
+                case 1: goto oid_0_0_7_719_1;
+                default: return $"/ITU-T/Recommendation/G/[Low-complexity, full-band audio coding for high-quality, conversational applications]/{index}";
+            }
+
+        // generic-capabilities
+        #region 0.0.7.719.1.*
+
+        oid_0_0_7_719_1:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Low-complexity, full-band audio coding for high-quality, conversational applications]/[Generic capabilities]";
+            switch (values[index++])
+            {
+                case 0: return "/ITU-T/Recommendation/G/[Low-complexity, full-band audio coding for high-quality, conversational applications]/[Generic capabilities]/[capability]";
+                default: return $"/ITU-T/Recommendation/G/[Low-complexity, full-band audio coding for high-quality, conversational applications]/[Generic capabilities]/{index}";
+            }
+
+        #endregion
+
+        #endregion
+
+        // 726
+        #region 0.0.7.726.*
+
+        oid_0_0_7_726:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[40, 32, 24, 16 kbit/s Adaptive Differential Pulse Code Modulation (ADPCM)]";
+            switch (values[index++])
+            {
+                case 1: goto oid_0_0_7_726_1;
+                default: return $"/ITU-T/Recommendation/G/[40, 32, 24, 16 kbit/s Adaptive Differential Pulse Code Modulation (ADPCM)]/{index}";
+            }
+
+        // generic-capabilities
+        #region 0.0.7.726.*
+
+        oid_0_0_7_726_1:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[40, 32, 24, 16 kbit/s Adaptive Differential Pulse Code Modulation (ADPCM)]/[generic capabilities]";
+            switch (values[index++])
+            {
+                case 0: return "/ITU-T/Recommendation/G/[40, 32, 24, 16 kbit/s Adaptive Differential Pulse Code Modulation (ADPCM)]/[generic capabilities]/[Version 2003]";
+                default: return $"/ITU-T/Recommendation/G/[40, 32, 24, 16 kbit/s Adaptive Differential Pulse Code Modulation (ADPCM)]/[generic capabilities]/{index}";
+            }
+
+        #endregion
+
+        #endregion
+
+        // sdhm, g774
+        #region 0.0.7.774.*
+
+        oid_0_0_7_774:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]";
+            switch (values[index++])
+            {
+                case 0: goto oid_0_0_7_774_0;
+                case 1: goto oid_0_0_7_774_1;
+                case 2: goto oid_0_0_7_774_2;
+                case 127: goto oid_0_0_7_774_127;
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/{index}";
+            }
+
+        // informationModel
+        #region 0.0.7.774.0.*
+
+        oid_0_0_7_774_0:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]";
+            switch (values[index++])
+            {
+                case 0: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Standard-specific extensions to the allocation scheme]";
+                // TODO: case 2: goto oid_0_0_7_774_0_2;
+                // TODO: case 3: goto oid_0_0_7_774_0_3;
+                case 4: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[GDMO packages]";
+                case 5: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Guidelines for the Definition of Managed Objects (GDMO) parameters]";
+                // TODO: case 6: goto oid_0_0_7_774_0_6;
+                // TODO: case 7: goto oid_0_0_7_774_0_7;
+                case 8: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Guidelines for the Definition of Managed Objects (GDMO) attribute groups]";
+                case 9: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Actions]";
+                case 10: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Guidelines for the Definition of Managed Objects (GDMO) notifications]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/{index}";
+            }
+
+        #endregion
+
+        // protocolSupport
+        #region 0.0.7.774.1.*
+
+        oid_0_0_7_774_1:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Protocol support]";
+            switch (values[index++])
+            {
+                case 0: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Protocol support]/[Application contexts]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Protocol support]/{index}";
+            }
+
+        #endregion
+
+        // managementApplicationSupport
+        #region 0.0.7.774.2.*
+
+        oid_0_0_7_774_2:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Management application support]";
+            switch (values[index++])
+            {
+                case 0: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Management application support]/[Standard-specific extensions to the allocation scheme]";
+                case 1: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Management application support]/[Functional unit packages]";
+                case 2: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Management application support]/[ASN.1 modules]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Management application support]/{index}";
+            }
+
+        #endregion
+
+        // dot, hyphen
+        #region 0.0.7.774.127.*
+
+        oid_0_0_7_774_127:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]";
+            switch (values[index++])
+            {
+                // TODO: case 1: goto oid_0_0_7_774_127_1;
+                // TODO: case 2: goto oid_0_0_7_774_127_2;
+                // TODO: case 3: goto oid_0_0_7_774_127_3;
+                // TODO: case 4: goto oid_0_0_7_774_127_4;
+                // TODO: case 5: goto oid_0_0_7_774_127_5;
+                // TODO: case 6: goto oid_0_0_7_774_127_6;
+                // TODO: case 7: goto oid_0_0_7_774_127_7;
+                // TODO: case 8: goto oid_0_0_7_774_127_8;
+                // TODO: case 9: goto oid_0_0_7_774_127_9;
+                // TODO: case 10: goto oid_0_0_7_774_127_10;
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/{index}";
+            }
+
+        #endregion
+
+        #endregion
+
+        // g722-1, g7221
+        #region 0.0.7.7221.*
+
+        oid_0_0_7_7221:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Coding at 24 and 32 kbit/s for hands-free operation in systems with low frame loss]";
+            switch (values[index++])
+            {
+                // TODO: case 1: goto oid_0_0_7_7221_1;
+                default: return $"/ITU-T/Recommendation/G/[Coding at 24 and 32 kbit/s for hands-free operation in systems with low frame loss]/{index}";
+            }
+
+        #endregion
+
+        // 7222
+        #region 0.0.7.7222.*
+
+        oid_0_0_7_7222:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Wideband coding of speech at around 16 kbit/s using Adaptive Multi-Rate Wideband (AMR-WB)]";
+            switch (values[index++])
+            {
+                // TODO: case 1: goto oid_0_0_7_7222_1;
+                default: return $"/ITU-T/Recommendation/G/[Wideband coding of speech at around 16 kbit/s using Adaptive Multi-Rate Wideband (AMR-WB)]/{index}";
+            }
+
+        #endregion
+
+        // g776-1, g7761
+        #region 0.0.7.7761.*
+
+        oid_0_0_7_7761:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Managed objects for signal processing network elements]";
+            switch (values[index++])
+            {
+                // TODO: case 7: goto oid_0_0_7_7761_7;
+                default: return $"/ITU-T/Recommendation/G/[Managed objects for signal processing network elements]/{index}";
+            }
+
+        #endregion
+
+        // gntm
+        #region 0.0.7.85501.*
+
+        oid_0_0_7_85501:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[GDMO engineering viewpoint for the generic network level model]";
+            switch (values[index++])
+            {
+                // TODO: case 0: goto oid_0_0_7_85501_0;
+                default: return $"/ITU-T/Recommendation/G/[GDMO engineering viewpoint for the generic network level model]/{index}";
+            }
+
+        #endregion
+
+        #endregion
+
+        // h
+        #region 0.0.8.*
+
+        oid_0_0_8:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H";
+            switch (values[index++])
+            {
+                // TODO: case 224: goto oid_0_0_8_224;
+                // TODO: case 230: goto oid_0_0_8_230;
+                // TODO: case 235: goto oid_0_0_8_235;
+                // TODO: case 239: goto oid_0_0_8_239;
+                // TODO: case 241: goto oid_0_0_8_241;
+                // TODO: case 245: goto oid_0_0_8_245;
+                // TODO: case 248: goto oid_0_0_8_248;
+                // TODO: case 249: goto oid_0_0_8_249;
+                // TODO: case 263: goto oid_0_0_8_263;
+                // TODO: case 282: goto oid_0_0_8_282;
+                // TODO: case 283: goto oid_0_0_8_283;
+                // TODO: case 323: goto oid_0_0_8_323;
+                // TODO: case 324: goto oid_0_0_8_324;
+                // TODO: case 341: goto oid_0_0_8_341;
+                // TODO: case 350: goto oid_0_0_8_350;
+                // TODO: case 450: goto oid_0_0_8_450;
+                // TODO: case 460: goto oid_0_0_8_460;
+                // TODO: case 641: goto oid_0_0_8_641;
+                // TODO: case 2250: goto oid_0_0_8_2250;
+                default: return $"/ITU-T/Recommendation/H/{index}";
+            }
+
+        #endregion
+
+        // i
+        #region 0.0.9.*
+
+        oid_0_0_9:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/I";
+            switch (values[index++])
+            {
+                // TODO: case 751: goto oid_0_0_9_751;
+                default: return $"/ITU-T/Recommendation/I/{index}";
+            }
+
+        #endregion
+
+        // m
+        #region 0.0.13.*
+
+        oid_0_0_13:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/M";
+            switch (values[index++])
+            {
+                // TODO: case 3100: goto oid_0_0_13_3100;
+                // TODO: case 3108: goto oid_0_0_13_3108;
+                // TODO: case 3611: goto oid_0_0_13_3611;
+                // TODO: case 3640: goto oid_0_0_13_3640;
+                // TODO: case 3641: goto oid_0_0_13_3641;
+                // TODO: case 3650: goto oid_0_0_13_3650;
+                default: return $"/ITU-T/Recommendation/M/{index}";
+            }
+
+        #endregion
+
+        // q
+        #region 0.0.17.*
+
+        oid_0_0_17:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/Q";
+            switch (values[index++])
+            {
+                // TODO: case 733: goto oid_0_0_17_733;
+                // TODO: case 736: goto oid_0_0_17_736;
+                // TODO: case 751: goto oid_0_0_17_751;
+                // TODO: case 753: goto oid_0_0_17_753;
+                // TODO: case 754: goto oid_0_0_17_754;
+                // TODO: case 755: goto oid_0_0_17_755;
+                // TODO: case 763: goto oid_0_0_17_763;
+                // TODO: case 765: goto oid_0_0_17_765;
+                // TODO: case 773: goto oid_0_0_17_773;
+                // TODO: case 775: goto oid_0_0_17_775;
+                // TODO: case 813: goto oid_0_0_17_813;
+                // TODO: case 814: goto oid_0_0_17_814;
+                // TODO: case 815: goto oid_0_0_17_815;
+                // TODO: case 821: goto oid_0_0_17_821;
+                // TODO: case 822: goto oid_0_0_17_822;
+                // TODO: case 823: goto oid_0_0_17_823;
+                // TODO: case 824: goto oid_0_0_17_824;
+                // TODO: case 825: goto oid_0_0_17_825;
+                // TODO: case 826: goto oid_0_0_17_826;
+                // TODO: case 831: goto oid_0_0_17_831;
+                // TODO: case 832: goto oid_0_0_17_832;
+                // TODO: case 835: goto oid_0_0_17_835;
+                // TODO: case 836: goto oid_0_0_17_836;
+                // TODO: case 860: goto oid_0_0_17_860;
+                // TODO: case 932: goto oid_0_0_17_932;
+                // TODO: case 941: goto oid_0_0_17_941;
+                // TODO: case 950: goto oid_0_0_17_950;
+                // TODO: case 951: goto oid_0_0_17_951;
+                // TODO: case 952: goto oid_0_0_17_952;
+                // TODO: case 953: goto oid_0_0_17_953;
+                // TODO: case 954: goto oid_0_0_17_954;
+                // TODO: case 955: goto oid_0_0_17_955;
+                // TODO: case 956: goto oid_0_0_17_956;
+                // TODO: case 957: goto oid_0_0_17_957;
+                // TODO: case 1218: goto oid_0_0_17_1218;
+                // TODO: case 1228: goto oid_0_0_17_1228;
+                // TODO: case 1238: goto oid_0_0_17_1238;
+                // TODO: case 1248: goto oid_0_0_17_1248;
+                // TODO: case 1400: goto oid_0_0_17_1400;
+                // TODO: case 1551: goto oid_0_0_17_1551;
+                // TODO: case 1831: goto oid_0_0_17_1831;
+                // TODO: case 2724: goto oid_0_0_17_2724;
+                // TODO: case 2751: goto oid_0_0_17_2751;
+                // TODO: case 2932: goto oid_0_0_17_2932;
+                // TODO: case 2964: goto oid_0_0_17_2964;
+                // TODO: case 2981: goto oid_0_0_17_2981;
+                // TODO: case 2984: goto oid_0_0_17_2984;
+                // TODO: case 3303: goto oid_0_0_17_3303;
+                // TODO: case 3304: goto oid_0_0_17_3304;
+                // TODO: case 3308: goto oid_0_0_17_3308;
+                case 8361: return "/ITU-T/Recommendation/Q/[Specifications of Signalling System No. 7 -- Q3 interface]";
+                default: return $"/ITU-T/Recommendation/Q/{index}";
+            }
+
+        #endregion
+
+        // t
+        #region 0.0.20.*
+
+        oid_0_0_20:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/T";
+            switch (values[index++])
+            {
+                // TODO: case 43: goto oid_0_0_20_43;
+                // TODO: case 123: goto oid_0_0_20_123;
+                // TODO: case 124: goto oid_0_0_20_124;
+                // TODO: case 126: goto oid_0_0_20_126;
+                // TODO: case 127: goto oid_0_0_20_127;
+                // TODO: case 128: goto oid_0_0_20_128;
+                // TODO: case 134: goto oid_0_0_20_134;
+                // TODO: case 135: goto oid_0_0_20_135;
+                // TODO: case 136: goto oid_0_0_20_136;
+                // TODO: case 137: goto oid_0_0_20_137;
+                case 330: return "/ITU-T/Recommendation/T/[TLMAAbsService]";
+                // TODO: case 433: goto oid_0_0_20_433;
+                // TODO: case 434: goto oid_0_0_20_434;
+                // TODO: case 435: goto oid_0_0_20_435;
+                // TODO: case 436: goto oid_0_0_20_436;
+                default: return $"/ITU-T/Recommendation/T/{index}";
+            }
+
+        #endregion
+
+        // v
+        #region 0.0.22.*
+
+        oid_0_0_22:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/V";
+            switch (values[index++])
+            {
+                // TODO: case 43: goto oid_0_0_22_150;
+                default: return $"/ITU-T/Recommendation/V/{index}";
+            }
+
+        #endregion
+
+        // x
+        #region 0.0.24.*
+
+        oid_0_0_24:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/X";
+            switch (values[index++])
+            {
+                // TODO: case 162: goto oid_0_0_24_162;
+                // TODO: case 754: goto oid_0_0_24_754;
+                // TODO: case 790: goto oid_0_0_24_790;
+                // TODO: case 792: goto oid_0_0_24_792;
+                // TODO: case 894: goto oid_0_0_24_894;
+                // TODO: case 1084: goto oid_0_0_24_1084;
+                // TODO: case 1089: goto oid_0_0_24_1089;
+                // TODO: case 1125: goto oid_0_0_24_1125;
+                // TODO: case 1243: goto oid_0_0_24_1243;
+                // TODO: case 1303: goto oid_0_0_24_1303;
+                default: return $"/ITU-T/Recommendation/X/{index}";
+            }
 
         #endregion
 
@@ -603,7 +1124,7 @@ namespace BurnOutSharp.Builder
 
         oid_0_2:
 
-            if (index == values.Count) return "/ITU-T/Administration";
+            if (index == values.Length) return "/ITU-T/Administration";
             switch (values[index++])
             {
                 case 202: return "/ITU-T/Administration/[Greece]";
@@ -871,7 +1392,7 @@ namespace BurnOutSharp.Builder
 
         oid_0_3:
 
-            if (index == values.Count) return "/ITU-T/Network-Operator";
+            if (index == values.Length) return "/ITU-T/Network-Operator";
             switch (values[index++])
             {
                 case 1111: return "/ITU-T/Network-Operator/[INMARSAT: Atlantic Ocean-East]";
@@ -1389,7 +1910,7 @@ namespace BurnOutSharp.Builder
 
         oid_0_4:
 
-            if (index == values.Count) return "/ITU-T/Identified-Organization";
+            if (index == values.Length) return "/ITU-T/Identified-Organization";
             switch (values[index++])
             {
                 // TODO: case 0: goto oid_0_4_0;
@@ -1403,7 +1924,7 @@ namespace BurnOutSharp.Builder
 
         oid_0_9:
 
-            if (index == values.Count) return "/ITU-T/Data";
+            if (index == values.Length) return "/ITU-T/Data";
             switch (values[index++])
             {
                 // TODO: case 0: goto oid_0_9_0;
@@ -1419,7 +1940,7 @@ namespace BurnOutSharp.Builder
 
         oid_1:
 
-            if (index == values.Count) return "/ISO";
+            if (index == values.Length) return "/ISO";
             switch (values[index++])
             {
                 case 0: goto oid_1_0;
@@ -1434,7 +1955,7 @@ namespace BurnOutSharp.Builder
 
         oid_1_0:
 
-            if (index == values.Count) return "/ISO/Standard";
+            if (index == values.Length) return "/ISO/Standard";
             switch (values[index++])
             {
                 // TODO: case 639: goto oid_1_0_639;
@@ -1589,7 +2110,7 @@ namespace BurnOutSharp.Builder
 
         oid_1_1:
 
-            if (index == values.Count) return "/ISO/Registration-Authority";
+            if (index == values.Length) return "/ISO/Registration-Authority";
             switch (values[index++])
             {
                 case 1: return "/ISO/Registration-Authority/[reserved]";
@@ -1617,7 +2138,7 @@ namespace BurnOutSharp.Builder
 
         oid_1_2:
 
-            if (index == values.Count) return "/ISO/Member-Body";
+            if (index == values.Length) return "/ISO/Member-Body";
             switch (values[index++])
             {
                 // TODO: case 36: goto oid_1_2_36;
@@ -1658,7 +2179,7 @@ namespace BurnOutSharp.Builder
 
         oid_1_3:
 
-            if (index == values.Count) return "/ISO/Identified-Organization";
+            if (index == values.Length) return "/ISO/Identified-Organization";
             switch (values[index++])
             {
                 case 1: return "/ISO/Identified-Organization/[Not assigned]";
@@ -1701,7 +2222,191 @@ namespace BurnOutSharp.Builder
                 case 38: return "/ISO/Identified-Organization/[The Australian Government Open Systems Interconnection Profile (GOSIP) network]";
                 case 39: return "/ISO/Identified-Organization/[\"OZDOD DEFNET\": Australian Department Of Defence (DOD) OSI network]";
                 case 40: return "/ISO/Identified-Organization/[Unilever Group Companies]";
-                // TODO: Left off at http://www.oid-info.com/get/1.3.40
+                case 41: return "/ISO/Identified-Organization/[Citicorp Global Information Network (CGIN)]";
+                case 42: return "/ISO/Identified-Organization/[Deutsche BundesPost (DBP) Telekom]";
+                case 43: return "/ISO/Identified-Organization/[HydroNETT]";
+                case 44: return "/ISO/Identified-Organization/[Thai Industrial Standards Institute (TISI)]";
+                case 45: return "/ISO/Identified-Organization/[\"ICI\" Company]";
+                case 46: return "/ISO/Identified-Organization/[Philips FUNction LOCations (FUNLOC)]";
+                case 47: return "/ISO/Identified-Organization/[Bull \"ODI\"/Distributed System Architecture (DSA)/Unix network]";
+                case 48: return "/ISO/Identified-Organization/[\"OSINZ\"]";
+                case 49: return "/ISO/Identified-Organization/[Auckland Area Health]";
+                case 50: return "/ISO/Identified-Organization/[Firmenich]";
+                case 51: return "/ISO/Identified-Organization/[\"AGFA-DIS\"]";
+                case 52: return "/ISO/Identified-Organization/[Society of Motion Picture and Television Engineers (SMPTE)]";
+                case 53: return "/ISO/Identified-Organization/[Migros_Network M_NETOPZ]";
+                case 54: return "/ISO/Identified-Organization/[Pfizer]";
+                case 55: return "/ISO/Identified-Organization/[Energy Net]";
+                case 56: return "/ISO/Identified-Organization/[Nokia]";
+                case 57: return "/ISO/Identified-Organization/[Saint Gobain]";
+                case 58: return "/ISO/Identified-Organization/[Siemens Corporate Network (SCN)]";
+                case 59: return "/ISO/Identified-Organization/[\"DANZNET\"]";
+                case 60: return "/ISO/Identified-Organization/[Dun & Bradstreet Data Universal Numbering System (D-U-N-S)]";
+                case 61: return "/ISO/Identified-Organization/[\"SOFFEX\" OSI]";
+                case 62: return "/ISO/Identified-Organization/[Koninklijke \"PTT\" Nederland (KPN) \"OVN\" (operator fixed networks)]";
+                case 63: return "/ISO/Identified-Organization/[AscomOSINet]";
+                case 64: return "/ISO/Identified-Organization/[Uniform Transport Code (UTC)]";
+                case 65: return "/ISO/Identified-Organization/[Solvay Group]";
+                case 66: return "/ISO/Identified-Organization/[Roche Corporate Network]";
+                case 67: return "/ISO/Identified-Organization/[Zellweger]";
+                case 68: return "/ISO/Identified-Organization/[Intel Corporation]";
+                case 69: return "/ISO/Identified-Organization/[SITA (Société Internationale de Télécommunications Aéronautiques)]";
+                case 70: return "/ISO/Identified-Organization/[DaimlerChrysler Corporate Network (DCCN)]";
+                case 71: return "/ISO/Identified-Organization/[LEGOnet]";
+                case 72: return "/ISO/Identified-Organization/[Navistar]";
+                case 73: return "/ISO/Identified-Organization/[Formatted Asynchronous Transfer Mode (ATM) address]";
+                case 74: return "/ISO/Identified-Organization/[\"ARINC\"]";
+                case 75: return "/ISO/Identified-Organization/[Alcanet (Alcatel-Alsthom vorporate network)]";
+                // TODO: case 76: goto oid_1_3_76;
+                case 77: return "/ISO/Identified-Organization/[Sistema Italiano di Indirizzamento di Reti OSI Gestito da \"UNINFO\"]";
+                case 78: return "/ISO/Identified-Organization/[Mitel terminal or switching equipment]";
+                case 79: return "/ISO/Identified-Organization/[Asynchronous Transfer Mode (ATM) Forum]";
+                case 80: return "/ISO/Identified-Organization/[UK national health service scheme (Electronic Data Interchange Registration Authorities (EDIRA) compliant)]";
+                case 81: return "/ISO/Identified-Organization/[International Network Service Access Point (NSAP)]";
+                case 82: return "/ISO/Identified-Organization/[Norwegian Telecommunications Authority (NTA)]";
+                case 83: return "/ISO/Identified-Organization/[Advanced Telecommunications Modules Limited Corporate Network]";
+                case 84: return "/ISO/Identified-Organization/[Athens Chamber of Commerce & Industry Scheme]";
+                case 85: return "/ISO/Identified-Organization/[Swisskey certificate authority coding system]";
+                case 86: return "/ISO/Identified-Organization/[United States Council for International Business (USCIB)]";
+                case 87: return "/ISO/Identified-Organization/[National Federation of Chambers of Commerce & Industry of Belgium Scheme]";
+                case 88: return "/ISO/Identified-Organization/[Global Location Number (GLN) (previously, European Article Number (EAN) location code)]";
+                case 89: return "/ISO/Identified-Organization/[Association of British Chambers of Commerce Ltd. scheme]";
+                case 90: return "/ISO/Identified-Organization/[Internet Protocol (IP) addressing]";
+                case 91: return "/ISO/Identified-Organization/[Cisco Systems / Open Systems Interconnection (OSI) network]";
+                case 92: return "/ISO/Identified-Organization/[Not to be assigned]";
+                case 93: return "/ISO/Identified-Organization/[Revenue Canada Business Number (BN) registration]";
+                case 94: return "/ISO/Identified-Organization/[Deutscher Industrie- und HandelsTag (DIHT) scheme]";
+                case 95: return "/ISO/Identified-Organization/[Hewlett-Packard (HP) Company internal Asynchronous Transfer Mode (ATM) network]";
+                case 96: return "/ISO/Identified-Organization/[Danish Chamber of Commerce & Industry]";
+                case 97: return "/ISO/Identified-Organization/[\"FTI\" - Ediforum Italia]";
+                case 98: return "/ISO/Identified-Organization/[Chamber of Commerce Tel Aviv-Jaffa]";
+                case 99: return "/ISO/Identified-Organization/[Siemens Supervisory Systems Network]";
+                case 100: return "/ISO/Identified-Organization/[PNG_ICD scheme]";
+                // TODO: case 101: goto oid_1_3_101;
+                case 102: return "/ISO/Identified-Organization/[\"HEAG\" holding group]";
+                case 103: return "/ISO/Identified-Organization/[Reserved for later allocation]";
+                case 104: return "/ISO/Identified-Organization/[British Telecommunications plc (BT)]";
+                case 105: return "/ISO/Identified-Organization/[Portuguese Chamber of Commerce and Industry]";
+                case 106: return "/ISO/Identified-Organization/[Vereniging van Kamers van Koophandel en Fabrieken in Nederland]";
+                case 107: return "/ISO/Identified-Organization/[Association of Swedish Chambers of Commerce and Industry]";
+                case 108: return "/ISO/Identified-Organization/[Australian Chambers of Commerce and Industry]";
+                case 109: return "/ISO/Identified-Organization/[BellSouth Asynchronous Transfer Mode (ATM) End System Address (AESA)]";
+                case 110: return "/ISO/Identified-Organization/[Bell Atlantic]";
+                // TODO: case 111: goto oid_1_3_111;
+                // TODO: case 112: goto oid_1_3_112;
+                case 113: return "/ISO/Identified-Organization/[OriginNet]";
+                // TODO: case 114: goto oid_1_3_114;
+                case 115: return "/ISO/Identified-Organization/[Pacific Bell data communications network]";
+                case 116: return "/ISO/Identified-Organization/[Postal Security Services (PSS)]";
+                case 117: return "/ISO/Identified-Organization/[Stentor]";
+                case 118: return "/ISO/Identified-Organization/[ATM-Network ZN\"96]";
+                case 119: return "/ISO/Identified-Organization/[\"MCI\" OSI network]";
+                case 120: return "/ISO/Identified-Organization/[Advantis]";
+                case 121: return "/ISO/Identified-Organization/[Affable Software data interchange codes]";
+                case 122: return "/ISO/Identified-Organization/[BB-DATA GmbH]";
+                case 123: return "/ISO/Identified-Organization/[Badische Anilin und Soda Fabrik (BASF) company Asynchronous Transfer Mode (ATM) network]";
+                // TODO: case 124: goto oid_1_3_124;
+                case 125: return "/ISO/Identified-Organization/[Henkel Corporate Network (H-Net)]";
+                case 126: return "/ISO/Identified-Organization/[\"GTE\" OSI network]";
+                case 127: return "/ISO/Identified-Organization/[Allianz Technology]";
+                case 128: return "/ISO/Identified-Organization/[\"BCNR\" (Swiss clearing bank number)]";
+                case 129: return "/ISO/Identified-Organization/[Telekurs Business Partner Identification (BPI)]";
+                // TODO: case 130: goto oid_1_3_130;
+                case 131: return "/ISO/Identified-Organization/[Code for the Identification of National Organizations]";
+                // TODO: case 132: goto oid_1_3_132;
+                // TODO: case 133: goto oid_1_3_133;
+                case 134: return "/ISO/Identified-Organization/[Infonet Services Corporation]";
+                case 135: return "/ISO/Identified-Organization/[Societa Interbancaria per l'Automazione (SIA) S.p.A.]";
+                case 136: return "/ISO/Identified-Organization/[Cable & Wireless global Asynchronous Transfer Mode (ATM) end-system address plan]";
+                case 137: return "/ISO/Identified-Organization/[Global One Asynchronous Transfer Mode (ATM) End System Address (AESA) scheme]";
+                case 138: return "/ISO/Identified-Organization/[France Telecom Asynchronous Transfer Mode (ATM) End System Address (AESA) plan]";
+                case 139: return "/ISO/Identified-Organization/[Savvis Communications Asynchronous Transfer Mode (ATM) End System Address (AESA)]";
+                case 140: return "/ISO/Identified-Organization/[Toshiba Organizations, Partners, And Suppliers (TOPAS) code]";
+                case 141: return "/ISO/Identified-Organization/[North Atlantic Treaty Organization (NATO) Commercial And Government Entity (NCAGE) system, a.k.a. NCAGE NATO Code of manufacturers]";
+                case 142: return "/ISO/Identified-Organization/[\"SECETI S.p.A.\"]";
+                case 143: return "/ISO/Identified-Organization/[EINESTEINet AG]";
+                case 144: return "/ISO/Identified-Organization/[Department of Defense Activity Address Code (DoDAAC)]";
+                case 145: return "/ISO/Identified-Organization/[Direction Générale de la Comptabilité Publique (DGCP) administrative accounting identification scheme]";
+                case 146: return "/ISO/Identified-Organization/[Direction Générale des Impots (DGI)]";
+                case 147: return "/ISO/Identified-Organization/[Standard company code (partner identification code) registered with \"JIPDEC\"]";
+                case 148: return "/ISO/Identified-Organization/[International Telecommunication Union (ITU) Data Network Identification Codes (DNIC)]";
+                case 149: return "/ISO/Identified-Organization/[Global Business Identifier (GBI)]";
+                case 150: return "/ISO/Identified-Organization/[Madge Networks Ltd Asynchronous Transfer Mode (ATM) addressing scheme]";
+                case 151: return "/ISO/Identified-Organization/[Australian Business Number (ABN) scheme]";
+                case 152: return "/ISO/Identified-Organization/[Electronic Data Interchange Registration Authorities (EDIRA) scheme identifier code]";
+                case 153: return "/ISO/Identified-Organization/[Concert Global network services Asynchronous Transfer Mode (ATM) End System Address (AESA)]";
+                // TODO: case 154: goto oid_1_3_154;
+                case 155: return "/ISO/Identified-Organization/[Global Crossing Asynchronous Transfer Mode (ATM) End System Address (AESA)]";
+                case 156: return "/ISO/Identified-Organization/[\"AUNA\"]";
+                case 157: return "/ISO/Identified-Organization/[Informatie en communicatie Technologie Organisatie (ITO) Drager Net]";
+                // TODO: case 158: goto oid_1_3_158;
+                // TODO: case 159: goto oid_1_3_159;
+                case 160: return "/ISO/Identified-Organization/[GS1 Global Trade Item Number (GTIN)]";
+                case 161: return "/ISO/Identified-Organization/[Electronic Commerce Code Management Association (ECCMA) open technical dictionary]";
+                // TODO: case 162: goto oid_1_3_162;
+                case 163: return "/ISO/Identified-Organization/[United States Environmental Protection Agency (US-EPA) facilities]";
+                case 164: return "/ISO/Identified-Organization/[\"TELUS\" Corporation Asynchronous Transfer Mode (ATM) End System Address (AESA) addressing scheme for ATM Private Network-to-Network Interface (PNNI) implementation]";
+                case 165: return "/ISO/Identified-Organization/[\"FIEIE\"]";
+                case 166: return "/ISO/Identified-Organization/[Swissguide]";
+                case 167: return "/ISO/Identified-Organization/[Priority Telecom Asynchronous Transfer Mode (ATM) End System Address (AESA) plan]";
+                case 168: return "/ISO/Identified-Organization/[Vodafone Ireland]";
+                case 169: return "/ISO/Identified-Organization/[Swiss Federal Business Identification Number]";
+                case 170: return "/ISO/Identified-Organization/[Teikoku Company Code]";
+                // TODO: case 171: goto oid_1_3_171;
+                case 172: return "/ISO/Identified-Organization/[Project Group \"Lists of properties\" (PROLIST®)]";
+                case 173: return "/ISO/Identified-Organization/[eCl@ss]";
+                case 174: return "/ISO/Identified-Organization/[StepNexus]";
+                case 175: return "/ISO/Identified-Organization/[Siemens AG]";
+                case 176: return "/ISO/Identified-Organization/[Paradine GmbH]";
+                // TODO: case 177: goto oid_1_3_177;
+                case 178: return "/ISO/Identified-Organization/[Route1's MobiNET]";
+                // TODO: case 179: goto oid_1_3_179;
+                case 180: return "/ISO/Identified-Organization/[Lithuanian military Public Key Infrastructure (PKI)]";
+                case 183: return "/ISO/Identified-Organization/[Unique IDentification Business (UIDB) number]";
+                case 184: return "/ISO/Identified-Organization/[\"DIGSTORG\"]";
+                case 185: return "/ISO/Identified-Organization/[Perceval Object Code (POC)]";
+                case 186: return "/ISO/Identified-Organization/[TrustPoint]";
+                case 187: return "/ISO/Identified-Organization/[Amazon Unique Identification Scheme (AUIS)]";
+                case 188: return "/ISO/Identified-Organization/[Corporate number of the social security and tax number system of Japan]";
+                case 189: return "/ISO/Identified-Organization/[European Business IDentifier (EBID)]";
+                case 190: return "/ISO/Identified-Organization/[Organisatie Identificatie Nummer (OIN)]";
+                case 191: return "/ISO/Identified-Organization/[Company code (Estonia)]";
+                case 192: return "/ISO/Identified-Organization/[Organisasjonsnummer, Norway]";
+                case 193: return "/ISO/Identified-Organization/[UBL.BE party identifier]";
+                case 194: return "/ISO/Identified-Organization/[\"KOIOS\" Open Technical Dictionary (OTD)]";
+                case 195: return "/ISO/Identified-Organization/[Singapore nationwide e-invoice framework]";
+                case 196: return "/ISO/Identified-Organization/[Íslensk kennitala]";
+                case 197: return "/ISO/Identified-Organization/[Reserved]";
+                case 198: return "/ISO/Identified-Organization/[ERSTORG]";
+                case 199: return "/ISO/Identified-Organization/[Legal Entity Identifier (LEI)]";
+                case 200: return "/ISO/Identified-Organization/[Legal entity code (Lithuania)]";
+                case 201: return "/ISO/Identified-Organization/[Codice Univoco Unità Organizzativa iPA]";
+                case 202: return "/ISO/Identified-Organization/[Indirizzo di Posta Elettronica Certificata]";
+                case 203: return "/ISO/Identified-Organization/[eDelivery network participant identifier]";
+                case 204: return "/ISO/Identified-Organization/[Leitweg-ID]";
+                case 205: return "/ISO/Identified-Organization/[CODDEST]";
+                case 206: return "/ISO/Identified-Organization/[Registre du Commerce et de l'Industrie (RCI), Monaco]";
+                case 207: return "/ISO/Identified-Organization/[Pilog Ontology Codification Identifier (POCI)]";
+                case 208: return "/ISO/Identified-Organization/[Numéro d'entreprise / Ondernemingsnummer / Unternehmensnummer, Belgium]";
+                case 209: return "/ISO/Identified-Organization/[GS1 identification keys]";
+                case 210: return "/ISO/Identified-Organization/[Codice fiscale]";
+                case 211: return "/ISO/Identified-Organization/[Partita iva]";
+                case 212: return "/ISO/Identified-Organization/[Finnish Organization Identifier]";
+                case 213: return "/ISO/Identified-Organization/[Finnish organization value add tax identifier]";
+                case 214: return "/ISO/Identified-Organization/[Tradeplace TradePI (Product Information) standard]";
+                case 215: return "/ISO/Identified-Organization/[Net service identifier]";
+                case 216: return "/ISO/Identified-Organization/[OVTcode]";
+                case 9900:
+                case 9991:
+                case 9992:
+                case 9993:
+                case 9994:
+                case 9995:
+                case 9996:
+                case 9997:
+                case 9998:
+                case 9999: return "/ISO/Identified-Organization/[Reserved]";
+                // TODO: Left off at http://www.oid-info.com/get/1.3.210
                 default: return $"/ISO/Identified-Organization/{index}";
             }
 
@@ -1714,21 +2419,21 @@ namespace BurnOutSharp.Builder
 
         oid_2:
 
-            if (index == values.Count) return "/Joint-ISO-ITU-T";
+            if (index == values.Length) return "/Joint-ISO-ITU-T";
             switch (values[index++])
             {
-                case 0: return "/Joint-ISO-ITU-T/[presentation]";
-                // TODO: case 1: goto oid_2_1;
-                // TODO: case 2: goto oid_2_2;
-                // TODO: case 3: goto oid_2_3;
-                // TODO: case 4: goto oid_2_4;
-                // TODO: case 5: goto oid_2_5;
-                // TODO: case 6: goto oid_2_6;
-                // TODO: case 7: goto oid_2_7;
-                // TODO: case 8: goto oid_2_8;
-                // TODO: case 9: goto oid_2_9;
-                // TODO: case 10: goto oid_2_10;
-                // TODO: case 11: goto oid_2_11;
+                case 0: return "/Joint-ISO-ITU-T/[Presentation layer service and protocol]";
+                case 1: goto oid_2_1;
+                case 2: goto oid_2_2;
+                case 3: goto oid_2_3;
+                case 4: goto oid_2_4;
+                case 5: goto oid_2_5;
+                case 6: goto oid_2_6;
+                case 7: goto oid_2_7;
+                case 8: goto oid_2_8;
+                case 9: goto oid_2_9;
+                case 10: goto oid_2_10;
+                case 11: goto oid_2_11;
                 // TODO: case 12: goto oid_2_12;
                 // TODO: case 13: goto oid_2_13;
                 // TODO: case 14: goto oid_2_14;
@@ -1757,6 +2462,249 @@ namespace BurnOutSharp.Builder
                 case 999: return "/Joint-ISO-ITU-T/Example";
                 default: return $"/Joint-ISO-ITU-T/{index}";
             }
+
+        // asn1
+        #region 2.1.*
+
+        oid_2_1:
+
+            if (index == values.Length) return "/ASN.1";
+            switch (values[index++])
+            {
+                // TODO: case 0: goto oid_2_1_0;
+                case 1: return "/ASN.1/[Basic Encoding Rules (BER)]";
+                // TODO: case 2: goto oid_2_1_2;
+                // TODO: case 3: goto oid_2_1_3;
+                // TODO: case 4: goto oid_2_1_4;
+                // TODO: case 5: goto oid_2_1_5;
+                // TODO: case 6: goto oid_2_1_6;
+                case 7: return "/ASN.1/[Javascript object notation Encoding Rules (JER)]";
+                // TODO: case 8: goto oid_2_1_8;
+                case 123: return "/ASN.1/[Examples]";
+                default: return $"/ASN.1/{index}";
+            }
+
+        #endregion
+
+        // association-control
+        #region 2.2.*
+
+        oid_2_2:
+
+            if (index == values.Length) return "/Joint-ISO-ITU-T/[Association Control Service Element (ACSE)]";
+            switch (values[index++])
+            {
+                // TODO: case 0: goto oid_2_2_0;
+                // TODO: case 1: goto oid_2_2_1;
+                // TODO: case 2: goto oid_2_2_2;
+                // TODO: case 3: goto oid_2_2_3;
+                default: return $"/Joint-ISO-ITU-T/[Association Control Service Element (ACSE)]/{index}";
+            }
+
+        #endregion
+
+        // reliable-transfer
+        #region 2.3.*
+
+        oid_2_3:
+
+            if (index == values.Length) return "/Joint-ISO-ITU-T/[Reliable transfer service element]";
+            switch (values[index++])
+            {
+                case 0: return "/Joint-ISO-ITU-T/[Reliable transfer service element]/[Reliable-Transfer-APDU]";
+                case 1: return "/Joint-ISO-ITU-T/[Reliable transfer service element]/[Reliable Transfer Service Element (RTSE) identifier]";
+                case 2: return "/Joint-ISO-ITU-T/[Reliable transfer service element]/[Abstract syntaxes]";
+                default: return $"/Joint-ISO-ITU-T/[Reliable transfer service element]/{index}";
+            }
+
+        #endregion
+
+        // remote-operations
+        #region 2.4.*
+
+        oid_2_4:
+
+            if (index == values.Length) return "/Joint-ISO-ITU-T/[Remote Operations Service Element (ROSE)]";
+            switch (values[index++])
+            {
+                case 0: return "/Joint-ISO-ITU-T/[Remote Operations Service Element (ROSE)]/[Remote-Operation-Notation]";
+                case 1: return "/Joint-ISO-ITU-T/[Remote Operations Service Element (ROSE)]/[Remote-Operations-APDUs]";
+                case 2: return "/Joint-ISO-ITU-T/[Remote Operations Service Element (ROSE)]/[Remote-Operations-Notation-extension]";
+                case 3: return "/Joint-ISO-ITU-T/[Remote Operations Service Element (ROSE)]/[Application Service Element (ASE) identifier]";
+                case 4: return "/Joint-ISO-ITU-T/[Remote Operations Service Element (ROSE)]/[Association Control Service Element (ACSE)]";
+                // TODO: case 5: goto oid_2_4_5;
+                // TODO: case 6: goto oid_2_4_6;
+                // TODO: case 7: goto oid_2_4_7;
+                // TODO: case 8: goto oid_2_4_8;
+                // TODO: case 9: goto oid_2_4_9;
+                // TODO: case 10: goto oid_2_4_10;
+                // TODO: case 11: goto oid_2_4_11;
+                // TODO: case 12: goto oid_2_4_12;
+                default: return $"/Joint-ISO-ITU-T/[Remote Operations Service Element (ROSE)]/{index}";
+            }
+
+        #endregion
+
+        // ds, directory
+        #region 2.5.*
+
+        oid_2_5:
+
+            if (index == values.Length) return "/Joint-ISO-ITU-T/[Directory services]";
+            switch (values[index++])
+            {
+                // TODO: case 1: goto oid_2_5_1;
+                case 2: return "/Joint-ISO-ITU-T/[Directory services]/[Directory service elements]";
+                // TODO: case 3: goto oid_2_5_3;
+                // TODO: case 4: goto oid_2_5_4;
+                // TODO: case 5: goto oid_2_5_5;
+                // TODO: case 6: goto oid_2_5_6;
+                case 7: return "/Joint-ISO-ITU-T/[Directory services]/[X.500 attribute sets]";
+                // TODO: case 8: goto oid_2_5_8;
+                // TODO: case 9: goto oid_2_5_9;
+                // TODO: case 12: goto oid_2_5_12;
+                // TODO: case 13: goto oid_2_5_13;
+                // TODO: case 14: goto oid_2_5_14;
+                // TODO: case 15: goto oid_2_5_15;
+                case 16: return "/Joint-ISO-ITU-T/[Directory services]/[Groups]";
+                // TODO: case 17: goto oid_2_5_17;
+                // TODO: case 18: goto oid_2_5_18;
+                // TODO: case 19: goto oid_2_5_19;
+                // TODO: case 20: goto oid_2_5_20;
+                // TODO: case 21: goto oid_2_5_21;
+                // TODO: case 23: goto oid_2_5_23;
+                // TODO: case 24: goto oid_2_5_24;
+                // TODO: case 25: goto oid_2_5_25;
+                // TODO: case 26: goto oid_2_5_26;
+                // TODO: case 27: goto oid_2_5_27;
+                // TODO: case 28: goto oid_2_5_28;
+                // TODO: case 29: goto oid_2_5_29;
+                // TODO: case 30: goto oid_2_5_30;
+                // TODO: case 31: goto oid_2_5_31;
+                // TODO: case 32: goto oid_2_5_32;
+                // TODO: case 33: goto oid_2_5_33;
+                // TODO: case 34: goto oid_2_5_34;
+                // TODO: case 35: goto oid_2_5_35;
+                case 36: return "/Joint-ISO-ITU-T/[Directory services]/[Matching restrictions]";
+                // TODO: case 37: goto oid_2_5_37;
+                case 38: return "/Joint-ISO-ITU-T/[Directory services]/[Key purposes]";
+                // TODO: case 39: goto oid_2_5_39;
+                // TODO: case 40: goto oid_2_5_40;
+                // TODO: case 41: goto oid_2_5_41;
+                // TODO: case 42: goto oid_2_5_42;
+                // TODO: case 43: goto oid_2_5_43;
+                // TODO: case 44: goto oid_2_5_44;
+                default: return $"/Joint-ISO-ITU-T/[Directory services]/{index}";
+            }
+
+        #endregion
+
+        // mhs, mhs-motis
+        #region 2.6.*
+
+        oid_2_6:
+
+            if (index == values.Length) return "/Joint-ISO-ITU-T/[Message Handling System (MHS)]";
+            switch (values[index++])
+            {
+                // TODO: case 0: goto oid_2_6_0;
+                // TODO: case 1: goto oid_2_6_1;
+                // TODO: case 2: goto oid_2_6_2;
+                // TODO: case 3: goto oid_2_6_3;
+                // TODO: case 4: goto oid_2_6_4;
+                // TODO: case 5: goto oid_2_6_5;
+                // TODO: case 6: goto oid_2_6_6;
+                // TODO: case 7: goto oid_2_6_7;
+                // TODO: case 8: goto oid_2_6_8;
+                // TODO: case 9: goto oid_2_6_9;
+                // TODO: case 10: goto oid_2_6_10;
+                default: return $"/Joint-ISO-ITU-T/[Message Handling System (MHS)]/{index}";
+            }
+
+        #endregion
+
+        // ccr
+        #region 2.7.*
+
+        oid_2_7:
+
+            if (index == values.Length) return "/Joint-ISO-ITU-T/[Commitment, Concurrency and Recovery (CCR) service and protocol]";
+            switch (values[index++])
+            {
+                // TODO: case 1: goto oid_2_7_1;
+                // TODO: case 2: goto oid_2_7_2;
+                default: return $"/Joint-ISO-ITU-T/[Commitment, Concurrency and Recovery (CCR) service and protocol]/{index}";
+            }
+
+        #endregion
+
+        // oda
+        #region 2.8.*
+
+        oid_2_8:
+
+            if (index == values.Length) return "/Joint-ISO-ITU-T/[Open Document Architecture (ODA)]";
+            switch (values[index++])
+            {
+                // TODO: case 0: goto oid_2_8_0;
+                // TODO: case 1: goto oid_2_8_1;
+                // TODO: case 2: goto oid_2_8_2;
+                // TODO: case 3: goto oid_2_8_3;
+                case 4: return "/Joint-ISO-ITU-T/[Open Document Architecture (ODA)]/[Identification of a document application profile]";
+                default: return $"/Joint-ISO-ITU-T/[Open Document Architecture (ODA)]/{index}";
+            }
+
+        #endregion
+
+        // ms, osi-management
+        #region 2.9.*
+
+        oid_2_9:
+
+            if (index == values.Length) return "/Joint-ISO-ITU-T/[OSI network management]";
+            switch (values[index++])
+            {
+                // TODO: case 0: goto oid_2_9_0;
+                // TODO: case 1: goto oid_2_9_1;
+                // TODO: case 2: goto oid_2_9_2;
+                // TODO: case 3: goto oid_2_9_3;
+                // TODO: case 4: goto oid_2_9_4;
+                default: return $"/Joint-ISO-ITU-T/[OSI network management]/{index}";
+            }
+
+        #endregion
+
+        // transaction-processing
+        #region 2.10.*
+
+        oid_2_10:
+
+            if (index == values.Length) return "/Joint-ISO-ITU-T/[Transaction processing]";
+            switch (values[index++])
+            {
+                // TODO: case 0: goto oid_2_10_0;
+                // TODO: case 1: goto oid_2_10_1;
+                // TODO: case 2: goto oid_2_10_2;
+                default: return $"/Joint-ISO-ITU-T/[Transaction processing]/{index}";
+            }
+
+        #endregion
+
+        // dor, distinguished-object-reference
+        #region 2.11.*
+
+        oid_2_11:
+
+            if (index == values.Length) return "/Joint-ISO-ITU-T/[Information technology -- Text and office systems -- Distributed-office-applications model -- Part 2: Distinguished-object-reference and associated procedures]";
+            switch (values[index++])
+            {
+                case 0: return "/Joint-ISO-ITU-T/[Information technology -- Text and office systems -- Distributed-office-applications model -- Part 2: Distinguished-object-reference and associated procedures]/[DOR-definition]";
+                case 1: return "/Joint-ISO-ITU-T/[Information technology -- Text and office systems -- Distributed-office-applications model -- Part 2: Distinguished-object-reference and associated procedures]/[Abstract syntax of \"distinguished-object-reference\"]";
+                // TODO: case 2: goto oid_2_11_2;
+                default: return $"/Joint-ISO-ITU-T/[Information technology -- Text and office systems -- Distributed-office-applications model -- Part 2: Distinguished-object-reference and associated procedures]/{index}";
+            }
+
+            #endregion
 
             #endregion
         }
