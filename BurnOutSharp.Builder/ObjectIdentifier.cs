@@ -113,8 +113,47 @@ namespace BurnOutSharp.Builder
         /// <param name="values">List of values to check against</param>
         /// <param name="index">Current index into the list</param>
         /// <returns>OID-IRI formatted string, if possible</returns>
-        /// <remarks>
-        public static string ParseOIDToOIDIRINotation(ulong[] values, ref int index)
+        /// <see href="http://www.oid-info.com/index.htm"/>
+        public static string ParseOIDToOIDIRINotation(ulong[] values)
+        {
+            // If we have an invalid set of values, we can't do anything
+            if (values == null || values.Length == 0)
+                return null;
+
+            // Set the initial index
+            int index = 0;
+
+            // Get a string builder for the path
+            var nameBuilder = new StringBuilder();
+
+            // Try to parse the standard value
+            string standard = ParseOIDToOIDIRINotation(values, ref index);
+            if (standard == null)
+                return null;
+
+            // Add the standard value to the output
+            nameBuilder.Append(standard);
+
+            // If we have no more items
+            if (index == values.Length)
+                return nameBuilder.ToString();
+
+            // Add trailing items as just values
+            nameBuilder.Append("/");
+            nameBuilder.Append(string.Join("/", values.Skip(index)));
+
+            // Create and return the string
+            return nameBuilder.ToString();
+        }
+
+        /// <summary>
+        /// Parse an OID in separated-value notation into OID-IRI notation
+        /// </summary>
+        /// <param name="values">List of values to check against</param>
+        /// <param name="index">Current index into the list</param>
+        /// <returns>OID-IRI formatted string, if possible</returns>
+        /// <see href="http://www.oid-info.com/index.htm"/>
+        private static string ParseOIDToOIDIRINotation(ulong[] values, ref int index)
         {
             // TODO: Once the modified OID-IRI formatting is done, make a compliant version
             return null;
@@ -502,8 +541,8 @@ namespace BurnOutSharp.Builder
                 case 3: goto oid_0_0_7_774_0_3;
                 case 4: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[GDMO packages]";
                 case 5: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Guidelines for the Definition of Managed Objects (GDMO) parameters]";
-                // TODO: case 6: goto oid_0_0_7_774_0_6;
-                // TODO: case 7: goto oid_0_0_7_774_0_7;
+                case 6: goto oid_0_0_7_774_0_6;
+                case 7: goto oid_0_0_7_774_0_7;
                 case 8: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Guidelines for the Definition of Managed Objects (GDMO) attribute groups]";
                 case 9: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Actions]";
                 case 10: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Guidelines for the Definition of Managed Objects (GDMO) notifications]";
@@ -622,6 +661,196 @@ namespace BurnOutSharp.Builder
 
         #endregion
 
+        // nameBinding
+        #region 0.0.7.774.0.6.*
+
+        oid_0_0_7_774_0_6:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]";
+            switch (values[index++])
+            {
+                case 4: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[au3CTPSource-augBidirectional]";
+                case 5: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[au3CTPSource-augSource]";
+                case 9: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[au4CTPSource-augBidirectional]";
+                case 10: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[au4CTPSource-augSource]";
+                case 11: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[augBidirectional-msTTPBidirectional]";
+                case 12: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[augSink-msTTPSink]";
+                case 13: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[augSource-msTTPSource]";
+                case 14: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[electricalSPITTPBidirectional-sdhNE]";
+                case 15: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[electricalSPITTPSink-sdhNE]";
+                case 16: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[electricalSPITTPSource-sdhNE]";
+                case 17: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[msCTPBidirectional-rsTTPBidirectional]";
+                case 18: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[msCTPSink-rsTTPBidirectional]";
+                case 19: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[msCTPSink-rsTTPSink]";
+                case 20: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[msCTPSource-rsTTPBidirectional]";
+                case 21: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[msCTPSource-rsTTPSource]";
+                case 22: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[msDatacomCTPBidirectional-msTTPBidirectional]";
+                case 23: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[msDatacomCTPSink-msTTPBidirectional]";
+                case 24: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[msDatacomCTPSink-msTTPSink]";
+                case 25: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[msDatacomCTPSource-msTTPBidirectional]";
+                case 26: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[msDatacomCTPSource-msTTPSource]";
+                case 27: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[msOrderwireCTPBidirectional-msTTPBidirectional]";
+                case 28: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[msOrderwireCTPSink-msTTPBidirectional]";
+                case 29: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[msOrderwireCTPSink-msTTPSink]";
+                case 30: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[msOrderwireCTPSource-msTTPBidirectional]";
+                case 31: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[msOrderwireCTPSource-msTTPSource]";
+                case 32: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[msTTPBidirectional-sdhNE]";
+                case 33: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[msTTPSink-sdhNE]";
+                case 34: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[msTTPSource-sdhNE]";
+                case 35: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[opticalSPITTPBidirectional-sdhNE]";
+                case 36: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[opticalSPITTPSink-sdhNE]";
+                case 37: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[opticalSPITTPSource-sdhNE]";
+                case 38: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[rsCTPBidirectional-electricalSPITTPBidirectional]";
+                case 39: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[rsCTPSink-electricalSPITTPBidirectional]";
+                case 40: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[rsCTPSink-electricalSPITTPSink]";
+                case 41: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[rsCTPSource-electricalSPITTPBidirectional]";
+                case 42: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[rsCTPSource-electricalSPITTPSource]";
+                case 43: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[rsCTPBidirectional-opticalSPITTPBidirectional]";
+                case 44: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[rsCTPSink-opticalSPITTPBidirectional]";
+                case 45: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[rsCTPSink-opticalSPITTPSink]";
+                case 46: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[rsCTPSource-opticalSPITTPBidirectional]";
+                case 47: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[rsCTPSource-opticalSPITTPSource]";
+                case 48: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[rsDatacomCTPBidirectional-rsTTPBidirectional]";
+                case 49: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[rsDatacomCTPSink-rsTTPBidirectional]";
+                case 50: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[rsDatacomCTPSink-rsTTPSink]";
+                case 51: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[rsDatacomCTPSource-rsTTPBidirectional]";
+                case 52: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[rsDatacomCTPSource-rsTTPSource]";
+                case 53: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[rsOrderwireCTPBidirectional-rsTTPBidirectional]";
+                case 54: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[rsOrderwireCTPSink-rsTTPBidirectional]";
+                case 55: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[rsOrderwireCTPSink-rsTTPSink]";
+                case 56: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[rsOrderwireCTPSource-rsTTPBidirectional]";
+                case 57: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[rsOrderwireCTPSource-rsTTPSource]";
+                case 58: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[rsTTPBidirectional-sdhNE]";
+                case 59: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[rsTTPSink-sdhNE]";
+                case 60: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[rsTTPSource-sdhNE]";
+                case 61: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[rsUserChannelCTPBidirectional-rsTTPBidirectional]";
+                case 62: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[rsUserChannelCTPSink-rsTTPBidirectional]";
+                case 63: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[rsUserChannelCTPSink-rsTTPSink]";
+                case 64: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[rsUserChannelCTPSource-rsTTPBidirectional]";
+                case 65: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[rsUserChannelCTPSource-rsTTPSource]";
+                case 69: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[tu11CTPSource-tug2Bidirectional]";
+                case 70: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[tu11CTPSource-tug2Source]";
+                case 74: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[tu12CTPSource-tug2Bidirectional]";
+                case 75: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[tu12CTPSource-tug2Source]";
+                case 79: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[tu2CTPSource-tug2Bidirectional]";
+                case 80: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[tu2CTPSource-tug2Source]";
+                case 84: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[tu3CTPSource-tug3Bidirectional]";
+                case 85: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[tu3CTPSource-tug3Source]";
+                case 86: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[tug2Bidirectional-tug3Bidirectional]";
+                case 87: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[tug2Sink-tug3Sink]";
+                case 88: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[tug2Source-tug3Source]";
+                case 97: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[vc11TTPSource-sdhNE]";
+                case 100: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[vc12TTPSource-sdhNE]";
+                case 103: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[vc2TTPSource-sdhNE]";
+                case 121: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[au3CTPBidirectionalR1-augBidirectional]";
+                case 122: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[au3CTPSinkR1-augBidirectional]";
+                case 123: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[au3CTPSinkR1-augSink]";
+                case 124: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[au4CTPBidirectionalR1-augBidirectional]";
+                case 125: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[au4CTPSinkR1-augBidirectional]";
+                case 126: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[au4CTPSinkR1-augSink]";
+                case 127: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[tu11CTPBidirectionalR1-tug2Bidirectional]";
+                case 128: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[tu11CTPSinkR1-tug2Bidirectional]";
+                case 129: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[tu11CTPSinkR1-tug2Sink]";
+                case 130: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[tu12CTPBidirectionalR1-tug2Bidirectional]";
+                case 131: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[tu12CTPSinkR1-tug2Bidirectional]";
+                case 132: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[tu12CTPSinkR1-tug2Sink]";
+                case 133: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[tu2CTPBidirectionalR1-tug2Bidirectional]";
+                case 134: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[tu2CTPSinkR1-tug2Bidirectional]";
+                case 135: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[tu2CTPSinkR1-tug2Sink]";
+                case 136: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[tu3CTPBidirectionalR1-tug3Bidirectional]";
+                case 137: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[tu3CTPSinkR1-tug3Bidirectional]";
+                case 138: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[tu3CTPSinkR1-tug3Sink]";
+                case 139: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[tug2Bidirectional-vc3TTPBidirectionalR1]";
+                case 140: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[tug2Sink-vc3TTPSinkR1]";
+                case 141: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[tug2Source-vc3TTPSourceR1]";
+                case 142: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[tug3Bidirectional-vc4TTPBidirectionalR1]";
+                case 143: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[tug3Sink-vc4TTPSinkR1]";
+                case 144: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[tug3Source-vc4TTPSourceR1]";
+                case 145: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[vc11TTPBidirectionalR1-sdhNE]";
+                case 146: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[vc11TTPSinkR1-sdhNE]";
+                case 147: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[vc12TTPBidirectionalR1-sdhNE]";
+                case 148: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[vc12TTPSinkR1-sdhNE]";
+                case 149: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[vc2TTPBidirectionalR1-sdhNE]";
+                case 150: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[vc2TTPSinkR1-sdhNE]";
+                case 151: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[vc3TTPBidirectionalR1-sdhNE]";
+                case 152: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[vc3TTPSinkR1-sdhNE]";
+                case 153: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[vc3TTPSourceR1-sdhNE]";
+                case 154: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[vc4TTPBidirectionalR1-sdhNE]";
+                case 155: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[vc4TTPSinkR1-sdhNE]";
+                case 156: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[vc4TTPSourceR1-sdhNE]";
+                case 157: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[vcnUserChannelCTPBidirectional-vc3TTPBidirectionalR1]";
+                case 158: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[vcnUserChannelCTPSink-vc3TTPBidirectionalR1]";
+                case 159: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[vcnUserChannelCTPSink-vc3TTPSinkR1]";
+                case 160: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[vcnUserChannelCTPSource-vc3TTPBidirectionalR1]";
+                case 161: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[vcnUserChannelCTPSource-vc3TTPSourceR1]";
+                case 162: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[vcnUserChannelCTPBidirectional-vc4TTPBidirectionalR1]";
+                case 163: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[vcnUserChannelCTPSink-vc4TTPBidirectionalR1]";
+                case 164: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[vcnUserChannelCTPSink-vc4TTPSinkR1]";
+                case 165: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[vcnUserChannelCTPSource-vc4TTPBidirectionalR1]";
+                case 166: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/[vcnUserChannelCTPSource-vc4TTPSourceR1]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Name bindings]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // attribute
+        #region 0.0.7.774.0.7.*
+
+        oid_0_0_7_774_0_7:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Attributes]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Attributes]/[electricalSPIPackage]";
+                case 2: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Attributes]/[au4CTPId]";
+                case 3: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Attributes]/[augId]";
+                case 4: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Attributes]/[c2SignalLabelExpected]";
+                case 5: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Attributes]/[c2SignalLabelReceive]";
+                case 6: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Attributes]/[c2SignalLabelSend]";
+                case 7: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Attributes]/[electricalSPITTPId]";
+                case 8: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Attributes]/[excessiveBERMtceInhibit]";
+                case 10: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Attributes]/[j1PathTraceExpected]";
+                case 11: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Attributes]/[j1PathTraceReceive]";
+                case 12: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Attributes]/[j1PathTraceSend]";
+                case 13: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Attributes]/[msCTPId]";
+                case 14: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Attributes]/[msDatacomCTPId]";
+                case 15: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Attributes]/[msOrderwireCTPId]";
+                case 16: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Attributes]/[msTTPId]";
+                case 17: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Attributes]/[opticalReach]";
+                case 18: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Attributes]/[opticalSPITTPId]";
+                case 19: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Attributes]/[opticalWavelength]";
+                case 20: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Attributes]/[pointerSinkType]";
+                case 21: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Attributes]/[pointerSourceType]";
+                case 22: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Attributes]/[rsCTPId]";
+                case 23: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Attributes]/[rsDatacomCTPId]";
+                case 24: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Attributes]/[rsOrderwireCTPId]";
+                case 25: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Attributes]/[rsTTPId]";
+                case 26: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Attributes]/[rsUserChannelCTPId]";
+                case 27: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Attributes]/[signalDegradeThreshold]";
+                case 28: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Attributes]/[stmLevel]";
+                case 29: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Attributes]/[tu11CTPId]";
+                case 30: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Attributes]/[tu12CTPId]";
+                case 31: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Attributes]/[tu2CTPId]";
+                case 32: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Attributes]/[tu3CTPId]";
+                case 33: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Attributes]/[tug2Id]";
+                case 34: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Attributes]/[tug3Id]";
+                case 35: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Attributes]/[v5SignalLabelExpected]";
+                case 36: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Attributes]/[v5SignalLabelReceive]";
+                case 37: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Attributes]/[v5SignalLabelSend]";
+                case 38: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Attributes]/[vc11TTPId]";
+                case 39: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Attributes]/[vc12TTPId]";
+                case 40: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Attributes]/[vc2TTPId]";
+                case 41: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Attributes]/[vc3TTPId]";
+                case 42: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Attributes]/[vc4TTPId]";
+                case 43: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Attributes]/[vcnUserChannelCTPId]";
+                case 44: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Attributes]/[trailTraceExpected]";
+                case 45: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Attributes]/[trailTraceReceive]";
+                case 46: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Attributes]/[trailTraceSend]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Information model]/[Attributes]/{values[index - 1]}";
+            }
+
+        #endregion
+
         #endregion
 
         // protocolSupport
@@ -662,11 +891,11 @@ namespace BurnOutSharp.Builder
             if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]";
             switch (values[index++])
             {
-                // TODO: case 1: goto oid_0_0_7_774_127_1;
-                // TODO: case 2: goto oid_0_0_7_774_127_2;
-                // TODO: case 3: goto oid_0_0_7_774_127_3;
-                // TODO: case 4: goto oid_0_0_7_774_127_4;
-                // TODO: case 5: goto oid_0_0_7_774_127_5;
+                case 1: goto oid_0_0_7_774_127_1;
+                case 2: goto oid_0_0_7_774_127_2;
+                case 3: goto oid_0_0_7_774_127_3;
+                case 4: goto oid_0_0_7_774_127_4;
+                case 5: goto oid_0_0_7_774_127_5;
                 // TODO: case 6: goto oid_0_0_7_774_127_6;
                 // TODO: case 7: goto oid_0_0_7_774_127_7;
                 // TODO: case 8: goto oid_0_0_7_774_127_8;
@@ -674,6 +903,933 @@ namespace BurnOutSharp.Builder
                 // TODO: case 10: goto oid_0_0_7_774_127_10;
                 default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/{values[index - 1]}";
             }
+
+        // part1, pm
+        #region 0.0.7.774.127.1.*
+
+        oid_0_0_7_774_127_1:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]";
+            switch (values[index++])
+            {
+                case 0: goto oid_0_0_7_774_127_1_0;
+                case 1: goto oid_0_0_7_774_127_1_1;
+                case 2: goto oid_0_0_7_774_127_1_2;
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/{values[index - 1]}";
+            }
+
+        // informationModel
+        #region 0.0.7.774.127.1.0.*
+
+        oid_0_0_7_774_127_1_0:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]";
+            switch (values[index++])
+            {
+                case 0: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Standard specific extension]";
+                case 1: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Functional unit packages]";
+                case 2: goto oid_0_0_7_774_127_1_0_2;
+                case 3: goto oid_0_0_7_774_127_1_0_3;
+                case 4: goto oid_0_0_7_774_127_1_0_4;
+                case 5: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Parameters]";
+                case 6: goto oid_0_0_7_774_127_1_0_6;
+                case 7: goto oid_0_0_7_774_127_1_0_7;
+                case 8: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Attribute groups]";
+                case 9: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Actions]";
+                case 10: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Notifications]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/{values[index - 1]}";
+            }
+
+        // asn1Module
+        #region 0.0.7.774.127.1.0.2.*
+
+        oid_0_0_7_774_127_1_0_2:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[ASN.1 modules]";
+            switch (values[index++])
+            {
+                case 0: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[ASN.1 modules]/[SDHPMASN1]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[ASN.1 modules]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // managedObjectClass
+        #region 0.0.7.774.127.1.0.3.*
+
+        oid_0_0_7_774_127_1_0_3:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Managed object classes]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Managed object classes]/[sdhCurrentData]";
+                case 2: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Managed object classes]/[rsCurrentData]";
+                case 3: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Managed object classes]/[rsCurrentDataTR]";
+                case 4: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Managed object classes]/[electricalSourceSPICurrentData]";
+                case 5: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Managed object classes]/[opticalSourceSPICurrentData]";
+                case 6: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Managed object classes]/[msCurrentData]";
+                case 7: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Managed object classes]/[msCurrentDataTR]";
+                case 8: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Managed object classes]/[protectionCurrentData]";
+                case 9: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Managed object classes]/[pathTerminationCurrentData]";
+                case 10: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Managed object classes]/[pathTerminationCurrentDataTR]";
+                case 11: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Managed object classes]/[msAdaptationCurrentData]";
+                case 12: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Managed object classes]/[rsHistoryData]";
+                case 13: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Managed object classes]/[electricalSPIHistoryData]";
+                case 14: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Managed object classes]/[opticalSPIHistoryData]";
+                case 15: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Managed object classes]/[msHistoryData]";
+                case 16: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Managed object classes]/[protectionHistoryData]";
+                case 17: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Managed object classes]/[pathTerminationHistoryData]";
+                case 18: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Managed object classes]/[msAdaptationHistoryData]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Managed object classes]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // package
+        #region 0.0.7.774.127.1.0.4.*
+
+        oid_0_0_7_774_127_1_0_4:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Packages]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Packages]/[cSESCurrentDataPackage]";
+                case 2: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Packages]/[farEndCSESCurrentDataPackage]";
+                case 3: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Packages]/[farEndCurrentDataPackage]";
+                case 4: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Packages]/[farEndHistoryDataPackage]";
+                case 5: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Packages]/[historyPackage]";
+                case 6: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Packages]/[laserBiasCurrentDataPackage]";
+                case 7: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Packages]/[laserBiasTideMarkPackage]";
+                case 8: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Packages]/[laserTemperatureCurrentDataPackage]";
+                case 9: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Packages]/[laserTemperatureTideMarkPackage]";
+                case 10: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Packages]/[oFSCurrentDataPackage]";
+                case 11: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Packages]/[oFSHistoryDataPackage]";
+                case 12: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Packages]/[transmitPowerLevelCurrentDataPackage]";
+                case 13: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Packages]/[transmitPowerLevelTideMarkPackage]";
+                case 14: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Packages]/[thresholdResetPackage]";
+                case 15: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Packages]/[uASCurrentDataPackage]";
+                case 16: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Packages]/[uASHistoryDataPackage]";
+                case 17: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Packages]/[unavailableTimeAlarmPackage]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Packages]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // nameBinding
+        #region 0.0.7.774.127.1.0.6.*
+
+        oid_0_0_7_774_127_1_0_6:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Name bindings]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Name bindings]/[historyData-sdhCurrentData]";
+                case 2: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Name bindings]/[msCurrentData-msTTPSink]";
+                case 3: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Name bindings]/[msCurrentDataTR-msTTPSink]";
+                case 4: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Name bindings]/[msCurrentData-protectedTTPSink]";
+                case 5: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Name bindings]/[msCurrentDataTR-protectedTTPSink]";
+                case 6: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Name bindings]/[protectionCurrentData-protectionUnit]";
+                case 7: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Name bindings]/[rsCurrentData-rsTTPSink]";
+                case 8: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Name bindings]/[rsCurrentDataTR-rsTTPSink]";
+                case 9: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Name bindings]/[pathTerminationCurrentData-vc4TTPSink]";
+                case 10: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Name bindings]/[pathTerminationCurrentData-vc3TTPSink]";
+                case 11: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Name bindings]/[pathTerminationCurrentData-vc2TTPSink]";
+                case 12: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Name bindings]/[pathTerminationCurrentData-vc12TTPSink]";
+                case 13: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Name bindings]/[pathTerminationCurrentData-vc11TTPSink]";
+                case 14: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Name bindings]/[pathTerminationCurrentDataTR-vc4TTPSink]";
+                case 15: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Name bindings]/[pathTerminationCurrentDataTR-vc3TTPSink]";
+                case 16: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Name bindings]/[pathTerminationCurrentDataTR-vc2TTPSink]";
+                case 17: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Name bindings]/[pathTerminationCurrentDataTR-vc12TTPSink]";
+                case 18: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Name bindings]/[pathTerminationCurrentDataTR-vc11TTPSink]";
+                case 19: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Name bindings]/[electricalSourceSPICurrentData-electricalSPITTPSource]";
+                case 20: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Name bindings]/[opticalSourceSPICurrentData-opticalSPITTPSource-electricalSPITTPSource]";
+                case 21: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Name bindings]/[msAdaptationCurrentData-au4CTPSource]";
+                case 22: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Name bindings]/[msAdaptationCurrentData-au3CTPSource]";
+                case 23: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Name bindings]/[pathTerminationCurrentData-vc4TTPSinkR1]";
+                case 24: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Name bindings]/[pathTerminationCurrentData-vc3TTPSinkR1]";
+                case 25: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Name bindings]/[pathTerminationCurrentData-vc2TTPSinkR1]";
+                case 26: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Name bindings]/[pathTerminationCurrentData-vc12TTPSinkR1]";
+                case 27: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Name bindings]/[pathTerminationCurrentData-vc11TTPSinkR1]";
+                case 28: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Name bindings]/[pathTerminationCurrentDataTR-vc4TTPSinkR1]";
+                case 29: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Name bindings]/[pathTerminationCurrentDataTR-vc3TTPSinkR1]";
+                case 30: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Name bindings]/[pathTerminationCurrentDataTR-vc2TTPSinkR1]";
+                case 31: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Name bindings]/[pathTerminationCurrentDataTR-vc12TTPSinkR1]";
+                case 32: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Name bindings]/[pathTerminationCurrentDataTR-vc11TTPSinkR1]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Name bindings]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // attribute
+        #region 0.0.7.774.127.1.0.7.*
+
+        oid_0_0_7_774_127_1_0_7:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Attributes]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Attributes]/[cSESEvent]";
+                case 2: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Attributes]/[eS]";
+                case 3: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Attributes]/[fEES]";
+                case 4: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Attributes]/[fEBBE]";
+                case 5: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Attributes]/[fECSESEvent]";
+                case 6: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Attributes]/[laserBias]";
+                case 7: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Attributes]/[laserBiasTideMarkMax]";
+                case 8: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Attributes]/[laserBiasTideMarkMin]";
+                case 9: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Attributes]/[laserTemperature]";
+                case 10: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Attributes]/[laserTemperatureTideMarkMax]";
+                case 11: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Attributes]/[laserTemperatureTideMarkMin]";
+                case 12: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Attributes]/[nCSES]";
+                case 13: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Attributes]/[bBE]";
+                case 14: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Attributes]/[oFS]";
+                case 15: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Attributes]/[pSC]";
+                case 16: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Attributes]/[pSD]";
+                case 17: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Attributes]/[sES]";
+                case 18: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Attributes]/[fESES]";
+                case 19: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Attributes]/[transmitPowerLevel]";
+                case 20: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Attributes]/[transmitPowerLevelTideMarkMax]";
+                case 21: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Attributes]/[transmitPowerLevelTideMarkMin]";
+                case 22: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Attributes]/[uAS]";
+                case 23: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Attributes]/[pJCHigh]";
+                case 24: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Attributes]/[pJCLow]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Information model]/[Attributes]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        #endregion
+
+        // protocolSupport
+        #region 0.0.7.774.127.1.1.*
+
+        oid_0_0_7_774_127_1_1:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Protocol support]";
+            switch (values[index++])
+            {
+                case 0: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Protocol support]/[Application contexts]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Protocol support]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // protocolSupport
+        #region 0.0.7.774.127.1.2.*
+
+        oid_0_0_7_774_127_1_2:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Management applications support]";
+            switch (values[index++])
+            {
+                case 0: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Management applications support]/[Standard specific extension]";
+                case 1: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Management applications support]/[Functional unit packages]";
+                case 2: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Management applications support]/[ASN.1 modules]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Recommendation ITU-T G.774.1]/[Management applications support]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        #endregion
+
+        // conf
+        #region 0.0.7.774.127.2.*
+
+        oid_0_0_7_774_127_2:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]";
+            switch (values[index++])
+            {
+                case 0: goto oid_0_0_7_774_127_2_0;
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/{values[index - 1]}";
+            }
+
+        // informationModel
+        #region 0.0.7.774.127.2.0.*
+
+        oid_0_0_7_774_127_2_0:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]";
+            switch (values[index++])
+            {
+                case 2: goto oid_0_0_7_774_127_2_0_2;
+                case 3: goto oid_0_0_7_774_127_2_0_3;
+                case 5: goto oid_0_0_7_774_127_2_0_5;
+                case 6: goto oid_0_0_7_774_127_2_0_6;
+                case 9: goto oid_0_0_7_774_127_2_0_9;
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/{values[index - 1]}";
+            }
+
+        // asn1Module
+        #region 0.0.7.774.127.2.0.2.*
+
+        oid_0_0_7_774_127_2_0_2:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[ASN.1 modules]";
+            switch (values[index++])
+            {
+                case 0: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[ASN.1 modules]/[SDHConfASN1]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[ASN.1 modules]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // managedObjectClass
+        #region 0.0.7.774.127.2.0.3.*
+
+        oid_0_0_7_774_127_2_0_3:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Managed object classes]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Managed object classes]/[modifiableAugBidirectional]";
+                case 2: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Managed object classes]/[modifiableAugSink]";
+                case 3: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Managed object classes]/[modifiableAugSource]";
+                case 4: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Managed object classes]/[modifiableTug3Bidirectional]";
+                case 5: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Managed object classes]/[modifiableTug3Sink]";
+                case 6: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Managed object classes]/[modifiableTug3Source]";
+                case 7: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Managed object classes]/[modifiableTug2Bidirectional]";
+                case 8: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Managed object classes]/[modifiableTug2Sink]";
+                case 9: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Managed object classes]/[modifiableTug2Source]";
+                case 18: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Managed object classes]/[modifiableVC2TTPSource]";
+                case 21: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Managed object classes]/[modifiableVC12TTPSource]";
+                case 24: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Managed object classes]/[modifiableVC11TTPSource]";
+                case 25: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Managed object classes]/[modifiableVC4TTPBidirectionalR1]";
+                case 26: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Managed object classes]/[modifiableVC4TTPSinkR1]";
+                case 27: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Managed object classes]/[modifiableVC4TTPSourceR1]";
+                case 28: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Managed object classes]/[modifiableVC3TTPBidirectionalR1]";
+                case 29: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Managed object classes]/[modifiableVC3TTPSinkR1]";
+                case 30: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Managed object classes]/[modifiableVC3TTPSourceR1]";
+                case 31: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Managed object classes]/[modifiableVC2TTPBidirectionalR1]";
+                case 32: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Managed object classes]/[modifiableVC2TTPSinkR1]";
+                case 33: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Managed object classes]/[modifiableVC12TTPBidirectionalR1]";
+                case 34: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Managed object classes]/[modifiableVC12TTPSinkR1]";
+                case 35: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Managed object classes]/[modifiableVC11TTPBidirectionalR1]";
+                case 36: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Managed object classes]/[modifiableVC11TTPSinkR1]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Managed object classes]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // parameter
+        #region 0.0.7.774.127.2.0.5.*
+
+        oid_0_0_7_774_127_2_0_5:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Parameters]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Parameters]/[defineSDHStructureError]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Parameters]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // nameBinding
+        #region 0.0.7.774.127.2.0.6.*
+
+        oid_0_0_7_774_127_2_0_6:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]";
+            switch (values[index++])
+            {
+                case 2: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[au3CTPSource-augSource]";
+                case 4: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[au4CTPSource-augSource]";
+                case 5: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[augSink-msTTPSink]";
+                case 6: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[augSource-msTTPSource]";
+                case 7: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[electricalSPITTPSink-sdhNE]";
+                case 8: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[electricalSPITTPSource-sdhNE]";
+                case 9: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[msCTPSink-rsTTPSink]";
+                case 10: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[msCTPSource-rsTTPSource]";
+                case 11: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[msDatacomCTPSink-msTTPSink]";
+                case 12: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[msDatacomCTPSource-msTTPSource]";
+                case 13: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[msOrderwireCTPSink-msTTPSink]";
+                case 14: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[msOrderwireCTPSource-msTTPSource]";
+                case 15: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[msTTPSink-sdhNE]";
+                case 16: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[msTTPSource-sdhNE]";
+                case 17: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[opticalSPITTPSink-sdhNE]";
+                case 18: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[opticalSPITTPSource-sdhNE]";
+                case 19: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[rsCTPSink-electricalSPITTPSink]";
+                case 20: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[rsCTPSource-electricalSPITTPSource]";
+                case 21: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[rsCTPSink-opticalSPITTPSink]";
+                case 22: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[rsCTPSource-opticalSPITTPSource]";
+                case 23: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[rsDatacomCTPSink-rsTTPSink]";
+                case 24: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[rsDatacomCTPSource-rsTTPSource]";
+                case 25: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[rsOrderwireCTPSink-rsTTPSink]";
+                case 26: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[rsOrderwireCTPSource-rsTTPSource]";
+                case 27: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[rsTTPSink-sdhNE]";
+                case 28: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[rsTTPSource-sdhNE]";
+                case 29: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[rsUserChannelCTPSink-rsTTPSink]";
+                case 30: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[rsUserChannelCTPSource-rsTTPSource]";
+                case 32: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[tu11CTPSource-tug2Source]";
+                case 34: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[tu12CTPSource-tug2Source]";
+                case 36: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[tu2CTPSource-tug2Source]";
+                case 38: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[tu3CTPSource-tug3Source]";
+                case 39: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[tug2Sink-tug3Sink]";
+                case 40: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[tug2Source-tug3Source]";
+                case 46: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[vc11TTPSource-sdhNE]";
+                case 48: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[vc12TTPSource-sdhNE]";
+                case 50: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[vc2TTPSource-sdhNE]";
+                case 59: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[au3CTPSinkR1-augSink]";
+                case 60: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[au4CTPSinkR1-augSink]";
+                case 61: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[tu11CTPSinkR1-tug2Sink]";
+                case 62: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[tu12CTPSinkR1-tug2Sink]";
+                case 63: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[tu2CTPSinkR1-tug2Sink]";
+                case 64: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[tu3CTPSinkR1-tug3Sink]";
+                case 65: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[tug2Sink-vc3TTPSinkR1]";
+                case 66: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[tug2Source-vc3TTPSourceR1]";
+                case 67: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[tug3Sink-vc4TTPSinkR1]";
+                case 68: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[tug3Source-vc4TTPSourceR1]";
+                case 69: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[vc11TTPSinkR1-sdhNE]";
+                case 70: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[vc12TTPSinkR1-sdhNE]";
+                case 71: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[vc2TTPSinkR1-sdhNE]";
+                case 72: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[vc3TTPSinkR1-sdhNE]";
+                case 73: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[vc3TTPSourceR1-sdhNE]";
+                case 74: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[vc4TTPSinkR1-sdhNE]";
+                case 75: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[vc4TTPSourceR1-sdhNE]";
+                case 76: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[vcnUserChannelCTPSink-vc3TTPSinkR1]";
+                case 77: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[vcnUserChannelCTPSource-vc3TTPSourceR1]";
+                case 78: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[vcnUserChannelCTPSink-vc4TTPSinkR1]";
+                case 79: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/[vcnUserChannelCTPSource-vc4TTPSourceR1]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Name bindings]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // action
+        #region 0.0.7.774.127.2.0.9.*
+
+        oid_0_0_7_774_127_2_0_9:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Action types]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Action types]/[defineAUGStructure]";
+                case 2: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Action types]/[defineVC4Structure]";
+                case 3: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Action types]/[defineVC3Structure]";
+                case 4: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Action types]/[defineTug3Structure]";
+                case 5: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Action types]/[defineTug2Structure]";
+                case 6: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Action types]/[defineClientType]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) configuration of the payload structure for the network element view]/[Information model]/[Action types]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        #endregion
+
+        #endregion
+
+        // prot
+        #region 0.0.7.774.127.3.*
+
+        oid_0_0_7_774_127_3:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]";
+            switch (values[index++])
+            {
+                case 0: goto oid_0_0_7_774_127_3_0;
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/{values[index - 1]}";
+            }
+
+        // informationModel
+        #region 0.0.7.774.127.3.0.*
+
+        oid_0_0_7_774_127_3_0:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]";
+            switch (values[index++])
+            {
+                case 2: goto oid_0_0_7_774_127_3_0_2;
+                case 3: goto oid_0_0_7_774_127_3_0_3;
+                case 4: goto oid_0_0_7_774_127_3_0_4;
+                case 5: goto oid_0_0_7_774_127_3_0_5;
+                case 6: goto oid_0_0_7_774_127_3_0_6;
+                case 7: goto oid_0_0_7_774_127_3_0_7;
+                case 9: goto oid_0_0_7_774_127_3_0_9;
+                case 10: goto oid_0_0_7_774_127_3_0_10;
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/{values[index - 1]}";
+            }
+
+        // asn1Module
+        #region 0.0.7.774.127.3.0.2.*
+
+        oid_0_0_7_774_127_3_0_2:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[ASN.1 modules]";
+            switch (values[index++])
+            {
+                case 0: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[ASN.1 modules]/[SDHProtASN1]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[ASN.1 modules]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // managedObjectClass
+        #region 0.0.7.774.127.3.0.3.*
+
+        oid_0_0_7_774_127_3_0_3:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Managed object classes]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Managed object classes]/[apsReportRecord]";
+                case 2: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Managed object classes]/[protectedTTPBidirectional]";
+                case 3: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Managed object classes]/[protectedTTPSink]";
+                case 4: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Managed object classes]/[protectedTTPSource]";
+                case 5: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Managed object classes]/[protectionGroup]";
+                case 6: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Managed object classes]/[protectionUnit]";
+                case 7: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Managed object classes]/[sdhMSProtectionGroup]";
+                case 8: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Managed object classes]/[sdhMSProtectionUnit]";
+                case 9: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Managed object classes]/[unprotectedCTPBidirectional]";
+                case 10: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Managed object classes]/[unprotectedCTPSink]";
+                case 11: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Managed object classes]/[unprotectedCTPSource]";
+                case 12: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Managed object classes]/[protectionGroupR1]";
+                case 13: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Managed object classes]/[sdhMSProtectionGroupR1]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Managed object classes]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // package
+        #region 0.0.7.774.127.3.0.4.*
+
+        oid_0_0_7_774_127_3_0_4:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Packages]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Packages]/[extraTrafficControlPkg]";
+                case 2: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Packages]/[lastAttemptResultPkg]";
+                case 3: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Packages]/[protectionSwitchExercisePkg]";
+                case 4: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Packages]/[protectionMismatchStatusPkg]";
+                case 5: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Packages]/[priorityPkg]";
+                case 6: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Packages]/[sdhPriorityPkg]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Packages]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // parameter
+        #region 0.0.7.774.127.3.0.5.*
+
+        oid_0_0_7_774_127_3_0_5:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Parameters]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Parameters]/[invokeProtectionError]";
+                case 2: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Parameters]/[releaseProtectionError]";
+                case 3: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Parameters]/[protectionStatusParameter]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Parameters]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // nameBinding
+        #region 0.0.7.774.127.3.0.6.*
+
+        oid_0_0_7_774_127_3_0_6:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Name bindings]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Name bindings]/[protectedTTPBidirectional-sdhNE]";
+                case 2: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Name bindings]/[protectedTTPSink-sdhNE]";
+                case 3: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Name bindings]/[protectedTTPSource-sdhNE]";
+                case 4: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Name bindings]/[protectionGroup-managedElement]";
+                case 5: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Name bindings]/[augBidirectional-protectedTTPBidirectional]";
+                case 6: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Name bindings]/[augSink-protectedTTPSink]";
+                case 7: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Name bindings]/[augSource-protectedTTPSource]";
+                case 8: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Name bindings]/[protectionUnit-protectionGroup]";
+                case 9: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Name bindings]/[unprotectedCTPBidirectional-msTTPBidirectional]";
+                case 10: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Name bindings]/[unprotectedCTPSink-msTTPSink]";
+                case 11: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Name bindings]/[unprotectedCTPSource-msTTPSource]";
+                case 12: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Name bindings]/[protectionGroupR1-managedElement]";
+                case 13: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Name bindings]/[protectionUnit-protectionGroupR1]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Name bindings]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // attribute
+        #region 0.0.7.774.127.3.0.7.*
+
+        oid_0_0_7_774_127_3_0_7:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Attribute types]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Attribute types]/[channelNumber]";
+                case 2: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Attribute types]/[lastAttemptResult]";
+                case 3: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Attribute types]/[priority]";
+                case 4: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Attribute types]/[protectedTTPId]";
+                case 5: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Attribute types]/[reportedProtectionUnit]";
+                case 6: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Attribute types]/[protectionGroupId]";
+                case 7: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Attribute types]/[protectionGroupType]";
+                case 8: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Attribute types]/[protectionMismatchStatus]";
+                case 9: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Attribute types]/[protectionStatus]";
+                case 10: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Attribute types]/[protectionSwitchMode]";
+                case 11: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Attribute types]/[protectionUnitId]";
+                case 12: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Attribute types]/[protecting]";
+                case 13: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Attribute types]/[reliableResourcePointer]";
+                case 14: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Attribute types]/[revertive]";
+                case 15: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Attribute types]/[sdhPriority]";
+                case 16: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Attribute types]/[unprotectedCTPId]";
+                case 17: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Attribute types]/[unreliableResourcePointer]";
+                case 18: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Attribute types]/[waitToRestoreTime]";
+                case 19: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Attribute types]/[notifiedProtectionUnit]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Attribute types]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // action
+        #region 0.0.7.774.127.3.0.9.*
+
+        oid_0_0_7_774_127_3_0_9:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Action types]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Action types]/[invokeExercise]";
+                case 2: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Action types]/[invokeProtection]";
+                case 3: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Action types]/[releaseProtection]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Action types]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // notification
+        #region 0.0.7.774.127.3.0.10.*
+
+        oid_0_0_7_774_127_3_0_10:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Notifications]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Notifications]/[protectionSwitchReporting]";
+                case 2: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Notifications]/[protectionSwitchReportingR1]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of multiplex-section protection for the network element view]/[Information model]/[Notifications]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        #endregion
+
+        #endregion
+
+        // sncp
+        #region 0.0.7.774.127.4.*
+
+        oid_0_0_7_774_127_4:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of the subnetwork connection protection for the network element view]";
+            switch (values[index++])
+            {
+                case 0: goto oid_0_0_7_774_127_4_0;
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of the subnetwork connection protection for the network element view]/{values[index - 1]}";
+            }
+
+        // informationModel
+        #region 0.0.7.774.127.4.0.*
+
+        oid_0_0_7_774_127_4_0:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of the subnetwork connection protection for the network element view]/[Information model]";
+            switch (values[index++])
+            {
+                case 0: goto oid_0_0_7_774_127_4_0_0;
+                case 2: goto oid_0_0_7_774_127_4_0_2;
+                case 3: goto oid_0_0_7_774_127_4_0_3;
+                case 4: goto oid_0_0_7_774_127_4_0_4;
+                case 5: goto oid_0_0_7_774_127_4_0_5;
+                case 6: goto oid_0_0_7_774_127_4_0_6;
+                case 7: goto oid_0_0_7_774_127_4_0_7;
+                case 9: goto oid_0_0_7_774_127_4_0_9;
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of the subnetwork connection protection for the network element view]/[Information model]/{values[index - 1]}";
+            }
+
+        // standardSpecificExtension
+        #region 0.0.7.774.127.4.0.0.*
+
+        oid_0_0_7_774_127_4_0_0:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of the subnetwork connection protection for the network element view]/[Information model]/[Standard specific extensions]";
+            switch (values[index++])
+            {
+                case 0: goto oid_0_0_7_774_127_4_0_0_0;
+                case 1: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of the subnetwork connection protection for the network element view]/[Information model]/[Standard specific extensions]/[SubNetwork Connection Protection (SNCP) path trace mismatch criteria]";
+                case 2: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of the subnetwork connection protection for the network element view]/[Information model]/[Standard specific extensions]/[SubNetwork Connection Protection (SNCP) excessive error criteria]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of the subnetwork connection protection for the network element view]/[Information model]/[Standard specific extensions]/{values[index - 1]}";
+            }
+
+        // sncpProtectionCriteria
+        #region 0.0.7.774.127.4.0.0.0.*
+
+        oid_0_0_7_774_127_4_0_0_0:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of the subnetwork connection protection for the network element view]/[Information model]/[Standard specific extensions]/[sncpProtectionCriteria]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of the subnetwork connection protection for the network element view]/[Information model]/[Standard specific extensions]/[sncpProtectionCriteria]/[sncpPathTraceMismatchCriteria]";
+                case 2: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of the subnetwork connection protection for the network element view]/[Information model]/[Standard specific extensions]/[sncpProtectionCriteria]/[sncpExcessiveErrorCriteria]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of the subnetwork connection protection for the network element view]/[Information model]/[Standard specific extensions]/[sncpProtectionCriteria]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        #endregion
+
+        // informationModel
+        #region 0.0.7.774.127.4.0.2.*
+
+        oid_0_0_7_774_127_4_0_2:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of the subnetwork connection protection for the network element view]/[Information model]/[ASN.1 modules]";
+            switch (values[index++])
+            {
+                case 0: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of the subnetwork connection protection for the network element view]/[Information model]/[ASN.1 modules]/[SDHSNCPASN1]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of the subnetwork connection protection for the network element view]/[Information model]/[ASN.1 modules]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // managedObjectClass
+        #region 0.0.7.774.127.4.0.3.*
+
+        oid_0_0_7_774_127_4_0_3:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of the subnetwork connection protection for the network element view]/[Information model]/[Managed object classes]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of the subnetwork connection protection for the network element view]/[Information model]/[Managed object classes]/[connectionProtectionGroup]";
+                case 2: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of the subnetwork connection protection for the network element view]/[Information model]/[Managed object classes]/[connectionProtection]";
+                case 3: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of the subnetwork connection protection for the network element view]/[Information model]/[Managed object classes]/[mpConnectionProtection]";
+                case 4: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of the subnetwork connection protection for the network element view]/[Information model]/[Managed object classes]/[sncpFabric]";
+                case 5: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of the subnetwork connection protection for the network element view]/[Information model]/[Managed object classes]/[connectionProtectionGroupR1]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of the subnetwork connection protection for the network element view]/[Information model]/[Managed object classes]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // package
+        #region 0.0.7.774.127.4.0.4.*
+
+        oid_0_0_7_774_127_4_0_4:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of the subnetwork connection protection for the network element view]/[Information model]/[Packages]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of the subnetwork connection protection for the network element view]/[Information model]/[Packages]/[holdOffTimePackage]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of the subnetwork connection protection for the network element view]/[Information model]/[Packages]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // parameter
+        #region 0.0.7.774.127.4.0.5.*
+
+        oid_0_0_7_774_127_4_0_5:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of the subnetwork connection protection for the network element view]/[Information model]/[Parameters]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of the subnetwork connection protection for the network element view]/[Information model]/[Parameters]/[switchStatusParameter]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of the subnetwork connection protection for the network element view]/[Information model]/[Parameters]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // nameBinding
+        #region 0.0.7.774.127.4.0.6.*
+
+        oid_0_0_7_774_127_4_0_6:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of the subnetwork connection protection for the network element view]/[Information model]/[Name bindings]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of the subnetwork connection protection for the network element view]/[Information model]/[Name bindings]/[connectionProtection-connectionProtectionGroup]";
+                case 2: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of the subnetwork connection protection for the network element view]/[Information model]/[Name bindings]/[connectionProtectionGroup-sncpFabric]";
+                case 3: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of the subnetwork connection protection for the network element view]/[Information model]/[Name bindings]/[crossConnection-mpConnectionProtection]";
+                case 4: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of the subnetwork connection protection for the network element view]/[Information model]/[Name bindings]/[mpConnectionProtection-connectionProtectionGroup]";
+                case 5: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of the subnetwork connection protection for the network element view]/[Information model]/[Name bindings]/[crossConnection-sncpFabric]";
+                case 6: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of the subnetwork connection protection for the network element view]/[Information model]/[Name bindings]/[mpCrossConnection-sncpFabric]";
+                case 7: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of the subnetwork connection protection for the network element view]/[Information model]/[Name bindings]/[connectionProtection-connectionProtectionGroupR1]";
+                case 8: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of the subnetwork connection protection for the network element view]/[Information model]/[Name bindings]/[connectionProtectionGroupR1-sncpFabric]";
+                case 9: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of the subnetwork connection protection for the network element view]/[Information model]/[Name bindings]/[mpConnectionProtection-connectionProtectionGroupR1]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of the subnetwork connection protection for the network element view]/[Information model]/[Name bindings]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // attribute
+        #region 0.0.7.774.127.4.0.7.*
+
+        oid_0_0_7_774_127_4_0_7:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of the subnetwork connection protection for the network element view]/[Information model]/[Attribute types]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of the subnetwork connection protection for the network element view]/[Information model]/[Attribute types]/[holdOffTime]";
+                case 2: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of the subnetwork connection protection for the network element view]/[Information model]/[Attribute types]/[protectionCriteria]";
+                case 3: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of the subnetwork connection protection for the network element view]/[Information model]/[Attribute types]/[switchStatus]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of the subnetwork connection protection for the network element view]/[Information model]/[Attribute types]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // attribute
+        #region 0.0.7.774.127.4.0.9.*
+
+        oid_0_0_7_774_127_4_0_9:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of the subnetwork connection protection for the network element view]/[Information model]/[Action types]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of the subnetwork connection protection for the network element view]/[Information model]/[Action types]/[protectedConnect]";
+                case 2: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of the subnetwork connection protection for the network element view]/[Information model]/[Action types]/[protectUnprotect]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of the subnetwork connection protection for the network element view]/[Information model]/[Action types]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        #endregion
+
+        #endregion
+
+        // cs
+        #region 0.0.7.774.127.5.*
+
+        oid_0_0_7_774_127_5:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) management of connection supervision functionality (HCS/LCS) for the network element view]";
+            switch (values[index++])
+            {
+                case 0: goto oid_0_0_7_774_127_5_0;
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) management of connection supervision functionality (HCS/LCS) for the network element view]/{values[index - 1]}";
+            }
+
+        // informationModel
+        #region 0.0.7.774.127.5.0.*
+
+        oid_0_0_7_774_127_5_0:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) management of connection supervision functionality (HCS/LCS) for the network element view]/[Information model]";
+            switch (values[index++])
+            {
+                case 2: goto oid_0_0_7_774_127_5_0_2;
+                case 3: goto oid_0_0_7_774_127_5_0_3;
+                case 4: goto oid_0_0_7_774_127_5_0_4;
+                case 6: goto oid_0_0_7_774_127_5_0_6;
+                case 7: goto oid_0_0_7_774_127_5_0_7;
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) management of connection supervision functionality (HCS/LCS) for the network element view]/[Information model]/{values[index - 1]}";
+            }
+
+        // asn1Module
+        #region 0.0.7.774.127.5.0.2.*
+
+        oid_0_0_7_774_127_5_0_2:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) management of connection supervision functionality (HCS/LCS) for the network element view]/[Information model]/[ASN.1 modules]";
+            switch (values[index++])
+            {
+                case 0: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) management of connection supervision functionality (HCS/LCS) for the network element view]/[Information model]/[ASN.1 modules]/[SDHCSASN1]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) management of connection supervision functionality (HCS/LCS) for the network element view]/[Information model]/[ASN.1 modules]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // managedObjectClass
+        #region 0.0.7.774.127.5.0.3.*
+
+        oid_0_0_7_774_127_5_0_3:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) management of connection supervision functionality (HCS/LCS) for the network element view]/[Information model]/[Managed object classes]";
+            switch (values[index++])
+            {
+                case 3: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) management of connection supervision functionality (HCS/LCS) for the network element view]/[Information model]/[Managed object classes]/[au4SupervisedCTPSource]";
+                case 6: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) management of connection supervision functionality (HCS/LCS) for the network element view]/[Information model]/[Managed object classes]/[au3SupervisedCTPSource]";
+                case 9: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) management of connection supervision functionality (HCS/LCS) for the network element view]/[Information model]/[Managed object classes]/[tu3SupervisedCTPSource]";
+                case 12: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) management of connection supervision functionality (HCS/LCS) for the network element view]/[Information model]/[Managed object classes]/[tu2SupervisedCTPSource]";
+                case 15: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) management of connection supervision functionality (HCS/LCS) for the network element view]/[Information model]/[Managed object classes]/[tu12SupervisedCTPSource]";
+                case 18: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) management of connection supervision functionality (HCS/LCS) for the network element view]/[Information model]/[Managed object classes]/[tu11SupervisedCTPSource]";
+                case 19: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) management of connection supervision functionality (HCS/LCS) for the network element view]/[Information model]/[Managed object classes]/[au4SupervisedCTPBidirectionalR1]";
+                case 20: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) management of connection supervision functionality (HCS/LCS) for the network element view]/[Information model]/[Managed object classes]/[au4SupervisedCTPSinkR1]";
+                case 21: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) management of connection supervision functionality (HCS/LCS) for the network element view]/[Information model]/[Managed object classes]/[au3SupervisedCTPBidirectionalR1]";
+                case 22: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) management of connection supervision functionality (HCS/LCS) for the network element view]/[Information model]/[Managed object classes]/[au3SupervisedCTPSinkR1]";
+                case 23: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) management of connection supervision functionality (HCS/LCS) for the network element view]/[Information model]/[Managed object classes]/[tu3SupervisedCTPBidirectionalR1]";
+                case 24: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) management of connection supervision functionality (HCS/LCS) for the network element view]/[Information model]/[Managed object classes]/[tu3SupervisedCTPSinkR1]";
+                case 25: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) management of connection supervision functionality (HCS/LCS) for the network element view]/[Information model]/[Managed object classes]/[tu2SupervisedCTPBidirectionalR1]";
+                case 26: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) management of connection supervision functionality (HCS/LCS) for the network element view]/[Information model]/[Managed object classes]/[tu2SupervisedCTPSinkR1]";
+                case 27: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) management of connection supervision functionality (HCS/LCS) for the network element view]/[Information model]/[Managed object classes]/[tu12SupervisedCTPBidirectionalR1]";
+                case 28: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) management of connection supervision functionality (HCS/LCS) for the network element view]/[Information model]/[Managed object classes]/[tu12SupervisedCTPSinkR1]";
+                case 29: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) management of connection supervision functionality (HCS/LCS) for the network element view]/[Information model]/[Managed object classes]/[tu11SupervisedCTPBidirectionalR1]";
+                case 30: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) management of connection supervision functionality (HCS/LCS) for the network element view]/[Information model]/[Managed object classes]/[tu11SupervisedCTPSinkR1]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) management of connection supervision functionality (HCS/LCS) for the network element view]/[Information model]/[Managed object classes]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // package
+        #region 0.0.7.774.127.5.0.4.*
+
+        oid_0_0_7_774_127_5_0_4:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) management of connection supervision functionality (HCS/LCS) for the network element view]/[Information model]/[Packages]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) management of connection supervision functionality (HCS/LCS) for the network element view]/[Information model]/[Packages]/[vc11-2SupervisionBidirectionalPackage]";
+                case 3: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) management of connection supervision functionality (HCS/LCS) for the network element view]/[Information model]/[Packages]/[vc11-2SupervisionSourcePackage]";
+                case 4: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) management of connection supervision functionality (HCS/LCS) for the network element view]/[Information model]/[Packages]/[vc3-4SupervisionBidirectionalPackage]";
+                case 6: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) management of connection supervision functionality (HCS/LCS) for the network element view]/[Information model]/[Packages]/[vc3-4SupervisionSourcePackage]";
+                case 7: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) management of connection supervision functionality (HCS/LCS) for the network element view]/[Information model]/[Packages]/[vc11-2SupervisionSinkPackageR1]";
+                case 8: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) management of connection supervision functionality (HCS/LCS) for the network element view]/[Information model]/[Packages]/[vc3-4SupervisionSinkPackageR1]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) management of connection supervision functionality (HCS/LCS) for the network element view]/[Information model]/[Packages]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // nameBinding
+        #region 0.0.7.774.127.5.0.6.*
+
+        oid_0_0_7_774_127_5_0_6:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) management of connection supervision functionality (HCS/LCS) for the network element view]/[Information model]/[Name bindings]";
+            switch (values[index++])
+            {
+                case 7: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) management of connection supervision functionality (HCS/LCS) for the network element view]/[Information model]/[Name bindings]/[pathTerminationCurrentData-au4SupervisedCTPSinkR1]";
+                case 8: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) management of connection supervision functionality (HCS/LCS) for the network element view]/[Information model]/[Name bindings]/[pathTerminationCurrentData-au3SupervisedCTPSinkR1]";
+                case 9: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) management of connection supervision functionality (HCS/LCS) for the network element view]/[Information model]/[Name bindings]/[pathTerminationCurrentData-tu3SupervisedCTPSinkR1]";
+                case 10: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) management of connection supervision functionality (HCS/LCS) for the network element view]/[Information model]/[Name bindings]/[pathTerminationCurrentData-tu2SupervisedCTPSinkR1]";
+                case 11: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) management of connection supervision functionality (HCS/LCS) for the network element view]/[Information model]/[Name bindings]/[pathTerminationCurrentData-tu12SupervisedCTPSinkR1]";
+                case 12: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) management of connection supervision functionality (HCS/LCS) for the network element view]/[Information model]/[Name bindings]/[pathTerminationCurrentData-tu11SupervisedCTPSinkR1]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) management of connection supervision functionality (HCS/LCS) for the network element view]/[Information model]/[Name bindings]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // attribute
+        #region 0.0.7.774.127.5.0.7.*
+
+        oid_0_0_7_774_127_5_0_7:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) management of connection supervision functionality (HCS/LCS) for the network element view]/[Information model]/[Attribute types]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) management of connection supervision functionality (HCS/LCS) for the network element view]/[Information model]/[Attribute types]/[generatorEnabled]";
+                case 2: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) management of connection supervision functionality (HCS/LCS) for the network element view]/[Information model]/[Attribute types]/[monitorActive]";
+                case 3: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) management of connection supervision functionality (HCS/LCS) for the network element view]/[Information model]/[Attribute types]/[j1PathTraceReceive]";
+                case 4: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) management of connection supervision functionality (HCS/LCS) for the network element view]/[Information model]/[Attribute types]/[j1PathTraceSend]";
+                case 5: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) management of connection supervision functionality (HCS/LCS) for the network element view]/[Information model]/[Attribute types]/[j2PathTraceExpected]";
+                case 6: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) management of connection supervision functionality (HCS/LCS) for the network element view]/[Information model]/[Attribute types]/[j2PathTraceReceive]";
+                case 7: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) management of connection supervision functionality (HCS/LCS) for the network element view]/[Information model]/[Attribute types]/[j2PathTraceSend]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) management of connection supervision functionality (HCS/LCS) for the network element view]/[Information model]/[Attribute types]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        #endregion
+
+        #endregion
 
         #endregion
 
@@ -2220,7 +3376,6 @@ namespace BurnOutSharp.Builder
                 case 9997:
                 case 9998:
                 case 9999: return "/ISO/Identified-Organization/[Reserved]";
-                // TODO: Left off at http://www.oid-info.com/get/1.3.210
                 default: return $"/ISO/Identified-Organization/{values[index - 1]}";
             }
 
@@ -2539,7 +3694,7 @@ namespace BurnOutSharp.Builder
         #endregion
 
         // network-layer, network-layer-management
-        #region 2.13_*
+        #region 2.13.*
 
         oid_2_13:
 
@@ -2553,7 +3708,7 @@ namespace BurnOutSharp.Builder
         #endregion
 
         // transport-layer, transport-layer-management
-        #region 2.14_*
+        #region 2.14.*
 
         oid_2_14:
 
@@ -2567,7 +3722,7 @@ namespace BurnOutSharp.Builder
         #endregion
 
         // datalink-layer, datalink-layer-management, datalink-layer-management-information
-        #region 2.15_*
+        #region 2.15.*
 
         oid_2_15:
 
@@ -2581,7 +3736,7 @@ namespace BurnOutSharp.Builder
         #endregion
 
         // country
-        #region 2.16_*
+        #region 2.16.*
 
         oid_2_16:
 
@@ -2796,7 +3951,7 @@ namespace BurnOutSharp.Builder
         #endregion
 
         // registration-procedures
-        #region 2.17_*
+        #region 2.17.*
 
         oid_2_17:
 
@@ -2814,7 +3969,7 @@ namespace BurnOutSharp.Builder
         #endregion
 
         // physical-layer, physical-layer-management
-        #region 2.18_*
+        #region 2.18.*
 
         oid_2_18:
 
@@ -2828,7 +3983,7 @@ namespace BurnOutSharp.Builder
         #endregion
 
         // mheg
-        #region 2.19_*
+        #region 2.19.*
 
         oid_2_19:
 
@@ -2842,7 +3997,7 @@ namespace BurnOutSharp.Builder
         #endregion
 
         // genericULS, generic-upper-layers-security, guls
-        #region 2.20_*
+        #region 2.20.*
 
         oid_2_20:
 
@@ -2861,7 +4016,7 @@ namespace BurnOutSharp.Builder
         #endregion
 
         // transport-layer-security-protocol
-        #region 2.21_*
+        #region 2.21.*
 
         oid_2_21:
 
@@ -2875,7 +4030,7 @@ namespace BurnOutSharp.Builder
         #endregion
 
         // network-layer-security-protocol
-        #region 2.22_*
+        #region 2.22.*
 
         oid_2_22:
 
@@ -2889,7 +4044,7 @@ namespace BurnOutSharp.Builder
         #endregion
 
         // international-organizations
-        #region 2.23_*
+        #region 2.23.*
 
         oid_2_23:
 
@@ -2922,7 +4077,7 @@ namespace BurnOutSharp.Builder
         #endregion
 
         // sios
-        #region 2.24_*
+        #region 2.24.*
 
         oid_2_24:
 
@@ -2936,7 +4091,7 @@ namespace BurnOutSharp.Builder
         #endregion
 
         // uuid [TODO: Requires 128-bit values]
-        #region 2.25_*
+        #region 2.25.*
 
         oid_2_25:
 
@@ -2944,12 +4099,12 @@ namespace BurnOutSharp.Builder
             switch (values[index++])
             {
                 case 0: return "/Joint-ISO-ITU-T/UUID/00000000-0000-0000-0000-000000000000";
-                case 288786655511405443130567505384701230: return "/Joint-ISO-ITU-T/UUID/00379e48-0a2b-1085-b288-0002a5d5fd2e";
-                case 987895962269883002155146617097157934: return "/Joint-ISO-ITU-T/UUID/00be4308-0c89-1085-8ea0-0002a5d5fd2e";
-                case 1858228783942312576083372383319475483: return "/Joint-ISO-ITU-T/UUID/0165e1c0-a655-11e0-95b8-0002a5d5c51b";
-                case 2474299330026746002885628159579243803: return "/Joint-ISO-ITU-T/UUID/01dc8860-25fb-11da-82b2-0002a5d5c51b";
-                case 3263645701162998421821186056373271854: return "/Joint-ISO-ITU-T/UUID/02748e28-08c4-1085-b21d-0002a5d5fd2e";
-                case 3325839809379844461264382260940242222: return "/Joint-ISO-ITU-T/UUID/02808890-0ad8-1085-9bdf-0002a5d5fd2e";
+                //case 288786655511405443130567505384701230: return "/Joint-ISO-ITU-T/UUID/00379e48-0a2b-1085-b288-0002a5d5fd2e";
+                //case 987895962269883002155146617097157934: return "/Joint-ISO-ITU-T/UUID/00be4308-0c89-1085-8ea0-0002a5d5fd2e";
+                //case 1858228783942312576083372383319475483: return "/Joint-ISO-ITU-T/UUID/0165e1c0-a655-11e0-95b8-0002a5d5c51b";
+                //case 2474299330026746002885628159579243803: return "/Joint-ISO-ITU-T/UUID/01dc8860-25fb-11da-82b2-0002a5d5c51b";
+                //case 3263645701162998421821186056373271854: return "/Joint-ISO-ITU-T/UUID/02748e28-08c4-1085-b21d-0002a5d5fd2e";
+                //case 3325839809379844461264382260940242222: return "/Joint-ISO-ITU-T/UUID/02808890-0ad8-1085-9bdf-0002a5d5fd2e";
                 // TODO: Left off at http://www.oid-info.com/get/2.25.3664154270495270126161055518190585115
                 default: return $"/Joint-ISO-ITU-T/UUID/{values[index - 1]}";
             }
@@ -2957,7 +4112,7 @@ namespace BurnOutSharp.Builder
         #endregion
 
         // odp
-        #region 2.26_*
+        #region 2.26.*
 
         oid_2_26:
 
@@ -2971,7 +4126,7 @@ namespace BurnOutSharp.Builder
         #endregion
 
         // tag-based, nid
-        #region 2.27_*
+        #region 2.27.*
 
         oid_2_27:
 
@@ -2986,7 +4141,7 @@ namespace BurnOutSharp.Builder
         #endregion
 
         // its
-        #region 2.28_*
+        #region 2.28.*
 
         oid_2_28:
 
@@ -3003,7 +4158,7 @@ namespace BurnOutSharp.Builder
         #endregion
 
         // upu
-        #region 2.40_*
+        #region 2.40.*
 
         oid_2_40:
 
@@ -3019,39 +4174,87 @@ namespace BurnOutSharp.Builder
         #endregion
 
         // bip
-        #region 2.41_*
+        #region 2.41.*
 
         oid_2_41:
 
             if (index == values.Length) return "/BIP";
             switch (values[index++])
             {
-                //TODO: case 0: goto oid_2_41_0;
+                case 0: goto oid_2_41_0;
                 default: return $"/BIP/{values[index - 1]}";
+            }
+
+        // bip
+        #region 2.41.0.*
+
+        oid_2_41_0:
+
+            if (index == values.Length) return "/BIP/[ASN.1 modules]";
+            switch (values[index++])
+            {
+                //TODO: case 0: goto oid_2_41_0_0;
+                //TODO: case 1: goto oid_2_41_0_1;
+                //TODO: case 2: goto oid_2_41_0_2;
+                default: return $"/BIP/[ASN.1 modules]/{values[index - 1]}";
             }
 
         #endregion
 
+        #endregion
+
         // telebiometrics
-        #region 2.42_*
+        #region 2.42.*
 
         oid_2_42:
 
             if (index == values.Length) return "/Telebiometrics";
             switch (values[index++])
             {
-                //TODO: case 0: goto oid_2_42_0;
-                //TODO: case 1: goto oid_2_42_1;
+                case 0: goto oid_2_42_0;
+                case 1: goto oid_2_42_1;
                 //TODO: case 2: goto oid_2_42_2;
                 //TODO: case 3: goto oid_2_42_3;
                 //TODO: case 10: goto oid_2_42_10;
                 default: return $"/Telebiometrics/{values[index - 1]}";
             }
 
+        // modules
+        #region 2.42.0.*
+
+        oid_2_42_0:
+
+            if (index == values.Length) return "/Telebiometrics/Modules";
+            switch (values[index++])
+            {
+                //TODO: case 0: goto oid_2_42_0_0;
+                default: return $"/Telebiometrics/Modules/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // modules
+        #region 2.42.1.*
+
+        oid_2_42_1:
+
+            if (index == values.Length) return "/Telebiometrics/TMM";
+            switch (values[index++])
+            {
+                //TODO: case 0: goto oid_2_42_1_0;
+                //TODO: case 1: goto oid_2_42_1_1;
+                //TODO: case 2: goto oid_2_42_1_2;
+                //TODO: case 3: goto oid_2_42_1_3;
+                //TODO: case 4: goto oid_2_42_1_4;
+                default: return $"/Telebiometrics/TMM/{values[index - 1]}";
+            }
+
+        #endregion
+
         #endregion
 
         // cybersecurity
-        #region 2.48_*
+        #region 2.48.*
 
         oid_2_48:
 
@@ -3066,52 +4269,260 @@ namespace BurnOutSharp.Builder
         #endregion
 
         // alerting
-        #region 2.49_*
+        #region 2.49.*
 
         oid_2_49:
 
             if (index == values.Length) return "/Alerting";
             switch (values[index++])
             {
-                //TODO: case 0: goto oid_2_49_0;
+                case 0: goto oid_2_49_0;
                 default: return $"/Alerting/{values[index - 1]}";
+            }
+
+        // wmo
+        #region 2.49.0.*
+
+        oid_2_49_0:
+
+            if (index == values.Length) return "/Alerting/WMO";
+            switch (values[index++])
+            {
+                case 0: goto oid_2_49_0_0;
+                case 1: return "/Alerting/WMO/[Alerting messages of countries]";
+                //TODO: case 2: goto oid_2_49_0_2;
+                //TODO: case 3: goto oid_2_49_0_3;
+                default: return $"/Alerting/WMO/{values[index - 1]}";
+            }
+
+        // authority
+        #region 2.49.0.0.*
+
+        oid_2_49_0_0:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]";
+            switch (values[index++])
+            {
+                //TODO: case 4: goto oid_2_49_0_0_4;
+                //TODO: case 8: goto oid_2_49_0_0_8;
+                //TODO: case 12: goto oid_2_49_0_0_12;
+                //TODO: case 20: goto oid_2_49_0_0_20;
+                //TODO: case 24: goto oid_2_49_0_0_24;
+                //TODO: case 28: goto oid_2_49_0_0_28;
+                //TODO: case 31: goto oid_2_49_0_0_31;
+                //TODO: case 32: goto oid_2_49_0_0_32;
+                //TODO: case 36: goto oid_2_49_0_0_36;
+                //TODO: case 40: goto oid_2_49_0_0_40;
+                //TODO: case 44: goto oid_2_49_0_0_44;
+                //TODO: case 48: goto oid_2_49_0_0_48;
+                //TODO: case 50: goto oid_2_49_0_0_50;
+                //TODO: case 51: goto oid_2_49_0_0_51;
+                //TODO: case 52: goto oid_2_49_0_0_52;
+                //TODO: case 56: goto oid_2_49_0_0_56;
+                case 60: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Bermuda]";
+                //TODO: case 64: goto oid_2_49_0_0_64;
+                //TODO: case 68: goto oid_2_49_0_0_68;
+                //TODO: case 70: goto oid_2_49_0_0_70;
+                //TODO: case 72: goto oid_2_49_0_0_72;
+                //TODO: case 76: goto oid_2_49_0_0_76;
+                //TODO: case 84: goto oid_2_49_0_0_84;
+                //TODO: case 90: goto oid_2_49_0_0_90;
+                //TODO: case 92: goto oid_2_49_0_0_92;
+                //TODO: case 96: goto oid_2_49_0_0_96;
+                //TODO: case 100: goto oid_2_49_0_0_100;
+                //TODO: case 104: goto oid_2_49_0_0_104;
+                //TODO: case 108: goto oid_2_49_0_0_108;
+                //TODO: case 112: goto oid_2_49_0_0_112;
+                //TODO: case 116: goto oid_2_49_0_0_116;
+                //TODO: case 120: goto oid_2_49_0_0_120;
+                //TODO: case 124: goto oid_2_49_0_0_124;
+                //TODO: case 132: goto oid_2_49_0_0_132;
+                //TODO: case 136: goto oid_2_49_0_0_136;
+                //TODO: case 140: goto oid_2_49_0_0_140;
+                //TODO: case 144: goto oid_2_49_0_0_144;
+                //TODO: case 148: goto oid_2_49_0_0_148;
+                //TODO: case 152: goto oid_2_49_0_0_152;
+                //TODO: case 156: goto oid_2_49_0_0_156;
+                //TODO: case 170: goto oid_2_49_0_0_170;
+                //TODO: case 174: goto oid_2_49_0_0_174;
+                //TODO: case 178: goto oid_2_49_0_0_178;
+                //TODO: case 180: goto oid_2_49_0_0_180;
+                //TODO: case 184: goto oid_2_49_0_0_184;
+                //TODO: case 188: goto oid_2_49_0_0_188;
+                //TODO: case 191: goto oid_2_49_0_0_191;
+                //TODO: case 192: goto oid_2_49_0_0_192;
+                //TODO: case 196: goto oid_2_49_0_0_196;
+                //TODO: case 203: goto oid_2_49_0_0_203;
+                //TODO: case 204: goto oid_2_49_0_0_204;
+                //TODO: case 208: goto oid_2_49_0_0_208;
+                //TODO: case 212: goto oid_2_49_0_0_212;
+                //TODO: case 214: goto oid_2_49_0_0_214;
+                //TODO: case 218: goto oid_2_49_0_0_218;
+                //TODO: case 222: goto oid_2_49_0_0_222;
+                //TODO: case 231: goto oid_2_49_0_0_231;
+                //TODO: case 232: goto oid_2_49_0_0_232;
+                //TODO: case 233: goto oid_2_49_0_0_233;
+                //TODO: case 242: goto oid_2_49_0_0_242;
+                //TODO: case 246: goto oid_2_49_0_0_246;
+                //TODO: case 250: goto oid_2_49_0_0_250;
+                //TODO: case 258: goto oid_2_49_0_0_258;
+                //TODO: case 262: goto oid_2_49_0_0_262;
+                //TODO: case 266: goto oid_2_49_0_0_266;
+                //TODO: case 268: goto oid_2_49_0_0_268;
+                //TODO: case 270: goto oid_2_49_0_0_270;
+                //TODO: case 276: goto oid_2_49_0_0_276;
+                //TODO: case 288: goto oid_2_49_0_0_288;
+                //TODO: case 296: goto oid_2_49_0_0_296;
+                //TODO: case 300: goto oid_2_49_0_0_300;
+                //TODO: case 308: goto oid_2_49_0_0_308;
+                //TODO: case 320: goto oid_2_49_0_0_320;
+                //TODO: case 324: goto oid_2_49_0_0_324;
+                //TODO: case 328: goto oid_2_49_0_0_328;
+                //TODO: case 332: goto oid_2_49_0_0_332;
+                //TODO: case 340: goto oid_2_49_0_0_340;
+                //TODO: case 344: goto oid_2_49_0_0_344;
+                //TODO: case 348: goto oid_2_49_0_0_348;
+                //TODO: case 352: goto oid_2_49_0_0_352;
+                //TODO: case 356: goto oid_2_49_0_0_356;
+                //TODO: case 360: goto oid_2_49_0_0_360;
+                //TODO: case 364: goto oid_2_49_0_0_364;
+                //TODO: case 368: goto oid_2_49_0_0_368;
+                //TODO: case 372: goto oid_2_49_0_0_372;
+                //TODO: case 376: goto oid_2_49_0_0_376;
+                //TODO: case 380: goto oid_2_49_0_0_380;
+                //TODO: case 384: goto oid_2_49_0_0_384;
+                //TODO: case 388: goto oid_2_49_0_0_388;
+                //TODO: case 392: goto oid_2_49_0_0_392;
+                //TODO: case 398: goto oid_2_49_0_0_398;
+                // TODO: Left off at http://www.oid-info.com/get/2.49.0.0.400
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/{values[index - 1]}";
             }
 
         #endregion
 
+        #endregion
+
+        #endregion
+
         // ors
-        #region 2.50_*
+        #region 2.50.*
 
         oid_2_50:
 
             if (index == values.Length) return "/OIDResolutionSystem";
             switch (values[index++])
             {
-                //TODO: case 0: goto oid_2_50_0;
+                case 0: goto oid_2_50_0;
                 default: return $"/OIDResolutionSystem/{values[index - 1]}";
+            }
+
+        // modules
+        #region 2.50.0.*
+
+        oid_2_50_0:
+
+            if (index == values.Length) return "/OIDResolutionSystem/[ASN.1 modules]";
+            switch (values[index++])
+            {
+                case 0: goto oid_2_50_0_0;
+                case 1: goto oid_2_50_0_1;
+                default: return $"/OIDResolutionSystem/[ASN.1 modules]/{values[index - 1]}";
+            }
+
+        // cinf
+        #region 2.50.0.0.*
+
+        oid_2_50_0_0:
+
+            if (index == values.Length) return "/OIDResolutionSystem/[ASN.1 modules]/[CINF-module]";
+            switch (values[index++])
+            {
+                case 1: return "/OIDResolutionSystem/[ASN.1 modules]/[CINF-module]/[Version 1]";
+                default: return $"/OIDResolutionSystem/[ASN.1 modules]/[CINF-module]/{values[index - 1]}";
             }
 
         #endregion
 
+        // rinf
+        #region 2.50.0.1.*
+
+        oid_2_50_0_1:
+
+            if (index == values.Length) return "/OIDResolutionSystem/[ASN.1 modules]/[RINF-module]";
+            switch (values[index++])
+            {
+                case 1: return "/OIDResolutionSystem/[ASN.1 modules]/[RINF-module]/[Version 1]";
+                default: return $"/OIDResolutionSystem/[ASN.1 modules]/[RINF-module]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        #endregion
+
+        #endregion
+
         // gs1
-        #region 2.51_*
+        #region 2.51.*
 
         oid_2_51:
 
             if (index == values.Length) return "/GS1";
             switch (values[index++])
             {
-                //TODO: case 1: goto oid_2_51_1;
-                //TODO: case 2: goto oid_2_51_2;
+                case 1: goto oid_2_51_1;
+                case 2: goto oid_2_51_2;
                 case 3: return "/GS1/[GS1 business data]";
                 case 4: return "/GS1/[GS1 technical data]";
                 default: return $"/GS1/{values[index - 1]}";
             }
 
+        // 1
+        #region 2.51.1.*
+
+        oid_2_51_1:
+
+            if (index == values.Length) return "/GS1/[GS1 identification keys]";
+            switch (values[index++])
+            {
+                case 1: return "/GS1/[GS1 identification keys]/[Global Trade Item Number (the GS1 Identification Key used to identify trade items)]";
+                case 2: return "/GS1/[GS1 identification keys]/[Serial Shipping Container Code (GS1 Identification Key used to identify logistics units)]";
+                case 3: return "/GS1/[GS1 identification keys]/[Global Location Number (GS1 Identification Key used to identify physical locations or parties)]";
+                case 4: return "/GS1/[GS1 identification keys]/[Global Returnable Asset Identifier (GS1 Identification Key used to identify Returnable Assets)]";
+                case 5: return "/GS1/[GS1 identification keys]/[Global Individual Asset Identifier (GS1 Identification Key used to identify an Individual Asset)]";
+                case 6: return "/GS1/[GS1 identification keys]/[Global Document Type Identifier (GS1 Identification Key used to identify a document type)]";
+                case 7: return "/GS1/[GS1 identification keys]/[Global Service Relation Number (a non-significant number used to identify the relationship between an organization offering services and the individual entities providing or benefiting from the services)]";
+                case 8: return "/GS1/[GS1 identification keys]/[Global Shipment Identification Number (GSIN)]";
+                case 9: return "/GS1/[GS1 identification keys]/[Global Identification Number for Consignment (GS1 Identification Key used to identify a logical grouping of logistic or transport units that are assembled to be transported under one transport document, e.g., HWB)]";
+                case 10: return "/GS1/[GS1 identification keys]/[Global Coupon Number (GS1 Identification Key that provides a globally unique identification for a coupon, with an optional serial number)]";
+                case 11: return "/GS1/[GS1 identification keys]/[Component or Part IDentifier (CPID)]";
+                case 12: return "/GS1/[GS1 identification keys]/[Global Model Number (GMN) used to identify a product model]";
+                default: return $"/GS1/[GS1 identification keys]/{values[index - 1]}";
+            }
+
         #endregion
 
-        // gs1
-        #region 2.52_*
+        // 2
+        #region 2.51.2.*
+
+        oid_2_51_2:
+
+            if (index == values.Length) return "/GS1/[GS1 supplementary data]";
+            switch (values[index++])
+            {
+                case 10: return "/GS1/[GS1 supplementary data]/[Number that associates an item with information the manufacturer considers relevant for traceability purposes]";
+                case 21: return "/GS1/[GS1 supplementary data]/[Numeric or alphanumeric code assigned to an individual instance of an entity for its lifetime]";
+                case 254: return "/GS1/[GS1 supplementary data]/[Alphanumeric extension component used to identify internal physical locations within a location]";
+                case 8011: return "/GS1/[GS1 supplementary data]/[Numeric identifier assigned to an individual instance of a component/part]";
+                case 8019: return "/GS1/[GS1 supplementary data]/[Numeric identifier allowing to distinguish different encounters during a service relationship]";
+                default: return $"/GS1/[GS1 supplementary data]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        #endregion
+
+        // uav
+        #region 2.52.*
 
         oid_2_52:
 
@@ -3121,11 +4532,45 @@ namespace BurnOutSharp.Builder
                 case 1: return "/Joint-ISO-ITU-T/UAV/[Unmanned Aerial Vehicle (UAV) devices]";
                 case 2: return "/Joint-ISO-ITU-T/UAV/[Ground control stations]";
                 case 3: return "/Joint-ISO-ITU-T/UAV/[Monitoring devices]";
-                //TODO: case 4: goto oid_2_52_4;
+                case 4: goto oid_2_52_4;
                 case 5: return "/Joint-ISO-ITU-T/UAV/[Security modules]";
-                //TODO: case 6: goto oid_2_52_6;
+                case 6: goto oid_2_52_6;
                 default: return $"/Joint-ISO-ITU-T/UAV/{values[index - 1]}";
             }
+
+        // 4
+        #region 2.52.4*
+
+        oid_2_52_4:
+
+            if (index == values.Length) return "/Joint-ISO-ITU-T/UAV/[Data modules for the full life-cycle management of Unmanned Aerial Vehicles (UAVs)]";
+            switch (values[index++])
+            {
+                case 1: return "/Joint-ISO-ITU-T/UAV/[Data modules for the full life-cycle management of Unmanned Aerial Vehicles (UAVs)]/[Data modules of a manufacturing system]";
+                case 2: return "/Joint-ISO-ITU-T/UAV/[Data modules for the full life-cycle management of Unmanned Aerial Vehicles (UAVs)]/[Data modules of a sales and logistical system]";
+                case 3: return "/Joint-ISO-ITU-T/UAV/[Data modules for the full life-cycle management of Unmanned Aerial Vehicles (UAVs)]/[Data modules of a repairing system]";
+                case 4: return "/Joint-ISO-ITU-T/UAV/[Data modules for the full life-cycle management of Unmanned Aerial Vehicles (UAVs)]/[Data modules of a scrapping system]";
+                default: return $"/Joint-ISO-ITU-T/UAV/[Data modules for the full life-cycle management of Unmanned Aerial Vehicles (UAVs)]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // 6
+        #region 2.52.6*
+
+        oid_2_52_6:
+
+            if (index == values.Length) return "/Joint-ISO-ITU-T/UAV/[Data modules for identity recognition of Unmanned Aerial Vehicles (UAVs)]";
+            switch (values[index++])
+            {
+                case 1: return "/Joint-ISO-ITU-T/UAV/[Data modules for identity recognition of Unmanned Aerial Vehicles (UAVs)]/[Data modules of Unmanned Aerial Vehicle (UAV) systems]";
+                case 2: return "/Joint-ISO-ITU-T/UAV/[Data modules for identity recognition of Unmanned Aerial Vehicles (UAVs)]/[Data modules of Unmanned Aerial Vehicle (UAV) Ground Control Station (GCS) systems]";
+                case 3: return "/Joint-ISO-ITU-T/UAV/[Data modules for identity recognition of Unmanned Aerial Vehicles (UAVs)]/[Data modules of Unmanned Aerial Vehicle (UAV) Monitoring and Control Station/server (MCS) systems]";
+                case 4: return "/Joint-ISO-ITU-T/UAV/[Data modules for identity recognition of Unmanned Aerial Vehicles (UAVs)]/[Data modules of Unmanned Aerial Vehicle (UAV) monitoring cloud systems]";
+                default: return $"/Joint-ISO-ITU-T/UAV/[Data modules for identity recognition of Unmanned Aerial Vehicles (UAVs)]/{values[index - 1]}";
+            }
+
+            #endregion
 
             #endregion
 
