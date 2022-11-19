@@ -2110,9 +2110,30 @@ namespace BurnOutSharp.Builder
             if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]";
             switch (values[index++])
             {
-                //TODO: case 0: goto oid_0_0_7_774_127_8_0;
+                case 0: goto oid_0_0_7_774_127_8_0;
                 default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/{values[index - 1]}";
             }
+
+        // informationModel
+        #region 0.0.7.774.127.8.0.*
+
+        oid_0_0_7_774_127_8_0:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]";
+            switch (values[index++])
+            {
+                //TODO: case 2: goto oid_0_0_7_774_127_8_0_2;
+                //TODO: case 3: goto oid_0_0_7_774_127_8_0_3;
+                //TODO: case 4: goto oid_0_0_7_774_127_8_0_4;
+                //TODO: case 5: goto oid_0_0_7_774_127_8_0_5;
+                //TODO: case 6: goto oid_0_0_7_774_127_8_0_6;
+                //TODO: case 7: goto oid_0_0_7_774_127_8_0_7;
+                //TODO: case 9: goto oid_0_0_7_774_127_8_0_9;
+                case 10: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Notifications]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/{values[index - 1]}";
+            }
+
+        #endregion
 
         #endregion
 
@@ -4432,9 +4453,27 @@ namespace BurnOutSharp.Builder
             if (index == values.Length) return "/Joint-ISO-ITU-T/[Information technology -- Open Distributed Processing (ODP)]";
             switch (values[index++])
             {
-                //TODO: case 0: goto oid_2_26_0;
+                case 0: goto oid_2_26_0;
                 default: return $"/Joint-ISO-ITU-T/[Information technology -- Open Distributed Processing (ODP)]/{values[index - 1]}";
             }
+
+        // trader
+        #region 2.26.0.*
+
+        oid_2_26_0:
+
+            if (index == values.Length) return "/Joint-ISO-ITU-T/[Information technology -- Open Distributed Processing (ODP)]/[Open Distributed Processing -- Trading Function: Provision of trading function using OSI Directory service]";
+            switch (values[index++])
+            {
+                //TODO: case 2: goto oid_2_26_0_2;
+                //TODO: case 4: goto oid_2_26_0_4;
+                //TODO: case 6: goto oid_2_26_0_6;
+                //TODO: case 13: goto oid_2_26_0_13;
+                //TODO: case 15: goto oid_2_26_0_15;
+                default: return $"/Joint-ISO-ITU-T/[Information technology -- Open Distributed Processing (ODP)]/[Open Distributed Processing -- Trading Function: Provision of trading function using OSI Directory service]/{values[index - 1]}";
+            }
+
+        #endregion
 
         #endregion
 
@@ -4461,12 +4500,30 @@ namespace BurnOutSharp.Builder
             if (index == values.Length) return "/Joint-ISO-ITU-T/ITS";
             switch (values[index++])
             {
-                //TODO: case 0: goto oid_2_28_0;
+                case 0: goto oid_2_28_0;
                 case 3: return "/Joint-ISO-ITU-T/ITS/[fieldDevice]";
                 case 4: return "/Joint-ISO-ITU-T/ITS/[fdVms]";
                 case 5: return "/Joint-ISO-ITU-T/ITS/[Graphic Data Dictionary (GDD) codes]";
                 default: return $"/Joint-ISO-ITU-T/ITS/{values[index - 1]}";
             }
+
+        // its-misc
+        #region 2.28.0.*
+
+        oid_2_28_0:
+
+            if (index == values.Length) return "/Joint-ISO-ITU-T/ITS/[Intelligent Transport Systems (ITS) data concepts that do not relate to internationally standardized object classes]";
+            switch (values[index++])
+            {
+                case 1: return "/Joint-ISO-ITU-T/ITS/[Intelligent Transport Systems (ITS) data concepts that do not relate to internationally standardized object classes]/[ISO member bodies]";
+                case 2: return "/Joint-ISO-ITU-T/ITS/[Intelligent Transport Systems (ITS) data concepts that do not relate to internationally standardized object classes]/[Standard development organizations]";
+                //TODO: case 3: goto oid_2_28_0_3;
+                //TODO: case 4: goto oid_2_28_0_4;
+                case 50: return "/Joint-ISO-ITU-T/ITS/[Intelligent Transport Systems (ITS) data concepts that do not relate to internationally standardized object classes]/[Private entities, such as corporations]";
+                default: return $"/Joint-ISO-ITU-T/ITS/[Intelligent Transport Systems (ITS) data concepts that do not relate to internationally standardized object classes]/{values[index - 1]}";
+            }
+
+        #endregion
 
         #endregion
 
@@ -4527,8 +4584,8 @@ namespace BurnOutSharp.Builder
                 case 0: goto oid_2_42_0;
                 case 1: goto oid_2_42_1;
                 case 2: goto oid_2_42_2;
-                //TODO: case 3: goto oid_2_42_3;
-                //TODO: case 10: goto oid_2_42_10;
+                case 3: goto oid_2_42_3;
+                case 10: goto oid_2_42_10;
                 default: return $"/Telebiometrics/{values[index - 1]}";
             }
 
@@ -4569,15 +4626,74 @@ namespace BurnOutSharp.Builder
 
         oid_2_42_2:
 
-            if (index == values.Length) return "/Telebiometrics/TMM";
+            if (index == values.Length) return "/Telebiometrics/Human_Physiology";
             switch (values[index++])
             {
-                //TODO: case 0: goto oid_2_42_1_0;
-                //TODO: case 1: goto oid_2_42_1_1;
-                //TODO: case 2: goto oid_2_42_1_2;
-                //TODO: case 3: goto oid_2_42_1_3;
-                //TODO: case 4: goto oid_2_42_1_4;
-                default: return $"/Telebiometrics/TMM/{values[index - 1]}";
+                //TODO: case 0: goto oid_2_42_2_0;
+                //TODO: case 1: goto oid_2_42_2_1;
+                //TODO: case 2: goto oid_2_42_2_2;
+                default: return $"/Telebiometrics/Human_Physiology/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // obj-cat, telehealth, e-health-protocol, th
+        #region 2.42.3.*
+
+        oid_2_42_3:
+
+            if (index == values.Length) return "/Telebiometrics/E_Health_Protocol";
+            switch (values[index++])
+            {
+                case 0: goto oid_2_42_3_0;
+                case 1: return "/Telebiometrics/E_Health_Protocol/[Patient schemes]";
+                case 2: return "/Telebiometrics/E_Health_Protocol/[Medical staff schemes]";
+                case 3: return "/Telebiometrics/E_Health_Protocol/[Observer schemes]";
+                case 4: return "/Telebiometrics/E_Health_Protocol/[Pharmaceutical schemes]";
+                case 5: return "/Telebiometrics/E_Health_Protocol/[Laboratory schemes]";
+                case 6: return "/Telebiometrics/E_Health_Protocol/[Drug manufacturer schemes]";
+                case 7: return "/Telebiometrics/E_Health_Protocol/[Medical device schemes]";
+                case 8: return "/Telebiometrics/E_Health_Protocol/[Medical software schemes]";
+                case 9: return "/Telebiometrics/E_Health_Protocol/[Medical insurance schemes]";
+                case 10: return "/Telebiometrics/E_Health_Protocol/[Medical record schemes]";
+                default: return $"/Telebiometrics/E_Health_Protocol/{values[index - 1]}";
+            }
+
+        // obj-cat, telehealth, e-health-protocol, th
+        #region 2.42.3.0.*
+
+        oid_2_42_3_0:
+
+            if (index == values.Length) return "/Telebiometrics/E_Health_Protocol/Modules";
+            switch (values[index++])
+            {
+                //TODO: case 0: goto oid_2_42_3_0_0;
+                //TODO: case 1: goto oid_2_42_3_0_1;
+                //TODO: case 2: goto oid_2_42_3_0_2;
+                //TODO: case 3: goto oid_2_42_3_0_3;
+                //TODO: case 4: goto oid_2_42_3_0_4;
+                //TODO: case 5: goto oid_2_42_3_0_5;
+                //TODO: case 6: goto oid_2_42_3_0_6;
+                //TODO: case 10: goto oid_2_42_3_0_10;
+                default: return $"/Telebiometrics/E_Health_Protocol/Modules/{values[index - 1]}";
+            }
+
+        #endregion
+
+        #endregion
+
+        // thprot
+        #region 2.42.10.*
+
+        oid_2_42_10:
+
+            if (index == values.Length) return "/Telebiometrics/[e-Health and world-wide telemedicines]";
+            switch (values[index++])
+            {
+                //TODO: case 0: goto oid_2_42_10_0;
+                //TODO: case 1: goto oid_2_42_10_1;
+                //TODO: case 2: goto oid_2_42_10_2;
+                default: return $"/Telebiometrics/[e-Health and world-wide telemedicines]/{values[index - 1]}";
             }
 
         #endregion
@@ -4896,4 +5012,18 @@ namespace BurnOutSharp.Builder
             {
                 case 1: return "/Joint-ISO-ITU-T/UAV/[Data modules for identity recognition of Unmanned Aerial Vehicles (UAVs)]/[Data modules of Unmanned Aerial Vehicle (UAV) systems]";
                 case 2: return "/Joint-ISO-ITU-T/UAV/[Data modules for identity recognition of Unmanned Aerial Vehicles (UAVs)]/[Data modules of Unmanned Aerial Vehicle (UAV) Ground Control Station (GCS) systems]";
-                case 3: return "/Joint-ISO-ITU-T/UAV/[Data modules for identity recognition of Unmanned Aerial Vehicles (UAVs)]/[Data modules of Unmanned Ae
+                case 3: return "/Joint-ISO-ITU-T/UAV/[Data modules for identity recognition of Unmanned Aerial Vehicles (UAVs)]/[Data modules of Unmanned Aerial Vehicle (UAV) Monitoring and Control Station/server (MCS) systems]";
+                case 4: return "/Joint-ISO-ITU-T/UAV/[Data modules for identity recognition of Unmanned Aerial Vehicles (UAVs)]/[Data modules of Unmanned Aerial Vehicle (UAV) monitoring cloud systems]";
+                default: return $"/Joint-ISO-ITU-T/UAV/[Data modules for identity recognition of Unmanned Aerial Vehicles (UAVs)]/{values[index - 1]}";
+            }
+
+            #endregion
+
+            #endregion
+
+            #endregion
+        }
+
+        #endregion
+    }
+}
