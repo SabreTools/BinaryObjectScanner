@@ -896,11 +896,11 @@ namespace BurnOutSharp.Builder
                 case 3: goto oid_0_0_7_774_127_3;
                 case 4: goto oid_0_0_7_774_127_4;
                 case 5: goto oid_0_0_7_774_127_5;
-                // TODO: case 6: goto oid_0_0_7_774_127_6;
-                // TODO: case 7: goto oid_0_0_7_774_127_7;
-                // TODO: case 8: goto oid_0_0_7_774_127_8;
-                // TODO: case 9: goto oid_0_0_7_774_127_9;
-                // TODO: case 10: goto oid_0_0_7_774_127_10;
+                case 6: goto oid_0_0_7_774_127_6;
+                case 7: goto oid_0_0_7_774_127_7;
+                case 8: goto oid_0_0_7_774_127_8;
+                case 9: goto oid_0_0_7_774_127_9;
+                case 10: goto oid_0_0_7_774_127_10;
                 default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/{values[index - 1]}";
             }
 
@@ -1831,6 +1831,319 @@ namespace BurnOutSharp.Builder
 
         #endregion
 
+        // pmUni
+        #region 0.0.7.774.127.6.*
+
+        oid_0_0_7_774_127_6:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]";
+            switch (values[index++])
+            {
+                case 0: goto oid_0_0_7_774_127_6_0;
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/{values[index - 1]}";
+            }
+
+        // informationModel
+        #region 0.0.7.774.127.6.0.*
+
+        oid_0_0_7_774_127_6_0:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]";
+            switch (values[index++])
+            {
+                case 2: goto oid_0_0_7_774_127_6_0_2;
+                case 3: goto oid_0_0_7_774_127_6_0_3;
+                case 4: goto oid_0_0_7_774_127_6_0_4;
+                case 6: goto oid_0_0_7_774_127_6_0_6;
+                case 7: goto oid_0_0_7_774_127_6_0_7;
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/{values[index - 1]}";
+            }
+
+        // asn1Module
+        #region 0.0.7.774.127.6.0.2.*
+
+        oid_0_0_7_774_127_6_0_2:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[ASN.1 modules]";
+            switch (values[index++])
+            {
+                case 0: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[ASN.1 modules]/[SDHPMUNIASN1]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[ASN.1 modules]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // managedObjectClass
+        #region 0.0.7.774.127.6.0.3.*
+
+        oid_0_0_7_774_127_6_0_3:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Managed object classes]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Managed object classes]/[sdhCurrentDataUnidirectional]";
+                case 2: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Managed object classes]/[msCurrentDataNearEnd]";
+                case 3: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Managed object classes]/[msCurrentDataNearEndTR]";
+                case 4: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Managed object classes]/[pathTerminationCurrentDataNearEnd]";
+                case 5: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Managed object classes]/[pathTerminationCurrentDataNearEndTR]";
+                case 6: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Managed object classes]/[msCurrentDataFarEnd]";
+                case 7: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Managed object classes]/[msCurrentDataFarEndTR]";
+                case 8: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Managed object classes]/[pathTerminationCurrentDataFarEnd]";
+                case 9: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Managed object classes]/[pathTerminationCurrentDataFarEndTR]";
+                case 10: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Managed object classes]/[msHistoryDataNearEnd]";
+                case 11: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Managed object classes]/[pathTerminationHistoryDataNearEnd]";
+                case 12: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Managed object classes]/[msHistoryDataFarEnd]";
+                case 13: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Managed object classes]/[pathTerminationHistoryDataFarEnd]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Managed object classes]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // package
+        #region 0.0.7.774.127.6.0.4.*
+
+        oid_0_0_7_774_127_6_0_4:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Packages]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Packages]/[nearEndUASCurrentDataPackage]";
+                case 2: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Packages]/[farEndUASCurrentDataPackage]";
+                case 3: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Packages]/[nearEndUASHistoryDataPackage]";
+                case 4: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Packages]/[farEndUASHistoryDataPackage]";
+                case 5: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Packages]/[failureCountsNearEndPackage]";
+                case 6: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Packages]/[eSANearEndPackage]";
+                case 7: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Packages]/[eSBNearEndPackage]";
+                case 8: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Packages]/[failureCountsFarEndPackage]";
+                case 9: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Packages]/[eSAFarEndPackage]";
+                case 10: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Packages]/[eSBFarEndPackage]";
+                case 11: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Packages]/[failureCountsNearEndHistoryDataPackage]";
+                case 12: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Packages]/[eSANearEndHistoryDataPackage]";
+                case 13: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Packages]/[eSBNearEndHistoryDataPackage]";
+                case 14: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Packages]/[failureCountsFarEndHistoryDataPackage]";
+                case 15: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Packages]/[eSAFarEndHistoryDataPackage]";
+                case 16: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Packages]/[eSBFarEndHistoryDataPackage]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Packages]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // nameBinding
+        #region 0.0.7.774.127.6.0.6.*
+
+        oid_0_0_7_774_127_6_0_6:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Name bindings]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Name bindings]/[msCurrentDataNearEnd-msTTPSink]";
+                case 2: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Name bindings]/[msCurrentDataNearEndTR-msTTPSink]";
+                case 13: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Name bindings]/[msCurrentDataFarEnd-msTTPSink]";
+                case 14: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Name bindings]/[msCurrentDataFarEndTR-msTTPSink]";
+                case 49: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Name bindings]/[pathTerminationCurrentDataNearEnd-vc4TTPSinkR1]";
+                case 50: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Name bindings]/[pathTerminationCurrentDataNearEnd-vc3TTPSinkR1]";
+                case 51: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Name bindings]/[pathTerminationCurrentDataNearEnd-vc2TTPSinkR1]";
+                case 52: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Name bindings]/[pathTerminationCurrentDataNearEnd-vc12TTPSinkR1]";
+                case 53: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Name bindings]/[pathTerminationCurrentDataNearEnd-vc11TTPSinkR1]";
+                case 54: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Name bindings]/[pathTerminationCurrentDataNearEndTR-vc4TTPSinkR1]";
+                case 55: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Name bindings]/[pathTerminationCurrentDataNearEndTR-vc3TTPSinkR1]";
+                case 56: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Name bindings]/[pathTerminationCurrentDataNearEndTR-vc2TTPSinkR1]";
+                case 57: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Name bindings]/[pathTerminationCurrentDataNearEndTR-vc12TTPSinkR1]";
+                case 58: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Name bindings]/[pathTerminationCurrentDataNearEndTR-vc11TTPSinkR1]";
+                case 59: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Name bindings]/[pathTerminationCurrentDataFarEnd-vc4TTPSinkR1]";
+                case 60: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Name bindings]/[pathTerminationCurrentDataFarEnd-vc3TTPSinkR1]";
+                case 61: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Name bindings]/[pathTerminationCurrentDataFarEnd-vc2TTPSinkR1]";
+                case 62: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Name bindings]/[pathTerminationCurrentDataFarEnd-vc12TTPSinkR1]";
+                case 63: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Name bindings]/[pathTerminationCurrentDataFarEnd-vc11TTPSinkR1]";
+                case 64: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Name bindings]/[pathTerminationCurrentDataFarEndTR-vc4TTPSinkR1]";
+                case 65: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Name bindings]/[pathTerminationCurrentDataFarEndTR-vc3TTPSinkR1]";
+                case 66: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Name bindings]/[pathTerminationCurrentDataFarEndTR-vc2TTPSinkR1]";
+                case 67: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Name bindings]/[pathTerminationCurrentDataFarEndTR-vc12TTPSinkR1]";
+                case 68: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Name bindings]/[pathTerminationCurrentDataFarEndTR-vc11TTPSinkR1]";
+                case 69: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Name bindings]/[pathTerminationCurrentDataNearEnd-au4SupervisedCTPSinkR1]";
+                case 70: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Name bindings]/[pathTerminationCurrentDataNearEnd-au3SupervisedCTPSinkR1]";
+                case 71: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Name bindings]/[pathTerminationCurrentDataNearEnd-tu3SupervisedCTPSinkR1]";
+                case 72: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Name bindings]/[pathTerminationCurrentDataNearEnd-tu2SupervisedCTPSinkR1]";
+                case 73: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Name bindings]/[pathTerminationCurrentDataNearEnd-tu12SupervisedCTPSinkR1]";
+                case 74: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Name bindings]/[pathTerminationCurrentDataNearEnd-tu11SupervisedCTPSinkR1]";
+                case 75: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Name bindings]/[pathTerminationCurrentDataFarEnd-au4SupervisedCTPSinkR1]";
+                case 76: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Name bindings]/[pathTerminationCurrentDataFarEnd-au3SupervisedCTPSinkR1]";
+                case 77: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Name bindings]/[pathTerminationCurrentDataFarEnd-tu3SupervisedCTPSinkR1]";
+                case 78: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Name bindings]/[pathTerminationCurrentDataFarEnd-tu2SupervisedCTPSinkR1]";
+                case 79: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Name bindings]/[pathTerminationCurrentDataFarEnd-tu12SupervisedCTPSinkR1]";
+                case 80: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Name bindings]/[pathTerminationCurrentDataFarEnd-tu11SupervisedCTPSinkR1]";
+                case 81: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Name bindings]/[pathTerminationCurrentDataNearEndTR-au4SupervisedCTPSinkR1]";
+                case 82: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Name bindings]/[pathTerminationCurrentDataNearEndTR-au3SupervisedCTPSinkR1]";
+                case 83: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Name bindings]/[pathTerminationCurrentDataNearEndTR-tu3SupervisedCTPSinkR1]";
+                case 84: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Name bindings]/[pathTerminationCurrentDataNearEndTR-tu2SupervisedCTPSinkR1]";
+                case 85: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Name bindings]/[pathTerminationCurrentDataNearEndTR-tu12SupervisedCTPSinkR1]";
+                case 86: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Name bindings]/[pathTerminationCurrentDataNearEndTR-tu11SupervisedCTPSinkR1]";
+                case 87: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Name bindings]/[pathTerminationCurrentDataFarEndTR-au4SupervisedCTPSinkR1]";
+                case 88: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Name bindings]/[pathTerminationCurrentDataFarEndTR-au3SupervisedCTPSinkR1]";
+                case 89: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Name bindings]/[pathTerminationCurrentDataFarEndTR-tu3SupervisedCTPSinkR1]";
+                case 90: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Name bindings]/[pathTerminationCurrentDataFarEndTR-tu2SupervisedCTPSinkR1]";
+                case 91: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Name bindings]/[pathTerminationCurrentDataFarEndTR-tu12SupervisedCTPSinkR1]";
+                case 92: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Name bindings]/[pathTerminationCurrentDataFarEndTR-tu11SupervisedCTPSinkR1]";
+                case 93: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Name bindings]/[msAdaptationCurrentData-au4CTPSource]";
+                case 94: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Name bindings]/[msAdaptationCurrentData-au3CTPSource]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Name bindings]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // attribute
+        #region 0.0.7.774.127.6.0.7.*
+
+        oid_0_0_7_774_127_6_0_7:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Attribute types]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Attribute types]/[nEUAS]";
+                case 2: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Attribute types]/[fEUAS]";
+                case 3: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Attribute types]/[fCNearEnd]";
+                case 4: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Attribute types]/[eSANearEnd]";
+                case 5: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Attribute types]/[eSBNearEnd]";
+                case 6: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Attribute types]/[fCFarEnd]";
+                case 7: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Attribute types]/[eSAFarEnd]";
+                case 8: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Attribute types]/[eSBFarEnd]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Unidirectional performance monitoring for the network element view]/[Information model]/[Attribute types]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        #endregion
+
+        #endregion
+
+        // ptl
+        #region 0.0.7.774.127.7.*
+
+        oid_0_0_7_774_127_7:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of lower order path trace and interface labelling for the network element view]";
+            switch (values[index++])
+            {
+                case 0: goto oid_0_0_7_774_127_7_0;
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of lower order path trace and interface labelling for the network element view]/{values[index - 1]}";
+            }
+
+        // informationModel
+        #region 0.0.7.774.127.7.0.*
+
+        oid_0_0_7_774_127_7_0:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of lower order path trace and interface labelling for the network element view]/[Information model]";
+            switch (values[index++])
+            {
+                case 2: goto oid_0_0_7_774_127_7_0_2;
+                case 3: goto oid_0_0_7_774_127_7_0_3;
+                case 4: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of lower order path trace and interface labelling for the network element view]/[Information model]/[Packages]";
+                case 5: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of lower order path trace and interface labelling for the network element view]/[Information model]/[Parameters]";
+                case 6: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of lower order path trace and interface labelling for the network element view]/[Information model]/[Name bindings]";
+                case 7: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of lower order path trace and interface labelling for the network element view]/[Information model]/[Attribute types]";
+                case 9: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of lower order path trace and interface labelling for the network element view]/[Information model]/[Action types]";
+                case 10: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of lower order path trace and interface labelling for the network element view]/[Information model]/[ANotifications]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of lower order path trace and interface labelling for the network element view]/[Information model]/{values[index - 1]}";
+            }
+
+        // asn1Module
+        #region 0.0.7.774.127.7.0.2.*
+
+        oid_0_0_7_774_127_7_0_2:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of lower order path trace and interface labelling for the network element view]/[Information model]/[ASN.1 modules]";
+            switch (values[index++])
+            {
+                case 0: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of lower order path trace and interface labelling for the network element view]/[Information model]/[ASN.1 modules]/[SDHPTLASN1]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of lower order path trace and interface labelling for the network element view]/[Information model]/[ASN.1 modules]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // managedObjectClass
+        #region 0.0.7.774.127.7.0.3.*
+
+        oid_0_0_7_774_127_7_0_3:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of lower order path trace and interface labelling for the network element view]/[Information model]/[Managed object classes]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of lower order path trace and interface labelling for the network element view]/[Information model]/[Managed object classes]/[labelledElectricalSPITTPBidirectional]";
+                case 2: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of lower order path trace and interface labelling for the network element view]/[Information model]/[Managed object classes]/[labelledElectricalSPITTPSink]";
+                case 3: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of lower order path trace and interface labelling for the network element view]/[Information model]/[Managed object classes]/[labelledElectricalSPITTPSource]";
+                case 4: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of lower order path trace and interface labelling for the network element view]/[Information model]/[Managed object classes]/[labelledOpticalSPITTPBidirectional]";
+                case 5: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of lower order path trace and interface labelling for the network element view]/[Information model]/[Managed object classes]/[labelledOpticalSPITTPSink]";
+                case 6: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of lower order path trace and interface labelling for the network element view]/[Information model]/[Managed object classes]/[labelledOpticalSPITTPSource]";
+                case 7: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of lower order path trace and interface labelling for the network element view]/[Information model]/[Managed object classes]/[vc11PathTraceTTPBidirectional]";
+                case 8: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of lower order path trace and interface labelling for the network element view]/[Information model]/[Managed object classes]/[vc11PathTraceTTPSink]";
+                case 9: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of lower order path trace and interface labelling for the network element view]/[Information model]/[Managed object classes]/[vc11PathTraceTTPSource]";
+                case 10: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of lower order path trace and interface labelling for the network element view]/[Information model]/[Managed object classes]/[vc12PathTraceTTPBidirectional]";
+                case 11: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of lower order path trace and interface labelling for the network element view]/[Information model]/[Managed object classes]/[vc12PathTraceTTPSink]";
+                case 12: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of lower order path trace and interface labelling for the network element view]/[Information model]/[Managed object classes]/[vc12PathTraceTTPSource]";
+                case 13: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of lower order path trace and interface labelling for the network element view]/[Information model]/[Managed object classes]/[vc2PathTraceTTPBidirectional]";
+                case 14: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of lower order path trace and interface labelling for the network element view]/[Information model]/[Managed object classes]/[vc2PathTraceTTPSink]";
+                case 15: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of lower order path trace and interface labelling for the network element view]/[Information model]/[Managed object classes]/[vc2PathTraceTTPSource]";
+                case 16: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of lower order path trace and interface labelling for the network element view]/[Information model]/[Managed object classes]/[modifiableVC2PathTraceTTPBidirectional]";
+                case 17: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of lower order path trace and interface labelling for the network element view]/[Information model]/[Managed object classes]/[modifiableVC2PathTraceTTPSink]";
+                case 18: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of lower order path trace and interface labelling for the network element view]/[Information model]/[Managed object classes]/[modifiableVC2PathTraceTTPSource]";
+                case 19: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of lower order path trace and interface labelling for the network element view]/[Information model]/[Managed object classes]/[modifiableVC12PathTraceTTPBidirectional]";
+                case 20: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of lower order path trace and interface labelling for the network element view]/[Information model]/[Managed object classes]/[modifiableVC12PathTraceTTPSink]";
+                case 21: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of lower order path trace and interface labelling for the network element view]/[Information model]/[Managed object classes]/[modifiableVC12PathTraceTTPSource]";
+                case 22: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of lower order path trace and interface labelling for the network element view]/[Information model]/[Managed object classes]/[modifiableVC11PathTraceTTPBidirectional]";
+                case 23: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of lower order path trace and interface labelling for the network element view]/[Information model]/[Managed object classes]/[modifiableVC11PathTraceTTPSink]";
+                case 24: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of lower order path trace and interface labelling for the network element view]/[Information model]/[Managed object classes]/[modifiableVC11PathTraceTTPSource]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of lower order path trace and interface labelling for the network element view]/[Information model]/[Managed object classes]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        #endregion
+
+        #endregion
+
+        // sdhRadioIM
+        #region 0.0.7.774.127.8.*
+
+        oid_0_0_7_774_127_8:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]";
+            switch (values[index++])
+            {
+                //TODO: case 0: goto oid_0_0_7_774_127_8_0;
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // protCoord
+        #region 0.0.7.774.127.9.*
+
+        oid_0_0_7_774_127_9:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Configuration of linear multiplex-section protection for the network element view]";
+            switch (values[index++])
+            {
+                //TODO: case 0: goto oid_0_0_7_774_127_9_0;
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Configuration of linear multiplex-section protection for the network element view]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // msspr
+        #region 0.0.7.774.127.10.*
+
+        oid_0_0_7_774_127_10:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]";
+            switch (values[index++])
+            {
+                //TODO: case 0: goto oid_0_0_7_774_127_10_0;
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/{values[index - 1]}";
+            }
+
+        #endregion
+
         #endregion
 
         #endregion
@@ -1843,7 +2156,7 @@ namespace BurnOutSharp.Builder
             if (index == values.Length) return "/ITU-T/Recommendation/G/[Coding at 24 and 32 kbit/s for hands-free operation in systems with low frame loss]";
             switch (values[index++])
             {
-                // TODO: case 1: goto oid_0_0_7_7221_1;
+                //TODO: case 1: goto oid_0_0_7_7221_1;
                 default: return $"/ITU-T/Recommendation/G/[Coding at 24 and 32 kbit/s for hands-free operation in systems with low frame loss]/{values[index - 1]}";
             }
 
@@ -1857,7 +2170,7 @@ namespace BurnOutSharp.Builder
             if (index == values.Length) return "/ITU-T/Recommendation/G/[Wideband coding of speech at around 16 kbit/s using Adaptive Multi-Rate Wideband (AMR-WB)]";
             switch (values[index++])
             {
-                // TODO: case 1: goto oid_0_0_7_7222_1;
+                //TODO: case 1: goto oid_0_0_7_7222_1;
                 default: return $"/ITU-T/Recommendation/G/[Wideband coding of speech at around 16 kbit/s using Adaptive Multi-Rate Wideband (AMR-WB)]/{values[index - 1]}";
             }
 
@@ -1871,7 +2184,7 @@ namespace BurnOutSharp.Builder
             if (index == values.Length) return "/ITU-T/Recommendation/G/[Managed objects for signal processing network elements]";
             switch (values[index++])
             {
-                // TODO: case 7: goto oid_0_0_7_7761_7;
+                //TODO: case 7: goto oid_0_0_7_7761_7;
                 default: return $"/ITU-T/Recommendation/G/[Managed objects for signal processing network elements]/{values[index - 1]}";
             }
 
@@ -1885,7 +2198,7 @@ namespace BurnOutSharp.Builder
             if (index == values.Length) return "/ITU-T/Recommendation/G/[GDMO engineering viewpoint for the generic network level model]";
             switch (values[index++])
             {
-                // TODO: case 0: goto oid_0_0_7_85501_0;
+                //TODO: case 0: goto oid_0_0_7_85501_0;
                 default: return $"/ITU-T/Recommendation/G/[GDMO engineering viewpoint for the generic network level model]/{values[index - 1]}";
             }
 
@@ -1901,25 +2214,25 @@ namespace BurnOutSharp.Builder
             if (index == values.Length) return "/ITU-T/Recommendation/H";
             switch (values[index++])
             {
-                // TODO: case 224: goto oid_0_0_8_224;
-                // TODO: case 230: goto oid_0_0_8_230;
-                // TODO: case 235: goto oid_0_0_8_235;
-                // TODO: case 239: goto oid_0_0_8_239;
-                // TODO: case 241: goto oid_0_0_8_241;
-                // TODO: case 245: goto oid_0_0_8_245;
-                // TODO: case 248: goto oid_0_0_8_248;
-                // TODO: case 249: goto oid_0_0_8_249;
-                // TODO: case 263: goto oid_0_0_8_263;
-                // TODO: case 282: goto oid_0_0_8_282;
-                // TODO: case 283: goto oid_0_0_8_283;
-                // TODO: case 323: goto oid_0_0_8_323;
-                // TODO: case 324: goto oid_0_0_8_324;
-                // TODO: case 341: goto oid_0_0_8_341;
-                // TODO: case 350: goto oid_0_0_8_350;
-                // TODO: case 450: goto oid_0_0_8_450;
-                // TODO: case 460: goto oid_0_0_8_460;
-                // TODO: case 641: goto oid_0_0_8_641;
-                // TODO: case 2250: goto oid_0_0_8_2250;
+                //TODO: case 224: goto oid_0_0_8_224;
+                //TODO: case 230: goto oid_0_0_8_230;
+                //TODO: case 235: goto oid_0_0_8_235;
+                //TODO: case 239: goto oid_0_0_8_239;
+                //TODO: case 241: goto oid_0_0_8_241;
+                //TODO: case 245: goto oid_0_0_8_245;
+                //TODO: case 248: goto oid_0_0_8_248;
+                //TODO: case 249: goto oid_0_0_8_249;
+                //TODO: case 263: goto oid_0_0_8_263;
+                //TODO: case 282: goto oid_0_0_8_282;
+                //TODO: case 283: goto oid_0_0_8_283;
+                //TODO: case 323: goto oid_0_0_8_323;
+                //TODO: case 324: goto oid_0_0_8_324;
+                //TODO: case 341: goto oid_0_0_8_341;
+                //TODO: case 350: goto oid_0_0_8_350;
+                //TODO: case 450: goto oid_0_0_8_450;
+                //TODO: case 460: goto oid_0_0_8_460;
+                //TODO: case 641: goto oid_0_0_8_641;
+                //TODO: case 2250: goto oid_0_0_8_2250;
                 default: return $"/ITU-T/Recommendation/H/{values[index - 1]}";
             }
 
@@ -1933,7 +2246,7 @@ namespace BurnOutSharp.Builder
             if (index == values.Length) return "/ITU-T/Recommendation/I";
             switch (values[index++])
             {
-                // TODO: case 751: goto oid_0_0_9_751;
+                //TODO: case 751: goto oid_0_0_9_751;
                 default: return $"/ITU-T/Recommendation/I/{values[index - 1]}";
             }
 
@@ -1947,12 +2260,12 @@ namespace BurnOutSharp.Builder
             if (index == values.Length) return "/ITU-T/Recommendation/M";
             switch (values[index++])
             {
-                // TODO: case 3100: goto oid_0_0_13_3100;
-                // TODO: case 3108: goto oid_0_0_13_3108;
-                // TODO: case 3611: goto oid_0_0_13_3611;
-                // TODO: case 3640: goto oid_0_0_13_3640;
-                // TODO: case 3641: goto oid_0_0_13_3641;
-                // TODO: case 3650: goto oid_0_0_13_3650;
+                //TODO: case 3100: goto oid_0_0_13_3100;
+                //TODO: case 3108: goto oid_0_0_13_3108;
+                //TODO: case 3611: goto oid_0_0_13_3611;
+                //TODO: case 3640: goto oid_0_0_13_3640;
+                //TODO: case 3641: goto oid_0_0_13_3641;
+                //TODO: case 3650: goto oid_0_0_13_3650;
                 default: return $"/ITU-T/Recommendation/M/{values[index - 1]}";
             }
 
@@ -1966,56 +2279,56 @@ namespace BurnOutSharp.Builder
             if (index == values.Length) return "/ITU-T/Recommendation/Q";
             switch (values[index++])
             {
-                // TODO: case 733: goto oid_0_0_17_733;
-                // TODO: case 736: goto oid_0_0_17_736;
-                // TODO: case 751: goto oid_0_0_17_751;
-                // TODO: case 753: goto oid_0_0_17_753;
-                // TODO: case 754: goto oid_0_0_17_754;
-                // TODO: case 755: goto oid_0_0_17_755;
-                // TODO: case 763: goto oid_0_0_17_763;
-                // TODO: case 765: goto oid_0_0_17_765;
-                // TODO: case 773: goto oid_0_0_17_773;
-                // TODO: case 775: goto oid_0_0_17_775;
-                // TODO: case 813: goto oid_0_0_17_813;
-                // TODO: case 814: goto oid_0_0_17_814;
-                // TODO: case 815: goto oid_0_0_17_815;
-                // TODO: case 821: goto oid_0_0_17_821;
-                // TODO: case 822: goto oid_0_0_17_822;
-                // TODO: case 823: goto oid_0_0_17_823;
-                // TODO: case 824: goto oid_0_0_17_824;
-                // TODO: case 825: goto oid_0_0_17_825;
-                // TODO: case 826: goto oid_0_0_17_826;
-                // TODO: case 831: goto oid_0_0_17_831;
-                // TODO: case 832: goto oid_0_0_17_832;
-                // TODO: case 835: goto oid_0_0_17_835;
-                // TODO: case 836: goto oid_0_0_17_836;
-                // TODO: case 860: goto oid_0_0_17_860;
-                // TODO: case 932: goto oid_0_0_17_932;
-                // TODO: case 941: goto oid_0_0_17_941;
-                // TODO: case 950: goto oid_0_0_17_950;
-                // TODO: case 951: goto oid_0_0_17_951;
-                // TODO: case 952: goto oid_0_0_17_952;
-                // TODO: case 953: goto oid_0_0_17_953;
-                // TODO: case 954: goto oid_0_0_17_954;
-                // TODO: case 955: goto oid_0_0_17_955;
-                // TODO: case 956: goto oid_0_0_17_956;
-                // TODO: case 957: goto oid_0_0_17_957;
-                // TODO: case 1218: goto oid_0_0_17_1218;
-                // TODO: case 1228: goto oid_0_0_17_1228;
-                // TODO: case 1238: goto oid_0_0_17_1238;
-                // TODO: case 1248: goto oid_0_0_17_1248;
-                // TODO: case 1400: goto oid_0_0_17_1400;
-                // TODO: case 1551: goto oid_0_0_17_1551;
-                // TODO: case 1831: goto oid_0_0_17_1831;
-                // TODO: case 2724: goto oid_0_0_17_2724;
-                // TODO: case 2751: goto oid_0_0_17_2751;
-                // TODO: case 2932: goto oid_0_0_17_2932;
-                // TODO: case 2964: goto oid_0_0_17_2964;
-                // TODO: case 2981: goto oid_0_0_17_2981;
-                // TODO: case 2984: goto oid_0_0_17_2984;
-                // TODO: case 3303: goto oid_0_0_17_3303;
-                // TODO: case 3304: goto oid_0_0_17_3304;
-                // TODO: case 3308: goto oid_0_0_17_3308;
+                //TODO: case 733: goto oid_0_0_17_733;
+                //TODO: case 736: goto oid_0_0_17_736;
+                //TODO: case 751: goto oid_0_0_17_751;
+                //TODO: case 753: goto oid_0_0_17_753;
+                //TODO: case 754: goto oid_0_0_17_754;
+                //TODO: case 755: goto oid_0_0_17_755;
+                //TODO: case 763: goto oid_0_0_17_763;
+                //TODO: case 765: goto oid_0_0_17_765;
+                //TODO: case 773: goto oid_0_0_17_773;
+                //TODO: case 775: goto oid_0_0_17_775;
+                //TODO: case 813: goto oid_0_0_17_813;
+                //TODO: case 814: goto oid_0_0_17_814;
+                //TODO: case 815: goto oid_0_0_17_815;
+                //TODO: case 821: goto oid_0_0_17_821;
+                //TODO: case 822: goto oid_0_0_17_822;
+                //TODO: case 823: goto oid_0_0_17_823;
+                //TODO: case 824: goto oid_0_0_17_824;
+                //TODO: case 825: goto oid_0_0_17_825;
+                //TODO: case 826: goto oid_0_0_17_826;
+                //TODO: case 831: goto oid_0_0_17_831;
+                //TODO: case 832: goto oid_0_0_17_832;
+                //TODO: case 835: goto oid_0_0_17_835;
+                //TODO: case 836: goto oid_0_0_17_836;
+                //TODO: case 860: goto oid_0_0_17_860;
+                //TODO: case 932: goto oid_0_0_17_932;
+                //TODO: case 941: goto oid_0_0_17_941;
+                //TODO: case 950: goto oid_0_0_17_950;
+                //TODO: case 951: goto oid_0_0_17_951;
+                //TODO: case 952: goto oid_0_0_17_952;
+                //TODO: case 953: goto oid_0_0_17_953;
+                //TODO: case 954: goto oid_0_0_17_954;
+                //TODO: case 955: goto oid_0_0_17_955;
+                //TODO: case 956: goto oid_0_0_17_956;
+                //TODO: case 957: goto oid_0_0_17_957;
+                //TODO: case 1218: goto oid_0_0_17_1218;
+                //TODO: case 1228: goto oid_0_0_17_1228;
+                //TODO: case 1238: goto oid_0_0_17_1238;
+                //TODO: case 1248: goto oid_0_0_17_1248;
+                //TODO: case 1400: goto oid_0_0_17_1400;
+                //TODO: case 1551: goto oid_0_0_17_1551;
+                //TODO: case 1831: goto oid_0_0_17_1831;
+                //TODO: case 2724: goto oid_0_0_17_2724;
+                //TODO: case 2751: goto oid_0_0_17_2751;
+                //TODO: case 2932: goto oid_0_0_17_2932;
+                //TODO: case 2964: goto oid_0_0_17_2964;
+                //TODO: case 2981: goto oid_0_0_17_2981;
+                //TODO: case 2984: goto oid_0_0_17_2984;
+                //TODO: case 3303: goto oid_0_0_17_3303;
+                //TODO: case 3304: goto oid_0_0_17_3304;
+                //TODO: case 3308: goto oid_0_0_17_3308;
                 case 8361: return "/ITU-T/Recommendation/Q/[Specifications of Signalling System No. 7 -- Q3 interface]";
                 default: return $"/ITU-T/Recommendation/Q/{values[index - 1]}";
             }
@@ -2030,21 +2343,21 @@ namespace BurnOutSharp.Builder
             if (index == values.Length) return "/ITU-T/Recommendation/T";
             switch (values[index++])
             {
-                // TODO: case 43: goto oid_0_0_20_43;
-                // TODO: case 123: goto oid_0_0_20_123;
-                // TODO: case 124: goto oid_0_0_20_124;
-                // TODO: case 126: goto oid_0_0_20_126;
-                // TODO: case 127: goto oid_0_0_20_127;
-                // TODO: case 128: goto oid_0_0_20_128;
-                // TODO: case 134: goto oid_0_0_20_134;
-                // TODO: case 135: goto oid_0_0_20_135;
-                // TODO: case 136: goto oid_0_0_20_136;
-                // TODO: case 137: goto oid_0_0_20_137;
+                //TODO: case 43: goto oid_0_0_20_43;
+                //TODO: case 123: goto oid_0_0_20_123;
+                //TODO: case 124: goto oid_0_0_20_124;
+                //TODO: case 126: goto oid_0_0_20_126;
+                //TODO: case 127: goto oid_0_0_20_127;
+                //TODO: case 128: goto oid_0_0_20_128;
+                //TODO: case 134: goto oid_0_0_20_134;
+                //TODO: case 135: goto oid_0_0_20_135;
+                //TODO: case 136: goto oid_0_0_20_136;
+                //TODO: case 137: goto oid_0_0_20_137;
                 case 330: return "/ITU-T/Recommendation/T/[TLMAAbsService]";
-                // TODO: case 433: goto oid_0_0_20_433;
-                // TODO: case 434: goto oid_0_0_20_434;
-                // TODO: case 435: goto oid_0_0_20_435;
-                // TODO: case 436: goto oid_0_0_20_436;
+                //TODO: case 433: goto oid_0_0_20_433;
+                //TODO: case 434: goto oid_0_0_20_434;
+                //TODO: case 435: goto oid_0_0_20_435;
+                //TODO: case 436: goto oid_0_0_20_436;
                 default: return $"/ITU-T/Recommendation/T/{values[index - 1]}";
             }
 
@@ -2058,7 +2371,7 @@ namespace BurnOutSharp.Builder
             if (index == values.Length) return "/ITU-T/Recommendation/V";
             switch (values[index++])
             {
-                // TODO: case 43: goto oid_0_0_22_150;
+                //TODO: case 43: goto oid_0_0_22_150;
                 default: return $"/ITU-T/Recommendation/V/{values[index - 1]}";
             }
 
@@ -2072,16 +2385,16 @@ namespace BurnOutSharp.Builder
             if (index == values.Length) return "/ITU-T/Recommendation/X";
             switch (values[index++])
             {
-                // TODO: case 162: goto oid_0_0_24_162;
-                // TODO: case 754: goto oid_0_0_24_754;
-                // TODO: case 790: goto oid_0_0_24_790;
-                // TODO: case 792: goto oid_0_0_24_792;
-                // TODO: case 894: goto oid_0_0_24_894;
-                // TODO: case 1084: goto oid_0_0_24_1084;
-                // TODO: case 1089: goto oid_0_0_24_1089;
-                // TODO: case 1125: goto oid_0_0_24_1125;
-                // TODO: case 1243: goto oid_0_0_24_1243;
-                // TODO: case 1303: goto oid_0_0_24_1303;
+                //TODO: case 162: goto oid_0_0_24_162;
+                //TODO: case 754: goto oid_0_0_24_754;
+                //TODO: case 790: goto oid_0_0_24_790;
+                //TODO: case 792: goto oid_0_0_24_792;
+                //TODO: case 894: goto oid_0_0_24_894;
+                //TODO: case 1084: goto oid_0_0_24_1084;
+                //TODO: case 1089: goto oid_0_0_24_1089;
+                //TODO: case 1125: goto oid_0_0_24_1125;
+                //TODO: case 1243: goto oid_0_0_24_1243;
+                //TODO: case 1303: goto oid_0_0_24_1303;
                 default: return $"/ITU-T/Recommendation/X/{values[index - 1]}";
             }
 
@@ -2118,7 +2431,7 @@ namespace BurnOutSharp.Builder
                 case 224: return "/ITU-T/Administration/[Italy]";
                 case 225: return "/ITU-T/Administration/[Vatican City State]";
                 case 226: return "/ITU-T/Administration/[Romania]";
-                // TODO: case 228: goto oid_0_2_228;
+                //TODO: case 228: goto oid_0_2_228;
                 case 229: return "/ITU-T/Administration/[Confederation of Switzerland]";
                 case 230: return "/ITU-T/Administration/[Czech Republic]";
                 case 231: return "/ITU-T/Administration/[Slovakia]";
@@ -2131,7 +2444,7 @@ namespace BurnOutSharp.Builder
                 case 238:
                 case 239: return "/ITU-T/Administration/[Denmark]";
                 case 240: return "/ITU-T/Administration/[Sweden]";
-                // TODO: case 242: goto oid_0_2_242;
+                //TODO: case 242: goto oid_0_2_242;
                 case 243: return "/ITU-T/Administration/[Norway]";
                 case 244: return "/ITU-T/Administration/[Finland]";
                 case 246: return "/ITU-T/Administration/[Republic of LITHUANIA]";
@@ -2144,7 +2457,7 @@ namespace BurnOutSharp.Builder
                 case 259: return "/ITU-T/Administration/[Republic of Moldova]";
                 case 260:
                 case 261: return "/ITU-T/Administration/[Republic of Poland]";
-                // TODO: case 262: goto oid_0_2_262;
+                //TODO: case 262: goto oid_0_2_262;
                 case 263:
                 case 264:
                 case 265: return "/ITU-T/Administration/[Federal Republic of Germany]";
@@ -2234,11 +2547,11 @@ namespace BurnOutSharp.Builder
                 case 436: return "/ITU-T/Administration/[Republic of Tajikistan]";
                 case 437: return "/ITU-T/Administration/[Kyrgyz Republic]";
                 case 438: return "/ITU-T/Administration/[Turkmenistan]";
-                // TODO: case 440: goto oid_0_2_440;
+                //TODO: case 440: goto oid_0_2_440;
                 case 441:
                 case 442:
                 case 443: return "/ITU-T/Administration/[Japan]";
-                // TODO: case 450: goto oid_0_2_450;
+                //TODO: case 450: goto oid_0_2_450;
                 case 452: return "/ITU-T/Administration/[Viet Nam]";
                 case 453:
                 case 454: return "/ITU-T/Administration/[Hong Kong, China]";
@@ -2702,7 +3015,7 @@ namespace BurnOutSharp.Builder
                 case 4321: return "/ITU-T/Network-Operator/[Islamic Republic of Iran: IranPac]";
                 case 4341: return "/ITU-T/Network-Operator/[Uzbekistan: UzPAK]";
                 case 4400: return "/ITU-T/Network-Operator/[Japan: GLOBALNET (Network of the Global \"VAN\" Japan Incorporation)]";
-                // TODO: case 4401: goto oid_0_3_4401;
+                //TODO: case 4401: goto oid_0_3_4401;
                 case 4402: return "/ITU-T/Network-Operator/[Japan: NEC-NET (NEC Corporation)]";
                 case 4403: return "/ITU-T/Network-Operator/[Japan: \"JENSNET\" (\"JENS Corporation\")]";
                 case 4404: return "/ITU-T/Network-Operator/[Japan: JAIS-NET (Japan Research Institute Ltd.)]";
@@ -2883,7 +3196,7 @@ namespace BurnOutSharp.Builder
             if (index == values.Length) return "/ITU-T/Identified-Organization";
             switch (values[index++])
             {
-                // TODO: case 0: goto oid_0_4_0;
+                //TODO: case 0: goto oid_0_4_0;
                 default: return $"/ITU-T/Identified-Organization/{values[index - 1]}";
             }
 
@@ -2897,7 +3210,7 @@ namespace BurnOutSharp.Builder
             if (index == values.Length) return "/ITU-T/Data";
             switch (values[index++])
             {
-                // TODO: case 0: goto oid_0_9_0;
+                //TODO: case 0: goto oid_0_9_0;
                 default: return $"/ITU-T/Data/{values[index - 1]}";
             }
 
@@ -2928,148 +3241,148 @@ namespace BurnOutSharp.Builder
             if (index == values.Length) return "/ISO/Standard";
             switch (values[index++])
             {
-                // TODO: case 639: goto oid_1_0_639;
-                // TODO: case 1087: goto oid_1_0_1087;
-                // TODO: case 2022: goto oid_1_0_2022;
-                // TODO: case 2382: goto oid_1_0_2382;
-                // TODO: case 3166: goto oid_1_0_3166;
+                //TODO: case 639: goto oid_1_0_639;
+                //TODO: case 1087: goto oid_1_0_1087;
+                //TODO: case 2022: goto oid_1_0_2022;
+                //TODO: case 2382: goto oid_1_0_2382;
+                //TODO: case 3166: goto oid_1_0_3166;
                 case 4217: return "/ISO/Standard/[Currency Codes]";
-                // TODO: case 4426: goto oid_1_0_4426;
-                // TODO: case 4922: goto oid_1_0_4922;
+                //TODO: case 4426: goto oid_1_0_4426;
+                //TODO: case 4922: goto oid_1_0_4922;
                 case 5218: return "/ISO/Standard/[Information technology -- Codes for the representation of human sexes]";
                 case 6523: return "/ISO/Standard/[Information technology -- Structure for the identification of organizations and organization parts]";
-                // TODO: case 7498: goto oid_1_0_7498;
-                // TODO: case 7816: goto oid_1_0_7816;
-                // TODO: case 8571: goto oid_1_0_8571;
+                //TODO: case 7498: goto oid_1_0_7498;
+                //TODO: case 7816: goto oid_1_0_7816;
+                //TODO: case 8571: goto oid_1_0_8571;
                 case 8601: return "/ISO/Standard/[Data elements and interchange formats -- Information interchange -- Representation of dates and times]";
-                // TODO: case 8802: goto oid_1_0_8802;
-                // TODO: case 9040: goto oid_1_0_9040;
-                // TODO: case 9041: goto oid_1_0_9041;
-                // TODO: case 9069: goto oid_1_0_9069;
+                //TODO: case 8802: goto oid_1_0_8802;
+                //TODO: case 9040: goto oid_1_0_9040;
+                //TODO: case 9041: goto oid_1_0_9041;
+                //TODO: case 9069: goto oid_1_0_9069;
                 case 9362: return "/ISO/Standard/[Banking -- Banking telecommunication messages -- Business Identifier Code (BIC)]";
-                // TODO: case 9506: goto oid_1_0_9506;
-                // TODO: case 9596: goto oid_1_0_9596;
-                // TODO: case 9796: goto oid_1_0_9796;
-                // TODO: case 9797: goto oid_1_0_9797;
-                // TODO: case 9798: goto oid_1_0_9798;
-                // TODO: case 9834: goto oid_1_0_9834;
-                // TODO: case 9979: goto oid_1_0_9979;
-                // TODO: case 9992: goto oid_1_0_9992;
-                // TODO: case 10021: goto oid_1_0_10021;
-                // TODO: case 10116: goto oid_1_0_10116;
-                // TODO: case 10118: goto oid_1_0_10118;
-                // TODO: case 10161: goto oid_1_0_10161;
-                // TODO: case 10166: goto oid_1_0_10166;
+                //TODO: case 9506: goto oid_1_0_9506;
+                //TODO: case 9596: goto oid_1_0_9596;
+                //TODO: case 9796: goto oid_1_0_9796;
+                //TODO: case 9797: goto oid_1_0_9797;
+                //TODO: case 9798: goto oid_1_0_9798;
+                //TODO: case 9834: goto oid_1_0_9834;
+                //TODO: case 9979: goto oid_1_0_9979;
+                //TODO: case 9992: goto oid_1_0_9992;
+                //TODO: case 10021: goto oid_1_0_10021;
+                //TODO: case 10116: goto oid_1_0_10116;
+                //TODO: case 10118: goto oid_1_0_10118;
+                //TODO: case 10161: goto oid_1_0_10161;
+                //TODO: case 10166: goto oid_1_0_10166;
                 case 10374: return "/ISO/Standard/[Freight containers -- Automatic identification]";
-                // TODO: case 10646: goto oid_1_0_10646;
-                // TODO: case 10746: goto oid_1_0_10746;
+                //TODO: case 10646: goto oid_1_0_10646;
+                //TODO: case 10746: goto oid_1_0_10746;
                 case 10891: return "/ISO/Standard/[Freight containers -- Radio frequency identification (RFID) -- Licence plate tag]";
-                // TODO: case 11188: goto oid_1_0_11188;
+                //TODO: case 11188: goto oid_1_0_11188;
                 case 11404: return "/ISO/Standard/[Information technology -- Programming languages, their environments and system software interfaces -- Language-independent datatypes]";
-                // TODO: case 11578: goto oid_1_0_11578;
-                // TODO: case 11582: goto oid_1_0_11582;
-                // TODO: case 11770: goto oid_1_0_11770;
-                // TODO: case 12813: goto oid_1_0_12813;
-                // TODO: case 12855: goto oid_1_0_12855;
-                // TODO: case 13141: goto oid_1_0_13141;
+                //TODO: case 11578: goto oid_1_0_11578;
+                //TODO: case 11582: goto oid_1_0_11582;
+                //TODO: case 11770: goto oid_1_0_11770;
+                //TODO: case 12813: goto oid_1_0_12813;
+                //TODO: case 12855: goto oid_1_0_12855;
+                //TODO: case 13141: goto oid_1_0_13141;
                 case 13616: return "/ISO/Standard/[Financial services -- International Bank Account Number (IBAN)]";
-                // TODO: case 13868: goto oid_1_0_13868;
-                // TODO: case 13869: goto oid_1_0_13869;
-                // TODO: case 13870: goto oid_1_0_13870;
-                // TODO: case 13873: goto oid_1_0_13873;
-                // TODO: case 13874: goto oid_1_0_13874;
-                // TODO: case 13888: goto oid_1_0_13888;
-                // TODO: case 14813: goto oid_1_0_14813;
-                // TODO: case 14816: goto oid_1_0_14816;
-                // TODO: case 14823: goto oid_1_0_14823;
-                // TODO: case 14843: goto oid_1_0_14843;
-                // TODO: case 14844: goto oid_1_0_14844;
-                // TODO: case 14846: goto oid_1_0_14846;
-                // TODO: case 14888: goto oid_1_0_14888;
-                // TODO: case 14906: goto oid_1_0_14906;
-                // TODO: case 15050: goto oid_1_0_15050;
-                // TODO: case 15052: goto oid_1_0_15052;
-                // TODO: case 15054: goto oid_1_0_15054;
-                // TODO: case 15118: goto oid_1_0_15118;
-                // TODO: case 15418: goto oid_1_0_15418;
-                // TODO: case 15429: goto oid_1_0_15429;
-                // TODO: case 15431: goto oid_1_0_15431;
-                // TODO: case 15433: goto oid_1_0_15433;
+                //TODO: case 13868: goto oid_1_0_13868;
+                //TODO: case 13869: goto oid_1_0_13869;
+                //TODO: case 13870: goto oid_1_0_13870;
+                //TODO: case 13873: goto oid_1_0_13873;
+                //TODO: case 13874: goto oid_1_0_13874;
+                //TODO: case 13888: goto oid_1_0_13888;
+                //TODO: case 14813: goto oid_1_0_14813;
+                //TODO: case 14816: goto oid_1_0_14816;
+                //TODO: case 14823: goto oid_1_0_14823;
+                //TODO: case 14843: goto oid_1_0_14843;
+                //TODO: case 14844: goto oid_1_0_14844;
+                //TODO: case 14846: goto oid_1_0_14846;
+                //TODO: case 14888: goto oid_1_0_14888;
+                //TODO: case 14906: goto oid_1_0_14906;
+                //TODO: case 15050: goto oid_1_0_15050;
+                //TODO: case 15052: goto oid_1_0_15052;
+                //TODO: case 15054: goto oid_1_0_15054;
+                //TODO: case 15118: goto oid_1_0_15118;
+                //TODO: case 15418: goto oid_1_0_15418;
+                //TODO: case 15429: goto oid_1_0_15429;
+                //TODO: case 15431: goto oid_1_0_15431;
+                //TODO: case 15433: goto oid_1_0_15433;
                 case 15434: return "/ISO/Standard/[Transfer Syntax for High Capacity data carrier]";
-                // TODO: case 15459: goto oid_1_0_15459;
-                // TODO: case 15506: goto oid_1_0_15506;
-                // TODO: case 15507: goto oid_1_0_15507;
-                // TODO: case 15628: goto oid_1_0_15628;
-                // TODO: case 15772: goto oid_1_0_15772;
-                // TODO: case 15946: goto oid_1_0_15946;
-                // TODO: case 15961: goto oid_1_0_15961;
-                // TODO: case 15992: goto oid_1_0_15992;
-                // TODO: case 16460: goto oid_1_0_16460;
-                // TODO: case 16785: goto oid_1_0_16785;
-                // TODO: case 17090: goto oid_1_0_17090;
-                // TODO: case 17262: goto oid_1_0_17262;
-                // TODO: case 17264: goto oid_1_0_17264;
-                // TODO: case 17419: goto oid_1_0_17419;
-                // TODO: case 17423: goto oid_1_0_17423;
-                // TODO: case 17429: goto oid_1_0_17429;
-                // TODO: case 17515: goto oid_1_0_17515;
-                // TODO: case 17573: goto oid_1_0_17573;
-                // TODO: case 17575: goto oid_1_0_17575;
-                // TODO: case 17876: goto oid_1_0_17876;
-                // TODO: case 17878: goto oid_1_0_17878;
-                // TODO: case 17922: goto oid_1_0_17922;
-                // TODO: case 18013: goto oid_1_0_18013;
-                // TODO: case 18014: goto oid_1_0_18014;
+                //TODO: case 15459: goto oid_1_0_15459;
+                //TODO: case 15506: goto oid_1_0_15506;
+                //TODO: case 15507: goto oid_1_0_15507;
+                //TODO: case 15628: goto oid_1_0_15628;
+                //TODO: case 15772: goto oid_1_0_15772;
+                //TODO: case 15946: goto oid_1_0_15946;
+                //TODO: case 15961: goto oid_1_0_15961;
+                //TODO: case 15992: goto oid_1_0_15992;
+                //TODO: case 16460: goto oid_1_0_16460;
+                //TODO: case 16785: goto oid_1_0_16785;
+                //TODO: case 17090: goto oid_1_0_17090;
+                //TODO: case 17262: goto oid_1_0_17262;
+                //TODO: case 17264: goto oid_1_0_17264;
+                //TODO: case 17419: goto oid_1_0_17419;
+                //TODO: case 17423: goto oid_1_0_17423;
+                //TODO: case 17429: goto oid_1_0_17429;
+                //TODO: case 17515: goto oid_1_0_17515;
+                //TODO: case 17573: goto oid_1_0_17573;
+                //TODO: case 17575: goto oid_1_0_17575;
+                //TODO: case 17876: goto oid_1_0_17876;
+                //TODO: case 17878: goto oid_1_0_17878;
+                //TODO: case 17922: goto oid_1_0_17922;
+                //TODO: case 18013: goto oid_1_0_18013;
+                //TODO: case 18014: goto oid_1_0_18014;
                 case 18031: return "/ISO/Standard/[Information technology -- Security techniques -- Random bit generation]";
                 case 18032: return "/ISO/Standard/[Information technology -- Security techniques -- Prime number generation]";
-                // TODO: case 18033: goto oid_1_0_18033;
-                // TODO: case 18370: goto oid_1_0_18370;
-                // TODO: case 18750: goto oid_1_0_18750;
-                // TODO: case 19079: goto oid_1_0_19079;
-                // TODO: case 19091: goto oid_1_0_19091;
-                // TODO: case 19321: goto oid_1_0_19321;
-                // TODO: case 19460: goto oid_1_0_19460;
-                // TODO: case 19592: goto oid_1_0_19592;
-                // TODO: case 19772: goto oid_1_0_19772;
-                // TODO: case 19785: goto oid_1_0_19785;
-                // TODO: case 19794: goto oid_1_0_19794;
-                // TODO: case 20008: goto oid_1_0_20008;
-                // TODO: case 20009: goto oid_1_0_20009;
+                //TODO: case 18033: goto oid_1_0_18033;
+                //TODO: case 18370: goto oid_1_0_18370;
+                //TODO: case 18750: goto oid_1_0_18750;
+                //TODO: case 19079: goto oid_1_0_19079;
+                //TODO: case 19091: goto oid_1_0_19091;
+                //TODO: case 19321: goto oid_1_0_19321;
+                //TODO: case 19460: goto oid_1_0_19460;
+                //TODO: case 19592: goto oid_1_0_19592;
+                //TODO: case 19772: goto oid_1_0_19772;
+                //TODO: case 19785: goto oid_1_0_19785;
+                //TODO: case 19794: goto oid_1_0_19794;
+                //TODO: case 20008: goto oid_1_0_20008;
+                //TODO: case 20009: goto oid_1_0_20009;
                 case 20022: return "/ISO/Standard/[Universal Financial Industry message scheme]";
-                // TODO: case 20248: goto oid_1_0_20248;
-                // TODO: case 20684: goto oid_1_0_20684;
-                // TODO: case 20828: goto oid_1_0_20828;
-                // TODO: case 21000: goto oid_1_0_21000;
-                // TODO: case 21091: goto oid_1_0_21091;
-                // TODO: case 21177: goto oid_1_0_21177;
-                // TODO: case 21184: goto oid_1_0_21184;
-                // TODO: case 21185: goto oid_1_0_21185;
-                // TODO: case 21192: goto oid_1_0_21192;
-                // TODO: case 21193: goto oid_1_0_21193;
-                // TODO: case 21210: goto oid_1_0_21210;
-                // TODO: case 21215: goto oid_1_0_21215;
-                // TODO: case 21218: goto oid_1_0_21218;
-                // TODO: case 21407: goto oid_1_0_21407;
-                // TODO: case 21889: goto oid_1_0_21889;
-                // TODO: case 22418: goto oid_1_0_22418;
-                // TODO: case 22895: goto oid_1_0_22895;
-                // TODO: case 23264: goto oid_1_0_23264;
-                // TODO: case 24102: goto oid_1_0_24102;
+                //TODO: case 20248: goto oid_1_0_20248;
+                //TODO: case 20684: goto oid_1_0_20684;
+                //TODO: case 20828: goto oid_1_0_20828;
+                //TODO: case 21000: goto oid_1_0_21000;
+                //TODO: case 21091: goto oid_1_0_21091;
+                //TODO: case 21177: goto oid_1_0_21177;
+                //TODO: case 21184: goto oid_1_0_21184;
+                //TODO: case 21185: goto oid_1_0_21185;
+                //TODO: case 21192: goto oid_1_0_21192;
+                //TODO: case 21193: goto oid_1_0_21193;
+                //TODO: case 21210: goto oid_1_0_21210;
+                //TODO: case 21215: goto oid_1_0_21215;
+                //TODO: case 21218: goto oid_1_0_21218;
+                //TODO: case 21407: goto oid_1_0_21407;
+                //TODO: case 21889: goto oid_1_0_21889;
+                //TODO: case 22418: goto oid_1_0_22418;
+                //TODO: case 22895: goto oid_1_0_22895;
+                //TODO: case 23264: goto oid_1_0_23264;
+                //TODO: case 24102: goto oid_1_0_24102;
                 case 24531: return "/ISO/Standard/[Intelligent Transport Systems (ITS) -- System architecture, taxonomy and terminology -- Using eXtensible Markup Language (XML) in ITS standards, data registries and data dictionaries]";
-                // TODO: case 24534: goto oid_1_0_24534;
-                // TODO: case 24727: goto oid_1_0_24727;
-                // TODO: case 24753: goto oid_1_0_24753;
-                // TODO: case 24761: goto oid_1_0_24761;
+                //TODO: case 24534: goto oid_1_0_24534;
+                //TODO: case 24727: goto oid_1_0_24727;
+                //TODO: case 24753: goto oid_1_0_24753;
+                //TODO: case 24761: goto oid_1_0_24761;
                 case 24787: return "/ISO/Standard/[Information technology -- Identification cards -- On-card biometric comparison]";
-                // TODO: case 29150: goto oid_1_0_29150;
-                // TODO: case 29192: goto oid_1_0_29192;
-                // TODO: case 29281: goto oid_1_0_29281;
-                // TODO: case 30107: goto oid_1_0_30107;
-                // TODO: case 39794: goto oid_1_0_39794;
-                // TODO: case 62351: goto oid_1_0_62351;
-                // TODO: case 62379: goto oid_1_0_62379;
-                // TODO: case 62439: goto oid_1_0_62439;
-                // TODO: case 63047: goto oid_1_0_63047;
+                //TODO: case 29150: goto oid_1_0_29150;
+                //TODO: case 29192: goto oid_1_0_29192;
+                //TODO: case 29281: goto oid_1_0_29281;
+                //TODO: case 30107: goto oid_1_0_30107;
+                //TODO: case 39794: goto oid_1_0_39794;
+                //TODO: case 62351: goto oid_1_0_62351;
+                //TODO: case 62379: goto oid_1_0_62379;
+                //TODO: case 62439: goto oid_1_0_62439;
+                //TODO: case 63047: goto oid_1_0_63047;
                 default: return $"/ISO/Standard/{values[index - 1]}";
             }
 
@@ -3094,10 +3407,10 @@ namespace BurnOutSharp.Builder
                 case 9:
                 case 10: return "/ISO/Registration-Authority/[reserved]";
                 case 2108: return "/ISO/Registration-Authority/[Information and documentation -- International Standard Book Numbering (ISBN)]";
-                // TODO: case 2375: goto oid_1_1_2375;
-                // TODO: case 10036: goto oid_1_1_10036;
-                // TODO: case 19785: goto oid_1_1_19785;
-                // TODO: case 24727: goto oid_1_1_24727;
+                //TODO: case 2375: goto oid_1_1_2375;
+                //TODO: case 10036: goto oid_1_1_10036;
+                //TODO: case 19785: goto oid_1_1_19785;
+                //TODO: case 24727: goto oid_1_1_24727;
                 default: return $"/ISO/Registration-Authority/{values[index - 1]}";
             }
 
@@ -3111,34 +3424,34 @@ namespace BurnOutSharp.Builder
             if (index == values.Length) return "/ISO/Member-Body";
             switch (values[index++])
             {
-                // TODO: case 36: goto oid_1_2_36;
-                // TODO: case 40: goto oid_1_2_40;
-                // TODO: case 56: goto oid_1_2_56;
+                //TODO: case 36: goto oid_1_2_36;
+                //TODO: case 40: goto oid_1_2_40;
+                //TODO: case 56: goto oid_1_2_56;
                 case 124: return "/ISO/Member-Body/CA";
-                // TODO: case 156: goto oid_1_2_156;
-                // TODO: case 203: goto oid_1_2_203;
-                // TODO: case 208: goto oid_1_2_208;
-                // TODO: case 246: goto oid_1_2_246;
-                // TODO: case 250: goto oid_1_2_250;
-                // TODO: case 276: goto oid_1_2_276;
+                //TODO: case 156: goto oid_1_2_156;
+                //TODO: case 203: goto oid_1_2_203;
+                //TODO: case 208: goto oid_1_2_208;
+                //TODO: case 246: goto oid_1_2_246;
+                //TODO: case 250: goto oid_1_2_250;
+                //TODO: case 276: goto oid_1_2_276;
                 case 280: return "/ISO/Member-Body/[Germany: Bundesrepublik Deutschland]";
-                // TODO: case 300: goto oid_1_2_300;
+                //TODO: case 300: goto oid_1_2_300;
                 case 344: return "/ISO/Member-Body/HK";
-                // TODO: case 372: goto oid_1_2_372;
-                // TODO: case 392: goto oid_1_2_392;
+                //TODO: case 372: goto oid_1_2_372;
+                //TODO: case 392: goto oid_1_2_392;
                 case 398: return "/ISO/Member-Body/KZ";
-                // TODO: case 410: goto oid_1_2_410;
-                // TODO: case 498: goto oid_1_2_498;
-                // TODO: case 528: goto oid_1_2_528;
+                //TODO: case 410: goto oid_1_2_410;
+                //TODO: case 498: goto oid_1_2_498;
+                //TODO: case 528: goto oid_1_2_528;
                 case 566: return "/ISO/Member-Body/NG";
-                // TODO: case 578: goto oid_1_2_578;
-                // TODO: case 616: goto oid_1_2_616;
-                // TODO: case 643: goto oid_1_2_643;
-                // TODO: case 702: goto oid_1_2_702;
-                // TODO: case 752: goto oid_1_2_752;
-                // TODO: case 804: goto oid_1_2_804;
-                // TODO: case 826: goto oid_1_2_826;
-                // TODO: case 840: goto oid_1_2_840;
+                //TODO: case 578: goto oid_1_2_578;
+                //TODO: case 616: goto oid_1_2_616;
+                //TODO: case 643: goto oid_1_2_643;
+                //TODO: case 702: goto oid_1_2_702;
+                //TODO: case 752: goto oid_1_2_752;
+                //TODO: case 804: goto oid_1_2_804;
+                //TODO: case 826: goto oid_1_2_826;
+                //TODO: case 840: goto oid_1_2_840;
                 default: return $"/ISO/Member-Body/{values[index - 1]}";
             }
 
@@ -3163,22 +3476,22 @@ namespace BurnOutSharp.Builder
                 case 9: return "/ISO/Identified-Organization/[Système d'Identification du Répertoire des ETablissements (SIRET) codes]";
                 case 10: return "/ISO/Identified-Organization/[Organizational identifiers for structured names under ISO 9541-2]";
                 case 11: return "/ISO/Identified-Organization/[OSI-based amateur radio organizations, network objects and application services]";
-                // TODO: case 12: goto oid_1_3_12;
+                //TODO: case 12: goto oid_1_3_12;
                 case 13: return "/ISO/Identified-Organization/[Code assigned by the German Automotive Association to companies operating file transfer stations using Odette File Transfer Protocol (OFTP) (formerly, \"VSA\" File Transfer Protocol (FTP) code)]";
-                // TODO: case 14: goto oid_1_3_14;
-                // TODO: case 15: goto oid_1_3_15;
-                // TODO: case 16: goto oid_1_3_16;
+                //TODO: case 14: goto oid_1_3_14;
+                //TODO: case 15: goto oid_1_3_15;
+                //TODO: case 16: goto oid_1_3_16;
                 case 17: return "/ISO/Identified-Organization/[COMMON LANGUAGE]";
-                // TODO: case 18: goto oid_1_3_18;
+                //TODO: case 18: goto oid_1_3_18;
                 case 19: return "/ISO/Identified-Organization/[Air Transport Industry Services Communications Network]";
                 case 20: return "/ISO/Identified-Organization/[European Laboratory for Particle Physics \"CERN\"]";
                 case 21: return "/ISO/Identified-Organization/[Society for Worldwide Interbank Financial Telecommunication (SWIFT)]";
-                // TODO: case 22: goto oid_1_3_22;
+                //TODO: case 22: goto oid_1_3_22;
                 case 23: return "/ISO/Identified-Organization/[Nordic University and Research Network: NORDUnet]";
                 case 24: return "/ISO/Identified-Organization/[Digital Equipment Corporation (DEC)]";
                 case 25: return "/ISO/Identified-Organization/[OSI Asia-Oceania Workshop (AOW)]";
-                // TODO: case 26: goto oid_1_3_26;
-                // TODO: case 27: goto oid_1_3_27;
+                //TODO: case 26: goto oid_1_3_26;
+                //TODO: case 27: goto oid_1_3_27;
                 case 28: return "/ISO/Identified-Organization/[Organisation for Data Exchange through TeleTransmission in Europe (ODETTE)]";
                 case 29: return "/ISO/Identified-Organization/[The all-union classifier of enterprises and organizations]";
                 case 30: return "/ISO/Identified-Organization/[AT&T/OSI network]";
@@ -3187,7 +3500,7 @@ namespace BurnOutSharp.Builder
                 case 33: return "/ISO/Identified-Organization/[S G Warburg Group Management Ltd OSI Internetwork]";
                 case 34: return "/ISO/Identified-Organization/[Reuter open address standard]";
                 case 35: return "/ISO/Identified-Organization/[British Petroleum Ltd]";
-                // TODO: case 36: goto oid_1_3_36;
+                //TODO: case 36: goto oid_1_3_36;
                 case 37: return "/ISO/Identified-Organization/[LY-tunnus]";
                 case 38: return "/ISO/Identified-Organization/[The Australian Government Open Systems Interconnection Profile (GOSIP) network]";
                 case 39: return "/ISO/Identified-Organization/[\"OZDOD DEFNET\": Australian Department Of Defence (DOD) OSI network]";
@@ -3227,7 +3540,7 @@ namespace BurnOutSharp.Builder
                 case 73: return "/ISO/Identified-Organization/[Formatted Asynchronous Transfer Mode (ATM) address]";
                 case 74: return "/ISO/Identified-Organization/[\"ARINC\"]";
                 case 75: return "/ISO/Identified-Organization/[Alcanet (Alcatel-Alsthom vorporate network)]";
-                // TODO: case 76: goto oid_1_3_76;
+                //TODO: case 76: goto oid_1_3_76;
                 case 77: return "/ISO/Identified-Organization/[Sistema Italiano di Indirizzamento di Reti OSI Gestito da \"UNINFO\"]";
                 case 78: return "/ISO/Identified-Organization/[Mitel terminal or switching equipment]";
                 case 79: return "/ISO/Identified-Organization/[Asynchronous Transfer Mode (ATM) Forum]";
@@ -3252,7 +3565,7 @@ namespace BurnOutSharp.Builder
                 case 98: return "/ISO/Identified-Organization/[Chamber of Commerce Tel Aviv-Jaffa]";
                 case 99: return "/ISO/Identified-Organization/[Siemens Supervisory Systems Network]";
                 case 100: return "/ISO/Identified-Organization/[PNG_ICD scheme]";
-                // TODO: case 101: goto oid_1_3_101;
+                //TODO: case 101: goto oid_1_3_101;
                 case 102: return "/ISO/Identified-Organization/[\"HEAG\" holding group]";
                 case 103: return "/ISO/Identified-Organization/[Reserved for later allocation]";
                 case 104: return "/ISO/Identified-Organization/[British Telecommunications plc (BT)]";
@@ -3262,10 +3575,10 @@ namespace BurnOutSharp.Builder
                 case 108: return "/ISO/Identified-Organization/[Australian Chambers of Commerce and Industry]";
                 case 109: return "/ISO/Identified-Organization/[BellSouth Asynchronous Transfer Mode (ATM) End System Address (AESA)]";
                 case 110: return "/ISO/Identified-Organization/[Bell Atlantic]";
-                // TODO: case 111: goto oid_1_3_111;
-                // TODO: case 112: goto oid_1_3_112;
+                //TODO: case 111: goto oid_1_3_111;
+                //TODO: case 112: goto oid_1_3_112;
                 case 113: return "/ISO/Identified-Organization/[OriginNet]";
-                // TODO: case 114: goto oid_1_3_114;
+                //TODO: case 114: goto oid_1_3_114;
                 case 115: return "/ISO/Identified-Organization/[Pacific Bell data communications network]";
                 case 116: return "/ISO/Identified-Organization/[Postal Security Services (PSS)]";
                 case 117: return "/ISO/Identified-Organization/[Stentor]";
@@ -3275,16 +3588,16 @@ namespace BurnOutSharp.Builder
                 case 121: return "/ISO/Identified-Organization/[Affable Software data interchange codes]";
                 case 122: return "/ISO/Identified-Organization/[BB-DATA GmbH]";
                 case 123: return "/ISO/Identified-Organization/[Badische Anilin und Soda Fabrik (BASF) company Asynchronous Transfer Mode (ATM) network]";
-                // TODO: case 124: goto oid_1_3_124;
+                //TODO: case 124: goto oid_1_3_124;
                 case 125: return "/ISO/Identified-Organization/[Henkel Corporate Network (H-Net)]";
                 case 126: return "/ISO/Identified-Organization/[\"GTE\" OSI network]";
                 case 127: return "/ISO/Identified-Organization/[Allianz Technology]";
                 case 128: return "/ISO/Identified-Organization/[\"BCNR\" (Swiss clearing bank number)]";
                 case 129: return "/ISO/Identified-Organization/[Telekurs Business Partner Identification (BPI)]";
-                // TODO: case 130: goto oid_1_3_130;
+                //TODO: case 130: goto oid_1_3_130;
                 case 131: return "/ISO/Identified-Organization/[Code for the Identification of National Organizations]";
-                // TODO: case 132: goto oid_1_3_132;
-                // TODO: case 133: goto oid_1_3_133;
+                //TODO: case 132: goto oid_1_3_132;
+                //TODO: case 133: goto oid_1_3_133;
                 case 134: return "/ISO/Identified-Organization/[Infonet Services Corporation]";
                 case 135: return "/ISO/Identified-Organization/[Societa Interbancaria per l'Automazione (SIA) S.p.A.]";
                 case 136: return "/ISO/Identified-Organization/[Cable & Wireless global Asynchronous Transfer Mode (ATM) end-system address plan]";
@@ -3305,15 +3618,15 @@ namespace BurnOutSharp.Builder
                 case 151: return "/ISO/Identified-Organization/[Australian Business Number (ABN) scheme]";
                 case 152: return "/ISO/Identified-Organization/[Electronic Data Interchange Registration Authorities (EDIRA) scheme identifier code]";
                 case 153: return "/ISO/Identified-Organization/[Concert Global network services Asynchronous Transfer Mode (ATM) End System Address (AESA)]";
-                // TODO: case 154: goto oid_1_3_154;
+                //TODO: case 154: goto oid_1_3_154;
                 case 155: return "/ISO/Identified-Organization/[Global Crossing Asynchronous Transfer Mode (ATM) End System Address (AESA)]";
                 case 156: return "/ISO/Identified-Organization/[\"AUNA\"]";
                 case 157: return "/ISO/Identified-Organization/[Informatie en communicatie Technologie Organisatie (ITO) Drager Net]";
-                // TODO: case 158: goto oid_1_3_158;
-                // TODO: case 159: goto oid_1_3_159;
+                //TODO: case 158: goto oid_1_3_158;
+                //TODO: case 159: goto oid_1_3_159;
                 case 160: return "/ISO/Identified-Organization/[GS1 Global Trade Item Number (GTIN)]";
                 case 161: return "/ISO/Identified-Organization/[Electronic Commerce Code Management Association (ECCMA) open technical dictionary]";
-                // TODO: case 162: goto oid_1_3_162;
+                //TODO: case 162: goto oid_1_3_162;
                 case 163: return "/ISO/Identified-Organization/[United States Environmental Protection Agency (US-EPA) facilities]";
                 case 164: return "/ISO/Identified-Organization/[\"TELUS\" Corporation Asynchronous Transfer Mode (ATM) End System Address (AESA) addressing scheme for ATM Private Network-to-Network Interface (PNNI) implementation]";
                 case 165: return "/ISO/Identified-Organization/[\"FIEIE\"]";
@@ -3322,15 +3635,15 @@ namespace BurnOutSharp.Builder
                 case 168: return "/ISO/Identified-Organization/[Vodafone Ireland]";
                 case 169: return "/ISO/Identified-Organization/[Swiss Federal Business Identification Number]";
                 case 170: return "/ISO/Identified-Organization/[Teikoku Company Code]";
-                // TODO: case 171: goto oid_1_3_171;
+                //TODO: case 171: goto oid_1_3_171;
                 case 172: return "/ISO/Identified-Organization/[Project Group \"Lists of properties\" (PROLIST®)]";
                 case 173: return "/ISO/Identified-Organization/[eCl@ss]";
                 case 174: return "/ISO/Identified-Organization/[StepNexus]";
                 case 175: return "/ISO/Identified-Organization/[Siemens AG]";
                 case 176: return "/ISO/Identified-Organization/[Paradine GmbH]";
-                // TODO: case 177: goto oid_1_3_177;
+                //TODO: case 177: goto oid_1_3_177;
                 case 178: return "/ISO/Identified-Organization/[Route1's MobiNET]";
-                // TODO: case 179: goto oid_1_3_179;
+                //TODO: case 179: goto oid_1_3_179;
                 case 180: return "/ISO/Identified-Organization/[Lithuanian military Public Key Infrastructure (PKI)]";
                 case 183: return "/ISO/Identified-Organization/[Unique IDentification Business (UIDB) number]";
                 case 184: return "/ISO/Identified-Organization/[\"DIGSTORG\"]";
@@ -3440,15 +3753,15 @@ namespace BurnOutSharp.Builder
             if (index == values.Length) return "/ASN.1";
             switch (values[index++])
             {
-                // TODO: case 0: goto oid_2_1_0;
+                //TODO: case 0: goto oid_2_1_0;
                 case 1: return "/ASN.1/[Basic Encoding Rules (BER)]";
-                // TODO: case 2: goto oid_2_1_2;
-                // TODO: case 3: goto oid_2_1_3;
-                // TODO: case 4: goto oid_2_1_4;
-                // TODO: case 5: goto oid_2_1_5;
-                // TODO: case 6: goto oid_2_1_6;
+                //TODO: case 2: goto oid_2_1_2;
+                //TODO: case 3: goto oid_2_1_3;
+                //TODO: case 4: goto oid_2_1_4;
+                //TODO: case 5: goto oid_2_1_5;
+                //TODO: case 6: goto oid_2_1_6;
                 case 7: return "/ASN.1/[Javascript object notation Encoding Rules (JER)]";
-                // TODO: case 8: goto oid_2_1_8;
+                //TODO: case 8: goto oid_2_1_8;
                 case 123: return "/ASN.1/[Examples]";
                 default: return $"/ASN.1/{values[index - 1]}";
             }
@@ -3463,10 +3776,10 @@ namespace BurnOutSharp.Builder
             if (index == values.Length) return "/Joint-ISO-ITU-T/[Association Control Service Element (ACSE)]";
             switch (values[index++])
             {
-                // TODO: case 0: goto oid_2_2_0;
-                // TODO: case 1: goto oid_2_2_1;
-                // TODO: case 2: goto oid_2_2_2;
-                // TODO: case 3: goto oid_2_2_3;
+                //TODO: case 0: goto oid_2_2_0;
+                //TODO: case 1: goto oid_2_2_1;
+                //TODO: case 2: goto oid_2_2_2;
+                //TODO: case 3: goto oid_2_2_3;
                 default: return $"/Joint-ISO-ITU-T/[Association Control Service Element (ACSE)]/{values[index - 1]}";
             }
 
@@ -3501,14 +3814,14 @@ namespace BurnOutSharp.Builder
                 case 2: return "/Joint-ISO-ITU-T/[Remote Operations Service Element (ROSE)]/[Remote-Operations-Notation-extension]";
                 case 3: return "/Joint-ISO-ITU-T/[Remote Operations Service Element (ROSE)]/[Application Service Element (ASE) identifier]";
                 case 4: return "/Joint-ISO-ITU-T/[Remote Operations Service Element (ROSE)]/[Association Control Service Element (ACSE)]";
-                // TODO: case 5: goto oid_2_4_5;
-                // TODO: case 6: goto oid_2_4_6;
-                // TODO: case 7: goto oid_2_4_7;
-                // TODO: case 8: goto oid_2_4_8;
-                // TODO: case 9: goto oid_2_4_9;
-                // TODO: case 10: goto oid_2_4_10;
-                // TODO: case 11: goto oid_2_4_11;
-                // TODO: case 12: goto oid_2_4_12;
+                //TODO: case 5: goto oid_2_4_5;
+                //TODO: case 6: goto oid_2_4_6;
+                //TODO: case 7: goto oid_2_4_7;
+                //TODO: case 8: goto oid_2_4_8;
+                //TODO: case 9: goto oid_2_4_9;
+                //TODO: case 10: goto oid_2_4_10;
+                //TODO: case 11: goto oid_2_4_11;
+                //TODO: case 12: goto oid_2_4_12;
                 default: return $"/Joint-ISO-ITU-T/[Remote Operations Service Element (ROSE)]/{values[index - 1]}";
             }
 
@@ -3522,47 +3835,47 @@ namespace BurnOutSharp.Builder
             if (index == values.Length) return "/Joint-ISO-ITU-T/[Directory services]";
             switch (values[index++])
             {
-                // TODO: case 1: goto oid_2_5_1;
+                //TODO: case 1: goto oid_2_5_1;
                 case 2: return "/Joint-ISO-ITU-T/[Directory services]/[Directory service elements]";
-                // TODO: case 3: goto oid_2_5_3;
-                // TODO: case 4: goto oid_2_5_4;
-                // TODO: case 5: goto oid_2_5_5;
-                // TODO: case 6: goto oid_2_5_6;
+                //TODO: case 3: goto oid_2_5_3;
+                //TODO: case 4: goto oid_2_5_4;
+                //TODO: case 5: goto oid_2_5_5;
+                //TODO: case 6: goto oid_2_5_6;
                 case 7: return "/Joint-ISO-ITU-T/[Directory services]/[X.500 attribute sets]";
-                // TODO: case 8: goto oid_2_5_8;
-                // TODO: case 9: goto oid_2_5_9;
-                // TODO: case 12: goto oid_2_5_12;
-                // TODO: case 13: goto oid_2_5_13;
-                // TODO: case 14: goto oid_2_5_14;
-                // TODO: case 15: goto oid_2_5_15;
+                //TODO: case 8: goto oid_2_5_8;
+                //TODO: case 9: goto oid_2_5_9;
+                //TODO: case 12: goto oid_2_5_12;
+                //TODO: case 13: goto oid_2_5_13;
+                //TODO: case 14: goto oid_2_5_14;
+                //TODO: case 15: goto oid_2_5_15;
                 case 16: return "/Joint-ISO-ITU-T/[Directory services]/[Groups]";
-                // TODO: case 17: goto oid_2_5_17;
-                // TODO: case 18: goto oid_2_5_18;
-                // TODO: case 19: goto oid_2_5_19;
-                // TODO: case 20: goto oid_2_5_20;
-                // TODO: case 21: goto oid_2_5_21;
-                // TODO: case 23: goto oid_2_5_23;
-                // TODO: case 24: goto oid_2_5_24;
-                // TODO: case 25: goto oid_2_5_25;
-                // TODO: case 26: goto oid_2_5_26;
-                // TODO: case 27: goto oid_2_5_27;
-                // TODO: case 28: goto oid_2_5_28;
-                // TODO: case 29: goto oid_2_5_29;
-                // TODO: case 30: goto oid_2_5_30;
-                // TODO: case 31: goto oid_2_5_31;
-                // TODO: case 32: goto oid_2_5_32;
-                // TODO: case 33: goto oid_2_5_33;
-                // TODO: case 34: goto oid_2_5_34;
-                // TODO: case 35: goto oid_2_5_35;
+                //TODO: case 17: goto oid_2_5_17;
+                //TODO: case 18: goto oid_2_5_18;
+                //TODO: case 19: goto oid_2_5_19;
+                //TODO: case 20: goto oid_2_5_20;
+                //TODO: case 21: goto oid_2_5_21;
+                //TODO: case 23: goto oid_2_5_23;
+                //TODO: case 24: goto oid_2_5_24;
+                //TODO: case 25: goto oid_2_5_25;
+                //TODO: case 26: goto oid_2_5_26;
+                //TODO: case 27: goto oid_2_5_27;
+                //TODO: case 28: goto oid_2_5_28;
+                //TODO: case 29: goto oid_2_5_29;
+                //TODO: case 30: goto oid_2_5_30;
+                //TODO: case 31: goto oid_2_5_31;
+                //TODO: case 32: goto oid_2_5_32;
+                //TODO: case 33: goto oid_2_5_33;
+                //TODO: case 34: goto oid_2_5_34;
+                //TODO: case 35: goto oid_2_5_35;
                 case 36: return "/Joint-ISO-ITU-T/[Directory services]/[Matching restrictions]";
-                // TODO: case 37: goto oid_2_5_37;
+                //TODO: case 37: goto oid_2_5_37;
                 case 38: return "/Joint-ISO-ITU-T/[Directory services]/[Key purposes]";
-                // TODO: case 39: goto oid_2_5_39;
-                // TODO: case 40: goto oid_2_5_40;
-                // TODO: case 41: goto oid_2_5_41;
-                // TODO: case 42: goto oid_2_5_42;
-                // TODO: case 43: goto oid_2_5_43;
-                // TODO: case 44: goto oid_2_5_44;
+                //TODO: case 39: goto oid_2_5_39;
+                //TODO: case 40: goto oid_2_5_40;
+                //TODO: case 41: goto oid_2_5_41;
+                //TODO: case 42: goto oid_2_5_42;
+                //TODO: case 43: goto oid_2_5_43;
+                //TODO: case 44: goto oid_2_5_44;
                 default: return $"/Joint-ISO-ITU-T/[Directory services]/{values[index - 1]}";
             }
 
@@ -3576,17 +3889,17 @@ namespace BurnOutSharp.Builder
             if (index == values.Length) return "/Joint-ISO-ITU-T/[Message Handling System (MHS)]";
             switch (values[index++])
             {
-                // TODO: case 0: goto oid_2_6_0;
-                // TODO: case 1: goto oid_2_6_1;
-                // TODO: case 2: goto oid_2_6_2;
-                // TODO: case 3: goto oid_2_6_3;
-                // TODO: case 4: goto oid_2_6_4;
-                // TODO: case 5: goto oid_2_6_5;
-                // TODO: case 6: goto oid_2_6_6;
-                // TODO: case 7: goto oid_2_6_7;
-                // TODO: case 8: goto oid_2_6_8;
-                // TODO: case 9: goto oid_2_6_9;
-                // TODO: case 10: goto oid_2_6_10;
+                //TODO: case 0: goto oid_2_6_0;
+                //TODO: case 1: goto oid_2_6_1;
+                //TODO: case 2: goto oid_2_6_2;
+                //TODO: case 3: goto oid_2_6_3;
+                //TODO: case 4: goto oid_2_6_4;
+                //TODO: case 5: goto oid_2_6_5;
+                //TODO: case 6: goto oid_2_6_6;
+                //TODO: case 7: goto oid_2_6_7;
+                //TODO: case 8: goto oid_2_6_8;
+                //TODO: case 9: goto oid_2_6_9;
+                //TODO: case 10: goto oid_2_6_10;
                 default: return $"/Joint-ISO-ITU-T/[Message Handling System (MHS)]/{values[index - 1]}";
             }
 
@@ -3600,8 +3913,8 @@ namespace BurnOutSharp.Builder
             if (index == values.Length) return "/Joint-ISO-ITU-T/[Commitment, Concurrency and Recovery (CCR) service and protocol]";
             switch (values[index++])
             {
-                // TODO: case 1: goto oid_2_7_1;
-                // TODO: case 2: goto oid_2_7_2;
+                //TODO: case 1: goto oid_2_7_1;
+                //TODO: case 2: goto oid_2_7_2;
                 default: return $"/Joint-ISO-ITU-T/[Commitment, Concurrency and Recovery (CCR) service and protocol]/{values[index - 1]}";
             }
 
@@ -3615,10 +3928,10 @@ namespace BurnOutSharp.Builder
             if (index == values.Length) return "/Joint-ISO-ITU-T/[Open Document Architecture (ODA)]";
             switch (values[index++])
             {
-                // TODO: case 0: goto oid_2_8_0;
-                // TODO: case 1: goto oid_2_8_1;
-                // TODO: case 2: goto oid_2_8_2;
-                // TODO: case 3: goto oid_2_8_3;
+                //TODO: case 0: goto oid_2_8_0;
+                //TODO: case 1: goto oid_2_8_1;
+                //TODO: case 2: goto oid_2_8_2;
+                //TODO: case 3: goto oid_2_8_3;
                 case 4: return "/Joint-ISO-ITU-T/[Open Document Architecture (ODA)]/[Identification of a document application profile]";
                 default: return $"/Joint-ISO-ITU-T/[Open Document Architecture (ODA)]/{values[index - 1]}";
             }
@@ -3633,11 +3946,11 @@ namespace BurnOutSharp.Builder
             if (index == values.Length) return "/Joint-ISO-ITU-T/[OSI network management]";
             switch (values[index++])
             {
-                // TODO: case 0: goto oid_2_9_0;
-                // TODO: case 1: goto oid_2_9_1;
-                // TODO: case 2: goto oid_2_9_2;
-                // TODO: case 3: goto oid_2_9_3;
-                // TODO: case 4: goto oid_2_9_4;
+                //TODO: case 0: goto oid_2_9_0;
+                //TODO: case 1: goto oid_2_9_1;
+                //TODO: case 2: goto oid_2_9_2;
+                //TODO: case 3: goto oid_2_9_3;
+                //TODO: case 4: goto oid_2_9_4;
                 default: return $"/Joint-ISO-ITU-T/[OSI network management]/{values[index - 1]}";
             }
 
@@ -3651,9 +3964,9 @@ namespace BurnOutSharp.Builder
             if (index == values.Length) return "/Joint-ISO-ITU-T/[Transaction processing]";
             switch (values[index++])
             {
-                // TODO: case 0: goto oid_2_10_0;
-                // TODO: case 1: goto oid_2_10_1;
-                // TODO: case 2: goto oid_2_10_2;
+                //TODO: case 0: goto oid_2_10_0;
+                //TODO: case 1: goto oid_2_10_1;
+                //TODO: case 2: goto oid_2_10_2;
                 default: return $"/Joint-ISO-ITU-T/[Transaction processing]/{values[index - 1]}";
             }
 
@@ -3669,7 +3982,7 @@ namespace BurnOutSharp.Builder
             {
                 case 0: return "/Joint-ISO-ITU-T/[Information technology -- Text and office systems -- Distributed-office-applications model -- Part 2: Distinguished-object-reference and associated procedures]/[DOR-definition]";
                 case 1: return "/Joint-ISO-ITU-T/[Information technology -- Text and office systems -- Distributed-office-applications model -- Part 2: Distinguished-object-reference and associated procedures]/[Abstract syntax of \"distinguished-object-reference\"]";
-                // TODO: case 2: goto oid_2_11_2;
+                //TODO: case 2: goto oid_2_11_2;
                 default: return $"/Joint-ISO-ITU-T/[Information technology -- Text and office systems -- Distributed-office-applications model -- Part 2: Distinguished-object-reference and associated procedures]/{values[index - 1]}";
             }
 
@@ -3683,11 +3996,11 @@ namespace BurnOutSharp.Builder
             if (index == values.Length) return "/Joint-ISO-ITU-T/[Referenced Data Transfer (RDT)]";
             switch (values[index++])
             {
-                // TODO: case 0: goto oid_2_12_0;
-                // TODO: case 1: goto oid_2_12_1;
-                // TODO: case 2: goto oid_2_12_2;
-                // TODO: case 3: goto oid_2_12_3;
-                // TODO: case 4: goto oid_2_12_4;
+                //TODO: case 0: goto oid_2_12_0;
+                //TODO: case 1: goto oid_2_12_1;
+                //TODO: case 2: goto oid_2_12_2;
+                //TODO: case 3: goto oid_2_12_3;
+                //TODO: case 4: goto oid_2_12_4;
                 default: return $"/Joint-ISO-ITU-T/[Referenced Data Transfer (RDT)]/{values[index - 1]}";
             }
 
@@ -3701,7 +4014,7 @@ namespace BurnOutSharp.Builder
             if (index == values.Length) return "/Joint-ISO-ITU-T/[Network layer management]";
             switch (values[index++])
             {
-                // TODO: case 0: goto oid_2_13_0;
+                //TODO: case 0: goto oid_2_13_0;
                 default: return $"/Joint-ISO-ITU-T/[Network layer management]/{values[index - 1]}";
             }
 
@@ -3715,7 +4028,7 @@ namespace BurnOutSharp.Builder
             if (index == values.Length) return "/Joint-ISO-ITU-T/[Transport layer management]";
             switch (values[index++])
             {
-                // TODO: case 0: goto oid_2_14_0;
+                //TODO: case 0: goto oid_2_14_0;
                 default: return $"/Joint-ISO-ITU-T/[Transport layer management]/{values[index - 1]}";
             }
 
@@ -3729,7 +4042,7 @@ namespace BurnOutSharp.Builder
             if (index == values.Length) return "/Joint-ISO-ITU-T/[OSI data link layer management]";
             switch (values[index++])
             {
-                // TODO: case 0: goto oid_2_15_0;
+                //TODO: case 0: goto oid_2_15_0;
                 default: return $"/Joint-ISO-ITU-T/[OSI data link layer management]/{values[index - 1]}";
             }
 
@@ -4023,7 +4336,7 @@ namespace BurnOutSharp.Builder
             if (index == values.Length) return "/Joint-ISO-ITU-T/[Transport layer security protocol]";
             switch (values[index++])
             {
-                // TODO: case 1: goto oid_2_21_1;
+                //TODO: case 1: goto oid_2_21_1;
                 default: return $"/Joint-ISO-ITU-T/[Transport layer security protocol]/{values[index - 1]}";
             }
 
@@ -4037,7 +4350,7 @@ namespace BurnOutSharp.Builder
             if (index == values.Length) return "/Joint-ISO-ITU-T/[Network layer security protocol]";
             switch (values[index++])
             {
-                // TODO: case 1: goto oid_2_22_1;
+                //TODO: case 1: goto oid_2_22_1;
                 default: return $"/Joint-ISO-ITU-T/[Network layer security protocol]/{values[index - 1]}";
             }
 
@@ -4051,25 +4364,25 @@ namespace BurnOutSharp.Builder
             if (index == values.Length) return "/Joint-ISO-ITU-T/International-Organizations";
             switch (values[index++])
             {
-                // TODO: case 42: goto oid_2_23_42;
-                // TODO: case 43: goto oid_2_23_43;
+                //TODO: case 42: goto oid_2_23_42;
+                //TODO: case 43: goto oid_2_23_43;
                 case 128: return "/Joint-ISO-ITU-T/International-Organizations/[Teleglobe, Inc.]";
                 case 129: return "/Joint-ISO-ITU-T/International-Organizations/[Key Recovery Alliance]";
                 case 130: return "/Joint-ISO-ITU-T/International-Organizations/[Object Management Group]";
                 case 131: return "/Joint-ISO-ITU-T/International-Organizations/[Visa International]";
                 case 132: return "/Joint-ISO-ITU-T/International-Organizations/[Comprehensive nuclear-Test-Ban Treaty Organization (CTBTO) Public-Key Infrastructure (PKI)]";
-                // TODO: case 133: goto oid_2_23_133;
+                //TODO: case 133: goto oid_2_23_133;
                 case 134: return "/Joint-ISO-ITU-T/International-Organizations/[Ceska Posta s.p.]";
                 case 135: return "/Joint-ISO-ITU-T/International-Organizations/[\"HBOS Plc\"]";
-                // TODO: case 136: goto oid_2_23_136;
+                //TODO: case 136: goto oid_2_23_136;
                 case 137: return "/Joint-ISO-ITU-T/International-Organizations/[Comrad Medical Systems]";
                 case 138: return "/Joint-ISO-ITU-T/International-Organizations/[International Atomic Energy Agency (IAEA)]";
                 case 139: return "/Joint-ISO-ITU-T/International-Organizations/[British Sky Broadcasting Group]";
-                // TODO: case 140: goto oid_2_23_140;
+                //TODO: case 140: goto oid_2_23_140;
                 case 141: return "/Joint-ISO-ITU-T/International-Organizations/[\"WAC\" Application Services Ltd.]";
-                // TODO: case 143: goto oid_2_23_143;
+                //TODO: case 143: goto oid_2_23_143;
                 case 144: return "/Joint-ISO-ITU-T/International-Organizations/[Directorate General of The General Security of Lebanon]";
-                // TODO: case 146: goto oid_2_23_146;
+                //TODO: case 146: goto oid_2_23_146;
                 case 147: return "/Joint-ISO-ITU-T/International-Organizations/[Peripheral Component Interconnect Special Interest Group (PCI-SIG) component measurement and authorization]";
                 default: return $"/Joint-ISO-ITU-T/International-Organizations/{values[index - 1]}";
             }
@@ -4213,7 +4526,7 @@ namespace BurnOutSharp.Builder
             {
                 case 0: goto oid_2_42_0;
                 case 1: goto oid_2_42_1;
-                //TODO: case 2: goto oid_2_42_2;
+                case 2: goto oid_2_42_2;
                 //TODO: case 3: goto oid_2_42_3;
                 //TODO: case 10: goto oid_2_42_10;
                 default: return $"/Telebiometrics/{values[index - 1]}";
@@ -4233,10 +4546,28 @@ namespace BurnOutSharp.Builder
 
         #endregion
 
-        // modules
+        // tmm
         #region 2.42.1.*
 
         oid_2_42_1:
+
+            if (index == values.Length) return "/Telebiometrics/TMM";
+            switch (values[index++])
+            {
+                //TODO: case 0: goto oid_2_42_1_0;
+                //TODO: case 1: goto oid_2_42_1_1;
+                //TODO: case 2: goto oid_2_42_1_2;
+                //TODO: case 3: goto oid_2_42_1_3;
+                //TODO: case 4: goto oid_2_42_1_4;
+                default: return $"/Telebiometrics/TMM/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // human-physiology
+        #region 2.42.2.*
+
+        oid_2_42_2:
 
             if (index == values.Length) return "/Telebiometrics/TMM";
             switch (values[index++])
@@ -4565,18 +4896,4 @@ namespace BurnOutSharp.Builder
             {
                 case 1: return "/Joint-ISO-ITU-T/UAV/[Data modules for identity recognition of Unmanned Aerial Vehicles (UAVs)]/[Data modules of Unmanned Aerial Vehicle (UAV) systems]";
                 case 2: return "/Joint-ISO-ITU-T/UAV/[Data modules for identity recognition of Unmanned Aerial Vehicles (UAVs)]/[Data modules of Unmanned Aerial Vehicle (UAV) Ground Control Station (GCS) systems]";
-                case 3: return "/Joint-ISO-ITU-T/UAV/[Data modules for identity recognition of Unmanned Aerial Vehicles (UAVs)]/[Data modules of Unmanned Aerial Vehicle (UAV) Monitoring and Control Station/server (MCS) systems]";
-                case 4: return "/Joint-ISO-ITU-T/UAV/[Data modules for identity recognition of Unmanned Aerial Vehicles (UAVs)]/[Data modules of Unmanned Aerial Vehicle (UAV) monitoring cloud systems]";
-                default: return $"/Joint-ISO-ITU-T/UAV/[Data modules for identity recognition of Unmanned Aerial Vehicles (UAVs)]/{values[index - 1]}";
-            }
-
-            #endregion
-
-            #endregion
-
-            #endregion
-        }
-
-        #endregion
-    }
-}
+                case 3: return "/Joint-ISO-ITU-T/UAV/[Data modules for identity recognition of Unmanned Aerial Vehicles (UAVs)]/[Data modules of Unmanned Ae
