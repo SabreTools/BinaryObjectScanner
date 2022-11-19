@@ -1124,7 +1124,7 @@ namespace ExecutableTest
                 for (int i = 0; i < table.NumberOfNameEntries; i++)
                 {
                     var entry = table.NameEntries[i];
-                    var newTypes = new List<object>(types);
+                    var newTypes = new List<object>(types ?? new List<object>());
                     newTypes.Add(Encoding.UTF8.GetString(entry.Name.UnicodeString));
                     PrintPortableExecutableNameResourceDirectoryEntry(entry, level + 1, newTypes);
                 }
@@ -1143,7 +1143,7 @@ namespace ExecutableTest
                 for (int i = 0; i < table.NumberOfIDEntries; i++)
                 {
                     var entry = table.IDEntries[i];
-                    var newTypes = new List<object>(types);
+                    var newTypes = new List<object>(types ?? new List<object>());
                     newTypes.Add(entry.IntegerID);
                     PrintPortableExecutableIDResourceDirectoryEntry(entry, level + 1, newTypes);
                 }
