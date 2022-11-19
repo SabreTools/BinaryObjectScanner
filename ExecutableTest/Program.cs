@@ -1125,7 +1125,7 @@ namespace ExecutableTest
                 {
                     var entry = table.NameEntries[i];
                     var newTypes = new List<object>(types ?? new List<object>());
-                    newTypes.Add(Encoding.UTF8.GetString(entry.Name.UnicodeString));
+                    newTypes.Add(Encoding.UTF8.GetString(entry.Name.UnicodeString ?? new byte[0]));
                     PrintPortableExecutableNameResourceDirectoryEntry(entry, level + 1, newTypes);
                 }
             }
@@ -1159,7 +1159,7 @@ namespace ExecutableTest
 
             Console.WriteLine($"{padding}Item level: {level}");
             Console.WriteLine($"{padding}Name offset: {entry.NameOffset}");
-            Console.WriteLine($"{padding}Name ({entry.Name.Length}): {Encoding.UTF8.GetString(entry.Name.UnicodeString)}");
+            Console.WriteLine($"{padding}Name ({entry.Name.Length}): {Encoding.UTF8.GetString(entry.Name.UnicodeString ?? new byte[0])}");
             if (entry.DataEntry != null)
                 PrintPortableExecutableResourceDataEntry(entry.DataEntry, level: level + 1, types);
             else if (entry.Subdirectory != null)
