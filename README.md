@@ -42,8 +42,9 @@ Below is a list of protections detected by BurnOutSharp. The two columns explain
 | CD-X | False | True | Unconfirmed¹ |
 | CDSHiELD SE | True | False | |
 | Cenga ProtectDVD | True | True | |
-| CodeLock / CodeLok / CopyLok | True | False | Partially unconfirmed² |
+| ChosenBytes CodeLock | True | True | Partially unconfirmed² |
 | CopyKiller | True | True | Unconfirmed¹ |
+| CopyLok/CodeLok | True | False | |
 | Cucko (EA Custom) | True | False | Does not detect all known cases |
 | Denuvo Anti-Cheat/Anti-Tamper| True | True | |
 | Dinamic Multimedia Protection/LockBlocks | False | True | LockBlocks needs manual confirmation of the presence of 2 rings |
