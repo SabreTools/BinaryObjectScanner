@@ -229,8 +229,6 @@ namespace BurnOutSharp.Builder
 
             #region Start
 
-            oid_start:
-
             switch (values[index++])
             {
                 case 0: goto oid_0;
@@ -2122,16 +2120,169 @@ namespace BurnOutSharp.Builder
             if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]";
             switch (values[index++])
             {
-                //TODO: case 2: goto oid_0_0_7_774_127_8_0_2;
-                //TODO: case 3: goto oid_0_0_7_774_127_8_0_3;
-                //TODO: case 4: goto oid_0_0_7_774_127_8_0_4;
-                //TODO: case 5: goto oid_0_0_7_774_127_8_0_5;
-                //TODO: case 6: goto oid_0_0_7_774_127_8_0_6;
-                //TODO: case 7: goto oid_0_0_7_774_127_8_0_7;
-                //TODO: case 9: goto oid_0_0_7_774_127_8_0_9;
+                case 2: goto oid_0_0_7_774_127_8_0_2;
+                case 3: goto oid_0_0_7_774_127_8_0_3;
+                case 4: goto oid_0_0_7_774_127_8_0_4;
+                case 5: goto oid_0_0_7_774_127_8_0_5;
+                case 6: goto oid_0_0_7_774_127_8_0_6;
+                case 7: goto oid_0_0_7_774_127_8_0_7;
+                case 9: goto oid_0_0_7_774_127_8_0_9;
                 case 10: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Notifications]";
                 default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/{values[index - 1]}";
             }
+
+        // asn1Module
+        #region 0.0.7.774.127.8.0.2.*
+
+        oid_0_0_7_774_127_8_0_2:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[ASN.1 modules]";
+            switch (values[index++])
+            {
+                case 0: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[ASN.1 modules]/[SDHRadioTpASN1]";
+                case 1: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[ASN.1 modules]/[SDHRadioProtASN1]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[ASN.1 modules]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // managedObjectClass
+        #region 0.0.7.774.127.8.0.3.*
+
+        oid_0_0_7_774_127_8_0_3:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Managed object classes]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Managed object classes]/[radioSPITTPBidirectional]";
+                case 2: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Managed object classes]/[radioSPITTPSink]";
+                case 3: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Managed object classes]/[radioSPITTPSource]";
+                case 4: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Managed object classes]/[sdhRadioProtectionGroup]";
+                case 5: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Managed object classes]/[sdhRadioProtectionUnit]";
+                case 6: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Managed object classes]/[msTcCTPBidirectional]";
+                case 7: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Managed object classes]/[msTcCTPSink]";
+                case 8: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Managed object classes]/[msTcCTPSource]";
+                case 9: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Managed object classes]/[msTcTTPBidirectional]";
+                case 10: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Managed object classes]/[msTcTTPSink]";
+                case 11: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Managed object classes]/[msTcTTPSource]";
+                case 12: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Managed object classes]/[au4HopcCTPBidirectional]";
+                case 13: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Managed object classes]/[au4HopcCTPSink]";
+                case 14: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Managed object classes]/[au4HopcCTPSource]";
+                case 15: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Managed object classes]/[vc4HopcTTPBidirectional]";
+                case 16: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Managed object classes]/[vc4HopcTTPSink]";
+                case 17: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Managed object classes]/[vc4HopcTTPSource]";
+                case 18: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Managed object classes]/[radioUnprotectedCTPBidirectional]";
+                case 19: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Managed object classes]/[radioUnprotectedCTPSink]";
+                case 20: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Managed object classes]/[radioUnprotectedCTPSource]";
+                case 21: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Managed object classes]/[radioProtectedTTPBidirectional]";
+                case 22: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Managed object classes]/[radioProtectedTTPSink]";
+                case 23: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Managed object classes]/[radioProtectedTTPSource]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Managed object classes]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // package
+        #region 0.0.7.774.127.8.0.4.*
+
+        oid_0_0_7_774_127_8_0_4:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Packages]";
+            switch (values[index++])
+            {
+                case 2: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Packages]/[atpcPackage]";
+                case 3: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Packages]/[rxLOSNotificationPackage]";
+                case 4: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Packages]/[demLOSNotificationPackage]";
+                case 5: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Packages]/[txLOSNotificationPackage]";
+                case 6: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Packages]/[modLOSNotificationPackage]";
+                case 7: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Packages]/[exerciseOnOffPkg]";
+                case 8: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Packages]/[singleExercisePkg]";
+                case 9: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Packages]/[privilegedChannelPkg]";
+                case 10: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Packages]/[radioHoldOffTimePkg]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Packages]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // parameter
+        #region 0.0.7.774.127.8.0.5.*
+
+        oid_0_0_7_774_127_8_0_5:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Parameters]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Parameters]/[radioProtectionStatusParameter]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Parameters]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // nameBinding
+        #region 0.0.7.774.127.8.0.6.*
+
+        oid_0_0_7_774_127_8_0_6:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Name bindings]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Name bindings]/[radioSPITTPSink-managedElement]";
+                case 2: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Name bindings]/[radioSPITTPSink-managedElement]";
+                case 3: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Name bindings]/[rsCTPSink-radioSPITTPSink]";
+                case 4: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Name bindings]/[rsCTPSource-radioSPITTPSource]";
+                case 5: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Name bindings]/[augSink-msTcTTPSink]";
+                case 6: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Name bindings]/[augSource-msTcTTPSource]";
+                case 7: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Name bindings]/[msTcCTPSink-rsTTPSink]";
+                case 8: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Name bindings]/[msTcCTPSource-rsTTPSource]";
+                case 9: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Name bindings]/[msTcTTPSink-sdhNE]";
+                case 10: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Name bindings]/[msTcTTPSource-sdhNE]";
+                case 11: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Name bindings]/[vc4HopcTTPSink-sdhNE]";
+                case 12: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Name bindings]/[vc4HopcTTPSource-sdhNE]";
+                case 13: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Name bindings]/[au4HopcCTPSink-augSink]";
+                case 14: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Name bindings]/[au4HopcCTPSource-augSource]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Name bindings]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // attribute
+        #region 0.0.7.774.127.8.0.7.*
+
+        oid_0_0_7_774_127_8_0_7:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Attribute types]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Attribute types]/[atpcImplemented]";
+                case 2: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Attribute types]/[atpcEnabled]";
+                case 3: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Attribute types]/[radioFrequency]";
+                case 4: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Attribute types]/[radioSPITTPId]";
+                case 5: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Attribute types]/[hitless]";
+                case 6: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Attribute types]/[radioHoldOffTime]";
+                case 7: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Attribute types]/[rpsSummaryStatus]";
+                case 8: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Attribute types]/[exerciseOn]";
+                case 9: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Attribute types]/[privilegedChannel]";
+                case 10: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Attribute types]/[radioProtectionStatus]";
+                case 11: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Attribute types]/[radioUnprotectedCTPId]";
+                case 12: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Attribute types]/[radioProtectedTTPId]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Attribute types]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // action
+        #region 0.0.7.774.127.8.0.9.*
+
+        oid_0_0_7_774_127_8_0_9:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Action types]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Action types]/[invokeRadioExercise]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Management of radio-relay systems for the network element view]/[Information model]/[Action types]/{values[index - 1]}";
+            }
+
+        #endregion
 
         #endregion
 
@@ -2145,9 +2296,119 @@ namespace BurnOutSharp.Builder
             if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Configuration of linear multiplex-section protection for the network element view]";
             switch (values[index++])
             {
-                //TODO: case 0: goto oid_0_0_7_774_127_9_0;
+                case 0: goto oid_0_0_7_774_127_9_0;
                 default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Configuration of linear multiplex-section protection for the network element view]/{values[index - 1]}";
             }
+
+        // informationModel
+        #region 0.0.7.774.127.9.0.*
+
+        oid_0_0_7_774_127_9_0:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Configuration of linear multiplex-section protection for the network element view]/[Information model]";
+            switch (values[index++])
+            {
+                case 2: goto oid_0_0_7_774_127_9_0_2;
+                case 3: goto oid_0_0_7_774_127_9_0_3;
+                case 5: goto oid_0_0_7_774_127_9_0_5;
+                case 6: goto oid_0_0_7_774_127_9_0_6;
+                case 7: goto oid_0_0_7_774_127_9_0_7;
+                case 9: goto oid_0_0_7_774_127_9_0_9;
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Configuration of linear multiplex-section protection for the network element view]/[Information model]/{values[index - 1]}";
+            }
+
+        // asn1Module
+        #region 0.0.7.774.127.9.0.2.*
+
+        oid_0_0_7_774_127_9_0_2:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Configuration of linear multiplex-section protection for the network element view]/[Information model]/[ASN.1 modules]";
+            switch (values[index++])
+            {
+                case 0: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Configuration of linear multiplex-section protection for the network element view]/[Information model]/[ASN.1 modules]/[SDHProtCoordASN1]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Configuration of linear multiplex-section protection for the network element view]/[Information model]/[ASN.1 modules]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // managedObjectClass
+        #region 0.0.7.774.127.9.0.3.*
+
+        oid_0_0_7_774_127_9_0_3:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Configuration of linear multiplex-section protection for the network element view]/[Information model]/[Managed object classes]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Configuration of linear multiplex-section protection for the network element view]/[Information model]/[Managed object classes]/[protectionCoordinator]";
+                case 2: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Configuration of linear multiplex-section protection for the network element view]/[Information model]/[Managed object classes]/[sdhMSProtectionCoordinator]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Configuration of linear multiplex-section protection for the network element view]/[Information model]/[Managed object classes]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // parameter
+        #region 0.0.7.774.127.9.0.5.*
+
+        oid_0_0_7_774_127_9_0_5:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Configuration of linear multiplex-section protection for the network element view]/[Information model]/[Parameters]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Configuration of linear multiplex-section protection for the network element view]/[Information model]/[Parameters]/[mSPConfigurationError]";
+                case 2: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Configuration of linear multiplex-section protection for the network element view]/[Information model]/[Parameters]/[mSPGroupConfigurationParameter]";
+                case 3: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Configuration of linear multiplex-section protection for the network element view]/[Information model]/[Parameters]/[mSPUnitConfigurationParameter]";
+                case 4: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Configuration of linear multiplex-section protection for the network element view]/[Information model]/[Parameters]/[protectionConfigurationError]";
+                case 5: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Configuration of linear multiplex-section protection for the network element view]/[Information model]/[Parameters]/[removeProtectionError]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Configuration of linear multiplex-section protection for the network element view]/[Information model]/[Parameters]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // nameBinding
+        #region 0.0.7.774.127.9.0.6.*
+
+        oid_0_0_7_774_127_9_0_6:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Configuration of linear multiplex-section protection for the network element view]/[Information model]/[Name bindings]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Configuration of linear multiplex-section protection for the network element view]/[Information model]/[Name bindings]/[protectionCoordinator-sdhNE]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Configuration of linear multiplex-section protection for the network element view]/[Information model]/[Name bindings]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // nameBinding
+        #region 0.0.7.774.127.9.0.7.*
+
+        oid_0_0_7_774_127_9_0_7:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Configuration of linear multiplex-section protection for the network element view]/[Information model]/[Attribute types]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Configuration of linear multiplex-section protection for the network element view]/[Information model]/[Attribute types]/[protectionCoordinatorId]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Configuration of linear multiplex-section protection for the network element view]/[Information model]/[Attribute types]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // action
+        #region 0.0.7.774.127.9.0.9.*
+
+        oid_0_0_7_774_127_9_0_9:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Configuration of linear multiplex-section protection for the network element view]/[Information model]/[Action types]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Configuration of linear multiplex-section protection for the network element view]/[Information model]/[Action types]/[dismissProtection]";
+                case 2: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Configuration of linear multiplex-section protection for the network element view]/[Information model]/[Action types]/[establishProtection]";
+                case 3: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Configuration of linear multiplex-section protection for the network element view]/[Information model]/[Action types]/[modifyProtection]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) - Configuration of linear multiplex-section protection for the network element view]/[Information model]/[Action types]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        #endregion
 
         #endregion
 
@@ -2159,9 +2420,216 @@ namespace BurnOutSharp.Builder
             if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]";
             switch (values[index++])
             {
-                //TODO: case 0: goto oid_0_0_7_774_127_10_0;
+                case 0: goto oid_0_0_7_774_127_10_0;
                 default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/{values[index - 1]}";
             }
+
+        // informationModel
+        #region 0.0.7.774.127.10.0.*
+
+        oid_0_0_7_774_127_10_0:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]";
+            switch (values[index++])
+            {
+                case 0: goto oid_0_0_7_774_127_10_0_0;
+                case 2: goto oid_0_0_7_774_127_10_0_2;
+                case 3: goto oid_0_0_7_774_127_10_0_3;
+                case 4: goto oid_0_0_7_774_127_10_0_4;
+                case 5: goto oid_0_0_7_774_127_10_0_5;
+                case 6: goto oid_0_0_7_774_127_10_0_6;
+                case 7: goto oid_0_0_7_774_127_10_0_7;
+                case 9: goto oid_0_0_7_774_127_10_0_9;
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/{values[index - 1]}";
+            }
+
+        // standardSpecificExtension
+        #region 0.0.7.774.127.10.0.0.*
+
+        oid_0_0_7_774_127_10_0_0:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Standard specific extensions]";
+            switch (values[index++])
+            {
+                case 0: goto oid_0_0_7_774_127_10_0_0_0;
+                case 1: goto oid_0_0_7_774_127_10_0_0_1;
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Standard specific extensions]/{values[index - 1]}";
+            }
+
+        // mssprProtectionCriteria
+        #region 0.0.7.774.127.10.0.0.0.*
+
+        oid_0_0_7_774_127_10_0_0_0:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Standard specific extensions]/[mssprProtectionCriteria]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Standard specific extensions]/[mssprProtectionCriteria]/[mssprExcessiveErrorCriteria]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Standard specific extensions]/[mssprProtectionCriteria]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // msSPRProbableCause
+        #region 0.0.7.774.127.10.0.0.1.*
+
+        oid_0_0_7_774_127_10_0_0_1:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Standard specific extensions]/[msSPRProbableCause]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Standard specific extensions]/[msSPRProbableCause]/[msSPRDefaultKBytes]";
+                case 2: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Standard specific extensions]/[msSPRProbableCause]/[msSPRInconsistentAPSCodes]";
+                case 3: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Standard specific extensions]/[msSPRProbableCause]/[msSPRNodeIdMismatch]";
+                case 4: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Standard specific extensions]/[msSPRProbableCause]/[msSPRImproperAPSCodes]";
+                case 5: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Standard specific extensions]/[msSPRProbableCause]/[msSPRApsChannelProcessingFailure]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Standard specific extensions]/[msSPRProbableCause]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        #endregion
+
+        // asn1Module
+        #region 0.0.7.774.127.10.0.2.*
+
+        oid_0_0_7_774_127_10_0_2:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[ASN.1 modules]";
+            switch (values[index++])
+            {
+                case 0: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[ASN.1 modules]/[SDHMSSPRASN1]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[ASN.1 modules]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // managedObjectClass
+        #region 0.0.7.774.127.10.0.3.*
+
+        oid_0_0_7_774_127_10_0_3:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Managed object classes]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Managed object classes]/[auSquelchTable]";
+                case 2: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Managed object classes]/[msSPRProtectionGroup]";
+                case 3: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Managed object classes]/[msSPRProtectionUnit]";
+                case 4: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Managed object classes]/[nutTable]";
+                case 5: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Managed object classes]/[ripTable]";
+                case 6: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Managed object classes]/[sdhMSSPRProtectionCoordinator]";
+                case 7: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Managed object classes]/[sPRingManager]";
+                case 8: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Managed object classes]/[squelchTable]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Managed object classes]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // package
+        #region 0.0.7.774.127.10.0.4.*
+
+        oid_0_0_7_774_127_10_0_4:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Packages]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Packages]/[changeSPRConfigurationPkg]";
+                case 2: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Packages]/[enhancedWtrSpanPkg]";
+                case 3: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Packages]/[fourFiberPUPkg]";
+                case 4: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Packages]/[manualSPRConfigurationPkg]";
+                case 5: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Packages]/[restoreExtraTrafficPkg]";
+                case 6: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Packages]/[wtrSpanPkg]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Packages]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // parameter
+        #region 0.0.7.774.127.10.0.5.*
+
+        oid_0_0_7_774_127_10_0_5:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Parameters]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Parameters]/[msSPRConfigurationError]";
+                case 2: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Parameters]/[msSPRLockoutTypeParameter]";
+                case 3: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Parameters]/[msSPRProtectionGroupConfigParameter]";
+                case 4: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Parameters]/[msSPRProtectionStatusParameter]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Parameters]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // nameBinding
+        #region 0.0.7.774.127.10.0.6.*
+
+        oid_0_0_7_774_127_10_0_6:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Name bindings]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Name bindings]/[auSquelchTable-squelchTable]";
+                case 2: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Name bindings]/[nutTable-sPRingManager]";
+                case 3: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Name bindings]/[ripTable-sPRingManager]";
+                case 4: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Name bindings]/[sPRingManager-managedElement]";
+                case 5: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Name bindings]/[squelchTable-sPRingManager]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Name bindings]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // attribute
+        #region 0.0.7.774.127.10.0.7.*
+
+        oid_0_0_7_774_127_10_0_7:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Attribute types]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Attribute types]/[auTable]";
+                case 2: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Attribute types]/[auNumber]";
+                case 3: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Attribute types]/[currentSquelchingList]";
+                case 4: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Attribute types]/[directionTable]";
+                case 5: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Attribute types]/[enhancedWaitToRestoreTimeSpan]";
+                case 6: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Attribute types]/[msSPRProtectionStatus]";
+                case 7: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Attribute types]/[nodeNumber]";
+                case 8: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Attribute types]/[nutChannelList]";
+                case 9: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Attribute types]/[nutTableId]";
+                case 10: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Attribute types]/[protectionGroupPointer]";
+                case 11: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Attribute types]/[restoreExtraTraffic]";
+                case 12: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Attribute types]/[ringId]";
+                case 13: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Attribute types]/[ringMap]";
+                case 14: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Attribute types]/[ringPU]";
+                case 15: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Attribute types]/[ripChannelList]";
+                case 16: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Attribute types]/[ripTableId]";
+                case 17: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Attribute types]/[spanPU]";
+                case 18: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Attribute types]/[sPRingApplication]";
+                case 19: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Attribute types]/[sPRingManagerId]";
+                case 20: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Attribute types]/[squelchTableId]";
+                case 21: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Attribute types]/[waitToRestoreTimeSpan]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Attribute types]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // action
+        #region 0.0.7.774.127.10.0.9.*
+
+        oid_0_0_7_774_127_10_0_9:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Action types]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Action types]/[changeSPRConfiguration]";
+                case 2: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Action types]/[updateRipTable]";
+                case 3: return "/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Action types]/[updateSquelchTable]";
+                default: return $"/ITU-T/Recommendation/G/[Synchronous Digital Hierarchy (SDH)]/[Parts of Recommendation ITU-T G.774]/[Synchronous Digital Hierarchy (SDH) Multiplex Section (MS) shared protection ring management for the network element view]/[Information model]/[Action types]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        #endregion
 
         #endregion
 
