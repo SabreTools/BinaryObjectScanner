@@ -36,8 +36,8 @@ namespace BurnOutSharp.ProtectionType
             if (sections == null)
                 return null;
 
-            // Present in "secdrv.sys" files found in SafeDisc 2.80.010+.
             string name = pex.FileDescription;
+            // Present in "secdrv.sys" files found in SafeDisc 2.80.010+.
             if (name?.Equals("Macrovision SECURITY Driver", StringComparison.OrdinalIgnoreCase) == true)
                 return $"SafeDisc Security Driver {GetSecDrvExecutableVersion(pex)}";
 
@@ -130,12 +130,6 @@ namespace BurnOutSharp.ProtectionType
                 // Unknown if it's a game specific file, but it contains the stxt371 and stxt774 sections.
                 // new PathMatchSet(new PathMatch("CoreDLL.dll", useEndsWith: true), "SafeDisc"),
 
-                // DIAG.exe is present in some SafeDisc discs between 4.50.000-4.70.000, but is already detected through other checks and properly reports the expected version string.
-                // Incase further detection is needed, it's Product Description is "SafeDisc SRV Tool APP", and the Product version seems to correspond directly to the appropriate SafeDisc version.
-                // "4.50.00.1619 2005/06/08" -> SafeDisc 4.50.000 (Redump entry 58455).
-                // "4.60.00.1702 2005/08/30" -> SafeDisc 4.60.000 (Redump entry 65209).
-                // "4.70.00.1941 2006/04/26" -> SafeDisc 4.70.000 (Redump entry 34783).
-
                 // Found in seemingly every SafeDisc Lite disc. (CD: Redump entries 25579 and 57986. DVD: Redump entry 63941). 
                 new PathMatchSet(new PathMatch("00000001.LT1", useEndsWith: true), "SafeDisc Lite"),
                 new PathMatchSet(new PathMatch("LTDLL.DLL", useEndsWith: true), "SafeDisc Lite"),
@@ -172,12 +166,6 @@ namespace BurnOutSharp.ProtectionType
                 // Found in Redump entry 58455.
                 // Unknown if it's a game specific file, but it contains the stxt371 and stxt774 sections.
                 // new PathMatchSet(new PathMatch("CoreDLL.dll", useEndsWith: true), "SafeDisc"),
-
-                // DIAG.exe is present in some SafeDisc discs between 4.50.000-4.70.000, but is already detected through other checks and properly reports the expected version string.
-                // Incase further detection is needed, it's Product Description is "SafeDisc SRV Tool APP", and the Product version seems to correspond directly to the appropriate SafeDisc version.
-                // "4.50.00.1619 2005/06/08" -> SafeDisc 4.50.000 (Redump entry 58455).
-                // "4.60.00.1702 2005/08/30" -> SafeDisc 4.60.000 (Redump entry 65209).
-                // "4.70.00.1941 2006/04/26" -> SafeDisc 4.70.000 (Redump entry 34783).
 
                 // Found in Redump entry 58990.
                 new PathMatchSet(new PathMatch("SafediskSplash.bmp", useEndsWith: true), "SafeDisc"),
@@ -708,6 +696,9 @@ namespace BurnOutSharp.ProtectionType
                 // The presence of any drvmgt.dll file at all is notably missing in several games with SafeDisc versions 4.50.000, including Redump entries 58990 and 65569.
                 case "C658E0B4992903D5E8DD9B235C25CB07EE5BFEEB":
                     return "4.50.000";
+                // Found in Redump entry 20092.
+                case "02F373C1D246DBEFBFD5F39B6D0E40E2964B0027":
+                    return "4.60.000";
                 // Found in Redump entry 56320.
                 case "84480ABCE4676EEB9C43DFF7C5C49F0D574FAC25":
                     return "4.70.000";
@@ -846,6 +837,34 @@ namespace BurnOutSharp.ProtectionType
                 default:
                     return null;
             }
+        }
+
+        private string GetSafeDiscDiagExecutableVersion(PortableExecutable pex)
+        {
+            // Different versions of this executable correspond to different SafeDisc versions.
+            string version = pex.FileVersion;
+            if (!string.IsNullOrEmpty(version))
+            {
+                switch (version)
+                {
+                    // Found to be in Redump entry 65569.
+                    // The product version is "4.50.00.1619 2005/06/08".
+                    case "4.50.00.1619":
+                        return "4.50.0.1619 / SafeDisc 4.50.000";
+                    // Found to be in Redump entry 20092.
+                    // The product version is "4.60.00.1702 2005/08/03".
+                    case "4.60.00.1702":
+                        return "4.60.0.1702 / SafeDisc 4.60.000";
+                    // Found to be in Redump entry 34783.
+                    // The product version is "4.70.00.1941 2006/04/26".
+                    case "4.70.00.1941":
+                        return "4.70.0.1941 / SafeDisc 4.70.000";
+                    default:
+                        return $"Unknown Version {version} (Report this to us on GitHub)";
+                }
+            }
+
+            return "Unknown Version (Report this to us on GitHub)";
         }
 
         private string GetSecDrvExecutableVersion(PortableExecutable pex)

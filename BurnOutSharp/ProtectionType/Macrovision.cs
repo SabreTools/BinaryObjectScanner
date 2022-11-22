@@ -182,6 +182,18 @@ namespace BurnOutSharp.ProtectionType
 
         private string CheckSectionForProtection(string file, bool includeDebug, PortableExecutable pex, string sectionName)
         {
+            string name = pex.FileDescription;
+
+            // Present in "Diag.exe" files from SafeDisc 4.50.000+.
+            if (name?.Equals("SafeDisc SRV Tool APP", StringComparison.OrdinalIgnoreCase) == true)
+                return $"SafeDisc SRV Tool APP {GetSafeDiscDiagExecutableVersion(pex)}";
+
+            name = pex.ProductName;
+
+            // Present in "Diag.exe" files from SafeDisc 4.50.000+.
+            if (name?.Equals("SafeDisc SRV Tool APP", StringComparison.OrdinalIgnoreCase) == true)
+                return $"SafeDisc SRV Tool APP {GetSafeDiscDiagExecutableVersion(pex)}";
+
             // This subtract is needed because BoG_ starts before the section
             var sectionRaw = pex.ReadRawSection(sectionName, first: true, offset: -64);
             if (sectionRaw != null)
