@@ -2771,13 +2771,14 @@ namespace BurnOutSharp.Builder
                 case 241: goto oid_0_0_8_241;
                 case 245: goto oid_0_0_8_245;
                 case 248: goto oid_0_0_8_248;
-                //TODO: case 249: goto oid_0_0_8_249;
-                //TODO: case 263: goto oid_0_0_8_263;
-                //TODO: case 282: goto oid_0_0_8_282;
-                //TODO: case 283: goto oid_0_0_8_283;
-                //TODO: case 323: goto oid_0_0_8_323;
-                //TODO: case 324: goto oid_0_0_8_324;
-                //TODO: case 341: goto oid_0_0_8_341;
+                case 249: goto oid_0_0_8_249;
+                case 261: goto oid_0_0_8_261;
+                case 263: goto oid_0_0_8_263;
+                case 282: goto oid_0_0_8_282;
+                case 283: goto oid_0_0_8_283;
+                case 323: goto oid_0_0_8_323;
+                case 324: goto oid_0_0_8_324;
+                case 341: goto oid_0_0_8_341;
                 //TODO: case 350: goto oid_0_0_8_350;
                 //TODO: case 450: goto oid_0_0_8_450;
                 //TODO: case 460: goto oid_0_0_8_460;
@@ -3263,6 +3264,627 @@ namespace BurnOutSharp.Builder
                 case 3: return "/ITU-T/Recommendation/H/[Gateway control protocol]/[ASN.1 modules]/[MEDIA-GATEWAY-CONTROL]/[Version 3]";
                 default: return $"/ITU-T/Recommendation/H/[Gateway control protocol]/[ASN.1 modules]/[MEDIA-GATEWAY-CONTROL]/{values[index - 1]}";
             }
+
+        #endregion
+
+        #endregion
+
+        #endregion
+
+        // 249 
+        #region 0.0.8.249.*
+
+        oid_0_0_8_249:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Recommendation ITU-T H.249]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/H/[Recommendation ITU-T H.249]/[navigation-key]";
+                case 2: return "/ITU-T/Recommendation/H/[Recommendation ITU-T H.249]/[soft-keys]";
+                case 3: return "/ITU-T/Recommendation/H/[Recommendation ITU-T H.249]/[pointing-device]";
+                case 4: return "/ITU-T/Recommendation/H/[Recommendation ITU-T H.249]/[modal-interface]";
+                default: return $"/ITU-T/Recommendation/H/[Recommendation ITU-T H.249]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // 261 
+        #region 0.0.8.261.*
+
+        oid_0_0_8_261:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Video codec for audiovisual services at p x 64 kbits]";
+            switch (values[index++])
+            {
+                case 1: goto oid_0_0_8_261_1;
+                default: return $"/ITU-T/Recommendation/H/[Video codec for audiovisual services at p x 64 kbits]/{values[index - 1]}";
+            }
+
+        // generic-capabilities 
+        #region 0.0.8.261.1.*
+
+        oid_0_0_8_261_1:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Video codec for audiovisual services at p x 64 kbits]/[Generic capabilities]";
+            switch (values[index++])
+            {
+                case 0: return "/ITU-T/Recommendation/H/[Video codec for audiovisual services at p x 64 kbits]/[Generic capabilities]/[Video codec]";
+                default: return $"/ITU-T/Recommendation/H/[Video codec for audiovisual services at p x 64 kbits]/[Generic capabilities]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        #endregion
+
+        // h263
+        #region 0.0.8.263.*
+
+        oid_0_0_8_263:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Video coding for low bit rate communication]";
+            switch (values[index++])
+            {
+                case 1: goto oid_0_0_8_263_1;
+                default: return $"/ITU-T/Recommendation/H/[Video coding for low bit rate communication]/{values[index - 1]}";
+            }
+
+        // generic-capabilities
+        #region 0.0.8.263.1.*
+
+        oid_0_0_8_263_1:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Video coding for low bit rate communication]/[Generic capabilities]";
+            switch (values[index++])
+            {
+                case 0: return "/ITU-T/Recommendation/H/[Video coding for low bit rate communication]/[Generic capabilities]/[First generic capability]";
+                default: return $"/ITU-T/Recommendation/H/[Video coding for low bit rate communication]/[Generic capabilities]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        #endregion
+
+        // h282
+        #region 0.0.8.282.*
+
+        oid_0_0_8_282:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Remote device control protocol for multimedia applications]";
+            switch (values[index++])
+            {
+                case 0: goto oid_0_0_8_282_0;
+                default: return $"/ITU-T/Recommendation/H/[Remote device control protocol for multimedia applications]/{values[index - 1]}";
+            }
+
+        // version
+        #region 0.0.8.282.0.*
+
+        oid_0_0_8_282_0:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Remote device control protocol for multimedia applications]/[Versions of Recommendation ITU-T H.282]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/H/[Remote device control protocol for multimedia applications]/[Versions of Recommendation ITU-T H.282]/[RDC-PROTOCOL]";
+                default: return $"/ITU-T/Recommendation/H/[Remote device control protocol for multimedia applications]/[Versions of Recommendation ITU-T H.282]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        #endregion
+
+        // h283
+        #region 0.0.8.283.*
+
+        oid_0_0_8_283:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Remote device control logical channel transport]";
+            switch (values[index++])
+            {
+                case 0: goto oid_0_0_8_283_0;
+                case 1: goto oid_0_0_8_283_1;
+                default: return $"/ITU-T/Recommendation/H/[Remote device control logical channel transport]/{values[index - 1]}";
+            }
+
+        // version
+        #region 0.0.8.283.0.*
+
+        oid_0_0_8_283_0:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Remote device control logical channel transport]/[Versions of Recommendation ITU-T H.283]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/H/[Remote device control logical channel transport]/[Versions of Recommendation ITU-T H.283]/[LCT-PROTOCOL]";
+                default: return $"/ITU-T/Recommendation/H/[Remote device control logical channel transport]/[Versions of Recommendation ITU-T H.283]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // generic-capabilities
+        #region 0.0.8.283.1.*
+
+        oid_0_0_8_283_1:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Remote device control logical channel transport]/[Generic Capability]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/H/[Remote device control logical channel transport]/[Generic Capability]/[First generic capability]";
+                default: return $"/ITU-T/Recommendation/H/[Remote device control logical channel transport]/[Generic Capability]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        #endregion
+
+        // 323
+        #region 0.0.8.323.*
+
+        oid_0_0_8_323:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Packet-based multimedia communications systems]";
+            switch (values[index++])
+            {
+                case 0: goto oid_0_0_8_323_0;
+                case 1: goto oid_0_0_8_323_1;
+                default: return $"/ITU-T/Recommendation/H/[Packet-based multimedia communications systems]/{values[index - 1]}";
+            }
+
+        // main
+        #region 0.0.8.323.0.*
+
+        oid_0_0_8_323_0:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Packet-based multimedia communications systems]/[Main part]";
+            switch (values[index++])
+            {
+                case 0: goto oid_0_0_8_323_0_0;
+                default: return $"/ITU-T/Recommendation/H/[Packet-based multimedia communications systems]/[Main part]/{values[index - 1]}";
+            }
+
+        // generic-capabilities
+        #region 0.0.8.323.0.0.*
+
+        oid_0_0_8_323_0_0:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Packet-based multimedia communications systems]/[Main part]/[Generic capabilities]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/H/[Packet-based multimedia communications systems]/[Main part]/[Generic capabilities]/[singleTransmitterMulticast]";
+                default: return $"/ITU-T/Recommendation/H/[Packet-based multimedia communications systems]/[Main part]/[Generic capabilities]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        #endregion
+
+        // annex
+        #region 0.0.8.323.1.*
+
+        oid_0_0_8_323_1:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Packet-based multimedia communications systems]/[Annexes]";
+            switch (values[index++])
+            {
+                case 7: goto oid_0_0_8_323_1_7;
+                default: return $"/ITU-T/Recommendation/H/[Packet-based multimedia communications systems]/[Annexes]/{values[index - 1]}";
+            }
+
+        // g
+        #region 0.0.8.323.1.7.*
+
+        oid_0_0_8_323_1_7:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Packet-based multimedia communications systems]/[Annexes]/[Annex G]";
+            switch (values[index++])
+            {
+                case 0: return "/ITU-T/Recommendation/H/[Packet-based multimedia communications systems]/[Annexes]/[Annex G]/[T140Data and T140Audio]";
+                default: return $"/ITU-T/Recommendation/H/[Packet-based multimedia communications systems]/[Annexes]/[Annex G]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        #endregion
+
+        #endregion
+
+        // h324
+        #region 0.0.8.324.*
+
+        oid_0_0_8_324:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Terminal for low bit-rate multimedia communication]";
+            switch (values[index++])
+            {
+                case 1: goto oid_0_0_8_324_1;
+                default: return $"/ITU-T/Recommendation/H/[Terminal for low bit-rate multimedia communication]/{values[index - 1]}";
+            }
+
+        // generic-capabilities
+        #region 0.0.8.324.1.*
+
+        oid_0_0_8_324_1:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Terminal for low bit-rate multimedia communication]/[Generic capabilities]";
+            switch (values[index++])
+            {
+                case 0: return "/ITU-T/Recommendation/H/[Terminal for low bit-rate multimedia communication]/[Generic capabilities]/[http]";
+                case 1: return "/ITU-T/Recommendation/H/[Terminal for low bit-rate multimedia communication]/[Generic capabilities]/[sessionResetCapability]";
+                case 2: goto oid_0_0_8_324_1_2;
+                case 3: return "/ITU-T/Recommendation/H/[Terminal for low bit-rate multimedia communication]/[Generic capabilities]/[textConversationCapability]";
+                default: return $"/ITU-T/Recommendation/H/[Terminal for low bit-rate multimedia communication]/[Generic capabilities]/{values[index - 1]}";
+            }
+
+        // mona
+        #region 0.0.8.324.1.2.*
+
+        oid_0_0_8_324_1_2:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Terminal for low bit-rate multimedia communication]/[Generic capabilities]/[Media-Oriented Negotiation Acceleration (MONA)]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/H/[Terminal for low bit-rate multimedia communication]/[Generic capabilities]/[Media-Oriented Negotiation Acceleration (MONA)]/[Mean Opinion Score (MOS)]";
+                case 2: return "/ITU-T/Recommendation/H/[Terminal for low bit-rate multimedia communication]/[Generic capabilities]/[Media-Oriented Negotiation Acceleration (MONA)]/[Mean Opinion Score (MOS) Ack]";
+                default: return $"/ITU-T/Recommendation/H/[Terminal for low bit-rate multimedia communication]/[Generic capabilities]/[Media-Oriented Negotiation Acceleration (MONA)]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        #endregion
+
+        #endregion
+
+        // h341
+        #region 0.0.8.341.*
+
+        oid_0_0_8_341:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Multimedia management information base]";
+            switch (values[index++])
+            {
+                case 1: goto oid_0_0_8_341_1;
+                default: return $"/ITU-T/Recommendation/H/[Multimedia management information base]/{values[index - 1]}";
+            }
+
+        // mib, mmRoot
+        #region 0.0.8.341.1.*
+
+        oid_0_0_8_341_1:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]";
+            switch (values[index++])
+            {
+                case 0: goto oid_0_0_8_341_1_0;
+                case 1: goto oid_0_0_8_341_1_1;
+                //TODO: case 2: goto oid_0_0_8_341_1_2;
+                //TODO: case 3: goto oid_0_0_8_341_1_3;
+                //TODO: case 4: goto oid_0_0_8_341_1_4;
+                default: return $"/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/{values[index - 1]}";
+            }
+
+        // mmRoot
+        #region 0.0.8.341.1.0.*
+
+        oid_0_0_8_341_1_0:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmRoot]";
+            switch (values[index++])
+            {
+                case 0: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmRoot]/[multimediaMibTC]";
+                default: return $"/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmRoot]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // mmH323Root
+        #region 0.0.8.341.1.1.*
+
+        oid_0_0_8_341_1_1:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]";
+            switch (values[index++])
+            {
+                case 1: goto oid_0_0_8_341_1_1_1;
+                case 2: goto oid_0_0_8_341_1_1_2;
+                //TODO: case 3: goto oid_0_0_8_341_1_1_3;
+                //TODO: case 4: goto oid_0_0_8_341_1_1_4;
+                //TODO: case 5: goto oid_0_0_8_341_1_1_5;
+                //TODO: case 6: goto oid_0_0_8_341_1_1_6;
+                default: return $"/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/{values[index - 1]}";
+            }
+
+        // h225CallSignaling
+        #region 0.0.8.341.1.1.1.*
+
+        oid_0_0_8_341_1_1_1:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]";
+            switch (values[index++])
+            {
+                case 1: goto oid_0_0_8_341_1_1_1_1;
+                case 2: goto oid_0_0_8_341_1_1_1_2;
+                case 3: goto oid_0_0_8_341_1_1_1_3;
+                case 4: goto oid_0_0_8_341_1_1_1_4;
+                case 5: goto oid_0_0_8_341_1_1_1_5;
+                default: return $"/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/{values[index - 1]}";
+            }
+
+        // callSignalConfig
+        #region 0.0.8.341.1.1.1.1.*
+
+        oid_0_0_8_341_1_1_1_1:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalConfig]";
+            switch (values[index++])
+            {
+                case 1: goto oid_0_0_8_341_1_1_1_1_1;
+                default: return $"/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalConfig]/{values[index - 1]}";
+            }
+
+        // callSignalConfigTable
+        #region 0.0.8.341.1.1.1.1.1.*
+
+        oid_0_0_8_341_1_1_1_1_1:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalConfig]/[callSignalConfigTable]";
+            switch (values[index++])
+            {
+                case 1: goto oid_0_0_8_341_1_1_1_1_1_1;
+                default: return $"/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalConfig]/[callSignalConfigTable]/{values[index - 1]}";
+            }
+
+        // callSignalConfigEntry
+        #region 0.0.8.341.1.1.1.1.1.1.*
+
+        oid_0_0_8_341_1_1_1_1_1_1:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalConfig]/[callSignalConfigTable]/[callSignalConfigEntry]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalConfig]/[callSignalConfigTable]/[callSignalConfigEntry]/[callSignalConfigMaxConnections]";
+                case 2: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalConfig]/[callSignalConfigTable]/[callSignalConfigEntry]/[callSignalConfigAvailableConnections]";
+                case 3: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalConfig]/[callSignalConfigTable]/[callSignalConfigEntry]/[callSignalConfigT303]";
+                case 4: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalConfig]/[callSignalConfigTable]/[callSignalConfigEntry]/[callSignalConfigT301]";
+                case 5: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalConfig]/[callSignalConfigTable]/[callSignalConfigEntry]/[callSignalConfigEnableNotifications]";
+                default: return $"/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalConfig]/[callSignalConfigTable]/[callSignalConfigEntry]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        #endregion
+
+        #endregion
+
+        // callSignalStats
+        #region 0.0.8.341.1.1.1.2.*
+
+        oid_0_0_8_341_1_1_1_2:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalStats]";
+            switch (values[index++])
+            {
+                case 1: goto oid_0_0_8_341_1_1_1_2_1;
+                default: return $"/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalStats]/{values[index - 1]}";
+            }
+
+        // callSignalStatsTable
+        #region 0.0.8.341.1.1.1.2.1.*
+
+        oid_0_0_8_341_1_1_1_2_1:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalStats]/[callSignalStatsTable]";
+            switch (values[index++])
+            {
+                case 1: goto oid_0_0_8_341_1_1_1_2_1_1;
+                default: return $"/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalStats]/[callSignalStatsTable]/{values[index - 1]}";
+            }
+
+        // callSignalStatsEntry
+        #region 0.0.8.341.1.1.1.2.1.1.*
+
+        oid_0_0_8_341_1_1_1_2_1_1:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalStats]/[callSignalStatsTable]/[callSignalStatsEntry]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalStats]/[callSignalStatsTable]/[callSignalStatsEntry]/[callSignalStatsCallConnectionsIn]";
+                case 2: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalStats]/[callSignalStatsTable]/[callSignalStatsEntry]/[callSignalStatsCallConnectionsOut]";
+                case 3: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalStats]/[callSignalStatsTable]/[callSignalStatsEntry]/[callSignalStatsAlertingMsgsIn]";
+                case 4: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalStats]/[callSignalStatsTable]/[callSignalStatsEntry]/[callSignalStatsAlertingMsgsOut]";
+                case 5: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalStats]/[callSignalStatsTable]/[callSignalStatsEntry]/[callSignalStatsCallProceedingsIn]";
+                case 6: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalStats]/[callSignalStatsTable]/[callSignalStatsEntry]/[callSignalStatsCallProceedingsOut]";
+                case 7: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalStats]/[callSignalStatsTable]/[callSignalStatsEntry]/[callSignalStatsSetupMsgsIn]";
+                case 8: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalStats]/[callSignalStatsTable]/[callSignalStatsEntry]/[callSignalStatsSetupMsgsOut]";
+                case 9: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalStats]/[callSignalStatsTable]/[callSignalStatsEntry]/[callSignalStatsSetupAckMsgsIn]";
+                case 10: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalStats]/[callSignalStatsTable]/[callSignalStatsEntry]/[callSignalStatsSetupAckMsgsOut]";
+                case 11: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalStats]/[callSignalStatsTable]/[callSignalStatsEntry]/[callSignalStatsProgressMsgsIn]";
+                case 12: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalStats]/[callSignalStatsTable]/[callSignalStatsEntry]/[callSignalStatsProgressMsgsOut]";
+                case 13: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalStats]/[callSignalStatsTable]/[callSignalStatsEntry]/[callSignalStatsReleaseCompleteMsgsIn]";
+                case 14: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalStats]/[callSignalStatsTable]/[callSignalStatsEntry]/[callSignalStatsReleaseCompleteMsgsOut]";
+                case 15: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalStats]/[callSignalStatsTable]/[callSignalStatsEntry]/[callSignalStatsStatusMsgsIn]";
+                case 16: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalStats]/[callSignalStatsTable]/[callSignalStatsEntry]/[callSignalStatsStatusMsgsOut]";
+                case 17: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalStats]/[callSignalStatsTable]/[callSignalStatsEntry]/[callSignalStatsStatusInquiryMsgsIn]";
+                case 18: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalStats]/[callSignalStatsTable]/[callSignalStatsEntry]/[callSignalStatsStatusInquiryMsgsOut]";
+                case 19: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalStats]/[callSignalStatsTable]/[callSignalStatsEntry]/[callSignalStatsFacilityMsgsIn]";
+                case 20: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalStats]/[callSignalStatsTable]/[callSignalStatsEntry]/[callSignalStatsFacilityMsgsOut]";
+                case 21: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalStats]/[callSignalStatsTable]/[callSignalStatsEntry]/[callSignalStatsInfoMsgsIn]";
+                case 22: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalStats]/[callSignalStatsTable]/[callSignalStatsEntry]/[callSignalStatsInfoMsgsOut]";
+                case 23: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalStats]/[callSignalStatsTable]/[callSignalStatsEntry]/[callSignalStatsNotifyMsgsIn]";
+                case 24: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalStats]/[callSignalStatsTable]/[callSignalStatsEntry]/[callSignalStatsNotifyMsgsOut]";
+                case 25: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalStats]/[callSignalStatsTable]/[callSignalStatsEntry]/[callSignalStatsAverageCallDuration]";
+                case 26: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalStats]/[callSignalStatsTable]/[callSignalStatsEntry]/[callSignalStatsCallConnections]";
+                case 27: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalStats]/[callSignalStatsTable]/[callSignalStatsEntry]/[callSignalStatsAlertingMsgs]";
+                case 28: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalStats]/[callSignalStatsTable]/[callSignalStatsEntry]/[callSignalStatsCallProceedings]";
+                case 29: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalStats]/[callSignalStatsTable]/[callSignalStatsEntry]/[callSignalStatsSetupMsgs]";
+                case 30: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalStats]/[callSignalStatsTable]/[callSignalStatsEntry]/[callSignalStatsSetupAckMsgs]";
+                case 31: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalStats]/[callSignalStatsTable]/[callSignalStatsEntry]/[callSignalStatsProgressMsgs]";
+                case 32: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalStats]/[callSignalStatsTable]/[callSignalStatsEntry]/[callSignalStatsReleaseCompleteMsgs]";
+                case 33: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalStats]/[callSignalStatsTable]/[callSignalStatsEntry]/[callSignalStatsStatusMsgs]";
+                case 34: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalStats]/[callSignalStatsTable]/[callSignalStatsEntry]/[callSignalStatsStatusInquiryMsgs]";
+                case 35: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalStats]/[callSignalStatsTable]/[callSignalStatsEntry]/[callSignalStatsFacilityMsgs]";
+                case 36: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalStats]/[callSignalStatsTable]/[callSignalStatsEntry]/[callSignalStatsInfoMsgs]";
+                case 37: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalStats]/[callSignalStatsTable]/[callSignalStatsEntry]/[callSignalStatsNotifyMsgs]";
+                default: return $"/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalStats]/[callSignalStatsTable]/[callSignalStatsEntry]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        #endregion
+
+        #endregion
+
+        // connections
+        #region 0.0.8.341.1.1.1.3.*
+
+        oid_0_0_8_341_1_1_1_3:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[connections]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[connections]/[connectionsActiveConnections]";
+                case 2: goto oid_0_0_8_341_1_1_1_3_2;
+                default: return $"/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[connections]/{values[index - 1]}";
+            }
+
+        // connectionsTable
+        #region 0.0.8.341.1.1.1.3.2.*
+
+        oid_0_0_8_341_1_1_1_3_2:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[connections]/[connectionsTable]";
+            switch (values[index++])
+            {
+                case 1: goto oid_0_0_8_341_1_1_1_3_2_1;
+                default: return $"/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[connections]/[connectionsTable]/{values[index - 1]}";
+            }
+
+        // connectionsTableEntry
+        #region 0.0.8.341.1.1.1.3.2.1.*
+
+        oid_0_0_8_341_1_1_1_3_2_1:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[connections]/[connectionsTable]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[connections]/[connectionsTable]/[connectionsSrcTransporTAddressTag]";
+                case 2: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[connections]/[connectionsTable]/[connectionsSrcTransporTAddress]";
+                case 3: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[connections]/[connectionsTable]/[connectionsCallIdentifier]";
+                case 4: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[connections]/[connectionsTable]/[connectionsRole]";
+                case 5: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[connections]/[connectionsTable]/[connectionsState]";
+                case 6: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[connections]/[connectionsTable]/[connectionsDestTransporTAddressTag]";
+                case 7: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[connections]/[connectionsTable]/[connectionsDestTransporTAddress]";
+                case 8: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[connections]/[connectionsTable]/[connectionsDestAliasTag]";
+                case 9: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[connections]/[connectionsTable]/[connectionsDestAlias]";
+                case 10: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[connections]/[connectionsTable]/[connectionsSrcH245SigTransporTAddressTag]";
+                case 11: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[connections]/[connectionsTable]/[connectionsSrcH245SigTransporTAddress]";
+                case 12: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[connections]/[connectionsTable]/[connectionsDestH245SigTransporTAddressTag]";
+                case 13: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[connections]/[connectionsTable]/[connectionsDestH245SigTransporTAddress]";
+                case 14: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[connections]/[connectionsTable]/[connectionsConfId]";
+                case 15: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[connections]/[connectionsTable]/[connectionsCalledPartyNumber]";
+                case 16: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[connections]/[connectionsTable]/[connectionsDestXtraCallingNumber1]";
+                case 17: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[connections]/[connectionsTable]/[connectionsDestXtraCallingNumber2]";
+                case 18: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[connections]/[connectionsTable]/[connectionsDestXtraCallingNumber3]";
+                case 19: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[connections]/[connectionsTable]/[connectionsDestXtraCallingNumber4]";
+                case 20: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[connections]/[connectionsTable]/[connectionsDestXtraCallingNumber5]";
+                case 21: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[connections]/[connectionsTable]/[connectionsFastCall]";
+                case 22: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[connections]/[connectionsTable]/[connectionsSecurity]";
+                case 23: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[connections]/[connectionsTable]/[connectionsH245Tunneling]";
+                case 24: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[connections]/[connectionsTable]/[connectionsCanOverlapSend]";
+                case 25: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[connections]/[connectionsTable]/[connectionsCRV]";
+                case 26: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[connections]/[connectionsTable]/[connectionsCallType]";
+                case 27: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[connections]/[connectionsTable]/[connectionsRemoteExtensionAddress]";
+                case 28: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[connections]/[connectionsTable]/[connectionsExtraCRV1]";
+                case 29: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[connections]/[connectionsTable]/[connectionsExtraCRV2]";
+                case 30: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[connections]/[connectionsTable]/[connectionsConnectionStartTime]";
+                case 31: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[connections]/[connectionsTable]/[connectionsEndpointType]";
+                case 32: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[connections]/[connectionsTable]/[connectionsReleaseCompleteReason]";
+                default: return $"/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[connections]/[connectionsTable]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        #endregion
+
+        #endregion
+
+        // 4
+        #region 0.0.8.341.1.1.1.4.*
+
+        oid_0_0_8_341_1_1_1_4:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[???]";
+            switch (values[index++])
+            {
+                case 0: goto oid_0_0_8_341_1_1_1_4_0;
+                default: return $"/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[???]/{values[index - 1]}";
+            }
+
+        // callSignalEvents
+        #region 0.0.8.341.1.1.1.4.0.*
+
+        oid_0_0_8_341_1_1_1_4_0:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[???]/[callSignalEvents]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[???]/[callSignalEvents]/[callReleaseComplete]";
+                default: return $"/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[???]/[callSignalEvents]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        #endregion
+
+        // callSignalingMIBConformance
+        #region 0.0.8.341.1.1.1.5.*
+
+        oid_0_0_8_341_1_1_1_5:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalingMIBConformance]";
+            switch (values[index++])
+            {
+                case 1: goto oid_0_0_8_341_1_1_1_5_1;
+                case 2: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalingMIBConformance]/[callSignalingMIBCompliance]";
+                default: return $"/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalingMIBConformance]/{values[index - 1]}";
+            }
+
+        // callSignalingMIBGroups
+        #region 0.0.8.341.1.1.1.5.1.*
+
+        oid_0_0_8_341_1_1_1_5_1:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalingMIBConformance]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalingMIBConformance]/[callSignalConfigGroup]";
+                case 2: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalingMIBConformance]/[callSignalStatsGroup]";
+                case 3: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalingMIBConformance]/[connectionsGroup]";
+                case 4: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalingMIBConformance]/[callSignalEventsGroup]";
+                default: return $"/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[h225CallSignaling]/[callSignalingMIBConformance]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        #endregion
+
+        #endregion
+
+        // ras
+        #region 0.0.8.341.1.1.2.*
+
+        oid_0_0_8_341_1_1_2:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]";
+            switch (values[index++])
+            {
+                //TODO: case 1: goto oid_0_0_8_341_1_1_2_1;
+                //TODO: case 2: goto oid_0_0_8_341_1_1_2_2;
+                //TODO: case 3: goto oid_0_0_8_341_1_1_2_3;
+                //TODO: case 4: goto oid_0_0_8_341_1_1_2_4;
+                //TODO: case 5: goto oid_0_0_8_341_1_1_2_5;
+                //TODO: case 6: goto oid_0_0_8_341_1_1_2_6;
+                default: return $"/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/{values[index - 1]}";
+            }
+
+        #endregion
 
         #endregion
 
@@ -5408,9 +6030,23 @@ namespace BurnOutSharp.Builder
             if (index == values.Length) return "/Joint-ISO-ITU-T/[Transport layer security protocol]";
             switch (values[index++])
             {
-                //TODO: case 1: goto oid_2_21_1;
+                case 1: goto oid_2_21_1;
                 default: return $"/Joint-ISO-ITU-T/[Transport layer security protocol]/{values[index - 1]}";
             }
+
+        // sa-p-kte
+        #region 2.21.1.*
+
+        oid_2_21_1:
+
+            if (index == values.Length) return "/Joint-ISO-ITU-T/[Transport layer security protocol]/[Security Association Protocol Type]";
+            switch (values[index++])
+            {
+                case 1: return "/Joint-ISO-ITU-T/[Transport layer security protocol]/[Security Association Protocol Type]/[Exponential Key Exchange (EKE)]";
+                default: return $"/Joint-ISO-ITU-T/[Transport layer security protocol]/[Security Association Protocol Type]/{values[index - 1]}";
+            }
+
+        #endregion
 
         #endregion
 
@@ -5422,9 +6058,23 @@ namespace BurnOutSharp.Builder
             if (index == values.Length) return "/Joint-ISO-ITU-T/[Network layer security protocol]";
             switch (values[index++])
             {
-                //TODO: case 1: goto oid_2_22_1;
+                case 1: goto oid_2_22_1;
                 default: return $"/Joint-ISO-ITU-T/[Network layer security protocol]/{values[index - 1]}";
             }
+
+        // sa-p-kte
+        #region 2.22.1.*
+
+        oid_2_22_1:
+
+            if (index == values.Length) return "/Joint-ISO-ITU-T/[Network layer security protocol]/[Security Association Protocol Type]";
+            switch (values[index++])
+            {
+                case 1: return "/Joint-ISO-ITU-T/[Network layer security protocol]/[Security Association Protocol Type]/[Exponential Key Exchange (EKE)]";
+                default: return $"/Joint-ISO-ITU-T/[Network layer security protocol]/[Security Association Protocol Type]/{values[index - 1]}";
+            }
+
+        #endregion
 
         #endregion
 
@@ -5469,9 +6119,52 @@ namespace BurnOutSharp.Builder
             if (index == values.Length) return "/Joint-ISO-ITU-T/[Security Information Objects (SIOs) for access control]";
             switch (values[index++])
             {
-                //TODO: case 0: goto oid_2_24_0;
+                case 0: goto oid_2_24_0;
                 default: return $"/Joint-ISO-ITU-T/[Security Information Objects (SIOs) for access control]/{values[index - 1]}";
             }
+
+        // specification
+        #region 2.24.0.*
+
+        oid_2_24_0:
+
+            if (index == values.Length) return "/Joint-ISO-ITU-T/[Security Information Objects (SIOs) for access control]/[Specification]";
+            switch (values[index++])
+            {
+                case 0: goto oid_2_24_0_0;
+                case 1: goto oid_2_24_0_1;
+                default: return $"/Joint-ISO-ITU-T/[Security Information Objects (SIOs) for access control]/[Specification]/{values[index - 1]}";
+            }
+
+        // modules
+        #region 2.24.0.0.*
+
+        oid_2_24_0_0:
+
+            if (index == values.Length) return "/Joint-ISO-ITU-T/[Security Information Objects (SIOs) for access control]/[Specification]/[ASN.1 modules]";
+            switch (values[index++])
+            {
+                case 0: return "/Joint-ISO-ITU-T/[Security Information Objects (SIOs) for access control]/[Specification]/[ASN.1 modules]/[SIOsAccessControl-MODULE]";
+                default: return $"/Joint-ISO-ITU-T/[Security Information Objects (SIOs) for access control]/[Specification]/[ASN.1 modules]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // securityLabels
+        #region 2.24.0.1.*
+
+        oid_2_24_0_1:
+
+            if (index == values.Length) return "/Joint-ISO-ITU-T/[Security Information Objects (SIOs) for access control]/[Specification]/[Security labels]";
+            switch (values[index++])
+            {
+                case 0: return "/Joint-ISO-ITU-T/[Security Information Objects (SIOs) for access control]/[Specification]/[Security labels]/[Confidentiality label]";
+                default: return $"/Joint-ISO-ITU-T/[Security Information Objects (SIOs) for access control]/[Specification]/[Security labels]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        #endregion
 
         #endregion
 
@@ -5586,11 +6279,47 @@ namespace BurnOutSharp.Builder
             if (index == values.Length) return "/Joint-ISO-ITU-T/[Universal Postal Union (UPU)]";
             switch (values[index++])
             {
-                //TODO: case 0: goto oid_2_40_0;
+                case 0: goto oid_2_40_0;
                 case 2: return "/Joint-ISO-ITU-T/[Universal Postal Union (UPU)]/[Member bodies (postal administrations)]";
-                //TODO: case 3: goto oid_2_40_3;
+                case 3: goto oid_2_40_3;
                 default: return $"/Joint-ISO-ITU-T/[Universal Postal Union (UPU)]/{values[index - 1]}";
             }
+
+        // standard
+        #region 2.40.0.*
+
+        oid_2_40_0:
+
+            if (index == values.Length) return "/Joint-ISO-ITU-T/[Universal Postal Union (UPU)]/[Universal Postal Union (UPU) standards]";
+            switch (values[index++])
+            {
+                case 25: return "/Joint-ISO-ITU-T/[Universal Postal Union (UPU)]/[Universal Postal Union (UPU) standards]/[Data constructs for the communication of information on postal items, batches and receptacles]";
+                default: return $"/Joint-ISO-ITU-T/[Universal Postal Union (UPU)]/[Universal Postal Union (UPU) standards]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // identified-organization
+        #region 2.40.3.*
+
+        oid_2_40_3:
+
+            if (index == values.Length) return "/Joint-ISO-ITU-T/[Universal Postal Union (UPU)]/[Data content related to standards produced by other identified organizations]";
+            switch (values[index++])
+            {
+                case 0: return "/Joint-ISO-ITU-T/[Universal Postal Union (UPU)]/[Data content related to standards produced by other identified organizations]/[International Organization for Standardization (ISO)]";
+                case 1: return "/Joint-ISO-ITU-T/[Universal Postal Union (UPU)]/[Data content related to standards produced by other identified organizations]/[International Electrotechnical Commission (IEC)]";
+                case 2: return "/Joint-ISO-ITU-T/[Universal Postal Union (UPU)]/[Data content related to standards produced by other identified organizations]/[United Nations (UN)]";
+                case 3: return "/Joint-ISO-ITU-T/[Universal Postal Union (UPU)]/[Data content related to standards produced by other identified organizations]/[Association Connecting Electronics Industries (IPC)]";
+                case 4: return "/Joint-ISO-ITU-T/[Universal Postal Union (UPU)]/[Data content related to standards produced by other identified organizations]/[International Telecommunication Union (ITU)]";
+                case 5: return "/Joint-ISO-ITU-T/[Universal Postal Union (UPU)]/[Data content related to standards produced by other identified organizations]/[European Telecommunications Standards Institute (ETSI)]";
+                case 6: return "/Joint-ISO-ITU-T/[Universal Postal Union (UPU)]/[Data content related to standards produced by other identified organizations]/[Federal Communications Commission (FCC)]";
+                case 7: return "/Joint-ISO-ITU-T/[Universal Postal Union (UPU)]/[Data content related to standards produced by other identified organizations]/[American National Standards Institute (ANSI)]";
+                case 8: return "/Joint-ISO-ITU-T/[Universal Postal Union (UPU)]/[Data content related to standards produced by other identified organizations]/[United Nations Directories for Electronic Data Interchange for Administration, Commerce and Transport (EDIFACT)]";
+                default: return $"/Joint-ISO-ITU-T/[Universal Postal Union (UPU)]/[Data content related to standards produced by other identified organizations]/{values[index - 1]}";
+            }
+
+        #endregion
 
         #endregion
 
@@ -5606,7 +6335,7 @@ namespace BurnOutSharp.Builder
                 default: return $"/BIP/{values[index - 1]}";
             }
 
-        // bip
+        // modules
         #region 2.41.0.*
 
         oid_2_41_0:
@@ -5614,11 +6343,53 @@ namespace BurnOutSharp.Builder
             if (index == values.Length) return "/BIP/[ASN.1 modules]";
             switch (values[index++])
             {
-                //TODO: case 0: goto oid_2_41_0_0;
-                //TODO: case 1: goto oid_2_41_0_1;
-                //TODO: case 2: goto oid_2_41_0_2;
+                case 0: goto oid_2_41_0_0;
+                case 1: goto oid_2_41_0_1;
+                case 2: goto oid_2_41_0_2;
                 default: return $"/BIP/[ASN.1 modules]/{values[index - 1]}";
             }
+
+        // bip
+        #region 2.41.0.0.*
+
+        oid_2_41_0_0:
+
+            if (index == values.Length) return "/BIP/[ASN.1 modules]/[Bip]";
+            switch (values[index++])
+            {
+                case 1: return "/BIP/[ASN.1 modules]/[Bip]/[Version 1]";
+                default: return $"/BIP/[ASN.1 modules]/[Bip]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // bip-tcpip
+        #region 2.41.0.1.*
+
+        oid_2_41_0_1:
+
+            if (index == values.Length) return "/BIP/[ASN.1 modules]/[BIP-TCPIP]";
+            switch (values[index++])
+            {
+                case 1: return "/BIP/[ASN.1 modules]/[BIP-TCPIP]/[Version 1]";
+                default: return $"/BIP/[ASN.1 modules]/[BIP-TCPIP]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // bip-discovery
+        #region 2.41.0.2.*
+
+        oid_2_41_0_2:
+
+            if (index == values.Length) return "/BIP/[ASN.1 modules]/[BIP-DISCOVERY]";
+            switch (values[index++])
+            {
+                case 1: return "/BIP/[ASN.1 modules]/[BIP-DISCOVERY]/[Version 1]";
+                default: return $"/BIP/[ASN.1 modules]/[BIP-DISCOVERY]/{values[index - 1]}";
+            }
+
+        #endregion
 
         #endregion
 
@@ -5648,9 +6419,23 @@ namespace BurnOutSharp.Builder
             if (index == values.Length) return "/Telebiometrics/Modules";
             switch (values[index++])
             {
-                //TODO: case 0: goto oid_2_42_0_0;
+                case 0: goto oid_2_42_0_0;
                 default: return $"/Telebiometrics/Modules/{values[index - 1]}";
             }
+
+        // main
+        #region 2.42.0.0.*
+
+        oid_2_42_0_0:
+
+            if (index == values.Length) return "/Telebiometrics/Modules/Main_Module";
+            switch (values[index++])
+            {
+                case 1: return "/Telebiometrics/Modules/Main_Module/Version1";
+                default: return $"/Telebiometrics/Modules/Main_Module/{values[index - 1]}";
+            }
+
+        #endregion
 
         #endregion
 
@@ -6276,7 +7061,7 @@ namespace BurnOutSharp.Builder
             }
 
         // 4
-        #region 2.52.4*
+        #region 2.52.4.*
 
         oid_2_52_4:
 
@@ -6293,7 +7078,7 @@ namespace BurnOutSharp.Builder
         #endregion
 
         // 6
-        #region 2.52.6*
+        #region 2.52.6.*
 
         oid_2_52_6:
 
