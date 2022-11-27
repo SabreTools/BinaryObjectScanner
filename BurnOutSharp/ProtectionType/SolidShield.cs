@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Interfaces;
@@ -16,6 +17,8 @@ namespace BurnOutSharp.ProtectionType
         /// <inheritdoc/>
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
+            // TODO: Investigate ".pseudo" section found in "tvdm.dll" in Redump entry 68166.
+
             // Get the sections from the executable, if possible
             var sections = pex?.SectionTable;
             if (sections == null)
@@ -24,18 +27,30 @@ namespace BurnOutSharp.ProtectionType
             string name = pex.FileDescription;
             if (name?.StartsWith("DVM Library", StringComparison.OrdinalIgnoreCase) == true)
                 return $"SolidShield {Utilities.GetInternalVersion(pex)}";
+
             else if (name?.StartsWith("Solidshield Activation Library", StringComparison.OrdinalIgnoreCase) == true)
                 return $"SolidShield Core.dll {Utilities.GetInternalVersion(pex)}";
+
             else if (name?.StartsWith("Activation Manager", StringComparison.OrdinalIgnoreCase) == true)
                 return $"SolidShield Activation Manager Module {GetInternalVersion(pex)}";
 
-           name = pex.ProductName;
+            // Found in "tvdm.dll" in Redump entry 68166.
+            else if (name?.StartsWith("Solidshield Library", StringComparison.OrdinalIgnoreCase) == true)
+                return $"SolidShield {GetInternalVersion(pex)}";
+
+            name = pex.ProductName;
             if (name?.StartsWith("Solidshield Activation Library", StringComparison.OrdinalIgnoreCase) == true)
                 return $"SolidShield Core.dll {Utilities.GetInternalVersion(pex)}";
+
             else if (name?.StartsWith("Solidshield Library", StringComparison.OrdinalIgnoreCase) == true)
                 return $"SolidShield Core.dll {Utilities.GetInternalVersion(pex)}";
+
             else if (name?.StartsWith("Activation Manager", StringComparison.OrdinalIgnoreCase) == true)
                 return $"SolidShield Activation Manager Module {GetInternalVersion(pex)}";
+
+            // Found in "tvdm.dll" in Redump entry 68166.
+            else if (name?.StartsWith("Solidshield Library", StringComparison.OrdinalIgnoreCase) == true)
+                return $"SolidShield {GetInternalVersion(pex)}";
 
             // Get the .init section, if it exists
             var initSectionRaw = pex.ReadRawSection(".init", first: true);
@@ -94,8 +109,13 @@ namespace BurnOutSharp.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new PathMatch("dvm.dll", useEndsWith: true), "SolidShield"),
-                new PathMatchSet(new PathMatch("hc.dll", useEndsWith: true), "SolidShield"),
+                // Found in Redump entry 68166.
+                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}tdvm.dll", useEndsWith: true), "SolidShield"),
+                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}tdvm.vds", useEndsWith: true), "SolidShield"),
+                new PathMatchSet(new PathMatch("vfs20.dll", useEndsWith: true), "SolidShield"),
+
+                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}dvm.dll", useEndsWith: true), "SolidShield"),
+                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}hc.dll", useEndsWith: true), "SolidShield"),
                 new PathMatchSet(new PathMatch("solidshield-cd.dll", useEndsWith: true), "SolidShield"),
                 new PathMatchSet(new PathMatch("c11prot.dll", useEndsWith: true), "SolidShield"),
             };
@@ -109,8 +129,8 @@ namespace BurnOutSharp.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new PathMatch("dvm.dll", useEndsWith: true), "SolidShield"),
-                new PathMatchSet(new PathMatch("hc.dll", useEndsWith: true), "SolidShield"),
+                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}dvm.dll", useEndsWith: true), "SolidShield"),
+                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}hc.dll", useEndsWith: true), "SolidShield"),
                 new PathMatchSet(new PathMatch("solidshield-cd.dll", useEndsWith: true), "SolidShield"),
                 new PathMatchSet(new PathMatch("c11prot.dll", useEndsWith: true), "SolidShield"),
             };
