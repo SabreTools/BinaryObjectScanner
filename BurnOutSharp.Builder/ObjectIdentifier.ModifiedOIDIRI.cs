@@ -93,7 +93,7 @@ namespace BurnOutSharp.Builder
             switch (values[index++])
             {
                 case 0: goto oid_0_0;
-                case 1: return "/ITU-T/1/[question]";
+                case 1: return "/ITU-T/[question]";
                 case 2: goto oid_0_2;
                 case 3: goto oid_0_3;
                 case 4: goto oid_0_4;
@@ -3875,14 +3875,277 @@ namespace BurnOutSharp.Builder
             if (index == values.Length) return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]";
             switch (values[index++])
             {
-                //TODO: case 1: goto oid_0_0_8_341_1_1_2_1;
-                //TODO: case 2: goto oid_0_0_8_341_1_1_2_2;
-                //TODO: case 3: goto oid_0_0_8_341_1_1_2_3;
+                case 1: goto oid_0_0_8_341_1_1_2_1;
+                case 2: goto oid_0_0_8_341_1_1_2_2;
+                case 3: goto oid_0_0_8_341_1_1_2_3;
                 //TODO: case 4: goto oid_0_0_8_341_1_1_2_4;
                 //TODO: case 5: goto oid_0_0_8_341_1_1_2_5;
                 //TODO: case 6: goto oid_0_0_8_341_1_1_2_6;
                 default: return $"/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/{values[index - 1]}";
             }
+
+        // rasConfiguration
+        #region 0.0.8.341.1.1.2.1.*
+
+        oid_0_0_8_341_1_1_2_1:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasConfiguration]";
+            switch (values[index++])
+            {
+                case 1: goto oid_0_0_8_341_1_1_2_1_1;
+                default: return $"/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasConfiguration]/{values[index - 1]}";
+            }
+
+        // rasConfigurationTable
+        #region 0.0.8.341.1.1.2.1.1.*
+
+        oid_0_0_8_341_1_1_2_1_1:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasConfiguration]/[rasConfigurationTable]";
+            switch (values[index++])
+            {
+                case 1: goto oid_0_0_8_341_1_1_2_1_1_1;
+                default: return $"/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasConfiguration]/[rasConfigurationTable]/{values[index - 1]}";
+            }
+
+        // rasConfigurationTableEntry
+        #region 0.0.8.341.1.1.2.1.1.1.*
+
+        oid_0_0_8_341_1_1_2_1_1_1:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasConfiguration]/[rasConfigurationTable]/[rasConfigurationTableEntry]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasConfiguration]/[rasConfigurationTable]/[rasConfigurationTableEntry]/[rasConfigurationGatekeeperIdentifier]";
+                case 2: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasConfiguration]/[rasConfigurationTable]/[rasConfigurationTableEntry]/[rasConfigurationTimer]";
+                case 3: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasConfiguration]/[rasConfigurationTable]/[rasConfigurationTableEntry]/[rasConfigurationMaxNumberOfRetries]";
+                case 4: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasConfiguration]/[rasConfigurationTable]/[rasConfigurationTableEntry]/[rasConfigurationGatekeeperDiscoveryAddressTag]";
+                case 5: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasConfiguration]/[rasConfigurationTable]/[rasConfigurationTableEntry]/[rasConfigurationGatekeeperDiscoveryAddress]";
+                default: return $"/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasConfiguration]/[rasConfigurationTable]/[rasConfigurationTableEntry]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        #endregion
+
+        #endregion
+
+        // rasRegistration
+        #region 0.0.8.341.1.1.2.2.*
+
+        oid_0_0_8_341_1_1_2_2:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasRegistration]";
+            switch (values[index++])
+            {
+                case 1: goto oid_0_0_8_341_1_1_2_2_1;
+                case 2: goto oid_0_0_8_341_1_1_2_2_2;
+                case 3: goto oid_0_0_8_341_1_1_2_2_3;
+                case 4: goto oid_0_0_8_341_1_1_2_2_4;
+                default: return $"/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasRegistration]/{values[index - 1]}";
+            }
+
+        // rasRegistrationTable
+        #region 0.0.8.341.1.1.2.2.1.*
+
+        oid_0_0_8_341_1_1_2_2_1:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasRegistration]/[rasRegistrationTable]";
+            switch (values[index++])
+            {
+                case 1: goto oid_0_0_8_341_1_1_2_2_1_1;
+                default: return $"/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasRegistration]/[rasRegistrationTable]/{values[index - 1]}";
+            }
+
+        // rasRegistrationTableEntry
+        #region 0.0.8.341.1.1.2.2.1.1.*
+
+        oid_0_0_8_341_1_1_2_2_1_1:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasRegistration]/[rasRegistrationTable]/[rasRegistrationTableEntry]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasRegistration]/[rasRegistrationTable]/[rasRegistrationTableEntry]/[rasRegistrationCallSignallingAddressTag]";
+                case 2: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasRegistration]/[rasRegistrationTable]/[rasRegistrationTableEntry]/[rasRegistrationCallSignallingAddress]";
+                case 3: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasRegistration]/[rasRegistrationTable]/[rasRegistrationTableEntry]/[rasRegistrationSrcRasAddressTag]";
+                case 4: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasRegistration]/[rasRegistrationTable]/[rasRegistrationTableEntry]/[rasRegistrationSrcRasAddress]";
+                case 5: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasRegistration]/[rasRegistrationTable]/[rasRegistrationTableEntry]/[rasRegistrationIsGatekeeper]";
+                case 6: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasRegistration]/[rasRegistrationTable]/[rasRegistrationTableEntry]/[rasRegistrationGatekeeperId]";
+                case 7: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasRegistration]/[rasRegistrationTable]/[rasRegistrationTableEntry]/[rasRegistrationEndpointId]";
+                case 8: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasRegistration]/[rasRegistrationTable]/[rasRegistrationTableEntry]/[rasRegistrationEncryption]";
+                case 9: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasRegistration]/[rasRegistrationTable]/[rasRegistrationTableEntry]/[rasRegistrationWillSupplyUUIE]";
+                case 10: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasRegistration]/[rasRegistrationTable]/[rasRegistrationTableEntry]/[rasRegistrationIntegrityCheckValue]";
+                case 11: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasRegistration]/[rasRegistrationTable]/[rasRegistrationTableEntry]/[rasRegistrationTableNumberOfAliases]";
+                case 12: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasRegistration]/[rasRegistrationTable]/[rasRegistrationTableEntry]/[rasRegistrationTableRowStatus]";
+                case 13: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasRegistration]/[rasRegistrationTable]/[rasRegistrationTableEntry]/[rasRegistrationEndpointType]";
+                case 14: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasRegistration]/[rasRegistrationTable]/[rasRegistrationTableEntry]/[rasRegistrationPregrantedARQ]";
+                case 15: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasRegistration]/[rasRegistrationTable]/[rasRegistrationTableEntry]/[rasRegistrationIsregisteredByRRQ]";
+                default: return $"/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasRegistration]/[rasRegistrationTable]/[rasRegistrationTableEntry]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        #endregion
+
+        // rasRegistrationAliasTable
+        #region 0.0.8.341.1.1.2.2.2.*
+
+        oid_0_0_8_341_1_1_2_2_2:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasRegistration]/[rasRegistrationAliasTable]";
+            switch (values[index++])
+            {
+                case 1: goto oid_0_0_8_341_1_1_2_2_2_1;
+                default: return $"/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasRegistration]/[rasRegistrationAliasTable]/{values[index - 1]}";
+            }
+
+        // rasRegistrationAliasTableEntry
+        #region 0.0.8.341.1.1.2.2.2.1.*
+
+        oid_0_0_8_341_1_1_2_2_2_1:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasRegistration]/[rasRegistrationAliasTable]/[rasRegistrationAliasTableEntry]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasRegistration]/[rasRegistrationAliasTable]/[rasRegistrationAliasTableEntry]/[rasRegistrationAliasTableIndex]";
+                case 2: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasRegistration]/[rasRegistrationAliasTable]/[rasRegistrationAliasTableEntry]/[rasRegistrationAliasTag]";
+                case 3: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasRegistration]/[rasRegistrationAliasTable]/[rasRegistrationAliasTableEntry]/[rasRegistrationAlias]";
+                default: return $"/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasRegistration]/[rasRegistrationAliasTable]/[rasRegistrationAliasTableEntry]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        #endregion
+
+        // rasRegistrationRasAddressTable
+        #region 0.0.8.341.1.1.2.2.3.*
+
+        oid_0_0_8_341_1_1_2_2_3:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasRegistration]/[rasRegistrationRasAddressTable]";
+            switch (values[index++])
+            {
+                case 1: goto oid_0_0_8_341_1_1_2_2_3_1;
+                default: return $"/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasRegistration]/[rasRegistrationRasAddressTable]/{values[index - 1]}";
+            }
+
+        // rasRegistrationRasAddressTableEntry
+        #region 0.0.8.341.1.1.2.2.3.1.*
+
+        oid_0_0_8_341_1_1_2_2_3_1:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasRegistration]/[rasRegistrationRasAddressTable]/[rasRegistrationRasAddressTableEntry]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasRegistration]/[rasRegistrationRasAddressTable]/[rasRegistrationRasAddressTableEntry]/[rasRegistrationRasAddressTableIndex]";
+                case 2: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasRegistration]/[rasRegistrationRasAddressTable]/[rasRegistrationRasAddressTableEntry]/[rasRegistrationAdditionalSrcRasAddressTag]";
+                case 3: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasRegistration]/[rasRegistrationRasAddressTable]/[rasRegistrationRasAddressTableEntry]/[rasRegistrationAdditionalSrcRasAddress]";
+                default: return $"/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasRegistration]/[rasRegistrationRasAddressTable]/[rasRegistrationRasAddressTableEntry]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        #endregion
+
+        // rasRegistrationCallSignalingAddressTable
+        #region 0.0.8.341.1.1.2.2.4.*
+
+        oid_0_0_8_341_1_1_2_2_4:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasRegistration]/[rasRegistrationCallSignalingAddressTable]";
+            switch (values[index++])
+            {
+                case 1: goto oid_0_0_8_341_1_1_2_2_4_1;
+                default: return $"/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasRegistration]/[rasRegistrationCallSignalingAddressTable]/{values[index - 1]}";
+            }
+
+        // rasRegistrationCallSignalingAddressTableEntry
+        #region 0.0.8.341.1.1.2.2.4.1.*
+
+        oid_0_0_8_341_1_1_2_2_4_1:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasRegistration]/[rasRegistrationCallSignalingAddressTable]/[rasRegistrationCallSignalingAddressTableEntry]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasRegistration]/[rasRegistrationCallSignalingAddressTable]/[rasRegistrationCallSignalingAddressTableEntry]/[rasRegistrationCallSignalingAddressTableIndex]";
+                case 2: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasRegistration]/[rasRegistrationCallSignalingAddressTable]/[rasRegistrationCallSignalingAddressTableEntry]/[rasRegistrationAdditionalCallSignalingAddressTag]";
+                case 3: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasRegistration]/[rasRegistrationCallSignalingAddressTable]/[rasRegistrationCallSignalingAddressTableEntry]/[rasRegistrationAdditionalCallSignalingAddress]";
+                default: return $"/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasRegistration]/[rasRegistrationCallSignalingAddressTable]/[rasRegistrationCallSignalingAddressTableEntry]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        #endregion
+
+        #endregion
+
+        // rasAdmission
+        #region 0.0.8.341.1.1.2.3.*
+
+        oid_0_0_8_341_1_1_2_3:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasAdmission]";
+            switch (values[index++])
+            {
+                case 1: goto oid_0_0_8_341_1_1_2_3_1;
+                default: return $"/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasAdmission]/{values[index - 1]}";
+            }
+
+        // rasAdmissionTable
+        #region 0.0.8.341.1.1.2.3.1.*
+
+        oid_0_0_8_341_1_1_2_3_1:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasAdmission]/[rasAdmissionTable]";
+            switch (values[index++])
+            {
+                case 1: goto oid_0_0_8_341_1_1_2_3_1_1;
+                default: return $"/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasAdmission]/[rasAdmissionTable]/{values[index - 1]}";
+            }
+
+        // rasAdmissionTableEntry
+        #region 0.0.8.341.1.1.2.3.1.1.*
+
+        oid_0_0_8_341_1_1_2_3_1_1:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasAdmission]/[rasAdmissionTable]/[rasAdmissionTableEntry]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasAdmission]/[rasAdmissionTable]/[rasAdmissionTableEntry]/[rasAdmissionSrcCallSignallingAddressTag]";
+                case 2: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasAdmission]/[rasAdmissionTable]/[rasAdmissionTableEntry]/[rasAdmissionSrcCallSignallingAddress]";
+                case 3: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasAdmission]/[rasAdmissionTable]/[rasAdmissionTableEntry]/[rasAdmissionDestCallSignallingAddressTag]";
+                case 4: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasAdmission]/[rasAdmissionTable]/[rasAdmissionTableEntry]/[rasAdmissionDestCallSignallingAddress]";
+                case 5: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasAdmission]/[rasAdmissionTable]/[rasAdmissionTableEntry]/[rasAdmissionCallIdentifier]";
+                case 6: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasAdmission]/[rasAdmissionTable]/[rasAdmissionTableEntry]/[rasAdmissionConferenceId]";
+                case 7: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasAdmission]/[rasAdmissionTable]/[rasAdmissionTableEntry]/[rasAdmissionRasAddressTag]";
+                case 8: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasAdmission]/[rasAdmissionTable]/[rasAdmissionTableEntry]/[rasAdmissionRasAddress]";
+                case 9: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasAdmission]/[rasAdmissionTable]/[rasAdmissionTableEntry]/[rasAdmissionCRV]";
+                case 10: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasAdmission]/[rasAdmissionTable]/[rasAdmissionTableEntry]/[rasAdmissionIsGatekeeper]";
+                case 11: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasAdmission]/[rasAdmissionTable]/[rasAdmissionTableEntry]/[rasAdmissionSrcAliasAddressTag]";
+                case 12: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasAdmission]/[rasAdmissionTable]/[rasAdmissionTableEntry]/[rasAdmissionSrcAliasAddress]";
+                case 13: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasAdmission]/[rasAdmissionTable]/[rasAdmissionTableEntry]/[rasAdmissionDestAliasAddressTag]";
+                case 14: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasAdmission]/[rasAdmissionTable]/[rasAdmissionTableEntry]/[rasAdmissionDestAliasAddress]";
+                case 15: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasAdmission]/[rasAdmissionTable]/[rasAdmissionTableEntry]/[rasAdmissionAnswerCallIndicator]";
+                case 16: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasAdmission]/[rasAdmissionTable]/[rasAdmissionTableEntry]/[rasAdmissionTime]";
+                case 17: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasAdmission]/[rasAdmissionTable]/[rasAdmissionTableEntry]/[rasAdmissionEndpointId]";
+                case 18: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasAdmission]/[rasAdmissionTable]/[rasAdmissionTableEntry]/[rasAdmissionBandwidth]";
+                case 19: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasAdmission]/[rasAdmissionTable]/[rasAdmissionTableEntry]/[rasAdmissionIRRFrequency]";
+                case 20: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasAdmission]/[rasAdmissionTable]/[rasAdmissionTableEntry]/[rasAdmissionCallType]";
+                case 21: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasAdmission]/[rasAdmissionTable]/[rasAdmissionTableEntry]/[rasAdmissionCallModel]";
+                case 22: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasAdmission]/[rasAdmissionTable]/[rasAdmissionTableEntry]/[rasAdmissionSrcHandlesBandwidth]";
+                case 23: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasAdmission]/[rasAdmissionTable]/[rasAdmissionTableEntry]/[rasAdmissionDestHandlesBandwidth]";
+                case 24: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasAdmission]/[rasAdmissionTable]/[rasAdmissionTableEntry]/[rasAdmissionSecurity]";
+                case 25: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasAdmission]/[rasAdmissionTable]/[rasAdmissionTableEntry]/[rasAdmissionSrcWillSupplyUUIE]";
+                case 26: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasAdmission]/[rasAdmissionTable]/[rasAdmissionTableEntry]/[rasAdmissionDestWillSupplyUUIE]";
+                case 27: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasAdmission]/[rasAdmissionTable]/[rasAdmissionTableEntry]/[rasAdmissionTableRowStatus]";
+                default: return $"/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasAdmission]/[rasAdmissionTable]/[rasAdmissionTableEntry]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        #endregion
+
+        #endregion
 
         #endregion
 
@@ -6465,11 +6728,66 @@ namespace BurnOutSharp.Builder
             if (index == values.Length) return "/Telebiometrics/Human_Physiology";
             switch (values[index++])
             {
-                //TODO: case 0: goto oid_2_42_2_0;
-                //TODO: case 1: goto oid_2_42_2_1;
+                case 0: goto oid_2_42_2_0;
+                case 1: goto oid_2_42_2_1;
                 //TODO: case 2: goto oid_2_42_2_2;
                 default: return $"/Telebiometrics/Human_Physiology/{values[index - 1]}";
             }
+
+        // modules
+        #region 2.42.2.0.*
+
+        oid_2_42_2_0:
+
+            if (index == values.Length) return "/Telebiometrics/Human_Physiology/Modules";
+            switch (values[index++])
+            {
+                case 0: goto oid_2_42_2_0_0;
+                default: return $"/Telebiometrics/Human_Physiology/Modules/{values[index - 1]}";
+            }
+
+        // main
+        #region 2.42.2.0.0.*
+
+        oid_2_42_2_0_0:
+
+            if (index == values.Length) return "/Telebiometrics/Human_Physiology/Modules/Main_Module";
+            switch (values[index++])
+            {
+                case 0: return "/Telebiometrics/Human_Physiology/Modules/Main_Module/First_Version";
+                default: return $"/Telebiometrics/Human_Physiology/Modules/Main_Module/{values[index - 1]}";
+            }
+
+        #endregion
+
+        #endregion
+
+        // symbols
+        #region 2.42.2.1.*
+
+        oid_2_42_2_1:
+
+            if (index == values.Length) return "/Telebiometrics/Human_Physiology/Symbols";
+            switch (values[index++])
+            {
+                case 1: return "/Telebiometrics/Human_Physiology/Symbols/Tango_in";
+                case 2: return "/Telebiometrics/Human_Physiology/Symbols/Video_in";
+                case 3: return "/Telebiometrics/Human_Physiology/Symbols/Audio_in";
+                case 4: return "/Telebiometrics/Human_Physiology/Symbols/Chemo_in";
+                case 5: return "/Telebiometrics/Human_Physiology/Symbols/Radio_in";
+                case 6: return "/Telebiometrics/Human_Physiology/Symbols/Calor_in";
+                case 7: return "/Telebiometrics/Human_Physiology/Symbols/Tango_out";
+                case 8: return "/Telebiometrics/Human_Physiology/Symbols/Video_out";
+                case 9: return "/Telebiometrics/Human_Physiology/Symbols/Audio_out";
+                case 10: return "/Telebiometrics/Human_Physiology/Symbols/Chemo_out";
+                case 11: return "/Telebiometrics/Human_Physiology/Symbols/Radio_out";
+                case 12: return "/Telebiometrics/Human_Physiology/Symbols/Calor_out";
+                case 13: return "/Telebiometrics/Human_Physiology/Symbols/Safe";
+                case 14: return "/Telebiometrics/Human_Physiology/Symbols/Threshold";
+                default: return $"/Telebiometrics/Human_Physiology/Symbols/{values[index - 1]}";
+            }
+
+        #endregion
 
         #endregion
 
@@ -6503,16 +6821,101 @@ namespace BurnOutSharp.Builder
             if (index == values.Length) return "/Telebiometrics/E_Health_Protocol/Modules";
             switch (values[index++])
             {
-                //TODO: case 0: goto oid_2_42_3_0_0;
-                //TODO: case 1: goto oid_2_42_3_0_1;
-                //TODO: case 2: goto oid_2_42_3_0_2;
-                //TODO: case 3: goto oid_2_42_3_0_3;
-                //TODO: case 4: goto oid_2_42_3_0_4;
-                //TODO: case 5: goto oid_2_42_3_0_5;
+                case 0: goto oid_2_42_3_0_0;
+                case 1: goto oid_2_42_3_0_1;
+                case 2: goto oid_2_42_3_0_2;
+                case 3: goto oid_2_42_3_0_3;
+                case 4: goto oid_2_42_3_0_4;
+                case 5: goto oid_2_42_3_0_5;
                 //TODO: case 6: goto oid_2_42_3_0_6;
                 //TODO: case 10: goto oid_2_42_3_0_10;
                 default: return $"/Telebiometrics/E_Health_Protocol/Modules/{values[index - 1]}";
             }
+
+        // identification
+        #region 2.42.3.0.0.*
+
+        oid_2_42_3_0_0:
+
+            if (index == values.Length) return "/Telebiometrics/E_Health_Protocol/Modules/Identification";
+            switch (values[index++])
+            {
+                case 1: return "/Telebiometrics/E_Health_Protocol/Modules/Identification/Version1";
+                default: return $"/Telebiometrics/E_Health_Protocol/Modules/Identification/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // set-up
+        #region 2.42.3.0.1.*
+
+        oid_2_42_3_0_1:
+
+            if (index == values.Length) return "/Telebiometrics/E_Health_Protocol/Modules/Setup";
+            switch (values[index++])
+            {
+                case 1: return "/Telebiometrics/E_Health_Protocol/Modules/Setup/Version1";
+                default: return $"/Telebiometrics/E_Health_Protocol/Modules/Setup/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // send-and-ack
+        #region 2.42.3.0.2.*
+
+        oid_2_42_3_0_2:
+
+            if (index == values.Length) return "/Telebiometrics/E_Health_Protocol/Modules/Send-and-ack";
+            switch (values[index++])
+            {
+                case 1: return "/Telebiometrics/E_Health_Protocol/Modules/Send-and-ack/Version1";
+                default: return $"/Telebiometrics/E_Health_Protocol/Modules/Send-and-ack/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // command-response
+        #region 2.42.3.0.3.*
+
+        oid_2_42_3_0_3:
+
+            if (index == values.Length) return "/Telebiometrics/E_Health_Protocol/Modules/Command-response";
+            switch (values[index++])
+            {
+                case 1: return "/Telebiometrics/E_Health_Protocol/Modules/Command-response/Version1";
+                default: return $"/Telebiometrics/E_Health_Protocol/Modules/Command-response/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // quantity-and-units
+        #region 2.42.3.0.4.*
+
+        oid_2_42_3_0_4:
+
+            if (index == values.Length) return "/Telebiometrics/E_Health_Protocol/Modules/Quantities_And_Units";
+            switch (values[index++])
+            {
+                case 1: return "/Telebiometrics/E_Health_Protocol/Modules/Quantities_And_Units/Version1";
+                default: return $"/Telebiometrics/E_Health_Protocol/Modules/Quantities_And_Units/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // examples
+        #region 2.42.3.0.5.*
+
+        oid_2_42_3_0_5:
+
+            if (index == values.Length) return "/Telebiometrics/E_Health_Protocol/Modules/Examples";
+            switch (values[index++])
+            {
+                case 0: return "/Telebiometrics/E_Health_Protocol/Modules/Examples/Command_Response";
+                case 1: return "/Telebiometrics/E_Health_Protocol/Modules/Examples/Data_Message";
+                default: return $"/Telebiometrics/E_Health_Protocol/Modules/Examples/{values[index - 1]}";
+            }
+
+        #endregion
 
         #endregion
 
