@@ -7148,71 +7148,71 @@ namespace BurnOutSharp.Builder
                 case 90: goto oid_2_49_0_0_90;
                 case 92: goto oid_2_49_0_0_92;
                 case 96: goto oid_2_49_0_0_96;
-                //TODO: case 100: goto oid_2_49_0_0_100;
-                //TODO: case 104: goto oid_2_49_0_0_104;
-                //TODO: case 108: goto oid_2_49_0_0_108;
-                //TODO: case 112: goto oid_2_49_0_0_112;
-                //TODO: case 116: goto oid_2_49_0_0_116;
-                //TODO: case 120: goto oid_2_49_0_0_120;
-                //TODO: case 124: goto oid_2_49_0_0_124;
-                //TODO: case 132: goto oid_2_49_0_0_132;
-                //TODO: case 136: goto oid_2_49_0_0_136;
-                //TODO: case 140: goto oid_2_49_0_0_140;
-                //TODO: case 144: goto oid_2_49_0_0_144;
-                //TODO: case 148: goto oid_2_49_0_0_148;
-                //TODO: case 152: goto oid_2_49_0_0_152;
-                //TODO: case 156: goto oid_2_49_0_0_156;
-                //TODO: case 170: goto oid_2_49_0_0_170;
-                //TODO: case 174: goto oid_2_49_0_0_174;
-                //TODO: case 178: goto oid_2_49_0_0_178;
-                //TODO: case 180: goto oid_2_49_0_0_180;
-                //TODO: case 184: goto oid_2_49_0_0_184;
-                //TODO: case 188: goto oid_2_49_0_0_188;
-                //TODO: case 191: goto oid_2_49_0_0_191;
-                //TODO: case 192: goto oid_2_49_0_0_192;
-                //TODO: case 196: goto oid_2_49_0_0_196;
-                //TODO: case 203: goto oid_2_49_0_0_203;
-                //TODO: case 204: goto oid_2_49_0_0_204;
-                //TODO: case 208: goto oid_2_49_0_0_208;
-                //TODO: case 212: goto oid_2_49_0_0_212;
-                //TODO: case 214: goto oid_2_49_0_0_214;
-                //TODO: case 218: goto oid_2_49_0_0_218;
-                //TODO: case 222: goto oid_2_49_0_0_222;
-                //TODO: case 231: goto oid_2_49_0_0_231;
-                //TODO: case 232: goto oid_2_49_0_0_232;
-                //TODO: case 233: goto oid_2_49_0_0_233;
-                //TODO: case 242: goto oid_2_49_0_0_242;
-                //TODO: case 246: goto oid_2_49_0_0_246;
-                //TODO: case 250: goto oid_2_49_0_0_250;
-                //TODO: case 258: goto oid_2_49_0_0_258;
-                //TODO: case 262: goto oid_2_49_0_0_262;
-                //TODO: case 266: goto oid_2_49_0_0_266;
-                //TODO: case 268: goto oid_2_49_0_0_268;
-                //TODO: case 270: goto oid_2_49_0_0_270;
-                //TODO: case 276: goto oid_2_49_0_0_276;
-                //TODO: case 288: goto oid_2_49_0_0_288;
-                //TODO: case 296: goto oid_2_49_0_0_296;
-                //TODO: case 300: goto oid_2_49_0_0_300;
-                //TODO: case 308: goto oid_2_49_0_0_308;
-                //TODO: case 320: goto oid_2_49_0_0_320;
-                //TODO: case 324: goto oid_2_49_0_0_324;
-                //TODO: case 328: goto oid_2_49_0_0_328;
-                //TODO: case 332: goto oid_2_49_0_0_332;
-                //TODO: case 340: goto oid_2_49_0_0_340;
-                //TODO: case 344: goto oid_2_49_0_0_344;
-                //TODO: case 348: goto oid_2_49_0_0_348;
-                //TODO: case 352: goto oid_2_49_0_0_352;
-                //TODO: case 356: goto oid_2_49_0_0_356;
-                //TODO: case 360: goto oid_2_49_0_0_360;
-                //TODO: case 364: goto oid_2_49_0_0_364;
-                //TODO: case 368: goto oid_2_49_0_0_368;
-                //TODO: case 372: goto oid_2_49_0_0_372;
-                //TODO: case 376: goto oid_2_49_0_0_376;
-                //TODO: case 380: goto oid_2_49_0_0_380;
-                //TODO: case 384: goto oid_2_49_0_0_384;
-                //TODO: case 388: goto oid_2_49_0_0_388;
-                //TODO: case 392: goto oid_2_49_0_0_392;
-                //TODO: case 398: goto oid_2_49_0_0_398;
+                case 100: goto oid_2_49_0_0_100;
+                case 104: goto oid_2_49_0_0_104;
+                case 108: goto oid_2_49_0_0_108;
+                case 112: goto oid_2_49_0_0_112;
+                case 116: goto oid_2_49_0_0_116;
+                case 120: goto oid_2_49_0_0_120;
+                case 124: goto oid_2_49_0_0_124;
+                case 132: goto oid_2_49_0_0_132;
+                case 136: goto oid_2_49_0_0_136;
+                case 140: goto oid_2_49_0_0_140;
+                case 144: goto oid_2_49_0_0_144;
+                case 148: goto oid_2_49_0_0_148;
+                case 152: goto oid_2_49_0_0_152;
+                case 156: goto oid_2_49_0_0_156;
+                case 170: goto oid_2_49_0_0_170;
+                case 174: goto oid_2_49_0_0_174;
+                case 178: goto oid_2_49_0_0_178;
+                case 180: goto oid_2_49_0_0_180;
+                case 184: goto oid_2_49_0_0_184;
+                case 188: goto oid_2_49_0_0_188;
+                case 191: goto oid_2_49_0_0_191;
+                case 192: goto oid_2_49_0_0_192;
+                case 196: goto oid_2_49_0_0_196;
+                case 203: goto oid_2_49_0_0_203;
+                case 204: goto oid_2_49_0_0_204;
+                case 208: goto oid_2_49_0_0_208;
+                case 212: goto oid_2_49_0_0_212;
+                case 214: goto oid_2_49_0_0_214;
+                case 218: goto oid_2_49_0_0_218;
+                case 222: goto oid_2_49_0_0_222;
+                case 231: goto oid_2_49_0_0_231;
+                case 232: goto oid_2_49_0_0_232;
+                case 233: goto oid_2_49_0_0_233;
+                case 242: goto oid_2_49_0_0_242;
+                case 246: goto oid_2_49_0_0_246;
+                case 250: goto oid_2_49_0_0_250;
+                case 258: goto oid_2_49_0_0_258;
+                case 262: goto oid_2_49_0_0_262;
+                case 266: goto oid_2_49_0_0_266;
+                case 268: goto oid_2_49_0_0_268;
+                case 270: goto oid_2_49_0_0_270;
+                case 276: goto oid_2_49_0_0_276;
+                case 288: goto oid_2_49_0_0_288;
+                case 296: goto oid_2_49_0_0_296;
+                case 300: goto oid_2_49_0_0_300;
+                case 308: goto oid_2_49_0_0_308;
+                case 320: goto oid_2_49_0_0_320;
+                case 324: goto oid_2_49_0_0_324;
+                case 328: goto oid_2_49_0_0_328;
+                case 332: goto oid_2_49_0_0_332;
+                case 340: goto oid_2_49_0_0_340;
+                case 344: goto oid_2_49_0_0_344;
+                case 348: goto oid_2_49_0_0_348;
+                case 352: goto oid_2_49_0_0_352;
+                case 356: goto oid_2_49_0_0_356;
+                case 360: goto oid_2_49_0_0_360;
+                case 364: goto oid_2_49_0_0_364;
+                case 368: goto oid_2_49_0_0_368;
+                case 372: goto oid_2_49_0_0_372;
+                case 376: goto oid_2_49_0_0_376;
+                case 380: goto oid_2_49_0_0_380;
+                case 384: goto oid_2_49_0_0_384;
+                case 388: goto oid_2_49_0_0_388;
+                case 392: goto oid_2_49_0_0_392;
+                case 398: goto oid_2_49_0_0_398;
                 //TODO: case 400: goto oid_2_49_0_0_400;
                 //TODO: case 404: goto oid_2_49_0_0_404;
                 //TODO: case 408: goto oid_2_49_0_0_408;
@@ -7684,6 +7684,933 @@ namespace BurnOutSharp.Builder
             {
                 case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Brunei Darussalam]/[Brunei Meteorological Service]";
                 default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Brunei Darussalam]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // bg
+        #region 2.49.0.0.100.*
+
+        oid_2_49_0_0_100:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Bulgaria]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Bulgaria]/[National Institute of Meteorology and Hydrology]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Bulgaria]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // mm
+        #region 2.49.0.0.104.*
+
+        oid_2_49_0_0_104:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Myanmar]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Myanmar]/[Department of Meteorology and Hydrology]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Myanmar]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // bi
+        #region 2.49.0.0.108.*
+
+        oid_2_49_0_0_108:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Burundi]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Burundi]/[Institut Géographique du Burundi]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Burundi]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // by
+        #region 2.49.0.0.112.*
+
+        oid_2_49_0_0_112:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Belarus]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Belarus]/[Department of Hydrometeorology]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Belarus]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // kh
+        #region 2.49.0.0.116.*
+
+        oid_2_49_0_0_116:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Cambodia]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Cambodia]/[Department of Meteorology (DOM)]";
+                case 1: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Cambodia]/[Ministry of Water Resources and Meteorology]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Cambodia]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // cm
+        #region 2.49.0.0.120.*
+
+        oid_2_49_0_0_120:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Cameroon]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Cameroon]/[Direction de la Météorologie Nationale]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Cameroon]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // ca
+        #region 2.49.0.0.124.*
+
+        oid_2_49_0_0_124:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Canada]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Canada]/[Meteorological Service of Canada]";
+                case 1: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Canada]/[Natural Resources Canada]";
+                case 2: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Canada]/[Alberta Emergency Management Agency (Government of Alberta, Ministry of Municipal Affairs)]";
+                case 3: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Canada]/[Ministère de la Sécurité publique du Québec]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Canada]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // cv
+        #region 2.49.0.0.132.*
+
+        oid_2_49_0_0_132:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Cape Verde]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Cape Verde]/[Instituto Nacional de Meteorologia e Geophísica]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Cape Verde]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // ky
+        #region 2.49.0.0.136.*
+
+        oid_2_49_0_0_136:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Cayman Islands]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Cayman Islands]/[Hazard Management Cayman Islands]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Cayman Islands]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // cf
+        #region 2.49.0.0.140.*
+
+        oid_2_49_0_0_140:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Central African Republic]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Central African Republic]/[Direction Générale de l'Aviation Civile et de la Météorologie]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Central African Republic]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // lk
+        #region 2.49.0.0.144.*
+
+        oid_2_49_0_0_144:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Sri Lanka]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Sri Lanka]/[Department of Meteorology]";
+                case 1: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Sri Lanka]/[Hydrology Division, Department of Irrigation]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Sri Lanka]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // td
+        #region 2.49.0.0.148.*
+
+        oid_2_49_0_0_148:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Chad]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Chad]/[Direction des Ressources en Eau et de la Météorologie]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Chad]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // cl
+        #region 2.49.0.0.152.*
+
+        oid_2_49_0_0_152:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Chile]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Chile]/[Direccion Meteorologica de Chile]";
+                case 1: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Chile]/[Dirección General de Aguas]";
+                case 3: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Chile]/[Servicio Hidrográfico y Oceanográfico de la Armada]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Chile]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // cn
+        #region 2.49.0.0.156.*
+
+        oid_2_49_0_0_156:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of China]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of China]/[China Meteorological Administration]";
+                case 1: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of China]/[Ministry of Water Resources]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of China]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // co
+        #region 2.49.0.0.170.*
+
+        oid_2_49_0_0_170:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Colombia]";
+            switch (values[index++])
+            {
+                case 1: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Colombia]/[Instituto de Hidrología, Meteorología y Estudios Ambientales]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Colombia]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // km
+        #region 2.49.0.0.174.*
+
+        oid_2_49_0_0_174:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Comoros]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Comoros]/[Direction de la Météorologie Nationale]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Comoros]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // cg
+        #region 2.49.0.0.178.*
+
+        oid_2_49_0_0_178:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Congo]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Congo]/[Direction de la Météorologie]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Congo]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // cd
+        #region 2.49.0.0.180.*
+
+        oid_2_49_0_0_180:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Democratic Republic of the Congo]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Democratic Republic of the Congo]/[Agence Nationale de la Météorologie et de Télédétection par Satellite]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Democratic Republic of the Congo]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // cd
+        #region 2.49.0.0.184.*
+
+        oid_2_49_0_0_184:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Cook Islands]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Cook Islands]/[Cook Islands Meteorological Service]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Cook Islands]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // cr
+        #region 2.49.0.0.188.*
+
+        oid_2_49_0_0_188:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Costa Rica]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Costa Rica]/[Instituto Meteorologico Nacional]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Costa Rica]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // hr
+        #region 2.49.0.0.191.*
+
+        oid_2_49_0_0_191:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Croatia]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Croatia]/[Meteorological and Hydrological Service]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Croatia]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // cu
+        #region 2.49.0.0.192.*
+
+        oid_2_49_0_0_192:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Cuba]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Cuba]/[Instituto de Meteorología]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Cuba]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // cy
+        #region 2.49.0.0.196.*
+
+        oid_2_49_0_0_196:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Cyprus]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Cyprus]/[Meteorological Service]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Cyprus]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // cz
+        #region 2.49.0.0.203.*
+
+        oid_2_49_0_0_203:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Czech Republic]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Czech Republic]/[Czech Hydrometeorological Institute]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Czech Republic]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // bj
+        #region 2.49.0.0.204.*
+
+        oid_2_49_0_0_204:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Benin]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Benin]/[Service Météorologique National]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Benin]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // dk
+        #region 2.49.0.0.208.*
+
+        oid_2_49_0_0_208:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Denmark]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Denmark]/[Danish Meteorological Institute]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Denmark]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // dm
+        #region 2.49.0.0.212.*
+
+        oid_2_49_0_0_212:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Dominica]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Dominica]/[Dominica Meteorological Services]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Dominica]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // dm
+        #region 2.49.0.0.214.*
+
+        oid_2_49_0_0_214:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Dominican Republic]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Dominican Republic]/[Oficina Nacional de Meteorología]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Dominican Republic]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // ec
+        #region 2.49.0.0.218.*
+
+        oid_2_49_0_0_218:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Ecuador]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Ecuador]/[Instituto Nacional de Meteorología e Hidrología]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Ecuador]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // sv
+        #region 2.49.0.0.222.*
+
+        oid_2_49_0_0_222:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of El Salvador]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of El Salvador]/[Servicio Nacional de Estudios Territoriales]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of El Salvador]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // et
+        #region 2.49.0.0.231.*
+
+        oid_2_49_0_0_231:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Ethiopia]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Ethiopia]/[National Meteorological Agency]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Ethiopia]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // er
+        #region 2.49.0.0.232.*
+
+        oid_2_49_0_0_232:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Eritrea]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Eritrea]/[Civil Aviation Authority]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Eritrea]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // ee
+        #region 2.49.0.0.233.*
+
+        oid_2_49_0_0_233:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Estonia]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Estonia]/[Estonian Meteorological and Hydrological Institute]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Estonia]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // fj
+        #region 2.49.0.0.242.*
+
+        oid_2_49_0_0_242:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Fiji]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Fiji]/[Fiji Meteorological Service]";
+                case 1: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Fiji]/[Suva Water Supplies]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Fiji]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // fi
+        #region 2.49.0.0.246.*
+
+        oid_2_49_0_0_246:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Finland]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Finland]/[Finnish Meteorological Institute]";
+                case 1: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Finland]/[Finnish Environment Institute]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Finland]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // fr
+        #region 2.49.0.0.250.*
+
+        oid_2_49_0_0_250:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of France]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of France]/[Météo-France]";
+                case 1: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of France]/[Service Central d'Hydrométéorologie et d'Appui à la Prévision des Inondations]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of France]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // pf
+        #region 2.49.0.0.258.*
+
+        oid_2_49_0_0_258:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of French Polynesia]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of French Polynesia]/[Météo-France]";
+                case 1: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of French Polynesia]/[DIRECTION DE LA DEFENSE ET DE LA PROTECTION CIVILE]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of French Polynesia]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // dj
+        #region 2.49.0.0.262.*
+
+        oid_2_49_0_0_262:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Djibouti]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Djibouti]/[Service de la Météorologie]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Djibouti]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // ga
+        #region 2.49.0.0.266.*
+
+        oid_2_49_0_0_266:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Gabon]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Gabon]/[Cabinet du Ministre des Transports]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Gabon]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // ge
+        #region 2.49.0.0.268.*
+
+        oid_2_49_0_0_268:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Georgia]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Georgia]/[Department of Hydrometeorology]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Georgia]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // gm
+        #region 2.49.0.0.270.*
+
+        oid_2_49_0_0_270:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Gambia]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Gambia]/[Department of Water Resources]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Gambia]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // de
+        #region 2.49.0.0.276.*
+
+        oid_2_49_0_0_276:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Germany]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Germany]/[Deutscher Wetterdienst]";
+                case 1: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Germany]/[Federal Institute of Hydrology]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Germany]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // gh
+        #region 2.49.0.0.288.*
+
+        oid_2_49_0_0_288:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Ghana]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Ghana]/[Ghana Meteorological Services Department]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Ghana]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // ki
+        #region 2.49.0.0.296.*
+
+        oid_2_49_0_0_296:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Kiribati]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Kiribati]/[Kiribati Meteorological Service]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Kiribati]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // gr
+        #region 2.49.0.0.300.*
+
+        oid_2_49_0_0_300:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Greece]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Greece]/[Hellenic National Meteorological Service]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Greece]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // gd
+        #region 2.49.0.0.308.*
+
+        oid_2_49_0_0_308:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Grenada]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Grenada]/[Caribbean Meteorological Organization]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Grenada]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // gt
+        #region 2.49.0.0.320.*
+
+        oid_2_49_0_0_320:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Guatemala]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Guatemala]/[Instituto Nacional de Sismología, Vulcanología, Meteorología e Hidrología (INSIVUMEH)]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Guatemala]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // gn
+        #region 2.49.0.0.324.*
+
+        oid_2_49_0_0_324:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Guinea]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Guinea]/[Direction Nationale de la Météorologie]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Guinea]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // gy
+        #region 2.49.0.0.328.*
+
+        oid_2_49_0_0_328:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Guyana]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Guyana]/[Hydrometeorological Service]";
+                case 1: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Guyana]/[Civil Defence Commission]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Guyana]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // ht
+        #region 2.49.0.0.332.*
+
+        oid_2_49_0_0_332:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Haiti]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Haiti]/[Haiti Weather]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Haiti]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // hn
+        #region 2.49.0.0.340.*
+
+        oid_2_49_0_0_340:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Honduras]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Honduras]/[Servicio Meteorologico Nacional]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Honduras]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // hk
+        #region 2.49.0.0.344.*
+
+        oid_2_49_0_0_344:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Hong Kong, China]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Hong Kong, China]/[Hong Kong Observatory]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Hong Kong, China]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // hu
+        #region 2.49.0.0.348.*
+
+        oid_2_49_0_0_348:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Hungary]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Hungary]/[Hungarian Meteorological Service]";
+                case 1: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Hungary]/[VITUKI]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Hungary]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // is
+        #region 2.49.0.0.352.*
+
+        oid_2_49_0_0_352:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Iceland]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Iceland]/[Icelandic Meteorological Office]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Iceland]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // in
+        #region 2.49.0.0.356.*
+
+        oid_2_49_0_0_356:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of India]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of India]/[India Meteorological Department]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of India]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // id
+        #region 2.49.0.0.360.*
+
+        oid_2_49_0_0_360:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Indonesia]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Indonesia]/[Meteorological and Geophysical Agency]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Indonesia]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // ir
+        #region 2.49.0.0.364.*
+
+        oid_2_49_0_0_364:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Islamic Republic of Iran]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Islamic Republic of Iran]/[Islamic Republic of Iran Meteorological Organization]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Islamic Republic of Iran]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // iq
+        #region 2.49.0.0.368.*
+
+        oid_2_49_0_0_368:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Iraq]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Iraq]/[Iraqi Meteorological Organization]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Iraq]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // ie
+        #region 2.49.0.0.372.*
+
+        oid_2_49_0_0_372:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Ireland]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Ireland]/[Met Eireann - Irish Meteorological Service]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Ireland]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // il
+        #region 2.49.0.0.376.*
+
+        oid_2_49_0_0_376:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Israel]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Israel]/[Israel Meteorological Service]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Israel]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // it
+        #region 2.49.0.0.380.*
+
+        oid_2_49_0_0_380:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Italy]";
+            switch (values[index++])
+            {
+                case 1: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Italy]/[Italian Civil Protecion in cooperation with italian region civil protecion structures]";
+                case 2: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Italy]/[Ministry of Interior - Department of firefighters, public rescue and civil defense]";
+                case 3: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Italy]/[National Centre for Aeronautical Meteorology and Climatology]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Italy]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // ci
+        #region 2.49.0.0.384.*
+
+        oid_2_49_0_0_384:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Cote d'Ivoire]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Cote d'Ivoire]/[Direction de la Météorologie Nationale]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Cote d'Ivoire]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // jm
+        #region 2.49.0.0.388.*
+
+        oid_2_49_0_0_388:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Jamaica]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Jamaica]/[Meteorological Service]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Jamaica]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // jp
+        #region 2.49.0.0.392.*
+
+        oid_2_49_0_0_392:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Japan]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Japan]/[Japan Meteorological Agency (JMA)]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Japan]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // kz
+        #region 2.49.0.0.398.*
+
+        oid_2_49_0_0_398:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Kazakhstan]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Kazakhstan]/[Kazhydromet]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Kazakhstan]/{values[index - 1]}";
             }
 
         #endregion
