@@ -3878,9 +3878,9 @@ namespace BurnOutSharp.Builder
                 case 1: goto oid_0_0_8_341_1_1_2_1;
                 case 2: goto oid_0_0_8_341_1_1_2_2;
                 case 3: goto oid_0_0_8_341_1_1_2_3;
-                //TODO: case 4: goto oid_0_0_8_341_1_1_2_4;
-                //TODO: case 5: goto oid_0_0_8_341_1_1_2_5;
-                //TODO: case 6: goto oid_0_0_8_341_1_1_2_6;
+                case 4: goto oid_0_0_8_341_1_1_2_4;
+                case 5: goto oid_0_0_8_341_1_1_2_5;
+                case 6: goto oid_0_0_8_341_1_1_2_6;
                 default: return $"/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/{values[index - 1]}";
             }
 
@@ -4142,6 +4142,139 @@ namespace BurnOutSharp.Builder
             }
 
         #endregion
+
+        #endregion
+
+        #endregion
+
+        // rasStats
+        #region 0.0.8.341.1.1.2.4.*
+
+        oid_0_0_8_341_1_1_2_4:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasStats]";
+            switch (values[index++])
+            {
+                case 1: goto oid_0_0_8_341_1_1_2_4_1;
+                default: return $"/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasStats]/{values[index - 1]}";
+            }
+
+        // rasStatsTable
+        #region 0.0.8.341.1.1.2.4.1.*
+
+        oid_0_0_8_341_1_1_2_4_1:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasStats]/[rasStatsTable]";
+            switch (values[index++])
+            {
+                case 1: goto oid_0_0_8_341_1_1_2_4_1_1;
+                default: return $"/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasStats]/[rasStatsTable]/{values[index - 1]}";
+            }
+
+        // rasStatsTableEntry
+        #region 0.0.8.341.1.1.2.4.1.1.*
+
+        oid_0_0_8_341_1_1_2_4_1_1:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasStats]/[rasStatsTable]/[rasStatsTableEntry]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasStats]/[rasStatsTable]/[rasStatsTableEntry]/[rasStatsGatekeeperConfirms]";
+                case 2: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasStats]/[rasStatsTable]/[rasStatsTableEntry]/[rasStatsGatekeeperRejects]";
+                case 3: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasStats]/[rasStatsTable]/[rasStatsTableEntry]/[rasStatsRegistrationConfirms]";
+                case 4: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasStats]/[rasStatsTable]/[rasStatsTableEntry]/[rasStatsRegistrationRejects]";
+                case 5: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasStats]/[rasStatsTable]/[rasStatsTableEntry]/[rasStatsUnregistrationConfirms]";
+                case 6: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasStats]/[rasStatsTable]/[rasStatsTableEntry]/[rasStatsUnregistrationRejects]";
+                case 7: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasStats]/[rasStatsTable]/[rasStatsTableEntry]/[rasStatsAdmissionConfirms]";
+                case 8: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasStats]/[rasStatsTable]/[rasStatsTableEntry]/[rasStatsAdmissionRejects]";
+                case 9: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasStats]/[rasStatsTable]/[rasStatsTableEntry]/[rasStatsBandwidthConfirms]";
+                case 10: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasStats]/[rasStatsTable]/[rasStatsTableEntry]/[rasStatsBandwidthRejects]";
+                case 11: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasStats]/[rasStatsTable]/[rasStatsTableEntry]/[rasStatsDisengageConfirms]";
+                case 12: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasStats]/[rasStatsTable]/[rasStatsTableEntry]/[rasStatsDisengageRejects]";
+                case 13: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasStats]/[rasStatsTable]/[rasStatsTableEntry]/[rasStatsLocationConfirms]";
+                case 14: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasStats]/[rasStatsTable]/[rasStatsTableEntry]/[rasStatsLocationRejects]";
+                case 15: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasStats]/[rasStatsTable]/[rasStatsTableEntry]/[rasStatsInfoRequests]";
+                case 16: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasStats]/[rasStatsTable]/[rasStatsTableEntry]/[rasStatsInfoRequestResponses]";
+                case 17: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasStats]/[rasStatsTable]/[rasStatsTableEntry]/[rasStatsnonStandardMessages]";
+                case 18: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasStats]/[rasStatsTable]/[rasStatsTableEntry]/[rasStatsUnknownMessages]";
+                case 19: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasStats]/[rasStatsTable]/[rasStatsTableEntry]/[rasStatsRequestInProgress]";
+                case 20: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasStats]/[rasStatsTable]/[rasStatsTableEntry]/[rasStatsResourceAvailabilityIndicator]";
+                case 21: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasStats]/[rasStatsTable]/[rasStatsTableEntry]/[rasStatsResourceAvailabilityConfirm]";
+                case 22: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasStats]/[rasStatsTable]/[rasStatsTableEntry]/[rasStatsRegisteredEndpointsNo]";
+                case 23: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasStats]/[rasStatsTable]/[rasStatsTableEntry]/[rasStatsAdmittedEndpointsNo]";
+                case 24: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasStats]/[rasStatsTable]/[rasStatsTableEntry]/[rasStatsINAKs]";
+                case 25: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasStats]/[rasStatsTable]/[rasStatsTableEntry]/[rasStatsIACKs]";
+                case 26: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasStats]/[rasStatsTable]/[rasStatsTableEntry]/[rasStatsGkRoutedCalls]";
+                case 27: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasStats]/[rasStatsTable]/[rasStatsTableEntry]/[rasStatsResourceAvailabilityIndications]";
+                case 28: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasStats]/[rasStatsTable]/[rasStatsTableEntry]/[rasStatsResourceAvailabilityConfirmations]";
+                default: return $"/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasStats]/[rasStatsTable]/[rasStatsTableEntry]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        #endregion
+
+        #endregion
+
+        // ???
+        #region 0.0.8.341.1.1.2.5.*
+
+        oid_0_0_8_341_1_1_2_5:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[???]";
+            switch (values[index++])
+            {
+                case 0: goto oid_0_0_8_341_1_1_2_5_0;
+                default: return $"/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[???]/{values[index - 1]}";
+            }
+
+        // rasEvents
+        #region 0.0.8.341.1.1.2.5.0.*
+
+        oid_0_0_8_341_1_1_2_5_0:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[???]/[rasEvents]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[???]/[rasEvents]/[lastArjReason]";
+                case 2: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[???]/[rasEvents]/[lastArjRasAddressTag]";
+                case 3: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[???]/[rasEvents]/[lastArjRasAddress]";
+                case 4: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[???]/[rasEvents]/[admissionReject]";
+                default: return $"/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[???]/[rasEvents]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        #endregion
+
+        // rasMIBConformance
+        #region 0.0.8.341.1.1.2.6.*
+
+        oid_0_0_8_341_1_1_2_6:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasMIBConformance]";
+            switch (values[index++])
+            {
+                case 1: goto oid_0_0_8_341_1_1_2_6_1;
+                case 2: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasMIBConformance]/[rasMIBCompliance]";
+                default: return $"/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasMIBConformance]/{values[index - 1]}";
+            }
+
+        // rasMIBGroups
+        #region 0.0.8.341.1.1.2.6.1.*
+
+        oid_0_0_8_341_1_1_2_6_1:
+
+            if (index == values.Length) return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasMIBConformance]/[rasMIBGroups]";
+            switch (values[index++])
+            {
+                case 1: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasMIBConformance]/[rasMIBGroups]/[rasConfigurationGroup]";
+                case 2: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasMIBConformance]/[rasMIBGroups]/[rasRegistrationGroup]";
+                case 3: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasMIBConformance]/[rasMIBGroups]/[rasAdmissionGroup]";
+                case 4: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasMIBConformance]/[rasMIBGroups]/[rasStatsGroup]";
+                case 5: return "/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasMIBConformance]/[rasMIBGroups]/[rasEventsGroup]";
+                default: return $"/ITU-T/Recommendation/H/[Multimedia management information base]/[Management Information Base (MIB)]/[mmH323Root]/[ras]/[rasMIBConformance]/[rasMIBGroups]/{values[index - 1]}";
+            }
 
         #endregion
 
@@ -6998,23 +7131,23 @@ namespace BurnOutSharp.Builder
                 case 31: goto oid_2_49_0_0_31;
                 case 32: goto oid_2_49_0_0_32;
                 case 36: goto oid_2_49_0_0_36;
-                //TODO: case 40: goto oid_2_49_0_0_40;
-                //TODO: case 44: goto oid_2_49_0_0_44;
-                //TODO: case 48: goto oid_2_49_0_0_48;
-                //TODO: case 50: goto oid_2_49_0_0_50;
-                //TODO: case 51: goto oid_2_49_0_0_51;
-                //TODO: case 52: goto oid_2_49_0_0_52;
-                //TODO: case 56: goto oid_2_49_0_0_56;
+                case 40: goto oid_2_49_0_0_40;
+                case 44: goto oid_2_49_0_0_44;
+                case 48: goto oid_2_49_0_0_48;
+                case 50: goto oid_2_49_0_0_50;
+                case 51: goto oid_2_49_0_0_51;
+                case 52: goto oid_2_49_0_0_52;
+                case 56: goto oid_2_49_0_0_56;
                 case 60: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Bermuda]";
-                //TODO: case 64: goto oid_2_49_0_0_64;
-                //TODO: case 68: goto oid_2_49_0_0_68;
-                //TODO: case 70: goto oid_2_49_0_0_70;
-                //TODO: case 72: goto oid_2_49_0_0_72;
-                //TODO: case 76: goto oid_2_49_0_0_76;
-                //TODO: case 84: goto oid_2_49_0_0_84;
-                //TODO: case 90: goto oid_2_49_0_0_90;
-                //TODO: case 92: goto oid_2_49_0_0_92;
-                //TODO: case 96: goto oid_2_49_0_0_96;
+                case 64: goto oid_2_49_0_0_64;
+                case 68: goto oid_2_49_0_0_68;
+                case 70: goto oid_2_49_0_0_70;
+                case 72: goto oid_2_49_0_0_72;
+                case 76: goto oid_2_49_0_0_76;
+                case 84: goto oid_2_49_0_0_84;
+                case 90: goto oid_2_49_0_0_90;
+                case 92: goto oid_2_49_0_0_92;
+                case 96: goto oid_2_49_0_0_96;
                 //TODO: case 100: goto oid_2_49_0_0_100;
                 //TODO: case 104: goto oid_2_49_0_0_104;
                 //TODO: case 108: goto oid_2_49_0_0_108;
@@ -7319,6 +7452,238 @@ namespace BurnOutSharp.Builder
                 case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Australia]/[Bureau of Meteorology]";
                 case 1: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Australia]/[Hydrological Services Program]";
                 default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Australia]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // at
+        #region 2.49.0.0.40.*
+
+        oid_2_49_0_0_40:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Austria]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Austria]/[Central Institute for Meteorology and Geodynamics]";
+                case 1: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Austria]/[Abteilung Wasserhaushalt]";
+                case 5: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Austria]/[Amt der Vorarlberger Landesregierung. Wasserwirtschaft]";
+                case 6: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Austria]/[Hydrographischer Dienst Tirol]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Austria]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // bs
+        #region 2.49.0.0.44.*
+
+        oid_2_49_0_0_44:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Bahamas]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Bahamas]/[Department of Meteorology]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Bahamas]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // bh
+        #region 2.49.0.0.48.*
+
+        oid_2_49_0_0_48:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Bahrain]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Bahrain]/[Bahrain Meteorological Service]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Bahrain]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // bd
+        #region 2.49.0.0.50.*
+
+        oid_2_49_0_0_50:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Bangladesh]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Bangladesh]/[Bangladesh Meteorological Department]";
+                case 1: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Bangladesh]/[Bangladesh Water Development Board (BWDB)]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Bangladesh]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // bd
+        #region 2.49.0.0.51.*
+
+        oid_2_49_0_0_51:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Armenia]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Armenia]/[Armenian State Hydrometeorological and Monitoring Service]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Armenia]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // bb
+        #region 2.49.0.0.52.*
+
+        oid_2_49_0_0_52:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Barbados]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Barbados]/[Meteorological Services]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Barbados]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // be
+        #region 2.49.0.0.56.*
+
+        oid_2_49_0_0_56:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Belgium]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Belgium]/[Institut Royal Météorologique]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Belgium]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // bt
+        #region 2.49.0.0.64.*
+
+        oid_2_49_0_0_64:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Bhutan]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Bhutan]/[Council for Renewable Natural Resources Research]";
+                case 1: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Bhutan]/[Department of Hydromet Services]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Bhutan]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // bo
+        #region 2.49.0.0.68.*
+
+        oid_2_49_0_0_68:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Bolivia]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Bolivia]/[Servicio Nacional de Meteorología e Hidrología]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Bolivia]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // ba
+        #region 2.49.0.0.70.*
+
+        oid_2_49_0_0_70:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Bosnia and Herzegovina]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Bosnia and Herzegovina]/[Federal Hydrometeorological Institute of Federation of Bosnia and Herzegovina]";
+                case 1: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Bosnia and Herzegovina]/[Republic Hydrometeorological Service of Republic of Srpska]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Bosnia and Herzegovina]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // bw
+        #region 2.49.0.0.72.*
+
+        oid_2_49_0_0_72:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Botswana]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Botswana]/[Botswana Meteorological Services]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Botswana]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // br
+        #region 2.49.0.0.76.*
+
+        oid_2_49_0_0_76:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Brazil]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Brazil]/[Instituto Nacional de Meteorologia - INMET]";
+                case 1: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Brazil]/[Universidade de Brasília - Observatório Sismológico]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Brazil]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // bz
+        #region 2.49.0.0.84.*
+
+        oid_2_49_0_0_84:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Belize]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Belize]/[National Meteorological Service]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Belize]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // sb
+        #region 2.49.0.0.90.*
+
+        oid_2_49_0_0_90:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Solomon Islands]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Solomon Islands]/[Solomon Islands Meteorological Service]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Solomon Islands]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // vg
+        #region 2.49.0.0.92.*
+
+        oid_2_49_0_0_92:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of British Virgin Islands]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of British Virgin Islands]/[Department of Disaster Management]";
+                case 1: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of British Virgin Islands]/[Caribbean Meteorological Organization]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of British Virgin Islands]/{values[index - 1]}";
+            }
+
+        #endregion
+
+        // bn
+        #region 2.49.0.0.96.*
+
+        oid_2_49_0_0_96:
+
+            if (index == values.Length) return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Brunei Darussalam]";
+            switch (values[index++])
+            {
+                case 0: return "/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Brunei Darussalam]/[Brunei Meteorological Service]";
+                default: return $"/Alerting/WMO/[Alerting authorities of countries]/[Alerting authorities of Brunei Darussalam]/{values[index - 1]}";
             }
 
         #endregion

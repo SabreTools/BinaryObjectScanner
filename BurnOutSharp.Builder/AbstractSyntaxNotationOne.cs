@@ -236,7 +236,7 @@ namespace BurnOutSharp.Builder
 
                     // Append the dot and modified OID-IRI notations
                     string dotNotationString = ObjectIdentifier.ParseOIDToDotNotation(objectNodes);
-                    string oidIriString = ObjectIdentifier.ParseOIDToModifiedOIDIRI(objectNodes);
+                    string oidIriString = ObjectIdentifier.ParseOIDToOIDIRINotation(objectNodes);
                     formatBuilder.Append($", Value: {dotNotationString} ({oidIriString})");
                     break;
 
