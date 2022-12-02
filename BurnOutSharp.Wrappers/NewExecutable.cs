@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 
 namespace BurnOutSharp.Wrappers
 {
@@ -75,7 +76,127 @@ namespace BurnOutSharp.Wrappers
 
         #endregion
 
-        // TODO: Determine what properties can be passed through
+        #region Header
+
+        /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.Magic"/>
+        public byte[] Magic => _executable.Header.Magic;
+
+        /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.LinkerVersion"/>
+        public byte LinkerVersion => _executable.Header.LinkerVersion;
+
+        /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.LinkerRevision"/>
+        public byte LinkerRevision => _executable.Header.LinkerRevision;
+
+        /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.EntryTableOffset"/>
+        public ushort EntryTableOffset => _executable.Header.EntryTableOffset;
+
+        /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.EntryTableSize"/>
+        public ushort EntryTableSize => _executable.Header.EntryTableSize;
+
+        /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.CrcChecksum"/>
+        public uint CrcChecksum => _executable.Header.CrcChecksum;
+
+        /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.FlagWord"/>
+        public Models.NewExecutable.HeaderFlag FlagWord => _executable.Header.FlagWord;
+
+        /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.AutomaticDataSegmentNumber"/>
+        public ushort AutomaticDataSegmentNumber => _executable.Header.AutomaticDataSegmentNumber;
+
+        /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.InitialHeapAlloc"/>
+        public ushort InitialHeapAlloc => _executable.Header.InitialHeapAlloc;
+
+        /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.InitialStackAlloc"/>
+        public ushort InitialStackAlloc => _executable.Header.InitialStackAlloc;
+
+        /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.InitialCSIPSetting"/>
+        public uint InitialCSIPSetting => _executable.Header.InitialCSIPSetting;
+
+        /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.InitialSSSPSetting"/>
+        public uint InitialSSSPSetting => _executable.Header.InitialSSSPSetting;
+
+        /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.FileSegmentCount"/>
+        public ushort FileSegmentCount => _executable.Header.FileSegmentCount;
+
+        /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.ModuleReferenceTableSize"/>
+        public ushort ModuleReferenceTableSize => _executable.Header.ModuleReferenceTableSize;
+
+        /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.NonResidentNameTableSize"/>
+        public ushort NonResidentNameTableSize => _executable.Header.NonResidentNameTableSize;
+
+        /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.SegmentTableOffset"/>
+        public ushort SegmentTableOffset => _executable.Header.SegmentTableOffset;
+
+        /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.ResourceTableOffset"/>
+        public ushort ResourceTableOffset => _executable.Header.ResourceTableOffset;
+
+        /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.ResidentNameTableOffset"/>
+        public ushort ResidentNameTableOffset => _executable.Header.ResidentNameTableOffset;
+
+        /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.ModuleReferenceTableOffset"/>
+        public ushort ModuleReferenceTableOffset => _executable.Header.ModuleReferenceTableOffset;
+
+        /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.ImportedNamesTableOffset"/>
+        public ushort ImportedNamesTableOffset => _executable.Header.ImportedNamesTableOffset;
+
+        /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.NonResidentNamesTableOffset"/>
+        public uint NonResidentNamesTableOffset => _executable.Header.NonResidentNamesTableOffset;
+
+        /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.MovableEntriesCount"/>
+        public ushort MovableEntriesCount => _executable.Header.MovableEntriesCount;
+
+        /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.SegmentAlignmentShiftCount"/>
+        public ushort SegmentAlignmentShiftCount => _executable.Header.SegmentAlignmentShiftCount;
+
+        /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.ResourceEntriesCount"/>
+        public ushort ResourceEntriesCount => _executable.Header.ResourceEntriesCount;
+
+        /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.TargetOperatingSystem"/>
+        public Models.NewExecutable.OperatingSystem TargetOperatingSystem => _executable.Header.TargetOperatingSystem;
+
+        /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.AdditionalFlags"/>
+        public Models.NewExecutable.OS2Flag AdditionalFlags => _executable.Header.AdditionalFlags;
+
+        /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.ReturnThunkOffset"/>
+        public ushort ReturnThunkOffset => _executable.Header.ReturnThunkOffset;
+
+        /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.SegmentReferenceThunkOffset"/>
+        public ushort SegmentReferenceThunkOffset => _executable.Header.SegmentReferenceThunkOffset;
+
+        /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.MinCodeSwapAreaSize"/>
+        public ushort MinCodeSwapAreaSize => _executable.Header.MinCodeSwapAreaSize;
+
+        /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.WindowsSDKRevision"/>
+        public byte WindowsSDKRevision => _executable.Header.WindowsSDKRevision;
+
+        /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.WindowsSDKVersion"/>
+        public byte WindowsSDKVersion => _executable.Header.WindowsSDKVersion;
+
+        #endregion
+
+        #region Tables
+
+        /// <inheritdoc cref="Models.NewExecutable.SegmentTable"/>
+        public Models.NewExecutable.SegmentTableEntry[] SegmentTable => _executable.SegmentTable;
+
+        /// <inheritdoc cref="Models.NewExecutable.ResourceTable"/>
+        public Models.NewExecutable.ResourceTable ResourceTable => _executable.ResourceTable;
+
+        /// <inheritdoc cref="Models.NewExecutable.ResidentNameTable"/>
+        public Models.NewExecutable.ResidentNameTableEntry[] ResidentNameTable => _executable.ResidentNameTable;
+
+        /// <inheritdoc cref="Models.NewExecutable.ModuleReferenceTable"/>
+        public Models.NewExecutable.ModuleReferenceTableEntry[] ModuleReferenceTable => _executable.ModuleReferenceTable;
+
+        /// <inheritdoc cref="Models.NewExecutable.ImportedNameTable"/>
+        public Dictionary<ushort, Models.NewExecutable.ImportedNameTableEntry> ImportedNameTable => _executable.ImportedNameTable;
+
+        /// <inheritdoc cref="Models.NewExecutable.EntryTable"/>
+        public Models.NewExecutable.EntryTableBundle[] EntryTable => _executable.EntryTable;
+
+        /// <inheritdoc cref="Models.NewExecutable.NonResidentNameTable"/>
+        public Models.NewExecutable.NonResidentNameTableEntry[] NonResidentNameTable => _executable.NonResidentNameTable;
+
+        #endregion
 
         #endregion
 
