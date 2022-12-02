@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net6.0</TargetFrameworks>
-    <Title>BurnOutSharp.Builder</Title>
-    <AssemblyName>BurnOutSharp.Builder</AssemblyName>
+    <Title>BurnOutSharp.Wrappers</Title>
+    <AssemblyName>BurnOutSharp.Wrappers</AssemblyName>
     <Authors>Matt Nadareski;Gernot Knippen</Authors>
     <Product>BurnOutSharp</Product>
     <Copyright>Copyright (c)2005-2010 Gernot Knippen, Copyright (c)2018-2022 Matt Nadareski</Copyright>
@@ -21,6 +21,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BurnOutSharp.Builder\BurnOutSharp.Builder.csproj" />
     <ProjectReference Include="..\BurnOutSharp.Models\BurnOutSharp.Models.csproj" />
   </ItemGroup>
 
