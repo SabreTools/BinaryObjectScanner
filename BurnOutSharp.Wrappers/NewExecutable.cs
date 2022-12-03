@@ -265,6 +265,8 @@ namespace BurnOutSharp.Wrappers
             return wrapper;
         }
     
+        #region Printing
+    
         /// <summary>
         /// Pretty print the New Executable information
         /// </summary>
@@ -518,5 +520,7 @@ namespace BurnOutSharp.Wrappers
             }
             Console.WriteLine();
         }
+    
+        #endregion
     }
 }

@@ -6,7 +6,7 @@ namespace BurnOutSharp.Wrappers
 {
     public abstract class WrapperBase
     {
-        #region Instance Variabled
+        #region Instance Variables
 
         /// <summary>
         /// Source of the original data

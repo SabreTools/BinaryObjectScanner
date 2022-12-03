@@ -333,6 +333,8 @@ namespace BurnOutSharp.Wrappers
             return wrapper;
         }
 
+        #region Printing
+
         /// <summary>
         /// Pretty print the Linear Executable information
         /// </summary>
@@ -340,5 +342,7 @@ namespace BurnOutSharp.Wrappers
         {
             // TODO: Implement printing
         }
+
+        #endregion
     }
 }
