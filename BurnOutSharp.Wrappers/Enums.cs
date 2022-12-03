@@ -3,7 +3,7 @@ namespace BurnOutSharp.Wrappers
     /// <summary>
     /// Location that the data originated from
     /// </summary>
-    internal enum DataSource
+    public enum DataSource
     {
         /// <summary>
         /// Unknown origin / testing

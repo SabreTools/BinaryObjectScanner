@@ -4,10 +4,9 @@ using System.IO;
 using System.Text;
 using static BurnOutSharp.Builder.Extensions;
 
-// TODO: Create base class for all wrappers
 namespace BurnOutSharp.Wrappers
 {
-    public class NewExecutable
+    public class NewExecutable : WrapperBase
     {
         #region Pass-Through Properties
 
@@ -217,29 +216,6 @@ namespace BurnOutSharp.Wrappers
         /// </summary>
         private Models.NewExecutable.Executable _executable;
 
-        /// <summary>
-        /// Source of the original data
-        /// </summary>
-        private DataSource _dataSource = DataSource.UNKNOWN;
-
-        /// <summary>
-        /// Source byte array data
-        /// </summary>
-        /// <remarks>This is only populated if <see cref="_dataSource"/> is <see cref="DataSource.ByteArray"/></remarks>
-        private byte[] _byteArrayData = null;
-
-        /// <summary>
-        /// Source byte array data offset
-        /// </summary>
-        /// <remarks>This is only populated if <see cref="_dataSource"/> is <see cref="DataSource.ByteArray"/></remarks>
-        private int _byteArrayOffset = -1;
-
-        /// <summary>
-        /// Source Stream data
-        /// </summary>
-        /// <remarks>This is only populated if <see cref="_dataSource"/> is <see cref="DataSource.Stream"/></remarks>
-        private Stream _streamData = null;
-
         #endregion
 
         /// <summary>
@@ -292,7 +268,7 @@ namespace BurnOutSharp.Wrappers
         /// <summary>
         /// Pretty print the New Executable information
         /// </summary>
-        public void Print()
+        public override void Print()
         {
             Console.WriteLine("New Executable Information:");
             Console.WriteLine("-------------------------");

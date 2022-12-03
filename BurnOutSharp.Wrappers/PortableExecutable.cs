@@ -5,10 +5,9 @@ using System.Text;
 using System.Xml;
 using static BurnOutSharp.Builder.Extensions;
 
-// TODO: Create base class for all wrappers
 namespace BurnOutSharp.Wrappers
 {
-    public class PortableExecutable
+    public class PortableExecutable : WrapperBase
     {
         #region Pass-Through Properties
 
@@ -316,6 +315,33 @@ namespace BurnOutSharp.Wrappers
 
         #region Extension Properties
 
+        /// <summary>
+        /// Array of sanitized section names
+        /// </summary>
+        public string[] SectionNames
+        {
+            get
+            {
+                // Use the cached data if possible
+                if (_sectionNames != null)
+                    return _sectionNames;
+
+                // Otherwise, build and return the cached array
+                _sectionNames = new string[_executable.SectionTable.Length];
+                for (int i = 0; i < _sectionNames.Length; i++)
+                {
+                    var section = _executable.SectionTable[i];
+
+                    // TODO: Handle long section names with leading `/`
+                    byte[] sectionNameBytes = section.Name;
+                    string sectionNameString = Encoding.UTF8.GetString(sectionNameBytes).TrimEnd('\0');
+                    _sectionNames[i] = sectionNameString;
+                }
+
+                return _sectionNames;
+            }
+        }
+
         // TODO: Determine what extension properties are needed
 
         #endregion
@@ -328,30 +354,7 @@ namespace BurnOutSharp.Wrappers
         private Models.PortableExecutable.Executable _executable;
 
         /// <summary>
-        /// Source of the original data
-        /// </summary>
-        private DataSource _dataSource = DataSource.UNKNOWN;
-
-        /// <summary>
-        /// Source byte array data
-        /// </summary>
-        /// <remarks>This is only populated if <see cref="_dataSource"/> is <see cref="DataSource.ByteArray"/></remarks>
-        private byte[] _byteArrayData = null;
-
-        /// <summary>
-        /// Source byte array data offset
-        /// </summary>
-        /// <remarks>This is only populated if <see cref="_dataSource"/> is <see cref="DataSource.ByteArray"/></remarks>
-        private int _byteArrayOffset = -1;
-
-        /// <summary>
-        /// Source Stream data
-        /// </summary>
-        /// <remarks>This is only populated if <see cref="_dataSource"/> is <see cref="DataSource.Stream"/></remarks>
-        private Stream _streamData = null;
-
-        /// <summary>
-        /// Array of santiized section names
+        /// Array of sanitized section names
         /// </summary>
         private string[] _sectionNames = null;
 
@@ -363,7 +366,7 @@ namespace BurnOutSharp.Wrappers
         /// <summary>
         /// Cached raw section data
         /// </summary>
-        private Dictionary<string, byte[]> _rawSectionData = null;
+        private readonly Dictionary<string, byte[]> _rawSectionData = new Dictionary<string, byte[]>();
 
         #endregion
 
@@ -415,31 +418,6 @@ namespace BurnOutSharp.Wrappers
         }
 
         /// <summary>
-        /// Get all section names from the executable
-        /// </summary>
-        /// <returns>A PE executable wrapper on success, null on failure</returns>
-        public string[] GetSectionNames()
-        {
-            // Use the cached data if possible
-            if (_sectionNames != null)
-                return _sectionNames;
-
-            // Otherwise, build and return the cached array
-            _sectionNames = new string[_executable.SectionTable.Length];
-            for (int i = 0; i < _sectionNames.Length; i++)
-            {
-                var section = _executable.SectionTable[i];
-
-                // TODO: Handle long section names with leading `/`
-                byte[] sectionNameBytes = section.Name;
-                string sectionNameString = Encoding.UTF8.GetString(sectionNameBytes).TrimEnd('\0');
-                _sectionNames[i] = sectionNameString;
-            }
-
-            return _sectionNames;
-        }
-    
-        /// <summary>
         /// Get raw section data from the source file
         /// </summary>
         /// <param name="sectionName">Stream representing the executable</param>
@@ -451,32 +429,15 @@ namespace BurnOutSharp.Wrappers
                 return null;
 
             // Validate the data source
-            switch (_dataSource)
-            {
-                // If we don't have a valid data source, we can't read the section data
-                case DataSource.UNKNOWN:
-                    return null;
-
-                // Byte array data requires both a valid array and offset
-                case DataSource.ByteArray:
-                    if (_byteArrayData == null || _byteArrayOffset < 0)
-                        return null;
-                    break;
-
-                // Stream data requires both a valid stream
-                case DataSource.Stream:
-                    if (_streamData == null)
-                        return null;
-                    break;
-            }
+            if (!DataSourceIsValid())
+                return null;
 
             // Make sure the section exists
-            string[] sectionNames = GetSectionNames();
-            if (sectionNames == null)
+            if (SectionNames == null)
                 return null;
 
             // Get the section index from the array
-            int sectionIndex = Array.IndexOf(sectionNames, sectionName);
+            int sectionIndex = Array.IndexOf(SectionNames, sectionName);
             if (sectionIndex < 0)
                 return null;
 
@@ -490,33 +451,11 @@ namespace BurnOutSharp.Wrappers
             lock (_rawSectionsLock)
             {
                 // If we already have cached data, just use that immediately
-                if (_rawSectionData != null && _rawSectionData.ContainsKey(sectionName))
+                if (_rawSectionData.ContainsKey(sectionName))
                     return _rawSectionData[sectionName];
 
-                // If the section dictionary doesn't exist, create it
-                if (_rawSectionData == null)
-                    _rawSectionData = new Dictionary<string, byte[]>();
-
                 // Populate the raw section data based on the source
-                byte[] sectionData = null;
-                switch (_dataSource)
-                {
-                    case DataSource.ByteArray:
-                        if (_byteArrayOffset + sectionAddress + sectionSize >= _byteArrayData.Length)
-                            return null;
-                        sectionData = new byte[sectionSize];
-                        Array.Copy(_byteArrayData, _byteArrayOffset + sectionAddress, sectionData, 0, sectionSize);
-                        break;
-
-                    case DataSource.Stream:
-                        if (sectionAddress + sectionSize >= _streamData.Length)
-                            return null;
-                        long currentLocation = _streamData.Position;
-                        _streamData.Seek(sectionAddress, SeekOrigin.Begin);
-                        sectionData = _streamData.ReadBytes((int)sectionSize);
-                        _streamData.Seek(currentLocation, SeekOrigin.Begin);
-                        break;
-                }
+                byte[] sectionData = ReadFromDataSource((int)sectionAddress, (int)sectionSize);
 
                 // Cache and return the section data, even if null
                 _rawSectionData[sectionName] = sectionData;
@@ -527,7 +466,7 @@ namespace BurnOutSharp.Wrappers
         /// <summary>
         /// Pretty print the New Executable information
         /// </summary>
-        public void Print()
+        public override void Print()
         {
             Console.WriteLine("Portable Executable Information:");
             Console.WriteLine("-------------------------");
