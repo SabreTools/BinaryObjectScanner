@@ -325,6 +325,7 @@ namespace BurnOutSharp.Wrappers
         /// <summary>
         /// Overlay data, if it exists
         /// </summary>
+        /// <see href="https://www.autoitscript.com/forum/topic/153277-pe-file-overlay-extraction/"/>
         public byte[] Overlay
         {
             get
@@ -335,8 +336,60 @@ namespace BurnOutSharp.Wrappers
                     if (_overlayData != null)
                         return _overlayData;
 
-                    // TODO: Implement from https://www.autoitscript.com/forum/topic/153277-pe-file-overlay-extraction/
-                    return null;
+                    // Get the end of the file, if possible
+                    int endOfFile = GetEndOfFile();
+                    if (endOfFile == -1)
+                        return null;
+
+                    // If we have certificate data, use that as the end
+                    if (_executable.OptionalHeader?.CertificateTable != null)
+                    {
+                        var certificateTable = _executable.OptionalHeader.CertificateTable;
+                        int certificateTableAddress = (int)certificateTable.VirtualAddress.ConvertVirtualAddress(_executable.SectionTable);
+                        if (certificateTableAddress != 0)
+                            endOfFile = certificateTableAddress;
+                    }
+
+                    // Search through all sections and find the furthest a section goes
+                    int endOfSectionData = -1;
+                    foreach (var section in _executable.SectionTable)
+                    {
+                        // If we have an invalid section address
+                        int sectionAddress = (int)section.VirtualAddress.ConvertVirtualAddress(_executable.SectionTable);
+                        if (sectionAddress == 0)
+                            continue;
+
+                        // If we have an invalid section size
+                        if (section.SizeOfRawData == 0 && section.VirtualSize == 0)
+                            continue;
+
+                        // Get the real section size
+                        int sectionSize;
+                        if (section.SizeOfRawData < section.VirtualSize)
+                            sectionSize = (int)section.VirtualSize;
+                        else
+                            sectionSize = (int)section.SizeOfRawData;
+
+                        // Compare and set the end of section data
+                        if (sectionAddress + sectionSize > endOfSectionData)
+                            endOfSectionData = sectionAddress + sectionSize;
+                    }
+
+                    // If we didn't find the end of section data
+                    if (endOfSectionData <= 0)
+                        return null;
+
+                    // If we're at the end of the file, cache an empty byte array
+                    if (endOfSectionData == endOfFile)
+                    {
+                        _overlayData = new byte[0];
+                        return _overlayData;
+                    }
+
+                    // Otherwise, cache and return the data
+                    int overlayLength = endOfFile - endOfSectionData;
+                    _overlayData = ReadFromDataSource(endOfSectionData, overlayLength);
+                    return _overlayData;
                 }
             }
         }
@@ -516,8 +569,6 @@ namespace BurnOutSharp.Wrappers
         }
 
         #endregion
-
-        // TODO: Determine what extension properties are needed
 
         #endregion
 

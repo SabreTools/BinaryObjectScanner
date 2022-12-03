@@ -50,7 +50,7 @@ namespace BurnOutSharp.Wrappers
                 // Stream data requires both a valid stream
                 case DataSource.Stream:
                     return _streamData != null && _streamData.CanRead && _streamData.CanSeek;
-                
+
                 // Everything else is invalid
                 case DataSource.UNKNOWN:
                 default:
@@ -101,7 +101,7 @@ namespace BurnOutSharp.Wrappers
             if (!SegmentValid(position, length))
                 return null;
 
-            // Read and retuen the data
+            // Read and return the data
             byte[] sectionData = null;
             switch (_dataSource)
             {
@@ -119,6 +119,31 @@ namespace BurnOutSharp.Wrappers
             }
 
             return sectionData;
+        }
+
+        /// <summary>
+        /// Get the ending offset of the source
+        /// </summary>
+        /// <returns>Value greater than 0 for a valid end of file, -1 on error</returns>
+        protected int GetEndOfFile()
+        {
+            // Validate the data souece
+            if (!DataSourceIsValid())
+                return -1;
+
+            // Return the effective endpoint
+            switch (_dataSource)
+            {
+                case DataSource.ByteArray:
+                    return _byteArrayData.Length - _byteArrayOffset;
+
+                case DataSource.Stream:
+                    return (int)_streamData.Length;
+
+                case DataSource.UNKNOWN:
+                default:
+                    return -1;
+            }
         }
 
         #endregion
