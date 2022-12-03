@@ -479,7 +479,7 @@ namespace BurnOutSharp.Wrappers
                     var entry = _executable.ResidentNameTable[i];
                     Console.WriteLine($"  Resident-Name Table Entry {i}");
                     Console.WriteLine($"    Length = {entry.Length}");
-                    Console.WriteLine($"    Name string = {Encoding.ASCII.GetString(entry.NameString)}");
+                    Console.WriteLine($"    Name string = {(entry.NameString != null ? Encoding.ASCII.GetString(entry.NameString) : "[EMPTY]")}");
                     Console.WriteLine($"    Ordinal number = {entry.OrdinalNumber}");
                 }
             }
@@ -527,7 +527,7 @@ namespace BurnOutSharp.Wrappers
                 {
                     Console.WriteLine($"  Imported-Name Table at Offset {entry.Key}");
                     Console.WriteLine($"    Length = {entry.Value.Length}");
-                    Console.WriteLine($"    Name string = {Encoding.ASCII.GetString(entry.Value.NameString)}");
+                    Console.WriteLine($"    Name string = {(entry.Value.NameString != null ? Encoding.ASCII.GetString(entry.Value.NameString) : "[EMPTY]")}");
                 }
             }
             Console.WriteLine();
@@ -588,7 +588,7 @@ namespace BurnOutSharp.Wrappers
                     var entry = _executable.NonResidentNameTable[i];
                     Console.WriteLine($"  Nonresident-Name Table Entry {i}");
                     Console.WriteLine($"    Length = {entry.Length}");
-                    Console.WriteLine($"    Name string = {Encoding.ASCII.GetString(entry.NameString)}");
+                    Console.WriteLine($"    Name string = {(entry.NameString != null ? Encoding.ASCII.GetString(entry.NameString) : "[EMPTY]")}");
                     Console.WriteLine($"    Ordinal number = {entry.OrdinalNumber}");
                 }
             }
