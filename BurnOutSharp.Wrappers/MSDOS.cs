@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 
+// TODO: Create base class for all wrappers
 namespace BurnOutSharp.Wrappers
 {
     public class MSDOS
@@ -88,6 +89,29 @@ namespace BurnOutSharp.Wrappers
         /// </summary>
         private Models.MSDOS.Executable _executable;
 
+        /// <summary>
+        /// Source of the original data
+        /// </summary>
+        private DataSource _dataSource = DataSource.UNKNOWN;
+
+        /// <summary>
+        /// Source byte array data
+        /// </summary>
+        /// <remarks>This is only populated if <see cref="_dataSource"/> is <see cref="DataSource.ByteArray"/></remarks>
+        private byte[] _byteArrayData = null;
+
+        /// <summary>
+        /// Source byte array data offset
+        /// </summary>
+        /// <remarks>This is only populated if <see cref="_dataSource"/> is <see cref="DataSource.ByteArray"/></remarks>
+        private int _byteArrayOffset = -1;
+
+        /// <summary>
+        /// Source Stream data
+        /// </summary>
+        /// <remarks>This is only populated if <see cref="_dataSource"/> is <see cref="DataSource.Stream"/></remarks>
+        private Stream _streamData = null;
+
         #endregion
 
         /// <summary>
@@ -107,7 +131,13 @@ namespace BurnOutSharp.Wrappers
             if (executable == null)
                 return null;
 
-            var wrapper = new MSDOS { _executable = executable };
+            var wrapper = new MSDOS
+            {
+                _executable = executable,
+                _dataSource = DataSource.ByteArray,
+                _byteArrayData = data,
+                _byteArrayOffset = offset,
+            };
             return wrapper;
         }
 
@@ -122,7 +152,12 @@ namespace BurnOutSharp.Wrappers
             if (executable == null)
                 return null;
 
-            var wrapper = new MSDOS { _executable = executable };
+            var wrapper = new MSDOS
+            {
+                _executable = executable,
+                _dataSource = DataSource.Stream,
+                _streamData = data,
+            };
             return wrapper;
         }
     
