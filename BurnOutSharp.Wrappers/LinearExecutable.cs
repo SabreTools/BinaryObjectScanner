@@ -321,5 +321,13 @@ namespace BurnOutSharp.Wrappers
             var wrapper = new LinearExecutable { _executable = executable };
             return wrapper;
         }
+
+        /// <summary>
+        /// Pretty print the Linear Executable information
+        /// </summary>
+        public void Print()
+        {
+            // TODO: Implement printing
+        }
     }
 }

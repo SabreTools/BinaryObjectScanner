@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace BurnOutSharp.Wrappers
 {
@@ -49,6 +50,25 @@ namespace BurnOutSharp.Wrappers
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.OverlayNumber"/>
         public ushort OverlayNumber => _executable.Header.OverlayNumber;
+
+        #endregion
+
+        #region PE Extensions
+
+        /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Reserved1"/>
+        public ushort[] Reserved1 => _executable.Header.Reserved1;
+
+        /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.OEMIdentifier"/>
+        public ushort OEMIdentifier => _executable.Header.OEMIdentifier;
+
+        /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.OEMInformation"/>
+        public ushort OEMInformation => _executable.Header.OEMInformation;
+
+        /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Reserved2"/>
+        public ushort[] Reserved2 => _executable.Header.Reserved2;
+
+        /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.NewExeHeaderAddr"/>
+        public uint NewExeHeaderAddr => _executable.Header.NewExeHeaderAddr;
 
         #endregion
 
@@ -104,6 +124,51 @@ namespace BurnOutSharp.Wrappers
 
             var wrapper = new MSDOS { _executable = executable };
             return wrapper;
+        }
+    
+        /// <summary>
+        /// Pretty print the MS-DOS executable information
+        /// </summary>
+        public void Print()
+        {
+            Console.WriteLine("MS-DOS Executable Information:");
+            Console.WriteLine("-------------------------");
+            Console.WriteLine();
+
+            Console.WriteLine("  Header Information:");
+            Console.WriteLine("  -------------------------");
+            Console.WriteLine($"  Magic number: {BitConverter.ToString(_executable.Header.Magic).Replace("-", string.Empty)}");
+            Console.WriteLine($"  Last page bytes: {_executable.Header.LastPageBytes}");
+            Console.WriteLine($"  Pages: {_executable.Header.Pages}");
+            Console.WriteLine($"  Relocation items: {_executable.Header.RelocationItems}");
+            Console.WriteLine($"  Header paragraph size: {_executable.Header.HeaderParagraphSize}");
+            Console.WriteLine($"  Minimum extra paragraphs: {_executable.Header.MinimumExtraParagraphs}");
+            Console.WriteLine($"  Maximum extra paragraphs: {_executable.Header.MaximumExtraParagraphs}");
+            Console.WriteLine($"  Initial SS value: {_executable.Header.InitialSSValue}");
+            Console.WriteLine($"  Initial SP value: {_executable.Header.InitialSPValue}");
+            Console.WriteLine($"  Checksum: {_executable.Header.Checksum}");
+            Console.WriteLine($"  Initial IP value: {_executable.Header.InitialIPValue}");
+            Console.WriteLine($"  Initial CS value: {_executable.Header.InitialCSValue}");
+            Console.WriteLine($"  Relocation table address: {_executable.Header.RelocationTableAddr}");
+            Console.WriteLine($"  Overlay number: {_executable.Header.OverlayNumber}");
+
+            Console.WriteLine("  Relocation Table Information:");
+            Console.WriteLine("  -------------------------");
+            if (_executable.Header.RelocationItems == 0 || _executable.RelocationTable.Length == 0)
+            {
+                Console.WriteLine("  No relocation table items");
+            }
+            else
+            {
+                for (int i = 0; i < _executable.RelocationTable.Length; i++)
+                {
+                    var entry = _executable.RelocationTable[i];
+                    Console.WriteLine($"  Relocation Table Entry {i}");
+                    Console.WriteLine($"    Offset = {entry.Offset}");
+                    Console.WriteLine($"    Segment = {entry.Segment}");
+                }
+            }
+            Console.WriteLine();
         }
     }
 }
