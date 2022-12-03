@@ -57,12 +57,6 @@ namespace BurnOutSharp.Models.PortableExecutable
         /// strings to identify Type, Name, or Language entries (depending on the
         /// level of the table).
         /// </summary>
-        public ResourceDirectoryEntry[] NameEntries;
-
-        /// <summary>
-        /// Directory entries immediately following the Name entries that
-        /// use numeric IDs for Type, Name, or Language entries.
-        /// </summary>
-        public ResourceDirectoryEntry[] IDEntries;
+        public ResourceDirectoryEntry[] Entries;
     }
 }

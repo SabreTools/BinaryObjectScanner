@@ -865,7 +865,7 @@ namespace BurnOutSharp.Wrappers
                             .Where(dit => dit?.TitleResource != null)
                             .Any(dit => dit.TitleResource.Contains(title));
                     }
-                    else if (d.ExtendedDialogItemTemplates!= null)
+                    else if (d.ExtendedDialogItemTemplates != null)
                     {
                         return d.ExtendedDialogItemTemplates
                             .Where(edit => edit?.TitleResource != null)
@@ -874,6 +874,18 @@ namespace BurnOutSharp.Wrappers
 
                     return false;
                 });
+        }
+
+        /// <summary>
+        /// Find unparsed resources by type name
+        /// </summary>
+        /// <param name="typeName">Type name to check for</param>
+        /// <returns>Enumerable of matching resources</returns>
+        public IEnumerable<byte[]> FindResourceByNamedType(string typeName)
+        {
+            return ResourceData.Where(kvp => kvp.Key.Contains(typeName))
+                .Select(kvp => kvp.Value as byte[])
+                .Where(b => b != null);
         }
 
         /// <summary>
@@ -886,7 +898,7 @@ namespace BurnOutSharp.Wrappers
             return ResourceData.Select(r => r.Value)
                 .Select(r => r as byte[])
                 .Where(b => b != null)
-                .Where(b => 
+                .Where(b =>
                 {
                     try
                     {
@@ -964,150 +976,6 @@ namespace BurnOutSharp.Wrappers
 
             // Return the now-cached assembly manifest
             return _assemblyManifest;
-        }
-
-        /// <summary>
-        /// Parse the resource directory table information
-        /// </summary>
-        private void ParseResourceDirectoryTable(Models.PortableExecutable.ResourceDirectoryTable table, List<object> types)
-        {
-            for (int i = 0; i < table.NumberOfNameEntries; i++)
-            {
-                var entry = table.NameEntries[i];
-                var newTypes = new List<object>(types ?? new List<object>());
-                newTypes.Add(Encoding.UTF8.GetString(entry.Name.UnicodeString ?? new byte[0]));
-                ParseNameResourceDirectoryEntry(entry, newTypes);
-            }
-
-            for (int i = 0; i < table.NumberOfIDEntries; i++)
-            {
-                var entry = table.IDEntries[i];
-                var newTypes = new List<object>(types ?? new List<object>());
-                newTypes.Add(entry.IntegerID);
-                ParseIDResourceDirectoryEntry(entry, newTypes);
-            }
-        }
-
-        /// <summary>
-        /// Parse the name resource directory entry information
-        /// </summary>
-        private void ParseNameResourceDirectoryEntry(Models.PortableExecutable.ResourceDirectoryEntry entry, List<object> types)
-        {
-            if (entry.DataEntry != null)
-                ParseResourceDataEntry(entry.DataEntry, types);
-            else if (entry.Subdirectory != null)
-                ParseResourceDirectoryTable(entry.Subdirectory, types);
-        }
-
-        /// <summary>
-        /// Parse the ID resource directory entry information
-        /// </summary>
-        private void ParseIDResourceDirectoryEntry(Models.PortableExecutable.ResourceDirectoryEntry entry, List<object> types)
-        {
-            if (entry.DataEntry != null)
-                ParseResourceDataEntry(entry.DataEntry, types);
-            else if (entry.Subdirectory != null)
-                ParseResourceDirectoryTable(entry.Subdirectory, types);
-        }
-
-        /// <summary>
-        /// Parse the resource data entry information
-        /// </summary>
-        /// <remarks>
-        /// When caching the version information and assembly manifest, this code assumes that there is only one of each
-        /// of those resources in the entire exectuable. This means that only the last found version or manifest will
-        /// ever be cached.
-        /// </remarks>
-        private void ParseResourceDataEntry(Models.PortableExecutable.ResourceDataEntry entry, List<object> types)
-        {
-            // Create the key and value objects
-            string key = types == null ? $"UNKNOWN_{Guid.NewGuid()}" : string.Join(", ", types);
-            object value = entry.Data;
-
-            // If we have a known resource type
-            if (types != null && types.Count > 0 && types[0] is uint resourceType)
-            {
-                switch ((Models.PortableExecutable.ResourceType)resourceType)
-                {
-                    case Models.PortableExecutable.ResourceType.RT_CURSOR:
-                        value = entry.Data;
-                        break;
-                    case Models.PortableExecutable.ResourceType.RT_BITMAP:
-                        value = entry.Data;
-                        break;
-                    case Models.PortableExecutable.ResourceType.RT_ICON:
-                        value = entry.Data;
-                        break;
-                    case Models.PortableExecutable.ResourceType.RT_MENU:
-                        value = entry.AsMenu();
-                        break;
-                    case Models.PortableExecutable.ResourceType.RT_DIALOG:
-                        value = entry.AsDialogBox();
-                        break;
-                    case Models.PortableExecutable.ResourceType.RT_STRING:
-                        value = entry.AsStringTable();
-                        break;
-                    case Models.PortableExecutable.ResourceType.RT_FONTDIR:
-                        value = entry.Data;
-                        break;
-                    case Models.PortableExecutable.ResourceType.RT_FONT:
-                        value = entry.Data;
-                        break;
-                    case Models.PortableExecutable.ResourceType.RT_ACCELERATOR:
-                        value = entry.AsAcceleratorTableResource();
-                        break;
-                    case Models.PortableExecutable.ResourceType.RT_RCDATA:
-                        value = entry.Data;
-                        break;
-                    case Models.PortableExecutable.ResourceType.RT_MESSAGETABLE:
-                        value = entry.AsMessageResourceData();
-                        break;
-                    case Models.PortableExecutable.ResourceType.RT_GROUP_CURSOR:
-                        value = entry.Data;
-                        break;
-                    case Models.PortableExecutable.ResourceType.RT_GROUP_ICON:
-                        value = entry.Data;
-                        break;
-                    case Models.PortableExecutable.ResourceType.RT_VERSION:
-                        _versionInfo = entry.AsVersionInfo();
-                        value = _versionInfo;
-                        break;
-                    case Models.PortableExecutable.ResourceType.RT_DLGINCLUDE:
-                        value = entry.Data;
-                        break;
-                    case Models.PortableExecutable.ResourceType.RT_PLUGPLAY:
-                        value = entry.Data;
-                        break;
-                    case Models.PortableExecutable.ResourceType.RT_VXD:
-                        value = entry.Data;
-                        break;
-                    case Models.PortableExecutable.ResourceType.RT_ANICURSOR:
-                        value = entry.Data;
-                        break;
-                    case Models.PortableExecutable.ResourceType.RT_ANIICON:
-                        value = entry.Data;
-                        break;
-                    case Models.PortableExecutable.ResourceType.RT_HTML:
-                        value = entry.Data;
-                        break;
-                    case Models.PortableExecutable.ResourceType.RT_MANIFEST:
-                        _assemblyManifest = entry.AsAssemblyManifest();
-                        value = _versionInfo;
-                        break;
-                    default:
-                        value = entry.Data;
-                        break;
-                }
-            }
-
-            // If we have a custom resource type
-            else if (types != null && types.Count > 0 && types[0] is string)
-            {
-                value = entry.Data;
-            }
-
-            // Add the key and value to the cache
-            _resourceData[key] = value;
         }
 
         #endregion
@@ -1277,96 +1145,112 @@ namespace BurnOutSharp.Wrappers
                 {
                     Console.WriteLine("    Export Table (1)");
                     Console.WriteLine($"      Virtual address: {_executable.OptionalHeader.ExportTable.VirtualAddress}");
+                    Console.WriteLine($"      Physical address: {_executable.OptionalHeader.ExportTable.VirtualAddress.ConvertVirtualAddress(_executable.SectionTable)}");
                     Console.WriteLine($"      Size: {_executable.OptionalHeader.ExportTable.Size}");
                 }
                 if (_executable.OptionalHeader.ImportTable != null)
                 {
                     Console.WriteLine("    Import Table (2)");
                     Console.WriteLine($"      Virtual address: {_executable.OptionalHeader.ImportTable.VirtualAddress}");
+                    Console.WriteLine($"      Physical address: {_executable.OptionalHeader.ImportTable.VirtualAddress.ConvertVirtualAddress(_executable.SectionTable)}");
                     Console.WriteLine($"      Size: {_executable.OptionalHeader.ImportTable.Size}");
                 }
                 if (_executable.OptionalHeader.ResourceTable != null)
                 {
                     Console.WriteLine("    Resource Table (3)");
                     Console.WriteLine($"      Virtual address: {_executable.OptionalHeader.ResourceTable.VirtualAddress}");
+                    Console.WriteLine($"      Physical address: {_executable.OptionalHeader.ResourceTable.VirtualAddress.ConvertVirtualAddress(_executable.SectionTable)}");
                     Console.WriteLine($"      Size: {_executable.OptionalHeader.ResourceTable.Size}");
                 }
                 if (_executable.OptionalHeader.ExceptionTable != null)
                 {
                     Console.WriteLine("    Exception Table (4)");
                     Console.WriteLine($"      Virtual address: {_executable.OptionalHeader.ExceptionTable.VirtualAddress}");
+                    Console.WriteLine($"      Physical address: {_executable.OptionalHeader.ExceptionTable.VirtualAddress.ConvertVirtualAddress(_executable.SectionTable)}");
                     Console.WriteLine($"      Size: {_executable.OptionalHeader.ExceptionTable.Size}");
                 }
                 if (_executable.OptionalHeader.CertificateTable != null)
                 {
                     Console.WriteLine("    Certificate Table (5)");
                     Console.WriteLine($"      Virtual address: {_executable.OptionalHeader.CertificateTable.VirtualAddress}");
+                    Console.WriteLine($"      Physical address: {_executable.OptionalHeader.CertificateTable.VirtualAddress.ConvertVirtualAddress(_executable.SectionTable)}");
                     Console.WriteLine($"      Size: {_executable.OptionalHeader.CertificateTable.Size}");
                 }
                 if (_executable.OptionalHeader.BaseRelocationTable != null)
                 {
                     Console.WriteLine("    Base Relocation Table (6)");
                     Console.WriteLine($"      Virtual address: {_executable.OptionalHeader.BaseRelocationTable.VirtualAddress}");
+                    Console.WriteLine($"      Physical address: {_executable.OptionalHeader.BaseRelocationTable.VirtualAddress.ConvertVirtualAddress(_executable.SectionTable)}");
                     Console.WriteLine($"      Size: {_executable.OptionalHeader.BaseRelocationTable.Size}");
                 }
                 if (_executable.OptionalHeader.Debug != null)
                 {
                     Console.WriteLine("    Debug Table (7)");
                     Console.WriteLine($"      Virtual address: {_executable.OptionalHeader.Debug.VirtualAddress}");
+                    Console.WriteLine($"      Physical address: {_executable.OptionalHeader.Debug.VirtualAddress.ConvertVirtualAddress(_executable.SectionTable)}");
                     Console.WriteLine($"      Size: {_executable.OptionalHeader.Debug.Size}");
                 }
                 if (_executable.OptionalHeader.NumberOfRvaAndSizes >= 8)
                 {
                     Console.WriteLine("    Architecture Table (8)");
                     Console.WriteLine($"      Virtual address: 0");
+                    Console.WriteLine($"      Physical address: 0");
                     Console.WriteLine($"      Size: 0");
                 }
                 if (_executable.OptionalHeader.GlobalPtr != null)
                 {
                     Console.WriteLine("    Global Pointer Register (9)");
                     Console.WriteLine($"      Virtual address: {_executable.OptionalHeader.GlobalPtr.VirtualAddress}");
+                    Console.WriteLine($"      Physical address: {_executable.OptionalHeader.GlobalPtr.VirtualAddress.ConvertVirtualAddress(_executable.SectionTable)}");
                     Console.WriteLine($"      Size: {_executable.OptionalHeader.GlobalPtr.Size}");
                 }
                 if (_executable.OptionalHeader.ThreadLocalStorageTable != null)
                 {
                     Console.WriteLine("    Thread Local Storage (TLS) Table (10)");
                     Console.WriteLine($"      Virtual address: {_executable.OptionalHeader.ThreadLocalStorageTable.VirtualAddress}");
+                    Console.WriteLine($"      Physical address: {_executable.OptionalHeader.ThreadLocalStorageTable.VirtualAddress.ConvertVirtualAddress(_executable.SectionTable)}");
                     Console.WriteLine($"      Size: {_executable.OptionalHeader.ThreadLocalStorageTable.Size}");
                 }
                 if (_executable.OptionalHeader.LoadConfigTable != null)
                 {
                     Console.WriteLine("    Load Config Table (11)");
                     Console.WriteLine($"      Virtual address: {_executable.OptionalHeader.LoadConfigTable.VirtualAddress}");
+                    Console.WriteLine($"      Physical address: {_executable.OptionalHeader.LoadConfigTable.VirtualAddress.ConvertVirtualAddress(_executable.SectionTable)}");
                     Console.WriteLine($"      Size: {_executable.OptionalHeader.LoadConfigTable.Size}");
                 }
                 if (_executable.OptionalHeader.BoundImport != null)
                 {
                     Console.WriteLine("    Bound Import Table (12)");
                     Console.WriteLine($"      Virtual address: {_executable.OptionalHeader.BoundImport.VirtualAddress}");
+                    Console.WriteLine($"      Physical address: {_executable.OptionalHeader.BoundImport.VirtualAddress.ConvertVirtualAddress(_executable.SectionTable)}");
                     Console.WriteLine($"      Size: {_executable.OptionalHeader.BoundImport.Size}");
                 }
                 if (_executable.OptionalHeader.ImportAddressTable != null)
                 {
                     Console.WriteLine("    Import Address Table (13)");
                     Console.WriteLine($"      Virtual address: {_executable.OptionalHeader.ImportAddressTable.VirtualAddress}");
+                    Console.WriteLine($"      Physical address: {_executable.OptionalHeader.ImportAddressTable.VirtualAddress.ConvertVirtualAddress(_executable.SectionTable)}");
                     Console.WriteLine($"      Size: {_executable.OptionalHeader.ImportAddressTable.Size}");
                 }
                 if (_executable.OptionalHeader.DelayImportDescriptor != null)
                 {
                     Console.WriteLine("    Delay Import Descriptior (14)");
                     Console.WriteLine($"      Virtual address: {_executable.OptionalHeader.DelayImportDescriptor.VirtualAddress}");
+                    Console.WriteLine($"      Physical address: {_executable.OptionalHeader.DelayImportDescriptor.VirtualAddress.ConvertVirtualAddress(_executable.SectionTable)}");
                     Console.WriteLine($"      Size: {_executable.OptionalHeader.DelayImportDescriptor.Size}");
                 }
                 if (_executable.OptionalHeader.CLRRuntimeHeader != null)
                 {
                     Console.WriteLine("    CLR Runtime Header (15)");
                     Console.WriteLine($"      Virtual address: {_executable.OptionalHeader.CLRRuntimeHeader.VirtualAddress}");
+                    Console.WriteLine($"      Physical address: {_executable.OptionalHeader.CLRRuntimeHeader.VirtualAddress.ConvertVirtualAddress(_executable.SectionTable)}");
                     Console.WriteLine($"      Size: {_executable.OptionalHeader.CLRRuntimeHeader.Size}");
                 }
                 if (_executable.OptionalHeader.NumberOfRvaAndSizes >= 16)
                 {
                     Console.WriteLine("    Reserved (16)");
                     Console.WriteLine($"      Virtual address: 0");
+                    Console.WriteLine($"      Physical address: 0");
                     Console.WriteLine($"      Size: 0");
                 }
             }
@@ -1393,6 +1277,7 @@ namespace BurnOutSharp.Wrappers
                     Console.WriteLine($"    Name = {Encoding.UTF8.GetString(entry.Name)}");
                     Console.WriteLine($"    Virtual size = {entry.VirtualSize}");
                     Console.WriteLine($"    Virtual address = {entry.VirtualAddress}");
+                    Console.WriteLine($"    Physical address: {entry.VirtualAddress.ConvertVirtualAddress(_executable.SectionTable)}");
                     Console.WriteLine($"    Size of raw data = {entry.SizeOfRawData}");
                     Console.WriteLine($"    Pointer to raw data = {entry.PointerToRawData}");
                     Console.WriteLine($"    Pointer to relocations = {entry.PointerToRelocations}");
@@ -1953,69 +1838,47 @@ namespace BurnOutSharp.Wrappers
             Console.WriteLine($"{padding}Number of ID entries: {table.NumberOfIDEntries}");
             Console.WriteLine();
 
-            Console.WriteLine($"{padding}Name entries");
+            Console.WriteLine($"{padding}Entries");
             Console.WriteLine($"{padding}-------------------------");
-            if (table.NumberOfNameEntries == 0)
+            if (table.NumberOfNameEntries == 0 && table.NumberOfIDEntries == 0)
             {
-                Console.WriteLine($"{padding}No named entries");
+                Console.WriteLine($"{padding}No entries");
                 Console.WriteLine();
             }
             else
             {
-                for (int i = 0; i < table.NumberOfNameEntries; i++)
+                for (int i = 0; i < table.Entries.Length; i++)
                 {
-                    var entry = table.NameEntries[i];
+                    var entry = table.Entries[i];
                     var newTypes = new List<object>(types ?? new List<object>());
-                    newTypes.Add(Encoding.UTF8.GetString(entry.Name.UnicodeString ?? new byte[0]));
-                    PrintNameResourceDirectoryEntry(entry, level + 1, newTypes);
-                }
-            }
+                    if (entry.Name != null)
+                        newTypes.Add(Encoding.UTF8.GetString(entry.Name.UnicodeString ?? new byte[0]));
+                    else
+                        newTypes.Add(entry.IntegerID);
 
-            Console.WriteLine($"{padding}ID entries");
-            Console.WriteLine($"{padding}-------------------------");
-            if (table.NumberOfIDEntries == 0)
-            {
-                Console.WriteLine($"{padding}No ID entries");
-                Console.WriteLine();
-            }
-            else
-            {
-
-                for (int i = 0; i < table.NumberOfIDEntries; i++)
-                {
-                    var entry = table.IDEntries[i];
-                    var newTypes = new List<object>(types ?? new List<object>());
-                    newTypes.Add(entry.IntegerID);
-                    PrintIDResourceDirectoryEntry(entry, level + 1, newTypes);
+                    PrintResourceDirectoryEntry(entry, level + 1, newTypes);
                 }
             }
         }
 
         /// <summary>
-        /// Pretty print the name resource directory entry information
+        /// Pretty print the resource directory entry information
         /// </summary>
-        private static void PrintNameResourceDirectoryEntry(Models.PortableExecutable.ResourceDirectoryEntry entry, int level, List<object> types)
+        private static void PrintResourceDirectoryEntry(Models.PortableExecutable.ResourceDirectoryEntry entry, int level, List<object> types)
         {
             string padding = new string(' ', (level + 1) * 2);
 
             Console.WriteLine($"{padding}Item level: {level}");
-            Console.WriteLine($"{padding}Name offset: {entry.NameOffset}");
-            Console.WriteLine($"{padding}Name ({entry.Name.Length}): {Encoding.UTF8.GetString(entry.Name.UnicodeString ?? new byte[0])}");
-            if (entry.DataEntry != null)
-                PrintResourceDataEntry(entry.DataEntry, level: level + 1, types);
-            else if (entry.Subdirectory != null)
-                PrintResourceDirectoryTable(entry.Subdirectory, level: level + 1, types);
-        }
+            if (entry.NameOffset != default)
+            {
+                Console.WriteLine($"{padding}Name offset: {entry.NameOffset}");
+                Console.WriteLine($"{padding}Name ({entry.Name.Length}): {Encoding.UTF8.GetString(entry.Name.UnicodeString ?? new byte[0])}");
+            }
+            else
+            {
+                Console.WriteLine($"{padding}Integer ID: {entry.IntegerID}");
+            }
 
-        /// <summary>
-        /// Pretty print the ID resource directory entry information
-        /// </summary>
-        private static void PrintIDResourceDirectoryEntry(Models.PortableExecutable.ResourceDirectoryEntry entry, int level, List<object> types)
-        {
-            string padding = new string(' ', (level + 1) * 2);
-
-            Console.WriteLine($"{padding}Item level: {level}");
-            Console.WriteLine($"{padding}Integer ID: {entry.IntegerID}");
             if (entry.DataEntry != null)
                 PrintResourceDataEntry(entry.DataEntry, level: level + 1, types);
             else if (entry.Subdirectory != null)
@@ -2030,7 +1893,7 @@ namespace BurnOutSharp.Wrappers
             string padding = new string(' ', (level + 1) * 2);
 
             // TODO: Use ordered list of base types to determine the shape of the data
-            //Console.WriteLine($"{padding}Base types: {string.Join(", ", types)}");
+            Console.WriteLine($"{padding}Base types: {string.Join(", ", types)}");
 
             Console.WriteLine($"{padding}Entry level: {level}");
             Console.WriteLine($"{padding}Data RVA: {entry.DataRVA}");
@@ -2644,6 +2507,141 @@ namespace BurnOutSharp.Wrappers
             }
 
             Console.WriteLine();
+        }
+
+        #endregion
+
+        #region Resource Parsing
+
+        /// <summary>
+        /// Parse the resource directory table information
+        /// </summary>
+        private void ParseResourceDirectoryTable(Models.PortableExecutable.ResourceDirectoryTable table, List<object> types)
+        {
+            int totalEntries = table.NumberOfNameEntries + table.NumberOfIDEntries;
+            for (int i = 0; i < totalEntries; i++)
+            {
+                var entry = table.Entries[i];
+                var newTypes = new List<object>(types ?? new List<object>());
+
+                if (entry.Name != null)
+                    newTypes.Add(Encoding.UTF8.GetString(entry.Name.UnicodeString ?? new byte[0]));
+                else
+                    newTypes.Add(entry.IntegerID);
+
+                ParseResourceDirectoryEntry(entry, newTypes);
+            }
+        }
+
+        /// <summary>
+        /// Parse the name resource directory entry information
+        /// </summary>
+        private void ParseResourceDirectoryEntry(Models.PortableExecutable.ResourceDirectoryEntry entry, List<object> types)
+        {
+            if (entry.DataEntry != null)
+                ParseResourceDataEntry(entry.DataEntry, types);
+            else if (entry.Subdirectory != null)
+                ParseResourceDirectoryTable(entry.Subdirectory, types);
+        }
+
+        /// <summary>
+        /// Parse the resource data entry information
+        /// </summary>
+        /// <remarks>
+        /// When caching the version information and assembly manifest, this code assumes that there is only one of each
+        /// of those resources in the entire exectuable. This means that only the last found version or manifest will
+        /// ever be cached.
+        /// </remarks>
+        private void ParseResourceDataEntry(Models.PortableExecutable.ResourceDataEntry entry, List<object> types)
+        {
+            // Create the key and value objects
+            string key = types == null ? $"UNKNOWN_{Guid.NewGuid()}" : string.Join(", ", types);
+            object value = entry.Data;
+
+            // If we have a known resource type
+            if (types != null && types.Count > 0 && types[0] is uint resourceType)
+            {
+                switch ((Models.PortableExecutable.ResourceType)resourceType)
+                {
+                    case Models.PortableExecutable.ResourceType.RT_CURSOR:
+                        value = entry.Data;
+                        break;
+                    case Models.PortableExecutable.ResourceType.RT_BITMAP:
+                        value = entry.Data;
+                        break;
+                    case Models.PortableExecutable.ResourceType.RT_ICON:
+                        value = entry.Data;
+                        break;
+                    case Models.PortableExecutable.ResourceType.RT_MENU:
+                        value = entry.AsMenu();
+                        break;
+                    case Models.PortableExecutable.ResourceType.RT_DIALOG:
+                        value = entry.AsDialogBox();
+                        break;
+                    case Models.PortableExecutable.ResourceType.RT_STRING:
+                        value = entry.AsStringTable();
+                        break;
+                    case Models.PortableExecutable.ResourceType.RT_FONTDIR:
+                        value = entry.Data;
+                        break;
+                    case Models.PortableExecutable.ResourceType.RT_FONT:
+                        value = entry.Data;
+                        break;
+                    case Models.PortableExecutable.ResourceType.RT_ACCELERATOR:
+                        value = entry.AsAcceleratorTableResource();
+                        break;
+                    case Models.PortableExecutable.ResourceType.RT_RCDATA:
+                        value = entry.Data;
+                        break;
+                    case Models.PortableExecutable.ResourceType.RT_MESSAGETABLE:
+                        value = entry.AsMessageResourceData();
+                        break;
+                    case Models.PortableExecutable.ResourceType.RT_GROUP_CURSOR:
+                        value = entry.Data;
+                        break;
+                    case Models.PortableExecutable.ResourceType.RT_GROUP_ICON:
+                        value = entry.Data;
+                        break;
+                    case Models.PortableExecutable.ResourceType.RT_VERSION:
+                        _versionInfo = entry.AsVersionInfo();
+                        value = _versionInfo;
+                        break;
+                    case Models.PortableExecutable.ResourceType.RT_DLGINCLUDE:
+                        value = entry.Data;
+                        break;
+                    case Models.PortableExecutable.ResourceType.RT_PLUGPLAY:
+                        value = entry.Data;
+                        break;
+                    case Models.PortableExecutable.ResourceType.RT_VXD:
+                        value = entry.Data;
+                        break;
+                    case Models.PortableExecutable.ResourceType.RT_ANICURSOR:
+                        value = entry.Data;
+                        break;
+                    case Models.PortableExecutable.ResourceType.RT_ANIICON:
+                        value = entry.Data;
+                        break;
+                    case Models.PortableExecutable.ResourceType.RT_HTML:
+                        value = entry.Data;
+                        break;
+                    case Models.PortableExecutable.ResourceType.RT_MANIFEST:
+                        _assemblyManifest = entry.AsAssemblyManifest();
+                        value = _versionInfo;
+                        break;
+                    default:
+                        value = entry.Data;
+                        break;
+                }
+            }
+
+            // If we have a custom resource type
+            else if (types != null && types.Count > 0 && types[0] is string)
+            {
+                value = entry.Data;
+            }
+
+            // Add the key and value to the cache
+            _resourceData[key] = value;
         }
 
         #endregion
