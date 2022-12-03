@@ -90,6 +90,8 @@ namespace BurnOutSharp.Wrappers
 
         #endregion
 
+        #region Constructors
+
         /// <summary>
         /// Private constructor
         /// </summary>
@@ -137,17 +139,26 @@ namespace BurnOutSharp.Wrappers
             return wrapper;
         }
     
+        #endregion
+
         #region Printing
     
-        /// <summary>
-        /// Pretty print the MS-DOS executable information
-        /// </summary>
+        /// <inheritdoc/>
         public override void Print()
         {
             Console.WriteLine("MS-DOS Executable Information:");
             Console.WriteLine("-------------------------");
             Console.WriteLine();
 
+            PrintHeader();
+            PrintRelocationTable();
+        }
+
+        /// <summary>
+        /// Print header information
+        /// </summary>
+        private void PrintHeader()
+        {
             Console.WriteLine("  Header Information:");
             Console.WriteLine("  -------------------------");
             Console.WriteLine($"  Magic number: {BitConverter.ToString(_executable.Header.Magic).Replace("-", string.Empty)}");
@@ -164,7 +175,13 @@ namespace BurnOutSharp.Wrappers
             Console.WriteLine($"  Initial CS value: {_executable.Header.InitialCSValue}");
             Console.WriteLine($"  Relocation table address: {_executable.Header.RelocationTableAddr}");
             Console.WriteLine($"  Overlay number: {_executable.Header.OverlayNumber}");
+        }
 
+        /// <summary>
+        /// Print relocation table information
+        /// </summary>
+        private void PrintRelocationTable()
+        {
             Console.WriteLine("  Relocation Table Information:");
             Console.WriteLine("  -------------------------");
             if (_executable.Header.RelocationItems == 0 || _executable.RelocationTable.Length == 0)

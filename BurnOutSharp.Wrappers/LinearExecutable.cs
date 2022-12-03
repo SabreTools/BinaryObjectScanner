@@ -286,6 +286,8 @@ namespace BurnOutSharp.Wrappers
 
         #endregion
 
+        #region Constructors
+
         /// <summary>
         /// Private constructor
         /// </summary>
@@ -333,11 +335,11 @@ namespace BurnOutSharp.Wrappers
             return wrapper;
         }
 
+        #endregion
+
         #region Printing
 
-        /// <summary>
-        /// Pretty print the Linear Executable information
-        /// </summary>
+        /// <inheritdoc/>
         public override void Print()
         {
             // TODO: Implement printing

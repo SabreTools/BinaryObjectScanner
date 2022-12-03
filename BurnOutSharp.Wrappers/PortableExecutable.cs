@@ -137,7 +137,7 @@ namespace BurnOutSharp.Wrappers
         public uint OH_BaseOfCode => _executable.OptionalHeader.BaseOfCode;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.BaseOfData"/>
-        public uint? OH_BaseOfData => _executable.OptionalHeader.Magic ==  Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
+        public uint? OH_BaseOfData => _executable.OptionalHeader.Magic == Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
             ? (uint?)_executable.OptionalHeader.BaseOfData
             : null;
 
@@ -146,7 +146,7 @@ namespace BurnOutSharp.Wrappers
         #region Windows-Specific Fields
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.ImageBase_PE32"/>
-        public ulong OH_ImageBase => _executable.OptionalHeader.Magic ==  Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
+        public ulong OH_ImageBase => _executable.OptionalHeader.Magic == Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
             ? _executable.OptionalHeader.ImageBase_PE32
             : _executable.OptionalHeader.ImageBase_PE32Plus;
 
@@ -193,22 +193,22 @@ namespace BurnOutSharp.Wrappers
         public Models.PortableExecutable.DllCharacteristics OH_DllCharacteristics => _executable.OptionalHeader.DllCharacteristics;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.SizeOfStackReserve_PE32"/>
-        public ulong OH_SizeOfStackReserve => _executable.OptionalHeader.Magic ==  Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
+        public ulong OH_SizeOfStackReserve => _executable.OptionalHeader.Magic == Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
             ? _executable.OptionalHeader.SizeOfStackReserve_PE32
             : _executable.OptionalHeader.SizeOfStackReserve_PE32Plus;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.SizeOfStackCommit_PE32"/>
-        public ulong OH_SizeOfStackCommit => _executable.OptionalHeader.Magic ==  Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
+        public ulong OH_SizeOfStackCommit => _executable.OptionalHeader.Magic == Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
             ? _executable.OptionalHeader.SizeOfStackCommit_PE32
             : _executable.OptionalHeader.SizeOfStackCommit_PE32Plus;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.SizeOfHeapReserve_PE32"/>
-        public ulong OH_SizeOfHeapReserve => _executable.OptionalHeader.Magic ==  Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
+        public ulong OH_SizeOfHeapReserve => _executable.OptionalHeader.Magic == Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
             ? _executable.OptionalHeader.SizeOfHeapReserve_PE32
             : _executable.OptionalHeader.SizeOfHeapReserve_PE32Plus;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.SizeOfHeapCommit_PE32"/>
-        public ulong OH_SizeOfHeapCommit => _executable.OptionalHeader.Magic ==  Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
+        public ulong OH_SizeOfHeapCommit => _executable.OptionalHeader.Magic == Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
             ? _executable.OptionalHeader.SizeOfHeapCommit_PE32
             : _executable.OptionalHeader.SizeOfHeapCommit_PE32Plus;
 
@@ -316,29 +316,51 @@ namespace BurnOutSharp.Wrappers
         #region Extension Properties
 
         /// <summary>
+        /// Overlay data, if it exists
+        /// </summary>
+        public byte[] Overlay
+        {
+            get
+            {
+                lock (_overlayDataLock)
+                {
+                    // Use the cached data if possible
+                    if (_overlayData != null)
+                        return _overlayData;
+
+                    // TODO: Implement from https://www.autoitscript.com/forum/topic/153277-pe-file-overlay-extraction/
+                    return null;
+                }
+            }
+        }
+
+        /// <summary>
         /// Array of sanitized section names
         /// </summary>
         public string[] SectionNames
         {
             get
             {
-                // Use the cached data if possible
-                if (_sectionNames != null)
-                    return _sectionNames;
-
-                // Otherwise, build and return the cached array
-                _sectionNames = new string[_executable.SectionTable.Length];
-                for (int i = 0; i < _sectionNames.Length; i++)
+                lock (_sectionNamesLock)
                 {
-                    var section = _executable.SectionTable[i];
+                    // Use the cached data if possible
+                    if (_sectionNames != null)
+                        return _sectionNames;
 
-                    // TODO: Handle long section names with leading `/`
-                    byte[] sectionNameBytes = section.Name;
-                    string sectionNameString = Encoding.UTF8.GetString(sectionNameBytes).TrimEnd('\0');
-                    _sectionNames[i] = sectionNameString;
+                    // Otherwise, build and return the cached array
+                    _sectionNames = new string[_executable.SectionTable.Length];
+                    for (int i = 0; i < _sectionNames.Length; i++)
+                    {
+                        var section = _executable.SectionTable[i];
+
+                        // TODO: Handle long section names with leading `/`
+                        byte[] sectionNameBytes = section.Name;
+                        string sectionNameString = Encoding.UTF8.GetString(sectionNameBytes).TrimEnd('\0');
+                        _sectionNames[i] = sectionNameString;
+                    }
+
+                    return _sectionNames;
                 }
-
-                return _sectionNames;
             }
         }
 
@@ -354,14 +376,14 @@ namespace BurnOutSharp.Wrappers
         private Models.PortableExecutable.Executable _executable;
 
         /// <summary>
+        /// Overlay data, if it exists
+        /// </summary>
+        private byte[] _overlayData = null;
+
+        /// <summary>
         /// Array of sanitized section names
         /// </summary>
         private string[] _sectionNames = null;
-
-        /// <summary>
-        /// Lock object for concurrent modifications on <see cref="_rawSectionData"/>
-        /// </summary>
-        private readonly object _rawSectionsLock = new object();
 
         /// <summary>
         /// Cached raw section data
@@ -369,6 +391,27 @@ namespace BurnOutSharp.Wrappers
         private readonly Dictionary<string, byte[]> _rawSectionData = new Dictionary<string, byte[]>();
 
         #endregion
+
+        #region Lock Objects
+
+        /// <summary>
+        /// Lock object for concurrent modifications on <see cref="_overlayData"/>
+        /// </summary>
+        private readonly object _overlayDataLock = new object();
+
+        /// <summary>
+        /// Lock object for concurrent modifications on <see cref="_sectionNames"/>
+        /// </summary>
+        private readonly object _sectionNamesLock = new object();
+
+        /// <summary>
+        /// Lock object for concurrent modifications on <see cref="_rawSectionData"/>
+        /// </summary>
+        private readonly object _rawSectionsLock = new object();
+
+        #endregion
+
+        #region Constructors
 
         /// <summary>
         /// Private constructor
@@ -417,6 +460,14 @@ namespace BurnOutSharp.Wrappers
             return wrapper;
         }
 
+        #endregion
+
+        // TODO: Write methods for manifest and version data
+        // TODO: Cache both objects for easy access
+        // TODO: Cache all resource objects, key has to be "path"
+        // TODO: Cache all certificate objects
+        // TODO: Cache all import/export tables
+
         /// <summary>
         /// Get raw section data from the source file
         /// </summary>
@@ -446,8 +497,10 @@ namespace BurnOutSharp.Wrappers
             uint sectionAddress = section.VirtualAddress.ConvertVirtualAddress(_executable.SectionTable);
             if (sectionAddress == 0)
                 return null;
+
             uint sectionSize = section.SizeOfRawData;
 
+            // TODO: Use section name and index to combat duplicates
             lock (_rawSectionsLock)
             {
                 // If we already have cached data, just use that immediately
@@ -465,20 +518,38 @@ namespace BurnOutSharp.Wrappers
 
         #region Printing
 
-        /// <summary>
-        /// Pretty print the New Executable information
-        /// </summary>
+        /// <inheritdoc/>
         public override void Print()
         {
             Console.WriteLine("Portable Executable Information:");
             Console.WriteLine("-------------------------");
             Console.WriteLine();
 
-            Console.WriteLine("  MS-DOS Stub Information:");
-            Console.WriteLine("  -------------------------");
-            Console.WriteLine();
+            // Stub
+            PrintStubHeader();
+            PrintStubExtendedHeader();
 
-            Console.WriteLine("  Header Information:");
+            // Header
+            PrintCOFFFileHeader();
+            PrintOptionalHeader();
+
+            // Tables
+            PrintSectionTable();
+            PrintCOFFSymbolTable();
+            PrintAttributeCertificateTable();
+            PrintDelayLoadDirectoryTable();
+            PrintDebugTable();
+            PrintExportTable();
+            PrintImportTable();
+            PrintResourceDirectoryTable();
+        }
+
+        /// <summary>
+        /// Print stub header information
+        /// </summary>
+        private void PrintStubHeader()
+        {
+            Console.WriteLine("  MS-DOS Stub Header Information:");
             Console.WriteLine("  -------------------------");
             Console.WriteLine($"  Magic number: {BitConverter.ToString(_executable.Stub.Header.Magic).Replace("-", string.Empty)}");
             Console.WriteLine($"  Last page bytes: {_executable.Stub.Header.LastPageBytes}");
@@ -495,8 +566,14 @@ namespace BurnOutSharp.Wrappers
             Console.WriteLine($"  Relocation table address: {_executable.Stub.Header.RelocationTableAddr}");
             Console.WriteLine($"  Overlay number: {_executable.Stub.Header.OverlayNumber}");
             Console.WriteLine();
+        }
 
-            Console.WriteLine("  Extended Header Information:");
+        /// <summary>
+        /// Print stub extended header information
+        /// </summary>
+        private void PrintStubExtendedHeader()
+        {
+            Console.WriteLine("  MS-DOS Stub Extended Header Information:");
             Console.WriteLine("  -------------------------");
             Console.WriteLine($"  Reserved words: {string.Join(", ", _executable.Stub.Header.Reserved1)}");
             Console.WriteLine($"  OEM identifier: {_executable.Stub.Header.OEMIdentifier}");
@@ -504,7 +581,13 @@ namespace BurnOutSharp.Wrappers
             Console.WriteLine($"  Reserved words: {string.Join(", ", _executable.Stub.Header.Reserved2)}");
             Console.WriteLine($"  New EXE header address: {_executable.Stub.Header.NewExeHeaderAddr}");
             Console.WriteLine();
+        }
 
+        /// <summary>
+        /// Print COFF file header information
+        /// </summary>
+        private void PrintCOFFFileHeader()
+        {
             Console.WriteLine("  COFF File Header Information:");
             Console.WriteLine("  -------------------------");
             Console.WriteLine($"  Signature: {BitConverter.ToString(_executable.Signature).Replace("-", string.Empty)}");
@@ -516,7 +599,13 @@ namespace BurnOutSharp.Wrappers
             Console.WriteLine($"  Size of optional header: {_executable.COFFFileHeader.SizeOfOptionalHeader}");
             Console.WriteLine($"  Characteristics: {_executable.COFFFileHeader.Characteristics}");
             Console.WriteLine();
+        }
 
+        /// <summary>
+        /// Print optional header information
+        /// </summary>
+        private void PrintOptionalHeader()
+        {
             Console.WriteLine("  Optional Header Information:");
             Console.WriteLine("  -------------------------");
             if (_executable.COFFFileHeader.SizeOfOptionalHeader == 0 || _executable.OptionalHeader == null)
@@ -572,7 +661,7 @@ namespace BurnOutSharp.Wrappers
                     Console.WriteLine($"  Size of heap commit: {_executable.OptionalHeader.SizeOfHeapCommit_PE32Plus}");
                 Console.WriteLine($"  Loader flags: {_executable.OptionalHeader.LoaderFlags}");
                 Console.WriteLine($"  Number of data-directory entries: {_executable.OptionalHeader.NumberOfRvaAndSizes}");
-            
+
                 if (_executable.OptionalHeader.ExportTable != null)
                 {
                     Console.WriteLine("    Export Table (1)");
@@ -671,7 +760,13 @@ namespace BurnOutSharp.Wrappers
                 }
             }
             Console.WriteLine();
+        }
 
+        /// <summary>
+        /// Print section table information
+        /// </summary>
+        private void PrintSectionTable()
+        {
             Console.WriteLine("  Section Table Information:");
             Console.WriteLine("  -------------------------");
             if (_executable.COFFFileHeader.NumberOfSections == 0 || _executable.SectionTable.Length == 0)
@@ -699,7 +794,13 @@ namespace BurnOutSharp.Wrappers
                 }
             }
             Console.WriteLine();
+        }
 
+        /// <summary>
+        /// Print COFF symbol table information
+        /// </summary>
+        private void PrintCOFFSymbolTable()
+        {
             Console.WriteLine("  COFF Symbol Table Information:");
             Console.WriteLine("  -------------------------");
             if (_executable.COFFFileHeader.PointerToSymbolTable == 0
@@ -848,7 +949,13 @@ namespace BurnOutSharp.Wrappers
                 }
             }
             Console.WriteLine();
+        }
 
+        /// <summary>
+        /// Print attribute certificate table information
+        /// </summary>
+        private void PrintAttributeCertificateTable()
+        {
             Console.WriteLine("  Attribute Certificate Table Information:");
             Console.WriteLine("  -------------------------");
             if (_executable.OptionalHeader?.CertificateTable == null
@@ -897,7 +1004,13 @@ namespace BurnOutSharp.Wrappers
                 }
             }
             Console.WriteLine();
+        }
 
+        /// <summary>
+        /// Print delay-load directory table information
+        /// </summary>
+        private void PrintDelayLoadDirectoryTable()
+        {
             Console.WriteLine("  Delay-Load Directory Table Information:");
             Console.WriteLine("  -------------------------");
             if (_executable.OptionalHeader?.DelayImportDescriptor == null
@@ -918,7 +1031,13 @@ namespace BurnOutSharp.Wrappers
                 Console.WriteLine($"  Timestamp = {_executable.DelayLoadDirectoryTable.TimeStamp}");
             }
             Console.WriteLine();
+        }
 
+        /// <summary>
+        /// Print debug table information
+        /// </summary>
+        private void PrintDebugTable()
+        {
             Console.WriteLine("  Debug Table Information:");
             Console.WriteLine("  -------------------------");
             if (_executable.OptionalHeader?.Debug == null
@@ -945,7 +1064,13 @@ namespace BurnOutSharp.Wrappers
                 }
             }
             Console.WriteLine();
+        }
 
+        /// <summary>
+        /// Print export table information
+        /// </summary>
+        private void PrintExportTable()
+        {
             Console.WriteLine("  Export Table Information:");
             Console.WriteLine("  -------------------------");
             if (_executable.OptionalHeader?.ExportTable == null
@@ -1041,7 +1166,13 @@ namespace BurnOutSharp.Wrappers
                 }
             }
             Console.WriteLine();
+        }
 
+        /// <summary>
+        /// Print import table information
+        /// </summary>
+        private void PrintImportTable()
+        {
             Console.WriteLine("  Import Table Information:");
             Console.WriteLine("  -------------------------");
             if (_executable.OptionalHeader?.ImportTable == null
@@ -1166,7 +1297,13 @@ namespace BurnOutSharp.Wrappers
                 }
             }
             Console.WriteLine();
+        }
 
+        /// <summary>
+        /// Print resource directory table information
+        /// </summary>
+        private void PrintResourceDirectoryTable()
+        {
             Console.WriteLine("  Resource Directory Table Information:");
             Console.WriteLine("  -------------------------");
             if (_executable.OptionalHeader?.ResourceTable == null
@@ -1888,7 +2025,7 @@ namespace BurnOutSharp.Wrappers
 
             Console.WriteLine();
         }
-    
+
         #endregion
     }
 }

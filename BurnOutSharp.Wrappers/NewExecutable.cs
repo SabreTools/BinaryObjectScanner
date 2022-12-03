@@ -218,6 +218,8 @@ namespace BurnOutSharp.Wrappers
 
         #endregion
 
+        #region Constructors
+
         /// <summary>
         /// Private constructor
         /// </summary>
@@ -264,23 +266,41 @@ namespace BurnOutSharp.Wrappers
             };
             return wrapper;
         }
-    
+
+        #endregion
+
         #region Printing
-    
-        /// <summary>
-        /// Pretty print the New Executable information
-        /// </summary>
+
+        /// <inheritdoc/>
         public override void Print()
         {
             Console.WriteLine("New Executable Information:");
             Console.WriteLine("-------------------------");
             Console.WriteLine();
 
-            Console.WriteLine("  MS-DOS Stub Information:");
-            Console.WriteLine("  -------------------------");
-            Console.WriteLine();
+            // Stub
+            PrintStubHeader();
+            PrintStubExtendedHeader();
 
-            Console.WriteLine("  Header Information:");
+            // Header
+            PrintHeader();
+
+            // Tables
+            PrintSegmentTable();
+            PrintResourceTable();
+            PrintResidentNameTable();
+            PrintModuleReferenceTable();
+            PrintImportedNameTable();
+            PrintEntryTable();
+            PrintNonresidentNameTable();
+        }
+
+        /// <summary>
+        /// Print stub header information
+        /// </summary>
+        private void PrintStubHeader()
+        {
+            Console.WriteLine("  MS-DOS Stub Header Information:");
             Console.WriteLine("  -------------------------");
             Console.WriteLine($"  Magic number: {BitConverter.ToString(_executable.Stub.Header.Magic).Replace("-", string.Empty)}");
             Console.WriteLine($"  Last page bytes: {_executable.Stub.Header.LastPageBytes}");
@@ -297,8 +317,14 @@ namespace BurnOutSharp.Wrappers
             Console.WriteLine($"  Relocation table address: {_executable.Stub.Header.RelocationTableAddr}");
             Console.WriteLine($"  Overlay number: {_executable.Stub.Header.OverlayNumber}");
             Console.WriteLine();
+        }
 
-            Console.WriteLine("  Extended Header Information:");
+        /// <summary>
+        /// Print stub extended header information
+        /// </summary>
+        private void PrintStubExtendedHeader()
+        {
+            Console.WriteLine("  MS-DOS Stub Extended Header Information:");
             Console.WriteLine("  -------------------------");
             Console.WriteLine($"  Reserved words: {string.Join(", ", _executable.Stub.Header.Reserved1)}");
             Console.WriteLine($"  OEM identifier: {_executable.Stub.Header.OEMIdentifier}");
@@ -306,7 +332,13 @@ namespace BurnOutSharp.Wrappers
             Console.WriteLine($"  Reserved words: {string.Join(", ", _executable.Stub.Header.Reserved2)}");
             Console.WriteLine($"  New EXE header address: {_executable.Stub.Header.NewExeHeaderAddr}");
             Console.WriteLine();
+        }
 
+        /// <summary>
+        /// Print header information
+        /// </summary>
+        private void PrintHeader()
+        {
             Console.WriteLine("  Header Information:");
             Console.WriteLine("  -------------------------");
             Console.WriteLine($"  Magic number: {BitConverter.ToString(_executable.Header.Magic).Replace("-", string.Empty)}");
@@ -341,7 +373,13 @@ namespace BurnOutSharp.Wrappers
             Console.WriteLine($"  Windows SDK revision: {_executable.Header.WindowsSDKRevision}");
             Console.WriteLine($"  Windows SDK version: {_executable.Header.WindowsSDKVersion}");
             Console.WriteLine();
+        }
 
+        /// <summary>
+        /// Print segment table information
+        /// </summary>
+        private void PrintSegmentTable()
+        {
             Console.WriteLine("  Segment Table Information:");
             Console.WriteLine("  -------------------------");
             if (_executable.Header.FileSegmentCount == 0 || _executable.SegmentTable.Length == 0)
@@ -361,7 +399,13 @@ namespace BurnOutSharp.Wrappers
                 }
             }
             Console.WriteLine();
+        }
 
+        /// <summary>
+        /// Print resource table information
+        /// </summary>
+        private void PrintResourceTable()
+        {
             Console.WriteLine("  Resource Table Information:");
             Console.WriteLine("  -------------------------");
             Console.WriteLine($"  Alignment shift count: {_executable.ResourceTable.AlignmentShiftCount}");
@@ -415,7 +459,13 @@ namespace BurnOutSharp.Wrappers
                 }
             }
             Console.WriteLine();
+        }
 
+        /// <summary>
+        /// Print resident-name table information
+        /// </summary>
+        private void PrintResidentNameTable()
+        {
             Console.WriteLine("  Resident-Name Table Information:");
             Console.WriteLine("  -------------------------");
             if (_executable.Header.ResidentNameTableOffset == 0 || _executable.ResidentNameTable.Length == 0)
@@ -434,7 +484,13 @@ namespace BurnOutSharp.Wrappers
                 }
             }
             Console.WriteLine();
+        }
 
+        /// <summary>
+        /// Print module-reference table information
+        /// </summary>
+        private void PrintModuleReferenceTable()
+        {
             Console.WriteLine("  Module-Reference Table Information:");
             Console.WriteLine("  -------------------------");
             if (_executable.Header.ModuleReferenceTableSize == 0 || _executable.ModuleReferenceTable.Length == 0)
@@ -452,7 +508,13 @@ namespace BurnOutSharp.Wrappers
                 }
             }
             Console.WriteLine();
+        }
 
+        /// <summary>
+        /// Print imported-name table information
+        /// </summary>
+        private void PrintImportedNameTable()
+        {
             Console.WriteLine("  Imported-Name Table Information:");
             Console.WriteLine("  -------------------------");
             if (_executable.Header.ImportedNamesTableOffset == 0 || _executable.ImportedNameTable.Count == 0)
@@ -469,7 +531,13 @@ namespace BurnOutSharp.Wrappers
                 }
             }
             Console.WriteLine();
+        }
 
+        /// <summary>
+        /// Print entry table information
+        /// </summary>
+        private void PrintEntryTable()
+        {
             Console.WriteLine("  Entry Table Information:");
             Console.WriteLine("  -------------------------");
             if (_executable.Header.EntryTableSize == 0 || _executable.EntryTable.Length == 0)
@@ -500,7 +568,13 @@ namespace BurnOutSharp.Wrappers
                 }
             }
             Console.WriteLine();
+        }
 
+        /// <summary>
+        /// Print nonresident-name table information
+        /// </summary>
+        private void PrintNonresidentNameTable()
+        {
             Console.WriteLine("  Nonresident-Name Table Information:");
             Console.WriteLine("  -------------------------");
             if (_executable.Header.NonResidentNameTableSize == 0 || _executable.NonResidentNameTable.Length == 0)
@@ -520,7 +594,7 @@ namespace BurnOutSharp.Wrappers
             }
             Console.WriteLine();
         }
-    
+
         #endregion
     }
 }
