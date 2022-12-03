@@ -1356,7 +1356,8 @@ namespace BurnOutSharp.Builder
                             while ((offset % 4) != 0)
                                 stringData.Padding = entry.Data.ReadUInt16(ref offset);
 
-                            stringData.Value = entry.Data.ReadString(ref offset, Encoding.Unicode);
+                            if (stringData.ValueLength != 0)
+                                stringData.Value = entry.Data.ReadString(ref offset, Encoding.Unicode);
 
                             while ((offset % 4) != 0)
                                 _ = entry.Data.ReadUInt16(ref offset);
@@ -1470,7 +1471,8 @@ namespace BurnOutSharp.Builder
                             while ((offset % 4) != 0)
                                 stringData.Padding = entry.Data.ReadUInt16(ref offset);
 
-                            stringData.Value = entry.Data.ReadString(ref offset, Encoding.Unicode);
+                            if (stringData.ValueLength != 0)
+                                stringData.Value = entry.Data.ReadString(ref offset, Encoding.Unicode);
 
                             while ((offset % 4) != 0)
                                 _ = entry.Data.ReadUInt16(ref offset);
