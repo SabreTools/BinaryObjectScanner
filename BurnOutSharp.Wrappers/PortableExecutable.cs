@@ -635,6 +635,15 @@ namespace BurnOutSharp.Wrappers
 
         #endregion
 
+        #region Constants
+
+        /// <summary>
+        /// Special string representing the MS-DOS executable data "section"
+        /// </summary>
+        public const string MSDOSExecutableData = "[MS-DOS Executable Data]";
+
+        #endregion
+
         #region Constructors
 
         /// <summary>
@@ -691,6 +700,73 @@ namespace BurnOutSharp.Wrappers
         // TODO: Cache all certificate objects
 
         /// <summary>
+        /// Determine if a section is contained within the section table
+        /// </summary>
+        /// <param name="sectionName">Name of the section to check for</param>
+        /// <param name="exact">True to enable exact matching of names, false for starts-with</param>
+        /// <returns>True if the section is in the executable, false otherwise</returns>
+        public bool ContainsSection(string sectionName, bool exact = false)
+        {
+            // Get all section names first
+            if (SectionNames == null)
+                return false;
+
+            // If we're checking exactly, return only exact matches
+            if (exact)
+                return SectionNames.Any(n => n.Equals(sectionName));
+
+            // Otherwise, check if section name starts with the value
+            else
+                return SectionNames.Any(n => n.StartsWith(sectionName));
+        }
+
+        /// <summary>
+        /// Get the first section based on name, if possible
+        /// </summary>
+        /// <param name="sectionName">Name of the section to check for</param>
+        /// <param name="exact">True to enable exact matching of names, false for starts-with</param>
+        /// <returns>Section data on success, null on error</returns>
+        public Models.PortableExecutable.SectionHeader GetFirstSection(string sectionName, bool exact = false)
+        {
+            // If we have no sections, we can't do anything
+            if (_executable.SectionTable == null || !SectionTable.Any())
+                return null;
+
+            // TODO: Handle long section names with leading `/`
+
+            // If we're checking exactly, return only exact matches
+            if (exact)
+                return SectionTable.FirstOrDefault(s => Encoding.UTF8.GetString(s.Name).Equals(sectionName));
+
+            // Otherwise, check if section name starts with the value
+            else
+                return SectionTable.FirstOrDefault(s => Encoding.UTF8.GetString(s.Name).StartsWith(sectionName));
+        }
+
+        /// <summary>
+        /// Get the last section based on name, if possible
+        /// </summary>
+        /// <param name="sectionName">Name of the section to check for</param>
+        /// <param name="exact">True to enable exact matching of names, false for starts-with</param>
+        /// <returns>Section data on success, null on error</returns>
+        public Models.PortableExecutable.SectionHeader GetLastSection(string sectionName, bool exact = false)
+        {
+            // If we have no sections, we can't do anything
+            if (SectionTable == null || !SectionTable.Any())
+                return null;
+
+            // TODO: Handle long section names with leading `/`
+
+            // If we're checking exactly, return only exact matches (with nulls trimmed)
+            if (exact)
+                return SectionTable.LastOrDefault(s => Encoding.UTF8.GetString(s.Name).Equals(sectionName));
+
+            // Otherwise, check if section name starts with the value
+            else
+                return SectionTable.LastOrDefault(s => Encoding.UTF8.GetString(s.Name).StartsWith(sectionName));
+        }
+
+        /// <summary>
         /// Get raw section data from the source file
         /// </summary>
         /// <param name="sectionName">Name of the section to get raw data for</param>
@@ -705,9 +781,25 @@ namespace BurnOutSharp.Wrappers
             if (!DataSourceIsValid())
                 return null;
 
-            // Make sure the section exists
-            if (SectionNames == null)
-                return null;
+            // We have a special case for the MS-DOS stub executable data
+            if (sectionName == MSDOSExecutableData)
+            {
+                lock (_rawSectionsLock)
+                {
+                    // If we already have cached data, just use that immediately
+                    if (_rawSectionData.ContainsKey(sectionName))
+                        return _rawSectionData[sectionName];
+
+                    // Populate the raw stub executable data based on the source
+                    int endOfStubHeader = 0x40;
+                    int lengthOfStubExecutableData = (int)_executable.Stub.Header.NewExeHeaderAddr - endOfStubHeader;
+                    byte[] sectionData = ReadFromDataSource(endOfStubHeader, lengthOfStubExecutableData);
+
+                    // Cache and return the stub executable data, even if null
+                    _rawSectionData[sectionName] = sectionData;
+                    return sectionData;
+                }
+            }
 
             // Get the section index from the array
             int sectionIndex = Array.IndexOf(SectionNames, sectionName);
@@ -738,7 +830,91 @@ namespace BurnOutSharp.Wrappers
             }
         }
 
-        // TODO: Make a method that allows you to find resources
+        /// <summary>
+        /// Find dialog box resources by title
+        /// </summary>
+        /// <param name="title">Dialog box title to check for</param>
+        /// <returns>Enumerable of matching resources</returns>
+        public IEnumerable<Models.PortableExecutable.DialogBoxResource> FindDialogByTitle(string title)
+        {
+            return ResourceData.Select(r => r.Value)
+                .Select(r => r as Models.PortableExecutable.DialogBoxResource)
+                .Where(d => d != null)
+                .Where(d =>
+                {
+                    return (d.DialogTemplate?.TitleResource?.Contains(title) ?? false)
+                        || (d.ExtendedDialogTemplate?.TitleResource?.Contains(title) ?? false);
+                });
+        }
+
+        /// <summary>
+        /// Find dialog box resources by contained item title
+        /// </summary>
+        /// <param name="title">Dialog box item title to check for</param>
+        /// <returns>Enumerable of matching resources</returns>
+        public IEnumerable<Models.PortableExecutable.DialogBoxResource> FindDialogBoxByItemTitle(string title)
+        {
+            return ResourceData.Select(r => r.Value)
+                .Select(r => r as Models.PortableExecutable.DialogBoxResource)
+                .Where(d => d != null)
+                .Where(d =>
+                {
+                    if (d.DialogItemTemplates != null)
+                    {
+                        return d.DialogItemTemplates
+                            .Where(dit => dit?.TitleResource != null)
+                            .Any(dit => dit.TitleResource.Contains(title));
+                    }
+                    else if (d.ExtendedDialogItemTemplates!= null)
+                    {
+                        return d.ExtendedDialogItemTemplates
+                            .Where(edit => edit?.TitleResource != null)
+                            .Any(edit => edit.TitleResource.Contains(title));
+                    }
+
+                    return false;
+                });
+        }
+
+        /// <summary>
+        /// Find unparsed resources by string value
+        /// </summary>
+        /// <param name="value">String value to check for</param>
+        /// <returns>Enumerable of matching resources</returns>
+        public IEnumerable<byte[]> FindGenericResource(string value)
+        {
+            return ResourceData.Select(r => r.Value)
+                .Select(r => r as byte[])
+                .Where(b => b != null)
+                .Where(b => 
+                {
+                    try
+                    {
+                        string arrayAsASCII = Encoding.ASCII.GetString(b);
+                        if (arrayAsASCII.Contains(value))
+                            return true;
+                    }
+                    catch { }
+
+                    try
+                    {
+                        string arrayAsUTF8 = Encoding.UTF8.GetString(b);
+                        if (arrayAsUTF8.Contains(value))
+                            return true;
+                    }
+                    catch { }
+
+                    try
+                    {
+                        string arrayAsUnicode = Encoding.Unicode.GetString(b);
+                        if (arrayAsUnicode.Contains(value))
+                            return true;
+                    }
+                    catch { }
+
+                    return true;
+                });
+        }
 
         /// <summary>
         /// Get the version info string associated with a key, if possible
@@ -925,7 +1101,7 @@ namespace BurnOutSharp.Wrappers
             }
 
             // If we have a custom resource type
-            else if (types != null && types.Count > 0 && types[0] is string resourceString)
+            else if (types != null && types.Count > 0 && types[0] is string)
             {
                 value = entry.Data;
             }
@@ -937,6 +1113,21 @@ namespace BurnOutSharp.Wrappers
         #endregion
 
         #region Printing
+
+        /// <summary>
+        /// Print all sections, including their start and end addresses
+        /// </summary>
+        public void PrintAllSections()
+        {
+            foreach (var section in _executable.SectionTable)
+            {
+                // TODO: Handle long section names with leading `/`
+                string sectionName = Encoding.UTF8.GetString(section.Name);
+                int sectionAddr = (int)section.PointerToRawData;
+                int sectionEnd = sectionAddr + (int)section.VirtualSize;
+                Console.WriteLine($"{sectionName}: {sectionAddr} -> {sectionEnd}");
+            }
+        }
 
         /// <inheritdoc/>
         public override void Print()
@@ -1417,7 +1608,14 @@ namespace BurnOutSharp.Wrappers
                     {
                         Console.WriteLine($"    Certificate Data [Binary]");
                         Console.WriteLine("  -------------------------");
-                        Console.WriteLine($"    {BitConverter.ToString(entry.Certificate).Replace("-", string.Empty)}");
+                        try
+                        {
+                            Console.WriteLine($"    {BitConverter.ToString(entry.Certificate).Replace("-", string.Empty)}");
+                        }
+                        catch
+                        {
+                            Console.WriteLine($"    [DATA TOO LARGE TO FORMAT]");
+                        }
                     }
 
                     Console.WriteLine();
@@ -2432,15 +2630,17 @@ namespace BurnOutSharp.Wrappers
                     default:
                         Console.WriteLine($"{padding}Type {(Models.PortableExecutable.ResourceType)resourceType} found, not parsed yet");
                         //Console.WriteLine($"{padding}Data: {BitConverter.ToString(entry.Data).Replace("-", string.Empty)}");
-                        //Console.WriteLine($"{padding}Data: {Encoding.Unicode.GetString(entry.Data)}");
+                        Console.WriteLine($"{padding}Data: {Encoding.ASCII.GetString(entry.Data)}");
                         break;
                 }
             }
             else if (types != null && types.Count > 0 && types[0] is string resourceString)
             {
                 Console.WriteLine($"{padding}Custom data type: {resourceString}");
-                //Console.WriteLine($"{padding}Data: {BitConverter.ToString(entry.Data).Replace("-", string.Empty)}");
-                //Console.WriteLine($"{padding}Data: {Encoding.Unicode.GetString(entry.Data)}");
+                if (entry.Data[0] == 0x4D && entry.Data[1] == 0x5A)
+                    Console.WriteLine($"{padding}Data: [Embedded Executable File]"); // TODO: Parse this out and print separately
+                else
+                    Console.WriteLine($"{padding}Data: {Encoding.ASCII.GetString(entry.Data)}");
             }
 
             Console.WriteLine();
