@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Xml;
 using static BurnOutSharp.Builder.Extensions;
@@ -301,15 +302,21 @@ namespace BurnOutSharp.Wrappers
         /// <inheritdoc cref="Models.PortableExecutable.ExportTable"/>
         public Models.PortableExecutable.ExportTable ExportTable => _executable.ExportTable;
 
+        /// <inheritdoc cref="Models.PortableExecutable.ExportTable.ExportNameTable"/>
+        public string[] ExportNameTable => _executable.ExportTable?.ExportNameTable?.Strings;
+
         /// <inheritdoc cref="Models.PortableExecutable.ImportTable"/>
         public Models.PortableExecutable.ImportTable ImportTable => _executable.ImportTable;
+
+        /// <inheritdoc cref="Models.PortableExecutable.ImportTable.HintNameTable"/>
+        public string[] ImportHintNameTable => _executable.ImportTable?.HintNameTable != null
+            ? _executable.ImportTable.HintNameTable.Select(entry => entry.Name).ToArray()
+            : null;
 
         /// <inheritdoc cref="Models.PortableExecutable.ResourceDirectoryTable"/>
         public Models.PortableExecutable.ResourceDirectoryTable ResourceDirectoryTable => _executable.ResourceDirectoryTable;
 
         #endregion
-
-        // TODO: Determine what properties can be passed through
 
         #endregion
 
@@ -364,6 +371,152 @@ namespace BurnOutSharp.Wrappers
             }
         }
 
+        /// <summary>
+        /// Dictionary of resource data
+        /// </summary>
+        public Dictionary<string, object> ResourceData
+        {
+            get
+            {
+                lock (_resourceDataLock)
+                {
+                    // Use the cached data if possible
+                    if (_resourceData != null)
+                        return _resourceData;
+
+                    // If we have no resource table, just return
+                    if (_executable.OptionalHeader?.ResourceTable == null
+                        || _executable.OptionalHeader.ResourceTable.VirtualAddress == 0
+                        || _executable.ResourceDirectoryTable == null)
+                        return null;
+
+                    // Otherwise, build and return the cached dictionary
+                    ParseResourceDirectoryTable(_executable.ResourceDirectoryTable, types: new List<object>());
+                    return _resourceData;
+                }
+            }
+        }
+
+        #region Version Information
+
+        /// <summary>
+        /// Additional information that should be displayed for diagnostic purposes.
+        /// </summary>
+        public string Comments => GetVersionInfoString("Comments");
+
+        /// <summary>
+        /// Company that produced the file—for example, "Microsoft Corporation" or
+        /// "Standard Microsystems Corporation, Inc." This string is required.
+        /// </summary>
+        public string CompanyName => GetVersionInfoString("CompanyName");
+
+        /// <summary>
+        /// File description to be presented to users. This string may be displayed in a
+        /// list box when the user is choosing files to install—for example, "Keyboard
+        /// Driver for AT-Style Keyboards". This string is required.
+        /// </summary>
+        public string FileDescription => GetVersionInfoString("FileDescription");
+
+        /// <summary>
+        /// Version number of the file—for example, "3.10" or "5.00.RC2". This string
+        /// is required.
+        /// </summary>
+        public string FileVersion => GetVersionInfoString("FileVersion");
+
+        /// <summary>
+        /// Internal name of the file, if one exists—for example, a module name if the
+        /// file is a dynamic-link library. If the file has no internal name, this
+        /// string should be the original filename, without extension. This string is required.
+        /// </summary>
+        public string InternalName => GetVersionInfoString(key: "InternalName");
+
+        /// <summary>
+        /// Copyright notices that apply to the file. This should include the full text of
+        /// all notices, legal symbols, copyright dates, and so on. This string is optional.
+        /// </summary>
+        public string LegalCopyright => GetVersionInfoString(key: "LegalCopyright");
+
+        /// <summary>
+        /// Trademarks and registered trademarks that apply to the file. This should include
+        /// the full text of all notices, legal symbols, trademark numbers, and so on. This
+        /// string is optional.
+        /// </summary>
+        public string LegalTrademarks => GetVersionInfoString(key: "LegalTrademarks");
+
+        /// <summary>
+        /// Original name of the file, not including a path. This information enables an
+        /// application to determine whether a file has been renamed by a user. The format of
+        /// the name depends on the file system for which the file was created. This string
+        /// is required.
+        /// </summary>
+        public string OriginalFilename => GetVersionInfoString(key: "OriginalFilename");
+
+        /// <summary>
+        /// Information about a private version of the file—for example, "Built by TESTER1 on
+        /// \TESTBED". This string should be present only if VS_FF_PRIVATEBUILD is specified in
+        /// the fileflags parameter of the root block.
+        /// </summary>
+        public string PrivateBuild => GetVersionInfoString(key: "PrivateBuild");
+
+        /// <summary>
+        /// Name of the product with which the file is distributed. This string is required.
+        /// </summary>
+        public string ProductName => GetVersionInfoString(key: "ProductName");
+
+        /// <summary>
+        /// Version of the product with which the file is distributed—for example, "3.10" or
+        /// "5.00.RC2". This string is required.
+        /// </summary>
+        public string ProductVersion => GetVersionInfoString(key: "ProductVersion");
+
+        /// <summary>
+        /// Text that specifies how this version of the file differs from the standard
+        /// version—for example, "Private build for TESTER1 solving mouse problems on M250 and
+        /// M250E computers". This string should be present only if VS_FF_SPECIALBUILD is
+        /// specified in the fileflags parameter of the root block.
+        /// </summary>
+        public string SpecialBuild => GetVersionInfoString(key: "SpecialBuild");
+
+        #endregion
+
+        #region Manifest Information
+
+        /// <summary>
+        /// Description as derived from the assembly manifest
+        /// </summary>
+        public string AssemblyDescription
+        {
+            get
+            {
+                var manifest = GetAssemblyManifest();
+                return manifest?
+                    .Description?
+                    .Value;
+            }
+        }
+
+        /// <summary>
+        /// Version as derived from the assembly manifest
+        /// </summary>
+        /// <remarks>
+        /// If there are multiple identities included in the manifest,
+        /// this will only retrieve the value from the first that doesn't
+        /// have a null or empty version.
+        /// </remarks>
+        public string AssemblyVersion
+        {
+            get
+            {
+                var manifest = GetAssemblyManifest();
+                return manifest?
+                    .AssemblyIdentities?
+                    .FirstOrDefault(ai => !string.IsNullOrWhiteSpace(ai.Version))?
+                    .Version;
+            }
+        }
+
+        #endregion
+
         // TODO: Determine what extension properties are needed
 
         #endregion
@@ -390,6 +543,21 @@ namespace BurnOutSharp.Wrappers
         /// </summary>
         private readonly Dictionary<string, byte[]> _rawSectionData = new Dictionary<string, byte[]>();
 
+        /// <summary>
+        /// Cached resource data
+        /// </summary>
+        private readonly Dictionary<string, object> _resourceData = new Dictionary<string, object>();
+
+        /// <summary>
+        /// Cached version info data
+        /// </summary>
+        private Models.PortableExecutable.VersionInfo _versionInfo = null;
+
+        /// <summary>
+        /// Cached assembly manifest data
+        /// </summary>
+        private Models.PortableExecutable.AssemblyManifest _assemblyManifest = null;
+
         #endregion
 
         #region Lock Objects
@@ -408,6 +576,11 @@ namespace BurnOutSharp.Wrappers
         /// Lock object for concurrent modifications on <see cref="_rawSectionData"/>
         /// </summary>
         private readonly object _rawSectionsLock = new object();
+
+        /// <summary>
+        /// Lock object for concurrent modifications on <see cref="_resourceData"/>
+        /// </summary>
+        private readonly object _resourceDataLock = new object();
 
         #endregion
 
@@ -462,16 +635,14 @@ namespace BurnOutSharp.Wrappers
 
         #endregion
 
-        // TODO: Write methods for manifest and version data
-        // TODO: Cache both objects for easy access
-        // TODO: Cache all resource objects, key has to be "path"
+        #region Data
+
         // TODO: Cache all certificate objects
-        // TODO: Cache all import/export tables
 
         /// <summary>
         /// Get raw section data from the source file
         /// </summary>
-        /// <param name="sectionName">Stream representing the executable</param>
+        /// <param name="sectionName">Name of the section to get raw data for</param>
         /// <returns>Byte array representing the data, null on error</returns>
         public byte[] GetRawSection(string sectionName)
         {
@@ -515,6 +686,204 @@ namespace BurnOutSharp.Wrappers
                 return sectionData;
             }
         }
+
+        // TODO: Make a method that allows you to find resources
+
+        /// <summary>
+        /// Get the version info string associated with a key, if possible
+        /// </summary>
+        /// <param name="key">Case-insensitive key to find in the version info</param>
+        /// <returns>String representing the data, null on error</returns>
+        /// <remarks>
+        /// This code does not take into account the locale and will find and return
+        /// the first available value. This may not actually matter for version info,
+        /// but it is worth mentioning.
+        /// </remarks>
+        public string GetVersionInfoString(string key)
+        {
+            // If we have an invalid key, we can't do anything
+            if (string.IsNullOrEmpty(key))
+                return null;
+
+            // Ensure that we have the resource data cached
+            _ = ResourceData;
+
+            // If we don't have string version info in this executable
+            var stringTable = _versionInfo?.StringFileInfo?.Children;
+            if (stringTable == null || !stringTable.Any())
+                return null;
+
+            // Try to find a key that matches
+            var match = stringTable
+                .SelectMany(st => st.Children)
+                .FirstOrDefault(sd => key.Equals(sd.Key, StringComparison.OrdinalIgnoreCase));
+
+            // Return either the match or null
+            return match?.Value?.TrimEnd('\0');
+        }
+
+        /// <summary>
+        /// Get the assembly manifest, if possible
+        /// </summary>
+        /// <returns>Assembly manifest object, null on error</returns>
+        private Models.PortableExecutable.AssemblyManifest GetAssemblyManifest()
+        {
+            // Use the cached data if possible
+            if (_assemblyManifest != null)
+                return _assemblyManifest;
+
+            // Ensure that we have the resource data cached
+            _ = ResourceData;
+
+            // Return the now-cached assembly manifest
+            return _assemblyManifest;
+        }
+
+        /// <summary>
+        /// Parse the resource directory table information
+        /// </summary>
+        private void ParseResourceDirectoryTable(Models.PortableExecutable.ResourceDirectoryTable table, List<object> types)
+        {
+            for (int i = 0; i < table.NumberOfNameEntries; i++)
+            {
+                var entry = table.NameEntries[i];
+                var newTypes = new List<object>(types ?? new List<object>());
+                newTypes.Add(Encoding.UTF8.GetString(entry.Name.UnicodeString ?? new byte[0]));
+                ParseNameResourceDirectoryEntry(entry, newTypes);
+            }
+
+            for (int i = 0; i < table.NumberOfIDEntries; i++)
+            {
+                var entry = table.IDEntries[i];
+                var newTypes = new List<object>(types ?? new List<object>());
+                newTypes.Add(entry.IntegerID);
+                ParseIDResourceDirectoryEntry(entry, newTypes);
+            }
+        }
+
+        /// <summary>
+        /// Parse the name resource directory entry information
+        /// </summary>
+        private void ParseNameResourceDirectoryEntry(Models.PortableExecutable.ResourceDirectoryEntry entry, List<object> types)
+        {
+            if (entry.DataEntry != null)
+                ParseResourceDataEntry(entry.DataEntry, types);
+            else if (entry.Subdirectory != null)
+                ParseResourceDirectoryTable(entry.Subdirectory, types);
+        }
+
+        /// <summary>
+        /// Parse the ID resource directory entry information
+        /// </summary>
+        private void ParseIDResourceDirectoryEntry(Models.PortableExecutable.ResourceDirectoryEntry entry, List<object> types)
+        {
+            if (entry.DataEntry != null)
+                ParseResourceDataEntry(entry.DataEntry, types);
+            else if (entry.Subdirectory != null)
+                ParseResourceDirectoryTable(entry.Subdirectory, types);
+        }
+
+        /// <summary>
+        /// Parse the resource data entry information
+        /// </summary>
+        /// <remarks>
+        /// When caching the version information and assembly manifest, this code assumes that there is only one of each
+        /// of those resources in the entire exectuable. This means that only the last found version or manifest will
+        /// ever be cached.
+        /// </remarks>
+        private void ParseResourceDataEntry(Models.PortableExecutable.ResourceDataEntry entry, List<object> types)
+        {
+            // Create the key and value objects
+            string key = types == null ? $"UNKNOWN_{Guid.NewGuid()}" : string.Join(", ", types);
+            object value = entry.Data;
+
+            // If we have a known resource type
+            if (types != null && types.Count > 0 && types[0] is uint resourceType)
+            {
+                switch ((Models.PortableExecutable.ResourceType)resourceType)
+                {
+                    case Models.PortableExecutable.ResourceType.RT_CURSOR:
+                        value = entry.Data;
+                        break;
+                    case Models.PortableExecutable.ResourceType.RT_BITMAP:
+                        value = entry.Data;
+                        break;
+                    case Models.PortableExecutable.ResourceType.RT_ICON:
+                        value = entry.Data;
+                        break;
+                    case Models.PortableExecutable.ResourceType.RT_MENU:
+                        value = entry.AsMenu();
+                        break;
+                    case Models.PortableExecutable.ResourceType.RT_DIALOG:
+                        value = entry.AsDialogBox();
+                        break;
+                    case Models.PortableExecutable.ResourceType.RT_STRING:
+                        value = entry.AsStringTable();
+                        break;
+                    case Models.PortableExecutable.ResourceType.RT_FONTDIR:
+                        value = entry.Data;
+                        break;
+                    case Models.PortableExecutable.ResourceType.RT_FONT:
+                        value = entry.Data;
+                        break;
+                    case Models.PortableExecutable.ResourceType.RT_ACCELERATOR:
+                        value = entry.AsAcceleratorTableResource();
+                        break;
+                    case Models.PortableExecutable.ResourceType.RT_RCDATA:
+                        value = entry.Data;
+                        break;
+                    case Models.PortableExecutable.ResourceType.RT_MESSAGETABLE:
+                        value = entry.AsMessageResourceData();
+                        break;
+                    case Models.PortableExecutable.ResourceType.RT_GROUP_CURSOR:
+                        value = entry.Data;
+                        break;
+                    case Models.PortableExecutable.ResourceType.RT_GROUP_ICON:
+                        value = entry.Data;
+                        break;
+                    case Models.PortableExecutable.ResourceType.RT_VERSION:
+                        _versionInfo = entry.AsVersionInfo();
+                        value = _versionInfo;
+                        break;
+                    case Models.PortableExecutable.ResourceType.RT_DLGINCLUDE:
+                        value = entry.Data;
+                        break;
+                    case Models.PortableExecutable.ResourceType.RT_PLUGPLAY:
+                        value = entry.Data;
+                        break;
+                    case Models.PortableExecutable.ResourceType.RT_VXD:
+                        value = entry.Data;
+                        break;
+                    case Models.PortableExecutable.ResourceType.RT_ANICURSOR:
+                        value = entry.Data;
+                        break;
+                    case Models.PortableExecutable.ResourceType.RT_ANIICON:
+                        value = entry.Data;
+                        break;
+                    case Models.PortableExecutable.ResourceType.RT_HTML:
+                        value = entry.Data;
+                        break;
+                    case Models.PortableExecutable.ResourceType.RT_MANIFEST:
+                        _assemblyManifest = entry.AsAssemblyManifest();
+                        value = _versionInfo;
+                        break;
+                    default:
+                        value = entry.Data;
+                        break;
+                }
+            }
+
+            // If we have a custom resource type
+            else if (types != null && types.Count > 0 && types[0] is string resourceString)
+            {
+                value = entry.Data;
+            }
+
+            // Add the key and value to the cache
+            _resourceData[key] = value;
+        }
+
+        #endregion
 
         #region Printing
 
@@ -1320,7 +1689,7 @@ namespace BurnOutSharp.Wrappers
         }
 
         /// <summary>
-        /// Pretty print the Portable Executable resource directory table information
+        /// Pretty print the resource directory table information
         /// </summary>
         private static void PrintResourceDirectoryTable(Models.PortableExecutable.ResourceDirectoryTable table, int level, List<object> types)
         {
@@ -1374,7 +1743,7 @@ namespace BurnOutSharp.Wrappers
         }
 
         /// <summary>
-        /// Pretty print the Portable Executable name resource directory entry information
+        /// Pretty print the name resource directory entry information
         /// </summary>
         private static void PrintNameResourceDirectoryEntry(Models.PortableExecutable.ResourceDirectoryEntry entry, int level, List<object> types)
         {
@@ -1390,7 +1759,7 @@ namespace BurnOutSharp.Wrappers
         }
 
         /// <summary>
-        /// Pretty print the Portable Executable ID resource directory entry information
+        /// Pretty print the ID resource directory entry information
         /// </summary>
         private static void PrintIDResourceDirectoryEntry(Models.PortableExecutable.ResourceDirectoryEntry entry, int level, List<object> types)
         {
@@ -1405,7 +1774,7 @@ namespace BurnOutSharp.Wrappers
         }
 
         /// <summary>
-        /// Pretty print the Portable Executable resource data entry information
+        /// Pretty print the resource data entry information
         /// </summary>
         private static void PrintResourceDataEntry(Models.PortableExecutable.ResourceDataEntry entry, int level, List<object> types)
         {
