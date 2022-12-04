@@ -395,7 +395,7 @@ namespace BurnOutSharp.Wrappers
         }
 
         /// <summary>
-        /// Array of sanitized section names
+        /// Sanitized section names
         /// </summary>
         public string[] SectionNames
         {
@@ -420,6 +420,30 @@ namespace BurnOutSharp.Wrappers
                     }
 
                     return _sectionNames;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Stub executable data, if it exists
+        /// </summary>
+        public byte[] StubExecutableData
+        {
+            get
+            {
+                lock (_stubExecutableDataLock)
+                {
+                    // If we already have cached data, just use that immediately
+                    if (_stubExecutableData != null)
+                        return _stubExecutableData;
+
+                    // Populate the raw stub executable data based on the source
+                    int endOfStubHeader = 0x40;
+                    int lengthOfStubExecutableData = (int)_executable.Stub.Header.NewExeHeaderAddr - endOfStubHeader;
+                    _stubExecutableData = ReadFromDataSource(endOfStubHeader, lengthOfStubExecutableData);
+
+                    // Cache and return the stub executable data, even if null
+                    return _stubExecutableData;
                 }
             }
         }
@@ -585,15 +609,20 @@ namespace BurnOutSharp.Wrappers
         private byte[] _overlayData = null;
 
         /// <summary>
-        /// Array of sanitized section names
+        /// Stub executable data, if it exists
+        /// </summary>
+        private byte[] _stubExecutableData = null;
+
+        /// <summary>
+        /// Sanitized section names
         /// </summary>
         private string[] _sectionNames = null;
 
         /// <summary>
         /// Cached raw section data
         /// </summary>
-        private readonly Dictionary<string, byte[]> _rawSectionData = new Dictionary<string, byte[]>();
-
+        private byte[][] _sectionData = null;
+        
         /// <summary>
         /// Cached resource data
         /// </summary>
@@ -619,28 +648,24 @@ namespace BurnOutSharp.Wrappers
         private readonly object _overlayDataLock = new object();
 
         /// <summary>
+        /// Lock object for concurrent modifications on <see cref="_stubExecutableData"/>
+        /// </summary>
+        private readonly object _stubExecutableDataLock = new object();
+
+        /// <summary>
         /// Lock object for concurrent modifications on <see cref="_sectionNames"/>
         /// </summary>
         private readonly object _sectionNamesLock = new object();
 
         /// <summary>
-        /// Lock object for concurrent modifications on <see cref="_rawSectionData"/>
+        /// Lock object for concurrent modifications on <see cref="_sectionData"/>
         /// </summary>
-        private readonly object _rawSectionsLock = new object();
+        private readonly object _sectionDataLock = new object();
 
         /// <summary>
         /// Lock object for concurrent modifications on <see cref="_resourceData"/>
         /// </summary>
         private readonly object _resourceDataLock = new object();
-
-        #endregion
-
-        #region Constants
-
-        /// <summary>
-        /// Special string representing the MS-DOS executable data "section"
-        /// </summary>
-        public const string MSDOSExecutableData = "[MS-DOS Executable Data]";
 
         #endregion
 
@@ -698,235 +723,6 @@ namespace BurnOutSharp.Wrappers
         #region Data
 
         // TODO: Cache all certificate objects
-
-        /// <summary>
-        /// Determine if a section is contained within the section table
-        /// </summary>
-        /// <param name="sectionName">Name of the section to check for</param>
-        /// <param name="exact">True to enable exact matching of names, false for starts-with</param>
-        /// <returns>True if the section is in the executable, false otherwise</returns>
-        public bool ContainsSection(string sectionName, bool exact = false)
-        {
-            // Get all section names first
-            if (SectionNames == null)
-                return false;
-
-            // If we're checking exactly, return only exact matches
-            if (exact)
-                return SectionNames.Any(n => n.Equals(sectionName));
-
-            // Otherwise, check if section name starts with the value
-            else
-                return SectionNames.Any(n => n.StartsWith(sectionName));
-        }
-
-        /// <summary>
-        /// Get the first section based on name, if possible
-        /// </summary>
-        /// <param name="sectionName">Name of the section to check for</param>
-        /// <param name="exact">True to enable exact matching of names, false for starts-with</param>
-        /// <returns>Section data on success, null on error</returns>
-        public Models.PortableExecutable.SectionHeader GetFirstSection(string sectionName, bool exact = false)
-        {
-            // If we have no sections, we can't do anything
-            if (_executable.SectionTable == null || !SectionTable.Any())
-                return null;
-
-            // TODO: Handle long section names with leading `/`
-
-            // If we're checking exactly, return only exact matches
-            if (exact)
-                return SectionTable.FirstOrDefault(s => Encoding.UTF8.GetString(s.Name).Equals(sectionName));
-
-            // Otherwise, check if section name starts with the value
-            else
-                return SectionTable.FirstOrDefault(s => Encoding.UTF8.GetString(s.Name).StartsWith(sectionName));
-        }
-
-        /// <summary>
-        /// Get the last section based on name, if possible
-        /// </summary>
-        /// <param name="sectionName">Name of the section to check for</param>
-        /// <param name="exact">True to enable exact matching of names, false for starts-with</param>
-        /// <returns>Section data on success, null on error</returns>
-        public Models.PortableExecutable.SectionHeader GetLastSection(string sectionName, bool exact = false)
-        {
-            // If we have no sections, we can't do anything
-            if (SectionTable == null || !SectionTable.Any())
-                return null;
-
-            // TODO: Handle long section names with leading `/`
-
-            // If we're checking exactly, return only exact matches (with nulls trimmed)
-            if (exact)
-                return SectionTable.LastOrDefault(s => Encoding.UTF8.GetString(s.Name).Equals(sectionName));
-
-            // Otherwise, check if section name starts with the value
-            else
-                return SectionTable.LastOrDefault(s => Encoding.UTF8.GetString(s.Name).StartsWith(sectionName));
-        }
-
-        /// <summary>
-        /// Get raw section data from the source file
-        /// </summary>
-        /// <param name="sectionName">Name of the section to get raw data for</param>
-        /// <returns>Byte array representing the data, null on error</returns>
-        public byte[] GetRawSection(string sectionName)
-        {
-            // If we have an invalid section name
-            if (string.IsNullOrEmpty(sectionName))
-                return null;
-
-            // Validate the data source
-            if (!DataSourceIsValid())
-                return null;
-
-            // We have a special case for the MS-DOS stub executable data
-            if (sectionName == MSDOSExecutableData)
-            {
-                lock (_rawSectionsLock)
-                {
-                    // If we already have cached data, just use that immediately
-                    if (_rawSectionData.ContainsKey(sectionName))
-                        return _rawSectionData[sectionName];
-
-                    // Populate the raw stub executable data based on the source
-                    int endOfStubHeader = 0x40;
-                    int lengthOfStubExecutableData = (int)_executable.Stub.Header.NewExeHeaderAddr - endOfStubHeader;
-                    byte[] sectionData = ReadFromDataSource(endOfStubHeader, lengthOfStubExecutableData);
-
-                    // Cache and return the stub executable data, even if null
-                    _rawSectionData[sectionName] = sectionData;
-                    return sectionData;
-                }
-            }
-
-            // Get the section index from the array
-            int sectionIndex = Array.IndexOf(SectionNames, sectionName);
-            if (sectionIndex < 0)
-                return null;
-
-            // Get the section data from the table
-            var section = _executable.SectionTable[sectionIndex];
-            uint sectionAddress = section.VirtualAddress.ConvertVirtualAddress(_executable.SectionTable);
-            if (sectionAddress == 0)
-                return null;
-
-            uint sectionSize = section.SizeOfRawData;
-
-            // TODO: Use section name and index to combat duplicates
-            lock (_rawSectionsLock)
-            {
-                // If we already have cached data, just use that immediately
-                if (_rawSectionData.ContainsKey(sectionName))
-                    return _rawSectionData[sectionName];
-
-                // Populate the raw section data based on the source
-                byte[] sectionData = ReadFromDataSource((int)sectionAddress, (int)sectionSize);
-
-                // Cache and return the section data, even if null
-                _rawSectionData[sectionName] = sectionData;
-                return sectionData;
-            }
-        }
-
-        /// <summary>
-        /// Find dialog box resources by title
-        /// </summary>
-        /// <param name="title">Dialog box title to check for</param>
-        /// <returns>Enumerable of matching resources</returns>
-        public IEnumerable<Models.PortableExecutable.DialogBoxResource> FindDialogByTitle(string title)
-        {
-            return ResourceData.Select(r => r.Value)
-                .Select(r => r as Models.PortableExecutable.DialogBoxResource)
-                .Where(d => d != null)
-                .Where(d =>
-                {
-                    return (d.DialogTemplate?.TitleResource?.Contains(title) ?? false)
-                        || (d.ExtendedDialogTemplate?.TitleResource?.Contains(title) ?? false);
-                });
-        }
-
-        /// <summary>
-        /// Find dialog box resources by contained item title
-        /// </summary>
-        /// <param name="title">Dialog box item title to check for</param>
-        /// <returns>Enumerable of matching resources</returns>
-        public IEnumerable<Models.PortableExecutable.DialogBoxResource> FindDialogBoxByItemTitle(string title)
-        {
-            return ResourceData.Select(r => r.Value)
-                .Select(r => r as Models.PortableExecutable.DialogBoxResource)
-                .Where(d => d != null)
-                .Where(d =>
-                {
-                    if (d.DialogItemTemplates != null)
-                    {
-                        return d.DialogItemTemplates
-                            .Where(dit => dit?.TitleResource != null)
-                            .Any(dit => dit.TitleResource.Contains(title));
-                    }
-                    else if (d.ExtendedDialogItemTemplates != null)
-                    {
-                        return d.ExtendedDialogItemTemplates
-                            .Where(edit => edit?.TitleResource != null)
-                            .Any(edit => edit.TitleResource.Contains(title));
-                    }
-
-                    return false;
-                });
-        }
-
-        /// <summary>
-        /// Find unparsed resources by type name
-        /// </summary>
-        /// <param name="typeName">Type name to check for</param>
-        /// <returns>Enumerable of matching resources</returns>
-        public IEnumerable<byte[]> FindResourceByNamedType(string typeName)
-        {
-            return ResourceData.Where(kvp => kvp.Key.Contains(typeName))
-                .Select(kvp => kvp.Value as byte[])
-                .Where(b => b != null);
-        }
-
-        /// <summary>
-        /// Find unparsed resources by string value
-        /// </summary>
-        /// <param name="value">String value to check for</param>
-        /// <returns>Enumerable of matching resources</returns>
-        public IEnumerable<byte[]> FindGenericResource(string value)
-        {
-            return ResourceData.Select(r => r.Value)
-                .Select(r => r as byte[])
-                .Where(b => b != null)
-                .Where(b =>
-                {
-                    try
-                    {
-                        string arrayAsASCII = Encoding.ASCII.GetString(b);
-                        if (arrayAsASCII.Contains(value))
-                            return true;
-                    }
-                    catch { }
-
-                    try
-                    {
-                        string arrayAsUTF8 = Encoding.UTF8.GetString(b);
-                        if (arrayAsUTF8.Contains(value))
-                            return true;
-                    }
-                    catch { }
-
-                    try
-                    {
-                        string arrayAsUnicode = Encoding.Unicode.GetString(b);
-                        if (arrayAsUnicode.Contains(value))
-                            return true;
-                    }
-                    catch { }
-
-                    return true;
-                });
-        }
 
         /// <summary>
         /// Get the version info string associated with a key, if possible
@@ -2511,6 +2307,108 @@ namespace BurnOutSharp.Wrappers
 
         #endregion
 
+        #region Resource Data
+
+        /// <summary>
+        /// Find dialog box resources by title
+        /// </summary>
+        /// <param name="title">Dialog box title to check for</param>
+        /// <returns>Enumerable of matching resources</returns>
+        public IEnumerable<Models.PortableExecutable.DialogBoxResource> FindDialogByTitle(string title)
+        {
+            return ResourceData.Select(r => r.Value)
+                .Select(r => r as Models.PortableExecutable.DialogBoxResource)
+                .Where(d => d != null)
+                .Where(d =>
+                {
+                    return (d.DialogTemplate?.TitleResource?.Contains(title) ?? false)
+                        || (d.ExtendedDialogTemplate?.TitleResource?.Contains(title) ?? false);
+                });
+        }
+
+        /// <summary>
+        /// Find dialog box resources by contained item title
+        /// </summary>
+        /// <param name="title">Dialog box item title to check for</param>
+        /// <returns>Enumerable of matching resources</returns>
+        public IEnumerable<Models.PortableExecutable.DialogBoxResource> FindDialogBoxByItemTitle(string title)
+        {
+            return ResourceData.Select(r => r.Value)
+                .Select(r => r as Models.PortableExecutable.DialogBoxResource)
+                .Where(d => d != null)
+                .Where(d =>
+                {
+                    if (d.DialogItemTemplates != null)
+                    {
+                        return d.DialogItemTemplates
+                            .Where(dit => dit?.TitleResource != null)
+                            .Any(dit => dit.TitleResource.Contains(title));
+                    }
+                    else if (d.ExtendedDialogItemTemplates != null)
+                    {
+                        return d.ExtendedDialogItemTemplates
+                            .Where(edit => edit?.TitleResource != null)
+                            .Any(edit => edit.TitleResource.Contains(title));
+                    }
+
+                    return false;
+                });
+        }
+
+        /// <summary>
+        /// Find unparsed resources by type name
+        /// </summary>
+        /// <param name="typeName">Type name to check for</param>
+        /// <returns>Enumerable of matching resources</returns>
+        public IEnumerable<byte[]> FindResourceByNamedType(string typeName)
+        {
+            return ResourceData.Where(kvp => kvp.Key.Contains(typeName))
+                .Select(kvp => kvp.Value as byte[])
+                .Where(b => b != null);
+        }
+
+        /// <summary>
+        /// Find unparsed resources by string value
+        /// </summary>
+        /// <param name="value">String value to check for</param>
+        /// <returns>Enumerable of matching resources</returns>
+        public IEnumerable<byte[]> FindGenericResource(string value)
+        {
+            return ResourceData.Select(r => r.Value)
+                .Select(r => r as byte[])
+                .Where(b => b != null)
+                .Where(b =>
+                {
+                    try
+                    {
+                        string arrayAsASCII = Encoding.ASCII.GetString(b);
+                        if (arrayAsASCII.Contains(value))
+                            return true;
+                    }
+                    catch { }
+
+                    try
+                    {
+                        string arrayAsUTF8 = Encoding.UTF8.GetString(b);
+                        if (arrayAsUTF8.Contains(value))
+                            return true;
+                    }
+                    catch { }
+
+                    try
+                    {
+                        string arrayAsUnicode = Encoding.Unicode.GetString(b);
+                        if (arrayAsUnicode.Contains(value))
+                            return true;
+                    }
+                    catch { }
+
+                    return true;
+                });
+        }
+
+        #endregion
+
         #region Resource Parsing
 
         /// <summary>
@@ -2642,6 +2540,226 @@ namespace BurnOutSharp.Wrappers
 
             // Add the key and value to the cache
             _resourceData[key] = value;
+        }
+
+        #endregion
+
+        #region Sections
+
+        /// <summary>
+        /// Determine if a section is contained within the section table
+        /// </summary>
+        /// <param name="sectionName">Name of the section to check for</param>
+        /// <param name="exact">True to enable exact matching of names, false for starts-with</param>
+        /// <returns>True if the section is in the executable, false otherwise</returns>
+        public bool ContainsSection(string sectionName, bool exact = false)
+        {
+            // Get all section names first
+            if (SectionNames == null)
+                return false;
+
+            // If we're checking exactly, return only exact matches
+            if (exact)
+                return SectionNames.Any(n => n.Equals(sectionName));
+
+            // Otherwise, check if section name starts with the value
+            else
+                return SectionNames.Any(n => n.StartsWith(sectionName));
+        }
+
+        /// <summary>
+        /// Get the first section based on name, if possible
+        /// </summary>
+        /// <param name="name">Name of the section to check for</param>
+        /// <param name="exact">True to enable exact matching of names, false for starts-with</param>
+        /// <returns>Section data on success, null on error</returns>
+        public Models.PortableExecutable.SectionHeader GetFirstSection(string name, bool exact = false)
+        {
+            // If we have no sections
+            if (_executable.SectionTable == null || !SectionTable.Any())
+                return null;
+
+            // If the section doesn't exist
+            if (!ContainsSection(name, exact))
+                return null;
+
+            // Get the first index of the section
+            int index = Array.IndexOf(SectionNames, name);
+            if (index == -1)
+                return null;
+
+            // Return the section
+            return SectionTable[index];
+        }
+
+        /// <summary>
+        /// Get the last section based on name, if possible
+        /// </summary>
+        /// <param name="name">Name of the section to check for</param>
+        /// <param name="exact">True to enable exact matching of names, false for starts-with</param>
+        /// <returns>Section data on success, null on error</returns>
+        public Models.PortableExecutable.SectionHeader GetLastSection(string name, bool exact = false)
+        {
+            // If we have no sections
+            if (_executable.SectionTable == null || !SectionTable.Any())
+                return null;
+
+            // If the section doesn't exist
+            if (!ContainsSection(name, exact))
+                return null;
+
+            // Get the last index of the section
+            int index = Array.LastIndexOf(SectionNames, name);
+            if (index == -1)
+                return null;
+
+            // Return the section
+            return SectionTable[index];
+        }
+
+        /// <summary>
+        /// Get the section based on index, if possible
+        /// </summary>
+        /// <param name="index">Index of the section to check for</param>
+        /// <returns>Section data on success, null on error</returns>
+        public Models.PortableExecutable.SectionHeader GetSection(int index)
+        {
+            // If we have no sections
+            if (_executable.SectionTable == null || !SectionTable.Any())
+                return null;
+
+            // If the section doesn't exist
+            if (index < 0 || index >= SectionTable.Length)
+                return null;
+
+            // Return the section
+            return SectionTable[index];
+        }
+
+        /// <summary>
+        /// Get the first section data based on name, if possible
+        /// </summary>
+        /// <param name="name">Name of the section to check for</param>
+        /// <param name="exact">True to enable exact matching of names, false for starts-with</param>
+        /// <returns>Section data on success, null on error</returns>
+        public byte[] GetFirstSectionData(string name, bool exact = false)
+        {
+            // If we have no sections
+            if (_executable.SectionTable == null || !SectionTable.Any())
+                return null;
+
+            // If the section doesn't exist
+            if (!ContainsSection(name, exact))
+                return null;
+
+            // Get the first index of the section
+            int index = Array.IndexOf(SectionNames, name);
+            if (index == -1)
+                return null;
+
+            // Get the section data from the table
+            var section = _executable.SectionTable[index];
+            uint address = section.VirtualAddress.ConvertVirtualAddress(_executable.SectionTable);
+            if (address == 0)
+                return null;
+
+            // Set the section size
+            uint size = section.SizeOfRawData;
+            lock (_sectionDataLock)
+            {
+                // If we already have cached data, just use that immediately
+                if (_sectionData[index] != null)
+                    return _sectionData[index];
+
+                // Populate the raw section data based on the source
+                byte[] sectionData = ReadFromDataSource((int)address, (int)size);
+
+                // Cache and return the section data, even if null
+                _sectionData[index] = sectionData;
+                return sectionData;
+            }
+        }
+
+        /// <summary>
+        /// Get the last section data based on name, if possible
+        /// </summary>
+        /// <param name="name">Name of the section to check for</param>
+        /// <param name="exact">True to enable exact matching of names, false for starts-with</param>
+        /// <returns>Section data on success, null on error</returns>
+        public byte[] GetLastSectionData(string name, bool exact = false)
+        {
+            // If we have no sections
+            if (_executable.SectionTable == null || !SectionTable.Any())
+                return null;
+
+            // If the section doesn't exist
+            if (!ContainsSection(name, exact))
+                return null;
+
+            // Get the last index of the section
+            int index = Array.LastIndexOf(SectionNames, name);
+            if (index == -1)
+                return null;
+
+            // Get the section data from the table
+            var section = _executable.SectionTable[index];
+            uint address = section.VirtualAddress.ConvertVirtualAddress(_executable.SectionTable);
+            if (address == 0)
+                return null;
+
+            // Set the section size
+            uint size = section.SizeOfRawData;
+            lock (_sectionDataLock)
+            {
+                // If we already have cached data, just use that immediately
+                if (_sectionData[index] != null)
+                    return _sectionData[index];
+
+                // Populate the raw section data based on the source
+                byte[] sectionData = ReadFromDataSource((int)address, (int)size);
+
+                // Cache and return the section data, even if null
+                _sectionData[index] = sectionData;
+                return sectionData;
+            }
+        }
+
+        /// <summary>
+        /// Get the section data based on index, if possible
+        /// </summary>
+        /// <param name="index">Index of the section to check for</param>
+        /// <returns>Section data on success, null on error</returns>
+        public byte[] GetSectionData(int index)
+        {
+            // If we have no sections
+            if (_executable.SectionTable == null || !SectionTable.Any())
+                return null;
+
+            // If the section doesn't exist
+            if (index < 0 || index >= SectionTable.Length)
+                return null;
+
+            // Get the section data from the table
+            var section = _executable.SectionTable[index];
+            uint address = section.VirtualAddress.ConvertVirtualAddress(_executable.SectionTable);
+            if (address == 0)
+                return null;
+
+            // Set the section size
+            uint size = section.SizeOfRawData;
+            lock (_sectionDataLock)
+            {
+                // If we already have cached data, just use that immediately
+                if (_sectionData.ContainsKey(index))
+                    return _sectionData[index];
+
+                // Populate the raw section data based on the source
+                byte[] sectionData = ReadFromDataSource((int)address, (int)size);
+
+                // Cache and return the section data, even if null
+                _sectionData[index] = sectionData;
+                return sectionData;
+            }
         }
 
         #endregion
