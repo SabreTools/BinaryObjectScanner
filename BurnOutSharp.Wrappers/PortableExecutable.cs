@@ -330,7 +330,7 @@ namespace BurnOutSharp.Wrappers
         {
             get
             {
-                lock (_overlayDataLock)
+                lock (_sourceDataLock)
                 {
                     // Use the cached data if possible
                     if (_overlayData != null)
@@ -401,7 +401,7 @@ namespace BurnOutSharp.Wrappers
         {
             get
             {
-                lock (_sectionNamesLock)
+                lock (_sourceDataLock)
                 {
                     // Use the cached data if possible
                     if (_sectionNames != null)
@@ -431,7 +431,7 @@ namespace BurnOutSharp.Wrappers
         {
             get
             {
-                lock (_stubExecutableDataLock)
+                lock (_sourceDataLock)
                 {
                     // If we already have cached data, just use that immediately
                     if (_stubExecutableData != null)
@@ -455,7 +455,7 @@ namespace BurnOutSharp.Wrappers
         {
             get
             {
-                lock (_resourceDataLock)
+                lock (_sourceDataLock)
                 {
                     // Use the cached data if possible
                     if (_resourceData != null)
@@ -638,34 +638,10 @@ namespace BurnOutSharp.Wrappers
         /// </summary>
         private Models.PortableExecutable.AssemblyManifest _assemblyManifest = null;
 
-        #endregion
-
-        #region Lock Objects
-
         /// <summary>
-        /// Lock object for concurrent modifications on <see cref="_overlayData"/>
+        /// Lock object for reading from the source
         /// </summary>
-        private readonly object _overlayDataLock = new object();
-
-        /// <summary>
-        /// Lock object for concurrent modifications on <see cref="_stubExecutableData"/>
-        /// </summary>
-        private readonly object _stubExecutableDataLock = new object();
-
-        /// <summary>
-        /// Lock object for concurrent modifications on <see cref="_sectionNames"/>
-        /// </summary>
-        private readonly object _sectionNamesLock = new object();
-
-        /// <summary>
-        /// Lock object for concurrent modifications on <see cref="_sectionData"/>
-        /// </summary>
-        private readonly object _sectionDataLock = new object();
-
-        /// <summary>
-        /// Lock object for concurrent modifications on <see cref="_resourceData"/>
-        /// </summary>
-        private readonly object _resourceDataLock = new object();
+        private readonly object _sourceDataLock = new object();
 
         #endregion
 
@@ -2665,8 +2641,12 @@ namespace BurnOutSharp.Wrappers
 
             // Set the section size
             uint size = section.SizeOfRawData;
-            lock (_sectionDataLock)
+            lock (_sourceDataLock)
             {
+                // Create the section data array if we have to
+                if (_sectionData == null)
+                    _sectionData = new byte[SectionNames.Length][];
+
                 // If we already have cached data, just use that immediately
                 if (_sectionData[index] != null)
                     return _sectionData[index];
@@ -2677,6 +2657,43 @@ namespace BurnOutSharp.Wrappers
                 // Cache and return the section data, even if null
                 _sectionData[index] = sectionData;
                 return sectionData;
+            }
+        }
+
+        /// <summary>
+        /// Get the first section data based on name, if possible
+        /// </summary>
+        /// <param name="name">Name of the section to check for</param>
+        /// <param name="exact">True to enable exact matching of names, false for starts-with</param>
+        /// <returns>Section data on success, null on error</returns>
+        [Obsolete]
+        public byte[] GetFirstSectionDataWithOffset(string name, bool exact = false, int offset = 0)
+        {
+            // If we have no sections
+            if (_executable.SectionTable == null || !SectionTable.Any())
+                return null;
+
+            // If the section doesn't exist
+            if (!ContainsSection(name, exact))
+                return null;
+
+            // Get the first index of the section
+            int index = Array.IndexOf(SectionNames, name);
+            if (index == -1)
+                return null;
+
+            // Get the section data from the table
+            var section = _executable.SectionTable[index];
+            uint address = section.VirtualAddress.ConvertVirtualAddress(_executable.SectionTable);
+            if (address == 0)
+                return null;
+
+            // Set the section size
+            uint size = section.SizeOfRawData;
+            lock (_sourceDataLock)
+            {
+                // Immediately return the data without caching
+                return ReadFromDataSource((int)address + offset, (int)size - offset);
             }
         }
 
@@ -2709,8 +2726,12 @@ namespace BurnOutSharp.Wrappers
 
             // Set the section size
             uint size = section.SizeOfRawData;
-            lock (_sectionDataLock)
+            lock (_sourceDataLock)
             {
+                // Create the section data array if we have to
+                if (_sectionData == null)
+                    _sectionData = new byte[SectionNames.Length][];
+
                 // If we already have cached data, just use that immediately
                 if (_sectionData[index] != null)
                     return _sectionData[index];
@@ -2747,10 +2768,10 @@ namespace BurnOutSharp.Wrappers
 
             // Set the section size
             uint size = section.SizeOfRawData;
-            lock (_sectionDataLock)
+            lock (_sourceDataLock)
             {
                 // If we already have cached data, just use that immediately
-                if (_sectionData.ContainsKey(index))
+                if (_sectionData[index] != null)
                     return _sectionData[index];
 
                 // Populate the raw section data based on the source
