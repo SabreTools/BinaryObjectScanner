@@ -707,8 +707,10 @@ namespace BurnOutSharp.Builder
                 entry.Length = data.ReadUInt32(ref offset);
                 entry.Revision = (WindowsCertificateRevision)data.ReadUInt16(ref offset);
                 entry.CertificateType = (WindowsCertificateType)data.ReadUInt16(ref offset);
-                if (entry.Length - 8 > 0)
-                    entry.Certificate = data.ReadBytes(ref offset, (int)entry.Length - 8);
+
+                int certificateDataLength = (int)(entry.Length - 8);
+                if (certificateDataLength > 0)
+                    entry.Certificate = data.ReadBytes(ref offset, certificateDataLength);
 
                 attributeCertificateTable.Add(entry);
 
@@ -1856,8 +1858,10 @@ namespace BurnOutSharp.Builder
                 entry.Length = data.ReadUInt32();
                 entry.Revision = (WindowsCertificateRevision)data.ReadUInt16();
                 entry.CertificateType = (WindowsCertificateType)data.ReadUInt16();
-                if (entry.Length - 8 > 0)
-                    entry.Certificate = data.ReadBytes((int)entry.Length - 8);
+
+                int certificateDataLength = (int)(entry.Length - 8);
+                if (certificateDataLength > 0)
+                    entry.Certificate = data.ReadBytes(certificateDataLength);
 
                 attributeCertificateTable.Add(entry);
 
