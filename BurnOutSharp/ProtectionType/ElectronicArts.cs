@@ -32,6 +32,8 @@ namespace BurnOutSharp.ProtectionType
 
             if (pex.FindDialogByTitle("About CDKey").Any())
                 return $"EA CdKey Registration Module {Utilities.GetInternalVersion(pex)}";
+            else if (pex.FindGenericResource("About CDKey").Any())
+                    return $"EA CdKey Registration Module {Utilities.GetInternalVersion(pex)}";
 
             // Get the .data/DATA section, if it exists
             var dataSectionRaw = pex.GetFirstSectionData(".data") ?? pex.GetFirstSectionData("DATA");
