@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
+using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -28,7 +28,7 @@ namespace BurnOutSharp.ProtectionType
                 return $"Windows Media Data Session DRM";
 
             // Get the .rdata section, if it exists
-            if (pex.ResourceDataSectionRaw != null)
+            if (pex.ContainsSection(".rdata"))
             {
                 var matchers = new List<ContentMatchSet>
                 {
@@ -47,7 +47,7 @@ namespace BurnOutSharp.ProtectionType
                     }, "Windows Media Data Session DRM"),
                 };
 
-                string match = MatchUtil.GetFirstMatch(file, pex.ResourceDataSectionRaw, matchers, includeDebug);
+                string match = MatchUtil.GetFirstMatch(file, pex.GetFirstSectionData(".rdata"), matchers, includeDebug);
                 if (!string.IsNullOrWhiteSpace(match))
                     return match;
             }

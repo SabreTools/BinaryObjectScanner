@@ -2,12 +2,10 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using BurnOutSharp.ExecutableType.Microsoft;
-using BurnOutSharp.ExecutableType.Microsoft.NE;
-using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
 using BurnOutSharp.Tools;
+using BurnOutSharp.Wrappers;
 using SharpCompress.Archives;
 using SharpCompress.Archives.Zip;
 
@@ -21,9 +19,8 @@ namespace BurnOutSharp.PackerType
         /// <inheritdoc/>
         public string CheckNewExecutable(string file, NewExecutable nex, bool includeDebug)
         {
-            // Get the DOS stub from the executable, if possible
-            var stub = nex?.DOSStubHeader;
-            if (stub == null)
+            // Check we have a valid executable
+            if (nex == null)
                 return null;
 
             string version = GetNEHeaderVersion(nex);
@@ -46,16 +43,15 @@ namespace BurnOutSharp.PackerType
                 return null;
 
             // Get the .rdata section, if it exists
-            if (pex.ResourceDataSectionRaw != null)
+            if (pex.ContainsSection(".rdata"))
             {
-                string version = GetSFXSectionDataVersion(file, pex.ResourceDataSectionRaw, includeDebug);
+                string version = GetSFXSectionDataVersion(file, pex.GetFirstSectionData(".rdata"), includeDebug);
                 if (!string.IsNullOrWhiteSpace(version))
                     return $"WinZip SFX {version}";
             }
 
             // Get the _winzip_ section, if it exists
-            bool winzipSection = pex.ContainsSection("_winzip_", exact: true);
-            if (winzipSection)
+            if (pex.ContainsSection("_winzip_", exact: true))
             {
                 string version = GetPEHeaderVersion(pex);
                 if (!string.IsNullOrWhiteSpace(version))
@@ -71,15 +67,16 @@ namespace BurnOutSharp.PackerType
             #region Unknown Version checks
 
             // Get the .rdata section, if it exists
-            if (pex.ResourceDataSectionRaw != null)
+            if (pex.ContainsSection(".rdata"))
             {
-                string version = GetSFXSectionDataUnknownVersion(file, pex.ResourceDataSectionRaw, includeDebug);
+                string version = GetSFXSectionDataUnknownVersion(file, pex.GetFirstSectionData(".rdata"), includeDebug);
                 if (!string.IsNullOrWhiteSpace(version))
                     return $"WinZip SFX {version}";
             }
 
-            // Get the .data section, if it exists
-            if (pex.DataSectionRaw != null)
+            // Get the .data/DATA section, if it exists
+            var dataSectionRaw = pex.GetFirstSectionData(".data") ?? pex.GetFirstSectionData("DATA");
+            if (dataSectionRaw != null)
             {
                 var matchers = new List<ContentMatchSet>
                 {
@@ -103,7 +100,7 @@ namespace BurnOutSharp.PackerType
                     }, "Unknown Version (32-bit)"),
                 };
 
-                string version = MatchUtil.GetFirstMatch(file, pex.DataSectionRaw, matchers, false);
+                string version = MatchUtil.GetFirstMatch(file, pex.GetFirstSectionData(".data"), matchers, false);
                 if (!string.IsNullOrWhiteSpace(version))
                 {
                     // Try to grab the value from the manifest, if possible
@@ -197,8 +194,8 @@ namespace BurnOutSharp.PackerType
         private static string GetAdjustedManifestVersion(PortableExecutable pex)
         {
             // Get the manifest information, if possible
-            string description = pex.ManifestDescription;
-            string version = pex.ManifestVersion;
+            string description = pex.AssemblyDescription;
+            string version = pex.AssemblyVersion;
 
             // Either an incorrect description or empty version mean we can't match
             if (description != "WinZip Self-Extractor")
@@ -245,144 +242,149 @@ namespace BurnOutSharp.PackerType
         /// TODO: Research to see if the versions are embedded elsewhere in these files
         private string GetNEHeaderVersion(NewExecutable nex)
         {
-            var neh = nex.NewExecutableHeader;
-
             #region 2.0 Variants
 
             // 2.0 (MS-DOS/16-bit)
-            if (neh.LinkerVersion == 0x11
-                && neh.LinkerRevision == 0x20
-                && neh.EntryTableOffset == 0x0086
-                && neh.EntryTableSize == 0x0002
-                && neh.CrcChecksum == 0x00000000
-                && neh.ProgramFlags == 0x0A
-                && neh.ApplicationFlags == 0x03
-                && neh.Autodata == 0x0003
-                && neh.InitialHeapAlloc == 0x2000
-                && neh.InitialStackAlloc == 0x4000
-                && neh.InitialCSIPSetting == 0x00012BE6
-                && neh.InitialSSSPSetting == 0x00030000
-                && neh.FileSegmentCount == 0x0003
-                && neh.ModuleReferenceTableSize == 0x0004
-                && neh.NonResidentNameTableSize == 0x004B
-                && neh.SegmentTableOffset == 0x0040
-                && neh.ResourceTableOffset == 0x0058
-                && neh.ResidentNameTableOffset == 0x0058
-                && neh.ModuleReferenceTableOffset == 0x0064
-                && neh.ImportedNamesTableOffset == 0x006C
-                && neh.NonResidentNamesTableOffset == 0x000044B8
-                && neh.MovableEntriesCount == 0x0000
-                && neh.SegmentAlignmentShiftCount == 0x0001
-                && neh.ResourceEntriesCount == 0x0000
-                && neh.TargetOperatingSystem == 0x02
-                && neh.AdditionalFlags == 0x00
-                && neh.ReturnThunkOffset == 0x0000
-                && neh.SegmentReferenceThunkOffset == 0x0000
-                && neh.MinCodeSwapAreaSize == 0x0000
-                && neh.WindowsSDKRevision == 0x00
-                && neh.WindowsSDKVersion == 0x03)
+            if (nex.LinkerVersion == 0x11
+                && nex.LinkerRevision == 0x20
+                && nex.EntryTableOffset == 0x0086
+                && nex.EntryTableSize == 0x0002
+                && nex.CrcChecksum == 0x00000000
+                && nex.FlagWord == (Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+                    | Models.NewExecutable.HeaderFlag.ProtectedModeOnly
+                    | Models.NewExecutable.HeaderFlag.FullScreen
+                    | Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
+                && nex.AutomaticDataSegmentNumber == 0x0003
+                && nex.InitialHeapAlloc == 0x2000
+                && nex.InitialStackAlloc == 0x4000
+                && nex.InitialCSIPSetting == 0x00012BE6
+                && nex.InitialSSSPSetting == 0x00030000
+                && nex.FileSegmentCount == 0x0003
+                && nex.ModuleReferenceTableSize == 0x0004
+                && nex.NonResidentNameTableSize == 0x004B
+                && nex.SegmentTableOffset == 0x0040
+                && nex.ResourceTableOffset == 0x0058
+                && nex.ResidentNameTableOffset == 0x0058
+                && nex.ModuleReferenceTableOffset == 0x0064
+                && nex.ImportedNamesTableOffset == 0x006C
+                && nex.NonResidentNamesTableOffset == 0x000044B8
+                && nex.MovableEntriesCount == 0x0000
+                && nex.SegmentAlignmentShiftCount == 0x0001
+                && nex.ResourceEntriesCount == 0x0000
+                && nex.TargetOperatingSystem == Models.NewExecutable.OperatingSystem.WINDOWS
+                && nex.AdditionalFlags == 0x00
+                && nex.ReturnThunkOffset == 0x0000
+                && nex.SegmentReferenceThunkOffset == 0x0000
+                && nex.MinCodeSwapAreaSize == 0x0000
+                && nex.WindowsSDKRevision == 0x00
+                && nex.WindowsSDKVersion == 0x03)
                 return "2.0 (MS-DOS/16-bit)";
             
             // 2.0 (16-bit)
-            if (neh.LinkerVersion == 0x11
-                && neh.LinkerRevision == 0x20
-                && neh.EntryTableOffset == 0x0086
-                && neh.EntryTableSize == 0x0002
-                && neh.CrcChecksum == 0x00000000
-                && neh.ProgramFlags == 0x0A
-                && neh.ApplicationFlags == 0x03
-                && neh.Autodata == 0x0003
-                && neh.InitialHeapAlloc == 0x2000
-                && neh.InitialStackAlloc == 0x4000
-                && neh.InitialCSIPSetting == 0x00013174
-                && neh.InitialSSSPSetting == 0x00030000
-                && neh.FileSegmentCount == 0x0003
-                && neh.ModuleReferenceTableSize == 0x0004
-                && neh.NonResidentNameTableSize == 0x004B
-                && neh.SegmentTableOffset == 0x0040
-                && neh.ResourceTableOffset == 0x0058
-                && neh.ResidentNameTableOffset == 0x0058
-                && neh.ModuleReferenceTableOffset == 0x0064
-                && neh.ImportedNamesTableOffset == 0x006C
-                && neh.NonResidentNamesTableOffset == 0x00000198
-                && neh.MovableEntriesCount == 0x0000
-                && neh.SegmentAlignmentShiftCount == 0x0001
-                && neh.ResourceEntriesCount == 0x0000
-                && neh.TargetOperatingSystem == 0x02
-                && neh.AdditionalFlags == 0x00
-                && neh.ReturnThunkOffset == 0x0000
-                && neh.SegmentReferenceThunkOffset == 0x0000
-                && neh.MinCodeSwapAreaSize == 0x0000
-                && neh.WindowsSDKRevision == 0x00
-                && neh.WindowsSDKVersion == 0x03)
+            if (nex.LinkerVersion == 0x11
+                && nex.LinkerRevision == 0x20
+                && nex.EntryTableOffset == 0x0086
+                && nex.EntryTableSize == 0x0002
+                && nex.CrcChecksum == 0x00000000
+                && nex.FlagWord == (Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+                    | Models.NewExecutable.HeaderFlag.ProtectedModeOnly
+                    | Models.NewExecutable.HeaderFlag.FullScreen
+                    | Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
+                && nex.AutomaticDataSegmentNumber == 0x0003
+                && nex.InitialHeapAlloc == 0x2000
+                && nex.InitialStackAlloc == 0x4000
+                && nex.InitialCSIPSetting == 0x00013174
+                && nex.InitialSSSPSetting == 0x00030000
+                && nex.FileSegmentCount == 0x0003
+                && nex.ModuleReferenceTableSize == 0x0004
+                && nex.NonResidentNameTableSize == 0x004B
+                && nex.SegmentTableOffset == 0x0040
+                && nex.ResourceTableOffset == 0x0058
+                && nex.ResidentNameTableOffset == 0x0058
+                && nex.ModuleReferenceTableOffset == 0x0064
+                && nex.ImportedNamesTableOffset == 0x006C
+                && nex.NonResidentNamesTableOffset == 0x00000198
+                && nex.MovableEntriesCount == 0x0000
+                && nex.SegmentAlignmentShiftCount == 0x0001
+                && nex.ResourceEntriesCount == 0x0000
+                && nex.TargetOperatingSystem == Models.NewExecutable.OperatingSystem.WINDOWS
+                && nex.AdditionalFlags == 0x00
+                && nex.ReturnThunkOffset == 0x0000
+                && nex.SegmentReferenceThunkOffset == 0x0000
+                && nex.MinCodeSwapAreaSize == 0x0000
+                && nex.WindowsSDKRevision == 0x00
+                && nex.WindowsSDKVersion == 0x03)
                 return "2.0 (16-bit)";
 
             // Compact 2.0 (16-bit)
-            if (neh.LinkerVersion == 0x11
-                && neh.LinkerRevision == 0x20
-                && neh.EntryTableOffset == 0x0080
-                && neh.EntryTableSize == 0x0002
-                && neh.CrcChecksum == 0x00000000
-                && neh.ProgramFlags == 0x0A
-                && neh.ApplicationFlags == 0x03
-                && neh.Autodata == 0x0003
-                && neh.InitialHeapAlloc == 0x2000
-                && neh.InitialStackAlloc == 0x4000
-                && neh.InitialCSIPSetting == 0x000124A0
-                && neh.InitialSSSPSetting == 0x00030000
-                && neh.FileSegmentCount == 0x0003
-                && neh.ModuleReferenceTableSize == 0x0003
-                && neh.NonResidentNameTableSize == 0x004B
-                && neh.SegmentTableOffset == 0x0040
-                && neh.ResourceTableOffset == 0x0058
-                && neh.ResidentNameTableOffset == 0x0058
-                && neh.ModuleReferenceTableOffset == 0x0064
-                && neh.ImportedNamesTableOffset == 0x006A
-                && neh.NonResidentNamesTableOffset == 0x00000192
-                && neh.MovableEntriesCount == 0x0000
-                && neh.SegmentAlignmentShiftCount == 0x0001
-                && neh.ResourceEntriesCount == 0x0000
-                && neh.TargetOperatingSystem == 0x02
-                && neh.AdditionalFlags == 0x00
-                && neh.ReturnThunkOffset == 0x0000
-                && neh.SegmentReferenceThunkOffset == 0x0000
-                && neh.MinCodeSwapAreaSize == 0x0000
-                && neh.WindowsSDKRevision == 0x00
-                && neh.WindowsSDKVersion == 0x03)
+            if (nex.LinkerVersion == 0x11
+                && nex.LinkerRevision == 0x20
+                && nex.EntryTableOffset == 0x0080
+                && nex.EntryTableSize == 0x0002
+                && nex.CrcChecksum == 0x00000000
+                && nex.FlagWord == (Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+                    | Models.NewExecutable.HeaderFlag.ProtectedModeOnly
+                    | Models.NewExecutable.HeaderFlag.FullScreen
+                    | Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
+                && nex.AutomaticDataSegmentNumber == 0x0003
+                && nex.InitialHeapAlloc == 0x2000
+                && nex.InitialStackAlloc == 0x4000
+                && nex.InitialCSIPSetting == 0x000124A0
+                && nex.InitialSSSPSetting == 0x00030000
+                && nex.FileSegmentCount == 0x0003
+                && nex.ModuleReferenceTableSize == 0x0003
+                && nex.NonResidentNameTableSize == 0x004B
+                && nex.SegmentTableOffset == 0x0040
+                && nex.ResourceTableOffset == 0x0058
+                && nex.ResidentNameTableOffset == 0x0058
+                && nex.ModuleReferenceTableOffset == 0x0064
+                && nex.ImportedNamesTableOffset == 0x006A
+                && nex.NonResidentNamesTableOffset == 0x00000192
+                && nex.MovableEntriesCount == 0x0000
+                && nex.SegmentAlignmentShiftCount == 0x0001
+                && nex.ResourceEntriesCount == 0x0000
+                && nex.TargetOperatingSystem == Models.NewExecutable.OperatingSystem.WINDOWS
+                && nex.AdditionalFlags == 0x00
+                && nex.ReturnThunkOffset == 0x0000
+                && nex.SegmentReferenceThunkOffset == 0x0000
+                && nex.MinCodeSwapAreaSize == 0x0000
+                && nex.WindowsSDKRevision == 0x00
+                && nex.WindowsSDKVersion == 0x03)
                 return "Compact 2.0 (16-bit)";
             
             // Software Installation 2.0 (16-bit)
-            if (neh.LinkerVersion == 0x11
-                && neh.LinkerRevision == 0x20
-                && neh.EntryTableOffset == 0x00CD
-                && neh.EntryTableSize == 0x0002
-                && neh.CrcChecksum == 0x00000000
-                && neh.ProgramFlags == 0x02
-                && neh.ApplicationFlags == 0x03
-                && neh.Autodata == 0x0003
-                && neh.InitialHeapAlloc == 0x2000
-                && neh.InitialStackAlloc == 0x4000
-                && neh.InitialCSIPSetting == 0x000136FA
-                && neh.InitialSSSPSetting == 0x00030000
-                && neh.FileSegmentCount == 0x0003
-                && neh.ModuleReferenceTableSize == 0x0005
-                && neh.NonResidentNameTableSize == 0x004B
-                && neh.SegmentTableOffset == 0x0040
-                && neh.ResourceTableOffset == 0x0058
-                && neh.ResidentNameTableOffset == 0x0097
-                && neh.ModuleReferenceTableOffset == 0x00A3
-                && neh.ImportedNamesTableOffset == 0x00AD
-                && neh.NonResidentNamesTableOffset == 0x000001DF
-                && neh.MovableEntriesCount == 0x0000
-                && neh.SegmentAlignmentShiftCount == 0x0001
-                && neh.ResourceEntriesCount == 0x0000
-                && neh.TargetOperatingSystem == 0x02
-                && neh.AdditionalFlags == 0x00
-                && neh.ReturnThunkOffset == 0x0000
-                && neh.SegmentReferenceThunkOffset == 0x0000
-                && neh.MinCodeSwapAreaSize == 0x0000
-                && neh.WindowsSDKRevision == 0x00
-                && neh.WindowsSDKVersion == 0x03)
+            if (nex.LinkerVersion == 0x11
+                && nex.LinkerRevision == 0x20
+                && nex.EntryTableOffset == 0x00CD
+                && nex.EntryTableSize == 0x0002
+                && nex.CrcChecksum == 0x00000000
+                && nex.FlagWord == (Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+                    | Models.NewExecutable.HeaderFlag.FullScreen
+                    | Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
+                && nex.AutomaticDataSegmentNumber == 0x0003
+                && nex.InitialHeapAlloc == 0x2000
+                && nex.InitialStackAlloc == 0x4000
+                && nex.InitialCSIPSetting == 0x000136FA
+                && nex.InitialSSSPSetting == 0x00030000
+                && nex.FileSegmentCount == 0x0003
+                && nex.ModuleReferenceTableSize == 0x0005
+                && nex.NonResidentNameTableSize == 0x004B
+                && nex.SegmentTableOffset == 0x0040
+                && nex.ResourceTableOffset == 0x0058
+                && nex.ResidentNameTableOffset == 0x0097
+                && nex.ModuleReferenceTableOffset == 0x00A3
+                && nex.ImportedNamesTableOffset == 0x00AD
+                && nex.NonResidentNamesTableOffset == 0x000001DF
+                && nex.MovableEntriesCount == 0x0000
+                && nex.SegmentAlignmentShiftCount == 0x0001
+                && nex.ResourceEntriesCount == 0x0000
+                && nex.TargetOperatingSystem == Models.NewExecutable.OperatingSystem.WINDOWS
+                && nex.AdditionalFlags == 0x00
+                && nex.ReturnThunkOffset == 0x0000
+                && nex.SegmentReferenceThunkOffset == 0x0000
+                && nex.MinCodeSwapAreaSize == 0x0000
+                && nex.WindowsSDKRevision == 0x00
+                && nex.WindowsSDKVersion == 0x03)
                 return "Software Installation 2.0 (16-bit)";
             
             #endregion
@@ -390,139 +392,145 @@ namespace BurnOutSharp.PackerType
             #region 2.1 RC2 Variants
             
             // 2.1 RC2 (MS-DOS/16-bit)
-            if (neh.LinkerVersion == 0x11
-                && neh.LinkerRevision == 0x20
-                && neh.EntryTableOffset == 0x0086
-                && neh.EntryTableSize == 0x0002
-                && neh.CrcChecksum == 0x00000000
-                && neh.ProgramFlags == 0x0A
-                && neh.ApplicationFlags == 0x03
-                && neh.Autodata == 0x0003
-                && neh.InitialHeapAlloc == 0x2000
-                && neh.InitialStackAlloc == 0x4000
-                && neh.InitialCSIPSetting == 0x00013386
-                && neh.InitialSSSPSetting == 0x00030000
-                && neh.FileSegmentCount == 0x0003
-                && neh.ModuleReferenceTableSize == 0x0004
-                && neh.NonResidentNameTableSize == 0x004B
-                && neh.SegmentTableOffset == 0x0040
-                && neh.ResourceTableOffset == 0x0058
-                && neh.ResidentNameTableOffset == 0x0058
-                && neh.ModuleReferenceTableOffset == 0x0064
-                && neh.ImportedNamesTableOffset == 0x006C
-                && neh.NonResidentNamesTableOffset == 0x000043C8
-                && neh.MovableEntriesCount == 0x0000
-                && neh.SegmentAlignmentShiftCount == 0x0001
-                && neh.ResourceEntriesCount == 0x0000
-                && neh.TargetOperatingSystem == 0x02
-                && neh.AdditionalFlags == 0x00
-                && neh.ReturnThunkOffset == 0x0000
-                && neh.SegmentReferenceThunkOffset == 0x0000
-                && neh.MinCodeSwapAreaSize == 0x0000
-                && neh.WindowsSDKRevision == 0x00
-                && neh.WindowsSDKVersion == 0x03)
+            if (nex.LinkerVersion == 0x11
+                && nex.LinkerRevision == 0x20
+                && nex.EntryTableOffset == 0x0086
+                && nex.EntryTableSize == 0x0002
+                && nex.CrcChecksum == 0x00000000
+                && nex.FlagWord == (Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+                    | Models.NewExecutable.HeaderFlag.ProtectedModeOnly
+                    | Models.NewExecutable.HeaderFlag.FullScreen
+                    | Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
+                && nex.AutomaticDataSegmentNumber == 0x0003
+                && nex.InitialHeapAlloc == 0x2000
+                && nex.InitialStackAlloc == 0x4000
+                && nex.InitialCSIPSetting == 0x00013386
+                && nex.InitialSSSPSetting == 0x00030000
+                && nex.FileSegmentCount == 0x0003
+                && nex.ModuleReferenceTableSize == 0x0004
+                && nex.NonResidentNameTableSize == 0x004B
+                && nex.SegmentTableOffset == 0x0040
+                && nex.ResourceTableOffset == 0x0058
+                && nex.ResidentNameTableOffset == 0x0058
+                && nex.ModuleReferenceTableOffset == 0x0064
+                && nex.ImportedNamesTableOffset == 0x006C
+                && nex.NonResidentNamesTableOffset == 0x000043C8
+                && nex.MovableEntriesCount == 0x0000
+                && nex.SegmentAlignmentShiftCount == 0x0001
+                && nex.ResourceEntriesCount == 0x0000
+                && nex.TargetOperatingSystem == Models.NewExecutable.OperatingSystem.WINDOWS
+                && nex.AdditionalFlags == 0x00
+                && nex.ReturnThunkOffset == 0x0000
+                && nex.SegmentReferenceThunkOffset == 0x0000
+                && nex.MinCodeSwapAreaSize == 0x0000
+                && nex.WindowsSDKRevision == 0x00
+                && nex.WindowsSDKVersion == 0x03)
                 return "2.1 RC2 (MS-DOS/16-bit)";
 
             // 2.1 RC2 (16-bit)
-            if (neh.LinkerVersion == 0x11
-                && neh.LinkerRevision == 0x20
-                && neh.EntryTableOffset == 0x00BE
-                && neh.EntryTableSize == 0x0002
-                && neh.CrcChecksum == 0x00000000
-                && neh.ProgramFlags == 0x02
-                && neh.ApplicationFlags == 0x03
-                && neh.Autodata == 0x0003
-                && neh.InitialHeapAlloc == 0x2000
-                && neh.InitialStackAlloc == 0x4000
-                && neh.InitialCSIPSetting == 0x00013E56
-                && neh.InitialSSSPSetting == 0x00030000
-                && neh.FileSegmentCount == 0x0003
-                && neh.ModuleReferenceTableSize == 0x0004
-                && neh.NonResidentNameTableSize == 0x004B
-                && neh.SegmentTableOffset == 0x0040
-                && neh.ResourceTableOffset == 0x0058
-                && neh.ResidentNameTableOffset == 0x0090
-                && neh.ModuleReferenceTableOffset == 0x009C
-                && neh.ImportedNamesTableOffset == 0x00A4
-                && neh.NonResidentNamesTableOffset == 0x000001D0
-                && neh.MovableEntriesCount == 0x0000
-                && neh.SegmentAlignmentShiftCount == 0x0001
-                && neh.ResourceEntriesCount == 0x0000
-                && neh.TargetOperatingSystem == 0x02
-                && neh.AdditionalFlags == 0x00
-                && neh.ReturnThunkOffset == 0x0000
-                && neh.SegmentReferenceThunkOffset == 0x0000
-                && neh.MinCodeSwapAreaSize == 0x0000
-                && neh.WindowsSDKRevision == 0x00
-                && neh.WindowsSDKVersion == 0x03)
+            if (nex.LinkerVersion == 0x11
+                && nex.LinkerRevision == 0x20
+                && nex.EntryTableOffset == 0x00BE
+                && nex.EntryTableSize == 0x0002
+                && nex.CrcChecksum == 0x00000000
+                && nex.FlagWord == (Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+                    | Models.NewExecutable.HeaderFlag.FullScreen
+                    | Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
+                && nex.AutomaticDataSegmentNumber == 0x0003
+                && nex.InitialHeapAlloc == 0x2000
+                && nex.InitialStackAlloc == 0x4000
+                && nex.InitialCSIPSetting == 0x00013E56
+                && nex.InitialSSSPSetting == 0x00030000
+                && nex.FileSegmentCount == 0x0003
+                && nex.ModuleReferenceTableSize == 0x0004
+                && nex.NonResidentNameTableSize == 0x004B
+                && nex.SegmentTableOffset == 0x0040
+                && nex.ResourceTableOffset == 0x0058
+                && nex.ResidentNameTableOffset == 0x0090
+                && nex.ModuleReferenceTableOffset == 0x009C
+                && nex.ImportedNamesTableOffset == 0x00A4
+                && nex.NonResidentNamesTableOffset == 0x000001D0
+                && nex.MovableEntriesCount == 0x0000
+                && nex.SegmentAlignmentShiftCount == 0x0001
+                && nex.ResourceEntriesCount == 0x0000
+                && nex.TargetOperatingSystem == Models.NewExecutable.OperatingSystem.WINDOWS
+                && nex.AdditionalFlags == 0x00
+                && nex.ReturnThunkOffset == 0x0000
+                && nex.SegmentReferenceThunkOffset == 0x0000
+                && nex.MinCodeSwapAreaSize == 0x0000
+                && nex.WindowsSDKRevision == 0x00
+                && nex.WindowsSDKVersion == 0x03)
                 return "2.1 RC2 (16-bit)";
 
             // Compact 2.1 RC2 (16-bit)
-            if (neh.LinkerVersion == 0x11
-                && neh.LinkerRevision == 0x20
-                && neh.EntryTableOffset == 0x0080
-                && neh.EntryTableSize == 0x0002
-                && neh.CrcChecksum == 0x00000000
-                && neh.ProgramFlags == 0x0A
-                && neh.ApplicationFlags == 0x03
-                && neh.Autodata == 0x0003
-                && neh.InitialHeapAlloc == 0x2000
-                && neh.InitialStackAlloc == 0x4000
-                && neh.InitialCSIPSetting == 0x00012B84
-                && neh.InitialSSSPSetting == 0x00030000
-                && neh.FileSegmentCount == 0x0003
-                && neh.ModuleReferenceTableSize == 0x0003
-                && neh.NonResidentNameTableSize == 0x004B
-                && neh.SegmentTableOffset == 0x0040
-                && neh.ResourceTableOffset == 0x0058
-                && neh.ResidentNameTableOffset == 0x0058
-                && neh.ModuleReferenceTableOffset == 0x0064
-                && neh.ImportedNamesTableOffset == 0x006A
-                && neh.NonResidentNamesTableOffset == 0x00000192
-                && neh.MovableEntriesCount == 0x0000
-                && neh.SegmentAlignmentShiftCount == 0x0001
-                && neh.ResourceEntriesCount == 0x0000
-                && neh.TargetOperatingSystem == 0x02
-                && neh.AdditionalFlags == 0x00
-                && neh.ReturnThunkOffset == 0x0000
-                && neh.SegmentReferenceThunkOffset == 0x0000
-                && neh.MinCodeSwapAreaSize == 0x0000
-                && neh.WindowsSDKRevision == 0x00
-                && neh.WindowsSDKVersion == 0x03)
+            if (nex.LinkerVersion == 0x11
+                && nex.LinkerRevision == 0x20
+                && nex.EntryTableOffset == 0x0080
+                && nex.EntryTableSize == 0x0002
+                && nex.CrcChecksum == 0x00000000
+                && nex.FlagWord == (Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+                    | Models.NewExecutable.HeaderFlag.ProtectedModeOnly
+                    | Models.NewExecutable.HeaderFlag.FullScreen
+                    | Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
+                && nex.AutomaticDataSegmentNumber == 0x0003
+                && nex.InitialHeapAlloc == 0x2000
+                && nex.InitialStackAlloc == 0x4000
+                && nex.InitialCSIPSetting == 0x00012B84
+                && nex.InitialSSSPSetting == 0x00030000
+                && nex.FileSegmentCount == 0x0003
+                && nex.ModuleReferenceTableSize == 0x0003
+                && nex.NonResidentNameTableSize == 0x004B
+                && nex.SegmentTableOffset == 0x0040
+                && nex.ResourceTableOffset == 0x0058
+                && nex.ResidentNameTableOffset == 0x0058
+                && nex.ModuleReferenceTableOffset == 0x0064
+                && nex.ImportedNamesTableOffset == 0x006A
+                && nex.NonResidentNamesTableOffset == 0x00000192
+                && nex.MovableEntriesCount == 0x0000
+                && nex.SegmentAlignmentShiftCount == 0x0001
+                && nex.ResourceEntriesCount == 0x0000
+                && nex.TargetOperatingSystem == Models.NewExecutable.OperatingSystem.WINDOWS
+                && nex.AdditionalFlags == 0x00
+                && nex.ReturnThunkOffset == 0x0000
+                && nex.SegmentReferenceThunkOffset == 0x0000
+                && nex.MinCodeSwapAreaSize == 0x0000
+                && nex.WindowsSDKRevision == 0x00
+                && nex.WindowsSDKVersion == 0x03)
                 return "Compact 2.1 RC2 (16-bit)";
             
             // Software Installation 2.1 RC2 (16-bit)
-            if (neh.LinkerVersion == 0x11
-                && neh.LinkerRevision == 0x20
-                && neh.EntryTableOffset == 0x00BE
-                && neh.EntryTableSize == 0x0002
-                && neh.CrcChecksum == 0x00000000
-                && neh.ProgramFlags == 0x02
-                && neh.ApplicationFlags == 0x03
-                && neh.Autodata == 0x0003
-                && neh.InitialHeapAlloc == 0x2000
-                && neh.InitialStackAlloc == 0x4000
-                && neh.InitialCSIPSetting == 0x000143AC
-                && neh.InitialSSSPSetting == 0x00030000
-                && neh.FileSegmentCount == 0x0003
-                && neh.ModuleReferenceTableSize == 0x0004
-                && neh.NonResidentNameTableSize == 0x004B
-                && neh.SegmentTableOffset == 0x0040
-                && neh.ResourceTableOffset == 0x0058
-                && neh.ResidentNameTableOffset == 0x0090
-                && neh.ModuleReferenceTableOffset == 0x009C
-                && neh.ImportedNamesTableOffset == 0x00A4
-                && neh.NonResidentNamesTableOffset == 0x000001D0
-                && neh.MovableEntriesCount == 0x0000
-                && neh.SegmentAlignmentShiftCount == 0x0001
-                && neh.ResourceEntriesCount == 0x0000
-                && neh.TargetOperatingSystem == 0x02
-                && neh.AdditionalFlags == 0x00
-                && neh.ReturnThunkOffset == 0x0000
-                && neh.SegmentReferenceThunkOffset == 0x0000
-                && neh.MinCodeSwapAreaSize == 0x0000
-                && neh.WindowsSDKRevision == 0x00
-                && neh.WindowsSDKVersion == 0x03)
+            if (nex.LinkerVersion == 0x11
+                && nex.LinkerRevision == 0x20
+                && nex.EntryTableOffset == 0x00BE
+                && nex.EntryTableSize == 0x0002
+                && nex.CrcChecksum == 0x00000000
+                && nex.FlagWord == (Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+                    | Models.NewExecutable.HeaderFlag.FullScreen
+                    | Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
+                && nex.AutomaticDataSegmentNumber == 0x0003
+                && nex.InitialHeapAlloc == 0x2000
+                && nex.InitialStackAlloc == 0x4000
+                && nex.InitialCSIPSetting == 0x000143AC
+                && nex.InitialSSSPSetting == 0x00030000
+                && nex.FileSegmentCount == 0x0003
+                && nex.ModuleReferenceTableSize == 0x0004
+                && nex.NonResidentNameTableSize == 0x004B
+                && nex.SegmentTableOffset == 0x0040
+                && nex.ResourceTableOffset == 0x0058
+                && nex.ResidentNameTableOffset == 0x0090
+                && nex.ModuleReferenceTableOffset == 0x009C
+                && nex.ImportedNamesTableOffset == 0x00A4
+                && nex.NonResidentNamesTableOffset == 0x000001D0
+                && nex.MovableEntriesCount == 0x0000
+                && nex.SegmentAlignmentShiftCount == 0x0001
+                && nex.ResourceEntriesCount == 0x0000
+                && nex.TargetOperatingSystem == Models.NewExecutable.OperatingSystem.WINDOWS
+                && nex.AdditionalFlags == 0x00
+                && nex.ReturnThunkOffset == 0x0000
+                && nex.SegmentReferenceThunkOffset == 0x0000
+                && nex.MinCodeSwapAreaSize == 0x0000
+                && nex.WindowsSDKRevision == 0x00
+                && nex.WindowsSDKVersion == 0x03)
                 return "Software Installation 2.1 RC2 (16-bit)";
             
             #endregion
@@ -530,139 +538,145 @@ namespace BurnOutSharp.PackerType
             #region 2.1 Variants
 
             // 2.1 (MS-DOS/16-bit)
-            if (neh.LinkerVersion == 0x11
-                && neh.LinkerRevision == 0x20
-                && neh.EntryTableOffset == 0x0086
-                && neh.EntryTableSize == 0x0002
-                && neh.CrcChecksum == 0x00000000
-                && neh.ProgramFlags == 0x0A
-                && neh.ApplicationFlags == 0x03
-                && neh.Autodata == 0x0003
-                && neh.InitialHeapAlloc == 0x2000
-                && neh.InitialStackAlloc == 0x3A00
-                && neh.InitialCSIPSetting == 0x00013396
-                && neh.InitialSSSPSetting == 0x00030000
-                && neh.FileSegmentCount == 0x0003
-                && neh.ModuleReferenceTableSize == 0x0004
-                && neh.NonResidentNameTableSize == 0x004B
-                && neh.SegmentTableOffset == 0x0040
-                && neh.ResourceTableOffset == 0x0058
-                && neh.ResidentNameTableOffset == 0x0058
-                && neh.ModuleReferenceTableOffset == 0x0064
-                && neh.ImportedNamesTableOffset == 0x006C
-                && neh.NonResidentNamesTableOffset == 0x000043C8
-                && neh.MovableEntriesCount == 0x0000
-                && neh.SegmentAlignmentShiftCount == 0x0001
-                && neh.ResourceEntriesCount == 0x0000
-                && neh.TargetOperatingSystem == 0x02
-                && neh.AdditionalFlags == 0x00
-                && neh.ReturnThunkOffset == 0x0000
-                && neh.SegmentReferenceThunkOffset == 0x0000
-                && neh.MinCodeSwapAreaSize == 0x0000
-                && neh.WindowsSDKRevision == 0x00
-                && neh.WindowsSDKVersion == 0x03)
+            if (nex.LinkerVersion == 0x11
+                && nex.LinkerRevision == 0x20
+                && nex.EntryTableOffset == 0x0086
+                && nex.EntryTableSize == 0x0002
+                && nex.CrcChecksum == 0x00000000
+                && nex.FlagWord == (Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+                    | Models.NewExecutable.HeaderFlag.ProtectedModeOnly
+                    | Models.NewExecutable.HeaderFlag.FullScreen
+                    | Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
+                && nex.AutomaticDataSegmentNumber == 0x0003
+                && nex.InitialHeapAlloc == 0x2000
+                && nex.InitialStackAlloc == 0x3A00
+                && nex.InitialCSIPSetting == 0x00013396
+                && nex.InitialSSSPSetting == 0x00030000
+                && nex.FileSegmentCount == 0x0003
+                && nex.ModuleReferenceTableSize == 0x0004
+                && nex.NonResidentNameTableSize == 0x004B
+                && nex.SegmentTableOffset == 0x0040
+                && nex.ResourceTableOffset == 0x0058
+                && nex.ResidentNameTableOffset == 0x0058
+                && nex.ModuleReferenceTableOffset == 0x0064
+                && nex.ImportedNamesTableOffset == 0x006C
+                && nex.NonResidentNamesTableOffset == 0x000043C8
+                && nex.MovableEntriesCount == 0x0000
+                && nex.SegmentAlignmentShiftCount == 0x0001
+                && nex.ResourceEntriesCount == 0x0000
+                && nex.TargetOperatingSystem == Models.NewExecutable.OperatingSystem.WINDOWS
+                && nex.AdditionalFlags == 0x00
+                && nex.ReturnThunkOffset == 0x0000
+                && nex.SegmentReferenceThunkOffset == 0x0000
+                && nex.MinCodeSwapAreaSize == 0x0000
+                && nex.WindowsSDKRevision == 0x00
+                && nex.WindowsSDKVersion == 0x03)
                 return "2.1 (MS-DOS/16-bit)";
             
             // 2.1 (16-bit)
-            if (neh.LinkerVersion == 0x11
-                && neh.LinkerRevision == 0x20
-                && neh.EntryTableOffset == 0x00BE
-                && neh.EntryTableSize == 0x0002
-                && neh.CrcChecksum == 0x00000000
-                && neh.ProgramFlags == 0x02
-                && neh.ApplicationFlags == 0x03
-                && neh.Autodata == 0x0003
-                && neh.InitialHeapAlloc == 0x2000
-                && neh.InitialStackAlloc == 0x3A00
-                && neh.InitialCSIPSetting == 0x00013E7E
-                && neh.InitialSSSPSetting == 0x00030000
-                && neh.FileSegmentCount == 0x0003
-                && neh.ModuleReferenceTableSize == 0x0004
-                && neh.NonResidentNameTableSize == 0x004B
-                && neh.SegmentTableOffset == 0x0040
-                && neh.ResourceTableOffset == 0x0058
-                && neh.ResidentNameTableOffset == 0x0090
-                && neh.ModuleReferenceTableOffset == 0x009C
-                && neh.ImportedNamesTableOffset == 0x00A4
-                && neh.NonResidentNamesTableOffset == 0x000001D0
-                && neh.MovableEntriesCount == 0x0000
-                && neh.SegmentAlignmentShiftCount == 0x0001
-                && neh.ResourceEntriesCount == 0x0000
-                && neh.TargetOperatingSystem == 0x02
-                && neh.AdditionalFlags == 0x00
-                && neh.ReturnThunkOffset == 0x0000
-                && neh.SegmentReferenceThunkOffset == 0x0000
-                && neh.MinCodeSwapAreaSize == 0x0000
-                && neh.WindowsSDKRevision == 0x00
-                && neh.WindowsSDKVersion == 0x03)
+            if (nex.LinkerVersion == 0x11
+                && nex.LinkerRevision == 0x20
+                && nex.EntryTableOffset == 0x00BE
+                && nex.EntryTableSize == 0x0002
+                && nex.CrcChecksum == 0x00000000
+                && nex.FlagWord == (Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+                    | Models.NewExecutable.HeaderFlag.FullScreen
+                    | Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
+                && nex.AutomaticDataSegmentNumber == 0x0003
+                && nex.InitialHeapAlloc == 0x2000
+                && nex.InitialStackAlloc == 0x3A00
+                && nex.InitialCSIPSetting == 0x00013E7E
+                && nex.InitialSSSPSetting == 0x00030000
+                && nex.FileSegmentCount == 0x0003
+                && nex.ModuleReferenceTableSize == 0x0004
+                && nex.NonResidentNameTableSize == 0x004B
+                && nex.SegmentTableOffset == 0x0040
+                && nex.ResourceTableOffset == 0x0058
+                && nex.ResidentNameTableOffset == 0x0090
+                && nex.ModuleReferenceTableOffset == 0x009C
+                && nex.ImportedNamesTableOffset == 0x00A4
+                && nex.NonResidentNamesTableOffset == 0x000001D0
+                && nex.MovableEntriesCount == 0x0000
+                && nex.SegmentAlignmentShiftCount == 0x0001
+                && nex.ResourceEntriesCount == 0x0000
+                && nex.TargetOperatingSystem == Models.NewExecutable.OperatingSystem.WINDOWS
+                && nex.AdditionalFlags == 0x00
+                && nex.ReturnThunkOffset == 0x0000
+                && nex.SegmentReferenceThunkOffset == 0x0000
+                && nex.MinCodeSwapAreaSize == 0x0000
+                && nex.WindowsSDKRevision == 0x00
+                && nex.WindowsSDKVersion == 0x03)
                 return "2.1 (16-bit)";
             
             // Compact 2.1 (16-bit)
-            if (neh.LinkerVersion == 0x11
-                && neh.LinkerRevision == 0x20
-                && neh.EntryTableOffset == 0x0080
-                && neh.EntryTableSize == 0x0002
-                && neh.CrcChecksum == 0x00000000
-                && neh.ProgramFlags == 0x0A
-                && neh.ApplicationFlags == 0x03
-                && neh.Autodata == 0x0003
-                && neh.InitialHeapAlloc == 0x2000
-                && neh.InitialStackAlloc == 0x3A00
-                && neh.InitialCSIPSetting == 0x00012B90
-                && neh.InitialSSSPSetting == 0x00030000
-                && neh.FileSegmentCount == 0x0003
-                && neh.ModuleReferenceTableSize == 0x0003
-                && neh.NonResidentNameTableSize == 0x004B
-                && neh.SegmentTableOffset == 0x0040
-                && neh.ResourceTableOffset == 0x0058
-                && neh.ResidentNameTableOffset == 0x0058
-                && neh.ModuleReferenceTableOffset == 0x0064
-                && neh.ImportedNamesTableOffset == 0x006A
-                && neh.NonResidentNamesTableOffset == 0x00000192
-                && neh.MovableEntriesCount == 0x0000
-                && neh.SegmentAlignmentShiftCount == 0x0001
-                && neh.ResourceEntriesCount == 0x0000
-                && neh.TargetOperatingSystem == 0x02
-                && neh.AdditionalFlags == 0x00
-                && neh.ReturnThunkOffset == 0x0000
-                && neh.SegmentReferenceThunkOffset == 0x0000
-                && neh.MinCodeSwapAreaSize == 0x0000
-                && neh.WindowsSDKRevision == 0x00
-                && neh.WindowsSDKVersion == 0x03)
+            if (nex.LinkerVersion == 0x11
+                && nex.LinkerRevision == 0x20
+                && nex.EntryTableOffset == 0x0080
+                && nex.EntryTableSize == 0x0002
+                && nex.CrcChecksum == 0x00000000
+                && nex.FlagWord == (Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+                    | Models.NewExecutable.HeaderFlag.ProtectedModeOnly
+                    | Models.NewExecutable.HeaderFlag.FullScreen
+                    | Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
+                && nex.AutomaticDataSegmentNumber == 0x0003
+                && nex.InitialHeapAlloc == 0x2000
+                && nex.InitialStackAlloc == 0x3A00
+                && nex.InitialCSIPSetting == 0x00012B90
+                && nex.InitialSSSPSetting == 0x00030000
+                && nex.FileSegmentCount == 0x0003
+                && nex.ModuleReferenceTableSize == 0x0003
+                && nex.NonResidentNameTableSize == 0x004B
+                && nex.SegmentTableOffset == 0x0040
+                && nex.ResourceTableOffset == 0x0058
+                && nex.ResidentNameTableOffset == 0x0058
+                && nex.ModuleReferenceTableOffset == 0x0064
+                && nex.ImportedNamesTableOffset == 0x006A
+                && nex.NonResidentNamesTableOffset == 0x00000192
+                && nex.MovableEntriesCount == 0x0000
+                && nex.SegmentAlignmentShiftCount == 0x0001
+                && nex.ResourceEntriesCount == 0x0000
+                && nex.TargetOperatingSystem == Models.NewExecutable.OperatingSystem.WINDOWS
+                && nex.AdditionalFlags == 0x00
+                && nex.ReturnThunkOffset == 0x0000
+                && nex.SegmentReferenceThunkOffset == 0x0000
+                && nex.MinCodeSwapAreaSize == 0x0000
+                && nex.WindowsSDKRevision == 0x00
+                && nex.WindowsSDKVersion == 0x03)
                 return "Compact 2.1 (16-bit)";
             
             // Software Installation 2.1 (16-bit)
-            if (neh.LinkerVersion == 0x11
-                && neh.LinkerRevision == 0x20
-                && neh.EntryTableOffset == 0x00BE
-                && neh.EntryTableSize == 0x0002
-                && neh.CrcChecksum == 0x00000000
-                && neh.ProgramFlags == 0x02
-                && neh.ApplicationFlags == 0x03
-                && neh.Autodata == 0x0003
-                && neh.InitialHeapAlloc == 0x2000
-                && neh.InitialStackAlloc == 0x3A00
-                && neh.InitialCSIPSetting == 0x00014408
-                && neh.InitialSSSPSetting == 0x00030000
-                && neh.FileSegmentCount == 0x0003
-                && neh.ModuleReferenceTableSize == 0x0004
-                && neh.NonResidentNameTableSize == 0x004B
-                && neh.SegmentTableOffset == 0x0040
-                && neh.ResourceTableOffset == 0x0058
-                && neh.ResidentNameTableOffset == 0x0090
-                && neh.ModuleReferenceTableOffset == 0x009C
-                && neh.ImportedNamesTableOffset == 0x00A4
-                && neh.NonResidentNamesTableOffset == 0x000001D0
-                && neh.MovableEntriesCount == 0x0000
-                && neh.SegmentAlignmentShiftCount == 0x0001
-                && neh.ResourceEntriesCount == 0x0000
-                && neh.TargetOperatingSystem == 0x02
-                && neh.AdditionalFlags == 0x00
-                && neh.ReturnThunkOffset == 0x0000
-                && neh.SegmentReferenceThunkOffset == 0x0000
-                && neh.MinCodeSwapAreaSize == 0x0000
-                && neh.WindowsSDKRevision == 0x00
-                && neh.WindowsSDKVersion == 0x03)
+            if (nex.LinkerVersion == 0x11
+                && nex.LinkerRevision == 0x20
+                && nex.EntryTableOffset == 0x00BE
+                && nex.EntryTableSize == 0x0002
+                && nex.CrcChecksum == 0x00000000
+                && nex.FlagWord == (Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+                    | Models.NewExecutable.HeaderFlag.FullScreen
+                    | Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
+                && nex.AutomaticDataSegmentNumber == 0x0003
+                && nex.InitialHeapAlloc == 0x2000
+                && nex.InitialStackAlloc == 0x3A00
+                && nex.InitialCSIPSetting == 0x00014408
+                && nex.InitialSSSPSetting == 0x00030000
+                && nex.FileSegmentCount == 0x0003
+                && nex.ModuleReferenceTableSize == 0x0004
+                && nex.NonResidentNameTableSize == 0x004B
+                && nex.SegmentTableOffset == 0x0040
+                && nex.ResourceTableOffset == 0x0058
+                && nex.ResidentNameTableOffset == 0x0090
+                && nex.ModuleReferenceTableOffset == 0x009C
+                && nex.ImportedNamesTableOffset == 0x00A4
+                && nex.NonResidentNamesTableOffset == 0x000001D0
+                && nex.MovableEntriesCount == 0x0000
+                && nex.SegmentAlignmentShiftCount == 0x0001
+                && nex.ResourceEntriesCount == 0x0000
+                && nex.TargetOperatingSystem == Models.NewExecutable.OperatingSystem.WINDOWS
+                && nex.AdditionalFlags == 0x00
+                && nex.ReturnThunkOffset == 0x0000
+                && nex.SegmentReferenceThunkOffset == 0x0000
+                && nex.MinCodeSwapAreaSize == 0x0000
+                && nex.WindowsSDKRevision == 0x00
+                && nex.WindowsSDKVersion == 0x03)
                 return "Software Installation 2.1 (16-bit)";
 
             #endregion
@@ -670,105 +684,109 @@ namespace BurnOutSharp.PackerType
             #region Misc. Variants
 
             // Personal Edition (16-bit)
-            if (neh.LinkerVersion == 0x11
-                && neh.LinkerRevision == 0x20
-                && neh.EntryTableOffset == 0x0086
-                && neh.EntryTableSize == 0x0002
-                && neh.CrcChecksum == 0x00000000
-                && neh.ProgramFlags == 0x0A
-                && neh.ApplicationFlags == 0x03
-                && neh.Autodata == 0x0003
-                && neh.InitialHeapAlloc == 0x2000
-                && neh.InitialStackAlloc == 0x4000
-                && neh.InitialCSIPSetting == 0x0001317C
-                && neh.InitialSSSPSetting == 0x00030000
-                && neh.FileSegmentCount == 0x0003
-                && neh.ModuleReferenceTableSize == 0x0004
-                && neh.NonResidentNameTableSize == 0x004B
-                && neh.SegmentTableOffset == 0x0040
-                && neh.ResourceTableOffset == 0x0058
-                && neh.ResidentNameTableOffset == 0x0058
-                && neh.ModuleReferenceTableOffset == 0x0064
-                && neh.ImportedNamesTableOffset == 0x006C
-                && neh.NonResidentNamesTableOffset == 0x00000198
-                && neh.MovableEntriesCount == 0x0000
-                && neh.SegmentAlignmentShiftCount == 0x0001
-                && neh.ResourceEntriesCount == 0x0000
-                && neh.TargetOperatingSystem == 0x02
-                && neh.AdditionalFlags == 0x00
-                && neh.ReturnThunkOffset == 0x0000
-                && neh.SegmentReferenceThunkOffset == 0x0000
-                && neh.MinCodeSwapAreaSize == 0x0000
-                && neh.WindowsSDKRevision == 0x00
-                && neh.WindowsSDKVersion == 0x03)
+            if (nex.LinkerVersion == 0x11
+                && nex.LinkerRevision == 0x20
+                && nex.EntryTableOffset == 0x0086
+                && nex.EntryTableSize == 0x0002
+                && nex.CrcChecksum == 0x00000000
+                && nex.FlagWord == (Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+                    | Models.NewExecutable.HeaderFlag.ProtectedModeOnly
+                    | Models.NewExecutable.HeaderFlag.FullScreen
+                    | Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
+                && nex.AutomaticDataSegmentNumber == 0x0003
+                && nex.InitialHeapAlloc == 0x2000
+                && nex.InitialStackAlloc == 0x4000
+                && nex.InitialCSIPSetting == 0x0001317C
+                && nex.InitialSSSPSetting == 0x00030000
+                && nex.FileSegmentCount == 0x0003
+                && nex.ModuleReferenceTableSize == 0x0004
+                && nex.NonResidentNameTableSize == 0x004B
+                && nex.SegmentTableOffset == 0x0040
+                && nex.ResourceTableOffset == 0x0058
+                && nex.ResidentNameTableOffset == 0x0058
+                && nex.ModuleReferenceTableOffset == 0x0064
+                && nex.ImportedNamesTableOffset == 0x006C
+                && nex.NonResidentNamesTableOffset == 0x00000198
+                && nex.MovableEntriesCount == 0x0000
+                && nex.SegmentAlignmentShiftCount == 0x0001
+                && nex.ResourceEntriesCount == 0x0000
+                && nex.TargetOperatingSystem == Models.NewExecutable.OperatingSystem.WINDOWS
+                && nex.AdditionalFlags == 0x00
+                && nex.ReturnThunkOffset == 0x0000
+                && nex.SegmentReferenceThunkOffset == 0x0000
+                && nex.MinCodeSwapAreaSize == 0x0000
+                && nex.WindowsSDKRevision == 0x00
+                && nex.WindowsSDKVersion == 0x03)
                 return "Personal Edition (16-bit)";
             
             // Personal Edition 32-bit (16-bit)
-            if (neh.LinkerVersion == 0x11
-                && neh.LinkerRevision == 0x20
-                && neh.EntryTableOffset == 0x00BE
-                && neh.EntryTableSize == 0x0002
-                && neh.CrcChecksum == 0x00000000
-                && neh.ProgramFlags == 0x02
-                && neh.ApplicationFlags == 0x03
-                && neh.Autodata == 0x0003
-                && neh.InitialHeapAlloc == 0x2000
-                && neh.InitialStackAlloc == 0x3C00
-                && neh.InitialCSIPSetting == 0x00013E7C
-                && neh.InitialSSSPSetting == 0x00030000
-                && neh.FileSegmentCount == 0x0003
-                && neh.ModuleReferenceTableSize == 0x0004
-                && neh.NonResidentNameTableSize == 0x004B
-                && neh.SegmentTableOffset == 0x0040
-                && neh.ResourceTableOffset == 0x0058
-                && neh.ResidentNameTableOffset == 0x0090
-                && neh.ModuleReferenceTableOffset == 0x009C
-                && neh.ImportedNamesTableOffset == 0x00A4
-                && neh.NonResidentNamesTableOffset == 0x000001D0
-                && neh.MovableEntriesCount == 0x0000
-                && neh.SegmentAlignmentShiftCount == 0x0001
-                && neh.ResourceEntriesCount == 0x0000
-                && neh.TargetOperatingSystem == 0x02
-                && neh.AdditionalFlags == 0x00
-                && neh.ReturnThunkOffset == 0x0000
-                && neh.SegmentReferenceThunkOffset == 0x0000
-                && neh.MinCodeSwapAreaSize == 0x0000
-                && neh.WindowsSDKRevision == 0x00
-                && neh.WindowsSDKVersion == 0x03)
+            if (nex.LinkerVersion == 0x11
+                && nex.LinkerRevision == 0x20
+                && nex.EntryTableOffset == 0x00BE
+                && nex.EntryTableSize == 0x0002
+                && nex.CrcChecksum == 0x00000000
+                && nex.FlagWord == (Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+                    | Models.NewExecutable.HeaderFlag.FullScreen
+                    | Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
+                && nex.AutomaticDataSegmentNumber == 0x0003
+                && nex.InitialHeapAlloc == 0x2000
+                && nex.InitialStackAlloc == 0x3C00
+                && nex.InitialCSIPSetting == 0x00013E7C
+                && nex.InitialSSSPSetting == 0x00030000
+                && nex.FileSegmentCount == 0x0003
+                && nex.ModuleReferenceTableSize == 0x0004
+                && nex.NonResidentNameTableSize == 0x004B
+                && nex.SegmentTableOffset == 0x0040
+                && nex.ResourceTableOffset == 0x0058
+                && nex.ResidentNameTableOffset == 0x0090
+                && nex.ModuleReferenceTableOffset == 0x009C
+                && nex.ImportedNamesTableOffset == 0x00A4
+                && nex.NonResidentNamesTableOffset == 0x000001D0
+                && nex.MovableEntriesCount == 0x0000
+                && nex.SegmentAlignmentShiftCount == 0x0001
+                && nex.ResourceEntriesCount == 0x0000
+                && nex.TargetOperatingSystem == Models.NewExecutable.OperatingSystem.WINDOWS
+                && nex.AdditionalFlags == 0x00
+                && nex.ReturnThunkOffset == 0x0000
+                && nex.SegmentReferenceThunkOffset == 0x0000
+                && nex.MinCodeSwapAreaSize == 0x0000
+                && nex.WindowsSDKRevision == 0x00
+                && nex.WindowsSDKVersion == 0x03)
                 return "Personal Edition 32-bit (16-bit)";
 
             // Personal Edition 32-bit Build 1260/1285 (16-bit)
-            if (neh.LinkerVersion == 0x11
-                && neh.LinkerRevision == 0x20
-                && neh.EntryTableOffset == 0x00C6
-                && neh.EntryTableSize == 0x0002
-                && neh.CrcChecksum == 0x00000000
-                && neh.ProgramFlags == 0x02
-                && neh.ApplicationFlags == 0x03
-                && neh.Autodata == 0x0003
-                && neh.InitialHeapAlloc == 0x43DC
-                && neh.InitialStackAlloc == 0x2708
-                && neh.InitialCSIPSetting == 0x00014ADC
-                && neh.InitialSSSPSetting == 0x00030000
-                && neh.FileSegmentCount == 0x0003
-                && neh.ModuleReferenceTableSize == 0x0005
-                && neh.NonResidentNameTableSize == 0x004B
-                && neh.SegmentTableOffset == 0x0040
-                && neh.ResourceTableOffset == 0x0058
-                && neh.ResidentNameTableOffset == 0x0090
-                && neh.ModuleReferenceTableOffset == 0x009C
-                && neh.ImportedNamesTableOffset == 0x00A6
-                && neh.NonResidentNamesTableOffset == 0x000001D8
-                && neh.MovableEntriesCount == 0x0000
-                && neh.SegmentAlignmentShiftCount == 0x0001
-                && neh.ResourceEntriesCount == 0x0000
-                && neh.TargetOperatingSystem == 0x02
-                && neh.AdditionalFlags == 0x00
-                && neh.ReturnThunkOffset == 0x0000
-                && neh.SegmentReferenceThunkOffset == 0x0000
-                && neh.MinCodeSwapAreaSize == 0x0000
-                && neh.WindowsSDKRevision == 0x00
-                && neh.WindowsSDKVersion == 0x03)
+            if (nex.LinkerVersion == 0x11
+                && nex.LinkerRevision == 0x20
+                && nex.EntryTableOffset == 0x00C6
+                && nex.EntryTableSize == 0x0002
+                && nex.CrcChecksum == 0x00000000
+                && nex.FlagWord == (Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+                    | Models.NewExecutable.HeaderFlag.FullScreen
+                    | Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
+                && nex.AutomaticDataSegmentNumber == 0x0003
+                && nex.InitialHeapAlloc == 0x43DC
+                && nex.InitialStackAlloc == 0x2708
+                && nex.InitialCSIPSetting == 0x00014ADC
+                && nex.InitialSSSPSetting == 0x00030000
+                && nex.FileSegmentCount == 0x0003
+                && nex.ModuleReferenceTableSize == 0x0005
+                && nex.NonResidentNameTableSize == 0x004B
+                && nex.SegmentTableOffset == 0x0040
+                && nex.ResourceTableOffset == 0x0058
+                && nex.ResidentNameTableOffset == 0x0090
+                && nex.ModuleReferenceTableOffset == 0x009C
+                && nex.ImportedNamesTableOffset == 0x00A6
+                && nex.NonResidentNamesTableOffset == 0x000001D8
+                && nex.MovableEntriesCount == 0x0000
+                && nex.SegmentAlignmentShiftCount == 0x0001
+                && nex.ResourceEntriesCount == 0x0000
+                && nex.TargetOperatingSystem == Models.NewExecutable.OperatingSystem.WINDOWS
+                && nex.AdditionalFlags == 0x00
+                && nex.ReturnThunkOffset == 0x0000
+                && nex.SegmentReferenceThunkOffset == 0x0000
+                && nex.MinCodeSwapAreaSize == 0x0000
+                && nex.WindowsSDKRevision == 0x00
+                && nex.WindowsSDKVersion == 0x03)
                 return "Personal Edition 32-bit Build 1260/1285 (16-bit)";
 
             #endregion
@@ -782,8 +800,8 @@ namespace BurnOutSharp.PackerType
         private string GetNEUnknownHeaderVersion(NewExecutable nex, string file, bool includeDebug)
         {
             // TODO: Like with PE, convert this into a preread in the header code
-            int resourceStart = nex.DOSStubHeader.NewExeHeaderAddr + nex.NewExecutableHeader.ResourceTableOffset;
-            int resourceEnd = nex.DOSStubHeader.NewExeHeaderAddr + nex.NewExecutableHeader.ModuleReferenceTableOffset;
+            int resourceStart = (int)(nex.Stub_NewExeHeaderAddr + nex.ResourceTableOffset);
+            int resourceEnd = (int)(nex.Stub_NewExeHeaderAddr + nex.ModuleReferenceTableOffset);
             int resourceLength = resourceEnd - resourceStart;
 
             var resourceData = nex.ReadArbitraryRange(resourceStart, resourceLength);
@@ -813,137 +831,134 @@ namespace BurnOutSharp.PackerType
         /// TODO: Research to see if the versions are embedded elsewhere in these files
         private string GetPEHeaderVersion(PortableExecutable pex)
         {
-            var ifh = pex.ImageFileHeader;
-            var ioh = pex.OptionalHeader;
-
             // 2.2.3063
-            if (ifh.Machine == MachineType.IMAGE_FILE_MACHINE_I386
-                && ifh.NumberOfSections == 0x0005
-                && ifh.TimeDateStamp == 0x38BE7AC9
-                && ifh.PointerToSymbolTable == 0x00000000
-                && ifh.NumberOfSymbols == 0x00000000
-                && ifh.SizeOfOptionalHeader == 0x00E0
-                && (ushort)ifh.Characteristics == 0x010F
+            if (pex.Machine == Models.PortableExecutable.MachineType.IMAGE_FILE_MACHINE_I386
+                && pex.NumberOfSections == 0x0005
+                && pex.TimeDateStamp == 0x38BE7AC9
+                && pex.PointerToSymbolTable == 0x00000000
+                && pex.NumberOfSymbols == 0x00000000
+                && pex.SizeOfOptionalHeader == 0x00E0
+                && (ushort)pex.Characteristics == 0x010F
 
-                && ioh.Magic == OptionalHeaderType.PE32
-                && ioh.MajorLinkerVersion == 0x05
-                && ioh.MinorLinkerVersion == 0x0A
-                && ioh.SizeOfCode == 0x00005C00
-                && ioh.SizeOfInitializedData == 0x00004C00
-                && ioh.SizeOfUninitializedData == 0x00000000
-                && ioh.AddressOfEntryPoint == 0x00003E71
-                && ioh.BaseOfCode == 0x00001000
-                && ioh.BaseOfData == 0x00007000
-                && ioh.ImageBasePE32 == 0x00400000)
+                && pex.OH_Magic == Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
+                && pex.OH_MajorLinkerVersion == 0x05
+                && pex.OH_MinorLinkerVersion == 0x0A
+                && pex.OH_SizeOfCode == 0x00005C00
+                && pex.OH_SizeOfInitializedData == 0x00004C00
+                && pex.OH_SizeOfUninitializedData == 0x00000000
+                && pex.OH_AddressOfEntryPoint == 0x00003E71
+                && pex.OH_BaseOfCode == 0x00001000
+                && pex.OH_BaseOfData == 0x00007000
+                && pex.OH_ImageBase == 0x00400000)
                 return "2.2.3063";
             
             // 2.2.4003
-            if (ifh.Machine == MachineType.IMAGE_FILE_MACHINE_I386
-                && ifh.NumberOfSections == 0x0005
-                && ifh.TimeDateStamp == 0x3A5B1B69
-                && ifh.PointerToSymbolTable == 0x00000000
-                && ifh.NumberOfSymbols == 0x00000000
-                && ifh.SizeOfOptionalHeader == 0x00E0
-                && (ushort)ifh.Characteristics == 0x010F
+            if (pex.Machine == Models.PortableExecutable.MachineType.IMAGE_FILE_MACHINE_I386
+                && pex.NumberOfSections == 0x0005
+                && pex.TimeDateStamp == 0x3A5B1B69
+                && pex.PointerToSymbolTable == 0x00000000
+                && pex.NumberOfSymbols == 0x00000000
+                && pex.SizeOfOptionalHeader == 0x00E0
+                && (ushort)pex.Characteristics == 0x010F
 
-                && ioh.Magic == OptionalHeaderType.PE32
-                && ioh.MajorLinkerVersion == 0x05
-                && ioh.MinorLinkerVersion == 0x0A
-                && ioh.SizeOfCode == 0x00004A00
-                && ioh.SizeOfInitializedData == 0x00002A00
-                && ioh.SizeOfUninitializedData == 0x00000000
-                && ioh.AddressOfEntryPoint == 0x000039D8
-                && ioh.BaseOfCode == 0x00001000
-                && ioh.BaseOfData == 0x00006000
-                && ioh.ImageBasePE32 == 0x00400000)
+                && pex.OH_Magic == Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
+                && pex.OH_MajorLinkerVersion == 0x05
+                && pex.OH_MinorLinkerVersion == 0x0A
+                && pex.OH_SizeOfCode == 0x00004A00
+                && pex.OH_SizeOfInitializedData == 0x00002A00
+                && pex.OH_SizeOfUninitializedData == 0x00000000
+                && pex.OH_AddressOfEntryPoint == 0x000039D8
+                && pex.OH_BaseOfCode == 0x00001000
+                && pex.OH_BaseOfData == 0x00006000
+                && pex.OH_ImageBase == 0x00400000)
                 return "2.2.4003";
             
             // Software Installation 2.2.4003
-            if (ifh.Machine == MachineType.IMAGE_FILE_MACHINE_I386
-                && ifh.NumberOfSections == 0x0005
-                && ifh.TimeDateStamp == 0x3A5B1B81
-                && ifh.PointerToSymbolTable == 0x00000000
-                && ifh.NumberOfSymbols == 0x00000000
-                && ifh.SizeOfOptionalHeader == 0x00E0
-                && (ushort)ifh.Characteristics == 0x010F
+            if (pex.Machine == Models.PortableExecutable.MachineType.IMAGE_FILE_MACHINE_I386
+                && pex.NumberOfSections == 0x0005
+                && pex.TimeDateStamp == 0x3A5B1B81
+                && pex.PointerToSymbolTable == 0x00000000
+                && pex.NumberOfSymbols == 0x00000000
+                && pex.SizeOfOptionalHeader == 0x00E0
+                && (ushort)pex.Characteristics == 0x010F
 
-                && ioh.Magic == OptionalHeaderType.PE32
-                && ioh.MajorLinkerVersion == 0x05
-                && ioh.MinorLinkerVersion == 0x0A
-                && ioh.SizeOfCode == 0x00005600
-                && ioh.SizeOfInitializedData == 0x00002A00
-                && ioh.SizeOfUninitializedData == 0x00000000
-                && ioh.AddressOfEntryPoint == 0x00003F8F
-                && ioh.BaseOfCode == 0x00001000
-                && ioh.BaseOfData == 0x00007000
-                && ioh.ImageBasePE32 == 0x00400000)
+                && pex.OH_Magic == Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
+                && pex.OH_MajorLinkerVersion == 0x05
+                && pex.OH_MinorLinkerVersion == 0x0A
+                && pex.OH_SizeOfCode == 0x00005600
+                && pex.OH_SizeOfInitializedData == 0x00002A00
+                && pex.OH_SizeOfUninitializedData == 0x00000000
+                && pex.OH_AddressOfEntryPoint == 0x00003F8F
+                && pex.OH_BaseOfCode == 0x00001000
+                && pex.OH_BaseOfData == 0x00007000
+                && pex.OH_ImageBase == 0x00400000)
                 return "Software Installation 2.2.4003";
 
             // 2.2.4325
-            if (ifh.Machine == MachineType.IMAGE_FILE_MACHINE_I386
-                && ifh.NumberOfSections == 0x0005
-                && ifh.TimeDateStamp == 0x3BFBB8FA
-                && ifh.PointerToSymbolTable == 0x00000000
-                && ifh.NumberOfSymbols == 0x00000000
-                && ifh.SizeOfOptionalHeader == 0x00E0
-                && (ushort)ifh.Characteristics == 0x010F
+            if (pex.Machine == Models.PortableExecutable.MachineType.IMAGE_FILE_MACHINE_I386
+                && pex.NumberOfSections == 0x0005
+                && pex.TimeDateStamp == 0x3BFBB8FA
+                && pex.PointerToSymbolTable == 0x00000000
+                && pex.NumberOfSymbols == 0x00000000
+                && pex.SizeOfOptionalHeader == 0x00E0
+                && (ushort)pex.Characteristics == 0x010F
 
-                && ioh.Magic == OptionalHeaderType.PE32
-                && ioh.MajorLinkerVersion == 0x06
-                && ioh.MinorLinkerVersion == 0x00
-                && ioh.SizeOfCode == 0x00006000
-                && ioh.SizeOfInitializedData == 0x0000F000
-                && ioh.SizeOfUninitializedData == 0x00000000
-                && ioh.AddressOfEntryPoint == 0x00003EF0
-                && ioh.BaseOfCode == 0x00001000
-                && ioh.BaseOfData == 0x00007000
-                && ioh.ImageBasePE32 == 0x00400000
-                && ioh.SectionAlignment == 0x00001000
-                && ioh.FileAlignment == 0x00001000)
+                && pex.OH_Magic == Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
+                && pex.OH_MajorLinkerVersion == 0x06
+                && pex.OH_MinorLinkerVersion == 0x00
+                && pex.OH_SizeOfCode == 0x00006000
+                && pex.OH_SizeOfInitializedData == 0x0000F000
+                && pex.OH_SizeOfUninitializedData == 0x00000000
+                && pex.OH_AddressOfEntryPoint == 0x00003EF0
+                && pex.OH_BaseOfCode == 0x00001000
+                && pex.OH_BaseOfData == 0x00007000
+                && pex.OH_ImageBase == 0x00400000
+                && pex.OH_SectionAlignment == 0x00001000
+                && pex.OH_FileAlignment == 0x00001000)
                 return "2.2.4325";
             
             // 2.2.5196
-            if (ifh.Machine == MachineType.IMAGE_FILE_MACHINE_I386
-                && ifh.NumberOfSections == 0x0005
-                && ifh.TimeDateStamp == 0x3D2AFCAD
-                && ifh.PointerToSymbolTable == 0x00000000
-                && ifh.NumberOfSymbols == 0x00000000
-                && ifh.SizeOfOptionalHeader == 0x00E0
-                && (ushort)ifh.Characteristics == 0x010F
+            if (pex.Machine == Models.PortableExecutable.MachineType.IMAGE_FILE_MACHINE_I386
+                && pex.NumberOfSections == 0x0005
+                && pex.TimeDateStamp == 0x3D2AFCAD
+                && pex.PointerToSymbolTable == 0x00000000
+                && pex.NumberOfSymbols == 0x00000000
+                && pex.SizeOfOptionalHeader == 0x00E0
+                && (ushort)pex.Characteristics == 0x010F
 
-                && ioh.Magic == OptionalHeaderType.PE32
-                && ioh.MajorLinkerVersion == 0x07
-                && ioh.MinorLinkerVersion == 0x00
-                && ioh.SizeOfCode == 0x00007000
-                && ioh.SizeOfInitializedData == 0x00010000
-                && ioh.SizeOfUninitializedData == 0x00000000
-                && ioh.AddressOfEntryPoint == 0x00004554
-                && ioh.BaseOfCode == 0x00001000
-                && ioh.BaseOfData == 0x00008000
-                && ioh.ImageBasePE32 == 0x00400000
-                && ioh.SectionAlignment == 0x00001000
-                && ioh.FileAlignment == 0x00001000)
+                && pex.OH_Magic == Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
+                && pex.OH_MajorLinkerVersion == 0x07
+                && pex.OH_MinorLinkerVersion == 0x00
+                && pex.OH_SizeOfCode == 0x00007000
+                && pex.OH_SizeOfInitializedData == 0x00010000
+                && pex.OH_SizeOfUninitializedData == 0x00000000
+                && pex.OH_AddressOfEntryPoint == 0x00004554
+                && pex.OH_BaseOfCode == 0x00001000
+                && pex.OH_BaseOfData == 0x00008000
+                && pex.OH_ImageBase == 0x00400000
+                && pex.OH_SectionAlignment == 0x00001000
+                && pex.OH_FileAlignment == 0x00001000)
                 return "2.2.5196";
             
             // 2.2.6202
-            if (ifh.Machine == MachineType.IMAGE_FILE_MACHINE_I386
-                && ifh.NumberOfSections == 0x0005
-                && ifh.TimeDateStamp == 0x4100F776
-                && ifh.PointerToSymbolTable == 0x00000000
-                && ifh.NumberOfSymbols == 0x00000000
-                && ifh.SizeOfOptionalHeader == 0x00E0
-                && (ushort)ifh.Characteristics == 0x010F
+            if (pex.Machine == Models.PortableExecutable.MachineType.IMAGE_FILE_MACHINE_I386
+                && pex.NumberOfSections == 0x0005
+                && pex.TimeDateStamp == 0x4100F776
+                && pex.PointerToSymbolTable == 0x00000000
+                && pex.NumberOfSymbols == 0x00000000
+                && pex.SizeOfOptionalHeader == 0x00E0
+                && (ushort)pex.Characteristics == 0x010F
 
-                && ioh.Magic == OptionalHeaderType.PE32
-                && ioh.MajorLinkerVersion == 0x07
-                && ioh.MinorLinkerVersion == 0x00
-                && ioh.SizeOfCode == 0x00007000
-                && ioh.SizeOfInitializedData == 0x00010000
-                && ioh.SizeOfUninitializedData == 0x00000000
-                && ioh.AddressOfEntryPoint == 0x00004603
-                && ioh.BaseOfCode == 0x00001000
-                && ioh.BaseOfData == 0x00008000
-                && ioh.ImageBasePE32 == 0x00400000)
+                && pex.OH_Magic == Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
+                && pex.OH_MajorLinkerVersion == 0x07
+                && pex.OH_MinorLinkerVersion == 0x00
+                && pex.OH_SizeOfCode == 0x00007000
+                && pex.OH_SizeOfInitializedData == 0x00010000
+                && pex.OH_SizeOfUninitializedData == 0x00000000
+                && pex.OH_AddressOfEntryPoint == 0x00004603
+                && pex.OH_BaseOfCode == 0x00001000
+                && pex.OH_BaseOfData == 0x00008000
+                && pex.OH_ImageBase == 0x00400000)
                 return "2.2.6202";
 
             return null;

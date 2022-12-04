@@ -1,4 +1,4 @@
-﻿using BurnOutSharp.ExecutableType.Microsoft.PE;
+﻿using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.Interfaces
 {

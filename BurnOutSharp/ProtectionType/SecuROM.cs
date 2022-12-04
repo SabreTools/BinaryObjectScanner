@@ -2,10 +2,10 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
-using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
 using BurnOutSharp.Tools;
+using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -44,7 +44,7 @@ namespace BurnOutSharp.ProtectionType
                 return $"SecuROM SLL Protected (for SecuROM v8.x)";
 
             // Search after the last section
-            if (pex.OverlayRaw != null)
+            if (pex.Overlay != null)
             {
                 var matchers = new List<ContentMatchSet>
                 {
@@ -52,7 +52,7 @@ namespace BurnOutSharp.ProtectionType
                     new ContentMatchSet(new byte?[] { 0x41, 0x64, 0x64, 0x44, 0x03, 0x00, 0x00, 0x00 }, GetV4Version, "SecuROM"),
                 };
 
-                string match = MatchUtil.GetFirstMatch(file, pex.OverlayRaw, matchers, includeDebug);
+                string match = MatchUtil.GetFirstMatch(file, pex.Overlay, matchers, includeDebug);
                 if (!string.IsNullOrWhiteSpace(match))
                     return match;
             }
@@ -61,10 +61,10 @@ namespace BurnOutSharp.ProtectionType
             for (int i = 4; i < sections.Length; i++)
             {
                 var nthSection = sections[i];
-                string nthSectionName = nthSection.NameString;
+                string nthSectionName = Encoding.UTF8.GetString(nthSection.Name).TrimEnd('\0');
                 if (nthSection != null && nthSectionName != ".idata" && nthSectionName != ".rsrc")
                 {
-                    var nthSectionData = pex.ReadRawSection(nthSectionName, first: true);
+                    var nthSectionData = pex.GetFirstSectionData(nthSectionName);
                     if (nthSectionData != null)
                     {
                         var matchers = new List<ContentMatchSet>
@@ -81,7 +81,7 @@ namespace BurnOutSharp.ProtectionType
             }
 
             // Get the .rdata section, if it exists
-            if (pex.ResourceDataSectionRaw != null)
+            if (pex.ContainsSection(".rdata"))
             {
                 var matchers = new List<ContentMatchSet>
                 {
@@ -112,7 +112,7 @@ namespace BurnOutSharp.ProtectionType
                     new ContentMatchSet(new byte?[] { 0x53, 0x65, 0x63, 0x75, 0x45, 0x78, 0x70 }, "WHITELABEL"),
                 };
 
-                string match = MatchUtil.GetFirstMatch(file, pex.ResourceDataSectionRaw, matchers, includeDebug);
+                string match = MatchUtil.GetFirstMatch(file, pex.GetFirstSectionData(".rdata"), matchers, includeDebug);
                 if (!string.IsNullOrWhiteSpace(match))
                 {
                     if (match.StartsWith("WHITELABEL"))
@@ -240,7 +240,7 @@ namespace BurnOutSharp.ProtectionType
         private static string GetV7Version(PortableExecutable pex)
         {
             int index = 172; // 64 bytes for DOS stub, 236 bytes in total
-            byte[] bytes = new ReadOnlySpan<byte>(pex.DOSStubHeader.ExecutableData, index, 4).ToArray();
+            byte[] bytes = new ReadOnlySpan<byte>(pex.StubExecutableData, index, 4).ToArray();
 
             //SecuROM 7 new and 8
             if (bytes[3] == 0x5C) // if (bytes[0] == 0xED && bytes[3] == 0x5C {
@@ -252,15 +252,16 @@ namespace BurnOutSharp.ProtectionType
             else
             {
                 index = 58; // 64 bytes for DOS stub, 122 bytes in total
-                bytes = new ReadOnlySpan<byte>(pex.DOSStubHeader.ExecutableData, index, 2).ToArray();
+                bytes = new ReadOnlySpan<byte>(pex.StubExecutableData, index, 2).ToArray();
                 return $"7.{bytes[0] ^ 0x10:00}.{bytes[1] ^ 0x10:0000}"; //return "7.01-7.10"
             }
         }
 
         private static string GetV8WhiteLabelVersion(PortableExecutable pex)
         {
-            // If we don't have a data section, we default to generic
-            if (pex.DataSectionRaw == null)
+           // Get the .data/DATA section, if it exists
+            var dataSectionRaw = pex.GetFirstSectionData(".data") ?? pex.GetFirstSectionData("DATA");
+            if (dataSectionRaw != null)
                 return "8";
 
             // Search .data for the version indicator
@@ -274,13 +275,13 @@ namespace BurnOutSharp.ProtectionType
                 0x82, 0xD8, 0x0C, 0xAC
             });
 
-            (bool success, int position) = matcher.Match(pex.DataSectionRaw);
+            (bool success, int position) = matcher.Match(dataSectionRaw);
 
             // If we can't find the string, we default to generic
             if (!success)
                 return "8";
 
-            byte[] bytes = new ReadOnlySpan<byte>(pex.DataSectionRaw, position + 0xAC, 3).ToArray();
+            byte[] bytes = new ReadOnlySpan<byte>(dataSectionRaw, position + 0xAC, 3).ToArray();
             return $"{bytes[0] ^ 0xCA}.{bytes[1] ^ 0x39:00}.{bytes[2] ^ 0x51:0000}";
         }
     }

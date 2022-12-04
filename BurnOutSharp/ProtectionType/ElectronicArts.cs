@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using BurnOutSharp.ExecutableType.Microsoft.PE;
+using System.Linq;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
 using BurnOutSharp.Tools;
+using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -29,12 +30,12 @@ namespace BurnOutSharp.ProtectionType
             if (name?.Equals("CDCode", StringComparison.Ordinal) == true)
                 return $"EA CdKey Registration Module {Utilities.GetInternalVersion(pex)}";
 
-            var resource = pex.FindResource(dataContains: "A\0b\0o\0u\0t\0 \0C\0D\0K\0e\0y");
-            if (resource != null)
+            if (pex.FindDialogByTitle("About CDKey").Any())
                 return $"EA CdKey Registration Module {Utilities.GetInternalVersion(pex)}";
 
-            // Get the .data section, if it exists
-            if (pex.DataSectionRaw != null)
+            // Get the .data/DATA section, if it exists
+            var dataSectionRaw = pex.GetFirstSectionData(".data") ?? pex.GetFirstSectionData("DATA");
+            if (dataSectionRaw != null)
             {
                 var matchers = new List<ContentMatchSet>
                 {
@@ -46,13 +47,13 @@ namespace BurnOutSharp.ProtectionType
                     }, Utilities.GetInternalVersion, "EA CdKey Registration Module"),
                 };
 
-                string match = MatchUtil.GetFirstMatch(file, pex.DataSectionRaw, matchers, includeDebug);
+                string match = MatchUtil.GetFirstMatch(file, dataSectionRaw, matchers, includeDebug);
                 if (!string.IsNullOrWhiteSpace(match))
                     return match;
             }
 
             // Get the .rdata section, if it exists
-            if (pex.ResourceDataSectionRaw != null)
+            if (pex.ContainsSection(".rdata"))
             {
                 var matchers = new List<ContentMatchSet>
                 {
@@ -65,13 +66,13 @@ namespace BurnOutSharp.ProtectionType
                     }, "EA DRM Protection"),
                 };
 
-                string match = MatchUtil.GetFirstMatch(file, pex.ResourceDataSectionRaw, matchers, includeDebug);
+                string match = MatchUtil.GetFirstMatch(file, pex.GetFirstSectionData(".rdata"), matchers, includeDebug);
                 if (!string.IsNullOrWhiteSpace(match))
                     return match;
             }
 
             // Get the .text section, if it exists
-            if (pex.TextSectionRaw != null)
+            if (pex.ContainsSection(".text"))
             {
                 var matchers = new List<ContentMatchSet>
                 {
@@ -84,7 +85,7 @@ namespace BurnOutSharp.ProtectionType
                     }, "EA DRM Protection"),
                 };
 
-                string match = MatchUtil.GetFirstMatch(file, pex.TextSectionRaw, matchers, includeDebug);
+                string match = MatchUtil.GetFirstMatch(file, pex.GetFirstSectionData(".text"), matchers, includeDebug);
                 if (!string.IsNullOrWhiteSpace(match))
                     return match;
             }

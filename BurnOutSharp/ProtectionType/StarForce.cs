@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
 using BurnOutSharp.Tools;
+using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -41,7 +41,7 @@ namespace BurnOutSharp.ProtectionType
             var rsrcSection = pex.GetLastSection(".rsrc", exact: true);
             if (rsrcSection != null)
             {
-                var rsrcSectionData = pex.ReadRawSection(".rsrc", first: true);
+                var rsrcSectionData = pex.GetLastSectionData(".rsrc");
                 if (rsrcSectionData != null)
                 {
                     var matchers = new List<ContentMatchSet>

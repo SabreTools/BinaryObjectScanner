@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
+using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -16,7 +16,7 @@ namespace BurnOutSharp.ProtectionType
                 return null;
 
             // Get the code/CODE section, if it exists
-            var codeSectionRaw = pex.ReadRawSection("code", first: true) ?? pex.ReadRawSection("CODE", first: true);
+            var codeSectionRaw = pex.GetFirstSectionData("code") ?? pex.GetFirstSectionData("CODE");
             if (codeSectionRaw != null)
             {
                 var matchers = new List<ContentMatchSet>

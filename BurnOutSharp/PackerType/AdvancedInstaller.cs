@@ -1,9 +1,9 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
+using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.PackerType
 {
@@ -23,7 +23,7 @@ namespace BurnOutSharp.PackerType
                 return null;
 
             // Get the .rdata section, if it exists
-            if (pex.ResourceDataSectionRaw != null)
+            if (pex.ContainsSection(".rdata"))
             {
                 var matchers = new List<ContentMatchSet>
                 {
@@ -38,7 +38,7 @@ namespace BurnOutSharp.PackerType
                     }, "Caphyon Advanced Installer"),
                 };
 
-                return MatchUtil.GetFirstMatch(file, pex.ResourceDataSectionRaw, matchers, includeDebug);
+                return MatchUtil.GetFirstMatch(file, pex.GetFirstSectionData(".rdata"), matchers, includeDebug);
             }
 
             return null;

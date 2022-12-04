@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
+using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -54,8 +54,7 @@ namespace BurnOutSharp.ProtectionType
                 return $"DiscGuard";
 
             // Get the .vbn section, if it exists
-            var DiscGuardSection = pex.ReadRawSection(".vbn");
-            if (DiscGuardSection != null)
+            if (pex.ContainsSection(".vbn"))
             {
                 var matchers = new List<ContentMatchSet>
                 {
@@ -106,13 +105,13 @@ namespace BurnOutSharp.ProtectionType
                     }, "DiscGuard"),
                 };
 
-                string match = MatchUtil.GetFirstMatch(file, DiscGuardSection, matchers, includeDebug);
+                string match = MatchUtil.GetFirstMatch(file, pex.GetFirstSectionData(".vbn"), matchers, includeDebug);
                 if (!string.IsNullOrWhiteSpace(match))
                     return match;
             }
 
             // Get the .rsrc section, if it exists
-            var rsrcSection = pex.ReadRawSection(".rsrc");
+            var rsrcSection = pex.GetFirstSectionData(".rsrc");
             if (rsrcSection != null)
             {
                 var matchers = new List<ContentMatchSet>

@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Concurrent;
 using System.IO;
-using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Tools;
+using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.PackerType
 {

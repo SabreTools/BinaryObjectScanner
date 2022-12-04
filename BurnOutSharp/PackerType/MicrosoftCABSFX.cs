@@ -2,10 +2,10 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
 using BurnOutSharp.Tools;
+using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.PackerType
 {
@@ -28,12 +28,13 @@ namespace BurnOutSharp.PackerType
             if (name?.Equals("Wextract", StringComparison.OrdinalIgnoreCase) == true)
                 return $"Microsoft CAB SFX {GetVersion(pex)}";
 
-            name = pex.OriginalFileName;
+            name = pex.OriginalFilename;
             if (name?.Equals("WEXTRACT.EXE", StringComparison.OrdinalIgnoreCase) == true)
                 return $"Microsoft CAB SFX {GetVersion(pex)}";
 
-            // Get the .data section, if it exists
-            if (pex.DataSectionRaw != null)
+            // Get the .data/DATA section, if it exists
+            var dataSectionRaw = pex.GetFirstSectionData(".data") ?? pex.GetFirstSectionData("DATA");
+            if (dataSectionRaw != null)
             {
                 var matchers = new List<ContentMatchSet>
                 {
@@ -45,13 +46,13 @@ namespace BurnOutSharp.PackerType
                     }, "Microsoft CAB SFX"),
                 };
 
-                string match = MatchUtil.GetFirstMatch(file, pex.DataSectionRaw, matchers, includeDebug);
+                string match = MatchUtil.GetFirstMatch(file, dataSectionRaw, matchers, includeDebug);
                 if (!string.IsNullOrWhiteSpace(match))
                     return $"Microsoft CAB SFX {GetVersion(pex)}";
             }
             
             // Get the .text section, if it exists
-            if (pex.TextSectionRaw != null)
+            if (pex.ContainsSection(".text"))
             {
                 var matchers = new List<ContentMatchSet>
                 {
@@ -61,7 +62,7 @@ namespace BurnOutSharp.PackerType
                     new ContentMatchSet(new byte?[] { 0x4D, 0x53, 0x43, 0x46, 0x75 }, "Microsoft CAB SFX"),
                 };
 
-                string match = MatchUtil.GetFirstMatch(file, pex.TextSectionRaw, matchers, includeDebug);
+                string match = MatchUtil.GetFirstMatch(file, pex.GetFirstSectionData(".text"), matchers, includeDebug);
                 if (!string.IsNullOrWhiteSpace(match))
                     return $"Microsoft CAB SFX {GetVersion(pex)}";
             }

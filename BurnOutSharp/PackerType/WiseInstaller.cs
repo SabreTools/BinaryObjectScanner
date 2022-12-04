@@ -2,11 +2,10 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using BurnOutSharp.ExecutableType.Microsoft.NE;
-using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
 using BurnOutSharp.Tools;
+using BurnOutSharp.Wrappers;
 using Wise = WiseUnpacker.WiseUnpacker;
 
 namespace BurnOutSharp.PackerType
@@ -20,9 +19,8 @@ namespace BurnOutSharp.PackerType
         /// <inheritdoc/>
         public string CheckNewExecutable(string file, NewExecutable nex, bool includeDebug)
         {
-            // Get the DOS stub from the executable, if possible
-            var stub = nex?.DOSStubHeader;
-            if (stub == null)
+            /// Check we have a valid executable
+            if (nex == null)
                 return null;
 
             // TODO: Don't read entire file
@@ -49,8 +47,9 @@ namespace BurnOutSharp.PackerType
             if (sections == null)
                 return null;
 
-            // Get the .data section, if it exists
-            if (pex.DataSectionRaw != null)
+            // Get the .data/DATA section, if it exists
+            var dataSectionRaw = pex.GetFirstSectionData(".data") ?? pex.GetFirstSectionData("DATA");
+            if (dataSectionRaw != null)
             {
                 var matchers = new List<ContentMatchSet>
                 {
@@ -58,13 +57,13 @@ namespace BurnOutSharp.PackerType
                     new ContentMatchSet(new byte?[] { 0x57, 0x69, 0x73, 0x65, 0x4D, 0x61, 0x69, 0x6E }, "Wise Installation Wizard Module"),
                 };
 
-                string match = MatchUtil.GetFirstMatch(file, pex.DataSectionRaw, matchers, includeDebug);
+                string match = MatchUtil.GetFirstMatch(file, dataSectionRaw, matchers, includeDebug);
                 if (!string.IsNullOrWhiteSpace(match))
                     return match;
             }
 
             // Get the .rdata section, if it exists
-            if (pex.ResourceDataSectionRaw != null)
+            if (pex.ContainsSection(".rdata"))
             {
                 var matchers = new List<ContentMatchSet>
                 {
@@ -72,7 +71,7 @@ namespace BurnOutSharp.PackerType
                     new ContentMatchSet(new byte?[] { 0x57, 0x69, 0x73, 0x65, 0x4D, 0x61, 0x69, 0x6E }, "Wise Installation Wizard Module"),
                 };
 
-                string match = MatchUtil.GetFirstMatch(file, pex.ResourceDataSectionRaw, matchers, includeDebug);
+                string match = MatchUtil.GetFirstMatch(file, pex.GetFirstSectionData(".rdata"), matchers, includeDebug);
                 if (!string.IsNullOrWhiteSpace(match))
                     return match;
             }

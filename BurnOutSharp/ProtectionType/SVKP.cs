@@ -1,5 +1,5 @@
-﻿using BurnOutSharp.ExecutableType.Microsoft.PE;
-using BurnOutSharp.Interfaces;
+﻿using BurnOutSharp.Interfaces;
+using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -14,11 +14,11 @@ namespace BurnOutSharp.ProtectionType
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the image file header from the executable, if possible
-            if (pex?.ImageFileHeader == null)
+            if (pex == null)
                 return null;
             
             // 0x504B5653 is "SVKP"
-            if (pex.ImageFileHeader.PointerToSymbolTable == 0x504B5653)
+            if (pex.PointerToSymbolTable == 0x504B5653)
                 return "SVKP (Slovak Protector)";
 
             return null;

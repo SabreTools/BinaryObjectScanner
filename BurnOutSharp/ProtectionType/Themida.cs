@@ -1,7 +1,7 @@
-﻿using BurnOutSharp.ExecutableType.Microsoft.PE;
+﻿using System.Collections.Generic;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
-using System.Collections.Generic;
+using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -35,8 +35,7 @@ namespace BurnOutSharp.ProtectionType
                 return null;
 
             // Get the "Arcsoft " section, if it exists
-            var initSectionRaw = pex.ReadRawSection("Arcsoft ", first: true);
-            if (initSectionRaw != null)
+            if (pex.ContainsSection("Arcsoft "))
             {
                 var matchers = new List<ContentMatchSet>
                 {
@@ -46,7 +45,7 @@ namespace BurnOutSharp.ProtectionType
                     new ContentMatchSet(new byte?[] { 0x54, 0x68, 0x65, 0x6D, 0x69, 0x64, 0x61 }, "Themida"),
                 };
 
-                string match = MatchUtil.GetFirstMatch(file, initSectionRaw, matchers, includeDebug);
+                string match = MatchUtil.GetFirstMatch(file, pex.GetFirstSectionData("Arcsoft "), matchers, includeDebug);
                 if (!string.IsNullOrWhiteSpace(match))
                     return match;
             }

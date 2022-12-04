@@ -73,6 +73,8 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </ProjectReference>
+    <ProjectReference Include="..\BurnOutSharp.Wrappers\BurnOutSharp.Wrappers.csproj" />
+    <ProjectReference Include="..\BurnOutSharp.Models\BurnOutSharp.Models.csproj" />
   </ItemGroup>
 
   <ItemGroup>

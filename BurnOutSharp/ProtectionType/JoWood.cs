@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
+using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -25,8 +25,7 @@ namespace BurnOutSharp.ProtectionType
             if (extSection)
             {
                 // Get the .dcrtext section, if it exists
-                var dcrtextSectionRaw = pex.ReadRawSection(".dcrtext");
-                if (dcrtextSectionRaw != null)
+                if (pex.ContainsSection(".dcrtext"))
                 {
                     var matchers = new List<ContentMatchSet>
                     {
@@ -40,7 +39,7 @@ namespace BurnOutSharp.ProtectionType
                         }, GetVersion, "JoWood X-Prot"),
                     };
 
-                    string match = MatchUtil.GetFirstMatch(file, dcrtextSectionRaw, matchers, includeDebug);
+                    string match = MatchUtil.GetFirstMatch(file, pex.GetFirstSectionData(".dcrtext"), matchers, includeDebug);
                     if (!string.IsNullOrWhiteSpace(match))
                         return match;
                 }

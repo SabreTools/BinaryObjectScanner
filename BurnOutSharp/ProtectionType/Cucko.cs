@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
+using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -20,7 +20,7 @@ namespace BurnOutSharp.ProtectionType
                 return null;
 
             // Get the .text section, if it exists
-            if (pex.TextSectionRaw == null)
+            if (!pex.ContainsSection(".text"))
                 return null;
 
             var matchers = new List<ContentMatchSet>
@@ -35,7 +35,7 @@ namespace BurnOutSharp.ProtectionType
                 }, "Cucko (EA Custom)")
             };
 
-            return MatchUtil.GetFirstMatch(file, pex.TextSectionRaw, matchers, includeDebug);
+            return MatchUtil.GetFirstMatch(file, pex.GetFirstSectionData(".text"), matchers, includeDebug);
         }
     }
 }

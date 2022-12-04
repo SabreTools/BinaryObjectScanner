@@ -1,6 +1,6 @@
 using System.Linq;
-using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Interfaces;
+using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -33,7 +33,7 @@ namespace BurnOutSharp.ProtectionType
             // If there are more than 2 icd-prefixed sections, then we have a match
             // Though this is the same name that SafeDisc uses for protected executables, this seems to be a coincidence.
             // Found in Redump entries 31557, 31674, 31675, 31708, 38239, 44210, and 53929.
-            int icdSectionCount = pex.GetSectionNames().Count(s => s.StartsWith("icd"));
+            int icdSectionCount = pex.SectionNames.Count(s => s.StartsWith("icd"));
             if (icdSectionCount >= 2)
                 return "CopyLok / CodeLok";
 

@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
+using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -59,7 +59,7 @@ namespace BurnOutSharp.ProtectionType
                 return $"ChosenBytes Code-Lock {pex.ProductVersion}";
 
             // Get the .text section, if it exists
-            if (pex.TextSectionRaw != null)
+            if (pex.ContainsSection(".text"))
             {
                 var matchers = new List<ContentMatchSet>
                 {
@@ -72,7 +72,7 @@ namespace BurnOutSharp.ProtectionType
                     }, "ChosenBytes Code-Lock"),
                 };
 
-                string match = MatchUtil.GetFirstMatch(file, pex.TextSectionRaw, matchers, includeDebug);
+                string match = MatchUtil.GetFirstMatch(file, pex.GetFirstSectionData(".text"), matchers, includeDebug);
                 if (!string.IsNullOrWhiteSpace(match))
                     return match;
             }

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
+using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.PackerType
 {
@@ -30,9 +30,9 @@ namespace BurnOutSharp.PackerType
                 return "Armadillo";
 
             // Loop through all "extension" sections -- usually .data1 or .text1
-            foreach (var section in sections.Where(s => s != null && s.NameString.EndsWith("1")))
+            foreach (var sectionName in pex.SectionNames.Where(s => s != null && s.EndsWith("1")))
             {
-                var sectionRaw = pex.ReadRawSection(section.NameString);
+                var sectionRaw = pex.GetFirstSectionData(sectionName);
                 if (sectionRaw != null)
                 {
                     var matchers = new List<ContentMatchSet>

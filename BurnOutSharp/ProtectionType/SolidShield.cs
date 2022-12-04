@@ -3,10 +3,10 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
 using BurnOutSharp.Tools;
+using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -53,8 +53,7 @@ namespace BurnOutSharp.ProtectionType
                 return $"SolidShield {GetInternalVersion(pex)}";
 
             // Get the .init section, if it exists
-            var initSectionRaw = pex.ReadRawSection(".init", first: true);
-            if (initSectionRaw != null)
+            if (pex.ContainsSection(".init"))
             {
                 var matchers = new List<ContentMatchSet>
                 {
@@ -68,21 +67,21 @@ namespace BurnOutSharp.ProtectionType
                     new ContentMatchSet(new byte?[] { 0x64, 0x76, 0x6D, 0x2E, 0x64, 0x6C, 0x6C }, "SolidShield EXE Wrapper v1"),
                 };
 
-                string match = MatchUtil.GetFirstMatch(file, initSectionRaw, matchers, includeDebug);
+                string match = MatchUtil.GetFirstMatch(file, pex.GetFirstSectionData(".init"), matchers, includeDebug);
                 if (!string.IsNullOrWhiteSpace(match))
                     return match;
             }
 
             // Get the wrapper resource, if it exists
-            var resource = pex.FindResource(dataContains: "B\0I\0N\0" + (char)0x07 + "\0I\0D\0R\0_\0S\0G\0T\0");
-            if (resource != null)
+            var wrapperResources = pex.FindResourceByNamedType("BIN, IDR_SGT");
+            if (wrapperResources.Any())
                 return "SolidShield EXE Wrapper v1";
 
             // Search the last two available sections
-            var sectionNames = pex.GetSectionNames();
+            var sectionNames = pex.SectionNames;
             for (int i = (sectionNames.Length >= 2 ? sectionNames.Length - 2 : 0); i < sectionNames.Length; i++)
             {
-                var nthSectionRaw = pex.ReadRawSection(sectionNames[i], first: false);
+                var nthSectionRaw = pex.GetLastSectionData(sectionNames[i]);
                 if (nthSectionRaw != null)
                 {
                     var matchers = new List<ContentMatchSet>

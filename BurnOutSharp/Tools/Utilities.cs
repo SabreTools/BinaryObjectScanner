@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
-using BurnOutSharp.ExecutableType.Microsoft.PE;
+using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.Tools
 {
@@ -182,19 +182,6 @@ namespace BurnOutSharp.Tools
         /// <summary>
         /// Get the internal version as reported by the resources
         /// </summary>
-        /// <param name="fileContent">Byte array representing the file contents</param>
-        /// <returns>Version string, null on error</returns>
-        public static string GetInternalVersion(byte[] fileContent)
-        {
-            if (fileContent == null || !fileContent.Any())
-                return null;
-
-            return GetInternalVersion(new PortableExecutable(fileContent, 0));
-        }
-
-        /// <summary>
-        /// Get the internal version as reported by the resources
-        /// </summary>
         /// <param name="pex">PortableExecutable representing the file contents</param>
         /// <returns>Version string, null on error</returns>
         public static string GetInternalVersion(PortableExecutable pex)
@@ -207,7 +194,7 @@ namespace BurnOutSharp.Tools
             if (!string.IsNullOrWhiteSpace(version))
                 return version;
 
-            version = pex.ManifestVersion;
+            version = pex.AssemblyVersion;
             if (!string.IsNullOrWhiteSpace(version))
                 return version;
 
@@ -306,7 +293,7 @@ namespace BurnOutSharp.Tools
         /// <param name="fileContent">Byte array representing the file contents</param>
         /// <param name="positions">Last matched positions in the contents</param>
         /// <returns>Version string, null on error</returns>
-        public static string GetInternalVersion(string file, byte[] fileContent, List<int> positions) => GetInternalVersion(fileContent);
+        public static string GetInternalVersion(string file, byte[] fileContent, List<int> positions) => GetInternalVersion(file);
 
         /// <summary>
         /// Wrapper for GetInternalVersion for use in path matching

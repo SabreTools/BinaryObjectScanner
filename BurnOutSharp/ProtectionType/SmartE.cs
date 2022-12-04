@@ -1,10 +1,9 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using BurnOutSharp.ExecutableType.Microsoft.PE;
-using BurnOutSharp.ExecutableType.Microsoft.PE.Headers;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
+using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -19,22 +18,22 @@ namespace BurnOutSharp.ProtectionType
                 return null;
 
             // Get the .edata section, if it exists
-            string match = GetMatchForSection(file, pex.ExportDataSectionRaw, includeDebug);
+            string match = GetMatchForSection(file, pex.GetFirstSectionData(".edata"), includeDebug);
             if (!string.IsNullOrWhiteSpace(match))
                 return match;
 
             // Get the .idata section, if it exists
-            match = GetMatchForSection(file, pex.ImportDataSectionRaw, includeDebug);
+            match = GetMatchForSection(file, pex.GetFirstSectionData(".idata"), includeDebug);
             if (!string.IsNullOrWhiteSpace(match))
                 return match;
 
             // Get the .rdata section, if it exists
-            match = GetMatchForSection(file, pex.ResourceDataSectionRaw, includeDebug);
+            match = GetMatchForSection(file, pex.GetFirstSectionData(".rdata"), includeDebug);
             if (!string.IsNullOrWhiteSpace(match))
                 return match;
 
             // Get the .tls section, if it exists
-            var tlsSectionRaw = pex.ReadRawSection(".tls", first: false);
+            var tlsSectionRaw = pex.GetLastSectionData(".tls");
             match = GetMatchForSection(file, tlsSectionRaw, includeDebug);
             if (!string.IsNullOrWhiteSpace(match))
                 return match;
@@ -72,7 +71,7 @@ namespace BurnOutSharp.ProtectionType
         /// <summary>
         /// Check a section for the SmartE string(s)
         /// </summary>
-        private string GetMatchForSection(SectionHeader section, string file, byte[] sectionContent, bool includeDebug)
+        private string GetMatchForSection(Models.PortableExecutable.SectionHeader section, string file, byte[] sectionContent, bool includeDebug)
         {
             if (section == null)
                 return null;

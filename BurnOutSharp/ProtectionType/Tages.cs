@@ -2,10 +2,10 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
 using BurnOutSharp.Tools;
+using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -44,8 +44,9 @@ namespace BurnOutSharp.ProtectionType
             // TODO: Add entry point check
             // https://github.com/horsicq/Detect-It-Easy/blob/master/db/PE/Tages.2.sg
 
-            // Get the .data section, if it exists
-            if (pex.DataSectionRaw != null)
+            // Get the .data/DATA section, if it exists
+            var dataSectionRaw = pex.GetFirstSectionData(".data") ?? pex.GetFirstSectionData("DATA");
+            if (dataSectionRaw != null)
             {
                 var matchers = new List<ContentMatchSet>
                 {
@@ -53,7 +54,7 @@ namespace BurnOutSharp.ProtectionType
                     new ContentMatchSet(new byte?[] { 0xE8, 0x75, 0x00, 0x00, 0x00, 0xE8, null, null, 0xFF, 0xFF, 0x68 }, GetVersion, "TAGES"),
                 };
 
-                string match = MatchUtil.GetFirstMatch(file, pex.DataSectionRaw, matchers, includeDebug);
+                string match = MatchUtil.GetFirstMatch(file, dataSectionRaw, matchers, includeDebug);
                 if (!string.IsNullOrWhiteSpace(match))
                     return match;
             }

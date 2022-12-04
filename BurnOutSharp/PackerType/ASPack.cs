@@ -1,9 +1,10 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using BurnOutSharp.ExecutableType.Microsoft.PE;
+using System.Text;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
+using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.PackerType
 {
@@ -26,20 +27,21 @@ namespace BurnOutSharp.PackerType
             if (aspackSection)
                 return "ASPack 2.29";
 
+            // TODO: Re-enable all Entry Point checks after implementing
             // Use the entry point data, if it exists
-            if (pex.EntryPointRaw != null)
-            {
-                var matchers = GenerateMatchers();
-                string match = MatchUtil.GetFirstMatch(file, pex.EntryPointRaw, matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
-                    return match;
-            }
+            // if (pex.EntryPointRaw != null)
+            // {
+            //     var matchers = GenerateMatchers();
+            //     string match = MatchUtil.GetFirstMatch(file, pex.EntryPointRaw, matchers, includeDebug);
+            //     if (!string.IsNullOrWhiteSpace(match))
+            //         return match;
+            // }
 
             // Get the .adata* section, if it exists
             var adataSection = pex.GetFirstSection(".adata", exact: false);
             if (adataSection != null)
             {
-                var adataSectionRaw = pex.ReadRawSection(adataSection.NameString);
+                var adataSectionRaw = pex.GetFirstSectionData(Encoding.UTF8.GetString(adataSection.Name));
                 if (adataSectionRaw != null)
                 {
                     var matchers = GenerateMatchers();
