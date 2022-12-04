@@ -596,5 +596,40 @@ namespace BurnOutSharp.Wrappers
         }
 
         #endregion
+
+        #region REMOVE -- DO NOT USE
+
+        /// <summary>
+        /// Read an arbitrary range from the source
+        /// </summary>
+        /// <param name="rangeStart">The start of where to read data from, -1 means start of source</param>
+        /// <param name="length">How many bytes to read, -1 means read until end</param>
+        /// <returns>Byte array representing the range, null on error</returns>
+        [Obsolete]
+        public byte[] ReadArbitraryRange(int rangeStart = -1, int length = -1)
+        {
+            // If we have an unset range start, read from the start of the source
+            if (rangeStart == -1)
+                rangeStart = 0;
+
+            // If we have an unset length, read the whole source
+            if (length == -1)
+            {
+                switch (_dataSource)
+                {
+                    case DataSource.ByteArray:
+                        length = _byteArrayData.Length - _byteArrayOffset;
+                        break;
+
+                    case DataSource.Stream:
+                        length = (int)_streamData.Length;
+                        break;
+                }
+            }
+
+            return ReadFromDataSource(rangeStart, length);
+        }
+
+        #endregion
     }
 }
