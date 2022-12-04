@@ -25,7 +25,7 @@ namespace BurnOutSharp.Builder
         public static byte[] ReadBytes(this byte[] content, ref int offset, int count)
         {
             // If there's an invalid byte count, don't do anything
-            if (count == 0)
+            if (count <= 0)
                 return null;
 
             byte[] buffer = new byte[count];
@@ -163,7 +163,7 @@ namespace BurnOutSharp.Builder
         public static byte[] ReadBytes(this Stream stream, int count)
         {
             // If there's an invalid byte count, don't do anything
-            if (count == 0)
+            if (count <= 0)
                 return null;
 
             byte[] buffer = new byte[count];
