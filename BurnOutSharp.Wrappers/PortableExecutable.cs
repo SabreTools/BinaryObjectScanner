@@ -717,7 +717,8 @@ namespace BurnOutSharp.Wrappers
                 return null;
 
             // Ensure that we have the resource data cached
-            _ = ResourceData;
+            if (ResourceData == null)
+                return null;
 
             // If we don't have string version info in this executable
             var stringTable = _versionInfo?.StringFileInfo?.Children;
@@ -744,7 +745,8 @@ namespace BurnOutSharp.Wrappers
                 return _assemblyManifest;
 
             // Ensure that we have the resource data cached
-            _ = ResourceData;
+            if (ResourceData == null)
+                return null;
 
             // Return the now-cached assembly manifest
             return _assemblyManifest;
@@ -2292,6 +2294,10 @@ namespace BurnOutSharp.Wrappers
         /// <returns>Enumerable of matching resources</returns>
         public IEnumerable<Models.PortableExecutable.DialogBoxResource> FindDialogByTitle(string title)
         {
+            // Ensure that we have the resource data cached
+            if (ResourceData == null)
+                return Enumerable.Empty<Models.PortableExecutable.DialogBoxResource>();
+
             return ResourceData.Select(r => r.Value)
                 .Select(r => r as Models.PortableExecutable.DialogBoxResource)
                 .Where(d => d != null)
@@ -2309,6 +2315,10 @@ namespace BurnOutSharp.Wrappers
         /// <returns>Enumerable of matching resources</returns>
         public IEnumerable<Models.PortableExecutable.DialogBoxResource> FindDialogBoxByItemTitle(string title)
         {
+            // Ensure that we have the resource data cached
+            if (ResourceData == null)
+                return Enumerable.Empty<Models.PortableExecutable.DialogBoxResource>();
+
             return ResourceData.Select(r => r.Value)
                 .Select(r => r as Models.PortableExecutable.DialogBoxResource)
                 .Where(d => d != null)
@@ -2338,6 +2348,10 @@ namespace BurnOutSharp.Wrappers
         /// <returns>Enumerable of matching resources</returns>
         public IEnumerable<byte[]> FindResourceByNamedType(string typeName)
         {
+            // Ensure that we have the resource data cached
+            if (ResourceData == null)
+                return Enumerable.Empty<byte[]>();
+
             return ResourceData.Where(kvp => kvp.Key.Contains(typeName))
                 .Select(kvp => kvp.Value as byte[])
                 .Where(b => b != null);
@@ -2350,6 +2364,10 @@ namespace BurnOutSharp.Wrappers
         /// <returns>Enumerable of matching resources</returns>
         public IEnumerable<byte[]> FindGenericResource(string value)
         {
+            // Ensure that we have the resource data cached
+            if (ResourceData == null)
+                return Enumerable.Empty<byte[]>();
+
             return ResourceData.Select(r => r.Value)
                 .Select(r => r as byte[])
                 .Where(b => b != null)
@@ -2379,7 +2397,7 @@ namespace BurnOutSharp.Wrappers
                     }
                     catch { }
 
-                    return true;
+                    return false;
                 });
         }
 
@@ -2435,76 +2453,84 @@ namespace BurnOutSharp.Wrappers
             // If we have a known resource type
             if (types != null && types.Count > 0 && types[0] is uint resourceType)
             {
-                switch ((Models.PortableExecutable.ResourceType)resourceType)
+                try
                 {
-                    case Models.PortableExecutable.ResourceType.RT_CURSOR:
-                        value = entry.Data;
-                        break;
-                    case Models.PortableExecutable.ResourceType.RT_BITMAP:
-                        value = entry.Data;
-                        break;
-                    case Models.PortableExecutable.ResourceType.RT_ICON:
-                        value = entry.Data;
-                        break;
-                    case Models.PortableExecutable.ResourceType.RT_MENU:
-                        value = entry.AsMenu();
-                        break;
-                    case Models.PortableExecutable.ResourceType.RT_DIALOG:
-                        value = entry.AsDialogBox();
-                        break;
-                    case Models.PortableExecutable.ResourceType.RT_STRING:
-                        value = entry.AsStringTable();
-                        break;
-                    case Models.PortableExecutable.ResourceType.RT_FONTDIR:
-                        value = entry.Data;
-                        break;
-                    case Models.PortableExecutable.ResourceType.RT_FONT:
-                        value = entry.Data;
-                        break;
-                    case Models.PortableExecutable.ResourceType.RT_ACCELERATOR:
-                        value = entry.AsAcceleratorTableResource();
-                        break;
-                    case Models.PortableExecutable.ResourceType.RT_RCDATA:
-                        value = entry.Data;
-                        break;
-                    case Models.PortableExecutable.ResourceType.RT_MESSAGETABLE:
-                        value = entry.AsMessageResourceData();
-                        break;
-                    case Models.PortableExecutable.ResourceType.RT_GROUP_CURSOR:
-                        value = entry.Data;
-                        break;
-                    case Models.PortableExecutable.ResourceType.RT_GROUP_ICON:
-                        value = entry.Data;
-                        break;
-                    case Models.PortableExecutable.ResourceType.RT_VERSION:
-                        _versionInfo = entry.AsVersionInfo();
-                        value = _versionInfo;
-                        break;
-                    case Models.PortableExecutable.ResourceType.RT_DLGINCLUDE:
-                        value = entry.Data;
-                        break;
-                    case Models.PortableExecutable.ResourceType.RT_PLUGPLAY:
-                        value = entry.Data;
-                        break;
-                    case Models.PortableExecutable.ResourceType.RT_VXD:
-                        value = entry.Data;
-                        break;
-                    case Models.PortableExecutable.ResourceType.RT_ANICURSOR:
-                        value = entry.Data;
-                        break;
-                    case Models.PortableExecutable.ResourceType.RT_ANIICON:
-                        value = entry.Data;
-                        break;
-                    case Models.PortableExecutable.ResourceType.RT_HTML:
-                        value = entry.Data;
-                        break;
-                    case Models.PortableExecutable.ResourceType.RT_MANIFEST:
-                        _assemblyManifest = entry.AsAssemblyManifest();
-                        value = _versionInfo;
-                        break;
-                    default:
-                        value = entry.Data;
-                        break;
+                    switch ((Models.PortableExecutable.ResourceType)resourceType)
+                    {
+                        case Models.PortableExecutable.ResourceType.RT_CURSOR:
+                            value = entry.Data;
+                            break;
+                        case Models.PortableExecutable.ResourceType.RT_BITMAP:
+                            value = entry.Data;
+                            break;
+                        case Models.PortableExecutable.ResourceType.RT_ICON:
+                            value = entry.Data;
+                            break;
+                        case Models.PortableExecutable.ResourceType.RT_MENU:
+                            value = entry.AsMenu();
+                            break;
+                        case Models.PortableExecutable.ResourceType.RT_DIALOG:
+                            value = entry.AsDialogBox();
+                            break;
+                        case Models.PortableExecutable.ResourceType.RT_STRING:
+                            value = entry.AsStringTable();
+                            break;
+                        case Models.PortableExecutable.ResourceType.RT_FONTDIR:
+                            value = entry.Data;
+                            break;
+                        case Models.PortableExecutable.ResourceType.RT_FONT:
+                            value = entry.Data;
+                            break;
+                        case Models.PortableExecutable.ResourceType.RT_ACCELERATOR:
+                            value = entry.AsAcceleratorTableResource();
+                            break;
+                        case Models.PortableExecutable.ResourceType.RT_RCDATA:
+                            value = entry.Data;
+                            break;
+                        case Models.PortableExecutable.ResourceType.RT_MESSAGETABLE:
+                            value = entry.AsMessageResourceData();
+                            break;
+                        case Models.PortableExecutable.ResourceType.RT_GROUP_CURSOR:
+                            value = entry.Data;
+                            break;
+                        case Models.PortableExecutable.ResourceType.RT_GROUP_ICON:
+                            value = entry.Data;
+                            break;
+                        case Models.PortableExecutable.ResourceType.RT_VERSION:
+                            _versionInfo = entry.AsVersionInfo();
+                            value = _versionInfo;
+                            break;
+                        case Models.PortableExecutable.ResourceType.RT_DLGINCLUDE:
+                            value = entry.Data;
+                            break;
+                        case Models.PortableExecutable.ResourceType.RT_PLUGPLAY:
+                            value = entry.Data;
+                            break;
+                        case Models.PortableExecutable.ResourceType.RT_VXD:
+                            value = entry.Data;
+                            break;
+                        case Models.PortableExecutable.ResourceType.RT_ANICURSOR:
+                            value = entry.Data;
+                            break;
+                        case Models.PortableExecutable.ResourceType.RT_ANIICON:
+                            value = entry.Data;
+                            break;
+                        case Models.PortableExecutable.ResourceType.RT_HTML:
+                            value = entry.Data;
+                            break;
+                        case Models.PortableExecutable.ResourceType.RT_MANIFEST:
+                            _assemblyManifest = entry.AsAssemblyManifest();
+                            value = _versionInfo;
+                            break;
+                        default:
+                            value = entry.Data;
+                            break;
+                    }
+                }
+                catch
+                {
+                    // Fall back on byte array data for malformed items
+                    value = entry.Data;
                 }
             }
 
