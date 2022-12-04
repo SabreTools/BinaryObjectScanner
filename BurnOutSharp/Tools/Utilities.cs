@@ -188,11 +188,11 @@ namespace BurnOutSharp.Tools
         {
             string version = pex.FileVersion;
             if (!string.IsNullOrWhiteSpace(version))
-                return version;
+                return version.Replace(", ", ".");
 
             version = pex.ProductVersion;
             if (!string.IsNullOrWhiteSpace(version))
-                return version;
+                return version.Replace(", ", ".");
 
             version = pex.AssemblyVersion;
             if (!string.IsNullOrWhiteSpace(version))
