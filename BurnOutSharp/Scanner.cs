@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using BurnOutSharp.FileType;
 using BurnOutSharp.Tools;
@@ -48,6 +49,9 @@ namespace BurnOutSharp
             ScanPackers = scanPackers;
             IncludeDebug = includeDebug;
             this.fileProgress = fileProgress;
+
+            // Register the codepages
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         }
 
         #region Scanning
