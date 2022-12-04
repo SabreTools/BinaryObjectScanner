@@ -2770,6 +2770,10 @@ namespace BurnOutSharp.Wrappers
             uint size = section.SizeOfRawData;
             lock (_sourceDataLock)
             {
+                // Create the section data array if we have to
+                if (_sectionData == null)
+                    _sectionData = new byte[SectionNames.Length][];
+
                 // If we already have cached data, just use that immediately
                 if (_sectionData[index] != null)
                     return _sectionData[index];
