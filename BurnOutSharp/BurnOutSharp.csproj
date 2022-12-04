@@ -77,9 +77,4 @@
     <ProjectReference Include="..\BurnOutSharp.Models\BurnOutSharp.Models.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="ExecutableType\Apple\" />
-    <Folder Include="ExecutableType\ELF\" />
-  </ItemGroup>
-
 </Project>
