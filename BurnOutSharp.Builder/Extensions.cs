@@ -1220,9 +1220,6 @@ namespace BurnOutSharp.Builder
             // Create the output table
             var stringTable = new Dictionary<int, string>();
 
-            // Create the string encoding
-            Encoding stringEncoding = (entry.Codepage != 0 ? Encoding.GetEncoding((int)entry.Codepage) : Encoding.Unicode);
-            
             // Loop through and add 
             while (offset < entry.Data.Length)
             {
@@ -1233,17 +1230,9 @@ namespace BurnOutSharp.Builder
                 }
                 else
                 {
-                    string fullEncodedString = stringEncoding.GetString(entry.Data, offset, entry.Data.Length - offset);
-                    if (stringLength > fullEncodedString.Length)
-                    {
-                        // TODO: Do something better than print to console
-                        Console.WriteLine($"Requested {stringLength} but only have {fullEncodedString.Length} remaining, truncating...");
-                        stringLength = (ushort)fullEncodedString.Length;
-                    }
-
-                    string stringValue = fullEncodedString.Substring(0, stringLength);
-                    offset += stringEncoding.GetByteCount(stringValue);
-                    stringValue = stringValue.Replace("\n", "\\n").Replace("\r", "\\r");
+                    string stringValue = Encoding.Unicode.GetString(entry.Data, offset, stringLength * 2);
+                    offset += stringLength * 2;
+                    stringValue = stringValue.Replace("\n", "\\n").Replace("\r", newValue: "\\r");
                     stringTable[stringIndex++] = stringValue;
                 }
             }
