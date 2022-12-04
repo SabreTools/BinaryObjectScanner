@@ -715,7 +715,7 @@ namespace BurnOutSharp.Builder
                 attributeCertificateTable.Add(entry);
 
                 // Align to the 8-byte boundary
-                while (offset < endOffset - 1 && (offset % 8) != 0)
+                while ((offset % 8) != 0 && offset < endOffset - 1 && offset != data.Length - 1)
                     _ = data.ReadByte(ref offset);
             }
 
@@ -1866,7 +1866,7 @@ namespace BurnOutSharp.Builder
                 attributeCertificateTable.Add(entry);
 
                 // Align to the 8-byte boundary
-                while (data.Position < endOffset - 1 && (data.Position % 8) != 0)
+                while ((data.Position % 8) != 0 && data.Position < endOffset - 1 && data.Position != data.Length - 1)
                     _ = data.ReadByteValue();
             }
 
