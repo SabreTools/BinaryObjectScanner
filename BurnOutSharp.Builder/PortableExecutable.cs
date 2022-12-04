@@ -700,7 +700,7 @@ namespace BurnOutSharp.Builder
         {
             var attributeCertificateTable = new List<AttributeCertificateTableEntry>();
 
-            while (offset < endOffset)
+            while (offset < endOffset && offset != data.Length)
             {
                 var entry = new AttributeCertificateTableEntry();
 
@@ -715,7 +715,7 @@ namespace BurnOutSharp.Builder
                 attributeCertificateTable.Add(entry);
 
                 // Align to the 8-byte boundary
-                while ((offset % 8) != 0 && offset < endOffset - 1 && offset != data.Length - 1)
+                while ((offset % 8) != 0 && offset < endOffset - 1 && offset != data.Length)
                     _ = data.ReadByte(ref offset);
             }
 
@@ -1851,7 +1851,7 @@ namespace BurnOutSharp.Builder
         {
             var attributeCertificateTable = new List<AttributeCertificateTableEntry>();
 
-            while (data.Position < endOffset)
+            while (data.Position < endOffset && data.Position != data.Length)
             {
                 var entry = new AttributeCertificateTableEntry();
 
@@ -1866,7 +1866,7 @@ namespace BurnOutSharp.Builder
                 attributeCertificateTable.Add(entry);
 
                 // Align to the 8-byte boundary
-                while ((data.Position % 8) != 0 && data.Position < endOffset - 1 && data.Position != data.Length - 1)
+                while ((data.Position % 8) != 0 && data.Position < endOffset && data.Position != data.Length)
                     _ = data.ReadByteValue();
             }
 
