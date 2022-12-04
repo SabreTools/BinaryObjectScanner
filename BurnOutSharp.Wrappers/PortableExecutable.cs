@@ -346,7 +346,7 @@ namespace BurnOutSharp.Wrappers
                     {
                         var certificateTable = _executable.OptionalHeader.CertificateTable;
                         int certificateTableAddress = (int)certificateTable.VirtualAddress.ConvertVirtualAddress(_executable.SectionTable);
-                        if (certificateTableAddress != 0)
+                        if (certificateTableAddress != 0 && certificateTableAddress < endOfFile)
                             endOfFile = certificateTableAddress;
                     }
 
@@ -380,7 +380,7 @@ namespace BurnOutSharp.Wrappers
                         return null;
 
                     // If we're at the end of the file, cache an empty byte array
-                    if (endOfSectionData == endOfFile)
+                    if (endOfSectionData >= endOfFile)
                     {
                         _overlayData = new byte[0];
                         return _overlayData;
