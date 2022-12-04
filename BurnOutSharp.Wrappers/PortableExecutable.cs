@@ -458,7 +458,7 @@ namespace BurnOutSharp.Wrappers
                 lock (_sourceDataLock)
                 {
                     // Use the cached data if possible
-                    if (_resourceData != null)
+                    if (_resourceData != null && _resourceData.Count != 0)
                         return _resourceData;
 
                     // If we have no resource table, just return
