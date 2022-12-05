@@ -17,11 +17,13 @@ namespace BurnOutSharp.ProtectionType
             if (sections == null)
                 return null;
 
+            // TODO: Export table instead of .edata
             // Get the .edata section, if it exists
             string match = GetMatchForSection(file, pex.GetFirstSectionData(".edata"), includeDebug);
             if (!string.IsNullOrWhiteSpace(match))
                 return match;
 
+            // TODO: Import table instead of .idata
             // Get the .idata section, if it exists
             match = GetMatchForSection(file, pex.GetFirstSectionData(".idata"), includeDebug);
             if (!string.IsNullOrWhiteSpace(match))
@@ -32,6 +34,7 @@ namespace BurnOutSharp.ProtectionType
             if (!string.IsNullOrWhiteSpace(match))
                 return match;
 
+            // TODO: TLS directory instead of .tls
             // Get the .tls section, if it exists
             var tlsSectionRaw = pex.GetLastSectionData(".tls");
             match = GetMatchForSection(file, tlsSectionRaw, includeDebug);
