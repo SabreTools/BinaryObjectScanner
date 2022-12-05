@@ -1067,46 +1067,73 @@ namespace BurnOutSharp.Builder
                     continue;
 
                 int tableAddress = (int)importDirectoryTableEntry.ImportAddressTableRVA.ConvertVirtualAddress(sections);
-                var entryAddressTable = new List<ImportAddressTableEntry>();
+                var addressLookupTable = new List<ImportAddressTableEntry>();
 
                 while (true)
                 {
-                    var entryLookupTableEntry = new ImportAddressTableEntry();
+                    var addressLookupTableEntry = new ImportAddressTableEntry();
 
                     if (magic == OptionalHeaderMagicNumber.PE32)
                     {
                         uint entryValue = data.ReadUInt32(ref tableAddress);
-                        entryLookupTableEntry.Address_PE32 = entryValue;
+                        addressLookupTableEntry.OrdinalNameFlag = (entryValue & 0x80000000) != 0;
+                        if (addressLookupTableEntry.OrdinalNameFlag)
+                            addressLookupTableEntry.OrdinalNumber = (ushort)(entryValue & ~0x80000000);
+                        else
+                            addressLookupTableEntry.HintNameTableRVA = (uint)(entryValue & ~0x80000000);
                     }
                     else if (magic == OptionalHeaderMagicNumber.PE32Plus)
                     {
                         ulong entryValue = data.ReadUInt64(ref tableAddress);
-                        entryLookupTableEntry.Address_PE32Plus = entryValue;
+                        addressLookupTableEntry.OrdinalNameFlag = (entryValue & 0x8000000000000000) != 0;
+                        if (addressLookupTableEntry.OrdinalNameFlag)
+                            addressLookupTableEntry.OrdinalNumber = (ushort)(entryValue & ~0x8000000000000000);
+                        else
+                            addressLookupTableEntry.HintNameTableRVA = (uint)(entryValue & ~0x8000000000000000);
                     }
 
-                    entryAddressTable.Add(entryLookupTableEntry);
+                    addressLookupTable.Add(addressLookupTableEntry);
 
                     // All zero values means the last entry
-                    if (entryLookupTableEntry.Address_PE32 == 0
-                        && entryLookupTableEntry.Address_PE32Plus == 0)
+                    if (addressLookupTableEntry.OrdinalNameFlag == false
+                        && addressLookupTableEntry.OrdinalNumber == 0
+                        && addressLookupTableEntry.HintNameTableRVA == 0)
                         break;
                 }
 
-                importAddressTables[i] = entryAddressTable.ToArray();
+                importAddressTables[i] = addressLookupTable.ToArray();
             }
 
             importTable.ImportAddressTables = importAddressTables;
 
             // Hint/Name table
+            var importHintNameTable = new List<HintNameTableEntry>();
+
             if (importTable.ImportLookupTables != null && importTable.ImportLookupTables.Count > 0)
             {
-                var importHintNameTable = new List<HintNameTableEntry>();
-
                 // Get the addresses of the hint/name table entries
-                List<int> hintNameTableEntryAddresses = importTable.ImportLookupTables
-                    .SelectMany(kvp => kvp.Value)
-                    .Select(ilte => (int)ilte.HintNameTableRVA.ConvertVirtualAddress(sections))
-                    .Where(addr => addr != 0)
+                List<int> hintNameTableEntryAddresses = new List<int>();
+
+                // If we have import lookup tables
+                if (importTable.ImportLookupTables != null && importLookupTables.Count > 0)
+                {
+                    var addresses = importTable.ImportLookupTables
+                        .SelectMany(kvp => kvp.Value)
+                        .Select(ilte => (int)ilte.HintNameTableRVA.ConvertVirtualAddress(sections));
+                    hintNameTableEntryAddresses.AddRange(addresses);
+                }
+
+                // If we have import address tables
+                if (importTable.ImportAddressTables != null && importTable.ImportAddressTables.Count > 0)
+                {
+                    var addresses = importTable.ImportAddressTables
+                        .SelectMany(kvp => kvp.Value)
+                        .Select(iate => (int)iate.HintNameTableRVA.ConvertVirtualAddress(sections));
+                    hintNameTableEntryAddresses.AddRange(addresses);
+                }
+
+                // Sanitize the addresses
+                hintNameTableEntryAddresses = hintNameTableEntryAddresses.Where(addr => addr != 0)
                     .Distinct()
                     .OrderBy(a => a)
                     .ToList();
@@ -1125,9 +1152,9 @@ namespace BurnOutSharp.Builder
                         importHintNameTable.Add(hintNameTableEntry);
                     }
                 }
-
-                importTable.HintNameTable = importHintNameTable.ToArray();
             }
+
+            importTable.HintNameTable = importHintNameTable.ToArray();
 
             return importTable;
         }
@@ -2295,46 +2322,74 @@ namespace BurnOutSharp.Builder
                 uint tableAddress = importDirectoryTableEntry.ImportAddressTableRVA.ConvertVirtualAddress(sections);
                 data.Seek(tableAddress, SeekOrigin.Begin);
 
-                var entryAddressTable = new List<ImportAddressTableEntry>();
+                var addressLookupTable = new List<ImportAddressTableEntry>();
 
                 while (true)
                 {
-                    var entryLookupTableEntry = new ImportAddressTableEntry();
+                    var addressLookupTableEntry = new ImportAddressTableEntry();
 
                     if (magic == OptionalHeaderMagicNumber.PE32)
                     {
                         uint entryValue = data.ReadUInt32();
-                        entryLookupTableEntry.Address_PE32 = entryValue;
+                        addressLookupTableEntry.OrdinalNameFlag = (entryValue & 0x80000000) != 0;
+                        if (addressLookupTableEntry.OrdinalNameFlag)
+                            addressLookupTableEntry.OrdinalNumber = (ushort)(entryValue & ~0x80000000);
+                        else
+                            addressLookupTableEntry.HintNameTableRVA = (uint)(entryValue & ~0x80000000);
                     }
                     else if (magic == OptionalHeaderMagicNumber.PE32Plus)
                     {
                         ulong entryValue = data.ReadUInt64();
-                        entryLookupTableEntry.Address_PE32Plus = entryValue;
+                        addressLookupTableEntry.OrdinalNameFlag = (entryValue & 0x8000000000000000) != 0;
+                        if (addressLookupTableEntry.OrdinalNameFlag)
+                            addressLookupTableEntry.OrdinalNumber = (ushort)(entryValue & ~0x8000000000000000);
+                        else
+                            addressLookupTableEntry.HintNameTableRVA = (uint)(entryValue & ~0x8000000000000000);
                     }
 
-                    entryAddressTable.Add(entryLookupTableEntry);
+                    addressLookupTable.Add(addressLookupTableEntry);
 
                     // All zero values means the last entry
-                    if (entryLookupTableEntry.Address_PE32 == 0
-                        && entryLookupTableEntry.Address_PE32Plus == 0)
+                    if (addressLookupTableEntry.OrdinalNameFlag == false
+                        && addressLookupTableEntry.OrdinalNumber == 0
+                        && addressLookupTableEntry.HintNameTableRVA == 0)
                         break;
                 }
 
-                importAddressTables[i] = entryAddressTable.ToArray();
+                importAddressTables[i] = addressLookupTable.ToArray();
             }
 
             importTable.ImportAddressTables = importAddressTables;
 
             // Hint/Name table
-            if (importTable.ImportLookupTables != null && importTable.ImportLookupTables.Count > 0)
-            {
-                var importHintNameTable = new List<HintNameTableEntry>();
+            var importHintNameTable = new List<HintNameTableEntry>();
 
+            if ((importTable.ImportLookupTables != null && importTable.ImportLookupTables.Count > 0)
+                || importTable.ImportAddressTables != null && importTable.ImportAddressTables.Count > 0)
+            {
                 // Get the addresses of the hint/name table entries
-                List<int> hintNameTableEntryAddresses = importTable.ImportLookupTables
-                    .SelectMany(kvp => kvp.Value)
-                    .Select(ilte => (int)ilte.HintNameTableRVA.ConvertVirtualAddress(sections))
-                    .Where(addr => addr != 0)
+                List<int> hintNameTableEntryAddresses = new List<int>();
+
+                // If we have import lookup tables
+                if (importTable.ImportLookupTables != null && importLookupTables.Count > 0)
+                {
+                    var addresses = importTable.ImportLookupTables
+                        .SelectMany(kvp => kvp.Value)
+                        .Select(ilte => (int)ilte.HintNameTableRVA.ConvertVirtualAddress(sections));
+                    hintNameTableEntryAddresses.AddRange(addresses);
+                }
+
+                // If we have import address tables
+                if (importTable.ImportAddressTables != null && importTable.ImportAddressTables.Count > 0)
+                {
+                    var addresses = importTable.ImportAddressTables
+                        .SelectMany(kvp => kvp.Value)
+                        .Select(iate => (int)iate.HintNameTableRVA.ConvertVirtualAddress(sections));
+                    hintNameTableEntryAddresses.AddRange(addresses);
+                }
+
+                // Sanitize the addresses
+                hintNameTableEntryAddresses = hintNameTableEntryAddresses.Where(addr => addr != 0)
                     .Distinct()
                     .OrderBy(a => a)
                     .ToList();
@@ -2355,9 +2410,9 @@ namespace BurnOutSharp.Builder
                         importHintNameTable.Add(hintNameTableEntry);
                     }
                 }
-
-                importTable.HintNameTable = importHintNameTable.ToArray();
             }
+
+            importTable.HintNameTable = importHintNameTable.ToArray();
 
             return importTable;
         }

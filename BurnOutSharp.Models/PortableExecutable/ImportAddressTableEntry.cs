@@ -12,13 +12,25 @@
     public class ImportAddressTableEntry
     {
         /// <summary>
-        /// 32-bit address of the symbol being imported
+        /// If this bit is set, import by ordinal. Otherwise, import by name. Bit is
+        /// masked as 0x80000000 for PE32, 0x8000000000000000 for PE32+. 
         /// </summary>
-        public uint Address_PE32;
+        /// <remarks>Bit 31/63</remarks>
+        public bool OrdinalNameFlag;
 
         /// <summary>
-        /// 64-bit address of the symbol being imported
+        /// A 16-bit ordinal number. This field is used only if the Ordinal/Name Flag
+        /// bit field is 1 (import by ordinal). Bits 30-15 or 62-15 must be 0.
         /// </summary>
-        public ulong Address_PE32Plus;
+        /// <remarks>Bits 15-0</remarks>
+        public ushort OrdinalNumber;
+
+        /// <summary>
+        /// A 31-bit RVA of a hint/name table entry. This field is used only if the
+        /// Ordinal/Name Flag bit field is 0 (import by name). For PE32+ bits 62-31
+        /// must be zero.
+        /// </summary>
+        /// <remarks>Bits 30-0</remarks>
+        public uint HintNameTableRVA;
     }
 }

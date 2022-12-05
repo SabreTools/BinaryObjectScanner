@@ -1579,12 +1579,13 @@ namespace BurnOutSharp.Wrappers
                         {
                             for (int i = 0; i < importAddressTable.Length; i++)
                             {
-                                var importLookupTableEntry = importAddressTable[i];
+                                var importAddressTableEntry = importAddressTable[i];
                                 Console.WriteLine($"      Import Address Table {index} Entry {i}");
-                                if (OH_Magic == Models.PortableExecutable.OptionalHeaderMagicNumber.PE32)
-                                    Console.WriteLine($"        Address: {importLookupTableEntry.Address_PE32}");
+                                Console.WriteLine($"        Ordinal/Name flag: {importAddressTableEntry.OrdinalNameFlag}");
+                                if (importAddressTableEntry.OrdinalNameFlag)
+                                    Console.WriteLine($"        Ordinal number: {importAddressTableEntry.OrdinalNumber}");
                                 else
-                                    Console.WriteLine($"        Address: {importLookupTableEntry.Address_PE32Plus}");
+                                    Console.WriteLine($"        Hint/Name table RVA: {importAddressTableEntry.HintNameTableRVA}");
                             }
                         }
                     }
