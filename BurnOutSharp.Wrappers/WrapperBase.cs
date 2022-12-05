@@ -73,10 +73,10 @@ namespace BurnOutSharp.Wrappers
             switch (_dataSource)
             {
                 case DataSource.ByteArray:
-                    return _byteArrayOffset + position + length < _byteArrayData.Length;
+                    return _byteArrayOffset + position + length <= _byteArrayData.Length;
 
                 case DataSource.Stream:
-                    return position + length < _streamData.Length;
+                    return position + length <= _streamData.Length;
 
                 // Everything else is invalid
                 case DataSource.UNKNOWN:
