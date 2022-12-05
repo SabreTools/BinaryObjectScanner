@@ -7,8 +7,7 @@ using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.PackerType
 {
-    // TODO: Figure out how to more granularly determine versions like PiD,
-    // at least for the 2.41 -> 2.75 range
+    // TODO: Figure out how to more granularly determine versions like PiD
     // TODO: Detect 3.15 and up (maybe looking for `Metamorphism`)
     // TODO: Add extraction
     // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
@@ -49,6 +48,17 @@ namespace BurnOutSharp.PackerType
             var sections = pex?.SectionTable;
             if (sections == null)
                 return null;
+
+            // The ExeS/EXES/*mtw sections seem to map to the Import Table
+            // 2.6/2.51
+            //  `ExeStealth - www.webtoolmaster.com`
+            // 2.72/2.73
+            //  `Shareware - ExeStealth`
+            //  `www.webtoolmaster.com`
+            // 2.74
+            //  `Shareware - ExeStealth`
+            // 2.76
+            //  `ExeStealth V2 Shareware not for public - This text not in registered version - www.webtoolmaster.com`
 
             // Get the ExeS/EXES section, if it exists
             bool exesSection = pex.ContainsSection("ExeS", exact: true) || pex.ContainsSection("EXES", exact: true);
