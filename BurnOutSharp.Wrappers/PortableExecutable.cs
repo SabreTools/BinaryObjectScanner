@@ -791,6 +791,9 @@ namespace BurnOutSharp.Wrappers
             PrintCOFFSymbolTable();
             PrintAttributeCertificateTable();
             PrintDelayLoadDirectoryTable();
+
+            // Named Sections
+            PrintBaseRelocationTable();
             PrintDebugTable();
             PrintExportTable();
             PrintImportTable();
@@ -1306,6 +1309,49 @@ namespace BurnOutSharp.Wrappers
                 Console.WriteLine($"  Bound delay import table RVA = {_executable.DelayLoadDirectoryTable.BoundDelayImportTable}");
                 Console.WriteLine($"  Unload delay import table RVA = {_executable.DelayLoadDirectoryTable.UnloadDelayImportTable}");
                 Console.WriteLine($"  Timestamp = {_executable.DelayLoadDirectoryTable.TimeStamp}");
+            }
+            Console.WriteLine();
+        }
+
+        /// <summary>
+        /// Print base relocation table information
+        /// </summary>
+        private void PrintBaseRelocationTable()
+        {
+            Console.WriteLine("  Base Relocation Table Information:");
+            Console.WriteLine("  -------------------------");
+            if (_executable.OptionalHeader?.BaseRelocationTable == null
+                || _executable.OptionalHeader.BaseRelocationTable.VirtualAddress == 0
+                || _executable.BaseRelocationTable == null)
+            {
+                Console.WriteLine("  No base relocation table items");
+            }
+            else
+            {
+                for (int i = 0; i < _executable.BaseRelocationTable.Length; i++)
+                {
+                    var baseRelocationTableEntry = _executable.BaseRelocationTable[i];
+                    Console.WriteLine($"  Base Relocation Table Entry {i}");
+                    Console.WriteLine($"    Page RVA: {baseRelocationTableEntry.PageRVA}");
+                    Console.WriteLine($"    Block size: {baseRelocationTableEntry.BlockSize}");
+
+                    Console.WriteLine($"    Base Relocation Table {i} Type and Offset Information:");
+                    Console.WriteLine("    -------------------------");
+                    if (baseRelocationTableEntry.TypeOffsetFieldEntries == null || baseRelocationTableEntry.TypeOffsetFieldEntries.Length == 0)
+                    {
+                        Console.WriteLine("    No base relocation table type and offset entries");
+                    }
+                    else
+                    {
+                        for (int j = 0; j < baseRelocationTableEntry.TypeOffsetFieldEntries.Length; j++)
+                        {
+                            var typeOffsetFieldEntry = baseRelocationTableEntry.TypeOffsetFieldEntries[j];
+                            Console.WriteLine($"    Type and Offset Entry {j}");
+                            Console.WriteLine($"      Type: {typeOffsetFieldEntry.BaseRelocationType}");
+                            Console.WriteLine($"      Offset: {typeOffsetFieldEntry.Offset}");
+                        }
+                    }
+                }
             }
             Console.WriteLine();
         }

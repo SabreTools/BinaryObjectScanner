@@ -69,6 +69,11 @@ namespace BurnOutSharp.Models.PortableExecutable
         // documented, but can be handed to the CLR interfaces for handling metadata.
 
         /// <summary>
+        /// Base relocation table (.reloc)
+        /// </summary>
+        public BaseRelocationBlock[] BaseRelocationTable { get; set; }
+
+        /// <summary>
         /// Debug table (.debug*)
         /// </summary>
         public DebugTable DebugTable { get; set; }
@@ -125,7 +130,6 @@ namespace BurnOutSharp.Models.PortableExecutable
         //      - Delay Bound Import Address Table
         //      - Delay Unload Import Address Table
         // - The .pdata Section [Multiple formats per entry]
-        // - The .reloc Section (Image Only)
         // - The .tls Section
         //      - TLS Callback Functions
         // - [The Load Configuration Structure (Image Only)]
