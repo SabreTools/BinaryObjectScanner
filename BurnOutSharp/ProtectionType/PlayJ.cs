@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
+using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -29,6 +29,7 @@ namespace BurnOutSharp.ProtectionType
     /// </summary>
     public class PlayJ : IPathCheck, IPortableExecutableCheck
     {
+        /// <inheritdoc/>
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
@@ -38,15 +39,17 @@ namespace BurnOutSharp.ProtectionType
 
             // Found in "PlayJ.exe" (https://web.archive.org/web/20010417025347/http://dlp.playj.com:80/playj/PlayJIns266.exe) and "CACTUSPJ.exe" ("Volumia!" by Puur (Barcode 7 43218 63282 2) (Discogs Release Code [r795427])).
             string name = pex.FileDescription;
-            if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("PlayJ Music Player", StringComparison.OrdinalIgnoreCase))
+            if (name?.StartsWith("PlayJ Music Player", StringComparison.OrdinalIgnoreCase) == true)
                 return $"PlayJ Music Player";
+            
             // Found in "PJSTREAM.DLL" ("Volumia!" by Puur (Barcode 7 43218 63282 2) (Discogs Release Code [r795427])).
             name = pex.FileDescription;
-            if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("EVAUX32 Module", StringComparison.OrdinalIgnoreCase))
+            if (name.StartsWith("EVAUX32 Module", StringComparison.OrdinalIgnoreCase) == true)
                 return $"PlayJ Music Player Component";
+            
             // Found in "PlayJ.exe" (https://web.archive.org/web/20010417025347/http://dlp.playj.com:80/playj/PlayJIns266.exe) and "CACTUSPJ.exe" ("Volumia!" by Puur (Barcode 7 43218 63282 2) (Discogs Release Code [r795427])).
             name = pex.ProductName;
-            if (!string.IsNullOrWhiteSpace(name) && name.StartsWith("PlayJ", StringComparison.OrdinalIgnoreCase))
+            if (name?.StartsWith("PlayJ", StringComparison.OrdinalIgnoreCase) == true)
                 return $"PlayJ";
 
             return null;

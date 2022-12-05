@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.IO;
-using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Interfaces;
+using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.PackerType
 {
@@ -21,7 +21,7 @@ namespace BurnOutSharp.PackerType
                 return null;
 
             // 0x4F434550 is "PECO"
-            if (pex.ImageFileHeader.PointerToSymbolTable == 0x4F434550)
+            if (pex.PointerToSymbolTable == 0x4F434550)
                 return "PE Compact v1.x";
 
             // TODO: Get more granular version detection. PiD is somehow able to detect version ranges based

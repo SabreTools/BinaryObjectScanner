@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
+using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -62,8 +62,9 @@ namespace BurnOutSharp.ProtectionType
             if (sections == null)
                 return null;
 
-            // Get the .data section, if it exists
-            if (pex.DataSectionRaw != null)
+            // Get the .data/DATA section, if it exists
+            var dataSectionRaw = pex.GetFirstSectionData(".data") ?? pex.GetFirstSectionData("DATA");
+            if (dataSectionRaw != null)
             {
                 var matchers = new List<ContentMatchSet>
                 {
@@ -74,28 +75,17 @@ namespace BurnOutSharp.ProtectionType
                     new ContentMatchSet(new byte?[] { 0x44, 0x41, 0x54, 0x41, 0x2E, 0x43, 0x44, 0x53 }, "Cactus Data Shield 200"),
                 };
 
-                string match = MatchUtil.GetFirstMatch(file, pex.DataSectionRaw, matchers, includeDebug);
+                string match = MatchUtil.GetFirstMatch(file, dataSectionRaw, matchers, includeDebug);
                 if (!string.IsNullOrWhiteSpace(match))
                     return match;
             }
 
-            // Get the .rsrc section, if it exists
-            var rsrcSectionRaw = pex.ReadRawSection(".rsrc", first: false);
-            if (rsrcSectionRaw != null)
-            {
-                var matchers = new List<ContentMatchSet>
-                {
-                    // CactusPJ
-                    // Found in "Volumia!" by Puur (Barcode 7 43218 63282 2) (Discogs Release Code [r795427]).
-                    // Modified version of the PlayJ Music Player specificaly for CDS, as indicated by the About page present when running the executable.
-                    new ContentMatchSet(new byte?[] { 0x43, 0x61, 0x63, 0x74, 0x75, 0x73, 0x50, 0x4A }, "PlayJ Music Player (Cactus Data Shield 200)"),
-                };
+            // Found in "Volumia!" by Puur (Barcode 7 43218 63282 2) (Discogs Release Code [r795427]).
+            // Modified version of the PlayJ Music Player specificaly for CDS, as indicated by the About page present when running the executable.
+            var resources = pex.FindGenericResource("CactusPJ");
+            if (resources.Any())
+                return "PlayJ Music Player (Cactus Data Shield 200)";
 
-                string match = MatchUtil.GetFirstMatch(file, rsrcSectionRaw, matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
-                    return match;
-            }
-			
             return null;
         }
 

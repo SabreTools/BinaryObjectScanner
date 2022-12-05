@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
+using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -57,8 +57,8 @@ namespace BurnOutSharp.ProtectionType
             return null;
         }
 
-            /// <inheritdoc/>
-            public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string> files)
+        /// <inheritdoc/>
+        public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string> files)
         {
             var matchers = new List<PathMatchSet>
             {

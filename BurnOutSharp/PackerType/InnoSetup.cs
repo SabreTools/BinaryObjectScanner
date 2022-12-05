@@ -4,10 +4,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using BurnOutSharp.ExecutableType.Microsoft.NE;
-using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
+using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.PackerType
 {
@@ -21,13 +20,12 @@ namespace BurnOutSharp.PackerType
         /// <inheritdoc/>
         public string CheckNewExecutable(string file, NewExecutable nex, bool includeDebug)
         {
-            // Get the DOS stub from the executable, if possible
-            var stub = nex?.DOSStubHeader;
-            if (stub == null)
+            // Check we have a valid executable
+            if (nex == null)
                 return null;
             
             // Check for "Inno" in the reserved words
-            if (stub.Reserved2[4] == 0x6E49 && stub.Reserved2[5] == 0x6F6E)
+            if (nex.Stub_Reserved2[4] == 0x6E49 && nex.Stub_Reserved2[5] == 0x6F6E)
             {
                 string version = GetOldVersion(file, nex);
                 if (!string.IsNullOrWhiteSpace(version))
@@ -46,9 +44,10 @@ namespace BurnOutSharp.PackerType
             var sections = pex?.SectionTable;
             if (sections == null)
                 return null;
-            
-            // Get the DATA/.data section, if it exists
-            if (pex.DataSectionRaw != null)
+
+            // Get the .data/DATA section, if it exists
+            var dataSectionRaw = pex.GetFirstSectionData(".data") ?? pex.GetFirstSectionData("DATA");
+            if (dataSectionRaw != null)
             {
                 var matchers = new List<ContentMatchSet>
                 {
@@ -61,7 +60,7 @@ namespace BurnOutSharp.PackerType
                     }, GetVersion, "Inno Setup"),
                 };
 
-                string match = MatchUtil.GetFirstMatch(file, pex.DataSectionRaw, matchers, includeDebug);
+                string match = MatchUtil.GetFirstMatch(file, dataSectionRaw, matchers, includeDebug);
                 if (!string.IsNullOrWhiteSpace(match))
                     return match;
             }
@@ -102,7 +101,7 @@ namespace BurnOutSharp.PackerType
                 string version = Encoding.ASCII.GetString(onlyVersion);
 
                 if (unicodeBytes.SequenceEqual(new byte[] { 0x28, 0x75, 0x29 }))
-                    return (version + " (Unicode)");
+                    return version + " (Unicode)";
 
                 return version;
             }

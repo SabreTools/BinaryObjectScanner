@@ -2,9 +2,9 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
+using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.PackerType
 {
@@ -116,7 +116,7 @@ namespace BurnOutSharp.PackerType
                 return null;
 
             // This subtract is needed because the version is before the section
-            return pex.ReadRawSection($"{sectionPrefix}0", first: true, offset: -128);
+            return pex.GetFirstSectionDataWithOffset($"{sectionPrefix}0", offset: -128);
         }
     }
 }

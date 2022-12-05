@@ -1,9 +1,9 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
-using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
 using BurnOutSharp.Tools;
+using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -27,12 +27,12 @@ namespace BurnOutSharp.ProtectionType
             if (name?.Contains("ImpulseReactor Dynamic Link Library") == true)
                 return $"Impulse Reactor Core Module {Utilities.GetInternalVersion(pex)}";
 
-            name = pex.OriginalFileName;
+            name = pex.OriginalFilename;
             if (name?.Contains("ReactorActivate.exe") == true)
                 return $"Stardock Product Activation {Utilities.GetInternalVersion(pex)}";
 
             // Get the .rdata section, if it exists
-            if (pex.ResourceDataSectionRaw != null)
+            if (pex.ContainsSection(".rdata"))
             {
                 // CVPInitializeClient
                 byte?[] check = new byte?[]
@@ -41,7 +41,7 @@ namespace BurnOutSharp.ProtectionType
                     0x61, 0x6C, 0x69, 0x7A, 0x65, 0x43, 0x6C, 0x69,
                     0x65, 0x6E, 0x74
                 };
-                bool containsCheck = pex.ResourceDataSectionRaw.FirstPosition(check, out int position);
+                bool containsCheck = pex.GetFirstSectionData(".rdata").FirstPosition(check, out int position);
 
                 // TODO: Find what resource this is in
                 // A + (char)0x00 + T + (char)0x00 + T + (char)0x00 + L + (char)0x00 + I + (char)0x00 + S + (char)0x00 + T + (char)0x00 + (char)0x00 + (char)0x00 + E + (char)0x00 + L + (char)0x00 + E + (char)0x00 + M + (char)0x00 + E + (char)0x00 + N + (char)0x00 + T + (char)0x00 + (char)0x00 + (char)0x00 + N + (char)0x00 + O + (char)0x00 + T + (char)0x00 + A + (char)0x00 + T + (char)0x00 + I + (char)0x00 + O + (char)0x00 + N + (char)0x00
@@ -54,7 +54,7 @@ namespace BurnOutSharp.ProtectionType
                     0x4E, 0x00, 0x4F, 0x00, 0x54, 0x00, 0x41, 0x00,
                     0x54, 0x00, 0x49, 0x00, 0x4F, 0x00, 0x4E
                 };
-                bool containsCheck2 = pex.ResourceDataSectionRaw.FirstPosition(check2, out int position2);
+                bool containsCheck2 = pex.GetFirstSectionData(".rdata").FirstPosition(check2, out int position2);
 
                 if (containsCheck && containsCheck2)
                     return $"Impulse Reactor Core Module {Utilities.GetInternalVersion(pex)}" + (includeDebug ? $" (Index {position}, {position2})" : string.Empty);

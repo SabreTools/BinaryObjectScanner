@@ -3,10 +3,9 @@ using System.Collections.Concurrent;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using BurnOutSharp.ExecutableType.Microsoft.NE;
-using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Tools;
+using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.FileType
 {
@@ -86,9 +85,9 @@ namespace BurnOutSharp.FileType
 
             // Create PortableExecutable and NewExecutable objects for use in the checks
             stream.Seek(0, SeekOrigin.Begin);
-            PortableExecutable pex = new PortableExecutable(stream);
+            PortableExecutable pex = PortableExecutable.Create(stream);
             stream.Seek(0, SeekOrigin.Begin);
-            NewExecutable nex = new NewExecutable(stream);
+            NewExecutable nex = NewExecutable.Create(stream);
             stream.Seek(0, SeekOrigin.Begin);
 
             // Iterate through all generic content checks
@@ -114,7 +113,7 @@ namespace BurnOutSharp.FileType
             }
 
             // If we have a NE executable, iterate through all NE content checks
-            if (nex?.Initialized == true)
+            if (nex != null)
             {
                 Parallel.ForEach(ScanningClasses.NewExecutableCheckClasses, contentCheckClass =>
                 {
@@ -137,7 +136,7 @@ namespace BurnOutSharp.FileType
             }
 
             // If we have a PE executable, iterate through all PE content checks
-            if (pex?.Initialized == true)
+            if (pex != null)
             {
                 // Print the section table for debug
                 if (scanner.IncludeDebug && pex.SectionTable != null)

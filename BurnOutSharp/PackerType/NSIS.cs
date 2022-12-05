@@ -1,9 +1,9 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
+using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.PackerType
 {
@@ -21,12 +21,13 @@ namespace BurnOutSharp.PackerType
             if (sections == null)
                 return null;
 
-            string description = pex.ManifestDescription;
+            string description = pex.AssemblyDescription;
             if (!string.IsNullOrWhiteSpace(description) && description.StartsWith("Nullsoft Install System"))
                 return $"NSIS {description.Substring("Nullsoft Install System".Length).Trim()}";
 
-            // Get the .data section, if it exists
-            if (pex.DataSectionRaw != null)
+            // Get the .data/DATA section, if it exists
+            var dataSectionRaw = pex.GetFirstSectionData(".data") ?? pex.GetFirstSectionData("DATA");
+            if (dataSectionRaw != null)
             {
                 var matchers = new List<ContentMatchSet>
                 {
@@ -38,7 +39,7 @@ namespace BurnOutSharp.PackerType
                     }, "NSIS"),
                 };
 
-                string match = MatchUtil.GetFirstMatch(file, pex.DataSectionRaw, matchers, includeDebug);
+                string match = MatchUtil.GetFirstMatch(file, dataSectionRaw, matchers, includeDebug);
                 if (!string.IsNullOrWhiteSpace(match))
                     return match;
             }

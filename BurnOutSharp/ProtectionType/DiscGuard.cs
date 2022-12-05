@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using BurnOutSharp.ExecutableType.Microsoft.PE;
+using System.Linq;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
+using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -41,21 +42,28 @@ namespace BurnOutSharp.ProtectionType
             // Found in "IOSLinksys.dll" (Redump entries 31914, 46743, 46961, 79284, and 79374).
             string name = pex.FileDescription;
             if (name?.StartsWith("IOSLinkNT", StringComparison.OrdinalIgnoreCase) == true)
-                return $"DiscGuard";
+                return "DiscGuard";
 
             // Found in "T29.dll" (Redump entry 31914).
             name = pex.ProductName;
             if (name?.StartsWith("DiscGuard (tm)", StringComparison.OrdinalIgnoreCase) == true)
-                return $"DiscGuard";
+                return "DiscGuard";
 
             // Found in "IOSLinksys.dll" (Redump entries 31914, 46743, 46961, 79284, and 79374).
             name = pex.ProductName;
             if (name?.StartsWith("TTR Technologies Ltd. DiscGuard (tm)", StringComparison.OrdinalIgnoreCase) == true)
-                return $"DiscGuard";
+                return "DiscGuard";
+
+            // Found in "Alternate.exe" (Redump entry 31914) and "Alt.exe" (Redump entries 46743, 46961, 79284, and 79374).
+            var resources = pex.FindStringTableByEntry("DiscGuard")
+                .Concat(pex.FindStringTableByEntry("The file Dg.vbn was not found."))
+                .Concat(pex.FindStringTableByEntry("The file IosLink.VxD was not found."))
+                .Concat(pex.FindStringTableByEntry("The file IosLink.sys was not found."));
+            if (resources.Any())
+                return "DiscGuard";
 
             // Get the .vbn section, if it exists
-            var DiscGuardSection = pex.ReadRawSection(".vbn");
-            if (DiscGuardSection != null)
+            if (pex.ContainsSection(".vbn"))
             {
                 var matchers = new List<ContentMatchSet>
                 {
@@ -106,31 +114,7 @@ namespace BurnOutSharp.ProtectionType
                     }, "DiscGuard"),
                 };
 
-                string match = MatchUtil.GetFirstMatch(file, DiscGuardSection, matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
-                    return match;
-            }
-
-            // Get the .rsrc section, if it exists
-            var rsrcSection = pex.ReadRawSection(".rsrc");
-            if (rsrcSection != null)
-            {
-                var matchers = new List<ContentMatchSet>
-                {
-                    // Found in "Alternate.exe" (Redump entry 31914) and "Alt.exe" (Redump entries 46743, 46961, 79284, and 79374).
-                    // T.h.e. .f.i.l.e. .I.o.s.L.i.n.k...V.x.D. .w.a.s. .n.o.t. .f.o.u.n.d.
-                    new ContentMatchSet(new byte?[]
-                    {
-                        0x54, 0x00, 0x68, 0x00, 0x65, 0x00, 0x20, 0x00, 0x66, 0x00, 0x69, 0x00,
-                        0x6C, 0x00, 0x65, 0x00, 0x20, 0x00, 0x49, 0x00, 0x6F, 0x00, 0x73, 0x00,
-                        0x4C, 0x00, 0x69, 0x00, 0x6E, 0x00, 0x6B, 0x00, 0x2E, 0x00, 0x56, 0x00,
-                        0x78, 0x00, 0x44, 0x00, 0x20, 0x00, 0x77, 0x00, 0x61, 0x00, 0x73, 0x00,
-                        0x20, 0x00, 0x6E, 0x00, 0x6F, 0x00, 0x74, 0x00, 0x20, 0x00, 0x66, 0x00,
-                        0x6F, 0x00, 0x75, 0x00, 0x6E, 0x00, 0x64, 0x00
-                    }, "DiscGuard"),
-                };
-
-                string match = MatchUtil.GetFirstMatch(file, rsrcSection, matchers, includeDebug);
+                string match = MatchUtil.GetFirstMatch(file, pex.GetFirstSectionData(".vbn"), matchers, includeDebug);
                 if (!string.IsNullOrWhiteSpace(match))
                     return match;
             }

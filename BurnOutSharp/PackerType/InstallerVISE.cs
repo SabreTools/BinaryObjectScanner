@@ -1,9 +1,9 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
+using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.PackerType
 {
@@ -23,8 +23,9 @@ namespace BurnOutSharp.PackerType
             if (sections == null)
                 return null;
 
-            // Get the DATA/.data section, if it exists
-            if (pex.DataSectionRaw != null)
+            // Get the .data/DATA section, if it exists
+            var dataSectionRaw = pex.GetFirstSectionData(".data") ?? pex.GetFirstSectionData("DATA");
+            if (dataSectionRaw != null)
             {
                 var matchers = new List<ContentMatchSet>
                 {
@@ -32,7 +33,7 @@ namespace BurnOutSharp.PackerType
                     new ContentMatchSet(new byte?[] { 0x56, 0x69, 0x73, 0x65, 0x4D, 0x61, 0x69, 0x6E }, "Installer VISE"),
                 };
 
-                return MatchUtil.GetFirstMatch(file, pex.DataSectionRaw, matchers, includeDebug);
+                return MatchUtil.GetFirstMatch(file, dataSectionRaw, matchers, includeDebug);
             }
             
             return null;

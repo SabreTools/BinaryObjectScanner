@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.IO;
-using BurnOutSharp.ExecutableType.Microsoft.NE;
-using BurnOutSharp.ExecutableType.Microsoft.PE;
-using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
-using BurnOutSharp.Tools;
+using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -37,9 +33,8 @@ namespace BurnOutSharp.ProtectionType
         /// <inheritdoc/>
         public string SafeCastCheckNewExecutable(string file, NewExecutable nex, bool includeDebug)
         {
-            // Get the DOS stub from the executable, if possible
-            var stub = nex?.DOSStubHeader;
-            if (stub == null)
+            // Check we have a valid executable
+            if (nex == null)
                 return null;
 
             // TODO: Implement the following NE checks:
@@ -59,8 +54,9 @@ namespace BurnOutSharp.ProtectionType
             if (sections == null)
                 return null;
 
-            // Get the .data section, if it exists
-            if (pex.DataSectionRaw != null)
+            // Get the .data/DATA section, if it exists
+            var dataSectionRaw = pex.GetFirstSectionData(".data") ?? pex.GetFirstSectionData("DATA");
+            if (dataSectionRaw != null)
             {
                 var matchers = new List<ContentMatchSet>
                 {
@@ -73,7 +69,7 @@ namespace BurnOutSharp.ProtectionType
                         0x74 }, "SafeCast"),
                 };
 
-                string match = MatchUtil.GetFirstMatch(file, pex.DataSectionRaw, matchers, includeDebug);
+                string match = MatchUtil.GetFirstMatch(file, dataSectionRaw, matchers, includeDebug);
                 if (!string.IsNullOrWhiteSpace(match))
                     return match;
             }

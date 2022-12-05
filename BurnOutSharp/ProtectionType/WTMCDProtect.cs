@@ -1,9 +1,9 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
+using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -25,8 +25,8 @@ namespace BurnOutSharp.ProtectionType
             if (!string.IsNullOrEmpty(name) && name.Contains("WTM Copy Protection Viewer"))
                 return "WTM Protection Viewer";
 
-            // Get the CODE section, if it exists
-            var codeSectionRaw = pex.ReadRawSection("CODE", first: true);
+            // Get the code/CODE section, if it exists
+            var codeSectionRaw = pex.GetFirstSectionData("code") ?? pex.GetFirstSectionData("CODE");
             if (codeSectionRaw != null)
             {
                 var matchers = new List<ContentMatchSet>
@@ -45,7 +45,7 @@ namespace BurnOutSharp.ProtectionType
             }
 
             // Get the .text section, if it exists
-            if (pex.TextSectionRaw != null)
+            if (pex.ContainsSection(".text"))
             {
                 var matchers = new List<ContentMatchSet>
                 {
@@ -68,7 +68,7 @@ namespace BurnOutSharp.ProtectionType
                     }, "WTM Protection Viewer"),
                 };
 
-                string match = MatchUtil.GetFirstMatch(file, pex.TextSectionRaw, matchers, includeDebug);
+                string match = MatchUtil.GetFirstMatch(file, pex.GetFirstSectionData(".text"), matchers, includeDebug);
                 if (!string.IsNullOrWhiteSpace(match))
                     return match;
             }

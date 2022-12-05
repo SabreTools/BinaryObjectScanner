@@ -3,10 +3,10 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
 using BurnOutSharp.Tools;
+using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -64,15 +64,15 @@ namespace BurnOutSharp.ProtectionType
                 0x6C, 0x61, 0x6D, 0x65, 0x6E, 0x74, 0x61, 0x73,
                 0x2E, 0x50, 0x45
             };
-            int endDosStub = pex.DOSStubHeader.NewExeHeaderAddr;
-            bool containsCheck = pex.DOSStubHeader.ExecutableData.FirstPosition(check, out int position);
+            int endDosStub = (int)pex.Stub_NewExeHeaderAddr;
+            bool containsCheck = pex.StubExecutableData.FirstPosition(check, out int position);
 
             // If the .text section doesn't exist, then the second check can't be found
             bool containsCheck2 = false;
             int position2 = -1;
 
             // Get the .text section, if it exists
-            if (pex.TextSectionRaw != null)
+            if (pex.ContainsSection(".text"))
             {
                 // GetModuleHandleA + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00 + GetProcAddress + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00 + LoadLibraryA + (char)0x00 + (char)0x00 + KERNEL32.dll + (char)0x00 + ëy + (char)0x01 + SNIF/MPVI
                 byte?[] check2 = new byte?[]
@@ -87,15 +87,15 @@ namespace BurnOutSharp.ProtectionType
                     0x45, 0x4C, 0x33, 0x32, 0x2E, 0x64, 0x6C, 0x6C,
                     0x00, 0xEB, 0x79, 0x01, null, null, null, null,
                 };
-                containsCheck2 = pex.TextSectionRaw.FirstPosition(check2, out position2);
+                containsCheck2 = pex.GetFirstSectionData(".text").FirstPosition(check2, out position2);
             }
 
             if (containsCheck && containsCheck2)
-                return $"LaserLok {GetVersion(pex.TextSectionRaw, position2)} {GetBuild(pex.TextSectionRaw, true)} [Check disc for physical ring]" + (includeDebug ? $" (Index {position}, {position2})" : string.Empty);
+                return $"LaserLok {GetVersion(pex.GetFirstSectionData(".text"), position2)} {GetBuild(pex.GetFirstSectionData(".text"), true)} [Check disc for physical ring]" + (includeDebug ? $" (Index {position}, {position2})" : string.Empty);
             else if (containsCheck && !containsCheck2)
-                return $"LaserLok Marathon {GetBuild(pex.TextSectionRaw, false)} [Check disc for physical ring]" + (includeDebug ? $" (Index {position})" : string.Empty);
+                return $"LaserLok Marathon {GetBuild(pex.GetFirstSectionData(".text"), false)} [Check disc for physical ring]" + (includeDebug ? $" (Index {position})" : string.Empty);
             else if (!containsCheck && containsCheck2)
-                return $"LaserLok {GetVersion(pex.TextSectionRaw, --position2)} {GetBuild(pex.TextSectionRaw, false)} [Check disc for physical ring]" + (includeDebug ? $" (Index {position2})" : string.Empty);
+                return $"LaserLok {GetVersion(pex.GetFirstSectionData(".text"), --position2)} {GetBuild(pex.GetFirstSectionData(".text"), false)} [Check disc for physical ring]" + (includeDebug ? $" (Index {position2})" : string.Empty);
 
             return null;
         }

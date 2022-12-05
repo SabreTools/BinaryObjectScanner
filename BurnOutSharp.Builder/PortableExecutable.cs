@@ -175,6 +175,29 @@ namespace BurnOutSharp.Builder
 
             #endregion
 
+            #region Base Relocation Table
+
+            // Should also be in a '.reloc' section
+            if (optionalHeader.BaseRelocationTable != null && optionalHeader.BaseRelocationTable.VirtualAddress.ConvertVirtualAddress(executable.SectionTable) != 0)
+            {
+                // If the offset for the base relocation table doesn't exist
+                int baseRelocationTableAddress = initialOffset
+                    + (int)optionalHeader.BaseRelocationTable.VirtualAddress.ConvertVirtualAddress(executable.SectionTable);
+                if (baseRelocationTableAddress >= data.Length)
+                    return executable;
+
+                // Try to parse the base relocation table
+                int endOffset = (int)(baseRelocationTableAddress + optionalHeader.BaseRelocationTable.Size);
+                var baseRelocationTable = ParseBaseRelocationTable(data, baseRelocationTableAddress, endOffset, executable.SectionTable);
+                if (baseRelocationTable == null)
+                    return null;
+
+                // Set the base relocation table
+                executable.BaseRelocationTable = baseRelocationTable;
+            }
+
+            #endregion
+
             #region Debug Table
 
             // Should also be in a '.debug' section
@@ -700,20 +723,22 @@ namespace BurnOutSharp.Builder
         {
             var attributeCertificateTable = new List<AttributeCertificateTableEntry>();
 
-            while (offset < endOffset)
+            while (offset < endOffset && offset != data.Length)
             {
                 var entry = new AttributeCertificateTableEntry();
 
                 entry.Length = data.ReadUInt32(ref offset);
                 entry.Revision = (WindowsCertificateRevision)data.ReadUInt16(ref offset);
                 entry.CertificateType = (WindowsCertificateType)data.ReadUInt16(ref offset);
-                if (entry.Length > 0)
-                    entry.Certificate = data.ReadBytes(ref offset, (int)entry.Length - 8);
+
+                int certificateDataLength = (int)(entry.Length - 8);
+                if (certificateDataLength > 0)
+                    entry.Certificate = data.ReadBytes(ref offset, certificateDataLength);
 
                 attributeCertificateTable.Add(entry);
 
                 // Align to the 8-byte boundary
-                while ((offset % 8) != 0)
+                while ((offset % 8) != 0 && offset < endOffset - 1 && offset != data.Length)
                     _ = data.ReadByte(ref offset);
             }
 
@@ -744,7 +769,49 @@ namespace BurnOutSharp.Builder
         }
 
         /// <summary>
-        /// Parse a Stream into a debug table
+        /// Parse a byte array into a base relocation table
+        /// </summary>
+        /// <param name="data">Byte array to parse</param>
+        /// <param name="offset">Offset into the byte array</param>
+        /// <param name="endOffset">First address not part of the base relocation table</param>
+        /// <param name="sections">Section table to use for virtual address translation</param>
+        /// <returns>Filled base relocation table on success, null on error</returns>
+        private static BaseRelocationBlock[] ParseBaseRelocationTable(byte[] data, int offset, int endOffset, SectionHeader[] sections)
+        {
+            // TODO: Use marshalling here instead of building
+            var baseRelocationTable = new List<BaseRelocationBlock>();
+
+            while (offset < endOffset)
+            {
+                var baseRelocationBlock = new BaseRelocationBlock();
+
+                baseRelocationBlock.PageRVA = data.ReadUInt32(ref offset);
+                baseRelocationBlock.BlockSize = data.ReadUInt32(ref offset);
+
+                var typeOffsetFieldEntries = new List<BaseRelocationTypeOffsetFieldEntry>();
+                int totalSize = 8;
+                while (totalSize < baseRelocationBlock.BlockSize)
+                {
+                    var baseRelocationTypeOffsetFieldEntry = new BaseRelocationTypeOffsetFieldEntry();
+
+                    ushort typeAndOffsetField = data.ReadUInt16(ref offset);
+                    baseRelocationTypeOffsetFieldEntry.BaseRelocationType = (BaseRelocationTypes)(typeAndOffsetField >> 12);
+                    baseRelocationTypeOffsetFieldEntry.Offset = (ushort)(typeAndOffsetField & 0x0FFF);
+
+                    typeOffsetFieldEntries.Add(baseRelocationTypeOffsetFieldEntry);
+                    totalSize += 2;
+                }
+
+                baseRelocationBlock.TypeOffsetFieldEntries = typeOffsetFieldEntries.ToArray();
+
+                baseRelocationTable.Add(baseRelocationBlock);
+            }
+
+            return baseRelocationTable.ToArray();
+        }
+
+        /// <summary>
+        /// Parse a byte array into a debug table
         /// </summary>
         /// <param name="data">Byte array to parse</param>
         /// <param name="offset">Offset into the byte array</param>
@@ -1327,6 +1394,30 @@ namespace BurnOutSharp.Builder
 
             #endregion
 
+            #region Base Relocation Table
+
+            // Should also be in a '.reloc' section
+            if (optionalHeader.BaseRelocationTable != null && optionalHeader.BaseRelocationTable.VirtualAddress.ConvertVirtualAddress(executable.SectionTable) != 0)
+            {
+                // If the offset for the base relocation table doesn't exist
+                int baseRelocationTableAddress = initialOffset
+                    + (int)optionalHeader.BaseRelocationTable.VirtualAddress.ConvertVirtualAddress(executable.SectionTable);
+                if (baseRelocationTableAddress >= data.Length)
+                    return executable;
+
+                // Try to parse the base relocation table
+                data.Seek(baseRelocationTableAddress, SeekOrigin.Begin);
+                int endOffset = (int)(baseRelocationTableAddress + optionalHeader.BaseRelocationTable.Size);
+                var baseRelocationTable = ParseBaseRelocationTable(data, endOffset, executable.SectionTable);
+                if (baseRelocationTable == null)
+                    return null;
+
+                // Set the base relocation table
+                executable.BaseRelocationTable = baseRelocationTable;
+            }
+
+            #endregion
+
             #region Debug Table
 
             // Should also be in a '.debug' section
@@ -1849,20 +1940,22 @@ namespace BurnOutSharp.Builder
         {
             var attributeCertificateTable = new List<AttributeCertificateTableEntry>();
 
-            while (data.Position < endOffset)
+            while (data.Position < endOffset && data.Position != data.Length)
             {
                 var entry = new AttributeCertificateTableEntry();
 
                 entry.Length = data.ReadUInt32();
                 entry.Revision = (WindowsCertificateRevision)data.ReadUInt16();
                 entry.CertificateType = (WindowsCertificateType)data.ReadUInt16();
-                if (entry.Length > 0)
-                    entry.Certificate = data.ReadBytes((int)entry.Length - 8);
+
+                int certificateDataLength = (int)(entry.Length - 8);
+                if (certificateDataLength > 0)
+                    entry.Certificate = data.ReadBytes(certificateDataLength);
 
                 attributeCertificateTable.Add(entry);
 
                 // Align to the 8-byte boundary
-                while ((data.Position % 8) != 0)
+                while ((data.Position % 8) != 0 && data.Position < endOffset && data.Position != data.Length)
                     _ = data.ReadByteValue();
             }
 
@@ -1889,6 +1982,47 @@ namespace BurnOutSharp.Builder
             delayLoadDirectoryTable.TimeStamp = data.ReadUInt32();
 
             return delayLoadDirectoryTable;
+        }
+
+        /// <summary>
+        /// Parse a Stream into a base relocation table
+        /// </summary>
+        /// <param name="data">Stream to parse</param>
+        /// <param name="endOffset">First address not part of the base relocation table</param>
+        /// <param name="sections">Section table to use for virtual address translation</param>
+        /// <returns>Filled base relocation table on success, null on error</returns>
+        private static BaseRelocationBlock[] ParseBaseRelocationTable(Stream data, int endOffset, SectionHeader[] sections)
+        {
+            // TODO: Use marshalling here instead of building
+            var baseRelocationTable = new List<BaseRelocationBlock>();
+
+            while (data.Position < endOffset)
+            {
+                var baseRelocationBlock = new BaseRelocationBlock();
+
+                baseRelocationBlock.PageRVA = data.ReadUInt32();
+                baseRelocationBlock.BlockSize = data.ReadUInt32();
+
+                var typeOffsetFieldEntries = new List<BaseRelocationTypeOffsetFieldEntry>();
+                int totalSize = 8;
+                while (totalSize < baseRelocationBlock.BlockSize)
+                {
+                    var baseRelocationTypeOffsetFieldEntry = new BaseRelocationTypeOffsetFieldEntry();
+
+                    ushort typeAndOffsetField = data.ReadUInt16();
+                    baseRelocationTypeOffsetFieldEntry.BaseRelocationType = (BaseRelocationTypes)(typeAndOffsetField >> 12);
+                    baseRelocationTypeOffsetFieldEntry.Offset = (ushort)(typeAndOffsetField & 0x0FFF);
+
+                    typeOffsetFieldEntries.Add(baseRelocationTypeOffsetFieldEntry);
+                    totalSize += 2;
+                }
+
+                baseRelocationBlock.TypeOffsetFieldEntries = typeOffsetFieldEntries.ToArray();
+
+                baseRelocationTable.Add(baseRelocationBlock);
+            }
+
+            return baseRelocationTable.ToArray();
         }
 
         /// <summary>
@@ -2250,51 +2384,49 @@ namespace BurnOutSharp.Builder
             resourceDirectoryTable.NumberOfNameEntries = data.ReadUInt16();
             resourceDirectoryTable.NumberOfIDEntries = data.ReadUInt16();
 
-            // Perform top-level pass of data
+            // If we have no entries
             int totalEntryCount = resourceDirectoryTable.NumberOfNameEntries + resourceDirectoryTable.NumberOfIDEntries;
-            if (totalEntryCount > 0)
+            if (totalEntryCount == 0)
+                return resourceDirectoryTable;
+
+            // Perform top-level pass of data
+            resourceDirectoryTable.Entries = new ResourceDirectoryEntry[totalEntryCount];
+            for (int i = 0; i < totalEntryCount; i++)
             {
-                resourceDirectoryTable.Entries = new ResourceDirectoryEntry[totalEntryCount];
-                for (int i = 0; i < totalEntryCount; i++)
+                var entry = new ResourceDirectoryEntry();
+                uint offset = data.ReadUInt32();
+                if ((offset & 0x80000000) != 0)
+                    entry.NameOffset = offset & ~0x80000000;
+                else
+                    entry.IntegerID = offset;
+
+                offset = data.ReadUInt32();
+                if ((offset & 0x80000000) != 0)
+                    entry.SubdirectoryOffset = offset & ~0x80000000;
+                else
+                    entry.DataEntryOffset = offset;
+
+                // Read the name from the offset, if needed
+                if (entry.NameOffset != default)
                 {
-                    var entry = new ResourceDirectoryEntry();
-                    uint offset = data.ReadUInt32();
-                    if ((offset & 0x80000000) != 0)
-                        entry.NameOffset = offset & ~0x80000000;
-                    else
-                        entry.IntegerID = offset;
-
-                    offset = data.ReadUInt32();
-                    if ((offset & 0x80000000) != 0)
-                        entry.SubdirectoryOffset = offset & ~0x80000000;
-                    else
-                        entry.DataEntryOffset = offset;
-
-                    // Read the name from the offset, if needed
-                    if (entry.NameOffset != default)
-                    {
-                        long currentOffset = data.Position;
-                        offset = entry.NameOffset + (uint)initialOffset;
-                        data.Seek(offset, SeekOrigin.Begin);
-                        var resourceDirectoryString = new ResourceDirectoryString();
-                        resourceDirectoryString.Length = data.ReadUInt16();
-                        resourceDirectoryString.UnicodeString = data.ReadBytes(resourceDirectoryString.Length * 2);
-                        entry.Name = resourceDirectoryString;
-                        data.Seek(currentOffset, SeekOrigin.Begin);
-                    }
-
-                    resourceDirectoryTable.Entries[i] = entry;
+                    long currentOffset = data.Position;
+                    offset = entry.NameOffset + (uint)initialOffset;
+                    data.Seek(offset, SeekOrigin.Begin);
+                    var resourceDirectoryString = new ResourceDirectoryString();
+                    resourceDirectoryString.Length = data.ReadUInt16();
+                    resourceDirectoryString.UnicodeString = data.ReadBytes(resourceDirectoryString.Length * 2);
+                    entry.Name = resourceDirectoryString;
+                    data.Seek(currentOffset, SeekOrigin.Begin);
                 }
+
+                resourceDirectoryTable.Entries[i] = entry;
             }
 
-            // Read all leaves at this level
-            if (totalEntryCount > 0)
+            // Loop through and process the entries
+            foreach (var entry in resourceDirectoryTable.Entries)
             {
-                foreach (var entry in resourceDirectoryTable.Entries)
+                if (entry.DataEntryOffset != 0)
                 {
-                    if (entry.SubdirectoryOffset != 0)
-                        continue;
-
                     uint offset = entry.DataEntryOffset + (uint)initialOffset;
                     data.Seek(offset, SeekOrigin.Begin);
 
@@ -2314,18 +2446,11 @@ namespace BurnOutSharp.Builder
 
                     entry.DataEntry = resourceDataEntry;
                 }
-            }
-
-            // Now go one level lower
-            if (totalEntryCount > 0)
-            {
-                foreach (var entry in resourceDirectoryTable.Entries)
+                else if (entry.SubdirectoryOffset != 0)
                 {
-                    if (entry.DataEntryOffset != 0)
-                        continue;
-
                     uint offset = entry.SubdirectoryOffset + (uint)initialOffset;
                     data.Seek(offset, SeekOrigin.Begin);
+
                     entry.Subdirectory = ParseResourceDirectoryTable(data, initialOffset, sections);
                 }
             }

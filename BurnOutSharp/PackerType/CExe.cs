@@ -1,9 +1,9 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
+using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.PackerType
 {
@@ -20,8 +20,8 @@ namespace BurnOutSharp.PackerType
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
-            var stub = pex?.DOSStubHeader;
-            if (stub == null)
+            var sections = pex?.SectionTable;
+            if (sections == null)
                 return null;
 
             var matchers = new List<ContentMatchSet>
@@ -37,7 +37,7 @@ namespace BurnOutSharp.PackerType
                 }, "CExe")
             };
 
-            string match = MatchUtil.GetFirstMatch(file, pex.DOSStubHeader.ExecutableData, matchers, includeDebug);
+            string match = MatchUtil.GetFirstMatch(file, pex.StubExecutableData, matchers, includeDebug);
             if (!string.IsNullOrWhiteSpace(match))
                 return match;
 

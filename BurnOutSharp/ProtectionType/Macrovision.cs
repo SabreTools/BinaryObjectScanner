@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using BurnOutSharp.ExecutableType.Microsoft.NE;
-using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
 using BurnOutSharp.Tools;
-using static System.Net.WebRequestMethods;
+using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -20,9 +16,8 @@ namespace BurnOutSharp.ProtectionType
         /// <inheritdoc/>
         public string CheckNewExecutable(string file, NewExecutable nex, bool includeDebug)
         {
-            // Get the DOS stub from the executable, if possible
-            var stub = nex?.DOSStubHeader;
-            if (stub == null)
+            // Check we have a valid executable
+            if (nex == null)
                 return null;
 
             List<string> resultsList = new List<string>();
@@ -195,7 +190,7 @@ namespace BurnOutSharp.ProtectionType
                 return $"SafeDisc SRV Tool APP {GetSafeDiscDiagExecutableVersion(pex)}";
 
             // This subtract is needed because BoG_ starts before the section
-            var sectionRaw = pex.ReadRawSection(sectionName, first: true, offset: -64);
+            var sectionRaw = pex.GetFirstSectionDataWithOffset(sectionName, offset: -64);
             if (sectionRaw != null)
             {
                 // TODO: Add more checks to help differentiate between SafeDisc and SafeCast.

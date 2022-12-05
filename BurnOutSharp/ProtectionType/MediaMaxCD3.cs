@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using BurnOutSharp.ExecutableType.Microsoft.PE;
+using System.Linq;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
+using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -32,12 +33,17 @@ namespace BurnOutSharp.ProtectionType
             if (name?.StartsWith("LicGen Module", StringComparison.OrdinalIgnoreCase) == true)
                 return $"MediaMax CD-3";
 
-            var resource = pex.FindResource(dataContains: "Cd3Ctl");
-            if (resource != null)
+            var cd3CtrlResources = pex.FindGenericResource("Cd3Ctl");
+            if (cd3CtrlResources.Any())
+                return $"MediaMax CD-3";
+            
+            var limitedProductionResources = pex.FindDialogBoxByItemTitle("This limited production advanced CD is not playable on your computer. It is solely intended for playback on standard CD players.");
+            if (limitedProductionResources.Any())
                 return $"MediaMax CD-3";
 
-            // Get the .data section, if it exists
-            if (pex.DataSectionRaw != null)
+            // Get the .data/DATA section, if it exists
+            var dataSectionRaw = pex.GetFirstSectionData(".data") ?? pex.GetFirstSectionData("DATA");
+            if (dataSectionRaw != null)
             {
                 var matchers = new List<ContentMatchSet>
                 {
@@ -49,13 +55,13 @@ namespace BurnOutSharp.ProtectionType
                     }, "MediaMax CD-3"),
                 };
 
-                string match = MatchUtil.GetFirstMatch(file, pex.DataSectionRaw, matchers, includeDebug);
+                string match = MatchUtil.GetFirstMatch(file, dataSectionRaw, matchers, includeDebug);
                 if (!string.IsNullOrWhiteSpace(match))
                     return match;
             }
 
             // Get the .rdata section, if it exists
-            if (pex.ResourceDataSectionRaw != null)
+            if (pex.ContainsSection(".rdata"))
             {
                 var matchers = new List<ContentMatchSet>
                 {
@@ -67,7 +73,7 @@ namespace BurnOutSharp.ProtectionType
                     }, "MediaMax CD-3"),
                 };
 
-                string match = MatchUtil.GetFirstMatch(file, pex.ResourceDataSectionRaw, matchers, includeDebug);
+                string match = MatchUtil.GetFirstMatch(file, pex.GetFirstSectionData(".rdata"), matchers, includeDebug);
                 if (!string.IsNullOrWhiteSpace(match))
                     return match;
             }

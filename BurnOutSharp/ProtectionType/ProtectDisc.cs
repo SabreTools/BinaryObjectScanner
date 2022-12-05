@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using BurnOutSharp.ExecutableType.Microsoft.PE;
+using System.Text;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
+using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -18,12 +19,11 @@ namespace BurnOutSharp.ProtectionType
             if (sections == null)
                 return null;
 
-            // Get the 4th section, if it exists (example names: ACE4) (Found in Redump entry 94793)
-            var fourthSection = sections.Length < 4 ? null : sections[3];
-            if (fourthSection != null)
+            // Get the 4th and 5th sections, if they exist (example names: ACE4/ACE5) (Found in Redump entries 94792, 94793)
+            for (int i = 3; i < sections.Length; i++)
             {
-                var fourthSectionData = pex.ReadRawSection(fourthSection.NameString, first: true);
-                if (fourthSectionData != null)
+                var nthSectionData = pex.GetSectionData(i);
+                if (nthSectionData != null)
                 {
                     var matchers = new List<ContentMatchSet>
                     {
@@ -31,33 +31,15 @@ namespace BurnOutSharp.ProtectionType
                         new ContentMatchSet(new byte?[] { 0x41, 0x43, 0x45, 0x2D, 0x50, 0x43, 0x44 }, GetVersion6till8, "ProtectDISC"),
                     };
 
-                    string match = MatchUtil.GetFirstMatch(file, fourthSectionData, matchers, includeDebug);
+                    string match = MatchUtil.GetFirstMatch(file, nthSectionData, matchers, includeDebug);
                     if (!string.IsNullOrWhiteSpace(match))
                         return match;
                 }
             }
 
-            // Get the 5th section, if it exists (example names: ACE5) (Found in Redump entry 94792)
-            var fifthSection = sections.Length < 5 ? null : sections[4];
-            if (fifthSection != null)
-            {
-                var fifthSectionData = pex.ReadRawSection(fifthSection.NameString, first: true);
-                if (fifthSectionData != null)
-                {
-                    var matchers = new List<ContentMatchSet>
-                    {
-                        // ACE-PCD
-                        new ContentMatchSet(new byte?[] { 0x41, 0x43, 0x45, 0x2D, 0x50, 0x43, 0x44 }, GetVersion6till8, "ProtectDISC"),
-                    };
-
-                    string match = MatchUtil.GetFirstMatch(file, fifthSectionData, matchers, includeDebug);
-                    if (!string.IsNullOrWhiteSpace(match))
-                        return match;
-                }
-            }
-
-            // Get the .data section, if it exists
-            if (pex.DataSectionRaw != null)
+            // Get the .data/DATA section, if it exists
+            var dataSectionRaw = pex.GetFirstSectionData(".data") ?? pex.GetFirstSectionData("DATA");
+            if (dataSectionRaw != null)
             {
                 var matchers = new List<ContentMatchSet>
                 {
@@ -65,7 +47,7 @@ namespace BurnOutSharp.ProtectionType
                     new ContentMatchSet(new byte?[] { 0x44, 0x43, 0x50, 0x2D, 0x42, 0x4F, 0x56, 0x00, 0x00 }, GetVersion3till6, "VOB ProtectCD/DVD"),
                 };
 
-                string match = MatchUtil.GetFirstMatch(file, pex.DataSectionRaw, matchers, includeDebug);
+                string match = MatchUtil.GetFirstMatch(file, dataSectionRaw, matchers, includeDebug);
                 if (!string.IsNullOrWhiteSpace(match))
                     return match;
             }
@@ -74,7 +56,7 @@ namespace BurnOutSharp.ProtectionType
             var secondToLastSection = sections.Length > 1 ? sections[sections.Length - 2] : null;
             if (secondToLastSection != null)
             {
-                var secondToLastSectionData = pex.ReadRawSection(secondToLastSection.NameString, first: true);
+                var secondToLastSectionData = pex.GetSectionData(sections.Length - 2);
                 if (secondToLastSectionData != null)
                 {
                     var matchers = new List<ContentMatchSet>
@@ -96,11 +78,13 @@ namespace BurnOutSharp.ProtectionType
                 }
             }
 
+            // TODO: Be better about finding the last section
             // Get the last section (example names: ACE5, akxpxgcv, and piofinqb)
             var lastSection = sections.LastOrDefault();
             if (lastSection != null)
             {
-                var lastSectionData = pex.ReadRawSection(lastSection.NameString, first: true);
+                string lastSectionName = Encoding.UTF8.GetString(lastSection.Name).TrimEnd('\0');
+                var lastSectionData = pex.GetFirstSectionData(lastSectionName);
                 if (lastSectionData != null)
                 {
                     var matchers = new List<ContentMatchSet>

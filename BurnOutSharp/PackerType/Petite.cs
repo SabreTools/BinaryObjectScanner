@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.IO;
-using BurnOutSharp.ExecutableType.Microsoft.PE;
 using BurnOutSharp.Interfaces;
+using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.PackerType
 {
@@ -21,8 +21,8 @@ namespace BurnOutSharp.PackerType
                 return null;
 
             // Get the .petite section, if it exists -- TODO: Is there a version number that can be found?
-            bool nicodeSection = pex.ContainsSection(".petite", exact: true);
-            if (nicodeSection)
+            bool petiteSection = pex.ContainsSection(".petite", exact: true);
+            if (petiteSection)
                 return "PEtite";
 
             return null;
