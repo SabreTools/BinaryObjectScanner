@@ -768,8 +768,8 @@ namespace BurnOutSharp.Wrappers
             {
                 // TODO: Handle long section names with leading `/`
                 string sectionName = Encoding.UTF8.GetString(section.Name);
-                int sectionAddr = (int)section.PointerToRawData;
-                int sectionEnd = sectionAddr + (int)section.VirtualSize;
+                uint sectionAddr = section.PointerToRawData;
+                uint sectionEnd = sectionAddr + section.VirtualSize;
                 Console.WriteLine($"{sectionName}: {sectionAddr} -> {sectionEnd}");
             }
         }
