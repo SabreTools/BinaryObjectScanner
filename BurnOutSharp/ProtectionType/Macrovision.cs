@@ -48,23 +48,43 @@ namespace BurnOutSharp.ProtectionType
 
             // Check for generic indications of Macrovision protections first.
 
+            string name = pex.FileDescription;
+
+            // Present in "Diag.exe" files from SafeDisc 4.50.000+.
+            if (name?.Equals("SafeDisc SRV Tool APP", StringComparison.OrdinalIgnoreCase) == true)
+                return $"SafeDisc SRV Tool APP {GetSafeDiscDiagExecutableVersion(pex)}";
+
+            name = pex.ProductName;
+
+            // Present in "Diag.exe" files from SafeDisc 4.50.000+.
+            if (name?.Equals("SafeDisc SRV Tool APP", StringComparison.OrdinalIgnoreCase) == true)
+                return $"SafeDisc SRV Tool APP {GetSafeDiscDiagExecutableVersion(pex)}";
+
+            // Check the header padding
+            string match = CheckSectionForProtection(file, includeDebug, pex.HeaderPaddingData);
+            if (!string.IsNullOrWhiteSpace(match))
+                return match;
+
+            // This subtract is needed because BoG_ starts before the section
+            // More specifically, in the padding of the previous block
+
             // Get the .text section, if it exists
-            string match = CheckSectionForProtection(file, includeDebug, pex, ".text");
+            match = CheckSectionForProtection(file, includeDebug, pex.GetFirstSectionDataWithOffset(".text", offset: -64));
             if (!string.IsNullOrWhiteSpace(match))
                 return match;
 
             // Get the .txt2 section, if it exists
-            match = CheckSectionForProtection(file, includeDebug, pex, ".txt2");
+            match = CheckSectionForProtection(file, includeDebug, pex.GetFirstSectionDataWithOffset(".txt2", offset: -64));
             if (!string.IsNullOrWhiteSpace(match))
                 return match;
 
-            // Get the CODE section, if it exists
-            match = CheckSectionForProtection(file, includeDebug, pex, "CODE");
+            // Get the code/CODE section, if it exists
+            match = CheckSectionForProtection(file, includeDebug, pex.GetFirstSectionDataWithOffset("code", offset: -64) ?? pex.GetFirstSectionDataWithOffset("CODE", offset: -64));
             if (!string.IsNullOrWhiteSpace(match))
                 return match;
 
             // Get the .data section, if it exists
-            match = CheckSectionForProtection(file, includeDebug, pex, ".data");
+            match = CheckSectionForProtection(file, includeDebug, pex.GetFirstSectionDataWithOffset(".data", offset: -64));
             if (!string.IsNullOrWhiteSpace(match))
                 return match;
 
@@ -175,26 +195,14 @@ namespace BurnOutSharp.ProtectionType
             return $"{version}.{subVersion:00}.{subsubVersion:000}";
         }
 
-        private string CheckSectionForProtection(string file, bool includeDebug, PortableExecutable pex, string sectionName)
+        private string CheckSectionForProtection(string file, bool includeDebug, byte[] sectionRaw)
         {
-            string name = pex.FileDescription;
+            // If we have null section data
+            if (sectionRaw == null)
+                return null;
 
-            // Present in "Diag.exe" files from SafeDisc 4.50.000+.
-            if (name?.Equals("SafeDisc SRV Tool APP", StringComparison.OrdinalIgnoreCase) == true)
-                return $"SafeDisc SRV Tool APP {GetSafeDiscDiagExecutableVersion(pex)}";
-
-            name = pex.ProductName;
-
-            // Present in "Diag.exe" files from SafeDisc 4.50.000+.
-            if (name?.Equals("SafeDisc SRV Tool APP", StringComparison.OrdinalIgnoreCase) == true)
-                return $"SafeDisc SRV Tool APP {GetSafeDiscDiagExecutableVersion(pex)}";
-
-            // This subtract is needed because BoG_ starts before the section
-            var sectionRaw = pex.GetFirstSectionDataWithOffset(sectionName, offset: -64);
-            if (sectionRaw != null)
-            {
-                // TODO: Add more checks to help differentiate between SafeDisc and SafeCast.
-                var matchers = new List<ContentMatchSet>
+            // TODO: Add more checks to help differentiate between SafeDisc and SafeCast.
+            var matchers = new List<ContentMatchSet>
                 {
                     // Checks for presence of two different strings to differentiate between SafeDisc and SafeCast.
                     new ContentMatchSet(new List<byte?[]>
@@ -231,10 +239,7 @@ namespace BurnOutSharp.ProtectionType
                     new ContentMatchSet(new byte?[] { 0x00, 0x00, 0x42, 0x6F, 0x47, 0x5F }, GetSafeDisc320to4xVersion, "SafeDisc"),
                 };
 
-                return MatchUtil.GetFirstMatch(file, sectionRaw, matchers, includeDebug);
-            }
-
-            return null;
+            return MatchUtil.GetFirstMatch(file, sectionRaw, matchers, includeDebug);
         }
     }
 }
