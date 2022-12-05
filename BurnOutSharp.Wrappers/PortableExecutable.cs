@@ -41,7 +41,7 @@ namespace BurnOutSharp.Wrappers
         public ushort Stub_InitialSSValue => _executable.Stub.Header.InitialSSValue;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.InitialSPValue"/>
-        public ushort Stub_Stub_InitialSPValue => _executable.Stub.Header.InitialSPValue;
+        public ushort Stub_InitialSPValue => _executable.Stub.Header.InitialSPValue;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Checksum"/>
         public ushort Stub_Checksum => _executable.Stub.Header.Checksum;
@@ -345,7 +345,7 @@ namespace BurnOutSharp.Wrappers
                         return null;
 
                     // If we have certificate data, use that as the end
-                    if (_executable.OptionalHeader?.CertificateTable != null)
+                    if (OH_CertificateTable != null)
                     {
                         var certificateTable = _executable.OptionalHeader.CertificateTable;
                         int certificateTableAddress = (int)certificateTable.VirtualAddress.ConvertVirtualAddress(_executable.SectionTable);
@@ -465,7 +465,7 @@ namespace BurnOutSharp.Wrappers
                         return _resourceData;
 
                     // If we have no resource table, just return
-                    if (_executable.OptionalHeader?.ResourceTable == null
+                    if (OH_ResourceTable == null
                         || _executable.OptionalHeader.ResourceTable.VirtualAddress == 0
                         || _executable.ResourceDirectoryTable == null)
                         return null;
@@ -625,7 +625,7 @@ namespace BurnOutSharp.Wrappers
         /// Cached raw section data
         /// </summary>
         private byte[][] _sectionData = null;
-        
+
         /// <summary>
         /// Cached resource data
         /// </summary>
@@ -764,7 +764,7 @@ namespace BurnOutSharp.Wrappers
         /// </summary>
         public void PrintAllSections()
         {
-            foreach (var section in _executable.SectionTable)
+            foreach (var section in SectionTable)
             {
                 // TODO: Handle long section names with leading `/`
                 string sectionName = Encoding.UTF8.GetString(section.Name);
@@ -810,20 +810,20 @@ namespace BurnOutSharp.Wrappers
         {
             Console.WriteLine("  MS-DOS Stub Header Information:");
             Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Magic number: {BitConverter.ToString(_executable.Stub.Header.Magic).Replace("-", string.Empty)}");
-            Console.WriteLine($"  Last page bytes: {_executable.Stub.Header.LastPageBytes}");
-            Console.WriteLine($"  Pages: {_executable.Stub.Header.Pages}");
-            Console.WriteLine($"  Relocation items: {_executable.Stub.Header.RelocationItems}");
-            Console.WriteLine($"  Header paragraph size: {_executable.Stub.Header.HeaderParagraphSize}");
-            Console.WriteLine($"  Minimum extra paragraphs: {_executable.Stub.Header.MinimumExtraParagraphs}");
-            Console.WriteLine($"  Maximum extra paragraphs: {_executable.Stub.Header.MaximumExtraParagraphs}");
-            Console.WriteLine($"  Initial SS value: {_executable.Stub.Header.InitialSSValue}");
-            Console.WriteLine($"  Initial SP value: {_executable.Stub.Header.InitialSPValue}");
-            Console.WriteLine($"  Checksum: {_executable.Stub.Header.Checksum}");
-            Console.WriteLine($"  Initial IP value: {_executable.Stub.Header.InitialIPValue}");
-            Console.WriteLine($"  Initial CS value: {_executable.Stub.Header.InitialCSValue}");
-            Console.WriteLine($"  Relocation table address: {_executable.Stub.Header.RelocationTableAddr}");
-            Console.WriteLine($"  Overlay number: {_executable.Stub.Header.OverlayNumber}");
+            Console.WriteLine($"  Magic number: {BitConverter.ToString(Stub_Magic).Replace("-", string.Empty)}");
+            Console.WriteLine($"  Last page bytes: {Stub_LastPageBytes}");
+            Console.WriteLine($"  Pages: {Stub_Pages}");
+            Console.WriteLine($"  Relocation items: {Stub_RelocationItems}");
+            Console.WriteLine($"  Header paragraph size: {Stub_HeaderParagraphSize}");
+            Console.WriteLine($"  Minimum extra paragraphs: {Stub_MinimumExtraParagraphs}");
+            Console.WriteLine($"  Maximum extra paragraphs: {Stub_MaximumExtraParagraphs}");
+            Console.WriteLine($"  Initial SS value: {Stub_InitialSSValue}");
+            Console.WriteLine($"  Initial SP value: {Stub_InitialSPValue}");
+            Console.WriteLine($"  Checksum: {Stub_Checksum}");
+            Console.WriteLine($"  Initial IP value: {Stub_InitialIPValue}");
+            Console.WriteLine($"  Initial CS value: {Stub_InitialCSValue}");
+            Console.WriteLine($"  Relocation table address: {Stub_RelocationTableAddr}");
+            Console.WriteLine($"  Overlay number: {Stub_OverlayNumber}");
             Console.WriteLine();
         }
 
@@ -834,11 +834,11 @@ namespace BurnOutSharp.Wrappers
         {
             Console.WriteLine("  MS-DOS Stub Extended Header Information:");
             Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Reserved words: {string.Join(", ", _executable.Stub.Header.Reserved1)}");
-            Console.WriteLine($"  OEM identifier: {_executable.Stub.Header.OEMIdentifier}");
-            Console.WriteLine($"  OEM information: {_executable.Stub.Header.OEMInformation}");
-            Console.WriteLine($"  Reserved words: {string.Join(", ", _executable.Stub.Header.Reserved2)}");
-            Console.WriteLine($"  New EXE header address: {_executable.Stub.Header.NewExeHeaderAddr}");
+            Console.WriteLine($"  Reserved words: {string.Join(", ", Stub_Reserved1)}");
+            Console.WriteLine($"  OEM identifier: {Stub_OEMIdentifier}");
+            Console.WriteLine($"  OEM information: {Stub_OEMInformation}");
+            Console.WriteLine($"  Reserved words: {string.Join(", ", Stub_Reserved2)}");
+            Console.WriteLine($"  New EXE header address: {Stub_NewExeHeaderAddr}");
             Console.WriteLine();
         }
 
@@ -849,14 +849,14 @@ namespace BurnOutSharp.Wrappers
         {
             Console.WriteLine("  COFF File Header Information:");
             Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Signature: {BitConverter.ToString(_executable.Signature).Replace("-", string.Empty)}");
-            Console.WriteLine($"  Machine: {_executable.COFFFileHeader.Machine}");
-            Console.WriteLine($"  Number of sections: {_executable.COFFFileHeader.NumberOfSections}");
-            Console.WriteLine($"  Time/Date stamp: {_executable.COFFFileHeader.TimeDateStamp}");
-            Console.WriteLine($"  Pointer to symbol table: {_executable.COFFFileHeader.PointerToSymbolTable}");
-            Console.WriteLine($"  Number of symbols: {_executable.COFFFileHeader.NumberOfSymbols}");
-            Console.WriteLine($"  Size of optional header: {_executable.COFFFileHeader.SizeOfOptionalHeader}");
-            Console.WriteLine($"  Characteristics: {_executable.COFFFileHeader.Characteristics}");
+            Console.WriteLine($"  Signature: {BitConverter.ToString(Signature).Replace("-", string.Empty)}");
+            Console.WriteLine($"  Machine: {Machine}");
+            Console.WriteLine($"  Number of sections: {NumberOfSections}");
+            Console.WriteLine($"  Time/Date stamp: {TimeDateStamp}");
+            Console.WriteLine($"  Pointer to symbol table: {PointerToSymbolTable}");
+            Console.WriteLine($"  Number of symbols: {NumberOfSymbols}");
+            Console.WriteLine($"  Size of optional header: {SizeOfOptionalHeader}");
+            Console.WriteLine($"  Characteristics: {Characteristics}");
             Console.WriteLine();
         }
 
@@ -867,166 +867,151 @@ namespace BurnOutSharp.Wrappers
         {
             Console.WriteLine("  Optional Header Information:");
             Console.WriteLine("  -------------------------");
-            if (_executable.COFFFileHeader.SizeOfOptionalHeader == 0 || _executable.OptionalHeader == null)
+            if (SizeOfOptionalHeader == 0)
             {
                 Console.WriteLine("  No optional header present");
             }
             else
             {
-                Console.WriteLine($"  Magic: {_executable.OptionalHeader.Magic}");
-                Console.WriteLine($"  Major linker version: {_executable.OptionalHeader.MajorLinkerVersion}");
-                Console.WriteLine($"  Minor linker version: {_executable.OptionalHeader.MinorLinkerVersion}");
-                Console.WriteLine($"  Size of code section: {_executable.OptionalHeader.SizeOfCode}");
-                Console.WriteLine($"  Size of initialized data: {_executable.OptionalHeader.SizeOfInitializedData}");
-                Console.WriteLine($"  Size of uninitialized data: {_executable.OptionalHeader.SizeOfUninitializedData}");
-                Console.WriteLine($"  Address of entry point: {_executable.OptionalHeader.AddressOfEntryPoint}");
-                Console.WriteLine($"  Base of code: {_executable.OptionalHeader.BaseOfCode}");
-                if (_executable.OptionalHeader.Magic == Models.PortableExecutable.OptionalHeaderMagicNumber.PE32)
-                    Console.WriteLine($"  Base of data: {_executable.OptionalHeader.BaseOfData}");
+                Console.WriteLine($"  Magic: {OH_Magic}");
+                Console.WriteLine($"  Major linker version: {OH_MajorLinkerVersion}");
+                Console.WriteLine($"  Minor linker version: {OH_MinorLinkerVersion}");
+                Console.WriteLine($"  Size of code section: {OH_SizeOfCode}");
+                Console.WriteLine($"  Size of initialized data: {OH_SizeOfInitializedData}");
+                Console.WriteLine($"  Size of uninitialized data: {OH_SizeOfUninitializedData}");
+                Console.WriteLine($"  Address of entry point: {OH_AddressOfEntryPoint}");
+                Console.WriteLine($"  Base of code: {OH_BaseOfCode}");
+                if (OH_Magic == Models.PortableExecutable.OptionalHeaderMagicNumber.PE32)
+                    Console.WriteLine($"  Base of data: {OH_BaseOfData}");
 
-                if (_executable.OptionalHeader.Magic == Models.PortableExecutable.OptionalHeaderMagicNumber.PE32)
-                    Console.WriteLine($"  Image base: {_executable.OptionalHeader.ImageBase_PE32}");
-                else if (_executable.OptionalHeader.Magic == Models.PortableExecutable.OptionalHeaderMagicNumber.PE32Plus)
-                    Console.WriteLine($"  Image base: {_executable.OptionalHeader.ImageBase_PE32Plus}");
-                Console.WriteLine($"  Section alignment: {_executable.OptionalHeader.SectionAlignment}");
-                Console.WriteLine($"  File alignment: {_executable.OptionalHeader.FileAlignment}");
-                Console.WriteLine($"  Major operating system version: {_executable.OptionalHeader.MajorOperatingSystemVersion}");
-                Console.WriteLine($"  Minor operating system version: {_executable.OptionalHeader.MinorOperatingSystemVersion}");
-                Console.WriteLine($"  Major image version: {_executable.OptionalHeader.MajorImageVersion}");
-                Console.WriteLine($"  Minor image version: {_executable.OptionalHeader.MinorImageVersion}");
-                Console.WriteLine($"  Major subsystem version: {_executable.OptionalHeader.MajorSubsystemVersion}");
-                Console.WriteLine($"  Minor subsystem version: {_executable.OptionalHeader.MinorSubsystemVersion}");
-                Console.WriteLine($"  Win32 version value: {_executable.OptionalHeader.Win32VersionValue}");
-                Console.WriteLine($"  Size of image: {_executable.OptionalHeader.SizeOfImage}");
-                Console.WriteLine($"  Size of headers: {_executable.OptionalHeader.SizeOfHeaders}");
-                Console.WriteLine($"  Checksum: {_executable.OptionalHeader.CheckSum}");
-                Console.WriteLine($"  Subsystem: {_executable.OptionalHeader.Subsystem}");
-                Console.WriteLine($"  DLL characteristics: {_executable.OptionalHeader.DllCharacteristics}");
-                if (_executable.OptionalHeader.Magic == Models.PortableExecutable.OptionalHeaderMagicNumber.PE32)
-                    Console.WriteLine($"  Size of stack reserve: {_executable.OptionalHeader.SizeOfStackReserve_PE32}");
-                else if (_executable.OptionalHeader.Magic == Models.PortableExecutable.OptionalHeaderMagicNumber.PE32Plus)
-                    Console.WriteLine($"  Size of stack reserve: {_executable.OptionalHeader.SizeOfStackReserve_PE32Plus}");
-                if (_executable.OptionalHeader.Magic == Models.PortableExecutable.OptionalHeaderMagicNumber.PE32)
-                    Console.WriteLine($"  Size of stack commit: {_executable.OptionalHeader.SizeOfStackCommit_PE32}");
-                else if (_executable.OptionalHeader.Magic == Models.PortableExecutable.OptionalHeaderMagicNumber.PE32Plus)
-                    Console.WriteLine($"  Size of stack commit: {_executable.OptionalHeader.SizeOfStackCommit_PE32Plus}");
-                if (_executable.OptionalHeader.Magic == Models.PortableExecutable.OptionalHeaderMagicNumber.PE32)
-                    Console.WriteLine($"  Size of heap reserve: {_executable.OptionalHeader.SizeOfHeapReserve_PE32}");
-                else if (_executable.OptionalHeader.Magic == Models.PortableExecutable.OptionalHeaderMagicNumber.PE32Plus)
-                    Console.WriteLine($"  Size of heap reserve: {_executable.OptionalHeader.SizeOfHeapReserve_PE32Plus}");
-                if (_executable.OptionalHeader.Magic == Models.PortableExecutable.OptionalHeaderMagicNumber.PE32)
-                    Console.WriteLine($"  Size of heap commit: {_executable.OptionalHeader.SizeOfHeapCommit_PE32}");
-                else if (_executable.OptionalHeader.Magic == Models.PortableExecutable.OptionalHeaderMagicNumber.PE32Plus)
-                    Console.WriteLine($"  Size of heap commit: {_executable.OptionalHeader.SizeOfHeapCommit_PE32Plus}");
-                Console.WriteLine($"  Loader flags: {_executable.OptionalHeader.LoaderFlags}");
-                Console.WriteLine($"  Number of data-directory entries: {_executable.OptionalHeader.NumberOfRvaAndSizes}");
+                Console.WriteLine($"  Image base: {OH_ImageBase}");
+                Console.WriteLine($"  Section alignment: {OH_SectionAlignment}");
+                Console.WriteLine($"  File alignment: {OH_FileAlignment}");
+                Console.WriteLine($"  Major operating system version: {OH_MajorOperatingSystemVersion}");
+                Console.WriteLine($"  Minor operating system version: {OH_MinorOperatingSystemVersion}");
+                Console.WriteLine($"  Major image version: {OH_MajorImageVersion}");
+                Console.WriteLine($"  Minor image version: {OH_MinorImageVersion}");
+                Console.WriteLine($"  Major subsystem version: {OH_MajorSubsystemVersion}");
+                Console.WriteLine($"  Minor subsystem version: {OH_MinorSubsystemVersion}");
+                Console.WriteLine($"  Win32 version value: {OH_Win32VersionValue}");
+                Console.WriteLine($"  Size of image: {OH_SizeOfImage}");
+                Console.WriteLine($"  Size of headers: {OH_SizeOfHeaders}");
+                Console.WriteLine($"  Checksum: {OH_CheckSum}");
+                Console.WriteLine($"  Subsystem: {OH_Subsystem}");
+                Console.WriteLine($"  DLL characteristics: {OH_DllCharacteristics}");
+                Console.WriteLine($"  Size of stack reserve: {OH_SizeOfStackReserve}");
+                Console.WriteLine($"  Size of stack commit: {OH_SizeOfStackCommit}");
+                Console.WriteLine($"  Size of heap reserve: {OH_SizeOfHeapReserve}");
+                Console.WriteLine($"  Size of heap commit: {OH_SizeOfHeapCommit}");
+                Console.WriteLine($"  Loader flags: {OH_LoaderFlags}");
+                Console.WriteLine($"  Number of data-directory entries: {OH_NumberOfRvaAndSizes}");
 
-                if (_executable.OptionalHeader.ExportTable != null)
+                if (OH_ExportTable != null)
                 {
                     Console.WriteLine("    Export Table (1)");
-                    Console.WriteLine($"      Virtual address: {_executable.OptionalHeader.ExportTable.VirtualAddress}");
-                    Console.WriteLine($"      Physical address: {_executable.OptionalHeader.ExportTable.VirtualAddress.ConvertVirtualAddress(_executable.SectionTable)}");
-                    Console.WriteLine($"      Size: {_executable.OptionalHeader.ExportTable.Size}");
+                    Console.WriteLine($"      Virtual address: {OH_ExportTable.VirtualAddress}");
+                    Console.WriteLine($"      Physical address: {OH_ExportTable.VirtualAddress.ConvertVirtualAddress(SectionTable)}");
+                    Console.WriteLine($"      Size: {OH_ExportTable.Size}");
                 }
-                if (_executable.OptionalHeader.ImportTable != null)
+                if (OH_ImportTable != null)
                 {
                     Console.WriteLine("    Import Table (2)");
-                    Console.WriteLine($"      Virtual address: {_executable.OptionalHeader.ImportTable.VirtualAddress}");
-                    Console.WriteLine($"      Physical address: {_executable.OptionalHeader.ImportTable.VirtualAddress.ConvertVirtualAddress(_executable.SectionTable)}");
-                    Console.WriteLine($"      Size: {_executable.OptionalHeader.ImportTable.Size}");
+                    Console.WriteLine($"      Virtual address: {OH_ImportTable.VirtualAddress}");
+                    Console.WriteLine($"      Physical address: {OH_ImportTable.VirtualAddress.ConvertVirtualAddress(SectionTable)}");
+                    Console.WriteLine($"      Size: {OH_ImportTable.Size}");
                 }
-                if (_executable.OptionalHeader.ResourceTable != null)
+                if (OH_ResourceTable != null)
                 {
                     Console.WriteLine("    Resource Table (3)");
-                    Console.WriteLine($"      Virtual address: {_executable.OptionalHeader.ResourceTable.VirtualAddress}");
-                    Console.WriteLine($"      Physical address: {_executable.OptionalHeader.ResourceTable.VirtualAddress.ConvertVirtualAddress(_executable.SectionTable)}");
-                    Console.WriteLine($"      Size: {_executable.OptionalHeader.ResourceTable.Size}");
+                    Console.WriteLine($"      Virtual address: {OH_ResourceTable.VirtualAddress}");
+                    Console.WriteLine($"      Physical address: {OH_ResourceTable.VirtualAddress.ConvertVirtualAddress(SectionTable)}");
+                    Console.WriteLine($"      Size: {OH_ResourceTable.Size}");
                 }
-                if (_executable.OptionalHeader.ExceptionTable != null)
+                if (OH_ExceptionTable != null)
                 {
                     Console.WriteLine("    Exception Table (4)");
-                    Console.WriteLine($"      Virtual address: {_executable.OptionalHeader.ExceptionTable.VirtualAddress}");
-                    Console.WriteLine($"      Physical address: {_executable.OptionalHeader.ExceptionTable.VirtualAddress.ConvertVirtualAddress(_executable.SectionTable)}");
-                    Console.WriteLine($"      Size: {_executable.OptionalHeader.ExceptionTable.Size}");
+                    Console.WriteLine($"      Virtual address: {OH_ExceptionTable.VirtualAddress}");
+                    Console.WriteLine($"      Physical address: {OH_ExceptionTable.VirtualAddress.ConvertVirtualAddress(SectionTable)}");
+                    Console.WriteLine($"      Size: {OH_ExceptionTable.Size}");
                 }
-                if (_executable.OptionalHeader.CertificateTable != null)
+                if (OH_CertificateTable != null)
                 {
                     Console.WriteLine("    Certificate Table (5)");
-                    Console.WriteLine($"      Virtual address: {_executable.OptionalHeader.CertificateTable.VirtualAddress}");
-                    Console.WriteLine($"      Physical address: {_executable.OptionalHeader.CertificateTable.VirtualAddress.ConvertVirtualAddress(_executable.SectionTable)}");
-                    Console.WriteLine($"      Size: {_executable.OptionalHeader.CertificateTable.Size}");
+                    Console.WriteLine($"      Virtual address: {OH_CertificateTable.VirtualAddress}");
+                    Console.WriteLine($"      Physical address: {OH_CertificateTable.VirtualAddress.ConvertVirtualAddress(SectionTable)}");
+                    Console.WriteLine($"      Size: {OH_CertificateTable.Size}");
                 }
-                if (_executable.OptionalHeader.BaseRelocationTable != null)
+                if (OH_BaseRelocationTable != null)
                 {
                     Console.WriteLine("    Base Relocation Table (6)");
-                    Console.WriteLine($"      Virtual address: {_executable.OptionalHeader.BaseRelocationTable.VirtualAddress}");
-                    Console.WriteLine($"      Physical address: {_executable.OptionalHeader.BaseRelocationTable.VirtualAddress.ConvertVirtualAddress(_executable.SectionTable)}");
-                    Console.WriteLine($"      Size: {_executable.OptionalHeader.BaseRelocationTable.Size}");
+                    Console.WriteLine($"      Virtual address: {OH_BaseRelocationTable.VirtualAddress}");
+                    Console.WriteLine($"      Physical address: {OH_BaseRelocationTable.VirtualAddress.ConvertVirtualAddress(SectionTable)}");
+                    Console.WriteLine($"      Size: {OH_BaseRelocationTable.Size}");
                 }
-                if (_executable.OptionalHeader.Debug != null)
+                if (OH_Debug != null)
                 {
                     Console.WriteLine("    Debug Table (7)");
-                    Console.WriteLine($"      Virtual address: {_executable.OptionalHeader.Debug.VirtualAddress}");
-                    Console.WriteLine($"      Physical address: {_executable.OptionalHeader.Debug.VirtualAddress.ConvertVirtualAddress(_executable.SectionTable)}");
-                    Console.WriteLine($"      Size: {_executable.OptionalHeader.Debug.Size}");
+                    Console.WriteLine($"      Virtual address: {OH_Debug.VirtualAddress}");
+                    Console.WriteLine($"      Physical address: {OH_Debug.VirtualAddress.ConvertVirtualAddress(SectionTable)}");
+                    Console.WriteLine($"      Size: {OH_Debug.Size}");
                 }
-                if (_executable.OptionalHeader.NumberOfRvaAndSizes >= 8)
+                if (OH_NumberOfRvaAndSizes >= 8)
                 {
                     Console.WriteLine("    Architecture Table (8)");
                     Console.WriteLine($"      Virtual address: 0");
                     Console.WriteLine($"      Physical address: 0");
                     Console.WriteLine($"      Size: 0");
                 }
-                if (_executable.OptionalHeader.GlobalPtr != null)
+                if (OH_GlobalPtr != null)
                 {
                     Console.WriteLine("    Global Pointer Register (9)");
-                    Console.WriteLine($"      Virtual address: {_executable.OptionalHeader.GlobalPtr.VirtualAddress}");
-                    Console.WriteLine($"      Physical address: {_executable.OptionalHeader.GlobalPtr.VirtualAddress.ConvertVirtualAddress(_executable.SectionTable)}");
-                    Console.WriteLine($"      Size: {_executable.OptionalHeader.GlobalPtr.Size}");
+                    Console.WriteLine($"      Virtual address: {OH_GlobalPtr.VirtualAddress}");
+                    Console.WriteLine($"      Physical address: {OH_GlobalPtr.VirtualAddress.ConvertVirtualAddress(SectionTable)}");
+                    Console.WriteLine($"      Size: {OH_GlobalPtr.Size}");
                 }
-                if (_executable.OptionalHeader.ThreadLocalStorageTable != null)
+                if (OH_ThreadLocalStorageTable != null)
                 {
                     Console.WriteLine("    Thread Local Storage (TLS) Table (10)");
-                    Console.WriteLine($"      Virtual address: {_executable.OptionalHeader.ThreadLocalStorageTable.VirtualAddress}");
-                    Console.WriteLine($"      Physical address: {_executable.OptionalHeader.ThreadLocalStorageTable.VirtualAddress.ConvertVirtualAddress(_executable.SectionTable)}");
-                    Console.WriteLine($"      Size: {_executable.OptionalHeader.ThreadLocalStorageTable.Size}");
+                    Console.WriteLine($"      Virtual address: {OH_ThreadLocalStorageTable.VirtualAddress}");
+                    Console.WriteLine($"      Physical address: {OH_ThreadLocalStorageTable.VirtualAddress.ConvertVirtualAddress(SectionTable)}");
+                    Console.WriteLine($"      Size: {OH_ThreadLocalStorageTable.Size}");
                 }
-                if (_executable.OptionalHeader.LoadConfigTable != null)
+                if (OH_LoadConfigTable != null)
                 {
                     Console.WriteLine("    Load Config Table (11)");
-                    Console.WriteLine($"      Virtual address: {_executable.OptionalHeader.LoadConfigTable.VirtualAddress}");
-                    Console.WriteLine($"      Physical address: {_executable.OptionalHeader.LoadConfigTable.VirtualAddress.ConvertVirtualAddress(_executable.SectionTable)}");
-                    Console.WriteLine($"      Size: {_executable.OptionalHeader.LoadConfigTable.Size}");
+                    Console.WriteLine($"      Virtual address: {OH_LoadConfigTable.VirtualAddress}");
+                    Console.WriteLine($"      Physical address: {OH_LoadConfigTable.VirtualAddress.ConvertVirtualAddress(SectionTable)}");
+                    Console.WriteLine($"      Size: {OH_LoadConfigTable.Size}");
                 }
-                if (_executable.OptionalHeader.BoundImport != null)
+                if (OH_BoundImport != null)
                 {
                     Console.WriteLine("    Bound Import Table (12)");
-                    Console.WriteLine($"      Virtual address: {_executable.OptionalHeader.BoundImport.VirtualAddress}");
-                    Console.WriteLine($"      Physical address: {_executable.OptionalHeader.BoundImport.VirtualAddress.ConvertVirtualAddress(_executable.SectionTable)}");
-                    Console.WriteLine($"      Size: {_executable.OptionalHeader.BoundImport.Size}");
+                    Console.WriteLine($"      Virtual address: {OH_BoundImport.VirtualAddress}");
+                    Console.WriteLine($"      Physical address: {OH_BoundImport.VirtualAddress.ConvertVirtualAddress(SectionTable)}");
+                    Console.WriteLine($"      Size: {OH_BoundImport.Size}");
                 }
-                if (_executable.OptionalHeader.ImportAddressTable != null)
+                if (OH_ImportAddressTable != null)
                 {
                     Console.WriteLine("    Import Address Table (13)");
-                    Console.WriteLine($"      Virtual address: {_executable.OptionalHeader.ImportAddressTable.VirtualAddress}");
-                    Console.WriteLine($"      Physical address: {_executable.OptionalHeader.ImportAddressTable.VirtualAddress.ConvertVirtualAddress(_executable.SectionTable)}");
-                    Console.WriteLine($"      Size: {_executable.OptionalHeader.ImportAddressTable.Size}");
+                    Console.WriteLine($"      Virtual address: {OH_ImportAddressTable.VirtualAddress}");
+                    Console.WriteLine($"      Physical address: {OH_ImportAddressTable.VirtualAddress.ConvertVirtualAddress(SectionTable)}");
+                    Console.WriteLine($"      Size: {OH_ImportAddressTable.Size}");
                 }
-                if (_executable.OptionalHeader.DelayImportDescriptor != null)
+                if (OH_DelayImportDescriptor != null)
                 {
                     Console.WriteLine("    Delay Import Descriptior (14)");
-                    Console.WriteLine($"      Virtual address: {_executable.OptionalHeader.DelayImportDescriptor.VirtualAddress}");
-                    Console.WriteLine($"      Physical address: {_executable.OptionalHeader.DelayImportDescriptor.VirtualAddress.ConvertVirtualAddress(_executable.SectionTable)}");
-                    Console.WriteLine($"      Size: {_executable.OptionalHeader.DelayImportDescriptor.Size}");
+                    Console.WriteLine($"      Virtual address: {OH_DelayImportDescriptor.VirtualAddress}");
+                    Console.WriteLine($"      Physical address: {OH_DelayImportDescriptor.VirtualAddress.ConvertVirtualAddress(SectionTable)}");
+                    Console.WriteLine($"      Size: {OH_DelayImportDescriptor.Size}");
                 }
-                if (_executable.OptionalHeader.CLRRuntimeHeader != null)
+                if (OH_CLRRuntimeHeader != null)
                 {
                     Console.WriteLine("    CLR Runtime Header (15)");
-                    Console.WriteLine($"      Virtual address: {_executable.OptionalHeader.CLRRuntimeHeader.VirtualAddress}");
-                    Console.WriteLine($"      Physical address: {_executable.OptionalHeader.CLRRuntimeHeader.VirtualAddress.ConvertVirtualAddress(_executable.SectionTable)}");
-                    Console.WriteLine($"      Size: {_executable.OptionalHeader.CLRRuntimeHeader.Size}");
+                    Console.WriteLine($"      Virtual address: {OH_CLRRuntimeHeader.VirtualAddress}");
+                    Console.WriteLine($"      Physical address: {OH_CLRRuntimeHeader.VirtualAddress.ConvertVirtualAddress(SectionTable)}");
+                    Console.WriteLine($"      Size: {OH_CLRRuntimeHeader.Size}");
                 }
-                if (_executable.OptionalHeader.NumberOfRvaAndSizes >= 16)
+                if (OH_NumberOfRvaAndSizes >= 16)
                 {
                     Console.WriteLine("    Reserved (16)");
                     Console.WriteLine($"      Virtual address: 0");
@@ -1044,20 +1029,20 @@ namespace BurnOutSharp.Wrappers
         {
             Console.WriteLine("  Section Table Information:");
             Console.WriteLine("  -------------------------");
-            if (_executable.COFFFileHeader.NumberOfSections == 0 || _executable.SectionTable.Length == 0)
+            if (NumberOfSections == 0 || SectionTable.Length == 0)
             {
                 Console.WriteLine("  No section table items");
             }
             else
             {
-                for (int i = 0; i < _executable.SectionTable.Length; i++)
+                for (int i = 0; i < SectionTable.Length; i++)
                 {
-                    var entry = _executable.SectionTable[i];
+                    var entry = SectionTable[i];
                     Console.WriteLine($"  Section Table Entry {i}");
                     Console.WriteLine($"    Name = {Encoding.UTF8.GetString(entry.Name)}");
                     Console.WriteLine($"    Virtual size = {entry.VirtualSize}");
                     Console.WriteLine($"    Virtual address = {entry.VirtualAddress}");
-                    Console.WriteLine($"    Physical address: {entry.VirtualAddress.ConvertVirtualAddress(_executable.SectionTable)}");
+                    Console.WriteLine($"    Physical address: {entry.VirtualAddress.ConvertVirtualAddress(SectionTable)}");
                     Console.WriteLine($"    Size of raw data = {entry.SizeOfRawData}");
                     Console.WriteLine($"    Pointer to raw data = {entry.PointerToRawData}");
                     Console.WriteLine($"    Pointer to relocations = {entry.PointerToRelocations}");
@@ -1079,9 +1064,9 @@ namespace BurnOutSharp.Wrappers
         {
             Console.WriteLine("  COFF Symbol Table Information:");
             Console.WriteLine("  -------------------------");
-            if (_executable.COFFFileHeader.PointerToSymbolTable == 0
-                || _executable.COFFFileHeader.NumberOfSymbols == 0
-                || _executable.COFFSymbolTable.Length == 0)
+            if (PointerToSymbolTable == 0
+                || NumberOfSymbols == 0
+                || COFFSymbolTable.Length == 0)
             {
                 Console.WriteLine("  No COFF symbol table items");
             }
@@ -1090,9 +1075,9 @@ namespace BurnOutSharp.Wrappers
                 int auxSymbolsRemaining = 0;
                 int currentSymbolType = 0;
 
-                for (int i = 0; i < _executable.COFFSymbolTable.Length; i++)
+                for (int i = 0; i < COFFSymbolTable.Length; i++)
                 {
-                    var entry = _executable.COFFSymbolTable[i];
+                    var entry = COFFSymbolTable[i];
                     Console.WriteLine($"  COFF Symbol Table Entry {i} (Subtype {currentSymbolType})");
                     if (currentSymbolType == 0)
                     {
@@ -1207,18 +1192,18 @@ namespace BurnOutSharp.Wrappers
                 Console.WriteLine();
                 Console.WriteLine("  COFF String Table Information:");
                 Console.WriteLine("  -------------------------");
-                if (_executable.COFFStringTable == null
-                    || _executable.COFFStringTable.Strings == null
-                    || _executable.COFFStringTable.Strings.Length == 0)
+                if (COFFStringTable == null
+                    || COFFStringTable.Strings == null
+                    || COFFStringTable.Strings.Length == 0)
                 {
                     Console.WriteLine("  No COFF string table items");
                 }
                 else
                 {
-                    Console.WriteLine($"  Total size: {_executable.COFFStringTable.TotalSize}");
-                    for (int i = 0; i < _executable.COFFStringTable.Strings.Length; i++)
+                    Console.WriteLine($"  Total size: {COFFStringTable.TotalSize}");
+                    for (int i = 0; i < COFFStringTable.Strings.Length; i++)
                     {
-                        string entry = _executable.COFFStringTable.Strings[i];
+                        string entry = COFFStringTable.Strings[i];
                         Console.WriteLine($"  COFF String Table Entry {i})");
                         Console.WriteLine($"    Value = {entry}");
                     }
@@ -1234,17 +1219,17 @@ namespace BurnOutSharp.Wrappers
         {
             Console.WriteLine("  Attribute Certificate Table Information:");
             Console.WriteLine("  -------------------------");
-            if (_executable.OptionalHeader?.CertificateTable == null
-                || _executable.OptionalHeader.CertificateTable.VirtualAddress == 0
-                || _executable.AttributeCertificateTable.Length == 0)
+            if (OH_CertificateTable == null
+                || OH_CertificateTable.VirtualAddress == 0
+                || AttributeCertificateTable.Length == 0)
             {
                 Console.WriteLine("  No attribute certificate table items");
             }
             else
             {
-                for (int i = 0; i < _executable.AttributeCertificateTable.Length; i++)
+                for (int i = 0; i < AttributeCertificateTable.Length; i++)
                 {
-                    var entry = _executable.AttributeCertificateTable[i];
+                    var entry = AttributeCertificateTable[i];
                     Console.WriteLine($"  Attribute Certificate Table Entry {i}");
                     Console.WriteLine($"    Length = {entry.Length}");
                     Console.WriteLine($"    Revision = {entry.Revision}");
@@ -1296,22 +1281,22 @@ namespace BurnOutSharp.Wrappers
         {
             Console.WriteLine("  Delay-Load Directory Table Information:");
             Console.WriteLine("  -------------------------");
-            if (_executable.OptionalHeader?.DelayImportDescriptor == null
-                || _executable.OptionalHeader.DelayImportDescriptor.VirtualAddress == 0
-                || _executable.DelayLoadDirectoryTable == null)
+            if (OH_DelayImportDescriptor == null
+                || OH_DelayImportDescriptor.VirtualAddress == 0
+                || DelayLoadDirectoryTable == null)
             {
                 Console.WriteLine("  No delay-load directory table items");
             }
             else
             {
-                Console.WriteLine($"  Attributes = {_executable.DelayLoadDirectoryTable.Attributes}");
-                Console.WriteLine($"  Name RVA = {_executable.DelayLoadDirectoryTable.Name}");
-                Console.WriteLine($"  Module handle = {_executable.DelayLoadDirectoryTable.ModuleHandle}");
-                Console.WriteLine($"  Delay import address table RVA = {_executable.DelayLoadDirectoryTable.DelayImportAddressTable}");
-                Console.WriteLine($"  Delay import name table RVA = {_executable.DelayLoadDirectoryTable.DelayImportNameTable}");
-                Console.WriteLine($"  Bound delay import table RVA = {_executable.DelayLoadDirectoryTable.BoundDelayImportTable}");
-                Console.WriteLine($"  Unload delay import table RVA = {_executable.DelayLoadDirectoryTable.UnloadDelayImportTable}");
-                Console.WriteLine($"  Timestamp = {_executable.DelayLoadDirectoryTable.TimeStamp}");
+                Console.WriteLine($"  Attributes = {DelayLoadDirectoryTable.Attributes}");
+                Console.WriteLine($"  Name RVA = {DelayLoadDirectoryTable.Name}");
+                Console.WriteLine($"  Module handle = {DelayLoadDirectoryTable.ModuleHandle}");
+                Console.WriteLine($"  Delay import address table RVA = {DelayLoadDirectoryTable.DelayImportAddressTable}");
+                Console.WriteLine($"  Delay import name table RVA = {DelayLoadDirectoryTable.DelayImportNameTable}");
+                Console.WriteLine($"  Bound delay import table RVA = {DelayLoadDirectoryTable.BoundDelayImportTable}");
+                Console.WriteLine($"  Unload delay import table RVA = {DelayLoadDirectoryTable.UnloadDelayImportTable}");
+                Console.WriteLine($"  Timestamp = {DelayLoadDirectoryTable.TimeStamp}");
             }
             Console.WriteLine();
         }
@@ -1323,20 +1308,20 @@ namespace BurnOutSharp.Wrappers
         {
             Console.WriteLine("  Base Relocation Table Information:");
             Console.WriteLine("  -------------------------");
-            if (_executable.OptionalHeader?.BaseRelocationTable == null
-                || _executable.OptionalHeader.BaseRelocationTable.VirtualAddress == 0
-                || _executable.BaseRelocationTable == null)
+            if (OH_BaseRelocationTable == null
+                || OH_BaseRelocationTable.VirtualAddress == 0
+                || BaseRelocationTable == null)
             {
                 Console.WriteLine("  No base relocation table items");
             }
             else
             {
-                for (int i = 0; i < _executable.BaseRelocationTable.Length; i++)
+                for (int i = 0; i < BaseRelocationTable.Length; i++)
                 {
-                    var baseRelocationTableEntry = _executable.BaseRelocationTable[i];
+                    var baseRelocationTableEntry = BaseRelocationTable[i];
                     Console.WriteLine($"  Base Relocation Table Entry {i}");
                     Console.WriteLine($"    Page RVA: {baseRelocationTableEntry.PageRVA}");
-                    Console.WriteLine($"    Page physical address: {baseRelocationTableEntry.PageRVA.ConvertVirtualAddress(_executable.SectionTable)}");
+                    Console.WriteLine($"    Page physical address: {baseRelocationTableEntry.PageRVA.ConvertVirtualAddress(SectionTable)}");
                     Console.WriteLine($"    Block size: {baseRelocationTableEntry.BlockSize}");
 
                     Console.WriteLine($"    Base Relocation Table {i} Type and Offset Information:");
@@ -1367,18 +1352,18 @@ namespace BurnOutSharp.Wrappers
         {
             Console.WriteLine("  Debug Table Information:");
             Console.WriteLine("  -------------------------");
-            if (_executable.OptionalHeader?.Debug == null
-                || _executable.OptionalHeader.Debug.VirtualAddress == 0
-                || _executable.DebugTable == null)
+            if (OH_Debug == null
+                || OH_Debug.VirtualAddress == 0
+                || DebugTable == null)
             {
                 Console.WriteLine("  No debug table items");
             }
             else
             {
                 // TODO: If more sections added, model this after the Export Table
-                for (int i = 0; i < _executable.DebugTable.DebugDirectoryTable.Length; i++)
+                for (int i = 0; i < DebugTable.DebugDirectoryTable.Length; i++)
                 {
-                    var debugDirectoryEntry = _executable.DebugTable.DebugDirectoryTable[i];
+                    var debugDirectoryEntry = DebugTable.DebugDirectoryTable[i];
                     Console.WriteLine($"  Debug Directory Table Entry {i}");
                     Console.WriteLine($"    Characteristics: {debugDirectoryEntry.Characteristics}");
                     Console.WriteLine($"    Time/Date stamp: {debugDirectoryEntry.TimeDateStamp}");
@@ -1400,9 +1385,9 @@ namespace BurnOutSharp.Wrappers
         {
             Console.WriteLine("  Export Table Information:");
             Console.WriteLine("  -------------------------");
-            if (_executable.OptionalHeader?.ExportTable == null
-                || _executable.OptionalHeader.ExportTable.VirtualAddress == 0
-                || _executable.ExportTable == null)
+            if (OH_ExportTable == null
+                || OH_ExportTable.VirtualAddress == 0
+                || ExportTable == null)
             {
                 Console.WriteLine("  No export table items");
             }
@@ -1411,31 +1396,31 @@ namespace BurnOutSharp.Wrappers
                 Console.WriteLine();
                 Console.WriteLine("    Export Directory Table Information:");
                 Console.WriteLine("    -------------------------");
-                Console.WriteLine($"    Export flags: {_executable.ExportTable.ExportDirectoryTable.ExportFlags}");
-                Console.WriteLine($"    Time/Date stamp: {_executable.ExportTable.ExportDirectoryTable.TimeDateStamp}");
-                Console.WriteLine($"    Major version: {_executable.ExportTable.ExportDirectoryTable.MajorVersion}");
-                Console.WriteLine($"    Minor version: {_executable.ExportTable.ExportDirectoryTable.MinorVersion}");
-                Console.WriteLine($"    Name RVA: {_executable.ExportTable.ExportDirectoryTable.NameRVA}");
-                Console.WriteLine($"    Name: {_executable.ExportTable.ExportDirectoryTable.Name}");
-                Console.WriteLine($"    Ordinal base: {_executable.ExportTable.ExportDirectoryTable.OrdinalBase}");
-                Console.WriteLine($"    Address table entries: {_executable.ExportTable.ExportDirectoryTable.AddressTableEntries}");
-                Console.WriteLine($"    Number of name pointers: {_executable.ExportTable.ExportDirectoryTable.NumberOfNamePointers}");
-                Console.WriteLine($"    Export address table RVA: {_executable.ExportTable.ExportDirectoryTable.ExportAddressTableRVA}");
-                Console.WriteLine($"    Name pointer table RVA: {_executable.ExportTable.ExportDirectoryTable.NamePointerRVA}");
-                Console.WriteLine($"    Ordinal table RVA: {_executable.ExportTable.ExportDirectoryTable.OrdinalTableRVA}");
+                Console.WriteLine($"    Export flags: {ExportTable.ExportDirectoryTable.ExportFlags}");
+                Console.WriteLine($"    Time/Date stamp: {ExportTable.ExportDirectoryTable.TimeDateStamp}");
+                Console.WriteLine($"    Major version: {ExportTable.ExportDirectoryTable.MajorVersion}");
+                Console.WriteLine($"    Minor version: {ExportTable.ExportDirectoryTable.MinorVersion}");
+                Console.WriteLine($"    Name RVA: {ExportTable.ExportDirectoryTable.NameRVA}");
+                Console.WriteLine($"    Name: {ExportTable.ExportDirectoryTable.Name}");
+                Console.WriteLine($"    Ordinal base: {ExportTable.ExportDirectoryTable.OrdinalBase}");
+                Console.WriteLine($"    Address table entries: {ExportTable.ExportDirectoryTable.AddressTableEntries}");
+                Console.WriteLine($"    Number of name pointers: {ExportTable.ExportDirectoryTable.NumberOfNamePointers}");
+                Console.WriteLine($"    Export address table RVA: {ExportTable.ExportDirectoryTable.ExportAddressTableRVA}");
+                Console.WriteLine($"    Name pointer table RVA: {ExportTable.ExportDirectoryTable.NamePointerRVA}");
+                Console.WriteLine($"    Ordinal table RVA: {ExportTable.ExportDirectoryTable.OrdinalTableRVA}");
                 Console.WriteLine();
 
                 Console.WriteLine("    Export Address Table Information:");
                 Console.WriteLine("    -------------------------");
-                if (_executable.ExportTable.ExportAddressTable == null || _executable.ExportTable.ExportAddressTable.Length == 0)
+                if (ExportTable.ExportAddressTable == null || ExportTable.ExportAddressTable.Length == 0)
                 {
                     Console.WriteLine("    No export address table items");
                 }
                 else
                 {
-                    for (int i = 0; i < _executable.ExportTable.ExportAddressTable.Length; i++)
+                    for (int i = 0; i < ExportTable.ExportAddressTable.Length; i++)
                     {
-                        var exportAddressTableEntry = _executable.ExportTable.ExportAddressTable[i];
+                        var exportAddressTableEntry = ExportTable.ExportAddressTable[i];
                         Console.WriteLine($"    Export Address Table Entry {i}");
                         Console.WriteLine($"      Export RVA / Forwarder RVA: {exportAddressTableEntry.ExportRVA}");
                     }
@@ -1444,15 +1429,15 @@ namespace BurnOutSharp.Wrappers
 
                 Console.WriteLine("    Name Pointer Table Information:");
                 Console.WriteLine("    -------------------------");
-                if (_executable.ExportTable.NamePointerTable?.Pointers == null || _executable.ExportTable.NamePointerTable.Pointers.Length == 0)
+                if (ExportTable.NamePointerTable?.Pointers == null || ExportTable.NamePointerTable.Pointers.Length == 0)
                 {
                     Console.WriteLine("    No name pointer table items");
                 }
                 else
                 {
-                    for (int i = 0; i < _executable.ExportTable.NamePointerTable.Pointers.Length; i++)
+                    for (int i = 0; i < ExportTable.NamePointerTable.Pointers.Length; i++)
                     {
-                        var namePointerTableEntry = _executable.ExportTable.NamePointerTable.Pointers[i];
+                        var namePointerTableEntry = ExportTable.NamePointerTable.Pointers[i];
                         Console.WriteLine($"    Name Pointer Table Entry {i}");
                         Console.WriteLine($"      Pointer: {namePointerTableEntry}");
                     }
@@ -1461,15 +1446,15 @@ namespace BurnOutSharp.Wrappers
 
                 Console.WriteLine("    Ordinal Table Information:");
                 Console.WriteLine("    -------------------------");
-                if (_executable.ExportTable.OrdinalTable?.Indexes == null || _executable.ExportTable.OrdinalTable.Indexes.Length == 0)
+                if (ExportTable.OrdinalTable?.Indexes == null || ExportTable.OrdinalTable.Indexes.Length == 0)
                 {
                     Console.WriteLine("    No ordinal table items");
                 }
                 else
                 {
-                    for (int i = 0; i < _executable.ExportTable.OrdinalTable.Indexes.Length; i++)
+                    for (int i = 0; i < ExportTable.OrdinalTable.Indexes.Length; i++)
                     {
-                        var ordinalTableEntry = _executable.ExportTable.OrdinalTable.Indexes[i];
+                        var ordinalTableEntry = ExportTable.OrdinalTable.Indexes[i];
                         Console.WriteLine($"    Ordinal Table Entry {i}");
                         Console.WriteLine($"      Index: {ordinalTableEntry}");
                     }
@@ -1478,15 +1463,15 @@ namespace BurnOutSharp.Wrappers
 
                 Console.WriteLine("    Export Name Table Information:");
                 Console.WriteLine("    -------------------------");
-                if (_executable.ExportTable.ExportNameTable?.Strings == null || _executable.ExportTable.ExportNameTable.Strings.Length == 0)
+                if (ExportTable.ExportNameTable?.Strings == null || ExportTable.ExportNameTable.Strings.Length == 0)
                 {
                     Console.WriteLine("    No export name table items");
                 }
                 else
                 {
-                    for (int i = 0; i < _executable.ExportTable.ExportNameTable.Strings.Length; i++)
+                    for (int i = 0; i < ExportTable.ExportNameTable.Strings.Length; i++)
                     {
-                        var exportNameTableEntry = _executable.ExportTable.ExportNameTable.Strings[i];
+                        var exportNameTableEntry = ExportTable.ExportNameTable.Strings[i];
                         Console.WriteLine($"    Export Name Table Entry {i}");
                         Console.WriteLine($"      String: {exportNameTableEntry}");
                     }
@@ -1502,9 +1487,9 @@ namespace BurnOutSharp.Wrappers
         {
             Console.WriteLine("  Import Table Information:");
             Console.WriteLine("  -------------------------");
-            if (_executable.OptionalHeader?.ImportTable == null
-                || _executable.OptionalHeader.ImportTable.VirtualAddress == 0
-                || _executable.ImportTable == null)
+            if (OH_ImportTable == null
+                || OH_ImportTable.VirtualAddress == 0
+                || ImportTable == null)
             {
                 Console.WriteLine("  No import table items");
             }
@@ -1513,15 +1498,15 @@ namespace BurnOutSharp.Wrappers
                 Console.WriteLine();
                 Console.WriteLine("    Import Directory Table Information:");
                 Console.WriteLine("    -------------------------");
-                if (_executable.ImportTable.ImportDirectoryTable == null || _executable.ImportTable.ImportDirectoryTable.Length == 0)
+                if (ImportTable.ImportDirectoryTable == null || ImportTable.ImportDirectoryTable.Length == 0)
                 {
                     Console.WriteLine("    No import directory table items");
                 }
                 else
                 {
-                    for (int i = 0; i < _executable.ImportTable.ImportDirectoryTable.Length; i++)
+                    for (int i = 0; i < ImportTable.ImportDirectoryTable.Length; i++)
                     {
-                        var importDirectoryTableEntry = _executable.ImportTable.ImportDirectoryTable[i];
+                        var importDirectoryTableEntry = ImportTable.ImportDirectoryTable[i];
                         Console.WriteLine($"    Import Directory Table Entry {i}");
                         Console.WriteLine($"      Import lookup table RVA: {importDirectoryTableEntry.ImportLookupTableRVA}");
                         Console.WriteLine($"      Time/Date stamp: {importDirectoryTableEntry.TimeDateStamp}");
@@ -1535,13 +1520,13 @@ namespace BurnOutSharp.Wrappers
 
                 Console.WriteLine("    Import Lookup Tables Information:");
                 Console.WriteLine("    -------------------------");
-                if (_executable.ImportTable.ImportLookupTables == null || _executable.ImportTable.ImportLookupTables.Count == 0)
+                if (ImportTable.ImportLookupTables == null || ImportTable.ImportLookupTables.Count == 0)
                 {
                     Console.WriteLine("    No import lookup tables");
                 }
                 else
                 {
-                    foreach (var kvp in _executable.ImportTable.ImportLookupTables)
+                    foreach (var kvp in ImportTable.ImportLookupTables)
                     {
                         int index = kvp.Key;
                         var importLookupTable = kvp.Value;
@@ -1572,13 +1557,13 @@ namespace BurnOutSharp.Wrappers
 
                 Console.WriteLine("    Import Address Tables Information:");
                 Console.WriteLine("    -------------------------");
-                if (_executable.ImportTable.ImportAddressTables == null || _executable.ImportTable.ImportAddressTables.Count == 0)
+                if (ImportTable.ImportAddressTables == null || ImportTable.ImportAddressTables.Count == 0)
                 {
                     Console.WriteLine("    No import address tables");
                 }
                 else
                 {
-                    foreach (var kvp in _executable.ImportTable.ImportAddressTables)
+                    foreach (var kvp in ImportTable.ImportAddressTables)
                     {
                         int index = kvp.Key;
                         var importAddressTable = kvp.Value;
@@ -1596,7 +1581,7 @@ namespace BurnOutSharp.Wrappers
                             {
                                 var importLookupTableEntry = importAddressTable[i];
                                 Console.WriteLine($"      Import Address Table {index} Entry {i}");
-                                if (_executable.OptionalHeader.Magic == Models.PortableExecutable.OptionalHeaderMagicNumber.PE32)
+                                if (OH_Magic == Models.PortableExecutable.OptionalHeaderMagicNumber.PE32)
                                     Console.WriteLine($"        Address: {importLookupTableEntry.Address_PE32}");
                                 else
                                     Console.WriteLine($"        Address: {importLookupTableEntry.Address_PE32Plus}");
@@ -1608,15 +1593,15 @@ namespace BurnOutSharp.Wrappers
 
                 Console.WriteLine("    Hint/Name Table Information:");
                 Console.WriteLine("    -------------------------");
-                if (_executable.ImportTable.HintNameTable == null || _executable.ImportTable.HintNameTable.Length == 0)
+                if (ImportTable.HintNameTable == null || ImportTable.HintNameTable.Length == 0)
                 {
                     Console.WriteLine("    No hint/name table items");
                 }
                 else
                 {
-                    for (int i = 0; i < _executable.ImportTable.HintNameTable.Length; i++)
+                    for (int i = 0; i < ImportTable.HintNameTable.Length; i++)
                     {
-                        var hintNameTableEntry = _executable.ImportTable.HintNameTable[i];
+                        var hintNameTableEntry = ImportTable.HintNameTable[i];
                         Console.WriteLine($"    Hint/Name Table Entry {i}");
                         Console.WriteLine($"      Hint: {hintNameTableEntry.Hint}");
                         Console.WriteLine($"      Name: {hintNameTableEntry.Name}");
@@ -1633,15 +1618,15 @@ namespace BurnOutSharp.Wrappers
         {
             Console.WriteLine("  Resource Directory Table Information:");
             Console.WriteLine("  -------------------------");
-            if (_executable.OptionalHeader?.ResourceTable == null
-                || _executable.OptionalHeader.ResourceTable.VirtualAddress == 0
-                || _executable.ResourceDirectoryTable == null)
+            if (OH_ResourceTable == null
+                || OH_ResourceTable.VirtualAddress == 0
+                || ResourceDirectoryTable == null)
             {
                 Console.WriteLine("  No resource directory table items");
             }
             else
             {
-                PrintResourceDirectoryTable(_executable.ResourceDirectoryTable, level: 0, types: new List<object>());
+                PrintResourceDirectoryTable(ResourceDirectoryTable, level: 0, types: new List<object>());
             }
             Console.WriteLine();
         }
@@ -2646,7 +2631,7 @@ namespace BurnOutSharp.Wrappers
         public Models.PortableExecutable.SectionHeader GetFirstSection(string name, bool exact = false)
         {
             // If we have no sections
-            if (_executable.SectionTable == null || !SectionTable.Any())
+            if (SectionTable == null || !SectionTable.Any())
                 return null;
 
             // If the section doesn't exist
@@ -2671,7 +2656,7 @@ namespace BurnOutSharp.Wrappers
         public Models.PortableExecutable.SectionHeader GetLastSection(string name, bool exact = false)
         {
             // If we have no sections
-            if (_executable.SectionTable == null || !SectionTable.Any())
+            if (SectionTable == null || !SectionTable.Any())
                 return null;
 
             // If the section doesn't exist
@@ -2695,7 +2680,7 @@ namespace BurnOutSharp.Wrappers
         public Models.PortableExecutable.SectionHeader GetSection(int index)
         {
             // If we have no sections
-            if (_executable.SectionTable == null || !SectionTable.Any())
+            if (SectionTable == null || !SectionTable.Any())
                 return null;
 
             // If the section doesn't exist
@@ -2715,7 +2700,7 @@ namespace BurnOutSharp.Wrappers
         public byte[] GetFirstSectionData(string name, bool exact = false)
         {
             // If we have no sections
-            if (_executable.SectionTable == null || !SectionTable.Any())
+            if (SectionTable == null || !SectionTable.Any())
                 return null;
 
             // If the section doesn't exist
@@ -2728,8 +2713,8 @@ namespace BurnOutSharp.Wrappers
                 return null;
 
             // Get the section data from the table
-            var section = _executable.SectionTable[index];
-            uint address = section.VirtualAddress.ConvertVirtualAddress(_executable.SectionTable);
+            var section = SectionTable[index];
+            uint address = section.VirtualAddress.ConvertVirtualAddress(SectionTable);
             if (address == 0)
                 return null;
 
@@ -2764,7 +2749,7 @@ namespace BurnOutSharp.Wrappers
         public byte[] GetFirstSectionDataWithOffset(string name, bool exact = false, int offset = 0)
         {
             // If we have no sections
-            if (_executable.SectionTable == null || !SectionTable.Any())
+            if (SectionTable == null || !SectionTable.Any())
                 return null;
 
             // If the section doesn't exist
@@ -2777,8 +2762,8 @@ namespace BurnOutSharp.Wrappers
                 return null;
 
             // Get the section data from the table
-            var section = _executable.SectionTable[index];
-            uint address = section.VirtualAddress.ConvertVirtualAddress(_executable.SectionTable);
+            var section = SectionTable[index];
+            uint address = section.VirtualAddress.ConvertVirtualAddress(SectionTable);
             if (address == 0)
                 return null;
 
@@ -2800,7 +2785,7 @@ namespace BurnOutSharp.Wrappers
         public byte[] GetLastSectionData(string name, bool exact = false)
         {
             // If we have no sections
-            if (_executable.SectionTable == null || !SectionTable.Any())
+            if (SectionTable == null || !SectionTable.Any())
                 return null;
 
             // If the section doesn't exist
@@ -2813,8 +2798,8 @@ namespace BurnOutSharp.Wrappers
                 return null;
 
             // Get the section data from the table
-            var section = _executable.SectionTable[index];
-            uint address = section.VirtualAddress.ConvertVirtualAddress(_executable.SectionTable);
+            var section = SectionTable[index];
+            uint address = section.VirtualAddress.ConvertVirtualAddress(SectionTable);
             if (address == 0)
                 return null;
 
@@ -2847,7 +2832,7 @@ namespace BurnOutSharp.Wrappers
         public byte[] GetSectionData(int index)
         {
             // If we have no sections
-            if (_executable.SectionTable == null || !SectionTable.Any())
+            if (SectionTable == null || !SectionTable.Any())
                 return null;
 
             // If the section doesn't exist
@@ -2855,8 +2840,8 @@ namespace BurnOutSharp.Wrappers
                 return null;
 
             // Get the section data from the table
-            var section = _executable.SectionTable[index];
-            uint address = section.VirtualAddress.ConvertVirtualAddress(_executable.SectionTable);
+            var section = SectionTable[index];
+            uint address = section.VirtualAddress.ConvertVirtualAddress(SectionTable);
             if (address == 0)
                 return null;
 

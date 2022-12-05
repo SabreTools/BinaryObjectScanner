@@ -35,7 +35,7 @@ namespace BurnOutSharp.Wrappers
         public ushort Stub_InitialSSValue => _executable.Stub.Header.InitialSSValue;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.InitialSPValue"/>
-        public ushort Stub_Stub_InitialSPValue => _executable.Stub.Header.InitialSPValue;
+        public ushort Stub_InitialSPValue => _executable.Stub.Header.InitialSPValue;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Checksum"/>
         public ushort Stub_Checksum => _executable.Stub.Header.Checksum;

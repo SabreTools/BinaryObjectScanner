@@ -39,7 +39,7 @@ namespace BurnOutSharp.Wrappers
         public ushort Stub_InitialSSValue => _executable.Stub.Header.InitialSSValue;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.InitialSPValue"/>
-        public ushort Stub_Stub_InitialSPValue => _executable.Stub.Header.InitialSPValue;
+        public ushort Stub_InitialSPValue => _executable.Stub.Header.InitialSPValue;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Checksum"/>
         public ushort Stub_Checksum => _executable.Stub.Header.Checksum;
@@ -302,20 +302,20 @@ namespace BurnOutSharp.Wrappers
         {
             Console.WriteLine("  MS-DOS Stub Header Information:");
             Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Magic number: {BitConverter.ToString(_executable.Stub.Header.Magic).Replace("-", string.Empty)}");
-            Console.WriteLine($"  Last page bytes: {_executable.Stub.Header.LastPageBytes}");
-            Console.WriteLine($"  Pages: {_executable.Stub.Header.Pages}");
-            Console.WriteLine($"  Relocation items: {_executable.Stub.Header.RelocationItems}");
-            Console.WriteLine($"  Header paragraph size: {_executable.Stub.Header.HeaderParagraphSize}");
-            Console.WriteLine($"  Minimum extra paragraphs: {_executable.Stub.Header.MinimumExtraParagraphs}");
-            Console.WriteLine($"  Maximum extra paragraphs: {_executable.Stub.Header.MaximumExtraParagraphs}");
-            Console.WriteLine($"  Initial SS value: {_executable.Stub.Header.InitialSSValue}");
-            Console.WriteLine($"  Initial SP value: {_executable.Stub.Header.InitialSPValue}");
-            Console.WriteLine($"  Checksum: {_executable.Stub.Header.Checksum}");
-            Console.WriteLine($"  Initial IP value: {_executable.Stub.Header.InitialIPValue}");
-            Console.WriteLine($"  Initial CS value: {_executable.Stub.Header.InitialCSValue}");
-            Console.WriteLine($"  Relocation table address: {_executable.Stub.Header.RelocationTableAddr}");
-            Console.WriteLine($"  Overlay number: {_executable.Stub.Header.OverlayNumber}");
+            Console.WriteLine($"  Magic number: {BitConverter.ToString(Stub_Magic).Replace("-", string.Empty)}");
+            Console.WriteLine($"  Last page bytes: {Stub_LastPageBytes}");
+            Console.WriteLine($"  Pages: {Stub_Pages}");
+            Console.WriteLine($"  Relocation items: {Stub_RelocationItems}");
+            Console.WriteLine($"  Header paragraph size: {Stub_HeaderParagraphSize}");
+            Console.WriteLine($"  Minimum extra paragraphs: {Stub_MinimumExtraParagraphs}");
+            Console.WriteLine($"  Maximum extra paragraphs: {Stub_MaximumExtraParagraphs}");
+            Console.WriteLine($"  Initial SS value: {Stub_InitialSSValue}");
+            Console.WriteLine($"  Initial SP value: {Stub_InitialSPValue}");
+            Console.WriteLine($"  Checksum: {Stub_Checksum}");
+            Console.WriteLine($"  Initial IP value: {Stub_InitialIPValue}");
+            Console.WriteLine($"  Initial CS value: {Stub_InitialCSValue}");
+            Console.WriteLine($"  Relocation table address: {Stub_RelocationTableAddr}");
+            Console.WriteLine($"  Overlay number: {Stub_OverlayNumber}");
             Console.WriteLine();
         }
 
@@ -326,11 +326,11 @@ namespace BurnOutSharp.Wrappers
         {
             Console.WriteLine("  MS-DOS Stub Extended Header Information:");
             Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Reserved words: {string.Join(", ", _executable.Stub.Header.Reserved1)}");
-            Console.WriteLine($"  OEM identifier: {_executable.Stub.Header.OEMIdentifier}");
-            Console.WriteLine($"  OEM information: {_executable.Stub.Header.OEMInformation}");
-            Console.WriteLine($"  Reserved words: {string.Join(", ", _executable.Stub.Header.Reserved2)}");
-            Console.WriteLine($"  New EXE header address: {_executable.Stub.Header.NewExeHeaderAddr}");
+            Console.WriteLine($"  Reserved words: {string.Join(", ", Stub_Reserved1)}");
+            Console.WriteLine($"  OEM identifier: {Stub_OEMIdentifier}");
+            Console.WriteLine($"  OEM information: {Stub_OEMInformation}");
+            Console.WriteLine($"  Reserved words: {string.Join(", ", Stub_Reserved2)}");
+            Console.WriteLine($"  New EXE header address: {Stub_NewExeHeaderAddr}");
             Console.WriteLine();
         }
 
@@ -341,37 +341,37 @@ namespace BurnOutSharp.Wrappers
         {
             Console.WriteLine("  Header Information:");
             Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Magic number: {BitConverter.ToString(_executable.Header.Magic).Replace("-", string.Empty)}");
-            Console.WriteLine($"  Linker version: {_executable.Header.LinkerVersion}");
-            Console.WriteLine($"  Linker revision: {_executable.Header.LinkerRevision}");
-            Console.WriteLine($"  Entry table offset: {_executable.Header.EntryTableOffset}");
-            Console.WriteLine($"  Entry table size: {_executable.Header.EntryTableSize}");
-            Console.WriteLine($"  CRC checksum: {_executable.Header.CrcChecksum}");
-            Console.WriteLine($"  Flag word: {_executable.Header.FlagWord}");
-            Console.WriteLine($"  Automatic data segment number: {_executable.Header.AutomaticDataSegmentNumber}");
-            Console.WriteLine($"  Initial heap allocation: {_executable.Header.InitialHeapAlloc}");
-            Console.WriteLine($"  Initial stack allocation: {_executable.Header.InitialStackAlloc}");
-            Console.WriteLine($"  Initial CS:IP setting: {_executable.Header.InitialCSIPSetting}");
-            Console.WriteLine($"  Initial SS:SP setting: {_executable.Header.InitialSSSPSetting}");
-            Console.WriteLine($"  File segment count: {_executable.Header.FileSegmentCount}");
-            Console.WriteLine($"  Module reference table size: {_executable.Header.ModuleReferenceTableSize}");
-            Console.WriteLine($"  Non-resident name table size: {_executable.Header.NonResidentNameTableSize}");
-            Console.WriteLine($"  Segment table offset: {_executable.Header.SegmentTableOffset}");
-            Console.WriteLine($"  Resource table offset: {_executable.Header.ResourceTableOffset}");
-            Console.WriteLine($"  Resident name table offset: {_executable.Header.ResidentNameTableOffset}");
-            Console.WriteLine($"  Module reference table offset: {_executable.Header.ModuleReferenceTableOffset}");
-            Console.WriteLine($"  Imported names table offset: {_executable.Header.ImportedNamesTableOffset}");
-            Console.WriteLine($"  Non-resident name table offset: {_executable.Header.NonResidentNamesTableOffset}");
-            Console.WriteLine($"  Moveable entries count: {_executable.Header.MovableEntriesCount}");
-            Console.WriteLine($"  Segment alignment shift count: {_executable.Header.SegmentAlignmentShiftCount}");
-            Console.WriteLine($"  Resource entries count: {_executable.Header.ResourceEntriesCount}");
-            Console.WriteLine($"  Target operating system: {_executable.Header.TargetOperatingSystem}");
-            Console.WriteLine($"  Additional flags: {_executable.Header.AdditionalFlags}");
-            Console.WriteLine($"  Return thunk offset: {_executable.Header.ReturnThunkOffset}");
-            Console.WriteLine($"  Segment reference thunk offset: {_executable.Header.SegmentReferenceThunkOffset}");
-            Console.WriteLine($"  Minimum code swap area size: {_executable.Header.MinCodeSwapAreaSize}");
-            Console.WriteLine($"  Windows SDK revision: {_executable.Header.WindowsSDKRevision}");
-            Console.WriteLine($"  Windows SDK version: {_executable.Header.WindowsSDKVersion}");
+            Console.WriteLine($"  Magic number: {BitConverter.ToString(Magic).Replace("-", string.Empty)}");
+            Console.WriteLine($"  Linker version: {LinkerVersion}");
+            Console.WriteLine($"  Linker revision: {LinkerRevision}");
+            Console.WriteLine($"  Entry table offset: {EntryTableOffset}");
+            Console.WriteLine($"  Entry table size: {EntryTableSize}");
+            Console.WriteLine($"  CRC checksum: {CrcChecksum}");
+            Console.WriteLine($"  Flag word: {FlagWord}");
+            Console.WriteLine($"  Automatic data segment number: {AutomaticDataSegmentNumber}");
+            Console.WriteLine($"  Initial heap allocation: {InitialHeapAlloc}");
+            Console.WriteLine($"  Initial stack allocation: {InitialStackAlloc}");
+            Console.WriteLine($"  Initial CS:IP setting: {InitialCSIPSetting}");
+            Console.WriteLine($"  Initial SS:SP setting: {InitialSSSPSetting}");
+            Console.WriteLine($"  File segment count: {FileSegmentCount}");
+            Console.WriteLine($"  Module reference table size: {ModuleReferenceTableSize}");
+            Console.WriteLine($"  Non-resident name table size: {NonResidentNameTableSize}");
+            Console.WriteLine($"  Segment table offset: {SegmentTableOffset}");
+            Console.WriteLine($"  Resource table offset: {ResourceTableOffset}");
+            Console.WriteLine($"  Resident name table offset: {ResidentNameTableOffset}");
+            Console.WriteLine($"  Module reference table offset: {ModuleReferenceTableOffset}");
+            Console.WriteLine($"  Imported names table offset: {ImportedNamesTableOffset}");
+            Console.WriteLine($"  Non-resident name table offset: {NonResidentNamesTableOffset}");
+            Console.WriteLine($"  Moveable entries count: {MovableEntriesCount}");
+            Console.WriteLine($"  Segment alignment shift count: {SegmentAlignmentShiftCount}");
+            Console.WriteLine($"  Resource entries count: {ResourceEntriesCount}");
+            Console.WriteLine($"  Target operating system: {TargetOperatingSystem}");
+            Console.WriteLine($"  Additional flags: {AdditionalFlags}");
+            Console.WriteLine($"  Return thunk offset: {ReturnThunkOffset}");
+            Console.WriteLine($"  Segment reference thunk offset: {SegmentReferenceThunkOffset}");
+            Console.WriteLine($"  Minimum code swap area size: {MinCodeSwapAreaSize}");
+            Console.WriteLine($"  Windows SDK revision: {WindowsSDKRevision}");
+            Console.WriteLine($"  Windows SDK version: {WindowsSDKVersion}");
             Console.WriteLine();
         }
 
@@ -382,15 +382,15 @@ namespace BurnOutSharp.Wrappers
         {
             Console.WriteLine("  Segment Table Information:");
             Console.WriteLine("  -------------------------");
-            if (_executable.Header.FileSegmentCount == 0 || _executable.SegmentTable.Length == 0)
+            if (FileSegmentCount == 0 || SegmentTable.Length == 0)
             {
                 Console.WriteLine("  No segment table items");
             }
             else
             {
-                for (int i = 0; i < _executable.SegmentTable.Length; i++)
+                for (int i = 0; i < SegmentTable.Length; i++)
                 {
-                    var entry = _executable.SegmentTable[i];
+                    var entry = SegmentTable[i];
                     Console.WriteLine($"  Segment Table Entry {i}");
                     Console.WriteLine($"    Offset = {entry.Offset}");
                     Console.WriteLine($"    Length = {entry.Length}");
@@ -408,17 +408,17 @@ namespace BurnOutSharp.Wrappers
         {
             Console.WriteLine("  Resource Table Information:");
             Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Alignment shift count: {_executable.ResourceTable.AlignmentShiftCount}");
-            if (_executable.Header.ResourceEntriesCount == 0 || _executable.ResourceTable.ResourceTypes.Length == 0)
+            Console.WriteLine($"  Alignment shift count: {ResourceTable.AlignmentShiftCount}");
+            if (ResourceEntriesCount == 0 || ResourceTable.ResourceTypes.Length == 0)
             {
                 Console.WriteLine("  No resource table items");
             }
             else
             {
-                for (int i = 0; i < _executable.ResourceTable.ResourceTypes.Length; i++)
+                for (int i = 0; i < ResourceTable.ResourceTypes.Length; i++)
                 {
                     // TODO: If not integer type, print out name
-                    var entry = _executable.ResourceTable.ResourceTypes[i];
+                    var entry = ResourceTable.ResourceTypes[i];
                     Console.WriteLine($"  Resource Table Entry {i}");
                     Console.WriteLine($"    Type ID = {entry.TypeID} (Is Integer Type: {entry.IsIntegerType()})");
                     Console.WriteLine($"    Resource count = {entry.ResourceCount}");
@@ -445,13 +445,13 @@ namespace BurnOutSharp.Wrappers
                 }
             }
 
-            if (_executable.ResourceTable.TypeAndNameStrings.Count == 0)
+            if (ResourceTable.TypeAndNameStrings.Count == 0)
             {
                 Console.WriteLine("  No resource table type/name strings");
             }
             else
             {
-                foreach (var typeAndNameString in _executable.ResourceTable.TypeAndNameStrings)
+                foreach (var typeAndNameString in ResourceTable.TypeAndNameStrings)
                 {
                     Console.WriteLine($"  Resource Type/Name Offset {typeAndNameString.Key}");
                     Console.WriteLine($"    Length = {typeAndNameString.Value.Length}");
@@ -468,15 +468,15 @@ namespace BurnOutSharp.Wrappers
         {
             Console.WriteLine("  Resident-Name Table Information:");
             Console.WriteLine("  -------------------------");
-            if (_executable.Header.ResidentNameTableOffset == 0 || _executable.ResidentNameTable.Length == 0)
+            if (ResidentNameTableOffset == 0 || ResidentNameTable.Length == 0)
             {
                 Console.WriteLine("  No resident-name table items");
             }
             else
             {
-                for (int i = 0; i < _executable.ResidentNameTable.Length; i++)
+                for (int i = 0; i < ResidentNameTable.Length; i++)
                 {
-                    var entry = _executable.ResidentNameTable[i];
+                    var entry = ResidentNameTable[i];
                     Console.WriteLine($"  Resident-Name Table Entry {i}");
                     Console.WriteLine($"    Length = {entry.Length}");
                     Console.WriteLine($"    Name string = {(entry.NameString != null ? Encoding.ASCII.GetString(entry.NameString) : "[EMPTY]")}");
@@ -493,18 +493,18 @@ namespace BurnOutSharp.Wrappers
         {
             Console.WriteLine("  Module-Reference Table Information:");
             Console.WriteLine("  -------------------------");
-            if (_executable.Header.ModuleReferenceTableSize == 0 || _executable.ModuleReferenceTable.Length == 0)
+            if (ModuleReferenceTableSize == 0 || ModuleReferenceTable.Length == 0)
             {
                 Console.WriteLine("  No module-reference table items");
             }
             else
             {
-                for (int i = 0; i < _executable.ModuleReferenceTable.Length; i++)
+                for (int i = 0; i < ModuleReferenceTable.Length; i++)
                 {
                     // TODO: Read the imported names table and print value here
-                    var entry = _executable.ModuleReferenceTable[i];
+                    var entry = ModuleReferenceTable[i];
                     Console.WriteLine($"  Module-Reference Table Entry {i}");
-                    Console.WriteLine($"    Offset = {entry.Offset} (adjusted to be {entry.Offset + _executable.Stub.Header.NewExeHeaderAddr + _executable.Header.ImportedNamesTableOffset})");
+                    Console.WriteLine($"    Offset = {entry.Offset} (adjusted to be {entry.Offset + Stub_NewExeHeaderAddr + ImportedNamesTableOffset})");
                 }
             }
             Console.WriteLine();
@@ -517,13 +517,13 @@ namespace BurnOutSharp.Wrappers
         {
             Console.WriteLine("  Imported-Name Table Information:");
             Console.WriteLine("  -------------------------");
-            if (_executable.Header.ImportedNamesTableOffset == 0 || _executable.ImportedNameTable.Count == 0)
+            if (ImportedNamesTableOffset == 0 || ImportedNameTable.Count == 0)
             {
                 Console.WriteLine("  No imported-name table items");
             }
             else
             {
-                foreach (var entry in _executable.ImportedNameTable)
+                foreach (var entry in ImportedNameTable)
                 {
                     Console.WriteLine($"  Imported-Name Table at Offset {entry.Key}");
                     Console.WriteLine($"    Length = {entry.Value.Length}");
@@ -540,15 +540,15 @@ namespace BurnOutSharp.Wrappers
         {
             Console.WriteLine("  Entry Table Information:");
             Console.WriteLine("  -------------------------");
-            if (_executable.Header.EntryTableSize == 0 || _executable.EntryTable.Length == 0)
+            if (EntryTableSize == 0 || EntryTable.Length == 0)
             {
                 Console.WriteLine("  No entry table items");
             }
             else
             {
-                for (int i = 0; i < _executable.EntryTable.Length; i++)
+                for (int i = 0; i < EntryTable.Length; i++)
                 {
-                    var entry = _executable.EntryTable[i];
+                    var entry = EntryTable[i];
                     Console.WriteLine($"  Entry Table Entry {i}");
                     Console.WriteLine($"    Entry count = {entry.EntryCount}");
                     Console.WriteLine($"    Segment indicator = {entry.SegmentIndicator} ({entry.GetEntryType()})");
@@ -577,15 +577,15 @@ namespace BurnOutSharp.Wrappers
         {
             Console.WriteLine("  Nonresident-Name Table Information:");
             Console.WriteLine("  -------------------------");
-            if (_executable.Header.NonResidentNameTableSize == 0 || _executable.NonResidentNameTable.Length == 0)
+            if (NonResidentNameTableSize == 0 || NonResidentNameTable.Length == 0)
             {
                 Console.WriteLine("  No nonresident-name table items");
             }
             else
             {
-                for (int i = 0; i < _executable.NonResidentNameTable.Length; i++)
+                for (int i = 0; i < NonResidentNameTable.Length; i++)
                 {
-                    var entry = _executable.NonResidentNameTable[i];
+                    var entry = NonResidentNameTable[i];
                     Console.WriteLine($"  Nonresident-Name Table Entry {i}");
                     Console.WriteLine($"    Length = {entry.Length}");
                     Console.WriteLine($"    Name string = {(entry.NameString != null ? Encoding.ASCII.GetString(entry.NameString) : "[EMPTY]")}");
