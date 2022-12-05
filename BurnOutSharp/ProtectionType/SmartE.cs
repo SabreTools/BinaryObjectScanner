@@ -17,29 +17,25 @@ namespace BurnOutSharp.ProtectionType
             if (sections == null)
                 return null;
 
-            // TODO: Export table instead of .edata
-            // Get the .edata section, if it exists
-            string match = GetMatchForSection(file, pex.GetFirstSectionData(".edata"), includeDebug);
-            if (!string.IsNullOrWhiteSpace(match))
-                return match;
+            // Get the last section
+            var lastSetionData = pex.GetSectionData(sections.Length);
+            if (lastSetionData != null)
+            {
+                var matchers = new List<ContentMatchSet>
+                {
+                    // BITARTS
+                    new ContentMatchSet(
+                        new ContentMatch(
+                            new byte?[] { 0x42, 0x49, 0x54, 0x41, 0x52, 0x54, 0x53 },
+                            start: 18319,
+                            end: 18320),
+                        "SmartE"),
+                };
 
-            // TODO: Import table instead of .idata
-            // Get the .idata section, if it exists
-            match = GetMatchForSection(file, pex.GetFirstSectionData(".idata"), includeDebug);
-            if (!string.IsNullOrWhiteSpace(match))
-                return match;
-
-            // Get the .rdata section, if it exists
-            match = GetMatchForSection(file, pex.GetFirstSectionData(".rdata"), includeDebug);
-            if (!string.IsNullOrWhiteSpace(match))
-                return match;
-
-            // TODO: TLS directory instead of .tls
-            // Get the .tls section, if it exists
-            var tlsSectionRaw = pex.GetLastSectionData(".tls");
-            match = GetMatchForSection(file, tlsSectionRaw, includeDebug);
-            if (!string.IsNullOrWhiteSpace(match))
-                return match;
+                string match = MatchUtil.GetFirstMatch(file, lastSetionData, matchers, includeDebug);
+                if (!string.IsNullOrWhiteSpace(match))
+                    return match;
+            }
 
             return null;
         }
@@ -69,44 +65,6 @@ namespace BurnOutSharp.ProtectionType
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
-        }
-
-        /// <summary>
-        /// Check a section for the SmartE string(s)
-        /// </summary>
-        private string GetMatchForSection(Models.PortableExecutable.SectionHeader section, string file, byte[] sectionContent, bool includeDebug)
-        {
-            if (section == null)
-                return null;
-
-            int sectionAddr = (int)section.PointerToRawData;
-            int sectionEnd = sectionAddr + (int)section.VirtualSize;
-            var matchers = new List<ContentMatchSet>
-            {
-                // BITARTS
-                new ContentMatchSet(
-                    new ContentMatch(new byte?[] { 0x42, 0x49, 0x54, 0x41, 0x52, 0x54, 0x53 }, start: sectionAddr, end: sectionEnd),
-                "SmartE"),
-            };
-
-            return MatchUtil.GetFirstMatch(file, sectionContent, matchers, includeDebug);
-        }
-
-        /// <summary>
-        /// Check a section for the SmartE string(s)
-        /// </summary>
-        private string GetMatchForSection(string file, byte[] sectionContent, bool includeDebug)
-        {
-            if (sectionContent == null)
-                return null;
-
-            var matchers = new List<ContentMatchSet>
-            {
-                // BITARTS
-                new ContentMatchSet(new byte?[] { 0x42, 0x49, 0x54, 0x41, 0x52, 0x54, 0x53 }, "SmartE"),
-            };
-
-            return MatchUtil.GetFirstMatch(file, sectionContent, matchers, includeDebug);
         }
     }
 }
