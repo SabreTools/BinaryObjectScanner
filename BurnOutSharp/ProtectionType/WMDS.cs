@@ -15,6 +15,7 @@ namespace BurnOutSharp.ProtectionType
     /// </summary>
     public class WMDS : IPathCheck, IPortableExecutableCheck
     {
+        /// <inheritdoc/>
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible

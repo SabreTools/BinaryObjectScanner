@@ -57,8 +57,8 @@ namespace BurnOutSharp.ProtectionType
             return null;
         }
 
-            /// <inheritdoc/>
-            public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string> files)
+        /// <inheritdoc/>
+        public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string> files)
         {
             var matchers = new List<PathMatchSet>
             {

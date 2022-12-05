@@ -13,10 +13,11 @@ namespace BurnOutSharp.ProtectionType
         /// <inheritdoc/>
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
-            // Get the image file header from the executable, if possible
-            if (pex == null)
+            // Get the sections from the executable, if possible
+            var sections = pex?.SectionTable;
+            if (sections == null)
                 return null;
-            
+
             // 0x504B5653 is "SVKP"
             if (pex.PointerToSymbolTable == 0x504B5653)
                 return "SVKP (Slovak Protector)";

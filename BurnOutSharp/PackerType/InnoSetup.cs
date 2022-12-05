@@ -44,7 +44,7 @@ namespace BurnOutSharp.PackerType
             var sections = pex?.SectionTable;
             if (sections == null)
                 return null;
-            
+
             // Get the .data/DATA section, if it exists
             var dataSectionRaw = pex.GetFirstSectionData(".data") ?? pex.GetFirstSectionData("DATA");
             if (dataSectionRaw != null)

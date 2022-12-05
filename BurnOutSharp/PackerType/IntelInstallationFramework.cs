@@ -22,17 +22,15 @@ namespace BurnOutSharp.PackerType
                 return null;
 
             string name = pex.FileDescription;
-            if (!string.IsNullOrWhiteSpace(name)
-                && (name.Equals("Intel(R) Installation Framework", StringComparison.OrdinalIgnoreCase)
-                || name.Equals("Intel Installation Framework", StringComparison.OrdinalIgnoreCase)))
+            if (name?.Equals("Intel(R) Installation Framework", StringComparison.OrdinalIgnoreCase) == true
+                || name?.Equals("Intel Installation Framework", StringComparison.OrdinalIgnoreCase) == true)
             {
                 return $"Intel Installation Framework {Utilities.GetInternalVersion(pex)}";
             }
 
             name = pex.ProductName;
-            if (!string.IsNullOrWhiteSpace(name)
-                && (name.Equals("Intel(R) Installation Framework", StringComparison.OrdinalIgnoreCase)
-                || name.Equals("Intel Installation Framework", StringComparison.OrdinalIgnoreCase)))
+            if (name.Equals("Intel(R) Installation Framework", StringComparison.OrdinalIgnoreCase) == true
+                || name.Equals("Intel Installation Framework", StringComparison.OrdinalIgnoreCase) == true)
             {
                 return $"Intel Installation Framework {Utilities.GetInternalVersion(pex)}";
             }

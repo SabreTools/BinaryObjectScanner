@@ -20,8 +20,8 @@ namespace BurnOutSharp.PackerType
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
-            var stubMagic = pex?.Stub_Magic;
-            if (stubMagic == null)
+            var sections = pex?.SectionTable;
+            if (sections == null)
                 return null;
 
             var matchers = new List<ContentMatchSet>
