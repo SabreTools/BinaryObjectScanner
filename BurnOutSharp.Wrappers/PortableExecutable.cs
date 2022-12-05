@@ -2342,6 +2342,24 @@ namespace BurnOutSharp.Wrappers
         }
 
         /// <summary>
+        /// Find string table resources by contained string entry
+        /// </summary>
+        /// <param name="entry">String entry to check for</param>
+        /// <returns>Enumerable of matching resources</returns>
+        public IEnumerable<Dictionary<int, string>> FindStringTableByEntry(string entry)
+        {
+            // Ensure that we have the resource data cached
+            if (ResourceData == null)
+                return Enumerable.Empty<Dictionary<int, string>>();
+
+            return ResourceData.Select(r => r.Value)
+                .Select(r => r as Dictionary<int, string>)
+                .Where(st => st != null)
+                .Where(st => st.Select(kvp => kvp.Value)
+                    .Any(s => s.Contains(entry)));
+        }
+
+        /// <summary>
         /// Find unparsed resources by type name
         /// </summary>
         /// <param name="typeName">Type name to check for</param>
