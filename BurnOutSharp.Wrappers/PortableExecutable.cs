@@ -1333,6 +1333,7 @@ namespace BurnOutSharp.Wrappers
                     var baseRelocationTableEntry = _executable.BaseRelocationTable[i];
                     Console.WriteLine($"  Base Relocation Table Entry {i}");
                     Console.WriteLine($"    Page RVA: {baseRelocationTableEntry.PageRVA}");
+                    Console.WriteLine($"    Page physical address: {baseRelocationTableEntry.PageRVA.ConvertVirtualAddress(_executable.SectionTable)}");
                     Console.WriteLine($"    Block size: {baseRelocationTableEntry.BlockSize}");
 
                     Console.WriteLine($"    Base Relocation Table {i} Type and Offset Information:");
