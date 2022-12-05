@@ -1509,11 +1509,13 @@ namespace BurnOutSharp.Wrappers
                         var importDirectoryTableEntry = ImportTable.ImportDirectoryTable[i];
                         Console.WriteLine($"    Import Directory Table Entry {i}");
                         Console.WriteLine($"      Import lookup table RVA: {importDirectoryTableEntry.ImportLookupTableRVA}");
+                        Console.WriteLine($"      Import lookup table Physical Address: {importDirectoryTableEntry.ImportLookupTableRVA.ConvertVirtualAddress(SectionTable)}");
                         Console.WriteLine($"      Time/Date stamp: {importDirectoryTableEntry.TimeDateStamp}");
                         Console.WriteLine($"      Forwarder chain: {importDirectoryTableEntry.ForwarderChain}");
                         Console.WriteLine($"      Name RVA: {importDirectoryTableEntry.NameRVA}");
                         Console.WriteLine($"      Name: {importDirectoryTableEntry.Name}");
                         Console.WriteLine($"      Import address table RVA: {importDirectoryTableEntry.ImportAddressTableRVA}");
+                        Console.WriteLine($"      Import address table Physical Address: {importDirectoryTableEntry.ImportAddressTableRVA.ConvertVirtualAddress(SectionTable)}");
                     }
                 }
                 Console.WriteLine();
@@ -1546,9 +1548,14 @@ namespace BurnOutSharp.Wrappers
                                 Console.WriteLine($"      Import Lookup Table {index} Entry {i}");
                                 Console.WriteLine($"        Ordinal/Name flag: {importLookupTableEntry.OrdinalNameFlag}");
                                 if (importLookupTableEntry.OrdinalNameFlag)
+                                {
                                     Console.WriteLine($"        Ordinal number: {importLookupTableEntry.OrdinalNumber}");
+                                }
                                 else
+                                {
                                     Console.WriteLine($"        Hint/Name table RVA: {importLookupTableEntry.HintNameTableRVA}");
+                                    Console.WriteLine($"        Hint/Name table Physical Address: {importLookupTableEntry.HintNameTableRVA.ConvertVirtualAddress(SectionTable)}");
+                                }
                             }
                         }
                     }
@@ -1583,9 +1590,14 @@ namespace BurnOutSharp.Wrappers
                                 Console.WriteLine($"      Import Address Table {index} Entry {i}");
                                 Console.WriteLine($"        Ordinal/Name flag: {importAddressTableEntry.OrdinalNameFlag}");
                                 if (importAddressTableEntry.OrdinalNameFlag)
+                                {
                                     Console.WriteLine($"        Ordinal number: {importAddressTableEntry.OrdinalNumber}");
+                                }
                                 else
+                                {
                                     Console.WriteLine($"        Hint/Name table RVA: {importAddressTableEntry.HintNameTableRVA}");
+                                    Console.WriteLine($"        Hint/Name table Physical Address: {importAddressTableEntry.HintNameTableRVA.ConvertVirtualAddress(SectionTable)}");
+                                }
                             }
                         }
                     }
