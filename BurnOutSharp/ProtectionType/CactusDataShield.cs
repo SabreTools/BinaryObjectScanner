@@ -80,23 +80,12 @@ namespace BurnOutSharp.ProtectionType
                     return match;
             }
 
-            // Get the .rsrc section, if it exists
-            var rsrcSectionRaw = pex.GetLastSectionData(".rsrc");
-            if (rsrcSectionRaw != null)
-            {
-                var matchers = new List<ContentMatchSet>
-                {
-                    // CactusPJ
-                    // Found in "Volumia!" by Puur (Barcode 7 43218 63282 2) (Discogs Release Code [r795427]).
-                    // Modified version of the PlayJ Music Player specificaly for CDS, as indicated by the About page present when running the executable.
-                    new ContentMatchSet(new byte?[] { 0x43, 0x61, 0x63, 0x74, 0x75, 0x73, 0x50, 0x4A }, "PlayJ Music Player (Cactus Data Shield 200)"),
-                };
+            // Found in "Volumia!" by Puur (Barcode 7 43218 63282 2) (Discogs Release Code [r795427]).
+            // Modified version of the PlayJ Music Player specificaly for CDS, as indicated by the About page present when running the executable.
+            var resources = pex.FindGenericResource("CactusPJ");
+            if (resources.Any())
+                return "PlayJ Music Player (Cactus Data Shield 200)";
 
-                string match = MatchUtil.GetFirstMatch(file, rsrcSectionRaw, matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
-                    return match;
-            }
-			
             return null;
         }
 
