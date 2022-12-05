@@ -296,6 +296,9 @@ namespace BurnOutSharp.Wrappers
 
         #region Sections
 
+        /// <inheritdoc cref="Models.PortableExecutable.BaseRelocationTable"/>
+        public Models.PortableExecutable.BaseRelocationBlock[] BaseRelocationTable => _executable.BaseRelocationTable;
+
         /// <inheritdoc cref="Models.PortableExecutable.DebugTable"/>
         public Models.PortableExecutable.DebugTable DebugTable => _executable.DebugTable;
 
