@@ -25,8 +25,9 @@ namespace BurnOutSharp.ProtectionType
             if (!string.IsNullOrEmpty(name) && name.Contains("WTM Copy Protection Viewer"))
                 return "WTM Protection Viewer";
 
-            // Get the CODE section, if it exists
-            if (pex.ContainsSection("CODE"))
+            // Get the code/CODE section, if it exists
+            var codeSectionRaw = pex.GetFirstSectionData("code") ?? pex.GetFirstSectionData("CODE");
+            if (codeSectionRaw != null)
             {
                 var matchers = new List<ContentMatchSet>
                 {
@@ -38,7 +39,7 @@ namespace BurnOutSharp.ProtectionType
                     }, "WTM CD Protect"),
                 };
 
-                string match = MatchUtil.GetFirstMatch(file, pex.GetFirstSectionData("CODE"), matchers, includeDebug);
+                string match = MatchUtil.GetFirstMatch(file, codeSectionRaw, matchers, includeDebug);
                 if (!string.IsNullOrWhiteSpace(match))
                     return match;
             }
