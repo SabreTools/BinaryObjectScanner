@@ -113,6 +113,10 @@ namespace BurnOutSharp.PackerType
 
         private static string GetOldVersion(string file, NewExecutable nex)
         {
+            // Notes:
+            // Look into `SETUPLDR` in the resident-name table
+            // Look into `SETUPLDR.EXE` in the nonresident-name table
+
             // TODO: Don't read entire file
             // TODO: Only 64 bytes at the end of the file is needed
             var data = nex.ReadArbitraryRange();
