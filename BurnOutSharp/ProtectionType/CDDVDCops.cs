@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
 using BurnOutSharp.Wrappers;
@@ -53,10 +54,6 @@ namespace BurnOutSharp.ProtectionType
             if (data == null)
                 return null;
 
-            // TODO: Do something with these strings in the NE header(?)
-            // - CDCOPS
-            // - CDcops assembly-language DLL
-
             // TODO: Figure out what NE section this lives in
             var neMatchSets = new List<ContentMatchSet>
             {
@@ -68,7 +65,25 @@ namespace BurnOutSharp.ProtectionType
                 }, GetVersion, "CD-Cops (Unconfirmed - Please report to us on Github)"),
             };
             
-            return MatchUtil.GetFirstMatch(file, data, neMatchSets, includeDebug);
+            string match = MatchUtil.GetFirstMatch(file, data, neMatchSets, includeDebug);
+            if (!string.IsNullOrEmpty(match))
+                return match;
+
+            // Check the imported-name table
+            bool importedNameTableEntries = nex.ImportedNameTable.Select(kvp => kvp.Value)
+                .Select(inte => Encoding.ASCII.GetString(inte.NameString))
+                .Any(s => s.Contains("CDCOPS"));
+            if (importedNameTableEntries)
+                return "CD-Cops";
+
+            // Check the nonresident-name table
+            bool nonresidentNameTableEntries = nex.NonResidentNameTable
+                .Select(nrnte => Encoding.ASCII.GetString(nrnte.NameString))
+                .Any(s => s.Contains("CDcops assembly-language DLL"));
+            if (nonresidentNameTableEntries)
+                return "CD-Cops";
+
+            return null;
         }
 
         /// <inheritdoc/>
