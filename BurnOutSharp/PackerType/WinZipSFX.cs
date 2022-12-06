@@ -2,6 +2,8 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
 using BurnOutSharp.Tools;
@@ -799,29 +801,15 @@ namespace BurnOutSharp.PackerType
         /// </summary>
         private string GetNEUnknownHeaderVersion(NewExecutable nex, string file, bool includeDebug)
         {
-            // TODO: Like with PE, convert this into a preread in the header code
-            int resourceStart = (int)(nex.Stub_NewExeHeaderAddr + nex.ResourceTableOffset);
-            int resourceEnd = (int)(nex.Stub_NewExeHeaderAddr + nex.ModuleReferenceTableOffset);
-            int resourceLength = resourceEnd - resourceStart;
+            // If the resident-name table doesnt exist
+            if (nex.ResidentNameTable == null)
+                return null;
 
-            var resourceData = nex.ReadArbitraryRange(resourceStart, resourceLength);
-            if (resourceData != null)
-            {
-                var matchers = new List<ContentMatchSet>
-                {
-                    // WZ-SE-01
-                    new ContentMatchSet(
-                        new ContentMatch(new byte?[]
-                        {
-                            0x57, 0x5A, 0x2D, 0x53, 0x45, 0x2D, 0x30, 0x31
-                        }, start: resourceStart, end: resourceEnd),
-                        "Unknown Version (16-bit)"),
-                };
+            bool found = nex.ResidentNameTable.Where(rnte => rnte?.NameString != null)
+                .Select(rnte => Encoding.ASCII.GetString(rnte.NameString))
+                .Any(s => s.Contains("WZ-SE-01"));
 
-                return MatchUtil.GetFirstMatch(file, resourceData, matchers, includeDebug);
-            }
-
-            return null;
+            return found ? "Unknown Version (16-bit)" : null;
         }
 
         /// <summary>
