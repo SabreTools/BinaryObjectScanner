@@ -23,30 +23,22 @@ namespace BurnOutSharp.PackerType
             if (sections == null)
                 return null;
 
-            // Standard UPX
-            var sectionData = FindData(pex, "UPX");
-            if (sectionData != null)
+            // Check header padding data
+            var headerPaddingData = pex.HeaderPaddingData;
+            if (headerPaddingData != null)
             {
                 var matchers = new List<ContentMatchSet>
                 {
                     // UPX!
                     new ContentMatchSet(new byte?[] { 0x55, 0x50, 0x58, 0x21 }, GetVersion, "UPX"),
-                };
 
-                return MatchUtil.GetFirstMatch(file, sectionData, matchers, includeDebug);
-            }
-
-            // NOS Variant
-            sectionData = FindData(pex, "NOS");
-            if (sectionData != null)
-            {
-                var matchers = new List<ContentMatchSet>
-                {
                     // NOS 
                     new ContentMatchSet(new byte?[] { 0x4E, 0x4F, 0x53, 0x20 }, GetVersion, "UPX (NOS Variant)"),
                 };
 
-                return MatchUtil.GetFirstMatch(file, sectionData, matchers, includeDebug);
+                string match = MatchUtil.GetFirstMatch(file, headerPaddingData, matchers, includeDebug);
+                if (!string.IsNullOrEmpty(match))
+                    return match;
             }
 
             return null;
@@ -97,26 +89,6 @@ namespace BurnOutSharp.PackerType
             {
                 return "(Unknown Version)";
             }
-        }
-    
-        /// <summary>
-        /// Find the location of the first matched section, if possible
-        /// </summary>
-        /// <param name="pex">PortableExecutable representing the read-in file</param>
-        /// <param name="sectionPrefix">Prefix of the sections to check for</param>
-        /// <returns>Section data, null on error</returns>
-        private byte[] FindData(PortableExecutable pex, string sectionPrefix)
-        {
-            // Get the two matching sections, if possible
-            var firstSection = pex.GetFirstSection($"{sectionPrefix}0", exact: true);
-            var secondSection = pex.GetFirstSection($"{sectionPrefix}1", exact: true);
-
-            // If either section is null, we can't do anything
-            if (firstSection == null || secondSection == null)
-                return null;
-
-            // This subtract is needed because the version is before the section
-            return pex.GetFirstSectionDataWithOffset($"{sectionPrefix}0", offset: -128);
         }
     }
 }
