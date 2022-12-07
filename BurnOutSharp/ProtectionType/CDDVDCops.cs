@@ -10,6 +10,12 @@ using BurnOutSharp.Wrappers;
 namespace BurnOutSharp.ProtectionType
 {
     // TODO: Investigate "Cops Copylock II" (https://www.cbmstuff.com/forum/showthread.php?tid=488).
+    // `AgentHugo.exe`
+    //      Embedded PE executable in one of the NE sections
+    // `AgentHugo.exe` / `NE.EXE` (1.46) / `NETINST.EXE` (1.48) / `NETINST.QZ_`
+    //      Embedded PKZIP archive that may contain the CD-Cops files
+    // `CDCOPS.DLL` (1.46) / `CDCOPS.DLL` (1.48)
+    //      `WINCOPS.INI`
     public class CDDVDCops : IContentCheck, INewExecutableCheck, IPathCheck, IPortableExecutableCheck
     {
         /// <inheritdoc/>
