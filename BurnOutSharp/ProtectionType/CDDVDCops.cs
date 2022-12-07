@@ -70,16 +70,19 @@ namespace BurnOutSharp.ProtectionType
                 return match;
 
             // Check the imported-name table
-            bool importedNameTableEntries = nex.ImportedNameTable.Select(kvp => kvp.Value)
+            bool importedNameTableEntries = nex.ImportedNameTable?
+                .Select(kvp => kvp.Value)
+                .Where(inte => inte.NameString != null)
                 .Select(inte => Encoding.ASCII.GetString(inte.NameString))
-                .Any(s => s.Contains("CDCOPS"));
+                .Any(s => s.Contains("CDCOPS")) ?? false;
             if (importedNameTableEntries)
                 return "CD-Cops";
 
             // Check the nonresident-name table
-            bool nonresidentNameTableEntries = nex.NonResidentNameTable
+            bool nonresidentNameTableEntries = nex.NonResidentNameTable?
+                .Where(nrnte => nrnte.NameString != null)
                 .Select(nrnte => Encoding.ASCII.GetString(nrnte.NameString))
-                .Any(s => s.Contains("CDcops assembly-language DLL"));
+                .Any(s => s.Contains("CDcops assembly-language DLL")) ?? false;
             if (nonresidentNameTableEntries)
                 return "CD-Cops";
 
