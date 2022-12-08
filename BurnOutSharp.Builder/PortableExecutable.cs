@@ -1182,77 +1182,69 @@ namespace BurnOutSharp.Builder
             resourceDirectoryTable.NumberOfNameEntries = data.ReadUInt16(ref offset);
             resourceDirectoryTable.NumberOfIDEntries = data.ReadUInt16(ref offset);
 
-            // Perform top-level pass of data
+            // If we have no entries
             int totalEntryCount = resourceDirectoryTable.NumberOfNameEntries + resourceDirectoryTable.NumberOfIDEntries;
-            if (totalEntryCount > 0)
+            if (totalEntryCount == 0)
+                return resourceDirectoryTable;
+
+            // Perform top-level pass of data
+            resourceDirectoryTable.Entries = new ResourceDirectoryEntry[totalEntryCount];
+            for (int i = 0; i < totalEntryCount; i++)
             {
-                resourceDirectoryTable.Entries = new ResourceDirectoryEntry[totalEntryCount];
-                for (int i = 0; i < totalEntryCount; i++)
+                var entry = new ResourceDirectoryEntry();
+                uint newOffset = data.ReadUInt32(ref offset);
+                if ((newOffset & 0x80000000) != 0)
+                    entry.NameOffset = newOffset & ~0x80000000;
+                else
+                    entry.IntegerID = newOffset;
+
+                newOffset = data.ReadUInt32(ref offset);
+                if ((newOffset & 0x80000000) != 0)
+                    entry.SubdirectoryOffset = newOffset & ~0x80000000;
+                else
+                    entry.DataEntryOffset = newOffset;
+
+                // Read the name from the offset, if needed
+                if (entry.NameOffset > 0)
                 {
-                    var entry = new ResourceDirectoryEntry();
-                    uint newOffset = data.ReadUInt32(ref offset);
-                    if ((newOffset & 0x80000000) != 0)
-                        entry.NameOffset = newOffset & ~0x80000000;
-                    else
-                        entry.IntegerID = newOffset;
+                    int nameOffset = (int)(entry.NameOffset + (uint)initialOffset);
 
-                    newOffset = data.ReadUInt32(ref offset);
-                    if ((newOffset & 0x80000000) != 0)
-                        entry.SubdirectoryOffset = newOffset & ~0x80000000;
-                    else
-                        entry.DataEntryOffset = newOffset;
+                    var resourceDirectoryString = new ResourceDirectoryString();
 
-                    // Read the name from the offset, if needed
-                    if (entry.NameOffset != default)
-                    {
-                        int currentOffset = offset;
-                        offset = (int)(entry.NameOffset + initialOffset);
-                        var resourceDirectoryString = new ResourceDirectoryString();
-                        resourceDirectoryString.Length = data.ReadUInt16(ref offset);
-                        resourceDirectoryString.UnicodeString = data.ReadBytes(ref offset, resourceDirectoryString.Length * 2);
-                        entry.Name = resourceDirectoryString;
-                        offset = currentOffset;
-                    }
+                    resourceDirectoryString.Length = data.ReadUInt16(ref nameOffset);
+                    if (resourceDirectoryString.Length > 0)
+                        resourceDirectoryString.UnicodeString = data.ReadBytes(ref nameOffset, resourceDirectoryString.Length * 2);
 
-                    resourceDirectoryTable.Entries[i] = entry;
+                    entry.Name = resourceDirectoryString;
                 }
+
+                resourceDirectoryTable.Entries[i] = entry;
             }
 
-            // Read all leaves at this level
-            if (totalEntryCount > 0)
+            // Loop through and process the entries
+            foreach (var entry in resourceDirectoryTable.Entries)
             {
-                foreach (var entry in resourceDirectoryTable.Entries)
+                if (entry.DataEntryOffset > 0)
                 {
-                    if (entry.SubdirectoryOffset != 0)
-                        continue;
-
-                    int newOffset = (int)(entry.DataEntryOffset + initialOffset);
+                    int dataEntryOffset = (int)(entry.DataEntryOffset + (uint)initialOffset);
 
                     var resourceDataEntry = new ResourceDataEntry();
-                    resourceDataEntry.DataRVA = data.ReadUInt32(ref newOffset);
-                    resourceDataEntry.Size = data.ReadUInt32(ref newOffset);
-                    resourceDataEntry.Codepage = data.ReadUInt32(ref offset);
-                    resourceDataEntry.Reserved = data.ReadUInt32(ref offset);
+                    resourceDataEntry.DataRVA = data.ReadUInt32(ref dataEntryOffset);
+                    resourceDataEntry.Size = data.ReadUInt32(ref dataEntryOffset);
+                    resourceDataEntry.Codepage = data.ReadUInt32(ref dataEntryOffset);
+                    resourceDataEntry.Reserved = data.ReadUInt32(ref dataEntryOffset);
 
                     // Read the data from the offset
-                    newOffset = (int)resourceDataEntry.DataRVA.ConvertVirtualAddress(sections);
-                    if (newOffset > 0)
-                        resourceDataEntry.Data = data.ReadBytes(ref newOffset, (int)resourceDataEntry.Size);
+                    dataEntryOffset = (int)resourceDataEntry.DataRVA.ConvertVirtualAddress(sections);
+                    if (dataEntryOffset > 0 && resourceDataEntry.Size > 0)
+                        resourceDataEntry.Data = data.ReadBytes(ref dataEntryOffset, (int)resourceDataEntry.Size);
 
                     entry.DataEntry = resourceDataEntry;
                 }
-            }
-
-            // Now go one level lower
-            if (totalEntryCount > 0)
-            {
-                foreach (var entry in resourceDirectoryTable.Entries)
+                else if (entry.SubdirectoryOffset > 0)
                 {
-                    if (entry.DataEntryOffset != 0)
-                        continue;
-
-                    int newOffset = (int)(entry.SubdirectoryOffset + initialOffset);
-                    entry.Subdirectory = ParseResourceDirectoryTable(data, newOffset, initialOffset, sections);
+                    int subdirectoryOffset = (int)(entry.SubdirectoryOffset + (uint)initialOffset);
+                    entry.Subdirectory = ParseResourceDirectoryTable(data, subdirectoryOffset, initialOffset, sections);
                 }
             }
 
@@ -2462,15 +2454,20 @@ namespace BurnOutSharp.Builder
                     entry.DataEntryOffset = offset;
 
                 // Read the name from the offset, if needed
-                if (entry.NameOffset != default)
+                if (entry.NameOffset > 0)
                 {
                     long currentOffset = data.Position;
                     offset = entry.NameOffset + (uint)initialOffset;
                     data.Seek(offset, SeekOrigin.Begin);
+
                     var resourceDirectoryString = new ResourceDirectoryString();
+
                     resourceDirectoryString.Length = data.ReadUInt16();
-                    resourceDirectoryString.UnicodeString = data.ReadBytes(resourceDirectoryString.Length * 2);
+                    if (resourceDirectoryString.Length > 0)
+                        resourceDirectoryString.UnicodeString = data.ReadBytes(resourceDirectoryString.Length * 2);
+
                     entry.Name = resourceDirectoryString;
+
                     data.Seek(currentOffset, SeekOrigin.Begin);
                 }
 
@@ -2480,7 +2477,7 @@ namespace BurnOutSharp.Builder
             // Loop through and process the entries
             foreach (var entry in resourceDirectoryTable.Entries)
             {
-                if (entry.DataEntryOffset != 0)
+                if (entry.DataEntryOffset > 0)
                 {
                     uint offset = entry.DataEntryOffset + (uint)initialOffset;
                     data.Seek(offset, SeekOrigin.Begin);
@@ -2493,7 +2490,7 @@ namespace BurnOutSharp.Builder
 
                     // Read the data from the offset
                     offset = resourceDataEntry.DataRVA.ConvertVirtualAddress(sections);
-                    if (offset != 0)
+                    if (offset > 0 && resourceDataEntry.Size > 0)
                     {
                         data.Seek(offset, SeekOrigin.Begin);
                         resourceDataEntry.Data = data.ReadBytes((int)resourceDataEntry.Size);
@@ -2501,7 +2498,7 @@ namespace BurnOutSharp.Builder
 
                     entry.DataEntry = resourceDataEntry;
                 }
-                else if (entry.SubdirectoryOffset != 0)
+                else if (entry.SubdirectoryOffset > 0)
                 {
                     uint offset = entry.SubdirectoryOffset + (uint)initialOffset;
                     data.Seek(offset, SeekOrigin.Begin);
