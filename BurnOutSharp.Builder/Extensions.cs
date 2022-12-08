@@ -1280,7 +1280,7 @@ namespace BurnOutSharp.Builder
                 versionInfo.Padding1 = entry.Data.ReadUInt16(ref offset);
 
             // Read fixed file info
-            if (versionInfo.ValueLength != 0)
+            if (versionInfo.ValueLength > 0)
             {
                 var fixedFileInfo = new Models.PortableExecutable.FixedFileInfo();
                 fixedFileInfo.Signature = entry.Data.ReadUInt32(ref offset);
@@ -1357,8 +1357,11 @@ namespace BurnOutSharp.Builder
                             while ((offset % 4) != 0)
                                 stringData.Padding = entry.Data.ReadUInt16(ref offset);
 
-                            if (stringData.ValueLength != 0)
-                                stringData.Value = entry.Data.ReadString(ref offset, Encoding.Unicode);
+                            if (stringData.ValueLength > 0)
+                            {
+                                byte[] valueBytes = entry.Data.ReadBytes(ref offset, stringData.ValueLength * sizeof(ushort));
+                                stringData.Value = Encoding.Unicode.GetString(valueBytes);
+                            }
 
                             while ((offset % 4) != 0)
                                 _ = entry.Data.ReadUInt16(ref offset);
@@ -1472,8 +1475,11 @@ namespace BurnOutSharp.Builder
                             while ((offset % 4) != 0)
                                 stringData.Padding = entry.Data.ReadUInt16(ref offset);
 
-                            if (stringData.ValueLength != 0)
-                                stringData.Value = entry.Data.ReadString(ref offset, Encoding.Unicode);
+                            if (stringData.ValueLength > 0)
+                            {
+                                byte[] valueBytes = entry.Data.ReadBytes(ref offset, stringData.ValueLength * sizeof(ushort));
+                                stringData.Value = Encoding.Unicode.GetString(valueBytes);
+                            }
 
                             while ((offset % 4) != 0)
                                 _ = entry.Data.ReadUInt16(ref offset);
