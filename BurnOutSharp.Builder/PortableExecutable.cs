@@ -2188,7 +2188,7 @@ namespace BurnOutSharp.Builder
                 exportNameTable.Strings = new string[exportDirectoryTable.NumberOfNamePointers];
                 for (int i = 0; i < exportDirectoryTable.NumberOfNamePointers; i++)
                 {
-                    string str = data.ReadString();
+                    string str = data.ReadString(Encoding.ASCII);
                     exportNameTable.Strings[i] = str;
                 }
 
