@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
 using BurnOutSharp.Wrappers;
@@ -14,6 +15,15 @@ namespace BurnOutSharp.ProtectionType
             var sections = pex?.SectionTable;
             if (sections == null)
                 return null;
+
+            // TODO: Indicates Hypertech Crack Proof as well?
+            //// Get the import directory table
+            //if (pex.ImportTable?.ImportDirectoryTable != null)
+            //{
+            //    bool match = pex.ImportTable.ImportDirectoryTable.Any(idte => idte.Name == "KeRnEl32.dLl");
+            //    if (match)
+            //        return "CDSHiELD SE";
+            //}
 
             // Get the code/CODE section, if it exists
             var codeSectionRaw = pex.GetFirstSectionData("code") ?? pex.GetFirstSectionData("CODE");
