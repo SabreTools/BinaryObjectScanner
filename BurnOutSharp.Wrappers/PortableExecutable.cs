@@ -528,6 +528,11 @@ namespace BurnOutSharp.Wrappers
         public string CompanyName => GetVersionInfoString("CompanyName");
 
         /// <summary>
+        /// "Debug version"
+        /// </summary>
+        public string DebugVersion => GetVersionInfoString("DebugVersion");
+
+        /// <summary>
         /// File description to be presented to users. This string may be displayed in a
         /// list box when the user is choosing files to install—for example, "Keyboard
         /// Driver for AT-Style Keyboards". This string is required.
@@ -597,7 +602,7 @@ namespace BurnOutSharp.Wrappers
         /// M250E computers". This string should be present only if VS_FF_SPECIALBUILD is
         /// specified in the fileflags parameter of the root block.
         /// </summary>
-        public string SpecialBuild => GetVersionInfoString(key: "SpecialBuild");
+        public string SpecialBuild => GetVersionInfoString(key: "SpecialBuild") ?? GetVersionInfoString(key: "Special Build");
 
         /// <summary>
         /// "Trade name"
