@@ -1230,6 +1230,12 @@ namespace BurnOutSharp.Builder
                 }
                 else
                 {
+                    if (stringLength * 2 > entry.Data.Length - offset)
+                    {
+                        Console.WriteLine($"{stringLength * 2} requested but {entry.Data.Length - offset} remains");
+                        stringLength = (ushort)((entry.Data.Length - offset) / 2);
+                    }
+
                     string stringValue = Encoding.Unicode.GetString(entry.Data, offset, stringLength * 2);
                     offset += stringLength * 2;
                     stringValue = stringValue.Replace("\n", "\\n").Replace("\r", newValue: "\\r");
