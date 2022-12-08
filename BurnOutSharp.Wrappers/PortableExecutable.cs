@@ -507,6 +507,16 @@ namespace BurnOutSharp.Wrappers
         #region Version Information
 
         /// <summary>
+        /// "Build GUID"
+        /// </summary>
+        public string BuildGuid => GetVersionInfoString("BuildGuid");
+
+        /// <summary>
+        /// "Build signature"
+        /// </summary>
+        public string BuildSignature => GetVersionInfoString("BuildSignature");
+        
+        /// <summary>
         /// Additional information that should be displayed for diagnostic purposes.
         /// </summary>
         public string Comments => GetVersionInfoString("Comments");
@@ -566,6 +576,11 @@ namespace BurnOutSharp.Wrappers
         public string PrivateBuild => GetVersionInfoString(key: "PrivateBuild");
 
         /// <summary>
+        /// "Product GUID"
+        /// </summary>
+        public string ProductGuid => GetVersionInfoString("ProductGuid");
+
+        /// <summary>
         /// Name of the product with which the file is distributed. This string is required.
         /// </summary>
         public string ProductName => GetVersionInfoString(key: "ProductName");
@@ -583,6 +598,11 @@ namespace BurnOutSharp.Wrappers
         /// specified in the fileflags parameter of the root block.
         /// </summary>
         public string SpecialBuild => GetVersionInfoString(key: "SpecialBuild");
+
+        /// <summary>
+        /// "Trade name"
+        /// </summary>
+        public string TradeName => GetVersionInfoString(key: "TradeName");
 
         #endregion
 
