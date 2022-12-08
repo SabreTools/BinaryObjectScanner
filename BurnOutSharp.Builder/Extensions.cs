@@ -130,11 +130,14 @@ namespace BurnOutSharp.Builder
         /// </summary>
         public static string ReadString(this byte[] content, ref int offset, Encoding encoding)
         {
+            if (offset >= content.Length)
+                return null;
+
             byte[] nullTerminator = encoding.GetBytes(new char[] { '\0' });
             int charWidth = nullTerminator.Length;
 
             List<char> keyChars = new List<char>();
-            while (BitConverter.ToUInt16(content, offset) != 0x0000)
+            while (offset < content.Length && BitConverter.ToUInt16(content, offset) != 0x0000)
             {
                 keyChars.Add(encoding.GetChars(content, offset, charWidth)[0]); offset += charWidth;
             }
@@ -266,13 +269,16 @@ namespace BurnOutSharp.Builder
         /// </summary>
         public static string ReadString(this Stream stream, Encoding encoding)
         {
+            if (stream.Position >= stream.Length)
+                return null;
+
             byte[] nullTerminator = encoding.GetBytes(new char[] { '\0' });
             int charWidth = nullTerminator.Length;
 
             List<byte> tempBuffer = new List<byte>();
 
             byte[] buffer = new byte[charWidth];
-            while (stream.Read(buffer, 0, charWidth) != 0 && !buffer.SequenceEqual(nullTerminator))
+            while (stream.Position < stream.Length && stream.Read(buffer, 0, charWidth) != 0 && !buffer.SequenceEqual(nullTerminator))
             {
                 tempBuffer.AddRange(buffer);
             }
@@ -529,9 +535,12 @@ namespace BurnOutSharp.Builder
                     // Read the menu resource as a string
                     dialogTemplateExtended.MenuResource = entry.Data.ReadString(ref offset, Encoding.Unicode);
 
-                    // Align to the WORD boundary
-                    while ((offset % 2) != 0)
-                        _ = entry.Data.ReadByte(ref offset);
+                    // Align to the WORD boundary if we're not at the end
+                    if (offset != entry.Data.Length)
+                    {
+                        while ((offset % 2) != 0)
+                            _ = entry.Data.ReadByte(ref offset);
+                    }
 
                     // Read the ordinal if we have the flag set
                     if (menuResourceHasOrdinal)
@@ -562,9 +571,12 @@ namespace BurnOutSharp.Builder
                     // Read the class resource as a string
                     dialogTemplateExtended.ClassResource = entry.Data.ReadString(ref offset, Encoding.Unicode);
 
-                    // Align to the WORD boundary
-                    while ((offset % 2) != 0)
-                        _ = entry.Data.ReadByte(ref offset);
+                    // Align to the WORD boundary if we're not at the end
+                    if (offset != entry.Data.Length)
+                    {
+                        while ((offset % 2) != 0)
+                            _ = entry.Data.ReadByte(ref offset);
+                    }
 
                     // Read the ordinal if we have the flag set
                     if (classResourcehasOrdinal)
@@ -590,9 +602,12 @@ namespace BurnOutSharp.Builder
                     // Read the title resource as a string
                     dialogTemplateExtended.TitleResource = entry.Data.ReadString(ref offset, Encoding.Unicode);
 
-                    // Align to the WORD boundary
-                    while ((offset % 2) != 0)
-                        _ = entry.Data.ReadByte(ref offset);
+                    // Align to the WORD boundary if we're not at the end
+                    if (offset != entry.Data.Length)
+                    {
+                        while ((offset % 2) != 0)
+                            _ = entry.Data.ReadByte(ref offset);
+                    }
                 }
 
                 #endregion
@@ -664,9 +679,12 @@ namespace BurnOutSharp.Builder
                         // Read the class resource as a string
                         dialogItemTemplate.ClassResource = entry.Data.ReadString(ref offset, Encoding.Unicode);
 
-                        // Align to the WORD boundary
-                        while ((offset % 2) != 0)
-                            _ = entry.Data.ReadByte(ref offset);
+                        // Align to the WORD boundary if we're not at the end
+                        if (offset != entry.Data.Length)
+                        {
+                            while ((offset % 2) != 0)
+                                _ = entry.Data.ReadByte(ref offset);
+                        }
                     }
 
                     #endregion
@@ -691,9 +709,12 @@ namespace BurnOutSharp.Builder
                         // Read the title resource as a string
                         dialogItemTemplate.TitleResource = entry.Data.ReadString(ref offset, Encoding.Unicode);
 
-                        // Align to the WORD boundary
-                        while ((offset % 2) != 0)
-                            _ = entry.Data.ReadByte(ref offset);
+                        // Align to the WORD boundary if we're not at the end
+                        if (offset != entry.Data.Length)
+                        {
+                            while ((offset % 2) != 0)
+                                _ = entry.Data.ReadByte(ref offset);
+                        }
                     }
 
                     #endregion
@@ -756,9 +777,12 @@ namespace BurnOutSharp.Builder
                     // Read the menu resource as a string
                     dialogTemplate.MenuResource = entry.Data.ReadString(ref offset, Encoding.Unicode);
 
-                    // Align to the WORD boundary
-                    while ((offset % 2) != 0)
-                        _ = entry.Data.ReadByte(ref offset);
+                    // Align to the WORD boundary if we're not at the end
+                    if (offset != entry.Data.Length)
+                    {
+                        while ((offset % 2) != 0)
+                            _ = entry.Data.ReadByte(ref offset);
+                    }
 
                     // Read the ordinal if we have the flag set
                     if (menuResourceHasOrdinal)
@@ -789,9 +813,12 @@ namespace BurnOutSharp.Builder
                     // Read the class resource as a string
                     dialogTemplate.ClassResource = entry.Data.ReadString(ref offset, Encoding.Unicode);
 
-                    // Align to the WORD boundary
-                    while ((offset % 2) != 0)
-                        _ = entry.Data.ReadByte(ref offset);
+                    // Align to the WORD boundary if we're not at the end
+                    if (offset != entry.Data.Length)
+                    {
+                        while ((offset % 2) != 0)
+                            _ = entry.Data.ReadByte(ref offset);
+                    }
 
                     // Read the ordinal if we have the flag set
                     if (classResourcehasOrdinal)
@@ -817,9 +844,12 @@ namespace BurnOutSharp.Builder
                     // Read the title resource as a string
                     dialogTemplate.TitleResource = entry.Data.ReadString(ref offset, Encoding.Unicode);
 
-                    // Align to the WORD boundary
-                    while ((offset % 2) != 0)
-                        _ = entry.Data.ReadByte(ref offset);
+                    // Align to the WORD boundary if we're not at the end
+                    if (offset != entry.Data.Length)
+                    {
+                        while ((offset % 2) != 0)
+                            _ = entry.Data.ReadByte(ref offset);
+                    }
                 }
 
                 #endregion
@@ -889,9 +919,12 @@ namespace BurnOutSharp.Builder
                         // Read the class resource as a string
                         dialogItemTemplate.ClassResource = entry.Data.ReadString(ref offset, Encoding.Unicode);
 
-                        // Align to the WORD boundary
-                        while ((offset % 2) != 0)
-                            _ = entry.Data.ReadByte(ref offset);
+                        // Align to the WORD boundary if we're not at the end
+                        if (offset != entry.Data.Length)
+                        {
+                            while ((offset % 2) != 0)
+                                _ = entry.Data.ReadByte(ref offset);
+                        }
                     }
 
                     #endregion
@@ -916,9 +949,12 @@ namespace BurnOutSharp.Builder
                         // Read the title resource as a string
                         dialogItemTemplate.TitleResource = entry.Data.ReadString(ref offset, Encoding.Unicode);
 
-                        // Align to the WORD boundary
-                        while ((offset % 2) != 0)
-                            _ = entry.Data.ReadByte(ref offset);
+                        // Align to the WORD boundary if we're not at the end
+                        if (offset != entry.Data.Length)
+                        {
+                            while ((offset % 2) != 0)
+                                _ = entry.Data.ReadByte(ref offset);
+                        }
                     }
 
                     #endregion

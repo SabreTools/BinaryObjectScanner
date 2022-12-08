@@ -1770,7 +1770,8 @@ namespace BurnOutSharp.Wrappers
                         Console.WriteLine($"{padding}Hardware-dependent icon resource found, not parsed yet");
                         break;
                     case Models.PortableExecutable.ResourceType.RT_MENU:
-                        var menu = entry.AsMenu();
+                        Models.PortableExecutable.MenuResource menu = null;
+                        try { menu = entry.AsMenu(); } catch { }
                         if (menu == null)
                         {
                             Console.WriteLine($"{padding}Menu resource found, but malformed");
@@ -1848,7 +1849,8 @@ namespace BurnOutSharp.Wrappers
                         }
                         break;
                     case Models.PortableExecutable.ResourceType.RT_DIALOG:
-                        var dialogBox = entry.AsDialogBox();
+                        Models.PortableExecutable.DialogBoxResource dialogBox = null;
+                        try { dialogBox = entry.AsDialogBox(); } catch { }
                         if (dialogBox == null)
                         {
                             Console.WriteLine($"{padding}Dialog box resource found, but malformed");
@@ -1971,7 +1973,8 @@ namespace BurnOutSharp.Wrappers
                         }
                         break;
                     case Models.PortableExecutable.ResourceType.RT_STRING:
-                        var stringTable = entry.AsStringTable();
+                        Dictionary<int, string> stringTable = null;
+                        try { stringTable = entry.AsStringTable(); } catch { }
                         if (stringTable == null)
                         {
                             Console.WriteLine($"{padding}String table resource found, but malformed");
@@ -1993,7 +1996,8 @@ namespace BurnOutSharp.Wrappers
                         Console.WriteLine($"{padding}Font resource found, not parsed yet");
                         break;
                     case Models.PortableExecutable.ResourceType.RT_ACCELERATOR:
-                        var acceleratorTable = entry.AsAcceleratorTableResource();
+                        Models.PortableExecutable.AcceleratorTableEntry[] acceleratorTable = null;
+                        try { acceleratorTable = entry.AsAcceleratorTableResource(); } catch { }
                         if (acceleratorTable == null)
                         {
                             Console.WriteLine($"{padding}Accelerator table resource found, but malformed");
@@ -2012,9 +2016,12 @@ namespace BurnOutSharp.Wrappers
                         break;
                     case Models.PortableExecutable.ResourceType.RT_RCDATA:
                         Console.WriteLine($"{padding}Application-defined resource found, not parsed yet");
+                        //if (entry.Data != null)
+                        //    Console.WriteLine($"{padding}Value (ASCII): {Encoding.ASCII.GetString(entry.Data)}");
                         break;
                     case Models.PortableExecutable.ResourceType.RT_MESSAGETABLE:
-                        var messageTable = entry.AsMessageResourceData();
+                        Models.PortableExecutable.MessageResourceData messageTable = null;
+                        try { messageTable = entry.AsMessageResourceData(); } catch { }
                         if (messageTable == null)
                         {
                             Console.WriteLine($"{padding}Message resource data found, but malformed");
@@ -2074,7 +2081,8 @@ namespace BurnOutSharp.Wrappers
                         Console.WriteLine($"{padding}Hardware-independent icon resource found, not parsed yet");
                         break;
                     case Models.PortableExecutable.ResourceType.RT_VERSION:
-                        var versionInfo = entry.AsVersionInfo();
+                        Models.PortableExecutable.VersionInfo versionInfo = null;
+                        try { versionInfo = entry.AsVersionInfo(); } catch { }
                         if (versionInfo == null)
                         {
                             Console.WriteLine($"{padding}Version info resource found, but malformed");
@@ -2192,7 +2200,8 @@ namespace BurnOutSharp.Wrappers
                         Console.WriteLine($"{padding}HTML resource found, not parsed yet");
                         break;
                     case Models.PortableExecutable.ResourceType.RT_MANIFEST:
-                        var assemblyManifest = entry.AsAssemblyManifest();
+                        Models.PortableExecutable.AssemblyManifest assemblyManifest = null;
+                        try { assemblyManifest = entry.AsAssemblyManifest(); } catch { }
                         if (assemblyManifest == null)
                         {
                             Console.WriteLine($"{padding}Assembly manifest found, but malformed");
@@ -2347,7 +2356,7 @@ namespace BurnOutSharp.Wrappers
                     default:
                         Console.WriteLine($"{padding}Type {(Models.PortableExecutable.ResourceType)resourceType} found, not parsed yet");
                         //Console.WriteLine($"{padding}Data: {BitConverter.ToString(entry.Data).Replace("-", string.Empty)}");
-                        Console.WriteLine($"{padding}Data: {Encoding.ASCII.GetString(entry.Data)}");
+                        //Console.WriteLine($"{padding}Data: {Encoding.ASCII.GetString(entry.Data)}");
                         break;
                 }
             }
