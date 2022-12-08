@@ -27,6 +27,13 @@ namespace BurnOutSharp.ProtectionType
                 // Get the .dcrtext section, if it exists
                 if (pex.ContainsSection(".dcrtext"))
                 {
+                    // TODO: This can't work yet because the version is embedded after the hint/name table
+                    //if ((pex.ImportTable?.ImportDirectoryTable?.Any(idte => idte.Name == "kernel32.dll") ?? false)
+                    //    && (pex.ImportHintNameTable?.Any(s => s == "VirtualProtect") ?? false))
+                    //{
+                    //    return $"JoWood X-Prot {GetVersion(pex)}"
+                    //}
+
                     var matchers = new List<ContentMatchSet>
                     {
                         // kernel32.dll + (char)0x00 + (char)0x00 + (char)0x00 + VirtualProtect
