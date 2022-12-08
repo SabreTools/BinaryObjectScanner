@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
 using BurnOutSharp.Tools;
@@ -24,25 +25,13 @@ namespace BurnOutSharp.PackerType
             if (sections == null)
                 return null;
 
-            // Get the .data/DATA section, if it exists
-            var dataSectionRaw = pex.GetFirstSectionData(".data") ?? pex.GetFirstSectionData("DATA");
-            if (dataSectionRaw != null)
-            {
-                var matchers = new List<ContentMatchSet>
-                {
-                    // Software\WinRAR SFX
-                    new ContentMatchSet(new byte?[]
-                    {
-                        0x53, 0x6F, 0x66, 0x74, 0x77, 0x61, 0x72, 0x65,
-                        0x5C, 0x57, 0x69, 0x6E, 0x52, 0x41, 0x52, 0x20,
-                        0x53, 0x46, 0x58
-                    }, "WinRAR SFX"),
-                };
+            string name = pex.AssemblyDescription;
+            if (name?.Contains("WinRAR archiver") == true)
+                return "WinRAR SFX";
 
-                string match = MatchUtil.GetFirstMatch(file, dataSectionRaw, matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
-                    return match;
-            }
+            var resources = pex.FindDialogByTitle("WinRAR self-extracting archive");
+            if (resources.Any())
+                return "WinRAR SFX";
 
             return null;
         }
