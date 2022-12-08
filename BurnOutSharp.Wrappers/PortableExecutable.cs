@@ -1761,615 +1761,863 @@ namespace BurnOutSharp.Wrappers
                 switch ((Models.PortableExecutable.ResourceType)resourceType)
                 {
                     case Models.PortableExecutable.ResourceType.RT_CURSOR:
-                        Console.WriteLine($"{padding}Hardware-dependent cursor resource found, not parsed yet");
+                        PrintResourceRT_CURSOR(entry, level);
                         break;
                     case Models.PortableExecutable.ResourceType.RT_BITMAP:
-                        Console.WriteLine($"{padding}Bitmap resource found, not parsed yet");
+                        PrintResourceRT_BITMAP(entry, level);
                         break;
                     case Models.PortableExecutable.ResourceType.RT_ICON:
-                        Console.WriteLine($"{padding}Hardware-dependent icon resource found, not parsed yet");
+                        PrintResourceRT_ICON(entry, level);
                         break;
                     case Models.PortableExecutable.ResourceType.RT_MENU:
-                        Models.PortableExecutable.MenuResource menu = null;
-                        try { menu = entry.AsMenu(); } catch { }
-                        if (menu == null)
-                        {
-                            Console.WriteLine($"{padding}Menu resource found, but malformed");
-                        }
-                        else
-                        {
-                            if (menu.MenuHeader != null)
-                            {
-                                Console.WriteLine($"{padding}Version: {menu.MenuHeader.Version}");
-                                Console.WriteLine($"{padding}Header size: {menu.MenuHeader.HeaderSize}");
-                                Console.WriteLine();
-                                Console.WriteLine($"{padding}Menu items");
-                                Console.WriteLine($"{padding}-------------------------");
-                                if (menu.MenuItems == null
-                                    || menu.MenuItems.Length == 0)
-                                {
-                                    Console.WriteLine($"{padding}No menu items");
-                                }
-                                else
-                                {
-                                    for (int i = 0; i < menu.MenuItems.Length; i++)
-                                    {
-                                        var menuItem = menu.MenuItems[i];
-
-                                        Console.WriteLine($"{padding}Menu item {i}");
-                                        if (menuItem.NormalMenuText != null)
-                                        {
-                                            Console.WriteLine($"{padding}  Resource info: {menuItem.NormalResInfo}");
-                                            Console.WriteLine($"{padding}  Menu text: {menuItem.NormalMenuText}");
-                                        }
-                                        else
-                                        {
-                                            Console.WriteLine($"{padding}  Item type: {menuItem.PopupItemType}");
-                                            Console.WriteLine($"{padding}  State: {menuItem.PopupState}");
-                                            Console.WriteLine($"{padding}  ID: {menuItem.PopupID}");
-                                            Console.WriteLine($"{padding}  Resource info: {menuItem.PopupResInfo}");
-                                            Console.WriteLine($"{padding}  Menu text: {menuItem.PopupMenuText}");
-                                        }
-                                    }
-                                }
-                            }
-                            else if (menu.ExtendedMenuHeader != null)
-                            {
-                                Console.WriteLine($"{padding}Version: {menu.ExtendedMenuHeader.Version}");
-                                Console.WriteLine($"{padding}Offset: {menu.ExtendedMenuHeader.Offset}");
-                                Console.WriteLine($"{padding}Help ID: {menu.ExtendedMenuHeader.HelpID}");
-                                Console.WriteLine();
-                                Console.WriteLine($"{padding}Menu items");
-                                Console.WriteLine($"{padding}-------------------------");
-                                if (menu.ExtendedMenuHeader.Offset == 0
-                                    || menu.ExtendedMenuItems == null
-                                    || menu.ExtendedMenuItems.Length == 0)
-                                {
-                                    Console.WriteLine($"{padding}No menu items");
-                                }
-                                else
-                                {
-                                    for (int i = 0; i < menu.ExtendedMenuItems.Length; i++)
-                                    {
-                                        var menuItem = menu.ExtendedMenuItems[i];
-
-                                        Console.WriteLine($"{padding}Dialog item template {i}");
-                                        Console.WriteLine($"{padding}  Item type: {menuItem.ItemType}");
-                                        Console.WriteLine($"{padding}  State: {menuItem.State}");
-                                        Console.WriteLine($"{padding}  ID: {menuItem.ID}");
-                                        Console.WriteLine($"{padding}  Flags: {menuItem.Flags}");
-                                        Console.WriteLine($"{padding}  Menu text: {menuItem.MenuText}");
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                Console.WriteLine($"{padding}Menu resource found, but malformed");
-                            }
-                        }
+                        PrintResourceRT_MENU(entry, level);
                         break;
                     case Models.PortableExecutable.ResourceType.RT_DIALOG:
-                        Models.PortableExecutable.DialogBoxResource dialogBox = null;
-                        try { dialogBox = entry.AsDialogBox(); } catch { }
-                        if (dialogBox == null)
-                        {
-                            Console.WriteLine($"{padding}Dialog box resource found, but malformed");
-                        }
-                        else
-                        {
-                            if (dialogBox.DialogTemplate != null)
-                            {
-                                Console.WriteLine($"{padding}Style: {dialogBox.DialogTemplate.Style}");
-                                Console.WriteLine($"{padding}Extended style: {dialogBox.DialogTemplate.ExtendedStyle}");
-                                Console.WriteLine($"{padding}Item count: {dialogBox.DialogTemplate.ItemCount}");
-                                Console.WriteLine($"{padding}X-coordinate of upper-left corner: {dialogBox.DialogTemplate.PositionX}");
-                                Console.WriteLine($"{padding}Y-coordinate of upper-left corner: {dialogBox.DialogTemplate.PositionY}");
-                                Console.WriteLine($"{padding}Width of the dialog box: {dialogBox.DialogTemplate.WidthX}");
-                                Console.WriteLine($"{padding}Height of the dialog box: {dialogBox.DialogTemplate.HeightY}");
-                                Console.WriteLine($"{padding}Menu resource: {dialogBox.DialogTemplate.MenuResource ?? "[EMPTY]"}");
-                                Console.WriteLine($"{padding}Menu resource ordinal: {dialogBox.DialogTemplate.MenuResourceOrdinal}");
-                                Console.WriteLine($"{padding}Class resource: {dialogBox.DialogTemplate.ClassResource ?? "[EMPTY]"}");
-                                Console.WriteLine($"{padding}Class resource ordinal: {dialogBox.DialogTemplate.ClassResourceOrdinal}");
-                                Console.WriteLine($"{padding}Title resource: {dialogBox.DialogTemplate.TitleResource ?? "[EMPTY]"}");
-                                Console.WriteLine($"{padding}Point size value: {dialogBox.DialogTemplate.PointSizeValue}");
-                                Console.WriteLine($"{padding}Typeface: {dialogBox.DialogTemplate.Typeface ?? "[EMPTY]"}");
-                                Console.WriteLine();
-                                Console.WriteLine($"{padding}Dialog item templates");
-                                Console.WriteLine($"{padding}-------------------------");
-                                if (dialogBox.DialogTemplate.ItemCount == 0
-                                    || dialogBox.DialogItemTemplates == null
-                                    || dialogBox.DialogItemTemplates.Length == 0)
-                                {
-                                    Console.WriteLine($"{padding}No dialog item templates");
-                                }
-                                else
-                                {
-                                    for (int i = 0; i < dialogBox.DialogItemTemplates.Length; i++)
-                                    {
-                                        var dialogItemTemplate = dialogBox.DialogItemTemplates[i];
-
-                                        Console.WriteLine($"{padding}Dialog item template {i}");
-                                        Console.WriteLine($"{padding}  Style: {dialogItemTemplate.Style}");
-                                        Console.WriteLine($"{padding}  Extended style: {dialogItemTemplate.ExtendedStyle}");
-                                        Console.WriteLine($"{padding}  X-coordinate of upper-left corner: {dialogItemTemplate.PositionX}");
-                                        Console.WriteLine($"{padding}  Y-coordinate of upper-left corner: {dialogItemTemplate.PositionY}");
-                                        Console.WriteLine($"{padding}  Width of the control: {dialogItemTemplate.WidthX}");
-                                        Console.WriteLine($"{padding}  Height of the control: {dialogItemTemplate.HeightY}");
-                                        Console.WriteLine($"{padding}  ID: {dialogItemTemplate.ID}");
-                                        Console.WriteLine($"{padding}  Class resource: {dialogItemTemplate.ClassResource ?? "[EMPTY]"}");
-                                        Console.WriteLine($"{padding}  Class resource ordinal: {dialogItemTemplate.ClassResourceOrdinal}");
-                                        Console.WriteLine($"{padding}  Title resource: {dialogItemTemplate.TitleResource ?? "[EMPTY]"}");
-                                        Console.WriteLine($"{padding}  Title resource ordinal: {dialogItemTemplate.TitleResourceOrdinal}");
-                                        Console.WriteLine($"{padding}  Creation data size: {dialogItemTemplate.CreationDataSize}");
-                                        if (dialogItemTemplate.CreationData != null && dialogItemTemplate.CreationData.Length != 0)
-                                            Console.WriteLine($"{padding}  Creation data: {BitConverter.ToString(dialogItemTemplate.CreationData).Replace("-", string.Empty)}");
-                                        else
-                                            Console.WriteLine($"{padding}  Creation data: [EMPTY]");
-                                    }
-                                }
-                            }
-                            else if (dialogBox.ExtendedDialogTemplate != null)
-                            {
-                                Console.WriteLine($"{padding}Version: {dialogBox.ExtendedDialogTemplate.Version}");
-                                Console.WriteLine($"{padding}Signature: {dialogBox.ExtendedDialogTemplate.Signature}");
-                                Console.WriteLine($"{padding}Help ID: {dialogBox.ExtendedDialogTemplate.HelpID}");
-                                Console.WriteLine($"{padding}Extended style: {dialogBox.ExtendedDialogTemplate.ExtendedStyle}");
-                                Console.WriteLine($"{padding}Style: {dialogBox.ExtendedDialogTemplate.Style}");
-                                Console.WriteLine($"{padding}Item count: {dialogBox.ExtendedDialogTemplate.DialogItems}");
-                                Console.WriteLine($"{padding}X-coordinate of upper-left corner: {dialogBox.ExtendedDialogTemplate.PositionX}");
-                                Console.WriteLine($"{padding}Y-coordinate of upper-left corner: {dialogBox.ExtendedDialogTemplate.PositionY}");
-                                Console.WriteLine($"{padding}Width of the dialog box: {dialogBox.ExtendedDialogTemplate.WidthX}");
-                                Console.WriteLine($"{padding}Height of the dialog box: {dialogBox.ExtendedDialogTemplate.HeightY}");
-                                Console.WriteLine($"{padding}Menu resource: {dialogBox.ExtendedDialogTemplate.MenuResource ?? "[EMPTY]"}");
-                                Console.WriteLine($"{padding}Menu resource ordinal: {dialogBox.ExtendedDialogTemplate.MenuResourceOrdinal}");
-                                Console.WriteLine($"{padding}Class resource: {dialogBox.ExtendedDialogTemplate.ClassResource ?? "[EMPTY]"}");
-                                Console.WriteLine($"{padding}Class resource ordinal: {dialogBox.ExtendedDialogTemplate.ClassResourceOrdinal}");
-                                Console.WriteLine($"{padding}Title resource: {dialogBox.ExtendedDialogTemplate.TitleResource ?? "[EMPTY]"}");
-                                Console.WriteLine($"{padding}Point size: {dialogBox.ExtendedDialogTemplate.PointSize}");
-                                Console.WriteLine($"{padding}Weight: {dialogBox.ExtendedDialogTemplate.Weight}");
-                                Console.WriteLine($"{padding}Italic: {dialogBox.ExtendedDialogTemplate.Italic}");
-                                Console.WriteLine($"{padding}Character set: {dialogBox.ExtendedDialogTemplate.CharSet}");
-                                Console.WriteLine($"{padding}Typeface: {dialogBox.ExtendedDialogTemplate.Typeface ?? "[EMPTY]"}");
-                                Console.WriteLine();
-                                Console.WriteLine($"{padding}Dialog item templates");
-                                Console.WriteLine($"{padding}-------------------------");
-                                if (dialogBox.ExtendedDialogTemplate.DialogItems == 0
-                                    || dialogBox.ExtendedDialogItemTemplates == null
-                                    || dialogBox.ExtendedDialogItemTemplates.Length == 0)
-                                {
-                                    Console.WriteLine($"{padding}No dialog item templates");
-                                }
-                                else
-                                {
-                                    for (int i = 0; i < dialogBox.ExtendedDialogItemTemplates.Length; i++)
-                                    {
-                                        var dialogItemTemplate = dialogBox.ExtendedDialogItemTemplates[i];
-
-                                        Console.WriteLine($"{padding}Dialog item template {i}");
-                                        Console.WriteLine($"{padding}  Help ID: {dialogItemTemplate.HelpID}");
-                                        Console.WriteLine($"{padding}  Extended style: {dialogItemTemplate.ExtendedStyle}");
-                                        Console.WriteLine($"{padding}  Style: {dialogItemTemplate.Style}");
-                                        Console.WriteLine($"{padding}  X-coordinate of upper-left corner: {dialogItemTemplate.PositionX}");
-                                        Console.WriteLine($"{padding}  Y-coordinate of upper-left corner: {dialogItemTemplate.PositionY}");
-                                        Console.WriteLine($"{padding}  Width of the control: {dialogItemTemplate.WidthX}");
-                                        Console.WriteLine($"{padding}  Height of the control: {dialogItemTemplate.HeightY}");
-                                        Console.WriteLine($"{padding}  ID: {dialogItemTemplate.ID}");
-                                        Console.WriteLine($"{padding}  Class resource: {dialogItemTemplate.ClassResource ?? "[EMPTY]"}");
-                                        Console.WriteLine($"{padding}  Class resource ordinal: {dialogItemTemplate.ClassResourceOrdinal}");
-                                        Console.WriteLine($"{padding}  Title resource: {dialogItemTemplate.TitleResource ?? "[EMPTY]"}");
-                                        Console.WriteLine($"{padding}  Title resource ordinal: {dialogItemTemplate.TitleResourceOrdinal}");
-                                        Console.WriteLine($"{padding}  Creation data size: {dialogItemTemplate.CreationDataSize}");
-                                        if (dialogItemTemplate.CreationData != null && dialogItemTemplate.CreationData.Length != 0)
-                                            Console.WriteLine($"{padding}  Creation data: {BitConverter.ToString(dialogItemTemplate.CreationData).Replace("-", string.Empty)}");
-                                        else
-                                            Console.WriteLine($"{padding}  Creation data: [EMPTY]");
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                Console.WriteLine($"{padding}Dialog box resource found, but malformed");
-                            }
-                        }
+                        PrintResourceRT_DIALOG(entry, level);
                         break;
                     case Models.PortableExecutable.ResourceType.RT_STRING:
-                        Dictionary<int, string> stringTable = null;
-                        try { stringTable = entry.AsStringTable(); } catch { }
-                        if (stringTable == null)
-                        {
-                            Console.WriteLine($"{padding}String table resource found, but malformed");
-                        }
-                        else
-                        {
-                            foreach (var kvp in stringTable)
-                            {
-                                int index = kvp.Key;
-                                string stringValue = kvp.Value;
-                                Console.WriteLine($"{padding}String entry {index}: {stringValue}");
-                            }
-                        }
+                        PrintResourceRT_STRING(entry, level);
                         break;
                     case Models.PortableExecutable.ResourceType.RT_FONTDIR:
-                        Console.WriteLine($"{padding}Font directory resource found, not parsed yet");
+                        PrintResourceRT_FONTDIR(entry, level);
                         break;
                     case Models.PortableExecutable.ResourceType.RT_FONT:
-                        Console.WriteLine($"{padding}Font resource found, not parsed yet");
+                        PrintResourceRT_FONT(entry, level);
                         break;
                     case Models.PortableExecutable.ResourceType.RT_ACCELERATOR:
-                        Models.PortableExecutable.AcceleratorTableEntry[] acceleratorTable = null;
-                        try { acceleratorTable = entry.AsAcceleratorTableResource(); } catch { }
-                        if (acceleratorTable == null)
-                        {
-                            Console.WriteLine($"{padding}Accelerator table resource found, but malformed");
-                        }
-                        else
-                        {
-                            for (int i = 0; i < acceleratorTable.Length; i++)
-                            {
-                                var acceleratorTableEntry = acceleratorTable[i];
-                                Console.WriteLine($"{padding}Flags: {acceleratorTableEntry.Flags}");
-                                Console.WriteLine($"{padding}Ansi: {acceleratorTableEntry.Ansi}");
-                                Console.WriteLine($"{padding}Id: {acceleratorTableEntry.Id}");
-                                Console.WriteLine($"{padding}Padding: {acceleratorTableEntry.Padding}");
-                            }
-                        }
+                        PrintResourceRT_ACCELERATOR(entry, level);
                         break;
                     case Models.PortableExecutable.ResourceType.RT_RCDATA:
-                        Console.WriteLine($"{padding}Application-defined resource found, not parsed yet");
-                        //if (entry.Data != null)
-                        //    Console.WriteLine($"{padding}Value (ASCII): {Encoding.ASCII.GetString(entry.Data)}");
+                        PrintResourceRT_RCDATA(entry, level);
                         break;
                     case Models.PortableExecutable.ResourceType.RT_MESSAGETABLE:
-                        Models.PortableExecutable.MessageResourceData messageTable = null;
-                        try { messageTable = entry.AsMessageResourceData(); } catch { }
-                        if (messageTable == null)
-                        {
-                            Console.WriteLine($"{padding}Message resource data found, but malformed");
-                        }
-                        else
-                        {
-                            Console.WriteLine($"{padding}Number of blocks: {messageTable.NumberOfBlocks}");
-                            Console.WriteLine();
-                            Console.WriteLine($"{padding}Message resource blocks");
-                            Console.WriteLine($"{padding}-------------------------");
-                            if (messageTable.NumberOfBlocks == 0
-                                || messageTable.Blocks == null
-                                || messageTable.Blocks.Length == 0)
-                            {
-                                Console.WriteLine($"{padding}No message resource blocks");
-                            }
-                            else
-                            {
-                                for (int i = 0; i < messageTable.Blocks.Length; i++)
-                                {
-                                    var messageResourceBlock = messageTable.Blocks[i];
-
-                                    Console.WriteLine($"{padding}Message resource block {i}");
-                                    Console.WriteLine($"{padding}  Low ID: {messageResourceBlock.LowId}");
-                                    Console.WriteLine($"{padding}  High ID: {messageResourceBlock.HighId}");
-                                    Console.WriteLine($"{padding}  Offset to entries: {messageResourceBlock.OffsetToEntries}");
-                                }
-                            }
-                            Console.WriteLine();
-
-                            Console.WriteLine($"{padding}Message resource entries");
-                            Console.WriteLine($"{padding}-------------------------");
-                            if (messageTable.Entries == null
-                                || messageTable.Entries.Count == 0)
-                            {
-                                Console.WriteLine($"{padding}No message resource entries");
-                            }
-                            else
-                            {
-                                foreach (var kvp in messageTable.Entries)
-                                {
-                                    uint index = kvp.Key;
-                                    var messageResourceEntry = kvp.Value;
-
-                                    Console.WriteLine($"{padding}Message resource entry {index}");
-                                    Console.WriteLine($"{padding}  Length: {messageResourceEntry.Length}");
-                                    Console.WriteLine($"{padding}  Flags: {messageResourceEntry.Flags}");
-                                    Console.WriteLine($"{padding}  Text: {messageResourceEntry.Text}");
-                                }
-                            }
-                        }
+                        PrintResourceRT_MESSAGETABLE(entry, level);
                         break;
                     case Models.PortableExecutable.ResourceType.RT_GROUP_CURSOR:
-                        Console.WriteLine($"{padding}Hardware-independent cursor resource found, not parsed yet");
+                        PrintResourceRT_GROUP_CURSOR(entry, level);
                         break;
                     case Models.PortableExecutable.ResourceType.RT_GROUP_ICON:
-                        Console.WriteLine($"{padding}Hardware-independent icon resource found, not parsed yet");
+                        PrintResourceRT_GROUP_ICON(entry, level);
                         break;
                     case Models.PortableExecutable.ResourceType.RT_VERSION:
-                        Models.PortableExecutable.VersionInfo versionInfo = null;
-                        try { versionInfo = entry.AsVersionInfo(); } catch { }
-                        if (versionInfo == null)
-                        {
-                            Console.WriteLine($"{padding}Version info resource found, but malformed");
-                        }
-                        else
-                        {
-                            Console.WriteLine($"{padding}Length: {versionInfo.Length}");
-                            Console.WriteLine($"{padding}Value length: {versionInfo.ValueLength}");
-                            Console.WriteLine($"{padding}Resource type: {versionInfo.ResourceType}");
-                            Console.WriteLine($"{padding}Key: {versionInfo.Key}");
-                            if (versionInfo.ValueLength != 0 && versionInfo.Value != null)
-                            {
-                                Console.WriteLine($"{padding}[Fixed File Info] Signature: {versionInfo.Value.Signature}");
-                                Console.WriteLine($"{padding}[Fixed File Info] Struct version: {versionInfo.Value.StrucVersion}");
-                                Console.WriteLine($"{padding}[Fixed File Info] File version (MS): {versionInfo.Value.FileVersionMS}");
-                                Console.WriteLine($"{padding}[Fixed File Info] File version (LS): {versionInfo.Value.FileVersionLS}");
-                                Console.WriteLine($"{padding}[Fixed File Info] Product version (MS): {versionInfo.Value.ProductVersionMS}");
-                                Console.WriteLine($"{padding}[Fixed File Info] Product version (LS): {versionInfo.Value.ProductVersionLS}");
-                                Console.WriteLine($"{padding}[Fixed File Info] File flags mask: {versionInfo.Value.FileFlagsMask}");
-                                Console.WriteLine($"{padding}[Fixed File Info] File flags: {versionInfo.Value.FileFlags}");
-                                Console.WriteLine($"{padding}[Fixed File Info] File OS: {versionInfo.Value.FileOS}");
-                                Console.WriteLine($"{padding}[Fixed File Info] Type: {versionInfo.Value.FileType}");
-                                Console.WriteLine($"{padding}[Fixed File Info] Subtype: {versionInfo.Value.FileSubtype}");
-                                Console.WriteLine($"{padding}[Fixed File Info] File date (MS): {versionInfo.Value.FileDateMS}");
-                                Console.WriteLine($"{padding}[Fixed File Info] File date (LS): {versionInfo.Value.FileDateLS}");
-                            }
-                            if (versionInfo.StringFileInfo != null)
-                            {
-                                Console.WriteLine($"{padding}[String File Info] Length: {versionInfo.StringFileInfo.Length}");
-                                Console.WriteLine($"{padding}[String File Info] Value length: {versionInfo.StringFileInfo.ValueLength}");
-                                Console.WriteLine($"{padding}[String File Info] Resource type: {versionInfo.StringFileInfo.ResourceType}");
-                                Console.WriteLine($"{padding}[String File Info] Key: {versionInfo.StringFileInfo.Key}");
-                                Console.WriteLine($"{padding}Children:");
-                                Console.WriteLine($"{padding}-------------------------");
-                                if (versionInfo.StringFileInfo.Children == null || versionInfo.StringFileInfo.Children.Length == 0)
-                                {
-                                    Console.WriteLine($"{padding}No string file info children");
-                                }
-                                else
-                                {
-                                    for (int i = 0; i < versionInfo.StringFileInfo.Children.Length; i++)
-                                    {
-                                        var stringFileInfoChildEntry = versionInfo.StringFileInfo.Children[i];
-
-                                        Console.WriteLine($"{padding}  [String Table {i}] Length: {stringFileInfoChildEntry.Length}");
-                                        Console.WriteLine($"{padding}  [String Table {i}] Value length: {stringFileInfoChildEntry.ValueLength}");
-                                        Console.WriteLine($"{padding}  [String Table {i}] ResourceType: {stringFileInfoChildEntry.ResourceType}");
-                                        Console.WriteLine($"{padding}  [String Table {i}] Key: {stringFileInfoChildEntry.Key}");
-                                        Console.WriteLine($"{padding}  [String Table {i}] Children:");
-                                        Console.WriteLine($"{padding}  -------------------------");
-                                        if (stringFileInfoChildEntry.Children == null || stringFileInfoChildEntry.Children.Length == 0)
-                                        {
-                                            Console.WriteLine($"{padding}  No string table {i} children");
-                                        }
-                                        else
-                                        {
-                                            for (int j = 0; j < stringFileInfoChildEntry.Children.Length; j++)
-                                            {
-                                                var stringDataEntry = stringFileInfoChildEntry.Children[j];
-
-                                                Console.WriteLine($"{padding}    [String Data {j}] Length: {stringDataEntry.Length}");
-                                                Console.WriteLine($"{padding}    [String Data {j}] Value length: {stringDataEntry.ValueLength}");
-                                                Console.WriteLine($"{padding}    [String Data {j}] ResourceType: {stringDataEntry.ResourceType}");
-                                                Console.WriteLine($"{padding}    [String Data {j}] Key: {stringDataEntry.Key}");
-                                                Console.WriteLine($"{padding}    [String Data {j}] Value: {stringDataEntry.Value}");
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            if (versionInfo.VarFileInfo != null)
-                            {
-                                Console.WriteLine($"{padding}[Var File Info] Length: {versionInfo.VarFileInfo.Length}");
-                                Console.WriteLine($"{padding}[Var File Info] Value length: {versionInfo.VarFileInfo.ValueLength}");
-                                Console.WriteLine($"{padding}[Var File Info] Resource type: {versionInfo.VarFileInfo.ResourceType}");
-                                Console.WriteLine($"{padding}[Var File Info] Key: {versionInfo.VarFileInfo.Key}");
-                                Console.WriteLine($"{padding}Children:");
-                                Console.WriteLine($"{padding}-------------------------");
-                                if (versionInfo.VarFileInfo.Children == null || versionInfo.VarFileInfo.Children.Length == 0)
-                                {
-                                    Console.WriteLine($"{padding}No var file info children");
-                                }
-                                else
-                                {
-                                    for (int i = 0; i < versionInfo.VarFileInfo.Children.Length; i++)
-                                    {
-                                        var varFileInfoChildEntry = versionInfo.VarFileInfo.Children[i];
-
-                                        Console.WriteLine($"{padding}  [String Table {i}] Length: {varFileInfoChildEntry.Length}");
-                                        Console.WriteLine($"{padding}  [String Table {i}] Value length: {varFileInfoChildEntry.ValueLength}");
-                                        Console.WriteLine($"{padding}  [String Table {i}] ResourceType: {varFileInfoChildEntry.ResourceType}");
-                                        Console.WriteLine($"{padding}  [String Table {i}] Key: {varFileInfoChildEntry.Key}");
-                                        Console.WriteLine($"{padding}  [String Table {i}] Value: {string.Join(",", varFileInfoChildEntry.Value)}");
-                                    }
-                                }
-                            }
-                        }
+                        PrintResourceRT_VERSION(entry, level);
                         break;
                     case Models.PortableExecutable.ResourceType.RT_DLGINCLUDE:
-                        Console.WriteLine($"{padding}External header resource found, not parsed yet");
+                        PrintResourceRT_DLGINCLUDE(entry, level);
                         break;
                     case Models.PortableExecutable.ResourceType.RT_PLUGPLAY:
-                        Console.WriteLine($"{padding}Plug and Play resource found, not parsed yet");
+                        PrintResourceRT_PLUGPLAY(entry, level);
                         break;
                     case Models.PortableExecutable.ResourceType.RT_VXD:
-                        Console.WriteLine($"{padding}VXD found, not parsed yet");
+                        PrintResourceRT_VXD(entry, level);
                         break;
                     case Models.PortableExecutable.ResourceType.RT_ANICURSOR:
-                        Console.WriteLine($"{padding}Animated cursor found, not parsed yet");
+                        PrintResourceRT_ANICURSOR(entry, level);
                         break;
                     case Models.PortableExecutable.ResourceType.RT_ANIICON:
-                        Console.WriteLine($"{padding}Animated icon found, not parsed yet");
+                        PrintResourceRT_ANIICON(entry, level);
                         break;
                     case Models.PortableExecutable.ResourceType.RT_HTML:
-                        Console.WriteLine($"{padding}HTML resource found, not parsed yet");
+                        PrintResourceRT_HTML(entry, level);
                         break;
                     case Models.PortableExecutable.ResourceType.RT_MANIFEST:
-                        Models.PortableExecutable.AssemblyManifest assemblyManifest = null;
-                        try { assemblyManifest = entry.AsAssemblyManifest(); } catch { }
-                        if (assemblyManifest == null)
-                        {
-                            Console.WriteLine($"{padding}Assembly manifest found, but malformed");
-                        }
-                        else
-                        {
-                            Console.WriteLine($"{padding}Manifest version: {assemblyManifest.ManifestVersion}");
-                            if (assemblyManifest.AssemblyIdentities != null && assemblyManifest.AssemblyIdentities.Length > 0)
-                            {
-                                for (int i = 0; i < assemblyManifest.AssemblyIdentities.Length; i++)
-                                {
-                                    var assemblyIdentity = assemblyManifest.AssemblyIdentities[i];
-                                    Console.WriteLine($"{padding}[Assembly Identity {i}] Name: {assemblyIdentity.Name}");
-                                    Console.WriteLine($"{padding}[Assembly Identity {i}] Version: {assemblyIdentity.Version}");
-                                    Console.WriteLine($"{padding}[Assembly Identity {i}] Type: {assemblyIdentity.Type}");
-                                    Console.WriteLine($"{padding}[Assembly Identity {i}] Processor architecture: {assemblyIdentity.ProcessorArchitecture}");
-                                    Console.WriteLine($"{padding}[Assembly Identity {i}] Public key token: {assemblyIdentity.PublicKeyToken}");
-                                    Console.WriteLine($"{padding}[Assembly Identity {i}] Language: {assemblyIdentity.Language}");
-                                }
-                            }
-                            if (assemblyManifest.Description != null)
-                            {
-                                Console.WriteLine($"{padding}[Assembly Description] Value: {assemblyManifest.Description.Value}");
-                            }
-                            if (assemblyManifest.COMInterfaceExternalProxyStub != null && assemblyManifest.COMInterfaceExternalProxyStub.Length > 0)
-                            {
-                                for (int i = 0; i < assemblyManifest.COMInterfaceExternalProxyStub.Length; i++)
-                                {
-                                    var comInterfaceExternalProxyStub = assemblyManifest.COMInterfaceExternalProxyStub[i];
-                                    Console.WriteLine($"{padding}[COM Interface External Proxy Stub {i}] IID: {comInterfaceExternalProxyStub.IID}");
-                                    Console.WriteLine($"{padding}[COM Interface External Proxy Stub {i}] Name: {comInterfaceExternalProxyStub.Name}");
-                                    Console.WriteLine($"{padding}[COM Interface External Proxy Stub {i}] TLBID: {comInterfaceExternalProxyStub.TLBID}");
-                                    Console.WriteLine($"{padding}[COM Interface External Proxy Stub {i}] Number of methods: {comInterfaceExternalProxyStub.NumMethods}");
-                                    Console.WriteLine($"{padding}[COM Interface External Proxy Stub {i}] Proxy stub (CLSID32): {comInterfaceExternalProxyStub.ProxyStubClsid32}");
-                                    Console.WriteLine($"{padding}[COM Interface External Proxy Stub {i}] Base interface: {comInterfaceExternalProxyStub.BaseInterface}");
-                                }
-                            }
-                            if (assemblyManifest.Dependency != null && assemblyManifest.Dependency.Length > 0)
-                            {
-                                for (int i = 0; i < assemblyManifest.Dependency.Length; i++)
-                                {
-                                    var dependency = assemblyManifest.Dependency[i];
-                                    if (dependency.DependentAssembly != null)
-                                    {
-                                        if (dependency.DependentAssembly.AssemblyIdentity != null)
-                                        {
-                                            Console.WriteLine($"{padding}[Dependency {i} Assembly Identity] Name: {dependency.DependentAssembly.AssemblyIdentity.Name}");
-                                            Console.WriteLine($"{padding}[Dependency {i} Assembly Identity] Version: {dependency.DependentAssembly.AssemblyIdentity.Version}");
-                                            Console.WriteLine($"{padding}[Dependency {i} Assembly Identity] Type: {dependency.DependentAssembly.AssemblyIdentity.Type}");
-                                            Console.WriteLine($"{padding}[Dependency {i} Assembly Identity] Processor architecture: {dependency.DependentAssembly.AssemblyIdentity.ProcessorArchitecture}");
-                                            Console.WriteLine($"{padding}[Dependency {i} Assembly Identity] Public key token: {dependency.DependentAssembly.AssemblyIdentity.PublicKeyToken}");
-                                            Console.WriteLine($"{padding}[Dependency {i} Assembly Identity] Language: {dependency.DependentAssembly.AssemblyIdentity.Language}");
-                                        }
-                                        if (dependency.DependentAssembly.BindingRedirect != null && dependency.DependentAssembly.BindingRedirect.Length > 0)
-                                        {
-                                            for (int j = 0; j < dependency.DependentAssembly.BindingRedirect.Length; j++)
-                                            {
-                                                var bindingRedirect = dependency.DependentAssembly.BindingRedirect[j];
-                                                Console.WriteLine($"{padding}[Dependency {i} Binding Redirect {j}] Old version: {bindingRedirect.OldVersion}");
-                                                Console.WriteLine($"{padding}[Dependency {i} Binding Redirect {j}] New version: {bindingRedirect.NewVersion}");
-                                            }
-                                        }
-                                    }
-
-                                    Console.WriteLine($"{padding}[Dependency {i}] Optional: {dependency.Optional}");
-                                }
-                            }
-                            if (assemblyManifest.File != null && assemblyManifest.File.Length > 0)
-                            {
-                                for (int i = 0; i < assemblyManifest.File.Length; i++)
-                                {
-                                    var file = assemblyManifest.File[i];
-                                    Console.WriteLine($"{padding}[File {i}] Name: {file.Name}");
-                                    Console.WriteLine($"{padding}[File {i}] Hash: {file.Hash}");
-                                    Console.WriteLine($"{padding}[File {i}] Hash algorithm: {file.HashAlgorithm}");
-                                    Console.WriteLine($"{padding}[File {i}] Size: {file.Size}");
-
-                                    if (file.COMClass != null && file.COMClass.Length > 0)
-                                    {
-                                        for (int j = 0; j < file.COMClass.Length; j++)
-                                        {
-                                            var comClass = file.COMClass[j];
-                                            Console.WriteLine($"{padding}[File {i} COM Class {j}] CLSID: {comClass.CLSID}");
-                                            Console.WriteLine($"{padding}[File {i} COM Class {j}] Threading model: {comClass.ThreadingModel}");
-                                            Console.WriteLine($"{padding}[File {i} COM Class {j}] Prog ID: {comClass.ProgID}");
-                                            Console.WriteLine($"{padding}[File {i} COM Class {j}] TLBID: {comClass.TLBID}");
-                                            Console.WriteLine($"{padding}[File {i} COM Class {j}] Description: {comClass.Description}");
-
-                                            if (comClass.ProgIDs != null && comClass.ProgIDs.Length > 0)
-                                            {
-                                                for (int k = 0; k < comClass.ProgIDs.Length; k++)
-                                                {
-                                                    var progId = comClass.ProgIDs[k];
-                                                    Console.WriteLine($"{padding}[File {i} COM Class {j} Prog ID {k}] Value: {progId.Value}");
-                                                }
-                                            }
-                                        }
-                                    }
-                                    if (file.COMInterfaceProxyStub != null && file.COMInterfaceProxyStub.Length > 0)
-                                    {
-                                        for (int j = 0; j < file.COMInterfaceProxyStub.Length; j++)
-                                        {
-                                            var comInterfaceProxyStub = file.COMInterfaceProxyStub[j];
-                                            Console.WriteLine($"{padding}[File {i} COM Interface Proxy Stub {j}] IID: {comInterfaceProxyStub.IID}");
-                                            Console.WriteLine($"{padding}[File {i} COM Interface Proxy Stub {j}] Name: {comInterfaceProxyStub.Name}");
-                                            Console.WriteLine($"{padding}[File {i} COM Interface Proxy Stub {j}] TLBID: {comInterfaceProxyStub.TLBID}");
-                                            Console.WriteLine($"{padding}[File {i} COM Interface Proxy Stub {j}] Number of methods: {comInterfaceProxyStub.NumMethods}");
-                                            Console.WriteLine($"{padding}[File {i} COM Interface Proxy Stub {j}] Proxy stub (CLSID32): {comInterfaceProxyStub.ProxyStubClsid32}");
-                                            Console.WriteLine($"{padding}[File {i} COM Interface Proxy Stub {j}] Base interface: {comInterfaceProxyStub.BaseInterface}");
-                                        }
-                                    }
-                                    if (file.Typelib != null && file.Typelib.Length > 0)
-                                    {
-                                        for (int j = 0; j < file.Typelib.Length; j++)
-                                        {
-                                            var typeLib = file.Typelib[j];
-                                            Console.WriteLine($"{padding}[File {i} Type Lib {j}] TLBID: {typeLib.TLBID}");
-                                            Console.WriteLine($"{padding}[File {i} Type Lib {j}] Version: {typeLib.Version}");
-                                            Console.WriteLine($"{padding}[File {i} Type Lib {j}] Help directory: {typeLib.HelpDir}");
-                                            Console.WriteLine($"{padding}[File {i} Type Lib {j}] Resource ID: {typeLib.ResourceID}");
-                                            Console.WriteLine($"{padding}[File {i} Type Lib {j}] Flags: {typeLib.Flags}");
-                                        }
-                                    }
-                                    if (file.WindowClass != null && file.WindowClass.Length > 0)
-                                    {
-                                        for (int j = 0; j < file.WindowClass.Length; j++)
-                                        {
-                                            var windowClass = file.WindowClass[j];
-                                            Console.WriteLine($"{padding}[File {i} Window Class {j}] Versioned: {windowClass.Versioned}");
-                                            Console.WriteLine($"{padding}[File {i} Window Class {j}] Value: {windowClass.Value}");
-                                        }
-                                    }
-                                }
-                            }
-                            if (assemblyManifest.EverythingElse != null && assemblyManifest.EverythingElse.Length > 0)
-                            {
-                                for (int i = 0; i < assemblyManifest.EverythingElse.Length; i++)
-                                {
-                                    var thing = assemblyManifest.EverythingElse[i];
-                                    if (thing is XmlElement element)
-                                    {
-                                        Console.WriteLine($"{padding}Unparsed XML Element {i}: {element.OuterXml}");
-                                    }
-                                    else
-                                    {
-                                        Console.WriteLine($"{padding}Unparsed Item {i}: {thing}");
-                                    }
-                                }
-                            }
-                        }
+                        PrintResourceRT_MANIFEST(entry, level);
                         break;
                     default:
-                        Console.WriteLine($"{padding}Type {(Models.PortableExecutable.ResourceType)resourceType} found, not parsed yet");
-                        //Console.WriteLine($"{padding}Data: {BitConverter.ToString(entry.Data).Replace("-", string.Empty)}");
-                        //Console.WriteLine($"{padding}Data: {Encoding.ASCII.GetString(entry.Data)}");
+                        PrintResourceUNKNOWN(entry, level, types[0]);
                         break;
                 }
             }
             else if (types != null && types.Count > 0 && types[0] is string resourceString)
             {
-                Console.WriteLine($"{padding}Custom data type: {resourceString}");
-                if (entry.Data[0] == 0x4D && entry.Data[1] == 0x5A)
-                    Console.WriteLine($"{padding}Data: [Embedded Executable File]"); // TODO: Parse this out and print separately
-                else
-                    Console.WriteLine($"{padding}Data: {Encoding.ASCII.GetString(entry.Data)}");
+                PrintResourceUNKNOWN(entry, level, types[0]);
             }
 
             Console.WriteLine();
+        }
+
+        /// <summary>
+        /// Print an RT_CURSOR resource
+        /// </summary>
+        private static void PrintResourceRT_CURSOR(Models.PortableExecutable.ResourceDataEntry entry, int level)
+        {
+            string padding = new string(' ', (level + 1) * 2);
+            Console.WriteLine($"{padding}Hardware-dependent cursor resource found, not parsed yet");
+        }
+
+        /// <summary>
+        /// Print an RT_BITMAP resource
+        /// </summary>
+        private static void PrintResourceRT_BITMAP(Models.PortableExecutable.ResourceDataEntry entry, int level)
+        {
+            string padding = new string(' ', (level + 1) * 2);
+            Console.WriteLine($"{padding}Bitmap resource found, not parsed yet");
+        }
+
+        /// <summary>
+        /// Print an RT_ICON resource
+        /// </summary>
+        private static void PrintResourceRT_ICON(Models.PortableExecutable.ResourceDataEntry entry, int level)
+        {
+            string padding = new string(' ', (level + 1) * 2);
+            Console.WriteLine($"{padding}Hardware-dependent icon resource found, not parsed yet");
+        }
+
+        /// <summary>
+        /// Print an RT_MENU resource
+        /// </summary>
+        private static void PrintResourceRT_MENU(Models.PortableExecutable.ResourceDataEntry entry, int level)
+        {
+            string padding = new string(' ', (level + 1) * 2);
+
+            Models.PortableExecutable.MenuResource menu = null;
+            try { menu = entry.AsMenu(); } catch { }
+            if (menu == null)
+            {
+                Console.WriteLine($"{padding}Menu resource found, but malformed");
+                return;
+            }
+
+            if (menu.MenuHeader != null)
+            {
+                Console.WriteLine($"{padding}Version: {menu.MenuHeader.Version}");
+                Console.WriteLine($"{padding}Header size: {menu.MenuHeader.HeaderSize}");
+                Console.WriteLine();
+                Console.WriteLine($"{padding}Menu items");
+                Console.WriteLine($"{padding}-------------------------");
+                if (menu.MenuItems == null || menu.MenuItems.Length == 0)
+                {
+                    Console.WriteLine($"{padding}No menu items");
+                    return;
+                }
+
+                for (int i = 0; i < menu.MenuItems.Length; i++)
+                {
+                    var menuItem = menu.MenuItems[i];
+
+                    Console.WriteLine($"{padding}Menu item {i}");
+                    if (menuItem.NormalMenuText != null)
+                    {
+                        Console.WriteLine($"{padding}  Resource info: {menuItem.NormalResInfo}");
+                        Console.WriteLine($"{padding}  Menu text: {menuItem.NormalMenuText}");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"{padding}  Item type: {menuItem.PopupItemType}");
+                        Console.WriteLine($"{padding}  State: {menuItem.PopupState}");
+                        Console.WriteLine($"{padding}  ID: {menuItem.PopupID}");
+                        Console.WriteLine($"{padding}  Resource info: {menuItem.PopupResInfo}");
+                        Console.WriteLine($"{padding}  Menu text: {menuItem.PopupMenuText}");
+                    }
+                }
+            }
+            else if (menu.ExtendedMenuHeader != null)
+            {
+                Console.WriteLine($"{padding}Version: {menu.ExtendedMenuHeader.Version}");
+                Console.WriteLine($"{padding}Offset: {menu.ExtendedMenuHeader.Offset}");
+                Console.WriteLine($"{padding}Help ID: {menu.ExtendedMenuHeader.HelpID}");
+                Console.WriteLine();
+                Console.WriteLine($"{padding}Menu items");
+                Console.WriteLine($"{padding}-------------------------");
+                if (menu.ExtendedMenuHeader.Offset == 0
+                    || menu.ExtendedMenuItems == null
+                    || menu.ExtendedMenuItems.Length == 0)
+                {
+                    Console.WriteLine($"{padding}No menu items");
+                    return;
+                }
+
+                for (int i = 0; i < menu.ExtendedMenuItems.Length; i++)
+                {
+                    var menuItem = menu.ExtendedMenuItems[i];
+
+                    Console.WriteLine($"{padding}Dialog item template {i}");
+                    Console.WriteLine($"{padding}  Item type: {menuItem.ItemType}");
+                    Console.WriteLine($"{padding}  State: {menuItem.State}");
+                    Console.WriteLine($"{padding}  ID: {menuItem.ID}");
+                    Console.WriteLine($"{padding}  Flags: {menuItem.Flags}");
+                    Console.WriteLine($"{padding}  Menu text: {menuItem.MenuText}");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"{padding}Menu resource found, but malformed");
+            }
+        }
+
+        /// <summary>
+        /// Print an RT_DIALOG resource
+        /// </summary>
+        private static void PrintResourceRT_DIALOG(Models.PortableExecutable.ResourceDataEntry entry, int level)
+        {
+            string padding = new string(' ', (level + 1) * 2);
+
+            Models.PortableExecutable.DialogBoxResource dialogBox = null;
+            try { dialogBox = entry.AsDialogBox(); } catch { }
+            if (dialogBox == null)
+            {
+                Console.WriteLine($"{padding}Dialog box resource found, but malformed");
+                return;
+            }
+
+            if (dialogBox.DialogTemplate != null)
+            {
+                Console.WriteLine($"{padding}Style: {dialogBox.DialogTemplate.Style}");
+                Console.WriteLine($"{padding}Extended style: {dialogBox.DialogTemplate.ExtendedStyle}");
+                Console.WriteLine($"{padding}Item count: {dialogBox.DialogTemplate.ItemCount}");
+                Console.WriteLine($"{padding}X-coordinate of upper-left corner: {dialogBox.DialogTemplate.PositionX}");
+                Console.WriteLine($"{padding}Y-coordinate of upper-left corner: {dialogBox.DialogTemplate.PositionY}");
+                Console.WriteLine($"{padding}Width of the dialog box: {dialogBox.DialogTemplate.WidthX}");
+                Console.WriteLine($"{padding}Height of the dialog box: {dialogBox.DialogTemplate.HeightY}");
+                Console.WriteLine($"{padding}Menu resource: {dialogBox.DialogTemplate.MenuResource ?? "[EMPTY]"}");
+                Console.WriteLine($"{padding}Menu resource ordinal: {dialogBox.DialogTemplate.MenuResourceOrdinal}");
+                Console.WriteLine($"{padding}Class resource: {dialogBox.DialogTemplate.ClassResource ?? "[EMPTY]"}");
+                Console.WriteLine($"{padding}Class resource ordinal: {dialogBox.DialogTemplate.ClassResourceOrdinal}");
+                Console.WriteLine($"{padding}Title resource: {dialogBox.DialogTemplate.TitleResource ?? "[EMPTY]"}");
+                Console.WriteLine($"{padding}Point size value: {dialogBox.DialogTemplate.PointSizeValue}");
+                Console.WriteLine($"{padding}Typeface: {dialogBox.DialogTemplate.Typeface ?? "[EMPTY]"}");
+                Console.WriteLine();
+                Console.WriteLine($"{padding}Dialog item templates");
+                Console.WriteLine($"{padding}-------------------------");
+                if (dialogBox.DialogTemplate.ItemCount == 0
+                    || dialogBox.DialogItemTemplates == null
+                    || dialogBox.DialogItemTemplates.Length == 0)
+                {
+                    Console.WriteLine($"{padding}No dialog item templates");
+                    return;
+                }
+
+                for (int i = 0; i < dialogBox.DialogItemTemplates.Length; i++)
+                {
+                    var dialogItemTemplate = dialogBox.DialogItemTemplates[i];
+
+                    Console.WriteLine($"{padding}Dialog item template {i}");
+                    Console.WriteLine($"{padding}  Style: {dialogItemTemplate.Style}");
+                    Console.WriteLine($"{padding}  Extended style: {dialogItemTemplate.ExtendedStyle}");
+                    Console.WriteLine($"{padding}  X-coordinate of upper-left corner: {dialogItemTemplate.PositionX}");
+                    Console.WriteLine($"{padding}  Y-coordinate of upper-left corner: {dialogItemTemplate.PositionY}");
+                    Console.WriteLine($"{padding}  Width of the control: {dialogItemTemplate.WidthX}");
+                    Console.WriteLine($"{padding}  Height of the control: {dialogItemTemplate.HeightY}");
+                    Console.WriteLine($"{padding}  ID: {dialogItemTemplate.ID}");
+                    Console.WriteLine($"{padding}  Class resource: {dialogItemTemplate.ClassResource ?? "[EMPTY]"}");
+                    Console.WriteLine($"{padding}  Class resource ordinal: {dialogItemTemplate.ClassResourceOrdinal}");
+                    Console.WriteLine($"{padding}  Title resource: {dialogItemTemplate.TitleResource ?? "[EMPTY]"}");
+                    Console.WriteLine($"{padding}  Title resource ordinal: {dialogItemTemplate.TitleResourceOrdinal}");
+                    Console.WriteLine($"{padding}  Creation data size: {dialogItemTemplate.CreationDataSize}");
+                    if (dialogItemTemplate.CreationData != null && dialogItemTemplate.CreationData.Length != 0)
+                        Console.WriteLine($"{padding}  Creation data: {BitConverter.ToString(dialogItemTemplate.CreationData).Replace("-", string.Empty)}");
+                    else
+                        Console.WriteLine($"{padding}  Creation data: [EMPTY]");
+                }
+            }
+            else if (dialogBox.ExtendedDialogTemplate != null)
+            {
+                Console.WriteLine($"{padding}Version: {dialogBox.ExtendedDialogTemplate.Version}");
+                Console.WriteLine($"{padding}Signature: {dialogBox.ExtendedDialogTemplate.Signature}");
+                Console.WriteLine($"{padding}Help ID: {dialogBox.ExtendedDialogTemplate.HelpID}");
+                Console.WriteLine($"{padding}Extended style: {dialogBox.ExtendedDialogTemplate.ExtendedStyle}");
+                Console.WriteLine($"{padding}Style: {dialogBox.ExtendedDialogTemplate.Style}");
+                Console.WriteLine($"{padding}Item count: {dialogBox.ExtendedDialogTemplate.DialogItems}");
+                Console.WriteLine($"{padding}X-coordinate of upper-left corner: {dialogBox.ExtendedDialogTemplate.PositionX}");
+                Console.WriteLine($"{padding}Y-coordinate of upper-left corner: {dialogBox.ExtendedDialogTemplate.PositionY}");
+                Console.WriteLine($"{padding}Width of the dialog box: {dialogBox.ExtendedDialogTemplate.WidthX}");
+                Console.WriteLine($"{padding}Height of the dialog box: {dialogBox.ExtendedDialogTemplate.HeightY}");
+                Console.WriteLine($"{padding}Menu resource: {dialogBox.ExtendedDialogTemplate.MenuResource ?? "[EMPTY]"}");
+                Console.WriteLine($"{padding}Menu resource ordinal: {dialogBox.ExtendedDialogTemplate.MenuResourceOrdinal}");
+                Console.WriteLine($"{padding}Class resource: {dialogBox.ExtendedDialogTemplate.ClassResource ?? "[EMPTY]"}");
+                Console.WriteLine($"{padding}Class resource ordinal: {dialogBox.ExtendedDialogTemplate.ClassResourceOrdinal}");
+                Console.WriteLine($"{padding}Title resource: {dialogBox.ExtendedDialogTemplate.TitleResource ?? "[EMPTY]"}");
+                Console.WriteLine($"{padding}Point size: {dialogBox.ExtendedDialogTemplate.PointSize}");
+                Console.WriteLine($"{padding}Weight: {dialogBox.ExtendedDialogTemplate.Weight}");
+                Console.WriteLine($"{padding}Italic: {dialogBox.ExtendedDialogTemplate.Italic}");
+                Console.WriteLine($"{padding}Character set: {dialogBox.ExtendedDialogTemplate.CharSet}");
+                Console.WriteLine($"{padding}Typeface: {dialogBox.ExtendedDialogTemplate.Typeface ?? "[EMPTY]"}");
+                Console.WriteLine();
+                Console.WriteLine($"{padding}Dialog item templates");
+                Console.WriteLine($"{padding}-------------------------");
+                if (dialogBox.ExtendedDialogTemplate.DialogItems == 0
+                    || dialogBox.ExtendedDialogItemTemplates == null
+                    || dialogBox.ExtendedDialogItemTemplates.Length == 0)
+                {
+                    Console.WriteLine($"{padding}No dialog item templates");
+                    return;
+                }
+
+                for (int i = 0; i < dialogBox.ExtendedDialogItemTemplates.Length; i++)
+                {
+                    var dialogItemTemplate = dialogBox.ExtendedDialogItemTemplates[i];
+
+                    Console.WriteLine($"{padding}Dialog item template {i}");
+                    Console.WriteLine($"{padding}  Help ID: {dialogItemTemplate.HelpID}");
+                    Console.WriteLine($"{padding}  Extended style: {dialogItemTemplate.ExtendedStyle}");
+                    Console.WriteLine($"{padding}  Style: {dialogItemTemplate.Style}");
+                    Console.WriteLine($"{padding}  X-coordinate of upper-left corner: {dialogItemTemplate.PositionX}");
+                    Console.WriteLine($"{padding}  Y-coordinate of upper-left corner: {dialogItemTemplate.PositionY}");
+                    Console.WriteLine($"{padding}  Width of the control: {dialogItemTemplate.WidthX}");
+                    Console.WriteLine($"{padding}  Height of the control: {dialogItemTemplate.HeightY}");
+                    Console.WriteLine($"{padding}  ID: {dialogItemTemplate.ID}");
+                    Console.WriteLine($"{padding}  Class resource: {dialogItemTemplate.ClassResource ?? "[EMPTY]"}");
+                    Console.WriteLine($"{padding}  Class resource ordinal: {dialogItemTemplate.ClassResourceOrdinal}");
+                    Console.WriteLine($"{padding}  Title resource: {dialogItemTemplate.TitleResource ?? "[EMPTY]"}");
+                    Console.WriteLine($"{padding}  Title resource ordinal: {dialogItemTemplate.TitleResourceOrdinal}");
+                    Console.WriteLine($"{padding}  Creation data size: {dialogItemTemplate.CreationDataSize}");
+                    if (dialogItemTemplate.CreationData != null && dialogItemTemplate.CreationData.Length != 0)
+                        Console.WriteLine($"{padding}  Creation data: {BitConverter.ToString(dialogItemTemplate.CreationData).Replace("-", string.Empty)}");
+                    else
+                        Console.WriteLine($"{padding}  Creation data: [EMPTY]");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"{padding}Dialog box resource found, but malformed");
+            }
+        }
+
+        /// <summary>
+        /// Print an RT_STRING resource
+        /// </summary>
+        private static void PrintResourceRT_STRING(Models.PortableExecutable.ResourceDataEntry entry, int level)
+        {
+            string padding = new string(' ', (level + 1) * 2);
+
+            Dictionary<int, string> stringTable = null;
+            try { stringTable = entry.AsStringTable(); } catch { }
+            if (stringTable == null)
+            {
+                Console.WriteLine($"{padding}String table resource found, but malformed");
+                return;
+            }
+
+            foreach (var kvp in stringTable)
+            {
+                int index = kvp.Key;
+                string stringValue = kvp.Value;
+                Console.WriteLine($"{padding}String entry {index}: {stringValue}");
+            }
+        }
+
+        /// <summary>
+        /// Print an RT_FONTDIR resource
+        /// </summary>
+        private static void PrintResourceRT_FONTDIR(Models.PortableExecutable.ResourceDataEntry entry, int level)
+        {
+            string padding = new string(' ', (level + 1) * 2);
+            Console.WriteLine($"{padding}Font directory resource found, not parsed yet");
+        }
+
+        /// <summary>
+        /// Print an RT_FONT resource
+        /// </summary>
+        private static void PrintResourceRT_FONT(Models.PortableExecutable.ResourceDataEntry entry, int level)
+        {
+            string padding = new string(' ', (level + 1) * 2);
+            Console.WriteLine($"{padding}Font resource found, not parsed yet");
+        }
+
+        /// <summary>
+        /// Print an RT_ACCELERATOR resource
+        /// </summary>
+        private static void PrintResourceRT_ACCELERATOR(Models.PortableExecutable.ResourceDataEntry entry, int level)
+        {
+            string padding = new string(' ', (level + 1) * 2);
+
+            Models.PortableExecutable.AcceleratorTableEntry[] acceleratorTable = null;
+            try { acceleratorTable = entry.AsAcceleratorTableResource(); } catch { }
+            if (acceleratorTable == null)
+            {
+                Console.WriteLine($"{padding}Accelerator table resource found, but malformed");
+                return;
+            }
+
+            for (int i = 0; i < acceleratorTable.Length; i++)
+            {
+                var acceleratorTableEntry = acceleratorTable[i];
+                Console.WriteLine($"{padding}Accelerator Table Entry {i}:");
+                Console.WriteLine($"{padding}  Flags: {acceleratorTableEntry.Flags}");
+                Console.WriteLine($"{padding}  Ansi: {acceleratorTableEntry.Ansi}");
+                Console.WriteLine($"{padding}  Id: {acceleratorTableEntry.Id}");
+                Console.WriteLine($"{padding}  Padding: {acceleratorTableEntry.Padding}");
+            }
+        }
+
+        /// <summary>
+        /// Print an RT_RCDATA resource
+        /// </summary>
+        private static void PrintResourceRT_RCDATA(Models.PortableExecutable.ResourceDataEntry entry, int level)
+        {
+            string padding = new string(' ', (level + 1) * 2);
+            Console.WriteLine($"{padding}Application-defined resource found, not parsed yet");
+
+            //if (entry.Data != null)
+            //    Console.WriteLine($"{padding}Value (ASCII): {Encoding.ASCII.GetString(entry.Data)}");
+            //if (entry.Data != null)
+            //    Console.WriteLine($"{padding}Value (UTF-8): {Encoding.UTF8.GetString(entry.Data)}");
+            //if (entry.Data != null)
+            //    Console.WriteLine($"{padding}Value (Unicode): {Encoding.Unicode.GetString(entry.Data)}");
+        }
+
+        /// <summary>
+        /// Print an RT_MESSAGETABLE resource
+        /// </summary>
+        private static void PrintResourceRT_MESSAGETABLE(Models.PortableExecutable.ResourceDataEntry entry, int level)
+        {
+            string padding = new string(' ', (level + 1) * 2);
+
+            Models.PortableExecutable.MessageResourceData messageTable = null;
+            try { messageTable = entry.AsMessageResourceData(); } catch { }
+            if (messageTable == null)
+            {
+                Console.WriteLine($"{padding}Message resource data found, but malformed");
+                return;
+            }
+
+            Console.WriteLine($"{padding}Number of blocks: {messageTable.NumberOfBlocks}");
+            Console.WriteLine();
+            Console.WriteLine($"{padding}Message resource blocks");
+            Console.WriteLine($"{padding}-------------------------");
+            if (messageTable.NumberOfBlocks == 0
+                || messageTable.Blocks == null
+                || messageTable.Blocks.Length == 0)
+            {
+                Console.WriteLine($"{padding}No message resource blocks");
+            }
+            else
+            {
+                for (int i = 0; i < messageTable.Blocks.Length; i++)
+                {
+                    var messageResourceBlock = messageTable.Blocks[i];
+
+                    Console.WriteLine($"{padding}Message resource block {i}");
+                    Console.WriteLine($"{padding}  Low ID: {messageResourceBlock.LowId}");
+                    Console.WriteLine($"{padding}  High ID: {messageResourceBlock.HighId}");
+                    Console.WriteLine($"{padding}  Offset to entries: {messageResourceBlock.OffsetToEntries}");
+                }
+            }
+            Console.WriteLine();
+
+            Console.WriteLine($"{padding}Message resource entries");
+            Console.WriteLine($"{padding}-------------------------");
+            if (messageTable.Entries == null
+                || messageTable.Entries.Count == 0)
+            {
+                Console.WriteLine($"{padding}No message resource entries");
+            }
+            else
+            {
+                foreach (var kvp in messageTable.Entries)
+                {
+                    uint index = kvp.Key;
+                    var messageResourceEntry = kvp.Value;
+
+                    Console.WriteLine($"{padding}Message resource entry {index}");
+                    Console.WriteLine($"{padding}  Length: {messageResourceEntry.Length}");
+                    Console.WriteLine($"{padding}  Flags: {messageResourceEntry.Flags}");
+                    Console.WriteLine($"{padding}  Text: {messageResourceEntry.Text}");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Print an RT_GROUP_CURSOR resource
+        /// </summary>
+        private static void PrintResourceRT_GROUP_CURSOR(Models.PortableExecutable.ResourceDataEntry entry, int level)
+        {
+            string padding = new string(' ', (level + 1) * 2);
+            Console.WriteLine($"{padding}Hardware-independent cursor resource found, not parsed yet");
+        }
+
+        /// <summary>
+        /// Print an RT_GROUP_ICON resource
+        /// </summary>
+        private static void PrintResourceRT_GROUP_ICON(Models.PortableExecutable.ResourceDataEntry entry, int level)
+        {
+            string padding = new string(' ', (level + 1) * 2);
+            Console.WriteLine($"{padding}Hardware-independent icon resource found, not parsed yet");
+        }
+
+        /// <summary>
+        /// Print an RT_VERSION resource
+        /// </summary>
+        private static void PrintResourceRT_VERSION(Models.PortableExecutable.ResourceDataEntry entry, int level)
+        {
+            string padding = new string(' ', (level + 1) * 2);
+
+            Models.PortableExecutable.VersionInfo versionInfo = null;
+            try { versionInfo = entry.AsVersionInfo(); } catch { }
+            if (versionInfo == null)
+            {
+                Console.WriteLine($"{padding}Version info resource found, but malformed");
+                return;
+            }
+
+            Console.WriteLine($"{padding}Length: {versionInfo.Length}");
+            Console.WriteLine($"{padding}Value length: {versionInfo.ValueLength}");
+            Console.WriteLine($"{padding}Resource type: {versionInfo.ResourceType}");
+            Console.WriteLine($"{padding}Key: {versionInfo.Key}");
+            if (versionInfo.ValueLength != 0 && versionInfo.Value != null)
+            {
+                Console.WriteLine($"{padding}[Fixed File Info] Signature: {versionInfo.Value.Signature}");
+                Console.WriteLine($"{padding}[Fixed File Info] Struct version: {versionInfo.Value.StrucVersion}");
+                Console.WriteLine($"{padding}[Fixed File Info] File version (MS): {versionInfo.Value.FileVersionMS}");
+                Console.WriteLine($"{padding}[Fixed File Info] File version (LS): {versionInfo.Value.FileVersionLS}");
+                Console.WriteLine($"{padding}[Fixed File Info] Product version (MS): {versionInfo.Value.ProductVersionMS}");
+                Console.WriteLine($"{padding}[Fixed File Info] Product version (LS): {versionInfo.Value.ProductVersionLS}");
+                Console.WriteLine($"{padding}[Fixed File Info] File flags mask: {versionInfo.Value.FileFlagsMask}");
+                Console.WriteLine($"{padding}[Fixed File Info] File flags: {versionInfo.Value.FileFlags}");
+                Console.WriteLine($"{padding}[Fixed File Info] File OS: {versionInfo.Value.FileOS}");
+                Console.WriteLine($"{padding}[Fixed File Info] Type: {versionInfo.Value.FileType}");
+                Console.WriteLine($"{padding}[Fixed File Info] Subtype: {versionInfo.Value.FileSubtype}");
+                Console.WriteLine($"{padding}[Fixed File Info] File date (MS): {versionInfo.Value.FileDateMS}");
+                Console.WriteLine($"{padding}[Fixed File Info] File date (LS): {versionInfo.Value.FileDateLS}");
+            }
+
+            if (versionInfo.StringFileInfo != null)
+            {
+                Console.WriteLine($"{padding}[String File Info] Length: {versionInfo.StringFileInfo.Length}");
+                Console.WriteLine($"{padding}[String File Info] Value length: {versionInfo.StringFileInfo.ValueLength}");
+                Console.WriteLine($"{padding}[String File Info] Resource type: {versionInfo.StringFileInfo.ResourceType}");
+                Console.WriteLine($"{padding}[String File Info] Key: {versionInfo.StringFileInfo.Key}");
+                Console.WriteLine($"{padding}Children:");
+                Console.WriteLine($"{padding}-------------------------");
+                if (versionInfo.StringFileInfo.Children == null || versionInfo.StringFileInfo.Children.Length == 0)
+                {
+                    Console.WriteLine($"{padding}No string file info children");
+                }
+                else
+                {
+                    for (int i = 0; i < versionInfo.StringFileInfo.Children.Length; i++)
+                    {
+                        var stringFileInfoChildEntry = versionInfo.StringFileInfo.Children[i];
+
+                        Console.WriteLine($"{padding}  [String Table {i}] Length: {stringFileInfoChildEntry.Length}");
+                        Console.WriteLine($"{padding}  [String Table {i}] Value length: {stringFileInfoChildEntry.ValueLength}");
+                        Console.WriteLine($"{padding}  [String Table {i}] ResourceType: {stringFileInfoChildEntry.ResourceType}");
+                        Console.WriteLine($"{padding}  [String Table {i}] Key: {stringFileInfoChildEntry.Key}");
+                        Console.WriteLine($"{padding}  [String Table {i}] Children:");
+                        Console.WriteLine($"{padding}  -------------------------");
+                        if (stringFileInfoChildEntry.Children == null || stringFileInfoChildEntry.Children.Length == 0)
+                        {
+                            Console.WriteLine($"{padding}  No string table {i} children");
+                        }
+                        else
+                        {
+                            for (int j = 0; j < stringFileInfoChildEntry.Children.Length; j++)
+                            {
+                                var stringDataEntry = stringFileInfoChildEntry.Children[j];
+
+                                Console.WriteLine($"{padding}    [String Data {j}] Length: {stringDataEntry.Length}");
+                                Console.WriteLine($"{padding}    [String Data {j}] Value length: {stringDataEntry.ValueLength}");
+                                Console.WriteLine($"{padding}    [String Data {j}] ResourceType: {stringDataEntry.ResourceType}");
+                                Console.WriteLine($"{padding}    [String Data {j}] Key: {stringDataEntry.Key}");
+                                Console.WriteLine($"{padding}    [String Data {j}] Value: {stringDataEntry.Value}");
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (versionInfo.VarFileInfo != null)
+            {
+                Console.WriteLine($"{padding}[Var File Info] Length: {versionInfo.VarFileInfo.Length}");
+                Console.WriteLine($"{padding}[Var File Info] Value length: {versionInfo.VarFileInfo.ValueLength}");
+                Console.WriteLine($"{padding}[Var File Info] Resource type: {versionInfo.VarFileInfo.ResourceType}");
+                Console.WriteLine($"{padding}[Var File Info] Key: {versionInfo.VarFileInfo.Key}");
+                Console.WriteLine($"{padding}Children:");
+                Console.WriteLine($"{padding}-------------------------");
+                if (versionInfo.VarFileInfo.Children == null || versionInfo.VarFileInfo.Children.Length == 0)
+                {
+                    Console.WriteLine($"{padding}No var file info children");
+                }
+                else
+                {
+                    for (int i = 0; i < versionInfo.VarFileInfo.Children.Length; i++)
+                    {
+                        var varFileInfoChildEntry = versionInfo.VarFileInfo.Children[i];
+
+                        Console.WriteLine($"{padding}  [String Table {i}] Length: {varFileInfoChildEntry.Length}");
+                        Console.WriteLine($"{padding}  [String Table {i}] Value length: {varFileInfoChildEntry.ValueLength}");
+                        Console.WriteLine($"{padding}  [String Table {i}] ResourceType: {varFileInfoChildEntry.ResourceType}");
+                        Console.WriteLine($"{padding}  [String Table {i}] Key: {varFileInfoChildEntry.Key}");
+                        Console.WriteLine($"{padding}  [String Table {i}] Value: {string.Join(",", varFileInfoChildEntry.Value)}");
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Print an RT_DLGINCLUDE resource
+        /// </summary>
+        private static void PrintResourceRT_DLGINCLUDE(Models.PortableExecutable.ResourceDataEntry entry, int level)
+        {
+            string padding = new string(' ', (level + 1) * 2);
+            Console.WriteLine($"{padding}External header resource found, not parsed yet");
+        }
+
+        /// <summary>
+        /// Print an RT_PLUGPLAY resource
+        /// </summary>
+        private static void PrintResourceRT_PLUGPLAY(Models.PortableExecutable.ResourceDataEntry entry, int level)
+        {
+            string padding = new string(' ', (level + 1) * 2);
+            Console.WriteLine($"{padding}Plug and Play resource found, not parsed yet");
+        }
+
+        /// <summary>
+        /// Print an RT_VXD resource
+        /// </summary>
+        private static void PrintResourceRT_VXD(Models.PortableExecutable.ResourceDataEntry entry, int level)
+        {
+            string padding = new string(' ', (level + 1) * 2);
+            Console.WriteLine($"{padding}VXD found, not parsed yet");
+        }
+
+        /// <summary>
+        /// Print an RT_ANICURSOR resource
+        /// </summary>
+        private static void PrintResourceRT_ANICURSOR(Models.PortableExecutable.ResourceDataEntry entry, int level)
+        {
+            string padding = new string(' ', (level + 1) * 2);
+            Console.WriteLine($"{padding}Animated cursor found, not parsed yet");
+        }
+
+        /// <summary>
+        /// Print an RT_ANIICON resource
+        /// </summary>
+        private static void PrintResourceRT_ANIICON(Models.PortableExecutable.ResourceDataEntry entry, int level)
+        {
+            string padding = new string(' ', (level + 1) * 2);
+            Console.WriteLine($"{padding}Animated icon found, not parsed yet");
+        }
+
+        /// <summary>
+        /// Print an RT_HTML resource
+        /// </summary>
+        private static void PrintResourceRT_HTML(Models.PortableExecutable.ResourceDataEntry entry, int level)
+        {
+            string padding = new string(' ', (level + 1) * 2);
+            Console.WriteLine($"{padding}HTML resource found, not parsed yet");
+
+            //if (entry.Data != null)
+            //    Console.WriteLine($"{padding}Value (ASCII): {Encoding.ASCII.GetString(entry.Data)}");
+            //if (entry.Data != null)
+            //    Console.WriteLine($"{padding}Value (UTF-8): {Encoding.UTF8.GetString(entry.Data)}");
+            //if (entry.Data != null)
+            //    Console.WriteLine($"{padding}Value (Unicode): {Encoding.Unicode.GetString(entry.Data)}");
+        }
+
+        /// <summary>
+        /// Print an RT_MANIFEST resource
+        /// </summary>
+        private static void PrintResourceRT_MANIFEST(Models.PortableExecutable.ResourceDataEntry entry, int level)
+        {
+            string padding = new string(' ', (level + 1) * 2);
+
+            Models.PortableExecutable.AssemblyManifest assemblyManifest = null;
+            try { assemblyManifest = entry.AsAssemblyManifest(); } catch { }
+            if (assemblyManifest == null)
+            {
+                Console.WriteLine($"{padding}Assembly manifest found, but malformed");
+                return;
+            }
+
+            Console.WriteLine($"{padding}Manifest version: {assemblyManifest.ManifestVersion}");
+            if (assemblyManifest.AssemblyIdentities != null && assemblyManifest.AssemblyIdentities.Length > 0)
+            {
+                for (int i = 0; i < assemblyManifest.AssemblyIdentities.Length; i++)
+                {
+                    var assemblyIdentity = assemblyManifest.AssemblyIdentities[i];
+                    Console.WriteLine($"{padding}[Assembly Identity {i}] Name: {assemblyIdentity.Name}");
+                    Console.WriteLine($"{padding}[Assembly Identity {i}] Version: {assemblyIdentity.Version}");
+                    Console.WriteLine($"{padding}[Assembly Identity {i}] Type: {assemblyIdentity.Type}");
+                    Console.WriteLine($"{padding}[Assembly Identity {i}] Processor architecture: {assemblyIdentity.ProcessorArchitecture}");
+                    Console.WriteLine($"{padding}[Assembly Identity {i}] Public key token: {assemblyIdentity.PublicKeyToken}");
+                    Console.WriteLine($"{padding}[Assembly Identity {i}] Language: {assemblyIdentity.Language}");
+                }
+            }
+
+            if (assemblyManifest.Description != null)
+                Console.WriteLine($"{padding}[Assembly Description] Value: {assemblyManifest.Description.Value}");
+
+            if (assemblyManifest.COMInterfaceExternalProxyStub != null && assemblyManifest.COMInterfaceExternalProxyStub.Length > 0)
+            {
+                for (int i = 0; i < assemblyManifest.COMInterfaceExternalProxyStub.Length; i++)
+                {
+                    var comInterfaceExternalProxyStub = assemblyManifest.COMInterfaceExternalProxyStub[i];
+                    Console.WriteLine($"{padding}[COM Interface External Proxy Stub {i}] IID: {comInterfaceExternalProxyStub.IID}");
+                    Console.WriteLine($"{padding}[COM Interface External Proxy Stub {i}] Name: {comInterfaceExternalProxyStub.Name}");
+                    Console.WriteLine($"{padding}[COM Interface External Proxy Stub {i}] TLBID: {comInterfaceExternalProxyStub.TLBID}");
+                    Console.WriteLine($"{padding}[COM Interface External Proxy Stub {i}] Number of methods: {comInterfaceExternalProxyStub.NumMethods}");
+                    Console.WriteLine($"{padding}[COM Interface External Proxy Stub {i}] Proxy stub (CLSID32): {comInterfaceExternalProxyStub.ProxyStubClsid32}");
+                    Console.WriteLine($"{padding}[COM Interface External Proxy Stub {i}] Base interface: {comInterfaceExternalProxyStub.BaseInterface}");
+                }
+            }
+
+            if (assemblyManifest.Dependency != null && assemblyManifest.Dependency.Length > 0)
+            {
+                for (int i = 0; i < assemblyManifest.Dependency.Length; i++)
+                {
+                    var dependency = assemblyManifest.Dependency[i];
+                    if (dependency.DependentAssembly != null)
+                    {
+                        if (dependency.DependentAssembly.AssemblyIdentity != null)
+                        {
+                            Console.WriteLine($"{padding}[Dependency {i} Assembly Identity] Name: {dependency.DependentAssembly.AssemblyIdentity.Name}");
+                            Console.WriteLine($"{padding}[Dependency {i} Assembly Identity] Version: {dependency.DependentAssembly.AssemblyIdentity.Version}");
+                            Console.WriteLine($"{padding}[Dependency {i} Assembly Identity] Type: {dependency.DependentAssembly.AssemblyIdentity.Type}");
+                            Console.WriteLine($"{padding}[Dependency {i} Assembly Identity] Processor architecture: {dependency.DependentAssembly.AssemblyIdentity.ProcessorArchitecture}");
+                            Console.WriteLine($"{padding}[Dependency {i} Assembly Identity] Public key token: {dependency.DependentAssembly.AssemblyIdentity.PublicKeyToken}");
+                            Console.WriteLine($"{padding}[Dependency {i} Assembly Identity] Language: {dependency.DependentAssembly.AssemblyIdentity.Language}");
+                        }
+                        if (dependency.DependentAssembly.BindingRedirect != null && dependency.DependentAssembly.BindingRedirect.Length > 0)
+                        {
+                            for (int j = 0; j < dependency.DependentAssembly.BindingRedirect.Length; j++)
+                            {
+                                var bindingRedirect = dependency.DependentAssembly.BindingRedirect[j];
+                                Console.WriteLine($"{padding}[Dependency {i} Binding Redirect {j}] Old version: {bindingRedirect.OldVersion}");
+                                Console.WriteLine($"{padding}[Dependency {i} Binding Redirect {j}] New version: {bindingRedirect.NewVersion}");
+                            }
+                        }
+                    }
+
+                    Console.WriteLine($"{padding}[Dependency {i}] Optional: {dependency.Optional}");
+                }
+            }
+
+            if (assemblyManifest.File != null && assemblyManifest.File.Length > 0)
+            {
+                for (int i = 0; i < assemblyManifest.File.Length; i++)
+                {
+                    var file = assemblyManifest.File[i];
+                    Console.WriteLine($"{padding}[File {i}] Name: {file.Name}");
+                    Console.WriteLine($"{padding}[File {i}] Hash: {file.Hash}");
+                    Console.WriteLine($"{padding}[File {i}] Hash algorithm: {file.HashAlgorithm}");
+                    Console.WriteLine($"{padding}[File {i}] Size: {file.Size}");
+
+                    if (file.COMClass != null && file.COMClass.Length > 0)
+                    {
+                        for (int j = 0; j < file.COMClass.Length; j++)
+                        {
+                            var comClass = file.COMClass[j];
+                            Console.WriteLine($"{padding}[File {i} COM Class {j}] CLSID: {comClass.CLSID}");
+                            Console.WriteLine($"{padding}[File {i} COM Class {j}] Threading model: {comClass.ThreadingModel}");
+                            Console.WriteLine($"{padding}[File {i} COM Class {j}] Prog ID: {comClass.ProgID}");
+                            Console.WriteLine($"{padding}[File {i} COM Class {j}] TLBID: {comClass.TLBID}");
+                            Console.WriteLine($"{padding}[File {i} COM Class {j}] Description: {comClass.Description}");
+
+                            if (comClass.ProgIDs != null && comClass.ProgIDs.Length > 0)
+                            {
+                                for (int k = 0; k < comClass.ProgIDs.Length; k++)
+                                {
+                                    var progId = comClass.ProgIDs[k];
+                                    Console.WriteLine($"{padding}[File {i} COM Class {j} Prog ID {k}] Value: {progId.Value}");
+                                }
+                            }
+                        }
+                    }
+
+                    if (file.COMInterfaceProxyStub != null && file.COMInterfaceProxyStub.Length > 0)
+                    {
+                        for (int j = 0; j < file.COMInterfaceProxyStub.Length; j++)
+                        {
+                            var comInterfaceProxyStub = file.COMInterfaceProxyStub[j];
+                            Console.WriteLine($"{padding}[File {i} COM Interface Proxy Stub {j}] IID: {comInterfaceProxyStub.IID}");
+                            Console.WriteLine($"{padding}[File {i} COM Interface Proxy Stub {j}] Name: {comInterfaceProxyStub.Name}");
+                            Console.WriteLine($"{padding}[File {i} COM Interface Proxy Stub {j}] TLBID: {comInterfaceProxyStub.TLBID}");
+                            Console.WriteLine($"{padding}[File {i} COM Interface Proxy Stub {j}] Number of methods: {comInterfaceProxyStub.NumMethods}");
+                            Console.WriteLine($"{padding}[File {i} COM Interface Proxy Stub {j}] Proxy stub (CLSID32): {comInterfaceProxyStub.ProxyStubClsid32}");
+                            Console.WriteLine($"{padding}[File {i} COM Interface Proxy Stub {j}] Base interface: {comInterfaceProxyStub.BaseInterface}");
+                        }
+                    }
+
+                    if (file.Typelib != null && file.Typelib.Length > 0)
+                    {
+                        for (int j = 0; j < file.Typelib.Length; j++)
+                        {
+                            var typeLib = file.Typelib[j];
+                            Console.WriteLine($"{padding}[File {i} Type Lib {j}] TLBID: {typeLib.TLBID}");
+                            Console.WriteLine($"{padding}[File {i} Type Lib {j}] Version: {typeLib.Version}");
+                            Console.WriteLine($"{padding}[File {i} Type Lib {j}] Help directory: {typeLib.HelpDir}");
+                            Console.WriteLine($"{padding}[File {i} Type Lib {j}] Resource ID: {typeLib.ResourceID}");
+                            Console.WriteLine($"{padding}[File {i} Type Lib {j}] Flags: {typeLib.Flags}");
+                        }
+                    }
+
+                    if (file.WindowClass != null && file.WindowClass.Length > 0)
+                    {
+                        for (int j = 0; j < file.WindowClass.Length; j++)
+                        {
+                            var windowClass = file.WindowClass[j];
+                            Console.WriteLine($"{padding}[File {i} Window Class {j}] Versioned: {windowClass.Versioned}");
+                            Console.WriteLine($"{padding}[File {i} Window Class {j}] Value: {windowClass.Value}");
+                        }
+                    }
+                }
+            }
+
+            if (assemblyManifest.EverythingElse != null && assemblyManifest.EverythingElse.Length > 0)
+            {
+                for (int i = 0; i < assemblyManifest.EverythingElse.Length; i++)
+                {
+                    var thing = assemblyManifest.EverythingElse[i];
+                    if (thing is XmlElement element)
+                    {
+                        Console.WriteLine($"{padding}Unparsed XML Element {i}: {element.OuterXml}");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"{padding}Unparsed Item {i}: {thing}");
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Print an UNKNOWN or custom resource
+        /// </summary>
+        private static void PrintResourceUNKNOWN(Models.PortableExecutable.ResourceDataEntry entry, int level, object resourceType)
+        {
+            string padding = new string(' ', (level + 1) * 2);
+
+            if (resourceType is uint numericType)
+            {
+                Console.WriteLine($"{padding}Type {(Models.PortableExecutable.ResourceType)numericType} found, not parsed yet");
+
+                //if (entry.Data != null)
+                //    Console.WriteLine($"{padding}Value (ASCII): {Encoding.ASCII.GetString(entry.Data)}");
+                //if (entry.Data != null)
+                //    Console.WriteLine($"{padding}Value (UTF-8): {Encoding.UTF8.GetString(entry.Data)}");
+                //if (entry.Data != null)
+                //    Console.WriteLine($"{padding}Value (Unicode): {Encoding.Unicode.GetString(entry.Data)}");
+            }
+            else if (resourceType is string stringType)
+            {
+                Console.WriteLine($"{padding}Type {stringType} found, not parsed yet");
+
+                if (entry.Data[0] == 0x4D && entry.Data[1] == 0x5A)
+                {
+                    Console.WriteLine($"{padding}Data: [Embedded Executable File]"); // TODO: Parse this out and print separately
+                }
+                else
+                {
+                    //if (entry.Data != null)
+                    //    Console.WriteLine($"{padding}Value (ASCII): {Encoding.ASCII.GetString(entry.Data)}");
+                    //if (entry.Data != null)
+                    //    Console.WriteLine($"{padding}Value (UTF-8): {Encoding.UTF8.GetString(entry.Data)}");
+                    //if (entry.Data != null)
+                    //    Console.WriteLine($"{padding}Value (Unicode): {Encoding.Unicode.GetString(entry.Data)}");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"{padding}Unknown type {resourceType} found, not parsed yet");
+
+                //if (entry.Data != null)
+                //    Console.WriteLine($"{padding}Value (ASCII): {Encoding.ASCII.GetString(entry.Data)}");
+                //if (entry.Data != null)
+                //    Console.WriteLine($"{padding}Value (UTF-8): {Encoding.UTF8.GetString(entry.Data)}");
+                //if (entry.Data != null)
+                //    Console.WriteLine($"{padding}Value (Unicode): {Encoding.Unicode.GetString(entry.Data)}");
+            }
         }
 
         #endregion
