@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
 using BurnOutSharp.Tools;
@@ -24,18 +25,12 @@ namespace BurnOutSharp.ProtectionType
             else if (name?.StartsWith("Games for Windows", StringComparison.OrdinalIgnoreCase) == true)
                 return $"Games for Windows LIVE {Utilities.GetInternalVersion(pex)}";
 
-            // Get the .rdata section, if it exists
-            if (pex.ContainsSection(".rdata"))
+            // Get the import directory table
+            if (pex.ImportTable?.ImportDirectoryTable != null)
             {
-                var matchers = new List<ContentMatchSet>
-                {
-                    // xlive.dll
-                    new ContentMatchSet(new byte?[] { 0x78, 0x6C, 0x69, 0x76, 0x65, 0x2E, 0x64, 0x6C, 0x6C }, "Games for Windows LIVE"),
-                };
-
-                string match = MatchUtil.GetFirstMatch(file, pex.GetFirstSectionData(".rdata"), matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
-                    return match;
+                bool match = pex.ImportTable.ImportDirectoryTable.Any(idte => idte.Name == "xlive.dll");
+                if (match)
+                    return "Games for Windows LIVE";
             }
 
             return null;
