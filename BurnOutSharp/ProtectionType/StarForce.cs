@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Tools;
 using BurnOutSharp.Wrappers;
@@ -18,7 +19,9 @@ namespace BurnOutSharp.ProtectionType
                 return null;
 
             string name = pex.LegalCopyright;
-            if (name?.Contains("Protection Technology") == true) // Protection Technology (StarForce)?
+            if (name?.StartsWith("(c) Protection Technology") == true) // (c) Protection Technology (StarForce)?
+                return $"StarForce {Utilities.GetInternalVersion(pex)}";
+            else if (name?.Contains("Protection Technology") == true) // Protection Technology (StarForce)?
                 return $"StarForce {Utilities.GetInternalVersion(pex)}";
 
             name = pex.InternalName;
@@ -26,6 +29,14 @@ namespace BurnOutSharp.ProtectionType
                 return $"StarForce {Utilities.GetInternalVersion(pex)}";
             else if (name?.Equals("protect.exe", StringComparison.Ordinal) == true)
                 return $"StarForce {Utilities.GetInternalVersion(pex)}";
+
+            // Check the export name table
+            if (pex.ExportNameTable != null)
+            {
+                // TODO: Should we just check for "PSA_*" instead of a single entry?
+                if (pex.ExportNameTable.Any(s => s == "PSA_GetDiscLabel"))
+                    return $"StarForce {Utilities.GetInternalVersion(pex)}";
+            }
 
             // TODO: Find what fvinfo field actually maps to this
             name = pex.FileDescription;
