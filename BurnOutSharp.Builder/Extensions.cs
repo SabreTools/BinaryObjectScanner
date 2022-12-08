@@ -609,9 +609,12 @@ namespace BurnOutSharp.Builder
                     dialogTemplateExtended.Typeface = entry.Data.ReadString(ref offset, Encoding.Unicode);
                 }
 
-                // Align to the DWORD boundary
-                while ((offset % 4) != 0)
-                    _ = entry.Data.ReadByte(ref offset);
+                // Align to the DWORD boundary if we're not at the end
+                if (offset != entry.Data.Length)
+                {
+                    while ((offset % 4) != 0)
+                        _ = entry.Data.ReadByte(ref offset);
+                }
 
                 #endregion
 
@@ -832,9 +835,12 @@ namespace BurnOutSharp.Builder
                     dialogTemplate.Typeface = entry.Data.ReadString(ref offset, Encoding.Unicode);
                 }
 
-                // Align to the DWORD boundary
-                while ((offset % 4) != 0)
-                    _ = entry.Data.ReadByte(ref offset);
+                // Align to the DWORD boundary if we're not at the end
+                if (offset != entry.Data.Length)
+                {
+                    while ((offset % 4) != 0)
+                        _ = entry.Data.ReadByte(ref offset);
+                }
 
                 #endregion
 
