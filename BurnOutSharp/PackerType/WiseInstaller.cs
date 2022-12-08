@@ -47,6 +47,8 @@ namespace BurnOutSharp.PackerType
             if (sections == null)
                 return null;
 
+            // TODO: Investigate STUB32.EXE in export directory table
+
             // Get the .data/DATA section, if it exists
             var dataSectionRaw = pex.GetFirstSectionData(".data") ?? pex.GetFirstSectionData("DATA");
             if (dataSectionRaw != null)
