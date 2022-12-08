@@ -67,7 +67,13 @@ namespace BurnOutSharp.ProtectionType
             int endDosStub = (int)pex.Stub_NewExeHeaderAddr;
             bool containsCheck = pex.StubExecutableData.FirstPosition(check, out int position);
 
-            // If the .text section doesn't exist, then the second check can't be found
+            // TODO: Can't use this because of the "SNIF/MPVI" check at the end
+            //// Check the executable tables
+            //bool containsCheck2 = (pex.ImportTable?.HintNameTable.Any(hnte => hnte.Name == "GetModuleHandleA") ?? false)
+            //    && (pex.ImportTable?.HintNameTable.Any(hnte => hnte.Name == "GetProcAddress") ?? false)
+            //    && (pex.ImportTable?.HintNameTable.Any(hnte => hnte.Name == "LoadLibraryA") ?? false)
+            //    && (pex.ImportTable?.ImportDirectoryTable.Any(idte => idte.Name == "KERNEL32.dll") ?? false);
+
             bool containsCheck2 = false;
             int position2 = -1;
 
