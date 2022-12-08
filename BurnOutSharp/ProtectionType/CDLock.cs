@@ -34,6 +34,8 @@ namespace BurnOutSharp.ProtectionType
             if (sections == null)
                 return null;
 
+            // TODO: Investigate "VirtualProtect" in Hint/Name table
+
             // Get the .data/DATA section, if it exists
             var dataSectionRaw = pex.GetFirstSectionData(".data") ?? pex.GetFirstSectionData("DATA");
             if (dataSectionRaw != null)
