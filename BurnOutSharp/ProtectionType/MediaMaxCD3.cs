@@ -41,6 +41,9 @@ namespace BurnOutSharp.ProtectionType
             if (limitedProductionResources.Any())
                 return $"MediaMax CD-3";
 
+            // TODO: Investigate the following dialog item title resource
+            // "This limited production advanced CD is not playable on your computer. It is solely intended for playback on standard CD players."
+
             // Get the .data/DATA section, if it exists
             var dataSectionRaw = pex.GetFirstSectionData(".data") ?? pex.GetFirstSectionData("DATA");
             if (dataSectionRaw != null)
@@ -60,22 +63,11 @@ namespace BurnOutSharp.ProtectionType
                     return match;
             }
 
-            // Get the .rdata section, if it exists
-            if (pex.ContainsSection(".rdata"))
+            // Get the export name table
+            if (pex.ExportNameTable != null)
             {
-                var matchers = new List<ContentMatchSet>
-                {
-                    // DllInstallSbcp
-                    new ContentMatchSet(new byte?[]
-                    {
-                        0x44, 0x6C, 0x6C, 0x49, 0x6E, 0x73, 0x74, 0x61,
-                        0x6C, 0x6C, 0x53, 0x62, 0x63, 0x70
-                    }, "MediaMax CD-3"),
-                };
-
-                string match = MatchUtil.GetFirstMatch(file, pex.GetFirstSectionData(".rdata"), matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
-                    return match;
+                if (pex.ExportNameTable.Any(s => s == "DllInstallSbcp"))
+                    return "MediaMax CD-3";
             }
 
             return null;
