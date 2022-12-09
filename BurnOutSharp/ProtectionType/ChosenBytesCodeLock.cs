@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
 using BurnOutSharp.Wrappers;
@@ -19,30 +20,8 @@ namespace BurnOutSharp.ProtectionType
     /// Code-Lock FAQ: https://web.archive.org/web/20041205165232/http://www.chosenbytes.com/codefaq.php
     /// Download (Version 2.35 trial): https://web.archive.org/web/20060220121200/http://www.chosenbytes.com:80/Code-Lock_cnet.zip
     /// </summary>
-    public class ChosenBytesCodeLock : IContentCheck, IPathCheck, IPortableExecutableCheck
+    public class ChosenBytesCodeLock : IPathCheck, IPortableExecutableCheck
     {
-        /// <inheritdoc/>
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug)
-        {
-            // TODO: Obtain a sample to find where this string is in a typical executable.
-            if (includeDebug)
-            {
-                var contentMatchSets = new List<ContentMatchSet>
-                 {
-                     // CODE-LOCK.OCX
-                     new ContentMatchSet(new byte?[]
-                     {
-                         0x43, 0x4F, 0x44, 0x45, 0x2D, 0x4C, 0x4F, 0x43,
-                         0x4B, 0x2E, 0x4F, 0x43, 0x58
-                     }, "ChosenBytes Code-Lock (Unconfirmed - Please report to us on Github)"),
-                 };
-
-                return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
-            }
-
-            return null;
-        }
-
         /// <inheritdoc/>
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
@@ -53,28 +32,22 @@ namespace BurnOutSharp.ProtectionType
 
             // Found in "Code-Lock.ocx" in Code-Lock version 2.35.
             // Also worth noting is the File Description for this file, which is "A future for you, a challenge for the rest.".
-            // This check is currently broken until executable checks are overhauled.
             string name = pex.ProductName;
             if (name?.StartsWith("Code-Lock", StringComparison.OrdinalIgnoreCase) == true)
                 return $"ChosenBytes Code-Lock {pex.ProductVersion}";
 
-            // Get the .text section, if it exists
-            if (pex.ContainsSection(".text"))
+            // Get the .text section strings, if they exist
+            List<string> strs = pex.GetFirstSectionStrings(".text");
+            if (strs != null)
             {
-                var matchers = new List<ContentMatchSet>
-                {
-                    // Found in compiled code examples created with Code-Lock 2.35.
-                    // Code-Lock.ocx
-                    new ContentMatchSet(new byte?[]
-                    {
-                        0x43, 0x6F, 0x64, 0x65, 0x2D, 0x4C, 0x6F, 0x63, 
-                        0x6B, 0x2E, 0x6F, 0x63, 0x78
-                    }, "ChosenBytes Code-Lock"),
-                };
+                if (strs.Any(s => s.Contains("CODE-LOCK.OCX")))
+                    return "ChosenBytes Code-Lock";
 
-                string match = MatchUtil.GetFirstMatch(file, pex.GetFirstSectionData(".text"), matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
-                    return match;
+                if (strs.Any(s => s.Contains("Code-Lock.ocx")))
+                    return "ChosenBytes Code-Lock";
+
+                if (strs.Any(s => s.Contains("CodeLock.Secure")))
+                    return "ChosenBytes Code-Lock";
             }
 
             return null;
