@@ -2,8 +2,8 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using BurnOutSharp.Interfaces;
-using BurnOutSharp.Matching;
 using BurnOutSharp.Tools;
 using BurnOutSharp.Wrappers;
 
@@ -29,38 +29,21 @@ namespace BurnOutSharp.PackerType
             if (name?.Equals("WEXTRACT.EXE", StringComparison.OrdinalIgnoreCase) == true)
                 return $"Microsoft CAB SFX {GetVersion(pex)}";
 
-            // Get the .data/DATA section, if it exists
-            var dataSectionRaw = pex.GetFirstSectionData(".data") ?? pex.GetFirstSectionData("DATA");
-            if (dataSectionRaw != null)
+            // Get the .data/DATA section strings, if they exist
+            List<string> strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
+            if (strs != null)
             {
-                var matchers = new List<ContentMatchSet>
-                {
-                    // wextract_cleanup
-                    new ContentMatchSet(new byte?[]
-                    {
-                        0x77, 0x65, 0x78, 0x74, 0x72, 0x61, 0x63, 0x74, 
-                        0x5F, 0x63, 0x6C, 0x65, 0x61, 0x6E, 0x75, 0x70,
-                    }, "Microsoft CAB SFX"),
-                };
-
-                string match = MatchUtil.GetFirstMatch(file, dataSectionRaw, matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
+                if (strs.Any(s => s.Contains("wextract_cleanup")))
                     return $"Microsoft CAB SFX {GetVersion(pex)}";
             }
-            
-            // Get the .text section, if it exists
-            if (pex.ContainsSection(".text"))
-            {
-                var matchers = new List<ContentMatchSet>
-                {
-                    /* This detects a different but similar type of SFX that uses Microsoft CAB files.
-                       Further research is needed to see if it's just a different version or entirely separate. */
-                    // MSCFu
-                    new ContentMatchSet(new byte?[] { 0x4D, 0x53, 0x43, 0x46, 0x75 }, "Microsoft CAB SFX"),
-                };
 
-                string match = MatchUtil.GetFirstMatch(file, pex.GetFirstSectionData(".text"), matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
+            // Get the .text section strings, if they exist
+            strs = pex.GetFirstSectionStrings(".text");
+            if (strs != null)
+            {
+                // This detects a different but similar type of SFX that uses Microsoft CAB files.
+                // Further research is needed to see if it's just a different version or entirely separate.
+                if (strs.Any(s => s.Contains("MSCFu")))
                     return $"Microsoft CAB SFX {GetVersion(pex)}";
             }
 
