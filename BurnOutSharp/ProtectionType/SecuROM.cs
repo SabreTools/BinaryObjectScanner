@@ -22,7 +22,15 @@ namespace BurnOutSharp.ProtectionType
 
             string name = pex.FileDescription;
             if (name?.Contains("SecuROM PA") == true)
-                return $"SecuROM PA v{Utilities.GetInternalVersion(pex)}";
+                return $"SecuROM Product Activation v{Utilities.GetInternalVersion(pex)}";
+
+            name = pex.OriginalFilename;
+            if (name?.Equals("paul_dll_activate_and_play.dll") == true)
+                return $"SecuROM Product Activation v{Utilities.GetInternalVersion(pex)}";
+
+            name = pex.ProductName;
+            if (name?.Contains("SecuROM Activate & Play") == true)
+                return $"SecuROM Product Activation v{Utilities.GetInternalVersion(pex)}";
 
             // Get the matrosch section, if it exists
             bool matroschSection = pex.ContainsSection("matrosch", exact: true);
@@ -85,22 +93,6 @@ namespace BurnOutSharp.ProtectionType
             {
                 var matchers = new List<ContentMatchSet>
                 {
-                    // drm_pagui_doit -- shortened from "_and_play.dll + (char)0x00 + drm_pagui_doit"
-                    new ContentMatchSet(new byte?[]
-                    {
-                        0x64, 0x72, 0x6D, 0x5F, 0x70, 0x61, 0x67, 0x75,
-                        0x69, 0x5F, 0x64, 0x6F, 0x69, 0x74
-                    }, Utilities.GetInternalVersion, "SecuROM Product Activation"),
-
-                    // TODO: Re-enable this one if the above undermatches somehow
-                    // // S + (char)0x00 + e + (char)0x00 + c + (char)0x00 + u + (char)0x00 + R + (char)0x00 + O + (char)0x00 + M + (char)0x00 +   + (char)0x00 + P + (char)0x00 + A + (char)0x00
-                    // new ContentMatchSet(new byte?[]
-                    // {
-                    //     0x53, 0x00, 0x65, 0x00, 0x63, 0x00, 0x75, 0x00,
-                    //     0x52, 0x00, 0x4F, 0x00, 0x4D, 0x00, 0x20, 0x00,
-                    //     0x50, 0x00, 0x41, 0x00
-                    // }, Utilities.GetInternalVersion, "SecuROM Product Activation"),
-
                     // The following 2 checks are unique:
                     // Both have the identifier found within `.rdata` but the version is within `.data`
                     // So, we use the placeholder "WHITELABEL" to see if we got a match
@@ -114,12 +106,7 @@ namespace BurnOutSharp.ProtectionType
 
                 string match = MatchUtil.GetFirstMatch(file, pex.GetFirstSectionData(".rdata"), matchers, includeDebug);
                 if (!string.IsNullOrWhiteSpace(match))
-                {
-                    if (match.StartsWith("WHITELABEL"))
-                        return $"SecuROM {GetV8WhiteLabelVersion(pex)} (White Label)";
-
-                    return match;
-                }
+                    return $"SecuROM {GetV8WhiteLabelVersion(pex)} (White Label)";
             }
 
             // Get the .cms_d and .cms_t sections, if they exist -- TODO: Confirm if both are needed or either/or is fine
