@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Wrappers;
-using psxt001z;
 
 namespace BurnOutSharp.Tools
 {
@@ -691,6 +689,27 @@ namespace BurnOutSharp.Tools
         #region Processed Executable Information
 
         /// <summary>
+        /// Get the internal version as reported by the filesystem
+        /// </summary>
+        /// <param name="file">File to check for version</param>
+        /// <returns>Version string, null on error</returns>
+        public static string GetInternalVersion(string file)
+        {
+            try
+            {
+                using (Stream fileStream = File.OpenRead(file))
+                {
+                    var pex = PortableExecutable.Create(fileStream);
+                    return GetInternalVersion(pex);
+                }
+            }
+            catch
+            {
+                return string.Empty;
+            }
+        }
+        
+        /// <summary>
         /// Get the internal version as reported by the resources
         /// </summary>
         /// <param name="pex">PortableExecutable representing the file contents</param>
@@ -712,45 +731,9 @@ namespace BurnOutSharp.Tools
             return null;
         }
 
-        /// <summary>
-        /// Get the internal version as reported by the filesystem
-        /// </summary>
-        /// <param name="file">File to check for version</param>
-        /// <returns>Version string, null on error</returns>
-        public static string GetInternalVersion(string file)
-        {
-            var fvinfo = GetFileVersionInfo(file);
-            if (fvinfo?.FileVersion == null)
-                return string.Empty;
-            if (fvinfo.FileVersion != "")
-                return fvinfo.FileVersion.Replace(", ", ".");
-            else
-                return fvinfo.ProductVersion.Replace(", ", ".");
-        }
-
         #endregion
 
         #region Executable Information
-
-        /// <summary>
-        /// Get the file version info object related to a path, if possible
-        /// </summary>
-        /// <param name="file">File to get information for</param>
-        /// <returns>FileVersionInfo object on success, null on error</returns>
-        private static FileVersionInfo GetFileVersionInfo(string file)
-        {
-            if (file == null || !File.Exists(file))
-                return null;
-
-            try
-            {
-                return FileVersionInfo.GetVersionInfo(file);
-            }
-            catch
-            {
-                return null;
-            }
-        }
 
         /// <summary>
         /// Get the SHA1 hash of a file, if possible
