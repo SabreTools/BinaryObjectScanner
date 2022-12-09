@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
 using BurnOutSharp.Wrappers;
@@ -26,32 +27,17 @@ namespace BurnOutSharp.ProtectionType
             // Found on "All That I Am" by Santana (Barcode 8 2876-59773-2 6)
             string name = pex.FileDescription;
             if (name?.StartsWith("Windows Media Data Session Licensing Engine", StringComparison.OrdinalIgnoreCase) == true)
-                return $"Windows Media Data Session DRM";
+                return "Windows Media Data Session DRM";
 
-            // Get the .rdata section, if it exists
-            if (pex.ContainsSection(".rdata"))
-            {
-                var matchers = new List<ContentMatchSet>
-                {
-                    // You cannot generate a licence to play the protected Windows Media files without an original disc.
-                    // Found in "autorun.exe" ("Touch" by Amerie).
-                    new ContentMatchSet(new byte?[] {
-                        0x59, 0x6F, 0x75, 0x20, 0x63, 0x61, 0x6E, 0x6E, 0x6F, 0x74, 0x20, 0x67,
-                        0x65, 0x6E, 0x65, 0x72, 0x61, 0x74, 0x65, 0x20, 0x61, 0x20, 0x6C, 0x69,
-                        0x63, 0x65, 0x6E, 0x63, 0x65, 0x20, 0x74, 0x6F, 0x20, 0x70, 0x6C, 0x61,
-                        0x79, 0x20, 0x74, 0x68, 0x65, 0x20, 0x70, 0x72, 0x6F, 0x74, 0x65, 0x63,
-                        0x74, 0x65, 0x64, 0x20, 0x57, 0x69, 0x6E, 0x64, 0x6F, 0x77, 0x73, 0x20,
-                        0x4D, 0x65, 0x64, 0x69, 0x61, 0x20, 0x66, 0x69, 0x6C, 0x65, 0x73, 0x20,
-                        0x77, 0x69, 0x74, 0x68, 0x6F, 0x75, 0x74, 0x20, 0x61, 0x6E, 0x20, 0x6F,
-                        0x72, 0x69, 0x67, 0x69, 0x6E, 0x61, 0x6C, 0x20, 0x64, 0x69, 0x73, 0x63,
-                        0x2E
-                    }, "Windows Media Data Session DRM"),
-                };
+            // Found in "autorun.exe" ("Touch" by Amerie).
+            var resource = pex.FindDialogBoxByItemTitle("If you attempt to play this content on a computer without a license, you will first have to acquire a license before it will play.");
+            if (resource.Any())
+                return "Windows Media Data Session DRM";
 
-                string match = MatchUtil.GetFirstMatch(file, pex.GetFirstSectionData(".rdata"), matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
-                    return match;
-            }
+            // Found in "autorun.exe" ("Touch" by Amerie).
+            resource = pex.FindDialogBoxByItemTitle("You cannot generate a licence to play the protected Windows Media files without an original disc.");
+            if (resource.Any())
+                return "Windows Media Data Session DRM";
 
             return null;
         }
