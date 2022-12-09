@@ -3032,34 +3032,7 @@ namespace BurnOutSharp.Wrappers
 
             // Get the first index of the section
             int index = Array.IndexOf(SectionNames, name);
-            if (index == -1)
-                return null;
-
-            // Get the section data from the table
-            var section = SectionTable[index];
-            uint address = section.VirtualAddress.ConvertVirtualAddress(SectionTable);
-            if (address == 0)
-                return null;
-
-            // Set the section size
-            uint size = section.SizeOfRawData;
-            lock (_sourceDataLock)
-            {
-                // Create the section data array if we have to
-                if (_sectionData == null)
-                    _sectionData = new byte[SectionNames.Length][];
-
-                // If we already have cached data, just use that immediately
-                if (_sectionData[index] != null)
-                    return _sectionData[index];
-
-                // Populate the raw section data based on the source
-                byte[] sectionData = ReadFromDataSource((int)address, (int)size);
-
-                // Cache and return the section data, even if null
-                _sectionData[index] = sectionData;
-                return sectionData;
-            }
+            return GetSectionData(index);
         }
 
         /// <summary>
@@ -3081,22 +3054,7 @@ namespace BurnOutSharp.Wrappers
 
             // Get the first index of the section
             int index = Array.IndexOf(SectionNames, name);
-            if (index == -1)
-                return null;
-
-            // Get the section data from the table
-            var section = SectionTable[index];
-            uint address = section.VirtualAddress.ConvertVirtualAddress(SectionTable);
-            if (address == 0)
-                return null;
-
-            // Set the section size
-            uint size = section.SizeOfRawData;
-            lock (_sourceDataLock)
-            {
-                // Immediately return the data without caching
-                return ReadFromDataSource((int)address + offset, (int)size - offset);
-            }
+            return GetSectionData(index);
         }
 
         /// <summary>
@@ -3117,34 +3075,7 @@ namespace BurnOutSharp.Wrappers
 
             // Get the last index of the section
             int index = Array.LastIndexOf(SectionNames, name);
-            if (index == -1)
-                return null;
-
-            // Get the section data from the table
-            var section = SectionTable[index];
-            uint address = section.VirtualAddress.ConvertVirtualAddress(SectionTable);
-            if (address == 0)
-                return null;
-
-            // Set the section size
-            uint size = section.SizeOfRawData;
-            lock (_sourceDataLock)
-            {
-                // Create the section data array if we have to
-                if (_sectionData == null)
-                    _sectionData = new byte[SectionNames.Length][];
-
-                // If we already have cached data, just use that immediately
-                if (_sectionData[index] != null)
-                    return _sectionData[index];
-
-                // Populate the raw section data based on the source
-                byte[] sectionData = ReadFromDataSource((int)address, (int)size);
-
-                // Cache and return the section data, even if null
-                _sectionData[index] = sectionData;
-                return sectionData;
-            }
+            return GetSectionData(index);
         }
 
         /// <summary>
@@ -3207,34 +3138,7 @@ namespace BurnOutSharp.Wrappers
 
             // Get the first index of the section
             int index = Array.IndexOf(SectionNames, name);
-            if (index == -1)
-                return null;
-
-            // Get the section data from the table
-            var section = SectionTable[index];
-            uint address = section.VirtualAddress.ConvertVirtualAddress(SectionTable);
-            if (address == 0)
-                return null;
-
-            // Set the section size
-            uint size = section.SizeOfRawData;
-            lock (_sourceDataLock)
-            {
-                // Create the section string array if we have to
-                if (_sectionStringData == null)
-                    _sectionStringData = new List<string>[SectionNames.Length];
-
-                // If we already have cached data, just use that immediately
-                if (_sectionStringData[index] != null)
-                    return _sectionStringData[index];
-
-                // Populate the section string data based on the source
-                List<string> sectionStringData = ReadStringsFromDataSource((int)address, (int)size);
-
-                // Cache and return the section string data, even if null
-                _sectionStringData[index] = sectionStringData;
-                return sectionStringData;
-            }
+            return GetSectionStrings(index);
         }
 
         /// <summary>
@@ -3255,41 +3159,13 @@ namespace BurnOutSharp.Wrappers
 
             // Get the last index of the section
             int index = Array.LastIndexOf(SectionNames, name);
-            if (index == -1)
-                return null;
-
-            // Get the section data from the table
-            var section = SectionTable[index];
-            uint address = section.VirtualAddress.ConvertVirtualAddress(SectionTable);
-            if (address == 0)
-                return null;
-
-            // Set the section size
-            uint size = section.SizeOfRawData;
-            lock (_sourceDataLock)
-            {
-                // Create the section string array if we have to
-                if (_sectionStringData == null)
-                    _sectionStringData = new List<string>[SectionNames.Length];
-
-                // If we already have cached data, just use that immediately
-                if (_sectionStringData[index] != null)
-                    return _sectionStringData[index];
-
-                // Populate the section string data based on the source
-                List<string> sectionStringData = ReadStringsFromDataSource((int)address, (int)size);
-
-                // Cache and return the section string data, even if null
-                _sectionStringData[index] = sectionStringData;
-                return sectionStringData;
-            }
+            return GetSectionStrings(index);
         }
 
         /// <summary>
         /// Get the section strings based on index, if possible
         /// </summary>
-        /// <param name="name">Name of the section to check for</param>
-        /// <param name="exact">True to enable exact matching of names, false for starts-with</param>
+        /// <param name="index">Index of the section to check for</param>
         /// <returns>Section strings on success, null on error</returns>
         public List<string> GetSectionStrings(int index)
         {
