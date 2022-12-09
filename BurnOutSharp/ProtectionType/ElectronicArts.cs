@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using BurnOutSharp.Interfaces;
-using BurnOutSharp.Matching;
 using BurnOutSharp.Tools;
 using BurnOutSharp.Wrappers;
 
@@ -35,61 +34,28 @@ namespace BurnOutSharp.ProtectionType
             else if (pex.FindGenericResource("About CDKey").Any())
                     return $"EA CdKey Registration Module {Utilities.GetInternalVersion(pex)}";
 
-            // Get the .data/DATA section, if it exists
-            var dataSectionRaw = pex.GetFirstSectionData(".data") ?? pex.GetFirstSectionData("DATA");
-            if (dataSectionRaw != null)
+            // Get the .data/DATA section strings, if they exist
+            List<string> strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
+            if (strs != null)
             {
-                var matchers = new List<ContentMatchSet>
-                {
-                    // EReg Config Form
-                    new ContentMatchSet(new byte?[]
-                    {
-                        0x45, 0x52, 0x65, 0x67, 0x20, 0x43, 0x6F, 0x6E,
-                        0x66, 0x69, 0x67, 0x20, 0x46, 0x6F, 0x72, 0x6D
-                    }, "EA CdKey Registration Module"),
-                };
-
-                string match = MatchUtil.GetFirstMatch(file, dataSectionRaw, matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
-                    return $"{match} {Utilities.GetInternalVersion(pex)}";
+                if (strs.Any(s => s.Contains("EReg Config Form")))
+                    return "EA CdKey Registration Module";
             }
 
-            // Get the .rdata section, if it exists
-            if (pex.ContainsSection(".rdata"))
+            // Get the .rdata section strings, if they exist
+            strs = pex.GetFirstSectionStrings(".rdata");
+            if (strs != null)
             {
-                var matchers = new List<ContentMatchSet>
-                {
-                    // GenericEA + (char)0x00 + (char)0x00 + (char)0x00 + Activation
-                    new ContentMatchSet(new byte?[]
-                    {
-                        0x47, 0x65, 0x6E, 0x65, 0x72, 0x69, 0x63, 0x45,
-                        0x41, 0x00, 0x00, 0x00, 0x41, 0x63, 0x74, 0x69,
-                        0x76, 0x61, 0x74, 0x69, 0x6F, 0x6E
-                    }, "EA DRM Protection"),
-                };
-
-                string match = MatchUtil.GetFirstMatch(file, pex.GetFirstSectionData(".rdata"), matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
-                    return match;
+                if (strs.Any(s => s.Contains("GenericEA")) && strs.Any(s => s.Contains("Activation")))
+                    return "EA DRM Protection";
             }
 
-            // Get the .text section, if it exists
-            if (pex.ContainsSection(".text"))
+            // Get the .rdata section strings, if they exist
+            strs = pex.GetFirstSectionStrings(".text");
+            if (strs != null)
             {
-                var matchers = new List<ContentMatchSet>
-                {
-                    // GenericEA + (char)0x00 + (char)0x00 + (char)0x00 + Activation
-                    new ContentMatchSet(new byte?[]
-                    {
-                        0x47, 0x65, 0x6E, 0x65, 0x72, 0x69, 0x63, 0x45,
-                        0x41, 0x00, 0x00, 0x00, 0x41, 0x63, 0x74, 0x69,
-                        0x76, 0x61, 0x74, 0x69, 0x6F, 0x6E
-                    }, "EA DRM Protection"),
-                };
-
-                string match = MatchUtil.GetFirstMatch(file, pex.GetFirstSectionData(".text"), matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
-                    return match;
+                if (strs.Any(s => s.Contains("GenericEA")) && strs.Any(s => s.Contains("Activation")))
+                    return "EA DRM Protection";
             }
 
             return null;
