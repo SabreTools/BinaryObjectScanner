@@ -1,8 +1,8 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using BurnOutSharp.Interfaces;
-using BurnOutSharp.Matching;
 using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.PackerType
@@ -18,23 +18,12 @@ namespace BurnOutSharp.PackerType
             if (sections == null)
                 return null;
 
-            // Get the .text section, if it exists
-            if (pex.ContainsSection(".text"))
+            // Get the .text section strings, if they exist
+            List<string> strs = pex.GetFirstSectionStrings(".text");
+            if (strs != null)
             {
-                var matchers = new List<ContentMatchSet>
-                {
-                    // DotfuscatorAttribute
-                    new ContentMatchSet(new byte?[]
-                    {
-                        0x44, 0x6F, 0x74, 0x66, 0x75, 0x73, 0x63, 0x61,
-                        0x74, 0x6F, 0x72, 0x41, 0x74, 0x74, 0x72, 0x69,
-                        0x62, 0x75, 0x74, 0x65
-                    }, "dotFuscator"),
-                };
-
-                string match = MatchUtil.GetFirstMatch(file, pex.GetFirstSectionData(".text"), matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
-                    return match;
+                if (strs.Any(s => s.Contains("DotfuscatorAttribute")))
+                    return "dotFuscator";
             }
 
             return null;
