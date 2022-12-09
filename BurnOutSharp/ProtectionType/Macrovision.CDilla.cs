@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using BurnOutSharp.Matching;
 using BurnOutSharp.Wrappers;
 
@@ -68,25 +69,6 @@ namespace BurnOutSharp.ProtectionType
             if (sections == null)
                 return null;
 
-            // Get the .data/DATA section, if it exists
-            var dataSectionRaw = pex.GetFirstSectionData(".data") ?? pex.GetFirstSectionData("DATA");
-            if (dataSectionRaw != null)
-            {
-                var matchers = new List<ContentMatchSet>
-                {
-                    // SOFTWARE\C-Dilla\RTS
-                    // Found in "DJMixStation\DJMixStation.exe" in IA item "ejay_nestle_trial".
-                    new ContentMatchSet(new byte?[] { 
-                        0x53, 0x4F, 0x46, 0x54, 0x57, 0x41, 0x52, 0x45, 
-                        0x5C, 0x43, 0x2D, 0x44, 0x69, 0x6C, 0x6C, 0x61, 
-                        0x5C, 0x52, 0x54, 0x53 }, "C-Dilla License Management System"),
-                };
-
-                string match = MatchUtil.GetFirstMatch(file, dataSectionRaw, matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
-                    return match;
-            }
-
             string name = pex.FileDescription;
 
             // Found in in "cdilla52.dll" from C-Dilla LMS version 3.24.010.
@@ -118,6 +100,58 @@ namespace BurnOutSharp.ProtectionType
             // Found in "CDANTSRV.EXE" from version 3.27.000 of C-Dilla LMS.
             if (name?.Equals("CD-Secure/CD-Compress Windows NT", StringComparison.OrdinalIgnoreCase) == true)
                 return $"C-Dilla License Management System Version {pex.ProductVersion}";
+
+            // Get string table resources
+            var resource = pex.FindStringTableByEntry("C-Dilla Licence Management System");
+            if (resource.Any())
+                return $"C-Dilla License Management System";
+
+            resource = pex.FindStringTableByEntry("C-DiIla Licence Management System");
+            if (resource.Any())
+                return $"C-Dilla License Management System";
+
+            resource = pex.FindStringTableByEntry("C-DILLA_BITMAP_NAMES_TAG");
+            if (resource.Any())
+                return $"C-Dilla License Management System";
+
+            resource = pex.FindStringTableByEntry("C-DILLA_EDITABLE_STRINGS_TAG");
+            if (resource.Any())
+                return $"C-Dilla License Management System";
+
+            resource = pex.FindStringTableByEntry("CdaLMS.exe");
+            if (resource.Any())
+                return $"C-Dilla License Management System";
+
+            resource = pex.FindStringTableByEntry("cdilla51.dll");
+            if (resource.Any())
+                return $"C-Dilla License Management System";
+
+            resource = pex.FindStringTableByEntry("cdilla52.dll");
+            if (resource.Any())
+                return $"C-Dilla License Management System";
+
+            resource = pex.FindStringTableByEntry("http://www.c-dilla.com/support/lms.html");
+            if (resource.Any())
+                return $"C-Dilla License Management System";
+
+            // Get the .data/DATA section, if it exists
+            var dataSectionRaw = pex.GetFirstSectionData(".data") ?? pex.GetFirstSectionData("DATA");
+            if (dataSectionRaw != null)
+            {
+                var matchers = new List<ContentMatchSet>
+                {
+                    // SOFTWARE\C-Dilla\RTS
+                    // Found in "DJMixStation\DJMixStation.exe" in IA item "ejay_nestle_trial".
+                    new ContentMatchSet(new byte?[] {
+                        0x53, 0x4F, 0x46, 0x54, 0x57, 0x41, 0x52, 0x45,
+                        0x5C, 0x43, 0x2D, 0x44, 0x69, 0x6C, 0x6C, 0x61,
+                        0x5C, 0x52, 0x54, 0x53 }, "C-Dilla License Management System"),
+                };
+
+                string match = MatchUtil.GetFirstMatch(file, dataSectionRaw, matchers, includeDebug);
+                if (!string.IsNullOrWhiteSpace(match))
+                    return match;
+            }
 
             // Check for CDSHARE/DISAG_SH sections
 
