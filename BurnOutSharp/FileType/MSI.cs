@@ -8,6 +8,9 @@ using OpenMcdf;
 
 namespace BurnOutSharp.FileType
 {
+    /// <summary>
+    /// Microsoft installation package
+    /// </summary>
     public class MSI : IScannable
     {
         /// <inheritdoc/>

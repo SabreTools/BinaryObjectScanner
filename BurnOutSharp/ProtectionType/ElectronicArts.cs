@@ -46,12 +46,12 @@ namespace BurnOutSharp.ProtectionType
                     {
                         0x45, 0x52, 0x65, 0x67, 0x20, 0x43, 0x6F, 0x6E,
                         0x66, 0x69, 0x67, 0x20, 0x46, 0x6F, 0x72, 0x6D
-                    }, Utilities.GetInternalVersion, "EA CdKey Registration Module"),
+                    }, "EA CdKey Registration Module"),
                 };
 
                 string match = MatchUtil.GetFirstMatch(file, dataSectionRaw, matchers, includeDebug);
                 if (!string.IsNullOrWhiteSpace(match))
-                    return match;
+                    return $"{match} {Utilities.GetInternalVersion(pex)}";
             }
 
             // Get the .rdata section, if it exists

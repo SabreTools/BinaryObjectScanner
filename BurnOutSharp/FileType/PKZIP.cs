@@ -8,6 +8,9 @@ using SharpCompress.Archives.Zip;
 
 namespace BurnOutSharp.FileType
 {
+    /// <summary>
+    /// PKWARE ZIP archive and derivatives
+    /// </summary>
     public class PKZIP : IScannable
     {
         /// <inheritdoc/>

@@ -9,6 +9,9 @@ using SharpCompress.Compressors.Deflate;
 
 namespace BurnOutSharp.FileType
 {
+    /// <summary>
+    /// BFPK custom archive format
+    /// </summary>
     public class BFPK : IScannable
     {
         /// <inheritdoc/>

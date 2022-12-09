@@ -8,6 +8,9 @@ using SharpCompress.Archives.SevenZip;
 
 namespace BurnOutSharp.FileType
 {
+    /// <summary>
+    /// 7-zip archive
+    /// </summary>
     public class SevenZip : IScannable
     {
         /// <inheritdoc/>

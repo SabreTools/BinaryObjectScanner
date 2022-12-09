@@ -8,6 +8,9 @@ using HLLib.Packages;
 
 namespace BurnOutSharp.FileType
 {
+    /// <summary>
+    /// Various Valve archive formats
+    /// </summary>
     public class Valve : IScannable
     {
         /// <inheritdoc/>

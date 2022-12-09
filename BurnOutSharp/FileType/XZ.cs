@@ -7,6 +7,9 @@ using SharpCompress.Compressors.Xz;
 
 namespace BurnOutSharp.FileType
 {
+    /// <summary>
+    /// xz archive
+    /// </summary>
     public class XZ : IScannable
     {
         /// <inheritdoc/>

@@ -8,6 +8,9 @@ using SharpCompress.Archives.Tar;
 
 namespace BurnOutSharp.FileType
 {
+    /// <summary>
+    /// Tape archive
+    /// </summary>
     public class TapeArchive : IScannable
     {
         /// <inheritdoc/>

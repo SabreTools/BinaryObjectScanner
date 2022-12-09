@@ -8,6 +8,9 @@ using SharpCompress.Archives.Rar;
 
 namespace BurnOutSharp.FileType
 {
+    /// <summary>
+    /// RAR archive
+    /// </summary>
     public class RAR : IScannable
     {
         /// <inheritdoc/>

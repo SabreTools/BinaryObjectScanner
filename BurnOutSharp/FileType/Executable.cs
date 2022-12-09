@@ -9,6 +9,9 @@ using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.FileType
 {
+    /// <summary>
+    /// Executable or library
+    /// </summary>
     public class Executable : IScannable
     {
         /// <inheritdoc/>

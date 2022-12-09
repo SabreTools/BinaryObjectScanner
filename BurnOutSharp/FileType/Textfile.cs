@@ -7,6 +7,9 @@ using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.FileType
 {
+    /// <summary>
+    /// Various generic textfile formats
+    /// </summary>
     public class Textfile : IScannable
     {
         /// <inheritdoc/>

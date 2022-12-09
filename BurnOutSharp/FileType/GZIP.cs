@@ -8,6 +8,9 @@ using SharpCompress.Archives.GZip;
 
 namespace BurnOutSharp.FileType
 {
+    /// <summary>
+    /// gzip archive
+    /// </summary>
     public class GZIP : IScannable
     {
         /// <inheritdoc/>

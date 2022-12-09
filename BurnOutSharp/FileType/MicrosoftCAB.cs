@@ -13,7 +13,10 @@ using WixToolset.Dtf.Compression.Cab;
 
 namespace BurnOutSharp.FileType
 {
-    // Specification available at http://download.microsoft.com/download/5/0/1/501ED102-E53F-4CE0-AA6B-B0F93629DDC6/Exchange/%5BMS-CAB%5D.pdf
+    /// <summary>
+    /// Microsoft cabinet file
+    /// </summary>
+    /// <remarks>Specification available at <see href="http://download.microsoft.com/download/5/0/1/501ED102-E53F-4CE0-AA6B-B0F93629DDC6/Exchange/%5BMS-CAB%5D.pdf"/></remarks>
     public class MicrosoftCAB : IScannable
     {
         /// <inheritdoc/>

@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.IO;
-using System.Linq;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Tools;
 
 namespace BurnOutSharp.FileType
 {
+    /// <summary>
+    /// PlayJ audio file
+    /// </summary>
     public class PLJ : IScannable
     {
         /// <inheritdoc/>
@@ -40,7 +42,7 @@ namespace BurnOutSharp.FileType
                 byte[] magic = new byte[16];
                 stream.Read(magic, 0, 16);
 
-                if (ShouldScan(magic))
+                if (Utilities.GetFileType(magic) == FileTypes.PLJ)
                 {
                     Utilities.AppendToDictionary(protections, file, "PlayJ Audio File");
                     return protections;

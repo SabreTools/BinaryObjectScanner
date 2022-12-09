@@ -8,6 +8,9 @@ using UnshieldSharp.Cabinet;
 
 namespace BurnOutSharp.FileType
 {
+    /// <summary>
+    /// InstallShield cabinet file
+    /// </summary>
     public class InstallShieldCAB : IScannable
     {
         /// <inheritdoc/>

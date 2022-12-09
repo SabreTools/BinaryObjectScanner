@@ -9,6 +9,9 @@ using UnshieldSharp.Archive;
 
 namespace BurnOutSharp.FileType
 {
+    /// <summary>
+    /// InstallShield archive v3
+    /// </summary>
     public class InstallShieldArchiveV3 : IScannable
     {
         /// <inheritdoc/>

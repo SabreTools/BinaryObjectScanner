@@ -7,6 +7,9 @@ using StormLibSharp;
 
 namespace BurnOutSharp.FileType
 {
+    /// <summary>
+    /// MPQ game data archive
+    /// </summary>
     public class MPQ : IScannable
     {
         /// <inheritdoc/>

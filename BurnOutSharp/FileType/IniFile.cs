@@ -6,6 +6,9 @@ using System.Linq;
 
 namespace BurnOutSharp.FileType
 {
+    /// <summary>
+    /// Key-value pair INI file
+    /// </summary>
     public class IniFile : IDictionary<string, string>
     {
         private Dictionary<string, string> _keyValuePairs = new Dictionary<string, string>();

@@ -8,6 +8,9 @@ using SharpCompress.Compressors.BZip2;
 
 namespace BurnOutSharp.FileType
 {
+    /// <summary>
+    /// bzip2 archive
+    /// </summary>
     public class BZip2 : IScannable
     {
         /// <inheritdoc/>
