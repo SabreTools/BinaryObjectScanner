@@ -684,6 +684,11 @@ namespace BurnOutSharp.Wrappers
         private byte[][] _sectionData = null;
 
         /// <summary>
+        /// Cached found string data in sections
+        /// </summary>
+        private List<string>[] _sectionStringData = null;
+
+        /// <summary>
         /// Cached resource data
         /// </summary>
         private readonly Dictionary<string, object> _resourceData = new Dictionary<string, object>();
@@ -3180,6 +3185,145 @@ namespace BurnOutSharp.Wrappers
                 // Cache and return the section data, even if null
                 _sectionData[index] = sectionData;
                 return sectionData;
+            }
+        }
+
+        /// <summary>
+        /// Get the first section strings based on name, if possible
+        /// </summary>
+        /// <param name="name">Name of the section to check for</param>
+        /// <param name="exact">True to enable exact matching of names, false for starts-with</param>
+        /// <returns>Section strings on success, null on error</returns>
+        public List<string> GetFirstSectionStrings(string name, bool exact = false)
+        {
+            // If we have no sections
+            if (SectionTable == null || !SectionTable.Any())
+                return null;
+
+            // If the section doesn't exist
+            if (!ContainsSection(name, exact))
+                return null;
+
+            // Get the first index of the section
+            int index = Array.IndexOf(SectionNames, name);
+            if (index == -1)
+                return null;
+
+            // Get the section data from the table
+            var section = SectionTable[index];
+            uint address = section.VirtualAddress.ConvertVirtualAddress(SectionTable);
+            if (address == 0)
+                return null;
+
+            // Set the section size
+            uint size = section.SizeOfRawData;
+            lock (_sourceDataLock)
+            {
+                // Create the section string array if we have to
+                if (_sectionStringData == null)
+                    _sectionStringData = new List<string>[SectionNames.Length];
+
+                // If we already have cached data, just use that immediately
+                if (_sectionStringData[index] != null)
+                    return _sectionStringData[index];
+
+                // Populate the section string data based on the source
+                List<string> sectionStringData = ReadStringsFromDataSource((int)address, (int)size);
+
+                // Cache and return the section string data, even if null
+                _sectionStringData[index] = sectionStringData;
+                return sectionStringData;
+            }
+        }
+
+        /// <summary>
+        /// Get the last section strings based on name, if possible
+        /// </summary>
+        /// <param name="name">Name of the section to check for</param>
+        /// <param name="exact">True to enable exact matching of names, false for starts-with</param>
+        /// <returns>Section strings on success, null on error</returns>
+        public List<string> GetLastSectionStrings(string name, bool exact = false)
+        {
+            // If we have no sections
+            if (SectionTable == null || !SectionTable.Any())
+                return null;
+
+            // If the section doesn't exist
+            if (!ContainsSection(name, exact))
+                return null;
+
+            // Get the last index of the section
+            int index = Array.LastIndexOf(SectionNames, name);
+            if (index == -1)
+                return null;
+
+            // Get the section data from the table
+            var section = SectionTable[index];
+            uint address = section.VirtualAddress.ConvertVirtualAddress(SectionTable);
+            if (address == 0)
+                return null;
+
+            // Set the section size
+            uint size = section.SizeOfRawData;
+            lock (_sourceDataLock)
+            {
+                // Create the section string array if we have to
+                if (_sectionStringData == null)
+                    _sectionStringData = new List<string>[SectionNames.Length];
+
+                // If we already have cached data, just use that immediately
+                if (_sectionStringData[index] != null)
+                    return _sectionStringData[index];
+
+                // Populate the section string data based on the source
+                List<string> sectionStringData = ReadStringsFromDataSource((int)address, (int)size);
+
+                // Cache and return the section string data, even if null
+                _sectionStringData[index] = sectionStringData;
+                return sectionStringData;
+            }
+        }
+
+        /// <summary>
+        /// Get the section strings based on index, if possible
+        /// </summary>
+        /// <param name="name">Name of the section to check for</param>
+        /// <param name="exact">True to enable exact matching of names, false for starts-with</param>
+        /// <returns>Section strings on success, null on error</returns>
+        public List<string> GetSectionStrings(int index)
+        {
+            // If we have no sections
+            if (SectionTable == null || !SectionTable.Any())
+                return null;
+
+            // If the section doesn't exist
+            if (index < 0 || index >= SectionTable.Length)
+                return null;
+
+            // Get the section data from the table
+            var section = SectionTable[index];
+            uint address = section.VirtualAddress.ConvertVirtualAddress(SectionTable);
+            if (address == 0)
+                return null;
+
+            // Set the section size
+            uint size = section.SizeOfRawData;
+            lock (_sourceDataLock)
+            {
+                // Create the section string array if we have to
+                if (_sectionStringData == null)
+                    _sectionStringData = new List<string>[SectionNames.Length];
+
+                // If we already have cached data, just use that immediately
+                if (_sectionStringData[index] != null)
+                    return _sectionStringData[index];
+
+                // Populate the section string data based on the source
+                List<string> sectionStringData = ReadStringsFromDataSource((int)address, (int)size);
+
+                // Cache and return the section string data, even if null
+                _sectionStringData[index] = sectionStringData;
+                return sectionStringData;
             }
         }
 

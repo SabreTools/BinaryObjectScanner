@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using static BurnOutSharp.Builder.Extensions;
 
@@ -93,7 +94,7 @@ namespace BurnOutSharp.Wrappers
         /// <returns>Byte array containing the requested data, null on error</returns>
         protected byte[] ReadFromDataSource(int position, int length)
         {
-            // Validate the data souece
+            // Validate the data source
             if (!DataSourceIsValid())
                 return null;
 
@@ -119,6 +120,23 @@ namespace BurnOutSharp.Wrappers
             }
 
             return sectionData;
+        }
+
+        /// <summary>
+        /// Read string data from the source
+        /// </summary>
+        /// <param name="position">Position in the source to read from</param>
+        /// <param name="length">Length of the requested data</param>
+        /// <returns>String list containing the requested data, null on error</returns>
+        protected List<string> ReadStringsFromDataSource(int position, int length)
+        {
+            // Read the data as a byte array first
+            byte[] sourceData = ReadFromDataSource(position, length);
+            if (sourceData == null)
+                return null;
+
+            // TODO: Complete implementation of string finding
+            return null;
         }
 
         /// <summary>
