@@ -18,11 +18,15 @@ namespace BurnOutSharp.ProtectionType
                 return null;
 
             string name = pex.FileDescription;
-            if (!string.IsNullOrEmpty(name) && name.Contains("Copy Protection Viewer"))
+            if (name?.Contains("Copy Protection Viewer") == true)
+                return "WTM Protection Viewer";
+
+            name = pex.LegalTrademarks;
+            if (name?.Contains("WTM Copy Protection") == true)
                 return "WTM Protection Viewer";
 
             name = pex.ProductName;
-            if (!string.IsNullOrEmpty(name) && name.Contains("WTM Copy Protection Viewer"))
+            if (name?.Contains("WTM Copy Protection Viewer") == true)
                 return "WTM Protection Viewer";
 
             // Get the code/CODE section, if it exists
