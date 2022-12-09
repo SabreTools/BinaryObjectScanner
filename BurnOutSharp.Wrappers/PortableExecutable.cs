@@ -2622,6 +2622,10 @@ namespace BurnOutSharp.Wrappers
                 {
                     Console.WriteLine($"{padding}Data: [Embedded Executable File]"); // TODO: Parse this out and print separately
                 }
+                else if (entry.Data[0] == 0x4D && entry.Data[1] == 0x53 && entry.Data[2] == 0x46 && entry.Data[3] == 0x54)
+                {
+                    Console.WriteLine($"{padding}Data: [Embedded OLE Library File]"); // TODO: Parse this out and print separately
+                }
                 else
                 {
                     //if (entry.Data != null)
