@@ -53,7 +53,7 @@ namespace BurnOutSharp.ProtectionType
                 bool containsCheck2 = pex.GetFirstSectionData(".rdata").FirstPosition(check2, out int position2);
 
                 if (containsCheck && containsCheck2)
-                    return $"Impulse Reactor Core Module {Utilities.GetInternalVersion(pex)}" + (includeDebug ? $" (Index {position}, {position2})" : string.Empty);
+                    return $"Impulse Reactor Core Module {Utilities.GetInternalVersion(pex)}" + (includeDebug ? $" (Index {position2})" : string.Empty);
                 else if (containsCheck && !containsCheck2)
                     return $"Impulse Reactor";
             }
