@@ -7,7 +7,7 @@ namespace BurnOutSharp.Matching
     /// <summary>
     /// Helper class for matching
     /// </summary>
-    internal static class MatchUtil
+    public static class MatchUtil
     {
         #region Content Matching
 
