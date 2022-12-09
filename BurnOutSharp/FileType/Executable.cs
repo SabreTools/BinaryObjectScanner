@@ -15,40 +15,6 @@ namespace BurnOutSharp.FileType
     public class Executable : IScannable
     {
         /// <inheritdoc/>
-        public bool ShouldScan(byte[] magic)
-        {
-            // DOS MZ executable file format (and descendants)
-            if (magic.StartsWith(new byte?[] { 0x4d, 0x5a }))
-                return true;
-
-            // Executable and Linkable Format
-            if (magic.StartsWith(new byte?[] { 0x7f, 0x45, 0x4c, 0x46 }))
-                return true;
-
-            // Mach-O binary (32-bit)
-            if (magic.StartsWith(new byte?[] { 0xfe, 0xed, 0xfa, 0xce }))
-                return true;
-
-            // Mach-O binary (32-bit, reverse byte ordering scheme)
-            if (magic.StartsWith(new byte?[] { 0xce, 0xfa, 0xed, 0xfe }))
-                return true;
-
-            // Mach-O binary (64-bit)
-            if (magic.StartsWith(new byte?[] { 0xfe, 0xed, 0xfa, 0xcf }))
-                return true;
-
-            // Mach-O binary (64-bit, reverse byte ordering scheme)
-            if (magic.StartsWith(new byte?[] { 0xcf, 0xfa, 0xed, 0xfe }))
-                return true;
-
-            // Prefrred Executable File Format
-            if (magic.StartsWith(new byte?[] { 0x4a, 0x6f, 0x79, 0x21, 0x70, 0x65, 0x66, 0x66 }))
-                return true;
-
-            return false;
-        }
-
-        /// <inheritdoc/>
         public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, string file)
         {
             if (!File.Exists(file))

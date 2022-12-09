@@ -12,16 +12,6 @@ namespace BurnOutSharp.FileType
     public class PLJ : IScannable
     {
         /// <inheritdoc/>
-        public bool ShouldScan(byte[] magic)
-        {
-            // https://www.iana.org/assignments/media-types/audio/vnd.everad.plj
-            if (magic.StartsWith(new byte?[] { 0xFF, 0x9D, 0x53, 0x4B }))
-                return true;
-
-            return false;
-        }
-
-        /// <inheritdoc/>
         public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, string file)
         {
             if (!File.Exists(file))

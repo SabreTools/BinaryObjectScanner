@@ -14,15 +14,6 @@ namespace BurnOutSharp.FileType
     public class SevenZip : IScannable
     {
         /// <inheritdoc/>
-        public bool ShouldScan(byte[] magic)
-        {
-            if (magic.StartsWith(new byte?[] { 0x37, 0x7a, 0xbc, 0xaf, 0x27, 0x1c }))
-                return true;
-
-            return false;
-        }
-
-        /// <inheritdoc/>
         public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, string file)
         {
             if (!File.Exists(file))

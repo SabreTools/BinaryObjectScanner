@@ -9,13 +9,6 @@ namespace BurnOutSharp.Interfaces
     internal interface IScannable
     {
         /// <summary>
-        /// Determine if a file signature matches one of the expected values
-        /// </summary>
-        /// <param name="magic">Byte array representing the file header</param>
-        /// <returns>True if the signature is valid, false otherwise</returns>
-        bool ShouldScan(byte[] magic);
-
-        /// <summary>
         /// Scan a file for all internal protections
         /// </summary>
         /// <param name="scanner">Scanner object for state tracking</param>

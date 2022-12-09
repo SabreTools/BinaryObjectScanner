@@ -14,18 +14,6 @@ namespace BurnOutSharp.FileType
     public class TapeArchive : IScannable
     {
         /// <inheritdoc/>
-        public bool ShouldScan(byte[] magic)
-        {
-            if (magic.StartsWith(new byte?[] { 0x75, 0x73, 0x74, 0x61, 0x72, 0x00, 0x30, 0x30 }))
-                return true;
-
-            if (magic.StartsWith(new byte?[] { 0x75, 0x73, 0x74, 0x61, 0x72, 0x20, 0x20, 0x00 }))
-                return true;
-
-            return false;
-        }
-
-        /// <inheritdoc/>
         public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, string file)
         {
             if (!File.Exists(file))

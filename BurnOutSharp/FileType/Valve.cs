@@ -14,12 +14,6 @@ namespace BurnOutSharp.FileType
     public class Valve : IScannable
     {
         /// <inheritdoc/>
-        public bool ShouldScan(byte[] magic)
-        {
-            return Package.GetPackageType(magic) != PackageType.HL_PACKAGE_NONE;
-        }
-
-        /// <inheritdoc/>
         public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, string file)
         {
             if (!File.Exists(file))

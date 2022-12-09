@@ -13,67 +13,6 @@ namespace BurnOutSharp.FileType
     public class Textfile : IScannable
     {
         /// <inheritdoc/>
-        public bool ShouldScan(byte[] magic)
-        {
-            return ShouldScan(magic, null);
-        }
-
-        /// <summary>
-        /// Determine if a file signature or extension matches one of the expected values
-        /// </summary>
-        /// <param name="magic">Byte array representing the file header</param>
-        /// <param name="extension">Extension for the file being checked</param>
-        /// <returns>True if the signature is valid, false otherwise</returns>
-        public bool ShouldScan(byte[] magic, string extension)
-        {
-            // Rich Text File
-            if (magic.StartsWith(new byte?[] { 0x7b, 0x5c, 0x72, 0x74, 0x66, 0x31 }))
-                return true;
-
-            // HTML
-            if (magic.StartsWith(new byte?[] { 0x3c, 0x68, 0x74, 0x6d, 0x6c }))
-                return true;
-
-            // HTML and XML
-            if (magic.StartsWith(new byte?[] { 0x3c, 0x21, 0x44, 0x4f, 0x43, 0x54, 0x59, 0x50, 0x45 }))
-                return true;
-
-            // Microsoft Office File (old)
-            if (magic.StartsWith(new byte?[] { 0xd0, 0xcf, 0x11, 0xe0, 0xa1, 0xb1, 0x1a, 0xe1 }))
-                return true;
-
-            // InstallShield Compiled Rules
-            if (magic.StartsWith(new byte?[] { 0x61, 0x4C, 0x75, 0x5A }))
-                return true;
-
-            // Windows Help File
-            if (magic.StartsWith(new byte?[] { 0x3F, 0x5F, 0x03, 0x00 }))
-                return true;
-
-            // "Description in Zip"
-            if (string.Equals(extension?.TrimStart('.'), "diz", StringComparison.OrdinalIgnoreCase))
-                return true;
-
-            // Setup information
-            if (string.Equals(extension?.TrimStart('.'), "inf", StringComparison.OrdinalIgnoreCase))
-                return true;
-
-            // InstallShield Script
-            if (string.Equals(extension?.TrimStart('.'), "ins", StringComparison.OrdinalIgnoreCase))
-                return true;
-
-            // Generic textfile (no header)
-            if (string.Equals(extension?.TrimStart('.'), "txt", StringComparison.OrdinalIgnoreCase))
-                return true;
-
-            // XML (multiple headers possible)
-            if (string.Equals(extension?.TrimStart('.'), "xml", StringComparison.OrdinalIgnoreCase))
-                return true;
-
-            return false;
-        }
-
-        /// <inheritdoc/>
         public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, string file)
         {
             if (!File.Exists(file))

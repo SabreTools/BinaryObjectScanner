@@ -14,15 +14,6 @@ namespace BurnOutSharp.FileType
     public class InstallShieldCAB : IScannable
     {
         /// <inheritdoc/>
-        public bool ShouldScan(byte[] magic)
-        {
-            if (magic.StartsWith(new byte?[] { 0x49, 0x53, 0x63 }))
-                return true;
-
-            return false;
-        }
-
-        /// <inheritdoc/>
         public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, string file)
         {
             if (!File.Exists(file))

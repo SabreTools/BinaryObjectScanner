@@ -14,28 +14,6 @@ namespace BurnOutSharp.FileType
     public class PKZIP : IScannable
     {
         /// <inheritdoc/>
-        public bool ShouldScan(byte[] magic)
-        {
-            // PKZIP (Unknown)
-            if (magic.StartsWith(new byte?[] { 0x50, 0x4b, 0x00, 0x00 }))
-                return true;
-
-            // PKZIP
-            if (magic.StartsWith(new byte?[] { 0x50, 0x4b, 0x03, 0x04 }))
-                return true;
-
-            // PKZIP (Empty Archive)
-            if (magic.StartsWith(new byte?[] { 0x50, 0x4b, 0x05, 0x06 }))
-                return true;
-
-            // PKZIP (Spanned Archive)
-            if (magic.StartsWith(new byte?[] { 0x50, 0x4b, 0x07, 0x08 }))
-                return true;
-
-            return false;
-        }
-
-        /// <inheritdoc/>
         public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, string file)
         {
             if (!File.Exists(file))
