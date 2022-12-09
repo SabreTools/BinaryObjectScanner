@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace BurnOutSharp.Matching
@@ -9,40 +10,40 @@ namespace BurnOutSharp.Matching
     /// </summary>
     public static class MatchUtil
     {
-        #region Content Matching
+        #region Array Content Matching
 
         /// <summary>
         /// Get all content matches for a given list of matchers
         /// </summary>
         /// <param name="file">File to check for matches</param>
-        /// <param name="fileContent">Byte array representing the file contents</param>
+        /// <param name="stack">Array to search</param>
         /// <param name="matchers">Enumerable of ContentMatchSets to be run on the file</param>
         /// <param name="includeDebug">True to include positional data, false otherwise</param>
         /// <returns>List of strings representing the matched protections, null or empty otherwise</returns>
         public static ConcurrentQueue<string> GetAllMatches(
             string file,
-            byte[] fileContent,
+            byte[] stack,
             IEnumerable<ContentMatchSet> matchers,
             bool includeDebug = false)
         {
-            return FindAllMatches(file, fileContent, matchers, includeDebug, false);
+            return FindAllMatches(file, stack, matchers, includeDebug, false);
         }
 
         /// <summary>
         /// Get first content match for a given list of matchers
         /// </summary>
         /// <param name="file">File to check for matches</param>
-        /// <param name="fileContent">Byte array representing the file contents</param>
+        /// <param name="stack">Array to search</param>
         /// <param name="matchers">Enumerable of ContentMatchSets to be run on the file</param>
         /// <param name="includeDebug">True to include positional data, false otherwise</param>
         /// <returns>String representing the matched protection, null otherwise</returns>
         public static string GetFirstMatch(
             string file,
-            byte[] fileContent,
+            byte[] stack,
             IEnumerable<ContentMatchSet> matchers,
             bool includeDebug = false)
         {
-            var contentMatches = FindAllMatches(file, fileContent, matchers, includeDebug, true);
+            var contentMatches = FindAllMatches(file, stack, matchers, includeDebug, true);
             if (contentMatches == null || !contentMatches.Any())
                 return null;
             
@@ -53,14 +54,14 @@ namespace BurnOutSharp.Matching
         /// Get the required set of content matches on a per Matcher basis
         /// </summary>
         /// <param name="file">File to check for matches</param>
-        /// <param name="fileContent">Byte array representing the file contents</param>
+        /// <param name="stack">Array to search</param>
         /// <param name="matchers">Enumerable of ContentMatchSets to be run on the file</param>
         /// <param name="includeDebug">True to include positional data, false otherwise</param>
         /// <param name="stopAfterFirst">True to stop after the first match, false otherwise</param>
         /// <returns>List of strings representing the matched protections, null or empty otherwise</returns>        
         private static ConcurrentQueue<string> FindAllMatches(
             string file,
-            byte[] fileContent,
+            byte[] stack,
             IEnumerable<ContentMatchSet> matchers,
             bool includeDebug,
             bool stopAfterFirst)
@@ -76,7 +77,7 @@ namespace BurnOutSharp.Matching
             foreach (var matcher in matchers)
             {
                 // Determine if the matcher passes
-                (bool passes, List<int> positions) = matcher.MatchesAll(fileContent);
+                (bool passes, List<int> positions) = matcher.MatchesAll(stack);
                 if (!passes)
                     continue;
 
@@ -84,7 +85,7 @@ namespace BurnOutSharp.Matching
                 string positionsString = string.Join(", ", positions);
 
                 // If we there is no version method, just return the protection name
-                if (matcher.GetVersion == null)
+                if (matcher.GetArrayVersion == null)
                 {
                     matchedProtections.Enqueue((matcher.ProtectionName ?? "Unknown Protection") + (includeDebug ? $" (Index {positionsString})" : string.Empty));
                 }
@@ -93,7 +94,108 @@ namespace BurnOutSharp.Matching
                 else
                 {
                     // A null version returned means the check didn't pass at the version step
-                    string version = matcher.GetVersion(file, fileContent, positions);
+                    string version = matcher.GetArrayVersion(file, stack, positions);
+                    if (version == null)
+                        continue;
+
+                    matchedProtections.Enqueue($"{matcher.ProtectionName ?? "Unknown Protection"} {version}".TrimEnd() + (includeDebug ? $" (Index {positionsString})" : string.Empty));
+                }
+
+                // If we're stopping after the first protection, bail out here
+                if (stopAfterFirst)
+                    return matchedProtections;
+            }
+
+            return matchedProtections;
+        }
+
+        #endregion
+
+        #region Stream Content Matching
+
+        /// <summary>
+        /// Get all content matches for a given list of matchers
+        /// </summary>
+        /// <param name="file">File to check for matches</param>
+        /// <param name="stack">Stream to search</param>
+        /// <param name="matchers">Enumerable of ContentMatchSets to be run on the file</param>
+        /// <param name="includeDebug">True to include positional data, false otherwise</param>
+        /// <returns>List of strings representing the matched protections, null or empty otherwise</returns>
+        public static ConcurrentQueue<string> GetAllMatches(
+            string file,
+            Stream stack,
+            IEnumerable<ContentMatchSet> matchers,
+            bool includeDebug = false)
+        {
+            return FindAllMatches(file, stack, matchers, includeDebug, false);
+        }
+
+        /// <summary>
+        /// Get first content match for a given list of matchers
+        /// </summary>
+        /// <param name="file">File to check for matches</param>
+        /// <param name="stack">Stream to search</param>
+        /// <param name="matchers">Enumerable of ContentMatchSets to be run on the file</param>
+        /// <param name="includeDebug">True to include positional data, false otherwise</param>
+        /// <returns>String representing the matched protection, null otherwise</returns>
+        public static string GetFirstMatch(
+            string file,
+            Stream stack,
+            IEnumerable<ContentMatchSet> matchers,
+            bool includeDebug = false)
+        {
+            var contentMatches = FindAllMatches(file, stack, matchers, includeDebug, true);
+            if (contentMatches == null || !contentMatches.Any())
+                return null;
+
+            return contentMatches.First();
+        }
+
+        /// <summary>
+        /// Get the required set of content matches on a per Matcher basis
+        /// </summary>
+        /// <param name="file">File to check for matches</param>
+        /// <param name="stack">Stream to search</param>
+        /// <param name="matchers">Enumerable of ContentMatchSets to be run on the file</param>
+        /// <param name="includeDebug">True to include positional data, false otherwise</param>
+        /// <param name="stopAfterFirst">True to stop after the first match, false otherwise</param>
+        /// <returns>List of strings representing the matched protections, null or empty otherwise</returns>        
+        private static ConcurrentQueue<string> FindAllMatches(
+            string file,
+            Stream stack,
+            IEnumerable<ContentMatchSet> matchers,
+            bool includeDebug,
+            bool stopAfterFirst)
+        {
+            // If there's no mappings, we can't match
+            if (matchers == null || !matchers.Any())
+                return null;
+
+            // Initialize the queue of matched protections
+            var matchedProtections = new ConcurrentQueue<string>();
+
+            // Loop through and try everything otherwise
+            foreach (var matcher in matchers)
+            {
+                // Determine if the matcher passes
+                (bool passes, List<int> positions) = matcher.MatchesAll(stack);
+                if (!passes)
+                    continue;
+
+                // Format the list of all positions found
+                string positionsString = string.Join(", ", positions);
+
+                // If we there is no version method, just return the protection name
+                if (matcher.GetStreamVersion == null)
+                {
+                    matchedProtections.Enqueue((matcher.ProtectionName ?? "Unknown Protection") + (includeDebug ? $" (Index {positionsString})" : string.Empty));
+                }
+
+                // Otherwise, invoke the version method
+                else
+                {
+                    // A null version returned means the check didn't pass at the version step
+                    string version = matcher.GetStreamVersion(file, stack, positions);
                     if (version == null)
                         continue;
 
