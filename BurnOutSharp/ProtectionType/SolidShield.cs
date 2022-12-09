@@ -62,9 +62,6 @@ namespace BurnOutSharp.ProtectionType
 
                     // (char)0xEF + (char)0xBE + (char)0xAD + (char)0xDE
                     new ContentMatchSet(new byte?[] { 0xEF, 0xBE, 0xAD, 0xDE }, GetExeWrapperVersion, "SolidShield EXE Wrapper"),
-
-                    // dvm.dll
-                    new ContentMatchSet(new byte?[] { 0x64, 0x76, 0x6D, 0x2E, 0x64, 0x6C, 0x6C }, "SolidShield EXE Wrapper v1"),
                 };
 
                 string match = MatchUtil.GetFirstMatch(file, pex.GetFirstSectionData(".init"), matchers, includeDebug);
@@ -98,6 +95,22 @@ namespace BurnOutSharp.ProtectionType
                     if (!string.IsNullOrWhiteSpace(match))
                         return match;
                 }
+            }
+
+            // Get the import directory table, if it exists
+            if (pex.ImportTable?.ImportDirectoryTable != null)
+            {
+                bool match = pex.ImportTable.ImportDirectoryTable.Any(idte => idte.Name == "dvm.dll");
+                if (match)
+                    return "SolidShield EXE Wrapper v1";
+
+                match = pex.ImportTable.ImportDirectoryTable.Any(idte => idte.Name == "activation.x86.dll");
+                if (match)
+                    return "SolidShield EXE Wrapper v2";
+
+                match = pex.ImportTable.ImportDirectoryTable.Any(idte => idte.Name == "activation.x64.dll");
+                if (match)
+                    return "SolidShield EXE Wrapper v2";
             }
 
             return null;
