@@ -134,23 +134,13 @@ namespace BurnOutSharp.ProtectionType
             if (resource.Any())
                 return $"C-Dilla License Management System";
 
-            // Get the .data/DATA section, if it exists
-            var dataSectionRaw = pex.GetFirstSectionData(".data") ?? pex.GetFirstSectionData("DATA");
-            if (dataSectionRaw != null)
+            // Get the .data/DATA section strings, if they exist
+            List<string> strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
+            if (strs != null)
             {
-                var matchers = new List<ContentMatchSet>
-                {
-                    // SOFTWARE\C-Dilla\RTS
-                    // Found in "DJMixStation\DJMixStation.exe" in IA item "ejay_nestle_trial".
-                    new ContentMatchSet(new byte?[] {
-                        0x53, 0x4F, 0x46, 0x54, 0x57, 0x41, 0x52, 0x45,
-                        0x5C, 0x43, 0x2D, 0x44, 0x69, 0x6C, 0x6C, 0x61,
-                        0x5C, 0x52, 0x54, 0x53 }, "C-Dilla License Management System"),
-                };
-
-                string match = MatchUtil.GetFirstMatch(file, dataSectionRaw, matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
-                    return match;
+                // Found in "DJMixStation\DJMixStation.exe" in IA item "ejay_nestle_trial".
+                if (strs.Any(s => s.Contains("SOFTWARE\\C-Dilla\\RTS")))
+                    return "C-Dilla License Management System";
             }
 
             // Check for CDSHARE/DISAG_SH sections
