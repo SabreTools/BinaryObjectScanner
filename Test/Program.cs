@@ -3,7 +3,10 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using BurnOutSharp;
+using BurnOutSharp.Wrappers;
+using static BurnOutSharp.Builder.Extensions;
 
 namespace Test
 {
@@ -11,12 +14,15 @@ namespace Test
     {
         static void Main(string[] args)
         {
+            // Register the codepages
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
             // Create progress indicator
             var p = new Progress<ProtectionProgress>();
             p.ProgressChanged += Changed;
 
             // Set initial values for scanner flags
-            bool debug = false, archives = true, packers = true;
+            bool debug = false, archives = true, packers = true, info = false;
             var inputPaths = new List<string>();
 
             // Loop through the arguments to get the flags
@@ -47,6 +53,11 @@ namespace Test
                         packers = false;
                         break;
 
+                    case "-i":
+                    case "--info":
+                        info = true;
+                        break;
+
                     default:
                         inputPaths.Add(arg);
                         break;
@@ -68,7 +79,10 @@ namespace Test
             // Loop through the input paths
             foreach (string inputPath in inputPaths)
             {
-                GetAndWriteProtections(scanner, inputPath);
+                if (info)
+                    PrintExecutableInfo(inputPath);
+                else
+                    GetAndWriteProtections(scanner, inputPath);
             }
 
             Console.WriteLine("Press enter to close the program...");
@@ -89,7 +103,10 @@ namespace Test
             Console.WriteLine("-d, --debug          Enable debug mode");
             Console.WriteLine("-na, --no-archives   Disable scanning archives");
             Console.WriteLine("-np, --no-packers    Disable scanning for packers");
+            Console.WriteLine("-i, --info           Print executable info");
         }
+
+        #region Protection
 
         /// <summary>
         /// Wrapper to get and log protections for a single path
@@ -154,5 +171,176 @@ namespace Test
         {
             Console.WriteLine($"{value.Percentage * 100:N2}%: {value.Filename} - {value.Protection}");
         }
+
+        #endregion
+
+        #region Printing
+
+        /// <summary>
+        /// Wrapper to print executable information for a single path
+        /// </summary>
+        /// <param name="path">File or directory path</param>
+        private static void PrintExecutableInfo(string path)
+        {
+            Console.WriteLine($"Checking possible path: {path}");
+
+            // Check if the file or directory exists
+            if (File.Exists(path))
+            {
+                PrintFileInfo(path);
+            }
+            else if (Directory.Exists(path))
+            {
+                foreach (string file in Directory.EnumerateFiles(path, "*", SearchOption.AllDirectories))
+                {
+                    PrintFileInfo(file);
+                }
+            }
+            else
+            {
+                Console.WriteLine($"{path} does not exist, skipping...");
+            }
+        }
+
+        /// <summary>
+        /// Print information for a single file, if possible
+        /// </summary>
+        private static void PrintFileInfo(string file)
+        {
+            using (Stream stream = File.OpenRead(file))
+            {
+                // Read the first 4 bytes
+                byte[] magic = stream.ReadBytes(2);
+
+                if (!IsMSDOS(magic))
+                {
+                    Console.WriteLine("Not a recognized executable format, skipping...");
+                    Console.WriteLine();
+                    return;
+                }
+
+                // Build the executable information
+                Console.WriteLine("Creating MS-DOS executable builder");
+                Console.WriteLine();
+
+                stream.Seek(0, SeekOrigin.Begin);
+                var msdos = MSDOS.Create(stream);
+                if (msdos == null)
+                {
+                    Console.WriteLine("Something went wrong parsing MS-DOS executable");
+                    Console.WriteLine();
+                    return;
+                }
+
+                // Print the executable info to screen
+                msdos.Print();
+
+                // Check for a valid new executable address
+                if (msdos.NewExeHeaderAddr >= stream.Length)
+                {
+                    Console.WriteLine("New EXE header address invalid, skipping additional reading...");
+                    Console.WriteLine();
+                    return;
+                }
+
+                // Try to read the executable info
+                stream.Seek(msdos.NewExeHeaderAddr, SeekOrigin.Begin);
+                magic = stream.ReadBytes(4);
+
+                // New Executable
+                if (IsNE(magic))
+                {
+                    stream.Seek(0, SeekOrigin.Begin);
+                    var newExecutable = NewExecutable.Create(stream);
+                    if (newExecutable == null)
+                    {
+                        Console.WriteLine("Something went wrong parsing New Executable");
+                        Console.WriteLine();
+                        return;
+                    }
+
+                    // Print the executable info to screen
+                    newExecutable.Print();
+                }
+
+                // Linear Executable
+                else if (IsLE(magic))
+                {
+                    Console.WriteLine($"Linear executable found. No parsing currently available.");
+                    Console.WriteLine();
+                    return;
+                }
+
+                // Portable Executable
+                else if (IsPE(magic))
+                {
+                    stream.Seek(0, SeekOrigin.Begin);
+                    var portableExecutable = PortableExecutable.Create(stream);
+                    if (portableExecutable == null)
+                    {
+                        Console.WriteLine("Something went wrong parsing Portable Executable");
+                        Console.WriteLine();
+                        return;
+                    }
+
+                    // Print the executable info to screen
+                    portableExecutable.Print();
+                }
+
+                // Unknown
+                else
+                {
+                    Console.WriteLine($"Unrecognized header signature: {BitConverter.ToString(magic).Replace("-", string.Empty)}");
+                    Console.WriteLine();
+                    return;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Determine if the magic bytes indicate an MS-DOS executable
+        /// </summary>
+        private static bool IsMSDOS(byte[] magic)
+        {
+            if (magic == null || magic.Length < 2)
+                return false;
+
+            return magic[0] == 'M' && magic[1] == 'Z';
+        }
+
+        /// <summary>
+        /// Determine if the magic bytes indicate a New Executable
+        /// </summary>
+        private static bool IsNE(byte[] magic)
+        {
+            if (magic == null || magic.Length < 2)
+                return false;
+
+            return magic[0] == 'N' && magic[1] == 'E';
+        }
+
+        /// <summary>
+        /// Determine if the magic bytes indicate a Linear Executable
+        /// </summary>
+        private static bool IsLE(byte[] magic)
+        {
+            if (magic == null || magic.Length < 2)
+                return false;
+
+            return magic[0] == 'L' && (magic[1] == 'E' || magic[1] == 'X');
+        }
+
+        /// <summary>
+        /// Determine if the magic bytes indicate a Portable Executable
+        /// </summary>
+        private static bool IsPE(byte[] magic)
+        {
+            if (magic == null || magic.Length < 4)
+                return false;
+
+            return magic[0] == 'P' && magic[1] == 'E' && magic[2] == '\0' && magic[3] == '\0';
+        }
+
+        #endregion
     }
 }
