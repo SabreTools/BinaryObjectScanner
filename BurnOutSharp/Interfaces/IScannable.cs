@@ -24,6 +24,6 @@ namespace BurnOutSharp.Interfaces
         /// <param name="stream">Stream representing the input file</param>
         /// <param name="file">Path to the input file</param>
         /// <returns>Dictionary mapping paths to protection lists</returns>
-        ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, Stream stream, string filename);
+        ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, Stream stream, string file);
     }
 }
