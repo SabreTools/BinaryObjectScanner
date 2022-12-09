@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using BurnOutSharp.FileType;
 using BurnOutSharp.Interfaces;
-using BurnOutSharp.Matching;
 using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.ProtectionType
@@ -21,35 +20,21 @@ namespace BurnOutSharp.ProtectionType
             if (sections == null)
                 return null;
 
-            // Get the .rdata section, if it exists
-            if (pex.ContainsSection(".rdata"))
+            // Get the .rdata section strings, if they exist
+            List<string> strs = pex.GetFirstSectionStrings(".rdata");
+            if (strs != null)
             {
-                var matchers = new List<ContentMatchSet>
-                {
-                    // XCP.DAT
-                    new ContentMatchSet(new byte?[] { 0x58, 0x43, 0x50, 0x2E, 0x44, 0x41, 0x54 }, "XCP"),
+                if (strs.Any(s => s.Contains("XCP.DAT")))
+                    return "XCP";
 
-                    // xcpdrive
-                    new ContentMatchSet(new byte?[] { 0x78, 0x63, 0x70, 0x64, 0x72, 0x69, 0x76, 0x65 }, "XCP"),
+                if (strs.Any(s => s.Contains("xcpdrive")))
+                    return "XCP";
 
-                    // XCPPlugins.dll
-                    new ContentMatchSet(new byte?[]
-                    {
-                        0x58, 0x43, 0x50, 0x50, 0x6C, 0x75, 0x67, 0x69,
-                        0x6E, 0x73, 0x2E, 0x64, 0x6C, 0x6C
-                    }, "XCP"),
+                if (strs.Any(s => s.Contains("XCPPlugins.dll")))
+                    return "XCP";
 
-                    // XCPPhoenix.dll
-                    new ContentMatchSet(new byte?[]
-                    {
-                        0x58, 0x43, 0x50, 0x50, 0x68, 0x6F, 0x65, 0x6E,
-                        0x69, 0x78, 0x2E, 0x64, 0x6C, 0x6C
-                    }, "XCP"),
-                };
-
-                string match = MatchUtil.GetFirstMatch(file, pex.GetFirstSectionData(".rdata"), matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
-                    return match;
+                if (strs.Any(s => s.Contains("XCPPhoenix.dll")))
+                    return "XCP";
             }
 
             return null;
