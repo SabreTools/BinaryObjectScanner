@@ -34,29 +34,21 @@ namespace BurnOutSharp.ProtectionType
 
             // TODO: Check for CVP* instead?
             bool containsCheck = pex.ExportNameTable?.Any(s => s.StartsWith("CVPInitializeClient")) ?? false;
+            bool containsCheck2 = false;
 
-            // Get the .rdata section, if it exists
-            if (pex.ContainsSection(".rdata"))
+            // Get the .rdata section strings, if they exist
+            List<string> strs = pex.GetFirstSectionStrings(".rdata");
+            if (strs != null)
             {
-                // TODO: Find what resource this is in
-                // A + (char)0x00 + T + (char)0x00 + T + (char)0x00 + L + (char)0x00 + I + (char)0x00 + S + (char)0x00 + T + (char)0x00 + (char)0x00 + (char)0x00 + E + (char)0x00 + L + (char)0x00 + E + (char)0x00 + M + (char)0x00 + E + (char)0x00 + N + (char)0x00 + T + (char)0x00 + (char)0x00 + (char)0x00 + N + (char)0x00 + O + (char)0x00 + T + (char)0x00 + A + (char)0x00 + T + (char)0x00 + I + (char)0x00 + O + (char)0x00 + N + (char)0x00
-                // ATTLIST\0ELEMENT\0NOTATION
-                byte?[] check2 = new byte?[]
-                {
-                    0x41, 0x00, 0x54, 0x00, 0x54, 0x00, 0x4C, 0x00,
-                    0x49, 0x00, 0x53, 0x00, 0x54, 0x00, 0x00, 0x00,
-                    0x45, 0x00, 0x4C, 0x00, 0x45, 0x00, 0x4D, 0x00,
-                    0x45, 0x00, 0x4E, 0x00, 0x54, 0x00, 0x00, 0x00,
-                    0x4E, 0x00, 0x4F, 0x00, 0x54, 0x00, 0x41, 0x00,
-                    0x54, 0x00, 0x49, 0x00, 0x4F, 0x00, 0x4E
-                };
-                bool containsCheck2 = pex.GetFirstSectionData(".rdata").FirstPosition(check2, out int position2);
-
-                if (containsCheck && containsCheck2)
-                    return $"Impulse Reactor Core Module {Utilities.GetInternalVersion(pex)}" + (includeDebug ? $" (Index {position2})" : string.Empty);
-                else if (containsCheck && !containsCheck2)
-                    return $"Impulse Reactor";
+                containsCheck2 = strs.Any(s => s.EndsWith("ATTLIST"))
+                    && strs.Any(s => s.Equals("ELEMENT"))
+                    && strs.Any(s => s.StartsWith("NOTATION"));
             }
+
+            if (containsCheck && containsCheck2)
+                return $"Impulse Reactor Core Module {Utilities.GetInternalVersion(pex)}";
+            else if (containsCheck && !containsCheck2)
+                return $"Impulse Reactor";
 
             return null;
         }
