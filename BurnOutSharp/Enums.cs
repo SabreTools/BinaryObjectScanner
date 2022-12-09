@@ -1,6 +1,9 @@
 ﻿namespace BurnOutSharp
 {
-    public enum FileTypes
+    /// <summary>
+    /// Subset of file types that are supported by the library
+    /// </summary>
+    public enum SupportedFileType
     {
         /// <summary>
         /// Unknown or unsupported

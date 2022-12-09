@@ -310,12 +310,12 @@ namespace BurnOutSharp
                 }
 
                 // Get the file type either from magic number or extension
-                FileTypes fileType = Utilities.GetFileType(magic);
-                if (fileType == FileTypes.UNKNOWN)
+                SupportedFileType fileType = Utilities.GetFileType(magic);
+                if (fileType == SupportedFileType.UNKNOWN)
                     fileType = Utilities.GetFileType(extension);
 
                 // If we still got unknown, just return null
-                if (fileType == FileTypes.UNKNOWN)
+                if (fileType == SupportedFileType.UNKNOWN)
                     return null;
 
                 // Create a scannable for the given file type
