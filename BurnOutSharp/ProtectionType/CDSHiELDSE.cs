@@ -25,19 +25,12 @@ namespace BurnOutSharp.ProtectionType
             //        return "CDSHiELD SE";
             //}
 
-            // Get the code/CODE section, if it exists
-            var codeSectionRaw = pex.GetFirstSectionData("code") ?? pex.GetFirstSectionData("CODE");
-            if (codeSectionRaw != null)
+            // Get the code/CODE section strings, if they exist
+            List<string> strs = pex.GetFirstSectionStrings("code") ?? pex.GetFirstSectionStrings("CODE");
+            if (strs != null)
             {
-                var matchers = new List<ContentMatchSet>
-                {
-                    // ~0017.tmp
-                    new ContentMatchSet(new byte?[] { 0x7E, 0x30, 0x30, 0x31, 0x37, 0x2E, 0x74, 0x6D, 0x70 }, "CDSHiELD SE"),
-                };
-
-                string match = MatchUtil.GetFirstMatch(file, codeSectionRaw, matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
-                    return match;
+                if (strs.Any(s => s.Contains("~0017.tmp")))
+                    return "CDSHiELD SE";
             }
 
             return null;
