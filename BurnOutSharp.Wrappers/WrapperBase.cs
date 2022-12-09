@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text;
 using static BurnOutSharp.Builder.Extensions;
 
 namespace BurnOutSharp.Wrappers
@@ -127,16 +129,101 @@ namespace BurnOutSharp.Wrappers
         /// </summary>
         /// <param name="position">Position in the source to read from</param>
         /// <param name="length">Length of the requested data</param>
+        /// <param name="charLimit">Number of characters needed to be a valid string</param>
         /// <returns>String list containing the requested data, null on error</returns>
-        protected List<string> ReadStringsFromDataSource(int position, int length)
+        protected List<string> ReadStringsFromDataSource(int position, int length, int charLimit = 5)
         {
             // Read the data as a byte array first
             byte[] sourceData = ReadFromDataSource(position, length);
             if (sourceData == null)
                 return null;
 
+            // If we have an invalid character limit, default to 5
+            if (charLimit <= 0)
+                charLimit = 5;
+
+            // Create the string list to return
+            var sourceStrings = new List<string>();
+
+            // Setup cached data
+            int sourceDataIndex = 0;
+            string cachedString = string.Empty;
+
+            // Check for ASCII strings
+            while (sourceDataIndex < sourceData.Length)
+            {
+                // If we have a control character or an invalid byte
+                if (sourceData[sourceDataIndex] < 0x20 || sourceData[sourceDataIndex] > 0x7F)
+                {
+                    // If we have no cached string
+                    if (cachedString.Length == 0)
+                    {
+                        sourceDataIndex++;
+                        continue;
+                    }
+
+                    // If we have a cached string greater than the limit
+                    if (cachedString.Length >= charLimit)
+                        sourceStrings.Add(cachedString);
+
+                    cachedString = string.Empty;
+                    sourceDataIndex++;
+                    continue;
+                }
+
+                // All other characters get read in
+                cachedString += Encoding.ASCII.GetString(sourceData, sourceDataIndex, 1);
+                sourceDataIndex++;
+            }
+
+            // If we have a cached string greater than the limit
+            if (cachedString.Length >= charLimit)
+                sourceStrings.Add(cachedString);
+
+            // Reset cached data
+            sourceDataIndex = 0;
+            cachedString = string.Empty;
+
+            // We are limiting the check for Unicode characters with a second byte of 0x00 for now
+
+            // Check for Unicode strings
+            while (sourceDataIndex < sourceData.Length)
+            {
+                ushort ch = BitConverter.ToUInt16(sourceData, sourceDataIndex);
+
+                // If we have a null terminator or "invalid" character
+                if (ch == 0x0000 || (ch & 0xFF00) != 0)
+                {
+                    // If we have no cached string
+                    if (cachedString.Length == 0)
+                    {
+                        sourceDataIndex += 2;
+                        continue;
+                    }
+
+                    // If we have a cached string greater than the limit
+                    if (cachedString.Length >= charLimit)
+                        sourceStrings.Add(cachedString);
+
+                    cachedString = string.Empty;
+                    sourceDataIndex += 2;
+                    continue;
+                }
+
+                // All other characters get read in
+                cachedString += Encoding.Unicode.GetString(sourceData, sourceDataIndex, 2);
+                sourceDataIndex += 2;
+            }
+
+            // If we have a cached string greater than the limit
+            if (cachedString.Length >= charLimit)
+                sourceStrings.Add(cachedString);
+
+            // Deduplicate the string list for storage
+            sourceStrings = sourceStrings.Distinct().OrderBy(s => s).ToList();
+
             // TODO: Complete implementation of string finding
-            return null;
+            return sourceStrings;
         }
 
         /// <summary>
