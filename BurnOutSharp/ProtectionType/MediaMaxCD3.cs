@@ -44,23 +44,12 @@ namespace BurnOutSharp.ProtectionType
             // TODO: Investigate the following dialog item title resource
             // "This limited production advanced CD is not playable on your computer. It is solely intended for playback on standard CD players."
 
-            // Get the .data/DATA section, if it exists
-            var dataSectionRaw = pex.GetFirstSectionData(".data") ?? pex.GetFirstSectionData("DATA");
-            if (dataSectionRaw != null)
+            // Get the .data/DATA section strings, if they exist
+            List<string> strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
+            if (strs != null)
             {
-                var matchers = new List<ContentMatchSet>
-                {
-                    // CD3 Launch Error
-                    new ContentMatchSet(new byte?[]
-                    {
-                        0x43, 0x44, 0x33, 0x20, 0x4C, 0x61, 0x75, 0x6E,
-                        0x63, 0x68, 0x20, 0x45, 0x72, 0x72, 0x6F, 0x72
-                    }, "MediaMax CD-3"),
-                };
-
-                string match = MatchUtil.GetFirstMatch(file, dataSectionRaw, matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
-                    return match;
+                if (strs.Any(s => s.Contains("CD3 Launch Error")))
+                    return "MediaMax CD-3";
             }
 
             // Get the export name table
