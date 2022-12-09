@@ -26,21 +26,16 @@ namespace BurnOutSharp.PackerType
             if (nicodeSection)
                 return "Armadillo";
 
+
             // Loop through all "extension" sections -- usually .data1 or .text1
             foreach (var sectionName in pex.SectionNames.Where(s => s != null && s.EndsWith("1")))
             {
-                var sectionRaw = pex.GetFirstSectionData(sectionName);
-                if (sectionRaw != null)
+                // Get the section strings, if they exist
+                List<string> strs = pex.GetFirstSectionStrings(sectionName);
+                if (strs != null)
                 {
-                    var matchers = new List<ContentMatchSet>
-                    {
-                        // ARMDEBUG
-                        new ContentMatchSet(new byte?[] { 0x41, 0x52, 0x4D, 0x44, 0x45, 0x42, 0x55, 0x47 }, $"Armadillo"),
-                    };
-
-                    string match = MatchUtil.GetFirstMatch(file, sectionRaw, matchers, includeDebug);
-                    if (!string.IsNullOrWhiteSpace(match))
-                        return match;
+                    if (strs.Any(s => s.Contains("ARMDEBUG")))
+                        return "Armadillo";
                 }
             }
 
