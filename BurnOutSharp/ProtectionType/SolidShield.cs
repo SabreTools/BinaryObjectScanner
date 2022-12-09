@@ -75,10 +75,9 @@ namespace BurnOutSharp.ProtectionType
                 return "SolidShield EXE Wrapper v1";
 
             // Search the last two available sections
-            var sectionNames = pex.SectionNames;
-            for (int i = (sectionNames.Length >= 2 ? sectionNames.Length - 2 : 0); i < sectionNames.Length; i++)
+            for (int i = (pex.SectionNames.Length >= 2 ? pex.SectionNames.Length - 2 : 0); i < pex.SectionNames.Length; i++)
             {
-                var nthSectionRaw = pex.GetLastSectionData(sectionNames[i]);
+                var nthSectionRaw = pex.GetSectionData(i);
                 if (nthSectionRaw != null)
                 {
                     var matchers = new List<ContentMatchSet>
