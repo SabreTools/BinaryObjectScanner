@@ -1,8 +1,8 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using BurnOutSharp.Interfaces;
-using BurnOutSharp.Matching;
 using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.PackerType
@@ -22,23 +22,12 @@ namespace BurnOutSharp.PackerType
             if (!string.IsNullOrWhiteSpace(description) && description.StartsWith("Nullsoft Install System"))
                 return $"NSIS {description.Substring("Nullsoft Install System".Length).Trim()}";
 
-            // Get the .data/DATA section, if it exists
-            var dataSectionRaw = pex.GetFirstSectionData(".data") ?? pex.GetFirstSectionData("DATA");
-            if (dataSectionRaw != null)
+            // Get the .data/DATA section strings, if they exist
+            List<string> strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
+            if (strs != null)
             {
-                var matchers = new List<ContentMatchSet>
-                {
-                    // NullsoftInst
-                    new ContentMatchSet(new byte?[]
-                    {
-                        0x4E, 0x75, 0x6C, 0x6C, 0x73, 0x6F, 0x66, 0x74,
-                        0x49, 0x6E, 0x73, 0x74
-                    }, "NSIS"),
-                };
-
-                string match = MatchUtil.GetFirstMatch(file, dataSectionRaw, matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
-                    return match;
+                if (strs.Any(s => s.Contains("NullsoftInst")))
+                    return "NSIS";
             }
 
             return null;
