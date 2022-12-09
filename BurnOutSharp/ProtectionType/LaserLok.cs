@@ -67,18 +67,16 @@ namespace BurnOutSharp.ProtectionType
             int endDosStub = (int)pex.Stub_NewExeHeaderAddr;
             bool containsCheck = pex.StubExecutableData.FirstPosition(check, out int position);
 
-            // TODO: Can't use this because of the "SNIF/MPVI" check at the end
-            //// Check the executable tables
-            //bool containsCheck2 = (pex.ImportTable?.HintNameTable.Any(hnte => hnte.Name == "GetModuleHandleA") ?? false)
-            //    && (pex.ImportTable?.HintNameTable.Any(hnte => hnte.Name == "GetProcAddress") ?? false)
-            //    && (pex.ImportTable?.HintNameTable.Any(hnte => hnte.Name == "LoadLibraryA") ?? false)
-            //    && (pex.ImportTable?.ImportDirectoryTable.Any(idte => idte.Name == "KERNEL32.dll") ?? false);
+            // Check the executable tables
+            bool containsCheck2 = (pex.ImportTable?.HintNameTable.Any(hnte => hnte.Name == "GetModuleHandleA") ?? false)
+                && (pex.ImportTable?.HintNameTable.Any(hnte => hnte.Name == "GetProcAddress") ?? false)
+                && (pex.ImportTable?.HintNameTable.Any(hnte => hnte.Name == "LoadLibraryA") ?? false)
+                && (pex.ImportTable?.ImportDirectoryTable.Any(idte => idte.Name == "KERNEL32.dll") ?? false);
 
-            bool containsCheck2 = false;
             int position2 = -1;
 
             // Get the .text section, if it exists
-            if (pex.ContainsSection(".text"))
+            if (containsCheck2 && pex.ContainsSection(".text"))
             {
                 // GetModuleHandleA + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00 + GetProcAddress + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00 + LoadLibraryA + (char)0x00 + (char)0x00 + KERNEL32.dll + (char)0x00 + ëy + (char)0x01 + SNIF/MPVI
                 byte?[] check2 = new byte?[]
