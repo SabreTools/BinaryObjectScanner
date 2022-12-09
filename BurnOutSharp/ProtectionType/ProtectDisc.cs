@@ -23,18 +23,18 @@ namespace BurnOutSharp.ProtectionType
             for (int i = 3; i < sections.Length; i++)
             {
                 var nthSectionData = pex.GetSectionData(i);
-                if (nthSectionData != null)
-                {
-                    var matchers = new List<ContentMatchSet>
-                    {
-                        // ACE-PCD
-                        new ContentMatchSet(new byte?[] { 0x41, 0x43, 0x45, 0x2D, 0x50, 0x43, 0x44 }, GetVersion6till8, "ProtectDISC"),
-                    };
+                if (nthSectionData == null)
+                    continue;
 
-                    string match = MatchUtil.GetFirstMatch(file, nthSectionData, matchers, includeDebug);
-                    if (!string.IsNullOrWhiteSpace(match))
-                        return match;
-                }
+                var matchers = new List<ContentMatchSet>
+                {
+                    // ACE-PCD
+                    new ContentMatchSet(new byte?[] { 0x41, 0x43, 0x45, 0x2D, 0x50, 0x43, 0x44 }, GetVersion6till8, "ProtectDISC"),
+                };
+
+                string match = MatchUtil.GetFirstMatch(file, nthSectionData, matchers, includeDebug);
+                if (!string.IsNullOrWhiteSpace(match))
+                    return match;
             }
 
             // Get the .data/DATA section, if it exists
@@ -269,7 +269,7 @@ namespace BurnOutSharp.ProtectionType
 
             return string.Empty;
         }
- 
+
         private static string GetVOBBuild(byte[] fileContent, int position)
         {
             if (!char.IsNumber((char)fileContent[position - 13]))
