@@ -11,9 +11,6 @@ namespace BurnOutSharp.PackerType
     // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
     public class InstallerVISE : IPortableExecutableCheck, IScannable
     {
-        /// <inheritdoc/>
-        public bool ShouldScan(byte[] magic) => true;
-
         //TODO: Add exact version detection for Windows builds, make sure versions before 3.X are detected as well, and detect the Mac builds.
         /// <inheritdoc/>
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)

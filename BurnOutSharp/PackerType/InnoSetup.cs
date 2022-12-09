@@ -15,9 +15,6 @@ namespace BurnOutSharp.PackerType
     public class InnoSetup : INewExecutableCheck, IPortableExecutableCheck, IScannable
     {
         /// <inheritdoc/>
-        public bool ShouldScan(byte[] magic) => true;
-
-        /// <inheritdoc/>
         public string CheckNewExecutable(string file, NewExecutable nex, bool includeDebug)
         {
             // Check we have a valid executable

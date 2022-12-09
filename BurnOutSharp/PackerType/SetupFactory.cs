@@ -13,9 +13,6 @@ namespace BurnOutSharp.PackerType
     public class SetupFactory : IPortableExecutableCheck, IScannable
     {
         /// <inheritdoc/>
-        public bool ShouldScan(byte[] magic) => true;
-
-        /// <inheritdoc/>
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible

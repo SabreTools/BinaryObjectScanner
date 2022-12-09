@@ -14,9 +14,6 @@ namespace BurnOutSharp.PackerType
     public class EXEStealth : IContentCheck, IPortableExecutableCheck, IScannable
     {
         /// <inheritdoc/>
-        public bool ShouldScan(byte[] magic) => true;
-
-        /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includeDebug)
         {
             // TODO: Obtain a sample to find where this string is in a typical executable

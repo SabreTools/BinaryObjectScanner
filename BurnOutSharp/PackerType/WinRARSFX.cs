@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using BurnOutSharp.Interfaces;
-using BurnOutSharp.Matching;
 using BurnOutSharp.Tools;
 using BurnOutSharp.Wrappers;
 using SharpCompress.Archives;
@@ -14,9 +12,6 @@ namespace BurnOutSharp.PackerType
 {
     public class WinRARSFX : IPortableExecutableCheck, IScannable
     {
-        /// <inheritdoc/>
-        public bool ShouldScan(byte[] magic) => true;
-
         /// <inheritdoc/>
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
