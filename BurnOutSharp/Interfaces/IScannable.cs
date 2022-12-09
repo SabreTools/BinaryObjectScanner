@@ -4,8 +4,13 @@ using System.IO;
 namespace BurnOutSharp.Interfaces
 {
     /// <summary>
-    /// Mark a file type as extractable
+    /// Mark a file type as being able to be scanned
     /// </summary>
+    /// <remarks>
+    /// This is also used for packers, embedded archives, and other
+    /// installer formats that may need to be "extracted" before they
+    /// can be fully scanned.
+    /// </remarks>
     internal interface IScannable
     {
         /// <summary>
