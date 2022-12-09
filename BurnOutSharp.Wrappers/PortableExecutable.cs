@@ -2174,6 +2174,8 @@ namespace BurnOutSharp.Wrappers
             Console.WriteLine($"{padding}Application-defined resource found, not parsed yet");
 
             //if (entry.Data != null)
+            //    Console.WriteLine($"{padding}Value (Byte Data): {BitConverter.ToString(entry.Data).Replace('-', ' ')}");
+            //if (entry.Data != null)
             //    Console.WriteLine($"{padding}Value (ASCII): {Encoding.ASCII.GetString(entry.Data)}");
             //if (entry.Data != null)
             //    Console.WriteLine($"{padding}Value (UTF-8): {Encoding.UTF8.GetString(entry.Data)}");
