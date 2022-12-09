@@ -1,8 +1,8 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using BurnOutSharp.Interfaces;
-using BurnOutSharp.Matching;
 using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.PackerType
@@ -19,28 +19,15 @@ namespace BurnOutSharp.PackerType
             if (sections == null)
                 return null;
 
-            // Get the .data/DATA section, if it exists
-            var dataSectionRaw = pex.GetFirstSectionData(".data") ?? pex.GetFirstSectionData("DATA");
-            if (dataSectionRaw != null)
+            // Get the .data/DATA section strings, if they exist
+            List<string> strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
+            if (strs != null)
             {
-                var matchers = new List<ContentMatchSet>
-                {
-                    // Gentee installer
-                    new ContentMatchSet(new byte?[]
-                    {
-                        0x47, 0x65, 0x6E, 0x74, 0x65, 0x65, 0x20, 0x69,
-                        0x6E, 0x73, 0x74, 0x61, 0x6C, 0x6C, 0x65, 0x72,
-                    }, "Gentee Installer"),
+                if (strs.Any(s => s.Contains("Gentee installer")))
+                    return "Gentee Installer";
 
-                    // ginstall.dll
-                    new ContentMatchSet(new byte?[]
-                    {
-                        0x67, 0x69, 0x6E, 0x73, 0x74, 0x61, 0x6C, 0x6C,
-                        0x2E, 0x64, 0x6C, 0x6C,
-                    }, "Gentee Installer"),
-                };
-
-                return MatchUtil.GetFirstMatch(file, dataSectionRaw, matchers, includeDebug);
+                if (strs.Any(s => s.Contains("ginstall.dll")))
+                    return "Gentee Installer";
             }
 
             return null;
