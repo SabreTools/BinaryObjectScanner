@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net6.0</TargetFrameworks>
+    <Title>psxt001z</Title>
+    <AssemblyName>psxt001z</AssemblyName>
+    <Authors>Matt Nadareski;Dremora</Authors>
+    <Product>BurnOutSharp</Product>
+    <Copyright>Copyright (c)2013 Dremora, Copyright (c)2018-2022 Matt Nadareski</Copyright>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+    <RepositoryUrl>https://github.com/mnadareski/BurnOutSharp</RepositoryUrl>
+    <Version>0.21-beta1</Version>
+    <AssemblyVersion>0.21.1</AssemblyVersion>
+    <FileVersion>0.21.1</FileVersion>
+    <IncludeSource>true</IncludeSource>
+    <IncludeSymbols>true</IncludeSymbols>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+</Project>

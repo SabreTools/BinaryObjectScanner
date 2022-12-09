@@ -9,7 +9,7 @@ In addition to the original BurnOut code, the following libraries (or ports ther
 - [HLLibSharp](https://github.com/mnadareski/HLLibSharp) - Various Valve archive format extraction
 - [LibMSPackSharp](https://github.com/mnadareski/LibMSPackSharp) - Microsoft CAB extraction [Currently unused]
 - [openmcdf](https://github.com/ironfede/openmcdf) - MSI extraction
-- [psxt001z](https://github.com/Dremora/psxt001z) - PS1 LibCrypt detection
+- [psxt001z](https://github.com/Dremora/psxt001z) - PS1 LibCrypt detection [Ported to C#]
 - [SharpCompress](https://github.com/adamhathcock/sharpcompress) - 7zip/GZip/RAR/PKZIP extraction
 - [StormLibSharp](https://github.com/robpaveza/stormlibsharp) - MPQ extraction
 - [UnshieldSharp](https://github.com/mnadareski/UnshieldSharp) - InstallShield CAB extraction
