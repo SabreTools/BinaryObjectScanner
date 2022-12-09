@@ -18,7 +18,7 @@ namespace BurnOutSharp.ProtectionType
                 return null;
 
             // Get the last section
-            var lastSetionData = pex.GetSectionData(sections.Length);
+            var lastSetionData = pex.GetSectionData(sections.Length - 1);
             if (lastSetionData != null)
             {
                 var matchers = new List<ContentMatchSet>
