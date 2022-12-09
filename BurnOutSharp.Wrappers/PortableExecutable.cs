@@ -666,6 +666,7 @@ namespace BurnOutSharp.Wrappers
         /// <summary>
         /// Overlay data, if it exists
         /// </summary>
+        /// TODO: Add overlay string data
         private byte[] _overlayData = null;
 
         /// <summary>

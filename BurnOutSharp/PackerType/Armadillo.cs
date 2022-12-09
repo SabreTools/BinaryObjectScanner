@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using BurnOutSharp.Interfaces;
-using BurnOutSharp.Matching;
 using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.PackerType
@@ -25,7 +24,6 @@ namespace BurnOutSharp.PackerType
             bool nicodeSection = pex.ContainsSection(".nicode", exact: true);
             if (nicodeSection)
                 return "Armadillo";
-
 
             // Loop through all "extension" sections -- usually .data1 or .text1
             foreach (var sectionName in pex.SectionNames.Where(s => s != null && s.EndsWith("1")))
