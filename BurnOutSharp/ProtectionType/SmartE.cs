@@ -1,6 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
 using BurnOutSharp.Wrappers;
@@ -17,24 +18,12 @@ namespace BurnOutSharp.ProtectionType
             if (sections == null)
                 return null;
 
-            // Get the last section
-            var lastSetionData = pex.GetSectionData(sections.Length - 1);
-            if (lastSetionData != null)
+            // Get the last section strings, if they exist
+            List<string> strs = pex.GetSectionStrings(sections.Length - 1);
+            if (strs != null)
             {
-                var matchers = new List<ContentMatchSet>
-                {
-                    // BITARTS
-                    new ContentMatchSet(
-                        new ContentMatch(
-                            new byte?[] { 0x42, 0x49, 0x54, 0x41, 0x52, 0x54, 0x53 },
-                            start: 18319,
-                            end: 18320),
-                        "SmartE"),
-                };
-
-                string match = MatchUtil.GetFirstMatch(file, lastSetionData, matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
-                    return match;
+                if (strs.Any(s => s.Contains("BITARTS")))
+                    return "SmartE";
             }
 
             return null;
