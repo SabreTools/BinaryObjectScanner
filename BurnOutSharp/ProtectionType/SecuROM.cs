@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
@@ -88,24 +89,14 @@ namespace BurnOutSharp.ProtectionType
                 }
             }
 
-            // Get the .rdata section, if it exists
-            if (pex.ContainsSection(".rdata"))
+            // Get the .rdata section strings, if they exist
+            List<string> strs = pex.GetFirstSectionStrings(".rdata");
+            if (strs != null)
             {
-                var matchers = new List<ContentMatchSet>
-                {
-                    // The following 2 checks are unique:
-                    // Both have the identifier found within `.rdata` but the version is within `.data`
-                    // So, we use the placeholder "WHITELABEL" to see if we got a match
-
-                    // /secuexp
-                    new ContentMatchSet(new byte?[] { 0x2F, 0x73, 0x65, 0x63, 0x75, 0x65, 0x78, 0x70 }, "WHITELABEL"),
-
-                    // SecuExp.exe
-                    new ContentMatchSet(new byte?[] { 0x53, 0x65, 0x63, 0x75, 0x45, 0x78, 0x70 }, "WHITELABEL"),
-                };
-
-                string match = MatchUtil.GetFirstMatch(file, pex.GetFirstSectionData(".rdata"), matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
+                // Both have the identifier found within `.rdata` but the version is within `.data`
+                if (strs.Any(s => s.Contains("/secuexp")))
+                    return $"SecuROM {GetV8WhiteLabelVersion(pex)} (White Label)";
+                else if (strs.Any(s => s.Contains("SecuExp.exe")))
                     return $"SecuROM {GetV8WhiteLabelVersion(pex)} (White Label)";
             }
 
