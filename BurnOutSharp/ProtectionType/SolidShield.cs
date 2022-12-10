@@ -77,22 +77,13 @@ namespace BurnOutSharp.ProtectionType
             // Search the last two available sections
             for (int i = (pex.SectionNames.Length >= 2 ? pex.SectionNames.Length - 2 : 0); i < pex.SectionNames.Length; i++)
             {
-                var nthSectionRaw = pex.GetSectionData(i);
-                if (nthSectionRaw != null)
+                // Get the nth section strings, if they exist
+                List<string> strs = pex.GetSectionStrings(i);
+                if (strs != null)
                 {
-                    var matchers = new List<ContentMatchSet>
-                    {
-                        // Solidshield
-                        new ContentMatchSet(new byte?[]
-                        {
-                            0x53, 0x6F, 0x6C, 0x69, 0x64, 0x73, 0x68, 0x69,
-                            0x65, 0x6C, 0x64
-                        }, GetVersion, "SolidShield EXE Wrapper"),
-                    };
-
-                    string match = MatchUtil.GetFirstMatch(file, nthSectionRaw, matchers, includeDebug);
-                    if (!string.IsNullOrWhiteSpace(match))
-                        return match;
+                    string str = strs.FirstOrDefault(s => s.Contains("Solidshield "));
+                    if (str != null)
+                        return $"SolidShield EXE Wrapper {str.Substring("Solidshield ".Length)}";
                 }
             }
 
@@ -161,26 +152,6 @@ namespace BurnOutSharp.ProtectionType
                 return "v2"; // TODO: Verify against other SolidShield 2 discs
 
             return null;
-        }
-
-        public static string GetVersion(string file, byte[] fileContent, List<int> positions)
-        {
-            int index = positions[0] + 12; // Begin reading after "Solidshield"
-            char version = (char)fileContent[index];
-            index++;
-            index++;
-            char subVersion = (char)fileContent[index];
-            index++;
-            index++;
-            char subSubVersion = (char)fileContent[index];
-            index++;
-            index++;
-            char subSubSubVersion = (char)fileContent[index];
-
-            if (!char.IsNumber(version))
-                return null;
-
-            return $"{version}.{subVersion}.{subSubVersion}.{subSubSubVersion}";
         }
 
         public static string GetVersionPlusTages(string file, byte[] fileContent, List<int> positions)
