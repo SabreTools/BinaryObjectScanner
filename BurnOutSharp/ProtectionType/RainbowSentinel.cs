@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
 using BurnOutSharp.Wrappers;
@@ -30,54 +31,28 @@ namespace BurnOutSharp.ProtectionType
             if (sections == null)
                 return null;
 
-            // Get the .data/DATA section, if it exists
-            var dataSectionRaw = pex.GetFirstSectionData(".data") ?? pex.GetFirstSectionData("DATA");
-            if (dataSectionRaw != null)
+            // Get the .data/DATA section strings, if they exist
+            List<string> strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
+            if (strs != null)
             {
-                var matchers = new List<ContentMatchSet>
-                {
-                    // Rainbow SentinelSuperPro
-                    // Found in "ADESKSYS.DLL"/"WINADMIN.EXE"/"WINQUERY.EXE" in BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]", folder "\netsetup\SUPPORT\IPX".
-                    new ContentMatchSet(new byte?[]
-                    {
-                        0x52, 0x61, 0x69, 0x6E, 0x62, 0x6F, 0x77, 0x20,
-                        0x53, 0x65, 0x6E, 0x74, 0x69, 0x6E, 0x65, 0x6C,
-                        0x53, 0x75, 0x70, 0x65, 0x72, 0x50, 0x72, 0x6F
-                    }, "Rainbow Sentinel SuperPro"),
-                };
-
-                string match = MatchUtil.GetFirstMatch(file, dataSectionRaw, matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
-                    return match;
+                // Found in "ADESKSYS.DLL"/"WINADMIN.EXE"/"WINQUERY.EXE" in BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]", folder "\netsetup\SUPPORT\IPX".
+                if (strs.Any(s => s.Contains("Rainbow SentinelSuperPro")))
+                    return "Rainbow Sentinel SuperPro";
             }
 
-            // Get the .text section, if it exists
-            if (pex.ContainsSection(".text"))
+            // Get the .text section strings, if they exist
+            strs = pex.GetFirstSectionStrings(".text");
+            if (strs != null)
             {
-                var matchers = new List<ContentMatchSet>
-                {
-                    // SENTINEL.VXD
-                    // Found in "ACLT.HWL" in BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]", folder "\aclt\DRV\W95LOCK".
-                    // Found in "ACAD.HWL" in BA entry "Autodesk AutoCAD r14 (1997)" and IA item "auto-cad-r14-cdrom".
-                    new ContentMatchSet(new byte?[]
-                    {
-                        0x53, 0x45, 0x4E, 0x54, 0x49, 0x4E, 0x45, 0x4C, 0x2E, 0x56, 0x58, 0x44
-                    }, "Rainbow Sentinel"),
+                // Found in "ACLT.HWL" in BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]", folder "\aclt\DRV\W95LOCK".
+                // Found in "ACAD.HWL" in BA entry "Autodesk AutoCAD r14 (1997)" and IA item "auto-cad-r14-cdrom".
+                if (strs.Any(s => s.Contains("SENTINEL.VXD")))
+                    return "Rainbow Sentinel SuperPro";
 
-                    // Rainbow SentinelSuperPro
-                    // Found in "ADESKSYS.DLL" in BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]", folder "\netsetup\SUPPORT\IPX".
-                    // TODO: Investigate "Elan License Manager" mentioned here.
-                    new ContentMatchSet(new byte?[]
-                    {
-                        0x52, 0x61, 0x69, 0x6E, 0x62, 0x6F, 0x77, 0x20, 
-                        0x53, 0x65, 0x6E, 0x74, 0x69, 0x6E, 0x65, 0x6C,
-                        0x53, 0x75, 0x70, 0x65, 0x72, 0x50, 0x72, 0x6F
-                    }, "Rainbow Sentinel SuperPro"),
-                };
-
-                string match = MatchUtil.GetFirstMatch(file, pex.GetFirstSectionData(".text"), matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
-                    return match;
+                // Found in "ADESKSYS.DLL" in BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]", folder "\netsetup\SUPPORT\IPX".
+                // TODO: Investigate "Elan License Manager" mentioned here.
+                if (strs.Any(s => s.Contains("Rainbow SentinelSuperPro")))
+                    return "Rainbow Sentinel SuperPro";
             }
 
             // TODO: Figure out why resources for "RNBOVTMP.DLL", "SENTTEMP.DLL", "SNTI386.DLL", and "SX32W.DL_"/"SX32W.DLL" aren't getting read properly, causing checks for these files to not work.
