@@ -68,19 +68,12 @@ namespace BurnOutSharp.ProtectionType
                     return match;
             }
 
-            // Get the last .bss section, if it exists
-            var bssSectionRaw = pex.GetLastSectionData(".bss");
-            if (bssSectionRaw != null)
+            // Get the last .bss section strings, if they exist
+            List<string> strs = pex.GetLastSectionStrings(".bss");
+            if (strs != null)
             {
-                var matchers = new List<ContentMatchSet>
-                {
-                    // TMSAMVOF
-                    new ContentMatchSet(new byte?[] { 0x54, 0x4D, 0x53, 0x41, 0x4D, 0x56, 0x4F, 0x46 }, "ActiveMARK"),
-                };
-
-                string match = MatchUtil.GetFirstMatch(file, bssSectionRaw, matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
-                    return match;
+                if (strs.Any(s => s.Contains("TMSAMVOF")))
+                    return "ActiveMARK";
             }
 
             return null;
