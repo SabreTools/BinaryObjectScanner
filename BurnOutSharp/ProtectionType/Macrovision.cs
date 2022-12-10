@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
 using BurnOutSharp.Tools;
@@ -60,59 +61,46 @@ namespace BurnOutSharp.ProtectionType
             if (name?.Equals("SafeDisc SRV Tool APP", StringComparison.OrdinalIgnoreCase) == true)
                 return $"SafeDisc SRV Tool APP {GetSafeDiscDiagExecutableVersion(pex)}";
 
-            // Check the header padding
-            string match = CheckSectionForProtection(file, includeDebug, pex.HeaderPaddingData);
-            if (!string.IsNullOrWhiteSpace(match))
-                return match;
-
-            // This subtract is needed because BoG_ starts before the section
-            // More specifically, in the padding of the previous block
-            // TODO: Investigate using string finding to get the strings from the padding areas
-
-            // Get the .text section, if it exists
-            match = CheckSectionForProtection(file, includeDebug, pex.GetFirstSectionDataWithOffset(".text", offset: -64));
-            if (!string.IsNullOrWhiteSpace(match))
-                return match;
-
-            // Get the .txt2 section, if it exists
-            match = CheckSectionForProtection(file, includeDebug, pex.GetFirstSectionDataWithOffset(".txt2", offset: -64));
-            if (!string.IsNullOrWhiteSpace(match))
-                return match;
-
-            // Get the code/CODE section, if it exists
-            match = CheckSectionForProtection(file, includeDebug, pex.GetFirstSectionDataWithOffset("code", offset: -64) ?? pex.GetFirstSectionDataWithOffset("CODE", offset: -64));
-            if (!string.IsNullOrWhiteSpace(match))
-                return match;
-
-            // Get the .data section, if it exists
-            match = CheckSectionForProtection(file, includeDebug, pex.GetFirstSectionDataWithOffset(".data", offset: -64));
-            if (!string.IsNullOrWhiteSpace(match))
-                return match;
-
             // Check for specific indications for individual Macrovision protections.
 
             List<string> resultsList = new List<string>();
 
+            // Check the header padding
+            string match = CheckSectionForProtection(file, includeDebug, pex.HeaderPaddingData);
+            if (!string.IsNullOrWhiteSpace(match))
+            {
+                resultsList.Add(match);
+            }
+            else
+            {
+                // Get the .data section, if it exists
+                match = CheckSectionForProtection(file, includeDebug, pex, ".data");
+                if (!string.IsNullOrWhiteSpace(match))
+                    resultsList.Add(match);
+            }
+
             // Run C-Dilla PE checks
-            string cDilla = CDillaCheckPortableExecutable(file, pex, includeDebug);
-            if (!string.IsNullOrWhiteSpace(cDilla))
-                resultsList.Add(cDilla);
+            match = CDillaCheckPortableExecutable(file, pex, includeDebug);
+            if (!string.IsNullOrWhiteSpace(match))
+                resultsList.Add(match);
 
             // Run SafeCast PE checks
-            string safeCast = SafeCastCheckPortableExecutable(file, pex, includeDebug);
-            if (!string.IsNullOrWhiteSpace(safeCast))
-                resultsList.Add(safeCast);
+            match = SafeCastCheckPortableExecutable(file, pex, includeDebug);
+            if (!string.IsNullOrWhiteSpace(match))
+                resultsList.Add(match);
 
             // Run SafeDisc PE checks
-            string safeDisc = SafeDiscCheckPortableExecutable(file, pex, includeDebug);
-            if (!string.IsNullOrWhiteSpace(safeDisc))
-                resultsList.Add(safeDisc);
+            match = SafeDiscCheckPortableExecutable(file, pex, includeDebug);
+            if (!string.IsNullOrWhiteSpace(match))
+                resultsList.Add(match);
 
             // Run FLEXnet PE checks
-            string flexnet = FLEXnetCheckPortableExecutable(file, pex, includeDebug);
-            if (!string.IsNullOrWhiteSpace(flexnet))
-                resultsList.Add(flexnet);
+            match = FLEXnetCheckPortableExecutable(file, pex, includeDebug);
+            if (!string.IsNullOrWhiteSpace(match))
+                resultsList.Add(match);
 
+            // Clean the result list
+            resultsList = CleanResultList(resultsList);
             if (resultsList != null && resultsList.Count > 0)
                 return string.Join(", ", resultsList);
 
@@ -202,32 +190,8 @@ namespace BurnOutSharp.ProtectionType
             if (sectionRaw == null)
                 return null;
 
-            // TODO: Add more checks to help differentiate between SafeDisc and SafeCast.
             var matchers = new List<ContentMatchSet>
             {
-                // Checks for presence of two different strings to differentiate between SafeDisc and SafeCast.
-                new ContentMatchSet(new List<byte?[]>
-                {
-                    // BoG_ *90.0&!!  Yy>
-                    new byte?[]
-                    {
-                        0x42, 0x6F, 0x47, 0x5F, 0x20, 0x2A, 0x39, 0x30,
-                        0x2E, 0x30, 0x26, 0x21, 0x21, 0x20, 0x20, 0x59,
-                        0x79, 0x3E
-                    },
-
-                    // product activation library
-                    new byte?[]
-                    {
-                        0x70, 0x72, 0x6F, 0x64, 0x75, 0x63, 0x74, 0x20,
-                        0x61, 0x63, 0x74, 0x69, 0x76, 0x61, 0x74, 0x69,
-                        0x6F, 0x6E, 0x20, 0x6C, 0x69, 0x62, 0x72, 0x61,
-                        0x72, 0x79
-                    },
-                }, GetMacrovisionVersion, "SafeCast"),
-
-                // TODO: Investigate likely false positive in Redump entry 74384.
-                // Unfortunately, this string is used throughout a wide variety of SafeDisc and SafeCast versions. If no previous checks are able to able to differentiate between them, then a generic result has to be given.
                 // BoG_ *90.0&!!  Yy>
                 new ContentMatchSet(new byte?[]
                 {
@@ -235,12 +199,70 @@ namespace BurnOutSharp.ProtectionType
                     0x2E, 0x30, 0x26, 0x21, 0x21, 0x20, 0x20, 0x59,
                     0x79, 0x3E
                 }, GetMacrovisionVersion, "SafeCast/SafeDisc"),
-
-                // (char)0x00 + (char)0x00 + BoG_
-                new ContentMatchSet(new byte?[] { 0x00, 0x00, 0x42, 0x6F, 0x47, 0x5F }, GetSafeDisc320to4xVersion, "SafeDisc"),
             };
 
             return MatchUtil.GetFirstMatch(file, sectionRaw, matchers, includeDebug);
+        }
+
+        private string CheckSectionForProtection(string file, bool includeDebug, PortableExecutable pex, string sectionName)
+        {
+            // Get the section strings, if they exist
+            List<string> strs = pex.GetFirstSectionStrings(sectionName);
+            if (strs == null)
+                return null;
+
+            // If we don't have the "BoG_" string
+            if (!strs.Any(s => s.Contains("BoG_ *90.0&!!  Yy>")))
+                return null;
+
+            byte[] sectionRaw = pex.GetFirstSectionData(sectionName);
+
+            // TODO: Add more checks to help differentiate between SafeDisc and SafeCast.
+            var matchers = new List<ContentMatchSet>
+            {
+                // BoG_ *90.0&!!  Yy>
+                new ContentMatchSet(new byte?[]
+                {
+                    0x42, 0x6F, 0x47, 0x5F, 0x20, 0x2A, 0x39, 0x30,
+                    0x2E, 0x30, 0x26, 0x21, 0x21, 0x20, 0x20, 0x59,
+                    0x79, 0x3E
+                }, GetMacrovisionVersion, "SafeCast/SafeDisc"),
+            };
+
+            return MatchUtil.GetFirstMatch(file, sectionRaw, matchers, includeDebug);
+        }
+
+        private List<string> CleanResultList(List<string> resultsList)
+        {
+            // If we have an invalid result list
+            if (resultsList == null || resultsList.Count == 0)
+                return resultsList;
+
+            // Cache the version expunged string
+            string versionExpunged = GetSafeDisc320to4xVersion(null, null, null);
+
+            // Clean SafeCast results
+            if (resultsList.Any(s => s == "SafeCast") && resultsList.Any(s => s.StartsWith("SafeCast/SafeDisc")))
+            {
+                resultsList = resultsList.Select(s =>
+                {
+                    if (s.StartsWith("SafeCast/SafeDisc"))
+                        return s.Replace("SafeCast/SafeDisc", "SafeCast");
+                    else if (s == "SafeCast" || s.EndsWith(versionExpunged))
+                        return null;
+                    else
+                        return s;
+                })
+                .Where(s => s != null)
+                .ToList();
+            }
+
+            // Clean incorrect version expunged results
+            if (resultsList.Any(s => s.StartsWith("SafeCast/SafeDisc")) && resultsList.Any(s => s.EndsWith(versionExpunged)))
+                resultsList = resultsList.Where(s => !s.EndsWith(versionExpunged)).ToList();
+
+            // Get distinct and order
+            return resultsList.Distinct().OrderBy(s => s).ToList();
         }
     }
 }

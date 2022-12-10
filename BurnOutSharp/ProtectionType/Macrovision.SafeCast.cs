@@ -55,6 +55,21 @@ namespace BurnOutSharp.ProtectionType
             if (sections == null)
                 return null;
 
+            // TODO: Investigate import hint/name table entry "CdaSysInstall"
+            // TODO: Investigate string table entries: "CDWP02DG", "CDWP02DG", "CDWS02DG"
+
+            // Get the import directory table, if it exists
+            if (pex.ImportTable?.ImportDirectoryTable != null)
+            {
+                if (pex.ImportTable.ImportDirectoryTable.Any(idte => idte.Name?.Equals("CdaC14BA.dll", StringComparison.OrdinalIgnoreCase) == true))
+                    return "SafeCast";
+            }
+
+            // Get the dialog box resources
+            var resource = pex.FindDialogByTitle("SafeCast API");
+            if (resource.Any())
+                return "SafeCast";
+
             // Get the .data/DATA section strings, if they exist
             List<string> strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
             if (strs != null)
