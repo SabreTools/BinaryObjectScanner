@@ -699,7 +699,7 @@ namespace BurnOutSharp.Builder
             var strings = new List<string>();
 
             uint totalSize = coffStringTable.TotalSize;
-            while (totalSize > 0)
+            while (totalSize > 0 && offset < data.Length)
             {
                 int initialPosition = offset;
                 string str = data.ReadString(ref offset);
@@ -790,7 +790,7 @@ namespace BurnOutSharp.Builder
 
                 var typeOffsetFieldEntries = new List<BaseRelocationTypeOffsetFieldEntry>();
                 int totalSize = 8;
-                while (totalSize < baseRelocationBlock.BlockSize)
+                while (totalSize < baseRelocationBlock.BlockSize && offset < data.Length)
                 {
                     var baseRelocationTypeOffsetFieldEntry = new BaseRelocationTypeOffsetFieldEntry();
 
@@ -2024,7 +2024,7 @@ namespace BurnOutSharp.Builder
 
                 var typeOffsetFieldEntries = new List<BaseRelocationTypeOffsetFieldEntry>();
                 int totalSize = 8;
-                while (totalSize < baseRelocationBlock.BlockSize)
+                while (totalSize < baseRelocationBlock.BlockSize && data.Position < data.Length)
                 {
                     var baseRelocationTypeOffsetFieldEntry = new BaseRelocationTypeOffsetFieldEntry();
 
