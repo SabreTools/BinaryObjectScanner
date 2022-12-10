@@ -1936,7 +1936,7 @@ namespace BurnOutSharp.Builder
             var strings = new List<string>();
 
             uint totalSize = coffStringTable.TotalSize;
-            while (totalSize > 0)
+            while (totalSize > 0 && data.Position < data.Length)
             {
                 long initialPosition = data.Position;
                 string str = data.ReadString();
