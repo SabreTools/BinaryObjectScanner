@@ -53,53 +53,33 @@ namespace BurnOutSharp.ProtectionType
             }
 
             // Get the second to last section
-            var secondToLastSection = sections.Length > 1 ? sections[sections.Length - 2] : null;
-            if (secondToLastSection != null)
+            if (sections.Length > 1)
             {
-                var secondToLastSectionData = pex.GetSectionData(sections.Length - 2);
-                if (secondToLastSectionData != null)
+                // Get the n - 1 section strings, if they exist
+                List<string> strs = pex.GetSectionStrings(sections.Length - 2);
+                if (strs != null)
                 {
-                    var matchers = new List<ContentMatchSet>
-                    {
-                        // VOB ProtectCD
-                        new ContentMatchSet(
-                            new byte?[]
-                            {
-                                0x56, 0x4F, 0x42, 0x20, 0x50, 0x72, 0x6F, 0x74,
-                                0x65, 0x63, 0x74, 0x43, 0x44
-                            },
-                            GetOldVersion,
-                            "VOB ProtectCD/DVD"),
-                    };
-
-                    string match = MatchUtil.GetFirstMatch(file, secondToLastSectionData, matchers, includeDebug);
-                    if (!string.IsNullOrWhiteSpace(match))
-                        return match;
+                    string str = strs.FirstOrDefault(s => s.Contains("VOB ProtectCD"));
+                    if (str != null)
+                        return $"VOB ProtectCD {GetOldVersion(str)}";
                 }
             }
 
-            // TODO: Be better about finding the last section
             // Get the last section (example names: ACE5, akxpxgcv, and piofinqb)
-            var lastSection = sections.LastOrDefault();
-            if (lastSection != null)
+            if (sections.Length > 0)
             {
-                string lastSectionName = Encoding.UTF8.GetString(lastSection.Name).TrimEnd('\0');
-                var lastSectionData = pex.GetFirstSectionData(lastSectionName);
-                if (lastSectionData != null)
+                var matchers = new List<ContentMatchSet>
                 {
-                    var matchers = new List<ContentMatchSet>
-                    {
-                        // HúMETINF
-                        new ContentMatchSet(new byte?[] { 0x48, 0xFA, 0x4D, 0x45, 0x54, 0x49, 0x4E, 0x46 }, GetVersion76till10, "ProtectDISC"),
+                    // HúMETINF
+                    new ContentMatchSet(new byte?[] { 0x48, 0xFA, 0x4D, 0x45, 0x54, 0x49, 0x4E, 0x46 }, GetVersion76till10, "ProtectDISC"),
 
-                        // DCP-BOV + (char)0x00 + (char)0x00
-                        new ContentMatchSet(new byte?[] { 0x44, 0x43, 0x50, 0x2D, 0x42, 0x4F, 0x56, 0x00, 0x00 }, GetVersion3till6, "VOB ProtectCD/DVD"),
-                    };
+                    // DCP-BOV + (char)0x00 + (char)0x00
+                    new ContentMatchSet(new byte?[] { 0x44, 0x43, 0x50, 0x2D, 0x42, 0x4F, 0x56, 0x00, 0x00 }, GetVersion3till6, "VOB ProtectCD/DVD"),
+                };
 
-                    string match = MatchUtil.GetFirstMatch(file, lastSectionData, matchers, includeDebug);
-                    if (!string.IsNullOrWhiteSpace(match))
-                        return match;
-                }
+                string match = MatchUtil.GetFirstMatch(file, pex.GetSectionData(sections.Length - 1), matchers, includeDebug);
+                if (!string.IsNullOrWhiteSpace(match))
+                    return match;
             }
 
             // Get the .vob.pcd section, if it exists
@@ -110,20 +90,24 @@ namespace BurnOutSharp.ProtectionType
             return null;
         }
 
-        public static string GetOldVersion(string file, byte[] fileContent, List<int> positions)
+        public static string GetOldVersion(string matchedString)
         {
-            int position = positions[0] + 16; // Begin reading after "VOB ProtectCD"
-            char[] version = new ArraySegment<byte>(fileContent, position, 4).Select(b => (char)b).ToArray();
-            if (char.IsNumber(version[0]) && char.IsNumber(version[2]) && char.IsNumber(version[3]))
-                return $"{version[0]}.{version[2]}{version[3]}";
+            // Remove unnecessary parts
+            matchedString = matchedString.Trim()
+                .Replace("----====#### ", string.Empty)
+                .Replace(" ####====----", string.Empty);
 
-            // Look for the legacy support version
-            position = positions[0] + "VOB ProtectCD with LEGACY SYSIPHOS Support V".Length;
-            version = new ArraySegment<byte>(fileContent, position, 7).Select(b => (char)b).ToArray();
-            if (char.IsNumber(version[0]) && char.IsNumber(version[2]) && char.IsNumber(version[4]))
-                return new string(version);
+            // Split the string
+            string[] matchedStringArray = matchedString.Split(' ');
 
-            return "old";
+            // If we have no version
+            if (matchedStringArray.Length <= 2)
+                return "old";
+            else if (matchedString.StartsWith("VOB ProtectCD with LEGACY SYSIPHOS Support V"))
+                return $"with LEGACY SYSIPHOS Support {matchedStringArray[6].TrimStart('V')}";
+
+            // Return the version string with leading `V` trimmed
+            return matchedStringArray[2].TrimStart('V');
         }
 
         public static string GetVersion3till6(string file, byte[] fileContent, List<int> positions)
