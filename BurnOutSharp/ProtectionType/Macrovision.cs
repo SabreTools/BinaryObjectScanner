@@ -67,6 +67,7 @@ namespace BurnOutSharp.ProtectionType
 
             // This subtract is needed because BoG_ starts before the section
             // More specifically, in the padding of the previous block
+            // TODO: Investigate using string finding to get the strings from the padding areas
 
             // Get the .text section, if it exists
             match = CheckSectionForProtection(file, includeDebug, pex.GetFirstSectionDataWithOffset(".text", offset: -64));
@@ -203,41 +204,41 @@ namespace BurnOutSharp.ProtectionType
 
             // TODO: Add more checks to help differentiate between SafeDisc and SafeCast.
             var matchers = new List<ContentMatchSet>
+            {
+                // Checks for presence of two different strings to differentiate between SafeDisc and SafeCast.
+                new ContentMatchSet(new List<byte?[]>
                 {
-                    // Checks for presence of two different strings to differentiate between SafeDisc and SafeCast.
-                    new ContentMatchSet(new List<byte?[]>
-                    {
-                        // BoG_ *90.0&!!  Yy>
-                        new byte?[]
-                        {
-                            0x42, 0x6F, 0x47, 0x5F, 0x20, 0x2A, 0x39, 0x30,
-                            0x2E, 0x30, 0x26, 0x21, 0x21, 0x20, 0x20, 0x59,
-                            0x79, 0x3E
-                        },
-
-                        // product activation library
-                        new byte?[]
-                        {
-                            0x70, 0x72, 0x6F, 0x64, 0x75, 0x63, 0x74, 0x20,
-                            0x61, 0x63, 0x74, 0x69, 0x76, 0x61, 0x74, 0x69,
-                            0x6F, 0x6E, 0x20, 0x6C, 0x69, 0x62, 0x72, 0x61,
-                            0x72, 0x79
-                        },
-                    }, GetMacrovisionVersion, "SafeCast"),
-
-                    // TODO: Investigate likely false positive in Redump entry 74384.
-                    // Unfortunately, this string is used throughout a wide variety of SafeDisc and SafeCast versions. If no previous checks are able to able to differentiate between them, then a generic result has to be given.
                     // BoG_ *90.0&!!  Yy>
-                    new ContentMatchSet(new byte?[]
+                    new byte?[]
                     {
                         0x42, 0x6F, 0x47, 0x5F, 0x20, 0x2A, 0x39, 0x30,
                         0x2E, 0x30, 0x26, 0x21, 0x21, 0x20, 0x20, 0x59,
                         0x79, 0x3E
-                    }, GetMacrovisionVersion, "SafeCast/SafeDisc"),
+                    },
 
-                    // (char)0x00 + (char)0x00 + BoG_
-                    new ContentMatchSet(new byte?[] { 0x00, 0x00, 0x42, 0x6F, 0x47, 0x5F }, GetSafeDisc320to4xVersion, "SafeDisc"),
-                };
+                    // product activation library
+                    new byte?[]
+                    {
+                        0x70, 0x72, 0x6F, 0x64, 0x75, 0x63, 0x74, 0x20,
+                        0x61, 0x63, 0x74, 0x69, 0x76, 0x61, 0x74, 0x69,
+                        0x6F, 0x6E, 0x20, 0x6C, 0x69, 0x62, 0x72, 0x61,
+                        0x72, 0x79
+                    },
+                }, GetMacrovisionVersion, "SafeCast"),
+
+                // TODO: Investigate likely false positive in Redump entry 74384.
+                // Unfortunately, this string is used throughout a wide variety of SafeDisc and SafeCast versions. If no previous checks are able to able to differentiate between them, then a generic result has to be given.
+                // BoG_ *90.0&!!  Yy>
+                new ContentMatchSet(new byte?[]
+                {
+                    0x42, 0x6F, 0x47, 0x5F, 0x20, 0x2A, 0x39, 0x30,
+                    0x2E, 0x30, 0x26, 0x21, 0x21, 0x20, 0x20, 0x59,
+                    0x79, 0x3E
+                }, GetMacrovisionVersion, "SafeCast/SafeDisc"),
+
+                // (char)0x00 + (char)0x00 + BoG_
+                new ContentMatchSet(new byte?[] { 0x00, 0x00, 0x42, 0x6F, 0x47, 0x5F }, GetSafeDisc320to4xVersion, "SafeDisc"),
+            };
 
             return MatchUtil.GetFirstMatch(file, sectionRaw, matchers, includeDebug);
         }
