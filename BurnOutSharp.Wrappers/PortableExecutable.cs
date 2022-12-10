@@ -3036,28 +3036,6 @@ namespace BurnOutSharp.Wrappers
         }
 
         /// <summary>
-        /// Get the first section data based on name, if possible
-        /// </summary>
-        /// <param name="name">Name of the section to check for</param>
-        /// <param name="exact">True to enable exact matching of names, false for starts-with</param>
-        /// <returns>Section data on success, null on error</returns>
-        [Obsolete]
-        public byte[] GetFirstSectionDataWithOffset(string name, bool exact = false, int offset = 0)
-        {
-            // If we have no sections
-            if (SectionTable == null || !SectionTable.Any())
-                return null;
-
-            // If the section doesn't exist
-            if (!ContainsSection(name, exact))
-                return null;
-
-            // Get the first index of the section
-            int index = Array.IndexOf(SectionNames, name);
-            return GetSectionData(index);
-        }
-
-        /// <summary>
         /// Get the last section data based on name, if possible
         /// </summary>
         /// <param name="name">Name of the section to check for</param>
