@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using BurnOutSharp.Interfaces;
-using BurnOutSharp.Matching;
 using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.ProtectionType
@@ -16,7 +16,7 @@ namespace BurnOutSharp.ProtectionType
     /// Further links and resources:
     /// https://github.com/VenTaz/Themidie
     /// https://github.com/ergrelet/unlicense
-    /// https://github.com/horsicq/Detect-It-Easy/blob/c332fa452087bc0e6705c452e00331618a9da00e/db/PE/Themida.2.sg
+    /// https://github.com/horsicq/Detect-It-Easy/blob/master/db/PE/Themida.2.sg
     /// 
     /// TODO:
     /// Add/Confirm detection for WinLicense/"Code Virtualize".
@@ -28,26 +28,19 @@ namespace BurnOutSharp.ProtectionType
         /// <inheritdoc/>
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
-            // TODO: Add detections from DiE (https://github.com/horsicq/Detect-It-Easy/blob/master/db/PE/Themida.2.sg).
             // Get the sections from the executable, if possible
             var sections = pex?.SectionTable;
             if (sections == null)
                 return null;
 
-            // Get the "Arcsoft " section, if it exists
-            if (pex.ContainsSection("Arcsoft "))
+            // Get the "Arcsoft " section strings, if they exist
+            List<string> strs = pex.GetFirstSectionStrings("Arcsoft ");
+            if (strs != null)
             {
-                var matchers = new List<ContentMatchSet>
-                {
-                    // Themida
-                    // Found in "uDigital Theatre.exe" in http://downloads.fyxm.net/ArcSoft-TotalMedia-23085.html (https://web.archive.org/web/20221114042838/http://files.fyxm.net/23/23085/totalmediatheatre3platinum_retail_tbyb_all.exe).
-                    // TODO: Investiage "uDRMCheck.dll" in the same product to see if it's related to Themida, or if it's a different form of DRM.
-                    new ContentMatchSet(new byte?[] { 0x54, 0x68, 0x65, 0x6D, 0x69, 0x64, 0x61 }, "Themida"),
-                };
-
-                string match = MatchUtil.GetFirstMatch(file, pex.GetFirstSectionData("Arcsoft "), matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
-                    return match;
+                // Found in "uDigital Theatre.exe" in http://downloads.fyxm.net/ArcSoft-TotalMedia-23085.html (https://web.archive.org/web/20221114042838/http://files.fyxm.net/23/23085/totalmediatheatre3platinum_retail_tbyb_all.exe).
+                // TODO: Investigate "uDRMCheck.dll" in the same product to see if it's related to Themida, or if it's a different form of DRM.
+                if (strs.Any(s => s.Contains("Themida")))
+                    return "Themida";
             }
 
             return null;
