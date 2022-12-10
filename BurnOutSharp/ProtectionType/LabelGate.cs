@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
 using BurnOutSharp.Wrappers;
@@ -35,20 +36,13 @@ namespace BurnOutSharp.ProtectionType
             if (name?.StartsWith("MQSTART", StringComparison.OrdinalIgnoreCase) == true)
                 return $"LabelGate CD2 Media Player";
 
-            // Get the .data/DATA section, if it exists
-            var dataSectionRaw = pex.GetFirstSectionData(".data") ?? pex.GetFirstSectionData("DATA");
-            if (dataSectionRaw != null)
+            // Get the .data/DATA section strings, if they exist
+            List<string> strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
+            if (strs != null)
             {
-                var matchers = new List<ContentMatchSet>
-                {
-                    // LGCD2_LAUNCH
-                    // Found in "START.EXE" (Redump entry 95010 and product ID SVWC-7185).
-                    new ContentMatchSet(new byte?[] { 0x4C, 0x47, 0x43, 0x44, 0x32, 0x5F, 0x4C, 0x41, 0x55, 0x4E, 0x43, 0x48 }, "LabelGate CD2"),
-                };
-
-                string match = MatchUtil.GetFirstMatch(file, dataSectionRaw, matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
-                    return match;
+                // Found in "START.EXE" (Redump entry 95010 and product ID SVWC-7185).
+                if (strs.Any(s => s.Contains("LGCD2_LAUNCH")))
+                    return "LabelGate CD2";
             }
 
             return null;
