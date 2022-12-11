@@ -26,7 +26,7 @@ Researching copy protections and packers can be a massive undertaking. Some can 
 | Tool / Method | Description |
 | --- | --- |
 | `Test.exe --info <path>` | The `--info` option on the test executable is a really good way of getting started with investigation. The output of `--info` contains nearly all immediately parsable information from any executable that has a wrapper defined in `BurnOutSharp.Wrappers`. In general, the newer the executable format, the more information will be immediately available. For the most basic of protections and packers, this may be as far as you need to go for your research. |
-| `Test.exe [--debug] <path>` | Running `Test.exe` without any options runs the existing set of packer and protection checks. The output of this will be all detected packers and protections on the given file, with optional debug information where applicable. This is helpful in research because a protection you are investigating may be related to (or obscured by) another, existing packer or protection. Having this information will make it easier to filter the results of `Test.exe --info <path>` as well. |
+| `Test.exe [--debug] <path>` | Running `Test.exe` without any options runs the existing set of packer and protection checks. The output of this will be all detected packers and protections on the given file, with optional debug information where applicable. This is helpful in research because a protection you are investigating may be related to (or obscured by) another existing packer or protection. Having this information will make it easier to filter the results of `Test.exe --info <path>` as well. |
 | **Add and debug** | This starts getting into more serious territory. Creating a skeleton for the packer or protection that you want to add and then messing around in code is a great way to start seeing what sort of stuff the library can see that's not normally output. See the table below for extension properties and methods that you may use in addition to the models defined in `BurnOutSharp.Models`. |
 | **Hex Editor / External Programs** | As an advanced port of call, using a hex editor and external protection scanning programs (sometimes in conjunction) can help you get a better idea of the protection you're looking into. For example, **TheRogueArchivist** used that combination to narrow down the exact check for a very stubborn protection. |
 
@@ -40,8 +40,8 @@ Below are all current extension properties along with a brief description.
 | **New Executable (NE)** | N/A | New Executables currently do not have any extension properties. |
 | **Portable Executable (PE)** | `HeaderPaddingData` | The data between the end of the PE header and the start of the first section. |
 |  | `HeaderPaddingStrings` | All found ASCII and Unicode wide character strings (length >= 3) between the end of the PE header and the start of the first section. |
-|  | `OverlayData` | The data between the end of the last sectiom and either the start of the certificate table or the end of the file. |
-|  | `OverlayStrings` | All found ASCII and Unicode wide character strings (length >= 3) between the end of the last sectiom and either the start of the certificate table or the end of the file. |
+|  | `OverlayData` | The data between the end of the last section and either the start of the certificate table or the end of the file. |
+|  | `OverlayStrings` | All found ASCII and Unicode wide character strings (length >= 3) between the end of the last section and either the start of the certificate table or the end of the file. |
 |  | `SectionNames` | The ordered set of section names converted to UTF-8 strings with trailing nulls trimmed. |
 |  | `StubExecutableData` | The data representing the MS-DOS executable stub code. For most programs, the stub would only print a message saying it needs Windows. |
 |  | `ResourceData` | Dictionary containing mappings from ID to either an object representing the resource (if parsed) or a byte array (if unparsed). |
@@ -55,7 +55,7 @@ Below are all current helper methods along with a brief description.
 | **MS-DOS** | N/A | MS-DOS executables currently do not have any helper methods. |
 | **New Executable (NE)** | `ReadArbitraryRange(int, int)` | Reads an arbitrary range of bytes out of the new executable. **This method will be replaced in the future as proper extension properties and methods are created.** |
 | **Portable Executable (PE)** | `GetVersionInfoString(string)` | Get a field from the version info string table based on the key, if the version info, string table, and key exist. Most common fields are already accessible as extension properties. See the table above for details. |
-|  | `GetAssemblyManifest()` | Get the parsed XML assembly manifest, if it exists. |
+|  | `GetAssemblyManifest()` | Get the parsed XML assembly manifest, if it exists. Some common fields are already accessible as extension properties. See the table above for details. |
 |  | `FindDialogByTitle(string)` | Find all dialog box resources that match a given title, if they exist. |
 |  | `FindDialogBoxByItemTitle(string)` | Find all dialog box reaources that contain a dialog item that matches a given title, if they exist. |
 |  | `FindStringTableByEntry(string)` | Find all string table resources that contain a given value, if they exist. |
@@ -84,9 +84,9 @@ Adding a new checker or format should happen in a few distinct steps:
 
     - If it is a new supported DRM scheme, copy protection, or obfuscator, create the file in `BurnOutSharp/ProtectionType/`. By default, you will need to implement at least one of `BurnOutSharp.Interfaces.INewExecutableCheck`, `BurnOutSharp.Interfaces.IPortableExecutableCheck`, and/or `BurnOutSharp.Interfaces.IPathCheck`. It is exceptionally rare to need to implement `BurnOutSharp.Interfaces.IScannable`.
 
-    - In addition to the above, there is a debug-only interface called `BurnOutSharp.Interfaces.IContentCheck`. Though there are examples of this being used in code, it is highly recommended to avoid tbis in a final implementation.
+    - In addition to the above, there is a debug-only interface called `BurnOutSharp.Interfaces.IContentCheck`. Though there are examples of this being used in code, it is highly recommended to avoid this in a final implementation.
 
-2. Look at other, similar classes for guidelines on how ny given set of checks should be implemented. Test early and often, including using debugging tools. Err on the side of over-commenting. Do not try to be clever with your code; readable code is royalty.
+2. Look at other, similar classes for guidelines on how any given set of checks should be implemented. Test early and often, including using debugging tools. Err on the side of over-commenting. Do not try to be clever with your code; readable code is royalty.
 
 3. Unless otherwise directed to by a maintainer, the only way to get changes in is through a pull request on GitHub. We do not accept patches in the form of patchfiles or archives. Please note that the maintainers may need an increased amount of time to review for obscure or hard-to-find protections.
 
