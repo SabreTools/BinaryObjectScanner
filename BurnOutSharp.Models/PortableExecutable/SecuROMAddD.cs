@@ -16,7 +16,7 @@ namespace BurnOutSharp.Models.PortableExecutable
         /// <summary>
         /// "AddD", Identifier?
         /// </summary>
-        public uint AddD;
+        public uint Signature;
 
         /// <summary>
         /// Unknown (Entry count?)
@@ -31,7 +31,7 @@ namespace BurnOutSharp.Models.PortableExecutable
         /// <summary>
         /// Unknown (Build? Formatted as a string)
         /// </summary>
-        public uint Build;
+        public char[] Build;
 
         /// <summary>
         /// Unknown (0x14)

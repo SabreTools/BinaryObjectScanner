@@ -392,6 +392,62 @@ namespace BurnOutSharp.Builder
         }
 
         /// <summary>
+        /// Read resource data as a SecuROM AddD overlay data
+        /// </summary>
+        /// <param name="data">Data to parse into a resource header</param>
+        /// <param name="offset">Offset into the byte array</param>
+        /// <returns>A filled SecuROM AddD overlay data on success, null on error</returns>
+        public static Models.PortableExecutable.SecuROMAddD AsSecuROMAddD(this byte[] data, ref int offset)
+        {
+            // If we have data that's invalid, we can't do anything
+            if (data == null)
+                return null;
+
+            // Read in the table
+            var addD = new Models.PortableExecutable.SecuROMAddD();
+
+            addD.Signature = data.ReadUInt32(ref offset);
+            if (addD.Signature != 0x44646441)
+                return null;
+
+            addD.EntryCount = data.ReadUInt32(ref offset);
+            addD.Version = data.ReadString(ref offset, Encoding.ASCII);
+            addD.Build = data.ReadBytes(ref offset, 4).Select(b => (char)b).ToArray();
+            addD.Unknown14h = data.ReadUInt32(ref offset);
+            addD.Unknown18h = data.ReadUInt32(ref offset);
+            addD.Unknown1Ch = data.ReadUInt32(ref offset);
+            addD.Unknown20h = data.ReadUInt32(ref offset);
+            addD.Unknown24h = data.ReadUInt32(ref offset);
+            addD.Unknown28h = data.ReadUInt32(ref offset);
+            addD.Unknown2Ch = data.ReadUInt32(ref offset);
+            addD.Unknown30h = data.ReadUInt32(ref offset);
+            addD.Unknown34h = data.ReadUInt32(ref offset);
+            addD.Unknown38h = data.ReadUInt32(ref offset);
+            addD.Unknown3Ch = data.ReadUInt32(ref offset);
+
+            addD.Entries = new Models.PortableExecutable.SecuROMAddDEntry[addD.EntryCount];
+            for (int i = 0; i < addD.EntryCount; i++)
+            {
+                var addDEntry = new Models.PortableExecutable.SecuROMAddDEntry();
+
+                addDEntry.PhysicalOffset = data.ReadUInt32(ref offset);
+                addDEntry.Length = data.ReadUInt32(ref offset);
+                addDEntry.Unknown08h = data.ReadUInt32(ref offset);
+                addDEntry.Unknown0Ch = data.ReadUInt32(ref offset);
+                addDEntry.Unknown10h = data.ReadUInt32(ref offset);
+                addDEntry.Unknown14h = data.ReadUInt32(ref offset);
+                addDEntry.Unknown18h = data.ReadUInt32(ref offset);
+                addDEntry.Unknown1Ch = data.ReadUInt32(ref offset);
+                addDEntry.FileName = data.ReadString(ref offset, Encoding.ASCII);
+                addDEntry.Unknown2Ch = data.ReadUInt32(ref offset);
+
+                addD.Entries[i] = addDEntry;
+            }
+
+            return addD;
+        }
+
+        /// <summary>
         /// Read resource data as a resource header
         /// </summary>
         /// <param name="data">Data to parse into a resource header</param>
