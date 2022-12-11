@@ -189,6 +189,10 @@ namespace BurnOutSharp.Wrappers
             // Check for Unicode strings
             while (sourceDataIndex < sourceData.Length)
             {
+                // Unicode characters are always 2 bytes
+                if (sourceDataIndex == sourceData.Length - 1)
+                    break;
+
                 ushort ch = BitConverter.ToUInt16(sourceData, sourceDataIndex);
 
                 // If we have a null terminator or "invalid" character

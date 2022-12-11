@@ -55,17 +55,10 @@ namespace BurnOutSharp.ProtectionType
             // TODO: Add entry point checks from https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
 
             // Get the overlay data, if it exists
-            if (pex.Overlay != null)
+            if (pex.OverlayStrings != null)
             {
-                var matchers = new List<ContentMatchSet>
-                {
-                    // (char)0x00 + TMSAMVOH
-                    new ContentMatchSet(new byte?[] { 0x00, 0x54, 0x4D, 0x53, 0x41, 0x4D, 0x56, 0x4F, 0x48, }, "ActiveMARK"),
-                };
-
-                string match = MatchUtil.GetFirstMatch(file, pex.Overlay, matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
-                    return match;
+                if (pex.OverlayStrings.Any(s => s.Contains("TMSAMVOH")))
+                    return "ActiveMARK";
             }
 
             // Get the last .bss section strings, if they exist

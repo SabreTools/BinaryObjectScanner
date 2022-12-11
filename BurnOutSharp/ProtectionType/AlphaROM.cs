@@ -75,18 +75,11 @@ namespace BurnOutSharp.ProtectionType
             }
 
             // Get the overlay data, if it exists
-            if (pex.Overlay != null)
+            if (pex.OverlayStrings != null)
             {
-                var matchers = new List<ContentMatchSet>
-                {
-                    // Found in Redump entry 84122.
-                    // SETTEC0000
-                    new ContentMatchSet(new byte?[] { 0x53, 0x45, 0x54, 0x54, 0x45, 0x43, 0x30, 0x30, 0x30, 0x30 }, "Alpha-ROM"),
-                };
-
-                string match = MatchUtil.GetFirstMatch(file, pex.Overlay, matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
-                    return match;
+                // Found in Redump entry 84122.
+                if (pex.OverlayStrings.Any(s => s.Contains("SETTEC0000")))
+                    return "Alpha-ROM";
             }
 
             return null;

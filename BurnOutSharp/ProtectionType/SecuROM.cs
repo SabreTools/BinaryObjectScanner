@@ -53,17 +53,10 @@ namespace BurnOutSharp.ProtectionType
                 return $"SecuROM SLL Protected (for SecuROM v8.x)";
 
             // Search after the last section
-            if (pex.Overlay != null)
+            if (pex.OverlayStrings != null)
             {
-                var matchers = new List<ContentMatchSet>
-                {
-                    // AddD + (char)0x03 + (char)0x00 + (char)0x00 + (char)0x00)
-                    new ContentMatchSet(new byte?[] { 0x41, 0x64, 0x64, 0x44, 0x03, 0x00, 0x00, 0x00 }, GetV4Version, "SecuROM"),
-                };
-
-                string match = MatchUtil.GetFirstMatch(file, pex.Overlay, matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
-                    return match;
+                if (pex.OverlayStrings.Any(s => s == "AddD"))
+                    return $"SecuROM {GetV4Version(pex)}";
             }
 
             // Get the sections 5+, if they exist (example names: .fmqyrx, .vcltz, .iywiak)
@@ -161,19 +154,19 @@ namespace BurnOutSharp.ProtectionType
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
 
-        public static string GetV4Version(string file, byte[] fileContent, List<int> positions)
+        private static string GetV4Version(PortableExecutable pex)
         {
-            int index = positions[0] + 8; // Begin reading after "AddD"
-            char version = (char)fileContent[index];
+            int index = 8; // Begin reading after "AddD"
+            char version = (char)pex.OverlayData[index];
             index += 2;
 
-            string subVersion = Encoding.ASCII.GetString(fileContent, index, 2);
+            string subVersion = Encoding.ASCII.GetString(pex.OverlayData, index, 2);
             index += 3;
 
-            string subSubVersion = Encoding.ASCII.GetString(fileContent, index, 2);
+            string subSubVersion = Encoding.ASCII.GetString(pex.OverlayData, index, 2);
             index += 3;
 
-            string subSubSubVersion = Encoding.ASCII.GetString(fileContent, index, 4);
+            string subSubSubVersion = Encoding.ASCII.GetString(pex.OverlayData, index, 4);
 
             if (!char.IsNumber(version))
                 return "(very old, v3 or less)";
