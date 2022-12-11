@@ -14,7 +14,7 @@ In addition to the original BurnOut code, the following libraries (or ports ther
 - [StormLibSharp](https://github.com/robpaveza/stormlibsharp) - MPQ extraction
 - [UnshieldSharp](https://github.com/mnadareski/UnshieldSharp) - InstallShield CAB extraction
 - [WiseUnpacker](https://github.com/mnadareski/WiseUnpacker) - Wise Installer extraction
-- [WixToolset.Dtf](https://github.com/wixtoolset/Dtf) - Microsoft CAB extraction
+- [WixToolset.Dtf](https://github.com/wixtoolset/Dtf) - Microsoft CAB extraction [Unused in .NET 6.0 builds]
 
 Please note that due to current library limitations, the functionality of StormLibSharp is locked to Windows only.
 
@@ -167,7 +167,7 @@ Below is a list of archive or archive-like formats that can be extracted and hav
 - GZIP
 - InstallShield Archive V3 (Z)
 - InstallShield CAB
-- Microsoft CAB
+- Microsoft CAB [.NET Standard 2.0 only]
 - MPQ
 - Microsoft Installer (MSI)
 - PKZIP and derived files
