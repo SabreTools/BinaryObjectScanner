@@ -8,8 +8,10 @@ using System.Text;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Tools;
 using ComponentAce.Compression.Libs.zlib;
+#if NETSTANDARD2_0
 using WixToolset.Dtf.Compression;
 using WixToolset.Dtf.Compression.Cab;
+#endif
 
 namespace BurnOutSharp.FileType
 {
@@ -34,6 +36,10 @@ namespace BurnOutSharp.FileType
         /// <inheritdoc/>
         public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, Stream stream, string file)
         {
+#if NET6_0_OR_GREATER
+            // WixToolset does not work with .NET 6.0 and is bound to Windows
+            return null;
+#else
             // If the cab file itself fails
             try
             {
@@ -67,9 +73,10 @@ namespace BurnOutSharp.FileType
             }
 
             return null;
+#endif
         }
 
-        #region LibMSPackSharp
+#region LibMSPackSharp
 
         // TODO: Add stream opening support
         /// <inheritdoc/>
@@ -157,14 +164,14 @@ namespace BurnOutSharp.FileType
         //    return null;
         //}
 
-        #endregion
+#endregion
 
-        #region TEMPORARY AREA FOR MS-CAB FORMAT
+#region TEMPORARY AREA FOR MS-CAB FORMAT
 
         // TODO: Add multi-cabinet reading
         internal class MSCABCabinet
         {
-            #region Constants
+#region Constants
 
             /// <summary>
             /// A maximum uncompressed size of an input file to store in CAB
@@ -191,9 +198,9 @@ namespace BurnOutSharp.FileType
             /// </summary>
             public const uint MaximumUncompressedFolderSize = 0x7FFF8000;
 
-            #endregion
+#endregion
 
-            #region Properties
+#region Properties
 
             /// <summary>
             /// Cabinet header
@@ -210,9 +217,9 @@ namespace BurnOutSharp.FileType
             /// </summary>
             public CFFILE[] Files { get; private set; }
 
-            #endregion
+#endregion
 
-            #region Serialization
+#region Serialization
 
             /// <summary>
             /// Deserialize <paramref name="data"/> at <paramref name="dataPtr"/> into a MSCABCabinet object
@@ -254,9 +261,9 @@ namespace BurnOutSharp.FileType
                 return cabinet;
             }
 
-            #endregion
+#endregion
 
-            #region Public Functionality
+#region Public Functionality
 
             /// <summary>
             /// Find the start of an MS-CAB cabinet in a set of data, if possible
@@ -358,7 +365,7 @@ namespace BurnOutSharp.FileType
             /// </summary>
             public void PrintInfo()
             {
-                #region CFHEADER
+#region CFHEADER
 
                 if (Header == null)
                 {
@@ -368,9 +375,9 @@ namespace BurnOutSharp.FileType
 
                 Header.PrintInfo();
 
-                #endregion
+#endregion
 
-                #region CFFOLDER
+#region CFFOLDER
 
                 if (Folders == null || Folders.Length == 0)
                 {
@@ -397,9 +404,9 @@ namespace BurnOutSharp.FileType
 
                 Console.WriteLine();
 
-                #endregion
+#endregion
 
-                #region CFFILE
+#region CFFILE
 
                 if (Files == null || Files.Length == 0)
                 {
@@ -426,12 +433,12 @@ namespace BurnOutSharp.FileType
 
                 Console.WriteLine();
 
-                #endregion
+#endregion
             }
 
-            #endregion
+#endregion
 
-            #region Internal Functionality
+#region Internal Functionality
 
             /// <summary>
             /// Get a null-terminated string as a byte array from input data
@@ -449,7 +456,7 @@ namespace BurnOutSharp.FileType
                 return str;
             }
 
-            #endregion
+#endregion
         }
 
         /// <summary>
@@ -458,7 +465,7 @@ namespace BurnOutSharp.FileType
         /// </summary>
         internal class CFHEADER
         {
-            #region Constants
+#region Constants
 
             /// <summary>
             /// Human-readable signature
@@ -475,9 +482,9 @@ namespace BurnOutSharp.FileType
             /// </summary>
             public static readonly byte[] SignatureBytes = new byte[] { 0x4D, 0x53, 0x43, 0x46 };
 
-            #endregion
+#endregion
 
-            #region Properties
+#region Properties
 
             /// <summary>
             /// Contains the characters "M", "S", "C", and "F" (bytes 0x4D, 0x53, 0x43,
@@ -619,9 +626,9 @@ namespace BurnOutSharp.FileType
             /// </summary>
             public byte[] DiskNext { get; private set; }
 
-            #endregion
+#endregion
 
-            #region Serialization
+#region Serialization
 
             /// <summary>
             /// Deserialize <paramref name="data"/> at <paramref name="dataPtr"/> into a CFHEADER object
@@ -723,9 +730,9 @@ namespace BurnOutSharp.FileType
                 return header;
             }
 
-            #endregion
+#endregion
 
-            #region Public Functionality
+#region Public Functionality
 
             /// <summary>
             /// Print all info about the cabinet file
@@ -770,7 +777,7 @@ namespace BurnOutSharp.FileType
                 Console.WriteLine();
             }
 
-            #endregion
+#endregion
         }
 
         [Flags]
@@ -819,7 +826,7 @@ namespace BurnOutSharp.FileType
         /// </summary>
         internal class CFFOLDER
         {
-            #region Properties
+#region Properties
 
             /// <summary>
             /// Specifies the absolute file offset of the first CFDATA field block for the folder.
@@ -852,9 +859,9 @@ namespace BurnOutSharp.FileType
             /// </summary>
             public Dictionary<int, CFDATA> DataBlocks { get; private set; } = new Dictionary<int, CFDATA>();
 
-            #endregion
+#endregion
 
-            #region Generated Properties
+#region Generated Properties
 
             /// <summary>
             /// Get the uncompressed data associated with this folder, if possible
@@ -900,9 +907,9 @@ namespace BurnOutSharp.FileType
                 }
             }
 
-            #endregion
+#endregion
 
-            #region Serialization
+#region Serialization
 
             /// <summary>
             /// Deserialize <paramref name="data"/> at <paramref name="dataPtr"/> into a CFFOLDER object
@@ -939,9 +946,9 @@ namespace BurnOutSharp.FileType
                 return folder;
             }
 
-            #endregion
+#endregion
 
-            #region Public Functionality
+#region Public Functionality
 
             /// <summary>
             /// Print all info about the cabinet file
@@ -956,7 +963,7 @@ namespace BurnOutSharp.FileType
                 Console.WriteLine();
             }
 
-            #endregion
+#endregion
         }
 
         internal enum CompressionType : ushort
@@ -998,7 +1005,7 @@ namespace BurnOutSharp.FileType
         /// </summary>
         internal class CFFILE
         {
-            #region Properties
+#region Properties
 
             /// <summary>
             /// Specifies the uncompressed size of this file, in bytes.
@@ -1050,9 +1057,9 @@ namespace BurnOutSharp.FileType
             /// </summary>
             public byte[] Name { get; private set; }
 
-            #endregion
+#endregion
 
-            #region Generated Properties
+#region Generated Properties
 
             /// <summary>
             /// Name value as a string (not null-terminated)
@@ -1106,9 +1113,9 @@ namespace BurnOutSharp.FileType
                 }
             }
 
-            #endregion
+#endregion
 
-            #region Serialization
+#region Serialization
 
             /// <summary>
             /// Deserialize <paramref name="data"/> at <paramref name="dataPtr"/> into a CFFILE object
@@ -1136,9 +1143,9 @@ namespace BurnOutSharp.FileType
                 return file;
             }
 
-            #endregion
+#endregion
 
-            #region Public Functionality
+#region Public Functionality
 
             /// <summary>
             /// Print all info about the cabinet file
@@ -1155,7 +1162,7 @@ namespace BurnOutSharp.FileType
                 Console.WriteLine();
             }
 
-            #endregion
+#endregion
         }
 
         internal enum FolderIndex : ushort
@@ -1227,7 +1234,7 @@ namespace BurnOutSharp.FileType
         /// </summary>
         internal class CFDATA
         {
-            #region Properties
+#region Properties
 
             /// <summary>
             /// Checksum of this CFDATA structure, from the <see cref="CompressedSize"/> through the
@@ -1266,9 +1273,9 @@ namespace BurnOutSharp.FileType
             /// </summary>
             public byte[] CompressedData { get; private set; }
 
-            #endregion
+#endregion
 
-            #region Serialization
+#region Serialization
 
             /// <summary>
             /// Deserialize <paramref name="data"/> at <paramref name="dataPtr"/> into a CFDATA object
@@ -1304,7 +1311,7 @@ namespace BurnOutSharp.FileType
                 return dataBlock;
             }
 
-            #endregion
+#endregion
         }
 
         /// <summary>
@@ -1322,9 +1329,9 @@ namespace BurnOutSharp.FileType
             //}
         }
 
-        #endregion
+#endregion
 
-        #region TEMPORARY AREA FOR MS-ZIP COMPRESSION FORMAT
+#region TEMPORARY AREA FOR MS-ZIP COMPRESSION FORMAT
 
         /// <summary>
         /// Each MSZIP block MUST consist of a 2-byte MSZIP signature and one or more RFC 1951 blocks. The
@@ -1333,7 +1340,7 @@ namespace BurnOutSharp.FileType
         /// </summary>
         internal class MSZIPBlock
         {
-            #region Constants
+#region Constants
 
             /// <summary>
             /// Human-readable signature
@@ -1350,9 +1357,9 @@ namespace BurnOutSharp.FileType
             /// </summary>
             public static readonly byte[] SignatureBytes = new byte[] { 0x43, 0x4B };
 
-            #endregion
+#endregion
 
-            #region Properties
+#region Properties
 
             /// <summary>
             /// 'CB'
@@ -1374,15 +1381,15 @@ namespace BurnOutSharp.FileType
             /// </summary>
             public byte[] Data { get; private set; }
 
-            #endregion
+#endregion
 
-            #region Static Properties
+#region Static Properties
 
             public static ZStream DecompressionStream { get; set; } = new ZStream();
 
-            #endregion
+#endregion
 
-            #region Serialization
+#region Serialization
 
             public static MSZIPBlock Deserialize(byte[] data)
             {
@@ -1403,9 +1410,9 @@ namespace BurnOutSharp.FileType
                 return block;
             }
 
-            #endregion
+#endregion
 
-            #region Public Functionality
+#region Public Functionality
 
             /// <summary>
             /// Decompress a single block of MS-ZIP data
@@ -1460,12 +1467,12 @@ namespace BurnOutSharp.FileType
                 }
             }
 
-            #endregion
+#endregion
         }
 
-        #endregion
+#endregion
 
-        #region TEMPORARY AREA FOR QUANTUM COMPRESSION FORMAT
+#region TEMPORARY AREA FOR QUANTUM COMPRESSION FORMAT
 
         // See http://www.russotto.net/quantumcomp.html for details about implementation
 
@@ -1512,7 +1519,7 @@ namespace BurnOutSharp.FileType
             SELECTOR_6_LENGTH = 7,
         }
 
-        #region LZ Compression Tables
+#region LZ Compression Tables
 
         internal static readonly uint[] PositionBaseTable = new uint[]
         {
@@ -1550,7 +1557,7 @@ namespace BurnOutSharp.FileType
             5, 5, 0,
         };
 
-        #endregion
+#endregion
 
         /// <summary>
         /// Number of position slots for (tsize - 10)
@@ -1648,15 +1655,15 @@ namespace BurnOutSharp.FileType
             public ModelSymbol[] Symbols { get; private set; }
         }
 
-        #endregion
+#endregion
 
-        #region TEMPORARY AREA FOR LZX COMPRESSION FORMAT
+#region TEMPORARY AREA FOR LZX COMPRESSION FORMAT
 
         // See the following for details about implementation (there is no open spec):
         // https://github.com/kyz/libmspack/blob/master/libmspack/mspack/lzx.h
         // https://github.com/kyz/libmspack/blob/master/libmspack/mspack/lzxc.c
         // https://github.com/kyz/libmspack/blob/master/libmspack/mspack/lzxd.c
 
-        #endregion
+#endregion
     }
 }

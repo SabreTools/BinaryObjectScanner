@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net6.0</TargetFrameworks>
     <Title>BurnOutSharp</Title>
     <AssemblyName>BurnOutSharp</AssemblyName>
     <Description>Port of BurnOut to C#, with additions</Description>
@@ -57,14 +57,23 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BurnOutSharp.Matching\BurnOutSharp.Matching.csproj" />
-    <ProjectReference Include="..\BurnOutSharp.Models\BurnOutSharp.Models.csproj" />
-    <ProjectReference Include="..\BurnOutSharp.Wrappers\BurnOutSharp.Wrappers.csproj" />
-    <ProjectReference Include="..\Dtf\src\WixToolset.Dtf.Compression\WixToolset.Dtf.Compression.csproj">
+    <ProjectReference Include="..\BurnOutSharp.Matching\BurnOutSharp.Matching.csproj">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </ProjectReference>
-    <ProjectReference Include="..\Dtf\src\WixToolset.Dtf.Compression.Cab\WixToolset.Dtf.Compression.Cab.csproj">
+    <ProjectReference Include="..\BurnOutSharp.Models\BurnOutSharp.Models.csproj">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </ProjectReference>
+    <ProjectReference Include="..\BurnOutSharp.Wrappers\BurnOutSharp.Wrappers.csproj">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </ProjectReference>
+    <ProjectReference Include="..\Dtf\src\WixToolset.Dtf.Compression\WixToolset.Dtf.Compression.csproj" Condition="'$(TargetFramework)' != 'net6.0'">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </ProjectReference>
+    <ProjectReference Include="..\Dtf\src\WixToolset.Dtf.Compression.Cab\WixToolset.Dtf.Compression.Cab.csproj" Condition="'$(TargetFramework)' != 'net6.0'">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </ProjectReference>
@@ -76,7 +85,10 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </ProjectReference>
-	  <ProjectReference Include="..\psxt001z\psxt001z.csproj" />
+    <ProjectReference Include="..\psxt001z\psxt001z.csproj">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </ProjectReference>
   </ItemGroup>
 
 </Project>
