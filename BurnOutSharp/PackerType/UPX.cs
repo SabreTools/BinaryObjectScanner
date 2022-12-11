@@ -1,7 +1,9 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
 using BurnOutSharp.Wrappers;
@@ -12,6 +14,10 @@ namespace BurnOutSharp.PackerType
     // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
     public class UPX : IPortableExecutableCheck, IScannable
     {
+        private static readonly Regex _oldUpxVersionMatch = new Regex(@"\$Id: UPX (.*?) Copyright \(C\)", RegexOptions.Compiled);
+
+        private static readonly Regex _upxVersionMatch = new Regex(@"^([0-9]\.[0-9]{2})$", RegexOptions.Compiled);
+
         /// <inheritdoc/>
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
@@ -20,22 +26,40 @@ namespace BurnOutSharp.PackerType
             if (sections == null)
                 return null;
 
-            // Check header padding data
-            var headerPaddingData = pex.HeaderPaddingData;
-            if (headerPaddingData != null)
+            // Check header padding strings
+            if (pex.HeaderPaddingStrings.Any())
             {
-                var matchers = new List<ContentMatchSet>
+                string match = pex.HeaderPaddingStrings.FirstOrDefault(s => s.Contains("UPX!"));
+                //if (match != null)
+                //    return "UPX";
+
+                match = pex.HeaderPaddingStrings.FirstOrDefault(s => s.StartsWith("$Id: UPX"));
+                if (match != null)
                 {
-                    // UPX!
-                    new ContentMatchSet(new byte?[] { 0x55, 0x50, 0x58, 0x21 }, GetVersion, "UPX"),
+                    var regexMatch = _oldUpxVersionMatch.Match(match);
+                    if (regexMatch.Success)
+                        return $"UPX {regexMatch.Groups[1].Value}";
+                    else
+                        return "UPX (Unknown Version)";
+                }
 
-                    // NOS 
-                    new ContentMatchSet(new byte?[] { 0x4E, 0x4F, 0x53, 0x20 }, GetVersion, "UPX (NOS Variant)"),
-                };
-
-                string match = MatchUtil.GetFirstMatch(file, headerPaddingData, matchers, includeDebug);
-                if (!string.IsNullOrEmpty(match))
-                    return match;
+                match = pex.HeaderPaddingStrings.FirstOrDefault(s => _upxVersionMatch.IsMatch(s));
+                if (pex.HeaderPaddingStrings.Any(s => s == "UPX!" && match != null))
+                {
+                    var regexMatch = _upxVersionMatch.Match(match);
+                    if (regexMatch.Success)
+                        return $"UPX {regexMatch.Groups[1].Value}";
+                    else
+                        return "UPX (Unknown Version)";
+                }
+                else if (pex.HeaderPaddingStrings.Any(s => s == "NOS " && match != null))
+                {
+                    var regexMatch = _upxVersionMatch.Match(match);
+                    if (regexMatch.Success)
+                        return $"UPX (NOS Variant) {regexMatch.Groups[1].Value}";
+                    else
+                        return "UPX (NOS Variant) (Unknown Version)";
+                }
             }
 
             return null;

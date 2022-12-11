@@ -66,7 +66,7 @@ namespace BurnOutSharp.ProtectionType
             List<string> resultsList = new List<string>();
 
             // Check the header padding
-            string match = CheckSectionForProtection(file, includeDebug, pex.HeaderPaddingData);
+            string match = CheckSectionForProtection(file, includeDebug, pex.HeaderPaddingStrings, pex.HeaderPaddingData);
             if (!string.IsNullOrWhiteSpace(match))
             {
                 resultsList.Add(match);
@@ -74,7 +74,7 @@ namespace BurnOutSharp.ProtectionType
             else
             {
                 // Get the .data section, if it exists
-                match = CheckSectionForProtection(file, includeDebug, pex, ".data");
+                match = CheckSectionForProtection(file, includeDebug, pex.GetFirstSectionStrings(".data"), pex.GetFirstSectionData(".data"));
                 if (!string.IsNullOrWhiteSpace(match))
                     resultsList.Add(match);
             }
@@ -184,38 +184,15 @@ namespace BurnOutSharp.ProtectionType
             return $"{version}.{subVersion:00}.{subsubVersion:000}";
         }
 
-        private string CheckSectionForProtection(string file, bool includeDebug, byte[] sectionRaw)
-        {
-            // If we have null section data
-            if (sectionRaw == null)
-                return null;
-
-            var matchers = new List<ContentMatchSet>
-            {
-                // BoG_ *90.0&!!  Yy>
-                new ContentMatchSet(new byte?[]
-                {
-                    0x42, 0x6F, 0x47, 0x5F, 0x20, 0x2A, 0x39, 0x30,
-                    0x2E, 0x30, 0x26, 0x21, 0x21, 0x20, 0x20, 0x59,
-                    0x79, 0x3E
-                }, GetMacrovisionVersion, "SafeCast/SafeDisc"),
-            };
-
-            return MatchUtil.GetFirstMatch(file, sectionRaw, matchers, includeDebug);
-        }
-
-        private string CheckSectionForProtection(string file, bool includeDebug, PortableExecutable pex, string sectionName)
+        private string CheckSectionForProtection(string file, bool includeDebug, List<string> sectionStrings, byte[] sectionRaw)
         {
             // Get the section strings, if they exist
-            List<string> strs = pex.GetFirstSectionStrings(sectionName);
-            if (strs == null)
+            if (sectionStrings == null)
                 return null;
 
             // If we don't have the "BoG_" string
-            if (!strs.Any(s => s.Contains("BoG_ *90.0&!!  Yy>")))
+            if (!sectionStrings.Any(s => s.Contains("BoG_ *90.0&!!  Yy>")))
                 return null;
-
-            byte[] sectionRaw = pex.GetFirstSectionData(sectionName);
 
             // TODO: Add more checks to help differentiate between SafeDisc and SafeCast.
             var matchers = new List<ContentMatchSet>

@@ -353,6 +353,33 @@ namespace BurnOutSharp.Wrappers
         }
 
         /// <summary>
+        /// Header padding strings, if they exist
+        /// </summary>
+        public List<string> HeaderPaddingStrings
+        {
+            get
+            {
+                lock (_sourceDataLock)
+                {
+                    // If we already have cached data, just use that immediately
+                    if (_headerPaddingStrings != null)
+                        return _headerPaddingStrings;
+
+                    // TODO: Don't scan the known header data as well
+
+                    // Populate the raw header padding data based on the source
+                    uint headerStartAddress = Stub_NewExeHeaderAddr;
+                    uint firstSectionAddress = SectionTable.Select(s => s.PointerToRawData).Where(s => s != 0).OrderBy(s => s).First();
+                    int headerLength = (int)(firstSectionAddress - headerStartAddress);
+                    _headerPaddingStrings = ReadStringsFromDataSource((int)headerStartAddress, headerLength, charLimit: 3);
+
+                    // Cache and return the header padding data, even if null
+                    return _headerPaddingStrings;
+                }
+            }
+        }
+
+        /// <summary>
         /// Overlay data, if it exists
         /// </summary>
         /// <see href="https://www.autoitscript.com/forum/topic/153277-pe-file-overlay-extraction/"/>
@@ -662,6 +689,11 @@ namespace BurnOutSharp.Wrappers
         /// Header padding data, if it exists
         /// </summary>
         private byte[] _headerPaddingData = null;
+
+        /// <summary>
+        /// Header padding data, if it exists
+        /// </summary>
+        private List<string> _headerPaddingStrings = null;
 
         /// <summary>
         /// Overlay data, if it exists
