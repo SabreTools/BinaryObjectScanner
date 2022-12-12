@@ -9,11 +9,13 @@ using BurnOutSharp.Wrappers;
 namespace BurnOutSharp.ProtectionType
 {
     /// <summary>
-    /// DiscGuard was a copy protection created by TTR (https://web.archive.org/web/19981212021829/http://ttrtech.com/) for protecting software.
+    /// DiscGuard (https://web.archive.org/web/19990208210940/http://www.ttrtech.com/discgard.htm) was a copy protection created by TTR (https://web.archive.org/web/19981212021829/http://ttrtech.com/) for protecting software.
     /// They also created a similar copy protection for audio CDs called DiscAudit (https://web.archive.org/web/19981206095259/http://www.ttrtech.com/discaudi.htm).
     /// It seems to work by encrypting the main game executable, and by having a "signature" that is supposedly only present on a genuine disc (https://www.cdmediaworld.com/hardware/cdrom/cd_protections_discguard.shtml).
     /// Due to the fact that these games can seemingly be burned to CD-R under the right conditions using CloneCD, it likely isn't using twin sectors or DPM (https://www.gameburnworld.com/protections_discguard.shtml).
-    /// It seems likely to be using subchannels as the basis for this signature, as no errored sectors are used.
+    /// It uses subchannels, at a minimum, to create this signature. Redump entry 79374 is confirmed to be affected by subchannels (IA item "ii-seven-kingdoms-ii-the-fryhtan-wars-dic-dump-1999").
+    /// If a CUE image is used, the protection states to insert the original disc. If a 00'd SUB file is used, the protection states to remove any virtual drive software.
+    /// With a properly dumped SUB, the game seemingly begins to play as intended.
     /// DiscGuard is seemingly able to be detect so-called "active debuggers", based on text found in "Alternate.exe" (Redump entry 31914) and "Alt.exe" (Redump entries 46743, 46961, 79284, and 79374).
     /// There's a reference to a file "Dg.vbn" being present in "Alternate.exe" (Redump entry 31914) and "Alt.exe" (Redump entries 46743, 46961, 79284, and 79374), but no copy has been found in any sample so far.
     /// There seem to be two distinct versions of DiscGuard, with one only being present on one known game (Redump entry 31914).
@@ -27,6 +29,9 @@ namespace BurnOutSharp.ProtectionType
     /// "TD352.dll" and "TE091.dll" (Redump entry 46743).
     /// "T71E1.dll" and "T7181.dll" (Redump entry 46961).
     /// "TA0E4.DLL" (Redump entry 79374).
+    /// Further discs that are noted to contain DiscGuard:
+    /// https://web.archive.org/web/19990503082646/http://www.ttrtech.com/prmakh.htm
+    /// https://web.archive.org/web/19990209180542/http://www.ttrtech.com/pr2cont.htm
     /// </summary>
     public class DiscGuard : IPathCheck, IPortableExecutableCheck
     {
