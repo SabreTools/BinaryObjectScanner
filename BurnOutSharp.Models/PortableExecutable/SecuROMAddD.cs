@@ -28,7 +28,7 @@ namespace BurnOutSharp.Models.PortableExecutable
         public uint EntryCount;
 
         /// <summary>
-        /// Version
+        /// Version, always 8 bytes?
         /// </summary>
         public string Version;
 

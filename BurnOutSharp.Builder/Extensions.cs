@@ -410,20 +410,25 @@ namespace BurnOutSharp.Builder
             if (addD.Signature != 0x44646441)
                 return null;
 
+            int originalOffset = offset;
+
             addD.EntryCount = data.ReadUInt32(ref offset);
             addD.Version = data.ReadString(ref offset, Encoding.ASCII);
+            if (string.IsNullOrWhiteSpace(addD.Version))
+                offset = originalOffset + 0x10;
+
             addD.Build = data.ReadBytes(ref offset, 4).Select(b => (char)b).ToArray();
-            addD.Unknown14h = data.ReadUInt32(ref offset);
-            addD.Unknown18h = data.ReadUInt32(ref offset);
-            addD.Unknown1Ch = data.ReadUInt32(ref offset);
-            addD.Unknown20h = data.ReadUInt32(ref offset);
-            addD.Unknown24h = data.ReadUInt32(ref offset);
-            addD.Unknown28h = data.ReadUInt32(ref offset);
-            addD.Unknown2Ch = data.ReadUInt32(ref offset);
-            addD.Unknown30h = data.ReadUInt32(ref offset);
-            addD.Unknown34h = data.ReadUInt32(ref offset);
-            addD.Unknown38h = data.ReadUInt32(ref offset);
-            addD.Unknown3Ch = data.ReadUInt32(ref offset);
+
+            // Distinguish between v1 and v2
+            int bytesToRead = 112; // v2
+            if (string.IsNullOrWhiteSpace(addD.Version)
+                || addD.Version.StartsWith("3")
+                || addD.Version.StartsWith("4.47"))
+            {
+                bytesToRead = 44;
+            }
+
+            addD.Unknown14h = data.ReadBytes(ref offset, bytesToRead);
 
             addD.Entries = new Models.PortableExecutable.SecuROMAddDEntry[addD.EntryCount];
             for (int i = 0; i < addD.EntryCount; i++)
