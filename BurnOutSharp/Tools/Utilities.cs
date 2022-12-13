@@ -684,6 +684,7 @@ namespace BurnOutSharp.Tools
                 case SupportedFileType.PLJ: return new FileType.PLJ();
                 case SupportedFileType.RAR: return new FileType.RAR();
                 case SupportedFileType.SevenZip: return new FileType.SevenZip();
+                case SupportedFileType.SFFS: return new FileType.SFFS();
                 case SupportedFileType.TapeArchive: return new FileType.TapeArchive();
                 case SupportedFileType.Textfile: return new FileType.Textfile();
                 case SupportedFileType.Valve: return new FileType.Valve();
