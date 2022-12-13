@@ -339,6 +339,13 @@ namespace BurnOutSharp
                     Utilities.AppendToDictionary(protections, subProtections);
                 }
 
+                // SFFS
+                if (scannable is SFFS)
+                {
+                    var subProtections = scannable.Scan(this, stream, fileName);
+                    Utilities.AppendToDictionary(protections, subProtections);
+                }
+
                 // Text-based files
                 if (scannable is Textfile)
                 {

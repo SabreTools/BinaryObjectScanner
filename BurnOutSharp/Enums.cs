@@ -81,6 +81,11 @@
         SevenZip,
 
         /// <summary>
+        /// StarForce FileSystem file
+        /// </summary>
+        SFFS,
+
+        /// <summary>
         /// Tape archive
         /// </summary>
         TapeArchive,
