@@ -69,7 +69,7 @@ Below is a list of protections detected by BurnOutSharp. The two columns explain
 | LibCrypt | True | False | Separate subfile scan only |
 | LaserLok | True | True | |
 | MediaCloQ | True | True | |
-| MediaMax CD3 | True | True | 
+| MediaMax CD3 | True | True | |
 | nProtect GameGuard | True | True | |
 | nProtect KeyCrypt | True | True | |
 | OpenMG | True | True | |
