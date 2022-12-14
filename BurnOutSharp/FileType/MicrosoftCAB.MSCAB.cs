@@ -1163,10 +1163,29 @@ namespace BurnOutSharp.FileType
     /// </summary>
     internal static class Checksum
     {
-        // TODO: Implement from `[MS-CAB].pdf`
-        //public static uint ChecksumData(byte[] data)
-        //{
+        public static uint ChecksumData(byte[] data)
+        {
+            uint[] C = new uint[4]
+            {
+                S(data, 1, data.Length),
+                S(data, 2, data.Length),
+                S(data, 3, data.Length),
+                S(data, 4, data.Length),
+            };
 
-        //}
+            return C[0] ^ C[1] ^ C[2] ^ C[3];
+        }
+
+        private static uint S(byte[] a, int b, int x)
+        {
+            int n = a.Length;
+
+            if (x < 4 && b > n % 4)
+                return 0;
+            else if (x < 4 && b <= n % 4)
+                return a[n - b + 1];
+            else // if (x >= 4)
+                return a[n - x + b] ^ S(a, b, x - 4);
+        }
     }
 }
