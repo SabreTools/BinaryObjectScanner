@@ -10,7 +10,7 @@ namespace BurnOutSharp.FileType
     /// <see href="http://download.microsoft.com/download/5/0/1/501ED102-E53F-4CE0-AA6B-B0F93629DDC6/Exchange/%5BMS-CAB%5D.pdf"/>
 
     // TODO: Add multi-cabinet reading
-    internal class MSCABCabinet
+    public class MSCABCabinet
     {
         #region Constants
 
@@ -82,7 +82,7 @@ namespace BurnOutSharp.FileType
             cabinet.Folders = new CFFOLDER[cabinet.Header.FolderCount];
             for (int i = 0; i < cabinet.Header.FolderCount; i++)
             {
-                cabinet.Folders[i] = CFFOLDER.Deserialize(data, ref dataPtr, basePtr, cabinet.Header.FolderReservedSize, cabinet.Header.DataReservedSize);
+                cabinet.Folders[i] = CFFOLDER.Deserialize(data, ref dataPtr, basePtr, cabinet.Header);
                 if (cabinet.Folders[i] == null)
                     return null;
             }
@@ -95,6 +95,45 @@ namespace BurnOutSharp.FileType
             for (int i = 0; i < cabinet.Header.FileCount; i++)
             {
                 cabinet.Files[i] = CFFILE.Deserialize(data, ref dataPtr);
+                if (cabinet.Files[i] == null)
+                    return null;
+            }
+
+            return cabinet;
+        }
+
+        /// <summary>
+        /// Deserialize <paramref name="data"/> into a MSCABCabinet object
+        /// </summary>
+        public static MSCABCabinet Deserialize(Stream data)
+        {
+            if (data == null || data.Position < 0)
+                return null;
+
+            MSCABCabinet cabinet = new MSCABCabinet();
+
+            // Start with the header
+            cabinet.Header = CFHEADER.Deserialize(data);
+            if (cabinet.Header == null)
+                return null;
+
+            // Then retrieve all folder headers
+            cabinet.Folders = new CFFOLDER[cabinet.Header.FolderCount];
+            for (int i = 0; i < cabinet.Header.FolderCount; i++)
+            {
+                cabinet.Folders[i] = CFFOLDER.Deserialize(data, cabinet.Header);
+                if (cabinet.Folders[i] == null)
+                    return null;
+            }
+
+            // We need to move to where the file headers are stored
+            data.Seek((int)cabinet.Header.FilesOffset, SeekOrigin.Begin);
+
+            // Then retrieve all file headers
+            cabinet.Files = new CFFILE[cabinet.Header.FileCount];
+            for (int i = 0; i < cabinet.Header.FileCount; i++)
+            {
+                cabinet.Files[i] = CFFILE.Deserialize(data);
                 if (cabinet.Files[i] == null)
                     return null;
             }
@@ -131,7 +170,7 @@ namespace BurnOutSharp.FileType
             foreach (CFFILE file in Files)
             {
                 // Create the output path
-                string outputPath = Path.Combine(outputDirectory, file.NameAsString);
+                string outputPath = Path.Combine(outputDirectory, file.Name);
 
                 // Get the associated folder, if possible
                 CFFOLDER folder = null;
@@ -168,7 +207,7 @@ namespace BurnOutSharp.FileType
                     continue;
 
                 // Check for a match
-                if (exact ? tempFile.NameAsString == filePath : tempFile.NameAsString.EndsWith(filePath, StringComparison.OrdinalIgnoreCase))
+                if (exact ? tempFile.Name == filePath : tempFile.Name.EndsWith(filePath, StringComparison.OrdinalIgnoreCase))
                 {
                     fileIndex = i;
                     break;
@@ -183,7 +222,7 @@ namespace BurnOutSharp.FileType
             CFFILE file = Files[fileIndex];
 
             // Create the output path
-            string outputPath = Path.Combine(outputDirectory, file.NameAsString);
+            string outputPath = Path.Combine(outputDirectory, file.Name);
 
             // Get the associated folder, if possible
             CFFOLDER folder = null;
@@ -278,33 +317,13 @@ namespace BurnOutSharp.FileType
         }
 
         #endregion
-
-        #region Internal Functionality
-
-        /// <summary>
-        /// Get a null-terminated string as a byte array from input data
-        /// </summary>
-        internal static byte[] GetNullTerminatedString(byte[] data, ref int dataPtr)
-        {
-            int nullIndex = Array.IndexOf<byte>(data, 0x00, dataPtr, 0xFF);
-            int stringSize = nullIndex - dataPtr;
-            if (stringSize < 0 || stringSize > 256)
-                return null;
-
-            byte[] str = new byte[stringSize];
-            Array.Copy(data, dataPtr, str, 0, stringSize);
-            dataPtr += stringSize + 1;
-            return str;
-        }
-
-        #endregion
     }
 
     /// <summary>
     /// The CFHEADER structure shown in the following packet diagram provides information about this
     /// cabinet (.cab) file.
     /// </summary>
-    internal class CFHEADER
+    public class CFHEADER
     {
         #region Constants
 
@@ -439,7 +458,7 @@ namespace BurnOutSharp.FileType
         /// reported to begin in the "previous cabinet," the szCabinetPrev field would indicate the name of the
         /// cabinet to examine.
         /// </summary>
-        public byte[] CabinetPrev { get; private set; }
+        public string CabinetPrev { get; private set; }
 
         /// <summary>
         /// If the flags.cfhdrPREV_CABINET field is not set, then this
@@ -448,7 +467,7 @@ namespace BurnOutSharp.FileType
         /// This string can be used when prompting the user to insert a disk. The string can contain up to 255
         /// bytes, plus the null byte.
         /// </summary>
-        public byte[] DiskPrev { get; private set; }
+        public string DiskPrev { get; private set; }
 
         /// <summary>
         /// If the flags.cfhdrNEXT_CABINET field is not set, this
@@ -456,7 +475,7 @@ namespace BurnOutSharp.FileType
         /// cabinet file in a set. The string can contain up to 255 bytes, plus the null byte. Files that extend
         /// beyond the end of the current cabinet file are continued in the named cabinet file.
         /// </summary>
-        public byte[] CabinetNext { get; private set; }
+        public string CabinetNext { get; private set; }
 
         /// <summary>
         /// If the flags.cfhdrNEXT_CABINET field is not set, this field is
@@ -465,7 +484,7 @@ namespace BurnOutSharp.FileType
         /// string can contain up to 255 bytes, plus the null byte. This string can be used when prompting the
         /// user to insert a disk.
         /// </summary>
-        public byte[] DiskNext { get; private set; }
+        public string DiskNext { get; private set; }
 
         #endregion
 
@@ -481,91 +500,145 @@ namespace BurnOutSharp.FileType
 
             CFHEADER header = new CFHEADER();
 
-            header.Signature = BitConverter.ToUInt32(data, dataPtr); dataPtr += 4;
+            header.Signature = data.ReadUInt32(ref dataPtr);
             if (header.Signature != SignatureValue)
                 return null;
 
-            header.Reserved1 = BitConverter.ToUInt32(data, dataPtr); dataPtr += 4;
+            header.Reserved1 = data.ReadUInt32(ref dataPtr);
             if (header.Reserved1 != 0x00000000)
                 return null;
 
-            header.CabinetSize = BitConverter.ToUInt32(data, dataPtr); dataPtr += 4;
+            header.CabinetSize = data.ReadUInt32(ref dataPtr);
             if (header.CabinetSize > MSCABCabinet.MaximumCabSize)
                 return null;
 
-            header.Reserved2 = BitConverter.ToUInt32(data, dataPtr); dataPtr += 4;
+            header.Reserved2 = data.ReadUInt32(ref dataPtr);
             if (header.Reserved2 != 0x00000000)
                 return null;
 
-            header.FilesOffset = BitConverter.ToUInt32(data, dataPtr); dataPtr += 4;
+            header.FilesOffset = data.ReadUInt32(ref dataPtr);
 
-            header.Reserved3 = BitConverter.ToUInt32(data, dataPtr); dataPtr += 4;
+            header.Reserved3 = data.ReadUInt32(ref dataPtr);
             if (header.Reserved3 != 0x00000000)
                 return null;
 
-            header.VersionMinor = data[dataPtr++];
-            header.VersionMajor = data[dataPtr++];
+            header.VersionMinor = data.ReadByte(ref dataPtr);
+            header.VersionMajor = data.ReadByte(ref dataPtr);
             if (header.VersionMajor != 0x00000001 || header.VersionMinor != 0x00000003)
                 return null;
 
-            header.FolderCount = BitConverter.ToUInt16(data, dataPtr); dataPtr += 2;
+            header.FolderCount = data.ReadUInt16(ref dataPtr);
             if (header.FolderCount > MSCABCabinet.MaximumFolderCount)
                 return null;
 
-            header.FileCount = BitConverter.ToUInt16(data, dataPtr); dataPtr += 2;
+            header.FileCount = data.ReadUInt16(ref dataPtr);
             if (header.FileCount > MSCABCabinet.MaximumFileCount)
                 return null;
 
-            header.Flags = (HeaderFlags)BitConverter.ToUInt16(data, dataPtr); dataPtr += 2;
-            header.SetID = BitConverter.ToUInt16(data, dataPtr); dataPtr += 2;
-            header.CabinetIndex = BitConverter.ToUInt16(data, dataPtr); dataPtr += 2;
+            header.Flags = (HeaderFlags)data.ReadUInt16(ref dataPtr);
+            header.SetID = data.ReadUInt16(ref dataPtr);
+            header.CabinetIndex = data.ReadUInt16(ref dataPtr);
 
             if (header.Flags.HasFlag(HeaderFlags.RESERVE_PRESENT))
             {
-                header.HeaderReservedSize = BitConverter.ToUInt16(data, dataPtr); dataPtr += 2;
+                header.HeaderReservedSize = data.ReadUInt16(ref dataPtr);
                 if (header.HeaderReservedSize > 60_000)
                     return null;
 
-                header.FolderReservedSize = data[dataPtr++];
-                header.DataReservedSize = data[dataPtr++];
+                header.FolderReservedSize = data.ReadByte(ref dataPtr);
+                header.DataReservedSize = data.ReadByte(ref dataPtr);
 
                 if (header.HeaderReservedSize > 0)
-                {
-                    header.ReservedData = new byte[header.HeaderReservedSize];
-                    Array.Copy(data, dataPtr, header.ReservedData, 0, header.HeaderReservedSize);
-                    dataPtr += header.HeaderReservedSize;
-                }
+                    header.ReservedData = data.ReadBytes(ref dataPtr, header.HeaderReservedSize);
             }
 
-            // TODO: Make string-finding block a helper method
             if (header.Flags.HasFlag(HeaderFlags.PREV_CABINET))
             {
-                byte[] cabPrev = MSCABCabinet.GetNullTerminatedString(data, ref dataPtr);
-                if (cabPrev == null)
-                    return null;
-
-                header.CabinetPrev = cabPrev;
-
-                byte[] diskPrev = MSCABCabinet.GetNullTerminatedString(data, ref dataPtr);
-                if (diskPrev == null)
-                    return null;
-
-                header.DiskPrev = diskPrev;
+                header.CabinetPrev = data.ReadString(ref dataPtr, Encoding.ASCII);
+                header.DiskPrev = data.ReadString(ref dataPtr, Encoding.ASCII);
             }
 
             if (header.Flags.HasFlag(HeaderFlags.NEXT_CABINET))
             {
-                byte[] cabNext = MSCABCabinet.GetNullTerminatedString(data, ref dataPtr);
-                if (cabNext == null)
+                header.CabinetNext = data.ReadString(ref dataPtr, Encoding.ASCII);
+                header.DiskNext = data.ReadString(ref dataPtr, Encoding.ASCII);
+            }
+
+            return header;
+        }
+
+        /// <summary>
+        /// Deserialize <paramref name="data"/> into a CFHEADER object
+        /// </summary>
+        public static CFHEADER Deserialize(Stream data)
+        {
+            if (data == null || data.Position < 0)
+                return null;
+
+            CFHEADER header = new CFHEADER();
+
+            header.Signature = data.ReadUInt32();
+            if (header.Signature != SignatureValue)
+                return null;
+
+            header.Reserved1 = data.ReadUInt32();
+            if (header.Reserved1 != 0x00000000)
+                return null;
+
+            header.CabinetSize = data.ReadUInt32();
+            if (header.CabinetSize > MSCABCabinet.MaximumCabSize)
+                return null;
+
+            header.Reserved2 = data.ReadUInt32();
+            if (header.Reserved2 != 0x00000000)
+                return null;
+
+            header.FilesOffset = data.ReadUInt32();
+
+            header.Reserved3 = data.ReadUInt32();
+            if (header.Reserved3 != 0x00000000)
+                return null;
+
+            header.VersionMinor = data.ReadByteValue();
+            header.VersionMajor = data.ReadByteValue();
+            if (header.VersionMajor != 0x00000001 || header.VersionMinor != 0x00000003)
+                return null;
+
+            header.FolderCount = data.ReadUInt16();
+            if (header.FolderCount > MSCABCabinet.MaximumFolderCount)
+                return null;
+
+            header.FileCount = data.ReadUInt16();
+            if (header.FileCount > MSCABCabinet.MaximumFileCount)
+                return null;
+
+            header.Flags = (HeaderFlags)data.ReadUInt16();
+            header.SetID = data.ReadUInt16();
+            header.CabinetIndex = data.ReadUInt16();
+
+            if (header.Flags.HasFlag(HeaderFlags.RESERVE_PRESENT))
+            {
+                header.HeaderReservedSize = data.ReadUInt16();
+                if (header.HeaderReservedSize > 60_000)
                     return null;
 
-                header.CabinetNext = cabNext;
+                header.FolderReservedSize = data.ReadByteValue();
+                header.DataReservedSize = data.ReadByteValue();
 
-                byte[] diskNext = MSCABCabinet.GetNullTerminatedString(data, ref dataPtr);
-                if (diskNext == null)
-                    return null;
+                if (header.HeaderReservedSize > 0)
+                    header.ReservedData = data.ReadBytes(header.HeaderReservedSize);
+            }
 
-                header.DiskNext = diskNext;
+            if (header.Flags.HasFlag(HeaderFlags.PREV_CABINET))
+            {
+                header.CabinetPrev = data.ReadString(Encoding.ASCII);
+                header.DiskPrev = data.ReadString(Encoding.ASCII);
+            }
+
+            if (header.Flags.HasFlag(HeaderFlags.NEXT_CABINET))
+            {
+                header.CabinetNext = data.ReadString(Encoding.ASCII);
+                header.DiskNext = data.ReadString(Encoding.ASCII);
             }
 
             return header;
@@ -605,14 +678,14 @@ namespace BurnOutSharp.FileType
 
             if (Flags.HasFlag(HeaderFlags.PREV_CABINET))
             {
-                Console.WriteLine($"    CabinetPrev:        {Encoding.ASCII.GetString(CabinetPrev).TrimEnd('\0')}");
-                Console.WriteLine($"    DiskPrev:           {Encoding.ASCII.GetString(DiskPrev).TrimEnd('\0')}");
+                Console.WriteLine($"    CabinetPrev:        {CabinetPrev}");
+                Console.WriteLine($"    DiskPrev:           {DiskPrev}");
             }
 
             if (Flags.HasFlag(HeaderFlags.NEXT_CABINET))
             {
-                Console.WriteLine($"    CabinetNext:        {Encoding.ASCII.GetString(CabinetNext).TrimEnd('\0')}");
-                Console.WriteLine($"    DiskNext:           {Encoding.ASCII.GetString(DiskNext).TrimEnd('\0')}");
+                Console.WriteLine($"    CabinetNext:        {CabinetNext}");
+                Console.WriteLine($"    DiskNext:           {DiskNext}");
             }
 
             Console.WriteLine();
@@ -622,7 +695,7 @@ namespace BurnOutSharp.FileType
     }
 
     [Flags]
-    internal enum HeaderFlags : ushort
+    public enum HeaderFlags : ushort
     {
         /// <summary>
         /// The flag is set if this cabinet file is not the first in a set of cabinet files.
@@ -665,7 +738,7 @@ namespace BurnOutSharp.FileType
     /// The typeCompress field can vary from one folder to the next, unless the folder is continued from a
     /// previous cabinet file.
     /// </summary>
-    internal class CFFOLDER
+    public class CFFOLDER
     {
         #region Properties
 
@@ -755,23 +828,19 @@ namespace BurnOutSharp.FileType
         /// <summary>
         /// Deserialize <paramref name="data"/> at <paramref name="dataPtr"/> into a CFFOLDER object
         /// </summary>
-        public static CFFOLDER Deserialize(byte[] data, ref int dataPtr, int basePtr, byte folderReservedSize, byte dataReservedSize)
+        public static CFFOLDER Deserialize(byte[] data, ref int dataPtr, int basePtr, CFHEADER header)
         {
             if (data == null || dataPtr < 0)
                 return null;
 
             CFFOLDER folder = new CFFOLDER();
 
-            folder.CabStartOffset = BitConverter.ToUInt32(data, dataPtr); dataPtr += 4;
-            folder.DataCount = BitConverter.ToUInt16(data, dataPtr); dataPtr += 2;
-            folder.CompressionType = (CompressionType)BitConverter.ToUInt16(data, dataPtr); dataPtr += 2;
+            folder.CabStartOffset = data.ReadUInt32(ref dataPtr);
+            folder.DataCount = data.ReadUInt16(ref dataPtr);
+            folder.CompressionType = (CompressionType)data.ReadUInt16(ref dataPtr);
 
-            if (folderReservedSize > 0)
-            {
-                folder.ReservedData = new byte[folderReservedSize];
-                Array.Copy(data, dataPtr, folder.ReservedData, 0, folderReservedSize);
-                dataPtr += folderReservedSize;
-            }
+            if (header.FolderReservedSize > 0)
+                folder.ReservedData = data.ReadBytes(ref dataPtr, header.FolderReservedSize);
 
             if (folder.CabStartOffset > 0)
             {
@@ -779,9 +848,43 @@ namespace BurnOutSharp.FileType
                 for (int i = 0; i < folder.DataCount; i++)
                 {
                     int offset = blockPtr;
-                    CFDATA dataBlock = CFDATA.Deserialize(data, ref blockPtr, dataReservedSize);
+                    CFDATA dataBlock = CFDATA.Deserialize(data, ref blockPtr, header.DataReservedSize);
                     folder.DataBlocks[offset] = dataBlock;
                 }
+            }
+
+            return folder;
+        }
+
+        /// <summary>
+        /// Deserialize <paramref name="data"/> into a CFFOLDER object
+        /// </summary>
+        public static CFFOLDER Deserialize(Stream data, CFHEADER header)
+        {
+            if (data == null || data.Position < 0)
+                return null;
+
+            CFFOLDER folder = new CFFOLDER();
+
+            folder.CabStartOffset = data.ReadUInt32();
+            folder.DataCount = data.ReadUInt16();
+            folder.CompressionType = (CompressionType)data.ReadUInt16();
+
+            if (header.FolderReservedSize > 0)
+                folder.ReservedData = data.ReadBytes(header.FolderReservedSize);
+
+            if (folder.CabStartOffset > 0)
+            {
+                long currentPosition = data.Position;
+                data.Seek(folder.CabStartOffset, SeekOrigin.Begin);
+
+                for (int i = 0; i < folder.DataCount; i++)
+                {
+                    CFDATA dataBlock = CFDATA.Deserialize(data, header.DataReservedSize);
+                    folder.DataBlocks[(int)folder.CabStartOffset] = dataBlock;
+                }
+
+                data.Seek(currentPosition, SeekOrigin.Begin);
             }
 
             return folder;
@@ -807,7 +910,7 @@ namespace BurnOutSharp.FileType
         #endregion
     }
 
-    internal enum CompressionType : ushort
+    public enum CompressionType : ushort
     {
         /// <summary>
         /// Mask for compression type.
@@ -844,7 +947,7 @@ namespace BurnOutSharp.FileType
     /// continued from the previous cabinet will be first, and entries for files continued to the next cabinet
     /// will be last.
     /// </summary>
-    internal class CFFILE
+    public class CFFILE
     {
         #region Properties
 
@@ -896,37 +999,11 @@ namespace BurnOutSharp.FileType
         /// CFFILE.szName field, but the _A_NAME_IS_UTF attribute is not set, the characters SHOULD be
         /// interpreted according to the current location.
         /// </summary>
-        public byte[] Name { get; private set; }
+        public string Name { get; private set; }
 
         #endregion
 
         #region Generated Properties
-
-        /// <summary>
-        /// Name value as a string (not null-terminated)
-        /// </summary>
-        public string NameAsString
-        {
-            get
-            {
-                // Perform sanity checks
-                if (Name == null || Name.Length == 0)
-                    return null;
-
-                // Attempt to respect the attribute flag for UTF-8
-                if (Attributes.HasFlag(FileAttributes.NAME_IS_UTF))
-                {
-                    try
-                    {
-                        return Encoding.UTF8.GetString(Name).TrimEnd('\0');
-                    }
-                    catch { }
-                }
-
-                // Default case uses local encoding
-                return Encoding.Default.GetString(Name).TrimEnd('\0');
-            }
-        }
 
         /// <summary>
         /// Convert the internal values into a DateTime object, if possible
@@ -935,17 +1012,28 @@ namespace BurnOutSharp.FileType
         {
             get
             {
-                // Date property
-                int year = (Date >> 9) + 1980;
-                int month = (Date >> 5) & 0x0F;
-                int day = Date & 0x1F;
+                // If we have an invalid DateTime
+                if (Date == 0 && Time == 0)
+                    return DateTime.MinValue;
 
-                // Time property
-                int hour = Time >> 11;
-                int minute = (Time >> 5) & 0x3F;
-                int second = (Time << 1) & 0x3E;
+                try
+                {
+                    // Date property
+                    int year = (Date >> 9) + 1980;
+                    int month = (Date >> 5) & 0x0F;
+                    int day = Date & 0x1F;
 
-                return new DateTime(year, month, day, hour, minute, second);
+                    // Time property
+                    int hour = Time >> 11;
+                    int minute = (Time >> 5) & 0x3F;
+                    int second = (Time << 1) & 0x3E;
+
+                    return new DateTime(year, month, day, hour, minute, second);
+                }
+                catch
+                {
+                    return DateTime.MinValue;
+                }
             }
             set
             {
@@ -968,18 +1056,42 @@ namespace BurnOutSharp.FileType
 
             CFFILE file = new CFFILE();
 
-            file.FileSize = BitConverter.ToUInt32(data, dataPtr); dataPtr += 4;
-            file.FolderStartOffset = BitConverter.ToUInt32(data, dataPtr); dataPtr += 4;
-            file.FolderIndex = (FolderIndex)BitConverter.ToUInt16(data, dataPtr); dataPtr += 2;
-            file.Date = BitConverter.ToUInt16(data, dataPtr); dataPtr += 2;
-            file.Time = BitConverter.ToUInt16(data, dataPtr); dataPtr += 2;
-            file.Attributes = (FileAttributes)BitConverter.ToUInt16(data, dataPtr); dataPtr += 2;
+            file.FileSize = data.ReadUInt32(ref dataPtr);
+            file.FolderStartOffset = data.ReadUInt32(ref dataPtr);
+            file.FolderIndex = (FolderIndex)data.ReadUInt16(ref dataPtr);
+            file.Date = data.ReadUInt16(ref dataPtr);
+            file.Time = data.ReadUInt16(ref dataPtr);
+            file.Attributes = (FileAttributes)data.ReadUInt16(ref dataPtr);
 
-            byte[] name = MSCABCabinet.GetNullTerminatedString(data, ref dataPtr);
-            if (name == null)
+            if (file.Attributes.HasFlag(FileAttributes.NAME_IS_UTF))
+                file.Name = data.ReadString(ref dataPtr, Encoding.Unicode);
+            else
+                file.Name = data.ReadString(ref dataPtr, Encoding.ASCII);
+
+            return file;
+        }
+
+        /// <summary>
+        /// Deserialize <paramref name="data"/> into a CFFILE object
+        /// </summary>
+        public static CFFILE Deserialize(Stream data)
+        {
+            if (data == null || data.Position < 0)
                 return null;
 
-            file.Name = name;
+            CFFILE file = new CFFILE();
+
+            file.FileSize = data.ReadUInt32();
+            file.FolderStartOffset = data.ReadUInt32();
+            file.FolderIndex = (FolderIndex)data.ReadUInt16();
+            file.Date = data.ReadUInt16();
+            file.Time = data.ReadUInt16();
+            file.Attributes = (FileAttributes)data.ReadUInt16();
+
+            if (file.Attributes.HasFlag(FileAttributes.NAME_IS_UTF))
+                file.Name = data.ReadString(Encoding.Unicode);
+            else
+                file.Name = data.ReadString(Encoding.ASCII);
 
             return file;
         }
@@ -998,7 +1110,7 @@ namespace BurnOutSharp.FileType
             Console.WriteLine($"        FolderIndex:        {FolderIndex} (0x{(ushort)FolderIndex:X4})");
             Console.WriteLine($"        DateTime:           {DateAndTimeAsDateTime} (0x{Date:X4} 0x{Time:X4})");
             Console.WriteLine($"        Attributes:         {Attributes} (0x{(ushort)Attributes:X4})");
-            Console.WriteLine($"        Name:               {NameAsString}");
+            Console.WriteLine($"        Name:               {Name}");
 
             Console.WriteLine();
         }
@@ -1006,7 +1118,7 @@ namespace BurnOutSharp.FileType
         #endregion
     }
 
-    internal enum FolderIndex : ushort
+    public enum FolderIndex : ushort
     {
         /// <summary>
         /// A value of zero indicates that this is the
@@ -1034,7 +1146,7 @@ namespace BurnOutSharp.FileType
     }
 
     [Flags]
-    internal enum FileAttributes : ushort
+    public enum FileAttributes : ushort
     {
         /// <summary>
         /// File is read-only.
@@ -1073,7 +1185,7 @@ namespace BurnOutSharp.FileType
     /// <see cref="CFFOLDER.CabStartOffset"/> field. Subsequent CFDATA structure records for this folder are
     /// contiguous.
     /// </summary>
-    internal class CFDATA
+    public class CFDATA
     {
         #region Properties
 
@@ -1128,26 +1240,44 @@ namespace BurnOutSharp.FileType
 
             CFDATA dataBlock = new CFDATA();
 
-            dataBlock.Checksum = BitConverter.ToUInt32(data, dataPtr); dataPtr += 4;
-            dataBlock.CompressedSize = BitConverter.ToUInt16(data, dataPtr); dataPtr += 2;
-            dataBlock.UncompressedSize = BitConverter.ToUInt16(data, dataPtr); dataPtr += 2;
+            dataBlock.Checksum = data.ReadUInt32(ref dataPtr);
+            dataBlock.CompressedSize = data.ReadUInt16(ref dataPtr);
+            dataBlock.UncompressedSize = data.ReadUInt16(ref dataPtr);
 
             if (dataBlock.UncompressedSize != 0 && dataBlock.CompressedSize > dataBlock.UncompressedSize)
                 return null;
 
             if (dataReservedSize > 0)
-            {
-                dataBlock.ReservedData = new byte[dataReservedSize];
-                Array.Copy(data, dataPtr, dataBlock.ReservedData, 0, dataReservedSize);
-                dataPtr += dataReservedSize;
-            }
+                dataBlock.ReservedData = data.ReadBytes(ref dataPtr, dataReservedSize);
 
             if (dataBlock.CompressedSize > 0)
-            {
-                dataBlock.CompressedData = new byte[dataBlock.CompressedSize];
-                Array.Copy(data, dataPtr, dataBlock.CompressedData, 0, dataBlock.CompressedSize);
-                dataPtr += dataBlock.CompressedSize;
-            }
+                dataBlock.CompressedData = data.ReadBytes(ref dataPtr, dataBlock.CompressedSize);
+
+            return dataBlock;
+        }
+
+        /// <summary>
+        /// Deserialize <paramref name="data"/> into a CFDATA object
+        /// </summary>
+        public static CFDATA Deserialize(Stream data, byte dataReservedSize = 0)
+        {
+            if (data == null || data.Position < 0)
+                return null;
+
+            CFDATA dataBlock = new CFDATA();
+
+            dataBlock.Checksum = data.ReadUInt32();
+            dataBlock.CompressedSize = data.ReadUInt16();
+            dataBlock.UncompressedSize = data.ReadUInt16();
+
+            if (dataBlock.UncompressedSize != 0 && dataBlock.CompressedSize > dataBlock.UncompressedSize)
+                return null;
+
+            if (dataReservedSize > 0)
+                dataBlock.ReservedData = data.ReadBytes(dataReservedSize);
+
+            if (dataBlock.CompressedSize > 0)
+                dataBlock.CompressedData = data.ReadBytes(dataBlock.CompressedSize);
 
             return dataBlock;
         }
@@ -1161,7 +1291,7 @@ namespace BurnOutSharp.FileType
     /// not supplied by the cabinet file creating application, the checksum field is set to 0 (zero). Cabinet
     /// extracting applications do not compute or verify the checksum if the field is set to 0 (zero).
     /// </summary>
-    internal static class Checksum
+    public static class Checksum
     {
         public static uint ChecksumData(byte[] data)
         {

@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using BurnOutSharp;
+using BurnOutSharp.FileType;
 using BurnOutSharp.Wrappers;
 using static BurnOutSharp.Builder.Extensions;
 
@@ -80,7 +81,7 @@ namespace Test
             foreach (string inputPath in inputPaths)
             {
                 if (info)
-                    PrintExecutableInfo(inputPath);
+                    PrintPathInfo(inputPath);
                 else
                     GetAndWriteProtections(scanner, inputPath);
             }
@@ -177,10 +178,10 @@ namespace Test
         #region Printing
 
         /// <summary>
-        /// Wrapper to print executable information for a single path
+        /// Wrapper to print information for a single path
         /// </summary>
         /// <param name="path">File or directory path</param>
-        private static void PrintExecutableInfo(string path)
+        private static void PrintPathInfo(string path)
         {
             Console.WriteLine($"Checking possible path: {path}");
 
@@ -210,91 +211,126 @@ namespace Test
             using (Stream stream = File.OpenRead(file))
             {
                 // Read the first 4 bytes
-                byte[] magic = stream.ReadBytes(2);
-
-                if (!IsMSDOS(magic))
-                {
-                    Console.WriteLine("Not a recognized executable format, skipping...");
-                    Console.WriteLine();
-                    return;
-                }
-
-                // Build the executable information
-                Console.WriteLine("Creating MS-DOS executable builder");
-                Console.WriteLine();
-
+                byte[] magic = stream.ReadBytes(4);
                 stream.Seek(0, SeekOrigin.Begin);
-                var msdos = MSDOS.Create(stream);
-                if (msdos == null)
+
+                // MS-DOS executable and decendents
+                if (IsMSDOS(magic))
                 {
-                    Console.WriteLine("Something went wrong parsing MS-DOS executable");
+                    // Build the executable information
+                    Console.WriteLine("Creating MS-DOS executable builder");
                     Console.WriteLine();
-                    return;
-                }
 
-                // Print the executable info to screen
-                msdos.Print();
-
-                // Check for a valid new executable address
-                if (msdos.NewExeHeaderAddr >= stream.Length)
-                {
-                    Console.WriteLine("New EXE header address invalid, skipping additional reading...");
-                    Console.WriteLine();
-                    return;
-                }
-
-                // Try to read the executable info
-                stream.Seek(msdos.NewExeHeaderAddr, SeekOrigin.Begin);
-                magic = stream.ReadBytes(4);
-
-                // New Executable
-                if (IsNE(magic))
-                {
-                    stream.Seek(0, SeekOrigin.Begin);
-                    var newExecutable = NewExecutable.Create(stream);
-                    if (newExecutable == null)
+                    var msdos = MSDOS.Create(stream);
+                    if (msdos == null)
                     {
-                        Console.WriteLine("Something went wrong parsing New Executable");
+                        Console.WriteLine("Something went wrong parsing MS-DOS executable");
                         Console.WriteLine();
                         return;
                     }
 
                     // Print the executable info to screen
-                    newExecutable.Print();
-                }
+                    msdos.Print();
 
-                // Linear Executable
-                else if (IsLE(magic))
-                {
-                    Console.WriteLine($"Linear executable found. No parsing currently available.");
-                    Console.WriteLine();
-                    return;
-                }
-
-                // Portable Executable
-                else if (IsPE(magic))
-                {
-                    stream.Seek(0, SeekOrigin.Begin);
-                    var portableExecutable = PortableExecutable.Create(stream);
-                    if (portableExecutable == null)
+                    // Check for a valid new executable address
+                    if (msdos.NewExeHeaderAddr >= stream.Length)
                     {
-                        Console.WriteLine("Something went wrong parsing Portable Executable");
+                        Console.WriteLine("New EXE header address invalid, skipping additional reading...");
                         Console.WriteLine();
                         return;
                     }
 
-                    // Print the executable info to screen
-                    portableExecutable.Print();
+                    // Try to read the executable info
+                    stream.Seek(msdos.NewExeHeaderAddr, SeekOrigin.Begin);
+                    magic = stream.ReadBytes(4);
+
+                    // New Executable
+                    if (IsNE(magic))
+                    {
+                        stream.Seek(0, SeekOrigin.Begin);
+                        var newExecutable = NewExecutable.Create(stream);
+                        if (newExecutable == null)
+                        {
+                            Console.WriteLine("Something went wrong parsing New Executable");
+                            Console.WriteLine();
+                            return;
+                        }
+
+                        // Print the executable info to screen
+                        newExecutable.Print();
+                    }
+
+                    // Linear Executable
+                    else if (IsLE(magic))
+                    {
+                        Console.WriteLine($"Linear executable found. No parsing currently available.");
+                        Console.WriteLine();
+                        return;
+                    }
+
+                    // Portable Executable
+                    else if (IsPE(magic))
+                    {
+                        stream.Seek(0, SeekOrigin.Begin);
+                        var portableExecutable = PortableExecutable.Create(stream);
+                        if (portableExecutable == null)
+                        {
+                            Console.WriteLine("Something went wrong parsing Portable Executable");
+                            Console.WriteLine();
+                            return;
+                        }
+
+                        // Print the executable info to screen
+                        portableExecutable.Print();
+                    }
+
+                    // Unknown
+                    else
+                    {
+                        Console.WriteLine($"Unrecognized header signature: {BitConverter.ToString(magic).Replace("-", string.Empty)}");
+                        Console.WriteLine();
+                        return;
+                    }
                 }
 
-                // Unknown
+                // MS-CAB archive
+                else if (IsMSCAB(magic))
+                {
+                    // Build the cabinet information
+                    Console.WriteLine("Creating MS-CAB deserializer");
+                    Console.WriteLine();
+
+                    var cabinet = MSCABCabinet.Deserialize(stream);
+                    if (cabinet == null)
+                    {
+                        Console.WriteLine("Something went wrong parsing MS-CAB archive");
+                        Console.WriteLine();
+                        return;
+                    }
+
+                    // Print the cabinet info to screen
+                    cabinet.PrintInfo();
+                }
+
+                // Everything else
                 else
                 {
-                    Console.WriteLine($"Unrecognized header signature: {BitConverter.ToString(magic).Replace("-", string.Empty)}");
+                    Console.WriteLine("Not a recognized file format, skipping...");
                     Console.WriteLine();
                     return;
                 }
             }
+        }
+
+        /// <summary>
+        /// Determine if the magic bytes indicate an MS-CAB archive
+        /// </summary>
+        private static bool IsMSCAB(byte[] magic)
+        {
+            if (magic == null || magic.Length < 4)
+                return false;
+
+            return magic[0] == 'M' && magic[1] == 'S' && magic[2] == 'C' && magic[3] == 'F';
         }
 
         /// <summary>
