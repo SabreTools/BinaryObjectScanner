@@ -5,10 +5,9 @@ using System.Linq;
 using System.Text;
 using BurnOutSharp.Tools;
 
+/// <see href="http://download.microsoft.com/download/5/0/1/501ED102-E53F-4CE0-AA6B-B0F93629DDC6/Exchange/%5BMS-CAB%5D.pdf"/>
 namespace BurnOutSharp.FileType
 {
-    /// <see href="http://download.microsoft.com/download/5/0/1/501ED102-E53F-4CE0-AA6B-B0F93629DDC6/Exchange/%5BMS-CAB%5D.pdf"/>
-
     // TODO: Add multi-cabinet reading
     public class MSCABCabinet
     {
@@ -800,7 +799,7 @@ namespace BurnOutSharp.FileType
                             decompressed = dataBlock.CompressedData;
                             break;
                         case CompressionType.TYPE_MSZIP:
-                            decompressed = MSZIPBlock.Deserialize(dataBlock.CompressedData).DecompressBlock(dataBlock.UncompressedSize, lastDecompressed);
+                            // TODO: UNIMPLEMENTED
                             break;
                         case CompressionType.TYPE_QUANTUM:
                             // TODO: UNIMPLEMENTED
