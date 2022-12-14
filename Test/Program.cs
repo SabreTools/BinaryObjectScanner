@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using BurnOutSharp;
-using BurnOutSharp.FileType;
 using BurnOutSharp.Wrappers;
 using static BurnOutSharp.Builder.Extensions;
 
@@ -300,7 +299,7 @@ namespace Test
                     Console.WriteLine("Creating MS-CAB deserializer");
                     Console.WriteLine();
 
-                    var cabinet = MSCABCabinet.Deserialize(stream);
+                    var cabinet = MicrosoftCabinet.Create(stream);
                     if (cabinet == null)
                     {
                         Console.WriteLine("Something went wrong parsing MS-CAB archive");
@@ -309,7 +308,7 @@ namespace Test
                     }
 
                     // Print the cabinet info to screen
-                    cabinet.PrintInfo();
+                    cabinet.Print();
                 }
 
                 // Everything else
