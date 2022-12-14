@@ -501,13 +501,22 @@ namespace BurnOutSharp.FileType
 
     public class MSZIPDeflate
     {
+        #region Constants
+
+        /// <summary>
+        /// Maximum Huffman code bit count
+        /// </summary>
+        public const int MAX_BITS = 16;
+
+        #endregion
+
         #region Properties
 
         /// <summary>
         /// Match lengths for literal codes 257..285
         /// </summary>
         /// <remarks>Each value here is the lower bound for lengths represented</remarks>
-        public Dictionary<int, int> LiteralLengths
+        public static Dictionary<int, int> LiteralLengths
         {
             get
             {
@@ -556,7 +565,7 @@ namespace BurnOutSharp.FileType
         /// <summary>
         /// Extra bits for literal codes 257..285
         /// </summary>
-        public Dictionary<int, int> LiteralExtraBits
+        public static Dictionary<int, int> LiteralExtraBits
         {
             get
             {
@@ -634,12 +643,12 @@ namespace BurnOutSharp.FileType
         /// <summary>
         /// Match lengths for literal codes 257..285
         /// </summary>
-        private Dictionary<int, int> _literalLengths = null;
+        private static Dictionary<int, int> _literalLengths = null;
 
         /// <summary>
         /// Extra bits for literal codes 257..285
         /// </summary>
-        private Dictionary<int, int> _literalExtraBits = null;
+        private static Dictionary<int, int> _literalExtraBits = null;
 
         #endregion
 
@@ -682,33 +691,52 @@ namespace BurnOutSharp.FileType
                 // Otherwise
                 else
                 {
+                    // If compressed with dynamic Huffman codes
+                    // read representation of code trees
                     block.BlockData = block.BTYPE == MSZIPDeflateCompressionType.DynamicHuffman
-                        ? (IMSZIPBlockData)new MSZIPDynamicHuffmanCompressedBlock()
+                        ? (IMSZIPBlockData)new MSZIPDynamicHuffmanCompressedBlock(data)
                         : (IMSZIPBlockData)new MSZIPFixedHuffmanCompressedBlock();
 
-                    // If compressed with dynamic Huffman codes
-                    if (block.BTYPE == MSZIPDeflateCompressionType.DynamicHuffman)
-                    {
-                        // read representation of code trees (see subsection below)
-                    }
+                    var compressedBlock = (block.BlockData as MSZIPCompressedBlock);
+
+                    // 9 bits per entry, 288 max symbols
+                    int[] literalDecodeTable = CreateTable(compressedBlock.LiteralLengths);
+
+                    // 6 bits per entry, 32 max symbols
+                    int[] distanceDecodeTable = CreateTable(compressedBlock.DistanceCodes);
 
                     // Loop until end of block code recognized
                     while (true)
                     {
-                        /*
-                        decode literal/length value from input stream
-                        if value < 256
-                            copy value (literal byte) to output stream
-                        otherwise
-                            if value = end of block (256)
-                                break from loop
-                            otherwise (value = 257..285)
-                                decode distance from input stream
+                        // Decode literal/length value from input stream
+                        int symbol = literalDecodeTable[data.ReadBitsLSB(9)];
 
-                            move backwards distance bytes in the output
-                            stream, and copy length bytes from this
-                            position to the output stream.
-                        */
+                        // Copy value (literal byte) to output stream
+                        if (symbol < 256)
+                        {
+                            decodedBytes.Add((byte)symbol);
+                        }
+                        // End of block (256)
+                        else if (symbol == 256)
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            ulong length = data.ReadBitsLSB(LiteralExtraBits[symbol]);
+                            length += (ulong)LiteralLengths[symbol];
+
+                            int code = distanceDecodeTable[length];
+
+                            ulong distance = data.ReadBitsLSB(DistanceExtraBits[code]);
+                            distance += (ulong)DistanceOffsets[code];
+
+                            // Decode distance from input stream
+
+                            // Move backwards distance bytes in the output
+                            // stream, and copy length bytes from this
+                            // position to the output stream.
+                        }
                     }
                 }
             } while (!block.BFINAL);
@@ -725,6 +753,111 @@ namespace BurnOutSharp.FileType
              X and Y, a string reference with <length = 5, distance = 2>
              adds X,Y,X,Y,X to the output stream.
             */
+        }
+
+        /// <summary>
+        /// Given this rule, we can define the Huffman code for an alphabet
+        /// just by giving the bit lengths of the codes for each symbol of
+        /// the alphabet in order; this is sufficient to determine the
+        /// actual codes.  In our example, the code is completely defined
+        /// by the sequence of bit lengths (2, 1, 3, 3).  The following
+        /// algorithm generates the codes as integers, intended to be read
+        /// from most- to least-significant bit.  The code lengths are
+        /// initially in tree[I].Len; the codes are produced in
+        /// tree[I].Code.
+        /// </summary>
+        public static void CreateTable(MSZIPCompressedBlock tree)
+        {
+            // Count the number of codes for each code length.  Let
+            // bl_count[N] be the number of codes of length N, N >= 1.
+            var bl_count = new Dictionary<int, int>();
+            for (int i = 0; i < tree.LiteralLengths.Length; i++)
+            {
+                if (!bl_count.ContainsKey(tree.LiteralLengths[i]))
+                    bl_count[tree.LiteralLengths[i]] = 0;
+
+                bl_count[tree.LiteralLengths[i]]++;
+            }
+
+            // Find the numerical value of the smallest code for each
+            // code length:
+            var next_code = new Dictionary<int, int>();
+            int code = 0;
+            bl_count[0] = 0;
+            for (int bits = 1; bits <= MAX_BITS; bits++)
+            {
+                code = (code + bl_count[bits - 1]) << 1;
+                next_code[bits] = code;
+            }
+
+            // Assign numerical values to all codes, using consecutive
+            // values for all codes of the same length with the base
+            // values determined at step 2. Codes that are never used
+            // (which have a bit length of zero) must not be assigned a
+            // value.
+            for (int n = 0; n <= tree.LiteralLengths.Length; n++)
+            {
+                int len = tree.LiteralLengths[n];
+                if (len != 0)
+                {
+                    tree.DistanceCodes[n] = next_code[len];
+                    next_code[len]++;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Given this rule, we can define the Huffman code for an alphabet
+        /// just by giving the bit lengths of the codes for each symbol of
+        /// the alphabet in order; this is sufficient to determine the
+        /// actual codes.  In our example, the code is completely defined
+        /// by the sequence of bit lengths (2, 1, 3, 3).  The following
+        /// algorithm generates the codes as integers, intended to be read
+        /// from most- to least-significant bit.  The code lengths are
+        /// initially in tree[I].Len; the codes are produced in
+        /// tree[I].Code.
+        /// </summary>
+        public static int[] CreateTable(int[] lengths)
+        {
+            // Count the number of codes for each code length.  Let
+            // bl_count[N] be the number of codes of length N, N >= 1.
+            var bl_count = new Dictionary<int, int>();
+            for (int i = 0; i < lengths.Length; i++)
+            {
+                if (!bl_count.ContainsKey(lengths[i]))
+                    bl_count[lengths[i]] = 0;
+
+                bl_count[lengths[i]]++;
+            }
+
+            // Find the numerical value of the smallest code for each
+            // code length:
+            var next_code = new Dictionary<int, int>();
+            int code = 0;
+            bl_count[0] = 0;
+            for (int bits = 1; bits <= MAX_BITS; bits++)
+            {
+                code = (code + bl_count[bits - 1]) << 1;
+                next_code[bits] = code;
+            }
+
+            // Assign numerical values to all codes, using consecutive
+            // values for all codes of the same length with the base
+            // values determined at step 2. Codes that are never used
+            // (which have a bit length of zero) must not be assigned a
+            // value.
+            int[] distances = new int[lengths.Length];
+            for (int n = 0; n <= lengths.Length; n++)
+            {
+                int len = lengths[n];
+                if (len != 0)
+                {
+                    distances[n] = next_code[len];
+                    next_code[len]++;
+                }
+            }
+
+            return distances;
         }
     }
 
@@ -832,9 +965,7 @@ namespace BurnOutSharp.FileType
     {
         #region Properties
 
-        /// <summary>
-        /// Huffman code lengths for the literal / length alphabet
-        /// </summary>
+        /// <inheritdoc/>
         public override int[] LiteralLengths
         {
             get
@@ -866,9 +997,7 @@ namespace BurnOutSharp.FileType
             }
         }
 
-        /// <summary>
-        /// Huffman distance codes for the literal / length alphabet
-        /// </summary>
+        /// <inheritdoc/>
         public override int[] DistanceCodes
         {
             get
@@ -910,82 +1039,120 @@ namespace BurnOutSharp.FileType
     /// </summary>
     public class MSZIPDynamicHuffmanCompressedBlock : MSZIPCompressedBlock
     {
-        /// <summary>
-        /// The Huffman codes for the literal/length code
-        /// </summary>
-        public override int[] LiteralLengths => new int[19];
+        #region Properties
+
+        /// <inheritdoc/>
+        public override int[] LiteralLengths { get; } = new int[19];
+
+        /// <inheritdoc/>
+        public override int[] DistanceCodes { get; } = new int[19];
+
+        #endregion
 
         /// <summary>
-        /// The Huffman codes for the distance code
+        /// Constructor
         /// </summary>
-        public override int[] DistanceCodes => new int[19];
+        public MSZIPDynamicHuffmanCompressedBlock(MSZIPDeflateStream stream)
+        {
+            // # of Literal/Length codes - 257
+            ulong HLIT = stream.ReadBitsLSB(5) + 257;
 
-        /*
-        3.2.7. Compression with dynamic Huffman codes (BTYPE=10)
+            // # of Distance codes - 1
+            ulong HDIST = stream.ReadBitsLSB(5) + 1;
 
-         The Huffman codes for the two alphabets appear in the block
-         immediately after the header bits and before the actual
-         compressed data, first the literal/length code and then the
-         distance code.  Each code is defined by a sequence of code
-         lengths, as discussed in Paragraph 3.2.2, above.  For even
-         greater compactness, the code length sequences themselves are
-         compressed using a Huffman code.  The alphabet for code lengths
-         is as follows:
+            // HCLEN, # of Code Length codes - 4
+            ulong HCLEN = stream.ReadBitsLSB(5) + 4;
 
-               0 - 15: Represent code lengths of 0 - 15
-                   16: Copy the previous code length 3 - 6 times.
-                       The next 2 bits indicate repeat length
-                             (0 = 3, ... , 3 = 6)
-                          Example:  Codes 8, 16 (+2 bits 11),
-                                    16 (+2 bits 10) will expand to
-                                    12 code lengths of 8 (1 + 6 + 5)
-                   17: Repeat a code length of 0 for 3 - 10 times.
-                       (3 bits of length)
-                   18: Repeat a code length of 0 for 11 - 138 times
-                       (7 bits of length)
+            // (HCLEN + 4) x 3 bits: code lengths for the code length
+            //  alphabet given just above
+            // 
+            //  These code lengths are interpreted as 3-bit integers
+            //  (0-7); as above, a code length of 0 means the
+            //  corresponding symbol (literal/ length or distance code
+            //  length) is not used.
+            int[] codeLengthAlphabet = new int[19];
+            for (ulong i = 0; i < HCLEN; i++)
+                codeLengthAlphabet[MSZIPDeflate.BitLengthOrder[i]] = (int)stream.ReadBitsLSB(3);
 
-         A code length of 0 indicates that the corresponding symbol in
-         the literal/length or distance alphabet will not occur in the
-         block, and should not participate in the Huffman code
-         construction algorithm given earlier.  If only one distance
-         code is used, it is encoded using one bit, not zero bits; in
-         this case there is a single code length of one, with one unused
-         code.  One distance code of zero bits means that there are no
-         distance codes used at all (the data is all literals).
+            for (ulong i = HCLEN; i < 19; i++)
+                codeLengthAlphabet[MSZIPDeflate.BitLengthOrder[i]] = 0;
 
-         We can now define the format of the block:
+            // Code length Huffman code
+            int[] codeLengthHuffmanCode = MSZIPDeflate.CreateTable(codeLengthAlphabet);
 
-               5 Bits: HLIT, # of Literal/Length codes - 257 (257 - 286)
-               5 Bits: HDIST, # of Distance codes - 1        (1 - 32)
-               4 Bits: HCLEN, # of Code Length codes - 4     (4 - 19)
+            // HLIT + 257 code lengths for the literal/length alphabet,
+            //  encoded using the code length Huffman code
+            this.LiteralLengths = BuildHuffmanTree(stream, HLIT, codeLengthHuffmanCode);
 
+            // HDIST + 1 code lengths for the distance alphabet,
+            //  encoded using the code length Huffman code
+            this.DistanceCodes = BuildHuffmanTree(stream, HDIST, codeLengthHuffmanCode);
+        }
 
-               (HCLEN + 4) x 3 bits: code lengths for the code length
-                  alphabet given just above, in the order: 16, 17, 18,
-                  0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15
+        /// <summary>
+        /// The alphabet for code lengths is as follows
+        /// </summary>
+        private int[] BuildHuffmanTree(MSZIPDeflateStream stream, ulong codeCount, int[] codeLengths)
+        {
+            // Setup the huffman tree
+            int[] tree = new int[codeCount];
 
-                  These code lengths are interpreted as 3-bit integers
-                  (0-7); as above, a code length of 0 means the
-                  corresponding symbol (literal/length or distance code
-                  length) is not used.
+            // Setup the loop variables
+            int lastCode = 0, repeatLength = 0;
+            for (ulong i = 0; i < codeCount; i++)
+            {
+                int code = codeLengths[(int)stream.ReadBitsLSB(7)];
 
-               HLIT + 257 code lengths for the literal/length alphabet,
-                  encoded using the code length Huffman code
+                // Represent code lengths of 0 - 15
+                if (code > 0 && code <= 15)
+                {
+                    lastCode = code;
+                    tree[i] = code;
+                }
 
-               HDIST + 1 code lengths for the distance alphabet,
-                  encoded using the code length Huffman code
+                // Copy the previous code length 3 - 6 times.
+                // The next 2 bits indicate repeat length (0 = 3, ... , 3 = 6)
+                // Example:  Codes 8, 16 (+2 bits 11), 16 (+2 bits 10) will expand to 12 code lengths of 8 (1 + 6 + 5)
+                else if (code == 16)
+                {
+                    repeatLength = (int)stream.ReadBitsLSB(2);
+                    repeatLength += 2;
+                    code = lastCode;
+                }
 
-               The actual compressed data of the block,
-                  encoded using the literal/length and distance Huffman
-                  codes
+                // Repeat a code length of 0 for 3 - 10 times.
+                // (3 bits of length)
+                else if (code == 17)
+                {
+                    repeatLength = (int)stream.ReadBitsLSB(3);
+                    repeatLength += 3;
+                    code = 0;
+                }
 
-               The literal/length symbol 256 (end of data),
-                  encoded using the literal/length Huffman code
+                // Repeat a code length of 0 for 11 - 138 times
+                // (7 bits of length)
+                else if (code == 18)
+                {
+                    repeatLength = (int)stream.ReadBitsLSB(7);
+                    repeatLength += 11;
+                    code = 0;
+                }
 
-         The code length repeat codes can cross from HLIT + 257 to the
-         HDIST + 1 code lengths.  In other words, all code lengths form
-         a single sequence of HLIT + HDIST + 258 values.
-        */
+                // Everything else
+                else
+                {
+                    throw new ArgumentOutOfRangeException();
+                }
+
+                // If we had a repeat length
+                for (; repeatLength > 0; repeatLength--)
+                {
+                    tree[i++] = code;
+                }
+            }
+
+            return tree;
+        }
     }
 
     #endregion
