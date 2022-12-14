@@ -115,6 +115,38 @@ namespace BurnOutSharp.ProtectionType
                 new PathMatchSet(new PathMatch("drvmgt.dll", useEndsWith: true), GetSafeDiscDrvmgtVersion, "SafeDisc"),
                 new PathMatchSet(new PathMatch("secdrv.sys", useEndsWith: true), GetSafeDiscSecdrvVersion, "SafeDisc Security Driver"),
 
+                // The SD0XXX.dll files appear to solely contain custom strings that allowed the publisher to customize the SafeDisc error messages. They are currently only known to be used by EA.
+                // Each file appears to contain strings for a specific language each.
+                // There is one non EA game that makes reference to "SD0809.dll", but doesn't include it (IA item "rayman.-raving.-rabbids.-hebrew.-dvd").
+                // TODO: Add a generic check to detect this type of string that appears to be present in all of these DLLs:
+                // "d:\DiceCanada\BoosterPack2\Installers\BF2XpackInstaller\Safedisk\SafeDiscDLLs\DLLs\Release\SD0816.pdb" (Redump entry 65569).
+
+                // Found in Redump entries 20729 and 65569.
+                new PathMatchSet(new PathMatch("SD040e.dll", useEndsWith: true), "SafeDisc"),
+
+                // Found in Redump entry 65569.
+                new PathMatchSet(new PathMatch("SD0c0a.dll", useEndsWith: true), "SafeDisc"),
+                new PathMatchSet(new PathMatch("SD040b.dll", useEndsWith: true), "SafeDisc"),
+                new PathMatchSet(new PathMatch("SD040c.dll", useEndsWith: true), "SafeDisc"),
+                new PathMatchSet(new PathMatch("SD041d.dll", useEndsWith: true), "SafeDisc"),
+                new PathMatchSet(new PathMatch("SD041e.dll", useEndsWith: true), "SafeDisc"),
+                new PathMatchSet(new PathMatch("SD041e.dll", useEndsWith: true), "SafeDisc"),
+                new PathMatchSet(new PathMatch("SD0404.dll", useEndsWith: true), "SafeDisc"),
+                new PathMatchSet(new PathMatch("SD0405.dll", useEndsWith: true), "SafeDisc"),
+                new PathMatchSet(new PathMatch("SD0406.dll", useEndsWith: true), "SafeDisc"),
+                new PathMatchSet(new PathMatch("SD0407.dll", useEndsWith: true), "SafeDisc"),
+                new PathMatchSet(new PathMatch("SD0409.dll", useEndsWith: true), "SafeDisc"),
+                new PathMatchSet(new PathMatch("SD0410.dll", useEndsWith: true), "SafeDisc"),
+                new PathMatchSet(new PathMatch("SD0411.dll", useEndsWith: true), "SafeDisc"),
+                new PathMatchSet(new PathMatch("SD0412.dll", useEndsWith: true), "SafeDisc"),
+                new PathMatchSet(new PathMatch("SD0413.dll", useEndsWith: true), "SafeDisc"),
+                new PathMatchSet(new PathMatch("SD0414.dll", useEndsWith: true), "SafeDisc"),
+                new PathMatchSet(new PathMatch("SD0415.dll", useEndsWith: true), "SafeDisc"),
+                new PathMatchSet(new PathMatch("SD0416.dll", useEndsWith: true), "SafeDisc"),
+                new PathMatchSet(new PathMatch("SD0804.dll", useEndsWith: true), "SafeDisc"),
+                new PathMatchSet(new PathMatch("SD0809.dll", useEndsWith: true), "SafeDisc"),
+                new PathMatchSet(new PathMatch("SD0816.dll", useEndsWith: true), "SafeDisc"),
+
                 // Used to distribute SafeDisc driver updates over the internet. Two distinct versions known to exist, with Microsoft also having distributed the later update as well.
                 // Version 1: https://web.archive.org/web/20040614184055/http://www.macrovision.com:80/products/safedisc/safedisc.exe
                 // Version 2: https://web.archive.org/web/20051104123646/http://www.macrovision.com/products/safedisc/safedisc.exe
@@ -125,7 +157,7 @@ namespace BurnOutSharp.ProtectionType
                 // Name check overmatches with a seemingly completely unrelated application, ironically included on at least one SafeDisc game (Redump entry 34828).
                 // new PathMatchSet(new PathMatch("mcp.dll", useEndsWith: true), "SafeDisc (Version 1.45.011-1.50.020)"),
 
-                // Found in Redump entry 58455.
+                // Found in Redump entry 58455 and 65569.
                 // Unknown if it's a game specific file, but it contains the stxt371 and stxt774 sections.
                 // new PathMatchSet(new PathMatch("CoreDLL.dll", useEndsWith: true), "SafeDisc"),
 
@@ -158,11 +190,43 @@ namespace BurnOutSharp.ProtectionType
                 new PathMatchSet(new PathMatch("drvmgt.dll", useEndsWith: true), GetSafeDiscDrvmgtVersion, "SafeDisc"),
                 new PathMatchSet(new PathMatch("secdrv.sys", useEndsWith: true), GetSafeDiscSecdrvVersion, "SafeDisc Security Driver"),
 
+                // The SD0XXX.dll files appear to solely contain custom strings that allowed the publisher to customize the SafeDisc error messages. They are currently only known to be used by EA.
+                // Each file appears to contain strings for a specific language each.
+                // There is one non EA game that makes reference to "SD0809.dll", but doesn't include it (IA item "rayman.-raving.-rabbids.-hebrew.-dvd").
+                // TODO: Add a generic check to detect this type of string that appears to be present in all of these DLLs:
+                // "d:\DiceCanada\BoosterPack2\Installers\BF2XpackInstaller\Safedisk\SafeDiscDLLs\DLLs\Release\SD0816.pdb" (Redump entry 65569).
+
+                // Found in Redump entries 20729 and 65569.
+                new PathMatchSet(new PathMatch("SD040e.dll", useEndsWith: true), "SafeDisc"),
+
+                // Found in Redump entry 65569.
+                new PathMatchSet(new PathMatch("SD0c0a.dll", useEndsWith: true), "SafeDisc"),
+                new PathMatchSet(new PathMatch("SD040b.dll", useEndsWith: true), "SafeDisc"),
+                new PathMatchSet(new PathMatch("SD040c.dll", useEndsWith: true), "SafeDisc"),
+                new PathMatchSet(new PathMatch("SD041d.dll", useEndsWith: true), "SafeDisc"),
+                new PathMatchSet(new PathMatch("SD041e.dll", useEndsWith: true), "SafeDisc"),
+                new PathMatchSet(new PathMatch("SD041e.dll", useEndsWith: true), "SafeDisc"),
+                new PathMatchSet(new PathMatch("SD0404.dll", useEndsWith: true), "SafeDisc"),
+                new PathMatchSet(new PathMatch("SD0405.dll", useEndsWith: true), "SafeDisc"),
+                new PathMatchSet(new PathMatch("SD0406.dll", useEndsWith: true), "SafeDisc"),
+                new PathMatchSet(new PathMatch("SD0407.dll", useEndsWith: true), "SafeDisc"),
+                new PathMatchSet(new PathMatch("SD0409.dll", useEndsWith: true), "SafeDisc"),
+                new PathMatchSet(new PathMatch("SD0410.dll", useEndsWith: true), "SafeDisc"),
+                new PathMatchSet(new PathMatch("SD0411.dll", useEndsWith: true), "SafeDisc"),
+                new PathMatchSet(new PathMatch("SD0412.dll", useEndsWith: true), "SafeDisc"),
+                new PathMatchSet(new PathMatch("SD0413.dll", useEndsWith: true), "SafeDisc"),
+                new PathMatchSet(new PathMatch("SD0414.dll", useEndsWith: true), "SafeDisc"),
+                new PathMatchSet(new PathMatch("SD0415.dll", useEndsWith: true), "SafeDisc"),
+                new PathMatchSet(new PathMatch("SD0416.dll", useEndsWith: true), "SafeDisc"),
+                new PathMatchSet(new PathMatch("SD0804.dll", useEndsWith: true), "SafeDisc"),
+                new PathMatchSet(new PathMatch("SD0809.dll", useEndsWith: true), "SafeDisc"),
+                new PathMatchSet(new PathMatch("SD0816.dll", useEndsWith: true), "SafeDisc"),
+
                 // Found in Redump entries 28810 and 30555.
                 // Name check overmatches with a seemingly completely unrelated application, ironically included on at least one SafeDisc game (Redump entry 34828).
                 // new PathMatchSet(new PathMatch("mcp.dll", useEndsWith: true), "SafeDisc (Version 1.45.011-1.50.020)"),
 
-                // Found in Redump entry 58455.
+                // Found in Redump entry 58455 and 65569.
                 // Unknown if it's a game specific file, but it contains the stxt371 and stxt774 sections.
                 // new PathMatchSet(new PathMatch("CoreDLL.dll", useEndsWith: true), "SafeDisc"),
 
