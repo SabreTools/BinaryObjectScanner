@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using BurnOutSharp.Interfaces;
@@ -35,13 +36,8 @@ namespace BurnOutSharp.ProtectionType
             // Get the export directory table
             if (pex.ExportTable?.ExportDirectoryTable != null)
             {
-                // Found in "cdguard.dll" in Redump entry 97142.
-                bool match = pex.ExportTable.ExportDirectoryTable.Name == "CDGUARD.DLL";
-                if (match)
-                    return "CD-Guard Copy Protection System";
-
-                // Found in "cdguard.dll" in IA item "pahgeby-he3hakomkou".
-                match = pex.ExportTable.ExportDirectoryTable.Name == "cdguard.dll";
+                // Found in "cdguard.dll" in Redump entry 97142 and IA item "pahgeby-he3hakomkou".
+                bool match = pex.ExportTable.ExportDirectoryTable.Name?.Equals("cdguard.dll", StringComparison.OrdinalIgnoreCase) == true;
                 if (match)
                     return "CD-Guard Copy Protection System";
             }
@@ -50,14 +46,9 @@ namespace BurnOutSharp.ProtectionType
             if (pex.ImportTable?.ImportDirectoryTable != null)
             {
                 // Found in "Randevu.exe" in Redump entry 97142.
-                bool match = pex.ImportTable.ImportDirectoryTable.Any(idte => idte.Name == "CDGUARD.DLL");
+                bool match = pex.ImportTable.ImportDirectoryTable.Any(idte => idte.Name?.Equals("cdguard.dll", StringComparison.OrdinalIgnoreCase) == true);
                 if (match)
                       return "CD-Guard Copy Protection System";
-
-                // Not found in any known sample, but presumably would be found in the game EXE for a game that uses the same driver version as IA item "pahgeby-he3hakomkou".
-                match = pex.ExportTable.ExportDirectoryTable.Name == "cdguard.dll";
-                if (match)
-                    return "CD-Guard Copy Protection System";
             }
 
             return null;
