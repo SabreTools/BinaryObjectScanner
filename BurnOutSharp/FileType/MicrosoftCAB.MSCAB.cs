@@ -800,12 +800,15 @@ namespace BurnOutSharp.FileType
                             break;
                         case CompressionType.TYPE_MSZIP:
                             // TODO: UNIMPLEMENTED
+                            decompressed = dataBlock.CompressedData;
                             break;
                         case CompressionType.TYPE_QUANTUM:
                             // TODO: UNIMPLEMENTED
+                            decompressed = dataBlock.CompressedData;
                             break;
                         case CompressionType.TYPE_LZX:
                             // TODO: UNIMPLEMENTED
+                            decompressed = dataBlock.CompressedData;
                             break;
                         default:
                             return null;

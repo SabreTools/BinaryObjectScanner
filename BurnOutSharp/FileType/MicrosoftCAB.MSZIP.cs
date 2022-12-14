@@ -723,6 +723,7 @@ namespace BurnOutSharp.FileType
                         }
                         else
                         {
+                            // Decode distance from input stream
                             ulong length = data.ReadBitsLSB(LiteralExtraBits[symbol]);
                             length += (ulong)LiteralLengths[symbol];
 
@@ -731,7 +732,6 @@ namespace BurnOutSharp.FileType
                             ulong distance = data.ReadBitsLSB(DistanceExtraBits[code]);
                             distance += (ulong)DistanceOffsets[code];
 
-                            // Decode distance from input stream
 
                             // Move backwards distance bytes in the output
                             // stream, and copy length bytes from this
