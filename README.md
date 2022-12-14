@@ -37,6 +37,7 @@ Below is a list of protections detected by BurnOutSharp. The two columns explain
 | C-Dilla License Management Solution / CD-Secure / CD-Compress | True | True | |
 | Cactus Data Shield | True | True | |
 | CD-Cops / DVD-Cops | True | True | Partially unconfirmed² |
+| CD-Guard | True | True | |
 | CD-Lock | True | True | |
 | CD-Protector | False | True | |
 | CD-X | False | True | Unconfirmed¹ |
