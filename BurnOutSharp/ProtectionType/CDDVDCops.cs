@@ -64,11 +64,12 @@ namespace BurnOutSharp.ProtectionType
             var neMatchSets = new List<ContentMatchSet>
             {
                 // CD-Cops,  ver. 
+                // Found in "h3blade.exe" in Redump entry 85077.
                 new ContentMatchSet(new byte?[]
                 {
                     0x43, 0x44, 0x2D, 0x43, 0x6F, 0x70, 0x73, 0x2C,
                     0x20, 0x20, 0x76, 0x65, 0x72, 0x2E, 0x20
-                }, GetVersion, "CD-Cops (Unconfirmed - Please report to us on Github)"),
+                }, GetVersion, "CD-Cops"),
             };
             
             string match = MatchUtil.GetFirstMatch(file, data, neMatchSets, includeDebug);
@@ -76,6 +77,7 @@ namespace BurnOutSharp.ProtectionType
                 return match;
 
             // Check the imported-name table
+            // Found in "h3blade.exe" in Redump entry 85077.
             bool importedNameTableEntries = nex.ImportedNameTable?
                 .Select(kvp => kvp.Value)
                 .Where(inte => inte.NameString != null)
@@ -85,6 +87,7 @@ namespace BurnOutSharp.ProtectionType
                 return "CD-Cops";
 
             // Check the nonresident-name table
+            // Found in "CDCOPS.DLL" in Redump entry 85077.
             bool nonresidentNameTableEntries = nex.NonResidentNameTable?
                 .Where(nrnte => nrnte.NameString != null)
                 .Select(nrnte => Encoding.ASCII.GetString(nrnte.NameString))
@@ -104,7 +107,7 @@ namespace BurnOutSharp.ProtectionType
                 return null;
 
             // Get the .grand section, if it exists -- TODO: Confirm is this is in DVD-Cops as well
-            // Found in "AGENTHUG.QZ_" in Redump entry 84517
+            // Found in "AGENTHUG.QZ_" in Redump entry 84517 and "h3blade.QZ_" in Redump entry 85077.
             bool grandSection = pex.ContainsSection(".grand", exact: true);
             if (grandSection)
                 return "CD-Cops";
