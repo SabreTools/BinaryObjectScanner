@@ -2286,14 +2286,26 @@ namespace BurnOutSharp.Wrappers
             string padding = new string(' ', (level + 1) * 2);
             Console.WriteLine($"{padding}Application-defined resource found, not parsed yet");
 
-            //if (entry.Data != null)
-            //    Console.WriteLine($"{padding}Value (Byte Data): {BitConverter.ToString(entry.Data).Replace('-', ' ')}");
-            //if (entry.Data != null)
-            //    Console.WriteLine($"{padding}Value (ASCII): {Encoding.ASCII.GetString(entry.Data)}");
-            //if (entry.Data != null)
-            //    Console.WriteLine($"{padding}Value (UTF-8): {Encoding.UTF8.GetString(entry.Data)}");
-            //if (entry.Data != null)
-            //    Console.WriteLine($"{padding}Value (Unicode): {Encoding.Unicode.GetString(entry.Data)}");
+            // Then print the data, if needed
+            if (entry.Data[0] == 0x4D && entry.Data[1] == 0x5A)
+            {
+                Console.WriteLine($"{padding}Data: [Embedded Executable File]"); // TODO: Parse this out and print separately
+            }
+            else if (entry.Data[0] == 0x4D && entry.Data[1] == 0x53 && entry.Data[2] == 0x46 && entry.Data[3] == 0x54)
+            {
+                Console.WriteLine($"{padding}Data: [Embedded OLE Library File]"); // TODO: Parse this out and print separately
+            }
+            else
+            {
+                //if (entry.Data != null)
+                //    Console.WriteLine($"{padding}Value (Byte Data): {BitConverter.ToString(entry.Data).Replace('-', ' ')}");
+                if (entry.Data != null)
+                    Console.WriteLine($"{padding}Value (ASCII): {Encoding.ASCII.GetString(entry.Data)}");
+                //if (entry.Data != null)
+                //    Console.WriteLine($"{padding}Value (UTF-8): {Encoding.UTF8.GetString(entry.Data)}");
+                //if (entry.Data != null)
+                //    Console.WriteLine($"{padding}Value (Unicode): {Encoding.Unicode.GetString(entry.Data)}");
+            }
         }
 
         /// <summary>

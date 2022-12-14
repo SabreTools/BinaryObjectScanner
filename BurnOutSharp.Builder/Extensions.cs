@@ -1416,108 +1416,12 @@ namespace BurnOutSharp.Builder
 
                 if (nextKey == "StringFileInfo")
                 {
-                    var stringFileInfo = new Models.PortableExecutable.StringFileInfo();
-
-                    stringFileInfo.Length = entry.Data.ReadUInt16(ref offset);
-                    stringFileInfo.ValueLength = entry.Data.ReadUInt16(ref offset);
-                    stringFileInfo.ResourceType = (Models.PortableExecutable.VersionResourceType)entry.Data.ReadUInt16(ref offset);
-                    stringFileInfo.Key = entry.Data.ReadString(ref offset, Encoding.Unicode);
-                    if (stringFileInfo.Key != "StringFileInfo")
-                        return null;
-
-                    while ((offset % 4) != 0)
-                        stringFileInfo.Padding = entry.Data.ReadUInt16(ref offset);
-
-                    var stringFileInfoChildren = new List<Models.PortableExecutable.StringTable>();
-                    while (offset < stringFileInfo.Length)
-                    {
-                        var stringTable = new Models.PortableExecutable.StringTable();
-
-                        stringTable.Length = entry.Data.ReadUInt16(ref offset);
-                        stringTable.ValueLength = entry.Data.ReadUInt16(ref offset);
-                        stringTable.ResourceType = (Models.PortableExecutable.VersionResourceType)entry.Data.ReadUInt16(ref offset);
-                        stringTable.Key = entry.Data.ReadString(ref offset, Encoding.Unicode);
-
-                        while ((offset % 4) != 0)
-                            stringTable.Padding = entry.Data.ReadUInt16(ref offset);
-
-                        var stringTableChildren = new List<Models.PortableExecutable.StringData>();
-                        while (offset < stringTable.Length)
-                        {
-                            var stringData = new Models.PortableExecutable.StringData();
-
-                            stringData.Length = entry.Data.ReadUInt16(ref offset);
-                            stringData.ValueLength = entry.Data.ReadUInt16(ref offset);
-                            stringData.ResourceType = (Models.PortableExecutable.VersionResourceType)entry.Data.ReadUInt16(ref offset);
-                            stringData.Key = entry.Data.ReadString(ref offset, Encoding.Unicode);
-
-                            while ((offset % 4) != 0)
-                                stringData.Padding = entry.Data.ReadUInt16(ref offset);
-
-                            if (stringData.ValueLength > 0)
-                            {
-                                byte[] valueBytes = entry.Data.ReadBytes(ref offset, stringData.ValueLength * sizeof(ushort));
-                                stringData.Value = Encoding.Unicode.GetString(valueBytes);
-                            }
-
-                            while ((offset % 4) != 0)
-                                _ = entry.Data.ReadUInt16(ref offset);
-
-                            stringTableChildren.Add(stringData);
-                        }
-
-                        stringTable.Children = stringTableChildren.ToArray();
-
-                        stringFileInfoChildren.Add(stringTable);
-                    }
-
-                    stringFileInfo.Children = stringFileInfoChildren.ToArray();
-
+                    var stringFileInfo = AsStringFileInfo(entry.Data, ref offset);
                     versionInfo.StringFileInfo = stringFileInfo;
                 }
                 else if (nextKey == "VarFileInfo")
                 {
-                    var varFileInfo = new Models.PortableExecutable.VarFileInfo();
-
-                    varFileInfo.Length = entry.Data.ReadUInt16(ref offset);
-                    varFileInfo.ValueLength = entry.Data.ReadUInt16(ref offset);
-                    varFileInfo.ResourceType = (Models.PortableExecutable.VersionResourceType)entry.Data.ReadUInt16(ref offset);
-                    varFileInfo.Key = entry.Data.ReadString(ref offset, Encoding.Unicode);
-                    if (varFileInfo.Key != "VarFileInfo")
-                        return null;
-
-                    while ((offset % 4) != 0)
-                        varFileInfo.Padding = entry.Data.ReadUInt16(ref offset);
-
-                    var varFileInfoChildren = new List<Models.PortableExecutable.VarData>();
-                    while (offset < varFileInfo.Length)
-                    {
-                        var varData = new Models.PortableExecutable.VarData();
-
-                        varData.Length = entry.Data.ReadUInt16(ref offset);
-                        varData.ValueLength = entry.Data.ReadUInt16(ref offset);
-                        varData.ResourceType = (Models.PortableExecutable.VersionResourceType)entry.Data.ReadUInt16(ref offset);
-                        varData.Key = entry.Data.ReadString(ref offset, Encoding.Unicode);
-                        if (varData.Key != "Translation")
-                            return null;
-
-                        while ((offset % 4) != 0)
-                            varData.Padding = entry.Data.ReadUInt16(ref offset);
-
-                        var varDataValue = new List<uint>();
-                        while (offset < (varData.ValueLength * sizeof(ushort)))
-                        {
-                            uint languageAndCodeIdentifierPair = entry.Data.ReadUInt32(ref offset);
-                            varDataValue.Add(languageAndCodeIdentifierPair);
-                        }
-
-                        varData.Value = varDataValue.ToArray();
-
-                        varFileInfoChildren.Add(varData);
-                    }
-
-                    varFileInfo.Children = varFileInfoChildren.ToArray();
-
+                    var varFileInfo = AsVarFileInfo(entry.Data, ref offset);
                     versionInfo.VarFileInfo = varFileInfo;
                 }
             }
@@ -1534,113 +1438,161 @@ namespace BurnOutSharp.Builder
 
                 if (nextKey == "StringFileInfo")
                 {
-                    var stringFileInfo = new Models.PortableExecutable.StringFileInfo();
-
-                    stringFileInfo.Length = entry.Data.ReadUInt16(ref offset);
-                    stringFileInfo.ValueLength = entry.Data.ReadUInt16(ref offset);
-                    stringFileInfo.ResourceType = (Models.PortableExecutable.VersionResourceType)entry.Data.ReadUInt16(ref offset);
-                    stringFileInfo.Key = entry.Data.ReadString(ref offset, Encoding.Unicode);
-                    if (stringFileInfo.Key != "StringFileInfo")
-                        return null;
-
-                    while ((offset % 4) != 0)
-                        stringFileInfo.Padding = entry.Data.ReadUInt16(ref offset);
-
-                    var stringFileInfoChildren = new List<Models.PortableExecutable.StringTable>();
-                    while (offset < stringFileInfo.Length)
-                    {
-                        var stringTable = new Models.PortableExecutable.StringTable();
-
-                        stringTable.Length = entry.Data.ReadUInt16(ref offset);
-                        stringTable.ValueLength = entry.Data.ReadUInt16(ref offset);
-                        stringTable.ResourceType = (Models.PortableExecutable.VersionResourceType)entry.Data.ReadUInt16(ref offset);
-                        stringTable.Key = entry.Data.ReadString(ref offset, Encoding.Unicode);
-
-                        while ((offset % 4) != 0)
-                            stringTable.Padding = entry.Data.ReadUInt16(ref offset);
-
-                        var stringTableChildren = new List<Models.PortableExecutable.StringData>();
-                        while (offset < stringTable.Length)
-                        {
-                            var stringData = new Models.PortableExecutable.StringData();
-
-                            stringData.Length = entry.Data.ReadUInt16(ref offset);
-                            stringData.ValueLength = entry.Data.ReadUInt16(ref offset);
-                            stringData.ResourceType = (Models.PortableExecutable.VersionResourceType)entry.Data.ReadUInt16(ref offset);
-                            stringData.Key = entry.Data.ReadString(ref offset, Encoding.Unicode);
-
-                            while ((offset % 4) != 0)
-                                stringData.Padding = entry.Data.ReadUInt16(ref offset);
-
-                            if (stringData.ValueLength > 0)
-                            {
-                                byte[] valueBytes = entry.Data.ReadBytes(ref offset, stringData.ValueLength * sizeof(ushort));
-                                stringData.Value = Encoding.Unicode.GetString(valueBytes);
-                            }
-
-                            while ((offset % 4) != 0)
-                                _ = entry.Data.ReadUInt16(ref offset);
-
-                            stringTableChildren.Add(stringData);
-                        }
-
-                        stringTable.Children = stringTableChildren.ToArray();
-
-                        stringFileInfoChildren.Add(stringTable);
-                    }
-
-                    stringFileInfo.Children = stringFileInfoChildren.ToArray();
-
+                    var stringFileInfo = AsStringFileInfo(entry.Data, ref offset);
                     versionInfo.StringFileInfo = stringFileInfo;
                 }
                 else if (nextKey == "VarFileInfo")
                 {
-                    var varFileInfo = new Models.PortableExecutable.VarFileInfo();
-
-                    varFileInfo.Length = entry.Data.ReadUInt16(ref offset);
-                    varFileInfo.ValueLength = entry.Data.ReadUInt16(ref offset);
-                    varFileInfo.ResourceType = (Models.PortableExecutable.VersionResourceType)entry.Data.ReadUInt16(ref offset);
-                    varFileInfo.Key = entry.Data.ReadString(ref offset, Encoding.Unicode);
-                    if (varFileInfo.Key != "VarFileInfo")
-                        return null;
-
-                    while ((offset % 4) != 0)
-                        varFileInfo.Padding = entry.Data.ReadUInt16(ref offset);
-
-                    var varFileInfoChildren = new List<Models.PortableExecutable.VarData>();
-                    while (offset < varFileInfo.Length)
-                    {
-                        var varData = new Models.PortableExecutable.VarData();
-
-                        varData.Length = entry.Data.ReadUInt16(ref offset);
-                        varData.ValueLength = entry.Data.ReadUInt16(ref offset);
-                        varData.ResourceType = (Models.PortableExecutable.VersionResourceType)entry.Data.ReadUInt16(ref offset);
-                        varData.Key = entry.Data.ReadString(ref offset, Encoding.Unicode);
-                        if (varData.Key != "Translation")
-                            return null;
-
-                        while ((offset % 4) != 0)
-                            varData.Padding = entry.Data.ReadUInt16(ref offset);
-
-                        var varDataValue = new List<uint>();
-                        while (offset < (varData.ValueLength * sizeof(ushort)))
-                        {
-                            uint languageAndCodeIdentifierPair = entry.Data.ReadUInt32(ref offset);
-                            varDataValue.Add(languageAndCodeIdentifierPair);
-                        }
-
-                        varData.Value = varDataValue.ToArray();
-
-                        varFileInfoChildren.Add(varData);
-                    }
-
-                    varFileInfo.Children = varFileInfoChildren.ToArray();
-
+                    var varFileInfo = AsVarFileInfo(entry.Data, ref offset);
                     versionInfo.VarFileInfo = varFileInfo;
                 }
             }
 
             return versionInfo;
+        }
+
+        /// <summary>
+        ///  Read byte data as a string file info resource
+        /// </summary>
+        /// <param name="data">Data to parse into a string file info</param>
+        /// <param name="offset">Offset into the byte array</param>
+        /// <returns>A filled string file info resource on success, null on error</returns>
+        private static Models.PortableExecutable.StringFileInfo AsStringFileInfo(byte[] data, ref int offset)
+        {
+            var stringFileInfo = new Models.PortableExecutable.StringFileInfo();
+
+            stringFileInfo.Length = data.ReadUInt16(ref offset);
+            stringFileInfo.ValueLength = data.ReadUInt16(ref offset);
+            stringFileInfo.ResourceType = (Models.PortableExecutable.VersionResourceType)data.ReadUInt16(ref offset);
+            stringFileInfo.Key = data.ReadString(ref offset, Encoding.Unicode);
+            if (stringFileInfo.Key != "StringFileInfo")
+                return null;
+
+            // Align to the DWORD boundary if we're not at the end
+            if (offset != data.Length)
+            {
+                while ((offset % 4) != 0)
+                    stringFileInfo.Padding = data.ReadByte(ref offset);
+            }
+
+            var stringFileInfoChildren = new List<Models.PortableExecutable.StringTable>();
+            while (offset < stringFileInfo.Length)
+            {
+                var stringTable = new Models.PortableExecutable.StringTable();
+
+                stringTable.Length = data.ReadUInt16(ref offset);
+                stringTable.ValueLength = data.ReadUInt16(ref offset);
+                stringTable.ResourceType = (Models.PortableExecutable.VersionResourceType)data.ReadUInt16(ref offset);
+                stringTable.Key = data.ReadString(ref offset, Encoding.Unicode);
+
+                // Align to the DWORD boundary if we're not at the end
+                if (offset != data.Length)
+                {
+                    while ((offset % 4) != 0)
+                        stringTable.Padding = data.ReadByte(ref offset);
+                }
+
+                var stringTableChildren = new List<Models.PortableExecutable.StringData>();
+                while (offset < stringTable.Length)
+                {
+                    var stringData = new Models.PortableExecutable.StringData();
+
+                    stringData.Length = data.ReadUInt16(ref offset);
+                    stringData.ValueLength = data.ReadUInt16(ref offset);
+                    stringData.ResourceType = (Models.PortableExecutable.VersionResourceType)data.ReadUInt16(ref offset);
+                    stringData.Key = data.ReadString(ref offset, Encoding.Unicode);
+
+                    // Align to the DWORD boundary if we're not at the end
+                    if (offset != data.Length)
+                    {
+                        while ((offset % 4) != 0)
+                            stringData.Padding = data.ReadByte(ref offset);
+                    }
+
+                    if (stringData.ValueLength > 0)
+                    {
+                        byte[] valueBytes = data.ReadBytes(ref offset, stringData.ValueLength * sizeof(ushort));
+                        stringData.Value = Encoding.Unicode.GetString(valueBytes);
+                    }
+
+                    // Align to the DWORD boundary if we're not at the end
+                    if (offset != data.Length)
+                    {
+                        while ((offset % 4) != 0)
+                            _ = data.ReadByte(ref offset);
+                    }
+
+                    stringTableChildren.Add(stringData);
+                }
+
+                stringTable.Children = stringTableChildren.ToArray();
+
+                stringFileInfoChildren.Add(stringTable);
+            }
+
+            stringFileInfo.Children = stringFileInfoChildren.ToArray();
+
+            return stringFileInfo;
+        }
+
+        /// <summary>
+        ///  Read byte data as a var file info resource
+        /// </summary>
+        /// <param name="data">Data to parse into a var file info</param>
+        /// <param name="offset">Offset into the byte array</param>
+        /// <returns>A filled var file info resource on success, null on error</returns>
+        private static Models.PortableExecutable.VarFileInfo AsVarFileInfo(byte[] data, ref int offset)
+        {
+            var varFileInfo = new Models.PortableExecutable.VarFileInfo();
+
+            varFileInfo.Length = data.ReadUInt16(ref offset);
+            varFileInfo.ValueLength = data.ReadUInt16(ref offset);
+            varFileInfo.ResourceType = (Models.PortableExecutable.VersionResourceType)data.ReadUInt16(ref offset);
+            varFileInfo.Key = data.ReadString(ref offset, Encoding.Unicode);
+            if (varFileInfo.Key != "VarFileInfo")
+                return null;
+
+            // Align to the DWORD boundary if we're not at the end
+            if (offset != data.Length)
+            {
+                while ((offset % 4) != 0)
+                    varFileInfo.Padding = data.ReadByte(ref offset);
+            }
+
+            var varFileInfoChildren = new List<Models.PortableExecutable.VarData>();
+            while (offset < varFileInfo.Length)
+            {
+                var varData = new Models.PortableExecutable.VarData();
+
+                varData.Length = data.ReadUInt16(ref offset);
+                varData.ValueLength = data.ReadUInt16(ref offset);
+                varData.ResourceType = (Models.PortableExecutable.VersionResourceType)data.ReadUInt16(ref offset);
+                varData.Key = data.ReadString(ref offset, Encoding.Unicode);
+                if (varData.Key != "Translation")
+                    return null;
+
+                // Align to the DWORD boundary if we're not at the end
+                if (offset != data.Length)
+                {
+                    while ((offset % 4) != 0)
+                        varData.Padding = data.ReadByte(ref offset);
+                }
+
+                var varDataValue = new List<uint>();
+                while (offset < (varData.ValueLength * sizeof(ushort)))
+                {
+                    uint languageAndCodeIdentifierPair = data.ReadUInt32(ref offset);
+                    varDataValue.Add(languageAndCodeIdentifierPair);
+                }
+
+                varData.Value = varDataValue.ToArray();
+
+                varFileInfoChildren.Add(varData);
+            }
+
+            varFileInfo.Children = varFileInfoChildren.ToArray();
+
+            return varFileInfo;
         }
 
         #endregion
