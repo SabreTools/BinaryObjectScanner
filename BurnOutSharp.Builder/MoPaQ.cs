@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using BurnOutSharp.Models.MoPaQ;
@@ -290,6 +291,8 @@ namespace BurnOutSharp.Builder
                         var hashEntry = ParseHashEntry(data, ref hashTableOffset);
                         if (hashEntry == null)
                             return null;
+
+                        hashTable.Add(hashEntry);
                     }
 
                     archive.HashTable = hashTable.ToArray();
@@ -314,6 +317,8 @@ namespace BurnOutSharp.Builder
                         var hashEntry = ParseHashEntry(data, ref hashTableOffset);
                         if (hashEntry == null)
                             return null;
+
+                        hashTable.Add(hashEntry);
                     }
 
                     archive.HashTable = hashTable.ToArray();
@@ -338,6 +343,8 @@ namespace BurnOutSharp.Builder
                         var hashEntry = ParseHashEntry(data, ref hashTableOffset);
                         if (hashEntry == null)
                             return null;
+
+                        hashTable.Add(hashEntry);
                     }
 
                     archive.HashTable = hashTable.ToArray();
@@ -366,6 +373,8 @@ namespace BurnOutSharp.Builder
                         var blockEntry = ParseBlockEntry(data, ref blockTableOffset);
                         if (blockEntry == null)
                             return null;
+
+                        blockTable.Add(blockEntry);
                     }
 
                     archive.BlockTable = blockTable.ToArray();
@@ -390,6 +399,8 @@ namespace BurnOutSharp.Builder
                         var blockEntry = ParseBlockEntry(data, ref blockTableOffset);
                         if (blockEntry == null)
                             return null;
+
+                        blockTable.Add(blockEntry);
                     }
 
                     archive.BlockTable = blockTable.ToArray();
@@ -414,6 +425,8 @@ namespace BurnOutSharp.Builder
                         var blockEntry = ParseBlockEntry(data, ref blockTableOffset);
                         if (blockEntry == null)
                             return null;
+
+                        blockTable.Add(blockEntry);
                     }
 
                     archive.BlockTable = blockTable.ToArray();
@@ -424,9 +437,26 @@ namespace BurnOutSharp.Builder
 
             #region Hi-Block Table
 
-            if (archive.ArchiveHeader.HiBlockTablePosition != 0)
+            // Version 2, 3, and 4
+            if (archive.ArchiveHeader.FormatVersion == 1
+                || archive.ArchiveHeader.FormatVersion == 2
+                || archive.ArchiveHeader.FormatVersion == 3)
             {
-                // TODO: Read in Hi-Block Table
+                // If we have a hi-block table
+                int hiBlockTableOffset = (int)archive.ArchiveHeader.HiBlockTablePosition;
+                if (hiBlockTableOffset != 0)
+                {
+                    // Read in the hi-block table
+                    var hiBlockTable = new List<short>();
+
+                    for (int i = 0; i < archive.BlockTable.Length; i++)
+                    {
+                        short hiBlockEntry = data.ReadInt16(ref hiBlockTableOffset);
+                        hiBlockTable.Add(hiBlockEntry);
+                    }
+
+                    archive.HiBlockTable = hiBlockTable.ToArray();
+                }
             }
 
             #endregion
@@ -764,6 +794,9 @@ namespace BurnOutSharp.Builder
                 long hashTableOffset = archive.ArchiveHeader.HashTablePosition;
                 if (hashTableOffset != 0)
                 {
+                    // Seek to the offset
+                    data.Seek(hashTableOffset, SeekOrigin.Begin);
+
                     // Find the ending offset based on size
                     long hashTableEnd = hashTableOffset + archive.ArchiveHeader.HashTableSize;
 
@@ -775,6 +808,8 @@ namespace BurnOutSharp.Builder
                         var hashEntry = ParseHashEntry(data);
                         if (hashEntry == null)
                             return null;
+
+                        hashTable.Add(hashEntry);
                     }
 
                     archive.HashTable = hashTable.ToArray();
@@ -788,6 +823,9 @@ namespace BurnOutSharp.Builder
                 long hashTableOffset = ((uint)archive.ArchiveHeader.HashTablePositionHi << 23) | archive.ArchiveHeader.HashTablePosition;
                 if (hashTableOffset != 0)
                 {
+                    // Seek to the offset
+                    data.Seek(hashTableOffset, SeekOrigin.Begin);
+
                     // Find the ending offset based on size
                     long hashTableEnd = hashTableOffset + archive.ArchiveHeader.HashTableSize;
 
@@ -799,6 +837,8 @@ namespace BurnOutSharp.Builder
                         var hashEntry = ParseHashEntry(data);
                         if (hashEntry == null)
                             return null;
+
+                        hashTable.Add(hashEntry);
                     }
 
                     archive.HashTable = hashTable.ToArray();
@@ -812,6 +852,9 @@ namespace BurnOutSharp.Builder
                 long hashTableOffset = ((uint)archive.ArchiveHeader.HashTablePositionHi << 23) | archive.ArchiveHeader.HashTablePosition;
                 if (hashTableOffset != 0)
                 {
+                    // Seek to the offset
+                    data.Seek(hashTableOffset, SeekOrigin.Begin);
+
                     // Find the ending offset based on size
                     long hashTableEnd = hashTableOffset + (long)archive.ArchiveHeader.HashTableSizeLong;
 
@@ -823,6 +866,8 @@ namespace BurnOutSharp.Builder
                         var hashEntry = ParseHashEntry(data);
                         if (hashEntry == null)
                             return null;
+
+                        hashTable.Add(hashEntry);
                     }
 
                     archive.HashTable = hashTable.ToArray();
@@ -840,6 +885,9 @@ namespace BurnOutSharp.Builder
                 long blockTableOffset = archive.ArchiveHeader.BlockTablePosition;
                 if (blockTableOffset != 0)
                 {
+                    // Seek to the offset
+                    data.Seek(blockTableOffset, SeekOrigin.Begin);
+
                     // Find the ending offset based on size
                     long blockTableEnd = blockTableOffset + archive.ArchiveHeader.BlockTableSize;
 
@@ -851,6 +899,8 @@ namespace BurnOutSharp.Builder
                         var blockEntry = ParseBlockEntry(data);
                         if (blockEntry == null)
                             return null;
+
+                        blockTable.Add(blockEntry);
                     }
 
                     archive.BlockTable = blockTable.ToArray();
@@ -864,6 +914,9 @@ namespace BurnOutSharp.Builder
                 long blockTableOffset = ((uint)archive.ArchiveHeader.BlockTablePositionHi << 23) | archive.ArchiveHeader.BlockTablePosition;
                 if (blockTableOffset != 0)
                 {
+                    // Seek to the offset
+                    data.Seek(blockTableOffset, SeekOrigin.Begin);
+
                     // Find the ending offset based on size
                     long blockTableEnd = blockTableOffset + archive.ArchiveHeader.BlockTableSize;
 
@@ -875,6 +928,8 @@ namespace BurnOutSharp.Builder
                         var blockEntry = ParseBlockEntry(data);
                         if (blockEntry == null)
                             return null;
+
+                        blockTable.Add(blockEntry);
                     }
 
                     archive.BlockTable = blockTable.ToArray();
@@ -888,6 +943,9 @@ namespace BurnOutSharp.Builder
                 long blockTableOffset = ((uint)archive.ArchiveHeader.BlockTablePositionHi << 23) | archive.ArchiveHeader.BlockTablePosition;
                 if (blockTableOffset != 0)
                 {
+                    // Seek to the offset
+                    data.Seek(blockTableOffset, SeekOrigin.Begin);
+
                     // Find the ending offset based on size
                     long blockTableEnd = blockTableOffset + (long)archive.ArchiveHeader.BlockTableSizeLong;
 
@@ -899,6 +957,8 @@ namespace BurnOutSharp.Builder
                         var blockEntry = ParseBlockEntry(data);
                         if (blockEntry == null)
                             return null;
+
+                        blockTable.Add(blockEntry);
                     }
 
                     archive.BlockTable = blockTable.ToArray();
@@ -909,9 +969,29 @@ namespace BurnOutSharp.Builder
 
             #region Hi-Block Table
 
-            if (archive.ArchiveHeader.HiBlockTablePosition != 0)
+            // Version 2, 3, and 4
+            if (archive.ArchiveHeader.FormatVersion == 1
+                || archive.ArchiveHeader.FormatVersion == 2
+                || archive.ArchiveHeader.FormatVersion == 3)
             {
-                // TODO: Read in Hi-Block Table
+                // If we have a hi-block table
+                long hiBlockTableOffset = (long)archive.ArchiveHeader.HiBlockTablePosition;
+                if (hiBlockTableOffset != 0)
+                {
+                    // Seek to the offset
+                    data.Seek(hiBlockTableOffset, SeekOrigin.Begin);
+
+                    // Read in the hi-block table
+                    var hiBlockTable = new List<short>();
+
+                    for (int i = 0; i < archive.BlockTable.Length; i++)
+                    {
+                        short hiBlockEntry = data.ReadInt16();
+                        hiBlockTable.Add(hiBlockEntry);
+                    }
+
+                    archive.HiBlockTable = hiBlockTable.ToArray();
+                }
             }
 
             #endregion
