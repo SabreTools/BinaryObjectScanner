@@ -292,6 +292,25 @@ namespace Test
                     }
                 }
 
+                // BFPK archive
+                else if (IsBFPK(magic))
+                {
+                    // Build the BFPK information
+                    Console.WriteLine("Creating BFPK deserializer");
+                    Console.WriteLine();
+
+                    var bfpk = BFPK.Create(stream);
+                    if (bfpk == null)
+                    {
+                        Console.WriteLine("Something went wrong parsing BFPK archive");
+                        Console.WriteLine();
+                        return;
+                    }
+
+                    // Print the BFPK info to screen
+                    bfpk.Print();
+                }
+
                 // MoPaQ (MPQ) archive
                 else if (IsMoPaQ(magic))
                 {
@@ -332,6 +351,17 @@ namespace Test
                     return;
                 }
             }
+        }
+
+        /// <summary>
+        /// Determine if the magic bytes indicate an BFPK archive
+        /// </summary>
+        private static bool IsBFPK(byte[] magic)
+        {
+            if (magic == null || magic.Length < 4)
+                return false;
+
+            return magic[0] == 'B' && magic[1] == 'F' && magic[2] == 'P' && magic[3] == 'K';
         }
 
         /// <summary>
