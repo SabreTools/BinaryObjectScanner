@@ -578,6 +578,31 @@ namespace BurnOutSharp.Wrappers
         }
 
         /// <summary>
+        /// Dictionary of debug data
+        /// </summary>
+        public Dictionary<int, byte[]> DebugData
+        {
+            get
+            {
+                lock (_sourceDataLock)
+                {
+                    // Use the cached data if possible
+                    if (_debugData != null && _debugData.Count != 0)
+                        return _debugData;
+
+                    // If we have no resource table, just return
+                    if (DebugTable?.DebugDirectoryTable == null
+                        || DebugTable.DebugDirectoryTable.Length == 0)
+                        return null;
+
+                    // Otherwise, build and return the cached dictionary
+                    ParseDebugTable();
+                    return _debugData;
+                }
+            }
+        }
+
+        /// <summary>
         /// Dictionary of resource data
         /// </summary>
         public Dictionary<string, object> ResourceData
@@ -592,12 +617,12 @@ namespace BurnOutSharp.Wrappers
 
                     // If we have no resource table, just return
                     if (OH_ResourceTable == null
-                        || _executable.OptionalHeader.ResourceTable.VirtualAddress == 0
-                        || _executable.ResourceDirectoryTable == null)
+                        || OH_ResourceTable.VirtualAddress == 0
+                        || ResourceDirectoryTable == null)
                         return null;
 
                     // Otherwise, build and return the cached dictionary
-                    ParseResourceDirectoryTable(_executable.ResourceDirectoryTable, types: new List<object>());
+                    ParseResourceDirectoryTable(ResourceDirectoryTable, types: new List<object>());
                     return _resourceData;
                 }
             }
@@ -806,6 +831,11 @@ namespace BurnOutSharp.Wrappers
         /// Cached found string data in tables
         /// </summary>
         private List<string>[] _tableStringData = null;
+
+        /// <summary>
+        /// Cached debug data
+        /// </summary>
+        private readonly Dictionary<int, byte[]> _debugData = new Dictionary<int, byte[]>();
 
         /// <summary>
         /// Cached resource data
@@ -2768,6 +2798,75 @@ namespace BurnOutSharp.Wrappers
                 //    Console.WriteLine($"{padding}Value (UTF-8): {Encoding.UTF8.GetString(entry.Data)}");
                 //if (entry.Data != null)
                 //    Console.WriteLine($"{padding}Value (Unicode): {Encoding.Unicode.GetString(entry.Data)}");
+            }
+        }
+
+        #endregion
+
+        #region Debug Data
+
+        /// <summary>
+        /// Find unparsed debug data by string value
+        /// </summary>
+        /// <param name="value">String value to check for</param>
+        /// <returns>Enumerable of matching debug data</returns>
+        public IEnumerable<byte[]> FindDebugTableByValue(string value)
+        {
+            // Ensure that we have the resource data cached
+            if (DebugData == null)
+                return Enumerable.Empty<byte[]>();
+
+            return DebugData.Select(r => r.Value)
+                .Where(b => b != null)
+                .Where(b =>
+                {
+                    try
+                    {
+                        string arrayAsASCII = Encoding.ASCII.GetString(b);
+                        if (arrayAsASCII.Contains(value))
+                            return true;
+                    }
+                    catch { }
+
+                    try
+                    {
+                        string arrayAsUTF8 = Encoding.UTF8.GetString(b);
+                        if (arrayAsUTF8.Contains(value))
+                            return true;
+                    }
+                    catch { }
+
+                    try
+                    {
+                        string arrayAsUnicode = Encoding.Unicode.GetString(b);
+                        if (arrayAsUnicode.Contains(value))
+                            return true;
+                    }
+                    catch { }
+
+                    return false;
+                });
+        }
+
+        #endregion
+
+        #region Debug Parsing
+
+        /// <summary>
+        /// Parse the debug directory table information
+        /// </summary>
+        private void ParseDebugTable()
+        {
+            // Loop through all debug table entries
+            for (int i = 0; i < DebugTable.DebugDirectoryTable.Length; i++)
+            {
+                var entry = DebugTable.DebugDirectoryTable[i];
+
+                uint address = entry.PointerToRawData;
+                uint size = entry.SizeOfData;
+
+                byte[] entryData = ReadFromDataSource((int)address, (int)size);
+                _debugData[i] = entryData;
             }
         }
 
