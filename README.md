@@ -58,6 +58,7 @@ Below is a list of protections detected by BurnOutSharp. The two columns explain
 | Executable-Based Online Registration | True | False | Possibly too broad |
 | Freelock | False | True | |
 | Games for Windows - Live | True | True | |
+| Gefest Protection System | True | False | |
 | Hexalock AutoLock | True | True | |
 | Impulse Reactor / Stardock Product Activation | True | True | |
 | IndyVCD | False | True | Unconfirmed¹ |
