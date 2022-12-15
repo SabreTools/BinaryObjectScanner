@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Text;
 using System.Xml;
 using static BurnOutSharp.Builder.Extensions;
@@ -580,7 +579,7 @@ namespace BurnOutSharp.Wrappers
         /// <summary>
         /// Dictionary of debug data
         /// </summary>
-        public Dictionary<int, byte[]> DebugData
+        public Dictionary<int, object> DebugData
         {
             get
             {
@@ -835,7 +834,7 @@ namespace BurnOutSharp.Wrappers
         /// <summary>
         /// Cached debug data
         /// </summary>
-        private readonly Dictionary<int, byte[]> _debugData = new Dictionary<int, byte[]>();
+        private readonly Dictionary<int, object> _debugData = new Dictionary<int, object>();
 
         /// <summary>
         /// Cached resource data
@@ -2806,17 +2805,41 @@ namespace BurnOutSharp.Wrappers
         #region Debug Data
 
         /// <summary>
+        /// Find CodeView debug data by path
+        /// </summary>
+        /// <param name="path">Partial path to check for</param>
+        /// <returns>Enumerable of matching debug data</returns>
+        public IEnumerable<object> FindCodeViewDebugTableByPath(string path)
+        {
+            // Ensure that we have the debug data cached
+            if (DebugData == null)
+                return Enumerable.Empty<object>();
+
+            return DebugData.Select(r => r.Value)
+                .Select(r => r as Models.PortableExecutable.NB10ProgramDatabase)
+                .Where(n => n != null)
+                .Where(n => n.PdbFileName.Contains("path"))
+                .Select(n => (object)n)
+                .Concat(DebugData.Select(r => r.Value)
+                    .Select(r => r as Models.PortableExecutable.RSDSProgramDatabase)
+                    .Where(r => r != null)
+                    .Where(r => r.PathAndFileName.Contains("path"))
+                    .Select(r => (object)r));
+        }
+
+        /// <summary>
         /// Find unparsed debug data by string value
         /// </summary>
         /// <param name="value">String value to check for</param>
         /// <returns>Enumerable of matching debug data</returns>
-        public IEnumerable<byte[]> FindDebugTableByValue(string value)
+        public IEnumerable<byte[]> FindGenericDebugTableByValue(string value)
         {
             // Ensure that we have the resource data cached
             if (DebugData == null)
                 return Enumerable.Empty<byte[]>();
 
             return DebugData.Select(r => r.Value)
+                .Select(b => b as byte[])
                 .Where(b => b != null)
                 .Where(b =>
                 {
@@ -2866,7 +2889,43 @@ namespace BurnOutSharp.Wrappers
                 uint size = entry.SizeOfData;
 
                 byte[] entryData = ReadFromDataSource((int)address, (int)size);
-                _debugData[i] = entryData;
+                
+                // If we have CodeView debug data, try to parse it
+                if (entry.DebugType == Models.PortableExecutable.DebugType.IMAGE_DEBUG_TYPE_CODEVIEW)
+                {
+                    // Read the signature
+                    int offset = 0;
+                    uint signature = entryData.ReadUInt32(ref offset);
+
+                    // Reset the offset
+                    offset = 0;
+
+                    // NB10
+                    if (signature == 0x3031424E)
+                    {
+                        var nb10ProgramDatabase = entryData.AsNB10ProgramDatabase(ref offset);
+                        if (nb10ProgramDatabase != null)
+                        {
+                            _debugData[i] = nb10ProgramDatabase;
+                            continue;
+                        }
+                    }
+
+                    // RSDS
+                    else if (signature == 0x53445352)
+                    {
+                        var rsdsProgramDatabase = entryData.AsRSDSProgramDatabase(ref offset);
+                        if (rsdsProgramDatabase != null)
+                        {
+                            _debugData[i] = rsdsProgramDatabase;
+                            continue;
+                        }
+                    }
+                }
+                else
+                {
+                    _debugData[i] = entryData;
+                }
             }
         }
 
