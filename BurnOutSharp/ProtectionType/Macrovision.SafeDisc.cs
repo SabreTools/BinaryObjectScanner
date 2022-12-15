@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using BurnOutSharp.Matching;
 using BurnOutSharp.Tools;
 using BurnOutSharp.Wrappers;
@@ -43,7 +44,7 @@ namespace BurnOutSharp.ProtectionType
             // Present on all "CLOKSPL.DLL" versions before SafeDisc 1.06.000. Found on Redump entries 61731 and 66004. 
             name = pex.ProductName;
             if (name?.Equals("SafeDisc CDROM Protection System", StringComparison.OrdinalIgnoreCase) == true)
-                return $"SafeDisc 1.00.025-1.01.044";
+                return "SafeDisc 1.00.025-1.01.044";
 
             // Get the stxt371 and stxt774 sections, if they exist -- TODO: Confirm if both are needed or either/or is fine
             bool stxt371Section = pex.ContainsSection("stxt371", exact: true);
@@ -55,7 +56,12 @@ namespace BurnOutSharp.ProtectionType
             // Only found so far on SafeDisc 1.00.025-1.01.044, but the report is currently left generic due to the generic nature of the check.
             name = pex.FileDescription;
             if (name?.Equals("SafeDisc", StringComparison.OrdinalIgnoreCase) == true)
-                return $"SafeDisc";
+                return "SafeDisc";
+
+            // Found in Redump entries 20729 and 65569.
+            // Get the debug data
+            if (pex.FindDebugTableByValue("SafeDisc").Any() || pex.FindDebugTableByValue("SafeDisk").Any())
+                return "SafeDisc";
 
             // TODO: Add entry point check
             // https://github.com/horsicq/Detect-It-Easy/blob/master/db/PE/Safedisc.2.sg
