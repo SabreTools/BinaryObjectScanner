@@ -301,18 +301,9 @@ namespace BurnOutSharp.Wrappers
         /// <returns>An LE/LX executable wrapper on success, null on failure</returns>
         public static LinearExecutable Create(byte[] data, int offset)
         {
-            var executable = Builder.LinearExecutable.ParseExecutable(data, offset);
-            if (executable == null)
-                return null;
-
-            var wrapper = new LinearExecutable
-            {
-                _executable = executable,
-                _dataSource = DataSource.ByteArray,
-                _byteArrayData = data,
-                _byteArrayOffset = offset,
-            };
-            return wrapper;
+            MemoryStream dataStream = new MemoryStream(data);
+            dataStream.Position = offset;
+            return Create(dataStream);
         }
 
         /// <summary>

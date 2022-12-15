@@ -55,18 +55,9 @@ namespace BurnOutSharp.Wrappers
         /// <returns>A BFPK archive wrapper on success, null on failure</returns>
         public static BFPK Create(byte[] data, int offset)
         {
-            var archive = Builder.BFPK.ParseArchive(data, offset);
-            if (archive == null)
-                return null;
-
-            var wrapper = new BFPK
-            {
-                _archive = archive,
-                _dataSource = DataSource.ByteArray,
-                _byteArrayData = data,
-                _byteArrayOffset = offset,
-            };
-            return wrapper;
+            MemoryStream dataStream = new MemoryStream(data);
+            dataStream.Position = offset;
+            return Create(dataStream);
         }
 
         /// <summary>

@@ -871,18 +871,9 @@ namespace BurnOutSharp.Wrappers
         /// <returns>A PE executable wrapper on success, null on failure</returns>
         public static PortableExecutable Create(byte[] data, int offset)
         {
-            var executable = Builder.PortableExecutable.ParseExecutable(data, offset);
-            if (executable == null)
-                return null;
-
-            var wrapper = new PortableExecutable
-            {
-                _executable = executable,
-                _dataSource = DataSource.ByteArray,
-                _byteArrayData = data,
-                _byteArrayOffset = offset,
-            };
-            return wrapper;
+            MemoryStream dataStream = new MemoryStream(data);
+            dataStream.Position = offset;
+            return Create(dataStream);
         }
 
         /// <summary>

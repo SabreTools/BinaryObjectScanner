@@ -233,18 +233,9 @@ namespace BurnOutSharp.Wrappers
         /// <returns>An NE executable wrapper on success, null on failure</returns>
         public static NewExecutable Create(byte[] data, int offset)
         {
-            var executable = Builder.NewExecutable.ParseExecutable(data, offset);
-            if (executable == null)
-                return null;
-
-            var wrapper = new NewExecutable
-            {
-                _executable = executable,
-                _dataSource = DataSource.ByteArray,
-                _byteArrayData = data,
-                _byteArrayOffset = offset,
-            };
-            return wrapper;
+            MemoryStream dataStream = new MemoryStream(data);
+            dataStream.Position = offset;
+            return Create(dataStream);
         }
 
         /// <summary>

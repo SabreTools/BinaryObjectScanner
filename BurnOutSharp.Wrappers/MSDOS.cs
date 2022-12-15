@@ -105,18 +105,9 @@ namespace BurnOutSharp.Wrappers
         /// <returns>An MS-DOS executable wrapper on success, null on failure</returns>
         public static MSDOS Create(byte[] data, int offset)
         {
-            var executable = Builder.MSDOS.ParseExecutable(data, offset);
-            if (executable == null)
-                return null;
-
-            var wrapper = new MSDOS
-            {
-                _executable = executable,
-                _dataSource = DataSource.ByteArray,
-                _byteArrayData = data,
-                _byteArrayOffset = offset,
-            };
-            return wrapper;
+            MemoryStream dataStream = new MemoryStream(data);
+            dataStream.Position = offset;
+            return Create(dataStream);
         }
 
         /// <summary>

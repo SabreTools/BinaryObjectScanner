@@ -116,18 +116,9 @@ namespace BurnOutSharp.Wrappers
         /// <returns>A cabinet wrapper on success, null on failure</returns>
         public static MicrosoftCabinet Create(byte[] data, int offset)
         {
-            var cabinet = Builder.MicrosoftCabinet.ParseCabinet(data, offset);
-            if (cabinet == null)
-                return null;
-
-            var wrapper = new MicrosoftCabinet
-            {
-                _cabinet = cabinet,
-                _dataSource = DataSource.ByteArray,
-                _byteArrayData = data,
-                _byteArrayOffset = offset,
-            };
-            return wrapper;
+            MemoryStream dataStream = new MemoryStream(data);
+            dataStream.Position = offset;
+            return Create(dataStream);
         }
 
         /// <summary>
