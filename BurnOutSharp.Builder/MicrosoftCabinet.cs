@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using BurnOutSharp.Models.MicrosoftCabinet;
 using BurnOutSharp.Utilities;
@@ -234,6 +235,8 @@ namespace BurnOutSharp.Builder
             if (folder.CabStartOffset > 0)
             {
                 int blockPtr = initialOffset + (int)folder.CabStartOffset;
+
+                folder.DataBlocks = new Dictionary<int, CFDATA>();
                 for (int i = 0; i < folder.DataCount; i++)
                 {
                     int dataStart = blockPtr;
@@ -481,6 +484,7 @@ namespace BurnOutSharp.Builder
                 long currentPosition = data.Position;
                 data.Seek(folder.CabStartOffset, SeekOrigin.Begin);
 
+                folder.DataBlocks = new Dictionary<int, CFDATA>();
                 for (int i = 0; i < folder.DataCount; i++)
                 {
                     CFDATA dataBlock = ParseDataBlock(data, header.DataReservedSize);

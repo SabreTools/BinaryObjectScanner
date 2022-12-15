@@ -297,7 +297,10 @@ namespace BurnOutSharp.Wrappers
                 Console.WriteLine($"  Header reserved size: {HeaderReservedSize}");
                 Console.WriteLine($"  Folder reserved size: {FolderReservedSize}");
                 Console.WriteLine($"  Data reserved size: {DataReservedSize}");
-                Console.WriteLine($"  Reserved data = {BitConverter.ToString(ReservedData).Replace("-", " ")}");
+                if (ReservedData == null)
+                    Console.WriteLine($"  Reserved data = [NULL]");
+                else
+                    Console.WriteLine($"  Reserved data = {BitConverter.ToString(ReservedData).Replace("-", " ")}");
             }
 
             if (Flags.HasFlag(Models.MicrosoftCabinet.HeaderFlags.PREV_CABINET))
@@ -335,8 +338,12 @@ namespace BurnOutSharp.Wrappers
                     Console.WriteLine($"    Cab start offset = {entry.CabStartOffset}");
                     Console.WriteLine($"    Data count = {entry.DataCount}");
                     Console.WriteLine($"    Compression type = {entry.CompressionType}");
-                    Console.WriteLine($"    Reserved data = {BitConverter.ToString(entry.ReservedData).Replace("-", " ")}");
+                    if (entry.ReservedData == null)
+                        Console.WriteLine($"    Reserved data = [NULL]");
+                    else
+                        Console.WriteLine($"    Reserved data = {BitConverter.ToString(entry.ReservedData).Replace("-", " ")}");
                     Console.WriteLine();
+
                     Console.WriteLine("    Data Blocks");
                     Console.WriteLine("    -------------------------");
                     if (entry.DataBlocks == null || entry.DataBlocks.Count == 0)
@@ -351,7 +358,10 @@ namespace BurnOutSharp.Wrappers
                             Console.WriteLine($"      Checksum = {block.Value.Checksum}");
                             Console.WriteLine($"      Compressed size = {block.Value.CompressedSize}");
                             Console.WriteLine($"      Uncompressed size = {block.Value.UncompressedSize}");
-                            Console.WriteLine($"      Reserved data = {BitConverter.ToString(block.Value.ReservedData).Replace("-", " ")}");
+                            if (block.Value.ReservedData == null)
+                                Console.WriteLine($"      Reserved data = [NULL]");
+                            else
+                                Console.WriteLine($"      Reserved data = {BitConverter.ToString(block.Value.ReservedData).Replace("-", " ")}");
                             //Console.WriteLine($"      Compressed data = {BitConverter.ToString(block.Value.CompressedData).Replace("-", " ")}");
                         }
                     }
