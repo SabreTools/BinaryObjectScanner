@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Xml;
 using static BurnOutSharp.Builder.Extensions;
@@ -613,7 +614,7 @@ namespace BurnOutSharp.Wrappers
         /// "Build signature"
         /// </summary>
         public string BuildSignature => GetVersionInfoString("BuildSignature");
-        
+
         /// <summary>
         /// Additional information that should be displayed for diagnostic purposes.
         /// </summary>
@@ -795,6 +796,16 @@ namespace BurnOutSharp.Wrappers
         /// Cached found string data in sections
         /// </summary>
         private List<string>[] _sectionStringData = null;
+
+        /// <summary>
+        /// Cached raw table data
+        /// </summary>
+        private byte[][] _tableData = null;
+
+        /// <summary>
+        /// Cached found string data in tables
+        /// </summary>
+        private List<string>[] _tableStringData = null;
 
         /// <summary>
         /// Cached resource data
@@ -3298,6 +3309,220 @@ namespace BurnOutSharp.Wrappers
                 // Cache and return the section string data, even if null
                 _sectionStringData[index] = sectionStringData;
                 return sectionStringData;
+            }
+        }
+
+        #endregion
+
+        #region Tables
+
+        /// <summary>
+        /// Get the table data based on index, if possible
+        /// </summary>
+        /// <param name="index">Index of the table to check for</param>
+        /// <returns>Table data on success, null on error</returns>
+        public byte[] GetTableData(int index)
+        {
+            // If the table doesn't exist
+            if (index < 0 || index > 16)
+                return null;
+
+            // Get the virtual address and size from the entries
+            uint virtualAddress = 0, size = 0;
+            switch (index)
+            {
+                case 1:
+                    virtualAddress = OH_ExportTable.VirtualAddress;
+                    size = OH_ExportTable.Size;
+                    break;
+                case 2:
+                    virtualAddress = OH_ImportTable.VirtualAddress;
+                    size = OH_ImportTable.Size;
+                    break;
+                case 3:
+                    virtualAddress = OH_ResourceTable.VirtualAddress;
+                    size = OH_ResourceTable.Size;
+                    break;
+                case 4:
+                    virtualAddress = OH_ExceptionTable.VirtualAddress;
+                    size = OH_ExceptionTable.Size;
+                    break;
+                case 5:
+                    virtualAddress = OH_CertificateTable.VirtualAddress;
+                    size = OH_CertificateTable.Size;
+                    break;
+                case 6:
+                    virtualAddress = OH_BaseRelocationTable.VirtualAddress;
+                    size = OH_BaseRelocationTable.Size;
+                    break;
+                case 7:
+                    virtualAddress = OH_Debug.VirtualAddress;
+                    size = OH_Debug.Size;
+                    break;
+                case 8: // Architecture Table
+                    virtualAddress = 0;
+                    size = 0;
+                    break; 
+                case 9:
+                    virtualAddress = OH_GlobalPtr.VirtualAddress;
+                    size = OH_GlobalPtr.Size;
+                    break;
+                case 10:
+                    virtualAddress = OH_ThreadLocalStorageTable.VirtualAddress;
+                    size = OH_ThreadLocalStorageTable.Size;
+                    break;
+                case 11:
+                    virtualAddress = OH_LoadConfigTable.VirtualAddress;
+                    size = OH_LoadConfigTable.Size;
+                    break;
+                case 12:
+                    virtualAddress = OH_BoundImport.VirtualAddress;
+                    size = OH_BoundImport.Size;
+                    break;
+                case 13:
+                    virtualAddress = OH_ImportAddressTable.VirtualAddress;
+                    size = OH_ImportAddressTable.Size;
+                    break;
+                case 14:
+                    virtualAddress = OH_DelayImportDescriptor.VirtualAddress;
+                    size = OH_DelayImportDescriptor.Size;
+                    break;
+                case 15:
+                    virtualAddress = OH_CLRRuntimeHeader.VirtualAddress;
+                    size = OH_CLRRuntimeHeader.Size;
+                    break;
+                case 16: // Reserved
+                    virtualAddress = 0;
+                    size = 0;
+                    break;
+            }
+
+            // Get the physical address from the virtual one
+            uint address = virtualAddress.ConvertVirtualAddress(SectionTable);
+            if (address == 0 || size == 0)
+                return null;
+
+            lock(_sourceDataLock)
+            {
+                // Create the table data array if we have to
+                if (_tableData == null)
+                    _tableData = new byte[16][];
+
+                // If we already have cached data, just use that immediately
+                if (_tableData[index] != null)
+                    return _tableData[index];
+
+                // Populate the raw table data based on the source
+                byte[] tableData = ReadFromDataSource((int)address, (int)size);
+
+                // Cache and return the table data, even if null
+                _tableData[index] = tableData;
+                return tableData;
+            }
+        }
+
+        /// <summary>
+        /// Get the table strings based on index, if possible
+        /// </summary>
+        /// <param name="index">Index of the table to check for</param>
+        /// <returns>Table strings on success, null on error</returns>
+        public List<string> GetTableStrings(int index)
+        {
+            // If the table doesn't exist
+            if (index < 0 || index > 16)
+                return null;
+
+            // Get the virtual address and size from the entries
+            uint virtualAddress = 0, size = 0;
+            switch (index)
+            {
+                case 1:
+                    virtualAddress = OH_ExportTable.VirtualAddress;
+                    size = OH_ExportTable.Size;
+                    break;
+                case 2:
+                    virtualAddress = OH_ImportTable.VirtualAddress;
+                    size = OH_ImportTable.Size;
+                    break;
+                case 3:
+                    virtualAddress = OH_ResourceTable.VirtualAddress;
+                    size = OH_ResourceTable.Size;
+                    break;
+                case 4:
+                    virtualAddress = OH_ExceptionTable.VirtualAddress;
+                    size = OH_ExceptionTable.Size;
+                    break;
+                case 5:
+                    virtualAddress = OH_CertificateTable.VirtualAddress;
+                    size = OH_CertificateTable.Size;
+                    break;
+                case 6:
+                    virtualAddress = OH_BaseRelocationTable.VirtualAddress;
+                    size = OH_BaseRelocationTable.Size;
+                    break;
+                case 7:
+                    virtualAddress = OH_Debug.VirtualAddress;
+                    size = OH_Debug.Size;
+                    break;
+                case 8: // Architecture Table
+                    virtualAddress = 0;
+                    size = 0;
+                    break;
+                case 9:
+                    virtualAddress = OH_GlobalPtr.VirtualAddress;
+                    size = OH_GlobalPtr.Size;
+                    break;
+                case 10:
+                    virtualAddress = OH_ThreadLocalStorageTable.VirtualAddress;
+                    size = OH_ThreadLocalStorageTable.Size;
+                    break;
+                case 11:
+                    virtualAddress = OH_LoadConfigTable.VirtualAddress;
+                    size = OH_LoadConfigTable.Size;
+                    break;
+                case 12:
+                    virtualAddress = OH_BoundImport.VirtualAddress;
+                    size = OH_BoundImport.Size;
+                    break;
+                case 13:
+                    virtualAddress = OH_ImportAddressTable.VirtualAddress;
+                    size = OH_ImportAddressTable.Size;
+                    break;
+                case 14:
+                    virtualAddress = OH_DelayImportDescriptor.VirtualAddress;
+                    size = OH_DelayImportDescriptor.Size;
+                    break;
+                case 15:
+                    virtualAddress = OH_CLRRuntimeHeader.VirtualAddress;
+                    size = OH_CLRRuntimeHeader.Size;
+                    break;
+                case 16: // Reserved
+                    virtualAddress = 0;
+                    size = 0;
+                    break;
+            }
+
+            // Get the physical address from the virtual one
+            uint address = virtualAddress.ConvertVirtualAddress(SectionTable);
+            if (address == 0 || size == 0)
+                return null;
+
+            lock (_sourceDataLock)
+            {
+                // Create the table string array if we have to
+                if (_tableStringData == null)
+                    _tableStringData = new List<string>[16];
+
+                // If we already have cached data, just use that immediately
+                if (_tableStringData[index] != null)
+                    return _tableStringData[index];
+
+                // Populate the table string data based on the source
+                List<string> tableStringData = ReadStringsFromDataSource((int)address, (int)size);
+
+                // Cache and return the table string data, even if null
+                _tableStringData[index] = tableStringData;
+                return tableStringData;
             }
         }
 
