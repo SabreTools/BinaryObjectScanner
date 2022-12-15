@@ -278,6 +278,9 @@ namespace BurnOutSharp.Tools
             if (magic.StartsWith(new byte?[] { 0x4d, 0x50, 0x51, 0x1a }))
                 return SupportedFileType.MPQ;
 
+            if (magic.StartsWith(new byte?[] { 0x4d, 0x50, 0x51, 0x1b }))
+                return SupportedFileType.MPQ;
+
             #endregion
 
             #region MSI

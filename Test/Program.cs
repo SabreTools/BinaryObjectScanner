@@ -292,6 +292,19 @@ namespace Test
                     }
                 }
 
+                // MoPaQ (MPQ) archive
+                else if (IsMoPaQ(magic))
+                {
+                    // Build the archive information
+                    Console.WriteLine("Creating MoPaQ deserializer");
+                    Console.WriteLine();
+
+                    // TODO: Write and use printing methods
+                    Console.WriteLine("MoPaQ archive printing not currently enabled");
+                    Console.WriteLine();
+                    return;
+                }
+
                 // MS-CAB archive
                 else if (IsMSCAB(magic))
                 {
@@ -319,6 +332,17 @@ namespace Test
                     return;
                 }
             }
+        }
+
+        /// <summary>
+        /// Determine if the magic bytes indicate an MoPaQ archive
+        /// </summary>
+        private static bool IsMoPaQ(byte[] magic)
+        {
+            if (magic == null || magic.Length < 4)
+                return false;
+
+            return magic[0] == 'M' && magic[1] == 'P' && magic[2] == 'Q' && (magic[3] == 0x1A || magic[3] == 0x1B);
         }
 
         /// <summary>
