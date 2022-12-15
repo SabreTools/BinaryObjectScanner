@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.IO;
-using System.Text;
+using System.Linq;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Tools;
 using SharpCompress.Compressors;
@@ -35,74 +35,71 @@ namespace BurnOutSharp.FileType
                 string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
                 Directory.CreateDirectory(tempPath);
 
-                using (BinaryReader br = new BinaryReader(stream, Encoding.Default, true))
+                stream.ReadBytes(4); // Skip magic number
+
+                int version = stream.ReadInt32();
+                int files = stream.ReadInt32();
+                long current = stream.Position;
+
+                for (int i = 0; i < files; i++)
                 {
-                    br.ReadBytes(4); // Skip magic number
+                    stream.Seek(current, SeekOrigin.Begin);
 
-                    int version = br.ReadInt32();
-                    int files = br.ReadInt32();
-                    long current = br.BaseStream.Position;
+                    int nameSize = stream.ReadInt32();
+                    string name = new string(stream.ReadBytes(nameSize).Select(b => (char)b).ToArray());
 
-                    for (int i = 0; i < files; i++)
+                    uint uncompressedSize = stream.ReadUInt32();
+                    int offset = stream.ReadInt32();
+
+                    current = stream.Position;
+
+                    stream.Seek(offset, SeekOrigin.Begin);
+                    uint compressedSize = stream.ReadUInt32();
+
+                    // Some files can lack the length prefix
+                    if (compressedSize > stream.Length)
                     {
-                        br.BaseStream.Seek(current, SeekOrigin.Begin);
-
-                        int nameSize = br.ReadInt32();
-                        string name = new string(br.ReadChars(nameSize));
-
-                        uint uncompressedSize = br.ReadUInt32();
-                        int offset = br.ReadInt32();
-
-                        current = br.BaseStream.Position;
-
-                        br.BaseStream.Seek(offset, SeekOrigin.Begin);
-                        uint compressedSize = br.ReadUInt32();
-
-                        // Some files can lack the length prefix
-                        if (compressedSize > br.BaseStream.Length)
-                        {
-                            br.BaseStream.Seek(-4, SeekOrigin.Current);
-                            compressedSize = uncompressedSize;
-                        }
-
-                        // If an individual entry fails
-                        try
-                        {
-                            string tempFile = Path.Combine(tempPath, name);
-                            if (!Directory.Exists(Path.GetDirectoryName(tempFile)))
-                                Directory.CreateDirectory(Path.GetDirectoryName(tempFile));
-
-                            if (compressedSize == uncompressedSize)
-                            {
-                                using (FileStream fs = File.OpenWrite(tempFile))
-                                {
-                                    fs.Write(br.ReadBytes((int)uncompressedSize), 0, (int)uncompressedSize);
-                                }
-                            }
-                            else
-                            {
-                                using (FileStream fs = File.OpenWrite(tempFile))
-                                {
-                                    try
-                                    {
-                                        ZlibStream zs = new ZlibStream(br.BaseStream, CompressionMode.Decompress);
-                                        zs.CopyTo(fs);
-                                    }
-                                    catch (ZlibException)
-                                    {
-                                        br.BaseStream.Seek(offset + 4, SeekOrigin.Begin);
-                                        fs.Write(br.ReadBytes((int)compressedSize), 0, (int)compressedSize);
-                                    }
-                                }
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            if (scanner.IncludeDebug) Console.WriteLine(ex);
-                        }
-
-                        br.BaseStream.Seek(current, SeekOrigin.Begin);
+                        stream.Seek(-4, SeekOrigin.Current);
+                        compressedSize = uncompressedSize;
                     }
+
+                    // If an individual entry fails
+                    try
+                    {
+                        string tempFile = Path.Combine(tempPath, name);
+                        if (!Directory.Exists(Path.GetDirectoryName(tempFile)))
+                            Directory.CreateDirectory(Path.GetDirectoryName(tempFile));
+
+                        if (compressedSize == uncompressedSize)
+                        {
+                            using (FileStream fs = File.OpenWrite(tempFile))
+                            {
+                                fs.Write(stream.ReadBytes((int)uncompressedSize), 0, (int)uncompressedSize);
+                            }
+                        }
+                        else
+                        {
+                            using (FileStream fs = File.OpenWrite(tempFile))
+                            {
+                                try
+                                {
+                                    ZlibStream zs = new ZlibStream(stream, CompressionMode.Decompress);
+                                    zs.CopyTo(fs);
+                                }
+                                catch (ZlibException)
+                                {
+                                    stream.Seek(offset + 4, SeekOrigin.Begin);
+                                    fs.Write(stream.ReadBytes((int)compressedSize), 0, (int)compressedSize);
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        if (scanner.IncludeDebug) Console.WriteLine(ex);
+                    }
+
+                    stream.Seek(current, SeekOrigin.Begin);
                 }
 
                 // Collect and format all found protections
