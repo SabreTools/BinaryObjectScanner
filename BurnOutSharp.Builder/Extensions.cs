@@ -345,7 +345,6 @@ namespace BurnOutSharp.Builder
 
         #endregion
 
-        // TODO: Implement other resource types from https://learn.microsoft.com/en-us/windows/win32/menurc/resource-file-formats
         #region Portable Executable
 
         /// <summary>
@@ -392,9 +391,9 @@ namespace BurnOutSharp.Builder
         }
 
         /// <summary>
-        /// Read resource data as a SecuROM AddD overlay data
+        /// Read overlay data as a SecuROM AddD overlay data
         /// </summary>
-        /// <param name="data">Data to parse into a resource header</param>
+        /// <param name="data">Data to parse into overlay data</param>
         /// <param name="offset">Offset into the byte array</param>
         /// <returns>A filled SecuROM AddD overlay data on success, null on error</returns>
         public static Models.PortableExecutable.SecuROMAddD AsSecuROMAddD(this byte[] data, ref int offset)
@@ -451,6 +450,38 @@ namespace BurnOutSharp.Builder
 
             return addD;
         }
+
+        #region Debug
+
+        /// <summary>
+        /// Read debug data as an RSDS Program Database
+        /// </summary>
+        /// <param name="data">Data to parse into a database</param>
+        /// <param name="offset">Offset into the byte array</param>
+        /// <returns>A filled RSDS Program Database on success, null on error</returns>
+        public static Models.PortableExecutable.RSDSProgramDatabase AsRSDSProgramDatabase(this byte[] data, ref int offset)
+        {
+            // If we have data that's invalid, we can't do anything
+            if (data == null)
+                return null;
+
+            var rsdsProgramDatabase = new Models.PortableExecutable.RSDSProgramDatabase();
+
+            rsdsProgramDatabase.Signature = data.ReadUInt32(ref offset);
+            if (rsdsProgramDatabase.Signature != 0x53445352)
+                return null;
+
+            rsdsProgramDatabase.GUID = new Guid(data.ReadBytes(ref offset, 0x10));
+            rsdsProgramDatabase.Age = data.ReadUInt32(ref offset);
+            rsdsProgramDatabase.PathAndFileName = data.ReadString(ref offset, Encoding.ASCII); // TODO: Actually null-terminated UTF-8
+
+            return rsdsProgramDatabase;
+        }
+
+        #endregion
+
+        // TODO: Implement other resource types from https://learn.microsoft.com/en-us/windows/win32/menurc/resource-file-formats
+        #region Resources
 
         /// <summary>
         /// Read resource data as a resource header
@@ -1594,6 +1625,8 @@ namespace BurnOutSharp.Builder
 
             return varFileInfo;
         }
+
+        #endregion
 
         #endregion
     }
