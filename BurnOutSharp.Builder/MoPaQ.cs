@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using BurnOutSharp.Models.MoPaQ;
@@ -1271,7 +1270,6 @@ namespace BurnOutSharp.Builder
         /// Parse a Stream into a patch info
         /// </summary>
         /// <param name="data">Stream to parse</param>
-        /// <param name="offset">Offset into the byte array</param>
         /// <returns>Filled patch info on success, null on error</returns>
         private static PatchInfo ParsePatchInfo(Stream data)
         {
