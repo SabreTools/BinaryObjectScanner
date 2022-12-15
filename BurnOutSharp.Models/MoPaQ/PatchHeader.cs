@@ -73,7 +73,7 @@ namespace BurnOutSharp.Models.MoPaQ
         /// <summary>
         /// Type of patch ('BSD0' or 'COPY')
         /// </summary>
-        public MoPaQPatchType PatchType { get; private set; }
+        public PatchType PatchType { get; private set; }
 
         #endregion
 

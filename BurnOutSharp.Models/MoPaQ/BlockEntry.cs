@@ -29,6 +29,6 @@ namespace BurnOutSharp.Models.MoPaQ
         /// <summary>
         /// Flags for the file.
         /// </summary>
-        public MoPaQFileFlags Flags;
+        public FileFlags Flags;
     }
 }

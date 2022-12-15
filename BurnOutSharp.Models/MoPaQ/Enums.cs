@@ -3,7 +3,7 @@
 namespace BurnOutSharp.Models.MoPaQ
 {
     [Flags]
-    public enum MoPaQFileFlags : uint
+    public enum FileFlags : uint
     {
         /// <summary>
         /// File is compressed using PKWARE Data compression library
@@ -76,7 +76,7 @@ namespace BurnOutSharp.Models.MoPaQ
         EnglishUK = 0x809,
     }
 
-    public enum MoPaQPatchType : uint
+    public enum PatchType : uint
     {
         /// <summary>
         /// Blizzard-modified version of BSDIFF40 incremental patch
