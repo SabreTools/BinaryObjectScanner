@@ -9,6 +9,7 @@ namespace BurnOutSharp.FileType
     /// <summary>
     /// StarForce Filesystem file
     /// </summary>
+    /// <see href="https://forum.xentax.com/viewtopic.php?f=21&t=2084"/>
     public class SFFS : IScannable
     {
         /// <inheritdoc/>

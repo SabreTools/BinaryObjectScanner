@@ -333,7 +333,7 @@ namespace BurnOutSharp.Tools
             #region SFFS
 
             // Found in Redump entry 81756, confirmed to be "StarForce Filesystem" by PiD.
-            if (magic.StartsWith(new byte?[] { 0x53, 0x46, 0x46, 0x53, 0x01, 0x00, 0x00, 0x00 }))
+            if (magic.StartsWith(new byte?[] { 0x53, 0x46, 0x46, 0x53 }))
                 return SupportedFileType.SFFS;
 
             #endregion 
