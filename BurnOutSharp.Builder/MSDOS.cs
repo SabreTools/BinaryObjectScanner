@@ -4,7 +4,6 @@ using BurnOutSharp.Utilities;
 
 namespace BurnOutSharp.Builder
 {
-    // TODO: Make Stream Data rely on Byte Data
     public static class MSDOS
     {
         #region Byte Data
@@ -25,128 +24,10 @@ namespace BurnOutSharp.Builder
             if (offset < 0 || offset >= data.Length)
                 return null;
 
-            // Cache the current offset
-            int initialOffset = offset;
-
-            // Create a new executable to fill
-            var executable = new Executable();
-
-            #region Executable Header
-
-            // Try to parse the executable header
-            var executableHeader = ParseExecutableHeader(data, offset);
-            if (executableHeader == null)
-                return null;
-
-            // Set the executable header
-            executable.Header = executableHeader;
-
-            #endregion
-
-            #region Relocation Table
-
-            // If the offset for the relocation table doesn't exist
-            int tableAddress = initialOffset + executableHeader.RelocationTableAddr;
-            if (tableAddress >= data.Length)
-                return executable;
-
-            // Try to parse the relocation table
-            var relocationTable = ParseRelocationTable(data, tableAddress, executableHeader.RelocationItems);
-            if (relocationTable == null)
-                return null;
-
-            // Set the relocation table
-            executable.RelocationTable = relocationTable;
-
-            #endregion
-
-            // Return the executable
-            return executable;
-        }
-
-        /// <summary>
-        /// Parse a byte array into an MS-DOS executable header
-        /// </summary>
-        /// <param name="data">Byte array to parse</param>
-        /// <param name="offset">Offset into the byte array</param>
-        /// <returns>Filled executable header on success, null on error</returns>
-        private static ExecutableHeader ParseExecutableHeader(byte[] data, int offset)
-        {
-            // TODO: Use marshalling here instead of building
-            var header = new ExecutableHeader();
-
-            #region Standard Fields
-
-            header.Magic = new byte[2];
-            for (int i = 0; i < header.Magic.Length; i++)
-            {
-                header.Magic[i] = data.ReadByte(ref offset);
-            }
-            if (header.Magic[0] != 'M' || header.Magic[1] != 'Z')
-                return null;
-
-            header.LastPageBytes = data.ReadUInt16(ref offset);
-            header.Pages = data.ReadUInt16(ref offset);
-            header.RelocationItems = data.ReadUInt16(ref offset);
-            header.HeaderParagraphSize = data.ReadUInt16(ref offset);
-            header.MinimumExtraParagraphs = data.ReadUInt16(ref offset);
-            header.MaximumExtraParagraphs = data.ReadUInt16(ref offset);
-            header.InitialSSValue = data.ReadUInt16(ref offset);
-            header.InitialSPValue = data.ReadUInt16(ref offset);
-            header.Checksum = data.ReadUInt16(ref offset);
-            header.InitialIPValue = data.ReadUInt16(ref offset);
-            header.InitialCSValue = data.ReadUInt16(ref offset);
-            header.RelocationTableAddr = data.ReadUInt16(ref offset);
-            header.OverlayNumber = data.ReadUInt16(ref offset);
-
-            #endregion
-
-            // If we don't have enough data for PE extensions
-            if (offset >= data.Length || data.Length - offset < 36)
-                return header;
-
-            #region PE Extensions
-
-            header.Reserved1 = new ushort[4];
-            for (int i = 0; i < header.Reserved1.Length; i++)
-            {
-                header.Reserved1[i] = data.ReadUInt16(ref offset);
-            }
-            header.OEMIdentifier = data.ReadUInt16(ref offset);
-            header.OEMInformation = data.ReadUInt16(ref offset);
-            header.Reserved2 = new ushort[10];
-            for (int i = 0; i < header.Reserved2.Length; i++)
-            {
-                header.Reserved2[i] = data.ReadUInt16(ref offset);
-            }
-            header.NewExeHeaderAddr = data.ReadUInt32(ref offset);
-
-            #endregion
-
-            return header;
-        }
-
-        /// <summary>
-        /// Parse a byte array into a relocation table
-        /// </summary>
-        /// <param name="data">Byte array to parse</param>
-        /// <param name="offset">Offset into the byte array</param>
-        /// <param name="count">Number of relocation table entries to read</param>
-        /// <returns>Filled relocation table on success, null on error</returns>
-        private static RelocationEntry[] ParseRelocationTable(byte[] data, int offset, int count)
-        {
-            // TODO: Use marshalling here instead of building
-            var relocationTable = new RelocationEntry[count];
-
-            for (int i = 0; i < count; i++)
-            {
-                var entry = new RelocationEntry();
-                entry.Offset = data.ReadUInt16(ref offset);
-                entry.Segment = data.ReadUInt16(ref offset);
-                relocationTable[i] = entry;
-            }
-
-            return relocationTable;
+            // Create a memory stream and parse that
+            MemoryStream dataStream = new MemoryStream(data);
+            dataStream.Position = offset;
+            return ParseExecutable(dataStream);
         }
 
         #endregion
