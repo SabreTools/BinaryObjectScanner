@@ -463,18 +463,40 @@ namespace BurnOutSharp.Builder
 
             #region BET Table
 
-            if (archive.ArchiveHeader.BetTablePosition != 0)
+            // Version 3 and 4
+            if (archive.ArchiveHeader.FormatVersion == 2 || archive.ArchiveHeader.FormatVersion == 3)
             {
-                // TODO: Read in BET Table
+                // If we have a BET table
+                int betTableOffset = (int)archive.ArchiveHeader.BetTablePosition;
+                if (betTableOffset != 0)
+                {
+                    // Read in the BET table
+                    var betTable = ParseBetTable(data, ref betTableOffset);
+                    if (betTable == null)
+                        return null;
+
+                    archive.BetTable = betTable;
+                }
             }
 
             #endregion
 
             #region HET Table
 
-            if (archive.ArchiveHeader.HetTablePosition != 0)
+            // Version 3 and 4
+            if (archive.ArchiveHeader.FormatVersion == 2 || archive.ArchiveHeader.FormatVersion == 3)
             {
-                // TODO: Read in HET Table
+                // If we have a HET table
+                int hetTableOffset = (int)archive.ArchiveHeader.HetTablePosition;
+                if (hetTableOffset != 0)
+                {
+                    // Read in the HET table
+                    var hetTable = ParseHetTable(data, ref hetTableOffset);
+                    if (hetTable == null)
+                        return null;
+
+                    archive.HetTable = hetTable;
+                }
             }
 
             #endregion
@@ -998,18 +1020,46 @@ namespace BurnOutSharp.Builder
 
             #region BET Table
 
-            if (archive.ArchiveHeader.BetTablePosition != 0)
+            // Version 3 and 4
+            if (archive.ArchiveHeader.FormatVersion == 2 || archive.ArchiveHeader.FormatVersion == 3)
             {
-                // TODO: Read in BET Table
+                // If we have a BET table
+                long betTableOffset = (long)archive.ArchiveHeader.BetTablePosition;
+                if (betTableOffset != 0)
+                {
+                    // Seek to the offset
+                    data.Seek(betTableOffset, SeekOrigin.Begin);
+
+                    // Read in the BET table
+                    var betTable = ParseBetTable(data);
+                    if (betTable != null)
+                        return null;
+
+                    archive.BetTable = betTable;
+                }
             }
 
             #endregion
 
             #region HET Table
 
-            if (archive.ArchiveHeader.HetTablePosition != 0)
+            // Version 3 and 4
+            if (archive.ArchiveHeader.FormatVersion == 2 || archive.ArchiveHeader.FormatVersion == 3)
             {
-                // TODO: Read in HET Table
+                // If we have a HET table
+                long hetTableOffset = (long)archive.ArchiveHeader.HetTablePosition;
+                if (hetTableOffset != 0)
+                {
+                    // Seek to the offset
+                    data.Seek(hetTableOffset, SeekOrigin.Begin);
+
+                    // Read in the HET table
+                    var hetTable = ParseHetTable(data);
+                    if (hetTable != null)
+                        return null;
+
+                    archive.HetTable = hetTable;
+                }
             }
 
             #endregion
