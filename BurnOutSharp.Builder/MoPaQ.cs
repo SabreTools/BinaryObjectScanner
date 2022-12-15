@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using BurnOutSharp.Models.MoPaQ;
 
@@ -271,18 +272,83 @@ namespace BurnOutSharp.Builder
 
             #region Hash Table
 
-            // If we have a hash table
-            ulong hashTableOffset = ((uint)archive.ArchiveHeader.HashTablePositionHi << 24) | archive.ArchiveHeader.HashTablePosition;
-            if (hashTableOffset != 0)
+            // Version 1
+            if (archive.ArchiveHeader.FormatVersion == 0)
             {
-                // TODO: Read in Hash Table
+                // If we have a hash table
+                long hashTableOffset = archive.ArchiveHeader.HashTablePosition;
+                if (hashTableOffset != 0)
+                {
+                    // Find the ending offset based on size
+                    long hashTableEnd = hashTableOffset + archive.ArchiveHeader.HashTableSize;
+
+                    // Read in the hash table
+                    var hashTable = new List<HashEntry>();
+
+                    while (hashTableOffset < hashTableEnd)
+                    {
+                        var hashEntry = ParseHashEntry(data, ref hashTableOffset);
+                        if (hashEntry == null)
+                            return null;
+                    }
+
+                    archive.HashTable = hashTable.ToArray();
+                }
+            }
+
+            // Version 2 and 3
+            else if (archive.ArchiveHeader.FormatVersion == 1 || archive.ArchiveHeader.FormatVersion == 2)
+            {
+                // If we have a hash table
+                long hashTableOffset = ((uint)archive.ArchiveHeader.HashTablePositionHi << 23) | archive.ArchiveHeader.HashTablePosition;
+                if (hashTableOffset != 0)
+                {
+                    // Find the ending offset based on size
+                    long hashTableEnd = hashTableOffset + archive.ArchiveHeader.HashTableSize;
+
+                    // Read in the hash table
+                    var hashTable = new List<HashEntry>();
+
+                    while (hashTableOffset < hashTableEnd)
+                    {
+                        var hashEntry = ParseHashEntry(data, ref hashTableOffset);
+                        if (hashEntry == null)
+                            return null;
+                    }
+
+                    archive.HashTable = hashTable.ToArray();
+                }
+            }
+
+            // Version 4
+            else if (archive.ArchiveHeader.FormatVersion == 3)
+            {
+                // If we have a hash table
+                long hashTableOffset = ((uint)archive.ArchiveHeader.HashTablePositionHi << 23) | archive.ArchiveHeader.HashTablePosition;
+                if (hashTableOffset != 0)
+                {
+                    // Find the ending offset based on size
+                    long hashTableEnd = hashTableOffset + (long)archive.ArchiveHeader.HashTableSizeLong;
+
+                    // Read in the hash table
+                    var hashTable = new List<HashEntry>();
+
+                    while (hashTableOffset < hashTableEnd)
+                    {
+                        var hashEntry = ParseHashEntry(data, ref hashTableOffset);
+                        if (hashEntry == null)
+                            return null;
+                    }
+
+                    archive.HashTable = hashTable.ToArray();
+                }
             }
 
             #endregion
 
             #region Block Table
 
-            ulong blockTableOffset = ((uint)archive.ArchiveHeader.BlockTablePositionHi << 24) | archive.ArchiveHeader.BlockTablePosition;
+            ulong blockTableOffset = ((uint)archive.ArchiveHeader.BlockTablePositionHi << 23) | archive.ArchiveHeader.BlockTablePosition;
             if (blockTableOffset != 0)
             {
                 // TODO: Read in Block Table
@@ -498,17 +564,19 @@ namespace BurnOutSharp.Builder
         /// <param name="data">Byte array to parse</param>
         /// <param name="offset">Offset into the byte array</param>
         /// <returns>Filled hash entry on success, null on error</returns>
-        private static HashEntry ParseHashEntry(byte[] data, ref int offset)
+        private static HashEntry ParseHashEntry(byte[] data, ref long offset)
         {
             // TODO: Use marshalling here instead of building
             HashEntry hashEntry = new HashEntry();
+            int intOffset = (int)offset;
 
-            hashEntry.NameHashPartA = data.ReadUInt32(ref offset);
-            hashEntry.NameHashPartB = data.ReadUInt32(ref offset);
-            hashEntry.Locale = (Locale)data.ReadUInt16(ref offset);
-            hashEntry.Platform = data.ReadUInt16(ref offset);
-            hashEntry.BlockIndex = data.ReadUInt32(ref offset);
+            hashEntry.NameHashPartA = data.ReadUInt32(ref intOffset);
+            hashEntry.NameHashPartB = data.ReadUInt32(ref intOffset);
+            hashEntry.Locale = (Locale)data.ReadUInt16(ref intOffset);
+            hashEntry.Platform = data.ReadUInt16(ref intOffset);
+            hashEntry.BlockIndex = data.ReadUInt32(ref intOffset);
 
+            offset = intOffset;
             return hashEntry;
         }
 
@@ -621,18 +689,83 @@ namespace BurnOutSharp.Builder
 
             #region Hash Table
 
-            // If we have a hash table
-            ulong hashTableOffset = ((uint)archive.ArchiveHeader.HashTablePositionHi << 24) | archive.ArchiveHeader.HashTablePosition;
-            if (hashTableOffset != 0)
+            // Version 1
+            if (archive.ArchiveHeader.FormatVersion == 0)
             {
-                // TODO: Read in Hash Table
+                // If we have a hash table
+                long hashTableOffset = archive.ArchiveHeader.HashTablePosition;
+                if (hashTableOffset != 0)
+                {
+                    // Find the ending offset based on size
+                    long hashTableEnd = hashTableOffset + archive.ArchiveHeader.HashTableSize;
+
+                    // Read in the hash table
+                    var hashTable = new List<HashEntry>();
+
+                    while (data.Position < hashTableEnd)
+                    {
+                        var hashEntry = ParseHashEntry(data);
+                        if (hashEntry == null)
+                            return null;
+                    }
+
+                    archive.HashTable = hashTable.ToArray();
+                }
+            }
+
+            // Version 2 and 3
+            else if (archive.ArchiveHeader.FormatVersion == 1 || archive.ArchiveHeader.FormatVersion == 2)
+            {
+                // If we have a hash table
+                long hashTableOffset = ((uint)archive.ArchiveHeader.HashTablePositionHi << 23) | archive.ArchiveHeader.HashTablePosition;
+                if (hashTableOffset != 0)
+                {
+                    // Find the ending offset based on size
+                    long hashTableEnd = hashTableOffset + archive.ArchiveHeader.HashTableSize;
+
+                    // Read in the hash table
+                    var hashTable = new List<HashEntry>();
+
+                    while (data.Position < hashTableEnd)
+                    {
+                        var hashEntry = ParseHashEntry(data);
+                        if (hashEntry == null)
+                            return null;
+                    }
+
+                    archive.HashTable = hashTable.ToArray();
+                }
+            }
+
+            // Version 4
+            else if (archive.ArchiveHeader.FormatVersion == 3)
+            {
+                // If we have a hash table
+                long hashTableOffset = ((uint)archive.ArchiveHeader.HashTablePositionHi << 23) | archive.ArchiveHeader.HashTablePosition;
+                if (hashTableOffset != 0)
+                {
+                    // Find the ending offset based on size
+                    long hashTableEnd = hashTableOffset + (long)archive.ArchiveHeader.HashTableSizeLong;
+
+                    // Read in the hash table
+                    var hashTable = new List<HashEntry>();
+
+                    while (data.Position < hashTableEnd)
+                    {
+                        var hashEntry = ParseHashEntry(data);
+                        if (hashEntry == null)
+                            return null;
+                    }
+
+                    archive.HashTable = hashTable.ToArray();
+                }
             }
 
             #endregion
 
             #region Block Table
 
-            ulong blockTableOffset = ((uint)archive.ArchiveHeader.BlockTablePositionHi << 24) | archive.ArchiveHeader.BlockTablePosition;
+            ulong blockTableOffset = ((uint)archive.ArchiveHeader.BlockTablePositionHi << 23) | archive.ArchiveHeader.BlockTablePosition;
             if (blockTableOffset != 0)
             {
                 // TODO: Read in Block Table
