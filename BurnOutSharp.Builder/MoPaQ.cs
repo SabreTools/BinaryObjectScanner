@@ -348,10 +348,76 @@ namespace BurnOutSharp.Builder
 
             #region Block Table
 
-            ulong blockTableOffset = ((uint)archive.ArchiveHeader.BlockTablePositionHi << 23) | archive.ArchiveHeader.BlockTablePosition;
-            if (blockTableOffset != 0)
+            // Version 1
+            if (archive.ArchiveHeader.FormatVersion == 0)
             {
-                // TODO: Read in Block Table
+                // If we have a block table
+                long blockTableOffset = archive.ArchiveHeader.BlockTablePosition;
+                if (blockTableOffset != 0)
+                {
+                    // Find the ending offset based on size
+                    long blockTableEnd = blockTableOffset + archive.ArchiveHeader.BlockTableSize;
+
+                    // Read in the block table
+                    var blockTable = new List<BlockEntry>();
+
+                    while (blockTableOffset < blockTableEnd)
+                    {
+                        var blockEntry = ParseBlockEntry(data, ref blockTableOffset);
+                        if (blockEntry == null)
+                            return null;
+                    }
+
+                    archive.BlockTable = blockTable.ToArray();
+                }
+            }
+
+            // Version 2 and 3
+            else if (archive.ArchiveHeader.FormatVersion == 1 || archive.ArchiveHeader.FormatVersion == 2)
+            {
+                // If we have a block table
+                long blockTableOffset = ((uint)archive.ArchiveHeader.BlockTablePositionHi << 23) | archive.ArchiveHeader.BlockTablePosition;
+                if (blockTableOffset != 0)
+                {
+                    // Find the ending offset based on size
+                    long blockTableEnd = blockTableOffset + archive.ArchiveHeader.BlockTableSize;
+
+                    // Read in the block table
+                    var blockTable = new List<BlockEntry>();
+
+                    while (blockTableOffset < blockTableEnd)
+                    {
+                        var blockEntry = ParseBlockEntry(data, ref blockTableOffset);
+                        if (blockEntry == null)
+                            return null;
+                    }
+
+                    archive.BlockTable = blockTable.ToArray();
+                }
+            }
+
+            // Version 4
+            else if (archive.ArchiveHeader.FormatVersion == 3)
+            {
+                // If we have a block table
+                long blockTableOffset = ((uint)archive.ArchiveHeader.BlockTablePositionHi << 23) | archive.ArchiveHeader.BlockTablePosition;
+                if (blockTableOffset != 0)
+                {
+                    // Find the ending offset based on size
+                    long blockTableEnd = blockTableOffset + (long)archive.ArchiveHeader.BlockTableSizeLong;
+
+                    // Read in the block table
+                    var blockTable = new List<BlockEntry>();
+
+                    while (blockTableOffset < blockTableEnd)
+                    {
+                        var blockEntry = ParseBlockEntry(data, ref blockTableOffset);
+                        if (blockEntry == null)
+                            return null;
+                    }
+
+                    archive.BlockTable = blockTable.ToArray();
+                }
             }
 
             #endregion
@@ -586,16 +652,18 @@ namespace BurnOutSharp.Builder
         /// <param name="data">Byte array to parse</param>
         /// <param name="offset">Offset into the byte array</param>
         /// <returns>Filled block entry on success, null on error</returns>
-        private static BlockEntry ParseBlockEntry(byte[] data, ref int offset)
+        private static BlockEntry ParseBlockEntry(byte[] data, ref long offset)
         {
             // TODO: Use marshalling here instead of building
             BlockEntry blockEntry = new BlockEntry();
+            int intOffset = (int)offset;
 
-            blockEntry.FilePosition = data.ReadUInt32(ref offset);
-            blockEntry.CompressedSize = data.ReadUInt32(ref offset);
-            blockEntry.UncompressedSize = data.ReadUInt32(ref offset);
-            blockEntry.Flags = (FileFlags)data.ReadUInt32(ref offset);
+            blockEntry.FilePosition = data.ReadUInt32(ref intOffset);
+            blockEntry.CompressedSize = data.ReadUInt32(ref intOffset);
+            blockEntry.UncompressedSize = data.ReadUInt32(ref intOffset);
+            blockEntry.Flags = (FileFlags)data.ReadUInt32(ref intOffset);
 
+            offset = intOffset;
             return blockEntry;
         }
 
@@ -765,10 +833,76 @@ namespace BurnOutSharp.Builder
 
             #region Block Table
 
-            ulong blockTableOffset = ((uint)archive.ArchiveHeader.BlockTablePositionHi << 23) | archive.ArchiveHeader.BlockTablePosition;
-            if (blockTableOffset != 0)
+            // Version 1
+            if (archive.ArchiveHeader.FormatVersion == 0)
             {
-                // TODO: Read in Block Table
+                // If we have a block table
+                long blockTableOffset = archive.ArchiveHeader.BlockTablePosition;
+                if (blockTableOffset != 0)
+                {
+                    // Find the ending offset based on size
+                    long blockTableEnd = blockTableOffset + archive.ArchiveHeader.BlockTableSize;
+
+                    // Read in the block table
+                    var blockTable = new List<BlockEntry>();
+
+                    while (data.Position < blockTableEnd)
+                    {
+                        var blockEntry = ParseBlockEntry(data);
+                        if (blockEntry == null)
+                            return null;
+                    }
+
+                    archive.BlockTable = blockTable.ToArray();
+                }
+            }
+
+            // Version 2 and 3
+            else if (archive.ArchiveHeader.FormatVersion == 1 || archive.ArchiveHeader.FormatVersion == 2)
+            {
+                // If we have a block table
+                long blockTableOffset = ((uint)archive.ArchiveHeader.BlockTablePositionHi << 23) | archive.ArchiveHeader.BlockTablePosition;
+                if (blockTableOffset != 0)
+                {
+                    // Find the ending offset based on size
+                    long blockTableEnd = blockTableOffset + archive.ArchiveHeader.BlockTableSize;
+
+                    // Read in the block table
+                    var blockTable = new List<BlockEntry>();
+
+                    while (data.Position < blockTableEnd)
+                    {
+                        var blockEntry = ParseBlockEntry(data);
+                        if (blockEntry == null)
+                            return null;
+                    }
+
+                    archive.BlockTable = blockTable.ToArray();
+                }
+            }
+
+            // Version 4
+            else if (archive.ArchiveHeader.FormatVersion == 3)
+            {
+                // If we have a block table
+                long blockTableOffset = ((uint)archive.ArchiveHeader.BlockTablePositionHi << 23) | archive.ArchiveHeader.BlockTablePosition;
+                if (blockTableOffset != 0)
+                {
+                    // Find the ending offset based on size
+                    long blockTableEnd = blockTableOffset + (long)archive.ArchiveHeader.BlockTableSizeLong;
+
+                    // Read in the block table
+                    var blockTable = new List<BlockEntry>();
+
+                    while (data.Position < blockTableEnd)
+                    {
+                        var blockEntry = ParseBlockEntry(data);
+                        if (blockEntry == null)
+                            return null;
+                    }
+
+                    archive.BlockTable = blockTable.ToArray();
+                }
             }
 
             #endregion
