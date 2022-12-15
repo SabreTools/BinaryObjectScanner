@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
-using BurnOutSharp.Tools;
 using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.ProtectionType
@@ -28,36 +27,36 @@ namespace BurnOutSharp.ProtectionType
 
             string name = pex.LegalCopyright;
             if (name?.StartsWith("(c) Protection Technology") == true) // (c) Protection Technology (StarForce)?
-                return $"StarForce {Utilities.GetInternalVersion(pex)}";
+                return $"StarForce {Tools.Utilities.GetInternalVersion(pex)}";
             else if (name?.Contains("Protection Technology") == true) // Protection Technology (StarForce)?
-                return $"StarForce {Utilities.GetInternalVersion(pex)}";
+                return $"StarForce {Tools.Utilities.GetInternalVersion(pex)}";
 
             // TODO: Decide if internal name checks are safe to use.
             name = pex.InternalName;
 
             // Found in "protect.x64" and "protect.x86" in Redump entry 94805.
             if (name?.Equals("CORE.ADMIN", StringComparison.Ordinal) == true)
-                return $"StarForce {Utilities.GetInternalVersion(pex)}";
+                return $"StarForce {Tools.Utilities.GetInternalVersion(pex)}";
 
             
             // These checks currently disabled due being possibly too generic:
             // Found in "protect.dll" in Redump entry 94805.
             // if (name?.Equals("CORE.DLL", StringComparison.Ordinal) == true)
-            //     return $"StarForce {Utilities.GetInternalVersion(pex)}";
+            //     return $"StarForce {Tools.Utilities.GetInternalVersion(pex)}";
             //
             // Found in "protect.exe" in Redump entry 94805.
             // if (name?.Equals("CORE.EXE", StringComparison.Ordinal) == true)
-            //     return $"StarForce {Utilities.GetInternalVersion(pex)}";
+            //     return $"StarForce {Tools.Utilities.GetInternalVersion(pex)}";
             //
             // else if (name?.Equals("protect.exe", StringComparison.Ordinal) == true)
-            //     return $"StarForce {Utilities.GetInternalVersion(pex)}";
+            //     return $"StarForce {Tools.Utilities.GetInternalVersion(pex)}";
 
             // Check the export name table
             if (pex.ExportNameTable != null)
             {
                 // TODO: Should we just check for "PSA_*" instead of a single entry?
                 if (pex.ExportNameTable.Any(s => s == "PSA_GetDiscLabel"))
-                    return $"StarForce {Utilities.GetInternalVersion(pex)}";
+                    return $"StarForce {Tools.Utilities.GetInternalVersion(pex)}";
             }
 
             // TODO: Find what fvinfo field actually maps to this
@@ -70,15 +69,15 @@ namespace BurnOutSharp.ProtectionType
 
             // Found in "protect.exe" in Redump entry 94805.
             if (name?.Contains("FrontLine Protection GUI Application") == true)
-                return $"StarForce {Utilities.GetInternalVersion(pex)}";
+                return $"StarForce {Tools.Utilities.GetInternalVersion(pex)}";
 
             // Found in "protect.dll" in Redump entry 94805.
             if (name?.Contains("FrontLine Protection Library") == true)
-                return $"StarForce {Utilities.GetInternalVersion(pex)}";
+                return $"StarForce {Tools.Utilities.GetInternalVersion(pex)}";
 
             // Found in "protect.x64" and "protect.x86" in Redump entry 94805.
             if (name?.Contains("FrontLine Helper") == true)
-                return $"StarForce {Utilities.GetInternalVersion(pex)}";
+                return $"StarForce {Tools.Utilities.GetInternalVersion(pex)}";
 
             // TODO: Find a sample of this check.
             if (name?.Contains("Protected Module") == true)

@@ -1,15 +1,35 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using BurnOutSharp.Matching;
 
-namespace BurnOutSharp.Tools
+namespace BurnOutSharp.Utilities
 {
-    internal static class Extensions
+    public static class Extensions
     {
-        #region Byte Arrays
+        #region ConcurrentQueue
+
+        /// <summary>
+        /// Add a range of values from one queue to another
+        /// </summary>
+        /// <param name="original">Queue to add data to</param>
+        /// <param name="values">Queue to get data from</param>
+        public static void AddRange(this ConcurrentQueue<string> original, ConcurrentQueue<string> values)
+        {
+            while (!values.IsEmpty)
+            {
+                if (!values.TryDequeue(out string value))
+                    return;
+
+                original.Enqueue(value);
+            }
+        }
+
+        #endregion
+
+        #region Byte Array Reading
 
         /// <summary>
         /// Read a byte and increment the pointer to an array
@@ -24,10 +44,22 @@ namespace BurnOutSharp.Tools
         /// </summary>
         public static byte[] ReadBytes(this byte[] content, ref int offset, int count)
         {
+            // If there's an invalid byte count, don't do anything
+            if (count <= 0)
+                return null;
+
             byte[] buffer = new byte[count];
             Array.Copy(content, offset, buffer, 0, Math.Min(count, content.Length - offset));
             offset += count;
             return buffer;
+        }
+
+        /// <summary>
+        /// Read an sbyte and increment the pointer to an array
+        /// </summary>
+        public static sbyte ReadSByte(this byte[] content, ref int offset)
+        {
+            return (sbyte)content[offset++];
         }
 
         /// <summary>
@@ -36,24 +68,6 @@ namespace BurnOutSharp.Tools
         public static char ReadChar(this byte[] content, ref int offset)
         {
             return (char)content[offset++];
-        }
-
-        /// <summary>
-        /// Read a character array and increment the pointer to an array
-        /// </summary>
-        public static char[] ReadChars(this byte[] content, ref int offset, int count) => content.ReadChars(ref offset, count, Encoding.Default);
-
-        /// <summary>
-        /// Read a character array and increment the pointer to an array
-        /// </summary>
-        public static char[] ReadChars(this byte[] content, ref int offset, int count, Encoding encoding)
-        {
-            // TODO: Fix the code below to make it work with byte arrays and not streams
-            return null;
-
-            // byte[] buffer = new byte[count];
-            // stream.Read(buffer, 0, count);
-            // return encoding.GetString(buffer).ToCharArray();
         }
 
         /// <summary>
@@ -146,81 +160,9 @@ namespace BurnOutSharp.Tools
             return new string(keyChars.ToArray()).TrimEnd('\0');
         }
 
-        /// <summary>
-        /// Find all positions of one array in another, if possible, if possible
-        /// </summary>
-        public static List<int> FindAllPositions(this byte[] stack, byte?[] needle, int start = 0, int end = -1)
-        {
-            // Get the outgoing list
-            List<int> positions = new List<int>();
-
-            // Initialize the loop variables
-            bool found = true;
-            int lastPosition = start;
-            var matcher = new ContentMatch(needle, end: end);
-
-            // Loop over and get all positions
-            while (found)
-            {
-                matcher.Start = lastPosition;
-                (found, lastPosition) = matcher.Match(stack, false);
-                if (found)
-                    positions.Add(lastPosition);
-            }
-
-            return positions;
-        }
-
-        /// <summary>
-        /// Find the first position of one array in another, if possible
-        /// </summary>
-        public static bool FirstPosition(this byte[] stack, byte[] needle, out int position, int start = 0, int end = -1)
-        {
-            byte?[] nullableNeedle = needle != null ? needle.Select(b => (byte?)b).ToArray() : null;
-            return stack.FirstPosition(nullableNeedle, out position, start, end);
-        }
-
-        /// <summary>
-        /// Find the first position of one array in another, if possible
-        /// </summary>
-        public static bool FirstPosition(this byte[] stack, byte?[] needle, out int position, int start = 0, int end = -1)
-        {
-            var matcher = new ContentMatch(needle, start, end);
-            (bool found, int foundPosition) = matcher.Match(stack, false);
-            position = foundPosition;
-            return found;
-        }
-
-        /// <summary>
-        /// Find the last position of one array in another, if possible
-        /// </summary>
-        public static bool LastPosition(this byte[] stack, byte?[] needle, out int position, int start = 0, int end = -1)
-        {
-            var matcher = new ContentMatch(needle, start, end);
-            (bool found, int foundPosition) = matcher.Match(stack, true);
-            position = foundPosition;
-            return found;
-        }
-
-        /// <summary>
-        /// See if a byte array starts with another
-        /// </summary>
-        public static bool StartsWith(this byte[] stack, byte?[] needle)
-        {
-            return stack.FirstPosition(needle, out int _, start: 0, end: 1);
-        }
-
-        /// <summary>
-        /// See if a byte array ends with another
-        /// </summary>
-        public static bool EndsWith(this byte[] stack, byte?[] needle)
-        {
-            return stack.FirstPosition(needle, out int _, start: stack.Length - needle.Length);
-        }
-
         #endregion
 
-        #region Streams
+        #region Stream Reading
 
         /// <summary>
         /// Read a byte from the stream
@@ -237,9 +179,23 @@ namespace BurnOutSharp.Tools
         /// </summary>
         public static byte[] ReadBytes(this Stream stream, int count)
         {
+            // If there's an invalid byte count, don't do anything
+            if (count <= 0)
+                return null;
+
             byte[] buffer = new byte[count];
             stream.Read(buffer, 0, count);
             return buffer;
+        }
+
+        /// <summary>
+        /// Read an sbyte from the stream
+        /// </summary>
+        public static sbyte ReadSByte(this Stream stream)
+        {
+            byte[] buffer = new byte[1];
+            stream.Read(buffer, 0, 1);
+            return (sbyte)buffer[0];
         }
 
         /// <summary>
@@ -250,21 +206,6 @@ namespace BurnOutSharp.Tools
             byte[] buffer = new byte[1];
             stream.Read(buffer, 0, 1);
             return (char)buffer[0];
-        }
-
-        /// <summary>
-        /// Read a character array from the stream
-        /// </summary>
-        public static char[] ReadChars(this Stream stream, int count) => stream.ReadChars(count, Encoding.Default);
-
-        /// <summary>
-        /// Read a character array from the stream
-        /// </summary>
-        public static char[] ReadChars(this Stream stream, int count, Encoding encoding)
-        {
-            byte[] buffer = new byte[count];
-            stream.Read(buffer, 0, count);
-            return encoding.GetString(buffer).ToCharArray();
         }
 
         /// <summary>
@@ -337,13 +278,16 @@ namespace BurnOutSharp.Tools
         /// </summary>
         public static string ReadString(this Stream stream, Encoding encoding)
         {
+            if (stream.Position >= stream.Length)
+                return null;
+
             byte[] nullTerminator = encoding.GetBytes(new char[] { '\0' });
             int charWidth = nullTerminator.Length;
 
             List<byte> tempBuffer = new List<byte>();
 
             byte[] buffer = new byte[charWidth];
-            while (stream.Read(buffer, 0, charWidth) != 0 && !buffer.SequenceEqual(nullTerminator))
+            while (stream.Position < stream.Length && stream.Read(buffer, 0, charWidth) != 0 && !buffer.SequenceEqual(nullTerminator))
             {
                 tempBuffer.AddRange(buffer);
             }

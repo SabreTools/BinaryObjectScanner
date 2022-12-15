@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
-using BurnOutSharp.Tools;
+using BurnOutSharp.Utilities;
 using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.ProtectionType

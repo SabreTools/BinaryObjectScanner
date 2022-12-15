@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Text;
 using BurnOutSharp.Models.MicrosoftCabinet;
+using BurnOutSharp.Utilities;
 
 namespace BurnOutSharp.Builder
 {

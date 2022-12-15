@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using BurnOutSharp.Models.NewExecutable;
+using BurnOutSharp.Utilities;
 
 namespace BurnOutSharp.Builder
 {

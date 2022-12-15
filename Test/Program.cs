@@ -5,8 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using BurnOutSharp;
+using BurnOutSharp.Utilities;
 using BurnOutSharp.Wrappers;
-using static BurnOutSharp.Builder.Extensions;
 
 namespace Test
 {

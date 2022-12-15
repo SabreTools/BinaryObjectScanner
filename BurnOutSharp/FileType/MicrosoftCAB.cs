@@ -2,7 +2,6 @@
 using System.Collections.Concurrent;
 using System.IO;
 using BurnOutSharp.Interfaces;
-using BurnOutSharp.Tools;
 #if NETSTANDARD2_0
 using WixToolset.Dtf.Compression;
 using WixToolset.Dtf.Compression.Cab;
@@ -10,6 +9,7 @@ using WixToolset.Dtf.Compression.Cab;
 using LibMSPackSharp;
 using LibMSPackSharp.CABExtract;
 #endif
+using static BurnOutSharp.Utilities.Dictionary;
 
 namespace BurnOutSharp.FileType
 {
@@ -105,7 +105,7 @@ namespace BurnOutSharp.FileType
                 }
 
                 // Remove temporary path references
-                Utilities.StripFromKeys(protections, tempPath);
+                StripFromKeys(protections, tempPath);
 
                 return protections;
             }
@@ -139,7 +139,7 @@ namespace BurnOutSharp.FileType
                 }
 
                 // Remove temporary path references
-                Utilities.StripFromKeys(protections, tempPath);
+                StripFromKeys(protections, tempPath);
 
                 return protections;
             }

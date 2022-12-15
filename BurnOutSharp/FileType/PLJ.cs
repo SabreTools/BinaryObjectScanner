@@ -2,7 +2,7 @@
 using System.Collections.Concurrent;
 using System.IO;
 using BurnOutSharp.Interfaces;
-using BurnOutSharp.Tools;
+using static BurnOutSharp.Utilities.Dictionary;
 
 namespace BurnOutSharp.FileType
 {
@@ -32,9 +32,9 @@ namespace BurnOutSharp.FileType
                 byte[] magic = new byte[16];
                 stream.Read(magic, 0, 16);
 
-                if (Utilities.GetFileType(magic) == SupportedFileType.PLJ)
+                if (Tools.Utilities.GetFileType(magic) == SupportedFileType.PLJ)
                 {
-                    Utilities.AppendToDictionary(protections, file, "PlayJ Audio File");
+                    AppendToDictionary(protections, file, "PlayJ Audio File");
                     return protections;
                 }
             }

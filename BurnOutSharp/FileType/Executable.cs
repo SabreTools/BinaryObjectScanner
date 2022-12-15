@@ -4,8 +4,8 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using BurnOutSharp.Interfaces;
-using BurnOutSharp.Tools;
 using BurnOutSharp.Wrappers;
+using static BurnOutSharp.Utilities.Dictionary;
 
 namespace BurnOutSharp.FileType
 {
@@ -47,7 +47,7 @@ namespace BurnOutSharp.FileType
                 {
                     if (scanner.IncludeDebug) Console.WriteLine(ex);
 
-                    Utilities.AppendToDictionary(protections, file, "[Out of memory attempting to open]");
+                    AppendToDictionary(protections, file, "[Out of memory attempting to open]");
                     return protections;
                 }
             }
@@ -66,7 +66,7 @@ namespace BurnOutSharp.FileType
                 {
                     string protection = contentCheckClass.CheckContents(file, fileContent, scanner.IncludeDebug);
                     if (ShouldAddProtection(contentCheckClass, scanner.ScanPackers, protection))
-                        Utilities.AppendToDictionary(protections, file, protection);
+                        AppendToDictionary(protections, file, protection);
 
                     // If we have an IScannable implementation
                     if (contentCheckClass is IScannable scannable)
@@ -74,8 +74,8 @@ namespace BurnOutSharp.FileType
                         if (file != null && !string.IsNullOrEmpty(protection))
                         {
                             var subProtections = scannable.Scan(scanner, null, file);
-                            Utilities.PrependToKeys(subProtections, file);
-                            Utilities.AppendToDictionary(protections, subProtections);
+                            PrependToKeys(subProtections, file);
+                            AppendToDictionary(protections, subProtections);
                         }
                     }
                 });
@@ -89,7 +89,7 @@ namespace BurnOutSharp.FileType
                     // Check using custom content checks first
                     string protection = contentCheckClass.CheckNewExecutable(file, nex, scanner.IncludeDebug);
                     if (ShouldAddProtection(contentCheckClass, scanner.ScanPackers, protection))
-                        Utilities.AppendToDictionary(protections, file, protection);
+                        AppendToDictionary(protections, file, protection);
 
                     // If we have an IScannable implementation
                     if (contentCheckClass is IScannable scannable)
@@ -97,8 +97,8 @@ namespace BurnOutSharp.FileType
                         if (file != null && !string.IsNullOrEmpty(protection))
                         {
                             var subProtections = scannable.Scan(scanner, null, file);
-                            Utilities.PrependToKeys(subProtections, file);
-                            Utilities.AppendToDictionary(protections, subProtections);
+                            PrependToKeys(subProtections, file);
+                            AppendToDictionary(protections, subProtections);
                         }
                     }
                 });
@@ -112,7 +112,7 @@ namespace BurnOutSharp.FileType
                     // Check using custom content checks first
                     string protection = contentCheckClass.CheckPortableExecutable(file, pex, scanner.IncludeDebug);
                     if (ShouldAddProtection(contentCheckClass, scanner.ScanPackers, protection))
-                        Utilities.AppendToDictionary(protections, file, protection);
+                        AppendToDictionary(protections, file, protection);
 
                     // If we have an IScannable implementation
                     if (contentCheckClass is IScannable scannable)
@@ -120,8 +120,8 @@ namespace BurnOutSharp.FileType
                         if (file != null && !string.IsNullOrEmpty(protection))
                         {
                             var subProtections = scannable.Scan(scanner, null, file);
-                            Utilities.PrependToKeys(subProtections, file);
-                            Utilities.AppendToDictionary(protections, subProtections);
+                            PrependToKeys(subProtections, file);
+                            AppendToDictionary(protections, subProtections);
                         }
                     }
                 });

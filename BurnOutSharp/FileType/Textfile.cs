@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.IO;
 using System.Text;
 using BurnOutSharp.Interfaces;
-using BurnOutSharp.Tools;
+using static BurnOutSharp.Utilities.Dictionary;
 
 namespace BurnOutSharp.FileType
 {
@@ -42,57 +42,57 @@ namespace BurnOutSharp.FileType
                 // AegiSoft License Manager
                 // Found in "setup.ins" (Redump entry 73521/IA item "Nova_HoyleCasino99USA").
                 if (fileContent.Contains("Failed to load the AegiSoft License Manager install program."))
-                    Utilities.AppendToDictionary(protections, file, "AegiSoft License Manager");
+                    AppendToDictionary(protections, file, "AegiSoft License Manager");
 
                 // CD-Key
                 if (fileContent.Contains("a valid serial number is required"))
-                    Utilities.AppendToDictionary(protections, file, "CD-Key / Serial");
+                    AppendToDictionary(protections, file, "CD-Key / Serial");
                 else if (fileContent.Contains("serial number is located"))
-                    Utilities.AppendToDictionary(protections, file, "CD-Key / Serial");
+                    AppendToDictionary(protections, file, "CD-Key / Serial");
 
                 // Freelock
                 // Found in "FILE_ID.DIZ" distributed with Freelock.
                 if (fileContent.Contains("FREELOCK 1.0"))
-                    Utilities.AppendToDictionary(protections, file, "Freelock 1.0");
+                    AppendToDictionary(protections, file, "Freelock 1.0");
                 else if (fileContent.Contains("FREELOCK 1.2"))
-                    Utilities.AppendToDictionary(protections, file, "Freelock 1.2");
+                    AppendToDictionary(protections, file, "Freelock 1.2");
                 else if (fileContent.Contains("FREELOCK 1.2a"))
-                    Utilities.AppendToDictionary(protections, file, "Freelock 1.2a");
+                    AppendToDictionary(protections, file, "Freelock 1.2a");
                 else if (fileContent.Contains("FREELOCK 1.3"))
-                    Utilities.AppendToDictionary(protections, file, "Freelock 1.3");
+                    AppendToDictionary(protections, file, "Freelock 1.3");
                 else if (fileContent.Contains("FREELOCK"))
-                    Utilities.AppendToDictionary(protections, file, "Freelock");
+                    AppendToDictionary(protections, file, "Freelock");
 
                 // MediaCloQ
                 if (fileContent.Contains("SunnComm MediaCloQ"))
-                    Utilities.AppendToDictionary(protections, file, "MediaCloQ");
+                    AppendToDictionary(protections, file, "MediaCloQ");
                 else if (fileContent.Contains("http://download.mediacloq.com/"))
-                    Utilities.AppendToDictionary(protections, file, "MediaCloQ");
+                    AppendToDictionary(protections, file, "MediaCloQ");
                 else if (fileContent.Contains("http://www.sunncomm.com/mediacloq/"))
-                    Utilities.AppendToDictionary(protections, file, "MediaCloQ");
+                    AppendToDictionary(protections, file, "MediaCloQ");
 
                 // MediaMax
                 if (fileContent.Contains("MediaMax technology"))
-                    Utilities.AppendToDictionary(protections, file, "MediaMax CD-3");
+                    AppendToDictionary(protections, file, "MediaMax CD-3");
                 else if (fileContent.Contains("exclusive Cd3 technology"))
-                    Utilities.AppendToDictionary(protections, file, "MediaMax CD-3");
+                    AppendToDictionary(protections, file, "MediaMax CD-3");
                 else if (fileContent.Contains("<PROTECTION-VENDOR>MediaMAX</PROTECTION-VENDOR>"))
-                    Utilities.AppendToDictionary(protections, file, "MediaMax CD-3");
+                    AppendToDictionary(protections, file, "MediaMax CD-3");
                 else if (fileContent.Contains("MediaMax(tm)"))
-                    Utilities.AppendToDictionary(protections, file, "MediaMax CD-3");
+                    AppendToDictionary(protections, file, "MediaMax CD-3");
 
                 // phenoProtect
                 if (fileContent.Contains("phenoProtect"))
-                    Utilities.AppendToDictionary(protections, file, "phenoProtect");
+                    AppendToDictionary(protections, file, "phenoProtect");
 
                 // Rainbow Sentinel
                 // Found in "SENTW95.HLP" and "SENTINEL.HLP" in BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]".
                 if (fileContent.Contains("Rainbow Sentinel Driver Help"))
-                    Utilities.AppendToDictionary(protections, file, "Rainbow Sentinel");
+                    AppendToDictionary(protections, file, "Rainbow Sentinel");
 
                 // Found in "OEMSETUP.INF" in BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]".
                 if (fileContent.Contains("Sentinel Driver Disk"))
-                    Utilities.AppendToDictionary(protections, file, "Rainbow Sentinel");
+                    AppendToDictionary(protections, file, "Rainbow Sentinel");
 
                 // The full line from a sample is as follows:
                 //
@@ -102,15 +102,15 @@ namespace BurnOutSharp.FileType
 
                 // SecuROM
                 if (fileContent.Contains("SecuROM protected application"))
-                    Utilities.AppendToDictionary(protections, file, "SecuROM");
+                    AppendToDictionary(protections, file, "SecuROM");
 
                 // Steam
                 if (fileContent.Contains("All use of the Program is governed by the terms of the Steam Agreement as described below."))
-                    Utilities.AppendToDictionary(protections, file, "Steam");
+                    AppendToDictionary(protections, file, "Steam");
 
                 // XCP
                 if (fileContent.Contains("http://cp.sonybmg.com/xcp/"))
-                    Utilities.AppendToDictionary(protections, file, "XCP");
+                    AppendToDictionary(protections, file, "XCP");
             }
             catch (Exception ex)
             {

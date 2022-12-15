@@ -1,6 +1,5 @@
 ﻿using System;
 using BurnOutSharp.Interfaces;
-using BurnOutSharp.Tools;
 using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.ProtectionType
@@ -18,7 +17,7 @@ namespace BurnOutSharp.ProtectionType
             // TODO: Is this too broad in general?
             string name = pex.InternalName;
             if (name?.StartsWith("EReg", StringComparison.OrdinalIgnoreCase) == true)
-                return $"Executable-Based Online Registration {Utilities.GetInternalVersion(pex)}";
+                return $"Executable-Based Online Registration {Tools.Utilities.GetInternalVersion(pex)}";
 
             return null;
         }

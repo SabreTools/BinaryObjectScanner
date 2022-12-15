@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using BurnOutSharp.Tools;
+using BurnOutSharp.Utilities;
 
 /// <see href="https://interoperability.blob.core.windows.net/files/MS-MCI/%5bMS-MCI%5d.pdf"/>
 /// <see href="https://www.rfc-editor.org/rfc/rfc1951"/>

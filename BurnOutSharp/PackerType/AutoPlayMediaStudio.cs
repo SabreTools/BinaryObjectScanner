@@ -2,7 +2,6 @@
 using System.Collections.Concurrent;
 using System.IO;
 using BurnOutSharp.Interfaces;
-using BurnOutSharp.Tools;
 using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.PackerType
@@ -61,7 +60,7 @@ namespace BurnOutSharp.PackerType
                 return version;
 
             // Check the internal versions
-            version = Utilities.GetInternalVersion(pex);
+            version = Tools.Utilities.GetInternalVersion(pex);
             if (!string.IsNullOrEmpty(version))
                 return version;
 

@@ -6,7 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BurnOutSharp.FileType;
-using BurnOutSharp.Tools;
+using BurnOutSharp.Utilities;
+using static BurnOutSharp.Utilities.Dictionary;
 
 namespace BurnOutSharp
 {
@@ -98,7 +99,7 @@ namespace BurnOutSharp
 
                     // Scan for path-detectable protections
                     var directoryPathProtections = GetDirectoryPathProtections(path, files);
-                    Utilities.AppendToDictionary(protections, directoryPathProtections);
+                    AppendToDictionary(protections, directoryPathProtections);
 
                     // Scan each file in directory separately
                     for (int i = 0; i < files.Count; i++)
@@ -116,7 +117,7 @@ namespace BurnOutSharp
 
                         // Scan for path-detectable protections
                         var filePathProtections = GetFilePathProtections(file);
-                        Utilities.AppendToDictionary(protections, filePathProtections);
+                        AppendToDictionary(protections, filePathProtections);
 
                         // Scan for content-detectable protections
                         var fileProtections = GetInternalProtections(file);
@@ -151,7 +152,7 @@ namespace BurnOutSharp
 
                     // Scan for path-detectable protections
                     var filePathProtections = GetFilePathProtections(path);
-                    Utilities.AppendToDictionary(protections, filePathProtections);
+                    AppendToDictionary(protections, filePathProtections);
 
                     // Scan for content-detectable protections
                     var fileProtections = GetInternalProtections(path);
@@ -181,7 +182,7 @@ namespace BurnOutSharp
             }
 
             // Clear out any empty keys
-            Utilities.ClearEmptyKeys(protections);
+            ClearEmptyKeys(protections);
 
             // If we're in debug, output the elasped time to console
             if (IncludeDebug)
@@ -268,8 +269,8 @@ namespace BurnOutSharp
                 if (IncludeDebug) Console.WriteLine(ex);
 
                 var protections = new ConcurrentDictionary<string, ConcurrentQueue<string>>();
-                Utilities.AppendToDictionary(protections, file, IncludeDebug ? ex.ToString() : "[Exception opening file, please try again]");
-                Utilities.ClearEmptyKeys(protections);
+                AppendToDictionary(protections, file, IncludeDebug ? ex.ToString() : "[Exception opening file, please try again]");
+                ClearEmptyKeys(protections);
                 return protections;
             }
         }
@@ -310,16 +311,16 @@ namespace BurnOutSharp
                 }
 
                 // Get the file type either from magic number or extension
-                SupportedFileType fileType = Utilities.GetFileType(magic);
+                SupportedFileType fileType = Tools.Utilities.GetFileType(magic);
                 if (fileType == SupportedFileType.UNKNOWN)
-                    fileType = Utilities.GetFileType(extension);
+                    fileType = Tools.Utilities.GetFileType(extension);
 
                 // If we still got unknown, just return null
                 if (fileType == SupportedFileType.UNKNOWN)
                     return null;
 
                 // Create a scannable for the given file type
-                var scannable = Utilities.CreateScannable(fileType);
+                var scannable = Tools.Utilities.CreateScannable(fileType);
                 if (scannable == null)
                     return null;
 
@@ -329,28 +330,28 @@ namespace BurnOutSharp
                 if (scannable is Executable)
                 {
                     var subProtections = scannable.Scan(this, stream, fileName);
-                    Utilities.AppendToDictionary(protections, subProtections);
+                    AppendToDictionary(protections, subProtections);
                 }
 
                 // PLJ
                 if (scannable is PLJ)
                 {
                     var subProtections = scannable.Scan(this, stream, fileName);
-                    Utilities.AppendToDictionary(protections, subProtections);
+                    AppendToDictionary(protections, subProtections);
                 }
 
                 // SFFS
                 if (scannable is SFFS)
                 {
                     var subProtections = scannable.Scan(this, stream, fileName);
-                    Utilities.AppendToDictionary(protections, subProtections);
+                    AppendToDictionary(protections, subProtections);
                 }
 
                 // Text-based files
                 if (scannable is Textfile)
                 {
                     var subProtections = scannable.Scan(this, stream, fileName);
-                    Utilities.AppendToDictionary(protections, subProtections);
+                    AppendToDictionary(protections, subProtections);
                 }
 
                 #endregion
@@ -364,112 +365,112 @@ namespace BurnOutSharp
                     if (scannable is SevenZip)
                     {
                         var subProtections = scannable.Scan(this, stream, fileName);
-                        Utilities.PrependToKeys(subProtections, fileName);
-                        Utilities.AppendToDictionary(protections, subProtections);
+                        PrependToKeys(subProtections, fileName);
+                        AppendToDictionary(protections, subProtections);
                     }
 
                     // BFPK archive
                     if (scannable is BFPK)
                     {
                         var subProtections = scannable.Scan(this, stream, fileName);
-                        Utilities.PrependToKeys(subProtections, fileName);
-                        Utilities.AppendToDictionary(protections, subProtections);
+                        PrependToKeys(subProtections, fileName);
+                        AppendToDictionary(protections, subProtections);
                     }
 
                     // BZip2
                     if (scannable is BZip2)
                     {
                         var subProtections = scannable.Scan(this, stream, fileName);
-                        Utilities.PrependToKeys(subProtections, fileName);
-                        Utilities.AppendToDictionary(protections, subProtections);
+                        PrependToKeys(subProtections, fileName);
+                        AppendToDictionary(protections, subProtections);
                     }
 
                     // GZIP
                     if (scannable is GZIP)
                     {
                         var subProtections = scannable.Scan(this, stream, fileName);
-                        Utilities.PrependToKeys(subProtections, fileName);
-                        Utilities.AppendToDictionary(protections, subProtections);
+                        PrependToKeys(subProtections, fileName);
+                        AppendToDictionary(protections, subProtections);
                     }
 
                     // InstallShield Archive V3 (Z)
                     if (fileName != null && scannable is InstallShieldArchiveV3)
                     {
                         var subProtections = scannable.Scan(this, fileName);
-                        Utilities.PrependToKeys(subProtections, fileName);
-                        Utilities.AppendToDictionary(protections, subProtections);
+                        PrependToKeys(subProtections, fileName);
+                        AppendToDictionary(protections, subProtections);
                     }
 
                     // InstallShield Cabinet
                     if (fileName != null && scannable is InstallShieldCAB)
                     {
                         var subProtections = scannable.Scan(this, fileName);
-                        Utilities.PrependToKeys(subProtections, fileName);
-                        Utilities.AppendToDictionary(protections, subProtections);
+                        PrependToKeys(subProtections, fileName);
+                        AppendToDictionary(protections, subProtections);
                     }
 
                     // Microsoft Cabinet
                     if (fileName != null && scannable is MicrosoftCAB)
                     {
                         var subProtections = scannable.Scan(this, fileName);
-                        Utilities.PrependToKeys(subProtections, fileName);
-                        Utilities.AppendToDictionary(protections, subProtections);
+                        PrependToKeys(subProtections, fileName);
+                        AppendToDictionary(protections, subProtections);
                     }
 
                     // MSI
                     if (fileName != null && scannable is MSI)
                     {
                         var subProtections = scannable.Scan(this, fileName);
-                        Utilities.PrependToKeys(subProtections, fileName);
-                        Utilities.AppendToDictionary(protections, subProtections);
+                        PrependToKeys(subProtections, fileName);
+                        AppendToDictionary(protections, subProtections);
                     }
 
                     // MPQ archive
                     if (fileName != null && scannable is MPQ)
                     {
                         var subProtections = scannable.Scan(this, fileName);
-                        Utilities.PrependToKeys(subProtections, fileName);
-                        Utilities.AppendToDictionary(protections, subProtections);
+                        PrependToKeys(subProtections, fileName);
+                        AppendToDictionary(protections, subProtections);
                     }
 
                     // PKZIP archive (and derivatives)
                     if (scannable is PKZIP)
                     {
                         var subProtections = scannable.Scan(this, stream, fileName);
-                        Utilities.PrependToKeys(subProtections, fileName);
-                        Utilities.AppendToDictionary(protections, subProtections);
+                        PrependToKeys(subProtections, fileName);
+                        AppendToDictionary(protections, subProtections);
                     }
 
                     // RAR archive
                     if (scannable is RAR)
                     {
                         var subProtections = scannable.Scan(this, stream, fileName);
-                        Utilities.PrependToKeys(subProtections, fileName);
-                        Utilities.AppendToDictionary(protections, subProtections);
+                        PrependToKeys(subProtections, fileName);
+                        AppendToDictionary(protections, subProtections);
                     }
 
                     // Tape Archive
                     if (scannable is TapeArchive)
                     {
                         var subProtections = scannable.Scan(this, stream, fileName);
-                        Utilities.PrependToKeys(subProtections, fileName);
-                        Utilities.AppendToDictionary(protections, subProtections);
+                        PrependToKeys(subProtections, fileName);
+                        AppendToDictionary(protections, subProtections);
                     }
 
                     // Valve archive formats
                     if (fileName != null && scannable is Valve)
                     {
                         var subProtections = scannable.Scan(this, fileName);
-                        Utilities.PrependToKeys(subProtections, fileName);
-                        Utilities.AppendToDictionary(protections, subProtections);
+                        PrependToKeys(subProtections, fileName);
+                        AppendToDictionary(protections, subProtections);
                     }
 
                     // XZ
                     if (scannable is XZ)
                     {
                         var subProtections = scannable.Scan(this, stream, fileName);
-                        Utilities.PrependToKeys(subProtections, fileName);
-                        Utilities.AppendToDictionary(protections, subProtections);
+                        PrependToKeys(subProtections, fileName);
+                        AppendToDictionary(protections, subProtections);
                     }
                 }
 
@@ -479,11 +480,11 @@ namespace BurnOutSharp
             {
                 if (IncludeDebug) Console.WriteLine(ex);
 
-                Utilities.AppendToDictionary(protections, fileName, IncludeDebug ? ex.ToString() : "[Exception opening file, please try again]");
+                AppendToDictionary(protections, fileName, IncludeDebug ? ex.ToString() : "[Exception opening file, please try again]");
             }
 
             // Clear out any empty keys
-            Utilities.ClearEmptyKeys(protections);
+            ClearEmptyKeys(protections);
 
             return protections;
         }

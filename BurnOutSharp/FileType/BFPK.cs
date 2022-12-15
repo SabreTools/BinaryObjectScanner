@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.IO;
-using System.Linq;
 using BurnOutSharp.Interfaces;
-using BurnOutSharp.Tools;
-using SharpCompress.Compressors;
-using SharpCompress.Compressors.Deflate;
+using static BurnOutSharp.Utilities.Dictionary;
 
 namespace BurnOutSharp.FileType
 {
@@ -60,7 +57,7 @@ namespace BurnOutSharp.FileType
                 }
 
                 // Remove temporary path references
-                Utilities.StripFromKeys(protections, tempPath);
+                StripFromKeys(protections, tempPath);
 
                 return protections;
             }

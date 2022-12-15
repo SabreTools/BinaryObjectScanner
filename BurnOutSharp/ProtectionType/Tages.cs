@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
-using BurnOutSharp.Tools;
 using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.ProtectionType
@@ -214,7 +213,7 @@ namespace BurnOutSharp.ProtectionType
         private string GetVersion(PortableExecutable pex)
         {
             // Check the internal versions
-            string version = Utilities.GetInternalVersion(pex);
+            string version = Tools.Utilities.GetInternalVersion(pex);
             if (!string.IsNullOrEmpty(version))
                 return version;
 

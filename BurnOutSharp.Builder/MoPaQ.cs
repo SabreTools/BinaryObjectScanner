@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using BurnOutSharp.Models.MoPaQ;
+using BurnOutSharp.Utilities;
 
 namespace BurnOutSharp.Builder
 {

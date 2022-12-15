@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using BurnOutSharp.Models.PortableExecutable;
+using BurnOutSharp.Utilities;
 
 namespace BurnOutSharp.Builder
 {

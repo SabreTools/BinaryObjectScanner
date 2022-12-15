@@ -3,8 +3,8 @@ using System.Collections.Concurrent;
 using System.IO;
 using System.Text.RegularExpressions;
 using BurnOutSharp.Interfaces;
-using BurnOutSharp.Tools;
 using UnshieldSharp.Cabinet;
+using static BurnOutSharp.Utilities.Dictionary;
 
 namespace BurnOutSharp.FileType
 {
@@ -88,7 +88,7 @@ namespace BurnOutSharp.FileType
                     }
 
                     // Remove temporary path references
-                    Utilities.StripFromKeys(protections, tempPath);
+                    StripFromKeys(protections, tempPath);
 
                     return protections;
                 }

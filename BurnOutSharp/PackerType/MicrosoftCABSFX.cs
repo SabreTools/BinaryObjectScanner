@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using BurnOutSharp.Interfaces;
-using BurnOutSharp.Tools;
 using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.PackerType
@@ -71,7 +70,7 @@ namespace BurnOutSharp.PackerType
         private string GetVersion(PortableExecutable pex)
         {
             // Check the internal versions
-            string version = Utilities.GetInternalVersion(pex);
+            string version = Tools.Utilities.GetInternalVersion(pex);
             if (!string.IsNullOrWhiteSpace(version))
                 return $"v{version}";
 

@@ -2,9 +2,10 @@
 using System.Collections.Concurrent;
 using System.IO;
 using BurnOutSharp.Interfaces;
-using BurnOutSharp.Tools;
+using BurnOutSharp.Utilities;
 using HLLib.Directory;
 using HLLib.Packages;
+using static BurnOutSharp.Utilities.Dictionary;
 
 namespace BurnOutSharp.FileType
 {
@@ -71,7 +72,7 @@ namespace BurnOutSharp.FileType
                 }
 
                 // Remove temporary path references
-                Utilities.StripFromKeys(protections, tempPath);
+                StripFromKeys(protections, tempPath);
 
                 return protections;
             }

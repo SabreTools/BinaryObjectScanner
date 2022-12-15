@@ -11,8 +11,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		appveyor.yml = appveyor.yml
 		Coding Guide.md = Coding Guide.md
-		LICENSE = LICENSE
 		Developer Guide.md = Developer Guide.md
+		LICENSE = LICENSE
 		README.md = README.md
 	EndProjectSection
 EndProject
@@ -33,6 +33,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BurnOutSharp.Matching", "BurnOutSharp.Matching\BurnOutSharp.Matching.csproj", "{563BC37B-8E02-4178-B6FE-F3F6F65E0096}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "psxt001z", "psxt001z\psxt001z.csproj", "{D9574B47-0D6B-445A-97BF-272B5EF9AD3F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BurnOutSharp.Utilities", "BurnOutSharp.Utilities\BurnOutSharp.Utilities.csproj", "{3C1D1FE2-7E7C-4EC1-96B1-FE68B73282CD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -84,6 +86,10 @@ Global
 		{D9574B47-0D6B-445A-97BF-272B5EF9AD3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D9574B47-0D6B-445A-97BF-272B5EF9AD3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D9574B47-0D6B-445A-97BF-272B5EF9AD3F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C1D1FE2-7E7C-4EC1-96B1-FE68B73282CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C1D1FE2-7E7C-4EC1-96B1-FE68B73282CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C1D1FE2-7E7C-4EC1-96B1-FE68B73282CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C1D1FE2-7E7C-4EC1-96B1-FE68B73282CD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

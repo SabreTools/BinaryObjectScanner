@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
-using BurnOutSharp.Tools;
 using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.ProtectionType
@@ -23,7 +22,7 @@ namespace BurnOutSharp.ProtectionType
             else if (!string.IsNullOrEmpty(name) && name.Contains("Steam Client API"))
                 return "Steam";
             else if (!string.IsNullOrEmpty(name) && name.Contains("Steam Client Engine"))
-                return $"Steam Client Engine {Utilities.GetInternalVersion(pex)}";
+                return $"Steam Client Engine {Tools.Utilities.GetInternalVersion(pex)}";
             else if (!string.IsNullOrEmpty(name) && name.Contains("Steam Client Service"))
                 return "Steam";
 

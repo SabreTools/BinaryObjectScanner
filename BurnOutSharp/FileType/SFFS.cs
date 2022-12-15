@@ -2,7 +2,7 @@
 using System.Collections.Concurrent;
 using System.IO;
 using BurnOutSharp.Interfaces;
-using BurnOutSharp.Tools;
+using static BurnOutSharp.Utilities.Dictionary;
 
 namespace BurnOutSharp.FileType
 {
@@ -33,9 +33,9 @@ namespace BurnOutSharp.FileType
                 byte[] magic = new byte[16];
                 stream.Read(magic, 0, 16);
 
-                if (Utilities.GetFileType(magic) == SupportedFileType.SFFS)
+                if (Tools.Utilities.GetFileType(magic) == SupportedFileType.SFFS)
                 {
-                    Utilities.AppendToDictionary(protections, file, "StarForce Filesystem Container");
+                    AppendToDictionary(protections, file, "StarForce Filesystem Container");
                     return protections;
                 }
             }

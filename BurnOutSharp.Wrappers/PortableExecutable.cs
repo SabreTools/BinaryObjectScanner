@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using BurnOutSharp.Utilities;
 using static BurnOutSharp.Builder.Extensions;
 
 namespace BurnOutSharp.Wrappers

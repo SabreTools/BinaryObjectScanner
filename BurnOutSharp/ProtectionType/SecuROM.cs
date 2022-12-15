@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
-using BurnOutSharp.Tools;
 using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.ProtectionType
@@ -23,15 +22,15 @@ namespace BurnOutSharp.ProtectionType
 
             string name = pex.FileDescription;
             if (name?.Contains("SecuROM PA") == true)
-                return $"SecuROM Product Activation v{Utilities.GetInternalVersion(pex)}";
+                return $"SecuROM Product Activation v{Tools.Utilities.GetInternalVersion(pex)}";
 
             name = pex.OriginalFilename;
             if (name?.Equals("paul_dll_activate_and_play.dll") == true)
-                return $"SecuROM Product Activation v{Utilities.GetInternalVersion(pex)}";
+                return $"SecuROM Product Activation v{Tools.Utilities.GetInternalVersion(pex)}";
 
             name = pex.ProductName;
             if (name?.Contains("SecuROM Activate & Play") == true)
-                return $"SecuROM Product Activation v{Utilities.GetInternalVersion(pex)}";
+                return $"SecuROM Product Activation v{Tools.Utilities.GetInternalVersion(pex)}";
 
             // Get the matrosch section, if it exists
             bool matroschSection = pex.ContainsSection("matrosch", exact: true);

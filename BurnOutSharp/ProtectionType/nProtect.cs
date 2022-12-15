@@ -1,9 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
-using BurnOutSharp.Tools;
 using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.ProtectionType
@@ -44,37 +42,37 @@ namespace BurnOutSharp.ProtectionType
 
             // Found in "GameGuard.des" in Redump entry 90526 and 99598.
             if (name?.Contains("nProtect GameGuard Launcher") == true)
-                return $"nProtect GameGuard ({Utilities.GetInternalVersion(pex)})";
+                return $"nProtect GameGuard ({Tools.Utilities.GetInternalVersion(pex)})";
 
             // Found in "npkcrypt.dll" in Redump entry 90526.
             if (name?.Contains("nProtect KeyCrypt Driver Support Dll") == true)
-                return $"nProtect KeyCrypt ({Utilities.GetInternalVersion(pex)})";
+                return $"nProtect KeyCrypt ({Tools.Utilities.GetInternalVersion(pex)})";
 
             // Found in "npkcrypt.sys" and "npkcusb.sys" in Redump entry 90526.
             if (name?.Contains("nProtect KeyCrypt Driver") == true)
-                return $"nProtect KeyCrypt ({Utilities.GetInternalVersion(pex)})";
+                return $"nProtect KeyCrypt ({Tools.Utilities.GetInternalVersion(pex)})";
 
             // Found in "npkpdb.dll" in Redump entry 90526.
             if (name?.Contains("nProtect KeyCrypt Program Database DLL") == true)
-                return $"nProtect KeyCrypt ({Utilities.GetInternalVersion(pex)})";
+                return $"nProtect KeyCrypt ({Tools.Utilities.GetInternalVersion(pex)})";
 
             name = pex.ProductName;
 
             // Found in "GameGuard.des" in Redump entry 90526 and 99598.
             if (name?.Contains("nProtect GameGuard Launcher") == true)
-                return $"nProtect GameGuard ({Utilities.GetInternalVersion(pex)})";
+                return $"nProtect GameGuard ({Tools.Utilities.GetInternalVersion(pex)})";
 
             // Found in "npkcrypt.dll" in Redump entry 90526.
             if (name?.Contains("nProtect KeyCrypt Driver Support Dll") == true)
-                return $"nProtect KeyCrypt ({Utilities.GetInternalVersion(pex)})";
+                return $"nProtect KeyCrypt ({Tools.Utilities.GetInternalVersion(pex)})";
 
             // Found in "npkcrypt.sys" and "npkcusb.sys" in Redump entry 90526.
             if (name?.Contains("nProtect KeyCrypt Driver") == true)
-                return $"nProtect KeyCrypt ({Utilities.GetInternalVersion(pex)})";
+                return $"nProtect KeyCrypt ({Tools.Utilities.GetInternalVersion(pex)})";
 
             // Found in "npkpdb.dll" in Redump entry 90526.
             if (name?.Contains("nProtect KeyCrypt Program Database DLL") == true)
-                return $"nProtect KeyCrypt ({Utilities.GetInternalVersion(pex)})";
+                return $"nProtect KeyCrypt ({Tools.Utilities.GetInternalVersion(pex)})";
 
             return null;
         }

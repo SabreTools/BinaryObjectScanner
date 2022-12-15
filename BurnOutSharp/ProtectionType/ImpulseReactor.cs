@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
-using BurnOutSharp.Tools;
 using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.ProtectionType
@@ -22,15 +21,15 @@ namespace BurnOutSharp.ProtectionType
 
             string name = pex.FileDescription;
             if (name?.Contains("ImpulseReactor Dynamic Link Library") == true)
-                return $"Impulse Reactor Core Module {Utilities.GetInternalVersion(pex)}";
+                return $"Impulse Reactor Core Module {Tools.Utilities.GetInternalVersion(pex)}";
 
             name = pex.ProductName;
             if (name?.Contains("ImpulseReactor Dynamic Link Library") == true)
-                return $"Impulse Reactor Core Module {Utilities.GetInternalVersion(pex)}";
+                return $"Impulse Reactor Core Module {Tools.Utilities.GetInternalVersion(pex)}";
 
             name = pex.OriginalFilename;
             if (name?.Contains("ReactorActivate.exe") == true)
-                return $"Stardock Product Activation {Utilities.GetInternalVersion(pex)}";
+                return $"Stardock Product Activation {Tools.Utilities.GetInternalVersion(pex)}";
 
             // TODO: Check for CVP* instead?
             bool containsCheck = pex.ExportNameTable?.Any(s => s.StartsWith("CVPInitializeClient")) ?? false;
@@ -46,7 +45,7 @@ namespace BurnOutSharp.ProtectionType
             }
 
             if (containsCheck && containsCheck2)
-                return $"Impulse Reactor Core Module {Utilities.GetInternalVersion(pex)}";
+                return $"Impulse Reactor Core Module {Tools.Utilities.GetInternalVersion(pex)}";
             else if (containsCheck && !containsCheck2)
                 return $"Impulse Reactor";
 
@@ -58,8 +57,8 @@ namespace BurnOutSharp.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new PathMatch("ImpulseReactor.dll", useEndsWith: true), Utilities.GetInternalVersion, "Impulse Reactor Core Module"),
-                new PathMatchSet(new PathMatch("ReactorActivate.exe", useEndsWith: true), Utilities.GetInternalVersion, "Stardock Product Activation"),
+                new PathMatchSet(new PathMatch("ImpulseReactor.dll", useEndsWith: true), Tools.Utilities.GetInternalVersion, "Impulse Reactor Core Module"),
+                new PathMatchSet(new PathMatch("ReactorActivate.exe", useEndsWith: true), Tools.Utilities.GetInternalVersion, "Stardock Product Activation"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);
@@ -70,8 +69,8 @@ namespace BurnOutSharp.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new PathMatch("ImpulseReactor.dll", useEndsWith: true), Utilities.GetInternalVersion, "Impulse Reactor Core Module"),
-                new PathMatchSet(new PathMatch("ReactorActivate.exe", useEndsWith: true), Utilities.GetInternalVersion, "Stardock Product Activation"),
+                new PathMatchSet(new PathMatch("ImpulseReactor.dll", useEndsWith: true), Tools.Utilities.GetInternalVersion, "Impulse Reactor Core Module"),
+                new PathMatchSet(new PathMatch("ReactorActivate.exe", useEndsWith: true), Tools.Utilities.GetInternalVersion, "Stardock Product Activation"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

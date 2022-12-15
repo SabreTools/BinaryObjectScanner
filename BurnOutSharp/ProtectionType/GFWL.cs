@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
-using BurnOutSharp.Tools;
 using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.ProtectionType
@@ -21,9 +20,9 @@ namespace BurnOutSharp.ProtectionType
 
             string name = pex.FileDescription;
             if (name?.StartsWith("Games for Windows - LIVE Zero Day Piracy Protection", StringComparison.OrdinalIgnoreCase) == true)
-                return $"Games for Windows LIVE - Zero Day Piracy Protection Module {Utilities.GetInternalVersion(pex)}";
+                return $"Games for Windows LIVE - Zero Day Piracy Protection Module {Tools.Utilities.GetInternalVersion(pex)}";
             else if (name?.StartsWith("Games for Windows", StringComparison.OrdinalIgnoreCase) == true)
-                return $"Games for Windows LIVE {Utilities.GetInternalVersion(pex)}";
+                return $"Games for Windows LIVE {Tools.Utilities.GetInternalVersion(pex)}";
 
             // Get the import directory table
             if (pex.ImportTable?.ImportDirectoryTable != null)

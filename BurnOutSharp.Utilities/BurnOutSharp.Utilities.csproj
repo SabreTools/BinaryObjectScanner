@@ -1,9 +1,9 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net6.0</TargetFrameworks>
-    <Title>BurnOutSharp.Builder</Title>
-    <AssemblyName>BurnOutSharp.Builder</AssemblyName>
+    <Title>BurnOutSharp.Utilities</Title>
+    <AssemblyName>BurnOutSharp.Utilities</AssemblyName>
     <Authors>Matt Nadareski</Authors>
     <Product>BurnOutSharp</Product>
     <Copyright>Copyright (c)2022 Matt Nadareski</Copyright>
@@ -18,10 +18,5 @@
   <PropertyGroup>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\BurnOutSharp.Models\BurnOutSharp.Models.csproj" />
-    <ProjectReference Include="..\BurnOutSharp.Utilities\BurnOutSharp.Utilities.csproj" />
-  </ItemGroup>
 
 </Project>

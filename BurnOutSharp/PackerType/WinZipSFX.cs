@@ -4,10 +4,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using BurnOutSharp.Interfaces;
-using BurnOutSharp.Tools;
 using BurnOutSharp.Wrappers;
 using SharpCompress.Archives;
 using SharpCompress.Archives.Zip;
+using static BurnOutSharp.Utilities.Dictionary;
 
 namespace BurnOutSharp.PackerType
 {
@@ -123,7 +123,7 @@ namespace BurnOutSharp.PackerType
                 }
 
                 // Remove temporary path references
-                Utilities.StripFromKeys(protections, tempPath);
+                StripFromKeys(protections, tempPath);
 
                 return protections;
             }

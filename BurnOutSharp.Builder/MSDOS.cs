@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using BurnOutSharp.Models.MSDOS;
+using BurnOutSharp.Utilities;
 
 namespace BurnOutSharp.Builder
 {
