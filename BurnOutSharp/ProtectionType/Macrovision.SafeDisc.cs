@@ -60,7 +60,7 @@ namespace BurnOutSharp.ProtectionType
 
             // Found in Redump entries 20729 and 65569.
             // Get the debug data
-            if (pex.FindDebugTableByValue("SafeDisc").Any() || pex.FindDebugTableByValue("SafeDisk").Any())
+            if (pex.FindCodeViewDebugTableByPath("SafeDisc").Any() || pex.FindCodeViewDebugTableByPath("Safedisk").Any())
                 return "SafeDisc";
 
             // TODO: Add entry point check
