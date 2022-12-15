@@ -25,8 +25,7 @@ namespace BurnOutSharp.Builder
                 return null;
 
             // Create a memory stream and parse that
-            MemoryStream dataStream = new MemoryStream(data);
-            dataStream.Position = offset;
+            MemoryStream dataStream = new MemoryStream(data, offset, data.Length - offset);
             return ParseExecutable(dataStream);
         }
 
@@ -42,7 +41,7 @@ namespace BurnOutSharp.Builder
         public static Executable ParseExecutable(Stream data)
         {
             // If the data is invalid
-            if (data == null)
+            if (data == null || data.Length == 0 || !data.CanSeek || !data.CanRead)
                 return null;
 
             // If the offset is out of bounds

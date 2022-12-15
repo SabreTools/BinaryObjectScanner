@@ -105,8 +105,16 @@ namespace BurnOutSharp.Wrappers
         /// <returns>An MS-DOS executable wrapper on success, null on failure</returns>
         public static MSDOS Create(byte[] data, int offset)
         {
-            MemoryStream dataStream = new MemoryStream(data);
-            dataStream.Position = offset;
+            // If the data is invalid
+            if (data == null)
+                return null;
+
+            // If the offset is out of bounds
+            if (offset < 0 || offset >= data.Length)
+                return null;
+
+            // Create a memory stream and use that
+            MemoryStream dataStream = new MemoryStream(data, offset, data.Length - offset);
             return Create(dataStream);
         }
 
@@ -117,6 +125,10 @@ namespace BurnOutSharp.Wrappers
         /// <returns>An MS-DOS executable wrapper on success, null on failure</returns>
         public static MSDOS Create(Stream data)
         {
+            // If the data is invalid
+            if (data == null || data.Length == 0 || !data.CanSeek || !data.CanRead)
+                return null;
+
             var executable = Builder.MSDOS.ParseExecutable(data);
             if (executable == null)
                 return null;
