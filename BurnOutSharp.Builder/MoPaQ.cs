@@ -269,11 +269,53 @@ namespace BurnOutSharp.Builder
 
             #endregion
 
-            // TODO: Read in Hash Table
-            // TODO: Read in Block Table
-            // TODO: Read in Hi-Block Table
-            // TODO: Read in BET Table
-            // TODO: Read in HET Table
+            #region Hash Table
+
+            // If we have a hash table
+            ulong hashTableOffset = ((uint)archive.ArchiveHeader.HashTablePositionHi << 24) | archive.ArchiveHeader.HashTablePosition;
+            if (hashTableOffset != 0)
+            {
+                // TODO: Read in Hash Table
+            }
+
+            #endregion
+
+            #region Block Table
+
+            ulong blockTableOffset = ((uint)archive.ArchiveHeader.BlockTablePositionHi << 24) | archive.ArchiveHeader.BlockTablePosition;
+            if (blockTableOffset != 0)
+            {
+                // TODO: Read in Block Table
+            }
+
+            #endregion
+
+            #region Hi-Block Table
+
+            if (archive.ArchiveHeader.HiBlockTablePosition != 0)
+            {
+                // TODO: Read in Hi-Block Table
+            }
+
+            #endregion
+
+            #region BET Table
+
+            if (archive.ArchiveHeader.BetTablePosition != 0)
+            {
+                // TODO: Read in BET Table
+            }
+
+            #endregion
+
+            #region HET Table
+
+            if (archive.ArchiveHeader.HetTablePosition != 0)
+            {
+                // TODO: Read in HET Table
+            }
+
+            #endregion
 
             return archive;
         }
@@ -519,7 +561,7 @@ namespace BurnOutSharp.Builder
         /// </summary>
         /// <param name="data">Stream to parse</param>
         /// <returns>Filled archive on success, null on error</returns>
-        public static Archive ParseCabinet(Stream data)
+        public static Archive ParseArchive(Stream data)
         {
             // If the data is invalid
             if (data == null)
@@ -577,11 +619,53 @@ namespace BurnOutSharp.Builder
 
             #endregion
 
-            // TODO: Read in Hash Table
-            // TODO: Read in Block Table
-            // TODO: Read in Hi-Block Table
-            // TODO: Read in BET Table
-            // TODO: Read in HET Table
+            #region Hash Table
+
+            // If we have a hash table
+            ulong hashTableOffset = ((uint)archive.ArchiveHeader.HashTablePositionHi << 24) | archive.ArchiveHeader.HashTablePosition;
+            if (hashTableOffset != 0)
+            {
+                // TODO: Read in Hash Table
+            }
+
+            #endregion
+
+            #region Block Table
+
+            ulong blockTableOffset = ((uint)archive.ArchiveHeader.BlockTablePositionHi << 24) | archive.ArchiveHeader.BlockTablePosition;
+            if (blockTableOffset != 0)
+            {
+                // TODO: Read in Block Table
+            }
+
+            #endregion
+
+            #region Hi-Block Table
+
+            if (archive.ArchiveHeader.HiBlockTablePosition != 0)
+            {
+                // TODO: Read in Hi-Block Table
+            }
+
+            #endregion
+
+            #region BET Table
+
+            if (archive.ArchiveHeader.BetTablePosition != 0)
+            {
+                // TODO: Read in BET Table
+            }
+
+            #endregion
+
+            #region HET Table
+
+            if (archive.ArchiveHeader.HetTablePosition != 0)
+            {
+                // TODO: Read in HET Table
+            }
+
+            #endregion
 
             return archive;
         }
