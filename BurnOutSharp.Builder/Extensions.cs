@@ -454,6 +454,32 @@ namespace BurnOutSharp.Builder
         #region Debug
 
         /// <summary>
+        /// Read debug data as an NB10 Program Database
+        /// </summary>
+        /// <param name="data">Data to parse into a database</param>
+        /// <param name="offset">Offset into the byte array</param>
+        /// <returns>A filled NB10 Program Database on success, null on error</returns>
+        public static Models.PortableExecutable.NB10ProgramDatabase AsNB10ProgramDatabase(this byte[] data, ref int offset)
+        {
+            // If we have data that's invalid, we can't do anything
+            if (data == null)
+                return null;
+
+            var nb10ProgramDatabase = new Models.PortableExecutable.NB10ProgramDatabase();
+
+            nb10ProgramDatabase.Signature = data.ReadUInt32(ref offset);
+            if (nb10ProgramDatabase.Signature != 0x3031424E)
+                return null;
+
+            nb10ProgramDatabase.Offset = data.ReadUInt32(ref offset);
+            nb10ProgramDatabase.Timestamp = data.ReadUInt32(ref offset);
+            nb10ProgramDatabase.Age = data.ReadUInt32(ref offset);
+            nb10ProgramDatabase.PdbFileName = data.ReadString(ref offset, Encoding.ASCII); // TODO: Actually null-terminated UTF-8?
+
+            return nb10ProgramDatabase;
+        }
+
+        /// <summary>
         /// Read debug data as an RSDS Program Database
         /// </summary>
         /// <param name="data">Data to parse into a database</param>

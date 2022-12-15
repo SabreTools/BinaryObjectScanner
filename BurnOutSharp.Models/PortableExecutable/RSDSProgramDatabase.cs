@@ -22,7 +22,9 @@ namespace BurnOutSharp.Models.PortableExecutable
         public Guid GUID;
 
         /// <summary>
-        /// "age"
+        /// Ever-incrementing value, which is initially set to 1 and
+        /// incremented every time when a part of the PDB file is updated
+        /// without rewriting the whole file. 
         /// </summary>
         public uint Age;
 
