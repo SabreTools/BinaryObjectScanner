@@ -126,17 +126,24 @@ namespace BurnOutSharp.Tools
         /// </summary>
         public static string ReadString(this byte[] content, ref int offset, Encoding encoding)
         {
+            if (offset >= content.Length)
+                return null;
+
             byte[] nullTerminator = encoding.GetBytes(new char[] { '\0' });
             int charWidth = nullTerminator.Length;
 
             List<char> keyChars = new List<char>();
-            while (BitConverter.ToUInt16(content, offset) != 0x0000)
+            while (offset < content.Length)
             {
-                keyChars.Add(encoding.GetChars(content, offset, charWidth)[0]); offset += charWidth;
-            }
-            offset += 2;
+                char c = encoding.GetChars(content, offset, charWidth)[0];
+                keyChars.Add(c);
+                offset += charWidth;
 
-            return new string(keyChars.ToArray());
+                if (c == '\0')
+                    break;
+            }
+
+            return new string(keyChars.ToArray()).TrimEnd('\0');
         }
 
         /// <summary>

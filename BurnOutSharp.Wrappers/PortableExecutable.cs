@@ -583,21 +583,18 @@ namespace BurnOutSharp.Wrappers
         {
             get
             {
-                lock (_sourceDataLock)
-                {
-                    // Use the cached data if possible
-                    if (_debugData != null && _debugData.Count != 0)
-                        return _debugData;
-
-                    // If we have no resource table, just return
-                    if (DebugTable?.DebugDirectoryTable == null
-                        || DebugTable.DebugDirectoryTable.Length == 0)
-                        return null;
-
-                    // Otherwise, build and return the cached dictionary
-                    ParseDebugTable();
+                // Use the cached data if possible
+                if (_debugData != null && _debugData.Count != 0)
                     return _debugData;
-                }
+
+                // If we have no resource table, just return
+                if (DebugTable?.DebugDirectoryTable == null
+                    || DebugTable.DebugDirectoryTable.Length == 0)
+                    return null;
+
+                // Otherwise, build and return the cached dictionary
+                ParseDebugTable();
+                return _debugData;
             }
         }
 
@@ -2815,16 +2812,19 @@ namespace BurnOutSharp.Wrappers
             if (DebugData == null)
                 return Enumerable.Empty<object>();
 
-            return DebugData.Select(r => r.Value)
+            var nb10Found = DebugData.Select(r => r.Value)
                 .Select(r => r as Models.PortableExecutable.NB10ProgramDatabase)
                 .Where(n => n != null)
-                .Where(n => n.PdbFileName.Contains("path"))
-                .Select(n => (object)n)
-                .Concat(DebugData.Select(r => r.Value)
-                    .Select(r => r as Models.PortableExecutable.RSDSProgramDatabase)
-                    .Where(r => r != null)
-                    .Where(r => r.PathAndFileName.Contains("path"))
-                    .Select(r => (object)r));
+                .Where(n => n.PdbFileName.Contains(path))
+                .Select(n => (object)n);
+
+            var rsdsFound = DebugData.Select(r => r.Value)
+                .Select(r => r as Models.PortableExecutable.RSDSProgramDatabase)
+                .Where(r => r != null)
+                .Where(r => r.PathAndFileName.Contains(path))
+                .Select(r => (object)r);
+
+            return nb10Found.Concat(rsdsFound);
         }
 
         /// <summary>
