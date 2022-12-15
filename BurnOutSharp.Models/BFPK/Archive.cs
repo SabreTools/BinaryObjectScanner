@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace BurnOutSharp.Models.BFPK
+﻿namespace BurnOutSharp.Models.BFPK
 {
     /// <summary>
     /// BFPK custom archive format
