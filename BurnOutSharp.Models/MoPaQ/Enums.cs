@@ -2,6 +2,58 @@
 
 namespace BurnOutSharp.Models.MoPaQ
 {
+    /// <summary>
+    /// Compression types for multiple compressions
+    /// </summary>
+    [Flags]
+    public enum CompressionType : uint
+    {
+        /// <summary>
+        /// Huffmann compression (used on WAVE files only)
+        /// </summary>
+        MPQ_COMPRESSION_HUFFMANN = 0x01,
+
+        /// <summary>
+        /// ZLIB compression
+        /// </summary>
+        MPQ_COMPRESSION_ZLIB = 0x02,
+
+        /// <summary>
+        /// PKWARE DCL compression
+        /// </summary>
+        MPQ_COMPRESSION_PKWARE = 0x08,
+
+        /// <summary>
+        /// BZIP2 compression (added in Warcraft III)
+        /// </summary>
+        MPQ_COMPRESSION_BZIP2 = 0x10,
+
+        /// <summary>
+        /// Sparse compression (added in Starcraft 2)
+        /// </summary>
+        MPQ_COMPRESSION_SPARSE = 0x20,
+
+        /// <summary>
+        /// IMA ADPCM compression (mono)
+        /// </summary>
+        MPQ_COMPRESSION_ADPCM_MONO = 0x40,
+
+        /// <summary>
+        /// IMA ADPCM compression (stereo)
+        /// </summary>
+        MPQ_COMPRESSION_ADPCM_STEREO = 0x80,
+
+        /// <summary>
+        /// LZMA compression. Added in Starcraft 2. This value is NOT a combination of flags.
+        /// </summary>
+        MPQ_COMPRESSION_LZMA = 0x12,
+
+        /// <summary>
+        /// Same compression
+        /// </summary>
+        MPQ_COMPRESSION_NEXT_SAME = 0xFFFFFFFF,
+    }
+
     [Flags]
     public enum FileFlags : uint
     {
@@ -55,6 +107,29 @@ namespace BurnOutSharp.Models.MoPaQ
         /// Set if file exists, reset when the file was deleted
         /// </summary>
         MPQ_FILE_EXISTS = 0x80000000,
+    }
+
+    public enum FormatVersion : ushort
+    {
+        /// <summary>
+        /// Format 1 (up to The Burning Crusade)
+        /// </summary>
+        Format1 = 0,
+
+        /// <summary>
+        /// Format 2 (The Burning Crusade and newer)
+        /// </summary>
+        Format2 = 1,
+
+        /// <summary>
+        /// Format 3 (WoW - Cataclysm beta or newer)
+        /// </summary>
+        Format3 = 2,
+
+        /// <summary>
+        /// Format 4 (WoW - Cataclysm beta or newer)
+        /// </summary>
+        Format4 = 3,
     }
 
     public enum Locale : short

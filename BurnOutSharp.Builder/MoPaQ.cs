@@ -10,126 +10,25 @@ namespace BurnOutSharp.Builder
     {
         #region Constants
 
-        #region User Data
+        #region Encryption
 
-        public const int UserDataSize = 0x10;
-
-        /// <summary>
-        /// Human-readable signature
-        /// </summary>
-        public static readonly string UserDataSignatureString = $"MPQ{(char)0x1B}";
+        private const uint MPQ_HASH_KEY2_MIX = 0x400;
 
         /// <summary>
-        /// Signature as an unsigned Int32 value
+        /// Obtained by HashString("(block table)", MPQ_HASH_FILE_KEY)
         /// </summary>
-        public const uint UserDataSignatureValue = 0x1B51504D;
+        private const uint MPQ_KEY_BLOCK_TABLE = 0xEC83B3A3;
 
         /// <summary>
-        /// Signature as a byte array
+        /// Obtained by HashString("(hash table)", MPQ_HASH_FILE_KEY)
         /// </summary>
-        public static readonly byte[] UserDataSignatureBytes = new byte[] { 0x4D, 0x50, 0x51, 0x1B };
+        private const uint MPQ_KEY_HASH_TABLE = 0xC3AF3770;
 
-        #endregion
-
-        #region Archive Header
-
-        #region Signatures
-
-        /// <summary>
-        /// Human-readable signature
-        /// </summary>
-        public static readonly string ArchiveHeaderSignatureString = $"MPQ{(char)0x1A}";
-
-        /// <summary>
-        /// Signature as an unsigned Int32 value
-        /// </summary>
-        public const uint ArchiveHeaderSignatureValue = 0x1A51504D;
-
-        /// <summary>
-        /// Signature as a byte array
-        /// </summary>
-        public static readonly byte[] ArchiveHeaderSignatureBytes = new byte[] { 0x4D, 0x50, 0x51, 0x1A };
-
-        #endregion
-
-        #region Header Sizes
-
-        public const int ArchiveHeaderHeaderVersion1Size = 0x20;
-
-        public const int ArchiveHeaderHeaderVersion2Size = 0x2C;
-
-        public const int ArchiveHeaderHeaderVersion3Size = 0x44;
-
-        public const int ArchiveHeaderHeaderVersion4Size = 0xD0;
-
-        #endregion
-
-        #endregion
-
-        #region HET Table
-
-        public const int HetTableSize = 0x44;
-
-        /// <summary>
-        /// Human-readable signature
-        /// </summary>
-        public static readonly string HetTableSignatureString = $"HET{(char)0x1A}";
-
-        /// <summary>
-        /// Signature as an unsigned Int32 value
-        /// </summary>
-        public const uint HetTableSignatureValue = 0x1A544548;
-
-        /// <summary>
-        /// Signature as a byte array
-        /// </summary>
-        public static readonly byte[] HetTableSignatureBytes = new byte[] { 0x48, 0x45, 0x54, 0x1A };
-
-        #endregion
-
-        #region BET Table
-
-        public const int BetTableSize = 0x88;
-
-        /// <summary>
-        /// Human-readable signature
-        /// </summary>
-        public static readonly string BetTableSignatureString = $"BET{(char)0x1A}";
-
-        /// <summary>
-        /// Signature as an unsigned Int32 value
-        /// </summary>
-        public const uint BetTableSignatureValue = 0x1A544542;
-
-        /// <summary>
-        /// Signature as a byte array
-        /// </summary>
-        public static readonly byte[] BetTableSignatureBytes = new byte[] { 0x42, 0x45, 0x54, 0x1A };
-
-        #endregion
-
-        #region Hash Entry
-
-        public const int HashEntrySize = 0x10;
-
-        #endregion
-
-        #region Block Entry
-
-        public const int BlockEntrySize = 0x10;
+        private const uint STORM_BUFFER_SIZE = 0x500;
 
         #endregion
 
         #region Patch Header
-
-        #region Signatures
-
-        #region Patch Header
-
-        /// <summary>
-        /// Human-readable signature
-        /// </summary>
-        public static readonly string PatchSignatureString = $"PTCH";
 
         /// <summary>
         /// Signature as an unsigned Int32 value
@@ -137,37 +36,9 @@ namespace BurnOutSharp.Builder
         public const uint PatchSignatureValue = 0x48435450;
 
         /// <summary>
-        /// Signature as a byte array
-        /// </summary>
-        public static readonly byte[] PatchSignatureBytes = new byte[] { 0x50, 0x54, 0x43, 0x48 };
-
-        #endregion
-
-        #region MD5 Block
-
-        /// <summary>
-        /// Human-readable signature
-        /// </summary>
-        public static readonly string Md5SignatureString = $"MD5_";
-
-        /// <summary>
         /// Signature as an unsigned Int32 value
         /// </summary>
         public const uint Md5SignatureValue = 0x5F35444D;
-
-        /// <summary>
-        /// Signature as a byte array
-        /// </summary>
-        public static readonly byte[] Md5SignatureBytes = new byte[] { 0x4D, 0x44, 0x35, 0x5F };
-
-        #endregion
-
-        #region XFRM Block
-
-        /// <summary>
-        /// Human-readable signature
-        /// </summary>
-        public static readonly string XFRMSignatureString = $"XFRM";
 
         /// <summary>
         /// Signature as an unsigned Int32 value
@@ -175,32 +46,9 @@ namespace BurnOutSharp.Builder
         public const uint XFRMSignatureValue = 0x4D524658;
 
         /// <summary>
-        /// Signature as a byte array
-        /// </summary>
-        public static readonly byte[] XFRMSignatureBytes = new byte[] { 0x58, 0x46, 0x52, 0x4D };
-
-        #endregion
-
-        #region BSDIFF Patch Type
-
-        /// <summary>
-        /// Human-readable signature
-        /// </summary>
-        public static readonly string BSDIFF40SignatureString = $"BSDIFF40";
-
-        /// <summary>
         /// Signature as an unsigned Int64 value
         /// </summary>
         public const ulong BSDIFF40SignatureValue = 0x3034464649445342;
-
-        /// <summary>
-        /// Signature as a byte array
-        /// </summary>
-        public static readonly byte[] BSDIFF40SignatureBytes = new byte[] { 0x42, 0x53, 0x44, 0x49, 0x46, 0x46, 0x34, 0x30 };
-
-        #endregion
-
-        #endregion
 
         #endregion
 
@@ -259,7 +107,7 @@ namespace BurnOutSharp.Builder
             // Check for User Data
             uint possibleSignature = data.ReadUInt32();
             data.Seek(-4, SeekOrigin.Current);
-            if (possibleSignature == UserDataSignatureValue)
+            if (possibleSignature == 0x1B51504D)
             {
                 // Save the current position for offset correction
                 long basePtr = data.Position;
@@ -283,7 +131,7 @@ namespace BurnOutSharp.Builder
             // Check for the Header
             possibleSignature = data.ReadUInt32();
             data.Seek(-4, SeekOrigin.Current);
-            if (possibleSignature == ArchiveHeaderSignatureValue)
+            if (possibleSignature == 0x1A51504D)
             {
                 // Try to parse the archive header
                 var archiveHeader = ParseArchiveHeader(data);
@@ -293,13 +141,19 @@ namespace BurnOutSharp.Builder
                 // Set the archive header
                 archive.ArchiveHeader = archiveHeader;
             }
+            else
+            {
+                return null;
+            }
 
             #endregion
 
             #region Hash Table
 
+            // TODO: The hash table has to be be decrypted before reading
+
             // Version 1
-            if (archive.ArchiveHeader.FormatVersion == 0)
+            if (archive.ArchiveHeader.FormatVersion == FormatVersion.Format1)
             {
                 // If we have a hash table
                 long hashTableOffset = archive.ArchiveHeader.HashTablePosition;
@@ -328,7 +182,7 @@ namespace BurnOutSharp.Builder
             }
 
             // Version 2 and 3
-            else if (archive.ArchiveHeader.FormatVersion == 1 || archive.ArchiveHeader.FormatVersion == 2)
+            else if (archive.ArchiveHeader.FormatVersion == FormatVersion.Format2 || archive.ArchiveHeader.FormatVersion == FormatVersion.Format3)
             {
                 // If we have a hash table
                 long hashTableOffset = ((uint)archive.ArchiveHeader.HashTablePositionHi << 23) | archive.ArchiveHeader.HashTablePosition;
@@ -357,7 +211,7 @@ namespace BurnOutSharp.Builder
             }
 
             // Version 4
-            else if (archive.ArchiveHeader.FormatVersion == 3)
+            else if (archive.ArchiveHeader.FormatVersion == FormatVersion.Format4)
             {
                 // If we have a hash table
                 long hashTableOffset = ((uint)archive.ArchiveHeader.HashTablePositionHi << 23) | archive.ArchiveHeader.HashTablePosition;
@@ -390,7 +244,7 @@ namespace BurnOutSharp.Builder
             #region Block Table
 
             // Version 1
-            if (archive.ArchiveHeader.FormatVersion == 0)
+            if (archive.ArchiveHeader.FormatVersion == FormatVersion.Format1)
             {
                 // If we have a block table
                 long blockTableOffset = archive.ArchiveHeader.BlockTablePosition;
@@ -419,7 +273,7 @@ namespace BurnOutSharp.Builder
             }
 
             // Version 2 and 3
-            else if (archive.ArchiveHeader.FormatVersion == 1 || archive.ArchiveHeader.FormatVersion == 2)
+            else if (archive.ArchiveHeader.FormatVersion == FormatVersion.Format2 || archive.ArchiveHeader.FormatVersion == FormatVersion.Format3)
             {
                 // If we have a block table
                 long blockTableOffset = ((uint)archive.ArchiveHeader.BlockTablePositionHi << 23) | archive.ArchiveHeader.BlockTablePosition;
@@ -448,7 +302,7 @@ namespace BurnOutSharp.Builder
             }
 
             // Version 4
-            else if (archive.ArchiveHeader.FormatVersion == 3)
+            else if (archive.ArchiveHeader.FormatVersion == FormatVersion.Format4)
             {
                 // If we have a block table
                 long blockTableOffset = ((uint)archive.ArchiveHeader.BlockTablePositionHi << 23) | archive.ArchiveHeader.BlockTablePosition;
@@ -481,9 +335,7 @@ namespace BurnOutSharp.Builder
             #region Hi-Block Table
 
             // Version 2, 3, and 4
-            if (archive.ArchiveHeader.FormatVersion == 1
-                || archive.ArchiveHeader.FormatVersion == 2
-                || archive.ArchiveHeader.FormatVersion == 3)
+            if (archive.ArchiveHeader.FormatVersion >= FormatVersion.Format2)
             {
                 // If we have a hi-block table
                 long hiBlockTableOffset = (long)archive.ArchiveHeader.HiBlockTablePosition;
@@ -510,7 +362,7 @@ namespace BurnOutSharp.Builder
             #region BET Table
 
             // Version 3 and 4
-            if (archive.ArchiveHeader.FormatVersion == 2 || archive.ArchiveHeader.FormatVersion == 3)
+            if (archive.ArchiveHeader.FormatVersion >= FormatVersion.Format3)
             {
                 // If we have a BET table
                 long betTableOffset = (long)archive.ArchiveHeader.BetTablePosition;
@@ -533,7 +385,7 @@ namespace BurnOutSharp.Builder
             #region HET Table
 
             // Version 3 and 4
-            if (archive.ArchiveHeader.FormatVersion == 2 || archive.ArchiveHeader.FormatVersion == 3)
+            if (archive.ArchiveHeader.FormatVersion >= FormatVersion.Format3)
             {
                 // If we have a HET table
                 long hetTableOffset = (long)archive.ArchiveHeader.HetTablePosition;
@@ -567,12 +419,12 @@ namespace BurnOutSharp.Builder
 
             // V1 - Common
             archiveHeader.Signature = data.ReadUInt32();
-            if (archiveHeader.Signature != ArchiveHeaderSignatureValue)
+            if (archiveHeader.Signature != 0x1A51504D)
                 return null;
 
             archiveHeader.HeaderSize = data.ReadUInt32();
             archiveHeader.ArchiveSize = data.ReadUInt32();
-            archiveHeader.FormatVersion = data.ReadUInt16();
+            archiveHeader.FormatVersion = (FormatVersion)data.ReadUInt16();
             archiveHeader.BlockSize = data.ReadUInt16();
             archiveHeader.HashTablePosition = data.ReadUInt32();
             archiveHeader.BlockTablePosition = data.ReadUInt32();
@@ -580,7 +432,7 @@ namespace BurnOutSharp.Builder
             archiveHeader.BlockTableSize = data.ReadUInt32();
 
             // V2
-            if (archiveHeader.FormatVersion >= 2 && archiveHeader.HeaderSize >= ArchiveHeaderHeaderVersion2Size)
+            if (archiveHeader.FormatVersion >= FormatVersion.Format2)
             {
                 archiveHeader.HiBlockTablePosition = data.ReadUInt64();
                 archiveHeader.HashTablePositionHi = data.ReadUInt16();
@@ -588,7 +440,7 @@ namespace BurnOutSharp.Builder
             }
 
             // V3
-            if (archiveHeader.FormatVersion >= 3 && archiveHeader.HeaderSize >= ArchiveHeaderHeaderVersion3Size)
+            if (archiveHeader.FormatVersion >= FormatVersion.Format3)
             {
                 archiveHeader.ArchiveSizeLong = data.ReadUInt64();
                 archiveHeader.BetTablePosition = data.ReadUInt64();
@@ -596,7 +448,7 @@ namespace BurnOutSharp.Builder
             }
 
             // V4
-            if (archiveHeader.FormatVersion >= 4 && archiveHeader.HeaderSize >= ArchiveHeaderHeaderVersion4Size)
+            if (archiveHeader.FormatVersion >= FormatVersion.Format4)
             {
                 archiveHeader.HashTableSizeLong = data.ReadUInt64();
                 archiveHeader.BlockTableSizeLong = data.ReadUInt64();
@@ -626,7 +478,7 @@ namespace BurnOutSharp.Builder
             UserData userData = new UserData();
 
             userData.Signature = data.ReadUInt32();
-            if (userData.Signature != UserDataSignatureValue)
+            if (userData.Signature != 0x1B51504D)
                 return null;
 
             userData.UserDataSize = data.ReadUInt32();
@@ -647,7 +499,7 @@ namespace BurnOutSharp.Builder
 
             // Common Headers
             hetTable.Signature = data.ReadUInt32();
-            if (hetTable.Signature != HetTableSignatureValue)
+            if (hetTable.Signature != 0x1A544548)
                 return null;
 
             hetTable.Version = data.ReadUInt32();
@@ -680,7 +532,7 @@ namespace BurnOutSharp.Builder
 
             // Common Headers
             betTable.Signature = data.ReadUInt32();
-            if (betTable.Signature != BetTableSignatureValue)
+            if (betTable.Signature != 0x1A544542)
                 return null;
 
             betTable.Version = data.ReadUInt32();
@@ -774,6 +626,64 @@ namespace BurnOutSharp.Builder
             // TODO: Fill the sector offset table
 
             return patchInfo;
+        }
+
+        #endregion
+
+        #region Helpers
+
+        /// <summary>
+        /// Buffer for encryption and decryption
+        /// </summary>
+        private uint[] _stormBuffer = new uint[STORM_BUFFER_SIZE];
+
+        /// <summary>
+        /// Prepare the encryption table
+        /// </summary>
+        private void PrepareCryptTable()
+        {
+            uint seed = 0x00100001;
+            for (uint index1 = 0; index1 < 0x100; index1++)
+            {
+                for (uint index2 = index1, i = 0; i < 5; i++, index2 += 0x100)
+                {
+                    seed = (seed * 125 + 3) % 0x2AAAAB;
+                    uint temp1 = (seed & 0xFFFF) << 0x10;
+
+                    seed = (seed * 125 + 3) % 0x2AAAAB;
+                    uint temp2 = (seed & 0xFFFF);
+
+                    _stormBuffer[index2] = (temp1 | temp2);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Decrypt a single block of data
+        /// </summary>
+        private unsafe byte[] DecryptBlock(byte[] block, uint length, uint key)
+        {
+            uint seed = 0xEEEEEEEE;
+
+            uint[] castBlock = new uint[length / 4];
+            Buffer.BlockCopy(block, 0, castBlock, 0, (int)length);
+            int castBlockPtr = 0;
+
+            // Round to uints
+            length >>= 2;
+
+            while (length-- > 0)
+            {
+                seed += _stormBuffer[MPQ_HASH_KEY2_MIX + (key & 0xFF)];
+                uint ch = castBlock[castBlockPtr] ^ (key + seed);
+
+                key = ((~key << 0x15) + 0x11111111) | (key >> 0x0B);
+                seed = ch + seed + (seed << 5) + 3;
+                castBlock[castBlockPtr++] = ch;
+            }
+
+            Buffer.BlockCopy(castBlock, 0, block, 0, (int)length);
+            return block;
         }
 
         #endregion

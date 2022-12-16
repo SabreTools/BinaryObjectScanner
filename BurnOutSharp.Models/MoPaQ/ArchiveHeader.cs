@@ -37,7 +37,7 @@ namespace BurnOutSharp.Models.MoPaQ
         /// 2 = Format 3 (WoW - Cataclysm beta or newer)
         /// 3 = Format 4 (WoW - Cataclysm beta or newer)
         /// </summary>
-        public ushort FormatVersion;
+        public FormatVersion FormatVersion;
 
         /// <summary>
         /// Power of two exponent specifying the number of 512-byte disk sectors in each logical sector
