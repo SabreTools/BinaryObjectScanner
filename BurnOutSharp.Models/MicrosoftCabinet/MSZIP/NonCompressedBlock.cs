@@ -1,10 +1,10 @@
-namespace BurnOutSharp.Models.MicrosoftCabinet
+namespace BurnOutSharp.Models.MicrosoftCabinet.MSZIP
 {
     /// <summary>
     /// Non-compressed blocks (BTYPE=00)
     /// </summary>
     /// <see href="https://www.rfc-editor.org/rfc/rfc1951"/>
-    public class MSZIPNonCompressedBlock : IMSZIPBlockData
+    public class NonCompressedBlock : IBlockData
     {
         /// <summary>
         /// The number of data bytes in the block

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using BurnOutSharp.Models.MicrosoftCabinet;
+using BurnOutSharp.Models.MicrosoftCabinet.MSZIP;
 using BurnOutSharp.Utilities;
 
 /// <see href="https://interoperability.blob.core.windows.net/files/MS-MCI/%5bMS-MCI%5d.pdf"/>
@@ -10,12 +11,12 @@ namespace BurnOutSharp.FileType
 {
     public static class MSZIPBlockBuilder
     {
-        public static MSZIPBlock Create(byte[] data)
+        public static Block Create(byte[] data)
         {
             if (data == null)
                 return null;
 
-            MSZIPBlock block = new MSZIPBlock();
+            Block block = new Block();
             int offset = 0;
 
             block.Signature = data.ReadUInt16(ref offset);
@@ -30,9 +31,9 @@ namespace BurnOutSharp.FileType
 
     public static class MSZIPDeflateBlockBuilder
     {
-        public static MSZIPDeflateBlock Create(ulong data)
+        public static DeflateBlock Create(ulong data)
         {
-            MSZIPDeflateBlock deflateBlock = new MSZIPDeflateBlock();
+            DeflateBlock deflateBlock = new DeflateBlock();
 
             deflateBlock.BFINAL = (data & 0b100) != 0;
             deflateBlock.BTYPE = (DeflateCompressionType)(data & 0b011);
@@ -43,9 +44,9 @@ namespace BurnOutSharp.FileType
 
     public static class MSZIPDynamicHuffmanCompressedBlockBuilder
     {
-        public static MSZIPDynamicHuffmanCompressedBlock Create(MSZIPDeflateStream stream)
+        public static DynamicHuffmanCompressedBlock Create(MSZIPDeflateStream stream)
         {
-            MSZIPDynamicHuffmanCompressedBlock dynamicHuffmanCompressedBlock = new MSZIPDynamicHuffmanCompressedBlock();
+            DynamicHuffmanCompressedBlock dynamicHuffmanCompressedBlock = new DynamicHuffmanCompressedBlock();
 
             // # of Literal/Length codes - 257
             ulong HLIT = stream.ReadBitsLSB(5) + 257;
@@ -152,13 +153,13 @@ namespace BurnOutSharp.FileType
 
     public static class MSZIPNonCompressedBlockBuilder
     {
-        public static MSZIPNonCompressedBlock Create(byte[] data)
+        public static NonCompressedBlock Create(byte[] data)
         {
             // If we have invalid header data
             if (data == null || data.Length < 4)
                 throw new ArgumentException();
 
-            MSZIPNonCompressedBlock nonCompressedBlock = new MSZIPNonCompressedBlock();
+            NonCompressedBlock nonCompressedBlock = new NonCompressedBlock();
             int offset = 0;
 
             nonCompressedBlock.LEN = data.ReadUInt16(ref offset);
@@ -334,7 +335,7 @@ namespace BurnOutSharp.FileType
             List<byte> decodedBytes = new List<byte>();
 
             // Create the loop variable block
-            MSZIPDeflateBlock block;
+            DeflateBlock block;
 
             do
             {
@@ -356,9 +357,9 @@ namespace BurnOutSharp.FileType
                     block.BlockData = MSZIPNonCompressedBlockBuilder.Create(nonCompressedHeader);
 
                     // Copy LEN bytes of data to output
-                    ushort length = ((MSZIPNonCompressedBlock)block.BlockData).LEN;
-                    ((MSZIPNonCompressedBlock)block.BlockData).Data = data.ReadBytesLSB(length);
-                    decodedBytes.AddRange(((MSZIPNonCompressedBlock)block.BlockData).Data);
+                    ushort length = ((NonCompressedBlock)block.BlockData).LEN;
+                    ((NonCompressedBlock)block.BlockData).Data = data.ReadBytesLSB(length);
+                    decodedBytes.AddRange(((NonCompressedBlock)block.BlockData).Data);
                 }
 
                 // Otherwise
@@ -367,10 +368,10 @@ namespace BurnOutSharp.FileType
                     // If compressed with dynamic Huffman codes
                     // read representation of code trees
                     block.BlockData = block.BTYPE == DeflateCompressionType.DynamicHuffman
-                        ? (IMSZIPBlockData)MSZIPDynamicHuffmanCompressedBlockBuilder.Create(data)
-                        : (IMSZIPBlockData)new MSZIPFixedHuffmanCompressedBlock();
+                        ? (IBlockData)MSZIPDynamicHuffmanCompressedBlockBuilder.Create(data)
+                        : (IBlockData)new FixedHuffmanCompressedBlock();
 
-                    var compressedBlock = (block.BlockData as MSZIPCompressedBlock);
+                    var compressedBlock = (block.BlockData as CompressedBlock);
 
                     // 9 bits per entry, 288 max symbols
                     int[] literalDecodeTable = CreateTable(compressedBlock.LiteralLengths);
@@ -439,7 +440,7 @@ namespace BurnOutSharp.FileType
         /// initially in tree[I].Len; the codes are produced in
         /// tree[I].Code.
         /// </summary>
-        public static void CreateTable(MSZIPCompressedBlock tree)
+        public static void CreateTable(CompressedBlock tree)
         {
             // Count the number of codes for each code length.  Let
             // bl_count[N] be the number of codes of length N, N >= 1.
