@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace BurnOutSharp.Builder
+namespace BurnOutSharp.ASN1
 {
     /// <summary>
     /// Methods related to Object Identifiers (OID)

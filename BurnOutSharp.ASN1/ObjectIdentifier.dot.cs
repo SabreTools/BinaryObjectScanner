@@ -1,4 +1,4 @@
-namespace BurnOutSharp.Builder
+namespace BurnOutSharp.ASN1
 {
 #pragma warning disable IDE0011
 

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using BurnOutSharp.ASN1;
 using BurnOutSharp.Utilities;
 using static BurnOutSharp.Builder.Extensions;
 
@@ -1450,7 +1451,7 @@ namespace BurnOutSharp.Wrappers
                     {
                         Console.WriteLine("    Certificate Data [Formatted]");
                         Console.WriteLine("    -------------------------");
-                        var topLevelValues = Builder.AbstractSyntaxNotationOne.Parse(entry.Certificate, pointer: 0);
+                        var topLevelValues = AbstractSyntaxNotationOne.Parse(entry.Certificate, pointer: 0);
                         if (topLevelValues == null)
                         {
                             Console.WriteLine("    INVALID DATA FOUND");
@@ -1458,7 +1459,7 @@ namespace BurnOutSharp.Wrappers
                         }
                         else
                         {
-                            foreach (Builder.ASN1TypeLengthValue tlv in topLevelValues)
+                            foreach (TypeLengthValue tlv in topLevelValues)
                             {
                                 string tlvString = tlv.Format(paddingLevel: 4);
                                 Console.WriteLine(tlvString);

@@ -57,6 +57,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BurnOutSharp.ASN1\BurnOutSharp.ASN1.csproj">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </ProjectReference>
+    <ProjectReference Include="..\BurnOutSharp.Builder\BurnOutSharp.Builder.csproj">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </ProjectReference>
     <ProjectReference Include="..\BurnOutSharp.Matching\BurnOutSharp.Matching.csproj">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
