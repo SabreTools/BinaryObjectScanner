@@ -1,4 +1,4 @@
-﻿using System.Runtime.InteropServices;
+﻿using BurnOutSharp.Models.MicrosoftCabinet.Quantum;
 
 /// <see href="http://www.russotto.net/quantumcomp.html"/>
 /// <see href="https://handwiki.org/wiki/Software:Quantum_compression"/>
@@ -8,49 +8,6 @@
 /// <see href="https://github.com/kyz/libmspack/blob/master/libmspack/mspack/qtmd.c"/>
 namespace BurnOutSharp.FileType
 {
-    internal enum SelectorModel
-    {
-        /// <summary>
-        /// Literal model, 64 entries, start at symbol 0
-        /// </summary>
-        SELECTOR_0 = 0,
-
-        /// <summary>
-        /// Literal model, 64 entries, start at symbol 64
-        /// </summary>
-        SELECTOR_1 = 1,
-
-        /// <summary>
-        /// Literal model, 64 entries, start at symbol 128
-        /// </summary>
-        SELECTOR_2 = 2,
-
-        /// <summary>
-        /// Literal model, 64 entries, start at symbol 192
-        /// </summary>
-        SELECTOR_3 = 3,
-
-        /// <summary>
-        /// LZ model, 3 character matches, max 24 entries, start at symbol 0
-        /// </summary>
-        SELECTOR_4 = 4,
-
-        /// <summary>
-        /// LZ model, 4 character matches, max 36 entries, start at symbol 0
-        /// </summary>
-        SELECTOR_5 = 5,
-
-        /// <summary>
-        /// LZ model, 5+ character matches, max 42 entries, start at symbol 0
-        /// </summary>
-        SELECTOR_6_POSITION = 6,
-
-        /// <summary>
-        /// LZ model, 5+ character matches, 27 entries, start at symbol 0
-        /// </summary>
-        SELECTOR_6_LENGTH = 7,
-    }
-
     #region LZ Compression Tables
 
     public static class QuantumConstants
@@ -118,84 +75,6 @@ namespace BurnOutSharp.FileType
 
     #endregion
 
-    /// <summary>
-    /// Quantum archive file structure
-    /// </summary>
-    [StructLayout(LayoutKind.Sequential)]
-    public class QuantumArchive
-    {
-        /// <summary>
-        /// Quantum signature: 0x44 0x53
-        /// </summary>
-        public ushort Signature;
-
-        /// <summary>
-        /// Quantum major version number
-        /// </summary>
-        public byte MajorVersion;
-
-        /// <summary>
-        /// Quantum minor version number
-        /// </summary>
-        public byte MinorVersion;
-
-        /// <summary>
-        /// Number of files within this archive
-        /// </summary>
-        public ushort FileCount;
-
-        /// <summary>
-        /// Table size required for decompression
-        /// </summary>
-        public byte TableSize;
-
-        /// <summary>
-        /// Compression flags
-        /// </summary>
-        public byte CompressionFlags;
-
-        /// <summary>
-        /// This is immediately followed by the list of files
-        /// </summary>
-        public QuantumFileDescriptor[] FileList;
-
-        // Immediately following the list of files is the compressed data. 
-    }
-
-    /// <remarks>
-    /// Strings are prefixed with their length. If the length is less than
-    /// 128 then it is stored directly in one byte. If it is greater than 127
-    /// then the high bit of the first byte is set to 1 and the remaining
-    /// fifteen bits contain the actual length in big-endian format. 
-    /// </remarks>
-    public class QuantumFileDescriptor
-    {
-        /// <summary>
-        /// File name, variable length string, not zero-terminated
-        /// </summary>
-        public string FileName;
-
-        /// <summary>
-        /// Comment field, variable length string, not zero-terminated
-        /// </summary>
-        public string CommentField;
-
-        /// <summary>
-        /// Fully expanded file size in bytes
-        /// </summary>
-        public uint ExpandedFileSize;
-
-        /// <summary>
-        /// File time (DOS format) 
-        /// </summary>
-        public ushort FileTime;
-
-        /// <summary>
-        /// File date (DOS format) 
-        /// </summary>
-        public ushort FileDate;
-    }
-
     public static class QuantumCompressor
     {
         // TODO: Determine how these values are set
@@ -248,7 +127,7 @@ namespace BurnOutSharp.FileType
             return 0;
         }
 
-        public static int GetSymbol(QuantumModel model)
+        public static int GetSymbol(Model model)
         {
             int freq = GetFrequency(model.Symbols[0].CumulativeFrequency);
 
@@ -268,19 +147,5 @@ namespace BurnOutSharp.FileType
 
             return sym;
         }
-    }
-
-    public class QuantumModelSymbol
-    {
-        public ushort Symbol { get; private set; }
-
-        public ushort CumulativeFrequency { get; private set; }
-    }
-
-    public class QuantumModel
-    {
-        public int Entries { get; set; }
-
-        public QuantumModelSymbol[] Symbols { get; set; }
     }
 }
