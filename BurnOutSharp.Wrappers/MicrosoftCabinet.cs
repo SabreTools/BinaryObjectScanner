@@ -779,6 +779,47 @@ namespace BurnOutSharp.Wrappers
         #region Files
 
         /// <summary>
+        /// Extract a single file to an output directory
+        /// </summary>
+        /// <param name="fileIndex">File index to check</param>
+        /// <param name="outputDirectory">Output directory to use for writing</param>
+        /// <returns>Byte array representing the data, null on error</returns>
+        public bool ExtractFile(int fileIndex, string outputDirectory)
+        {
+            // If we have an invalid file index
+            if (fileIndex < 0 || fileIndex >= Files.Length)
+                return false;
+
+            // If we have an invalid output directory
+            if (string.IsNullOrWhiteSpace(outputDirectory))
+                return false;
+
+            // Ensure the directory exists
+            Directory.CreateDirectory(outputDirectory);
+
+            // Get the file header
+            var file = Files[fileIndex];
+            if (file == null || file.FileSize == 0)
+                return false;
+
+            // Create the output filename
+            string fileName = Path.Combine(outputDirectory, file.Name);
+
+            // Get the file data, if possible
+            byte[] fileData = GetFileData(fileIndex);
+            if (fileData == null)
+                return false;
+
+            // Write the file data
+            using (FileStream fs = File.OpenWrite(fileName))
+            {
+                fs.Write(fileData, 0, fileData.Length);
+            }
+
+            return true;
+        }
+
+        /// <summary>
         /// Get the DateTime for a particular file index
         /// </summary>
         /// <param name="fileIndex">File index to check</param>
@@ -816,6 +857,33 @@ namespace BurnOutSharp.Wrappers
             {
                 return DateTime.MinValue;
             }
+        }
+
+        /// <summary>
+        /// Get the uncompressed data associated with a file
+        /// </summary>
+        /// <param name="fileIndex">File index to check</param>
+        /// <returns>Byte array representing the data, null on error</returns>
+        public byte[] GetFileData(int fileIndex)
+        {
+            // If we have an invalid file index
+            if (fileIndex < 0 || fileIndex >= Files.Length)
+                return null;
+
+            // Get the file header
+            var file = Files[fileIndex];
+            if (file == null || file.FileSize == 0)
+                return null;
+
+            // Get the parent folder data
+            byte[] folderData = GetUncompressedData((int)file.FolderIndex);
+            if (folderData == null)
+                return null;
+
+            // Get the segment that represents this file
+            byte[] fileData = new byte[file.FileSize];
+            Array.Copy(folderData, file.FolderStartOffset, fileData, 0, file.FileSize);
+            return fileData;
         }
 
         #endregion
