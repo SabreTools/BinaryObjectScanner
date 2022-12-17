@@ -44,18 +44,18 @@ namespace BurnOutSharp.FileType
 
     public static class MSZIPDynamicHuffmanCompressedBlockBuilder
     {
-        public static DynamicHuffmanCompressedBlock Create(MSZIPDeflateStream stream)
+        public static DynamicHuffmanCompressedBlock Create(BitStream stream)
         {
             DynamicHuffmanCompressedBlock dynamicHuffmanCompressedBlock = new DynamicHuffmanCompressedBlock();
 
             // # of Literal/Length codes - 257
-            ulong HLIT = stream.ReadBitsLSB(5) + 257;
+            ulong HLIT = stream.ReadBits(5).AsUInt64() + 257;
 
             // # of Distance codes - 1
-            ulong HDIST = stream.ReadBitsLSB(5) + 1;
+            ulong HDIST = stream.ReadBits(5).AsUInt64() + 1;
 
             // HCLEN, # of Code Length codes - 4
-            ulong HCLEN = stream.ReadBitsLSB(5) + 4;
+            ulong HCLEN = stream.ReadBits(5).AsUInt64() + 4;
 
             // (HCLEN + 4) x 3 bits: code lengths for the code length
             //  alphabet given just above
@@ -66,7 +66,7 @@ namespace BurnOutSharp.FileType
             //  length) is not used.
             int[] codeLengthAlphabet = new int[19];
             for (ulong i = 0; i < HCLEN; i++)
-                codeLengthAlphabet[MSZIPDeflate.BitLengthOrder[i]] = (int)stream.ReadBitsLSB(3);
+                codeLengthAlphabet[MSZIPDeflate.BitLengthOrder[i]] = (int)stream.ReadBits(3).AsUInt64();
 
             for (ulong i = HCLEN; i < 19; i++)
                 codeLengthAlphabet[MSZIPDeflate.BitLengthOrder[i]] = 0;
@@ -88,7 +88,7 @@ namespace BurnOutSharp.FileType
         /// <summary>
         /// The alphabet for code lengths is as follows
         /// </summary>
-        private static int[] BuildHuffmanTree(MSZIPDeflateStream stream, ulong codeCount, int[] codeLengths)
+        private static int[] BuildHuffmanTree(BitStream stream, ulong codeCount, int[] codeLengths)
         {
             // Setup the huffman tree
             int[] tree = new int[codeCount];
@@ -97,7 +97,7 @@ namespace BurnOutSharp.FileType
             int lastCode = 0, repeatLength = 0;
             for (ulong i = 0; i < codeCount; i++)
             {
-                int code = codeLengths[(int)stream.ReadBitsLSB(7)];
+                int code = codeLengths[(int)stream.ReadBits(7).AsUInt64()];
 
                 // Represent code lengths of 0 - 15
                 if (code > 0 && code <= 15)
@@ -111,7 +111,7 @@ namespace BurnOutSharp.FileType
                 // Example:  Codes 8, 16 (+2 bits 11), 16 (+2 bits 10) will expand to 12 code lengths of 8 (1 + 6 + 5)
                 else if (code == 16)
                 {
-                    repeatLength = (int)stream.ReadBitsLSB(2);
+                    repeatLength = (int)stream.ReadBits(2).AsUInt64();
                     repeatLength += 2;
                     code = lastCode;
                 }
@@ -120,7 +120,7 @@ namespace BurnOutSharp.FileType
                 // (3 bits of length)
                 else if (code == 17)
                 {
-                    repeatLength = (int)stream.ReadBitsLSB(3);
+                    repeatLength = (int)stream.ReadBits(3).AsUInt64();
                     repeatLength += 3;
                     code = 0;
                 }
@@ -129,7 +129,7 @@ namespace BurnOutSharp.FileType
                 // (7 bits of length)
                 else if (code == 18)
                 {
-                    repeatLength = (int)stream.ReadBitsLSB(7);
+                    repeatLength = (int)stream.ReadBits(7).AsUInt64();
                     repeatLength += 11;
                     code = 0;
                 }
@@ -329,7 +329,7 @@ namespace BurnOutSharp.FileType
         /// <summary>
         /// The decoding algorithm for the actual data
         /// </summary>
-        public static void Decode(MSZIPDeflateStream data)
+        public static void Decode(BitStream data)
         {
             // Create the output byte array
             List<byte> decodedBytes = new List<byte>();
@@ -339,7 +339,7 @@ namespace BurnOutSharp.FileType
 
             do
             {
-                ulong header = data.ReadBitsLSB(3);
+                ulong header = data.ReadBits(3).AsUInt64();
                 block = MSZIPDeflateBlockBuilder.Create(header);
 
                 // We should never get a reserved block
@@ -350,15 +350,15 @@ namespace BurnOutSharp.FileType
                 if (block.BTYPE == DeflateCompressionType.NoCompression)
                 {
                     // Skip any remaining bits in current partially processed byte
-                    data.DiscardToByteBoundary();
+                    data.DiscardBuffer();
 
                     // Read LEN and NLEN
-                    byte[] nonCompressedHeader = data.ReadBytesLSB(4);
+                    byte[] nonCompressedHeader = data.ReadBytes(4);
                     block.BlockData = MSZIPNonCompressedBlockBuilder.Create(nonCompressedHeader);
 
                     // Copy LEN bytes of data to output
                     ushort length = ((NonCompressedBlock)block.BlockData).LEN;
-                    ((NonCompressedBlock)block.BlockData).Data = data.ReadBytesLSB(length);
+                    ((NonCompressedBlock)block.BlockData).Data = data.ReadBytes(length);
                     decodedBytes.AddRange(((NonCompressedBlock)block.BlockData).Data);
                 }
 
@@ -383,7 +383,7 @@ namespace BurnOutSharp.FileType
                     while (true)
                     {
                         // Decode literal/length value from input stream
-                        int symbol = literalDecodeTable[data.ReadBitsLSB(9)];
+                        int symbol = literalDecodeTable[data.ReadBits(9).AsUInt64()];
 
                         // Copy value (literal byte) to output stream
                         if (symbol < 256)
@@ -398,12 +398,12 @@ namespace BurnOutSharp.FileType
                         else
                         {
                             // Decode distance from input stream
-                            ulong length = data.ReadBitsLSB(LiteralExtraBits[symbol]);
+                            ulong length = data.ReadBits(LiteralExtraBits[symbol]).AsUInt64();
                             length += (ulong)LiteralLengths[symbol];
 
                             int code = distanceDecodeTable[length];
 
-                            ulong distance = data.ReadBitsLSB(DistanceExtraBits[code]);
+                            ulong distance = data.ReadBits(DistanceExtraBits[code]).AsUInt64();
                             distance += (ulong)DistanceOffsets[code];
 
 
@@ -532,399 +532,6 @@ namespace BurnOutSharp.FileType
             }
 
             return distances;
-        }
-    }
-
-    /// <see href="https://www.rfc-editor.org/rfc/rfc1951"/>
-    public class MSZIPDeflateStream
-    {
-        #region Instance Variables
-
-        /// <summary>
-        /// Original data source to read from
-        /// </summary>
-        private System.IO.Stream _dataStream = null;
-
-        /// <summary>
-        /// Current rolling buffer
-        /// </summary>
-        private byte[] _buffer = null;
-
-        /// <summary>
-        /// Current position in the buffer
-        /// </summary>
-        private int _bufferPointer = -1;
-
-        /// <summary>
-        /// Bit buffer to read bits from when necessary
-        /// </summary>
-        private BitArray _bitBuffer = null;
-
-        /// <summary>
-        /// Number of bits left in the buffer
-        /// </summary>
-        private int _bitsLeft = 0;
-
-        #endregion
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        public MSZIPDeflateStream(System.IO.Stream dataStream)
-        {
-            _dataStream = dataStream;
-        }
-
-        /// <summary>
-        /// Read between 0 and 64 bits of data from the stream assuming LSB
-        /// </summary>
-        /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public ulong ReadBitsLSB(int numBits)
-        {
-            // If we are reading an invalid number of bits
-            if (numBits < 0 || numBits > 64)
-                throw new ArgumentOutOfRangeException();
-
-            // Allocate the bit buffer
-            ulong bitBuffer = 0;
-
-            // If the bit buffer has the right number remaining
-            if (_bitsLeft >= numBits)
-            {
-                for (int i = 0; i < numBits; i++)
-                {
-                    bitBuffer |= _bitBuffer[i + _bitBuffer.Length - _bitsLeft--] ? 1u : 0;
-                    bitBuffer <<= 1;
-                }
-
-                return bitBuffer;
-            }
-
-            // Otherwise, we need to read what we can
-            int bitsRemaining = _bitsLeft;
-            for (int i = 0; i < bitsRemaining; i++)
-            {
-                bitBuffer |= _bitBuffer[i + _bitBuffer.Length - _bitsLeft--] ? 1u : 0;
-                bitBuffer <<= 1;
-            }
-
-            // Fill the bit buffer, if possible
-            FillBitBuffer();
-
-            // If we couldn't read anything, throw an exception
-            if (_buffer == null)
-                throw new IndexOutOfRangeException();
-
-            // Otherwise, read in the remaining bits needed
-            for (int i = 0; i < bitsRemaining; i++)
-            {
-                bitBuffer |= _bitBuffer[i + _bitBuffer.Length - _bitsLeft--] ? 1u : 0;
-                bitBuffer <<= 1;
-            }
-
-            return bitBuffer;
-        }
-
-        /// <summary>
-        /// Read between 0 and 64 bits of data from the stream assuming MSB
-        /// </summary>
-        /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public ulong ReadBitsMSB(int numBits)
-        {
-            // If we are reading an invalid number of bits
-            if (numBits < 0 || numBits > 64)
-                throw new ArgumentOutOfRangeException();
-
-            // Allocate the bit buffer
-            ulong bitBuffer = 0;
-
-            // If the bit buffer has the right number remaining
-            if (_bitsLeft >= numBits)
-            {
-                for (int i = 0; i < numBits; i++)
-                {
-                    bitBuffer |= _bitBuffer[i + _bitsLeft--] ? 1u : 0;
-                    bitBuffer <<= 1;
-                }
-
-                return bitBuffer;
-            }
-
-            // Otherwise, we need to read what we can
-            int bitsRemaining = _bitsLeft;
-            for (int i = 0; i < bitsRemaining; i++)
-            {
-                bitBuffer |= _bitBuffer[i + _bitsLeft--] ? 1u : 0;
-                bitBuffer <<= 1;
-            }
-
-            // Fill the bit buffer, if possible
-            FillBitBuffer();
-
-            // If we couldn't read anything, throw an exception
-            if (_buffer == null)
-                throw new IndexOutOfRangeException();
-
-            // Otherwise, read in the remaining bits needed
-            for (int i = 0; i < bitsRemaining; i++)
-            {
-                bitBuffer |= _bitBuffer[i + _bitsLeft--] ? 1u : 0;
-                bitBuffer <<= 1;
-            }
-
-            return bitBuffer;
-        }
-
-        /// <summary>
-        /// Read more than 0 bytes of data from the stream assuming LSB
-        /// </summary>
-        public byte[] ReadBytesLSB(int numBytes)
-        {
-            // If we are reading an invalid number of bytes
-            if (numBytes < 0)
-                throw new ArgumentOutOfRangeException();
-
-            // Allocate the byte buffer
-            byte[] byteBuffer = new byte[numBytes];
-            int byteBufferPtr = 0;
-
-            // If the bit buffer has the right number remaining
-            if (_bitsLeft >= numBytes * 8)
-            {
-                byte fullBitBuffer = 0;
-                for (int i = 0; i < numBytes * 8; i++)
-                {
-                    fullBitBuffer |= (byte)(_bitBuffer[i + _bitBuffer.Length - _bitsLeft--] ? 1 : 0);
-                    if (i % 8 == 7)
-                    {
-                        byteBuffer[byteBufferPtr++] = fullBitBuffer;
-                        fullBitBuffer = 0;
-                    }
-                    else
-                    {
-                        fullBitBuffer <<= 1;
-                    }
-                }
-
-                byteBuffer[byteBufferPtr++] = fullBitBuffer;
-                return byteBuffer;
-            }
-
-            // Otherwise, we need to read what we can
-            int bitsRemaining = _bitsLeft;
-
-            byte bitBuffer = 0;
-            for (int i = 0; i < numBytes * 8; i++)
-            {
-                bitBuffer |= (byte)(_bitBuffer[i + _bitBuffer.Length - _bitsLeft--] ? 1 : 0);
-                if (i % 8 == 7)
-                {
-                    byteBuffer[byteBufferPtr++] = bitBuffer;
-                    bitBuffer = 0;
-                }
-                else
-                {
-                    bitBuffer <<= 1;
-                }
-            }
-
-            // Fill the bit buffer, if possible
-            FillBitBuffer();
-
-            // If we couldn't read anything, throw an exception
-            if (_buffer == null)
-                throw new IndexOutOfRangeException();
-
-            // Otherwise, read in the remaining bits needed
-            for (int i = 0; i < bitsRemaining; i++)
-            {
-                bitBuffer |= (byte)(_bitBuffer[i + _bitBuffer.Length - _bitsLeft--] ? 1 : 0);
-                if (i % 8 == 7)
-                {
-                    byteBuffer[byteBufferPtr++] = bitBuffer;
-                    bitBuffer = 0;
-                }
-                else
-                {
-                    bitBuffer <<= 1;
-                }
-            }
-
-            byteBuffer[byteBufferPtr++] = bitBuffer;
-            return byteBuffer;
-        }
-
-        /// <summary>
-        /// Read more than 0 bytes of data from the stream assuming MSB
-        /// </summary>
-        public byte[] ReadBytesMSB(int numBytes)
-        {
-            // If we are reading an invalid number of bytes
-            if (numBytes < 0)
-                throw new ArgumentOutOfRangeException();
-
-            // Allocate the byte buffer
-            byte[] byteBuffer = new byte[numBytes];
-            int byteBufferPtr = 0;
-
-            // If the bit buffer has the right number remaining
-            if (_bitsLeft >= numBytes * 8)
-            {
-                byte fullBitBuffer = 0;
-                for (int i = 0; i < numBytes * 8; i++)
-                {
-                    fullBitBuffer |= (byte)(_bitBuffer[i + _bitsLeft--] ? 1 : 0);
-                    if (i % 8 == 7)
-                    {
-                        byteBuffer[byteBufferPtr++] = fullBitBuffer;
-                        fullBitBuffer = 0;
-                    }
-                    else
-                    {
-                        fullBitBuffer <<= 1;
-                    }
-                }
-
-                byteBuffer[byteBufferPtr++] = fullBitBuffer;
-                return byteBuffer;
-            }
-
-            // Otherwise, we need to read what we can
-            int bitsRemaining = _bitsLeft;
-
-            byte bitBuffer = 0;
-            for (int i = 0; i < numBytes * 8; i++)
-            {
-                bitBuffer |= (byte)(_bitBuffer[i + _bitsLeft--] ? 1 : 0);
-                if (i % 8 == 7)
-                {
-                    byteBuffer[byteBufferPtr++] = bitBuffer;
-                    bitBuffer = 0;
-                }
-                else
-                {
-                    bitBuffer <<= 1;
-                }
-            }
-
-            // Fill the bit buffer, if possible
-            FillBitBuffer();
-
-            // If we couldn't read anything, throw an exception
-            if (_buffer == null)
-                throw new IndexOutOfRangeException();
-
-            // Otherwise, read in the remaining bits needed
-            for (int i = 0; i < bitsRemaining; i++)
-            {
-                bitBuffer |= (byte)(_bitBuffer[i + _bitsLeft--] ? 1 : 0);
-                if (i % 8 == 7)
-                {
-                    byteBuffer[byteBufferPtr++] = bitBuffer;
-                    bitBuffer = 0;
-                }
-                else
-                {
-                    bitBuffer <<= 1;
-                }
-            }
-
-            byteBuffer[byteBufferPtr++] = bitBuffer;
-            return byteBuffer;
-        }
-
-        /// <summary>
-        /// Discard bits in the array up to the next byte boundary
-        /// </summary>
-        public void DiscardToByteBoundary()
-        {
-            int bitsToDiscard = _bitsLeft & 7;
-            _bitsLeft -= bitsToDiscard;
-        }
-
-        /// <summary>
-        /// Fill the internal bit buffer from the internal buffer
-        /// </summary>
-        /// <remarks>Fills up to 4 bytes worth of data at a time</remarks>
-        private void FillBitBuffer()
-        {
-            // If we have 4 bytes left, just create the bit buffer directly
-            if (_bufferPointer < _buffer.Length - 4)
-            {
-                // Read all 4 bytes directly
-                byte[] readAllBytes = new ReadOnlySpan<byte>(_buffer, _bufferPointer, 4).ToArray();
-                _bufferPointer += 4;
-
-                // Create the new bit buffer
-                _bitBuffer = new BitArray(readAllBytes);
-                _bitsLeft = 32;
-                return;
-            }
-
-            // If we have less than 4 bytes left, we need to get creative
-            // Create the byte array to hold the data
-            byte[] bytes = new byte[4];
-
-            // Read what we can first
-            int bytesRemaining = _buffer.Length - _bufferPointer;
-            if (bytesRemaining > 0)
-            {
-                byte[] readBytesRemaining = new ReadOnlySpan<byte>(_buffer, _bufferPointer, bytesRemaining).ToArray();
-                Array.Copy(readBytesRemaining, 0, bytes, 0, bytesRemaining);
-                _bufferPointer += bytesRemaining;
-            }
-
-            // Fill the buffer, if we can
-            FillBuffer();
-
-            // If we couldn't read anything, reset the buffer
-            if (_buffer == null && bytesRemaining == 4)
-            {
-                _bitBuffer = null;
-                _bitsLeft = 0;
-                return;
-            }
-
-            // If we don't have anything left, just create a bit array
-            if (_buffer == null)
-            {
-                byte[] readBytesRemaining = new ReadOnlySpan<byte>(bytes, 0, bytesRemaining).ToArray();
-                _bitBuffer = new BitArray(readBytesRemaining);
-                _bitsLeft = 8 * bytesRemaining;
-                return;
-            }
-
-            // Otherwise, we want to read in the remaining necessary bytes
-            int bytesToRead = 4 - bytesRemaining;
-            byte[] bytesRead = new ReadOnlySpan<byte>(_buffer, _bufferPointer, bytesToRead).ToArray();
-            _bufferPointer += bytesToRead;
-
-            Array.Copy(bytesRead, 0, bytes, bytesRemaining, bytesToRead);
-            _bitBuffer = new BitArray(bytes);
-            _bitsLeft = 32;
-        }
-
-        /// <summary>
-        /// Fill the internal buffer from the original data source
-        /// </summary>
-        /// <remarks>Reads up to 4096 bytes at a time</remarks>
-        private void FillBuffer()
-        {
-            // Get the amount of bytes to read
-            int bytesRemaining = (int)(_dataStream.Length - _dataStream.Position);
-            int bytesToRead = Math.Min(bytesRemaining, 4096);
-
-            // If we can't ready any bytes, reset the buffer
-            if (bytesToRead == 0)
-            {
-                _buffer = null;
-                _bufferPointer = -1;
-                return;
-            }
-
-            // Otherwise, read and reset the position
-            _buffer = _dataStream.ReadBytes(bytesToRead);
-            _bufferPointer = 0;
         }
     }
 
