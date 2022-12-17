@@ -4,7 +4,7 @@ namespace BurnOutSharp.Models.MicrosoftCabinet.MSZIP
     /// Compression with dynamic Huffman codes (BTYPE=10)
     /// </summary>
     /// <see href="https://www.rfc-editor.org/rfc/rfc1951"/>
-    public class DynamicHuffmanCompressedBlock : CompressedBlock
+    public class DynamicHuffmanCompressedBlockHeader : CompressedBlockHeader
     {
         /// <inheritdoc/>
         public override int[] LiteralLengths { get; set; }

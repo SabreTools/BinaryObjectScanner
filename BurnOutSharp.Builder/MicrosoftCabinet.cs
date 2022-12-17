@@ -9,50 +9,6 @@ namespace BurnOutSharp.Builder
     // TODO: Add multi-cabinet reading
     public class MicrosoftCabinet
     {
-        #region Constants
-
-        /// <summary>
-        /// Human-readable signature
-        /// </summary>
-        public static readonly string SignatureString = "MSCF";
-
-        /// <summary>
-        /// Signature as an unsigned Int32 value
-        /// </summary>
-        public const uint SignatureValue = 0x4643534D;
-
-        /// <summary>
-        /// Signature as a byte array
-        /// </summary>
-        public static readonly byte[] SignatureBytes = new byte[] { 0x4D, 0x53, 0x43, 0x46 };
-
-        /// <summary>
-        /// A maximum uncompressed size of an input file to store in CAB
-        /// </summary>
-        public const uint MaximumUncompressedFileSize = 0x7FFF8000;
-
-        /// <summary>
-        /// A maximum file COUNT
-        /// </summary>
-        public const ushort MaximumFileCount = 0xFFFF;
-
-        /// <summary>
-        /// A maximum size of a created CAB (compressed)
-        /// </summary>
-        public const uint MaximumCabSize = 0x7FFFFFFF;
-
-        /// <summary>
-        /// A maximum CAB-folder COUNT
-        /// </summary>
-        public const ushort MaximumFolderCount = 0xFFFF;
-
-        /// <summary>
-        /// A maximum uncompressed data size in a CAB-folder
-        /// </summary>
-        public const uint MaximumUncompressedFolderSize = 0x7FFF8000;
-
-        #endregion
-
         #region Byte Data
 
         /// <summary>
@@ -170,40 +126,18 @@ namespace BurnOutSharp.Builder
             CFHEADER header = new CFHEADER();
 
             header.Signature = data.ReadUInt32();
-            if (header.Signature != SignatureValue)
+            if (header.Signature != 0x4643534D)
                 return null;
 
             header.Reserved1 = data.ReadUInt32();
-            if (header.Reserved1 != 0x00000000)
-                return null;
-
             header.CabinetSize = data.ReadUInt32();
-            if (header.CabinetSize > MaximumCabSize)
-                return null;
-
             header.Reserved2 = data.ReadUInt32();
-            if (header.Reserved2 != 0x00000000)
-                return null;
-
             header.FilesOffset = data.ReadUInt32();
-
             header.Reserved3 = data.ReadUInt32();
-            if (header.Reserved3 != 0x00000000)
-                return null;
-
             header.VersionMinor = data.ReadByteValue();
             header.VersionMajor = data.ReadByteValue();
-            if (header.VersionMajor != 0x00000001 || header.VersionMinor != 0x00000003)
-                return null;
-
             header.FolderCount = data.ReadUInt16();
-            if (header.FolderCount > MaximumFolderCount)
-                return null;
-
             header.FileCount = data.ReadUInt16();
-            if (header.FileCount > MaximumFileCount)
-                return null;
-
             header.Flags = (HeaderFlags)data.ReadUInt16();
             header.SetID = data.ReadUInt16();
             header.CabinetIndex = data.ReadUInt16();
@@ -319,44 +253,6 @@ namespace BurnOutSharp.Builder
                 file.Name = data.ReadString(Encoding.ASCII);
 
             return file;
-        }
-
-        #endregion
-
-        #region Helpers
-
-        /// <summary>
-        /// The computation and verification of checksums found in CFDATA structure entries cabinet files is
-        /// done by using a function described by the following mathematical notation. When checksums are
-        /// not supplied by the cabinet file creating application, the checksum field is set to 0 (zero). Cabinet
-        /// extracting applications do not compute or verify the checksum if the field is set to 0 (zero).
-        /// </summary>
-        public static class Checksum
-        {
-            public static uint ChecksumData(byte[] data)
-            {
-                uint[] C = new uint[4]
-                {
-                S(data, 1, data.Length),
-                S(data, 2, data.Length),
-                S(data, 3, data.Length),
-                S(data, 4, data.Length),
-                };
-
-                return C[0] ^ C[1] ^ C[2] ^ C[3];
-            }
-
-            private static uint S(byte[] a, int b, int x)
-            {
-                int n = a.Length;
-
-                if (x < 4 && b > n % 4)
-                    return 0;
-                else if (x < 4 && b <= n % 4)
-                    return a[n - b + 1];
-                else // if (x >= 4)
-                    return a[n - x + b] ^ S(a, b, x - 4);
-            }
         }
 
         #endregion

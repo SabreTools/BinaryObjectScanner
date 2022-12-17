@@ -4,7 +4,7 @@ namespace BurnOutSharp.Models.MicrosoftCabinet.MSZIP
     /// Non-compressed blocks (BTYPE=00)
     /// </summary>
     /// <see href="https://www.rfc-editor.org/rfc/rfc1951"/>
-    public class NonCompressedBlock : IBlockData
+    public class NonCompressedBlockHeader : IBlockDataHeader
     {
         /// <summary>
         /// The number of data bytes in the block
@@ -17,10 +17,5 @@ namespace BurnOutSharp.Models.MicrosoftCabinet.MSZIP
         /// </summary>
         /// <remarks>Bytes 2-3</remarks>
         public ushort NLEN;
-
-        /// <summary>
-        /// <see cref="LEN"/> bytes of literal data
-        /// </summary>
-        public byte[] Data;
     }
 }

@@ -1,7 +1,7 @@
 namespace BurnOutSharp.Models.MicrosoftCabinet.MSZIP
 {
     /// <see href="https://www.rfc-editor.org/rfc/rfc1951"/>
-    public class DeflateBlock
+    public class DeflateBlockHeader
     {
         /// <summary>
         /// Set if and only if this is the last block of the data set.
@@ -18,6 +18,6 @@ namespace BurnOutSharp.Models.MicrosoftCabinet.MSZIP
         /// <summary>
         /// Block data as defined by the compression type
         /// </summary>
-        public IBlockData BlockData { get; set; }
+        public IBlockDataHeader BlockData { get; set; }
     }
 }

@@ -7,7 +7,7 @@ namespace BurnOutSharp.Models.MicrosoftCabinet.MSZIP
     /// </summary>
     /// <see href="https://interoperability.blob.core.windows.net/files/MS-MCI/%5bMS-MCI%5d.pdf"/>
     /// <see href="https://www.rfc-editor.org/rfc/rfc1951"/>
-    public class FixedHuffmanCompressedBlock : CompressedBlock
+    public class FixedHuffmanCompressedBlockHeader : CompressedBlockHeader
     {
         #region Properties
 

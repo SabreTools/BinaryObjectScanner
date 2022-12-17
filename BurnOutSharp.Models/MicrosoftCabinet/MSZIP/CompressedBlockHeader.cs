@@ -1,10 +1,10 @@
 namespace BurnOutSharp.Models.MicrosoftCabinet.MSZIP
 {
     /// <summary>
-    /// Base class for compressed blocks
+    /// Base class for compressed block headers
     /// </summary>
     /// <see href="https://www.rfc-editor.org/rfc/rfc1951"/>
-    public abstract class CompressedBlock : IBlockData
+    public abstract class CompressedBlockHeader : IBlockDataHeader
     {
         /// <summary>
         /// Huffman code lengths for the literal / length alphabet
