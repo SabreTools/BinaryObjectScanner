@@ -18,6 +18,6 @@ namespace BurnOutSharp.Models.MicrosoftCabinet.MSZIP
         /// <summary>
         /// Block data as defined by the compression type
         /// </summary>
-        public IBlockDataHeader BlockData { get; set; }
+        public IBlockDataHeader BlockDataHeader { get; set; }
     }
 }

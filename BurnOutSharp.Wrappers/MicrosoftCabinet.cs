@@ -164,34 +164,34 @@ namespace BurnOutSharp.Wrappers
         /// not supplied by the cabinet file creating application, the checksum field is set to 0 (zero). Cabinet
         /// extracting applications do not compute or verify the checksum if the field is set to 0 (zero).
         /// </summary>
-        private static class Checksum
+        private static uint ChecksumData(byte[] data)
         {
-            public static uint ChecksumData(byte[] data)
+            uint[] C = new uint[4]
             {
-                uint[] C = new uint[4]
-                {
                 S(data, 1, data.Length),
                 S(data, 2, data.Length),
                 S(data, 3, data.Length),
                 S(data, 4, data.Length),
-                };
+            };
 
-                return C[0] ^ C[1] ^ C[2] ^ C[3];
-            }
-
-            private static uint S(byte[] a, int b, int x)
-            {
-                int n = a.Length;
-
-                if (x < 4 && b > n % 4)
-                    return 0;
-                else if (x < 4 && b <= n % 4)
-                    return a[n - b + 1];
-                else // if (x >= 4)
-                    return a[n - x + b] ^ S(a, b, x - 4);
-            }
+            return C[0] ^ C[1] ^ C[2] ^ C[3];
         }
 
+        /// <summary>
+        /// Individual algorithmic step
+        /// </summary>
+        private static uint S(byte[] a, int b, int x)
+        {
+            int n = a.Length;
+
+            if (x < 4 && b > n % 4)
+                return 0;
+            else if (x < 4 && b <= n % 4)
+                return a[n - b + 1];
+            else // if (x >= 4)
+                return a[n - x + b] ^ S(a, b, x - 4);
+        }
+        
         #endregion
 
         #region Compression
@@ -472,111 +472,6 @@ namespace BurnOutSharp.Wrappers
 
         #endregion
 
-        #region Decompression
-
-        /// <summary>
-        /// The decoding algorithm for the actual data
-        /// </summary>
-        private static void MSZIPDecode(BitStream data)
-        {
-            // Create the output byte array
-            List<byte> decodedBytes = new List<byte>();
-
-            // Create the loop variable block
-            Models.MicrosoftCabinet.MSZIP.DeflateBlockHeader block;
-
-            do
-            {
-                block = AsDeflateBlockHeader(data);
-
-                // We should never get a reserved block
-                if (block.BTYPE == Models.MicrosoftCabinet.DeflateCompressionType.Reserved)
-                    throw new Exception();
-
-                // If stored with no compression
-                if (block.BTYPE == Models.MicrosoftCabinet.DeflateCompressionType.NoCompression)
-                {
-                    // Skip any remaining bits in current partially processed byte
-                    data.DiscardBuffer();
-
-                    // Read the block header
-                    block.BlockData = AsNonCompressedBlockHeader(data);
-
-                    // Copy LEN bytes of data to output
-                    var header = block.BlockData as Models.MicrosoftCabinet.MSZIP.NonCompressedBlockHeader;
-                    ushort length = header.LEN;
-                    decodedBytes.AddRange(data.ReadBytes(length));
-                }
-
-                // Otherwise
-                else
-                {
-                    // If compressed with dynamic Huffman codes
-                    // read representation of code trees
-                    block.BlockData = block.BTYPE == Models.MicrosoftCabinet.DeflateCompressionType.DynamicHuffman
-                        ? (Models.MicrosoftCabinet.MSZIP.IBlockDataHeader)AsDynamicHuffmanCompressedBlockHeader(data)
-                        : (Models.MicrosoftCabinet.MSZIP.IBlockDataHeader)new Models.MicrosoftCabinet.MSZIP.FixedHuffmanCompressedBlockHeader();
-
-                    var header = block.BlockData as Models.MicrosoftCabinet.MSZIP.CompressedBlockHeader;
-
-                    // 9 bits per entry, 288 max symbols
-                    int[] literalDecodeTable = CreateTable(header.LiteralLengths);
-
-                    // 6 bits per entry, 32 max symbols
-                    int[] distanceDecodeTable = CreateTable(header.DistanceCodes);
-
-                    // Loop until end of block code recognized
-                    while (true)
-                    {
-                        // Decode literal/length value from input stream
-                        int symbol = literalDecodeTable[data.ReadBits(9).AsUInt64()];
-
-                        // Copy value (literal byte) to output stream
-                        if (symbol < 256)
-                        {
-                            decodedBytes.Add((byte)symbol);
-                        }
-                        // End of block (256)
-                        else if (symbol == 256)
-                        {
-                            break;
-                        }
-                        else
-                        {
-                            // Decode distance from input stream
-                            ulong length = data.ReadBits(LiteralExtraBits[symbol]).AsUInt64();
-                            length += (ulong)LiteralLengths[symbol];
-
-                            int code = distanceDecodeTable[length];
-
-                            ulong distance = data.ReadBits(DistanceExtraBits[code]).AsUInt64();
-                            distance += (ulong)DistanceOffsets[code];
-
-
-                            // Move backwards distance bytes in the output
-                            // stream, and copy length bytes from this
-                            // position to the output stream.
-                        }
-                    }
-                }
-            } while (!block.BFINAL);
-
-            /*
-             Note that a duplicated string reference may refer to a string
-             in a previous block; i.e., the backward distance may cross one
-             or more block boundaries.  However a distance cannot refer past
-             the beginning of the output stream.  (An application using a
-             preset dictionary might discard part of the output stream; a
-             distance can refer to that part of the output stream anyway)
-             Note also that the referenced string may overlap the current
-             position; for example, if the last 2 bytes decoded have values
-             X and Y, a string reference with <length = 5, distance = 2>
-             adds X,Y,X,Y,X to the output stream.
-            */
-        }
-
-        #endregion
-
         #region Helpers
         
         /// <summary>
@@ -700,8 +595,6 @@ namespace BurnOutSharp.Wrappers
 
         #endregion
 
-        // TODO: Implement MSZIP decompression
-
         #endregion
 
         #region Quantum
@@ -748,8 +641,7 @@ namespace BurnOutSharp.Wrappers
                         decompressed = dataBlock.CompressedData;
                         break;
                     case Models.MicrosoftCabinet.CompressionType.TYPE_MSZIP:
-                        // TODO: UNIMPLEMENTED
-                        decompressed = dataBlock.CompressedData;
+                        decompressed = DecompressMSZIPData(dataBlock.CompressedData);
                         break;
                     case Models.MicrosoftCabinet.CompressionType.TYPE_QUANTUM:
                         // TODO: UNIMPLEMENTED
@@ -769,6 +661,117 @@ namespace BurnOutSharp.Wrappers
             }
 
             return data.ToArray();
+        }
+
+        /// <summary>
+        /// Decompress MSZIP data
+        /// </summary>
+        private byte[] DecompressMSZIPData(byte[] data)
+        {
+            // Create the bitstream to read from
+            var dataStream = new BitStream(data);
+
+            // Get the block header
+            var blockHeader = AsBlockHeader(dataStream);
+            if (blockHeader == null)
+                return null;
+
+            // Create the output byte array
+            List<byte> decodedBytes = new List<byte>();
+
+            // Create the loop variable block
+            Models.MicrosoftCabinet.MSZIP.DeflateBlockHeader deflateBlockHeader;
+
+            do
+            {
+                deflateBlockHeader = AsDeflateBlockHeader(dataStream);
+
+                // We should never get a reserved block
+                if (deflateBlockHeader.BTYPE == Models.MicrosoftCabinet.DeflateCompressionType.Reserved)
+                    throw new Exception();
+
+                // If stored with no compression
+                if (deflateBlockHeader.BTYPE == Models.MicrosoftCabinet.DeflateCompressionType.NoCompression)
+                {
+                    // Skip any remaining bits in current partially processed byte
+                    dataStream.DiscardBuffer();
+
+                    // Read the block header
+                    deflateBlockHeader.BlockDataHeader = AsNonCompressedBlockHeader(dataStream);
+
+                    // Copy LEN bytes of data to output
+                    var header = deflateBlockHeader.BlockDataHeader as Models.MicrosoftCabinet.MSZIP.NonCompressedBlockHeader;
+                    ushort length = header.LEN;
+                    decodedBytes.AddRange(dataStream.ReadBytes(length));
+                }
+
+                // Otherwise
+                else
+                {
+                    // If compressed with dynamic Huffman codes
+                    // read representation of code trees
+                    deflateBlockHeader.BlockDataHeader = deflateBlockHeader.BTYPE == Models.MicrosoftCabinet.DeflateCompressionType.DynamicHuffman
+                        ? (Models.MicrosoftCabinet.MSZIP.IBlockDataHeader)AsDynamicHuffmanCompressedBlockHeader(dataStream)
+                        : (Models.MicrosoftCabinet.MSZIP.IBlockDataHeader)new Models.MicrosoftCabinet.MSZIP.FixedHuffmanCompressedBlockHeader();
+
+                    var header = deflateBlockHeader.BlockDataHeader as Models.MicrosoftCabinet.MSZIP.CompressedBlockHeader;
+
+                    // 9 bits per entry, 288 max symbols
+                    int[] literalDecodeTable = CreateTable(header.LiteralLengths);
+
+                    // 6 bits per entry, 32 max symbols
+                    int[] distanceDecodeTable = CreateTable(header.DistanceCodes);
+
+                    // Loop until end of block code recognized
+                    while (true)
+                    {
+                        // Decode literal/length value from input stream
+                        int symbol = literalDecodeTable[dataStream.ReadBits(9).AsUInt64()];
+
+                        // Copy value (literal byte) to output stream
+                        if (symbol < 256)
+                        {
+                            decodedBytes.Add((byte)symbol);
+                        }
+                        // End of block (256)
+                        else if (symbol == 256)
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            // Decode distance from input stream
+                            ulong length = dataStream.ReadBits(LiteralExtraBits[symbol]).AsUInt64();
+                            length += (ulong)LiteralLengths[symbol];
+
+                            int code = distanceDecodeTable[length];
+
+                            ulong distance = dataStream.ReadBits(DistanceExtraBits[code]).AsUInt64();
+                            distance += (ulong)DistanceOffsets[code];
+
+
+                            // Move backwards distance bytes in the output
+                            // stream, and copy length bytes from this
+                            // position to the output stream.
+                        }
+                    }
+                }
+            } while (!deflateBlockHeader.BFINAL);
+
+            /*
+             Note that a duplicated string reference may refer to a string
+             in a previous block; i.e., the backward distance may cross one
+             or more block boundaries.  However a distance cannot refer past
+             the beginning of the output stream.  (An application using a
+             preset dictionary might discard part of the output stream; a
+             distance can refer to that part of the output stream anyway)
+             Note also that the referenced string may overlap the current
+             position; for example, if the last 2 bytes decoded have values
+             X and Y, a string reference with <length = 5, distance = 2>
+             adds X,Y,X,Y,X to the output stream.
+            */
+
+            return decodedBytes.ToArray();
         }
 
         #endregion
