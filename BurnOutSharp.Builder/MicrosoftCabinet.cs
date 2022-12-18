@@ -195,8 +195,9 @@ namespace BurnOutSharp.Builder
                 folder.DataBlocks = new Dictionary<int, CFDATA>();
                 for (int i = 0; i < folder.DataCount; i++)
                 {
+                    long dataBlockStart = data.Position;
                     CFDATA dataBlock = ParseDataBlock(data, header.DataReservedSize);
-                    folder.DataBlocks[(int)folder.CabStartOffset] = dataBlock;
+                    folder.DataBlocks[(int)dataBlockStart] = dataBlock;
                 }
 
                 data.Seek(currentPosition, SeekOrigin.Begin);

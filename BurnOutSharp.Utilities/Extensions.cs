@@ -40,7 +40,7 @@ namespace BurnOutSharp.Utilities
             byte value = 0;
 
             int maxValue = Math.Min(8, array.Length);
-            for (int i = 0; i < maxValue; i++)
+            for (int i = maxValue - 1; i >= 0; i--)
             {
                 value <<= 1;
                 value |= (byte)(array[i] ? 1 : 0);
@@ -56,8 +56,8 @@ namespace BurnOutSharp.Utilities
         {
             sbyte value = 0;
 
-            int maxValue = Math.Min(8, array.Length);
-            for (int i = 0; i < maxValue; i++)
+            int maxValue = Math.Min(val1: 8, array.Length);
+            for (int i = maxValue - 1; i >= 0; i--)
             {
                 value <<= 1;
                 value |= (sbyte)(array[i] ? 1 : 0);
@@ -74,7 +74,7 @@ namespace BurnOutSharp.Utilities
             short value = 0;
 
             int maxValue = Math.Min(16, array.Length);
-            for (int i = 0; i < maxValue; i++)
+            for (int i = maxValue - 1; i >= 0; i--)
             {
                 value <<= 1;
                 value |= (short)(array[i] ? 1 : 0);
@@ -91,7 +91,7 @@ namespace BurnOutSharp.Utilities
             ushort value = 0;
 
             int maxValue = Math.Min(16, array.Length);
-            for (int i = 0; i < maxValue; i++)
+            for (int i = maxValue - 1; i >= 0; i--)
             {
                 value <<= 1;
                 value |= (ushort)(array[i] ? 1 : 0);
@@ -108,7 +108,7 @@ namespace BurnOutSharp.Utilities
             int value = 0;
 
             int maxValue = Math.Min(32, array.Length);
-            for (int i = 0; i < maxValue; i++)
+            for (int i = maxValue - 1; i >= 0; i--)
             {
                 value <<= 1;
                 value |= (int)(array[i] ? 1 : 0);
@@ -125,7 +125,7 @@ namespace BurnOutSharp.Utilities
             uint value = 0;
 
             int maxValue = Math.Min(32, array.Length);
-            for (int i = 0; i < maxValue; i++)
+            for (int i = maxValue - 1; i >= 0; i--)
             {
                 value <<= 1;
                 value |= (uint)(array[i] ? 1 : 0);
@@ -142,7 +142,7 @@ namespace BurnOutSharp.Utilities
             long value = 0;
 
             int maxValue = Math.Min(64, array.Length);
-            for (int i = 0; i < maxValue; i++)
+            for (int i = maxValue - 1; i >= 0; i--)
             {
                 value <<= 1;
                 value |= (long)(array[i] ? 1 : 0);
@@ -159,7 +159,7 @@ namespace BurnOutSharp.Utilities
             ulong value = 0;
 
             int maxValue = Math.Min(64, array.Length);
-            for (int i = 0; i < maxValue; i++)
+            for (int i = maxValue - 1; i >= 0; i--)
             {
                 value <<= 1;
                 value |= (ulong)(array[i] ? 1 : 0);

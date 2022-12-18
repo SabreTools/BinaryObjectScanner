@@ -371,7 +371,7 @@ namespace BurnOutSharp.Wrappers
 
             var header = new Models.MicrosoftCabinet.MSZIP.BlockHeader();
         
-            header.Signature = data.ReadBits(2 * 8).AsUInt16();
+            header.Signature = data.ReadAlignedUInt16();
             if (header.Signature != 0x4B43)
                 return null;
 
@@ -419,7 +419,7 @@ namespace BurnOutSharp.Wrappers
             byte HDIST = (byte)(data.ReadBits(5).AsByte() + 1);
 
             // HCLEN, # of Code Length codes - 4
-            byte HCLEN = (byte)(data.ReadBits(5).AsByte() + 4);
+            byte HCLEN = (byte)(data.ReadBits(4).AsByte() + 4);
 
             // (HCLEN + 4) x 3 bits: code lengths for the code length
             //  alphabet given just above
@@ -428,23 +428,20 @@ namespace BurnOutSharp.Wrappers
             //  (0-7); as above, a code length of 0 means the
             //  corresponding symbol (literal/ length or distance code
             //  length) is not used.
-            int[] codeLengthAlphabet = new int[19];
+            int[] bitLengths = new int[19];
             for (ulong i = 0; i < HCLEN; i++)
-                codeLengthAlphabet[BitLengthOrder[i]] = data.ReadBits(3).AsByte();
-
-            for (ulong i = HCLEN; i < 19; i++)
-                codeLengthAlphabet[BitLengthOrder[i]] = 0;
+                bitLengths[BitLengthOrder[i]] = data.ReadBits(3).AsByte();
 
             // Code length Huffman code
-            int[] codeLengthHuffmanCode = CreateTable(codeLengthAlphabet);
+            int[] bitLengthTable = CreateTable(bitLengths);
 
             // HLIT + 257 code lengths for the literal/length alphabet,
             //  encoded using the code length Huffman code
-            header.LiteralLengths = BuildHuffmanTree(data, HLIT, codeLengthHuffmanCode);
+            header.LiteralLengths = BuildHuffmanTree(data, HLIT, bitLengthTable);
 
             // HDIST + 1 code lengths for the distance alphabet,
             //  encoded using the code length Huffman code
-            header.DistanceCodes = BuildHuffmanTree(data, HDIST, codeLengthHuffmanCode);
+            header.DistanceCodes = BuildHuffmanTree(data, HDIST, bitLengthTable);
 
             return header;
         }
@@ -463,8 +460,8 @@ namespace BurnOutSharp.Wrappers
 
             var header = new Models.MicrosoftCabinet.MSZIP.NonCompressedBlockHeader();
 
-            header.LEN = data.ReadBits(2 * 8).AsUInt16();
-            header.NLEN = data.ReadBits(2 * 8).AsUInt16();
+            header.LEN = data.ReadAlignedUInt16();
+            header.NLEN = data.ReadAlignedUInt16();
             // TODO: Confirm NLEN is 1's compliment of LEN
 
             return header;
@@ -486,41 +483,43 @@ namespace BurnOutSharp.Wrappers
             int lastCode = 0, repeatLength = 0;
             for (ulong i = 0; i < codeCount; i++)
             {
-                int code = codeLengths[(int)data.ReadBits(7).AsUInt64()];
+                int codeLength = codeLengths[data.ReadBits(7).AsUInt16()];
+                if (codeLengths[codeLength] > 7)
+                    _ = data.ReadBits(codeLengths[codeLength] - 7);
 
                 // Represent code lengths of 0 - 15
-                if (code > 0 && code <= 15)
+                if (codeLength > 0 && codeLength <= 15)
                 {
-                    lastCode = code;
-                    tree[i] = code;
+                    lastCode = codeLength;
+                    tree[i] = codeLength;
                 }
 
                 // Copy the previous code length 3 - 6 times.
                 // The next 2 bits indicate repeat length (0 = 3, ... , 3 = 6)
-                // Example:  Codes 8, 16 (+2 bits 11), 16 (+2 bits 10) will expand to 12 code lengths of 8 (1 + 6 + 5)
-                else if (code == 16)
+                // Example: Codes 8, 16 (+2 bits 11), 16 (+2 bits 10) will expand to 12 code lengths of 8 (1 + 6 + 5)
+                else if (codeLength == 16)
                 {
-                    repeatLength = (int)data.ReadBits(2).AsUInt64();
+                    repeatLength = data.ReadBits(2).AsByte();
                     repeatLength += 2;
-                    code = lastCode;
+                    codeLength = lastCode;
                 }
 
                 // Repeat a code length of 0 for 3 - 10 times.
                 // (3 bits of length)
-                else if (code == 17)
+                else if (codeLength == 17)
                 {
-                    repeatLength = (int)data.ReadBits(3).AsUInt64();
+                    repeatLength = data.ReadBits(3).AsByte();
                     repeatLength += 3;
-                    code = 0;
+                    codeLength = 0;
                 }
 
                 // Repeat a code length of 0 for 11 - 138 times
                 // (7 bits of length)
-                else if (code == 18)
+                else if (codeLength == 18)
                 {
-                    repeatLength = (int)data.ReadBits(7).AsUInt64();
+                    repeatLength = data.ReadBits(7).AsByte();
                     repeatLength += 11;
-                    code = 0;
+                    codeLength = 0;
                 }
 
                 // Everything else
@@ -532,7 +531,7 @@ namespace BurnOutSharp.Wrappers
                 // If we had a repeat length
                 for (; repeatLength > 0; repeatLength--)
                 {
-                    tree[i++] = code;
+                    tree[i++] = codeLength;
                 }
             }
 
@@ -554,18 +553,15 @@ namespace BurnOutSharp.Wrappers
         {
             // Count the number of codes for each code length.  Let
             // bl_count[N] be the number of codes of length N, N >= 1.
-            var bl_count = new Dictionary<int, int>();
+            int[] bl_count = new int[259];
             for (int i = 0; i < lengths.Length; i++)
             {
-                if (!bl_count.ContainsKey(lengths[i]))
-                    bl_count[lengths[i]] = 0;
-
                 bl_count[lengths[i]]++;
             }
 
             // Find the numerical value of the smallest code for each
-            // code length:
-            var next_code = new Dictionary<int, int>();
+            // code length.
+            int[] next_code = new int[MAX_BITS + 1];
             int code = 0;
             bl_count[0] = 0;
             for (int bits = 1; bits <= MAX_BITS; bits++)
@@ -580,7 +576,7 @@ namespace BurnOutSharp.Wrappers
             // (which have a bit length of zero) must not be assigned a
             // value.
             int[] distances = new int[lengths.Length];
-            for (int n = 0; n <= lengths.Length; n++)
+            for (int n = 0; n < lengths.Length; n++)
             {
                 int len = lengths[n];
                 if (len != 0)
@@ -702,7 +698,7 @@ namespace BurnOutSharp.Wrappers
                     // Copy LEN bytes of data to output
                     var header = deflateBlockHeader.BlockDataHeader as Models.MicrosoftCabinet.MSZIP.NonCompressedBlockHeader;
                     ushort length = header.LEN;
-                    decodedBytes.AddRange(dataStream.ReadBytes(length));
+                    decodedBytes.AddRange(dataStream.ReadAlignedBytes(length));
                 }
 
                 // Otherwise
@@ -726,7 +722,7 @@ namespace BurnOutSharp.Wrappers
                     while (true)
                     {
                         // Decode literal/length value from input stream
-                        int symbol = literalDecodeTable[dataStream.ReadBits(9).AsUInt64()];
+                        int symbol = literalDecodeTable[dataStream.ReadBits(9).AsUInt16()];
 
                         // Copy value (literal byte) to output stream
                         if (symbol < 256)

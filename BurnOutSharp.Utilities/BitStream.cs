@@ -8,6 +8,8 @@ namespace BurnOutSharp.Utilities
     /// </summary>
     public class BitStream
     {
+        #region Instance Variables
+
         /// <summary>
         /// Underlying stream to read from
         /// </summary>
@@ -23,6 +25,8 @@ namespace BurnOutSharp.Utilities
         /// </summary>
         private int _bitPosition;
 
+        #endregion
+
         public BitStream(byte[] data)
         {
             _stream = new MemoryStream(data);
@@ -37,6 +41,8 @@ namespace BurnOutSharp.Utilities
             _bitPosition = -1;
         }
 
+        #region Reading
+
         /// <summary>
         /// Read an array of bits from the input
         /// </summary>
@@ -49,7 +55,7 @@ namespace BurnOutSharp.Utilities
                 return null;
 
             // If we have an invalid bit buffer
-            if (_bitBuffer == null || _bitPosition < 0 || _bitPosition >= 8)
+            if (_bitBuffer == null || _bitPosition < 0 || _bitPosition > 7)
                 RefreshBuffer();
 
             // Create an array to hold the bits
@@ -74,49 +80,148 @@ namespace BurnOutSharp.Utilities
             return bits;
         }
 
+        #region Byte-Aligned Reads
+
+        /// <summary>
+        /// Read a byte-aligned byte from the input
+        /// </summary>
+        public byte ReadAlignedByte()
+        {
+            // Read back a single byte
+            if (_stream.Position > 0)
+                _stream.Seek(-1, SeekOrigin.Current);
+
+            // Read the value and refreah the buffer
+            byte value = _stream.ReadByteValue();
+            RefreshBuffer();
+            return value;
+        }
+
         /// <summary>
         /// Read an array of bytes from the input
         /// </summary>
         /// <param name="byteCount">Number of bytes to read</param>
         /// <returns>Array representing the read bytes, null on error</returns>
-        public byte[] ReadBytes(int byteCount)
+        public byte[] ReadAlignedBytes(int byteCount)
         {
-            // If we have an invalid byte count
-            if (byteCount <= 0)
-                return null;
+            // Read back a single byte
+            if (_stream.Position > 0)
+                _stream.Seek(-1, SeekOrigin.Current);
 
-            // Get the corresponding bit array
-            BitArray bits = ReadBits(byteCount * 8);
-            if (bits == null)
-                return null;
-
-            // Create the byte array
-            byte[] bytes = new byte[byteCount];
-
-            // Initialize the loop variables
-            byte byt = 0; int bitNumber = 0, byteNumber = 0;
-
-            // Loop and build the byte array
-            for (int i = 0; i < bits.Length; i++)
-            {
-                // Add the new bit to the byte
-                byt <<= 1;
-                byt |= (byte)(bits[i] ? 1 : 0);
-                bitNumber++;
-
-                // If we are at the end of a byte
-                if (bitNumber == 8)
-                {
-                     bytes[byteNumber++] = byt;
-                     bitNumber = 0;
-                }
-            }
-
-            // Add the last byte
-            bytes[byteNumber] = byt;
-
-            return bytes;
+            // Read the value and refreah the buffer
+            byte[] value = _stream.ReadBytes(byteCount);
+            RefreshBuffer();
+            return value;
         }
+
+        /// <summary>
+        /// Read a byte-aligned sbyte from the input
+        /// </summary>
+        public sbyte ReadAlignedSByte()
+        {
+            // Read back a single byte
+            if (_stream.Position > 0)
+                _stream.Seek(-1, SeekOrigin.Current);
+
+            // Read the value and refreah the buffer
+            sbyte value = _stream.ReadSByte();
+            RefreshBuffer();
+            return value;
+        }
+
+        /// <summary>
+        /// Read a byte-aligned short from the input
+        /// </summary>
+        public short ReadAlignedInt16()
+        {
+            // Read back a single byte
+            if (_stream.Position > 0)
+                _stream.Seek(-1, SeekOrigin.Current);
+
+            // Read the value and refreah the buffer
+            short value = _stream.ReadInt16();
+            RefreshBuffer();
+            return value;
+        }
+
+        /// <summary>
+        /// Read a byte-aligned ushort from the input
+        /// </summary>
+        public ushort ReadAlignedUInt16()
+        {
+            // Read back a single byte
+            if (_stream.Position > 0)
+                _stream.Seek(-1, SeekOrigin.Current);
+
+            // Read the value and refreah the buffer
+            ushort value = _stream.ReadUInt16();
+            RefreshBuffer();
+            return value;
+        }
+
+        /// <summary>
+        /// Read a byte-aligned int from the input
+        /// </summary>
+        public int ReadAlignedInt32()
+        {
+            // Read back a single byte
+            if (_stream.Position > 0)
+                _stream.Seek(-1, SeekOrigin.Current);
+
+            // Read the value and refreah the buffer
+            int value = _stream.ReadInt32();
+            RefreshBuffer();
+            return value;
+        }
+
+        /// <summary>
+        /// Read a byte-aligned uint from the input
+        /// </summary>
+        public uint ReadAlignedUInt32()
+        {
+            // Read back a single byte
+            if (_stream.Position > 0)
+                _stream.Seek(-1, SeekOrigin.Current);
+
+            // Read the value and refreah the buffer
+            uint value = _stream.ReadUInt32();
+            RefreshBuffer();
+            return value;
+        }
+
+        /// <summary>
+        /// Read a byte-aligned long from the input
+        /// </summary>
+        public long ReadAlignedInt64()
+        {
+            // Read back a single byte
+            if (_stream.Position > 0)
+                _stream.Seek(-1, SeekOrigin.Current);
+
+            // Read the value and refreah the buffer
+            long value = _stream.ReadInt64();
+            RefreshBuffer();
+            return value;
+        }
+
+        /// <summary>
+        /// Read a byte-aligned ulong from the input
+        /// </summary>
+        public ulong ReadAlignedUInt64()
+        {
+            // Read back a single byte
+            if (_stream.Position > 0)
+                _stream.Seek(-1, SeekOrigin.Current);
+
+            // Read the value and refreah the buffer
+            ulong value = _stream.ReadUInt64();
+            RefreshBuffer();
+            return value;
+        }
+
+        #endregion
+
+        #endregion
 
         /// <summary>
         /// Discard the remaining bits in the buffer
