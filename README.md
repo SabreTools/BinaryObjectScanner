@@ -132,6 +132,7 @@ Below is a list of executable packers detected by BurnOutSharp. The three column
 
 | Protection Name | Content Check | Path Check | Extractable |
 | --------------- | ------------- | ---------- | ----------- |
+| 7-zip SFX | Yes | No | No |
 | Advanced Installer / Caphyon Advanced Installer | Yes | No | No |
 | Armadillo | Yes | No | No |
 | ASPack | Yes | No | No |
