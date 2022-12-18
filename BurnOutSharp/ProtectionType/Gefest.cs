@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using BurnOutSharp.Interfaces;
@@ -28,24 +27,12 @@ namespace BurnOutSharp.ProtectionType
             if (sections == null)
                 return null;
 
-            // Get the HeaderPaddingData, if it exists
-            if (pex.HeaderPaddingData != null)
+            // Get the header padding strings, if it exists
+            if (pex.HeaderPaddingStrings != null)
             {
-                var matchers = new List<ContentMatchSet>
-                {
-                    // Found in "FDMASTER.EXE" in Redump entry 93700.
-                    // Gefest Protection System
-                    new ContentMatchSet(new byte?[]
-                    {
-                        0x47, 0x65, 0x66, 0x65, 0x73, 0x74, 0x20, 0x50,
-                        0x72, 0x6F, 0x74, 0x65, 0x63, 0x74, 0x69, 0x6F, 
-                        0x6E, 0x20, 0x53, 0x79, 0x73, 0x74, 0x65, 0x6D
-                    }, GetVersion, "Gefest Protection System"),
-                };
-
-                string match = MatchUtil.GetFirstMatch(file, pex.HeaderPaddingData, matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
-                    return match;
+                string match = pex.HeaderPaddingStrings.FirstOrDefault(s => s.Contains("Gefest Protection System"));
+                if (match != null)
+                    return $"Gefest Protection System {GetVersion(match)}";
             }
 
             return null;
@@ -73,12 +60,10 @@ namespace BurnOutSharp.ProtectionType
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
 
-        public static string GetVersion(string file, byte[] fileContent, List<int> positions)
+        private static string GetVersion(string match)
         {
-            // TODO: Verify that this works properly with other samples. Look at possibly ending the version string at the first 0x20 character.
-            int position = positions[0];
-            char[] version = new ArraySegment<byte>(fileContent, position + 25, 30).Select(b => (char)b).ToArray();
-            return new string(version);
+            match = match.Trim('*').Trim();
+            return match.Substring("Gefest Protection System ".Length);
         }
     }
 }
