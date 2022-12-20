@@ -44,6 +44,7 @@ Below are all current extension properties along with a brief description.
 |  | `OverlayStrings` | All found ASCII and Unicode wide character strings (length >= 3) between the end of the last section and either the start of the certificate table or the end of the file. |
 |  | `SectionNames` | The ordered set of section names converted to UTF-8 strings with trailing nulls trimmed. |
 |  | `StubExecutableData` | The data representing the MS-DOS executable stub code. For most programs, the stub would only print a message saying it needs Windows. |
+|  | `DebugData` | Dictionary containing mappings from debug directory number to either an object representing the data (if parsed) or a byte array (if unparsed). |
 |  | `ResourceData` | Dictionary containing mappings from ID to either an object representing the resource (if parsed) or a byte array (if unparsed). |
 |  | `BuildGuid`, `BuildSignature`, `Comments`, `CompanyName`, `DebugVersion`, `FileDescription`, `FileVersion`, `InternalName`, `LegalCopyright`, `LegalTrademarks`, `OriginalFilename`, `PrivateBuild`, `ProductGuid`, `ProductName`, `ProductVersion`, `SpecialBuild`, `TradeName` | Version information strings, some of which are not visible in the Windows file property tab. Not all will be available for all files. |
 |  | `AssemblyDescription`, `AssemblyVersion` | Assembly manifest (XML) description and version. May not be available for all files. |
@@ -56,6 +57,8 @@ Below are all current helper methods along with a brief description.
 | **New Executable (NE)** | `ReadArbitraryRange(int, int)` | Reads an arbitrary range of bytes out of the new executable. **This method will be replaced in the future as proper extension properties and methods are created.** |
 | **Portable Executable (PE)** | `GetVersionInfoString(string)` | Get a field from the version info string table based on the key, if the version info, string table, and key exist. Most common fields are already accessible as extension properties. See the table above for details. |
 |  | `GetAssemblyManifest()` | Get the parsed XML assembly manifest, if it exists. Some common fields are already accessible as extension properties. See the table above for details. |
+|  | `FindCodeViewDebugTableByPath(string)` | Find all CodeView-formatted debug tables that match a given path/filename, if they exist. |
+|  | `FindGenericDebugTableByValue(string)` | Find an unparsed or custom debug table where the ASCII, Unicode, or UTF-8 representations contain a given value, if they exist. |
 |  | `FindDialogByTitle(string)` | Find all dialog box resources that match a given title, if they exist. |
 |  | `FindDialogBoxByItemTitle(string)` | Find all dialog box reaources that contain a dialog item that matches a given title, if they exist. |
 |  | `FindStringTableByEntry(string)` | Find all string table resources that contain a given value, if they exist. |
@@ -71,6 +74,8 @@ Below are all current helper methods along with a brief description.
 |  | `GetFirstSectionStrings(string, bool)` | Get the first section found ASCII and Unicode wide character strings (length >= 5) whose name matches the provided value, if it exists. |
 |  | `GetLastSectionStrings(string, bool)` | Get the last section found ASCII and Unicode wide character strings (length >= 5) whose name matches the provided value, if it exists. |
 |  | `GetSectionStrings(int)` | Get the section found ASCII and Unicode wide character strings (length >= 5) whose index matches the provided value, if it exists. |
+|  | `GetTableData(int)` | Get the table raw data whose index matches the provided value, if it exists. |
+|  | `GetTableStrings(int)` | Get the table found ASCII and Unicode wide character strings (length >= 5) whose index matches the provided value, if it exists. |
 
 ## Adding a New Checker / Format
 
