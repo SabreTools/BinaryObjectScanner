@@ -33,7 +33,7 @@ Below is a list of protections detected by BurnOutSharp. The two columns explain
 | Alpha-ROM | True | False | |
 | BD+ | False | True | |
 | Bitpool | False | True | |
-| ByteShield | False | True | Unconfirmed¹ |
+| ByteShield | True | True | |
 | C-Dilla License Management Solution / CD-Secure / CD-Compress | True | True | |
 | Cactus Data Shield | True | True | |
 | CD-Cops / DVD-Cops | True | True | Partially unconfirmed² |

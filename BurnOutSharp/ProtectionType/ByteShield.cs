@@ -1,7 +1,9 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
+using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -35,15 +37,104 @@ namespace BurnOutSharp.ProtectionType
     /// https://www.ftc.gov/sites/default/files/documents/public_comments/ftc-town-hall-address-digital-rights-management-technologies-event-takes-place-wednesday-march-25/539814-00707.pdf
     /// https://www.gamesindustry.biz/byteshield-drm-system-now-protecting-over-200-games
     /// </summary>
-    public class ByteShield : IPathCheck
+    public class ByteShield : IPortableExecutableCheck, IPathCheck
     {
+        /// <inheritdoc/>
+        public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        {
+            // Get the sections from the executable, if possible
+            var sections = pex?.SectionTable;
+            if (sections == null)
+                return null;
+
+            // Found in "LineRider2.exe" in Redump entry 6236
+            string name = pex.FileDescription;
+            if (name?.Equals("ByteShield Client") == true)
+                return $"ByteShield Activation Client {Tools.Utilities.GetInternalVersion(pex)}";
+
+            // Found in "LineRider2.exe" in Redump entry 6236
+            name = pex.InternalName;
+            if (name?.Equals("ByteShield") == true)
+                return $"ByteShield Activation Client {Tools.Utilities.GetInternalVersion(pex)}";
+
+            // Found in "LineRider2.exe" in Redump entry 6236
+            name = pex.OriginalFilename;
+            if (name?.Equals("ByteShield.EXE") == true)
+                return $"ByteShield Activation Client {Tools.Utilities.GetInternalVersion(pex)}";
+
+            // Found in "LineRider2.exe" in Redump entry 6236
+            name = pex.ProductName;
+            if (name?.Equals("ByteShield Client") == true)
+                return $"ByteShield Activation Client {Tools.Utilities.GetInternalVersion(pex)}";
+
+            // Found in "ByteShield.dll" in Redump entry 6236
+            name = pex.ExportTable?.ExportDirectoryTable?.Name;
+            if (name?.Equals("ByteShield Client") == true)
+                return "ByteShield Component Module";
+
+            // Found in "LineRider2.exe" in Redump entry 6236
+            var stMatch = pex.FindStringTableByEntry("ByteShield");
+            if (stMatch.Any())
+                return $"ByteShield Activation Client {Tools.Utilities.GetInternalVersion(pex)}";
+
+            // Found in "LineRider2.exe" in Redump entry 6236
+            var dbMatch = pex.FindDialogByTitle("About ByteShield");
+            if (dbMatch.Any())
+                return "ByteShield";
+
+            // TODO: See if the version number is anywhere else
+            // TODO: Parse the version number out of the dialog box item
+            // Found in "LineRider2.exe" in Redump entry 6236
+            dbMatch = pex.FindDialogBoxByItemTitle("ByteShield Version 1.0");
+            if (dbMatch.Any())
+                return "ByteShield";
+
+            // Get strings from .data, if possible
+            var strings = pex.GetFirstSectionStrings(".data");
+            if (strings != null && strings.Any())
+            {
+                // Found in "LineRider2.exe" in Redump entry 6236
+                if (strings.Any(s => s?.Contains("ByteShield") == true))
+                    return "ByteShield";
+            }
+
+            // Get strings from .rdata, if possible
+            strings = pex.GetFirstSectionStrings(".rdata");
+            if (strings != null && strings.Any())
+            {
+                // Found in "ByteShield.dll" in Redump entry 6236
+                if (strings.Any(s => s?.Contains("Byte|Shield") == true))
+                    return "ByteShield Component Module";
+
+                // Found in "ByteShield.dll" in Redump entry 6236
+                else if (strings.Any(s => s?.Contains("Byteshield0") == true))
+                    return "ByteShield Component Module";
+
+                // Found in "ByteShield.dll" in Redump entry 6236
+                else if (strings.Any(s => s?.Contains("ByteShieldLoader") == true))
+                    return "ByteShield Component Module";
+            }
+
+            // Get strings from .ret, if possible
+            strings = pex.GetFirstSectionStrings(".ret");
+            if (strings != null && strings.Any())
+            {
+                // Found in "LineRider2.bbz" in Redump entry 6236
+                if (strings.Any(s => s?.Contains("ByteShield") == true))
+                    return "ByteShield Encrypted Executable";
+            }
+
+            return null;
+        }
+        
         /// <inheritdoc/>
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string> files)
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new PathMatch("Byteshield.dll", useEndsWith: true), "ByteShield (Unconfirmed - Please report to us on Github)"),
-                new PathMatchSet(new PathMatch(".bbz", useEndsWith: true), "ByteShield (Unconfirmed - Please report to us on Github)"),
+                new PathMatchSet(new PathMatch("Byteshield.dll", useEndsWith: true), "ByteShield Component Module"),
+                new PathMatchSet(new PathMatch("Byteshield.ini", useEndsWith: true), "ByteShield"),
+                new PathMatchSet(new PathMatch(".bbz", useEndsWith: true), "ByteShield Encrypted Executable"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);
@@ -54,8 +145,9 @@ namespace BurnOutSharp.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new PathMatch("Byteshield.dll", useEndsWith: true), "ByteShield (Unconfirmed - Please report to us on Github)"),
-                new PathMatchSet(new PathMatch(".bbz", useEndsWith: true), "ByteShield (Unconfirmed - Please report to us on Github)"),
+                new PathMatchSet(new PathMatch("Byteshield.dll", useEndsWith: true), "ByteShield Component Module"),
+                new PathMatchSet(new PathMatch("Byteshield.ini", useEndsWith: true), "ByteShield"),
+                new PathMatchSet(new PathMatch(".bbz", useEndsWith: true), "ByteShield Encrypted Executable"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

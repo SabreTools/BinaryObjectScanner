@@ -58,6 +58,7 @@ namespace BurnOutSharp.ProtectionType
                 return "SoftLock";
 
             // TODO: See if the version number is anywhere else
+            // TODO: Parse the version number out of the dialog box item
             // Found in "IALib.DLL" in IA item "TAFSEERVER4SETUP"
             dbMatch = pex.FindDialogBoxByItemTitle("Softlock Protected Application Version 1.0");
             if (dbMatch.Any())
@@ -73,7 +74,7 @@ namespace BurnOutSharp.ProtectionType
                 // Found in "TafseerVer4.exe" in IA item "TAFSEERVER4SETUP"
                 if (strings.Any(s => s?.Contains("SOFTLOCKPROTECTION") == true))
                     return "SoftLock";
-            };
+            }
 
             // Investigate if the ".section" section is an indicator of SoftLock
 
