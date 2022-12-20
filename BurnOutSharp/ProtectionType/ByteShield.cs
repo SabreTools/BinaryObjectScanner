@@ -92,7 +92,7 @@ namespace BurnOutSharp.ProtectionType
 
             // Get the .data/DATA section strings, if they exist
             List<string> strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
-            if (strs != null && strs.Any())
+            if (strs != null)
             {
                 // Found in "LineRider2.exe" in Redump entry 6236
                 if (strs.Any(s => s?.Contains("ByteShield") == true))
@@ -101,28 +101,28 @@ namespace BurnOutSharp.ProtectionType
 
             // Get the .rdata section strings, if they exist
             strs = pex.GetFirstSectionStrings(".rdata");
-            if (strings != null && strings.Any())
+            if (strs != null)
             {
                 // Found in "ByteShield.dll" in Redump entry 6236
-                if (strings.Any(s => s?.Contains("Byte|Shield") == true))
+                if (strs.Any(s => s?.Contains("Byte|Shield") == true))
                     return "ByteShield Component Module";
 
                 // Found in "ByteShield.dll" in Redump entry 6236
-                else if (strings.Any(s => s?.Contains("Byteshield0") == true))
+                else if (strs.Any(s => s?.Contains("Byteshield0") == true))
                     return "ByteShield Component Module";
 
                 // Found in "ByteShield.dll" in Redump entry 6236
-                else if (strings.Any(s => s?.Contains("ByteShieldLoader") == true))
+                else if (strs.Any(s => s?.Contains("ByteShieldLoader") == true))
                     return "ByteShield Component Module";
             }
 
             // Get the .ret section strings, if they exist
             strs = pex.GetFirstSectionStrings(".ret");
-            if (strings != null && strings.Any())
+            if (strs != null)
             {
                 // TODO: Figure out if this specifically indicates if the file is encrypted
                 // Found in "LineRider2.bbz" in Redump entry 6236
-                if (strings.Any(s => s?.Contains("ByteShield") == true))
+                if (strs.Any(s => s?.Contains("ByteShield") == true))
                     return "ByteShield";
             }
 
