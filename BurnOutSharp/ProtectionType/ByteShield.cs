@@ -15,6 +15,7 @@ namespace BurnOutSharp.ProtectionType
     /// Patent relating to ByteShield: https://patentimages.storage.googleapis.com/ed/76/c7/d98a56aeeca2e9/US7716474.pdf and https://patents.google.com/patent/US20100212028.
     /// 
     /// Games known to use it: 
+    /// Line Rider 2: Unbound (https://fileforums.com/showthread.php?t=86909).
     /// Football Manager 2011 (https://community.sigames.com/forums/topic/189163-for-those-of-you-struggling-with-byteshield-activation-issues/).
     /// 
     /// Publishers known to use it:
@@ -119,9 +120,10 @@ namespace BurnOutSharp.ProtectionType
             strings = pex.GetFirstSectionStrings(".ret");
             if (strings != null && strings.Any())
             {
+                // TODO: Figure out if this specifically indicates if the file is encrypted
                 // Found in "LineRider2.bbz" in Redump entry 6236
                 if (strings.Any(s => s?.Contains("ByteShield") == true))
-                    return "ByteShield Encrypted Executable";
+                    return "ByteShield";
             }
 
             return null;
@@ -130,11 +132,12 @@ namespace BurnOutSharp.ProtectionType
         /// <inheritdoc/>
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string> files)
         {
+            // TODO: Investigate reference to "bbz650.tmp" in "Byteshield.dll" (Redump entry 6236)
+            // Files with the ".bbz" extension are associated with ByteShield, but the extenstion is known to be used in other places as well.
             var matchers = new List<PathMatchSet>
             {
                 new PathMatchSet(new PathMatch("Byteshield.dll", useEndsWith: true), "ByteShield Component Module"),
                 new PathMatchSet(new PathMatch("Byteshield.ini", useEndsWith: true), "ByteShield"),
-                new PathMatchSet(new PathMatch(".bbz", useEndsWith: true), "ByteShield Encrypted Executable"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);
@@ -143,11 +146,12 @@ namespace BurnOutSharp.ProtectionType
         /// <inheritdoc/>
         public string CheckFilePath(string path)
         {
+            // TODO: Investigate reference to "bbz650.tmp" in "Byteshield.dll" (Redump entry 6236)
+            // Files with the ".bbz" extension are associated with ByteShield, but the extenstion is known to be used in other places as well.
             var matchers = new List<PathMatchSet>
             {
                 new PathMatchSet(new PathMatch("Byteshield.dll", useEndsWith: true), "ByteShield Component Module"),
                 new PathMatchSet(new PathMatch("Byteshield.ini", useEndsWith: true), "ByteShield"),
-                new PathMatchSet(new PathMatch(".bbz", useEndsWith: true), "ByteShield Encrypted Executable"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
