@@ -86,7 +86,7 @@ Below is a list of protections detected by BurnOutSharp. The two columns explain
 | SafeLock | False | True | |
 | SecuROM | True | True | v8.x and White Label detected partially² |
 | SmartE | True | True | |
-| SoftLock | False | True | Unconfirmed¹ |
+| SoftLock | False | True | |
 | SolidShield | True | True | Some Wrapper v1 not detected² |
 | StarForce | True | False | Partially unconfirmed², commented out issue with `protect.exe` false positives |
 | Steam | True | True | |

@@ -10,14 +10,16 @@ namespace BurnOutSharp.ProtectionType
         /// <inheritdoc/>
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string> files)
         {
-            // TODO: Verify if these are OR or AND
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new PathMatch("SOFTLOCKI.dat", useEndsWith: true), "SoftLock (Unconfirmed - Please report to us on Github)"),
-                new PathMatchSet(new PathMatch("SOFTLOCKC.dat", useEndsWith: true), "SoftLock (Unconfirmed - Please report to us on Github)"),
+                new PathMatchSet(new List<PathMatch>
+                {
+                    new PathMatch(needle: "SOFTLOCKC.dat", useEndsWith: true),
+                    new PathMatch("SOFTLOCKI.dat", useEndsWith: true),
+                }, "SoftLock"),
             };
 
-            return MatchUtil.GetAllMatches(files, matchers, any: true);
+            return MatchUtil.GetAllMatches(files, matchers, any: false);
         }
 
         /// <inheritdoc/>
@@ -25,8 +27,8 @@ namespace BurnOutSharp.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new PathMatch("SOFTLOCKI.dat", useEndsWith: true), "SoftLock (Unconfirmed - Please report to us on Github)"),
-                new PathMatchSet(new PathMatch("SOFTLOCKC.dat", useEndsWith: true), "SoftLock (Unconfirmed - Please report to us on Github)"),
+                new PathMatchSet(new PathMatch("SOFTLOCKC.dat", useEndsWith: true), "SoftLock"),
+                new PathMatchSet(new PathMatch("SOFTLOCKI.dat", useEndsWith: true), "SoftLock"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
