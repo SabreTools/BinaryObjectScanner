@@ -113,6 +113,44 @@ namespace BurnOutSharp.Builder
         }
 
         /// <summary>
+        /// Find the section a revlative virtual address lives in
+        /// </summary>
+        /// <param name="rva">Relative virtual address to convert</param>
+        /// <param name="sections">Array of sections to check against</param>
+        /// <returns>Section index, null on error</returns>
+        public static int ContainingSectionIndex(this uint rva, Models.PortableExecutable.SectionHeader[] sections)
+        {
+            // If we have an invalid section table, we can't do anything
+            if (sections == null || sections.Length == 0)
+                return -1;
+
+            // If the RVA is 0, we just return -1 because it's invalid
+            if (rva == 0)
+                return -1;
+
+            // Loop through all of the sections
+            for (int i = 0; i < sections.Length; i++)
+            {
+                // If the section is invalid, just skip it
+                if (sections[i] == null)
+                    continue;
+
+                // If the section "starts" at 0, just skip it
+                if (sections[i].PointerToRawData == 0)
+                    continue;
+
+                // Attempt to derive the physical address from the current section
+                var section = sections[i];
+                if (rva >= section.VirtualAddress && section.VirtualSize != 0 && rva <= section.VirtualAddress + section.VirtualSize)
+                    return i;
+                else if (rva >= section.VirtualAddress && section.SizeOfRawData != 0 && rva <= section.VirtualAddress + section.SizeOfRawData)
+                    return i;
+            }
+
+            return -1;
+        }
+
+        /// <summary>
         /// Read overlay data as a SecuROM AddD overlay data
         /// </summary>
         /// <param name="data">Data to parse into overlay data</param>

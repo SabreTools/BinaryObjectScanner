@@ -74,6 +74,7 @@ Below are all current helper methods along with a brief description.
 |  | `GetFirstSectionStrings(string, bool)` | Get the first section found ASCII and Unicode wide character strings (length >= 5) whose name matches the provided value, if it exists. |
 |  | `GetLastSectionStrings(string, bool)` | Get the last section found ASCII and Unicode wide character strings (length >= 5) whose name matches the provided value, if it exists. |
 |  | `GetSectionStrings(int)` | Get the section found ASCII and Unicode wide character strings (length >= 5) whose index matches the provided value, if it exists. |
+|  | `FindEntryPointSection()` | Get the section header for the section that contains the entry point, if it exists. |
 |  | `GetTableData(int)` | Get the table raw data whose index matches the provided value, if it exists. |
 |  | `GetTableStrings(int)` | Get the table found ASCII and Unicode wide character strings (length >= 5) whose index matches the provided value, if it exists. |
 

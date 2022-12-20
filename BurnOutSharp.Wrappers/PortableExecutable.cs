@@ -3240,6 +3240,20 @@ namespace BurnOutSharp.Wrappers
         }
 
         /// <summary>
+        /// Get the section index corresponding to the entry point, if possible
+        /// </summary>
+        /// <returns>Section index on success, null on error</returns>
+        public int FindEntryPointSectionIndex()
+        {
+            // If we don't have an entry point
+            if (OH_AddressOfEntryPoint.ConvertVirtualAddress(SectionTable) == 0)
+                return -1;
+
+            // Otherwise, find the section it exists within
+            return OH_AddressOfEntryPoint.ContainingSectionIndex(SectionTable);
+        }
+
+        /// <summary>
         /// Get the first section based on name, if possible
         /// </summary>
         /// <param name="name">Name of the section to check for</param>
