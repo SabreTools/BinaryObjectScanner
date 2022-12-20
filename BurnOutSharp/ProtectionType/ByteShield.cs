@@ -90,17 +90,17 @@ namespace BurnOutSharp.ProtectionType
             if (dbMatch.Any())
                 return "ByteShield";
 
-            // Get strings from .data, if possible
-            var strings = pex.GetFirstSectionStrings(".data");
-            if (strings != null && strings.Any())
+            // Get the .data/DATA section strings, if they exist
+            List<string> strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
+            if (strs != null && strs.Any())
             {
                 // Found in "LineRider2.exe" in Redump entry 6236
-                if (strings.Any(s => s?.Contains("ByteShield") == true))
+                if (strs.Any(s => s?.Contains("ByteShield") == true))
                     return "ByteShield";
             }
 
-            // Get strings from .rdata, if possible
-            strings = pex.GetFirstSectionStrings(".rdata");
+            // Get the .rdata section strings, if they exist
+            strs = pex.GetFirstSectionStrings(".rdata");
             if (strings != null && strings.Any())
             {
                 // Found in "ByteShield.dll" in Redump entry 6236
@@ -116,8 +116,8 @@ namespace BurnOutSharp.ProtectionType
                     return "ByteShield Component Module";
             }
 
-            // Get strings from .ret, if possible
-            strings = pex.GetFirstSectionStrings(".ret");
+            // Get the .ret section strings, if they exist
+            strs = pex.GetFirstSectionStrings(".ret");
             if (strings != null && strings.Any())
             {
                 // TODO: Figure out if this specifically indicates if the file is encrypted

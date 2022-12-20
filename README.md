@@ -109,23 +109,6 @@ Below is a list of protections detected by BurnOutSharp. The two columns explain
 
 ² - This is the same as ¹, but only for a subset of the checks.
 
-## Unimplemented Protections
-
-Below is a list of protections that have been identified but have not yet been implemented. Assistance on these would be greatly appreciated. See the source code for more details, where available.
-
-- Alcatraz
-- Alpha-Audio
-- CrypKey
-- DBB
-- DiscAudit
-- Doc.loc
-- FADE
-- MusicGuard
-- Roxxe
-- SAFEAUDIO
-- The Bongle
-- The Copy Protected CD
-
 ## Executable Packers Detected
 
 Below is a list of executable packers detected by BurnOutSharp. The three columns explain what sort of checks are performed to determine how the protection is detected as well as if the contents can be extracted.
@@ -155,12 +138,6 @@ Below is a list of executable packers detected by BurnOutSharp. The three column
 | WinRAR SFX | Yes | No | Yes |
 | WinZip SFX | Yes | No | Yes |
 | WISE Installer | Yes | No | Yes |
-
-## Unimplemented Packers
-
-Below is a list of packers that have been identified but have not yet been implemented. Assistance on these would be greatly appreciated. See the source code for more details, where available.
-
-- N/A
 
 ## Archive Formats
 

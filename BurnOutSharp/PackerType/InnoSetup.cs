@@ -40,7 +40,7 @@ namespace BurnOutSharp.PackerType
             if (sections == null)
                 return null;
 
-            // Get the .data section strings, if they exist
+            // Get the .data/DATA section strings, if they exist
             List<string> strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
             if (strs != null)
             {
