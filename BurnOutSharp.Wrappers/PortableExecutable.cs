@@ -1278,6 +1278,7 @@ namespace BurnOutSharp.Wrappers
             Console.WriteLine("  -------------------------");
             if (PointerToSymbolTable == 0
                 || NumberOfSymbols == 0
+                || COFFSymbolTable == null
                 || COFFSymbolTable.Length == 0)
             {
                 Console.WriteLine("  No COFF symbol table items");
