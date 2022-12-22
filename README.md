@@ -155,7 +155,7 @@ Below is a list of archive or archive-like formats that can be extracted and hav
 - PKZIP and derived files
 - RAR
 - TAR
-- ~~Valve archive formats~~ Disabled for the forseeable future
+- Valve archive formats
 - XZ
 
 ## Contributions
