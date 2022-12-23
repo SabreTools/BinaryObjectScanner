@@ -25,7 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BurnOutSharp.ASN1\BurnOutSharp.ASN1.csproj" />
-    <ProjectReference Include="..\BurnOutSharp.Builder\BurnOutSharp.Builder.csproj" />
+    <ProjectReference Include="..\BurnOutSharp.Builders\BurnOutSharp.Builders.csproj" />
     <ProjectReference Include="..\BurnOutSharp.Models\BurnOutSharp.Models.csproj" />
   </ItemGroup>
 

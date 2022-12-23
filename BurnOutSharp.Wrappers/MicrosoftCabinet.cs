@@ -141,7 +141,7 @@ namespace BurnOutSharp.Wrappers
             if (data == null || data.Length == 0 || !data.CanSeek || !data.CanRead)
                 return null;
 
-            var cabinet = Builder.MicrosoftCabinet.ParseCabinet(data);
+            var cabinet = Builders.MicrosoftCabinet.ParseCabinet(data);
             if (cabinet == null)
                 return null;
 

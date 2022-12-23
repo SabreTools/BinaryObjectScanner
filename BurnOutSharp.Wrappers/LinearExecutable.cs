@@ -325,7 +325,7 @@ namespace BurnOutSharp.Wrappers
             if (data == null || data.Length == 0 || !data.CanSeek || !data.CanRead)
                 return null;
 
-            var executable = Builder.LinearExecutable.ParseExecutable(data);
+            var executable = Builders.LinearExecutable.ParseExecutable(data);
             if (executable == null)
                 return null;
 

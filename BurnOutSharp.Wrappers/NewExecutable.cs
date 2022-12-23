@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using static BurnOutSharp.Builder.Extensions;
+using static BurnOutSharp.Builders.Extensions;
 
 namespace BurnOutSharp.Wrappers
 {
@@ -257,7 +257,7 @@ namespace BurnOutSharp.Wrappers
             if (data == null || data.Length == 0 || !data.CanSeek || !data.CanRead)
                 return null;
 
-            var executable = Builder.NewExecutable.ParseExecutable(data);
+            var executable = Builders.NewExecutable.ParseExecutable(data);
             if (executable == null)
                 return null;
 

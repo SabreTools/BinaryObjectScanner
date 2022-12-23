@@ -6,7 +6,7 @@ using System.Text;
 using BurnOutSharp.Models.PortableExecutable;
 using BurnOutSharp.Utilities;
 
-namespace BurnOutSharp.Builder
+namespace BurnOutSharp.Builders
 {
     public static class PortableExecutable
     {

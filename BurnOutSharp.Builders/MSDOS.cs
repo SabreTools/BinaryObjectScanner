@@ -2,7 +2,7 @@
 using BurnOutSharp.Models.MSDOS;
 using BurnOutSharp.Utilities;
 
-namespace BurnOutSharp.Builder
+namespace BurnOutSharp.Builders
 {
     public static class MSDOS
     {

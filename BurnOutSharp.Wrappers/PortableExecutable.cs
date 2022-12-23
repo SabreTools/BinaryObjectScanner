@@ -6,7 +6,7 @@ using System.Text;
 using System.Xml;
 using BurnOutSharp.ASN1;
 using BurnOutSharp.Utilities;
-using static BurnOutSharp.Builder.Extensions;
+using static BurnOutSharp.Builders.Extensions;
 
 namespace BurnOutSharp.Wrappers
 {
@@ -933,7 +933,7 @@ namespace BurnOutSharp.Wrappers
             if (data == null || data.Length == 0 || !data.CanSeek || !data.CanRead)
                 return null;
 
-            var executable = Builder.PortableExecutable.ParseExecutable(data);
+            var executable = Builders.PortableExecutable.ParseExecutable(data);
             if (executable == null)
                 return null;
 

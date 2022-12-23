@@ -79,7 +79,7 @@ namespace BurnOutSharp.Wrappers
             if (data == null || data.Length == 0 || !data.CanSeek || !data.CanRead)
                 return null;
 
-            var archive = Builder.BFPK.ParseArchive(data);
+            var archive = Builders.BFPK.ParseArchive(data);
             if (archive == null)
                 return null;
 

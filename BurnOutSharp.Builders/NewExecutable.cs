@@ -4,7 +4,7 @@ using System.Linq;
 using BurnOutSharp.Models.NewExecutable;
 using BurnOutSharp.Utilities;
 
-namespace BurnOutSharp.Builder
+namespace BurnOutSharp.Builders
 {
     public static class NewExecutable
     {

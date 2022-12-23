@@ -4,7 +4,7 @@ using System.Text;
 using BurnOutSharp.Models.MicrosoftCabinet;
 using BurnOutSharp.Utilities;
 
-namespace BurnOutSharp.Builder
+namespace BurnOutSharp.Builders
 {
     // TODO: Add multi-cabinet reading
     public class MicrosoftCabinet

@@ -4,7 +4,7 @@ using System.IO;
 using BurnOutSharp.Models.MoPaQ;
 using BurnOutSharp.Utilities;
 
-namespace BurnOutSharp.Builder
+namespace BurnOutSharp.Builders
 {
     public class MoPaQ
     {

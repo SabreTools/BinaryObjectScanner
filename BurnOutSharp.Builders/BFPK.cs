@@ -3,7 +3,7 @@ using System.Linq;
 using BurnOutSharp.Models.BFPK;
 using BurnOutSharp.Utilities;
 
-namespace BurnOutSharp.Builder
+namespace BurnOutSharp.Builders
 {
     public class BFPK
     {

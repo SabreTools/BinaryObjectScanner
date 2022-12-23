@@ -129,7 +129,7 @@ namespace BurnOutSharp.Wrappers
             if (data == null || data.Length == 0 || !data.CanSeek || !data.CanRead)
                 return null;
 
-            var executable = Builder.MSDOS.ParseExecutable(data);
+            var executable = Builders.MSDOS.ParseExecutable(data);
             if (executable == null)
                 return null;
 

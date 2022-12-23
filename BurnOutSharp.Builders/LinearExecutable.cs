@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using BurnOutSharp.Models.LinearExecutable;
 
-namespace BurnOutSharp.Builder
+namespace BurnOutSharp.Builders
 {
     public static class LinearExecutable
     {

@@ -61,7 +61,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </ProjectReference>
-    <ProjectReference Include="..\BurnOutSharp.Builder\BurnOutSharp.Builder.csproj">
+    <ProjectReference Include="..\BurnOutSharp.Builders\BurnOutSharp.Builders.csproj">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </ProjectReference>
