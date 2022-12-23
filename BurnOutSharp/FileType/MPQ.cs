@@ -20,7 +20,7 @@ namespace BurnOutSharp.FileType
             if (!File.Exists(file))
                 return null;
 
-            using (var fs = File.OpenRead(file))
+            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 return Scan(scanner, fs, file);
             }

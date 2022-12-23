@@ -207,7 +207,7 @@ namespace Test
         /// </summary>
         private static void PrintFileInfo(string file)
         {
-            using (Stream stream = File.OpenRead(file))
+            using (Stream stream = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 // Read the first 4 bytes
                 byte[] magic = stream.ReadBytes(4);

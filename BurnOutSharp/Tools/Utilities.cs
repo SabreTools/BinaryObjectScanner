@@ -541,7 +541,7 @@ namespace BurnOutSharp.Tools
         {
             try
             {
-                using (Stream fileStream = File.OpenRead(file))
+                using (Stream fileStream = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
                 {
                     var pex = PortableExecutable.Create(fileStream);
                     return GetInternalVersion(pex);

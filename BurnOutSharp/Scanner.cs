@@ -259,7 +259,7 @@ namespace BurnOutSharp
             // Open the file and begin scanning
             try
             {
-                using (FileStream fs = File.OpenRead(file))
+                using (FileStream fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
                 {
                     return GetInternalProtections(file, fs);
                 }
