@@ -11,10 +11,10 @@ In addition to the original BurnOut code, the following libraries (or ports ther
 - [openmcdf](https://github.com/ironfede/openmcdf) - MSI extraction
 - [psxt001z](https://github.com/Dremora/psxt001z) - PS1 LibCrypt detection [Ported to C#]
 - [SharpCompress](https://github.com/adamhathcock/sharpcompress) - 7zip/GZip/RAR/PKZIP extraction
-- [StormLibSharp](https://github.com/robpaveza/stormlibsharp) - MPQ extraction
+- [StormLibSharp](https://github.com/robpaveza/stormlibsharp) - MPQ extraction [Unused in .NET 6.0 builds due to Windows-specific libraries]
 - [UnshieldSharp](https://github.com/mnadareski/UnshieldSharp) - InstallShield CAB extraction
 - [WiseUnpacker](https://github.com/mnadareski/WiseUnpacker) - Wise Installer extraction
-- [WixToolset.Dtf](https://github.com/wixtoolset/Dtf) - Microsoft CAB extraction [Unused in .NET 6.0 builds]
+- [WixToolset.Dtf](https://github.com/wixtoolset/Dtf) - Microsoft CAB extraction [Unused in .NET 6.0 builds due to Windows-specific libraries]
 
 Please note that due to current library limitations, the functionality of StormLibSharp is locked to Windows only.
 

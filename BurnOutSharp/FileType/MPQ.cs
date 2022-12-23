@@ -2,7 +2,9 @@
 using System.Collections.Concurrent;
 using System.IO;
 using BurnOutSharp.Interfaces;
+#if NETSTANDARD2_0
 using StormLibSharp;
+#endif
 using static BurnOutSharp.Utilities.Dictionary;
 
 namespace BurnOutSharp.FileType
@@ -28,7 +30,11 @@ namespace BurnOutSharp.FileType
         /// <inheritdoc/>
         public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, Stream stream, string file)
         {
-            // If the mpq file itself fails
+#if NET6_0_OR_GREATER
+            // Not supported for .NET 6.0 due to Windows DLL requirements
+            return null;
+#else
+            // If the MPQ file itself fails
             try
             {
                 string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
@@ -94,6 +100,7 @@ namespace BurnOutSharp.FileType
             }
 
             return null;
+#endif
         }
     }
 }

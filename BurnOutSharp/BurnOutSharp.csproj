@@ -49,7 +49,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="*.dll" Pack="true">
+    <None Include="*.dll" Pack="true" Condition="'$(TargetFramework)' != 'net6.0'">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <CopyToPublishDirectory>Always</CopyToPublishDirectory>
       <PackageCopyToOutput>true</PackageCopyToOutput>
