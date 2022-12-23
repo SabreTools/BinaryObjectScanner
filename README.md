@@ -16,8 +16,6 @@ In addition to the original BurnOut code, the following libraries (or ports ther
 - [WiseUnpacker](https://github.com/mnadareski/WiseUnpacker) - Wise Installer extraction
 - [WixToolset.Dtf](https://github.com/wixtoolset/Dtf) - Microsoft CAB extraction [Unused in .NET 6.0 builds due to Windows-specific libraries]
 
-Please note that due to current library limitations, the functionality of StormLibSharp is locked to Windows only.
-
 ## Protections Detected
 
 Below is a list of protections detected by BurnOutSharp. The two columns explain what sort of checks are performed to determine how the protection is detected. Generally speaking, it's better to have a content check than a path check.
