@@ -343,6 +343,25 @@ namespace Test
                     cabinet.Print();
                 }
 
+                // VPK
+                else if (IsVPK(magic))
+                {
+                    // Build the archive information
+                    Console.WriteLine("Creating VPK deserializer");
+                    Console.WriteLine();
+
+                    var vpk = VPK.Create(stream);
+                    if (vpk == null)
+                    {
+                        Console.WriteLine("Something went wrong parsing VPK");
+                        Console.WriteLine();
+                        return;
+                    }
+
+                    // Print the VPK info to screen
+                    vpk.Print();
+                }
+
                 // Everything else
                 else
                 {
@@ -428,6 +447,17 @@ namespace Test
                 return false;
 
             return magic[0] == 'P' && magic[1] == 'E' && magic[2] == '\0' && magic[3] == '\0';
+        }
+
+        /// <summary>
+        /// Determine if the magic bytes indicate an VPK
+        /// </summary>
+        private static bool IsVPK(byte[] magic)
+        {
+            if (magic == null || magic.Length < 4)
+                return false;
+
+            return magic[0] == 0x34 && magic[1] == 0x12 && magic[2] == 0xaa && magic[3] == 0x55;
         }
 
         #endregion

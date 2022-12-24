@@ -261,7 +261,7 @@ namespace BurnOutSharp.Tools
 
             #region VPK
 
-            if (magic.StartsWith(new byte?[] { 0x34, 0x12, 0x55, 0xaa }))
+            if (magic.StartsWith(new byte?[] { 0x34, 0x12, 0xaa, 0x55 }))
                 return SupportedFileType.VPK;
 
             #endregion
