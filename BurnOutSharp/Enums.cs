@@ -16,6 +16,11 @@
         BFPK,
 
         /// <summary>
+        /// Half-Life Level
+        /// </summary>
+        BSP,
+
+        /// <summary>
         /// bzip2 archive
         /// </summary>
         BZip2,
@@ -24,6 +29,11 @@
         /// Executable or library
         /// </summary>
         Executable,
+
+        /// <summary>
+        /// Half-Life Game Cache File
+        /// </summary>
+        GCF,
 
         /// <summary>
         /// gzip archive
@@ -61,6 +71,16 @@
         MSI,
 
         /// <summary>
+        /// Half-Life No Cache File
+        /// </summary>
+        NCF,
+
+        /// <summary>
+        /// Half-Life Package File
+        /// </summary>
+        PAK,
+
+        /// <summary>
         /// PKWARE ZIP archive and derivatives
         /// </summary>
         PKZIP,
@@ -86,6 +106,11 @@
         SFFS,
 
         /// <summary>
+        /// SGA
+        /// </summary>
+        SGA,
+
+        /// <summary>
         /// Tape archive
         /// </summary>
         TapeArchive,
@@ -96,13 +121,28 @@
         Textfile,
 
         /// <summary>
-        /// Various Valve archive formats
+        /// Half-Life 2 Level
         /// </summary>
-        Valve,
+        VBSP,
+
+        /// <summary>
+        /// Valve Package File
+        /// </summary>
+        VPK,
+
+        /// <summary>
+        /// Half-Life Texture Package File
+        /// </summary>
+        WAD,
 
         /// <summary>
         /// xz archive
         /// </summary>
         XZ,
+
+        /// <summary>
+        /// xz archive
+        /// </summary>
+        XZP,
     }
 }

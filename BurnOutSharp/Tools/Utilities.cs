@@ -31,7 +31,7 @@ namespace BurnOutSharp.Tools
             #region BSP
 
             if (magic.StartsWith(new byte?[] { 0x1e, 0x00, 0x00, 0x00 }))
-                return SupportedFileType.Valve;
+                return SupportedFileType.BSP;
 
             #endregion
 
@@ -81,7 +81,7 @@ namespace BurnOutSharp.Tools
             #region GCF
 
             if (magic.StartsWith(new byte?[] { 0x01, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00 }))
-                return SupportedFileType.Valve;
+                return SupportedFileType.GCF;
 
             #endregion
 
@@ -139,14 +139,14 @@ namespace BurnOutSharp.Tools
             #region NCF
 
             if (magic.StartsWith(new byte?[] { 0x01, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00 }))
-                return SupportedFileType.Valve;
+                return SupportedFileType.NCF;
 
             #endregion
 
             #region PAK
 
             if (magic.StartsWith(new byte?[] { 0x50, 0x41, 0x43, 0x4B }))
-                return SupportedFileType.Valve;
+                return SupportedFileType.PAK;
 
             #endregion
 
@@ -208,7 +208,7 @@ namespace BurnOutSharp.Tools
             #region SGA
 
             if (magic.StartsWith(new byte?[] { 0x5F, 0x41, 0x52, 0x43, 0x48, 0x49, 0x56, 0x45 }))
-                return SupportedFileType.Valve;
+                return SupportedFileType.SGA;
 
             #endregion
 
@@ -255,21 +255,21 @@ namespace BurnOutSharp.Tools
             #region VBSP
 
             if (magic.StartsWith(new byte?[] { 0x56, 0x42, 0x53, 0x50 }))
-                return SupportedFileType.Valve;
+                return SupportedFileType.VBSP;
 
             #endregion
 
             #region VPK
 
             if (magic.StartsWith(new byte?[] { 0x34, 0x12, 0x55, 0xaa }))
-                return SupportedFileType.Valve;
+                return SupportedFileType.VPK;
 
             #endregion
 
             #region WAD
 
             if (magic.StartsWith(new byte?[] { 0x57, 0x41, 0x44, 0x33 }))
-                return SupportedFileType.Valve;
+                return SupportedFileType.WAD;
 
             #endregion
 
@@ -283,7 +283,7 @@ namespace BurnOutSharp.Tools
             #region XZP
 
             if (magic.StartsWith(new byte?[] { 0x70, 0x69, 0x5A, 0x78 }))
-                return SupportedFileType.Valve;
+                return SupportedFileType.XZP;
 
             #endregion
 
@@ -313,7 +313,7 @@ namespace BurnOutSharp.Tools
             #region BSP
 
             if (extension.Equals("bsp", StringComparison.OrdinalIgnoreCase))
-                return SupportedFileType.Valve;
+                return SupportedFileType.BSP;
 
             #endregion
 
@@ -339,7 +339,7 @@ namespace BurnOutSharp.Tools
             #region GCF
 
             if (extension.Equals("gcf", StringComparison.OrdinalIgnoreCase))
-                return SupportedFileType.Valve;
+                return SupportedFileType.GCF;
 
             #endregion
 
@@ -395,14 +395,14 @@ namespace BurnOutSharp.Tools
             #region NCF
 
             if (extension.Equals("ncf", StringComparison.OrdinalIgnoreCase))
-                return SupportedFileType.Valve;
+                return SupportedFileType.NCF;
 
             #endregion
 
             #region PAK
 
             if (extension.Equals("pak", StringComparison.OrdinalIgnoreCase))
-                return SupportedFileType.Valve;
+                return SupportedFileType.PAK;
 
             #endregion
 
@@ -519,7 +519,7 @@ namespace BurnOutSharp.Tools
             #region SGA
 
             if (extension.Equals("sga", StringComparison.OrdinalIgnoreCase))
-                return SupportedFileType.Valve;
+                return SupportedFileType.SGA;
 
             #endregion
 
@@ -575,21 +575,21 @@ namespace BurnOutSharp.Tools
             #region VBSP
 
             if (extension.Equals("bsp", StringComparison.OrdinalIgnoreCase))
-                return SupportedFileType.Valve;
+                return SupportedFileType.VBSP;
 
             #endregion
 
             #region VPK
 
             if (extension.Equals("vpk", StringComparison.OrdinalIgnoreCase))
-                return SupportedFileType.Valve;
+                return SupportedFileType.VPK;
 
             #endregion
 
             #region WAD
 
             if (extension.Equals("wad", StringComparison.OrdinalIgnoreCase))
-                return SupportedFileType.Valve;
+                return SupportedFileType.WAD;
 
             #endregion
 
@@ -603,7 +603,7 @@ namespace BurnOutSharp.Tools
             #region XZP
 
             if (extension.Equals("xzp", StringComparison.OrdinalIgnoreCase))
-                return SupportedFileType.Valve;
+                return SupportedFileType.XZP;
 
             #endregion
 
@@ -619,8 +619,10 @@ namespace BurnOutSharp.Tools
             switch (fileType)
             {
                 case SupportedFileType.BFPK: return new FileType.BFPK();
+                case SupportedFileType.BSP: return new FileType.Valve();
                 case SupportedFileType.BZip2: return new FileType.BZip2();
                 case SupportedFileType.Executable: return new FileType.Executable();
+                case SupportedFileType.GCF: return new FileType.Valve();
                 case SupportedFileType.GZIP: return new FileType.GZIP();
                 //case FileTypes.IniFile: return new FileType.IniFile();
                 case SupportedFileType.InstallShieldArchiveV3: return new FileType.InstallShieldArchiveV3();
@@ -628,15 +630,21 @@ namespace BurnOutSharp.Tools
                 case SupportedFileType.MicrosoftCAB: return new FileType.MicrosoftCAB();
                 case SupportedFileType.MPQ: return new FileType.MPQ();
                 case SupportedFileType.MSI: return new FileType.MSI();
+                case SupportedFileType.NCF: return new FileType.Valve();
+                case SupportedFileType.PAK: return new FileType.PKZIP();
                 case SupportedFileType.PKZIP: return new FileType.PKZIP();
                 case SupportedFileType.PLJ: return new FileType.PLJ();
                 case SupportedFileType.RAR: return new FileType.RAR();
                 case SupportedFileType.SevenZip: return new FileType.SevenZip();
                 case SupportedFileType.SFFS: return new FileType.SFFS();
+                case SupportedFileType.SGA: return new FileType.Valve();
                 case SupportedFileType.TapeArchive: return new FileType.TapeArchive();
                 case SupportedFileType.Textfile: return new FileType.Textfile();
-                case SupportedFileType.Valve: return new FileType.Valve();
+                case SupportedFileType.VBSP: return new FileType.Valve();
+                case SupportedFileType.VPK: return new FileType.Valve();
+                case SupportedFileType.WAD: return new FileType.Valve();
                 case SupportedFileType.XZ: return new FileType.XZ();
+                case SupportedFileType.XZP: return new FileType.Valve();
                 default: return null;
             }
         }
