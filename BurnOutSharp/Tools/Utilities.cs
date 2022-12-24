@@ -28,6 +28,13 @@ namespace BurnOutSharp.Tools
 
             #endregion
 
+            #region BSP
+
+            if (magic.StartsWith(new byte?[] { 0x1e, 0x00, 0x00, 0x00 }))
+                return SupportedFileType.Valve;
+
+            #endregion
+
             #region BZip2
 
             if (magic.StartsWith(new byte?[] { 0x42, 0x52, 0x68 }))
@@ -68,6 +75,13 @@ namespace BurnOutSharp.Tools
             if (magic.StartsWith(new byte?[] { 0x4a, 0x6f, 0x79, 0x21, 0x70, 0x65, 0x66, 0x66 }))
                 return FileTypes.Executable;
             */
+
+            #endregion
+
+            #region GCF
+
+            if (magic.StartsWith(new byte?[] { 0x01, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00 }))
+                return SupportedFileType.Valve;
 
             #endregion
 
@@ -122,6 +136,20 @@ namespace BurnOutSharp.Tools
 
             #endregion
 
+            #region NCF
+
+            if (magic.StartsWith(new byte?[] { 0x01, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00 }))
+                return SupportedFileType.Valve;
+
+            #endregion
+
+            #region PAK
+
+            if (magic.StartsWith(new byte?[] { 0x50, 0x41, 0x43, 0x4B }))
+                return SupportedFileType.Valve;
+
+            #endregion
+
             #region PKZIP
 
             // PKZIP (Unknown)
@@ -162,6 +190,13 @@ namespace BurnOutSharp.Tools
 
             #endregion
 
+            #region SevenZip
+
+            if (magic.StartsWith(new byte?[] { 0x37, 0x7a, 0xbc, 0xaf, 0x27, 0x1c }))
+                return SupportedFileType.SevenZip;
+
+            #endregion
+
             #region SFFS
 
             // Found in Redump entry 81756, confirmed to be "StarForce Filesystem" by PiD.
@@ -170,10 +205,10 @@ namespace BurnOutSharp.Tools
 
             #endregion 
 
-            #region SevenZip
+            #region SGA
 
-            if (magic.StartsWith(new byte?[] { 0x37, 0x7a, 0xbc, 0xaf, 0x27, 0x1c }))
-                return SupportedFileType.SevenZip;
+            if (magic.StartsWith(new byte?[] { 0x5F, 0x41, 0x52, 0x43, 0x48, 0x49, 0x56, 0x45 }))
+                return SupportedFileType.Valve;
 
             #endregion
 
@@ -217,9 +252,23 @@ namespace BurnOutSharp.Tools
 
             #endregion
 
-            #region Valve
+            #region VBSP
 
-            if (HLLib.Packages.Package.GetPackageType(magic) != HLLib.Packages.PackageType.HL_PACKAGE_NONE)
+            if (magic.StartsWith(new byte?[] { 0x56, 0x42, 0x53, 0x50 }))
+                return SupportedFileType.Valve;
+
+            #endregion
+
+            #region VPK
+
+            if (magic.StartsWith(new byte?[] { 0x34, 0x12, 0x55, 0xaa }))
+                return SupportedFileType.Valve;
+
+            #endregion
+
+            #region WAD
+
+            if (magic.StartsWith(new byte?[] { 0x57, 0x41, 0x44, 0x33 }))
                 return SupportedFileType.Valve;
 
             #endregion
@@ -228,6 +277,13 @@ namespace BurnOutSharp.Tools
 
             if (magic.StartsWith(new byte?[] { 0xfd, 0x37, 0x7a, 0x58, 0x5a, 0x00 }))
                 return SupportedFileType.XZ;
+
+            #endregion
+
+            #region XZP
+
+            if (magic.StartsWith(new byte?[] { 0x70, 0x69, 0x5A, 0x78 }))
+                return SupportedFileType.Valve;
 
             #endregion
 
@@ -254,6 +310,13 @@ namespace BurnOutSharp.Tools
 
             #endregion
 
+            #region BSP
+
+            if (extension.Equals("bsp", StringComparison.OrdinalIgnoreCase))
+                return SupportedFileType.Valve;
+
+            #endregion
+
             #region BZip2
 
             if (extension.Equals("bz2", StringComparison.OrdinalIgnoreCase))
@@ -270,6 +333,13 @@ namespace BurnOutSharp.Tools
             // DOS MZ library file format (and descendants)
             if (extension.Equals("dll", StringComparison.OrdinalIgnoreCase))
                 return SupportedFileType.Executable;
+
+            #endregion
+
+            #region GCF
+
+            if (extension.Equals("gcf", StringComparison.OrdinalIgnoreCase))
+                return SupportedFileType.Valve;
 
             #endregion
 
@@ -319,6 +389,20 @@ namespace BurnOutSharp.Tools
 
             if (extension.Equals("msi", StringComparison.OrdinalIgnoreCase))
                 return SupportedFileType.MSI;
+
+            #endregion
+
+            #region NCF
+
+            if (extension.Equals("ncf", StringComparison.OrdinalIgnoreCase))
+                return SupportedFileType.Valve;
+
+            #endregion
+
+            #region PAK
+
+            if (extension.Equals("pak", StringComparison.OrdinalIgnoreCase))
+                return SupportedFileType.Valve;
 
             #endregion
 
@@ -432,6 +516,13 @@ namespace BurnOutSharp.Tools
 
             #endregion
 
+            #region SGA
+
+            if (extension.Equals("sga", StringComparison.OrdinalIgnoreCase))
+                return SupportedFileType.Valve;
+
+            #endregion
+
             #region TapeArchive
 
             if (extension.Equals("tar", StringComparison.OrdinalIgnoreCase))
@@ -481,9 +572,24 @@ namespace BurnOutSharp.Tools
 
             #endregion
 
-            #region Valve
+            #region VBSP
 
-            // No extensions registered for Valve
+            if (extension.Equals("bsp", StringComparison.OrdinalIgnoreCase))
+                return SupportedFileType.Valve;
+
+            #endregion
+
+            #region VPK
+
+            if (extension.Equals("vpk", StringComparison.OrdinalIgnoreCase))
+                return SupportedFileType.Valve;
+
+            #endregion
+
+            #region WAD
+
+            if (extension.Equals("wad", StringComparison.OrdinalIgnoreCase))
+                return SupportedFileType.Valve;
 
             #endregion
 
@@ -491,6 +597,13 @@ namespace BurnOutSharp.Tools
 
             if (extension.Equals("xz", StringComparison.OrdinalIgnoreCase))
                 return SupportedFileType.XZ;
+
+            #endregion
+
+            #region XZP
+
+            if (extension.Equals("xzp", StringComparison.OrdinalIgnoreCase))
+                return SupportedFileType.Valve;
 
             #endregion
 
