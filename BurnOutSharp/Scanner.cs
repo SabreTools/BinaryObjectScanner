@@ -465,6 +465,14 @@ namespace BurnOutSharp
                         AppendToDictionary(protections, subProtections);
                     }
 
+                    // VPK
+                    if (fileName != null && scannable is VPK)
+                    {
+                        var subProtections = scannable.Scan(this, fileName);
+                        PrependToKeys(subProtections, fileName);
+                        AppendToDictionary(protections, subProtections);
+                    }
+
                     // XZ
                     if (scannable is XZ)
                     {
