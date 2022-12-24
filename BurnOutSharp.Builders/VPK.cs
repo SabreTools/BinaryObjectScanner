@@ -101,6 +101,16 @@ namespace BurnOutSharp.Builders
 
             #endregion
 
+            #region Directory Items
+
+            // Create the directory items tree
+            var directoryItems = ParseDirectoryItemTree(data);
+
+            // Set the directory items
+            file.DirectoryItems = directoryItems;
+
+            #endregion
+
             #region Archive Hashes
 
             if (header?.Version == 2 && file.ExtendedHeader != null && file.ExtendedHeader.ArchiveHashLength > 0)
@@ -120,16 +130,6 @@ namespace BurnOutSharp.Builders
 
                 file.ArchiveHashes = archiveHashes.ToArray();
             }
-
-            #endregion
-
-            #region Directory Items
-
-            // Create the directory items tree
-            var directoryItems = ParseDirectoryItemTree(data);
-
-            // Set the directory items
-            file.DirectoryItems = directoryItems;
 
             #endregion
 
@@ -212,12 +212,24 @@ namespace BurnOutSharp.Builders
                 if (string.IsNullOrEmpty(extensionString))
                     break;
 
+                // Sanitize the extension
+                for (int i = 0; i < 0x20; i++)
+                {
+                    extensionString = extensionString.Replace($"{(char)i}", string.Empty);
+                }
+
                 while (true)
                 {
                     // Get the path
                     string pathString = data.ReadString(Encoding.ASCII);
                     if (string.IsNullOrEmpty(pathString))
                         break;
+
+                    // Sanitize the path
+                    for (int i = 0; i < 0x20; i++)
+                    {
+                        pathString = pathString.Replace($"{(char)i}", string.Empty);
+                    }
 
                     while (true)
                     {
@@ -226,9 +238,15 @@ namespace BurnOutSharp.Builders
                         if (string.IsNullOrEmpty(nameString))
                             break;
 
+                        // Sanitize the name
+                        for (int i = 0; i < 0x20; i++)
+                        {
+                            nameString = nameString.Replace($"{(char)i}", string.Empty);
+                        }
+
                         // Get the directory item
                         var directoryItem = ParseDirectoryItem(data, extensionString, pathString, nameString);
-                        
+
                         // Add the directory item
                         directoryItems.Add(directoryItem);
                     }

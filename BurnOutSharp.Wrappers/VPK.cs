@@ -1,5 +1,7 @@
 using System;
 using System.IO;
+using System.Linq;
+using BurnOutSharp.Utilities;
 
 namespace BurnOutSharp.Wrappers
 {
@@ -54,7 +56,51 @@ namespace BurnOutSharp.Wrappers
 
         #region Extension Properties
 
-        // TODO: Determine what extension properties are needed
+        /// <summary>
+        /// Array of archive filenames attached to the given VPK
+        /// </summary>
+        public string[] ArchiveFilenames
+        {
+            get
+            {
+                // Use the cached value if we have it
+                if (_archiveFilenames != null)
+                    return _archiveFilenames;
+
+                // If we don't have a source filename
+                if (!(_streamData is FileStream fs) || string.IsNullOrWhiteSpace(fs.Name))
+                    return null;
+
+                // If the filename is not the right format
+                string extension = Path.GetExtension(fs.Name).TrimStart('.');
+                string fileName = Path.Combine(Path.GetDirectoryName(fs.Name), Path.GetFileNameWithoutExtension(fs.Name));
+                if (fileName.Length < 3)
+                    return null;
+                else if (fileName.Substring(fileName.Length - 3) != "dir")
+                    return null;
+
+                // Get the archive count
+                int archiveCount = DirectoryItems
+                    .Select(di => di.DirectoryEntry)
+                    .Select(de => de.ArchiveIndex)
+                    .Where(ai => ai != Builders.VPK.HL_VPK_NO_ARCHIVE)
+                    .Max();
+
+                // Build the list of archive filenames to populate
+                _archiveFilenames = new string[archiveCount];
+
+                // Loop through and create the archive filenames
+                for (int i = 0; i < archiveCount; i++)
+                {
+                    // We need 5 digits to print a short, but we already have 3 for dir.
+                    string archiveFileName = $"{fileName.Substring(0, fileName.Length - 3)}{i.ToString().PadLeft(3, '0')}.{extension}";
+                    _archiveFilenames[i] = archiveFileName;
+                }
+
+                // Return the array
+                return _archiveFilenames;
+            }
+        }
 
         #endregion
 
@@ -64,6 +110,11 @@ namespace BurnOutSharp.Wrappers
         /// Internal representation of the executable
         /// </summary>
         private Models.VPK.File _file;
+
+        /// <summary>
+        /// Array of archive filenames attached to the given VPK
+        /// </summary>
+        private string[] _archiveFilenames = null;
 
         #endregion
 
@@ -289,30 +340,88 @@ namespace BurnOutSharp.Wrappers
             if (directoryItem?.DirectoryEntry == null)
                 return false;
 
+            // If we have an item with no archive
+            byte[] data;
+            if (directoryItem.DirectoryEntry.ArchiveIndex == Builders.VPK.HL_VPK_NO_ARCHIVE)
+            {
+                if (directoryItem.PreloadData == null)
+                    return false;
+
+                data = directoryItem.PreloadData;
+            }
+            else
+            {
+                // If we have invalid archives
+                if (ArchiveFilenames == null || ArchiveFilenames.Length == 0)
+                    return false;
+
+                // If we have an invalid index
+                if (directoryItem.DirectoryEntry.ArchiveIndex < 0 || directoryItem.DirectoryEntry.ArchiveIndex >= ArchiveFilenames.Length)
+                    return false;
+
+                // Get the archive filename
+                string archiveFileName = ArchiveFilenames[directoryItem.DirectoryEntry.ArchiveIndex];
+                if (string.IsNullOrWhiteSpace(archiveFileName))
+                    return false;
+
+                // If the archive doesn't exist
+                if (!File.Exists(archiveFileName))
+                    return false;
+
+                // Try to open the archive
+                Stream archiveStream = null;
+                try
+                {
+                    // Open the archive
+                    archiveStream = File.OpenRead(archiveFileName);
+
+                    // Seek to the data
+                    archiveStream.Seek(directoryItem.DirectoryEntry.EntryOffset, SeekOrigin.Begin);
+
+                    // Read the directory item bytes
+                    data = archiveStream.ReadBytes((int)directoryItem.DirectoryEntry.EntryLength);
+                }
+                catch
+                {
+                    return false;
+                }
+                finally
+                {
+                    archiveStream?.Close();
+                }
+
+                // If we have preload data, prepend it
+                if (directoryItem.PreloadData != null)
+                    data = directoryItem.PreloadData.Concat(data).ToArray();
+            }
+
             // Create the filename
             string filename = $"{directoryItem.Name}.{directoryItem.Extension}";
-            if (!string.IsNullOrEmpty(directoryItem.Path))
+            if (!string.IsNullOrWhiteSpace(directoryItem.Path))
                 filename = Path.Combine(directoryItem.Path, filename);
 
             // If we have an invalid output directory
             if (string.IsNullOrWhiteSpace(outputDirectory))
                 return false;
 
-            // Ensure the output directory is created
-            Directory.CreateDirectory(outputDirectory);
-
             // Create the full output path
             filename = Path.Combine(outputDirectory, filename);
 
-            // Read the directory item bytes
-            int offset = (int)directoryItem.DirectoryEntry.EntryOffset;
-            int length = (int)directoryItem.DirectoryEntry.EntryLength;
-            byte[] data = ReadFromDataSource(offset, length);
+            // Ensure the output directory is created
+            Directory.CreateDirectory(Path.GetDirectoryName(filename));
 
-            // Open the output file for writing
-            using (Stream fs = File.OpenWrite(filename))
+            // Try to write the data
+            try
             {
-                fs.Write(data, 0, data.Length);
+                // Open the output file for writing
+                using (Stream fs = File.OpenWrite(filename))
+                {
+                    fs.Write(data, 0, data.Length);
+                }
+            }
+            catch
+            {
+                return false;
             }
 
             return true;
