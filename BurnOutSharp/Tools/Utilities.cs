@@ -312,8 +312,7 @@ namespace BurnOutSharp.Tools
 
             #region BSP
 
-            if (extension.Equals("bsp", StringComparison.OrdinalIgnoreCase))
-                return SupportedFileType.BSP;
+            // Shares an extension with VBSP so it can't be used accurately
 
             #endregion
 
@@ -574,8 +573,7 @@ namespace BurnOutSharp.Tools
 
             #region VBSP
 
-            if (extension.Equals("bsp", StringComparison.OrdinalIgnoreCase))
-                return SupportedFileType.VBSP;
+            // Shares an extension with BSP so it can't be used accurately
 
             #endregion
 
@@ -619,7 +617,7 @@ namespace BurnOutSharp.Tools
             switch (fileType)
             {
                 case SupportedFileType.BFPK: return new FileType.BFPK();
-                case SupportedFileType.BSP: return new FileType.Valve();
+                case SupportedFileType.BSP: return new FileType.BSP();
                 case SupportedFileType.BZip2: return new FileType.BZip2();
                 case SupportedFileType.Executable: return new FileType.Executable();
                 case SupportedFileType.GCF: return new FileType.Valve();
