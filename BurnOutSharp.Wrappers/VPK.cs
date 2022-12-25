@@ -107,7 +107,7 @@ namespace BurnOutSharp.Wrappers
         #region Instance Variables
 
         /// <summary>
-        /// Internal representation of the executable
+        /// Internal representation of the VPK
         /// </summary>
         private Models.VPK.File _file;
 
@@ -128,7 +128,7 @@ namespace BurnOutSharp.Wrappers
         /// <summary>
         /// Create an VPK from a byte array and offset
         /// </summary>
-        /// <param name="data">Byte array representing the executable</param>
+        /// <param name="data">Byte array representing the VPK</param>
         /// <param name="offset">Offset within the array to parse</param>
         /// <returns>An VPK wrapper on success, null on failure</returns>
         public static VPK Create(byte[] data, int offset)

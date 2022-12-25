@@ -311,6 +311,25 @@ namespace Test
                     bfpk.Print();
                 }
 
+                // BSP
+                else if (IsBSP(magic))
+                {
+                    // Build the BSP information
+                    Console.WriteLine("Creating BSP deserializer");
+                    Console.WriteLine();
+
+                    var bsp = BSP.Create(stream);
+                    if (bsp == null)
+                    {
+                        Console.WriteLine("Something went wrong parsing BSP");
+                        Console.WriteLine();
+                        return;
+                    }
+
+                    // Print the BSP info to screen
+                    bsp.Print();
+                }
+
                 // MoPaQ (MPQ) archive
                 else if (IsMoPaQ(magic))
                 {
@@ -381,6 +400,17 @@ namespace Test
                 return false;
 
             return magic[0] == 'B' && magic[1] == 'F' && magic[2] == 'P' && magic[3] == 'K';
+        }
+
+        /// <summary>
+        /// Determine if the magic bytes indicate an BFPK archive
+        /// </summary>
+        private static bool IsBSP(byte[] magic)
+        {
+            if (magic == null || magic.Length < 4)
+                return false;
+
+            return magic[0] == 0x1e && magic[1] == 0x00 && magic[2] == 0x00 && magic[3] == 0x00;
         }
 
         /// <summary>
