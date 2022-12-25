@@ -1,4 +1,6 @@
 using System.IO;
+using System.Linq;
+using System.Text;
 using BurnOutSharp.Models.BSP;
 using BurnOutSharp.Utilities;
 
@@ -124,6 +126,28 @@ namespace BurnOutSharp.Builders
 
             #endregion
 
+            #region Textures
+
+            // Create the texture array
+            file.Textures = new Texture[textureHeader.TextureCount];
+
+            // Try to parse the textures
+            for (int i = 0; i < textureHeader.TextureCount; i++)
+            {
+                // Get the texture offset
+                int offset = (int)(textureHeader.Offsets[i] + file.Lumps[HL_BSP_LUMP_TEXTUREDATA].Offset);
+                if (offset < 0 || offset >= data.Length)
+                    continue;
+
+                // Seek to the texture
+                data.Seek(offset, SeekOrigin.Begin);
+
+                var texture = ParseTexture(data);
+                file.Textures[i] = texture;
+            }
+
+            #endregion
+
             return file;
         }
 
@@ -183,6 +207,65 @@ namespace BurnOutSharp.Builders
             textureHeader.Offsets = offsets;
 
             return textureHeader;
+        }
+
+        /// <summary>
+        /// Parse a Stream into a texture
+        /// </summary>
+        /// <param name="data">Stream to parse</param>
+        /// <param name="mipmap">Mipmap level</param>
+        /// <returns>Filled texture on success, null on error</returns>
+        private static Texture ParseTexture(Stream data, uint mipmap = 0)
+        {
+            // TODO: Use marshalling here instead of building
+            Texture texture = new Texture();
+
+            byte[] name = data.ReadBytes(16).TakeWhile(c => c != '\0').ToArray();
+            texture.Name = Encoding.ASCII.GetString(name);
+            texture.Width = data.ReadUInt32();
+            texture.Height = data.ReadUInt32();
+            texture.Offsets = new uint[4];
+            for (int i = 0; i < 4; i++)
+            {
+                texture.Offsets[i] = data.ReadUInt32();
+            }
+
+            // Get the size of the pixel data
+            uint pixelSize = 0;
+            for (int i = 0; i < HL_BSP_MIPMAP_COUNT; i++)
+            {
+                if (texture.Offsets[i] != 0)
+                {
+                    pixelSize += (texture.Width >> i) * (texture.Height >> i);
+                }
+            }
+
+            // If we have no pixel data
+            if (pixelSize == 0)
+                return texture;
+
+            texture.TextureData = data.ReadBytes((int)pixelSize);
+            texture.PaletteSize = data.ReadUInt16();
+            texture.PaletteData = data.ReadBytes((int)(texture.PaletteSize * 3));
+
+            // Adjust the dimensions based on mipmap level
+            switch (mipmap)
+            {
+                case 1:
+                    texture.Width /= 2;
+                    texture.Height /= 2;
+                    break;
+                case 2:
+                    texture.Width /= 4;
+                    texture.Height /= 4;
+                    break;
+                case 3:
+                    texture.Width /= 8;
+                    texture.Height /= 8;
+                    break;
+            }
+
+            return texture;
         }
 
         #endregion

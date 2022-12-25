@@ -20,5 +20,10 @@ namespace BurnOutSharp.Models.BSP
         /// Texture header data
         /// </summary>
         public TextureHeader TextureHeader { get; set; }
+
+        /// <summary>
+        /// Textures
+        /// </summary>
+        public Texture[] Textures { get; set; }
     }
 }
