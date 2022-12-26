@@ -31,12 +31,12 @@ namespace BurnOutSharp.Models.NCF
         /// <summary>
         /// Reserved
         /// </summary>
-        public uint Dummy3;
+        public uint Dummy1;
 
         /// <summary>
         /// Reserved
         /// </summary>
-        public uint Dummy4;
+        public uint Dummy2;
 
         /// <summary>
         /// Total size of NCF file in bytes.
@@ -56,6 +56,6 @@ namespace BurnOutSharp.Models.NCF
         /// <summary>
         /// Reserved
         /// </summary>
-        public uint Dummy5;
+        public uint Dummy3;
     }
 }

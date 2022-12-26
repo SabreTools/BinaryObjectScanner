@@ -381,6 +381,25 @@ namespace Test
                     cabinet.Print();
                 }
 
+                // NCF
+                else if (IsNCF(magic))
+                {
+                    // Build the NCF information
+                    Console.WriteLine("Creating NCF deserializer");
+                    Console.WriteLine();
+
+                    var ncf = NCF.Create(stream);
+                    if (ncf == null)
+                    {
+                        Console.WriteLine("Something went wrong parsing NCF");
+                        Console.WriteLine();
+                        return;
+                    }
+
+                    // Print the NCF info to screen
+                    ncf.Print();
+                }
+
                 // VPK
                 else if (IsVPK(magic))
                 {
@@ -475,6 +494,18 @@ namespace Test
                 return false;
 
             return magic[0] == 'M' && magic[1] == 'Z';
+        }
+
+        /// <summary>
+        /// Determine if the magic bytes indicate an NCF
+        /// </summary>
+        private static bool IsNCF(byte[] magic)
+        {
+            if (magic == null || magic.Length < 8)
+                return false;
+
+            return magic[0] == 0x01 && magic[1] == 0x00 && magic[2] == 0x00 && magic[3] == 0x00
+                && magic[4] == 0x02 && magic[5] == 0x00 && magic[6] == 0x00 && magic[7] == 0x00;
         }
 
         /// <summary>

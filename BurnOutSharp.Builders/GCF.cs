@@ -237,7 +237,10 @@ namespace BurnOutSharp.Builders
                     {
                         data.Seek(-directoryName.Length, SeekOrigin.Current);
                         byte[] endingData = data.ReadBytes((int)(directoryNamesEnd - data.Position));
-                        directoryName = Encoding.ASCII.GetString(endingData);
+                        if (endingData != null)
+                            directoryName = Encoding.ASCII.GetString(endingData);
+                        else
+                            directoryName = null;
                     }
 
                     file.DirectoryNames[nameOffset] = directoryName;

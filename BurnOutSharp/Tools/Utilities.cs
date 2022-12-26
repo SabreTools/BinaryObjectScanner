@@ -628,7 +628,6 @@ namespace BurnOutSharp.Tools
                 case SupportedFileType.MicrosoftCAB: return new FileType.MicrosoftCAB();
                 case SupportedFileType.MPQ: return new FileType.MPQ();
                 case SupportedFileType.MSI: return new FileType.MSI();
-                case SupportedFileType.NCF: return new FileType.Valve();
                 case SupportedFileType.PAK: return new FileType.PKZIP();
                 case SupportedFileType.PKZIP: return new FileType.PKZIP();
                 case SupportedFileType.PLJ: return new FileType.PLJ();
