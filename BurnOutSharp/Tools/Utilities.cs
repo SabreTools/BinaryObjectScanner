@@ -313,6 +313,8 @@ namespace BurnOutSharp.Tools
             #region BSP
 
             // Shares an extension with VBSP so it can't be used accurately
+            // if (extension.Equals("bsp", StringComparison.OrdinalIgnoreCase))
+            //     return SupportedFileType.BSP;
 
             #endregion
 
@@ -574,20 +576,24 @@ namespace BurnOutSharp.Tools
             #region VBSP
 
             // Shares an extension with BSP so it can't be used accurately
+            // if (extension.Equals("bsp", StringComparison.OrdinalIgnoreCase))
+            //     return SupportedFileType.VBSP;
 
             #endregion
 
             #region VPK
 
-            if (extension.Equals("vpk", StringComparison.OrdinalIgnoreCase))
-                return SupportedFileType.VPK;
+            // Common extension so this cannot be used accurately
+            // if (extension.Equals("vpk", StringComparison.OrdinalIgnoreCase))
+            //     return SupportedFileType.VPK;
 
             #endregion
 
             #region WAD
 
-            if (extension.Equals("wad", StringComparison.OrdinalIgnoreCase))
-                return SupportedFileType.WAD;
+            // Common extension so this cannot be used accurately
+            // if (extension.Equals("wad", StringComparison.OrdinalIgnoreCase))
+            //     return SupportedFileType.WAD;
 
             #endregion
 
