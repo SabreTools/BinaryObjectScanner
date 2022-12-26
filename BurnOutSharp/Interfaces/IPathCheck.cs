@@ -9,7 +9,7 @@ namespace BurnOutSharp.Interfaces
     /// <remarks>
     /// These checks rely primarily on filenames and paths, not file contents
     /// </remarks>
-    internal interface IPathCheck
+    public interface IPathCheck
     {
         /// <summary>
         /// Check a file path for protections based on path name

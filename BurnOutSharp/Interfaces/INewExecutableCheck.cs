@@ -5,7 +5,7 @@ namespace BurnOutSharp.Interfaces
     /// <summary>
     /// Check a New Executable (NE) for protection
     /// </summary>
-    internal interface INewExecutableCheck
+    public interface INewExecutableCheck
     {
         /// <summary>
         /// Check a path for protections based on file contents

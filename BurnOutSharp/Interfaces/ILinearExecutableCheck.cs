@@ -5,7 +5,7 @@ namespace BurnOutSharp.Interfaces
     /// <summary>
     /// Check a Linear Executable (LE) for protection
     /// </summary>
-    internal interface ILinearExecutableCheck
+    public interface ILinearExecutableCheck
     {
         /// <summary>
         /// Check a path for protections based on file contents

@@ -11,7 +11,7 @@ namespace BurnOutSharp.Interfaces
     /// installer formats that may need to be "extracted" before they
     /// can be fully scanned.
     /// </remarks>
-    internal interface IScannable
+    public interface IScannable
     {
         /// <summary>
         /// Scan a file for all internal protections

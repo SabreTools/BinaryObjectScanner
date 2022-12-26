@@ -3,7 +3,7 @@
     /// <summary>
     /// Check a generic file for protection
     /// </summary>
-    internal interface IContentCheck
+    public interface IContentCheck
     {
         /// <summary>
         /// Check a path for protections based on file contents
