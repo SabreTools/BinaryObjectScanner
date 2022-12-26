@@ -640,7 +640,6 @@ namespace BurnOutSharp.Tools
                 case SupportedFileType.RAR: return new FileType.RAR();
                 case SupportedFileType.SevenZip: return new FileType.SevenZip();
                 case SupportedFileType.SFFS: return new FileType.SFFS();
-                case SupportedFileType.SGA: return new FileType.Valve();
                 case SupportedFileType.TapeArchive: return new FileType.TapeArchive();
                 case SupportedFileType.Textfile: return new FileType.Textfile();
                 case SupportedFileType.VBSP: return new FileType.VBSP();
