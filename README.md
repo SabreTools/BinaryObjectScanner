@@ -6,7 +6,6 @@ C# port of the protection scanning ability of [BurnOut](http://burnout.sourcefor
 
 In addition to the original BurnOut code, the following libraries (or ports thereof) are used for file handling:
 
-- [HLLibSharp](https://github.com/mnadareski/HLLibSharp) - SGA extraction
 - [LibMSPackSharp](https://github.com/mnadareski/LibMSPackSharp) - Microsoft CAB extraction [Only used in .NET 6.0 builds, unstable]
 - [openmcdf](https://github.com/ironfede/openmcdf) - MSI extraction
 - [psxt001z](https://github.com/Dremora/psxt001z) - PS1 LibCrypt detection [Ported to C#]
@@ -154,6 +153,7 @@ Below is a list of container formats that are supported in some way:
 | Half-Life Package File (PAK) | Yes | Yes | Yes | |
 | Half-Life Texture Package File (WAD) | Yes | Yes | Yes | |
 | Half-Life 2 Level (VBSP) | Yes | Yes | Yes | |
+| INI configuration file | No | No | No | Used in other detections currently |
 | InstallShield Archive V3 (Z) | No | Yes | Yes | Via `UnshieldSharp` |
 | InstallShield CAB | No | Yes | Yes | Via `UnshieldSharp` |
 | Linear Executable | No | No | No | Skeleton only |
@@ -166,10 +166,10 @@ Below is a list of container formats that are supported in some way:
 | PlayJ audio file (PLJ) | No | Yes | No | |
 | Portable Executable | Yes | Yes | No* | Some packed executables are supported |
 | RAR archive (RAR) | No | Yes | Yes | Via `SharpCompress` |
-| StarForce Filesystem file (SFFS) | No | Yes | No | |
+| SGA? | No | No | No | Skeleton only |
+| StarForce Filesystem file (SFFS) | No | Yes | No | Skeleton only |
 | Tape archive (TAR) | No | Yes | Yes | Via `SharpCompress` |
 | Valve Package File (VPK) | Yes | Yes | Yes | |
-| Valve Texture Directory (SGA) | No | No | No | Support unconfirmed |
 | XBox Package File (XZP) | Yes | Yes | Yes | |
 | xz archive (XZ) | No | Yes | Yes | Via `SharpCompress` |
 
