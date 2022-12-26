@@ -637,7 +637,7 @@ namespace BurnOutSharp.Tools
                 case SupportedFileType.SGA: return new FileType.Valve();
                 case SupportedFileType.TapeArchive: return new FileType.TapeArchive();
                 case SupportedFileType.Textfile: return new FileType.Textfile();
-                case SupportedFileType.VBSP: return new FileType.Valve();
+                case SupportedFileType.VBSP: return new FileType.VBSP();
                 case SupportedFileType.VPK: return new FileType.VPK();
                 case SupportedFileType.WAD: return new FileType.Valve();
                 case SupportedFileType.XZ: return new FileType.XZ();

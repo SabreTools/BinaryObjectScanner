@@ -20,29 +20,9 @@ namespace BurnOutSharp.Builders
         public const int HL_VBSP_LUMP_ENTITIES = 0;
 
         /// <summary>
-        /// Idnex for the pakfile lump
+        /// Index for the pakfile lump
         /// </summary>
         public const int HL_VBSP_LUMP_PAKFILE = 40;
-
-        /// <summary>
-        /// Zip local file header signature as an integer
-        /// </summary>
-        public const int HL_VBSP_ZIP_LOCAL_FILE_HEADER_SIGNATURE = 0x04034b50;
-
-        /// <summary>
-        /// Zip file header signature as an integer
-        /// </summary>
-        public const int HL_VBSP_ZIP_FILE_HEADER_SIGNATURE = 0x02014b50;
-
-        /// <summary>
-        /// Zip end of central directory record signature as an integer
-        /// </summary>
-        public const int HL_VBSP_ZIP_END_OF_CENTRAL_DIRECTORY_RECORD_SIGNATURE = 0x06054b50;
-
-        /// <summary>
-        /// Length of a ZIP checksum in bytes
-        /// </summary>
-        public const int HL_VBSP_ZIP_CHECKSUM_LENGTH = 0x00008000;
 
         #endregion
 

@@ -419,6 +419,25 @@ namespace Test
                     pak.Print();
                 }
 
+                // VBSP
+                else if (IsVBSP(magic))
+                {
+                    // Build the archive information
+                    Console.WriteLine("Creating VBSP deserializer");
+                    Console.WriteLine();
+
+                    var vbsp = VBSP.Create(stream);
+                    if (vbsp == null)
+                    {
+                        Console.WriteLine("Something went wrong parsing VBSP");
+                        Console.WriteLine();
+                        return;
+                    }
+
+                    // Print the VBSP info to screen
+                    vbsp.Print();
+                }
+
                 // VPK
                 else if (IsVPK(magic))
                 {
@@ -569,6 +588,17 @@ namespace Test
                 return false;
 
             return magic[0] == 'P' && magic[1] == 'E' && magic[2] == '\0' && magic[3] == '\0';
+        }
+
+        /// <summary>
+        /// Determine if the magic bytes indicate a VBSP
+        /// </summary>
+        private static bool IsVBSP(byte[] magic)
+        {
+            if (magic == null || magic.Length < 4)
+                return false;
+
+            return magic[0] == 'V' && magic[1] == 'B' && magic[2] == 'S' && magic[3] == 'P';
         }
 
         /// <summary>
