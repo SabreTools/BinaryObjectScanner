@@ -6,15 +6,17 @@ C# port of the protection scanning ability of [BurnOut](http://burnout.sourcefor
 
 In addition to the original BurnOut code, the following libraries (or ports thereof) are used for file handling:
 
-- [HLLibSharp](https://github.com/mnadareski/HLLibSharp) - Various Valve archive format extraction
+- [HLLibSharp](https://github.com/mnadareski/HLLibSharp) - SGA extraction
 - [LibMSPackSharp](https://github.com/mnadareski/LibMSPackSharp) - Microsoft CAB extraction [Only used in .NET 6.0 builds, unstable]
 - [openmcdf](https://github.com/ironfede/openmcdf) - MSI extraction
 - [psxt001z](https://github.com/Dremora/psxt001z) - PS1 LibCrypt detection [Ported to C#]
-- [SharpCompress](https://github.com/adamhathcock/sharpcompress) - 7zip/GZip/RAR/PKZIP extraction
-- [StormLibSharp](https://github.com/robpaveza/stormlibsharp) - MPQ extraction [Unused in .NET 6.0 builds due to Windows-specific libraries]
+- [SharpCompress](https://github.com/adamhathcock/sharpcompress) - Common archive format extraction
+- [StormLibSharp](https://github.com/robpaveza/stormlibsharp) - MoPaQ extraction [Unused in .NET 6.0 builds due to Windows-specific libraries]
 - [UnshieldSharp](https://github.com/mnadareski/UnshieldSharp) - InstallShield CAB extraction
 - [WiseUnpacker](https://github.com/mnadareski/WiseUnpacker) - Wise Installer extraction
 - [WixToolset.Dtf](https://github.com/wixtoolset/Dtf) - Microsoft CAB extraction [Unused in .NET 6.0 builds due to Windows-specific libraries]
+
+Valve packages handling is based [HLLibSharp](https://github.com/mnadareski/HLLibSharp) but lacks everything but parsing and extraction capability.
 
 ## Protections Detected
 
@@ -137,24 +139,35 @@ Below is a list of executable packers detected by BurnOutSharp. The three column
 | WinZip SFX | Yes | No | Yes |
 | WISE Installer | Yes | No | Yes |
 
-## Archive Formats
+## Container Formats
 
-Below is a list of archive or archive-like formats that can be extracted and have contents scanned using this code:
+Below is a list of container formats that are supported in some way:
 
-- 7zip
-- BFPK
-- BZIP2
-- GZIP
-- InstallShield Archive V3 (Z)
-- InstallShield CAB
-- Microsoft CAB [.NET Standard 2.0 only]
-- MPQ
-- Microsoft Installer (MSI)
-- PKZIP and derived files
-- RAR
-- TAR
-- Valve archive formats
-- XZ
+| Format Name | Information Printing | Detection | Extraction | Notes |
+| --- | --- | --- | --- | --- |
+| 7-zip archive | No | Yes | Yes | Via `SharpCompress` |
+| BFPK custom archive format | Yes | Yes | Yes | |
+| bzip2 archive | No | Yes | Yes | Via `SharpCompress` |
+| gzip archive | No | Yes | Yes | Via `SharpCompress` |
+| Half-Life Game Cache File (GCF) | Yes | Yes | Yes | |
+| Half-Life Level (BSP) | Yes | Yes | Yes | |
+| Half-Life Package File (PAK) | Yes | Yes | Yes | |
+| Half-Life Texture Package File (WAD) | Yes | Yes | Yes | |
+| Half-Life 2 Level (VBSP) | Yes | Yes | Yes | |
+| InstallShield Archive V3 (Z) | No | Yes | Yes | Via `UnshieldSharp` |
+| InstallShield CAB | No | Yes | Yes | Via `UnshieldSharp` |
+| Microsoft cabinet file | Yes | Yes | Yes | Via `WixToolset.Dtf` / `LibMSPackSharp` |
+| MoPaQ game data archive (MPQ) | No | Yes | Yes | Via `StormLibSharp` |
+| Microsoft installation package (MSI) | No | Yes | Yes | Via `OpenMcdf` |
+| PKZIP and derived files (ZIP, etc.) | No | Yes | Yes | Via `SharpCompress` |
+| PlayJ audio file (PLJ) | No | Yes | No | |
+| RAR archive (RAR) | No | Yes | Yes | Via `SharpCompress` |
+| StarForce Filesystem file (SFFS) | No | Yes | No | |
+| Tape archive (TAR) | No | Yes | Yes | Via `SharpCompress` |
+| Valve Package File (VPK) | Yes | Yes | Yes | |
+| Valve Texture Directory (SGA) | No | No | No | Support unconfirmed |
+| XBox Package File (XZP) | Yes | Yes | Yes | |
+| xz archive (XZ) | No | Yes | Yes | Via `SharpCompress` |
 
 ## Contributions
 

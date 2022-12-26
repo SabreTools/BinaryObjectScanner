@@ -10,7 +10,7 @@ using static BurnOutSharp.Utilities.Dictionary;
 namespace BurnOutSharp.FileType
 {
     /// <summary>
-    /// MPQ game data archive
+    /// MoPaQ game data archive
     /// </summary>
     public class MPQ : IScannable
     {

@@ -7,7 +7,7 @@ using static BurnOutSharp.Utilities.Dictionary;
 namespace BurnOutSharp.FileType
 {
     /// <summary>
-    /// Valve Package File
+    /// Half-Life Level
     /// </summary>
     public class BSP : IScannable
     {

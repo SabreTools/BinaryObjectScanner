@@ -7,7 +7,7 @@ using static BurnOutSharp.Utilities.Dictionary;
 namespace BurnOutSharp.FileType
 {
     /// <summary>
-    /// Valve Package File
+    /// XBox Package File
     /// </summary>
     public class XZP : IScannable
     {
