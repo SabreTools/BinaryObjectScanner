@@ -7,6 +7,8 @@ namespace BurnOutSharp.Models.XZP
 
         public uint NameOffset;
 
+        public string Name;
+
         public uint TimeCreated;
     }
 }

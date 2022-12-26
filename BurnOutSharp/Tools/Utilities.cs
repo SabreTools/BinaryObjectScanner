@@ -7,7 +7,7 @@ using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.Tools
 {
-    internal static class Utilities
+    public static class Utilities
     {
         #region File Types
 
@@ -647,7 +647,7 @@ namespace BurnOutSharp.Tools
                 case SupportedFileType.VPK: return new FileType.VPK();
                 case SupportedFileType.WAD: return new FileType.WAD();
                 case SupportedFileType.XZ: return new FileType.XZ();
-                case SupportedFileType.XZP: return new FileType.Valve();
+                case SupportedFileType.XZP: return new FileType.XZP();
                 default: return null;
             }
         }

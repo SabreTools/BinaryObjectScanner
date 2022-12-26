@@ -131,7 +131,7 @@ namespace BurnOutSharp.Builders
                 file.DirectoryItems = new DirectoryItem[header.DirectoryItemCount];
 
                 // Try to parse the directory items
-                for (int i = 0; i < header.PreloadDirectoryEntryCount; i++)
+                for (int i = 0; i < header.DirectoryItemCount; i++)
                 {
                     var directoryItem = ParseDirectoryItem(data);
                     file.DirectoryItems[i] = directoryItem;
@@ -233,6 +233,18 @@ namespace BurnOutSharp.Builders
             directoryItem.FileNameCRC = data.ReadUInt32();
             directoryItem.NameOffset = data.ReadUInt32();
             directoryItem.TimeCreated = data.ReadUInt32();
+
+            // Cache the current offset
+            long currentPosition = data.Position;
+
+            // Seek to the name offset
+            data.Seek(directoryItem.NameOffset, SeekOrigin.Begin);
+
+            // Read the name
+            directoryItem.Name = data.ReadString(Encoding.ASCII);
+
+            // Seek back to the right position
+            data.Seek(currentPosition, SeekOrigin.Begin);
 
             return directoryItem;
         }

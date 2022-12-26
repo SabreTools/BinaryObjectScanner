@@ -213,8 +213,11 @@ namespace Test
                 byte[] magic = stream.ReadBytes(8);
                 stream.Seek(0, SeekOrigin.Begin);
 
+                // Get the file type
+                SupportedFileType ft = BurnOutSharp.Tools.Utilities.GetFileType(magic);
+
                 // MS-DOS executable and decendents
-                if (IsMSDOS(magic))
+                if (ft == SupportedFileType.Executable)
                 {
                     // Build the executable information
                     Console.WriteLine("Creating MS-DOS executable builder");
@@ -293,7 +296,7 @@ namespace Test
                 }
 
                 // BFPK archive
-                else if (IsBFPK(magic))
+                else if (ft == SupportedFileType.BFPK)
                 {
                     // Build the BFPK information
                     Console.WriteLine("Creating BFPK deserializer");
@@ -312,7 +315,7 @@ namespace Test
                 }
 
                 // BSP
-                else if (IsBSP(magic))
+                else if (ft == SupportedFileType.BSP)
                 {
                     // Build the BSP information
                     Console.WriteLine("Creating BSP deserializer");
@@ -331,7 +334,7 @@ namespace Test
                 }
 
                 // GCF
-                else if (IsGCF(magic))
+                else if (ft == SupportedFileType.GCF)
                 {
                     // Build the GCF information
                     Console.WriteLine("Creating GCF deserializer");
@@ -350,7 +353,7 @@ namespace Test
                 }
 
                 // MoPaQ (MPQ) archive
-                else if (IsMoPaQ(magic))
+                else if (ft == SupportedFileType.MPQ)
                 {
                     // Build the archive information
                     Console.WriteLine("Creating MoPaQ deserializer");
@@ -363,7 +366,7 @@ namespace Test
                 }
 
                 // MS-CAB archive
-                else if (IsMSCAB(magic))
+                else if (ft == SupportedFileType.MicrosoftCAB)
                 {
                     // Build the cabinet information
                     Console.WriteLine("Creating MS-CAB deserializer");
@@ -382,7 +385,7 @@ namespace Test
                 }
 
                 // NCF
-                else if (IsNCF(magic))
+                else if (ft == SupportedFileType.NCF)
                 {
                     // Build the NCF information
                     Console.WriteLine("Creating NCF deserializer");
@@ -401,7 +404,7 @@ namespace Test
                 }
 
                 // PAK
-                else if (IsPAK(magic))
+                else if (ft == SupportedFileType.PAK)
                 {
                     // Build the archive information
                     Console.WriteLine("Creating PAK deserializer");
@@ -420,7 +423,7 @@ namespace Test
                 }
 
                 // VBSP
-                else if (IsVBSP(magic))
+                else if (ft == SupportedFileType.VBSP)
                 {
                     // Build the archive information
                     Console.WriteLine("Creating VBSP deserializer");
@@ -439,7 +442,7 @@ namespace Test
                 }
 
                 // VPK
-                else if (IsVPK(magic))
+                else if (ft == SupportedFileType.VPK)
                 {
                     // Build the archive information
                     Console.WriteLine("Creating VPK deserializer");
@@ -458,7 +461,7 @@ namespace Test
                 }
 
                 // WAD
-                else if (IsWAD(magic))
+                else if (ft == SupportedFileType.WAD)
                 {
                     // Build the archive information
                     Console.WriteLine("Creating WAD deserializer");
@@ -476,6 +479,25 @@ namespace Test
                     wad.Print();
                 }
 
+                // XZP
+                else if (ft == SupportedFileType.XZP)
+                {
+                    // Build the archive information
+                    Console.WriteLine("Creating XZP deserializer");
+                    Console.WriteLine();
+
+                    var xzp = XZP.Create(stream);
+                    if (xzp == null)
+                    {
+                        Console.WriteLine("Something went wrong parsing XZP");
+                        Console.WriteLine();
+                        return;
+                    }
+
+                    // Print the XZP info to screen
+                    xzp.Print();
+                }
+
                 // Everything else
                 else
                 {
@@ -484,85 +506,6 @@ namespace Test
                     return;
                 }
             }
-        }
-
-        /// <summary>
-        /// Determine if the magic bytes indicate an BFPK archive
-        /// </summary>
-        private static bool IsBFPK(byte[] magic)
-        {
-            if (magic == null || magic.Length < 4)
-                return false;
-
-            return magic[0] == 'B' && magic[1] == 'F' && magic[2] == 'P' && magic[3] == 'K';
-        }
-
-        /// <summary>
-        /// Determine if the magic bytes indicate a BSP
-        /// </summary>
-        private static bool IsBSP(byte[] magic)
-        {
-            if (magic == null || magic.Length < 4)
-                return false;
-
-            return magic[0] == 0x1e && magic[1] == 0x00 && magic[2] == 0x00 && magic[3] == 0x00;
-        }
-
-        /// <summary>
-        /// Determine if the magic bytes indicate a GCF
-        /// </summary>
-        private static bool IsGCF(byte[] magic)
-        {
-            if (magic == null || magic.Length < 8)
-                return false;
-
-            return magic[0] == 0x01 && magic[1] == 0x00 && magic[2] == 0x00 && magic[3] == 0x00
-                && magic[4] == 0x01 && magic[5] == 0x00 && magic[6] == 0x00 && magic[7] == 0x00;
-        }
-
-        /// <summary>
-        /// Determine if the magic bytes indicate an MoPaQ archive
-        /// </summary>
-        private static bool IsMoPaQ(byte[] magic)
-        {
-            if (magic == null || magic.Length < 4)
-                return false;
-
-            return magic[0] == 'M' && magic[1] == 'P' && magic[2] == 'Q' && (magic[3] == 0x1A || magic[3] == 0x1B);
-        }
-
-        /// <summary>
-        /// Determine if the magic bytes indicate an MS-CAB archive
-        /// </summary>
-        private static bool IsMSCAB(byte[] magic)
-        {
-            if (magic == null || magic.Length < 4)
-                return false;
-
-            return magic[0] == 'M' && magic[1] == 'S' && magic[2] == 'C' && magic[3] == 'F';
-        }
-
-        /// <summary>
-        /// Determine if the magic bytes indicate an MS-DOS executable
-        /// </summary>
-        private static bool IsMSDOS(byte[] magic)
-        {
-            if (magic == null || magic.Length < 2)
-                return false;
-
-            return magic[0] == 'M' && magic[1] == 'Z';
-        }
-
-        /// <summary>
-        /// Determine if the magic bytes indicate an NCF
-        /// </summary>
-        private static bool IsNCF(byte[] magic)
-        {
-            if (magic == null || magic.Length < 8)
-                return false;
-
-            return magic[0] == 0x01 && magic[1] == 0x00 && magic[2] == 0x00 && magic[3] == 0x00
-                && magic[4] == 0x02 && magic[5] == 0x00 && magic[6] == 0x00 && magic[7] == 0x00;
         }
 
         /// <summary>
@@ -588,17 +531,6 @@ namespace Test
         }
 
         /// <summary>
-        /// Determine if the magic bytes indicate a PAK
-        /// </summary>
-        private static bool IsPAK(byte[] magic)
-        {
-            if (magic == null || magic.Length < 4)
-                return false;
-
-            return magic[0] == 'P' && magic[1] == 'A' && magic[2] == 'C' && magic[3] == 'K';
-        }
-
-        /// <summary>
         /// Determine if the magic bytes indicate a Portable Executable
         /// </summary>
         private static bool IsPE(byte[] magic)
@@ -607,39 +539,6 @@ namespace Test
                 return false;
 
             return magic[0] == 'P' && magic[1] == 'E' && magic[2] == '\0' && magic[3] == '\0';
-        }
-
-        /// <summary>
-        /// Determine if the magic bytes indicate a VBSP
-        /// </summary>
-        private static bool IsVBSP(byte[] magic)
-        {
-            if (magic == null || magic.Length < 4)
-                return false;
-
-            return magic[0] == 'V' && magic[1] == 'B' && magic[2] == 'S' && magic[3] == 'P';
-        }
-
-        /// <summary>
-        /// Determine if the magic bytes indicate a VPK
-        /// </summary>
-        private static bool IsVPK(byte[] magic)
-        {
-            if (magic == null || magic.Length < 4)
-                return false;
-
-            return magic[0] == 0x34 && magic[1] == 0x12 && magic[2] == 0xaa && magic[3] == 0x55;
-        }
-
-        /// <summary>
-        /// Determine if the magic bytes indicate a WAD
-        /// </summary>
-        private static bool IsWAD(byte[] magic)
-        {
-            if (magic == null || magic.Length < 4)
-                return false;
-
-            return magic[0] == 'W' && magic[1] == 'A' && magic[2] == 'D' && magic[3] == '3';
         }
 
         #endregion
