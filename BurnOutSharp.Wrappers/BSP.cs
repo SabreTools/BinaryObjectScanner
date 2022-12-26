@@ -64,11 +64,11 @@ namespace BurnOutSharp.Wrappers
         private BSP() { }
 
         /// <summary>
-        /// Create an BSP from a byte array and offset
+        /// Create a BSP from a byte array and offset
         /// </summary>
         /// <param name="data">Byte array representing the BSP</param>
         /// <param name="offset">Offset within the array to parse</param>
-        /// <returns>An BSP wrapper on success, null on failure</returns>
+        /// <returns>A BSP wrapper on success, null on failure</returns>
         public static BSP Create(byte[] data, int offset)
         {
             // If the data is invalid
@@ -85,10 +85,10 @@ namespace BurnOutSharp.Wrappers
         }
 
         /// <summary>
-        /// Create anVPK from a Stream
+        /// Create a BSP from a Stream
         /// </summary>
-        /// <param name="data">Stream representing the executable</param>
-        /// <returns>An VPK wrapper on success, null on failure</returns>
+        /// <param name="data">Stream representing the BSP</param>
+        /// <returns>An BSP wrapper on success, null on failure</returns>
         public static BSP Create(Stream data)
         {
             // If the data is invalid

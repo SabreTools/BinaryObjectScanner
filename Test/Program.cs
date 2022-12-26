@@ -209,8 +209,8 @@ namespace Test
         {
             using (Stream stream = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
-                // Read the first 4 bytes
-                byte[] magic = stream.ReadBytes(4);
+                // Read the first 8 bytes
+                byte[] magic = stream.ReadBytes(8);
                 stream.Seek(0, SeekOrigin.Begin);
 
                 // MS-DOS executable and decendents
@@ -330,6 +330,25 @@ namespace Test
                     bsp.Print();
                 }
 
+                // GCF
+                else if (IsGCF(magic))
+                {
+                    // Build the GCF information
+                    Console.WriteLine("Creating GCF deserializer");
+                    Console.WriteLine();
+
+                    var gcf = GCF.Create(stream);
+                    if (gcf == null)
+                    {
+                        Console.WriteLine("Something went wrong parsing GCF");
+                        Console.WriteLine();
+                        return;
+                    }
+
+                    // Print the GCF info to screen
+                    gcf.Print();
+                }
+
                 // MoPaQ (MPQ) archive
                 else if (IsMoPaQ(magic))
                 {
@@ -403,7 +422,7 @@ namespace Test
         }
 
         /// <summary>
-        /// Determine if the magic bytes indicate an BFPK archive
+        /// Determine if the magic bytes indicate a BSP
         /// </summary>
         private static bool IsBSP(byte[] magic)
         {
@@ -411,6 +430,18 @@ namespace Test
                 return false;
 
             return magic[0] == 0x1e && magic[1] == 0x00 && magic[2] == 0x00 && magic[3] == 0x00;
+        }
+
+        /// <summary>
+        /// Determine if the magic bytes indicate a GCF
+        /// </summary>
+        private static bool IsGCF(byte[] magic)
+        {
+            if (magic == null || magic.Length < 8)
+                return false;
+
+            return magic[0] == 0x01 && magic[1] == 0x00 && magic[2] == 0x00 && magic[3] == 0x00
+                && magic[4] == 0x01 && magic[5] == 0x00 && magic[6] == 0x00 && magic[7] == 0x00;
         }
 
         /// <summary>
@@ -480,7 +511,7 @@ namespace Test
         }
 
         /// <summary>
-        /// Determine if the magic bytes indicate an VPK
+        /// Determine if the magic bytes indicate a VPK
         /// </summary>
         private static bool IsVPK(byte[] magic)
         {

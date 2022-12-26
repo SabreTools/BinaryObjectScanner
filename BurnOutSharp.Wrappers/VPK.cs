@@ -126,11 +126,11 @@ namespace BurnOutSharp.Wrappers
         private VPK() { }
 
         /// <summary>
-        /// Create an VPK from a byte array and offset
+        /// Create a VPK from a byte array and offset
         /// </summary>
         /// <param name="data">Byte array representing the VPK</param>
         /// <param name="offset">Offset within the array to parse</param>
-        /// <returns>An VPK wrapper on success, null on failure</returns>
+        /// <returns>A VPK wrapper on success, null on failure</returns>
         public static VPK Create(byte[] data, int offset)
         {
             // If the data is invalid
@@ -147,10 +147,10 @@ namespace BurnOutSharp.Wrappers
         }
 
         /// <summary>
-        /// Create anVPK from a Stream
+        /// Create a VPK from a Stream
         /// </summary>
-        /// <param name="data">Stream representing the executable</param>
-        /// <returns>An VPK wrapper on success, null on failure</returns>
+        /// <param name="data">Stream representing the VPK</param>
+        /// <returns>A VPK wrapper on success, null on failure</returns>
         public static VPK Create(Stream data)
         {
             // If the data is invalid

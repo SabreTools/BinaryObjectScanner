@@ -9,6 +9,11 @@ namespace BurnOutSharp.Models.GCF
         public uint NameOffset;
 
         /// <summary>
+        /// Directory item name from the end of the directory items.
+        /// </summary>
+        public string Name;
+
+        /// <summary>
         /// Size of the item.  (If file, file size.  If folder, num items.)
         /// </summary>
         public uint ItemSize;

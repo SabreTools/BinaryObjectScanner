@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using BurnOutSharp.Models.GCF;
@@ -216,9 +217,38 @@ namespace BurnOutSharp.Builders
 
             #region Directory Names
 
-            // Read the directory names as a single string
-            byte[] directoryNames = data.ReadBytes((int)directoryHeader.NameSize);
-            file.DirectoryNames = Encoding.ASCII.GetString(directoryNames);
+            if (directoryHeader.NameSize > 0)
+            {
+                // Get the current offset for adjustment
+                long directoryNamesStart = data.Position;
+
+                // Get the ending offset
+                long directoryNamesEnd = data.Position + directoryHeader.NameSize;
+
+                // Create the string dictionary
+                file.DirectoryNames = new Dictionary<long, string>();
+
+                // Loop and read the null-terminated strings
+                while (data.Position < directoryNamesEnd)
+                {
+                    long nameOffset = data.Position - directoryNamesStart;
+                    string directoryName = data.ReadString(Encoding.ASCII);
+                    if (data.Position > directoryNamesEnd)
+                    {
+                        data.Seek(-directoryName.Length, SeekOrigin.Current);
+                        byte[] endingData = data.ReadBytes((int)(directoryNamesEnd - data.Position));
+                        directoryName = Encoding.ASCII.GetString(endingData);
+                    }
+
+                    file.DirectoryNames[nameOffset] = directoryName;
+                }
+
+                // Loop and assign to entries
+                foreach (var directoryEntry in file.DirectoryEntries)
+                {
+                    directoryEntry.Name = file.DirectoryNames[directoryEntry.NameOffset];
+                }
+            }
 
             #endregion
 
@@ -652,7 +682,7 @@ namespace BurnOutSharp.Builders
                 return null;
 
             directoryMapHeader.Dummy1 = data.ReadUInt32();
-            if (directoryMapHeader.Dummy0 != 0x00000000)
+            if (directoryMapHeader.Dummy1 != 0x00000000)
                 return null;
 
             return directoryMapHeader;
@@ -684,6 +714,9 @@ namespace BurnOutSharp.Builders
             ChecksumHeader checksumHeader = new ChecksumHeader();
 
             checksumHeader.Dummy0 = data.ReadUInt32();
+            if (checksumHeader.Dummy0 != 0x00000001)
+                return null;
+
             checksumHeader.ChecksumSize = data.ReadUInt32();
 
             return checksumHeader;
@@ -704,7 +737,7 @@ namespace BurnOutSharp.Builders
                 return null;
 
             checksumMapHeader.Dummy1 = data.ReadUInt32();
-            if (checksumMapHeader.Dummy0 != 0x00000001)
+            if (checksumMapHeader.Dummy1 != 0x00000001)
                 return null;
 
             checksumMapHeader.ItemCount = data.ReadUInt32();

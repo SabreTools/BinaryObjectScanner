@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace BurnOutSharp.Models.GCF
 {
     /// <summary>
@@ -56,7 +58,7 @@ namespace BurnOutSharp.Models.GCF
         /// <summary>
         /// Directory names data
         /// </summary>
-        public string DirectoryNames { get; set; }
+        public Dictionary<long, string> DirectoryNames { get; set; }
 
         /// <summary>
         /// Directory info 1 entries data
