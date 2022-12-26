@@ -377,8 +377,24 @@ namespace BurnOutSharp
                         AppendToDictionary(protections, subProtections);
                     }
 
+                    // BSP
+                    if (scannable is BSP)
+                    {
+                        var subProtections = scannable.Scan(this, stream, fileName);
+                        PrependToKeys(subProtections, fileName);
+                        AppendToDictionary(protections, subProtections);
+                    }
+
                     // BZip2
                     if (scannable is BZip2)
+                    {
+                        var subProtections = scannable.Scan(this, stream, fileName);
+                        PrependToKeys(subProtections, fileName);
+                        AppendToDictionary(protections, subProtections);
+                    }
+
+                    // GCF
+                    if (scannable is GCF)
                     {
                         var subProtections = scannable.Scan(this, stream, fileName);
                         PrependToKeys(subProtections, fileName);
@@ -425,8 +441,16 @@ namespace BurnOutSharp
                         AppendToDictionary(protections, subProtections);
                     }
 
-                    // MPQ archive
+                    // MoPaQ archive
                     if (fileName != null && scannable is MPQ)
+                    {
+                        var subProtections = scannable.Scan(this, fileName);
+                        PrependToKeys(subProtections, fileName);
+                        AppendToDictionary(protections, subProtections);
+                    }
+                    
+                    // PAK
+                    if (fileName != null && scannable is PAK)
                     {
                         var subProtections = scannable.Scan(this, fileName);
                         PrependToKeys(subProtections, fileName);
@@ -457,8 +481,8 @@ namespace BurnOutSharp
                         AppendToDictionary(protections, subProtections);
                     }
 
-                    // Valve archive formats
-                    if (fileName != null && scannable is Valve)
+                    // VBSP
+                    if (fileName != null && scannable is VBSP)
                     {
                         var subProtections = scannable.Scan(this, fileName);
                         PrependToKeys(subProtections, fileName);
@@ -473,8 +497,24 @@ namespace BurnOutSharp
                         AppendToDictionary(protections, subProtections);
                     }
 
+                    // WAD
+                    if (scannable is WAD)
+                    {
+                        var subProtections = scannable.Scan(this, stream, fileName);
+                        PrependToKeys(subProtections, fileName);
+                        AppendToDictionary(protections, subProtections);
+                    }
+
                     // XZ
                     if (scannable is XZ)
+                    {
+                        var subProtections = scannable.Scan(this, stream, fileName);
+                        PrependToKeys(subProtections, fileName);
+                        AppendToDictionary(protections, subProtections);
+                    }
+
+                    // XZP
+                    if (scannable is XZP)
                     {
                         var subProtections = scannable.Scan(this, stream, fileName);
                         PrependToKeys(subProtections, fileName);
