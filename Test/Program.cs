@@ -400,6 +400,25 @@ namespace Test
                     ncf.Print();
                 }
 
+                // PAK
+                else if (IsPAK(magic))
+                {
+                    // Build the archive information
+                    Console.WriteLine("Creating PAK deserializer");
+                    Console.WriteLine();
+
+                    var pak = PAK.Create(stream);
+                    if (pak == null)
+                    {
+                        Console.WriteLine("Something went wrong parsing PAK");
+                        Console.WriteLine();
+                        return;
+                    }
+
+                    // Print the PAK info to screen
+                    pak.Print();
+                }
+
                 // VPK
                 else if (IsVPK(magic))
                 {
@@ -528,6 +547,17 @@ namespace Test
                 return false;
 
             return magic[0] == 'L' && (magic[1] == 'E' || magic[1] == 'X');
+        }
+
+        /// <summary>
+        /// Determine if the magic bytes indicate a PAK
+        /// </summary>
+        private static bool IsPAK(byte[] magic)
+        {
+            if (magic == null || magic.Length < 4)
+                return false;
+
+            return magic[0] == 'P' && magic[1] == 'A' && magic[2] == 'C' && magic[3] == 'K';
         }
 
         /// <summary>

@@ -7,9 +7,9 @@ using static BurnOutSharp.Utilities.Dictionary;
 namespace BurnOutSharp.FileType
 {
     /// <summary>
-    /// Half-Life Game Cache File
+    /// Half-Life Package File
     /// </summary>
-    public class GCF : IScannable
+    public class PAK : IScannable
     {
         /// <inheritdoc/>
         public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, string file)
@@ -26,19 +26,19 @@ namespace BurnOutSharp.FileType
         /// <inheritdoc/>
         public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, Stream stream, string file)
         {
-            // If the GCF file itself fails
+            // If the PAK file itself fails
             try
             {
                 string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
                 Directory.CreateDirectory(tempPath);
 
                 // Create the wrapper
-                Wrappers.GCF gcf = Wrappers.GCF.Create(stream);
-                if (gcf == null)
+                Wrappers.PAK pak = Wrappers.PAK.Create(stream);
+                if (pak == null)
                     return null;
 
                 // Loop through and extract all files
-                gcf.ExtractAll(tempPath);
+                pak.ExtractAll(tempPath);
 
                 // Collect and format all found protections
                 var protections = scanner.GetProtections(tempPath);

@@ -104,6 +104,9 @@ namespace BurnOutSharp.Builders
 
             byte[] signature = data.ReadBytes(4);
             header.Signature = Encoding.ASCII.GetString(signature);
+            if (header.Signature != "PACK")
+                return null;
+
             header.DirectoryOffset = data.ReadUInt32();
             header.DirectoryLength = data.ReadUInt32();
 
@@ -121,7 +124,7 @@ namespace BurnOutSharp.Builders
             DirectoryItem directoryItem = new DirectoryItem();
 
             byte[] itemName = data.ReadBytes(56);
-            directoryItem.ItemName = Encoding.ASCII.GetString(itemName);
+            directoryItem.ItemName = Encoding.ASCII.GetString(itemName).TrimEnd('\0');
             directoryItem.ItemOffset = data.ReadUInt32();
             directoryItem.ItemLength = data.ReadUInt32();
 
