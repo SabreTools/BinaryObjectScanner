@@ -620,7 +620,7 @@ namespace BurnOutSharp.Tools
                 case SupportedFileType.BSP: return new FileType.BSP();
                 case SupportedFileType.BZip2: return new FileType.BZip2();
                 case SupportedFileType.Executable: return new FileType.Executable();
-                case SupportedFileType.GCF: return new FileType.Valve();
+                case SupportedFileType.GCF: return new FileType.GCF();
                 case SupportedFileType.GZIP: return new FileType.GZIP();
                 //case FileTypes.IniFile: return new FileType.IniFile();
                 case SupportedFileType.InstallShieldArchiveV3: return new FileType.InstallShieldArchiveV3();
