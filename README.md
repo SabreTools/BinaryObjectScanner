@@ -156,11 +156,15 @@ Below is a list of container formats that are supported in some way:
 | Half-Life 2 Level (VBSP) | Yes | Yes | Yes | |
 | InstallShield Archive V3 (Z) | No | Yes | Yes | Via `UnshieldSharp` |
 | InstallShield CAB | No | Yes | Yes | Via `UnshieldSharp` |
+| Linear Executable | No | No | No | Skeleton only |
 | Microsoft cabinet file | Yes | Yes | Yes | Via `WixToolset.Dtf` / `LibMSPackSharp` |
 | MoPaQ game data archive (MPQ) | No | Yes | Yes | Via `StormLibSharp` |
 | Microsoft installation package (MSI) | No | Yes | Yes | Via `OpenMcdf` |
+| MS-DOS Executable | Yes | Yes | No | Incomplete |
+| New Exectuable | Yes | Yes | No | Incomplete |
 | PKZIP and derived files (ZIP, etc.) | No | Yes | Yes | Via `SharpCompress` |
 | PlayJ audio file (PLJ) | No | Yes | No | |
+| Portable Executable | Yes | Yes | No* | Some packed executables are supported |
 | RAR archive (RAR) | No | Yes | Yes | Via `SharpCompress` |
 | StarForce Filesystem file (SFFS) | No | Yes | No | |
 | Tape archive (TAR) | No | Yes | Yes | Via `SharpCompress` |
