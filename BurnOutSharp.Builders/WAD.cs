@@ -160,7 +160,7 @@ namespace BurnOutSharp.Builders
             lump.Padding0 = data.ReadByteValue();
             lump.Padding1 = data.ReadByteValue();
             byte[] name = data.ReadBytes(16);
-            lump.Name = Encoding.ASCII.GetString(name);
+            lump.Name = Encoding.ASCII.GetString(name).TrimEnd('\0');
 
             return lump;
         }

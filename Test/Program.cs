@@ -457,6 +457,25 @@ namespace Test
                     vpk.Print();
                 }
 
+                // WAD
+                else if (IsWAD(magic))
+                {
+                    // Build the archive information
+                    Console.WriteLine("Creating WAD deserializer");
+                    Console.WriteLine();
+
+                    var wad = WAD.Create(stream);
+                    if (wad == null)
+                    {
+                        Console.WriteLine("Something went wrong parsing WAD");
+                        Console.WriteLine();
+                        return;
+                    }
+
+                    // Print the WAD info to screen
+                    wad.Print();
+                }
+
                 // Everything else
                 else
                 {
@@ -610,6 +629,17 @@ namespace Test
                 return false;
 
             return magic[0] == 0x34 && magic[1] == 0x12 && magic[2] == 0xaa && magic[3] == 0x55;
+        }
+
+        /// <summary>
+        /// Determine if the magic bytes indicate a WAD
+        /// </summary>
+        private static bool IsWAD(byte[] magic)
+        {
+            if (magic == null || magic.Length < 4)
+                return false;
+
+            return magic[0] == 'W' && magic[1] == 'A' && magic[2] == 'D' && magic[3] == '3';
         }
 
         #endregion
