@@ -1,7 +1,6 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using BurnOutSharp.Utilities;
 
 namespace BurnOutSharp.Wrappers
 {
@@ -301,7 +300,96 @@ namespace BurnOutSharp.Wrappers
 
         #region Extension Properties
 
-        // TODO: Figure out what extension properties are needed
+        /// <summary>
+        /// Set of all files and their information
+        /// </summary>
+        public FileInfo[] Files
+        {
+            get
+            {
+                // Use the cached value if we have it
+                if (_files != null)
+                    return _files;
+
+                // Otherwise, scan and build the files
+                var files = new List<FileInfo>();
+                for (int i = 0; i < DirectoryEntries.Length; i++)
+                {
+                    // Get the directory entry
+                    var directoryEntry = DirectoryEntries[i];
+                    var directoryMapEntry = DirectoryMapEntries[i];
+
+                    // If we have a directory, skip for now
+                    if ((directoryEntry.DirectoryFlags & Builders.GCF.HL_GCF_FLAG_FILE) == 0)
+                        continue;
+
+                    // Otherwise, start building the file info
+                    var fileInfo = new FileInfo()
+                    {
+                        Size = directoryEntry.ItemSize,
+                        Encrypted = (directoryEntry.DirectoryFlags & Builders.GCF.HL_GCF_FLAG_ENCRYPTED) != 0,
+                    };
+                    var pathParts = new List<string> { directoryEntry.Name };
+                    var blockEntries = new List<Models.GCF.BlockEntry>();
+
+                    // Traverse the parent tree
+                    uint index = directoryEntry.ParentIndex;
+                    while (index != 0xFFFFFFFF)
+                    {
+                        var parentDirectoryEntry = DirectoryEntries[index];
+                        pathParts.Add(parentDirectoryEntry.Name);
+                        index = parentDirectoryEntry.ParentIndex;
+                    }
+
+                    // Traverse the block entries
+                    index = directoryMapEntry.FirstBlockIndex;
+                    while (index != DBH_BlockCount)
+                    {
+                        var nextBlock = BlockEntries[index];
+                        blockEntries.Add(nextBlock);
+                        index = nextBlock.NextBlockEntryIndex;
+                    }
+
+                    // Reverse the path parts because of traversal
+                    pathParts.Reverse();
+
+                    // Build the remaining file info
+                    fileInfo.Path = Path.Combine(pathParts.ToArray());
+                    fileInfo.BlockEntries = blockEntries.ToArray();
+
+                    // Add the file info and continue
+                    files.Add(fileInfo);
+                }
+
+                // Set and return the file infos
+                _files = files.ToArray();
+                return _files;
+            }
+        }
+
+        /// <summary>
+        /// Set of all data block offsets
+        /// </summary>
+        public long[] DataBlockOffsets
+        {
+            get
+            {
+                // Use the cached value if we have it
+                if (_dataBlockOffsets != null)
+                    return _dataBlockOffsets;
+
+                // Otherwise, build the data block set
+                _dataBlockOffsets = new long[DBH_BlockCount];
+                for (int i = 0; i < DBH_BlockCount; i++)
+                {
+                    long dataBlockOffset = DBH_FirstBlockOffset + (i * DBH_BlockSize);
+                    _dataBlockOffsets[i] = dataBlockOffset;
+                }
+
+                // Return the set of data blocks
+                return _dataBlockOffsets;
+            }
+        }
 
         #endregion
 
@@ -311,6 +399,16 @@ namespace BurnOutSharp.Wrappers
         /// Internal representation of the GCF
         /// </summary>
         private Models.GCF.File _file;
+
+        /// <summary>
+        /// Set of all files and their information
+        /// </summary>
+        private FileInfo[] _files = null;
+
+        /// <summary>
+        /// Set of all data block offsets
+        /// </summary>
+        private long[] _dataBlockOffsets = null;
 
         #endregion
 
@@ -852,7 +950,18 @@ namespace BurnOutSharp.Wrappers
         /// <returns>True if all files extracted, false otherwise</returns>
         public bool ExtractAll(string outputDirectory)
         {
-            return false;
+            // If we have no files
+            if (Files == null || Files.Length == 0)
+                return false;
+
+            // Loop through and extract all files to the output
+            bool allExtracted = true;
+            for (int i = 0; i < Files.Length; i++)
+            {
+                allExtracted &= ExtractFile(i, outputDirectory);
+            }
+
+            return allExtracted;
         }
 
         /// <summary>
@@ -863,7 +972,105 @@ namespace BurnOutSharp.Wrappers
         /// <returns>True if the file extracted, false otherwise</returns>
         public bool ExtractFile(int index, string outputDirectory)
         {
-            return false;
+            // If we have no files
+            if (Files == null || Files.Length == 0)
+                return false;
+
+            // If the files index is invalid
+            if (index < 0 || index >= Files.Length)
+                return false;
+
+            // Get the file
+            var file = Files[index];
+            if (file.Size == 0)
+                return false;
+
+            // If the file is encrypted -- TODO: Revisit later
+            if (file.Encrypted)
+                return false;
+
+            // Get all data block offsets needed for extraction
+            var dataBlockOffsets = new List<long>();
+            for (int i = 0; i < file.BlockEntries.Length; i++)
+            {
+                var blockEntry = file.BlockEntries[i];
+
+                uint dataBlockIndex = blockEntry.FirstDataBlockIndex;
+                long blockEntrySize = blockEntry.FileDataSize;
+                while (blockEntrySize > 0)
+                {
+                    long dataBlockOffset = DataBlockOffsets[dataBlockIndex++];
+                    dataBlockOffsets.Add(dataBlockOffset);
+                    blockEntrySize -= DBH_BlockSize;
+                }
+            }
+
+            // Create the filename
+            string filename = file.Path;
+
+            // If we have an invalid output directory
+            if (string.IsNullOrWhiteSpace(outputDirectory))
+                return false;
+
+            // Create the full output path
+            filename = Path.Combine(outputDirectory, filename);
+
+            // Ensure the output directory is created
+            Directory.CreateDirectory(Path.GetDirectoryName(filename));
+
+            // Try to write the data
+            try
+            {
+                // Open the output file for writing
+                using (Stream fs = File.OpenWrite(filename))
+                {
+                    // Now read the data sequentially and write out while we have data left
+                    long fileSize = file.Size;
+                    for (int i = 0; i < dataBlockOffsets.Count; i++)
+                    {
+                        int readSize = (int)Math.Min(DBH_BlockSize, fileSize);
+
+                        byte[] data = ReadFromDataSource((int)dataBlockOffsets[i], readSize);
+                        fs.Write(data, 0, data.Length);
+                    }
+                }
+            }
+            catch
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        #endregion
+
+        #region Helper Classes
+
+        /// <summary>
+        /// Class to contain all necessary file information
+        /// </summary>
+        public sealed class FileInfo
+        {
+            /// <summary>
+            /// Full item path
+            /// </summary>
+            public string Path;
+
+            /// <summary>
+            /// File size
+            /// </summary>
+            public uint Size;
+
+            /// <summary>
+            /// Indicates if the block is encrypted
+            /// </summary>
+            public bool Encrypted;
+
+            /// <summary>
+            /// Array of block entries
+            /// </summary>
+            public Models.GCF.BlockEntry[] BlockEntries;
         }
 
         #endregion

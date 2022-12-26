@@ -13,32 +13,32 @@ namespace BurnOutSharp.Builders
         /// <summary>
         /// The item is a file.
         /// </summary>
-        private const int HL_GCF_FLAG_FILE = 0x00004000;
+        public const int HL_GCF_FLAG_FILE = 0x00004000;
 
         /// <summary>
         /// The item is encrypted.
         /// </summary>
-        private const int HL_GCF_FLAG_ENCRYPTED = 0x00000100;
+        public const int HL_GCF_FLAG_ENCRYPTED = 0x00000100;
 
         /// <summary>
         /// Backup the item before overwriting it.
         /// </summary>
-        private const int HL_GCF_FLAG_BACKUP_LOCAL = 0x00000040;
+        public const int HL_GCF_FLAG_BACKUP_LOCAL = 0x00000040;
 
         /// <summary>
         /// The item is to be copied to the disk.
         /// </summary>
-        private const int HL_GCF_FLAG_COPY_LOCAL = 0x0000000A;
+        public const int HL_GCF_FLAG_COPY_LOCAL = 0x0000000A;
 
         /// <summary>
         /// Don't overwrite the item if copying it to the disk and the item already exists.
         /// </summary>
-        private const int HL_GCF_FLAG_COPY_LOCAL_NO_OVERWRITE = 0x00000001;
+        public const int HL_GCF_FLAG_COPY_LOCAL_NO_OVERWRITE = 0x00000001;
 
         /// <summary>
         /// The maximum data allowed in a 32 bit checksum.
         /// </summary>
-        private const int HL_GCF_CHECKSUM_LENGTH = 0x00008000;
+        public const int HL_GCF_CHECKSUM_LENGTH = 0x00008000;
 
         #endregion
 
