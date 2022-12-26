@@ -1,9 +1,6 @@
 [submodule "BurnOutSharp/External/stormlibsharp"]
 	path = BurnOutSharp/External/stormlibsharp
 	url = https://github.com/robpaveza/stormlibsharp.git
-[submodule "HLLibSharp"]
-	path = HLLibSharp
-	url = https://github.com/mnadareski/HLLibSharp
 [submodule "LibMSPackSharp"]
 	path = LibMSPackSharp
 	url = https://github.com/mnadareski/LibMSPackSharp.git
