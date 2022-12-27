@@ -172,7 +172,7 @@ namespace BurnOutSharp.Wrappers
                 return null;
 
             var header = new Models.MicrosoftCabinet.MSZIP.BlockHeader();
-        
+
             header.Signature = data.ReadAlignedUInt16();
             if (header.Signature != 0x4B43)
                 return null;
@@ -193,7 +193,7 @@ namespace BurnOutSharp.Wrappers
                 return null;
 
             var header = new Models.MicrosoftCabinet.MSZIP.DeflateBlockHeader();
-        
+
             header.BFINAL = data.ReadBits(1)[0];
             header.BTYPE = (Models.MicrosoftCabinet.DeflateCompressionType)data.ReadBits(2).AsByte();
 
@@ -231,19 +231,19 @@ namespace BurnOutSharp.Wrappers
             //  corresponding symbol (literal/ length or distance code
             //  length) is not used.
             int[] bitLengths = new int[19];
-            for (ulong i = 0; i < HCLEN; i++)
+            for (byte i = 0; i < HCLEN; i++)
                 bitLengths[BitLengthOrder[i]] = data.ReadBits(3).AsByte();
 
             // Code length Huffman code
-            int[] bitLengthTable = CreateTable(bitLengths);
+            int[] bitLengthTable = CreateTable(19, 7, bitLengths, 1 << 7);
 
             // HLIT + 257 code lengths for the literal/length alphabet,
             //  encoded using the code length Huffman code
-            header.LiteralLengths = BuildHuffmanTree(data, HLIT, bitLengthTable);
+            header.LiteralLengths = BuildHuffmanTree(data, HLIT, bitLengths, bitLengthTable);
 
             // HDIST + 1 code lengths for the distance alphabet,
             //  encoded using the code length Huffman code
-            header.DistanceCodes = BuildHuffmanTree(data, HDIST, bitLengthTable);
+            header.DistanceCodes = BuildHuffmanTree(data, HDIST, bitLengths, bitLengthTable);
 
             return header;
         }
@@ -264,7 +264,8 @@ namespace BurnOutSharp.Wrappers
 
             header.LEN = data.ReadAlignedUInt16();
             header.NLEN = data.ReadAlignedUInt16();
-            // TODO: Confirm NLEN is 1's compliment of LEN
+            if (header.LEN != (~header.NLEN & 0xFFFF))
+                return null;
 
             return header;
         }
@@ -272,56 +273,58 @@ namespace BurnOutSharp.Wrappers
         #endregion
 
         #region Helpers
-        
+
         /// <summary>
         /// The alphabet for code lengths is as follows
         /// </summary>
-        private static int[] BuildHuffmanTree(BitStream data, ushort codeCount, int[] codeLengths)
+        private static int[] BuildHuffmanTree(BitStream data, ushort codeCount, int[] bitLengths, int[] decodingTable)
         {
             // Setup the huffman tree
             int[] tree = new int[codeCount];
 
             // Setup the loop variables
             int lastCode = 0, repeatLength = 0;
-            for (ulong i = 0; i < codeCount; i++)
+            for (int i = 0; i < codeCount; i++)
             {
-                int codeLength = codeLengths[data.ReadBits(7).AsUInt16()];
-                if (codeLengths[codeLength] > 7)
-                    _ = data.ReadBits(codeLengths[codeLength] - 7);
+                // TODO: Fix so we only read the number of bits we need
+                int nextCode = data.ReadBits(7).AsUInt16();
+                int symbol = decodingTable[nextCode];
+                if (bitLengths[symbol] > 7)
+                    _ = data.ReadBits(decodingTable[symbol] - 7);
 
                 // Represent code lengths of 0 - 15
-                if (codeLength > 0 && codeLength <= 15)
+                if (symbol > 0 && symbol <= 15)
                 {
-                    lastCode = codeLength;
-                    tree[i] = codeLength;
+                    lastCode = symbol;
+                    tree[i] = symbol;
                 }
 
                 // Copy the previous code length 3 - 6 times.
                 // The next 2 bits indicate repeat length (0 = 3, ... , 3 = 6)
                 // Example: Codes 8, 16 (+2 bits 11), 16 (+2 bits 10) will expand to 12 code lengths of 8 (1 + 6 + 5)
-                else if (codeLength == 16)
+                else if (symbol == 16)
                 {
                     repeatLength = data.ReadBits(2).AsByte();
                     repeatLength += 2;
-                    codeLength = lastCode;
+                    symbol = lastCode;
                 }
 
                 // Repeat a code length of 0 for 3 - 10 times.
                 // (3 bits of length)
-                else if (codeLength == 17)
+                else if (symbol == 17)
                 {
                     repeatLength = data.ReadBits(3).AsByte();
                     repeatLength += 3;
-                    codeLength = 0;
+                    symbol = 0;
                 }
 
                 // Repeat a code length of 0 for 11 - 138 times
                 // (7 bits of length)
-                else if (codeLength == 18)
+                else if (symbol == 18)
                 {
                     repeatLength = data.ReadBits(7).AsByte();
                     repeatLength += 11;
-                    codeLength = 0;
+                    symbol = 0;
                 }
 
                 // Everything else
@@ -333,7 +336,7 @@ namespace BurnOutSharp.Wrappers
                 // If we had a repeat length
                 for (; repeatLength > 0; repeatLength--)
                 {
-                    tree[i++] = codeLength;
+                    tree[i++] = symbol;
                 }
             }
 
@@ -341,54 +344,140 @@ namespace BurnOutSharp.Wrappers
         }
 
         /// <summary>
-        /// Given this rule, we can define the Huffman code for an alphabet
-        /// just by giving the bit lengths of the codes for each symbol of
-        /// the alphabet in order; this is sufficient to determine the
-        /// actual codes.  In our example, the code is completely defined
-        /// by the sequence of bit lengths (2, 1, 3, 3).  The following
-        /// algorithm generates the codes as integers, intended to be read
-        /// from most- to least-significant bit.  The code lengths are
-        /// initially in tree[I].Len; the codes are produced in
-        /// tree[I].Code.
+        /// This function was originally coded by David Tritscher.
+        /// 
+        /// It builds a fast huffman decoding table from a canonical huffman code lengths table.
         /// </summary>
-        private static int[] CreateTable(int[] lengths)
+        /// <param name="maxSymbols">Total number of symbols in this huffman tree.</param>
+        /// <param name="bitCount">Any symbols with a code length of bitCount or less can be decoded in one lookup of the table.</param>
+        /// <param name="lengths">A table to get code lengths from [0 to maxSymbols-1]</param>
+        /// <returns>The table with decoded symbols and pointers.</returns>
+        /// <see href="https://github.com/mnadareski/LibMSPackSharp/blob/master/LibMSPackSharp/Compression/CompressionStream.ReadHuff.cs"/>
+        private static int[] CreateTable(int maxSymbols, int bitCount, int[] lengths, int distanceSize)
         {
-            // Count the number of codes for each code length.  Let
-            // bl_count[N] be the number of codes of length N, N >= 1.
-            int[] bl_count = new int[259];
-            for (int i = 0; i < lengths.Length; i++)
-            {
-                bl_count[lengths[i]]++;
-            }
+            int[] table = new int[distanceSize];
 
-            // Find the numerical value of the smallest code for each
-            // code length.
-            int[] next_code = new int[MAX_BITS + 1];
-            int code = 0;
-            bl_count[0] = 0;
-            for (int bits = 1; bits <= MAX_BITS; bits++)
-            {
-                code = (code + bl_count[bits - 1]) << 1;
-                next_code[bits] = code;
-            }
+            ushort sym, next_symbol;
+            uint leaf, fill;
+            uint reverse;
+            byte bit_num;
+            uint pos = 0; // The current position in the decode table
+            uint table_mask = (uint)1 << bitCount;
+            uint bit_mask = table_mask >> 1; // Don't do 0 length codes
 
-            // Assign numerical values to all codes, using consecutive
-            // values for all codes of the same length with the base
-            // values determined at step 2. Codes that are never used
-            // (which have a bit length of zero) must not be assigned a
-            // value.
-            int[] distances = new int[lengths.Length];
-            for (int n = 0; n < lengths.Length; n++)
+            // Fill entries for codes short enough for a direct mapping
+            for (bit_num = 1; bit_num <= bitCount; bit_num++)
             {
-                int len = lengths[n];
-                if (len != 0)
+                for (sym = 0; sym < maxSymbols; sym++)
                 {
-                    distances[n] = next_code[len];
-                    next_code[len]++;
+                    if (lengths[sym] != bit_num)
+                        continue;
+
+                    // Reverse the significant bits
+                    fill = (uint)lengths[sym];
+                    reverse = pos >> (int)(bitCount - fill);
+                    leaf = 0;
+
+                    do
+                    {
+                        leaf <<= 1;
+                        leaf |= reverse & 1;
+                        reverse >>= 1;
+                    } while (--fill > 0);
+
+                    if ((pos += bit_mask) > table_mask)
+                        return null; // Table overrun
+
+                    // Fill all possible lookups of this symbol with the symbol itself
+                    fill = bit_mask;
+                    next_symbol = (ushort)(1 << bit_num);
+
+                    do
+                    {
+                        table[leaf] = sym;
+                        leaf += next_symbol;
+                    } while (--fill > 0);
                 }
+
+                bit_mask >>= 1;
             }
 
-            return distances;
+            // Exit with success if table is now complete
+            if (pos == table_mask)
+                return table;
+
+            // Mark all remaining table entries as unused
+            for (sym = (ushort)pos; sym < table_mask; sym++)
+            {
+                reverse = sym;
+                leaf = 0;
+                fill = (uint)bitCount;
+
+                do
+                {
+                    leaf <<= 1;
+                    leaf |= reverse & 1;
+                    reverse >>= 1;
+                } while (--fill > 0);
+
+                table[leaf] = 0xFFFF;
+            }
+
+            // next_symbol = base of allocation for long codes
+            next_symbol = ((table_mask >> 1) < maxSymbols) ? (ushort)maxSymbols : (ushort)(table_mask >> 1);
+
+            // Give ourselves room for codes to grow by up to 16 more bits.
+            // codes now start at bit bitCount+16 and end at (bitCount+16-codelength)
+            pos <<= 16;
+            table_mask <<= 16;
+            bit_mask = 1 << 15;
+
+            for (bit_num = (byte)(bitCount + 1); bit_num <= MAX_BITS; bit_num++)
+            {
+                for (sym = 0; sym < maxSymbols; sym++)
+                {
+                    if (lengths[sym] != bit_num)
+                        continue;
+                    if (pos >= table_mask)
+                        return null; // Table overflow
+
+                    // leaf = the first bitCount of the code, reversed
+                    reverse = pos >> 16;
+                    leaf = 0;
+                    fill = (uint)bitCount;
+
+                    do
+                    {
+                        leaf <<= 1;
+                        leaf |= reverse & 1;
+                        reverse >>= 1;
+                    } while (--fill > 0);
+
+                    for (fill = 0; fill < (bit_num - bitCount); fill++)
+                    {
+                        // If this path hasn't been taken yet, 'allocate' two entries
+                        if (table[leaf] == 0xFFFF)
+                        {
+                            table[(next_symbol << 1)] = 0xFFFF;
+                            table[(next_symbol << 1) + 1] = 0xFFFF;
+                            table[leaf] = (ushort)next_symbol++;
+                        }
+
+                        // Follow the path and select either left or right for next bit
+                        leaf = (uint)(table[leaf] << 1);
+                        if (((pos >> (15 - (int)fill)) & 1) != 0)
+                            leaf++;
+                    }
+
+                    table[leaf] = sym;
+                    pos += bit_mask;
+                }
+
+                bit_mask >>= 1;
+            }
+
+            // Full table?
+            return pos == table_mask ? table : null;
         }
 
         #endregion
@@ -398,7 +487,7 @@ namespace BurnOutSharp.Wrappers
         /// <summary>
         /// Decompress MSZIP data
         /// </summary>
-        private byte[] DecompressMSZIPData(byte[] data)
+        protected byte[] DecompressMSZIPData(byte[] data)
         {
             // Create the bitstream to read from
             var dataStream = new BitStream(data);
@@ -420,7 +509,7 @@ namespace BurnOutSharp.Wrappers
 
                 // We should never get a reserved block
                 if (deflateBlockHeader.BTYPE == Models.MicrosoftCabinet.DeflateCompressionType.Reserved)
-                    throw new Exception();
+                    throw new InvalidOperationException();
 
                 // If stored with no compression
                 if (deflateBlockHeader.BTYPE == Models.MicrosoftCabinet.DeflateCompressionType.NoCompression)
@@ -440,25 +529,30 @@ namespace BurnOutSharp.Wrappers
                 // Otherwise
                 else
                 {
-                    // If compressed with dynamic Huffman codes
-                    // read representation of code trees
-                    deflateBlockHeader.BlockDataHeader = deflateBlockHeader.BTYPE == Models.MicrosoftCabinet.DeflateCompressionType.DynamicHuffman
-                        ? (Models.MicrosoftCabinet.MSZIP.IBlockDataHeader)AsDynamicHuffmanCompressedBlockHeader(dataStream)
-                        : (Models.MicrosoftCabinet.MSZIP.IBlockDataHeader)new Models.MicrosoftCabinet.MSZIP.FixedHuffmanCompressedBlockHeader();
+                    // If compressed with dynamic Huffman codes read representation of code trees
+                    switch (deflateBlockHeader.BTYPE)
+                    {
+                        case Models.MicrosoftCabinet.DeflateCompressionType.FixedHuffman:
+                            deflateBlockHeader.BlockDataHeader = new Models.MicrosoftCabinet.MSZIP.FixedHuffmanCompressedBlockHeader();
+                            break;
+                        case Models.MicrosoftCabinet.DeflateCompressionType.DynamicHuffman:
+                            deflateBlockHeader.BlockDataHeader = AsDynamicHuffmanCompressedBlockHeader(dataStream);
+                            break;
+                    }
 
                     var header = deflateBlockHeader.BlockDataHeader as Models.MicrosoftCabinet.MSZIP.CompressedBlockHeader;
 
                     // 9 bits per entry, 288 max symbols
-                    int[] literalDecodeTable = CreateTable(header.LiteralLengths);
+                    int[] literalDecodeTable = CreateTable(288, 9, header.LiteralLengths, (1 << 9) + (288 * 2));
 
                     // 6 bits per entry, 32 max symbols
-                    int[] distanceDecodeTable = CreateTable(header.DistanceCodes);
+                    int[] distanceDecodeTable = CreateTable(32, 6, header.DistanceCodes, (1 << 6) + (32 * 2));
 
                     // Loop until end of block code recognized
                     while (true)
                     {
                         // Decode literal/length value from input stream
-                        int symbol = literalDecodeTable[dataStream.ReadBits(9).AsUInt16()];
+                        int symbol = literalDecodeTable[dataStream.ReadBits(7).AsUInt16()];
 
                         // Copy value (literal byte) to output stream
                         if (symbol < 256)
