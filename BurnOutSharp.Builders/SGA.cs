@@ -472,9 +472,9 @@ namespace BurnOutSharp.Builders
                 switch (majorVersion)
                 {
                     case 4: (directory as Directory4).Folders[i].Name = strings[(directory as Directory4).Folders[i].NameOffset]; break;
-                    case 5: (directory as Directory4).Folders[i].Name = strings[(directory as Directory4).Folders[i].NameOffset]; break;
-                    case 6: (directory as Directory4).Folders[i].Name = strings[(directory as Directory4).Folders[i].NameOffset]; break;
-                    case 7: (directory as Directory4).Folders[i].Name = strings[(directory as Directory4).Folders[i].NameOffset]; break;
+                    case 5: (directory as Directory5).Folders[i].Name = strings[(directory as Directory5).Folders[i].NameOffset]; break;
+                    case 6: (directory as Directory6).Folders[i].Name = strings[(directory as Directory6).Folders[i].NameOffset]; break;
+                    case 7: (directory as Directory7).Folders[i].Name = strings[(directory as Directory7).Folders[i].NameOffset]; break;
                     default: return null;
                 }
             }
@@ -485,9 +485,9 @@ namespace BurnOutSharp.Builders
                 switch (majorVersion)
                 {
                     case 4: (directory as Directory4).Files[i].Name = strings[(directory as Directory4).Files[i].NameOffset]; break;
-                    case 5: (directory as Directory4).Files[i].Name = strings[(directory as Directory4).Files[i].NameOffset]; break;
-                    case 6: (directory as Directory4).Files[i].Name = strings[(directory as Directory4).Files[i].NameOffset]; break;
-                    case 7: (directory as Directory4).Files[i].Name = strings[(directory as Directory4).Files[i].NameOffset]; break;
+                    case 5: (directory as Directory5).Files[i].Name = strings[(directory as Directory5).Files[i].NameOffset]; break;
+                    case 6: (directory as Directory6).Files[i].Name = strings[(directory as Directory6).Files[i].NameOffset]; break;
+                    case 7: (directory as Directory7).Files[i].Name = strings[(directory as Directory7).Files[i].NameOffset]; break;
                     default: return null;
                 }
             }

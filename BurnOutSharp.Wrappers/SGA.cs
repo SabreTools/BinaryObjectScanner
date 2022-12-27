@@ -693,7 +693,7 @@ namespace BurnOutSharp.Wrappers
             // Loop through and get all parent directories
             var parentNames = new List<string> { filename };
 
-            // Get the immediate parent directory
+            // Get the parent directory
             object folder;
             switch (MajorVersion)
             {
@@ -716,6 +716,8 @@ namespace BurnOutSharp.Wrappers
                     default: return false;
                 }
             }
+
+            // TODO: Should the section name/alias be used in the path as well?
 
             // Reverse and assemble the filename
             parentNames.Reverse();
@@ -760,18 +762,27 @@ namespace BurnOutSharp.Wrappers
             if (compressedData == null)
                 return false;
 
-            // Decompress the data
-            byte[] data = new byte[outputFileSize];
-            ZStream zst = new ZStream
+            // If the compressed and uncompressed sizes match
+            byte[] data;
+            if (fileSize == outputFileSize)
             {
-                next_in = compressedData,
-                avail_in = compressedData.Length,
-                next_out = data,
-                avail_out = data.Length,
-            };
-            zst.inflateInit();
-            zst.inflate(zlibConst.Z_FULL_FLUSH);
-            zst.inflateEnd();
+                data = compressedData;
+            }
+            else
+            {
+                // Decompress the data
+                data = new byte[outputFileSize];
+                ZStream zst = new ZStream
+                {
+                    next_in = compressedData,
+                    avail_in = compressedData.Length,
+                    next_out = data,
+                    avail_out = data.Length,
+                };
+                zst.inflateInit();
+                zst.inflate(zlibConst.Z_FULL_FLUSH);
+                zst.inflateEnd();
+            }
 
             // If we have an invalid output directory
             if (string.IsNullOrWhiteSpace(outputDirectory))
