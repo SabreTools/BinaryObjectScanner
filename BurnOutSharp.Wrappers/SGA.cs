@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using ComponentAce.Compression.Libs.zlib;
 
 namespace BurnOutSharp.Wrappers
 {
@@ -508,7 +510,7 @@ namespace BurnOutSharp.Wrappers
                             Console.WriteLine($"    File start index: {section5.FileStartIndex}");
                             Console.WriteLine($"    File end index: {section5.FileEndIndex}");
                             Console.WriteLine($"    Folder root index: {section5.FolderRootIndex}");
-                           break;
+                            break;
                         default:
                             Console.WriteLine($"    Unknown format for version {MajorVersion}");
                             break;
@@ -642,7 +644,18 @@ namespace BurnOutSharp.Wrappers
         /// <returns>True if all files extracted, false otherwise</returns>
         public bool ExtractAll(string outputDirectory)
         {
-            return false;
+            // If we have no files
+            if (Files == null || Files.Length == 0)
+                return false;
+
+            // Loop through and extract all files to the output
+            bool allExtracted = true;
+            for (int i = 0; i < Files.Length; i++)
+            {
+                allExtracted &= ExtractFile(i, outputDirectory);
+            }
+
+            return allExtracted;
         }
 
         /// <summary>
@@ -653,6 +666,137 @@ namespace BurnOutSharp.Wrappers
         /// <returns>True if the file extracted, false otherwise</returns>
         public bool ExtractFile(int index, string outputDirectory)
         {
+            // If we have no files
+            if (Files == null || Files.Length == 0)
+                return false;
+
+            // If the files index is invalid
+            if (index < 0 || index >= Files.Length)
+                return false;
+
+            // Get the files
+            var file = Files[index];
+            if (file == null)
+                return false;
+
+            // Create the filename
+            string filename;
+            switch (MajorVersion)
+            {
+                case 4:
+                case 5: filename = (file as Models.SGA.File4).Name; break;
+                case 6: filename = (file as Models.SGA.File6).Name; break;
+                case 7: filename = (file as Models.SGA.File7).Name; break;
+                default: return false;
+            }
+
+            // Loop through and get all parent directories
+            var parentNames = new List<string> { filename };
+
+            // Get the immediate parent directory
+            object folder;
+            switch (MajorVersion)
+            {
+                case 4: folder = (Folders as Models.SGA.Folder4[]).FirstOrDefault(f => index >= f.FileStartIndex && index <= f.FileEndIndex); break;
+                case 5:
+                case 6:
+                case 7: folder = (Folders as Models.SGA.Folder5[]).FirstOrDefault(f => index >= f.FileStartIndex && index <= f.FileEndIndex); break;
+                default: return false;
+            }
+
+            // If we have a parent folder
+            if (folder != null)
+            {
+                switch (MajorVersion)
+                {
+                    case 4: parentNames.Add((folder as Models.SGA.Folder4).Name); break;
+                    case 5:
+                    case 6:
+                    case 7: parentNames.Add((folder as Models.SGA.Folder5).Name); break;
+                    default: return false;
+                }
+            }
+
+            // Reverse and assemble the filename
+            parentNames.Reverse();
+            filename = Path.Combine(parentNames.ToArray());
+
+            // Get the file offset
+            long fileOffset;
+            switch (MajorVersion)
+            {
+                case 4:
+                case 5: fileOffset = (file as Models.SGA.File4).Offset; break;
+                case 6: fileOffset = (file as Models.SGA.File6).Offset; break;
+                case 7: fileOffset = (file as Models.SGA.File7).Offset; break;
+                default: return false;
+            }
+
+            // Adjust the file offset
+            fileOffset += FileDataOffset.Value;
+
+            // Get the file sizes
+            long fileSize, outputFileSize;
+            switch (MajorVersion)
+            {
+                case 4:
+                case 5:
+                    fileSize = (file as Models.SGA.File4).SizeOnDisk;
+                    outputFileSize = (file as Models.SGA.File4).Size;
+                    break;
+                case 6:
+                    fileSize = (file as Models.SGA.File6).SizeOnDisk;
+                    outputFileSize = (file as Models.SGA.File6).Size;
+                    break;
+                case 7:
+                    fileSize = (file as Models.SGA.File7).SizeOnDisk;
+                    outputFileSize = (file as Models.SGA.File7).Size;
+                    break;
+                default: return false;
+            }
+
+            // Read the compressed data directly
+            byte[] compressedData = ReadFromDataSource((int)fileOffset, (int)fileSize);
+            if (compressedData == null)
+                return false;
+
+            // Decompress the data
+            byte[] data = new byte[outputFileSize];
+            ZStream zst = new ZStream
+            {
+                next_in = compressedData,
+                avail_in = compressedData.Length,
+                next_out = data,
+                avail_out = data.Length,
+            };
+            zst.inflateInit();
+            zst.inflate(zlibConst.Z_FULL_FLUSH);
+            zst.inflateEnd();
+
+            // If we have an invalid output directory
+            if (string.IsNullOrWhiteSpace(outputDirectory))
+                return false;
+
+            // Create the full output path
+            filename = Path.Combine(outputDirectory, filename);
+
+            // Ensure the output directory is created
+            Directory.CreateDirectory(Path.GetDirectoryName(filename));
+
+            // Try to write the data
+            try
+            {
+                // Open the output file for writing
+                using (Stream fs = File.OpenWrite(filename))
+                {
+                    fs.Write(data, 0, data.Length);
+                }
+            }
+            catch
+            {
+                return false;
+            }
+
             return false;
         }
 

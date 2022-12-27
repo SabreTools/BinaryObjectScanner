@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <PackageReference Include="SharpCompress" Version="0.32.2" />
+    <PackageReference Include="zlib.net-mutliplatform" Version="1.0.6" />
   </ItemGroup>
 
   <ItemGroup>
