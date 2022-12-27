@@ -207,6 +207,8 @@ namespace Test
         /// </summary>
         private static void PrintFileInfo(string file)
         {
+            Console.WriteLine($"Attempting to print info for {file}");
+
             using (Stream stream = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 // Read the first 8 bytes
@@ -420,6 +422,25 @@ namespace Test
 
                     // Print the PAK info to screen
                     pak.Print();
+                }
+
+                // PAK
+                else if (ft == SupportedFileType.SGA)
+                {
+                    // Build the archive information
+                    Console.WriteLine("Creating SGA deserializer");
+                    Console.WriteLine();
+
+                    var sga = SGA.Create(stream);
+                    if (sga == null)
+                    {
+                        Console.WriteLine("Something went wrong parsing SGA");
+                        Console.WriteLine();
+                        return;
+                    }
+
+                    // Print the SGA info to screen
+                    sga.Print();
                 }
 
                 // VBSP

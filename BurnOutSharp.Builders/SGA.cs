@@ -120,8 +120,8 @@ namespace BurnOutSharp.Builders
                     header4.MajorVersion = majorVersion;
                     header4.MinorVersion = minorVersion;
                     header4.FileMD5 = data.ReadBytes(0x10);
-                    byte[] header4Name = data.ReadBytes(64);
-                    header4.Name = Encoding.ASCII.GetString(header4Name);
+                    byte[] header4Name = data.ReadBytes(count: 128);
+                    header4.Name = Encoding.Unicode.GetString(header4Name).TrimEnd('\0');
                     header4.HeaderMD5 = data.ReadBytes(0x10);
                     header4.HeaderLength = data.ReadUInt32();
                     header4.FileDataOffset = data.ReadUInt32();
@@ -137,8 +137,8 @@ namespace BurnOutSharp.Builders
                     header6.Signature = signature;
                     header6.MajorVersion = majorVersion;
                     header6.MinorVersion = minorVersion;
-                    byte[] header6Name = data.ReadBytes(64);
-                    header6.Name = Encoding.ASCII.GetString(header6Name);
+                    byte[] header6Name = data.ReadBytes(count: 128);
+                    header6.Name = Encoding.Unicode.GetString(header6Name).TrimEnd('\0');
                     header6.HeaderLength = data.ReadUInt32();
                     header6.FileDataOffset = data.ReadUInt32();
                     header6.Dummy0 = data.ReadUInt32();
@@ -174,6 +174,9 @@ namespace BurnOutSharp.Builders
 
             #endregion
 
+            // Cache the current offset
+            long currentOffset = data.Position;
+
             #region Directory Header
 
             // Try to parse the directory header
@@ -196,15 +199,18 @@ namespace BurnOutSharp.Builders
             #region Sections
 
             // Get the sections offset
-            uint sectionOffset;
+            long sectionOffset;
             switch (majorVersion)
             {
                 case 4: sectionOffset = (directoryHeader as DirectoryHeader4).SectionOffset; break;
-                case 5: sectionOffset = (directoryHeader as DirectoryHeader5).SectionOffset; break;
+                case 5:
                 case 6: sectionOffset = (directoryHeader as DirectoryHeader5).SectionOffset; break;
                 case 7: sectionOffset = (directoryHeader as DirectoryHeader7).SectionOffset; break;
                 default: return null;
             }
+
+            // Adjust the sections offset based on the directory
+            sectionOffset += currentOffset;
 
             // Validate the offset
             if (sectionOffset < 0 || sectionOffset >= data.Length)
@@ -218,7 +224,7 @@ namespace BurnOutSharp.Builders
             switch (majorVersion)
             {
                 case 4: sectionCount = (directoryHeader as DirectoryHeader4).SectionCount; break;
-                case 5: sectionCount = (directoryHeader as DirectoryHeader5).SectionCount; break;
+                case 5:
                 case 6: sectionCount = (directoryHeader as DirectoryHeader5).SectionCount; break;
                 case 7: sectionCount = (directoryHeader as DirectoryHeader7).SectionCount; break;
                 default: return null;
@@ -229,8 +235,8 @@ namespace BurnOutSharp.Builders
             switch (majorVersion)
             {
                 case 4: sections = new Section4[sectionCount]; break;
-                case 5: sections = new Section5[sectionCount]; break;
-                case 6: sections = new Section5[sectionCount]; break;
+                case 5:
+                case 6:
                 case 7: sections = new Section5[sectionCount]; break;
                 default: return null;
             }
@@ -241,8 +247,8 @@ namespace BurnOutSharp.Builders
                 switch (majorVersion)
                 {
                     case 4: sections[i] = ParseSection4(data); break;
-                    case 5: sections[i] = ParseSection5(data); break;
-                    case 6: sections[i] = ParseSection5(data); break;
+                    case 5:
+                    case 6:
                     case 7: sections[i] = ParseSection5(data); break;
                     default: return null;
                 }
@@ -263,7 +269,7 @@ namespace BurnOutSharp.Builders
             #region Folders
 
             // Get the folders offset
-            uint folderOffset;
+            long folderOffset;
             switch (majorVersion)
             {
                 case 4: folderOffset = (directoryHeader as DirectoryHeader4).FolderOffset; break;
@@ -272,6 +278,9 @@ namespace BurnOutSharp.Builders
                 case 7: folderOffset = (directoryHeader as DirectoryHeader7).FolderOffset; break;
                 default: return null;
             }
+
+            // Adjust the folders offset based on the directory
+            folderOffset += currentOffset;
 
             // Validate the offset
             if (folderOffset < 0 || folderOffset >= data.Length)
@@ -326,11 +335,11 @@ namespace BurnOutSharp.Builders
             }
 
             #endregion
-        
+
             #region Files
 
             // Get the files offset
-            uint fileOffset;
+            long fileOffset;
             switch (majorVersion)
             {
                 case 4: fileOffset = (directoryHeader as DirectoryHeader4).FileOffset; break;
@@ -339,6 +348,9 @@ namespace BurnOutSharp.Builders
                 case 7: fileOffset = (directoryHeader as DirectoryHeader7).FileOffset; break;
                 default: return null;
             }
+
+            // Adjust the files offset based on the directory
+            fileOffset += currentOffset;
 
             // Validate the offset
             if (fileOffset < 0 || fileOffset >= data.Length)
@@ -393,11 +405,11 @@ namespace BurnOutSharp.Builders
             }
 
             #endregion
-        
+
             #region String Table
 
             // Get the string table offset
-            uint stringTableOffset;
+            long stringTableOffset;
             switch (majorVersion)
             {
                 case 4: stringTableOffset = (directoryHeader as DirectoryHeader4).StringTableOffset; break;
@@ -406,6 +418,9 @@ namespace BurnOutSharp.Builders
                 case 7: stringTableOffset = (directoryHeader as DirectoryHeader7).StringTableOffset; break;
                 default: return null;
             }
+
+            // Adjust the string table offset based on the directory
+            stringTableOffset += currentOffset;
 
             // Validate the offset
             if (stringTableOffset < 0 || stringTableOffset >= data.Length)
@@ -425,13 +440,19 @@ namespace BurnOutSharp.Builders
                 default: return null;
             }
 
-            // Create the strings array
+            // TODO: Are these strings actually indexed by number and not position?
+            // TODO: If indexed by position, I think it needs to be adjusted by start of table
+
+            // Create the strings dictionary
             Dictionary<long, string> strings = new Dictionary<long, string>((int)stringCount);
+
+            // Get the current position to adjust the offsets
+            long stringTableStart = data.Position;
 
             // Try to parse the strings
             for (int i = 0; i < stringCount; i++)
             {
-                long currentPosition = data.Position;
+                long currentPosition = data.Position - stringTableStart;
                 strings[currentPosition] = data.ReadString(Encoding.ASCII);
             }
 
@@ -445,8 +466,34 @@ namespace BurnOutSharp.Builders
                 default: return null;
             }
 
+            // Loop through all folders to assign names
+            for (int i = 0; i < folderCount; i++)
+            {
+                switch (majorVersion)
+                {
+                    case 4: (directory as Directory4).Folders[i].Name = strings[(directory as Directory4).Folders[i].NameOffset]; break;
+                    case 5: (directory as Directory4).Folders[i].Name = strings[(directory as Directory4).Folders[i].NameOffset]; break;
+                    case 6: (directory as Directory4).Folders[i].Name = strings[(directory as Directory4).Folders[i].NameOffset]; break;
+                    case 7: (directory as Directory4).Folders[i].Name = strings[(directory as Directory4).Folders[i].NameOffset]; break;
+                    default: return null;
+                }
+            }
+
+            // Loop through all files to assign names
+            for (int i = 0; i < fileCount; i++)
+            {
+                switch (majorVersion)
+                {
+                    case 4: (directory as Directory4).Files[i].Name = strings[(directory as Directory4).Files[i].NameOffset]; break;
+                    case 5: (directory as Directory4).Files[i].Name = strings[(directory as Directory4).Files[i].NameOffset]; break;
+                    case 6: (directory as Directory4).Files[i].Name = strings[(directory as Directory4).Files[i].NameOffset]; break;
+                    case 7: (directory as Directory4).Files[i].Name = strings[(directory as Directory4).Files[i].NameOffset]; break;
+                    default: return null;
+                }
+            }
+
             #endregion
-        
+
             return directory;
         }
 
@@ -543,10 +590,10 @@ namespace BurnOutSharp.Builders
         {
             Section4 section4 = new Section4();
 
-            byte[] section4Alias = data.ReadBytes(64);
-            section4.Alias = Encoding.ASCII.GetString(section4Alias);
+            byte[] section4Alias = data.ReadBytes(count: 64);
+            section4.Alias = Encoding.ASCII.GetString(section4Alias).TrimEnd('\0');
             byte[] section4Name = data.ReadBytes(64);
-            section4.Name = Encoding.ASCII.GetString(section4Name);
+            section4.Name = Encoding.ASCII.GetString(section4Name).TrimEnd('\0');
             section4.FolderStartIndex = data.ReadUInt16();
             section4.FolderEndIndex = data.ReadUInt16();
             section4.FileStartIndex = data.ReadUInt16();
@@ -566,10 +613,10 @@ namespace BurnOutSharp.Builders
         {
             Section5 section5 = new Section5();
 
-            byte[] section5Alias = data.ReadBytes(64);
-            section5.Alias = Encoding.ASCII.GetString(section5Alias);
+            byte[] section5Alias = data.ReadBytes(count: 64);
+            section5.Alias = Encoding.ASCII.GetString(section5Alias).TrimEnd('\0');
             byte[] section5Name = data.ReadBytes(64);
-            section5.Name = Encoding.ASCII.GetString(section5Name);
+            section5.Name = Encoding.ASCII.GetString(section5Name).TrimEnd('\0');
             section5.FolderStartIndex = data.ReadUInt32();
             section5.FolderEndIndex = data.ReadUInt32();
             section5.FileStartIndex = data.ReadUInt32();
@@ -590,10 +637,11 @@ namespace BurnOutSharp.Builders
             Folder4 folder4 = new Folder4();
 
             folder4.NameOffset = data.ReadUInt32();
-            folder4.FolderStartIndex =data.ReadUInt16();
-            folder4.FolderEndIndex =data.ReadUInt16();
-            folder4.FileStartIndex =data.ReadUInt16();
-            folder4.FileEndIndex =data.ReadUInt16();
+            folder4.Name = null; // Read from string table
+            folder4.FolderStartIndex = data.ReadUInt16();
+            folder4.FolderEndIndex = data.ReadUInt16();
+            folder4.FileStartIndex = data.ReadUInt16();
+            folder4.FileEndIndex = data.ReadUInt16();
 
             return folder4;
         }
@@ -609,6 +657,7 @@ namespace BurnOutSharp.Builders
             Folder5 folder5 = new Folder5();
 
             folder5.NameOffset = data.ReadUInt32();
+            folder5.Name = null; // Read from string table
             folder5.FolderStartIndex = data.ReadUInt32();
             folder5.FolderEndIndex = data.ReadUInt32();
             folder5.FileStartIndex = data.ReadUInt32();
@@ -617,7 +666,7 @@ namespace BurnOutSharp.Builders
             return folder5;
         }
 
-         /// <summary>
+        /// <summary>
         /// Parse a Stream into an SGA file version 4
         /// </summary>
         /// <param name="data">Stream to parse</param>
@@ -628,6 +677,7 @@ namespace BurnOutSharp.Builders
             File4 file4 = new File4();
 
             file4.NameOffset = data.ReadUInt32();
+            file4.Name = null; // Read from string table
             file4.Offset = data.ReadUInt32();
             file4.SizeOnDisk = data.ReadUInt32();
             file4.Size = data.ReadUInt32();
@@ -649,6 +699,7 @@ namespace BurnOutSharp.Builders
             File6 file6 = new File6();
 
             file6.NameOffset = data.ReadUInt32();
+            file6.Name = null; // Read from string table
             file6.Offset = data.ReadUInt32();
             file6.SizeOnDisk = data.ReadUInt32();
             file6.Size = data.ReadUInt32();
@@ -671,6 +722,7 @@ namespace BurnOutSharp.Builders
             File7 file7 = new File7();
 
             file7.NameOffset = data.ReadUInt32();
+            file7.Name = null; // Read from string table
             file7.Offset = data.ReadUInt32();
             file7.SizeOnDisk = data.ReadUInt32();
             file7.Size = data.ReadUInt32();

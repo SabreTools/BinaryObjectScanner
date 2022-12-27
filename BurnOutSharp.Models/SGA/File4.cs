@@ -5,6 +5,8 @@ namespace BurnOutSharp.Models.SGA
     {
         public uint NameOffset;
 
+        public string Name;
+
         public uint Offset;
 
         public uint SizeOnDisk;
