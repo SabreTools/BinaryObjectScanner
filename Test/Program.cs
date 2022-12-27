@@ -424,7 +424,7 @@ namespace Test
                     pak.Print();
                 }
 
-                // PAK
+                // SGA
                 else if (ft == SupportedFileType.SGA)
                 {
                     // Build the archive information

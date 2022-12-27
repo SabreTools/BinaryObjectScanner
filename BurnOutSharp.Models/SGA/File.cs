@@ -1,5 +1,8 @@
 namespace BurnOutSharp.Models.SGA
 {
+    /// <summary>
+    /// SGA game archive
+    /// </summary>
     /// <see href="https://github.com/RavuAlHemio/hllib/blob/master/HLLib/SGAFile.h"/>
     public class File
     {

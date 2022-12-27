@@ -166,7 +166,7 @@ Below is a list of container formats that are supported in some way:
 | PlayJ audio file (PLJ) | No | Yes | No | |
 | Portable Executable | Yes | Yes | No* | Some packed executables are supported |
 | RAR archive (RAR) | No | Yes | Yes | Via `SharpCompress` |
-| SGA? | No | No | No | Skeleton only |
+| SGA game archive | Yes | Yes | Yes | |
 | StarForce Filesystem file (SFFS) | No | Yes | No | Skeleton only |
 | Tape archive (TAR) | No | Yes | Yes | Via `SharpCompress` |
 | Valve Package File (VPK) | Yes | Yes | Yes | |

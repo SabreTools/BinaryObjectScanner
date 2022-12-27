@@ -473,6 +473,14 @@ namespace BurnOutSharp
                         AppendToDictionary(protections, subProtections);
                     }
 
+                    // SGA
+                    if (scannable is SGA)
+                    {
+                        var subProtections = scannable.Scan(this, stream, fileName);
+                        PrependToKeys(subProtections, fileName);
+                        AppendToDictionary(protections, subProtections);
+                    }
+
                     // Tape Archive
                     if (scannable is TapeArchive)
                     {
