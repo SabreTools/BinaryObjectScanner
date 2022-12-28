@@ -3,6 +3,7 @@ using System.IO;
 using System.Text;
 using BurnOutSharp.Models.MicrosoftCabinet;
 using BurnOutSharp.Utilities;
+using static BurnOutSharp.Models.MicrosoftCabinet.Constants;
 
 namespace BurnOutSharp.Builders
 {
@@ -125,8 +126,9 @@ namespace BurnOutSharp.Builders
         {
             CFHEADER header = new CFHEADER();
 
-            header.Signature = data.ReadUInt32();
-            if (header.Signature != 0x4643534D)
+            byte[] signature = data.ReadBytes(4);
+            header.Signature = Encoding.ASCII.GetString(signature);
+            if (header.Signature != SignatureString)
                 return null;
 
             header.Reserved1 = data.ReadUInt32();

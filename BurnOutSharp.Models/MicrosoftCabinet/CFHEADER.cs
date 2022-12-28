@@ -14,7 +14,7 @@ namespace BurnOutSharp.Models.MicrosoftCabinet
         /// Contains the characters "M", "S", "C", and "F" (bytes 0x4D, 0x53, 0x43,
         /// 0x46). This field is used to ensure that the file is a cabinet (.cab) file.
         /// </summary>
-        public uint Signature;
+        public string Signature;
 
         /// <summary>
         /// Reserved field; MUST be set to 0 (zero).

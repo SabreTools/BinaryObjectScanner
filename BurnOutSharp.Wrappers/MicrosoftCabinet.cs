@@ -12,7 +12,7 @@ namespace BurnOutSharp.Wrappers
         #region Header
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.Signature"/>
-        public uint Signature => _cabinet.Header.Signature;
+        public string Signature => _cabinet.Header.Signature;
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.Reserved1"/>
         public uint Reserved1 => _cabinet.Header.Reserved1;
