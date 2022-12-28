@@ -26,7 +26,7 @@ namespace BurnOutSharp.Models.NCF
         /// <summary>
         /// Flags for the directory item.  (0x00000000 == Folder).
         /// </summary>
-        public uint DirectoryFlags;
+        public HL_NCF_FLAG DirectoryFlags;
 
         /// <summary>
         /// Index of the parent directory item.  (0xFFFFFFFF == None).

@@ -8,35 +8,6 @@ namespace BurnOutSharp.Builders
 {
     public static class NCF
     {
-        #region Constants
-
-        /// <summary>
-        /// The item is a file.
-        /// </summary>
-        public const int HL_NCF_FLAG_FILE = 0x00004000;
-
-        /// <summary>
-        /// The item is encrypted.
-        /// </summary>
-        public const int HL_NCF_FLAG_ENCRYPTED = 0x00000100;
-
-        /// <summary>
-        /// Backup the item before overwriting it.
-        /// </summary>
-        public const int HL_NCF_FLAG_BACKUP_LOCAL = 0x00000040;
-
-        /// <summary>
-        /// The item is to be copied to the disk.
-        /// </summary>
-        public const int HL_NCF_FLAG_COPY_LOCAL = 0x0000000a;
-
-        /// <summary>
-        /// Don't overwrite the item if copying it to the disk and the item already exis
-        /// </summary>
-        public const int HL_NCF_FLAG_COPY_LOCAL_NO_OVERWRITE = 0x00000001;
-
-        #endregion
-
         #region Byte Data
 
         /// <summary>
@@ -390,7 +361,7 @@ namespace BurnOutSharp.Builders
             directoryEntry.NameOffset = data.ReadUInt32();
             directoryEntry.ItemSize = data.ReadUInt32();
             directoryEntry.ChecksumIndex = data.ReadUInt32();
-            directoryEntry.DirectoryFlags = data.ReadUInt32();
+            directoryEntry.DirectoryFlags = (HL_NCF_FLAG)data.ReadUInt32();
             directoryEntry.ParentIndex = data.ReadUInt32();
             directoryEntry.NextIndex = data.ReadUInt32();
             directoryEntry.FirstIndex = data.ReadUInt32();
