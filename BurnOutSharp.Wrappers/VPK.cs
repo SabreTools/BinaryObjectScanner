@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using BurnOutSharp.Utilities;
+using static BurnOutSharp.Models.VPK.Constants;
 
 namespace BurnOutSharp.Wrappers
 {
@@ -83,7 +84,7 @@ namespace BurnOutSharp.Wrappers
                 int archiveCount = DirectoryItems
                     .Select(di => di.DirectoryEntry)
                     .Select(de => de.ArchiveIndex)
-                    .Where(ai => ai != Builders.VPK.HL_VPK_NO_ARCHIVE)
+                    .Where(ai => ai != HL_VPK_NO_ARCHIVE)
                     .Max();
 
                 // Build the list of archive filenames to populate
@@ -342,7 +343,7 @@ namespace BurnOutSharp.Wrappers
 
             // If we have an item with no archive
             byte[] data;
-            if (directoryItem.DirectoryEntry.ArchiveIndex == Builders.VPK.HL_VPK_NO_ARCHIVE)
+            if (directoryItem.DirectoryEntry.ArchiveIndex == HL_VPK_NO_ARCHIVE)
             {
                 if (directoryItem.PreloadData == null)
                     return false;

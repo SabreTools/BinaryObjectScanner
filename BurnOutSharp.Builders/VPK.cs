@@ -3,30 +3,12 @@ using System.IO;
 using System.Text;
 using BurnOutSharp.Models.VPK;
 using BurnOutSharp.Utilities;
+using static BurnOutSharp.Models.VPK.Constants;
 
 namespace BurnOutSharp.Builders
 {
     public static class VPK
     {
-        #region Constants
-
-        /// <summary>
-        /// VPK header signature as an integer
-        /// </summary>
-        public const int HL_VPK_SIGNATURE = 0x55aa1234;
-
-        /// <summary>
-        /// Index indicating that there is no archive
-        /// </summary>
-        public const int HL_VPK_NO_ARCHIVE = 0x7fff;
-
-        /// <summary>
-        /// Length of a VPK checksum in bytes
-        /// </summary>
-        public const int HL_VPK_CHECKSUM_LENGTH = 0x00008000;
-
-        #endregion
-
         #region Byte Data
 
         /// <summary>
@@ -147,7 +129,7 @@ namespace BurnOutSharp.Builders
             Header header = new Header();
 
             header.Signature = data.ReadUInt32();
-            if (header.Signature != HL_VPK_SIGNATURE)
+            if (header.Signature != SignatureUInt32)
                 return null;
 
             header.Version = data.ReadUInt32();
