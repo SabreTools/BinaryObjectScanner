@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using BurnOutSharp.Models.PortableExecutable;
 using BurnOutSharp.Utilities;
+using static BurnOutSharp.Models.PortableExecutable.Constants;
 
 namespace BurnOutSharp.Builders
 {
@@ -73,12 +74,9 @@ namespace BurnOutSharp.Builders
             #region Signature
 
             data.Seek(initialOffset + stub.Header.NewExeHeaderAddr, SeekOrigin.Begin);
-            executable.Signature = new byte[4];
-            for (int i = 0; i < executable.Signature.Length; i++)
-            {
-                executable.Signature[i] = data.ReadByteValue();
-            }
-            if (executable.Signature[0] != 'P' || executable.Signature[1] != 'E' || executable.Signature[2] != '\0' || executable.Signature[3] != '\0')
+            byte[] signature = data.ReadBytes(4);
+            executable.Signature = Encoding.ASCII.GetString(signature);
+            if (executable.Signature != SignatureString)
                 return null;
 
             #endregion

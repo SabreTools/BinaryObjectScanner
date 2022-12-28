@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using BurnOutSharp;
+using BurnOutSharp.Matching;
 using BurnOutSharp.Utilities;
 using BurnOutSharp.Wrappers;
 
@@ -249,7 +250,7 @@ namespace Test
                     magic = stream.ReadBytes(4);
 
                     // New Executable
-                    if (IsNE(magic))
+                    if (magic.StartsWith(BurnOutSharp.Models.NewExecutable.Constants.SignatureBytes))
                     {
                         stream.Seek(0, SeekOrigin.Begin);
                         var newExecutable = NewExecutable.Create(stream);
@@ -265,7 +266,8 @@ namespace Test
                     }
 
                     // Linear Executable
-                    else if (IsLE(magic))
+                    if (magic.StartsWith(BurnOutSharp.Models.LinearExecutable.Constants.LESignatureBytes)
+                        || magic.StartsWith(BurnOutSharp.Models.LinearExecutable.Constants.LXSignatureBytes))
                     {
                         Console.WriteLine($"Linear executable found. No parsing currently available.");
                         Console.WriteLine();
@@ -273,7 +275,7 @@ namespace Test
                     }
 
                     // Portable Executable
-                    else if (IsPE(magic))
+                    if (magic.StartsWith(BurnOutSharp.Models.PortableExecutable.Constants.SignatureBytes))
                     {
                         stream.Seek(0, SeekOrigin.Begin);
                         var portableExecutable = PortableExecutable.Create(stream);
@@ -354,24 +356,18 @@ namespace Test
                     gcf.Print();
                 }
 
-                // // IS-CAB archive
-                // else if (ft == SupportedFileType.InstallShieldCAB)
-                // {
-                //     // Build the cabinet information
-                //     Console.WriteLine("Creating IS-CAB deserializer");
-                //     Console.WriteLine();
+                // IS-CAB archive
+                else if (ft == SupportedFileType.InstallShieldCAB)
+                {
+                    // Build the archive information
+                    Console.WriteLine("Creating IS-CAB deserializer");
+                    Console.WriteLine();
 
-                //     var cabinet = BurnOutSharp.Builders.InstallShieldCabinet.ParseCabinet(stream);
-                //     if (cabinet == null)
-                //     {
-                //         Console.WriteLine("Something went wrong parsing IS-CAB archive");
-                //         Console.WriteLine();
-                //         return;
-                //     }
-
-                //     // Print the cabinet info to screen
-                //     cabinet.Print();
-                // }
+                    // TODO: Write and use printing methods
+                    Console.WriteLine("IS-CAB archive printing not currently enabled");
+                    Console.WriteLine();
+                    return;
+                }
 
                 // MoPaQ (MPQ) archive
                 else if (ft == SupportedFileType.MPQ)
@@ -546,39 +542,6 @@ namespace Test
                     return;
                 }
             }
-        }
-
-        /// <summary>
-        /// Determine if the magic bytes indicate a New Executable
-        /// </summary>
-        private static bool IsNE(byte[] magic)
-        {
-            if (magic == null || magic.Length < 2)
-                return false;
-
-            return magic[0] == 'N' && magic[1] == 'E';
-        }
-
-        /// <summary>
-        /// Determine if the magic bytes indicate a Linear Executable
-        /// </summary>
-        private static bool IsLE(byte[] magic)
-        {
-            if (magic == null || magic.Length < 2)
-                return false;
-
-            return magic[0] == 'L' && (magic[1] == 'E' || magic[1] == 'X');
-        }
-
-        /// <summary>
-        /// Determine if the magic bytes indicate a Portable Executable
-        /// </summary>
-        private static bool IsPE(byte[] magic)
-        {
-            if (magic == null || magic.Length < 4)
-                return false;
-
-            return magic[0] == 'P' && magic[1] == 'E' && magic[2] == '\0' && magic[3] == '\0';
         }
 
         #endregion

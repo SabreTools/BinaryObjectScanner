@@ -19,7 +19,7 @@ namespace BurnOutSharp.Models.PortableExecutable
         /// signature that identifies the file as a PE format image file. This signature is "PE\0\0"
         /// (the letters "P" and "E" followed by two null bytes).
         /// </summary>
-        public byte[] Signature { get; set; }
+        public string Signature { get; set; }
 
         /// <summary>
         /// COFF file header

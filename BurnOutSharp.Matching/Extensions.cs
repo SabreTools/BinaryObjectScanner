@@ -64,9 +64,25 @@ namespace BurnOutSharp.Matching
         /// <summary>
         /// See if a byte array starts with another
         /// </summary>
+        public static bool StartsWith(this byte[] stack, byte[] needle)
+        {
+            return stack.FirstPosition(needle, out int _, start: 0, end: 1);
+        }
+
+        /// <summary>
+        /// See if a byte array starts with another
+        /// </summary>
         public static bool StartsWith(this byte[] stack, byte?[] needle)
         {
             return stack.FirstPosition(needle, out int _, start: 0, end: 1);
+        }
+
+        /// <summary>
+        /// See if a byte array ends with another
+        /// </summary>
+        public static bool EndsWith(this byte[] stack, byte[] needle)
+        {
+            return stack.FirstPosition(needle, out int _, start: stack.Length - needle.Length);
         }
 
         /// <summary>

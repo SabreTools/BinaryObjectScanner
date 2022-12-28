@@ -84,7 +84,7 @@ namespace BurnOutSharp.Wrappers
         #endregion
 
         /// <inheritdoc cref="Models.PortableExecutable.Executable.Signature"/>
-        public byte[] Signature => _executable.Signature;
+        public string Signature => _executable.Signature;
 
         #region COFF File Header
 
@@ -1098,7 +1098,7 @@ namespace BurnOutSharp.Wrappers
         {
             Console.WriteLine("  COFF File Header Information:");
             Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Signature: {BitConverter.ToString(Signature).Replace("-", string.Empty)}");
+            Console.WriteLine($"  Signature: {Signature}");
             Console.WriteLine($"  Machine: {Machine}");
             Console.WriteLine($"  Number of sections: {NumberOfSections}");
             Console.WriteLine($"  Time/Date stamp: {TimeDateStamp}");

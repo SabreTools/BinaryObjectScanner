@@ -9,6 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="..\BurnOutSharp\BurnOutSharp.csproj" />
     <ProjectReference Include="..\BurnOutSharp.Builders\BurnOutSharp.Builders.csproj" />
+    <ProjectReference Include="..\BurnOutSharp.Matching\BurnOutSharp.Matching.csproj" />
     <ProjectReference Include="..\BurnOutSharp.Models\BurnOutSharp.Models.csproj" />
     <ProjectReference Include="..\BurnOutSharp.Utilities\BurnOutSharp.Utilities.csproj" />
     <ProjectReference Include="..\BurnOutSharp.Wrappers\BurnOutSharp.Wrappers.csproj" />
