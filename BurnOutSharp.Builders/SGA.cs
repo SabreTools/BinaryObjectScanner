@@ -3,20 +3,12 @@ using System.IO;
 using System.Text;
 using BurnOutSharp.Models.SGA;
 using BurnOutSharp.Utilities;
+using static BurnOutSharp.Models.SGA.Constants;
 
 namespace BurnOutSharp.Builders
 {
     public static class SGA
     {
-        #region Constants
-
-        /// <summary>
-        /// Length of a SGA checksum in bytes
-        /// </summary>
-        public const int HL_SGA_CHECKSUM_LENGTH = 0x00008000;
-
-        #endregion
-
         #region Byte Data
 
         /// <summary>
@@ -101,7 +93,7 @@ namespace BurnOutSharp.Builders
             // TODO: Use marshalling here instead of building
             byte[] signatureBytes = data.ReadBytes(8);
             string signature = Encoding.ASCII.GetString(signatureBytes);
-            if (signature != "_ARCHIVE")
+            if (signature != SignatureString)
                 return null;
 
             ushort majorVersion = data.ReadUInt16();
