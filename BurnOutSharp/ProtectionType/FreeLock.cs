@@ -56,7 +56,7 @@ namespace BurnOutSharp.ProtectionType
                 }, "Freelock 1.3"),
             };
 
-            return MatchUtil.GetAllMatches(files, matchers, any: true);
+            return MatchUtil.GetAllMatches(files, matchers, any: false);
         }
 
         /// <inheritdoc/>
