@@ -72,36 +72,39 @@ namespace BurnOutSharp.PackerType
             if (payload == null || payload.Length == 0)
                 return null;
 
+            // Determine which compression was used
+            bool zlib = pex.FindResourceByNamedType("99, 1").Any();
+
             // Set the otuput data to write
             byte[] data = null;
 
-            // TODO: We need to research if there were any other types of compression that were used
-            // zlib is a good default option, but it does mention LZ in the function naming
-
-            // Try zlib first
-            try
-            {
-                // Inflate the data into the buffer
-                Inflater inflater = new Inflater();
-                inflater.SetInput(payload);
-                data = new byte[payload.Length * 4];
-                int read = inflater.Inflate(data);
-
-                // Trim the buffer to the proper size
-                data = new ReadOnlySpan<byte>(data, 0, read).ToArray();
-            }
-            catch
-            {
-                // Reset the data
-                data = null;
-            }
-
-            // Try lzw next
-            if (data == null)
+            // If we had the decompression DLL included, it's zlib
+            if (zlib)
             {
                 try
                 {
-                    // TODO: Implement LZW decompression
+                    // Inflate the data into the buffer
+                    Inflater inflater = new Inflater();
+                    inflater.SetInput(payload);
+                    data = new byte[payload.Length * 4];
+                    int read = inflater.Inflate(data);
+
+                    // Trim the buffer to the proper size
+                    data = new ReadOnlySpan<byte>(data, 0, read).ToArray();
+                }
+                catch
+                {
+                    // Reset the data
+                    data = null;
+                }
+            }
+
+            // Otherwise, LZ is used via the Windows API
+            else
+            {
+                try
+                {
+                    // TODO: Implement LZ decompression
                 }
                 catch
                 {
