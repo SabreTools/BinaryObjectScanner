@@ -18,7 +18,7 @@ namespace BurnOutSharp.Models.MoPaQ
         /// <summary>
         /// 'HET\x1A'
         /// </summary>
-        public uint Signature;
+        public string Signature;
 
         /// <summary>
         /// Version. Seems to be always 1

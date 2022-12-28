@@ -1,59 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using BurnOutSharp.Models.MoPaQ;
 using BurnOutSharp.Utilities;
+using static BurnOutSharp.Models.MoPaQ.Constants;
 
 namespace BurnOutSharp.Builders
 {
     public class MoPaQ
     {
-        #region Constants
-
-        #region Encryption
-
-        private const uint MPQ_HASH_KEY2_MIX = 0x400;
-
-        /// <summary>
-        /// Obtained by HashString("(block table)", MPQ_HASH_FILE_KEY)
-        /// </summary>
-        private const uint MPQ_KEY_BLOCK_TABLE = 0xEC83B3A3;
-
-        /// <summary>
-        /// Obtained by HashString("(hash table)", MPQ_HASH_FILE_KEY)
-        /// </summary>
-        private const uint MPQ_KEY_HASH_TABLE = 0xC3AF3770;
-
-        private const uint STORM_BUFFER_SIZE = 0x500;
-
-        #endregion
-
-        #region Patch Header
-
-        /// <summary>
-        /// Signature as an unsigned Int32 value
-        /// </summary>
-        public const uint PatchSignatureValue = 0x48435450;
-
-        /// <summary>
-        /// Signature as an unsigned Int32 value
-        /// </summary>
-        public const uint Md5SignatureValue = 0x5F35444D;
-
-        /// <summary>
-        /// Signature as an unsigned Int32 value
-        /// </summary>
-        public const uint XFRMSignatureValue = 0x4D524658;
-
-        /// <summary>
-        /// Signature as an unsigned Int64 value
-        /// </summary>
-        public const ulong BSDIFF40SignatureValue = 0x3034464649445342;
-
-        #endregion
-
-        #endregion
-
         #region Byte Data
 
         /// <summary>
@@ -418,8 +374,9 @@ namespace BurnOutSharp.Builders
             ArchiveHeader archiveHeader = new ArchiveHeader();
 
             // V1 - Common
-            archiveHeader.Signature = data.ReadUInt32();
-            if (archiveHeader.Signature != 0x1A51504D)
+            byte[] signature = data.ReadBytes(4);
+            archiveHeader.Signature = Encoding.ASCII.GetString(signature);
+            if (archiveHeader.Signature != ArchiveHeaderSignatureString)
                 return null;
 
             archiveHeader.HeaderSize = data.ReadUInt32();
@@ -477,8 +434,9 @@ namespace BurnOutSharp.Builders
         {
             UserData userData = new UserData();
 
-            userData.Signature = data.ReadUInt32();
-            if (userData.Signature != 0x1B51504D)
+            byte[] signature = data.ReadBytes(4);
+            userData.Signature = Encoding.ASCII.GetString(signature);
+            if (userData.Signature != UserDataSignatureString)
                 return null;
 
             userData.UserDataSize = data.ReadUInt32();
@@ -498,8 +456,9 @@ namespace BurnOutSharp.Builders
             HetTable hetTable = new HetTable();
 
             // Common Headers
-            hetTable.Signature = data.ReadUInt32();
-            if (hetTable.Signature != 0x1A544548)
+            byte[] signature = data.ReadBytes(4);
+            hetTable.Signature = Encoding.ASCII.GetString(signature);
+            if (hetTable.Signature != HetTableSignatureString)
                 return null;
 
             hetTable.Version = data.ReadUInt32();
@@ -531,8 +490,9 @@ namespace BurnOutSharp.Builders
             BetTable betTable = new BetTable();
 
             // Common Headers
-            betTable.Signature = data.ReadUInt32();
-            if (betTable.Signature != 0x1A544542)
+            byte[] signature = data.ReadBytes(4);
+            betTable.Signature = Encoding.ASCII.GetString(signature);
+            if (betTable.Signature != BetTableSignatureString)
                 return null;
 
             betTable.Version = data.ReadUInt32();

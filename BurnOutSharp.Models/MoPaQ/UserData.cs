@@ -15,7 +15,7 @@ namespace BurnOutSharp.Models.MoPaQ
         /// The user data signature
         /// </summary>
         /// <see cref="SignatureValue"/>
-        public uint Signature;
+        public string Signature;
 
         /// <summary>
         /// Maximum size of the user data

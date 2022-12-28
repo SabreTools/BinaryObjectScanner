@@ -14,7 +14,7 @@ namespace BurnOutSharp.Models.MoPaQ
         /// <summary>
         /// The MPQ archive signature
         /// </summary>
-        public uint Signature;
+        public string Signature;
 
         /// <summary>
         /// Size of the archive header
