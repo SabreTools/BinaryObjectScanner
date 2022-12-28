@@ -21,6 +21,7 @@ namespace BurnOutSharp.Tools
             if (magic == null || magic.Length == 0)
                 return SupportedFileType.UNKNOWN;
 
+            // TODO: For all modelled types, use the constants instead of hardcoded values here
             #region BFPK
 
             if (magic.StartsWith(new byte?[] { 0x42, 0x46, 0x50, 0x4b }))
