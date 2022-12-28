@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using ComponentAce.Compression.Libs.zlib;
+using ICSharpCode.SharpZipLib.Zip.Compression;
 
 namespace BurnOutSharp.Wrappers
 {
@@ -772,16 +772,9 @@ namespace BurnOutSharp.Wrappers
             {
                 // Decompress the data
                 data = new byte[outputFileSize];
-                ZStream zst = new ZStream
-                {
-                    next_in = compressedData,
-                    avail_in = compressedData.Length,
-                    next_out = data,
-                    avail_out = data.Length,
-                };
-                zst.inflateInit();
-                zst.inflate(zlibConst.Z_FULL_FLUSH);
-                zst.inflateEnd();
+                Inflater inflater = new Inflater();
+                inflater.SetInput(compressedData);
+                inflater.Inflate(data);
             }
 
             // If we have an invalid output directory

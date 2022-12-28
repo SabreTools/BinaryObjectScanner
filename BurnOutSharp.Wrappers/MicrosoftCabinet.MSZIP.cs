@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using BurnOutSharp.Utilities;
+using ICSharpCode.SharpZipLib.Zip.Compression;
 
 namespace BurnOutSharp.Wrappers
 {
@@ -489,6 +490,12 @@ namespace BurnOutSharp.Wrappers
         /// </summary>
         protected byte[] DecompressMSZIPData(byte[] data)
         {
+            // Inflater inflater = new Inflater(noHeader: true);
+            // inflater.SetInput(data);
+            // byte[] outputData = new byte[data.Length * 4];
+            // int read = inflater.Inflate(outputData);
+            // return outputData.AsSpan(0, read).ToArray();
+
             // Create the bitstream to read from
             var dataStream = new BitStream(data);
 
