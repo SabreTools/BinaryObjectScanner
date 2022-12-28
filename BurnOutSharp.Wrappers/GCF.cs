@@ -320,14 +320,14 @@ namespace BurnOutSharp.Wrappers
                     var directoryMapEntry = DirectoryMapEntries[i];
 
                     // If we have a directory, skip for now
-                    if ((directoryEntry.DirectoryFlags & Builders.GCF.HL_GCF_FLAG_FILE) == 0)
+                    if (!directoryEntry.DirectoryFlags.HasFlag(Models.GCF.HL_GCF_FLAG.HL_GCF_FLAG_FILE))
                         continue;
 
                     // Otherwise, start building the file info
                     var fileInfo = new FileInfo()
                     {
                         Size = directoryEntry.ItemSize,
-                        Encrypted = (directoryEntry.DirectoryFlags & Builders.GCF.HL_GCF_FLAG_ENCRYPTED) != 0,
+                        Encrypted = directoryEntry.DirectoryFlags.HasFlag(Models.GCF.HL_GCF_FLAG.HL_GCF_FLAG_ENCRYPTED),
                     };
                     var pathParts = new List<string> { directoryEntry.Name };
                     var blockEntries = new List<Models.GCF.BlockEntry>();
