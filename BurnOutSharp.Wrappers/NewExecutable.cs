@@ -15,7 +15,7 @@ namespace BurnOutSharp.Wrappers
         #region Standard Fields
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Magic"/>
-        public byte[] Stub_Magic => _executable.Stub.Header.Magic;
+        public string Stub_Magic => _executable.Stub.Header.Magic;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.LastPageBytes"/>
         public ushort Stub_LastPageBytes => _executable.Stub.Header.LastPageBytes;
@@ -305,7 +305,7 @@ namespace BurnOutSharp.Wrappers
         {
             Console.WriteLine("  MS-DOS Stub Header Information:");
             Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Magic number: {BitConverter.ToString(Stub_Magic).Replace("-", string.Empty)}");
+            Console.WriteLine($"  Magic number: {Stub_Magic}");
             Console.WriteLine($"  Last page bytes: {Stub_LastPageBytes}");
             Console.WriteLine($"  Pages: {Stub_Pages}");
             Console.WriteLine($"  Relocation items: {Stub_RelocationItems}");

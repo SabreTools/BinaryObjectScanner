@@ -10,7 +10,7 @@ namespace BurnOutSharp.Wrappers
         #region Header
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Magic"/>
-        public byte[] Magic => _executable.Header.Magic;
+        public string Magic => _executable.Header.Magic;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.LastPageBytes"/>
         public ushort LastPageBytes => _executable.Header.LastPageBytes;
@@ -164,7 +164,7 @@ namespace BurnOutSharp.Wrappers
         {
             Console.WriteLine("  Header Information:");
             Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Magic number: {BitConverter.ToString(Magic).Replace("-", string.Empty)}");
+            Console.WriteLine($"  Magic number: {Magic}");
             Console.WriteLine($"  Last page bytes: {LastPageBytes}");
             Console.WriteLine($"  Pages: {Pages}");
             Console.WriteLine($"  Relocation items: {RelocationItems}");

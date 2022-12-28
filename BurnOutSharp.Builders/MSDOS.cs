@@ -1,6 +1,8 @@
 ﻿using System.IO;
+using System.Text;
 using BurnOutSharp.Models.MSDOS;
 using BurnOutSharp.Utilities;
+using static BurnOutSharp.Models.MSDOS.Constants;
 
 namespace BurnOutSharp.Builders
 {
@@ -100,12 +102,9 @@ namespace BurnOutSharp.Builders
 
             #region Standard Fields
 
-            header.Magic = new byte[2];
-            for (int i = 0; i < header.Magic.Length; i++)
-            {
-                header.Magic[i] = data.ReadByteValue();
-            }
-            if (header.Magic[0] != 'M' || header.Magic[1] != 'Z')
+            byte[] magic = data.ReadBytes(2);
+            header.Magic = Encoding.ASCII.GetString(magic);
+            if (header.Magic != SignatureString)
                 return null;
 
             header.LastPageBytes = data.ReadUInt16();
