@@ -354,6 +354,25 @@ namespace Test
                     gcf.Print();
                 }
 
+                // // IS-CAB archive
+                // else if (ft == SupportedFileType.InstallShieldCAB)
+                // {
+                //     // Build the cabinet information
+                //     Console.WriteLine("Creating IS-CAB deserializer");
+                //     Console.WriteLine();
+
+                //     var cabinet = BurnOutSharp.Builders.InstallShieldCabinet.ParseCabinet(stream);
+                //     if (cabinet == null)
+                //     {
+                //         Console.WriteLine("Something went wrong parsing IS-CAB archive");
+                //         Console.WriteLine();
+                //         return;
+                //     }
+
+                //     // Print the cabinet info to screen
+                //     cabinet.Print();
+                // }
+
                 // MoPaQ (MPQ) archive
                 else if (ft == SupportedFileType.MPQ)
                 {
