@@ -12,7 +12,7 @@ namespace BurnOutSharp.Wrappers
         #region Header
 
         /// <inheritdoc cref="Models.BFPK.Header.Magic"/>
-        public uint Magic => _archive.Header.Magic;
+        public string Magic => _archive.Header.Magic;
 
         /// <inheritdoc cref="Models.BFPK.Header.Version"/>
         public int Version => _archive.Header.Version;

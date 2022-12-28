@@ -1,7 +1,9 @@
 ﻿using System.IO;
 using System.Linq;
+using System.Text;
 using BurnOutSharp.Models.BFPK;
 using BurnOutSharp.Utilities;
+using static BurnOutSharp.Models.BFPK.Constants;
 
 namespace BurnOutSharp.Builders
 {
@@ -10,7 +12,7 @@ namespace BurnOutSharp.Builders
         #region Byte Data
 
         /// <summary>
-        /// Parse a byte array into a MoPaQ archive
+        /// Parse a byte array into a BFPK archive
         /// </summary>
         /// <param name="data">Byte array to parse</param>
         /// <param name="offset">Offset into the byte array</param>
@@ -35,7 +37,7 @@ namespace BurnOutSharp.Builders
         #region Stream Data
 
         /// <summary>
-        /// Parse a Stream into a MoPaQ archive
+        /// Parse a Stream into a BFPK archive
         /// </summary>
         /// <param name="data">Stream to parse</param>
         /// <returns>Filled archive on success, null on error</returns>
@@ -103,8 +105,9 @@ namespace BurnOutSharp.Builders
             // TODO: Use marshalling here instead of building
             Header header = new Header();
 
-            header.Magic = data.ReadUInt32();
-            if (header.Magic != 0x4b504642)
+            byte[] magic = data.ReadBytes(4);
+            header.Magic = Encoding.ASCII.GetString(magic);
+            if (header.Magic != SignatureString)
                 return null;
 
             header.Version = data.ReadInt32();
@@ -125,7 +128,10 @@ namespace BurnOutSharp.Builders
 
             fileEntry.NameSize = data.ReadInt32();
             if (fileEntry.NameSize > 0)
-                fileEntry.Name = new string(data.ReadBytes(fileEntry.NameSize).Select(b => (char)b).ToArray());
+            {
+                byte[] name = data.ReadBytes(fileEntry.NameSize);
+                fileEntry.Name = Encoding.ASCII.GetString(name);
+            }
 
             fileEntry.UncompressedSize = data.ReadInt32();
             fileEntry.Offset = data.ReadInt32();

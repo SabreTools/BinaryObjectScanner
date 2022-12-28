@@ -12,7 +12,7 @@ namespace BurnOutSharp.Models.BFPK
         /// <summary>
         /// "BFPK"
         /// </summary>
-        public uint Magic;
+        public string Magic;
 
         /// <summary>
         /// Version
