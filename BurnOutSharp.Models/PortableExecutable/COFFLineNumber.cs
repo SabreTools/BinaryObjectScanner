@@ -17,7 +17,7 @@ namespace BurnOutSharp.Models.PortableExecutable
     /// </summary>
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/debug/pe-format"/>
     [StructLayout(LayoutKind.Explicit)]
-    public class COFFLineNumber
+    public sealed class COFFLineNumber
     {
         /// <summary>
         /// Used when Linenumber is zero: index to symbol table entry for a function.

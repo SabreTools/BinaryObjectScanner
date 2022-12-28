@@ -7,7 +7,7 @@ namespace BurnOutSharp.Models.PortableExecutable
     /// box in a message table resource.
     /// </summary>
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-message_resource_data"/>
-    public class MessageResourceData
+    public sealed class MessageResourceData
     {
         /// <summary>
         /// The number of MESSAGE_RESOURCE_BLOCK structures.

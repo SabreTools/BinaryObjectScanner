@@ -5,7 +5,7 @@
     /// structure that contains all other file-version information structures.
     /// </summary>
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/menurc/vs-versioninfo"/>
-    public class VersionInfo
+    public sealed class VersionInfo
     {
         /// <summary>
         /// The length, in bytes, of the VS_VERSIONINFO structure. This length does not

@@ -9,7 +9,7 @@ namespace BurnOutSharp.Models.MSDOS
     /// and PE executables, usually as stubs so that when they are ran under DOS, they display a warning.
     /// </summary>
     /// <see href="https://wiki.osdev.org/MZ"/>
-    public class Executable
+    public sealed class Executable
     {
         /// <summary>
         /// MS-DOS executable header

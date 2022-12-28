@@ -7,7 +7,7 @@ namespace BurnOutSharp.Models.MoPaQ
     /// </summary>
     /// <see href="http://zezula.net/en/mpq/mpqformat.html"/>
     [StructLayout(LayoutKind.Sequential)]
-    public class PatchInfo
+    public sealed class PatchInfo
     {
         /// <summary>
         /// Length of patch info header, in bytes

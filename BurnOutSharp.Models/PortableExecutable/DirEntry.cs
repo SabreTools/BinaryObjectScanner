@@ -5,7 +5,7 @@
     /// definition provided here is for explanation only; it is not present in any standard header file.
     /// </summary>
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/menurc/direntry"/>
-    public class DirEntry
+    public sealed class DirEntry
     {
         /// <summary>
         /// A unique ordinal identifier for an individual font in a font resource group.

@@ -5,7 +5,7 @@
     /// explanation only; it is not present in any standard header file.
     /// </summary>
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/menurc/menuex-template-item"/>
-    public class MenuItemExtended
+    public sealed class MenuItemExtended
     {
         /// <summary>
         /// Describes the menu item.

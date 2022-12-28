@@ -7,7 +7,7 @@ namespace BurnOutSharp.Models.PortableExecutable
     /// </summary>
     /// <see href="https://www.debuginfo.com/articles/debuginfomatch.html"/>
     [StructLayout(LayoutKind.Sequential)]
-    public class NB10ProgramDatabase
+    public sealed class NB10ProgramDatabase
     {
         /// <summary>
         /// "CodeView signature, equal to “NB10” 

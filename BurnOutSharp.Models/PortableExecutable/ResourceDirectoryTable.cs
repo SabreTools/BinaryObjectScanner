@@ -16,7 +16,7 @@ namespace BurnOutSharp.Models.PortableExecutable
     /// </summary>
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/debug/pe-format"/>
     [StructLayout(LayoutKind.Sequential)]
-    public class ResourceDirectoryTable
+    public sealed class ResourceDirectoryTable
     {
         /// <summary>
         /// Resource flags. This field is reserved for future use. It is currently

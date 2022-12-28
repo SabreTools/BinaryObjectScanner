@@ -11,7 +11,7 @@ namespace BurnOutSharp.Models.MoPaQ
     /// </summary>
     /// <see href="http://zezula.net/en/mpq/mpqformat.html"/>
     [StructLayout(LayoutKind.Sequential)]
-    public class HashEntry
+    public sealed class HashEntry
     {
         /// <summary>
         /// The hash of the full file name (part A)

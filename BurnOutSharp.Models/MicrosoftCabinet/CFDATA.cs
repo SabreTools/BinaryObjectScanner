@@ -10,7 +10,7 @@ namespace BurnOutSharp.Models.MicrosoftCabinet
     /// </summary>
     /// <see href="http://download.microsoft.com/download/5/0/1/501ED102-E53F-4CE0-AA6B-B0F93629DDC6/Exchange/%5BMS-CAB%5D.pdf"/>
     [StructLayout(LayoutKind.Sequential)]
-    public class CFDATA
+    public sealed class CFDATA
     {
         /// <summary>
         /// Checksum of this CFDATA structure, from the <see cref="CompressedSize"/> through the

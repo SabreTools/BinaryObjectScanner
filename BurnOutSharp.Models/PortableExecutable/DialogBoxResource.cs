@@ -7,7 +7,7 @@
     /// describe the format of extended dialog box resources.
     /// </summary>
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/menurc/resource-file-formats"/>
-    public class DialogBoxResource
+    public sealed class DialogBoxResource
     {
         #region Dialog template
 

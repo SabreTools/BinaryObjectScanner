@@ -13,7 +13,7 @@ namespace BurnOutSharp.Models.PortableExecutable
     /// </summary>
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/debug/pe-format"/>
     [StructLayout(LayoutKind.Sequential)]
-    public class ImportDirectoryTableEntry
+    public sealed class ImportDirectoryTableEntry
     {
         /// <summary>
         /// The RVA of the import lookup table. This table contains a name or ordinal

@@ -7,7 +7,7 @@ namespace BurnOutSharp.Models.BFPK
     /// </summary>
     /// <see cref="https://forum.xentax.com/viewtopic.php?t=5102"/>
     [StructLayout(LayoutKind.Sequential)]
-    public class Header
+    public sealed class Header
     {
         /// <summary>
         /// "BFPK"

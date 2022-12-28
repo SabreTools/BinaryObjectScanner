@@ -7,7 +7,7 @@ namespace BurnOutSharp.Models.PortableExecutable
     /// is the MS-DOS 2.0 Section, and is used for MS-DOS compatibility only.
     /// </summary>
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/debug/pe-format"/>
-    public class Executable
+    public sealed class Executable
     {
         /// <summary>
         /// MS-DOS executable stub

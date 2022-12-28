@@ -4,7 +4,7 @@
     /// File entry
     /// </summary>
     /// <see cref="https://forum.xentax.com/viewtopic.php?t=5102"/>
-    public class FileEntry
+    public sealed class FileEntry
     {
         /// <summary>
         /// Name size

@@ -9,7 +9,7 @@ namespace BurnOutSharp.Models.MoPaQ
     /// </summary>
     /// <see href="http://zezula.net/en/mpq/mpqformat.html"/>
     [StructLayout(LayoutKind.Sequential)]
-    public class BlockEntry
+    public sealed class BlockEntry
     {
         /// <summary>
         /// Offset of the beginning of the file data, relative to the beginning of the archive.

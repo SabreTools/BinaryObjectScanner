@@ -4,7 +4,7 @@
     /// BFPK custom archive format
     /// </summary>
     /// <see cref="https://forum.xentax.com/viewtopic.php?t=5102"/>
-    public class Archive
+    public sealed class Archive
     {
         /// <summary>
         /// Header

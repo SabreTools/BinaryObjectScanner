@@ -7,7 +7,7 @@ namespace BurnOutSharp.Models.MoPaQ
     /// </summary>
     /// <see href="http://zezula.net/en/mpq/mpqformat.html"/>
     [StructLayout(LayoutKind.Sequential)]
-    public class ArchiveHeader
+    public sealed class ArchiveHeader
     {
         #region V1 Properties
 

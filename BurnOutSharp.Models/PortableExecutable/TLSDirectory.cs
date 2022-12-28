@@ -1,7 +1,7 @@
 ﻿namespace BurnOutSharp.Models.PortableExecutable
 {
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/debug/pe-format"/>
-    public class TLSDirectory
+    public sealed class TLSDirectory
     {
         #region RawDataStartVA
 

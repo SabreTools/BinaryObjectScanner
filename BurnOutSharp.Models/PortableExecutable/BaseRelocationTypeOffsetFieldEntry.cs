@@ -4,7 +4,7 @@
     /// Type or Offset field entry is a WORD (2 bytes).
     /// </summary>
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/debug/pe-format"/>
-    public class BaseRelocationTypeOffsetFieldEntry
+    public sealed class BaseRelocationTypeOffsetFieldEntry
     {
         /// <summary>
         /// Stored in the high 4 bits of the WORD, a value that indicates the type

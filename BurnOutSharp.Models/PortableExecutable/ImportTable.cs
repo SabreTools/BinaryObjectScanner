@@ -17,7 +17,7 @@ namespace BurnOutSharp.Models.PortableExecutable
     ///     - Hint-Name Table
     /// </summary>
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/debug/pe-format"/>
-    public class ImportTable
+    public sealed class ImportTable
     {
         /// <summary>
         /// The import information begins with the import directory table, which describes the

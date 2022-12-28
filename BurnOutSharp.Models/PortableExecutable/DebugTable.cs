@@ -15,7 +15,7 @@
     /// is mapped in the address space.
     /// </summary>
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/debug/pe-format"/>
-    public class DebugTable
+    public sealed class DebugTable
     {
         /// <summary>
         /// Image files contain an optional debug directory that indicates what form

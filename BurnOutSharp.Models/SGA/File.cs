@@ -4,7 +4,7 @@ namespace BurnOutSharp.Models.SGA
     /// SGA game archive
     /// </summary>
     /// <see href="https://github.com/RavuAlHemio/hllib/blob/master/HLLib/SGAFile.h"/>
-    public class File
+    public sealed class File
     {
         /// <summary>
         ///Header data

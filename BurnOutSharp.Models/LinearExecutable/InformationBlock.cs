@@ -13,7 +13,7 @@ namespace BurnOutSharp.Models.LinearExecutable
     /// <see href="https://faydoc.tripod.com/formats/exe-LE.htm"/>
     /// <see href="http://www.edm2.com/index.php/LX_-_Linear_eXecutable_Module_Format_Description"/>
     [StructLayout(LayoutKind.Sequential)]
-    public class InformationBlock
+    public sealed class InformationBlock
     {
         /// <summary>
         /// Specifies the signature word

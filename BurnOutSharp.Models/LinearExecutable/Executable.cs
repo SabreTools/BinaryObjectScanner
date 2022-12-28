@@ -8,7 +8,7 @@ namespace BurnOutSharp.Models.LinearExecutable
     /// </summary>
     /// <see href="https://faydoc.tripod.com/formats/exe-LE.htm"/>
     /// <see href="http://www.edm2.com/index.php/LX_-_Linear_eXecutable_Module_Format_Description"/>
-    public class Executable
+    public sealed class Executable
     {
         /// <summary>
         /// MS-DOS executable stub

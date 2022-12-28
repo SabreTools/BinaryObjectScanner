@@ -12,7 +12,7 @@ namespace BurnOutSharp.Models.PortableExecutable
     /// </summary>
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/debug/pe-format"/>
     [StructLayout(LayoutKind.Sequential)]
-    public class DataDirectory
+    public sealed class DataDirectory
     {
         /// <summary>
         /// The first field, VirtualAddress, is actually the RVA of the table. The RVA

@@ -19,7 +19,7 @@
     /// describes the format of the entry table bundles.
     /// </remarks>
     /// <see href="http://bytepointer.com/resources/win16_ne_exe_format_win3.0.htm"/>
-    public class EntryTableBundle
+    public sealed class EntryTableBundle
     {
         /// <summary>
         /// Number of entries in this bundle. All records in one bundle

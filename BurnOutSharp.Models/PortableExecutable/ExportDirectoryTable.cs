@@ -10,7 +10,7 @@ namespace BurnOutSharp.Models.PortableExecutable
     /// </summary>
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/debug/pe-format"/>
     [StructLayout(LayoutKind.Sequential)]
-    public class ExportDirectoryTable
+    public sealed class ExportDirectoryTable
     {
         /// <summary>
         /// Reserved, must be 0.

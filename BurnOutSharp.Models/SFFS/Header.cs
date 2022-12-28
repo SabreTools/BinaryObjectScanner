@@ -5,9 +5,9 @@ namespace BurnOutSharp.Models.SFFS
     /// <summary>
     /// Header
     /// </summary>
-    /// <see cref="https://forum.xentax.com/viewtopic.php?f=21&t=2084"/>
+    /// <see href="https://forum.xentax.com/viewtopic.php?f=21&t=2084"/>
     [StructLayout(LayoutKind.Sequential)]
-    public class Header
+    public sealed class Header
     {
         /// <summary>
         /// "SFFS"

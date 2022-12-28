@@ -28,7 +28,7 @@
     /// PE32+ format.
     /// </summary>
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/debug/pe-format"/>
-    public class OptionalHeader
+    public sealed class OptionalHeader
     {
         #region Standard Fields (Image Only)
 

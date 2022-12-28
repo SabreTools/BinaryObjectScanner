@@ -9,7 +9,7 @@
     /// called "virtual addresses." The loader typically processes the binding.
     /// </summary>
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/debug/pe-format"/>
-    public class ImportAddressTableEntry
+    public sealed class ImportAddressTableEntry
     {
         /// <summary>
         /// If this bit is set, import by ordinal. Otherwise, import by name. Bit is

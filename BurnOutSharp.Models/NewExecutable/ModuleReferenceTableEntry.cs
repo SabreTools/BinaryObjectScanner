@@ -9,7 +9,7 @@ namespace BurnOutSharp.Models.NewExecutable
     /// </summary>
     /// <see href="http://bytepointer.com/resources/win16_ne_exe_format_win3.0.htm"/>
     [StructLayout(LayoutKind.Sequential)]
-    public class ModuleReferenceTableEntry
+    public sealed class ModuleReferenceTableEntry
     {
         /// <summary>
         /// Offset within Imported Names Table to referenced module name string.

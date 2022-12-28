@@ -9,7 +9,7 @@ namespace BurnOutSharp.Models.MoPaQ
     /// </summary>
     /// <see href="http://zezula.net/en/mpq/mpqformat.html"/>
     [StructLayout(LayoutKind.Sequential)]
-    public class UserData
+    public sealed class UserData
     {
         /// <summary>
         /// The user data signature

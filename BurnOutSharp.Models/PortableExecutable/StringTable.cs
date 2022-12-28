@@ -6,7 +6,7 @@
     /// A code page is an ordered character set.
     /// </summary>
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/menurc/stringtable"/>
-    public class StringTable
+    public sealed class StringTable
     {
         /// <summary>
         /// The length, in bytes, of this StringTable structure, including all structures

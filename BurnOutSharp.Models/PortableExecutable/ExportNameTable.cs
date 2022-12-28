@@ -17,7 +17,7 @@
     /// of variable length.
     /// </summary>
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/debug/pe-format"/>
-    public class ExportNameTable
+    public sealed class ExportNameTable
     {
         /// <summary>
         /// A series of null-terminated ASCII strings of variable length.

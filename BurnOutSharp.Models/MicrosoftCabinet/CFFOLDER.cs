@@ -24,7 +24,7 @@ namespace BurnOutSharp.Models.MicrosoftCabinet
     /// </summary>
     /// <see href="http://download.microsoft.com/download/5/0/1/501ED102-E53F-4CE0-AA6B-B0F93629DDC6/Exchange/%5BMS-CAB%5D.pdf"/>
     [StructLayout(LayoutKind.Sequential)]
-    public class CFFOLDER
+    public sealed class CFFOLDER
     {
         /// <summary>
         /// Specifies the absolute file offset of the first CFDATA field block for the folder.

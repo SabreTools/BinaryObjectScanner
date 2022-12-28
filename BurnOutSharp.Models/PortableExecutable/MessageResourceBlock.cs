@@ -5,7 +5,7 @@
     /// by the LowId and HighId members.
     /// </summary>
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-message_resource_block"/>
-    public class MessageResourceBlock
+    public sealed class MessageResourceBlock
     {
         /// <summary>
         /// The lowest message identifier contained within this structure.

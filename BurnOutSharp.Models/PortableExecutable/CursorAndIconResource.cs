@@ -28,7 +28,7 @@
     /// randomly access the information.
     /// </summary>
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/menurc/resource-file-formats"/>
-    public class CursorAndIconResource
+    public sealed class CursorAndIconResource
     {
         /// <summary>
         /// Describes keyboard accelerator characteristics.

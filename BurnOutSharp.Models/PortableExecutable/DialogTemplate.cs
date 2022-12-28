@@ -10,7 +10,7 @@ namespace BurnOutSharp.Models.PortableExecutable
     /// </summary>
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-dlgtemplate"/>
     [StructLayout(LayoutKind.Sequential)]
-    public class DialogTemplate
+    public sealed class DialogTemplate
     {
         /// <summary>
         /// The style of the dialog box. This member can be a combination of window style

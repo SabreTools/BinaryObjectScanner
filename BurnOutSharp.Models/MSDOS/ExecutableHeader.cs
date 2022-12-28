@@ -9,7 +9,7 @@ namespace BurnOutSharp.Models.MSDOS
     /// <see href="https://wiki.osdev.org/MZ"/>
     /// <see href="http://www.pinvoke.net/default.aspx/Structures.IMAGE_DOS_HEADER"/>
     [StructLayout(LayoutKind.Sequential)]
-    public class ExecutableHeader
+    public sealed class ExecutableHeader
     {
         #region Standard Fields
 

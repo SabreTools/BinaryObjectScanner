@@ -9,7 +9,7 @@
     /// of Windows, the size must be 64 for x86 images.
     /// </summary>
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/debug/pe-format"/>
-    public class LoadConfigurationDirectory
+    public sealed class LoadConfigurationDirectory
     {
         /// <summary>
         /// Flags that indicate attributes of the file, currently unused.

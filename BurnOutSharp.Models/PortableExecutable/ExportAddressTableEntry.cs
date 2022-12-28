@@ -16,7 +16,7 @@ namespace BurnOutSharp.Models.PortableExecutable
     /// </summary>
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/debug/pe-format"/>
     [StructLayout(LayoutKind.Explicit)]
-    public class ExportAddressTableEntry
+    public sealed class ExportAddressTableEntry
     {
         /// <summary>
         /// The address of the exported symbol when loaded into memory, relative to

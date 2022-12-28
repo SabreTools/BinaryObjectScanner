@@ -8,7 +8,7 @@ namespace BurnOutSharp.Models.PortableExecutable
     /// </summary>
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/menurc/menuheader"/>
     [StructLayout(LayoutKind.Sequential)]
-    public class MenuHeader
+    public sealed class MenuHeader
     {
         /// <summary>
         /// The version number of the menu template. This member must be equal to zero to indicate

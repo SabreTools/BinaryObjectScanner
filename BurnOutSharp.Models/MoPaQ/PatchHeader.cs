@@ -8,7 +8,7 @@ namespace BurnOutSharp.Models.MoPaQ
     /// </summary>
     /// <see href="http://zezula.net/en/mpq/mpqformat.html"/>
     [StructLayout(LayoutKind.Sequential)]
-    public class PatchHeader
+    public sealed class PatchHeader
     {
         #region PATCH Header
 

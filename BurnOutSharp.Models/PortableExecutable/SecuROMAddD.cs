@@ -11,7 +11,7 @@ namespace BurnOutSharp.Models.PortableExecutable
     /// is protected by SecuROM.
     /// </remarks>
     [StructLayout(LayoutKind.Sequential)]
-    public class SecuROMAddD
+    public sealed class SecuROMAddD
     {
         /// <summary>
         /// "AddD", Identifier?

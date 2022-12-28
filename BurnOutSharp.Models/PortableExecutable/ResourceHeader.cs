@@ -7,7 +7,7 @@
     /// explanation only; it is not present in any standard header file.
     /// </summary>
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/menurc/resourceheader"/>
-    public class ResourceHeader
+    public sealed class ResourceHeader
     {
         /// <summary>
         /// The size, in bytes, of the data that follows the resource header for this

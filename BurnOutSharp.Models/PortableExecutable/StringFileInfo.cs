@@ -5,7 +5,7 @@
     /// information that can be displayed for a particular language and code page.
     /// </summary>
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/menurc/stringfileinfo"/>
-    public class StringFileInfo
+    public sealed class StringFileInfo
     {
         /// <summary>
         /// The length, in bytes, of the entire StringFileInfo block, including all

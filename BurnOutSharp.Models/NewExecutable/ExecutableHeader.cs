@@ -9,7 +9,7 @@ namespace BurnOutSharp.Models.NewExecutable
     /// <see href="http://bytepointer.com/resources/win16_ne_exe_format_win3.0.htm"/>
     /// <see href="https://github.com/libyal/libexe/blob/main/documentation/Executable%20(EXE)%20file%20format.asciidoc#24-ne-extended-header"/>
     [StructLayout(LayoutKind.Sequential)]
-    public class ExecutableHeader
+    public sealed class ExecutableHeader
     {
         /// <summary>
         /// Signature word.

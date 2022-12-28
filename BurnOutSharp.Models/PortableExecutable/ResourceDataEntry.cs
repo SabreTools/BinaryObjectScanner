@@ -11,7 +11,7 @@ namespace BurnOutSharp.Models.PortableExecutable
     /// </summary>
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/debug/pe-format"/>
     [StructLayout(LayoutKind.Sequential)]
-    public class ResourceDataEntry
+    public sealed class ResourceDataEntry
     {
         /// <summary>
         /// The address of a unit of resource data in the Resource Data area.

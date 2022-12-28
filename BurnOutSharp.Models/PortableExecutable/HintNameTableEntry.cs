@@ -4,7 +4,7 @@
     /// One hint/name table suffices for the entire import section.
     /// </summary>
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/debug/pe-format"/>
-    public class HintNameTableEntry
+    public sealed class HintNameTableEntry
     {
         /// <summary>
         /// An index into the export name pointer table. A match is attempted first

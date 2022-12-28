@@ -7,7 +7,7 @@
     /// Mike O'Brien (Mike O'brien PaCK).
     /// </summary>
     /// <see href="http://zezula.net/en/mpq/mpqformat.html"/>
-    public class Archive
+    public sealed class Archive
     {
         // TODO: Data before archive, ignored
 

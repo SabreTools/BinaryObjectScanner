@@ -13,7 +13,7 @@
     /// exist to support use of export names.
     /// </summary>
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/debug/pe-format"/>
-    public class ExportTable
+    public sealed class ExportTable
     {
         /// <summary>
         /// A table with just one row (unlike the debug directory). This table indicates the

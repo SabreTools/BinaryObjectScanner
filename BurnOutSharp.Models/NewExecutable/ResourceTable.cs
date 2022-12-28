@@ -15,7 +15,7 @@ namespace BurnOutSharp.Models.NewExecutable
     /// </summary>
     /// <see href="http://bytepointer.com/resources/win16_ne_exe_format_win3.0.htm"/>
     [StructLayout(LayoutKind.Sequential)]
-    public class ResourceTable
+    public sealed class ResourceTable
     {
         /// <summary>
         /// Alignment shift count for resource data.

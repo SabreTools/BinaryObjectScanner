@@ -8,7 +8,7 @@ namespace BurnOutSharp.Models.PortableExecutable
     /// </summary>
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/dlgbox/dlgitemtemplateex"/>
     [StructLayout(LayoutKind.Sequential)]
-    public class DialogItemTemplateExtended
+    public sealed class DialogItemTemplateExtended
     {
         /// <summary>
         /// The help context identifier for the control. When the system sends a WM_HELP message,

@@ -18,7 +18,7 @@ namespace BurnOutSharp.Models.PortableExecutable
     /// defines a symbol or name.
     /// </summary>
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/debug/pe-format"/>
-    public class COFFSymbolTableEntry
+    public sealed class COFFSymbolTableEntry
     {
         #region Standard COFF Symbol Table Entry
 

@@ -4,7 +4,7 @@ namespace BurnOutSharp.Models.XZP
     /// XBox Package File
     /// </summary>
     /// <see href="https://github.com/RavuAlHemio/hllib/blob/master/HLLib/XZPFile.h"/>
-    public class File
+    public sealed class File
     {
         /// <summary>
         /// Header data

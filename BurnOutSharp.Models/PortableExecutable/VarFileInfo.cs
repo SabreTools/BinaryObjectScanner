@@ -5,7 +5,7 @@
     /// information not dependent on a particular language and code page combination.
     /// </summary>
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/menurc/varfileinfo"/>
-    public class VarFileInfo
+    public sealed class VarFileInfo
     {
         /// <summary>
         /// The length, in bytes, of the entire VarFileInfo block, including all structures

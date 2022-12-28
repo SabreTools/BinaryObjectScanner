@@ -4,7 +4,7 @@ namespace BurnOutSharp.Models.NewExecutable
 {
     /// <see href="http://bytepointer.com/resources/win16_ne_exe_format_win3.0.htm"/>
     [StructLayout(LayoutKind.Sequential)]
-    public class InternalRefRelocationRecord
+    public sealed class InternalRefRelocationRecord
     {
         /// <summary>
         /// Segment number for a fixed segment, or 0FFh for a

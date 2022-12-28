@@ -8,7 +8,7 @@ namespace BurnOutSharp.Models.NewExecutable
     /// </summary>
     /// <see href="http://bytepointer.com/resources/win16_ne_exe_format_win3.0.htm"/>
     [StructLayout(LayoutKind.Sequential)]
-    public class ResourceTypeResourceEntry
+    public sealed class ResourceTypeResourceEntry
     {
         /// <summary>
         /// File offset to the contents of the resource data,

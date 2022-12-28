@@ -18,7 +18,7 @@
     /// relocations do not have to be applied.
     /// </summary>
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/debug/pe-format"/>
-    public class BaseRelocationBlock
+    public sealed class BaseRelocationBlock
     {
         /// <summary>
         /// The image base plus the page RVA is added to each offset to create

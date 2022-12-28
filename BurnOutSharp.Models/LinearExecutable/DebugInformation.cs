@@ -14,7 +14,7 @@ namespace BurnOutSharp.Models.LinearExecutable
     /// <see href="https://faydoc.tripod.com/formats/exe-LE.htm"/>
     /// <see href="http://www.edm2.com/index.php/LX_-_Linear_eXecutable_Module_Format_Description"/>
     [StructLayout(LayoutKind.Sequential)]
-    public class DebugInformation
+    public sealed class DebugInformation
     {
         /// <summary>
         /// The signature consists of a string of three (3) ASCII characters: "NB0"

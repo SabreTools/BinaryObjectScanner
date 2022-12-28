@@ -14,7 +14,7 @@ namespace BurnOutSharp.Models.PortableExecutable
     /// </summary>
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/dlgbox/dlgtemplateex"/>
     [StructLayout(LayoutKind.Sequential)]
-    public class DialogTemplateExtended
+    public sealed class DialogTemplateExtended
     {
         /// <summary>
         /// The version number of the extended dialog box template. This member must be

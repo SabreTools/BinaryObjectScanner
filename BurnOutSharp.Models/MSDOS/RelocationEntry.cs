@@ -7,7 +7,7 @@ namespace BurnOutSharp.Models.MSDOS
     /// </summary>
     /// <see href="https://wiki.osdev.org/MZ"/>
     [StructLayout(LayoutKind.Sequential)]
-    public class RelocationEntry
+    public sealed class RelocationEntry
     {
         /// <summary>
         /// Offset of the relocation within provided segment.

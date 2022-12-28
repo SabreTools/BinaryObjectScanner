@@ -9,7 +9,7 @@ namespace BurnOutSharp.Models.MoPaQ
     /// </summary>
     /// <see href="http://zezula.net/en/mpq/mpqformat.html"/>
     [StructLayout(LayoutKind.Sequential)]
-    public class BetTable
+    public sealed class BetTable
     {
         // TODO: Extract this out and make in common between HET and BET
         #region Common Table Headers

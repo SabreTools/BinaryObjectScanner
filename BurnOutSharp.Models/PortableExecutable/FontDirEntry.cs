@@ -5,7 +5,7 @@
     /// provided here is for explanation only; it is not present in any standard header file.
     /// </summary>
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/menurc/fontdirentry"/>
-    public class FontDirEntry
+    public sealed class FontDirEntry
     {
         /// <summary>
         /// A user-defined version number for the resource data that tools can use to read and write

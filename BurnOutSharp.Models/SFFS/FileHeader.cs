@@ -2,9 +2,9 @@
 
 namespace BurnOutSharp.Models.SFFS
 {
-    /// <see cref="https://forum.xentax.com/viewtopic.php?f=21&t=2084"/>
+    /// <see href="https://forum.xentax.com/viewtopic.php?f=21&t=2084"/>
     [StructLayout(LayoutKind.Sequential)]
-    public class FileHeader
+    public sealed class FileHeader
     {
         /// <summary>
         /// Start of file content (encrypted with filename)

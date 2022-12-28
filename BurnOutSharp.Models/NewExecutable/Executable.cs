@@ -11,7 +11,7 @@ namespace BurnOutSharp.Models.NewExecutable
     /// modules in the system and to support dynamic linking.
     /// </summary>
     /// <see href="http://bytepointer.com/resources/win16_ne_exe_format_win3.0.htm"/>
-    public class Executable
+    public sealed class Executable
     {
         /// <summary>
         /// MS-DOS executable stub

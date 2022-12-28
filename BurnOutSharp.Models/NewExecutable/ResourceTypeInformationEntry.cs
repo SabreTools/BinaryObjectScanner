@@ -8,7 +8,7 @@ namespace BurnOutSharp.Models.NewExecutable
     /// </summary>
     /// <see href="http://bytepointer.com/resources/win16_ne_exe_format_win3.0.htm"/>
     [StructLayout(LayoutKind.Sequential)]
-    public class ResourceTypeInformationEntry
+    public sealed class ResourceTypeInformationEntry
     {
         /// <summary>
         /// Type ID. This is an integer type if the high-order bit is

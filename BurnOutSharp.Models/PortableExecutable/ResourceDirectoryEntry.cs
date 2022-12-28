@@ -17,7 +17,7 @@
     /// IMAGE_DIRECTORY_ENTRY_RESOURCE DataDirectory.
     /// </summary>
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/debug/pe-format"/>
-    public class ResourceDirectoryEntry
+    public sealed class ResourceDirectoryEntry
     {
         #region Offset 0x00
 

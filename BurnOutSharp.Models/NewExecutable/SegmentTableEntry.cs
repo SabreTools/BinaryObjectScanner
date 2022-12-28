@@ -10,7 +10,7 @@ namespace BurnOutSharp.Models.NewExecutable
     /// </summary>
     /// <see href="http://bytepointer.com/resources/win16_ne_exe_format_win3.0.htm"/>
     [StructLayout(LayoutKind.Sequential)]
-    public class SegmentTableEntry
+    public sealed class SegmentTableEntry
     {
         /// <summary>
         /// Logical-sector offset (n byte) to the contents of the segment

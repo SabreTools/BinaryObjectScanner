@@ -8,7 +8,7 @@
     /// is defined as follows:
     /// </summary>
     /// <see href="http://bytepointer.com/resources/win16_ne_exe_format_win3.0.htm"/>
-    public class PerSegmentData
+    public sealed class PerSegmentData
     {
         /// <summary>
         /// Number of relocation records that follow.

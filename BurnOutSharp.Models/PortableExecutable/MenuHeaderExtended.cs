@@ -8,7 +8,7 @@ namespace BurnOutSharp.Models.PortableExecutable
     /// </summary>
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/menurc/menuex-template-header"/>
     [StructLayout(LayoutKind.Sequential)]
-    public class MenuHeaderExtended
+    public sealed class MenuHeaderExtended
     {
         /// <summary>
         /// The template version number. This member must be 1 for extended menu templates.

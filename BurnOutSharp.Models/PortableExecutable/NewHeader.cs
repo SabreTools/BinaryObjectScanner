@@ -9,7 +9,7 @@ namespace BurnOutSharp.Models.PortableExecutable
     /// </summary>
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/menurc/newheader"/>
     [StructLayout(LayoutKind.Sequential)]
-    public class NewHeader
+    public sealed class NewHeader
     {
         /// <summary>
         /// Reserved; must be zero.

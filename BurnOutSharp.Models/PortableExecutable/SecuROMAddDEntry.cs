@@ -11,7 +11,7 @@ namespace BurnOutSharp.Models.PortableExecutable
     /// is protected by SecuROM.
     /// </remarks>
     [StructLayout(LayoutKind.Sequential)]
-    public class SecuROMAddDEntry
+    public sealed class SecuROMAddDEntry
     {
         /// <summary>
         /// Physical offset of the embedded file

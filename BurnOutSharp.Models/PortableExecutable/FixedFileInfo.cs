@@ -8,7 +8,7 @@ namespace BurnOutSharp.Models.PortableExecutable
     /// </summary>
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/api/verrsrc/ns-verrsrc-vs_fixedfileinfo"/>
     [StructLayout(LayoutKind.Sequential)]
-    public class FixedFileInfo
+    public sealed class FixedFileInfo
     {
         /// <summary>
         /// Contains the value 0xFEEF04BD. This is used with the szKey member of the VS_VERSIONINFO

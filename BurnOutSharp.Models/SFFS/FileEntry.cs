@@ -2,9 +2,9 @@
 
 namespace BurnOutSharp.Models.SFFS
 {
-    /// <see cref="https://forum.xentax.com/viewtopic.php?f=21&t=2084"/>
+    /// <see href="https://forum.xentax.com/viewtopic.php?f=21&t=2084"/>
     [StructLayout(LayoutKind.Sequential)]
-    public class FileEntry
+    public sealed class FileEntry
     {
         /// <summary>
         /// MD5 hash of filename (not encrypted,)

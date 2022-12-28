@@ -6,7 +6,7 @@
     /// copyright notices, or its trademarks.
     /// </summary>
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/menurc/string-str"/>
-    public class StringData
+    public sealed class StringData
     {
         /// <summary>
         /// The length, in bytes, of this String structure.

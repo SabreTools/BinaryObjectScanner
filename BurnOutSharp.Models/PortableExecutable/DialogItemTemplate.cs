@@ -9,7 +9,7 @@ namespace BurnOutSharp.Models.PortableExecutable
     /// </summary>
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-dlgitemtemplate"/>
     [StructLayout(LayoutKind.Sequential)]
-    public class DialogItemTemplate
+    public sealed class DialogItemTemplate
     {
         /// <summary>
         /// The style of the control. This member can be a combination of window style values

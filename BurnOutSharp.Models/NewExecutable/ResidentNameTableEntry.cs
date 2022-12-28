@@ -11,7 +11,7 @@ namespace BurnOutSharp.Models.NewExecutable
     /// </summary>
     /// <see href="http://bytepointer.com/resources/win16_ne_exe_format_win3.0.htm"/>
     [StructLayout(LayoutKind.Sequential)]
-    public class ResidentNameTableEntry
+    public sealed class ResidentNameTableEntry
     {
         /// <summary>
         /// Length of the name string that follows. A zero value indicates

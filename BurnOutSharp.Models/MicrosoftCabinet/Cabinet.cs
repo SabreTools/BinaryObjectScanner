@@ -7,7 +7,7 @@
     /// document does not specify these internal compression formats.
     /// </summary>
     /// <see href="http://download.microsoft.com/download/5/0/1/501ED102-E53F-4CE0-AA6B-B0F93629DDC6/Exchange/%5BMS-CAB%5D.pdf"/>
-    public class Cabinet
+    public sealed class Cabinet
     {
         /// <summary>
         /// Cabinet header

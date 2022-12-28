@@ -11,7 +11,7 @@
     /// </summary>
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/menurc/normalmenuitem"/>
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/menurc/popupmenuitem"/>
-    public class MenuItem
+    public sealed class MenuItem
     {
         #region NORMALMENUITEM
 

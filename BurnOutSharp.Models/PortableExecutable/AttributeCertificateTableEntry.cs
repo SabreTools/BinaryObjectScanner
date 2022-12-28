@@ -37,7 +37,7 @@
     /// the remainder of this section.
     /// </summary>
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/debug/pe-format"/>
-    public class AttributeCertificateTableEntry
+    public sealed class AttributeCertificateTableEntry
     {
         /// <summary>
         /// Specifies the length of the attribute certificate entry.

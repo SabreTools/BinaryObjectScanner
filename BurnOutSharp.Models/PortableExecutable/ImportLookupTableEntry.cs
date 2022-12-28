@@ -9,7 +9,7 @@
     /// (NULL) to indicate the end of the table.
     /// </summary>
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/debug/pe-format"/>
-    public class ImportLookupTableEntry
+    public sealed class ImportLookupTableEntry
     {
         /// <summary>
         /// If this bit is set, import by ordinal. Otherwise, import by name. Bit is

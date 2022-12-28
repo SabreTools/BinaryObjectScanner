@@ -32,7 +32,7 @@
     ///     name = ExportNameTable[i];
     /// </summary>
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/debug/pe-format"/>
-    public class ExportOrdinalTable
+    public sealed class ExportOrdinalTable
     {
         /// <summary>
         /// An array of 16-bit unbiased indexes into the export address table

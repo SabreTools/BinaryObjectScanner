@@ -21,7 +21,7 @@ namespace BurnOutSharp.Models.PortableExecutable
     /// </summary>
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/debug/pe-format"/>
     [StructLayout(LayoutKind.Sequential)]
-    public class SectionHeader
+    public sealed class SectionHeader
     {
         /// <summary>
         /// An 8-byte, null-padded UTF-8 encoded string. If the string is exactly 8

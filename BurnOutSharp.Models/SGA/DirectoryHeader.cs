@@ -1,7 +1,7 @@
 namespace BurnOutSharp.Models.SGA
 {
     /// <see href="https://github.com/RavuAlHemio/hllib/blob/master/HLLib/SGAFile.h"/>
-    public class DirectoryHeader<T>
+    public abstract class DirectoryHeader<T>
     {
         public uint SectionOffset;
 

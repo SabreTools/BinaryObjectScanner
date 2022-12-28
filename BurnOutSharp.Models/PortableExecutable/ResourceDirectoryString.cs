@@ -8,7 +8,7 @@
     /// alignment of the fixed-size directory entries.
     /// </summary>
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/debug/pe-format"/>
-    public class ResourceDirectoryString
+    public sealed class ResourceDirectoryString
     {
         /// <summary>
         /// The size of the string, not including length field itself.

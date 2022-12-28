@@ -9,7 +9,7 @@ namespace BurnOutSharp.Models.PortableExecutable
     /// </summary>
     /// <see href="http://www.godevtool.com/Other/pdb.htm"/>
     [StructLayout(LayoutKind.Sequential)]
-    public class RSDSProgramDatabase
+    public sealed class RSDSProgramDatabase
     {
         /// <summary>
         /// "RSDS" signature

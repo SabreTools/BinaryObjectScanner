@@ -6,7 +6,7 @@
     /// DLL supports.
     /// </summary>
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/menurc/var-str"/>
-    public class VarData
+    public sealed class VarData
     {
         /// <summary>
         /// The length, in bytes, of the Var structure.

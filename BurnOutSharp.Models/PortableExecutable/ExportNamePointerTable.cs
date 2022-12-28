@@ -8,7 +8,7 @@
     /// An export name is defined only if the export name pointer table contains a pointer to it.
     /// </summary>
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/debug/pe-format"/>
-    public class ExportNamePointerTable
+    public sealed class ExportNamePointerTable
     {
         /// <summary>
         /// The pointers are 32 bits each and are relative to the image base.
