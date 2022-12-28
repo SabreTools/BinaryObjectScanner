@@ -21,13 +21,7 @@ namespace BurnOutSharp.Models.LinearExecutable
         /// <summary>
         /// Resource type ID.
         /// </summary>
-        /// <remarks>
-        /// The type of resources are:
-        /// - BTMP = Bitmap
-        /// - EMSG = Error message string
-        /// - FONT = Fonts
-        /// </remarks>
-        public ushort TypeID;
+        public ResourceTableEntryType TypeID;
 
         /// <summary>
         /// An ID used as a name for the resource when referred to.

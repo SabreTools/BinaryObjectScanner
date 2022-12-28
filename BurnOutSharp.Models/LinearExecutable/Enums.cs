@@ -646,6 +646,24 @@ namespace BurnOutSharp.Models.LinearExecutable
         Windows386 = 0x04,
     }
 
+    public enum ResourceTableEntryType : uint
+    {
+        /// <summary>
+        /// "BTMP" - Bitmap
+        /// </summary>
+        BTMP = 0x504d5442,
+
+        /// <summary>
+        /// "EMSG" - Error message string
+        /// </summary>
+        EMSG = 0x47534d45,
+
+        /// <summary>
+        /// "FONT" - Fonts
+        /// </summary>
+        FONT = 0x544e4f46,
+    }
+
     public enum WordOrder : byte
     {
         /// <summary>

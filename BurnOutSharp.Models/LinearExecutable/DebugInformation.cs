@@ -19,7 +19,7 @@ namespace BurnOutSharp.Models.LinearExecutable
         /// <summary>
         /// The signature consists of a string of three (3) ASCII characters: "NB0"
         /// </summary>
-        public byte[] Signature;
+        public string Signature;
 
         /// <summary>
         /// This defines the type of debugger data that exists in the remainder of the
