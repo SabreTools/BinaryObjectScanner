@@ -2,6 +2,7 @@ using System.IO;
 using System.Text;
 using BurnOutSharp.Models.XZP;
 using BurnOutSharp.Utilities;
+using static BurnOutSharp.Models.XZP.Constants;
 
 namespace BurnOutSharp.Builders
 {
@@ -170,7 +171,7 @@ namespace BurnOutSharp.Builders
 
             byte[] signature = data.ReadBytes(4);
             header.Signature = Encoding.ASCII.GetString(signature);
-            if (header.Signature != "piZx")
+            if (header.Signature != HeaderSignatureString)
                 return null;
 
             header.Version = data.ReadUInt32();
@@ -262,7 +263,7 @@ namespace BurnOutSharp.Builders
             footer.FileLength = data.ReadUInt32();
             byte[] signature = data.ReadBytes(4);
             footer.Signature = Encoding.ASCII.GetString(signature);
-            if (footer.Signature != "tFzX")
+            if (footer.Signature != FooterSignatureString)
                 return null;
 
             return footer;
