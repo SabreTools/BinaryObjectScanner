@@ -2,6 +2,7 @@ using System.IO;
 using System.Text;
 using BurnOutSharp.Models.PAK;
 using BurnOutSharp.Utilities;
+using static BurnOutSharp.Models.PAK.Constants;
 
 namespace BurnOutSharp.Builders
 {
@@ -104,7 +105,7 @@ namespace BurnOutSharp.Builders
 
             byte[] signature = data.ReadBytes(4);
             header.Signature = Encoding.ASCII.GetString(signature);
-            if (header.Signature != "PACK")
+            if (header.Signature != SignatureString)
                 return null;
 
             header.DirectoryOffset = data.ReadUInt32();
