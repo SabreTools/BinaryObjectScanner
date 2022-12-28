@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using static BurnOutSharp.Models.BSP.Constants;
 
 namespace BurnOutSharp.Wrappers
 {
@@ -38,12 +39,6 @@ namespace BurnOutSharp.Wrappers
         public Models.BSP.Texture[] Textures => _file.Textures;
 
         #endregion
-
-        #endregion
-
-        #region Extension Properties
-
-        // TODO: Figure out what extension oroperties are needed
 
         #endregion
 
@@ -155,10 +150,10 @@ namespace BurnOutSharp.Wrappers
                     string specialLumpName = string.Empty;
                     switch (i)
                     {
-                        case Builders.BSP.HL_BSP_LUMP_ENTITIES:
+                        case HL_BSP_LUMP_ENTITIES:
                             specialLumpName = " (entities)";
                             break;
-                        case Builders.BSP.HL_BSP_LUMP_TEXTUREDATA:
+                        case HL_BSP_LUMP_TEXTUREDATA:
                             specialLumpName = " (texture data)";
                             break;
                     }
@@ -267,10 +262,10 @@ namespace BurnOutSharp.Wrappers
             string filename = $"lump_{index}.bin";
             switch (index)
             {
-                case Builders.BSP.HL_BSP_LUMP_ENTITIES:
+                case HL_BSP_LUMP_ENTITIES:
                     filename = "entities.ent";
                     break;
-                case Builders.BSP.HL_BSP_LUMP_TEXTUREDATA:
+                case HL_BSP_LUMP_TEXTUREDATA:
                     filename = "texture_data.bin";
                     break;
             }

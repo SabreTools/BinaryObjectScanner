@@ -3,35 +3,12 @@ using System.Linq;
 using System.Text;
 using BurnOutSharp.Models.BSP;
 using BurnOutSharp.Utilities;
+using static BurnOutSharp.Models.BSP.Constants;
 
 namespace BurnOutSharp.Builders
 {
     public static class BSP
     {
-        #region Constants
-
-        /// <summary>
-        /// Number of lumps in a BSP
-        /// </summary>
-        private const int HL_BSP_LUMP_COUNT = 15;
-
-        /// <summary>
-        /// Index for the entities lump
-        /// </summary>
-        public const int HL_BSP_LUMP_ENTITIES = 0;
-
-        /// <summary>
-        /// Index for the texture data lump
-        /// </summary>
-        public const int HL_BSP_LUMP_TEXTUREDATA = 2;
-
-        /// <summary>
-        /// Number of valid mipmap levels
-        /// </summary>
-        public const int HL_BSP_MIPMAP_COUNT = 4;
-
-        #endregion
-
         #region Byte Data
 
         /// <summary>
