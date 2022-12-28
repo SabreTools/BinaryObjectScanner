@@ -2,30 +2,12 @@ using System.IO;
 using System.Text;
 using BurnOutSharp.Models.VBSP;
 using BurnOutSharp.Utilities;
+using static BurnOutSharp.Models.VBSP.Constants;
 
 namespace BurnOutSharp.Builders
 {
     public static class VBSP
     {
-        #region Constants
-
-        /// <summary>
-        /// Total number of lumps in the package
-        /// </summary>
-        public const int HL_VBSP_LUMP_COUNT = 64;
-
-        /// <summary>
-        /// Index for the entities lump
-        /// </summary>
-        public const int HL_VBSP_LUMP_ENTITIES = 0;
-
-        /// <summary>
-        /// Index for the pakfile lump
-        /// </summary>
-        public const int HL_VBSP_LUMP_PAKFILE = 40;
-
-        #endregion
-
         #region Byte Data
 
         /// <summary>
@@ -101,7 +83,7 @@ namespace BurnOutSharp.Builders
 
             byte[] signature = data.ReadBytes(4);
             header.Signature = Encoding.ASCII.GetString(signature);
-            if (header.Signature != "VBSP")
+            if (header.Signature != SignatureString)
                 return null;
 
             header.Version = data.ReadInt32();

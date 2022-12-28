@@ -1,6 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
+using static BurnOutSharp.Models.VBSP.Constants;
 
 namespace BurnOutSharp.Wrappers
 {
@@ -138,10 +138,10 @@ namespace BurnOutSharp.Wrappers
                     string specialLumpName = string.Empty;
                     switch (i)
                     {
-                        case Builders.VBSP.HL_VBSP_LUMP_ENTITIES:
+                        case HL_VBSP_LUMP_ENTITIES:
                             specialLumpName = " (entities)";
                             break;
-                        case Builders.VBSP.HL_VBSP_LUMP_PAKFILE:
+                        case HL_VBSP_LUMP_PAKFILE:
                             specialLumpName = " (pakfile)";
                             break;
                     }
@@ -211,10 +211,10 @@ namespace BurnOutSharp.Wrappers
             string filename = $"lump_{index}.bin";
             switch (index)
             {
-                case Builders.VBSP.HL_VBSP_LUMP_ENTITIES:
+                case HL_VBSP_LUMP_ENTITIES:
                     filename = "entities.ent";
                     break;
-                case Builders.VBSP.HL_VBSP_LUMP_PAKFILE:
+                case HL_VBSP_LUMP_PAKFILE:
                     filename = "pakfile.zip";
                     break;
             }
