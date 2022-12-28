@@ -1,12 +1,17 @@
 using System;
 using System.Collections.Generic;
+using BurnOutSharp.Models.Compression.MSZIP;
 using BurnOutSharp.Utilities;
 using ICSharpCode.SharpZipLib.Zip.Compression;
 
-namespace BurnOutSharp.Wrappers
+namespace BurnOutSharp.Compression
 {
-    public partial class MicrosoftCabinet : WrapperBase
+    public class MSZIP
     {
+        // TODO: Implement MSZIP decompression
+        // The below is a first attempt at implementation that is not working. It likely needs to be replaced by
+        // a zlib wrapper and/or a proper implementation
+
         #region Constants
 
         /// <summary>

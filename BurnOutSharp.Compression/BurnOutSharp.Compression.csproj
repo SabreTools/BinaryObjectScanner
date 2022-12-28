@@ -1,9 +1,9 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net6.0</TargetFrameworks>
-    <Title>BurnOutSharp.Wrappers</Title>
-    <AssemblyName>BurnOutSharp.Wrappers</AssemblyName>
+    <Title>BurnOutSharp.Compression</Title>
+    <AssemblyName>BurnOutSharp.Compression</AssemblyName>
     <Authors>Matt Nadareski</Authors>
     <Product>BurnOutSharp</Product>
     <Copyright>Copyright (c)2022 Matt Nadareski</Copyright>
@@ -25,10 +25,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BurnOutSharp.ASN1\BurnOutSharp.ASN1.csproj" />
-    <ProjectReference Include="..\BurnOutSharp.Builders\BurnOutSharp.Builders.csproj" />
-    <ProjectReference Include="..\BurnOutSharp.Compression\BurnOutSharp.Compression.csproj" />
     <ProjectReference Include="..\BurnOutSharp.Models\BurnOutSharp.Models.csproj" />
+    <ProjectReference Include="..\BurnOutSharp.Utilities\BurnOutSharp.Utilities.csproj" />
   </ItemGroup>
 
 </Project>

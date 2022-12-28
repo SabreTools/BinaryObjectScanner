@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace BurnOutSharp.Wrappers
 {
-    public partial class MicrosoftCabinet : WrapperBase
+    public class MicrosoftCabinet : WrapperBase
     {
         #region Pass-Through Properties
 
@@ -229,7 +229,8 @@ namespace BurnOutSharp.Wrappers
                         decompressed = dataBlock.CompressedData;
                         break;
                     case Models.MicrosoftCabinet.CompressionType.TYPE_MSZIP:
-                        decompressed = DecompressMSZIPData(dataBlock.CompressedData);
+                        // TODO: UNIMPLEMENTED
+                        decompressed = dataBlock.CompressedData;
                         break;
                     case Models.MicrosoftCabinet.CompressionType.TYPE_QUANTUM:
                         // TODO: UNIMPLEMENTED
