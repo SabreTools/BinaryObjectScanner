@@ -2,6 +2,7 @@ using System.IO;
 using System.Text;
 using BurnOutSharp.Models.WAD;
 using BurnOutSharp.Utilities;
+using static BurnOutSharp.Models.WAD.Constants;
 
 namespace BurnOutSharp.Builders
 {
@@ -133,7 +134,7 @@ namespace BurnOutSharp.Builders
 
             byte[] signature = data.ReadBytes(4);
             header.Signature = Encoding.ASCII.GetString(signature);
-            if (header.Signature != "WAD3")
+            if (header.Signature != SignatureString)
                 return null;
 
             header.LumpCount = data.ReadUInt32();
