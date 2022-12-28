@@ -334,12 +334,12 @@ namespace BurnOutSharp.Wrappers
         {
             get
             {
-                // If we already have cached data, just use that immediately
-                if (_headerPaddingData != null)
-                    return _headerPaddingData;
-
                 lock (_sourceDataLock)
                 {
+                    // If we already have cached data, just use that immediately
+                    if (_headerPaddingData != null)
+                        return _headerPaddingData;
+
                     // TODO: Don't scan the known header data as well
 
                     // Populate the raw header padding data based on the source
@@ -361,12 +361,12 @@ namespace BurnOutSharp.Wrappers
         {
             get
             {
-                // If we already have cached data, just use that immediately
-                if (_headerPaddingStrings != null)
-                    return _headerPaddingStrings;
-
                 lock (_sourceDataLock)
                 {
+                    // If we already have cached data, just use that immediately
+                    if (_headerPaddingStrings != null)
+                        return _headerPaddingStrings;
+
                     // TODO: Don't scan the known header data as well
 
                     // Populate the raw header padding data based on the source
@@ -388,22 +388,22 @@ namespace BurnOutSharp.Wrappers
         {
             get
             {
-                // If we have no entry point
-                int entryPointAddress = (int)OH_AddressOfEntryPoint.ConvertVirtualAddress(SectionTable);
-                if (entryPointAddress == 0)
-                    return null;
-
-                // If the entry point matches with the start of a section, use that
-                int entryPointSection = FindEntryPointSectionIndex();
-                if (entryPointSection >= 0 && OH_AddressOfEntryPoint == SectionTable[entryPointSection].VirtualAddress)
-                    return GetSectionData(entryPointSection);
-
-                // If we already have cached data, just use that immediately
-                if (_entryPointData != null)
-                    return _entryPointData;
-
                 lock (_sourceDataLock)
                 {
+                    // If we have no entry point
+                    int entryPointAddress = (int)OH_AddressOfEntryPoint.ConvertVirtualAddress(SectionTable);
+                    if (entryPointAddress == 0)
+                        return null;
+
+                    // If the entry point matches with the start of a section, use that
+                    int entryPointSection = FindEntryPointSectionIndex();
+                    if (entryPointSection >= 0 && OH_AddressOfEntryPoint == SectionTable[entryPointSection].VirtualAddress)
+                        return GetSectionData(entryPointSection);
+
+                    // If we already have cached data, just use that immediately
+                    if (_entryPointData != null)
+                        return _entryPointData;
+
                     // Read the first 128 bytes of the entry point
                     _entryPointData = ReadFromDataSource(entryPointAddress, length: 128);
 
@@ -421,17 +421,17 @@ namespace BurnOutSharp.Wrappers
         {
             get
             {
-                // Use the cached data if possible
-                if (_overlayData != null)
-                    return _overlayData;
-
-                // Get the end of the file, if possible
-                int endOfFile = GetEndOfFile();
-                if (endOfFile == -1)
-                    return null;
-
                 lock (_sourceDataLock)
                 {
+                    // Use the cached data if possible
+                    if (_overlayData != null)
+                        return _overlayData;
+
+                    // Get the end of the file, if possible
+                    int endOfFile = GetEndOfFile();
+                    if (endOfFile == -1)
+                        return null;
+
                     // If we have certificate data, use that as the end
                     if (OH_CertificateTable != null)
                     {
@@ -492,17 +492,17 @@ namespace BurnOutSharp.Wrappers
         {
             get
             {
-                // Use the cached data if possible
-                if (_overlayStrings != null)
-                    return _overlayStrings;
-
-                // Get the end of the file, if possible
-                int endOfFile = GetEndOfFile();
-                if (endOfFile == -1)
-                    return null;
-
                 lock (_sourceDataLock)
                 {
+                    // Use the cached data if possible
+                    if (_overlayStrings != null)
+                        return _overlayStrings;
+
+                    // Get the end of the file, if possible
+                    int endOfFile = GetEndOfFile();
+                    if (endOfFile == -1)
+                        return null;
+
                     // If we have certificate data, use that as the end
                     if (OH_CertificateTable != null)
                     {
@@ -590,12 +590,12 @@ namespace BurnOutSharp.Wrappers
         {
             get
             {
-                // If we already have cached data, just use that immediately
-                if (_stubExecutableData != null)
-                    return _stubExecutableData;
-
                 lock (_sourceDataLock)
                 {
+                    // If we already have cached data, just use that immediately
+                    if (_stubExecutableData != null)
+                        return _stubExecutableData;
+
                     // Populate the raw stub executable data based on the source
                     int endOfStubHeader = 0x40;
                     int lengthOfStubExecutableData = (int)_executable.Stub.Header.NewExeHeaderAddr - endOfStubHeader;
@@ -614,17 +614,17 @@ namespace BurnOutSharp.Wrappers
         {
             get
             {
-                // Use the cached data if possible
-                if (_debugData != null && _debugData.Count != 0)
-                    return _debugData;
-
-                // If we have no resource table, just return
-                if (DebugTable?.DebugDirectoryTable == null
-                    || DebugTable.DebugDirectoryTable.Length == 0)
-                    return null;
-
                 lock (_sourceDataLock)
                 {
+                    // Use the cached data if possible
+                    if (_debugData != null && _debugData.Count != 0)
+                        return _debugData;
+
+                    // If we have no resource table, just return
+                    if (DebugTable?.DebugDirectoryTable == null
+                        || DebugTable.DebugDirectoryTable.Length == 0)
+                        return null;
+
                     // Otherwise, build and return the cached dictionary
                     ParseDebugTable();
                     return _debugData;
@@ -639,18 +639,18 @@ namespace BurnOutSharp.Wrappers
         {
             get
             {
-                // Use the cached data if possible
-                if (_resourceData != null && _resourceData.Count != 0)
-                    return _resourceData;
-
-                // If we have no resource table, just return
-                if (OH_ResourceTable == null
-                    || OH_ResourceTable.VirtualAddress == 0
-                    || ResourceDirectoryTable == null)
-                    return null;
-
                 lock (_sourceDataLock)
                 {
+                    // Use the cached data if possible
+                    if (_resourceData != null && _resourceData.Count != 0)
+                        return _resourceData;
+
+                    // If we have no resource table, just return
+                    if (OH_ResourceTable == null
+                        || OH_ResourceTable.VirtualAddress == 0
+                        || ResourceDirectoryTable == null)
+                        return null;
+
                     // Otherwise, build and return the cached dictionary
                     ParseResourceDirectoryTable(ResourceDirectoryTable, types: new List<object>());
                     return _resourceData;
