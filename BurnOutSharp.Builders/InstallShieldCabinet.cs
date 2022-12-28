@@ -3,6 +3,7 @@ using System.IO;
 using System.Text;
 using BurnOutSharp.Models.InstallShieldCabinet;
 using BurnOutSharp.Utilities;
+using static BurnOutSharp.Models.InstallShieldCabinet.Constants;
 
 namespace BurnOutSharp.Builders
 {
@@ -328,8 +329,9 @@ namespace BurnOutSharp.Builders
         {
             CommonHeader commonHeader = new CommonHeader();
 
-            commonHeader.Signature = data.ReadUInt32();
-            if (commonHeader.Signature != 0x28635349)
+            byte[] signature = data.ReadBytes(4);
+            commonHeader.Signature = Encoding.ASCII.GetString(signature);
+            if (commonHeader.Signature != SignatureString)
                 return null;
 
             commonHeader.Version = data.ReadUInt32();
@@ -360,15 +362,13 @@ namespace BurnOutSharp.Builders
             cabDescriptor.FileTableOffset2 = data.ReadUInt32();
             cabDescriptor.Reserved3 = data.ReadBytes(0x0E);
 
-            // TODO: Determine how the value "71" was chosen here
-            cabDescriptor.FileGroupOffsets = new uint[71];
+            cabDescriptor.FileGroupOffsets = new uint[MAX_FILE_GROUP_COUNT];
             for (int i = 0; i < cabDescriptor.FileGroupOffsets.Length; i++)
             {
                 cabDescriptor.FileGroupOffsets[i] = data.ReadUInt32();
             }
 
-            // TODO: Determine how the value "71" was chosen here
-            cabDescriptor.ComponentOffsets = new uint[71];
+            cabDescriptor.ComponentOffsets = new uint[MAX_COMPONENT_COUNT];
             for (int i = 0; i < cabDescriptor.ComponentOffsets.Length; i++)
             {
                 cabDescriptor.ComponentOffsets[i] = data.ReadUInt32();
