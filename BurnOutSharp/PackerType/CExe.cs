@@ -1,15 +1,17 @@
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
 using BurnOutSharp.Wrappers;
+using ICSharpCode.SharpZipLib.Zip.Compression;
 
 namespace BurnOutSharp.PackerType
 {
     // The official website for CExe also includes the source code (which does have to be retrieved by the Wayback Machine)
     // http://www.scottlu.com/Content/CExe.html
-    // TODO: Add extraction
     // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
     public class CExe : IPortableExecutableCheck, IScannable
     {
@@ -20,6 +22,10 @@ namespace BurnOutSharp.PackerType
             var sections = pex?.SectionTable;
             if (sections == null)
                 return null;
+
+            // If there are exactly 2 resources with type 99
+            if (pex.FindResourceByNamedType("99, ").Count() == 2)
+                return "CExe";
 
             var matchers = new List<ContentMatchSet>
             {
@@ -56,6 +62,97 @@ namespace BurnOutSharp.PackerType
         /// <inheritdoc/>
         public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, Stream stream, string file)
         {
+            // Parse into an executable again for easier extraction
+            PortableExecutable pex = PortableExecutable.Create(stream);
+            if (pex == null)
+                return null;
+
+            // Get the first resource of type 99 with index 2
+            byte[] payload = pex.FindResourceByNamedType("99, 2").FirstOrDefault();
+            if (payload == null || payload.Length == 0)
+                return null;
+
+            // Set the otuput data to write
+            byte[] data = null;
+
+            // TODO: We need to research if there were any other types of compression that were used
+            // zlib is a good default option, but it does mention LZ in the function naming
+
+            // Try zlib first
+            try
+            {
+                // Inflate the data into the buffer
+                Inflater inflater = new Inflater();
+                inflater.SetInput(payload);
+                data = new byte[payload.Length * 4];
+                int read = inflater.Inflate(data);
+
+                // Trim the buffer to the proper size
+                data = new ReadOnlySpan<byte>(data, 0, read).ToArray();
+            }
+            catch
+            {
+                // Reset the data
+                data = null;
+            }
+
+            // Try lzw next
+            if (data == null)
+            {
+                try
+                {
+                    // TODO: Implement LZW decompression
+                }
+                catch
+                {
+                    // Reset the data
+                    data = null;
+                }
+            }
+
+            // If we have no data
+            if (data == null)
+                return null;
+
+            // If the extraction fails
+            try
+            {
+                string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+                Directory.CreateDirectory(tempPath);
+
+                // Create the temp filename
+                string tempFile = string.IsNullOrEmpty(file) ? "temp.sxe" : $"{Path.GetFileNameWithoutExtension(file)}.sxe";
+                tempFile = Path.Combine(tempPath, tempFile);
+
+                // Write the file data to a temp file
+                using (Stream tempStream = File.Open(tempFile, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
+                {
+                    tempStream.Write(data, 0, data.Length);
+                }
+
+                // Collect and format all found protections
+                var protections = scanner.GetProtections(tempPath);
+
+                // If temp directory cleanup fails
+                try
+                {
+                    Directory.Delete(tempPath, true);
+                }
+                catch (Exception ex)
+                {
+                    if (scanner.IncludeDebug) Console.WriteLine(ex);
+                }
+
+                // Remove temporary path references
+                Utilities.Dictionary.StripFromKeys(protections, tempPath);
+
+                return protections;
+            }
+            catch (Exception ex)
+            {
+                if (scanner.IncludeDebug) Console.WriteLine(ex);
+            }
+
             return null;
         }
     }
