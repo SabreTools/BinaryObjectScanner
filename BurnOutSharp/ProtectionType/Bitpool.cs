@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
 
@@ -18,7 +19,7 @@ namespace BurnOutSharp.ProtectionType
             var matchers = new List<PathMatchSet>
             {
                 new PathMatchSet(new PathMatch("bitpool.rsc", useEndsWith: true), "Bitpool"),
-                new PathMatchSet(new PathMatch("CD.IDX", useEndsWith: true), "Bitpool"),
+                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}CD.IDX", useEndsWith: true), "Bitpool"),
 
                 // Completely empty file present on multiple discs with Bitpool (Redump entries 52626 and 50229).
                 new PathMatchSet(new PathMatch("LEADOUT.OFS", useEndsWith: true), "Bitpool"),
@@ -27,10 +28,10 @@ namespace BurnOutSharp.ProtectionType
                 // Both examples with only having the first letter uppercase and as the whole file name being uppercase have been seen.
                 new PathMatchSet(new List<PathMatch>
                 {
-                    new PathMatch("Crc_a", useEndsWith: true),
-                    new PathMatch("Crc_b", useEndsWith: true),
-                    new PathMatch("Crc_c", useEndsWith: true),
-                    new PathMatch("Crc_d", useEndsWith: true),
+                    new PathMatch($"{Path.DirectorySeparatorChar}Crc_a", useEndsWith: true),
+                    new PathMatch($"{Path.DirectorySeparatorChar}Crc_b", useEndsWith: true),
+                    new PathMatch($"{Path.DirectorySeparatorChar}Crc_c", useEndsWith: true),
+                    new PathMatch($"{Path.DirectorySeparatorChar}Crc_d", useEndsWith: true),
                 }, "Bitpool"),
             };
 
@@ -43,7 +44,7 @@ namespace BurnOutSharp.ProtectionType
             var matchers = new List<PathMatchSet>
             {
                 new PathMatchSet(new PathMatch("bitpool.rsc", useEndsWith: true), "Bitpool"),
-                new PathMatchSet(new PathMatch("CD.IDX", useEndsWith: true), "Bitpool"),
+                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}CD.IDX", useEndsWith: true), "Bitpool"),
 
                 // Completely empty file present on multiple discs with Bitpool (Redump entries 52626 and 50229).
                 new PathMatchSet(new PathMatch("LEADOUT.OFS", useEndsWith: true), "Bitpool"),
