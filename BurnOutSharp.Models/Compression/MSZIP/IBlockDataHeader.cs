@@ -1,4 +1,4 @@
-namespace BurnOutSharp.Models.MicrosoftCabinet.MSZIP
+namespace BurnOutSharp.Models.Compression.MSZIP
 {
     /// <summary>
     /// Empty interface defining block header types

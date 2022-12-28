@@ -1,4 +1,4 @@
-namespace BurnOutSharp.Models.MicrosoftCabinet.LZX
+namespace BurnOutSharp.Models.Compression.LZX
 {
     /// <summary>
     /// An LZXD block represents a sequence of compressed data that is encoded with the same set of
@@ -15,7 +15,7 @@ namespace BurnOutSharp.Models.MicrosoftCabinet.LZX
     public class BlockHeader
     {
         /// <remarks>3 bits</remarks>
-        public LZXBlockType BlockType;
+        public BlockType BlockType;
 
         /// <summary>
         /// Block size is the high 8 bits of 24

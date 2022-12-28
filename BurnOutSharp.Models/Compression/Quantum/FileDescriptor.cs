@@ -1,4 +1,4 @@
-namespace BurnOutSharp.Models.MicrosoftCabinet.Quantum
+namespace BurnOutSharp.Models.Compression.Quantum
 {
     /// <remarks>
     /// Strings are prefixed with their length. If the length is less than

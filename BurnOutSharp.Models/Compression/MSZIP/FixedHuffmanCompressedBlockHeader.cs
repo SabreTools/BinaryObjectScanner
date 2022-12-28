@@ -1,6 +1,6 @@
 using System;
 
-namespace BurnOutSharp.Models.MicrosoftCabinet.MSZIP
+namespace BurnOutSharp.Models.Compression.MSZIP
 {
     /// <summary>
     /// Compression with fixed Huffman codes (BTYPE=01)

@@ -1,4 +1,4 @@
-namespace BurnOutSharp.Models.MicrosoftCabinet.LZX
+namespace BurnOutSharp.Models.Compression.LZX
 {
     public class Header
     {

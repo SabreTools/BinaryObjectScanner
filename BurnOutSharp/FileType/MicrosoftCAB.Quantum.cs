@@ -1,4 +1,4 @@
-﻿using BurnOutSharp.Models.MicrosoftCabinet.Quantum;
+﻿using BurnOutSharp.Models.Compression.Quantum;
 
 /// <see href="http://www.russotto.net/quantumcomp.html"/>
 /// <see href="https://handwiki.org/wiki/Software:Quantum_compression"/>

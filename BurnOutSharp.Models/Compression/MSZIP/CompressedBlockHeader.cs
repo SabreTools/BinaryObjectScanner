@@ -1,4 +1,4 @@
-namespace BurnOutSharp.Models.MicrosoftCabinet.MSZIP
+namespace BurnOutSharp.Models.Compression.MSZIP
 {
     /// <summary>
     /// Base class for compressed block headers

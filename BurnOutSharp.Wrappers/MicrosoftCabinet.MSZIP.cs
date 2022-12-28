@@ -166,13 +166,13 @@ namespace BurnOutSharp.Wrappers
         /// <param name="data">BitStream representing the block</param>
         /// <param name="offset">Offset within the array to parse</param>
         /// <returns>Filled block header on success, null on error</returns>
-        private static Models.MicrosoftCabinet.MSZIP.BlockHeader AsBlockHeader(BitStream data)
+        private static Models.Compression.MSZIP.BlockHeader AsBlockHeader(BitStream data)
         {
             // If the data is invalid
             if (data == null)
                 return null;
 
-            var header = new Models.MicrosoftCabinet.MSZIP.BlockHeader();
+            var header = new Models.Compression.MSZIP.BlockHeader();
 
             header.Signature = data.ReadAlignedUInt16();
             if (header.Signature != 0x4B43)
@@ -187,16 +187,16 @@ namespace BurnOutSharp.Wrappers
         /// <param name="data">Byte array representing the block</param>
         /// <param name="offset">Offset within the array to parse</param>
         /// <returns>Filled deflate block header on success, null on error</returns>
-        private static Models.MicrosoftCabinet.MSZIP.DeflateBlockHeader AsDeflateBlockHeader(BitStream data)
+        private static Models.Compression.MSZIP.DeflateBlockHeader AsDeflateBlockHeader(BitStream data)
         {
             // If the data is invalid
             if (data == null)
                 return null;
 
-            var header = new Models.MicrosoftCabinet.MSZIP.DeflateBlockHeader();
+            var header = new Models.Compression.MSZIP.DeflateBlockHeader();
 
             header.BFINAL = data.ReadBits(1)[0];
-            header.BTYPE = (Models.MicrosoftCabinet.DeflateCompressionType)data.ReadBits(2).AsByte();
+            header.BTYPE = (Models.Compression.MSZIP.CompressionType)data.ReadBits(2).AsByte();
 
             return header;
         }
@@ -207,13 +207,13 @@ namespace BurnOutSharp.Wrappers
         /// <param name="data">Byte array representing the block</param>
         /// <param name="offset">Offset within the array to parse</param>
         /// <returns>Filled dynamic Huffman compressed block header on success, null on error</returns>
-        private static Models.MicrosoftCabinet.MSZIP.DynamicHuffmanCompressedBlockHeader AsDynamicHuffmanCompressedBlockHeader(BitStream data)
+        private static Models.Compression.MSZIP.DynamicHuffmanCompressedBlockHeader AsDynamicHuffmanCompressedBlockHeader(BitStream data)
         {
             // If the data is invalid
             if (data == null)
                 return null;
 
-            var header = new Models.MicrosoftCabinet.MSZIP.DynamicHuffmanCompressedBlockHeader();
+            var header = new Models.Compression.MSZIP.DynamicHuffmanCompressedBlockHeader();
 
             // # of Literal/Length codes - 257
             ushort HLIT = (ushort)(data.ReadBits(5).AsUInt16() + 257);
@@ -255,13 +255,13 @@ namespace BurnOutSharp.Wrappers
         /// <param name="data">Byte array representing the block</param>
         /// <param name="offset">Offset within the array to parse</param>
         /// <returns>Filled non-compressed block header on success, null on error</returns>
-        private static Models.MicrosoftCabinet.MSZIP.NonCompressedBlockHeader AsNonCompressedBlockHeader(BitStream data)
+        private static Models.Compression.MSZIP.NonCompressedBlockHeader AsNonCompressedBlockHeader(BitStream data)
         {
             // If the data is invalid
             if (data == null)
                 return null;
 
-            var header = new Models.MicrosoftCabinet.MSZIP.NonCompressedBlockHeader();
+            var header = new Models.Compression.MSZIP.NonCompressedBlockHeader();
 
             header.LEN = data.ReadAlignedUInt16();
             header.NLEN = data.ReadAlignedUInt16();
@@ -508,18 +508,18 @@ namespace BurnOutSharp.Wrappers
             List<byte> decodedBytes = new List<byte>();
 
             // Create the loop variable block
-            Models.MicrosoftCabinet.MSZIP.DeflateBlockHeader deflateBlockHeader;
+            Models.Compression.MSZIP.DeflateBlockHeader deflateBlockHeader;
 
             do
             {
                 deflateBlockHeader = AsDeflateBlockHeader(dataStream);
 
                 // We should never get a reserved block
-                if (deflateBlockHeader.BTYPE == Models.MicrosoftCabinet.DeflateCompressionType.Reserved)
+                if (deflateBlockHeader.BTYPE == Models.Compression.MSZIP.CompressionType.Reserved)
                     throw new InvalidOperationException();
 
                 // If stored with no compression
-                if (deflateBlockHeader.BTYPE == Models.MicrosoftCabinet.DeflateCompressionType.NoCompression)
+                if (deflateBlockHeader.BTYPE == Models.Compression.MSZIP.CompressionType.NoCompression)
                 {
                     // Skip any remaining bits in current partially processed byte
                     dataStream.DiscardBuffer();
@@ -528,7 +528,7 @@ namespace BurnOutSharp.Wrappers
                     deflateBlockHeader.BlockDataHeader = AsNonCompressedBlockHeader(dataStream);
 
                     // Copy LEN bytes of data to output
-                    var header = deflateBlockHeader.BlockDataHeader as Models.MicrosoftCabinet.MSZIP.NonCompressedBlockHeader;
+                    var header = deflateBlockHeader.BlockDataHeader as Models.Compression.MSZIP.NonCompressedBlockHeader;
                     ushort length = header.LEN;
                     decodedBytes.AddRange(dataStream.ReadAlignedBytes(length));
                 }
@@ -539,15 +539,15 @@ namespace BurnOutSharp.Wrappers
                     // If compressed with dynamic Huffman codes read representation of code trees
                     switch (deflateBlockHeader.BTYPE)
                     {
-                        case Models.MicrosoftCabinet.DeflateCompressionType.FixedHuffman:
-                            deflateBlockHeader.BlockDataHeader = new Models.MicrosoftCabinet.MSZIP.FixedHuffmanCompressedBlockHeader();
+                        case Models.Compression.MSZIP.CompressionType.FixedHuffman:
+                            deflateBlockHeader.BlockDataHeader = new Models.Compression.MSZIP.FixedHuffmanCompressedBlockHeader();
                             break;
-                        case Models.MicrosoftCabinet.DeflateCompressionType.DynamicHuffman:
+                        case Models.Compression.MSZIP.CompressionType.DynamicHuffman:
                             deflateBlockHeader.BlockDataHeader = AsDynamicHuffmanCompressedBlockHeader(dataStream);
                             break;
                     }
 
-                    var header = deflateBlockHeader.BlockDataHeader as Models.MicrosoftCabinet.MSZIP.CompressedBlockHeader;
+                    var header = deflateBlockHeader.BlockDataHeader as Models.Compression.MSZIP.CompressedBlockHeader;
 
                     // 9 bits per entry, 288 max symbols
                     int[] literalDecodeTable = CreateTable(288, 9, header.LiteralLengths, (1 << 9) + (288 * 2));

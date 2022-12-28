@@ -1,4 +1,4 @@
-namespace BurnOutSharp.Models.MicrosoftCabinet.MSZIP
+namespace BurnOutSharp.Models.Compression.MSZIP
 {
     /// <see href="https://www.rfc-editor.org/rfc/rfc1951"/>
     public class DeflateBlockHeader
@@ -13,7 +13,7 @@ namespace BurnOutSharp.Models.MicrosoftCabinet.MSZIP
         /// Specifies how the data are compressed
         /// </summary>
         /// <remarks>Bits 1-2</remarks>
-        public DeflateCompressionType BTYPE { get; set; }
+        public CompressionType BTYPE { get; set; }
 
         /// <summary>
         /// Block data as defined by the compression type

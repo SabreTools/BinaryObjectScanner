@@ -1,15 +1,22 @@
-namespace BurnOutSharp.Models.MicrosoftCabinet.LZX
+namespace BurnOutSharp.Models.Compression.LZX
 {
     /// <summary>
-    /// The fields of a verbatim block that follow the generic block header
+    /// An aligned offset block is identical to the verbatim block except for the presence of the aligned offset
+    /// tree preceding the other trees.
     /// </summary>
     /// <see href="https://interoperability.blob.core.windows.net/files/MS-PATCH/%5bMS-PATCH%5d.pdf"/>
-    public class VerbatimBlock
+    public class AlignedOffsetBlock
     {
         /// <summary>
         /// Generic block header
         /// </summary>
         public BlockHeader Header;
+
+        /// <summary>
+        /// Aligned offset tree
+        /// </summary>
+        /// <remarks>8 elements, 3 bits each</remarks>
+        public byte[] AlignedOffsetTree;
 
         /// <summary>
         /// Pretree for first 256 elements of main tree

@@ -1,4 +1,4 @@
-namespace BurnOutSharp.Models.MicrosoftCabinet.MSZIP
+namespace BurnOutSharp.Models.Compression.MSZIP
 {
     /// <summary>
     /// Compression with dynamic Huffman codes (BTYPE=10)

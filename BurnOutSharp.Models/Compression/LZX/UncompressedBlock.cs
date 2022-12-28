@@ -1,4 +1,4 @@
-namespace BurnOutSharp.Models.MicrosoftCabinet.LZX
+namespace BurnOutSharp.Models.Compression.LZX
 {
     /// <summary>
     /// Following the generic block header, an uncompressed block begins with 1 to 16 bits of zero padding

@@ -30,29 +30,6 @@ namespace BurnOutSharp.Models.MicrosoftCabinet
         TYPE_LZX = 0x0003,
     }
 
-    public enum DeflateCompressionType : byte
-    {
-        /// <summary>
-        /// no compression
-        /// </summary>
-        NoCompression = 0b00,
-
-        /// <summary>
-        /// Compressed with fixed Huffman codes
-        /// </summary>
-        FixedHuffman = 0b01,
-
-        /// <summary>
-        /// Compressed with dynamic Huffman codes
-        /// </summary>
-        DynamicHuffman = 0b10,
-
-        /// <summary>
-        /// Reserved (error)
-        /// </summary>
-        Reserved = 0b11,
-    }
-
     [Flags]
     public enum FileAttributes : ushort
     {
@@ -137,94 +114,5 @@ namespace BurnOutSharp.Models.MicrosoftCabinet
         /// structure. The value is 0x0004.
         /// </summary>
         RESERVE_PRESENT = 0x0004,
-    }
-
-    /// <summary>
-    /// 3-bit block type
-    /// </summary>
-    public enum LZXBlockType : byte
-    {
-        /// <summary>
-        /// Not valid
-        /// </summary>
-        INVALID_0 = 0b000,
-
-        /// <summary>
-        /// Verbatim block
-        /// </summary>
-        Verbatim = 0b001,
-
-        /// <summary>
-        /// Aligned offset block
-        /// </summary>
-        AlignedOffset = 0b010,
-
-        /// <summary>
-        /// Uncompressed block
-        /// </summary>
-        Uncompressed = 0b011,
-
-        /// <summary>
-        /// Not valid
-        /// </summary>
-        INVALID_4 = 0b100,
-
-        /// <summary>
-        /// Not valid
-        /// </summary>
-        INVALID_5 = 0b101,
-
-        /// <summary>
-        /// Not valid
-        /// </summary>
-        INVALID_6 = 0b110,
-
-        /// <summary>
-        /// Not valid
-        /// </summary>
-        INVALID_7 = 0b111,
-    }
-
-    public enum QuantumSelectorModel
-    {
-        /// <summary>
-        /// Literal model, 64 entries, start at symbol 0
-        /// </summary>
-        SELECTOR_0 = 0,
-
-        /// <summary>
-        /// Literal model, 64 entries, start at symbol 64
-        /// </summary>
-        SELECTOR_1 = 1,
-
-        /// <summary>
-        /// Literal model, 64 entries, start at symbol 128
-        /// </summary>
-        SELECTOR_2 = 2,
-
-        /// <summary>
-        /// Literal model, 64 entries, start at symbol 192
-        /// </summary>
-        SELECTOR_3 = 3,
-
-        /// <summary>
-        /// LZ model, 3 character matches, max 24 entries, start at symbol 0
-        /// </summary>
-        SELECTOR_4 = 4,
-
-        /// <summary>
-        /// LZ model, 4 character matches, max 36 entries, start at symbol 0
-        /// </summary>
-        SELECTOR_5 = 5,
-
-        /// <summary>
-        /// LZ model, 5+ character matches, max 42 entries, start at symbol 0
-        /// </summary>
-        SELECTOR_6_POSITION = 6,
-
-        /// <summary>
-        /// LZ model, 5+ character matches, 27 entries, start at symbol 0
-        /// </summary>
-        SELECTOR_6_LENGTH = 7,
     }
 }

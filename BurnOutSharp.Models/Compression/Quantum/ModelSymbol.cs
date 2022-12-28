@@ -1,4 +1,4 @@
-namespace BurnOutSharp.Models.MicrosoftCabinet.Quantum
+namespace BurnOutSharp.Models.Compression.Quantum
 {
     /// <see href="http://www.russotto.net/quantumcomp.html"/>
     public class ModelSymbol

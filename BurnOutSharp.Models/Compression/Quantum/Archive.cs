@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 
-namespace BurnOutSharp.Models.MicrosoftCabinet.Quantum
+namespace BurnOutSharp.Models.Compression.Quantum
 {
     /// <summary>
     /// Quantum archive file structure
