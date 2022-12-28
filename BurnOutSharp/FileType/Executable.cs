@@ -73,7 +73,7 @@ namespace BurnOutSharp.FileType
                     {
                         if (file != null && !string.IsNullOrEmpty(protection))
                         {
-                            var subProtections = scannable.Scan(scanner, null, file);
+                            var subProtections = scannable.Scan(scanner, file);
                             PrependToKeys(subProtections, file);
                             AppendToDictionary(protections, subProtections);
                         }
@@ -96,7 +96,7 @@ namespace BurnOutSharp.FileType
                     {
                         if (file != null && !string.IsNullOrEmpty(protection))
                         {
-                            var subProtections = scannable.Scan(scanner, null, file);
+                            var subProtections = scannable.Scan(scanner, file);
                             PrependToKeys(subProtections, file);
                             AppendToDictionary(protections, subProtections);
                         }
@@ -119,7 +119,7 @@ namespace BurnOutSharp.FileType
                     {
                         if (file != null && !string.IsNullOrEmpty(protection))
                         {
-                            var subProtections = scannable.Scan(scanner, null, file);
+                            var subProtections = scannable.Scan(scanner, file);
                             PrependToKeys(subProtections, file);
                             AppendToDictionary(protections, subProtections);
                         }
