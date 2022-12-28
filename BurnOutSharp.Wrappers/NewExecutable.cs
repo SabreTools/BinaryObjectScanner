@@ -82,7 +82,7 @@ namespace BurnOutSharp.Wrappers
         #region Header
 
         /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.Magic"/>
-        public byte[] Magic => _executable.Header.Magic;
+        public string Magic => _executable.Header.Magic;
 
         /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.LinkerVersion"/>
         public byte LinkerVersion => _executable.Header.LinkerVersion;
@@ -344,7 +344,7 @@ namespace BurnOutSharp.Wrappers
         {
             Console.WriteLine("  Header Information:");
             Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Magic number: {BitConverter.ToString(Magic).Replace("-", string.Empty)}");
+            Console.WriteLine($"  Magic number: {Magic}");
             Console.WriteLine($"  Linker version: {LinkerVersion}");
             Console.WriteLine($"  Linker revision: {LinkerRevision}");
             Console.WriteLine($"  Entry table offset: {EntryTableOffset}");

@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using BurnOutSharp.Models.NewExecutable;
 using BurnOutSharp.Utilities;
+using static BurnOutSharp.Models.NewExecutable.Constants;
 
 namespace BurnOutSharp.Builders
 {
@@ -246,12 +248,9 @@ namespace BurnOutSharp.Builders
             // TODO: Use marshalling here instead of building
             var header = new ExecutableHeader();
 
-            header.Magic = new byte[2];
-            for (int i = 0; i < header.Magic.Length; i++)
-            {
-                header.Magic[i] = data.ReadByteValue();
-            }
-            if (header.Magic[0] != 'N' || header.Magic[1] != 'E')
+            byte[] magic = data.ReadBytes(2);
+            header.Magic = Encoding.ASCII.GetString(magic);
+            if (header.Magic != SignatureString)
                 return null;
 
             header.LinkerVersion = data.ReadByteValue();
