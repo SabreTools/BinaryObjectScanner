@@ -17,6 +17,7 @@ namespace BurnOutSharp.FileType
     /// Microsoft cabinet file
     /// </summary>
     /// <remarks>Specification available at <see href="http://download.microsoft.com/download/5/0/1/501ED102-E53F-4CE0-AA6B-B0F93629DDC6/Exchange/%5BMS-CAB%5D.pdf"/></remarks>
+    /// <see href="https://github.com/wine-mirror/wine/tree/master/dlls/cabinet"/>
     public partial class MicrosoftCAB : IScannable
     {
         /// <inheritdoc/>
