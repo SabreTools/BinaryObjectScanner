@@ -45,6 +45,7 @@ Below is a list of protections detected by BurnOutSharp. The two columns explain
 | ChosenBytes CodeLock | True | True | Partially unconfirmed² |
 | CopyKiller | True | True | Unconfirmed¹ |
 | CopyLok/CodeLok | True | False | |
+| CrypKey | True | False | |
 | Cucko (EA Custom) | True | False | Does not detect all known cases |
 | Denuvo Anti-Cheat/Anti-Tamper| True | True | |
 | Dinamic Multimedia Protection/LockBlocks | False | True | LockBlocks needs manual confirmation of the presence of 2 rings |
