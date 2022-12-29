@@ -4,7 +4,7 @@ namespace BurnOutSharp.Models.VPK
     {
         public static readonly byte[] SignatureBytes = new byte[] { 0x34, 0x12, 0xaa, 0x55 };
 
-        public const string SignatureString = "4\u0012\u00aaU";
+        public const string SignatureString = "4\x12\xaaU";
 
         public const uint SignatureUInt32 = 0x55aa1234;
 
