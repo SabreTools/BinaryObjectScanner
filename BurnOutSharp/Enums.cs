@@ -61,6 +61,11 @@
         MicrosoftCAB,
 
         /// <summary>
+        /// Microsoft LZ-compressed file
+        /// </summary>
+        MicrosoftLZ,
+
+        /// <summary>
         /// MPQ game data archive
         /// </summary>
         MPQ,

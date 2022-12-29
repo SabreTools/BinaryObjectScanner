@@ -85,6 +85,44 @@ namespace BurnOutSharp.Compression
             return decompressed;
         }
 
+        /// <summary>
+        /// Reconstructs the full filename of the compressed file
+        /// </summary>
+        public static string GetExpandedName(string input, out LZERROR error)
+        {
+            // Try to open the file as a compressed stream
+            var fileStream = File.Open(input, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            var state = new LZ().Open(fileStream, out error);
+            if (state?.Window == null)
+                return null;
+
+            // Get the extension for modification
+            string inputExtension = Path.GetExtension(input).TrimStart('.');
+
+            // If we have no extension
+            if (string.IsNullOrWhiteSpace(inputExtension))
+                return Path.GetFileNameWithoutExtension(input);
+
+            // If we have an extension of length 1
+            if (inputExtension.Length == 1)
+            {
+                if (inputExtension == "_")
+                    return $"{Path.GetFileNameWithoutExtension(input)}.{char.ToLower(state.LastChar)}";
+                else
+                    return Path.GetFileNameWithoutExtension(input);
+            }
+
+            // If we have an extension that doesn't end in an underscore
+            if (!inputExtension.EndsWith("_"))
+                return Path.GetFileNameWithoutExtension(input);
+
+            // Build the new filename
+            bool isLowerCase = char.IsUpper(input[0]);
+            char replacementChar = isLowerCase ? char.ToLower(state.LastChar) : char.ToUpper(state.LastChar);
+            string outputExtension = inputExtension.Substring(0, inputExtension.Length - 1) + replacementChar;
+            return $"{Path.GetFileNameWithoutExtension(input)}.{outputExtension}";
+        }
+
         #endregion
 
         #region State Management
@@ -171,48 +209,6 @@ namespace BurnOutSharp.Compression
 
             // Return the state
             return state;
-        }
-
-        #endregion
-
-        #region File Name Handling
-
-        /// <summary>
-        /// Reconstructs the full filename of the compressed file
-        /// </summary>
-        public string GetExpandedName(string input, out LZERROR error)
-        {
-            // Try to open the file as a compressed stream
-            var fileStream = File.Open(input, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            var state = Open(fileStream, out error);
-            if (state?.Window == null)
-                return null;
-
-            // Get the extension for modification
-            string inputExtension = Path.GetExtension(input).TrimStart('.');
-
-            // If we have no extension
-            if (string.IsNullOrWhiteSpace(inputExtension))
-                return Path.GetFileNameWithoutExtension(input);
-
-            // If we have an extension of length 1
-            if (inputExtension.Length == 1)
-            {
-                if (inputExtension == "_")
-                    return $"{Path.GetFileNameWithoutExtension(input)}.{char.ToLower(state.LastChar)}";
-                else
-                    return Path.GetFileNameWithoutExtension(input);
-            }
-
-            // If we have an extension that doesn't end in an underscore
-            if (!inputExtension.EndsWith("_"))
-                return Path.GetFileNameWithoutExtension(input);
-
-            // Build the new filename
-            bool isLowerCase = char.IsUpper(input[0]);
-            char replacementChar = isLowerCase ? char.ToLower(state.LastChar) : char.ToUpper(state.LastChar);
-            string outputExtension = inputExtension.Substring(0, inputExtension.Length - 1) + replacementChar;
-            return $"{Path.GetFileNameWithoutExtension(input)}.{outputExtension}";
         }
 
         #endregion

@@ -433,6 +433,14 @@ namespace BurnOutSharp
                         AppendToDictionary(protections, subProtections);
                     }
 
+                    // Microsoft LZ
+                    if (fileName != null && scannable is MicrosoftLZ)
+                    {
+                        var subProtections = scannable.Scan(this, fileName);
+                        PrependToKeys(subProtections, fileName);
+                        AppendToDictionary(protections, subProtections);
+                    }
+
                     // MSI
                     if (fileName != null && scannable is MSI)
                     {

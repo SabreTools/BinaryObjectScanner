@@ -120,6 +120,13 @@ namespace BurnOutSharp.Tools
 
             #endregion
 
+            #region MicrosoftLZ
+
+            if (magic.StartsWith(new byte?[] { 0x53, 0x5a, 0x44, 0x44, 0x88, 0xf0, 0x27, 0x33 }))
+                return SupportedFileType.MicrosoftLZ;
+
+            #endregion
+
             #region MPQ
 
             if (magic.StartsWith(new byte?[] { 0x4d, 0x50, 0x51, 0x1a }))
@@ -633,6 +640,7 @@ namespace BurnOutSharp.Tools
                 case SupportedFileType.InstallShieldArchiveV3: return new FileType.InstallShieldArchiveV3();
                 case SupportedFileType.InstallShieldCAB: return new FileType.InstallShieldCAB();
                 case SupportedFileType.MicrosoftCAB: return new FileType.MicrosoftCAB();
+                case SupportedFileType.MicrosoftLZ: return new FileType.MicrosoftLZ();
                 case SupportedFileType.MPQ: return new FileType.MPQ();
                 case SupportedFileType.MSI: return new FileType.MSI();
                 case SupportedFileType.PAK: return new FileType.PAK();
