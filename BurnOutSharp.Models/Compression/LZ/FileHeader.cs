@@ -6,7 +6,7 @@ namespace BurnOutSharp.Models.Compression.LZ
     /// <see href="https://github.com/wine-mirror/wine/blob/master/dlls/kernel32/lzexpand.c"/>
     public sealed class FileHeaader
     {
-        public byte[] Magic;
+        public string Magic;
 
         public byte CompressionType;
 

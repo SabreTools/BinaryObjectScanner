@@ -3,6 +3,8 @@ namespace BurnOutSharp.Models.Compression.LZ
     /// <see href="https://github.com/wine-mirror/wine/blob/master/include/lzexpand.h"/>
     public enum LZERROR
     {
+        LZERROR_OK = 1,
+        LZERROR_NOT_LZ = 0,
         LZERROR_BADINHANDLE = -1,
         LZERROR_BADOUTHANDLE = -2,
         LZERROR_READ = -3,
