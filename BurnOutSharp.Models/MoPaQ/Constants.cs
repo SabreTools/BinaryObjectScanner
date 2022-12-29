@@ -6,7 +6,7 @@ namespace BurnOutSharp.Models.MoPaQ
 
         public static readonly byte[] ArchiveHeaderSignatureBytes = new byte[] { 0x4d, 0x50, 0x51, 0x1a };
 
-        public const string ArchiveHeaderSignatureString = "MPQ\x1a";
+        public static readonly string ArchiveHeaderSignatureString = System.Text.Encoding.ASCII.GetString(ArchiveHeaderSignatureBytes);
 
         public const uint ArchiveHeaderSignatureUInt32 = 0x1a51504d;
 
@@ -16,7 +16,7 @@ namespace BurnOutSharp.Models.MoPaQ
 
         public static readonly byte[] UserDataSignatureBytes = new byte[] { 0x4d, 0x50, 0x51, 0x1b };
 
-        public const string UserDataSignatureString = "MPQ\x1b";
+        public static readonly string UserDataSignatureString = System.Text.Encoding.ASCII.GetString(UserDataSignatureBytes);
 
         public const uint UserDataSignatureUInt32 = 0x1b51504d;
 
@@ -26,7 +26,7 @@ namespace BurnOutSharp.Models.MoPaQ
 
         public static readonly byte[] HetTableSignatureBytes = new byte[] { 0x48, 0x45, 0x54, 0x1a };
 
-        public const string HetTableSignatureString = "HET\x1a";
+        public static readonly string HetTableSignatureString = System.Text.Encoding.ASCII.GetString(HetTableSignatureBytes);
 
         public const uint HetTableSignatureUInt32 = 0x1a544548;
 
@@ -36,7 +36,7 @@ namespace BurnOutSharp.Models.MoPaQ
 
         public static readonly byte[] BetTableSignatureBytes = new byte[] { 0x42, 0x45, 0x54, 0x1a };
 
-        public const string BetTableSignatureString = "BET\x1a";
+        public static readonly string BetTableSignatureString = System.Text.Encoding.ASCII.GetString(BetTableSignatureBytes);
 
         public const uint BetTableSignatureUInt32 = 0x1a544542;
 
