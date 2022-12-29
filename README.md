@@ -119,7 +119,7 @@ Below is a list of executable packers detected by BurnOutSharp. The three column
 | Armadillo | Yes | No | No |
 | ASPack | Yes | No | No |
 | AutoPlay Media Studio | Yes | No | No |
-| CExe | Yes | No | No |
+| CExe | Yes | No | Yes |
 | dotFuscator | Yes | No | No |
 | EXE Stealth | Yes | No | No |
 | Gentee Installer | Yes | No | No |
