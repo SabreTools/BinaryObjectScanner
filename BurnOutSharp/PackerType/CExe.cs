@@ -105,19 +105,7 @@ namespace BurnOutSharp.PackerType
             {
                 try
                 {
-                    LZ lz = new LZ();
-                    Models.Compression.LZ.State src = lz.OpenFile(new MemoryStream(payload));
-                    MemoryStream dstStream = new MemoryStream();
-                    Models.Compression.LZ.State dst = lz.OpenFile(dstStream);
-                    long read = lz.Copy(src, dst);
-                    if (read < 0)
-                        return null;
-
-                    // Copy the data to the buffer
-                    data = new ReadOnlySpan<byte>(dstStream.GetBuffer(), 0, (int)dstStream.Position).ToArray();
-                    
-                    lz.Close(src);
-                    lz.Close(dst);
+                    data = LZ.Decompress(payload);
                 }
                 catch
                 {

@@ -11,430 +11,95 @@ namespace BurnOutSharp.Compression
     /// <see href="https://github.com/wine-mirror/wine/blob/master/dlls/kernel32/lzexpand.c"/>
     public class LZ
     {
-        /// <summary>
-        /// LZStart   (KERNEL32.@)
-        /// </summary>
-        public LZERROR Start() => LZERROR.LZERROR_OK;
+        #region Constructors
 
         /// <summary>
-        /// Initializes internal decompression buffers, returns lzfiledescriptor.
-        /// (return value the same as hfSrc, if hfSrc is not compressed)
-        /// on failure, returns error code <0
-        /// lzfiledescriptors range from 0x400 to 0x410 (only 16 open files per process)
-        /// 
-        /// since _llseek uses the same types as libc.lseek, we just use the macros of
-        /// libc
+        /// Constructor
         /// </summary>
-        public LZERROR Init(Stream hfSrc, out State lzs)
+        public LZ() { }
+
+        #endregion
+
+        #region Static Methods
+
+        /// <summary>
+        /// Decompress LZ-compressed data
+        /// </summary>
+        /// <param name="compressed">Byte array representing the compressed data</param>
+        /// <returns>Decompressed data as a byte array, null on error</returns>
+        public static byte[] Decompress(byte[] compressed)
         {
-            LZERROR ret = ReadHeader(hfSrc, out FileHeaader head);
-            if (ret != LZERROR.LZERROR_OK)
-            {
-                hfSrc.Seek(0, SeekOrigin.Begin);
-                if (ret == LZERROR.LZERROR_NOT_LZ)
-                {
-                    lzs = new State { RealFD = hfSrc };
-                    return ret;
-                }
-                else
-                {
-                    lzs = null;
-                    return ret;
-                }
-            }
+            // If we have and invalid input
+            if (compressed == null || compressed.Length == 0)
+                return null;
 
-            lzs = new State();
-
-            lzs.RealFD = hfSrc;
-            lzs.LastChar = head.LastChar;
-            lzs.RealLength = head.RealLength;
-
-            lzs.Get = new byte[GETLEN];
-            lzs.GetLen = 0;
-            lzs.GetCur = 0;
-
-            // Yes, preinitialize with spaces
-            lzs.Table = Enumerable.Repeat((byte)' ', LZ_TABLE_SIZE).ToArray();
-
-            // Yes, start 16 byte from the END of the table
-            lzs.CurTabEnt = 0xff0;
-
-            return LZERROR.LZERROR_OK;
+            // Create a memory stream for the input and decompress that
+            var compressedStream = new MemoryStream(compressed);
+            return Decompress(compressedStream);
         }
 
         /// <summary>
-        /// LZDone   (KERNEL32.@)
+        /// Decompress LZ-compressed data
         /// </summary>
-        public void Done() { }
-
-        /// <summary>
-        /// gets the full filename of the compressed file 'in' by opening it
-        /// and reading the header
-        /// 
-        /// "file." is being translated to "file"
-        /// "file.bl_" (with lastchar 'a') is being translated to "file.bla"
-        /// "FILE.BL_" (with lastchar 'a') is being translated to "FILE.BLA"
-        /// </summary>
-        public LZERROR GetExpandedName(string input, out string output)
+        /// <param name="compressed">Stream representing the compressed data</param>
+        /// <returns>Decompressed data as a byte array, null on error</returns>
+        public static byte[] Decompress(Stream compressed)
         {
-            output = null;
+            // If we have and invalid input
+            if (compressed == null || compressed.Length == 0)
+                return null;
 
-            State state = OpenFile(input, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            if (state.Get == null)
-                return LZERROR.LZERROR_NOT_LZ;
+            // Create a new LZ for decompression
+            var lz = new LZ();
 
-            string inputExtension = Path.GetExtension(input).TrimStart('.');
-            if (string.IsNullOrWhiteSpace(inputExtension))
+            // Open the input data
+            var sourceState = lz.Open(compressed, out _);
+            if (sourceState?.Window == null)
+                return null;
+
+            // Create the output data and open it
+            var decompressedStream = new MemoryStream();
+            var destState = lz.Open(decompressedStream, out _);
+            if (destState == null)
+                return null;
+
+            // Decompress the data by copying
+            long read = lz.CopyTo(sourceState, destState, out LZERROR error);
+
+            // Copy the data to the buffer
+            byte[] decompressed;
+            if (read == 0 || (error != LZERROR.LZERROR_OK && error != LZERROR.LZERROR_NOT_LZ))
             {
-                output = Path.GetFileNameWithoutExtension(input);
-                return LZERROR.LZERROR_OK;
+                decompressed = null;
+            }
+            else
+            {
+                int dataEnd = (int)decompressedStream.Position;
+                decompressedStream.Seek(0, SeekOrigin.Begin);
+                decompressed = decompressedStream.ReadBytes(dataEnd);
             }
 
-            if (inputExtension.Length == 1)
-            {
-                if (inputExtension == "_")
-                {
-                    output = $"{Path.GetFileNameWithoutExtension(input)}.{char.ToLower(state.LastChar)}";
-                    return LZERROR.LZERROR_OK;
-                }
-                else
-                {
-                    output = Path.GetFileNameWithoutExtension(input);
-                    return LZERROR.LZERROR_OK;
-                }
-            }
+            // Close the streams
+            lz.Close(sourceState);
+            lz.Close(destState);
 
-            if (!inputExtension.EndsWith("_"))
-            {
-                output = Path.GetFileNameWithoutExtension(input);
-                return LZERROR.LZERROR_OK;
-            }
-
-            bool isLowerCase = char.IsUpper(output[0]);
-            char replacementChar = isLowerCase ? char.ToLower(state.LastChar) : char.ToUpper(state.LastChar);
-            string outputExtension = inputExtension.Substring(0, inputExtension.Length - 1) + replacementChar;
-            output = $"{Path.GetFileNameWithoutExtension(input)}.{outputExtension}";
-            return LZERROR.LZERROR_OK;
+            return decompressed;
         }
 
-        /// <summary>
-        /// LZRead   (KERNEL32.@)
-        /// </summary>
-        public int Read(State lzs, byte[] vbuf, int toread)
-        {
-            int howmuch;
-            byte b;
-            int buf = 0; // vbufPtr
+        #endregion
 
-            howmuch = toread;
-
-            // If we have an uncompressed stream
-            if (lzs.Get == null)
-                return lzs.RealFD.Read(vbuf, 0, toread);
-
-            // The decompressor itself is in a define, cause we need it twice
-            // in this function. (the decompressed byte will be in b)
-            // DECOMPRESS_ONE_BYTE
-            // {
-            //     if (lzs.StringLen != 0)
-            //     {
-            //         b = lzs.Table[lzs.StringPos];
-            //         lzs.StringPos = (lzs.StringPos + 1) & 0xFFF;
-            //         lzs.StringLen--;
-            //     }
-            //     else
-            //     {
-            //         if ((lzs.ByteType & 0x100) == 0)
-            //         {
-            //             if (Get(lzs, out b) != LZERROR.LZERROR_OK)
-            //                 return toread - howmuch;
-
-            //             lzs.ByteType = (ushort)(b | 0xFF00);
-            //         }
-            //         if ((lzs.ByteType & 1) != 0)
-            //         {
-            //             if (Get(lzs, out b) != LZERROR.LZERROR_OK)
-            //                 return toread - howmuch;
-            //         }
-            //         else
-            //         {
-            //             if (Get(lzs, out byte b1) != LZERROR.LZERROR_OK)
-            //                 return toread - howmuch;
-            //             if (Get(lzs, out byte b2) != LZERROR.LZERROR_OK)
-            //                 return toread - howmuch;
-
-            //             // Format:
-            //             // b1 b2
-            //             // AB CD
-            //             // where CAB is the stringoffset in the table
-            //             // and D+3 is the len of the string
-            //             lzs.StringPos = (uint)(b1 | ((b2 & 0xf0) << 4));
-            //             lzs.StringLen = (byte)((b2 & 0xf) + 2);
-
-            //             // 3, but we use a byte already below...
-            //             b = lzs.Table[lzs.StringPos];
-            //             lzs.StringPos = (lzs.StringPos + 1) & 0xFFF;
-            //         }
-
-            //         lzs.ByteType >>= 1;
-            //     }
-
-            //     // Store b in table
-            //     lzs.Table[lzs.CurTabEnt++] = b;
-            //     lzs.CurTabEnt &= 0xFFF;
-            //     lzs.RealCurrent++;
-            // }
-
-            // If someone has seeked, we have to bring the decompressor to that position
-            if (lzs.RealCurrent != lzs.RealWanted)
-            {
-                // If the wanted position is before the current position
-                // I see no easy way to unroll .. We have to restart at
-                // the beginning. *sigh*
-                if (lzs.RealCurrent > lzs.RealWanted)
-                {
-                    // Flush decompressor state
-                    lzs.RealFD.Seek(LZ_HEADER_LEN, SeekOrigin.Begin);
-                    GetFlush(lzs);
-                    lzs.RealCurrent = 0;
-                    lzs.ByteType = 0;
-                    lzs.StringLen = 0;
-                    lzs.Table = Enumerable.Repeat((byte)' ', LZ_TABLE_SIZE).ToArray();
-                    lzs.CurTabEnt = 0xFF0;
-                }
-
-                while (lzs.RealCurrent < lzs.RealWanted)
-                {
-                    // DECOMPRESS_ONE_BYTE -- TODO: Make into helper method; original code is a DEFINE
-                    if (lzs.StringLen != 0)
-                    {
-                        b = lzs.Table[lzs.StringPos];
-                        lzs.StringPos = (lzs.StringPos + 1) & 0xFFF;
-                        lzs.StringLen--;
-                    }
-                    else
-                    {
-                        if ((lzs.ByteType & 0x100) == 0)
-                        {
-                            if (Get(lzs, out b) != LZERROR.LZERROR_OK)
-                                return toread - howmuch;
-
-                            lzs.ByteType = (ushort)(b | 0xFF00);
-                        }
-                        if ((lzs.ByteType & 1) != 0)
-                        {
-                            if (Get(lzs, out b) != LZERROR.LZERROR_OK)
-                                return toread - howmuch;
-                        }
-                        else
-                        {
-                            if (Get(lzs, out byte b1) != LZERROR.LZERROR_OK)
-                                return toread - howmuch;
-                            if (Get(lzs, out byte b2) != LZERROR.LZERROR_OK)
-                                return toread - howmuch;
-
-                            // Format:
-                            // b1 b2
-                            // AB CD
-                            // where CAB is the stringoffset in the table
-                            // and D+3 is the len of the string
-                            lzs.StringPos = (uint)(b1 | ((b2 & 0xf0) << 4));
-                            lzs.StringLen = (byte)((b2 & 0xf) + 2);
-
-                            // 3, but we use a byte already below...
-                            b = lzs.Table[lzs.StringPos];
-                            lzs.StringPos = (lzs.StringPos + 1) & 0xFFF;
-                        }
-
-                        lzs.ByteType >>= 1;
-                    }
-
-                    // Store b in table
-                    lzs.Table[lzs.CurTabEnt++] = b;
-                    lzs.CurTabEnt &= 0xFFF;
-                    lzs.RealCurrent++;
-                }
-            }
-
-            while (howmuch > 0)
-            {
-                // DECOMPRESS_ONE_BYTE -- TODO: Make into helper method; original code is a DEFINE
-                if (lzs.StringLen != 0)
-                {
-                    b = lzs.Table[lzs.StringPos];
-                    lzs.StringPos = (lzs.StringPos + 1) & 0xFFF;
-                    lzs.StringLen--;
-                }
-                else
-                {
-                    if ((lzs.ByteType & 0x100) == 0)
-                    {
-                        if (Get(lzs, out b) != LZERROR.LZERROR_OK)
-                            return toread - howmuch;
-
-                        lzs.ByteType = (ushort)(b | 0xFF00);
-                    }
-                    if ((lzs.ByteType & 1) != 0)
-                    {
-                        if (Get(lzs, out b) != LZERROR.LZERROR_OK)
-                            return toread - howmuch;
-                    }
-                    else
-                    {
-                        if (Get(lzs, out byte b1) != LZERROR.LZERROR_OK)
-                            return toread - howmuch;
-                        if (Get(lzs, out byte b2) != LZERROR.LZERROR_OK)
-                            return toread - howmuch;
-
-                        // Format:
-                        // b1 b2
-                        // AB CD
-                        // where CAB is the stringoffset in the table
-                        // and D+3 is the len of the string
-                        lzs.StringPos = (uint)(b1 | ((b2 & 0xf0) << 4));
-                        lzs.StringLen = (byte)((b2 & 0xf) + 2);
-
-                        // 3, but we use a byte already below...
-                        b = lzs.Table[lzs.StringPos];
-                        lzs.StringPos = (lzs.StringPos + 1) & 0xFFF;
-                    }
-
-                    lzs.ByteType >>= 1;
-                }
-
-                // Store b in table
-                lzs.Table[lzs.CurTabEnt++] = b;
-                lzs.CurTabEnt &= 0xFFF;
-                lzs.RealCurrent++;
-
-                lzs.RealWanted++;
-                vbuf[buf++] = b;
-                howmuch--;
-            }
-
-            return toread;
-        }
+        #region State Management
 
         /// <summary>
-        /// LZSeek   (KERNEL32.@)
+        /// Opens a stream and creates a state from it
         /// </summary>
-        public long Seek(State lzs, long offset, SeekOrigin type)
+        /// <param name="stream">Source stream to create a state from</stream>
+        /// <param name="error">Output representing the last error</param>
+        /// <returns>An initialized State, null on error</returns>
+        /// <remarks>Uncompressed streams are represented by a State with no buffer</remarks>
+        public State Open(Stream stream, out LZERROR error)
         {
-            // Not compressed? Just use normal Seek
-            if (lzs.Get == null)
-                return lzs.RealFD.Seek(offset, type);
-
-            long newwanted = lzs.RealWanted;
-            switch (type)
-            {
-                case SeekOrigin.Current:
-                    newwanted += offset;
-                    break;
-                case SeekOrigin.End:
-                    newwanted = lzs.RealLength - offset;
-                    break;
-                default:
-                    newwanted = offset;
-                    break;
-            }
-
-            if (newwanted > lzs.RealLength)
-                return (long)LZERROR.LZERROR_BADVALUE;
-            if (newwanted < 0)
-                return (long)LZERROR.LZERROR_BADVALUE;
-
-            lzs.RealWanted = (uint)newwanted;
-            return newwanted;
-        }
-
-        /// <summary>
-        /// Copies everything from src to dest
-        /// if src is a LZ compressed file, it will be uncompressed.
-        /// will return the number of bytes written to dest or errors.
-        /// </summary>
-        public long Copy(State src, State dest)
-        {
-            int usedlzinit = 0, ret, wret;
-            State oldsrc = src;
-            Stream srcfd;
-            DateTime filetime;
-            State lzs;
-
-            const int BUFLEN = 1000;
-            byte[] buf = new byte[BUFLEN];
-
-            // we need that weird typedef, for i can't seem to get function pointer
-            // casts right. (Or they probably just do not like WINAPI in general)
-            //typedef UINT(WINAPI * _readfun)(HFILE, LPVOID, UINT);
-
-            if (src.Get == null)
-            {
-                LZERROR err = Init(src.RealFD, out src);
-                if (err < LZERROR.LZERROR_NOT_LZ)
-                    return (long)LZERROR.LZERROR_NOT_LZ;
-                
-                usedlzinit = 1;
-            }
-
-            // Not compressed? just copy
-            if (src.Get == null)
-            {
-                src.RealFD.CopyTo(dest.RealFD);
-                return src.RealFD.Length;
-            }
-
-            long len = 0;
-            while (true)
-            {
-                ret = Read(src, buf, BUFLEN);
-                if (ret <= 0)
-                {
-                    if (ret == (int)LZERROR.LZERROR_NOT_LZ)
-                        break;
-                    if (ret == (int)LZERROR.LZERROR_BADINHANDLE)
-                        return (long)LZERROR.LZERROR_READ;
-                    return ret;
-                }
-
-                len += ret;
-                dest.RealFD.Write(buf, 0, ret);
-            }
-
-            // Maintain the timestamp of the source file to the destination file
-            // srcfd = (!(lzs = GET_LZ_STATE(src))) ? src : lzs->realfd;
-            // GetFileTime( LongToHandle(srcfd), NULL, NULL, &filetime );
-            // SetFileTime( LongToHandle(dest), NULL, NULL, &filetime );
-
-            // Close handle
-            if (usedlzinit != 0)
-                Close(src);
-
-            return len;
-        }
-
-        /// <summary>
-        /// Opens a file. If not compressed, open it as a normal file.
-        /// </summary>
-        public State OpenFile(string fileName, FileMode mode, FileAccess access, FileShare fileShare = FileShare.ReadWrite)
-        {
-            try
-            {
-                Stream stream = File.Open(fileName, mode, access, fileShare);
-                LZERROR error = Init(stream, out State lzs);
-                if (error == LZERROR.LZERROR_OK || error == LZERROR.LZERROR_NOT_LZ)
-                    return lzs;
-            }
-            catch { }
-
-            return null;
-        }
-
-        /// <summary>
-        /// Opens a file. If not compressed, open it as a normal file.
-        /// </summary>
-        public State OpenFile(Stream stream)
-        {
-            LZERROR error = Init(stream, out State lzs);
+            State lzs = Init(stream, out error);
             if (error == LZERROR.LZERROR_OK || error == LZERROR.LZERROR_NOT_LZ)
                 return lzs;
 
@@ -442,71 +107,424 @@ namespace BurnOutSharp.Compression
         }
 
         /// <summary>
-        /// Closes a state
+        /// Closes a state by invalidating the source
         /// </summary>
+        /// <param name="stream">State object to close</stream>
         public void Close(State state)
         {
-            // TODO: Figure out if this is effectively all
-            state?.RealFD?.Close();
+            try
+            {
+                state?.Source?.Close();
+            }
+            catch { }
+        }
+
+        /// <summary>
+        /// Initializes internal decompression buffers
+        /// </summary>
+        /// <param name="source">Input stream to create a state from</param>
+        /// <param name="error">Output representing the last error</param>
+        /// <returns>An initialized State, null on error</returns>
+        /// <remarks>Uncompressed streams are represented by a State with no buffer</remarks>
+        public State Init(Stream source, out LZERROR error)
+        {
+            // If we have an invalid source
+            if (source == null)
+            {
+                error = LZERROR.LZERROR_BADVALUE;
+                return null;
+            }
+
+            // Attempt to read the header
+            var fileHeader = ParseFileHeader(source, out error);
+
+            // If we had a valid but uncompressed stream
+            if (error == LZERROR.LZERROR_NOT_LZ)
+            {
+                source.Seek(0, SeekOrigin.Begin);
+                return new State { Source = source };
+            }
+
+            // If we had any error
+            else if (error != LZERROR.LZERROR_OK)
+            {
+                source.Seek(0, SeekOrigin.Begin);
+                return null;
+            }
+
+            // Initialize the table with all spaces
+            byte[] table = Enumerable.Repeat((byte)' ', LZ_TABLE_SIZE).ToArray();
+
+            // Build the state
+            var state = new State
+            {
+                Source = source,
+                LastChar = fileHeader.LastChar,
+                RealLength = fileHeader.RealLength,
+
+                Window = new byte[GETLEN],
+                WindowLength = 0,
+                WindowCurrent = 0,
+
+                Table = table,
+                CurrentTableEntry = 0xff0,
+            };
+
+            // Return the state
+            return state;
+        }
+
+        #endregion
+
+        #region File Name Handling
+
+        /// <summary>
+        /// Reconstructs the full filename of the compressed file
+        /// </summary>
+        public string GetExpandedName(string input, out LZERROR error)
+        {
+            // Try to open the file as a compressed stream
+            var fileStream = File.Open(input, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            var state = Open(fileStream, out error);
+            if (state?.Window == null)
+                return null;
+
+            // Get the extension for modification
+            string inputExtension = Path.GetExtension(input).TrimStart('.');
+
+            // If we have no extension
+            if (string.IsNullOrWhiteSpace(inputExtension))
+                return Path.GetFileNameWithoutExtension(input);
+
+            // If we have an extension of length 1
+            if (inputExtension.Length == 1)
+            {
+                if (inputExtension == "_")
+                    return $"{Path.GetFileNameWithoutExtension(input)}.{char.ToLower(state.LastChar)}";
+                else
+                    return Path.GetFileNameWithoutExtension(input);
+            }
+
+            // If we have an extension that doesn't end in an underscore
+            if (!inputExtension.EndsWith("_"))
+                return Path.GetFileNameWithoutExtension(input);
+
+            // Build the new filename
+            bool isLowerCase = char.IsUpper(input[0]);
+            char replacementChar = isLowerCase ? char.ToLower(state.LastChar) : char.ToUpper(state.LastChar);
+            string outputExtension = inputExtension.Substring(0, inputExtension.Length - 1) + replacementChar;
+            return $"{Path.GetFileNameWithoutExtension(input)}.{outputExtension}";
+        }
+
+        #endregion
+
+        #region Stream Functionality
+
+        /// <summary>
+        /// Attempt to read the specified number of bytes from the State
+        /// </summary>
+        /// <param name="source">Source State to read from</param>
+        /// <param name="buffer">Byte buffer to read into</param>
+        /// <param name="offset">Offset within the buffer to read</param>
+        /// <param name="count">Number of bytes to read</param>
+        /// <param name="error">Output representing the last error</param>
+        /// <returns>The number of bytes read, if possible</returns>
+        /// <remarks>
+        /// If the source data is compressed, this will decompress the data.
+        /// If the source data is uncompressed, it is copied directly
+        /// </remarks>
+        public int Read(State source, byte[] buffer, int offset, int count, out LZERROR error)
+        {
+            // If we have an uncompressed input
+            if (source.Window == null)
+            {
+                error = LZERROR.LZERROR_NOT_LZ;
+                return source.Source.Read(buffer, offset, count);
+            }
+
+            // If seeking has occurred, we need to perform the seek
+            if (source.RealCurrent != source.RealWanted)
+            {
+                // If the requested position is before the current, we need to reset
+                if (source.RealCurrent > source.RealWanted)
+                {
+                    // Reset the decompressor state
+                    source.Source.Seek(LZ_HEADER_LEN, SeekOrigin.Begin);
+                    FlushWindow(source);
+                    source.RealCurrent = 0;
+                    source.ByteType = 0;
+                    source.StringLength = 0;
+                    source.Table = Enumerable.Repeat((byte)' ', LZ_TABLE_SIZE).ToArray();
+                    source.CurrentTableEntry = 0xFF0;
+                }
+
+                // While we are not at the right offset
+                while (source.RealCurrent < source.RealWanted)
+                {
+                    _ = DecompressByte(source, out error);
+                    if (error != LZERROR.LZERROR_OK)
+                        return 0;
+                }
+            }
+
+            int bytesRemaining = count;
+            while (bytesRemaining > 0)
+            {
+                byte b = DecompressByte(source, out error);
+                if (error != LZERROR.LZERROR_OK)
+                    return count - bytesRemaining;
+
+                source.RealWanted++;
+                buffer[offset++] = b;
+                bytesRemaining--;
+            }
+
+            error = LZERROR.LZERROR_OK;
+            return count;
+        }
+
+        /// <summary>
+        /// Perform a seek on the source data
+        /// </summary>
+        /// <param name="state">State to seek within</param>
+        /// <param name="offset">Data offset to seek to</state>
+        /// <param name="seekOrigin">SeekOrigin representing how to seek</state>
+        /// <param name="error">Output representing the last error</param>
+        /// <returns>The position that was seeked to, -1 on error</returns>
+        public long Seek(State state, long offset, SeekOrigin seekOrigin, out LZERROR error)
+        {
+            // If we have an invalid state
+            if (state == null)
+            {
+                error = LZERROR.LZERROR_BADVALUE;
+                return -1;
+            }
+
+            // If we have an uncompressed input
+            if (state.Window == null)
+            {
+                error = LZERROR.LZERROR_NOT_LZ;
+                return state.Source.Seek(offset, seekOrigin);
+            }
+
+            // Otherwise, generate the new offset
+            long newWanted = state.RealWanted;
+            switch (seekOrigin)
+            {
+                case SeekOrigin.Current:
+                    newWanted += offset;
+                    break;
+                case SeekOrigin.End:
+                    newWanted = state.RealLength - offset;
+                    break;
+                default:
+                    newWanted = offset;
+                    break;
+            }
+
+            // If we have an invalid new offset
+            if (newWanted < 0 && newWanted > state.RealLength)
+            {
+                error = LZERROR.LZERROR_BADVALUE;
+                return -1;
+            }
+
+            error = LZERROR.LZERROR_OK;
+            state.RealWanted = (uint)newWanted;
+            return newWanted;
+        }
+
+        /// <summary>
+        /// Copies all data from the source to the destination
+        /// </summary>
+        /// <param name="source">Source State to read from</param>
+        /// <param name="dest">Destination state to write to</param>
+        /// <param name="error">Output representing the last error</param>
+        /// <returns>The number of bytes written, -1 on error</returns>
+        /// <remarks>
+        /// If the source data is compressed, this will decompress the data.
+        /// If the source data is uncompressed, it is copied directly
+        /// </remarks>
+        public long CopyTo(State source, State dest, out LZERROR error)
+        {
+            error = LZERROR.LZERROR_OK;
+
+            // If we have an uncompressed input
+            if (source.Window == null)
+            {
+                source.Source.CopyTo(dest.Source);
+                return source.Source.Length;
+            }
+
+            // Loop until we have read everything
+            long length = 0;
+            while (true)
+            {
+                // Read at most 1000 bytes
+                byte[] buf = new byte[1000];
+                int read = Read(source, buf, 0, buf.Length, out error);
+
+                // If we had an error
+                if (read == 0)
+                {
+                    if (error == LZERROR.LZERROR_NOT_LZ)
+                    {
+                        error = LZERROR.LZERROR_OK;
+                        break;
+                    }
+                    else if (error != LZERROR.LZERROR_OK)
+                    {
+                        error = LZERROR.LZERROR_READ;
+                        return 0;
+                    }
+                }
+
+                // Otherwise, append the length read and write the data
+                length += read;
+                dest.Source.Write(buf, 0, read);
+            }
+
+            return length;
+        }
+
+        /// <summary>
+        /// Decompress a single byte of data from the source State
+        /// </summary>
+        /// <param name="source">Source State to read from</param>
+        /// <param name="error">Output representing the last error</param>
+        /// <returns>The read byte, if possible</returns>
+        private byte DecompressByte(State source, out LZERROR error)
+        {
+            byte b;
+
+            if (source.StringLength != 0)
+            {
+                b = source.Table[source.StringPosition];
+                source.StringPosition = (source.StringPosition + 1) & 0xFFF;
+                source.StringLength--;
+            }
+            else
+            {
+                if ((source.ByteType & 0x100) == 0)
+                {
+                    b = ReadByte(source, out error);
+                    if (error != LZERROR.LZERROR_OK)
+                        return 0;
+
+                    source.ByteType = (ushort)(b | 0xFF00);
+                }
+                if ((source.ByteType & 1) != 0)
+                {
+                    b = ReadByte(source, out error);
+                    if (error != LZERROR.LZERROR_OK)
+                        return 0;
+                }
+                else
+                {
+                    byte b1 = ReadByte(source, out error);
+                    if (error != LZERROR.LZERROR_OK)
+                        return 0;
+
+                    byte b2 = ReadByte(source, out error);
+                    if (error != LZERROR.LZERROR_OK)
+                        return 0;
+
+                    // Format:
+                    // b1 b2
+                    // AB CD
+                    // where CAB is the stringoffset in the table
+                    // and D+3 is the len of the string
+                    source.StringPosition = (uint)(b1 | ((b2 & 0xf0) << 4));
+                    source.StringLength = (byte)((b2 & 0xf) + 2);
+
+                    // 3, but we use a byte already below...
+                    b = source.Table[source.StringPosition];
+                    source.StringPosition = (source.StringPosition + 1) & 0xFFF;
+                }
+
+                source.ByteType >>= 1;
+            }
+
+            // Store b in table
+            source.Table[source.CurrentTableEntry++] = b;
+            source.CurrentTableEntry &= 0xFFF;
+            source.RealCurrent++;
+
+            error = LZERROR.LZERROR_OK;
+            return b;
         }
 
         /// <summary>
         /// Reads one compressed byte, including buffering
         /// </summary>
-        private LZERROR Get(State lzs, out byte b)
+        /// <param name="state">State to read using</param>
+        /// <param name="error">Output representing the last error</param>
+        /// <returns>Byte value that was read, if possible</returns>
+        private byte ReadByte(State state, out LZERROR error)
         {
-            if (lzs.GetCur < lzs.GetLen)
+            // If we have enough data in the buffer
+            if (state.WindowCurrent < state.WindowLength)
             {
-                b = lzs.Get[lzs.GetCur++];
-                return LZERROR.LZERROR_OK;
+                error = LZERROR.LZERROR_OK;
+                return state.Window[state.WindowCurrent++];
             }
-            else
+
+            // Otherwise, read from the source
+            int ret = state.Source.Read(state.Window, 0, GETLEN);
+            if (ret == 0)
             {
-                int ret = lzs.RealFD.Read(lzs.Get, 0, GETLEN);
-                if (ret == 0)
-                {
-                    b = 0;
-                    return LZERROR.LZERROR_NOT_LZ;
-                }
-
-                lzs.GetLen = (uint)ret;
-                lzs.GetCur = 1;
-                b = lzs.Get[0];
-                return LZERROR.LZERROR_OK;
+                error = LZERROR.LZERROR_NOT_LZ;
+                return 0;
             }
-        }
 
-        private void GetFlush(State lzs)
-        {
-            lzs.GetCur = lzs.GetLen;
+            // Reset the window state
+            state.WindowLength = (uint)ret;
+            state.WindowCurrent = 1;
+            error = LZERROR.LZERROR_OK;
+            return state.Window[0];
         }
 
         /// <summary>
-        /// Internal function, reads lzheader
+        /// Reset the current window position to the length
         /// </summary>
-        private LZERROR ReadHeader(Stream fd, out FileHeaader head)
+        /// <param name="state">State to flush</param>
+        private void FlushWindow(State state)
         {
-            // Create the file header
-            head = new FileHeaader();
-
-            if (fd == null || !fd.CanSeek || !fd.CanRead)
-                return LZERROR.LZERROR_BADINHANDLE;
-
-            // Ensure we're at the start of the stream
-            fd.Seek(0, SeekOrigin.Begin);
-
-            byte[] magic = fd.ReadBytes(LZ_MAGIC_LEN);
-            head.Magic = Encoding.ASCII.GetString(magic);
-            if (head.Magic != MagicString)
-                return LZERROR.LZERROR_NOT_LZ;
-
-            head.CompressionType = fd.ReadByteValue();
-            if (head.CompressionType != (byte)'A')
-                return LZERROR.LZERROR_UNKNOWNALG;
-
-            head.LastChar = (char)fd.ReadByteValue();
-            head.RealLength = fd.ReadUInt32();
-            return LZERROR.LZERROR_OK;
+            state.WindowCurrent = state.WindowLength;
         }
+
+        /// <summary>
+        /// Parse a Stream into a file header
+        /// </summary>
+        /// <param name="data">Stream to parse</param>
+        /// <param name="error">Output representing the last error</param>
+        /// <returns>Filled file header on success, null on error</returns>
+        private FileHeaader ParseFileHeader(Stream data, out LZERROR error)
+        {
+            error = LZERROR.LZERROR_OK;
+            FileHeaader fileHeader = new FileHeaader();
+
+            byte[] magic = data.ReadBytes(LZ_MAGIC_LEN);
+            fileHeader.Magic = Encoding.ASCII.GetString(magic);
+            if (fileHeader.Magic != MagicString)
+            {
+                error = LZERROR.LZERROR_NOT_LZ;
+                return null;
+            }
+
+            fileHeader.CompressionType = data.ReadByteValue();
+            if (fileHeader.CompressionType != (byte)'A')
+            {
+                error = LZERROR.LZERROR_UNKNOWNALG;
+                return null;
+            }
+
+            fileHeader.LastChar = (char)data.ReadByteValue();
+            fileHeader.RealLength = data.ReadUInt32();
+
+            return fileHeader;
+        }
+
+        #endregion
     }
 }

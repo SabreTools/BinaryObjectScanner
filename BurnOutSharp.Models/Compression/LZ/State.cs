@@ -5,27 +5,27 @@ namespace BurnOutSharp.Models.Compression.LZ
     public sealed class State
     {
         /// <summary>
-        /// The real filedescriptor
+        /// Internal backing stream
         /// </summary>
-        public Stream RealFD { get; set; }
+        public Stream Source { get; set; }
 
         /// <summary>
-        /// The last char of the filename
+        /// The last char of the filename for replacement
         /// </summary>
         public char LastChar { get; set; }
 
         /// <summary>
-        /// The decompressed length of the file
+        /// Decompressed length of the file
         /// </summary>
         public uint RealLength { get; set; }
 
         /// <summary>
-        /// The position the decompressor currently is
+        /// Position the decompressor currently is
         /// </summary>
         public uint RealCurrent { get; set; }
 
         /// <summary>
-        /// The position the user wants to read from
+        /// Position the user wants to read from
         /// </summary>
         public uint RealWanted { get; set; }
 
@@ -37,17 +37,17 @@ namespace BurnOutSharp.Models.Compression.LZ
         /// <summary>
         /// CURrent TABle ENTry
         /// </summary>
-        public uint CurTabEnt { get; set; }
+        public uint CurrentTableEntry { get; set; }
 
         /// <summary>
         /// Length and position of current string
         /// </summary>
-        public byte StringLen { get; set; }
+        public byte StringLength { get; set; }
 
         /// <summary>
         /// From stringtable
         /// </summary>
-        public uint StringPos { get; set; }
+        public uint StringPosition { get; set; }
 
         /// <summary>
         /// Bitmask within blocks
@@ -57,16 +57,16 @@ namespace BurnOutSharp.Models.Compression.LZ
         /// <summary>
         /// GETLEN bytes
         /// </summary>
-        public byte[] Get { get; set; }
+        public byte[] Window { get; set; }
 
         /// <summary>
         /// Current read
         /// </summary>
-        public uint GetCur { get; set; }
+        public uint WindowCurrent { get; set; }
 
         /// <summary>
         /// Length last got
         /// </summary>
-        public uint GetLen { get; set; }
+        public uint WindowLength { get; set; }
     }
 }
