@@ -35,6 +35,10 @@ namespace BurnOutSharp.FileType
         public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, Stream stream, string file)
         {
 #if NET6_0_OR_GREATER
+            // TODO: LibMSPackSharp still has issues with certain CAB files
+            // TODO: Re-enable CAB extraction for .NET 6.0 once LibMSPackSharp is fixed or an alternative is found
+            return null;
+
             // If the cab file itself fails
             try
             {
