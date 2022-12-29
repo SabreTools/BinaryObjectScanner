@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using BurnOutSharp.Compression;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
 using BurnOutSharp.Wrappers;
@@ -75,8 +76,8 @@ namespace BurnOutSharp.PackerType
             // Determine which compression was used
             bool zlib = pex.FindResourceByNamedType("99, 1").Any();
 
-            // Set the otuput data to write
-            byte[] data = null;
+            // Create the output data buffer
+            byte[] data;
 
             // If we had the decompression DLL included, it's zlib
             if (zlib)
@@ -104,7 +105,19 @@ namespace BurnOutSharp.PackerType
             {
                 try
                 {
-                    // TODO: Implement LZ decompression
+                    LZ lz = new LZ();
+                    Models.Compression.LZ.State src = lz.OpenFile(new MemoryStream(payload));
+                    MemoryStream dstStream = new MemoryStream();
+                    Models.Compression.LZ.State dst = lz.OpenFile(dstStream);
+                    long read = lz.Copy(src, dst);
+                    if (read < 0)
+                        return null;
+
+                    // Copy the data to the buffer
+                    data = new ReadOnlySpan<byte>(dstStream.GetBuffer(), 0, (int)dstStream.Position).ToArray();
+                    
+                    lz.Close(src);
+                    lz.Close(dst);
                 }
                 catch
                 {
