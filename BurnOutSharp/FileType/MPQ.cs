@@ -2,7 +2,7 @@
 using System.Collections.Concurrent;
 using System.IO;
 using BurnOutSharp.Interfaces;
-#if NETSTANDARD2_0
+#if NET48
 using StormLibSharp;
 #endif
 using static BurnOutSharp.Utilities.Dictionary;

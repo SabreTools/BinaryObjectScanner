@@ -29,15 +29,18 @@ before_build:
 - nuget restore
 
 # build step
-build:
-  verbosity: minimal
-  project: BurnOutSharp.sln
-
-# post-build step
-after_build:
-- cd Test\bin\Debug
-- 7z a BurnOutSharp_net48.zip net48\*
-- 7z a BurnOutSharp_net6.0.zip net6.0\*
+build_script:
+  - cmd: dotnet restore
+  # .NET Framework 4.8
+  - cmd: dotnet build --framework net48
+  # .NET 6.0, Windows x86
+  - cmd: dotnet publish Test\Test.csproj --framework net6.0 --runtime win-x86 --self-contained true -p:PublishSingleFile=true
+  # .NET 6.0, Windows x64
+  - cmd: dotnet publish Test\Test.csproj --framework net6.0 --runtime win-x64 --self-contained true -p:PublishSingleFile=true
+  # .NET 6.0, Linux x64
+  - cmd: dotnet publish Test\Test.csproj --framework net6.0 --runtime linux-x64 --self-contained true -p:PublishSingleFile=true
+  # .NET 6.0, OSX x64
+  - cmd: dotnet publish Test\Test.csproj --framework net6.0 --runtime osx-x64 --self-contained true -p:PublishSingleFile=true
 
 # success/failure tracking
 on_success:
@@ -49,7 +52,18 @@ on_failure:
 
 # artifact linking
 artifacts:
-- path: Test\bin\Debug\BurnOutSharp_net48.zip
+- path: Test\bin\Debug\net48
   name: BurnOutSharp (.NET Framework 4.8)
-- path: Test\bin\Debug\BurnOutSharp_net6.0.zip
-  name: BurnOutSharp (.NET 6.0)
+  type: zip
+- path: Test\bin\Debug\net6.0\win-x86\publish
+  name: BurnOutSharp (.NET 6.0, Windows x86)
+  type: zip
+- path: Test\bin\Debug\net6.0\win-x64\publish
+  name: BurnOutSharp (.NET 6.0, Windows x64)
+  type: zip
+- path: Test\bin\Debug\net6.0\linux-x64\publish
+  name: BurnOutSharp (.NET 6.0, Linux x64)
+  type: zip
+- path: Test\bin\Debug\net6.0\osx-x64\publish
+  name: BurnOutSharp (.NET 6.0, OSX x64)
+  type: zip

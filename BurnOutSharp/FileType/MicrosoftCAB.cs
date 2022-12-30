@@ -2,7 +2,7 @@
 using System.Collections.Concurrent;
 using System.IO;
 using BurnOutSharp.Interfaces;
-#if NETSTANDARD2_0
+#if NET48
 using WixToolset.Dtf.Compression;
 using WixToolset.Dtf.Compression.Cab;
 #elif NET6_0_OR_GREATER
