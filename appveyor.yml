@@ -13,8 +13,6 @@ environment:
   EnableNuGetPackageRestore: true
 
 # msbuild configuration
-platform:
-- Any CPU
 configuration:
 - Debug
 
