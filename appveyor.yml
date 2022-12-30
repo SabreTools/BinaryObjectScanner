@@ -36,6 +36,7 @@ build_script:
   - cmd: dotnet publish Test\Test.csproj --framework net6.0 --runtime osx-x64 --self-contained true -p:PublishSingleFile=true
 
 # post-build script
+after_build:
   - cmd: cd %APPVEYOR_BUILD_FOLDER%\Test\bin\Debug\net48
   - cmd: 7z a -tzip %APPVEYOR_BUILD_FOLDER%\BurnOutSharp_net48.zip *
   - cmd: cd %APPVEYOR_BUILD_FOLDER%\Test\bin\Debug\net6.0\win-x86\publish\
