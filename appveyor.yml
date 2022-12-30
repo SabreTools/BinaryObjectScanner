@@ -32,7 +32,7 @@ before_build:
 build_script:
   - cmd: dotnet restore
   # .NET Framework 4.8
-  - cmd: dotnet build --framework net48
+  - cmd: dotnet build Test\Test.csproj --framework net48
   # .NET 6.0, Windows x86
   - cmd: dotnet publish Test\Test.csproj --framework net6.0 --runtime win-x86 --self-contained true -p:PublishSingleFile=true
   # .NET 6.0, Windows x64
