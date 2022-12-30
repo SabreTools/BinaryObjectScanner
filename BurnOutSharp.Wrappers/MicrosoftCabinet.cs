@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace BurnOutSharp.Wrappers
 {
-    public class MicrosoftCabinet : WrapperBase
+    public partial class MicrosoftCabinet : WrapperBase
     {
         #region Pass-Through Properties
 

@@ -300,7 +300,7 @@ namespace BurnOutSharp.Builders
 
                 // Try to parse the resource directory table
                 data.Seek(resourceTableAddress, SeekOrigin.Begin);
-                var resourceDirectoryTable = ParseResourceDirectoryTable(data, data.Position, executable.SectionTable, optionalHeader.ResourceTable.Size, true);
+                var resourceDirectoryTable = ParseResourceDirectoryTable(data, data.Position, executable.SectionTable, true);
                 if (resourceDirectoryTable == null)
                     return null;
 
@@ -1195,10 +1195,9 @@ namespace BurnOutSharp.Builders
         /// <param name="data">Stream to parse</param>
         /// <param name="initialOffset">Initial offset to use in address comparisons</param>
         /// <param name="sections">Section table to use for virtual address translation</param>
-        /// <param name="size">Indicates the size of the section, only used for top-level</param>
         /// <param name="topLevel">Indicates if this is the top level or not</param>
         /// <returns>Filled resource directory table on success, null on error</returns>
-        private static ResourceDirectoryTable ParseResourceDirectoryTable(Stream data, long initialOffset, SectionHeader[] sections, uint size = 0, bool topLevel = false)
+        private static ResourceDirectoryTable ParseResourceDirectoryTable(Stream data, long initialOffset, SectionHeader[] sections, bool topLevel = false)
         {
             // TODO: Use marshalling here instead of building
             var resourceDirectoryTable = new ResourceDirectoryTable();
@@ -1293,6 +1292,13 @@ namespace BurnOutSharp.Builders
             if (!topLevel)
                 return resourceDirectoryTable;
 
+            // If we're not aligned to a section
+            if (!sections.Any(s => s.PointerToRawData == initialOffset))
+                return resourceDirectoryTable;
+
+            // Get the section size
+            int size = (int)sections.First(s => s.PointerToRawData == initialOffset).SizeOfRawData;
+
             // Align to the 1024-byte boundary
             while (data.Position - initialOffset < size && data.Position % 1024 != 0)
                 _ = data.ReadByteValue();
@@ -1301,7 +1307,7 @@ namespace BurnOutSharp.Builders
             if (data.Position - initialOffset < size)
             {
                 Array.Resize(ref resourceDirectoryTable.Entries, totalEntryCount + 1);
-                int length = (int)(data.Position - initialOffset);
+                int length = (int)(size - data.Position - initialOffset);
 
                 resourceDirectoryTable.Entries[totalEntryCount] = new ResourceDirectoryEntry
                 {

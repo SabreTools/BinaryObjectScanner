@@ -115,31 +115,32 @@ Below is a list of protections detected by BurnOutSharp. The two columns explain
 
 Below is a list of executable packers detected by BurnOutSharp. The three columns explain what sort of checks are performed to determine how the protection is detected as well as if the contents can be extracted.
 
-| Protection Name | Content Check | Path Check | Extractable |
-| --------------- | ------------- | ---------- | ----------- |
-| 7-zip SFX | Yes | No | No |
-| Advanced Installer / Caphyon Advanced Installer | Yes | No | No |
-| Armadillo | Yes | No | No |
-| ASPack | Yes | No | No |
-| AutoPlay Media Studio | Yes | No | No |
-| CExe | Yes | No | Yes |
-| dotFuscator | Yes | No | No |
-| EXE Stealth | Yes | No | No |
-| Gentee Installer | Yes | No | No |
-| Inno Setup | Yes | No | No |
-| InstallAnywhere | Yes | No | No |
-| Installer VISE | Yes | No | No |
-| Intel Installation Framework | Yes | No | No |
-| Microsoft CAB SFX | Yes | No | No |
-| NSIS | Yes | No | No |
-| PECompact | Yes | No | No |
-| PEtite | Yes | No | No |
-| Setup Factory | Yes | No | No |
-| Shrinker | Yes | No | No |
-| UPX and UPX (NOS Variant) | Yes | No | No |
-| WinRAR SFX | Yes | No | Yes |
-| WinZip SFX | Yes | No | Yes |
-| WISE Installer | Yes | No | Yes |
+| Protection Name | Content Check | Path Check | Extractable | Notes |
+| --------------- | ------------- | ---------- | ----------- | ----- |
+| 7-zip SFX | Yes | No | No | |
+| Advanced Installer / Caphyon Advanced Installer | Yes | No | No | |
+| Armadillo | Yes | No | No | |
+| ASPack | Yes | No | No | |
+| AutoPlay Media Studio | Yes | No | No | |
+| CExe | Yes | No | Yes | |
+| dotFuscator | Yes | No | No | |
+| Embedded Executable | Yes | No | Yes | Not technically a packer |
+| EXE Stealth | Yes | No | No | |
+| Gentee Installer | Yes | No | No | |
+| Inno Setup | Yes | No | No | |
+| InstallAnywhere | Yes | No | No | |
+| Installer VISE | Yes | No | No | |
+| Intel Installation Framework | Yes | No | No | |
+| Microsoft CAB SFX | Yes | No | No | |
+| NSIS | Yes | No | No | |
+| PECompact | Yes | No | No | |
+| PEtite | Yes | No | No | |
+| Setup Factory | Yes | No | No | |
+| Shrinker | Yes | No | No | |
+| UPX and UPX (NOS Variant) | Yes | No | No | |
+| WinRAR SFX | Yes | No | Yes | |
+| WinZip SFX | Yes | No | Yes | |
+| WISE Installer | Yes | No | Yes | |
 
 ## Container Formats
 
