@@ -86,11 +86,11 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </ProjectReference>
-    <ProjectReference Include="..\Dtf\src\WixToolset.Dtf.Compression\WixToolset.Dtf.Compression.csproj" Condition="'$(TargetFramework)' != 'net6.0'">
+    <ProjectReference Include="..\Dtf\src\WixToolset.Dtf.Compression\WixToolset.Dtf.Compression.csproj" Condition="'$(TargetFramework)' == 'net48'">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </ProjectReference>
-    <ProjectReference Include="..\Dtf\src\WixToolset.Dtf.Compression.Cab\WixToolset.Dtf.Compression.Cab.csproj" Condition="'$(TargetFramework)' != 'net6.0'">
+    <ProjectReference Include="..\Dtf\src\WixToolset.Dtf.Compression.Cab\WixToolset.Dtf.Compression.Cab.csproj" Condition="'$(TargetFramework)' == 'net48'">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </ProjectReference>
