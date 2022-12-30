@@ -300,7 +300,7 @@ namespace BurnOutSharp.Builders
 
                 // Try to parse the resource directory table
                 data.Seek(resourceTableAddress, SeekOrigin.Begin);
-                var resourceDirectoryTable = ParseResourceDirectoryTable(data, data.Position, executable.SectionTable);
+                var resourceDirectoryTable = ParseResourceDirectoryTable(data, data.Position, executable.SectionTable, optionalHeader.ResourceTable.Size, true);
                 if (resourceDirectoryTable == null)
                     return null;
 
@@ -1195,8 +1195,10 @@ namespace BurnOutSharp.Builders
         /// <param name="data">Stream to parse</param>
         /// <param name="initialOffset">Initial offset to use in address comparisons</param>
         /// <param name="sections">Section table to use for virtual address translation</param>
+        /// <param name="size">Indicates the size of the section, only used for top-level</param>
+        /// <param name="topLevel">Indicates if this is the top level or not</param>
         /// <returns>Filled resource directory table on success, null on error</returns>
-        private static ResourceDirectoryTable ParseResourceDirectoryTable(Stream data, long initialOffset, SectionHeader[] sections)
+        private static ResourceDirectoryTable ParseResourceDirectoryTable(Stream data, long initialOffset, SectionHeader[] sections, uint size = 0, bool topLevel = false)
         {
             // TODO: Use marshalling here instead of building
             var resourceDirectoryTable = new ResourceDirectoryTable();
@@ -1285,6 +1287,34 @@ namespace BurnOutSharp.Builders
 
                     entry.Subdirectory = ParseResourceDirectoryTable(data, initialOffset, sections);
                 }
+            }
+
+            // If we are not at the top level
+            if (!topLevel)
+                return resourceDirectoryTable;
+
+            // Align to the 1024-byte boundary
+            while (data.Position - initialOffset < size && data.Position % 1024 != 0)
+                _ = data.ReadByteValue();
+
+            // If we have not used up the full size, parse the remaining chunk as a single resource
+            if (data.Position - initialOffset < size)
+            {
+                Array.Resize(ref resourceDirectoryTable.Entries, totalEntryCount + 1);
+                int length = (int)(data.Position - initialOffset);
+
+                resourceDirectoryTable.Entries[totalEntryCount] = new ResourceDirectoryEntry
+                {
+                    Name = new ResourceDirectoryString { UnicodeString = Encoding.ASCII.GetBytes("HIDDEN RESOURCE") },
+                    IntegerID = uint.MaxValue,
+                    DataEntryOffset = (uint)data.Position,
+                    DataEntry = new ResourceDataEntry
+                    {
+                        Size = (uint)length,
+                        Data = data.ReadBytes(length),
+                        Codepage = (uint)Encoding.Unicode.CodePage,
+                    },
+                };
             }
 
             return resourceDirectoryTable;

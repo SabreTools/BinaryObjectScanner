@@ -563,23 +563,26 @@ namespace BurnOutSharp.Wrappers
         {
             get
             {
-                // Use the cached data if possible
-                if (_sectionNames != null)
-                    return _sectionNames;
-
-                // Otherwise, build and return the cached array
-                _sectionNames = new string[_executable.SectionTable.Length];
-                for (int i = 0; i < _sectionNames.Length; i++)
+                lock (_sourceDataLock)
                 {
-                    var section = _executable.SectionTable[i];
+                    // Use the cached data if possible
+                    if (_sectionNames != null)
+                        return _sectionNames;
 
-                    // TODO: Handle long section names with leading `/`
-                    byte[] sectionNameBytes = section.Name;
-                    string sectionNameString = Encoding.UTF8.GetString(sectionNameBytes).TrimEnd('\0');
-                    _sectionNames[i] = sectionNameString;
+                    // Otherwise, build and return the cached array
+                    _sectionNames = new string[_executable.SectionTable.Length];
+                    for (int i = 0; i < _sectionNames.Length; i++)
+                    {
+                        var section = _executable.SectionTable[i];
+
+                        // TODO: Handle long section names with leading `/`
+                        byte[] sectionNameBytes = section.Name;
+                        string sectionNameString = Encoding.UTF8.GetString(sectionNameBytes).TrimEnd('\0');
+                        _sectionNames[i] = sectionNameString;
+                    }
+
+                    return _sectionNames;
                 }
-
-                return _sectionNames;
             }
         }
 
@@ -3117,7 +3120,7 @@ namespace BurnOutSharp.Wrappers
         /// </summary>
         private void ParseResourceDirectoryTable(Models.PortableExecutable.ResourceDirectoryTable table, List<object> types)
         {
-            int totalEntries = table.NumberOfNameEntries + table.NumberOfIDEntries;
+            int totalEntries = table?.Entries?.Length ?? 0;
             for (int i = 0; i < totalEntries; i++)
             {
                 var entry = table.Entries[i];
