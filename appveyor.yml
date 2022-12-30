@@ -29,16 +29,23 @@ before_build:
 # build step
 build_script:
   - cmd: dotnet restore
-  # .NET Framework 4.8
   - cmd: dotnet build Test\Test.csproj --framework net48
-  # .NET 6.0, Windows x86
   - cmd: dotnet publish Test\Test.csproj --framework net6.0 --runtime win-x86 --self-contained true -p:PublishSingleFile=true
-  # .NET 6.0, Windows x64
   - cmd: dotnet publish Test\Test.csproj --framework net6.0 --runtime win-x64 --self-contained true -p:PublishSingleFile=true
-  # .NET 6.0, Linux x64
   - cmd: dotnet publish Test\Test.csproj --framework net6.0 --runtime linux-x64 --self-contained true -p:PublishSingleFile=true
-  # .NET 6.0, OSX x64
   - cmd: dotnet publish Test\Test.csproj --framework net6.0 --runtime osx-x64 --self-contained true -p:PublishSingleFile=true
+
+# post-build script
+  - cmd: cd %APPVEYOR_BUILD_FOLDER%\Test\bin\Debug\net48
+  - cmd: 7z a -tzip %APPVEYOR_BUILD_FOLDER%\BurnOutSharp_net48.zip *
+  - cmd: cd %APPVEYOR_BUILD_FOLDER%\Test\bin\Debug\net6.0\win-x86\publish\
+  - cmd: 7z a -tzip %APPVEYOR_BUILD_FOLDER%\BurnOutSharp_net60_win-x86.zip *
+  - cmd: cd %APPVEYOR_BUILD_FOLDER%\Test\bin\Debug\net6.0\win-x64\publish\
+  - cmd: 7z a -tzip %APPVEYOR_BUILD_FOLDER%\BurnOutSharp_net60_win-x64.zip *
+  - cmd: cd %APPVEYOR_BUILD_FOLDER%\Test\bin\Debug\net6.0\linux-x64\publish\
+  - cmd: 7z a -tzip %APPVEYOR_BUILD_FOLDER%\BurnOutSharp_net60_linux-x64.zip *
+  - cmd: cd %APPVEYOR_BUILD_FOLDER%\Test\bin\Debug\net6.0\osx-x64\publish\
+  - cmd: 7z a -tzip %APPVEYOR_BUILD_FOLDER%\BurnOutSharp_net60_osx-x64.zip *
 
 # success/failure tracking
 on_success:
@@ -50,18 +57,13 @@ on_failure:
 
 # artifact linking
 artifacts:
-- path: Test\bin\Debug\net48\*
+- path: BurnOutSharp_net48.zip
   name: BurnOutSharp (.NET Framework 4.8)
-  type: zip
-- path: Test\bin\Debug\net6.0\win-x86\publish\*
+- path: BurnOutSharp_net60_win-x86.zip
   name: BurnOutSharp (.NET 6.0, Windows x86)
-  type: zip
-- path: Test\bin\Debug\net6.0\win-x64\publish\*
+- path: BurnOutSharp_net60_win-x64.zip
   name: BurnOutSharp (.NET 6.0, Windows x64)
-  type: zip
-- path: Test\bin\Debug\net6.0\linux-x64\publish\*
+- path: BurnOutSharp_net60_linux-x64.zip
   name: BurnOutSharp (.NET 6.0, Linux x64)
-  type: zip
-- path: Test\bin\Debug\net6.0\osx-x64\publish\*
+- path: BurnOutSharp_net60_osx-x64.zip
   name: BurnOutSharp (.NET 6.0, OSX x64)
-  type: zip
