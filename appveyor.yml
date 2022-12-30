@@ -52,18 +52,18 @@ on_failure:
 
 # artifact linking
 artifacts:
-- path: Test\bin\Debug\net48
+- path: Test\bin\Debug\net48\*
   name: BurnOutSharp (.NET Framework 4.8)
   type: zip
-- path: Test\bin\Debug\net6.0\win-x86\publish
+- path: Test\bin\Debug\net6.0\win-x86\publish\*
   name: BurnOutSharp (.NET 6.0, Windows x86)
   type: zip
-- path: Test\bin\Debug\net6.0\win-x64\publish
+- path: Test\bin\Debug\net6.0\win-x64\publish\*
   name: BurnOutSharp (.NET 6.0, Windows x64)
   type: zip
-- path: Test\bin\Debug\net6.0\linux-x64\publish
+- path: Test\bin\Debug\net6.0\linux-x64\publish\*
   name: BurnOutSharp (.NET 6.0, Linux x64)
   type: zip
-- path: Test\bin\Debug\net6.0\osx-x64\publish
+- path: Test\bin\Debug\net6.0\osx-x64\publish\*
   name: BurnOutSharp (.NET 6.0, OSX x64)
   type: zip
