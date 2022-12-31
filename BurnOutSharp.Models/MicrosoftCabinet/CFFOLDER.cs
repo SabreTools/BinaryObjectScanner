@@ -55,6 +55,6 @@ namespace BurnOutSharp.Models.MicrosoftCabinet
         /// <summary>
         /// Data blocks associated with this folder
         /// </summary>
-        public Dictionary<int, CFDATA> DataBlocks;
+        public CFDATA[] DataBlocks;
     }
 }

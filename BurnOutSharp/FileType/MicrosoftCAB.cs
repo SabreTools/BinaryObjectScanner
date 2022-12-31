@@ -6,8 +6,7 @@ using BurnOutSharp.Interfaces;
 using WixToolset.Dtf.Compression;
 using WixToolset.Dtf.Compression.Cab;
 #elif NET6_0_OR_GREATER
-using LibMSPackSharp;
-using LibMSPackSharp.CABExtract;
+using BurnOutSharp.Wrappers;
 #endif
 using static BurnOutSharp.Utilities.Dictionary;
 
@@ -36,65 +35,33 @@ namespace BurnOutSharp.FileType
         public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, Stream stream, string file)
         {
 #if NET6_0_OR_GREATER
-            // TODO: LibMSPackSharp still has issues with certain CAB files
-            // TODO: Re-enable CAB extraction for .NET 6.0 once LibMSPackSharp is fixed or an alternative is found
-            return null;
-
             // If the cab file itself fails
             try
             {
                 string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
                 Directory.CreateDirectory(tempPath);
 
-                // Create the decompressor
-                var decompressor = Library.CreateCABDecompressor(null);
-                decompressor.Debug = scanner.IncludeDebug;
-
                 // Open the cab file
-                var cabFile = decompressor.Open(file);
+                var cabFile = MicrosoftCabinet.Create(stream);
                 if (cabFile == null)
                 {
-                    if (scanner.IncludeDebug) Console.WriteLine($"Error occurred opening of '{file}': {decompressor.Error}");
+                    if (scanner.IncludeDebug) Console.WriteLine($"Error occurred while opening");
                     return null;
                 }
 
-                // If we have a previous CAB and it exists, don't try scanning
-                string directory = Path.GetDirectoryName(file);
-                if (!string.IsNullOrWhiteSpace(cabFile.PreviousCabinetName))
+                // If entry extraction fails
+                try
                 {
-                    if (File.Exists(Path.Combine(directory, cabFile.PreviousCabinetName)))
-                        return null;
+                    bool success = cabFile.ExtractAll(tempPath);
+                    if (!success)
+                    {
+                        if (scanner.IncludeDebug) Console.WriteLine($"Error occurred during extraction of files");
+                    }
                 }
-
-                // If there are additional next CABs, add those
-                string fileName = Path.GetFileName(file);
-                CABExtract.LoadSpanningCabinets(cabFile, fileName);
-
-                // Loop through the found internal files
-                var sub = cabFile.Files;
-                while (sub != null)
+                catch (Exception ex)
                 {
-                    // If an individual entry fails
-                    try
-                    {
-                        // The trim here is for some very odd and stubborn files
-                        string tempFile = Path.Combine(tempPath, sub.Filename.TrimEnd('\0', ' ', '.'));
-                        Error error = decompressor.Extract(sub, tempFile);
-                        if (error != Error.MSPACK_ERR_OK)
-                        {
-                            if (scanner.IncludeDebug) Console.WriteLine($"Error occurred during extraction of '{sub.Filename}': {error}");
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        if (scanner.IncludeDebug) Console.WriteLine(ex);
-                    }
-
-                    sub = sub.Next;
+                    if (scanner.IncludeDebug) Console.WriteLine(ex);
                 }
-
-                // Destroy the decompressor
-                Library.DestroyCABDecompressor(decompressor);
 
                 // Collect and format all found protections
                 var protections = scanner.GetProtections(tempPath);

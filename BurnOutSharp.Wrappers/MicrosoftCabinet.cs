@@ -213,14 +213,15 @@ namespace BurnOutSharp.Wrappers
                 return null;
 
             // If we have invalid data blocks
-            if (folder.DataBlocks == null || folder.DataBlocks.Count == 0)
+            if (folder.DataBlocks == null || folder.DataBlocks.Length == 0)
                 return null;
 
             // Store the last decompressed block for MS-ZIP
+            Compression.MSZIP mszip = new Compression.MSZIP();
             byte[] lastDecompressed = null;
 
             List<byte> data = new List<byte>();
-            foreach (var dataBlock in folder.DataBlocks.OrderBy(kvp => kvp.Key).Select(kvp => kvp.Value))
+            foreach (var dataBlock in folder.DataBlocks)
             {
                 byte[] decompressed = null;
                 switch (folder.CompressionType)
@@ -229,16 +230,17 @@ namespace BurnOutSharp.Wrappers
                         decompressed = dataBlock.CompressedData;
                         break;
                     case Models.MicrosoftCabinet.CompressionType.TYPE_MSZIP:
-                        // TODO: UNIMPLEMENTED
-                        decompressed = dataBlock.CompressedData;
+                        decompressed = mszip.DecompressMSZIPData(dataBlock.CompressedData, lastDecompressed);
                         break;
                     case Models.MicrosoftCabinet.CompressionType.TYPE_QUANTUM:
                         // TODO: UNIMPLEMENTED
-                        decompressed = dataBlock.CompressedData;
+                        //decompressed = dataBlock.CompressedData;
+                        decompressed = null;
                         break;
                     case Models.MicrosoftCabinet.CompressionType.TYPE_LZX:
                         // TODO: UNIMPLEMENTED
-                        decompressed = dataBlock.CompressedData;
+                        //decompressed = dataBlock.CompressedData;
+                        decompressed = null;
                         break;
                     default:
                         return null;
@@ -257,15 +259,36 @@ namespace BurnOutSharp.Wrappers
         #region Files
 
         /// <summary>
-        /// Extract a single file to an output directory
+        /// Extract all files from the MS-CAB to an output directory
         /// </summary>
-        /// <param name="fileIndex">File index to check</param>
-        /// <param name="outputDirectory">Output directory to use for writing</param>
-        /// <returns>Byte array representing the data, null on error</returns>
-        public bool ExtractFile(int fileIndex, string outputDirectory)
+        /// <param name="outputDirectory">Output directory to write to</param>
+        /// <returns>True if all filez extracted, false otherwise</returns>
+        public bool ExtractAll(string outputDirectory)
+        {
+            // If we have no files
+            if (Files == null || Files.Length == 0)
+                return false;
+
+            // Loop through and extract all files to the output
+            bool allExtracted = true;
+            for (int i = 0; i < Files.Length; i++)
+            {
+                allExtracted &= ExtractFile(i, outputDirectory);
+            }
+
+            return allExtracted;
+        }
+
+        /// <summary>
+        /// Extract a file from the MS-CAB to an output directory by index
+        /// </summary>
+        /// <param name="index">File index to extract</param>
+        /// <param name="outputDirectory">Output directory to write to</param>
+        /// <returns>True if the file extracted, false otherwise</returns>
+        public bool ExtractFile(int index, string outputDirectory)
         {
             // If we have an invalid file index
-            if (fileIndex < 0 || fileIndex >= Files.Length)
+            if (index < 0 || index >= Files.Length)
                 return false;
 
             // If we have an invalid output directory
@@ -276,7 +299,7 @@ namespace BurnOutSharp.Wrappers
             Directory.CreateDirectory(outputDirectory);
 
             // Get the file header
-            var file = Files[fileIndex];
+            var file = Files[index];
             if (file == null || file.FileSize == 0)
                 return false;
 
@@ -284,7 +307,7 @@ namespace BurnOutSharp.Wrappers
             string fileName = Path.Combine(outputDirectory, file.Name);
 
             // Get the file data, if possible
-            byte[] fileData = GetFileData(fileIndex);
+            byte[] fileData = GetFileData(index);
             if (fileData == null)
                 return false;
 
@@ -455,23 +478,24 @@ namespace BurnOutSharp.Wrappers
 
                     Console.WriteLine("    Data Blocks");
                     Console.WriteLine("    -------------------------");
-                    if (entry.DataBlocks == null || entry.DataBlocks.Count == 0)
+                    if (entry.DataBlocks == null || entry.DataBlocks.Length == 0)
                     {
                         Console.WriteLine("    No data blocks");
                     }
                     else
                     {
-                        foreach (var block in entry.DataBlocks)
+                        for (int j = 0; j < entry.DataBlocks.Length; j++)
                         {
-                            Console.WriteLine($"    Data Block at offset {block.Key}");
-                            Console.WriteLine($"      Checksum = {block.Value.Checksum}");
-                            Console.WriteLine($"      Compressed size = {block.Value.CompressedSize}");
-                            Console.WriteLine($"      Uncompressed size = {block.Value.UncompressedSize}");
-                            if (block.Value.ReservedData == null)
+                            Models.MicrosoftCabinet.CFDATA dataBlock = entry.DataBlocks[j];
+                            Console.WriteLine($"    Data Block {j}");
+                            Console.WriteLine($"      Checksum = {dataBlock.Checksum}");
+                            Console.WriteLine($"      Compressed size = {dataBlock.CompressedSize}");
+                            Console.WriteLine($"      Uncompressed size = {dataBlock.UncompressedSize}");
+                            if (dataBlock.ReservedData == null)
                                 Console.WriteLine($"      Reserved data = [NULL]");
                             else
-                                Console.WriteLine($"      Reserved data = {BitConverter.ToString(block.Value.ReservedData).Replace("-", " ")}");
-                            //Console.WriteLine($"      Compressed data = {BitConverter.ToString(block.Value.CompressedData).Replace("-", " ")}");
+                                Console.WriteLine($"      Reserved data = {BitConverter.ToString(dataBlock.ReservedData).Replace("-", " ")}");
+                            //Console.WriteLine($"      Compressed data = {BitConverter.ToString(dataBlock.CompressedData).Replace("-", " ")}");
                         }
                     }
                 }

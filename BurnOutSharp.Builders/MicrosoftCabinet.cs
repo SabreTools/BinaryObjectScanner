@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Text;
 using BurnOutSharp.Models.MicrosoftCabinet;
 using BurnOutSharp.Utilities;
@@ -184,7 +183,7 @@ namespace BurnOutSharp.Builders
 
             folder.CabStartOffset = data.ReadUInt32();
             folder.DataCount = data.ReadUInt16();
-            folder.CompressionType = (CompressionType)data.ReadUInt16();
+            folder.CompressionType = (CompressionType)(data.ReadUInt16() & (ushort)CompressionType.MASK_TYPE);
 
             if (header.FolderReservedSize > 0)
                 folder.ReservedData = data.ReadBytes(header.FolderReservedSize);
@@ -194,12 +193,11 @@ namespace BurnOutSharp.Builders
                 long currentPosition = data.Position;
                 data.Seek(folder.CabStartOffset, SeekOrigin.Begin);
 
-                folder.DataBlocks = new Dictionary<int, CFDATA>();
+                folder.DataBlocks = new CFDATA[folder.DataCount];
                 for (int i = 0; i < folder.DataCount; i++)
                 {
-                    long dataBlockStart = data.Position;
                     CFDATA dataBlock = ParseDataBlock(data, header.DataReservedSize);
-                    folder.DataBlocks[(int)dataBlockStart] = dataBlock;
+                    folder.DataBlocks[i] = dataBlock;
                 }
 
                 data.Seek(currentPosition, SeekOrigin.Begin);
@@ -221,9 +219,6 @@ namespace BurnOutSharp.Builders
             dataBlock.Checksum = data.ReadUInt32();
             dataBlock.CompressedSize = data.ReadUInt16();
             dataBlock.UncompressedSize = data.ReadUInt16();
-
-            if (dataBlock.UncompressedSize != 0 && dataBlock.CompressedSize > dataBlock.UncompressedSize)
-                return null;
 
             if (dataReservedSize > 0)
                 dataBlock.ReservedData = data.ReadBytes(dataReservedSize);
