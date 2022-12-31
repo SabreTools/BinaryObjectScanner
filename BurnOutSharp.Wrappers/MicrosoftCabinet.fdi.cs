@@ -616,6 +616,44 @@ namespace BurnOutSharp.Wrappers
         */
         public const int CAB_BLOCKMAX = (32768);
         public const int CAB_INPUTMAX = (CAB_BLOCKMAX + 6144);
+
+        /****************************************************************************/
+        /* Tables for deflate from PKZIP's appnote.txt. */
+
+        //#define THOSE_ZIP_CONSTS
+
+        /* Order of the bit length code lengths */
+        public static readonly byte[] Zipborder =
+        { 16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15};
+
+        /* Copy lengths for literal codes 257..285 */
+        public static readonly ushort[] Zipcplens =
+        { 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 19, 23, 27, 31, 35, 43, 51,
+        59, 67, 83, 99, 115, 131, 163, 195, 227, 258, 0, 0};
+
+        /* Extra bits for literal codes 257..285 */
+        public static readonly ushort[] Zipcplext =
+        { 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4,
+        4, 5, 5, 5, 5, 0, 99, 99}; /* 99==invalid */
+
+        /* Copy offsets for distance codes 0..29 */
+        public static readonly ushort[] Zipcpdist =
+        { 1, 2, 3, 4, 5, 7, 9, 13, 17, 25, 33, 49, 65, 97, 129, 193, 257, 385,
+        513, 769, 1025, 1537, 2049, 3073, 4097, 6145, 8193, 12289, 16385, 24577};
+
+        /* Extra bits for distance codes */
+        public static readonly ushort[] Zipcpdext =
+        { 0, 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10,
+        10, 11, 11, 12, 12, 13, 13};
+
+        /* And'ing with Zipmask[n] masks the lower n bits */
+        public static readonly ushort[] Zipmask = new ushort[17]
+        { 0x0000, 0x0001, 0x0003, 0x0007, 0x000f, 0x001f, 0x003f, 0x007f, 0x00ff,
+        0x01ff, 0x03ff, 0x07ff, 0x0fff, 0x1fff, 0x3fff, 0x7fff, 0xffff };
+
+        /* SESSION Operation */
+        public const uint EXTRACT_FILLFILELIST  = 0x00000001;
+        public const uint EXTRACT_EXTRACTFILES  = 0x00000002;
     }
 
     /* MSZIP stuff */
@@ -1011,7 +1049,271 @@ namespace BurnOutSharp.Wrappers
         public byte flags;
     }
 
-    // TODO: Left off at `struct cds_forward `
+    /// <see href="https://github.com/wine-mirror/wine/blob/master/dlls/cabinet/cabinet.h"/>
+    internal class cds_forward
+    {
+        /// <summary>
+        /// current folder we're extracting from
+        /// </summary>
+        public cab_folder current;
+
+        /// <summary>
+        /// uncompressed offset within folder
+        /// </summary>
+        public uint offset;
+
+        /// <summary>
+        /// (high level) start of data to use up
+        /// </summary>
+        public byte outpos; // byte*
+
+        /// <summary>
+        /// (high level) amount of data to use up
+        /// </summary>
+        public ushort outlen;
+
+        /// <summary>
+        /// at which split in current folder?
+        /// </summary>
+        public ushort split;
+
+        /// <summary>
+        /// chosen compress fn
+        /// </summary>
+        public Func<int, int, cds_forward, int> decompress;
+
+        /// <summary>
+        /// +2 for lzx bitbuffer overflows!
+        /// </summary>
+        public byte[] inbuf = new byte[CAB_INPUTMAX + 2];
+
+        public byte[] outbuf = new byte[CAB_INPUTMAX];
+
+        public byte[] q_length_base = new byte[27], q_length_extra = new byte[27], q_extra_bits = new byte[42];
+
+        public uint[] q_position_base = new uint[42];
+
+        public uint[] lzx_position_base = new uint[51];
+
+        public uint[] extra_bits = new uint[51];
+
+        #region methods
+
+        public ZIPstate zip;
+        public QTMstate qtm;
+        public LZXstate lzx;
+
+        #endregion
+    }
+
+    /*
+    * the rest of these are somewhat kludgy macros which are shared between fdi.c
+    * and cabextract.c.
+    */
+
+    /* Bitstream reading macros (Quantum / normal byte order)
+    *
+    * Q_INIT_BITSTREAM    should be used first to set up the system
+    * Q_READ_BITS(var,n)  takes N bits from the buffer and puts them in var.
+    *                     unlike LZX, this can loop several times to get the
+    *                     requisite number of bits.
+    * Q_FILL_BUFFER       adds more data to the bit buffer, if there is room
+    *                     for another 16 bits.
+    * Q_PEEK_BITS(n)      extracts (without removing) N bits from the bit
+    *                     buffer
+    * Q_REMOVE_BITS(n)    removes N bits from the bit buffer
+    *
+    * These bit access routines work by using the area beyond the MSB and the
+    * LSB as a free source of zeroes. This avoids having to mask any bits.
+    * So we have to know the bit width of the bitbuffer variable. This is
+    * defined as ULONG_BITS.
+    *
+    * ULONG_BITS should be at least 16 bits. Unlike LZX's Huffman decoding,
+    * Quantum's arithmetic decoding only needs 1 bit at a time, it doesn't
+    * need an assured number. Retrieving larger bitstrings can be done with
+    * multiple reads and fills of the bitbuffer. The code should work fine
+    * for machines where ULONG >= 32 bits.
+    *
+    * Also note that Quantum reads bytes in normal order; LZX is in
+    * little-endian order.
+    */
+
+    // #define Q_INIT_BITSTREAM do { bitsleft = 0; bitbuf = 0; } while (0)
+
+    // #define Q_FILL_BUFFER do {                                                  \
+    // if (bitsleft <= (CAB_ULONG_BITS - 16)) {                                  \
+    //     bitbuf |= ((inpos[0]<<8)|inpos[1]) << (CAB_ULONG_BITS-16 - bitsleft);   \
+    //     bitsleft += 16; inpos += 2;                                             \
+    // }                                                                         \
+    // } while (0)
+
+    // #define Q_PEEK_BITS(n)   (bitbuf >> (CAB_ULONG_BITS - (n)))
+    // #define Q_REMOVE_BITS(n) ((bitbuf <<= (n)), (bitsleft -= (n)))
+
+    // #define Q_READ_BITS(v,n) do {                                           \
+    // (v) = 0;                                                              \
+    // for (bitsneed = (n); bitsneed; bitsneed -= bitrun) {                  \
+    //     Q_FILL_BUFFER;                                                      \
+    //     bitrun = (bitsneed > bitsleft) ? bitsleft : bitsneed;               \
+    //     (v) = ((v) << bitrun) | Q_PEEK_BITS(bitrun);                        \
+    //     Q_REMOVE_BITS(bitrun);                                              \
+    // }                                                                     \
+    // } while (0)
+
+    // #define Q_MENTRIES(model) (QTM(model).entries)
+    // #define Q_MSYM(model,symidx) (QTM(model).syms[(symidx)].sym)
+    // #define Q_MSYMFREQ(model,symidx) (QTM(model).syms[(symidx)].cumfreq)
+
+    /* GET_SYMBOL(model, var) fetches the next symbol from the stated model
+    * and puts it in var. it may need to read the bitstream to do this.
+    */
+    // #define GET_SYMBOL(m, var) do {                                         \
+    // range =  ((H - L) & 0xFFFF) + 1;                                      \
+    // symf = ((((C - L + 1) * Q_MSYMFREQ(m,0)) - 1) / range) & 0xFFFF;      \
+    //                                                                         \
+    // for (i=1; i < Q_MENTRIES(m); i++) {                                   \
+    //     if (Q_MSYMFREQ(m,i) <= symf) break;                                 \
+    // }                                                                     \
+    // (var) = Q_MSYM(m,i-1);                                                \
+    //                                                                         \
+    // range = (H - L) + 1;                                                  \
+    // H = L + ((Q_MSYMFREQ(m,i-1) * range) / Q_MSYMFREQ(m,0)) - 1;          \
+    // L = L + ((Q_MSYMFREQ(m,i)   * range) / Q_MSYMFREQ(m,0));              \
+    // while (1) {                                                           \
+    //     if ((L & 0x8000) != (H & 0x8000)) {                                 \
+    //     if ((L & 0x4000) && !(H & 0x4000)) {                              \
+    //         /* underflow case */                                            \
+    //         C ^= 0x4000; L &= 0x3FFF; H |= 0x4000;                          \
+    //     }                                                                 \
+    //     else break;                                                       \
+    //     }                                                                   \
+    //     L <<= 1; H = (H << 1) | 1;                                          \
+    //     Q_FILL_BUFFER;                                                      \
+    //     C  = (C << 1) | Q_PEEK_BITS(1);                                     \
+    //     Q_REMOVE_BITS(1);                                                   \
+    // }                                                                     \
+    //                                                                         \
+    // QTMupdatemodel(&(QTM(m)), i);                                         \
+    // } while (0)
+
+    /* Bitstream reading macros (LZX / intel little-endian byte order)
+    *
+    * INIT_BITSTREAM    should be used first to set up the system
+    * READ_BITS(var,n)  takes N bits from the buffer and puts them in var
+    *
+    * ENSURE_BITS(n)    ensures there are at least N bits in the bit buffer.
+    *                   it can guarantee up to 17 bits (i.e. it can read in
+    *                   16 new bits when there is down to 1 bit in the buffer,
+    *                   and it can read 32 bits when there are 0 bits in the
+    *                   buffer).
+    * PEEK_BITS(n)      extracts (without removing) N bits from the bit buffer
+    * REMOVE_BITS(n)    removes N bits from the bit buffer
+    *
+    * These bit access routines work by using the area beyond the MSB and the
+    * LSB as a free source of zeroes. This avoids having to mask any bits.
+    * So we have to know the bit width of the bitbuffer variable.
+    */
+
+    // #define INIT_BITSTREAM do { bitsleft = 0; bitbuf = 0; } while (0)
+
+    /* Quantum reads bytes in normal order; LZX is little-endian order */
+    // #define ENSURE_BITS(n)                                                    \
+    // while (bitsleft < (n)) {                                                \
+    //     bitbuf |= ((inpos[1]<<8)|inpos[0]) << (CAB_ULONG_BITS-16 - bitsleft); \
+    //     bitsleft += 16; inpos+=2;                                             \
+    // }
+
+    // #define PEEK_BITS(n)   (bitbuf >> (CAB_ULONG_BITS - (n)))
+    // #define REMOVE_BITS(n) ((bitbuf <<= (n)), (bitsleft -= (n)))
+
+    // #define READ_BITS(v,n) do {                                             \
+    // if (n) {                                                              \
+    //     ENSURE_BITS(n);                                                     \
+    //     (v) = PEEK_BITS(n);                                                 \
+    //     REMOVE_BITS(n);                                                     \
+    // }                                                                     \
+    // else {                                                                \
+    //     (v) = 0;                                                            \
+    // }                                                                     \
+    // } while (0)
+
+    /* Huffman macros */
+
+    // #define TABLEBITS(tbl)   (LZX_##tbl##_TABLEBITS)
+    // #define MAXSYMBOLS(tbl)  (LZX_##tbl##_MAXSYMBOLS)
+    // #define SYMTABLE(tbl)    (LZX(tbl##_table))
+    // #define LENTABLE(tbl)    (LZX(tbl##_len))
+
+    /* BUILD_TABLE(tablename) builds a huffman lookup table from code lengths.
+    * In reality, it just calls make_decode_table() with the appropriate
+    * values - they're all fixed by some #defines anyway, so there's no point
+    * writing each call out in full by hand.
+    */
+    // #define BUILD_TABLE(tbl)                                                \
+    // if (make_decode_table(                                                \
+    //     MAXSYMBOLS(tbl), TABLEBITS(tbl), LENTABLE(tbl), SYMTABLE(tbl)       \
+    // )) { return DECR_ILLEGALDATA; }
+
+    /* READ_HUFFSYM(tablename, var) decodes one huffman symbol from the
+    * bitstream using the stated table and puts it in var.
+    */
+    // #define READ_HUFFSYM(tbl,var) do {                                      \
+    // ENSURE_BITS(16);                                                      \
+    // hufftbl = SYMTABLE(tbl);                                              \
+    // if ((i = hufftbl[PEEK_BITS(TABLEBITS(tbl))]) >= MAXSYMBOLS(tbl)) {    \
+    //     j = 1 << (CAB_ULONG_BITS - TABLEBITS(tbl));                         \
+    //     do {                                                                \
+    //     j >>= 1; i <<= 1; i |= (bitbuf & j) ? 1 : 0;                      \
+    //     if (!j) { return DECR_ILLEGALDATA; }                              \
+    //     } while ((i = hufftbl[i]) >= MAXSYMBOLS(tbl));                      \
+    // }                                                                     \
+    // j = LENTABLE(tbl)[(var) = i];                                         \
+    // REMOVE_BITS(j);                                                       \
+    // } while (0)
+
+    /* READ_LENGTHS(tablename, first, last) reads in code lengths for symbols
+    * first to last in the given table. The code lengths are stored in their
+    * own special LZX way.
+    */
+    // #define READ_LENGTHS(tbl,first,last,fn) do { \
+    // lb.bb = bitbuf; lb.bl = bitsleft; lb.ip = inpos; \
+    // if (fn(LENTABLE(tbl),(first),(last),&lb,decomp_state)) { \
+    //     return DECR_ILLEGALDATA; \
+    // } \
+    // bitbuf = lb.bb; bitsleft = lb.bl; inpos = lb.ip; \
+    // } while (0)
+
+    /// <see href="https://github.com/wine-mirror/wine/blob/master/dlls/cabinet/cabinet.h"/>
+    internal class FILELIST
+    {
+        public string FileName;
+
+        public FILELIST next;
+
+        public bool DoExtract;
+    }
+
+    /// <see href="https://github.com/wine-mirror/wine/blob/master/dlls/cabinet/cabinet.h"/>
+    internal class SESSION
+    {
+        public int FileSize;
+
+        public ERF Error;
+
+        public FILELIST FileList;
+
+        public int FileCount;
+
+        public int Operation;
+
+        public char[] Destination = new char[CB_MAX_CAB_PATH];
+
+        public char[] CurrentFile = new char[CB_MAX_CAB_PATH];
+
+        public char[] Reserved = new char[CB_MAX_CAB_PATH];
+
+        public FILELIST FilterList;
+    }
 
     #endregion
 }
