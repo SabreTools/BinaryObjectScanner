@@ -19,9 +19,9 @@ namespace BurnOutSharp.Compression
         /// <summary>
         /// Decompress MSZIP data block
         /// </summary>
-        public byte[] DecompressMSZIPData(byte[] data, byte[] previousBlock = null)
+        public byte[] DecompressMSZIPData(byte[] data, bool previousBlock = false)
         {
-            if (previousBlock != null)
+            if (previousBlock)
                 _inflater.Reset();
 
             _inflater.SetInput(buffer: data, 2, data.Length - 2);

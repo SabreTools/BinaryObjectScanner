@@ -217,19 +217,19 @@ namespace BurnOutSharp.Wrappers
 
             // Store the last decompressed block for MS-ZIP
             Compression.MSZIP mszip = new Compression.MSZIP();
-            byte[] lastDecompressed = null;
+            bool hasLastBlock = false;
 
             List<byte> data = new List<byte>();
             foreach (var dataBlock in folder.DataBlocks)
             {
-                byte[] decompressed = null;
+                byte[] decompressed;
                 switch (folder.CompressionType & Models.MicrosoftCabinet.CompressionType.MASK_TYPE)
                 {
                     case Models.MicrosoftCabinet.CompressionType.TYPE_NONE:
                         decompressed = dataBlock.CompressedData;
                         break;
                     case Models.MicrosoftCabinet.CompressionType.TYPE_MSZIP:
-                        decompressed = mszip.DecompressMSZIPData(dataBlock.CompressedData, lastDecompressed);
+                        decompressed = mszip.DecompressMSZIPData(dataBlock.CompressedData, hasLastBlock);
                         break;
                     case Models.MicrosoftCabinet.CompressionType.TYPE_QUANTUM:
                         // TODO: UNIMPLEMENTED
@@ -245,9 +245,8 @@ namespace BurnOutSharp.Wrappers
                         return null;
                 }
 
-                lastDecompressed = decompressed;
-                if (decompressed != null)
-                    data.AddRange(decompressed);
+                hasLastBlock = true;
+                data.AddRange(decompressed ?? new byte[0]);
             }
 
             return data.ToArray();
@@ -468,7 +467,8 @@ namespace BurnOutSharp.Wrappers
                     Console.WriteLine($"  Folder {i}");
                     Console.WriteLine($"    Cab start offset = {entry.CabStartOffset}");
                     Console.WriteLine($"    Data count = {entry.DataCount}");
-                    Console.WriteLine($"    Compression type = {entry.CompressionType} ({entry.CompressionType & Models.MicrosoftCabinet.CompressionType.MASK_TYPE})");
+                    Console.WriteLine($"    Compression type = {entry.CompressionType}");
+                    Console.WriteLine($"    Masked compression type = {entry.CompressionType & Models.MicrosoftCabinet.CompressionType.MASK_TYPE}");
                     if (entry.ReservedData == null)
                         Console.WriteLine($"    Reserved data = [NULL]");
                     else
