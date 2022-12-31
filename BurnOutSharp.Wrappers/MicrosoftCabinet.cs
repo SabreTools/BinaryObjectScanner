@@ -376,7 +376,7 @@ namespace BurnOutSharp.Wrappers
 
             // Get the parent folder data
             byte[] folderData = GetUncompressedData((int)file.FolderIndex);
-            if (folderData == null)
+            if (folderData == null || folderData.Length == 0)
                 return null;
 
             // Get the segment that represents this file
