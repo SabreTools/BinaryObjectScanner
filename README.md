@@ -10,6 +10,7 @@ In addition to the original BurnOut code, the following libraries (or ports ther
 - [openmcdf](https://github.com/ironfede/openmcdf) - MSI extraction
 - [psxt001z](https://github.com/Dremora/psxt001z) - PS1 LibCrypt detection [Ported to C#]
 - [SharpCompress](https://github.com/adamhathcock/sharpcompress) - Common archive format extraction
+- [SharpZipLib](https://github.com/icsharpcode/SharpZipLib) - zlib-based extraction [Used in .NET 6.0 builds for MS-ZIP handling as well]
 - [StormLibSharp](https://github.com/robpaveza/stormlibsharp) - MoPaQ extraction [Unused in .NET 6.0 builds due to Windows-specific libraries]
 - [UnshieldSharp](https://github.com/mnadareski/UnshieldSharp) - InstallShield CAB extraction
 - [WiseUnpacker](https://github.com/mnadareski/WiseUnpacker) - Wise Installer extraction
@@ -161,7 +162,7 @@ Below is a list of container formats that are supported in some way:
 | InstallShield Archive V3 (Z) | No | Yes | Yes | Via `UnshieldSharp` |
 | InstallShield CAB | No | Yes | Yes | Via `UnshieldSharp` |
 | Linear Executable | No | No | No | Skeleton only |
-| Microsoft cabinet file | Yes | Yes | Yes | Via `WixToolset.Dtf` / ~~`LibMSPackSharp`~~ (Currently disabled) |
+| Microsoft cabinet file | Yes | Yes | Yes | Via `WixToolset.Dtf` / `SharpZipLib` (Only uncompressed and MS-ZIP supported) |
 | Microsoft LZ-compressed files | No | Yes | Yes | |
 | MoPaQ game data archive (MPQ) | No | Yes | Yes | Via `StormLibSharp` |
 | Microsoft installation package (MSI) | No | Yes | Yes | Via `OpenMcdf` |
