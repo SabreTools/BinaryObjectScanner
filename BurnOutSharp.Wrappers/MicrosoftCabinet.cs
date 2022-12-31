@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 namespace BurnOutSharp.Wrappers
 {
@@ -190,7 +189,7 @@ namespace BurnOutSharp.Wrappers
             else // if (x >= 4)
                 return a[n - x + b] ^ S(a, b, x - 4);
         }
-        
+
         #endregion
 
         #region Folders
@@ -224,7 +223,7 @@ namespace BurnOutSharp.Wrappers
             foreach (var dataBlock in folder.DataBlocks)
             {
                 byte[] decompressed = null;
-                switch (folder.CompressionType)
+                switch (folder.CompressionType & Models.MicrosoftCabinet.CompressionType.MASK_TYPE)
                 {
                     case Models.MicrosoftCabinet.CompressionType.TYPE_NONE:
                         decompressed = dataBlock.CompressedData;
@@ -469,7 +468,7 @@ namespace BurnOutSharp.Wrappers
                     Console.WriteLine($"  Folder {i}");
                     Console.WriteLine($"    Cab start offset = {entry.CabStartOffset}");
                     Console.WriteLine($"    Data count = {entry.DataCount}");
-                    Console.WriteLine($"    Compression type = {entry.CompressionType}");
+                    Console.WriteLine($"    Compression type = {entry.CompressionType} ({entry.CompressionType & Models.MicrosoftCabinet.CompressionType.MASK_TYPE})");
                     if (entry.ReservedData == null)
                         Console.WriteLine($"    Reserved data = [NULL]");
                     else

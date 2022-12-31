@@ -183,7 +183,7 @@ namespace BurnOutSharp.Builders
 
             folder.CabStartOffset = data.ReadUInt32();
             folder.DataCount = data.ReadUInt16();
-            folder.CompressionType = (CompressionType)(data.ReadUInt16() & (ushort)CompressionType.MASK_TYPE);
+            folder.CompressionType = (CompressionType)data.ReadUInt16();
 
             if (header.FolderReservedSize > 0)
                 folder.ReservedData = data.ReadBytes(header.FolderReservedSize);
