@@ -232,9 +232,7 @@ namespace BurnOutSharp.Wrappers
                         decompressed = mszip.DecompressMSZIPData(dataBlock.CompressedData, hasLastBlock);
                         break;
                     case Models.MicrosoftCabinet.CompressionType.TYPE_QUANTUM:
-                        // TODO: UNIMPLEMENTED
-                        //decompressed = dataBlock.CompressedData;
-                        decompressed = null;
+                        decompressed = Compression.Quantum.Decompressor.Decompress(folder, dataBlock);
                         break;
                     case Models.MicrosoftCabinet.CompressionType.TYPE_LZX:
                         // TODO: UNIMPLEMENTED
@@ -379,8 +377,12 @@ namespace BurnOutSharp.Wrappers
             if (folderData == null || folderData.Length == 0)
                 return null;
 
-            // Get the segment that represents this file
+            // Create the output file data
             byte[] fileData = new byte[file.FileSize];
+            if (fileData.Length < file.FolderStartOffset + file.FileSize)
+                return null;
+
+            // Get the segment that represents this file
             Array.Copy(folderData, file.FolderStartOffset, fileData, 0, file.FileSize);
             return fileData;
         }

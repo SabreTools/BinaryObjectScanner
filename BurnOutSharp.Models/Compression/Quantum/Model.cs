@@ -4,7 +4,7 @@ namespace BurnOutSharp.Models.Compression.Quantum
     /// <see href="http://www.russotto.net/quantumcomp.html"/>
     public sealed class Model
     {
-        public int ShiftsLeft;
+        public int TimeToReorder;
 
         public int Entries;
 

@@ -1,14 +1,54 @@
 using System;
 using System.Linq;
 using BurnOutSharp.Models.Compression.Quantum;
+using BurnOutSharp.Models.MicrosoftCabinet;
 
 namespace BurnOutSharp.Compression.Quantum
 {
     /// <see href="https://github.com/wine-mirror/wine/blob/master/dlls/cabinet/cabinet.h"/>
     /// <see href="https://github.com/wine-mirror/wine/blob/master/dlls/cabinet/fdi.c"/>
     /// <see href="https://github.com/wine-mirror/wine/blob/master/include/fdi.h"/>
-    public class Decompressor
+    /// <see href="http://www.russotto.net/quantumcomp.html"/>
+    public static class Decompressor
     {
+        /// <summary>
+        /// Decompress a data block using a given state
+        /// </summary>
+        public static byte[] Decompress(CFFOLDER folder, CFDATA dataBlock)
+        {
+            // If we have an invalid folder
+            if (folder == null)
+                return null;
+
+            // If we have an invalid data block
+            if (dataBlock?.CompressedData == null)
+            {
+                // Corrupt blocks will show as size 0
+                int compressedSize = dataBlock?.CompressedSize ?? 0;
+                if (compressedSize == 0)
+                    compressedSize = 32768;
+
+                return new byte[compressedSize];
+            }
+
+            // Setup the decompression state
+            State state = new State();
+            if (!InitState(state, folder))
+                return new byte[dataBlock.UncompressedSize];
+
+            // Setup the decompression variables
+            int inlen = dataBlock.CompressedSize;
+            byte[] inbuf = dataBlock.CompressedData;
+            int outlen = dataBlock.UncompressedSize;
+            byte[] outbuf = new byte[outlen];
+
+            // Perform the decompression, if possible
+            if (Decompress(state, inlen, inbuf, outlen, outbuf))
+                return outbuf;
+            else
+                return new byte[outlen];
+        }
+
         /// <summary>
         /// Decompress a byte array using a given State
         /// </summary>
@@ -39,24 +79,35 @@ namespace BurnOutSharp.Compression.Quantum
 
             while (togo > 0)
             {
+                // If we have more requested bytes than we have data
+                if (inpos >= inbuf.Length - 1)
+                    break;
+
                 selector = (byte)GET_SYMBOL(state.Model7, ref H, ref L, ref C, inbuf, ref inpos, ref bitsleft, ref bitbuf);
                 switch (selector)
                 {
+                    // Selector 0 = literal model, 64 entries, 0x00-0x3F
                     case 0:
                         sym = (byte)GET_SYMBOL(state.Model7Submodel00, ref H, ref L, ref C, inbuf, ref inpos, ref bitsleft, ref bitbuf);
                         state.Window[window + window_posn++] = sym;
                         togo--;
                         break;
+
+                    // Selector 1 = literal model, 64 entries, 0x40-0x7F
                     case 1:
                         sym = (byte)GET_SYMBOL(state.Model7Submodel40, ref H, ref L, ref C, inbuf, ref inpos, ref bitsleft, ref bitbuf);
                         state.Window[window + window_posn++] = sym;
                         togo--;
                         break;
+
+                    // Selector 2 = literal model, 64 entries, 0x80-0xBF
                     case 2:
                         sym = (byte)GET_SYMBOL(state.Model7Submodel80, ref H, ref L, ref C, inbuf, ref inpos, ref bitsleft, ref bitbuf);
                         state.Window[window + window_posn++] = sym;
                         togo--;
                         break;
+
+                    // Selector 3 = literal model, 64 entries, 0xC0-0xFF
                     case 3:
                         sym = (byte)GET_SYMBOL(state.Model7SubmodelC0, ref H, ref L, ref C, inbuf, ref inpos, ref bitsleft, ref bitbuf);
                         state.Window[window + window_posn++] = sym;
@@ -93,7 +144,7 @@ namespace BurnOutSharp.Compression.Quantum
                         return false;
                 }
 
-                // If this is a match */
+                // If this is a match
                 if (selector >= 4)
                 {
                     rundest = (int)(window + window_posn);
@@ -144,7 +195,17 @@ namespace BurnOutSharp.Compression.Quantum
         /// <summary>
         /// Initialize a Quantum decompressor state
         /// </summary>
-        public static bool InitState(int window, int level, State state)
+        public static bool InitState(State state, CFFOLDER folder)
+        {
+            int window = ((ushort)folder.CompressionType >> 8) & 0x1f;
+            int level = ((ushort)folder.CompressionType >> 4) & 0xF;
+            return InitState(state, window, level);
+        }
+
+        /// <summary>
+        /// Initialize a Quantum decompressor state
+        /// </summary>
+        public static bool InitState(State state, int window, int level)
         {
             uint windowSize = (uint)(1 << window);
             int msz = window * 2, i;
@@ -184,22 +245,22 @@ namespace BurnOutSharp.Compression.Quantum
             }
 
             // Initialize arithmetic coding models
-            InitModel(state.Model7, state.Model7Symbols, 7, 0);
+            state.Model7 = CreateModel(state.Model7Symbols, 7, 0);
 
-            InitModel(state.Model7Submodel00, state.Model7Submodel00Symbols, 0x40, 0x00);
-            InitModel(state.Model7Submodel40, state.Model7Submodel40Symbols, 0x40, 0x40);
-            InitModel(state.Model7Submodel80, state.Model7Submodel80Symbols, 0x40, 0x80);
-            InitModel(state.Model7SubmodelC0, state.Model7SubmodelC0Symbols, 0x40, 0xC0);
+            state.Model7Submodel00 = CreateModel(state.Model7Submodel00Symbols, 0x40, 0x00);
+            state.Model7Submodel40 = CreateModel(state.Model7Submodel40Symbols, 0x40, 0x40);
+            state.Model7Submodel80 = CreateModel(state.Model7Submodel80Symbols, 0x40, 0x80);
+            state.Model7SubmodelC0 = CreateModel(state.Model7SubmodelC0Symbols, 0x40, 0xC0);
 
             // Model 4 depends on table size, ranges from 20 to 24
-            InitModel(state.Model4, state.Model4Symbols, (msz < 24) ? msz : 24, 0);
+            state.Model4 = CreateModel(state.Model4Symbols, (msz < 24) ? msz : 24, 0);
 
             // Model 5 depends on table size, ranges from 20 to 36
-            InitModel(state.Model5, symbols: state.Model5Symbols, (msz < 36) ? msz : 36, 0);
+            state.Model5 = CreateModel(symbols: state.Model5Symbols, (msz < 36) ? msz : 36, 0);
 
             // Model 6 Position depends on table size, ranges from 20 to 42
-            InitModel(state.Model6Position, state.Model6PositionSymbols, msz, 0);
-            InitModel(state.Model6Length, state.Model6LengthSymbols, 27, 0);
+            state.Model6Position = CreateModel(state.Model6PositionSymbols, msz, 0);
+            state.Model6Length = CreateModel(state.Model6LengthSymbols, 27, 0);
 
             return true;
         }
@@ -208,12 +269,15 @@ namespace BurnOutSharp.Compression.Quantum
         /// Initialize a Quantum model that decodes symbols from s to (s + n - 1)
         /// </summary>
         /// <see href="https://github.com/wine-mirror/wine/blob/master/dlls/cabinet/fdi.c"/>
-        public static void InitModel(Model model, ModelSymbol[] symbols, int entryCount, int initialSymbol)
+        private static Model CreateModel(ModelSymbol[] symbols, int entryCount, int initialSymbol)
         {
             // Set the basic values
-            model.ShiftsLeft = 4;
-            model.Entries = entryCount;
-            model.Symbols = symbols;
+            Model model = new Model
+            {
+                TimeToReorder = 4,
+                Entries = entryCount,
+                Symbols = symbols,
+            };
 
             // Clear out the look-up table
             model.LookupTable = Enumerable.Repeat<ushort>(0xFF, model.LookupTable.Length).ToArray();
@@ -224,22 +288,24 @@ namespace BurnOutSharp.Compression.Quantum
                 // Set up a look-up entry for symbol
                 model.LookupTable[i + initialSymbol] = i;
 
-                // Actual symbol
-                model.Symbols[i].Symbol = (ushort)(i + initialSymbol);
-
-                // Current frequency of that symbol
-                model.Symbols[i].CumulativeFrequency = (ushort)(entryCount - i);
+                // Create the symbol in the table
+                model.Symbols[i] = new ModelSymbol
+                {
+                    Symbol = (ushort)(i + initialSymbol),
+                    CumulativeFrequency = (ushort)(entryCount - i),
+                };
             }
 
             // Set the last symbol frequency to 0
-            model.Symbols[entryCount].CumulativeFrequency = 0;
+            model.Symbols[entryCount] = new ModelSymbol { CumulativeFrequency = 0 };
+            return model;
         }
 
         /// <summary>
         /// Update the quantum model for a particular symbol
         /// </summary>
         /// <see href="https://github.com/wine-mirror/wine/blob/master/dlls/cabinet/fdi.c"/>
-        public static void UpdateModel(Model model, int symbol)
+        private static void UpdateModel(Model model, int symbol)
         {
             // Update the cumulative frequency for all symbols less than the provided
             for (int i = 0; i < symbol; i++)
@@ -252,7 +318,7 @@ namespace BurnOutSharp.Compression.Quantum
                 return;
 
             // If we have more than 1 shift left in the model
-            if (--model.ShiftsLeft != 0)
+            if (--model.TimeToReorder != 0)
             {
                 // Loop through the entries from highest to lowest,
                 // performing the shift on the cumulative frequencies
@@ -269,7 +335,7 @@ namespace BurnOutSharp.Compression.Quantum
             else
             {
                 // Reset the shifts left value to 50
-                model.ShiftsLeft = 50;
+                model.TimeToReorder = 50;
 
                 // Loop through the entries setting the cumulative frequencies
                 for (int i = 0; i < model.Entries; i++)
@@ -512,12 +578,17 @@ namespace BurnOutSharp.Compression.Quantum
                 }
 
                 L <<= 1; H = (ushort)((H << 1) | 1);
+
+                // If we have more requested bytes than we have data
+                if (inpos >= inbuf.Length - 1)
+                    break;
+
                 Q_FILL_BUFFER(inbuf, ref inpos, ref bitsleft, ref bitbuf);
                 C = (ushort)((C << 1) | Q_PEEK_BITS(1, bitbuf));
                 Q_REMOVE_BITS(1, ref bitsleft, ref bitbuf);
             }
 
-            Decompressor.UpdateModel(model, i);
+            UpdateModel(model, i);
             return v;
         }
 
