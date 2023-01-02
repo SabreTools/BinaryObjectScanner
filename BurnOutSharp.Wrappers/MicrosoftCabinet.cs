@@ -216,7 +216,7 @@ namespace BurnOutSharp.Wrappers
                 return null;
 
             // Store the last decompressed block for MS-ZIP
-            Compression.MSZIP mszip = new Compression.MSZIP();
+            Compression.MSZIP_zlib mszip = new Compression.MSZIP_zlib();
             bool hasLastBlock = false;
 
             List<byte> data = new List<byte>();

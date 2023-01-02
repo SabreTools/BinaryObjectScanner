@@ -1,6 +1,7 @@
 // using static BurnOutSharp.Wrappers.CabinetConstants;
 // using static BurnOutSharp.Wrappers.FDIcConstants;
 // using static BurnOutSharp.Wrappers.FDIConstants;
+// using static BurnOutSharp.Models.Compression.MSZIP.Constants;
 // using cab_LONG = System.Int32;
 // using cab_off_t = System.UInt32;
 // using cab_UBYTE = System.Byte;
@@ -11,14 +12,6 @@
 // {
 //     internal unsafe class MSZIPfdi
 //     {
-//         /// <summary>
-//         /// Ziphuft_free (internal)
-//         /// </summary>
-//         static void fdi_Ziphuft_free(FDI_Int fdi, Ziphuft t)
-//         {
-//             // No-op because of garbage collection
-//         }
-
 //         /// <summary>
 //         /// fdi_Ziphuft_build (internal)
 //         /// </summary>
@@ -170,7 +163,7 @@
 //                         if (!(q = decomp_state.fdi.alloc((z + 1) * sizeof(Ziphuft))))
 //                         {
 //                             if (h)
-//                                 fdi_Ziphuft_free(decomp_state.fdi, decomp_state.zip.u[0]);
+//                                 Free(decomp_state.fdi, decomp_state.zip.u[0]);
 //                             return 3;             /* not enough memory */
 //                         }
 
@@ -249,8 +242,8 @@
 //             w = decomp_state.zip.window_posn;                       /* initialize window position */
 
 //             /* inflate the coded data */
-//             ml = Zipmask[bl];               /* precompute masks for speed */
-//             md = Zipmask[bd];
+//             ml = BitMasks[bl];               /* precompute masks for speed */
+//             md = BitMasks[bd];
 
 //             for (; ; )
 //             {
@@ -263,7 +256,7 @@
 //                         ZIPDUMPBITS(t.b)
 //                       e -= 16;
 //                         ZIPNEEDBITS(e)
-//                     } while ((e = (t = t.v.t + (b & Zipmask[e])).e) > 16);
+//                     } while ((e = (t = t.v.t + (b & BitMasks[e])).e) > 16);
 //                 ZIPDUMPBITS(t.b)
 //                 if (e == 16)                /* then it's a literal */
 //                     decomp_state.outbuf[w++] = (cab_UBYTE)t.v.n;
@@ -275,7 +268,7 @@
 
 //                     /* get length of block to copy */
 //                     ZIPNEEDBITS(e)
-//                   n = t.v.n + (b & Zipmask[e]);
+//                   n = t.v.n + (b & BitMasks[e]);
 //                     ZIPDUMPBITS(e);
 
 //                     /* decode distance of block to copy */
@@ -288,10 +281,10 @@
 //                             ZIPDUMPBITS(t.b)
 //                           e -= 16;
 //                             ZIPNEEDBITS(e)
-//                         } while ((e = (t = t.v.t + (b & Zipmask[e])).e) > 16);
+//                         } while ((e = (t = t.v.t + (b & BitMasks[e])).e) > 16);
 //                     ZIPDUMPBITS(t.b)
 //                   ZIPNEEDBITS(e)
-//                   d = w - t.v.n - (b & Zipmask[e]);
+//                   d = w - t.v.n - (b & BitMasks[e]);
 //                     ZIPDUMPBITS(e)
 //                   do
 //                     {
@@ -313,51 +306,6 @@
 //             decomp_state.zip.bk = k;
 
 //             /* done */
-//             return 0;
-//         }
-
-//         /// <summary>
-//         /// Zipinflate_stored (internal)
-//         /// 
-//         /// "decompress" an inflated type 0 (stored) block.
-//         /// </summary>
-//         static cab_LONG fdi_Zipinflate_stored(fdi_decomp_state decomp_state)
-//         {
-//             cab_ULONG n;           /* number of bytes in block */
-//             cab_ULONG w;           /* current window position */
-//             cab_ULONG b;  /* bit buffer */
-//             cab_ULONG k;  /* number of bits in bit buffer */
-
-//             /* make local copies of globals */
-//             b = decomp_state.zip.bb;                       /* initialize bit buffer */
-//             k = decomp_state.zip.bk;
-//             w = decomp_state.zip.window_posn;              /* initialize window position */
-
-//             /* go to byte boundary */
-//             n = k & 7;
-//             ZIPDUMPBITS(n);
-
-//             /* get the length and its complement */
-//             ZIPNEEDBITS(16)
-//           n = (b & 0xffff);
-//             ZIPDUMPBITS(16)
-//           ZIPNEEDBITS(16)
-//           if (n != ((~b) & 0xffff))
-//                 return 1;                   /* error in compressed data */
-//             ZIPDUMPBITS(16)
-
-//   /* read and output the compressed data */
-//   while (n--)
-//             {
-//                 ZIPNEEDBITS(8)
-//     decomp_state.outbuf[w++] = (cab_UBYTE)b;
-//                 ZIPDUMPBITS(8)
-//   }
-
-//             /* restore the globals from the locals */
-//             decomp_state.zip.window_posn = w;              /* restore global window pointer */
-//             decomp_state.zip.bb = b;                       /* restore global bit buffer */
-//             decomp_state.zip.bk = k;
 //             return 0;
 //         }
 
@@ -384,24 +332,24 @@
 //             for (; i < 288; i++)          /* make a complete, but wrong code set */
 //                 l[i] = 8;
 //             fixed_bl = 7;
-//             if ((i = fdi_Ziphuft_build(l, 288, 257, Zipcplens, Zipcplext, &fixed_tl, &fixed_bl, decomp_state)))
+//             if ((i = fdi_Ziphuft_build(l, 288, 257, CopyLengths, LiteralExtraBits, &fixed_tl, &fixed_bl, decomp_state)))
 //                 return i;
 
 //             /* distance table */
 //             for (i = 0; i < 30; i++)      /* make an incomplete code set */
 //                 l[i] = 5;
 //             fixed_bd = 5;
-//             if ((i = fdi_Ziphuft_build(l, 30, 0, Zipcpdist, Zipcpdext, &fixed_td, &fixed_bd, decomp_state)) > 1)
+//             if ((i = fdi_Ziphuft_build(l, 30, 0, CopyOffsets, DistanceExtraBits, &fixed_td, &fixed_bd, decomp_state)) > 1)
 //             {
-//                 fdi_Ziphuft_free(decomp_state.fdi, fixed_tl);
+//                 Free(decomp_state.fdi, fixed_tl);
 //                 return i;
 //             }
 
 //             /* decompress until an end-of-block code */
 //             i = fdi_Zipinflate_codes(fixed_tl, fixed_td, fixed_bl, fixed_bd, decomp_state);
 
-//             fdi_Ziphuft_free(decomp_state.fdi, fixed_td);
-//             fdi_Ziphuft_free(decomp_state.fdi, fixed_tl);
+//             Free(decomp_state.fdi, fixed_td);
+//             Free(decomp_state.fdi, fixed_tl);
 //             return i;
 //         }
 
@@ -450,24 +398,24 @@
 //             for (j = 0; j < nb; j++)
 //             {
 //                 ZIPNEEDBITS(3)
-//                 ll[Zipborder[j]] = b & 7;
+//                 ll[BitLengthOrder[j]] = b & 7;
 //                 ZIPDUMPBITS(3)
 //               }
 //             for (; j < 19; j++)
-//                 ll[Zipborder[j]] = 0;
+//                 ll[BitLengthOrder[j]] = 0;
 
 //             /* build decoding table for trees--single level, 7 bit lookup */
 //             bl = 7;
 //             if ((i = fdi_Ziphuft_build(ll, 19, 19, null, null, &tl, &bl, decomp_state)) != 0)
 //             {
 //                 if (i == 1)
-//                     fdi_Ziphuft_free(decomp_state.fdi, tl);
+//                     Free(decomp_state.fdi, tl);
 //                 return i;                   /* incomplete code set */
 //             }
 
 //             /* read in literal and distance code lengths */
 //             n = nl + nd;
-//             m = Zipmask[bl];
+//             m = BitMasks[bl];
 //             i = l = 0;
 //             while ((cab_ULONG)i < n)
 //             {
@@ -512,7 +460,7 @@
 //             }
 
 //             /* free decoding table for trees */
-//             fdi_Ziphuft_free(decomp_state.fdi, tl);
+//             Free(decomp_state.fdi, tl);
 
 //             /* restore the global bit buffer */
 //             decomp_state.zip.bb = b;
@@ -520,92 +468,23 @@
 
 //             /* build the decoding tables for literal/length and distance codes */
 //             bl = ZIPLBITS;
-//             if ((i = fdi_Ziphuft_build(ll, nl, 257, Zipcplens, Zipcplext, &tl, &bl, decomp_state)) != 0)
+//             if ((i = fdi_Ziphuft_build(ll, nl, 257, CopyLengths, LiteralExtraBits, &tl, &bl, decomp_state)) != 0)
 //             {
 //                 if (i == 1)
-//                     fdi_Ziphuft_free(decomp_state.fdi, tl);
+//                     Free(decomp_state.fdi, tl);
 //                 return i;                   /* incomplete code set */
 //             }
 //             bd = ZIPDBITS;
-//             fdi_Ziphuft_build(ll + nl, nd, 0, Zipcpdist, Zipcpdext, &td, &bd, decomp_state);
+//             fdi_Ziphuft_build(ll + nl, nd, 0, CopyOffsets, DistanceExtraBits, &td, &bd, decomp_state);
 
 //             /* decompress until an end-of-block code */
 //             if (fdi_Zipinflate_codes(tl, td, bl, bd, decomp_state))
 //                 return 1;
 
 //             /* free the decoding tables, return */
-//             fdi_Ziphuft_free(decomp_state.fdi, tl);
-//             fdi_Ziphuft_free(decomp_state.fdi, td);
+//             Free(decomp_state.fdi, tl);
+//             Free(decomp_state.fdi, td);
 //             return 0;
-//         }
-
-//         /// <summary>
-//         /// fdi_Zipinflate_block (internal)
-//         /// 
-//         /// decompress an inflated block
-//         /// </summary>
-//         static cab_LONG fdi_Zipinflate_block(cab_LONG* e, fdi_decomp_state decomp_state) /* e == last block flag */
-//         {
-//             cab_ULONG t;            /* block type */
-//             cab_ULONG b;     /* bit buffer */
-//             cab_ULONG k;     /* number of bits in bit buffer */
-
-//             /* make local bit buffer */
-//             b = decomp_state.zip.bb;
-//             k = decomp_state.zip.bk;
-
-//             /* read in last block bit */
-//             ZIPNEEDBITS(1)
-//             * e = (cab_LONG)b & 1;
-//             ZIPDUMPBITS(1)
-
-//   /* read in block type */
-//   ZIPNEEDBITS(2)
-//           t = b & 3;
-//             ZIPDUMPBITS(2)
-
-//   /* restore the global bit buffer */
-//   decomp_state.zip.bb = b;
-//             decomp_state.zip.bk = k;
-
-//             /* inflate that block type */
-//             if (t == 2)
-//                 return fdi_Zipinflate_dynamic(decomp_state);
-//             if (t == 0)
-//                 return fdi_Zipinflate_stored(decomp_state);
-//             if (t == 1)
-//                 return fdi_Zipinflate_fixed(decomp_state);
-//             /* bad block type */
-//             return 2;
-//         }
-
-//         /// <summary>
-//         /// ZIPfdi_decomp(internal)
-//         /// </summary>
-//         static int ZIPfdi_decomp(int inlen, int outlen, fdi_decomp_state decomp_state)
-//         {
-//             cab_LONG e;               /* last block flag */
-
-//             TRACE("(inlen == %d, outlen == %d)\n", inlen, outlen);
-
-//             decomp_state.zip.inpos = decomp_state.inbuf;
-//             decomp_state.zip.bb = decomp_state.zip.bk = decomp_state.zip.window_posn = 0;
-//             if (outlen > ZIPWSIZE)
-//                 return DECR_DATAFORMAT;
-
-//             /* CK = Chris Kirmse, official Microsoft purloiner */
-//             if (decomp_state.zip.inpos[0] != 0x43 || decomp_state.zip.inpos[1] != 0x4B)
-//                 return DECR_ILLEGALDATA;
-//             decomp_state.zip.inpos += 2;
-
-//             do
-//             {
-//                 if (fdi_Zipinflate_block(&e, decomp_state))
-//                     return DECR_ILLEGALDATA;
-//             } while (!e);
-
-//             /* return success */
-//             return DECR_OK;
 //         }
 //     }
 // }

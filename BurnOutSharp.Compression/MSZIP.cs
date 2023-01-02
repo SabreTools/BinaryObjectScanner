@@ -3,7 +3,7 @@ using ICSharpCode.SharpZipLib.Zip.Compression;
 
 namespace BurnOutSharp.Compression
 {
-    public class MSZIP
+    public class MSZIP_zlib
     {
         #region Instance Variables
 

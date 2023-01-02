@@ -3,6 +3,7 @@
 // using System.IO;
 // using System.Linq;
 // using BurnOutSharp.Compression;
+// using BurnOutSharp.Compression.MSZIP;
 // using static BurnOutSharp.Wrappers.CabinetConstants;
 // using static BurnOutSharp.Wrappers.FDIcConstants;
 // using static BurnOutSharp.Wrappers.FDIConstants;
@@ -1177,124 +1178,9 @@
 //         public const int CAB_BLOCKMAX = (32768);
 //         public const int CAB_INPUTMAX = (CAB_BLOCKMAX + 6144);
 
-//         /****************************************************************************/
-//         /* Tables for deflate from PKZIP's appnote.txt. */
-
-//         //#define THOSE_ZIP_CONSTS
-
-//         /* Order of the bit length code lengths */
-//         public static readonly byte[] Zipborder =
-//         { 16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15};
-
-//         /* Copy lengths for literal codes 257..285 */
-//         public static readonly ushort[] Zipcplens =
-//         { 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 19, 23, 27, 31, 35, 43, 51,
-//         59, 67, 83, 99, 115, 131, 163, 195, 227, 258, 0, 0};
-
-//         /* Extra bits for literal codes 257..285 */
-//         public static readonly ushort[] Zipcplext =
-//         { 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4,
-//         4, 5, 5, 5, 5, 0, 99, 99}; /* 99==invalid */
-
-//         /* Copy offsets for distance codes 0..29 */
-//         public static readonly ushort[] Zipcpdist =
-//         { 1, 2, 3, 4, 5, 7, 9, 13, 17, 25, 33, 49, 65, 97, 129, 193, 257, 385,
-//         513, 769, 1025, 1537, 2049, 3073, 4097, 6145, 8193, 12289, 16385, 24577};
-
-//         /* Extra bits for distance codes */
-//         public static readonly ushort[] Zipcpdext =
-//         { 0, 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10,
-//         10, 11, 11, 12, 12, 13, 13};
-
-//         /* And'ing with Zipmask[n] masks the lower n bits */
-//         public static readonly ushort[] Zipmask = new ushort[17]
-//         { 0x0000, 0x0001, 0x0003, 0x0007, 0x000f, 0x001f, 0x003f, 0x007f, 0x00ff,
-//         0x01ff, 0x03ff, 0x07ff, 0x0fff, 0x1fff, 0x3fff, 0x7fff, 0xffff };
-
 //         /* SESSION Operation */
 //         public const uint EXTRACT_FILLFILELIST = 0x00000001;
 //         public const uint EXTRACT_EXTRACTFILES = 0x00000002;
-//     }
-
-//     /* MSZIP stuff */
-
-//     /// <see href="https://github.com/wine-mirror/wine/blob/master/dlls/cabinet/cabinet.h"/>
-//     internal class Ziphuft
-//     {
-//         /// <summary>
-//         /// number of extra bits or operation
-//         /// </summary>
-//         public byte e;
-
-//         /// <summary>
-//         /// number of bits in this code or subcode
-//         /// </summary>
-//         public byte b;
-
-//         #region v
-
-//         /// <summary>
-//         /// literal, length base, or distance base
-//         /// </summary>
-//         public ushort n;
-
-//         /// <summary>
-//         /// pointer to next level of table
-//         /// </summary>
-//         public Ziphuft t;
-
-//         #endregion
-//     }
-
-//     /// <see href="https://github.com/wine-mirror/wine/blob/master/dlls/cabinet/cabinet.h"/>
-//     internal class ZIPstate
-//     {
-//         /// <summary>
-//         /// current offset within the window
-//         /// </summary>
-//         public uint window_posn;
-
-//         /// <summary>
-//         /// bit buffer
-//         /// </summary>
-//         public uint bb;
-
-//         /// <summary>
-//         /// bits in bit buffer
-//         /// </summary>
-//         public uint bk;
-
-//         /// <summary>
-//         /// literal/length and distance code lengths
-//         /// </summary>
-//         public uint[] ll = new uint[288 + 32];
-
-//         /// <summary>
-//         /// bit length count table
-//         /// </summary>
-//         public uint[] c = new uint[ZIPBMAX + 1];
-
-//         /// <summary>
-//         /// memory for l[-1..ZIPBMAX-1]
-//         /// </summary>
-//         public uint[] lx = new uint[ZIPBMAX + 1];
-
-//         /// <summary>
-//         /// table stack
-//         /// </summary>
-//         public Ziphuft[] u = new Ziphuft[ZIPBMAX];
-
-//         /// <summary>
-//         /// values in order of bit length
-//         /// </summary>
-//         public uint[] v = new uint[ZIPN_MAX];
-
-//         /// <summary>
-//         /// bit offsets, then code stack
-//         /// </summary>
-//         public uint[] x = new uint[ZIPBMAX + 1];
-
-//         public byte* inpos;
 //     }
 
 //     /* LZX stuff */
@@ -1592,8 +1478,8 @@
 
 //         #region methods
 
-//         public ZIPstate zip;
-//         public QuantumState qtm;
+//         public Compression.MSZIP.State zip;
+//         public Compression.Quantum.State qtm;
 //         public LZXstate lzx;
 
 //         #endregion
@@ -1627,11 +1513,11 @@
 //     /* Quantum reads bytes in normal order; LZX is little-endian order */
 //     // #define ENSURE_BITS(n)                                                    \
 //     // while (bitsleft < (n)) {                                                \
-//     //     bitbuf |= ((inpos[1]<<8)|inpos[0]) << (CAB_Uint_BITS-16 - bitsleft); \
+//     //     bitbuf |= ((inpos[1]<<8)|inpos[0]) << (16 - bitsleft); \
 //     //     bitsleft += 16; inpos+=2;                                             \
 //     // }
 
-//     // #define PEEK_BITS(n)   (bitbuf >> (CAB_Uint_BITS - (n)))
+//     // #define PEEK_BITS(n)   (bitbuf >> (32 - (n)))
 //     // #define REMOVE_BITS(n) ((bitbuf <<= (n)), (bitsleft -= (n)))
 
 //     // #define READ_BITS(v,n) do {                                             \
@@ -1669,7 +1555,7 @@
 //     // ENSURE_BITS(16);                                                      \
 //     // hufftbl = SYMTABLE(tbl);                                              \
 //     // if ((i = hufftbl[PEEK_BITS(TABLEBITS(tbl))]) >= MAXSYMBOLS(tbl)) {    \
-//     //     j = 1 << (CAB_Uint_BITS - TABLEBITS(tbl));                         \
+//     //     j = 1 << (32 - TABLEBITS(tbl));                         \
 //     //     do {                                                                \
 //     //     j >>= 1; i <<= 1; i |= (bitbuf & j) ? 1 : 0;                      \
 //     //     if (!j) { return DECR_ILLEGALDATA; }                              \
@@ -1923,8 +1809,8 @@
 
 //         #region methods
 
-//         public ZIPstate zip;
-//         public QuantumState qtm;
+//         public Compression.MSZIP.State zip;
+//         public Compression.Quantum.State qtm;
 //         public LZXstate lzx;
 
 //         #endregion
