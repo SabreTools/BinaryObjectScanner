@@ -18,7 +18,6 @@
 //         private const int FDIERROR_NONE = 0;
 //         private const int ERROR_BAD_ARGUMENTS = 0;
 //         private const int FDIERROR_ALLOC_FAIL = 0;
-//         private static void TRACE(object o) { }
 //         private static void ERR(object o) { }
 
 //         // END TEMP AREA
@@ -41,73 +40,6 @@
 //                 return null;
 //             }
 //             return fdi;
-//         }
-
-//         /****************************************************************
-//         * QTMupdatemodel (internal)
-//         */
-//         static void QTMupdatemodel(QTMmodel model, int sym)
-//         {
-//             QTMmodelsym temp;
-//             int i, j;
-
-//             for (i = 0; i < sym; i++) model.syms[i].cumfreq += 8;
-
-//             if (model.syms[0].cumfreq > 3800)
-//             {
-//                 if (--model.shiftsleft != 0)
-//                 {
-//                     for (i = model.entries - 1; i >= 0; i--)
-//                     {
-//                         /* -1, not -2; the 0 entry saves this */
-//                         model.syms[i].cumfreq >>= 1;
-//                         if (model.syms[i].cumfreq <= model.syms[i + 1].cumfreq)
-//                         {
-//                             model.syms[i].cumfreq = (ushort)(model.syms[i + 1].cumfreq + 1);
-//                         }
-//                     }
-//                 }
-//                 else
-//                 {
-//                     model.shiftsleft = 50;
-//                     for (i = 0; i < model.entries; i++)
-//                     {
-//                         /* no -1, want to include the 0 entry */
-//                         /* this converts cumfreqs into frequencies, then shifts right */
-//                         model.syms[i].cumfreq -= model.syms[i + 1].cumfreq;
-//                         model.syms[i].cumfreq++; /* avoid losing things entirely */
-//                         model.syms[i].cumfreq >>= 1;
-//                     }
-
-//                     /* now sort by frequencies, decreasing order -- this must be an
-//                     * inplace selection sort, or a sort with the same (in)stability
-//                     * characteristics
-//                     */
-//                     for (i = 0; i < model.entries - 1; i++)
-//                     {
-//                         for (j = i + 1; j < model.entries; j++)
-//                         {
-//                             if (model.syms[i].cumfreq < model.syms[j].cumfreq)
-//                             {
-//                                 temp = model.syms[i];
-//                                 model.syms[i] = model.syms[j];
-//                                 model.syms[j] = temp;
-//                             }
-//                         }
-//                     }
-
-//                     /* then convert frequencies back to cumfreq */
-//                     for (i = model.entries - 1; i >= 0; i--)
-//                     {
-//                         model.syms[i].cumfreq += model.syms[i + 1].cumfreq;
-//                     }
-//                     /* then update the other part of the table */
-//                     for (i = 0; i < model.entries; i++)
-//                     {
-//                         model.tabloc[model.syms[i].sym] = (ushort)i;
-//                     }
-//                 }
-//             }
 //         }
 
 //         /*************************************************************************
@@ -287,7 +219,7 @@
 //         {
 //             FDI_Int fdi;
 
-//             //   TRACE("(pfnalloc == ^%p, pfnfree == ^%p, pfnopen == ^%p, pfnread == ^%p, pfnwrite == ^%p, "
+//             //   System.Diagnostics.Debug.WriteLine("(pfnalloc == ^%p, pfnfree == ^%p, pfnopen == ^%p, pfnread == ^%p, pfnwrite == ^%p, "
 //             //         "pfnclose == ^%p, pfnseek == ^%p, cpuType == %d, perf == ^%p)\n",
 //             //         pfnalloc, pfnfree, pfnopen, pfnread, pfnwrite, pfnclose, pfnseek,
 //             //         cpuType, perf);
@@ -349,7 +281,7 @@
 //             uint i;
 //             byte[] buf = null;
 
-//             //TRACE("(fdi == %p, hf == %Id, cabsize == %ld)\n", fdi, hf, cabsize);
+//             //System.Diagnostics.Debug.WriteLine("(fdi == %p, hf == %Id, cabsize == %ld)\n", fdi, hf, cabsize);
 
 //             do
 //             {
@@ -413,7 +345,7 @@
 //             byte[] buf = new byte[64]; byte block_resv;
 //             string prevname = null, previnfo = null, nextname = null, nextinfo = null;
 
-//             //TRACE("(fdi == ^%p, hf == %Id, pfdici == ^%p)\n", fdi, hf, pfdici);
+//             //System.Diagnostics.Debug.WriteLine("(fdi == ^%p, hf == %Id, pfdici == ^%p)\n", fdi, hf, pfdici);
 
 //             /* read in the CFHEADER */
 //             if (fdi.read(hf, buf, cfhead_SIZEOF) != cfhead_SIZEOF)
@@ -585,7 +517,7 @@
 //             bool rv;
 //             FDI_Int fdi = get_fdi_ptr(hfdi);
 
-//             //TRACE("(hfdi == ^%p, hf == ^%Id, pfdici == ^%p)\n", hfdi, hf, pfdici);
+//             //System.Diagnostics.Debug.WriteLine("(hfdi == ^%p, hf == ^%Id, pfdici == ^%p)\n", hfdi, hf, pfdici);
 
 //             if (fdi == null) return false;
 
@@ -600,84 +532,6 @@
 //                 pfdici.hasnext = false; /* yuck. duplicate apparent cabinet.dll bug */
 
 //             return rv;
-//         }
-
-//         /******************************************************************
-//         * QTMfdi_initmodel (internal)
-//         *
-//         * Initialize a model which decodes symbols from [s] to [s]+[n]-1
-//         */
-//         static void QTMfdi_initmodel(QTMmodel m, QTMmodelsym[] sym, int n, int s)
-//         {
-//             int i;
-//             m.shiftsleft = 4;
-//             m.entries = n;
-//             m.syms = sym;
-//             memset(m.tabloc, 0xFF, sizeof(m.tabloc)); /* clear out look-up table */
-//             for (i = 0; i < n; i++)
-//             {
-//                 m.tabloc[i + s] = (ushort)i;   /* set up a look-up entry for symbol */
-//                 m.syms[i].sym = (ushort)(i + s); /* actual symbol */
-//                 m.syms[i].cumfreq = (ushort)(n - i); /* current frequency of that symbol */
-//             }
-//             m.syms[n].cumfreq = 0;
-//         }
-
-//         /******************************************************************
-//         * QTMfdi_init (internal)
-//         */
-//         static int QTMfdi_init(int window, int level, fdi_decomp_state decomp_state)
-//         {
-//             uint wndsize = (uint)(1 << window);
-//             int msz = window * 2, i;
-//             uint j;
-
-//             /* QTM supports window sizes of 2^10 (1Kb) through 2^21 (2Mb) */
-//             /* if a previously allocated window is big enough, keep it    */
-//             if (window < 10 || window > 21) return DECR_DATAFORMAT;
-//             if (decomp_state.qtm.actual_size < wndsize)
-//             {
-//                 if (decomp_state.qtm.window != null) decomp_state.fdi.free(decomp_state.qtm.window);
-//                 decomp_state.qtm.window = null;
-//             }
-//             if (decomp_state.qtm.window == null)
-//             {
-//                 if ((decomp_state.qtm.window = decomp_state.fdi.alloc((int)wndsize)) == null) return DECR_NOMEMORY;
-//                 decomp_state.qtm.actual_size = wndsize;
-//             }
-//             decomp_state.qtm.window_size = wndsize;
-//             decomp_state.qtm.window_posn = 0;
-
-//             /* initialize static slot/extrabits tables */
-//             for (i = 0, j = 0; i < 27; i++)
-//             {
-//                 decomp_state.q_length_extra[i] = (byte)((i == 26) ? 0 : (i < 2 ? 0 : i - 2) >> 2);
-//                 decomp_state.q_length_base[i] = (byte)j; j += (uint)(1 << ((i == 26) ? 5 : decomp_state.q_length_extra[i]));
-//             }
-//             for (i = 0, j = 0; i < 42; i++)
-//             {
-//                 decomp_state.q_extra_bits[i] = (byte)((i < 2 ? 0 : i - 2) >> 1);
-//                 decomp_state.q_position_base[i] = j; j += (uint)(1 << decomp_state.q_extra_bits[i]);
-//             }
-
-//             /* initialize arithmetic coding models */
-
-//             QTMfdi_initmodel(decomp_state.qtm.model7, decomp_state.qtm.m7sym, 7, 0);
-
-//             QTMfdi_initmodel(decomp_state.qtm.model00, decomp_state.qtm.m00sym, 0x40, 0x00);
-//             QTMfdi_initmodel(decomp_state.qtm.model40, decomp_state.qtm.m40sym, 0x40, 0x40);
-//             QTMfdi_initmodel(decomp_state.qtm.model80, decomp_state.qtm.m80sym, 0x40, 0x80);
-//             QTMfdi_initmodel(decomp_state.qtm.modelC0, decomp_state.qtm.mC0sym, 0x40, 0xC0);
-
-//             /* model 4 depends on table size, ranges from 20 to 24  */
-//             QTMfdi_initmodel(decomp_state.qtm.model4, decomp_state.qtm.m4sym, (msz < 24) ? msz : 24, 0);
-//             /* model 5 depends on table size, ranges from 20 to 36  */
-//             QTMfdi_initmodel(decomp_state.qtm.model5, decomp_state.qtm.m5sym, (msz < 36) ? msz : 36, 0);
-//             /* model 6pos depends on table size, ranges from 20 to 42 */
-//             QTMfdi_initmodel(decomp_state.qtm.model6pos, decomp_state.qtm.m6psym, msz, 0);
-//             QTMfdi_initmodel(decomp_state.qtm.model6len, decomp_state.qtm.m6lsym, 27, 0);
-
-//             return DECR_OK;
 //         }
 
 //         /************************************************************
@@ -755,25 +609,6 @@
 //             Array.Copy(decomp_state.inbuf, decomp_state.outbuf, inlen);
 //             return DECR_OK;
 //         }
-
-//         /********************************************************
-//         * Ziphuft_free (internal)
-//         */
-//         static void fdi_Ziphuft_free(FDI_Int fdi, Ziphuft t)
-//         {
-//             Ziphuft p, q;
-
-//             /* Go through linked list, freeing from the allocated (t[-1]) address. */
-//             p = t;
-//             while (p != null)
-//             {
-//                 q = (--p).v.t;
-//                 fdi.free(p);
-//                 p = q;
-//             }
-//         }
-
-//         // Left off at fdi_Ziphuft_build (internal)
 //     }
 
 //     /// <see href="https://github.com/wine-mirror/wine/blob/master/include/fdi.h"/>
@@ -1498,7 +1333,7 @@
 //         /// </summary>
 //         public uint[] x = new uint[ZIPBMAX + 1];
 
-//         public int inpos; // byte*
+//         public byte* inpos;
 //     }
 
 //     /* Quantum stuff */
@@ -1656,7 +1491,7 @@
 
 //         public int bl;
 
-//         public byte[] ip; // byte*
+//         public byte* ip;
 //     }
 
 //     /****************************************************************************/
@@ -1829,7 +1664,7 @@
 //         /// <summary>
 //         /// (high level) start of data to use up
 //         /// </summary>
-//         public byte outpos; // byte*
+//         public byte* outpos;
 
 //         /// <summary>
 //         /// (high level) amount of data to use up
@@ -2258,7 +2093,7 @@
 //         /// <summary>
 //         /// (high level) start of data to use up
 //         /// </summary>
-//         public byte outpos; // byte*
+//         public byte* outpos;
 
 //         /// <summary>
 //         /// (high level) amount of data to use up
