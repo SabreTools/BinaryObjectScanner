@@ -1,4 +1,4 @@
-// using BurnOutSharp.Compression;
+// using BurnOutSharp.Compression.Quantum;
 // using BurnOutSharp.Models.Compression.Quantum;
 // using static BurnOutSharp.Wrappers.CabinetConstants;
 // using static BurnOutSharp.Wrappers.FDIcConstants;
@@ -11,120 +11,18 @@
 
 // namespace BurnOutSharp.Wrappers
 // {
-//     /// <see href="https://github.com/wine-mirror/wine/blob/master/dlls/cabinet/cabinet.h"/>
-//     internal class QuantumState
+//     internal unsafe class Quantumfdi
 //     {
-//         /// <summary>
-//         /// the actual decoding window
-//         /// </summary>
-//         public byte[] window;
-
-//         /// <summary>
-//         /// window size (1Kb through 2Mb)
-//         /// </summary>
-//         public uint window_size;
-
-//         /// <summary>
-//         /// window size when it was first allocated
-//         /// </summary>
-//         public uint actual_size;
-
-//         /// <summary>
-//         /// current offset within the window
-//         /// </summary>
-//         public uint window_posn;
-
-//         public Model model7;
-//         public ModelSymbol[] m7sym = new ModelSymbol[7 + 1];
-
-//         public Model model4;
-//         public Model model5;
-//         public Model model6pos;
-//         public Model model6len;
-//         public ModelSymbol[] m4sym = new ModelSymbol[0x18 + 1];
-//         public ModelSymbol[] m5sym = new ModelSymbol[0x24 + 1];
-//         public ModelSymbol[] m6psym = new ModelSymbol[0x2a + 1];
-//         public ModelSymbol[] m6lsym = new ModelSymbol[0x1b + 1];
-
-//         public Model model00;
-//         public Model model40;
-//         public Model model80;
-//         public Model modelC0;
-//         public ModelSymbol[] m00sym = new ModelSymbol[0x40 + 1];
-//         public ModelSymbol[] m40sym = new ModelSymbol[0x40 + 1];
-//         public ModelSymbol[] m80sym = new ModelSymbol[0x40 + 1];
-//         public ModelSymbol[] mC0sym = new ModelSymbol[0x40 + 1];
-//     }
-
-//     internal class Quantumfdi
-//     {
-//         /// <summary>
-//         /// QTMfdi_init (internal)
-//         /// </summary>
-//         internal static int QTMfdi_init(int window, int level, fdi_decomp_state decomp_state)
-//         {
-//             uint wndsize = (uint)(1 << window);
-//             int msz = window * 2, i;
-//             uint j;
-
-//             /* QTM supports window sizes of 2^10 (1Kb) through 2^21 (2Mb) */
-//             /* if a previously allocated window is big enough, keep it    */
-//             if (window < 10 || window > 21) return DECR_DATAFORMAT;
-//             if (decomp_state.qtm.actual_size < wndsize)
-//             {
-//                 if (decomp_state.qtm.window != null) decomp_state.fdi.free(decomp_state.qtm.window);
-//                 decomp_state.qtm.window = null;
-//             }
-//             if (decomp_state.qtm.window == null)
-//             {
-//                 if ((decomp_state.qtm.window = decomp_state.fdi.alloc((int)wndsize)) == null) return DECR_NOMEMORY;
-//                 decomp_state.qtm.actual_size = wndsize;
-//             }
-//             decomp_state.qtm.window_size = wndsize;
-//             decomp_state.qtm.window_posn = 0;
-
-//             /* initialize static slot/extrabits tables */
-//             for (i = 0, j = 0; i < 27; i++)
-//             {
-//                 decomp_state.q_length_extra[i] = (byte)((i == 26) ? 0 : (i < 2 ? 0 : i - 2) >> 2);
-//                 decomp_state.q_length_base[i] = (byte)j; j += (uint)(1 << ((i == 26) ? 5 : decomp_state.q_length_extra[i]));
-//             }
-//             for (i = 0, j = 0; i < 42; i++)
-//             {
-//                 decomp_state.q_extra_bits[i] = (byte)((i < 2 ? 0 : i - 2) >> 1);
-//                 decomp_state.q_position_base[i] = j; j += (uint)(1 << decomp_state.q_extra_bits[i]);
-//             }
-
-//             /* initialize arithmetic coding models */
-
-//             Quantum.InitModel(decomp_state.qtm.model7, decomp_state.qtm.m7sym, 7, 0);
-
-//             Quantum.InitModel(decomp_state.qtm.model00, decomp_state.qtm.m00sym, 0x40, 0x00);
-//             Quantum.InitModel(decomp_state.qtm.model40, decomp_state.qtm.m40sym, 0x40, 0x40);
-//             Quantum.InitModel(decomp_state.qtm.model80, decomp_state.qtm.m80sym, 0x40, 0x80);
-//             Quantum.InitModel(decomp_state.qtm.modelC0, decomp_state.qtm.mC0sym, 0x40, 0xC0);
-
-//             /* model 4 depends on table size, ranges from 20 to 24  */
-//             Quantum.InitModel(decomp_state.qtm.model4, decomp_state.qtm.m4sym, (msz < 24) ? msz : 24, 0);
-//             /* model 5 depends on table size, ranges from 20 to 36  */
-//             Quantum.InitModel(decomp_state.qtm.model5, decomp_state.qtm.m5sym, (msz < 36) ? msz : 36, 0);
-//             /* model 6pos depends on table size, ranges from 20 to 42 */
-//             Quantum.InitModel(decomp_state.qtm.model6pos, decomp_state.qtm.m6psym, msz, 0);
-//             Quantum.InitModel(decomp_state.qtm.model6len, decomp_state.qtm.m6lsym, 27, 0);
-
-//             return DECR_OK;
-//         }
-
 //         /// <summary>
 //         /// QTMfdi_decomp(internal)
 //         /// </summary>
 //         internal static int QTMfdi_decomp(int inlen, int outlen, fdi_decomp_state decomp_state)
 //         {
 //             cab_UBYTE* inpos = decomp_state.inbuf;
-//             cab_UBYTE* window = decomp_state.qtm.window;
+//             cab_UBYTE* window = decomp_state.Window;
 //             cab_UBYTE* runsrc, rundest;
-//             cab_ULONG window_posn = decomp_state.qtm.window_posn;
-//             cab_ULONG window_size = decomp_state.qtm.window_size;
+//             cab_ULONG window_posn = decomp_state.WindowPosition;
+//             cab_ULONG window_size = decomp_state.WindowSize;
 
 //             /* used by bitstream macros */
 //             int bitsleft, bitrun, bitsneed;
@@ -135,7 +33,7 @@
 //             cab_UWORD symf;
 //             int i;
 
-//             int extra, togo = outlen, match_length = 0, copy_length;
+//             int extra = 0, togo = outlen, match_length = 0, copy_length;
 //             cab_UBYTE selector, sym;
 //             cab_ULONG match_offset = 0;
 
@@ -144,8 +42,8 @@
 //             System.Diagnostics.Debug.WriteLine("(inlen == %d, outlen == %d)\n", inlen, outlen);
 
 //             /* read initial value of C */
-//             Q_INIT_BITSTREAM;
-//             Q_READ_BITS(C, 16);
+//             Q_INIT_BITSTREAM(out bitsleft, out bitbuf);
+//             C = Q_READ_BITS_UINT16(16, ref inpos, ref bitsleft, ref bitbuf);
 
 //             /* apply 2^x-1 mask */
 //             window_posn &= window_size - 1;
@@ -158,45 +56,53 @@
 
 //             while (togo > 0)
 //             {
-//                 GET_SYMBOL(model7, selector);
+//                 selector = GET_SYMBOL(state.Model7, ref H, ref L, ref C, ref inpos, ref bitsleft, ref bitbuf);
 //                 switch (selector)
 //                 {
 //                     case 0:
-//                         GET_SYMBOL(model00, sym); window[window_posn++] = sym; togo--;
+//                         sym = GET_SYMBOL(state.Model7Submodel00, ref H, ref L, ref C, ref inpos, ref bitsleft, ref bitbuf);
+//                         window[window_posn++] = sym;
+//                         togo--;
 //                         break;
 //                     case 1:
-//                         GET_SYMBOL(model40, sym); window[window_posn++] = sym; togo--;
+//                         sym = GET_SYMBOL(state.Model7Submodel40, ref H, ref L, ref C, ref inpos, ref bitsleft, ref bitbuf);
+//                         window[window_posn++] = sym;
+//                         togo--;
 //                         break;
 //                     case 2:
-//                         GET_SYMBOL(model80, sym); window[window_posn++] = sym; togo--;
+//                         sym = GET_SYMBOL(state.Model7Submodel80, ref H, ref L, ref C, ref inpos, ref bitsleft, ref bitbuf);
+//                         window[window_posn++] = sym;
+//                         togo--;
 //                         break;
 //                     case 3:
-//                         GET_SYMBOL(modelC0, sym); window[window_posn++] = sym; togo--;
+//                         sym = GET_SYMBOL(state.Model7SubmodelC0, ref H, ref L, ref C, ref inpos, ref bitsleft, ref bitbuf);
+//                         window[window_posn++] = sym;
+//                         togo--;
 //                         break;
 
+//                     // Selector 4 = fixed length of 3
 //                     case 4:
-//                         /* selector 4 = fixed length of 3 */
-//                         GET_SYMBOL(model4, sym);
-//                         Q_READ_BITS(extra, decomp_state.q_extra_bits[sym]);
+//                         sym = GET_SYMBOL(state.Model4, ref H, ref L, ref C, ref inpos, ref bitsleft, ref bitbuf);
+//                         extra = Q_READ_BITS_INT32(state.q_extra_bits[sym], ref inpos, ref bitsleft, ref bitbuf);
 //                         match_offset = decomp_state.q_position_base[sym] + extra + 1;
 //                         match_length = 3;
 //                         break;
 
+//                     // Selector 5 = fixed length of 4
 //                     case 5:
-//                         /* selector 5 = fixed length of 4 */
-//                         GET_SYMBOL(model5, sym);
-//                         Q_READ_BITS(extra, decomp_state.q_extra_bits[sym]);
+//                         sym = GET_SYMBOL(state.Model5, ref H, ref L, ref C, ref inpos, ref bitsleft, ref bitbuf);
+//                         extra = Q_READ_BITS_INT32(state.q_extra_bits[sym], ref inpos, ref bitsleft, ref bitbuf);
 //                         match_offset = decomp_state.q_position_base[sym] + extra + 1;
 //                         match_length = 4;
 //                         break;
 
+//                     // Selector 6 = variable length
 //                     case 6:
-//                         /* selector 6 = variable length */
-//                         GET_SYMBOL(model6len, sym);
-//                         Q_READ_BITS(extra, decomp_state.q_length_extra[sym]);
+//                         sym = GET_SYMBOL(state.Model6Length, ref H, ref L, ref C, ref inpos, ref bitsleft, ref bitbuf);
+//                         extra = Q_READ_BITS_INT32(state.q_length_extra[sym], ref inpos, ref bitsleft, ref bitbuf);
 //                         match_length = decomp_state.q_length_base[sym] + extra + 5;
-//                         GET_SYMBOL(model6pos, sym);
-//                         Q_READ_BITS(extra, decomp_state.q_extra_bits[sym]);
+//                         sym = GET_SYMBOL(state.Model6Position, ref H, ref L, ref C, ref inpos, ref bitsleft, ref bitbuf);
+//                         extra = Q_READ_BITS_INT32(state.q_extra_bits[sym], ref inpos, ref bitsleft, ref bitbuf);
 //                         match_offset = decomp_state.q_position_base[sym] + extra + 1;
 //                         break;
 
@@ -244,8 +150,131 @@
 
 //             memcpy(decomp_state.outbuf, window + ((!window_posn) ? window_size : window_posn) - outlen, outlen);
 
-//             decomp_state.qtm.window_posn = window_posn;
+//             decomp_state.WindowPosition = window_posn;
 //             return DECR_OK;
+//         }
+
+//         /// <summary>
+//         /// Should be used first to set up the system
+//         /// </summary>
+//         private static void Q_INIT_BITSTREAM(out int bitsleft, out uint bitbuf)
+//         {
+//             bitsleft = 0; bitbuf = 0;
+//         }
+
+//         /// <summary>
+//         /// Adds more data to the bit buffer, if there is room for another 16 bits.
+//         /// </summary>
+//         private static void Q_FILL_BUFFER(ref byte* inpos, ref int bitsleft, ref uint bitbuf)
+//         {
+//             if (bitsleft <= 16)
+//             {
+//                 bitbuf |= (uint)((inpos[0] << 8) | inpos[1]) << (16 - bitsleft);
+//                 bitsleft += 16; inpos += 2;
+//             }
+//         }
+
+//         /// <summary>
+//         /// Extracts (without removing) N bits from the bit buffer
+//         /// </summary>
+//         private static uint Q_PEEK_BITS(int n, uint bitbuf)
+//         {
+//             return bitbuf >> (32 - n);
+//         }
+
+//         /// <summary>
+//         /// Removes N bits from the bit buffer
+//         /// </summary>
+//         private static void Q_REMOVE_BITS(int n, ref int bitsleft, ref uint bitbuf)
+//         {
+//             bitbuf <<= n;
+//             bitsleft -= n;
+//         }
+
+//         /// <summary>
+//         /// Takes N bits from the buffer and puts them in v. Unlike LZX, this can loop
+//         /// several times to get the requisite number of bits.
+//         /// </summary>
+//         private static ushort Q_READ_BITS_UINT16(int n, ref byte* inpos, ref int bitsleft, ref uint bitbuf)
+//         {
+//             ushort v = 0; int bitrun;
+//             for (int bitsneed = n; bitsneed != 0; bitsneed -= bitrun)
+//             {
+//                 Q_FILL_BUFFER(ref inpos, ref bitsleft, ref bitbuf);
+
+//                 bitrun = (bitsneed > bitsleft) ? bitsleft : bitsneed;
+//                 v = (ushort)((v << bitrun) | Q_PEEK_BITS(bitrun, bitbuf));
+
+//                 Q_REMOVE_BITS(bitrun, ref bitsleft, ref bitbuf);
+//             }
+
+//             return v;
+//         }
+
+//         /// <summary>
+//         /// Takes N bits from the buffer and puts them in v. Unlike LZX, this can loop
+//         /// several times to get the requisite number of bits.
+//         /// </summary>
+//         private static int Q_READ_BITS_INT32(int n, ref byte* inpos, ref int bitsleft, ref uint bitbuf)
+//         {
+//             int v = 0; int bitrun;
+//             for (int bitsneed = n; bitsneed != 0; bitsneed -= bitrun)
+//             {
+//                 Q_FILL_BUFFER(ref inpos, ref bitsleft, ref bitbuf);
+
+//                 bitrun = (bitsneed > bitsleft) ? bitsleft : bitsneed;
+//                 v = (int)((v << bitrun) | Q_PEEK_BITS(bitrun, bitbuf));
+
+//                 Q_REMOVE_BITS(bitrun, ref bitsleft, ref bitbuf);
+//             }
+
+//             return v;
+//         }
+
+//         /// <summary>
+//         /// Fetches the next symbol from the stated model and puts it in v.
+//         /// It may need to read the bitstream to do this.
+//         /// </summary>
+//         private static int GET_SYMBOL(Model model, ref ushort H, ref ushort L, ref ushort C, ref byte* inpos, ref int bitsleft, ref uint bitbuf)
+//         {
+//             uint range = (uint)(((H - L) & 0xFFFF) + 1);
+//             ushort symf = (ushort)(((((C - L + 1) * model.Symbols[0].CumulativeFrequency) - 1) / range) & 0xFFFF);
+
+//             int i;
+//             for (i = 1; i < model.Entries; i++)
+//             {
+//                 if (model.Symbols[i].CumulativeFrequency <= symf)
+//                     break;
+//             }
+
+//             int v = model.Symbols[i - 1].Symbol;
+//             range = (uint)(H - L + 1);
+//             H = (ushort)(L + ((model.Symbols[i - 1].CumulativeFrequency * range) / model.Symbols[0].CumulativeFrequency) - 1);
+//             L = (ushort)(L + ((model.Symbols[i].CumulativeFrequency * range) / model.Symbols[0].CumulativeFrequency));
+
+//             while (true)
+//             {
+//                 if ((L & 0x8000) != (H & 0x8000))
+//                 {
+//                     if ((L & 0x4000) != 0 && (H & 0x4000) == 0)
+//                     {
+//                         // Underflow case
+//                         C ^= 0x4000; L &= 0x3FFF; H |= 0x4000;
+//                     }
+//                     else
+//                     {
+//                         break;
+//                     }
+//                 }
+
+//                 L <<= 1; H = (ushort)((H << 1) | 1);
+//                 Q_FILL_BUFFER(ref inpos, ref bitsleft, ref bitbuf);
+//                 C = (ushort)((C << 1) | Q_PEEK_BITS(1, bitbuf));
+//                 Q_REMOVE_BITS(1, ref bitsleft, ref bitbuf);
+//             }
+
+//             Decompressor.UpdateModel(model, i);
+//             return v;
 //         }
 //     }
 // }
