@@ -22,7 +22,7 @@ namespace BurnOutSharp.Compression.MSZIP
         /// <summary>
         /// Pointer to next level of table
         /// </summary>
-        public HuffmanNode NextLevel;
+        public HuffmanNode[] NextLevel;
 
         #endregion
     }
