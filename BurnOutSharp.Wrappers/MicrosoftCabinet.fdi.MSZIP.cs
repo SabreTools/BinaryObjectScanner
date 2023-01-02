@@ -5,7 +5,7 @@
 // using cab_LONG = System.Int32;
 // using cab_off_t = System.UInt32;
 // using cab_UBYTE = System.Byte;
-// using cab_ULONG = System.UInt32;
+// using uint = System.UInt32;
 // using cab_UWORD = System.UInt16;
 
 // namespace BurnOutSharp.Wrappers
@@ -13,26 +13,26 @@
 //     internal unsafe class MSZIPfdi
 //     {
 //         /// <summary>
-//         /// fdi_Ziphuft_build (internal)
+//         /// BuildHuffmanTree (internal)
 //         /// </summary>
-//         static cab_LONG fdi_Ziphuft_build(cab_ULONG* b, cab_ULONG n, cab_ULONG s, cab_UWORD* d, cab_UWORD* e, ref Ziphuft[] t, cab_LONG* m, fdi_decomp_state decomp_state)
+//         static cab_LONG BuildHuffmanTree(uint* b, uint n, uint s, cab_UWORD* d, cab_UWORD* e, ref Ziphuft[] t, cab_LONG* m, fdi_decomp_state decomp_state)
 //         {
-//             cab_ULONG a;                      /* counter for codes of length k */
-//             cab_ULONG el;                   /* length of EOB code (value 256) */
-//             cab_ULONG f;                    /* i repeats in table every f entries */
+//             uint a;                      /* counter for codes of length k */
+//             uint el;                   /* length of EOB code (value 256) */
+//             uint f;                    /* i repeats in table every f entries */
 //             cab_LONG g;                     /* maximum code length */
 //             cab_LONG h;                     /* table level */
-//             cab_ULONG i;           /* counter, current code */
-//             cab_ULONG j;           /* counter */
+//             uint i;           /* counter, current code */
+//             uint j;           /* counter */
 //             cab_LONG k;            /* number of bits in current code */
 //             cab_LONG* l;                      /* stack of bits per table */
-//             cab_ULONG* p;          /* pointer into decomp_state.zip.c[],decomp_state.zip.b[],decomp_state.zip.v[] */
+//             uint* p;          /* pointer into decomp_state.zip.c[],decomp_state.zip.b[],decomp_state.zip.v[] */
 //             Ziphuft* q;           /* points to current table */
 //             Ziphuft r;                     /* table entry for structure assignment */
 //             cab_LONG w;                  /* bits before this table == (l * h) */
-//             cab_ULONG* xp;                    /* pointer into x */
+//             uint* xp;                    /* pointer into x */
 //             cab_LONG y;                           /* number of dummy codes added */
-//             cab_ULONG z;                    /* number of entries in current table */
+//             uint z;                    /* number of entries in current table */
 
 //             l = decomp_state.zip.lx + 1;
 
@@ -153,7 +153,7 @@
 //                             }
 //                         }
 
-//                         if ((cab_ULONG)w + j > el && (cab_ULONG)w < el)
+//                         if ((uint)w + j > el && (uint)w < el)
 //                             j = el - w;           /* make EOB code end at table */
 
 //                         z = 1 << j;             /* table entries for j-bit table */
@@ -228,13 +228,13 @@
 //         /// </summary>
 //         static cab_LONG fdi_Zipinflate_codes(in Ziphuft tl, in Ziphuft td, cab_LONG bl, cab_LONG bd, fdi_decomp_state decomp_state)
 //         {
-//             cab_ULONG e;     /* table entry flag/number of extra bits */
-//             cab_ULONG n, d;           /* length and index for copy */
-//             cab_ULONG w;              /* current window position */
+//             uint e;     /* table entry flag/number of extra bits */
+//             uint n, d;           /* length and index for copy */
+//             uint w;              /* current window position */
 //             Ziphuft t;  /* pointer to table entry */
-//             cab_ULONG ml, md;         /* masks for bl and bd bits */
-//             cab_ULONG b;     /* bit buffer */
-//             cab_ULONG k;     /* number of bits in bit buffer */
+//             uint ml, md;         /* masks for bl and bd bits */
+//             uint b;     /* bit buffer */
+//             uint k;     /* number of bits in bit buffer */
 
 //             /* make local copies of globals */
 //             b = decomp_state.zip.bb;                       /* initialize bit buffer */
@@ -247,7 +247,7 @@
 
 //             for (; ; )
 //             {
-//                 ZIPNEEDBITS((cab_ULONG)bl)
+//                 ZIPNEEDBITS((uint)bl)
 //                 if ((e = (t = tl + (b & ml)).e) > 16)
 //                     do
 //                     {
@@ -272,7 +272,7 @@
 //                     ZIPDUMPBITS(e);
 
 //                     /* decode distance of block to copy */
-//                     ZIPNEEDBITS((cab_ULONG)bd)
+//                     ZIPNEEDBITS((uint)bd)
 //                   if ((e = (t = td + (b & md)).e) > 16)
 //                         do
 //                         {
@@ -310,50 +310,6 @@
 //         }
 
 //         /// <summary>
-//         /// fdi_Zipinflate_fixed (internal)
-//         /// </summary>
-//         static cab_LONG fdi_Zipinflate_fixed(fdi_decomp_state decomp_state)
-//         {
-//             Ziphuft fixed_tl;
-//             Ziphuft fixed_td;
-//             cab_LONG fixed_bl, fixed_bd;
-//             cab_LONG i;                /* temporary variable */
-//             cab_ULONG* l;
-
-//             l = decomp_state.zip.ll;
-
-//             /* literal table */
-//             for (i = 0; i < 144; i++)
-//                 l[i] = 8;
-//             for (; i < 256; i++)
-//                 l[i] = 9;
-//             for (; i < 280; i++)
-//                 l[i] = 7;
-//             for (; i < 288; i++)          /* make a complete, but wrong code set */
-//                 l[i] = 8;
-//             fixed_bl = 7;
-//             if ((i = fdi_Ziphuft_build(l, 288, 257, CopyLengths, LiteralExtraBits, &fixed_tl, &fixed_bl, decomp_state)))
-//                 return i;
-
-//             /* distance table */
-//             for (i = 0; i < 30; i++)      /* make an incomplete code set */
-//                 l[i] = 5;
-//             fixed_bd = 5;
-//             if ((i = fdi_Ziphuft_build(l, 30, 0, CopyOffsets, DistanceExtraBits, &fixed_td, &fixed_bd, decomp_state)) > 1)
-//             {
-//                 Free(decomp_state.fdi, fixed_tl);
-//                 return i;
-//             }
-
-//             /* decompress until an end-of-block code */
-//             i = fdi_Zipinflate_codes(fixed_tl, fixed_td, fixed_bl, fixed_bd, decomp_state);
-
-//             Free(decomp_state.fdi, fixed_td);
-//             Free(decomp_state.fdi, fixed_tl);
-//             return i;
-//         }
-
-//         /// <summary>
 //         /// fdi_Zipinflate_dynamic (internal)
 //         /// 
 //         /// decompress an inflated type 2 (dynamic Huffman codes) block.
@@ -361,52 +317,50 @@
 //         static cab_LONG fdi_Zipinflate_dynamic(fdi_decomp_state decomp_state)
 //         {
 //             cab_LONG i;             /* temporary variables */
-//             cab_ULONG j;
-//             cab_ULONG* ll;
-//             cab_ULONG l;            /* last length */
-//             cab_ULONG m;            /* mask for bit lengths table */
-//             cab_ULONG n;            /* number of lengths to get */
+//             uint j;
+//             uint l;            /* last length */
+//             uint m;            /* mask for bit lengths table */
+//             uint n;            /* number of lengths to get */
 //             Ziphuft tl;           /* literal/length code table */
 //             Ziphuft td;           /* distance code table */
 //             cab_LONG bl;                  /* lookup bits for tl */
 //             cab_LONG bd;                  /* lookup bits for td */
-//             cab_ULONG nb;           /* number of bit length codes */
-//             cab_ULONG nl;           /* number of literal/length codes */
-//             cab_ULONG nd;           /* number of distance codes */
-//             cab_ULONG b;         /* bit buffer */
-//             cab_ULONG k;           /* number of bits in bit buffer */
+//             uint nb;           /* number of bit length codes */
+//             uint nl;           /* number of literal/length codes */
+//             uint nd;           /* number of distance codes */
+//             uint bitBuffer;         /* bit buffer */
+//             uint bitCount;           /* number of bits in bit buffer */
 
 //             /* make local bit buffer */
-//             b = decomp_state.zip.bb;
-//             k = decomp_state.zip.bk;
-//             ll = decomp_state.zip.ll;
+//             bitBuffer = decomp_state.zip.bb;
+//             bitCount = decomp_state.zip.bk;
 
 //             /* read in table lengths */
 //             ZIPNEEDBITS(5)
-//   nl = 257 + (b & 0x1f);      /* number of literal/length codes */
+//              nl = 257 + (bitBuffer & 0x1f);      /* number of literal/length codes */
 //             ZIPDUMPBITS(5)
-//   ZIPNEEDBITS(5)
-//   nd = 1 + (b & 0x1f);        /* number of distance codes */
+//              ZIPNEEDBITS(5)
+//              nd = 1 + (bitBuffer & 0x1f);        /* number of distance codes */
 //             ZIPDUMPBITS(5)
-//   ZIPNEEDBITS(4)
-//   nb = 4 + (b & 0xf);         /* number of bit length codes */
+//              ZIPNEEDBITS(4)
+//              nb = 4 + (bitBuffer & 0xf);         /* number of bit length codes */
 //             ZIPDUMPBITS(4)
-//   if (nl > 288 || nd > 32)
+//               if (nl > 288 || nd > 32)
 //                 return 1;                   /* bad lengths */
 
 //             /* read in bit-length-code lengths */
 //             for (j = 0; j < nb; j++)
 //             {
 //                 ZIPNEEDBITS(3)
-//                 ll[BitLengthOrder[j]] = b & 7;
+//                 state.Lengths[BitLengthOrder[j]] = bitBuffer & 7;
 //                 ZIPDUMPBITS(3)
 //               }
 //             for (; j < 19; j++)
-//                 ll[BitLengthOrder[j]] = 0;
+//                 state.Lengths[BitLengthOrder[j]] = 0;
 
 //             /* build decoding table for trees--single level, 7 bit lookup */
 //             bl = 7;
-//             if ((i = fdi_Ziphuft_build(ll, 19, 19, null, null, &tl, &bl, decomp_state)) != 0)
+//             if ((i = BuildHuffmanTree(state.Lengths, 19, 19, null, null, &tl, &bl, decomp_state)) != 0)
 //             {
 //                 if (i == 1)
 //                     Free(decomp_state.fdi, tl);
@@ -417,44 +371,44 @@
 //             n = nl + nd;
 //             m = BitMasks[bl];
 //             i = l = 0;
-//             while ((cab_ULONG)i < n)
+//             while ((uint)i < n)
 //             {
-//                 ZIPNEEDBITS((cab_ULONG)bl)
-//                 j = (td = tl + (b & m)).b;
+//                 ZIPNEEDBITS((uint)bl)
+//                 j = (td = tl + (bitBuffer & m)).b;
 //                 ZIPDUMPBITS(j)
 //                 j = td.v.n;
 //                 if (j < 16)                 /* length of code in bits (0..15) */
-//                     ll[i++] = l = j;          /* save last length in l */
+//                     state.Lengths[i++] = l = j;          /* save last length in l */
 //                 else if (j == 16)           /* repeat last length 3 to 6 times */
 //                 {
 //                     ZIPNEEDBITS(2)
-//                   j = 3 + (b & 3);
+//                   j = 3 + (bitBuffer & 3);
 //                     ZIPDUMPBITS(2)
-//                   if ((cab_ULONG)i + j > n)
+//                   if ((uint)i + j > n)
 //                         return 1;
 //                     while (j--)
-//                         ll[i++] = l;
+//                         state.Lengths[i++] = l;
 //                 }
 //                 else if (j == 17)           /* 3 to 10 zero length codes */
 //                 {
 //                     ZIPNEEDBITS(3)
-//                   j = 3 + (b & 7);
+//                   j = 3 + (bitBuffer & 7);
 //                     ZIPDUMPBITS(3)
-//                   if ((cab_ULONG)i + j > n)
+//                   if ((uint)i + j > n)
 //                         return 1;
 //                     while (j--)
-//                         ll[i++] = 0;
+//                         state.Lengths[i++] = 0;
 //                     l = 0;
 //                 }
 //                 else                        /* j == 18: 11 to 138 zero length codes */
 //                 {
 //                     ZIPNEEDBITS(7)
-//                   j = 11 + (b & 0x7f);
+//                   j = 11 + (bitBuffer & 0x7f);
 //                     ZIPDUMPBITS(7)
-//                   if ((cab_ULONG)i + j > n)
+//                   if ((uint)i + j > n)
 //                         return 1;
 //                     while (j--)
-//                         ll[i++] = 0;
+//                         state.Lengths[i++] = 0;
 //                     l = 0;
 //                 }
 //             }
@@ -463,19 +417,19 @@
 //             Free(decomp_state.fdi, tl);
 
 //             /* restore the global bit buffer */
-//             decomp_state.zip.bb = b;
-//             decomp_state.zip.bk = k;
+//             decomp_state.zip.bb = bitBuffer;
+//             decomp_state.zip.bk = bitCount;
 
 //             /* build the decoding tables for literal/length and distance codes */
 //             bl = ZIPLBITS;
-//             if ((i = fdi_Ziphuft_build(ll, nl, 257, CopyLengths, LiteralExtraBits, &tl, &bl, decomp_state)) != 0)
+//             if ((i = BuildHuffmanTree(state.Lengths, nl, 257, CopyLengths, LiteralExtraBits, &tl, &bl, decomp_state)) != 0)
 //             {
 //                 if (i == 1)
 //                     Free(decomp_state.fdi, tl);
 //                 return i;                   /* incomplete code set */
 //             }
 //             bd = ZIPDBITS;
-//             fdi_Ziphuft_build(ll + nl, nd, 0, CopyOffsets, DistanceExtraBits, &td, &bd, decomp_state);
+//             BuildHuffmanTree(state.Lengths + nl, nd, 0, CopyOffsets, DistanceExtraBits, &td, &bd, decomp_state);
 
 //             /* decompress until an end-of-block code */
 //             if (fdi_Zipinflate_codes(tl, td, bl, bd, decomp_state))

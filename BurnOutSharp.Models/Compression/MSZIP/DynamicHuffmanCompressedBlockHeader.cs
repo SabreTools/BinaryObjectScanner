@@ -4,12 +4,16 @@ namespace BurnOutSharp.Models.Compression.MSZIP
     /// Compression with dynamic Huffman codes (BTYPE=10)
     /// </summary>
     /// <see href="https://www.rfc-editor.org/rfc/rfc1951"/>
-    public class DynamicHuffmanCompressedBlockHeader : CompressedBlockHeader
+    public class DynamicHuffmanCompressedBlockHeader
     {
-        /// <inheritdoc/>
-        public override int[] LiteralLengths { get; set; }
+        /// <summary>
+        /// Huffman code lengths for the literal / length alphabet
+        /// </summary>
+        public int[] LiteralLengths;
 
-        /// <inheritdoc/>
-        public override int[] DistanceCodes { get; set; }
+        /// <summary>
+        /// Huffman distance codes for the literal / length alphabet
+        /// </summary>
+        public int[] DistanceCodes;
     }
 }

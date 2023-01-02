@@ -14,10 +14,5 @@ namespace BurnOutSharp.Models.Compression.MSZIP
         /// </summary>
         /// <remarks>Bits 1-2</remarks>
         public CompressionType BTYPE { get; set; }
-
-        /// <summary>
-        /// Block data as defined by the compression type
-        /// </summary>
-        public IBlockDataHeader BlockDataHeader { get; set; }
     }
 }

@@ -4,7 +4,7 @@ namespace BurnOutSharp.Models.Compression.MSZIP
     /// Non-compressed blocks (BTYPE=00)
     /// </summary>
     /// <see href="https://www.rfc-editor.org/rfc/rfc1951"/>
-    public class NonCompressedBlockHeader : IBlockDataHeader
+    public class NonCompressedBlockHeader
     {
         /// <summary>
         /// The number of data bytes in the block

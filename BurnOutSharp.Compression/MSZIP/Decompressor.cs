@@ -7,14 +7,6 @@ namespace BurnOutSharp.Compression.MSZIP
     public class Decompressor
     {
         /// <summary>
-        /// Free a single huffman node
-        /// </summary>
-        /// <remarks>No-op because of garbage collection</remarks>
-        public static void Free(HuffmanNode node) { }
-
-        // TODO: Port other methods
-
-        /// <summary>
         /// Decompress a byte array using a given State
         /// </summary>
         public static bool Decompress(State state, int inlen, byte[] inbuf, int outlen, byte[] outbuf)
@@ -50,14 +42,17 @@ namespace BurnOutSharp.Compression.MSZIP
             uint bitBuffer = state.BitBuffer;
             uint bitCount = state.BitCount;
 
+            // Read the deflate block header
+            var header = new DeflateBlockHeader();
+
             // Read in last block bit
             ZIPNEEDBITS(1, state, inbuf, ref bitBuffer, ref bitCount);
-            e = (int)(bitBuffer & 1);
+            header.BFINAL = (e = (int)(bitBuffer & 1)) != 0;
             ZIPDUMPBITS(1, ref bitBuffer, ref bitCount);
 
             // Read in block type
             ZIPNEEDBITS(2, state, inbuf, ref bitBuffer, ref bitCount);
-            CompressionType blockType = (CompressionType)(bitBuffer & 3);
+            header.BTYPE = (CompressionType)(bitBuffer & 3);
             ZIPDUMPBITS(2, ref bitBuffer, ref bitCount);
 
             // Restore the global bit buffer
@@ -65,14 +60,14 @@ namespace BurnOutSharp.Compression.MSZIP
             state.BitCount = bitCount;
 
             // Inflate that block type
-            switch (blockType)
+            switch (header.BTYPE)
             {
                 case CompressionType.NoCompression:
                     return (uint)DecompressStored(state, inbuf, outbuf);
                 case CompressionType.FixedHuffman:
-                    return 0; // TODO: return fdi_Zipinflate_fixed(decomp_state);
+                    return (uint)DecompressFixed(state, inbuf, outbuf);
                 case CompressionType.DynamicHuffman:
-                    return 0; // TODO: return fdi_Zipinflate_dynamic(decomp_state);
+                    return (uint)DecompressDynamic(state, inbuf, outbuf);
 
                 // Bad block type
                 case CompressionType.Reserved:
@@ -95,13 +90,18 @@ namespace BurnOutSharp.Compression.MSZIP
             int n = (int)(bitCount & 7);
             ZIPDUMPBITS(n, ref bitBuffer, ref bitCount);
 
+            // Read the stored block header
+            var header = new NonCompressedBlockHeader();
+
             // Get the length and its compliment
             ZIPNEEDBITS(16, state, inbuf, ref bitBuffer, ref bitCount);
-            n = (int)(bitBuffer & 0xffff);
+            header.LEN = (ushort)(bitBuffer & 0xffff);
             ZIPDUMPBITS(16, ref bitBuffer, ref bitCount);
 
             ZIPNEEDBITS(16, state, inbuf, ref bitBuffer, ref bitCount);
-            if (n != (~bitBuffer & 0xffff))
+            header.NLEN = (ushort)(bitBuffer & 0xffff);
+
+            if (header.LEN != (~header.NLEN & 0xffff))
                 return 1; // Error in compressed data
 
             ZIPDUMPBITS(16, ref bitBuffer, ref bitCount);
@@ -121,6 +121,77 @@ namespace BurnOutSharp.Compression.MSZIP
 
             return 0;
         }
+
+        /// <summary>
+        /// Decompress a block originally compressed with fixed Huffman codes
+        /// </summary>
+        private static int DecompressFixed(State state, byte[] inbuf, byte[] outbuf)
+        {
+            // Create the block header
+            var header = new FixedHuffmanCompressedBlockHeader();
+
+            // Assign the literal lengths
+            state.Lengths = header.LiteralLengths;
+            var literalLengthTable = new HuffmanNode[30];
+            int literalLengthBitCount = 7;
+
+            // Build the literal length tree
+            int i = BuildHuffmanTree(state.Lengths, 0, 30, 0, CopyOffsets, LiteralExtraBits, ref literalLengthTable, ref literalLengthBitCount, state);
+            if (i != 0)
+                return i;
+
+            // Assign the distance codes
+            state.Lengths = header.DistanceCodes;
+            var distanceCodeTable = new HuffmanNode[30];
+            int distanceCodeBitCount = 5;
+
+            // Build the distance code tree
+            i = BuildHuffmanTree(state.Lengths, 0, 30, 0, CopyOffsets, DistanceExtraBits, ref distanceCodeTable, ref distanceCodeBitCount, state);
+            if (i != 0)
+                return i;
+
+            // Decompress until an end-of-block code
+            return InflateCodes(literalLengthTable, distanceCodeTable, literalLengthBitCount, distanceCodeBitCount, state, inbuf, outbuf);
+        }
+
+        /// <summary>
+        /// Decompress a block originally compressed with dynamic Huffman codes
+        /// </summary>
+        /// INCORRECT IMPLEMENTATION TO SATISFY COMPILER FOR NOW
+        private static int DecompressDynamic(State state, byte[] inbuf, byte[] outbuf)
+        {
+
+            // TODO: Finish implementation
+            return 0;
+        }
+
+        /// <summary>
+        /// Build a Huffman tree from a set of lengths
+        /// </summary>
+        /// INCORRECT IMPLEMENTATION TO SATISFY COMPILER FOR NOW
+        private static int BuildHuffmanTree(uint[] b, int bi, uint n, uint s, ushort[] d, ushort[] e, ref HuffmanNode[] t, ref int m, State state)
+        {
+            
+            // TODO: Finish implementation
+            return 0;
+        }
+
+        /// <summary>
+        /// Inflate codes into Huffman trees
+        /// </summary>
+        /// INCORRECT IMPLEMENTATION TO SATISFY COMPILER FOR NOW
+        private static int InflateCodes(HuffmanNode[] tl, HuffmanNode[] td, int bl, int bd, State state, byte[] inbuf, byte[] outbuf)
+        {
+
+            // TODO: Finish implementation
+            return 0;
+        }
+
+        /// <summary>
+        /// Free a single huffman node
+        /// </summary>
+        /// <remarks>No-op because of garbage collection</remarks>
+        private static void Free(HuffmanNode node) { }
 
         #region Macros
 

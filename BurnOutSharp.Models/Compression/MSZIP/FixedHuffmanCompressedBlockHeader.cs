@@ -7,12 +7,14 @@ namespace BurnOutSharp.Models.Compression.MSZIP
     /// </summary>
     /// <see href="https://interoperability.blob.core.windows.net/files/MS-MCI/%5bMS-MCI%5d.pdf"/>
     /// <see href="https://www.rfc-editor.org/rfc/rfc1951"/>
-    public class FixedHuffmanCompressedBlockHeader : CompressedBlockHeader
+    public class FixedHuffmanCompressedBlockHeader
     {
         #region Properties
 
-        /// <inheritdoc/>
-        public override int[] LiteralLengths
+        /// <summary>
+        /// Huffman code lengths for the literal / length alphabet
+        /// </summary>
+        public uint[] LiteralLengths
         {
             get
             {
@@ -21,7 +23,7 @@ namespace BurnOutSharp.Models.Compression.MSZIP
                     return _literalLengths;
 
                 // Otherwise, build it from scratch
-                _literalLengths = new int[288];
+                _literalLengths = new uint[288];
 
                 // Literal Value 0 - 143, 8 bits
                 for (int i = 0; i < 144; i++)
@@ -47,8 +49,10 @@ namespace BurnOutSharp.Models.Compression.MSZIP
             }
         }
 
-        /// <inheritdoc/>
-        public override int[] DistanceCodes
+        /// <summary>
+        /// Huffman distance codes for the literal / length alphabet
+        /// </summary>
+        public uint[] DistanceCodes
         {
             get
             {
@@ -57,10 +61,10 @@ namespace BurnOutSharp.Models.Compression.MSZIP
                     return _distanceCodes;
 
                 // Otherwise, build it from scratch
-                _distanceCodes = new int[32];
+                _distanceCodes = new uint[30];
 
                 // Fixed length, 5 bits
-                for (int i = 0; i < 32; i++)
+                for (int i = 0; i < 30; i++)
                     _distanceCodes[i] = 5;
 
                 return _distanceCodes;
@@ -78,12 +82,12 @@ namespace BurnOutSharp.Models.Compression.MSZIP
         /// <summary>
         /// Huffman code lengths for the literal / length alphabet
         /// </summary>
-        private int[] _literalLengths = null;
+        private uint[] _literalLengths = null;
 
         /// <summary>
         /// Huffman distance codes for the literal / length alphabet
         /// </summary>
-        private int[] _distanceCodes = null;
+        private uint[] _distanceCodes = null;
 
         #endregion
     }
