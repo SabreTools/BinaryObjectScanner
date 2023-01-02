@@ -1,3 +1,5 @@
+// using BurnOutSharp.Compression;
+// using BurnOutSharp.Models.Compression.Quantum;
 // using static BurnOutSharp.Wrappers.CabinetConstants;
 // using static BurnOutSharp.Wrappers.FDIcConstants;
 // using static BurnOutSharp.Wrappers.FDIConstants;
@@ -9,94 +11,53 @@
 
 // namespace BurnOutSharp.Wrappers
 // {
-//     internal unsafe class Quantumfdi
+//     /// <see href="https://github.com/wine-mirror/wine/blob/master/dlls/cabinet/cabinet.h"/>
+//     internal class QuantumState
 //     {
 //         /// <summary>
-//         /// QTMupdatemodel (internal)
+//         /// the actual decoding window
 //         /// </summary>
-//         internal static void QTMupdatemodel(QTMmodel model, int sym)
-//         {
-//             for (int i = 0; i < sym; i++)
-//             {
-//                 model.syms[i].cumfreq += 8;
-//             }
-
-//             if (model.syms[0].cumfreq > 3800)
-//             {
-//                 if (--model.shiftsleft != 0)
-//                 {
-//                     for (int i = model.entries - 1; i >= 0; i--)
-//                     {
-//                         // -1, not -2; the 0 entry saves this
-//                         model.syms[i].cumfreq >>= 1;
-//                         if (model.syms[i].cumfreq <= model.syms[i + 1].cumfreq)
-//                             model.syms[i].cumfreq = (ushort)(model.syms[i + 1].cumfreq + 1);
-//                     }
-//                 }
-//                 else
-//                 {
-//                     model.shiftsleft = 50;
-//                     for (int i = 0; i < model.entries; i++)
-//                     {
-//                         // no -1, want to include the 0 entry
-//                         // this converts cumfreqs into frequencies, then shifts right
-//                         model.syms[i].cumfreq -= model.syms[i + 1].cumfreq;
-//                         model.syms[i].cumfreq++; /* avoid losing things entirely */
-//                         model.syms[i].cumfreq >>= 1;
-//                     }
-
-//                     // Now sort by frequencies, decreasing order -- this must be an
-//                     // inplace selection sort, or a sort with the same (in)stability
-//                     // characteristics
-//                     for (int i = 0; i < model.entries - 1; i++)
-//                     {
-//                         for (int j = i + 1; j < model.entries; j++)
-//                         {
-//                             if (model.syms[i].cumfreq < model.syms[j].cumfreq)
-//                             {
-//                                 QTMmodelsym temp = model.syms[i];
-//                                 model.syms[i] = model.syms[j];
-//                                 model.syms[j] = temp;
-//                             }
-//                         }
-//                     }
-
-//                     // Then convert frequencies back to cumfreq
-//                     for (int i = model.entries - 1; i >= 0; i--)
-//                     {
-//                         model.syms[i].cumfreq += model.syms[i + 1].cumfreq;
-//                     }
-
-//                     // Then update the other part of the table
-//                     for (int i = 0; i < model.entries; i++)
-//                     {
-//                         model.tabloc[model.syms[i].sym] = (ushort)i;
-//                     }
-//                 }
-//             }
-//         }
+//         public byte[] window;
 
 //         /// <summary>
-//         /// QTMfdi_initmodel (internal)
-//         /// 
-//         /// Initialize a model which decodes symbols from [s] to [s]+[n]-1
+//         /// window size (1Kb through 2Mb)
 //         /// </summary>
-//         internal static void QTMfdi_initmodel(QTMmodel m, QTMmodelsym[] sym, int n, int s)
-//         {
-//             int i;
-//             m.shiftsleft = 4;
-//             m.entries = n;
-//             m.syms = sym;
-//             memset(m.tabloc, 0xFF, sizeof(m.tabloc)); /* clear out look-up table */
-//             for (i = 0; i < n; i++)
-//             {
-//                 m.tabloc[i + s] = (ushort)i;   /* set up a look-up entry for symbol */
-//                 m.syms[i].sym = (ushort)(i + s); /* actual symbol */
-//                 m.syms[i].cumfreq = (ushort)(n - i); /* current frequency of that symbol */
-//             }
-//             m.syms[n].cumfreq = 0;
-//         }
+//         public uint window_size;
 
+//         /// <summary>
+//         /// window size when it was first allocated
+//         /// </summary>
+//         public uint actual_size;
+
+//         /// <summary>
+//         /// current offset within the window
+//         /// </summary>
+//         public uint window_posn;
+
+//         public Model model7;
+//         public ModelSymbol[] m7sym = new ModelSymbol[7 + 1];
+
+//         public Model model4;
+//         public Model model5;
+//         public Model model6pos;
+//         public Model model6len;
+//         public ModelSymbol[] m4sym = new ModelSymbol[0x18 + 1];
+//         public ModelSymbol[] m5sym = new ModelSymbol[0x24 + 1];
+//         public ModelSymbol[] m6psym = new ModelSymbol[0x2a + 1];
+//         public ModelSymbol[] m6lsym = new ModelSymbol[0x1b + 1];
+
+//         public Model model00;
+//         public Model model40;
+//         public Model model80;
+//         public Model modelC0;
+//         public ModelSymbol[] m00sym = new ModelSymbol[0x40 + 1];
+//         public ModelSymbol[] m40sym = new ModelSymbol[0x40 + 1];
+//         public ModelSymbol[] m80sym = new ModelSymbol[0x40 + 1];
+//         public ModelSymbol[] mC0sym = new ModelSymbol[0x40 + 1];
+//     }
+
+//     internal class Quantumfdi
+//     {
 //         /// <summary>
 //         /// QTMfdi_init (internal)
 //         /// </summary>
@@ -136,20 +97,20 @@
 
 //             /* initialize arithmetic coding models */
 
-//             QTMfdi_initmodel(decomp_state.qtm.model7, decomp_state.qtm.m7sym, 7, 0);
+//             Quantum.InitModel(decomp_state.qtm.model7, decomp_state.qtm.m7sym, 7, 0);
 
-//             QTMfdi_initmodel(decomp_state.qtm.model00, decomp_state.qtm.m00sym, 0x40, 0x00);
-//             QTMfdi_initmodel(decomp_state.qtm.model40, decomp_state.qtm.m40sym, 0x40, 0x40);
-//             QTMfdi_initmodel(decomp_state.qtm.model80, decomp_state.qtm.m80sym, 0x40, 0x80);
-//             QTMfdi_initmodel(decomp_state.qtm.modelC0, decomp_state.qtm.mC0sym, 0x40, 0xC0);
+//             Quantum.InitModel(decomp_state.qtm.model00, decomp_state.qtm.m00sym, 0x40, 0x00);
+//             Quantum.InitModel(decomp_state.qtm.model40, decomp_state.qtm.m40sym, 0x40, 0x40);
+//             Quantum.InitModel(decomp_state.qtm.model80, decomp_state.qtm.m80sym, 0x40, 0x80);
+//             Quantum.InitModel(decomp_state.qtm.modelC0, decomp_state.qtm.mC0sym, 0x40, 0xC0);
 
 //             /* model 4 depends on table size, ranges from 20 to 24  */
-//             QTMfdi_initmodel(decomp_state.qtm.model4, decomp_state.qtm.m4sym, (msz < 24) ? msz : 24, 0);
+//             Quantum.InitModel(decomp_state.qtm.model4, decomp_state.qtm.m4sym, (msz < 24) ? msz : 24, 0);
 //             /* model 5 depends on table size, ranges from 20 to 36  */
-//             QTMfdi_initmodel(decomp_state.qtm.model5, decomp_state.qtm.m5sym, (msz < 36) ? msz : 36, 0);
+//             Quantum.InitModel(decomp_state.qtm.model5, decomp_state.qtm.m5sym, (msz < 36) ? msz : 36, 0);
 //             /* model 6pos depends on table size, ranges from 20 to 42 */
-//             QTMfdi_initmodel(decomp_state.qtm.model6pos, decomp_state.qtm.m6psym, msz, 0);
-//             QTMfdi_initmodel(decomp_state.qtm.model6len, decomp_state.qtm.m6lsym, 27, 0);
+//             Quantum.InitModel(decomp_state.qtm.model6pos, decomp_state.qtm.m6psym, msz, 0);
+//             Quantum.InitModel(decomp_state.qtm.model6len, decomp_state.qtm.m6lsym, 27, 0);
 
 //             return DECR_OK;
 //         }

@@ -1,10 +1,15 @@
 namespace BurnOutSharp.Models.Compression.Quantum
 {
+    /// <see href="https://github.com/wine-mirror/wine/blob/master/dlls/cabinet/cabinet.h"/>
     /// <see href="http://www.russotto.net/quantumcomp.html"/>
-    public class Model
+    public sealed class Model
     {
-        public int Entries { get; set; }
+        public int ShiftsLeft;
 
-        public ModelSymbol[] Symbols { get; set; }
+        public int Entries;
+
+        public ModelSymbol[] Symbols;
+
+        public ushort[] LookupTable = new ushort[256];
     }
 }

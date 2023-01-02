@@ -2,6 +2,7 @@
 // using System.Collections.Generic;
 // using System.IO;
 // using System.Linq;
+// using BurnOutSharp.Compression;
 // using static BurnOutSharp.Wrappers.CabinetConstants;
 // using static BurnOutSharp.Wrappers.FDIcConstants;
 // using static BurnOutSharp.Wrappers.FDIConstants;
@@ -698,46 +699,6 @@
 //         public const ushort tcompSHIFT_LZX_WINDOW = 8;
 
 //         /// <summary>
-//         /// Mask for Quantum Compression Level
-//         /// </summary>
-//         public const ushort tcompMASK_QUANTUM_LEVEL = 0x00F0;
-
-//         /// <summary>
-//         /// Lowest Quantum Level (1)
-//         /// </summary>
-//         public const ushort tcompQUANTUM_LEVEL_LO = 0x0010;
-
-//         /// <summary>
-//         /// Highest Quantum Level (7)
-//         /// </summary>
-//         public const ushort tcompQUANTUM_LEVEL_HI = 0x0070;
-
-//         /// <summary>
-//         /// Amount to shift over to get int
-//         /// </summary>
-//         public const ushort tcompSHIFT_QUANTUM_LEVEL = 4;
-
-//         /// <summary>
-//         /// Mask for Quantum Compression Memory
-//         /// </summary>
-//         public const ushort tcompMASK_QUANTUM_MEM = 0x1F00;
-
-//         /// <summary>
-//         /// Lowest Quantum Memory (10)
-//         /// </summary>
-//         public const ushort tcompQUANTUM_MEM_LO = 0x0A00;
-
-//         /// <summary>
-//         /// Highest Quantum Memory (21)
-//         /// </summary>
-//         public const ushort tcompQUANTUM_MEM_HI = 0x1500;
-
-//         /// <summary>
-//         /// Amount to shift over to get int
-//         /// </summary>
-//         public const ushort tcompSHIFT_QUANTUM_MEM = 8;
-
-//         /// <summary>
 //         /// Reserved bits (high 3 bits)
 //         /// </summary>
 //         public const ushort tcompMASK_RESERVED = 0xE000;
@@ -1336,73 +1297,6 @@
 //         public byte* inpos;
 //     }
 
-//     /* Quantum stuff */
-
-//     /// <see href="https://github.com/wine-mirror/wine/blob/master/dlls/cabinet/cabinet.h"/>
-//     internal class QTMmodelsym
-//     {
-//         public ushort sym;
-
-//         public ushort cumfreq;
-//     }
-
-//     /// <see href="https://github.com/wine-mirror/wine/blob/master/dlls/cabinet/cabinet.h"/>
-//     internal class QTMmodel
-//     {
-//         public int shiftsleft;
-
-//         public int entries;
-
-//         public QTMmodelsym[] syms;
-
-//         public ushort[] tabloc = new ushort[256];
-//     }
-
-//     /// <see href="https://github.com/wine-mirror/wine/blob/master/dlls/cabinet/cabinet.h"/>
-//     internal class QTMstate
-//     {
-//         /// <summary>
-//         /// the actual decoding window
-//         /// </summary>
-//         public byte[] window;
-
-//         /// <summary>
-//         /// window size (1Kb through 2Mb)
-//         /// </summary>
-//         public uint window_size;
-
-//         /// <summary>
-//         /// window size when it was first allocated
-//         /// </summary>
-//         public uint actual_size;
-
-//         /// <summary>
-//         /// current offset within the window
-//         /// </summary>
-//         public uint window_posn;
-
-//         public QTMmodel model7;
-//         public QTMmodelsym[] m7sym = new QTMmodelsym[7 + 1];
-
-//         public QTMmodel model4;
-//         public QTMmodel model5;
-//         public QTMmodel model6pos;
-//         public QTMmodel model6len;
-//         public QTMmodelsym[] m4sym = new QTMmodelsym[0x18 + 1];
-//         public QTMmodelsym[] m5sym = new QTMmodelsym[0x24 + 1];
-//         public QTMmodelsym[] m6psym = new QTMmodelsym[0x2a + 1];
-//         public QTMmodelsym[] m6lsym = new QTMmodelsym[0x1b + 1];
-
-//         public QTMmodel model00;
-//         public QTMmodel model40;
-//         public QTMmodel model80;
-//         public QTMmodel modelC0;
-//         public QTMmodelsym[] m00sym = new QTMmodelsym[0x40 + 1];
-//         public QTMmodelsym[] m40sym = new QTMmodelsym[0x40 + 1];
-//         public QTMmodelsym[] m80sym = new QTMmodelsym[0x40 + 1];
-//         public QTMmodelsym[] mC0sym = new QTMmodelsym[0x40 + 1];
-//     }
-
 //     /* LZX stuff */
 
 //     /// <see href="https://github.com/wine-mirror/wine/blob/master/dlls/cabinet/cabinet.h"/>
@@ -1699,7 +1593,7 @@
 //         #region methods
 
 //         public ZIPstate zip;
-//         public QTMstate qtm;
+//         public QuantumState qtm;
 //         public LZXstate lzx;
 
 //         #endregion
@@ -1792,7 +1686,7 @@
 //     //     Q_REMOVE_BITS(1);                                                   \
 //     // }                                                                     \
 //     //                                                                         \
-//     // QTMupdatemodel(&(decomp_state.qtm.m)), i);                                         \
+//     // Quantum.UpdateModel(&(decomp_state.qtm.m)), i);                                         \
 //     // } while (0)
 
 //     /* Bitstream reading macros (LZX / intel little-endian byte order)
@@ -2115,7 +2009,7 @@
 //         #region methods
 
 //         public ZIPstate zip;
-//         public QTMstate qtm;
+//         public QuantumState qtm;
 //         public LZXstate lzx;
 
 //         #endregion
