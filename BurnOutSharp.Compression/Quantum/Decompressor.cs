@@ -1,20 +1,144 @@
+using System;
 using System.Linq;
 using BurnOutSharp.Models.Compression.Quantum;
-using static BurnOutSharp.Models.Compression.Quantum.Constants;
 
 namespace BurnOutSharp.Compression.Quantum
 {
+    /// <see href="https://github.com/wine-mirror/wine/blob/master/dlls/cabinet/cabinet.h"/>
+    /// <see href="https://github.com/wine-mirror/wine/blob/master/dlls/cabinet/fdi.c"/>
+    /// <see href="https://github.com/wine-mirror/wine/blob/master/include/fdi.h"/>
     public class Decompressor
     {
-        // TODO: Implement Quantum decompression
-
         /// <summary>
         /// Decompress a byte array using a given State
         /// </summary>
         public static bool Decompress(State state, int inlen, byte[] inbuf, int outlen, byte[] outbuf)
         {
-            // Port from MicrosoftCabinet.fdi.Quantum.cs
-            return false;
+            int inpos = 0; // inbuf[0]
+            int window = 0; // state.Window[0]
+            int runsrc, rundest;
+            uint window_posn = state.WindowPosition;
+            uint window_size = state.WindowSize;
+
+            int extra, togo = outlen, match_length = 0, copy_length;
+            byte selector, sym;
+            uint match_offset = 0;
+
+            ushort H = 0xFFFF, L = 0;
+
+            // Read initial value of C
+            Q_INIT_BITSTREAM(out int bitsleft, out uint bitbuf);
+            ushort C = Q_READ_BITS_UINT16(16, inbuf, ref inpos, ref bitsleft, ref bitbuf);
+
+            // Apply 2^x-1 mask
+            window_posn &= window_size - 1;
+
+            // Runs can't straddle the window wraparound
+            if ((window_posn + togo) > window_size)
+                return false;
+
+            while (togo > 0)
+            {
+                selector = (byte)GET_SYMBOL(state.Model7, ref H, ref L, ref C, inbuf, ref inpos, ref bitsleft, ref bitbuf);
+                switch (selector)
+                {
+                    case 0:
+                        sym = (byte)GET_SYMBOL(state.Model7Submodel00, ref H, ref L, ref C, inbuf, ref inpos, ref bitsleft, ref bitbuf);
+                        state.Window[window + window_posn++] = sym;
+                        togo--;
+                        break;
+                    case 1:
+                        sym = (byte)GET_SYMBOL(state.Model7Submodel40, ref H, ref L, ref C, inbuf, ref inpos, ref bitsleft, ref bitbuf);
+                        state.Window[window + window_posn++] = sym;
+                        togo--;
+                        break;
+                    case 2:
+                        sym = (byte)GET_SYMBOL(state.Model7Submodel80, ref H, ref L, ref C, inbuf, ref inpos, ref bitsleft, ref bitbuf);
+                        state.Window[window + window_posn++] = sym;
+                        togo--;
+                        break;
+                    case 3:
+                        sym = (byte)GET_SYMBOL(state.Model7SubmodelC0, ref H, ref L, ref C, inbuf, ref inpos, ref bitsleft, ref bitbuf);
+                        state.Window[window + window_posn++] = sym;
+                        togo--;
+                        break;
+
+                    // Selector 4 = fixed length of 3
+                    case 4:
+                        sym = (byte)GET_SYMBOL(state.Model4, ref H, ref L, ref C, inbuf, ref inpos, ref bitsleft, ref bitbuf);
+                        extra = Q_READ_BITS_INT32(state.q_extra_bits[sym], inbuf, ref inpos, ref bitsleft, ref bitbuf);
+                        match_offset = (uint)(state.q_position_base[sym] + extra + 1);
+                        match_length = 3;
+                        break;
+
+                    // Selector 5 = fixed length of 4
+                    case 5:
+                        sym = (byte)GET_SYMBOL(state.Model5, ref H, ref L, ref C, inbuf, ref inpos, ref bitsleft, ref bitbuf);
+                        extra = Q_READ_BITS_INT32(state.q_extra_bits[sym], inbuf, ref inpos, ref bitsleft, ref bitbuf);
+                        match_offset = (uint)(state.q_position_base[sym] + extra + 1);
+                        match_length = 4;
+                        break;
+
+                    // Selector 6 = variable length
+                    case 6:
+                        sym = (byte)GET_SYMBOL(state.Model6Length, ref H, ref L, ref C, inbuf, ref inpos, ref bitsleft, ref bitbuf);
+                        extra = Q_READ_BITS_INT32(state.q_length_extra[sym], inbuf, ref inpos, ref bitsleft, ref bitbuf);
+                        match_length = state.q_length_base[sym] + extra + 5;
+                        sym = (byte)GET_SYMBOL(state.Model6Position, ref H, ref L, ref C, inbuf, ref inpos, ref bitsleft, ref bitbuf);
+                        extra = Q_READ_BITS_INT32(state.q_extra_bits[sym], inbuf, ref inpos, ref bitsleft, ref bitbuf);
+                        match_offset = (uint)(state.q_position_base[sym] + extra + 1);
+                        break;
+
+                    default:
+                        return false;
+                }
+
+                // If this is a match */
+                if (selector >= 4)
+                {
+                    rundest = (int)(window + window_posn);
+                    togo -= match_length;
+
+                    // Copy any wrapped around source data
+                    if (window_posn >= match_offset)
+                    {
+                        // No wrap
+                        runsrc = (int)(rundest - match_offset);
+                    }
+                    else
+                    {
+                        runsrc = (int)(rundest + (window_size - match_offset));
+                        copy_length = (int)(match_offset - window_posn);
+                        if (copy_length < match_length)
+                        {
+                            match_length -= copy_length;
+                            window_posn += (uint)copy_length;
+                            while (copy_length-- > 0)
+                            {
+                                state.Window[rundest++] = state.Window[rundest++];
+                            }
+
+                            runsrc = window;
+                        }
+                    }
+
+                    window_posn += (uint)match_length;
+
+                    // Copy match data - no worries about destination wraps
+                    while (match_length-- > 0)
+                    {
+                        state.Window[rundest++] = state.Window[runsrc++];
+                    }
+                }
+            }
+
+            if (togo != 0)
+                return false;
+
+            Array.Copy(state.Window, (window_posn == 0 ? window_size : window_posn) - outlen, outbuf, 0, outlen);
+
+            state.WindowPosition = window_posn;
+            return true;
         }
 
         /// <summary>
@@ -355,7 +479,7 @@ namespace BurnOutSharp.Compression.Quantum
         /// Fetches the next symbol from the stated model and puts it in v.
         /// It may need to read the bitstream to do this.
         /// </summary>
-        private static int GET_SYMBOL(Model model, ref ushort H, ref ushort L, ref ushort C, byte[] inbuf, ref int inpos, ref int bitsleft, ref uint bitbuf)
+        private static ushort GET_SYMBOL(Model model, ref ushort H, ref ushort L, ref ushort C, byte[] inbuf, ref int inpos, ref int bitsleft, ref uint bitbuf)
         {
             uint range = (uint)(((H - L) & 0xFFFF) + 1);
             ushort symf = (ushort)(((((C - L + 1) * model.Symbols[0].CumulativeFrequency) - 1) / range) & 0xFFFF);
@@ -367,7 +491,7 @@ namespace BurnOutSharp.Compression.Quantum
                     break;
             }
 
-            int v = model.Symbols[i - 1].Symbol;
+            ushort v = model.Symbols[i - 1].Symbol;
             range = (uint)(H - L + 1);
             H = (ushort)(L + ((model.Symbols[i - 1].CumulativeFrequency * range) / model.Symbols[0].CumulativeFrequency) - 1);
             L = (ushort)(L + ((model.Symbols[i].CumulativeFrequency * range) / model.Symbols[0].CumulativeFrequency));
