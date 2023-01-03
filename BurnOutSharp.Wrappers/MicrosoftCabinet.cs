@@ -386,7 +386,7 @@ namespace BurnOutSharp.Wrappers
 
             // Create the output file data
             byte[] fileData = new byte[file.FileSize];
-            if (fileData.Length < file.FolderStartOffset + file.FileSize)
+            if (folderData.Length < file.FolderStartOffset + file.FileSize)
                 return null;
 
             // Get the segment that represents this file
