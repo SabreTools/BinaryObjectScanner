@@ -162,7 +162,7 @@ Below is a list of container formats that are supported in some way:
 | InstallShield Archive V3 (Z) | No | Yes | Yes | Via `UnshieldSharp` |
 | InstallShield CAB | No | Yes | Yes | Via `UnshieldSharp` |
 | Linear Executable | No | No | No | Skeleton only |
-| Microsoft cabinet file | Yes | Yes | Yes | Via `WixToolset.Dtf` / `SharpZipLib` (Only uncompressed and MS-ZIP supported) |
+| Microsoft cabinet file | Yes | Yes | Yes | Via `WixToolset.Dtf` / `SharpZipLib` (Only uncompressed, MS-ZIP, and Quantum supported) |
 | Microsoft LZ-compressed files | No | Yes | Yes | |
 | MoPaQ game data archive (MPQ) | No | Yes | Yes | Via `StormLibSharp` |
 | Microsoft installation package (MSI) | No | Yes | Yes | Via `OpenMcdf` |
@@ -171,6 +171,7 @@ Below is a list of container formats that are supported in some way:
 | PKZIP and derived files (ZIP, etc.) | No | Yes | Yes | Via `SharpCompress` |
 | PlayJ audio file (PLJ) | No | Yes | No | |
 | Portable Executable | Yes | Yes | No* | Some packed executables are supported |
+| Quantum archive (Q) | Yes | No | No | |
 | RAR archive (RAR) | No | Yes | Yes | Via `SharpCompress` |
 | SGA game archive | Yes | Yes | Yes | |
 | StarForce Filesystem file (SFFS) | No | Yes | No | Skeleton only |
