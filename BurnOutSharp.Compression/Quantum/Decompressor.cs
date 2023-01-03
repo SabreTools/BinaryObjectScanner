@@ -166,8 +166,8 @@ namespace BurnOutSharp.Compression.Quantum
         /// </summary>
         public static bool InitState(State state, int window, int level)
         {
-            uint windowSize = (uint)(1 << window), j;
-            int msz = window * 2, i;
+            uint windowSize = (uint)(1 << window);
+            int maxSize = window * 2;
 
             // QTM supports window sizes of 2^10 (1Kb) through 2^21 (2Mb)
             // If a previously allocated window is big enough, keep it
@@ -198,13 +198,13 @@ namespace BurnOutSharp.Compression.Quantum
             state.Model3 = CreateModel(state.Model3Symbols, 0x40, 0xC0);
 
             // Model 4 depends on table size, ranges from 20 to 24
-            state.Model4 = CreateModel(state.Model4Symbols, (msz < 24) ? msz : 24, 0);
+            state.Model4 = CreateModel(state.Model4Symbols, (maxSize < 24) ? maxSize : 24, 0);
 
             // Model 5 depends on table size, ranges from 20 to 36
-            state.Model5 = CreateModel(symbols: state.Model5Symbols, (msz < 36) ? msz : 36, 0);
+            state.Model5 = CreateModel(symbols: state.Model5Symbols, (maxSize < 36) ? maxSize : 36, 0);
 
             // Model 6 Position depends on table size, ranges from 20 to 42
-            state.Model6Position = CreateModel(state.Model6PositionSymbols, msz, 0);
+            state.Model6Position = CreateModel(state.Model6PositionSymbols, (maxSize < 42) ? maxSize : 42, 0);
             state.Model6Length = CreateModel(state.Model6LengthSymbols, 27, 0);
 
             return true;
@@ -213,7 +213,6 @@ namespace BurnOutSharp.Compression.Quantum
         /// <summary>
         /// Initialize a Quantum model that decodes symbols from s to (s + n - 1)
         /// </summary>
-        /// <see href="https://github.com/wine-mirror/wine/blob/master/dlls/cabinet/fdi.c"/>
         private static Model CreateModel(ModelSymbol[] symbols, int entryCount, int initialSymbol)
         {
             // Set the basic values
@@ -249,7 +248,6 @@ namespace BurnOutSharp.Compression.Quantum
         /// <summary>
         /// Update the Quantum model for a particular symbol
         /// </summary>
-        /// <see href="https://github.com/wine-mirror/wine/blob/master/dlls/cabinet/fdi.c"/>
         private static void UpdateModel(Model model, int symbol)
         {
             // Update the cumulative frequency for all symbols less than the provided

@@ -123,7 +123,7 @@ namespace BurnOutSharp.Compression.Quantum
         public ModelSymbol[] Model6LengthSymbols = new ModelSymbol[0x1b + 1];
 
         #endregion
-    
+
         #region Decompression Tables
 
         /// <summary>
@@ -131,9 +131,12 @@ namespace BurnOutSharp.Compression.Quantum
         /// </summary>
         public uint[] PositionSlotBases = new uint[42]
         {
-            0, 1, 2, 3, 4, 6, 8, 12, 16, 24, 32, 48, 64, 96, 128, 192, 256, 384, 512, 768,
-            1024, 1536, 2048, 3072, 4096, 6144, 8192, 12288, 16384, 24576, 32768, 49152,
-            65536, 98304, 131072, 196608, 262144, 393216, 524288, 786432, 1048576, 1572864
+            0x00000, 0x00001, 0x00002, 0x00003, 0x00004, 0x00006, 0x00008, 0x0000c,
+            0x00010, 0x00018, 0x00020, 0x00030, 0x00040, 0x00060, 0x00080, 0x000c0,
+            0x00100, 0x00180, 0x00200, 0x00300, 0x00400, 0x00600, 0x00800, 0x00c00,
+            0x01000, 0x01800, 0x02000, 0x03000, 0x04000, 0x06000, 0x08000, 0x0c000,
+            0x10000, 0x18000, 0x20000, 0x30000, 0x40000, 0x60000, 0x80000, 0xc0000,
+            0x100000, 0x180000
         };
 
         /// <summary>
@@ -141,8 +144,12 @@ namespace BurnOutSharp.Compression.Quantum
         /// </summary>
         public byte[] ExtraBits = new byte[42]
         {
-            0, 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10,
-            11, 11, 12, 12, 13, 13, 14, 14, 15, 15, 16, 16, 17, 17, 18, 18, 19, 19
+            0,  0,  0,  0,  1,  1,  2,  2,
+            3,  3,  4,  4,  5,  5,  6,  6,
+            7,  7,  8,  8,  9,  9, 10, 10,
+            11, 11, 12, 12, 13, 13, 14, 14,
+            15, 15, 16, 16, 17, 17, 18, 18,
+            19, 19
         };
 
         /// <summary>
@@ -150,8 +157,10 @@ namespace BurnOutSharp.Compression.Quantum
         /// </summary>
         public byte[] LengthBases = new byte[27]
         {
-            0, 1, 2, 3, 4, 5, 6, 8, 10, 12, 14, 18, 22, 26,
-            30, 38, 46, 54, 62, 78, 94, 110, 126, 158, 190, 222, 254
+            0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x08,
+            0x0a, 0x0c, 0x0e, 0x12, 0x16, 0x1a, 0x1e, 0x26,
+            0x2e, 0x36, 0x3e, 0x4e, 0x5e, 0x6e, 0x7e, 0x9e,
+            0xbe, 0xde, 0xfe
         };
 
         /// <summary>
@@ -159,8 +168,10 @@ namespace BurnOutSharp.Compression.Quantum
         /// </summary>
         public byte[] LengthExtraBits = new byte[27]
         {
-            0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2,
-            3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 0
+            0,  0,  0,  0,  0,  0,  1,  1,
+            1,  1,  2,  2,  2,  2,  3,  3,
+            3,  3,  4,  4,  4,  4,  5,  5,
+            5,  5,  0
         };
 
         #endregion
