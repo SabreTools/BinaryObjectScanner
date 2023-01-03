@@ -41,33 +41,33 @@ namespace BurnOutSharp.Compression.Quantum
 
             while (togo > 0)
             {
-                selector = (byte)GET_SYMBOL(state.Model7, ref H, ref L, ref C, inbuf, ref inpos, ref bitsleft, ref bitbuf);
+                selector = (byte)GET_SYMBOL(state.SelectorModel, ref H, ref L, ref C, inbuf, ref inpos, ref bitsleft, ref bitbuf);
                 switch (selector)
                 {
                     // Selector 0 = literal model, 64 entries, 0x00-0x3F
                     case 0:
-                        sym = (byte)GET_SYMBOL(state.Model7Submodel00, ref H, ref L, ref C, inbuf, ref inpos, ref bitsleft, ref bitbuf);
+                        sym = (byte)GET_SYMBOL(state.Model0, ref H, ref L, ref C, inbuf, ref inpos, ref bitsleft, ref bitbuf);
                         state.Window[window + windowPosition++] = sym;
                         togo--;
                         break;
 
                     // Selector 1 = literal model, 64 entries, 0x40-0x7F
                     case 1:
-                        sym = (byte)GET_SYMBOL(state.Model7Submodel40, ref H, ref L, ref C, inbuf, ref inpos, ref bitsleft, ref bitbuf);
+                        sym = (byte)GET_SYMBOL(state.Model1, ref H, ref L, ref C, inbuf, ref inpos, ref bitsleft, ref bitbuf);
                         state.Window[window + windowPosition++] = sym;
                         togo--;
                         break;
 
                     // Selector 2 = literal model, 64 entries, 0x80-0xBF
                     case 2:
-                        sym = (byte)GET_SYMBOL(state.Model7Submodel80, ref H, ref L, ref C, inbuf, ref inpos, ref bitsleft, ref bitbuf);
+                        sym = (byte)GET_SYMBOL(state.Model2, ref H, ref L, ref C, inbuf, ref inpos, ref bitsleft, ref bitbuf);
                         state.Window[window + windowPosition++] = sym;
                         togo--;
                         break;
 
                     // Selector 3 = literal model, 64 entries, 0xC0-0xFF
                     case 3:
-                        sym = (byte)GET_SYMBOL(state.Model7SubmodelC0, ref H, ref L, ref C, inbuf, ref inpos, ref bitsleft, ref bitbuf);
+                        sym = (byte)GET_SYMBOL(state.Model3, ref H, ref L, ref C, inbuf, ref inpos, ref bitsleft, ref bitbuf);
                         state.Window[window + windowPosition++] = sym;
                         togo--;
                         break;
@@ -75,28 +75,28 @@ namespace BurnOutSharp.Compression.Quantum
                     // Selector 4 = fixed length of 3
                     case 4:
                         sym = (byte)GET_SYMBOL(state.Model4, ref H, ref L, ref C, inbuf, ref inpos, ref bitsleft, ref bitbuf);
-                        extra = (int)Q_READ_BITS(state.q_extra_bits[sym], inbuf, ref inpos, ref bitsleft, ref bitbuf);
-                        matchOffset = (uint)(state.q_position_base[sym] + extra + 1);
+                        extra = (int)Q_READ_BITS(state.ExtraBits[sym], inbuf, ref inpos, ref bitsleft, ref bitbuf);
+                        matchOffset = (uint)(state.PositionSlotBases[sym] + extra + 1);
                         matchLength = 3;
                         break;
 
                     // Selector 5 = fixed length of 4
                     case 5:
                         sym = (byte)GET_SYMBOL(state.Model5, ref H, ref L, ref C, inbuf, ref inpos, ref bitsleft, ref bitbuf);
-                        extra = (int)Q_READ_BITS(state.q_extra_bits[sym], inbuf, ref inpos, ref bitsleft, ref bitbuf);
-                        matchOffset = (uint)(state.q_position_base[sym] + extra + 1);
+                        extra = (int)Q_READ_BITS(state.ExtraBits[sym], inbuf, ref inpos, ref bitsleft, ref bitbuf);
+                        matchOffset = (uint)(state.PositionSlotBases[sym] + extra + 1);
                         matchLength = 4;
                         break;
 
                     // Selector 6 = variable length
                     case 6:
                         sym = (byte)GET_SYMBOL(state.Model6Length, ref H, ref L, ref C, inbuf, ref inpos, ref bitsleft, ref bitbuf);
-                        extra = (int)Q_READ_BITS(state.q_length_extra[sym], inbuf, ref inpos, ref bitsleft, ref bitbuf);
-                        matchLength = state.q_length_base[sym] + extra + 5;
+                        extra = (int)Q_READ_BITS(state.LengthExtraBits[sym], inbuf, ref inpos, ref bitsleft, ref bitbuf);
+                        matchLength = state.LengthBases[sym] + extra + 5;
 
                         sym = (byte)GET_SYMBOL(state.Model6Position, ref H, ref L, ref C, inbuf, ref inpos, ref bitsleft, ref bitbuf);
-                        extra = (int)Q_READ_BITS(state.q_extra_bits[sym], inbuf, ref inpos, ref bitsleft, ref bitbuf);
-                        matchOffset = (uint)(state.q_position_base[sym] + extra + 1);
+                        extra = (int)Q_READ_BITS(state.ExtraBits[sym], inbuf, ref inpos, ref bitsleft, ref bitbuf);
+                        matchOffset = (uint)(state.PositionSlotBases[sym] + extra + 1);
                         break;
 
                     default:
@@ -189,28 +189,13 @@ namespace BurnOutSharp.Compression.Quantum
             state.WindowSize = windowSize;
             state.WindowPosition = 0;
 
-            // Initialize static slot/extrabits tables
-            for (i = 0, j = 0; i < 27; i++)
-            {
-                state.q_length_extra[i] = (byte)((i == 26) ? 0 : (i < 2 ? 0 : i - 2) >> 2);
-                state.q_length_base[i] = (byte)j;
-                j += (uint)(1 << ((i == 26) ? 5 : state.q_length_extra[i]));
-            }
-
-            for (i = 0, j = 0; i < 42; i++)
-            {
-                state.q_extra_bits[i] = (byte)((i < 2 ? 0 : i - 2) >> 1);
-                state.q_position_base[i] = j;
-                j += (uint)(1 << state.q_extra_bits[i]);
-            }
-
             // Initialize arithmetic coding models
-            state.Model7 = CreateModel(state.Model7Symbols, 7, 0);
+            state.SelectorModel = CreateModel(state.SelectorModelSymbols, 7, 0);
 
-            state.Model7Submodel00 = CreateModel(state.Model7Submodel00Symbols, 0x40, 0x00);
-            state.Model7Submodel40 = CreateModel(state.Model7Submodel40Symbols, 0x40, 0x40);
-            state.Model7Submodel80 = CreateModel(state.Model7Submodel80Symbols, 0x40, 0x80);
-            state.Model7SubmodelC0 = CreateModel(state.Model7SubmodelC0Symbols, 0x40, 0xC0);
+            state.Model0 = CreateModel(state.Model0Symbols, 0x40, 0x00);
+            state.Model1 = CreateModel(state.Model1Symbols, 0x40, 0x40);
+            state.Model2 = CreateModel(state.Model2Symbols, 0x40, 0x80);
+            state.Model3 = CreateModel(state.Model3Symbols, 0x40, 0xC0);
 
             // Model 4 depends on table size, ranges from 20 to 24
             state.Model4 = CreateModel(state.Model4Symbols, (msz < 24) ? msz : 24, 0);
