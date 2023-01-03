@@ -439,6 +439,25 @@ namespace Test
                     pak.Print();
                 }
 
+                // Quantum
+                else if (ft == SupportedFileType.Quantum)
+                {
+                    // Build the archive information
+                    Console.WriteLine("Creating Quantum deserializer");
+                    Console.WriteLine();
+
+                    var quantum = Quantum.Create(stream);
+                    if (quantum == null)
+                    {
+                        Console.WriteLine("Something went wrong parsing Quantum");
+                        Console.WriteLine();
+                        return;
+                    }
+
+                    // Print the Quantum info to screen
+                    quantum.Print();
+                }
+
                 // SGA
                 else if (ft == SupportedFileType.SGA)
                 {

@@ -1,18 +1,18 @@
 using System.Runtime.InteropServices;
 
-namespace BurnOutSharp.Models.Compression.Quantum
+namespace BurnOutSharp.Models.Quantum
 {
     /// <summary>
-    /// Quantum archive file structure
+    /// Quantum archive file header
     /// </summary>
     /// <see href="https://handwiki.org/wiki/Software:Quantum_compression"/>
     [StructLayout(LayoutKind.Sequential)]
-    public class Archive
+    public class Header
     {
         /// <summary>
         /// Quantum signature: 0x44 0x53
         /// </summary>
-        public ushort Signature;
+        public string Signature;
 
         /// <summary>
         /// Quantum major version number
@@ -38,12 +38,5 @@ namespace BurnOutSharp.Models.Compression.Quantum
         /// Compression flags
         /// </summary>
         public byte CompressionFlags;
-
-        /// <summary>
-        /// This is immediately followed by the list of files
-        /// </summary>
-        public FileDescriptor[] FileList;
-
-        // Immediately following the list of files is the compressed data. 
     }
 }

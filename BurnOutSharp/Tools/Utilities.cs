@@ -186,6 +186,13 @@ namespace BurnOutSharp.Tools
 
             #endregion
 
+            #region Quantum
+
+            if (magic.StartsWith(new byte?[] { 0x44, 0x53 }))
+                return SupportedFileType.Quantum;
+
+            #endregion
+            
             #region RAR
 
             // RAR archive version 1.50 onwards
@@ -410,8 +417,10 @@ namespace BurnOutSharp.Tools
 
             #region PAK
 
-            if (extension.Equals("pak", StringComparison.OrdinalIgnoreCase))
-                return SupportedFileType.PAK;
+            // No extensions registered for PAK
+            // Both PAK and Quantum share one extension
+            // if (extension.Equals("pak", StringComparison.OrdinalIgnoreCase))
+            //     return SupportedFileType.PAK;
 
             #endregion
 
@@ -511,6 +520,17 @@ namespace BurnOutSharp.Tools
 
             #endregion
 
+            #region Quantum
+
+            if (extension.Equals("q", StringComparison.OrdinalIgnoreCase))
+                return SupportedFileType.Quantum;
+
+            // Both PAK and Quantum share one extension
+            // if (extension.Equals("pak", StringComparison.OrdinalIgnoreCase))
+            //     return SupportedFileType.Quantum;
+
+            #endregion
+            
             #region RAR
 
             if (extension.Equals("rar", StringComparison.OrdinalIgnoreCase))
@@ -646,6 +666,7 @@ namespace BurnOutSharp.Tools
                 case SupportedFileType.PAK: return new FileType.PAK();
                 case SupportedFileType.PKZIP: return new FileType.PKZIP();
                 case SupportedFileType.PLJ: return new FileType.PLJ();
+                case SupportedFileType.Quantum: return null; // TODO: Update this line
                 case SupportedFileType.RAR: return new FileType.RAR();
                 case SupportedFileType.SevenZip: return new FileType.SevenZip();
                 case SupportedFileType.SFFS: return new FileType.SFFS();

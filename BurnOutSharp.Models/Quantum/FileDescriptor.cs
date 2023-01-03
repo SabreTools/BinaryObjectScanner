@@ -1,17 +1,25 @@
-namespace BurnOutSharp.Models.Compression.Quantum
+namespace BurnOutSharp.Models.Quantum
 {
-    /// <remarks>
-    /// Strings are prefixed with their length. If the length is less than
-    /// 128 then it is stored directly in one byte. If it is greater than 127
-    /// then the high bit of the first byte is set to 1 and the remaining
-    /// fifteen bits contain the actual length in big-endian format. 
-    /// </remarks>
+    /// <summary>
+    /// Quantum archive file descriptor
+    /// </summary>
+    /// <see href="https://handwiki.org/wiki/Software:Quantum_compression"/>
     public class FileDescriptor
     {
+        /// <summary>
+        /// Length of file name
+        /// </summary>
+        public int FileNameSize;
+        
         /// <summary>
         /// File name, variable length string, not zero-terminated
         /// </summary>
         public string FileName;
+
+        /// <summary>
+        /// Length of comment field
+        /// </summary>
+        public int CommentFieldSize;
 
         /// <summary>
         /// Comment field, variable length string, not zero-terminated

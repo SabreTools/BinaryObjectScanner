@@ -96,6 +96,11 @@
         PLJ,
 
         /// <summary>
+        /// Quantum archive
+        /// </summary>
+        Quantum,
+
+        /// <summary>
         /// RAR archive
         /// </summary>
         RAR,
