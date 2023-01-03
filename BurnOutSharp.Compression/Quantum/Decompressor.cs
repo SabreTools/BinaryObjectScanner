@@ -142,7 +142,7 @@ namespace BurnOutSharp.Compression.Quantum
                 }
             }
 
-            if (togo != 0)
+            if (togo > 0)
                 return false;
 
             Array.Copy(state.Window, (windowPosition == 0 ? windowSize : windowPosition) - outlen, outbuf, 0, outlen);

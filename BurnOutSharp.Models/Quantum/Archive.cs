@@ -16,6 +16,9 @@ namespace BurnOutSharp.Models.Quantum
         /// </summary>
         public FileDescriptor[] FileList { get; set; }
 
-        // Immediately following the list of files is the compressed data. 
+        /// <summary>
+        /// Immediately following the list of files is the compressed data
+        /// </summary>
+        public long CompressedDataOffset { get; set; }
     }
 }

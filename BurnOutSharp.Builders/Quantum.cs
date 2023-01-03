@@ -78,7 +78,7 @@ namespace BurnOutSharp.Builders
                 // Read all entries in turn
                 for (int i = 0; i < header.FileCount; i++)
                 {
-                    var file = ParseFileDescriptor(data);
+                    var file = ParseFileDescriptor(data, header.MinorVersion);
                     if (file == null)
                         return null;
 
@@ -90,6 +90,9 @@ namespace BurnOutSharp.Builders
             }
 
             #endregion
+
+            // Cache the compressed data offset
+            archive.CompressedDataOffset = data.Position;
 
             return archive;
         }
@@ -122,8 +125,9 @@ namespace BurnOutSharp.Builders
         /// Parse a Stream into a file descriptor
         /// </summary>
         /// <param name="data">Stream to parse</param>
+        /// <param name="minorVersion">Minor version of the archive</param>
         /// <returns>Filled file descriptor on success, null on error</returns>
-        private static FileDescriptor ParseFileDescriptor(Stream data)
+        private static FileDescriptor ParseFileDescriptor(Stream data, byte minorVersion)
         {
             // TODO: Use marshalling here instead of building
             FileDescriptor fileDescriptor = new FileDescriptor();
@@ -145,6 +149,10 @@ namespace BurnOutSharp.Builders
             fileDescriptor.ExpandedFileSize = data.ReadUInt32();
             fileDescriptor.FileTime = data.ReadUInt16();
             fileDescriptor.FileDate = data.ReadUInt16();
+
+            // Hack for unknown format data
+            if (minorVersion == 22)
+                _ = data.ReadUInt16();
 
             return fileDescriptor;
         }

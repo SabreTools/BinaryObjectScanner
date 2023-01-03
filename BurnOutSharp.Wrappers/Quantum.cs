@@ -1,7 +1,5 @@
 using System;
 using System.IO;
-using SharpCompress.Compressors;
-using SharpCompress.Compressors.Deflate;
 
 namespace BurnOutSharp.Wrappers
 {
@@ -37,6 +35,9 @@ namespace BurnOutSharp.Wrappers
         public Models.Quantum.FileDescriptor[] FileList => _archive.FileList;
 
         #endregion
+
+        /// <inheritdoc cref="Models.Quantum.Archive.CompressedDataOffset"/>
+        public long CompressedDataOffset => _archive.CompressedDataOffset;
 
         #endregion
 
@@ -162,6 +163,8 @@ namespace BurnOutSharp.Wrappers
 
             PrintHeader();
             PrintFileList();
+            Console.WriteLine($"  Compressed data offset: {CompressedDataOffset}");
+            Console.WriteLine();
         }
 
         /// <summary>
