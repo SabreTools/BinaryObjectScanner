@@ -1102,74 +1102,6 @@
 
 //         /* MSZIP stuff */
 
-//         /// <summary>
-//         /// window size
-//         /// </summary>
-//         public const ushort ZIPWSIZE = 0x8000;
-
-//         /// <summary>
-//         /// bits in base literal/length lookup table
-//         /// </summary>
-//         public const int ZIPLBITS = 9;
-
-//         /// <summary>
-//         /// bits in base distance lookup table
-//         /// </summary>
-//         public const int ZIPDBITS = 6;
-
-//         /// <summary>
-//         /// maximum bit length of any code
-//         /// </summary>
-//         public const int ZIPBMAX = 16;
-
-//         /// <summary>
-//         /// maximum number of codes in any set
-//         /// </summary>
-//         public const int ZIPN_MAX = 288;
-
-//         /* LZX stuff */
-
-//         /* some constants defined by the LZX specification */
-//         public const int LZX_MIN_MATCH = (2);
-//         public const int LZX_MAX_MATCH = (257);
-//         public const int LZX_NUM_CHARS = (256);
-
-//         /// <summary>
-//         /// also blocktypes 4-7 invalid
-//         /// </summary>
-//         public const int LZX_BLOCKTYPE_INVALID = (0);
-//         public const int LZX_BLOCKTYPE_VERBATIM = (1);
-//         public const int LZX_BLOCKTYPE_ALIGNED = (2);
-//         public const int LZX_BLOCKTYPE_UNCOMPRESSED = (3);
-//         public const int LZX_PRETREE_NUM_ELEMENTS = (20);
-
-//         /// <summary>
-//         /// aligned offset tree #elements
-//         /// </summary>
-//         public const int LZX_ALIGNED_NUM_ELEMENTS = (8);
-
-//         /// <summary>
-//         /// this one missing from spec!
-//         /// </summary>
-//         public const int LZX_NUM_PRIMARY_LENGTHS = (7);
-
-//         /// <summary>
-//         /// length tree #elements
-//         /// </summary>
-//         public const int LZX_NUM_SECONDARY_LENGTHS = (249);
-
-//         /* LZX huffman defines: tweak tablebits as desired */
-//         public const int LZX_PRETREE_MAXSYMBOLS = (LZX_PRETREE_NUM_ELEMENTS);
-//         public const int LZX_PRETREE_TABLEBITS = (6);
-//         public const int LZX_MAINTREE_MAXSYMBOLS = (LZX_NUM_CHARS + 50 * 8);
-//         public const int LZX_MAINTREE_TABLEBITS = (12);
-//         public const int LZX_LENGTH_MAXSYMBOLS = (LZX_NUM_SECONDARY_LENGTHS + 1);
-//         public const int LZX_LENGTH_TABLEBITS = (12);
-//         public const int LZX_ALIGNED_MAXSYMBOLS = (LZX_ALIGNED_NUM_ELEMENTS);
-//         public const int LZX_ALIGNED_TABLEBITS = (7);
-
-//         public const int LZX_LENTABLE_SAFETY = (64); /* we allow length table decoding overruns */
-
 //         /* CAB data blocks are <= 32768 bytes in uncompressed form. Uncompressed
 //         * blocks have zero growth. MSZIP guarantees that it won't grow above
 //         * uncompressed size by more than 12 bytes. LZX guarantees it won't grow
@@ -1181,97 +1113,6 @@
 //         /* SESSION Operation */
 //         public const uint EXTRACT_FILLFILELIST = 0x00000001;
 //         public const uint EXTRACT_EXTRACTFILES = 0x00000002;
-//     }
-
-//     /* LZX stuff */
-
-//     /// <see href="https://github.com/wine-mirror/wine/blob/master/dlls/cabinet/cabinet.h"/>
-//     internal class LZXstate
-//     {
-//         /// <summary>
-//         /// the actual decoding window
-//         /// </summary>
-//         public byte[] window;
-
-//         /// <summary>
-//         /// window size (32Kb through 2Mb)
-//         /// </summary>
-//         public uint window_size;
-
-//         /// <summary>
-//         /// window size when it was first allocated
-//         /// </summary>
-//         public uint actual_size;
-
-//         /// <summary>
-//         /// current offset within the window
-//         /// </summary>
-//         public uint window_posn;
-
-//         /// <summary>
-//         /// for the LRU offset system
-//         /// </summary>
-//         public uint R0, R1, R2;
-
-//         /// <summary>
-//         /// number of main tree elements
-//         /// </summary>
-//         public ushort main_elements;
-
-//         /// <summary>
-//         /// have we started decoding at all yet?
-//         /// </summary>
-//         public int header_read;
-
-//         /// <summary>
-//         /// type of this block
-//         /// </summary>
-//         public ushort block_type;
-
-//         /// <summary>
-//         /// uncompressed length of this block
-//         /// </summary>
-//         public uint block_length;
-
-//         /// <summary>
-//         /// uncompressed bytes still left to decode
-//         /// </summary>
-//         public uint block_remaining;
-
-//         /// <summary>
-//         /// the number of CFDATA blocks processed
-//         /// </summary>
-//         public uint frames_read;
-
-//         /// <summary>
-//         /// magic header value used for transform
-//         /// </summary>
-//         public int intel_filesize;
-
-//         /// <summary>
-//         /// current offset in transform space
-//         /// </summary>
-//         public int intel_curpos;
-
-//         /// <summary>
-//         /// have we seen any translatable data yet?
-//         /// </summary>
-//         public int intel_started;
-
-//         public ushort[] tblPRETREE_table = new ushort[(1 << LZX_PRETREE_TABLEBITS) + (LZX_PRETREE_MAXSYMBOLS << 1)];
-//         public ushort[] tblMAINTREE_table = new ushort[(1 << LZX_MAINTREE_TABLEBITS) + (LZX_MAINTREE_MAXSYMBOLS << 1)];
-//         public ushort[] tblLENGTH_table = new ushort[(1 << LZX_LENGTH_TABLEBITS) + (LZX_LENGTH_MAXSYMBOLS << 1)];
-//         public ushort[] tblALIGNED_table = new ushort[(1 << LZX_ALIGNED_TABLEBITS) + (LZX_ALIGNED_MAXSYMBOLS << 1)];
-//     }
-
-//     /// <see href="https://github.com/wine-mirror/wine/blob/master/dlls/cabinet/cabinet.h"/>
-//     internal class lzx_bits
-//     {
-//         public uint bb;
-
-//         public int bl;
-
-//         public byte* ip;
 //     }
 
 //     /****************************************************************************/
@@ -1480,7 +1321,7 @@
 
 //         public Compression.MSZIP.State zip;
 //         public Compression.Quantum.State qtm;
-//         public LZXstate lzx;
+//         public Compression.LZX.State lzx;
 
 //         #endregion
 //     }
@@ -1811,7 +1652,7 @@
 
 //         public Compression.MSZIP.State zip;
 //         public Compression.Quantum.State qtm;
-//         public LZXstate lzx;
+//         public Compression.LZX.State lzx;
 
 //         #endregion
 
