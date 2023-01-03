@@ -356,7 +356,10 @@ namespace BurnOutSharp.Compression.Quantum
             if (bitsleft > 16)
                 return;
 
-            bitbuf |= (uint)(((inbuf[inpos + 0] << 8) | inbuf[inpos + 1]) << (16 - bitsleft));
+            byte b0 = inpos + 0 < inbuf.Length ? inbuf[inpos + 0] : (byte)0;
+            byte b1 = inpos + 1 < inbuf.Length ? inbuf[inpos + 1] : (byte)0;
+
+            bitbuf |= (uint)(((b0 << 8) | b1) << (16 - bitsleft));
             bitsleft += 16;
             inpos += 2;
         }
