@@ -207,6 +207,8 @@ namespace BurnOutSharp.Wrappers
                     Console.WriteLine($"    Expanded file size = {fileDescriptor.ExpandedFileSize}");
                     Console.WriteLine($"    File time = {fileDescriptor.FileTime}");
                     Console.WriteLine($"    File date = {fileDescriptor.FileDate}");
+                    if (fileDescriptor.Unknown != null)
+                        Console.WriteLine($"    Unknown (Checksum?) = {fileDescriptor.Unknown}");
                 }
             }
             Console.WriteLine();

@@ -152,7 +152,7 @@ namespace BurnOutSharp.Builders
 
             // Hack for unknown format data
             if (minorVersion == 22)
-                _ = data.ReadUInt16();
+                fileDescriptor.Unknown = data.ReadUInt16();
 
             return fileDescriptor;
         }

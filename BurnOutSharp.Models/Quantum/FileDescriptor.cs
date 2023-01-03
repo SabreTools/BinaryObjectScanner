@@ -40,5 +40,11 @@ namespace BurnOutSharp.Models.Quantum
         /// File date (DOS format) 
         /// </summary>
         public ushort FileDate;
+
+        /// <summary>
+        /// Unknown data, Checksum?
+        /// </summary>
+        /// <remarks>Minor version 22</remarks>
+        public ushort? Unknown;
     }
 }

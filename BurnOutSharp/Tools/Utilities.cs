@@ -666,7 +666,7 @@ namespace BurnOutSharp.Tools
                 case SupportedFileType.PAK: return new FileType.PAK();
                 case SupportedFileType.PKZIP: return new FileType.PKZIP();
                 case SupportedFileType.PLJ: return new FileType.PLJ();
-                case SupportedFileType.Quantum: return null; // TODO: Update this line
+                //case SupportedFileType.Quantum: return new FileType.Quantum();
                 case SupportedFileType.RAR: return new FileType.RAR();
                 case SupportedFileType.SevenZip: return new FileType.SevenZip();
                 case SupportedFileType.SFFS: return new FileType.SFFS();
