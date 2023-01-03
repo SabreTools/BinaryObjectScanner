@@ -37,11 +37,8 @@ namespace BurnOutSharp.FileType
                 if (bfpk == null)
                     return null;
 
-                // Loop through and extract all files
-                for (int i = 0; i < bfpk.Files; i++)
-                {
-                    bfpk.ExtractFile(i, tempPath);
-                }
+                // Extract all files
+                bfpk.ExtractAll(tempPath);
 
                 // Collect and format all found protections
                 var protections = scanner.GetProtections(tempPath);

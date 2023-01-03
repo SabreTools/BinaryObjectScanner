@@ -97,11 +97,32 @@ namespace BurnOutSharp.Wrappers
         #region Data
 
         /// <summary>
-        /// Extract a single file based on index
+        /// Extract all files from the BFPK to an output directory
         /// </summary>
-        /// <param name="index">Index of the file to extract</param>
-        /// <param name="outputDirectory">Directory to write the file to</param>
-        /// <returns>True if the extraction succeeded, false otherwise</returns>
+        /// <param name="outputDirectory">Output directory to write to</param>
+        /// <returns>True if all files extracted, false otherwise</returns>
+        public bool ExtractAll(string outputDirectory)
+        {
+            // If we have no files
+            if (FileTable == null || FileTable.Length == 0)
+                return false;
+
+            // Loop through and extract all files to the output
+            bool allExtracted = true;
+            for (int i = 0; i < FileTable.Length; i++)
+            {
+                allExtracted &= ExtractFile(i, outputDirectory);
+            }
+
+            return allExtracted;
+        }
+
+        /// <summary>
+        /// Extract a file from the BFPK to an output directory by index
+        /// </summary>
+        /// <param name="index">File index to extract</param>
+        /// <param name="outputDirectory">Output directory to write to</param>
+        /// <returns>True if the file extracted, false otherwise</returns>
         public bool ExtractFile(int index, string outputDirectory)
         {
             // If we have no files
