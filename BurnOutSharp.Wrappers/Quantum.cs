@@ -1,5 +1,7 @@
 using System;
 using System.IO;
+using System.Linq;
+using BurnOutSharp.Compression.Quantum;
 
 namespace BurnOutSharp.Wrappers
 {
@@ -29,7 +31,7 @@ namespace BurnOutSharp.Wrappers
 
         #endregion
 
-        #region Files
+        #region File List
 
         /// <inheritdoc cref="Models.Quantum.Archive.FileList"/>
         public Models.Quantum.FileDescriptor[] FileList => _archive.FileList;
@@ -144,10 +146,74 @@ namespace BurnOutSharp.Wrappers
                 return false;
 
             // Get the file information
-            var file = FileList[index];
+            var fileDescriptor = FileList[index];
 
-            // TODO: Is it even possible to extract a single file?
+            // Read the entire compressed data
+            int compressedDataOffset = (int)CompressedDataOffset;
+            int compressedDataLength = GetEndOfFile() - compressedDataOffset;
+            byte[] compressedData = ReadFromDataSource(compressedDataOffset, compressedDataLength);
+
+            // TODO: Figure out decompression
+            // - Single-file archives seem to work
+            // - Single-file archives with files that span a window boundary seem to work
+            // - The first files in each archive seem to work
             return false;
+
+            // // Setup the decompression state
+            // State state = new State();
+            // Decompressor.InitState(state, TableSize, CompressionFlags);
+
+            // // Decompress the entire array
+            // int decompressedDataLength = (int)FileList.Sum(fd => fd.ExpandedFileSize);
+            // byte[] decompressedData = new byte[decompressedDataLength];
+            // Decompressor.Decompress(state, compressedData.Length, compressedData, decompressedData.Length, decompressedData);
+
+            // // Read the data
+            // int offset = (int)FileList.Take(index).Sum(fd => fd.ExpandedFileSize);
+            // byte[] data = new byte[fileDescriptor.ExpandedFileSize];
+            // Array.Copy(decompressedData, offset, data, 0, data.Length);
+
+            // // Loop through all files before the current
+            // for (int i = 0; i < index; i++)
+            // {
+            //     // Decompress the next block of data
+            //     byte[] tempData = new byte[FileList[i].ExpandedFileSize];
+            //     int lastRead = Decompressor.Decompress(state, compressedData.Length, compressedData, tempData.Length, tempData);
+            //     compressedData = new ReadOnlySpan<byte>(compressedData, (lastRead), compressedData.Length - (lastRead)).ToArray();
+            // }
+
+            // // Read the data
+            // byte[] data = new byte[fileDescriptor.ExpandedFileSize];
+            // _ = Decompressor.Decompress(state, compressedData.Length, compressedData, data.Length, data);
+
+            // // Create the filename
+            // string filename = fileDescriptor.FileName;
+
+            // // If we have an invalid output directory
+            // if (string.IsNullOrWhiteSpace(outputDirectory))
+            //     return false;
+
+            // // Create the full output path
+            // filename = Path.Combine(outputDirectory, filename);
+
+            // // Ensure the output directory is created
+            // Directory.CreateDirectory(Path.GetDirectoryName(filename));
+
+            // // Try to write the data
+            // try
+            // {
+            //     // Open the output file for writing
+            //     using (Stream fs = File.OpenWrite(filename))
+            //     {
+            //         fs.Write(data, 0, data.Length);
+            //     }
+            // }
+            // catch
+            // {
+            //     return false;
+            // }
+
+            return true;
         }
 
         #endregion

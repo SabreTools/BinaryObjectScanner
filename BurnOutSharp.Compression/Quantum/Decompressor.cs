@@ -14,9 +14,9 @@ namespace BurnOutSharp.Compression.Quantum
         /// <summary>
         /// Decompress a byte array using a given State
         /// </summary>
-        public static bool Decompress(State state, int inlen, byte[] inbuf, int outlen, byte[] outbuf)
+        public static int Decompress(State state, int inlen, byte[] inbuf, int outlen, byte[] outbuf)
         {
-            int inpos = 0; // inbuf[0]
+            int inpos = 0, outpos = 0; // inbuf[0], outbuf[0]
             int window = 0; // state.Window[0]
             int runsrc, rundest;
             uint windowPosition = state.WindowPosition;
@@ -26,81 +26,80 @@ namespace BurnOutSharp.Compression.Quantum
             byte selector, sym;
             uint matchOffset = 0;
 
+            // Make local copies of state variables
+            uint bitBuffer = state.BitBuffer;
+            int bitsLeft = state.BitsLeft;
+
             ushort H = 0xFFFF, L = 0;
 
             // Read initial value of C
-            Q_INIT_BITSTREAM(out int bitsleft, out uint bitbuf);
-            ushort C = (ushort)Q_READ_BITS(16, inbuf, ref inpos, ref bitsleft, ref bitbuf);
+            ushort C = (ushort)Q_READ_BITS(16, inbuf, ref inpos, ref bitsLeft, ref bitBuffer);
 
             // Apply 2^x-1 mask
             windowPosition &= windowSize - 1;
 
-            // Runs can't straddle the window wraparound
-            if ((windowPosition + togo) > windowSize)
-                return false;
-
             while (togo > 0)
             {
-                selector = (byte)GET_SYMBOL(state.SelectorModel, ref H, ref L, ref C, inbuf, ref inpos, ref bitsleft, ref bitbuf);
+                selector = (byte)GET_SYMBOL(state.SelectorModel, ref H, ref L, ref C, inbuf, ref inpos, ref bitsLeft, ref bitBuffer);
                 switch (selector)
                 {
                     // Selector 0 = literal model, 64 entries, 0x00-0x3F
                     case 0:
-                        sym = (byte)GET_SYMBOL(state.Model0, ref H, ref L, ref C, inbuf, ref inpos, ref bitsleft, ref bitbuf);
+                        sym = (byte)GET_SYMBOL(state.Model0, ref H, ref L, ref C, inbuf, ref inpos, ref bitsLeft, ref bitBuffer);
                         state.Window[window + windowPosition++] = sym;
                         togo--;
                         break;
 
                     // Selector 1 = literal model, 64 entries, 0x40-0x7F
                     case 1:
-                        sym = (byte)GET_SYMBOL(state.Model1, ref H, ref L, ref C, inbuf, ref inpos, ref bitsleft, ref bitbuf);
+                        sym = (byte)GET_SYMBOL(state.Model1, ref H, ref L, ref C, inbuf, ref inpos, ref bitsLeft, ref bitBuffer);
                         state.Window[window + windowPosition++] = sym;
                         togo--;
                         break;
 
                     // Selector 2 = literal model, 64 entries, 0x80-0xBF
                     case 2:
-                        sym = (byte)GET_SYMBOL(state.Model2, ref H, ref L, ref C, inbuf, ref inpos, ref bitsleft, ref bitbuf);
+                        sym = (byte)GET_SYMBOL(state.Model2, ref H, ref L, ref C, inbuf, ref inpos, ref bitsLeft, ref bitBuffer);
                         state.Window[window + windowPosition++] = sym;
                         togo--;
                         break;
 
                     // Selector 3 = literal model, 64 entries, 0xC0-0xFF
                     case 3:
-                        sym = (byte)GET_SYMBOL(state.Model3, ref H, ref L, ref C, inbuf, ref inpos, ref bitsleft, ref bitbuf);
+                        sym = (byte)GET_SYMBOL(state.Model3, ref H, ref L, ref C, inbuf, ref inpos, ref bitsLeft, ref bitBuffer);
                         state.Window[window + windowPosition++] = sym;
                         togo--;
                         break;
 
                     // Selector 4 = fixed length of 3
                     case 4:
-                        sym = (byte)GET_SYMBOL(state.Model4, ref H, ref L, ref C, inbuf, ref inpos, ref bitsleft, ref bitbuf);
-                        extra = (int)Q_READ_BITS(state.ExtraBits[sym], inbuf, ref inpos, ref bitsleft, ref bitbuf);
+                        sym = (byte)GET_SYMBOL(state.Model4, ref H, ref L, ref C, inbuf, ref inpos, ref bitsLeft, ref bitBuffer);
+                        extra = (int)Q_READ_BITS(state.ExtraBits[sym], inbuf, ref inpos, ref bitsLeft, ref bitBuffer);
                         matchOffset = (uint)(state.PositionSlotBases[sym] + extra + 1);
                         matchLength = 3;
                         break;
 
                     // Selector 5 = fixed length of 4
                     case 5:
-                        sym = (byte)GET_SYMBOL(state.Model5, ref H, ref L, ref C, inbuf, ref inpos, ref bitsleft, ref bitbuf);
-                        extra = (int)Q_READ_BITS(state.ExtraBits[sym], inbuf, ref inpos, ref bitsleft, ref bitbuf);
+                        sym = (byte)GET_SYMBOL(state.Model5, ref H, ref L, ref C, inbuf, ref inpos, ref bitsLeft, ref bitBuffer);
+                        extra = (int)Q_READ_BITS(state.ExtraBits[sym], inbuf, ref inpos, ref bitsLeft, ref bitBuffer);
                         matchOffset = (uint)(state.PositionSlotBases[sym] + extra + 1);
                         matchLength = 4;
                         break;
 
                     // Selector 6 = variable length
                     case 6:
-                        sym = (byte)GET_SYMBOL(state.Model6Length, ref H, ref L, ref C, inbuf, ref inpos, ref bitsleft, ref bitbuf);
-                        extra = (int)Q_READ_BITS(state.LengthExtraBits[sym], inbuf, ref inpos, ref bitsleft, ref bitbuf);
+                        sym = (byte)GET_SYMBOL(state.Model6Length, ref H, ref L, ref C, inbuf, ref inpos, ref bitsLeft, ref bitBuffer);
+                        extra = (int)Q_READ_BITS(state.LengthExtraBits[sym], inbuf, ref inpos, ref bitsLeft, ref bitBuffer);
                         matchLength = state.LengthBases[sym] + extra + 5;
 
-                        sym = (byte)GET_SYMBOL(state.Model6Position, ref H, ref L, ref C, inbuf, ref inpos, ref bitsleft, ref bitbuf);
-                        extra = (int)Q_READ_BITS(state.ExtraBits[sym], inbuf, ref inpos, ref bitsleft, ref bitbuf);
+                        sym = (byte)GET_SYMBOL(state.Model6Position, ref H, ref L, ref C, inbuf, ref inpos, ref bitsLeft, ref bitBuffer);
+                        extra = (int)Q_READ_BITS(state.ExtraBits[sym], inbuf, ref inpos, ref bitsLeft, ref bitBuffer);
                         matchOffset = (uint)(state.PositionSlotBases[sym] + extra + 1);
                         break;
 
                     default:
-                        return false;
+                        return inpos;
                 }
 
                 // If this is a match
@@ -138,17 +137,40 @@ namespace BurnOutSharp.Compression.Quantum
                     while (matchLength-- > 0)
                     {
                         state.Window[rundest++] = state.Window[runsrc++];
+
+                        // Handle wraparounds that aren't supposed to happen
+                        if (rundest >= state.Window.Length)
+                            rundest = 0;
+                        if (runsrc >= state.Window.Length)
+                            runsrc = 0;
                     }
+                }
+
+                // If we hit the end of the window, copy to the output and wrap
+                if (windowPosition >= state.Window.Length)
+                {
+                    Array.Copy(state.Window, 0, outbuf, outpos, Math.Min(windowSize, outlen));
+                    outpos += (int)Math.Min(windowSize, outlen);
+                    outlen -= (int)Math.Min(windowSize, outlen);
+                    windowPosition = 0;
                 }
             }
 
             if (togo > 0)
-                return false;
+                return inpos;
 
-            Array.Copy(state.Window, (windowPosition == 0 ? windowSize : windowPosition) - outlen, outbuf, 0, outlen);
+            if (outlen > 0)
+            {
+                int sourceIndex = (int)((windowPosition == 0 ? windowSize : windowPosition) - outlen);
+                Array.Copy(state.Window, sourceIndex, outbuf, outpos, outlen);
+            }
 
+            // Cache the decompression state variables
+            state.BitBuffer = bitBuffer;
+            state.BitsLeft = bitsLeft;
             state.WindowPosition = windowPosition;
-            return true;
+
+            return inpos;
         }
 
         /// <summary>
@@ -353,7 +375,7 @@ namespace BurnOutSharp.Compression.Quantum
         /// </summary>
         private static void Q_FILL_BUFFER(byte[] inbuf, ref int inpos, ref int bitsleft, ref uint bitbuf)
         {
-            if (bitsleft > 16)
+            if (bitsleft > 8)
                 return;
 
             byte b0 = inpos + 0 < inbuf.Length ? inbuf[inpos + 0] : (byte)0;

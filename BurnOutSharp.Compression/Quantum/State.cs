@@ -175,5 +175,19 @@ namespace BurnOutSharp.Compression.Quantum
         };
 
         #endregion
+
+        #region Decompression State
+
+        /// <summary>
+        /// Bit buffer to persist between runs
+        /// </summary>
+        public uint BitBuffer = 0;
+
+        /// <summary>
+        /// Bits remaining to persist between runs
+        /// </summary>
+        public int BitsLeft = 0;
+
+        #endregion
     }
 }
