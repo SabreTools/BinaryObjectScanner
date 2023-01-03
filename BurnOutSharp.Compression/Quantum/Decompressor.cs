@@ -402,8 +402,7 @@ namespace BurnOutSharp.Compression.Quantum
         /// </summary>
         private static ushort GET_SYMBOL(Model model, ref ushort H, ref ushort L, ref ushort C, byte[] inbuf, ref int inpos, ref int bitsleft, ref uint bitbuf)
         {
-            uint range = (uint)(((H - L) & 0xFFFF) + 1);
-            ushort symf = (ushort)(((((C - L + 1) * model.Symbols[0].CumulativeFrequency) - 1) / range) & 0xFFFF);
+            ushort symf = GetFrequency(model.Symbols[0].CumulativeFrequency, H, L, C);
 
             int i;
             for (i = 1; i < model.Entries; i++)
@@ -413,37 +412,61 @@ namespace BurnOutSharp.Compression.Quantum
             }
 
             ushort symbol = model.Symbols[i - 1].Symbol;
+            GetCode(model.Symbols[i - 1].CumulativeFrequency,
+                model.Symbols[i].CumulativeFrequency,
+                model.Symbols[0].CumulativeFrequency,
+                ref H, ref L, ref C,
+                inbuf, ref inpos, ref bitsleft, ref bitbuf);
 
-            range = (uint)(H - L + 1);
-            H = (ushort)(L + ((model.Symbols[i - 1].CumulativeFrequency * range) / model.Symbols[0].CumulativeFrequency) - 1);
-            L = (ushort)(L + ((model.Symbols[i].CumulativeFrequency * range) / model.Symbols[0].CumulativeFrequency));
+            UpdateModel(model, i);
+            return symbol;
+        }
+
+        /// <summary>
+        /// Get the frequency for a given range and total frequency
+        /// </summary>
+        private static ushort GetFrequency(ushort totalFrequency, ushort H, ushort L, ushort C)
+        {
+            uint range = (uint)(((H - L) & 0xFFFF) + 1);
+            uint freq = (uint)(((C - L + 1) * totalFrequency - 1) / range);
+            return (ushort)(freq & 0xFFFF);
+        }
+
+        /// <summary>
+        /// The decoder renormalization loop
+        /// </summary>
+        private static void GetCode(int previousFrequency,
+            int cumulativeFrequency,
+            int totalFrequency,
+            ref ushort H,
+            ref ushort L,
+            ref ushort C,
+            byte[] inbuf,
+            ref int inpos,
+            ref int bitsleft,
+            ref uint bitbuf)
+        {
+            uint range = (uint)((H - L) + 1);
+            H = (ushort)(L + ((previousFrequency * range) / totalFrequency) - 1);
+            L = (ushort)(L + (cumulativeFrequency * range) / totalFrequency);
 
             while (true)
             {
                 if ((L & 0x8000) != (H & 0x8000))
                 {
-                    // Underflow case
-                    if ((L & 0x4000) != 0 && (H & 0x4000) == 0)
-                    {
-                        C ^= 0x4000;
-                        L &= 0x3FFF;
-                        H |= 0x4000;
-                    }
-                    else
-                    {
+                    if ((L & 0x4000) == 0 || (H & 0x4000) != 0)
                         break;
-                    }
+
+                    // Underflow case
+                    C ^= 0x4000;
+                    L &= 0x3FFF;
+                    H |= 0x4000;
                 }
 
                 L <<= 1;
                 H = (ushort)((H << 1) | 1);
-                Q_FILL_BUFFER(inbuf, ref inpos, ref bitsleft, ref bitbuf);
-                C = (ushort)((C << 1) | Q_PEEK_BITS(1, bitbuf));
-                Q_REMOVE_BITS(1, ref bitsleft, ref bitbuf);
+                C = (ushort)((C << 1) | Q_READ_BITS(1, inbuf, ref inpos, ref bitsleft, ref bitbuf));
             }
-
-            UpdateModel(model, i);
-            return symbol;
         }
 
         #endregion
