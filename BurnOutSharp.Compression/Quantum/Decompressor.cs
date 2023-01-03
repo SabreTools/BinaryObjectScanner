@@ -12,44 +12,6 @@ namespace BurnOutSharp.Compression.Quantum
     public static class Decompressor
     {
         /// <summary>
-        /// Decompress a data block using a given state
-        /// </summary>
-        public static byte[] Decompress(CFFOLDER folder, CFDATA dataBlock)
-        {
-            // If we have an invalid folder
-            if (folder == null)
-                return null;
-
-            // If we have an invalid data block
-            if (dataBlock?.CompressedData == null)
-            {
-                // Corrupt blocks will show as size 0
-                int compressedSize = dataBlock?.CompressedSize ?? 0;
-                if (compressedSize == 0)
-                    compressedSize = 32768;
-
-                return new byte[compressedSize];
-            }
-
-            // Setup the decompression state
-            State state = new State();
-            if (!InitState(state, folder))
-                return new byte[dataBlock.UncompressedSize];
-
-            // Setup the decompression variables
-            int inlen = dataBlock.CompressedSize;
-            byte[] inbuf = dataBlock.CompressedData;
-            int outlen = dataBlock.UncompressedSize;
-            byte[] outbuf = new byte[outlen];
-
-            // Perform the decompression, if possible
-            if (Decompress(state, inlen, inbuf, outlen, outbuf))
-                return outbuf;
-            else
-                return new byte[outlen];
-        }
-
-        /// <summary>
         /// Decompress a byte array using a given State
         /// </summary>
         public static bool Decompress(State state, int inlen, byte[] inbuf, int outlen, byte[] outbuf)
@@ -57,87 +19,84 @@ namespace BurnOutSharp.Compression.Quantum
             int inpos = 0; // inbuf[0]
             int window = 0; // state.Window[0]
             int runsrc, rundest;
-            uint window_posn = state.WindowPosition;
-            uint window_size = state.WindowSize;
+            uint windowPosition = state.WindowPosition;
+            uint windowSize = state.WindowSize;
 
-            int extra, togo = outlen, match_length = 0, copy_length;
+            int extra, togo = outlen, matchLength = 0, copyLength;
             byte selector, sym;
-            uint match_offset = 0;
+            uint matchOffset = 0;
 
             ushort H = 0xFFFF, L = 0;
 
             // Read initial value of C
             Q_INIT_BITSTREAM(out int bitsleft, out uint bitbuf);
-            ushort C = Q_READ_BITS_UINT16(16, inbuf, ref inpos, ref bitsleft, ref bitbuf);
+            ushort C = (ushort)Q_READ_BITS(16, inbuf, ref inpos, ref bitsleft, ref bitbuf);
 
             // Apply 2^x-1 mask
-            window_posn &= window_size - 1;
+            windowPosition &= windowSize - 1;
 
             // Runs can't straddle the window wraparound
-            if ((window_posn + togo) > window_size)
+            if ((windowPosition + togo) > windowSize)
                 return false;
 
             while (togo > 0)
             {
-                // If we have more requested bytes than we have data
-                if (inpos >= inbuf.Length - 1)
-                    break;
-
                 selector = (byte)GET_SYMBOL(state.Model7, ref H, ref L, ref C, inbuf, ref inpos, ref bitsleft, ref bitbuf);
                 switch (selector)
                 {
                     // Selector 0 = literal model, 64 entries, 0x00-0x3F
                     case 0:
                         sym = (byte)GET_SYMBOL(state.Model7Submodel00, ref H, ref L, ref C, inbuf, ref inpos, ref bitsleft, ref bitbuf);
-                        state.Window[window + window_posn++] = sym;
+                        state.Window[window + windowPosition++] = sym;
                         togo--;
                         break;
 
                     // Selector 1 = literal model, 64 entries, 0x40-0x7F
                     case 1:
                         sym = (byte)GET_SYMBOL(state.Model7Submodel40, ref H, ref L, ref C, inbuf, ref inpos, ref bitsleft, ref bitbuf);
-                        state.Window[window + window_posn++] = sym;
+                        state.Window[window + windowPosition++] = sym;
                         togo--;
                         break;
 
                     // Selector 2 = literal model, 64 entries, 0x80-0xBF
                     case 2:
                         sym = (byte)GET_SYMBOL(state.Model7Submodel80, ref H, ref L, ref C, inbuf, ref inpos, ref bitsleft, ref bitbuf);
-                        state.Window[window + window_posn++] = sym;
+                        state.Window[window + windowPosition++] = sym;
                         togo--;
                         break;
 
                     // Selector 3 = literal model, 64 entries, 0xC0-0xFF
                     case 3:
                         sym = (byte)GET_SYMBOL(state.Model7SubmodelC0, ref H, ref L, ref C, inbuf, ref inpos, ref bitsleft, ref bitbuf);
-                        state.Window[window + window_posn++] = sym;
+                        state.Window[window + windowPosition++] = sym;
                         togo--;
                         break;
 
                     // Selector 4 = fixed length of 3
                     case 4:
                         sym = (byte)GET_SYMBOL(state.Model4, ref H, ref L, ref C, inbuf, ref inpos, ref bitsleft, ref bitbuf);
-                        extra = Q_READ_BITS_INT32(state.q_extra_bits[sym], inbuf, ref inpos, ref bitsleft, ref bitbuf);
-                        match_offset = (uint)(state.q_position_base[sym] + extra + 1);
-                        match_length = 3;
+                        extra = (int)Q_READ_BITS(state.q_extra_bits[sym], inbuf, ref inpos, ref bitsleft, ref bitbuf);
+                        matchOffset = (uint)(state.q_position_base[sym] + extra + 1);
+                        matchLength = 3;
                         break;
 
                     // Selector 5 = fixed length of 4
                     case 5:
                         sym = (byte)GET_SYMBOL(state.Model5, ref H, ref L, ref C, inbuf, ref inpos, ref bitsleft, ref bitbuf);
-                        extra = Q_READ_BITS_INT32(state.q_extra_bits[sym], inbuf, ref inpos, ref bitsleft, ref bitbuf);
-                        match_offset = (uint)(state.q_position_base[sym] + extra + 1);
-                        match_length = 4;
+                        extra = (int)Q_READ_BITS(state.q_extra_bits[sym], inbuf, ref inpos, ref bitsleft, ref bitbuf);
+                        matchOffset = (uint)(state.q_position_base[sym] + extra + 1);
+                        matchLength = 4;
                         break;
 
                     // Selector 6 = variable length
                     case 6:
                         sym = (byte)GET_SYMBOL(state.Model6Length, ref H, ref L, ref C, inbuf, ref inpos, ref bitsleft, ref bitbuf);
-                        extra = Q_READ_BITS_INT32(state.q_length_extra[sym], inbuf, ref inpos, ref bitsleft, ref bitbuf);
-                        match_length = state.q_length_base[sym] + extra + 5;
+                        extra = (int)Q_READ_BITS(state.q_length_extra[sym], inbuf, ref inpos, ref bitsleft, ref bitbuf);
+                        matchLength = state.q_length_base[sym] + extra + 5;
+
                         sym = (byte)GET_SYMBOL(state.Model6Position, ref H, ref L, ref C, inbuf, ref inpos, ref bitsleft, ref bitbuf);
-                        extra = Q_READ_BITS_INT32(state.q_extra_bits[sym], inbuf, ref inpos, ref bitsleft, ref bitbuf);
-                        match_offset = (uint)(state.q_position_base[sym] + extra + 1);
+                        extra = (int)Q_READ_BITS(state.q_extra_bits[sym], inbuf, ref inpos, ref bitsleft, ref bitbuf);
+                        matchOffset = (uint)(state.q_position_base[sym] + extra + 1);
                         break;
 
                     default:
@@ -147,24 +106,24 @@ namespace BurnOutSharp.Compression.Quantum
                 // If this is a match
                 if (selector >= 4)
                 {
-                    rundest = (int)(window + window_posn);
-                    togo -= match_length;
+                    rundest = (int)(window + windowPosition);
+                    togo -= matchLength;
 
                     // Copy any wrapped around source data
-                    if (window_posn >= match_offset)
+                    if (windowPosition >= matchOffset)
                     {
                         // No wrap
-                        runsrc = (int)(rundest - match_offset);
+                        runsrc = (int)(rundest - matchOffset);
                     }
                     else
                     {
-                        runsrc = (int)(rundest + (window_size - match_offset));
-                        copy_length = (int)(match_offset - window_posn);
-                        if (copy_length < match_length)
+                        runsrc = (int)(rundest + (windowSize - matchOffset));
+                        copyLength = (int)(matchOffset - windowPosition);
+                        if (copyLength < matchLength)
                         {
-                            match_length -= copy_length;
-                            window_posn += (uint)copy_length;
-                            while (copy_length-- > 0)
+                            matchLength -= copyLength;
+                            windowPosition += (uint)copyLength;
+                            while (copyLength-- > 0)
                             {
                                 state.Window[rundest++] = state.Window[rundest++];
                             }
@@ -173,10 +132,10 @@ namespace BurnOutSharp.Compression.Quantum
                         }
                     }
 
-                    window_posn += (uint)match_length;
+                    windowPosition += (uint)matchLength;
 
                     // Copy match data - no worries about destination wraps
-                    while (match_length-- > 0)
+                    while (matchLength-- > 0)
                     {
                         state.Window[rundest++] = state.Window[runsrc++];
                     }
@@ -186,9 +145,9 @@ namespace BurnOutSharp.Compression.Quantum
             if (togo != 0)
                 return false;
 
-            Array.Copy(state.Window, (window_posn == 0 ? window_size : window_posn) - outlen, outbuf, 0, outlen);
+            Array.Copy(state.Window, (windowPosition == 0 ? windowSize : windowPosition) - outlen, outbuf, 0, outlen);
 
-            state.WindowPosition = window_posn;
+            state.WindowPosition = windowPosition;
             return true;
         }
 
@@ -207,9 +166,8 @@ namespace BurnOutSharp.Compression.Quantum
         /// </summary>
         public static bool InitState(State state, int window, int level)
         {
-            uint windowSize = (uint)(1 << window);
+            uint windowSize = (uint)(1 << window), j;
             int msz = window * 2, i;
-            uint j;
 
             // QTM supports window sizes of 2^10 (1Kb) through 2^21 (2Mb)
             // If a previously allocated window is big enough, keep it
@@ -235,13 +193,15 @@ namespace BurnOutSharp.Compression.Quantum
             for (i = 0, j = 0; i < 27; i++)
             {
                 state.q_length_extra[i] = (byte)((i == 26) ? 0 : (i < 2 ? 0 : i - 2) >> 2);
-                state.q_length_base[i] = (byte)j; j += (uint)(1 << ((i == 26) ? 5 : state.q_length_extra[i]));
+                state.q_length_base[i] = (byte)j;
+                j += (uint)(1 << ((i == 26) ? 5 : state.q_length_extra[i]));
             }
 
             for (i = 0, j = 0; i < 42; i++)
             {
                 state.q_extra_bits[i] = (byte)((i < 2 ? 0 : i - 2) >> 1);
-                state.q_position_base[i] = j; j += (uint)(1 << state.q_extra_bits[i]);
+                state.q_position_base[i] = j;
+                j += (uint)(1 << state.q_extra_bits[i]);
             }
 
             // Initialize arithmetic coding models
@@ -280,7 +240,7 @@ namespace BurnOutSharp.Compression.Quantum
             };
 
             // Clear out the look-up table
-            model.LookupTable = Enumerable.Repeat<ushort>(0xFF, model.LookupTable.Length).ToArray();
+            model.LookupTable = Enumerable.Repeat<ushort>(0xFFFF, model.LookupTable.Length).ToArray();
 
             // Loop through and build the look-up table
             for (ushort i = 0; i < entryCount; i++)
@@ -302,7 +262,7 @@ namespace BurnOutSharp.Compression.Quantum
         }
 
         /// <summary>
-        /// Update the quantum model for a particular symbol
+        /// Update the Quantum model for a particular symbol
         /// </summary>
         /// <see href="https://github.com/wine-mirror/wine/blob/master/dlls/cabinet/fdi.c"/>
         private static void UpdateModel(Model model, int symbol)
@@ -370,106 +330,39 @@ namespace BurnOutSharp.Compression.Quantum
                 }
 
                 // Then update the other part of the table
-                for (int i = 0; i < model.Entries; i++)
+                for (ushort i = 0; i < model.Entries; i++)
                 {
-                    model.LookupTable[model.Symbols[i].Symbol] = (ushort)i;
+                    model.LookupTable[model.Symbols[i].Symbol] = i;
                 }
             }
         }
 
+        // Bitstream reading macros (Quantum / normal byte order)
         #region Macros
 
-        /* Bitstream reading macros (Quantum / normal byte order)
-            *
-            * Q_INIT_BITSTREAM    should be used first to set up the system
-            * Q_READ_BITS(var,n)  takes N bits from the buffer and puts them in var.
-            *                     unlike LZX, this can loop several times to get the
-            *                     requisite number of bits.
-            * Q_FILL_BUFFER       adds more data to the bit buffer, if there is room
-            *                     for another 16 bits.
-            * Q_PEEK_BITS(n)      extracts (without removing) N bits from the bit
-            *                     buffer
-            * Q_REMOVE_BITS(n)    removes N bits from the bit buffer
-            *
-            * These bit access routines work by using the area beyond the MSB and the
-            * LSB as a free source of zeroes. This avoids having to mask any bits.
-            * So we have to know the bit width of the bitbuffer variable. This is
-            * defined as Uint_BITS.
-            *
-            * Uint_BITS should be at least 16 bits. Unlike LZX's Huffman decoding,
-            * Quantum's arithmetic decoding only needs 1 bit at a time, it doesn't
-            * need an assured number. Retrieving larger bitstrings can be done with
-            * multiple reads and fills of the bitbuffer. The code should work fine
-            * for machines where Uint >= 32 bits.
-            *
-            * Also note that Quantum reads bytes in normal order; LZX is in
-            * little-endian order.
-            */
-
-        // #define Q_INIT_BITSTREAM do { bitsleft = 0; bitbuf = 0; } while (0)
-
-        // #define Q_FILL_BUFFER do {                                                  \
-        // if (bitsleft <= (16)) {                                  \
-        //     bitbuf |= ((inpos[0]<<8)|inpos[1]) << (32-16 - bitsleft);   \
-        //     bitsleft += 16; inpos += 2;                                             \
-        // }                                                                         \
-        // } while (0)
-
-        // #define Q_PEEK_BITS(n)   (bitbuf >> (32 - (n)))
-        // #define Q_REMOVE_BITS(n) ((bitbuf <<= (n)), (bitsleft -= (n)))
-
-        // #define Q_READ_BITS(v,n) do {                                           \
-        // (v) = 0;                                                              \
-        // for (bitsneed = (n); bitsneed; bitsneed -= bitrun) {                  \
-        //     Q_FILL_BUFFER;                                                      \
-        //     bitrun = (bitsneed > bitsleft) ? bitsleft : bitsneed;               \
-        //     (v) = ((v) << bitrun) | Q_PEEK_BITS(bitrun);                        \
-        //     Q_REMOVE_BITS(bitrun);                                              \
-        // }                                                                     \
-        // } while (0)
-
-        // #define Q_MENTRIES(model) (state.qtm.model).Entries)
-        // #define Q_MSYM(model,symidx) (state.qtm.model).syms[(symidx)].sym)
-        // #define Q_MSYMFREQ(model,symidx) (state.qtm.model).syms[(symidx)].cumfreq)
-
-        /* GET_SYMBOL(model, var) fetches the next symbol from the stated model
-        * and puts it in var. it may need to read the bitstream to do this.
+        /* 
+        * These bit access routines work by using the area beyond the MSB and the
+        * LSB as a free source of zeroes. This avoids having to mask any bits.
+        * So we have to know the bit width of the bitbuffer variable. This is
+        * defined as Uint_BITS.
+        *
+        * Uint_BITS should be at least 16 bits. Unlike LZX's Huffman decoding,
+        * Quantum's arithmetic decoding only needs 1 bit at a time, it doesn't
+        * need an assured number. Retrieving larger bitstrings can be done with
+        * multiple reads and fills of the bitbuffer. The code should work fine
+        * for machines where Uint >= 32 bits.
+        *
+        * Also note that Quantum reads bytes in normal order; LZX is in
+        * little-endian order.
         */
-        // #define GET_SYMBOL(m, var) do {                                         \
-        // range =  ((H - L) & 0xFFFF) + 1;                                      \
-        // symf = ((((C - L + 1) *  (state.qtm.m).syms[(0)].cumfreq) - 1) / range) & 0xFFFF;      \
-        //                                                                         \
-        // for (i=1; i < (state.qtm.m).Entries); i++) {                                   \
-        //     if ((state.qtm.m).syms[(i)].cumfreq) <= symf) break;                                 \
-        // }                                                                     \
-        // (var) =  (state.qtm.m).syms[(i-1)].sym)                                   \
-        //                                                                         \
-        // range = (H - L) + 1;                                                  \
-        // H = L + (((state.qtm.m).syms[(i-1)].cumfreq) * range) / (state.qtm.m).syms[(0)].cumfreq) - 1;          \
-        // L = L + (((state.qtm.m).syms[(i)].cumfreq) * range) / (state.qtm.m).syms[(0)].cumfreq);              \
-        // while (1) {                                                           \
-        //     if ((L & 0x8000) != (H & 0x8000)) {                                 \
-        //     if ((L & 0x4000) && !(H & 0x4000)) {                              \
-        //         /* underflow case */                                            \
-        //         C ^= 0x4000; L &= 0x3FFF; H |= 0x4000;                          \
-        //     }                                                                 \
-        //     else break;                                                       \
-        //     }                                                                   \
-        //     L <<= 1; H = (H << 1) | 1;                                          \
-        //     Q_FILL_BUFFER;                                                      \
-        //     C  = (C << 1) | Q_PEEK_BITS(1);                                     \
-        //     Q_REMOVE_BITS(1);                                                   \
-        // }                                                                     \
-        //                                                                         \
-        // Quantum.UpdateModel(&(state.qtm.m)), i);                                         \
-        // } while (0)
 
         /// <summary>
         /// Should be used first to set up the system
         /// </summary>
         private static void Q_INIT_BITSTREAM(out int bitsleft, out uint bitbuf)
         {
-            bitsleft = 0; bitbuf = 0;
+            bitsleft = 0;
+            bitbuf = 0;
         }
 
         /// <summary>
@@ -477,11 +370,12 @@ namespace BurnOutSharp.Compression.Quantum
         /// </summary>
         private static void Q_FILL_BUFFER(byte[] inbuf, ref int inpos, ref int bitsleft, ref uint bitbuf)
         {
-            if (bitsleft <= 16)
-            {
-                bitbuf |= (uint)((inbuf[inpos + 0] << 8) | inbuf[inpos + 1]) << (16 - bitsleft);
-                bitsleft += 16; inpos += 2;
-            }
+            if (bitsleft > 16)
+                return;
+
+            bitbuf |= (uint)(((inbuf[inpos + 0] << 8) | inbuf[inpos + 1]) << (16 - bitsleft));
+            bitsleft += 16;
+            inpos += 2;
         }
 
         /// <summary>
@@ -505,16 +399,14 @@ namespace BurnOutSharp.Compression.Quantum
         /// Takes N bits from the buffer and puts them in v. Unlike LZX, this can loop
         /// several times to get the requisite number of bits.
         /// </summary>
-        private static ushort Q_READ_BITS_UINT16(int n, byte[] inbuf, ref int inpos, ref int bitsleft, ref uint bitbuf)
+        private static uint Q_READ_BITS(int n, byte[] inbuf, ref int inpos, ref int bitsleft, ref uint bitbuf)
         {
-            ushort v = 0; int bitrun;
+            uint v = 0; int bitrun;
             for (int bitsneed = n; bitsneed != 0; bitsneed -= bitrun)
             {
                 Q_FILL_BUFFER(inbuf, ref inpos, ref bitsleft, ref bitbuf);
-
                 bitrun = (bitsneed > bitsleft) ? bitsleft : bitsneed;
-                v = (ushort)((v << bitrun) | Q_PEEK_BITS(bitrun, bitbuf));
-
+                v = (v << bitrun) | Q_PEEK_BITS(bitrun, bitbuf);
                 Q_REMOVE_BITS(bitrun, ref bitsleft, ref bitbuf);
             }
 
@@ -522,27 +414,7 @@ namespace BurnOutSharp.Compression.Quantum
         }
 
         /// <summary>
-        /// Takes N bits from the buffer and puts them in v. Unlike LZX, this can loop
-        /// several times to get the requisite number of bits.
-        /// </summary>
-        private static int Q_READ_BITS_INT32(int n, byte[] inbuf, ref int inpos, ref int bitsleft, ref uint bitbuf)
-        {
-            int v = 0; int bitrun;
-            for (int bitsneed = n; bitsneed != 0; bitsneed -= bitrun)
-            {
-                Q_FILL_BUFFER(inbuf, ref inpos, ref bitsleft, ref bitbuf);
-
-                bitrun = (bitsneed > bitsleft) ? bitsleft : bitsneed;
-                v = (int)((v << bitrun) | Q_PEEK_BITS(bitrun, bitbuf));
-
-                Q_REMOVE_BITS(bitrun, ref bitsleft, ref bitbuf);
-            }
-
-            return v;
-        }
-
-        /// <summary>
-        /// Fetches the next symbol from the stated model and puts it in v.
+        /// Fetches the next symbol from the stated model and puts it in symbol.
         /// It may need to read the bitstream to do this.
         /// </summary>
         private static ushort GET_SYMBOL(Model model, ref ushort H, ref ushort L, ref ushort C, byte[] inbuf, ref int inpos, ref int bitsleft, ref uint bitbuf)
@@ -557,7 +429,8 @@ namespace BurnOutSharp.Compression.Quantum
                     break;
             }
 
-            ushort v = model.Symbols[i - 1].Symbol;
+            ushort symbol = model.Symbols[i - 1].Symbol;
+
             range = (uint)(H - L + 1);
             H = (ushort)(L + ((model.Symbols[i - 1].CumulativeFrequency * range) / model.Symbols[0].CumulativeFrequency) - 1);
             L = (ushort)(L + ((model.Symbols[i].CumulativeFrequency * range) / model.Symbols[0].CumulativeFrequency));
@@ -566,10 +439,12 @@ namespace BurnOutSharp.Compression.Quantum
             {
                 if ((L & 0x8000) != (H & 0x8000))
                 {
+                    // Underflow case
                     if ((L & 0x4000) != 0 && (H & 0x4000) == 0)
                     {
-                        // Underflow case
-                        C ^= 0x4000; L &= 0x3FFF; H |= 0x4000;
+                        C ^= 0x4000;
+                        L &= 0x3FFF;
+                        H |= 0x4000;
                     }
                     else
                     {
@@ -577,19 +452,15 @@ namespace BurnOutSharp.Compression.Quantum
                     }
                 }
 
-                L <<= 1; H = (ushort)((H << 1) | 1);
-
-                // If we have more requested bytes than we have data
-                if (inpos >= inbuf.Length - 1)
-                    break;
-
+                L <<= 1;
+                H = (ushort)((H << 1) | 1);
                 Q_FILL_BUFFER(inbuf, ref inpos, ref bitsleft, ref bitbuf);
                 C = (ushort)((C << 1) | Q_PEEK_BITS(1, bitbuf));
                 Q_REMOVE_BITS(1, ref bitsleft, ref bitbuf);
             }
 
             UpdateModel(model, i);
-            return v;
+            return symbol;
         }
 
         #endregion

@@ -215,14 +215,21 @@ namespace BurnOutSharp.Wrappers
             if (folder.DataBlocks == null || folder.DataBlocks.Length == 0)
                 return null;
 
-            // Store the last decompressed block for MS-ZIP
+            // Setup LZX decompression
+            // TODO: Use this area for LZX
+
+            // Setup MS-ZIP decompression
             Compression.MSZIP_zlib mszip = new Compression.MSZIP_zlib();
             bool hasLastBlock = false;
+
+            // Setup Quantum decompression
+            var qtm = new Compression.Quantum.State();
+            Compression.Quantum.Decompressor.InitState(qtm, folder);
 
             List<byte> data = new List<byte>();
             foreach (var dataBlock in folder.DataBlocks)
             {
-                byte[] decompressed;
+                byte[] decompressed = new byte[dataBlock.UncompressedSize];
                 switch (folder.CompressionType & Models.MicrosoftCabinet.CompressionType.MASK_TYPE)
                 {
                     case Models.MicrosoftCabinet.CompressionType.TYPE_NONE:
@@ -232,7 +239,7 @@ namespace BurnOutSharp.Wrappers
                         decompressed = mszip.DecompressMSZIPData(dataBlock.CompressedData, hasLastBlock);
                         break;
                     case Models.MicrosoftCabinet.CompressionType.TYPE_QUANTUM:
-                        decompressed = Compression.Quantum.Decompressor.Decompress(folder, dataBlock);
+                        Compression.Quantum.Decompressor.Decompress(qtm, dataBlock.CompressedSize, dataBlock.CompressedData, dataBlock.UncompressedSize, decompressed);
                         break;
                     case Models.MicrosoftCabinet.CompressionType.TYPE_LZX:
                         // TODO: UNIMPLEMENTED
