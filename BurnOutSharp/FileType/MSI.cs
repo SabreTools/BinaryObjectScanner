@@ -97,7 +97,7 @@ namespace BurnOutSharp.FileType
         }
 
         /// <remarks>Adapted from LibMSI</remarks>
-        private static string DecodeStreamName(string input)
+        public static string DecodeStreamName(string input)
         {
             if (input == null)
                 return null;

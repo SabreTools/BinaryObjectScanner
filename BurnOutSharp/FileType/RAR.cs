@@ -34,9 +34,9 @@ namespace BurnOutSharp.FileType
                 string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
                 Directory.CreateDirectory(tempPath);
 
-                using (RarArchive zipFile = RarArchive.Open(stream))
+                using (RarArchive rarFile = RarArchive.Open(stream))
                 {
-                    foreach (var entry in zipFile.Entries)
+                    foreach (var entry in rarFile.Entries)
                     {
                         // If an individual entry fails
                         try
