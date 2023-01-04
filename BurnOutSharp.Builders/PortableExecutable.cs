@@ -1299,8 +1299,8 @@ namespace BurnOutSharp.Builders
             // Get the section size
             int size = (int)sections.First(s => s.PointerToRawData == initialOffset).SizeOfRawData;
 
-            // Align to the 512-byte boundary or we find the start of an MS-DOS header
-            while (data.Position - initialOffset < size && data.Position % 0x200 != 0)
+            // Align to the 512-byte boundary, we find the start of an MS-DOS header, or the end of the file
+            while (data.Position - initialOffset < size && data.Position % 0x200 != 0 && data.Position < data.Length - 1)
             {
                 // If we find the start of an MS-DOS header
                 if (data.ReadUInt16() == Models.MSDOS.Constants.SignatureUInt16)
