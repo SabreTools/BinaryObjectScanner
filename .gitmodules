@@ -1,9 +1,3 @@
 [submodule "BurnOutSharp/External/stormlibsharp"]
 	path = BurnOutSharp/External/stormlibsharp
 	url = https://github.com/robpaveza/stormlibsharp.git
-[submodule "LibMSPackSharp"]
-	path = LibMSPackSharp
-	url = https://github.com/mnadareski/LibMSPackSharp.git
-[submodule "Dtf"]
-	path = Dtf
-	url = https://github.com/wixtoolset/Dtf.git
