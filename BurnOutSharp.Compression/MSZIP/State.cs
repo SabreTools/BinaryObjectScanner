@@ -3,54 +3,54 @@ using static BurnOutSharp.Models.Compression.MSZIP.Constants;
 namespace BurnOutSharp.Compression.MSZIP
 {
     /// <see href="https://github.com/wine-mirror/wine/blob/master/dlls/cabinet/cabinet.h"/>
-    public class State
+    public unsafe class State
     {
         /// <summary>
         /// Current offset within the window
         /// </summary>
-        public uint WindowPosition;
+        public uint window_posn;
 
         /// <summary>
         /// Bit buffer
         /// </summary>
-        public uint BitBuffer;
+        public uint bb;
 
         /// <summary>
         /// Bits in bit buffer
         /// </summary>
-        public uint BitCount;
+        public uint bk;
 
         /// <summary>
         /// Literal/length and distance code lengths
         /// </summary>
-        public uint[] Lengths = new uint[288 + 32];
+        public uint[] ll = new uint[288 + 32];
 
         /// <summary>
         /// Bit length count table
         /// </summary>
-        public uint[] Counts = new uint[ZIPBMAX + 1];
+        public uint[] c = new uint[ZIPBMAX + 1];
 
         /// <summary>
         /// Memory for l[-1..ZIPBMAX-1]
         /// </summary>
-        public int[] LengthMemory = new int[ZIPBMAX + 1];
+        public int[] lx = new int[ZIPBMAX + 1];
 
         /// <summary>
         /// Table stack
         /// </summary>
-        public HuffmanNode[] TableStack = new HuffmanNode[ZIPBMAX];
+        public HuffmanNode*[] u = new HuffmanNode*[ZIPBMAX];
 
         /// <summary>
         /// Values in order of bit length
         /// </summary>
-        public uint[] Values = new uint[ZIPN_MAX];
+        public uint[] v = new uint[ZIPN_MAX];
 
         /// <summary>
         /// Bit offsets, then code stack
         /// </summary>
-        public uint[] BitOffsets = new uint[ZIPBMAX + 1];
+        public uint[] x = new uint[ZIPBMAX + 1];
 
         /// <remarks>byte*</remarks>
-        public int InputPosition;
+        public byte* inpos;
     }
 }

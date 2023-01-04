@@ -1,28 +1,28 @@
 namespace BurnOutSharp.Compression.MSZIP
 {
-    public class HuffmanNode
+    public unsafe struct HuffmanNode
     {
         /// <summary>
         /// Number of extra bits or operation
         /// </summary>
-        public byte ExtraBits;
+        public byte e;
 
         /// <summary>
         /// Number of bits in this code or subcode
         /// </summary>
-        public byte BitLength;
+        public byte b;
 
         #region v
 
         /// <summary>
         /// Literal, length base, or distance base
         /// </summary>
-        public ushort Base;
+        public ushort n;
 
         /// <summary>
         /// Pointer to next level of table
         /// </summary>
-        public HuffmanNode[] NextLevel;
+        public HuffmanNode* t;
 
         #endregion
     }
