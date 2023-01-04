@@ -1331,47 +1331,6 @@
 //     * and cabextract.c.
 //     */
 
-//     /* Bitstream reading macros (LZX / intel little-endian byte order)
-//     *
-//     * INIT_BITSTREAM    should be used first to set up the system
-//     * READ_BITS(var,n)  takes N bits from the buffer and puts them in var
-//     *
-//     * ENSURE_BITS(n)    ensures there are at least N bits in the bit buffer.
-//     *                   it can guarantee up to 17 bits (i.e. it can read in
-//     *                   16 new bits when there is down to 1 bit in the buffer,
-//     *                   and it can read 32 bits when there are 0 bits in the
-//     *                   buffer).
-//     * PEEK_BITS(n)      extracts (without removing) N bits from the bit buffer
-//     * REMOVE_BITS(n)    removes N bits from the bit buffer
-//     *
-//     * These bit access routines work by using the area beyond the MSB and the
-//     * LSB as a free source of zeroes. This avoids having to mask any bits.
-//     * So we have to know the bit width of the bitbuffer variable.
-//     */
-
-//     // #define INIT_BITSTREAM do { bitsleft = 0; bitbuf = 0; } while (0)
-
-//     /* Quantum reads bytes in normal order; LZX is little-endian order */
-//     // #define ENSURE_BITS(n)                                                    \
-//     // while (bitsleft < (n)) {                                                \
-//     //     bitbuf |= ((inpos[1]<<8)|inpos[0]) << (16 - bitsleft); \
-//     //     bitsleft += 16; inpos+=2;                                             \
-//     // }
-
-//     // #define PEEK_BITS(n)   (bitbuf >> (32 - (n)))
-//     // #define REMOVE_BITS(n) ((bitbuf <<= (n)), (bitsleft -= (n)))
-
-//     // #define READ_BITS(v,n) do {                                             \
-//     // if (n) {                                                              \
-//     //     ENSURE_BITS(n);                                                     \
-//     //     (v) = PEEK_BITS(n);                                                 \
-//     //     REMOVE_BITS(n);                                                     \
-//     // }                                                                     \
-//     // else {                                                                \
-//     //     (v) = 0;                                                            \
-//     // }                                                                     \
-//     // } while (0)
-
 //     /* Huffman macros */
 
 //     // #define TABLEBITS(tbl)   (LZX_##tbl##_TABLEBITS)
@@ -1388,35 +1347,6 @@
 //     // if (make_decode_table(                                                \
 //     //     MAXSYMBOLS(tbl), TABLEBITS(tbl), LENTABLE(tbl), SYMTABLE(tbl)       \
 //     // )) { return DECR_ILLEGALDATA; }
-
-//     /* READ_HUFFSYM(tablename, var) decodes one huffman symbol from the
-//     * bitstream using the stated table and puts it in var.
-//     */
-//     // #define READ_HUFFSYM(tbl,var) do {                                      \
-//     // ENSURE_BITS(16);                                                      \
-//     // hufftbl = SYMTABLE(tbl);                                              \
-//     // if ((i = hufftbl[PEEK_BITS(TABLEBITS(tbl))]) >= MAXSYMBOLS(tbl)) {    \
-//     //     j = 1 << (32 - TABLEBITS(tbl));                         \
-//     //     do {                                                                \
-//     //     j >>= 1; i <<= 1; i |= (bitbuf & j) ? 1 : 0;                      \
-//     //     if (!j) { return DECR_ILLEGALDATA; }                              \
-//     //     } while ((i = hufftbl[i]) >= MAXSYMBOLS(tbl));                      \
-//     // }                                                                     \
-//     // j = LENTABLE(tbl)[(var) = i];                                         \
-//     // REMOVE_BITS(j);                                                       \
-//     // } while (0)
-
-//     /* READ_LENGTHS(tablename, first, last) reads in code lengths for symbols
-//     * first to last in the given table. The code lengths are stored in their
-//     * own special LZX way.
-//     */
-//     // #define READ_LENGTHS(tbl,first,last,fn) do { \
-//     // lb.bb = bitbuf; lb.bl = bitsleft; lb.ip = inpos; \
-//     // if (fn(LENTABLE(tbl),(first),(last),&lb,decomp_state)) { \
-//     //     return DECR_ILLEGALDATA; \
-//     // } \
-//     // bitbuf = lb.bb; bitsleft = lb.bl; inpos = lb.ip; \
-//     // } while (0)
 
 //     /// <see href="https://github.com/wine-mirror/wine/blob/master/dlls/cabinet/cabinet.h"/>
 //     internal class FILELIST

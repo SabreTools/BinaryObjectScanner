@@ -76,8 +76,15 @@ namespace BurnOutSharp.Compression.LZX
         public int intel_started;
 
         public ushort[] tblPRETREE_table = new ushort[(1 << LZX_PRETREE_TABLEBITS) + (LZX_PRETREE_MAXSYMBOLS << 1)];
+        public byte[] tblPRETREE_len = new byte[LZX_PRETREE_MAXSYMBOLS + LZX_LENTABLE_SAFETY];
+
         public ushort[] tblMAINTREE_table = new ushort[(1 << LZX_MAINTREE_TABLEBITS) + (LZX_MAINTREE_MAXSYMBOLS << 1)];
+        public byte[] tblMAINTREE_len = new byte[LZX_MAINTREE_MAXSYMBOLS + LZX_LENTABLE_SAFETY];
+
         public ushort[] tblLENGTH_table = new ushort[(1 << LZX_LENGTH_TABLEBITS) + (LZX_LENGTH_MAXSYMBOLS << 1)];
+        public byte[] tblLENGTH_len = new byte[LZX_LENGTH_MAXSYMBOLS + LZX_LENTABLE_SAFETY];
+
         public ushort[] tblALIGNED_table = new ushort[(1 << LZX_ALIGNED_TABLEBITS) + (LZX_ALIGNED_MAXSYMBOLS << 1)];
+        public byte[] tblALIGNED_len = new byte[LZX_ALIGNED_MAXSYMBOLS + LZX_LENTABLE_SAFETY];
     }
 }

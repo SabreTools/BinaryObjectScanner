@@ -5,7 +5,7 @@ namespace BurnOutSharp.Compression.LZX
     {
         public uint BitBuffer;
 
-        public int BitLength;
+        public int BitsLeft;
 
         public int InitialPosition; //byte*
     }
