@@ -75,7 +75,7 @@ namespace Test
                         info = true;
                         break;
 
-                    case "-e":
+                    case "-x":
                     case "--extract":
                         extract = true;
                         break;
@@ -164,7 +164,7 @@ namespace Test
             Console.WriteLine("-na, --no-archives   Disable scanning archives");
             Console.WriteLine("-np, --no-packers    Disable scanning for packers");
             Console.WriteLine("-i, --info           Print executable info");
-            Console.WriteLine("-e, --extract        Extract archive formats");
+            Console.WriteLine("-x, --extract        Extract archive formats");
             Console.WriteLine("-o, --outdir [PATH]  Set output path for extraction");
         }
 
