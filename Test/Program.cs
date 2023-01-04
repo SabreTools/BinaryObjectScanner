@@ -147,7 +147,7 @@ namespace Test
             Console.WriteLine("-np, --no-packers    Disable scanning for packers");
             Console.WriteLine("-i, --info           Print executable info");
             Console.WriteLine("-x, --extract        Extract archive formats");
-            Console.WriteLine("-o, --outdir [PATH]  Set output path for extraction");
+            Console.WriteLine("-o, --outdir [PATH]  Set output path for extraction (REQUIRED)");
         }
     }
 }
