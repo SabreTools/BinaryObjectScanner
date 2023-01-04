@@ -6,7 +6,6 @@ C# port of the protection scanning ability of [BurnOut](http://burnout.sourcefor
 
 In addition to the original BurnOut code, the following libraries (or ports thereof) are used for file handling:
 
-- [LibMSPackSharp](https://github.com/mnadareski/LibMSPackSharp) - Microsoft CAB extraction [Only used in .NET 6.0 builds, unstable]
 - [openmcdf](https://github.com/ironfede/openmcdf) - MSI extraction
 - [psxt001z](https://github.com/Dremora/psxt001z) - PS1 LibCrypt detection [Ported to C#]
 - [SharpCompress](https://github.com/adamhathcock/sharpcompress) - Common archive format extraction
@@ -14,7 +13,6 @@ In addition to the original BurnOut code, the following libraries (or ports ther
 - [StormLibSharp](https://github.com/robpaveza/stormlibsharp) - MoPaQ extraction [Unused in .NET 6.0 builds due to Windows-specific libraries]
 - [UnshieldSharp](https://github.com/mnadareski/UnshieldSharp) - InstallShield CAB extraction
 - [WiseUnpacker](https://github.com/mnadareski/WiseUnpacker) - Wise Installer extraction
-- [WixToolset.Dtf](https://github.com/wixtoolset/Dtf) - Microsoft CAB extraction [Unused in .NET 6.0 builds due to Windows-specific libraries]
 
 Valve packages handling is based [HLLibSharp](https://github.com/mnadareski/HLLibSharp) but lacks everything but parsing and extraction capability.
 
