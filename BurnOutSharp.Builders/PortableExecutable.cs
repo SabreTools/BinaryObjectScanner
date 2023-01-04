@@ -1317,7 +1317,7 @@ namespace BurnOutSharp.Builders
             if (data.Position - initialOffset < size)
             {
                 Array.Resize(ref resourceDirectoryTable.Entries, totalEntryCount + 1);
-                int length = (int)(size - data.Position - initialOffset);
+                int length = (int)(size - (data.Position - initialOffset));
 
                 resourceDirectoryTable.Entries[totalEntryCount] = new ResourceDirectoryEntry
                 {
