@@ -2822,7 +2822,11 @@ namespace BurnOutSharp.Wrappers
                 Console.WriteLine($"{padding}Unknown type {resourceType} found, not parsed yet");
 
             // Then print the data, if needed
-            if (entry.Data[0] == 0x4D && entry.Data[1] == 0x5A)
+            if (entry.Data == null)
+            {
+                Console.WriteLine($"{padding}Data: [NULL] (This may indicate a very large resource)");
+            }
+            else if (entry.Data[0] == 0x4D && entry.Data[1] == 0x5A)
             {
                 Console.WriteLine($"{padding}Data: [Embedded Executable File]"); // TODO: Parse this out and print separately
             }

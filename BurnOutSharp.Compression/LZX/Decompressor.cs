@@ -65,7 +65,6 @@ namespace BurnOutSharp.Compression.LZX
             int endinp = inpos + inlen;
             int window = 0; // state.window[0];
             int runsrc, rundest; // byte*
-            ushort[] hufftbl; /* used in READ_HUFFSYM macro as chosen decoding table */
 
             uint window_posn = state.window_posn;
             uint window_size = state.window_size;
@@ -470,13 +469,10 @@ namespace BurnOutSharp.Compression.LZX
         /// </summary>
         private static int ReadLengths(byte[] lengths, uint first, uint last, Bits lb, State state, byte[] inbuf)
         {
-            uint i, j, x, y;
-            int z;
-
+            uint x, y;
             uint bitbuf = lb.BitBuffer;
             int bitsleft = lb.BitsLeft;
             int inpos = lb.InputPosition;
-            ushort[] hufftbl;
 
             for (x = 0; x < 20; x++)
             {
@@ -488,7 +484,7 @@ namespace BurnOutSharp.Compression.LZX
 
             for (x = first; x < last;)
             {
-                z = READ_HUFFSYM(state.tblPRETREE_table, state.tblPRETREE_len, LZX_PRETREE_TABLEBITS, LZX_PRETREE_MAXSYMBOLS, inbuf, ref inpos, ref bitsleft, ref bitbuf);
+                int z = READ_HUFFSYM(state.tblPRETREE_table, state.tblPRETREE_len, LZX_PRETREE_TABLEBITS, LZX_PRETREE_MAXSYMBOLS, inbuf, ref inpos, ref bitsleft, ref bitbuf);
                 if (z == 17)
                 {
                     y = READ_BITS(4, inbuf, ref inpos, ref bitsleft, ref bitbuf);
