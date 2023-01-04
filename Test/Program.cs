@@ -75,15 +75,15 @@ namespace Test
                         info = true;
                         break;
 
-                    // case "-e":
-                    // case "--extract":
-                    //     extract = true;
-                    //     break;
+                    case "-e":
+                    case "--extract":
+                        extract = true;
+                        break;
 
-                    // case "-o":
-                    // case "--outdir":
-                    //     outputPath = i + 1 < args.Length ? args[++i] : null;
-                    //     break;
+                    case "-o":
+                    case "--outdir":
+                        outputPath = i + 1 < args.Length ? args[++i] : null;
+                        break;
 
                     default:
                         inputPaths.Add(arg);
@@ -164,8 +164,8 @@ namespace Test
             Console.WriteLine("-na, --no-archives   Disable scanning archives");
             Console.WriteLine("-np, --no-packers    Disable scanning for packers");
             Console.WriteLine("-i, --info           Print executable info");
-            // Console.WriteLine("-e, --extract        Extract archive formats");
-            // Console.WriteLine("-o, --outdir [PATH]  Set output path for extraction");
+            Console.WriteLine("-e, --extract        Extract archive formats");
+            Console.WriteLine("-o, --outdir [PATH]  Set output path for extraction");
         }
 
         #region Protection
