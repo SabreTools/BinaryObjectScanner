@@ -1,5 +1,7 @@
+using System;
 using BurnOutSharp.Models.Compression.LZX;
 using static BurnOutSharp.Models.Compression.LZX.Constants;
+using static BurnOutSharp.Models.MicrosoftCabinet.Constants;
 
 namespace BurnOutSharp.Compression.LZX
 {
@@ -7,15 +9,462 @@ namespace BurnOutSharp.Compression.LZX
     public class Decompressor
     {
         /// <summary>
+        /// Initialize an LZX decompressor state
+        /// </summary>
+        public static bool Init(int window, State state)
+        {
+            uint wndsize = (uint)(1 << window);
+            int posn_slots;
+
+            /* LZX supports window sizes of 2^15 (32Kb) through 2^21 (2Mb) */
+            /* if a previously allocated window is big enough, keep it     */
+            if (window < 15 || window > 21)
+                return false;
+
+            if (state.actual_size < wndsize)
+                state.window = null;
+
+            if (state.window == null)
+            {
+                state.window = new byte[wndsize];
+                state.actual_size = wndsize;
+            }
+
+            state.window_size = wndsize;
+
+            /* calculate required position slots */
+            if (window == 20) posn_slots = 42;
+            else if (window == 21) posn_slots = 50;
+            else posn_slots = window << 1;
+
+            /*posn_slots=i=0; while (i < wndsize) i += 1 << CAB(extra_bits)[posn_slots++]; */
+
+            state.R0 = state.R1 = state.R2 = 1;
+            state.main_elements = (ushort)(LZX_NUM_CHARS + (posn_slots << 3));
+            state.header_read = 0;
+            state.frames_read = 0;
+            state.block_remaining = 0;
+            state.block_type = LZX_BLOCKTYPE_INVALID;
+            state.intel_curpos = 0;
+            state.intel_started = 0;
+            state.window_posn = 0;
+
+            /* initialize tables to 0 (because deltas will be applied to them) */
+            // memset(state.MAINTREE_len, 0, sizeof(state.MAINTREE_len));
+            // memset(state.LENGTH_len, 0, sizeof(state.LENGTH_len));
+
+            return true;
+        }
+
+        /// <summary>
         /// Decompress a byte array using a given State
         /// </summary>
         public static bool Decompress(State state, int inlen, byte[] inbuf, int outlen, byte[] outbuf)
         {
+            int inpos = 0; // inbuf[0];
+            int endinp = inpos + inlen;
+            int window = 0; // state.window[0];
+            int runsrc, rundest; // byte*
+            ushort[] hufftbl; /* used in READ_HUFFSYM macro as chosen decoding table */
 
-            // TODO: Finish implementation
-            return false;
+            uint window_posn = state.window_posn;
+            uint window_size = state.window_size;
+            uint R0 = state.R0;
+            uint R1 = state.R1;
+            uint R2 = state.R2;
+
+            uint match_offset, i, j, k; /* ijk used in READ_HUFFSYM macro */
+            Bits lb = new Bits(); /* used in READ_LENGTHS macro */
+
+            int togo = outlen, this_run, main_element, aligned_bits;
+            int match_length, copy_length, length_footer, extra, verbatim_bits;
+
+            INIT_BITSTREAM(out int bitsleft, out uint bitbuf);
+
+            /* read header if necessary */
+            if (state.header_read == 0)
+            {
+                i = j = 0;
+                k = READ_BITS(1, inbuf, ref inpos, ref bitsleft, ref bitbuf);
+                if (k != 0)
+                {
+                    i = READ_BITS(16, inbuf, ref inpos, ref bitsleft, ref bitbuf);
+                    j = READ_BITS(16, inbuf, ref inpos, ref bitsleft, ref bitbuf);
+                }
+
+                state.intel_filesize = (int)((i << 16) | j); /* or 0 if not encoded */
+                state.header_read = 1;
+            }
+
+            /* main decoding loop */
+            while (togo > 0)
+            {
+                /* last block finished, new block expected */
+                if (state.block_remaining == 0)
+                {
+                    if (state.block_type == LZX_BLOCKTYPE_UNCOMPRESSED)
+                    {
+                        if ((state.block_length & 1) != 0)
+                            inpos++; /* realign bitstream to word */
+
+                        INIT_BITSTREAM(out bitsleft, out bitbuf);
+                    }
+
+                    state.block_type = (ushort)READ_BITS(3, inbuf, ref inpos, ref bitsleft, ref bitbuf);
+                    i = READ_BITS(16, inbuf, ref inpos, ref bitsleft, ref bitbuf);
+                    j = READ_BITS(8, inbuf, ref inpos, ref bitsleft, ref bitbuf);
+                    state.block_remaining = state.block_length = (i << 8) | j;
+
+                    switch (state.block_type)
+                    {
+                        case LZX_BLOCKTYPE_ALIGNED:
+                            for (i = 0; i < 8; i++)
+                            {
+                                j = READ_BITS(3, inbuf, ref inpos, ref bitsleft, ref bitbuf);
+                                state.tblALIGNED_len[i] = (byte)j;
+                            }
+
+                            make_decode_table(LZX_ALIGNED_MAXSYMBOLS, LZX_ALIGNED_TABLEBITS, state.tblALIGNED_len, state.tblALIGNED_table);
+
+                            /* rest of aligned header is same as verbatim */
+                            goto case LZX_BLOCKTYPE_VERBATIM;
+
+                        case LZX_BLOCKTYPE_VERBATIM:
+                            READ_LENGTHS(state.tblMAINTREE_len, 0, 256, lb, state, inbuf, ref inpos, ref bitsleft, ref bitbuf);
+                            READ_LENGTHS(state.tblMAINTREE_len, 256, state.main_elements, lb, state, inbuf, ref inpos, ref bitsleft, ref bitbuf);
+                            make_decode_table(LZX_MAINTREE_MAXSYMBOLS, LZX_MAINTREE_TABLEBITS, state.tblMAINTREE_len, state.tblMAINTREE_table);
+                            if (state.tblMAINTREE_len[0xE8] != 0)
+                                state.intel_started = 1;
+
+                            READ_LENGTHS(state.tblLENGTH_len, 0, LZX_NUM_SECONDARY_LENGTHS, lb, state, inbuf, ref inpos, ref bitsleft, ref bitbuf);
+                            make_decode_table(LZX_LENGTH_MAXSYMBOLS, LZX_LENGTH_TABLEBITS, state.tblLENGTH_len, state.tblLENGTH_table);
+                            break;
+
+                        case LZX_BLOCKTYPE_UNCOMPRESSED:
+                            state.intel_started = 1; /* because we can't assume otherwise */
+                            ENSURE_BITS(16, inbuf, ref inpos, ref bitsleft, ref bitbuf); /* get up to 16 pad bits into the buffer */
+
+                            /* and align the bitstream! */
+                            if (bitsleft > 16)
+                                inpos -= 2;
+
+                            R0 = (uint)(inbuf[inpos + 0] | (inbuf[inpos + 1] << 8) | (inbuf[inpos + 2] << 16) | (inbuf[inpos + 3] << 24)); inpos += 4;
+                            R1 = (uint)(inbuf[inpos + 0] | (inbuf[inpos + 1] << 8) | (inbuf[inpos + 2] << 16) | (inbuf[inpos + 3] << 24)); inpos += 4;
+                            R2 = (uint)(inbuf[inpos + 0] | (inbuf[inpos + 1] << 8) | (inbuf[inpos + 2] << 16) | (inbuf[inpos + 3] << 24)); inpos += 4;
+                            break;
+
+                        default:
+                            return false;
+                    }
+                }
+
+                /* buffer exhaustion check */
+                if (inpos > endinp)
+                {
+                    /* it's possible to have a file where the next run is less than
+                     * 16 bits in size. In this case, the READ_HUFFSYM() macro used
+                     * in building the tables will exhaust the buffer, so we should
+                     * allow for this, but not allow those accidentally read bits to
+                     * be used (so we check that there are at least 16 bits
+                     * remaining - in this boundary case they aren't really part of
+                     * the compressed data)
+                     */
+                    if (inpos > (endinp + 2) || bitsleft < 16)
+                        return false;
+                }
+
+                while ((this_run = (int)state.block_remaining) > 0 && togo > 0)
+                {
+                    if (this_run > togo) this_run = togo;
+                    togo -= this_run;
+                    state.block_remaining -= (uint)this_run;
+
+                    /* apply 2^x-1 mask */
+                    window_posn &= window_size - 1;
+
+                    /* runs can't straddle the window wraparound */
+                    if ((window_posn + this_run) > window_size)
+                        return false;
+
+                    switch (state.block_type)
+                    {
+
+                        case LZX_BLOCKTYPE_VERBATIM:
+                            while (this_run > 0)
+                            {
+                                main_element = READ_HUFFSYM(state.tblMAINTREE_table, state.tblMAINTREE_len, LZX_MAINTREE_TABLEBITS, LZX_MAINTREE_MAXSYMBOLS, inbuf, ref inpos, ref bitsleft, ref bitbuf);
+                                if (main_element < LZX_NUM_CHARS)
+                                {
+                                    /* literal: 0 to LZX_NUM_CHARS-1 */
+                                    state.window[window + window_posn++] = (byte)main_element;
+                                    this_run--;
+                                }
+                                else
+                                {
+                                    /* match: LZX_NUM_CHARS + ((slot<<3) | length_header (3 bits)) */
+                                    main_element -= LZX_NUM_CHARS;
+
+                                    match_length = main_element & LZX_NUM_PRIMARY_LENGTHS;
+                                    if (match_length == LZX_NUM_PRIMARY_LENGTHS)
+                                    {
+                                        length_footer = READ_HUFFSYM(state.tblLENGTH_table, state.tblLENGTH_len, LZX_LENGTH_TABLEBITS, LZX_LENGTH_MAXSYMBOLS, inbuf, ref inpos, ref bitsleft, ref bitbuf);
+                                        match_length += length_footer;
+                                    }
+
+                                    match_length += LZX_MIN_MATCH;
+                                    match_offset = (uint)(main_element >> 3);
+
+                                    if (match_offset > 2)
+                                    {
+                                        /* not repeated offset */
+                                        if (match_offset != 3)
+                                        {
+                                            extra = state.ExtraBits[match_offset];
+                                            verbatim_bits = (int)READ_BITS(extra, inbuf, ref inpos, ref bitsleft, ref bitbuf);
+                                            match_offset = (uint)(state.PositionSlotBases[match_offset] - 2 + verbatim_bits);
+                                        }
+                                        else
+                                        {
+                                            match_offset = 1;
+                                        }
+
+                                        /* update repeated offset LRU queue */
+                                        R2 = R1; R1 = R0; R0 = match_offset;
+                                    }
+                                    else if (match_offset == 0)
+                                    {
+                                        match_offset = R0;
+                                    }
+                                    else if (match_offset == 1)
+                                    {
+                                        match_offset = R1;
+                                        R1 = R0; R0 = match_offset;
+                                    }
+                                    else /* match_offset == 2 */
+                                    {
+                                        match_offset = R2;
+                                        R2 = R0; R0 = match_offset;
+                                    }
+
+                                    rundest = (int)(window + window_posn);
+                                    this_run -= match_length;
+
+                                    /* copy any wrapped around source data */
+                                    if (window_posn >= match_offset)
+                                    {
+                                        /* no wrap */
+                                        runsrc = (int)(rundest - match_offset);
+                                    }
+                                    else
+                                    {
+                                        runsrc = (int)(rundest + (window_size - match_offset));
+                                        copy_length = (int)(match_offset - window_posn);
+                                        if (copy_length < match_length)
+                                        {
+                                            match_length -= copy_length;
+                                            window_posn += (uint)copy_length;
+                                            while (copy_length-- > 0)
+                                            {
+                                                state.window[rundest++] = state.window[runsrc++];
+                                            }
+
+                                            runsrc = window;
+                                        }
+                                    }
+
+                                    window_posn += (uint)match_length;
+
+                                    /* copy match data - no worries about destination wraps */
+                                    while (match_length-- > 0)
+                                    {
+                                        state.window[rundest++] = state.window[runsrc++];
+                                    }
+                                }
+                            }
+                            break;
+
+                        case LZX_BLOCKTYPE_ALIGNED:
+                            while (this_run > 0)
+                            {
+                                main_element = READ_HUFFSYM(state.tblMAINTREE_table, state.tblMAINTREE_len, LZX_MAINTREE_TABLEBITS, LZX_MAINTREE_MAXSYMBOLS, inbuf, ref inpos, ref bitsleft, ref bitbuf);
+
+                                if (main_element < LZX_NUM_CHARS)
+                                {
+                                    /* literal: 0 to LZX_NUM_CHARS-1 */
+                                    state.window[window + window_posn++] = (byte)main_element;
+                                    this_run--;
+                                }
+                                else
+                                {
+                                    /* mverbatim_bitsatch: LZX_NUM_CHARS + ((slot<<3) | length_header (3 bits)) */
+                                    main_element -= LZX_NUM_CHARS;
+
+                                    match_length = main_element & LZX_NUM_PRIMARY_LENGTHS;
+                                    if (match_length == LZX_NUM_PRIMARY_LENGTHS)
+                                    {
+                                        length_footer = READ_HUFFSYM(state.tblLENGTH_table, state.tblLENGTH_len, LZX_LENGTH_TABLEBITS, LZX_LENGTH_MAXSYMBOLS, inbuf, ref inpos, ref bitsleft, ref bitbuf);
+                                        match_length += length_footer;
+                                    }
+                                    match_length += LZX_MIN_MATCH;
+
+                                    match_offset = (uint)(main_element >> 3);
+
+                                    if (match_offset > 2)
+                                    {
+                                        /* not repeated offset */
+                                        extra = state.ExtraBits[match_offset];
+                                        match_offset = state.PositionSlotBases[match_offset] - 2;
+                                        if (extra > 3)
+                                        {
+                                            /* verbatim and aligned bits */
+                                            extra -= 3;
+                                            verbatim_bits = (int)READ_BITS(extra, inbuf, ref inpos, ref bitsleft, ref bitbuf);
+                                            match_offset += (uint)(verbatim_bits << 3);
+                                            aligned_bits = READ_HUFFSYM(state.tblALIGNED_table, state.tblALIGNED_len, LZX_ALIGNED_TABLEBITS, LZX_ALIGNED_MAXSYMBOLS, inbuf, ref inpos, ref bitsleft, ref bitbuf);
+                                            match_offset += (uint)aligned_bits;
+                                        }
+                                        else if (extra == 3)
+                                        {
+                                            /* aligned bits only */
+                                            aligned_bits = READ_HUFFSYM(state.tblALIGNED_table, state.tblALIGNED_len, LZX_ALIGNED_TABLEBITS, LZX_ALIGNED_MAXSYMBOLS, inbuf, ref inpos, ref bitsleft, ref bitbuf);
+                                            match_offset += (uint)aligned_bits;
+                                        }
+                                        else if (extra > 0)
+                                        {
+                                            /* extra==1, extra==2 */
+                                            /* verbatim bits only */
+                                            verbatim_bits = (int)READ_BITS(extra, inbuf, ref inpos, ref bitsleft, ref bitbuf);
+                                            match_offset += (uint)verbatim_bits;
+                                        }
+                                        else /* extra == 0 */
+                                        {
+                                            /* ??? */
+                                            match_offset = 1;
+                                        }
+
+                                        /* update repeated offset LRU queue */
+                                        R2 = R1; R1 = R0; R0 = match_offset;
+                                    }
+                                    else if (match_offset == 0)
+                                    {
+                                        match_offset = R0;
+                                    }
+                                    else if (match_offset == 1)
+                                    {
+                                        match_offset = R1;
+                                        R1 = R0; R0 = match_offset;
+                                    }
+                                    else /* match_offset == 2 */
+                                    {
+                                        match_offset = R2;
+                                        R2 = R0; R0 = match_offset;
+                                    }
+
+                                    rundest = (int)(window + window_posn);
+                                    this_run -= match_length;
+
+                                    /* copy any wrapped around source data */
+                                    if (window_posn >= match_offset)
+                                    {
+                                        /* no wrap */
+                                        runsrc = (int)(rundest - match_offset);
+                                    }
+                                    else
+                                    {
+                                        runsrc = (int)(rundest + (window_size - match_offset));
+                                        copy_length = (int)(match_offset - window_posn);
+                                        if (copy_length < match_length)
+                                        {
+                                            match_length -= copy_length;
+                                            window_posn += (uint)copy_length;
+                                            while (copy_length-- > 0)
+                                            {
+                                                state.window[rundest++] = state.window[runsrc++];
+                                            }
+
+                                            runsrc = window;
+                                        }
+                                    }
+
+                                    window_posn += (uint)match_length;
+
+                                    /* copy match data - no worries about destination wraps */
+                                    while (match_length-- > 0)
+                                    {
+                                        state.window[rundest++] = state.window[runsrc++];
+                                    }
+                                }
+                            }
+                            break;
+
+                        case LZX_BLOCKTYPE_UNCOMPRESSED:
+                            if ((inpos + this_run) > endinp)
+                                return false;
+                            
+                            Array.Copy(inbuf, inpos, state.window, window + window_posn, this_run);
+                            inpos += this_run;
+                            window_posn += (uint)this_run;
+                            break;
+
+                        default:
+                            return false; /* might as well */
+                    }
+
+                }
+            }
+
+            if (togo != 0)
+                return false;
+
+            Array.Copy(state.window, window + ((window_posn == 0) ? window_size : window_posn) - outlen, outbuf, 0, outlen);
+
+            state.window_posn = window_posn;
+            state.R0 = R0;
+            state.R1 = R1;
+            state.R2 = R2;
+
+            /* intel E8 decoding */
+            if ((state.frames_read++ < 32768) && state.intel_filesize != 0)
+            {
+                if (outlen <= 6 || state.intel_started == 0)
+                {
+                    state.intel_curpos += outlen;
+                }
+                else
+                {
+                    int data = 0; // outbuf[0];
+                    int dataend = data + outlen - 10;
+                    int curpos = state.intel_curpos;
+                    int filesize = state.intel_filesize;
+                    int abs_off, rel_off;
+
+                    state.intel_curpos = curpos + outlen;
+
+                    while (data < dataend)
+                    {
+                        if (outbuf[data++] != 0xE8)
+                        {
+                            curpos++;
+                            continue;
+                        }
+
+                        abs_off = outbuf[data + 0] | (outbuf[data + 1] << 8) | (outbuf[data + 2] << 16) | (outbuf[data + 3] << 24);
+                        if ((abs_off >= -curpos) && (abs_off < filesize))
+                        {
+                            rel_off = (abs_off >= 0) ? abs_off - curpos : abs_off + filesize;
+                            outbuf[data + 0] = (byte)rel_off;
+                            outbuf[data + 1] = (byte)(rel_off >> 8);
+                            outbuf[data + 2] = (byte)(rel_off >> 16);
+                            outbuf[data + 3] = (byte)(rel_off >> 24);
+                        }
+                        data += 4;
+                        curpos += 5;
+                    }
+                }
+            }
+            
+            return true;
         }
-
         /// <summary>
         /// Read and build the Huffman tree from the lengths
         /// </summary>
@@ -118,7 +567,10 @@ namespace BurnOutSharp.Compression.LZX
         {
             while (bitsleft < n)
             {
-                bitbuf |= (uint)(((inbuf[inpos + 1] << 8) | inbuf[inpos + 0]) << (16 - bitsleft));
+                byte b0 = inpos + 0 < inbuf.Length ? inbuf[inpos + 0] : (byte)0;
+                byte b1 = inpos + 1 < inbuf.Length ? inbuf[inpos + 1] : (byte)0;
+
+                bitbuf |= (uint)(((b1 << 8) | b0) << (16 - bitsleft));
                 bitsleft += 16;
                 inpos += 2;
             }

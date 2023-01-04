@@ -216,6 +216,8 @@ namespace BurnOutSharp.Wrappers
                 return null;
 
             // Setup LZX decompression
+            var lzx = new Compression.LZX.State();
+            Compression.LZX.Decompressor.Init(((ushort)folder.CompressionType >> 8) & 0x1f, lzx);
             // TODO: Use this area for LZX
 
             // Setup MS-ZIP decompression
@@ -242,9 +244,7 @@ namespace BurnOutSharp.Wrappers
                         Compression.Quantum.Decompressor.Decompress(qtm, dataBlock.CompressedSize, dataBlock.CompressedData, dataBlock.UncompressedSize, decompressed);
                         break;
                     case Models.MicrosoftCabinet.CompressionType.TYPE_LZX:
-                        // TODO: UNIMPLEMENTED
-                        //decompressed = dataBlock.CompressedData;
-                        decompressed = null;
+                        Compression.LZX.Decompressor.Decompress(state: lzx, dataBlock.CompressedSize, dataBlock.CompressedData, dataBlock.UncompressedSize, decompressed);
                         break;
                     default:
                         return null;

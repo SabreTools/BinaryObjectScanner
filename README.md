@@ -162,7 +162,7 @@ Below is a list of container formats that are supported in some way:
 | InstallShield Archive V3 (Z) | No | Yes | Yes | Via `UnshieldSharp` |
 | InstallShield CAB | No | Yes | Yes | Via `UnshieldSharp` |
 | Linear Executable | No | No | No | Skeleton only |
-| Microsoft cabinet file | Yes | Yes | Yes | Via `WixToolset.Dtf` / `SharpZipLib` (Only uncompressed, MS-ZIP, and Quantum supported) |
+| Microsoft cabinet file | Yes | Yes | Yes | Via `WixToolset.Dtf` / `SharpZipLib` |
 | Microsoft LZ-compressed files | No | Yes | Yes | |
 | MoPaQ game data archive (MPQ) | No | Yes | Yes | Via `StormLibSharp` |
 | Microsoft installation package (MSI) | No | Yes | Yes | Via `OpenMcdf` |
