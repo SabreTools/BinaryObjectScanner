@@ -48,7 +48,6 @@ after_build:
   - cmd: 7z a -tzip %APPVEYOR_BUILD_FOLDER%\BurnOutSharp_net6.0_linux-x64.zip *
   - cmd: cd %APPVEYOR_BUILD_FOLDER%\Test\bin\Debug\net6.0\osx-x64\publish\
   - cmd: 7z a -tzip %APPVEYOR_BUILD_FOLDER%\BurnOutSharp_net6.0_osx-x64.zip *
-  - cmd: mv "%APPVEYOR_BUILD_FOLDER%\BurnOutSharp\bin\Debug"\*.nupkg "%APPVEYOR_BUILD_FOLDER%"
 
 # success/failure tracking
 on_success:
@@ -70,5 +69,5 @@ artifacts:
   name: BurnOutSharp (.NET 6.0, Linux x64)
 - path: BurnOutSharp_net6.0_osx-x64.zip
   name: BurnOutSharp (.NET 6.0, OSX x64)
-- path: '*.nupkg'
+- path: '%APPVEYOR_BUILD_FOLDER%\BurnOutSharp\bin\Debug\*.nupkg'
   name: Nuget Packages
