@@ -26,6 +26,8 @@ namespace BurnOutSharp.PackerType
             if (MatchesNEVersion(nex) != null)
                 return "Wise Installation Wizard Module";
 
+            // TODO: Investigate STUB.EXE in nonresident-name table
+
             // TODO: Don't read entire file
             var data = nex.ReadArbitraryRange();
             if (data == null)
