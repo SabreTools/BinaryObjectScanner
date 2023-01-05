@@ -56,6 +56,11 @@
         InstallShieldCAB,
 
         /// <summary>
+        /// Link Data Security encrypted file
+        /// </summary>
+        LDSCRYPT,
+
+        /// <summary>
         /// Microsoft cabinet file
         /// </summary>
         MicrosoftCAB,

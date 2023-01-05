@@ -161,6 +161,7 @@ Below is a list of container formats that are supported in some way:
 | InstallShield Archive V3 (Z) | No | Yes | Yes | Via `UnshieldSharp` |
 | InstallShield CAB | No | Yes | Yes | Via `UnshieldSharp` |
 | Linear Executable | No | No | No | Skeleton only |
+| Link Data Security encrypted file | No | Yes | No | |
 | Microsoft cabinet file | Yes | Yes | Yes | |
 | Microsoft LZ-compressed files | No | Yes | Yes | |
 | MoPaQ game data archive (MPQ) | No | Yes | Yes | Via `StormLibSharp` |
