@@ -23,7 +23,7 @@ namespace BurnOutSharp.PackerType
                 return null;
 
             // If we match a known header
-            if (MatchesNEVersion(nex))
+            if (MatchesNEVersion(nex) != null)
                 return "Wise Installation Wizard Module";
 
             // TODO: Don't read entire file
@@ -115,54 +115,55 @@ namespace BurnOutSharp.PackerType
         /// </summary>
         /// <param name="nex">New executable to check</param>
         /// <returns>True if it matches a known version, false otherwise</returns>
-        private bool MatchesNEVersion(NewExecutable nex)
+        private FormatProperty MatchesNEVersion(NewExecutable nex)
         {
             // TODO: Offset is _not_ the EXE header address, rather where the data starts. Fix this.
             switch (nex.Stub_NewExeHeaderAddr)
             {
-                // Dll = false, ArchiveStart = 0x11, ArchiveEnd = -1, InitText = false, FilenamePosition = 0x04, NoCrc = true
-                case 0x84b0: return true;
+                case 0x84b0:
+                    return new FormatProperty { Dll = false, ArchiveStart = 0x11, ArchiveEnd = -1, InitText = false, FilenamePosition = 0x04, NoCrc = true };
 
-                // Dll = false, ArchiveStart = 0x1e, ArchiveEnd = -1, InitText = false, FilenamePosition = 0x04, NoCrc = false
-                case 0x3e10: return true;
+                case 0x3e10:
+                    return new FormatProperty { Dll = false, ArchiveStart = 0x1e, ArchiveEnd = -1, InitText = false, FilenamePosition = 0x04, NoCrc = false };
 
-                // Dll = false, ArchiveStart = 0x1e, ArchiveEnd = -1, InitText = false, FilenamePosition = 0x04, NoCrc = false
-                case 0x3e50: return true;
+                case 0x3e50:
+                    return new FormatProperty { Dll = false, ArchiveStart = 0x1e, ArchiveEnd = -1, InitText = false, FilenamePosition = 0x04, NoCrc = false };
 
-                // Dll = false, ArchiveStart = 0x1e, ArchiveEnd = -1, InitText = false, FilenamePosition = 0x04, NoCrc = false
-                case 0x3c20: return true;
+                case 0x3c20:
+                    return new FormatProperty { Dll = false, ArchiveStart = 0x1e, ArchiveEnd = -1, InitText = false, FilenamePosition = 0x04, NoCrc = false };
 
-                // Dll = false, ArchiveStart = 0x22, ArchiveEnd = -1, InitText = false, FilenamePosition = 0x04, NoCrc = false
-                case 0x3c30: return true;
+                case 0x3c30:
+                    return new FormatProperty { Dll = false, ArchiveStart = 0x22, ArchiveEnd = -1, InitText = false, FilenamePosition = 0x04, NoCrc = false };
 
-                // Dll = false, ArchiveStart = 0x40, ArchiveEnd = 0x3c, InitText = false, FilenamePosition = 0x04, NoCrc = false
-                case 0x3660: return true;
+                case 0x3660:
+                    return new FormatProperty { Dll = false, ArchiveStart = 0x40, ArchiveEnd = 0x3c, InitText = false, FilenamePosition = 0x04, NoCrc = false };
 
-                // Dll = false, ArchiveStart = 0x48, ArchiveEnd = 0x44, InitText = false, FilenamePosition = 0x1c, NoCrc = false
-                case 0x36f0: return true;
+                case 0x36f0:
+                    return new FormatProperty { Dll = false, ArchiveStart = 0x48, ArchiveEnd = 0x44, InitText = false, FilenamePosition = 0x1c, NoCrc = false };
 
-                // Dll = false, ArchiveStart = 0x50, ArchiveEnd = 0x4c, InitText = false, FilenamePosition = 0x1c, NoCrc = false
-                case 0x3770: return true;
+                case 0x3770:
+                    return new FormatProperty { Dll = false, ArchiveStart = 0x50, ArchiveEnd = 0x4c, InitText = false, FilenamePosition = 0x1c, NoCrc = false };
 
-                // Dll = true, ArchiveStart = 0x50, ArchiveEnd = 0x4c, InitText = false, FilenamePosition = 0x1c, NoCrc = false
-                case 0x3780: return true;
+                case 0x3780:
+                    return new FormatProperty { Dll = true, ArchiveStart = 0x50, ArchiveEnd = 0x4c, InitText = false, FilenamePosition = 0x1c, NoCrc = false };
 
-                // Dll = true, ArchiveStart = 0x50, ArchiveEnd = 0x4c, InitText = false, FilenamePosition = 0x1c, NoCrc = false
-                case 0x37b0: return true;
+                case 0x37b0:
+                    return new FormatProperty { Dll = true, ArchiveStart = 0x50, ArchiveEnd = 0x4c, InitText = false, FilenamePosition = 0x1c, NoCrc = false };
 
-                // Dll = true, ArchiveStart = 0x50, ArchiveEnd = 0x4c, InitText = false, FilenamePosition = 0x1c, NoCrc = false
-                case 0x37d0: return true;
+                case 0x37d0:
+                    return new FormatProperty { Dll = true, ArchiveStart = 0x50, ArchiveEnd = 0x4c, InitText = false, FilenamePosition = 0x1c, NoCrc = false };
 
-                // Dll = true, ArchiveStart = 0x5a, ArchiveEnd = 0x4c, InitText = true, FilenamePosition = 0x1c, NoCrc = false
-                case 0x3c80: return true;
+                case 0x3c80:
+                    return new FormatProperty { Dll = true, ArchiveStart = 0x5a, ArchiveEnd = 0x4c, InitText = true, FilenamePosition = 0x1c, NoCrc = false };
 
-                // Dll = true, ArchiveStart = 0x5a, ArchiveEnd = 0x4c, InitText = true, FilenamePosition = 0x1c, NoCrc = false
-                case 0x3bd0: return true;
+                case 0x3bd0:
+                    return new FormatProperty { Dll = true, ArchiveStart = 0x5a, ArchiveEnd = 0x4c, InitText = true, FilenamePosition = 0x1c, NoCrc = false };
 
-                // Dll = true, ArchiveStart = 0x5a, ArchiveEnd = 0x4c, InitText = true, FilenamePosition = 0x1c, NoCrc = false
-                case 0x3c10: return true;
+                case 0x3c10:
+                    return new FormatProperty { Dll = true, ArchiveStart = 0x5a, ArchiveEnd = 0x4c, InitText = true, FilenamePosition = 0x1c, NoCrc = false };
 
-                default: return false;
+                default:
+                    return null;
             }
         }
 
