@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
-using BurnOutSharp.Tools;
 using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.ProtectionType
@@ -92,6 +91,12 @@ namespace BurnOutSharp.ProtectionType
                     0x00, 0xEB, 0x79, 0x01, null, null, null, null,
                 };
                 containsCheck2 = pex.GetFirstSectionData(".text").FirstPosition(check2, out position2);
+            }
+            else
+            {
+                // Otherwise, we reset the containsCheck2 value
+                containsCheck2 = false;
+
             }
 
             if (containsCheck && containsCheck2)
@@ -184,6 +189,10 @@ namespace BurnOutSharp.ProtectionType
 
         private static string GetVersion(byte[] sectionContent, int position)
         {
+            // If we have invalid data
+            if (sectionContent == null)
+                return null;
+
             return new string(new ArraySegment<byte>(sectionContent, position + 76, 4).Select(b => (char)b).ToArray());
         }
 
