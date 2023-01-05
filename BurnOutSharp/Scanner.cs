@@ -140,18 +140,15 @@ namespace BurnOutSharp
                         }
 
                         // Scan for content-detectable protections
-                        if (ScanContents)
+                        var fileProtections = GetInternalProtections(file);
+                        if (fileProtections != null && fileProtections.Any())
                         {
-                            var fileProtections = GetInternalProtections(file);
-                            if (fileProtections != null && fileProtections.Any())
+                            foreach (string key in fileProtections.Keys)
                             {
-                                foreach (string key in fileProtections.Keys)
-                                {
-                                    if (!protections.ContainsKey(key))
-                                        protections[key] = new ConcurrentQueue<string>();
+                                if (!protections.ContainsKey(key))
+                                    protections[key] = new ConcurrentQueue<string>();
 
-                                    protections[key].AddRange(fileProtections[key]);
-                                }
+                                protections[key].AddRange(fileProtections[key]);
                             }
                         }
 
@@ -181,18 +178,15 @@ namespace BurnOutSharp
                     }
 
                     // Scan for content-detectable protections
-                    if (ScanContents)
+                    var fileProtections = GetInternalProtections(path);
+                    if (fileProtections != null && fileProtections.Any())
                     {
-                        var fileProtections = GetInternalProtections(path);
-                        if (fileProtections != null && fileProtections.Any())
+                        foreach (string key in fileProtections.Keys)
                         {
-                            foreach (string key in fileProtections.Keys)
-                            {
-                                if (!protections.ContainsKey(key))
-                                    protections[key] = new ConcurrentQueue<string>();
+                            if (!protections.ContainsKey(key))
+                                protections[key] = new ConcurrentQueue<string>();
 
-                                protections[key].AddRange(fileProtections[key]);
-                            }
+                            protections[key].AddRange(fileProtections[key]);
                         }
                     }
 
@@ -355,39 +349,43 @@ namespace BurnOutSharp
 
                 #region Non-Archive File Types
 
-                // Executable
-                if (scannable is Executable)
+                // If we're scanning file contents
+                if (ScanContents)
                 {
-                    var subProtections = scannable.Scan(this, stream, fileName);
-                    AppendToDictionary(protections, subProtections);
-                }
+                    // Executable
+                    if (scannable is Executable)
+                    {
+                        var subProtections = scannable.Scan(this, stream, fileName);
+                        AppendToDictionary(protections, subProtections);
+                    }
 
-                // PLJ
-                if (scannable is PLJ)
-                {
-                    var subProtections = scannable.Scan(this, stream, fileName);
-                    AppendToDictionary(protections, subProtections);
-                }
+                    // PLJ
+                    if (scannable is PLJ)
+                    {
+                        var subProtections = scannable.Scan(this, stream, fileName);
+                        AppendToDictionary(protections, subProtections);
+                    }
 
-                // SFFS
-                if (scannable is SFFS)
-                {
-                    var subProtections = scannable.Scan(this, stream, fileName);
-                    AppendToDictionary(protections, subProtections);
-                }
+                    // SFFS
+                    if (scannable is SFFS)
+                    {
+                        var subProtections = scannable.Scan(this, stream, fileName);
+                        AppendToDictionary(protections, subProtections);
+                    }
 
-                // Text-based files
-                if (scannable is Textfile)
-                {
-                    var subProtections = scannable.Scan(this, stream, fileName);
-                    AppendToDictionary(protections, subProtections);
+                    // Text-based files
+                    if (scannable is Textfile)
+                    {
+                        var subProtections = scannable.Scan(this, stream, fileName);
+                        AppendToDictionary(protections, subProtections);
+                    }
                 }
 
                 #endregion
 
                 #region Archive File Types
 
-                // If we're scanning archives, we have a few to try out
+                // If we're scanning archives
                 if (ScanArchives)
                 {
                     // 7-Zip archive
