@@ -13,7 +13,6 @@ namespace BurnOutSharp.PackerType
     // https://github.com/horsicq/Detect-It-Easy/blob/63a1aa8bb23ca02d8a7fd5936db8dbc5c5d52dea/db/PE/HyperTech%20Crackproof.2.sg
     public class HyperTechCrackProof : IPortableExecutableCheck, IScannable
     {
-
         /// <inheritdoc/>
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
@@ -28,9 +27,7 @@ namespace BurnOutSharp.PackerType
             bool importTableMatch = (pex.ImportTable?.ImportDirectoryTable?.Any(idte => idte.Name == "KeRnEl32.dLl") ?? false);
 
             if (peCSection && importTableMatch)
-            {
                 return "HyperTech CrackProof";
-            }
 
             return null;
         }
