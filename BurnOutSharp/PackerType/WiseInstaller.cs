@@ -95,7 +95,10 @@ namespace BurnOutSharp.PackerType
             // If the installer file itself fails
             try
             {
-                // TODO: Include NE parsing
+                // Try to parse as a New Executable
+                NewExecutable nex = NewExecutable.Create(stream);
+                if (nex != null)
+                    return ScanNewExecutable(scanner, nex, file);
 
                 // Try to parse as a Portable Executable
                 PortableExecutable pex = PortableExecutable.Create(stream);
@@ -210,6 +213,51 @@ namespace BurnOutSharp.PackerType
 
             else if (pex.OverlayAddress == 0x3a00)
                 return new FormatProperty { Dll = true, ArchiveStart = 0x5a, ArchiveEnd = 0x4c, InitText = true, FilenamePosition = 0x1c, NoCrc = false };
+
+            return null;
+        }
+
+        /// <summary>
+        /// Attempt to extract Wise data from a New Executable
+        /// </summary>
+        /// <param name="scanner">Scanner object for state tracking</param>
+        /// <param name="nex">New executable to check</param>
+        /// <param name="file">Path to the input file</param>
+        /// <returns>True if it matches a known version, false otherwise</returns>
+        private ConcurrentDictionary<string, ConcurrentQueue<string>> ScanNewExecutable(Scanner scanner, NewExecutable nex, string file)
+        {
+            // If the installer file itself fails
+            try
+            {
+                string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+                Directory.CreateDirectory(tempPath);
+
+                // TODO: Try to find where the file data lives and how to get it
+                Wise unpacker = new Wise();
+                unpacker.ExtractTo(file, tempPath);
+
+                // Collect and format all found protections
+                var protections = scanner.GetProtections(tempPath);
+
+                // If temp directory cleanup fails
+                try
+                {
+                    Directory.Delete(tempPath, true);
+                }
+                catch (Exception ex)
+                {
+                    if (scanner.IncludeDebug) Console.WriteLine(ex);
+                }
+
+                // Remove temporary path references
+                StripFromKeys(protections, tempPath);
+
+                return protections;
+            }
+            catch (Exception ex)
+            {
+                if (scanner.IncludeDebug) Console.WriteLine(ex);
+            }
 
             return null;
         }
