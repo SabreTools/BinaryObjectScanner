@@ -21,6 +21,11 @@ namespace BurnOutSharp
         public bool ScanArchives { get; private set; }
 
         /// <summary>
+        /// Determines if content matches are used or not
+        /// </summary>
+        public bool ScanContents { get; private set; }
+
+        /// <summary>
         /// Determines if packers are counted as detected protections or not
         /// </summary>
         public bool ScanPackers { get; private set; }
@@ -46,13 +51,15 @@ namespace BurnOutSharp
         /// Constructor
         /// </summary>
         /// <param name="scanArchives">Enable scanning archive contents</param>
+        /// <param name="scanContents">Enable including content detections in output</param>
         /// <param name="scanPackers">Enable including packers in output</param>
         /// <param name="scanPaths">Enable including path detections in output</param>
         /// <param name="includeDebug">Enable including debug information</param>
         /// <param name="fileProgress">Optional progress callback</param>
-        public Scanner(bool scanArchives, bool scanPackers, bool scanPaths, bool includeDebug, IProgress<ProtectionProgress> fileProgress = null)
+        public Scanner(bool scanArchives, bool scanContents, bool scanPackers, bool scanPaths, bool includeDebug, IProgress<ProtectionProgress> fileProgress = null)
         {
             ScanArchives = scanArchives;
+            ScanContents = scanContents;
             ScanPackers = scanPackers;
             ScanPaths = scanPaths;
             IncludeDebug = includeDebug;
@@ -133,15 +140,18 @@ namespace BurnOutSharp
                         }
 
                         // Scan for content-detectable protections
-                        var fileProtections = GetInternalProtections(file);
-                        if (fileProtections != null && fileProtections.Any())
+                        if (ScanContents)
                         {
-                            foreach (string key in fileProtections.Keys)
+                            var fileProtections = GetInternalProtections(file);
+                            if (fileProtections != null && fileProtections.Any())
                             {
-                                if (!protections.ContainsKey(key))
-                                    protections[key] = new ConcurrentQueue<string>();
+                                foreach (string key in fileProtections.Keys)
+                                {
+                                    if (!protections.ContainsKey(key))
+                                        protections[key] = new ConcurrentQueue<string>();
 
-                                protections[key].AddRange(fileProtections[key]);
+                                    protections[key].AddRange(fileProtections[key]);
+                                }
                             }
                         }
 
@@ -171,15 +181,18 @@ namespace BurnOutSharp
                     }
 
                     // Scan for content-detectable protections
-                    var fileProtections = GetInternalProtections(path);
-                    if (fileProtections != null && fileProtections.Any())
+                    if (ScanContents)
                     {
-                        foreach (string key in fileProtections.Keys)
+                        var fileProtections = GetInternalProtections(path);
+                        if (fileProtections != null && fileProtections.Any())
                         {
-                            if (!protections.ContainsKey(key))
-                                protections[key] = new ConcurrentQueue<string>();
+                            foreach (string key in fileProtections.Keys)
+                            {
+                                if (!protections.ContainsKey(key))
+                                    protections[key] = new ConcurrentQueue<string>();
 
-                            protections[key].AddRange(fileProtections[key]);
+                                protections[key].AddRange(fileProtections[key]);
+                            }
                         }
                     }
 

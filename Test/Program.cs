@@ -18,7 +18,7 @@ namespace Test
             p.ProgressChanged += Protector.Changed;
 
             // Set initial values for scanner flags
-            bool debug = false, archives = true, packers = true, paths = true, info = false, extract = false;
+            bool debug = false, archives = true, contents = true, packers = true, paths = true, info = false, extract = false;
             string outputPath = string.Empty;
             var inputPaths = new List<string>();
 
@@ -88,7 +88,7 @@ namespace Test
             }
 
             // Create scanner for all paths
-            var scanner = new Scanner(archives, packers, paths, debug, p);
+            var scanner = new Scanner(archives, contents, packers, paths, debug, p);
 
             // If we have extraction, check the output path exists and is valid
             if (extract)
@@ -148,6 +148,7 @@ namespace Test
             Console.WriteLine("Possible options:");
             Console.WriteLine("-?, -h, --help       Display this help text and quit");
             Console.WriteLine("-d, --debug          Enable debug mode");
+            Console.WriteLine("-nc, --no-contents   Disable scanning for content checks");
             Console.WriteLine("-na, --no-archives   Disable scanning archives");
             Console.WriteLine("-np, --no-packers    Disable scanning for packers");
             Console.WriteLine("-ns, --no-paths      Disable scanning for path checks");
