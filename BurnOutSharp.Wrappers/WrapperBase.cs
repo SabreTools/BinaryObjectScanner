@@ -73,6 +73,10 @@ namespace BurnOutSharp.Wrappers
             if (!DataSourceIsValid())
                 return false;
 
+            // If we have an invalid position
+            if (position < 0 || position >= GetEndOfFile())
+                return false;
+
             switch (_dataSource)
             {
                 case DataSource.ByteArray:
