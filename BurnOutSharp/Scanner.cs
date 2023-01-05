@@ -26,6 +26,11 @@ namespace BurnOutSharp
         public bool ScanPackers { get; private set; }
 
         /// <summary>
+        /// Determines if path matches are used or not
+        /// </summary>
+        public bool ScanPaths { get; private set; }
+
+        /// <summary>
         /// Determines if debug information is output or not
         /// </summary>
         public bool IncludeDebug { get; private set; }
@@ -42,12 +47,14 @@ namespace BurnOutSharp
         /// </summary>
         /// <param name="scanArchives">Enable scanning archive contents</param>
         /// <param name="scanPackers">Enable including packers in output</param>
+        /// <param name="scanPaths">Enable including path detections in output</param>
         /// <param name="includeDebug">Enable including debug information</param>
         /// <param name="fileProgress">Optional progress callback</param>
-        public Scanner(bool scanArchives, bool scanPackers, bool includeDebug, IProgress<ProtectionProgress> fileProgress = null)
+        public Scanner(bool scanArchives, bool scanPackers, bool scanPaths, bool includeDebug, IProgress<ProtectionProgress> fileProgress = null)
         {
             ScanArchives = scanArchives;
             ScanPackers = scanPackers;
+            ScanPaths = scanPaths;
             IncludeDebug = includeDebug;
             this.fileProgress = fileProgress;
 
@@ -98,8 +105,11 @@ namespace BurnOutSharp
                     var files = Directory.EnumerateFiles(path, "*", SearchOption.AllDirectories).ToList();
 
                     // Scan for path-detectable protections
-                    var directoryPathProtections = GetDirectoryPathProtections(path, files);
-                    AppendToDictionary(protections, directoryPathProtections);
+                    if (ScanPaths)
+                    {
+                        var directoryPathProtections = GetDirectoryPathProtections(path, files);
+                        AppendToDictionary(protections, directoryPathProtections);
+                    }
 
                     // Scan each file in directory separately
                     for (int i = 0; i < files.Count; i++)
@@ -116,8 +126,11 @@ namespace BurnOutSharp
                         this.fileProgress?.Report(new ProtectionProgress(reportableFileName, i / (float)files.Count, "Checking file" + (file != reportableFileName ? " from archive" : string.Empty)));
 
                         // Scan for path-detectable protections
-                        var filePathProtections = GetFilePathProtections(file);
-                        AppendToDictionary(protections, filePathProtections);
+                        if (ScanPaths)
+                        {
+                            var filePathProtections = GetFilePathProtections(file);
+                            AppendToDictionary(protections, filePathProtections);
+                        }
 
                         // Scan for content-detectable protections
                         var fileProtections = GetInternalProtections(file);
@@ -151,8 +164,11 @@ namespace BurnOutSharp
                     this.fileProgress?.Report(new ProtectionProgress(reportableFileName, 0, "Checking file" + (path != reportableFileName ? " from archive" : string.Empty)));
 
                     // Scan for path-detectable protections
-                    var filePathProtections = GetFilePathProtections(path);
-                    AppendToDictionary(protections, filePathProtections);
+                    if (ScanPaths)
+                    {
+                        var filePathProtections = GetFilePathProtections(path);
+                        AppendToDictionary(protections, filePathProtections);
+                    }
 
                     // Scan for content-detectable protections
                     var fileProtections = GetInternalProtections(path);
@@ -456,7 +472,7 @@ namespace BurnOutSharp
                         PrependToKeys(subProtections, fileName);
                         AppendToDictionary(protections, subProtections);
                     }
-                    
+
                     // PAK
                     if (fileName != null && scannable is PAK)
                     {
