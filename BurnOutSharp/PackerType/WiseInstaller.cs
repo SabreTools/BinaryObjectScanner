@@ -93,9 +93,6 @@ namespace BurnOutSharp.PackerType
             // If the installer file itself fails
             try
             {
-                string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-                Directory.CreateDirectory(tempPath);
-
                 // TODO: Include NE parsing
 
                 // Try to parse as a Portable Executable
