@@ -71,7 +71,7 @@ namespace BurnOutSharp.ProtectionType
                     0x20, 0x20, 0x76, 0x65, 0x72, 0x2E, 0x20
                 }, GetVersion, "CD-Cops"),
             };
-            
+
             string match = MatchUtil.GetFirstMatch(file, data, neMatchSets, includeDebug);
             if (!string.IsNullOrEmpty(match))
                 return match;
@@ -123,11 +123,11 @@ namespace BurnOutSharp.ProtectionType
             {
                 // Found in Redump entry 84517
                 new PathMatchSet(new PathMatch("CDCOPS.DLL", useEndsWith: true), "CD-Cops"),
-                new PathMatchSet(new PathMatch(".W_X", useEndsWith: true), "CD-Cops"),
-                new PathMatchSet(new PathMatch(".QZ_", useEndsWith: true), "CD-Cops"),
+                new PathMatchSet(new PathMatch(".W_X", matchExact: true, useEndsWith: true), "CD-Cops"),
+                new PathMatchSet(new PathMatch(".QZ_", matchExact: true, useEndsWith: true), "CD-Cops"),
 
-                new PathMatchSet(new PathMatch(".GZ_", useEndsWith: true), "CD-Cops (Unconfirmed - Please report to us on Github)"),
-                new PathMatchSet(new PathMatch(".Qz", useEndsWith: true), "CD-Cops (Unconfirmed - Please report to us on Github)"),
+                new PathMatchSet(new PathMatch(".GZ_", matchExact: true, useEndsWith: true), "CD-Cops (Unconfirmed - Please report to us on Github)"),
+                new PathMatchSet(new PathMatch(".Qz", matchExact: true, useEndsWith: true), "CD-Cops (Unconfirmed - Please report to us on Github)"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);
@@ -140,11 +140,11 @@ namespace BurnOutSharp.ProtectionType
             {
                 // Found in Redump entry 84517
                 new PathMatchSet(new PathMatch("CDCOPS.DLL", useEndsWith: true), "CD-Cops"),
-                new PathMatchSet(new PathMatch(".W_X", useEndsWith: true), "CD-Cops"),
-                new PathMatchSet(new PathMatch(".QZ_", useEndsWith: true), "CD-Cops"),
+                new PathMatchSet(new PathMatch(".W_X", matchExact: true, useEndsWith: true), "CD-Cops"),
+                new PathMatchSet(new PathMatch(".QZ_", matchExact: true, useEndsWith: true), "CD-Cops"),
 
-                new PathMatchSet(new PathMatch(".GZ_", useEndsWith: true), "CD-Cops (Unconfirmed - Please report to us on Github)"),
-                new PathMatchSet(new PathMatch(".Qz", useEndsWith: true), "CD-Cops (Unconfirmed - Please report to us on Github)"),
+                new PathMatchSet(new PathMatch(".GZ_", matchExact: true, useEndsWith: true), "CD-Cops (Unconfirmed - Please report to us on Github)"),
+                new PathMatchSet(new PathMatch(".Qz", matchExact: true, useEndsWith: true), "CD-Cops (Unconfirmed - Please report to us on Github)"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
