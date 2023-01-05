@@ -96,10 +96,138 @@ namespace BurnOutSharp.PackerType
                 string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
                 Directory.CreateDirectory(tempPath);
 
-                // Parse into an executable again for easier extraction
+                // TODO: Include NE parsing
+
+                // Try to parse as a Portable Executable
                 PortableExecutable pex = PortableExecutable.Create(stream);
-                if (pex == null)
-                    return null;
+                if (pex != null)
+                    return ScanPortableExecutable(scanner, pex, file);
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                if (scanner.IncludeDebug) Console.WriteLine(ex);
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Checks an NE header to see if it matches a known signature
+        /// </summary>
+        /// <param name="nex">New executable to check</param>
+        /// <returns>True if it matches a known version, false otherwise</returns>
+        private bool MatchesNEVersion(NewExecutable nex)
+        {
+            // TODO: Offset is _not_ the EXE header address, rather where the data starts. Fix this.
+            switch (nex.Stub_NewExeHeaderAddr)
+            {
+                // Dll = false, ArchiveStart = 0x11, ArchiveEnd = -1, InitText = false, FilenamePosition = 0x04, NoCrc = true
+                case 0x84b0: return true;
+
+                // Dll = false, ArchiveStart = 0x1e, ArchiveEnd = -1, InitText = false, FilenamePosition = 0x04, NoCrc = false
+                case 0x3e10: return true;
+
+                // Dll = false, ArchiveStart = 0x1e, ArchiveEnd = -1, InitText = false, FilenamePosition = 0x04, NoCrc = false
+                case 0x3e50: return true;
+
+                // Dll = false, ArchiveStart = 0x1e, ArchiveEnd = -1, InitText = false, FilenamePosition = 0x04, NoCrc = false
+                case 0x3c20: return true;
+
+                // Dll = false, ArchiveStart = 0x22, ArchiveEnd = -1, InitText = false, FilenamePosition = 0x04, NoCrc = false
+                case 0x3c30: return true;
+
+                // Dll = false, ArchiveStart = 0x40, ArchiveEnd = 0x3c, InitText = false, FilenamePosition = 0x04, NoCrc = false
+                case 0x3660: return true;
+
+                // Dll = false, ArchiveStart = 0x48, ArchiveEnd = 0x44, InitText = false, FilenamePosition = 0x1c, NoCrc = false
+                case 0x36f0: return true;
+
+                // Dll = false, ArchiveStart = 0x50, ArchiveEnd = 0x4c, InitText = false, FilenamePosition = 0x1c, NoCrc = false
+                case 0x3770: return true;
+
+                // Dll = true, ArchiveStart = 0x50, ArchiveEnd = 0x4c, InitText = false, FilenamePosition = 0x1c, NoCrc = false
+                case 0x3780: return true;
+
+                // Dll = true, ArchiveStart = 0x50, ArchiveEnd = 0x4c, InitText = false, FilenamePosition = 0x1c, NoCrc = false
+                case 0x37b0: return true;
+
+                // Dll = true, ArchiveStart = 0x50, ArchiveEnd = 0x4c, InitText = false, FilenamePosition = 0x1c, NoCrc = false
+                case 0x37d0: return true;
+
+                // Dll = true, ArchiveStart = 0x5a, ArchiveEnd = 0x4c, InitText = true, FilenamePosition = 0x1c, NoCrc = false
+                case 0x3c80: return true;
+
+                // Dll = true, ArchiveStart = 0x5a, ArchiveEnd = 0x4c, InitText = true, FilenamePosition = 0x1c, NoCrc = false
+                case 0x3bd0: return true;
+
+                // Dll = true, ArchiveStart = 0x5a, ArchiveEnd = 0x4c, InitText = true, FilenamePosition = 0x1c, NoCrc = false
+                case 0x3c10: return true;
+
+                default: return false;
+            }
+        }
+
+        /// <summary>
+        /// Checks a PE header to see if it matches a known signature
+        /// </summary>
+        /// <param name="pex">Portable executable to check</param>
+        /// <returns>True if it matches a known version, false otherwise</returns>
+        private FormatProperty GetPEFormat(PortableExecutable pex)
+        {
+            if (pex.OverlayAddress == 0x6e00
+                && pex.GetFirstSection(".text")?.VirtualSize == 0x3cf4
+                && pex.GetFirstSection(".data")?.VirtualSize == 0x1528)
+                return new FormatProperty { Dll = false, ArchiveStart = 0x50, ArchiveEnd = 0x4c, InitText = false, FilenamePosition = 0x1c, NoCrc = false };
+
+            else if (pex.OverlayAddress == 0x6e00
+                && pex.GetFirstSection(".text")?.VirtualSize == 0x3cf4
+                && pex.GetFirstSection(".data")?.VirtualSize == 0x1568)
+                return new FormatProperty { Dll = false, ArchiveStart = 0x50, ArchiveEnd = 0x4c, InitText = false, FilenamePosition = 0x1c, NoCrc = false };
+
+            else if (pex.OverlayAddress == 0x6e00
+                && pex.GetFirstSection(".text")?.VirtualSize == 0x3d54)
+                return new FormatProperty { Dll = false, ArchiveStart = 0x50, ArchiveEnd = 0x4c, InitText = false, FilenamePosition = 0x1c, NoCrc = false };
+
+            else if (pex.OverlayAddress == 0x6e00
+                && pex.GetFirstSection(".text")?.VirtualSize == 0x3d44)
+                return new FormatProperty { Dll = false, ArchiveStart = 0x50, ArchiveEnd = 0x4c, InitText = false, FilenamePosition = 0x1c, NoCrc = false };
+
+            else if (pex.OverlayAddress == 0x6e00
+                && pex.GetFirstSection(".text")?.VirtualSize == 0x3d04)
+                return new FormatProperty { Dll = false, ArchiveStart = 0x50, ArchiveEnd = 0x4c, InitText = false, FilenamePosition = 0x1c, NoCrc = false };
+
+            // Found in Binary.WiseCustomCalla
+            else if (pex.OverlayAddress == 0x6200)
+                return new FormatProperty { Dll = true, ArchiveStart = 0x62, ArchiveEnd = 0x4c, InitText = true, FilenamePosition = 0x1c, NoCrc = false };
+
+            else if (pex.OverlayAddress == 0x3000)
+                return new FormatProperty { Dll = false, ArchiveStart = 0x50, ArchiveEnd = 0x4c, InitText = false, FilenamePosition = 0x1c, NoCrc = false };
+
+            else if (pex.OverlayAddress == 0x3800)
+                return new FormatProperty { Dll = true, ArchiveStart = 0x5a, ArchiveEnd = 0x4c, InitText = true, FilenamePosition = 0x1c, NoCrc = false };
+
+            else if (pex.OverlayAddress == 0x3a00)
+                return new FormatProperty { Dll = true, ArchiveStart = 0x5a, ArchiveEnd = 0x4c, InitText = true, FilenamePosition = 0x1c, NoCrc = false };
+
+            return null;
+        }
+
+        /// <summary>
+        /// Attempt to extract Wise data from a Portable Executable
+        /// </summary>
+        /// <param name="scanner">Scanner object for state tracking</param>
+        /// <param name="pex">Portable executable to check</param>
+        /// <param name="file">Path to the input file</param>
+        /// <returns>True if it matches a known version, false otherwise</returns>
+        private ConcurrentDictionary<string, ConcurrentQueue<string>> ScanPortableExecutable(Scanner scanner, PortableExecutable pex, string file)
+        {
+            // If the installer file itself fails
+            try
+            {
+                string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+                Directory.CreateDirectory(tempPath);
 
                 // Get the matching PE format
                 var format = GetPEFormat(pex);
@@ -230,107 +358,6 @@ namespace BurnOutSharp.PackerType
             {
                 if (scanner.IncludeDebug) Console.WriteLine(ex);
             }
-
-            return null;
-        }
-
-        /// <summary>
-        /// Checks an NE header to see if it matches a known signature
-        /// </summary>
-        /// <param name="nex">New executable to check</param>
-        /// <returns>True if it matches a known version, false otherwise</returns>
-        private bool MatchesNEVersion(NewExecutable nex)
-        {
-            // TODO: Offset is _not_ the EXE header address, rather where the data starts. Fix this.
-            switch (nex.Stub_NewExeHeaderAddr)
-            {
-                // Dll = false, ArchiveStart = 0x11, ArchiveEnd = -1, InitText = false, FilenamePosition = 0x04, NoCrc = true
-                case 0x84b0: return true;
-
-                // Dll = false, ArchiveStart = 0x1e, ArchiveEnd = -1, InitText = false, FilenamePosition = 0x04, NoCrc = false
-                case 0x3e10: return true;
-
-                // Dll = false, ArchiveStart = 0x1e, ArchiveEnd = -1, InitText = false, FilenamePosition = 0x04, NoCrc = false
-                case 0x3e50: return true;
-
-                // Dll = false, ArchiveStart = 0x1e, ArchiveEnd = -1, InitText = false, FilenamePosition = 0x04, NoCrc = false
-                case 0x3c20: return true;
-
-                // Dll = false, ArchiveStart = 0x22, ArchiveEnd = -1, InitText = false, FilenamePosition = 0x04, NoCrc = false
-                case 0x3c30: return true;
-
-                // Dll = false, ArchiveStart = 0x40, ArchiveEnd = 0x3c, InitText = false, FilenamePosition = 0x04, NoCrc = false
-                case 0x3660: return true;
-
-                // Dll = false, ArchiveStart = 0x48, ArchiveEnd = 0x44, InitText = false, FilenamePosition = 0x1c, NoCrc = false
-                case 0x36f0: return true;
-
-                // Dll = false, ArchiveStart = 0x50, ArchiveEnd = 0x4c, InitText = false, FilenamePosition = 0x1c, NoCrc = false
-                case 0x3770: return true;
-
-                // Dll = true, ArchiveStart = 0x50, ArchiveEnd = 0x4c, InitText = false, FilenamePosition = 0x1c, NoCrc = false
-                case 0x3780: return true;
-
-                // Dll = true, ArchiveStart = 0x50, ArchiveEnd = 0x4c, InitText = false, FilenamePosition = 0x1c, NoCrc = false
-                case 0x37b0: return true;
-
-                // Dll = true, ArchiveStart = 0x50, ArchiveEnd = 0x4c, InitText = false, FilenamePosition = 0x1c, NoCrc = false
-                case 0x37d0: return true;
-
-                // Dll = true, ArchiveStart = 0x5a, ArchiveEnd = 0x4c, InitText = true, FilenamePosition = 0x1c, NoCrc = false
-                case 0x3c80: return true;
-
-                // Dll = true, ArchiveStart = 0x5a, ArchiveEnd = 0x4c, InitText = true, FilenamePosition = 0x1c, NoCrc = false
-                case 0x3bd0: return true;
-
-                // Dll = true, ArchiveStart = 0x5a, ArchiveEnd = 0x4c, InitText = true, FilenamePosition = 0x1c, NoCrc = false
-                case 0x3c10: return true;
-
-                default: return false;
-            }
-        }
-
-        /// <summary>
-        /// Checks a PE header to see if it matches a known signature
-        /// </summary>
-        /// <param name="pex">Portable executable to check</param>
-        /// <returns>True if it matches a known version, false otherwise</returns>
-        private FormatProperty GetPEFormat(PortableExecutable pex)
-        {
-            if (pex.OverlayAddress == 0x6e00
-                && pex.GetFirstSection(".text")?.VirtualSize == 0x3cf4
-                && pex.GetFirstSection(".data")?.VirtualSize == 0x1528)
-                return new FormatProperty { Dll = false, ArchiveStart = 0x50, ArchiveEnd = 0x4c, InitText = false, FilenamePosition = 0x1c, NoCrc = false };
-
-            else if (pex.OverlayAddress == 0x6e00
-                && pex.GetFirstSection(".text")?.VirtualSize == 0x3cf4
-                && pex.GetFirstSection(".data")?.VirtualSize == 0x1568)
-                return new FormatProperty { Dll = false, ArchiveStart = 0x50, ArchiveEnd = 0x4c, InitText = false, FilenamePosition = 0x1c, NoCrc = false };
-
-            else if (pex.OverlayAddress == 0x6e00
-                && pex.GetFirstSection(".text")?.VirtualSize == 0x3d54)
-                return new FormatProperty { Dll = false, ArchiveStart = 0x50, ArchiveEnd = 0x4c, InitText = false, FilenamePosition = 0x1c, NoCrc = false };
-
-            else if (pex.OverlayAddress == 0x6e00
-                && pex.GetFirstSection(".text")?.VirtualSize == 0x3d44)
-                return new FormatProperty { Dll = false, ArchiveStart = 0x50, ArchiveEnd = 0x4c, InitText = false, FilenamePosition = 0x1c, NoCrc = false };
-
-            else if (pex.OverlayAddress == 0x6e00
-                && pex.GetFirstSection(".text")?.VirtualSize == 0x3d04)
-                return new FormatProperty { Dll = false, ArchiveStart = 0x50, ArchiveEnd = 0x4c, InitText = false, FilenamePosition = 0x1c, NoCrc = false };
-
-            // Found in Binary.WiseCustomCalla
-            else if (pex.OverlayAddress == 0x6200)
-                return new FormatProperty { Dll = true, ArchiveStart = 0x62, ArchiveEnd = 0x4c, InitText = true, FilenamePosition = 0x1c, NoCrc = false };
-
-            else if (pex.OverlayAddress == 0x3000)
-                return new FormatProperty { Dll = false, ArchiveStart = 0x50, ArchiveEnd = 0x4c, InitText = false, FilenamePosition = 0x1c, NoCrc = false };
-
-            else if (pex.OverlayAddress == 0x3800)
-                return new FormatProperty { Dll = true, ArchiveStart = 0x5a, ArchiveEnd = 0x4c, InitText = true, FilenamePosition = 0x1c, NoCrc = false };
-
-            else if (pex.OverlayAddress == 0x3a00)
-                return new FormatProperty { Dll = true, ArchiveStart = 0x5a, ArchiveEnd = 0x4c, InitText = true, FilenamePosition = 0x1c, NoCrc = false };
 
             return null;
         }
