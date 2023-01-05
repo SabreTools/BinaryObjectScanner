@@ -47,6 +47,11 @@ namespace Test
                         archives = false;
                         break;
 
+                    case "-nc":
+                    case "--no-contents":
+                        contents = false;
+                        break;
+
                     case "-np":
                     case "--no-packers":
                         packers = false;
