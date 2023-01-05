@@ -414,6 +414,70 @@ namespace BurnOutSharp.Wrappers
         }
 
         /// <summary>
+        /// Address of the overlay, if it exists
+        /// </summary>
+        /// <see href="https://www.autoitscript.com/forum/topic/153277-pe-file-overlay-extraction/"/>
+        public int OverlayAddress
+        {
+            get
+            {
+                lock (_sourceDataLock)
+                {
+                    // Use the cached data if possible
+                    if (_overlayAddress != null)
+                        return _overlayAddress.Value;
+
+                    // Get the end of the file, if possible
+                    int endOfFile = GetEndOfFile();
+                    if (endOfFile == -1)
+                        return -1;
+
+                    // If we have certificate data, use that as the end
+                    if (OH_CertificateTable != null)
+                    {
+                        var certificateTable = _executable.OptionalHeader.CertificateTable;
+                        int certificateTableAddress = (int)certificateTable.VirtualAddress.ConvertVirtualAddress(_executable.SectionTable);
+                        if (certificateTableAddress != 0 && certificateTableAddress < endOfFile)
+                            endOfFile = certificateTableAddress;
+                    }
+
+                    // Search through all sections and find the furthest a section goes
+                    int endOfSectionData = -1;
+                    foreach (var section in _executable.SectionTable)
+                    {
+                        // If we have an invalid section address
+                        int sectionAddress = (int)section.VirtualAddress.ConvertVirtualAddress(_executable.SectionTable);
+                        if (sectionAddress == 0)
+                            continue;
+
+                        // If we have an invalid section size
+                        if (section.SizeOfRawData == 0 && section.VirtualSize == 0)
+                            continue;
+
+                        // Get the real section size
+                        int sectionSize;
+                        if (section.SizeOfRawData < section.VirtualSize)
+                            sectionSize = (int)section.VirtualSize;
+                        else
+                            sectionSize = (int)section.SizeOfRawData;
+
+                        // Compare and set the end of section data
+                        if (sectionAddress + sectionSize > endOfSectionData)
+                            endOfSectionData = sectionAddress + sectionSize;
+                    }
+
+                    // If we didn't find the end of section data
+                    if (endOfSectionData <= 0)
+                        endOfSectionData = -1;
+                        
+                    // Cache and return the position
+                    _overlayAddress = endOfSectionData;
+                    return _overlayAddress.Value;
+                }
+            }
+        }
+
+        /// <summary>
         /// Overlay data, if it exists
         /// </summary>
         /// <see href="https://www.autoitscript.com/forum/topic/153277-pe-file-overlay-extraction/"/>
@@ -829,6 +893,11 @@ namespace BurnOutSharp.Wrappers
         /// Entry point data, if it exists and isn't aligned to a section
         /// </summary>
         private byte[] _entryPointData = null;
+
+        /// <summary>
+        /// Address of the overlay, if it exists
+        /// </summary>
+        private int? _overlayAddress = null;
 
         /// <summary>
         /// Overlay data, if it exists
