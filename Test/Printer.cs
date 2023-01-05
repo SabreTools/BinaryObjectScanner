@@ -98,7 +98,7 @@ namespace Test
                     }
 
                     // Linear Executable
-                    if (magic.StartsWith(BurnOutSharp.Models.LinearExecutable.Constants.LESignatureBytes)
+                    else if (magic.StartsWith(BurnOutSharp.Models.LinearExecutable.Constants.LESignatureBytes)
                         || magic.StartsWith(BurnOutSharp.Models.LinearExecutable.Constants.LXSignatureBytes))
                     {
                         Console.WriteLine($"Linear executable found. No parsing currently available.");
@@ -107,7 +107,7 @@ namespace Test
                     }
 
                     // Portable Executable
-                    if (magic.StartsWith(BurnOutSharp.Models.PortableExecutable.Constants.SignatureBytes))
+                    else if (magic.StartsWith(BurnOutSharp.Models.PortableExecutable.Constants.SignatureBytes))
                     {
                         stream.Seek(0, SeekOrigin.Begin);
                         var portableExecutable = PortableExecutable.Create(stream);
