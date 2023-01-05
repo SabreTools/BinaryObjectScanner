@@ -359,6 +359,13 @@ namespace BurnOutSharp
                         AppendToDictionary(protections, subProtections);
                     }
 
+                    // LDSCRYPT
+                    if (scannable is LDSCRYPT)
+                    {
+                        var subProtections = scannable.Scan(this, stream, fileName);
+                        AppendToDictionary(protections, subProtections);
+                    }
+
                     // PLJ
                     if (scannable is PLJ)
                     {

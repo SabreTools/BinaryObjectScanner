@@ -16,6 +16,8 @@ namespace BurnOutSharp.ProtectionType
     //      Embedded PKZIP archive that may contain the CD-Cops files
     // `CDCOPS.DLL` (1.46) / `CDCOPS.DLL` (1.48)
     //      `WINCOPS.INI`
+    // Samples of CD-Cops can be found in IA items "der-brockhaus-multimedial-2002-premium" and "der-brockhaus-multimedial-2003-premium".
+    // A sample of CD-Cops that makes use of encrypted PDFs (LDSCRYPT) can be found in IA item "Faculty_Edition_People_Problems_and_Power_by_Joseph_Unekis_Textbytes".
     public class CDDVDCops : IContentCheck, INewExecutableCheck, IPathCheck, IPortableExecutableCheck
     {
         /// <inheritdoc/>
@@ -121,6 +123,9 @@ namespace BurnOutSharp.ProtectionType
             // TODO: Original had "CDCOPS.DLL" required and all the rest in a combined OR
             var matchers = new List<PathMatchSet>
             {
+                // A 400+ MB file called "WASTE.DAT" that is fully 00 padded can be found in IA item "Faculty_Edition_People_Problems_and_Power_by_Joseph_Unekis_Textbytes".
+                // Presumably used to increase the amount of data written to the disc to allow DPM checking to be used for the protection. It's unknown if this file is used on any other protected discs.
+
                 // Found in Redump entry 84517
                 new PathMatchSet(new PathMatch("CDCOPS.DLL", useEndsWith: true), "CD-Cops"),
                 new PathMatchSet(new PathMatch(".W_X", matchExact: true, useEndsWith: true), "CD-Cops"),
@@ -138,6 +143,9 @@ namespace BurnOutSharp.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
+                // A 400+ MB file called "WASTE.DAT" that is fully 00 padded can be found in IA item "Faculty_Edition_People_Problems_and_Power_by_Joseph_Unekis_Textbytes".
+                // Presumably used to increase the amount of data written to the disc to allow DPM checking to be used for the protection. It's unknown if this file is used on any other protected discs.
+
                 // Found in Redump entry 84517
                 new PathMatchSet(new PathMatch("CDCOPS.DLL", useEndsWith: true), "CD-Cops"),
                 new PathMatchSet(new PathMatch(".W_X", matchExact: true, useEndsWith: true), "CD-Cops"),

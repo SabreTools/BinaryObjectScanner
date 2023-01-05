@@ -113,6 +113,13 @@ namespace BurnOutSharp.Tools
 
             #endregion
 
+            #region LDSCRYPT
+
+            if (magic.StartsWith(new byte?[] { 0x4C, 0x44, 0x53, 0x43, 0x52, 0x59, 0x50, 0x54 }))
+                return SupportedFileType.LDSCRYPT;
+
+            #endregion
+
             #region MicrosoftCAB
 
             if (magic.StartsWith(new byte?[] { 0x4d, 0x53, 0x43, 0x46 }))
@@ -659,6 +666,7 @@ namespace BurnOutSharp.Tools
                 //case FileTypes.IniFile: return new FileType.IniFile();
                 case SupportedFileType.InstallShieldArchiveV3: return new FileType.InstallShieldArchiveV3();
                 case SupportedFileType.InstallShieldCAB: return new FileType.InstallShieldCAB();
+                case SupportedFileType.LDSCRYPT: return new FileType.LDSCRYPT();
                 case SupportedFileType.MicrosoftCAB: return new FileType.MicrosoftCAB();
                 case SupportedFileType.MicrosoftLZ: return new FileType.MicrosoftLZ();
                 case SupportedFileType.MPQ: return new FileType.MPQ();
