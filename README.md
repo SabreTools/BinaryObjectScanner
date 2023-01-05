@@ -126,6 +126,7 @@ Below is a list of executable packers detected by BurnOutSharp. The three column
 | Embedded Executable | Yes | No | Yes | Not technically a packer |
 | EXE Stealth | Yes | No | No | |
 | Gentee Installer | Yes | No | No | |
+| HyperTech CrackProof | Yes | No | No | |
 | Inno Setup | Yes | No | No | |
 | InstallAnywhere | Yes | No | No | |
 | Installer VISE | Yes | No | No | |
