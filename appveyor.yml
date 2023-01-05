@@ -8,23 +8,14 @@ pull_requests:
 # vm template
 image: Visual Studio 2022
 
-# environment variables
-# environment:
-#   EnableNuGetPackageRestore: true
-
 # msbuild configuration
 configuration:
 - Debug
 
 # install dependencies
 install:
-# - ps: appveyor DownloadFile https://dist.nuget.org/win-x86-commandline/latest/nuget.exe
 - cd %APPVEYOR_BUILD_FOLDER%
 - git submodule update --init --recursive
-
-# pre-build script
-# before_build:
-# - nuget restore
 
 # build step
 build_script:
@@ -69,5 +60,5 @@ artifacts:
   name: BurnOutSharp (.NET 6.0, Linux x64)
 - path: BurnOutSharp_net6.0_osx-x64.zip
   name: BurnOutSharp (.NET 6.0, OSX x64)
-- path: '%APPVEYOR_BUILD_FOLDER%\BurnOutSharp\bin\Debug\*.nupkg'
+- path: BurnOutSharp\bin\Debug\*.nupkg
   name: Nuget Packages
