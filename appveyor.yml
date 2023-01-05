@@ -25,7 +25,7 @@ build_script:
   - cmd: dotnet publish Test\Test.csproj --framework net6.0 --runtime win-x64 --self-contained true -p:PublishSingleFile=true
   - cmd: dotnet publish Test\Test.csproj --framework net6.0 --runtime linux-x64 --self-contained true -p:PublishSingleFile=true
   - cmd: dotnet publish Test\Test.csproj --framework net6.0 --runtime osx-x64 --self-contained true -p:PublishSingleFile=true
-  - cmd: dotnet pack BurnOutSharp\BurnOutSharp.csproj
+  - cmd: dotnet pack BurnOutSharp\BurnOutSharp.csproj --output %APPVEYOR_BUILD_FOLDER%
 
 # post-build script
 after_build:
@@ -60,5 +60,5 @@ artifacts:
   name: BurnOutSharp (.NET 6.0, Linux x64)
 - path: BurnOutSharp_net6.0_osx-x64.zip
   name: BurnOutSharp (.NET 6.0, OSX x64)
-- path: BurnOutSharp\bin\Debug\*.nupkg
+- path: '*.nupkg'
   name: Nuget Packages
