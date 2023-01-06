@@ -3016,6 +3016,8 @@ namespace BurnOutSharp.Wrappers
                 uint size = entry.SizeOfData;
 
                 byte[] entryData = ReadFromDataSource((int)address, (int)size);
+                if (entryData == null)
+                    continue;
 
                 // If we have CodeView debug data, try to parse it
                 if (entry.DebugType == Models.PortableExecutable.DebugType.IMAGE_DEBUG_TYPE_CODEVIEW)
