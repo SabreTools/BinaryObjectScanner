@@ -32,7 +32,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="UnshieldSharp" Version="1.6.8" />
-    <PackageReference Include="WiseUnpacker" Version="1.0.3" />
+    <PackageReference Include="WiseUnpacker" Version="1.0.4" />
   </ItemGroup>
 
   <!-- These are needed for dealing with submodules -->
