@@ -31,7 +31,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="UnshieldSharp" Version="1.6.8" />
+    <PackageReference Include="UnshieldSharp" Version="1.6.9" />
     <PackageReference Include="WiseUnpacker" Version="1.0.4" />
   </ItemGroup>
 
