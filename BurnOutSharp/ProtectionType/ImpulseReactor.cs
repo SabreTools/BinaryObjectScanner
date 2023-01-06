@@ -32,7 +32,7 @@ namespace BurnOutSharp.ProtectionType
                 return $"Stardock Product Activation {Tools.Utilities.GetInternalVersion(pex)}";
 
             // TODO: Check for CVP* instead?
-            bool containsCheck = pex.ExportNameTable?.Any(s => s.StartsWith("CVPInitializeClient")) ?? false;
+            bool containsCheck = pex.ExportNameTable?.Any(s => s?.StartsWith("CVPInitializeClient") ?? false) ?? false;
             bool containsCheck2 = false;
 
             // Get the .rdata section strings, if they exist
