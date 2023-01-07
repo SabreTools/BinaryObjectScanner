@@ -56,7 +56,7 @@ namespace BurnOutSharp.Builders
             // Create a new cart image to fill
             var cart = new Cart();
 
-            #region Header
+            #region NCSD Header
 
             // Try to parse the header
             var header = ParseNCSDHeader(data);
@@ -65,6 +65,34 @@ namespace BurnOutSharp.Builders
 
             // Set the cart image header
             cart.Header = header;
+
+            #endregion
+
+            #region Card Info Header
+
+            // Try to parse the card info header
+            var cardInfoHeader = ParseCardInfoHeader(data);
+            if (cardInfoHeader == null)
+                return null;
+
+            // Set the card info header
+            cart.CardInfoHeader = cardInfoHeader;
+
+            #endregion
+
+            #region Development Card Info Header
+
+            // TODO: Hook up a builder flag to enable development parsing
+            if (false)
+            {
+                // Try to parse the development card info header
+                var developmentCardInfoHeader = ParseDevelopmentCardInfoHeader(data);
+                if (developmentCardInfoHeader == null)
+                    return null;
+
+                // Set the development card info header
+                cart.DevelopmentCardInfoHeader = developmentCardInfoHeader;
+            }
 
             #endregion
 
@@ -88,16 +116,15 @@ namespace BurnOutSharp.Builders
         /// Parse a Stream into an NCSD header
         /// </summary>
         /// <param name="data">Stream to parse</param>
-        /// <param name="development">Indicates if the cart is development or not</param>
         /// <returns>Filled NCSD header on success, null on error</returns>
-        private static NCSDHeader ParseNCSDHeader(Stream data, bool development = false)
+        private static NCSDHeader ParseNCSDHeader(Stream data)
         {
             // TODO: Use marshalling here instead of building
             NCSDHeader header = new NCSDHeader();
 
             header.RSA2048Signature = data.ReadBytes(0x100);
             byte[] magicNumber = data.ReadBytes(4);
-            header.MagicNumber = Encoding.ASCII.GetString(magicNumber);
+            header.MagicNumber = Encoding.ASCII.GetString(magicNumber).TrimEnd('\0');;
             if (header.MagicNumber != NCSDMagicNumber)
                 return null;
 
@@ -119,36 +146,16 @@ namespace BurnOutSharp.Builders
                 header.SectorZeroOffset = data.ReadUInt32();
                 header.PartitionFlags = data.ReadBytes(8);
 
-                header.PartitionIdTable = new byte[8][];
+                header.PartitionIdTable = new ulong[8];
                 for (int i = 0; i < 8; i++)
                 {
-                    header.PartitionIdTable[i] = data.ReadBytes(8);
+                    header.PartitionIdTable[i] = data.ReadUInt64();
                 }
 
                 header.Reserved1 = data.ReadBytes(0x20);
-                header.Reserved2 = data.ReadBytes(0xE);
+                header.Reserved2 = data.ReadBytes(0x0E);
                 header.FirmUpdateByte1 = data.ReadByteValue();
                 header.FirmUpdateByte2 = data.ReadByteValue();
-
-                header.CARD2WritableAddressMediaUnits = data.ReadBytes(4);
-                header.CardInfoBytemask = data.ReadBytes(4);
-                header.Reserved3 = data.ReadBytes(0x108);
-                header.TitleVersion = data.ReadUInt16();
-                header.CardRevision = data.ReadUInt16();
-                header.Reserved4 = data.ReadBytes(0xCEC); // Incorrectly documented as 0xCEE
-                header.CardSeedKeyY = data.ReadBytes(0x10);
-                header.EncryptedCardSeed = data.ReadBytes(0x10);
-                header.CardSeedAESMAC = data.ReadBytes(0x10);
-                header.CardSeedNonce = data.ReadBytes(0xC);
-                header.Reserved5 = data.ReadBytes(0xC4);
-                header.BackupHeader = ParseNCCHHeader(data, true);
-
-                if (development)
-                {
-                    header.CardDeviceReserved1 = data.ReadBytes(0x200);
-                    header.TitleKey = data.ReadBytes(0x10);
-                    header.CardDeviceReserved2 = data.ReadBytes(0xF0);
-                }
             }
             else if (header.PartitionsFSType == FilesystemType.FIRM)
             {
@@ -176,6 +183,78 @@ namespace BurnOutSharp.Builders
         }
 
         /// <summary>
+        /// Parse a Stream into a card info header
+        /// </summary>
+        /// <param name="data">Stream to parse</param>
+        /// <returns>Filled card info header on success, null on error</returns>
+        private static CardInfoHeader ParseCardInfoHeader(Stream data)
+        {
+            // TODO: Use marshalling here instead of building
+            CardInfoHeader cardInfoHeader = new CardInfoHeader();
+
+            cardInfoHeader.WritableAddressMediaUnits = data.ReadUInt32();
+            cardInfoHeader.CardInfoBitmask = data.ReadUInt32();
+            cardInfoHeader.Reserved1 = data.ReadBytes(0xF8);
+            cardInfoHeader.FilledSize = data.ReadUInt32();
+            cardInfoHeader.Reserved2 = data.ReadBytes(0x0C);
+            cardInfoHeader.TitleVersion = data.ReadUInt16();
+            cardInfoHeader.CardRevision = data.ReadUInt16();
+            cardInfoHeader.Reserved3 = data.ReadBytes(0x0C);
+            cardInfoHeader.CVerTitleID = data.ReadBytes(8);
+            cardInfoHeader.CVerVersionNumber = data.ReadUInt16();
+            cardInfoHeader.Reserved4 = data.ReadBytes(0xCD6);
+
+            return cardInfoHeader;
+        }
+
+        /// <summary>
+        /// Parse a Stream into a development card info header
+        /// </summary>
+        /// <param name="data">Stream to parse</param>
+        /// <returns>Filled development card info header on success, null on error</returns>
+        private static DevelopmentCardInfoHeader ParseDevelopmentCardInfoHeader(Stream data)
+        {
+            // TODO: Use marshalling here instead of building
+            DevelopmentCardInfoHeader developmentCardInfoHeader = new DevelopmentCardInfoHeader();
+
+            developmentCardInfoHeader.InitialData = ParseInitialData(data);
+            if (developmentCardInfoHeader.InitialData == null)
+                return null;
+
+            developmentCardInfoHeader.CardDeviceReserved1 = data.ReadBytes(0x200);
+            developmentCardInfoHeader.TitleKey = data.ReadBytes(0x10);
+            developmentCardInfoHeader.CardDeviceReserved2 = data.ReadBytes(0x1BF0);
+
+            developmentCardInfoHeader.TestData = ParseTestData(data);
+            if (developmentCardInfoHeader.TestData == null)
+                return null;
+
+            return developmentCardInfoHeader;
+        }
+
+        /// <summary>
+        /// Parse a Stream into an initial data
+        /// </summary>
+        /// <param name="data">Stream to parse</param>
+        /// <returns>Filled initial data on success, null on error</returns>
+        private static InitialData ParseInitialData(Stream data)
+        {
+            // TODO: Use marshalling here instead of building
+            InitialData initialData = new InitialData();
+
+            initialData.CardSeedKeyY = data.ReadBytes(0x10);
+            initialData.EncryptedCardSeed = data.ReadBytes(0x10);
+            initialData.CardSeedAESMAC = data.ReadBytes(0x10);
+            initialData.CardSeedNonce = data.ReadBytes(0xC);
+            initialData.Reserved = data.ReadBytes(0xC4);
+            initialData.BackupHeader = ParseNCCHHeader(data, true);
+            if (initialData.BackupHeader == null)
+                return null;
+
+            return initialData;
+        }
+
+        /// <summary>
         /// Parse a Stream into an NCCH header
         /// </summary>
         /// <param name="data">Stream to parse</param>
@@ -190,7 +269,7 @@ namespace BurnOutSharp.Builders
                 header.RSA2048Signature = data.ReadBytes(0x100);
 
             byte[] magicId = data.ReadBytes(4);
-            header.MagicID = Encoding.ASCII.GetString(magicId);
+            header.MagicID = Encoding.ASCII.GetString(magicId).TrimEnd('\0');;
             if (header.MagicID != NCCHMagicNumber)
                 return null;
 
@@ -245,6 +324,31 @@ namespace BurnOutSharp.Builders
             headerFlags.BitMasks = (BitMasks)data.ReadByteValue();
 
             return headerFlags;
+        }
+
+        /// <summary>
+        /// Parse a Stream into an initial data
+        /// </summary>
+        /// <param name="data">Stream to parse</param>
+        /// <returns>Filled initial data on success, null on error</returns>
+        private static TestData ParseTestData(Stream data)
+        {
+            // TODO: Use marshalling here instead of building
+            TestData testData = new TestData();
+
+            // TODO: Validate some of the values
+            testData.Signature = data.ReadBytes(8);
+            testData.AscendingByteSequence = data.ReadBytes(0x1F8);
+            testData.DescendingByteSequence = data.ReadBytes(0x200);
+            testData.Filled00 = data.ReadBytes(0x200);
+            testData.FilledFF = data.ReadBytes(0x200);
+            testData.Filled0F = data.ReadBytes(0x200);
+            testData.FilledF0 = data.ReadBytes(0x200);
+            testData.Filled55 = data.ReadBytes(0x200);
+            testData.FilledAA = data.ReadBytes(0x1FF);
+            testData.FinalByte = data.ReadByteValue();
+
+            return testData;
         }
 
         #endregion

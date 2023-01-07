@@ -11,6 +11,16 @@ namespace BurnOutSharp.Models.N3DS
         public NCSDHeader Header { get; set; }
 
         /// <summary>
+        /// 3DS card info header
+        /// </summary>
+        public CardInfoHeader CardInfoHeader { get; set; }
+
+        /// <summary>
+        /// 3DS development card info header
+        /// </summary>
+        public DevelopmentCardInfoHeader DevelopmentCardInfoHeader { get; set; }
+
+        /// <summary>
         /// NCCH partitions
         /// </summary>
         public NCCHHeader[] Partitions { get; set; }

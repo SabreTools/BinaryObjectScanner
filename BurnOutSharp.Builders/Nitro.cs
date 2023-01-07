@@ -113,10 +113,10 @@ namespace BurnOutSharp.Builders
             CommonHeader commonHeader = new CommonHeader();
 
             byte[] gameTitle = data.ReadBytes(0x0C);
-            commonHeader.GameTitle = Encoding.ASCII.GetString(gameTitle);
+            commonHeader.GameTitle = Encoding.ASCII.GetString(gameTitle).TrimEnd('\0');
             commonHeader.GameCode = data.ReadUInt32();
             byte[] makerCode = data.ReadBytes(2);
-            commonHeader.MakerCode = Encoding.ASCII.GetString(bytes: makerCode);
+            commonHeader.MakerCode = Encoding.ASCII.GetString(bytes: makerCode).TrimEnd('\0');
             commonHeader.UnitCode = (Unitcode)data.ReadByteValue();
             commonHeader.EncryptionSeedSelect = data.ReadByteValue();
             commonHeader.DeviceCapacity = data.ReadByteValue();

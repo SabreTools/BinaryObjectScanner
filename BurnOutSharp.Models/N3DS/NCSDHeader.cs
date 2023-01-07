@@ -75,7 +75,7 @@
         /// <summary>
         /// Partition ID table
         /// </summary>
-        public byte[][] PartitionIdTable;
+        public ulong[] PartitionIdTable;
 
         /// <summary>
         /// Reserved
@@ -113,88 +113,6 @@
         /// Encrypted MBR partition-table, for the TWL partitions(key-data used for this keyslot is console-unique).
         /// </summary>
         public byte[] EncryptedMBR;
-
-        #endregion
-
-        #region Card Info Header
-
-        /// <summary>
-        /// CARD2: Writable Address In Media Units (For 'On-Chip' Savedata). CARD1: Always 0xFFFFFFFF.
-        /// </summary>
-        public byte[] CARD2WritableAddressMediaUnits;
-
-        /// <summary>
-        /// Card Info Bitmask
-        /// </summary>
-        public byte[] CardInfoBytemask;
-
-        /// <summary>
-        /// Reserved1
-        /// </summary>
-        public byte[] Reserved3;
-
-        /// <summary>
-        /// Title version
-        /// </summary>
-        public ushort TitleVersion;
-
-        /// <summary>
-        /// Card revision
-        /// </summary>
-        public ushort CardRevision;
-
-        /// <summary>
-        /// Reserved2
-        /// </summary>
-        public byte[] Reserved4;
-
-        /// <summary>
-        /// Card seed keyY (first u64 is Media ID (same as first NCCH partitionId))
-        /// </summary>
-        public byte[] CardSeedKeyY;
-
-        /// <summary>
-        /// Encrypted card seed (AES-CCM, keyslot 0x3B for retail cards, see CTRCARD_SECSEED)        /// </summary>
-        public byte[] EncryptedCardSeed;
-
-        /// <summary>
-        /// Card seed AES-MAC
-        /// </summary>
-        public byte[] CardSeedAESMAC;
-
-        /// <summary>
-        /// Card seed nonce
-        /// </summary>
-        public byte[] CardSeedNonce;
-
-        /// <summary>
-        /// Reserved3
-        /// </summary>
-        public byte[] Reserved5;
-
-        /// <summary>
-        /// Copy of first NCCH header (excluding RSA signature)
-        /// </summary>
-        public NCCHHeader BackupHeader;
-
-        #endregion
-
-        #region Development Card Info Header Extension
-
-        /// <summary>
-        /// CardDeviceReserved1
-        /// </summary>
-        public byte[] CardDeviceReserved1;
-
-        /// <summary>
-        /// TitleKey
-        /// </summary>
-        public byte[] TitleKey;
-
-        /// <summary>
-        /// CardDeviceReserved2
-        /// </summary>
-        public byte[] CardDeviceReserved2;
 
         #endregion
     }
