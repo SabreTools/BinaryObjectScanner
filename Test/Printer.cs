@@ -50,6 +50,8 @@ namespace Test
 
                 // Get the file type
                 SupportedFileType ft = BurnOutSharp.Tools.Utilities.GetFileType(magic);
+                if (ft == SupportedFileType.UNKNOWN)
+                    ft = BurnOutSharp.Tools.Utilities.GetFileType(Path.GetExtension(file).TrimStart('.'));
 
                 // MS-DOS executable and decendents
                 if (ft == SupportedFileType.Executable)

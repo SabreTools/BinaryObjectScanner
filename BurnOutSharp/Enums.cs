@@ -81,9 +81,19 @@
         MSI,
 
         /// <summary>
+        /// Nintendo 3DS cart image
+        /// </summary>
+        N3DS,
+
+        /// <summary>
         /// Half-Life No Cache File
         /// </summary>
         NCF,
+
+        /// <summary>
+        /// Nintendo DS/DSi cart image
+        /// </summary>
+        Nitro,
 
         /// <summary>
         /// Half-Life Package File

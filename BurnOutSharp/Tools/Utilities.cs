@@ -151,10 +151,22 @@ namespace BurnOutSharp.Tools
 
             #endregion
 
+            #region N3DS
+
+            // No magic checks for N3DS
+
+            #endregion
+
             #region NCF
 
             if (magic.StartsWith(new byte?[] { 0x01, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00 }))
                 return SupportedFileType.NCF;
+
+            #endregion
+
+            #region Nitro
+
+            // No magic checks for Nitro
 
             #endregion
 
@@ -199,7 +211,7 @@ namespace BurnOutSharp.Tools
                 return SupportedFileType.Quantum;
 
             #endregion
-            
+
             #region RAR
 
             // RAR archive version 1.50 onwards
@@ -415,10 +427,42 @@ namespace BurnOutSharp.Tools
 
             #endregion
 
+            #region N3DS
+
+            // 3DS cart image
+            if (extension.Equals("3ds", StringComparison.OrdinalIgnoreCase))
+                return SupportedFileType.N3DS;
+
+            // CIA package -- Not currently supported
+            // else if (extension.Equals(value: "cia", StringComparison.OrdinalIgnoreCase))
+            //     return SupportedFileType.N3DS;
+
+            #endregion
+
             #region NCF
 
             if (extension.Equals("ncf", StringComparison.OrdinalIgnoreCase))
                 return SupportedFileType.NCF;
+
+            #endregion
+
+            #region Nitro
+
+            // DS cart image
+            if (extension.Equals("nds", StringComparison.OrdinalIgnoreCase))
+                return SupportedFileType.Nitro;
+
+            // DS development cart image
+            else if (extension.Equals("srl", StringComparison.OrdinalIgnoreCase))
+                return SupportedFileType.Nitro;
+
+            // DSi cart image
+            else if (extension.Equals("dsi", StringComparison.OrdinalIgnoreCase))
+                return SupportedFileType.Nitro;
+
+            // iQue DS cart image
+            else if (extension.Equals("ids", StringComparison.OrdinalIgnoreCase))
+                return SupportedFileType.Nitro;
 
             #endregion
 
@@ -537,7 +581,7 @@ namespace BurnOutSharp.Tools
             //     return SupportedFileType.Quantum;
 
             #endregion
-            
+
             #region RAR
 
             if (extension.Equals("rar", StringComparison.OrdinalIgnoreCase))
@@ -714,7 +758,7 @@ namespace BurnOutSharp.Tools
                 return string.Empty;
             }
         }
-        
+
         /// <summary>
         /// Get the internal version as reported by the resources
         /// </summary>
