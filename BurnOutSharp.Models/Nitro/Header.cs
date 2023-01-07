@@ -16,17 +16,17 @@ namespace BurnOutSharp.Models.Nitro
         /// <summary>
         /// Gamecode
         /// </summary>
-        public uint Gamecode;
+        public uint GameCode;
 
         /// <summary>
         /// Makercode
         /// </summary>
-        public string Makercode;
+        public string MakerCode;
 
         /// <summary>
         /// Unitcode
         /// </summary>
-        public Unitcode Unitcode;
+        public Unitcode UnitCode;
 
         /// <summary>
         /// Encryption seed select (device code. 0 = normal)
@@ -36,7 +36,7 @@ namespace BurnOutSharp.Models.Nitro
         /// <summary>
         /// Devicecapacity
         /// </summary>
-        public byte Devicecapacity;
+        public byte DeviceCapacity;
 
         /// <summary>
         /// Reserved
@@ -141,12 +141,12 @@ namespace BurnOutSharp.Models.Nitro
         /// <summary>
         /// Normal card control register settings (0x00416657 for OneTimePROM)
         /// </summary>
-        public byte[] NormalCardControlRegisterSettings;
+        public uint NormalCardControlRegisterSettings;
 
         /// <summary>
         /// Secure card control register settings (0x081808F8 for OneTimePROM)
         /// </summary>
-        public byte[] SecureCardControlRegisterSettings;
+        public uint SecureCardControlRegisterSettings;
 
         /// <summary>
         /// Icon Banner offset (NDSi same as NDS, but with new extra entries)
@@ -166,12 +166,12 @@ namespace BurnOutSharp.Models.Nitro
         /// <summary>
         /// ARM9 autoload
         /// </summary>
-        public byte[] ARM9Autoload;
+        public uint ARM9Autoload;
 
         /// <summary>
         /// ARM7 autoload
         /// </summary>
-        public byte[] ARM7Autoload;
+        public uint ARM7Autoload;
 
         /// <summary>
         /// Secure disable
@@ -215,47 +215,48 @@ namespace BurnOutSharp.Models.Nitro
 
         #endregion
 
+        // TODO: Should this be separated into a distinct file?
         #region Extended DSi
 
         /// <summary>
         /// Global MBK1..MBK5 Settings
         /// </summary>
-        public byte[] GlobalMBK15Settings;
+        public uint[] GlobalMBK15Settings;
 
         /// <summary>
         ///	Local MBK6..MBK8 Settings for ARM9
         /// </summary>
-        public byte[] LocalMBK68SettingsARM9;
+        public uint[] LocalMBK68SettingsARM9;
 
         /// <summary>
         /// Local MBK6..MBK8 Settings for ARM7
         /// </summary>
-        public byte[] LocalMBK68SettingsARM7;
+        public uint[] LocalMBK68SettingsARM7;
 
         /// <summary>
         /// Global MBK9 Setting
         /// </summary>
-        public byte[] GlobalMBK9Setting;
+        public uint GlobalMBK9Setting;
 
         /// <summary>
-        /// 
+        /// Region Flags
         /// </summary>
-        public byte[] RegionFlags;
+        public uint RegionFlags;
 
         /// <summary>
         /// Access control
         /// </summary>
-        public byte[] AccessControl;
+        public uint AccessControl;
 
         /// <summary>
         /// ARM7 SCFG EXT mask (controls which devices to enable)
         /// </summary>
-        public byte[] ARM7SCFGEXTMask;
+        public uint ARM7SCFGEXTMask;
 
         /// <summary>
         /// Reserved/flags? When bit2 of byte 0x1bf is set, usage of banner.sav from the title data dir is enabled.(additional banner data)
         /// </summary>
-        public byte[] ReservedFlags;
+        public uint ReservedFlags;
 
         /// <summary>
         /// ARM9i rom offset
@@ -265,7 +266,7 @@ namespace BurnOutSharp.Models.Nitro
         /// <summary>
         /// Reserved
         /// </summary>
-        public byte[] Reserved3;
+        public uint Reserved3;
 
         /// <summary>
         /// ARM9i load address
@@ -285,7 +286,7 @@ namespace BurnOutSharp.Models.Nitro
         /// <summary>
         /// Pointer to base address where various structures and parameters are passed to the title - what is that???
         /// </summary>
-        public byte[] Reserved4;
+        public uint Reserved4;
 
         /// <summary>
         /// ARM7i load address
@@ -355,7 +356,7 @@ namespace BurnOutSharp.Models.Nitro
         /// <summary>
         /// Unknown (used by DSi)
         /// </summary>
-        public byte[] Unknown1;
+        public uint Unknown1;
 
         /// <summary>
         /// NTR+TWL region ROM size (total size including DSi area)

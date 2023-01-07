@@ -82,6 +82,9 @@ namespace BurnOutSharp.Builders
 
             #endregion
 
+            // TODO: Read and optionally parse out the other areas
+            // Look for offsets and lengths in the header pieces
+
             return cart;
         }
 
@@ -97,12 +100,12 @@ namespace BurnOutSharp.Builders
 
             byte[] gameTitle = data.ReadBytes(0x0C);
             header.GameTitle = Encoding.ASCII.GetString(gameTitle);
-            header.Gamecode = data.ReadUInt32();
+            header.GameCode = data.ReadUInt32();
             byte[] makerCode = data.ReadBytes(2);
-            header.Makercode = Encoding.ASCII.GetString(bytes: makerCode);
-            header.Unitcode = (Unitcode)data.ReadByteValue();
+            header.MakerCode = Encoding.ASCII.GetString(bytes: makerCode);
+            header.UnitCode = (Unitcode)data.ReadByteValue();
             header.EncryptionSeedSelect = data.ReadByteValue();
-            header.Devicecapacity = data.ReadByteValue();
+            header.DeviceCapacity = data.ReadByteValue();
             header.Reserved1 = data.ReadBytes(7);
             header.GameRevision = data.ReadUInt16();
             header.RomVersion = data.ReadByteValue();
@@ -123,31 +126,51 @@ namespace BurnOutSharp.Builders
             header.ARM9OverlayLength = data.ReadUInt32();
             header.ARM7OverlayOffset = data.ReadUInt32();
             header.ARM7OverlayLength = data.ReadUInt32();
+            header.NormalCardControlRegisterSettings = data.ReadUInt32();
+            header.SecureCardControlRegisterSettings = data.ReadUInt32();
+            header.IconBannerOffset = data.ReadUInt32();
+            header.SecureAreaCRC = data.ReadUInt16();
+            header.SecureTransferTimeout = data.ReadUInt16();
+            header.ARM9Autoload = data.ReadUInt32();
+            header.ARM7Autoload = data.ReadUInt32();
             header.SecureDisable = data.ReadBytes(8);
             header.NTRRegionRomSize = data.ReadUInt32();
             header.HeaderSize = data.ReadUInt32();
             header.Reserved2 = data.ReadBytes(56);
             header.NintendoLogo = data.ReadBytes(156);
             header.NintendoLogoCRC = data.ReadUInt16();
+            header.HeaderCRC = data.ReadUInt16();
             header.DebuggerReserved = data.ReadBytes(0x20);
 
             // If we have a DSi compatible title
-            if (header.Unitcode == Unitcode.NDSPlusDSi || header.Unitcode == Unitcode.DSi)
+            if (header.UnitCode == Unitcode.NDSPlusDSi || header.UnitCode == Unitcode.DSi)
             {
-                header.GlobalMBK15Settings = data.ReadBytes(20);
-                header.LocalMBK68SettingsARM9 = data.ReadBytes(12);
-                header.LocalMBK68SettingsARM7 = data.ReadBytes(12);
-                header.GlobalMBK9Setting = data.ReadBytes(4);
-                header.RegionFlags = data.ReadBytes(4);
-                header.AccessControl = data.ReadBytes(4);
-                header.ARM7SCFGEXTMask = data.ReadBytes(4);
-                header.ReservedFlags = data.ReadBytes(4);
+                header.GlobalMBK15Settings = new uint[5];
+                for (int i = 0; i < 5; i++)
+                {
+                    header.GlobalMBK15Settings[i] = data.ReadUInt32();
+                }
+                header.LocalMBK68SettingsARM9 = new uint[3];
+                for (int i = 0; i < 3; i++)
+                {
+                    header.LocalMBK68SettingsARM9[i] = data.ReadUInt32();
+                }
+                header.LocalMBK68SettingsARM7 = new uint[3];
+                for (int i = 0; i < 3; i++)
+                {
+                    header.LocalMBK68SettingsARM7[i] = data.ReadUInt32();
+                }
+                header.GlobalMBK9Setting = data.ReadUInt32();
+                header.RegionFlags = data.ReadUInt32();
+                header.AccessControl = data.ReadUInt32();
+                header.ARM7SCFGEXTMask = data.ReadUInt32();
+                header.ReservedFlags = data.ReadUInt32();
                 header.ARM9iRomOffset = data.ReadUInt32();
-                header.Reserved3 = data.ReadBytes(4);
+                header.Reserved3 = data.ReadUInt32();
                 header.ARM9iLoadAddress = data.ReadUInt32();
                 header.ARM9iSize = data.ReadUInt32();
                 header.ARM7iRomOffset = data.ReadUInt32();
-                header.Reserved4 = data.ReadBytes(4);
+                header.Reserved4 = data.ReadUInt32();
                 header.ARM7iLoadAddress = data.ReadUInt32();
                 header.ARM7iSize = data.ReadUInt32();
                 header.DigestNTRRegionOffset = data.ReadUInt32();
@@ -161,7 +184,7 @@ namespace BurnOutSharp.Builders
                 header.DigestSectorSize = data.ReadUInt32();
                 header.DigestBlockSectorCount = data.ReadUInt32();
                 header.IconBannerSize = data.ReadUInt32();
-                header.Unknown1 = data.ReadBytes(4);
+                header.Unknown1 = data.ReadUInt32();
                 header.ModcryptArea1Offset = data.ReadUInt32();
                 header.ModcryptArea1Size = data.ReadUInt32();
                 header.ModcryptArea2Offset = data.ReadUInt32();
