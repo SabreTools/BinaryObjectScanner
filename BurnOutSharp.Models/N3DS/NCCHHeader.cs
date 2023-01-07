@@ -44,7 +44,7 @@
         /// <summary>
         /// Program ID
         /// </summary>
-        public ulong ProgramId;
+        public byte[] ProgramId;
 
         /// <summary>
         /// Reserved

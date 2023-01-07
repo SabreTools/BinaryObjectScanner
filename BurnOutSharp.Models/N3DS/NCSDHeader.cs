@@ -19,6 +19,11 @@
         public byte[] RSA2048Signature;
 
         /// <summary>
+        /// Magic Number 'NCSD'
+        /// </summary>
+        public string MagicNumber;
+
+        /// <summary>
         /// Size of the NCSD image, in media units (1 media unit = 0x200 bytes)
         /// </summary>
         public uint ImageSizeInMediaUnits;
