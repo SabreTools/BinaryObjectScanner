@@ -235,6 +235,25 @@ namespace Test
                     cabinet.Print();
                 }
 
+                // N3DS
+                else if (ft == SupportedFileType.NCF)
+                {
+                    // Build the N3DS information
+                    Console.WriteLine("Creating Nintendo 3DS deserializer");
+                    Console.WriteLine();
+
+                    var n3ds = N3DS.Create(stream);
+                    if (n3ds == null)
+                    {
+                        Console.WriteLine("Something went wrong parsing Nintendo 3DS");
+                        Console.WriteLine();
+                        return;
+                    }
+
+                    // Print the N3DS info to screen
+                    n3ds.Print();
+                }
+
                 // NCF
                 else if (ft == SupportedFileType.NCF)
                 {
@@ -252,6 +271,25 @@ namespace Test
 
                     // Print the NCF info to screen
                     ncf.Print();
+                }
+
+                // Nitro
+                else if (ft == SupportedFileType.NCF)
+                {
+                    // Build the NCF information
+                    Console.WriteLine("Creating Nintendo DS/DSi deserializer");
+                    Console.WriteLine();
+
+                    var nitro = Nitro.Create(stream);
+                    if (nitro == null)
+                    {
+                        Console.WriteLine("Something went wrong parsing Nintendo DS/DSi");
+                        Console.WriteLine();
+                        return;
+                    }
+
+                    // Print the Nitro info to screen
+                    nitro.Print();
                 }
 
                 // PAK

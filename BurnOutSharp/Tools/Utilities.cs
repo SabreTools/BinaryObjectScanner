@@ -715,6 +715,9 @@ namespace BurnOutSharp.Tools
                 case SupportedFileType.MicrosoftLZ: return new FileType.MicrosoftLZ();
                 case SupportedFileType.MPQ: return new FileType.MPQ();
                 case SupportedFileType.MSI: return new FileType.MSI();
+                //case SupportedFileType.N3DS: return new FileType.N3DS();
+                //case SupportedFileType.NCF: return new FileType.NCF();
+                //case SupportedFileType.Nitro: return new FileType.Nitro();
                 case SupportedFileType.PAK: return new FileType.PAK();
                 case SupportedFileType.PKZIP: return new FileType.PKZIP();
                 case SupportedFileType.PLJ: return new FileType.PLJ();
