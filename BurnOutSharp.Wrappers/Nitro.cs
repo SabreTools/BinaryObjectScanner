@@ -7,282 +7,278 @@ namespace BurnOutSharp.Wrappers
     {
         #region Pass-Through Properties
 
-        #region Header
+        #region Common Header
 
-        #region Common
+        /// <inheritdoc cref="Models.Nitro.CommonHeader.GameTitle"/>
+        public string GameTitle => _cart.CommonHeader.GameTitle;
 
-        /// <inheritdoc cref="Models.Nitro.Header.GameTitle"/>
-        public string GameTitle => _cart.Header.GameTitle;
+        /// <inheritdoc cref="Models.Nitro.CommonHeader.GameCode"/>
+        public uint GameCode => _cart.CommonHeader.GameCode;
 
-        /// <inheritdoc cref="Models.Nitro.Header.GameCode"/>
-        public uint GameCode => _cart.Header.GameCode;
+        /// <inheritdoc cref="Models.Nitro.CommonHeader.MakerCode"/>
+        public string MakerCode => _cart.CommonHeader.MakerCode;
 
-        /// <inheritdoc cref="Models.Nitro.Header.MakerCode"/>
-        public string MakerCode => _cart.Header.MakerCode;
+        /// <inheritdoc cref="Models.Nitro.CommonHeader.UnitCode"/>
+        public Models.Nitro.Unitcode UnitCode => _cart.CommonHeader.UnitCode;
 
-        /// <inheritdoc cref="Models.Nitro.Header.UnitCode"/>
-        public Models.Nitro.Unitcode UnitCode => _cart.Header.UnitCode;
+        /// <inheritdoc cref="Models.Nitro.CommonHeader.EncryptionSeedSelect"/>
+        public byte EncryptionSeedSelect => _cart.CommonHeader.EncryptionSeedSelect;
 
-        /// <inheritdoc cref="Models.Nitro.Header.EncryptionSeedSelect"/>
-        public byte EncryptionSeedSelect => _cart.Header.EncryptionSeedSelect;
+        /// <inheritdoc cref="Models.Nitro.CommonHeader.DeviceCapacity"/>
+        public byte DeviceCapacity => _cart.CommonHeader.DeviceCapacity;
 
-        /// <inheritdoc cref="Models.Nitro.Header.DeviceCapacity"/>
-        public byte DeviceCapacity => _cart.Header.DeviceCapacity;
+        /// <inheritdoc cref="Models.Nitro.CommonHeader.Reserved1"/>
+        public byte[] Reserved1 => _cart.CommonHeader.Reserved1;
 
-        /// <inheritdoc cref="Models.Nitro.Header.Reserved1"/>
-        public byte[] Reserved1 => _cart.Header.Reserved1;
+        /// <inheritdoc cref="Models.Nitro.CommonHeader.GameRevision"/>
+        public ushort GameRevision => _cart.CommonHeader.GameRevision;
 
-        /// <inheritdoc cref="Models.Nitro.Header.GameRevision"/>
-        public ushort GameRevision => _cart.Header.GameRevision;
+        /// <inheritdoc cref="Models.Nitro.CommonHeader.RomVersion"/>
+        public byte RomVersion => _cart.CommonHeader.RomVersion;
 
-        /// <inheritdoc cref="Models.Nitro.Header.RomVersion"/>
-        public byte RomVersion => _cart.Header.RomVersion;
+        /// <inheritdoc cref="Models.Nitro.CommonHeader.InternalFlags"/>
+        public byte InternalFlags => _cart.CommonHeader.InternalFlags;
 
-        /// <inheritdoc cref="Models.Nitro.Header.InternalFlags"/>
-        public byte InternalFlags => _cart.Header.InternalFlags;
+        /// <inheritdoc cref="Models.Nitro.CommonHeader.ARM9RomOffset"/>
+        public uint ARM9RomOffset => _cart.CommonHeader.ARM9RomOffset;
 
-        /// <inheritdoc cref="Models.Nitro.Header.ARM9RomOffset"/>
-        public uint ARM9RomOffset => _cart.Header.ARM9RomOffset;
+        /// <inheritdoc cref="Models.Nitro.CommonHeader.ARM9EntryAddress"/>
+        public uint ARM9EntryAddress => _cart.CommonHeader.ARM9EntryAddress;
 
-        /// <inheritdoc cref="Models.Nitro.Header.ARM9EntryAddress"/>
-        public uint ARM9EntryAddress => _cart.Header.ARM9EntryAddress;
+        /// <inheritdoc cref="Models.Nitro.CommonHeader.ARM9LoadAddress"/>
+        public uint ARM9LoadAddress => _cart.CommonHeader.ARM9LoadAddress;
 
-        /// <inheritdoc cref="Models.Nitro.Header.ARM9LoadAddress"/>
-        public uint ARM9LoadAddress => _cart.Header.ARM9LoadAddress;
+        /// <inheritdoc cref="Models.Nitro.CommonHeader.ARM9Size"/>
+        public uint ARM9Size => _cart.CommonHeader.ARM9Size;
 
-        /// <inheritdoc cref="Models.Nitro.Header.ARM9Size"/>
-        public uint ARM9Size => _cart.Header.ARM9Size;
+        /// <inheritdoc cref="Models.Nitro.CommonHeader.ARM7RomOffset"/>
+        public uint ARM7RomOffset => _cart.CommonHeader.ARM7RomOffset;
 
-        /// <inheritdoc cref="Models.Nitro.Header.ARM7RomOffset"/>
-        public uint ARM7RomOffset => _cart.Header.ARM7RomOffset;
+        /// <inheritdoc cref="Models.Nitro.CommonHeader.ARM7EntryAddress"/>
+        public uint ARM7EntryAddress => _cart.CommonHeader.ARM7EntryAddress;
 
-        /// <inheritdoc cref="Models.Nitro.Header.ARM7EntryAddress"/>
-        public uint ARM7EntryAddress => _cart.Header.ARM7EntryAddress;
+        /// <inheritdoc cref="Models.Nitro.CommonHeader.ARM7LoadAddress"/>
+        public uint ARM7LoadAddress => _cart.CommonHeader.ARM7LoadAddress;
 
-        /// <inheritdoc cref="Models.Nitro.Header.ARM7LoadAddress"/>
-        public uint ARM7LoadAddress => _cart.Header.ARM7LoadAddress;
+        /// <inheritdoc cref="Models.Nitro.CommonHeader.ARM7Size"/>
+        public uint ARM7Size => _cart.CommonHeader.ARM7Size;
 
-        /// <inheritdoc cref="Models.Nitro.Header.ARM7Size"/>
-        public uint ARM7Size => _cart.Header.ARM7Size;
+        /// <inheritdoc cref="Models.Nitro.CommonHeader.FileNameTableOffset"/>
+        public uint FileNameTableOffset => _cart.CommonHeader.FileNameTableOffset;
 
-        /// <inheritdoc cref="Models.Nitro.Header.FileNameTableOffset"/>
-        public uint FileNameTableOffset => _cart.Header.FileNameTableOffset;
+        /// <inheritdoc cref="Models.Nitro.CommonHeader.FileNameTableLength"/>
+        public uint FileNameTableLength => _cart.CommonHeader.FileNameTableLength;
 
-        /// <inheritdoc cref="Models.Nitro.Header.FileNameTableLength"/>
-        public uint FileNameTableLength => _cart.Header.FileNameTableLength;
+        /// <inheritdoc cref="Models.Nitro.CommonHeader.FileAllocationTableOffset"/>
+        public uint FileAllocationTableOffset => _cart.CommonHeader.FileAllocationTableOffset;
 
-        /// <inheritdoc cref="Models.Nitro.Header.FileAllocationTableOffset"/>
-        public uint FileAllocationTableOffset => _cart.Header.FileAllocationTableOffset;
+        /// <inheritdoc cref="Models.Nitro.CommonHeader.FileAllocationTableLength"/>
+        public uint FileAllocationTableLength => _cart.CommonHeader.FileAllocationTableLength;
 
-        /// <inheritdoc cref="Models.Nitro.Header.FileAllocationTableLength"/>
-        public uint FileAllocationTableLength => _cart.Header.FileAllocationTableLength;
+        /// <inheritdoc cref="Models.Nitro.CommonHeader.ARM9OverlayOffset"/>
+        public uint ARM9OverlayOffset => _cart.CommonHeader.ARM9OverlayOffset;
 
-        /// <inheritdoc cref="Models.Nitro.Header.ARM9OverlayOffset"/>
-        public uint ARM9OverlayOffset => _cart.Header.ARM9OverlayOffset;
+        /// <inheritdoc cref="Models.Nitro.CommonHeader.ARM9OverlayLength"/>
+        public uint ARM9OverlayLength => _cart.CommonHeader.ARM9OverlayLength;
 
-        /// <inheritdoc cref="Models.Nitro.Header.ARM9OverlayLength"/>
-        public uint ARM9OverlayLength => _cart.Header.ARM9OverlayLength;
+        /// <inheritdoc cref="Models.Nitro.CommonHeader.ARM7OverlayOffset"/>
+        public uint ARM7OverlayOffset => _cart.CommonHeader.ARM7OverlayOffset;
 
-        /// <inheritdoc cref="Models.Nitro.Header.ARM7OverlayOffset"/>
-        public uint ARM7OverlayOffset => _cart.Header.ARM7OverlayOffset;
+        /// <inheritdoc cref="Models.Nitro.CommonHeader.ARM7OverlayLength"/>
+        public uint ARM7OverlayLength => _cart.CommonHeader.ARM7OverlayLength;
 
-        /// <inheritdoc cref="Models.Nitro.Header.ARM7OverlayLength"/>
-        public uint ARM7OverlayLength => _cart.Header.ARM7OverlayLength;
+        /// <inheritdoc cref="Models.Nitro.CommonHeader.NormalCardControlRegisterSettings"/>
+        public uint NormalCardControlRegisterSettings => _cart.CommonHeader.NormalCardControlRegisterSettings;
 
-        /// <inheritdoc cref="Models.Nitro.Header.NormalCardControlRegisterSettings"/>
-        public uint NormalCardControlRegisterSettings => _cart.Header.NormalCardControlRegisterSettings;
+        /// <inheritdoc cref="Models.Nitro.CommonHeader.SecureCardControlRegisterSettings"/>
+        public uint SecureCardControlRegisterSettings => _cart.CommonHeader.SecureCardControlRegisterSettings;
 
-        /// <inheritdoc cref="Models.Nitro.Header.SecureCardControlRegisterSettings"/>
-        public uint SecureCardControlRegisterSettings => _cart.Header.SecureCardControlRegisterSettings;
+        /// <inheritdoc cref="Models.Nitro.CommonHeader.IconBannerOffset"/>
+        public uint IconBannerOffset => _cart.CommonHeader.IconBannerOffset;
 
-        /// <inheritdoc cref="Models.Nitro.Header.IconBannerOffset"/>
-        public uint IconBannerOffset => _cart.Header.IconBannerOffset;
+        /// <inheritdoc cref="Models.Nitro.CommonHeader.SecureAreaCRC"/>
+        public ushort SecureAreaCRC => _cart.CommonHeader.SecureAreaCRC;
 
-        /// <inheritdoc cref="Models.Nitro.Header.SecureAreaCRC"/>
-        public ushort SecureAreaCRC => _cart.Header.SecureAreaCRC;
+        /// <inheritdoc cref="Models.Nitro.CommonHeader.SecureTransferTimeout"/>
+        public ushort SecureTransferTimeout => _cart.CommonHeader.SecureTransferTimeout;
 
-        /// <inheritdoc cref="Models.Nitro.Header.SecureTransferTimeout"/>
-        public ushort SecureTransferTimeout => _cart.Header.SecureTransferTimeout;
+        /// <inheritdoc cref="Models.Nitro.CommonHeader.ARM9Autoload"/>
+        public uint ARM9Autoload => _cart.CommonHeader.ARM9Autoload;
 
-        /// <inheritdoc cref="Models.Nitro.Header.ARM9Autoload"/>
-        public uint ARM9Autoload => _cart.Header.ARM9Autoload;
+        /// <inheritdoc cref="Models.Nitro.CommonHeader.ARM7Autoload"/>
+        public uint ARM7Autoload => _cart.CommonHeader.ARM7Autoload;
 
-        /// <inheritdoc cref="Models.Nitro.Header.ARM7Autoload"/>
-        public uint ARM7Autoload => _cart.Header.ARM7Autoload;
+        /// <inheritdoc cref="Models.Nitro.CommonHeader.SecureDisable"/>
+        public byte[] SecureDisable => _cart.CommonHeader.SecureDisable;
 
-        /// <inheritdoc cref="Models.Nitro.Header.SecureDisable"/>
-        public byte[] SecureDisable => _cart.Header.SecureDisable;
+        /// <inheritdoc cref="Models.Nitro.CommonHeader.NTRRegionRomSize"/>
+        public uint NTRRegionRomSize => _cart.CommonHeader.NTRRegionRomSize;
 
-        /// <inheritdoc cref="Models.Nitro.Header.NTRRegionRomSize"/>
-        public uint NTRRegionRomSize => _cart.Header.NTRRegionRomSize;
+        /// <inheritdoc cref="Models.Nitro.CommonHeader.HeaderSize"/>
+        public uint HeaderSize => _cart.CommonHeader.HeaderSize;
 
-        /// <inheritdoc cref="Models.Nitro.Header.HeaderSize"/>
-        public uint HeaderSize => _cart.Header.HeaderSize;
+        /// <inheritdoc cref="Models.Nitro.CommonHeader.Reserved2"/>
+        public byte[] Reserved2 => _cart.CommonHeader.Reserved2;
 
-        /// <inheritdoc cref="Models.Nitro.Header.Reserved2"/>
-        public byte[] Reserved2 => _cart.Header.Reserved2;
+        /// <inheritdoc cref="Models.Nitro.CommonHeader.NintendoLogo"/>
+        public byte[] NintendoLogo => _cart.CommonHeader.NintendoLogo;
 
-        /// <inheritdoc cref="Models.Nitro.Header.NintendoLogo"/>
-        public byte[] NintendoLogo => _cart.Header.NintendoLogo;
+        /// <inheritdoc cref="Models.Nitro.CommonHeader.NintendoLogoCRC"/>
+        public ushort NintendoLogoCRC => _cart.CommonHeader.NintendoLogoCRC;
 
-        /// <inheritdoc cref="Models.Nitro.Header.NintendoLogoCRC"/>
-        public ushort NintendoLogoCRC => _cart.Header.NintendoLogoCRC;
+        /// <inheritdoc cref="Models.Nitro.CommonHeader.HeaderCRC"/>
+        public ushort HeaderCRC => _cart.CommonHeader.HeaderCRC;
 
-        /// <inheritdoc cref="Models.Nitro.Header.HeaderCRC"/>
-        public ushort HeaderCRC => _cart.Header.HeaderCRC;
-
-        /// <inheritdoc cref="Models.Nitro.Header.DebuggerReserved"/>
-        public byte[] DebuggerReserved => _cart.Header.DebuggerReserved;
+        /// <inheritdoc cref="Models.Nitro.CommonHeader.DebuggerReserved"/>
+        public byte[] DebuggerReserved => _cart.CommonHeader.DebuggerReserved;
 
         #endregion
 
-        #region Extended DSi
+        #region Extended DSi Header
 
-        /// <inheritdoc cref="Models.Nitro.Header.GlobalMBK15Settings"/>
-        public uint[] GlobalMBK15Settings => _cart.Header.GlobalMBK15Settings;
+        /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.GlobalMBK15Settings"/>
+        public uint[] GlobalMBK15Settings => _cart.ExtendedDSiHeader?.GlobalMBK15Settings;
 
-        /// <inheritdoc cref="Models.Nitro.Header.LocalMBK68SettingsARM9"/>
-        public uint[] LocalMBK68SettingsARM9 => _cart.Header.LocalMBK68SettingsARM9;
+        /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.LocalMBK68SettingsARM9"/>
+        public uint[] LocalMBK68SettingsARM9 => _cart.ExtendedDSiHeader?.LocalMBK68SettingsARM9;
 
-        /// <inheritdoc cref="Models.Nitro.Header.LocalMBK68SettingsARM7"/>
-        public uint[] LocalMBK68SettingsARM7 => _cart.Header.LocalMBK68SettingsARM7;
+        /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.LocalMBK68SettingsARM7"/>
+        public uint[] LocalMBK68SettingsARM7 => _cart.ExtendedDSiHeader?.LocalMBK68SettingsARM7;
 
-        /// <inheritdoc cref="Models.Nitro.Header.GlobalMBK9Setting"/>
-        public uint GlobalMBK9Setting => _cart.Header.GlobalMBK9Setting;
+        /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.GlobalMBK9Setting"/>
+        public uint? GlobalMBK9Setting => _cart.ExtendedDSiHeader?.GlobalMBK9Setting;
 
-        /// <inheritdoc cref="Models.Nitro.Header.RegionFlags"/>
-        public uint RegionFlags => _cart.Header.RegionFlags;
+        /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.RegionFlags"/>
+        public uint? RegionFlags => _cart.ExtendedDSiHeader?.RegionFlags;
 
-        /// <inheritdoc cref="Models.Nitro.Header.AccessControl"/>
-        public uint AccessControl => _cart.Header.AccessControl;
+        /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.AccessControl"/>
+        public uint? AccessControl => _cart.ExtendedDSiHeader?.AccessControl;
 
-        /// <inheritdoc cref="Models.Nitro.Header.ARM7SCFGEXTMask"/>
-        public uint ARM7SCFGEXTMask => _cart.Header.ARM7SCFGEXTMask;
+        /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.ARM7SCFGEXTMask"/>
+        public uint? ARM7SCFGEXTMask => _cart.ExtendedDSiHeader?.ARM7SCFGEXTMask;
 
-        /// <inheritdoc cref="Models.Nitro.Header.ReservedFlags"/>
-        public uint ReservedFlags => _cart.Header.ReservedFlags;
+        /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.ReservedFlags"/>
+        public uint? ReservedFlags => _cart.ExtendedDSiHeader?.ReservedFlags;
 
-        /// <inheritdoc cref="Models.Nitro.Header.ARM9iRomOffset"/>
-        public uint ARM9iRomOffset => _cart.Header.ARM9iRomOffset;
+        /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.ARM9iRomOffset"/>
+        public uint? ARM9iRomOffset => _cart.ExtendedDSiHeader?.ARM9iRomOffset;
 
-        /// <inheritdoc cref="Models.Nitro.Header.Reserved3"/>
-        public uint Reserved3 => _cart.Header.Reserved3;
+        /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.Reserved3"/>
+        public uint? Reserved3 => _cart.ExtendedDSiHeader?.Reserved3;
 
-        /// <inheritdoc cref="Models.Nitro.Header.ARM9iLoadAddress"/>
-        public uint ARM9iLoadAddress => _cart.Header.ARM9iLoadAddress;
+        /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.ARM9iLoadAddress"/>
+        public uint? ARM9iLoadAddress => _cart.ExtendedDSiHeader?.ARM9iLoadAddress;
 
-        /// <inheritdoc cref="Models.Nitro.Header.ARM9iSize"/>
-        public uint ARM9iSize => _cart.Header.ARM9iSize;
+        /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.ARM9iSize"/>
+        public uint? ARM9iSize => _cart.ExtendedDSiHeader?.ARM9iSize;
 
-        /// <inheritdoc cref="Models.Nitro.Header.ARM7iRomOffset"/>
-        public uint ARM7iRomOffset => _cart.Header.ARM7iRomOffset;
+        /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.ARM7iRomOffset"/>
+        public uint? ARM7iRomOffset => _cart.ExtendedDSiHeader?.ARM7iRomOffset;
 
-        /// <inheritdoc cref="Models.Nitro.Header.Reserved4"/>
-        public uint Reserved4 => _cart.Header.Reserved4;
+        /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.Reserved4"/>
+        public uint? Reserved4 => _cart.ExtendedDSiHeader?.Reserved4;
 
-        /// <inheritdoc cref="Models.Nitro.Header.ARM7iLoadAddress"/>
-        public uint ARM7iLoadAddress => _cart.Header.ARM7iLoadAddress;
+        /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.ARM7iLoadAddress"/>
+        public uint? ARM7iLoadAddress => _cart.ExtendedDSiHeader?.ARM7iLoadAddress;
 
-        /// <inheritdoc cref="Models.Nitro.Header.ARM7iSize"/>
-        public uint ARM7iSize => _cart.Header.ARM7iSize;
+        /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.ARM7iSize"/>
+        public uint? ARM7iSize => _cart.ExtendedDSiHeader?.ARM7iSize;
 
-        /// <inheritdoc cref="Models.Nitro.Header.DigestNTRRegionOffset"/>
-        public uint DigestNTRRegionOffset => _cart.Header.DigestNTRRegionOffset;
+        /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.DigestNTRRegionOffset"/>
+        public uint? DigestNTRRegionOffset => _cart.ExtendedDSiHeader?.DigestNTRRegionOffset;
 
-        /// <inheritdoc cref="Models.Nitro.Header.DigestNTRRegionLength"/>
-        public uint DigestNTRRegionLength => _cart.Header.DigestNTRRegionLength;
+        /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.DigestNTRRegionLength"/>
+        public uint? DigestNTRRegionLength => _cart.ExtendedDSiHeader?.DigestNTRRegionLength;
 
-        /// <inheritdoc cref="Models.Nitro.Header.DigestTWLRegionOffset"/>
-        public uint DigestTWLRegionOffset => _cart.Header.DigestTWLRegionOffset;
+        /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.DigestTWLRegionOffset"/>
+        public uint? DigestTWLRegionOffset => _cart.ExtendedDSiHeader?.DigestTWLRegionOffset;
 
-        /// <inheritdoc cref="Models.Nitro.Header.DigestTWLRegionLength"/>
-        public uint DigestTWLRegionLength => _cart.Header.DigestTWLRegionLength;
+        /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.DigestTWLRegionLength"/>
+        public uint? DigestTWLRegionLength => _cart.ExtendedDSiHeader?.DigestTWLRegionLength;
 
-        /// <inheritdoc cref="Models.Nitro.Header.DigestSectorHashtableRegionOffset"/>
-        public uint DigestSectorHashtableRegionOffset => _cart.Header.DigestSectorHashtableRegionOffset;
+        /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.DigestSectorHashtableRegionOffset"/>
+        public uint? DigestSectorHashtableRegionOffset => _cart.ExtendedDSiHeader?.DigestSectorHashtableRegionOffset;
 
-        /// <inheritdoc cref="Models.Nitro.Header.DigestSectorHashtableRegionLength"/>
-        public uint DigestSectorHashtableRegionLength => _cart.Header.DigestSectorHashtableRegionLength;
+        /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.DigestSectorHashtableRegionLength"/>
+        public uint? DigestSectorHashtableRegionLength => _cart.ExtendedDSiHeader?.DigestSectorHashtableRegionLength;
 
-        /// <inheritdoc cref="Models.Nitro.Header.DigestBlockHashtableRegionOffset"/>
-        public uint DigestBlockHashtableRegionOffset => _cart.Header.DigestBlockHashtableRegionOffset;
+        /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.DigestBlockHashtableRegionOffset"/>
+        public uint? DigestBlockHashtableRegionOffset => _cart.ExtendedDSiHeader?.DigestBlockHashtableRegionOffset;
 
-        /// <inheritdoc cref="Models.Nitro.Header.DigestBlockHashtableRegionLength"/>
-        public uint DigestBlockHashtableRegionLength => _cart.Header.DigestBlockHashtableRegionLength;
+        /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.DigestBlockHashtableRegionLength"/>
+        public uint? DigestBlockHashtableRegionLength => _cart.ExtendedDSiHeader?.DigestBlockHashtableRegionLength;
 
-        /// <inheritdoc cref="Models.Nitro.Header.DigestSectorSize"/>
-        public uint DigestSectorSize => _cart.Header.DigestSectorSize;
+        /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.DigestSectorSize"/>
+        public uint? DigestSectorSize => _cart.ExtendedDSiHeader?.DigestSectorSize;
 
-        /// <inheritdoc cref="Models.Nitro.Header.DigestBlockSectorCount"/>
-        public uint DigestBlockSectorCount => _cart.Header.DigestBlockSectorCount;
+        /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.DigestBlockSectorCount"/>
+        public uint? DigestBlockSectorCount => _cart.ExtendedDSiHeader?.DigestBlockSectorCount;
 
-        /// <inheritdoc cref="Models.Nitro.Header.IconBannerSize"/>
-        public uint IconBannerSize => _cart.Header.IconBannerSize;
+        /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.IconBannerSize"/>
+        public uint? IconBannerSize => _cart.ExtendedDSiHeader?.IconBannerSize;
 
-        /// <inheritdoc cref="Models.Nitro.Header.Unknown1"/>
-        public uint Unknown1 => _cart.Header.Unknown1;
+        /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.Unknown1"/>
+        public uint? Unknown1 => _cart.ExtendedDSiHeader?.Unknown1;
 
-        /// <inheritdoc cref="Models.Nitro.Header.ModcryptArea1Offset"/>
-        public uint ModcryptArea1Offset => _cart.Header.ModcryptArea1Offset;
+        /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.ModcryptArea1Offset"/>
+        public uint? ModcryptArea1Offset => _cart.ExtendedDSiHeader?.ModcryptArea1Offset;
 
-        /// <inheritdoc cref="Models.Nitro.Header.ModcryptArea1Size"/>
-        public uint ModcryptArea1Size => _cart.Header.ModcryptArea1Size;
+        /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.ModcryptArea1Size"/>
+        public uint? ModcryptArea1Size => _cart.ExtendedDSiHeader?.ModcryptArea1Size;
 
-        /// <inheritdoc cref="Models.Nitro.Header.ModcryptArea2Offset"/>
-        public uint ModcryptArea2Offset => _cart.Header.ModcryptArea2Offset;
+        /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.ModcryptArea2Offset"/>
+        public uint? ModcryptArea2Offset => _cart.ExtendedDSiHeader?.ModcryptArea2Offset;
 
-        /// <inheritdoc cref="Models.Nitro.Header.ModcryptArea2Size"/>
-        public uint ModcryptArea2Size => _cart.Header.ModcryptArea2Size;
+        /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.ModcryptArea2Size"/>
+        public uint? ModcryptArea2Size => _cart.ExtendedDSiHeader?.ModcryptArea2Size;
 
-        /// <inheritdoc cref="Models.Nitro.Header.TitleID"/>
-        public byte[] TitleID => _cart.Header.TitleID;
+        /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.TitleID"/>
+        public byte[] TitleID => _cart.ExtendedDSiHeader?.TitleID;
 
-        /// <inheritdoc cref="Models.Nitro.Header.DSiWarePublicSavSize"/>
-        public uint DSiWarePublicSavSize => _cart.Header.DSiWarePublicSavSize;
+        /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.DSiWarePublicSavSize"/>
+        public uint? DSiWarePublicSavSize => _cart.ExtendedDSiHeader?.DSiWarePublicSavSize;
 
-        /// <inheritdoc cref="Models.Nitro.Header.DSiWarePrivateSavSize"/>
-        public uint DSiWarePrivateSavSize => _cart.Header.DSiWarePrivateSavSize;
+        /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.DSiWarePrivateSavSize"/>
+        public uint? DSiWarePrivateSavSize => _cart.ExtendedDSiHeader?.DSiWarePrivateSavSize;
 
-        /// <inheritdoc cref="Models.Nitro.Header.ReservedZero"/>
-        public byte[] ReservedZero => _cart.Header.ReservedZero;
+        /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.ReservedZero"/>
+        public byte[] ReservedZero => _cart.ExtendedDSiHeader?.ReservedZero;
 
-        /// <inheritdoc cref="Models.Nitro.Header.Unknown2"/>
-        public byte[] Unknown2 => _cart.Header.Unknown2;
+        /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.Unknown2"/>
+        public byte[] Unknown2 => _cart.ExtendedDSiHeader?.Unknown2;
 
-        /// <inheritdoc cref="Models.Nitro.Header.ARM9WithSecureAreaSHA1HMACHash"/>
-        public byte[] ARM9WithSecureAreaSHA1HMACHash => _cart.Header.ARM9WithSecureAreaSHA1HMACHash;
+        /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.ARM9WithSecureAreaSHA1HMACHash"/>
+        public byte[] ARM9WithSecureAreaSHA1HMACHash => _cart.ExtendedDSiHeader?.ARM9WithSecureAreaSHA1HMACHash;
 
-        /// <inheritdoc cref="Models.Nitro.Header.ARM7SHA1HMACHash"/>
-        public byte[] ARM7SHA1HMACHash => _cart.Header.ARM7SHA1HMACHash;
+        /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.ARM7SHA1HMACHash"/>
+        public byte[] ARM7SHA1HMACHash => _cart.ExtendedDSiHeader?.ARM7SHA1HMACHash;
 
-        /// <inheritdoc cref="Models.Nitro.Header.DigestMasterSHA1HMACHash"/>
-        public byte[] DigestMasterSHA1HMACHash => _cart.Header.DigestMasterSHA1HMACHash;
+        /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.DigestMasterSHA1HMACHash"/>
+        public byte[] DigestMasterSHA1HMACHash => _cart.ExtendedDSiHeader?.DigestMasterSHA1HMACHash;
 
-        /// <inheritdoc cref="Models.Nitro.Header.BannerSHA1HMACHash"/>
-        public byte[] BannerSHA1HMACHash => _cart.Header.BannerSHA1HMACHash;
+        /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.BannerSHA1HMACHash"/>
+        public byte[] BannerSHA1HMACHash => _cart.ExtendedDSiHeader?.BannerSHA1HMACHash;
 
-        /// <inheritdoc cref="Models.Nitro.Header.ARM9iDecryptedSHA1HMACHash"/>
-        public byte[] ARM9iDecryptedSHA1HMACHash => _cart.Header.ARM9iDecryptedSHA1HMACHash;
+        /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.ARM9iDecryptedSHA1HMACHash"/>
+        public byte[] ARM9iDecryptedSHA1HMACHash => _cart.ExtendedDSiHeader?.ARM9iDecryptedSHA1HMACHash;
 
-        /// <inheritdoc cref="Models.Nitro.Header.ARM7iDecryptedSHA1HMACHash"/>
-        public byte[] ARM7iDecryptedSHA1HMACHash => _cart.Header.ARM7iDecryptedSHA1HMACHash;
+        /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.ARM7iDecryptedSHA1HMACHash"/>
+        public byte[] ARM7iDecryptedSHA1HMACHash => _cart.ExtendedDSiHeader?.ARM7iDecryptedSHA1HMACHash;
 
-        /// <inheritdoc cref="Models.Nitro.Header.Reserved5"/>
-        public byte[] Reserved5 => _cart.Header.Reserved5;
+        /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.Reserved5"/>
+        public byte[] Reserved5 => _cart.ExtendedDSiHeader?.Reserved5;
 
-        /// <inheritdoc cref="Models.Nitro.Header.ARM9NoSecureAreaSHA1HMACHash"/>
-        public byte[] ARM9NoSecureAreaSHA1HMACHash => _cart.Header.ARM9NoSecureAreaSHA1HMACHash;
+        /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.ARM9NoSecureAreaSHA1HMACHash"/>
+        public byte[] ARM9NoSecureAreaSHA1HMACHash => _cart.ExtendedDSiHeader?.ARM9NoSecureAreaSHA1HMACHash;
 
-        /// <inheritdoc cref="Models.Nitro.Header.Reserved6"/>
-        public byte[] Reserved6 => _cart.Header.Reserved6;
+        /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.Reserved6"/>
+        public byte[] Reserved6 => _cart.ExtendedDSiHeader?.Reserved6;
 
-        /// <inheritdoc cref="Models.Nitro.Header.ReservedAndUnchecked"/>
-        public byte[] ReservedAndUnchecked => _cart.Header.ReservedAndUnchecked;
+        /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.ReservedAndUnchecked"/>
+        public byte[] ReservedAndUnchecked => _cart.ExtendedDSiHeader?.ReservedAndUnchecked;
 
-        /// <inheritdoc cref="Models.Nitro.Header.RSASignature"/>
-        public byte[] RSASignature => _cart.Header.RSASignature;
-
-        #endregion
+        /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.RSASignature"/>
+        public byte[] RSASignature => _cart.ExtendedDSiHeader?.RSASignature;
 
         #endregion
 
@@ -368,7 +364,7 @@ namespace BurnOutSharp.Wrappers
             Console.WriteLine();
 
             PrintCommonHeader();
-            PrintDSiHeader();
+            PrintExtendedDSiHeader();
             PrintSecureArea();
         }
 
@@ -423,15 +419,15 @@ namespace BurnOutSharp.Wrappers
         }
 
         /// <summary>
-        /// Print DSi header information
+        /// Print extended DSi header information
         /// </summary>
-        private void PrintDSiHeader()
+        private void PrintExtendedDSiHeader()
         {
-            Console.WriteLine("  DSi Header Information:");
+            Console.WriteLine("  Extended DSi Header Information:");
             Console.WriteLine("  -------------------------");
-            if (UnitCode == Models.Nitro.Unitcode.NDSPlusDSi || UnitCode == Models.Nitro.Unitcode.DSi)
+            if (_cart.ExtendedDSiHeader == null)
             {
-                Console.WriteLine("  No DSi header");
+                Console.WriteLine("  No extended DSi header");
             }
             else
             {

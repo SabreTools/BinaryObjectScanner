@@ -1,14 +1,19 @@
 namespace BurnOutSharp.Models.Nitro
 {
     /// <summary>
-    /// Represents a DS cart image
+    /// Represents a DS/DSi cart image
     /// </summary>
     public class Cart
     {
         /// <summary>
-        /// DS cart header
+        /// DS/DSi cart header
         /// </summary>
-        public Header Header { get; set; }
+        public CommonHeader CommonHeader { get; set; }
+
+        /// <summary>
+        /// DSi extended cart header
+        /// </summary>
+        public ExtendedDSiHeader ExtendedDSiHeader { get; set; }
 
         /// <summary>
         /// Secure area, may be encrypted or decrypted

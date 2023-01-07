@@ -58,12 +58,26 @@ namespace BurnOutSharp.Builders
             #region Header
 
             // Try to parse the header
-            var header = ParseHeader(data);
+            var header = ParseCommonHeader(data);
             if (header == null)
                 return null;
 
             // Set the cart image header
-            cart.Header = header;
+            cart.CommonHeader = header;
+
+            #endregion
+
+            #region Extended DSi Header
+
+            // If we have a DSi-compatible cartridge
+            if (header.UnitCode == Unitcode.NDSPlusDSi || header.UnitCode == Unitcode.DSi)
+            {
+                var extendedDSiHeader = ParseExtendedDSiHeader(data);
+                if (extendedDSiHeader == null)
+                    return null;
+
+                cart.ExtendedDSiHeader = extendedDSiHeader;
+            }
 
             #endregion
 
@@ -89,125 +103,134 @@ namespace BurnOutSharp.Builders
         }
 
         /// <summary>
-        /// Parse a Stream into a header
+        /// Parse a Stream into a common header
         /// </summary>
         /// <param name="data">Stream to parse</param>
-        /// <returns>Filled header on success, null on error</returns>
-        private static Header ParseHeader(Stream data)
+        /// <returns>Filled common header on success, null on error</returns>
+        private static CommonHeader ParseCommonHeader(Stream data)
         {
             // TODO: Use marshalling here instead of building
-            Header header = new Header();
+            CommonHeader commonHeader = new CommonHeader();
 
             byte[] gameTitle = data.ReadBytes(0x0C);
-            header.GameTitle = Encoding.ASCII.GetString(gameTitle);
-            header.GameCode = data.ReadUInt32();
+            commonHeader.GameTitle = Encoding.ASCII.GetString(gameTitle);
+            commonHeader.GameCode = data.ReadUInt32();
             byte[] makerCode = data.ReadBytes(2);
-            header.MakerCode = Encoding.ASCII.GetString(bytes: makerCode);
-            header.UnitCode = (Unitcode)data.ReadByteValue();
-            header.EncryptionSeedSelect = data.ReadByteValue();
-            header.DeviceCapacity = data.ReadByteValue();
-            header.Reserved1 = data.ReadBytes(7);
-            header.GameRevision = data.ReadUInt16();
-            header.RomVersion = data.ReadByteValue();
-            header.InternalFlags = data.ReadByteValue();
-            header.ARM9RomOffset = data.ReadUInt32();
-            header.ARM9EntryAddress = data.ReadUInt32();
-            header.ARM9LoadAddress = data.ReadUInt32();
-            header.ARM9Size = data.ReadUInt32();
-            header.ARM7RomOffset = data.ReadUInt32();
-            header.ARM7EntryAddress = data.ReadUInt32();
-            header.ARM7LoadAddress = data.ReadUInt32();
-            header.ARM7Size = data.ReadUInt32();
-            header.FileNameTableOffset = data.ReadUInt32();
-            header.FileNameTableLength = data.ReadUInt32();
-            header.FileAllocationTableOffset = data.ReadUInt32();
-            header.FileAllocationTableLength = data.ReadUInt32();
-            header.ARM9OverlayOffset = data.ReadUInt32();
-            header.ARM9OverlayLength = data.ReadUInt32();
-            header.ARM7OverlayOffset = data.ReadUInt32();
-            header.ARM7OverlayLength = data.ReadUInt32();
-            header.NormalCardControlRegisterSettings = data.ReadUInt32();
-            header.SecureCardControlRegisterSettings = data.ReadUInt32();
-            header.IconBannerOffset = data.ReadUInt32();
-            header.SecureAreaCRC = data.ReadUInt16();
-            header.SecureTransferTimeout = data.ReadUInt16();
-            header.ARM9Autoload = data.ReadUInt32();
-            header.ARM7Autoload = data.ReadUInt32();
-            header.SecureDisable = data.ReadBytes(8);
-            header.NTRRegionRomSize = data.ReadUInt32();
-            header.HeaderSize = data.ReadUInt32();
-            header.Reserved2 = data.ReadBytes(56);
-            header.NintendoLogo = data.ReadBytes(156);
-            header.NintendoLogoCRC = data.ReadUInt16();
-            header.HeaderCRC = data.ReadUInt16();
-            header.DebuggerReserved = data.ReadBytes(0x20);
+            commonHeader.MakerCode = Encoding.ASCII.GetString(bytes: makerCode);
+            commonHeader.UnitCode = (Unitcode)data.ReadByteValue();
+            commonHeader.EncryptionSeedSelect = data.ReadByteValue();
+            commonHeader.DeviceCapacity = data.ReadByteValue();
+            commonHeader.Reserved1 = data.ReadBytes(7);
+            commonHeader.GameRevision = data.ReadUInt16();
+            commonHeader.RomVersion = data.ReadByteValue();
+            commonHeader.InternalFlags = data.ReadByteValue();
+            commonHeader.ARM9RomOffset = data.ReadUInt32();
+            commonHeader.ARM9EntryAddress = data.ReadUInt32();
+            commonHeader.ARM9LoadAddress = data.ReadUInt32();
+            commonHeader.ARM9Size = data.ReadUInt32();
+            commonHeader.ARM7RomOffset = data.ReadUInt32();
+            commonHeader.ARM7EntryAddress = data.ReadUInt32();
+            commonHeader.ARM7LoadAddress = data.ReadUInt32();
+            commonHeader.ARM7Size = data.ReadUInt32();
+            commonHeader.FileNameTableOffset = data.ReadUInt32();
+            commonHeader.FileNameTableLength = data.ReadUInt32();
+            commonHeader.FileAllocationTableOffset = data.ReadUInt32();
+            commonHeader.FileAllocationTableLength = data.ReadUInt32();
+            commonHeader.ARM9OverlayOffset = data.ReadUInt32();
+            commonHeader.ARM9OverlayLength = data.ReadUInt32();
+            commonHeader.ARM7OverlayOffset = data.ReadUInt32();
+            commonHeader.ARM7OverlayLength = data.ReadUInt32();
+            commonHeader.NormalCardControlRegisterSettings = data.ReadUInt32();
+            commonHeader.SecureCardControlRegisterSettings = data.ReadUInt32();
+            commonHeader.IconBannerOffset = data.ReadUInt32();
+            commonHeader.SecureAreaCRC = data.ReadUInt16();
+            commonHeader.SecureTransferTimeout = data.ReadUInt16();
+            commonHeader.ARM9Autoload = data.ReadUInt32();
+            commonHeader.ARM7Autoload = data.ReadUInt32();
+            commonHeader.SecureDisable = data.ReadBytes(8);
+            commonHeader.NTRRegionRomSize = data.ReadUInt32();
+            commonHeader.HeaderSize = data.ReadUInt32();
+            commonHeader.Reserved2 = data.ReadBytes(56);
+            commonHeader.NintendoLogo = data.ReadBytes(156);
+            commonHeader.NintendoLogoCRC = data.ReadUInt16();
+            commonHeader.HeaderCRC = data.ReadUInt16();
+            commonHeader.DebuggerReserved = data.ReadBytes(0x20);
 
-            // If we have a DSi compatible title
-            if (header.UnitCode == Unitcode.NDSPlusDSi || header.UnitCode == Unitcode.DSi)
+            return commonHeader;
+        }
+
+        /// <summary>
+        /// Parse a Stream into an extended DSi header
+        /// </summary>
+        /// <param name="data">Stream to parse</param>
+        /// <returns>Filled extended DSi header on success, null on error</returns>
+        private static ExtendedDSiHeader ParseExtendedDSiHeader(Stream data)
+        {
+            // TODO: Use marshalling here instead of building
+            ExtendedDSiHeader extendedDSiHeader = new ExtendedDSiHeader();
+
+            extendedDSiHeader.GlobalMBK15Settings = new uint[5];
+            for (int i = 0; i < 5; i++)
             {
-                header.GlobalMBK15Settings = new uint[5];
-                for (int i = 0; i < 5; i++)
-                {
-                    header.GlobalMBK15Settings[i] = data.ReadUInt32();
-                }
-                header.LocalMBK68SettingsARM9 = new uint[3];
-                for (int i = 0; i < 3; i++)
-                {
-                    header.LocalMBK68SettingsARM9[i] = data.ReadUInt32();
-                }
-                header.LocalMBK68SettingsARM7 = new uint[3];
-                for (int i = 0; i < 3; i++)
-                {
-                    header.LocalMBK68SettingsARM7[i] = data.ReadUInt32();
-                }
-                header.GlobalMBK9Setting = data.ReadUInt32();
-                header.RegionFlags = data.ReadUInt32();
-                header.AccessControl = data.ReadUInt32();
-                header.ARM7SCFGEXTMask = data.ReadUInt32();
-                header.ReservedFlags = data.ReadUInt32();
-                header.ARM9iRomOffset = data.ReadUInt32();
-                header.Reserved3 = data.ReadUInt32();
-                header.ARM9iLoadAddress = data.ReadUInt32();
-                header.ARM9iSize = data.ReadUInt32();
-                header.ARM7iRomOffset = data.ReadUInt32();
-                header.Reserved4 = data.ReadUInt32();
-                header.ARM7iLoadAddress = data.ReadUInt32();
-                header.ARM7iSize = data.ReadUInt32();
-                header.DigestNTRRegionOffset = data.ReadUInt32();
-                header.DigestNTRRegionLength = data.ReadUInt32();
-                header.DigestTWLRegionOffset = data.ReadUInt32();
-                header.DigestTWLRegionLength = data.ReadUInt32();
-                header.DigestSectorHashtableRegionOffset = data.ReadUInt32();
-                header.DigestSectorHashtableRegionLength = data.ReadUInt32();
-                header.DigestBlockHashtableRegionOffset = data.ReadUInt32();
-                header.DigestBlockHashtableRegionLength = data.ReadUInt32();
-                header.DigestSectorSize = data.ReadUInt32();
-                header.DigestBlockSectorCount = data.ReadUInt32();
-                header.IconBannerSize = data.ReadUInt32();
-                header.Unknown1 = data.ReadUInt32();
-                header.ModcryptArea1Offset = data.ReadUInt32();
-                header.ModcryptArea1Size = data.ReadUInt32();
-                header.ModcryptArea2Offset = data.ReadUInt32();
-                header.ModcryptArea2Size = data.ReadUInt32();
-                header.TitleID = data.ReadBytes(8);
-                header.DSiWarePublicSavSize = data.ReadUInt32();
-                header.DSiWarePrivateSavSize = data.ReadUInt32();
-                header.ReservedZero = data.ReadBytes(176);
-                header.Unknown2 = data.ReadBytes(0x10);
-                header.ARM9WithSecureAreaSHA1HMACHash = data.ReadBytes(20);
-                header.ARM7SHA1HMACHash = data.ReadBytes(20);
-                header.DigestMasterSHA1HMACHash = data.ReadBytes(20);
-                header.BannerSHA1HMACHash = data.ReadBytes(20);
-                header.ARM9iDecryptedSHA1HMACHash = data.ReadBytes(20);
-                header.ARM7iDecryptedSHA1HMACHash = data.ReadBytes(20);
-                header.Reserved5 = data.ReadBytes(40);
-                header.ARM9NoSecureAreaSHA1HMACHash = data.ReadBytes(20);
-                header.Reserved6 = data.ReadBytes(2636);
-                header.ReservedAndUnchecked = data.ReadBytes(0x180);
-                header.RSASignature = data.ReadBytes(0x80);
+                extendedDSiHeader.GlobalMBK15Settings[i] = data.ReadUInt32();
             }
+            extendedDSiHeader.LocalMBK68SettingsARM9 = new uint[3];
+            for (int i = 0; i < 3; i++)
+            {
+                extendedDSiHeader.LocalMBK68SettingsARM9[i] = data.ReadUInt32();
+            }
+            extendedDSiHeader.LocalMBK68SettingsARM7 = new uint[3];
+            for (int i = 0; i < 3; i++)
+            {
+                extendedDSiHeader.LocalMBK68SettingsARM7[i] = data.ReadUInt32();
+            }
+            extendedDSiHeader.GlobalMBK9Setting = data.ReadUInt32();
+            extendedDSiHeader.RegionFlags = data.ReadUInt32();
+            extendedDSiHeader.AccessControl = data.ReadUInt32();
+            extendedDSiHeader.ARM7SCFGEXTMask = data.ReadUInt32();
+            extendedDSiHeader.ReservedFlags = data.ReadUInt32();
+            extendedDSiHeader.ARM9iRomOffset = data.ReadUInt32();
+            extendedDSiHeader.Reserved3 = data.ReadUInt32();
+            extendedDSiHeader.ARM9iLoadAddress = data.ReadUInt32();
+            extendedDSiHeader.ARM9iSize = data.ReadUInt32();
+            extendedDSiHeader.ARM7iRomOffset = data.ReadUInt32();
+            extendedDSiHeader.Reserved4 = data.ReadUInt32();
+            extendedDSiHeader.ARM7iLoadAddress = data.ReadUInt32();
+            extendedDSiHeader.ARM7iSize = data.ReadUInt32();
+            extendedDSiHeader.DigestNTRRegionOffset = data.ReadUInt32();
+            extendedDSiHeader.DigestNTRRegionLength = data.ReadUInt32();
+            extendedDSiHeader.DigestTWLRegionOffset = data.ReadUInt32();
+            extendedDSiHeader.DigestTWLRegionLength = data.ReadUInt32();
+            extendedDSiHeader.DigestSectorHashtableRegionOffset = data.ReadUInt32();
+            extendedDSiHeader.DigestSectorHashtableRegionLength = data.ReadUInt32();
+            extendedDSiHeader.DigestBlockHashtableRegionOffset = data.ReadUInt32();
+            extendedDSiHeader.DigestBlockHashtableRegionLength = data.ReadUInt32();
+            extendedDSiHeader.DigestSectorSize = data.ReadUInt32();
+            extendedDSiHeader.DigestBlockSectorCount = data.ReadUInt32();
+            extendedDSiHeader.IconBannerSize = data.ReadUInt32();
+            extendedDSiHeader.Unknown1 = data.ReadUInt32();
+            extendedDSiHeader.ModcryptArea1Offset = data.ReadUInt32();
+            extendedDSiHeader.ModcryptArea1Size = data.ReadUInt32();
+            extendedDSiHeader.ModcryptArea2Offset = data.ReadUInt32();
+            extendedDSiHeader.ModcryptArea2Size = data.ReadUInt32();
+            extendedDSiHeader.TitleID = data.ReadBytes(8);
+            extendedDSiHeader.DSiWarePublicSavSize = data.ReadUInt32();
+            extendedDSiHeader.DSiWarePrivateSavSize = data.ReadUInt32();
+            extendedDSiHeader.ReservedZero = data.ReadBytes(176);
+            extendedDSiHeader.Unknown2 = data.ReadBytes(0x10);
+            extendedDSiHeader.ARM9WithSecureAreaSHA1HMACHash = data.ReadBytes(20);
+            extendedDSiHeader.ARM7SHA1HMACHash = data.ReadBytes(20);
+            extendedDSiHeader.DigestMasterSHA1HMACHash = data.ReadBytes(20);
+            extendedDSiHeader.BannerSHA1HMACHash = data.ReadBytes(20);
+            extendedDSiHeader.ARM9iDecryptedSHA1HMACHash = data.ReadBytes(20);
+            extendedDSiHeader.ARM7iDecryptedSHA1HMACHash = data.ReadBytes(20);
+            extendedDSiHeader.Reserved5 = data.ReadBytes(40);
+            extendedDSiHeader.ARM9NoSecureAreaSHA1HMACHash = data.ReadBytes(20);
+            extendedDSiHeader.Reserved6 = data.ReadBytes(2636);
+            extendedDSiHeader.ReservedAndUnchecked = data.ReadBytes(0x180);
+            extendedDSiHeader.RSASignature = data.ReadBytes(0x80);
 
-            return header;
+            return extendedDSiHeader;
         }
 
         #endregion
