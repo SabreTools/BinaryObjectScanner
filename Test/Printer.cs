@@ -51,7 +51,10 @@ namespace Test
                 // Get the file type
                 SupportedFileType ft = BurnOutSharp.Tools.Utilities.GetFileType(magic);
                 if (ft == SupportedFileType.UNKNOWN)
-                    ft = BurnOutSharp.Tools.Utilities.GetFileType(Path.GetExtension(file).TrimStart('.'));
+                {
+                    string extension = Path.GetExtension(file).TrimStart('.');
+                    ft = BurnOutSharp.Tools.Utilities.GetFileType(extension);
+                }
 
                 // MS-DOS executable and decendents
                 if (ft == SupportedFileType.Executable)
@@ -236,7 +239,7 @@ namespace Test
                 }
 
                 // N3DS
-                else if (ft == SupportedFileType.NCF)
+                else if (ft == SupportedFileType.N3DS)
                 {
                     // Build the N3DS information
                     Console.WriteLine("Creating Nintendo 3DS deserializer");
@@ -274,7 +277,7 @@ namespace Test
                 }
 
                 // Nitro
-                else if (ft == SupportedFileType.NCF)
+                else if (ft == SupportedFileType.Nitro)
                 {
                     // Build the NCF information
                     Console.WriteLine("Creating Nintendo DS/DSi deserializer");
