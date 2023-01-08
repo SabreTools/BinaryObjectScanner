@@ -34,5 +34,10 @@ namespace BurnOutSharp.Models.N3DS
         /// ExeFS headers associated with each partition
         /// </summary>
         public ExeFSHeader[] ExeFSHeaders { get; set; }
+
+        /// <summary>
+        /// RomFS headers associated with each partition
+        /// </summary>
+        public RomFSHeader[] RomFSHeaders { get; set; }
     }
 }

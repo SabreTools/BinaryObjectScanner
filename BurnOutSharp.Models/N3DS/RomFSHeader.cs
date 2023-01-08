@@ -5,8 +5,19 @@
     /// used as external file storage.
     /// </summary>
     /// <see href="https://www.3dbrew.org/wiki/RomFS"/>
+    /// TODO: Implement the other parts of the RomFS tree structure
     public sealed class RomFSHeader
     {
+        /// <summary>
+        /// Magic "IVFC"
+        /// </summary>
+        public string MagicString;
+
+        /// <summary>
+        /// Magic number 0x10000
+        /// </summary>
+        public uint MagicNumber;
+
         /// <summary>
         /// Master hash size
         /// </summary>

@@ -161,6 +161,32 @@ namespace BurnOutSharp.Builders
 
             #endregion
 
+            #region RomFS Headers
+
+            // Create the RomFS header table
+            cart.RomFSHeaders = new RomFSHeader[8];
+
+            // Iterate and build the RomFS headers
+            for (int i = 0; i < 8; i++)
+            {
+                // If we have an encrypted or invalid partition
+                if (cart.Partitions[i].MagicID != NCCHMagicNumber)
+                    continue;
+
+                // Get the RomFS header offset
+                long offset = (cart.Header.PartitionsTable[i].Offset + cart.Partitions[i].RomFSOffsetInMediaUnits) * mediaUnitSize;
+                if (offset < 0 || offset >= data.Length)
+                    continue;
+
+                // Seek to the RomFS header
+                data.Seek(offset, SeekOrigin.Begin);
+
+                // Parse the RomFS header
+                cart.RomFSHeaders[i] = ParseRomFSHeader(data);
+            }
+
+            #endregion
+
             return cart;
         }
 
@@ -645,6 +671,44 @@ namespace BurnOutSharp.Builders
             exeFSFileHeader.FileSize = data.ReadUInt32();
 
             return exeFSFileHeader;
+        }
+
+        /// <summary>
+        /// Parse a Stream into an RomFS header
+        /// </summary>
+        /// <param name="data">Stream to parse</param>
+        /// <returns>Filled RomFS header on success, null on error</returns>
+        private static RomFSHeader ParseRomFSHeader(Stream data)
+        {
+            // TODO: Use marshalling here instead of building
+            RomFSHeader romFSHeader = new RomFSHeader();
+
+            byte[] magicString = data.ReadBytes(4);
+            romFSHeader.MagicString = Encoding.ASCII.GetString(magicString).TrimEnd('\0');
+            if (romFSHeader.MagicString != RomFSMagicNumber)
+                return null;
+
+            romFSHeader.MagicNumber = data.ReadUInt32();
+            if (romFSHeader.MagicNumber != RomFSSecondMagicNumber)
+                return null;
+
+            romFSHeader.MasterHashSize = data.ReadUInt32();
+            romFSHeader.Level1LogicalOffset = data.ReadUInt64();
+            romFSHeader.Level1HashdataSize = data.ReadUInt64();
+            romFSHeader.Level1BlockSizeLog2 = data.ReadUInt32();
+            romFSHeader.Reserved1 = data.ReadBytes(4);
+            romFSHeader.Level2LogicalOffset = data.ReadUInt64();
+            romFSHeader.Level2HashdataSize = data.ReadUInt64();
+            romFSHeader.Level2BlockSizeLog2 = data.ReadUInt32();
+            romFSHeader.Reserved2 = data.ReadBytes(4);
+            romFSHeader.Level3LogicalOffset = data.ReadUInt64();
+            romFSHeader.Level3HashdataSize = data.ReadUInt64();
+            romFSHeader.Level3BlockSizeLog2 = data.ReadUInt32();
+            romFSHeader.Reserved3 = data.ReadBytes(4);
+            romFSHeader.Reserved4 = data.ReadBytes(4);
+            romFSHeader.OptionalInfoSize = data.ReadUInt32();
+
+            return romFSHeader;
         }
 
         #endregion

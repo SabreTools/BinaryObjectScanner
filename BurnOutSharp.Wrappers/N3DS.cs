@@ -204,6 +204,13 @@ namespace BurnOutSharp.Wrappers
 
         #endregion
 
+        #region RomFS Headers
+
+        /// <inheritdoc cref="Models.N3DS.Cart.RomFSHeaders"/>
+        public Models.N3DS.RomFSHeader[] RomFSHeaders => _cart.RomFSHeaders;
+
+        #endregion
+
         #endregion
 
         #region Instance Variables
@@ -284,6 +291,7 @@ namespace BurnOutSharp.Wrappers
             PrintPartitions();
             PrintExtendedHeaders();
             PrintExeFSHeaders();
+            PrintRomFSHeaders();
         }
 
         /// <summary>
@@ -641,7 +649,7 @@ namespace BurnOutSharp.Wrappers
         }
 
         /// <summary>
-        /// Print ExeFS header header information
+        /// Print ExeFS header information
         /// </summary>
         private void PrintExeFSHeaders()
         {
@@ -682,6 +690,52 @@ namespace BurnOutSharp.Wrappers
                             Console.WriteLine(value: $"    File Hash {j}");
                             Console.WriteLine(value: $"      SHA-256: {BitConverter.ToString(fileHash).Replace('-', ' ')}");
                         }
+                    }
+                }
+            }
+            Console.WriteLine();
+        }
+
+        /// <summary>
+        /// Print RomFS header information
+        /// </summary>
+        private void PrintRomFSHeaders()
+        {
+            Console.WriteLine("  RomFS Header Information:");
+            Console.WriteLine("  -------------------------");
+            if (RomFSHeaders == null || RomFSHeaders.Length == 0)
+            {
+                Console.WriteLine("  No RomFS headers");
+            }
+            else
+            {
+                for (int i = 0; i < RomFSHeaders.Length; i++)
+                {
+                    var romFSHeader = RomFSHeaders[i];
+                    Console.WriteLine($"  RomFS Header {i}");
+                    if (romFSHeader == null)
+                    {
+                        Console.WriteLine($"    Unrecognized RomFS data, no data can be parsed");
+                    }
+                    else
+                    {
+                        Console.WriteLine(value: $"    Magic string: {romFSHeader.MagicString}");
+                        Console.WriteLine(value: $"    Magic number: {romFSHeader.MagicNumber}");
+                        Console.WriteLine(value: $"    Master hash size: {romFSHeader.MasterHashSize}");
+                        Console.WriteLine(value: $"    Level 1 logical offset: {romFSHeader.Level1LogicalOffset}");
+                        Console.WriteLine(value: $"    Level 1 hashdata size: {romFSHeader.Level1HashdataSize}");
+                        Console.WriteLine(value: $"    Level 1 block size: {romFSHeader.Level1BlockSizeLog2}");
+                        Console.WriteLine(value: $"    Reserved 1: {BitConverter.ToString(romFSHeader.Reserved1).Replace('-', ' ')}");
+                        Console.WriteLine(value: $"    Level 2 logical offset: {romFSHeader.Level2LogicalOffset}");
+                        Console.WriteLine(value: $"    Level 2 hashdata size: {romFSHeader.Level2HashdataSize}");
+                        Console.WriteLine(value: $"    Level 2 block size: {romFSHeader.Level2BlockSizeLog2}");
+                        Console.WriteLine(value: $"    Reserved 2: {BitConverter.ToString(romFSHeader.Reserved2).Replace('-', ' ')}");
+                        Console.WriteLine(value: $"    Level 3 logical offset: {romFSHeader.Level3LogicalOffset}");
+                        Console.WriteLine(value: $"    Level 3 hashdata size: {romFSHeader.Level3HashdataSize}");
+                        Console.WriteLine(value: $"    Level 3 block size: {romFSHeader.Level3BlockSizeLog2}");
+                        Console.WriteLine(value: $"    Reserved 3: {BitConverter.ToString(romFSHeader.Reserved3).Replace('-', ' ')}");
+                        Console.WriteLine(value: $"    Reserved 4: {BitConverter.ToString(romFSHeader.Reserved4).Replace('-', ' ')}");
+                        Console.WriteLine(value: $"    Optional info size: {romFSHeader.OptionalInfoSize}");
                     }
                 }
             }
