@@ -9,7 +9,7 @@
         /// <summary>
         /// Extdata ID
         /// </summary>
-        public byte[] ExtdataID;
+        public ulong ExtdataID;
 
         /// <summary>
         /// System savedata IDs
@@ -24,7 +24,9 @@
         /// <summary>
         /// Filesystem access info
         /// </summary>
-        public byte[] FilesystemAccessInfo;
+        /// TODO: Create enum for the flag values
+        /// TODO: Combine with "other attributes"
+        public byte[] FileSystemAccessInfo;
 
         /// <summary>
         /// Other attributes

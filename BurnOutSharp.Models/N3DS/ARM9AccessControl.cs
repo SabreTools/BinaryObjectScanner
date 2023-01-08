@@ -6,7 +6,7 @@
         /// <summary>
         /// Descriptors
         /// </summary>
-        public ARM9AccessControlDescriptors[] Descriptors;
+        public byte[] Descriptors;
 
         /// <summary>
         /// ARM9 Descriptor Version. Originally this value had to be ≥ 2.

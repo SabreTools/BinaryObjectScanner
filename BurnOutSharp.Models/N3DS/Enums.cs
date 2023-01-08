@@ -2,6 +2,7 @@
 
 namespace BurnOutSharp.Models.N3DS
 {
+    // TODO: Fix this, I don't think it's correct
     [Flags]
     public enum ARM9AccessControlDescriptors : byte
     {
@@ -14,7 +15,7 @@ namespace BurnOutSharp.Models.N3DS
         CreateSeed = 0x20,
         UseCardSPI = 0x40,
         SDApplication = 0x80,
-        MoundSdmcWriteAccess = 0xF0,
+        MountSdmcWriteAccess = 0xF0,
     }
 
     [Flags]

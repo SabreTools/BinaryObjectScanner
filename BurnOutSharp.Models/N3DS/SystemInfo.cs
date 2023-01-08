@@ -11,7 +11,7 @@
         /// <summary>
         /// Jump ID
         /// </summary>
-        public byte[] JumpID;
+        public ulong JumpID;
 
         /// <summary>
         /// Reserved

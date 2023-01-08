@@ -6,7 +6,7 @@
     /// - A signed copy of NCCH HDR public key, and exheader ACI. This version of the ACI is used as limitation to the actual ACI.
     /// </summary>
     /// <see href="https://www.3dbrew.org/wiki/NCCH/Extended_Header"/>
-    public sealed class CXIExtendedHeader
+    public sealed class NCCHExtendedHeader
     {
         /// <summary>
         /// SCI

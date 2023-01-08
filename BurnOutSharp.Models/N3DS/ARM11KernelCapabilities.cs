@@ -33,7 +33,8 @@
         /// 12	Special memory
         /// 13	Process has access to CPU core 2 (New3DS only)
         /// </summary>
-        public byte[][] Descriptors;
+        /// TODO: Make enum for flag values
+        public uint[] Descriptors;
 
         /// <summary>
         /// Reserved

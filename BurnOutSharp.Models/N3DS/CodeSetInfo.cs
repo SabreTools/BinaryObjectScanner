@@ -6,7 +6,7 @@
         /// <summary>
         /// Address
         /// </summary>
-        public byte[] Address;
+        public uint Address;
 
         /// <summary>
         /// Physical region size (in page-multiples)

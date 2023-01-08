@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Text;
 using BurnOutSharp.Models.N3DS;
@@ -105,7 +106,33 @@ namespace BurnOutSharp.Builders
 
             #endregion
 
-            // TODO: Parse partition extended headers (decrypted only)
+            #region Extended Headers
+
+            // Create the extended header table
+            cart.NCCHExtendedHeaders = new NCCHExtendedHeader[8];
+
+            // Iterate and build the extended headers
+            for (int i = 0; i < 8; i++)
+            {
+                // If we have an encrypted or invalid partition
+                if (cart.Partitions[i].MagicID != NCCHMagicNumber)
+                    continue;
+
+                // Get the extended header offset
+                long mediaUnitSize = (uint)(0x200 * Math.Pow(2, header.PartitionFlags[(int)NCSDFlags.MediaUnitSize]));
+                long offset = (cart.Header.PartitionsTable[i].Offset * mediaUnitSize) + 0x200;
+                if (offset < 0 || offset >= data.Length)
+                    continue;
+
+                // Seek to the extended header
+                data.Seek(offset, SeekOrigin.Begin);
+
+                // Parse the extended header
+                cart.NCCHExtendedHeaders[i] = ParseNCCHExtendedHeader(data);
+            }
+
+            #endregion
+
             // TODO: Parse ExeFS file entries (decrypted only)
             // TODO: Parse ExeFS filename table (decrypted only)
 
@@ -347,6 +374,209 @@ namespace BurnOutSharp.Builders
             testData.FinalByte = data.ReadByteValue();
 
             return testData;
+        }
+
+        /// <summary>
+        /// Parse a Stream into an NCCH extended header
+        /// </summary>
+        /// <param name="data">Stream to parse</param>
+        /// <returns>Filled NCCH extended header on success, null on error</returns>
+        private static NCCHExtendedHeader ParseNCCHExtendedHeader(Stream data)
+        {
+            // TODO: Use marshalling here instead of building
+            NCCHExtendedHeader extendedHeader = new NCCHExtendedHeader();
+
+            extendedHeader.SCI = ParseSystemControlInfo(data);
+            if (extendedHeader.SCI == null)
+                return null;
+
+            extendedHeader.ACI = ParseAccessControlInfo(data);
+            if (extendedHeader.ACI == null)
+                return null;
+
+            extendedHeader.AccessDescSignature = data.ReadBytes(0x100);
+            extendedHeader.NCCHHDRPublicKey = data.ReadBytes(0x100);
+
+            extendedHeader.ACIForLimitations = ParseAccessControlInfo(data);
+            if (extendedHeader.ACI == null)
+                return null;
+
+            return extendedHeader;
+        }
+
+        /// <summary>
+        /// Parse a Stream into a system control info
+        /// </summary>
+        /// <param name="data">Stream to parse</param>
+        /// <returns>Filled system control info on success, null on error</returns>
+        private static SystemControlInfo ParseSystemControlInfo(Stream data)
+        {
+            // TODO: Use marshalling here instead of building
+            SystemControlInfo systemControlInfo = new SystemControlInfo();
+
+            byte[] applicationTitle = data.ReadBytes(8);
+            systemControlInfo.ApplicationTitle = Encoding.ASCII.GetString(applicationTitle).TrimEnd('\0');
+            systemControlInfo.Reserved1 = data.ReadBytes(5);
+            systemControlInfo.Flag = data.ReadByteValue();
+            systemControlInfo.RemasterVersion = data.ReadUInt16();
+            systemControlInfo.TextCodeSetInfo = ParseCodeSetInfo(data);
+            systemControlInfo.StackSize = data.ReadUInt32();
+            systemControlInfo.ReadOnlyCodeSetInfo = ParseCodeSetInfo(data);
+            systemControlInfo.Reserved2 = data.ReadBytes(4);
+            systemControlInfo.DataCodeSetInfo = ParseCodeSetInfo(data);
+            systemControlInfo.BSSSize = data.ReadUInt32();
+            systemControlInfo.DependencyModuleList = new ulong[48];
+            for (int i = 0; i < 48; i++)
+            {
+                systemControlInfo.DependencyModuleList[i] = data.ReadUInt64();
+            }
+            systemControlInfo.SystemInfo = ParseSystemInfo(data);
+
+            return systemControlInfo;
+        }
+
+        /// <summary>
+        /// Parse a Stream into a code set info
+        /// </summary>
+        /// <param name="data">Stream to parse</param>
+        /// <returns>Filled code set info on success, null on error</returns>
+        private static CodeSetInfo ParseCodeSetInfo(Stream data)
+        {
+            // TODO: Use marshalling here instead of building
+            CodeSetInfo codeSetInfo = new CodeSetInfo();
+
+            codeSetInfo.Address = data.ReadUInt32();
+            codeSetInfo.PhysicalRegionSizeInPages = data.ReadUInt32();
+            codeSetInfo.SizeInBytes = data.ReadUInt32();
+
+            return codeSetInfo;
+        }
+
+        /// <summary>
+        /// Parse a Stream into a system info
+        /// </summary>
+        /// <param name="data">Stream to parse</param>
+        /// <returns>Filled system info on success, null on error</returns>
+        private static SystemInfo ParseSystemInfo(Stream data)
+        {
+            // TODO: Use marshalling here instead of building
+            SystemInfo systemInfo = new SystemInfo();
+
+            systemInfo.SaveDataSize = data.ReadUInt64();
+            systemInfo.JumpID = data.ReadUInt64();
+            systemInfo.Reserved = data.ReadBytes(0x30);
+
+            return systemInfo;
+        }
+
+        /// <summary>
+        /// Parse a Stream into an access control info
+        /// </summary>
+        /// <param name="data">Stream to parse</param>
+        /// <returns>Filled access control info on success, null on error</returns>
+        private static AccessControlInfo ParseAccessControlInfo(Stream data)
+        {
+            // TODO: Use marshalling here instead of building
+            AccessControlInfo accessControlInfo = new AccessControlInfo();
+
+            accessControlInfo.ARM11LocalSystemCapabilities = ParseARM11LocalSystemCapabilities(data);
+            accessControlInfo.ARM11KernelCapabilities = ParseARM11KernelCapabilities(data);
+            accessControlInfo.ARM9AccessControl = ParseARM9AccessControl(data);
+
+            return accessControlInfo;
+        }
+
+        /// <summary>
+        /// Parse a Stream into an ARM11 local system capabilities
+        /// </summary>
+        /// <param name="data">Stream to parse</param>
+        /// <returns>Filled ARM11 local system capabilities on success, null on error</returns>
+        private static ARM11LocalSystemCapabilities ParseARM11LocalSystemCapabilities(Stream data)
+        {
+            // TODO: Use marshalling here instead of building
+            ARM11LocalSystemCapabilities arm11LocalSystemCapabilities = new ARM11LocalSystemCapabilities();
+
+            arm11LocalSystemCapabilities.ProgramID = data.ReadUInt64();
+            arm11LocalSystemCapabilities.CoreVersion = data.ReadUInt32();
+            arm11LocalSystemCapabilities.Flag1 = (ARM11LSCFlag1)data.ReadByteValue();
+            arm11LocalSystemCapabilities.Flag2 = (ARM11LSCFlag2)data.ReadByteValue();
+            arm11LocalSystemCapabilities.Flag0 = (ARM11LSCFlag0)data.ReadByteValue();
+            arm11LocalSystemCapabilities.Priority = data.ReadByteValue();
+            arm11LocalSystemCapabilities.ResourceLimitDescriptors = new ushort[16];
+            for (int i = 0; i < 16; i++)
+            {
+                arm11LocalSystemCapabilities.ResourceLimitDescriptors[i] = data.ReadUInt16();
+            }
+            arm11LocalSystemCapabilities.StorageInfo = ParseStorageInfo(data);
+            arm11LocalSystemCapabilities.ServiceAccessControl = new ulong[32];
+            for (int i = 0; i < 32; i++)
+            {
+                arm11LocalSystemCapabilities.ServiceAccessControl[i] = data.ReadUInt64();
+            }
+            arm11LocalSystemCapabilities.ExtendedServiceAccessControl = new ulong[2];
+            for (int i = 0; i < 2; i++)
+            {
+                arm11LocalSystemCapabilities.ExtendedServiceAccessControl[i] = data.ReadUInt64();
+            }
+            arm11LocalSystemCapabilities.Reserved = data.ReadBytes(0x0F);
+            arm11LocalSystemCapabilities.ResourceLimitCategory = (ResourceLimitCategory)data.ReadByteValue();
+
+            return arm11LocalSystemCapabilities;
+        }
+
+        /// <summary>
+        /// Parse a Stream into a storage info
+        /// </summary>
+        /// <param name="data">Stream to parse</param>
+        /// <returns>Filled storage info on success, null on error</returns>
+        private static StorageInfo ParseStorageInfo(Stream data)
+        {
+            // TODO: Use marshalling here instead of building
+            StorageInfo storageInfo = new StorageInfo();
+
+            storageInfo.ExtdataID = data.ReadUInt64();
+            storageInfo.SystemSavedataIDs = data.ReadBytes(8);
+            storageInfo.StorageAccessibleUniqueIDs = data.ReadBytes(8);
+            storageInfo.FileSystemAccessInfo = data.ReadBytes(7);
+            storageInfo.OtherAttributes = (StorageInfoOtherAttributes)data.ReadByteValue();
+
+            return storageInfo;
+        }
+
+        /// <summary>
+        /// Parse a Stream into an ARM11 kernel capabilities
+        /// </summary>
+        /// <param name="data">Stream to parse</param>
+        /// <returns>Filled ARM11 kernel capabilities on success, null on error</returns>
+        private static ARM11KernelCapabilities ParseARM11KernelCapabilities(Stream data)
+        {
+            // TODO: Use marshalling here instead of building
+            ARM11KernelCapabilities arm11KernelCapabilities = new ARM11KernelCapabilities();
+
+            arm11KernelCapabilities.Descriptors = new uint[28];
+            for (int i = 0; i < 28; i++)
+            {
+                arm11KernelCapabilities.Descriptors[i] = data.ReadUInt32();
+            }
+            arm11KernelCapabilities.Reserved = data.ReadBytes(0x10);
+
+            return arm11KernelCapabilities;
+        }
+
+        /// <summary>
+        /// Parse a Stream into an ARM11 access control
+        /// </summary>
+        /// <param name="data">Stream to parse</param>
+        /// <returns>Filled ARM11 access control on success, null on error</returns>
+        private static ARM9AccessControl ParseARM9AccessControl(Stream data)
+        {
+            // TODO: Use marshalling here instead of building
+            ARM9AccessControl arm9AccessControl = new ARM9AccessControl();
+
+            arm9AccessControl.Descriptors = data.ReadBytes(15);
+            arm9AccessControl.DescriptorVersion = data.ReadByteValue();
+
+            return arm9AccessControl;
         }
 
         #endregion

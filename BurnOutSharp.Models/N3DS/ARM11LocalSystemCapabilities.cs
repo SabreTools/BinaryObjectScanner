@@ -6,7 +6,7 @@
         /// <summary>
         /// Program ID
         /// </summary>
-        public byte[] ProgramID;
+        public ulong ProgramID;
 
         /// <summary>
         /// Core version (The Title ID low of the required FIRM)
@@ -36,7 +36,7 @@
         /// <summary>
         /// Resource limit descriptors. The first byte here controls the maximum allowed CpuTime.
         /// </summary>
-        public byte[][] ResourceLimitDescriptors;
+        public ushort[] ResourceLimitDescriptors;
 
         /// <summary>
         /// Storage info
@@ -46,12 +46,12 @@
         /// <summary>
         /// Service access control
         /// </summary>
-        public byte[][] ServiceAccessControl;
+        public ulong[] ServiceAccessControl;
 
         /// <summary>
         /// Extended service access control, support for this was implemented with 9.3.0-X.
         /// </summary>
-        public byte[][] ExtendedServiceAccessControl;
+        public ulong[] ExtendedServiceAccessControl;
 
         /// <summary>
         /// Reserved

@@ -6,7 +6,7 @@
         /// <summary>
         /// Application title (default is "CtrApp")
         /// </summary>
-        public char[] ApplicationTitle;
+        public string ApplicationTitle;
 
         /// <summary>
         /// Reserved
@@ -21,12 +21,12 @@
         /// <summary>
         /// Remaster version
         /// </summary>
-        public byte[] RemasterVersion;
+        public ushort RemasterVersion;
 
         /// <summary>
         /// Text code set info
         /// </summary>
-        public CodeSetInfo TextCodesetInfo;
+        public CodeSetInfo TextCodeSetInfo;
 
         /// <summary>
         /// Stack size
@@ -56,7 +56,7 @@
         /// <summary>
         /// Dependency module (program ID) list
         /// </summary>
-        public byte[][] DependencyModuleList;
+        public ulong[] DependencyModuleList;
 
         /// <summary>
         /// SystemInfo
