@@ -24,5 +24,10 @@ namespace BurnOutSharp.Models.Nitro
         /// Name table (folder allocation table, name list)
         /// </summary>
         public NameTable NameTable { get; set; }
+
+        /// <summary>
+        /// File allocation table
+        /// </summary>
+        public FileAllocationTableEntry[] FileAllocationTable { get; set; }
     }
 }

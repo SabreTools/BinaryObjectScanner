@@ -117,7 +117,30 @@ namespace BurnOutSharp.Builders
 
             #endregion
 
-            // TODO: Parse file allocation table
+            #region File Allocation Table
+
+            // Try to get the file allocation table offset
+            long fileAllocationTableOffset = header.FileAllocationTableOffset;
+            if (fileAllocationTableOffset < 0 || fileAllocationTableOffset > data.Length)
+                return null;
+
+            // Seek to the file allocation table
+            data.Seek(fileAllocationTableOffset, SeekOrigin.Begin);
+
+            // Create the file allocation table
+            var fileAllocationTable = new List<FileAllocationTableEntry>();
+
+            // Try to parse the file allocation table
+            while (data.Position - fileAllocationTableOffset < header.FileAllocationTableLength)
+            {
+                var entry = ParseFileAllocationTableEntry(data);
+                fileAllocationTable.Add(entry);
+            }
+
+            // Set the file allocation table
+            cart.FileAllocationTable = fileAllocationTable.ToArray();
+
+            #endregion
 
             // TODO: Read and optionally parse out the other areas
             // Look for offsets and lengths in the header pieces
@@ -345,6 +368,22 @@ namespace BurnOutSharp.Builders
 
             if (entry.Folder)
                 entry.Index = data.ReadUInt16();
+
+            return entry;
+        }
+
+        /// <summary>
+        /// Parse a Stream into a name list entry
+        /// </summary>
+        /// <param name="data">Stream to parse</param>
+        /// <returns>Filled name list entry on success, null on error</returns>
+        private static FileAllocationTableEntry ParseFileAllocationTableEntry(Stream data)
+        {
+            // TODO: Use marshalling here instead of building
+            FileAllocationTableEntry entry = new FileAllocationTableEntry();
+
+            entry.StartOffset = data.ReadUInt32();
+            entry.EndOffset = data.ReadUInt32();
 
             return entry;
         }
