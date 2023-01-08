@@ -190,6 +190,13 @@ namespace BurnOutSharp.Wrappers
 
         #endregion
 
+        #region Extended Headers
+
+        /// <inheritdoc cref="Models.N3DS.Cart.ExtendedHeaders"/>
+        public Models.N3DS.NCCHExtendedHeader[] ExtendedHeaders => _cart.ExtendedHeaders;
+
+        #endregion
+
         #endregion
 
         #region Instance Variables
@@ -268,6 +275,7 @@ namespace BurnOutSharp.Wrappers
             PrintCardInfoHeader();
             PrintDevelopmentCardInfoHeader();
             PrintPartitions();
+            PrintExtendedHeaders();
         }
 
         /// <summary>
@@ -493,6 +501,131 @@ namespace BurnOutSharp.Wrappers
                         Console.WriteLine($"    Reserved 4: {BitConverter.ToString(partitionHeader.Reserved4).Replace('-', ' ')}");
                         Console.WriteLine($"    ExeFS superblock SHA-256 hash: {BitConverter.ToString(partitionHeader.ExeFSSuperblockHash).Replace('-', ' ')}");
                         Console.WriteLine($"    RomFS superblock SHA-256 hash: {BitConverter.ToString(partitionHeader.RomFSSuperblockHash).Replace('-', ' ')}");
+                    }
+                }
+            }
+            Console.WriteLine();
+        }
+
+        /// <summary>
+        /// Print NCCH extended header information
+        /// </summary>
+        private void PrintExtendedHeaders()
+        {
+            Console.WriteLine("  NCCH Extended Header Information:");
+            Console.WriteLine("  -------------------------");
+            if (ExtendedHeaders == null || ExtendedHeaders.Length == 0)
+            {
+                Console.WriteLine("  No NCCH extended headers");
+            }
+            else
+            {
+                for (int i = 0; i < ExtendedHeaders.Length; i++)
+                {
+                    var extendedHeader = ExtendedHeaders[i];
+                    Console.WriteLine($"  NCCH Extended Header {i}");
+                    if (extendedHeader == null)
+                    {
+                        Console.WriteLine($"    Unrecognized partition data, no data can be parsed");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"    System control info:");
+                        Console.WriteLine($"      Application title: {extendedHeader.SCI.ApplicationTitle}");
+                        Console.WriteLine($"      Reserved 1: {BitConverter.ToString(extendedHeader.SCI.Reserved1).Replace('-', ' ')}");
+                        Console.WriteLine($"      Flag: {extendedHeader.SCI.Flag}");
+                        Console.WriteLine($"      Remaster version: {extendedHeader.SCI.RemasterVersion}");
+
+                        Console.WriteLine($"      Text code set info:");
+                        Console.WriteLine($"        Address: {extendedHeader.SCI.TextCodeSetInfo.Address}");
+                        Console.WriteLine($"        Physical region size (in page-multiples): {extendedHeader.SCI.TextCodeSetInfo.PhysicalRegionSizeInPages}");
+                        Console.WriteLine($"        Size (in bytes): {extendedHeader.SCI.TextCodeSetInfo.SizeInBytes}");
+
+                        Console.WriteLine($"      Stack size: {extendedHeader.SCI.StackSize}");
+
+                        Console.WriteLine($"      Read-only code set info:");
+                        Console.WriteLine($"        Address: {extendedHeader.SCI.ReadOnlyCodeSetInfo.Address}");
+                        Console.WriteLine($"        Physical region size (in page-multiples): {extendedHeader.SCI.ReadOnlyCodeSetInfo.PhysicalRegionSizeInPages}");
+                        Console.WriteLine($"        Size (in bytes): {extendedHeader.SCI.ReadOnlyCodeSetInfo.SizeInBytes}");
+
+                        Console.WriteLine($"      Reserved 2: {BitConverter.ToString(extendedHeader.SCI.Reserved2).Replace('-', newChar: ' ')}");
+
+                        Console.WriteLine($"      Data code set info:");
+                        Console.WriteLine($"        Address: {extendedHeader.SCI.DataCodeSetInfo.Address}");
+                        Console.WriteLine($"        Physical region size (in page-multiples): {extendedHeader.SCI.DataCodeSetInfo.PhysicalRegionSizeInPages}");
+                        Console.WriteLine($"        Size (in bytes): {extendedHeader.SCI.DataCodeSetInfo.SizeInBytes}");
+
+                        Console.WriteLine($"      BSS size: {extendedHeader.SCI.BSSSize}");
+                        Console.WriteLine($"      Dependency module list: {string.Join(", ", extendedHeader.SCI.DependencyModuleList)}");
+
+                        Console.WriteLine($"      System info:");
+                        Console.WriteLine($"        SaveData size: {extendedHeader.SCI.SystemInfo.SaveDataSize}");
+                        Console.WriteLine($"        Jump ID: {extendedHeader.SCI.SystemInfo.JumpID}");
+                        Console.WriteLine($"        Reserved: {BitConverter.ToString(extendedHeader.SCI.SystemInfo.Reserved).Replace('-', newChar: ' ')}");
+
+                        Console.WriteLine($"    Access control info:");
+                        Console.WriteLine($"      ARM11 local system capabilities:");
+                        Console.WriteLine($"        Program ID: {extendedHeader.ACI.ARM11LocalSystemCapabilities.ProgramID}");
+                        Console.WriteLine($"        Core version: {extendedHeader.ACI.ARM11LocalSystemCapabilities.CoreVersion}");
+                        Console.WriteLine($"        Flag 1: {extendedHeader.ACI.ARM11LocalSystemCapabilities.Flag1}");
+                        Console.WriteLine($"        Flag 2: {extendedHeader.ACI.ARM11LocalSystemCapabilities.Flag2}");
+                        Console.WriteLine($"        Flag 0: {extendedHeader.ACI.ARM11LocalSystemCapabilities.Flag0}");
+                        Console.WriteLine($"        Priority: {extendedHeader.ACI.ARM11LocalSystemCapabilities.Priority}");
+                        Console.WriteLine($"        Resource limit descriptors: {string.Join(", ", extendedHeader.ACI.ARM11LocalSystemCapabilities.ResourceLimitDescriptors)}");
+
+                        Console.WriteLine($"        Storage info:");
+                        Console.WriteLine($"          Extdata ID: {extendedHeader.ACI.ARM11LocalSystemCapabilities.StorageInfo.ExtdataID}");
+                        Console.WriteLine($"          System savedata IDs: {BitConverter.ToString(extendedHeader.ACI.ARM11LocalSystemCapabilities.StorageInfo.SystemSavedataIDs).Replace('-', newChar: ' ')}");
+                        Console.WriteLine($"          Storage accessible unique IDs: {BitConverter.ToString(extendedHeader.ACI.ARM11LocalSystemCapabilities.StorageInfo.StorageAccessibleUniqueIDs).Replace('-', newChar: ' ')}");
+                        Console.WriteLine($"          File system access info: {BitConverter.ToString(extendedHeader.ACI.ARM11LocalSystemCapabilities.StorageInfo.FileSystemAccessInfo).Replace('-', newChar: ' ')}");
+                        Console.WriteLine($"          Other attributes: {extendedHeader.ACI.ARM11LocalSystemCapabilities.StorageInfo.OtherAttributes}");
+
+                        Console.WriteLine($"        Service access control: {string.Join(", ", extendedHeader.ACI.ARM11LocalSystemCapabilities.ServiceAccessControl)}");
+                        Console.WriteLine($"        Extended service access control: {string.Join(", ", extendedHeader.ACI.ARM11LocalSystemCapabilities.ExtendedServiceAccessControl)}");
+                        Console.WriteLine($"        Reserved: {BitConverter.ToString(extendedHeader.ACI.ARM11LocalSystemCapabilities.Reserved).Replace('-', newChar: ' ')}");
+                        Console.WriteLine($"        Resource limit cateogry: {extendedHeader.ACI.ARM11LocalSystemCapabilities.ResourceLimitCategory}");
+
+                        Console.WriteLine($"      ARM11 kernel capabilities:");
+                        Console.WriteLine($"        Descriptors: {string.Join(", ", extendedHeader.ACI.ARM11KernelCapabilities.Descriptors)}");
+                        Console.WriteLine($"        Reserved: {BitConverter.ToString(extendedHeader.ACI.ARM11KernelCapabilities.Reserved).Replace('-', newChar: ' ')}");
+
+                        Console.WriteLine($"      ARM9 access control:");
+                        Console.WriteLine($"        Descriptors: {BitConverter.ToString(extendedHeader.ACI.ARM9AccessControl.Descriptors).Replace('-', newChar: ' ')}");
+                        Console.WriteLine($"        Descriptor version: {extendedHeader.ACI.ARM9AccessControl.DescriptorVersion}");
+
+                        Console.WriteLine($"    AccessDec signature (RSA-2048-SHA256): {BitConverter.ToString(extendedHeader.AccessDescSignature).Replace('-', ' ')}");
+                        Console.WriteLine($"    NCCH HDR RSA-2048 public key: {BitConverter.ToString(extendedHeader.NCCHHDRPublicKey).Replace('-', ' ')}");
+                        
+                        
+                        Console.WriteLine($"    Access control info (for limitations of first ACI):");
+                        Console.WriteLine($"      ARM11 local system capabilities:");
+                        Console.WriteLine($"        Program ID: {extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.ProgramID}");
+                        Console.WriteLine($"        Core version: {extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.CoreVersion}");
+                        Console.WriteLine($"        Flag 1: {extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.Flag1}");
+                        Console.WriteLine($"        Flag 2: {extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.Flag2}");
+                        Console.WriteLine($"        Flag 0: {extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.Flag0}");
+                        Console.WriteLine($"        Priority: {extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.Priority}");
+                        Console.WriteLine($"        Resource limit descriptors: {string.Join(", ", extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.ResourceLimitDescriptors)}");
+
+                        Console.WriteLine($"        Storage info:");
+                        Console.WriteLine($"          Extdata ID: {extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.StorageInfo.ExtdataID}");
+                        Console.WriteLine($"          System savedata IDs: {BitConverter.ToString(extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.StorageInfo.SystemSavedataIDs).Replace('-', newChar: ' ')}");
+                        Console.WriteLine($"          Storage accessible unique IDs: {BitConverter.ToString(extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.StorageInfo.StorageAccessibleUniqueIDs).Replace('-', newChar: ' ')}");
+                        Console.WriteLine($"          File system access info: {BitConverter.ToString(extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.StorageInfo.FileSystemAccessInfo).Replace('-', newChar: ' ')}");
+                        Console.WriteLine($"          Other attributes: {extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.StorageInfo.OtherAttributes}");
+
+                        Console.WriteLine($"        Service access control: {string.Join(", ", extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.ServiceAccessControl)}");
+                        Console.WriteLine($"        Extended service access control: {string.Join(", ", extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.ExtendedServiceAccessControl)}");
+                        Console.WriteLine($"        Reserved: {BitConverter.ToString(extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.Reserved).Replace('-', newChar: ' ')}");
+                        Console.WriteLine($"        Resource limit cateogry: {extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.ResourceLimitCategory}");
+
+                        Console.WriteLine($"      ARM11 kernel capabilities:");
+                        Console.WriteLine($"        Descriptors: {string.Join(", ", extendedHeader.ACIForLimitations.ARM11KernelCapabilities.Descriptors)}");
+                        Console.WriteLine($"        Reserved: {BitConverter.ToString(extendedHeader.ACIForLimitations.ARM11KernelCapabilities.Reserved).Replace('-', newChar: ' ')}");
+
+                        Console.WriteLine($"      ARM9 access control:");
+                        Console.WriteLine($"        Descriptors: {BitConverter.ToString(extendedHeader.ACIForLimitations.ARM9AccessControl.Descriptors).Replace('-', newChar: ' ')}");
+                        Console.WriteLine($"        Descriptor version: {extendedHeader.ACIForLimitations.ARM9AccessControl.DescriptorVersion}");
                     }
                 }
             }

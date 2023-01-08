@@ -28,6 +28,6 @@ namespace BurnOutSharp.Models.N3DS
         /// <summary>
         /// NCCH extended headers
         /// </summary>
-        public NCCHExtendedHeader[] NCCHExtendedHeaders { get; set; }
+        public NCCHExtendedHeader[] ExtendedHeaders { get; set; }
     }
 }

@@ -109,7 +109,7 @@ namespace BurnOutSharp.Builders
             #region Extended Headers
 
             // Create the extended header table
-            cart.NCCHExtendedHeaders = new NCCHExtendedHeader[8];
+            cart.ExtendedHeaders = new NCCHExtendedHeader[8];
 
             // Iterate and build the extended headers
             for (int i = 0; i < 8; i++)
@@ -128,7 +128,7 @@ namespace BurnOutSharp.Builders
                 data.Seek(offset, SeekOrigin.Begin);
 
                 // Parse the extended header
-                cart.NCCHExtendedHeaders[i] = ParseNCCHExtendedHeader(data);
+                cart.ExtendedHeaders[i] = ParseNCCHExtendedHeader(data);
             }
 
             #endregion
