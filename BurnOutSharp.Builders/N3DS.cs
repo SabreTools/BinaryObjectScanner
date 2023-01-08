@@ -106,6 +106,9 @@ namespace BurnOutSharp.Builders
 
             #endregion
 
+            // Cache the media unit size for further use
+            long mediaUnitSize = (uint)(0x200 * Math.Pow(2, header.PartitionFlags[(int)NCSDFlags.MediaUnitSize]));
+
             #region Extended Headers
 
             // Create the extended header table
@@ -119,7 +122,6 @@ namespace BurnOutSharp.Builders
                     continue;
 
                 // Get the extended header offset
-                long mediaUnitSize = (uint)(0x200 * Math.Pow(2, header.PartitionFlags[(int)NCSDFlags.MediaUnitSize]));
                 long offset = (cart.Header.PartitionsTable[i].Offset * mediaUnitSize) + 0x200;
                 if (offset < 0 || offset >= data.Length)
                     continue;
@@ -133,7 +135,32 @@ namespace BurnOutSharp.Builders
 
             #endregion
 
-            // TODO: Parse ExeFS file entries (decrypted only)
+            #region ExeFS Headers
+
+            // Create the ExeFS header table
+            cart.ExeFSHeaders = new ExeFSHeader[8];
+
+            // Iterate and build the ExeFS headers
+            for (int i = 0; i < 8; i++)
+            {
+                // If we have an encrypted or invalid partition
+                if (cart.Partitions[i].MagicID != NCCHMagicNumber)
+                    continue;
+
+                // Get the ExeFS header offset
+                long offset = (cart.Header.PartitionsTable[i].Offset + cart.Partitions[i].ExeFSOffsetInMediaUnits) * mediaUnitSize;
+                if (offset < 0 || offset >= data.Length)
+                    continue;
+
+                // Seek to the ExeFS header
+                data.Seek(offset, SeekOrigin.Begin);
+
+                // Parse the ExeFS header
+                cart.ExeFSHeaders[i] = ParseExeFSHeader(data);
+            }
+
+            #endregion
+
             // TODO: Parse ExeFS filename table (decrypted only)
 
             return cart;
@@ -577,6 +604,49 @@ namespace BurnOutSharp.Builders
             arm9AccessControl.DescriptorVersion = data.ReadByteValue();
 
             return arm9AccessControl;
+        }
+
+        /// <summary>
+        /// Parse a Stream into an ExeFS header
+        /// </summary>
+        /// <param name="data">Stream to parse</param>
+        /// <returns>Filled ExeFS header on success, null on error</returns>
+        private static ExeFSHeader ParseExeFSHeader(Stream data)
+        {
+            // TODO: Use marshalling here instead of building
+            ExeFSHeader exeFSHeader = new ExeFSHeader();
+
+            exeFSHeader.FileHeaders = new ExeFSFileHeader[10];
+            for (int i = 0; i < 10; i++)
+            {
+                exeFSHeader.FileHeaders[i] = ParseExeFSFileHeader(data);
+            }
+            exeFSHeader.Reserved = data.ReadBytes(0x20);
+            exeFSHeader.FileHashes = new byte[10][];
+            for (int i = 0; i < 10; i++)
+            {
+                exeFSHeader.FileHashes[i] = data.ReadBytes(0x20);
+            }
+
+            return exeFSHeader;
+        }
+
+        /// <summary>
+        /// Parse a Stream into an ExeFS file header
+        /// </summary>
+        /// <param name="data">Stream to parse</param>
+        /// <returns>Filled ExeFS file header on success, null on error</returns>
+        private static ExeFSFileHeader ParseExeFSFileHeader(Stream data)
+        {
+            // TODO: Use marshalling here instead of building
+            ExeFSFileHeader exeFSFileHeader = new ExeFSFileHeader();
+
+            byte[] fileName = data.ReadBytes(8);
+            exeFSFileHeader.FileName = Encoding.ASCII.GetString(fileName).TrimEnd('\0');
+            exeFSFileHeader.FileOffset = data.ReadUInt32();
+            exeFSFileHeader.FileSize = data.ReadUInt32();
+
+            return exeFSFileHeader;
         }
 
         #endregion

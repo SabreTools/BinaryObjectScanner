@@ -22,5 +22,11 @@
         /// Reserved
         /// </summary>
         public byte[] Reserved;
+
+        /// <summary>
+        /// File hashes (10 hashes maximum, 32 bytes each, one for each header)
+        /// </summary>
+        /// <remarks>SHA-256 hashes</remarks>
+        public byte[][] FileHashes;
     }
 }

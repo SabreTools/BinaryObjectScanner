@@ -29,5 +29,10 @@ namespace BurnOutSharp.Models.N3DS
         /// NCCH extended headers
         /// </summary>
         public NCCHExtendedHeader[] ExtendedHeaders { get; set; }
+
+        /// <summary>
+        /// ExeFS headers associated with each partition
+        /// </summary>
+        public ExeFSHeader[] ExeFSHeaders { get; set; }
     }
 }
