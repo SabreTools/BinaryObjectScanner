@@ -161,8 +161,6 @@ namespace BurnOutSharp.Builders
 
             #endregion
 
-            // TODO: Parse ExeFS filename table (decrypted only)
-
             return cart;
         }
 
