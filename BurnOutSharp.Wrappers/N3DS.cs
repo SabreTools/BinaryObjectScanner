@@ -197,6 +197,13 @@ namespace BurnOutSharp.Wrappers
 
         #endregion
 
+        #region ExeFS Headers
+
+        /// <inheritdoc cref="Models.N3DS.Cart.ExeFSHeaders"/>
+        public Models.N3DS.ExeFSHeader[] ExeFSHeaders => _cart.ExeFSHeaders;
+
+        #endregion
+
         #endregion
 
         #region Instance Variables
@@ -276,6 +283,7 @@ namespace BurnOutSharp.Wrappers
             PrintDevelopmentCardInfoHeader();
             PrintPartitions();
             PrintExtendedHeaders();
+            PrintExeFSHeaders();
         }
 
         /// <summary>
@@ -595,8 +603,8 @@ namespace BurnOutSharp.Wrappers
 
                         Console.WriteLine($"    AccessDec signature (RSA-2048-SHA256): {BitConverter.ToString(extendedHeader.AccessDescSignature).Replace('-', ' ')}");
                         Console.WriteLine($"    NCCH HDR RSA-2048 public key: {BitConverter.ToString(extendedHeader.NCCHHDRPublicKey).Replace('-', ' ')}");
-                        
-                        
+
+
                         Console.WriteLine($"    Access control info (for limitations of first ACI):");
                         Console.WriteLine($"      ARM11 local system capabilities:");
                         Console.WriteLine($"        Program ID: {extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.ProgramID}");
@@ -626,6 +634,54 @@ namespace BurnOutSharp.Wrappers
                         Console.WriteLine($"      ARM9 access control:");
                         Console.WriteLine($"        Descriptors: {BitConverter.ToString(extendedHeader.ACIForLimitations.ARM9AccessControl.Descriptors).Replace('-', newChar: ' ')}");
                         Console.WriteLine($"        Descriptor version: {extendedHeader.ACIForLimitations.ARM9AccessControl.DescriptorVersion}");
+                    }
+                }
+            }
+            Console.WriteLine();
+        }
+
+        /// <summary>
+        /// Print ExeFS header header information
+        /// </summary>
+        private void PrintExeFSHeaders()
+        {
+            Console.WriteLine("  ExeFS Header Information:");
+            Console.WriteLine("  -------------------------");
+            if (ExeFSHeaders == null || ExeFSHeaders.Length == 0)
+            {
+                Console.WriteLine("  No ExeFS headers");
+            }
+            else
+            {
+                for (int i = 0; i < ExeFSHeaders.Length; i++)
+                {
+                    var exeFSHeader = ExeFSHeaders[i];
+                    Console.WriteLine($"  ExeFS Header {i}");
+                    if (exeFSHeader == null)
+                    {
+                        Console.WriteLine($"    Unrecognized partition data, no data can be parsed");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"    File headers:");
+                        for (int j = 0; j < exeFSHeader.FileHeaders.Length; j++)
+                        {
+                            var fileHeader = exeFSHeader.FileHeaders[j];
+                            Console.WriteLine(value: $"    File Header {j}");
+                            Console.WriteLine(value: $"      File name: {fileHeader.FileName}");
+                            Console.WriteLine(value: $"      File offset: {fileHeader.FileOffset}");
+                            Console.WriteLine(value: $"      File size: {fileHeader.FileSize}");
+                        }
+
+                        Console.WriteLine(value: $"    Reserved: {BitConverter.ToString(exeFSHeader.Reserved).Replace('-', ' ')}");
+                        
+                        Console.WriteLine($"    File hashes:");
+                        for (int j = 0; j < exeFSHeader.FileHashes.Length; j++)
+                        {
+                            var fileHash = exeFSHeader.FileHashes[j];
+                            Console.WriteLine(value: $"    File Hash {j}");
+                            Console.WriteLine(value: $"      SHA-256: {BitConverter.ToString(fileHash).Replace('-', ' ')}");
+                        }
                     }
                 }
             }
