@@ -82,17 +82,13 @@ namespace BurnOutSharp.Builders
 
             #region Development Card Info Header
 
-            // TODO: Hook up a builder flag to enable development parsing
-            if (false)
-            {
-                // Try to parse the development card info header
-                var developmentCardInfoHeader = ParseDevelopmentCardInfoHeader(data);
-                if (developmentCardInfoHeader == null)
-                    return null;
+            // Try to parse the development card info header
+            var developmentCardInfoHeader = ParseDevelopmentCardInfoHeader(data);
+            if (developmentCardInfoHeader == null)
+                return null;
 
-                // Set the development card info header
-                cart.DevelopmentCardInfoHeader = developmentCardInfoHeader;
-            }
+            // Set the development card info header
+            cart.DevelopmentCardInfoHeader = developmentCardInfoHeader;
 
             #endregion
 
@@ -109,6 +105,10 @@ namespace BurnOutSharp.Builders
 
             #endregion
 
+            // TODO: Parse partition extended headers (decrypted only)
+            // TODO: Parse ExeFS file entries (decrypted only)
+            // TODO: Parse ExeFS filename table (decrypted only)
+
             return cart;
         }
 
@@ -124,7 +124,7 @@ namespace BurnOutSharp.Builders
 
             header.RSA2048Signature = data.ReadBytes(0x100);
             byte[] magicNumber = data.ReadBytes(4);
-            header.MagicNumber = Encoding.ASCII.GetString(magicNumber).TrimEnd('\0');;
+            header.MagicNumber = Encoding.ASCII.GetString(magicNumber).TrimEnd('\0'); ;
             if (header.MagicNumber != NCSDMagicNumber)
                 return null;
 
@@ -269,10 +269,7 @@ namespace BurnOutSharp.Builders
                 header.RSA2048Signature = data.ReadBytes(0x100);
 
             byte[] magicId = data.ReadBytes(4);
-            header.MagicID = Encoding.ASCII.GetString(magicId).TrimEnd('\0');;
-            if (header.MagicID != NCCHMagicNumber)
-                return null;
-
+            header.MagicID = Encoding.ASCII.GetString(magicId).TrimEnd('\0');
             header.ContentSizeInMediaUnits = data.ReadUInt32();
             header.PartitionId = data.ReadUInt64();
             header.MakerCode = data.ReadUInt16();
@@ -281,7 +278,8 @@ namespace BurnOutSharp.Builders
             header.ProgramId = data.ReadBytes(8);
             header.Reserved1 = data.ReadBytes(0x10);
             header.LogoRegionHash = data.ReadBytes(0x20);
-            header.ProductCode = data.ReadBytes(0x10);
+            byte[] productCode = data.ReadBytes(0x10);
+            header.ProductCode = Encoding.ASCII.GetString(productCode).TrimEnd('\0');
             header.ExtendedHeaderHash = data.ReadBytes(0x20);
             header.ExtendedHeaderSizeInBytes = data.ReadUInt32();
             header.Reserved2 = data.ReadBytes(4);

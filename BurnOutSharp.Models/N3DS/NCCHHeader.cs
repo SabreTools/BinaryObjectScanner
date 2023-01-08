@@ -59,7 +59,7 @@
         /// <summary>
         /// Product code
         /// </summary>
-        public byte[] ProductCode;
+        public string ProductCode;
 
         /// <summary>
         /// Extended header SHA-256 hash (SHA256 of 2x Alignment Size, beginning at 0x0 of ExHeader)

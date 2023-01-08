@@ -9,7 +9,8 @@ namespace BurnOutSharp.Models.N3DS
         public byte[] CardSeedKeyY;
 
         /// <summary>
-        /// Encrypted card seed (AES-CCM, keyslot 0x3B for retail cards, see CTRCARD_SECSEED)        /// </summary>
+        /// Encrypted card seed (AES-CCM, keyslot 0x3B for retail cards, see CTRCARD_SECSEED)
+        /// </summary>
         public byte[] EncryptedCardSeed;
 
         /// <summary>
