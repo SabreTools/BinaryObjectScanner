@@ -19,5 +19,10 @@ namespace BurnOutSharp.Models.Nitro
         /// Secure area, may be encrypted or decrypted
         /// </summary>
         public byte[] SecureArea { get; set; }
+
+        /// <summary>
+        /// Name table (folder allocation table, name list)
+        /// </summary>
+        public NameTable NameTable { get; set; }
     }
 }

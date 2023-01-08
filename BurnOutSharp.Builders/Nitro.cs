@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using BurnOutSharp.Models.Nitro;
@@ -84,7 +85,7 @@ namespace BurnOutSharp.Builders
             #region Secure Area
 
             // Try to get the secure area offset
-            int secureAreaOffset = 0x4000;
+            long secureAreaOffset = 0x4000;
             if (secureAreaOffset > data.Length)
                 return null;
 
@@ -95,6 +96,28 @@ namespace BurnOutSharp.Builders
             cart.SecureArea = data.ReadBytes(0x800);
 
             #endregion
+
+            #region Name Table
+
+            // Try to get the name table offset
+            long nameTableOffset = header.FileNameTableOffset;
+            if (nameTableOffset < 0 || nameTableOffset > data.Length)
+                return null;
+
+            // Seek to the name table
+            data.Seek(nameTableOffset, SeekOrigin.Begin);
+
+            // Try to parse the name table
+            var nameTable = ParseNameTable(data);
+            if (nameTable == null)
+                return null;
+
+            // Set the name table
+            cart.NameTable = nameTable;
+
+            #endregion
+
+            // TODO: Parse file allocation table
 
             // TODO: Read and optionally parse out the other areas
             // Look for offsets and lengths in the header pieces
@@ -112,7 +135,7 @@ namespace BurnOutSharp.Builders
             // TODO: Use marshalling here instead of building
             CommonHeader commonHeader = new CommonHeader();
 
-            byte[] gameTitle = data.ReadBytes(0x0C);
+            byte[] gameTitle = data.ReadBytes(12);
             commonHeader.GameTitle = Encoding.ASCII.GetString(gameTitle).TrimEnd('\0');
             commonHeader.GameCode = data.ReadUInt32();
             byte[] makerCode = data.ReadBytes(2);
@@ -231,6 +254,99 @@ namespace BurnOutSharp.Builders
             extendedDSiHeader.RSASignature = data.ReadBytes(0x80);
 
             return extendedDSiHeader;
+        }
+
+        /// <summary>
+        /// Parse a Stream into a name table
+        /// </summary>
+        /// <param name="data">Stream to parse</param>
+        /// <returns>Filled name table on success, null on error</returns>
+        private static NameTable ParseNameTable(Stream data)
+        {
+            // TODO: Use marshalling here instead of building
+            NameTable nameTable = new NameTable();
+
+            // Create a variable-length table
+            var folderAllocationTable = new List<FolderAllocationTableEntry>();
+            int entryCount = int.MaxValue;
+            while (entryCount > 0)
+            {
+                var entry = ParseFolderAllocationTableEntry(data);
+                folderAllocationTable.Add(entry);
+
+                // If we have the root entry
+                if (entryCount == int.MaxValue)
+                    entryCount = (entry.Unknown << 8) | entry.ParentFolderIndex;
+
+                // Decrement the entry count
+                entryCount--;
+            }
+
+            // Assign the folder allocation table
+            nameTable.FolderAllocationTable = folderAllocationTable.ToArray();
+
+            // Create a variable-length table
+            var nameList = new List<NameListEntry>();
+            while (true)
+            {
+                var entry = ParseNameListEntry(data);
+                if (entry == null)
+                    break;
+
+                nameList.Add(entry);
+            }
+
+            // Assign the name list
+            nameTable.NameList = nameList.ToArray();
+
+            return nameTable;
+        }
+
+        /// <summary>
+        /// Parse a Stream into a folder allocation table entry
+        /// </summary>
+        /// <param name="data">Stream to parse</param>
+        /// <returns>Filled folder allocation table entry on success, null on error</returns>
+        private static FolderAllocationTableEntry ParseFolderAllocationTableEntry(Stream data)
+        {
+            // TODO: Use marshalling here instead of building
+            FolderAllocationTableEntry entry = new FolderAllocationTableEntry();
+
+            entry.StartOffset = data.ReadUInt32();
+            entry.FirstFileIndex = data.ReadUInt16();
+            entry.ParentFolderIndex = data.ReadByteValue();
+            entry.Unknown = data.ReadByteValue();
+
+            return entry;
+        }
+
+        /// <summary>
+        /// Parse a Stream into a name list entry
+        /// </summary>
+        /// <param name="data">Stream to parse</param>
+        /// <returns>Filled name list entry on success, null on error</returns>
+        private static NameListEntry ParseNameListEntry(Stream data)
+        {
+            // TODO: Use marshalling here instead of building
+            NameListEntry entry = new NameListEntry();
+
+            byte flagAndSize = data.ReadByteValue();
+            if (flagAndSize == 0xFF)
+                return null;
+
+            entry.Folder = (flagAndSize & 0x80) != 0;
+
+            byte size = (byte)(flagAndSize & ~0x80);
+            if (size > 0)
+            {
+                byte[] name = data.ReadBytes(size);
+                entry.Name = Encoding.UTF8.GetString(name);
+            }
+
+            if (entry.Folder)
+                entry.Index = data.ReadUInt16();
+
+            return entry;
         }
 
         #endregion
