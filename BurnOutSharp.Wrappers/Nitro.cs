@@ -289,6 +289,23 @@ namespace BurnOutSharp.Wrappers
 
         #endregion
 
+        #region Name Table
+
+        /// <inheritdoc cref="Models.Nitro.NameTable.FolderAllocationTable"/>
+        public Models.Nitro.FolderAllocationTableEntry[] FolderAllocationTable => _cart.NameTable.FolderAllocationTable;
+
+        /// <inheritdoc cref="Models.Nitro.NameTable.NameList"/>
+        public Models.Nitro.NameListEntry[] NameList => _cart.NameTable.NameList;
+
+        #endregion
+
+        #region Name Table
+
+        /// <inheritdoc cref="Models.Nitro.Cart.FileAllocationTable"/>
+        public Models.Nitro.FileAllocationTableEntry[] FileAllocationTable => _cart.FileAllocationTable;
+
+        #endregion
+
         #endregion
 
         #region Instance Variables
@@ -366,6 +383,8 @@ namespace BurnOutSharp.Wrappers
             PrintCommonHeader();
             PrintExtendedDSiHeader();
             PrintSecureArea();
+            PrintNameTable();
+            PrintFileAllocationTable();
         }
 
         /// <summary>
@@ -490,10 +509,103 @@ namespace BurnOutSharp.Wrappers
         {
             Console.WriteLine("  Secure Area Information:");
             Console.WriteLine("  -------------------------");
-            if (SecureArea == null || SecureArea.Length == 0)
-                Console.WriteLine("  No secure area");
+            Console.WriteLine($"  {BitConverter.ToString(SecureArea).Replace('-', ' ')}");
+            Console.WriteLine();
+        }
+
+        /// <summary>
+        /// Print name table information
+        /// </summary>
+        private void PrintNameTable()
+        {
+            Console.WriteLine("  Name Table Information:");
+            Console.WriteLine("  -------------------------");
+            Console.WriteLine();
+
+            PrintFolderAllocationTable();
+            PrintNameList();
+        }
+
+        /// <summary>
+        /// Print folder allocation table information
+        /// </summary>
+        private void PrintFolderAllocationTable()
+        {
+            Console.WriteLine($"  Folder Allocation Table:");
+            Console.WriteLine("  -------------------------");
+            if (FolderAllocationTable == null || FolderAllocationTable.Length == 0)
+            {
+                Console.WriteLine("  No folder allocation table entries");
+            }
             else
-                Console.WriteLine($"  {BitConverter.ToString(SecureArea).Replace('-', ' ')}");
+            {
+                for (int i = 0; i < FolderAllocationTable.Length; i++)
+                {
+                    var entry = FolderAllocationTable[i];
+                    Console.WriteLine($"  Folder Allocation Table Entry {i}");
+                    Console.WriteLine($"    Start offset: {entry.StartOffset}");
+                    Console.WriteLine($"    First file index: {entry.FirstFileIndex}");
+                    if (entry.Unknown == 0xF0)
+                    {
+                        Console.WriteLine($"    Parent folder index: {entry.ParentFolderIndex}");
+                        Console.WriteLine($"    Unknown: {entry.Unknown}");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"    Total entries: {(entry.Unknown << 8) | entry.ParentFolderIndex}");
+                    }
+                }
+            }
+            Console.WriteLine();
+        }
+
+        /// <summary>
+        /// Print folder allocation table information
+        /// </summary>
+        private void PrintNameList()
+        {
+            Console.WriteLine($"  Name List:");
+            Console.WriteLine("  -------------------------");
+            if (NameList == null || NameList.Length == 0)
+            {
+                Console.WriteLine("  No name list entries");
+            }
+            else
+            {
+                for (int i = 0; i < NameList.Length; i++)
+                {
+                    var entry = NameList[i];
+                    Console.WriteLine($"  Name List Entry {i}");
+                    Console.WriteLine($"    Folder: {entry.Folder}");
+                    Console.WriteLine($"    Name: {entry.Name ?? "[NULL]"}");
+                    if (entry.Folder)
+                        Console.WriteLine($"    Index: {entry.Index}");
+                }
+            }
+            Console.WriteLine();
+        }
+
+        /// <summary>
+        /// Print file allocation table information
+        /// </summary>
+        private void PrintFileAllocationTable()
+        {
+            Console.WriteLine($"  File Allocation Table:");
+            Console.WriteLine("  -------------------------");
+            if (FileAllocationTable == null || FileAllocationTable.Length == 0)
+            {
+                Console.WriteLine("  No file allocation table entries");
+            }
+            else
+            {
+                for (int i = 0; i < FileAllocationTable.Length; i++)
+                {
+                    var entry = FileAllocationTable[i];
+                    Console.WriteLine($"  File Allocation Table Entry {i}");
+                    Console.WriteLine($"    Start offset: {entry.StartOffset}");
+                    Console.WriteLine($"    End offset: {entry.EndOffset}");
+                }
+            }
             Console.WriteLine();
         }
 

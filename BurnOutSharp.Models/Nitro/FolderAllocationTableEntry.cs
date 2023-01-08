@@ -26,7 +26,7 @@ namespace BurnOutSharp.Models.Nitro
         public byte ParentFolderIndex;
 
         /// <summary>
-        /// Unknown, always 0xF0 except for root folder where it is 0x00
+        /// Unknown, always 0xF0 except for root folder
         /// </summary>
         public byte Unknown;
     }
