@@ -173,6 +173,9 @@ Below is a list of container formats that are supported in some way:
 | Microsoft installation package (MSI) | No | Yes | Yes | Via `OpenMcdf` |
 | MS-DOS Executable | Yes | Yes | No | Incomplete |
 | New Exectuable | Yes | Yes | No | Incomplete |
+| Nintendo 3DS cart image | Yes | Yes | No | |
+| Nintendo CIA archive | Yes | Yes | No | |
+| Nintendo DS/DSi cart image | Yes | Yes | No | |
 | PKZIP and derived files (ZIP, etc.) | No | Yes | Yes | Via `SharpCompress` |
 | PlayJ audio file (PLJ) | No | Yes | No | |
 | Portable Executable | Yes | Yes | No* | Some packed executables are supported |
