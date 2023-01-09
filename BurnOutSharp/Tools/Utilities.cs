@@ -43,6 +43,12 @@ namespace BurnOutSharp.Tools
 
             #endregion
 
+            #region CIA
+
+            // No magic checks for CIA
+
+            #endregion
+
             #region Executable
 
             // DOS MZ executable file format (and descendants)
@@ -359,6 +365,13 @@ namespace BurnOutSharp.Tools
 
             #endregion
 
+            #region CIA
+
+            if (extension.Equals("cia", StringComparison.OrdinalIgnoreCase))
+                return SupportedFileType.CIA;
+
+            #endregion
+            
             #region Executable
 
             // DOS MZ executable file format (and descendants)
@@ -704,6 +717,7 @@ namespace BurnOutSharp.Tools
                 case SupportedFileType.BFPK: return new FileType.BFPK();
                 case SupportedFileType.BSP: return new FileType.BSP();
                 case SupportedFileType.BZip2: return new FileType.BZip2();
+                //case SupportedFileType.CIA: return new FileType.CIA();
                 case SupportedFileType.Executable: return new FileType.Executable();
                 case SupportedFileType.GCF: return new FileType.GCF();
                 case SupportedFileType.GZIP: return new FileType.GZIP();

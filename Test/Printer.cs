@@ -174,6 +174,25 @@ namespace Test
                     bsp.Print();
                 }
 
+                // CIA
+                else if (ft == SupportedFileType.CIA)
+                {
+                    // Build the CIA information
+                    Console.WriteLine("Creating CIA deserializer");
+                    Console.WriteLine();
+
+                    var cia = CIA.Create(stream);
+                    if (cia == null)
+                    {
+                        Console.WriteLine("Something went wrong parsing CIA");
+                        Console.WriteLine();
+                        return;
+                    }
+
+                    // Print the CIA info to screen
+                    cia.Print();
+                }
+
                 // GCF
                 else if (ft == SupportedFileType.GCF)
                 {

@@ -26,6 +26,11 @@
         BZip2,
 
         /// <summary>
+        /// CTR Importable Archive
+        /// </summary>
+        CIA,
+
+        /// <summary>
         /// Executable or library
         /// </summary>
         Executable,
