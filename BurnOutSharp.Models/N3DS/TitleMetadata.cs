@@ -114,7 +114,7 @@ namespace BurnOutSharp.Models.N3DS
         public ushort TitleVersion;
 
         /// <summary>
-        /// Content Count
+        /// Content Count (big-endian)
         /// </summary>
         public ushort ContentCount;
 

@@ -224,6 +224,13 @@ namespace BurnOutSharp.Wrappers
 
         #endregion
 
+        #region Partitions
+
+        /// <inheritdoc cref="Models.N3DS.CIA.Partitions"/>
+        public Models.N3DS.NCCHHeader[] Partitions => _cia.Partitions;
+
+        #endregion
+
         #region Meta Data
 
         /// <inheritdoc cref="Models.N3DS.MetaData.TitleIDDependencyList"/>
@@ -321,7 +328,7 @@ namespace BurnOutSharp.Wrappers
             PrintCertificateChain();
             PrintTicket();
             PrintTitleMetadata();
-            // TODO: Print the content file data
+            PrintPartitions();
             PrintMetaData();
         }
 
@@ -596,6 +603,76 @@ namespace BurnOutSharp.Wrappers
                             Console.WriteLine($"    Public key: {BitConverter.ToString(certificate.ECCPublicKey).Replace('-', ' ')}");
                             Console.WriteLine($"    Padding: {BitConverter.ToString(certificate.ECCPadding).Replace('-', ' ')}");
                             break;
+                    }
+                }
+            }
+            Console.WriteLine();
+        }
+
+        /// <summary>
+        /// Print NCCH partition header information
+        /// </summary>
+        private void PrintPartitions()
+        {
+            Console.WriteLine("  NCCH Partition Header Information:");
+            Console.WriteLine("  -------------------------");
+            if (Partitions == null || Partitions.Length == 0)
+            {
+                Console.WriteLine("  No NCCH partition headers");
+            }
+            else
+            {
+                for (int i = 0; i < Partitions.Length; i++)
+                {
+                    var partitionHeader = Partitions[i];
+                    Console.WriteLine($"  NCCH Partition Header {i}");
+                    if (partitionHeader.MagicID == string.Empty)
+                    {
+                        Console.WriteLine($"    Empty partition, no data can be parsed");
+                    }
+                    else if (partitionHeader.MagicID != Models.N3DS.Constants.NCCHMagicNumber)
+                    {
+                        Console.WriteLine($"    Unrecognized partition data, no data can be parsed");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"    RSA-2048 SHA-256 signature: {BitConverter.ToString(partitionHeader.RSA2048Signature).Replace('-', ' ')}");
+                        Console.WriteLine($"    Magic ID: {partitionHeader.MagicID}");
+                        Console.WriteLine($"    Content size in media units: {partitionHeader.ContentSizeInMediaUnits}");
+                        Console.WriteLine($"    Partition ID: {partitionHeader.PartitionId}");
+                        Console.WriteLine($"    Maker code: {partitionHeader.MakerCode}");
+                        Console.WriteLine($"    Version: {partitionHeader.Version}");
+                        Console.WriteLine($"    Verification hash: {partitionHeader.VerificationHash}");
+                        Console.WriteLine($"    Program ID: {BitConverter.ToString(partitionHeader.ProgramId).Replace('-', ' ')}");
+                        Console.WriteLine($"    Reserved 1: {BitConverter.ToString(partitionHeader.Reserved1).Replace('-', ' ')}");
+                        Console.WriteLine($"    Logo region SHA-256 hash: {BitConverter.ToString(partitionHeader.LogoRegionHash).Replace('-', ' ')}");
+                        Console.WriteLine($"    Product code: {partitionHeader.ProductCode}");
+                        Console.WriteLine($"    Extended header SHA-256 hash: {BitConverter.ToString(partitionHeader.ExtendedHeaderHash).Replace('-', ' ')}");
+                        Console.WriteLine($"    Extended header size in bytes: {partitionHeader.ExtendedHeaderSizeInBytes}");
+                        Console.WriteLine($"    Reserved 2: {BitConverter.ToString(partitionHeader.Reserved2).Replace('-', ' ')}");
+                        Console.WriteLine("    Flags:");
+                        Console.WriteLine($"      Reserved 0: {partitionHeader.Flags.Reserved0}");
+                        Console.WriteLine($"      Reserved 1: {partitionHeader.Flags.Reserved1}");
+                        Console.WriteLine($"      Reserved 2: {partitionHeader.Flags.Reserved2}");
+                        Console.WriteLine($"      Crypto method: {partitionHeader.Flags.CryptoMethod}");
+                        Console.WriteLine($"      Content platform: {partitionHeader.Flags.ContentPlatform}");
+                        Console.WriteLine($"      Content type: {partitionHeader.Flags.MediaPlatformIndex}");
+                        Console.WriteLine($"      Content unit size: {partitionHeader.Flags.ContentUnitSize}");
+                        Console.WriteLine($"      Bitmasks: {partitionHeader.Flags.BitMasks}");
+                        Console.WriteLine($"    Plain region offset, in media units: {partitionHeader.PlainRegionOffsetInMediaUnits}");
+                        Console.WriteLine($"    Plain region size, in media units: {partitionHeader.PlainRegionSizeInMediaUnits}");
+                        Console.WriteLine($"    Logo region offset, in media units: {partitionHeader.LogoRegionOffsetInMediaUnits}");
+                        Console.WriteLine($"    Logo region size, in media units: {partitionHeader.LogoRegionSizeInMediaUnits}");
+                        Console.WriteLine($"    ExeFS offset, in media units: {partitionHeader.ExeFSOffsetInMediaUnits}");
+                        Console.WriteLine($"    ExeFS size, in media units: {partitionHeader.ExeFSSizeInMediaUnits}");
+                        Console.WriteLine($"    ExeFS hash region size, in media units: {partitionHeader.ExeFSHashRegionSizeInMediaUnits}");
+                        Console.WriteLine($"    Reserved 3: {BitConverter.ToString(partitionHeader.Reserved3).Replace('-', ' ')}");
+                        Console.WriteLine($"    RomFS offset, in media units: {partitionHeader.RomFSOffsetInMediaUnits}");
+                        Console.WriteLine($"    RomFS size, in media units: {partitionHeader.RomFSSizeInMediaUnits}");
+                        Console.WriteLine($"    RomFS hash region size, in media units: {partitionHeader.RomFSHashRegionSizeInMediaUnits}");
+                        Console.WriteLine($"    Reserved 4: {BitConverter.ToString(partitionHeader.Reserved4).Replace('-', ' ')}");
+                        Console.WriteLine($"    ExeFS superblock SHA-256 hash: {BitConverter.ToString(partitionHeader.ExeFSSuperblockHash).Replace('-', ' ')}");
+                        Console.WriteLine($"    RomFS superblock SHA-256 hash: {BitConverter.ToString(partitionHeader.RomFSSuperblockHash).Replace('-', ' ')}");
                     }
                 }
             }

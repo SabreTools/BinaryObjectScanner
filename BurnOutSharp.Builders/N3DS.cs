@@ -244,6 +244,12 @@ namespace BurnOutSharp.Builders
 
             #endregion
 
+            // Align to 64-byte boundary, if needed
+            while (data.Position < data.Length - 1 && data.Position % 64 != 0)
+            {
+                _ = data.ReadByteValue();
+            }
+
             #region Certificate Chain
 
             // Create the certificate chain
@@ -261,6 +267,12 @@ namespace BurnOutSharp.Builders
 
             #endregion
 
+            // Align to 64-byte boundary, if needed
+            while (data.Position < data.Length - 1 && data.Position % 64 != 0)
+            {
+                _ = data.ReadByteValue();
+            }
+
             #region Ticket
 
             // Try to parse the ticket
@@ -272,6 +284,12 @@ namespace BurnOutSharp.Builders
             cia.Ticket = ticket;
 
             #endregion
+
+            // Align to 64-byte boundary, if needed
+            while (data.Position < data.Length - 1 && data.Position % 64 != 0)
+            {
+                _ = data.ReadByteValue();
+            }
 
             #region Title Metadata
 
@@ -285,13 +303,30 @@ namespace BurnOutSharp.Builders
 
             #endregion
 
+            // Align to 64-byte boundary, if needed
+            while (data.Position < data.Length - 1 && data.Position % 64 != 0)
+            {
+                _ = data.ReadByteValue();
+            }
+
             #region Content File Data
 
-            // If we have content
-            if (header.ContentSize > 0)
-                cia.ContentFileData = data.ReadBytes((int)header.ContentSize);
+            // Create the partition table
+            cia.Partitions = new NCCHHeader[8];
+
+            // Iterate and build the partitions
+            for (int i = 0; i < 8; i++)
+            {
+                cia.Partitions[i] = ParseNCCHHeader(data);
+            }
 
             #endregion
+
+            // Align to 64-byte boundary, if needed
+            while (data.Position < data.Length - 1 && data.Position % 64 != 0)
+            {
+                _ = data.ReadByteValue();
+            }
 
             #region Meta Data
 
@@ -933,8 +968,9 @@ namespace BurnOutSharp.Builders
         /// Parse a Stream into a ticket
         /// </summary>
         /// <param name="data">Stream to parse</param>
+        /// <param name="fromCdn">Indicates if the ticket is from CDN</param>
         /// <returns>Filled ticket on success, null on error</returns>
-        private static Ticket ParseTicket(Stream data)
+        private static Ticket ParseTicket(Stream data, bool fromCdn = false)
         {
             // TODO: Use marshalling here instead of building
             Ticket ticket = new Ticket();
@@ -1011,14 +1047,19 @@ namespace BurnOutSharp.Builders
             data.Seek(-8, SeekOrigin.Current);
 
             ticket.ContentIndex = data.ReadBytes((int)ticket.ContentIndexSize);
-            ticket.CertificateChain = new Certificate[2];
-            for (int i = 0; i < 2; i++)
-            {
-                var certificate = ParseCertificate(data);
-                if (certificate == null)
-                    return null;
 
-                ticket.CertificateChain[i] = certificate;
+            // Certificates only exist in standalone CETK files
+            if (fromCdn)
+            {
+                ticket.CertificateChain = new Certificate[2];
+                for (int i = 0; i < 2; i++)
+                {
+                    var certificate = ParseCertificate(data);
+                    if (certificate == null)
+                        return null;
+
+                    ticket.CertificateChain[i] = certificate;
+                }
             }
 
             return ticket;
@@ -1028,8 +1069,9 @@ namespace BurnOutSharp.Builders
         /// Parse a Stream into a title metadata
         /// </summary>
         /// <param name="data">Stream to parse</param>
+        /// <param name="fromCdn">Indicates if the ticket is from CDN</param>
         /// <returns>Filled title metadata on success, null on error</returns>
-        private static TitleMetadata ParseTitleMetadata(Stream data)
+        private static TitleMetadata ParseTitleMetadata(Stream data, bool fromCdn = false)
         {
             // TODO: Use marshalling here instead of building
             TitleMetadata titleMetadata = new TitleMetadata();
@@ -1084,7 +1126,12 @@ namespace BurnOutSharp.Builders
             titleMetadata.Reserved3 = data.ReadBytes(0x31);
             titleMetadata.AccessRights = data.ReadUInt32();
             titleMetadata.TitleVersion = data.ReadUInt16();
-            titleMetadata.ContentCount = data.ReadUInt16();
+
+            // Read the content count (big-endian)
+            byte[] contentCount = data.ReadBytes(2);
+            Array.Reverse(contentCount);
+            titleMetadata.ContentCount = BitConverter.ToUInt16(contentCount, 0);
+
             titleMetadata.BootContent = data.ReadUInt16();
             titleMetadata.Padding2 = data.ReadBytes(2);
             titleMetadata.SHA256HashContentInfoRecords = data.ReadBytes(0x20);
@@ -1098,14 +1145,19 @@ namespace BurnOutSharp.Builders
             {
                 titleMetadata.ContentChunkRecords[i] = ParseContentChunkRecord(data);
             }
-            titleMetadata.CertificateChain = new Certificate[2];
-            for (int i = 0; i < 2; i++)
-            {
-                var certificate = ParseCertificate(data);
-                if (certificate == null)
-                    return null;
 
-                titleMetadata.CertificateChain[i] = certificate;
+            // Certificates only exist in standalone TMD files
+            if (fromCdn)
+            {
+                titleMetadata.CertificateChain = new Certificate[2];
+                for (int i = 0; i < 2; i++)
+                {
+                    var certificate = ParseCertificate(data);
+                    if (certificate == null)
+                        return null;
+
+                    titleMetadata.CertificateChain[i] = certificate;
+                }
             }
 
             return titleMetadata;
