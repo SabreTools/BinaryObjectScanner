@@ -14,8 +14,10 @@ The following libraries (or ports thereof) are used for file handling:
 - [UnshieldSharp](https://github.com/mnadareski/UnshieldSharp) - InstallShield CAB extraction
 - [WiseUnpacker](https://github.com/mnadareski/WiseUnpacker) - Wise Installer extraction
 
-Original code was based on [BurnOut](http://burnout.sourceforge.net/). The only thing left from that original port is in the name of the library. This project is fully unaffiliated with the original BurnOut and its authors.
-Valve packages handling is based on [HLLibSharp](https://github.com/mnadareski/HLLibSharp) but lacks everything but parsing and extraction capability.
+The following projects have influenced this library in a signicant way:
+
+- [BurnOut](http://burnout.sourceforge.net/) - Project that this library was initially based on. The only thing left from that original port is in the name of the library. This project is fully unaffiliated with the original BurnOut and its authors.
+- [HLLibSharp](https://github.com/mnadareski/HLLibSharp) - Valve packages handling is based on HLLibSharp but lacks everything but parsing and extraction capability.
 
 Please visit our sibling project, [DRML](https://github.com/TheRogueArchivist/DRML), the DRM Library for a more in-depth look at some of the protections detected.
 
