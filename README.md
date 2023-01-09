@@ -2,7 +2,7 @@
 
 [![Build status](https://ci.appveyor.com/api/projects/status/gmdft5bk1h8a1c31?svg=true)](https://ci.appveyor.com/project/mnadareski/burnoutsharp)
 
-C# protection, packer, and archive scanning utility. This currently compiles as a library so it can be used in any C# application. A reference application called `Test` is also included to demonstrate the abilities of the library. For an example of a program implementing the library, see [MPF](https://github.com/SabreTools/MPF).
+C# protection, packer, and archive scanning library. This currently compiles as a library so it can be used in any C# application. A reference application called `Test` is also included to demonstrate the abilities of the library. For an example of a program implementing the library, see [MPF](https://github.com/SabreTools/MPF).
 
 The following libraries (or ports thereof) are used for file handling:
 
@@ -14,7 +14,7 @@ The following libraries (or ports thereof) are used for file handling:
 - [UnshieldSharp](https://github.com/mnadareski/UnshieldSharp) - InstallShield CAB extraction
 - [WiseUnpacker](https://github.com/mnadareski/WiseUnpacker) - Wise Installer extraction
 
-Original code was based on [BurnOut](http://burnout.sourceforge.net/) but all original ported code has been replaced multiple times over.
+Original code was based on [BurnOut](http://burnout.sourceforge.net/). The only thing left from that original port is in the name of the library. This project is fully unaffiliated with the original BurnOut and its authors.
 Valve packages handling is based on [HLLibSharp](https://github.com/mnadareski/HLLibSharp) but lacks everything but parsing and extraction capability.
 
 Please visit our sibling project, [DRML](https://github.com/TheRogueArchivist/DRML), the DRM Library for a more in-depth look at some of the protections detected.
