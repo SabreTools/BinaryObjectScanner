@@ -25,7 +25,7 @@ namespace BurnOutSharp.Models.CFB
         /// 
         /// If Header Major Version is 4, there MUST be 1,024 fields specified to fill a 4,096-byte sector
         /// </remarks>
-        public SectorNumber[] FATSectors { get; set; }
+        public SectorNumber[] FATSectorNumbers { get; set; }
 
         /// <summary>
         /// The mini FAT is used to allocate space in the mini stream.
@@ -38,7 +38,7 @@ namespace BurnOutSharp.Models.CFB
         /// 
         /// If Header Major Version is 4, there MUST be 1,024 fields specified to fill a 4,096-byte sector
         /// </remarks>
-        public SectorNumber[] MiniFATSectors { get; set; }
+        public SectorNumber[] MiniFATSectorNumbers { get; set; }
 
         /// <summary>
         /// The DIFAT array is used to represent storage of the FAT sectors.
@@ -55,7 +55,7 @@ namespace BurnOutSharp.Models.CFB
         /// If Header Major Version is 4, there MUST be 1,023 fields specified
         /// to fill a 4,096-byte sector minus the "Next DIFAT Sector Location" field.
         /// </remarks>
-        public SectorNumber[] DIFATSectors { get; set; }
+        public SectorNumber[] DIFATSectorNumbers { get; set; }
 
         /// <summary>
         /// The directory entry array is an array of directory entries that
@@ -87,6 +87,6 @@ namespace BurnOutSharp.Models.CFB
         /// all zeroes. The Modified Time field in the root storage directory
         /// entry MAY be all zeroes.
         /// <remarks>
-        public DirectoryEntry[] Directories { get; set; }
+        public DirectoryEntry[] DirectoryEntries { get; set; }
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using BurnOutSharp.Models.CFB;
 using BurnOutSharp.Utilities;
 using static BurnOutSharp.Models.CFB.Constants;
@@ -69,97 +70,184 @@ namespace BurnOutSharp.Builders
 
             #endregion
 
-            #region FAT Sectors
+            #region DIFAT Sector Numbers
+
+            // Create a DIFAT sector table
+            var difatSectors = new List<SectorNumber>();
+
+            // Add the sectors from the header
+            difatSectors.AddRange(fileHeader.DIFAT);
+
+            // Loop through and add the DIFAT sectors
+            SectorNumber currentSector = (SectorNumber)fileHeader.FirstDIFATSectorLocation;
+            for (int i = 0; i < fileHeader.NumberOfDIFATSectors; i++)
+            {
+                // If we have a readable sector
+                if (currentSector <= SectorNumber.MAXREGSECT)
+                {
+                    // Get the new next sector information
+                    long sectorOffset = (long)((long)(currentSector + 1) * Math.Pow(2, fileHeader.SectorShift));
+                    if (sectorOffset < 0 || sectorOffset >= data.Length)
+                        return null;
+
+                    // Seek to the next sector
+                    data.Seek(sectorOffset, SeekOrigin.Begin);
+
+                    // Try to parse the sectors
+                    var sectorNumbers = ParseSectorNumbers(data, fileHeader.SectorShift);
+                    if (sectorNumbers == null)
+                        return null;
+
+                    // Add the sector shifts
+                    difatSectors.AddRange(sectorNumbers);
+                }
+
+                // Get the next sector from the DIFAT
+                currentSector = difatSectors[i];
+            }
+
+            // Assign the DIFAT sectors table
+            binary.DIFATSectorNumbers = difatSectors.ToArray();
+
+            #endregion
+
+            #region FAT Sector Numbers
 
             // Create a FAT sector table
             var fatSectors = new List<SectorNumber>();
 
             // Loop through and add the FAT sectors
+            currentSector = binary.DIFATSectorNumbers[0];
             for (int i = 0; i < fileHeader.NumberOfFATSectors; i++)
             {
-                // Try to get the FAT sector offset
-                long offset = (long)(fileHeader.DIFAT[i] * Math.Pow(2, fileHeader.SectorShift));
-                if (offset < 0 || offset >= data.Length)
-                    return null;
+                // If we have a readable sector
+                if (currentSector <= SectorNumber.MAXREGSECT)
+                {
+                    // Get the new next sector information
+                    long sectorOffset = (long)((long)(currentSector + 1) * Math.Pow(2, fileHeader.SectorShift));
+                    if (sectorOffset < 0 || sectorOffset >= data.Length)
+                        return null;
 
-                // Seek to the offset
-                data.Seek(offset, SeekOrigin.Begin);
+                    // Seek to the next sector
+                    data.Seek(sectorOffset, SeekOrigin.Begin);
 
-                // Try to parse the sectors
-                var sectorNumbers = ParseSector(data, fileHeader.SectorShift);
-                if (sectorNumbers == null)
-                    return null;
+                    // Try to parse the sectors
+                    var sectorNumbers = ParseSectorNumbers(data, fileHeader.SectorShift);
+                    if (sectorNumbers == null)
+                        return null;
 
-                // Add the sector shifts
-                fatSectors.AddRange(sectorNumbers);
+                    // Add the sector shifts
+                    fatSectors.AddRange(sectorNumbers);
+                }
+
+                // Get the next sector from the DIFAT
+                currentSector = binary.DIFATSectorNumbers[i];
             }
 
             // Assign the FAT sectors table
-            binary.FATSectors = fatSectors.ToArray();
+            binary.FATSectorNumbers = fatSectors.ToArray();
 
             #endregion
 
-            #region Mini FAT Sectors
-
-            // Get the offset of the first mini FAT sector
-            long firstMiniFatOffset = (long)(fileHeader.FirstMiniFATSectorLocation * Math.Pow(2, fileHeader.SectorShift));
-            if (firstMiniFatOffset < 0 || firstMiniFatOffset >= data.Length)
-                return null;
-
-            // Seek to the first mini FAT sector
-            data.Seek(firstMiniFatOffset, SeekOrigin.Begin);
+            #region Mini FAT Sector Numbers
 
             // Create a mini FAT sector table
             var miniFatSectors = new List<SectorNumber>();
 
             // Loop through and add the mini FAT sectors
+            currentSector = (SectorNumber)fileHeader.FirstMiniFATSectorLocation;
             for (int i = 0; i < fileHeader.NumberOfMiniFATSectors; i++)
             {
-                // Try to parse the sectors
-                var sectorNumbers = ParseSector(data, fileHeader.SectorShift);
-                if (sectorNumbers == null)
-                    return null;
+                // If we have a readable sector
+                if (currentSector <= SectorNumber.MAXREGSECT)
+                {
+                    // Get the new next sector information
+                    long sectorOffset = (long)((long)(currentSector + 1) * Math.Pow(2, fileHeader.SectorShift));
+                    if (sectorOffset < 0 || sectorOffset >= data.Length)
+                        return null;
 
-                // Add the sector shifts
-                miniFatSectors.AddRange(sectorNumbers);
+                    // Seek to the next sector
+                    data.Seek(sectorOffset, SeekOrigin.Begin);
+
+                    // Try to parse the sectors
+                    var sectorNumbers = ParseSectorNumbers(data, fileHeader.SectorShift);
+                    if (sectorNumbers == null)
+                        return null;
+
+                    // Add the sector shifts
+                    miniFatSectors.AddRange(sectorNumbers);
+                }
+
+                // Get the next sector from the DIFAT
+                currentSector = binary.DIFATSectorNumbers[i];
             }
 
             // Assign the mini FAT sectors table
-            binary.MiniFATSectors = miniFatSectors.ToArray();
+            binary.MiniFATSectorNumbers = miniFatSectors.ToArray();
 
             #endregion
 
-            #region DIFAT Sectors
+            #region Directory Entries
 
-            // Get the offset of the first DIFAT sector
-            long firstDifatOffset = (long)(fileHeader.FirstDIFATSectorLocation * Math.Pow(2, fileHeader.SectorShift));
-            if (firstDifatOffset < 0 || firstDifatOffset >= data.Length)
+            // Get the offset of the first directory sector
+            long firstDirectoryOffset = (long)(fileHeader.FirstDirectorySectorLocation * Math.Pow(2, fileHeader.SectorShift));
+            if (firstDirectoryOffset < 0 || firstDirectoryOffset >= data.Length)
                 return null;
 
-            // Seek to the first DIFAT sector
-            data.Seek(firstDifatOffset, SeekOrigin.Begin);
+            // Seek to the first directory sector
+            data.Seek(firstDirectoryOffset, SeekOrigin.Begin);
 
-            // Create a DIFAT sector table
-            var difatSectors = new List<SectorNumber>();
+            // Create a directory sector table
+            var directorySectors = new List<DirectoryEntry>();
 
-            // Loop through and add the DIFAT sectors
-            for (int i = 0; i < fileHeader.NumberOfMiniFATSectors; i++)
+            // Get the number of directory sectors
+            uint directorySectorCount = 0;
+            switch (fileHeader.MajorVersion)
             {
-                // Try to parse the sectors
-                var sectorNumbers = ParseSector(data, fileHeader.SectorShift);
-                if (sectorNumbers == null)
-                    return null;
-
-                // Add the sector shifts
-                difatSectors.AddRange(sectorNumbers);
+                case 3:
+                    directorySectorCount = int.MaxValue;
+                    break;
+                case 4:
+                    directorySectorCount = fileHeader.NumberOfDirectorySectors;
+                    break;
             }
 
-            // Assign the DIFAT sectors table
-            binary.DIFATSectors = difatSectors.ToArray();
+            // Loop through and add the directory sectors
+            currentSector = (SectorNumber)fileHeader.FirstDirectorySectorLocation;
+            for (int i = 0; i < directorySectorCount; i++)
+            {
+                // If we have an end of chain
+                if (currentSector == SectorNumber.ENDOFCHAIN)
+                    break;
+
+                // If we have a readable sector
+                if (currentSector <= SectorNumber.MAXREGSECT)
+                {
+                    // Get the new next sector information
+                    long sectorOffset = (long)((long)(currentSector + 1) * Math.Pow(2, fileHeader.SectorShift));
+                    if (sectorOffset < 0 || sectorOffset >= data.Length)
+                        return null;
+
+                    // Seek to the next sector
+                    data.Seek(sectorOffset, SeekOrigin.Begin);
+
+                    // Try to parse the sectors
+                    var directoryEntries = ParseDirectoryEntries(data, fileHeader.SectorShift);
+                    if (directoryEntries == null)
+                        return null;
+
+                    // Add the sector shifts
+                    directorySectors.AddRange(directoryEntries);
+                }
+
+                // Get the next sector from the DIFAT
+                currentSector = binary.DIFATSectorNumbers[i];
+            }
+
+            // Assign the Directory sectors table
+            binary.DirectoryEntries = directorySectors.ToArray();
 
             #endregion
-
-            // TODO: Implement directory sector parsing
 
             return binary;
         }
@@ -208,10 +296,10 @@ namespace BurnOutSharp.Builders
             header.NumberOfMiniFATSectors = data.ReadUInt32();
             header.FirstDIFATSectorLocation = data.ReadUInt32();
             header.NumberOfDIFATSectors = data.ReadUInt32();
-            header.DIFAT = new uint[109];
+            header.DIFAT = new SectorNumber[109];
             for (int i = 0; i < header.DIFAT.Length; i++)
             {
-                header.DIFAT[i] = data.ReadUInt32();
+                header.DIFAT[i] = (SectorNumber)data.ReadUInt32();
             }
 
             // Skip rest of sector for version 4
@@ -227,7 +315,7 @@ namespace BurnOutSharp.Builders
         /// <param name="data">Stream to parse</param>
         /// <param name="sectorShift">Sector shift from the header</param>
         /// <returns>Filled sector full of sector numbers on success, null on error</returns>
-        private static SectorNumber[] ParseSector(Stream data, ushort sectorShift)
+        private static SectorNumber[] ParseSectorNumbers(Stream data, ushort sectorShift)
         {
             // TODO: Use marshalling here instead of building
             int sectorCount = (int)(Math.Pow(2, sectorShift) / sizeof(uint));
@@ -239,6 +327,59 @@ namespace BurnOutSharp.Builders
             }
 
             return sectorNumbers;
+        }
+
+        /// <summary>
+        /// Parse a Stream into a sector full of directory entries
+        /// </summary>
+        /// <param name="data">Stream to parse</param>
+        /// <param name="sectorShift">Sector shift from the header</param>
+        /// <returns>Filled sector full of directory entries on success, null on error</returns>
+        private static DirectoryEntry[] ParseDirectoryEntries(Stream data, ushort sectorShift)
+        {
+            // TODO: Use marshalling here instead of building
+            const int directoryEntrySize = 64 + 2 + 1 + 1 + 4 + 4 + 4 + 16 + 4 + 8 + 8 + 4 + 8;
+            int sectorCount = (int)(Math.Pow(2, sectorShift) / directoryEntrySize);
+            DirectoryEntry[] directoryEntries = new DirectoryEntry[sectorCount];
+
+            for (int i = 0; i < directoryEntries.Length; i++)
+            {
+                var directoryEntry = ParseDirectoryEntry(data);
+                if (directoryEntry == null)
+                    return null;
+
+                directoryEntries[i] = directoryEntry;
+            }
+
+            return directoryEntries;
+        }
+
+        /// <summary>
+        /// Parse a Stream into a directory entry
+        /// </summary>
+        /// <param name="data">Stream to parse</param>
+        /// <returns>Filled directory entry on success, null on error</returns>
+        private static DirectoryEntry ParseDirectoryEntry(Stream data)
+        {
+            // TODO: Use marshalling here instead of building
+            DirectoryEntry directoryEntry = new DirectoryEntry();
+
+            byte[] name = data.ReadBytes(64);
+            directoryEntry.Name = Encoding.Unicode.GetString(name).TrimEnd('\0');
+            directoryEntry.NameLength = data.ReadUInt16();
+            directoryEntry.ObjectType = (ObjectType)data.ReadByteValue();
+            directoryEntry.ColorFlag = (ColorFlag)data.ReadByteValue();
+            directoryEntry.LeftSiblingID = (StreamID)data.ReadUInt32();
+            directoryEntry.RightSiblingID = (StreamID)data.ReadUInt32();
+            directoryEntry.ChildID = (StreamID)data.ReadUInt32();
+            directoryEntry.CLSID = data.ReadGuid();
+            directoryEntry.StateBits = data.ReadUInt32();
+            directoryEntry.CreationTime = data.ReadUInt64();
+            directoryEntry.ModifiedTime = data.ReadUInt64();
+            directoryEntry.StartingSectorLocation = data.ReadUInt32();
+            directoryEntry.StreamSize = data.ReadUInt64();
+
+            return directoryEntry;
         }
 
         #endregion

@@ -122,6 +122,6 @@ namespace BurnOutSharp.Models.CFB
         /// This array of 32-bit integer fields contains the first 109 FAT sector
         /// locations of the compound file
         /// </summary>
-        public uint[] DIFAT;
+        public SectorNumber[] DIFAT;
     }
 }
