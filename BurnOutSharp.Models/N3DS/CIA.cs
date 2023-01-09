@@ -40,7 +40,8 @@ namespace BurnOutSharp.Models.N3DS
         /// <summary>
         /// Content file data
         /// </summary>
-        public NCCHHeader[] Partitions { get; set; }
+        /// TODO: Parse the content file data
+        public byte[] ContentFileData { get; set; }
 
         /// <summary>
         /// Meta file data (Not a necessary component)

@@ -285,6 +285,14 @@ namespace BurnOutSharp.Builders
 
             #endregion
 
+            #region Content File Data
+
+            // If we have content
+            if (header.ContentSize > 0)
+                cia.ContentFileData = data.ReadBytes((int)header.ContentSize);
+
+            #endregion
+
             #region Meta Data
 
             // If we have a meta data
