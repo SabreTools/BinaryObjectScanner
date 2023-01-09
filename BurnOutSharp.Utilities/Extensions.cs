@@ -272,6 +272,17 @@ namespace BurnOutSharp.Utilities
         }
 
         /// <summary>
+        /// Read a Guid from the stream
+        /// </summary>
+        public static Guid ReadGuid(this byte[] content, ref int offset)
+        {
+            byte[] buffer = new byte[16];
+            Array.Copy(content, offset, buffer, 0, 16);
+            offset += 16;
+            return new Guid(buffer);
+        }
+
+        /// <summary>
         /// Read a null-terminated string from the stream
         /// </summary>
         public static string ReadString(this byte[] content, ref int offset) => content.ReadString(ref offset, Encoding.Default);
@@ -407,6 +418,16 @@ namespace BurnOutSharp.Utilities
             byte[] buffer = new byte[8];
             stream.Read(buffer, 0, 8);
             return BitConverter.ToUInt64(buffer, 0);
+        }
+
+        /// <summary>
+        /// Read a Guid from the stream
+        /// </summary>
+        public static Guid ReadGuid(this Stream stream)
+        {
+            byte[] buffer = new byte[16];
+            stream.Read(buffer, 0, 16);
+            return new Guid(buffer);
         }
 
         /// <summary>
