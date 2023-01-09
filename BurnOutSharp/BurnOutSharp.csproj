@@ -5,7 +5,7 @@
     <RuntimeIdentifiers>win-x86;win-x64;linux-x64;osx-x64</RuntimeIdentifiers>
     <Title>BurnOutSharp</Title>
     <AssemblyName>BurnOutSharp</AssemblyName>
-    <Description>Port of BurnOut to C#, with additions</Description>
+    <Description>Protection scanning library</Description>
     <Authors>Matt Nadareski;Gernot Knippen</Authors>
     <Product>BurnOutSharp</Product>
     <Copyright>Copyright (c)2018-2023 Matt Nadareski</Copyright>
