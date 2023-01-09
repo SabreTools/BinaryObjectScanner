@@ -1,5 +1,6 @@
+using System;
+using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using BurnOutSharp.Models.CFB;
 using BurnOutSharp.Utilities;
 using static BurnOutSharp.Models.CFB.Constants;
@@ -68,9 +69,96 @@ namespace BurnOutSharp.Builders
 
             #endregion
 
-            // TODO: Implement FAT sector parsing
-            // TODO: Implement Mini FAT sector parsing
-            // TODO: Implement DIFAT sector parsing
+            #region FAT Sectors
+
+            // Create a FAT sector table
+            var fatSectors = new List<SectorNumber>();
+
+            // Loop through and add the FAT sectors
+            for (int i = 0; i < fileHeader.NumberOfFATSectors; i++)
+            {
+                // Try to get the FAT sector offset
+                long offset = (long)(fileHeader.DIFAT[i] * Math.Pow(2, fileHeader.SectorShift));
+                if (offset < 0 || offset >= data.Length)
+                    return null;
+
+                // Seek to the offset
+                data.Seek(offset, SeekOrigin.Begin);
+
+                // Try to parse the sectors
+                var sectorNumbers = ParseSector(data, fileHeader.SectorShift);
+                if (sectorNumbers == null)
+                    return null;
+
+                // Add the sector shifts
+                fatSectors.AddRange(sectorNumbers);
+            }
+
+            // Assign the FAT sectors table
+            binary.FATSectors = fatSectors.ToArray();
+
+            #endregion
+
+            #region Mini FAT Sectors
+
+            // Get the offset of the first mini FAT sector
+            long firstMiniFatOffset = (long)(fileHeader.FirstMiniFATSectorLocation * Math.Pow(2, fileHeader.SectorShift));
+            if (firstMiniFatOffset < 0 || firstMiniFatOffset >= data.Length)
+                return null;
+
+            // Seek to the first mini FAT sector
+            data.Seek(firstMiniFatOffset, SeekOrigin.Begin);
+
+            // Create a mini FAT sector table
+            var miniFatSectors = new List<SectorNumber>();
+
+            // Loop through and add the mini FAT sectors
+            for (int i = 0; i < fileHeader.NumberOfMiniFATSectors; i++)
+            {
+                // Try to parse the sectors
+                var sectorNumbers = ParseSector(data, fileHeader.SectorShift);
+                if (sectorNumbers == null)
+                    return null;
+
+                // Add the sector shifts
+                miniFatSectors.AddRange(sectorNumbers);
+            }
+
+            // Assign the mini FAT sectors table
+            binary.MiniFATSectors = miniFatSectors.ToArray();
+
+            #endregion
+
+            #region DIFAT Sectors
+
+            // Get the offset of the first DIFAT sector
+            long firstDifatOffset = (long)(fileHeader.FirstDIFATSectorLocation * Math.Pow(2, fileHeader.SectorShift));
+            if (firstDifatOffset < 0 || firstDifatOffset >= data.Length)
+                return null;
+
+            // Seek to the first DIFAT sector
+            data.Seek(firstDifatOffset, SeekOrigin.Begin);
+
+            // Create a DIFAT sector table
+            var difatSectors = new List<SectorNumber>();
+
+            // Loop through and add the DIFAT sectors
+            for (int i = 0; i < fileHeader.NumberOfMiniFATSectors; i++)
+            {
+                // Try to parse the sectors
+                var sectorNumbers = ParseSector(data, fileHeader.SectorShift);
+                if (sectorNumbers == null)
+                    return null;
+
+                // Add the sector shifts
+                difatSectors.AddRange(sectorNumbers);
+            }
+
+            // Assign the DIFAT sectors table
+            binary.DIFATSectors = difatSectors.ToArray();
+
+            #endregion
+
             // TODO: Implement directory sector parsing
 
             return binary;
@@ -86,8 +174,8 @@ namespace BurnOutSharp.Builders
             // TODO: Use marshalling here instead of building
             FileHeader header = new FileHeader();
 
-            header.Signature = data.ReadBytes(8);
-            if (header.Signature != SignatureBytes)
+            header.Signature = data.ReadUInt64();
+            if (header.Signature != SignatureUInt64)
                 return null;
 
             header.CLSID = data.ReadGuid();
@@ -131,6 +219,26 @@ namespace BurnOutSharp.Builders
                 _ = data.ReadBytes(3584);
 
             return header;
+        }
+
+        /// <summary>
+        /// Parse a Stream into a sector full of sector numbers
+        /// </summary>
+        /// <param name="data">Stream to parse</param>
+        /// <param name="sectorShift">Sector shift from the header</param>
+        /// <returns>Filled sector full of sector numbers on success, null on error</returns>
+        private static SectorNumber[] ParseSector(Stream data, ushort sectorShift)
+        {
+            // TODO: Use marshalling here instead of building
+            int sectorCount = (int)(Math.Pow(2, sectorShift) / sizeof(uint));
+            SectorNumber[] sectorNumbers = new SectorNumber[sectorCount];
+
+            for (int i = 0; i < sectorNumbers.Length; i++)
+            {
+                sectorNumbers[i] = (SectorNumber)data.ReadUInt32();
+            }
+
+            return sectorNumbers;
         }
 
         #endregion

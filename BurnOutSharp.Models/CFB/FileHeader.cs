@@ -9,7 +9,7 @@ namespace BurnOutSharp.Models.CFB
         /// IOdentification signature for the compound file structure, and MUST be
         /// set to the value 0xD0, 0xCF, 0x11, 0xE0, 0xA1, 0xB1, 0x1A, 0xE1.
         /// </summary>
-        public byte[] Signature;
+        public ulong Signature;
 
         /// <summary>
         /// Reserved and unused class ID that MUST be set to all zeroes (CLSID_NULL)
