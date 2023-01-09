@@ -189,7 +189,7 @@ namespace BurnOutSharp.Models.N3DS
     {
         RSA_4096 = 0x00000000,
         RSA_2048 = 0x01000000,
-        ECDSA = 0x02000000,
+        EllipticCurve = 0x02000000,
     }
 
     public enum ResourceLimitCategory

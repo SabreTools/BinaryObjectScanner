@@ -1,11 +1,12 @@
 namespace BurnOutSharp.Models.N3DS
 {
     /// <see href="https://www.3dbrew.org/wiki/CIA#Meta"/>
-    public sealed class MetaFile
+    public sealed class MetaData
     {
         /// <summary>
         /// Title ID dependency list - Taken from the application's ExHeader
         /// </summary>
+        /// TODO: Determine numeric format of each entry
         public byte[] TitleIDDependencyList;
 
         /// <summary>

@@ -29,9 +29,14 @@ namespace BurnOutSharp.Models.N3DS
         public byte[] Signature;
 
         /// <summary>
+        /// Padding
+        /// </summary>
+        public byte[] Padding1;
+
+        /// <summary>
         /// Signature Issuer
         /// </summary>
-        public byte[] SignatureIssuer;
+        public string Issuer;
 
         /// <summary>
         /// Version
@@ -86,7 +91,7 @@ namespace BurnOutSharp.Models.N3DS
         /// <summary>
         /// Reserved
         /// </summary>
-        public uint Reserved2;
+        public byte[] Reserved2;
 
         /// <summary>
         /// SRL Flag
@@ -121,7 +126,7 @@ namespace BurnOutSharp.Models.N3DS
         /// <summary>
         /// Padding
         /// </summary>
-        public ushort Padding;
+        public byte[] Padding2;
 
         /// <summary>
         /// SHA-256 Hash of the Content Info Records

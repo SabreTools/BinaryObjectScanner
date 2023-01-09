@@ -30,6 +30,11 @@ namespace BurnOutSharp.Models.N3DS
         public byte[] Signature;
 
         /// <summary>
+        /// Padding to align next data to 0x40 bytes
+        /// </summary>
+        public byte[] Padding;
+
+        /// <summary>
         /// Issuer
         /// </summary>
         public string Issuer;
@@ -49,18 +54,23 @@ namespace BurnOutSharp.Models.N3DS
         /// </summary>
         public uint ExpirationTime;
 
-        // This contains the Public Key(i.e. Modulus & Public Exponent)
-        #region RSA
+        // This contains the Public Key (i.e. Modulus & Public Exponent)
+        #region RSA-4096 and RSA-2048
 
         /// <summary>
         /// Modulus
         /// </summary>
-        public byte[] Modulus;
+        public byte[] RSAModulus;
 
         /// <summary>
         /// Public Exponent
         /// </summary>
-        public uint PublicExponent;
+        public uint RSAPublicExponent;
+
+        /// <summary>
+        /// Padding
+        /// </summary>
+        public byte[] RSAPadding;
 
         #endregion
 
@@ -70,7 +80,12 @@ namespace BurnOutSharp.Models.N3DS
         /// <summary>
         /// Public Key
         /// </summary>
-        public byte[] PublicKey;
+        public byte[] ECCPublicKey;
+
+        /// <summary>
+        /// Padding
+        /// </summary>
+        public byte[] ECCPadding;
 
         #endregion
     }

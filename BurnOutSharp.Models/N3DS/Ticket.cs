@@ -28,6 +28,11 @@ namespace BurnOutSharp.Models.N3DS
         public byte[] Signature;
 
         /// <summary>
+        /// Padding
+        /// </summary>
+        public byte[] Padding;
+
+        /// <summary>
         /// Issuer
         /// </summary>
         public string Issuer;
@@ -91,7 +96,7 @@ namespace BurnOutSharp.Models.N3DS
         /// <summary>
         /// Reserved
         /// </summary>
-        public ushort Reserved2;
+        public byte[] Reserved2;
 
         /// <summary>
         /// Ticket title version
@@ -105,7 +110,7 @@ namespace BurnOutSharp.Models.N3DS
         /// <summary>
         /// Reserved
         /// </summary>
-        public ulong Reserved3;
+        public byte[] Reserved3;
 
         /// <summary>
         /// License Type
@@ -113,8 +118,7 @@ namespace BurnOutSharp.Models.N3DS
         public byte LicenseType;
 
         /// <summary>
-        /// Index to the common keyY used for this ticket, usually 0x1 for retail system titles;
-        /// see below.
+        /// Index to the common keyY used for this ticket, usually 0x1 for retail system titles
         /// </summary>
         public byte CommonKeyYIndex;
 
@@ -149,14 +153,14 @@ namespace BurnOutSharp.Models.N3DS
         /// <remarks>
         /// In demos, the first u32 in the "Limits" section is 0x4, then the second u32 is the max-playcount.
         /// </remarks>
-        public int[] Limits;
+        public uint[] Limits;
 
         /// <summary>
         /// The Content Index of a ticket has its own size defined within itself,
         /// with seemingly a minimal of 20 bytes, the second u32 in big endian defines
         /// the full value of X.
         /// </summary>
-        public int ContentIndexSize;
+        public uint ContentIndexSize;
 
         /// <summary>
         /// Content Index
