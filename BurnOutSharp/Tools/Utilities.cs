@@ -43,6 +43,13 @@ namespace BurnOutSharp.Tools
 
             #endregion
 
+            #region CFB
+
+            if (magic.StartsWith(new byte?[] { 0xD0, 0xCF, 0x11, 0xE0, 0xA1, 0xB1, 0x1A, 0xE1 }))
+                return SupportedFileType.CFB;
+
+            #endregion
+
             #region CIA
 
             // No magic checks for CIA
@@ -147,13 +154,6 @@ namespace BurnOutSharp.Tools
 
             if (magic.StartsWith(new byte?[] { 0x4d, 0x50, 0x51, 0x1b }))
                 return SupportedFileType.MPQ;
-
-            #endregion
-
-            #region MSI
-
-            if (magic.StartsWith(new byte?[] { 0xD0, 0xCF, 0x11, 0xE0, 0xA1, 0xB1, 0x1A, 0xE1 }))
-                return SupportedFileType.MSI;
 
             #endregion
 
@@ -365,6 +365,30 @@ namespace BurnOutSharp.Tools
 
             #endregion
 
+            #region CFB
+
+            // Installer package
+            if (extension.Equals("msi", StringComparison.OrdinalIgnoreCase))
+                return SupportedFileType.CFB;
+
+            // Merge module
+            else if (extension.Equals("msm", StringComparison.OrdinalIgnoreCase))
+                return SupportedFileType.CFB;
+
+            // Patch Package
+            else if (extension.Equals("msp", StringComparison.OrdinalIgnoreCase))
+                return SupportedFileType.CFB;
+
+            // Transform
+            else if (extension.Equals("mst", StringComparison.OrdinalIgnoreCase))
+                return SupportedFileType.CFB;
+
+            // Patch Creation Properties
+            else if (extension.Equals("pcp", StringComparison.OrdinalIgnoreCase))
+                return SupportedFileType.CFB;
+
+            #endregion
+
             #region CIA
 
             if (extension.Equals("cia", StringComparison.OrdinalIgnoreCase))
@@ -430,13 +454,6 @@ namespace BurnOutSharp.Tools
 
             if (extension.Equals("mpq", StringComparison.OrdinalIgnoreCase))
                 return SupportedFileType.MPQ;
-
-            #endregion
-
-            #region MSI
-
-            if (extension.Equals("msi", StringComparison.OrdinalIgnoreCase))
-                return SupportedFileType.MSI;
 
             #endregion
 
@@ -717,6 +734,7 @@ namespace BurnOutSharp.Tools
                 case SupportedFileType.BFPK: return new FileType.BFPK();
                 case SupportedFileType.BSP: return new FileType.BSP();
                 case SupportedFileType.BZip2: return new FileType.BZip2();
+                case SupportedFileType.CFB: return new FileType.CFB();
                 //case SupportedFileType.CIA: return new FileType.CIA();
                 case SupportedFileType.Executable: return new FileType.Executable();
                 case SupportedFileType.GCF: return new FileType.GCF();
@@ -728,7 +746,6 @@ namespace BurnOutSharp.Tools
                 case SupportedFileType.MicrosoftCAB: return new FileType.MicrosoftCAB();
                 case SupportedFileType.MicrosoftLZ: return new FileType.MicrosoftLZ();
                 case SupportedFileType.MPQ: return new FileType.MPQ();
-                case SupportedFileType.MSI: return new FileType.MSI();
                 //case SupportedFileType.N3DS: return new FileType.N3DS();
                 //case SupportedFileType.NCF: return new FileType.NCF();
                 //case SupportedFileType.Nitro: return new FileType.Nitro();

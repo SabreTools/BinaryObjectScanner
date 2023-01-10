@@ -9,9 +9,9 @@ using static BurnOutSharp.Utilities.Dictionary;
 namespace BurnOutSharp.FileType
 {
     /// <summary>
-    /// Microsoft installation package
+    /// Compound File Binary
     /// </summary>
-    public class MSI : IScannable
+    public class CFB : IScannable
     {
         /// <inheritdoc/>
         public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, string file)

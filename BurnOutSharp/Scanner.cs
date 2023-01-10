@@ -427,6 +427,14 @@ namespace BurnOutSharp
                         AppendToDictionary(protections, subProtections);
                     }
 
+                    // CFB
+                    if (fileName != null && scannable is CFB)
+                    {
+                        var subProtections = scannable.Scan(this, fileName);
+                        PrependToKeys(subProtections, fileName);
+                        AppendToDictionary(protections, subProtections);
+                    }
+
                     // GCF
                     if (scannable is GCF)
                     {
@@ -469,14 +477,6 @@ namespace BurnOutSharp
 
                     // Microsoft LZ
                     if (fileName != null && scannable is MicrosoftLZ)
-                    {
-                        var subProtections = scannable.Scan(this, fileName);
-                        PrependToKeys(subProtections, fileName);
-                        AppendToDictionary(protections, subProtections);
-                    }
-
-                    // MSI
-                    if (fileName != null && scannable is MSI)
                     {
                         var subProtections = scannable.Scan(this, fileName);
                         PrependToKeys(subProtections, fileName);

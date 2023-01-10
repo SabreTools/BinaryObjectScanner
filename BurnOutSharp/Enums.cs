@@ -26,6 +26,11 @@
         BZip2,
 
         /// <summary>
+        /// Compound File Binary
+        /// </summary>
+        CFB,
+
+        /// <summary>
         /// CTR Importable Archive
         /// </summary>
         CIA,
@@ -79,11 +84,6 @@
         /// MPQ game data archive
         /// </summary>
         MPQ,
-
-        /// <summary>
-        /// Microsoft installation package
-        /// </summary>
-        MSI,
 
         /// <summary>
         /// Nintendo 3DS cart image

@@ -156,7 +156,7 @@ Below is a list of container formats that are supported in some way:
 | 7-zip archive | No | Yes | Yes | Via `SharpCompress` |
 | BFPK custom archive format | Yes | Yes | Yes | |
 | bzip2 archive | No | Yes | Yes | Via `SharpCompress` |
-| Compound File Binary (CFB) | Yes | Yes* | No | Basis of MSI, only CFB common pieces printable |
+| Compound File Binary (CFB) | Yes* | Yes | Yes | Via `OpenMcdf`, only CFB common pieces printable |
 | gzip archive | No | Yes | Yes | Via `SharpCompress` |
 | Half-Life Game Cache File (GCF) | Yes | Yes | Yes | |
 | Half-Life Level (BSP) | Yes | Yes | Yes | |
@@ -171,7 +171,6 @@ Below is a list of container formats that are supported in some way:
 | Microsoft cabinet file | Yes | Yes | Yes | |
 | Microsoft LZ-compressed files | No | Yes | Yes | |
 | MoPaQ game data archive (MPQ) | No | Yes | Yes | Via `StormLibSharp` |
-| Microsoft installation package (MSI) | No | Yes | Yes | Via `OpenMcdf` |
 | MS-DOS Executable | Yes | Yes | No | Incomplete |
 | New Exectuable | Yes | Yes | No | Incomplete |
 | Nintendo 3DS cart image | Yes | Yes | No | |

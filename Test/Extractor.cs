@@ -189,6 +189,58 @@ namespace Test
                     }
                 }
 
+                // CFB
+                else if (ft == SupportedFileType.CFB)
+                {
+                    // Build the installer information
+                    Console.WriteLine("Extracting CFB contents");
+                    Console.WriteLine();
+
+                    // If the CFB file itself fails
+                    try
+                    {
+                        using (CompoundFile cf = new CompoundFile(stream, CFSUpdateMode.ReadOnly, CFSConfiguration.Default))
+                        {
+                            cf.RootStorage.VisitEntries((e) =>
+                            {
+                                if (!e.IsStream)
+                                    return;
+
+                                var str = cf.RootStorage.GetStream(e.Name);
+                                if (str == null)
+                                    return;
+
+                                byte[] strData = str.GetData();
+                                if (strData == null)
+                                    return;
+
+                                string decoded = BurnOutSharp.FileType.CFB.DecodeStreamName(e.Name).TrimEnd('\0');
+                                byte[] nameBytes = Encoding.UTF8.GetBytes(e.Name);
+
+                                // UTF-8 encoding of 0x4840.
+                                if (nameBytes[0] == 0xe4 && nameBytes[1] == 0xa1 && nameBytes[2] == 0x80)
+                                    decoded = decoded.Substring(3);
+
+                                foreach (char c in Path.GetInvalidFileNameChars())
+                                {
+                                    decoded = decoded.Replace(c, '_');
+                                }
+
+                                string filename = Path.Combine(outputDirectory, decoded);
+                                using (Stream fs = File.OpenWrite(filename))
+                                {
+                                    fs.Write(strData, 0, strData.Length);
+                                }
+                            }, recursive: true);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Something went wrong extracting CFB: {ex}");
+                        Console.WriteLine();
+                    }
+                }
+
                 // GCF
                 else if (ft == SupportedFileType.GCF)
                 {
@@ -457,58 +509,6 @@ namespace Test
                     }
                 }
 #endif
-
-                // MSI
-                else if (ft == SupportedFileType.MSI)
-                {
-                    // Build the installer information
-                    Console.WriteLine("Extracting MSI contents");
-                    Console.WriteLine();
-
-                    // If the MSI file itself fails
-                    try
-                    {
-                        using (CompoundFile msi = new CompoundFile(stream, CFSUpdateMode.ReadOnly, CFSConfiguration.Default))
-                        {
-                            msi.RootStorage.VisitEntries((e) =>
-                            {
-                                if (!e.IsStream)
-                                    return;
-
-                                var str = msi.RootStorage.GetStream(e.Name);
-                                if (str == null)
-                                    return;
-
-                                byte[] strData = str.GetData();
-                                if (strData == null)
-                                    return;
-
-                                string decoded = BurnOutSharp.FileType.MSI.DecodeStreamName(e.Name).TrimEnd('\0');
-                                byte[] nameBytes = Encoding.UTF8.GetBytes(e.Name);
-
-                                // UTF-8 encoding of 0x4840.
-                                if (nameBytes[0] == 0xe4 && nameBytes[1] == 0xa1 && nameBytes[2] == 0x80)
-                                    decoded = decoded.Substring(3);
-
-                                foreach (char c in Path.GetInvalidFileNameChars())
-                                {
-                                    decoded = decoded.Replace(c, '_');
-                                }
-
-                                string filename = Path.Combine(outputDirectory, decoded);
-                                using (Stream fs = File.OpenWrite(filename))
-                                {
-                                    fs.Write(strData, 0, strData.Length);
-                                }
-                            }, recursive: true);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Something went wrong extracting MSI: {ex}");
-                        Console.WriteLine();
-                    }
-                }
 
                 // PAK
                 else if (ft == SupportedFileType.PAK)
