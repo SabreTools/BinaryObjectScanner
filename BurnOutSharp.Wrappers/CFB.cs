@@ -96,6 +96,20 @@ namespace BurnOutSharp.Wrappers
 
         #endregion
 
+        #region Extension Properties
+
+        /// <summary>
+        /// Normal sector size in bytes
+        /// </summary>
+        public long SectorSize => (long)Math.Pow(2, SectorShift);
+
+        /// <summary>
+        /// Mini sector size in bytes
+        /// </summary>
+        public long MiniSectorSize => (long)Math.Pow(2, MiniSectorShift);
+
+        #endregion
+
         #region Instance Variables
 
         /// <summary>
@@ -215,8 +229,7 @@ namespace BurnOutSharp.Wrappers
                     return null;
 
                 // Try to read the sector data
-                int sectorDataLength = (int)Math.Pow(2, SectorShift);
-                var sectorData = ReadFromDataSource(sectorDataOffset, sectorDataLength);
+                var sectorData = ReadFromDataSource(sectorDataOffset, (int)SectorSize);
                 if (sectorData == null)
                     return null;
 
@@ -239,7 +252,7 @@ namespace BurnOutSharp.Wrappers
                 return -1;
 
             // Convert based on the sector shift value
-            return (long)((long)(sector + 1) * Math.Pow(2, SectorShift));
+            return (long)(sector + 1) * SectorSize;
         }
 
         #endregion
@@ -300,8 +313,7 @@ namespace BurnOutSharp.Wrappers
                     return null;
 
                 // Try to read the sector data
-                int sectorDataLength = (int)Math.Pow(2, MiniSectorShift);
-                var sectorData = ReadFromDataSource(sectorDataOffset, sectorDataLength);
+                var sectorData = ReadFromDataSource(sectorDataOffset, (int)MiniSectorSize);
                 if (sectorData == null)
                     return null;
 
@@ -324,7 +336,7 @@ namespace BurnOutSharp.Wrappers
                 return -1;
 
             // Convert based on the sector shift value
-            return (long)((long)(sector + 1) * Math.Pow(2, MiniSectorShift));
+            return (long)(sector + 1) * MiniSectorSize;
         }
 
         #endregion
