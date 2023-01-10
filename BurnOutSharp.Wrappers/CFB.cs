@@ -285,7 +285,7 @@ namespace BurnOutSharp.Wrappers
                 for (int i = 0; i < DirectoryEntries.Length; i++)
                 {
                     var directoryEntry = DirectoryEntries[i];
-                    Console.WriteLine($"  DIFAT Sector Entry {i}");
+                    Console.WriteLine($"  Directory Entry {i}");
                     Console.WriteLine($"    Name: {directoryEntry.Name}");
                     Console.WriteLine($"    Name length: {directoryEntry.NameLength}");
                     Console.WriteLine($"    Object type: {directoryEntry.ObjectType}");
