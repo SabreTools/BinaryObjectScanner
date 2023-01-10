@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace BurnOutSharp.Wrappers
@@ -154,6 +155,74 @@ namespace BurnOutSharp.Wrappers
                 _streamData = data,
             };
             return wrapper;
+        }
+
+        #endregion
+
+        #region Data
+
+        /// <summary>
+        /// Get the ordered FAT sector chain for a given starting sector
+        /// </summary>
+        /// <param name="startingSector">Initial FAT sector</param>
+        /// <returns>Ordered list of sector numbers, null on error</returns>
+        public List<Models.CFB.SectorNumber> GetFATSectorChain(uint startingSector)
+        {
+            // If we have an invalid sector
+            if (startingSector < 0 || startingSector >= FATSectorNumbers.Length)
+                return null;
+
+            // Setup the returned list
+            var sectors = new List<Models.CFB.SectorNumber> { (Models.CFB.SectorNumber)startingSector };
+
+            var lastSector = (Models.CFB.SectorNumber)startingSector;
+            while (true)
+            {
+                // Get the next sector from the lookup table
+                var nextSector = FATSectorNumbers[(uint)lastSector];
+
+                // If we have an end of chain or free sector
+                if (nextSector == Models.CFB.SectorNumber.ENDOFCHAIN || nextSector == Models.CFB.SectorNumber.FREESECT)
+                    break;
+
+                // Add the next sector to the list and replace the last sector
+                sectors.Add(nextSector);
+                lastSector = nextSector;
+            }
+
+            return sectors;
+        }
+
+        /// <summary>
+        /// Get the ordered Mini FAT sector chain for a given starting sector
+        /// </summary>
+        /// <param name="startingSector">Initial Mini FAT sector</param>
+        /// <returns>Ordered list of sector numbers, null on error</returns>
+        public List<Models.CFB.SectorNumber> GetMiniFATSectorChain(uint startingSector)
+        {
+            // If we have an invalid sector
+            if (startingSector < 0 || startingSector >= MiniFATSectorNumbers.Length)
+                return null;
+
+            // Setup the returned list
+            var sectors = new List<Models.CFB.SectorNumber> { (Models.CFB.SectorNumber)startingSector };
+
+            var lastSector = (Models.CFB.SectorNumber)startingSector;
+            while (true)
+            {
+                // Get the next sector from the lookup table
+                var nextSector = MiniFATSectorNumbers[(uint)lastSector];
+
+                // If we have an end of chain or free sector
+                if (nextSector == Models.CFB.SectorNumber.ENDOFCHAIN || nextSector == Models.CFB.SectorNumber.FREESECT)
+                    break;
+
+                // Add the next sector to the list and replace the last sector
+                sectors.Add(nextSector);
+                lastSector = nextSector;
+            }
+
+            return sectors;
         }
 
         #endregion
