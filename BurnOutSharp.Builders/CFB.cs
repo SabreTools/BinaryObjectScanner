@@ -232,7 +232,7 @@ namespace BurnOutSharp.Builders
                     data.Seek(sectorOffset, SeekOrigin.Begin);
 
                     // Try to parse the sectors
-                    var directoryEntries = ParseDirectoryEntries(data, fileHeader.SectorShift);
+                    var directoryEntries = ParseDirectoryEntries(data, fileHeader.SectorShift, fileHeader.MajorVersion);
                     if (directoryEntries == null)
                         return null;
 
@@ -334,8 +334,9 @@ namespace BurnOutSharp.Builders
         /// </summary>
         /// <param name="data">Stream to parse</param>
         /// <param name="sectorShift">Sector shift from the header</param>
+        /// <param name="majorVersion">Major version from the header</param>
         /// <returns>Filled sector full of directory entries on success, null on error</returns>
-        private static DirectoryEntry[] ParseDirectoryEntries(Stream data, ushort sectorShift)
+        private static DirectoryEntry[] ParseDirectoryEntries(Stream data, ushort sectorShift, ushort majorVersion)
         {
             // TODO: Use marshalling here instead of building
             const int directoryEntrySize = 64 + 2 + 1 + 1 + 4 + 4 + 4 + 16 + 4 + 8 + 8 + 4 + 8;
@@ -344,7 +345,7 @@ namespace BurnOutSharp.Builders
 
             for (int i = 0; i < directoryEntries.Length; i++)
             {
-                var directoryEntry = ParseDirectoryEntry(data);
+                var directoryEntry = ParseDirectoryEntry(data, majorVersion);
                 if (directoryEntry == null)
                     return null;
 
@@ -358,8 +359,9 @@ namespace BurnOutSharp.Builders
         /// Parse a Stream into a directory entry
         /// </summary>
         /// <param name="data">Stream to parse</param>
+        /// <param name="majorVersion">Major version from the header</param>
         /// <returns>Filled directory entry on success, null on error</returns>
-        private static DirectoryEntry ParseDirectoryEntry(Stream data)
+        private static DirectoryEntry ParseDirectoryEntry(Stream data, ushort majorVersion)
         {
             // TODO: Use marshalling here instead of building
             DirectoryEntry directoryEntry = new DirectoryEntry();
@@ -378,6 +380,8 @@ namespace BurnOutSharp.Builders
             directoryEntry.ModifiedTime = data.ReadUInt64();
             directoryEntry.StartingSectorLocation = data.ReadUInt32();
             directoryEntry.StreamSize = data.ReadUInt64();
+            if (majorVersion == 3)
+                directoryEntry.StreamSize &= 0x0000FFFF;
 
             return directoryEntry;
         }
