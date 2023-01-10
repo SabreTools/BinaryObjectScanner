@@ -166,16 +166,16 @@ namespace BurnOutSharp.Wrappers
         /// </summary>
         /// <param name="startingSector">Initial FAT sector</param>
         /// <returns>Ordered list of sector numbers, null on error</returns>
-        public List<Models.CFB.SectorNumber> GetFATSectorChain(uint startingSector)
+        public List<Models.CFB.SectorNumber> GetFATSectorChain(Models.CFB.SectorNumber startingSector)
         {
             // If we have an invalid sector
-            if (startingSector < 0 || startingSector >= FATSectorNumbers.Length)
+            if (startingSector < 0 || (long)startingSector >= FATSectorNumbers.Length)
                 return null;
 
             // Setup the returned list
-            var sectors = new List<Models.CFB.SectorNumber> { (Models.CFB.SectorNumber)startingSector };
+            var sectors = new List<Models.CFB.SectorNumber> { startingSector };
 
-            var lastSector = (Models.CFB.SectorNumber)startingSector;
+            var lastSector = startingSector;
             while (true)
             {
                 // Get the next sector from the lookup table
@@ -194,20 +194,54 @@ namespace BurnOutSharp.Wrappers
         }
 
         /// <summary>
+        /// Get the data for the FAT sector chain starting at a given starting sector
+        /// </summary>
+        /// <param name="startingSector">Initial FAT sector</param>
+        /// <returns>Ordered list of sector numbers, null on error</returns>
+        public byte[] GetFATSectorChainData(Models.CFB.SectorNumber startingSector)
+        {
+            // Get the sector chain first
+            var sectorChain = GetFATSectorChain(startingSector);
+            if (sectorChain == null)
+                return null;
+
+            // Sequentially read the sectors
+            var data = new List<byte>();
+            for (int i = 0; i < sectorChain.Count; i++)
+            {
+                // Try to get the sector data offset
+                int sectorDataOffset = (int)ToFileOffset(sectorChain[i]);
+                if (sectorDataOffset < 0 || sectorDataOffset >= GetEndOfFile())
+                    return null;
+
+                // Try to read the sector data
+                int sectorDataLength = (int)Math.Pow(2, SectorShift);
+                var sectorData = ReadFromDataSource(sectorDataOffset, sectorDataLength);
+                if (sectorData == null)
+                    return null;
+
+                // Add the sector data to the output
+                data.AddRange(sectorData);
+            }
+
+            return data.ToArray();
+        }
+
+        /// <summary>
         /// Get the ordered Mini FAT sector chain for a given starting sector
         /// </summary>
         /// <param name="startingSector">Initial Mini FAT sector</param>
         /// <returns>Ordered list of sector numbers, null on error</returns>
-        public List<Models.CFB.SectorNumber> GetMiniFATSectorChain(uint startingSector)
+        public List<Models.CFB.SectorNumber> GetMiniFATSectorChain(Models.CFB.SectorNumber startingSector)
         {
             // If we have an invalid sector
-            if (startingSector < 0 || startingSector >= MiniFATSectorNumbers.Length)
+            if (startingSector < 0 || (long)startingSector >= MiniFATSectorNumbers.Length)
                 return null;
 
             // Setup the returned list
-            var sectors = new List<Models.CFB.SectorNumber> { (Models.CFB.SectorNumber)startingSector };
+            var sectors = new List<Models.CFB.SectorNumber> { startingSector };
 
-            var lastSector = (Models.CFB.SectorNumber)startingSector;
+            var lastSector = startingSector;
             while (true)
             {
                 // Get the next sector from the lookup table
@@ -223,6 +257,70 @@ namespace BurnOutSharp.Wrappers
             }
 
             return sectors;
+        }
+
+        /// <summary>
+        /// Get the data for the Mini FAT sector chain starting at a given starting sector
+        /// </summary>
+        /// <param name="startingSector">Initial Mini FAT sector</param>
+        /// <returns>Ordered list of sector numbers, null on error</returns>
+        public byte[] GetMiniFATSectorChainData(Models.CFB.SectorNumber startingSector)
+        {
+            // Get the sector chain first
+            var sectorChain = GetMiniFATSectorChain(startingSector);
+            if (sectorChain == null)
+                return null;
+
+            // Sequentially read the sectors
+            var data = new List<byte>();
+            for (int i = 0; i < sectorChain.Count; i++)
+            {
+                // Try to get the sector data offset
+                int sectorDataOffset = (int)ToMiniFileOffset(sectorChain[i]);
+                if (sectorDataOffset < 0 || sectorDataOffset >= GetEndOfFile())
+                    return null;
+
+                // Try to read the sector data
+                int sectorDataLength = (int)Math.Pow(2, MiniSectorShift);
+                var sectorData = ReadFromDataSource(sectorDataOffset, sectorDataLength);
+                if (sectorData == null)
+                    return null;
+
+                // Add the sector data to the output
+                data.AddRange(sectorData);
+            }
+
+            return data.ToArray();
+        }
+
+        /// <summary>
+        /// Convert a FAT sector value to a byte offset
+        /// </summary>
+        /// <param name="sector">Sector to convert</param>
+        /// <returns>File offset in bytes, -1 on error</returns>
+        public long ToFileOffset(Models.CFB.SectorNumber sector)
+        {
+            // If we have an invalid sector number
+            if (sector > Models.CFB.SectorNumber.MAXREGSECT)
+                return -1;
+
+            // Convert based on the sector shift value
+            return (long)((long)(sector + 1) * Math.Pow(2, SectorShift));
+        }
+
+        /// <summary>
+        /// Convert a Mini FAT sector value to a byte offset
+        /// </summary>
+        /// <param name="sector">Sector to convert</param>
+        /// <returns>File offset in bytes, -1 on error</returns>
+        public long ToMiniFileOffset(Models.CFB.SectorNumber sector)
+        {
+            // If we have an invalid sector number
+            if (sector > Models.CFB.SectorNumber.MAXREGSECT)
+                return -1;
+
+            // Convert based on the sector shift value
+            return (long)((long)(sector + 1) * Math.Pow(2, MiniSectorShift));
         }
 
         #endregion
