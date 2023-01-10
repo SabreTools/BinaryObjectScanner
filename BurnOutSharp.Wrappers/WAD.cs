@@ -127,8 +127,8 @@ namespace BurnOutSharp.Wrappers
             Console.WriteLine("  Header Information:");
             Console.WriteLine("  -------------------------");
             Console.WriteLine($"  Signature: {Signature}");
-            Console.WriteLine($"  Lump count: {LumpCount}");
-            Console.WriteLine($"  Lump offset: {LumpOffset}");
+            Console.WriteLine($"  Lump count: {LumpCount} (0x{LumpCount:X})");
+            Console.WriteLine($"  Lump offset: {LumpOffset} (0x{LumpOffset:X})");
             Console.WriteLine();
         }
 
@@ -149,14 +149,14 @@ namespace BurnOutSharp.Wrappers
                 {
                     var lump = Lumps[i];
                     Console.WriteLine($"  Lump {i}");
-                    Console.WriteLine($"    Offset: {lump.Offset}");
-                    Console.WriteLine($"    Disk length: {lump.DiskLength}");
-                    Console.WriteLine($"    Length: {lump.Length}");
-                    Console.WriteLine($"    Type: {lump.Type}");
-                    Console.WriteLine($"    Compression: {lump.Compression}");
-                    Console.WriteLine($"    Padding 0: {lump.Padding0}");
-                    Console.WriteLine($"    Padding 1: {lump.Padding1}");
-                    Console.WriteLine($"    Name: {lump.Name}");
+                    Console.WriteLine($"    Offset: {lump.Offset} (0x{lump.Offset:X})");
+                    Console.WriteLine($"    Disk length: {lump.DiskLength} (0x{lump.DiskLength:X})");
+                    Console.WriteLine($"    Length: {lump.Length} (0x{lump.Length:X})");
+                    Console.WriteLine($"    Type: {lump.Type} (0x{lump.Type:X})");
+                    Console.WriteLine($"    Compression: {lump.Compression} (0x{lump.Compression:X})");
+                    Console.WriteLine($"    Padding 0: {lump.Padding0} (0x{lump.Padding0:X})");
+                    Console.WriteLine($"    Padding 1: {lump.Padding1} (0x{lump.Padding1:X})");
+                    Console.WriteLine($"    Name: {lump.Name ?? "[NULL]"}");
                 }
             }
             Console.WriteLine();
@@ -186,12 +186,12 @@ namespace BurnOutSharp.Wrappers
                     else
                     {
                         Console.WriteLine($"    Name: {lumpInfo.Name ?? "[NULL]"}");
-                        Console.WriteLine($"    Width: {lumpInfo.Width}");
-                        Console.WriteLine($"    Height: {lumpInfo.Height}");
-                        Console.WriteLine($"    Pixel offset: {lumpInfo.PixelOffset}");
+                        Console.WriteLine($"    Width: {lumpInfo.Width} (0x{lumpInfo.Width:X})");
+                        Console.WriteLine($"    Height: {lumpInfo.Height} (0x{lumpInfo.Height:X})");
+                        Console.WriteLine($"    Pixel offset: {lumpInfo.PixelOffset} (0x{lumpInfo.PixelOffset:X})");
                         // TODO: Print unknown data?
                         // TODO: Print pixel data?
-                        Console.WriteLine($"    Palette size: {lumpInfo.PaletteSize}");
+                        Console.WriteLine($"    Palette size: {lumpInfo.PaletteSize} (0x{lumpInfo.PaletteSize:X})");
                         // TODO: Print palette data?
                     }
                 }

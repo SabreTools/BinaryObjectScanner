@@ -439,14 +439,14 @@ namespace BurnOutSharp.Wrappers
             Console.WriteLine("  Header Information:");
             Console.WriteLine("  -------------------------");
             Console.WriteLine($"  Signature: {Signature}");
-            Console.WriteLine($"  Major version: {MajorVersion}");
-            Console.WriteLine($"  Minor version: {MinorVersion}");
+            Console.WriteLine($"  Major version: {MajorVersion} (0x{MajorVersion:X})");
+            Console.WriteLine($"  Minor version: {MinorVersion} (0x{MinorVersion:X})");
             Console.WriteLine($"  File MD5: {(FileMD5 == null ? "[NULL]" : BitConverter.ToString(FileMD5).Replace("-", string.Empty))}");
             Console.WriteLine($"  Name: {Name ?? "[NULL]"}");
             Console.WriteLine($"  Header MD5: {(HeaderMD5 == null ? "[NULL]" : BitConverter.ToString(HeaderMD5).Replace("-", string.Empty))}");
-            Console.WriteLine($"  Header length: {HeaderLength.ToString() ?? "[NULL]"}");
-            Console.WriteLine($"  File data offset: {FileDataOffset.ToString() ?? "[NULL]"}");
-            Console.WriteLine($"  Dummy 0: {Dummy0.ToString() ?? "[NULL]"}");
+            Console.WriteLine($"  Header length: {HeaderLength?.ToString() ?? "[NULL]"} (0x{HeaderLength?.ToString("X") ?? "[NULL]"})");
+            Console.WriteLine($"  File data offset: {FileDataOffset?.ToString() ?? "[NULL]"} (0x{FileDataOffset?.ToString("X") ?? "[NULL]"})");
+            Console.WriteLine($"  Dummy 0: {Dummy0?.ToString() ?? "[NULL]"} (0x{Dummy0?.ToString("X") ?? "[NULL]"})");
             Console.WriteLine();
         }
 
@@ -457,16 +457,16 @@ namespace BurnOutSharp.Wrappers
         {
             Console.WriteLine("  Directory Header Information:");
             Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Section offset: {SectionOffset.ToString() ?? "[NULL]"}");
-            Console.WriteLine($"  Section count: {SectionCount.ToString() ?? "[NULL]"}");
-            Console.WriteLine($"  Folder offset: {FolderOffset.ToString() ?? "[NULL]"}");
-            Console.WriteLine($"  Folder count: {FolderCount.ToString() ?? "[NULL]"}");
-            Console.WriteLine($"  File offset: {FileOffset.ToString() ?? "[NULL]"}");
-            Console.WriteLine($"  File count: {FileCount.ToString() ?? "[NULL]"}");
-            Console.WriteLine($"  String table offset: {StringTableOffset.ToString() ?? "[NULL]"}");
-            Console.WriteLine($"  String table count: {StringTableCount.ToString() ?? "[NULL]"}");
-            Console.WriteLine($"  Hash table offset: {HashTableOffset?.ToString() ?? "[NULL]"}");
-            Console.WriteLine($"  Block size: {BlockSize?.ToString() ?? "[NULL]"}");
+            Console.WriteLine($"  Section offset: {SectionOffset?.ToString() ?? "[NULL]"} (0x{SectionOffset?.ToString("X") ?? "[NULL]"})");
+            Console.WriteLine($"  Section count: {SectionCount?.ToString() ?? "[NULL]"} (0x{SectionCount?.ToString("X") ?? "[NULL]"})");
+            Console.WriteLine($"  Folder offset: {FolderOffset?.ToString() ?? "[NULL]"} (0x{FolderOffset?.ToString("X") ?? "[NULL]"})");
+            Console.WriteLine($"  Folder count: {FolderCount?.ToString() ?? "[NULL]"} (0x{FolderCount?.ToString("X") ?? "[NULL]"})");
+            Console.WriteLine($"  File offset: {FileOffset?.ToString() ?? "[NULL]"} (0x{FileOffset?.ToString("X") ?? "[NULL]"})");
+            Console.WriteLine($"  File count: {FileCount?.ToString() ?? "[NULL]"} (0x{FileCount?.ToString("X") ?? "[NULL]"})");
+            Console.WriteLine($"  String table offset: {StringTableOffset?.ToString() ?? "[NULL]"} (0x{StringTableOffset?.ToString("X") ?? "[NULL]"})");
+            Console.WriteLine($"  String table count: {StringTableCount?.ToString() ?? "[NULL]"} (0x{StringTableCount?.ToString("X") ?? "[NULL]"})");
+            Console.WriteLine($"  Hash table offset: {HashTableOffset?.ToString() ?? "[NULL]"} (0x{HashTableOffset?.ToString("X") ?? "[NULL]"})");
+            Console.WriteLine($"  Block size: {BlockSize?.ToString() ?? "[NULL]"} (0x{BlockSize?.ToString("X") ?? "[NULL]"})");
             Console.WriteLine();
         }
 
@@ -492,11 +492,11 @@ namespace BurnOutSharp.Wrappers
                             var section4 = Sections[i] as Models.SGA.Section4;
                             Console.WriteLine($"    Alias: {section4.Alias ?? "[NULL]"}");
                             Console.WriteLine($"    Name: {section4.Name ?? "[NULL]"}");
-                            Console.WriteLine($"    Folder start index: {section4.FolderStartIndex}");
-                            Console.WriteLine($"    Folder end index: {section4.FolderEndIndex}");
-                            Console.WriteLine($"    File start index: {section4.FileStartIndex}");
-                            Console.WriteLine($"    File end index: {section4.FileEndIndex}");
-                            Console.WriteLine($"    Folder root index: {section4.FolderRootIndex}");
+                            Console.WriteLine($"    Folder start index: {section4.FolderStartIndex} (0x{section4.FolderStartIndex:X})");
+                            Console.WriteLine($"    Folder end index: {section4.FolderEndIndex} (0x{section4.FolderEndIndex:X})");
+                            Console.WriteLine($"    File start index: {section4.FileStartIndex} (0x{section4.FileStartIndex:X})");
+                            Console.WriteLine($"    File end index: {section4.FileEndIndex} (0x{section4.FileEndIndex:X})");
+                            Console.WriteLine($"    Folder root index: {section4.FolderRootIndex} (0x{section4.FolderRootIndex:X})");
                             break;
 
                         case 5:
@@ -505,11 +505,11 @@ namespace BurnOutSharp.Wrappers
                             var section5 = Sections[i] as Models.SGA.Section5;
                             Console.WriteLine($"    Alias: {section5.Alias ?? "[NULL]"}");
                             Console.WriteLine($"    Name: {section5.Name ?? "[NULL]"}");
-                            Console.WriteLine($"    Folder start index: {section5.FolderStartIndex}");
-                            Console.WriteLine($"    Folder end index: {section5.FolderEndIndex}");
-                            Console.WriteLine($"    File start index: {section5.FileStartIndex}");
-                            Console.WriteLine($"    File end index: {section5.FileEndIndex}");
-                            Console.WriteLine($"    Folder root index: {section5.FolderRootIndex}");
+                            Console.WriteLine($"    Folder start index: {section5.FolderStartIndex} (0x{section5.FolderStartIndex:X})");
+                            Console.WriteLine($"    Folder end index: {section5.FolderEndIndex} (0x{section5.FolderEndIndex:X})");
+                            Console.WriteLine($"    File start index: {section5.FileStartIndex} (0x{section5.FileStartIndex:X})");
+                            Console.WriteLine($"    File end index: {section5.FileEndIndex} (0x{section5.FileEndIndex:X})");
+                            Console.WriteLine($"    Folder root index: {section5.FolderRootIndex} (0x{section5.FolderRootIndex:X})");
                             break;
                         default:
                             Console.WriteLine($"    Unknown format for version {MajorVersion}");
@@ -540,24 +540,24 @@ namespace BurnOutSharp.Wrappers
                     {
                         case 4:
                             var folder4 = Folders[i] as Models.SGA.Folder4;
-                            Console.WriteLine($"    Name offset: {folder4.NameOffset}");
+                            Console.WriteLine($"    Name offset: {folder4.NameOffset} (0x{folder4.NameOffset:X})");
                             Console.WriteLine($"    Name: {folder4.Name ?? "[NULL]"}");
-                            Console.WriteLine($"    Folder start index: {folder4.FolderStartIndex}");
-                            Console.WriteLine($"    Folder end index: {folder4.FolderEndIndex}");
-                            Console.WriteLine($"    File start index: {folder4.FileStartIndex}");
-                            Console.WriteLine($"    File end index: {folder4.FileEndIndex}");
+                            Console.WriteLine($"    Folder start index: {folder4.FolderStartIndex} (0x{folder4.FolderStartIndex:X})");
+                            Console.WriteLine($"    Folder end index: {folder4.FolderEndIndex} (0x{folder4.FolderEndIndex:X})");
+                            Console.WriteLine($"    File start index: {folder4.FileStartIndex} (0x{folder4.FileStartIndex:X})");
+                            Console.WriteLine($"    File end index: {folder4.FileEndIndex} (0x{folder4.FileEndIndex:X})");
                             break;
 
                         case 5:
                         case 6:
                         case 7:
                             var folder5 = Folders[i] as Models.SGA.Folder5;
-                            Console.WriteLine($"    Name offset: {folder5.NameOffset}");
+                            Console.WriteLine($"    Name offset: {folder5.NameOffset} (0x{folder5.NameOffset:X})");
                             Console.WriteLine($"    Name: {folder5.Name ?? "[NULL]"}");
-                            Console.WriteLine($"    Folder start index: {folder5.FolderStartIndex}");
-                            Console.WriteLine($"    Folder end index: {folder5.FolderEndIndex}");
-                            Console.WriteLine($"    File start index: {folder5.FileStartIndex}");
-                            Console.WriteLine($"    File end index: {folder5.FileEndIndex}");
+                            Console.WriteLine($"    Folder start index: {folder5.FolderStartIndex} (0x{folder5.FolderStartIndex:X})");
+                            Console.WriteLine($"    Folder end index: {folder5.FolderEndIndex} (0x{folder5.FolderEndIndex:X})");
+                            Console.WriteLine($"    File start index: {folder5.FileStartIndex} (0x{folder5.FileStartIndex:X})");
+                            Console.WriteLine($"    File end index: {folder5.FileEndIndex} (0x{folder5.FileEndIndex:X})");
                             break;
                         default:
                             Console.WriteLine($"    Unknown format for version {MajorVersion}");
@@ -589,40 +589,40 @@ namespace BurnOutSharp.Wrappers
                         case 4:
                         case 5:
                             var file4 = Files[i] as Models.SGA.File4;
-                            Console.WriteLine($"    Name offset: {file4.NameOffset}");
+                            Console.WriteLine($"    Name offset: {file4.NameOffset} (0x{file4.NameOffset:X})");
                             Console.WriteLine($"    Name: {file4.Name ?? "[NULL]"}");
-                            Console.WriteLine($"    Offset: {file4.Offset}");
-                            Console.WriteLine($"    Size on disk: {file4.SizeOnDisk}");
-                            Console.WriteLine($"    Size: {file4.Size}");
-                            Console.WriteLine($"    Time modified: {file4.TimeModified}");
-                            Console.WriteLine($"    Dummy 0: {file4.Dummy0}");
-                            Console.WriteLine($"    Type: {file4.Type}");
+                            Console.WriteLine($"    Offset: {file4.Offset} (0x{file4.Offset:X})");
+                            Console.WriteLine($"    Size on disk: {file4.SizeOnDisk} (0x{file4.SizeOnDisk:X})");
+                            Console.WriteLine($"    Size: {file4.Size} (0x{file4.Size:X})");
+                            Console.WriteLine($"    Time modified: {file4.TimeModified} (0x{file4.TimeModified:X})");
+                            Console.WriteLine($"    Dummy 0: {file4.Dummy0} (0x{file4.Dummy0:X})");
+                            Console.WriteLine($"    Type: {file4.Type} (0x{file4.Type:X})");
                             break;
 
                         case 6:
                             var file6 = Files[i] as Models.SGA.File6;
-                            Console.WriteLine($"    Name offset: {file6.NameOffset}");
+                            Console.WriteLine($"    Name offset: {file6.NameOffset} (0x{file6.NameOffset:X})");
                             Console.WriteLine($"    Name: {file6.Name ?? "[NULL]"}");
-                            Console.WriteLine($"    Offset: {file6.Offset}");
-                            Console.WriteLine($"    Size on disk: {file6.SizeOnDisk}");
-                            Console.WriteLine($"    Size: {file6.Size}");
-                            Console.WriteLine($"    Time modified: {file6.TimeModified}");
-                            Console.WriteLine($"    Dummy 0: {file6.Dummy0}");
-                            Console.WriteLine($"    Type: {file6.Type}");
-                            Console.WriteLine($"    CRC32: {file6.CRC32}");
+                            Console.WriteLine($"    Offset: {file6.Offset} (0x{file6.Offset:X})");
+                            Console.WriteLine($"    Size on disk: {file6.SizeOnDisk} (0x{file6.SizeOnDisk:X})");
+                            Console.WriteLine($"    Size: {file6.Size} (0x{file6.Size:X})");
+                            Console.WriteLine($"    Time modified: {file6.TimeModified} (0x{file6.TimeModified:X})");
+                            Console.WriteLine($"    Dummy 0: {file6.Dummy0} (0x{file6.Dummy0:X})");
+                            Console.WriteLine($"    Type: {file6.Type} (0x{file6.Type:X})");
+                            Console.WriteLine($"    CRC32: {file6.CRC32} (0x{file6.CRC32:X})");
                             break;
                         case 7:
                             var file7 = Files[i] as Models.SGA.File7;
-                            Console.WriteLine($"    Name offset: {file7.NameOffset}");
+                            Console.WriteLine($"    Name offset: {file7.NameOffset} (0x{file7.NameOffset:X})");
                             Console.WriteLine($"    Name: {file7.Name ?? "[NULL]"}");
-                            Console.WriteLine($"    Offset: {file7.Offset}");
-                            Console.WriteLine($"    Size on disk: {file7.SizeOnDisk}");
-                            Console.WriteLine($"    Size: {file7.Size}");
-                            Console.WriteLine($"    Time modified: {file7.TimeModified}");
-                            Console.WriteLine($"    Dummy 0: {file7.Dummy0}");
-                            Console.WriteLine($"    Type: {file7.Type}");
-                            Console.WriteLine($"    CRC32: {file7.CRC32}");
-                            Console.WriteLine($"    Hash offset: {file7.HashOffset}");
+                            Console.WriteLine($"    Offset: {file7.Offset} (0x{file7.Offset:X})");
+                            Console.WriteLine($"    Size on disk: {file7.SizeOnDisk} (0x{file7.SizeOnDisk:X})");
+                            Console.WriteLine($"    Size: {file7.Size} (0x{file7.Size:X})");
+                            Console.WriteLine($"    Time modified: {file7.TimeModified} (0x{file7.TimeModified:X})");
+                            Console.WriteLine($"    Dummy 0: {file7.Dummy0} (0x{file7.Dummy0:X})");
+                            Console.WriteLine($"    Type: {file7.Type} (0x{file7.Type:X})");
+                            Console.WriteLine($"    CRC32: {file7.CRC32} (0x{file7.CRC32:X})");
+                            Console.WriteLine($"    Hash offset: {file7.HashOffset} (0x{file7.HashOffset:X})");
                             break;
                         default:
                             Console.WriteLine($"    Unknown format for version {MajorVersion}");

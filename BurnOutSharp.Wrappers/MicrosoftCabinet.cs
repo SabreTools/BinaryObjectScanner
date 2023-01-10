@@ -415,24 +415,24 @@ namespace BurnOutSharp.Wrappers
             Console.WriteLine("  Header Information:");
             Console.WriteLine("  -------------------------");
             Console.WriteLine($"  Signature: {Signature}");
-            Console.WriteLine($"  Reserved 1: {Reserved1}");
-            Console.WriteLine($"  Cabinet size: {CabinetSize}");
-            Console.WriteLine($"  Reserved 2: {Reserved2}");
-            Console.WriteLine($"  Files offset: {FilesOffset}");
-            Console.WriteLine($"  Reserved 3: {Reserved3}");
-            Console.WriteLine($"  Minor version: {VersionMinor}");
-            Console.WriteLine($"  Major version: {VersionMajor}");
-            Console.WriteLine($"  Folder count: {FolderCount}");
-            Console.WriteLine($"  File count: {FileCount}");
-            Console.WriteLine($"  Flags: {Flags}");
-            Console.WriteLine($"  Set ID: {SetID}");
-            Console.WriteLine($"  Cabinet index: {CabinetIndex}");
+            Console.WriteLine($"  Reserved 1: {Reserved1} (0x{Reserved1:X})");
+            Console.WriteLine($"  Cabinet size: {CabinetSize} (0x{CabinetSize:X})");
+            Console.WriteLine($"  Reserved 2: {Reserved2} (0x{Reserved2:X})");
+            Console.WriteLine($"  Files offset: {FilesOffset} (0x{FilesOffset:X})");
+            Console.WriteLine($"  Reserved 3: {Reserved3} (0x{Reserved3:X})");
+            Console.WriteLine($"  Minor version: {VersionMinor} (0x{VersionMinor:X})");
+            Console.WriteLine($"  Major version: {VersionMajor} (0x{VersionMajor:X})");
+            Console.WriteLine($"  Folder count: {FolderCount} (0x{FolderCount:X})");
+            Console.WriteLine($"  File count: {FileCount} (0x{FileCount:X})");
+            Console.WriteLine($"  Flags: {Flags} (0x{Flags:X})");
+            Console.WriteLine($"  Set ID: {SetID} (0x{SetID:X})");
+            Console.WriteLine($"  Cabinet index: {CabinetIndex} (0x{CabinetIndex:X})");
 
             if (Flags.HasFlag(Models.MicrosoftCabinet.HeaderFlags.RESERVE_PRESENT))
             {
-                Console.WriteLine($"  Header reserved size: {HeaderReservedSize}");
-                Console.WriteLine($"  Folder reserved size: {FolderReservedSize}");
-                Console.WriteLine($"  Data reserved size: {DataReservedSize}");
+                Console.WriteLine($"  Header reserved size: {HeaderReservedSize} (0x{HeaderReservedSize:X})");
+                Console.WriteLine($"  Folder reserved size: {FolderReservedSize} (0x{FolderReservedSize:X})");
+                Console.WriteLine($"  Data reserved size: {DataReservedSize} (0x{DataReservedSize:X})");
                 if (ReservedData == null)
                     Console.WriteLine($"  Reserved data = [NULL]");
                 else
@@ -471,9 +471,9 @@ namespace BurnOutSharp.Wrappers
                 {
                     var entry = Folders[i];
                     Console.WriteLine($"  Folder {i}");
-                    Console.WriteLine($"    Cab start offset = {entry.CabStartOffset}");
-                    Console.WriteLine($"    Data count = {entry.DataCount}");
-                    Console.WriteLine($"    Compression type = {entry.CompressionType}");
+                    Console.WriteLine($"    Cab start offset = {entry.CabStartOffset} (0x{entry.CabStartOffset:X})");
+                    Console.WriteLine($"    Data count = {entry.DataCount} (0x{entry.DataCount:X})");
+                    Console.WriteLine($"    Compression type = {entry.CompressionType} (0x{entry.CompressionType:X})");
                     Console.WriteLine($"    Masked compression type = {entry.CompressionType & Models.MicrosoftCabinet.CompressionType.MASK_TYPE}");
                     if (entry.ReservedData == null)
                         Console.WriteLine($"    Reserved data = [NULL]");
@@ -493,9 +493,9 @@ namespace BurnOutSharp.Wrappers
                         {
                             Models.MicrosoftCabinet.CFDATA dataBlock = entry.DataBlocks[j];
                             Console.WriteLine($"    Data Block {j}");
-                            Console.WriteLine($"      Checksum = {dataBlock.Checksum}");
-                            Console.WriteLine($"      Compressed size = {dataBlock.CompressedSize}");
-                            Console.WriteLine($"      Uncompressed size = {dataBlock.UncompressedSize}");
+                            Console.WriteLine($"      Checksum = {dataBlock.Checksum} (0x{dataBlock.Checksum:X})");
+                            Console.WriteLine($"      Compressed size = {dataBlock.CompressedSize} (0x{dataBlock.CompressedSize:X})");
+                            Console.WriteLine($"      Uncompressed size = {dataBlock.UncompressedSize} (0x{dataBlock.UncompressedSize:X})");
                             if (dataBlock.ReservedData == null)
                                 Console.WriteLine($"      Reserved data = [NULL]");
                             else
@@ -525,13 +525,13 @@ namespace BurnOutSharp.Wrappers
                 {
                     var entry = Files[i];
                     Console.WriteLine($"  File {i}");
-                    Console.WriteLine($"    File size = {entry.FileSize}");
-                    Console.WriteLine($"    Folder start offset = {entry.FolderStartOffset}");
-                    Console.WriteLine($"    Folder index = {entry.FolderIndex}");
-                    Console.WriteLine($"    Date = {entry.Date}");
-                    Console.WriteLine($"    Time = {entry.Time}");
-                    Console.WriteLine($"    Attributes = {entry.Attributes}");
-                    Console.WriteLine($"    Name = {entry.Name}");
+                    Console.WriteLine($"    File size = {entry.FileSize} (0x{entry.FileSize:X})");
+                    Console.WriteLine($"    Folder start offset = {entry.FolderStartOffset} (0x{entry.FolderStartOffset:X})");
+                    Console.WriteLine($"    Folder index = {entry.FolderIndex} (0x{entry.FolderIndex:X})");
+                    Console.WriteLine($"    Date = {entry.Date} (0x{entry.Date:X})");
+                    Console.WriteLine($"    Time = {entry.Time} (0x{entry.Time:X})");
+                    Console.WriteLine($"    Attributes = {entry.Attributes} (0x{entry.Attributes:X})");
+                    Console.WriteLine($"    Name = {entry.Name ?? "[NULL]"}");
                 }
             }
             Console.WriteLine();

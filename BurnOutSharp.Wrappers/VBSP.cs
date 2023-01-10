@@ -113,8 +113,8 @@ namespace BurnOutSharp.Wrappers
             Console.WriteLine("  Header Information:");
             Console.WriteLine("  -------------------------");
             Console.WriteLine($"  Signature: {Signature}");
-            Console.WriteLine($"  Version: {Version}");
-            Console.WriteLine($"  Map revision: {MapRevision}");
+            Console.WriteLine($"  Version: {Version} (0x{Version:X})");
+            Console.WriteLine($"  Map revision: {MapRevision} (0x{MapRevision:X})");
             Console.WriteLine();
         }
 
@@ -147,9 +147,9 @@ namespace BurnOutSharp.Wrappers
                     }
 
                     Console.WriteLine($"  Lump {i}{specialLumpName}");
-                    Console.WriteLine($"    Offset: {lump.Offset}");
-                    Console.WriteLine($"    Length: {lump.Length}");
-                    Console.WriteLine($"    Version: {lump.Version}");
+                    Console.WriteLine($"    Offset: {lump.Offset} (0x{lump.Offset:X})");
+                    Console.WriteLine($"    Length: {lump.Length} (0x{lump.Length:X})");
+                    Console.WriteLine($"    Version: {lump.Version} (0x{lump.Version:X})");
                     Console.WriteLine($"    4CC: {string.Join(", ", lump.FourCC)}");
                 }
             }

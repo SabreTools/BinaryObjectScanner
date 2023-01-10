@@ -518,17 +518,17 @@ namespace BurnOutSharp.Wrappers
         {
             Console.WriteLine("  Header Information:");
             Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Dummy 0: {Dummy0}");
-            Console.WriteLine($"  Major version: {MajorVersion}");
-            Console.WriteLine($"  Minor version: {MinorVersion}");
-            Console.WriteLine($"  Cache ID: {CacheID}");
-            Console.WriteLine($"  Last version played: {LastVersionPlayed}");
-            Console.WriteLine($"  Dummy 1: {Dummy1}");
-            Console.WriteLine($"  Dummy 2: {Dummy2}");
-            Console.WriteLine($"  File size: {FileSize}");
-            Console.WriteLine($"  Block size: {BlockSize}");
-            Console.WriteLine($"  Block count: {BlockCount}");
-            Console.WriteLine($"  Dummy 3: {Dummy3}");
+            Console.WriteLine($"  Dummy 0: {Dummy0} (0x{Dummy0:X})");
+            Console.WriteLine($"  Major version: {MajorVersion} (0x{MajorVersion:X})");
+            Console.WriteLine($"  Minor version: {MinorVersion} (0x{MinorVersion:X})");
+            Console.WriteLine($"  Cache ID: {CacheID} (0x{CacheID:X})");
+            Console.WriteLine($"  Last version played: {LastVersionPlayed} (0x{LastVersionPlayed:X})");
+            Console.WriteLine($"  Dummy 1: {Dummy1} (0x{Dummy1:X})");
+            Console.WriteLine($"  Dummy 2: {Dummy2} (0x{Dummy2:X})");
+            Console.WriteLine($"  File size: {FileSize} (0x{FileSize:X})");
+            Console.WriteLine($"  Block size: {BlockSize} (0x{BlockSize:X})");
+            Console.WriteLine($"  Block count: {BlockCount} (0x{BlockCount:X})");
+            Console.WriteLine($"  Dummy 3: {Dummy3} (0x{Dummy3:X})");
             Console.WriteLine();
         }
 
@@ -539,14 +539,14 @@ namespace BurnOutSharp.Wrappers
         {
             Console.WriteLine("  Block Entry Header Information:");
             Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Block count: {BEH_BlockCount}");
-            Console.WriteLine($"  Blocks used: {BEH_BlocksUsed}");
-            Console.WriteLine($"  Dummy 0: {BEH_Dummy0}");
-            Console.WriteLine($"  Dummy 1: {BEH_Dummy1}");
-            Console.WriteLine($"  Dummy 2: {BEH_Dummy2}");
-            Console.WriteLine($"  Dummy 3: {BEH_Dummy3}");
-            Console.WriteLine($"  Dummy 4: {BEH_Dummy4}");
-            Console.WriteLine($"  Checksum: {BEH_Checksum}");
+            Console.WriteLine($"  Block count: {BEH_BlockCount} (0x{BEH_BlockCount:X})");
+            Console.WriteLine($"  Blocks used: {BEH_BlocksUsed} (0x{BEH_BlocksUsed:X})");
+            Console.WriteLine($"  Dummy 0: {BEH_Dummy0} (0x{BEH_Dummy0:X})");
+            Console.WriteLine($"  Dummy 1: {BEH_Dummy1} (0x{BEH_Dummy1:X})");
+            Console.WriteLine($"  Dummy 2: {BEH_Dummy2} (0x{BEH_Dummy2:X})");
+            Console.WriteLine($"  Dummy 3: {BEH_Dummy3} (0x{BEH_Dummy3:X})");
+            Console.WriteLine($"  Dummy 4: {BEH_Dummy4} (0x{BEH_Dummy4:X})");
+            Console.WriteLine($"  Checksum: {BEH_Checksum} (0x{BEH_Checksum:X})");
             Console.WriteLine();
         }
 
@@ -567,13 +567,13 @@ namespace BurnOutSharp.Wrappers
                 {
                     var blockEntry = BlockEntries[i];
                     Console.WriteLine($"  Block Entry {i}");
-                    Console.WriteLine($"    Entry flags: {blockEntry.EntryFlags}");
-                    Console.WriteLine($"    File data offset: {blockEntry.FileDataOffset}");
-                    Console.WriteLine($"    File data size: {blockEntry.FileDataSize}");
-                    Console.WriteLine($"    First data block index: {blockEntry.FirstDataBlockIndex}");
-                    Console.WriteLine($"    Next block entry index: {blockEntry.NextBlockEntryIndex}");
-                    Console.WriteLine($"    Previous block entry index: {blockEntry.PreviousBlockEntryIndex}");
-                    Console.WriteLine($"    Directory index: {blockEntry.DirectoryIndex}");
+                    Console.WriteLine($"    Entry flags: {blockEntry.EntryFlags} (0x{blockEntry.EntryFlags:X})");
+                    Console.WriteLine($"    File data offset: {blockEntry.FileDataOffset} (0x{blockEntry.FileDataOffset:X})");
+                    Console.WriteLine($"    File data size: {blockEntry.FileDataSize} (0x{blockEntry.FileDataSize:X})");
+                    Console.WriteLine($"    First data block index: {blockEntry.FirstDataBlockIndex} (0x{blockEntry.FirstDataBlockIndex:X})");
+                    Console.WriteLine($"    Next block entry index: {blockEntry.NextBlockEntryIndex} (0x{blockEntry.NextBlockEntryIndex:X})");
+                    Console.WriteLine($"    Previous block entry index: {blockEntry.PreviousBlockEntryIndex} (0x{blockEntry.PreviousBlockEntryIndex:X})");
+                    Console.WriteLine($"    Directory index: {blockEntry.DirectoryIndex} (0x{blockEntry.DirectoryIndex:X})");
                 }
             }
             Console.WriteLine();
@@ -586,10 +586,10 @@ namespace BurnOutSharp.Wrappers
         {
             Console.WriteLine("  Fragmentation Map Header Information:");
             Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Block count: {FMH_BlockCount}");
-            Console.WriteLine($"  First unused entry: {FMH_FirstUnusedEntry}");
-            Console.WriteLine($"  Terminator: {FMH_Terminator}");
-            Console.WriteLine($"  Checksum: {FMH_Checksum}");
+            Console.WriteLine($"  Block count: {FMH_BlockCount} (0x{FMH_BlockCount:X})");
+            Console.WriteLine($"  First unused entry: {FMH_FirstUnusedEntry} (0x{FMH_FirstUnusedEntry:X})");
+            Console.WriteLine($"  Terminator: {FMH_Terminator} (0x{FMH_Terminator:X})");
+            Console.WriteLine($"  Checksum: {FMH_Checksum} (0x{FMH_Checksum:X})");
             Console.WriteLine();
         }
 
@@ -610,7 +610,7 @@ namespace BurnOutSharp.Wrappers
                 {
                     var fragmentationMap = FragmentationMaps[i];
                     Console.WriteLine($"  Fragmentation Map {i}");
-                    Console.WriteLine($"    Next data block index: {fragmentationMap.NextDataBlockIndex}");
+                    Console.WriteLine($"    Next data block index: {fragmentationMap.NextDataBlockIndex} (0x{fragmentationMap.NextDataBlockIndex:X})");
                 }
             }
             Console.WriteLine();
@@ -629,11 +629,11 @@ namespace BurnOutSharp.Wrappers
             }
             else
             {
-                Console.WriteLine($"  Block count: {BEMH_BlockCount}");
-                Console.WriteLine($"  First block entry index: {BEMH_FirstBlockEntryIndex}");
-                Console.WriteLine($"  Last block entry index: {BEMH_LastBlockEntryIndex}");
-                Console.WriteLine($"  Dummy 0: {BEMH_Dummy0}");
-                Console.WriteLine($"  Checksum: {BEMH_Checksum}");
+                Console.WriteLine($"  Block count: {BEMH_BlockCount} (0x{BEMH_BlockCount:X})");
+                Console.WriteLine($"  First block entry index: {BEMH_FirstBlockEntryIndex} (0x{BEMH_FirstBlockEntryIndex:X})");
+                Console.WriteLine($"  Last block entry index: {BEMH_LastBlockEntryIndex} (0x{BEMH_LastBlockEntryIndex:X})");
+                Console.WriteLine($"  Dummy 0: {BEMH_Dummy0} (0x{BEMH_Dummy0:X})");
+                Console.WriteLine($"  Checksum: {BEMH_Checksum} (0x{BEMH_Checksum:X})");
             }
             Console.WriteLine();
         }
@@ -655,8 +655,8 @@ namespace BurnOutSharp.Wrappers
                 {
                     var blockEntryMap = BlockEntryMaps[i];
                     Console.WriteLine($"  Block Entry Map {i}");
-                    Console.WriteLine($"    Previous data block index: {blockEntryMap.PreviousBlockEntryIndex}");
-                    Console.WriteLine($"    Next data block index: {blockEntryMap.NextBlockEntryIndex}");
+                    Console.WriteLine($"    Previous data block index: {blockEntryMap.PreviousBlockEntryIndex} (0x{blockEntryMap.PreviousBlockEntryIndex:X})");
+                    Console.WriteLine($"    Next data block index: {blockEntryMap.NextBlockEntryIndex} (0x{blockEntryMap.NextBlockEntryIndex:X})");
                 }
             }
             Console.WriteLine();
@@ -669,20 +669,20 @@ namespace BurnOutSharp.Wrappers
         {
             Console.WriteLine("  Directory Header Information:");
             Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Dummy 0: {DH_Dummy0}");
-            Console.WriteLine($"  Cache ID: {DH_CacheID}");
-            Console.WriteLine($"  Last version played: {DH_LastVersionPlayed}");
-            Console.WriteLine($"  Item count: {DH_ItemCount}");
-            Console.WriteLine($"  File count: {DH_FileCount}");
-            Console.WriteLine($"  Dummy 1: {DH_Dummy1}");
-            Console.WriteLine($"  Directory size: {DH_DirectorySize}");
-            Console.WriteLine($"  Name size: {DH_NameSize}");
-            Console.WriteLine($"  Info 1 count: {DH_Info1Count}");
-            Console.WriteLine($"  Copy count: {DH_CopyCount}");
-            Console.WriteLine($"  Local count: {DH_LocalCount}");
-            Console.WriteLine($"  Dummy 2: {DH_Dummy2}");
-            Console.WriteLine($"  Dummy 3: {DH_Dummy3}");
-            Console.WriteLine($"  Checksum: {DH_Checksum}");
+            Console.WriteLine($"  Dummy 0: {DH_Dummy0} (0x{DH_Dummy0:X})");
+            Console.WriteLine($"  Cache ID: {DH_CacheID} (0x{DH_CacheID:X})");
+            Console.WriteLine($"  Last version played: {DH_LastVersionPlayed} (0x{DH_LastVersionPlayed:X})");
+            Console.WriteLine($"  Item count: {DH_ItemCount} (0x{DH_ItemCount:X})");
+            Console.WriteLine($"  File count: {DH_FileCount} (0x{DH_FileCount:X})");
+            Console.WriteLine($"  Dummy 1: {DH_Dummy1} (0x{DH_Dummy1:X})");
+            Console.WriteLine($"  Directory size: {DH_DirectorySize} (0x{DH_DirectorySize:X})");
+            Console.WriteLine($"  Name size: {DH_NameSize} (0x{DH_NameSize:X})");
+            Console.WriteLine($"  Info 1 count: {DH_Info1Count} (0x{DH_Info1Count:X})");
+            Console.WriteLine($"  Copy count: {DH_CopyCount} (0x{DH_CopyCount:X})");
+            Console.WriteLine($"  Local count: {DH_LocalCount} (0x{DH_LocalCount:X})");
+            Console.WriteLine($"  Dummy 2: {DH_Dummy2} (0x{DH_Dummy2:X})");
+            Console.WriteLine($"  Dummy 3: {DH_Dummy3} (0x{DH_Dummy3:X})");
+            Console.WriteLine($"  Checksum: {DH_Checksum} (0x{DH_Checksum:X})");
             Console.WriteLine();
         }
 
@@ -703,14 +703,14 @@ namespace BurnOutSharp.Wrappers
                 {
                     var directoryEntry = DirectoryEntries[i];
                     Console.WriteLine($"  Directory Entry {i}");
-                    Console.WriteLine($"    Name offset: {directoryEntry.NameOffset}");
-                    Console.WriteLine($"    Name: {directoryEntry.Name}");
-                    Console.WriteLine($"    Item size: {directoryEntry.ItemSize}");
-                    Console.WriteLine($"    Checksum index: {directoryEntry.ChecksumIndex}");
-                    Console.WriteLine($"    Directory flags: {directoryEntry.DirectoryFlags}");
-                    Console.WriteLine($"    Parent index: {directoryEntry.ParentIndex}");
-                    Console.WriteLine($"    Next index: {directoryEntry.NextIndex}");
-                    Console.WriteLine($"    First index: {directoryEntry.FirstIndex}");
+                    Console.WriteLine($"    Name offset: {directoryEntry.NameOffset} (0x{directoryEntry.NameOffset:X})");
+                    Console.WriteLine($"    Name: {directoryEntry.Name ?? "[NULL]"}");
+                    Console.WriteLine($"    Item size: {directoryEntry.ItemSize} (0x{directoryEntry.ItemSize:X})");
+                    Console.WriteLine($"    Checksum index: {directoryEntry.ChecksumIndex} (0x{directoryEntry.ChecksumIndex:X})");
+                    Console.WriteLine($"    Directory flags: {directoryEntry.DirectoryFlags} (0x{directoryEntry.DirectoryFlags:X})");
+                    Console.WriteLine($"    Parent index: {directoryEntry.ParentIndex} (0x{directoryEntry.ParentIndex:X})");
+                    Console.WriteLine($"    Next index: {directoryEntry.NextIndex} (0x{directoryEntry.NextIndex:X})");
+                    Console.WriteLine($"    First index: {directoryEntry.FirstIndex} (0x{directoryEntry.FirstIndex:X})");
                 }
             }
             Console.WriteLine();
@@ -733,7 +733,7 @@ namespace BurnOutSharp.Wrappers
                 {
                     var directoryInfoEntry = DirectoryInfo1Entries[i];
                     Console.WriteLine($"  Directory Info 1 Entry {i}");
-                    Console.WriteLine($"    Dummy 0: {directoryInfoEntry.Dummy0}");
+                    Console.WriteLine($"    Dummy 0: {directoryInfoEntry.Dummy0} (0x{directoryInfoEntry.Dummy0:X})");
                 }
             }
             Console.WriteLine();
@@ -756,7 +756,7 @@ namespace BurnOutSharp.Wrappers
                 {
                     var directoryInfoEntry = DirectoryInfo2Entries[i];
                     Console.WriteLine($"  Directory Info 2 Entry {i}");
-                    Console.WriteLine($"    Dummy 0: {directoryInfoEntry.Dummy0}");
+                    Console.WriteLine($"    Dummy 0: {directoryInfoEntry.Dummy0} (0x{directoryInfoEntry.Dummy0:X})");
                 }
             }
             Console.WriteLine();
@@ -779,7 +779,7 @@ namespace BurnOutSharp.Wrappers
                 {
                     var directoryCopyEntry = DirectoryCopyEntries[i];
                     Console.WriteLine($"  Directory Copy Entry {i}");
-                    Console.WriteLine($"    Directory index: {directoryCopyEntry.DirectoryIndex}");
+                    Console.WriteLine($"    Directory index: {directoryCopyEntry.DirectoryIndex} (0x{directoryCopyEntry.DirectoryIndex:X})");
                 }
             }
             Console.WriteLine();
@@ -802,7 +802,7 @@ namespace BurnOutSharp.Wrappers
                 {
                     var directoryLocalEntry = DirectoryLocalEntries[i];
                     Console.WriteLine($"  Directory Local Entry {i}");
-                    Console.WriteLine($"    Directory index: {directoryLocalEntry.DirectoryIndex}");
+                    Console.WriteLine($"    Directory index: {directoryLocalEntry.DirectoryIndex} (0x{directoryLocalEntry.DirectoryIndex:X})");
                 }
             }
             Console.WriteLine();
@@ -821,8 +821,8 @@ namespace BurnOutSharp.Wrappers
             }
             else
             {
-                Console.WriteLine($"  Dummy 0: {DMH_Dummy0}");
-                Console.WriteLine($"  Dummy 1: {DMH_Dummy1}");
+                Console.WriteLine($"  Dummy 0: {DMH_Dummy0} (0x{DMH_Dummy0:X})");
+                Console.WriteLine($"  Dummy 1: {DMH_Dummy1} (0x{DMH_Dummy1:X})");
             }
             Console.WriteLine();
         }
@@ -844,7 +844,7 @@ namespace BurnOutSharp.Wrappers
                 {
                     var directoryMapEntry = DirectoryMapEntries[i];
                     Console.WriteLine($"  Directory Map Entry {i}");
-                    Console.WriteLine($"    First block index: {directoryMapEntry.FirstBlockIndex}");
+                    Console.WriteLine($"    First block index: {directoryMapEntry.FirstBlockIndex} (0x{directoryMapEntry.FirstBlockIndex:X})");
                 }
             }
             Console.WriteLine();
@@ -857,8 +857,8 @@ namespace BurnOutSharp.Wrappers
         {
             Console.WriteLine("  Checksum Header Information:");
             Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Dummy 0: {CH_Dummy0}");
-            Console.WriteLine($"  Checksum size: {CH_ChecksumSize}");
+            Console.WriteLine($"  Dummy 0: {CH_Dummy0} (0x{CH_Dummy0:X})");
+            Console.WriteLine($"  Checksum size: {CH_ChecksumSize} (0x{CH_ChecksumSize:X})");
             Console.WriteLine();
         }
 
@@ -869,10 +869,10 @@ namespace BurnOutSharp.Wrappers
         {
             Console.WriteLine("  Checksum Map Header Information:");
             Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Dummy 0: {CMH_Dummy0}");
-            Console.WriteLine($"  Dummy 1: {CMH_Dummy1}");
-            Console.WriteLine($"  Item count: {CMH_ItemCount}");
-            Console.WriteLine($"  Checksum count: {CMH_ChecksumCount}");
+            Console.WriteLine($"  Dummy 0: {CMH_Dummy0} (0x{CMH_Dummy0:X})");
+            Console.WriteLine($"  Dummy 1: {CMH_Dummy1} (0x{CMH_Dummy1:X})");
+            Console.WriteLine($"  Item count: {CMH_ItemCount} (0x{CMH_ItemCount:X})");
+            Console.WriteLine($"  Checksum count: {CMH_ChecksumCount} (0x{CMH_ChecksumCount:X})");
             Console.WriteLine();
         }
 
@@ -893,8 +893,8 @@ namespace BurnOutSharp.Wrappers
                 {
                     var checksumMapEntry = ChecksumMapEntries[i];
                     Console.WriteLine($"  Checksum Map Entry {i}");
-                    Console.WriteLine($"    Checksum count: {checksumMapEntry.ChecksumCount}");
-                    Console.WriteLine($"    First checksum index: {checksumMapEntry.FirstChecksumIndex}");
+                    Console.WriteLine($"    Checksum count: {checksumMapEntry.ChecksumCount} (0x{checksumMapEntry.ChecksumCount:X})");
+                    Console.WriteLine($"    First checksum index: {checksumMapEntry.FirstChecksumIndex} (0x{checksumMapEntry.FirstChecksumIndex:X})");
                 }
             }
             Console.WriteLine();
@@ -917,7 +917,7 @@ namespace BurnOutSharp.Wrappers
                 {
                     var checksumEntry = ChecksumEntries[i];
                     Console.WriteLine($"  Checksum Entry {i}");
-                    Console.WriteLine($"    Checksum: {checksumEntry.Checksum}");
+                    Console.WriteLine($"    Checksum: {checksumEntry.Checksum} (0x{checksumEntry.Checksum:X})");
                 }
             }
             Console.WriteLine();
@@ -930,12 +930,12 @@ namespace BurnOutSharp.Wrappers
         {
             Console.WriteLine("  Data Block Header Information:");
             Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Last version played: {DBH_LastVersionPlayed}");
-            Console.WriteLine($"  Block count: {DBH_BlockCount}");
-            Console.WriteLine($"  Block size: {DBH_BlockSize}");
-            Console.WriteLine($"  First block offset: {DBH_FirstBlockOffset}");
-            Console.WriteLine($"  Blocks used: {DBH_BlocksUsed}");
-            Console.WriteLine($"  Checksum: {DBH_Checksum}");
+            Console.WriteLine($"  Last version played: {DBH_LastVersionPlayed} (0x{DBH_LastVersionPlayed:X})");
+            Console.WriteLine($"  Block count: {DBH_BlockCount} (0x{DBH_BlockCount:X})");
+            Console.WriteLine($"  Block size: {DBH_BlockSize} (0x{DBH_BlockSize:X})");
+            Console.WriteLine($"  First block offset: {DBH_FirstBlockOffset} (0x{DBH_FirstBlockOffset:X})");
+            Console.WriteLine($"  Blocks used: {DBH_BlocksUsed} (0x{DBH_BlocksUsed:X})");
+            Console.WriteLine($"  Checksum: {DBH_Checksum} (0x{DBH_Checksum:X})");
             Console.WriteLine();
         }
 

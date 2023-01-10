@@ -395,44 +395,44 @@ namespace BurnOutSharp.Wrappers
             Console.WriteLine("  Common Header Information:");
             Console.WriteLine("  -------------------------");
             Console.WriteLine($"  Game title: {GameTitle ?? "[NULL]"}");
-            Console.WriteLine($"  Game code: {GameCode}");
+            Console.WriteLine($"  Game code: {GameCode} (0x{GameCode:X})");
             Console.WriteLine($"  Maker code: {MakerCode ?? "[NULL]"}");
-            Console.WriteLine($"  Unit code: {UnitCode}");
-            Console.WriteLine($"  Encryption seed select: {EncryptionSeedSelect}");
-            Console.WriteLine($"  Device capacity: {DeviceCapacity}");
+            Console.WriteLine($"  Unit code: {UnitCode} (0x{UnitCode:X})");
+            Console.WriteLine($"  Encryption seed select: {EncryptionSeedSelect} (0x{EncryptionSeedSelect:X})");
+            Console.WriteLine($"  Device capacity: {DeviceCapacity} (0x{DeviceCapacity:X})");
             Console.WriteLine($"  Reserved 1: {BitConverter.ToString(Reserved1).Replace('-', ' ')}");
-            Console.WriteLine($"  Game revision: {GameRevision}");
-            Console.WriteLine($"  Rom version: {RomVersion}");
-            Console.WriteLine($"  ARM9 rom offset: {ARM9RomOffset}");
-            Console.WriteLine($"  ARM9 entry address: {ARM9EntryAddress}");
-            Console.WriteLine($"  ARM9 load address: {ARM9LoadAddress}");
-            Console.WriteLine($"  ARM9 size: {ARM9Size}");
-            Console.WriteLine($"  ARM7 rom offset: {ARM7RomOffset}");
-            Console.WriteLine($"  ARM7 entry address: {ARM7EntryAddress}");
-            Console.WriteLine($"  ARM7 load address: {ARM7LoadAddress}");
-            Console.WriteLine($"  ARM7 size: {ARM7Size}");
-            Console.WriteLine($"  File name table offset: {FileNameTableOffset}");
-            Console.WriteLine($"  File name table length: {FileNameTableLength}");
-            Console.WriteLine($"  File allocation table offset: {FileAllocationTableOffset}");
-            Console.WriteLine($"  File allocation table length: {FileAllocationTableLength}");
-            Console.WriteLine($"  ARM9 overlay offset: {ARM9OverlayOffset}");
-            Console.WriteLine($"  ARM9 overlay length: {ARM9OverlayLength}");
-            Console.WriteLine($"  ARM7 overlay offset: {ARM7OverlayOffset}");
-            Console.WriteLine($"  ARM7 overlay length: {ARM7OverlayLength}");
-            Console.WriteLine($"  Normal card control register settings: {NormalCardControlRegisterSettings}");
-            Console.WriteLine($"  Secure card control register settings: {SecureCardControlRegisterSettings}");
-            Console.WriteLine($"  Icon banner offset: {IconBannerOffset}");
-            Console.WriteLine($"  Secure area CRC: {SecureAreaCRC}");
-            Console.WriteLine($"  Secure transfer timeout: {SecureTransferTimeout}");
-            Console.WriteLine($"  ARM9 autoload: {ARM9Autoload}");
-            Console.WriteLine($"  ARM7 autoload: {ARM7Autoload}");
-            Console.WriteLine($"  Secure disable: {SecureDisable}");
-            Console.WriteLine($"  NTR region rom size: {NTRRegionRomSize}");
-            Console.WriteLine($"  Header size: {HeaderSize}");
+            Console.WriteLine($"  Game revision: {GameRevision} (0x{GameRevision:X})");
+            Console.WriteLine($"  Rom version: {RomVersion} (0x{RomVersion:X})");
+            Console.WriteLine($"  ARM9 rom offset: {ARM9RomOffset} (0x{ARM9RomOffset:X})");
+            Console.WriteLine($"  ARM9 entry address: {ARM9EntryAddress} (0x{ARM9EntryAddress:X})");
+            Console.WriteLine($"  ARM9 load address: {ARM9LoadAddress} (0x{ARM9LoadAddress:X})");
+            Console.WriteLine($"  ARM9 size: {ARM9Size} (0x{ARM9Size:X})");
+            Console.WriteLine($"  ARM7 rom offset: {ARM7RomOffset} (0x{ARM7RomOffset:X})");
+            Console.WriteLine($"  ARM7 entry address: {ARM7EntryAddress} (0x{ARM7EntryAddress:X})");
+            Console.WriteLine($"  ARM7 load address: {ARM7LoadAddress} (0x{ARM7LoadAddress:X})");
+            Console.WriteLine($"  ARM7 size: {ARM7Size} (0x{ARM7Size:X})");
+            Console.WriteLine($"  File name table offset: {FileNameTableOffset} (0x{FileNameTableOffset:X})");
+            Console.WriteLine($"  File name table length: {FileNameTableLength} (0x{FileNameTableLength:X})");
+            Console.WriteLine($"  File allocation table offset: {FileAllocationTableOffset} (0x{FileAllocationTableOffset:X})");
+            Console.WriteLine($"  File allocation table length: {FileAllocationTableLength} (0x{FileAllocationTableLength:X})");
+            Console.WriteLine($"  ARM9 overlay offset: {ARM9OverlayOffset} (0x{ARM9OverlayOffset:X})");
+            Console.WriteLine($"  ARM9 overlay length: {ARM9OverlayLength} (0x{ARM9OverlayLength:X})");
+            Console.WriteLine($"  ARM7 overlay offset: {ARM7OverlayOffset} (0x{ARM7OverlayOffset:X})");
+            Console.WriteLine($"  ARM7 overlay length: {ARM7OverlayLength} (0x{ARM7OverlayLength:X})");
+            Console.WriteLine($"  Normal card control register settings: {NormalCardControlRegisterSettings} (0x{NormalCardControlRegisterSettings:X})");
+            Console.WriteLine($"  Secure card control register settings: {SecureCardControlRegisterSettings} (0x{SecureCardControlRegisterSettings:X})");
+            Console.WriteLine($"  Icon banner offset: {IconBannerOffset} (0x{IconBannerOffset:X})");
+            Console.WriteLine($"  Secure area CRC: {SecureAreaCRC} (0x{SecureAreaCRC:X})");
+            Console.WriteLine($"  Secure transfer timeout: {SecureTransferTimeout} (0x{SecureTransferTimeout:X})");
+            Console.WriteLine($"  ARM9 autoload: {ARM9Autoload} (0x{ARM9Autoload:X})");
+            Console.WriteLine($"  ARM7 autoload: {ARM7Autoload} (0x{ARM7Autoload:X})");
+            Console.WriteLine($"  Secure disable: {SecureDisable} (0x{SecureDisable:X})");
+            Console.WriteLine($"  NTR region rom size: {NTRRegionRomSize} (0x{NTRRegionRomSize:X})");
+            Console.WriteLine($"  Header size: {HeaderSize} (0x{HeaderSize:X})");
             Console.WriteLine($"  Reserved 2: {BitConverter.ToString(Reserved2).Replace('-', ' ')}");
             Console.WriteLine($"  Nintendo logo: {BitConverter.ToString(NintendoLogo).Replace('-', ' ')}");
-            Console.WriteLine($"  Nintendo logo CRC: {NintendoLogoCRC}");
-            Console.WriteLine($"  Header CRC: {HeaderCRC}");
+            Console.WriteLine($"  Nintendo logo CRC: {NintendoLogoCRC} (0x{NintendoLogoCRC:X})");
+            Console.WriteLine($"  Header CRC: {HeaderCRC} (0x{HeaderCRC:X})");
             Console.WriteLine($"  Debugger reserved: {BitConverter.ToString(DebuggerReserved).Replace('-', ' ')}");
             Console.WriteLine();
         }
@@ -453,38 +453,38 @@ namespace BurnOutSharp.Wrappers
                 Console.WriteLine($"  Global MBK1..MBK5 settings: {string.Join(", ", GlobalMBK15Settings)}");
                 Console.WriteLine($"  Local MBK6..MBK8 settings for ARM9: {string.Join(", ", LocalMBK68SettingsARM9)}");
                 Console.WriteLine($"  Local MBK6..MBK8 settings for ARM7: {string.Join(", ", LocalMBK68SettingsARM7)}");
-                Console.WriteLine($"  Global MBK9 setting: {GlobalMBK9Setting}");
-                Console.WriteLine($"  Region flags: {RegionFlags}");
-                Console.WriteLine($"  Access control: {AccessControl}");
-                Console.WriteLine($"  ARM7 SCFG EXT mask: {ARM7SCFGEXTMask}");
-                Console.WriteLine($"  Reserved/flags?: {ReservedFlags}");
-                Console.WriteLine($"  ARM9i rom offset: {ARM9iRomOffset}");
-                Console.WriteLine($"  Reserved 3: {Reserved3}");
-                Console.WriteLine($"  ARM9i load address: {ARM9iLoadAddress}");
-                Console.WriteLine($"  ARM9i size: {ARM9iSize}");
-                Console.WriteLine($"  ARM7i rom offset: {ARM7iRomOffset}");
-                Console.WriteLine($"  Reserved 4: {Reserved4}");
-                Console.WriteLine($"  ARM7i load address: {ARM7iLoadAddress}");
-                Console.WriteLine($"  ARM7i size: {ARM7iSize}");
-                Console.WriteLine($"  Digest NTR region offset: {DigestNTRRegionOffset}");
-                Console.WriteLine($"  Digest NTR region length: {DigestNTRRegionLength}");
-                Console.WriteLine($"  Digest TWL region offset: {DigestTWLRegionOffset}");
-                Console.WriteLine($"  Digest TWL region length: {DigestTWLRegionLength}");
-                Console.WriteLine($"  Digest sector hashtable region offset: {DigestSectorHashtableRegionOffset}");
-                Console.WriteLine($"  Digest sector hashtable region length: {DigestSectorHashtableRegionLength}");
-                Console.WriteLine($"  Digest block hashtable region offset: {DigestBlockHashtableRegionOffset}");
-                Console.WriteLine($"  Digest block hashtable region length: {DigestBlockHashtableRegionLength}");
-                Console.WriteLine($"  Digest sector size: {DigestSectorSize}");
-                Console.WriteLine($"  Digest block sector count: {DigestBlockSectorCount}");
-                Console.WriteLine($"  Icon banner size: {IconBannerSize}");
-                Console.WriteLine($"  Unknown 1: {Unknown1}");
-                Console.WriteLine($"  Modcrypt area 1 offset: {ModcryptArea1Offset}");
-                Console.WriteLine($"  Modcrypt area 1 size: {ModcryptArea1Size}");
-                Console.WriteLine($"  Modcrypt area 2 offset: {ModcryptArea2Offset}");
-                Console.WriteLine($"  Modcrypt area 2 size: {ModcryptArea2Size}");
+                Console.WriteLine($"  Global MBK9 setting: {GlobalMBK9Setting} (0x{GlobalMBK9Setting:X})");
+                Console.WriteLine($"  Region flags: {RegionFlags} (0x{RegionFlags:X})");
+                Console.WriteLine($"  Access control: {AccessControl} (0x{AccessControl:X})");
+                Console.WriteLine($"  ARM7 SCFG EXT mask: {ARM7SCFGEXTMask} (0x{ARM7SCFGEXTMask:X})");
+                Console.WriteLine($"  Reserved/flags?: {ReservedFlags} (0x{ReservedFlags:X})");
+                Console.WriteLine($"  ARM9i rom offset: {ARM9iRomOffset} (0x{ARM9iRomOffset:X})");
+                Console.WriteLine($"  Reserved 3: {Reserved3} (0x{Reserved3:X})");
+                Console.WriteLine($"  ARM9i load address: {ARM9iLoadAddress} (0x{ARM9iLoadAddress:X})");
+                Console.WriteLine($"  ARM9i size: {ARM9iSize} (0x{ARM9iSize:X})");
+                Console.WriteLine($"  ARM7i rom offset: {ARM7iRomOffset} (0x{ARM7iRomOffset:X})");
+                Console.WriteLine($"  Reserved 4: {Reserved4} (0x{Reserved4:X})");
+                Console.WriteLine($"  ARM7i load address: {ARM7iLoadAddress} (0x{ARM7iLoadAddress:X})");
+                Console.WriteLine($"  ARM7i size: {ARM7iSize} (0x{ARM7iSize:X})");
+                Console.WriteLine($"  Digest NTR region offset: {DigestNTRRegionOffset} (0x{DigestNTRRegionOffset:X})");
+                Console.WriteLine($"  Digest NTR region length: {DigestNTRRegionLength} (0x{DigestNTRRegionLength:X})");
+                Console.WriteLine($"  Digest TWL region offset: {DigestTWLRegionOffset} (0x{DigestTWLRegionOffset:X})");
+                Console.WriteLine($"  Digest TWL region length: {DigestTWLRegionLength} (0x{DigestTWLRegionLength:X})");
+                Console.WriteLine($"  Digest sector hashtable region offset: {DigestSectorHashtableRegionOffset} (0x{DigestSectorHashtableRegionOffset:X})");
+                Console.WriteLine($"  Digest sector hashtable region length: {DigestSectorHashtableRegionLength} (0x{DigestSectorHashtableRegionLength:X})");
+                Console.WriteLine($"  Digest block hashtable region offset: {DigestBlockHashtableRegionOffset} (0x{DigestBlockHashtableRegionOffset:X})");
+                Console.WriteLine($"  Digest block hashtable region length: {DigestBlockHashtableRegionLength} (0x{DigestBlockHashtableRegionLength:X})");
+                Console.WriteLine($"  Digest sector size: {DigestSectorSize} (0x{DigestSectorSize:X})");
+                Console.WriteLine($"  Digest block sector count: {DigestBlockSectorCount} (0x{DigestBlockSectorCount:X})");
+                Console.WriteLine($"  Icon banner size: {IconBannerSize} (0x{IconBannerSize:X})");
+                Console.WriteLine($"  Unknown 1: {Unknown1} (0x{Unknown1:X})");
+                Console.WriteLine($"  Modcrypt area 1 offset: {ModcryptArea1Offset} (0x{ModcryptArea1Offset:X})");
+                Console.WriteLine($"  Modcrypt area 1 size: {ModcryptArea1Size} (0x{ModcryptArea1Size:X})");
+                Console.WriteLine($"  Modcrypt area 2 offset: {ModcryptArea2Offset} (0x{ModcryptArea2Offset:X})");
+                Console.WriteLine($"  Modcrypt area 2 size: {ModcryptArea2Size} (0x{ModcryptArea2Size:X})");
                 Console.WriteLine($"  Title ID: {BitConverter.ToString(TitleID).Replace('-', ' ')}");
-                Console.WriteLine($"  DSiWare 'public.sav' size: {DSiWarePublicSavSize}");
-                Console.WriteLine($"  DSiWare 'private.sav' size: {DSiWarePrivateSavSize}");
+                Console.WriteLine($"  DSiWare 'public.sav' size: {DSiWarePublicSavSize} (0x{DSiWarePublicSavSize:X})");
+                Console.WriteLine($"  DSiWare 'private.sav' size: {DSiWarePrivateSavSize} (0x{DSiWarePrivateSavSize:X})");
                 Console.WriteLine($"  Reserved (zero): {BitConverter.ToString(ReservedZero).Replace('-', ' ')}");
                 Console.WriteLine($"  Unknown 2: {BitConverter.ToString(Unknown2).Replace('-', ' ')}");
                 Console.WriteLine($"  ARM9 (with encrypted secure area) SHA1 HMAC hash: {BitConverter.ToString(ARM9WithSecureAreaSHA1HMACHash).Replace('-', ' ')}");
@@ -543,16 +543,17 @@ namespace BurnOutSharp.Wrappers
                 {
                     var entry = FolderAllocationTable[i];
                     Console.WriteLine($"  Folder Allocation Table Entry {i}");
-                    Console.WriteLine($"    Start offset: {entry.StartOffset}");
-                    Console.WriteLine($"    First file index: {entry.FirstFileIndex}");
+                    Console.WriteLine($"    Start offset: {entry.StartOffset} (0x{entry.StartOffset:X})");
+                    Console.WriteLine($"    First file index: {entry.FirstFileIndex} (0x{entry.FirstFileIndex:X})");
                     if (entry.Unknown == 0xF0)
                     {
-                        Console.WriteLine($"    Parent folder index: {entry.ParentFolderIndex}");
-                        Console.WriteLine($"    Unknown: {entry.Unknown}");
+                        Console.WriteLine($"    Parent folder index: {entry.ParentFolderIndex} (0x{entry.ParentFolderIndex:X})");
+                        Console.WriteLine($"    Unknown: {entry.Unknown} (0x{entry.Unknown:X})");
                     }
                     else
                     {
-                        Console.WriteLine($"    Total entries: {(entry.Unknown << 8) | entry.ParentFolderIndex}");
+                        ushort totalEntries = (ushort)((entry.Unknown << 8) | entry.ParentFolderIndex);
+                        Console.WriteLine($"    Total entries: {totalEntries} (0x{totalEntries:X})");
                     }
                 }
             }
@@ -576,10 +577,10 @@ namespace BurnOutSharp.Wrappers
                 {
                     var entry = NameList[i];
                     Console.WriteLine($"  Name List Entry {i}");
-                    Console.WriteLine($"    Folder: {entry.Folder}");
+                    Console.WriteLine($"    Folder: {entry.Folder} (0x{entry.Folder:X})");
                     Console.WriteLine($"    Name: {entry.Name ?? "[NULL]"}");
                     if (entry.Folder)
-                        Console.WriteLine($"    Index: {entry.Index}");
+                        Console.WriteLine($"    Index: {entry.Index} (0x{entry.Index:X})");
                 }
             }
             Console.WriteLine();
@@ -602,8 +603,8 @@ namespace BurnOutSharp.Wrappers
                 {
                     var entry = FileAllocationTable[i];
                     Console.WriteLine($"  File Allocation Table Entry {i}");
-                    Console.WriteLine($"    Start offset: {entry.StartOffset}");
-                    Console.WriteLine($"    End offset: {entry.EndOffset}");
+                    Console.WriteLine($"    Start offset: {entry.StartOffset} (0x{entry.StartOffset:X})");
+                    Console.WriteLine($"    End offset: {entry.EndOffset} (0x{entry.EndOffset:X})");
                 }
             }
             Console.WriteLine();

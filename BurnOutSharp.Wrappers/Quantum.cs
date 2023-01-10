@@ -229,7 +229,7 @@ namespace BurnOutSharp.Wrappers
 
             PrintHeader();
             PrintFileList();
-            Console.WriteLine($"  Compressed data offset: {CompressedDataOffset}");
+            Console.WriteLine($"  Compressed data offset: {CompressedDataOffset} (0x{CompressedDataOffset:X})");
             Console.WriteLine();
         }
 
@@ -241,11 +241,11 @@ namespace BurnOutSharp.Wrappers
             Console.WriteLine("  Header Information:");
             Console.WriteLine("  -------------------------");
             Console.WriteLine($"  Signature: {Signature}");
-            Console.WriteLine($"  Major version: {MajorVersion}");
-            Console.WriteLine($"  Minor version: {MinorVersion}");
-            Console.WriteLine($"  File count: {FileCount}");
-            Console.WriteLine($"  Table size: {TableSize}");
-            Console.WriteLine($"  Compression flags: {CompressionFlags}");
+            Console.WriteLine($"  Major version: {MajorVersion} (0x{MajorVersion:X})");
+            Console.WriteLine($"  Minor version: {MinorVersion} (0x{MinorVersion:X})");
+            Console.WriteLine($"  File count: {FileCount} (0x{FileCount:X})");
+            Console.WriteLine($"  Table size: {TableSize} (0x{TableSize:X})");
+            Console.WriteLine($"  Compression flags: {CompressionFlags} (0x{CompressionFlags:X})");
             Console.WriteLine();
         }
 
@@ -266,15 +266,15 @@ namespace BurnOutSharp.Wrappers
                 {
                     var fileDescriptor = FileList[i];
                     Console.WriteLine($"  File Descriptor {i}");
-                    Console.WriteLine($"    File name size = {fileDescriptor.FileNameSize}");
-                    Console.WriteLine($"    File name = {fileDescriptor.FileName ?? "[NULL]"}");
-                    Console.WriteLine($"    Comment field size = {fileDescriptor.CommentFieldSize}");
-                    Console.WriteLine($"    Comment field = {fileDescriptor.CommentField ?? "[NULL]"}");
-                    Console.WriteLine($"    Expanded file size = {fileDescriptor.ExpandedFileSize}");
-                    Console.WriteLine($"    File time = {fileDescriptor.FileTime}");
-                    Console.WriteLine($"    File date = {fileDescriptor.FileDate}");
+                    Console.WriteLine($"    File name size: {fileDescriptor.FileNameSize} (0x{fileDescriptor.FileNameSize:X})");
+                    Console.WriteLine($"    File name: {fileDescriptor.FileName ?? "[NULL]"}");
+                    Console.WriteLine($"    Comment field size: {fileDescriptor.CommentFieldSize} (0x{fileDescriptor.CommentFieldSize:X})");
+                    Console.WriteLine($"    Comment field: {fileDescriptor.CommentField ?? "[NULL]"}");
+                    Console.WriteLine($"    Expanded file size: {fileDescriptor.ExpandedFileSize} (0x{fileDescriptor.ExpandedFileSize:X})");
+                    Console.WriteLine($"    File time: {fileDescriptor.FileTime} (0x{fileDescriptor.FileTime:X})");
+                    Console.WriteLine($"    File date: {fileDescriptor.FileDate} (0x{fileDescriptor.FileDate:X})");
                     if (fileDescriptor.Unknown != null)
-                        Console.WriteLine($"    Unknown (Checksum?) = {fileDescriptor.Unknown}");
+                        Console.WriteLine($"    Unknown (Checksum?): {fileDescriptor.Unknown} (0x{fileDescriptor.Unknown:X})");
                 }
             }
             Console.WriteLine();

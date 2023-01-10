@@ -339,14 +339,14 @@ namespace BurnOutSharp.Wrappers
         {
             Console.WriteLine("  CIA Header Information:");
             Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Header size: {HeaderSize}");
-            Console.WriteLine($"  Type: {Type}");
-            Console.WriteLine($"  Version: {Version}");
-            Console.WriteLine($"  Certificate chain size: {CertificateChainSize}");
-            Console.WriteLine($"  Ticket size: {TicketSize}");
-            Console.WriteLine($"  TMD file size: {TMDFileSize}");
-            Console.WriteLine($"  Meta size: {MetaSize}");
-            Console.WriteLine($"  Content size: {ContentSize}");
+            Console.WriteLine($"  Header size: {HeaderSize} (0x{HeaderSize:X})");
+            Console.WriteLine($"  Type: {Type} (0x{Type:X})");
+            Console.WriteLine($"  Version: {Version} (0x{Version:X})");
+            Console.WriteLine($"  Certificate chain size: {CertificateChainSize} (0x{CertificateChainSize:X})");
+            Console.WriteLine($"  Ticket size: {TicketSize} (0x{TicketSize:X})");
+            Console.WriteLine($"  TMD file size: {TMDFileSize} (0x{TMDFileSize:X})");
+            Console.WriteLine($"  Meta size: {MetaSize} (0x{MetaSize:X})");
+            Console.WriteLine($"  Content size: {ContentSize} (0x{ContentSize:X})");
             Console.WriteLine($"  Content index: {BitConverter.ToString(ContentIndex).Replace('-', ' ')}");
             Console.WriteLine();
         }
@@ -377,21 +377,21 @@ namespace BurnOutSharp.Wrappers
                     }
 
                     Console.WriteLine($"  Certificate {i}{certificateName}");
-                    Console.WriteLine($"    Signature type: {certificate.SignatureType}");
-                    Console.WriteLine($"    Signature size: {certificate.SignatureSize}");
-                    Console.WriteLine($"    Padding size: {certificate.PaddingSize}");
+                    Console.WriteLine($"    Signature type: {certificate.SignatureType} (0x{certificate.SignatureType:X})");
+                    Console.WriteLine($"    Signature size: {certificate.SignatureSize} (0x{certificate.SignatureSize:X})");
+                    Console.WriteLine($"    Padding size: {certificate.PaddingSize} (0x{certificate.PaddingSize:X})");
                     Console.WriteLine($"    Signature: {BitConverter.ToString(certificate.Signature).Replace('-', ' ')}");
                     Console.WriteLine($"    Padding: {BitConverter.ToString(certificate.Padding).Replace('-', ' ')}");
                     Console.WriteLine($"    Issuer: {certificate.Issuer ?? "[NULL]"}");
-                    Console.WriteLine($"    Key type: {certificate.KeyType}");
+                    Console.WriteLine($"    Key type: {certificate.KeyType} (0x{certificate.KeyType:X})");
                     Console.WriteLine($"    Name: {certificate.Name ?? "[NULL]"}");
-                    Console.WriteLine($"    Expiration time: {certificate.ExpirationTime}");
+                    Console.WriteLine($"    Expiration time: {certificate.ExpirationTime} (0x{certificate.ExpirationTime:X})");
                     switch (certificate.KeyType)
                     {
                         case Models.N3DS.PublicKeyType.RSA_4096:
                         case Models.N3DS.PublicKeyType.RSA_2048:
                             Console.WriteLine($"    Modulus: {BitConverter.ToString(certificate.RSAModulus).Replace('-', ' ')}");
-                            Console.WriteLine($"    Public exponent: {certificate.RSAPublicExponent}");
+                            Console.WriteLine($"    Public exponent: {certificate.RSAPublicExponent} (0x{certificate.RSAPublicExponent:X})");
                             Console.WriteLine($"    Padding: {BitConverter.ToString(certificate.RSAPadding).Replace('-', ' ')}");
                             break;
                         case Models.N3DS.PublicKeyType.EllipticCurve:
@@ -411,33 +411,37 @@ namespace BurnOutSharp.Wrappers
         {
             Console.WriteLine("  Ticket Information:");
             Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Signature type: {T_SignatureType}");
-            Console.WriteLine($"  Signature size: {T_SignatureSize}");
-            Console.WriteLine($"  Padding size: {T_PaddingSize}");
+            Console.WriteLine($"  Signature type: {T_SignatureType} (0x{T_SignatureType:X})");
+            Console.WriteLine($"  Signature size: {T_SignatureSize} (0x{T_SignatureSize:X})");
+            Console.WriteLine($"  Padding size: {T_PaddingSize} (0x{T_PaddingSize:X})");
             Console.WriteLine($"  Signature: {BitConverter.ToString(T_Signature).Replace('-', ' ')}");
             Console.WriteLine($"  Padding: {BitConverter.ToString(T_Padding).Replace('-', ' ')}");
             Console.WriteLine($"  Issuer: {T_Issuer ?? "[NULL]"}");
             Console.WriteLine($"  ECC public key: {BitConverter.ToString(T_ECCPublicKey).Replace('-', ' ')}");
-            Console.WriteLine($"  Version: {T_Version}");
-            Console.WriteLine($"  CaCrlVersion: {T_CaCrlVersion}");
-            Console.WriteLine($"  SignerCrlVersion: {T_SignerCrlVersion}");
+            Console.WriteLine($"  Version: {T_Version} (0x{T_Version:X})");
+            Console.WriteLine($"  CaCrlVersion: {T_CaCrlVersion} (0x{T_CaCrlVersion:X})");
+            Console.WriteLine($"  SignerCrlVersion: {T_SignerCrlVersion} (0x{T_SignerCrlVersion:X})");
             Console.WriteLine($"  Title key: {BitConverter.ToString(T_TitleKey).Replace('-', ' ')}");
-            Console.WriteLine($"  Reserved 1: {T_Reserved1}");
-            Console.WriteLine($"  Ticket ID: {T_TicketID}");
-            Console.WriteLine($"  Console ID: {T_ConsoleID}");
-            Console.WriteLine($"  Title ID {T_TitleID}");
+            Console.WriteLine($"  Reserved 1: {T_Reserved1} (0x{T_Reserved1:X})");
+            Console.WriteLine($"  Ticket ID: {T_TicketID} (0x{T_TicketID:X})");
+            Console.WriteLine($"  Console ID: {T_ConsoleID} (0x{T_ConsoleID:X})");
+            Console.WriteLine($"  Title ID {T_TitleID} (0x{T_TitleID:X})");
             Console.WriteLine($"  Reserved 2: {BitConverter.ToString(T_Reserved2).Replace('-', ' ')}");
-            Console.WriteLine($"  Ticket title version: {T_TicketTitleVersion}");
+            Console.WriteLine($"  Ticket title version: {T_TicketTitleVersion} (0x{T_TicketTitleVersion:X})");
             Console.WriteLine($"  Reserved 3: {BitConverter.ToString(T_Reserved3).Replace('-', ' ')}");
-            Console.WriteLine($"  License type: {T_LicenseType}");
-            Console.WriteLine($"  Common keY index: {T_CommonKeyYIndex}");
+            Console.WriteLine($"  License type: {T_LicenseType} (0x{T_LicenseType:X})");
+            Console.WriteLine($"  Common keY index: {T_CommonKeyYIndex} (0x{T_CommonKeyYIndex:X})");
             Console.WriteLine($"  Reserved 4: {BitConverter.ToString(T_Reserved4).Replace('-', ' ')}");
-            Console.WriteLine($"  eShop Account ID?: {T_eShopAccountID}");
-            Console.WriteLine($"  Reserved 5: {T_Reserved5}");
-            Console.WriteLine($"  Audit: {T_Audit}");
+            Console.WriteLine($"  eShop Account ID?: {T_eShopAccountID} (0x{T_eShopAccountID:X})");
+            Console.WriteLine($"  Reserved 5: {T_Reserved5} (0x{T_Reserved5:X})");
+            Console.WriteLine($"  Audit: {T_Audit} (0x{T_Audit:X})");
             Console.WriteLine($"  Reserved 6: {BitConverter.ToString(T_Reserved6).Replace('-', ' ')}");
-            Console.WriteLine($"  Limits: {string.Join(", ", T_Limits)}");
-            Console.WriteLine($"  Content index size: {T_ContentIndexSize}");
+            Console.WriteLine($"  Limits:");
+            for (int i = 0; i < T_Limits.Length; i++)
+            {
+                Console.WriteLine($"    Limit {i}: {T_Limits[i]} (0x{T_Limits[i]:X})");
+            }
+            Console.WriteLine($"  Content index size: {T_ContentIndexSize} (0x{T_ContentIndexSize:X})");
             Console.WriteLine($"  Content index: {BitConverter.ToString(T_ContentIndex).Replace('-', ' ')}");
             Console.WriteLine();
 
@@ -461,21 +465,21 @@ namespace BurnOutSharp.Wrappers
                     }
 
                     Console.WriteLine($"  Certificate {i}{certificateName}");
-                    Console.WriteLine($"    Signature type: {certificate.SignatureType}");
-                    Console.WriteLine($"    Signature size: {certificate.SignatureSize}");
-                    Console.WriteLine($"    Padding size: {certificate.PaddingSize}");
+                    Console.WriteLine($"    Signature type: {certificate.SignatureType} (0x{certificate.SignatureType:X})");
+                    Console.WriteLine($"    Signature size: {certificate.SignatureSize} (0x{certificate.SignatureSize:X})");
+                    Console.WriteLine($"    Padding size: {certificate.PaddingSize} (0x{certificate.PaddingSize:X})");
                     Console.WriteLine($"    Signature: {BitConverter.ToString(certificate.Signature).Replace('-', ' ')}");
                     Console.WriteLine($"    Padding: {BitConverter.ToString(certificate.Padding).Replace('-', ' ')}");
                     Console.WriteLine($"    Issuer: {certificate.Issuer ?? "[NULL]"}");
-                    Console.WriteLine($"    Key type: {certificate.KeyType}");
+                    Console.WriteLine($"    Key type: {certificate.KeyType} (0x{certificate.KeyType:X})");
                     Console.WriteLine($"    Name: {certificate.Name ?? "[NULL]"}");
-                    Console.WriteLine($"    Expiration time: {certificate.ExpirationTime}");
+                    Console.WriteLine($"    Expiration time: {certificate.ExpirationTime} (0x{certificate.ExpirationTime:X})");
                     switch (certificate.KeyType)
                     {
                         case Models.N3DS.PublicKeyType.RSA_4096:
                         case Models.N3DS.PublicKeyType.RSA_2048:
                             Console.WriteLine($"    Modulus: {BitConverter.ToString(certificate.RSAModulus).Replace('-', ' ')}");
-                            Console.WriteLine($"    Public exponent: {certificate.RSAPublicExponent}");
+                            Console.WriteLine($"    Public exponent: {certificate.RSAPublicExponent} (0x{certificate.RSAPublicExponent:X})");
                             Console.WriteLine($"    Padding: {BitConverter.ToString(certificate.RSAPadding).Replace('-', ' ')}");
                             break;
                         case Models.N3DS.PublicKeyType.EllipticCurve:
@@ -495,29 +499,29 @@ namespace BurnOutSharp.Wrappers
         {
             Console.WriteLine("  Title Metadata Information:");
             Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Signature type: {TMD_SignatureType}");
-            Console.WriteLine($"  Signature size: {TMD_SignatureSize}");
-            Console.WriteLine($"  Padding size: {TMD_PaddingSize}");
+            Console.WriteLine($"  Signature type: {TMD_SignatureType} (0x{TMD_SignatureType:X})");
+            Console.WriteLine($"  Signature size: {TMD_SignatureSize} (0x{TMD_SignatureSize:X})");
+            Console.WriteLine($"  Padding size: {TMD_PaddingSize} (0x{TMD_PaddingSize:X})");
             Console.WriteLine($"  Signature: {BitConverter.ToString(TMD_Signature).Replace('-', ' ')}");
             Console.WriteLine($"  Padding 1: {BitConverter.ToString(TMD_Padding1).Replace('-', ' ')}");
             Console.WriteLine($"  Issuer: {TMD_Issuer ?? "[NULL]"}");
-            Console.WriteLine($"  Version: {TMD_Version}");
-            Console.WriteLine($"  CaCrlVersion: {TMD_CaCrlVersion}");
-            Console.WriteLine($"  SignerCrlVersion: {TMD_SignerCrlVersion}");
-            Console.WriteLine($"  Reserved 1: {TMD_Reserved1}");
-            Console.WriteLine($"  System version: {TMD_SystemVersion}");
-            Console.WriteLine($"  Title ID: {TMD_TitleID}");
-            Console.WriteLine($"  Title type: {TMD_TitleType}");
-            Console.WriteLine($"  Group ID: {TMD_GroupID}");
-            Console.WriteLine($"  Save data size: {TMD_SaveDataSize}");
-            Console.WriteLine($"  SRL private save data size: {TMD_SRLPrivateSaveDataSize}");
+            Console.WriteLine($"  Version: {TMD_Version} (0x{TMD_Version:X})");
+            Console.WriteLine($"  CaCrlVersion: {TMD_CaCrlVersion} (0x{TMD_CaCrlVersion:X})");
+            Console.WriteLine($"  SignerCrlVersion: {TMD_SignerCrlVersion} (0x{TMD_SignerCrlVersion:X})");
+            Console.WriteLine($"  Reserved 1: {TMD_Reserved1} (0x{TMD_Reserved1:X})");
+            Console.WriteLine($"  System version: {TMD_SystemVersion} (0x{TMD_SystemVersion:X})");
+            Console.WriteLine($"  Title ID: {TMD_TitleID} (0x{TMD_TitleID:X})");
+            Console.WriteLine($"  Title type: {TMD_TitleType} (0x{TMD_TitleType:X})");
+            Console.WriteLine($"  Group ID: {TMD_GroupID} (0x{TMD_GroupID:X})");
+            Console.WriteLine($"  Save data size: {TMD_SaveDataSize} (0x{TMD_SaveDataSize:X})");
+            Console.WriteLine($"  SRL private save data size: {TMD_SRLPrivateSaveDataSize} (0x{TMD_SRLPrivateSaveDataSize:X})");
             Console.WriteLine($"  Reserved 2: {BitConverter.ToString(TMD_Reserved2).Replace('-', ' ')}");
-            Console.WriteLine($"  SRL flag: {TMD_SRLFlag}");
+            Console.WriteLine($"  SRL flag: {TMD_SRLFlag} (0x{TMD_SRLFlag:X})");
             Console.WriteLine($"  Reserved 3: {BitConverter.ToString(TMD_Reserved3).Replace('-', ' ')}");
-            Console.WriteLine($"  Access rights: {TMD_AccessRights}");
-            Console.WriteLine($"  Title version: {TMD_TitleVersion}");
-            Console.WriteLine($"  Content count: {TMD_ContentCount}");
-            Console.WriteLine($"  Boot content: {TMD_BootContent}");
+            Console.WriteLine($"  Access rights: {TMD_AccessRights} (0x{TMD_AccessRights:X})");
+            Console.WriteLine($"  Title version: {TMD_TitleVersion} (0x{TMD_TitleVersion:X})");
+            Console.WriteLine($"  Content count: {TMD_ContentCount} (0x{TMD_ContentCount:X})");
+            Console.WriteLine($"  Boot content: {TMD_BootContent} (0x{TMD_BootContent:X})");
             Console.WriteLine($"  Padding 2: {BitConverter.ToString(TMD_Padding2).Replace('-', ' ')}");
             Console.WriteLine($"  SHA-256 hash of the content info records: {BitConverter.ToString(TMD_SHA256HashContentInfoRecords).Replace('-', ' ')}");
             Console.WriteLine();
@@ -534,8 +538,8 @@ namespace BurnOutSharp.Wrappers
                 {
                     var contentInfoRecord = TMD_ContentInfoRecords[i];
                     Console.WriteLine($"  Content Info Record {i}");
-                    Console.WriteLine($"    Content index offset: {contentInfoRecord.ContentIndexOffset}");
-                    Console.WriteLine($"    Content command count: {contentInfoRecord.ContentCommandCount}");
+                    Console.WriteLine($"    Content index offset: {contentInfoRecord.ContentIndexOffset} (0x{contentInfoRecord.ContentIndexOffset:X})");
+                    Console.WriteLine($"    Content command count: {contentInfoRecord.ContentCommandCount} (0x{contentInfoRecord.ContentCommandCount:X})");
                     Console.WriteLine($"    SHA-256 hash of the next {contentInfoRecord.ContentCommandCount} records not hashed: {BitConverter.ToString(contentInfoRecord.UnhashedContentRecordsSHA256Hash).Replace('-', ' ')}");
                 }
             }
@@ -553,10 +557,10 @@ namespace BurnOutSharp.Wrappers
                 {
                     var contentChunkRecord = TMD_ContentChunkRecords[i];
                     Console.WriteLine($"  Content Chunk Record {i}");
-                    Console.WriteLine($"    Content ID: {contentChunkRecord.ContentId}");
-                    Console.WriteLine($"    Content index: {contentChunkRecord.ContentIndex}");
-                    Console.WriteLine($"    Content type: {contentChunkRecord.ContentType}");
-                    Console.WriteLine($"    Content size: {contentChunkRecord.ContentSize}");
+                    Console.WriteLine($"    Content ID: {contentChunkRecord.ContentId} (0x{contentChunkRecord.ContentId:X})");
+                    Console.WriteLine($"    Content index: {contentChunkRecord.ContentIndex} (0x{contentChunkRecord.ContentIndex:X})");
+                    Console.WriteLine($"    Content type: {contentChunkRecord.ContentType} (0x{contentChunkRecord.ContentType:X})");
+                    Console.WriteLine($"    Content size: {contentChunkRecord.ContentSize} (0x{contentChunkRecord.ContentSize:X})");
                     Console.WriteLine($"    SHA-256 hash: {BitConverter.ToString(contentChunkRecord.SHA256Hash).Replace('-', ' ')}");
                 }
             }
@@ -582,21 +586,21 @@ namespace BurnOutSharp.Wrappers
                     }
 
                     Console.WriteLine($"  Certificate {i}{certificateName}");
-                    Console.WriteLine($"    Signature type: {certificate.SignatureType}");
-                    Console.WriteLine($"    Signature size: {certificate.SignatureSize}");
-                    Console.WriteLine($"    Padding size: {certificate.PaddingSize}");
+                    Console.WriteLine($"    Signature type: {certificate.SignatureType} (0x{certificate.SignatureType:X})");
+                    Console.WriteLine($"    Signature size: {certificate.SignatureSize} (0x{certificate.SignatureSize:X})");
+                    Console.WriteLine($"    Padding size: {certificate.PaddingSize} (0x{certificate.PaddingSize:X})");
                     Console.WriteLine($"    Signature: {BitConverter.ToString(certificate.Signature).Replace('-', ' ')}");
                     Console.WriteLine($"    Padding: {BitConverter.ToString(certificate.Padding).Replace('-', ' ')}");
                     Console.WriteLine($"    Issuer: {certificate.Issuer ?? "[NULL]"}");
-                    Console.WriteLine($"    Key type: {certificate.KeyType}");
+                    Console.WriteLine($"    Key type: {certificate.KeyType} (0x{certificate.KeyType:X})");
                     Console.WriteLine($"    Name: {certificate.Name ?? "[NULL]"}");
-                    Console.WriteLine($"    Expiration time: {certificate.ExpirationTime}");
+                    Console.WriteLine($"    Expiration time: {certificate.ExpirationTime} (0x{certificate.ExpirationTime:X})");
                     switch (certificate.KeyType)
                     {
                         case Models.N3DS.PublicKeyType.RSA_4096:
                         case Models.N3DS.PublicKeyType.RSA_2048:
                             Console.WriteLine($"    Modulus: {BitConverter.ToString(certificate.RSAModulus).Replace('-', ' ')}");
-                            Console.WriteLine($"    Public exponent: {certificate.RSAPublicExponent}");
+                            Console.WriteLine($"    Public exponent: {certificate.RSAPublicExponent} (0x{certificate.RSAPublicExponent:X})");
                             Console.WriteLine($"    Padding: {BitConverter.ToString(certificate.RSAPadding).Replace('-', ' ')}");
                             break;
                         case Models.N3DS.PublicKeyType.EllipticCurve:
@@ -637,39 +641,39 @@ namespace BurnOutSharp.Wrappers
                     else
                     {
                         Console.WriteLine($"    RSA-2048 SHA-256 signature: {BitConverter.ToString(partitionHeader.RSA2048Signature).Replace('-', ' ')}");
-                        Console.WriteLine($"    Magic ID: {partitionHeader.MagicID}");
-                        Console.WriteLine($"    Content size in media units: {partitionHeader.ContentSizeInMediaUnits}");
-                        Console.WriteLine($"    Partition ID: {partitionHeader.PartitionId}");
-                        Console.WriteLine($"    Maker code: {partitionHeader.MakerCode}");
-                        Console.WriteLine($"    Version: {partitionHeader.Version}");
-                        Console.WriteLine($"    Verification hash: {partitionHeader.VerificationHash}");
+                        Console.WriteLine($"    Magic ID: {partitionHeader.MagicID} (0x{partitionHeader.MagicID:X})");
+                        Console.WriteLine($"    Content size in media units: {partitionHeader.ContentSizeInMediaUnits} (0x{partitionHeader.ContentSizeInMediaUnits:X})");
+                        Console.WriteLine($"    Partition ID: {partitionHeader.PartitionId} (0x{partitionHeader.PartitionId:X})");
+                        Console.WriteLine($"    Maker code: {partitionHeader.MakerCode} (0x{partitionHeader.MakerCode:X})");
+                        Console.WriteLine($"    Version: {partitionHeader.Version} (0x{partitionHeader.Version:X})");
+                        Console.WriteLine($"    Verification hash: {partitionHeader.VerificationHash} (0x{partitionHeader.VerificationHash:X})");
                         Console.WriteLine($"    Program ID: {BitConverter.ToString(partitionHeader.ProgramId).Replace('-', ' ')}");
                         Console.WriteLine($"    Reserved 1: {BitConverter.ToString(partitionHeader.Reserved1).Replace('-', ' ')}");
                         Console.WriteLine($"    Logo region SHA-256 hash: {BitConverter.ToString(partitionHeader.LogoRegionHash).Replace('-', ' ')}");
-                        Console.WriteLine($"    Product code: {partitionHeader.ProductCode}");
+                        Console.WriteLine($"    Product code: {partitionHeader.ProductCode} (0x{partitionHeader.ProductCode:X})");
                         Console.WriteLine($"    Extended header SHA-256 hash: {BitConverter.ToString(partitionHeader.ExtendedHeaderHash).Replace('-', ' ')}");
-                        Console.WriteLine($"    Extended header size in bytes: {partitionHeader.ExtendedHeaderSizeInBytes}");
+                        Console.WriteLine($"    Extended header size in bytes: {partitionHeader.ExtendedHeaderSizeInBytes} (0x{partitionHeader.ExtendedHeaderSizeInBytes:X})");
                         Console.WriteLine($"    Reserved 2: {BitConverter.ToString(partitionHeader.Reserved2).Replace('-', ' ')}");
                         Console.WriteLine("    Flags:");
-                        Console.WriteLine($"      Reserved 0: {partitionHeader.Flags.Reserved0}");
-                        Console.WriteLine($"      Reserved 1: {partitionHeader.Flags.Reserved1}");
-                        Console.WriteLine($"      Reserved 2: {partitionHeader.Flags.Reserved2}");
-                        Console.WriteLine($"      Crypto method: {partitionHeader.Flags.CryptoMethod}");
-                        Console.WriteLine($"      Content platform: {partitionHeader.Flags.ContentPlatform}");
-                        Console.WriteLine($"      Content type: {partitionHeader.Flags.MediaPlatformIndex}");
-                        Console.WriteLine($"      Content unit size: {partitionHeader.Flags.ContentUnitSize}");
-                        Console.WriteLine($"      Bitmasks: {partitionHeader.Flags.BitMasks}");
-                        Console.WriteLine($"    Plain region offset, in media units: {partitionHeader.PlainRegionOffsetInMediaUnits}");
-                        Console.WriteLine($"    Plain region size, in media units: {partitionHeader.PlainRegionSizeInMediaUnits}");
-                        Console.WriteLine($"    Logo region offset, in media units: {partitionHeader.LogoRegionOffsetInMediaUnits}");
-                        Console.WriteLine($"    Logo region size, in media units: {partitionHeader.LogoRegionSizeInMediaUnits}");
-                        Console.WriteLine($"    ExeFS offset, in media units: {partitionHeader.ExeFSOffsetInMediaUnits}");
-                        Console.WriteLine($"    ExeFS size, in media units: {partitionHeader.ExeFSSizeInMediaUnits}");
-                        Console.WriteLine($"    ExeFS hash region size, in media units: {partitionHeader.ExeFSHashRegionSizeInMediaUnits}");
+                        Console.WriteLine($"      Reserved 0: {partitionHeader.Flags.Reserved0} (0x{partitionHeader.Flags.Reserved0:X})");
+                        Console.WriteLine($"      Reserved 1: {partitionHeader.Flags.Reserved1} (0x{partitionHeader.Flags.Reserved1:X})");
+                        Console.WriteLine($"      Reserved 2: {partitionHeader.Flags.Reserved2} (0x{partitionHeader.Flags.Reserved2:X})");
+                        Console.WriteLine($"      Crypto method: {partitionHeader.Flags.CryptoMethod} (0x{partitionHeader.Flags.CryptoMethod:X})");
+                        Console.WriteLine($"      Content platform: {partitionHeader.Flags.ContentPlatform} (0x{partitionHeader.Flags.ContentPlatform:X})");
+                        Console.WriteLine($"      Content type: {partitionHeader.Flags.MediaPlatformIndex} (0x{partitionHeader.Flags.MediaPlatformIndex:X})");
+                        Console.WriteLine($"      Content unit size: {partitionHeader.Flags.ContentUnitSize} (0x{partitionHeader.Flags.ContentUnitSize:X})");
+                        Console.WriteLine($"      Bitmasks: {partitionHeader.Flags.BitMasks} (0x{partitionHeader.Flags.BitMasks:X})");
+                        Console.WriteLine($"    Plain region offset, in media units: {partitionHeader.PlainRegionOffsetInMediaUnits} (0x{partitionHeader.PlainRegionOffsetInMediaUnits:X})");
+                        Console.WriteLine($"    Plain region size, in media units: {partitionHeader.PlainRegionSizeInMediaUnits} (0x{partitionHeader.PlainRegionSizeInMediaUnits:X})");
+                        Console.WriteLine($"    Logo region offset, in media units: {partitionHeader.LogoRegionOffsetInMediaUnits} (0x{partitionHeader.LogoRegionOffsetInMediaUnits:X})");
+                        Console.WriteLine($"    Logo region size, in media units: {partitionHeader.LogoRegionSizeInMediaUnits} (0x{partitionHeader.LogoRegionSizeInMediaUnits:X})");
+                        Console.WriteLine($"    ExeFS offset, in media units: {partitionHeader.ExeFSOffsetInMediaUnits} (0x{partitionHeader.ExeFSOffsetInMediaUnits:X})");
+                        Console.WriteLine($"    ExeFS size, in media units: {partitionHeader.ExeFSSizeInMediaUnits} (0x{partitionHeader.ExeFSSizeInMediaUnits:X})");
+                        Console.WriteLine($"    ExeFS hash region size, in media units: {partitionHeader.ExeFSHashRegionSizeInMediaUnits} (0x{partitionHeader.ExeFSHashRegionSizeInMediaUnits:X})");
                         Console.WriteLine($"    Reserved 3: {BitConverter.ToString(partitionHeader.Reserved3).Replace('-', ' ')}");
-                        Console.WriteLine($"    RomFS offset, in media units: {partitionHeader.RomFSOffsetInMediaUnits}");
-                        Console.WriteLine($"    RomFS size, in media units: {partitionHeader.RomFSSizeInMediaUnits}");
-                        Console.WriteLine($"    RomFS hash region size, in media units: {partitionHeader.RomFSHashRegionSizeInMediaUnits}");
+                        Console.WriteLine($"    RomFS offset, in media units: {partitionHeader.RomFSOffsetInMediaUnits} (0x{partitionHeader.RomFSOffsetInMediaUnits:X})");
+                        Console.WriteLine($"    RomFS size, in media units: {partitionHeader.RomFSSizeInMediaUnits} (0x{partitionHeader.RomFSSizeInMediaUnits:X})");
+                        Console.WriteLine($"    RomFS hash region size, in media units: {partitionHeader.RomFSHashRegionSizeInMediaUnits} (0x{partitionHeader.RomFSHashRegionSizeInMediaUnits:X})");
                         Console.WriteLine($"    Reserved 4: {BitConverter.ToString(partitionHeader.Reserved4).Replace('-', ' ')}");
                         Console.WriteLine($"    ExeFS superblock SHA-256 hash: {BitConverter.ToString(partitionHeader.ExeFSSuperblockHash).Replace('-', ' ')}");
                         Console.WriteLine($"    RomFS superblock SHA-256 hash: {BitConverter.ToString(partitionHeader.RomFSSuperblockHash).Replace('-', ' ')}");
@@ -694,7 +698,7 @@ namespace BurnOutSharp.Wrappers
             {
                 Console.WriteLine(value: $"  Title ID dependency list: {BitConverter.ToString(MD_TitleIDDependencyList).Replace('-', ' ')}");
                 Console.WriteLine($"  Reserved 1: {BitConverter.ToString(MD_Reserved1).Replace('-', ' ')}");
-                Console.WriteLine($"  Core version: {MD_CoreVersion}");
+                Console.WriteLine($"  Core version: {MD_CoreVersion} (0x{MD_CoreVersion:X})");
                 Console.WriteLine($"  Reserved 2: {BitConverter.ToString(MD_Reserved2).Replace('-', ' ')}");
                 Console.WriteLine($"  Icon data: {BitConverter.ToString(MD_IconData).Replace('-', ' ')}");
             }

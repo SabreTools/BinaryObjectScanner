@@ -195,9 +195,9 @@ namespace BurnOutSharp.Wrappers
         {
             Console.WriteLine("  Header Information:");
             Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Signature: {Signature}");
-            Console.WriteLine($"  Version: {Version}");
-            Console.WriteLine($"  Directory length: {DirectoryLength}");
+            Console.WriteLine($"  Signature: {Signature} (0x{Signature:X})");
+            Console.WriteLine($"  Version: {Version} (0x{Version:X})");
+            Console.WriteLine($"  Directory length: {DirectoryLength} (0x{DirectoryLength:X})");
             Console.WriteLine();
         }
 
@@ -214,10 +214,10 @@ namespace BurnOutSharp.Wrappers
             }
             else
             {
-                Console.WriteLine($"  Dummy 0: {Dummy0}");
-                Console.WriteLine($"  Archive hash length: {ArchiveHashLength}");
-                Console.WriteLine($"  Extra length: {ExtraLength}");
-                Console.WriteLine($"  Dummy 1: {Dummy1}");
+                Console.WriteLine($"  Dummy 0: {Dummy0} (0x{Dummy0:X})");
+                Console.WriteLine($"  Archive hash length: {ArchiveHashLength} (0x{ArchiveHashLength:X})");
+                Console.WriteLine($"  Extra length: {ExtraLength} (0x{ExtraLength:X})");
+                Console.WriteLine($"  Dummy 1: {Dummy1} (0x{Dummy1:X})");
                 Console.WriteLine();
             }
         }
@@ -239,9 +239,9 @@ namespace BurnOutSharp.Wrappers
                 {
                     var archiveHash = ArchiveHashes[i];
                     Console.WriteLine($"  Archive Hash {i}");
-                    Console.WriteLine($"    Archive index: {archiveHash.ArchiveIndex}");
-                    Console.WriteLine($"    Archive offset: {archiveHash.ArchiveOffset}");
-                    Console.WriteLine($"    Length: {archiveHash.Length}");
+                    Console.WriteLine($"    Archive index: {archiveHash.ArchiveIndex} (0x{archiveHash.ArchiveIndex:X})");
+                    Console.WriteLine($"    Archive offset: {archiveHash.ArchiveOffset} (0x{archiveHash.ArchiveOffset:X})");
+                    Console.WriteLine($"    Length: {archiveHash.Length} (0x{archiveHash.Length:X})");
                     Console.WriteLine($"    Hash: {BitConverter.ToString(archiveHash.Hash).Replace("-", string.Empty)}");
                 }
             }
@@ -286,12 +286,12 @@ namespace BurnOutSharp.Wrappers
             }
             else
             {
-                Console.WriteLine($"   Directory entry CRC: {directoryEntry.CRC}");
-                Console.WriteLine($"   Directory entry preload bytes: {directoryEntry.PreloadBytes}");
-                Console.WriteLine($"   Directory entry archive index: {directoryEntry.ArchiveIndex}");
-                Console.WriteLine($"   Directory entry entry offset: {directoryEntry.EntryOffset}");
-                Console.WriteLine($"   Directory entry entry length: {directoryEntry.EntryLength}");
-                Console.WriteLine($"   Directory entry dummy 0: {directoryEntry.Dummy0}");
+                Console.WriteLine($"   Directory entry CRC: {directoryEntry.CRC} (0x{directoryEntry.CRC:X})");
+                Console.WriteLine($"   Directory entry preload bytes: {directoryEntry.PreloadBytes} (0x{directoryEntry.PreloadBytes:X})");
+                Console.WriteLine($"   Directory entry archive index: {directoryEntry.ArchiveIndex} (0x{directoryEntry.ArchiveIndex:X})");
+                Console.WriteLine($"   Directory entry entry offset: {directoryEntry.EntryOffset} (0x{directoryEntry.EntryOffset:X})");
+                Console.WriteLine($"   Directory entry entry length: {directoryEntry.EntryLength} (0x{directoryEntry.EntryLength:X})");
+                Console.WriteLine($"   Directory entry dummy 0: {directoryEntry.Dummy0} (0x{directoryEntry.Dummy0:X})");
             }
         }
 

@@ -119,8 +119,8 @@ namespace BurnOutSharp.Wrappers
             Console.WriteLine("  Header Information:");
             Console.WriteLine("  -------------------------");
             Console.WriteLine($"  Signature: {Signature}");
-            Console.WriteLine($"  Directory offset: {DirectoryOffset}");
-            Console.WriteLine($"  Directory length: {DirectoryLength}");
+            Console.WriteLine($"  Directory offset: {DirectoryOffset} (0x{DirectoryOffset:X})");
+            Console.WriteLine($"  Directory length: {DirectoryLength} (0x{DirectoryLength:X})");
             Console.WriteLine();
         }
 
@@ -142,8 +142,8 @@ namespace BurnOutSharp.Wrappers
                     var directoryItem = DirectoryItems[i];
                     Console.WriteLine($"  Directory Item {i}");
                     Console.WriteLine($"    Item name: {directoryItem.ItemName}");
-                    Console.WriteLine($"    Item offset: {directoryItem.ItemOffset}");
-                    Console.WriteLine($"    Item length: {directoryItem.ItemLength}");
+                    Console.WriteLine($"    Item offset: {directoryItem.ItemOffset} (0x{directoryItem.ItemOffset:X})");
+                    Console.WriteLine($"    Item length: {directoryItem.ItemLength} (0x{directoryItem.ItemLength:X})");
                 }
             }
             Console.WriteLine();

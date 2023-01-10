@@ -127,7 +127,7 @@ namespace BurnOutSharp.Wrappers
         {
             Console.WriteLine("  Header Information:");
             Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Version: {Version}");
+            Console.WriteLine($"  Version: {Version} (0x{Version:X})");
             Console.WriteLine();
         }
 
@@ -159,8 +159,8 @@ namespace BurnOutSharp.Wrappers
                     }
 
                     Console.WriteLine($"  Lump {i}{specialLumpName}");
-                    Console.WriteLine($"    Offset: {lump.Offset}");
-                    Console.WriteLine($"    Length: {lump.Length}");
+                    Console.WriteLine($"    Offset: {lump.Offset} (0x{lump.Offset:X})");
+                    Console.WriteLine($"    Length: {lump.Length} (0x{lump.Length:X})");
                 }
             }
             Console.WriteLine();
@@ -174,7 +174,11 @@ namespace BurnOutSharp.Wrappers
             Console.WriteLine("  Texture Header Information:");
             Console.WriteLine("  -------------------------");
             Console.WriteLine($"  Texture count: {TextureCount}");
-            Console.WriteLine($"  Offsets: {string.Join(", ", Offsets)}");
+            Console.WriteLine($"  Offsets:");
+            for (int i = 0; i < Offsets.Length; i++)
+            {
+                Console.WriteLine($"    Offset {i}: {Offsets[i]} (0x{Offsets[i]:X})");
+            }
             Console.WriteLine();
         }
 
@@ -196,11 +200,15 @@ namespace BurnOutSharp.Wrappers
                     var texture = Textures[i];
                     Console.WriteLine($"  Texture {i}");
                     Console.WriteLine($"    Name: {texture.Name}");
-                    Console.WriteLine($"    Width: {texture.Width}");
-                    Console.WriteLine($"    Height: {texture.Height}");
-                    Console.WriteLine($"    Offsets: {string.Join(", ", texture.Offsets)}");
+                    Console.WriteLine($"    Width: {texture.Width} (0x{texture.Width:X})");
+                    Console.WriteLine($"    Height: {texture.Height} (0x{texture.Height:X})");
+                    Console.WriteLine($"    Offsets:");
+                    for (int j = 0; j < texture.Offsets.Length; j++)
+                    {
+                        Console.WriteLine($"      Offset {j}: {Offsets[i]} (0x{texture.Offsets[j]:X})");
+                    }
                     // Skip texture data
-                    Console.WriteLine($"    Palette size: {texture.PaletteSize}");
+                    Console.WriteLine($"    Palette size: {texture.PaletteSize} (0x{texture.PaletteSize:X})");
                     // Skip palette data
                 }
             }

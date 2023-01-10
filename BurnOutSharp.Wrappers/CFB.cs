@@ -364,27 +364,27 @@ namespace BurnOutSharp.Wrappers
         {
             Console.WriteLine("  File Header Information:");
             Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Signature: {Signature}");
+            Console.WriteLine($"  Signature: {Signature} (0x{Signature:X})");
             Console.WriteLine($"  CLSID: {CLSID}");
-            Console.WriteLine($"  Minor version: {MinorVersion}");
-            Console.WriteLine($"  Major version: {MajorVersion}");
-            Console.WriteLine($"  Byte order: {ByteOrder}");
-            Console.WriteLine($"  Sector shift: {SectorShift} [{(long)Math.Pow(2, SectorShift)}]");
-            Console.WriteLine($"  Mini sector shift: {MiniSectorShift} [{(long)Math.Pow(2, MiniSectorShift)}]");
+            Console.WriteLine($"  Minor version: {MinorVersion} (0x{MinorVersion:X})");
+            Console.WriteLine($"  Major version: {MajorVersion} (0x{MajorVersion:X})");
+            Console.WriteLine($"  Byte order: {ByteOrder} (0x{ByteOrder:X})");
+            Console.WriteLine($"  Sector shift: {SectorShift} (0x{SectorShift:X}) => {SectorSize}");
+            Console.WriteLine($"  Mini sector shift: {MiniSectorShift} (0x{MiniSectorShift:X}) => {MiniSectorSize}");
             Console.WriteLine($"  Reserved: {BitConverter.ToString(Reserved).Replace('-', ' ')}");
-            Console.WriteLine($"  Number of directory sectors: {NumberOfDirectorySectors}");
-            Console.WriteLine($"  Number of FAT sectors: {NumberOfFATSectors}");
-            Console.WriteLine($"  First directory sector location: {FirstDirectorySectorLocation}");
-            Console.WriteLine($"  Transaction signature number: {TransactionSignatureNumber}");
-            Console.WriteLine($"  Mini stream cutoff size: {MiniStreamCutoffSize}");
-            Console.WriteLine($"  First mini FAT sector location: {FirstMiniFATSectorLocation}");
-            Console.WriteLine($"  Number of mini FAT sectors: {NumberOfMiniFATSectors}");
-            Console.WriteLine($"  First DIFAT sector location: {FirstDIFATSectorLocation}");
-            Console.WriteLine($"  Number of DIFAT sectors: {NumberOfDIFATSectors}");
+            Console.WriteLine($"  Number of directory sectors: {NumberOfDirectorySectors} (0x{NumberOfDirectorySectors:X})");
+            Console.WriteLine($"  Number of FAT sectors: {NumberOfFATSectors} (0x{NumberOfFATSectors:X})");
+            Console.WriteLine($"  First directory sector location: {FirstDirectorySectorLocation} (0x{FirstDirectorySectorLocation:X})");
+            Console.WriteLine($"  Transaction signature number: {TransactionSignatureNumber} (0x{TransactionSignatureNumber:X})");
+            Console.WriteLine($"  Mini stream cutoff size: {MiniStreamCutoffSize} (0x{MiniStreamCutoffSize:X})");
+            Console.WriteLine($"  First mini FAT sector location: {FirstMiniFATSectorLocation} (0x{FirstMiniFATSectorLocation:X})");
+            Console.WriteLine($"  Number of mini FAT sectors: {NumberOfMiniFATSectors} (0x{NumberOfMiniFATSectors:X})");
+            Console.WriteLine($"  First DIFAT sector location: {FirstDIFATSectorLocation} (0x{FirstDIFATSectorLocation:X})");
+            Console.WriteLine($"  Number of DIFAT sectors: {NumberOfDIFATSectors} (0x{NumberOfDIFATSectors:X})");
             Console.WriteLine($"  DIFAT:");
             for (int i = 0; i < DIFAT.Length; i++)
             {
-                Console.WriteLine($"    DIFAT Entry {i}: {DIFAT[i]}");
+                Console.WriteLine($"    DIFAT Entry {i}: {DIFAT[i]} (0x{DIFAT[i]:X})");
             }
             Console.WriteLine();
         }
@@ -404,7 +404,7 @@ namespace BurnOutSharp.Wrappers
             {
                 for (int i = 0; i < FATSectorNumbers.Length; i++)
                 {
-                    Console.WriteLine($"  FAT Sector Entry {i}: {FATSectorNumbers[i]}");
+                    Console.WriteLine($"  FAT Sector Entry {i}: {FATSectorNumbers[i]} (0x{FATSectorNumbers[i]:X})");
                 }
             }
             Console.WriteLine();
@@ -425,7 +425,7 @@ namespace BurnOutSharp.Wrappers
             {
                 for (int i = 0; i < MiniFATSectorNumbers.Length; i++)
                 {
-                    Console.WriteLine($"  Mini FAT Sector Entry {i}: {MiniFATSectorNumbers[i]}");
+                    Console.WriteLine($"  Mini FAT Sector Entry {i}: {MiniFATSectorNumbers[i]} (0x{MiniFATSectorNumbers[i]:X})");
                 }
             }
             Console.WriteLine();
@@ -446,7 +446,7 @@ namespace BurnOutSharp.Wrappers
             {
                 for (int i = 0; i < DIFATSectorNumbers.Length; i++)
                 {
-                    Console.WriteLine($"  DIFAT Sector Entry {i}: {DIFATSectorNumbers[i]}");
+                    Console.WriteLine($"  DIFAT Sector Entry {i}: {DIFATSectorNumbers[i]} (0x{DIFATSectorNumbers[i]:X})");
                 }
             }
             Console.WriteLine();
@@ -470,18 +470,18 @@ namespace BurnOutSharp.Wrappers
                     var directoryEntry = DirectoryEntries[i];
                     Console.WriteLine($"  Directory Entry {i}");
                     Console.WriteLine($"    Name: {directoryEntry.Name}");
-                    Console.WriteLine($"    Name length: {directoryEntry.NameLength}");
-                    Console.WriteLine($"    Object type: {directoryEntry.ObjectType}");
-                    Console.WriteLine($"    Color flag: {directoryEntry.ColorFlag}");
-                    Console.WriteLine($"    Left sibling ID: {directoryEntry.LeftSiblingID}");
-                    Console.WriteLine($"    Right sibling ID: {directoryEntry.RightSiblingID}");
-                    Console.WriteLine($"    Child ID: {directoryEntry.ChildID}");
+                    Console.WriteLine($"    Name length: {directoryEntry.NameLength} (0x{directoryEntry.NameLength:X})");
+                    Console.WriteLine($"    Object type: {directoryEntry.ObjectType} (0x{directoryEntry.ObjectType:X})");
+                    Console.WriteLine($"    Color flag: {directoryEntry.ColorFlag} (0x{directoryEntry.ColorFlag:X})");
+                    Console.WriteLine($"    Left sibling ID: {directoryEntry.LeftSiblingID} (0x{directoryEntry.LeftSiblingID:X})");
+                    Console.WriteLine($"    Right sibling ID: {directoryEntry.RightSiblingID} (0x{directoryEntry.RightSiblingID:X})");
+                    Console.WriteLine($"    Child ID: {directoryEntry.ChildID} (0x{directoryEntry.ChildID:X})");
                     Console.WriteLine($"    CLSID: {directoryEntry.CLSID}");
-                    Console.WriteLine($"    State bits: {directoryEntry.StateBits}");
-                    Console.WriteLine($"    Creation time: {directoryEntry.CreationTime}");
-                    Console.WriteLine($"    Modification time: {directoryEntry.ModifiedTime}");
-                    Console.WriteLine($"    Staring sector location: {directoryEntry.StartingSectorLocation}");
-                    Console.WriteLine($"    Stream size: {directoryEntry.StreamSize}");
+                    Console.WriteLine($"    State bits: {directoryEntry.StateBits} (0x{directoryEntry.StateBits:X})");
+                    Console.WriteLine($"    Creation time: {directoryEntry.CreationTime} (0x{directoryEntry.CreationTime:X})");
+                    Console.WriteLine($"    Modification time: {directoryEntry.ModifiedTime} (0x{directoryEntry.ModifiedTime:X})");
+                    Console.WriteLine($"    Staring sector location: {directoryEntry.StartingSectorLocation} (0x{directoryEntry.StartingSectorLocation:X})");
+                    Console.WriteLine($"    Stream size: {directoryEntry.StreamSize} (0x{directoryEntry.StreamSize:X})");
                 }
             }
             Console.WriteLine();

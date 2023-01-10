@@ -165,19 +165,19 @@ namespace BurnOutSharp.Wrappers
             Console.WriteLine("  Header Information:");
             Console.WriteLine("  -------------------------");
             Console.WriteLine($"  Magic number: {Magic}");
-            Console.WriteLine($"  Last page bytes: {LastPageBytes}");
-            Console.WriteLine($"  Pages: {Pages}");
-            Console.WriteLine($"  Relocation items: {RelocationItems}");
-            Console.WriteLine($"  Header paragraph size: {HeaderParagraphSize}");
-            Console.WriteLine($"  Minimum extra paragraphs: {MinimumExtraParagraphs}");
-            Console.WriteLine($"  Maximum extra paragraphs: {MaximumExtraParagraphs}");
-            Console.WriteLine($"  Initial SS value: {InitialSSValue}");
-            Console.WriteLine($"  Initial SP value: {InitialSPValue}");
-            Console.WriteLine($"  Checksum: {Checksum}");
-            Console.WriteLine($"  Initial IP value: {InitialIPValue}");
-            Console.WriteLine($"  Initial CS value: {InitialCSValue}");
-            Console.WriteLine($"  Relocation table address: {RelocationTableAddr}");
-            Console.WriteLine($"  Overlay number: {OverlayNumber}");
+            Console.WriteLine($"  Last page bytes: {LastPageBytes} (0x{LastPageBytes:X})");
+            Console.WriteLine($"  Pages: {Pages} (0x{Pages:X})");
+            Console.WriteLine($"  Relocation items: {RelocationItems} (0x{RelocationItems:X})");
+            Console.WriteLine($"  Header paragraph size: {HeaderParagraphSize} (0x{HeaderParagraphSize:X})");
+            Console.WriteLine($"  Minimum extra paragraphs: {MinimumExtraParagraphs} (0x{MinimumExtraParagraphs:X})");
+            Console.WriteLine($"  Maximum extra paragraphs: {MaximumExtraParagraphs} (0x{MaximumExtraParagraphs:X})");
+            Console.WriteLine($"  Initial SS value: {InitialSSValue} (0x{InitialSSValue:X})");
+            Console.WriteLine($"  Initial SP value: {InitialSPValue} (0x{InitialSPValue:X})");
+            Console.WriteLine($"  Checksum: {Checksum} (0x{Checksum:X})");
+            Console.WriteLine($"  Initial IP value: {InitialIPValue} (0x{InitialIPValue:X})");
+            Console.WriteLine($"  Initial CS value: {InitialCSValue} (0x{InitialCSValue:X})");
+            Console.WriteLine($"  Relocation table address: {RelocationTableAddr} (0x{RelocationTableAddr:X})");
+            Console.WriteLine($"  Overlay number: {OverlayNumber} (0x{OverlayNumber:X})");
         }
 
         /// <summary>
@@ -197,8 +197,8 @@ namespace BurnOutSharp.Wrappers
                 {
                     var entry = RelocationTable[i];
                     Console.WriteLine($"  Relocation Table Entry {i}");
-                    Console.WriteLine($"    Offset = {entry.Offset}");
-                    Console.WriteLine($"    Segment = {entry.Segment}");
+                    Console.WriteLine($"    Offset: {entry.Offset} (0x{entry.Offset:X})");
+                    Console.WriteLine($"    Segment: {entry.Segment} (0x{entry.Segment:X})");
                 }
             }
             Console.WriteLine();

@@ -1091,7 +1091,7 @@ namespace BurnOutSharp.Wrappers
                 string sectionName = Encoding.UTF8.GetString(section.Name);
                 uint sectionAddr = section.PointerToRawData;
                 uint sectionEnd = sectionAddr + section.VirtualSize;
-                Console.WriteLine($"{sectionName}: {sectionAddr} -> {sectionEnd}");
+                Console.WriteLine($"{sectionName}: {sectionAddr} -> {sectionEnd} ({sectionAddr:X} -> {sectionEnd:X})");
             }
         }
 
@@ -1132,19 +1132,19 @@ namespace BurnOutSharp.Wrappers
             Console.WriteLine("  MS-DOS Stub Header Information:");
             Console.WriteLine("  -------------------------");
             Console.WriteLine($"  Magic number: {Stub_Magic}");
-            Console.WriteLine($"  Last page bytes: {Stub_LastPageBytes}");
-            Console.WriteLine($"  Pages: {Stub_Pages}");
-            Console.WriteLine($"  Relocation items: {Stub_RelocationItems}");
-            Console.WriteLine($"  Header paragraph size: {Stub_HeaderParagraphSize}");
-            Console.WriteLine($"  Minimum extra paragraphs: {Stub_MinimumExtraParagraphs}");
-            Console.WriteLine($"  Maximum extra paragraphs: {Stub_MaximumExtraParagraphs}");
-            Console.WriteLine($"  Initial SS value: {Stub_InitialSSValue}");
-            Console.WriteLine($"  Initial SP value: {Stub_InitialSPValue}");
-            Console.WriteLine($"  Checksum: {Stub_Checksum}");
-            Console.WriteLine($"  Initial IP value: {Stub_InitialIPValue}");
-            Console.WriteLine($"  Initial CS value: {Stub_InitialCSValue}");
-            Console.WriteLine($"  Relocation table address: {Stub_RelocationTableAddr}");
-            Console.WriteLine($"  Overlay number: {Stub_OverlayNumber}");
+            Console.WriteLine($"  Last page bytes: {Stub_LastPageBytes} (0x{Stub_LastPageBytes:X})");
+            Console.WriteLine($"  Pages: {Stub_Pages} (0x{Stub_Pages:X})");
+            Console.WriteLine($"  Relocation items: {Stub_RelocationItems} (0x{Stub_RelocationItems:X})");
+            Console.WriteLine($"  Header paragraph size: {Stub_HeaderParagraphSize} (0x{Stub_HeaderParagraphSize:X})");
+            Console.WriteLine($"  Minimum extra paragraphs: {Stub_MinimumExtraParagraphs} (0x{Stub_MinimumExtraParagraphs:X})");
+            Console.WriteLine($"  Maximum extra paragraphs: {Stub_MaximumExtraParagraphs} (0x{Stub_MaximumExtraParagraphs:X})");
+            Console.WriteLine($"  Initial SS value: {Stub_InitialSSValue} (0x{Stub_InitialSSValue:X})");
+            Console.WriteLine($"  Initial SP value: {Stub_InitialSPValue} (0x{Stub_InitialSPValue:X})");
+            Console.WriteLine($"  Checksum: {Stub_Checksum} (0x{Stub_Checksum:X})");
+            Console.WriteLine($"  Initial IP value: {Stub_InitialIPValue} (0x{Stub_InitialIPValue:X})");
+            Console.WriteLine($"  Initial CS value: {Stub_InitialCSValue} (0x{Stub_InitialCSValue:X})");
+            Console.WriteLine($"  Relocation table address: {Stub_RelocationTableAddr} (0x{Stub_RelocationTableAddr:X})");
+            Console.WriteLine($"  Overlay number: {Stub_OverlayNumber} (0x{Stub_OverlayNumber:X})");
             Console.WriteLine();
         }
 
@@ -1156,10 +1156,10 @@ namespace BurnOutSharp.Wrappers
             Console.WriteLine("  MS-DOS Stub Extended Header Information:");
             Console.WriteLine("  -------------------------");
             Console.WriteLine($"  Reserved words: {string.Join(", ", Stub_Reserved1)}");
-            Console.WriteLine($"  OEM identifier: {Stub_OEMIdentifier}");
-            Console.WriteLine($"  OEM information: {Stub_OEMInformation}");
+            Console.WriteLine($"  OEM identifier: {Stub_OEMIdentifier} (0x{Stub_OEMIdentifier:X})");
+            Console.WriteLine($"  OEM information: {Stub_OEMInformation} (0x{Stub_OEMInformation:X})");
             Console.WriteLine($"  Reserved words: {string.Join(", ", Stub_Reserved2)}");
-            Console.WriteLine($"  New EXE header address: {Stub_NewExeHeaderAddr}");
+            Console.WriteLine($"  New EXE header address: {Stub_NewExeHeaderAddr} (0x{Stub_NewExeHeaderAddr:X})");
             Console.WriteLine();
         }
 
@@ -1171,13 +1171,13 @@ namespace BurnOutSharp.Wrappers
             Console.WriteLine("  COFF File Header Information:");
             Console.WriteLine("  -------------------------");
             Console.WriteLine($"  Signature: {Signature}");
-            Console.WriteLine($"  Machine: {Machine}");
-            Console.WriteLine($"  Number of sections: {NumberOfSections}");
-            Console.WriteLine($"  Time/Date stamp: {TimeDateStamp}");
-            Console.WriteLine($"  Pointer to symbol table: {PointerToSymbolTable}");
-            Console.WriteLine($"  Number of symbols: {NumberOfSymbols}");
-            Console.WriteLine($"  Size of optional header: {SizeOfOptionalHeader}");
-            Console.WriteLine($"  Characteristics: {Characteristics}");
+            Console.WriteLine($"  Machine: {Machine} (0x{Machine:X})");
+            Console.WriteLine($"  Number of sections: {NumberOfSections} (0x{NumberOfSections:X})");
+            Console.WriteLine($"  Time/Date stamp: {TimeDateStamp} (0x{TimeDateStamp:X})");
+            Console.WriteLine($"  Pointer to symbol table: {PointerToSymbolTable} (0x{PointerToSymbolTable:X})");
+            Console.WriteLine($"  Number of symbols: {NumberOfSymbols} (0x{NumberOfSymbols:X})");
+            Console.WriteLine($"  Size of optional header: {SizeOfOptionalHeader} (0x{SizeOfOptionalHeader:X})");
+            Console.WriteLine($"  Characteristics: {Characteristics} (0x{Characteristics:X})");
             Console.WriteLine();
         }
 
@@ -1194,150 +1194,150 @@ namespace BurnOutSharp.Wrappers
             }
             else
             {
-                Console.WriteLine($"  Magic: {OH_Magic}");
-                Console.WriteLine($"  Major linker version: {OH_MajorLinkerVersion}");
-                Console.WriteLine($"  Minor linker version: {OH_MinorLinkerVersion}");
-                Console.WriteLine($"  Size of code section: {OH_SizeOfCode}");
-                Console.WriteLine($"  Size of initialized data: {OH_SizeOfInitializedData}");
-                Console.WriteLine($"  Size of uninitialized data: {OH_SizeOfUninitializedData}");
-                Console.WriteLine($"  Address of entry point: {OH_AddressOfEntryPoint}");
-                Console.WriteLine($"  Base of code: {OH_BaseOfCode}");
+                Console.WriteLine($"  Magic: {OH_Magic} (0x{OH_Magic:X})");
+                Console.WriteLine($"  Major linker version: {OH_MajorLinkerVersion} (0x{OH_MajorLinkerVersion:X})");
+                Console.WriteLine($"  Minor linker version: {OH_MinorLinkerVersion} (0x{OH_MinorLinkerVersion:X})");
+                Console.WriteLine($"  Size of code section: {OH_SizeOfCode} (0x{OH_SizeOfCode:X})");
+                Console.WriteLine($"  Size of initialized data: {OH_SizeOfInitializedData} (0x{OH_SizeOfInitializedData:X})");
+                Console.WriteLine($"  Size of uninitialized data: {OH_SizeOfUninitializedData} (0x{OH_SizeOfUninitializedData:X})");
+                Console.WriteLine($"  Address of entry point: {OH_AddressOfEntryPoint} (0x{OH_AddressOfEntryPoint:X})");
+                Console.WriteLine($"  Base of code: {OH_BaseOfCode} (0x{OH_BaseOfCode:X})");
                 if (OH_Magic == Models.PortableExecutable.OptionalHeaderMagicNumber.PE32)
-                    Console.WriteLine($"  Base of data: {OH_BaseOfData}");
+                    Console.WriteLine($"  Base of data: {OH_BaseOfData} (0x{OH_BaseOfData:X})");
 
-                Console.WriteLine($"  Image base: {OH_ImageBase}");
-                Console.WriteLine($"  Section alignment: {OH_SectionAlignment}");
-                Console.WriteLine($"  File alignment: {OH_FileAlignment}");
-                Console.WriteLine($"  Major operating system version: {OH_MajorOperatingSystemVersion}");
-                Console.WriteLine($"  Minor operating system version: {OH_MinorOperatingSystemVersion}");
-                Console.WriteLine($"  Major image version: {OH_MajorImageVersion}");
-                Console.WriteLine($"  Minor image version: {OH_MinorImageVersion}");
-                Console.WriteLine($"  Major subsystem version: {OH_MajorSubsystemVersion}");
-                Console.WriteLine($"  Minor subsystem version: {OH_MinorSubsystemVersion}");
-                Console.WriteLine($"  Win32 version value: {OH_Win32VersionValue}");
-                Console.WriteLine($"  Size of image: {OH_SizeOfImage}");
-                Console.WriteLine($"  Size of headers: {OH_SizeOfHeaders}");
-                Console.WriteLine($"  Checksum: {OH_CheckSum}");
-                Console.WriteLine($"  Subsystem: {OH_Subsystem}");
-                Console.WriteLine($"  DLL characteristics: {OH_DllCharacteristics}");
-                Console.WriteLine($"  Size of stack reserve: {OH_SizeOfStackReserve}");
-                Console.WriteLine($"  Size of stack commit: {OH_SizeOfStackCommit}");
-                Console.WriteLine($"  Size of heap reserve: {OH_SizeOfHeapReserve}");
-                Console.WriteLine($"  Size of heap commit: {OH_SizeOfHeapCommit}");
-                Console.WriteLine($"  Loader flags: {OH_LoaderFlags}");
-                Console.WriteLine($"  Number of data-directory entries: {OH_NumberOfRvaAndSizes}");
+                Console.WriteLine($"  Image base: {OH_ImageBase} (0x{OH_ImageBase:X})");
+                Console.WriteLine($"  Section alignment: {OH_SectionAlignment} (0x{OH_SectionAlignment:X})");
+                Console.WriteLine($"  File alignment: {OH_FileAlignment} (0x{OH_FileAlignment:X})");
+                Console.WriteLine($"  Major operating system version: {OH_MajorOperatingSystemVersion} (0x{OH_MajorOperatingSystemVersion:X})");
+                Console.WriteLine($"  Minor operating system version: {OH_MinorOperatingSystemVersion} (0x{OH_MinorOperatingSystemVersion:X})");
+                Console.WriteLine($"  Major image version: {OH_MajorImageVersion} (0x{OH_MajorImageVersion:X})");
+                Console.WriteLine($"  Minor image version: {OH_MinorImageVersion} (0x{OH_MinorImageVersion:X})");
+                Console.WriteLine($"  Major subsystem version: {OH_MajorSubsystemVersion} (0x{OH_MajorSubsystemVersion:X})");
+                Console.WriteLine($"  Minor subsystem version: {OH_MinorSubsystemVersion} (0x{OH_MinorSubsystemVersion:X})");
+                Console.WriteLine($"  Win32 version value: {OH_Win32VersionValue} (0x{OH_Win32VersionValue:X})");
+                Console.WriteLine($"  Size of image: {OH_SizeOfImage} (0x{OH_SizeOfImage:X})");
+                Console.WriteLine($"  Size of headers: {OH_SizeOfHeaders} (0x{OH_SizeOfHeaders:X})");
+                Console.WriteLine($"  Checksum: {OH_CheckSum} (0x{OH_CheckSum:X})");
+                Console.WriteLine($"  Subsystem: {OH_Subsystem} (0x{OH_Subsystem:X})");
+                Console.WriteLine($"  DLL characteristics: {OH_DllCharacteristics} (0x{OH_DllCharacteristics:X})");
+                Console.WriteLine($"  Size of stack reserve: {OH_SizeOfStackReserve} (0x{OH_SizeOfStackReserve:X})");
+                Console.WriteLine($"  Size of stack commit: {OH_SizeOfStackCommit} (0x{OH_SizeOfStackCommit:X})");
+                Console.WriteLine($"  Size of heap reserve: {OH_SizeOfHeapReserve} (0x{OH_SizeOfHeapReserve:X})");
+                Console.WriteLine($"  Size of heap commit: {OH_SizeOfHeapCommit} (0x{OH_SizeOfHeapCommit:X})");
+                Console.WriteLine($"  Loader flags: {OH_LoaderFlags} (0x{OH_LoaderFlags:X})");
+                Console.WriteLine($"  Number of data-directory entries: {OH_NumberOfRvaAndSizes} (0x{OH_NumberOfRvaAndSizes:X})");
 
                 if (OH_ExportTable != null)
                 {
                     Console.WriteLine("    Export Table (1)");
-                    Console.WriteLine($"      Virtual address: {OH_ExportTable.VirtualAddress}");
-                    Console.WriteLine($"      Physical address: {OH_ExportTable.VirtualAddress.ConvertVirtualAddress(SectionTable)}");
-                    Console.WriteLine($"      Size: {OH_ExportTable.Size}");
+                    Console.WriteLine($"      Virtual address: {OH_ExportTable.VirtualAddress} (0x{OH_ExportTable.VirtualAddress:X})");
+                    Console.WriteLine($"      Physical address: {OH_ExportTable.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_ExportTable.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
+                    Console.WriteLine($"      Size: {OH_ExportTable.Size} (0x{OH_ExportTable.Size:X})");
                 }
                 if (OH_ImportTable != null)
                 {
                     Console.WriteLine("    Import Table (2)");
-                    Console.WriteLine($"      Virtual address: {OH_ImportTable.VirtualAddress}");
-                    Console.WriteLine($"      Physical address: {OH_ImportTable.VirtualAddress.ConvertVirtualAddress(SectionTable)}");
-                    Console.WriteLine($"      Size: {OH_ImportTable.Size}");
+                    Console.WriteLine($"      Virtual address: {OH_ImportTable.VirtualAddress} (0x{OH_ImportTable.VirtualAddress:X})");
+                    Console.WriteLine($"      Physical address: {OH_ImportTable.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_ImportTable.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
+                    Console.WriteLine($"      Size: {OH_ImportTable.Size} (0x{OH_ImportTable.Size:X})");
                 }
                 if (OH_ResourceTable != null)
                 {
                     Console.WriteLine("    Resource Table (3)");
-                    Console.WriteLine($"      Virtual address: {OH_ResourceTable.VirtualAddress}");
-                    Console.WriteLine($"      Physical address: {OH_ResourceTable.VirtualAddress.ConvertVirtualAddress(SectionTable)}");
-                    Console.WriteLine($"      Size: {OH_ResourceTable.Size}");
+                    Console.WriteLine($"      Virtual address: {OH_ResourceTable.VirtualAddress} (0x{OH_ResourceTable.VirtualAddress:X})");
+                    Console.WriteLine($"      Physical address: {OH_ResourceTable.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_ResourceTable.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
+                    Console.WriteLine($"      Size: {OH_ResourceTable.Size} (0x{OH_ResourceTable.Size:X})");
                 }
                 if (OH_ExceptionTable != null)
                 {
                     Console.WriteLine("    Exception Table (4)");
-                    Console.WriteLine($"      Virtual address: {OH_ExceptionTable.VirtualAddress}");
-                    Console.WriteLine($"      Physical address: {OH_ExceptionTable.VirtualAddress.ConvertVirtualAddress(SectionTable)}");
-                    Console.WriteLine($"      Size: {OH_ExceptionTable.Size}");
+                    Console.WriteLine($"      Virtual address: {OH_ExceptionTable.VirtualAddress} (0x{OH_ExceptionTable.VirtualAddress:X})");
+                    Console.WriteLine($"      Physical address: {OH_ExceptionTable.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_ExceptionTable.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
+                    Console.WriteLine($"      Size: {OH_ExceptionTable.Size} (0x{OH_ExceptionTable.Size:X})");
                 }
                 if (OH_CertificateTable != null)
                 {
                     Console.WriteLine("    Certificate Table (5)");
-                    Console.WriteLine($"      Virtual address: {OH_CertificateTable.VirtualAddress}");
-                    Console.WriteLine($"      Physical address: {OH_CertificateTable.VirtualAddress.ConvertVirtualAddress(SectionTable)}");
-                    Console.WriteLine($"      Size: {OH_CertificateTable.Size}");
+                    Console.WriteLine($"      Virtual address: {OH_CertificateTable.VirtualAddress} (0x{OH_CertificateTable.VirtualAddress:X})");
+                    Console.WriteLine($"      Physical address: {OH_CertificateTable.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_CertificateTable.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
+                    Console.WriteLine($"      Size: {OH_CertificateTable.Size} (0x{OH_CertificateTable.Size:X})");
                 }
                 if (OH_BaseRelocationTable != null)
                 {
                     Console.WriteLine("    Base Relocation Table (6)");
-                    Console.WriteLine($"      Virtual address: {OH_BaseRelocationTable.VirtualAddress}");
-                    Console.WriteLine($"      Physical address: {OH_BaseRelocationTable.VirtualAddress.ConvertVirtualAddress(SectionTable)}");
-                    Console.WriteLine($"      Size: {OH_BaseRelocationTable.Size}");
+                    Console.WriteLine($"      Virtual address: {OH_BaseRelocationTable.VirtualAddress} (0x{OH_BaseRelocationTable.VirtualAddress:X})");
+                    Console.WriteLine($"      Physical address: {OH_BaseRelocationTable.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_BaseRelocationTable.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
+                    Console.WriteLine($"      Size: {OH_BaseRelocationTable.Size} (0x{OH_BaseRelocationTable.Size:X})");
                 }
                 if (OH_Debug != null)
                 {
                     Console.WriteLine("    Debug Table (7)");
-                    Console.WriteLine($"      Virtual address: {OH_Debug.VirtualAddress}");
-                    Console.WriteLine($"      Physical address: {OH_Debug.VirtualAddress.ConvertVirtualAddress(SectionTable)}");
-                    Console.WriteLine($"      Size: {OH_Debug.Size}");
+                    Console.WriteLine($"      Virtual address: {OH_Debug.VirtualAddress} (0x{OH_Debug.VirtualAddress:X})");
+                    Console.WriteLine($"      Physical address: {OH_Debug.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_Debug.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
+                    Console.WriteLine($"      Size: {OH_Debug.Size} (0x{OH_Debug.Size:X})");
                 }
                 if (OH_NumberOfRvaAndSizes >= 8)
                 {
                     Console.WriteLine("    Architecture Table (8)");
-                    Console.WriteLine($"      Virtual address: 0");
-                    Console.WriteLine($"      Physical address: 0");
-                    Console.WriteLine($"      Size: 0");
+                    Console.WriteLine($"      Virtual address: 0 (0x00000000)");
+                    Console.WriteLine($"      Physical address: 0 (0x00000000)");
+                    Console.WriteLine($"      Size: 0 (0x00000000)");
                 }
                 if (OH_GlobalPtr != null)
                 {
                     Console.WriteLine("    Global Pointer Register (9)");
-                    Console.WriteLine($"      Virtual address: {OH_GlobalPtr.VirtualAddress}");
-                    Console.WriteLine($"      Physical address: {OH_GlobalPtr.VirtualAddress.ConvertVirtualAddress(SectionTable)}");
-                    Console.WriteLine($"      Size: {OH_GlobalPtr.Size}");
+                    Console.WriteLine($"      Virtual address: {OH_GlobalPtr.VirtualAddress} (0x{OH_GlobalPtr.VirtualAddress:X})");
+                    Console.WriteLine($"      Physical address: {OH_GlobalPtr.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_GlobalPtr.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
+                    Console.WriteLine($"      Size: {OH_GlobalPtr.Size} (0x{OH_GlobalPtr.Size:X})");
                 }
                 if (OH_ThreadLocalStorageTable != null)
                 {
                     Console.WriteLine("    Thread Local Storage (TLS) Table (10)");
-                    Console.WriteLine($"      Virtual address: {OH_ThreadLocalStorageTable.VirtualAddress}");
-                    Console.WriteLine($"      Physical address: {OH_ThreadLocalStorageTable.VirtualAddress.ConvertVirtualAddress(SectionTable)}");
-                    Console.WriteLine($"      Size: {OH_ThreadLocalStorageTable.Size}");
+                    Console.WriteLine($"      Virtual address: {OH_ThreadLocalStorageTable.VirtualAddress} (0x{OH_ThreadLocalStorageTable.VirtualAddress:X})");
+                    Console.WriteLine($"      Physical address: {OH_ThreadLocalStorageTable.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_ThreadLocalStorageTable.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
+                    Console.WriteLine($"      Size: {OH_ThreadLocalStorageTable.Size} (0x{OH_ThreadLocalStorageTable.Size:X})");
                 }
                 if (OH_LoadConfigTable != null)
                 {
                     Console.WriteLine("    Load Config Table (11)");
-                    Console.WriteLine($"      Virtual address: {OH_LoadConfigTable.VirtualAddress}");
-                    Console.WriteLine($"      Physical address: {OH_LoadConfigTable.VirtualAddress.ConvertVirtualAddress(SectionTable)}");
-                    Console.WriteLine($"      Size: {OH_LoadConfigTable.Size}");
+                    Console.WriteLine($"      Virtual address: {OH_LoadConfigTable.VirtualAddress} (0x{OH_LoadConfigTable.VirtualAddress:X})");
+                    Console.WriteLine($"      Physical address: {OH_LoadConfigTable.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_LoadConfigTable.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
+                    Console.WriteLine($"      Size: {OH_LoadConfigTable.Size} (0x{OH_LoadConfigTable.Size:X})");
                 }
                 if (OH_BoundImport != null)
                 {
                     Console.WriteLine("    Bound Import Table (12)");
-                    Console.WriteLine($"      Virtual address: {OH_BoundImport.VirtualAddress}");
-                    Console.WriteLine($"      Physical address: {OH_BoundImport.VirtualAddress.ConvertVirtualAddress(SectionTable)}");
-                    Console.WriteLine($"      Size: {OH_BoundImport.Size}");
+                    Console.WriteLine($"      Virtual address: {OH_BoundImport.VirtualAddress} (0x{OH_BoundImport.VirtualAddress:X})");
+                    Console.WriteLine($"      Physical address: {OH_BoundImport.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_BoundImport.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
+                    Console.WriteLine($"      Size: {OH_BoundImport.Size} (0x{OH_BoundImport.Size:X})");
                 }
                 if (OH_ImportAddressTable != null)
                 {
                     Console.WriteLine("    Import Address Table (13)");
-                    Console.WriteLine($"      Virtual address: {OH_ImportAddressTable.VirtualAddress}");
-                    Console.WriteLine($"      Physical address: {OH_ImportAddressTable.VirtualAddress.ConvertVirtualAddress(SectionTable)}");
-                    Console.WriteLine($"      Size: {OH_ImportAddressTable.Size}");
+                    Console.WriteLine($"      Virtual address: {OH_ImportAddressTable.VirtualAddress} (0x{OH_ImportAddressTable.VirtualAddress:X})");
+                    Console.WriteLine($"      Physical address: {OH_ImportAddressTable.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_ImportAddressTable.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
+                    Console.WriteLine($"      Size: {OH_ImportAddressTable.Size} (0x{OH_ImportAddressTable.Size:X})");
                 }
                 if (OH_DelayImportDescriptor != null)
                 {
                     Console.WriteLine("    Delay Import Descriptior (14)");
-                    Console.WriteLine($"      Virtual address: {OH_DelayImportDescriptor.VirtualAddress}");
-                    Console.WriteLine($"      Physical address: {OH_DelayImportDescriptor.VirtualAddress.ConvertVirtualAddress(SectionTable)}");
-                    Console.WriteLine($"      Size: {OH_DelayImportDescriptor.Size}");
+                    Console.WriteLine($"      Virtual address: {OH_DelayImportDescriptor.VirtualAddress} (0x{OH_DelayImportDescriptor.VirtualAddress:X})");
+                    Console.WriteLine($"      Physical address: {OH_DelayImportDescriptor.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_DelayImportDescriptor.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
+                    Console.WriteLine($"      Size: {OH_DelayImportDescriptor.Size} (0x{OH_DelayImportDescriptor.Size:X})");
                 }
                 if (OH_CLRRuntimeHeader != null)
                 {
                     Console.WriteLine("    CLR Runtime Header (15)");
-                    Console.WriteLine($"      Virtual address: {OH_CLRRuntimeHeader.VirtualAddress}");
-                    Console.WriteLine($"      Physical address: {OH_CLRRuntimeHeader.VirtualAddress.ConvertVirtualAddress(SectionTable)}");
-                    Console.WriteLine($"      Size: {OH_CLRRuntimeHeader.Size}");
+                    Console.WriteLine($"      Virtual address: {OH_CLRRuntimeHeader.VirtualAddress} (0x{OH_CLRRuntimeHeader.VirtualAddress:X})");
+                    Console.WriteLine($"      Physical address: {OH_CLRRuntimeHeader.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_CLRRuntimeHeader.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
+                    Console.WriteLine($"      Size: {OH_CLRRuntimeHeader.Size} (0x{OH_CLRRuntimeHeader.Size:X})");
                 }
                 if (OH_NumberOfRvaAndSizes >= 16)
                 {
                     Console.WriteLine("    Reserved (16)");
-                    Console.WriteLine($"      Virtual address: 0");
-                    Console.WriteLine($"      Physical address: 0");
-                    Console.WriteLine($"      Size: 0");
+                    Console.WriteLine($"      Virtual address: 0 (0x00000000)");
+                    Console.WriteLine($"      Physical address: 0 (0x00000000)");
+                    Console.WriteLine($"      Size: 0 (0x00000000)");
                 }
             }
             Console.WriteLine();
@@ -1360,17 +1360,17 @@ namespace BurnOutSharp.Wrappers
                 {
                     var entry = SectionTable[i];
                     Console.WriteLine($"  Section Table Entry {i}");
-                    Console.WriteLine($"    Name = {Encoding.UTF8.GetString(entry.Name)}");
-                    Console.WriteLine($"    Virtual size = {entry.VirtualSize}");
-                    Console.WriteLine($"    Virtual address = {entry.VirtualAddress}");
-                    Console.WriteLine($"    Physical address: {entry.VirtualAddress.ConvertVirtualAddress(SectionTable)}");
-                    Console.WriteLine($"    Size of raw data = {entry.SizeOfRawData}");
-                    Console.WriteLine($"    Pointer to raw data = {entry.PointerToRawData}");
-                    Console.WriteLine($"    Pointer to relocations = {entry.PointerToRelocations}");
-                    Console.WriteLine($"    Pointer to linenumbers = {entry.PointerToLinenumbers}");
-                    Console.WriteLine($"    Number of relocations = {entry.NumberOfRelocations}");
-                    Console.WriteLine($"    Number of linenumbers = {entry.NumberOfLinenumbers}");
-                    Console.WriteLine($"    Characteristics = {entry.Characteristics}");
+                    Console.WriteLine($"    Name: {Encoding.UTF8.GetString(entry.Name).TrimEnd('\0')}");
+                    Console.WriteLine($"    Virtual size: {entry.VirtualSize} (0x{entry.VirtualSize:X})");
+                    Console.WriteLine($"    Virtual address: {entry.VirtualAddress} (0x{entry.VirtualAddress:X})");
+                    Console.WriteLine($"    Physical address: {entry.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{entry.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
+                    Console.WriteLine($"    Size of raw data: {entry.SizeOfRawData} (0x{entry.SizeOfRawData:X})");
+                    Console.WriteLine($"    Pointer to raw data: {entry.PointerToRawData} (0x{entry.PointerToRawData:X})");
+                    Console.WriteLine($"    Pointer to relocations: {entry.PointerToRelocations} (0x{entry.PointerToRelocations:X})");
+                    Console.WriteLine($"    Pointer to linenumbers: {entry.PointerToLinenumbers} (0x{entry.PointerToLinenumbers:X})");
+                    Console.WriteLine($"    Number of relocations: {entry.NumberOfRelocations} (0x{entry.NumberOfRelocations:X})");
+                    Console.WriteLine($"    Number of linenumbers: {entry.NumberOfLinenumbers} (0x{entry.NumberOfLinenumbers:X})");
+                    Console.WriteLine($"    Characteristics: {entry.Characteristics} (0x{entry.Characteristics:X})");
                     // TODO: Add COFFRelocations
                     // TODO: Add COFFLineNumbers
                 }
@@ -1405,18 +1405,18 @@ namespace BurnOutSharp.Wrappers
                     {
                         if (entry.ShortName != null)
                         {
-                            Console.WriteLine($"    Short name = {Encoding.UTF8.GetString(entry.ShortName)}");
+                            Console.WriteLine($"    Short name: {Encoding.UTF8.GetString(entry.ShortName).TrimEnd('\0')}");
                         }
                         else
                         {
-                            Console.WriteLine($"    Zeroes = {entry.Zeroes}");
-                            Console.WriteLine($"    Offset = {entry.Offset}");
+                            Console.WriteLine($"    Zeroes: {entry.Zeroes} (0x{entry.Zeroes:X})");
+                            Console.WriteLine($"    Offset: {entry.Offset} (0x{entry.Offset:X})");
                         }
-                        Console.WriteLine($"    Value = {entry.Value}");
-                        Console.WriteLine($"    Section number = {entry.SectionNumber}");
-                        Console.WriteLine($"    Symbol type = {entry.SymbolType}");
-                        Console.WriteLine($"    Storage class = {entry.StorageClass}");
-                        Console.WriteLine($"    Number of aux symbols = {entry.NumberOfAuxSymbols}");
+                        Console.WriteLine($"    Value: {entry.Value} (0x{entry.Value:X})");
+                        Console.WriteLine($"    Section number: {entry.SectionNumber} (0x{entry.SectionNumber:X})");
+                        Console.WriteLine($"    Symbol type: {entry.SymbolType} (0x{entry.SymbolType:X})");
+                        Console.WriteLine($"    Storage class: {entry.StorageClass} (0x{entry.StorageClass:X})");
+                        Console.WriteLine($"    Number of aux symbols: {entry.NumberOfAuxSymbols} (0x{entry.NumberOfAuxSymbols:X})");
 
                         auxSymbolsRemaining = entry.NumberOfAuxSymbols;
                         if (auxSymbolsRemaining == 0)
@@ -1458,51 +1458,51 @@ namespace BurnOutSharp.Wrappers
                     }
                     else if (currentSymbolType == 1)
                     {
-                        Console.WriteLine($"    Tag index = {entry.AuxFormat1TagIndex}");
-                        Console.WriteLine($"    Total size = {entry.AuxFormat1TotalSize}");
-                        Console.WriteLine($"    Pointer to linenumber = {entry.AuxFormat1PointerToLinenumber}");
-                        Console.WriteLine($"    Pointer to next function = {entry.AuxFormat1PointerToNextFunction}");
-                        Console.WriteLine($"    Unused = {entry.AuxFormat1Unused}");
+                        Console.WriteLine($"    Tag index: {entry.AuxFormat1TagIndex} (0x{entry.AuxFormat1TagIndex:X})");
+                        Console.WriteLine($"    Total size: {entry.AuxFormat1TotalSize} (0x{entry.AuxFormat1TotalSize:X})");
+                        Console.WriteLine($"    Pointer to linenumber: {entry.AuxFormat1PointerToLinenumber} (0x{entry.AuxFormat1PointerToLinenumber:X})");
+                        Console.WriteLine($"    Pointer to next function: {entry.AuxFormat1PointerToNextFunction} (0x{entry.AuxFormat1PointerToNextFunction:X})");
+                        Console.WriteLine($"    Unused: {entry.AuxFormat1Unused} (0x{entry.AuxFormat1Unused:X})");
                         auxSymbolsRemaining--;
                     }
                     else if (currentSymbolType == 2)
                     {
-                        Console.WriteLine($"    Unused = {entry.AuxFormat2Unused1}");
-                        Console.WriteLine($"    Linenumber = {entry.AuxFormat2Linenumber}");
-                        Console.WriteLine($"    Unused = {entry.AuxFormat2Unused2}");
-                        Console.WriteLine($"    Pointer to next function = {entry.AuxFormat2PointerToNextFunction}");
-                        Console.WriteLine($"    Unused = {entry.AuxFormat2Unused3}");
+                        Console.WriteLine($"    Unused: {entry.AuxFormat2Unused1} (0x{entry.AuxFormat2Unused1:X})");
+                        Console.WriteLine($"    Linenumber: {entry.AuxFormat2Linenumber} (0x{entry.AuxFormat2Linenumber:X})");
+                        Console.WriteLine($"    Unused: {entry.AuxFormat2Unused2} (0x{entry.AuxFormat2Unused2:X})");
+                        Console.WriteLine($"    Pointer to next function: {entry.AuxFormat2PointerToNextFunction} (0x{entry.AuxFormat2PointerToNextFunction:X})");
+                        Console.WriteLine($"    Unused: {entry.AuxFormat2Unused3} (0x{entry.AuxFormat2Unused3:X})");
                         auxSymbolsRemaining--;
                     }
                     else if (currentSymbolType == 3)
                     {
-                        Console.WriteLine($"    Tag index = {entry.AuxFormat3TagIndex}");
-                        Console.WriteLine($"    Characteristics = {entry.AuxFormat3Characteristics}");
-                        Console.WriteLine($"    Unused = {BitConverter.ToString(entry.AuxFormat3Unused).Replace("-", string.Empty)}");
+                        Console.WriteLine($"    Tag index: {entry.AuxFormat3TagIndex} (0x{entry.AuxFormat3TagIndex:X})");
+                        Console.WriteLine($"    Characteristics: {entry.AuxFormat3Characteristics} (0x{entry.AuxFormat3Characteristics:X})");
+                        Console.WriteLine($"    Unused: {BitConverter.ToString(entry.AuxFormat3Unused).Replace("-", string.Empty)}");
                         auxSymbolsRemaining--;
                     }
                     else if (currentSymbolType == 4)
                     {
-                        Console.WriteLine($"    File name = {Encoding.ASCII.GetString(entry.AuxFormat4FileName)}");
+                        Console.WriteLine($"    File name: {Encoding.ASCII.GetString(entry.AuxFormat4FileName).TrimEnd('\0')}");
                         auxSymbolsRemaining--;
                     }
                     else if (currentSymbolType == 5)
                     {
-                        Console.WriteLine($"    Length = {entry.AuxFormat5Length}");
-                        Console.WriteLine($"    Number of relocations = {entry.AuxFormat5NumberOfRelocations}");
-                        Console.WriteLine($"    Number of linenumbers = {entry.AuxFormat5NumberOfLinenumbers}");
-                        Console.WriteLine($"    Checksum = {entry.AuxFormat5CheckSum}");
-                        Console.WriteLine($"    Number = {entry.AuxFormat5Number}");
-                        Console.WriteLine($"    Selection = {entry.AuxFormat5Selection}");
-                        Console.WriteLine($"    Unused = {BitConverter.ToString(entry.AuxFormat5Unused).Replace("-", string.Empty)}");
+                        Console.WriteLine($"    Length: {entry.AuxFormat5Length} (0x{entry.AuxFormat5Length:X})");
+                        Console.WriteLine($"    Number of relocations: {entry.AuxFormat5NumberOfRelocations} (0x{entry.AuxFormat5NumberOfRelocations:X})");
+                        Console.WriteLine($"    Number of linenumbers: {entry.AuxFormat5NumberOfLinenumbers} (0x{entry.AuxFormat5NumberOfLinenumbers:X})");
+                        Console.WriteLine($"    Checksum: {entry.AuxFormat5CheckSum} (0x{entry.AuxFormat5CheckSum:X})");
+                        Console.WriteLine($"    Number: {entry.AuxFormat5Number} (0x{entry.AuxFormat5Number:X})");
+                        Console.WriteLine($"    Selection: {entry.AuxFormat5Selection} (0x{entry.AuxFormat5Selection:X})");
+                        Console.WriteLine($"    Unused: {BitConverter.ToString(entry.AuxFormat5Unused).Replace("-", string.Empty)}");
                         auxSymbolsRemaining--;
                     }
                     else if (currentSymbolType == 6)
                     {
-                        Console.WriteLine($"    Aux type = {entry.AuxFormat6AuxType}");
-                        Console.WriteLine($"    Reserved = {entry.AuxFormat6Reserved1}");
-                        Console.WriteLine($"    Symbol table index = {entry.AuxFormat6SymbolTableIndex}");
-                        Console.WriteLine($"    Reserved = {BitConverter.ToString(entry.AuxFormat6Reserved2).Replace("-", string.Empty)}");
+                        Console.WriteLine($"    Aux type: {entry.AuxFormat6AuxType} (0x{entry.AuxFormat6AuxType:X})");
+                        Console.WriteLine($"    Reserved: {entry.AuxFormat6Reserved1} (0x{entry.AuxFormat6Reserved1:X})");
+                        Console.WriteLine($"    Symbol table index: {entry.AuxFormat6SymbolTableIndex} (0x{entry.AuxFormat6SymbolTableIndex:X})");
+                        Console.WriteLine($"    Reserved: {BitConverter.ToString(entry.AuxFormat6Reserved2).Replace("-", string.Empty)}");
                         auxSymbolsRemaining--;
                     }
 
@@ -1522,12 +1522,12 @@ namespace BurnOutSharp.Wrappers
                 }
                 else
                 {
-                    Console.WriteLine($"  Total size: {COFFStringTable.TotalSize}");
+                    Console.WriteLine($"  Total size: {COFFStringTable.TotalSize} (0x{COFFStringTable.TotalSize:X})");
                     for (int i = 0; i < COFFStringTable.Strings.Length; i++)
                     {
                         string entry = COFFStringTable.Strings[i];
                         Console.WriteLine($"  COFF String Table Entry {i})");
-                        Console.WriteLine($"    Value = {entry}");
+                        Console.WriteLine($"    Value: {entry}");
                     }
                 }
             }
@@ -1553,9 +1553,9 @@ namespace BurnOutSharp.Wrappers
                 {
                     var entry = AttributeCertificateTable[i];
                     Console.WriteLine($"  Attribute Certificate Table Entry {i}");
-                    Console.WriteLine($"    Length = {entry.Length}");
-                    Console.WriteLine($"    Revision = {entry.Revision}");
-                    Console.WriteLine($"    Certificate type = {entry.CertificateType}");
+                    Console.WriteLine($"    Length: {entry.Length} (0x{entry.Length:X})");
+                    Console.WriteLine($"    Revision: {entry.Revision} (0x{entry.Revision:X})");
+                    Console.WriteLine($"    Certificate type: {entry.CertificateType} (0x{entry.CertificateType:X})");
                     Console.WriteLine();
                     if (entry.CertificateType == Models.PortableExecutable.WindowsCertificateType.WIN_CERT_TYPE_PKCS_SIGNED_DATA)
                     {
@@ -1611,14 +1611,14 @@ namespace BurnOutSharp.Wrappers
             }
             else
             {
-                Console.WriteLine($"  Attributes = {DelayLoadDirectoryTable.Attributes}");
-                Console.WriteLine($"  Name RVA = {DelayLoadDirectoryTable.Name}");
-                Console.WriteLine($"  Module handle = {DelayLoadDirectoryTable.ModuleHandle}");
-                Console.WriteLine($"  Delay import address table RVA = {DelayLoadDirectoryTable.DelayImportAddressTable}");
-                Console.WriteLine($"  Delay import name table RVA = {DelayLoadDirectoryTable.DelayImportNameTable}");
-                Console.WriteLine($"  Bound delay import table RVA = {DelayLoadDirectoryTable.BoundDelayImportTable}");
-                Console.WriteLine($"  Unload delay import table RVA = {DelayLoadDirectoryTable.UnloadDelayImportTable}");
-                Console.WriteLine($"  Timestamp = {DelayLoadDirectoryTable.TimeStamp}");
+                Console.WriteLine($"  Attributes: {DelayLoadDirectoryTable.Attributes} (0x{DelayLoadDirectoryTable.Attributes:X})");
+                Console.WriteLine($"  Name RVA: {DelayLoadDirectoryTable.Name} (0x{DelayLoadDirectoryTable.Name:X})");
+                Console.WriteLine($"  Module handle: {DelayLoadDirectoryTable.ModuleHandle} (0x{DelayLoadDirectoryTable.ModuleHandle:X})");
+                Console.WriteLine($"  Delay import address table RVA: {DelayLoadDirectoryTable.DelayImportAddressTable} (0x{DelayLoadDirectoryTable.DelayImportAddressTable:X})");
+                Console.WriteLine($"  Delay import name table RVA: {DelayLoadDirectoryTable.DelayImportNameTable} (0x{DelayLoadDirectoryTable.DelayImportNameTable:X})");
+                Console.WriteLine($"  Bound delay import table RVA: {DelayLoadDirectoryTable.BoundDelayImportTable} (0x{DelayLoadDirectoryTable.BoundDelayImportTable:X})");
+                Console.WriteLine($"  Unload delay import table RVA: {DelayLoadDirectoryTable.UnloadDelayImportTable} (0x{DelayLoadDirectoryTable.UnloadDelayImportTable:X})");
+                Console.WriteLine($"  Timestamp: {DelayLoadDirectoryTable.TimeStamp} (0x{DelayLoadDirectoryTable.TimeStamp:X})");
             }
             Console.WriteLine();
         }
@@ -1642,9 +1642,9 @@ namespace BurnOutSharp.Wrappers
                 {
                     var baseRelocationTableEntry = BaseRelocationTable[i];
                     Console.WriteLine($"  Base Relocation Table Entry {i}");
-                    Console.WriteLine($"    Page RVA: {baseRelocationTableEntry.PageRVA}");
-                    Console.WriteLine($"    Page physical address: {baseRelocationTableEntry.PageRVA.ConvertVirtualAddress(SectionTable)}");
-                    Console.WriteLine($"    Block size: {baseRelocationTableEntry.BlockSize}");
+                    Console.WriteLine($"    Page RVA: {baseRelocationTableEntry.PageRVA} (0x{baseRelocationTableEntry.PageRVA:X})");
+                    Console.WriteLine($"    Page physical address: {baseRelocationTableEntry.PageRVA.ConvertVirtualAddress(SectionTable)} (0x{baseRelocationTableEntry.PageRVA.ConvertVirtualAddress(SectionTable):X})");
+                    Console.WriteLine($"    Block size: {baseRelocationTableEntry.BlockSize} (0x{baseRelocationTableEntry.BlockSize:X})");
 
                     Console.WriteLine($"    Base Relocation Table {i} Type and Offset Information:");
                     Console.WriteLine("    -------------------------");
@@ -1658,8 +1658,8 @@ namespace BurnOutSharp.Wrappers
                         {
                             var typeOffsetFieldEntry = baseRelocationTableEntry.TypeOffsetFieldEntries[j];
                             Console.WriteLine($"    Type and Offset Entry {j}");
-                            Console.WriteLine($"      Type: {typeOffsetFieldEntry.BaseRelocationType}");
-                            Console.WriteLine($"      Offset: {typeOffsetFieldEntry.Offset}");
+                            Console.WriteLine($"      Type: {typeOffsetFieldEntry.BaseRelocationType} (0x{typeOffsetFieldEntry.BaseRelocationType:X})");
+                            Console.WriteLine($"      Offset: {typeOffsetFieldEntry.Offset} (0x{typeOffsetFieldEntry.Offset:X})");
                         }
                     }
                 }
@@ -1687,14 +1687,14 @@ namespace BurnOutSharp.Wrappers
                 {
                     var debugDirectoryEntry = DebugTable.DebugDirectoryTable[i];
                     Console.WriteLine($"  Debug Directory Table Entry {i}");
-                    Console.WriteLine($"    Characteristics: {debugDirectoryEntry.Characteristics}");
-                    Console.WriteLine($"    Time/Date stamp: {debugDirectoryEntry.TimeDateStamp}");
-                    Console.WriteLine($"    Major version: {debugDirectoryEntry.MajorVersion}");
-                    Console.WriteLine($"    Minor version: {debugDirectoryEntry.MinorVersion}");
-                    Console.WriteLine($"    Debug type: {debugDirectoryEntry.DebugType}");
-                    Console.WriteLine($"    Size of data: {debugDirectoryEntry.SizeOfData}");
-                    Console.WriteLine($"    Address of raw data: {debugDirectoryEntry.AddressOfRawData}");
-                    Console.WriteLine($"    Pointer to raw data: {debugDirectoryEntry.PointerToRawData}");
+                    Console.WriteLine($"    Characteristics: {debugDirectoryEntry.Characteristics} (0x{debugDirectoryEntry.Characteristics:X})");
+                    Console.WriteLine($"    Time/Date stamp: {debugDirectoryEntry.TimeDateStamp} (0x{debugDirectoryEntry.TimeDateStamp:X})");
+                    Console.WriteLine($"    Major version: {debugDirectoryEntry.MajorVersion} (0x{debugDirectoryEntry.MajorVersion:X})");
+                    Console.WriteLine($"    Minor version: {debugDirectoryEntry.MinorVersion} (0x{debugDirectoryEntry.MinorVersion:X})");
+                    Console.WriteLine($"    Debug type: {debugDirectoryEntry.DebugType} (0x{debugDirectoryEntry.DebugType:X})");
+                    Console.WriteLine($"    Size of data: {debugDirectoryEntry.SizeOfData} (0x{debugDirectoryEntry.SizeOfData:X})");
+                    Console.WriteLine($"    Address of raw data: {debugDirectoryEntry.AddressOfRawData} (0x{debugDirectoryEntry.AddressOfRawData:X})");
+                    Console.WriteLine($"    Pointer to raw data: {debugDirectoryEntry.PointerToRawData} (0x{debugDirectoryEntry.PointerToRawData:X})");
                 }
             }
             Console.WriteLine();
@@ -1718,18 +1718,18 @@ namespace BurnOutSharp.Wrappers
                 Console.WriteLine();
                 Console.WriteLine("    Export Directory Table Information:");
                 Console.WriteLine("    -------------------------");
-                Console.WriteLine($"    Export flags: {ExportTable.ExportDirectoryTable.ExportFlags}");
-                Console.WriteLine($"    Time/Date stamp: {ExportTable.ExportDirectoryTable.TimeDateStamp}");
-                Console.WriteLine($"    Major version: {ExportTable.ExportDirectoryTable.MajorVersion}");
-                Console.WriteLine($"    Minor version: {ExportTable.ExportDirectoryTable.MinorVersion}");
-                Console.WriteLine($"    Name RVA: {ExportTable.ExportDirectoryTable.NameRVA}");
+                Console.WriteLine($"    Export flags: {ExportTable.ExportDirectoryTable.ExportFlags} (0x{ExportTable.ExportDirectoryTable.ExportFlags:X})");
+                Console.WriteLine($"    Time/Date stamp: {ExportTable.ExportDirectoryTable.TimeDateStamp} (0x{ExportTable.ExportDirectoryTable.TimeDateStamp:X})");
+                Console.WriteLine($"    Major version: {ExportTable.ExportDirectoryTable.MajorVersion} (0x{ExportTable.ExportDirectoryTable.MajorVersion:X})");
+                Console.WriteLine($"    Minor version: {ExportTable.ExportDirectoryTable.MinorVersion} (0x{ExportTable.ExportDirectoryTable.MinorVersion:X})");
+                Console.WriteLine($"    Name RVA: {ExportTable.ExportDirectoryTable.NameRVA} (0x{ExportTable.ExportDirectoryTable.NameRVA:X})");
                 Console.WriteLine($"    Name: {ExportTable.ExportDirectoryTable.Name}");
-                Console.WriteLine($"    Ordinal base: {ExportTable.ExportDirectoryTable.OrdinalBase}");
-                Console.WriteLine($"    Address table entries: {ExportTable.ExportDirectoryTable.AddressTableEntries}");
-                Console.WriteLine($"    Number of name pointers: {ExportTable.ExportDirectoryTable.NumberOfNamePointers}");
-                Console.WriteLine($"    Export address table RVA: {ExportTable.ExportDirectoryTable.ExportAddressTableRVA}");
-                Console.WriteLine($"    Name pointer table RVA: {ExportTable.ExportDirectoryTable.NamePointerRVA}");
-                Console.WriteLine($"    Ordinal table RVA: {ExportTable.ExportDirectoryTable.OrdinalTableRVA}");
+                Console.WriteLine($"    Ordinal base: {ExportTable.ExportDirectoryTable.OrdinalBase} (0x{ExportTable.ExportDirectoryTable.OrdinalBase:X})");
+                Console.WriteLine($"    Address table entries: {ExportTable.ExportDirectoryTable.AddressTableEntries} (0x{ExportTable.ExportDirectoryTable.AddressTableEntries:X})");
+                Console.WriteLine($"    Number of name pointers: {ExportTable.ExportDirectoryTable.NumberOfNamePointers} (0x{ExportTable.ExportDirectoryTable.NumberOfNamePointers:X})");
+                Console.WriteLine($"    Export address table RVA: {ExportTable.ExportDirectoryTable.ExportAddressTableRVA} (0x{ExportTable.ExportDirectoryTable.ExportAddressTableRVA:X})");
+                Console.WriteLine($"    Name pointer table RVA: {ExportTable.ExportDirectoryTable.NamePointerRVA} (0x{ExportTable.ExportDirectoryTable.NamePointerRVA:X})");
+                Console.WriteLine($"    Ordinal table RVA: {ExportTable.ExportDirectoryTable.OrdinalTableRVA} (0x{ExportTable.ExportDirectoryTable.OrdinalTableRVA:X})");
                 Console.WriteLine();
 
                 Console.WriteLine("    Export Address Table Information:");
@@ -1744,7 +1744,7 @@ namespace BurnOutSharp.Wrappers
                     {
                         var exportAddressTableEntry = ExportTable.ExportAddressTable[i];
                         Console.WriteLine($"    Export Address Table Entry {i}");
-                        Console.WriteLine($"      Export RVA / Forwarder RVA: {exportAddressTableEntry.ExportRVA}");
+                        Console.WriteLine($"      Export RVA / Forwarder RVA: {exportAddressTableEntry.ExportRVA} (0x{exportAddressTableEntry.ExportRVA:X})");
                     }
                 }
                 Console.WriteLine();
@@ -1761,7 +1761,7 @@ namespace BurnOutSharp.Wrappers
                     {
                         var namePointerTableEntry = ExportTable.NamePointerTable.Pointers[i];
                         Console.WriteLine($"    Name Pointer Table Entry {i}");
-                        Console.WriteLine($"      Pointer: {namePointerTableEntry}");
+                        Console.WriteLine($"      Pointer: {namePointerTableEntry} (0x{namePointerTableEntry:X})");
                     }
                 }
                 Console.WriteLine();
@@ -1778,7 +1778,7 @@ namespace BurnOutSharp.Wrappers
                     {
                         var ordinalTableEntry = ExportTable.OrdinalTable.Indexes[i];
                         Console.WriteLine($"    Ordinal Table Entry {i}");
-                        Console.WriteLine($"      Index: {ordinalTableEntry}");
+                        Console.WriteLine($"      Index: {ordinalTableEntry} (0x{ordinalTableEntry:X})");
                     }
                 }
                 Console.WriteLine();
@@ -1830,14 +1830,14 @@ namespace BurnOutSharp.Wrappers
                     {
                         var importDirectoryTableEntry = ImportTable.ImportDirectoryTable[i];
                         Console.WriteLine($"    Import Directory Table Entry {i}");
-                        Console.WriteLine($"      Import lookup table RVA: {importDirectoryTableEntry.ImportLookupTableRVA}");
-                        Console.WriteLine($"      Import lookup table Physical Address: {importDirectoryTableEntry.ImportLookupTableRVA.ConvertVirtualAddress(SectionTable)}");
-                        Console.WriteLine($"      Time/Date stamp: {importDirectoryTableEntry.TimeDateStamp}");
-                        Console.WriteLine($"      Forwarder chain: {importDirectoryTableEntry.ForwarderChain}");
-                        Console.WriteLine($"      Name RVA: {importDirectoryTableEntry.NameRVA}");
+                        Console.WriteLine($"      Import lookup table RVA: {importDirectoryTableEntry.ImportLookupTableRVA} (0x{importDirectoryTableEntry.ImportLookupTableRVA:X})");
+                        Console.WriteLine($"      Import lookup table Physical Address: {importDirectoryTableEntry.ImportLookupTableRVA.ConvertVirtualAddress(SectionTable)} (0x{importDirectoryTableEntry.ImportLookupTableRVA.ConvertVirtualAddress(SectionTable):X})");
+                        Console.WriteLine($"      Time/Date stamp: {importDirectoryTableEntry.TimeDateStamp} (0x{importDirectoryTableEntry.TimeDateStamp:X})");
+                        Console.WriteLine($"      Forwarder chain: {importDirectoryTableEntry.ForwarderChain} (0x{importDirectoryTableEntry.ForwarderChain:X})");
+                        Console.WriteLine($"      Name RVA: {importDirectoryTableEntry.NameRVA} (0x{importDirectoryTableEntry.NameRVA:X})");
                         Console.WriteLine($"      Name: {importDirectoryTableEntry.Name}");
-                        Console.WriteLine($"      Import address table RVA: {importDirectoryTableEntry.ImportAddressTableRVA}");
-                        Console.WriteLine($"      Import address table Physical Address: {importDirectoryTableEntry.ImportAddressTableRVA.ConvertVirtualAddress(SectionTable)}");
+                        Console.WriteLine($"      Import address table RVA: {importDirectoryTableEntry.ImportAddressTableRVA} (0x{importDirectoryTableEntry.ImportAddressTableRVA:X})");
+                        Console.WriteLine($"      Import address table Physical Address: {importDirectoryTableEntry.ImportAddressTableRVA.ConvertVirtualAddress(SectionTable)} (0x{importDirectoryTableEntry.ImportAddressTableRVA.ConvertVirtualAddress(SectionTable):X})");
                     }
                 }
                 Console.WriteLine();
@@ -1868,15 +1868,15 @@ namespace BurnOutSharp.Wrappers
                             {
                                 var importLookupTableEntry = importLookupTable[i];
                                 Console.WriteLine($"      Import Lookup Table {index} Entry {i}");
-                                Console.WriteLine($"        Ordinal/Name flag: {importLookupTableEntry.OrdinalNameFlag}");
+                                Console.WriteLine($"        Ordinal/Name flag: {importLookupTableEntry.OrdinalNameFlag} (0x{importLookupTableEntry.OrdinalNameFlag:X})");
                                 if (importLookupTableEntry.OrdinalNameFlag)
                                 {
-                                    Console.WriteLine($"        Ordinal number: {importLookupTableEntry.OrdinalNumber}");
+                                    Console.WriteLine($"        Ordinal number: {importLookupTableEntry.OrdinalNumber} (0x{importLookupTableEntry.OrdinalNumber:X})");
                                 }
                                 else
                                 {
-                                    Console.WriteLine($"        Hint/Name table RVA: {importLookupTableEntry.HintNameTableRVA}");
-                                    Console.WriteLine($"        Hint/Name table Physical Address: {importLookupTableEntry.HintNameTableRVA.ConvertVirtualAddress(SectionTable)}");
+                                    Console.WriteLine($"        Hint/Name table RVA: {importLookupTableEntry.HintNameTableRVA} (0x{importLookupTableEntry.HintNameTableRVA:X})");
+                                    Console.WriteLine($"        Hint/Name table Physical Address: {importLookupTableEntry.HintNameTableRVA.ConvertVirtualAddress(SectionTable)} (0x{importLookupTableEntry.HintNameTableRVA.ConvertVirtualAddress(SectionTable):X})");
                                 }
                             }
                         }
@@ -1910,15 +1910,15 @@ namespace BurnOutSharp.Wrappers
                             {
                                 var importAddressTableEntry = importAddressTable[i];
                                 Console.WriteLine($"      Import Address Table {index} Entry {i}");
-                                Console.WriteLine($"        Ordinal/Name flag: {importAddressTableEntry.OrdinalNameFlag}");
+                                Console.WriteLine($"        Ordinal/Name flag: {importAddressTableEntry.OrdinalNameFlag} (0x{importAddressTableEntry.OrdinalNameFlag:X})");
                                 if (importAddressTableEntry.OrdinalNameFlag)
                                 {
-                                    Console.WriteLine($"        Ordinal number: {importAddressTableEntry.OrdinalNumber}");
+                                    Console.WriteLine($"        Ordinal number: {importAddressTableEntry.OrdinalNumber} (0x{importAddressTableEntry.OrdinalNumber:X})");
                                 }
                                 else
                                 {
-                                    Console.WriteLine($"        Hint/Name table RVA: {importAddressTableEntry.HintNameTableRVA}");
-                                    Console.WriteLine($"        Hint/Name table Physical Address: {importAddressTableEntry.HintNameTableRVA.ConvertVirtualAddress(SectionTable)}");
+                                    Console.WriteLine($"        Hint/Name table RVA: {importAddressTableEntry.HintNameTableRVA} (0x{importAddressTableEntry.HintNameTableRVA:X})");
+                                    Console.WriteLine($"        Hint/Name table Physical Address: {importAddressTableEntry.HintNameTableRVA.ConvertVirtualAddress(SectionTable)} (0x{importAddressTableEntry.HintNameTableRVA.ConvertVirtualAddress(SectionTable):X})");
                                 }
                             }
                         }
@@ -1938,7 +1938,7 @@ namespace BurnOutSharp.Wrappers
                     {
                         var hintNameTableEntry = ImportTable.HintNameTable[i];
                         Console.WriteLine($"    Hint/Name Table Entry {i}");
-                        Console.WriteLine($"      Hint: {hintNameTableEntry.Hint}");
+                        Console.WriteLine($"      Hint: {hintNameTableEntry.Hint} (0x{hintNameTableEntry.Hint:X})");
                         Console.WriteLine($"      Name: {hintNameTableEntry.Name}");
                     }
                 }
@@ -1974,12 +1974,12 @@ namespace BurnOutSharp.Wrappers
             string padding = new string(' ', (level + 1) * 2);
 
             Console.WriteLine($"{padding}Table level: {level}");
-            Console.WriteLine($"{padding}Characteristics: {table.Characteristics}");
-            Console.WriteLine($"{padding}Time/Date stamp: {table.TimeDateStamp}");
-            Console.WriteLine($"{padding}Major version: {table.MajorVersion}");
-            Console.WriteLine($"{padding}Minor version: {table.MinorVersion}");
-            Console.WriteLine($"{padding}Number of name entries: {table.NumberOfNameEntries}");
-            Console.WriteLine($"{padding}Number of ID entries: {table.NumberOfIDEntries}");
+            Console.WriteLine($"{padding}Characteristics: {table.Characteristics} (0x{table.Characteristics:X})");
+            Console.WriteLine($"{padding}Time/Date stamp: {table.TimeDateStamp} (0x{table.TimeDateStamp:X})");
+            Console.WriteLine($"{padding}Major version: {table.MajorVersion} (0x{table.MajorVersion:X})");
+            Console.WriteLine($"{padding}Minor version: {table.MinorVersion} (0x{table.MinorVersion:X})");
+            Console.WriteLine($"{padding}Number of name entries: {table.NumberOfNameEntries} (0x{table.NumberOfNameEntries:X})");
+            Console.WriteLine($"{padding}Number of ID entries: {table.NumberOfIDEntries} (0x{table.NumberOfIDEntries:X})");
             Console.WriteLine();
 
             Console.WriteLine($"{padding}Entries");
@@ -2015,12 +2015,12 @@ namespace BurnOutSharp.Wrappers
             Console.WriteLine($"{padding}Item level: {level}");
             if (entry.NameOffset != default)
             {
-                Console.WriteLine($"{padding}Name offset: {entry.NameOffset}");
+                Console.WriteLine($"{padding}Name offset: {entry.NameOffset} (0x{entry.NameOffset:X})");
                 Console.WriteLine($"{padding}Name ({entry.Name.Length}): {Encoding.UTF8.GetString(entry.Name.UnicodeString ?? new byte[0])}");
             }
             else
             {
-                Console.WriteLine($"{padding}Integer ID: {entry.IntegerID}");
+                Console.WriteLine($"{padding}Integer ID: {entry.IntegerID} (0x{entry.IntegerID:X})");
             }
 
             if (entry.DataEntry != null)
@@ -2040,10 +2040,10 @@ namespace BurnOutSharp.Wrappers
             Console.WriteLine($"{padding}Base types: {string.Join(", ", types)}");
 
             Console.WriteLine($"{padding}Entry level: {level}");
-            Console.WriteLine($"{padding}Data RVA: {entry.DataRVA}");
-            Console.WriteLine($"{padding}Size: {entry.Size}");
-            Console.WriteLine($"{padding}Codepage: {entry.Codepage}");
-            Console.WriteLine($"{padding}Reserved: {entry.Reserved}");
+            Console.WriteLine($"{padding}Data RVA: {entry.DataRVA} (0x{entry.DataRVA:X})");
+            Console.WriteLine($"{padding}Size: {entry.Size} (0x{entry.Size:X})");
+            Console.WriteLine($"{padding}Codepage: {entry.Codepage} (0x{entry.Codepage:X})");
+            Console.WriteLine($"{padding}Reserved: {entry.Reserved} (0x{entry.Reserved:X})");
 
             // TODO: Print out per-type data
             if (types != null && types.Count > 0 && types[0] is uint resourceType)
@@ -2170,8 +2170,8 @@ namespace BurnOutSharp.Wrappers
 
             if (menu.MenuHeader != null)
             {
-                Console.WriteLine($"{padding}Version: {menu.MenuHeader.Version}");
-                Console.WriteLine($"{padding}Header size: {menu.MenuHeader.HeaderSize}");
+                Console.WriteLine($"{padding}Version: {menu.MenuHeader.Version} (0x{menu.MenuHeader.Version:X})");
+                Console.WriteLine($"{padding}Header size: {menu.MenuHeader.HeaderSize} (0x{menu.MenuHeader.HeaderSize:X})");
                 Console.WriteLine();
                 Console.WriteLine($"{padding}Menu items");
                 Console.WriteLine($"{padding}-------------------------");
@@ -2188,24 +2188,24 @@ namespace BurnOutSharp.Wrappers
                     Console.WriteLine($"{padding}Menu item {i}");
                     if (menuItem.NormalMenuText != null)
                     {
-                        Console.WriteLine($"{padding}  Resource info: {menuItem.NormalResInfo}");
-                        Console.WriteLine($"{padding}  Menu text: {menuItem.NormalMenuText}");
+                        Console.WriteLine($"{padding}  Resource info: {menuItem.NormalResInfo} (0x{menuItem.NormalResInfo:X})");
+                        Console.WriteLine($"{padding}  Menu text: {menuItem.NormalMenuText} (0x{menuItem.NormalMenuText:X})");
                     }
                     else
                     {
-                        Console.WriteLine($"{padding}  Item type: {menuItem.PopupItemType}");
-                        Console.WriteLine($"{padding}  State: {menuItem.PopupState}");
-                        Console.WriteLine($"{padding}  ID: {menuItem.PopupID}");
-                        Console.WriteLine($"{padding}  Resource info: {menuItem.PopupResInfo}");
-                        Console.WriteLine($"{padding}  Menu text: {menuItem.PopupMenuText}");
+                        Console.WriteLine($"{padding}  Item type: {menuItem.PopupItemType} (0x{menuItem.PopupItemType:X})");
+                        Console.WriteLine($"{padding}  State: {menuItem.PopupState} (0x{menuItem.PopupState:X})");
+                        Console.WriteLine($"{padding}  ID: {menuItem.PopupID} (0x{menuItem.PopupID:X})");
+                        Console.WriteLine($"{padding}  Resource info: {menuItem.PopupResInfo} (0x{menuItem.PopupResInfo:X})");
+                        Console.WriteLine($"{padding}  Menu text: {menuItem.PopupMenuText} (0x{menuItem.PopupMenuText:X})");
                     }
                 }
             }
             else if (menu.ExtendedMenuHeader != null)
             {
-                Console.WriteLine($"{padding}Version: {menu.ExtendedMenuHeader.Version}");
-                Console.WriteLine($"{padding}Offset: {menu.ExtendedMenuHeader.Offset}");
-                Console.WriteLine($"{padding}Help ID: {menu.ExtendedMenuHeader.HelpID}");
+                Console.WriteLine($"{padding}Version: {menu.ExtendedMenuHeader.Version} (0x{menu.ExtendedMenuHeader.Version:X})");
+                Console.WriteLine($"{padding}Offset: {menu.ExtendedMenuHeader.Offset} (0x{menu.ExtendedMenuHeader.Offset:X})");
+                Console.WriteLine($"{padding}Help ID: {menu.ExtendedMenuHeader.HelpID} (0x{menu.ExtendedMenuHeader.HelpID:X})");
                 Console.WriteLine();
                 Console.WriteLine($"{padding}Menu items");
                 Console.WriteLine($"{padding}-------------------------");
@@ -2222,11 +2222,11 @@ namespace BurnOutSharp.Wrappers
                     var menuItem = menu.ExtendedMenuItems[i];
 
                     Console.WriteLine($"{padding}Dialog item template {i}");
-                    Console.WriteLine($"{padding}  Item type: {menuItem.ItemType}");
-                    Console.WriteLine($"{padding}  State: {menuItem.State}");
-                    Console.WriteLine($"{padding}  ID: {menuItem.ID}");
-                    Console.WriteLine($"{padding}  Flags: {menuItem.Flags}");
-                    Console.WriteLine($"{padding}  Menu text: {menuItem.MenuText}");
+                    Console.WriteLine($"{padding}  Item type: {menuItem.ItemType} (0x{menuItem.ItemType:X})");
+                    Console.WriteLine($"{padding}  State: {menuItem.State} (0x{menuItem.State:X})");
+                    Console.WriteLine($"{padding}  ID: {menuItem.ID} (0x{menuItem.ID:X})");
+                    Console.WriteLine($"{padding}  Flags: {menuItem.Flags} (0x{menuItem.Flags:X})");
+                    Console.WriteLine($"{padding}  Menu text: {menuItem.MenuText} (0x{menuItem.MenuText:X})");
                 }
             }
             else
@@ -2252,19 +2252,19 @@ namespace BurnOutSharp.Wrappers
 
             if (dialogBox.DialogTemplate != null)
             {
-                Console.WriteLine($"{padding}Style: {dialogBox.DialogTemplate.Style}");
-                Console.WriteLine($"{padding}Extended style: {dialogBox.DialogTemplate.ExtendedStyle}");
-                Console.WriteLine($"{padding}Item count: {dialogBox.DialogTemplate.ItemCount}");
-                Console.WriteLine($"{padding}X-coordinate of upper-left corner: {dialogBox.DialogTemplate.PositionX}");
-                Console.WriteLine($"{padding}Y-coordinate of upper-left corner: {dialogBox.DialogTemplate.PositionY}");
-                Console.WriteLine($"{padding}Width of the dialog box: {dialogBox.DialogTemplate.WidthX}");
-                Console.WriteLine($"{padding}Height of the dialog box: {dialogBox.DialogTemplate.HeightY}");
+                Console.WriteLine($"{padding}Style: {dialogBox.DialogTemplate.Style} (0x{dialogBox.DialogTemplate.Style:X})");
+                Console.WriteLine($"{padding}Extended style: {dialogBox.DialogTemplate.ExtendedStyle} (0x{dialogBox.DialogTemplate.ExtendedStyle:X})");
+                Console.WriteLine($"{padding}Item count: {dialogBox.DialogTemplate.ItemCount} (0x{dialogBox.DialogTemplate.ItemCount:X})");
+                Console.WriteLine($"{padding}X-coordinate of upper-left corner: {dialogBox.DialogTemplate.PositionX} (0x{dialogBox.DialogTemplate.PositionX:X})");
+                Console.WriteLine($"{padding}Y-coordinate of upper-left corner: {dialogBox.DialogTemplate.PositionY} (0x{dialogBox.DialogTemplate.PositionY:X})");
+                Console.WriteLine($"{padding}Width of the dialog box: {dialogBox.DialogTemplate.WidthX} (0x{dialogBox.DialogTemplate.WidthX:X})");
+                Console.WriteLine($"{padding}Height of the dialog box: {dialogBox.DialogTemplate.HeightY} (0x{dialogBox.DialogTemplate.HeightY:X})");
                 Console.WriteLine($"{padding}Menu resource: {dialogBox.DialogTemplate.MenuResource ?? "[EMPTY]"}");
-                Console.WriteLine($"{padding}Menu resource ordinal: {dialogBox.DialogTemplate.MenuResourceOrdinal}");
+                Console.WriteLine($"{padding}Menu resource ordinal: {dialogBox.DialogTemplate.MenuResourceOrdinal} (0x{dialogBox.DialogTemplate.MenuResourceOrdinal:X})");
                 Console.WriteLine($"{padding}Class resource: {dialogBox.DialogTemplate.ClassResource ?? "[EMPTY]"}");
-                Console.WriteLine($"{padding}Class resource ordinal: {dialogBox.DialogTemplate.ClassResourceOrdinal}");
+                Console.WriteLine($"{padding}Class resource ordinal: {dialogBox.DialogTemplate.ClassResourceOrdinal} (0x{dialogBox.DialogTemplate.ClassResourceOrdinal:X})");
                 Console.WriteLine($"{padding}Title resource: {dialogBox.DialogTemplate.TitleResource ?? "[EMPTY]"}");
-                Console.WriteLine($"{padding}Point size value: {dialogBox.DialogTemplate.PointSizeValue}");
+                Console.WriteLine($"{padding}Point size value: {dialogBox.DialogTemplate.PointSizeValue} (0x{dialogBox.DialogTemplate.PointSizeValue:X})");
                 Console.WriteLine($"{padding}Typeface: {dialogBox.DialogTemplate.Typeface ?? "[EMPTY]"}");
                 Console.WriteLine();
                 Console.WriteLine($"{padding}Dialog item templates");
@@ -2282,18 +2282,18 @@ namespace BurnOutSharp.Wrappers
                     var dialogItemTemplate = dialogBox.DialogItemTemplates[i];
 
                     Console.WriteLine($"{padding}Dialog item template {i}");
-                    Console.WriteLine($"{padding}  Style: {dialogItemTemplate.Style}");
-                    Console.WriteLine($"{padding}  Extended style: {dialogItemTemplate.ExtendedStyle}");
-                    Console.WriteLine($"{padding}  X-coordinate of upper-left corner: {dialogItemTemplate.PositionX}");
-                    Console.WriteLine($"{padding}  Y-coordinate of upper-left corner: {dialogItemTemplate.PositionY}");
-                    Console.WriteLine($"{padding}  Width of the control: {dialogItemTemplate.WidthX}");
-                    Console.WriteLine($"{padding}  Height of the control: {dialogItemTemplate.HeightY}");
-                    Console.WriteLine($"{padding}  ID: {dialogItemTemplate.ID}");
+                    Console.WriteLine($"{padding}  Style: {dialogItemTemplate.Style} (0x{dialogItemTemplate.Style:X})");
+                    Console.WriteLine($"{padding}  Extended style: {dialogItemTemplate.ExtendedStyle} (0x{dialogItemTemplate.ExtendedStyle:X})");
+                    Console.WriteLine($"{padding}  X-coordinate of upper-left corner: {dialogItemTemplate.PositionX} (0x{dialogItemTemplate.PositionX:X})");
+                    Console.WriteLine($"{padding}  Y-coordinate of upper-left corner: {dialogItemTemplate.PositionY} (0x{dialogItemTemplate.PositionY:X})");
+                    Console.WriteLine($"{padding}  Width of the control: {dialogItemTemplate.WidthX} (0x{dialogItemTemplate.WidthX:X})");
+                    Console.WriteLine($"{padding}  Height of the control: {dialogItemTemplate.HeightY} (0x{dialogItemTemplate.HeightY:X})");
+                    Console.WriteLine($"{padding}  ID: {dialogItemTemplate.ID} (0x{dialogItemTemplate.ID:X})");
                     Console.WriteLine($"{padding}  Class resource: {dialogItemTemplate.ClassResource ?? "[EMPTY]"}");
-                    Console.WriteLine($"{padding}  Class resource ordinal: {dialogItemTemplate.ClassResourceOrdinal}");
+                    Console.WriteLine($"{padding}  Class resource ordinal: {dialogItemTemplate.ClassResourceOrdinal} (0x{dialogItemTemplate.ClassResourceOrdinal:X})");
                     Console.WriteLine($"{padding}  Title resource: {dialogItemTemplate.TitleResource ?? "[EMPTY]"}");
-                    Console.WriteLine($"{padding}  Title resource ordinal: {dialogItemTemplate.TitleResourceOrdinal}");
-                    Console.WriteLine($"{padding}  Creation data size: {dialogItemTemplate.CreationDataSize}");
+                    Console.WriteLine($"{padding}  Title resource ordinal: {dialogItemTemplate.TitleResourceOrdinal} (0x{dialogItemTemplate.TitleResourceOrdinal:X})");
+                    Console.WriteLine($"{padding}  Creation data size: {dialogItemTemplate.CreationDataSize} (0x{dialogItemTemplate.CreationDataSize:X})");
                     if (dialogItemTemplate.CreationData != null && dialogItemTemplate.CreationData.Length != 0)
                         Console.WriteLine($"{padding}  Creation data: {BitConverter.ToString(dialogItemTemplate.CreationData).Replace("-", string.Empty)}");
                     else
@@ -2302,25 +2302,25 @@ namespace BurnOutSharp.Wrappers
             }
             else if (dialogBox.ExtendedDialogTemplate != null)
             {
-                Console.WriteLine($"{padding}Version: {dialogBox.ExtendedDialogTemplate.Version}");
-                Console.WriteLine($"{padding}Signature: {dialogBox.ExtendedDialogTemplate.Signature}");
-                Console.WriteLine($"{padding}Help ID: {dialogBox.ExtendedDialogTemplate.HelpID}");
-                Console.WriteLine($"{padding}Extended style: {dialogBox.ExtendedDialogTemplate.ExtendedStyle}");
-                Console.WriteLine($"{padding}Style: {dialogBox.ExtendedDialogTemplate.Style}");
-                Console.WriteLine($"{padding}Item count: {dialogBox.ExtendedDialogTemplate.DialogItems}");
-                Console.WriteLine($"{padding}X-coordinate of upper-left corner: {dialogBox.ExtendedDialogTemplate.PositionX}");
-                Console.WriteLine($"{padding}Y-coordinate of upper-left corner: {dialogBox.ExtendedDialogTemplate.PositionY}");
-                Console.WriteLine($"{padding}Width of the dialog box: {dialogBox.ExtendedDialogTemplate.WidthX}");
-                Console.WriteLine($"{padding}Height of the dialog box: {dialogBox.ExtendedDialogTemplate.HeightY}");
+                Console.WriteLine($"{padding}Version: {dialogBox.ExtendedDialogTemplate.Version} (0x{dialogBox.ExtendedDialogTemplate.Version:X})");
+                Console.WriteLine($"{padding}Signature: {dialogBox.ExtendedDialogTemplate.Signature} (0x{dialogBox.ExtendedDialogTemplate.Signature:X})");
+                Console.WriteLine($"{padding}Help ID: {dialogBox.ExtendedDialogTemplate.HelpID} (0x{dialogBox.ExtendedDialogTemplate.HelpID:X})");
+                Console.WriteLine($"{padding}Extended style: {dialogBox.ExtendedDialogTemplate.ExtendedStyle} (0x{dialogBox.ExtendedDialogTemplate.ExtendedStyle:X})");
+                Console.WriteLine($"{padding}Style: {dialogBox.ExtendedDialogTemplate.Style} (0x{dialogBox.ExtendedDialogTemplate.Style:X})");
+                Console.WriteLine($"{padding}Item count: {dialogBox.ExtendedDialogTemplate.DialogItems} (0x{dialogBox.ExtendedDialogTemplate.DialogItems:X})");
+                Console.WriteLine($"{padding}X-coordinate of upper-left corner: {dialogBox.ExtendedDialogTemplate.PositionX} (0x{dialogBox.ExtendedDialogTemplate.PositionX:X})");
+                Console.WriteLine($"{padding}Y-coordinate of upper-left corner: {dialogBox.ExtendedDialogTemplate.PositionY} (0x{dialogBox.ExtendedDialogTemplate.PositionY:X})");
+                Console.WriteLine($"{padding}Width of the dialog box: {dialogBox.ExtendedDialogTemplate.WidthX} (0x{dialogBox.ExtendedDialogTemplate.WidthX:X})");
+                Console.WriteLine($"{padding}Height of the dialog box: {dialogBox.ExtendedDialogTemplate.HeightY} (0x{dialogBox.ExtendedDialogTemplate.HeightY:X})");
                 Console.WriteLine($"{padding}Menu resource: {dialogBox.ExtendedDialogTemplate.MenuResource ?? "[EMPTY]"}");
-                Console.WriteLine($"{padding}Menu resource ordinal: {dialogBox.ExtendedDialogTemplate.MenuResourceOrdinal}");
+                Console.WriteLine($"{padding}Menu resource ordinal: {dialogBox.ExtendedDialogTemplate.MenuResourceOrdinal} (0x{dialogBox.ExtendedDialogTemplate.MenuResourceOrdinal:X})");
                 Console.WriteLine($"{padding}Class resource: {dialogBox.ExtendedDialogTemplate.ClassResource ?? "[EMPTY]"}");
-                Console.WriteLine($"{padding}Class resource ordinal: {dialogBox.ExtendedDialogTemplate.ClassResourceOrdinal}");
+                Console.WriteLine($"{padding}Class resource ordinal: {dialogBox.ExtendedDialogTemplate.ClassResourceOrdinal} (0x{dialogBox.ExtendedDialogTemplate.ClassResourceOrdinal:X})");
                 Console.WriteLine($"{padding}Title resource: {dialogBox.ExtendedDialogTemplate.TitleResource ?? "[EMPTY]"}");
-                Console.WriteLine($"{padding}Point size: {dialogBox.ExtendedDialogTemplate.PointSize}");
-                Console.WriteLine($"{padding}Weight: {dialogBox.ExtendedDialogTemplate.Weight}");
-                Console.WriteLine($"{padding}Italic: {dialogBox.ExtendedDialogTemplate.Italic}");
-                Console.WriteLine($"{padding}Character set: {dialogBox.ExtendedDialogTemplate.CharSet}");
+                Console.WriteLine($"{padding}Point size: {dialogBox.ExtendedDialogTemplate.PointSize} (0x{dialogBox.ExtendedDialogTemplate.PointSize:X})");
+                Console.WriteLine($"{padding}Weight: {dialogBox.ExtendedDialogTemplate.Weight} (0x{dialogBox.ExtendedDialogTemplate.Weight:X})");
+                Console.WriteLine($"{padding}Italic: {dialogBox.ExtendedDialogTemplate.Italic} (0x{dialogBox.ExtendedDialogTemplate.Italic:X})");
+                Console.WriteLine($"{padding}Character set: {dialogBox.ExtendedDialogTemplate.CharSet} (0x{dialogBox.ExtendedDialogTemplate.CharSet:X})");
                 Console.WriteLine($"{padding}Typeface: {dialogBox.ExtendedDialogTemplate.Typeface ?? "[EMPTY]"}");
                 Console.WriteLine();
                 Console.WriteLine($"{padding}Dialog item templates");
@@ -2338,19 +2338,19 @@ namespace BurnOutSharp.Wrappers
                     var dialogItemTemplate = dialogBox.ExtendedDialogItemTemplates[i];
 
                     Console.WriteLine($"{padding}Dialog item template {i}");
-                    Console.WriteLine($"{padding}  Help ID: {dialogItemTemplate.HelpID}");
-                    Console.WriteLine($"{padding}  Extended style: {dialogItemTemplate.ExtendedStyle}");
-                    Console.WriteLine($"{padding}  Style: {dialogItemTemplate.Style}");
-                    Console.WriteLine($"{padding}  X-coordinate of upper-left corner: {dialogItemTemplate.PositionX}");
-                    Console.WriteLine($"{padding}  Y-coordinate of upper-left corner: {dialogItemTemplate.PositionY}");
-                    Console.WriteLine($"{padding}  Width of the control: {dialogItemTemplate.WidthX}");
-                    Console.WriteLine($"{padding}  Height of the control: {dialogItemTemplate.HeightY}");
-                    Console.WriteLine($"{padding}  ID: {dialogItemTemplate.ID}");
+                    Console.WriteLine($"{padding}  Help ID: {dialogItemTemplate.HelpID} (0x{dialogItemTemplate.HelpID:X})");
+                    Console.WriteLine($"{padding}  Extended style: {dialogItemTemplate.ExtendedStyle} (0x{dialogItemTemplate.ExtendedStyle:X})");
+                    Console.WriteLine($"{padding}  Style: {dialogItemTemplate.Style} (0x{dialogItemTemplate.Style:X})");
+                    Console.WriteLine($"{padding}  X-coordinate of upper-left corner: {dialogItemTemplate.PositionX} (0x{dialogItemTemplate.PositionX:X})");
+                    Console.WriteLine($"{padding}  Y-coordinate of upper-left corner: {dialogItemTemplate.PositionY} (0x{dialogItemTemplate.PositionY:X})");
+                    Console.WriteLine($"{padding}  Width of the control: {dialogItemTemplate.WidthX} (0x{dialogItemTemplate.WidthX:X})");
+                    Console.WriteLine($"{padding}  Height of the control: {dialogItemTemplate.HeightY} (0x{dialogItemTemplate.HeightY:X})");
+                    Console.WriteLine($"{padding}  ID: {dialogItemTemplate.ID} (0x{dialogItemTemplate.ID:X})");
                     Console.WriteLine($"{padding}  Class resource: {dialogItemTemplate.ClassResource ?? "[EMPTY]"}");
-                    Console.WriteLine($"{padding}  Class resource ordinal: {dialogItemTemplate.ClassResourceOrdinal}");
+                    Console.WriteLine($"{padding}  Class resource ordinal: {dialogItemTemplate.ClassResourceOrdinal} (0x{dialogItemTemplate.ClassResourceOrdinal:X})");
                     Console.WriteLine($"{padding}  Title resource: {dialogItemTemplate.TitleResource ?? "[EMPTY]"}");
-                    Console.WriteLine($"{padding}  Title resource ordinal: {dialogItemTemplate.TitleResourceOrdinal}");
-                    Console.WriteLine($"{padding}  Creation data size: {dialogItemTemplate.CreationDataSize}");
+                    Console.WriteLine($"{padding}  Title resource ordinal: {dialogItemTemplate.TitleResourceOrdinal} (0x{dialogItemTemplate.TitleResourceOrdinal:X})");
+                    Console.WriteLine($"{padding}  Creation data size: {dialogItemTemplate.CreationDataSize} (0x{dialogItemTemplate.CreationDataSize:X})");
                     if (dialogItemTemplate.CreationData != null && dialogItemTemplate.CreationData.Length != 0)
                         Console.WriteLine($"{padding}  Creation data: {BitConverter.ToString(dialogItemTemplate.CreationData).Replace("-", string.Empty)}");
                     else
@@ -2423,10 +2423,10 @@ namespace BurnOutSharp.Wrappers
             {
                 var acceleratorTableEntry = acceleratorTable[i];
                 Console.WriteLine($"{padding}Accelerator Table Entry {i}:");
-                Console.WriteLine($"{padding}  Flags: {acceleratorTableEntry.Flags}");
-                Console.WriteLine($"{padding}  Ansi: {acceleratorTableEntry.Ansi}");
-                Console.WriteLine($"{padding}  Id: {acceleratorTableEntry.Id}");
-                Console.WriteLine($"{padding}  Padding: {acceleratorTableEntry.Padding}");
+                Console.WriteLine($"{padding}  Flags: {acceleratorTableEntry.Flags} (0x{acceleratorTableEntry.Flags:X})");
+                Console.WriteLine($"{padding}  Ansi: {acceleratorTableEntry.Ansi} (0x{acceleratorTableEntry.Ansi:X})");
+                Console.WriteLine($"{padding}  Id: {acceleratorTableEntry.Id} (0x{acceleratorTableEntry.Id:X})");
+                Console.WriteLine($"{padding}  Padding: {acceleratorTableEntry.Padding} (0x{acceleratorTableEntry.Padding:X})");
             }
         }
 
@@ -2475,7 +2475,7 @@ namespace BurnOutSharp.Wrappers
                 return;
             }
 
-            Console.WriteLine($"{padding}Number of blocks: {messageTable.NumberOfBlocks}");
+            Console.WriteLine($"{padding}Number of blocks: {messageTable.NumberOfBlocks} (0x{messageTable.NumberOfBlocks:X})");
             Console.WriteLine();
             Console.WriteLine($"{padding}Message resource blocks");
             Console.WriteLine($"{padding}-------------------------");
@@ -2492,9 +2492,9 @@ namespace BurnOutSharp.Wrappers
                     var messageResourceBlock = messageTable.Blocks[i];
 
                     Console.WriteLine($"{padding}Message resource block {i}");
-                    Console.WriteLine($"{padding}  Low ID: {messageResourceBlock.LowId}");
-                    Console.WriteLine($"{padding}  High ID: {messageResourceBlock.HighId}");
-                    Console.WriteLine($"{padding}  Offset to entries: {messageResourceBlock.OffsetToEntries}");
+                    Console.WriteLine($"{padding}  Low ID: {messageResourceBlock.LowId} (0x{messageResourceBlock.LowId:X})");
+                    Console.WriteLine($"{padding}  High ID: {messageResourceBlock.HighId} (0x{messageResourceBlock.HighId:X})");
+                    Console.WriteLine($"{padding}  Offset to entries: {messageResourceBlock.OffsetToEntries} (0x{messageResourceBlock.OffsetToEntries:X})");
                 }
             }
             Console.WriteLine();
@@ -2514,8 +2514,8 @@ namespace BurnOutSharp.Wrappers
                     var messageResourceEntry = kvp.Value;
 
                     Console.WriteLine($"{padding}Message resource entry {index}");
-                    Console.WriteLine($"{padding}  Length: {messageResourceEntry.Length}");
-                    Console.WriteLine($"{padding}  Flags: {messageResourceEntry.Flags}");
+                    Console.WriteLine($"{padding}  Length: {messageResourceEntry.Length} (0x{messageResourceEntry.Length:X})");
+                    Console.WriteLine($"{padding}  Flags: {messageResourceEntry.Flags} (0x{messageResourceEntry.Flags:X})");
                     Console.WriteLine($"{padding}  Text: {messageResourceEntry.Text}");
                 }
             }
@@ -2554,32 +2554,32 @@ namespace BurnOutSharp.Wrappers
                 return;
             }
 
-            Console.WriteLine($"{padding}Length: {versionInfo.Length}");
-            Console.WriteLine($"{padding}Value length: {versionInfo.ValueLength}");
-            Console.WriteLine($"{padding}Resource type: {versionInfo.ResourceType}");
+            Console.WriteLine($"{padding}Length: {versionInfo.Length} (0x{versionInfo.Length:X})");
+            Console.WriteLine($"{padding}Value length: {versionInfo.ValueLength} (0x{versionInfo.ValueLength:X})");
+            Console.WriteLine($"{padding}Resource type: {versionInfo.ResourceType} (0x{versionInfo.ResourceType:X})");
             Console.WriteLine($"{padding}Key: {versionInfo.Key}");
             if (versionInfo.ValueLength != 0 && versionInfo.Value != null)
             {
-                Console.WriteLine($"{padding}[Fixed File Info] Signature: {versionInfo.Value.Signature}");
-                Console.WriteLine($"{padding}[Fixed File Info] Struct version: {versionInfo.Value.StrucVersion}");
-                Console.WriteLine($"{padding}[Fixed File Info] File version (MS): {versionInfo.Value.FileVersionMS}");
-                Console.WriteLine($"{padding}[Fixed File Info] File version (LS): {versionInfo.Value.FileVersionLS}");
-                Console.WriteLine($"{padding}[Fixed File Info] Product version (MS): {versionInfo.Value.ProductVersionMS}");
-                Console.WriteLine($"{padding}[Fixed File Info] Product version (LS): {versionInfo.Value.ProductVersionLS}");
-                Console.WriteLine($"{padding}[Fixed File Info] File flags mask: {versionInfo.Value.FileFlagsMask}");
-                Console.WriteLine($"{padding}[Fixed File Info] File flags: {versionInfo.Value.FileFlags}");
-                Console.WriteLine($"{padding}[Fixed File Info] File OS: {versionInfo.Value.FileOS}");
-                Console.WriteLine($"{padding}[Fixed File Info] Type: {versionInfo.Value.FileType}");
-                Console.WriteLine($"{padding}[Fixed File Info] Subtype: {versionInfo.Value.FileSubtype}");
-                Console.WriteLine($"{padding}[Fixed File Info] File date (MS): {versionInfo.Value.FileDateMS}");
-                Console.WriteLine($"{padding}[Fixed File Info] File date (LS): {versionInfo.Value.FileDateLS}");
+                Console.WriteLine($"{padding}[Fixed File Info] Signature: {versionInfo.Value.Signature} (0x{versionInfo.Value.Signature:X})");
+                Console.WriteLine($"{padding}[Fixed File Info] Struct version: {versionInfo.Value.StrucVersion} (0x{versionInfo.Value.StrucVersion:X})");
+                Console.WriteLine($"{padding}[Fixed File Info] File version (MS): {versionInfo.Value.FileVersionMS} (0x{versionInfo.Value.FileVersionMS:X})");
+                Console.WriteLine($"{padding}[Fixed File Info] File version (LS): {versionInfo.Value.FileVersionLS} (0x{versionInfo.Value.FileVersionLS:X})");
+                Console.WriteLine($"{padding}[Fixed File Info] Product version (MS): {versionInfo.Value.ProductVersionMS} (0x{versionInfo.Value.ProductVersionMS:X})");
+                Console.WriteLine($"{padding}[Fixed File Info] Product version (LS): {versionInfo.Value.ProductVersionLS} (0x{versionInfo.Value.ProductVersionLS:X})");
+                Console.WriteLine($"{padding}[Fixed File Info] File flags mask: {versionInfo.Value.FileFlagsMask} (0x{versionInfo.Value.FileFlagsMask:X})");
+                Console.WriteLine($"{padding}[Fixed File Info] File flags: {versionInfo.Value.FileFlags} (0x{versionInfo.Value.FileFlags:X})");
+                Console.WriteLine($"{padding}[Fixed File Info] File OS: {versionInfo.Value.FileOS} (0x{versionInfo.Value.FileOS:X})");
+                Console.WriteLine($"{padding}[Fixed File Info] Type: {versionInfo.Value.FileType} (0x{versionInfo.Value.FileType:X})");
+                Console.WriteLine($"{padding}[Fixed File Info] Subtype: {versionInfo.Value.FileSubtype} (0x{versionInfo.Value.FileSubtype:X})");
+                Console.WriteLine($"{padding}[Fixed File Info] File date (MS): {versionInfo.Value.FileDateMS} (0x{versionInfo.Value.FileDateMS:X})");
+                Console.WriteLine($"{padding}[Fixed File Info] File date (LS): {versionInfo.Value.FileDateLS} (0x{versionInfo.Value.FileDateLS:X})");
             }
 
             if (versionInfo.StringFileInfo != null)
             {
-                Console.WriteLine($"{padding}[String File Info] Length: {versionInfo.StringFileInfo.Length}");
-                Console.WriteLine($"{padding}[String File Info] Value length: {versionInfo.StringFileInfo.ValueLength}");
-                Console.WriteLine($"{padding}[String File Info] Resource type: {versionInfo.StringFileInfo.ResourceType}");
+                Console.WriteLine($"{padding}[String File Info] Length: {versionInfo.StringFileInfo.Length} (0x{versionInfo.StringFileInfo.Length:X})");
+                Console.WriteLine($"{padding}[String File Info] Value length: {versionInfo.StringFileInfo.ValueLength} (0x{versionInfo.StringFileInfo.ValueLength:X})");
+                Console.WriteLine($"{padding}[String File Info] Resource type: {versionInfo.StringFileInfo.ResourceType} (0x{versionInfo.StringFileInfo.ResourceType:X})");
                 Console.WriteLine($"{padding}[String File Info] Key: {versionInfo.StringFileInfo.Key}");
                 Console.WriteLine($"{padding}Children:");
                 Console.WriteLine($"{padding}-------------------------");
@@ -2593,9 +2593,9 @@ namespace BurnOutSharp.Wrappers
                     {
                         var stringFileInfoChildEntry = versionInfo.StringFileInfo.Children[i];
 
-                        Console.WriteLine($"{padding}  [String Table {i}] Length: {stringFileInfoChildEntry.Length}");
-                        Console.WriteLine($"{padding}  [String Table {i}] Value length: {stringFileInfoChildEntry.ValueLength}");
-                        Console.WriteLine($"{padding}  [String Table {i}] ResourceType: {stringFileInfoChildEntry.ResourceType}");
+                        Console.WriteLine($"{padding}  [String Table {i}] Length: {stringFileInfoChildEntry.Length} (0x{stringFileInfoChildEntry.Length:X})");
+                        Console.WriteLine($"{padding}  [String Table {i}] Value length: {stringFileInfoChildEntry.ValueLength} (0x{stringFileInfoChildEntry.ValueLength:X})");
+                        Console.WriteLine($"{padding}  [String Table {i}] ResourceType: {stringFileInfoChildEntry.ResourceType} (0x{stringFileInfoChildEntry.ResourceType:X})");
                         Console.WriteLine($"{padding}  [String Table {i}] Key: {stringFileInfoChildEntry.Key}");
                         Console.WriteLine($"{padding}  [String Table {i}] Children:");
                         Console.WriteLine($"{padding}  -------------------------");
@@ -2609,9 +2609,9 @@ namespace BurnOutSharp.Wrappers
                             {
                                 var stringDataEntry = stringFileInfoChildEntry.Children[j];
 
-                                Console.WriteLine($"{padding}    [String Data {j}] Length: {stringDataEntry.Length}");
-                                Console.WriteLine($"{padding}    [String Data {j}] Value length: {stringDataEntry.ValueLength}");
-                                Console.WriteLine($"{padding}    [String Data {j}] ResourceType: {stringDataEntry.ResourceType}");
+                                Console.WriteLine($"{padding}    [String Data {j}] Length: {stringDataEntry.Length} (0x{stringDataEntry.Length:X})");
+                                Console.WriteLine($"{padding}    [String Data {j}] Value length: {stringDataEntry.ValueLength} (0x{stringDataEntry.ValueLength:X})");
+                                Console.WriteLine($"{padding}    [String Data {j}] ResourceType: {stringDataEntry.ResourceType} (0x{stringDataEntry.ResourceType:X})");
                                 Console.WriteLine($"{padding}    [String Data {j}] Key: {stringDataEntry.Key}");
                                 Console.WriteLine($"{padding}    [String Data {j}] Value: {stringDataEntry.Value}");
                             }
@@ -2622,9 +2622,9 @@ namespace BurnOutSharp.Wrappers
 
             if (versionInfo.VarFileInfo != null)
             {
-                Console.WriteLine($"{padding}[Var File Info] Length: {versionInfo.VarFileInfo.Length}");
-                Console.WriteLine($"{padding}[Var File Info] Value length: {versionInfo.VarFileInfo.ValueLength}");
-                Console.WriteLine($"{padding}[Var File Info] Resource type: {versionInfo.VarFileInfo.ResourceType}");
+                Console.WriteLine($"{padding}[Var File Info] Length: {versionInfo.VarFileInfo.Length} (0x{versionInfo.VarFileInfo.Length:X})");
+                Console.WriteLine($"{padding}[Var File Info] Value length: {versionInfo.VarFileInfo.ValueLength} (0x{versionInfo.VarFileInfo.ValueLength:X})");
+                Console.WriteLine($"{padding}[Var File Info] Resource type: {versionInfo.VarFileInfo.ResourceType} (0x{versionInfo.VarFileInfo.ResourceType:X})");
                 Console.WriteLine($"{padding}[Var File Info] Key: {versionInfo.VarFileInfo.Key}");
                 Console.WriteLine($"{padding}Children:");
                 Console.WriteLine($"{padding}-------------------------");
@@ -2638,9 +2638,9 @@ namespace BurnOutSharp.Wrappers
                     {
                         var varFileInfoChildEntry = versionInfo.VarFileInfo.Children[i];
 
-                        Console.WriteLine($"{padding}  [String Table {i}] Length: {varFileInfoChildEntry.Length}");
-                        Console.WriteLine($"{padding}  [String Table {i}] Value length: {varFileInfoChildEntry.ValueLength}");
-                        Console.WriteLine($"{padding}  [String Table {i}] ResourceType: {varFileInfoChildEntry.ResourceType}");
+                        Console.WriteLine($"{padding}  [String Table {i}] Length: {varFileInfoChildEntry.Length} (0x{varFileInfoChildEntry.Length:X})");
+                        Console.WriteLine($"{padding}  [String Table {i}] Value length: {varFileInfoChildEntry.ValueLength} (0x{varFileInfoChildEntry.ValueLength:X})");
+                        Console.WriteLine($"{padding}  [String Table {i}] ResourceType: {varFileInfoChildEntry.ResourceType} (0x{varFileInfoChildEntry.ResourceType:X})");
                         Console.WriteLine($"{padding}  [String Table {i}] Key: {varFileInfoChildEntry.Key}");
                         Console.WriteLine($"{padding}  [String Table {i}] Value: {string.Join(",", varFileInfoChildEntry.Value)}");
                     }

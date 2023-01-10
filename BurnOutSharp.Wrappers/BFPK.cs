@@ -203,8 +203,8 @@ namespace BurnOutSharp.Wrappers
             Console.WriteLine("  Header Information:");
             Console.WriteLine("  -------------------------");
             Console.WriteLine($"  Magic: {Magic}");
-            Console.WriteLine($"  Version: {Version}");
-            Console.WriteLine($"  Files: {Files}");
+            Console.WriteLine($"  Version: {Version} (0x{Version:X})");
+            Console.WriteLine($"  Files: {Files} (0x{Files:X})");
             Console.WriteLine();
         }
 
@@ -225,11 +225,11 @@ namespace BurnOutSharp.Wrappers
                 {
                     var entry = FileTable[i];
                     Console.WriteLine($"  File Table Entry {i}");
-                    Console.WriteLine($"    Name size = {entry.NameSize}");
+                    Console.WriteLine($"    Name size = {entry.NameSize} (0x{entry.NameSize:X})");
                     Console.WriteLine($"    Name = {entry.Name}");
-                    Console.WriteLine($"    Uncompressed size = {entry.UncompressedSize}");
-                    Console.WriteLine($"    Offset = {entry.Offset}");
-                    Console.WriteLine($"    Compressed Size = {entry.CompressedSize}");
+                    Console.WriteLine($"    Uncompressed size = {entry.UncompressedSize} (0x{entry.UncompressedSize:X})");
+                    Console.WriteLine($"    Offset = {entry.Offset} (0x{entry.Offset:X})");
+                    Console.WriteLine($"    Compressed Size = {entry.CompressedSize} (0x{entry.CompressedSize:X})");
                 }
             }
             Console.WriteLine();
