@@ -159,7 +159,7 @@ namespace BurnOutSharp.Wrappers
 
         #endregion
 
-        #region Data
+        #region FAT Sector Data
 
         /// <summary>
         /// Get the ordered FAT sector chain for a given starting sector
@@ -210,7 +210,7 @@ namespace BurnOutSharp.Wrappers
             for (int i = 0; i < sectorChain.Count; i++)
             {
                 // Try to get the sector data offset
-                int sectorDataOffset = (int)ToFileOffset(sectorChain[i]);
+                int sectorDataOffset = (int)FATSectorToFileOffset(sectorChain[i]);
                 if (sectorDataOffset < 0 || sectorDataOffset >= GetEndOfFile())
                     return null;
 
@@ -226,6 +226,25 @@ namespace BurnOutSharp.Wrappers
 
             return data.ToArray();
         }
+
+        /// <summary>
+        /// Convert a FAT sector value to a byte offset
+        /// </summary>
+        /// <param name="sector">Sector to convert</param>
+        /// <returns>File offset in bytes, -1 on error</returns>
+        public long FATSectorToFileOffset(Models.CFB.SectorNumber sector)
+        {
+            // If we have an invalid sector number
+            if (sector > Models.CFB.SectorNumber.MAXREGSECT)
+                return -1;
+
+            // Convert based on the sector shift value
+            return (long)((long)(sector + 1) * Math.Pow(2, SectorShift));
+        }
+
+        #endregion
+
+        #region Mini FAT Sector Data
 
         /// <summary>
         /// Get the ordered Mini FAT sector chain for a given starting sector
@@ -276,7 +295,7 @@ namespace BurnOutSharp.Wrappers
             for (int i = 0; i < sectorChain.Count; i++)
             {
                 // Try to get the sector data offset
-                int sectorDataOffset = (int)ToMiniFileOffset(sectorChain[i]);
+                int sectorDataOffset = (int)MiniFATSectorToFileOffset(sectorChain[i]);
                 if (sectorDataOffset < 0 || sectorDataOffset >= GetEndOfFile())
                     return null;
 
@@ -294,26 +313,11 @@ namespace BurnOutSharp.Wrappers
         }
 
         /// <summary>
-        /// Convert a FAT sector value to a byte offset
-        /// </summary>
-        /// <param name="sector">Sector to convert</param>
-        /// <returns>File offset in bytes, -1 on error</returns>
-        public long ToFileOffset(Models.CFB.SectorNumber sector)
-        {
-            // If we have an invalid sector number
-            if (sector > Models.CFB.SectorNumber.MAXREGSECT)
-                return -1;
-
-            // Convert based on the sector shift value
-            return (long)((long)(sector + 1) * Math.Pow(2, SectorShift));
-        }
-
-        /// <summary>
         /// Convert a Mini FAT sector value to a byte offset
         /// </summary>
         /// <param name="sector">Sector to convert</param>
         /// <returns>File offset in bytes, -1 on error</returns>
-        public long ToMiniFileOffset(Models.CFB.SectorNumber sector)
+        public long MiniFATSectorToFileOffset(Models.CFB.SectorNumber sector)
         {
             // If we have an invalid sector number
             if (sector > Models.CFB.SectorNumber.MAXREGSECT)
