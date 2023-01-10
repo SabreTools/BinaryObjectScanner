@@ -6,7 +6,7 @@ namespace BurnOutSharp.Models.CFB
     public sealed class FileHeader
     {
         /// <summary>
-        /// IOdentification signature for the compound file structure, and MUST be
+        /// Iddentification signature for the compound file structure, and MUST be
         /// set to the value 0xD0, 0xCF, 0x11, 0xE0, 0xA1, 0xB1, 0x1A, 0xE1.
         /// </summary>
         public ulong Signature;
