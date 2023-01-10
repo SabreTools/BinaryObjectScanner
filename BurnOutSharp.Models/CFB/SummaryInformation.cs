@@ -2,9 +2,11 @@ using System;
 
 namespace BurnOutSharp.Models.CFB
 {
-    /// <see href=""/>
+    /// <see href="https://github.com/GNOME/msitools/blob/master/libmsi/libmsi-summary-info.c"/>
     public sealed class SummaryInformation
     {
+        #region Set Header
+
         /// <summary>
         /// This field MUST be set to 0xFFFE. This field is a byte order mark for
         /// all integer fields, specifying little-endian byte order.
@@ -12,9 +14,33 @@ namespace BurnOutSharp.Models.CFB
         public ushort ByteOrder;
 
         /// <summary>
-        /// 26 bytes of unknown data
+        /// Format
         /// </summary>
-        public byte[] Unknown1;
+        public ushort Format;
+
+        /// <summary>
+        /// Build
+        /// </summary>
+        public ushort Build;
+
+        /// <summary>
+        /// Platform ID
+        /// </summary>
+        public ushort PlatformID;
+
+        /// <summary>
+        /// CLSID
+        /// </summary>
+        public Guid CLSID;
+
+        /// <summary>
+        /// 4 bytes of reserved data
+        /// </summary>
+        public byte[] Reserved;
+
+        #endregion
+
+        #region Format Header
 
         /// <summary>
         /// Format ID, should be <see cref="Constants.FMTID_SummaryInformation"/>
@@ -24,7 +50,11 @@ namespace BurnOutSharp.Models.CFB
         /// <summary>
         /// 16 bytes of unknown data
         /// </summary>
-        public byte[] Unknown2;
+        public byte[] Unknown;
+
+        #endregion
+
+        #region Section Header
 
         /// <summary>
         /// Location of the section
@@ -41,6 +71,12 @@ namespace BurnOutSharp.Models.CFB
         /// </summary>
         public uint PropertyCount;
 
-        // Followed by an array of variants
+        /// <summary>
+        /// Properties
+        /// </summary>
+        /// <remarks>Each Variant might be followed by an index and offset value</remarks>
+        public Variant[] Properties;
+
+        #endregion
     }
 }
