@@ -27,7 +27,7 @@ namespace BurnOutSharp.PackerType
                 return null;
 
             // Check header padding strings
-            if (pex.HeaderPaddingStrings.Any())
+            if (pex.HeaderPaddingStrings?.Any() == true)
             {
                 string match = pex.HeaderPaddingStrings.FirstOrDefault(s => s.Contains("UPX!"));
                 //if (match != null)
