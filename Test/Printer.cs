@@ -257,6 +257,25 @@ namespace Test
                     cabinet.Print();
                 }
 
+                // MSI -- TODO: Technically CFB
+                else if (ft == SupportedFileType.MSI)
+                {
+                    // Build the CFB information
+                    Console.WriteLine("Creating Compact File Binary deserializer");
+                    Console.WriteLine();
+
+                    var cfb = CFB.Create(stream);
+                    if (cfb == null)
+                    {
+                        Console.WriteLine("Something went wrong parsing Compact File Binary");
+                        Console.WriteLine();
+                        return;
+                    }
+
+                    // Print the CFB to screen
+                    cfb.Print();
+                }
+
                 // N3DS
                 else if (ft == SupportedFileType.N3DS)
                 {

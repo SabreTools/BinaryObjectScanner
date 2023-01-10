@@ -188,7 +188,7 @@ namespace BurnOutSharp.Wrappers
             Console.WriteLine($"  Byte order: {ByteOrder}");
             Console.WriteLine($"  Sector shift: {SectorShift} [{(long)Math.Pow(2, SectorShift)}]");
             Console.WriteLine($"  Mini sector shift: {MiniSectorShift} [{(long)Math.Pow(2, MiniSectorShift)}]");
-            Console.WriteLine($"  Reserved: {BitConverter.ToString(Reserved).Replace('-', ' ')}]");
+            Console.WriteLine($"  Reserved: {BitConverter.ToString(Reserved).Replace('-', ' ')}");
             Console.WriteLine($"  Number of directory sectors: {NumberOfDirectorySectors}");
             Console.WriteLine($"  Number of FAT sectors: {NumberOfFATSectors}");
             Console.WriteLine($"  First directory sector location: {FirstDirectorySectorLocation}");
@@ -201,7 +201,7 @@ namespace BurnOutSharp.Wrappers
             Console.WriteLine($"  DIFAT:");
             for (int i = 0; i < DIFAT.Length; i++)
             {
-                Console.WriteLine($"  DIFAT Entry {i}: {DIFAT[i]}");
+                Console.WriteLine($"    DIFAT Entry {i}: {DIFAT[i]}");
             }
             Console.WriteLine();
         }
