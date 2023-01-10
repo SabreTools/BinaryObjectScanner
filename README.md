@@ -156,6 +156,7 @@ Below is a list of container formats that are supported in some way:
 | 7-zip archive | No | Yes | Yes | Via `SharpCompress` |
 | BFPK custom archive format | Yes | Yes | Yes | |
 | bzip2 archive | No | Yes | Yes | Via `SharpCompress` |
+| Compound File Binary (CFB) | Yes | Yes* | No | Basis of MSI, only CFB common pieces printable |
 | gzip archive | No | Yes | Yes | Via `SharpCompress` |
 | Half-Life Game Cache File (GCF) | Yes | Yes | Yes | |
 | Half-Life Level (BSP) | Yes | Yes | Yes | |
