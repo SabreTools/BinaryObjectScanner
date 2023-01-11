@@ -130,7 +130,7 @@ namespace Test
             foreach (string inputPath in inputPaths)
             {
                 if (info)
-                    Printer.PrintPathInfo(inputPath);
+                    Printer.PrintPathInfo(inputPath, debug);
                 else if (extract)
                     Extractor.ExtractPath(inputPath, outputPath);
                 else

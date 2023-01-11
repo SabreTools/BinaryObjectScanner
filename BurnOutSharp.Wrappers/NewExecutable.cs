@@ -395,10 +395,10 @@ namespace BurnOutSharp.Wrappers
                 {
                     var entry = SegmentTable[i];
                     Console.WriteLine($"  Segment Table Entry {i}");
-                    Console.WriteLine($"    Offset: {entry.Offset}");
-                    Console.WriteLine($"    Length: {entry.Length}");
-                    Console.WriteLine($"    Flag word: {entry.FlagWord}");
-                    Console.WriteLine($"    Minimum allocation size: {entry.MinimumAllocationSize}");
+                    Console.WriteLine($"    Offset: {entry.Offset} (0x{entry.Offset:X})");
+                    Console.WriteLine($"    Length: {entry.Length} (0x{entry.Length:X})");
+                    Console.WriteLine($"    Flag word: {entry.FlagWord} (0x{entry.FlagWord:X})");
+                    Console.WriteLine($"    Minimum allocation size: {entry.MinimumAllocationSize} (0x{entry.MinimumAllocationSize:X})");
                 }
             }
             Console.WriteLine();
@@ -424,8 +424,8 @@ namespace BurnOutSharp.Wrappers
                     var entry = ResourceTable.ResourceTypes[i];
                     Console.WriteLine($"  Resource Table Entry {i}");
                     Console.WriteLine($"    Type ID: {entry.TypeID} (0x{entry.TypeID:X}) (Is Integer Type: {entry.IsIntegerType()})");
-                    Console.WriteLine($"    Resource count: {entry.ResourceCount}");
-                    Console.WriteLine($"    Reserved: {entry.Reserved}");
+                    Console.WriteLine($"    Resource count: {entry.ResourceCount} (0x{entry.ResourceCount:X})");
+                    Console.WriteLine($"    Reserved: {entry.Reserved} (0x{entry.Reserved:X})");
                     Console.WriteLine($"    Resources = ");
                     if (entry.ResourceCount == 0 || entry.Resources.Length == 0)
                     {
@@ -438,11 +438,11 @@ namespace BurnOutSharp.Wrappers
                             // TODO: If not integer type, print out name
                             var resource = entry.Resources[j];
                             Console.WriteLine($"      Resource Entry {i}");
-                            Console.WriteLine($"        Offset: {resource.Offset}");
-                            Console.WriteLine($"        Length: {resource.Length}");
-                            Console.WriteLine($"        Flag word: {resource.FlagWord}");
-                            Console.WriteLine($"        Resource ID: {resource.ResourceID} (Is Integer Type: {resource.IsIntegerType()})");
-                            Console.WriteLine($"        Reserved: {resource.Reserved}");
+                            Console.WriteLine($"        Offset: {resource.Offset} (0x{resource.Offset:X})");
+                            Console.WriteLine($"        Length: {resource.Length} (0x{resource.Length:X})");
+                            Console.WriteLine($"        Flag word: {resource.FlagWord} (0x{resource.FlagWord:X})");
+                            Console.WriteLine($"        Resource ID: {resource.ResourceID} (0x{resource.ResourceID:X}) (Is Integer Type: {resource.IsIntegerType()})");
+                            Console.WriteLine($"        Reserved: {resource.Reserved} (0x{resource.Reserved:X})");
                         }
                     }
                 }
@@ -457,8 +457,8 @@ namespace BurnOutSharp.Wrappers
                 foreach (var typeAndNameString in ResourceTable.TypeAndNameStrings)
                 {
                     Console.WriteLine($"  Resource Type/Name Offset {typeAndNameString.Key}");
-                    Console.WriteLine($"    Length: {typeAndNameString.Value.Length}");
-                    Console.WriteLine($"    Text: {Encoding.ASCII.GetString(typeAndNameString.Value.Text)}");
+                    Console.WriteLine($"    Length: {typeAndNameString.Value.Length} (0x{typeAndNameString.Value.Length:X})");
+                    Console.WriteLine($"    Text: {(typeAndNameString.Value.Text != null ? Encoding.ASCII.GetString(typeAndNameString.Value.Text).TrimEnd('\0') : "[EMPTY]")}");
                 }
             }
             Console.WriteLine();
@@ -481,9 +481,9 @@ namespace BurnOutSharp.Wrappers
                 {
                     var entry = ResidentNameTable[i];
                     Console.WriteLine($"  Resident-Name Table Entry {i}");
-                    Console.WriteLine($"    Length: {entry.Length}");
-                    Console.WriteLine($"    Name string: {(entry.NameString != null ? Encoding.ASCII.GetString(entry.NameString) : "[EMPTY]")}");
-                    Console.WriteLine($"    Ordinal number: {entry.OrdinalNumber}");
+                    Console.WriteLine($"    Length: {entry.Length} (0x{entry.Length:X})");
+                    Console.WriteLine($"    Name string: {(entry.NameString != null ? Encoding.ASCII.GetString(entry.NameString).TrimEnd('\0') : "[EMPTY]")}");
+                    Console.WriteLine($"    Ordinal number: {entry.OrdinalNumber} (0x{entry.OrdinalNumber:X})");
                 }
             }
             Console.WriteLine();
@@ -529,7 +529,7 @@ namespace BurnOutSharp.Wrappers
                 foreach (var entry in ImportedNameTable)
                 {
                     Console.WriteLine($"  Imported-Name Table at Offset {entry.Key}");
-                    Console.WriteLine($"    Length: {entry.Value.Length}");
+                    Console.WriteLine($"    Length: {entry.Value.Length} (0x{entry.Value.Length:X})");
                     Console.WriteLine($"    Name string: {(entry.Value.NameString != null ? Encoding.ASCII.GetString(entry.Value.NameString) : "[EMPTY]")}");
                 }
             }
@@ -553,19 +553,19 @@ namespace BurnOutSharp.Wrappers
                 {
                     var entry = EntryTable[i];
                     Console.WriteLine($"  Entry Table Entry {i}");
-                    Console.WriteLine($"    Entry count: {entry.EntryCount}");
-                    Console.WriteLine($"    Segment indicator: {entry.SegmentIndicator} ({entry.GetEntryType()})");
+                    Console.WriteLine($"    Entry count: {entry.EntryCount} (0x{entry.EntryCount:X})");
+                    Console.WriteLine($"    Segment indicator: {entry.SegmentIndicator} (0x{entry.SegmentIndicator:X}) ({entry.GetEntryType()})");
                     switch (entry.GetEntryType())
                     {
                         case BurnOutSharp.Models.NewExecutable.SegmentEntryType.FixedSegment:
-                            Console.WriteLine($"    Flag word: {entry.FixedFlagWord}");
-                            Console.WriteLine($"    Offset: {entry.FixedOffset}");
+                            Console.WriteLine($"    Flag word: {entry.FixedFlagWord} (0x{entry.FixedFlagWord:X})");
+                            Console.WriteLine($"    Offset: {entry.FixedOffset} (0x{entry.FixedOffset:X})");
                             break;
                         case BurnOutSharp.Models.NewExecutable.SegmentEntryType.MoveableSegment:
-                            Console.WriteLine($"    Flag word: {entry.MoveableFlagWord}");
-                            Console.WriteLine($"    Reserved: {entry.MoveableReserved}");
-                            Console.WriteLine($"    Segment number: {entry.MoveableSegmentNumber}");
-                            Console.WriteLine($"    Offset: {entry.MoveableOffset}");
+                            Console.WriteLine($"    Flag word: {entry.MoveableFlagWord} (0x{entry.MoveableFlagWord:X})");
+                            Console.WriteLine($"    Reserved: {entry.MoveableReserved} (0x{entry.MoveableReserved:X})");
+                            Console.WriteLine($"    Segment number: {entry.MoveableSegmentNumber} (0x{entry.MoveableSegmentNumber:X})");
+                            Console.WriteLine($"    Offset: {entry.MoveableOffset} (0x{entry.MoveableOffset:X})");
                             break;
                     }
                 }
@@ -590,9 +590,9 @@ namespace BurnOutSharp.Wrappers
                 {
                     var entry = NonResidentNameTable[i];
                     Console.WriteLine($"  Nonresident-Name Table Entry {i}");
-                    Console.WriteLine($"    Length: {entry.Length}");
+                    Console.WriteLine($"    Length: {entry.Length} (0x{entry.Length:X})");
                     Console.WriteLine($"    Name string: {(entry.NameString != null ? Encoding.ASCII.GetString(entry.NameString) : "[EMPTY]")}");
-                    Console.WriteLine($"    Ordinal number: {entry.OrdinalNumber}");
+                    Console.WriteLine($"    Ordinal number: {entry.OrdinalNumber} (0x{entry.OrdinalNumber:X})");
                 }
             }
             Console.WriteLine();

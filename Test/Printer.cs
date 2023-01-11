@@ -13,20 +13,21 @@ namespace Test
         /// Wrapper to print information for a single path
         /// </summary>
         /// <param name="path">File or directory path</param>
-        public static void PrintPathInfo(string path)
+        /// <param name="debug">Enable debug output</param>
+        public static void PrintPathInfo(string path, bool debug)
         {
             Console.WriteLine($"Checking possible path: {path}");
 
             // Check if the file or directory exists
             if (File.Exists(path))
             {
-                PrintFileInfo(path);
+                PrintFileInfo(path, debug);
             }
             else if (Directory.Exists(path))
             {
                 foreach (string file in Directory.EnumerateFiles(path, "*", SearchOption.AllDirectories))
                 {
-                    PrintFileInfo(file);
+                    PrintFileInfo(file, debug);
                 }
             }
             else
@@ -38,7 +39,7 @@ namespace Test
         /// <summary>
         /// Print information for a single file, if possible
         /// </summary>
-        private static void PrintFileInfo(string file)
+        private static void PrintFileInfo(string file, bool debug)
         {
             Console.WriteLine($"Attempting to print info for {file}");
 
@@ -77,7 +78,7 @@ namespace Test
                     // Check for a valid new executable address
                     if (msdos.NewExeHeaderAddr >= stream.Length)
                     {
-                        Console.WriteLine("New EXE header address invalid, skipping additional reading...");
+                        if (debug) Console.WriteLine("New EXE header address invalid, skipping additional reading...");
                         Console.WriteLine();
                         return;
                     }
@@ -130,7 +131,7 @@ namespace Test
                     // Unknown
                     else
                     {
-                        Console.WriteLine($"Unrecognized header signature: {BitConverter.ToString(magic).Replace("-", string.Empty)}");
+                        if (debug) Console.WriteLine($"Unrecognized header signature: {BitConverter.ToString(magic).Replace("-", string.Empty)}");
                         Console.WriteLine();
                         return;
                     }
@@ -469,6 +470,7 @@ namespace Test
                 // Everything else
                 else
                 {
+                    if (debug) Console.WriteLine($"File format found: {ft}");
                     Console.WriteLine("Not a recognized file format, skipping...");
                     Console.WriteLine();
                     return;
