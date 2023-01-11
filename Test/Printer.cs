@@ -107,9 +107,17 @@ namespace Test
                     else if (magic.StartsWith(BurnOutSharp.Models.LinearExecutable.Constants.LESignatureBytes)
                         || magic.StartsWith(BurnOutSharp.Models.LinearExecutable.Constants.LXSignatureBytes))
                     {
-                        Console.WriteLine($"Linear executable found. No parsing currently available.");
-                        Console.WriteLine();
-                        return;
+                        stream.Seek(0, SeekOrigin.Begin);
+                        var linearExecutable = LinearExecutable.Create(stream);
+                        if (linearExecutable == null)
+                        {
+                            Console.WriteLine("Something went wrong parsing New Executable");
+                            Console.WriteLine();
+                            return;
+                        }
+
+                        // Print the executable info to screen
+                        linearExecutable.Print();
                     }
 
                     // Portable Executable
