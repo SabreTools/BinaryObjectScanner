@@ -16,7 +16,7 @@ namespace BurnOutSharp.Models.LinearExecutable
     /// <see href="https://faydoc.tripod.com/formats/exe-LE.htm"/>
     /// <see href="http://www.edm2.com/index.php/LX_-_Linear_eXecutable_Module_Format_Description"/>
     [StructLayout(LayoutKind.Sequential)]
-    public sealed class ObjectPageTableEntry
+    public sealed class ObjectPageMapEntry
     {
         /// <summary>
         /// Offset to the page data in the EXE file.

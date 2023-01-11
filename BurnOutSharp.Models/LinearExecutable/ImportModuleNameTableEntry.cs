@@ -36,6 +36,6 @@ namespace BurnOutSharp.Models.LinearExecutable
         /// This is a variable length string with it's length defined in bytes by
         /// the LEN field. The string is case sensitive and is not null terminated.
         /// </remarks>
-        public byte[] Name;
+        public string Name;
     }
 }

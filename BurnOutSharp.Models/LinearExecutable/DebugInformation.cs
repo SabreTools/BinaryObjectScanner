@@ -27,10 +27,12 @@ namespace BurnOutSharp.Models.LinearExecutable
         /// </summary>
         public DebugFormatType FormatType;
 
-        // DEBUGGER DATA = Debugger specific data.
-        // The format of the debugger data is defined by the debugger that is being used.
-        // The values defined for the type field are not enforced by the system. It is
-        // the responsibility of the linker or debugging tools to follow the convention
-        // for the type field that is defined here. 
+        /// <summary>
+        /// The format of the debugger data is defined by the debugger that is being used.
+        /// The values defined for the type field are not enforced by the system. It is
+        /// the responsibility of the linker or debugging tools to follow the convention
+        /// for the type field that is defined here.
+        /// </summary>
+        public byte[] DebuggerData;
     }
 }

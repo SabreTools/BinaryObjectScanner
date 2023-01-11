@@ -11,12 +11,12 @@ namespace BurnOutSharp.Models.LinearExecutable
     /// information in the entry table.
     /// 
     /// The resident name table is kept resident in system memory while the module is
-    /// loaded.It is intended to contain the exported entry point names that are
-    /// frequently dynamically linked to by name.Non-resident names are not kept in
+    /// loaded. It is intended to contain the exported entry point names that are
+    /// frequently dynamically linked to by name. Non-resident names are not kept in
     /// memory and are read from the EXE file when a dynamic link reference is made.
     /// Exported entry point names that are infrequently dynamically linked to by name
     /// or are commonly referenced by ordinal number should be placed in the
-    /// non-resident name table.The trade off made for references by name is performance
+    /// non-resident name table. The trade off made for references by name is performance
     /// vs memory usage.
     /// 
     /// Import references by name require these tables to be searched to obtain the entry
@@ -28,7 +28,7 @@ namespace BurnOutSharp.Models.LinearExecutable
     /// <see href="https://faydoc.tripod.com/formats/exe-LE.htm"/>
     /// <see href="http://www.edm2.com/index.php/LX_-_Linear_eXecutable_Module_Format_Description"/>
     [StructLayout(LayoutKind.Sequential)]
-    public sealed class ResidentNameTableEntry
+    public sealed class ResidentNamesTableEntry
     {
         /// <summary>
         /// String Length.
@@ -51,7 +51,7 @@ namespace BurnOutSharp.Models.LinearExecutable
         /// This is a variable length string with it's length defined in bytes by the LEN field.
         /// The string is case case sensitive and is not null terminated.
         /// </remarks>
-        public byte[] Name;
+        public string Name;
 
         /// <summary>
         /// Ordinal number.

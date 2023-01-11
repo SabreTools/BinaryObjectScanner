@@ -28,7 +28,7 @@ namespace BurnOutSharp.Models.LinearExecutable
     /// <see href="https://faydoc.tripod.com/formats/exe-LE.htm"/>
     /// <see href="http://www.edm2.com/index.php/LX_-_Linear_eXecutable_Module_Format_Description"/>
     [StructLayout(LayoutKind.Sequential)]
-    public sealed class NonResidentNameTableEntry
+    public sealed class NonResidentNamesTableEntry
     {
         /// <summary>
         /// String Length.
@@ -51,7 +51,7 @@ namespace BurnOutSharp.Models.LinearExecutable
         /// This is a variable length string with it's length defined in bytes by the LEN field.
         /// The string is case case sensitive and is not null terminated.
         /// </remarks>
-        public byte[] Name;
+        public string Name;
 
         /// <summary>
         /// Ordinal number.

@@ -223,7 +223,7 @@ namespace BurnOutSharp.Wrappers
         public Models.LinearExecutable.ObjectTableEntry[] ObjectTable => _executable.ObjectTable;
 
         /// <inheritdoc cref="Models.LinearExecutable.ObjectTable"/>
-        public Models.LinearExecutable.ObjectPageTableEntry[] ObjectPageTable => _executable.ObjectPageTable;
+        public Models.LinearExecutable.ObjectPageMapEntry[] ObjectPageTable => _executable.ObjectPageMap;
 
         // TODO: Object iterate data map table [Does this exist?]
 
@@ -231,10 +231,10 @@ namespace BurnOutSharp.Wrappers
         public Models.LinearExecutable.ResourceTableEntry[] ResourceTable => _executable.ResourceTable;
 
         /// <inheritdoc cref="Models.LinearExecutable.ResidentNameTable"/>
-        public Models.LinearExecutable.ResidentNameTableEntry[] ResidentNameTable => _executable.ResidentNameTable;
+        public Models.LinearExecutable.ResidentNamesTableEntry[] ResidentNameTable => _executable.ResidentNamesTable;
 
         /// <inheritdoc cref="Models.LinearExecutable.EntryTable"/>
-        public Models.LinearExecutable.EntryTableEntry[] EntryTable => _executable.EntryTable;
+        public Models.LinearExecutable.EntryTableBundle[] EntryTable => _executable.EntryTable;
 
         /// <inheritdoc cref="Models.LinearExecutable.ModuleFormatDirectivesTable"/>
         public Models.LinearExecutable.ModuleFormatDirectivesTableEntry[] ModuleFormatDirectivesTable => _executable.ModuleFormatDirectivesTable;
@@ -262,7 +262,7 @@ namespace BurnOutSharp.Wrappers
         // TODO: Iterated Pages
 
         /// <inheritdoc cref="Models.LinearExecutable.NonResidentNameTable"/>
-        public Models.LinearExecutable.NonResidentNameTableEntry[] NonResidentNameTable => _executable.NonResidentNameTable;
+        public Models.LinearExecutable.NonResidentNamesTableEntry[] NonResidentNameTable => _executable.NonResidentNamesTable;
 
         /// <inheritdoc cref="Models.LinearExecutable.DebugInformation"/>
         public Models.LinearExecutable.DebugInformation DebugInformation => _executable.DebugInformation;

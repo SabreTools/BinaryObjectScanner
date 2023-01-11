@@ -26,11 +26,11 @@ namespace BurnOutSharp.Models.LinearExecutable
         public ObjectTableEntry[] ObjectTable { get; set; }
 
         /// <summary>
-        /// Object page table
+        /// Object page map
         /// </summary>
-        public ObjectPageTableEntry[] ObjectPageTable { get; set; }
+        public ObjectPageMapEntry[] ObjectPageMap { get; set; }
 
-        // TODO: Object iterate data map table [Does this exist?]
+        // TODO: Object iterate data map table (Undefined)
 
         /// <summary>
         /// Resource table
@@ -40,12 +40,12 @@ namespace BurnOutSharp.Models.LinearExecutable
         /// <summary>
         /// Resident Name table
         /// </summary>
-        public ResidentNameTableEntry[] ResidentNameTable { get; set; }
+        public ResidentNamesTableEntry[] ResidentNamesTable { get; set; }
 
         /// <summary>
         /// Entry table
         /// </summary>
-        public EntryTableEntry[] EntryTable { get; set; }
+        public EntryTableBundle[] EntryTable { get; set; }
 
         /// <summary>
         /// Module format directives table (optional)
@@ -56,11 +56,6 @@ namespace BurnOutSharp.Models.LinearExecutable
         /// Verify record directive table (optional)
         /// </summary>
         public VerifyRecordDirectiveTableEntry[] VerifyRecordDirectiveTable { get; set; }
-
-        /// <summary>
-        /// Per-Page checksum table
-        /// </summary>
-        public PerPageChecksumTableEntry[] PerPageChecksumTable { get; set; }
 
         /// <summary>
         /// Fix-up page table
@@ -82,14 +77,15 @@ namespace BurnOutSharp.Models.LinearExecutable
         /// </summary>
         public ImportModuleProcedureNameTableEntry[] ImportModuleProcedureNameTable { get; set; }
 
-        // TODO: Preload Pages
-        // TODO: Demand Load Pages
-        // TODO: Iterated Pages
+        /// <summary>
+        /// Per-Page checksum table
+        /// </summary>
+        public PerPageChecksumTableEntry[] PerPageChecksumTable { get; set; }
 
         /// <summary>
         /// Non-Resident Name table
         /// </summary>
-        public NonResidentNameTableEntry[] NonResidentNameTable { get; set; }
+        public NonResidentNamesTableEntry[] NonResidentNamesTable { get; set; }
 
         // TODO: Non-resident directives data (Undefined)
 
