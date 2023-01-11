@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using BurnOutSharp.Models.LinearExecutable;
 using BurnOutSharp.Utilities;
@@ -725,105 +724,104 @@ namespace BurnOutSharp.Builders
             else
                 entry.SourceOffset = data.ReadUInt16();
 
-            switch (entry.TargetFlags & FixupRecordTargetFlags.FixupTargetTypeMask)
+            // OBJECT / TRGOFF
+            if (entry.TargetFlags.HasFlag(FixupRecordTargetFlags.InternalReference))
             {
-                // OBJECT / TRGOFF
-                case FixupRecordTargetFlags.InternalReference:
+                // 16-bit Object Number/Module Ordinal Flag
+                if (entry.TargetFlags.HasFlag(FixupRecordTargetFlags.SixteenBitObjectNumberModuleOrdinalFlag))
+                    entry.TargetObjectNumberWORD = data.ReadUInt16();
+                else
+                    entry.TargetObjectNumberByte = data.ReadByteValue();
 
-                    // 16-bit Object Number/Module Ordinal Flag
-                    if (entry.TargetFlags.HasFlag(FixupRecordTargetFlags.SixteenBitObjectNumberModuleOrdinalFlag))
-                        entry.TargetObjectNumberWORD = data.ReadUInt16();
-                    else
-                        entry.TargetObjectNumberByte = data.ReadByteValue();
-
-                    // 16-bit Selector fixup
-                    if (!entry.SourceType.HasFlag(FixupRecordSourceType.SixteenBitSelectorFixup))
-                    {
-                        // 32-bit Target Offset Flag
-                        if (entry.TargetFlags.HasFlag(FixupRecordTargetFlags.ThirtyTwoBitTargetOffsetFlag))
-                            entry.TargetOffsetDWORD = data.ReadUInt32();
-                        else
-                            entry.TargetOffsetWORD = data.ReadUInt16();
-                    }
-
-                    break;
-
-                // MOD ORD# / IMPORT ORD / ADDITIVE
-                case FixupRecordTargetFlags.ImportedReferenceByOrdinal:
-
-                    // 16-bit Object Number/Module Ordinal Flag
-                    if (entry.TargetFlags.HasFlag(FixupRecordTargetFlags.SixteenBitObjectNumberModuleOrdinalFlag))
-                        entry.OrdinalIndexImportModuleNameTableWORD = data.ReadUInt16();
-                    else
-                        entry.OrdinalIndexImportModuleNameTableByte = data.ReadByteValue();
-
-                    // 8-bit Ordinal Flag & 32-bit Target Offset Flag
-                    if (entry.TargetFlags.HasFlag(FixupRecordTargetFlags.EightBitOrdinalFlag))
-                        entry.ImportedOrdinalNumberByte = data.ReadByteValue();
-                    else if (entry.TargetFlags.HasFlag(FixupRecordTargetFlags.ThirtyTwoBitTargetOffsetFlag))
-                        entry.ImportedOrdinalNumberDWORD = data.ReadUInt32();
-                    else
-                        entry.ImportedOrdinalNumberWORD = data.ReadUInt16();
-
-                    // Additive Fixup Flag
-                    if (entry.TargetFlags.HasFlag(FixupRecordTargetFlags.AdditiveFixupFlag))
-                    {
-                        // 32-bit Additive Flag
-                        if (entry.TargetFlags.HasFlag(FixupRecordTargetFlags.ThirtyTwoBitAdditiveFixupFlag))
-                            entry.AdditiveFixupValueDWORD = data.ReadUInt32();
-                        else
-                            entry.AdditiveFixupValueWORD = data.ReadUInt16();
-                    }
-
-                    break;
-
-                // MOD ORD# / PROCEDURE NAME OFFSET / ADDITIVE
-                case FixupRecordTargetFlags.ImportedReferenceByName:
-
-                    // 16-bit Object Number/Module Ordinal Flag
-                    if (entry.TargetFlags.HasFlag(FixupRecordTargetFlags.SixteenBitObjectNumberModuleOrdinalFlag))
-                        entry.OrdinalIndexImportModuleNameTableWORD = data.ReadUInt16();
-                    else
-                        entry.OrdinalIndexImportModuleNameTableByte = data.ReadByteValue();
-
+                // 16-bit Selector fixup
+                if (!entry.SourceType.HasFlag(FixupRecordSourceType.SixteenBitSelectorFixup))
+                {
                     // 32-bit Target Offset Flag
                     if (entry.TargetFlags.HasFlag(FixupRecordTargetFlags.ThirtyTwoBitTargetOffsetFlag))
-                        entry.OffsetImportProcedureNameTableDWORD = data.ReadUInt32();
+                        entry.TargetOffsetDWORD = data.ReadUInt32();
                     else
-                        entry.OffsetImportProcedureNameTableWORD = data.ReadUInt16();
+                        entry.TargetOffsetWORD = data.ReadUInt16();
+                }
+            }
 
-                    // Additive Fixup Flag
-                    if (entry.TargetFlags.HasFlag(FixupRecordTargetFlags.AdditiveFixupFlag))
-                    {
-                        // 32-bit Additive Flag
-                        if (entry.TargetFlags.HasFlag(FixupRecordTargetFlags.ThirtyTwoBitAdditiveFixupFlag))
-                            entry.AdditiveFixupValueDWORD = data.ReadUInt32();
-                        else
-                            entry.AdditiveFixupValueWORD = data.ReadUInt16();
-                    }
+            // MOD ORD# / IMPORT ORD / ADDITIVE
+            else if (entry.TargetFlags.HasFlag(FixupRecordTargetFlags.ImportedReferenceByOrdinal))
+            {
+                // 16-bit Object Number/Module Ordinal Flag
+                if (entry.TargetFlags.HasFlag(FixupRecordTargetFlags.SixteenBitObjectNumberModuleOrdinalFlag))
+                    entry.OrdinalIndexImportModuleNameTableWORD = data.ReadUInt16();
+                else
+                    entry.OrdinalIndexImportModuleNameTableByte = data.ReadByteValue();
 
-                    break;
+                // 8-bit Ordinal Flag & 32-bit Target Offset Flag
+                if (entry.TargetFlags.HasFlag(FixupRecordTargetFlags.EightBitOrdinalFlag))
+                    entry.ImportedOrdinalNumberByte = data.ReadByteValue();
+                else if (entry.TargetFlags.HasFlag(FixupRecordTargetFlags.ThirtyTwoBitTargetOffsetFlag))
+                    entry.ImportedOrdinalNumberDWORD = data.ReadUInt32();
+                else
+                    entry.ImportedOrdinalNumberWORD = data.ReadUInt16();
 
-                // ORD # / ADDITIVE
-                case FixupRecordTargetFlags.InternalReferenceViaEntryTable:
-
-                    // 16-bit Object Number/Module Ordinal Flag
-                    if (entry.TargetFlags.HasFlag(FixupRecordTargetFlags.SixteenBitObjectNumberModuleOrdinalFlag))
-                        entry.OrdinalIndexImportModuleNameTableWORD = data.ReadUInt16();
+                // Additive Fixup Flag
+                if (entry.TargetFlags.HasFlag(FixupRecordTargetFlags.AdditiveFixupFlag))
+                {
+                    // 32-bit Additive Flag
+                    if (entry.TargetFlags.HasFlag(FixupRecordTargetFlags.ThirtyTwoBitAdditiveFixupFlag))
+                        entry.AdditiveFixupValueDWORD = data.ReadUInt32();
                     else
-                        entry.OrdinalIndexImportModuleNameTableByte = data.ReadByteValue();
+                        entry.AdditiveFixupValueWORD = data.ReadUInt16();
+                }
+            }
 
-                    // Additive Fixup Flag
-                    if (entry.TargetFlags.HasFlag(FixupRecordTargetFlags.AdditiveFixupFlag))
-                    {
-                        // 32-bit Additive Flag
-                        if (entry.TargetFlags.HasFlag(FixupRecordTargetFlags.ThirtyTwoBitAdditiveFixupFlag))
-                            entry.AdditiveFixupValueDWORD = data.ReadUInt32();
-                        else
-                            entry.AdditiveFixupValueWORD = data.ReadUInt16();
-                    }
+            // MOD ORD# / PROCEDURE NAME OFFSET / ADDITIVE
+            else if (entry.TargetFlags.HasFlag(FixupRecordTargetFlags.ImportedReferenceByName))
+            {
+                // 16-bit Object Number/Module Ordinal Flag
+                if (entry.TargetFlags.HasFlag(FixupRecordTargetFlags.SixteenBitObjectNumberModuleOrdinalFlag))
+                    entry.OrdinalIndexImportModuleNameTableWORD = data.ReadUInt16();
+                else
+                    entry.OrdinalIndexImportModuleNameTableByte = data.ReadByteValue();
 
-                    break;
+                // 32-bit Target Offset Flag
+                if (entry.TargetFlags.HasFlag(FixupRecordTargetFlags.ThirtyTwoBitTargetOffsetFlag))
+                    entry.OffsetImportProcedureNameTableDWORD = data.ReadUInt32();
+                else
+                    entry.OffsetImportProcedureNameTableWORD = data.ReadUInt16();
+
+                // Additive Fixup Flag
+                if (entry.TargetFlags.HasFlag(FixupRecordTargetFlags.AdditiveFixupFlag))
+                {
+                    // 32-bit Additive Flag
+                    if (entry.TargetFlags.HasFlag(FixupRecordTargetFlags.ThirtyTwoBitAdditiveFixupFlag))
+                        entry.AdditiveFixupValueDWORD = data.ReadUInt32();
+                    else
+                        entry.AdditiveFixupValueWORD = data.ReadUInt16();
+                }
+            }
+
+            // ORD # / ADDITIVE
+            else if (entry.TargetFlags.HasFlag(FixupRecordTargetFlags.InternalReferenceViaEntryTable))
+            {
+                // 16-bit Object Number/Module Ordinal Flag
+                if (entry.TargetFlags.HasFlag(FixupRecordTargetFlags.SixteenBitObjectNumberModuleOrdinalFlag))
+                    entry.OrdinalIndexImportModuleNameTableWORD = data.ReadUInt16();
+                else
+                    entry.OrdinalIndexImportModuleNameTableByte = data.ReadByteValue();
+
+                // Additive Fixup Flag
+                if (entry.TargetFlags.HasFlag(FixupRecordTargetFlags.AdditiveFixupFlag))
+                {
+                    // 32-bit Additive Flag
+                    if (entry.TargetFlags.HasFlag(FixupRecordTargetFlags.ThirtyTwoBitAdditiveFixupFlag))
+                        entry.AdditiveFixupValueDWORD = data.ReadUInt32();
+                    else
+                        entry.AdditiveFixupValueWORD = data.ReadUInt16();
+                }
+            }
+
+            // No other top-level flags recognized
+            else
+            {
+                return null;
             }
 
             #region SCROFFn
