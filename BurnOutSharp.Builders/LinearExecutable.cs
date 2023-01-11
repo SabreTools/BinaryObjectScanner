@@ -428,7 +428,7 @@ namespace BurnOutSharp.Builders
             #region Debug Information
 
             // Get the debug information offset
-            offset = informationBlock.NonResidentNamesTableOffset + stub.Header.NewExeHeaderAddr;
+            offset = informationBlock.DebugInformationOffset + stub.Header.NewExeHeaderAddr;
             if (offset > stub.Header.NewExeHeaderAddr && offset < data.Length)
             {
                 // Seek to the debug information

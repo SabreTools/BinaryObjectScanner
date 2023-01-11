@@ -111,7 +111,7 @@ namespace Test
                         var linearExecutable = LinearExecutable.Create(stream);
                         if (linearExecutable == null)
                         {
-                            Console.WriteLine("Something went wrong parsing New Executable");
+                            Console.WriteLine("Something went wrong parsing Linear Executable");
                             Console.WriteLine();
                             return;
                         }
