@@ -24,7 +24,7 @@ namespace BurnOutSharp.Models.LinearExecutable
         /// The signature word is used by the loader to identify the EXE
         /// file as a valid 32-bit Linear Executable Module Format.
         /// </remarks>
-        public char[] Signature;
+        public string Signature;
 
         /// <summary>
         /// Byte Ordering. 

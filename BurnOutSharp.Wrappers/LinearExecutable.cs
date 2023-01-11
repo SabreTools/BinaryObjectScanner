@@ -78,7 +78,7 @@ namespace BurnOutSharp.Wrappers
         #region Information Block
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.Signature"/>
-        public char[] Signature => _executable.InformationBlock.Signature;
+        public string Signature => _executable.InformationBlock.Signature;
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ByteOrder"/>
         public Models.LinearExecutable.ByteOrder ByteOrder => _executable.InformationBlock.ByteOrder;
