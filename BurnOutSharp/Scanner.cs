@@ -359,6 +359,13 @@ namespace BurnOutSharp
                         AppendToDictionary(protections, subProtections);
                     }
 
+                    // BD+ SVM
+                    if (scannable is BDPlusSVM)
+                    {
+                        var subProtections = scannable.Scan(this, stream, fileName);
+                        AppendToDictionary(protections, subProtections);
+                    }
+
                     // Executable
                     if (scannable is Executable)
                     {

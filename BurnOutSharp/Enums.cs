@@ -16,6 +16,11 @@
         AACSMediaKeyBlock,
 
         /// <summary>
+        /// BD+ SVM
+        /// </summary>
+        BDPlusSVM,
+
+        /// <summary>
         /// BFPK custom archive
         /// </summary>
         BFPK,

@@ -18,6 +18,7 @@ The following projects have influenced this library:
 
 - [BurnOut](http://burnout.sourceforge.net/) - Project that this library was initially based on. The only thing left from that original port is in the name of the library. This project is fully unaffiliated with the original BurnOut and its authors.
 - [HLLibSharp](https://github.com/mnadareski/HLLibSharp) - Documentation around Valve package handling, including extraction.
+- [libbdplus](https://www.videolan.org/developers/libbdplus.html) - Documentation around the BD+ SVM files.
 - [libmspack](https://github.com/kyz/libmspack) - Documentation around the MS-CAB format and associated compression methods.
 - [NDecrypt](https://github.com/SabreTools/NDecrypt) - NDS (Nitro) and 3DS cart image file layouts and documentation, though not encrypt/decrypt.
 
@@ -31,12 +32,10 @@ Below is a list of protections detected by BurnOutSharp. The two columns explain
 | --------------- | ------------- | ---------- | ----- |
 | 3PLock | True | False | |
 | 321Studios Online Activation | True | False | |
-| AACS | False | True | BluRay and HD-DVD variants detected |
 | ActiveMARK | True | False | Version 5 unconfirmed²; version finding incomplete |
 | AegiSoft License Manager | True | True | |
 | Alpha-DVD | False | True | Unconfirmed¹ |
 | Alpha-ROM | True | False | |
-| BD+ | False | True | |
 | Bitpool | False | True | |
 | ByteShield | True | True | |
 | C-Dilla License Management Solution / CD-Secure / CD-Compress | True | True | |
@@ -154,6 +153,8 @@ Below is a list of container formats that are supported in some way:
 | Format Name | Information Printing | Detection | Extraction | Notes |
 | --- | --- | --- | --- | --- |
 | 7-zip archive | No | Yes | Yes | Via `SharpCompress` |
+| AACS Media Key Block | Yes | Yes | N/A | BluRay and HD-DVD variants detected |
+| BD+ SVM | Yes | Yes | N/A | |
 | BFPK custom archive format | Yes | Yes | Yes | |
 | bzip2 archive | No | Yes | Yes | Via `SharpCompress` |
 | Compound File Binary (CFB) | Yes* | Yes | Yes | Via `OpenMcdf`, only CFB common pieces printable |

@@ -34,6 +34,13 @@ namespace BurnOutSharp.Tools
 
             #endregion
 
+            #region BDPlusSVM
+
+            if (magic.StartsWith(new byte?[] { 0x42, 0x44, 0x53, 0x56, 0x4D, 0x5F, 0x43, 0x43 }))
+                return SupportedFileType.BDPlusSVM;
+
+            #endregion
+
             #region BFPK
 
             if (magic.StartsWith(new byte?[] { 0x42, 0x46, 0x50, 0x4b }))
@@ -369,6 +376,13 @@ namespace BurnOutSharp.Tools
 
             #endregion
 
+            #region BDPlusSVM
+
+            if (extension.Equals(value: "svm", StringComparison.OrdinalIgnoreCase))
+                return SupportedFileType.BDPlusSVM;
+
+            #endregion
+            
             #region BFPK
 
             // No extensions registered for BFPK
@@ -757,6 +771,7 @@ namespace BurnOutSharp.Tools
             switch (fileType)
             {
                 case SupportedFileType.AACSMediaKeyBlock: return new FileType.AACSMediaKeyBlock();
+                case SupportedFileType.BDPlusSVM: return new FileType.BDPlusSVM();
                 case SupportedFileType.BFPK: return new FileType.BFPK();
                 case SupportedFileType.BSP: return new FileType.BSP();
                 case SupportedFileType.BZip2: return new FileType.BZip2();

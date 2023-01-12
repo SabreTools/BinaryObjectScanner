@@ -164,6 +164,25 @@ namespace Test
                     mkb.Print();
                 }
 
+                // BD+ SVM
+                else if (ft == SupportedFileType.BDPlusSVM)
+                {
+                    // Build the BD+ SVM information
+                    Console.WriteLine("Creating BD+ SVM deserializer");
+                    Console.WriteLine();
+
+                    var svm = BDPlusSVM.Create(stream);
+                    if (svm == null)
+                    {
+                        Console.WriteLine("Something went wrong parsing BD+ SVM");
+                        Console.WriteLine();
+                        return;
+                    }
+
+                    // Print the BD+ SVM info to screen
+                    svm.Print();
+                }
+
                 // BFPK archive
                 else if (ft == SupportedFileType.BFPK)
                 {
