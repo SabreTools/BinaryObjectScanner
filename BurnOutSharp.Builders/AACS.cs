@@ -194,6 +194,10 @@ namespace BurnOutSharp.Builders
             // Set the subset differences
             record.SubsetDifferences = subsetDifferences.ToArray();
 
+            // If there's any data left, discard it
+            if (data.Position < initialOffset + length)
+                _ = data.ReadBytes((int)(initialOffset + length - data.Position));
+
             return record;
         }
 
@@ -319,7 +323,8 @@ namespace BurnOutSharp.Builders
             var blocks = new List<DriveRevocationSignatureBlock>();
 
             // Try to parse the signature blocks
-            while (data.Position < initialOffset + length)
+            int entryCount = 0;
+            while (entryCount < record.TotalNumberOfEntries && data.Position < initialOffset + length)
             {
                 var block = new DriveRevocationSignatureBlock();
 
@@ -333,6 +338,7 @@ namespace BurnOutSharp.Builders
                     entry.DriveID = data.ReadBytes(6);
 
                     block.EntryFields[i] = entry;
+                    entryCount++;
                 }
 
                 blocks.Add(block);
@@ -378,7 +384,8 @@ namespace BurnOutSharp.Builders
             var blocks = new List<HostRevocationSignatureBlock>();
 
             // Try to parse the signature blocks
-            while (data.Position < initialOffset + length)
+            int entryCount = 0;
+            while (entryCount < record.TotalNumberOfEntries && data.Position < initialOffset + length)
             {
                 var block = new HostRevocationSignatureBlock();
 
@@ -392,6 +399,7 @@ namespace BurnOutSharp.Builders
                     entry.HostID = data.ReadBytes(6);
 
                     block.EntryFields[i] = entry;
+                    entryCount++;
                 }
 
                 blocks.Add(block);

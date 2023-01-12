@@ -756,7 +756,7 @@ namespace BurnOutSharp.Tools
         {
             switch (fileType)
             {
-                // case SupportedFileType.AACSMediaKeyBlock: return new FileType.AACSMediaKeyBlock();
+                case SupportedFileType.AACSMediaKeyBlock: return new FileType.AACSMediaKeyBlock();
                 case SupportedFileType.BFPK: return new FileType.BFPK();
                 case SupportedFileType.BSP: return new FileType.BSP();
                 case SupportedFileType.BZip2: return new FileType.BZip2();

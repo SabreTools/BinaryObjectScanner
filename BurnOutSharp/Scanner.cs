@@ -352,6 +352,13 @@ namespace BurnOutSharp
                 // If we're scanning file contents
                 if (ScanContents)
                 {
+                    // AACS media key block
+                    if (scannable is AACSMediaKeyBlock)
+                    {
+                        var subProtections = scannable.Scan(this, stream, fileName);
+                        AppendToDictionary(protections, subProtections);
+                    }
+
                     // Executable
                     if (scannable is Executable)
                     {
