@@ -11,6 +11,11 @@
         UNKNOWN,
 
         /// <summary>
+        /// AACS media key block
+        /// </summary>
+        AACSMediaKeyBlock,
+
+        /// <summary>
         /// BFPK custom archive
         /// </summary>
         BFPK,

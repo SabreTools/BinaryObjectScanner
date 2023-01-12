@@ -22,6 +22,18 @@ namespace BurnOutSharp.Tools
                 return SupportedFileType.UNKNOWN;
 
             // TODO: For all modelled types, use the constants instead of hardcoded values here
+            #region AACSMediaKeyBlock
+
+            // Block starting with verify media key record
+            if (magic.StartsWith(new byte?[] { 0x81, 0x00, 0x00, 0x14 }))
+                return SupportedFileType.AACSMediaKeyBlock;
+
+            // Block starting with type and version record
+            if (magic.StartsWith(new byte?[] { 0x10, 0x00, 0x00, 0x0C }))
+                return SupportedFileType.AACSMediaKeyBlock;
+
+            #endregion
+
             #region BFPK
 
             if (magic.StartsWith(new byte?[] { 0x42, 0x46, 0x50, 0x4b }))
@@ -343,6 +355,19 @@ namespace BurnOutSharp.Tools
 
             // Normalize the extension
             extension = extension.TrimStart('.').Trim();
+
+            #region AACSMediaKeyBlock
+
+            // Shares an extension with INF setup information so it can't be used accurately
+            // Blu-ray
+            // if (extension.Equals("inf", StringComparison.OrdinalIgnoreCase))
+            //     return SupportedFileType.AACSMediaKeyBlock;
+
+            // HD-DVD
+            if (extension.Equals("aacs", StringComparison.OrdinalIgnoreCase))
+                return SupportedFileType.AACSMediaKeyBlock;
+
+            #endregion
 
             #region BFPK
 
@@ -731,6 +756,7 @@ namespace BurnOutSharp.Tools
         {
             switch (fileType)
             {
+                // case SupportedFileType.AACSMediaKeyBlock: return new FileType.AACSMediaKeyBlock();
                 case SupportedFileType.BFPK: return new FileType.BFPK();
                 case SupportedFileType.BSP: return new FileType.BSP();
                 case SupportedFileType.BZip2: return new FileType.BZip2();
