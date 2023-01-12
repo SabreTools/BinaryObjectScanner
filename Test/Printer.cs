@@ -145,6 +145,25 @@ namespace Test
                     }
                 }
 
+                // AACS Media Key Block
+                else if (ft == SupportedFileType.AACSMediaKeyBlock)
+                {
+                    // Build the AACS MKB information
+                    Console.WriteLine("Creating AACS media key block deserializer");
+                    Console.WriteLine();
+
+                    var mkb = AACSMediaKeyBlock.Create(stream);
+                    if (mkb == null)
+                    {
+                        Console.WriteLine("Something went wrong parsing AACS media key block");
+                        Console.WriteLine();
+                        return;
+                    }
+
+                    // Print the AACS MKB info to screen
+                    mkb.Print();
+                }
+
                 // BFPK archive
                 else if (ft == SupportedFileType.BFPK)
                 {
@@ -479,7 +498,7 @@ namespace Test
                 else
                 {
                     if (debug) Console.WriteLine($"File format found: {ft}");
-                    Console.WriteLine("Not a recognized file format, skipping...");
+                    Console.WriteLine("Not a printable file format, skipping...");
                     Console.WriteLine();
                     return;
                 }
