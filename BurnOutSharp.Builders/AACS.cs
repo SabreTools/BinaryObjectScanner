@@ -171,6 +171,9 @@ namespace BurnOutSharp.Builders
             // TODO: Use marshalling here instead of building
             var record = new ExplicitSubsetDifferenceRecord();
 
+            record.RecordType = type;
+            record.RecordLength = length;
+
             // Cache the current offset
             long initialOffset = data.Position - 4;
 
@@ -208,6 +211,9 @@ namespace BurnOutSharp.Builders
             // TODO: Use marshalling here instead of building
             var record = new MediaKeyDataRecord();
 
+            record.RecordType = type;
+            record.RecordLength = length;
+
             // Cache the current offset
             long initialOffset = data.Position - 4;
 
@@ -240,6 +246,9 @@ namespace BurnOutSharp.Builders
 
             // TODO: Use marshalling here instead of building
             var record = new SubsetDifferenceIndexRecord();
+
+            record.RecordType = type;
+            record.RecordLength = length;
 
             // Cache the current offset
             long initialOffset = data.Position - 4;
@@ -278,7 +287,7 @@ namespace BurnOutSharp.Builders
 
             record.RecordType = type;
             record.RecordLength = length;
-            record.MKBType = (MediaKeyBlockType)data.ReadUInt32BE();
+            record.MediaKeyBlockType = (MediaKeyBlockType)data.ReadUInt32BE();
             record.VersionNumber = data.ReadUInt32BE();
 
             return record;
@@ -297,6 +306,9 @@ namespace BurnOutSharp.Builders
 
             // TODO: Use marshalling here instead of building
             var record = new DriveRevocationListRecord();
+
+            record.RecordType = type;
+            record.RecordLength = length;
 
             // Cache the current offset
             long initialOffset = data.Position - 4;
@@ -353,6 +365,9 @@ namespace BurnOutSharp.Builders
 
             // TODO: Use marshalling here instead of building
             var record = new HostRevocationListRecord();
+
+            record.RecordType = type;
+            record.RecordLength = length;
 
             // Cache the current offset
             long initialOffset = data.Position - 4;

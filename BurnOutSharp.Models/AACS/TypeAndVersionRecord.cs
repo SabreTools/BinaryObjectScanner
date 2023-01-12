@@ -17,7 +17,7 @@ namespace BurnOutSharp.Models.AACS
         /// controlling access to AACS Content on pre- recorded media. In
         /// this case, the device shall not use the KCD.
         /// </summary>
-        public MediaKeyBlockType MKBType;
+        public MediaKeyBlockType MediaKeyBlockType;
 
         /// <summary>
         /// The Version Number is a 32-bit unsigned integer. Each time the
