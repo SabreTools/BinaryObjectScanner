@@ -10,7 +10,7 @@ namespace BurnOutSharp.Models.AACS
     ///     [AES_128D(vKm, C]msb_64 == 0x0123456789ABCDEF)]
     /// where Km is the Media Key value.
     /// </summary>
-    /// <see href="http://web.archive.org/web/20180718234519/https://aacsla.com/jp/marketplace/evaluating/aacs_technical_overview_040721.pdf"/>
+    /// <see href="https://aacsla.com/wp-content/uploads/2019/02/AACS_Spec_Common_Final_0953.pdf"/>
     public sealed class VerifyMediaKeyRecord : Record
     {
         /// <summary>

@@ -9,7 +9,7 @@ namespace BurnOutSharp.Models.AACS
     /// the length field, are “Big Endian”; in other words, the most significant
     /// byte comes first in the record.
     /// </summary>
-    /// <see href="http://web.archive.org/web/20180718234519/https://aacsla.com/jp/marketplace/evaluating/aacs_technical_overview_040721.pdf"/>
+    /// <see href="https://aacsla.com/wp-content/uploads/2019/02/AACS_Spec_Common_Final_0953.pdf"/>
     public abstract class Record
     {
         /// <summary>

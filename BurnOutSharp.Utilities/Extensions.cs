@@ -371,12 +371,34 @@ namespace BurnOutSharp.Utilities
         }
 
         /// <summary>
+        /// Read a short from the stream in big-endian format
+        /// </summary>
+        public static short ReadInt16BE(this Stream stream)
+        {
+            byte[] buffer = new byte[2];
+            stream.Read(buffer, 0, 2);
+            Array.Reverse(buffer);
+            return BitConverter.ToInt16(buffer, 0);
+        }
+
+        /// <summary>
         /// Read a ushort from the stream
         /// </summary>
         public static ushort ReadUInt16(this Stream stream)
         {
             byte[] buffer = new byte[2];
             stream.Read(buffer, 0, 2);
+            return BitConverter.ToUInt16(buffer, 0);
+        }
+
+        /// <summary>
+        /// Read a ushort from the stream in big-endian format
+        /// </summary>
+        public static ushort ReadUInt16BE(this Stream stream)
+        {
+            byte[] buffer = new byte[2];
+            stream.Read(buffer, 0, 2);
+            Array.Reverse(buffer);
             return BitConverter.ToUInt16(buffer, 0);
         }
 
@@ -391,12 +413,34 @@ namespace BurnOutSharp.Utilities
         }
 
         /// <summary>
+        /// Read an int from the stream in big-endian format
+        /// </summary>
+        public static int ReadInt32BE(this Stream stream)
+        {
+            byte[] buffer = new byte[4];
+            stream.Read(buffer, 0, 4);
+            Array.Reverse(buffer);
+            return BitConverter.ToInt32(buffer, 0);
+        }
+
+        /// <summary>
         /// Read a uint from the stream
         /// </summary>
         public static uint ReadUInt32(this Stream stream)
         {
             byte[] buffer = new byte[4];
             stream.Read(buffer, 0, 4);
+            return BitConverter.ToUInt32(buffer, 0);
+        }
+
+        /// <summary>
+        /// Read a uint from the stream in big-endian format
+        /// </summary>
+        public static uint ReadUInt32BE(this Stream stream)
+        {
+            byte[] buffer = new byte[4];
+            stream.Read(buffer, 0, 4);
+            Array.Reverse(buffer);
             return BitConverter.ToUInt32(buffer, 0);
         }
 
@@ -411,6 +455,17 @@ namespace BurnOutSharp.Utilities
         }
 
         /// <summary>
+        /// Read a long from the stream in big-endian format
+        /// </summary>
+        public static long ReadInt64BE(this Stream stream)
+        {
+            byte[] buffer = new byte[8];
+            stream.Read(buffer, 0, 8);
+            Array.Reverse(buffer);
+            return BitConverter.ToInt64(buffer, 0);
+        }
+
+        /// <summary>
         /// Read a ulong from the stream
         /// </summary>
         public static ulong ReadUInt64(this Stream stream)
@@ -421,12 +476,34 @@ namespace BurnOutSharp.Utilities
         }
 
         /// <summary>
+        /// Read a ulong from the stream in big-endian format
+        /// </summary>
+        public static ulong ReadUInt64BE(this Stream stream)
+        {
+            byte[] buffer = new byte[8];
+            stream.Read(buffer, 0, 8);
+            Array.Reverse(buffer);
+            return BitConverter.ToUInt64(buffer, 0);
+        }
+
+        /// <summary>
         /// Read a Guid from the stream
         /// </summary>
         public static Guid ReadGuid(this Stream stream)
         {
             byte[] buffer = new byte[16];
             stream.Read(buffer, 0, 16);
+            return new Guid(buffer);
+        }
+
+        /// <summary>
+        /// Read a Guid from the stream in big-endian format
+        /// </summary>
+        public static Guid ReadGuidBE(this Stream stream)
+        {
+            byte[] buffer = new byte[16];
+            stream.Read(buffer, 0, 16);
+            Array.Reverse(buffer);
             return new Guid(buffer);
         }
 

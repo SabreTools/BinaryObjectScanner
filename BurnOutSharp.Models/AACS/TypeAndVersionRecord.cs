@@ -8,14 +8,16 @@ namespace BurnOutSharp.Models.AACS
     /// fact, more recent than the Media Key Block Extension that is currently
     /// on the media.
     /// </summary>
-    /// <see href="http://web.archive.org/web/20180718234519/https://aacsla.com/jp/marketplace/evaluating/aacs_technical_overview_040721.pdf"/>
+    /// <see href="https://aacsla.com/wp-content/uploads/2019/02/AACS_Spec_Common_Final_0953.pdf"/>
     public sealed class TypeAndVersionRecord : Record
     {
         /// <summary>
-        /// For AACS applications, the type field is always 0x00031003.
-        /// Devices shall ignore this.
+        /// For AACS applications, the MKBType field is one of three values.
+        /// It is not an error for a Type 3 Media Key Block to be used for
+        /// controlling access to AACS Content on pre- recorded media. In
+        /// this case, the device shall not use the KCD.
         /// </summary>
-        public uint MKBType;
+        public MediaKeyBlockType MKBType;
 
         /// <summary>
         /// The Version Number is a 32-bit unsigned integer. Each time the
