@@ -283,9 +283,9 @@ namespace BurnOutSharp.Wrappers
         #region Printing
 
         /// <summary>
-        /// Pretty print the item information
+        /// Export the item information as pretty-printed text
         /// </summary>
-        public abstract void PrettyPrint();
+        public abstract StringBuilder PrettyPrint();
 
 #if NET6_0_OR_GREATER
 

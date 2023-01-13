@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 
 namespace BurnOutSharp.Wrappers
 {
@@ -348,431 +349,447 @@ namespace BurnOutSharp.Wrappers
         #region Printing
 
         /// <inheritdoc/>
-        public override void PrettyPrint()
+        public override StringBuilder PrettyPrint()
         {
-            Console.WriteLine("New Executable Information:");
-            Console.WriteLine("-------------------------");
-            Console.WriteLine();
+            StringBuilder builder = new StringBuilder();
+
+            builder.AppendLine("New Executable Information:");
+            builder.AppendLine("-------------------------");
+            builder.AppendLine();
 
             // Stub
-            PrintStubHeader();
-            PrintStubExtendedHeader();
+            PrintStubHeader(builder);
+            PrintStubExtendedHeader(builder);
 
             // Information Block
-            PrintInformationBlock();
+            PrintInformationBlock(builder);
 
             // Tables
-            PrintObjectTable();
-            PrintObjectPageMap();
-            PrintResourceTable();
-            PrintResidentNamesTable();
-            PrintEntryTable();
-            PrintModuleFormatDirectivesTable();
-            PrintVerifyRecordDirectiveTable();
-            PrintFixupPageTable();
-            PrintFixupRecordTable();
-            PrintImportModuleNameTable();
-            PrintImportModuleProcedureNameTable();
-            PrintPerPageChecksumTable();
-            PrintNonResidentNamesTable();
+            PrintObjectTable(builder);
+            PrintObjectPageMap(builder);
+            PrintResourceTable(builder);
+            PrintResidentNamesTable(builder);
+            PrintEntryTable(builder);
+            PrintModuleFormatDirectivesTable(builder);
+            PrintVerifyRecordDirectiveTable(builder);
+            PrintFixupPageTable(builder);
+            PrintFixupRecordTable(builder);
+            PrintImportModuleNameTable(builder);
+            PrintImportModuleProcedureNameTable(builder);
+            PrintPerPageChecksumTable(builder);
+            PrintNonResidentNamesTable(builder);
 
             // Debug
-            PrintDebugInformation();
+            PrintDebugInformation(builder);
+
+            return builder;
         }
 
         /// <summary>
         /// Print stub header information
         /// </summary>
-        private void PrintStubHeader()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintStubHeader(StringBuilder builder)
         {
-            Console.WriteLine("  MS-DOS Stub Header Information:");
-            Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Magic number: {Stub_Magic}");
-            Console.WriteLine($"  Last page bytes: {Stub_LastPageBytes} (0x{Stub_LastPageBytes:X})");
-            Console.WriteLine($"  Pages: {Stub_Pages} (0x{Stub_Pages:X})");
-            Console.WriteLine($"  Relocation items: {Stub_RelocationItems} (0x{Stub_RelocationItems:X})");
-            Console.WriteLine($"  Header paragraph size: {Stub_HeaderParagraphSize} (0x{Stub_HeaderParagraphSize:X})");
-            Console.WriteLine($"  Minimum extra paragraphs: {Stub_MinimumExtraParagraphs} (0x{Stub_MinimumExtraParagraphs:X})");
-            Console.WriteLine($"  Maximum extra paragraphs: {Stub_MaximumExtraParagraphs} (0x{Stub_MaximumExtraParagraphs:X})");
-            Console.WriteLine($"  Initial SS value: {Stub_InitialSSValue} (0x{Stub_InitialSSValue:X})");
-            Console.WriteLine($"  Initial SP value: {Stub_InitialSPValue} (0x{Stub_InitialSPValue:X})");
-            Console.WriteLine($"  Checksum: {Stub_Checksum} (0x{Stub_Checksum:X})");
-            Console.WriteLine($"  Initial IP value: {Stub_InitialIPValue} (0x{Stub_InitialIPValue:X})");
-            Console.WriteLine($"  Initial CS value: {Stub_InitialCSValue} (0x{Stub_InitialCSValue:X})");
-            Console.WriteLine($"  Relocation table address: {Stub_RelocationTableAddr} (0x{Stub_RelocationTableAddr:X})");
-            Console.WriteLine($"  Overlay number: {Stub_OverlayNumber} (0x{Stub_OverlayNumber:X})");
-            Console.WriteLine();
+            builder.AppendLine("  MS-DOS Stub Header Information:");
+            builder.AppendLine("  -------------------------");
+            builder.AppendLine($"  Magic number: {Stub_Magic}");
+            builder.AppendLine($"  Last page bytes: {Stub_LastPageBytes} (0x{Stub_LastPageBytes:X})");
+            builder.AppendLine($"  Pages: {Stub_Pages} (0x{Stub_Pages:X})");
+            builder.AppendLine($"  Relocation items: {Stub_RelocationItems} (0x{Stub_RelocationItems:X})");
+            builder.AppendLine($"  Header paragraph size: {Stub_HeaderParagraphSize} (0x{Stub_HeaderParagraphSize:X})");
+            builder.AppendLine($"  Minimum extra paragraphs: {Stub_MinimumExtraParagraphs} (0x{Stub_MinimumExtraParagraphs:X})");
+            builder.AppendLine($"  Maximum extra paragraphs: {Stub_MaximumExtraParagraphs} (0x{Stub_MaximumExtraParagraphs:X})");
+            builder.AppendLine($"  Initial SS value: {Stub_InitialSSValue} (0x{Stub_InitialSSValue:X})");
+            builder.AppendLine($"  Initial SP value: {Stub_InitialSPValue} (0x{Stub_InitialSPValue:X})");
+            builder.AppendLine($"  Checksum: {Stub_Checksum} (0x{Stub_Checksum:X})");
+            builder.AppendLine($"  Initial IP value: {Stub_InitialIPValue} (0x{Stub_InitialIPValue:X})");
+            builder.AppendLine($"  Initial CS value: {Stub_InitialCSValue} (0x{Stub_InitialCSValue:X})");
+            builder.AppendLine($"  Relocation table address: {Stub_RelocationTableAddr} (0x{Stub_RelocationTableAddr:X})");
+            builder.AppendLine($"  Overlay number: {Stub_OverlayNumber} (0x{Stub_OverlayNumber:X})");
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print stub extended header information
         /// </summary>
-        private void PrintStubExtendedHeader()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintStubExtendedHeader(StringBuilder builder)
         {
-            Console.WriteLine("  MS-DOS Stub Extended Header Information:");
-            Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Reserved words: {string.Join(", ", Stub_Reserved1)}");
-            Console.WriteLine($"  OEM identifier: {Stub_OEMIdentifier} (0x{Stub_OEMIdentifier:X})");
-            Console.WriteLine($"  OEM information: {Stub_OEMInformation} (0x{Stub_OEMInformation:X})");
-            Console.WriteLine($"  Reserved words: {string.Join(", ", Stub_Reserved2)}");
-            Console.WriteLine($"  New EXE header address: {Stub_NewExeHeaderAddr} (0x{Stub_NewExeHeaderAddr:X})");
-            Console.WriteLine();
+            builder.AppendLine("  MS-DOS Stub Extended Header Information:");
+            builder.AppendLine("  -------------------------");
+            builder.AppendLine($"  Reserved words: {string.Join(", ", Stub_Reserved1)}");
+            builder.AppendLine($"  OEM identifier: {Stub_OEMIdentifier} (0x{Stub_OEMIdentifier:X})");
+            builder.AppendLine($"  OEM information: {Stub_OEMInformation} (0x{Stub_OEMInformation:X})");
+            builder.AppendLine($"  Reserved words: {string.Join(", ", Stub_Reserved2)}");
+            builder.AppendLine($"  New EXE header address: {Stub_NewExeHeaderAddr} (0x{Stub_NewExeHeaderAddr:X})");
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print information block information
         /// </summary>
-        private void PrintInformationBlock()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintInformationBlock(StringBuilder builder)
         {
-            Console.WriteLine("  Information Block Information:");
-            Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Signature: {Signature}");
-            Console.WriteLine($"  Byte order: {ByteOrder} (0x{ByteOrder:X})");
-            Console.WriteLine($"  Word order: {WordOrder} (0x{WordOrder:X})");
-            Console.WriteLine($"  Executable format level: {ExecutableFormatLevel} (0x{ExecutableFormatLevel:X})");
-            Console.WriteLine($"  CPU type: {CPUType} (0x{CPUType:X})");
-            Console.WriteLine($"  Module OS: {ModuleOS} (0x{ModuleOS:X})");
-            Console.WriteLine($"  Module version: {ModuleVersion} (0x{ModuleVersion:X})");
-            Console.WriteLine($"  Module type flags: {ModuleTypeFlags} (0x{ModuleTypeFlags:X})");
-            Console.WriteLine($"  Module number pages: {ModuleNumberPages} (0x{ModuleNumberPages:X})");
-            Console.WriteLine($"  Initial object CS: {InitialObjectCS} (0x{InitialObjectCS:X})");
-            Console.WriteLine($"  Initial EIP: {InitialEIP} (0x{InitialEIP:X})");
-            Console.WriteLine($"  Initial object SS: {InitialObjectSS} (0x{InitialObjectSS:X})");
-            Console.WriteLine($"  Initial ESP: {InitialESP} (0x{InitialESP:X})");
-            Console.WriteLine($"  Memory page size: {MemoryPageSize} (0x{MemoryPageSize:X})");
-            Console.WriteLine($"  Bytes on last page: {BytesOnLastPage} (0x{BytesOnLastPage:X})");
-            Console.WriteLine($"  Fix-up section size: {FixupSectionSize} (0x{FixupSectionSize:X})");
-            Console.WriteLine($"  Fix-up section checksum: {FixupSectionChecksum} (0x{FixupSectionChecksum:X})");
-            Console.WriteLine($"  Loader section size: {LoaderSectionSize} (0x{LoaderSectionSize:X})");
-            Console.WriteLine($"  Loader section checksum: {LoaderSectionChecksum} (0x{LoaderSectionChecksum:X})");
-            Console.WriteLine($"  Object table offset: {ObjectTableOffset} (0x{ObjectTableOffset:X})");
-            Console.WriteLine($"  Object table count: {ObjectTableCount} (0x{ObjectTableCount:X})");
-            Console.WriteLine($"  Object page map offset: {ObjectPageMapOffset} (0x{ObjectPageMapOffset:X})");
-            Console.WriteLine($"  Object iterate data map offset: {ObjectIterateDataMapOffset} (0x{ObjectIterateDataMapOffset:X})");
-            Console.WriteLine($"  Resource table offset: {ResourceTableOffset} (0x{ResourceTableOffset:X})");
-            Console.WriteLine($"  Resource table count: {ResourceTableCount} (0x{ResourceTableCount:X})");
-            Console.WriteLine($"  Resident names table offset: {ResidentNamesTableOffset} (0x{ResidentNamesTableOffset:X})");
-            Console.WriteLine($"  Entry table offset: {EntryTableOffset} (0x{EntryTableOffset:X})");
-            Console.WriteLine($"  Module directives table offset: {ModuleDirectivesTableOffset} (0x{ModuleDirectivesTableOffset:X})");
-            Console.WriteLine($"  Module directives table count: {ModuleDirectivesCount} (0x{ModuleDirectivesCount:X})");
-            Console.WriteLine($"  Fix-up page table offset: {FixupPageTableOffset} (0x{FixupPageTableOffset:X})");
-            Console.WriteLine($"  Fix-up record table offset: {FixupRecordTableOffset} (0x{FixupRecordTableOffset:X})");
-            Console.WriteLine($"  Imported modules name table offset: {ImportedModulesNameTableOffset} (0x{ImportedModulesNameTableOffset:X})");
-            Console.WriteLine($"  Imported modules count: {ImportedModulesCount} (0x{ImportedModulesCount:X})");
-            Console.WriteLine($"  Imported procedure name table count: {ImportProcedureNameTableOffset} (0x{ImportProcedureNameTableOffset:X})");
-            Console.WriteLine($"  Per-page checksum table offset: {PerPageChecksumTableOffset} (0x{PerPageChecksumTableOffset:X})");
-            Console.WriteLine($"  Data pages offset: {DataPagesOffset} (0x{DataPagesOffset:X})");
-            Console.WriteLine($"  Preload page count: {PreloadPageCount} (0x{PreloadPageCount:X})");
-            Console.WriteLine($"  Non-resident names table offset: {NonResidentNamesTableOffset} (0x{NonResidentNamesTableOffset:X})");
-            Console.WriteLine($"  Non-resident names table length: {NonResidentNamesTableLength} (0x{NonResidentNamesTableLength:X})");
-            Console.WriteLine($"  Non-resident names table checksum: {NonResidentNamesTableChecksum} (0x{NonResidentNamesTableChecksum:X})");
-            Console.WriteLine($"  Automatic data object: {AutomaticDataObject} (0x{AutomaticDataObject:X})");
-            Console.WriteLine($"  Debug information offset: {DebugInformationOffset} (0x{DebugInformationOffset:X})");
-            Console.WriteLine($"  Debug information length: {DebugInformationLength} (0x{DebugInformationLength:X})");
-            Console.WriteLine($"  Preload instance pages number: {PreloadInstancePagesNumber} (0x{PreloadInstancePagesNumber:X})");
-            Console.WriteLine($"  Demand instance pages number: {DemandInstancePagesNumber} (0x{DemandInstancePagesNumber:X})");
-            Console.WriteLine($"  Extra heap allocation: {ExtraHeapAllocation} (0x{ExtraHeapAllocation:X})");
-            Console.WriteLine();
+            builder.AppendLine("  Information Block Information:");
+            builder.AppendLine("  -------------------------");
+            builder.AppendLine($"  Signature: {Signature}");
+            builder.AppendLine($"  Byte order: {ByteOrder} (0x{ByteOrder:X})");
+            builder.AppendLine($"  Word order: {WordOrder} (0x{WordOrder:X})");
+            builder.AppendLine($"  Executable format level: {ExecutableFormatLevel} (0x{ExecutableFormatLevel:X})");
+            builder.AppendLine($"  CPU type: {CPUType} (0x{CPUType:X})");
+            builder.AppendLine($"  Module OS: {ModuleOS} (0x{ModuleOS:X})");
+            builder.AppendLine($"  Module version: {ModuleVersion} (0x{ModuleVersion:X})");
+            builder.AppendLine($"  Module type flags: {ModuleTypeFlags} (0x{ModuleTypeFlags:X})");
+            builder.AppendLine($"  Module number pages: {ModuleNumberPages} (0x{ModuleNumberPages:X})");
+            builder.AppendLine($"  Initial object CS: {InitialObjectCS} (0x{InitialObjectCS:X})");
+            builder.AppendLine($"  Initial EIP: {InitialEIP} (0x{InitialEIP:X})");
+            builder.AppendLine($"  Initial object SS: {InitialObjectSS} (0x{InitialObjectSS:X})");
+            builder.AppendLine($"  Initial ESP: {InitialESP} (0x{InitialESP:X})");
+            builder.AppendLine($"  Memory page size: {MemoryPageSize} (0x{MemoryPageSize:X})");
+            builder.AppendLine($"  Bytes on last page: {BytesOnLastPage} (0x{BytesOnLastPage:X})");
+            builder.AppendLine($"  Fix-up section size: {FixupSectionSize} (0x{FixupSectionSize:X})");
+            builder.AppendLine($"  Fix-up section checksum: {FixupSectionChecksum} (0x{FixupSectionChecksum:X})");
+            builder.AppendLine($"  Loader section size: {LoaderSectionSize} (0x{LoaderSectionSize:X})");
+            builder.AppendLine($"  Loader section checksum: {LoaderSectionChecksum} (0x{LoaderSectionChecksum:X})");
+            builder.AppendLine($"  Object table offset: {ObjectTableOffset} (0x{ObjectTableOffset:X})");
+            builder.AppendLine($"  Object table count: {ObjectTableCount} (0x{ObjectTableCount:X})");
+            builder.AppendLine($"  Object page map offset: {ObjectPageMapOffset} (0x{ObjectPageMapOffset:X})");
+            builder.AppendLine($"  Object iterate data map offset: {ObjectIterateDataMapOffset} (0x{ObjectIterateDataMapOffset:X})");
+            builder.AppendLine($"  Resource table offset: {ResourceTableOffset} (0x{ResourceTableOffset:X})");
+            builder.AppendLine($"  Resource table count: {ResourceTableCount} (0x{ResourceTableCount:X})");
+            builder.AppendLine($"  Resident names table offset: {ResidentNamesTableOffset} (0x{ResidentNamesTableOffset:X})");
+            builder.AppendLine($"  Entry table offset: {EntryTableOffset} (0x{EntryTableOffset:X})");
+            builder.AppendLine($"  Module directives table offset: {ModuleDirectivesTableOffset} (0x{ModuleDirectivesTableOffset:X})");
+            builder.AppendLine($"  Module directives table count: {ModuleDirectivesCount} (0x{ModuleDirectivesCount:X})");
+            builder.AppendLine($"  Fix-up page table offset: {FixupPageTableOffset} (0x{FixupPageTableOffset:X})");
+            builder.AppendLine($"  Fix-up record table offset: {FixupRecordTableOffset} (0x{FixupRecordTableOffset:X})");
+            builder.AppendLine($"  Imported modules name table offset: {ImportedModulesNameTableOffset} (0x{ImportedModulesNameTableOffset:X})");
+            builder.AppendLine($"  Imported modules count: {ImportedModulesCount} (0x{ImportedModulesCount:X})");
+            builder.AppendLine($"  Imported procedure name table count: {ImportProcedureNameTableOffset} (0x{ImportProcedureNameTableOffset:X})");
+            builder.AppendLine($"  Per-page checksum table offset: {PerPageChecksumTableOffset} (0x{PerPageChecksumTableOffset:X})");
+            builder.AppendLine($"  Data pages offset: {DataPagesOffset} (0x{DataPagesOffset:X})");
+            builder.AppendLine($"  Preload page count: {PreloadPageCount} (0x{PreloadPageCount:X})");
+            builder.AppendLine($"  Non-resident names table offset: {NonResidentNamesTableOffset} (0x{NonResidentNamesTableOffset:X})");
+            builder.AppendLine($"  Non-resident names table length: {NonResidentNamesTableLength} (0x{NonResidentNamesTableLength:X})");
+            builder.AppendLine($"  Non-resident names table checksum: {NonResidentNamesTableChecksum} (0x{NonResidentNamesTableChecksum:X})");
+            builder.AppendLine($"  Automatic data object: {AutomaticDataObject} (0x{AutomaticDataObject:X})");
+            builder.AppendLine($"  Debug information offset: {DebugInformationOffset} (0x{DebugInformationOffset:X})");
+            builder.AppendLine($"  Debug information length: {DebugInformationLength} (0x{DebugInformationLength:X})");
+            builder.AppendLine($"  Preload instance pages number: {PreloadInstancePagesNumber} (0x{PreloadInstancePagesNumber:X})");
+            builder.AppendLine($"  Demand instance pages number: {DemandInstancePagesNumber} (0x{DemandInstancePagesNumber:X})");
+            builder.AppendLine($"  Extra heap allocation: {ExtraHeapAllocation} (0x{ExtraHeapAllocation:X})");
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print object table information
         /// </summary>
-        private void PrintObjectTable()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintObjectTable(StringBuilder builder)
         {
-            Console.WriteLine("  Object Table Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Object Table Information:");
+            builder.AppendLine("  -------------------------");
             if (ObjectTable == null || ObjectTable.Length == 0)
             {
-                Console.WriteLine("  No object table entries");
+                builder.AppendLine("  No object table entries");
             }
             else
             {
                 for (int i = 0; i < ObjectTable.Length; i++)
                 {
                     var entry = ObjectTable[i];
-                    Console.WriteLine($"  Object Table Entry {i}");
-                    Console.WriteLine($"    Virtual segment size: {entry.VirtualSegmentSize} (0x{entry.VirtualSegmentSize:X})");
-                    Console.WriteLine($"    Relocation base address: {entry.RelocationBaseAddress} (0x{entry.RelocationBaseAddress:X})");
-                    Console.WriteLine($"    Object flags: {entry.ObjectFlags} (0x{entry.ObjectFlags:X})");
-                    Console.WriteLine($"    Page table index: {entry.PageTableIndex} (0x{entry.PageTableIndex:X})");
-                    Console.WriteLine($"    Page table entries: {entry.PageTableEntries} (0x{entry.PageTableEntries:X})");
-                    Console.WriteLine($"    Reserved: {entry.Reserved} (0x{entry.Reserved:X})");
+                    builder.AppendLine($"  Object Table Entry {i}");
+                    builder.AppendLine($"    Virtual segment size: {entry.VirtualSegmentSize} (0x{entry.VirtualSegmentSize:X})");
+                    builder.AppendLine($"    Relocation base address: {entry.RelocationBaseAddress} (0x{entry.RelocationBaseAddress:X})");
+                    builder.AppendLine($"    Object flags: {entry.ObjectFlags} (0x{entry.ObjectFlags:X})");
+                    builder.AppendLine($"    Page table index: {entry.PageTableIndex} (0x{entry.PageTableIndex:X})");
+                    builder.AppendLine($"    Page table entries: {entry.PageTableEntries} (0x{entry.PageTableEntries:X})");
+                    builder.AppendLine($"    Reserved: {entry.Reserved} (0x{entry.Reserved:X})");
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print object page map information
         /// </summary>
-        private void PrintObjectPageMap()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintObjectPageMap(StringBuilder builder)
         {
-            Console.WriteLine("  Object Page Map Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Object Page Map Information:");
+            builder.AppendLine("  -------------------------");
             if (ObjectPageMap == null || ObjectPageMap.Length == 0)
             {
-                Console.WriteLine("  No object page map entries");
+                builder.AppendLine("  No object page map entries");
             }
             else
             {
                 for (int i = 0; i < ObjectPageMap.Length; i++)
                 {
                     var entry = ObjectPageMap[i];
-                    Console.WriteLine($"  Object Page Map Entry {i}");
-                    Console.WriteLine($"    Page data offset: {entry.PageDataOffset} (0x{entry.PageDataOffset:X})");
-                    Console.WriteLine($"    Data size: {entry.DataSize} (0x{entry.DataSize:X})");
-                    Console.WriteLine($"    Flags: {entry.Flags} (0x{entry.Flags:X})");
+                    builder.AppendLine($"  Object Page Map Entry {i}");
+                    builder.AppendLine($"    Page data offset: {entry.PageDataOffset} (0x{entry.PageDataOffset:X})");
+                    builder.AppendLine($"    Data size: {entry.DataSize} (0x{entry.DataSize:X})");
+                    builder.AppendLine($"    Flags: {entry.Flags} (0x{entry.Flags:X})");
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print resource table information
         /// </summary>
-        private void PrintResourceTable()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintResourceTable(StringBuilder builder)
         {
-            Console.WriteLine("  Resource Table Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Resource Table Information:");
+            builder.AppendLine("  -------------------------");
             if (ResourceTable == null || ResourceTable.Length == 0)
             {
-                Console.WriteLine("  No resource table entries");
+                builder.AppendLine("  No resource table entries");
             }
             else
             {
                 for (int i = 0; i < ResourceTable.Length; i++)
                 {
                     var entry = ResourceTable[i];
-                    Console.WriteLine($"  Resource Table Entry {i}");
-                    Console.WriteLine($"    Type ID: {entry.TypeID} (0x{entry.TypeID:X})");
-                    Console.WriteLine($"    Name ID: {entry.NameID} (0x{entry.NameID:X})");
-                    Console.WriteLine($"    Resource size: {entry.ResourceSize} (0x{entry.ResourceSize:X})");
-                    Console.WriteLine($"    Object number: {entry.ObjectNumber} (0x{entry.ObjectNumber:X})");
-                    Console.WriteLine($"    Offset: {entry.Offset} (0x{entry.Offset:X})");
+                    builder.AppendLine($"  Resource Table Entry {i}");
+                    builder.AppendLine($"    Type ID: {entry.TypeID} (0x{entry.TypeID:X})");
+                    builder.AppendLine($"    Name ID: {entry.NameID} (0x{entry.NameID:X})");
+                    builder.AppendLine($"    Resource size: {entry.ResourceSize} (0x{entry.ResourceSize:X})");
+                    builder.AppendLine($"    Object number: {entry.ObjectNumber} (0x{entry.ObjectNumber:X})");
+                    builder.AppendLine($"    Offset: {entry.Offset} (0x{entry.Offset:X})");
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print resident names table information
         /// </summary>
-        private void PrintResidentNamesTable()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintResidentNamesTable(StringBuilder builder)
         {
-            Console.WriteLine("  Resident Names Table Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Resident Names Table Information:");
+            builder.AppendLine("  -------------------------");
             if (ResidentNamesTable == null || ResidentNamesTable.Length == 0)
             {
-                Console.WriteLine("  No resident names table entries");
+                builder.AppendLine("  No resident names table entries");
             }
             else
             {
                 for (int i = 0; i < ResidentNamesTable.Length; i++)
                 {
                     var entry = ResidentNamesTable[i];
-                    Console.WriteLine($"  Resident Names Table Entry {i}");
-                    Console.WriteLine($"    Length: {entry.Length} (0x{entry.Length:X})");
-                    Console.WriteLine($"    Name: {entry.Name ?? "[NULL]"}");
-                    Console.WriteLine($"    Ordinal number: {entry.OrdinalNumber} (0x{entry.OrdinalNumber:X})");
+                    builder.AppendLine($"  Resident Names Table Entry {i}");
+                    builder.AppendLine($"    Length: {entry.Length} (0x{entry.Length:X})");
+                    builder.AppendLine($"    Name: {entry.Name ?? "[NULL]"}");
+                    builder.AppendLine($"    Ordinal number: {entry.OrdinalNumber} (0x{entry.OrdinalNumber:X})");
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print entry table information
         /// </summary>
-        private void PrintEntryTable()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintEntryTable(StringBuilder builder)
         {
-            Console.WriteLine("  Entry Table Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Entry Table Information:");
+            builder.AppendLine("  -------------------------");
             if (EntryTable == null || EntryTable.Length == 0)
             {
-                Console.WriteLine("  No entry table bundles");
+                builder.AppendLine("  No entry table bundles");
             }
             else
             {
                 for (int i = 0; i < EntryTable.Length; i++)
                 {
                     var bundle = EntryTable[i];
-                    Console.WriteLine($"  Entry Table Bundle {i}");
-                    Console.WriteLine($"    Entries: {bundle.Entries} (0x{bundle.Entries:X})");
-                    Console.WriteLine($"    Bundle type: {bundle.BundleType} (0x{bundle.BundleType:X})");
+                    builder.AppendLine($"  Entry Table Bundle {i}");
+                    builder.AppendLine($"    Entries: {bundle.Entries} (0x{bundle.Entries:X})");
+                    builder.AppendLine($"    Bundle type: {bundle.BundleType} (0x{bundle.BundleType:X})");
                     if (bundle.TableEntries != null && bundle.TableEntries.Length != 0)
                     {
-                        Console.WriteLine();
-                        Console.WriteLine($"    Entry Table Entries:");
-                        Console.WriteLine("    -------------------------");
+                        builder.AppendLine();
+                        builder.AppendLine($"    Entry Table Entries:");
+                        builder.AppendLine("    -------------------------");
                         for (int j = 0; j < bundle.TableEntries.Length; j++)
                         {
                             var entry = bundle.TableEntries[j];
-                            Console.WriteLine($"    Entry Table Entry {j}");
+                            builder.AppendLine($"    Entry Table Entry {j}");
                             switch (bundle.BundleType & ~Models.LinearExecutable.BundleType.ParameterTypingInformationPresent)
                             {
                                 case Models.LinearExecutable.BundleType.UnusedEntry:
-                                    Console.WriteLine($"      Unused, empty entry");
+                                    builder.AppendLine($"      Unused, empty entry");
                                     break;
 
                                 case Models.LinearExecutable.BundleType.SixteenBitEntry:
-                                    Console.WriteLine($"      Object number: {entry.SixteenBitObjectNumber} (0x{entry.SixteenBitObjectNumber:X})");
-                                    Console.WriteLine($"      Entry flags: {entry.SixteenBitEntryFlags} (0x{entry.SixteenBitEntryFlags:X})");
-                                    Console.WriteLine($"      Offset: {entry.SixteenBitOffset} (0x{entry.SixteenBitOffset:X})");
+                                    builder.AppendLine($"      Object number: {entry.SixteenBitObjectNumber} (0x{entry.SixteenBitObjectNumber:X})");
+                                    builder.AppendLine($"      Entry flags: {entry.SixteenBitEntryFlags} (0x{entry.SixteenBitEntryFlags:X})");
+                                    builder.AppendLine($"      Offset: {entry.SixteenBitOffset} (0x{entry.SixteenBitOffset:X})");
                                     break;
 
                                 case Models.LinearExecutable.BundleType.TwoEightySixCallGateEntry:
-                                    Console.WriteLine($"      Object number: {entry.TwoEightySixObjectNumber} (0x{entry.TwoEightySixObjectNumber:X})");
-                                    Console.WriteLine($"      Entry flags: {entry.TwoEightySixEntryFlags} (0x{entry.TwoEightySixEntryFlags:X})");
-                                    Console.WriteLine($"      Offset: {entry.TwoEightySixOffset} (0x{entry.TwoEightySixOffset:X})");
-                                    Console.WriteLine($"      Callgate: {entry.TwoEightySixCallgate} (0x{entry.TwoEightySixCallgate:X})");
+                                    builder.AppendLine($"      Object number: {entry.TwoEightySixObjectNumber} (0x{entry.TwoEightySixObjectNumber:X})");
+                                    builder.AppendLine($"      Entry flags: {entry.TwoEightySixEntryFlags} (0x{entry.TwoEightySixEntryFlags:X})");
+                                    builder.AppendLine($"      Offset: {entry.TwoEightySixOffset} (0x{entry.TwoEightySixOffset:X})");
+                                    builder.AppendLine($"      Callgate: {entry.TwoEightySixCallgate} (0x{entry.TwoEightySixCallgate:X})");
                                     break;
 
                                 case Models.LinearExecutable.BundleType.ThirtyTwoBitEntry:
-                                    Console.WriteLine($"      Object number: {entry.ThirtyTwoBitObjectNumber} (0x{entry.ThirtyTwoBitObjectNumber:X})");
-                                    Console.WriteLine($"      Entry flags: {entry.ThirtyTwoBitEntryFlags} (0x{entry.ThirtyTwoBitEntryFlags:X})");
-                                    Console.WriteLine($"      Offset: {entry.ThirtyTwoBitOffset} (0x{entry.ThirtyTwoBitOffset:X})");
+                                    builder.AppendLine($"      Object number: {entry.ThirtyTwoBitObjectNumber} (0x{entry.ThirtyTwoBitObjectNumber:X})");
+                                    builder.AppendLine($"      Entry flags: {entry.ThirtyTwoBitEntryFlags} (0x{entry.ThirtyTwoBitEntryFlags:X})");
+                                    builder.AppendLine($"      Offset: {entry.ThirtyTwoBitOffset} (0x{entry.ThirtyTwoBitOffset:X})");
                                     break;
 
                                 case Models.LinearExecutable.BundleType.ForwarderEntry:
-                                    Console.WriteLine($"      Reserved: {entry.ForwarderReserved} (0x{entry.ForwarderReserved:X})");
-                                    Console.WriteLine($"      Forwarder flags: {entry.ForwarderFlags} (0x{entry.ForwarderFlags:X})");
-                                    Console.WriteLine($"      Module ordinal number: {entry.ForwarderModuleOrdinalNumber} (0x{entry.ForwarderModuleOrdinalNumber:X})");
-                                    Console.WriteLine($"      Procedure name offset: {entry.ProcedureNameOffset} (0x{entry.ProcedureNameOffset:X})");
-                                    Console.WriteLine($"      Import ordinal number: {entry.ImportOrdinalNumber} (0x{entry.ImportOrdinalNumber:X})");
+                                    builder.AppendLine($"      Reserved: {entry.ForwarderReserved} (0x{entry.ForwarderReserved:X})");
+                                    builder.AppendLine($"      Forwarder flags: {entry.ForwarderFlags} (0x{entry.ForwarderFlags:X})");
+                                    builder.AppendLine($"      Module ordinal number: {entry.ForwarderModuleOrdinalNumber} (0x{entry.ForwarderModuleOrdinalNumber:X})");
+                                    builder.AppendLine($"      Procedure name offset: {entry.ProcedureNameOffset} (0x{entry.ProcedureNameOffset:X})");
+                                    builder.AppendLine($"      Import ordinal number: {entry.ImportOrdinalNumber} (0x{entry.ImportOrdinalNumber:X})");
                                     break;
 
                                 default:
-                                    Console.WriteLine($"      Unknown entry type {bundle.BundleType}");
+                                    builder.AppendLine($"      Unknown entry type {bundle.BundleType}");
                                     break;
                             }
                         }
                     }
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print module format directives table information
         /// </summary>
-        private void PrintModuleFormatDirectivesTable()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintModuleFormatDirectivesTable(StringBuilder builder)
         {
-            Console.WriteLine("  Module Format Directives Table Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Module Format Directives Table Information:");
+            builder.AppendLine("  -------------------------");
             if (ModuleFormatDirectivesTable == null || ModuleFormatDirectivesTable.Length == 0)
             {
-                Console.WriteLine("  No module format directives table entries");
+                builder.AppendLine("  No module format directives table entries");
             }
             else
             {
                 for (int i = 0; i < ModuleFormatDirectivesTable.Length; i++)
                 {
                     var entry = ModuleFormatDirectivesTable[i];
-                    Console.WriteLine($"  Moduile Format Directives Table Entry {i}");
-                    Console.WriteLine($"    Directive number: {entry.DirectiveNumber} (0x{entry.DirectiveNumber:X})");
-                    Console.WriteLine($"    Directive data length: {entry.DirectiveDataLength} (0x{entry.DirectiveDataLength:X})");
-                    Console.WriteLine($"    Directive data offset: {entry.DirectiveDataOffset} (0x{entry.DirectiveDataOffset:X})");
+                    builder.AppendLine($"  Moduile Format Directives Table Entry {i}");
+                    builder.AppendLine($"    Directive number: {entry.DirectiveNumber} (0x{entry.DirectiveNumber:X})");
+                    builder.AppendLine($"    Directive data length: {entry.DirectiveDataLength} (0x{entry.DirectiveDataLength:X})");
+                    builder.AppendLine($"    Directive data offset: {entry.DirectiveDataOffset} (0x{entry.DirectiveDataOffset:X})");
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print verify record directive table information
         /// </summary>
-        private void PrintVerifyRecordDirectiveTable()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintVerifyRecordDirectiveTable(StringBuilder builder)
         {
-            Console.WriteLine("  Verify Record Directive Table Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Verify Record Directive Table Information:");
+            builder.AppendLine("  -------------------------");
             if (VerifyRecordDirectiveTable == null || VerifyRecordDirectiveTable.Length == 0)
             {
-                Console.WriteLine("  No verify record directive table entries");
+                builder.AppendLine("  No verify record directive table entries");
             }
             else
             {
                 for (int i = 0; i < VerifyRecordDirectiveTable.Length; i++)
                 {
                     var entry = VerifyRecordDirectiveTable[i];
-                    Console.WriteLine($"  Verify Record Directive Table Entry {i}");
-                    Console.WriteLine($"    Entry count: {entry.EntryCount} (0x{entry.EntryCount:X})");
-                    Console.WriteLine($"    Ordinal index: {entry.OrdinalIndex} (0x{entry.OrdinalIndex:X})");
-                    Console.WriteLine($"    Version: {entry.Version} (0x{entry.Version:X})");
-                    Console.WriteLine($"    Object entries count: {entry.ObjectEntriesCount} (0x{entry.ObjectEntriesCount:X})");
-                    Console.WriteLine($"    Object number in module: {entry.ObjectNumberInModule} (0x{entry.ObjectNumberInModule:X})");
-                    Console.WriteLine($"    Object load base address: {entry.ObjectLoadBaseAddress} (0x{entry.ObjectLoadBaseAddress:X})");
-                    Console.WriteLine($"    Object virtual address size: {entry.ObjectVirtualAddressSize} (0x{entry.ObjectVirtualAddressSize:X})");
+                    builder.AppendLine($"  Verify Record Directive Table Entry {i}");
+                    builder.AppendLine($"    Entry count: {entry.EntryCount} (0x{entry.EntryCount:X})");
+                    builder.AppendLine($"    Ordinal index: {entry.OrdinalIndex} (0x{entry.OrdinalIndex:X})");
+                    builder.AppendLine($"    Version: {entry.Version} (0x{entry.Version:X})");
+                    builder.AppendLine($"    Object entries count: {entry.ObjectEntriesCount} (0x{entry.ObjectEntriesCount:X})");
+                    builder.AppendLine($"    Object number in module: {entry.ObjectNumberInModule} (0x{entry.ObjectNumberInModule:X})");
+                    builder.AppendLine($"    Object load base address: {entry.ObjectLoadBaseAddress} (0x{entry.ObjectLoadBaseAddress:X})");
+                    builder.AppendLine($"    Object virtual address size: {entry.ObjectVirtualAddressSize} (0x{entry.ObjectVirtualAddressSize:X})");
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print fix-up page table information
         /// </summary>
-        private void PrintFixupPageTable()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintFixupPageTable(StringBuilder builder)
         {
-            Console.WriteLine("  Fix-up Page Table Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Fix-up Page Table Information:");
+            builder.AppendLine("  -------------------------");
             if (FixupPageTable == null || FixupPageTable.Length == 0)
             {
-                Console.WriteLine("  No fix-up page table entries");
+                builder.AppendLine("  No fix-up page table entries");
             }
             else
             {
                 for (int i = 0; i < FixupPageTable.Length; i++)
                 {
                     var entry = FixupPageTable[i];
-                    Console.WriteLine($"  Fix-up Page Table Entry {i}");
-                    Console.WriteLine($"    Offset: {entry.Offset} (0x{entry.Offset:X})");
+                    builder.AppendLine($"  Fix-up Page Table Entry {i}");
+                    builder.AppendLine($"    Offset: {entry.Offset} (0x{entry.Offset:X})");
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print fix-up record table information
         /// </summary>
-        private void PrintFixupRecordTable()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintFixupRecordTable(StringBuilder builder)
         {
-            Console.WriteLine("  Fix-up Record Table Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Fix-up Record Table Information:");
+            builder.AppendLine("  -------------------------");
             if (FixupRecordTable == null || FixupRecordTable.Length == 0)
             {
-                Console.WriteLine("  No fix-up record table entries");
-                Console.WriteLine();
+                builder.AppendLine("  No fix-up record table entries");
+                builder.AppendLine();
             }
             else
             {
                 for (int i = 0; i < FixupRecordTable.Length; i++)
                 {
                     var entry = FixupRecordTable[i];
-                    Console.WriteLine($"  Fix-up Record Table Entry {i}");
-                    Console.WriteLine($"    Source type: {entry.SourceType} (0x{entry.SourceType:X})");
-                    Console.WriteLine($"    Target flags: {entry.TargetFlags} (0x{entry.TargetFlags:X})");
+                    builder.AppendLine($"  Fix-up Record Table Entry {i}");
+                    builder.AppendLine($"    Source type: {entry.SourceType} (0x{entry.SourceType:X})");
+                    builder.AppendLine($"    Target flags: {entry.TargetFlags} (0x{entry.TargetFlags:X})");
 
                     // Source list flag
                     if (entry.SourceType.HasFlag(Models.LinearExecutable.FixupRecordSourceType.SourceListFlag))
-                        Console.WriteLine($"    Source offset list count: {entry.SourceOffsetListCount} (0x{entry.SourceOffsetListCount:X})");
+                        builder.AppendLine($"    Source offset list count: {entry.SourceOffsetListCount} (0x{entry.SourceOffsetListCount:X})");
                     else
-                        Console.WriteLine($"    Source offset: {entry.SourceOffset} (0x{entry.SourceOffset:X})");
+                        builder.AppendLine($"    Source offset: {entry.SourceOffset} (0x{entry.SourceOffset:X})");
 
                     // OBJECT / TRGOFF
                     if (entry.TargetFlags.HasFlag(Models.LinearExecutable.FixupRecordTargetFlags.InternalReference))
                     {
                         // 16-bit Object Number/Module Ordinal Flag
                         if (entry.TargetFlags.HasFlag(Models.LinearExecutable.FixupRecordTargetFlags.SixteenBitObjectNumberModuleOrdinalFlag))
-                            Console.WriteLine($"    Target object number: {entry.TargetObjectNumberWORD} (0x{entry.TargetObjectNumberWORD:X})");
+                            builder.AppendLine($"    Target object number: {entry.TargetObjectNumberWORD} (0x{entry.TargetObjectNumberWORD:X})");
                         else
-                            Console.WriteLine($"    Target object number: {entry.TargetObjectNumberByte} (0x{entry.TargetObjectNumberByte:X})");
+                            builder.AppendLine($"    Target object number: {entry.TargetObjectNumberByte} (0x{entry.TargetObjectNumberByte:X})");
 
                         // 16-bit Selector fixup
                         if (!entry.SourceType.HasFlag(Models.LinearExecutable.FixupRecordSourceType.SixteenBitSelectorFixup))
                         {
                             // 32-bit Target Offset Flag
                             if (entry.TargetFlags.HasFlag(Models.LinearExecutable.FixupRecordTargetFlags.ThirtyTwoBitTargetOffsetFlag))
-                                Console.WriteLine($"    Target offset: {entry.TargetOffsetDWORD} (0x{entry.TargetOffsetDWORD:X})");
+                                builder.AppendLine($"    Target offset: {entry.TargetOffsetDWORD} (0x{entry.TargetOffsetDWORD:X})");
                             else
-                                Console.WriteLine($"    Target offset: {entry.TargetOffsetWORD} (0x{entry.TargetOffsetWORD:X})");
+                                builder.AppendLine($"    Target offset: {entry.TargetOffsetWORD} (0x{entry.TargetOffsetWORD:X})");
                         }
                     }
 
@@ -781,26 +798,26 @@ namespace BurnOutSharp.Wrappers
                     {
                         // 16-bit Object Number/Module Ordinal Flag
                         if (entry.TargetFlags.HasFlag(Models.LinearExecutable.FixupRecordTargetFlags.SixteenBitObjectNumberModuleOrdinalFlag))
-                            Console.WriteLine(value: $"    Ordinal index import module name table: {entry.OrdinalIndexImportModuleNameTableWORD} (0x{entry.OrdinalIndexImportModuleNameTableWORD:X})");
+                            builder.AppendLine(value: $"    Ordinal index import module name table: {entry.OrdinalIndexImportModuleNameTableWORD} (0x{entry.OrdinalIndexImportModuleNameTableWORD:X})");
                         else
-                            Console.WriteLine(value: $"    Ordinal index import module name table: {entry.OrdinalIndexImportModuleNameTableByte} (0x{entry.OrdinalIndexImportModuleNameTableByte:X})");
+                            builder.AppendLine(value: $"    Ordinal index import module name table: {entry.OrdinalIndexImportModuleNameTableByte} (0x{entry.OrdinalIndexImportModuleNameTableByte:X})");
 
                         // 8-bit Ordinal Flag & 32-bit Target Offset Flag
                         if (entry.TargetFlags.HasFlag(Models.LinearExecutable.FixupRecordTargetFlags.EightBitOrdinalFlag))
-                            Console.WriteLine(value: $"    Imported ordinal number: {entry.ImportedOrdinalNumberByte} (0x{entry.ImportedOrdinalNumberByte:X})");
+                            builder.AppendLine(value: $"    Imported ordinal number: {entry.ImportedOrdinalNumberByte} (0x{entry.ImportedOrdinalNumberByte:X})");
                         else if (entry.TargetFlags.HasFlag(flag: Models.LinearExecutable.FixupRecordTargetFlags.ThirtyTwoBitTargetOffsetFlag))
-                            Console.WriteLine(value: $"    Imported ordinal number: {entry.ImportedOrdinalNumberDWORD} (0x{entry.ImportedOrdinalNumberDWORD:X})");
+                            builder.AppendLine(value: $"    Imported ordinal number: {entry.ImportedOrdinalNumberDWORD} (0x{entry.ImportedOrdinalNumberDWORD:X})");
                         else
-                            Console.WriteLine(value: $"    Imported ordinal number: {entry.ImportedOrdinalNumberWORD} (0x{entry.ImportedOrdinalNumberWORD:X})");
+                            builder.AppendLine(value: $"    Imported ordinal number: {entry.ImportedOrdinalNumberWORD} (0x{entry.ImportedOrdinalNumberWORD:X})");
 
                         // Additive Fixup Flag
                         if (entry.TargetFlags.HasFlag(Models.LinearExecutable.FixupRecordTargetFlags.AdditiveFixupFlag))
                         {
                             // 32-bit Additive Flag
                             if (entry.TargetFlags.HasFlag(Models.LinearExecutable.FixupRecordTargetFlags.ThirtyTwoBitAdditiveFixupFlag))
-                                Console.WriteLine(value: $"    Additive fixup value: {entry.AdditiveFixupValueDWORD} (0x{entry.AdditiveFixupValueDWORD:X})");
+                                builder.AppendLine(value: $"    Additive fixup value: {entry.AdditiveFixupValueDWORD} (0x{entry.AdditiveFixupValueDWORD:X})");
                             else
-                                Console.WriteLine(value: $"    Additive fixup value: {entry.AdditiveFixupValueWORD} (0x{entry.AdditiveFixupValueWORD:X})");
+                                builder.AppendLine(value: $"    Additive fixup value: {entry.AdditiveFixupValueWORD} (0x{entry.AdditiveFixupValueWORD:X})");
                         }
                     }
 
@@ -809,24 +826,24 @@ namespace BurnOutSharp.Wrappers
                     {
                         // 16-bit Object Number/Module Ordinal Flag
                         if (entry.TargetFlags.HasFlag(Models.LinearExecutable.FixupRecordTargetFlags.SixteenBitObjectNumberModuleOrdinalFlag))
-                            Console.WriteLine(value: $"    Ordinal index import module name table: {entry.OrdinalIndexImportModuleNameTableWORD} (0x{entry.OrdinalIndexImportModuleNameTableWORD:X})");
+                            builder.AppendLine(value: $"    Ordinal index import module name table: {entry.OrdinalIndexImportModuleNameTableWORD} (0x{entry.OrdinalIndexImportModuleNameTableWORD:X})");
                         else
-                            Console.WriteLine(value: $"    Ordinal index import module name table: {entry.OrdinalIndexImportModuleNameTableByte} (0x{entry.OrdinalIndexImportModuleNameTableByte:X})");
+                            builder.AppendLine(value: $"    Ordinal index import module name table: {entry.OrdinalIndexImportModuleNameTableByte} (0x{entry.OrdinalIndexImportModuleNameTableByte:X})");
 
                         // 32-bit Target Offset Flag
                         if (entry.TargetFlags.HasFlag(Models.LinearExecutable.FixupRecordTargetFlags.ThirtyTwoBitTargetOffsetFlag))
-                            Console.WriteLine(value: $"    Offset import procedure name table: {entry.OffsetImportProcedureNameTableDWORD} (0x{entry.OffsetImportProcedureNameTableDWORD:X})");
+                            builder.AppendLine(value: $"    Offset import procedure name table: {entry.OffsetImportProcedureNameTableDWORD} (0x{entry.OffsetImportProcedureNameTableDWORD:X})");
                         else
-                            Console.WriteLine(value: $"    Offset import procedure name table: {entry.OffsetImportProcedureNameTableWORD} (0x{entry.OffsetImportProcedureNameTableWORD:X})");
+                            builder.AppendLine(value: $"    Offset import procedure name table: {entry.OffsetImportProcedureNameTableWORD} (0x{entry.OffsetImportProcedureNameTableWORD:X})");
 
                         // Additive Fixup Flag
                         if (entry.TargetFlags.HasFlag(Models.LinearExecutable.FixupRecordTargetFlags.AdditiveFixupFlag))
                         {
                             // 32-bit Additive Flag
                             if (entry.TargetFlags.HasFlag(Models.LinearExecutable.FixupRecordTargetFlags.ThirtyTwoBitAdditiveFixupFlag))
-                                Console.WriteLine(value: $"    Additive fixup value: {entry.AdditiveFixupValueDWORD} (0x{entry.AdditiveFixupValueDWORD:X})");
+                                builder.AppendLine(value: $"    Additive fixup value: {entry.AdditiveFixupValueDWORD} (0x{entry.AdditiveFixupValueDWORD:X})");
                             else
-                                Console.WriteLine(value: $"    Additive fixup value: {entry.AdditiveFixupValueWORD} (0x{entry.AdditiveFixupValueWORD:X})");
+                                builder.AppendLine(value: $"    Additive fixup value: {entry.AdditiveFixupValueWORD} (0x{entry.AdditiveFixupValueWORD:X})");
                         }
                     }
 
@@ -835,42 +852,42 @@ namespace BurnOutSharp.Wrappers
                     {
                         // 16-bit Object Number/Module Ordinal Flag
                         if (entry.TargetFlags.HasFlag(Models.LinearExecutable.FixupRecordTargetFlags.SixteenBitObjectNumberModuleOrdinalFlag))
-                            Console.WriteLine($"    Target object number: {entry.TargetObjectNumberWORD} (0x{entry.TargetObjectNumberWORD:X})");
+                            builder.AppendLine($"    Target object number: {entry.TargetObjectNumberWORD} (0x{entry.TargetObjectNumberWORD:X})");
                         else
-                            Console.WriteLine($"    Target object number: {entry.TargetObjectNumberByte} (0x{entry.TargetObjectNumberByte:X})");
+                            builder.AppendLine($"    Target object number: {entry.TargetObjectNumberByte} (0x{entry.TargetObjectNumberByte:X})");
 
                         // Additive Fixup Flag
                         if (entry.TargetFlags.HasFlag(Models.LinearExecutable.FixupRecordTargetFlags.AdditiveFixupFlag))
                         {
                             // 32-bit Additive Flag
                             if (entry.TargetFlags.HasFlag(Models.LinearExecutable.FixupRecordTargetFlags.ThirtyTwoBitAdditiveFixupFlag))
-                                Console.WriteLine(value: $"    Additive fixup value: {entry.AdditiveFixupValueDWORD} (0x{entry.AdditiveFixupValueDWORD:X})");
+                                builder.AppendLine(value: $"    Additive fixup value: {entry.AdditiveFixupValueDWORD} (0x{entry.AdditiveFixupValueDWORD:X})");
                             else
-                                Console.WriteLine(value: $"    Additive fixup value: {entry.AdditiveFixupValueWORD} (0x{entry.AdditiveFixupValueWORD:X})");
+                                builder.AppendLine(value: $"    Additive fixup value: {entry.AdditiveFixupValueWORD} (0x{entry.AdditiveFixupValueWORD:X})");
                         }
                     }
 
                     // No other top-level flags recognized
                     else
                     {
-                        Console.WriteLine($"    Unknown entry format");
+                        builder.AppendLine($"    Unknown entry format");
                     }
 
-                    Console.WriteLine();
-                    Console.WriteLine($"    Source Offset List:");
-                    Console.WriteLine("    -------------------------");
+                    builder.AppendLine();
+                    builder.AppendLine($"    Source Offset List:");
+                    builder.AppendLine("    -------------------------");
                     if (entry.SourceOffsetList == null || entry.SourceOffsetList.Length == 0)
                     {
-                        Console.WriteLine($"    No source offset list entries");
+                        builder.AppendLine($"    No source offset list entries");
                     }
                     else
                     {
                         for (int j = 0; j < entry.SourceOffsetList.Length; j++)
                         {
-                            Console.WriteLine($"    Source Offset List Entry {j}: {entry.SourceOffsetList[j]} (0x{entry.SourceOffsetList[j]:X})");
+                            builder.AppendLine($"    Source Offset List Entry {j}: {entry.SourceOffsetList[j]} (0x{entry.SourceOffsetList[j]:X})");
                         }
                     }
-                    Console.WriteLine();
+                    builder.AppendLine();
                 }
             }
         }
@@ -878,117 +895,122 @@ namespace BurnOutSharp.Wrappers
         /// <summary>
         /// Print import module name table information
         /// </summary>
-        private void PrintImportModuleNameTable()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintImportModuleNameTable(StringBuilder builder)
         {
-            Console.WriteLine("  Import Module Name Table Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Import Module Name Table Information:");
+            builder.AppendLine("  -------------------------");
             if (ImportModuleNameTable == null || ImportModuleNameTable.Length == 0)
             {
-                Console.WriteLine("  No import module name table entries");
+                builder.AppendLine("  No import module name table entries");
             }
             else
             {
                 for (int i = 0; i < ImportModuleNameTable.Length; i++)
                 {
                     var entry = ImportModuleNameTable[i];
-                    Console.WriteLine($"  Import Module Name Table Entry {i}");
-                    Console.WriteLine($"    Length: {entry.Length} (0x{entry.Length:X})");
-                    Console.WriteLine($"    Name: {entry.Name ?? "[NULL]"}");
+                    builder.AppendLine($"  Import Module Name Table Entry {i}");
+                    builder.AppendLine($"    Length: {entry.Length} (0x{entry.Length:X})");
+                    builder.AppendLine($"    Name: {entry.Name ?? "[NULL]"}");
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print import module procedure name table information
         /// </summary>
-        private void PrintImportModuleProcedureNameTable()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintImportModuleProcedureNameTable(StringBuilder builder)
         {
-            Console.WriteLine("  Import Module Procedure Name Table Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Import Module Procedure Name Table Information:");
+            builder.AppendLine("  -------------------------");
             if (ImportModuleProcedureNameTable == null || ImportModuleProcedureNameTable.Length == 0)
             {
-                Console.WriteLine("  No import module procedure name table entries");
+                builder.AppendLine("  No import module procedure name table entries");
             }
             else
             {
                 for (int i = 0; i < ImportModuleProcedureNameTable.Length; i++)
                 {
                     var entry = ImportModuleProcedureNameTable[i];
-                    Console.WriteLine($"  Import Module Procedure Name Table Entry {i}");
-                    Console.WriteLine($"    Length: {entry.Length} (0x{entry.Length:X})");
-                    Console.WriteLine($"    Name: {entry.Name ?? "[NULL]"}");
+                    builder.AppendLine($"  Import Module Procedure Name Table Entry {i}");
+                    builder.AppendLine($"    Length: {entry.Length} (0x{entry.Length:X})");
+                    builder.AppendLine($"    Name: {entry.Name ?? "[NULL]"}");
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print per-page checksum table information
         /// </summary>
-        private void PrintPerPageChecksumTable()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintPerPageChecksumTable(StringBuilder builder)
         {
-            Console.WriteLine("  Per-Page Checksum Table Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Per-Page Checksum Table Information:");
+            builder.AppendLine("  -------------------------");
             if (PerPageChecksumTable == null || PerPageChecksumTable.Length == 0)
             {
-                Console.WriteLine("  No per-page checksum table entries");
+                builder.AppendLine("  No per-page checksum table entries");
             }
             else
             {
                 for (int i = 0; i < PerPageChecksumTable.Length; i++)
                 {
                     var entry = PerPageChecksumTable[i];
-                    Console.WriteLine($" Per-Page Checksum Table Entry {i}");
-                    Console.WriteLine($"    Checksum: {entry.Checksum} (0x{entry.Checksum:X})");
+                    builder.AppendLine($" Per-Page Checksum Table Entry {i}");
+                    builder.AppendLine($"    Checksum: {entry.Checksum} (0x{entry.Checksum:X})");
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print non-resident names table information
         /// </summary>
-        private void PrintNonResidentNamesTable()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintNonResidentNamesTable(StringBuilder builder)
         {
-            Console.WriteLine("  Non-Resident Names Table Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Non-Resident Names Table Information:");
+            builder.AppendLine("  -------------------------");
             if (NonResidentNamesTable == null || NonResidentNamesTable.Length == 0)
             {
-                Console.WriteLine("  No non-resident names table entries");
+                builder.AppendLine("  No non-resident names table entries");
             }
             else
             {
                 for (int i = 0; i < NonResidentNamesTable.Length; i++)
                 {
                     var entry = NonResidentNamesTable[i];
-                    Console.WriteLine($"  Non-Resident Names Table Entry {i}");
-                    Console.WriteLine($"    Length: {entry.Length} (0x{entry.Length:X})");
-                    Console.WriteLine($"    Name: {entry.Name ?? "[NULL]"}");
-                    Console.WriteLine($"    Ordinal number: {entry.OrdinalNumber} (0x{entry.OrdinalNumber:X})");
+                    builder.AppendLine($"  Non-Resident Names Table Entry {i}");
+                    builder.AppendLine($"    Length: {entry.Length} (0x{entry.Length:X})");
+                    builder.AppendLine($"    Name: {entry.Name ?? "[NULL]"}");
+                    builder.AppendLine($"    Ordinal number: {entry.OrdinalNumber} (0x{entry.OrdinalNumber:X})");
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print debug information
         /// </summary>
-        private void PrintDebugInformation()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintDebugInformation(StringBuilder builder)
         {
-            Console.WriteLine("  Debug Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Debug Information:");
+            builder.AppendLine("  -------------------------");
             if (_executable.DebugInformation == null)
             {
-                Console.WriteLine("  No debug information");
+                builder.AppendLine("  No debug information");
             }
             else
             {
-                Console.WriteLine($"  Signature: {DI_Signature ?? "[NULL]"}");
-                Console.WriteLine($"  Format type: {DI_FormatType} (0x{DI_FormatType:X})");
+                builder.AppendLine($"  Signature: {DI_Signature ?? "[NULL]"}");
+                builder.AppendLine($"  Format type: {DI_FormatType} (0x{DI_FormatType:X})");
                 // Debugger data
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
 #if NET6_0_OR_GREATER

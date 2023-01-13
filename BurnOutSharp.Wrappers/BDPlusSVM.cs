@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Text;
 
 namespace BurnOutSharp.Wrappers
 {
@@ -99,31 +100,36 @@ namespace BurnOutSharp.Wrappers
         #region Printing
 
         /// <inheritdoc/>
-        public override void PrettyPrint()
+        public override StringBuilder PrettyPrint()
         {
-            Console.WriteLine("BD+ Information:");
-            Console.WriteLine("-------------------------");
-            Console.WriteLine();
+            StringBuilder builder = new StringBuilder();
+            
+            builder.AppendLine("BD+ Information:");
+            builder.AppendLine("-------------------------");
+            builder.AppendLine();
 
-            PrintSVM();
+            PrintSVM(builder);
+
+            return builder;
         }
 
         /// <summary>
         /// Print SVM information
         /// </summary>
-        private void PrintSVM()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintSVM(StringBuilder builder)
         {
-            Console.WriteLine("  SVM Information:");
-            Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Signature: {Signature}");
-            Console.WriteLine($"  Unknown 1: {BitConverter.ToString(Unknown1).Replace('-', ' ')}");
-            Console.WriteLine($"  Year: {Year} (0x{Year:X})");
-            Console.WriteLine($"  Month: {Month} (0x{Month:X})");
-            Console.WriteLine($"  Day: {Day} (0x{Day:X})");
-            Console.WriteLine($"  Unknown 2: {BitConverter.ToString(Unknown2).Replace('-', ' ')}");
-            Console.WriteLine($"  Length: {Length} (0x{Length:X})");
-            //Console.WriteLine($"  Data: {BitConverter.ToString(Data ?? new byte[0]).Replace('-', ' ')}");
-            Console.WriteLine();
+            builder.AppendLine("  SVM Information:");
+            builder.AppendLine("  -------------------------");
+            builder.AppendLine($"  Signature: {Signature}");
+            builder.AppendLine($"  Unknown 1: {BitConverter.ToString(Unknown1).Replace('-', ' ')}");
+            builder.AppendLine($"  Year: {Year} (0x{Year:X})");
+            builder.AppendLine($"  Month: {Month} (0x{Month:X})");
+            builder.AppendLine($"  Day: {Day} (0x{Day:X})");
+            builder.AppendLine($"  Unknown 2: {BitConverter.ToString(Unknown2).Replace('-', ' ')}");
+            builder.AppendLine($"  Length: {Length} (0x{Length:X})");
+            //builder.AppendLine($"  Data: {BitConverter.ToString(Data ?? new byte[0]).Replace('-', ' ')}");
+            builder.AppendLine();
         }
 
 #if NET6_0_OR_GREATER

@@ -1080,317 +1080,312 @@ namespace BurnOutSharp.Wrappers
 
         #region Printing
 
-        /// <summary>
-        /// Print all sections, including their start and end addresses
-        /// </summary>
-        public void PrintAllSections()
-        {
-            foreach (var section in SectionTable)
-            {
-                // TODO: Handle long section names with leading `/`
-                string sectionName = Encoding.UTF8.GetString(section.Name);
-                uint sectionAddr = section.PointerToRawData;
-                uint sectionEnd = sectionAddr + section.VirtualSize;
-                Console.WriteLine($"{sectionName}: {sectionAddr} -> {sectionEnd} ({sectionAddr:X} -> {sectionEnd:X})");
-            }
-        }
-
         /// <inheritdoc/>
-        public override void PrettyPrint()
+        public override StringBuilder PrettyPrint()
         {
-            Console.WriteLine("Portable Executable Information:");
-            Console.WriteLine("-------------------------");
-            Console.WriteLine();
+            StringBuilder builder = new StringBuilder();
+
+            builder.AppendLine("Portable Executable Information:");
+            builder.AppendLine("-------------------------");
+            builder.AppendLine();
 
             // Stub
-            PrintStubHeader();
-            PrintStubExtendedHeader();
+            PrintStubHeader(builder);
+            PrintStubExtendedHeader(builder);
 
             // Header
-            PrintCOFFFileHeader();
-            PrintOptionalHeader();
+            PrintCOFFFileHeader(builder);
+            PrintOptionalHeader(builder);
 
             // Tables
-            PrintSectionTable();
-            PrintCOFFSymbolTable();
-            PrintAttributeCertificateTable();
-            PrintDelayLoadDirectoryTable();
+            PrintSectionTable(builder);
+            PrintCOFFSymbolTable(builder);
+            PrintAttributeCertificateTable(builder);
+            PrintDelayLoadDirectoryTable(builder);
 
             // Named Sections
-            PrintBaseRelocationTable();
-            PrintDebugTable();
-            PrintExportTable();
-            PrintImportTable();
-            PrintResourceDirectoryTable();
+            PrintBaseRelocationTable(builder);
+            PrintDebugTable(builder);
+            PrintExportTable(builder);
+            PrintImportTable(builder);
+            PrintResourceDirectoryTable(builder);
+
+            return builder;
         }
 
         /// <summary>
         /// Print stub header information
         /// </summary>
-        private void PrintStubHeader()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintStubHeader(StringBuilder builder)
         {
-            Console.WriteLine("  MS-DOS Stub Header Information:");
-            Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Magic number: {Stub_Magic}");
-            Console.WriteLine($"  Last page bytes: {Stub_LastPageBytes} (0x{Stub_LastPageBytes:X})");
-            Console.WriteLine($"  Pages: {Stub_Pages} (0x{Stub_Pages:X})");
-            Console.WriteLine($"  Relocation items: {Stub_RelocationItems} (0x{Stub_RelocationItems:X})");
-            Console.WriteLine($"  Header paragraph size: {Stub_HeaderParagraphSize} (0x{Stub_HeaderParagraphSize:X})");
-            Console.WriteLine($"  Minimum extra paragraphs: {Stub_MinimumExtraParagraphs} (0x{Stub_MinimumExtraParagraphs:X})");
-            Console.WriteLine($"  Maximum extra paragraphs: {Stub_MaximumExtraParagraphs} (0x{Stub_MaximumExtraParagraphs:X})");
-            Console.WriteLine($"  Initial SS value: {Stub_InitialSSValue} (0x{Stub_InitialSSValue:X})");
-            Console.WriteLine($"  Initial SP value: {Stub_InitialSPValue} (0x{Stub_InitialSPValue:X})");
-            Console.WriteLine($"  Checksum: {Stub_Checksum} (0x{Stub_Checksum:X})");
-            Console.WriteLine($"  Initial IP value: {Stub_InitialIPValue} (0x{Stub_InitialIPValue:X})");
-            Console.WriteLine($"  Initial CS value: {Stub_InitialCSValue} (0x{Stub_InitialCSValue:X})");
-            Console.WriteLine($"  Relocation table address: {Stub_RelocationTableAddr} (0x{Stub_RelocationTableAddr:X})");
-            Console.WriteLine($"  Overlay number: {Stub_OverlayNumber} (0x{Stub_OverlayNumber:X})");
-            Console.WriteLine();
+            builder.AppendLine("  MS-DOS Stub Header Information:");
+            builder.AppendLine("  -------------------------");
+            builder.AppendLine($"  Magic number: {Stub_Magic}");
+            builder.AppendLine($"  Last page bytes: {Stub_LastPageBytes} (0x{Stub_LastPageBytes:X})");
+            builder.AppendLine($"  Pages: {Stub_Pages} (0x{Stub_Pages:X})");
+            builder.AppendLine($"  Relocation items: {Stub_RelocationItems} (0x{Stub_RelocationItems:X})");
+            builder.AppendLine($"  Header paragraph size: {Stub_HeaderParagraphSize} (0x{Stub_HeaderParagraphSize:X})");
+            builder.AppendLine($"  Minimum extra paragraphs: {Stub_MinimumExtraParagraphs} (0x{Stub_MinimumExtraParagraphs:X})");
+            builder.AppendLine($"  Maximum extra paragraphs: {Stub_MaximumExtraParagraphs} (0x{Stub_MaximumExtraParagraphs:X})");
+            builder.AppendLine($"  Initial SS value: {Stub_InitialSSValue} (0x{Stub_InitialSSValue:X})");
+            builder.AppendLine($"  Initial SP value: {Stub_InitialSPValue} (0x{Stub_InitialSPValue:X})");
+            builder.AppendLine($"  Checksum: {Stub_Checksum} (0x{Stub_Checksum:X})");
+            builder.AppendLine($"  Initial IP value: {Stub_InitialIPValue} (0x{Stub_InitialIPValue:X})");
+            builder.AppendLine($"  Initial CS value: {Stub_InitialCSValue} (0x{Stub_InitialCSValue:X})");
+            builder.AppendLine($"  Relocation table address: {Stub_RelocationTableAddr} (0x{Stub_RelocationTableAddr:X})");
+            builder.AppendLine($"  Overlay number: {Stub_OverlayNumber} (0x{Stub_OverlayNumber:X})");
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print stub extended header information
         /// </summary>
-        private void PrintStubExtendedHeader()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintStubExtendedHeader(StringBuilder builder)
         {
-            Console.WriteLine("  MS-DOS Stub Extended Header Information:");
-            Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Reserved words: {string.Join(", ", Stub_Reserved1)}");
-            Console.WriteLine($"  OEM identifier: {Stub_OEMIdentifier} (0x{Stub_OEMIdentifier:X})");
-            Console.WriteLine($"  OEM information: {Stub_OEMInformation} (0x{Stub_OEMInformation:X})");
-            Console.WriteLine($"  Reserved words: {string.Join(", ", Stub_Reserved2)}");
-            Console.WriteLine($"  New EXE header address: {Stub_NewExeHeaderAddr} (0x{Stub_NewExeHeaderAddr:X})");
-            Console.WriteLine();
+            builder.AppendLine("  MS-DOS Stub Extended Header Information:");
+            builder.AppendLine("  -------------------------");
+            builder.AppendLine($"  Reserved words: {string.Join(", ", Stub_Reserved1)}");
+            builder.AppendLine($"  OEM identifier: {Stub_OEMIdentifier} (0x{Stub_OEMIdentifier:X})");
+            builder.AppendLine($"  OEM information: {Stub_OEMInformation} (0x{Stub_OEMInformation:X})");
+            builder.AppendLine($"  Reserved words: {string.Join(", ", Stub_Reserved2)}");
+            builder.AppendLine($"  New EXE header address: {Stub_NewExeHeaderAddr} (0x{Stub_NewExeHeaderAddr:X})");
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print COFF file header information
         /// </summary>
-        private void PrintCOFFFileHeader()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintCOFFFileHeader(StringBuilder builder)
         {
-            Console.WriteLine("  COFF File Header Information:");
-            Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Signature: {Signature}");
-            Console.WriteLine($"  Machine: {Machine} (0x{Machine:X})");
-            Console.WriteLine($"  Number of sections: {NumberOfSections} (0x{NumberOfSections:X})");
-            Console.WriteLine($"  Time/Date stamp: {TimeDateStamp} (0x{TimeDateStamp:X})");
-            Console.WriteLine($"  Pointer to symbol table: {PointerToSymbolTable} (0x{PointerToSymbolTable:X})");
-            Console.WriteLine($"  Number of symbols: {NumberOfSymbols} (0x{NumberOfSymbols:X})");
-            Console.WriteLine($"  Size of optional header: {SizeOfOptionalHeader} (0x{SizeOfOptionalHeader:X})");
-            Console.WriteLine($"  Characteristics: {Characteristics} (0x{Characteristics:X})");
-            Console.WriteLine();
+            builder.AppendLine("  COFF File Header Information:");
+            builder.AppendLine("  -------------------------");
+            builder.AppendLine($"  Signature: {Signature}");
+            builder.AppendLine($"  Machine: {Machine} (0x{Machine:X})");
+            builder.AppendLine($"  Number of sections: {NumberOfSections} (0x{NumberOfSections:X})");
+            builder.AppendLine($"  Time/Date stamp: {TimeDateStamp} (0x{TimeDateStamp:X})");
+            builder.AppendLine($"  Pointer to symbol table: {PointerToSymbolTable} (0x{PointerToSymbolTable:X})");
+            builder.AppendLine($"  Number of symbols: {NumberOfSymbols} (0x{NumberOfSymbols:X})");
+            builder.AppendLine($"  Size of optional header: {SizeOfOptionalHeader} (0x{SizeOfOptionalHeader:X})");
+            builder.AppendLine($"  Characteristics: {Characteristics} (0x{Characteristics:X})");
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print optional header information
         /// </summary>
-        private void PrintOptionalHeader()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintOptionalHeader(StringBuilder builder)
         {
-            Console.WriteLine("  Optional Header Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Optional Header Information:");
+            builder.AppendLine("  -------------------------");
             if (SizeOfOptionalHeader == 0)
             {
-                Console.WriteLine("  No optional header present");
+                builder.AppendLine("  No optional header present");
             }
             else
             {
-                Console.WriteLine($"  Magic: {OH_Magic} (0x{OH_Magic:X})");
-                Console.WriteLine($"  Major linker version: {OH_MajorLinkerVersion} (0x{OH_MajorLinkerVersion:X})");
-                Console.WriteLine($"  Minor linker version: {OH_MinorLinkerVersion} (0x{OH_MinorLinkerVersion:X})");
-                Console.WriteLine($"  Size of code section: {OH_SizeOfCode} (0x{OH_SizeOfCode:X})");
-                Console.WriteLine($"  Size of initialized data: {OH_SizeOfInitializedData} (0x{OH_SizeOfInitializedData:X})");
-                Console.WriteLine($"  Size of uninitialized data: {OH_SizeOfUninitializedData} (0x{OH_SizeOfUninitializedData:X})");
-                Console.WriteLine($"  Address of entry point: {OH_AddressOfEntryPoint} (0x{OH_AddressOfEntryPoint:X})");
-                Console.WriteLine($"  Base of code: {OH_BaseOfCode} (0x{OH_BaseOfCode:X})");
+                builder.AppendLine($"  Magic: {OH_Magic} (0x{OH_Magic:X})");
+                builder.AppendLine($"  Major linker version: {OH_MajorLinkerVersion} (0x{OH_MajorLinkerVersion:X})");
+                builder.AppendLine($"  Minor linker version: {OH_MinorLinkerVersion} (0x{OH_MinorLinkerVersion:X})");
+                builder.AppendLine($"  Size of code section: {OH_SizeOfCode} (0x{OH_SizeOfCode:X})");
+                builder.AppendLine($"  Size of initialized data: {OH_SizeOfInitializedData} (0x{OH_SizeOfInitializedData:X})");
+                builder.AppendLine($"  Size of uninitialized data: {OH_SizeOfUninitializedData} (0x{OH_SizeOfUninitializedData:X})");
+                builder.AppendLine($"  Address of entry point: {OH_AddressOfEntryPoint} (0x{OH_AddressOfEntryPoint:X})");
+                builder.AppendLine($"  Base of code: {OH_BaseOfCode} (0x{OH_BaseOfCode:X})");
                 if (OH_Magic == Models.PortableExecutable.OptionalHeaderMagicNumber.PE32)
-                    Console.WriteLine($"  Base of data: {OH_BaseOfData} (0x{OH_BaseOfData:X})");
+                    builder.AppendLine($"  Base of data: {OH_BaseOfData} (0x{OH_BaseOfData:X})");
 
-                Console.WriteLine($"  Image base: {OH_ImageBase} (0x{OH_ImageBase:X})");
-                Console.WriteLine($"  Section alignment: {OH_SectionAlignment} (0x{OH_SectionAlignment:X})");
-                Console.WriteLine($"  File alignment: {OH_FileAlignment} (0x{OH_FileAlignment:X})");
-                Console.WriteLine($"  Major operating system version: {OH_MajorOperatingSystemVersion} (0x{OH_MajorOperatingSystemVersion:X})");
-                Console.WriteLine($"  Minor operating system version: {OH_MinorOperatingSystemVersion} (0x{OH_MinorOperatingSystemVersion:X})");
-                Console.WriteLine($"  Major image version: {OH_MajorImageVersion} (0x{OH_MajorImageVersion:X})");
-                Console.WriteLine($"  Minor image version: {OH_MinorImageVersion} (0x{OH_MinorImageVersion:X})");
-                Console.WriteLine($"  Major subsystem version: {OH_MajorSubsystemVersion} (0x{OH_MajorSubsystemVersion:X})");
-                Console.WriteLine($"  Minor subsystem version: {OH_MinorSubsystemVersion} (0x{OH_MinorSubsystemVersion:X})");
-                Console.WriteLine($"  Win32 version value: {OH_Win32VersionValue} (0x{OH_Win32VersionValue:X})");
-                Console.WriteLine($"  Size of image: {OH_SizeOfImage} (0x{OH_SizeOfImage:X})");
-                Console.WriteLine($"  Size of headers: {OH_SizeOfHeaders} (0x{OH_SizeOfHeaders:X})");
-                Console.WriteLine($"  Checksum: {OH_CheckSum} (0x{OH_CheckSum:X})");
-                Console.WriteLine($"  Subsystem: {OH_Subsystem} (0x{OH_Subsystem:X})");
-                Console.WriteLine($"  DLL characteristics: {OH_DllCharacteristics} (0x{OH_DllCharacteristics:X})");
-                Console.WriteLine($"  Size of stack reserve: {OH_SizeOfStackReserve} (0x{OH_SizeOfStackReserve:X})");
-                Console.WriteLine($"  Size of stack commit: {OH_SizeOfStackCommit} (0x{OH_SizeOfStackCommit:X})");
-                Console.WriteLine($"  Size of heap reserve: {OH_SizeOfHeapReserve} (0x{OH_SizeOfHeapReserve:X})");
-                Console.WriteLine($"  Size of heap commit: {OH_SizeOfHeapCommit} (0x{OH_SizeOfHeapCommit:X})");
-                Console.WriteLine($"  Loader flags: {OH_LoaderFlags} (0x{OH_LoaderFlags:X})");
-                Console.WriteLine($"  Number of data-directory entries: {OH_NumberOfRvaAndSizes} (0x{OH_NumberOfRvaAndSizes:X})");
+                builder.AppendLine($"  Image base: {OH_ImageBase} (0x{OH_ImageBase:X})");
+                builder.AppendLine($"  Section alignment: {OH_SectionAlignment} (0x{OH_SectionAlignment:X})");
+                builder.AppendLine($"  File alignment: {OH_FileAlignment} (0x{OH_FileAlignment:X})");
+                builder.AppendLine($"  Major operating system version: {OH_MajorOperatingSystemVersion} (0x{OH_MajorOperatingSystemVersion:X})");
+                builder.AppendLine($"  Minor operating system version: {OH_MinorOperatingSystemVersion} (0x{OH_MinorOperatingSystemVersion:X})");
+                builder.AppendLine($"  Major image version: {OH_MajorImageVersion} (0x{OH_MajorImageVersion:X})");
+                builder.AppendLine($"  Minor image version: {OH_MinorImageVersion} (0x{OH_MinorImageVersion:X})");
+                builder.AppendLine($"  Major subsystem version: {OH_MajorSubsystemVersion} (0x{OH_MajorSubsystemVersion:X})");
+                builder.AppendLine($"  Minor subsystem version: {OH_MinorSubsystemVersion} (0x{OH_MinorSubsystemVersion:X})");
+                builder.AppendLine($"  Win32 version value: {OH_Win32VersionValue} (0x{OH_Win32VersionValue:X})");
+                builder.AppendLine($"  Size of image: {OH_SizeOfImage} (0x{OH_SizeOfImage:X})");
+                builder.AppendLine($"  Size of headers: {OH_SizeOfHeaders} (0x{OH_SizeOfHeaders:X})");
+                builder.AppendLine($"  Checksum: {OH_CheckSum} (0x{OH_CheckSum:X})");
+                builder.AppendLine($"  Subsystem: {OH_Subsystem} (0x{OH_Subsystem:X})");
+                builder.AppendLine($"  DLL characteristics: {OH_DllCharacteristics} (0x{OH_DllCharacteristics:X})");
+                builder.AppendLine($"  Size of stack reserve: {OH_SizeOfStackReserve} (0x{OH_SizeOfStackReserve:X})");
+                builder.AppendLine($"  Size of stack commit: {OH_SizeOfStackCommit} (0x{OH_SizeOfStackCommit:X})");
+                builder.AppendLine($"  Size of heap reserve: {OH_SizeOfHeapReserve} (0x{OH_SizeOfHeapReserve:X})");
+                builder.AppendLine($"  Size of heap commit: {OH_SizeOfHeapCommit} (0x{OH_SizeOfHeapCommit:X})");
+                builder.AppendLine($"  Loader flags: {OH_LoaderFlags} (0x{OH_LoaderFlags:X})");
+                builder.AppendLine($"  Number of data-directory entries: {OH_NumberOfRvaAndSizes} (0x{OH_NumberOfRvaAndSizes:X})");
 
                 if (OH_ExportTable != null)
                 {
-                    Console.WriteLine("    Export Table (1)");
-                    Console.WriteLine($"      Virtual address: {OH_ExportTable.VirtualAddress} (0x{OH_ExportTable.VirtualAddress:X})");
-                    Console.WriteLine($"      Physical address: {OH_ExportTable.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_ExportTable.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
-                    Console.WriteLine($"      Size: {OH_ExportTable.Size} (0x{OH_ExportTable.Size:X})");
+                    builder.AppendLine("    Export Table (1)");
+                    builder.AppendLine($"      Virtual address: {OH_ExportTable.VirtualAddress} (0x{OH_ExportTable.VirtualAddress:X})");
+                    builder.AppendLine($"      Physical address: {OH_ExportTable.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_ExportTable.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
+                    builder.AppendLine($"      Size: {OH_ExportTable.Size} (0x{OH_ExportTable.Size:X})");
                 }
                 if (OH_ImportTable != null)
                 {
-                    Console.WriteLine("    Import Table (2)");
-                    Console.WriteLine($"      Virtual address: {OH_ImportTable.VirtualAddress} (0x{OH_ImportTable.VirtualAddress:X})");
-                    Console.WriteLine($"      Physical address: {OH_ImportTable.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_ImportTable.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
-                    Console.WriteLine($"      Size: {OH_ImportTable.Size} (0x{OH_ImportTable.Size:X})");
+                    builder.AppendLine("    Import Table (2)");
+                    builder.AppendLine($"      Virtual address: {OH_ImportTable.VirtualAddress} (0x{OH_ImportTable.VirtualAddress:X})");
+                    builder.AppendLine($"      Physical address: {OH_ImportTable.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_ImportTable.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
+                    builder.AppendLine($"      Size: {OH_ImportTable.Size} (0x{OH_ImportTable.Size:X})");
                 }
                 if (OH_ResourceTable != null)
                 {
-                    Console.WriteLine("    Resource Table (3)");
-                    Console.WriteLine($"      Virtual address: {OH_ResourceTable.VirtualAddress} (0x{OH_ResourceTable.VirtualAddress:X})");
-                    Console.WriteLine($"      Physical address: {OH_ResourceTable.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_ResourceTable.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
-                    Console.WriteLine($"      Size: {OH_ResourceTable.Size} (0x{OH_ResourceTable.Size:X})");
+                    builder.AppendLine("    Resource Table (3)");
+                    builder.AppendLine($"      Virtual address: {OH_ResourceTable.VirtualAddress} (0x{OH_ResourceTable.VirtualAddress:X})");
+                    builder.AppendLine($"      Physical address: {OH_ResourceTable.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_ResourceTable.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
+                    builder.AppendLine($"      Size: {OH_ResourceTable.Size} (0x{OH_ResourceTable.Size:X})");
                 }
                 if (OH_ExceptionTable != null)
                 {
-                    Console.WriteLine("    Exception Table (4)");
-                    Console.WriteLine($"      Virtual address: {OH_ExceptionTable.VirtualAddress} (0x{OH_ExceptionTable.VirtualAddress:X})");
-                    Console.WriteLine($"      Physical address: {OH_ExceptionTable.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_ExceptionTable.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
-                    Console.WriteLine($"      Size: {OH_ExceptionTable.Size} (0x{OH_ExceptionTable.Size:X})");
+                    builder.AppendLine("    Exception Table (4)");
+                    builder.AppendLine($"      Virtual address: {OH_ExceptionTable.VirtualAddress} (0x{OH_ExceptionTable.VirtualAddress:X})");
+                    builder.AppendLine($"      Physical address: {OH_ExceptionTable.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_ExceptionTable.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
+                    builder.AppendLine($"      Size: {OH_ExceptionTable.Size} (0x{OH_ExceptionTable.Size:X})");
                 }
                 if (OH_CertificateTable != null)
                 {
-                    Console.WriteLine("    Certificate Table (5)");
-                    Console.WriteLine($"      Virtual address: {OH_CertificateTable.VirtualAddress} (0x{OH_CertificateTable.VirtualAddress:X})");
-                    Console.WriteLine($"      Physical address: {OH_CertificateTable.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_CertificateTable.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
-                    Console.WriteLine($"      Size: {OH_CertificateTable.Size} (0x{OH_CertificateTable.Size:X})");
+                    builder.AppendLine("    Certificate Table (5)");
+                    builder.AppendLine($"      Virtual address: {OH_CertificateTable.VirtualAddress} (0x{OH_CertificateTable.VirtualAddress:X})");
+                    builder.AppendLine($"      Physical address: {OH_CertificateTable.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_CertificateTable.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
+                    builder.AppendLine($"      Size: {OH_CertificateTable.Size} (0x{OH_CertificateTable.Size:X})");
                 }
                 if (OH_BaseRelocationTable != null)
                 {
-                    Console.WriteLine("    Base Relocation Table (6)");
-                    Console.WriteLine($"      Virtual address: {OH_BaseRelocationTable.VirtualAddress} (0x{OH_BaseRelocationTable.VirtualAddress:X})");
-                    Console.WriteLine($"      Physical address: {OH_BaseRelocationTable.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_BaseRelocationTable.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
-                    Console.WriteLine($"      Size: {OH_BaseRelocationTable.Size} (0x{OH_BaseRelocationTable.Size:X})");
+                    builder.AppendLine("    Base Relocation Table (6)");
+                    builder.AppendLine($"      Virtual address: {OH_BaseRelocationTable.VirtualAddress} (0x{OH_BaseRelocationTable.VirtualAddress:X})");
+                    builder.AppendLine($"      Physical address: {OH_BaseRelocationTable.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_BaseRelocationTable.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
+                    builder.AppendLine($"      Size: {OH_BaseRelocationTable.Size} (0x{OH_BaseRelocationTable.Size:X})");
                 }
                 if (OH_Debug != null)
                 {
-                    Console.WriteLine("    Debug Table (7)");
-                    Console.WriteLine($"      Virtual address: {OH_Debug.VirtualAddress} (0x{OH_Debug.VirtualAddress:X})");
-                    Console.WriteLine($"      Physical address: {OH_Debug.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_Debug.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
-                    Console.WriteLine($"      Size: {OH_Debug.Size} (0x{OH_Debug.Size:X})");
+                    builder.AppendLine("    Debug Table (7)");
+                    builder.AppendLine($"      Virtual address: {OH_Debug.VirtualAddress} (0x{OH_Debug.VirtualAddress:X})");
+                    builder.AppendLine($"      Physical address: {OH_Debug.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_Debug.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
+                    builder.AppendLine($"      Size: {OH_Debug.Size} (0x{OH_Debug.Size:X})");
                 }
                 if (OH_NumberOfRvaAndSizes >= 8)
                 {
-                    Console.WriteLine("    Architecture Table (8)");
-                    Console.WriteLine($"      Virtual address: 0 (0x00000000)");
-                    Console.WriteLine($"      Physical address: 0 (0x00000000)");
-                    Console.WriteLine($"      Size: 0 (0x00000000)");
+                    builder.AppendLine("    Architecture Table (8)");
+                    builder.AppendLine($"      Virtual address: 0 (0x00000000)");
+                    builder.AppendLine($"      Physical address: 0 (0x00000000)");
+                    builder.AppendLine($"      Size: 0 (0x00000000)");
                 }
                 if (OH_GlobalPtr != null)
                 {
-                    Console.WriteLine("    Global Pointer Register (9)");
-                    Console.WriteLine($"      Virtual address: {OH_GlobalPtr.VirtualAddress} (0x{OH_GlobalPtr.VirtualAddress:X})");
-                    Console.WriteLine($"      Physical address: {OH_GlobalPtr.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_GlobalPtr.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
-                    Console.WriteLine($"      Size: {OH_GlobalPtr.Size} (0x{OH_GlobalPtr.Size:X})");
+                    builder.AppendLine("    Global Pointer Register (9)");
+                    builder.AppendLine($"      Virtual address: {OH_GlobalPtr.VirtualAddress} (0x{OH_GlobalPtr.VirtualAddress:X})");
+                    builder.AppendLine($"      Physical address: {OH_GlobalPtr.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_GlobalPtr.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
+                    builder.AppendLine($"      Size: {OH_GlobalPtr.Size} (0x{OH_GlobalPtr.Size:X})");
                 }
                 if (OH_ThreadLocalStorageTable != null)
                 {
-                    Console.WriteLine("    Thread Local Storage (TLS) Table (10)");
-                    Console.WriteLine($"      Virtual address: {OH_ThreadLocalStorageTable.VirtualAddress} (0x{OH_ThreadLocalStorageTable.VirtualAddress:X})");
-                    Console.WriteLine($"      Physical address: {OH_ThreadLocalStorageTable.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_ThreadLocalStorageTable.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
-                    Console.WriteLine($"      Size: {OH_ThreadLocalStorageTable.Size} (0x{OH_ThreadLocalStorageTable.Size:X})");
+                    builder.AppendLine("    Thread Local Storage (TLS) Table (10)");
+                    builder.AppendLine($"      Virtual address: {OH_ThreadLocalStorageTable.VirtualAddress} (0x{OH_ThreadLocalStorageTable.VirtualAddress:X})");
+                    builder.AppendLine($"      Physical address: {OH_ThreadLocalStorageTable.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_ThreadLocalStorageTable.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
+                    builder.AppendLine($"      Size: {OH_ThreadLocalStorageTable.Size} (0x{OH_ThreadLocalStorageTable.Size:X})");
                 }
                 if (OH_LoadConfigTable != null)
                 {
-                    Console.WriteLine("    Load Config Table (11)");
-                    Console.WriteLine($"      Virtual address: {OH_LoadConfigTable.VirtualAddress} (0x{OH_LoadConfigTable.VirtualAddress:X})");
-                    Console.WriteLine($"      Physical address: {OH_LoadConfigTable.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_LoadConfigTable.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
-                    Console.WriteLine($"      Size: {OH_LoadConfigTable.Size} (0x{OH_LoadConfigTable.Size:X})");
+                    builder.AppendLine("    Load Config Table (11)");
+                    builder.AppendLine($"      Virtual address: {OH_LoadConfigTable.VirtualAddress} (0x{OH_LoadConfigTable.VirtualAddress:X})");
+                    builder.AppendLine($"      Physical address: {OH_LoadConfigTable.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_LoadConfigTable.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
+                    builder.AppendLine($"      Size: {OH_LoadConfigTable.Size} (0x{OH_LoadConfigTable.Size:X})");
                 }
                 if (OH_BoundImport != null)
                 {
-                    Console.WriteLine("    Bound Import Table (12)");
-                    Console.WriteLine($"      Virtual address: {OH_BoundImport.VirtualAddress} (0x{OH_BoundImport.VirtualAddress:X})");
-                    Console.WriteLine($"      Physical address: {OH_BoundImport.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_BoundImport.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
-                    Console.WriteLine($"      Size: {OH_BoundImport.Size} (0x{OH_BoundImport.Size:X})");
+                    builder.AppendLine("    Bound Import Table (12)");
+                    builder.AppendLine($"      Virtual address: {OH_BoundImport.VirtualAddress} (0x{OH_BoundImport.VirtualAddress:X})");
+                    builder.AppendLine($"      Physical address: {OH_BoundImport.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_BoundImport.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
+                    builder.AppendLine($"      Size: {OH_BoundImport.Size} (0x{OH_BoundImport.Size:X})");
                 }
                 if (OH_ImportAddressTable != null)
                 {
-                    Console.WriteLine("    Import Address Table (13)");
-                    Console.WriteLine($"      Virtual address: {OH_ImportAddressTable.VirtualAddress} (0x{OH_ImportAddressTable.VirtualAddress:X})");
-                    Console.WriteLine($"      Physical address: {OH_ImportAddressTable.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_ImportAddressTable.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
-                    Console.WriteLine($"      Size: {OH_ImportAddressTable.Size} (0x{OH_ImportAddressTable.Size:X})");
+                    builder.AppendLine("    Import Address Table (13)");
+                    builder.AppendLine($"      Virtual address: {OH_ImportAddressTable.VirtualAddress} (0x{OH_ImportAddressTable.VirtualAddress:X})");
+                    builder.AppendLine($"      Physical address: {OH_ImportAddressTable.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_ImportAddressTable.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
+                    builder.AppendLine($"      Size: {OH_ImportAddressTable.Size} (0x{OH_ImportAddressTable.Size:X})");
                 }
                 if (OH_DelayImportDescriptor != null)
                 {
-                    Console.WriteLine("    Delay Import Descriptior (14)");
-                    Console.WriteLine($"      Virtual address: {OH_DelayImportDescriptor.VirtualAddress} (0x{OH_DelayImportDescriptor.VirtualAddress:X})");
-                    Console.WriteLine($"      Physical address: {OH_DelayImportDescriptor.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_DelayImportDescriptor.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
-                    Console.WriteLine($"      Size: {OH_DelayImportDescriptor.Size} (0x{OH_DelayImportDescriptor.Size:X})");
+                    builder.AppendLine("    Delay Import Descriptior (14)");
+                    builder.AppendLine($"      Virtual address: {OH_DelayImportDescriptor.VirtualAddress} (0x{OH_DelayImportDescriptor.VirtualAddress:X})");
+                    builder.AppendLine($"      Physical address: {OH_DelayImportDescriptor.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_DelayImportDescriptor.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
+                    builder.AppendLine($"      Size: {OH_DelayImportDescriptor.Size} (0x{OH_DelayImportDescriptor.Size:X})");
                 }
                 if (OH_CLRRuntimeHeader != null)
                 {
-                    Console.WriteLine("    CLR Runtime Header (15)");
-                    Console.WriteLine($"      Virtual address: {OH_CLRRuntimeHeader.VirtualAddress} (0x{OH_CLRRuntimeHeader.VirtualAddress:X})");
-                    Console.WriteLine($"      Physical address: {OH_CLRRuntimeHeader.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_CLRRuntimeHeader.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
-                    Console.WriteLine($"      Size: {OH_CLRRuntimeHeader.Size} (0x{OH_CLRRuntimeHeader.Size:X})");
+                    builder.AppendLine("    CLR Runtime Header (15)");
+                    builder.AppendLine($"      Virtual address: {OH_CLRRuntimeHeader.VirtualAddress} (0x{OH_CLRRuntimeHeader.VirtualAddress:X})");
+                    builder.AppendLine($"      Physical address: {OH_CLRRuntimeHeader.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_CLRRuntimeHeader.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
+                    builder.AppendLine($"      Size: {OH_CLRRuntimeHeader.Size} (0x{OH_CLRRuntimeHeader.Size:X})");
                 }
                 if (OH_NumberOfRvaAndSizes >= 16)
                 {
-                    Console.WriteLine("    Reserved (16)");
-                    Console.WriteLine($"      Virtual address: 0 (0x00000000)");
-                    Console.WriteLine($"      Physical address: 0 (0x00000000)");
-                    Console.WriteLine($"      Size: 0 (0x00000000)");
+                    builder.AppendLine("    Reserved (16)");
+                    builder.AppendLine($"      Virtual address: 0 (0x00000000)");
+                    builder.AppendLine($"      Physical address: 0 (0x00000000)");
+                    builder.AppendLine($"      Size: 0 (0x00000000)");
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print section table information
         /// </summary>
-        private void PrintSectionTable()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintSectionTable(StringBuilder builder)
         {
-            Console.WriteLine("  Section Table Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Section Table Information:");
+            builder.AppendLine("  -------------------------");
             if (NumberOfSections == 0 || SectionTable.Length == 0)
             {
-                Console.WriteLine("  No section table items");
+                builder.AppendLine("  No section table items");
             }
             else
             {
                 for (int i = 0; i < SectionTable.Length; i++)
                 {
                     var entry = SectionTable[i];
-                    Console.WriteLine($"  Section Table Entry {i}");
-                    Console.WriteLine($"    Name: {Encoding.UTF8.GetString(entry.Name).TrimEnd('\0')}");
-                    Console.WriteLine($"    Virtual size: {entry.VirtualSize} (0x{entry.VirtualSize:X})");
-                    Console.WriteLine($"    Virtual address: {entry.VirtualAddress} (0x{entry.VirtualAddress:X})");
-                    Console.WriteLine($"    Physical address: {entry.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{entry.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
-                    Console.WriteLine($"    Size of raw data: {entry.SizeOfRawData} (0x{entry.SizeOfRawData:X})");
-                    Console.WriteLine($"    Pointer to raw data: {entry.PointerToRawData} (0x{entry.PointerToRawData:X})");
-                    Console.WriteLine($"    Pointer to relocations: {entry.PointerToRelocations} (0x{entry.PointerToRelocations:X})");
-                    Console.WriteLine($"    Pointer to linenumbers: {entry.PointerToLinenumbers} (0x{entry.PointerToLinenumbers:X})");
-                    Console.WriteLine($"    Number of relocations: {entry.NumberOfRelocations} (0x{entry.NumberOfRelocations:X})");
-                    Console.WriteLine($"    Number of linenumbers: {entry.NumberOfLinenumbers} (0x{entry.NumberOfLinenumbers:X})");
-                    Console.WriteLine($"    Characteristics: {entry.Characteristics} (0x{entry.Characteristics:X})");
+                    builder.AppendLine($"  Section Table Entry {i}");
+                    builder.AppendLine($"    Name: {Encoding.UTF8.GetString(entry.Name).TrimEnd('\0')}");
+                    builder.AppendLine($"    Virtual size: {entry.VirtualSize} (0x{entry.VirtualSize:X})");
+                    builder.AppendLine($"    Virtual address: {entry.VirtualAddress} (0x{entry.VirtualAddress:X})");
+                    builder.AppendLine($"    Physical address: {entry.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{entry.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
+                    builder.AppendLine($"    Size of raw data: {entry.SizeOfRawData} (0x{entry.SizeOfRawData:X})");
+                    builder.AppendLine($"    Pointer to raw data: {entry.PointerToRawData} (0x{entry.PointerToRawData:X})");
+                    builder.AppendLine($"    Pointer to relocations: {entry.PointerToRelocations} (0x{entry.PointerToRelocations:X})");
+                    builder.AppendLine($"    Pointer to linenumbers: {entry.PointerToLinenumbers} (0x{entry.PointerToLinenumbers:X})");
+                    builder.AppendLine($"    Number of relocations: {entry.NumberOfRelocations} (0x{entry.NumberOfRelocations:X})");
+                    builder.AppendLine($"    Number of linenumbers: {entry.NumberOfLinenumbers} (0x{entry.NumberOfLinenumbers:X})");
+                    builder.AppendLine($"    Characteristics: {entry.Characteristics} (0x{entry.Characteristics:X})");
                     // TODO: Add COFFRelocations
                     // TODO: Add COFFLineNumbers
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print COFF symbol table information
         /// </summary>
-        private void PrintCOFFSymbolTable()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintCOFFSymbolTable(StringBuilder builder)
         {
-            Console.WriteLine("  COFF Symbol Table Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  COFF Symbol Table Information:");
+            builder.AppendLine("  -------------------------");
             if (PointerToSymbolTable == 0
                 || NumberOfSymbols == 0
                 || COFFSymbolTable == null
                 || COFFSymbolTable.Length == 0)
             {
-                Console.WriteLine("  No COFF symbol table items");
+                builder.AppendLine("  No COFF symbol table items");
             }
             else
             {
@@ -1400,23 +1395,23 @@ namespace BurnOutSharp.Wrappers
                 for (int i = 0; i < COFFSymbolTable.Length; i++)
                 {
                     var entry = COFFSymbolTable[i];
-                    Console.WriteLine($"  COFF Symbol Table Entry {i} (Subtype {currentSymbolType})");
+                    builder.AppendLine($"  COFF Symbol Table Entry {i} (Subtype {currentSymbolType})");
                     if (currentSymbolType == 0)
                     {
                         if (entry.ShortName != null)
                         {
-                            Console.WriteLine($"    Short name: {Encoding.UTF8.GetString(entry.ShortName).TrimEnd('\0')}");
+                            builder.AppendLine($"    Short name: {Encoding.UTF8.GetString(entry.ShortName).TrimEnd('\0')}");
                         }
                         else
                         {
-                            Console.WriteLine($"    Zeroes: {entry.Zeroes} (0x{entry.Zeroes:X})");
-                            Console.WriteLine($"    Offset: {entry.Offset} (0x{entry.Offset:X})");
+                            builder.AppendLine($"    Zeroes: {entry.Zeroes} (0x{entry.Zeroes:X})");
+                            builder.AppendLine($"    Offset: {entry.Offset} (0x{entry.Offset:X})");
                         }
-                        Console.WriteLine($"    Value: {entry.Value} (0x{entry.Value:X})");
-                        Console.WriteLine($"    Section number: {entry.SectionNumber} (0x{entry.SectionNumber:X})");
-                        Console.WriteLine($"    Symbol type: {entry.SymbolType} (0x{entry.SymbolType:X})");
-                        Console.WriteLine($"    Storage class: {entry.StorageClass} (0x{entry.StorageClass:X})");
-                        Console.WriteLine($"    Number of aux symbols: {entry.NumberOfAuxSymbols} (0x{entry.NumberOfAuxSymbols:X})");
+                        builder.AppendLine($"    Value: {entry.Value} (0x{entry.Value:X})");
+                        builder.AppendLine($"    Section number: {entry.SectionNumber} (0x{entry.SectionNumber:X})");
+                        builder.AppendLine($"    Symbol type: {entry.SymbolType} (0x{entry.SymbolType:X})");
+                        builder.AppendLine($"    Storage class: {entry.StorageClass} (0x{entry.StorageClass:X})");
+                        builder.AppendLine($"    Number of aux symbols: {entry.NumberOfAuxSymbols} (0x{entry.NumberOfAuxSymbols:X})");
 
                         auxSymbolsRemaining = entry.NumberOfAuxSymbols;
                         if (auxSymbolsRemaining == 0)
@@ -1458,51 +1453,51 @@ namespace BurnOutSharp.Wrappers
                     }
                     else if (currentSymbolType == 1)
                     {
-                        Console.WriteLine($"    Tag index: {entry.AuxFormat1TagIndex} (0x{entry.AuxFormat1TagIndex:X})");
-                        Console.WriteLine($"    Total size: {entry.AuxFormat1TotalSize} (0x{entry.AuxFormat1TotalSize:X})");
-                        Console.WriteLine($"    Pointer to linenumber: {entry.AuxFormat1PointerToLinenumber} (0x{entry.AuxFormat1PointerToLinenumber:X})");
-                        Console.WriteLine($"    Pointer to next function: {entry.AuxFormat1PointerToNextFunction} (0x{entry.AuxFormat1PointerToNextFunction:X})");
-                        Console.WriteLine($"    Unused: {entry.AuxFormat1Unused} (0x{entry.AuxFormat1Unused:X})");
+                        builder.AppendLine($"    Tag index: {entry.AuxFormat1TagIndex} (0x{entry.AuxFormat1TagIndex:X})");
+                        builder.AppendLine($"    Total size: {entry.AuxFormat1TotalSize} (0x{entry.AuxFormat1TotalSize:X})");
+                        builder.AppendLine($"    Pointer to linenumber: {entry.AuxFormat1PointerToLinenumber} (0x{entry.AuxFormat1PointerToLinenumber:X})");
+                        builder.AppendLine($"    Pointer to next function: {entry.AuxFormat1PointerToNextFunction} (0x{entry.AuxFormat1PointerToNextFunction:X})");
+                        builder.AppendLine($"    Unused: {entry.AuxFormat1Unused} (0x{entry.AuxFormat1Unused:X})");
                         auxSymbolsRemaining--;
                     }
                     else if (currentSymbolType == 2)
                     {
-                        Console.WriteLine($"    Unused: {entry.AuxFormat2Unused1} (0x{entry.AuxFormat2Unused1:X})");
-                        Console.WriteLine($"    Linenumber: {entry.AuxFormat2Linenumber} (0x{entry.AuxFormat2Linenumber:X})");
-                        Console.WriteLine($"    Unused: {entry.AuxFormat2Unused2} (0x{entry.AuxFormat2Unused2:X})");
-                        Console.WriteLine($"    Pointer to next function: {entry.AuxFormat2PointerToNextFunction} (0x{entry.AuxFormat2PointerToNextFunction:X})");
-                        Console.WriteLine($"    Unused: {entry.AuxFormat2Unused3} (0x{entry.AuxFormat2Unused3:X})");
+                        builder.AppendLine($"    Unused: {entry.AuxFormat2Unused1} (0x{entry.AuxFormat2Unused1:X})");
+                        builder.AppendLine($"    Linenumber: {entry.AuxFormat2Linenumber} (0x{entry.AuxFormat2Linenumber:X})");
+                        builder.AppendLine($"    Unused: {entry.AuxFormat2Unused2} (0x{entry.AuxFormat2Unused2:X})");
+                        builder.AppendLine($"    Pointer to next function: {entry.AuxFormat2PointerToNextFunction} (0x{entry.AuxFormat2PointerToNextFunction:X})");
+                        builder.AppendLine($"    Unused: {entry.AuxFormat2Unused3} (0x{entry.AuxFormat2Unused3:X})");
                         auxSymbolsRemaining--;
                     }
                     else if (currentSymbolType == 3)
                     {
-                        Console.WriteLine($"    Tag index: {entry.AuxFormat3TagIndex} (0x{entry.AuxFormat3TagIndex:X})");
-                        Console.WriteLine($"    Characteristics: {entry.AuxFormat3Characteristics} (0x{entry.AuxFormat3Characteristics:X})");
-                        Console.WriteLine($"    Unused: {BitConverter.ToString(entry.AuxFormat3Unused).Replace("-", string.Empty)}");
+                        builder.AppendLine($"    Tag index: {entry.AuxFormat3TagIndex} (0x{entry.AuxFormat3TagIndex:X})");
+                        builder.AppendLine($"    Characteristics: {entry.AuxFormat3Characteristics} (0x{entry.AuxFormat3Characteristics:X})");
+                        builder.AppendLine($"    Unused: {BitConverter.ToString(entry.AuxFormat3Unused).Replace("-", string.Empty)}");
                         auxSymbolsRemaining--;
                     }
                     else if (currentSymbolType == 4)
                     {
-                        Console.WriteLine($"    File name: {Encoding.ASCII.GetString(entry.AuxFormat4FileName).TrimEnd('\0')}");
+                        builder.AppendLine($"    File name: {Encoding.ASCII.GetString(entry.AuxFormat4FileName).TrimEnd('\0')}");
                         auxSymbolsRemaining--;
                     }
                     else if (currentSymbolType == 5)
                     {
-                        Console.WriteLine($"    Length: {entry.AuxFormat5Length} (0x{entry.AuxFormat5Length:X})");
-                        Console.WriteLine($"    Number of relocations: {entry.AuxFormat5NumberOfRelocations} (0x{entry.AuxFormat5NumberOfRelocations:X})");
-                        Console.WriteLine($"    Number of linenumbers: {entry.AuxFormat5NumberOfLinenumbers} (0x{entry.AuxFormat5NumberOfLinenumbers:X})");
-                        Console.WriteLine($"    Checksum: {entry.AuxFormat5CheckSum} (0x{entry.AuxFormat5CheckSum:X})");
-                        Console.WriteLine($"    Number: {entry.AuxFormat5Number} (0x{entry.AuxFormat5Number:X})");
-                        Console.WriteLine($"    Selection: {entry.AuxFormat5Selection} (0x{entry.AuxFormat5Selection:X})");
-                        Console.WriteLine($"    Unused: {BitConverter.ToString(entry.AuxFormat5Unused).Replace("-", string.Empty)}");
+                        builder.AppendLine($"    Length: {entry.AuxFormat5Length} (0x{entry.AuxFormat5Length:X})");
+                        builder.AppendLine($"    Number of relocations: {entry.AuxFormat5NumberOfRelocations} (0x{entry.AuxFormat5NumberOfRelocations:X})");
+                        builder.AppendLine($"    Number of linenumbers: {entry.AuxFormat5NumberOfLinenumbers} (0x{entry.AuxFormat5NumberOfLinenumbers:X})");
+                        builder.AppendLine($"    Checksum: {entry.AuxFormat5CheckSum} (0x{entry.AuxFormat5CheckSum:X})");
+                        builder.AppendLine($"    Number: {entry.AuxFormat5Number} (0x{entry.AuxFormat5Number:X})");
+                        builder.AppendLine($"    Selection: {entry.AuxFormat5Selection} (0x{entry.AuxFormat5Selection:X})");
+                        builder.AppendLine($"    Unused: {BitConverter.ToString(entry.AuxFormat5Unused).Replace("-", string.Empty)}");
                         auxSymbolsRemaining--;
                     }
                     else if (currentSymbolType == 6)
                     {
-                        Console.WriteLine($"    Aux type: {entry.AuxFormat6AuxType} (0x{entry.AuxFormat6AuxType:X})");
-                        Console.WriteLine($"    Reserved: {entry.AuxFormat6Reserved1} (0x{entry.AuxFormat6Reserved1:X})");
-                        Console.WriteLine($"    Symbol table index: {entry.AuxFormat6SymbolTableIndex} (0x{entry.AuxFormat6SymbolTableIndex:X})");
-                        Console.WriteLine($"    Reserved: {BitConverter.ToString(entry.AuxFormat6Reserved2).Replace("-", string.Empty)}");
+                        builder.AppendLine($"    Aux type: {entry.AuxFormat6AuxType} (0x{entry.AuxFormat6AuxType:X})");
+                        builder.AppendLine($"    Reserved: {entry.AuxFormat6Reserved1} (0x{entry.AuxFormat6Reserved1:X})");
+                        builder.AppendLine($"    Symbol table index: {entry.AuxFormat6SymbolTableIndex} (0x{entry.AuxFormat6SymbolTableIndex:X})");
+                        builder.AppendLine($"    Reserved: {BitConverter.ToString(entry.AuxFormat6Reserved2).Replace("-", string.Empty)}");
                         auxSymbolsRemaining--;
                     }
 
@@ -1511,174 +1506,178 @@ namespace BurnOutSharp.Wrappers
                         currentSymbolType = 0;
                 }
 
-                Console.WriteLine();
-                Console.WriteLine("  COFF String Table Information:");
-                Console.WriteLine("  -------------------------");
+                builder.AppendLine();
+                builder.AppendLine("  COFF String Table Information:");
+                builder.AppendLine("  -------------------------");
                 if (COFFStringTable == null
                     || COFFStringTable.Strings == null
                     || COFFStringTable.Strings.Length == 0)
                 {
-                    Console.WriteLine("  No COFF string table items");
+                    builder.AppendLine("  No COFF string table items");
                 }
                 else
                 {
-                    Console.WriteLine($"  Total size: {COFFStringTable.TotalSize} (0x{COFFStringTable.TotalSize:X})");
+                    builder.AppendLine($"  Total size: {COFFStringTable.TotalSize} (0x{COFFStringTable.TotalSize:X})");
                     for (int i = 0; i < COFFStringTable.Strings.Length; i++)
                     {
                         string entry = COFFStringTable.Strings[i];
-                        Console.WriteLine($"  COFF String Table Entry {i})");
-                        Console.WriteLine($"    Value: {entry}");
+                        builder.AppendLine($"  COFF String Table Entry {i})");
+                        builder.AppendLine($"    Value: {entry}");
                     }
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print attribute certificate table information
         /// </summary>
-        private void PrintAttributeCertificateTable()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintAttributeCertificateTable(StringBuilder builder)
         {
-            Console.WriteLine("  Attribute Certificate Table Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Attribute Certificate Table Information:");
+            builder.AppendLine("  -------------------------");
             if (OH_CertificateTable == null
                 || OH_CertificateTable.VirtualAddress == 0
                 || AttributeCertificateTable.Length == 0)
             {
-                Console.WriteLine("  No attribute certificate table items");
+                builder.AppendLine("  No attribute certificate table items");
             }
             else
             {
                 for (int i = 0; i < AttributeCertificateTable.Length; i++)
                 {
                     var entry = AttributeCertificateTable[i];
-                    Console.WriteLine($"  Attribute Certificate Table Entry {i}");
-                    Console.WriteLine($"    Length: {entry.Length} (0x{entry.Length:X})");
-                    Console.WriteLine($"    Revision: {entry.Revision} (0x{entry.Revision:X})");
-                    Console.WriteLine($"    Certificate type: {entry.CertificateType} (0x{entry.CertificateType:X})");
-                    Console.WriteLine();
+                    builder.AppendLine($"  Attribute Certificate Table Entry {i}");
+                    builder.AppendLine($"    Length: {entry.Length} (0x{entry.Length:X})");
+                    builder.AppendLine($"    Revision: {entry.Revision} (0x{entry.Revision:X})");
+                    builder.AppendLine($"    Certificate type: {entry.CertificateType} (0x{entry.CertificateType:X})");
+                    builder.AppendLine();
                     if (entry.CertificateType == Models.PortableExecutable.WindowsCertificateType.WIN_CERT_TYPE_PKCS_SIGNED_DATA)
                     {
-                        Console.WriteLine("    Certificate Data [Formatted]");
-                        Console.WriteLine("    -------------------------");
+                        builder.AppendLine("    Certificate Data [Formatted]");
+                        builder.AppendLine("    -------------------------");
                         var topLevelValues = AbstractSyntaxNotationOne.Parse(entry.Certificate, pointer: 0);
                         if (topLevelValues == null)
                         {
-                            Console.WriteLine("    INVALID DATA FOUND");
-                            Console.WriteLine($"    {BitConverter.ToString(entry.Certificate).Replace("-", string.Empty)}");
+                            builder.AppendLine("    INVALID DATA FOUND");
+                            builder.AppendLine($"    {BitConverter.ToString(entry.Certificate).Replace("-", string.Empty)}");
                         }
                         else
                         {
                             foreach (TypeLengthValue tlv in topLevelValues)
                             {
                                 string tlvString = tlv.Format(paddingLevel: 4);
-                                Console.WriteLine(tlvString);
+                                builder.AppendLine(tlvString);
                             }
                         }
                     }
                     else
                     {
-                        Console.WriteLine($"    Certificate Data [Binary]");
-                        Console.WriteLine("  -------------------------");
+                        builder.AppendLine($"    Certificate Data [Binary]");
+                        builder.AppendLine("  -------------------------");
                         try
                         {
-                            Console.WriteLine($"    {BitConverter.ToString(entry.Certificate).Replace("-", string.Empty)}");
+                            builder.AppendLine($"    {BitConverter.ToString(entry.Certificate).Replace("-", string.Empty)}");
                         }
                         catch
                         {
-                            Console.WriteLine($"    [DATA TOO LARGE TO FORMAT]");
+                            builder.AppendLine($"    [DATA TOO LARGE TO FORMAT]");
                         }
                     }
 
-                    Console.WriteLine();
+                    builder.AppendLine();
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print delay-load directory table information
         /// </summary>
-        private void PrintDelayLoadDirectoryTable()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintDelayLoadDirectoryTable(StringBuilder builder)
         {
-            Console.WriteLine("  Delay-Load Directory Table Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Delay-Load Directory Table Information:");
+            builder.AppendLine("  -------------------------");
             if (OH_DelayImportDescriptor == null
                 || OH_DelayImportDescriptor.VirtualAddress == 0
                 || DelayLoadDirectoryTable == null)
             {
-                Console.WriteLine("  No delay-load directory table items");
+                builder.AppendLine("  No delay-load directory table items");
             }
             else
             {
-                Console.WriteLine($"  Attributes: {DelayLoadDirectoryTable.Attributes} (0x{DelayLoadDirectoryTable.Attributes:X})");
-                Console.WriteLine($"  Name RVA: {DelayLoadDirectoryTable.Name} (0x{DelayLoadDirectoryTable.Name:X})");
-                Console.WriteLine($"  Module handle: {DelayLoadDirectoryTable.ModuleHandle} (0x{DelayLoadDirectoryTable.ModuleHandle:X})");
-                Console.WriteLine($"  Delay import address table RVA: {DelayLoadDirectoryTable.DelayImportAddressTable} (0x{DelayLoadDirectoryTable.DelayImportAddressTable:X})");
-                Console.WriteLine($"  Delay import name table RVA: {DelayLoadDirectoryTable.DelayImportNameTable} (0x{DelayLoadDirectoryTable.DelayImportNameTable:X})");
-                Console.WriteLine($"  Bound delay import table RVA: {DelayLoadDirectoryTable.BoundDelayImportTable} (0x{DelayLoadDirectoryTable.BoundDelayImportTable:X})");
-                Console.WriteLine($"  Unload delay import table RVA: {DelayLoadDirectoryTable.UnloadDelayImportTable} (0x{DelayLoadDirectoryTable.UnloadDelayImportTable:X})");
-                Console.WriteLine($"  Timestamp: {DelayLoadDirectoryTable.TimeStamp} (0x{DelayLoadDirectoryTable.TimeStamp:X})");
+                builder.AppendLine($"  Attributes: {DelayLoadDirectoryTable.Attributes} (0x{DelayLoadDirectoryTable.Attributes:X})");
+                builder.AppendLine($"  Name RVA: {DelayLoadDirectoryTable.Name} (0x{DelayLoadDirectoryTable.Name:X})");
+                builder.AppendLine($"  Module handle: {DelayLoadDirectoryTable.ModuleHandle} (0x{DelayLoadDirectoryTable.ModuleHandle:X})");
+                builder.AppendLine($"  Delay import address table RVA: {DelayLoadDirectoryTable.DelayImportAddressTable} (0x{DelayLoadDirectoryTable.DelayImportAddressTable:X})");
+                builder.AppendLine($"  Delay import name table RVA: {DelayLoadDirectoryTable.DelayImportNameTable} (0x{DelayLoadDirectoryTable.DelayImportNameTable:X})");
+                builder.AppendLine($"  Bound delay import table RVA: {DelayLoadDirectoryTable.BoundDelayImportTable} (0x{DelayLoadDirectoryTable.BoundDelayImportTable:X})");
+                builder.AppendLine($"  Unload delay import table RVA: {DelayLoadDirectoryTable.UnloadDelayImportTable} (0x{DelayLoadDirectoryTable.UnloadDelayImportTable:X})");
+                builder.AppendLine($"  Timestamp: {DelayLoadDirectoryTable.TimeStamp} (0x{DelayLoadDirectoryTable.TimeStamp:X})");
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print base relocation table information
         /// </summary>
-        private void PrintBaseRelocationTable()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintBaseRelocationTable(StringBuilder builder)
         {
-            Console.WriteLine("  Base Relocation Table Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Base Relocation Table Information:");
+            builder.AppendLine("  -------------------------");
             if (OH_BaseRelocationTable == null
                 || OH_BaseRelocationTable.VirtualAddress == 0
                 || BaseRelocationTable == null)
             {
-                Console.WriteLine("  No base relocation table items");
+                builder.AppendLine("  No base relocation table items");
             }
             else
             {
                 for (int i = 0; i < BaseRelocationTable.Length; i++)
                 {
                     var baseRelocationTableEntry = BaseRelocationTable[i];
-                    Console.WriteLine($"  Base Relocation Table Entry {i}");
-                    Console.WriteLine($"    Page RVA: {baseRelocationTableEntry.PageRVA} (0x{baseRelocationTableEntry.PageRVA:X})");
-                    Console.WriteLine($"    Page physical address: {baseRelocationTableEntry.PageRVA.ConvertVirtualAddress(SectionTable)} (0x{baseRelocationTableEntry.PageRVA.ConvertVirtualAddress(SectionTable):X})");
-                    Console.WriteLine($"    Block size: {baseRelocationTableEntry.BlockSize} (0x{baseRelocationTableEntry.BlockSize:X})");
+                    builder.AppendLine($"  Base Relocation Table Entry {i}");
+                    builder.AppendLine($"    Page RVA: {baseRelocationTableEntry.PageRVA} (0x{baseRelocationTableEntry.PageRVA:X})");
+                    builder.AppendLine($"    Page physical address: {baseRelocationTableEntry.PageRVA.ConvertVirtualAddress(SectionTable)} (0x{baseRelocationTableEntry.PageRVA.ConvertVirtualAddress(SectionTable):X})");
+                    builder.AppendLine($"    Block size: {baseRelocationTableEntry.BlockSize} (0x{baseRelocationTableEntry.BlockSize:X})");
 
-                    Console.WriteLine($"    Base Relocation Table {i} Type and Offset Information:");
-                    Console.WriteLine("    -------------------------");
+                    builder.AppendLine($"    Base Relocation Table {i} Type and Offset Information:");
+                    builder.AppendLine("    -------------------------");
                     if (baseRelocationTableEntry.TypeOffsetFieldEntries == null || baseRelocationTableEntry.TypeOffsetFieldEntries.Length == 0)
                     {
-                        Console.WriteLine("    No base relocation table type and offset entries");
+                        builder.AppendLine("    No base relocation table type and offset entries");
                     }
                     else
                     {
                         for (int j = 0; j < baseRelocationTableEntry.TypeOffsetFieldEntries.Length; j++)
                         {
                             var typeOffsetFieldEntry = baseRelocationTableEntry.TypeOffsetFieldEntries[j];
-                            Console.WriteLine($"    Type and Offset Entry {j}");
-                            Console.WriteLine($"      Type: {typeOffsetFieldEntry.BaseRelocationType} (0x{typeOffsetFieldEntry.BaseRelocationType:X})");
-                            Console.WriteLine($"      Offset: {typeOffsetFieldEntry.Offset} (0x{typeOffsetFieldEntry.Offset:X})");
+                            builder.AppendLine($"    Type and Offset Entry {j}");
+                            builder.AppendLine($"      Type: {typeOffsetFieldEntry.BaseRelocationType} (0x{typeOffsetFieldEntry.BaseRelocationType:X})");
+                            builder.AppendLine($"      Offset: {typeOffsetFieldEntry.Offset} (0x{typeOffsetFieldEntry.Offset:X})");
                         }
                     }
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print debug table information
         /// </summary>
-        private void PrintDebugTable()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintDebugTable(StringBuilder builder)
         {
-            Console.WriteLine("  Debug Table Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Debug Table Information:");
+            builder.AppendLine("  -------------------------");
             if (OH_Debug == null
                 || OH_Debug.VirtualAddress == 0
                 || DebugTable == null)
             {
-                Console.WriteLine("  No debug table items");
+                builder.AppendLine("  No debug table items");
             }
             else
             {
@@ -1686,167 +1685,169 @@ namespace BurnOutSharp.Wrappers
                 for (int i = 0; i < DebugTable.DebugDirectoryTable.Length; i++)
                 {
                     var debugDirectoryEntry = DebugTable.DebugDirectoryTable[i];
-                    Console.WriteLine($"  Debug Directory Table Entry {i}");
-                    Console.WriteLine($"    Characteristics: {debugDirectoryEntry.Characteristics} (0x{debugDirectoryEntry.Characteristics:X})");
-                    Console.WriteLine($"    Time/Date stamp: {debugDirectoryEntry.TimeDateStamp} (0x{debugDirectoryEntry.TimeDateStamp:X})");
-                    Console.WriteLine($"    Major version: {debugDirectoryEntry.MajorVersion} (0x{debugDirectoryEntry.MajorVersion:X})");
-                    Console.WriteLine($"    Minor version: {debugDirectoryEntry.MinorVersion} (0x{debugDirectoryEntry.MinorVersion:X})");
-                    Console.WriteLine($"    Debug type: {debugDirectoryEntry.DebugType} (0x{debugDirectoryEntry.DebugType:X})");
-                    Console.WriteLine($"    Size of data: {debugDirectoryEntry.SizeOfData} (0x{debugDirectoryEntry.SizeOfData:X})");
-                    Console.WriteLine($"    Address of raw data: {debugDirectoryEntry.AddressOfRawData} (0x{debugDirectoryEntry.AddressOfRawData:X})");
-                    Console.WriteLine($"    Pointer to raw data: {debugDirectoryEntry.PointerToRawData} (0x{debugDirectoryEntry.PointerToRawData:X})");
+                    builder.AppendLine($"  Debug Directory Table Entry {i}");
+                    builder.AppendLine($"    Characteristics: {debugDirectoryEntry.Characteristics} (0x{debugDirectoryEntry.Characteristics:X})");
+                    builder.AppendLine($"    Time/Date stamp: {debugDirectoryEntry.TimeDateStamp} (0x{debugDirectoryEntry.TimeDateStamp:X})");
+                    builder.AppendLine($"    Major version: {debugDirectoryEntry.MajorVersion} (0x{debugDirectoryEntry.MajorVersion:X})");
+                    builder.AppendLine($"    Minor version: {debugDirectoryEntry.MinorVersion} (0x{debugDirectoryEntry.MinorVersion:X})");
+                    builder.AppendLine($"    Debug type: {debugDirectoryEntry.DebugType} (0x{debugDirectoryEntry.DebugType:X})");
+                    builder.AppendLine($"    Size of data: {debugDirectoryEntry.SizeOfData} (0x{debugDirectoryEntry.SizeOfData:X})");
+                    builder.AppendLine($"    Address of raw data: {debugDirectoryEntry.AddressOfRawData} (0x{debugDirectoryEntry.AddressOfRawData:X})");
+                    builder.AppendLine($"    Pointer to raw data: {debugDirectoryEntry.PointerToRawData} (0x{debugDirectoryEntry.PointerToRawData:X})");
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print export table information
         /// </summary>
-        private void PrintExportTable()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintExportTable(StringBuilder builder)
         {
-            Console.WriteLine("  Export Table Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Export Table Information:");
+            builder.AppendLine("  -------------------------");
             if (OH_ExportTable == null
                 || OH_ExportTable.VirtualAddress == 0
                 || ExportTable == null)
             {
-                Console.WriteLine("  No export table items");
+                builder.AppendLine("  No export table items");
             }
             else
             {
-                Console.WriteLine();
-                Console.WriteLine("    Export Directory Table Information:");
-                Console.WriteLine("    -------------------------");
-                Console.WriteLine($"    Export flags: {ExportTable.ExportDirectoryTable.ExportFlags} (0x{ExportTable.ExportDirectoryTable.ExportFlags:X})");
-                Console.WriteLine($"    Time/Date stamp: {ExportTable.ExportDirectoryTable.TimeDateStamp} (0x{ExportTable.ExportDirectoryTable.TimeDateStamp:X})");
-                Console.WriteLine($"    Major version: {ExportTable.ExportDirectoryTable.MajorVersion} (0x{ExportTable.ExportDirectoryTable.MajorVersion:X})");
-                Console.WriteLine($"    Minor version: {ExportTable.ExportDirectoryTable.MinorVersion} (0x{ExportTable.ExportDirectoryTable.MinorVersion:X})");
-                Console.WriteLine($"    Name RVA: {ExportTable.ExportDirectoryTable.NameRVA} (0x{ExportTable.ExportDirectoryTable.NameRVA:X})");
-                Console.WriteLine($"    Name: {ExportTable.ExportDirectoryTable.Name}");
-                Console.WriteLine($"    Ordinal base: {ExportTable.ExportDirectoryTable.OrdinalBase} (0x{ExportTable.ExportDirectoryTable.OrdinalBase:X})");
-                Console.WriteLine($"    Address table entries: {ExportTable.ExportDirectoryTable.AddressTableEntries} (0x{ExportTable.ExportDirectoryTable.AddressTableEntries:X})");
-                Console.WriteLine($"    Number of name pointers: {ExportTable.ExportDirectoryTable.NumberOfNamePointers} (0x{ExportTable.ExportDirectoryTable.NumberOfNamePointers:X})");
-                Console.WriteLine($"    Export address table RVA: {ExportTable.ExportDirectoryTable.ExportAddressTableRVA} (0x{ExportTable.ExportDirectoryTable.ExportAddressTableRVA:X})");
-                Console.WriteLine($"    Name pointer table RVA: {ExportTable.ExportDirectoryTable.NamePointerRVA} (0x{ExportTable.ExportDirectoryTable.NamePointerRVA:X})");
-                Console.WriteLine($"    Ordinal table RVA: {ExportTable.ExportDirectoryTable.OrdinalTableRVA} (0x{ExportTable.ExportDirectoryTable.OrdinalTableRVA:X})");
-                Console.WriteLine();
+                builder.AppendLine();
+                builder.AppendLine("    Export Directory Table Information:");
+                builder.AppendLine("    -------------------------");
+                builder.AppendLine($"    Export flags: {ExportTable.ExportDirectoryTable.ExportFlags} (0x{ExportTable.ExportDirectoryTable.ExportFlags:X})");
+                builder.AppendLine($"    Time/Date stamp: {ExportTable.ExportDirectoryTable.TimeDateStamp} (0x{ExportTable.ExportDirectoryTable.TimeDateStamp:X})");
+                builder.AppendLine($"    Major version: {ExportTable.ExportDirectoryTable.MajorVersion} (0x{ExportTable.ExportDirectoryTable.MajorVersion:X})");
+                builder.AppendLine($"    Minor version: {ExportTable.ExportDirectoryTable.MinorVersion} (0x{ExportTable.ExportDirectoryTable.MinorVersion:X})");
+                builder.AppendLine($"    Name RVA: {ExportTable.ExportDirectoryTable.NameRVA} (0x{ExportTable.ExportDirectoryTable.NameRVA:X})");
+                builder.AppendLine($"    Name: {ExportTable.ExportDirectoryTable.Name}");
+                builder.AppendLine($"    Ordinal base: {ExportTable.ExportDirectoryTable.OrdinalBase} (0x{ExportTable.ExportDirectoryTable.OrdinalBase:X})");
+                builder.AppendLine($"    Address table entries: {ExportTable.ExportDirectoryTable.AddressTableEntries} (0x{ExportTable.ExportDirectoryTable.AddressTableEntries:X})");
+                builder.AppendLine($"    Number of name pointers: {ExportTable.ExportDirectoryTable.NumberOfNamePointers} (0x{ExportTable.ExportDirectoryTable.NumberOfNamePointers:X})");
+                builder.AppendLine($"    Export address table RVA: {ExportTable.ExportDirectoryTable.ExportAddressTableRVA} (0x{ExportTable.ExportDirectoryTable.ExportAddressTableRVA:X})");
+                builder.AppendLine($"    Name pointer table RVA: {ExportTable.ExportDirectoryTable.NamePointerRVA} (0x{ExportTable.ExportDirectoryTable.NamePointerRVA:X})");
+                builder.AppendLine($"    Ordinal table RVA: {ExportTable.ExportDirectoryTable.OrdinalTableRVA} (0x{ExportTable.ExportDirectoryTable.OrdinalTableRVA:X})");
+                builder.AppendLine();
 
-                Console.WriteLine("    Export Address Table Information:");
-                Console.WriteLine("    -------------------------");
+                builder.AppendLine("    Export Address Table Information:");
+                builder.AppendLine("    -------------------------");
                 if (ExportTable.ExportAddressTable == null || ExportTable.ExportAddressTable.Length == 0)
                 {
-                    Console.WriteLine("    No export address table items");
+                    builder.AppendLine("    No export address table items");
                 }
                 else
                 {
                     for (int i = 0; i < ExportTable.ExportAddressTable.Length; i++)
                     {
                         var exportAddressTableEntry = ExportTable.ExportAddressTable[i];
-                        Console.WriteLine($"    Export Address Table Entry {i}");
-                        Console.WriteLine($"      Export RVA / Forwarder RVA: {exportAddressTableEntry.ExportRVA} (0x{exportAddressTableEntry.ExportRVA:X})");
+                        builder.AppendLine($"    Export Address Table Entry {i}");
+                        builder.AppendLine($"      Export RVA / Forwarder RVA: {exportAddressTableEntry.ExportRVA} (0x{exportAddressTableEntry.ExportRVA:X})");
                     }
                 }
-                Console.WriteLine();
+                builder.AppendLine();
 
-                Console.WriteLine("    Name Pointer Table Information:");
-                Console.WriteLine("    -------------------------");
+                builder.AppendLine("    Name Pointer Table Information:");
+                builder.AppendLine("    -------------------------");
                 if (ExportTable.NamePointerTable?.Pointers == null || ExportTable.NamePointerTable.Pointers.Length == 0)
                 {
-                    Console.WriteLine("    No name pointer table items");
+                    builder.AppendLine("    No name pointer table items");
                 }
                 else
                 {
                     for (int i = 0; i < ExportTable.NamePointerTable.Pointers.Length; i++)
                     {
                         var namePointerTableEntry = ExportTable.NamePointerTable.Pointers[i];
-                        Console.WriteLine($"    Name Pointer Table Entry {i}");
-                        Console.WriteLine($"      Pointer: {namePointerTableEntry} (0x{namePointerTableEntry:X})");
+                        builder.AppendLine($"    Name Pointer Table Entry {i}");
+                        builder.AppendLine($"      Pointer: {namePointerTableEntry} (0x{namePointerTableEntry:X})");
                     }
                 }
-                Console.WriteLine();
+                builder.AppendLine();
 
-                Console.WriteLine("    Ordinal Table Information:");
-                Console.WriteLine("    -------------------------");
+                builder.AppendLine("    Ordinal Table Information:");
+                builder.AppendLine("    -------------------------");
                 if (ExportTable.OrdinalTable?.Indexes == null || ExportTable.OrdinalTable.Indexes.Length == 0)
                 {
-                    Console.WriteLine("    No ordinal table items");
+                    builder.AppendLine("    No ordinal table items");
                 }
                 else
                 {
                     for (int i = 0; i < ExportTable.OrdinalTable.Indexes.Length; i++)
                     {
                         var ordinalTableEntry = ExportTable.OrdinalTable.Indexes[i];
-                        Console.WriteLine($"    Ordinal Table Entry {i}");
-                        Console.WriteLine($"      Index: {ordinalTableEntry} (0x{ordinalTableEntry:X})");
+                        builder.AppendLine($"    Ordinal Table Entry {i}");
+                        builder.AppendLine($"      Index: {ordinalTableEntry} (0x{ordinalTableEntry:X})");
                     }
                 }
-                Console.WriteLine();
+                builder.AppendLine();
 
-                Console.WriteLine("    Export Name Table Information:");
-                Console.WriteLine("    -------------------------");
+                builder.AppendLine("    Export Name Table Information:");
+                builder.AppendLine("    -------------------------");
                 if (ExportTable.ExportNameTable?.Strings == null || ExportTable.ExportNameTable.Strings.Length == 0)
                 {
-                    Console.WriteLine("    No export name table items");
+                    builder.AppendLine("    No export name table items");
                 }
                 else
                 {
                     for (int i = 0; i < ExportTable.ExportNameTable.Strings.Length; i++)
                     {
                         var exportNameTableEntry = ExportTable.ExportNameTable.Strings[i];
-                        Console.WriteLine($"    Export Name Table Entry {i}");
-                        Console.WriteLine($"      String: {exportNameTableEntry}");
+                        builder.AppendLine($"    Export Name Table Entry {i}");
+                        builder.AppendLine($"      String: {exportNameTableEntry}");
                     }
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print import table information
         /// </summary>
-        private void PrintImportTable()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintImportTable(StringBuilder builder)
         {
-            Console.WriteLine("  Import Table Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Import Table Information:");
+            builder.AppendLine("  -------------------------");
             if (OH_ImportTable == null
                 || OH_ImportTable.VirtualAddress == 0
                 || ImportTable == null)
             {
-                Console.WriteLine("  No import table items");
+                builder.AppendLine("  No import table items");
             }
             else
             {
-                Console.WriteLine();
-                Console.WriteLine("    Import Directory Table Information:");
-                Console.WriteLine("    -------------------------");
+                builder.AppendLine();
+                builder.AppendLine("    Import Directory Table Information:");
+                builder.AppendLine("    -------------------------");
                 if (ImportTable.ImportDirectoryTable == null || ImportTable.ImportDirectoryTable.Length == 0)
                 {
-                    Console.WriteLine("    No import directory table items");
+                    builder.AppendLine("    No import directory table items");
                 }
                 else
                 {
                     for (int i = 0; i < ImportTable.ImportDirectoryTable.Length; i++)
                     {
                         var importDirectoryTableEntry = ImportTable.ImportDirectoryTable[i];
-                        Console.WriteLine($"    Import Directory Table Entry {i}");
-                        Console.WriteLine($"      Import lookup table RVA: {importDirectoryTableEntry.ImportLookupTableRVA} (0x{importDirectoryTableEntry.ImportLookupTableRVA:X})");
-                        Console.WriteLine($"      Import lookup table Physical Address: {importDirectoryTableEntry.ImportLookupTableRVA.ConvertVirtualAddress(SectionTable)} (0x{importDirectoryTableEntry.ImportLookupTableRVA.ConvertVirtualAddress(SectionTable):X})");
-                        Console.WriteLine($"      Time/Date stamp: {importDirectoryTableEntry.TimeDateStamp} (0x{importDirectoryTableEntry.TimeDateStamp:X})");
-                        Console.WriteLine($"      Forwarder chain: {importDirectoryTableEntry.ForwarderChain} (0x{importDirectoryTableEntry.ForwarderChain:X})");
-                        Console.WriteLine($"      Name RVA: {importDirectoryTableEntry.NameRVA} (0x{importDirectoryTableEntry.NameRVA:X})");
-                        Console.WriteLine($"      Name: {importDirectoryTableEntry.Name}");
-                        Console.WriteLine($"      Import address table RVA: {importDirectoryTableEntry.ImportAddressTableRVA} (0x{importDirectoryTableEntry.ImportAddressTableRVA:X})");
-                        Console.WriteLine($"      Import address table Physical Address: {importDirectoryTableEntry.ImportAddressTableRVA.ConvertVirtualAddress(SectionTable)} (0x{importDirectoryTableEntry.ImportAddressTableRVA.ConvertVirtualAddress(SectionTable):X})");
+                        builder.AppendLine($"    Import Directory Table Entry {i}");
+                        builder.AppendLine($"      Import lookup table RVA: {importDirectoryTableEntry.ImportLookupTableRVA} (0x{importDirectoryTableEntry.ImportLookupTableRVA:X})");
+                        builder.AppendLine($"      Import lookup table Physical Address: {importDirectoryTableEntry.ImportLookupTableRVA.ConvertVirtualAddress(SectionTable)} (0x{importDirectoryTableEntry.ImportLookupTableRVA.ConvertVirtualAddress(SectionTable):X})");
+                        builder.AppendLine($"      Time/Date stamp: {importDirectoryTableEntry.TimeDateStamp} (0x{importDirectoryTableEntry.TimeDateStamp:X})");
+                        builder.AppendLine($"      Forwarder chain: {importDirectoryTableEntry.ForwarderChain} (0x{importDirectoryTableEntry.ForwarderChain:X})");
+                        builder.AppendLine($"      Name RVA: {importDirectoryTableEntry.NameRVA} (0x{importDirectoryTableEntry.NameRVA:X})");
+                        builder.AppendLine($"      Name: {importDirectoryTableEntry.Name}");
+                        builder.AppendLine($"      Import address table RVA: {importDirectoryTableEntry.ImportAddressTableRVA} (0x{importDirectoryTableEntry.ImportAddressTableRVA:X})");
+                        builder.AppendLine($"      Import address table Physical Address: {importDirectoryTableEntry.ImportAddressTableRVA.ConvertVirtualAddress(SectionTable)} (0x{importDirectoryTableEntry.ImportAddressTableRVA.ConvertVirtualAddress(SectionTable):X})");
                     }
                 }
-                Console.WriteLine();
+                builder.AppendLine();
 
-                Console.WriteLine("    Import Lookup Tables Information:");
-                Console.WriteLine("    -------------------------");
+                builder.AppendLine("    Import Lookup Tables Information:");
+                builder.AppendLine("    -------------------------");
                 if (ImportTable.ImportLookupTables == null || ImportTable.ImportLookupTables.Count == 0)
                 {
-                    Console.WriteLine("    No import lookup tables");
+                    builder.AppendLine("    No import lookup tables");
                 }
                 else
                 {
@@ -1855,40 +1856,40 @@ namespace BurnOutSharp.Wrappers
                         int index = kvp.Key;
                         var importLookupTable = kvp.Value;
 
-                        Console.WriteLine();
-                        Console.WriteLine($"      Import Lookup Table {index} Information:");
-                        Console.WriteLine("      -------------------------");
+                        builder.AppendLine();
+                        builder.AppendLine($"      Import Lookup Table {index} Information:");
+                        builder.AppendLine("      -------------------------");
                         if (importLookupTable == null || importLookupTable.Length == 0)
                         {
-                            Console.WriteLine("      No import lookup table items");
+                            builder.AppendLine("      No import lookup table items");
                         }
                         else
                         {
                             for (int i = 0; i < importLookupTable.Length; i++)
                             {
                                 var importLookupTableEntry = importLookupTable[i];
-                                Console.WriteLine($"      Import Lookup Table {index} Entry {i}");
-                                Console.WriteLine($"        Ordinal/Name flag: {importLookupTableEntry.OrdinalNameFlag} (0x{importLookupTableEntry.OrdinalNameFlag:X})");
+                                builder.AppendLine($"      Import Lookup Table {index} Entry {i}");
+                                builder.AppendLine($"        Ordinal/Name flag: {importLookupTableEntry.OrdinalNameFlag} (0x{importLookupTableEntry.OrdinalNameFlag:X})");
                                 if (importLookupTableEntry.OrdinalNameFlag)
                                 {
-                                    Console.WriteLine($"        Ordinal number: {importLookupTableEntry.OrdinalNumber} (0x{importLookupTableEntry.OrdinalNumber:X})");
+                                    builder.AppendLine($"        Ordinal number: {importLookupTableEntry.OrdinalNumber} (0x{importLookupTableEntry.OrdinalNumber:X})");
                                 }
                                 else
                                 {
-                                    Console.WriteLine($"        Hint/Name table RVA: {importLookupTableEntry.HintNameTableRVA} (0x{importLookupTableEntry.HintNameTableRVA:X})");
-                                    Console.WriteLine($"        Hint/Name table Physical Address: {importLookupTableEntry.HintNameTableRVA.ConvertVirtualAddress(SectionTable)} (0x{importLookupTableEntry.HintNameTableRVA.ConvertVirtualAddress(SectionTable):X})");
+                                    builder.AppendLine($"        Hint/Name table RVA: {importLookupTableEntry.HintNameTableRVA} (0x{importLookupTableEntry.HintNameTableRVA:X})");
+                                    builder.AppendLine($"        Hint/Name table Physical Address: {importLookupTableEntry.HintNameTableRVA.ConvertVirtualAddress(SectionTable)} (0x{importLookupTableEntry.HintNameTableRVA.ConvertVirtualAddress(SectionTable):X})");
                                 }
                             }
                         }
                     }
                 }
-                Console.WriteLine();
+                builder.AppendLine();
 
-                Console.WriteLine("    Import Address Tables Information:");
-                Console.WriteLine("    -------------------------");
+                builder.AppendLine("    Import Address Tables Information:");
+                builder.AppendLine("    -------------------------");
                 if (ImportTable.ImportAddressTables == null || ImportTable.ImportAddressTables.Count == 0)
                 {
-                    Console.WriteLine("    No import address tables");
+                    builder.AppendLine("    No import address tables");
                 }
                 else
                 {
@@ -1897,97 +1898,99 @@ namespace BurnOutSharp.Wrappers
                         int index = kvp.Key;
                         var importAddressTable = kvp.Value;
 
-                        Console.WriteLine();
-                        Console.WriteLine($"      Import Address Table {index} Information:");
-                        Console.WriteLine("      -------------------------");
+                        builder.AppendLine();
+                        builder.AppendLine($"      Import Address Table {index} Information:");
+                        builder.AppendLine("      -------------------------");
                         if (importAddressTable == null || importAddressTable.Length == 0)
                         {
-                            Console.WriteLine("      No import address table items");
+                            builder.AppendLine("      No import address table items");
                         }
                         else
                         {
                             for (int i = 0; i < importAddressTable.Length; i++)
                             {
                                 var importAddressTableEntry = importAddressTable[i];
-                                Console.WriteLine($"      Import Address Table {index} Entry {i}");
-                                Console.WriteLine($"        Ordinal/Name flag: {importAddressTableEntry.OrdinalNameFlag} (0x{importAddressTableEntry.OrdinalNameFlag:X})");
+                                builder.AppendLine($"      Import Address Table {index} Entry {i}");
+                                builder.AppendLine($"        Ordinal/Name flag: {importAddressTableEntry.OrdinalNameFlag} (0x{importAddressTableEntry.OrdinalNameFlag:X})");
                                 if (importAddressTableEntry.OrdinalNameFlag)
                                 {
-                                    Console.WriteLine($"        Ordinal number: {importAddressTableEntry.OrdinalNumber} (0x{importAddressTableEntry.OrdinalNumber:X})");
+                                    builder.AppendLine($"        Ordinal number: {importAddressTableEntry.OrdinalNumber} (0x{importAddressTableEntry.OrdinalNumber:X})");
                                 }
                                 else
                                 {
-                                    Console.WriteLine($"        Hint/Name table RVA: {importAddressTableEntry.HintNameTableRVA} (0x{importAddressTableEntry.HintNameTableRVA:X})");
-                                    Console.WriteLine($"        Hint/Name table Physical Address: {importAddressTableEntry.HintNameTableRVA.ConvertVirtualAddress(SectionTable)} (0x{importAddressTableEntry.HintNameTableRVA.ConvertVirtualAddress(SectionTable):X})");
+                                    builder.AppendLine($"        Hint/Name table RVA: {importAddressTableEntry.HintNameTableRVA} (0x{importAddressTableEntry.HintNameTableRVA:X})");
+                                    builder.AppendLine($"        Hint/Name table Physical Address: {importAddressTableEntry.HintNameTableRVA.ConvertVirtualAddress(SectionTable)} (0x{importAddressTableEntry.HintNameTableRVA.ConvertVirtualAddress(SectionTable):X})");
                                 }
                             }
                         }
                     }
                 }
-                Console.WriteLine();
+                builder.AppendLine();
 
-                Console.WriteLine("    Hint/Name Table Information:");
-                Console.WriteLine("    -------------------------");
+                builder.AppendLine("    Hint/Name Table Information:");
+                builder.AppendLine("    -------------------------");
                 if (ImportTable.HintNameTable == null || ImportTable.HintNameTable.Length == 0)
                 {
-                    Console.WriteLine("    No hint/name table items");
+                    builder.AppendLine("    No hint/name table items");
                 }
                 else
                 {
                     for (int i = 0; i < ImportTable.HintNameTable.Length; i++)
                     {
                         var hintNameTableEntry = ImportTable.HintNameTable[i];
-                        Console.WriteLine($"    Hint/Name Table Entry {i}");
-                        Console.WriteLine($"      Hint: {hintNameTableEntry.Hint} (0x{hintNameTableEntry.Hint:X})");
-                        Console.WriteLine($"      Name: {hintNameTableEntry.Name}");
+                        builder.AppendLine($"    Hint/Name Table Entry {i}");
+                        builder.AppendLine($"      Hint: {hintNameTableEntry.Hint} (0x{hintNameTableEntry.Hint:X})");
+                        builder.AppendLine($"      Name: {hintNameTableEntry.Name}");
                     }
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print resource directory table information
         /// </summary>
-        private void PrintResourceDirectoryTable()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintResourceDirectoryTable(StringBuilder builder)
         {
-            Console.WriteLine("  Resource Directory Table Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Resource Directory Table Information:");
+            builder.AppendLine("  -------------------------");
             if (OH_ResourceTable == null
                 || OH_ResourceTable.VirtualAddress == 0
                 || ResourceDirectoryTable == null)
             {
-                Console.WriteLine("  No resource directory table items");
+                builder.AppendLine("  No resource directory table items");
             }
             else
             {
-                PrintResourceDirectoryTable(ResourceDirectoryTable, level: 0, types: new List<object>());
+                PrintResourceDirectoryTable(ResourceDirectoryTable, level: 0, types: new List<object>(), builder);
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Pretty print the resource directory table information
         /// </summary>
-        private static void PrintResourceDirectoryTable(Models.PortableExecutable.ResourceDirectoryTable table, int level, List<object> types)
+        /// <param name="builder">StringBuilder to append information to</param>
+        private static void PrintResourceDirectoryTable(Models.PortableExecutable.ResourceDirectoryTable table, int level, List<object> types, StringBuilder builder)
         {
             string padding = new string(' ', (level + 1) * 2);
 
-            Console.WriteLine($"{padding}Table level: {level}");
-            Console.WriteLine($"{padding}Characteristics: {table.Characteristics} (0x{table.Characteristics:X})");
-            Console.WriteLine($"{padding}Time/Date stamp: {table.TimeDateStamp} (0x{table.TimeDateStamp:X})");
-            Console.WriteLine($"{padding}Major version: {table.MajorVersion} (0x{table.MajorVersion:X})");
-            Console.WriteLine($"{padding}Minor version: {table.MinorVersion} (0x{table.MinorVersion:X})");
-            Console.WriteLine($"{padding}Number of name entries: {table.NumberOfNameEntries} (0x{table.NumberOfNameEntries:X})");
-            Console.WriteLine($"{padding}Number of ID entries: {table.NumberOfIDEntries} (0x{table.NumberOfIDEntries:X})");
-            Console.WriteLine();
+            builder.AppendLine($"{padding}Table level: {level}");
+            builder.AppendLine($"{padding}Characteristics: {table.Characteristics} (0x{table.Characteristics:X})");
+            builder.AppendLine($"{padding}Time/Date stamp: {table.TimeDateStamp} (0x{table.TimeDateStamp:X})");
+            builder.AppendLine($"{padding}Major version: {table.MajorVersion} (0x{table.MajorVersion:X})");
+            builder.AppendLine($"{padding}Minor version: {table.MinorVersion} (0x{table.MinorVersion:X})");
+            builder.AppendLine($"{padding}Number of name entries: {table.NumberOfNameEntries} (0x{table.NumberOfNameEntries:X})");
+            builder.AppendLine($"{padding}Number of ID entries: {table.NumberOfIDEntries} (0x{table.NumberOfIDEntries:X})");
+            builder.AppendLine();
 
-            Console.WriteLine($"{padding}Entries");
-            Console.WriteLine($"{padding}-------------------------");
+            builder.AppendLine($"{padding}Entries");
+            builder.AppendLine($"{padding}-------------------------");
             if (table.NumberOfNameEntries == 0 && table.NumberOfIDEntries == 0)
             {
-                Console.WriteLine($"{padding}No entries");
-                Console.WriteLine();
+                builder.AppendLine($"{padding}No entries");
+                builder.AppendLine();
             }
             else
             {
@@ -2000,7 +2003,7 @@ namespace BurnOutSharp.Wrappers
                     else
                         newTypes.Add(entry.IntegerID);
 
-                    PrintResourceDirectoryEntry(entry, level + 1, newTypes);
+                    PrintResourceDirectoryEntry(entry, level + 1, newTypes, builder);
                 }
             }
         }
@@ -2008,42 +2011,44 @@ namespace BurnOutSharp.Wrappers
         /// <summary>
         /// Pretty print the resource directory entry information
         /// </summary>
-        private static void PrintResourceDirectoryEntry(Models.PortableExecutable.ResourceDirectoryEntry entry, int level, List<object> types)
+        /// <param name="builder">StringBuilder to append information to</param>
+        private static void PrintResourceDirectoryEntry(Models.PortableExecutable.ResourceDirectoryEntry entry, int level, List<object> types, StringBuilder builder)
         {
             string padding = new string(' ', (level + 1) * 2);
 
-            Console.WriteLine($"{padding}Item level: {level}");
+            builder.AppendLine($"{padding}Item level: {level}");
             if (entry.NameOffset != default)
             {
-                Console.WriteLine($"{padding}Name offset: {entry.NameOffset} (0x{entry.NameOffset:X})");
-                Console.WriteLine($"{padding}Name ({entry.Name.Length}): {Encoding.UTF8.GetString(entry.Name.UnicodeString ?? new byte[0])}");
+                builder.AppendLine($"{padding}Name offset: {entry.NameOffset} (0x{entry.NameOffset:X})");
+                builder.AppendLine($"{padding}Name ({entry.Name.Length}): {Encoding.UTF8.GetString(entry.Name.UnicodeString ?? new byte[0])}");
             }
             else
             {
-                Console.WriteLine($"{padding}Integer ID: {entry.IntegerID} (0x{entry.IntegerID:X})");
+                builder.AppendLine($"{padding}Integer ID: {entry.IntegerID} (0x{entry.IntegerID:X})");
             }
 
             if (entry.DataEntry != null)
-                PrintResourceDataEntry(entry.DataEntry, level: level + 1, types);
+                PrintResourceDataEntry(entry.DataEntry, level: level + 1, types, builder);
             else if (entry.Subdirectory != null)
-                PrintResourceDirectoryTable(entry.Subdirectory, level: level + 1, types);
+                PrintResourceDirectoryTable(entry.Subdirectory, level: level + 1, types, builder);
         }
 
         /// <summary>
         /// Pretty print the resource data entry information
         /// </summary>
-        private static void PrintResourceDataEntry(Models.PortableExecutable.ResourceDataEntry entry, int level, List<object> types)
+        /// <param name="builder">StringBuilder to append information to</param>
+        private static void PrintResourceDataEntry(Models.PortableExecutable.ResourceDataEntry entry, int level, List<object> types, StringBuilder builder)
         {
             string padding = new string(' ', (level + 1) * 2);
 
             // TODO: Use ordered list of base types to determine the shape of the data
-            Console.WriteLine($"{padding}Base types: {string.Join(", ", types)}");
+            builder.AppendLine($"{padding}Base types: {string.Join(", ", types)}");
 
-            Console.WriteLine($"{padding}Entry level: {level}");
-            Console.WriteLine($"{padding}Data RVA: {entry.DataRVA} (0x{entry.DataRVA:X})");
-            Console.WriteLine($"{padding}Size: {entry.Size} (0x{entry.Size:X})");
-            Console.WriteLine($"{padding}Codepage: {entry.Codepage} (0x{entry.Codepage:X})");
-            Console.WriteLine($"{padding}Reserved: {entry.Reserved} (0x{entry.Reserved:X})");
+            builder.AppendLine($"{padding}Entry level: {level}");
+            builder.AppendLine($"{padding}Data RVA: {entry.DataRVA} (0x{entry.DataRVA:X})");
+            builder.AppendLine($"{padding}Size: {entry.Size} (0x{entry.Size:X})");
+            builder.AppendLine($"{padding}Codepage: {entry.Codepage} (0x{entry.Codepage:X})");
+            builder.AppendLine($"{padding}Reserved: {entry.Reserved} (0x{entry.Reserved:X})");
 
             // TODO: Print out per-type data
             if (types != null && types.Count > 0 && types[0] is uint resourceType)
@@ -2051,112 +2056,116 @@ namespace BurnOutSharp.Wrappers
                 switch ((Models.PortableExecutable.ResourceType)resourceType)
                 {
                     case Models.PortableExecutable.ResourceType.RT_CURSOR:
-                        PrintResourceRT_CURSOR(entry, level);
+                        PrintResourceRT_CURSOR(entry, level, builder);
                         break;
                     case Models.PortableExecutable.ResourceType.RT_BITMAP:
-                        PrintResourceRT_BITMAP(entry, level);
+                        PrintResourceRT_BITMAP(entry, level, builder);
                         break;
                     case Models.PortableExecutable.ResourceType.RT_ICON:
-                        PrintResourceRT_ICON(entry, level);
+                        PrintResourceRT_ICON(entry, level, builder);
                         break;
                     case Models.PortableExecutable.ResourceType.RT_MENU:
-                        PrintResourceRT_MENU(entry, level);
+                        PrintResourceRT_MENU(entry, level, builder);
                         break;
                     case Models.PortableExecutable.ResourceType.RT_DIALOG:
-                        PrintResourceRT_DIALOG(entry, level);
+                        PrintResourceRT_DIALOG(entry, level, builder);
                         break;
                     case Models.PortableExecutable.ResourceType.RT_STRING:
-                        PrintResourceRT_STRING(entry, level);
+                        PrintResourceRT_STRING(entry, level, builder);
                         break;
                     case Models.PortableExecutable.ResourceType.RT_FONTDIR:
-                        PrintResourceRT_FONTDIR(entry, level);
+                        PrintResourceRT_FONTDIR(entry, level, builder);
                         break;
                     case Models.PortableExecutable.ResourceType.RT_FONT:
-                        PrintResourceRT_FONT(entry, level);
+                        PrintResourceRT_FONT(entry, level, builder);
                         break;
                     case Models.PortableExecutable.ResourceType.RT_ACCELERATOR:
-                        PrintResourceRT_ACCELERATOR(entry, level);
+                        PrintResourceRT_ACCELERATOR(entry, level, builder);
                         break;
                     case Models.PortableExecutable.ResourceType.RT_RCDATA:
-                        PrintResourceRT_RCDATA(entry, level);
+                        PrintResourceRT_RCDATA(entry, level, builder);
                         break;
                     case Models.PortableExecutable.ResourceType.RT_MESSAGETABLE:
-                        PrintResourceRT_MESSAGETABLE(entry, level);
+                        PrintResourceRT_MESSAGETABLE(entry, level, builder);
                         break;
                     case Models.PortableExecutable.ResourceType.RT_GROUP_CURSOR:
-                        PrintResourceRT_GROUP_CURSOR(entry, level);
+                        PrintResourceRT_GROUP_CURSOR(entry, level, builder);
                         break;
                     case Models.PortableExecutable.ResourceType.RT_GROUP_ICON:
-                        PrintResourceRT_GROUP_ICON(entry, level);
+                        PrintResourceRT_GROUP_ICON(entry, level, builder);
                         break;
                     case Models.PortableExecutable.ResourceType.RT_VERSION:
-                        PrintResourceRT_VERSION(entry, level);
+                        PrintResourceRT_VERSION(entry, level, builder);
                         break;
                     case Models.PortableExecutable.ResourceType.RT_DLGINCLUDE:
-                        PrintResourceRT_DLGINCLUDE(entry, level);
+                        PrintResourceRT_DLGINCLUDE(entry, level, builder);
                         break;
                     case Models.PortableExecutable.ResourceType.RT_PLUGPLAY:
-                        PrintResourceRT_PLUGPLAY(entry, level);
+                        PrintResourceRT_PLUGPLAY(entry, level, builder);
                         break;
                     case Models.PortableExecutable.ResourceType.RT_VXD:
-                        PrintResourceRT_VXD(entry, level);
+                        PrintResourceRT_VXD(entry, level, builder);
                         break;
                     case Models.PortableExecutable.ResourceType.RT_ANICURSOR:
-                        PrintResourceRT_ANICURSOR(entry, level);
+                        PrintResourceRT_ANICURSOR(entry, level, builder);
                         break;
                     case Models.PortableExecutable.ResourceType.RT_ANIICON:
-                        PrintResourceRT_ANIICON(entry, level);
+                        PrintResourceRT_ANIICON(entry, level, builder);
                         break;
                     case Models.PortableExecutable.ResourceType.RT_HTML:
-                        PrintResourceRT_HTML(entry, level);
+                        PrintResourceRT_HTML(entry, level, builder);
                         break;
                     case Models.PortableExecutable.ResourceType.RT_MANIFEST:
-                        PrintResourceRT_MANIFEST(entry, level);
+                        PrintResourceRT_MANIFEST(entry, level, builder);
                         break;
                     default:
-                        PrintResourceUNKNOWN(entry, level, types[0]);
+                        PrintResourceUNKNOWN(entry, level, types[0], builder);
                         break;
                 }
             }
             else if (types != null && types.Count > 0 && types[0] is string resourceString)
             {
-                PrintResourceUNKNOWN(entry, level, types[0]);
+                PrintResourceUNKNOWN(entry, level, types[0], builder);
             }
 
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print an RT_CURSOR resource
         /// </summary>
-        private static void PrintResourceRT_CURSOR(Models.PortableExecutable.ResourceDataEntry entry, int level)
+        /// <param name="builder">StringBuilder to append information to</param>
+        private static void PrintResourceRT_CURSOR(Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
         {
             string padding = new string(' ', (level + 1) * 2);
-            Console.WriteLine($"{padding}Hardware-dependent cursor resource found, not parsed yet");
+            builder.AppendLine($"{padding}Hardware-dependent cursor resource found, not parsed yet");
         }
 
         /// <summary>
         /// Print an RT_BITMAP resource
         /// </summary>
-        private static void PrintResourceRT_BITMAP(Models.PortableExecutable.ResourceDataEntry entry, int level)
+        /// <param name="builder">StringBuilder to append information to</param>
+        private static void PrintResourceRT_BITMAP(Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
         {
             string padding = new string(' ', (level + 1) * 2);
-            Console.WriteLine($"{padding}Bitmap resource found, not parsed yet");
+            builder.AppendLine($"{padding}Bitmap resource found, not parsed yet");
         }
 
         /// <summary>
         /// Print an RT_ICON resource
         /// </summary>
-        private static void PrintResourceRT_ICON(Models.PortableExecutable.ResourceDataEntry entry, int level)
+        /// <param name="builder">StringBuilder to append information to</param>
+        private static void PrintResourceRT_ICON(Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
         {
             string padding = new string(' ', (level + 1) * 2);
-            Console.WriteLine($"{padding}Hardware-dependent icon resource found, not parsed yet");
+            builder.AppendLine($"{padding}Hardware-dependent icon resource found, not parsed yet");
         }
 
         /// <summary>
         /// Print an RT_MENU resource
         /// </summary>
-        private static void PrintResourceRT_MENU(Models.PortableExecutable.ResourceDataEntry entry, int level)
+        /// <param name="builder">StringBuilder to append information to</param>
+        private static void PrintResourceRT_MENU(Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
         {
             string padding = new string(' ', (level + 1) * 2);
 
@@ -2164,20 +2173,20 @@ namespace BurnOutSharp.Wrappers
             try { menu = entry.AsMenu(); } catch { }
             if (menu == null)
             {
-                Console.WriteLine($"{padding}Menu resource found, but malformed");
+                builder.AppendLine($"{padding}Menu resource found, but malformed");
                 return;
             }
 
             if (menu.MenuHeader != null)
             {
-                Console.WriteLine($"{padding}Version: {menu.MenuHeader.Version} (0x{menu.MenuHeader.Version:X})");
-                Console.WriteLine($"{padding}Header size: {menu.MenuHeader.HeaderSize} (0x{menu.MenuHeader.HeaderSize:X})");
-                Console.WriteLine();
-                Console.WriteLine($"{padding}Menu items");
-                Console.WriteLine($"{padding}-------------------------");
+                builder.AppendLine($"{padding}Version: {menu.MenuHeader.Version} (0x{menu.MenuHeader.Version:X})");
+                builder.AppendLine($"{padding}Header size: {menu.MenuHeader.HeaderSize} (0x{menu.MenuHeader.HeaderSize:X})");
+                builder.AppendLine();
+                builder.AppendLine($"{padding}Menu items");
+                builder.AppendLine($"{padding}-------------------------");
                 if (menu.MenuItems == null || menu.MenuItems.Length == 0)
                 {
-                    Console.WriteLine($"{padding}No menu items");
+                    builder.AppendLine($"{padding}No menu items");
                     return;
                 }
 
@@ -2185,35 +2194,35 @@ namespace BurnOutSharp.Wrappers
                 {
                     var menuItem = menu.MenuItems[i];
 
-                    Console.WriteLine($"{padding}Menu item {i}");
+                    builder.AppendLine($"{padding}Menu item {i}");
                     if (menuItem.NormalMenuText != null)
                     {
-                        Console.WriteLine($"{padding}  Resource info: {menuItem.NormalResInfo} (0x{menuItem.NormalResInfo:X})");
-                        Console.WriteLine($"{padding}  Menu text: {menuItem.NormalMenuText} (0x{menuItem.NormalMenuText:X})");
+                        builder.AppendLine($"{padding}  Resource info: {menuItem.NormalResInfo} (0x{menuItem.NormalResInfo:X})");
+                        builder.AppendLine($"{padding}  Menu text: {menuItem.NormalMenuText} (0x{menuItem.NormalMenuText:X})");
                     }
                     else
                     {
-                        Console.WriteLine($"{padding}  Item type: {menuItem.PopupItemType} (0x{menuItem.PopupItemType:X})");
-                        Console.WriteLine($"{padding}  State: {menuItem.PopupState} (0x{menuItem.PopupState:X})");
-                        Console.WriteLine($"{padding}  ID: {menuItem.PopupID} (0x{menuItem.PopupID:X})");
-                        Console.WriteLine($"{padding}  Resource info: {menuItem.PopupResInfo} (0x{menuItem.PopupResInfo:X})");
-                        Console.WriteLine($"{padding}  Menu text: {menuItem.PopupMenuText} (0x{menuItem.PopupMenuText:X})");
+                        builder.AppendLine($"{padding}  Item type: {menuItem.PopupItemType} (0x{menuItem.PopupItemType:X})");
+                        builder.AppendLine($"{padding}  State: {menuItem.PopupState} (0x{menuItem.PopupState:X})");
+                        builder.AppendLine($"{padding}  ID: {menuItem.PopupID} (0x{menuItem.PopupID:X})");
+                        builder.AppendLine($"{padding}  Resource info: {menuItem.PopupResInfo} (0x{menuItem.PopupResInfo:X})");
+                        builder.AppendLine($"{padding}  Menu text: {menuItem.PopupMenuText} (0x{menuItem.PopupMenuText:X})");
                     }
                 }
             }
             else if (menu.ExtendedMenuHeader != null)
             {
-                Console.WriteLine($"{padding}Version: {menu.ExtendedMenuHeader.Version} (0x{menu.ExtendedMenuHeader.Version:X})");
-                Console.WriteLine($"{padding}Offset: {menu.ExtendedMenuHeader.Offset} (0x{menu.ExtendedMenuHeader.Offset:X})");
-                Console.WriteLine($"{padding}Help ID: {menu.ExtendedMenuHeader.HelpID} (0x{menu.ExtendedMenuHeader.HelpID:X})");
-                Console.WriteLine();
-                Console.WriteLine($"{padding}Menu items");
-                Console.WriteLine($"{padding}-------------------------");
+                builder.AppendLine($"{padding}Version: {menu.ExtendedMenuHeader.Version} (0x{menu.ExtendedMenuHeader.Version:X})");
+                builder.AppendLine($"{padding}Offset: {menu.ExtendedMenuHeader.Offset} (0x{menu.ExtendedMenuHeader.Offset:X})");
+                builder.AppendLine($"{padding}Help ID: {menu.ExtendedMenuHeader.HelpID} (0x{menu.ExtendedMenuHeader.HelpID:X})");
+                builder.AppendLine();
+                builder.AppendLine($"{padding}Menu items");
+                builder.AppendLine($"{padding}-------------------------");
                 if (menu.ExtendedMenuHeader.Offset == 0
                     || menu.ExtendedMenuItems == null
                     || menu.ExtendedMenuItems.Length == 0)
                 {
-                    Console.WriteLine($"{padding}No menu items");
+                    builder.AppendLine($"{padding}No menu items");
                     return;
                 }
 
@@ -2221,24 +2230,25 @@ namespace BurnOutSharp.Wrappers
                 {
                     var menuItem = menu.ExtendedMenuItems[i];
 
-                    Console.WriteLine($"{padding}Dialog item template {i}");
-                    Console.WriteLine($"{padding}  Item type: {menuItem.ItemType} (0x{menuItem.ItemType:X})");
-                    Console.WriteLine($"{padding}  State: {menuItem.State} (0x{menuItem.State:X})");
-                    Console.WriteLine($"{padding}  ID: {menuItem.ID} (0x{menuItem.ID:X})");
-                    Console.WriteLine($"{padding}  Flags: {menuItem.Flags} (0x{menuItem.Flags:X})");
-                    Console.WriteLine($"{padding}  Menu text: {menuItem.MenuText} (0x{menuItem.MenuText:X})");
+                    builder.AppendLine($"{padding}Dialog item template {i}");
+                    builder.AppendLine($"{padding}  Item type: {menuItem.ItemType} (0x{menuItem.ItemType:X})");
+                    builder.AppendLine($"{padding}  State: {menuItem.State} (0x{menuItem.State:X})");
+                    builder.AppendLine($"{padding}  ID: {menuItem.ID} (0x{menuItem.ID:X})");
+                    builder.AppendLine($"{padding}  Flags: {menuItem.Flags} (0x{menuItem.Flags:X})");
+                    builder.AppendLine($"{padding}  Menu text: {menuItem.MenuText} (0x{menuItem.MenuText:X})");
                 }
             }
             else
             {
-                Console.WriteLine($"{padding}Menu resource found, but malformed");
+                builder.AppendLine($"{padding}Menu resource found, but malformed");
             }
         }
 
         /// <summary>
         /// Print an RT_DIALOG resource
         /// </summary>
-        private static void PrintResourceRT_DIALOG(Models.PortableExecutable.ResourceDataEntry entry, int level)
+        /// <param name="builder">StringBuilder to append information to</param>
+        private static void PrintResourceRT_DIALOG(Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
         {
             string padding = new string(' ', (level + 1) * 2);
 
@@ -2246,34 +2256,34 @@ namespace BurnOutSharp.Wrappers
             try { dialogBox = entry.AsDialogBox(); } catch { }
             if (dialogBox == null)
             {
-                Console.WriteLine($"{padding}Dialog box resource found, but malformed");
+                builder.AppendLine($"{padding}Dialog box resource found, but malformed");
                 return;
             }
 
             if (dialogBox.DialogTemplate != null)
             {
-                Console.WriteLine($"{padding}Style: {dialogBox.DialogTemplate.Style} (0x{dialogBox.DialogTemplate.Style:X})");
-                Console.WriteLine($"{padding}Extended style: {dialogBox.DialogTemplate.ExtendedStyle} (0x{dialogBox.DialogTemplate.ExtendedStyle:X})");
-                Console.WriteLine($"{padding}Item count: {dialogBox.DialogTemplate.ItemCount} (0x{dialogBox.DialogTemplate.ItemCount:X})");
-                Console.WriteLine($"{padding}X-coordinate of upper-left corner: {dialogBox.DialogTemplate.PositionX} (0x{dialogBox.DialogTemplate.PositionX:X})");
-                Console.WriteLine($"{padding}Y-coordinate of upper-left corner: {dialogBox.DialogTemplate.PositionY} (0x{dialogBox.DialogTemplate.PositionY:X})");
-                Console.WriteLine($"{padding}Width of the dialog box: {dialogBox.DialogTemplate.WidthX} (0x{dialogBox.DialogTemplate.WidthX:X})");
-                Console.WriteLine($"{padding}Height of the dialog box: {dialogBox.DialogTemplate.HeightY} (0x{dialogBox.DialogTemplate.HeightY:X})");
-                Console.WriteLine($"{padding}Menu resource: {dialogBox.DialogTemplate.MenuResource ?? "[EMPTY]"}");
-                Console.WriteLine($"{padding}Menu resource ordinal: {dialogBox.DialogTemplate.MenuResourceOrdinal} (0x{dialogBox.DialogTemplate.MenuResourceOrdinal:X})");
-                Console.WriteLine($"{padding}Class resource: {dialogBox.DialogTemplate.ClassResource ?? "[EMPTY]"}");
-                Console.WriteLine($"{padding}Class resource ordinal: {dialogBox.DialogTemplate.ClassResourceOrdinal} (0x{dialogBox.DialogTemplate.ClassResourceOrdinal:X})");
-                Console.WriteLine($"{padding}Title resource: {dialogBox.DialogTemplate.TitleResource ?? "[EMPTY]"}");
-                Console.WriteLine($"{padding}Point size value: {dialogBox.DialogTemplate.PointSizeValue} (0x{dialogBox.DialogTemplate.PointSizeValue:X})");
-                Console.WriteLine($"{padding}Typeface: {dialogBox.DialogTemplate.Typeface ?? "[EMPTY]"}");
-                Console.WriteLine();
-                Console.WriteLine($"{padding}Dialog item templates");
-                Console.WriteLine($"{padding}-------------------------");
+                builder.AppendLine($"{padding}Style: {dialogBox.DialogTemplate.Style} (0x{dialogBox.DialogTemplate.Style:X})");
+                builder.AppendLine($"{padding}Extended style: {dialogBox.DialogTemplate.ExtendedStyle} (0x{dialogBox.DialogTemplate.ExtendedStyle:X})");
+                builder.AppendLine($"{padding}Item count: {dialogBox.DialogTemplate.ItemCount} (0x{dialogBox.DialogTemplate.ItemCount:X})");
+                builder.AppendLine($"{padding}X-coordinate of upper-left corner: {dialogBox.DialogTemplate.PositionX} (0x{dialogBox.DialogTemplate.PositionX:X})");
+                builder.AppendLine($"{padding}Y-coordinate of upper-left corner: {dialogBox.DialogTemplate.PositionY} (0x{dialogBox.DialogTemplate.PositionY:X})");
+                builder.AppendLine($"{padding}Width of the dialog box: {dialogBox.DialogTemplate.WidthX} (0x{dialogBox.DialogTemplate.WidthX:X})");
+                builder.AppendLine($"{padding}Height of the dialog box: {dialogBox.DialogTemplate.HeightY} (0x{dialogBox.DialogTemplate.HeightY:X})");
+                builder.AppendLine($"{padding}Menu resource: {dialogBox.DialogTemplate.MenuResource ?? "[EMPTY]"}");
+                builder.AppendLine($"{padding}Menu resource ordinal: {dialogBox.DialogTemplate.MenuResourceOrdinal} (0x{dialogBox.DialogTemplate.MenuResourceOrdinal:X})");
+                builder.AppendLine($"{padding}Class resource: {dialogBox.DialogTemplate.ClassResource ?? "[EMPTY]"}");
+                builder.AppendLine($"{padding}Class resource ordinal: {dialogBox.DialogTemplate.ClassResourceOrdinal} (0x{dialogBox.DialogTemplate.ClassResourceOrdinal:X})");
+                builder.AppendLine($"{padding}Title resource: {dialogBox.DialogTemplate.TitleResource ?? "[EMPTY]"}");
+                builder.AppendLine($"{padding}Point size value: {dialogBox.DialogTemplate.PointSizeValue} (0x{dialogBox.DialogTemplate.PointSizeValue:X})");
+                builder.AppendLine($"{padding}Typeface: {dialogBox.DialogTemplate.Typeface ?? "[EMPTY]"}");
+                builder.AppendLine();
+                builder.AppendLine($"{padding}Dialog item templates");
+                builder.AppendLine($"{padding}-------------------------");
                 if (dialogBox.DialogTemplate.ItemCount == 0
                     || dialogBox.DialogItemTemplates == null
                     || dialogBox.DialogItemTemplates.Length == 0)
                 {
-                    Console.WriteLine($"{padding}No dialog item templates");
+                    builder.AppendLine($"{padding}No dialog item templates");
                     return;
                 }
 
@@ -2281,55 +2291,55 @@ namespace BurnOutSharp.Wrappers
                 {
                     var dialogItemTemplate = dialogBox.DialogItemTemplates[i];
 
-                    Console.WriteLine($"{padding}Dialog item template {i}");
-                    Console.WriteLine($"{padding}  Style: {dialogItemTemplate.Style} (0x{dialogItemTemplate.Style:X})");
-                    Console.WriteLine($"{padding}  Extended style: {dialogItemTemplate.ExtendedStyle} (0x{dialogItemTemplate.ExtendedStyle:X})");
-                    Console.WriteLine($"{padding}  X-coordinate of upper-left corner: {dialogItemTemplate.PositionX} (0x{dialogItemTemplate.PositionX:X})");
-                    Console.WriteLine($"{padding}  Y-coordinate of upper-left corner: {dialogItemTemplate.PositionY} (0x{dialogItemTemplate.PositionY:X})");
-                    Console.WriteLine($"{padding}  Width of the control: {dialogItemTemplate.WidthX} (0x{dialogItemTemplate.WidthX:X})");
-                    Console.WriteLine($"{padding}  Height of the control: {dialogItemTemplate.HeightY} (0x{dialogItemTemplate.HeightY:X})");
-                    Console.WriteLine($"{padding}  ID: {dialogItemTemplate.ID} (0x{dialogItemTemplate.ID:X})");
-                    Console.WriteLine($"{padding}  Class resource: {dialogItemTemplate.ClassResource ?? "[EMPTY]"}");
-                    Console.WriteLine($"{padding}  Class resource ordinal: {dialogItemTemplate.ClassResourceOrdinal} (0x{dialogItemTemplate.ClassResourceOrdinal:X})");
-                    Console.WriteLine($"{padding}  Title resource: {dialogItemTemplate.TitleResource ?? "[EMPTY]"}");
-                    Console.WriteLine($"{padding}  Title resource ordinal: {dialogItemTemplate.TitleResourceOrdinal} (0x{dialogItemTemplate.TitleResourceOrdinal:X})");
-                    Console.WriteLine($"{padding}  Creation data size: {dialogItemTemplate.CreationDataSize} (0x{dialogItemTemplate.CreationDataSize:X})");
+                    builder.AppendLine($"{padding}Dialog item template {i}");
+                    builder.AppendLine($"{padding}  Style: {dialogItemTemplate.Style} (0x{dialogItemTemplate.Style:X})");
+                    builder.AppendLine($"{padding}  Extended style: {dialogItemTemplate.ExtendedStyle} (0x{dialogItemTemplate.ExtendedStyle:X})");
+                    builder.AppendLine($"{padding}  X-coordinate of upper-left corner: {dialogItemTemplate.PositionX} (0x{dialogItemTemplate.PositionX:X})");
+                    builder.AppendLine($"{padding}  Y-coordinate of upper-left corner: {dialogItemTemplate.PositionY} (0x{dialogItemTemplate.PositionY:X})");
+                    builder.AppendLine($"{padding}  Width of the control: {dialogItemTemplate.WidthX} (0x{dialogItemTemplate.WidthX:X})");
+                    builder.AppendLine($"{padding}  Height of the control: {dialogItemTemplate.HeightY} (0x{dialogItemTemplate.HeightY:X})");
+                    builder.AppendLine($"{padding}  ID: {dialogItemTemplate.ID} (0x{dialogItemTemplate.ID:X})");
+                    builder.AppendLine($"{padding}  Class resource: {dialogItemTemplate.ClassResource ?? "[EMPTY]"}");
+                    builder.AppendLine($"{padding}  Class resource ordinal: {dialogItemTemplate.ClassResourceOrdinal} (0x{dialogItemTemplate.ClassResourceOrdinal:X})");
+                    builder.AppendLine($"{padding}  Title resource: {dialogItemTemplate.TitleResource ?? "[EMPTY]"}");
+                    builder.AppendLine($"{padding}  Title resource ordinal: {dialogItemTemplate.TitleResourceOrdinal} (0x{dialogItemTemplate.TitleResourceOrdinal:X})");
+                    builder.AppendLine($"{padding}  Creation data size: {dialogItemTemplate.CreationDataSize} (0x{dialogItemTemplate.CreationDataSize:X})");
                     if (dialogItemTemplate.CreationData != null && dialogItemTemplate.CreationData.Length != 0)
-                        Console.WriteLine($"{padding}  Creation data: {BitConverter.ToString(dialogItemTemplate.CreationData).Replace("-", string.Empty)}");
+                        builder.AppendLine($"{padding}  Creation data: {BitConverter.ToString(dialogItemTemplate.CreationData).Replace("-", string.Empty)}");
                     else
-                        Console.WriteLine($"{padding}  Creation data: [EMPTY]");
+                        builder.AppendLine($"{padding}  Creation data: [EMPTY]");
                 }
             }
             else if (dialogBox.ExtendedDialogTemplate != null)
             {
-                Console.WriteLine($"{padding}Version: {dialogBox.ExtendedDialogTemplate.Version} (0x{dialogBox.ExtendedDialogTemplate.Version:X})");
-                Console.WriteLine($"{padding}Signature: {dialogBox.ExtendedDialogTemplate.Signature} (0x{dialogBox.ExtendedDialogTemplate.Signature:X})");
-                Console.WriteLine($"{padding}Help ID: {dialogBox.ExtendedDialogTemplate.HelpID} (0x{dialogBox.ExtendedDialogTemplate.HelpID:X})");
-                Console.WriteLine($"{padding}Extended style: {dialogBox.ExtendedDialogTemplate.ExtendedStyle} (0x{dialogBox.ExtendedDialogTemplate.ExtendedStyle:X})");
-                Console.WriteLine($"{padding}Style: {dialogBox.ExtendedDialogTemplate.Style} (0x{dialogBox.ExtendedDialogTemplate.Style:X})");
-                Console.WriteLine($"{padding}Item count: {dialogBox.ExtendedDialogTemplate.DialogItems} (0x{dialogBox.ExtendedDialogTemplate.DialogItems:X})");
-                Console.WriteLine($"{padding}X-coordinate of upper-left corner: {dialogBox.ExtendedDialogTemplate.PositionX} (0x{dialogBox.ExtendedDialogTemplate.PositionX:X})");
-                Console.WriteLine($"{padding}Y-coordinate of upper-left corner: {dialogBox.ExtendedDialogTemplate.PositionY} (0x{dialogBox.ExtendedDialogTemplate.PositionY:X})");
-                Console.WriteLine($"{padding}Width of the dialog box: {dialogBox.ExtendedDialogTemplate.WidthX} (0x{dialogBox.ExtendedDialogTemplate.WidthX:X})");
-                Console.WriteLine($"{padding}Height of the dialog box: {dialogBox.ExtendedDialogTemplate.HeightY} (0x{dialogBox.ExtendedDialogTemplate.HeightY:X})");
-                Console.WriteLine($"{padding}Menu resource: {dialogBox.ExtendedDialogTemplate.MenuResource ?? "[EMPTY]"}");
-                Console.WriteLine($"{padding}Menu resource ordinal: {dialogBox.ExtendedDialogTemplate.MenuResourceOrdinal} (0x{dialogBox.ExtendedDialogTemplate.MenuResourceOrdinal:X})");
-                Console.WriteLine($"{padding}Class resource: {dialogBox.ExtendedDialogTemplate.ClassResource ?? "[EMPTY]"}");
-                Console.WriteLine($"{padding}Class resource ordinal: {dialogBox.ExtendedDialogTemplate.ClassResourceOrdinal} (0x{dialogBox.ExtendedDialogTemplate.ClassResourceOrdinal:X})");
-                Console.WriteLine($"{padding}Title resource: {dialogBox.ExtendedDialogTemplate.TitleResource ?? "[EMPTY]"}");
-                Console.WriteLine($"{padding}Point size: {dialogBox.ExtendedDialogTemplate.PointSize} (0x{dialogBox.ExtendedDialogTemplate.PointSize:X})");
-                Console.WriteLine($"{padding}Weight: {dialogBox.ExtendedDialogTemplate.Weight} (0x{dialogBox.ExtendedDialogTemplate.Weight:X})");
-                Console.WriteLine($"{padding}Italic: {dialogBox.ExtendedDialogTemplate.Italic} (0x{dialogBox.ExtendedDialogTemplate.Italic:X})");
-                Console.WriteLine($"{padding}Character set: {dialogBox.ExtendedDialogTemplate.CharSet} (0x{dialogBox.ExtendedDialogTemplate.CharSet:X})");
-                Console.WriteLine($"{padding}Typeface: {dialogBox.ExtendedDialogTemplate.Typeface ?? "[EMPTY]"}");
-                Console.WriteLine();
-                Console.WriteLine($"{padding}Dialog item templates");
-                Console.WriteLine($"{padding}-------------------------");
+                builder.AppendLine($"{padding}Version: {dialogBox.ExtendedDialogTemplate.Version} (0x{dialogBox.ExtendedDialogTemplate.Version:X})");
+                builder.AppendLine($"{padding}Signature: {dialogBox.ExtendedDialogTemplate.Signature} (0x{dialogBox.ExtendedDialogTemplate.Signature:X})");
+                builder.AppendLine($"{padding}Help ID: {dialogBox.ExtendedDialogTemplate.HelpID} (0x{dialogBox.ExtendedDialogTemplate.HelpID:X})");
+                builder.AppendLine($"{padding}Extended style: {dialogBox.ExtendedDialogTemplate.ExtendedStyle} (0x{dialogBox.ExtendedDialogTemplate.ExtendedStyle:X})");
+                builder.AppendLine($"{padding}Style: {dialogBox.ExtendedDialogTemplate.Style} (0x{dialogBox.ExtendedDialogTemplate.Style:X})");
+                builder.AppendLine($"{padding}Item count: {dialogBox.ExtendedDialogTemplate.DialogItems} (0x{dialogBox.ExtendedDialogTemplate.DialogItems:X})");
+                builder.AppendLine($"{padding}X-coordinate of upper-left corner: {dialogBox.ExtendedDialogTemplate.PositionX} (0x{dialogBox.ExtendedDialogTemplate.PositionX:X})");
+                builder.AppendLine($"{padding}Y-coordinate of upper-left corner: {dialogBox.ExtendedDialogTemplate.PositionY} (0x{dialogBox.ExtendedDialogTemplate.PositionY:X})");
+                builder.AppendLine($"{padding}Width of the dialog box: {dialogBox.ExtendedDialogTemplate.WidthX} (0x{dialogBox.ExtendedDialogTemplate.WidthX:X})");
+                builder.AppendLine($"{padding}Height of the dialog box: {dialogBox.ExtendedDialogTemplate.HeightY} (0x{dialogBox.ExtendedDialogTemplate.HeightY:X})");
+                builder.AppendLine($"{padding}Menu resource: {dialogBox.ExtendedDialogTemplate.MenuResource ?? "[EMPTY]"}");
+                builder.AppendLine($"{padding}Menu resource ordinal: {dialogBox.ExtendedDialogTemplate.MenuResourceOrdinal} (0x{dialogBox.ExtendedDialogTemplate.MenuResourceOrdinal:X})");
+                builder.AppendLine($"{padding}Class resource: {dialogBox.ExtendedDialogTemplate.ClassResource ?? "[EMPTY]"}");
+                builder.AppendLine($"{padding}Class resource ordinal: {dialogBox.ExtendedDialogTemplate.ClassResourceOrdinal} (0x{dialogBox.ExtendedDialogTemplate.ClassResourceOrdinal:X})");
+                builder.AppendLine($"{padding}Title resource: {dialogBox.ExtendedDialogTemplate.TitleResource ?? "[EMPTY]"}");
+                builder.AppendLine($"{padding}Point size: {dialogBox.ExtendedDialogTemplate.PointSize} (0x{dialogBox.ExtendedDialogTemplate.PointSize:X})");
+                builder.AppendLine($"{padding}Weight: {dialogBox.ExtendedDialogTemplate.Weight} (0x{dialogBox.ExtendedDialogTemplate.Weight:X})");
+                builder.AppendLine($"{padding}Italic: {dialogBox.ExtendedDialogTemplate.Italic} (0x{dialogBox.ExtendedDialogTemplate.Italic:X})");
+                builder.AppendLine($"{padding}Character set: {dialogBox.ExtendedDialogTemplate.CharSet} (0x{dialogBox.ExtendedDialogTemplate.CharSet:X})");
+                builder.AppendLine($"{padding}Typeface: {dialogBox.ExtendedDialogTemplate.Typeface ?? "[EMPTY]"}");
+                builder.AppendLine();
+                builder.AppendLine($"{padding}Dialog item templates");
+                builder.AppendLine($"{padding}-------------------------");
                 if (dialogBox.ExtendedDialogTemplate.DialogItems == 0
                     || dialogBox.ExtendedDialogItemTemplates == null
                     || dialogBox.ExtendedDialogItemTemplates.Length == 0)
                 {
-                    Console.WriteLine($"{padding}No dialog item templates");
+                    builder.AppendLine($"{padding}No dialog item templates");
                     return;
                 }
 
@@ -2337,36 +2347,37 @@ namespace BurnOutSharp.Wrappers
                 {
                     var dialogItemTemplate = dialogBox.ExtendedDialogItemTemplates[i];
 
-                    Console.WriteLine($"{padding}Dialog item template {i}");
-                    Console.WriteLine($"{padding}  Help ID: {dialogItemTemplate.HelpID} (0x{dialogItemTemplate.HelpID:X})");
-                    Console.WriteLine($"{padding}  Extended style: {dialogItemTemplate.ExtendedStyle} (0x{dialogItemTemplate.ExtendedStyle:X})");
-                    Console.WriteLine($"{padding}  Style: {dialogItemTemplate.Style} (0x{dialogItemTemplate.Style:X})");
-                    Console.WriteLine($"{padding}  X-coordinate of upper-left corner: {dialogItemTemplate.PositionX} (0x{dialogItemTemplate.PositionX:X})");
-                    Console.WriteLine($"{padding}  Y-coordinate of upper-left corner: {dialogItemTemplate.PositionY} (0x{dialogItemTemplate.PositionY:X})");
-                    Console.WriteLine($"{padding}  Width of the control: {dialogItemTemplate.WidthX} (0x{dialogItemTemplate.WidthX:X})");
-                    Console.WriteLine($"{padding}  Height of the control: {dialogItemTemplate.HeightY} (0x{dialogItemTemplate.HeightY:X})");
-                    Console.WriteLine($"{padding}  ID: {dialogItemTemplate.ID} (0x{dialogItemTemplate.ID:X})");
-                    Console.WriteLine($"{padding}  Class resource: {dialogItemTemplate.ClassResource ?? "[EMPTY]"}");
-                    Console.WriteLine($"{padding}  Class resource ordinal: {dialogItemTemplate.ClassResourceOrdinal} (0x{dialogItemTemplate.ClassResourceOrdinal:X})");
-                    Console.WriteLine($"{padding}  Title resource: {dialogItemTemplate.TitleResource ?? "[EMPTY]"}");
-                    Console.WriteLine($"{padding}  Title resource ordinal: {dialogItemTemplate.TitleResourceOrdinal} (0x{dialogItemTemplate.TitleResourceOrdinal:X})");
-                    Console.WriteLine($"{padding}  Creation data size: {dialogItemTemplate.CreationDataSize} (0x{dialogItemTemplate.CreationDataSize:X})");
+                    builder.AppendLine($"{padding}Dialog item template {i}");
+                    builder.AppendLine($"{padding}  Help ID: {dialogItemTemplate.HelpID} (0x{dialogItemTemplate.HelpID:X})");
+                    builder.AppendLine($"{padding}  Extended style: {dialogItemTemplate.ExtendedStyle} (0x{dialogItemTemplate.ExtendedStyle:X})");
+                    builder.AppendLine($"{padding}  Style: {dialogItemTemplate.Style} (0x{dialogItemTemplate.Style:X})");
+                    builder.AppendLine($"{padding}  X-coordinate of upper-left corner: {dialogItemTemplate.PositionX} (0x{dialogItemTemplate.PositionX:X})");
+                    builder.AppendLine($"{padding}  Y-coordinate of upper-left corner: {dialogItemTemplate.PositionY} (0x{dialogItemTemplate.PositionY:X})");
+                    builder.AppendLine($"{padding}  Width of the control: {dialogItemTemplate.WidthX} (0x{dialogItemTemplate.WidthX:X})");
+                    builder.AppendLine($"{padding}  Height of the control: {dialogItemTemplate.HeightY} (0x{dialogItemTemplate.HeightY:X})");
+                    builder.AppendLine($"{padding}  ID: {dialogItemTemplate.ID} (0x{dialogItemTemplate.ID:X})");
+                    builder.AppendLine($"{padding}  Class resource: {dialogItemTemplate.ClassResource ?? "[EMPTY]"}");
+                    builder.AppendLine($"{padding}  Class resource ordinal: {dialogItemTemplate.ClassResourceOrdinal} (0x{dialogItemTemplate.ClassResourceOrdinal:X})");
+                    builder.AppendLine($"{padding}  Title resource: {dialogItemTemplate.TitleResource ?? "[EMPTY]"}");
+                    builder.AppendLine($"{padding}  Title resource ordinal: {dialogItemTemplate.TitleResourceOrdinal} (0x{dialogItemTemplate.TitleResourceOrdinal:X})");
+                    builder.AppendLine($"{padding}  Creation data size: {dialogItemTemplate.CreationDataSize} (0x{dialogItemTemplate.CreationDataSize:X})");
                     if (dialogItemTemplate.CreationData != null && dialogItemTemplate.CreationData.Length != 0)
-                        Console.WriteLine($"{padding}  Creation data: {BitConverter.ToString(dialogItemTemplate.CreationData).Replace("-", string.Empty)}");
+                        builder.AppendLine($"{padding}  Creation data: {BitConverter.ToString(dialogItemTemplate.CreationData).Replace("-", string.Empty)}");
                     else
-                        Console.WriteLine($"{padding}  Creation data: [EMPTY]");
+                        builder.AppendLine($"{padding}  Creation data: [EMPTY]");
                 }
             }
             else
             {
-                Console.WriteLine($"{padding}Dialog box resource found, but malformed");
+                builder.AppendLine($"{padding}Dialog box resource found, but malformed");
             }
         }
 
         /// <summary>
         /// Print an RT_STRING resource
         /// </summary>
-        private static void PrintResourceRT_STRING(Models.PortableExecutable.ResourceDataEntry entry, int level)
+        /// <param name="builder">StringBuilder to append information to</param>
+        private static void PrintResourceRT_STRING(Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
         {
             string padding = new string(' ', (level + 1) * 2);
 
@@ -2374,7 +2385,7 @@ namespace BurnOutSharp.Wrappers
             try { stringTable = entry.AsStringTable(); } catch { }
             if (stringTable == null)
             {
-                Console.WriteLine($"{padding}String table resource found, but malformed");
+                builder.AppendLine($"{padding}String table resource found, but malformed");
                 return;
             }
 
@@ -2382,32 +2393,35 @@ namespace BurnOutSharp.Wrappers
             {
                 int index = kvp.Key;
                 string stringValue = kvp.Value;
-                Console.WriteLine($"{padding}String entry {index}: {stringValue}");
+                builder.AppendLine($"{padding}String entry {index}: {stringValue}");
             }
         }
 
         /// <summary>
         /// Print an RT_FONTDIR resource
         /// </summary>
-        private static void PrintResourceRT_FONTDIR(Models.PortableExecutable.ResourceDataEntry entry, int level)
+        /// <param name="builder">StringBuilder to append information to</param>
+        private static void PrintResourceRT_FONTDIR(Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
         {
             string padding = new string(' ', (level + 1) * 2);
-            Console.WriteLine($"{padding}Font directory resource found, not parsed yet");
+            builder.AppendLine($"{padding}Font directory resource found, not parsed yet");
         }
 
         /// <summary>
         /// Print an RT_FONT resource
         /// </summary>
-        private static void PrintResourceRT_FONT(Models.PortableExecutable.ResourceDataEntry entry, int level)
+        /// <param name="builder">StringBuilder to append information to</param>
+        private static void PrintResourceRT_FONT(Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
         {
             string padding = new string(' ', (level + 1) * 2);
-            Console.WriteLine($"{padding}Font resource found, not parsed yet");
+            builder.AppendLine($"{padding}Font resource found, not parsed yet");
         }
 
         /// <summary>
         /// Print an RT_ACCELERATOR resource
         /// </summary>
-        private static void PrintResourceRT_ACCELERATOR(Models.PortableExecutable.ResourceDataEntry entry, int level)
+        /// <param name="builder">StringBuilder to append information to</param>
+        private static void PrintResourceRT_ACCELERATOR(Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
         {
             string padding = new string(' ', (level + 1) * 2);
 
@@ -2415,55 +2429,57 @@ namespace BurnOutSharp.Wrappers
             try { acceleratorTable = entry.AsAcceleratorTableResource(); } catch { }
             if (acceleratorTable == null)
             {
-                Console.WriteLine($"{padding}Accelerator table resource found, but malformed");
+                builder.AppendLine($"{padding}Accelerator table resource found, but malformed");
                 return;
             }
 
             for (int i = 0; i < acceleratorTable.Length; i++)
             {
                 var acceleratorTableEntry = acceleratorTable[i];
-                Console.WriteLine($"{padding}Accelerator Table Entry {i}:");
-                Console.WriteLine($"{padding}  Flags: {acceleratorTableEntry.Flags} (0x{acceleratorTableEntry.Flags:X})");
-                Console.WriteLine($"{padding}  Ansi: {acceleratorTableEntry.Ansi} (0x{acceleratorTableEntry.Ansi:X})");
-                Console.WriteLine($"{padding}  Id: {acceleratorTableEntry.Id} (0x{acceleratorTableEntry.Id:X})");
-                Console.WriteLine($"{padding}  Padding: {acceleratorTableEntry.Padding} (0x{acceleratorTableEntry.Padding:X})");
+                builder.AppendLine($"{padding}Accelerator Table Entry {i}:");
+                builder.AppendLine($"{padding}  Flags: {acceleratorTableEntry.Flags} (0x{acceleratorTableEntry.Flags:X})");
+                builder.AppendLine($"{padding}  Ansi: {acceleratorTableEntry.Ansi} (0x{acceleratorTableEntry.Ansi:X})");
+                builder.AppendLine($"{padding}  Id: {acceleratorTableEntry.Id} (0x{acceleratorTableEntry.Id:X})");
+                builder.AppendLine($"{padding}  Padding: {acceleratorTableEntry.Padding} (0x{acceleratorTableEntry.Padding:X})");
             }
         }
 
         /// <summary>
         /// Print an RT_RCDATA resource
         /// </summary>
-        private static void PrintResourceRT_RCDATA(Models.PortableExecutable.ResourceDataEntry entry, int level)
+        /// <param name="builder">StringBuilder to append information to</param>
+        private static void PrintResourceRT_RCDATA(Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
         {
             string padding = new string(' ', (level + 1) * 2);
-            Console.WriteLine($"{padding}Application-defined resource found, not parsed yet");
+            builder.AppendLine($"{padding}Application-defined resource found, not parsed yet");
 
             // Then print the data, if needed
             if (entry.Data[0] == 0x4D && entry.Data[1] == 0x5A)
             {
-                Console.WriteLine($"{padding}Data: [Embedded Executable File]"); // TODO: Parse this out and print separately
+                builder.AppendLine($"{padding}Data: [Embedded Executable File]"); // TODO: Parse this out and print separately
             }
             else if (entry.Data[0] == 0x4D && entry.Data[1] == 0x53 && entry.Data[2] == 0x46 && entry.Data[3] == 0x54)
             {
-                Console.WriteLine($"{padding}Data: [Embedded OLE Library File]"); // TODO: Parse this out and print separately
+                builder.AppendLine($"{padding}Data: [Embedded OLE Library File]"); // TODO: Parse this out and print separately
             }
             else
             {
                 //if (entry.Data != null)
-                //    Console.WriteLine($"{padding}Value (Byte Data): {BitConverter.ToString(entry.Data).Replace('-', ' ')}");
+                //    builder.AppendLine($"{padding}Value (Byte Data): {BitConverter.ToString(entry.Data).Replace('-', ' ')}");
                 //if (entry.Data != null)
-                //    Console.WriteLine($"{padding}Value (ASCII): {Encoding.ASCII.GetString(entry.Data)}");
+                //    builder.AppendLine($"{padding}Value (ASCII): {Encoding.ASCII.GetString(entry.Data)}");
                 //if (entry.Data != null)
-                //    Console.WriteLine($"{padding}Value (UTF-8): {Encoding.UTF8.GetString(entry.Data)}");
+                //    builder.AppendLine($"{padding}Value (UTF-8): {Encoding.UTF8.GetString(entry.Data)}");
                 //if (entry.Data != null)
-                //    Console.WriteLine($"{padding}Value (Unicode): {Encoding.Unicode.GetString(entry.Data)}");
+                //    builder.AppendLine($"{padding}Value (Unicode): {Encoding.Unicode.GetString(entry.Data)}");
             }
         }
 
         /// <summary>
         /// Print an RT_MESSAGETABLE resource
         /// </summary>
-        private static void PrintResourceRT_MESSAGETABLE(Models.PortableExecutable.ResourceDataEntry entry, int level)
+        /// <param name="builder">StringBuilder to append information to</param>
+        private static void PrintResourceRT_MESSAGETABLE(Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
         {
             string padding = new string(' ', (level + 1) * 2);
 
@@ -2471,19 +2487,19 @@ namespace BurnOutSharp.Wrappers
             try { messageTable = entry.AsMessageResourceData(); } catch { }
             if (messageTable == null)
             {
-                Console.WriteLine($"{padding}Message resource data found, but malformed");
+                builder.AppendLine($"{padding}Message resource data found, but malformed");
                 return;
             }
 
-            Console.WriteLine($"{padding}Number of blocks: {messageTable.NumberOfBlocks} (0x{messageTable.NumberOfBlocks:X})");
-            Console.WriteLine();
-            Console.WriteLine($"{padding}Message resource blocks");
-            Console.WriteLine($"{padding}-------------------------");
+            builder.AppendLine($"{padding}Number of blocks: {messageTable.NumberOfBlocks} (0x{messageTable.NumberOfBlocks:X})");
+            builder.AppendLine();
+            builder.AppendLine($"{padding}Message resource blocks");
+            builder.AppendLine($"{padding}-------------------------");
             if (messageTable.NumberOfBlocks == 0
                 || messageTable.Blocks == null
                 || messageTable.Blocks.Length == 0)
             {
-                Console.WriteLine($"{padding}No message resource blocks");
+                builder.AppendLine($"{padding}No message resource blocks");
             }
             else
             {
@@ -2491,20 +2507,20 @@ namespace BurnOutSharp.Wrappers
                 {
                     var messageResourceBlock = messageTable.Blocks[i];
 
-                    Console.WriteLine($"{padding}Message resource block {i}");
-                    Console.WriteLine($"{padding}  Low ID: {messageResourceBlock.LowId} (0x{messageResourceBlock.LowId:X})");
-                    Console.WriteLine($"{padding}  High ID: {messageResourceBlock.HighId} (0x{messageResourceBlock.HighId:X})");
-                    Console.WriteLine($"{padding}  Offset to entries: {messageResourceBlock.OffsetToEntries} (0x{messageResourceBlock.OffsetToEntries:X})");
+                    builder.AppendLine($"{padding}Message resource block {i}");
+                    builder.AppendLine($"{padding}  Low ID: {messageResourceBlock.LowId} (0x{messageResourceBlock.LowId:X})");
+                    builder.AppendLine($"{padding}  High ID: {messageResourceBlock.HighId} (0x{messageResourceBlock.HighId:X})");
+                    builder.AppendLine($"{padding}  Offset to entries: {messageResourceBlock.OffsetToEntries} (0x{messageResourceBlock.OffsetToEntries:X})");
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
 
-            Console.WriteLine($"{padding}Message resource entries");
-            Console.WriteLine($"{padding}-------------------------");
+            builder.AppendLine($"{padding}Message resource entries");
+            builder.AppendLine($"{padding}-------------------------");
             if (messageTable.Entries == null
                 || messageTable.Entries.Count == 0)
             {
-                Console.WriteLine($"{padding}No message resource entries");
+                builder.AppendLine($"{padding}No message resource entries");
             }
             else
             {
@@ -2513,10 +2529,10 @@ namespace BurnOutSharp.Wrappers
                     uint index = kvp.Key;
                     var messageResourceEntry = kvp.Value;
 
-                    Console.WriteLine($"{padding}Message resource entry {index}");
-                    Console.WriteLine($"{padding}  Length: {messageResourceEntry.Length} (0x{messageResourceEntry.Length:X})");
-                    Console.WriteLine($"{padding}  Flags: {messageResourceEntry.Flags} (0x{messageResourceEntry.Flags:X})");
-                    Console.WriteLine($"{padding}  Text: {messageResourceEntry.Text}");
+                    builder.AppendLine($"{padding}Message resource entry {index}");
+                    builder.AppendLine($"{padding}  Length: {messageResourceEntry.Length} (0x{messageResourceEntry.Length:X})");
+                    builder.AppendLine($"{padding}  Flags: {messageResourceEntry.Flags} (0x{messageResourceEntry.Flags:X})");
+                    builder.AppendLine($"{padding}  Text: {messageResourceEntry.Text}");
                 }
             }
         }
@@ -2524,25 +2540,28 @@ namespace BurnOutSharp.Wrappers
         /// <summary>
         /// Print an RT_GROUP_CURSOR resource
         /// </summary>
-        private static void PrintResourceRT_GROUP_CURSOR(Models.PortableExecutable.ResourceDataEntry entry, int level)
+        /// <param name="builder">StringBuilder to append information to</param>
+        private static void PrintResourceRT_GROUP_CURSOR(Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
         {
             string padding = new string(' ', (level + 1) * 2);
-            Console.WriteLine($"{padding}Hardware-independent cursor resource found, not parsed yet");
+            builder.AppendLine($"{padding}Hardware-independent cursor resource found, not parsed yet");
         }
 
         /// <summary>
         /// Print an RT_GROUP_ICON resource
         /// </summary>
-        private static void PrintResourceRT_GROUP_ICON(Models.PortableExecutable.ResourceDataEntry entry, int level)
+        /// <param name="builder">StringBuilder to append information to</param>
+        private static void PrintResourceRT_GROUP_ICON(Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
         {
             string padding = new string(' ', (level + 1) * 2);
-            Console.WriteLine($"{padding}Hardware-independent icon resource found, not parsed yet");
+            builder.AppendLine($"{padding}Hardware-independent icon resource found, not parsed yet");
         }
 
         /// <summary>
         /// Print an RT_VERSION resource
         /// </summary>
-        private static void PrintResourceRT_VERSION(Models.PortableExecutable.ResourceDataEntry entry, int level)
+        /// <param name="builder">StringBuilder to append information to</param>
+        private static void PrintResourceRT_VERSION(Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
         {
             string padding = new string(' ', (level + 1) * 2);
 
@@ -2550,42 +2569,42 @@ namespace BurnOutSharp.Wrappers
             try { versionInfo = entry.AsVersionInfo(); } catch { }
             if (versionInfo == null)
             {
-                Console.WriteLine($"{padding}Version info resource found, but malformed");
+                builder.AppendLine($"{padding}Version info resource found, but malformed");
                 return;
             }
 
-            Console.WriteLine($"{padding}Length: {versionInfo.Length} (0x{versionInfo.Length:X})");
-            Console.WriteLine($"{padding}Value length: {versionInfo.ValueLength} (0x{versionInfo.ValueLength:X})");
-            Console.WriteLine($"{padding}Resource type: {versionInfo.ResourceType} (0x{versionInfo.ResourceType:X})");
-            Console.WriteLine($"{padding}Key: {versionInfo.Key}");
+            builder.AppendLine($"{padding}Length: {versionInfo.Length} (0x{versionInfo.Length:X})");
+            builder.AppendLine($"{padding}Value length: {versionInfo.ValueLength} (0x{versionInfo.ValueLength:X})");
+            builder.AppendLine($"{padding}Resource type: {versionInfo.ResourceType} (0x{versionInfo.ResourceType:X})");
+            builder.AppendLine($"{padding}Key: {versionInfo.Key}");
             if (versionInfo.ValueLength != 0 && versionInfo.Value != null)
             {
-                Console.WriteLine($"{padding}[Fixed File Info] Signature: {versionInfo.Value.Signature} (0x{versionInfo.Value.Signature:X})");
-                Console.WriteLine($"{padding}[Fixed File Info] Struct version: {versionInfo.Value.StrucVersion} (0x{versionInfo.Value.StrucVersion:X})");
-                Console.WriteLine($"{padding}[Fixed File Info] File version (MS): {versionInfo.Value.FileVersionMS} (0x{versionInfo.Value.FileVersionMS:X})");
-                Console.WriteLine($"{padding}[Fixed File Info] File version (LS): {versionInfo.Value.FileVersionLS} (0x{versionInfo.Value.FileVersionLS:X})");
-                Console.WriteLine($"{padding}[Fixed File Info] Product version (MS): {versionInfo.Value.ProductVersionMS} (0x{versionInfo.Value.ProductVersionMS:X})");
-                Console.WriteLine($"{padding}[Fixed File Info] Product version (LS): {versionInfo.Value.ProductVersionLS} (0x{versionInfo.Value.ProductVersionLS:X})");
-                Console.WriteLine($"{padding}[Fixed File Info] File flags mask: {versionInfo.Value.FileFlagsMask} (0x{versionInfo.Value.FileFlagsMask:X})");
-                Console.WriteLine($"{padding}[Fixed File Info] File flags: {versionInfo.Value.FileFlags} (0x{versionInfo.Value.FileFlags:X})");
-                Console.WriteLine($"{padding}[Fixed File Info] File OS: {versionInfo.Value.FileOS} (0x{versionInfo.Value.FileOS:X})");
-                Console.WriteLine($"{padding}[Fixed File Info] Type: {versionInfo.Value.FileType} (0x{versionInfo.Value.FileType:X})");
-                Console.WriteLine($"{padding}[Fixed File Info] Subtype: {versionInfo.Value.FileSubtype} (0x{versionInfo.Value.FileSubtype:X})");
-                Console.WriteLine($"{padding}[Fixed File Info] File date (MS): {versionInfo.Value.FileDateMS} (0x{versionInfo.Value.FileDateMS:X})");
-                Console.WriteLine($"{padding}[Fixed File Info] File date (LS): {versionInfo.Value.FileDateLS} (0x{versionInfo.Value.FileDateLS:X})");
+                builder.AppendLine($"{padding}[Fixed File Info] Signature: {versionInfo.Value.Signature} (0x{versionInfo.Value.Signature:X})");
+                builder.AppendLine($"{padding}[Fixed File Info] Struct version: {versionInfo.Value.StrucVersion} (0x{versionInfo.Value.StrucVersion:X})");
+                builder.AppendLine($"{padding}[Fixed File Info] File version (MS): {versionInfo.Value.FileVersionMS} (0x{versionInfo.Value.FileVersionMS:X})");
+                builder.AppendLine($"{padding}[Fixed File Info] File version (LS): {versionInfo.Value.FileVersionLS} (0x{versionInfo.Value.FileVersionLS:X})");
+                builder.AppendLine($"{padding}[Fixed File Info] Product version (MS): {versionInfo.Value.ProductVersionMS} (0x{versionInfo.Value.ProductVersionMS:X})");
+                builder.AppendLine($"{padding}[Fixed File Info] Product version (LS): {versionInfo.Value.ProductVersionLS} (0x{versionInfo.Value.ProductVersionLS:X})");
+                builder.AppendLine($"{padding}[Fixed File Info] File flags mask: {versionInfo.Value.FileFlagsMask} (0x{versionInfo.Value.FileFlagsMask:X})");
+                builder.AppendLine($"{padding}[Fixed File Info] File flags: {versionInfo.Value.FileFlags} (0x{versionInfo.Value.FileFlags:X})");
+                builder.AppendLine($"{padding}[Fixed File Info] File OS: {versionInfo.Value.FileOS} (0x{versionInfo.Value.FileOS:X})");
+                builder.AppendLine($"{padding}[Fixed File Info] Type: {versionInfo.Value.FileType} (0x{versionInfo.Value.FileType:X})");
+                builder.AppendLine($"{padding}[Fixed File Info] Subtype: {versionInfo.Value.FileSubtype} (0x{versionInfo.Value.FileSubtype:X})");
+                builder.AppendLine($"{padding}[Fixed File Info] File date (MS): {versionInfo.Value.FileDateMS} (0x{versionInfo.Value.FileDateMS:X})");
+                builder.AppendLine($"{padding}[Fixed File Info] File date (LS): {versionInfo.Value.FileDateLS} (0x{versionInfo.Value.FileDateLS:X})");
             }
 
             if (versionInfo.StringFileInfo != null)
             {
-                Console.WriteLine($"{padding}[String File Info] Length: {versionInfo.StringFileInfo.Length} (0x{versionInfo.StringFileInfo.Length:X})");
-                Console.WriteLine($"{padding}[String File Info] Value length: {versionInfo.StringFileInfo.ValueLength} (0x{versionInfo.StringFileInfo.ValueLength:X})");
-                Console.WriteLine($"{padding}[String File Info] Resource type: {versionInfo.StringFileInfo.ResourceType} (0x{versionInfo.StringFileInfo.ResourceType:X})");
-                Console.WriteLine($"{padding}[String File Info] Key: {versionInfo.StringFileInfo.Key}");
-                Console.WriteLine($"{padding}Children:");
-                Console.WriteLine($"{padding}-------------------------");
+                builder.AppendLine($"{padding}[String File Info] Length: {versionInfo.StringFileInfo.Length} (0x{versionInfo.StringFileInfo.Length:X})");
+                builder.AppendLine($"{padding}[String File Info] Value length: {versionInfo.StringFileInfo.ValueLength} (0x{versionInfo.StringFileInfo.ValueLength:X})");
+                builder.AppendLine($"{padding}[String File Info] Resource type: {versionInfo.StringFileInfo.ResourceType} (0x{versionInfo.StringFileInfo.ResourceType:X})");
+                builder.AppendLine($"{padding}[String File Info] Key: {versionInfo.StringFileInfo.Key}");
+                builder.AppendLine($"{padding}Children:");
+                builder.AppendLine($"{padding}-------------------------");
                 if (versionInfo.StringFileInfo.Children == null || versionInfo.StringFileInfo.Children.Length == 0)
                 {
-                    Console.WriteLine($"{padding}No string file info children");
+                    builder.AppendLine($"{padding}No string file info children");
                 }
                 else
                 {
@@ -2593,15 +2612,15 @@ namespace BurnOutSharp.Wrappers
                     {
                         var stringFileInfoChildEntry = versionInfo.StringFileInfo.Children[i];
 
-                        Console.WriteLine($"{padding}  [String Table {i}] Length: {stringFileInfoChildEntry.Length} (0x{stringFileInfoChildEntry.Length:X})");
-                        Console.WriteLine($"{padding}  [String Table {i}] Value length: {stringFileInfoChildEntry.ValueLength} (0x{stringFileInfoChildEntry.ValueLength:X})");
-                        Console.WriteLine($"{padding}  [String Table {i}] ResourceType: {stringFileInfoChildEntry.ResourceType} (0x{stringFileInfoChildEntry.ResourceType:X})");
-                        Console.WriteLine($"{padding}  [String Table {i}] Key: {stringFileInfoChildEntry.Key}");
-                        Console.WriteLine($"{padding}  [String Table {i}] Children:");
-                        Console.WriteLine($"{padding}  -------------------------");
+                        builder.AppendLine($"{padding}  [String Table {i}] Length: {stringFileInfoChildEntry.Length} (0x{stringFileInfoChildEntry.Length:X})");
+                        builder.AppendLine($"{padding}  [String Table {i}] Value length: {stringFileInfoChildEntry.ValueLength} (0x{stringFileInfoChildEntry.ValueLength:X})");
+                        builder.AppendLine($"{padding}  [String Table {i}] ResourceType: {stringFileInfoChildEntry.ResourceType} (0x{stringFileInfoChildEntry.ResourceType:X})");
+                        builder.AppendLine($"{padding}  [String Table {i}] Key: {stringFileInfoChildEntry.Key}");
+                        builder.AppendLine($"{padding}  [String Table {i}] Children:");
+                        builder.AppendLine($"{padding}  -------------------------");
                         if (stringFileInfoChildEntry.Children == null || stringFileInfoChildEntry.Children.Length == 0)
                         {
-                            Console.WriteLine($"{padding}  No string table {i} children");
+                            builder.AppendLine($"{padding}  No string table {i} children");
                         }
                         else
                         {
@@ -2609,11 +2628,11 @@ namespace BurnOutSharp.Wrappers
                             {
                                 var stringDataEntry = stringFileInfoChildEntry.Children[j];
 
-                                Console.WriteLine($"{padding}    [String Data {j}] Length: {stringDataEntry.Length} (0x{stringDataEntry.Length:X})");
-                                Console.WriteLine($"{padding}    [String Data {j}] Value length: {stringDataEntry.ValueLength} (0x{stringDataEntry.ValueLength:X})");
-                                Console.WriteLine($"{padding}    [String Data {j}] ResourceType: {stringDataEntry.ResourceType} (0x{stringDataEntry.ResourceType:X})");
-                                Console.WriteLine($"{padding}    [String Data {j}] Key: {stringDataEntry.Key}");
-                                Console.WriteLine($"{padding}    [String Data {j}] Value: {stringDataEntry.Value}");
+                                builder.AppendLine($"{padding}    [String Data {j}] Length: {stringDataEntry.Length} (0x{stringDataEntry.Length:X})");
+                                builder.AppendLine($"{padding}    [String Data {j}] Value length: {stringDataEntry.ValueLength} (0x{stringDataEntry.ValueLength:X})");
+                                builder.AppendLine($"{padding}    [String Data {j}] ResourceType: {stringDataEntry.ResourceType} (0x{stringDataEntry.ResourceType:X})");
+                                builder.AppendLine($"{padding}    [String Data {j}] Key: {stringDataEntry.Key}");
+                                builder.AppendLine($"{padding}    [String Data {j}] Value: {stringDataEntry.Value}");
                             }
                         }
                     }
@@ -2622,15 +2641,15 @@ namespace BurnOutSharp.Wrappers
 
             if (versionInfo.VarFileInfo != null)
             {
-                Console.WriteLine($"{padding}[Var File Info] Length: {versionInfo.VarFileInfo.Length} (0x{versionInfo.VarFileInfo.Length:X})");
-                Console.WriteLine($"{padding}[Var File Info] Value length: {versionInfo.VarFileInfo.ValueLength} (0x{versionInfo.VarFileInfo.ValueLength:X})");
-                Console.WriteLine($"{padding}[Var File Info] Resource type: {versionInfo.VarFileInfo.ResourceType} (0x{versionInfo.VarFileInfo.ResourceType:X})");
-                Console.WriteLine($"{padding}[Var File Info] Key: {versionInfo.VarFileInfo.Key}");
-                Console.WriteLine($"{padding}Children:");
-                Console.WriteLine($"{padding}-------------------------");
+                builder.AppendLine($"{padding}[Var File Info] Length: {versionInfo.VarFileInfo.Length} (0x{versionInfo.VarFileInfo.Length:X})");
+                builder.AppendLine($"{padding}[Var File Info] Value length: {versionInfo.VarFileInfo.ValueLength} (0x{versionInfo.VarFileInfo.ValueLength:X})");
+                builder.AppendLine($"{padding}[Var File Info] Resource type: {versionInfo.VarFileInfo.ResourceType} (0x{versionInfo.VarFileInfo.ResourceType:X})");
+                builder.AppendLine($"{padding}[Var File Info] Key: {versionInfo.VarFileInfo.Key}");
+                builder.AppendLine($"{padding}Children:");
+                builder.AppendLine($"{padding}-------------------------");
                 if (versionInfo.VarFileInfo.Children == null || versionInfo.VarFileInfo.Children.Length == 0)
                 {
-                    Console.WriteLine($"{padding}No var file info children");
+                    builder.AppendLine($"{padding}No var file info children");
                 }
                 else
                 {
@@ -2638,11 +2657,11 @@ namespace BurnOutSharp.Wrappers
                     {
                         var varFileInfoChildEntry = versionInfo.VarFileInfo.Children[i];
 
-                        Console.WriteLine($"{padding}  [String Table {i}] Length: {varFileInfoChildEntry.Length} (0x{varFileInfoChildEntry.Length:X})");
-                        Console.WriteLine($"{padding}  [String Table {i}] Value length: {varFileInfoChildEntry.ValueLength} (0x{varFileInfoChildEntry.ValueLength:X})");
-                        Console.WriteLine($"{padding}  [String Table {i}] ResourceType: {varFileInfoChildEntry.ResourceType} (0x{varFileInfoChildEntry.ResourceType:X})");
-                        Console.WriteLine($"{padding}  [String Table {i}] Key: {varFileInfoChildEntry.Key}");
-                        Console.WriteLine($"{padding}  [String Table {i}] Value: {string.Join(",", varFileInfoChildEntry.Value)}");
+                        builder.AppendLine($"{padding}  [String Table {i}] Length: {varFileInfoChildEntry.Length} (0x{varFileInfoChildEntry.Length:X})");
+                        builder.AppendLine($"{padding}  [String Table {i}] Value length: {varFileInfoChildEntry.ValueLength} (0x{varFileInfoChildEntry.ValueLength:X})");
+                        builder.AppendLine($"{padding}  [String Table {i}] ResourceType: {varFileInfoChildEntry.ResourceType} (0x{varFileInfoChildEntry.ResourceType:X})");
+                        builder.AppendLine($"{padding}  [String Table {i}] Key: {varFileInfoChildEntry.Key}");
+                        builder.AppendLine($"{padding}  [String Table {i}] Value: {string.Join(",", varFileInfoChildEntry.Value)}");
                     }
                 }
             }
@@ -2651,68 +2670,75 @@ namespace BurnOutSharp.Wrappers
         /// <summary>
         /// Print an RT_DLGINCLUDE resource
         /// </summary>
-        private static void PrintResourceRT_DLGINCLUDE(Models.PortableExecutable.ResourceDataEntry entry, int level)
+        /// <param name="builder">StringBuilder to append information to</param>
+        private static void PrintResourceRT_DLGINCLUDE(Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
         {
             string padding = new string(' ', (level + 1) * 2);
-            Console.WriteLine($"{padding}External header resource found, not parsed yet");
+            builder.AppendLine($"{padding}External header resource found, not parsed yet");
         }
 
         /// <summary>
         /// Print an RT_PLUGPLAY resource
         /// </summary>
-        private static void PrintResourceRT_PLUGPLAY(Models.PortableExecutable.ResourceDataEntry entry, int level)
+        /// <param name="builder">StringBuilder to append information to</param>
+        private static void PrintResourceRT_PLUGPLAY(Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
         {
             string padding = new string(' ', (level + 1) * 2);
-            Console.WriteLine($"{padding}Plug and Play resource found, not parsed yet");
+            builder.AppendLine($"{padding}Plug and Play resource found, not parsed yet");
         }
 
         /// <summary>
         /// Print an RT_VXD resource
         /// </summary>
-        private static void PrintResourceRT_VXD(Models.PortableExecutable.ResourceDataEntry entry, int level)
+        /// <param name="builder">StringBuilder to append information to</param>
+        private static void PrintResourceRT_VXD(Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
         {
             string padding = new string(' ', (level + 1) * 2);
-            Console.WriteLine($"{padding}VXD found, not parsed yet");
+            builder.AppendLine($"{padding}VXD found, not parsed yet");
         }
 
         /// <summary>
         /// Print an RT_ANICURSOR resource
         /// </summary>
-        private static void PrintResourceRT_ANICURSOR(Models.PortableExecutable.ResourceDataEntry entry, int level)
+        /// <param name="builder">StringBuilder to append information to</param>
+        private static void PrintResourceRT_ANICURSOR(Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
         {
             string padding = new string(' ', (level + 1) * 2);
-            Console.WriteLine($"{padding}Animated cursor found, not parsed yet");
+            builder.AppendLine($"{padding}Animated cursor found, not parsed yet");
         }
 
         /// <summary>
         /// Print an RT_ANIICON resource
         /// </summary>
-        private static void PrintResourceRT_ANIICON(Models.PortableExecutable.ResourceDataEntry entry, int level)
+        /// <param name="builder">StringBuilder to append information to</param>
+        private static void PrintResourceRT_ANIICON(Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
         {
             string padding = new string(' ', (level + 1) * 2);
-            Console.WriteLine($"{padding}Animated icon found, not parsed yet");
+            builder.AppendLine($"{padding}Animated icon found, not parsed yet");
         }
 
         /// <summary>
         /// Print an RT_HTML resource
         /// </summary>
-        private static void PrintResourceRT_HTML(Models.PortableExecutable.ResourceDataEntry entry, int level)
+        /// <param name="builder">StringBuilder to append information to</param>
+        private static void PrintResourceRT_HTML(Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
         {
             string padding = new string(' ', (level + 1) * 2);
-            Console.WriteLine($"{padding}HTML resource found, not parsed yet");
+            builder.AppendLine($"{padding}HTML resource found, not parsed yet");
 
             //if (entry.Data != null)
-            //    Console.WriteLine($"{padding}Value (ASCII): {Encoding.ASCII.GetString(entry.Data)}");
+            //    builder.AppendLine($"{padding}Value (ASCII): {Encoding.ASCII.GetString(entry.Data)}");
             //if (entry.Data != null)
-            //    Console.WriteLine($"{padding}Value (UTF-8): {Encoding.UTF8.GetString(entry.Data)}");
+            //    builder.AppendLine($"{padding}Value (UTF-8): {Encoding.UTF8.GetString(entry.Data)}");
             //if (entry.Data != null)
-            //    Console.WriteLine($"{padding}Value (Unicode): {Encoding.Unicode.GetString(entry.Data)}");
+            //    builder.AppendLine($"{padding}Value (Unicode): {Encoding.Unicode.GetString(entry.Data)}");
         }
 
         /// <summary>
         /// Print an RT_MANIFEST resource
         /// </summary>
-        private static void PrintResourceRT_MANIFEST(Models.PortableExecutable.ResourceDataEntry entry, int level)
+        /// <param name="builder">StringBuilder to append information to</param>
+        private static void PrintResourceRT_MANIFEST(Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
         {
             string padding = new string(' ', (level + 1) * 2);
 
@@ -2720,39 +2746,39 @@ namespace BurnOutSharp.Wrappers
             try { assemblyManifest = entry.AsAssemblyManifest(); } catch { }
             if (assemblyManifest == null)
             {
-                Console.WriteLine($"{padding}Assembly manifest found, but malformed");
+                builder.AppendLine($"{padding}Assembly manifest found, but malformed");
                 return;
             }
 
-            Console.WriteLine($"{padding}Manifest version: {assemblyManifest.ManifestVersion}");
+            builder.AppendLine($"{padding}Manifest version: {assemblyManifest.ManifestVersion}");
             if (assemblyManifest.AssemblyIdentities != null && assemblyManifest.AssemblyIdentities.Length > 0)
             {
                 for (int i = 0; i < assemblyManifest.AssemblyIdentities.Length; i++)
                 {
                     var assemblyIdentity = assemblyManifest.AssemblyIdentities[i];
-                    Console.WriteLine($"{padding}[Assembly Identity {i}] Name: {assemblyIdentity.Name}");
-                    Console.WriteLine($"{padding}[Assembly Identity {i}] Version: {assemblyIdentity.Version}");
-                    Console.WriteLine($"{padding}[Assembly Identity {i}] Type: {assemblyIdentity.Type}");
-                    Console.WriteLine($"{padding}[Assembly Identity {i}] Processor architecture: {assemblyIdentity.ProcessorArchitecture}");
-                    Console.WriteLine($"{padding}[Assembly Identity {i}] Public key token: {assemblyIdentity.PublicKeyToken}");
-                    Console.WriteLine($"{padding}[Assembly Identity {i}] Language: {assemblyIdentity.Language}");
+                    builder.AppendLine($"{padding}[Assembly Identity {i}] Name: {assemblyIdentity.Name}");
+                    builder.AppendLine($"{padding}[Assembly Identity {i}] Version: {assemblyIdentity.Version}");
+                    builder.AppendLine($"{padding}[Assembly Identity {i}] Type: {assemblyIdentity.Type}");
+                    builder.AppendLine($"{padding}[Assembly Identity {i}] Processor architecture: {assemblyIdentity.ProcessorArchitecture}");
+                    builder.AppendLine($"{padding}[Assembly Identity {i}] Public key token: {assemblyIdentity.PublicKeyToken}");
+                    builder.AppendLine($"{padding}[Assembly Identity {i}] Language: {assemblyIdentity.Language}");
                 }
             }
 
             if (assemblyManifest.Description != null)
-                Console.WriteLine($"{padding}[Assembly Description] Value: {assemblyManifest.Description.Value}");
+                builder.AppendLine($"{padding}[Assembly Description] Value: {assemblyManifest.Description.Value}");
 
             if (assemblyManifest.COMInterfaceExternalProxyStub != null && assemblyManifest.COMInterfaceExternalProxyStub.Length > 0)
             {
                 for (int i = 0; i < assemblyManifest.COMInterfaceExternalProxyStub.Length; i++)
                 {
                     var comInterfaceExternalProxyStub = assemblyManifest.COMInterfaceExternalProxyStub[i];
-                    Console.WriteLine($"{padding}[COM Interface External Proxy Stub {i}] IID: {comInterfaceExternalProxyStub.IID}");
-                    Console.WriteLine($"{padding}[COM Interface External Proxy Stub {i}] Name: {comInterfaceExternalProxyStub.Name}");
-                    Console.WriteLine($"{padding}[COM Interface External Proxy Stub {i}] TLBID: {comInterfaceExternalProxyStub.TLBID}");
-                    Console.WriteLine($"{padding}[COM Interface External Proxy Stub {i}] Number of methods: {comInterfaceExternalProxyStub.NumMethods}");
-                    Console.WriteLine($"{padding}[COM Interface External Proxy Stub {i}] Proxy stub (CLSID32): {comInterfaceExternalProxyStub.ProxyStubClsid32}");
-                    Console.WriteLine($"{padding}[COM Interface External Proxy Stub {i}] Base interface: {comInterfaceExternalProxyStub.BaseInterface}");
+                    builder.AppendLine($"{padding}[COM Interface External Proxy Stub {i}] IID: {comInterfaceExternalProxyStub.IID}");
+                    builder.AppendLine($"{padding}[COM Interface External Proxy Stub {i}] Name: {comInterfaceExternalProxyStub.Name}");
+                    builder.AppendLine($"{padding}[COM Interface External Proxy Stub {i}] TLBID: {comInterfaceExternalProxyStub.TLBID}");
+                    builder.AppendLine($"{padding}[COM Interface External Proxy Stub {i}] Number of methods: {comInterfaceExternalProxyStub.NumMethods}");
+                    builder.AppendLine($"{padding}[COM Interface External Proxy Stub {i}] Proxy stub (CLSID32): {comInterfaceExternalProxyStub.ProxyStubClsid32}");
+                    builder.AppendLine($"{padding}[COM Interface External Proxy Stub {i}] Base interface: {comInterfaceExternalProxyStub.BaseInterface}");
                 }
             }
 
@@ -2765,25 +2791,25 @@ namespace BurnOutSharp.Wrappers
                     {
                         if (dependency.DependentAssembly.AssemblyIdentity != null)
                         {
-                            Console.WriteLine($"{padding}[Dependency {i} Assembly Identity] Name: {dependency.DependentAssembly.AssemblyIdentity.Name}");
-                            Console.WriteLine($"{padding}[Dependency {i} Assembly Identity] Version: {dependency.DependentAssembly.AssemblyIdentity.Version}");
-                            Console.WriteLine($"{padding}[Dependency {i} Assembly Identity] Type: {dependency.DependentAssembly.AssemblyIdentity.Type}");
-                            Console.WriteLine($"{padding}[Dependency {i} Assembly Identity] Processor architecture: {dependency.DependentAssembly.AssemblyIdentity.ProcessorArchitecture}");
-                            Console.WriteLine($"{padding}[Dependency {i} Assembly Identity] Public key token: {dependency.DependentAssembly.AssemblyIdentity.PublicKeyToken}");
-                            Console.WriteLine($"{padding}[Dependency {i} Assembly Identity] Language: {dependency.DependentAssembly.AssemblyIdentity.Language}");
+                            builder.AppendLine($"{padding}[Dependency {i} Assembly Identity] Name: {dependency.DependentAssembly.AssemblyIdentity.Name}");
+                            builder.AppendLine($"{padding}[Dependency {i} Assembly Identity] Version: {dependency.DependentAssembly.AssemblyIdentity.Version}");
+                            builder.AppendLine($"{padding}[Dependency {i} Assembly Identity] Type: {dependency.DependentAssembly.AssemblyIdentity.Type}");
+                            builder.AppendLine($"{padding}[Dependency {i} Assembly Identity] Processor architecture: {dependency.DependentAssembly.AssemblyIdentity.ProcessorArchitecture}");
+                            builder.AppendLine($"{padding}[Dependency {i} Assembly Identity] Public key token: {dependency.DependentAssembly.AssemblyIdentity.PublicKeyToken}");
+                            builder.AppendLine($"{padding}[Dependency {i} Assembly Identity] Language: {dependency.DependentAssembly.AssemblyIdentity.Language}");
                         }
                         if (dependency.DependentAssembly.BindingRedirect != null && dependency.DependentAssembly.BindingRedirect.Length > 0)
                         {
                             for (int j = 0; j < dependency.DependentAssembly.BindingRedirect.Length; j++)
                             {
                                 var bindingRedirect = dependency.DependentAssembly.BindingRedirect[j];
-                                Console.WriteLine($"{padding}[Dependency {i} Binding Redirect {j}] Old version: {bindingRedirect.OldVersion}");
-                                Console.WriteLine($"{padding}[Dependency {i} Binding Redirect {j}] New version: {bindingRedirect.NewVersion}");
+                                builder.AppendLine($"{padding}[Dependency {i} Binding Redirect {j}] Old version: {bindingRedirect.OldVersion}");
+                                builder.AppendLine($"{padding}[Dependency {i} Binding Redirect {j}] New version: {bindingRedirect.NewVersion}");
                             }
                         }
                     }
 
-                    Console.WriteLine($"{padding}[Dependency {i}] Optional: {dependency.Optional}");
+                    builder.AppendLine($"{padding}[Dependency {i}] Optional: {dependency.Optional}");
                 }
             }
 
@@ -2792,28 +2818,28 @@ namespace BurnOutSharp.Wrappers
                 for (int i = 0; i < assemblyManifest.File.Length; i++)
                 {
                     var file = assemblyManifest.File[i];
-                    Console.WriteLine($"{padding}[File {i}] Name: {file.Name}");
-                    Console.WriteLine($"{padding}[File {i}] Hash: {file.Hash}");
-                    Console.WriteLine($"{padding}[File {i}] Hash algorithm: {file.HashAlgorithm}");
-                    Console.WriteLine($"{padding}[File {i}] Size: {file.Size}");
+                    builder.AppendLine($"{padding}[File {i}] Name: {file.Name}");
+                    builder.AppendLine($"{padding}[File {i}] Hash: {file.Hash}");
+                    builder.AppendLine($"{padding}[File {i}] Hash algorithm: {file.HashAlgorithm}");
+                    builder.AppendLine($"{padding}[File {i}] Size: {file.Size}");
 
                     if (file.COMClass != null && file.COMClass.Length > 0)
                     {
                         for (int j = 0; j < file.COMClass.Length; j++)
                         {
                             var comClass = file.COMClass[j];
-                            Console.WriteLine($"{padding}[File {i} COM Class {j}] CLSID: {comClass.CLSID}");
-                            Console.WriteLine($"{padding}[File {i} COM Class {j}] Threading model: {comClass.ThreadingModel}");
-                            Console.WriteLine($"{padding}[File {i} COM Class {j}] Prog ID: {comClass.ProgID}");
-                            Console.WriteLine($"{padding}[File {i} COM Class {j}] TLBID: {comClass.TLBID}");
-                            Console.WriteLine($"{padding}[File {i} COM Class {j}] Description: {comClass.Description}");
+                            builder.AppendLine($"{padding}[File {i} COM Class {j}] CLSID: {comClass.CLSID}");
+                            builder.AppendLine($"{padding}[File {i} COM Class {j}] Threading model: {comClass.ThreadingModel}");
+                            builder.AppendLine($"{padding}[File {i} COM Class {j}] Prog ID: {comClass.ProgID}");
+                            builder.AppendLine($"{padding}[File {i} COM Class {j}] TLBID: {comClass.TLBID}");
+                            builder.AppendLine($"{padding}[File {i} COM Class {j}] Description: {comClass.Description}");
 
                             if (comClass.ProgIDs != null && comClass.ProgIDs.Length > 0)
                             {
                                 for (int k = 0; k < comClass.ProgIDs.Length; k++)
                                 {
                                     var progId = comClass.ProgIDs[k];
-                                    Console.WriteLine($"{padding}[File {i} COM Class {j} Prog ID {k}] Value: {progId.Value}");
+                                    builder.AppendLine($"{padding}[File {i} COM Class {j} Prog ID {k}] Value: {progId.Value}");
                                 }
                             }
                         }
@@ -2824,12 +2850,12 @@ namespace BurnOutSharp.Wrappers
                         for (int j = 0; j < file.COMInterfaceProxyStub.Length; j++)
                         {
                             var comInterfaceProxyStub = file.COMInterfaceProxyStub[j];
-                            Console.WriteLine($"{padding}[File {i} COM Interface Proxy Stub {j}] IID: {comInterfaceProxyStub.IID}");
-                            Console.WriteLine($"{padding}[File {i} COM Interface Proxy Stub {j}] Name: {comInterfaceProxyStub.Name}");
-                            Console.WriteLine($"{padding}[File {i} COM Interface Proxy Stub {j}] TLBID: {comInterfaceProxyStub.TLBID}");
-                            Console.WriteLine($"{padding}[File {i} COM Interface Proxy Stub {j}] Number of methods: {comInterfaceProxyStub.NumMethods}");
-                            Console.WriteLine($"{padding}[File {i} COM Interface Proxy Stub {j}] Proxy stub (CLSID32): {comInterfaceProxyStub.ProxyStubClsid32}");
-                            Console.WriteLine($"{padding}[File {i} COM Interface Proxy Stub {j}] Base interface: {comInterfaceProxyStub.BaseInterface}");
+                            builder.AppendLine($"{padding}[File {i} COM Interface Proxy Stub {j}] IID: {comInterfaceProxyStub.IID}");
+                            builder.AppendLine($"{padding}[File {i} COM Interface Proxy Stub {j}] Name: {comInterfaceProxyStub.Name}");
+                            builder.AppendLine($"{padding}[File {i} COM Interface Proxy Stub {j}] TLBID: {comInterfaceProxyStub.TLBID}");
+                            builder.AppendLine($"{padding}[File {i} COM Interface Proxy Stub {j}] Number of methods: {comInterfaceProxyStub.NumMethods}");
+                            builder.AppendLine($"{padding}[File {i} COM Interface Proxy Stub {j}] Proxy stub (CLSID32): {comInterfaceProxyStub.ProxyStubClsid32}");
+                            builder.AppendLine($"{padding}[File {i} COM Interface Proxy Stub {j}] Base interface: {comInterfaceProxyStub.BaseInterface}");
                         }
                     }
 
@@ -2838,11 +2864,11 @@ namespace BurnOutSharp.Wrappers
                         for (int j = 0; j < file.Typelib.Length; j++)
                         {
                             var typeLib = file.Typelib[j];
-                            Console.WriteLine($"{padding}[File {i} Type Lib {j}] TLBID: {typeLib.TLBID}");
-                            Console.WriteLine($"{padding}[File {i} Type Lib {j}] Version: {typeLib.Version}");
-                            Console.WriteLine($"{padding}[File {i} Type Lib {j}] Help directory: {typeLib.HelpDir}");
-                            Console.WriteLine($"{padding}[File {i} Type Lib {j}] Resource ID: {typeLib.ResourceID}");
-                            Console.WriteLine($"{padding}[File {i} Type Lib {j}] Flags: {typeLib.Flags}");
+                            builder.AppendLine($"{padding}[File {i} Type Lib {j}] TLBID: {typeLib.TLBID}");
+                            builder.AppendLine($"{padding}[File {i} Type Lib {j}] Version: {typeLib.Version}");
+                            builder.AppendLine($"{padding}[File {i} Type Lib {j}] Help directory: {typeLib.HelpDir}");
+                            builder.AppendLine($"{padding}[File {i} Type Lib {j}] Resource ID: {typeLib.ResourceID}");
+                            builder.AppendLine($"{padding}[File {i} Type Lib {j}] Flags: {typeLib.Flags}");
                         }
                     }
 
@@ -2851,8 +2877,8 @@ namespace BurnOutSharp.Wrappers
                         for (int j = 0; j < file.WindowClass.Length; j++)
                         {
                             var windowClass = file.WindowClass[j];
-                            Console.WriteLine($"{padding}[File {i} Window Class {j}] Versioned: {windowClass.Versioned}");
-                            Console.WriteLine($"{padding}[File {i} Window Class {j}] Value: {windowClass.Value}");
+                            builder.AppendLine($"{padding}[File {i} Window Class {j}] Versioned: {windowClass.Versioned}");
+                            builder.AppendLine($"{padding}[File {i} Window Class {j}] Value: {windowClass.Value}");
                         }
                     }
                 }
@@ -2865,11 +2891,11 @@ namespace BurnOutSharp.Wrappers
                     var thing = assemblyManifest.EverythingElse[i];
                     if (thing is XmlElement element)
                     {
-                        Console.WriteLine($"{padding}Unparsed XML Element {i}: {element.OuterXml}");
+                        builder.AppendLine($"{padding}Unparsed XML Element {i}: {element.OuterXml}");
                     }
                     else
                     {
-                        Console.WriteLine($"{padding}Unparsed Item {i}: {thing}");
+                        builder.AppendLine($"{padding}Unparsed Item {i}: {thing}");
                     }
                 }
             }
@@ -2878,22 +2904,23 @@ namespace BurnOutSharp.Wrappers
         /// <summary>
         /// Print an UNKNOWN or custom resource
         /// </summary>
-        private static void PrintResourceUNKNOWN(Models.PortableExecutable.ResourceDataEntry entry, int level, object resourceType)
+        /// <param name="builder">StringBuilder to append information to</param>
+        private static void PrintResourceUNKNOWN(Models.PortableExecutable.ResourceDataEntry entry, int level, object resourceType, StringBuilder builder)
         {
             string padding = new string(' ', (level + 1) * 2);
 
             // Print the type first
             if (resourceType is uint numericType)
-                Console.WriteLine($"{padding}Type {(Models.PortableExecutable.ResourceType)numericType} found, not parsed yet");
+                builder.AppendLine($"{padding}Type {(Models.PortableExecutable.ResourceType)numericType} found, not parsed yet");
             else if (resourceType is string stringType)
-                Console.WriteLine($"{padding}Type {stringType} found, not parsed yet");
+                builder.AppendLine($"{padding}Type {stringType} found, not parsed yet");
             else
-                Console.WriteLine($"{padding}Unknown type {resourceType} found, not parsed yet");
+                builder.AppendLine($"{padding}Unknown type {resourceType} found, not parsed yet");
 
             // Then print the data, if needed
             if (entry.Data == null)
             {
-                Console.WriteLine($"{padding}Data: [NULL] (This may indicate a very large resource)");
+                builder.AppendLine($"{padding}Data: [NULL] (This may indicate a very large resource)");
             }
             else
             {
@@ -2902,24 +2929,24 @@ namespace BurnOutSharp.Wrappers
 
                 if (entry.Data[0] == 0x4D && entry.Data[1] == 0x5A)
                 {
-                    Console.WriteLine($"{padding}Data: [Embedded Executable File]"); // TODO: Parse this out and print separately
+                    builder.AppendLine($"{padding}Data: [Embedded Executable File]"); // TODO: Parse this out and print separately
                 }
                 else if (entry.Data[0] == 0x4D && entry.Data[1] == 0x53 && entry.Data[2] == 0x46 && entry.Data[3] == 0x54)
                 {
-                    Console.WriteLine($"{padding}Data: [Embedded OLE Library File]"); // TODO: Parse this out and print separately
+                    builder.AppendLine($"{padding}Data: [Embedded OLE Library File]"); // TODO: Parse this out and print separately
                 }
                 else
                 {
-                    Console.WriteLine($"{padding}Data: {BitConverter.ToString(magic).Replace('-', ' ')} ...");
+                    builder.AppendLine($"{padding}Data: {BitConverter.ToString(magic).Replace('-', ' ')} ...");
 
                     //if (entry.Data != null)
-                    //    Console.WriteLine($"{padding}Value (Byte Data): {BitConverter.ToString(entry.Data).Replace('-', ' ')}");
+                    //    builder.AppendLine($"{padding}Value (Byte Data): {BitConverter.ToString(entry.Data).Replace('-', ' ')}");
                     //if (entry.Data != null)
-                    //    Console.WriteLine($"{padding}Value (ASCII): {Encoding.ASCII.GetString(entry.Data)}");
+                    //    builder.AppendLine($"{padding}Value (ASCII): {Encoding.ASCII.GetString(entry.Data)}");
                     //if (entry.Data != null)
-                    //    Console.WriteLine($"{padding}Value (UTF-8): {Encoding.UTF8.GetString(entry.Data)}");
+                    //    builder.AppendLine($"{padding}Value (UTF-8): {Encoding.UTF8.GetString(entry.Data)}");
                     //if (entry.Data != null)
-                    //    Console.WriteLine($"{padding}Value (Unicode): {Encoding.Unicode.GetString(entry.Data)}");
+                    //    builder.AppendLine($"{padding}Value (Unicode): {Encoding.Unicode.GetString(entry.Data)}");
                 }
             }
         }

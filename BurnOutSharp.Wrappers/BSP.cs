@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using static BurnOutSharp.Models.BSP.Constants;
 
 namespace BurnOutSharp.Wrappers
@@ -108,39 +109,45 @@ namespace BurnOutSharp.Wrappers
         #region Printing
 
         /// <inheritdoc/>
-        public override void PrettyPrint()
+        public override StringBuilder PrettyPrint()
         {
-            Console.WriteLine("BSP Information:");
-            Console.WriteLine("-------------------------");
-            Console.WriteLine();
+            StringBuilder builder = new StringBuilder();
+            
+            builder.AppendLine("BSP Information:");
+            builder.AppendLine("-------------------------");
+            builder.AppendLine();
 
-            PrintHeader();
-            PrintLumps();
-            PrintTextureHeader();
-            PrintTextures();
+            PrintHeader(builder);
+            PrintLumps(builder);
+            PrintTextureHeader(builder);
+            PrintTextures(builder);
+
+            return builder;
         }
 
         /// <summary>
         /// Print header information
         /// </summary>
-        private void PrintHeader()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintHeader(StringBuilder builder)
         {
-            Console.WriteLine("  Header Information:");
-            Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Version: {Version} (0x{Version:X})");
-            Console.WriteLine();
+            builder.AppendLine("  Header Information:");
+            builder.AppendLine("  -------------------------");
+            builder.AppendLine($"  Version: {Version} (0x{Version:X})");
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print lumps information
         /// </summary>
-        private void PrintLumps()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintLumps(StringBuilder builder)
         {
-            Console.WriteLine("  Lumps Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Lumps Information:");
+            builder.AppendLine("  -------------------------");
             if (Lumps == null || Lumps.Length == 0)
             {
-                Console.WriteLine("  No lumps");
+                builder.AppendLine("  No lumps");
             }
             else
             {
@@ -158,61 +165,63 @@ namespace BurnOutSharp.Wrappers
                             break;
                     }
 
-                    Console.WriteLine($"  Lump {i}{specialLumpName}");
-                    Console.WriteLine($"    Offset: {lump.Offset} (0x{lump.Offset:X})");
-                    Console.WriteLine($"    Length: {lump.Length} (0x{lump.Length:X})");
+                    builder.AppendLine($"  Lump {i}{specialLumpName}");
+                    builder.AppendLine($"    Offset: {lump.Offset} (0x{lump.Offset:X})");
+                    builder.AppendLine($"    Length: {lump.Length} (0x{lump.Length:X})");
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print texture header information
         /// </summary>
-        private void PrintTextureHeader()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintTextureHeader(StringBuilder builder)
         {
-            Console.WriteLine("  Texture Header Information:");
-            Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Texture count: {TextureCount}");
-            Console.WriteLine($"  Offsets:");
+            builder.AppendLine("  Texture Header Information:");
+            builder.AppendLine("  -------------------------");
+            builder.AppendLine($"  Texture count: {TextureCount}");
+            builder.AppendLine($"  Offsets:");
             for (int i = 0; i < Offsets.Length; i++)
             {
-                Console.WriteLine($"    Offset {i}: {Offsets[i]} (0x{Offsets[i]:X})");
+                builder.AppendLine($"    Offset {i}: {Offsets[i]} (0x{Offsets[i]:X})");
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print textures information
         /// </summary>
-        private void PrintTextures()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintTextures(StringBuilder builder)
         {
-            Console.WriteLine("  Textures Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Textures Information:");
+            builder.AppendLine("  -------------------------");
             if (Textures == null || Textures.Length == 0)
             {
-                Console.WriteLine("  No textures");
+                builder.AppendLine("  No textures");
             }
             else
             {
                 for (int i = 0; i < Textures.Length; i++)
                 {
                     var texture = Textures[i];
-                    Console.WriteLine($"  Texture {i}");
-                    Console.WriteLine($"    Name: {texture.Name}");
-                    Console.WriteLine($"    Width: {texture.Width} (0x{texture.Width:X})");
-                    Console.WriteLine($"    Height: {texture.Height} (0x{texture.Height:X})");
-                    Console.WriteLine($"    Offsets:");
+                    builder.AppendLine($"  Texture {i}");
+                    builder.AppendLine($"    Name: {texture.Name}");
+                    builder.AppendLine($"    Width: {texture.Width} (0x{texture.Width:X})");
+                    builder.AppendLine($"    Height: {texture.Height} (0x{texture.Height:X})");
+                    builder.AppendLine($"    Offsets:");
                     for (int j = 0; j < texture.Offsets.Length; j++)
                     {
-                        Console.WriteLine($"      Offset {j}: {Offsets[i]} (0x{texture.Offsets[j]:X})");
+                        builder.AppendLine($"      Offset {j}: {Offsets[i]} (0x{texture.Offsets[j]:X})");
                     }
                     // Skip texture data
-                    Console.WriteLine($"    Palette size: {texture.PaletteSize} (0x{texture.PaletteSize:X})");
+                    builder.AppendLine($"    Palette size: {texture.PaletteSize} (0x{texture.PaletteSize:X})");
                     // Skip palette data
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
 #if NET6_0_OR_GREATER

@@ -1,5 +1,5 @@
-using System;
 using System.IO;
+using System.Text;
 
 namespace BurnOutSharp.Wrappers
 {
@@ -108,95 +108,102 @@ namespace BurnOutSharp.Wrappers
         #region Printing
 
         /// <inheritdoc/>
-        public override void PrettyPrint()
+        public override StringBuilder PrettyPrint()
         {
-            Console.WriteLine("WAD Information:");
-            Console.WriteLine("-------------------------");
-            Console.WriteLine();
+            StringBuilder builder = new StringBuilder();
 
-            PrintHeader();
-            PrintLumps();
-            PrintLumpInfos();
+            builder.AppendLine("WAD Information:");
+            builder.AppendLine("-------------------------");
+            builder.AppendLine();
+
+            PrintHeader(builder);
+            PrintLumps(builder);
+            PrintLumpInfos(builder);
+
+            return builder;
         }
 
         /// <summary>
         /// Print header information
         /// </summary>
-        private void PrintHeader()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintHeader(StringBuilder builder)
         {
-            Console.WriteLine("  Header Information:");
-            Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Signature: {Signature}");
-            Console.WriteLine($"  Lump count: {LumpCount} (0x{LumpCount:X})");
-            Console.WriteLine($"  Lump offset: {LumpOffset} (0x{LumpOffset:X})");
-            Console.WriteLine();
+            builder.AppendLine("  Header Information:");
+            builder.AppendLine("  -------------------------");
+            builder.AppendLine($"  Signature: {Signature}");
+            builder.AppendLine($"  Lump count: {LumpCount} (0x{LumpCount:X})");
+            builder.AppendLine($"  Lump offset: {LumpOffset} (0x{LumpOffset:X})");
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print lumps information
         /// </summary>
-        private void PrintLumps()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintLumps(StringBuilder builder)
         {
-            Console.WriteLine("  Lumps Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Lumps Information:");
+            builder.AppendLine("  -------------------------");
             if (Lumps == null || Lumps.Length == 0)
             {
-                Console.WriteLine("  No lumps");
+                builder.AppendLine("  No lumps");
             }
             else
             {
                 for (int i = 0; i < Lumps.Length; i++)
                 {
                     var lump = Lumps[i];
-                    Console.WriteLine($"  Lump {i}");
-                    Console.WriteLine($"    Offset: {lump.Offset} (0x{lump.Offset:X})");
-                    Console.WriteLine($"    Disk length: {lump.DiskLength} (0x{lump.DiskLength:X})");
-                    Console.WriteLine($"    Length: {lump.Length} (0x{lump.Length:X})");
-                    Console.WriteLine($"    Type: {lump.Type} (0x{lump.Type:X})");
-                    Console.WriteLine($"    Compression: {lump.Compression} (0x{lump.Compression:X})");
-                    Console.WriteLine($"    Padding 0: {lump.Padding0} (0x{lump.Padding0:X})");
-                    Console.WriteLine($"    Padding 1: {lump.Padding1} (0x{lump.Padding1:X})");
-                    Console.WriteLine($"    Name: {lump.Name ?? "[NULL]"}");
+                    builder.AppendLine($"  Lump {i}");
+                    builder.AppendLine($"    Offset: {lump.Offset} (0x{lump.Offset:X})");
+                    builder.AppendLine($"    Disk length: {lump.DiskLength} (0x{lump.DiskLength:X})");
+                    builder.AppendLine($"    Length: {lump.Length} (0x{lump.Length:X})");
+                    builder.AppendLine($"    Type: {lump.Type} (0x{lump.Type:X})");
+                    builder.AppendLine($"    Compression: {lump.Compression} (0x{lump.Compression:X})");
+                    builder.AppendLine($"    Padding 0: {lump.Padding0} (0x{lump.Padding0:X})");
+                    builder.AppendLine($"    Padding 1: {lump.Padding1} (0x{lump.Padding1:X})");
+                    builder.AppendLine($"    Name: {lump.Name ?? "[NULL]"}");
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print lump infos information
         /// </summary>
-        private void PrintLumpInfos()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintLumpInfos(StringBuilder builder)
         {
-            Console.WriteLine("  Lump Infos Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Lump Infos Information:");
+            builder.AppendLine("  -------------------------");
             if (LumpInfos == null || LumpInfos.Length == 0)
             {
-                Console.WriteLine("  No lump infos");
+                builder.AppendLine("  No lump infos");
             }
             else
             {
                 for (int i = 0; i < LumpInfos.Length; i++)
                 {
                     var lumpInfo = LumpInfos[i];
-                    Console.WriteLine($"  Lump Info {i}");
+                    builder.AppendLine($"  Lump Info {i}");
                     if (lumpInfo == null)
                     {
-                        Console.WriteLine("    Lump is compressed");
+                        builder.AppendLine("    Lump is compressed");
                     }
                     else
                     {
-                        Console.WriteLine($"    Name: {lumpInfo.Name ?? "[NULL]"}");
-                        Console.WriteLine($"    Width: {lumpInfo.Width} (0x{lumpInfo.Width:X})");
-                        Console.WriteLine($"    Height: {lumpInfo.Height} (0x{lumpInfo.Height:X})");
-                        Console.WriteLine($"    Pixel offset: {lumpInfo.PixelOffset} (0x{lumpInfo.PixelOffset:X})");
+                        builder.AppendLine($"    Name: {lumpInfo.Name ?? "[NULL]"}");
+                        builder.AppendLine($"    Width: {lumpInfo.Width} (0x{lumpInfo.Width:X})");
+                        builder.AppendLine($"    Height: {lumpInfo.Height} (0x{lumpInfo.Height:X})");
+                        builder.AppendLine($"    Pixel offset: {lumpInfo.PixelOffset} (0x{lumpInfo.PixelOffset:X})");
                         // TODO: Print unknown data?
                         // TODO: Print pixel data?
-                        Console.WriteLine($"    Palette size: {lumpInfo.PaletteSize} (0x{lumpInfo.PaletteSize:X})");
+                        builder.AppendLine($"    Palette size: {lumpInfo.PaletteSize} (0x{lumpInfo.PaletteSize:X})");
                         // TODO: Print palette data?
                     }
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
 #if NET6_0_OR_GREATER

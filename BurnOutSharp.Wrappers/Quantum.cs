@@ -1,7 +1,5 @@
-using System;
 using System.IO;
-using System.Linq;
-using BurnOutSharp.Compression.Quantum;
+using System.Text;
 
 namespace BurnOutSharp.Wrappers
 {
@@ -221,63 +219,69 @@ namespace BurnOutSharp.Wrappers
         #region Printing
 
         /// <inheritdoc/>
-        public override void PrettyPrint()
+        public override StringBuilder PrettyPrint()
         {
-            Console.WriteLine("Quantum Information:");
-            Console.WriteLine("-------------------------");
-            Console.WriteLine();
+            StringBuilder builder = new StringBuilder();
 
-            PrintHeader();
-            PrintFileList();
-            Console.WriteLine($"  Compressed data offset: {CompressedDataOffset} (0x{CompressedDataOffset:X})");
-            Console.WriteLine();
+            builder.AppendLine("Quantum Information:");
+            builder.AppendLine("-------------------------");
+            builder.AppendLine();
+
+            PrintHeader(builder);
+            PrintFileList(builder);
+            builder.AppendLine($"  Compressed data offset: {CompressedDataOffset} (0x{CompressedDataOffset:X})");
+            builder.AppendLine();
+
+            return builder;
         }
 
         /// <summary>
         /// Print header information
         /// </summary>
-        private void PrintHeader()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintHeader(StringBuilder builder)
         {
-            Console.WriteLine("  Header Information:");
-            Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Signature: {Signature}");
-            Console.WriteLine($"  Major version: {MajorVersion} (0x{MajorVersion:X})");
-            Console.WriteLine($"  Minor version: {MinorVersion} (0x{MinorVersion:X})");
-            Console.WriteLine($"  File count: {FileCount} (0x{FileCount:X})");
-            Console.WriteLine($"  Table size: {TableSize} (0x{TableSize:X})");
-            Console.WriteLine($"  Compression flags: {CompressionFlags} (0x{CompressionFlags:X})");
-            Console.WriteLine();
+            builder.AppendLine("  Header Information:");
+            builder.AppendLine("  -------------------------");
+            builder.AppendLine($"  Signature: {Signature}");
+            builder.AppendLine($"  Major version: {MajorVersion} (0x{MajorVersion:X})");
+            builder.AppendLine($"  Minor version: {MinorVersion} (0x{MinorVersion:X})");
+            builder.AppendLine($"  File count: {FileCount} (0x{FileCount:X})");
+            builder.AppendLine($"  Table size: {TableSize} (0x{TableSize:X})");
+            builder.AppendLine($"  Compression flags: {CompressionFlags} (0x{CompressionFlags:X})");
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print file list information
         /// </summary>
-        private void PrintFileList()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintFileList(StringBuilder builder)
         {
-            Console.WriteLine("  File List Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  File List Information:");
+            builder.AppendLine("  -------------------------");
             if (FileCount == 0 || FileList == null || FileList.Length == 0)
             {
-                Console.WriteLine("  No file list items");
+                builder.AppendLine("  No file list items");
             }
             else
             {
                 for (int i = 0; i < FileList.Length; i++)
                 {
                     var fileDescriptor = FileList[i];
-                    Console.WriteLine($"  File Descriptor {i}");
-                    Console.WriteLine($"    File name size: {fileDescriptor.FileNameSize} (0x{fileDescriptor.FileNameSize:X})");
-                    Console.WriteLine($"    File name: {fileDescriptor.FileName ?? "[NULL]"}");
-                    Console.WriteLine($"    Comment field size: {fileDescriptor.CommentFieldSize} (0x{fileDescriptor.CommentFieldSize:X})");
-                    Console.WriteLine($"    Comment field: {fileDescriptor.CommentField ?? "[NULL]"}");
-                    Console.WriteLine($"    Expanded file size: {fileDescriptor.ExpandedFileSize} (0x{fileDescriptor.ExpandedFileSize:X})");
-                    Console.WriteLine($"    File time: {fileDescriptor.FileTime} (0x{fileDescriptor.FileTime:X})");
-                    Console.WriteLine($"    File date: {fileDescriptor.FileDate} (0x{fileDescriptor.FileDate:X})");
+                    builder.AppendLine($"  File Descriptor {i}");
+                    builder.AppendLine($"    File name size: {fileDescriptor.FileNameSize} (0x{fileDescriptor.FileNameSize:X})");
+                    builder.AppendLine($"    File name: {fileDescriptor.FileName ?? "[NULL]"}");
+                    builder.AppendLine($"    Comment field size: {fileDescriptor.CommentFieldSize} (0x{fileDescriptor.CommentFieldSize:X})");
+                    builder.AppendLine($"    Comment field: {fileDescriptor.CommentField ?? "[NULL]"}");
+                    builder.AppendLine($"    Expanded file size: {fileDescriptor.ExpandedFileSize} (0x{fileDescriptor.ExpandedFileSize:X})");
+                    builder.AppendLine($"    File time: {fileDescriptor.FileTime} (0x{fileDescriptor.FileTime:X})");
+                    builder.AppendLine($"    File date: {fileDescriptor.FileDate} (0x{fileDescriptor.FileDate:X})");
                     if (fileDescriptor.Unknown != null)
-                        Console.WriteLine($"    Unknown (Checksum?): {fileDescriptor.Unknown} (0x{fileDescriptor.Unknown:X})");
+                        builder.AppendLine($"    Unknown (Checksum?): {fileDescriptor.Unknown} (0x{fileDescriptor.Unknown:X})");
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
 #if NET6_0_OR_GREATER

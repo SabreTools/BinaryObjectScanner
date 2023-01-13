@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Text;
 using BurnOutSharp.Utilities;
 using static BurnOutSharp.Models.VPK.Constants;
 
@@ -176,122 +177,131 @@ namespace BurnOutSharp.Wrappers
         #region Printing
 
         /// <inheritdoc/>
-        public override void PrettyPrint()
+        public override StringBuilder PrettyPrint()
         {
-            Console.WriteLine("VPK Information:");
-            Console.WriteLine("-------------------------");
-            Console.WriteLine();
+            StringBuilder builder = new StringBuilder();
 
-            PrintHeader();
-            PrintExtendedHeader();
-            PrintArchiveHashes();
-            PrintDirectoryItems();
+            builder.AppendLine("VPK Information:");
+            builder.AppendLine("-------------------------");
+            builder.AppendLine();
+
+            PrintHeader(builder);
+            PrintExtendedHeader(builder);
+            PrintArchiveHashes(builder);
+            PrintDirectoryItems(builder);
+
+            return builder;
         }
 
         /// <summary>
         /// Print header information
         /// </summary>
-        private void PrintHeader()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintHeader(StringBuilder builder)
         {
-            Console.WriteLine("  Header Information:");
-            Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Signature: {Signature} (0x{Signature:X})");
-            Console.WriteLine($"  Version: {Version} (0x{Version:X})");
-            Console.WriteLine($"  Directory length: {DirectoryLength} (0x{DirectoryLength:X})");
-            Console.WriteLine();
+            builder.AppendLine("  Header Information:");
+            builder.AppendLine("  -------------------------");
+            builder.AppendLine($"  Signature: {Signature} (0x{Signature:X})");
+            builder.AppendLine($"  Version: {Version} (0x{Version:X})");
+            builder.AppendLine($"  Directory length: {DirectoryLength} (0x{DirectoryLength:X})");
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print extended header information
         /// </summary>
-        private void PrintExtendedHeader()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintExtendedHeader(StringBuilder builder)
         {
-            Console.WriteLine("  Extended Header Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Extended Header Information:");
+            builder.AppendLine("  -------------------------");
             if (_file.ExtendedHeader == null)
             {
-                Console.WriteLine("  No extended header");
+                builder.AppendLine("  No extended header");
             }
             else
             {
-                Console.WriteLine($"  Dummy 0: {Dummy0} (0x{Dummy0:X})");
-                Console.WriteLine($"  Archive hash length: {ArchiveHashLength} (0x{ArchiveHashLength:X})");
-                Console.WriteLine($"  Extra length: {ExtraLength} (0x{ExtraLength:X})");
-                Console.WriteLine($"  Dummy 1: {Dummy1} (0x{Dummy1:X})");
-                Console.WriteLine();
+                builder.AppendLine($"  Dummy 0: {Dummy0} (0x{Dummy0:X})");
+                builder.AppendLine($"  Archive hash length: {ArchiveHashLength} (0x{ArchiveHashLength:X})");
+                builder.AppendLine($"  Extra length: {ExtraLength} (0x{ExtraLength:X})");
+                builder.AppendLine($"  Dummy 1: {Dummy1} (0x{Dummy1:X})");
+                builder.AppendLine();
             }
         }
 
         /// <summary>
         /// Print archive hashes information
         /// </summary>
-        private void PrintArchiveHashes()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintArchiveHashes(StringBuilder builder)
         {
-            Console.WriteLine("  Archive Hashes Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Archive Hashes Information:");
+            builder.AppendLine("  -------------------------");
             if (ArchiveHashes == null || ArchiveHashes.Length == 0)
             {
-                Console.WriteLine("  No archive hashes");
+                builder.AppendLine("  No archive hashes");
             }
             else
             {
                 for (int i = 0; i < ArchiveHashes.Length; i++)
                 {
                     var archiveHash = ArchiveHashes[i];
-                    Console.WriteLine($"  Archive Hash {i}");
-                    Console.WriteLine($"    Archive index: {archiveHash.ArchiveIndex} (0x{archiveHash.ArchiveIndex:X})");
-                    Console.WriteLine($"    Archive offset: {archiveHash.ArchiveOffset} (0x{archiveHash.ArchiveOffset:X})");
-                    Console.WriteLine($"    Length: {archiveHash.Length} (0x{archiveHash.Length:X})");
-                    Console.WriteLine($"    Hash: {BitConverter.ToString(archiveHash.Hash).Replace("-", string.Empty)}");
+                    builder.AppendLine($"  Archive Hash {i}");
+                    builder.AppendLine($"    Archive index: {archiveHash.ArchiveIndex} (0x{archiveHash.ArchiveIndex:X})");
+                    builder.AppendLine($"    Archive offset: {archiveHash.ArchiveOffset} (0x{archiveHash.ArchiveOffset:X})");
+                    builder.AppendLine($"    Length: {archiveHash.Length} (0x{archiveHash.Length:X})");
+                    builder.AppendLine($"    Hash: {BitConverter.ToString(archiveHash.Hash).Replace("-", string.Empty)}");
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print directory items information
         /// </summary>
-        private void PrintDirectoryItems()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintDirectoryItems(StringBuilder builder)
         {
-            Console.WriteLine("  Directory Items Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Directory Items Information:");
+            builder.AppendLine("  -------------------------");
             if (DirectoryItems == null || DirectoryItems.Length == 0)
             {
-                Console.WriteLine("  No directory items");
+                builder.AppendLine("  No directory items");
             }
             else
             {
                 for (int i = 0; i < DirectoryItems.Length; i++)
                 {
                     var directoryItem = DirectoryItems[i];
-                    Console.WriteLine($"  Directory Item {i}");
-                    Console.WriteLine($"    Extension: {directoryItem.Extension}");
-                    Console.WriteLine($"    Path: {directoryItem.Path}");
-                    Console.WriteLine($"    Name: {directoryItem.Name}");
-                    PrintDirectoryEntry(directoryItem.DirectoryEntry);
+                    builder.AppendLine($"  Directory Item {i}");
+                    builder.AppendLine($"    Extension: {directoryItem.Extension}");
+                    builder.AppendLine($"    Path: {directoryItem.Path}");
+                    builder.AppendLine($"    Name: {directoryItem.Name}");
+                    PrintDirectoryEntry(directoryItem.DirectoryEntry, builder);
                     // TODO: Print out preload data?
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print directory entry information
         /// </summary>
-        private void PrintDirectoryEntry(Models.VPK.DirectoryEntry directoryEntry)
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintDirectoryEntry(Models.VPK.DirectoryEntry directoryEntry, StringBuilder builder)
         {
             if (directoryEntry == null)
             {
-                Console.WriteLine("   Directory entry: [NULL]");
+                builder.AppendLine("   Directory entry: [NULL]");
             }
             else
             {
-                Console.WriteLine($"   Directory entry CRC: {directoryEntry.CRC} (0x{directoryEntry.CRC:X})");
-                Console.WriteLine($"   Directory entry preload bytes: {directoryEntry.PreloadBytes} (0x{directoryEntry.PreloadBytes:X})");
-                Console.WriteLine($"   Directory entry archive index: {directoryEntry.ArchiveIndex} (0x{directoryEntry.ArchiveIndex:X})");
-                Console.WriteLine($"   Directory entry entry offset: {directoryEntry.EntryOffset} (0x{directoryEntry.EntryOffset:X})");
-                Console.WriteLine($"   Directory entry entry length: {directoryEntry.EntryLength} (0x{directoryEntry.EntryLength:X})");
-                Console.WriteLine($"   Directory entry dummy 0: {directoryEntry.Dummy0} (0x{directoryEntry.Dummy0:X})");
+                builder.AppendLine($"   Directory entry CRC: {directoryEntry.CRC} (0x{directoryEntry.CRC:X})");
+                builder.AppendLine($"   Directory entry preload bytes: {directoryEntry.PreloadBytes} (0x{directoryEntry.PreloadBytes:X})");
+                builder.AppendLine($"   Directory entry archive index: {directoryEntry.ArchiveIndex} (0x{directoryEntry.ArchiveIndex:X})");
+                builder.AppendLine($"   Directory entry entry offset: {directoryEntry.EntryOffset} (0x{directoryEntry.EntryOffset:X})");
+                builder.AppendLine($"   Directory entry entry length: {directoryEntry.EntryLength} (0x{directoryEntry.EntryLength:X})");
+                builder.AppendLine($"   Directory entry dummy 0: {directoryEntry.Dummy0} (0x{directoryEntry.Dummy0:X})");
             }
         }
 

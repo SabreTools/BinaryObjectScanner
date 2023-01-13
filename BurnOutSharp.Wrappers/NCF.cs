@@ -1,5 +1,5 @@
-using System;
 using System.IO;
+using System.Text;
 
 namespace BurnOutSharp.Wrappers
 {
@@ -257,306 +257,323 @@ namespace BurnOutSharp.Wrappers
         #region Printing
 
         /// <inheritdoc/>
-        public override void PrettyPrint()
+        public override StringBuilder PrettyPrint()
         {
-            Console.WriteLine("NCF Information:");
-            Console.WriteLine("-------------------------");
-            Console.WriteLine();
+            StringBuilder builder = new StringBuilder();
+
+            builder.AppendLine("NCF Information:");
+            builder.AppendLine("-------------------------");
+            builder.AppendLine();
 
             // Header
-            PrintHeader();
+            PrintHeader(builder);
 
             // Directory and Directory Maps
-            PrintDirectoryHeader();
-            PrintDirectoryEntries();
+            PrintDirectoryHeader(builder);
+            PrintDirectoryEntries(builder);
             // TODO: Should we print out the entire string table?
-            PrintDirectoryInfo1Entries();
-            PrintDirectoryInfo2Entries();
-            PrintDirectoryCopyEntries();
-            PrintDirectoryLocalEntries();
-            PrintUnknownHeader();
-            PrintUnknownEntries();
+            PrintDirectoryInfo1Entries(builder);
+            PrintDirectoryInfo2Entries(builder);
+            PrintDirectoryCopyEntries(builder);
+            PrintDirectoryLocalEntries(builder);
+            PrintUnknownHeader(builder);
+            PrintUnknownEntries(builder);
 
             // Checksums and Checksum Maps
-            PrintChecksumHeader();
-            PrintChecksumMapHeader();
-            PrintChecksumMapEntries();
-            PrintChecksumEntries();
+            PrintChecksumHeader(builder);
+            PrintChecksumMapHeader(builder);
+            PrintChecksumMapEntries(builder);
+            PrintChecksumEntries(builder);
+
+            return builder;
         }
 
         /// <summary>
         /// Print header information
         /// </summary>
-        private void PrintHeader()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintHeader(StringBuilder builder)
         {
-            Console.WriteLine("  Header Information:");
-            Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Dummy 0: {Dummy0} (0x{Dummy0:X})");
-            Console.WriteLine($"  Major version: {MajorVersion} (0x{MajorVersion:X})");
-            Console.WriteLine($"  Minor version: {MinorVersion} (0x{MinorVersion:X})");
-            Console.WriteLine($"  Cache ID: {CacheID} (0x{CacheID:X})");
-            Console.WriteLine($"  Last version played: {LastVersionPlayed} (0x{LastVersionPlayed:X})");
-            Console.WriteLine($"  Dummy 1: {Dummy1} (0x{Dummy1:X})");
-            Console.WriteLine($"  Dummy 2: {Dummy2} (0x{Dummy2:X})");
-            Console.WriteLine($"  File size: {FileSize} (0x{FileSize:X})");
-            Console.WriteLine($"  Block size: {BlockSize} (0x{BlockSize:X})");
-            Console.WriteLine($"  Block count: {BlockCount} (0x{BlockCount:X})");
-            Console.WriteLine($"  Dummy 3: {Dummy3} (0x{Dummy3:X})");
-            Console.WriteLine();
+            builder.AppendLine("  Header Information:");
+            builder.AppendLine("  -------------------------");
+            builder.AppendLine($"  Dummy 0: {Dummy0} (0x{Dummy0:X})");
+            builder.AppendLine($"  Major version: {MajorVersion} (0x{MajorVersion:X})");
+            builder.AppendLine($"  Minor version: {MinorVersion} (0x{MinorVersion:X})");
+            builder.AppendLine($"  Cache ID: {CacheID} (0x{CacheID:X})");
+            builder.AppendLine($"  Last version played: {LastVersionPlayed} (0x{LastVersionPlayed:X})");
+            builder.AppendLine($"  Dummy 1: {Dummy1} (0x{Dummy1:X})");
+            builder.AppendLine($"  Dummy 2: {Dummy2} (0x{Dummy2:X})");
+            builder.AppendLine($"  File size: {FileSize} (0x{FileSize:X})");
+            builder.AppendLine($"  Block size: {BlockSize} (0x{BlockSize:X})");
+            builder.AppendLine($"  Block count: {BlockCount} (0x{BlockCount:X})");
+            builder.AppendLine($"  Dummy 3: {Dummy3} (0x{Dummy3:X})");
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print directory header information
         /// </summary>
-        private void PrintDirectoryHeader()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintDirectoryHeader(StringBuilder builder)
         {
-            Console.WriteLine("  Directory Header Information:");
-            Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Dummy 0: {DH_Dummy0} (0x{DH_Dummy0:X})");
-            Console.WriteLine($"  Cache ID: {DH_CacheID} (0x{DH_CacheID:X})");
-            Console.WriteLine($"  Last version played: {DH_LastVersionPlayed} (0x{DH_LastVersionPlayed:X})");
-            Console.WriteLine($"  Item count: {DH_ItemCount} (0x{DH_ItemCount:X})");
-            Console.WriteLine($"  File count: {DH_FileCount} (0x{DH_FileCount:X})");
-            Console.WriteLine($"  Checksum data length: {DH_ChecksumDataLength} (0x{DH_ChecksumDataLength:X})");
-            Console.WriteLine($"  Directory size: {DH_DirectorySize} (0x{DH_DirectorySize:X})");
-            Console.WriteLine($"  Name size: {DH_NameSize} (0x{DH_NameSize:X})");
-            Console.WriteLine($"  Info 1 count: {DH_Info1Count} (0x{DH_Info1Count:X})");
-            Console.WriteLine($"  Copy count: {DH_CopyCount} (0x{DH_CopyCount:X})");
-            Console.WriteLine($"  Local count: {DH_LocalCount} (0x{DH_LocalCount:X})");
-            Console.WriteLine($"  Dummy 1: {DH_Dummy1} (0x{DH_Dummy1:X})");
-            Console.WriteLine($"  Dummy 2: {DH_Dummy2} (0x{DH_Dummy2:X})");
-            Console.WriteLine($"  Checksum: {DH_Checksum} (0x{DH_Checksum:X})");
-            Console.WriteLine();
+            builder.AppendLine("  Directory Header Information:");
+            builder.AppendLine("  -------------------------");
+            builder.AppendLine($"  Dummy 0: {DH_Dummy0} (0x{DH_Dummy0:X})");
+            builder.AppendLine($"  Cache ID: {DH_CacheID} (0x{DH_CacheID:X})");
+            builder.AppendLine($"  Last version played: {DH_LastVersionPlayed} (0x{DH_LastVersionPlayed:X})");
+            builder.AppendLine($"  Item count: {DH_ItemCount} (0x{DH_ItemCount:X})");
+            builder.AppendLine($"  File count: {DH_FileCount} (0x{DH_FileCount:X})");
+            builder.AppendLine($"  Checksum data length: {DH_ChecksumDataLength} (0x{DH_ChecksumDataLength:X})");
+            builder.AppendLine($"  Directory size: {DH_DirectorySize} (0x{DH_DirectorySize:X})");
+            builder.AppendLine($"  Name size: {DH_NameSize} (0x{DH_NameSize:X})");
+            builder.AppendLine($"  Info 1 count: {DH_Info1Count} (0x{DH_Info1Count:X})");
+            builder.AppendLine($"  Copy count: {DH_CopyCount} (0x{DH_CopyCount:X})");
+            builder.AppendLine($"  Local count: {DH_LocalCount} (0x{DH_LocalCount:X})");
+            builder.AppendLine($"  Dummy 1: {DH_Dummy1} (0x{DH_Dummy1:X})");
+            builder.AppendLine($"  Dummy 2: {DH_Dummy2} (0x{DH_Dummy2:X})");
+            builder.AppendLine($"  Checksum: {DH_Checksum} (0x{DH_Checksum:X})");
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print directory entries information
         /// </summary>
-        private void PrintDirectoryEntries()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintDirectoryEntries(StringBuilder builder)
         {
-            Console.WriteLine("  Directory Entries Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Directory Entries Information:");
+            builder.AppendLine("  -------------------------");
             if (DirectoryEntries == null || DirectoryEntries.Length == 0)
             {
-                Console.WriteLine("  No directory entries");
+                builder.AppendLine("  No directory entries");
             }
             else
             {
                 for (int i = 0; i < DirectoryEntries.Length; i++)
                 {
                     var directoryEntry = DirectoryEntries[i];
-                    Console.WriteLine($"  Directory Entry {i}");
-                    Console.WriteLine($"    Name offset: {directoryEntry.NameOffset} (0x{directoryEntry.NameOffset:X})");
-                    Console.WriteLine($"    Name: {directoryEntry.Name}");
-                    Console.WriteLine($"    Item size: {directoryEntry.ItemSize} (0x{directoryEntry.ItemSize:X})");
-                    Console.WriteLine($"    Checksum index: {directoryEntry.ChecksumIndex} (0x{directoryEntry.ChecksumIndex:X})");
-                    Console.WriteLine($"    Directory flags: {directoryEntry.DirectoryFlags} (0x{directoryEntry.DirectoryFlags:X})");
-                    Console.WriteLine($"    Parent index: {directoryEntry.ParentIndex} (0x{directoryEntry.ParentIndex:X})");
-                    Console.WriteLine($"    Next index: {directoryEntry.NextIndex} (0x{directoryEntry.NextIndex:X})");
-                    Console.WriteLine($"    First index: {directoryEntry.FirstIndex} (0x{directoryEntry.FirstIndex:X})");
+                    builder.AppendLine($"  Directory Entry {i}");
+                    builder.AppendLine($"    Name offset: {directoryEntry.NameOffset} (0x{directoryEntry.NameOffset:X})");
+                    builder.AppendLine($"    Name: {directoryEntry.Name}");
+                    builder.AppendLine($"    Item size: {directoryEntry.ItemSize} (0x{directoryEntry.ItemSize:X})");
+                    builder.AppendLine($"    Checksum index: {directoryEntry.ChecksumIndex} (0x{directoryEntry.ChecksumIndex:X})");
+                    builder.AppendLine($"    Directory flags: {directoryEntry.DirectoryFlags} (0x{directoryEntry.DirectoryFlags:X})");
+                    builder.AppendLine($"    Parent index: {directoryEntry.ParentIndex} (0x{directoryEntry.ParentIndex:X})");
+                    builder.AppendLine($"    Next index: {directoryEntry.NextIndex} (0x{directoryEntry.NextIndex:X})");
+                    builder.AppendLine($"    First index: {directoryEntry.FirstIndex} (0x{directoryEntry.FirstIndex:X})");
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print directory info 1 entries information
         /// </summary>
-        private void PrintDirectoryInfo1Entries()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintDirectoryInfo1Entries(StringBuilder builder)
         {
-            Console.WriteLine("  Directory Info 1 Entries Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Directory Info 1 Entries Information:");
+            builder.AppendLine("  -------------------------");
             if (DirectoryInfo1Entries == null || DirectoryInfo1Entries.Length == 0)
             {
-                Console.WriteLine("  No directory info 1 entries");
+                builder.AppendLine("  No directory info 1 entries");
             }
             else
             {
                 for (int i = 0; i < DirectoryInfo1Entries.Length; i++)
                 {
                     var directoryInfoEntry = DirectoryInfo1Entries[i];
-                    Console.WriteLine($"  Directory Info 1 Entry {i}");
-                    Console.WriteLine($"    Dummy 0: {directoryInfoEntry.Dummy0} (0x{directoryInfoEntry.Dummy0:X})");
+                    builder.AppendLine($"  Directory Info 1 Entry {i}");
+                    builder.AppendLine($"    Dummy 0: {directoryInfoEntry.Dummy0} (0x{directoryInfoEntry.Dummy0:X})");
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print directory info 2 entries information
         /// </summary>
-        private void PrintDirectoryInfo2Entries()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintDirectoryInfo2Entries(StringBuilder builder)
         {
-            Console.WriteLine("  Directory Info 2 Entries Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Directory Info 2 Entries Information:");
+            builder.AppendLine("  -------------------------");
             if (DirectoryInfo2Entries == null || DirectoryInfo2Entries.Length == 0)
             {
-                Console.WriteLine("  No directory info 2 entries");
+                builder.AppendLine("  No directory info 2 entries");
             }
             else
             {
                 for (int i = 0; i < DirectoryInfo2Entries.Length; i++)
                 {
                     var directoryInfoEntry = DirectoryInfo2Entries[i];
-                    Console.WriteLine($"  Directory Info 2 Entry {i}");
-                    Console.WriteLine($"    Dummy 0: {directoryInfoEntry.Dummy0} (0x{directoryInfoEntry.Dummy0:X})");
+                    builder.AppendLine($"  Directory Info 2 Entry {i}");
+                    builder.AppendLine($"    Dummy 0: {directoryInfoEntry.Dummy0} (0x{directoryInfoEntry.Dummy0:X})");
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print directory copy entries information
         /// </summary>
-        private void PrintDirectoryCopyEntries()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintDirectoryCopyEntries(StringBuilder builder)
         {
-            Console.WriteLine("  Directory Copy Entries Information:");
-            Console.WriteLine(value: "  -------------------------");
+            builder.AppendLine("  Directory Copy Entries Information:");
+            builder.AppendLine(value: "  -------------------------");
             if (DirectoryCopyEntries == null || DirectoryCopyEntries.Length == 0)
             {
-                Console.WriteLine("  No directory copy entries");
+                builder.AppendLine("  No directory copy entries");
             }
             else
             {
                 for (int i = 0; i < DirectoryCopyEntries.Length; i++)
                 {
                     var directoryCopyEntry = DirectoryCopyEntries[i];
-                    Console.WriteLine($"  Directory Copy Entry {i}");
-                    Console.WriteLine($"    Directory index: {directoryCopyEntry.DirectoryIndex} (0x{directoryCopyEntry.DirectoryIndex:X})");
+                    builder.AppendLine($"  Directory Copy Entry {i}");
+                    builder.AppendLine($"    Directory index: {directoryCopyEntry.DirectoryIndex} (0x{directoryCopyEntry.DirectoryIndex:X})");
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print directory local entries information
         /// </summary>
-        private void PrintDirectoryLocalEntries()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintDirectoryLocalEntries(StringBuilder builder)
         {
-            Console.WriteLine("  Directory Local Entries Information:");
-            Console.WriteLine(value: "  -------------------------");
+            builder.AppendLine("  Directory Local Entries Information:");
+            builder.AppendLine(value: "  -------------------------");
             if (DirectoryLocalEntries == null || DirectoryLocalEntries.Length == 0)
             {
-                Console.WriteLine("  No directory local entries");
+                builder.AppendLine("  No directory local entries");
             }
             else
             {
                 for (int i = 0; i < DirectoryLocalEntries.Length; i++)
                 {
                     var directoryLocalEntry = DirectoryLocalEntries[i];
-                    Console.WriteLine($"  Directory Local Entry {i}");
-                    Console.WriteLine($"    Directory index: {directoryLocalEntry.DirectoryIndex} (0x{directoryLocalEntry.DirectoryIndex:X})");
+                    builder.AppendLine($"  Directory Local Entry {i}");
+                    builder.AppendLine($"    Directory index: {directoryLocalEntry.DirectoryIndex} (0x{directoryLocalEntry.DirectoryIndex:X})");
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print unknown header information
         /// </summary>
-        private void PrintUnknownHeader()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintUnknownHeader(StringBuilder builder)
         {
-            Console.WriteLine("  Unknown Header Information:");
-            Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Dummy 0: {UH_Dummy0} (0x{UH_Dummy0:X})");
-            Console.WriteLine($"  Dummy 1: {UH_Dummy1} (0x{UH_Dummy1:X})");
-            Console.WriteLine();
+            builder.AppendLine("  Unknown Header Information:");
+            builder.AppendLine("  -------------------------");
+            builder.AppendLine($"  Dummy 0: {UH_Dummy0} (0x{UH_Dummy0:X})");
+            builder.AppendLine($"  Dummy 1: {UH_Dummy1} (0x{UH_Dummy1:X})");
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print unknown entries information
         /// </summary>
-        private void PrintUnknownEntries()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintUnknownEntries(StringBuilder builder)
         {
-            Console.WriteLine("  Unknown Entries Information:");
-            Console.WriteLine(value: "  -------------------------");
+            builder.AppendLine("  Unknown Entries Information:");
+            builder.AppendLine(value: "  -------------------------");
             if (UnknownEntries == null || UnknownEntries.Length == 0)
             {
-                Console.WriteLine("  No unknown entries");
+                builder.AppendLine("  No unknown entries");
             }
             else
             {
                 for (int i = 0; i < UnknownEntries.Length; i++)
                 {
                     var unknownEntry = UnknownEntries[i];
-                    Console.WriteLine($"  Unknown Entry {i}");
-                    Console.WriteLine($"    Dummy 0: {unknownEntry.Dummy0} (0x{unknownEntry.Dummy0:X})");
+                    builder.AppendLine($"  Unknown Entry {i}");
+                    builder.AppendLine($"    Dummy 0: {unknownEntry.Dummy0} (0x{unknownEntry.Dummy0:X})");
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print checksum header information
         /// </summary>
-        private void PrintChecksumHeader()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintChecksumHeader(StringBuilder builder)
         {
-            Console.WriteLine("  Checksum Header Information:");
-            Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Dummy 0: {CH_Dummy0} (0x{CH_Dummy0:X})");
-            Console.WriteLine($"  Checksum size: {CH_ChecksumSize} (0x{CH_ChecksumSize:X})");
-            Console.WriteLine();
+            builder.AppendLine("  Checksum Header Information:");
+            builder.AppendLine("  -------------------------");
+            builder.AppendLine($"  Dummy 0: {CH_Dummy0} (0x{CH_Dummy0:X})");
+            builder.AppendLine($"  Checksum size: {CH_ChecksumSize} (0x{CH_ChecksumSize:X})");
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print checksum map header information
         /// </summary>
-        private void PrintChecksumMapHeader()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintChecksumMapHeader(StringBuilder builder)
         {
-            Console.WriteLine("  Checksum Map Header Information:");
-            Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Dummy 0: {CMH_Dummy0} (0x{CMH_Dummy0:X})");
-            Console.WriteLine($"  Dummy 1: {CMH_Dummy1} (0x{CMH_Dummy1:X})");
-            Console.WriteLine($"  Item count: {CMH_ItemCount} (0x{CMH_ItemCount:X})");
-            Console.WriteLine($"  Checksum count: {CMH_ChecksumCount} (0x{CMH_ChecksumCount:X})");
-            Console.WriteLine();
+            builder.AppendLine("  Checksum Map Header Information:");
+            builder.AppendLine("  -------------------------");
+            builder.AppendLine($"  Dummy 0: {CMH_Dummy0} (0x{CMH_Dummy0:X})");
+            builder.AppendLine($"  Dummy 1: {CMH_Dummy1} (0x{CMH_Dummy1:X})");
+            builder.AppendLine($"  Item count: {CMH_ItemCount} (0x{CMH_ItemCount:X})");
+            builder.AppendLine($"  Checksum count: {CMH_ChecksumCount} (0x{CMH_ChecksumCount:X})");
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print checksum map entries information
         /// </summary>
-        private void PrintChecksumMapEntries()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintChecksumMapEntries(StringBuilder builder)
         {
-            Console.WriteLine("  Checksum Map Entries Information:");
-            Console.WriteLine(value: "  -------------------------");
+            builder.AppendLine("  Checksum Map Entries Information:");
+            builder.AppendLine(value: "  -------------------------");
             if (ChecksumMapEntries == null || ChecksumMapEntries.Length == 0)
             {
-                Console.WriteLine("  No checksum map entries");
+                builder.AppendLine("  No checksum map entries");
             }
             else
             {
                 for (int i = 0; i < ChecksumMapEntries.Length; i++)
                 {
                     var checksumMapEntry = ChecksumMapEntries[i];
-                    Console.WriteLine($"  Checksum Map Entry {i}");
-                    Console.WriteLine($"    Checksum count: {checksumMapEntry.ChecksumCount} (0x{checksumMapEntry.ChecksumCount:X})");
-                    Console.WriteLine($"    First checksum index: {checksumMapEntry.FirstChecksumIndex} (0x{checksumMapEntry.FirstChecksumIndex:X})");
+                    builder.AppendLine($"  Checksum Map Entry {i}");
+                    builder.AppendLine($"    Checksum count: {checksumMapEntry.ChecksumCount} (0x{checksumMapEntry.ChecksumCount:X})");
+                    builder.AppendLine($"    First checksum index: {checksumMapEntry.FirstChecksumIndex} (0x{checksumMapEntry.FirstChecksumIndex:X})");
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print checksum entries information
         /// </summary>
-        private void PrintChecksumEntries()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintChecksumEntries(StringBuilder builder)
         {
-            Console.WriteLine("  Checksum Entries Information:");
-            Console.WriteLine(value: "  -------------------------");
+            builder.AppendLine("  Checksum Entries Information:");
+            builder.AppendLine(value: "  -------------------------");
             if (ChecksumEntries == null || ChecksumEntries.Length == 0)
             {
-                Console.WriteLine("  No checksum entries");
+                builder.AppendLine("  No checksum entries");
             }
             else
             {
                 for (int i = 0; i < ChecksumEntries.Length; i++)
                 {
                     var checksumEntry = ChecksumEntries[i];
-                    Console.WriteLine($"  Checksum Entry {i}");
-                    Console.WriteLine($"    Checksum: {checksumEntry.Checksum} (0x{checksumEntry.Checksum:X})");
+                    builder.AppendLine($"  Checksum Entry {i}");
+                    builder.AppendLine($"    Checksum: {checksumEntry.Checksum} (0x{checksumEntry.Checksum:X})");
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
 #if NET6_0_OR_GREATER

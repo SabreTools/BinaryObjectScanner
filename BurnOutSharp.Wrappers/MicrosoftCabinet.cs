@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 namespace BurnOutSharp.Wrappers
 {
@@ -396,145 +397,152 @@ namespace BurnOutSharp.Wrappers
         #region Printing
 
         /// <inheritdoc/>
-        public override void PrettyPrint()
+        public override StringBuilder PrettyPrint()
         {
-            Console.WriteLine("Microsoft Cabinet Information:");
-            Console.WriteLine("-------------------------");
-            Console.WriteLine();
+            StringBuilder builder = new StringBuilder();
 
-            PrintHeader();
-            PrintFolders();
-            PrintFiles();
+            builder.AppendLine("Microsoft Cabinet Information:");
+            builder.AppendLine("-------------------------");
+            builder.AppendLine();
+
+            PrintHeader(builder);
+            PrintFolders(builder);
+            PrintFiles(builder);
+
+            return builder;
         }
 
         /// <summary>
         /// Print header information
         /// </summary>
-        private void PrintHeader()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintHeader(StringBuilder builder)
         {
-            Console.WriteLine("  Header Information:");
-            Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Signature: {Signature}");
-            Console.WriteLine($"  Reserved 1: {Reserved1} (0x{Reserved1:X})");
-            Console.WriteLine($"  Cabinet size: {CabinetSize} (0x{CabinetSize:X})");
-            Console.WriteLine($"  Reserved 2: {Reserved2} (0x{Reserved2:X})");
-            Console.WriteLine($"  Files offset: {FilesOffset} (0x{FilesOffset:X})");
-            Console.WriteLine($"  Reserved 3: {Reserved3} (0x{Reserved3:X})");
-            Console.WriteLine($"  Minor version: {VersionMinor} (0x{VersionMinor:X})");
-            Console.WriteLine($"  Major version: {VersionMajor} (0x{VersionMajor:X})");
-            Console.WriteLine($"  Folder count: {FolderCount} (0x{FolderCount:X})");
-            Console.WriteLine($"  File count: {FileCount} (0x{FileCount:X})");
-            Console.WriteLine($"  Flags: {Flags} (0x{Flags:X})");
-            Console.WriteLine($"  Set ID: {SetID} (0x{SetID:X})");
-            Console.WriteLine($"  Cabinet index: {CabinetIndex} (0x{CabinetIndex:X})");
+            builder.AppendLine("  Header Information:");
+            builder.AppendLine("  -------------------------");
+            builder.AppendLine($"  Signature: {Signature}");
+            builder.AppendLine($"  Reserved 1: {Reserved1} (0x{Reserved1:X})");
+            builder.AppendLine($"  Cabinet size: {CabinetSize} (0x{CabinetSize:X})");
+            builder.AppendLine($"  Reserved 2: {Reserved2} (0x{Reserved2:X})");
+            builder.AppendLine($"  Files offset: {FilesOffset} (0x{FilesOffset:X})");
+            builder.AppendLine($"  Reserved 3: {Reserved3} (0x{Reserved3:X})");
+            builder.AppendLine($"  Minor version: {VersionMinor} (0x{VersionMinor:X})");
+            builder.AppendLine($"  Major version: {VersionMajor} (0x{VersionMajor:X})");
+            builder.AppendLine($"  Folder count: {FolderCount} (0x{FolderCount:X})");
+            builder.AppendLine($"  File count: {FileCount} (0x{FileCount:X})");
+            builder.AppendLine($"  Flags: {Flags} (0x{Flags:X})");
+            builder.AppendLine($"  Set ID: {SetID} (0x{SetID:X})");
+            builder.AppendLine($"  Cabinet index: {CabinetIndex} (0x{CabinetIndex:X})");
 
             if (Flags.HasFlag(Models.MicrosoftCabinet.HeaderFlags.RESERVE_PRESENT))
             {
-                Console.WriteLine($"  Header reserved size: {HeaderReservedSize} (0x{HeaderReservedSize:X})");
-                Console.WriteLine($"  Folder reserved size: {FolderReservedSize} (0x{FolderReservedSize:X})");
-                Console.WriteLine($"  Data reserved size: {DataReservedSize} (0x{DataReservedSize:X})");
+                builder.AppendLine($"  Header reserved size: {HeaderReservedSize} (0x{HeaderReservedSize:X})");
+                builder.AppendLine($"  Folder reserved size: {FolderReservedSize} (0x{FolderReservedSize:X})");
+                builder.AppendLine($"  Data reserved size: {DataReservedSize} (0x{DataReservedSize:X})");
                 if (ReservedData == null)
-                    Console.WriteLine($"  Reserved data = [NULL]");
+                    builder.AppendLine($"  Reserved data = [NULL]");
                 else
-                    Console.WriteLine($"  Reserved data = {BitConverter.ToString(ReservedData).Replace("-", " ")}");
+                    builder.AppendLine($"  Reserved data = {BitConverter.ToString(ReservedData).Replace("-", " ")}");
             }
 
             if (Flags.HasFlag(Models.MicrosoftCabinet.HeaderFlags.PREV_CABINET))
             {
-                Console.WriteLine($"  Previous cabinet: {CabinetPrev}");
-                Console.WriteLine($"  Previous disk: {DiskPrev}");
+                builder.AppendLine($"  Previous cabinet: {CabinetPrev}");
+                builder.AppendLine($"  Previous disk: {DiskPrev}");
             }
 
             if (Flags.HasFlag(Models.MicrosoftCabinet.HeaderFlags.NEXT_CABINET))
             {
-                Console.WriteLine($"  Next cabinet: {CabinetNext}");
-                Console.WriteLine($"  Next disk: {DiskNext}");
+                builder.AppendLine($"  Next cabinet: {CabinetNext}");
+                builder.AppendLine($"  Next disk: {DiskNext}");
             }
 
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print folders information
         /// </summary>
-        private void PrintFolders()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintFolders(StringBuilder builder)
         {
-            Console.WriteLine("  Folders:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Folders:");
+            builder.AppendLine("  -------------------------");
             if (FolderCount == 0 || Folders == null || Folders.Length == 0)
             {
-                Console.WriteLine("  No folders");
+                builder.AppendLine("  No folders");
             }
             else
             {
                 for (int i = 0; i < Folders.Length; i++)
                 {
                     var entry = Folders[i];
-                    Console.WriteLine($"  Folder {i}");
-                    Console.WriteLine($"    Cab start offset = {entry.CabStartOffset} (0x{entry.CabStartOffset:X})");
-                    Console.WriteLine($"    Data count = {entry.DataCount} (0x{entry.DataCount:X})");
-                    Console.WriteLine($"    Compression type = {entry.CompressionType} (0x{entry.CompressionType:X})");
-                    Console.WriteLine($"    Masked compression type = {entry.CompressionType & Models.MicrosoftCabinet.CompressionType.MASK_TYPE}");
+                    builder.AppendLine($"  Folder {i}");
+                    builder.AppendLine($"    Cab start offset = {entry.CabStartOffset} (0x{entry.CabStartOffset:X})");
+                    builder.AppendLine($"    Data count = {entry.DataCount} (0x{entry.DataCount:X})");
+                    builder.AppendLine($"    Compression type = {entry.CompressionType} (0x{entry.CompressionType:X})");
+                    builder.AppendLine($"    Masked compression type = {entry.CompressionType & Models.MicrosoftCabinet.CompressionType.MASK_TYPE}");
                     if (entry.ReservedData == null)
-                        Console.WriteLine($"    Reserved data = [NULL]");
+                        builder.AppendLine($"    Reserved data = [NULL]");
                     else
-                        Console.WriteLine($"    Reserved data = {BitConverter.ToString(entry.ReservedData).Replace("-", " ")}");
-                    Console.WriteLine();
+                        builder.AppendLine($"    Reserved data = {BitConverter.ToString(entry.ReservedData).Replace("-", " ")}");
+                    builder.AppendLine();
 
-                    Console.WriteLine("    Data Blocks");
-                    Console.WriteLine("    -------------------------");
+                    builder.AppendLine("    Data Blocks");
+                    builder.AppendLine("    -------------------------");
                     if (entry.DataBlocks == null || entry.DataBlocks.Length == 0)
                     {
-                        Console.WriteLine("    No data blocks");
+                        builder.AppendLine("    No data blocks");
                     }
                     else
                     {
                         for (int j = 0; j < entry.DataBlocks.Length; j++)
                         {
                             Models.MicrosoftCabinet.CFDATA dataBlock = entry.DataBlocks[j];
-                            Console.WriteLine($"    Data Block {j}");
-                            Console.WriteLine($"      Checksum = {dataBlock.Checksum} (0x{dataBlock.Checksum:X})");
-                            Console.WriteLine($"      Compressed size = {dataBlock.CompressedSize} (0x{dataBlock.CompressedSize:X})");
-                            Console.WriteLine($"      Uncompressed size = {dataBlock.UncompressedSize} (0x{dataBlock.UncompressedSize:X})");
+                            builder.AppendLine($"    Data Block {j}");
+                            builder.AppendLine($"      Checksum = {dataBlock.Checksum} (0x{dataBlock.Checksum:X})");
+                            builder.AppendLine($"      Compressed size = {dataBlock.CompressedSize} (0x{dataBlock.CompressedSize:X})");
+                            builder.AppendLine($"      Uncompressed size = {dataBlock.UncompressedSize} (0x{dataBlock.UncompressedSize:X})");
                             if (dataBlock.ReservedData == null)
-                                Console.WriteLine($"      Reserved data = [NULL]");
+                                builder.AppendLine($"      Reserved data = [NULL]");
                             else
-                                Console.WriteLine($"      Reserved data = {BitConverter.ToString(dataBlock.ReservedData).Replace("-", " ")}");
-                            //Console.WriteLine($"      Compressed data = {BitConverter.ToString(dataBlock.CompressedData).Replace("-", " ")}");
+                                builder.AppendLine($"      Reserved data = {BitConverter.ToString(dataBlock.ReservedData).Replace("-", " ")}");
+                            //builder.AppendLine($"      Compressed data = {BitConverter.ToString(dataBlock.CompressedData).Replace("-", " ")}");
                         }
                     }
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print files information
         /// </summary>
-        private void PrintFiles()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintFiles(StringBuilder builder)
         {
-            Console.WriteLine("  Files:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Files:");
+            builder.AppendLine("  -------------------------");
             if (FileCount == 0 || Files == null || Files.Length == 0)
             {
-                Console.WriteLine("  No files");
+                builder.AppendLine("  No files");
             }
             else
             {
                 for (int i = 0; i < Files.Length; i++)
                 {
                     var entry = Files[i];
-                    Console.WriteLine($"  File {i}");
-                    Console.WriteLine($"    File size = {entry.FileSize} (0x{entry.FileSize:X})");
-                    Console.WriteLine($"    Folder start offset = {entry.FolderStartOffset} (0x{entry.FolderStartOffset:X})");
-                    Console.WriteLine($"    Folder index = {entry.FolderIndex} (0x{entry.FolderIndex:X})");
-                    Console.WriteLine($"    Date = {entry.Date} (0x{entry.Date:X})");
-                    Console.WriteLine($"    Time = {entry.Time} (0x{entry.Time:X})");
-                    Console.WriteLine($"    Attributes = {entry.Attributes} (0x{entry.Attributes:X})");
-                    Console.WriteLine($"    Name = {entry.Name ?? "[NULL]"}");
+                    builder.AppendLine($"  File {i}");
+                    builder.AppendLine($"    File size = {entry.FileSize} (0x{entry.FileSize:X})");
+                    builder.AppendLine($"    Folder start offset = {entry.FolderStartOffset} (0x{entry.FolderStartOffset:X})");
+                    builder.AppendLine($"    Folder index = {entry.FolderIndex} (0x{entry.FolderIndex:X})");
+                    builder.AppendLine($"    Date = {entry.Date} (0x{entry.Date:X})");
+                    builder.AppendLine($"    Time = {entry.Time} (0x{entry.Time:X})");
+                    builder.AppendLine($"    Attributes = {entry.Attributes} (0x{entry.Attributes:X})");
+                    builder.AppendLine($"    Name = {entry.Name ?? "[NULL]"}");
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
 #if NET6_0_OR_GREATER

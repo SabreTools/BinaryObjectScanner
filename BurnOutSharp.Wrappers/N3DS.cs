@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Text;
 
 namespace BurnOutSharp.Wrappers
 {
@@ -279,465 +280,476 @@ namespace BurnOutSharp.Wrappers
         #region Printing
 
         /// <inheritdoc/>
-        public override void PrettyPrint()
+        public override StringBuilder PrettyPrint()
         {
-            Console.WriteLine("3DS Cart Information:");
-            Console.WriteLine("-------------------------");
-            Console.WriteLine();
+            StringBuilder builder = new StringBuilder();
 
-            PrintNCSDHeader();
-            PrintCardInfoHeader();
-            PrintDevelopmentCardInfoHeader();
-            PrintPartitions();
-            PrintExtendedHeaders();
-            PrintExeFSHeaders();
-            PrintRomFSHeaders();
+            builder.AppendLine("3DS Cart Information:");
+            builder.AppendLine("-------------------------");
+            builder.AppendLine();
+
+            PrintNCSDHeader(builder);
+            PrintCardInfoHeader(builder);
+            PrintDevelopmentCardInfoHeader(builder);
+            PrintPartitions(builder);
+            PrintExtendedHeaders(builder);
+            PrintExeFSHeaders(builder);
+            PrintRomFSHeaders(builder);
+
+            return builder;
         }
 
         /// <summary>
         /// Print NCSD header information
         /// </summary>
-        private void PrintNCSDHeader()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintNCSDHeader(StringBuilder builder)
         {
-            Console.WriteLine("  NCSD Header Information:");
-            Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  RSA-2048 SHA-256 signature: {BitConverter.ToString(RSA2048Signature).Replace('-', ' ')}");
-            Console.WriteLine($"  Magic number: {MagicNumber} (0x{MagicNumber:X})");
-            Console.WriteLine($"  Image size in media units: {ImageSizeInMediaUnits} (0x{ImageSizeInMediaUnits:X})");
-            Console.WriteLine($"  Media ID: {BitConverter.ToString(MediaId).Replace('-', ' ')}");
-            Console.WriteLine($"  Partitions filesystem type: {PartitionsFSType} (0x{PartitionsFSType:X})");
-            Console.WriteLine($"  Partitions crypt type: {BitConverter.ToString(PartitionsCryptType).Replace('-', ' ')}");
-            Console.WriteLine();
+            builder.AppendLine("  NCSD Header Information:");
+            builder.AppendLine("  -------------------------");
+            builder.AppendLine($"  RSA-2048 SHA-256 signature: {BitConverter.ToString(RSA2048Signature).Replace('-', ' ')}");
+            builder.AppendLine($"  Magic number: {MagicNumber} (0x{MagicNumber:X})");
+            builder.AppendLine($"  Image size in media units: {ImageSizeInMediaUnits} (0x{ImageSizeInMediaUnits:X})");
+            builder.AppendLine($"  Media ID: {BitConverter.ToString(MediaId).Replace('-', ' ')}");
+            builder.AppendLine($"  Partitions filesystem type: {PartitionsFSType} (0x{PartitionsFSType:X})");
+            builder.AppendLine($"  Partitions crypt type: {BitConverter.ToString(PartitionsCryptType).Replace('-', ' ')}");
+            builder.AppendLine();
 
-            Console.WriteLine($"  Partition table:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine($"  Partition table:");
+            builder.AppendLine("  -------------------------");
             for (int i = 0; i < PartitionsTable.Length; i++)
             {
                 var partitionTableEntry = PartitionsTable[i];
-                Console.WriteLine($"  Partition table entry {i}");
-                Console.WriteLine($"    Offset: {partitionTableEntry.Offset} (0x{partitionTableEntry.Offset:X})");
-                Console.WriteLine($"    Length: {partitionTableEntry.Length} (0x{partitionTableEntry.Length:X})");
+                builder.AppendLine($"  Partition table entry {i}");
+                builder.AppendLine($"    Offset: {partitionTableEntry.Offset} (0x{partitionTableEntry.Offset:X})");
+                builder.AppendLine($"    Length: {partitionTableEntry.Length} (0x{partitionTableEntry.Length:X})");
             }
-            Console.WriteLine();
+            builder.AppendLine();
 
             // If we have a cart image
             if (PartitionsFSType == Models.N3DS.FilesystemType.Normal || PartitionsFSType == Models.N3DS.FilesystemType.None)
             {
-                Console.WriteLine($"  Exheader SHA-256 hash: {BitConverter.ToString(ExheaderHash).Replace('-', ' ')}");
-                Console.WriteLine($"  Additional header size: {AdditionalHeaderSize} (0x{AdditionalHeaderSize:X})");
-                Console.WriteLine($"  Sector zero offset: {SectorZeroOffset} (0x{SectorZeroOffset:X})");
-                Console.WriteLine($"  Partition flags: {BitConverter.ToString(PartitionFlags).Replace('-', ' ')}");
-                Console.WriteLine();
+                builder.AppendLine($"  Exheader SHA-256 hash: {BitConverter.ToString(ExheaderHash).Replace('-', ' ')}");
+                builder.AppendLine($"  Additional header size: {AdditionalHeaderSize} (0x{AdditionalHeaderSize:X})");
+                builder.AppendLine($"  Sector zero offset: {SectorZeroOffset} (0x{SectorZeroOffset:X})");
+                builder.AppendLine($"  Partition flags: {BitConverter.ToString(PartitionFlags).Replace('-', ' ')}");
+                builder.AppendLine();
 
-                Console.WriteLine($"  Partition ID table:");
-                Console.WriteLine("  -------------------------");
+                builder.AppendLine($"  Partition ID table:");
+                builder.AppendLine("  -------------------------");
                 for (int i = 0; i < PartitionIdTable.Length; i++)
                 {
-                    Console.WriteLine($"  Partition {i} ID: {PartitionIdTable[i]} (0x{PartitionIdTable[i]:X})");
+                    builder.AppendLine($"  Partition {i} ID: {PartitionIdTable[i]} (0x{PartitionIdTable[i]:X})");
                 }
-                Console.WriteLine();
+                builder.AppendLine();
 
-                Console.WriteLine($"  Reserved 1: {BitConverter.ToString(Reserved1).Replace('-', ' ')}");
-                Console.WriteLine($"  Reserved 2: {BitConverter.ToString(Reserved2).Replace('-', ' ')}");
-                Console.WriteLine($"  Firmware update byte 1: {FirmUpdateByte1} (0x{FirmUpdateByte1:X})");
-                Console.WriteLine($"  Firmware update byte 2: {FirmUpdateByte2} (0x{FirmUpdateByte2:X})");
+                builder.AppendLine($"  Reserved 1: {BitConverter.ToString(Reserved1).Replace('-', ' ')}");
+                builder.AppendLine($"  Reserved 2: {BitConverter.ToString(Reserved2).Replace('-', ' ')}");
+                builder.AppendLine($"  Firmware update byte 1: {FirmUpdateByte1} (0x{FirmUpdateByte1:X})");
+                builder.AppendLine($"  Firmware update byte 2: {FirmUpdateByte2} (0x{FirmUpdateByte2:X})");
             }
 
             // If we have a firmware image
             else if (PartitionsFSType == Models.N3DS.FilesystemType.FIRM)
             {
-                Console.WriteLine($"  Unknown: {BitConverter.ToString(Unknown).Replace('-', ' ')}");
-                Console.WriteLine($"  Encrypted MBR: {BitConverter.ToString(EncryptedMBR).Replace('-', ' ')}");
+                builder.AppendLine($"  Unknown: {BitConverter.ToString(Unknown).Replace('-', ' ')}");
+                builder.AppendLine($"  Encrypted MBR: {BitConverter.ToString(EncryptedMBR).Replace('-', ' ')}");
             }
 
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print card info header information
         /// </summary>
-        private void PrintCardInfoHeader()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintCardInfoHeader(StringBuilder builder)
         {
-            Console.WriteLine("  Card Info Header Information:");
-            Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Writable address in media units: {CIH_WritableAddressMediaUnits} (0x{CIH_WritableAddressMediaUnits:X})");
-            Console.WriteLine($"  Card info bitmask: {CIH_CardInfoBitmask} (0x{CIH_CardInfoBitmask:X})");
-            Console.WriteLine($"  Reserved 1: {BitConverter.ToString(CIH_Reserved1).Replace('-', ' ')}");
-            Console.WriteLine($"  Filled size of cartridge: {CIH_FilledSize} (0x{CIH_FilledSize:X})");
-            Console.WriteLine($"  Reserved 2: {BitConverter.ToString(CIH_Reserved2).Replace('-', ' ')}");
-            Console.WriteLine($"  Title version: {CIH_TitleVersion} (0x{CIH_TitleVersion:X})");
-            Console.WriteLine($"  Card revision: {CIH_CardRevision} (0x{CIH_CardRevision:X})");
-            Console.WriteLine($"  Reserved 3: {BitConverter.ToString(CIH_Reserved3).Replace('-', ' ')}");
-            Console.WriteLine($"  Title ID of CVer in included update partition: {BitConverter.ToString(CIH_CVerTitleID).Replace('-', ' ')}");
-            Console.WriteLine($"  Version number of CVer in included update partition: {CIH_CVerVersionNumber} (0x{CIH_CVerVersionNumber:X})");
-            Console.WriteLine($"  Reserved 4: {BitConverter.ToString(CIH_Reserved4).Replace('-', ' ')}");
-            Console.WriteLine();
+            builder.AppendLine("  Card Info Header Information:");
+            builder.AppendLine("  -------------------------");
+            builder.AppendLine($"  Writable address in media units: {CIH_WritableAddressMediaUnits} (0x{CIH_WritableAddressMediaUnits:X})");
+            builder.AppendLine($"  Card info bitmask: {CIH_CardInfoBitmask} (0x{CIH_CardInfoBitmask:X})");
+            builder.AppendLine($"  Reserved 1: {BitConverter.ToString(CIH_Reserved1).Replace('-', ' ')}");
+            builder.AppendLine($"  Filled size of cartridge: {CIH_FilledSize} (0x{CIH_FilledSize:X})");
+            builder.AppendLine($"  Reserved 2: {BitConverter.ToString(CIH_Reserved2).Replace('-', ' ')}");
+            builder.AppendLine($"  Title version: {CIH_TitleVersion} (0x{CIH_TitleVersion:X})");
+            builder.AppendLine($"  Card revision: {CIH_CardRevision} (0x{CIH_CardRevision:X})");
+            builder.AppendLine($"  Reserved 3: {BitConverter.ToString(CIH_Reserved3).Replace('-', ' ')}");
+            builder.AppendLine($"  Title ID of CVer in included update partition: {BitConverter.ToString(CIH_CVerTitleID).Replace('-', ' ')}");
+            builder.AppendLine($"  Version number of CVer in included update partition: {CIH_CVerVersionNumber} (0x{CIH_CVerVersionNumber:X})");
+            builder.AppendLine($"  Reserved 4: {BitConverter.ToString(CIH_Reserved4).Replace('-', ' ')}");
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print development card info header information
         /// </summary>
-        private void PrintDevelopmentCardInfoHeader()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintDevelopmentCardInfoHeader(StringBuilder builder)
         {
-            Console.WriteLine("  Development Card Info Header Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Development Card Info Header Information:");
+            builder.AppendLine("  -------------------------");
             if (_cart.DevelopmentCardInfoHeader == null)
             {
-                Console.WriteLine("  No development card info header");
+                builder.AppendLine("  No development card info header");
             }
             else
             {
-                Console.WriteLine();
-                Console.WriteLine("  Initial Data:");
-                Console.WriteLine("  -------------------------");
-                Console.WriteLine($"  Card seed keyY: {BitConverter.ToString(DCIH_ID_CardSeedKeyY).Replace('-', ' ')}");
-                Console.WriteLine($"  Encrypted card seed: {BitConverter.ToString(DCIH_ID_EncryptedCardSeed).Replace('-', ' ')}");
-                Console.WriteLine($"  Card seed AES-MAC: {BitConverter.ToString(DCIH_ID_CardSeedAESMAC).Replace('-', ' ')}");
-                Console.WriteLine($"  Card seed nonce: {BitConverter.ToString(DCIH_ID_CardSeedNonce).Replace('-', ' ')}");
-                Console.WriteLine($"  Reserved: {BitConverter.ToString(DCIH_ID_Reserved).Replace('-', ' ')}");
-                Console.WriteLine();
+                builder.AppendLine();
+                builder.AppendLine("  Initial Data:");
+                builder.AppendLine("  -------------------------");
+                builder.AppendLine($"  Card seed keyY: {BitConverter.ToString(DCIH_ID_CardSeedKeyY).Replace('-', ' ')}");
+                builder.AppendLine($"  Encrypted card seed: {BitConverter.ToString(DCIH_ID_EncryptedCardSeed).Replace('-', ' ')}");
+                builder.AppendLine($"  Card seed AES-MAC: {BitConverter.ToString(DCIH_ID_CardSeedAESMAC).Replace('-', ' ')}");
+                builder.AppendLine($"  Card seed nonce: {BitConverter.ToString(DCIH_ID_CardSeedNonce).Replace('-', ' ')}");
+                builder.AppendLine($"  Reserved: {BitConverter.ToString(DCIH_ID_Reserved).Replace('-', ' ')}");
+                builder.AppendLine();
 
-                Console.WriteLine("    Backup Header:");
-                Console.WriteLine("    -------------------------");
-                Console.WriteLine($"    Magic ID: {DCIH_ID_BackupHeader.MagicID} (0x{DCIH_ID_BackupHeader.MagicID:X})");
-                Console.WriteLine($"    Content size in media units: {DCIH_ID_BackupHeader.ContentSizeInMediaUnits} (0x{DCIH_ID_BackupHeader.ContentSizeInMediaUnits:X})");
-                Console.WriteLine($"    Partition ID: {DCIH_ID_BackupHeader.PartitionId} (0x{DCIH_ID_BackupHeader.PartitionId:X})");
-                Console.WriteLine($"    Maker code: {DCIH_ID_BackupHeader.MakerCode} (0x{DCIH_ID_BackupHeader.MakerCode:X})");
-                Console.WriteLine($"    Version: {DCIH_ID_BackupHeader.Version} (0x{DCIH_ID_BackupHeader.Version:X})");
-                Console.WriteLine($"    Verification hash: {DCIH_ID_BackupHeader.VerificationHash} (0x{DCIH_ID_BackupHeader.VerificationHash:X})");
-                Console.WriteLine($"    Program ID: {BitConverter.ToString(DCIH_ID_BackupHeader.ProgramId).Replace('-', ' ')}");
-                Console.WriteLine($"    Reserved 1: {BitConverter.ToString(DCIH_ID_BackupHeader.Reserved1).Replace('-', ' ')}");
-                Console.WriteLine($"    Logo region SHA-256 hash: {BitConverter.ToString(DCIH_ID_BackupHeader.LogoRegionHash).Replace('-', ' ')}");
-                Console.WriteLine($"    Product code: {DCIH_ID_BackupHeader.ProductCode} (0x{DCIH_ID_BackupHeader.ProductCode:X})");
-                Console.WriteLine($"    Extended header SHA-256 hash: {BitConverter.ToString(DCIH_ID_BackupHeader.ExtendedHeaderHash).Replace('-', ' ')}");
-                Console.WriteLine($"    Extended header size in bytes: {DCIH_ID_BackupHeader.ExtendedHeaderSizeInBytes} (0x{DCIH_ID_BackupHeader.ExtendedHeaderSizeInBytes:X})");
-                Console.WriteLine($"    Reserved 2: {BitConverter.ToString(DCIH_ID_BackupHeader.Reserved2).Replace('-', ' ')}");
-                Console.WriteLine($"    Flags: {DCIH_ID_BackupHeader.Flags} (0x{DCIH_ID_BackupHeader.Flags:X})");
-                Console.WriteLine($"    Plain region offset, in media units: {DCIH_ID_BackupHeader.PlainRegionOffsetInMediaUnits} (0x{DCIH_ID_BackupHeader.PlainRegionOffsetInMediaUnits:X})");
-                Console.WriteLine($"    Plain region size, in media units: {DCIH_ID_BackupHeader.PlainRegionSizeInMediaUnits} (0x{DCIH_ID_BackupHeader.PlainRegionSizeInMediaUnits:X})");
-                Console.WriteLine($"    Logo region offset, in media units: {DCIH_ID_BackupHeader.LogoRegionOffsetInMediaUnits} (0x{DCIH_ID_BackupHeader.LogoRegionOffsetInMediaUnits:X})");
-                Console.WriteLine($"    Logo region size, in media units: {DCIH_ID_BackupHeader.LogoRegionSizeInMediaUnits} (0x{DCIH_ID_BackupHeader.LogoRegionSizeInMediaUnits:X})");
-                Console.WriteLine($"    ExeFS offset, in media units: {DCIH_ID_BackupHeader.ExeFSOffsetInMediaUnits} (0x{DCIH_ID_BackupHeader.ExeFSOffsetInMediaUnits:X})");
-                Console.WriteLine($"    ExeFS size, in media units: {DCIH_ID_BackupHeader.ExeFSSizeInMediaUnits} (0x{DCIH_ID_BackupHeader.ExeFSSizeInMediaUnits:X})");
-                Console.WriteLine($"    ExeFS hash region size, in media units: {DCIH_ID_BackupHeader.ExeFSHashRegionSizeInMediaUnits} (0x{DCIH_ID_BackupHeader.ExeFSHashRegionSizeInMediaUnits:X})");
-                Console.WriteLine($"    Reserved 3: {BitConverter.ToString(DCIH_ID_BackupHeader.Reserved3).Replace('-', ' ')}");
-                Console.WriteLine($"    RomFS offset, in media units: {DCIH_ID_BackupHeader.RomFSOffsetInMediaUnits} (0x{DCIH_ID_BackupHeader.RomFSOffsetInMediaUnits:X})");
-                Console.WriteLine($"    RomFS size, in media units: {DCIH_ID_BackupHeader.RomFSSizeInMediaUnits} (0x{DCIH_ID_BackupHeader.RomFSSizeInMediaUnits:X})");
-                Console.WriteLine($"    RomFS hash region size, in media units: {DCIH_ID_BackupHeader.RomFSHashRegionSizeInMediaUnits} (0x{DCIH_ID_BackupHeader.RomFSHashRegionSizeInMediaUnits:X})");
-                Console.WriteLine($"    Reserved 4: {BitConverter.ToString(DCIH_ID_BackupHeader.Reserved4).Replace('-', ' ')}");
-                Console.WriteLine($"    ExeFS superblock SHA-256 hash: {BitConverter.ToString(DCIH_ID_BackupHeader.ExeFSSuperblockHash).Replace('-', ' ')}");
-                Console.WriteLine($"    RomFS superblock SHA-256 hash: {BitConverter.ToString(DCIH_ID_BackupHeader.RomFSSuperblockHash).Replace('-', ' ')}");
-                Console.WriteLine();
+                builder.AppendLine("    Backup Header:");
+                builder.AppendLine("    -------------------------");
+                builder.AppendLine($"    Magic ID: {DCIH_ID_BackupHeader.MagicID} (0x{DCIH_ID_BackupHeader.MagicID:X})");
+                builder.AppendLine($"    Content size in media units: {DCIH_ID_BackupHeader.ContentSizeInMediaUnits} (0x{DCIH_ID_BackupHeader.ContentSizeInMediaUnits:X})");
+                builder.AppendLine($"    Partition ID: {DCIH_ID_BackupHeader.PartitionId} (0x{DCIH_ID_BackupHeader.PartitionId:X})");
+                builder.AppendLine($"    Maker code: {DCIH_ID_BackupHeader.MakerCode} (0x{DCIH_ID_BackupHeader.MakerCode:X})");
+                builder.AppendLine($"    Version: {DCIH_ID_BackupHeader.Version} (0x{DCIH_ID_BackupHeader.Version:X})");
+                builder.AppendLine($"    Verification hash: {DCIH_ID_BackupHeader.VerificationHash} (0x{DCIH_ID_BackupHeader.VerificationHash:X})");
+                builder.AppendLine($"    Program ID: {BitConverter.ToString(DCIH_ID_BackupHeader.ProgramId).Replace('-', ' ')}");
+                builder.AppendLine($"    Reserved 1: {BitConverter.ToString(DCIH_ID_BackupHeader.Reserved1).Replace('-', ' ')}");
+                builder.AppendLine($"    Logo region SHA-256 hash: {BitConverter.ToString(DCIH_ID_BackupHeader.LogoRegionHash).Replace('-', ' ')}");
+                builder.AppendLine($"    Product code: {DCIH_ID_BackupHeader.ProductCode} (0x{DCIH_ID_BackupHeader.ProductCode:X})");
+                builder.AppendLine($"    Extended header SHA-256 hash: {BitConverter.ToString(DCIH_ID_BackupHeader.ExtendedHeaderHash).Replace('-', ' ')}");
+                builder.AppendLine($"    Extended header size in bytes: {DCIH_ID_BackupHeader.ExtendedHeaderSizeInBytes} (0x{DCIH_ID_BackupHeader.ExtendedHeaderSizeInBytes:X})");
+                builder.AppendLine($"    Reserved 2: {BitConverter.ToString(DCIH_ID_BackupHeader.Reserved2).Replace('-', ' ')}");
+                builder.AppendLine($"    Flags: {DCIH_ID_BackupHeader.Flags} (0x{DCIH_ID_BackupHeader.Flags:X})");
+                builder.AppendLine($"    Plain region offset, in media units: {DCIH_ID_BackupHeader.PlainRegionOffsetInMediaUnits} (0x{DCIH_ID_BackupHeader.PlainRegionOffsetInMediaUnits:X})");
+                builder.AppendLine($"    Plain region size, in media units: {DCIH_ID_BackupHeader.PlainRegionSizeInMediaUnits} (0x{DCIH_ID_BackupHeader.PlainRegionSizeInMediaUnits:X})");
+                builder.AppendLine($"    Logo region offset, in media units: {DCIH_ID_BackupHeader.LogoRegionOffsetInMediaUnits} (0x{DCIH_ID_BackupHeader.LogoRegionOffsetInMediaUnits:X})");
+                builder.AppendLine($"    Logo region size, in media units: {DCIH_ID_BackupHeader.LogoRegionSizeInMediaUnits} (0x{DCIH_ID_BackupHeader.LogoRegionSizeInMediaUnits:X})");
+                builder.AppendLine($"    ExeFS offset, in media units: {DCIH_ID_BackupHeader.ExeFSOffsetInMediaUnits} (0x{DCIH_ID_BackupHeader.ExeFSOffsetInMediaUnits:X})");
+                builder.AppendLine($"    ExeFS size, in media units: {DCIH_ID_BackupHeader.ExeFSSizeInMediaUnits} (0x{DCIH_ID_BackupHeader.ExeFSSizeInMediaUnits:X})");
+                builder.AppendLine($"    ExeFS hash region size, in media units: {DCIH_ID_BackupHeader.ExeFSHashRegionSizeInMediaUnits} (0x{DCIH_ID_BackupHeader.ExeFSHashRegionSizeInMediaUnits:X})");
+                builder.AppendLine($"    Reserved 3: {BitConverter.ToString(DCIH_ID_BackupHeader.Reserved3).Replace('-', ' ')}");
+                builder.AppendLine($"    RomFS offset, in media units: {DCIH_ID_BackupHeader.RomFSOffsetInMediaUnits} (0x{DCIH_ID_BackupHeader.RomFSOffsetInMediaUnits:X})");
+                builder.AppendLine($"    RomFS size, in media units: {DCIH_ID_BackupHeader.RomFSSizeInMediaUnits} (0x{DCIH_ID_BackupHeader.RomFSSizeInMediaUnits:X})");
+                builder.AppendLine($"    RomFS hash region size, in media units: {DCIH_ID_BackupHeader.RomFSHashRegionSizeInMediaUnits} (0x{DCIH_ID_BackupHeader.RomFSHashRegionSizeInMediaUnits:X})");
+                builder.AppendLine($"    Reserved 4: {BitConverter.ToString(DCIH_ID_BackupHeader.Reserved4).Replace('-', ' ')}");
+                builder.AppendLine($"    ExeFS superblock SHA-256 hash: {BitConverter.ToString(DCIH_ID_BackupHeader.ExeFSSuperblockHash).Replace('-', ' ')}");
+                builder.AppendLine($"    RomFS superblock SHA-256 hash: {BitConverter.ToString(DCIH_ID_BackupHeader.RomFSSuperblockHash).Replace('-', ' ')}");
+                builder.AppendLine();
 
-                Console.WriteLine($"  Card device reserved 1: {BitConverter.ToString(DCIH_CardDeviceReserved1).Replace('-', ' ')}");
-                Console.WriteLine($"  Title key: {BitConverter.ToString(DCIH_TitleKey).Replace('-', ' ')}");
-                Console.WriteLine($"  Card device reserved 2: {BitConverter.ToString(DCIH_CardDeviceReserved2).Replace('-', ' ')}");
-                Console.WriteLine();
+                builder.AppendLine($"  Card device reserved 1: {BitConverter.ToString(DCIH_CardDeviceReserved1).Replace('-', ' ')}");
+                builder.AppendLine($"  Title key: {BitConverter.ToString(DCIH_TitleKey).Replace('-', ' ')}");
+                builder.AppendLine($"  Card device reserved 2: {BitConverter.ToString(DCIH_CardDeviceReserved2).Replace('-', ' ')}");
+                builder.AppendLine();
 
-                Console.WriteLine("  Test Data:");
-                Console.WriteLine("  -------------------------");
-                Console.WriteLine($"  Signature: {BitConverter.ToString(DCIH_TD_Signature).Replace('-', ' ')}");
-                Console.WriteLine($"  Ascending byte sequence: {BitConverter.ToString(DCIH_TD_AscendingByteSequence).Replace('-', ' ')}");
-                Console.WriteLine($"  Descending byte sequence: {BitConverter.ToString(DCIH_TD_DescendingByteSequence).Replace('-', ' ')}");
-                Console.WriteLine($"  Filled with 00: {BitConverter.ToString(DCIH_TD_Filled00).Replace('-', ' ')}");
-                Console.WriteLine($"  Filled with FF: {BitConverter.ToString(DCIH_TD_FilledFF).Replace('-', ' ')}");
-                Console.WriteLine($"  Filled with 0F: {BitConverter.ToString(DCIH_TD_Filled0F).Replace('-', ' ')}");
-                Console.WriteLine($"  Filled with F0: {BitConverter.ToString(DCIH_TD_FilledF0).Replace('-', ' ')}");
-                Console.WriteLine($"  Filled with 55: {BitConverter.ToString(DCIH_TD_Filled55).Replace('-', ' ')}");
-                Console.WriteLine($"  Filled with AA: {BitConverter.ToString(DCIH_TD_FilledAA).Replace('-', ' ')}");
-                Console.WriteLine($"  Final byte: {DCIH_TD_FinalByte}");
+                builder.AppendLine("  Test Data:");
+                builder.AppendLine("  -------------------------");
+                builder.AppendLine($"  Signature: {BitConverter.ToString(DCIH_TD_Signature).Replace('-', ' ')}");
+                builder.AppendLine($"  Ascending byte sequence: {BitConverter.ToString(DCIH_TD_AscendingByteSequence).Replace('-', ' ')}");
+                builder.AppendLine($"  Descending byte sequence: {BitConverter.ToString(DCIH_TD_DescendingByteSequence).Replace('-', ' ')}");
+                builder.AppendLine($"  Filled with 00: {BitConverter.ToString(DCIH_TD_Filled00).Replace('-', ' ')}");
+                builder.AppendLine($"  Filled with FF: {BitConverter.ToString(DCIH_TD_FilledFF).Replace('-', ' ')}");
+                builder.AppendLine($"  Filled with 0F: {BitConverter.ToString(DCIH_TD_Filled0F).Replace('-', ' ')}");
+                builder.AppendLine($"  Filled with F0: {BitConverter.ToString(DCIH_TD_FilledF0).Replace('-', ' ')}");
+                builder.AppendLine($"  Filled with 55: {BitConverter.ToString(DCIH_TD_Filled55).Replace('-', ' ')}");
+                builder.AppendLine($"  Filled with AA: {BitConverter.ToString(DCIH_TD_FilledAA).Replace('-', ' ')}");
+                builder.AppendLine($"  Final byte: {DCIH_TD_FinalByte}");
             }
 
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print NCCH partition header information
         /// </summary>
-        private void PrintPartitions()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintPartitions(StringBuilder builder)
         {
-            Console.WriteLine("  NCCH Partition Header Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  NCCH Partition Header Information:");
+            builder.AppendLine("  -------------------------");
             if (Partitions == null || Partitions.Length == 0)
             {
-                Console.WriteLine("  No NCCH partition headers");
+                builder.AppendLine("  No NCCH partition headers");
             }
             else
             {
                 for (int i = 0; i < Partitions.Length; i++)
                 {
                     var partitionHeader = Partitions[i];
-                    Console.WriteLine($"  NCCH Partition Header {i}");
+                    builder.AppendLine($"  NCCH Partition Header {i}");
                     if (partitionHeader.MagicID == string.Empty)
                     {
-                        Console.WriteLine($"    Empty partition, no data can be parsed");
+                        builder.AppendLine($"    Empty partition, no data can be parsed");
                     }
                     else if (partitionHeader.MagicID != Models.N3DS.Constants.NCCHMagicNumber)
                     {
-                        Console.WriteLine($"    Unrecognized partition data, no data can be parsed");
+                        builder.AppendLine($"    Unrecognized partition data, no data can be parsed");
                     }
                     else
                     {
-                        Console.WriteLine($"    RSA-2048 SHA-256 signature: {BitConverter.ToString(partitionHeader.RSA2048Signature).Replace('-', ' ')}");
-                        Console.WriteLine($"    Magic ID: {partitionHeader.MagicID} (0x{partitionHeader.MagicID:X})");
-                        Console.WriteLine($"    Content size in media units: {partitionHeader.ContentSizeInMediaUnits} (0x{partitionHeader.ContentSizeInMediaUnits:X})");
-                        Console.WriteLine($"    Partition ID: {partitionHeader.PartitionId} (0x{partitionHeader.PartitionId:X})");
-                        Console.WriteLine($"    Maker code: {partitionHeader.MakerCode} (0x{partitionHeader.MakerCode:X})");
-                        Console.WriteLine($"    Version: {partitionHeader.Version} (0x{partitionHeader.Version:X})");
-                        Console.WriteLine($"    Verification hash: {partitionHeader.VerificationHash} (0x{partitionHeader.VerificationHash:X})");
-                        Console.WriteLine($"    Program ID: {BitConverter.ToString(partitionHeader.ProgramId).Replace('-', ' ')}");
-                        Console.WriteLine($"    Reserved 1: {BitConverter.ToString(partitionHeader.Reserved1).Replace('-', ' ')}");
-                        Console.WriteLine($"    Logo region SHA-256 hash: {BitConverter.ToString(partitionHeader.LogoRegionHash).Replace('-', ' ')}");
-                        Console.WriteLine($"    Product code: {partitionHeader.ProductCode} (0x{partitionHeader.ProductCode:X})");
-                        Console.WriteLine($"    Extended header SHA-256 hash: {BitConverter.ToString(partitionHeader.ExtendedHeaderHash).Replace('-', ' ')}");
-                        Console.WriteLine($"    Extended header size in bytes: {partitionHeader.ExtendedHeaderSizeInBytes} (0x{partitionHeader.ExtendedHeaderSizeInBytes:X})");
-                        Console.WriteLine($"    Reserved 2: {BitConverter.ToString(partitionHeader.Reserved2).Replace('-', ' ')}");
-                        Console.WriteLine("    Flags:");
-                        Console.WriteLine($"      Reserved 0: {partitionHeader.Flags.Reserved0} (0x{partitionHeader.Flags.Reserved0:X})");
-                        Console.WriteLine($"      Reserved 1: {partitionHeader.Flags.Reserved1} (0x{partitionHeader.Flags.Reserved1:X})");
-                        Console.WriteLine($"      Reserved 2: {partitionHeader.Flags.Reserved2} (0x{partitionHeader.Flags.Reserved2:X})");
-                        Console.WriteLine($"      Crypto method: {partitionHeader.Flags.CryptoMethod} (0x{partitionHeader.Flags.CryptoMethod:X})");
-                        Console.WriteLine($"      Content platform: {partitionHeader.Flags.ContentPlatform} (0x{partitionHeader.Flags.ContentPlatform:X})");
-                        Console.WriteLine($"      Content type: {partitionHeader.Flags.MediaPlatformIndex} (0x{partitionHeader.Flags.MediaPlatformIndex:X})");
-                        Console.WriteLine($"      Content unit size: {partitionHeader.Flags.ContentUnitSize} (0x{partitionHeader.Flags.ContentUnitSize:X})");
-                        Console.WriteLine($"      Bitmasks: {partitionHeader.Flags.BitMasks} (0x{partitionHeader.Flags.BitMasks:X})");
-                        Console.WriteLine($"    Plain region offset, in media units: {partitionHeader.PlainRegionOffsetInMediaUnits} (0x{partitionHeader.PlainRegionOffsetInMediaUnits:X})");
-                        Console.WriteLine($"    Plain region size, in media units: {partitionHeader.PlainRegionSizeInMediaUnits} (0x{partitionHeader.PlainRegionSizeInMediaUnits:X})");
-                        Console.WriteLine($"    Logo region offset, in media units: {partitionHeader.LogoRegionOffsetInMediaUnits} (0x{partitionHeader.LogoRegionOffsetInMediaUnits:X})");
-                        Console.WriteLine($"    Logo region size, in media units: {partitionHeader.LogoRegionSizeInMediaUnits} (0x{partitionHeader.LogoRegionSizeInMediaUnits:X})");
-                        Console.WriteLine($"    ExeFS offset, in media units: {partitionHeader.ExeFSOffsetInMediaUnits} (0x{partitionHeader.ExeFSOffsetInMediaUnits:X})");
-                        Console.WriteLine($"    ExeFS size, in media units: {partitionHeader.ExeFSSizeInMediaUnits} (0x{partitionHeader.ExeFSSizeInMediaUnits:X})");
-                        Console.WriteLine($"    ExeFS hash region size, in media units: {partitionHeader.ExeFSHashRegionSizeInMediaUnits} (0x{partitionHeader.ExeFSHashRegionSizeInMediaUnits:X})");
-                        Console.WriteLine($"    Reserved 3: {BitConverter.ToString(partitionHeader.Reserved3).Replace('-', ' ')}");
-                        Console.WriteLine($"    RomFS offset, in media units: {partitionHeader.RomFSOffsetInMediaUnits} (0x{partitionHeader.RomFSOffsetInMediaUnits:X})");
-                        Console.WriteLine($"    RomFS size, in media units: {partitionHeader.RomFSSizeInMediaUnits} (0x{partitionHeader.RomFSSizeInMediaUnits:X})");
-                        Console.WriteLine($"    RomFS hash region size, in media units: {partitionHeader.RomFSHashRegionSizeInMediaUnits} (0x{partitionHeader.RomFSHashRegionSizeInMediaUnits:X})");
-                        Console.WriteLine($"    Reserved 4: {BitConverter.ToString(partitionHeader.Reserved4).Replace('-', ' ')}");
-                        Console.WriteLine($"    ExeFS superblock SHA-256 hash: {BitConverter.ToString(partitionHeader.ExeFSSuperblockHash).Replace('-', ' ')}");
-                        Console.WriteLine($"    RomFS superblock SHA-256 hash: {BitConverter.ToString(partitionHeader.RomFSSuperblockHash).Replace('-', ' ')}");
+                        builder.AppendLine($"    RSA-2048 SHA-256 signature: {BitConverter.ToString(partitionHeader.RSA2048Signature).Replace('-', ' ')}");
+                        builder.AppendLine($"    Magic ID: {partitionHeader.MagicID} (0x{partitionHeader.MagicID:X})");
+                        builder.AppendLine($"    Content size in media units: {partitionHeader.ContentSizeInMediaUnits} (0x{partitionHeader.ContentSizeInMediaUnits:X})");
+                        builder.AppendLine($"    Partition ID: {partitionHeader.PartitionId} (0x{partitionHeader.PartitionId:X})");
+                        builder.AppendLine($"    Maker code: {partitionHeader.MakerCode} (0x{partitionHeader.MakerCode:X})");
+                        builder.AppendLine($"    Version: {partitionHeader.Version} (0x{partitionHeader.Version:X})");
+                        builder.AppendLine($"    Verification hash: {partitionHeader.VerificationHash} (0x{partitionHeader.VerificationHash:X})");
+                        builder.AppendLine($"    Program ID: {BitConverter.ToString(partitionHeader.ProgramId).Replace('-', ' ')}");
+                        builder.AppendLine($"    Reserved 1: {BitConverter.ToString(partitionHeader.Reserved1).Replace('-', ' ')}");
+                        builder.AppendLine($"    Logo region SHA-256 hash: {BitConverter.ToString(partitionHeader.LogoRegionHash).Replace('-', ' ')}");
+                        builder.AppendLine($"    Product code: {partitionHeader.ProductCode} (0x{partitionHeader.ProductCode:X})");
+                        builder.AppendLine($"    Extended header SHA-256 hash: {BitConverter.ToString(partitionHeader.ExtendedHeaderHash).Replace('-', ' ')}");
+                        builder.AppendLine($"    Extended header size in bytes: {partitionHeader.ExtendedHeaderSizeInBytes} (0x{partitionHeader.ExtendedHeaderSizeInBytes:X})");
+                        builder.AppendLine($"    Reserved 2: {BitConverter.ToString(partitionHeader.Reserved2).Replace('-', ' ')}");
+                        builder.AppendLine("    Flags:");
+                        builder.AppendLine($"      Reserved 0: {partitionHeader.Flags.Reserved0} (0x{partitionHeader.Flags.Reserved0:X})");
+                        builder.AppendLine($"      Reserved 1: {partitionHeader.Flags.Reserved1} (0x{partitionHeader.Flags.Reserved1:X})");
+                        builder.AppendLine($"      Reserved 2: {partitionHeader.Flags.Reserved2} (0x{partitionHeader.Flags.Reserved2:X})");
+                        builder.AppendLine($"      Crypto method: {partitionHeader.Flags.CryptoMethod} (0x{partitionHeader.Flags.CryptoMethod:X})");
+                        builder.AppendLine($"      Content platform: {partitionHeader.Flags.ContentPlatform} (0x{partitionHeader.Flags.ContentPlatform:X})");
+                        builder.AppendLine($"      Content type: {partitionHeader.Flags.MediaPlatformIndex} (0x{partitionHeader.Flags.MediaPlatformIndex:X})");
+                        builder.AppendLine($"      Content unit size: {partitionHeader.Flags.ContentUnitSize} (0x{partitionHeader.Flags.ContentUnitSize:X})");
+                        builder.AppendLine($"      Bitmasks: {partitionHeader.Flags.BitMasks} (0x{partitionHeader.Flags.BitMasks:X})");
+                        builder.AppendLine($"    Plain region offset, in media units: {partitionHeader.PlainRegionOffsetInMediaUnits} (0x{partitionHeader.PlainRegionOffsetInMediaUnits:X})");
+                        builder.AppendLine($"    Plain region size, in media units: {partitionHeader.PlainRegionSizeInMediaUnits} (0x{partitionHeader.PlainRegionSizeInMediaUnits:X})");
+                        builder.AppendLine($"    Logo region offset, in media units: {partitionHeader.LogoRegionOffsetInMediaUnits} (0x{partitionHeader.LogoRegionOffsetInMediaUnits:X})");
+                        builder.AppendLine($"    Logo region size, in media units: {partitionHeader.LogoRegionSizeInMediaUnits} (0x{partitionHeader.LogoRegionSizeInMediaUnits:X})");
+                        builder.AppendLine($"    ExeFS offset, in media units: {partitionHeader.ExeFSOffsetInMediaUnits} (0x{partitionHeader.ExeFSOffsetInMediaUnits:X})");
+                        builder.AppendLine($"    ExeFS size, in media units: {partitionHeader.ExeFSSizeInMediaUnits} (0x{partitionHeader.ExeFSSizeInMediaUnits:X})");
+                        builder.AppendLine($"    ExeFS hash region size, in media units: {partitionHeader.ExeFSHashRegionSizeInMediaUnits} (0x{partitionHeader.ExeFSHashRegionSizeInMediaUnits:X})");
+                        builder.AppendLine($"    Reserved 3: {BitConverter.ToString(partitionHeader.Reserved3).Replace('-', ' ')}");
+                        builder.AppendLine($"    RomFS offset, in media units: {partitionHeader.RomFSOffsetInMediaUnits} (0x{partitionHeader.RomFSOffsetInMediaUnits:X})");
+                        builder.AppendLine($"    RomFS size, in media units: {partitionHeader.RomFSSizeInMediaUnits} (0x{partitionHeader.RomFSSizeInMediaUnits:X})");
+                        builder.AppendLine($"    RomFS hash region size, in media units: {partitionHeader.RomFSHashRegionSizeInMediaUnits} (0x{partitionHeader.RomFSHashRegionSizeInMediaUnits:X})");
+                        builder.AppendLine($"    Reserved 4: {BitConverter.ToString(partitionHeader.Reserved4).Replace('-', ' ')}");
+                        builder.AppendLine($"    ExeFS superblock SHA-256 hash: {BitConverter.ToString(partitionHeader.ExeFSSuperblockHash).Replace('-', ' ')}");
+                        builder.AppendLine($"    RomFS superblock SHA-256 hash: {BitConverter.ToString(partitionHeader.RomFSSuperblockHash).Replace('-', ' ')}");
                     }
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print NCCH extended header information
         /// </summary>
-        private void PrintExtendedHeaders()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintExtendedHeaders(StringBuilder builder)
         {
-            Console.WriteLine("  NCCH Extended Header Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  NCCH Extended Header Information:");
+            builder.AppendLine("  -------------------------");
             if (ExtendedHeaders == null || ExtendedHeaders.Length == 0)
             {
-                Console.WriteLine("  No NCCH extended headers");
+                builder.AppendLine("  No NCCH extended headers");
             }
             else
             {
                 for (int i = 0; i < ExtendedHeaders.Length; i++)
                 {
                     var extendedHeader = ExtendedHeaders[i];
-                    Console.WriteLine($"  NCCH Extended Header {i}");
+                    builder.AppendLine($"  NCCH Extended Header {i}");
                     if (extendedHeader == null)
                     {
-                        Console.WriteLine($"    Unrecognized partition data, no data can be parsed");
+                        builder.AppendLine($"    Unrecognized partition data, no data can be parsed");
                     }
                     else
                     {
-                        Console.WriteLine($"    System control info:");
-                        Console.WriteLine($"      Application title: {extendedHeader.SCI.ApplicationTitle}");
-                        Console.WriteLine($"      Reserved 1: {BitConverter.ToString(extendedHeader.SCI.Reserved1).Replace('-', ' ')}");
-                        Console.WriteLine($"      Flag: {extendedHeader.SCI.Flag} (0x{extendedHeader.SCI.Flag:X})");
-                        Console.WriteLine($"      Remaster version: {extendedHeader.SCI.RemasterVersion} (0x{extendedHeader.SCI.RemasterVersion:X})");
+                        builder.AppendLine($"    System control info:");
+                        builder.AppendLine($"      Application title: {extendedHeader.SCI.ApplicationTitle}");
+                        builder.AppendLine($"      Reserved 1: {BitConverter.ToString(extendedHeader.SCI.Reserved1).Replace('-', ' ')}");
+                        builder.AppendLine($"      Flag: {extendedHeader.SCI.Flag} (0x{extendedHeader.SCI.Flag:X})");
+                        builder.AppendLine($"      Remaster version: {extendedHeader.SCI.RemasterVersion} (0x{extendedHeader.SCI.RemasterVersion:X})");
 
-                        Console.WriteLine($"      Text code set info:");
-                        Console.WriteLine($"        Address: {extendedHeader.SCI.TextCodeSetInfo.Address} (0x{extendedHeader.SCI.TextCodeSetInfo.Address:X})");
-                        Console.WriteLine($"        Physical region size (in page-multiples): {extendedHeader.SCI.TextCodeSetInfo.PhysicalRegionSizeInPages} (0x{extendedHeader.SCI.TextCodeSetInfo.PhysicalRegionSizeInPages:X})");
-                        Console.WriteLine($"        Size (in bytes): {extendedHeader.SCI.TextCodeSetInfo.SizeInBytes} (0x{extendedHeader.SCI.TextCodeSetInfo.SizeInBytes:X})");
+                        builder.AppendLine($"      Text code set info:");
+                        builder.AppendLine($"        Address: {extendedHeader.SCI.TextCodeSetInfo.Address} (0x{extendedHeader.SCI.TextCodeSetInfo.Address:X})");
+                        builder.AppendLine($"        Physical region size (in page-multiples): {extendedHeader.SCI.TextCodeSetInfo.PhysicalRegionSizeInPages} (0x{extendedHeader.SCI.TextCodeSetInfo.PhysicalRegionSizeInPages:X})");
+                        builder.AppendLine($"        Size (in bytes): {extendedHeader.SCI.TextCodeSetInfo.SizeInBytes} (0x{extendedHeader.SCI.TextCodeSetInfo.SizeInBytes:X})");
 
-                        Console.WriteLine($"      Stack size: {extendedHeader.SCI.StackSize} (0x{extendedHeader.SCI.StackSize:X})");
+                        builder.AppendLine($"      Stack size: {extendedHeader.SCI.StackSize} (0x{extendedHeader.SCI.StackSize:X})");
 
-                        Console.WriteLine($"      Read-only code set info:");
-                        Console.WriteLine($"        Address: {extendedHeader.SCI.ReadOnlyCodeSetInfo.Address} (0x{extendedHeader.SCI.ReadOnlyCodeSetInfo.Address:X})");
-                        Console.WriteLine($"        Physical region size (in page-multiples): {extendedHeader.SCI.ReadOnlyCodeSetInfo.PhysicalRegionSizeInPages} (0x{extendedHeader.SCI.ReadOnlyCodeSetInfo.PhysicalRegionSizeInPages:X})");
-                        Console.WriteLine($"        Size (in bytes): {extendedHeader.SCI.ReadOnlyCodeSetInfo.SizeInBytes} (0x{extendedHeader.SCI.ReadOnlyCodeSetInfo.SizeInBytes:X})");
+                        builder.AppendLine($"      Read-only code set info:");
+                        builder.AppendLine($"        Address: {extendedHeader.SCI.ReadOnlyCodeSetInfo.Address} (0x{extendedHeader.SCI.ReadOnlyCodeSetInfo.Address:X})");
+                        builder.AppendLine($"        Physical region size (in page-multiples): {extendedHeader.SCI.ReadOnlyCodeSetInfo.PhysicalRegionSizeInPages} (0x{extendedHeader.SCI.ReadOnlyCodeSetInfo.PhysicalRegionSizeInPages:X})");
+                        builder.AppendLine($"        Size (in bytes): {extendedHeader.SCI.ReadOnlyCodeSetInfo.SizeInBytes} (0x{extendedHeader.SCI.ReadOnlyCodeSetInfo.SizeInBytes:X})");
 
-                        Console.WriteLine($"      Reserved 2: {BitConverter.ToString(extendedHeader.SCI.Reserved2).Replace('-', newChar: ' ')}");
+                        builder.AppendLine($"      Reserved 2: {BitConverter.ToString(extendedHeader.SCI.Reserved2).Replace('-', newChar: ' ')}");
 
-                        Console.WriteLine($"      Data code set info:");
-                        Console.WriteLine($"        Address: {extendedHeader.SCI.DataCodeSetInfo.Address} (0x{extendedHeader.SCI.DataCodeSetInfo.Address:X})");
-                        Console.WriteLine($"        Physical region size (in page-multiples): {extendedHeader.SCI.DataCodeSetInfo.PhysicalRegionSizeInPages} (0x{extendedHeader.SCI.DataCodeSetInfo.PhysicalRegionSizeInPages:X})");
-                        Console.WriteLine($"        Size (in bytes): {extendedHeader.SCI.DataCodeSetInfo.SizeInBytes} (0x{extendedHeader.SCI.DataCodeSetInfo.SizeInBytes:X})");
+                        builder.AppendLine($"      Data code set info:");
+                        builder.AppendLine($"        Address: {extendedHeader.SCI.DataCodeSetInfo.Address} (0x{extendedHeader.SCI.DataCodeSetInfo.Address:X})");
+                        builder.AppendLine($"        Physical region size (in page-multiples): {extendedHeader.SCI.DataCodeSetInfo.PhysicalRegionSizeInPages} (0x{extendedHeader.SCI.DataCodeSetInfo.PhysicalRegionSizeInPages:X})");
+                        builder.AppendLine($"        Size (in bytes): {extendedHeader.SCI.DataCodeSetInfo.SizeInBytes} (0x{extendedHeader.SCI.DataCodeSetInfo.SizeInBytes:X})");
 
-                        Console.WriteLine($"      BSS size: {extendedHeader.SCI.BSSSize} (0x{extendedHeader.SCI.BSSSize:X})");
-                        Console.WriteLine($"      Dependency module list: {string.Join(", ", extendedHeader.SCI.DependencyModuleList)}");
+                        builder.AppendLine($"      BSS size: {extendedHeader.SCI.BSSSize} (0x{extendedHeader.SCI.BSSSize:X})");
+                        builder.AppendLine($"      Dependency module list: {string.Join(", ", extendedHeader.SCI.DependencyModuleList)}");
 
-                        Console.WriteLine($"      System info:");
-                        Console.WriteLine($"        SaveData size: {extendedHeader.SCI.SystemInfo.SaveDataSize} (0x{extendedHeader.SCI.SystemInfo.SaveDataSize:X})");
-                        Console.WriteLine($"        Jump ID: {extendedHeader.SCI.SystemInfo.JumpID} (0x{extendedHeader.SCI.SystemInfo.JumpID:X})");
-                        Console.WriteLine($"        Reserved: {BitConverter.ToString(extendedHeader.SCI.SystemInfo.Reserved).Replace('-', newChar: ' ')}");
+                        builder.AppendLine($"      System info:");
+                        builder.AppendLine($"        SaveData size: {extendedHeader.SCI.SystemInfo.SaveDataSize} (0x{extendedHeader.SCI.SystemInfo.SaveDataSize:X})");
+                        builder.AppendLine($"        Jump ID: {extendedHeader.SCI.SystemInfo.JumpID} (0x{extendedHeader.SCI.SystemInfo.JumpID:X})");
+                        builder.AppendLine($"        Reserved: {BitConverter.ToString(extendedHeader.SCI.SystemInfo.Reserved).Replace('-', newChar: ' ')}");
 
-                        Console.WriteLine($"    Access control info:");
-                        Console.WriteLine($"      ARM11 local system capabilities:");
-                        Console.WriteLine($"        Program ID: {extendedHeader.ACI.ARM11LocalSystemCapabilities.ProgramID} (0x{extendedHeader.ACI.ARM11LocalSystemCapabilities.ProgramID:X})");
-                        Console.WriteLine($"        Core version: {extendedHeader.ACI.ARM11LocalSystemCapabilities.CoreVersion} (0x{extendedHeader.ACI.ARM11LocalSystemCapabilities.CoreVersion:X})");
-                        Console.WriteLine($"        Flag 1: {extendedHeader.ACI.ARM11LocalSystemCapabilities.Flag1} (0x{extendedHeader.ACI.ARM11LocalSystemCapabilities.Flag1:X})");
-                        Console.WriteLine($"        Flag 2: {extendedHeader.ACI.ARM11LocalSystemCapabilities.Flag2} (0x{extendedHeader.ACI.ARM11LocalSystemCapabilities.Flag2:X})");
-                        Console.WriteLine($"        Flag 0: {extendedHeader.ACI.ARM11LocalSystemCapabilities.Flag0} (0x{extendedHeader.ACI.ARM11LocalSystemCapabilities.Flag0:X})");
-                        Console.WriteLine($"        Priority: {extendedHeader.ACI.ARM11LocalSystemCapabilities.Priority} (0x{extendedHeader.ACI.ARM11LocalSystemCapabilities.Priority:X})");
-                        Console.WriteLine($"        Resource limit descriptors: {string.Join(", ", extendedHeader.ACI.ARM11LocalSystemCapabilities.ResourceLimitDescriptors)}");
+                        builder.AppendLine($"    Access control info:");
+                        builder.AppendLine($"      ARM11 local system capabilities:");
+                        builder.AppendLine($"        Program ID: {extendedHeader.ACI.ARM11LocalSystemCapabilities.ProgramID} (0x{extendedHeader.ACI.ARM11LocalSystemCapabilities.ProgramID:X})");
+                        builder.AppendLine($"        Core version: {extendedHeader.ACI.ARM11LocalSystemCapabilities.CoreVersion} (0x{extendedHeader.ACI.ARM11LocalSystemCapabilities.CoreVersion:X})");
+                        builder.AppendLine($"        Flag 1: {extendedHeader.ACI.ARM11LocalSystemCapabilities.Flag1} (0x{extendedHeader.ACI.ARM11LocalSystemCapabilities.Flag1:X})");
+                        builder.AppendLine($"        Flag 2: {extendedHeader.ACI.ARM11LocalSystemCapabilities.Flag2} (0x{extendedHeader.ACI.ARM11LocalSystemCapabilities.Flag2:X})");
+                        builder.AppendLine($"        Flag 0: {extendedHeader.ACI.ARM11LocalSystemCapabilities.Flag0} (0x{extendedHeader.ACI.ARM11LocalSystemCapabilities.Flag0:X})");
+                        builder.AppendLine($"        Priority: {extendedHeader.ACI.ARM11LocalSystemCapabilities.Priority} (0x{extendedHeader.ACI.ARM11LocalSystemCapabilities.Priority:X})");
+                        builder.AppendLine($"        Resource limit descriptors: {string.Join(", ", extendedHeader.ACI.ARM11LocalSystemCapabilities.ResourceLimitDescriptors)}");
 
-                        Console.WriteLine($"        Storage info:");
-                        Console.WriteLine($"          Extdata ID: {extendedHeader.ACI.ARM11LocalSystemCapabilities.StorageInfo.ExtdataID} (0x{extendedHeader.ACI.ARM11LocalSystemCapabilities.StorageInfo.ExtdataID:X})");
-                        Console.WriteLine($"          System savedata IDs: {BitConverter.ToString(extendedHeader.ACI.ARM11LocalSystemCapabilities.StorageInfo.SystemSavedataIDs).Replace('-', newChar: ' ')}");
-                        Console.WriteLine($"          Storage accessible unique IDs: {BitConverter.ToString(extendedHeader.ACI.ARM11LocalSystemCapabilities.StorageInfo.StorageAccessibleUniqueIDs).Replace('-', newChar: ' ')}");
-                        Console.WriteLine($"          File system access info: {BitConverter.ToString(extendedHeader.ACI.ARM11LocalSystemCapabilities.StorageInfo.FileSystemAccessInfo).Replace('-', newChar: ' ')}");
-                        Console.WriteLine($"          Other attributes: {extendedHeader.ACI.ARM11LocalSystemCapabilities.StorageInfo.OtherAttributes} (0x{extendedHeader.ACI.ARM11LocalSystemCapabilities.StorageInfo.OtherAttributes:X})");
+                        builder.AppendLine($"        Storage info:");
+                        builder.AppendLine($"          Extdata ID: {extendedHeader.ACI.ARM11LocalSystemCapabilities.StorageInfo.ExtdataID} (0x{extendedHeader.ACI.ARM11LocalSystemCapabilities.StorageInfo.ExtdataID:X})");
+                        builder.AppendLine($"          System savedata IDs: {BitConverter.ToString(extendedHeader.ACI.ARM11LocalSystemCapabilities.StorageInfo.SystemSavedataIDs).Replace('-', newChar: ' ')}");
+                        builder.AppendLine($"          Storage accessible unique IDs: {BitConverter.ToString(extendedHeader.ACI.ARM11LocalSystemCapabilities.StorageInfo.StorageAccessibleUniqueIDs).Replace('-', newChar: ' ')}");
+                        builder.AppendLine($"          File system access info: {BitConverter.ToString(extendedHeader.ACI.ARM11LocalSystemCapabilities.StorageInfo.FileSystemAccessInfo).Replace('-', newChar: ' ')}");
+                        builder.AppendLine($"          Other attributes: {extendedHeader.ACI.ARM11LocalSystemCapabilities.StorageInfo.OtherAttributes} (0x{extendedHeader.ACI.ARM11LocalSystemCapabilities.StorageInfo.OtherAttributes:X})");
 
-                        Console.WriteLine($"        Service access control: {string.Join(", ", extendedHeader.ACI.ARM11LocalSystemCapabilities.ServiceAccessControl)}");
-                        Console.WriteLine($"        Extended service access control: {string.Join(", ", extendedHeader.ACI.ARM11LocalSystemCapabilities.ExtendedServiceAccessControl)}");
-                        Console.WriteLine($"        Reserved: {BitConverter.ToString(extendedHeader.ACI.ARM11LocalSystemCapabilities.Reserved).Replace('-', newChar: ' ')}");
-                        Console.WriteLine($"        Resource limit cateogry: {extendedHeader.ACI.ARM11LocalSystemCapabilities.ResourceLimitCategory} (0x{extendedHeader.ACI.ARM11LocalSystemCapabilities.ResourceLimitCategory:X})");
+                        builder.AppendLine($"        Service access control: {string.Join(", ", extendedHeader.ACI.ARM11LocalSystemCapabilities.ServiceAccessControl)}");
+                        builder.AppendLine($"        Extended service access control: {string.Join(", ", extendedHeader.ACI.ARM11LocalSystemCapabilities.ExtendedServiceAccessControl)}");
+                        builder.AppendLine($"        Reserved: {BitConverter.ToString(extendedHeader.ACI.ARM11LocalSystemCapabilities.Reserved).Replace('-', newChar: ' ')}");
+                        builder.AppendLine($"        Resource limit cateogry: {extendedHeader.ACI.ARM11LocalSystemCapabilities.ResourceLimitCategory} (0x{extendedHeader.ACI.ARM11LocalSystemCapabilities.ResourceLimitCategory:X})");
 
-                        Console.WriteLine($"      ARM11 kernel capabilities:");
-                        Console.WriteLine($"        Descriptors: {string.Join(", ", extendedHeader.ACI.ARM11KernelCapabilities.Descriptors)}");
-                        Console.WriteLine($"        Reserved: {BitConverter.ToString(extendedHeader.ACI.ARM11KernelCapabilities.Reserved).Replace('-', newChar: ' ')}");
+                        builder.AppendLine($"      ARM11 kernel capabilities:");
+                        builder.AppendLine($"        Descriptors: {string.Join(", ", extendedHeader.ACI.ARM11KernelCapabilities.Descriptors)}");
+                        builder.AppendLine($"        Reserved: {BitConverter.ToString(extendedHeader.ACI.ARM11KernelCapabilities.Reserved).Replace('-', newChar: ' ')}");
 
-                        Console.WriteLine($"      ARM9 access control:");
-                        Console.WriteLine($"        Descriptors: {BitConverter.ToString(extendedHeader.ACI.ARM9AccessControl.Descriptors).Replace('-', newChar: ' ')}");
-                        Console.WriteLine($"        Descriptor version: {extendedHeader.ACI.ARM9AccessControl.DescriptorVersion} (0x{extendedHeader.ACI.ARM9AccessControl.DescriptorVersion:X})");
+                        builder.AppendLine($"      ARM9 access control:");
+                        builder.AppendLine($"        Descriptors: {BitConverter.ToString(extendedHeader.ACI.ARM9AccessControl.Descriptors).Replace('-', newChar: ' ')}");
+                        builder.AppendLine($"        Descriptor version: {extendedHeader.ACI.ARM9AccessControl.DescriptorVersion} (0x{extendedHeader.ACI.ARM9AccessControl.DescriptorVersion:X})");
 
-                        Console.WriteLine($"    AccessDec signature (RSA-2048-SHA256): {BitConverter.ToString(extendedHeader.AccessDescSignature).Replace('-', ' ')}");
-                        Console.WriteLine($"    NCCH HDR RSA-2048 public key: {BitConverter.ToString(extendedHeader.NCCHHDRPublicKey).Replace('-', ' ')}");
+                        builder.AppendLine($"    AccessDec signature (RSA-2048-SHA256): {BitConverter.ToString(extendedHeader.AccessDescSignature).Replace('-', ' ')}");
+                        builder.AppendLine($"    NCCH HDR RSA-2048 public key: {BitConverter.ToString(extendedHeader.NCCHHDRPublicKey).Replace('-', ' ')}");
 
 
-                        Console.WriteLine($"    Access control info (for limitations of first ACI):");
-                        Console.WriteLine($"      ARM11 local system capabilities:");
-                        Console.WriteLine($"        Program ID: {extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.ProgramID} (0x{extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.ProgramID:X})");
-                        Console.WriteLine($"        Core version: {extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.CoreVersion} (0x{extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.CoreVersion:X})");
-                        Console.WriteLine($"        Flag 1: {extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.Flag1} (0x{extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.Flag1:X})");
-                        Console.WriteLine($"        Flag 2: {extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.Flag2} (0x{extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.Flag2:X})");
-                        Console.WriteLine($"        Flag 0: {extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.Flag0} (0x{extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.Flag0:X})");
-                        Console.WriteLine($"        Priority: {extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.Priority} (0x{extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.Priority:X})");
-                        Console.WriteLine($"        Resource limit descriptors: {string.Join(", ", extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.ResourceLimitDescriptors)}");
+                        builder.AppendLine($"    Access control info (for limitations of first ACI):");
+                        builder.AppendLine($"      ARM11 local system capabilities:");
+                        builder.AppendLine($"        Program ID: {extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.ProgramID} (0x{extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.ProgramID:X})");
+                        builder.AppendLine($"        Core version: {extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.CoreVersion} (0x{extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.CoreVersion:X})");
+                        builder.AppendLine($"        Flag 1: {extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.Flag1} (0x{extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.Flag1:X})");
+                        builder.AppendLine($"        Flag 2: {extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.Flag2} (0x{extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.Flag2:X})");
+                        builder.AppendLine($"        Flag 0: {extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.Flag0} (0x{extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.Flag0:X})");
+                        builder.AppendLine($"        Priority: {extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.Priority} (0x{extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.Priority:X})");
+                        builder.AppendLine($"        Resource limit descriptors: {string.Join(", ", extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.ResourceLimitDescriptors)}");
 
-                        Console.WriteLine($"        Storage info:");
-                        Console.WriteLine($"          Extdata ID: {extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.StorageInfo.ExtdataID} (0x{extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.StorageInfo.ExtdataID:X})");
-                        Console.WriteLine($"          System savedata IDs: {BitConverter.ToString(extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.StorageInfo.SystemSavedataIDs).Replace('-', newChar: ' ')}");
-                        Console.WriteLine($"          Storage accessible unique IDs: {BitConverter.ToString(extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.StorageInfo.StorageAccessibleUniqueIDs).Replace('-', newChar: ' ')}");
-                        Console.WriteLine($"          File system access info: {BitConverter.ToString(extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.StorageInfo.FileSystemAccessInfo).Replace('-', newChar: ' ')}");
-                        Console.WriteLine($"          Other attributes: {extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.StorageInfo.OtherAttributes} (0x{extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.StorageInfo.OtherAttributes:X})");
+                        builder.AppendLine($"        Storage info:");
+                        builder.AppendLine($"          Extdata ID: {extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.StorageInfo.ExtdataID} (0x{extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.StorageInfo.ExtdataID:X})");
+                        builder.AppendLine($"          System savedata IDs: {BitConverter.ToString(extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.StorageInfo.SystemSavedataIDs).Replace('-', newChar: ' ')}");
+                        builder.AppendLine($"          Storage accessible unique IDs: {BitConverter.ToString(extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.StorageInfo.StorageAccessibleUniqueIDs).Replace('-', newChar: ' ')}");
+                        builder.AppendLine($"          File system access info: {BitConverter.ToString(extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.StorageInfo.FileSystemAccessInfo).Replace('-', newChar: ' ')}");
+                        builder.AppendLine($"          Other attributes: {extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.StorageInfo.OtherAttributes} (0x{extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.StorageInfo.OtherAttributes:X})");
 
-                        Console.WriteLine($"        Service access control: {string.Join(", ", extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.ServiceAccessControl)}");
-                        Console.WriteLine($"        Extended service access control: {string.Join(", ", extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.ExtendedServiceAccessControl)}");
-                        Console.WriteLine($"        Reserved: {BitConverter.ToString(extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.Reserved).Replace('-', newChar: ' ')}");
-                        Console.WriteLine($"        Resource limit cateogry: {extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.ResourceLimitCategory} (0x{extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.ResourceLimitCategory:X})");
+                        builder.AppendLine($"        Service access control: {string.Join(", ", extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.ServiceAccessControl)}");
+                        builder.AppendLine($"        Extended service access control: {string.Join(", ", extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.ExtendedServiceAccessControl)}");
+                        builder.AppendLine($"        Reserved: {BitConverter.ToString(extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.Reserved).Replace('-', newChar: ' ')}");
+                        builder.AppendLine($"        Resource limit cateogry: {extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.ResourceLimitCategory} (0x{extendedHeader.ACIForLimitations.ARM11LocalSystemCapabilities.ResourceLimitCategory:X})");
 
-                        Console.WriteLine($"      ARM11 kernel capabilities:");
-                        Console.WriteLine($"        Descriptors: {string.Join(", ", extendedHeader.ACIForLimitations.ARM11KernelCapabilities.Descriptors)}");
-                        Console.WriteLine($"        Reserved: {BitConverter.ToString(extendedHeader.ACIForLimitations.ARM11KernelCapabilities.Reserved).Replace('-', newChar: ' ')}");
+                        builder.AppendLine($"      ARM11 kernel capabilities:");
+                        builder.AppendLine($"        Descriptors: {string.Join(", ", extendedHeader.ACIForLimitations.ARM11KernelCapabilities.Descriptors)}");
+                        builder.AppendLine($"        Reserved: {BitConverter.ToString(extendedHeader.ACIForLimitations.ARM11KernelCapabilities.Reserved).Replace('-', newChar: ' ')}");
 
-                        Console.WriteLine($"      ARM9 access control:");
-                        Console.WriteLine($"        Descriptors: {BitConverter.ToString(extendedHeader.ACIForLimitations.ARM9AccessControl.Descriptors).Replace('-', newChar: ' ')}");
-                        Console.WriteLine($"        Descriptor version: {extendedHeader.ACIForLimitations.ARM9AccessControl.DescriptorVersion} (0x{extendedHeader.ACIForLimitations.ARM9AccessControl.DescriptorVersion:X})");
+                        builder.AppendLine($"      ARM9 access control:");
+                        builder.AppendLine($"        Descriptors: {BitConverter.ToString(extendedHeader.ACIForLimitations.ARM9AccessControl.Descriptors).Replace('-', newChar: ' ')}");
+                        builder.AppendLine($"        Descriptor version: {extendedHeader.ACIForLimitations.ARM9AccessControl.DescriptorVersion} (0x{extendedHeader.ACIForLimitations.ARM9AccessControl.DescriptorVersion:X})");
                     }
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print ExeFS header information
         /// </summary>
-        private void PrintExeFSHeaders()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintExeFSHeaders(StringBuilder builder)
         {
-            Console.WriteLine("  ExeFS Header Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  ExeFS Header Information:");
+            builder.AppendLine("  -------------------------");
             if (ExeFSHeaders == null || ExeFSHeaders.Length == 0)
             {
-                Console.WriteLine("  No ExeFS headers");
+                builder.AppendLine("  No ExeFS headers");
             }
             else
             {
                 for (int i = 0; i < ExeFSHeaders.Length; i++)
                 {
                     var exeFSHeader = ExeFSHeaders[i];
-                    Console.WriteLine($"  ExeFS Header {i}");
+                    builder.AppendLine($"  ExeFS Header {i}");
                     if (exeFSHeader == null)
                     {
-                        Console.WriteLine($"    Unrecognized partition data, no data can be parsed");
+                        builder.AppendLine($"    Unrecognized partition data, no data can be parsed");
                     }
                     else
                     {
-                        Console.WriteLine($"    File headers:");
+                        builder.AppendLine($"    File headers:");
                         for (int j = 0; j < exeFSHeader.FileHeaders.Length; j++)
                         {
                             var fileHeader = exeFSHeader.FileHeaders[j];
-                            Console.WriteLine(value: $"    File Header {j}");
-                            Console.WriteLine(value: $"      File name: {fileHeader.FileName}");
-                            Console.WriteLine(value: $"      File offset: {fileHeader.FileOffset} (0x{fileHeader.FileOffset:X})");
-                            Console.WriteLine(value: $"      File size: {fileHeader.FileSize} (0x{fileHeader.FileSize:X})");
+                            builder.AppendLine(value: $"    File Header {j}");
+                            builder.AppendLine(value: $"      File name: {fileHeader.FileName}");
+                            builder.AppendLine(value: $"      File offset: {fileHeader.FileOffset} (0x{fileHeader.FileOffset:X})");
+                            builder.AppendLine(value: $"      File size: {fileHeader.FileSize} (0x{fileHeader.FileSize:X})");
                         }
 
-                        Console.WriteLine(value: $"    Reserved: {BitConverter.ToString(exeFSHeader.Reserved).Replace('-', ' ')}");
+                        builder.AppendLine(value: $"    Reserved: {BitConverter.ToString(exeFSHeader.Reserved).Replace('-', ' ')}");
                         
-                        Console.WriteLine($"    File hashes:");
+                        builder.AppendLine($"    File hashes:");
                         for (int j = 0; j < exeFSHeader.FileHashes.Length; j++)
                         {
                             var fileHash = exeFSHeader.FileHashes[j];
-                            Console.WriteLine(value: $"    File Hash {j}");
-                            Console.WriteLine(value: $"      SHA-256: {BitConverter.ToString(fileHash).Replace('-', ' ')}");
+                            builder.AppendLine(value: $"    File Hash {j}");
+                            builder.AppendLine(value: $"      SHA-256: {BitConverter.ToString(fileHash).Replace('-', ' ')}");
                         }
                     }
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print RomFS header information
         /// </summary>
-        private void PrintRomFSHeaders()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintRomFSHeaders(StringBuilder builder)
         {
-            Console.WriteLine("  RomFS Header Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  RomFS Header Information:");
+            builder.AppendLine("  -------------------------");
             if (RomFSHeaders == null || RomFSHeaders.Length == 0)
             {
-                Console.WriteLine("  No RomFS headers");
+                builder.AppendLine("  No RomFS headers");
             }
             else
             {
                 for (int i = 0; i < RomFSHeaders.Length; i++)
                 {
                     var romFSHeader = RomFSHeaders[i];
-                    Console.WriteLine($"  RomFS Header {i}");
+                    builder.AppendLine($"  RomFS Header {i}");
                     if (romFSHeader == null)
                     {
-                        Console.WriteLine($"    Unrecognized RomFS data, no data can be parsed");
+                        builder.AppendLine($"    Unrecognized RomFS data, no data can be parsed");
                     }
                     else
                     {
-                        Console.WriteLine(value: $"    Magic string: {romFSHeader.MagicString}");
-                        Console.WriteLine(value: $"    Magic number: {romFSHeader.MagicNumber} (0x{romFSHeader.MagicNumber:X})");
-                        Console.WriteLine(value: $"    Master hash size: {romFSHeader.MasterHashSize} (0x{romFSHeader.MasterHashSize:X})");
-                        Console.WriteLine(value: $"    Level 1 logical offset: {romFSHeader.Level1LogicalOffset} (0x{romFSHeader.Level1LogicalOffset:X})");
-                        Console.WriteLine(value: $"    Level 1 hashdata size: {romFSHeader.Level1HashdataSize} (0x{romFSHeader.Level1HashdataSize:X})");
-                        Console.WriteLine(value: $"    Level 1 block size: {romFSHeader.Level1BlockSizeLog2} (0x{romFSHeader.Level1BlockSizeLog2:X})");
-                        Console.WriteLine(value: $"    Reserved 1: {BitConverter.ToString(romFSHeader.Reserved1).Replace('-', ' ')}");
-                        Console.WriteLine(value: $"    Level 2 logical offset: {romFSHeader.Level2LogicalOffset} (0x{romFSHeader.Level2LogicalOffset:X})");
-                        Console.WriteLine(value: $"    Level 2 hashdata size: {romFSHeader.Level2HashdataSize} (0x{romFSHeader.Level2HashdataSize:X})");
-                        Console.WriteLine(value: $"    Level 2 block size: {romFSHeader.Level2BlockSizeLog2} (0x{romFSHeader.Level2BlockSizeLog2:X})");
-                        Console.WriteLine(value: $"    Reserved 2: {BitConverter.ToString(romFSHeader.Reserved2).Replace('-', ' ')}");
-                        Console.WriteLine(value: $"    Level 3 logical offset: {romFSHeader.Level3LogicalOffset} (0x{romFSHeader.Level3LogicalOffset:X})");
-                        Console.WriteLine(value: $"    Level 3 hashdata size: {romFSHeader.Level3HashdataSize} (0x{romFSHeader.Level3HashdataSize:X})");
-                        Console.WriteLine(value: $"    Level 3 block size: {romFSHeader.Level3BlockSizeLog2} (0x{romFSHeader.Level3BlockSizeLog2:X})");
-                        Console.WriteLine(value: $"    Reserved 3: {BitConverter.ToString(romFSHeader.Reserved3).Replace('-', ' ')}");
-                        Console.WriteLine(value: $"    Reserved 4: {BitConverter.ToString(romFSHeader.Reserved4).Replace('-', ' ')}");
-                        Console.WriteLine(value: $"    Optional info size: {romFSHeader.OptionalInfoSize} (0x{romFSHeader.OptionalInfoSize:X})");
+                        builder.AppendLine(value: $"    Magic string: {romFSHeader.MagicString}");
+                        builder.AppendLine(value: $"    Magic number: {romFSHeader.MagicNumber} (0x{romFSHeader.MagicNumber:X})");
+                        builder.AppendLine(value: $"    Master hash size: {romFSHeader.MasterHashSize} (0x{romFSHeader.MasterHashSize:X})");
+                        builder.AppendLine(value: $"    Level 1 logical offset: {romFSHeader.Level1LogicalOffset} (0x{romFSHeader.Level1LogicalOffset:X})");
+                        builder.AppendLine(value: $"    Level 1 hashdata size: {romFSHeader.Level1HashdataSize} (0x{romFSHeader.Level1HashdataSize:X})");
+                        builder.AppendLine(value: $"    Level 1 block size: {romFSHeader.Level1BlockSizeLog2} (0x{romFSHeader.Level1BlockSizeLog2:X})");
+                        builder.AppendLine(value: $"    Reserved 1: {BitConverter.ToString(romFSHeader.Reserved1).Replace('-', ' ')}");
+                        builder.AppendLine(value: $"    Level 2 logical offset: {romFSHeader.Level2LogicalOffset} (0x{romFSHeader.Level2LogicalOffset:X})");
+                        builder.AppendLine(value: $"    Level 2 hashdata size: {romFSHeader.Level2HashdataSize} (0x{romFSHeader.Level2HashdataSize:X})");
+                        builder.AppendLine(value: $"    Level 2 block size: {romFSHeader.Level2BlockSizeLog2} (0x{romFSHeader.Level2BlockSizeLog2:X})");
+                        builder.AppendLine(value: $"    Reserved 2: {BitConverter.ToString(romFSHeader.Reserved2).Replace('-', ' ')}");
+                        builder.AppendLine(value: $"    Level 3 logical offset: {romFSHeader.Level3LogicalOffset} (0x{romFSHeader.Level3LogicalOffset:X})");
+                        builder.AppendLine(value: $"    Level 3 hashdata size: {romFSHeader.Level3HashdataSize} (0x{romFSHeader.Level3HashdataSize:X})");
+                        builder.AppendLine(value: $"    Level 3 block size: {romFSHeader.Level3BlockSizeLog2} (0x{romFSHeader.Level3BlockSizeLog2:X})");
+                        builder.AppendLine(value: $"    Reserved 3: {BitConverter.ToString(romFSHeader.Reserved3).Replace('-', ' ')}");
+                        builder.AppendLine(value: $"    Reserved 4: {BitConverter.ToString(romFSHeader.Reserved4).Replace('-', ' ')}");
+                        builder.AppendLine(value: $"    Optional info size: {romFSHeader.OptionalInfoSize} (0x{romFSHeader.OptionalInfoSize:X})");
                     }
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
 #if NET6_0_OR_GREATER

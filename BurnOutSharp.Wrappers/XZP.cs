@@ -1,6 +1,6 @@
-using System;
 using System.IO;
 using System.Linq;
+using System.Text;
 
 namespace BurnOutSharp.Wrappers
 {
@@ -151,148 +151,158 @@ namespace BurnOutSharp.Wrappers
         #region Printing
 
         /// <inheritdoc/>
-        public override void PrettyPrint()
+        public override StringBuilder PrettyPrint()
         {
-            Console.WriteLine("XZP Information:");
-            Console.WriteLine("-------------------------");
-            Console.WriteLine();
+            StringBuilder builder = new StringBuilder();
 
-            PrintHeader();
-            PrintDirectoryEntries();
-            PrintPreloadDirectoryEntries();
-            PrintPreloadDirectoryMappings();
-            PrintDirectoryItems();
-            PrintFooter();
+            builder.AppendLine("XZP Information:");
+            builder.AppendLine("-------------------------");
+            builder.AppendLine();
+
+            PrintHeader(builder);
+            PrintDirectoryEntries(builder);
+            PrintPreloadDirectoryEntries(builder);
+            PrintPreloadDirectoryMappings(builder);
+            PrintDirectoryItems(builder);
+            PrintFooter(builder);
+
+            return builder;
         }
 
         /// <summary>
         /// Print header information
         /// </summary>
-        private void PrintHeader()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintHeader(StringBuilder builder)
         {
-            Console.WriteLine("  Header Information:");
-            Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Signature: {Signature}");
-            Console.WriteLine($"  Version: {Version} (0x{Version:X})");
-            Console.WriteLine($"  Preload directory entry count: {PreloadDirectoryEntryCount} (0x{PreloadDirectoryEntryCount:X})");
-            Console.WriteLine($"  Directory entry count: {DirectoryEntryCount} (0x{DirectoryEntryCount:X})");
-            Console.WriteLine($"  Preload bytes: {PreloadBytes} (0x{PreloadBytes:X})");
-            Console.WriteLine($"  Header length: {HeaderLength} (0x{HeaderLength:X})");
-            Console.WriteLine($"  Directory item count: {DirectoryItemCount} (0x{DirectoryItemCount:X})");
-            Console.WriteLine($"  Directory item offset: {DirectoryItemOffset} (0x{DirectoryItemOffset:X})");
-            Console.WriteLine($"  Directory item length: {DirectoryItemLength} (0x{DirectoryItemLength:X})");
-            Console.WriteLine();
+            builder.AppendLine("  Header Information:");
+            builder.AppendLine("  -------------------------");
+            builder.AppendLine($"  Signature: {Signature}");
+            builder.AppendLine($"  Version: {Version} (0x{Version:X})");
+            builder.AppendLine($"  Preload directory entry count: {PreloadDirectoryEntryCount} (0x{PreloadDirectoryEntryCount:X})");
+            builder.AppendLine($"  Directory entry count: {DirectoryEntryCount} (0x{DirectoryEntryCount:X})");
+            builder.AppendLine($"  Preload bytes: {PreloadBytes} (0x{PreloadBytes:X})");
+            builder.AppendLine($"  Header length: {HeaderLength} (0x{HeaderLength:X})");
+            builder.AppendLine($"  Directory item count: {DirectoryItemCount} (0x{DirectoryItemCount:X})");
+            builder.AppendLine($"  Directory item offset: {DirectoryItemOffset} (0x{DirectoryItemOffset:X})");
+            builder.AppendLine($"  Directory item length: {DirectoryItemLength} (0x{DirectoryItemLength:X})");
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print directory entries information
         /// </summary>
-        private void PrintDirectoryEntries()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintDirectoryEntries(StringBuilder builder)
         {
-            Console.WriteLine("  Directory Entries Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Directory Entries Information:");
+            builder.AppendLine("  -------------------------");
             if (DirectoryEntries == null || DirectoryEntries.Length == 0)
             {
-                Console.WriteLine("  No directory entries");
+                builder.AppendLine("  No directory entries");
             }
             else
             {
                 for (int i = 0; i < DirectoryEntries.Length; i++)
                 {
                     var directoryEntry = DirectoryEntries[i];
-                    Console.WriteLine($"  Directory Entry {i}");
-                    Console.WriteLine($"    File name CRC: {directoryEntry.FileNameCRC} (0x{directoryEntry.FileNameCRC:X})");
-                    Console.WriteLine($"    Entry length: {directoryEntry.EntryLength} (0x{directoryEntry.EntryLength:X})");
-                    Console.WriteLine($"    Entry offset: {directoryEntry.EntryOffset} (0x{directoryEntry.EntryOffset:X})");
+                    builder.AppendLine($"  Directory Entry {i}");
+                    builder.AppendLine($"    File name CRC: {directoryEntry.FileNameCRC} (0x{directoryEntry.FileNameCRC:X})");
+                    builder.AppendLine($"    Entry length: {directoryEntry.EntryLength} (0x{directoryEntry.EntryLength:X})");
+                    builder.AppendLine($"    Entry offset: {directoryEntry.EntryOffset} (0x{directoryEntry.EntryOffset:X})");
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print preload directory entries information
         /// </summary>
-        private void PrintPreloadDirectoryEntries()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintPreloadDirectoryEntries(StringBuilder builder)
         {
-            Console.WriteLine("  Preload Directory Entries Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Preload Directory Entries Information:");
+            builder.AppendLine("  -------------------------");
             if (PreloadDirectoryEntries == null || PreloadDirectoryEntries.Length == 0)
             {
-                Console.WriteLine("  No preload directory entries");
+                builder.AppendLine("  No preload directory entries");
             }
             else
             {
                 for (int i = 0; i < PreloadDirectoryEntries.Length; i++)
                 {
                     var preloadDirectoryEntry = PreloadDirectoryEntries[i];
-                    Console.WriteLine($"  Directory Entry {i}");
-                    Console.WriteLine($"    File name CRC: {preloadDirectoryEntry.FileNameCRC} (0x{preloadDirectoryEntry.FileNameCRC:X})");
-                    Console.WriteLine($"    Entry length: {preloadDirectoryEntry.EntryLength} (0x{preloadDirectoryEntry.EntryLength:X})");
-                    Console.WriteLine($"    Entry offset: {preloadDirectoryEntry.EntryOffset} (0x{preloadDirectoryEntry.EntryOffset:X})");
+                    builder.AppendLine($"  Directory Entry {i}");
+                    builder.AppendLine($"    File name CRC: {preloadDirectoryEntry.FileNameCRC} (0x{preloadDirectoryEntry.FileNameCRC:X})");
+                    builder.AppendLine($"    Entry length: {preloadDirectoryEntry.EntryLength} (0x{preloadDirectoryEntry.EntryLength:X})");
+                    builder.AppendLine($"    Entry offset: {preloadDirectoryEntry.EntryOffset} (0x{preloadDirectoryEntry.EntryOffset:X})");
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print preload directory mappings information
         /// </summary>
-        private void PrintPreloadDirectoryMappings()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintPreloadDirectoryMappings(StringBuilder builder)
         {
-            Console.WriteLine("  Preload Directory Mappings Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Preload Directory Mappings Information:");
+            builder.AppendLine("  -------------------------");
             if (PreloadDirectoryMappings == null || PreloadDirectoryMappings.Length == 0)
             {
-                Console.WriteLine("  No preload directory mappings");
+                builder.AppendLine("  No preload directory mappings");
             }
             else
             {
                 for (int i = 0; i < PreloadDirectoryMappings.Length; i++)
                 {
                     var preloadDirectoryMapping = PreloadDirectoryMappings[i];
-                    Console.WriteLine($"  Directory Mapping {i}");
-                    Console.WriteLine($"    Preload directory entry index: {preloadDirectoryMapping.PreloadDirectoryEntryIndex} (0x{preloadDirectoryMapping.PreloadDirectoryEntryIndex:X})");
+                    builder.AppendLine($"  Directory Mapping {i}");
+                    builder.AppendLine($"    Preload directory entry index: {preloadDirectoryMapping.PreloadDirectoryEntryIndex} (0x{preloadDirectoryMapping.PreloadDirectoryEntryIndex:X})");
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print directory items information
         /// </summary>
-        private void PrintDirectoryItems()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintDirectoryItems(StringBuilder builder)
         {
-            Console.WriteLine("  Directory Items Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Directory Items Information:");
+            builder.AppendLine("  -------------------------");
             if (DirectoryItems == null || DirectoryItems.Length == 0)
             {
-                Console.WriteLine("  No directory items");
+                builder.AppendLine("  No directory items");
             }
             else
             {
                 for (int i = 0; i < DirectoryItems.Length; i++)
                 {
                     var directoryItem = DirectoryItems[i];
-                    Console.WriteLine($"  Directory Item {i}");
-                    Console.WriteLine($"    File name CRC: {directoryItem.FileNameCRC} (0x{directoryItem.FileNameCRC:X})");
-                    Console.WriteLine($"    Name offset: {directoryItem.NameOffset} (0x{directoryItem.NameOffset:X})");
-                    Console.WriteLine($"    Name: {directoryItem.Name ?? "[NULL]"}");
-                    Console.WriteLine($"    Time created: {directoryItem.TimeCreated} (0x{directoryItem.TimeCreated:X})");
+                    builder.AppendLine($"  Directory Item {i}");
+                    builder.AppendLine($"    File name CRC: {directoryItem.FileNameCRC} (0x{directoryItem.FileNameCRC:X})");
+                    builder.AppendLine($"    Name offset: {directoryItem.NameOffset} (0x{directoryItem.NameOffset:X})");
+                    builder.AppendLine($"    Name: {directoryItem.Name ?? "[NULL]"}");
+                    builder.AppendLine($"    Time created: {directoryItem.TimeCreated} (0x{directoryItem.TimeCreated:X})");
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print footer information
         /// </summary>
-        private void PrintFooter()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintFooter(StringBuilder builder)
         {
-            Console.WriteLine("  Footer Information:");
-            Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  File length: {F_FileLength} (0x{F_FileLength:X})");
-            Console.WriteLine($"  Signature: {F_Signature}");
-            Console.WriteLine();
+            builder.AppendLine("  Footer Information:");
+            builder.AppendLine("  -------------------------");
+            builder.AppendLine($"  File length: {F_FileLength} (0x{F_FileLength:X})");
+            builder.AppendLine($"  Signature: {F_Signature}");
+            builder.AppendLine();
         }
 
 #if NET6_0_OR_GREATER

@@ -1,5 +1,5 @@
-using System;
 using System.IO;
+using System.Text;
 
 namespace BurnOutSharp.Wrappers
 {
@@ -101,52 +101,58 @@ namespace BurnOutSharp.Wrappers
         #region Printing
 
         /// <inheritdoc/>
-        public override void PrettyPrint()
+        public override StringBuilder PrettyPrint()
         {
-            Console.WriteLine("PAK Information:");
-            Console.WriteLine("-------------------------");
-            Console.WriteLine();
+            StringBuilder builder = new StringBuilder();
 
-            PrintHeader();
-            PrintDirectoryItems();
+            builder.AppendLine("PAK Information:");
+            builder.AppendLine("-------------------------");
+            builder.AppendLine();
+
+            PrintHeader(builder);
+            PrintDirectoryItems(builder);
+
+            return builder;
         }
 
         /// <summary>
         /// Print header information
         /// </summary>
-        private void PrintHeader()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintHeader(StringBuilder builder)
         {
-            Console.WriteLine("  Header Information:");
-            Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Signature: {Signature}");
-            Console.WriteLine($"  Directory offset: {DirectoryOffset} (0x{DirectoryOffset:X})");
-            Console.WriteLine($"  Directory length: {DirectoryLength} (0x{DirectoryLength:X})");
-            Console.WriteLine();
+            builder.AppendLine("  Header Information:");
+            builder.AppendLine("  -------------------------");
+            builder.AppendLine($"  Signature: {Signature}");
+            builder.AppendLine($"  Directory offset: {DirectoryOffset} (0x{DirectoryOffset:X})");
+            builder.AppendLine($"  Directory length: {DirectoryLength} (0x{DirectoryLength:X})");
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print directory items information
         /// </summary>
-        private void PrintDirectoryItems()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintDirectoryItems(StringBuilder builder)
         {
-            Console.WriteLine("  Directory Items Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Directory Items Information:");
+            builder.AppendLine("  -------------------------");
             if (DirectoryItems == null || DirectoryItems.Length == 0)
             {
-                Console.WriteLine("  No directory items");
+                builder.AppendLine("  No directory items");
             }
             else
             {
                 for (int i = 0; i < DirectoryItems.Length; i++)
                 {
                     var directoryItem = DirectoryItems[i];
-                    Console.WriteLine($"  Directory Item {i}");
-                    Console.WriteLine($"    Item name: {directoryItem.ItemName}");
-                    Console.WriteLine($"    Item offset: {directoryItem.ItemOffset} (0x{directoryItem.ItemOffset:X})");
-                    Console.WriteLine($"    Item length: {directoryItem.ItemLength} (0x{directoryItem.ItemLength:X})");
+                    builder.AppendLine($"  Directory Item {i}");
+                    builder.AppendLine($"    Item name: {directoryItem.ItemName}");
+                    builder.AppendLine($"    Item offset: {directoryItem.ItemOffset} (0x{directoryItem.ItemOffset:X})");
+                    builder.AppendLine($"    Item length: {directoryItem.ItemLength} (0x{directoryItem.ItemLength:X})");
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
 #if NET6_0_OR_GREATER

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using ICSharpCode.SharpZipLib.Zip.Compression;
 
 namespace BurnOutSharp.Wrappers
@@ -414,223 +415,232 @@ namespace BurnOutSharp.Wrappers
         #region Printing
 
         /// <inheritdoc/>
-        public override void PrettyPrint()
+        public override StringBuilder PrettyPrint()
         {
-            Console.WriteLine("SGA Information:");
-            Console.WriteLine("-------------------------");
-            Console.WriteLine();
+            StringBuilder builder = new StringBuilder();
+
+            builder.AppendLine("SGA Information:");
+            builder.AppendLine("-------------------------");
+            builder.AppendLine();
 
             // Header
-            PrintHeader();
+            PrintHeader(builder);
 
             // Directory
-            PrintDirectoryHeader();
-            PrintSections();
-            PrintFolders();
-            PrintFiles();
+            PrintDirectoryHeader(builder);
+            PrintSections(builder);
+            PrintFolders(builder);
+            PrintFiles(builder);
             // TODO: Should we print the string table?
+
+            return builder;
         }
 
         /// <summary>
         /// Print header information
         /// </summary>
-        private void PrintHeader()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintHeader(StringBuilder builder)
         {
-            Console.WriteLine("  Header Information:");
-            Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Signature: {Signature}");
-            Console.WriteLine($"  Major version: {MajorVersion} (0x{MajorVersion:X})");
-            Console.WriteLine($"  Minor version: {MinorVersion} (0x{MinorVersion:X})");
-            Console.WriteLine($"  File MD5: {(FileMD5 == null ? "[NULL]" : BitConverter.ToString(FileMD5).Replace("-", string.Empty))}");
-            Console.WriteLine($"  Name: {Name ?? "[NULL]"}");
-            Console.WriteLine($"  Header MD5: {(HeaderMD5 == null ? "[NULL]" : BitConverter.ToString(HeaderMD5).Replace("-", string.Empty))}");
-            Console.WriteLine($"  Header length: {HeaderLength?.ToString() ?? "[NULL]"} (0x{HeaderLength?.ToString("X") ?? "[NULL]"})");
-            Console.WriteLine($"  File data offset: {FileDataOffset?.ToString() ?? "[NULL]"} (0x{FileDataOffset?.ToString("X") ?? "[NULL]"})");
-            Console.WriteLine($"  Dummy 0: {Dummy0?.ToString() ?? "[NULL]"} (0x{Dummy0?.ToString("X") ?? "[NULL]"})");
-            Console.WriteLine();
+            builder.AppendLine("  Header Information:");
+            builder.AppendLine("  -------------------------");
+            builder.AppendLine($"  Signature: {Signature}");
+            builder.AppendLine($"  Major version: {MajorVersion} (0x{MajorVersion:X})");
+            builder.AppendLine($"  Minor version: {MinorVersion} (0x{MinorVersion:X})");
+            builder.AppendLine($"  File MD5: {(FileMD5 == null ? "[NULL]" : BitConverter.ToString(FileMD5).Replace("-", string.Empty))}");
+            builder.AppendLine($"  Name: {Name ?? "[NULL]"}");
+            builder.AppendLine($"  Header MD5: {(HeaderMD5 == null ? "[NULL]" : BitConverter.ToString(HeaderMD5).Replace("-", string.Empty))}");
+            builder.AppendLine($"  Header length: {HeaderLength?.ToString() ?? "[NULL]"} (0x{HeaderLength?.ToString("X") ?? "[NULL]"})");
+            builder.AppendLine($"  File data offset: {FileDataOffset?.ToString() ?? "[NULL]"} (0x{FileDataOffset?.ToString("X") ?? "[NULL]"})");
+            builder.AppendLine($"  Dummy 0: {Dummy0?.ToString() ?? "[NULL]"} (0x{Dummy0?.ToString("X") ?? "[NULL]"})");
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print directory header information
         /// </summary>
-        private void PrintDirectoryHeader()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintDirectoryHeader(StringBuilder builder)
         {
-            Console.WriteLine("  Directory Header Information:");
-            Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Section offset: {SectionOffset?.ToString() ?? "[NULL]"} (0x{SectionOffset?.ToString("X") ?? "[NULL]"})");
-            Console.WriteLine($"  Section count: {SectionCount?.ToString() ?? "[NULL]"} (0x{SectionCount?.ToString("X") ?? "[NULL]"})");
-            Console.WriteLine($"  Folder offset: {FolderOffset?.ToString() ?? "[NULL]"} (0x{FolderOffset?.ToString("X") ?? "[NULL]"})");
-            Console.WriteLine($"  Folder count: {FolderCount?.ToString() ?? "[NULL]"} (0x{FolderCount?.ToString("X") ?? "[NULL]"})");
-            Console.WriteLine($"  File offset: {FileOffset?.ToString() ?? "[NULL]"} (0x{FileOffset?.ToString("X") ?? "[NULL]"})");
-            Console.WriteLine($"  File count: {FileCount?.ToString() ?? "[NULL]"} (0x{FileCount?.ToString("X") ?? "[NULL]"})");
-            Console.WriteLine($"  String table offset: {StringTableOffset?.ToString() ?? "[NULL]"} (0x{StringTableOffset?.ToString("X") ?? "[NULL]"})");
-            Console.WriteLine($"  String table count: {StringTableCount?.ToString() ?? "[NULL]"} (0x{StringTableCount?.ToString("X") ?? "[NULL]"})");
-            Console.WriteLine($"  Hash table offset: {HashTableOffset?.ToString() ?? "[NULL]"} (0x{HashTableOffset?.ToString("X") ?? "[NULL]"})");
-            Console.WriteLine($"  Block size: {BlockSize?.ToString() ?? "[NULL]"} (0x{BlockSize?.ToString("X") ?? "[NULL]"})");
-            Console.WriteLine();
+            builder.AppendLine("  Directory Header Information:");
+            builder.AppendLine("  -------------------------");
+            builder.AppendLine($"  Section offset: {SectionOffset?.ToString() ?? "[NULL]"} (0x{SectionOffset?.ToString("X") ?? "[NULL]"})");
+            builder.AppendLine($"  Section count: {SectionCount?.ToString() ?? "[NULL]"} (0x{SectionCount?.ToString("X") ?? "[NULL]"})");
+            builder.AppendLine($"  Folder offset: {FolderOffset?.ToString() ?? "[NULL]"} (0x{FolderOffset?.ToString("X") ?? "[NULL]"})");
+            builder.AppendLine($"  Folder count: {FolderCount?.ToString() ?? "[NULL]"} (0x{FolderCount?.ToString("X") ?? "[NULL]"})");
+            builder.AppendLine($"  File offset: {FileOffset?.ToString() ?? "[NULL]"} (0x{FileOffset?.ToString("X") ?? "[NULL]"})");
+            builder.AppendLine($"  File count: {FileCount?.ToString() ?? "[NULL]"} (0x{FileCount?.ToString("X") ?? "[NULL]"})");
+            builder.AppendLine($"  String table offset: {StringTableOffset?.ToString() ?? "[NULL]"} (0x{StringTableOffset?.ToString("X") ?? "[NULL]"})");
+            builder.AppendLine($"  String table count: {StringTableCount?.ToString() ?? "[NULL]"} (0x{StringTableCount?.ToString("X") ?? "[NULL]"})");
+            builder.AppendLine($"  Hash table offset: {HashTableOffset?.ToString() ?? "[NULL]"} (0x{HashTableOffset?.ToString("X") ?? "[NULL]"})");
+            builder.AppendLine($"  Block size: {BlockSize?.ToString() ?? "[NULL]"} (0x{BlockSize?.ToString("X") ?? "[NULL]"})");
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print sections information
         /// </summary>
-        private void PrintSections()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintSections(StringBuilder builder)
         {
-            Console.WriteLine("  Sections Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Sections Information:");
+            builder.AppendLine("  -------------------------");
             if (Sections == null || Sections.Length == 0)
             {
-                Console.WriteLine("  No sections");
+                builder.AppendLine("  No sections");
             }
             else
             {
                 for (int i = 0; i < Sections.Length; i++)
                 {
-                    Console.WriteLine($"  Section {i}");
+                    builder.AppendLine($"  Section {i}");
                     switch (MajorVersion)
                     {
                         case 4:
                             var section4 = Sections[i] as Models.SGA.Section4;
-                            Console.WriteLine($"    Alias: {section4.Alias ?? "[NULL]"}");
-                            Console.WriteLine($"    Name: {section4.Name ?? "[NULL]"}");
-                            Console.WriteLine($"    Folder start index: {section4.FolderStartIndex} (0x{section4.FolderStartIndex:X})");
-                            Console.WriteLine($"    Folder end index: {section4.FolderEndIndex} (0x{section4.FolderEndIndex:X})");
-                            Console.WriteLine($"    File start index: {section4.FileStartIndex} (0x{section4.FileStartIndex:X})");
-                            Console.WriteLine($"    File end index: {section4.FileEndIndex} (0x{section4.FileEndIndex:X})");
-                            Console.WriteLine($"    Folder root index: {section4.FolderRootIndex} (0x{section4.FolderRootIndex:X})");
+                            builder.AppendLine($"    Alias: {section4.Alias ?? "[NULL]"}");
+                            builder.AppendLine($"    Name: {section4.Name ?? "[NULL]"}");
+                            builder.AppendLine($"    Folder start index: {section4.FolderStartIndex} (0x{section4.FolderStartIndex:X})");
+                            builder.AppendLine($"    Folder end index: {section4.FolderEndIndex} (0x{section4.FolderEndIndex:X})");
+                            builder.AppendLine($"    File start index: {section4.FileStartIndex} (0x{section4.FileStartIndex:X})");
+                            builder.AppendLine($"    File end index: {section4.FileEndIndex} (0x{section4.FileEndIndex:X})");
+                            builder.AppendLine($"    Folder root index: {section4.FolderRootIndex} (0x{section4.FolderRootIndex:X})");
                             break;
 
                         case 5:
                         case 6:
                         case 7:
                             var section5 = Sections[i] as Models.SGA.Section5;
-                            Console.WriteLine($"    Alias: {section5.Alias ?? "[NULL]"}");
-                            Console.WriteLine($"    Name: {section5.Name ?? "[NULL]"}");
-                            Console.WriteLine($"    Folder start index: {section5.FolderStartIndex} (0x{section5.FolderStartIndex:X})");
-                            Console.WriteLine($"    Folder end index: {section5.FolderEndIndex} (0x{section5.FolderEndIndex:X})");
-                            Console.WriteLine($"    File start index: {section5.FileStartIndex} (0x{section5.FileStartIndex:X})");
-                            Console.WriteLine($"    File end index: {section5.FileEndIndex} (0x{section5.FileEndIndex:X})");
-                            Console.WriteLine($"    Folder root index: {section5.FolderRootIndex} (0x{section5.FolderRootIndex:X})");
+                            builder.AppendLine($"    Alias: {section5.Alias ?? "[NULL]"}");
+                            builder.AppendLine($"    Name: {section5.Name ?? "[NULL]"}");
+                            builder.AppendLine($"    Folder start index: {section5.FolderStartIndex} (0x{section5.FolderStartIndex:X})");
+                            builder.AppendLine($"    Folder end index: {section5.FolderEndIndex} (0x{section5.FolderEndIndex:X})");
+                            builder.AppendLine($"    File start index: {section5.FileStartIndex} (0x{section5.FileStartIndex:X})");
+                            builder.AppendLine($"    File end index: {section5.FileEndIndex} (0x{section5.FileEndIndex:X})");
+                            builder.AppendLine($"    Folder root index: {section5.FolderRootIndex} (0x{section5.FolderRootIndex:X})");
                             break;
                         default:
-                            Console.WriteLine($"    Unknown format for version {MajorVersion}");
+                            builder.AppendLine($"    Unknown format for version {MajorVersion}");
                             break;
                     }
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print folders information
         /// </summary>
-        private void PrintFolders()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintFolders(StringBuilder builder)
         {
-            Console.WriteLine("  Folders Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Folders Information:");
+            builder.AppendLine("  -------------------------");
             if (Folders == null || Folders.Length == 0)
             {
-                Console.WriteLine("  No folders");
+                builder.AppendLine("  No folders");
             }
             else
             {
                 for (int i = 0; i < Folders.Length; i++)
                 {
-                    Console.WriteLine($"  Folder {i}");
+                    builder.AppendLine($"  Folder {i}");
                     switch (MajorVersion)
                     {
                         case 4:
                             var folder4 = Folders[i] as Models.SGA.Folder4;
-                            Console.WriteLine($"    Name offset: {folder4.NameOffset} (0x{folder4.NameOffset:X})");
-                            Console.WriteLine($"    Name: {folder4.Name ?? "[NULL]"}");
-                            Console.WriteLine($"    Folder start index: {folder4.FolderStartIndex} (0x{folder4.FolderStartIndex:X})");
-                            Console.WriteLine($"    Folder end index: {folder4.FolderEndIndex} (0x{folder4.FolderEndIndex:X})");
-                            Console.WriteLine($"    File start index: {folder4.FileStartIndex} (0x{folder4.FileStartIndex:X})");
-                            Console.WriteLine($"    File end index: {folder4.FileEndIndex} (0x{folder4.FileEndIndex:X})");
+                            builder.AppendLine($"    Name offset: {folder4.NameOffset} (0x{folder4.NameOffset:X})");
+                            builder.AppendLine($"    Name: {folder4.Name ?? "[NULL]"}");
+                            builder.AppendLine($"    Folder start index: {folder4.FolderStartIndex} (0x{folder4.FolderStartIndex:X})");
+                            builder.AppendLine($"    Folder end index: {folder4.FolderEndIndex} (0x{folder4.FolderEndIndex:X})");
+                            builder.AppendLine($"    File start index: {folder4.FileStartIndex} (0x{folder4.FileStartIndex:X})");
+                            builder.AppendLine($"    File end index: {folder4.FileEndIndex} (0x{folder4.FileEndIndex:X})");
                             break;
 
                         case 5:
                         case 6:
                         case 7:
                             var folder5 = Folders[i] as Models.SGA.Folder5;
-                            Console.WriteLine($"    Name offset: {folder5.NameOffset} (0x{folder5.NameOffset:X})");
-                            Console.WriteLine($"    Name: {folder5.Name ?? "[NULL]"}");
-                            Console.WriteLine($"    Folder start index: {folder5.FolderStartIndex} (0x{folder5.FolderStartIndex:X})");
-                            Console.WriteLine($"    Folder end index: {folder5.FolderEndIndex} (0x{folder5.FolderEndIndex:X})");
-                            Console.WriteLine($"    File start index: {folder5.FileStartIndex} (0x{folder5.FileStartIndex:X})");
-                            Console.WriteLine($"    File end index: {folder5.FileEndIndex} (0x{folder5.FileEndIndex:X})");
+                            builder.AppendLine($"    Name offset: {folder5.NameOffset} (0x{folder5.NameOffset:X})");
+                            builder.AppendLine($"    Name: {folder5.Name ?? "[NULL]"}");
+                            builder.AppendLine($"    Folder start index: {folder5.FolderStartIndex} (0x{folder5.FolderStartIndex:X})");
+                            builder.AppendLine($"    Folder end index: {folder5.FolderEndIndex} (0x{folder5.FolderEndIndex:X})");
+                            builder.AppendLine($"    File start index: {folder5.FileStartIndex} (0x{folder5.FileStartIndex:X})");
+                            builder.AppendLine($"    File end index: {folder5.FileEndIndex} (0x{folder5.FileEndIndex:X})");
                             break;
                         default:
-                            Console.WriteLine($"    Unknown format for version {MajorVersion}");
+                            builder.AppendLine($"    Unknown format for version {MajorVersion}");
                             break;
                     }
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print files information
         /// </summary>
-        private void PrintFiles()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintFiles(StringBuilder builder)
         {
-            Console.WriteLine("  Files Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Files Information:");
+            builder.AppendLine("  -------------------------");
             if (Files == null || Files.Length == 0)
             {
-                Console.WriteLine("  No files");
+                builder.AppendLine("  No files");
             }
             else
             {
                 for (int i = 0; i < Files.Length; i++)
                 {
-                    Console.WriteLine($"  File {i}");
+                    builder.AppendLine($"  File {i}");
                     switch (MajorVersion)
                     {
                         case 4:
                         case 5:
                             var file4 = Files[i] as Models.SGA.File4;
-                            Console.WriteLine($"    Name offset: {file4.NameOffset} (0x{file4.NameOffset:X})");
-                            Console.WriteLine($"    Name: {file4.Name ?? "[NULL]"}");
-                            Console.WriteLine($"    Offset: {file4.Offset} (0x{file4.Offset:X})");
-                            Console.WriteLine($"    Size on disk: {file4.SizeOnDisk} (0x{file4.SizeOnDisk:X})");
-                            Console.WriteLine($"    Size: {file4.Size} (0x{file4.Size:X})");
-                            Console.WriteLine($"    Time modified: {file4.TimeModified} (0x{file4.TimeModified:X})");
-                            Console.WriteLine($"    Dummy 0: {file4.Dummy0} (0x{file4.Dummy0:X})");
-                            Console.WriteLine($"    Type: {file4.Type} (0x{file4.Type:X})");
+                            builder.AppendLine($"    Name offset: {file4.NameOffset} (0x{file4.NameOffset:X})");
+                            builder.AppendLine($"    Name: {file4.Name ?? "[NULL]"}");
+                            builder.AppendLine($"    Offset: {file4.Offset} (0x{file4.Offset:X})");
+                            builder.AppendLine($"    Size on disk: {file4.SizeOnDisk} (0x{file4.SizeOnDisk:X})");
+                            builder.AppendLine($"    Size: {file4.Size} (0x{file4.Size:X})");
+                            builder.AppendLine($"    Time modified: {file4.TimeModified} (0x{file4.TimeModified:X})");
+                            builder.AppendLine($"    Dummy 0: {file4.Dummy0} (0x{file4.Dummy0:X})");
+                            builder.AppendLine($"    Type: {file4.Type} (0x{file4.Type:X})");
                             break;
 
                         case 6:
                             var file6 = Files[i] as Models.SGA.File6;
-                            Console.WriteLine($"    Name offset: {file6.NameOffset} (0x{file6.NameOffset:X})");
-                            Console.WriteLine($"    Name: {file6.Name ?? "[NULL]"}");
-                            Console.WriteLine($"    Offset: {file6.Offset} (0x{file6.Offset:X})");
-                            Console.WriteLine($"    Size on disk: {file6.SizeOnDisk} (0x{file6.SizeOnDisk:X})");
-                            Console.WriteLine($"    Size: {file6.Size} (0x{file6.Size:X})");
-                            Console.WriteLine($"    Time modified: {file6.TimeModified} (0x{file6.TimeModified:X})");
-                            Console.WriteLine($"    Dummy 0: {file6.Dummy0} (0x{file6.Dummy0:X})");
-                            Console.WriteLine($"    Type: {file6.Type} (0x{file6.Type:X})");
-                            Console.WriteLine($"    CRC32: {file6.CRC32} (0x{file6.CRC32:X})");
+                            builder.AppendLine($"    Name offset: {file6.NameOffset} (0x{file6.NameOffset:X})");
+                            builder.AppendLine($"    Name: {file6.Name ?? "[NULL]"}");
+                            builder.AppendLine($"    Offset: {file6.Offset} (0x{file6.Offset:X})");
+                            builder.AppendLine($"    Size on disk: {file6.SizeOnDisk} (0x{file6.SizeOnDisk:X})");
+                            builder.AppendLine($"    Size: {file6.Size} (0x{file6.Size:X})");
+                            builder.AppendLine($"    Time modified: {file6.TimeModified} (0x{file6.TimeModified:X})");
+                            builder.AppendLine($"    Dummy 0: {file6.Dummy0} (0x{file6.Dummy0:X})");
+                            builder.AppendLine($"    Type: {file6.Type} (0x{file6.Type:X})");
+                            builder.AppendLine($"    CRC32: {file6.CRC32} (0x{file6.CRC32:X})");
                             break;
                         case 7:
                             var file7 = Files[i] as Models.SGA.File7;
-                            Console.WriteLine($"    Name offset: {file7.NameOffset} (0x{file7.NameOffset:X})");
-                            Console.WriteLine($"    Name: {file7.Name ?? "[NULL]"}");
-                            Console.WriteLine($"    Offset: {file7.Offset} (0x{file7.Offset:X})");
-                            Console.WriteLine($"    Size on disk: {file7.SizeOnDisk} (0x{file7.SizeOnDisk:X})");
-                            Console.WriteLine($"    Size: {file7.Size} (0x{file7.Size:X})");
-                            Console.WriteLine($"    Time modified: {file7.TimeModified} (0x{file7.TimeModified:X})");
-                            Console.WriteLine($"    Dummy 0: {file7.Dummy0} (0x{file7.Dummy0:X})");
-                            Console.WriteLine($"    Type: {file7.Type} (0x{file7.Type:X})");
-                            Console.WriteLine($"    CRC32: {file7.CRC32} (0x{file7.CRC32:X})");
-                            Console.WriteLine($"    Hash offset: {file7.HashOffset} (0x{file7.HashOffset:X})");
+                            builder.AppendLine($"    Name offset: {file7.NameOffset} (0x{file7.NameOffset:X})");
+                            builder.AppendLine($"    Name: {file7.Name ?? "[NULL]"}");
+                            builder.AppendLine($"    Offset: {file7.Offset} (0x{file7.Offset:X})");
+                            builder.AppendLine($"    Size on disk: {file7.SizeOnDisk} (0x{file7.SizeOnDisk:X})");
+                            builder.AppendLine($"    Size: {file7.Size} (0x{file7.Size:X})");
+                            builder.AppendLine($"    Time modified: {file7.TimeModified} (0x{file7.TimeModified:X})");
+                            builder.AppendLine($"    Dummy 0: {file7.Dummy0} (0x{file7.Dummy0:X})");
+                            builder.AppendLine($"    Type: {file7.Type} (0x{file7.Type:X})");
+                            builder.AppendLine($"    CRC32: {file7.CRC32} (0x{file7.CRC32:X})");
+                            builder.AppendLine($"    Hash offset: {file7.HashOffset} (0x{file7.HashOffset:X})");
                             break;
                         default:
-                            Console.WriteLine($"    Unknown format for version {MajorVersion}");
+                            builder.AppendLine($"    Unknown format for version {MajorVersion}");
                             break;
                     }
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
 #if NET6_0_OR_GREATER

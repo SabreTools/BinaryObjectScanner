@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Text;
 using BurnOutSharp;
 using BurnOutSharp.Matching;
 using BurnOutSharp.Utilities;
@@ -257,7 +258,10 @@ namespace Test
 #endif
                 // If we don't have the JSON flag
                 if (!json)
-                    wrapper.PrettyPrint();
+                {
+                    StringBuilder builder = wrapper.PrettyPrint();
+                    Console.WriteLine(builder);
+                }
             }
         }
     }

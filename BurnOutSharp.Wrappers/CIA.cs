@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Text;
 
 namespace BurnOutSharp.Wrappers
 {
@@ -318,49 +319,55 @@ namespace BurnOutSharp.Wrappers
         #region Printing
 
         /// <inheritdoc/>
-        public override void PrettyPrint()
+        public override StringBuilder PrettyPrint()
         {
-            Console.WriteLine("CIA Archive Information:");
-            Console.WriteLine("-------------------------");
-            Console.WriteLine();
+            StringBuilder builder = new StringBuilder();
 
-            PrintHeader();
-            PrintCertificateChain();
-            PrintTicket();
-            PrintTitleMetadata();
-            PrintPartitions();
-            PrintMetaData();
+            builder.AppendLine("CIA Archive Information:");
+            builder.AppendLine("-------------------------");
+            builder.AppendLine();
+
+            PrintHeader(builder);
+            PrintCertificateChain(builder);
+            PrintTicket(builder);
+            PrintTitleMetadata(builder);
+            PrintPartitions(builder);
+            PrintMetaData(builder);
+
+            return builder;
         }
 
         /// <summary>
         /// Print CIA header information
         /// </summary>
-        private void PrintHeader()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintHeader(StringBuilder builder)
         {
-            Console.WriteLine("  CIA Header Information:");
-            Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Header size: {HeaderSize} (0x{HeaderSize:X})");
-            Console.WriteLine($"  Type: {Type} (0x{Type:X})");
-            Console.WriteLine($"  Version: {Version} (0x{Version:X})");
-            Console.WriteLine($"  Certificate chain size: {CertificateChainSize} (0x{CertificateChainSize:X})");
-            Console.WriteLine($"  Ticket size: {TicketSize} (0x{TicketSize:X})");
-            Console.WriteLine($"  TMD file size: {TMDFileSize} (0x{TMDFileSize:X})");
-            Console.WriteLine($"  Meta size: {MetaSize} (0x{MetaSize:X})");
-            Console.WriteLine($"  Content size: {ContentSize} (0x{ContentSize:X})");
-            Console.WriteLine($"  Content index: {BitConverter.ToString(ContentIndex).Replace('-', ' ')}");
-            Console.WriteLine();
+            builder.AppendLine("  CIA Header Information:");
+            builder.AppendLine("  -------------------------");
+            builder.AppendLine($"  Header size: {HeaderSize} (0x{HeaderSize:X})");
+            builder.AppendLine($"  Type: {Type} (0x{Type:X})");
+            builder.AppendLine($"  Version: {Version} (0x{Version:X})");
+            builder.AppendLine($"  Certificate chain size: {CertificateChainSize} (0x{CertificateChainSize:X})");
+            builder.AppendLine($"  Ticket size: {TicketSize} (0x{TicketSize:X})");
+            builder.AppendLine($"  TMD file size: {TMDFileSize} (0x{TMDFileSize:X})");
+            builder.AppendLine($"  Meta size: {MetaSize} (0x{MetaSize:X})");
+            builder.AppendLine($"  Content size: {ContentSize} (0x{ContentSize:X})");
+            builder.AppendLine($"  Content index: {BitConverter.ToString(ContentIndex).Replace('-', ' ')}");
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print NCCH partition header information
         /// </summary>
-        private void PrintCertificateChain()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintCertificateChain(StringBuilder builder)
         {
-            Console.WriteLine("  Certificate Chain Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Certificate Chain Information:");
+            builder.AppendLine("  -------------------------");
             if (CertificateChain == null || CertificateChain.Length == 0)
             {
-                Console.WriteLine("  No certificates, expected 3");
+                builder.AppendLine("  No certificates, expected 3");
             }
             else
             {
@@ -376,80 +383,81 @@ namespace BurnOutSharp.Wrappers
                         case 2: certificateName = " (TMD)"; break;
                     }
 
-                    Console.WriteLine($"  Certificate {i}{certificateName}");
-                    Console.WriteLine($"    Signature type: {certificate.SignatureType} (0x{certificate.SignatureType:X})");
-                    Console.WriteLine($"    Signature size: {certificate.SignatureSize} (0x{certificate.SignatureSize:X})");
-                    Console.WriteLine($"    Padding size: {certificate.PaddingSize} (0x{certificate.PaddingSize:X})");
-                    Console.WriteLine($"    Signature: {BitConverter.ToString(certificate.Signature).Replace('-', ' ')}");
-                    Console.WriteLine($"    Padding: {BitConverter.ToString(certificate.Padding).Replace('-', ' ')}");
-                    Console.WriteLine($"    Issuer: {certificate.Issuer ?? "[NULL]"}");
-                    Console.WriteLine($"    Key type: {certificate.KeyType} (0x{certificate.KeyType:X})");
-                    Console.WriteLine($"    Name: {certificate.Name ?? "[NULL]"}");
-                    Console.WriteLine($"    Expiration time: {certificate.ExpirationTime} (0x{certificate.ExpirationTime:X})");
+                    builder.AppendLine($"  Certificate {i}{certificateName}");
+                    builder.AppendLine($"    Signature type: {certificate.SignatureType} (0x{certificate.SignatureType:X})");
+                    builder.AppendLine($"    Signature size: {certificate.SignatureSize} (0x{certificate.SignatureSize:X})");
+                    builder.AppendLine($"    Padding size: {certificate.PaddingSize} (0x{certificate.PaddingSize:X})");
+                    builder.AppendLine($"    Signature: {BitConverter.ToString(certificate.Signature).Replace('-', ' ')}");
+                    builder.AppendLine($"    Padding: {BitConverter.ToString(certificate.Padding).Replace('-', ' ')}");
+                    builder.AppendLine($"    Issuer: {certificate.Issuer ?? "[NULL]"}");
+                    builder.AppendLine($"    Key type: {certificate.KeyType} (0x{certificate.KeyType:X})");
+                    builder.AppendLine($"    Name: {certificate.Name ?? "[NULL]"}");
+                    builder.AppendLine($"    Expiration time: {certificate.ExpirationTime} (0x{certificate.ExpirationTime:X})");
                     switch (certificate.KeyType)
                     {
                         case Models.N3DS.PublicKeyType.RSA_4096:
                         case Models.N3DS.PublicKeyType.RSA_2048:
-                            Console.WriteLine($"    Modulus: {BitConverter.ToString(certificate.RSAModulus).Replace('-', ' ')}");
-                            Console.WriteLine($"    Public exponent: {certificate.RSAPublicExponent} (0x{certificate.RSAPublicExponent:X})");
-                            Console.WriteLine($"    Padding: {BitConverter.ToString(certificate.RSAPadding).Replace('-', ' ')}");
+                            builder.AppendLine($"    Modulus: {BitConverter.ToString(certificate.RSAModulus).Replace('-', ' ')}");
+                            builder.AppendLine($"    Public exponent: {certificate.RSAPublicExponent} (0x{certificate.RSAPublicExponent:X})");
+                            builder.AppendLine($"    Padding: {BitConverter.ToString(certificate.RSAPadding).Replace('-', ' ')}");
                             break;
                         case Models.N3DS.PublicKeyType.EllipticCurve:
-                            Console.WriteLine($"    Public key: {BitConverter.ToString(certificate.ECCPublicKey).Replace('-', ' ')}");
-                            Console.WriteLine($"    Padding: {BitConverter.ToString(certificate.ECCPadding).Replace('-', ' ')}");
+                            builder.AppendLine($"    Public key: {BitConverter.ToString(certificate.ECCPublicKey).Replace('-', ' ')}");
+                            builder.AppendLine($"    Padding: {BitConverter.ToString(certificate.ECCPadding).Replace('-', ' ')}");
                             break;
                     }
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print ticket information
         /// </summary>
-        private void PrintTicket()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintTicket(StringBuilder builder)
         {
-            Console.WriteLine("  Ticket Information:");
-            Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Signature type: {T_SignatureType} (0x{T_SignatureType:X})");
-            Console.WriteLine($"  Signature size: {T_SignatureSize} (0x{T_SignatureSize:X})");
-            Console.WriteLine($"  Padding size: {T_PaddingSize} (0x{T_PaddingSize:X})");
-            Console.WriteLine($"  Signature: {BitConverter.ToString(T_Signature).Replace('-', ' ')}");
-            Console.WriteLine($"  Padding: {BitConverter.ToString(T_Padding).Replace('-', ' ')}");
-            Console.WriteLine($"  Issuer: {T_Issuer ?? "[NULL]"}");
-            Console.WriteLine($"  ECC public key: {BitConverter.ToString(T_ECCPublicKey).Replace('-', ' ')}");
-            Console.WriteLine($"  Version: {T_Version} (0x{T_Version:X})");
-            Console.WriteLine($"  CaCrlVersion: {T_CaCrlVersion} (0x{T_CaCrlVersion:X})");
-            Console.WriteLine($"  SignerCrlVersion: {T_SignerCrlVersion} (0x{T_SignerCrlVersion:X})");
-            Console.WriteLine($"  Title key: {BitConverter.ToString(T_TitleKey).Replace('-', ' ')}");
-            Console.WriteLine($"  Reserved 1: {T_Reserved1} (0x{T_Reserved1:X})");
-            Console.WriteLine($"  Ticket ID: {T_TicketID} (0x{T_TicketID:X})");
-            Console.WriteLine($"  Console ID: {T_ConsoleID} (0x{T_ConsoleID:X})");
-            Console.WriteLine($"  Title ID {T_TitleID} (0x{T_TitleID:X})");
-            Console.WriteLine($"  Reserved 2: {BitConverter.ToString(T_Reserved2).Replace('-', ' ')}");
-            Console.WriteLine($"  Ticket title version: {T_TicketTitleVersion} (0x{T_TicketTitleVersion:X})");
-            Console.WriteLine($"  Reserved 3: {BitConverter.ToString(T_Reserved3).Replace('-', ' ')}");
-            Console.WriteLine($"  License type: {T_LicenseType} (0x{T_LicenseType:X})");
-            Console.WriteLine($"  Common keY index: {T_CommonKeyYIndex} (0x{T_CommonKeyYIndex:X})");
-            Console.WriteLine($"  Reserved 4: {BitConverter.ToString(T_Reserved4).Replace('-', ' ')}");
-            Console.WriteLine($"  eShop Account ID?: {T_eShopAccountID} (0x{T_eShopAccountID:X})");
-            Console.WriteLine($"  Reserved 5: {T_Reserved5} (0x{T_Reserved5:X})");
-            Console.WriteLine($"  Audit: {T_Audit} (0x{T_Audit:X})");
-            Console.WriteLine($"  Reserved 6: {BitConverter.ToString(T_Reserved6).Replace('-', ' ')}");
-            Console.WriteLine($"  Limits:");
+            builder.AppendLine("  Ticket Information:");
+            builder.AppendLine("  -------------------------");
+            builder.AppendLine($"  Signature type: {T_SignatureType} (0x{T_SignatureType:X})");
+            builder.AppendLine($"  Signature size: {T_SignatureSize} (0x{T_SignatureSize:X})");
+            builder.AppendLine($"  Padding size: {T_PaddingSize} (0x{T_PaddingSize:X})");
+            builder.AppendLine($"  Signature: {BitConverter.ToString(T_Signature).Replace('-', ' ')}");
+            builder.AppendLine($"  Padding: {BitConverter.ToString(T_Padding).Replace('-', ' ')}");
+            builder.AppendLine($"  Issuer: {T_Issuer ?? "[NULL]"}");
+            builder.AppendLine($"  ECC public key: {BitConverter.ToString(T_ECCPublicKey).Replace('-', ' ')}");
+            builder.AppendLine($"  Version: {T_Version} (0x{T_Version:X})");
+            builder.AppendLine($"  CaCrlVersion: {T_CaCrlVersion} (0x{T_CaCrlVersion:X})");
+            builder.AppendLine($"  SignerCrlVersion: {T_SignerCrlVersion} (0x{T_SignerCrlVersion:X})");
+            builder.AppendLine($"  Title key: {BitConverter.ToString(T_TitleKey).Replace('-', ' ')}");
+            builder.AppendLine($"  Reserved 1: {T_Reserved1} (0x{T_Reserved1:X})");
+            builder.AppendLine($"  Ticket ID: {T_TicketID} (0x{T_TicketID:X})");
+            builder.AppendLine($"  Console ID: {T_ConsoleID} (0x{T_ConsoleID:X})");
+            builder.AppendLine($"  Title ID {T_TitleID} (0x{T_TitleID:X})");
+            builder.AppendLine($"  Reserved 2: {BitConverter.ToString(T_Reserved2).Replace('-', ' ')}");
+            builder.AppendLine($"  Ticket title version: {T_TicketTitleVersion} (0x{T_TicketTitleVersion:X})");
+            builder.AppendLine($"  Reserved 3: {BitConverter.ToString(T_Reserved3).Replace('-', ' ')}");
+            builder.AppendLine($"  License type: {T_LicenseType} (0x{T_LicenseType:X})");
+            builder.AppendLine($"  Common keY index: {T_CommonKeyYIndex} (0x{T_CommonKeyYIndex:X})");
+            builder.AppendLine($"  Reserved 4: {BitConverter.ToString(T_Reserved4).Replace('-', ' ')}");
+            builder.AppendLine($"  eShop Account ID?: {T_eShopAccountID} (0x{T_eShopAccountID:X})");
+            builder.AppendLine($"  Reserved 5: {T_Reserved5} (0x{T_Reserved5:X})");
+            builder.AppendLine($"  Audit: {T_Audit} (0x{T_Audit:X})");
+            builder.AppendLine($"  Reserved 6: {BitConverter.ToString(T_Reserved6).Replace('-', ' ')}");
+            builder.AppendLine($"  Limits:");
             for (int i = 0; i < T_Limits.Length; i++)
             {
-                Console.WriteLine($"    Limit {i}: {T_Limits[i]} (0x{T_Limits[i]:X})");
+                builder.AppendLine($"    Limit {i}: {T_Limits[i]} (0x{T_Limits[i]:X})");
             }
-            Console.WriteLine($"  Content index size: {T_ContentIndexSize} (0x{T_ContentIndexSize:X})");
-            Console.WriteLine($"  Content index: {BitConverter.ToString(T_ContentIndex).Replace('-', ' ')}");
-            Console.WriteLine();
+            builder.AppendLine($"  Content index size: {T_ContentIndexSize} (0x{T_ContentIndexSize:X})");
+            builder.AppendLine($"  Content index: {BitConverter.ToString(T_ContentIndex).Replace('-', ' ')}");
+            builder.AppendLine();
 
-            Console.WriteLine("  Ticket Certificate Chain Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Ticket Certificate Chain Information:");
+            builder.AppendLine("  -------------------------");
             if (T_CertificateChain == null || T_CertificateChain.Length == 0)
             {
-                Console.WriteLine("  No certificates, expected 2");
+                builder.AppendLine("  No certificates, expected 2");
             }
             else
             {
@@ -464,113 +472,114 @@ namespace BurnOutSharp.Wrappers
                         case 1: certificateName = " (CA)"; break;
                     }
 
-                    Console.WriteLine($"  Certificate {i}{certificateName}");
-                    Console.WriteLine($"    Signature type: {certificate.SignatureType} (0x{certificate.SignatureType:X})");
-                    Console.WriteLine($"    Signature size: {certificate.SignatureSize} (0x{certificate.SignatureSize:X})");
-                    Console.WriteLine($"    Padding size: {certificate.PaddingSize} (0x{certificate.PaddingSize:X})");
-                    Console.WriteLine($"    Signature: {BitConverter.ToString(certificate.Signature).Replace('-', ' ')}");
-                    Console.WriteLine($"    Padding: {BitConverter.ToString(certificate.Padding).Replace('-', ' ')}");
-                    Console.WriteLine($"    Issuer: {certificate.Issuer ?? "[NULL]"}");
-                    Console.WriteLine($"    Key type: {certificate.KeyType} (0x{certificate.KeyType:X})");
-                    Console.WriteLine($"    Name: {certificate.Name ?? "[NULL]"}");
-                    Console.WriteLine($"    Expiration time: {certificate.ExpirationTime} (0x{certificate.ExpirationTime:X})");
+                    builder.AppendLine($"  Certificate {i}{certificateName}");
+                    builder.AppendLine($"    Signature type: {certificate.SignatureType} (0x{certificate.SignatureType:X})");
+                    builder.AppendLine($"    Signature size: {certificate.SignatureSize} (0x{certificate.SignatureSize:X})");
+                    builder.AppendLine($"    Padding size: {certificate.PaddingSize} (0x{certificate.PaddingSize:X})");
+                    builder.AppendLine($"    Signature: {BitConverter.ToString(certificate.Signature).Replace('-', ' ')}");
+                    builder.AppendLine($"    Padding: {BitConverter.ToString(certificate.Padding).Replace('-', ' ')}");
+                    builder.AppendLine($"    Issuer: {certificate.Issuer ?? "[NULL]"}");
+                    builder.AppendLine($"    Key type: {certificate.KeyType} (0x{certificate.KeyType:X})");
+                    builder.AppendLine($"    Name: {certificate.Name ?? "[NULL]"}");
+                    builder.AppendLine($"    Expiration time: {certificate.ExpirationTime} (0x{certificate.ExpirationTime:X})");
                     switch (certificate.KeyType)
                     {
                         case Models.N3DS.PublicKeyType.RSA_4096:
                         case Models.N3DS.PublicKeyType.RSA_2048:
-                            Console.WriteLine($"    Modulus: {BitConverter.ToString(certificate.RSAModulus).Replace('-', ' ')}");
-                            Console.WriteLine($"    Public exponent: {certificate.RSAPublicExponent} (0x{certificate.RSAPublicExponent:X})");
-                            Console.WriteLine($"    Padding: {BitConverter.ToString(certificate.RSAPadding).Replace('-', ' ')}");
+                            builder.AppendLine($"    Modulus: {BitConverter.ToString(certificate.RSAModulus).Replace('-', ' ')}");
+                            builder.AppendLine($"    Public exponent: {certificate.RSAPublicExponent} (0x{certificate.RSAPublicExponent:X})");
+                            builder.AppendLine($"    Padding: {BitConverter.ToString(certificate.RSAPadding).Replace('-', ' ')}");
                             break;
                         case Models.N3DS.PublicKeyType.EllipticCurve:
-                            Console.WriteLine($"    Public key: {BitConverter.ToString(certificate.ECCPublicKey).Replace('-', ' ')}");
-                            Console.WriteLine($"    Padding: {BitConverter.ToString(certificate.ECCPadding).Replace('-', ' ')}");
+                            builder.AppendLine($"    Public key: {BitConverter.ToString(certificate.ECCPublicKey).Replace('-', ' ')}");
+                            builder.AppendLine($"    Padding: {BitConverter.ToString(certificate.ECCPadding).Replace('-', ' ')}");
                             break;
                     }
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print title metadata information
         /// </summary>
-        private void PrintTitleMetadata()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintTitleMetadata(StringBuilder builder)
         {
-            Console.WriteLine("  Title Metadata Information:");
-            Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Signature type: {TMD_SignatureType} (0x{TMD_SignatureType:X})");
-            Console.WriteLine($"  Signature size: {TMD_SignatureSize} (0x{TMD_SignatureSize:X})");
-            Console.WriteLine($"  Padding size: {TMD_PaddingSize} (0x{TMD_PaddingSize:X})");
-            Console.WriteLine($"  Signature: {BitConverter.ToString(TMD_Signature).Replace('-', ' ')}");
-            Console.WriteLine($"  Padding 1: {BitConverter.ToString(TMD_Padding1).Replace('-', ' ')}");
-            Console.WriteLine($"  Issuer: {TMD_Issuer ?? "[NULL]"}");
-            Console.WriteLine($"  Version: {TMD_Version} (0x{TMD_Version:X})");
-            Console.WriteLine($"  CaCrlVersion: {TMD_CaCrlVersion} (0x{TMD_CaCrlVersion:X})");
-            Console.WriteLine($"  SignerCrlVersion: {TMD_SignerCrlVersion} (0x{TMD_SignerCrlVersion:X})");
-            Console.WriteLine($"  Reserved 1: {TMD_Reserved1} (0x{TMD_Reserved1:X})");
-            Console.WriteLine($"  System version: {TMD_SystemVersion} (0x{TMD_SystemVersion:X})");
-            Console.WriteLine($"  Title ID: {TMD_TitleID} (0x{TMD_TitleID:X})");
-            Console.WriteLine($"  Title type: {TMD_TitleType} (0x{TMD_TitleType:X})");
-            Console.WriteLine($"  Group ID: {TMD_GroupID} (0x{TMD_GroupID:X})");
-            Console.WriteLine($"  Save data size: {TMD_SaveDataSize} (0x{TMD_SaveDataSize:X})");
-            Console.WriteLine($"  SRL private save data size: {TMD_SRLPrivateSaveDataSize} (0x{TMD_SRLPrivateSaveDataSize:X})");
-            Console.WriteLine($"  Reserved 2: {BitConverter.ToString(TMD_Reserved2).Replace('-', ' ')}");
-            Console.WriteLine($"  SRL flag: {TMD_SRLFlag} (0x{TMD_SRLFlag:X})");
-            Console.WriteLine($"  Reserved 3: {BitConverter.ToString(TMD_Reserved3).Replace('-', ' ')}");
-            Console.WriteLine($"  Access rights: {TMD_AccessRights} (0x{TMD_AccessRights:X})");
-            Console.WriteLine($"  Title version: {TMD_TitleVersion} (0x{TMD_TitleVersion:X})");
-            Console.WriteLine($"  Content count: {TMD_ContentCount} (0x{TMD_ContentCount:X})");
-            Console.WriteLine($"  Boot content: {TMD_BootContent} (0x{TMD_BootContent:X})");
-            Console.WriteLine($"  Padding 2: {BitConverter.ToString(TMD_Padding2).Replace('-', ' ')}");
-            Console.WriteLine($"  SHA-256 hash of the content info records: {BitConverter.ToString(TMD_SHA256HashContentInfoRecords).Replace('-', ' ')}");
-            Console.WriteLine();
+            builder.AppendLine("  Title Metadata Information:");
+            builder.AppendLine("  -------------------------");
+            builder.AppendLine($"  Signature type: {TMD_SignatureType} (0x{TMD_SignatureType:X})");
+            builder.AppendLine($"  Signature size: {TMD_SignatureSize} (0x{TMD_SignatureSize:X})");
+            builder.AppendLine($"  Padding size: {TMD_PaddingSize} (0x{TMD_PaddingSize:X})");
+            builder.AppendLine($"  Signature: {BitConverter.ToString(TMD_Signature).Replace('-', ' ')}");
+            builder.AppendLine($"  Padding 1: {BitConverter.ToString(TMD_Padding1).Replace('-', ' ')}");
+            builder.AppendLine($"  Issuer: {TMD_Issuer ?? "[NULL]"}");
+            builder.AppendLine($"  Version: {TMD_Version} (0x{TMD_Version:X})");
+            builder.AppendLine($"  CaCrlVersion: {TMD_CaCrlVersion} (0x{TMD_CaCrlVersion:X})");
+            builder.AppendLine($"  SignerCrlVersion: {TMD_SignerCrlVersion} (0x{TMD_SignerCrlVersion:X})");
+            builder.AppendLine($"  Reserved 1: {TMD_Reserved1} (0x{TMD_Reserved1:X})");
+            builder.AppendLine($"  System version: {TMD_SystemVersion} (0x{TMD_SystemVersion:X})");
+            builder.AppendLine($"  Title ID: {TMD_TitleID} (0x{TMD_TitleID:X})");
+            builder.AppendLine($"  Title type: {TMD_TitleType} (0x{TMD_TitleType:X})");
+            builder.AppendLine($"  Group ID: {TMD_GroupID} (0x{TMD_GroupID:X})");
+            builder.AppendLine($"  Save data size: {TMD_SaveDataSize} (0x{TMD_SaveDataSize:X})");
+            builder.AppendLine($"  SRL private save data size: {TMD_SRLPrivateSaveDataSize} (0x{TMD_SRLPrivateSaveDataSize:X})");
+            builder.AppendLine($"  Reserved 2: {BitConverter.ToString(TMD_Reserved2).Replace('-', ' ')}");
+            builder.AppendLine($"  SRL flag: {TMD_SRLFlag} (0x{TMD_SRLFlag:X})");
+            builder.AppendLine($"  Reserved 3: {BitConverter.ToString(TMD_Reserved3).Replace('-', ' ')}");
+            builder.AppendLine($"  Access rights: {TMD_AccessRights} (0x{TMD_AccessRights:X})");
+            builder.AppendLine($"  Title version: {TMD_TitleVersion} (0x{TMD_TitleVersion:X})");
+            builder.AppendLine($"  Content count: {TMD_ContentCount} (0x{TMD_ContentCount:X})");
+            builder.AppendLine($"  Boot content: {TMD_BootContent} (0x{TMD_BootContent:X})");
+            builder.AppendLine($"  Padding 2: {BitConverter.ToString(TMD_Padding2).Replace('-', ' ')}");
+            builder.AppendLine($"  SHA-256 hash of the content info records: {BitConverter.ToString(TMD_SHA256HashContentInfoRecords).Replace('-', ' ')}");
+            builder.AppendLine();
 
-            Console.WriteLine("  Ticket Content Info Records Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Ticket Content Info Records Information:");
+            builder.AppendLine("  -------------------------");
             if (TMD_ContentInfoRecords == null || TMD_ContentInfoRecords.Length == 0)
             {
-                Console.WriteLine("  No content info records, expected 64");
+                builder.AppendLine("  No content info records, expected 64");
             }
             else
             {
                 for (int i = 0; i < TMD_ContentInfoRecords.Length; i++)
                 {
                     var contentInfoRecord = TMD_ContentInfoRecords[i];
-                    Console.WriteLine($"  Content Info Record {i}");
-                    Console.WriteLine($"    Content index offset: {contentInfoRecord.ContentIndexOffset} (0x{contentInfoRecord.ContentIndexOffset:X})");
-                    Console.WriteLine($"    Content command count: {contentInfoRecord.ContentCommandCount} (0x{contentInfoRecord.ContentCommandCount:X})");
-                    Console.WriteLine($"    SHA-256 hash of the next {contentInfoRecord.ContentCommandCount} records not hashed: {BitConverter.ToString(contentInfoRecord.UnhashedContentRecordsSHA256Hash).Replace('-', ' ')}");
+                    builder.AppendLine($"  Content Info Record {i}");
+                    builder.AppendLine($"    Content index offset: {contentInfoRecord.ContentIndexOffset} (0x{contentInfoRecord.ContentIndexOffset:X})");
+                    builder.AppendLine($"    Content command count: {contentInfoRecord.ContentCommandCount} (0x{contentInfoRecord.ContentCommandCount:X})");
+                    builder.AppendLine($"    SHA-256 hash of the next {contentInfoRecord.ContentCommandCount} records not hashed: {BitConverter.ToString(contentInfoRecord.UnhashedContentRecordsSHA256Hash).Replace('-', ' ')}");
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
 
-            Console.WriteLine("  Ticket Content Chunk Records Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Ticket Content Chunk Records Information:");
+            builder.AppendLine("  -------------------------");
             if (TMD_ContentChunkRecords == null || TMD_ContentChunkRecords.Length == 0)
             {
-                Console.WriteLine($"  No content chunk records, expected {TMD_ContentCount}");
+                builder.AppendLine($"  No content chunk records, expected {TMD_ContentCount}");
             }
             else
             {
                 for (int i = 0; i < TMD_ContentChunkRecords.Length; i++)
                 {
                     var contentChunkRecord = TMD_ContentChunkRecords[i];
-                    Console.WriteLine($"  Content Chunk Record {i}");
-                    Console.WriteLine($"    Content ID: {contentChunkRecord.ContentId} (0x{contentChunkRecord.ContentId:X})");
-                    Console.WriteLine($"    Content index: {contentChunkRecord.ContentIndex} (0x{contentChunkRecord.ContentIndex:X})");
-                    Console.WriteLine($"    Content type: {contentChunkRecord.ContentType} (0x{contentChunkRecord.ContentType:X})");
-                    Console.WriteLine($"    Content size: {contentChunkRecord.ContentSize} (0x{contentChunkRecord.ContentSize:X})");
-                    Console.WriteLine($"    SHA-256 hash: {BitConverter.ToString(contentChunkRecord.SHA256Hash).Replace('-', ' ')}");
+                    builder.AppendLine($"  Content Chunk Record {i}");
+                    builder.AppendLine($"    Content ID: {contentChunkRecord.ContentId} (0x{contentChunkRecord.ContentId:X})");
+                    builder.AppendLine($"    Content index: {contentChunkRecord.ContentIndex} (0x{contentChunkRecord.ContentIndex:X})");
+                    builder.AppendLine($"    Content type: {contentChunkRecord.ContentType} (0x{contentChunkRecord.ContentType:X})");
+                    builder.AppendLine($"    Content size: {contentChunkRecord.ContentSize} (0x{contentChunkRecord.ContentSize:X})");
+                    builder.AppendLine($"    SHA-256 hash: {BitConverter.ToString(contentChunkRecord.SHA256Hash).Replace('-', ' ')}");
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
 
-            Console.WriteLine("  Ticket Certificate Chain Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Ticket Certificate Chain Information:");
+            builder.AppendLine("  -------------------------");
             if (TMD_CertificateChain == null || TMD_CertificateChain.Length == 0)
             {
-                Console.WriteLine("  No certificates, expected 2");
+                builder.AppendLine("  No certificates, expected 2");
             }
             else
             {
@@ -585,124 +594,126 @@ namespace BurnOutSharp.Wrappers
                         case 1: certificateName = " (CA)"; break;
                     }
 
-                    Console.WriteLine($"  Certificate {i}{certificateName}");
-                    Console.WriteLine($"    Signature type: {certificate.SignatureType} (0x{certificate.SignatureType:X})");
-                    Console.WriteLine($"    Signature size: {certificate.SignatureSize} (0x{certificate.SignatureSize:X})");
-                    Console.WriteLine($"    Padding size: {certificate.PaddingSize} (0x{certificate.PaddingSize:X})");
-                    Console.WriteLine($"    Signature: {BitConverter.ToString(certificate.Signature).Replace('-', ' ')}");
-                    Console.WriteLine($"    Padding: {BitConverter.ToString(certificate.Padding).Replace('-', ' ')}");
-                    Console.WriteLine($"    Issuer: {certificate.Issuer ?? "[NULL]"}");
-                    Console.WriteLine($"    Key type: {certificate.KeyType} (0x{certificate.KeyType:X})");
-                    Console.WriteLine($"    Name: {certificate.Name ?? "[NULL]"}");
-                    Console.WriteLine($"    Expiration time: {certificate.ExpirationTime} (0x{certificate.ExpirationTime:X})");
+                    builder.AppendLine($"  Certificate {i}{certificateName}");
+                    builder.AppendLine($"    Signature type: {certificate.SignatureType} (0x{certificate.SignatureType:X})");
+                    builder.AppendLine($"    Signature size: {certificate.SignatureSize} (0x{certificate.SignatureSize:X})");
+                    builder.AppendLine($"    Padding size: {certificate.PaddingSize} (0x{certificate.PaddingSize:X})");
+                    builder.AppendLine($"    Signature: {BitConverter.ToString(certificate.Signature).Replace('-', ' ')}");
+                    builder.AppendLine($"    Padding: {BitConverter.ToString(certificate.Padding).Replace('-', ' ')}");
+                    builder.AppendLine($"    Issuer: {certificate.Issuer ?? "[NULL]"}");
+                    builder.AppendLine($"    Key type: {certificate.KeyType} (0x{certificate.KeyType:X})");
+                    builder.AppendLine($"    Name: {certificate.Name ?? "[NULL]"}");
+                    builder.AppendLine($"    Expiration time: {certificate.ExpirationTime} (0x{certificate.ExpirationTime:X})");
                     switch (certificate.KeyType)
                     {
                         case Models.N3DS.PublicKeyType.RSA_4096:
                         case Models.N3DS.PublicKeyType.RSA_2048:
-                            Console.WriteLine($"    Modulus: {BitConverter.ToString(certificate.RSAModulus).Replace('-', ' ')}");
-                            Console.WriteLine($"    Public exponent: {certificate.RSAPublicExponent} (0x{certificate.RSAPublicExponent:X})");
-                            Console.WriteLine($"    Padding: {BitConverter.ToString(certificate.RSAPadding).Replace('-', ' ')}");
+                            builder.AppendLine($"    Modulus: {BitConverter.ToString(certificate.RSAModulus).Replace('-', ' ')}");
+                            builder.AppendLine($"    Public exponent: {certificate.RSAPublicExponent} (0x{certificate.RSAPublicExponent:X})");
+                            builder.AppendLine($"    Padding: {BitConverter.ToString(certificate.RSAPadding).Replace('-', ' ')}");
                             break;
                         case Models.N3DS.PublicKeyType.EllipticCurve:
-                            Console.WriteLine($"    Public key: {BitConverter.ToString(certificate.ECCPublicKey).Replace('-', ' ')}");
-                            Console.WriteLine($"    Padding: {BitConverter.ToString(certificate.ECCPadding).Replace('-', ' ')}");
+                            builder.AppendLine($"    Public key: {BitConverter.ToString(certificate.ECCPublicKey).Replace('-', ' ')}");
+                            builder.AppendLine($"    Padding: {BitConverter.ToString(certificate.ECCPadding).Replace('-', ' ')}");
                             break;
                     }
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print NCCH partition header information
         /// </summary>
-        private void PrintPartitions()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintPartitions(StringBuilder builder)
         {
-            Console.WriteLine("  NCCH Partition Header Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  NCCH Partition Header Information:");
+            builder.AppendLine("  -------------------------");
             if (Partitions == null || Partitions.Length == 0)
             {
-                Console.WriteLine("  No NCCH partition headers");
+                builder.AppendLine("  No NCCH partition headers");
             }
             else
             {
                 for (int i = 0; i < Partitions.Length; i++)
                 {
                     var partitionHeader = Partitions[i];
-                    Console.WriteLine($"  NCCH Partition Header {i}");
+                    builder.AppendLine($"  NCCH Partition Header {i}");
                     if (partitionHeader.MagicID == string.Empty)
                     {
-                        Console.WriteLine($"    Empty partition, no data can be parsed");
+                        builder.AppendLine($"    Empty partition, no data can be parsed");
                     }
                     else if (partitionHeader.MagicID != Models.N3DS.Constants.NCCHMagicNumber)
                     {
-                        Console.WriteLine($"    Unrecognized partition data, no data can be parsed");
+                        builder.AppendLine($"    Unrecognized partition data, no data can be parsed");
                     }
                     else
                     {
-                        Console.WriteLine($"    RSA-2048 SHA-256 signature: {BitConverter.ToString(partitionHeader.RSA2048Signature).Replace('-', ' ')}");
-                        Console.WriteLine($"    Magic ID: {partitionHeader.MagicID} (0x{partitionHeader.MagicID:X})");
-                        Console.WriteLine($"    Content size in media units: {partitionHeader.ContentSizeInMediaUnits} (0x{partitionHeader.ContentSizeInMediaUnits:X})");
-                        Console.WriteLine($"    Partition ID: {partitionHeader.PartitionId} (0x{partitionHeader.PartitionId:X})");
-                        Console.WriteLine($"    Maker code: {partitionHeader.MakerCode} (0x{partitionHeader.MakerCode:X})");
-                        Console.WriteLine($"    Version: {partitionHeader.Version} (0x{partitionHeader.Version:X})");
-                        Console.WriteLine($"    Verification hash: {partitionHeader.VerificationHash} (0x{partitionHeader.VerificationHash:X})");
-                        Console.WriteLine($"    Program ID: {BitConverter.ToString(partitionHeader.ProgramId).Replace('-', ' ')}");
-                        Console.WriteLine($"    Reserved 1: {BitConverter.ToString(partitionHeader.Reserved1).Replace('-', ' ')}");
-                        Console.WriteLine($"    Logo region SHA-256 hash: {BitConverter.ToString(partitionHeader.LogoRegionHash).Replace('-', ' ')}");
-                        Console.WriteLine($"    Product code: {partitionHeader.ProductCode} (0x{partitionHeader.ProductCode:X})");
-                        Console.WriteLine($"    Extended header SHA-256 hash: {BitConverter.ToString(partitionHeader.ExtendedHeaderHash).Replace('-', ' ')}");
-                        Console.WriteLine($"    Extended header size in bytes: {partitionHeader.ExtendedHeaderSizeInBytes} (0x{partitionHeader.ExtendedHeaderSizeInBytes:X})");
-                        Console.WriteLine($"    Reserved 2: {BitConverter.ToString(partitionHeader.Reserved2).Replace('-', ' ')}");
-                        Console.WriteLine("    Flags:");
-                        Console.WriteLine($"      Reserved 0: {partitionHeader.Flags.Reserved0} (0x{partitionHeader.Flags.Reserved0:X})");
-                        Console.WriteLine($"      Reserved 1: {partitionHeader.Flags.Reserved1} (0x{partitionHeader.Flags.Reserved1:X})");
-                        Console.WriteLine($"      Reserved 2: {partitionHeader.Flags.Reserved2} (0x{partitionHeader.Flags.Reserved2:X})");
-                        Console.WriteLine($"      Crypto method: {partitionHeader.Flags.CryptoMethod} (0x{partitionHeader.Flags.CryptoMethod:X})");
-                        Console.WriteLine($"      Content platform: {partitionHeader.Flags.ContentPlatform} (0x{partitionHeader.Flags.ContentPlatform:X})");
-                        Console.WriteLine($"      Content type: {partitionHeader.Flags.MediaPlatformIndex} (0x{partitionHeader.Flags.MediaPlatformIndex:X})");
-                        Console.WriteLine($"      Content unit size: {partitionHeader.Flags.ContentUnitSize} (0x{partitionHeader.Flags.ContentUnitSize:X})");
-                        Console.WriteLine($"      Bitmasks: {partitionHeader.Flags.BitMasks} (0x{partitionHeader.Flags.BitMasks:X})");
-                        Console.WriteLine($"    Plain region offset, in media units: {partitionHeader.PlainRegionOffsetInMediaUnits} (0x{partitionHeader.PlainRegionOffsetInMediaUnits:X})");
-                        Console.WriteLine($"    Plain region size, in media units: {partitionHeader.PlainRegionSizeInMediaUnits} (0x{partitionHeader.PlainRegionSizeInMediaUnits:X})");
-                        Console.WriteLine($"    Logo region offset, in media units: {partitionHeader.LogoRegionOffsetInMediaUnits} (0x{partitionHeader.LogoRegionOffsetInMediaUnits:X})");
-                        Console.WriteLine($"    Logo region size, in media units: {partitionHeader.LogoRegionSizeInMediaUnits} (0x{partitionHeader.LogoRegionSizeInMediaUnits:X})");
-                        Console.WriteLine($"    ExeFS offset, in media units: {partitionHeader.ExeFSOffsetInMediaUnits} (0x{partitionHeader.ExeFSOffsetInMediaUnits:X})");
-                        Console.WriteLine($"    ExeFS size, in media units: {partitionHeader.ExeFSSizeInMediaUnits} (0x{partitionHeader.ExeFSSizeInMediaUnits:X})");
-                        Console.WriteLine($"    ExeFS hash region size, in media units: {partitionHeader.ExeFSHashRegionSizeInMediaUnits} (0x{partitionHeader.ExeFSHashRegionSizeInMediaUnits:X})");
-                        Console.WriteLine($"    Reserved 3: {BitConverter.ToString(partitionHeader.Reserved3).Replace('-', ' ')}");
-                        Console.WriteLine($"    RomFS offset, in media units: {partitionHeader.RomFSOffsetInMediaUnits} (0x{partitionHeader.RomFSOffsetInMediaUnits:X})");
-                        Console.WriteLine($"    RomFS size, in media units: {partitionHeader.RomFSSizeInMediaUnits} (0x{partitionHeader.RomFSSizeInMediaUnits:X})");
-                        Console.WriteLine($"    RomFS hash region size, in media units: {partitionHeader.RomFSHashRegionSizeInMediaUnits} (0x{partitionHeader.RomFSHashRegionSizeInMediaUnits:X})");
-                        Console.WriteLine($"    Reserved 4: {BitConverter.ToString(partitionHeader.Reserved4).Replace('-', ' ')}");
-                        Console.WriteLine($"    ExeFS superblock SHA-256 hash: {BitConverter.ToString(partitionHeader.ExeFSSuperblockHash).Replace('-', ' ')}");
-                        Console.WriteLine($"    RomFS superblock SHA-256 hash: {BitConverter.ToString(partitionHeader.RomFSSuperblockHash).Replace('-', ' ')}");
+                        builder.AppendLine($"    RSA-2048 SHA-256 signature: {BitConverter.ToString(partitionHeader.RSA2048Signature).Replace('-', ' ')}");
+                        builder.AppendLine($"    Magic ID: {partitionHeader.MagicID} (0x{partitionHeader.MagicID:X})");
+                        builder.AppendLine($"    Content size in media units: {partitionHeader.ContentSizeInMediaUnits} (0x{partitionHeader.ContentSizeInMediaUnits:X})");
+                        builder.AppendLine($"    Partition ID: {partitionHeader.PartitionId} (0x{partitionHeader.PartitionId:X})");
+                        builder.AppendLine($"    Maker code: {partitionHeader.MakerCode} (0x{partitionHeader.MakerCode:X})");
+                        builder.AppendLine($"    Version: {partitionHeader.Version} (0x{partitionHeader.Version:X})");
+                        builder.AppendLine($"    Verification hash: {partitionHeader.VerificationHash} (0x{partitionHeader.VerificationHash:X})");
+                        builder.AppendLine($"    Program ID: {BitConverter.ToString(partitionHeader.ProgramId).Replace('-', ' ')}");
+                        builder.AppendLine($"    Reserved 1: {BitConverter.ToString(partitionHeader.Reserved1).Replace('-', ' ')}");
+                        builder.AppendLine($"    Logo region SHA-256 hash: {BitConverter.ToString(partitionHeader.LogoRegionHash).Replace('-', ' ')}");
+                        builder.AppendLine($"    Product code: {partitionHeader.ProductCode} (0x{partitionHeader.ProductCode:X})");
+                        builder.AppendLine($"    Extended header SHA-256 hash: {BitConverter.ToString(partitionHeader.ExtendedHeaderHash).Replace('-', ' ')}");
+                        builder.AppendLine($"    Extended header size in bytes: {partitionHeader.ExtendedHeaderSizeInBytes} (0x{partitionHeader.ExtendedHeaderSizeInBytes:X})");
+                        builder.AppendLine($"    Reserved 2: {BitConverter.ToString(partitionHeader.Reserved2).Replace('-', ' ')}");
+                        builder.AppendLine("    Flags:");
+                        builder.AppendLine($"      Reserved 0: {partitionHeader.Flags.Reserved0} (0x{partitionHeader.Flags.Reserved0:X})");
+                        builder.AppendLine($"      Reserved 1: {partitionHeader.Flags.Reserved1} (0x{partitionHeader.Flags.Reserved1:X})");
+                        builder.AppendLine($"      Reserved 2: {partitionHeader.Flags.Reserved2} (0x{partitionHeader.Flags.Reserved2:X})");
+                        builder.AppendLine($"      Crypto method: {partitionHeader.Flags.CryptoMethod} (0x{partitionHeader.Flags.CryptoMethod:X})");
+                        builder.AppendLine($"      Content platform: {partitionHeader.Flags.ContentPlatform} (0x{partitionHeader.Flags.ContentPlatform:X})");
+                        builder.AppendLine($"      Content type: {partitionHeader.Flags.MediaPlatformIndex} (0x{partitionHeader.Flags.MediaPlatformIndex:X})");
+                        builder.AppendLine($"      Content unit size: {partitionHeader.Flags.ContentUnitSize} (0x{partitionHeader.Flags.ContentUnitSize:X})");
+                        builder.AppendLine($"      Bitmasks: {partitionHeader.Flags.BitMasks} (0x{partitionHeader.Flags.BitMasks:X})");
+                        builder.AppendLine($"    Plain region offset, in media units: {partitionHeader.PlainRegionOffsetInMediaUnits} (0x{partitionHeader.PlainRegionOffsetInMediaUnits:X})");
+                        builder.AppendLine($"    Plain region size, in media units: {partitionHeader.PlainRegionSizeInMediaUnits} (0x{partitionHeader.PlainRegionSizeInMediaUnits:X})");
+                        builder.AppendLine($"    Logo region offset, in media units: {partitionHeader.LogoRegionOffsetInMediaUnits} (0x{partitionHeader.LogoRegionOffsetInMediaUnits:X})");
+                        builder.AppendLine($"    Logo region size, in media units: {partitionHeader.LogoRegionSizeInMediaUnits} (0x{partitionHeader.LogoRegionSizeInMediaUnits:X})");
+                        builder.AppendLine($"    ExeFS offset, in media units: {partitionHeader.ExeFSOffsetInMediaUnits} (0x{partitionHeader.ExeFSOffsetInMediaUnits:X})");
+                        builder.AppendLine($"    ExeFS size, in media units: {partitionHeader.ExeFSSizeInMediaUnits} (0x{partitionHeader.ExeFSSizeInMediaUnits:X})");
+                        builder.AppendLine($"    ExeFS hash region size, in media units: {partitionHeader.ExeFSHashRegionSizeInMediaUnits} (0x{partitionHeader.ExeFSHashRegionSizeInMediaUnits:X})");
+                        builder.AppendLine($"    Reserved 3: {BitConverter.ToString(partitionHeader.Reserved3).Replace('-', ' ')}");
+                        builder.AppendLine($"    RomFS offset, in media units: {partitionHeader.RomFSOffsetInMediaUnits} (0x{partitionHeader.RomFSOffsetInMediaUnits:X})");
+                        builder.AppendLine($"    RomFS size, in media units: {partitionHeader.RomFSSizeInMediaUnits} (0x{partitionHeader.RomFSSizeInMediaUnits:X})");
+                        builder.AppendLine($"    RomFS hash region size, in media units: {partitionHeader.RomFSHashRegionSizeInMediaUnits} (0x{partitionHeader.RomFSHashRegionSizeInMediaUnits:X})");
+                        builder.AppendLine($"    Reserved 4: {BitConverter.ToString(partitionHeader.Reserved4).Replace('-', ' ')}");
+                        builder.AppendLine($"    ExeFS superblock SHA-256 hash: {BitConverter.ToString(partitionHeader.ExeFSSuperblockHash).Replace('-', ' ')}");
+                        builder.AppendLine($"    RomFS superblock SHA-256 hash: {BitConverter.ToString(partitionHeader.RomFSSuperblockHash).Replace('-', ' ')}");
                     }
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print metadata information
         /// </summary>
-        private void PrintMetaData()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintMetaData(StringBuilder builder)
         {
-            Console.WriteLine("  Meta Data Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Meta Data Information:");
+            builder.AppendLine("  -------------------------");
             if (_cia.MetaData == null || MetaSize == 0)
             {
-                Console.WriteLine(value: "  No meta file data");
+                builder.AppendLine(value: "  No meta file data");
             }
             else
             {
-                Console.WriteLine(value: $"  Title ID dependency list: {BitConverter.ToString(MD_TitleIDDependencyList).Replace('-', ' ')}");
-                Console.WriteLine($"  Reserved 1: {BitConverter.ToString(MD_Reserved1).Replace('-', ' ')}");
-                Console.WriteLine($"  Core version: {MD_CoreVersion} (0x{MD_CoreVersion:X})");
-                Console.WriteLine($"  Reserved 2: {BitConverter.ToString(MD_Reserved2).Replace('-', ' ')}");
-                Console.WriteLine($"  Icon data: {BitConverter.ToString(MD_IconData).Replace('-', ' ')}");
+                builder.AppendLine(value: $"  Title ID dependency list: {BitConverter.ToString(MD_TitleIDDependencyList).Replace('-', ' ')}");
+                builder.AppendLine($"  Reserved 1: {BitConverter.ToString(MD_Reserved1).Replace('-', ' ')}");
+                builder.AppendLine($"  Core version: {MD_CoreVersion} (0x{MD_CoreVersion:X})");
+                builder.AppendLine($"  Reserved 2: {BitConverter.ToString(MD_Reserved2).Replace('-', ' ')}");
+                builder.AppendLine($"  Icon data: {BitConverter.ToString(MD_IconData).Replace('-', ' ')}");
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
 #if NET6_0_OR_GREATER

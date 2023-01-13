@@ -1,5 +1,5 @@
-using System;
 using System.IO;
+using System.Text;
 using static BurnOutSharp.Models.VBSP.Constants;
 
 namespace BurnOutSharp.Wrappers
@@ -94,41 +94,47 @@ namespace BurnOutSharp.Wrappers
         #region Printing
 
         /// <inheritdoc/>
-        public override void PrettyPrint()
+        public override StringBuilder PrettyPrint()
         {
-            Console.WriteLine("VBSP Information:");
-            Console.WriteLine("-------------------------");
-            Console.WriteLine();
+            StringBuilder builder = new StringBuilder();
 
-            PrintHeader();
-            PrintLumps();
+            builder.AppendLine("VBSP Information:");
+            builder.AppendLine("-------------------------");
+            builder.AppendLine();
+
+            PrintHeader(builder);
+            PrintLumps(builder);
+
+            return builder;
         }
 
         /// <summary>
         /// Print header information
         /// </summary>
+        /// <param name="builder">StringBuilder to append information to</param>
         /// <remarks>Slightly out of order due to the lumps</remarks>
-        private void PrintHeader()
+        private void PrintHeader(StringBuilder builder)
         {
-            Console.WriteLine("  Header Information:");
-            Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Signature: {Signature}");
-            Console.WriteLine($"  Version: {Version} (0x{Version:X})");
-            Console.WriteLine($"  Map revision: {MapRevision} (0x{MapRevision:X})");
-            Console.WriteLine();
+            builder.AppendLine("  Header Information:");
+            builder.AppendLine("  -------------------------");
+            builder.AppendLine($"  Signature: {Signature}");
+            builder.AppendLine($"  Version: {Version} (0x{Version:X})");
+            builder.AppendLine($"  Map revision: {MapRevision} (0x{MapRevision:X})");
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print lumps information
         /// </summary>
+        /// <param name="builder">StringBuilder to append information to</param>
         /// <remarks>Technically part of the header</remarks>
-        private void PrintLumps()
+        private void PrintLumps(StringBuilder builder)
         {
-            Console.WriteLine("  Lumps Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Lumps Information:");
+            builder.AppendLine("  -------------------------");
             if (Lumps == null || Lumps.Length == 0)
             {
-                Console.WriteLine("  No lumps");
+                builder.AppendLine("  No lumps");
             }
             else
             {
@@ -146,14 +152,14 @@ namespace BurnOutSharp.Wrappers
                             break;
                     }
 
-                    Console.WriteLine($"  Lump {i}{specialLumpName}");
-                    Console.WriteLine($"    Offset: {lump.Offset} (0x{lump.Offset:X})");
-                    Console.WriteLine($"    Length: {lump.Length} (0x{lump.Length:X})");
-                    Console.WriteLine($"    Version: {lump.Version} (0x{lump.Version:X})");
-                    Console.WriteLine($"    4CC: {string.Join(", ", lump.FourCC)}");
+                    builder.AppendLine($"  Lump {i}{specialLumpName}");
+                    builder.AppendLine($"    Offset: {lump.Offset} (0x{lump.Offset:X})");
+                    builder.AppendLine($"    Length: {lump.Length} (0x{lump.Length:X})");
+                    builder.AppendLine($"    Version: {lump.Version} (0x{lump.Version:X})");
+                    builder.AppendLine($"    4CC: {string.Join(", ", lump.FourCC)}");
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
 #if NET6_0_OR_GREATER

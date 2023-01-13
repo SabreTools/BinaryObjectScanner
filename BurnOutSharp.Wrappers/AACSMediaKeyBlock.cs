@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Text;
 
 namespace BurnOutSharp.Wrappers
 {
@@ -82,135 +83,140 @@ namespace BurnOutSharp.Wrappers
         #region Printing
 
         /// <inheritdoc/>
-        public override void PrettyPrint()
+        public override StringBuilder PrettyPrint()
         {
-            Console.WriteLine("AACS Media Key Block Information:");
-            Console.WriteLine("-------------------------");
-            Console.WriteLine();
+            StringBuilder builder = new StringBuilder();
 
-            PrintRecords();
+            builder.AppendLine("AACS Media Key Block Information:");
+            builder.AppendLine("-------------------------");
+            builder.AppendLine();
+
+            PrintRecords(builder);
+
+            return builder;
         }
 
         /// <summary>
         /// Print records information
         /// </summary>
-        private void PrintRecords()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintRecords(StringBuilder builder)
         {
-            Console.WriteLine("  Records Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Records Information:");
+            builder.AppendLine("  -------------------------");
             if (Records == null || Records.Length == 0)
             {
-                Console.WriteLine("  No records");
+                builder.AppendLine("  No records");
             }
             else
             {
                 for (int i = 0; i < Records.Length; i++)
                 {
                     var record = Records[i];
-                    Console.WriteLine($"  Record Entry {i}");
-                    Console.WriteLine($"    Record type: {record.RecordType} (0x{record.RecordType:X})");
-                    Console.WriteLine($"    Record length: {record.RecordLength} (0x{record.RecordLength:X})");
+                    builder.AppendLine($"  Record Entry {i}");
+                    builder.AppendLine($"    Record type: {record.RecordType} (0x{record.RecordType:X})");
+                    builder.AppendLine($"    Record length: {record.RecordLength} (0x{record.RecordLength:X})");
 
                     switch (record.RecordType)
                     {
                         case Models.AACS.RecordType.EndOfMediaKeyBlock:
                             var eomkb = record as Models.AACS.EndOfMediaKeyBlockRecord;
-                            Console.WriteLine($"    Signature data: {BitConverter.ToString(eomkb.SignatureData ?? new byte[0]).Replace('-', ' ')}");
+                            builder.AppendLine($"    Signature data: {BitConverter.ToString(eomkb.SignatureData ?? new byte[0]).Replace('-', ' ')}");
                             break;
 
                         case Models.AACS.RecordType.ExplicitSubsetDifference:
                             var esd = record as Models.AACS.ExplicitSubsetDifferenceRecord;
-                            Console.WriteLine($"    Subset Differences:");
-                            Console.WriteLine("    -------------------------");
+                            builder.AppendLine($"    Subset Differences:");
+                            builder.AppendLine("    -------------------------");
                             if (esd.SubsetDifferences == null || esd.SubsetDifferences.Length == 0)
                             {
-                                Console.WriteLine($"    No subset differences");
+                                builder.AppendLine($"    No subset differences");
                             }
                             else
                             {
                                 for (int j = 0; j < esd.SubsetDifferences.Length; j++)
                                 {
                                     var sd = esd.SubsetDifferences[j];
-                                    Console.WriteLine($"    Subset Difference {j}");
-                                    Console.WriteLine($"      Mask: {sd.Mask} (0x{sd.Mask:X})");
-                                    Console.WriteLine($"      Number: {sd.Number} (0x{sd.Number:X})");
+                                    builder.AppendLine($"    Subset Difference {j}");
+                                    builder.AppendLine($"      Mask: {sd.Mask} (0x{sd.Mask:X})");
+                                    builder.AppendLine($"      Number: {sd.Number} (0x{sd.Number:X})");
                                 }
                             }
                             break;
 
                         case Models.AACS.RecordType.MediaKeyData:
                             var mkd = record as Models.AACS.MediaKeyDataRecord;
-                            Console.WriteLine($"    Media Keys:");
-                            Console.WriteLine("    -------------------------");
+                            builder.AppendLine($"    Media Keys:");
+                            builder.AppendLine("    -------------------------");
                             if (mkd.MediaKeyData == null || mkd.MediaKeyData.Length == 0)
                             {
-                                Console.WriteLine($"    No media keys");
+                                builder.AppendLine($"    No media keys");
                             }
                             else
                             {
                                 for (int j = 0; j < mkd.MediaKeyData.Length; j++)
                                 {
                                     var mk = mkd.MediaKeyData[j];
-                                    Console.WriteLine($"      Media key {j}: {BitConverter.ToString(mk ?? new byte[0]).Replace('-', ' ')}");
+                                    builder.AppendLine($"      Media key {j}: {BitConverter.ToString(mk ?? new byte[0]).Replace('-', ' ')}");
                                 }
                             }
                             break;
 
                         case Models.AACS.RecordType.SubsetDifferenceIndex:
                             var sdi = record as Models.AACS.SubsetDifferenceIndexRecord;
-                            Console.WriteLine($"    Span: {sdi.Span} (0x{sdi.Span:X})");
-                            Console.WriteLine($"    Offsets:");
-                            Console.WriteLine("    -------------------------");
+                            builder.AppendLine($"    Span: {sdi.Span} (0x{sdi.Span:X})");
+                            builder.AppendLine($"    Offsets:");
+                            builder.AppendLine("    -------------------------");
                             if (sdi.Offsets == null || sdi.Offsets.Length == 0)
                             {
-                                Console.WriteLine($"    No offsets");
+                                builder.AppendLine($"    No offsets");
                             }
                             else
                             {
                                 for (int j = 0; j < sdi.Offsets.Length; j++)
                                 {
                                     var offset = sdi.Offsets[j];
-                                    Console.WriteLine($"      Offset {j}: {offset} (0x{offset:X})");
+                                    builder.AppendLine($"      Offset {j}: {offset} (0x{offset:X})");
                                 }
                             }
                             break;
 
                         case Models.AACS.RecordType.TypeAndVersion:
                             var tav = record as Models.AACS.TypeAndVersionRecord;
-                            Console.WriteLine($"    Media key block type: {tav.MediaKeyBlockType} (0x{tav.MediaKeyBlockType:X})");
-                            Console.WriteLine($"    Version number: {tav.VersionNumber} (0x{tav.VersionNumber:X})");
+                            builder.AppendLine($"    Media key block type: {tav.MediaKeyBlockType} (0x{tav.MediaKeyBlockType:X})");
+                            builder.AppendLine($"    Version number: {tav.VersionNumber} (0x{tav.VersionNumber:X})");
                             break;
 
                         case Models.AACS.RecordType.DriveRevocationList:
                             var drl = record as Models.AACS.DriveRevocationListRecord;
-                            Console.WriteLine($"    Total number of entries: {drl.TotalNumberOfEntries} (0x{drl.TotalNumberOfEntries:X})");
-                            Console.WriteLine($"    Signature Blocks:");
-                            Console.WriteLine("    -------------------------");
+                            builder.AppendLine($"    Total number of entries: {drl.TotalNumberOfEntries} (0x{drl.TotalNumberOfEntries:X})");
+                            builder.AppendLine($"    Signature Blocks:");
+                            builder.AppendLine("    -------------------------");
                             if (drl.SignatureBlocks == null || drl.SignatureBlocks.Length == 0)
                             {
-                                Console.WriteLine($"    No signature blocks");
+                                builder.AppendLine($"    No signature blocks");
                             }
                             else
                             {
                                 for (int j = 0; j < drl.SignatureBlocks.Length; j++)
                                 {
                                     var block = drl.SignatureBlocks[j];
-                                    Console.WriteLine($"    Signature Block {j}");
-                                    Console.WriteLine($"      Number of entries: {block.NumberOfEntries}");
-                                    Console.WriteLine($"      Entry Fields:");
-                                    Console.WriteLine("      -------------------------");
+                                    builder.AppendLine($"    Signature Block {j}");
+                                    builder.AppendLine($"      Number of entries: {block.NumberOfEntries}");
+                                    builder.AppendLine($"      Entry Fields:");
+                                    builder.AppendLine("      -------------------------");
                                     if (block.EntryFields == null || block.EntryFields.Length == 0)
                                     {
-                                        Console.WriteLine($"      No entry fields");
+                                        builder.AppendLine($"      No entry fields");
                                     }
                                     else
                                     {
                                         for (int k = 0; k < block.EntryFields.Length; k++)
                                         {
                                             var ef = block.EntryFields[k];
-                                            Console.WriteLine($"      Entry {k}");
-                                            Console.WriteLine($"        Range: {ef.Range} (0x{ef.Range:X})");
-                                            Console.WriteLine($"        Drive ID: {BitConverter.ToString(ef.DriveID ?? new byte[0]).Replace('-', ' ')}");
+                                            builder.AppendLine($"      Entry {k}");
+                                            builder.AppendLine($"        Range: {ef.Range} (0x{ef.Range:X})");
+                                            builder.AppendLine($"        Drive ID: {BitConverter.ToString(ef.DriveID ?? new byte[0]).Replace('-', ' ')}");
                                         }
                                     }
                                 }
@@ -219,34 +225,34 @@ namespace BurnOutSharp.Wrappers
 
                         case Models.AACS.RecordType.HostRevocationList:
                             var hrl = record as Models.AACS.HostRevocationListRecord;
-                            Console.WriteLine($"    Total number of entries: {hrl.TotalNumberOfEntries} (0x{hrl.TotalNumberOfEntries:X})");
-                            Console.WriteLine($"    Signature Blocks:");
-                            Console.WriteLine("    -------------------------");
+                            builder.AppendLine($"    Total number of entries: {hrl.TotalNumberOfEntries} (0x{hrl.TotalNumberOfEntries:X})");
+                            builder.AppendLine($"    Signature Blocks:");
+                            builder.AppendLine("    -------------------------");
                             if (hrl.SignatureBlocks == null || hrl.SignatureBlocks.Length == 0)
                             {
-                                Console.WriteLine($"    No signature blocks");
+                                builder.AppendLine($"    No signature blocks");
                             }
                             else
                             {
                                 for (int j = 0; j < hrl.SignatureBlocks.Length; j++)
                                 {
                                     var block = hrl.SignatureBlocks[j];
-                                    Console.WriteLine($"    Signature Block {j}");
-                                    Console.WriteLine($"      Number of entries: {block.NumberOfEntries}");
-                                    Console.WriteLine($"      Entry Fields:");
-                                    Console.WriteLine("      -------------------------");
+                                    builder.AppendLine($"    Signature Block {j}");
+                                    builder.AppendLine($"      Number of entries: {block.NumberOfEntries}");
+                                    builder.AppendLine($"      Entry Fields:");
+                                    builder.AppendLine("      -------------------------");
                                     if (block.EntryFields == null || block.EntryFields.Length == 0)
                                     {
-                                        Console.WriteLine($"      No entry fields");
+                                        builder.AppendLine($"      No entry fields");
                                     }
                                     else
                                     {
                                         for (int k = 0; k < block.EntryFields.Length; k++)
                                         {
                                             var ef = block.EntryFields[k];
-                                            Console.WriteLine($"      Entry {k}");
-                                            Console.WriteLine($"        Range: {ef.Range} (0x{ef.Range:X})");
-                                            Console.WriteLine($"        Host ID: {BitConverter.ToString(ef.HostID ?? new byte[0]).Replace('-', ' ')}");
+                                            builder.AppendLine($"      Entry {k}");
+                                            builder.AppendLine($"        Range: {ef.Range} (0x{ef.Range:X})");
+                                            builder.AppendLine($"        Host ID: {BitConverter.ToString(ef.HostID ?? new byte[0]).Replace('-', ' ')}");
                                         }
                                     }
                                 }
@@ -255,17 +261,17 @@ namespace BurnOutSharp.Wrappers
 
                         case Models.AACS.RecordType.VerifyMediaKey:
                             var vmk = record as Models.AACS.VerifyMediaKeyRecord;
-                            Console.WriteLine($"    Ciphertext value: {BitConverter.ToString(vmk.CiphertextValue ?? new byte[0]).Replace('-', ' ')}");
+                            builder.AppendLine($"    Ciphertext value: {BitConverter.ToString(vmk.CiphertextValue ?? new byte[0]).Replace('-', ' ')}");
                             break;
 
                         case Models.AACS.RecordType.Copyright:
                             var c = record as Models.AACS.CopyrightRecord;
-                            Console.WriteLine($"    Copyright: {c.Copyright ?? "[NULL]"}");
+                            builder.AppendLine($"    Copyright: {c.Copyright ?? "[NULL]"}");
                             break;
                     }
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
 #if NET6_0_OR_GREATER

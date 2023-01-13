@@ -1,5 +1,5 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
+using System.Text;
 using SharpCompress.Compressors;
 using SharpCompress.Compressors.Deflate;
 
@@ -185,54 +185,60 @@ namespace BurnOutSharp.Wrappers
         #region Printing
 
         /// <inheritdoc/>
-        public override void PrettyPrint()
+        public override StringBuilder PrettyPrint()
         {
-            Console.WriteLine("BFPK Information:");
-            Console.WriteLine("-------------------------");
-            Console.WriteLine();
+            StringBuilder builder = new StringBuilder();
 
-            PrintHeader();
-            PrintFileTable();
+            builder.AppendLine("BFPK Information:");
+            builder.AppendLine("-------------------------");
+            builder.AppendLine();
+
+            PrintHeader(builder);
+            PrintFileTable(builder);
+
+            return builder;
         }
 
         /// <summary>
         /// Print header information
         /// </summary>
-        private void PrintHeader()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintHeader(StringBuilder builder)
         {
-            Console.WriteLine("  Header Information:");
-            Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Magic: {Magic}");
-            Console.WriteLine($"  Version: {Version} (0x{Version:X})");
-            Console.WriteLine($"  Files: {Files} (0x{Files:X})");
-            Console.WriteLine();
+            builder.AppendLine("  Header Information:");
+            builder.AppendLine("  -------------------------");
+            builder.AppendLine($"  Magic: {Magic}");
+            builder.AppendLine($"  Version: {Version} (0x{Version:X})");
+            builder.AppendLine($"  Files: {Files} (0x{Files:X})");
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print file table information
         /// </summary>
-        private void PrintFileTable()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintFileTable(StringBuilder builder)
         {
-            Console.WriteLine("  File Table Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  File Table Information:");
+            builder.AppendLine("  -------------------------");
             if (Files == 0 || FileTable == null || FileTable.Length == 0)
             {
-                Console.WriteLine("  No file table items");
+                builder.AppendLine("  No file table items");
             }
             else
             {
                 for (int i = 0; i < FileTable.Length; i++)
                 {
                     var entry = FileTable[i];
-                    Console.WriteLine($"  File Table Entry {i}");
-                    Console.WriteLine($"    Name size: {entry.NameSize} (0x{entry.NameSize:X})");
-                    Console.WriteLine($"    Name: {entry.Name}");
-                    Console.WriteLine($"    Uncompressed size: {entry.UncompressedSize} (0x{entry.UncompressedSize:X})");
-                    Console.WriteLine($"    Offset: {entry.Offset} (0x{entry.Offset:X})");
-                    Console.WriteLine($"    Compressed Size: {entry.CompressedSize} (0x{entry.CompressedSize:X})");
+                    builder.AppendLine($"  File Table Entry {i}");
+                    builder.AppendLine($"    Name size: {entry.NameSize} (0x{entry.NameSize:X})");
+                    builder.AppendLine($"    Name: {entry.Name}");
+                    builder.AppendLine($"    Uncompressed size: {entry.UncompressedSize} (0x{entry.UncompressedSize:X})");
+                    builder.AppendLine($"    Offset: {entry.Offset} (0x{entry.Offset:X})");
+                    builder.AppendLine($"    Compressed Size: {entry.CompressedSize} (0x{entry.CompressedSize:X})");
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
 #if NET6_0_OR_GREATER

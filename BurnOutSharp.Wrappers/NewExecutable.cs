@@ -275,146 +275,155 @@ namespace BurnOutSharp.Wrappers
         #region Printing
 
         /// <inheritdoc/>
-        public override void PrettyPrint()
+        public override StringBuilder PrettyPrint()
         {
-            Console.WriteLine("New Executable Information:");
-            Console.WriteLine("-------------------------");
-            Console.WriteLine();
+            StringBuilder builder = new StringBuilder();
+
+            builder.AppendLine("New Executable Information:");
+            builder.AppendLine("-------------------------");
+            builder.AppendLine();
 
             // Stub
-            PrintStubHeader();
-            PrintStubExtendedHeader();
+            PrintStubHeader(builder);
+            PrintStubExtendedHeader(builder);
 
             // Header
-            PrintHeader();
+            PrintHeader(builder);
 
             // Tables
-            PrintSegmentTable();
-            PrintResourceTable();
-            PrintResidentNameTable();
-            PrintModuleReferenceTable();
-            PrintImportedNameTable();
-            PrintEntryTable();
-            PrintNonresidentNameTable();
+            PrintSegmentTable(builder);
+            PrintResourceTable(builder);
+            PrintResidentNameTable(builder);
+            PrintModuleReferenceTable(builder);
+            PrintImportedNameTable(builder);
+            PrintEntryTable(builder);
+            PrintNonresidentNameTable(builder);
+
+            return builder;
         }
 
         /// <summary>
         /// Print stub header information
         /// </summary>
-        private void PrintStubHeader()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintStubHeader(StringBuilder builder)
         {
-            Console.WriteLine("  MS-DOS Stub Header Information:");
-            Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Magic number: {Stub_Magic}");
-            Console.WriteLine($"  Last page bytes: {Stub_LastPageBytes} (0x{Stub_LastPageBytes:X})");
-            Console.WriteLine($"  Pages: {Stub_Pages} (0x{Stub_Pages:X})");
-            Console.WriteLine($"  Relocation items: {Stub_RelocationItems} (0x{Stub_RelocationItems:X})");
-            Console.WriteLine($"  Header paragraph size: {Stub_HeaderParagraphSize} (0x{Stub_HeaderParagraphSize:X})");
-            Console.WriteLine($"  Minimum extra paragraphs: {Stub_MinimumExtraParagraphs} (0x{Stub_MinimumExtraParagraphs:X})");
-            Console.WriteLine($"  Maximum extra paragraphs: {Stub_MaximumExtraParagraphs} (0x{Stub_MaximumExtraParagraphs:X})");
-            Console.WriteLine($"  Initial SS value: {Stub_InitialSSValue} (0x{Stub_InitialSSValue:X})");
-            Console.WriteLine($"  Initial SP value: {Stub_InitialSPValue} (0x{Stub_InitialSPValue:X})");
-            Console.WriteLine($"  Checksum: {Stub_Checksum} (0x{Stub_Checksum:X})");
-            Console.WriteLine($"  Initial IP value: {Stub_InitialIPValue} (0x{Stub_InitialIPValue:X})");
-            Console.WriteLine($"  Initial CS value: {Stub_InitialCSValue} (0x{Stub_InitialCSValue:X})");
-            Console.WriteLine($"  Relocation table address: {Stub_RelocationTableAddr} (0x{Stub_RelocationTableAddr:X})");
-            Console.WriteLine($"  Overlay number: {Stub_OverlayNumber} (0x{Stub_OverlayNumber:X})");
-            Console.WriteLine();
+            builder.AppendLine("  MS-DOS Stub Header Information:");
+            builder.AppendLine("  -------------------------");
+            builder.AppendLine($"  Magic number: {Stub_Magic}");
+            builder.AppendLine($"  Last page bytes: {Stub_LastPageBytes} (0x{Stub_LastPageBytes:X})");
+            builder.AppendLine($"  Pages: {Stub_Pages} (0x{Stub_Pages:X})");
+            builder.AppendLine($"  Relocation items: {Stub_RelocationItems} (0x{Stub_RelocationItems:X})");
+            builder.AppendLine($"  Header paragraph size: {Stub_HeaderParagraphSize} (0x{Stub_HeaderParagraphSize:X})");
+            builder.AppendLine($"  Minimum extra paragraphs: {Stub_MinimumExtraParagraphs} (0x{Stub_MinimumExtraParagraphs:X})");
+            builder.AppendLine($"  Maximum extra paragraphs: {Stub_MaximumExtraParagraphs} (0x{Stub_MaximumExtraParagraphs:X})");
+            builder.AppendLine($"  Initial SS value: {Stub_InitialSSValue} (0x{Stub_InitialSSValue:X})");
+            builder.AppendLine($"  Initial SP value: {Stub_InitialSPValue} (0x{Stub_InitialSPValue:X})");
+            builder.AppendLine($"  Checksum: {Stub_Checksum} (0x{Stub_Checksum:X})");
+            builder.AppendLine($"  Initial IP value: {Stub_InitialIPValue} (0x{Stub_InitialIPValue:X})");
+            builder.AppendLine($"  Initial CS value: {Stub_InitialCSValue} (0x{Stub_InitialCSValue:X})");
+            builder.AppendLine($"  Relocation table address: {Stub_RelocationTableAddr} (0x{Stub_RelocationTableAddr:X})");
+            builder.AppendLine($"  Overlay number: {Stub_OverlayNumber} (0x{Stub_OverlayNumber:X})");
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print stub extended header information
         /// </summary>
-        private void PrintStubExtendedHeader()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintStubExtendedHeader(StringBuilder builder)
         {
-            Console.WriteLine("  MS-DOS Stub Extended Header Information:");
-            Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Reserved words: {string.Join(", ", Stub_Reserved1)}");
-            Console.WriteLine($"  OEM identifier: {Stub_OEMIdentifier} (0x{Stub_OEMIdentifier:X})");
-            Console.WriteLine($"  OEM information: {Stub_OEMInformation} (0x{Stub_OEMInformation:X})");
-            Console.WriteLine($"  Reserved words: {string.Join(", ", Stub_Reserved2)}");
-            Console.WriteLine($"  New EXE header address: {Stub_NewExeHeaderAddr} (0x{Stub_NewExeHeaderAddr:X})");
-            Console.WriteLine();
+            builder.AppendLine("  MS-DOS Stub Extended Header Information:");
+            builder.AppendLine("  -------------------------");
+            builder.AppendLine($"  Reserved words: {string.Join(", ", Stub_Reserved1)}");
+            builder.AppendLine($"  OEM identifier: {Stub_OEMIdentifier} (0x{Stub_OEMIdentifier:X})");
+            builder.AppendLine($"  OEM information: {Stub_OEMInformation} (0x{Stub_OEMInformation:X})");
+            builder.AppendLine($"  Reserved words: {string.Join(", ", Stub_Reserved2)}");
+            builder.AppendLine($"  New EXE header address: {Stub_NewExeHeaderAddr} (0x{Stub_NewExeHeaderAddr:X})");
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print header information
         /// </summary>
-        private void PrintHeader()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintHeader(StringBuilder builder)
         {
-            Console.WriteLine("  Header Information:");
-            Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Magic number: {Magic}");
-            Console.WriteLine($"  Linker version: {LinkerVersion} (0x{LinkerVersion:X})");
-            Console.WriteLine($"  Linker revision: {LinkerRevision} (0x{LinkerRevision:X})");
-            Console.WriteLine($"  Entry table offset: {EntryTableOffset} (0x{EntryTableOffset:X})");
-            Console.WriteLine($"  Entry table size: {EntryTableSize} (0x{EntryTableSize:X})");
-            Console.WriteLine($"  CRC checksum: {CrcChecksum} (0x{CrcChecksum:X})");
-            Console.WriteLine($"  Flag word: {FlagWord} (0x{FlagWord:X})");
-            Console.WriteLine($"  Automatic data segment number: {AutomaticDataSegmentNumber} (0x{AutomaticDataSegmentNumber:X})");
-            Console.WriteLine($"  Initial heap allocation: {InitialHeapAlloc} (0x{InitialHeapAlloc:X})");
-            Console.WriteLine($"  Initial stack allocation: {InitialStackAlloc} (0x{InitialStackAlloc:X})");
-            Console.WriteLine($"  Initial CS:IP setting: {InitialCSIPSetting} (0x{InitialCSIPSetting:X})");
-            Console.WriteLine($"  Initial SS:SP setting: {InitialSSSPSetting} (0x{InitialSSSPSetting:X})");
-            Console.WriteLine($"  File segment count: {FileSegmentCount} (0x{FileSegmentCount:X})");
-            Console.WriteLine($"  Module reference table size: {ModuleReferenceTableSize} (0x{ModuleReferenceTableSize:X})");
-            Console.WriteLine($"  Non-resident name table size: {NonResidentNameTableSize} (0x{NonResidentNameTableSize:X})");
-            Console.WriteLine($"  Segment table offset: {SegmentTableOffset} (0x{SegmentTableOffset:X})");
-            Console.WriteLine($"  Resource table offset: {ResourceTableOffset} (0x{ResourceTableOffset:X})");
-            Console.WriteLine($"  Resident name table offset: {ResidentNameTableOffset} (0x{ResidentNameTableOffset:X})");
-            Console.WriteLine($"  Module reference table offset: {ModuleReferenceTableOffset} (0x{ModuleReferenceTableOffset:X})");
-            Console.WriteLine($"  Imported names table offset: {ImportedNamesTableOffset} (0x{ImportedNamesTableOffset:X})");
-            Console.WriteLine($"  Non-resident name table offset: {NonResidentNamesTableOffset} (0x{NonResidentNamesTableOffset:X})");
-            Console.WriteLine($"  Moveable entries count: {MovableEntriesCount} (0x{MovableEntriesCount:X})");
-            Console.WriteLine($"  Segment alignment shift count: {SegmentAlignmentShiftCount} (0x{SegmentAlignmentShiftCount:X})");
-            Console.WriteLine($"  Resource entries count: {ResourceEntriesCount} (0x{ResourceEntriesCount:X})");
-            Console.WriteLine($"  Target operating system: {TargetOperatingSystem} (0x{TargetOperatingSystem:X})");
-            Console.WriteLine($"  Additional flags: {AdditionalFlags} (0x{AdditionalFlags:X})");
-            Console.WriteLine($"  Return thunk offset: {ReturnThunkOffset} (0x{ReturnThunkOffset:X})");
-            Console.WriteLine($"  Segment reference thunk offset: {SegmentReferenceThunkOffset} (0x{SegmentReferenceThunkOffset:X})");
-            Console.WriteLine($"  Minimum code swap area size: {MinCodeSwapAreaSize} (0x{MinCodeSwapAreaSize:X})");
-            Console.WriteLine($"  Windows SDK revision: {WindowsSDKRevision} (0x{WindowsSDKRevision:X})");
-            Console.WriteLine($"  Windows SDK version: {WindowsSDKVersion} (0x{WindowsSDKVersion:X})");
-            Console.WriteLine();
+            builder.AppendLine("  Header Information:");
+            builder.AppendLine("  -------------------------");
+            builder.AppendLine($"  Magic number: {Magic}");
+            builder.AppendLine($"  Linker version: {LinkerVersion} (0x{LinkerVersion:X})");
+            builder.AppendLine($"  Linker revision: {LinkerRevision} (0x{LinkerRevision:X})");
+            builder.AppendLine($"  Entry table offset: {EntryTableOffset} (0x{EntryTableOffset:X})");
+            builder.AppendLine($"  Entry table size: {EntryTableSize} (0x{EntryTableSize:X})");
+            builder.AppendLine($"  CRC checksum: {CrcChecksum} (0x{CrcChecksum:X})");
+            builder.AppendLine($"  Flag word: {FlagWord} (0x{FlagWord:X})");
+            builder.AppendLine($"  Automatic data segment number: {AutomaticDataSegmentNumber} (0x{AutomaticDataSegmentNumber:X})");
+            builder.AppendLine($"  Initial heap allocation: {InitialHeapAlloc} (0x{InitialHeapAlloc:X})");
+            builder.AppendLine($"  Initial stack allocation: {InitialStackAlloc} (0x{InitialStackAlloc:X})");
+            builder.AppendLine($"  Initial CS:IP setting: {InitialCSIPSetting} (0x{InitialCSIPSetting:X})");
+            builder.AppendLine($"  Initial SS:SP setting: {InitialSSSPSetting} (0x{InitialSSSPSetting:X})");
+            builder.AppendLine($"  File segment count: {FileSegmentCount} (0x{FileSegmentCount:X})");
+            builder.AppendLine($"  Module reference table size: {ModuleReferenceTableSize} (0x{ModuleReferenceTableSize:X})");
+            builder.AppendLine($"  Non-resident name table size: {NonResidentNameTableSize} (0x{NonResidentNameTableSize:X})");
+            builder.AppendLine($"  Segment table offset: {SegmentTableOffset} (0x{SegmentTableOffset:X})");
+            builder.AppendLine($"  Resource table offset: {ResourceTableOffset} (0x{ResourceTableOffset:X})");
+            builder.AppendLine($"  Resident name table offset: {ResidentNameTableOffset} (0x{ResidentNameTableOffset:X})");
+            builder.AppendLine($"  Module reference table offset: {ModuleReferenceTableOffset} (0x{ModuleReferenceTableOffset:X})");
+            builder.AppendLine($"  Imported names table offset: {ImportedNamesTableOffset} (0x{ImportedNamesTableOffset:X})");
+            builder.AppendLine($"  Non-resident name table offset: {NonResidentNamesTableOffset} (0x{NonResidentNamesTableOffset:X})");
+            builder.AppendLine($"  Moveable entries count: {MovableEntriesCount} (0x{MovableEntriesCount:X})");
+            builder.AppendLine($"  Segment alignment shift count: {SegmentAlignmentShiftCount} (0x{SegmentAlignmentShiftCount:X})");
+            builder.AppendLine($"  Resource entries count: {ResourceEntriesCount} (0x{ResourceEntriesCount:X})");
+            builder.AppendLine($"  Target operating system: {TargetOperatingSystem} (0x{TargetOperatingSystem:X})");
+            builder.AppendLine($"  Additional flags: {AdditionalFlags} (0x{AdditionalFlags:X})");
+            builder.AppendLine($"  Return thunk offset: {ReturnThunkOffset} (0x{ReturnThunkOffset:X})");
+            builder.AppendLine($"  Segment reference thunk offset: {SegmentReferenceThunkOffset} (0x{SegmentReferenceThunkOffset:X})");
+            builder.AppendLine($"  Minimum code swap area size: {MinCodeSwapAreaSize} (0x{MinCodeSwapAreaSize:X})");
+            builder.AppendLine($"  Windows SDK revision: {WindowsSDKRevision} (0x{WindowsSDKRevision:X})");
+            builder.AppendLine($"  Windows SDK version: {WindowsSDKVersion} (0x{WindowsSDKVersion:X})");
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print segment table information
         /// </summary>
-        private void PrintSegmentTable()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintSegmentTable(StringBuilder builder)
         {
-            Console.WriteLine("  Segment Table Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Segment Table Information:");
+            builder.AppendLine("  -------------------------");
             if (FileSegmentCount == 0 || SegmentTable.Length == 0)
             {
-                Console.WriteLine("  No segment table items");
+                builder.AppendLine("  No segment table items");
             }
             else
             {
                 for (int i = 0; i < SegmentTable.Length; i++)
                 {
                     var entry = SegmentTable[i];
-                    Console.WriteLine($"  Segment Table Entry {i}");
-                    Console.WriteLine($"    Offset: {entry.Offset} (0x{entry.Offset:X})");
-                    Console.WriteLine($"    Length: {entry.Length} (0x{entry.Length:X})");
-                    Console.WriteLine($"    Flag word: {entry.FlagWord} (0x{entry.FlagWord:X})");
-                    Console.WriteLine($"    Minimum allocation size: {entry.MinimumAllocationSize} (0x{entry.MinimumAllocationSize:X})");
+                    builder.AppendLine($"  Segment Table Entry {i}");
+                    builder.AppendLine($"    Offset: {entry.Offset} (0x{entry.Offset:X})");
+                    builder.AppendLine($"    Length: {entry.Length} (0x{entry.Length:X})");
+                    builder.AppendLine($"    Flag word: {entry.FlagWord} (0x{entry.FlagWord:X})");
+                    builder.AppendLine($"    Minimum allocation size: {entry.MinimumAllocationSize} (0x{entry.MinimumAllocationSize:X})");
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print resource table information
         /// </summary>
-        private void PrintResourceTable()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintResourceTable(StringBuilder builder)
         {
-            Console.WriteLine("  Resource Table Information:");
-            Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Alignment shift count: {ResourceTable.AlignmentShiftCount} (0x{ResourceTable.AlignmentShiftCount:X})");
+            builder.AppendLine("  Resource Table Information:");
+            builder.AppendLine("  -------------------------");
+            builder.AppendLine($"  Alignment shift count: {ResourceTable.AlignmentShiftCount} (0x{ResourceTable.AlignmentShiftCount:X})");
             if (ResourceEntriesCount == 0 || ResourceTable.ResourceTypes.Length == 0)
             {
-                Console.WriteLine("  No resource table items");
+                builder.AppendLine("  No resource table items");
             }
             else
             {
@@ -422,14 +431,14 @@ namespace BurnOutSharp.Wrappers
                 {
                     // TODO: If not integer type, print out name
                     var entry = ResourceTable.ResourceTypes[i];
-                    Console.WriteLine($"  Resource Table Entry {i}");
-                    Console.WriteLine($"    Type ID: {entry.TypeID} (0x{entry.TypeID:X}) (Is Integer Type: {entry.IsIntegerType()})");
-                    Console.WriteLine($"    Resource count: {entry.ResourceCount} (0x{entry.ResourceCount:X})");
-                    Console.WriteLine($"    Reserved: {entry.Reserved} (0x{entry.Reserved:X})");
-                    Console.WriteLine($"    Resources = ");
+                    builder.AppendLine($"  Resource Table Entry {i}");
+                    builder.AppendLine($"    Type ID: {entry.TypeID} (0x{entry.TypeID:X}) (Is Integer Type: {entry.IsIntegerType()})");
+                    builder.AppendLine($"    Resource count: {entry.ResourceCount} (0x{entry.ResourceCount:X})");
+                    builder.AppendLine($"    Reserved: {entry.Reserved} (0x{entry.Reserved:X})");
+                    builder.AppendLine($"    Resources = ");
                     if (entry.ResourceCount == 0 || entry.Resources.Length == 0)
                     {
-                        Console.WriteLine("      No resource items");
+                        builder.AppendLine("      No resource items");
                     }
                     else
                     {
@@ -437,12 +446,12 @@ namespace BurnOutSharp.Wrappers
                         {
                             // TODO: If not integer type, print out name
                             var resource = entry.Resources[j];
-                            Console.WriteLine($"      Resource Entry {i}");
-                            Console.WriteLine($"        Offset: {resource.Offset} (0x{resource.Offset:X})");
-                            Console.WriteLine($"        Length: {resource.Length} (0x{resource.Length:X})");
-                            Console.WriteLine($"        Flag word: {resource.FlagWord} (0x{resource.FlagWord:X})");
-                            Console.WriteLine($"        Resource ID: {resource.ResourceID} (0x{resource.ResourceID:X}) (Is Integer Type: {resource.IsIntegerType()})");
-                            Console.WriteLine($"        Reserved: {resource.Reserved} (0x{resource.Reserved:X})");
+                            builder.AppendLine($"      Resource Entry {i}");
+                            builder.AppendLine($"        Offset: {resource.Offset} (0x{resource.Offset:X})");
+                            builder.AppendLine($"        Length: {resource.Length} (0x{resource.Length:X})");
+                            builder.AppendLine($"        Flag word: {resource.FlagWord} (0x{resource.FlagWord:X})");
+                            builder.AppendLine($"        Resource ID: {resource.ResourceID} (0x{resource.ResourceID:X}) (Is Integer Type: {resource.IsIntegerType()})");
+                            builder.AppendLine($"        Reserved: {resource.Reserved} (0x{resource.Reserved:X})");
                         }
                     }
                 }
@@ -450,55 +459,57 @@ namespace BurnOutSharp.Wrappers
 
             if (ResourceTable.TypeAndNameStrings.Count == 0)
             {
-                Console.WriteLine("  No resource table type/name strings");
+                builder.AppendLine("  No resource table type/name strings");
             }
             else
             {
                 foreach (var typeAndNameString in ResourceTable.TypeAndNameStrings)
                 {
-                    Console.WriteLine($"  Resource Type/Name Offset {typeAndNameString.Key}");
-                    Console.WriteLine($"    Length: {typeAndNameString.Value.Length} (0x{typeAndNameString.Value.Length:X})");
-                    Console.WriteLine($"    Text: {(typeAndNameString.Value.Text != null ? Encoding.ASCII.GetString(typeAndNameString.Value.Text).TrimEnd('\0') : "[EMPTY]")}");
+                    builder.AppendLine($"  Resource Type/Name Offset {typeAndNameString.Key}");
+                    builder.AppendLine($"    Length: {typeAndNameString.Value.Length} (0x{typeAndNameString.Value.Length:X})");
+                    builder.AppendLine($"    Text: {(typeAndNameString.Value.Text != null ? Encoding.ASCII.GetString(typeAndNameString.Value.Text).TrimEnd('\0') : "[EMPTY]")}");
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print resident-name table information
         /// </summary>
-        private void PrintResidentNameTable()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintResidentNameTable(StringBuilder builder)
         {
-            Console.WriteLine("  Resident-Name Table Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Resident-Name Table Information:");
+            builder.AppendLine("  -------------------------");
             if (ResidentNameTableOffset == 0 || ResidentNameTable.Length == 0)
             {
-                Console.WriteLine("  No resident-name table items");
+                builder.AppendLine("  No resident-name table items");
             }
             else
             {
                 for (int i = 0; i < ResidentNameTable.Length; i++)
                 {
                     var entry = ResidentNameTable[i];
-                    Console.WriteLine($"  Resident-Name Table Entry {i}");
-                    Console.WriteLine($"    Length: {entry.Length} (0x{entry.Length:X})");
-                    Console.WriteLine($"    Name string: {(entry.NameString != null ? Encoding.ASCII.GetString(entry.NameString).TrimEnd('\0') : "[EMPTY]")}");
-                    Console.WriteLine($"    Ordinal number: {entry.OrdinalNumber} (0x{entry.OrdinalNumber:X})");
+                    builder.AppendLine($"  Resident-Name Table Entry {i}");
+                    builder.AppendLine($"    Length: {entry.Length} (0x{entry.Length:X})");
+                    builder.AppendLine($"    Name string: {(entry.NameString != null ? Encoding.ASCII.GetString(entry.NameString).TrimEnd('\0') : "[EMPTY]")}");
+                    builder.AppendLine($"    Ordinal number: {entry.OrdinalNumber} (0x{entry.OrdinalNumber:X})");
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print module-reference table information
         /// </summary>
-        private void PrintModuleReferenceTable()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintModuleReferenceTable(StringBuilder builder)
         {
-            Console.WriteLine("  Module-Reference Table Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Module-Reference Table Information:");
+            builder.AppendLine("  -------------------------");
             if (ModuleReferenceTableSize == 0 || ModuleReferenceTable.Length == 0)
             {
-                Console.WriteLine("  No module-reference table items");
+                builder.AppendLine("  No module-reference table items");
             }
             else
             {
@@ -506,96 +517,99 @@ namespace BurnOutSharp.Wrappers
                 {
                     // TODO: Read the imported names table and print value here
                     var entry = ModuleReferenceTable[i];
-                    Console.WriteLine($"  Module-Reference Table Entry {i}");
-                    Console.WriteLine($"    Offset: {entry.Offset} (adjusted to be {entry.Offset + Stub_NewExeHeaderAddr + ImportedNamesTableOffset})");
+                    builder.AppendLine($"  Module-Reference Table Entry {i}");
+                    builder.AppendLine($"    Offset: {entry.Offset} (adjusted to be {entry.Offset + Stub_NewExeHeaderAddr + ImportedNamesTableOffset})");
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print imported-name table information
         /// </summary>
-        private void PrintImportedNameTable()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintImportedNameTable(StringBuilder builder)
         {
-            Console.WriteLine("  Imported-Name Table Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Imported-Name Table Information:");
+            builder.AppendLine("  -------------------------");
             if (ImportedNamesTableOffset == 0 || ImportedNameTable.Count == 0)
             {
-                Console.WriteLine("  No imported-name table items");
+                builder.AppendLine("  No imported-name table items");
             }
             else
             {
                 foreach (var entry in ImportedNameTable)
                 {
-                    Console.WriteLine($"  Imported-Name Table at Offset {entry.Key}");
-                    Console.WriteLine($"    Length: {entry.Value.Length} (0x{entry.Value.Length:X})");
-                    Console.WriteLine($"    Name string: {(entry.Value.NameString != null ? Encoding.ASCII.GetString(entry.Value.NameString) : "[EMPTY]")}");
+                    builder.AppendLine($"  Imported-Name Table at Offset {entry.Key}");
+                    builder.AppendLine($"    Length: {entry.Value.Length} (0x{entry.Value.Length:X})");
+                    builder.AppendLine($"    Name string: {(entry.Value.NameString != null ? Encoding.ASCII.GetString(entry.Value.NameString) : "[EMPTY]")}");
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print entry table information
         /// </summary>
-        private void PrintEntryTable()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintEntryTable(StringBuilder builder)
         {
-            Console.WriteLine("  Entry Table Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Entry Table Information:");
+            builder.AppendLine("  -------------------------");
             if (EntryTableSize == 0 || EntryTable.Length == 0)
             {
-                Console.WriteLine("  No entry table items");
+                builder.AppendLine("  No entry table items");
             }
             else
             {
                 for (int i = 0; i < EntryTable.Length; i++)
                 {
                     var entry = EntryTable[i];
-                    Console.WriteLine($"  Entry Table Entry {i}");
-                    Console.WriteLine($"    Entry count: {entry.EntryCount} (0x{entry.EntryCount:X})");
-                    Console.WriteLine($"    Segment indicator: {entry.SegmentIndicator} (0x{entry.SegmentIndicator:X}) ({entry.GetEntryType()})");
+                    builder.AppendLine($"  Entry Table Entry {i}");
+                    builder.AppendLine($"    Entry count: {entry.EntryCount} (0x{entry.EntryCount:X})");
+                    builder.AppendLine($"    Segment indicator: {entry.SegmentIndicator} (0x{entry.SegmentIndicator:X}) ({entry.GetEntryType()})");
                     switch (entry.GetEntryType())
                     {
                         case BurnOutSharp.Models.NewExecutable.SegmentEntryType.FixedSegment:
-                            Console.WriteLine($"    Flag word: {entry.FixedFlagWord} (0x{entry.FixedFlagWord:X})");
-                            Console.WriteLine($"    Offset: {entry.FixedOffset} (0x{entry.FixedOffset:X})");
+                            builder.AppendLine($"    Flag word: {entry.FixedFlagWord} (0x{entry.FixedFlagWord:X})");
+                            builder.AppendLine($"    Offset: {entry.FixedOffset} (0x{entry.FixedOffset:X})");
                             break;
                         case BurnOutSharp.Models.NewExecutable.SegmentEntryType.MoveableSegment:
-                            Console.WriteLine($"    Flag word: {entry.MoveableFlagWord} (0x{entry.MoveableFlagWord:X})");
-                            Console.WriteLine($"    Reserved: {entry.MoveableReserved} (0x{entry.MoveableReserved:X})");
-                            Console.WriteLine($"    Segment number: {entry.MoveableSegmentNumber} (0x{entry.MoveableSegmentNumber:X})");
-                            Console.WriteLine($"    Offset: {entry.MoveableOffset} (0x{entry.MoveableOffset:X})");
+                            builder.AppendLine($"    Flag word: {entry.MoveableFlagWord} (0x{entry.MoveableFlagWord:X})");
+                            builder.AppendLine($"    Reserved: {entry.MoveableReserved} (0x{entry.MoveableReserved:X})");
+                            builder.AppendLine($"    Segment number: {entry.MoveableSegmentNumber} (0x{entry.MoveableSegmentNumber:X})");
+                            builder.AppendLine($"    Offset: {entry.MoveableOffset} (0x{entry.MoveableOffset:X})");
                             break;
                     }
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print nonresident-name table information
         /// </summary>
-        private void PrintNonresidentNameTable()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintNonresidentNameTable(StringBuilder builder)
         {
-            Console.WriteLine("  Nonresident-Name Table Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Nonresident-Name Table Information:");
+            builder.AppendLine("  -------------------------");
             if (NonResidentNameTableSize == 0 || NonResidentNameTable.Length == 0)
             {
-                Console.WriteLine("  No nonresident-name table items");
+                builder.AppendLine("  No nonresident-name table items");
             }
             else
             {
                 for (int i = 0; i < NonResidentNameTable.Length; i++)
                 {
                     var entry = NonResidentNameTable[i];
-                    Console.WriteLine($"  Nonresident-Name Table Entry {i}");
-                    Console.WriteLine($"    Length: {entry.Length} (0x{entry.Length:X})");
-                    Console.WriteLine($"    Name string: {(entry.NameString != null ? Encoding.ASCII.GetString(entry.NameString) : "[EMPTY]")}");
-                    Console.WriteLine($"    Ordinal number: {entry.OrdinalNumber} (0x{entry.OrdinalNumber:X})");
+                    builder.AppendLine($"  Nonresident-Name Table Entry {i}");
+                    builder.AppendLine($"    Length: {entry.Length} (0x{entry.Length:X})");
+                    builder.AppendLine($"    Name string: {(entry.NameString != null ? Encoding.ASCII.GetString(entry.NameString) : "[EMPTY]")}");
+                    builder.AppendLine($"    Ordinal number: {entry.OrdinalNumber} (0x{entry.OrdinalNumber:X})");
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
 #if NET6_0_OR_GREATER

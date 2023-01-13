@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 namespace BurnOutSharp.Wrappers
 {
@@ -344,147 +345,156 @@ namespace BurnOutSharp.Wrappers
         #region Printing
 
         /// <inheritdoc/>
-        public override void PrettyPrint()
+        public override StringBuilder PrettyPrint()
         {
-            Console.WriteLine("Compound File Binary Information:");
-            Console.WriteLine("-------------------------");
-            Console.WriteLine();
+            StringBuilder builder = new StringBuilder();
+            
+            builder.AppendLine("Compound File Binary Information:");
+            builder.AppendLine("-------------------------");
+            builder.AppendLine();
 
-            PrintFileHeader();
-            PrintFATSectorNumbers();
-            PrintMiniFATSectorNumbers();
-            PrintDIFATSectorNumbers();
-            PrintDirectoryEntries();
+            PrintFileHeader(builder);
+            PrintFATSectorNumbers(builder);
+            PrintMiniFATSectorNumbers(builder);
+            PrintDIFATSectorNumbers(builder);
+            PrintDirectoryEntries(builder);
+
+            return builder;
         }
 
         /// <summary>
         /// Print header information
         /// </summary>
-        private void PrintFileHeader()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintFileHeader(StringBuilder builder)
         {
-            Console.WriteLine("  File Header Information:");
-            Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Signature: {Signature} (0x{Signature:X})");
-            Console.WriteLine($"  CLSID: {CLSID}");
-            Console.WriteLine($"  Minor version: {MinorVersion} (0x{MinorVersion:X})");
-            Console.WriteLine($"  Major version: {MajorVersion} (0x{MajorVersion:X})");
-            Console.WriteLine($"  Byte order: {ByteOrder} (0x{ByteOrder:X})");
-            Console.WriteLine($"  Sector shift: {SectorShift} (0x{SectorShift:X}) => {SectorSize}");
-            Console.WriteLine($"  Mini sector shift: {MiniSectorShift} (0x{MiniSectorShift:X}) => {MiniSectorSize}");
-            Console.WriteLine($"  Reserved: {BitConverter.ToString(Reserved).Replace('-', ' ')}");
-            Console.WriteLine($"  Number of directory sectors: {NumberOfDirectorySectors} (0x{NumberOfDirectorySectors:X})");
-            Console.WriteLine($"  Number of FAT sectors: {NumberOfFATSectors} (0x{NumberOfFATSectors:X})");
-            Console.WriteLine($"  First directory sector location: {FirstDirectorySectorLocation} (0x{FirstDirectorySectorLocation:X})");
-            Console.WriteLine($"  Transaction signature number: {TransactionSignatureNumber} (0x{TransactionSignatureNumber:X})");
-            Console.WriteLine($"  Mini stream cutoff size: {MiniStreamCutoffSize} (0x{MiniStreamCutoffSize:X})");
-            Console.WriteLine($"  First mini FAT sector location: {FirstMiniFATSectorLocation} (0x{FirstMiniFATSectorLocation:X})");
-            Console.WriteLine($"  Number of mini FAT sectors: {NumberOfMiniFATSectors} (0x{NumberOfMiniFATSectors:X})");
-            Console.WriteLine($"  First DIFAT sector location: {FirstDIFATSectorLocation} (0x{FirstDIFATSectorLocation:X})");
-            Console.WriteLine($"  Number of DIFAT sectors: {NumberOfDIFATSectors} (0x{NumberOfDIFATSectors:X})");
-            Console.WriteLine($"  DIFAT:");
+            builder.AppendLine("  File Header Information:");
+            builder.AppendLine("  -------------------------");
+            builder.AppendLine($"  Signature: {Signature} (0x{Signature:X})");
+            builder.AppendLine($"  CLSID: {CLSID}");
+            builder.AppendLine($"  Minor version: {MinorVersion} (0x{MinorVersion:X})");
+            builder.AppendLine($"  Major version: {MajorVersion} (0x{MajorVersion:X})");
+            builder.AppendLine($"  Byte order: {ByteOrder} (0x{ByteOrder:X})");
+            builder.AppendLine($"  Sector shift: {SectorShift} (0x{SectorShift:X}) => {SectorSize}");
+            builder.AppendLine($"  Mini sector shift: {MiniSectorShift} (0x{MiniSectorShift:X}) => {MiniSectorSize}");
+            builder.AppendLine($"  Reserved: {BitConverter.ToString(Reserved).Replace('-', ' ')}");
+            builder.AppendLine($"  Number of directory sectors: {NumberOfDirectorySectors} (0x{NumberOfDirectorySectors:X})");
+            builder.AppendLine($"  Number of FAT sectors: {NumberOfFATSectors} (0x{NumberOfFATSectors:X})");
+            builder.AppendLine($"  First directory sector location: {FirstDirectorySectorLocation} (0x{FirstDirectorySectorLocation:X})");
+            builder.AppendLine($"  Transaction signature number: {TransactionSignatureNumber} (0x{TransactionSignatureNumber:X})");
+            builder.AppendLine($"  Mini stream cutoff size: {MiniStreamCutoffSize} (0x{MiniStreamCutoffSize:X})");
+            builder.AppendLine($"  First mini FAT sector location: {FirstMiniFATSectorLocation} (0x{FirstMiniFATSectorLocation:X})");
+            builder.AppendLine($"  Number of mini FAT sectors: {NumberOfMiniFATSectors} (0x{NumberOfMiniFATSectors:X})");
+            builder.AppendLine($"  First DIFAT sector location: {FirstDIFATSectorLocation} (0x{FirstDIFATSectorLocation:X})");
+            builder.AppendLine($"  Number of DIFAT sectors: {NumberOfDIFATSectors} (0x{NumberOfDIFATSectors:X})");
+            builder.AppendLine($"  DIFAT:");
             for (int i = 0; i < DIFAT.Length; i++)
             {
-                Console.WriteLine($"    DIFAT Entry {i}: {DIFAT[i]} (0x{DIFAT[i]:X})");
+                builder.AppendLine($"    DIFAT Entry {i}: {DIFAT[i]} (0x{DIFAT[i]:X})");
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print FAT sector numbers
         /// </summary>
-        private void PrintFATSectorNumbers()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintFATSectorNumbers(StringBuilder builder)
         {
-            Console.WriteLine("  FAT Sectors Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  FAT Sectors Information:");
+            builder.AppendLine("  -------------------------");
             if (FATSectorNumbers == null || FATSectorNumbers.Length == 0)
             {
-                Console.WriteLine("  No FAT sectors");
+                builder.AppendLine("  No FAT sectors");
             }
             else
             {
                 for (int i = 0; i < FATSectorNumbers.Length; i++)
                 {
-                    Console.WriteLine($"  FAT Sector Entry {i}: {FATSectorNumbers[i]} (0x{FATSectorNumbers[i]:X})");
+                    builder.AppendLine($"  FAT Sector Entry {i}: {FATSectorNumbers[i]} (0x{FATSectorNumbers[i]:X})");
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print mini FAT sector numbers
         /// </summary>
-        private void PrintMiniFATSectorNumbers()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintMiniFATSectorNumbers(StringBuilder builder)
         {
-            Console.WriteLine("  Mini FAT Sectors Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Mini FAT Sectors Information:");
+            builder.AppendLine("  -------------------------");
             if (MiniFATSectorNumbers == null || MiniFATSectorNumbers.Length == 0)
             {
-                Console.WriteLine("  No mini FAT sectors");
+                builder.AppendLine("  No mini FAT sectors");
             }
             else
             {
                 for (int i = 0; i < MiniFATSectorNumbers.Length; i++)
                 {
-                    Console.WriteLine($"  Mini FAT Sector Entry {i}: {MiniFATSectorNumbers[i]} (0x{MiniFATSectorNumbers[i]:X})");
+                    builder.AppendLine($"  Mini FAT Sector Entry {i}: {MiniFATSectorNumbers[i]} (0x{MiniFATSectorNumbers[i]:X})");
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         /// <summary>
         /// Print DIFAT sector numbers
         /// </summary>
-        private void PrintDIFATSectorNumbers()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintDIFATSectorNumbers(StringBuilder builder)
         {
-            Console.WriteLine("  DIFAT Sectors Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  DIFAT Sectors Information:");
+            builder.AppendLine("  -------------------------");
             if (DIFATSectorNumbers == null || DIFATSectorNumbers.Length == 0)
             {
-                Console.WriteLine("  No DIFAT sectors");
+                builder.AppendLine("  No DIFAT sectors");
             }
             else
             {
                 for (int i = 0; i < DIFATSectorNumbers.Length; i++)
                 {
-                    Console.WriteLine($"  DIFAT Sector Entry {i}: {DIFATSectorNumbers[i]} (0x{DIFATSectorNumbers[i]:X})");
+                    builder.AppendLine($"  DIFAT Sector Entry {i}: {DIFATSectorNumbers[i]} (0x{DIFATSectorNumbers[i]:X})");
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         // <summary>
         /// Print directory entries
         /// </summary>
-        private void PrintDirectoryEntries()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintDirectoryEntries(StringBuilder builder)
         {
-            Console.WriteLine("  Directory Entries Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Directory Entries Information:");
+            builder.AppendLine("  -------------------------");
             if (DirectoryEntries == null || DirectoryEntries.Length == 0)
             {
-                Console.WriteLine("  No directory entries");
+                builder.AppendLine("  No directory entries");
             }
             else
             {
                 for (int i = 0; i < DirectoryEntries.Length; i++)
                 {
                     var directoryEntry = DirectoryEntries[i];
-                    Console.WriteLine($"  Directory Entry {i}");
-                    Console.WriteLine($"    Name: {directoryEntry.Name}");
-                    Console.WriteLine($"    Name length: {directoryEntry.NameLength} (0x{directoryEntry.NameLength:X})");
-                    Console.WriteLine($"    Object type: {directoryEntry.ObjectType} (0x{directoryEntry.ObjectType:X})");
-                    Console.WriteLine($"    Color flag: {directoryEntry.ColorFlag} (0x{directoryEntry.ColorFlag:X})");
-                    Console.WriteLine($"    Left sibling ID: {directoryEntry.LeftSiblingID} (0x{directoryEntry.LeftSiblingID:X})");
-                    Console.WriteLine($"    Right sibling ID: {directoryEntry.RightSiblingID} (0x{directoryEntry.RightSiblingID:X})");
-                    Console.WriteLine($"    Child ID: {directoryEntry.ChildID} (0x{directoryEntry.ChildID:X})");
-                    Console.WriteLine($"    CLSID: {directoryEntry.CLSID}");
-                    Console.WriteLine($"    State bits: {directoryEntry.StateBits} (0x{directoryEntry.StateBits:X})");
-                    Console.WriteLine($"    Creation time: {directoryEntry.CreationTime} (0x{directoryEntry.CreationTime:X})");
-                    Console.WriteLine($"    Modification time: {directoryEntry.ModifiedTime} (0x{directoryEntry.ModifiedTime:X})");
-                    Console.WriteLine($"    Staring sector location: {directoryEntry.StartingSectorLocation} (0x{directoryEntry.StartingSectorLocation:X})");
-                    Console.WriteLine($"    Stream size: {directoryEntry.StreamSize} (0x{directoryEntry.StreamSize:X})");
+                    builder.AppendLine($"  Directory Entry {i}");
+                    builder.AppendLine($"    Name: {directoryEntry.Name}");
+                    builder.AppendLine($"    Name length: {directoryEntry.NameLength} (0x{directoryEntry.NameLength:X})");
+                    builder.AppendLine($"    Object type: {directoryEntry.ObjectType} (0x{directoryEntry.ObjectType:X})");
+                    builder.AppendLine($"    Color flag: {directoryEntry.ColorFlag} (0x{directoryEntry.ColorFlag:X})");
+                    builder.AppendLine($"    Left sibling ID: {directoryEntry.LeftSiblingID} (0x{directoryEntry.LeftSiblingID:X})");
+                    builder.AppendLine($"    Right sibling ID: {directoryEntry.RightSiblingID} (0x{directoryEntry.RightSiblingID:X})");
+                    builder.AppendLine($"    Child ID: {directoryEntry.ChildID} (0x{directoryEntry.ChildID:X})");
+                    builder.AppendLine($"    CLSID: {directoryEntry.CLSID}");
+                    builder.AppendLine($"    State bits: {directoryEntry.StateBits} (0x{directoryEntry.StateBits:X})");
+                    builder.AppendLine($"    Creation time: {directoryEntry.CreationTime} (0x{directoryEntry.CreationTime:X})");
+                    builder.AppendLine($"    Modification time: {directoryEntry.ModifiedTime} (0x{directoryEntry.ModifiedTime:X})");
+                    builder.AppendLine($"    Staring sector location: {directoryEntry.StartingSectorLocation} (0x{directoryEntry.StartingSectorLocation:X})");
+                    builder.AppendLine($"    Stream size: {directoryEntry.StreamSize} (0x{directoryEntry.StreamSize:X})");
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
 #if NET6_0_OR_GREATER

@@ -1,5 +1,5 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
+using System.Text;
 
 namespace BurnOutSharp.Wrappers
 {
@@ -147,61 +147,67 @@ namespace BurnOutSharp.Wrappers
         #region Printing
     
         /// <inheritdoc/>
-        public override void PrettyPrint()
+        public override StringBuilder PrettyPrint()
         {
-            Console.WriteLine("MS-DOS Executable Information:");
-            Console.WriteLine("-------------------------");
-            Console.WriteLine();
+            StringBuilder builder = new StringBuilder();
 
-            PrintHeader();
-            PrintRelocationTable();
+            builder.AppendLine("MS-DOS Executable Information:");
+            builder.AppendLine("-------------------------");
+            builder.AppendLine();
+
+            PrintHeader(builder);
+            PrintRelocationTable(builder);
+
+            return builder;
         }
 
         /// <summary>
         /// Print header information
         /// </summary>
-        private void PrintHeader()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintHeader(StringBuilder builder)
         {
-            Console.WriteLine("  Header Information:");
-            Console.WriteLine("  -------------------------");
-            Console.WriteLine($"  Magic number: {Magic}");
-            Console.WriteLine($"  Last page bytes: {LastPageBytes} (0x{LastPageBytes:X})");
-            Console.WriteLine($"  Pages: {Pages} (0x{Pages:X})");
-            Console.WriteLine($"  Relocation items: {RelocationItems} (0x{RelocationItems:X})");
-            Console.WriteLine($"  Header paragraph size: {HeaderParagraphSize} (0x{HeaderParagraphSize:X})");
-            Console.WriteLine($"  Minimum extra paragraphs: {MinimumExtraParagraphs} (0x{MinimumExtraParagraphs:X})");
-            Console.WriteLine($"  Maximum extra paragraphs: {MaximumExtraParagraphs} (0x{MaximumExtraParagraphs:X})");
-            Console.WriteLine($"  Initial SS value: {InitialSSValue} (0x{InitialSSValue:X})");
-            Console.WriteLine($"  Initial SP value: {InitialSPValue} (0x{InitialSPValue:X})");
-            Console.WriteLine($"  Checksum: {Checksum} (0x{Checksum:X})");
-            Console.WriteLine($"  Initial IP value: {InitialIPValue} (0x{InitialIPValue:X})");
-            Console.WriteLine($"  Initial CS value: {InitialCSValue} (0x{InitialCSValue:X})");
-            Console.WriteLine($"  Relocation table address: {RelocationTableAddr} (0x{RelocationTableAddr:X})");
-            Console.WriteLine($"  Overlay number: {OverlayNumber} (0x{OverlayNumber:X})");
+            builder.AppendLine("  Header Information:");
+            builder.AppendLine("  -------------------------");
+            builder.AppendLine($"  Magic number: {Magic}");
+            builder.AppendLine($"  Last page bytes: {LastPageBytes} (0x{LastPageBytes:X})");
+            builder.AppendLine($"  Pages: {Pages} (0x{Pages:X})");
+            builder.AppendLine($"  Relocation items: {RelocationItems} (0x{RelocationItems:X})");
+            builder.AppendLine($"  Header paragraph size: {HeaderParagraphSize} (0x{HeaderParagraphSize:X})");
+            builder.AppendLine($"  Minimum extra paragraphs: {MinimumExtraParagraphs} (0x{MinimumExtraParagraphs:X})");
+            builder.AppendLine($"  Maximum extra paragraphs: {MaximumExtraParagraphs} (0x{MaximumExtraParagraphs:X})");
+            builder.AppendLine($"  Initial SS value: {InitialSSValue} (0x{InitialSSValue:X})");
+            builder.AppendLine($"  Initial SP value: {InitialSPValue} (0x{InitialSPValue:X})");
+            builder.AppendLine($"  Checksum: {Checksum} (0x{Checksum:X})");
+            builder.AppendLine($"  Initial IP value: {InitialIPValue} (0x{InitialIPValue:X})");
+            builder.AppendLine($"  Initial CS value: {InitialCSValue} (0x{InitialCSValue:X})");
+            builder.AppendLine($"  Relocation table address: {RelocationTableAddr} (0x{RelocationTableAddr:X})");
+            builder.AppendLine($"  Overlay number: {OverlayNumber} (0x{OverlayNumber:X})");
         }
 
         /// <summary>
         /// Print relocation table information
         /// </summary>
-        private void PrintRelocationTable()
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintRelocationTable(StringBuilder builder)
         {
-            Console.WriteLine("  Relocation Table Information:");
-            Console.WriteLine("  -------------------------");
+            builder.AppendLine("  Relocation Table Information:");
+            builder.AppendLine("  -------------------------");
             if (RelocationItems == 0 || RelocationTable.Length == 0)
             {
-                Console.WriteLine("  No relocation table items");
+                builder.AppendLine("  No relocation table items");
             }
             else
             {
                 for (int i = 0; i < RelocationTable.Length; i++)
                 {
                     var entry = RelocationTable[i];
-                    Console.WriteLine($"  Relocation Table Entry {i}");
-                    Console.WriteLine($"    Offset: {entry.Offset} (0x{entry.Offset:X})");
-                    Console.WriteLine($"    Segment: {entry.Segment} (0x{entry.Segment:X})");
+                    builder.AppendLine($"  Relocation Table Entry {i}");
+                    builder.AppendLine($"    Offset: {entry.Offset} (0x{entry.Offset:X})");
+                    builder.AppendLine($"    Segment: {entry.Segment} (0x{entry.Segment:X})");
                 }
             }
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
 #if NET6_0_OR_GREATER
