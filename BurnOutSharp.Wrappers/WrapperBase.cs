@@ -285,7 +285,7 @@ namespace BurnOutSharp.Wrappers
         /// <summary>
         /// Pretty print the item information
         /// </summary>
-        public abstract void Print();
+        public abstract void PrettyPrint();
 
 #if NET6_0_OR_GREATER
 

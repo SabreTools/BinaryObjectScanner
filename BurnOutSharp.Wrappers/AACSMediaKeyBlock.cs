@@ -82,7 +82,7 @@ namespace BurnOutSharp.Wrappers
         #region Printing
 
         /// <inheritdoc/>
-        public override void Print()
+        public override void PrettyPrint()
         {
             Console.WriteLine("AACS Media Key Block Information:");
             Console.WriteLine("-------------------------");

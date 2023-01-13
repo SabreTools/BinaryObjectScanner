@@ -257,7 +257,7 @@ namespace Test
 #endif
                 // If we don't have the JSON flag
                 if (!json)
-                    wrapper.Print();
+                    wrapper.PrettyPrint();
             }
         }
     }

@@ -1096,7 +1096,7 @@ namespace BurnOutSharp.Wrappers
         }
 
         /// <inheritdoc/>
-        public override void Print()
+        public override void PrettyPrint()
         {
             Console.WriteLine("Portable Executable Information:");
             Console.WriteLine("-------------------------");

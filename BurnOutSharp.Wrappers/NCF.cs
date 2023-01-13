@@ -257,7 +257,7 @@ namespace BurnOutSharp.Wrappers
         #region Printing
 
         /// <inheritdoc/>
-        public override void Print()
+        public override void PrettyPrint()
         {
             Console.WriteLine("NCF Information:");
             Console.WriteLine("-------------------------");
