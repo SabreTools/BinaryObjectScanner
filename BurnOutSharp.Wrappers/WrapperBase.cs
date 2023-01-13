@@ -43,7 +43,7 @@ namespace BurnOutSharp.Wrappers
         {
             get
             {
-                var serializer = new System.Text.Json.JsonSerializerOptions { IncludeFields = true };
+                var serializer = new System.Text.Json.JsonSerializerOptions { IncludeFields = true, WriteIndented = true };
                 serializer.Converters.Add(new ConcreteAbstractSerializer());
                 serializer.Converters.Add(new ConcreteInterfaceSerializer());
                 serializer.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());

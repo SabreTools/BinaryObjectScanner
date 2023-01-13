@@ -139,7 +139,7 @@ namespace Test
             foreach (string inputPath in inputPaths)
             {
                 if (info)
-                    Printer.PrintPathInfo(inputPath, json, debug);
+                    Printer.PrintPathInfo(inputPath, json, outputPath, debug);
                 else if (extract)
                     Extractor.ExtractPath(inputPath, outputPath);
                 else
@@ -170,8 +170,8 @@ namespace Test
 #if NET6_0_OR_GREATER
             Console.WriteLine("-j, --json           Print executable info as JSON");
 #endif
-            Console.WriteLine("-x, --extract        Extract archive formats");
-            Console.WriteLine("-o, --outdir [PATH]  Set output path for extraction (REQUIRED)");
+            Console.WriteLine("-x, --extract        Extract archive formats (Requires -o)");
+            Console.WriteLine("-o, --outdir [PATH]  Set output path for information and extraction");
         }
     }
 }

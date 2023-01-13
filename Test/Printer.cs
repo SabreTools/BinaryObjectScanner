@@ -15,21 +15,22 @@ namespace Test
         /// </summary>
         /// <param name="path">File or directory path</param>
         /// <param name="json">Enable JSON output, if supported</param>
+        /// <param name="outputDirectory">Output directory path</param>
         /// <param name="debug">Enable debug output</param>
-        public static void PrintPathInfo(string path, bool json, bool debug)
+        public static void PrintPathInfo(string path, bool json, string outputDirectory, bool debug)
         {
             Console.WriteLine($"Checking possible path: {path}");
 
             // Check if the file or directory exists
             if (File.Exists(path))
             {
-                PrintFileInfo(path, json, debug);
+                PrintFileInfo(path, json, outputDirectory, debug);
             }
             else if (Directory.Exists(path))
             {
                 foreach (string file in Directory.EnumerateFiles(path, "*", SearchOption.AllDirectories))
                 {
-                    PrintFileInfo(file, json, debug);
+                    PrintFileInfo(file, json, outputDirectory, debug);
                 }
             }
             else
@@ -41,7 +42,7 @@ namespace Test
         /// <summary>
         /// Print information for a single file, if possible
         /// </summary>
-        private static void PrintFileInfo(string file, bool json, bool debug)
+        private static void PrintFileInfo(string file, bool json, string outputDirectory, bool debug)
         {
             Console.WriteLine($"Attempting to print info for {file}");
 
@@ -252,15 +253,49 @@ namespace Test
                 // If we have the JSON flag
                 if (json)
                 {
+                    // Create the output data
                     string serializedData = wrapper.ExportJSON();
                     Console.WriteLine(serializedData);
+
+                    // Create the output filename
+                    string filename = $"info-{DateTime.Now:yyyy-MM-dd_HHmmss}.json";
+
+                    // If we have an output directory
+                    if (!string.IsNullOrWhiteSpace(outputDirectory))
+                    {
+                        Directory.CreateDirectory(outputDirectory);
+                        filename = Path.Combine(outputDirectory, filename);
+                    }
+
+                    // Write the output data
+                    using (var sw = new StreamWriter(File.OpenWrite(filename)))
+                    {
+                        sw.WriteLine(serializedData);
+                    }
                 }
 #endif
                 // If we don't have the JSON flag
                 if (!json)
                 {
+                    // Create the output data
                     StringBuilder builder = wrapper.PrettyPrint();
                     Console.WriteLine(builder);
+
+                    // Create the output filename
+                    string filename = $"info-{DateTime.Now:yyyy-MM-dd_HHmmss}.txt";
+
+                    // If we have an output directory
+                    if (!string.IsNullOrWhiteSpace(outputDirectory))
+                    {
+                        Directory.CreateDirectory(outputDirectory);
+                        filename = Path.Combine(outputDirectory, filename);
+                    }
+
+                    // Write the output data
+                    using (var sw = new StreamWriter(File.OpenWrite(filename)))
+                    {
+                        sw.WriteLine(builder.ToString());
+                    }
                 }
             }
         }

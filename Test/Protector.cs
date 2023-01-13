@@ -29,7 +29,7 @@ namespace Test
             }
             catch (Exception ex)
             {
-                using (StreamWriter sw = new StreamWriter(File.OpenWrite($"{DateTime.Now:yyyy-MM-dd_HHmmss}-exception.txt")))
+                using (StreamWriter sw = new StreamWriter(File.OpenWrite($"exception-{DateTime.Now:yyyy-MM-dd_HHmmss}.txt")))
                 {
                     sw.WriteLine(ex);
                 }
@@ -49,7 +49,7 @@ namespace Test
                 return;
             }
 
-            using (var sw = new StreamWriter(File.OpenWrite($"{DateTime.Now:yyyy-MM-dd_HHmmss}.txt")))
+            using (var sw = new StreamWriter(File.OpenWrite($"protection-{DateTime.Now:yyyy-MM-dd_HHmmss}.txt")))
             {
                 foreach (string key in protections.Keys.OrderBy(k => k))
                 {
