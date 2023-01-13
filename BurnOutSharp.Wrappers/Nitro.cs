@@ -610,6 +610,13 @@ namespace BurnOutSharp.Wrappers
             Console.WriteLine();
         }
 
+#if NET6_0_OR_GREATER
+
+        /// <inheritdoc/>
+        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_cart, _jsonSerializerOptions);
+
+#endif
+
         #endregion
     }
 }

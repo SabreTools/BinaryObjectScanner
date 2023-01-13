@@ -13,21 +13,22 @@ namespace Test
         /// Wrapper to print information for a single path
         /// </summary>
         /// <param name="path">File or directory path</param>
+        /// <param name="json">Enable JSON output, if supported</param>
         /// <param name="debug">Enable debug output</param>
-        public static void PrintPathInfo(string path, bool debug)
+        public static void PrintPathInfo(string path, bool json, bool debug)
         {
             Console.WriteLine($"Checking possible path: {path}");
 
             // Check if the file or directory exists
             if (File.Exists(path))
             {
-                PrintFileInfo(path, debug);
+                PrintFileInfo(path, json, debug);
             }
             else if (Directory.Exists(path))
             {
                 foreach (string file in Directory.EnumerateFiles(path, "*", SearchOption.AllDirectories))
                 {
-                    PrintFileInfo(file, debug);
+                    PrintFileInfo(file, json, debug);
                 }
             }
             else
@@ -39,9 +40,14 @@ namespace Test
         /// <summary>
         /// Print information for a single file, if possible
         /// </summary>
-        private static void PrintFileInfo(string file, bool debug)
+        private static void PrintFileInfo(string file, bool json, bool debug)
         {
             Console.WriteLine($"Attempting to print info for {file}");
+
+#if NET6_0_OR_GREATER
+            // Setup the JSON output
+            string serializedData = null;
+#endif
 
             using (Stream stream = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
@@ -162,6 +168,11 @@ namespace Test
 
                     // Print the AACS MKB info to screen
                     mkb.Print();
+
+#if NET6_0_OR_GREATER
+                    // Assign the serialized data
+                    serializedData = mkb.ExportJSON();
+#endif
                 }
 
                 // BD+ SVM
@@ -181,6 +192,11 @@ namespace Test
 
                     // Print the BD+ SVM info to screen
                     svm.Print();
+
+#if NET6_0_OR_GREATER
+                    // Assign the serialized data
+                    serializedData = svm.ExportJSON();
+#endif
                 }
 
                 // BFPK archive
@@ -200,6 +216,11 @@ namespace Test
 
                     // Print the BFPK info to screen
                     bfpk.Print();
+
+#if NET6_0_OR_GREATER
+                    // Assign the serialized data
+                    serializedData = bfpk.ExportJSON();
+#endif
                 }
 
                 // BSP
@@ -219,6 +240,11 @@ namespace Test
 
                     // Print the BSP info to screen
                     bsp.Print();
+
+#if NET6_0_OR_GREATER
+                    // Assign the serialized data
+                    serializedData = bsp.ExportJSON();
+#endif
                 }
 
                 // CFB
@@ -238,6 +264,11 @@ namespace Test
 
                     // Print the CFB to screen
                     cfb.Print();
+
+#if NET6_0_OR_GREATER
+                    // Assign the serialized data
+                    serializedData = cfb.ExportJSON();
+#endif
                 }
 
                 // CIA
@@ -257,6 +288,11 @@ namespace Test
 
                     // Print the CIA info to screen
                     cia.Print();
+
+#if NET6_0_OR_GREATER
+                    // Assign the serialized data
+                    serializedData = cia.ExportJSON();
+#endif
                 }
 
                 // GCF
@@ -276,6 +312,11 @@ namespace Test
 
                     // Print the GCF info to screen
                     gcf.Print();
+
+#if NET6_0_OR_GREATER
+                    // Assign the serialized data
+                    serializedData = gcf.ExportJSON();
+#endif
                 }
 
                 // IS-CAB archive
@@ -321,6 +362,11 @@ namespace Test
 
                     // Print the cabinet info to screen
                     cabinet.Print();
+
+#if NET6_0_OR_GREATER
+                    // Assign the serialized data
+                    serializedData = cabinet.ExportJSON();
+#endif
                 }
 
                 // N3DS
@@ -340,6 +386,11 @@ namespace Test
 
                     // Print the N3DS info to screen
                     n3ds.Print();
+
+#if NET6_0_OR_GREATER
+                    // Assign the serialized data
+                    serializedData = n3ds.ExportJSON();
+#endif
                 }
 
                 // NCF
@@ -359,6 +410,11 @@ namespace Test
 
                     // Print the NCF info to screen
                     ncf.Print();
+
+#if NET6_0_OR_GREATER
+                    // Assign the serialized data
+                    serializedData = ncf.ExportJSON();
+#endif
                 }
 
                 // Nitro
@@ -378,6 +434,11 @@ namespace Test
 
                     // Print the Nitro info to screen
                     nitro.Print();
+
+#if NET6_0_OR_GREATER
+                    // Assign the serialized data
+                    serializedData = nitro.ExportJSON();
+#endif
                 }
 
                 // PAK
@@ -397,6 +458,11 @@ namespace Test
 
                     // Print the PAK info to screen
                     pak.Print();
+
+#if NET6_0_OR_GREATER
+                    // Assign the serialized data
+                    serializedData = pak.ExportJSON();
+#endif
                 }
 
                 // Quantum
@@ -416,6 +482,11 @@ namespace Test
 
                     // Print the Quantum info to screen
                     quantum.Print();
+
+#if NET6_0_OR_GREATER
+                    // Assign the serialized data
+                    serializedData = quantum.ExportJSON();
+#endif
                 }
 
                 // SGA
@@ -435,6 +506,11 @@ namespace Test
 
                     // Print the SGA info to screen
                     sga.Print();
+
+#if NET6_0_OR_GREATER
+                    // Assign the serialized data
+                    serializedData = sga.ExportJSON();
+#endif
                 }
 
                 // VBSP
@@ -454,6 +530,11 @@ namespace Test
 
                     // Print the VBSP info to screen
                     vbsp.Print();
+
+#if NET6_0_OR_GREATER
+                    // Assign the serialized data
+                    serializedData = vbsp.ExportJSON();
+#endif
                 }
 
                 // VPK
@@ -473,6 +554,11 @@ namespace Test
 
                     // Print the VPK info to screen
                     vpk.Print();
+
+#if NET6_0_OR_GREATER
+                    // Assign the serialized data
+                    serializedData = vpk.ExportJSON();
+#endif
                 }
 
                 // WAD
@@ -492,6 +578,11 @@ namespace Test
 
                     // Print the WAD info to screen
                     wad.Print();
+
+#if NET6_0_OR_GREATER
+                    // Assign the serialized data
+                    serializedData = wad.ExportJSON();
+#endif
                 }
 
                 // XZP
@@ -511,6 +602,11 @@ namespace Test
 
                     // Print the XZP info to screen
                     xzp.Print();
+
+#if NET6_0_OR_GREATER
+                    // Assign the serialized data
+                    serializedData = xzp.ExportJSON();
+#endif
                 }
 
                 // Everything else
@@ -522,6 +618,17 @@ namespace Test
                     return;
                 }
             }
+
+#if NET6_0_OR_GREATER
+
+            // If we have serialized data, write it out to a file
+            if (json && !string.IsNullOrEmpty(serializedData))
+            {
+                // No-op for now
+                Console.WriteLine(serializedData);
+            }
+
+#endif
         }
     }
 }

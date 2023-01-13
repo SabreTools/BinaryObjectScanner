@@ -18,7 +18,7 @@ namespace Test
             p.ProgressChanged += Protector.Changed;
 
             // Set initial values for scanner flags
-            bool debug = false, archives = true, contents = true, packers = true, paths = true, info = false, extract = false;
+            bool debug = false, archives = true, contents = true, json = false, packers = true, paths = true, info = false, extract = false;
             string outputPath = string.Empty;
             var inputPaths = new List<string>();
 
@@ -51,6 +51,15 @@ namespace Test
                     case "--no-contents":
                         contents = false;
                         break;
+
+#if NET6_0_OR_GREATER
+
+                    case "-j":
+                    case "--json":
+                        json = true;
+                        break;
+
+#endif
 
                     case "-np":
                     case "--no-packers":
@@ -130,7 +139,7 @@ namespace Test
             foreach (string inputPath in inputPaths)
             {
                 if (info)
-                    Printer.PrintPathInfo(inputPath, debug);
+                    Printer.PrintPathInfo(inputPath, json, debug);
                 else if (extract)
                     Extractor.ExtractPath(inputPath, outputPath);
                 else
@@ -158,6 +167,9 @@ namespace Test
             Console.WriteLine("-np, --no-packers    Disable scanning for packers");
             Console.WriteLine("-ns, --no-paths      Disable scanning for path checks");
             Console.WriteLine("-i, --info           Print executable info");
+#if NET6_0_OR_GREATER
+            Console.WriteLine("-j, --json           Print executable info as JSON");
+#endif
             Console.WriteLine("-x, --extract        Extract archive formats");
             Console.WriteLine("-o, --outdir [PATH]  Set output path for extraction (REQUIRED)");
         }

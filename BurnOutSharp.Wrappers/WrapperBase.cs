@@ -34,6 +34,25 @@ namespace BurnOutSharp.Wrappers
         /// <remarks>This is only populated if <see cref="_dataSource"/> is <see cref="DataSource.Stream"/></remarks>
         protected Stream _streamData = null;
 
+#if NET6_0_OR_GREATER
+
+        /// <summary>
+        /// JSON serializer options for output printing
+        /// </summary>
+        protected System.Text.Json.JsonSerializerOptions _jsonSerializerOptions
+        {
+            get
+            {
+                var serializer = new System.Text.Json.JsonSerializerOptions { IncludeFields = true };
+                serializer.Converters.Add(new ConcreteAbstractSerializer());
+                serializer.Converters.Add(new ConcreteInterfaceSerializer());
+                serializer.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+                return serializer;
+            }
+        }
+
+#endif
+
         #endregion
 
         #region Data
@@ -264,9 +283,18 @@ namespace BurnOutSharp.Wrappers
         #region Printing
 
         /// <summary>
-        /// Pretty print the Executable information
+        /// Pretty print the item information
         /// </summary>
         public abstract void Print();
+
+#if NET6_0_OR_GREATER
+
+        /// <summary>
+        /// Export the item information as JSON
+        /// </summary>
+        public abstract string ExportJSON();
+
+#endif
 
         #endregion
     }
