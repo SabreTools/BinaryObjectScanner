@@ -324,10 +324,14 @@ This section contains information on project and class organization principles t
 | `BurnOutSharp/PackerType` | At least one file per packer type. Partial classes allowed. |
 | `BurnOutSharp/ProtectionType` | At least one file per protection type. Partial classes allowed. |
 | `BurnOutSharp/Tools` | Two files - one for extension methods and one for utilities. |
-| `BurnOutSharp.Builder` | One file per executable type. |
+| `BurnOutSharp.ASN1` | Flat directory structure. |
+| `BurnOutSharp.Builders` | One file per executable type. |
+| `BurnOutSharp.Compression` | One directory per compression type. |
 | `BurnOutSharp.Matching` | Flat directory structure. Include interfaces and base classes. |
 | `BurnOutSharp.Models` | One directory per executable type. One file per object model. |
+| `BurnOutSharp.Utilities` | Flat directory structure. |
 | `BurnOutSharp.Wrappers` | One file per executable type. Common functionality goes in `WrapperBase.cs`. |
+| `psxt001z` | Flat directory structure. |
 | `Test` | All functionality lives in `Program.cs`. |
 
 If the project or directory you are looking for is not included in the above, please consider it to be outside the context of this document.
@@ -344,10 +348,14 @@ This section contains information on in-code organization principles that depend
 | `BurnOutSharp/PackerType` | `IContentCheck` implementations, `INewExecutableCheck` implementations, `IPortableExecutableCheck` implementations, `IPathCheck` implementations, `IScannable` implementations, helper methods. |
 | `BurnOutSharp/ProtectionType` |  `IContentCheck` implementations, `INewExecutableCheck` implementations, `IPortableExecutableCheck` implementations, `IPathCheck` implementations, `IScannable` implementations, helper methods.. |
 | `BurnOutSharp/Tools` | Methods grouped by function. Regions ordered alphabetically. |
-| `BurnOutSharp.Builder` | Two copies of each non-generic method: one for byte arrays and one for Streams. |
-| `BurnOutSharp.Matching` | Varies from file to file.. |
+| `BurnOutSharp.ASN1` | Partial classes suggested for different implmentations. |
+| `BurnOutSharp.Builders` | Two copies of each non-generic method: one for byte arrays and one for Streams. |
+| `BurnOutSharp.Compression` | Varies from file to file. |
+| `BurnOutSharp.Matching` | Varies from file to file. |
 | `BurnOutSharp.Models` | No methods at all, just properties. |
+| `BurnOutSharp.Utilities` | Varies from file to file. |
 | `BurnOutSharp.Wrappers` | Follow region and method grouping from existing wrappers. |
+| `psxt001z` | Varies from file to file. |
 | `Test` | New functionality should be added as a combination of a flag with a long and a short form, a new line in the help text, and a new method (if necessary). |
 
 If the project or directory you are looking for is not included in the above, please consider it to be outside the context of this document.
