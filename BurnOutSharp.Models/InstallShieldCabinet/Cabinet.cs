@@ -19,9 +19,9 @@ namespace BurnOutSharp.Models.InstallShieldCabinet
         public VolumeHeader VolumeHeader { get; set; }
 
         /// <summary>
-        /// Cabinet descriptor
+        /// Descriptor
         /// </summary>
-        public CabDescriptor CabinetDescriptor { get; set; }
+        public Descriptor Descriptor { get; set; }
 
         #endregion
 

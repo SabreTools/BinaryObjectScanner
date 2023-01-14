@@ -3,14 +3,29 @@ namespace BurnOutSharp.Models.InstallShieldCabinet
     /// <see href="https://github.com/twogood/unshield/blob/main/lib/cabfile.h"/>
     public sealed class CommonHeader
     {
+        /// <summary>
+        /// "ISc("
+        /// </summary>
         public string Signature;
 
+        /// <summary>
+        /// Encoded version
+        /// </summary>
         public uint Version;
 
+        /// <summary>
+        /// Volume information
+        /// </summary>
         public uint VolumeInfo;
 
-        public uint CabDescriptorOffset;
+        /// <summary>
+        /// Offset to cabinet descriptor
+        /// </summary>
+        public uint DescriptorOffset;
 
-        public uint CabDescriptorSize;
+        /// <summary>
+        /// Cabinet descriptor size
+        /// </summary>
+        public uint DescriptorSize;
     }
 }
