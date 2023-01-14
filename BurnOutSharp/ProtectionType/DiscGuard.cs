@@ -18,9 +18,9 @@ namespace BurnOutSharp.ProtectionType
     /// With a properly dumped SUB, the game seemingly begins to play as intended.
     /// DiscGuard is seemingly able to be detect so-called "active debuggers", based on text found in "Alternate.exe" (Redump entry 31914) and "Alt.exe" (Redump entries 46743, 46961, 79284, and 79374).
     /// There's a reference to a file "Dg.vbn" being present in "Alternate.exe" (Redump entry 31914) and "Alt.exe" (Redump entries 46743, 46961, 79284, and 79374), but no copy has been found in any sample so far.
-    /// There seem to be two distinct versions of DiscGuard, with one only being present on one known game (Redump entry 31914).
-    /// "Alternate.exe" in the outlying version is "Alt.exe" in the rest.
-    /// "TTR1.DLL" and "TTR2.DLL" in the outlying version appear to be "T111.DLL" and "T222.DLL" in the rest, respectively.
+    /// There are several distinct versions of DiscGuard, with the earliest only being present on one known game (Redump entry 31914).
+    /// "Alternate.exe" in the earlier version is "Alt.exe" in the rest.
+    /// "TTR1.DLL" and "TTR2.DLL" in the earlier version appear to be "T111.DLL" and "T222.DLL" in the rest, respectively.
     /// "IOSLink.sys" and "IOSLink.vxd" seem to be the same throughout all versions, even down to the reported File Version in "IOSLink.sys".
     /// There are other various DLLs, but their names seem to be different on every disc. Their filenames all seem to start with the letter "T", and it seems to be one of these specifically that the protected executable imports.
     /// These outlying DLLs are:
@@ -48,6 +48,10 @@ namespace BurnOutSharp.ProtectionType
             string name = pex.FileDescription;
             if (name?.StartsWith("IOSLinkNT", StringComparison.OrdinalIgnoreCase) == true)
                 return "DiscGuard";
+
+            // Found in "T29.dll" (Redump entry 31914).
+            if (name?.StartsWith("TTR Technologies DiscGuard (tm)", StringComparison.OrdinalIgnoreCase) == true)
+                return $"DiscGuard {GetVersion(pex)}";
 
             // Found in "T29.dll" (Redump entry 31914).
             name = pex.ProductName;
@@ -89,7 +93,7 @@ namespace BurnOutSharp.ProtectionType
                         0x0D, 0xF5, 0x49, 0x83, 0x8E, 0xAB, 0x85, 0x92, 0x78, 0x1D, 0x69, 0x1E,
                         0x44, 0xC6, 0xF6, 0xB4, 0x5F, 0x5F, 0xC2, 0x48, 0x5A, 0xED, 0x43, 0xD3,
                         0xA4, 0x41, 0x81
-                    }, "DiscGuard"),
+                    }, GetVersion, "DiscGuard"),
 
                     // Found in "T5375.dll" (Redump entry 79284), "TD352.dll" and "TE091.dll" (Redump entry 46743), "T71E1.dll" and "T7181.dll" (Redump entry 46961), and "TA0E4.DLL" (Redump entry 79374).
                     new ContentMatchSet(new byte?[]
@@ -116,7 +120,7 @@ namespace BurnOutSharp.ProtectionType
                         0x0A, 0xA7, 0xB7, 0xAE, 0x02, 0xCF, 0xAC, 0x5F, 0xB8, 0x03, 0x15, 0x80,
                         0x9A, 0x58, 0x5C, 0x03, 0x28, 0x31, 0x9E, 0xB8, 0x21, 0x5D, 0x07, 0xB3,
                         0xB9, 0xEC, 0x75, 0xBA, 0xC2, 0xC8, 0x9D, 0x6F, 0x7A, 0xA1, 0x00, 0x8A
-                    }, "DiscGuard"),
+                    }, GetVersion, "DiscGuard"),
                 };
 
                 string match = MatchUtil.GetFirstMatch(file, pex.GetFirstSectionData(".vbn"), matchers, includeDebug);
@@ -171,6 +175,28 @@ namespace BurnOutSharp.ProtectionType
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
+        }
+
+        /// <inheritdoc/>
+        private string GetVersion(PortableExecutable pex)
+        {
+            // Check the internal versions
+            string version = Tools.Utilities.GetInternalVersion(pex);
+            if (!string.IsNullOrEmpty(version))
+                return version;
+
+            return "(Unknown Version)";
+        }
+
+        /// <inheritdoc/>
+        private string GetVersion(string file, byte[] fileContent, List<int> positions)
+        {
+            // Check the internal versions
+            string version = Tools.Utilities.GetInternalVersion(file);
+            if (!string.IsNullOrEmpty(version))
+                return version;
+
+            return string.Empty;
         }
     }
 }
