@@ -1,6 +1,7 @@
 namespace BurnOutSharp.Models.InstallShieldCabinet
 {
     /// <see href="https://github.com/twogood/unshield/blob/main/lib/cabfile.h"/>
+    /// TODO: Should standard and high values be combined?
     public sealed class VolumeHeader
     {
         public uint DataOffset;
