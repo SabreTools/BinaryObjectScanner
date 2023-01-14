@@ -166,7 +166,7 @@ Below is a list of container formats that are supported in some way:
 | Half-Life 2 Level (VBSP) | Yes | Yes | Yes | |
 | INI configuration file | No | No | No | Used in other detections currently |
 | InstallShield Archive V3 (Z) | No | Yes | Yes | Via `UnshieldSharp` |
-| InstallShield CAB | No | Yes | Yes | Via `UnshieldSharp` |
+| InstallShield CAB | Yes | Yes | Yes | Via `UnshieldSharp` |
 | Linear Executable | No | No | No | Skeleton only |
 | Link Data Security encrypted file | No | Yes | No | |
 | Microsoft cabinet file | Yes | Yes | Yes | |
