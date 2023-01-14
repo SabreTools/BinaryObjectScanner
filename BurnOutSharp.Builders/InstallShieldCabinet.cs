@@ -131,7 +131,7 @@ namespace BurnOutSharp.Builders
             #region Directory Descriptors
 
             // Create and fill the directory descriptors
-            cabinet.DirectoryDescriptors = new FileDescriptor[descriptor.DirectoryCount];
+            cabinet.DirectoryNames = new string[descriptor.DirectoryCount];
             for (int i = 0; i < descriptor.DirectoryCount; i++)
             {
                 // Get the directory descriptor offset
@@ -147,8 +147,8 @@ namespace BurnOutSharp.Builders
                 data.Seek(offset, SeekOrigin.Begin);
 
                 // Create and add the file descriptor
-                FileDescriptor directoryDescriptor = ParseDirectoryDescriptor(data, GetMajorVersion(commonHeader));
-                cabinet.DirectoryDescriptors[i] = directoryDescriptor;
+                string directoryName = ParseDirectoryName(data, GetMajorVersion(commonHeader));
+                cabinet.DirectoryNames[i] = directoryName;
             }
 
             #endregion
@@ -673,10 +673,22 @@ namespace BurnOutSharp.Builders
                 component.FileGroupNames = new string[component.FileGroupCount];
                 for (int j = 0; j < component.FileGroupCount; j++)
                 {
+                    // Get the name offset
+                    uint nameOffset = data.ReadUInt32();
+
+                    // Cache the current offset
+                    long preNameOffset = data.Position;
+
+                    // Seek to the name offset
+                    data.Seek(nameOffset + descriptorOffset, SeekOrigin.Begin);
+
                     if (majorVersion >= 17)
                         component.FileGroupNames[j] = data.ReadString(Encoding.Unicode);
                     else
                         component.FileGroupNames[j] = data.ReadString(Encoding.ASCII);
+
+                    // Seek back to the original position
+                    data.Seek(preNameOffset, SeekOrigin.Begin);
                 }
             }
 
@@ -687,22 +699,18 @@ namespace BurnOutSharp.Builders
         }
 
         /// <summary>
-        /// Parse a Stream into a directory descriptor
+        /// Parse a Stream into a directory name
         /// </summary>
         /// <param name="data">Stream to parse</param>
         /// <param name="majorVersion">Major version of the cabinet</param>
-        /// <returns>Filled directory descriptor on success, null on error</returns>
-        private static FileDescriptor ParseDirectoryDescriptor(Stream data, int majorVersion)
+        /// <returns>Filled directory name on success, null on error</returns>
+        private static string ParseDirectoryName(Stream data, int majorVersion)
         {
-            FileDescriptor fileDescriptor = new FileDescriptor();
-
             // Read the string
             if (majorVersion >= 17)
-                fileDescriptor.Name = data.ReadString(Encoding.Unicode);
+                return data.ReadString(Encoding.Unicode);
             else
-                fileDescriptor.Name = data.ReadString(Encoding.ASCII);
-
-            return fileDescriptor;
+                return data.ReadString(Encoding.ASCII);
         }
 
         /// <summary>

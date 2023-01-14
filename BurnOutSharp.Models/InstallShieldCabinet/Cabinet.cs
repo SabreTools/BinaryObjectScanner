@@ -33,9 +33,9 @@ namespace BurnOutSharp.Models.InstallShieldCabinet
         public uint[] FileDescriptorOffsets { get; set; }
 
         /// <summary>
-        /// Directory file descriptors
+        /// Directory names
         /// </summary>
-        public FileDescriptor[] DirectoryDescriptors { get; set; }
+        public string[] DirectoryNames { get; set; }
 
         /// <summary>
         /// Standard file descriptors

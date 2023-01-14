@@ -162,8 +162,8 @@ namespace BurnOutSharp.Wrappers
 
         #region Directory Descriptors
 
-        /// <inheritdoc cref="Models.InstallShieldCabinet.Cabinet.DirectoryDescriptors"/>
-        public Models.InstallShieldCabinet.FileDescriptor[] DirectoryDescriptors => _cabinet.DirectoryDescriptors;
+        /// <inheritdoc cref="Models.InstallShieldCabinet.Cabinet.DirectoryNames"/>
+        public string[] DirectoryNames => _cabinet.DirectoryNames;
 
         #endregion
 
@@ -312,7 +312,7 @@ namespace BurnOutSharp.Wrappers
 
             // File Descriptors
             PrintFileDescriptorOffsets(builder);
-            PrintDirectoryDescriptors(builder);
+            PrintDirectoryNames(builder);
             PrintFileDescriptors(builder);
 
             // File Groups
@@ -472,35 +472,22 @@ namespace BurnOutSharp.Wrappers
         }
 
         /// <summary>
-        /// Print directory descriptors information
+        /// Print directory names information
         /// </summary>
         /// <param name="builder">StringBuilder to append information to</param>
-        private void PrintDirectoryDescriptors(StringBuilder builder)
+        private void PrintDirectoryNames(StringBuilder builder)
         {
-            builder.AppendLine("  Directory Descriptors:");
+            builder.AppendLine("  Directory Names:");
             builder.AppendLine("  -------------------------");
-            if (DirectoryDescriptors == null || DirectoryDescriptors.Length == 0)
+            if (DirectoryNames == null || DirectoryNames.Length == 0)
             {
-                builder.AppendLine("  No directory descriptors");
+                builder.AppendLine("  No directory names");
             }
             else
             {
-                for (int i = 0; i < DirectoryDescriptors.Length; i++)
+                for (int i = 0; i < DirectoryNames.Length; i++)
                 {
-                    var directoryDescriptor = DirectoryDescriptors[i];
-                    builder.AppendLine($"  Directory Descriptor {i}:");
-                    builder.AppendLine($"    Name offset: {directoryDescriptor.NameOffset} (0x{directoryDescriptor.NameOffset:X})");
-                    builder.AppendLine($"    Name: {directoryDescriptor.Name ?? "[NULL]"}");
-                    builder.AppendLine($"    Directory index: {directoryDescriptor.DirectoryIndex} (0x{directoryDescriptor.DirectoryIndex:X})");
-                    builder.AppendLine($"    Flags: {directoryDescriptor.Flags} (0x{directoryDescriptor.Flags:X})");
-                    builder.AppendLine($"    Expanded size: {directoryDescriptor.ExpandedSize} (0x{directoryDescriptor.ExpandedSize:X})");
-                    builder.AppendLine($"    Compressed size: {directoryDescriptor.CompressedSize} (0x{directoryDescriptor.CompressedSize:X})");
-                    builder.AppendLine($"    Data offset: {directoryDescriptor.DataOffset} (0x{directoryDescriptor.DataOffset:X})");
-                    builder.AppendLine($"    MD5: {BitConverter.ToString(directoryDescriptor.MD5 ?? new byte[0]).Replace('-', ' ')}");
-                    builder.AppendLine($"    Volume: {directoryDescriptor.Volume} (0x{directoryDescriptor.Volume:X})");
-                    builder.AppendLine($"    Link previous: {directoryDescriptor.LinkPrevious} (0x{directoryDescriptor.LinkPrevious:X})");
-                    builder.AppendLine($"    Link next: {directoryDescriptor.LinkNext} (0x{directoryDescriptor.LinkNext:X})");
-                    builder.AppendLine($"    Link flags: {directoryDescriptor.LinkFlags} (0x{directoryDescriptor.LinkFlags:X})");
+                    builder.AppendLine($"    Directory Name {i}: {DirectoryNames[i] ?? "[NULL]"}");
                 }
             }
             builder.AppendLine();
@@ -587,6 +574,7 @@ namespace BurnOutSharp.Wrappers
             if (FileGroups == null || FileGroups.Length == 0)
             {
                 builder.AppendLine("  No file groups");
+                builder.AppendLine();
             }
             else
             {
@@ -625,9 +613,9 @@ namespace BurnOutSharp.Wrappers
                         builder.AppendLine($"    Reserved 6: {BitConverter.ToString(fileGroup.Reserved6).Replace('-', ' ')}");
                         builder.AppendLine($"    Reserved 7: {BitConverter.ToString(fileGroup.Reserved7).Replace('-', ' ')}");
                     }
+                    builder.AppendLine();
                 }
             }
-            builder.AppendLine();
         }
 
         /// <summary>
@@ -676,6 +664,7 @@ namespace BurnOutSharp.Wrappers
             if (Components == null || Components.Length == 0)
             {
                 builder.AppendLine("  No components");
+                builder.AppendLine();
             }
             else
             {
@@ -739,9 +728,9 @@ namespace BurnOutSharp.Wrappers
                         builder.AppendLine($"    Reserved offset 7: {component.ReservedOffset7} (0x{component.ReservedOffset7:X})");
                         builder.AppendLine($"    Reserved offset 8: {component.ReservedOffset8} (0x{component.ReservedOffset8:X})");
                     }
+                    builder.AppendLine();
                 }
             }
-            builder.AppendLine();
         }
 
 #if NET6_0_OR_GREATER
