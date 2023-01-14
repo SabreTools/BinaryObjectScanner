@@ -93,7 +93,7 @@ namespace BurnOutSharp.ProtectionType
                         0x0D, 0xF5, 0x49, 0x83, 0x8E, 0xAB, 0x85, 0x92, 0x78, 0x1D, 0x69, 0x1E,
                         0x44, 0xC6, 0xF6, 0xB4, 0x5F, 0x5F, 0xC2, 0x48, 0x5A, 0xED, 0x43, 0xD3,
                         0xA4, 0x41, 0x81
-                    }, $"DiscGuard {GetVersion(pex)}"),
+                    }, GetVersion, "DiscGuard"),
 
                     // Found in "T5375.dll" (Redump entry 79284), "TD352.dll" and "TE091.dll" (Redump entry 46743), "T71E1.dll" and "T7181.dll" (Redump entry 46961), and "TA0E4.DLL" (Redump entry 79374).
                     new ContentMatchSet(new byte?[]
@@ -120,7 +120,7 @@ namespace BurnOutSharp.ProtectionType
                         0x0A, 0xA7, 0xB7, 0xAE, 0x02, 0xCF, 0xAC, 0x5F, 0xB8, 0x03, 0x15, 0x80,
                         0x9A, 0x58, 0x5C, 0x03, 0x28, 0x31, 0x9E, 0xB8, 0x21, 0x5D, 0x07, 0xB3,
                         0xB9, 0xEC, 0x75, 0xBA, 0xC2, 0xC8, 0x9D, 0x6F, 0x7A, 0xA1, 0x00, 0x8A
-                    }, $"DiscGuard {GetVersion(pex)}"),
+                    }, GetVersion, "DiscGuard"),
                 };
 
                 string match = MatchUtil.GetFirstMatch(file, pex.GetFirstSectionData(".vbn"), matchers, includeDebug);
@@ -186,6 +186,17 @@ namespace BurnOutSharp.ProtectionType
                 return version;
 
             return "(Unknown Version)";
+        }
+
+        /// <inheritdoc/>
+        private string GetVersion(string file, byte[] fileContent, List<int> positions)
+        {
+            // Check the internal versions
+            string version = Tools.Utilities.GetInternalVersion(file);
+            if (!string.IsNullOrEmpty(version))
+                return version;
+
+            return string.Empty;
         }
     }
 }
