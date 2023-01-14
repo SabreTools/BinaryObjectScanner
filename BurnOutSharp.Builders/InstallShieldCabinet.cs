@@ -18,7 +18,7 @@ namespace BurnOutSharp.Builders
         /// <param name="data">Byte array to parse</param>
         /// <param name="offset">Offset into the byte array</param>
         /// <returns>Filled cabinet on success, null on error</returns>
-        public static Header ParseCabinet(byte[] data, int offset)
+        public static Cabinet ParseCabinet(byte[] data, int offset)
         {
             // If the data is invalid
             if (data == null)
@@ -42,7 +42,7 @@ namespace BurnOutSharp.Builders
         /// </summary>
         /// <param name="data">Stream to parse</param>
         /// <returns>Filled cabinet on success, null on error</returns>
-        public static Header ParseCabinet(Stream data)
+        public static Cabinet ParseCabinet(Stream data)
         {
             // If the data is invalid
             if (data == null || data.Length == 0 || !data.CanSeek || !data.CanRead)
@@ -56,7 +56,7 @@ namespace BurnOutSharp.Builders
             int initialOffset = (int)data.Position;
 
             // Create a new cabinet to fill
-            var header = new Header();
+            var cabinet = new Cabinet();
 
             #region Common Header
 
@@ -66,7 +66,19 @@ namespace BurnOutSharp.Builders
                 return null;
 
             // Set the cabinet header
-            header.CommonHeader = commonHeader;
+            cabinet.CommonHeader = commonHeader;
+
+            #endregion
+
+            #region Volume Header
+
+            // Try to parse the volume header
+            var volumeHeader = ParseVolumeHeader(data, GetMajorVersion(commonHeader));
+            if (volumeHeader == null)
+                return null;
+
+            // Set the volume header
+            cabinet.VolumeHeader = volumeHeader;
 
             #endregion
 
@@ -86,7 +98,7 @@ namespace BurnOutSharp.Builders
                 return null;
 
             // Set the cabinet descriptor
-            header.CabinetDescriptor = cabinetDescriptor;
+            cabinet.CabinetDescriptor = cabinetDescriptor;
 
             #endregion
 
@@ -102,16 +114,16 @@ namespace BurnOutSharp.Builders
 
             // Get the number of file table items
             uint fileTableItems;
-            if (header.MajorVersion <= 5)
+            if (GetMajorVersion(commonHeader) <= 5)
                 fileTableItems = cabinetDescriptor.DirectoryCount + cabinetDescriptor.FileCount;
             else
                 fileTableItems = cabinetDescriptor.DirectoryCount;
 
             // Create and fill the file table
-            header.FileDescriptorOffsets = new uint[fileTableItems];
-            for (int i = 0; i < header.FileDescriptorOffsets.Length; i++)
+            cabinet.FileDescriptorOffsets = new uint[fileTableItems];
+            for (int i = 0; i < cabinet.FileDescriptorOffsets.Length; i++)
             {
-                header.FileDescriptorOffsets[i] = data.ReadUInt32();
+                cabinet.FileDescriptorOffsets[i] = data.ReadUInt32();
             }
 
             #endregion
@@ -119,13 +131,13 @@ namespace BurnOutSharp.Builders
             #region Directory Descriptors
 
             // Create and fill the directory descriptors
-            header.DirectoryDescriptors = new FileDescriptor[cabinetDescriptor.DirectoryCount];
+            cabinet.DirectoryDescriptors = new FileDescriptor[cabinetDescriptor.DirectoryCount];
             for (int i = 0; i < cabinetDescriptor.DirectoryCount; i++)
             {
                 // Get the directory descriptor offset
                 uint offset = cabinetDescriptorOffset
                     + cabinetDescriptor.FileTableOffset
-                    + header.FileDescriptorOffsets[i];
+                    + cabinet.FileDescriptorOffsets[i];
 
                 // If we have an invalid offset
                 if (offset < 0 || offset >= data.Length)
@@ -135,8 +147,8 @@ namespace BurnOutSharp.Builders
                 data.Seek(offset, SeekOrigin.Begin);
 
                 // Create and add the file descriptor
-                FileDescriptor directoryDescriptor = ParseDirectoryDescriptor(data, header.MajorVersion);
-                header.DirectoryDescriptors[i] = directoryDescriptor;
+                FileDescriptor directoryDescriptor = ParseDirectoryDescriptor(data, GetMajorVersion(commonHeader));
+                cabinet.DirectoryDescriptors[i] = directoryDescriptor;
             }
 
             #endregion
@@ -144,16 +156,16 @@ namespace BurnOutSharp.Builders
             #region File Descriptors
 
             // Create and fill the file descriptors
-            header.FileDescriptors = new FileDescriptor[cabinetDescriptor.FileCount];
+            cabinet.FileDescriptors = new FileDescriptor[cabinetDescriptor.FileCount];
             for (int i = 0; i < cabinetDescriptor.FileCount; i++)
             {
                 // Get the file descriptor offset
                 uint offset;
-                if (header.MajorVersion <= 5)
+                if (GetMajorVersion(commonHeader) <= 5)
                 {
                     offset = cabinetDescriptorOffset
                         + cabinetDescriptor.FileTableOffset
-                        + header.FileDescriptorOffsets[cabinetDescriptor.DirectoryCount + i];
+                        + cabinet.FileDescriptorOffsets[cabinetDescriptor.DirectoryCount + i];
                 }
                 else
                 {
@@ -171,8 +183,8 @@ namespace BurnOutSharp.Builders
                 data.Seek(offset, SeekOrigin.Begin);
 
                 // Create and add the file descriptor
-                FileDescriptor fileDescriptor = ParseFileDescriptor(data, header.MajorVersion, cabinetDescriptorOffset + cabinetDescriptor.FileTableOffset);
-                header.FileDescriptors[i] = fileDescriptor;
+                FileDescriptor fileDescriptor = ParseFileDescriptor(data, GetMajorVersion(commonHeader), cabinetDescriptorOffset + cabinetDescriptor.FileTableOffset);
+                cabinet.FileDescriptors[i] = fileDescriptor;
             }
 
             #endregion
@@ -180,7 +192,7 @@ namespace BurnOutSharp.Builders
             #region File Group Offsets
 
             // Create and fill the file group offsets
-            header.FileGroupOffsets = new Dictionary<long, OffsetList>();
+            cabinet.FileGroupOffsets = new Dictionary<long, OffsetList>();
             for (int i = 0; i < cabinetDescriptor.FileGroupOffsets.Length; i++)
             {
                 // Get the file group offset
@@ -197,8 +209,8 @@ namespace BurnOutSharp.Builders
                 data.Seek(offset, SeekOrigin.Begin);
 
                 // Create and add the offset
-                OffsetList offsetList = ParseOffsetList(data, header.MajorVersion, cabinetDescriptorOffset);
-                header.FileGroupOffsets[cabinetDescriptor.FileGroupOffsets[i]] = offsetList;
+                OffsetList offsetList = ParseOffsetList(data, GetMajorVersion(commonHeader), cabinetDescriptorOffset);
+                cabinet.FileGroupOffsets[cabinetDescriptor.FileGroupOffsets[i]] = offsetList;
 
                 // If we have a nonzero next offset
                 uint nextOffset = offsetList.NextOffset;
@@ -211,8 +223,8 @@ namespace BurnOutSharp.Builders
                     data.Seek(internalOffset, SeekOrigin.Begin);
 
                     // Create and add the offset
-                    offsetList = ParseOffsetList(data, header.MajorVersion, cabinetDescriptorOffset);
-                    header.FileGroupOffsets[nextOffset] = offsetList;
+                    offsetList = ParseOffsetList(data, GetMajorVersion(commonHeader), cabinetDescriptorOffset);
+                    cabinet.FileGroupOffsets[nextOffset] = offsetList;
 
                     // Set the next offset
                     nextOffset = offsetList.NextOffset;
@@ -225,7 +237,7 @@ namespace BurnOutSharp.Builders
 
             // Create and fill the file groups
             List<FileGroup> fileGroups = new List<FileGroup>();
-            foreach (var kvp in header.FileGroupOffsets)
+            foreach (var kvp in cabinet.FileGroupOffsets)
             {
                 // Get the offset
                 OffsetList list = kvp.Value;
@@ -236,21 +248,21 @@ namespace BurnOutSharp.Builders
                 data.Seek(list.DescriptorOffset + cabinetDescriptorOffset, SeekOrigin.Begin);
 
                 // Try to parse the file group
-                FileGroup fileGroup = ParseFileGroup(data, header.MajorVersion, cabinetDescriptorOffset);
+                FileGroup fileGroup = ParseFileGroup(data, GetMajorVersion(commonHeader), cabinetDescriptorOffset);
 
                 // Add the file group
                 fileGroups.Add(fileGroup);
             }
 
             // Set the file groups
-            header.FileGroups = fileGroups.ToArray();
+            cabinet.FileGroups = fileGroups.ToArray();
 
             #endregion
 
             #region Component Offsets
 
             // Create and fill the component offsets
-            header.ComponentOffsets = new Dictionary<long, OffsetList>();
+            cabinet.ComponentOffsets = new Dictionary<long, OffsetList>();
             for (int i = 0; i < cabinetDescriptor.ComponentOffsets.Length; i++)
             {
                 // Get the component offset
@@ -267,8 +279,8 @@ namespace BurnOutSharp.Builders
                 data.Seek(offset, SeekOrigin.Begin);
 
                 // Create and add the offset
-                OffsetList offsetList = ParseOffsetList(data, header.MajorVersion, cabinetDescriptorOffset);
-                header.ComponentOffsets[cabinetDescriptor.ComponentOffsets[i]] = offsetList;
+                OffsetList offsetList = ParseOffsetList(data, GetMajorVersion(commonHeader), cabinetDescriptorOffset);
+                cabinet.ComponentOffsets[cabinetDescriptor.ComponentOffsets[i]] = offsetList;
 
                 // If we have a nonzero next offset
                 uint nextOffset = offsetList.NextOffset;
@@ -281,8 +293,8 @@ namespace BurnOutSharp.Builders
                     data.Seek(internalOffset, SeekOrigin.Begin);
 
                     // Create and add the offset
-                    offsetList = ParseOffsetList(data, header.MajorVersion, cabinetDescriptorOffset);
-                    header.ComponentOffsets[nextOffset] = offsetList;
+                    offsetList = ParseOffsetList(data, GetMajorVersion(commonHeader), cabinetDescriptorOffset);
+                    cabinet.ComponentOffsets[nextOffset] = offsetList;
 
                     // Set the next offset
                     nextOffset = offsetList.NextOffset;
@@ -295,7 +307,7 @@ namespace BurnOutSharp.Builders
 
             // Create and fill the components
             List<Component> components = new List<Component>();
-            foreach (KeyValuePair<long, OffsetList> kvp in header.ComponentOffsets)
+            foreach (KeyValuePair<long, OffsetList> kvp in cabinet.ComponentOffsets)
             {
                 // Get the offset
                 OffsetList list = kvp.Value;
@@ -306,18 +318,18 @@ namespace BurnOutSharp.Builders
                 data.Seek(list.DescriptorOffset + cabinetDescriptorOffset, SeekOrigin.Begin);
 
                 // Try to parse the component
-                Component component = ParseComponent(data, header.MajorVersion, cabinetDescriptorOffset);
+                Component component = ParseComponent(data, GetMajorVersion(commonHeader), cabinetDescriptorOffset);
 
                 // Add the component
                 components.Add(component);
             }
 
             // Set the components
-            header.Components = components.ToArray();
+            cabinet.Components = components.ToArray();
 
             #endregion
 
-            return header;
+            return cabinet;
         }
 
         /// <summary>
@@ -340,6 +352,53 @@ namespace BurnOutSharp.Builders
             commonHeader.CabDescriptorSize = data.ReadUInt32();
 
             return commonHeader;
+        }
+
+        /// <summary>
+        /// Parse a Stream into a volume header
+        /// </summary>
+        /// <param name="data">Stream to parse</param>
+        /// <param name="majorVersion">Major version of the cabinet</param>
+        /// <returns>Filled volume header on success, null on error</returns>
+        private static VolumeHeader ParseVolumeHeader(Stream data, int majorVersion)
+        {
+            VolumeHeader volumeHeader = new VolumeHeader();
+
+            // Read the descriptor based on version
+            if (majorVersion <= 5)
+            {
+                volumeHeader.DataOffset = data.ReadUInt32();
+                _ = data.ReadBytes(0x04); // Skip 0x04 bytes, unknown data?
+                volumeHeader.FirstFileIndex = data.ReadUInt32();
+                volumeHeader.LastFileIndex = data.ReadUInt32();
+                volumeHeader.FirstFileOffset = data.ReadUInt32();
+                volumeHeader.FirstFileSizeExpanded = data.ReadUInt32();
+                volumeHeader.FirstFileSizeCompressed = data.ReadUInt32();
+                volumeHeader.LastFileOffset = data.ReadUInt32();
+                volumeHeader.LastFileSizeExpanded = data.ReadUInt32();
+                volumeHeader.LastFileSizeCompressed = data.ReadUInt32();
+            }
+            else
+            {
+                volumeHeader.DataOffset = data.ReadUInt32();
+                volumeHeader.DataOffsetHigh = data.ReadUInt32();
+                volumeHeader.FirstFileIndex = data.ReadUInt32();
+                volumeHeader.LastFileIndex = data.ReadUInt32();
+                volumeHeader.FirstFileOffset = data.ReadUInt32();
+                volumeHeader.FirstFileOffsetHigh = data.ReadUInt32();
+                volumeHeader.FirstFileSizeExpanded = data.ReadUInt32();
+                volumeHeader.FirstFileSizeExpandedHigh = data.ReadUInt32();
+                volumeHeader.FirstFileSizeCompressed = data.ReadUInt32();
+                volumeHeader.FirstFileSizeCompressedHigh = data.ReadUInt32();
+                volumeHeader.LastFileOffset = data.ReadUInt32();
+                volumeHeader.LastFileOffsetHigh = data.ReadUInt32();
+                volumeHeader.LastFileSizeExpanded = data.ReadUInt32();
+                volumeHeader.LastFileSizeExpandedHigh = data.ReadUInt32();
+                volumeHeader.LastFileSizeCompressed = data.ReadUInt32();
+                volumeHeader.LastFileSizeCompressedHigh = data.ReadUInt32();
+            }
+
+            return volumeHeader;
         }
 
         /// <summary>
@@ -599,51 +658,29 @@ namespace BurnOutSharp.Builders
             return fileDescriptor;
         }
 
+        #endregion
+
+        #region Helpers
+
         /// <summary>
-        /// Parse a Stream into a volume header
+        /// Get the major version of the cabinet
         /// </summary>
-        /// <param name="data">Stream to parse</param>
-        /// <param name="majorVersion">Major version of the cabinet</param>
-        /// <returns>Filled volume header on success, null on error</returns>
-        private static VolumeHeader ParseVolumeHeader(Stream data, int majorVersion)
+        /// <remarks>This should live in the wrapper but is needed during parsing</remarks>
+        private static int GetMajorVersion(CommonHeader commonHeader)
         {
-            VolumeHeader volumeHeader = new VolumeHeader();
-
-            // Read the descriptor based on version
-            if (majorVersion <= 5)
+            uint majorVersion = commonHeader.Version;
+            if (majorVersion >> 24 == 1)
             {
-                volumeHeader.DataOffset = data.ReadUInt32();
-                _ = data.ReadBytes(0x04); // Skip 0x04 bytes, unknown data?
-                volumeHeader.FirstFileIndex = data.ReadUInt32();
-                volumeHeader.LastFileIndex = data.ReadUInt32();
-                volumeHeader.FirstFileOffset = data.ReadUInt32();
-                volumeHeader.FirstFileSizeExpanded = data.ReadUInt32();
-                volumeHeader.FirstFileSizeCompressed = data.ReadUInt32();
-                volumeHeader.LastFileOffset = data.ReadUInt32();
-                volumeHeader.LastFileSizeExpanded = data.ReadUInt32();
-                volumeHeader.LastFileSizeCompressed = data.ReadUInt32();
+                majorVersion = (majorVersion >> 12) & 0x0F;
             }
-            else
+            else if (majorVersion >> 24 == 2 || majorVersion >> 24 == 4)
             {
-                volumeHeader.DataOffset = data.ReadUInt32();
-                volumeHeader.DataOffsetHigh = data.ReadUInt32();
-                volumeHeader.FirstFileIndex = data.ReadUInt32();
-                volumeHeader.LastFileIndex = data.ReadUInt32();
-                volumeHeader.FirstFileOffset = data.ReadUInt32();
-                volumeHeader.FirstFileOffsetHigh = data.ReadUInt32();
-                volumeHeader.FirstFileSizeExpanded = data.ReadUInt32();
-                volumeHeader.FirstFileSizeExpandedHigh = data.ReadUInt32();
-                volumeHeader.FirstFileSizeCompressed = data.ReadUInt32();
-                volumeHeader.FirstFileSizeCompressedHigh = data.ReadUInt32();
-                volumeHeader.LastFileOffset = data.ReadUInt32();
-                volumeHeader.LastFileOffsetHigh = data.ReadUInt32();
-                volumeHeader.LastFileSizeExpanded = data.ReadUInt32();
-                volumeHeader.LastFileSizeExpandedHigh = data.ReadUInt32();
-                volumeHeader.LastFileSizeCompressed = data.ReadUInt32();
-                volumeHeader.LastFileSizeCompressedHigh = data.ReadUInt32();
+                majorVersion = majorVersion & 0xFFFF;
+                if (majorVersion != 0)
+                    majorVersion /= 100;
             }
 
-            return volumeHeader;
+            return (int)majorVersion;
         }
 
         #endregion
