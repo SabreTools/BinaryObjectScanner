@@ -352,7 +352,7 @@ namespace Test
                     // If the cab file itself fails
                     try
                     {
-                        InstallShieldCabinet cabfile = InstallShieldCabinet.Open(file);
+                        var cabfile = UnshieldSharp.Cabinet.InstallShieldCabinet.Open(file);
                         for (int i = 0; i < cabfile.FileCount; i++)
                         {
                             // If an individual entry fails

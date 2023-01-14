@@ -155,19 +155,19 @@ namespace Test
 
                     // IS-CAB archive
                     case SupportedFileType.InstallShieldCAB:
-                        wrapperName = "IS-CAB archive";
-                        //wrapper = InstallShieldCAB.Create(stream);
+                        wrapperName = "InstallShield Cabinet";
+                        wrapper = InstallShieldCabinet.Create(stream);
                         break;
 
                     // MoPaQ (MPQ) archive
                     case SupportedFileType.MPQ:
                         wrapperName = "MoPaQ archive";
-                        //wrapper = InstallShieldCAB.Create(stream);
+                        //wrapper = MPQ.Create(stream);
                         break;
 
                     // MS-CAB archive
                     case SupportedFileType.MicrosoftCAB:
-                        wrapperName = "MS-CAB archive";
+                        wrapperName = "Microsoft Cabinet";
                         wrapper = MicrosoftCabinet.Create(stream);
                         break;
 
