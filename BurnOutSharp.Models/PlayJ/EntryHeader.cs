@@ -144,24 +144,6 @@ namespace BurnOutSharp.Models.PlayJ
 
         #region V2 Notes
 
-        // Header Layout (V2) [WIP]
-        // ------------------------------------------------------------------------------
-        // 0x00                                 Signature                       UInt32
-        // 0x04                                 Version                         UInt32 [0x0000000A]
-        // 0x08                                 UNKNOWN                         byte[36]
-        // 0x2A                                 Track Length                    UInt16
-        // 0x2C                                 Track                           String
-        // 0x2C+TL                              Artist Length                   UInt16
-        // 0x2E+TL                              Artist                          String
-        // 0x2E+TL+TAL                          Album Length                    UInt16
-        // 0x30+TL+TAL                          Album                           String
-        // 0x30+TL+TAL+AL                       Writer Length                   UInt16
-        // 0x32+TL+TAL+AL                       Writer                          String
-        // 0x32+TL+TAL+AL+WL                    Publisher Length                UInt16
-        // 0x34+TL+TAL+AL+WL                    Publisher                       String
-        // 0x34+TL+TAL+AL+WL+PL                 Label Length                    UInt16
-        // 0x36+TL+TAL+AL+WL+PL                 Label                           String
-
         // In the third block:
         //      lady.plj has 0x00000002 and references "ad006376_5.dat" after
 

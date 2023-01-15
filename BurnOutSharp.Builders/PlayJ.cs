@@ -101,7 +101,7 @@ namespace BurnOutSharp.Builders
                 var entryHeader = ParseAudioFile(data, currentOffset);
                 if (entryHeader == null)
                     return null;
-                
+
                 playlist.AudioFiles[i] = entryHeader;
             }
 
@@ -175,7 +175,7 @@ namespace BurnOutSharp.Builders
             data.Seek(offset, SeekOrigin.Begin);
 
             // Set the unknown value 2
-            audioFile.UnknownValue2 = data.ReadUInt32();;
+            audioFile.UnknownValue2 = data.ReadUInt32(); ;
 
             #endregion
 
@@ -235,21 +235,26 @@ namespace BurnOutSharp.Builders
             if (entryHeader.Signature != SignatureUInt32)
                 return null;
 
-            // Only V1 is supported currently
+            // Only V1 is fully supported
             entryHeader.Version = data.ReadUInt32();
-            if (entryHeader.Version != 0x00000000)
-                return null;
-
-            entryHeader.TrackID = data.ReadUInt32();
-            entryHeader.UnknownOffset1 = data.ReadUInt32();
-            entryHeader.UnknownOffset2 = data.ReadUInt32();
-            entryHeader.UnknownOffset3 = data.ReadUInt32();
-            entryHeader.Unknown1 = data.ReadUInt32();
-            entryHeader.Unknown2 = data.ReadUInt32();
-            entryHeader.Year = data.ReadUInt32();
-            entryHeader.TrackNumber = data.ReadByteValue();
-            entryHeader.Subgenre = (Subgenre)data.ReadByteValue();
-            entryHeader.Duration = data.ReadUInt32();
+            if (entryHeader.Version == 0x00000000)
+            {
+                entryHeader.TrackID = data.ReadUInt32();
+                entryHeader.UnknownOffset1 = data.ReadUInt32();
+                entryHeader.UnknownOffset2 = data.ReadUInt32();
+                entryHeader.UnknownOffset3 = data.ReadUInt32();
+                entryHeader.Unknown1 = data.ReadUInt32();
+                entryHeader.Unknown2 = data.ReadUInt32();
+                entryHeader.Year = data.ReadUInt32();
+                entryHeader.TrackNumber = data.ReadByteValue();
+                entryHeader.Subgenre = (Subgenre)data.ReadByteValue();
+                entryHeader.Duration = data.ReadUInt32();
+            }
+            else
+            {
+                // Discard the following pieces until we can figure out what they are
+                _ = data.ReadBytes(36);
+            }
 
             entryHeader.TrackLength = data.ReadUInt16();
             byte[] track = data.ReadBytes(entryHeader.TrackLength);
