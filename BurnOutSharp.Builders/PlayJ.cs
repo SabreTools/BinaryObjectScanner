@@ -358,6 +358,130 @@ namespace BurnOutSharp.Builders
         }
 
         /// <summary>
+        /// Parse a Stream into an audio header
+        /// </summary>
+        /// <param name="data">Stream to parse</param>
+        /// <returns>Filled audio header on success, null on error</returns>
+        private static AudioHeader ParseAudioHeader(Stream data)
+        {
+            // Cache the current offset
+            long initialOffset = data.Position;
+
+            // TODO: Use marshalling here instead of building
+            AudioHeader audioHeader;
+
+            // Get the common header pieces
+            uint signature = data.ReadUInt32();
+            if (signature != SignatureUInt32)
+                return null;
+            
+            uint version = data.ReadUInt32();
+
+            // Build the header according to version
+            uint unknownOffset1;
+            switch (version)
+            {
+                // Version 1
+                case 0x00000000:
+                    AudioHeaderV1 v1 = new AudioHeaderV1();
+
+                    v1.Signature = signature;
+                    v1.Version = version;
+                    v1.TrackID = data.ReadUInt32();
+                    v1.UnknownOffset1 = data.ReadUInt32();
+                    v1.UnknownOffset2 = data.ReadUInt32();
+                    v1.UnknownOffset3 = data.ReadUInt32();
+                    v1.Unknown1 = data.ReadUInt32();
+                    v1.Unknown2 = data.ReadUInt32();
+                    v1.Year = data.ReadUInt32();
+                    v1.TrackNumber = data.ReadByteValue();
+                    v1.Subgenre = (Subgenre)data.ReadByteValue();
+                    v1.Duration = data.ReadUInt32();
+
+                    audioHeader = v1;
+                    unknownOffset1 = v1.UnknownOffset1;
+                    break;
+                
+                // Version 2
+                case 0x0000000A:
+                    AudioHeaderV2 v2 = new AudioHeaderV2();
+
+                    v2.Signature = signature;
+                    v2.Version = version;
+                    v2.Unknown1 = data.ReadUInt32();
+                    v2.Unknown2 = data.ReadUInt32();
+                    v2.Unknown3 = data.ReadUInt32();
+                    v2.Unknown4 = data.ReadUInt32();
+                    v2.Unknown5 = data.ReadUInt32();
+                    v2.Unknown6 = data.ReadUInt32();
+                    v2.UnknownOffset1 = data.ReadUInt32();
+                    v2.Unknown7 = data.ReadUInt32();
+                    v2.Unknown8 = data.ReadUInt32();
+                    v2.Unknown9 = data.ReadUInt32();
+                    v2.UnknownOffset2 = data.ReadUInt32();
+                    v2.Unknown10 = data.ReadUInt32();
+                    v2.Unknown11 = data.ReadUInt32();
+                    v2.Unknown12 = data.ReadUInt32();
+                    v2.TrackID = data.ReadUInt32();
+                    v2.Year = data.ReadUInt32();
+                    v2.TrackNumber = data.ReadUInt32();
+                    v2.Unknown13 = data.ReadUInt32();
+
+                    audioHeader = v2;
+                    unknownOffset1 = v2.UnknownOffset1 + 0x54;
+                    break;
+
+                // No other version are recognized
+                default:
+                    return null;
+            }
+
+            audioHeader.Signature = data.ReadUInt32();
+            if (audioHeader.Signature != SignatureUInt32)
+                return null;
+
+            audioHeader.TrackLength = data.ReadUInt16();
+            byte[] track = data.ReadBytes(audioHeader.TrackLength);
+            if (track != null)
+                audioHeader.Track = Encoding.ASCII.GetString(track);
+
+            audioHeader.ArtistLength = data.ReadUInt16();
+            byte[] artist = data.ReadBytes(audioHeader.ArtistLength);
+            if (artist != null)
+                audioHeader.Artist = Encoding.ASCII.GetString(artist);
+
+            audioHeader.AlbumLength = data.ReadUInt16();
+            byte[] album = data.ReadBytes(audioHeader.AlbumLength);
+            if (album != null)
+                audioHeader.Album = Encoding.ASCII.GetString(album);
+
+            audioHeader.WriterLength = data.ReadUInt16();
+            byte[] writer = data.ReadBytes(audioHeader.WriterLength);
+            if (writer != null)
+                audioHeader.Writer = Encoding.ASCII.GetString(writer);
+
+            audioHeader.PublisherLength = data.ReadUInt16();
+            byte[] publisher = data.ReadBytes(audioHeader.PublisherLength);
+            if (publisher != null)
+                audioHeader.Publisher = Encoding.ASCII.GetString(publisher);
+
+            audioHeader.LabelLength = data.ReadUInt16();
+            byte[] label = data.ReadBytes(audioHeader.LabelLength);
+            if (label != null)
+                audioHeader.Label = Encoding.ASCII.GetString(label);
+
+            if (data.Position - initialOffset < unknownOffset1)
+            {
+                audioHeader.CommentsLength = data.ReadUInt16();
+                byte[] comments = data.ReadBytes(audioHeader.CommentsLength);
+                if (comments != null)
+                    audioHeader.Comments = Encoding.ASCII.GetString(comments);
+            }
+
+            return audioHeader;
+        }
+
+        /// <summary>
         /// Parse a Stream into an unknown block 1
         /// </summary>
         /// <param name="data">Stream to parse</param>
