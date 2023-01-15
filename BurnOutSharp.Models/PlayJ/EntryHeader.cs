@@ -171,9 +171,6 @@ namespace BurnOutSharp.Models.PlayJ
         // 0x5C     0x00000005      Track Number
         // 0x60     0x00033068      Unknown [Varies]
 
-        // In the third block:
-        //      lady.plj has 0x00000002 and references "ad006376_5.dat" after
-
         #endregion
     }
 }
