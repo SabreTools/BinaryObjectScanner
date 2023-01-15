@@ -263,7 +263,7 @@ namespace Test
                     Console.WriteLine(serializedData);
 
                     // Write the output data
-                    using (var sw = new StreamWriter(File.OpenWrite($"info-{DateTime.Now:yyyy-MM-dd_HHmmss}.json")))
+                    using (var sw = new StreamWriter(File.OpenWrite($"info-{DateTime.Now:yyyy-MM-dd_HHmmss.ffff}.json")))
                     {
                         sw.WriteLine(serializedData);
                     }
@@ -277,7 +277,7 @@ namespace Test
                     Console.WriteLine(builder);
 
                     // Write the output data
-                    using (var sw = new StreamWriter(File.OpenWrite($"info-{DateTime.Now:yyyy-MM-dd_HHmmss}.txt")))
+                    using (var sw = new StreamWriter(File.OpenWrite($"info-{DateTime.Now:yyyy-MM-dd_HHmmss.ffff}.txt")))
                     {
                         sw.WriteLine(builder.ToString());
                     }
