@@ -269,9 +269,10 @@ namespace BurnOutSharp.Builders
 
                 entryHeader.TrackID = data.ReadUInt32();
                 entryHeader.Year = data.ReadUInt32(); // Unconfirmed
+                entryHeader.TrackNumber = data.ReadUInt32();
 
                 // Discard the following pieces until we can figure out what they are
-                _ = data.ReadBytes(0x08);
+                _ = data.ReadBytes(0x04);
             }
 
             entryHeader.TrackLength = data.ReadUInt16();

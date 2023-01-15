@@ -58,7 +58,8 @@ namespace BurnOutSharp.Models.PlayJ
         /// <summary>
         /// Track number
         /// </summary>
-        public byte TrackNumber;
+        /// <remarks>Byte in V1, UInt32 in V2</remarks>
+        public uint TrackNumber;
 
         /// <summary>
         /// Subgenre
@@ -144,31 +145,31 @@ namespace BurnOutSharp.Models.PlayJ
 
         #region V2 Notes
 
-        // Unknown V2 data block (lady.plj)
+        // Unknown V2 data block
         // ---------------------------
-        // 0x08     0x00000001      Unknown
-        // 0x0C     0x00000001      Unknown
-        // 0x10     0x00000000      Unknown
-        // 0x14     0x00000003      Unknown
-        // 0x18     0x00000001      Unknown
-        // 0x1C     0x00000000      Unknown
-        // 0x20     0x00000066      Unknown
-        // 0x24     0xF02F4372      Unknown
-        // 0x28     0x00000004      Unknown
-        // 0x2C     0x00000002      Unknown
-        // 0x30     0x00000066      Unknown
-        // 0x34     0x00005933      Unknown
-        // 0x38     0xB462688A      Unknown
-        // 0x3C     0x00000005      Unknown (Track number?)
-        // 0x40     0x00000009      Unknown (Total tracks?)
-        // 0x44     0x00005999      Unknown
-        // 0x48     0x0032FF38      Unknown
-        // 0x4C     0x00000000      Unknown
-        // 0x50     0x00000007      Unknown
+        // 0x08     0x00000001      Unknown [Common]
+        // 0x0C     0x00000001      Unknown [Common]
+        // 0x10     0x00000000      Unknown [Common]
+        // 0x14     0x00000003      Unknown [Common]
+        // 0x18     0x00000001      Unknown [Common]
+        // 0x1C     0x00000000      Unknown [Common]
+        // 0x20     0x00000066      Unknown [Varies]
+        // 0x24     0xF02F4372      Unknown [Varies]
+        // 0x28     0x00000004      Unknown [Common]
+        // 0x2C     0x00000002      Unknown [Common]
+        // 0x30     0x00000066      Unknown [Varies]
+        // 0x34     0x00005933      Unknown [Varies]
+        // 0x38     0xB462688A      Unknown [Varies]
+        // 0x3C     0x00000005      Unknown [Common]
+        // 0x40     0x00000009      Unknown [Common]
+        // 0x44     0x00005999      Unknown [Varies]
+        // 0x48     0x0032FF38      Unknown [Varies]
+        // 0x4C     0x00000000      Unknown [Common]
+        // 0x50     0x00000007      Unknown [Common]
         // 0x54     0x0001897D      Track ID
         // 0x58     0xFFFFFFFF      Unknown (Year?)
-        // 0x5C     0x00000005      Unknown (Track number?)
-        // 0x60     0x00033068      Unknown
+        // 0x5C     0x00000005      Track Number
+        // 0x60     0x00033068      Unknown [Varies]
 
         // In the third block:
         //      lady.plj has 0x00000002 and references "ad006376_5.dat" after

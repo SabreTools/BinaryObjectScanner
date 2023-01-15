@@ -38,7 +38,7 @@ namespace BurnOutSharp.Wrappers
         public uint Year => _audioFile.Header.Year;
 
         /// <inheritdoc cref="Models.PlayJ.EntryHeader.TrackNumber"/>
-        public byte TrackNumber => _audioFile.Header.TrackNumber;
+        public uint TrackNumber => _audioFile.Header.TrackNumber;
 
         /// <inheritdoc cref="Models.PlayJ.EntryHeader.Subgenre"/>
         public Models.PlayJ.Subgenre Subgenre => _audioFile.Header.Subgenre;
