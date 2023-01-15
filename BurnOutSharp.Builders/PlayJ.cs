@@ -146,13 +146,17 @@ namespace BurnOutSharp.Builders
 
             #region Unknown Block 1
 
-            // Get the unknown block 1 offset
-            long offset = entryHeader.UnknownOffset1 + adjust;
-            if (offset < 0 || offset >= data.Length)
-                return null;
+            // If we have an unknown block 1 offset
+            if (entryHeader.UnknownOffset1 > 0)
+            {
+                // Get the unknown block 1 offset
+                long offset = entryHeader.UnknownOffset1 + adjust;
+                if (offset < 0 || offset >= data.Length)
+                    return null;
 
-            // Seek to the unknown block 1
-            data.Seek(offset, SeekOrigin.Begin);
+                // Seek to the unknown block 1
+                data.Seek(offset, SeekOrigin.Begin);
+            }
 
             // Try to parse the unknown block 1
             var unknownBlock1 = ParseUnknownBlock1(data);
@@ -166,28 +170,36 @@ namespace BurnOutSharp.Builders
 
             #region Unknown Value 2
 
-            // Get the unknown value 2 offset
-            offset = entryHeader.UnknownOffset2 + adjust;
-            if (offset < 0 || offset >= data.Length)
-                return null;
+            // If we have an unknown value 2 offset
+            if (entryHeader.UnknownOffset2 > 0)
+            {
+                // Get the unknown value 2 offset
+                long offset = entryHeader.UnknownOffset2 + adjust;
+                if (offset < 0 || offset >= data.Length)
+                    return null;
 
-            // Seek to the unknown value 2
-            data.Seek(offset, SeekOrigin.Begin);
+                // Seek to the unknown value 2
+                data.Seek(offset, SeekOrigin.Begin);
+            }
 
             // Set the unknown value 2
-            audioFile.UnknownValue2 = data.ReadUInt32(); ;
+            audioFile.UnknownValue2 = data.ReadUInt32();
 
             #endregion
 
             #region Unknown Block 3
 
-            // Get the unknown block 3 offset
-            offset = entryHeader.UnknownOffset3 + adjust;
-            if (offset < 0 || offset >= data.Length)
-                return null;
+            // If we have an unknown block 3 offset
+            if (entryHeader.UnknownOffset3 > 0)
+            {
+                // Get the unknown block 3 offset
+                long offset = entryHeader.UnknownOffset3 + adjust;
+                if (offset < 0 || offset >= data.Length)
+                    return null;
 
-            // Seek to the unknown block 3
-            data.Seek(offset, SeekOrigin.Begin);
+                // Seek to the unknown block 3
+                data.Seek(offset, SeekOrigin.Begin);
+            }
 
             // Try to parse the unknown block 3
             var unknownBlock3 = ParseUnknownBlock3(data);
