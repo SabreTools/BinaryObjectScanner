@@ -253,7 +253,7 @@ namespace BurnOutSharp.Builders
             else
             {
                 // Discard the following pieces until we can figure out what they are
-                _ = data.ReadBytes(36);
+                _ = data.ReadBytes(0x5C);
             }
 
             entryHeader.TrackLength = data.ReadUInt16();
