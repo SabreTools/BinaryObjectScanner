@@ -9,5 +9,10 @@ namespace BurnOutSharp.Models.PlayJ
         /// Unknown data
         /// </summary>
         public byte[] Data;
+
+        // Notes about Data:
+        // - This may be where the encrypted audio samples live
+        // - It is also possible that it's where the ad data lives and samples follow
+        //      + See V2 for example of why this would be the case
     }
 }

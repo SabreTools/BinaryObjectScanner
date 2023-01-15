@@ -168,46 +168,87 @@ namespace BurnOutSharp.Builders
 
             #endregion
 
-            #region Unknown Value 2
+            #region V1 Only
 
-            // If we have an unknown value 2 offset
-            if (entryHeader.UnknownOffset2 > 0)
+            // If we have a V1 file
+            if (entryHeader.Version == 0x00000000)
             {
-                // Get the unknown value 2 offset
-                long offset = entryHeader.UnknownOffset2 + adjust;
-                if (offset < 0 || offset >= data.Length)
+                #region Unknown Value 2
+
+                // If we have an unknown value 2 offset
+                if (entryHeader.UnknownOffset2 > 0)
+                {
+                    // Get the unknown value 2 offset
+                    long offset = entryHeader.UnknownOffset2 + adjust;
+                    if (offset < 0 || offset >= data.Length)
+                        return null;
+
+                    // Seek to the unknown value 2
+                    data.Seek(offset, SeekOrigin.Begin);
+                }
+
+                // Set the unknown value 2
+                audioFile.UnknownValue2 = data.ReadUInt32();
+
+                #endregion
+
+                #region Unknown Block 3
+
+                // If we have an unknown block 3 offset
+                if (entryHeader.UnknownOffset2 > 0)
+                {
+                    // Get the unknown block 3 offset
+                    long offset = entryHeader.UnknownOffset3 + adjust;
+                    if (offset < 0 || offset >= data.Length)
+                        return null;
+
+                    // Seek to the unknown block 3
+                    data.Seek(offset, SeekOrigin.Begin);
+                }
+
+                // Try to parse the unknown block 3
+                var unknownBlock3 = ParseUnknownBlock3(data);
+                if (unknownBlock3 == null)
                     return null;
 
-                // Seek to the unknown value 2
-                data.Seek(offset, SeekOrigin.Begin);
-            }
+                // Set the unknown block 3
+                audioFile.UnknownBlock3 = unknownBlock3;
 
-            // Set the unknown value 2
-            audioFile.UnknownValue2 = data.ReadUInt32();
+                #endregion
+            }
 
             #endregion
 
-            #region Unknown Block 3
+            #region V2 Only
 
-            // If we have an unknown block 3 offset
-            if (entryHeader.UnknownOffset3 > 0)
+            // If we have a V2 file
+            if (entryHeader.Version == 0x0000000A)
             {
-                // Get the unknown block 3 offset
-                long offset = entryHeader.UnknownOffset3 + adjust;
-                if (offset < 0 || offset >= data.Length)
-                    return null;
+                #region Data Files Count
 
-                // Seek to the unknown block 3
-                data.Seek(offset, SeekOrigin.Begin);
+                // Set the data files count
+                audioFile.DataFilesCount = data.ReadUInt32();
+
+                #endregion
+
+                #region Data Files
+
+                // Create the data files array
+                audioFile.DataFiles = new DataFile[audioFile.DataFilesCount];
+
+                // Try to parse the data files
+                for (int i = 0; i < audioFile.DataFiles.Length; i++)
+                {
+                    var dataFile = ParseDataFile(data);
+                    if (dataFile == null)
+                        return null;
+
+                    audioFile.DataFiles[i] = dataFile;
+                }
+
+
+                #endregion
             }
-
-            // Try to parse the unknown block 3
-            var unknownBlock3 = ParseUnknownBlock3(data);
-            if (unknownBlock3 == null)
-                return null;
-
-            // Set the unknown block 3
-            audioFile.UnknownBlock3 = unknownBlock3;
 
             #endregion
 
@@ -326,8 +367,8 @@ namespace BurnOutSharp.Builders
             // TODO: Use marshalling here instead of building
             UnknownBlock1 unknownBlock1 = new UnknownBlock1();
 
-            unknownBlock1.Length = data.ReadUInt16();
-            unknownBlock1.Data = data.ReadBytes(unknownBlock1.Length);
+            unknownBlock1.Length = data.ReadUInt32();
+            unknownBlock1.Data = data.ReadBytes((int)unknownBlock1.Length);
 
             return unknownBlock1;
         }
@@ -345,6 +386,27 @@ namespace BurnOutSharp.Builders
             // No-op because we don't even know the length
 
             return unknownBlock3;
+        }
+
+        /// <summary>
+        /// Parse a Stream into a data file
+        /// </summary>
+        /// <param name="data">Stream to parse</param>
+        /// <returns>Filled data file on success, null on error</returns>
+        private static DataFile ParseDataFile(Stream data)
+        {
+            // TODO: Use marshalling here instead of building
+            DataFile dataFile = new DataFile();
+
+            dataFile.FileNameLength = data.ReadUInt16();
+            byte[] fileName = data.ReadBytes(dataFile.FileNameLength);
+            if (fileName != null)
+                dataFile.FileName = Encoding.ASCII.GetString(fileName);
+
+            dataFile.DataLength = data.ReadUInt32();
+            dataFile.Data = data.ReadBytes((int)dataFile.DataLength);
+
+            return dataFile;
         }
 
         #endregion

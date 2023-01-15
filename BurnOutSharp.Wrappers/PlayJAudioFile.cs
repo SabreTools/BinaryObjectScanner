@@ -93,12 +93,14 @@ namespace BurnOutSharp.Wrappers
         #region Unknown Block 1
 
         /// <inheritdoc cref="Models.PlayJ.UnknownBlock1.Length"/>
-        public ushort UB1_Length => _audioFile.UnknownBlock1.Length;
+        public uint UB1_Length => _audioFile.UnknownBlock1.Length;
 
         /// <inheritdoc cref="Models.PlayJ.UnknownBlock1.Data"/>
         public byte[] UB1_Data => _audioFile.UnknownBlock1.Data;
 
         #endregion
+
+        #region V1 Only
 
         #region Unknown Value 2
 
@@ -111,6 +113,26 @@ namespace BurnOutSharp.Wrappers
 
         /// <inheritdoc cref="Models.PlayJ.UnknownBlock3.Data"/>
         public byte[] UB3_Data => _audioFile.UnknownBlock3.Data;
+
+        #endregion
+
+        #endregion
+
+        #region V2 Only
+
+        #region Data Files Count
+
+        /// <inheritdoc cref="Models.PlayJ.AudioFile.DataFilesCount"/>
+        public uint DataFilesCount => _audioFile.DataFilesCount;
+
+        #endregion
+
+        #region Unknown Block 3
+
+        /// <inheritdoc cref="Models.PlayJ.AudioFile.DataFiles"/>
+        public Models.PlayJ.DataFile[] DataFiles => _audioFile.DataFiles;
+
+        #endregion
 
         #endregion
 
@@ -192,8 +214,16 @@ namespace BurnOutSharp.Wrappers
 
             PrintEntryHeader(builder);
             PrintUnknownBlock1(builder);
-            PrintUnknownValue2(builder);
-            PrintUnknownBlock3(builder);
+
+            if (Version == 0x00000000)
+            {
+                PrintUnknownValue2(builder);
+                PrintUnknownBlock3(builder);
+            }
+            else if (Version == 0x0000000A)
+            {
+                PrintDataFiles(builder);
+            }
 
             return builder;
         }
@@ -249,7 +279,7 @@ namespace BurnOutSharp.Wrappers
         }
 
         /// <summary>
-        /// Print unknown value 2 information
+        /// Print unknown value 2 information (V1 only)
         /// </summary>
         /// <param name="builder">StringBuilder to append information to</param>
         private void PrintUnknownValue2(StringBuilder builder)
@@ -261,7 +291,7 @@ namespace BurnOutSharp.Wrappers
         }
 
         /// <summary>
-        /// Print unknown block 3 information
+        /// Print unknown block 3 information (V1 only)
         /// </summary>
         /// <param name="builder">StringBuilder to append information to</param>
         private void PrintUnknownBlock3(StringBuilder builder)
@@ -269,6 +299,30 @@ namespace BurnOutSharp.Wrappers
             builder.AppendLine("  Unknown Block 3 Information:");
             builder.AppendLine("  -------------------------");
             builder.AppendLine($"  Data: {BitConverter.ToString(UB3_Data ?? new byte[0]).Replace('-', ' ')}");
+            builder.AppendLine();
+        }
+
+        /// <summary>
+        /// Print data files information (V2 only)
+        /// </summary>
+        /// <param name="builder">StringBuilder to append information to</param>
+        private void PrintDataFiles(StringBuilder builder)
+        {
+            builder.AppendLine("  Data Files Information:");
+            builder.AppendLine("  -------------------------");
+            builder.AppendLine($"  Data files count: {DataFilesCount} (0x{DataFilesCount:X})");
+            if (DataFilesCount != 0 && DataFiles != null && DataFiles.Length != 0)
+            {
+                for (int i = 0; i < DataFiles.Length; i++)
+                {
+                    var dataFile = DataFiles[i];
+                    builder.AppendLine($"  Data File {i}:");
+                    builder.AppendLine($"    File name length: {dataFile.FileNameLength} (0x{dataFile.FileNameLength:X})");
+                    builder.AppendLine($"    File name: {dataFile.FileName ?? "[NULL]"}");
+                    builder.AppendLine($"    Data length: {dataFile.DataLength} (0x{dataFile.DataLength:X})");
+                    builder.AppendLine($"    Data: {BitConverter.ToString(dataFile.Data ?? new byte[0]).Replace('-', ' ')}");
+                }
+            }
             builder.AppendLine();
         }
 

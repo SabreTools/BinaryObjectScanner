@@ -8,11 +8,17 @@ namespace BurnOutSharp.Models.PlayJ
         /// <summary>
         /// Length of the following data block
         /// </summary>
-        public ushort Length;
+        public uint Length;
 
         /// <summary>
         /// Unknown data
         /// </summary>
         public byte[] Data;
+
+        // Notes about Data:
+        // - Might be UInt16 offset and UInt16 length pairs
+        // - Might be relevant to ad data
+        // - Might be relevant to encryption
+        // - Highly repeating patterns in the values with only a few differences
     }
 }
