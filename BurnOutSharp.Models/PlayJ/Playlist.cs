@@ -8,11 +8,11 @@ namespace BurnOutSharp.Models.PlayJ
         /// <summary>
         /// Playlist header
         /// </summary>
-        public PlaylistHeader PlaylistHeader { get; set; }
+        public PlaylistHeader Header { get; set; }
 
         /// <summary>
-        /// Entry headers
+        /// Embedded audio files / headers
         /// </summary>
-        public EntryHeader[] EntryHeaders { get; set; }
+        public AudioFile[] AudioFiles { get; set; }
     }
 }

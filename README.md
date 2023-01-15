@@ -178,7 +178,7 @@ Below is a list of container formats that are supported in some way:
 | Nintendo CIA archive | Yes | Yes | No | |
 | Nintendo DS/DSi cart image | Yes | Yes | No | |
 | PKZIP and derived files (ZIP, etc.) | No | Yes | Yes | Via `SharpCompress` |
-| PlayJ audio file (PLJ) | No | Yes | No | |
+| PlayJ audio file (PLJ) | Yes* | Yes | No | Undocumented file format, many fields printed |
 | Portable Executable | Yes | Yes | No* | Some packed executables are supported |
 | Quantum archive (Q) | Yes | No | No | |
 | RAR archive (RAR) | No | Yes | Yes | Via `SharpCompress` |

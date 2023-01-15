@@ -195,6 +195,12 @@ namespace Test
                         wrapper = PAK.Create(stream);
                         break;
 
+                    // PLJ
+                    case SupportedFileType.PLJ:
+                        wrapperName = "PlayJ audio file";
+                        wrapper = PlayJAudioFile.Create(stream);
+                        break;
+
                     // Quantum
                     case SupportedFileType.Quantum:
                         wrapperName = "Quantum archive";
