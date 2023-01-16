@@ -55,6 +55,10 @@ namespace BurnOutSharp.FileType
                         // If an individual entry fails
                         try
                         {
+                            // Check if the file is valid first
+                            if (!cabfile.FileIsValid(i))
+                                continue;
+
                             string filename = cabfile.FileName(i);
                             string tempFile;
                             try
