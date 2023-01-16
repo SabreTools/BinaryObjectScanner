@@ -1,7 +1,7 @@
 namespace BurnOutSharp.Models.PlayJ
 {
     /// <summary>
-    /// Data referred to by <see cref="EntryHeader.UnknownOffset1"/>
+    /// Data referred to by <see cref="AudioHeaderV1.UnknownOffset1"/> or <see cref="AudioHeaderV2.UnknownOffset1"/>
     /// </summary>
     public sealed class UnknownBlock1
     {

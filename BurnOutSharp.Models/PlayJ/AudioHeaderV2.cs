@@ -67,14 +67,39 @@ namespace BurnOutSharp.Models.PlayJ
         public uint Unknown10;
 
         /// <summary>
-        /// Unknown (Always 0x00000000)
+        /// Unknown
         /// </summary>
         public uint Unknown11;
 
         /// <summary>
-        /// Unknown (Always 0x00000007)
+        /// Unknown (Always 0x0000005)
         /// </summary>
         public uint Unknown12;
+
+        /// <summary>
+        /// Unknown (Always 0x0000009)
+        /// </summary>
+        public uint Unknown13;
+
+        /// <summary>
+        /// Unknown
+        /// </summary>
+        public uint Unknown14;
+
+        /// <summary>
+        /// Unknown
+        /// </summary>
+        public uint Unknown15;
+
+        /// <summary>
+        /// Unknown (Always 0x0000000)
+        /// </summary>
+        public uint Unknown16;
+
+        /// <summary>
+        /// Unknown (Always 0x00000007)
+        /// </summary>
+        public uint Unknown17;
 
         /// <summary>
         /// Download track ID
@@ -96,6 +121,6 @@ namespace BurnOutSharp.Models.PlayJ
         /// <summary>
         /// Unknown
         /// </summary>
-        public uint Unknown13;
+        public uint Unknown18;
     }
 }

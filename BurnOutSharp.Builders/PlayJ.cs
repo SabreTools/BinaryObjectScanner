@@ -132,25 +132,29 @@ namespace BurnOutSharp.Builders
             // Create a new audio file to fill
             var audioFile = new AudioFile();
 
-            #region Entry Header
+            #region Audio Header
 
-            // Try to parse the entry header
-            var entryHeader = ParseEntryHeader(data);
-            if (entryHeader == null)
+            // Try to parse the audio header
+            var audioHeader = ParseAudioHeader(data);
+            if (audioHeader == null)
                 return null;
 
-            // Set the entry header
-            audioFile.Header = entryHeader;
+            // Set the audio header
+            audioFile.Header = audioHeader;
 
             #endregion
 
             #region Unknown Block 1
 
+            uint unknownOffset1 = (audioHeader.Version == 0x00000000)
+                ? (audioHeader as AudioHeaderV1).UnknownOffset1
+                : (audioHeader as AudioHeaderV2).UnknownOffset1 + 0x54;
+
             // If we have an unknown block 1 offset
-            if (entryHeader.UnknownOffset1 > 0)
+            if (unknownOffset1 > 0)
             {
                 // Get the unknown block 1 offset
-                long offset = entryHeader.UnknownOffset1 + adjust;
+                long offset = unknownOffset1 + adjust;
                 if (offset < 0 || offset >= data.Length)
                     return null;
 
@@ -171,15 +175,18 @@ namespace BurnOutSharp.Builders
             #region V1 Only
 
             // If we have a V1 file
-            if (entryHeader.Version == 0x00000000)
+            if (audioHeader.Version == 0x00000000)
             {
                 #region Unknown Value 2
 
+                // Get the V1 unknown offset 2
+                uint? unknownOffset2 = (audioHeader as AudioHeaderV1)?.UnknownOffset2;
+
                 // If we have an unknown value 2 offset
-                if (entryHeader.UnknownOffset2 > 0)
+                if (unknownOffset2 != null && unknownOffset2 > 0)
                 {
                     // Get the unknown value 2 offset
-                    long offset = entryHeader.UnknownOffset2 + adjust;
+                    long offset = unknownOffset2.Value + adjust;
                     if (offset < 0 || offset >= data.Length)
                         return null;
 
@@ -194,11 +201,14 @@ namespace BurnOutSharp.Builders
 
                 #region Unknown Block 3
 
+                // Get the V1 unknown offset 3
+                uint? unknownOffset3 = (audioHeader as AudioHeaderV1)?.UnknownOffset3;
+
                 // If we have an unknown block 3 offset
-                if (entryHeader.UnknownOffset2 > 0)
+                if (unknownOffset3 != null && unknownOffset3 > 0)
                 {
                     // Get the unknown block 3 offset
-                    long offset = entryHeader.UnknownOffset3 + adjust;
+                    long offset = unknownOffset3.Value + adjust;
                     if (offset < 0 || offset >= data.Length)
                         return null;
 
@@ -222,7 +232,7 @@ namespace BurnOutSharp.Builders
             #region V2 Only
 
             // If we have a V2 file
-            if (entryHeader.Version == 0x0000000A)
+            if (audioHeader.Version == 0x0000000A)
             {
                 #region Data Files Count
 
@@ -269,92 +279,6 @@ namespace BurnOutSharp.Builders
             playlistHeader.Data = data.ReadBytes(52);
 
             return playlistHeader;
-        }
-
-        /// <summary>
-        /// Parse a Stream into an entry header
-        /// </summary>
-        /// <param name="data">Stream to parse</param>
-        /// <returns>Filled entry header on success, null on error</returns>
-        private static EntryHeader ParseEntryHeader(Stream data)
-        {
-            // Cache the current offset
-            long initialOffset = data.Position;
-
-            // TODO: Use marshalling here instead of building
-            EntryHeader entryHeader = new EntryHeader();
-
-            entryHeader.Signature = data.ReadUInt32();
-            if (entryHeader.Signature != SignatureUInt32)
-                return null;
-
-            // Only V1 is fully supported
-            entryHeader.Version = data.ReadUInt32();
-            if (entryHeader.Version == 0x00000000)
-            {
-                entryHeader.TrackID = data.ReadUInt32();
-                entryHeader.UnknownOffset1 = data.ReadUInt32();
-                entryHeader.UnknownOffset2 = data.ReadUInt32();
-                entryHeader.UnknownOffset3 = data.ReadUInt32();
-                entryHeader.Unknown1 = data.ReadUInt32();
-                entryHeader.Unknown2 = data.ReadUInt32();
-                entryHeader.Year = data.ReadUInt32();
-                entryHeader.TrackNumber = data.ReadByteValue();
-                entryHeader.Subgenre = (Subgenre)data.ReadByteValue();
-                entryHeader.Duration = data.ReadUInt32();
-            }
-            else
-            {
-                // Discard the following pieces until we can figure out what they are
-                _ = data.ReadBytes(0x4C);
-
-                entryHeader.TrackID = data.ReadUInt32();
-                entryHeader.Year = data.ReadUInt32(); // Unconfirmed
-                entryHeader.TrackNumber = data.ReadUInt32();
-
-                // Discard the following pieces until we can figure out what they are
-                _ = data.ReadBytes(0x04);
-            }
-
-            entryHeader.TrackLength = data.ReadUInt16();
-            byte[] track = data.ReadBytes(entryHeader.TrackLength);
-            if (track != null)
-                entryHeader.Track = Encoding.ASCII.GetString(track);
-
-            entryHeader.ArtistLength = data.ReadUInt16();
-            byte[] artist = data.ReadBytes(entryHeader.ArtistLength);
-            if (artist != null)
-                entryHeader.Artist = Encoding.ASCII.GetString(artist);
-
-            entryHeader.AlbumLength = data.ReadUInt16();
-            byte[] album = data.ReadBytes(entryHeader.AlbumLength);
-            if (album != null)
-                entryHeader.Album = Encoding.ASCII.GetString(album);
-
-            entryHeader.WriterLength = data.ReadUInt16();
-            byte[] writer = data.ReadBytes(entryHeader.WriterLength);
-            if (writer != null)
-                entryHeader.Writer = Encoding.ASCII.GetString(writer);
-
-            entryHeader.PublisherLength = data.ReadUInt16();
-            byte[] publisher = data.ReadBytes(entryHeader.PublisherLength);
-            if (publisher != null)
-                entryHeader.Publisher = Encoding.ASCII.GetString(publisher);
-
-            entryHeader.LabelLength = data.ReadUInt16();
-            byte[] label = data.ReadBytes(entryHeader.LabelLength);
-            if (label != null)
-                entryHeader.Label = Encoding.ASCII.GetString(label);
-
-            if (data.Position - initialOffset < entryHeader.UnknownOffset1)
-            {
-                entryHeader.CommentsLength = data.ReadUInt16();
-                byte[] comments = data.ReadBytes(entryHeader.CommentsLength);
-                if (comments != null)
-                    entryHeader.Comments = Encoding.ASCII.GetString(comments);
-            }
-
-            return entryHeader;
         }
 
         /// <summary>
@@ -422,10 +346,15 @@ namespace BurnOutSharp.Builders
                     v2.Unknown10 = data.ReadUInt32();
                     v2.Unknown11 = data.ReadUInt32();
                     v2.Unknown12 = data.ReadUInt32();
+                    v2.Unknown13 = data.ReadUInt32();
+                    v2.Unknown14 = data.ReadUInt32();
+                    v2.Unknown15 = data.ReadUInt32();
+                    v2.Unknown16 = data.ReadUInt32();
+                    v2.Unknown17 = data.ReadUInt32();
                     v2.TrackID = data.ReadUInt32();
                     v2.Year = data.ReadUInt32();
                     v2.TrackNumber = data.ReadUInt32();
-                    v2.Unknown13 = data.ReadUInt32();
+                    v2.Unknown18 = data.ReadUInt32();
 
                     audioHeader = v2;
                     unknownOffset1 = v2.UnknownOffset1 + 0x54;
@@ -435,10 +364,6 @@ namespace BurnOutSharp.Builders
                 default:
                     return null;
             }
-
-            audioHeader.Signature = data.ReadUInt32();
-            if (audioHeader.Signature != SignatureUInt32)
-                return null;
 
             audioHeader.TrackLength = data.ReadUInt16();
             byte[] track = data.ReadBytes(audioHeader.TrackLength);

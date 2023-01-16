@@ -8,84 +8,161 @@ namespace BurnOutSharp.Wrappers
     {
         #region Pass-Through Properties
 
-        #region Entry Header
+        #region Audio Header
 
-        /// <inheritdoc cref="Models.PlayJ.EntryHeader.Signature"/>
+        /// <inheritdoc cref="Models.PlayJ.AudioHeader.Signature"/>
         public uint Signature => _audioFile.Header.Signature;
 
-        /// <inheritdoc cref="Models.PlayJ.EntryHeader.Version"/>
+        /// <inheritdoc cref="Models.PlayJ.AudioHeader.Version"/>
         public uint Version => _audioFile.Header.Version;
 
-        /// <inheritdoc cref="Models.PlayJ.EntryHeader.TrackID"/>
-        public uint TrackID => _audioFile.Header.TrackID;
+        #region V1 Only
 
-        /// <inheritdoc cref="Models.PlayJ.EntryHeader.UnknownOffset1"/>
-        public uint UnknownOffset1 => _audioFile.Header.UnknownOffset1;
+        /// <inheritdoc cref="Models.PlayJ.AudioHeaderV1.TrackID"/>
+        public uint? V1_TrackID => (_audioFile.Header as Models.PlayJ.AudioHeaderV1)?.TrackID;
 
-        /// <inheritdoc cref="Models.PlayJ.EntryHeader.UnknownOffset2"/>
-        public uint UnknownOffset2 => _audioFile.Header.UnknownOffset2;
+        /// <inheritdoc cref="Models.PlayJ.AudioHeaderV1.UnknownOffset1"/>
+        public uint? V1_UnknownOffset1 => (_audioFile.Header as Models.PlayJ.AudioHeaderV1)?.UnknownOffset1;
 
-        /// <inheritdoc cref="Models.PlayJ.EntryHeader.UnknownOffset3"/>
-        public uint UnknownOffset3 => _audioFile.Header.UnknownOffset3;
+        /// <inheritdoc cref="Models.PlayJ.AudioHeaderV1.UnknownOffset2"/>
+        public uint? V1_UnknownOffset2 => (_audioFile.Header as Models.PlayJ.AudioHeaderV1)?.UnknownOffset2;
 
-        /// <inheritdoc cref="Models.PlayJ.EntryHeader.Unknown1"/>
-        public uint Unknown1 => _audioFile.Header.Unknown1;
+        /// <inheritdoc cref="Models.PlayJ.AudioHeaderV1.UnknownOffset3"/>
+        public uint? V1_UnknownOffset3 => (_audioFile.Header as Models.PlayJ.AudioHeaderV1)?.UnknownOffset3;
 
-        /// <inheritdoc cref="Models.PlayJ.EntryHeader.Unknown2"/>
-        public uint Unknown2 => _audioFile.Header.Unknown2;
+        /// <inheritdoc cref="Models.PlayJ.AudioHeaderV1.Unknown1"/>
+        public uint? V1_Unknown1 => (_audioFile.Header as Models.PlayJ.AudioHeaderV1)?.Unknown1;
 
-        /// <inheritdoc cref="Models.PlayJ.EntryHeader.Year"/>
-        public uint Year => _audioFile.Header.Year;
+        /// <inheritdoc cref="Models.PlayJ.AudioHeaderV1.Unknown2"/>
+        public uint? V1_Unknown2 => (_audioFile.Header as Models.PlayJ.AudioHeaderV1)?.Unknown2;
 
-        /// <inheritdoc cref="Models.PlayJ.EntryHeader.TrackNumber"/>
-        public uint TrackNumber => _audioFile.Header.TrackNumber;
+        /// <inheritdoc cref="Models.PlayJ.AudioHeaderV1.Year"/>
+        public uint? V1_Year => (_audioFile.Header as Models.PlayJ.AudioHeaderV1)?.Year;
 
-        /// <inheritdoc cref="Models.PlayJ.EntryHeader.Subgenre"/>
-        public Models.PlayJ.Subgenre Subgenre => _audioFile.Header.Subgenre;
+        /// <inheritdoc cref="Models.PlayJ.AudioHeaderV1.TrackNumber"/>
+        public uint? V1_TrackNumber => (_audioFile.Header as Models.PlayJ.AudioHeaderV1)?.TrackNumber;
 
-        /// <inheritdoc cref="Models.PlayJ.EntryHeader.Duration"/>
-        public uint Duration => _audioFile.Header.Duration;
+        /// <inheritdoc cref="Models.PlayJ.AudioHeaderV1.Subgenre"/>
+        public Models.PlayJ.Subgenre? V1_Subgenre => (_audioFile.Header as Models.PlayJ.AudioHeaderV1)?.Subgenre;
 
-        /// <inheritdoc cref="Models.PlayJ.EntryHeader.TrackLength"/>
+        /// <inheritdoc cref="Models.PlayJ.AudioHeaderV1.Duration"/>
+        public uint? V1_Duration => (_audioFile.Header as Models.PlayJ.AudioHeaderV1)?.Duration;
+
+        #endregion
+
+        #region V2 Only
+
+        /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Unknown1"/>
+        public uint? V2_Unknown1 => (_audioFile.Header as Models.PlayJ.AudioHeaderV2)?.Unknown1;
+
+        /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Unknown2"/>
+        public uint? V2_Unknown2 => (_audioFile.Header as Models.PlayJ.AudioHeaderV2)?.Unknown2;
+
+        /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Unknown3"/>
+        public uint? V2_Unknown3 => (_audioFile.Header as Models.PlayJ.AudioHeaderV2)?.Unknown3;
+
+        /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Unknown4"/>
+        public uint? V2_Unknown4 => (_audioFile.Header as Models.PlayJ.AudioHeaderV2)?.Unknown4;
+
+        /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Unknown5"/>
+        public uint? V2_Unknown5 => (_audioFile.Header as Models.PlayJ.AudioHeaderV2)?.Unknown5;
+
+        /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Unknown6"/>
+        public uint? V2_Unknown6 => (_audioFile.Header as Models.PlayJ.AudioHeaderV2)?.Unknown6;
+
+        /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.UnknownOffset1"/>
+        public uint? V2_UnknownOffset1 => (_audioFile.Header as Models.PlayJ.AudioHeaderV2)?.UnknownOffset1;
+
+        /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Unknown7"/>
+        public uint? V2_Unknown7 => (_audioFile.Header as Models.PlayJ.AudioHeaderV2)?.Unknown7;
+
+        /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Unknown8"/>
+        public uint? V2_Unknown8 => (_audioFile.Header as Models.PlayJ.AudioHeaderV2)?.Unknown8;
+
+        /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Unknown9"/>
+        public uint? V2_Unknown9 => (_audioFile.Header as Models.PlayJ.AudioHeaderV2)?.Unknown9;
+
+        /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.UnknownOffset2"/>
+        public uint? V2_UnknownOffset2 => (_audioFile.Header as Models.PlayJ.AudioHeaderV2)?.UnknownOffset2;
+
+        /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Unknown10"/>
+        public uint? V2_Unknown10 => (_audioFile.Header as Models.PlayJ.AudioHeaderV2)?.Unknown10;
+
+        /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Unknown11"/>
+        public uint? V2_Unknown11 => (_audioFile.Header as Models.PlayJ.AudioHeaderV2)?.Unknown11;
+
+        /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Unknown12"/>
+        public uint? V2_Unknown12 => (_audioFile.Header as Models.PlayJ.AudioHeaderV2)?.Unknown12;
+
+        /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Unknown13"/>
+        public uint? V2_Unknown13 => (_audioFile.Header as Models.PlayJ.AudioHeaderV2)?.Unknown13;
+
+        /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Unknown14"/>
+        public uint? V2_Unknown14 => (_audioFile.Header as Models.PlayJ.AudioHeaderV2)?.Unknown14;
+
+        /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Unknown15"/>
+        public uint? V2_Unknown15 => (_audioFile.Header as Models.PlayJ.AudioHeaderV2)?.Unknown15;
+
+        /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Unknown16"/>
+        public uint? V2_Unknown16 => (_audioFile.Header as Models.PlayJ.AudioHeaderV2)?.Unknown16;
+
+        /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Unknown17"/>
+        public uint? V2_Unknown17 => (_audioFile.Header as Models.PlayJ.AudioHeaderV2)?.Unknown17;
+
+        /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.TrackID"/>
+        public uint? V2_TrackID => (_audioFile.Header as Models.PlayJ.AudioHeaderV2)?.TrackID;
+
+        /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Year"/>
+        public uint? V2_Year => (_audioFile.Header as Models.PlayJ.AudioHeaderV2)?.Year;
+
+        /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.TrackNumber"/>
+        public uint? V2_TrackNumber => (_audioFile.Header as Models.PlayJ.AudioHeaderV2)?.TrackNumber;
+
+        /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Unknown18"/>
+        public uint? V2_Unknown18 => (_audioFile.Header as Models.PlayJ.AudioHeaderV2)?.Unknown18;
+
+        #endregion
+
+        /// <inheritdoc cref="Models.PlayJ.AudioHeader.TrackLength"/>
         public ushort TrackLength => _audioFile.Header.TrackLength;
 
-        /// <inheritdoc cref="Models.PlayJ.EntryHeader.Track"/>
+        /// <inheritdoc cref="Models.PlayJ.AudioHeader.Track"/>
         public string Track => _audioFile.Header.Track;
 
-        /// <inheritdoc cref="Models.PlayJ.EntryHeader.ArtistLength"/>
+        /// <inheritdoc cref="Models.PlayJ.AudioHeader.ArtistLength"/>
         public ushort ArtistLength => _audioFile.Header.ArtistLength;
 
-        /// <inheritdoc cref="Models.PlayJ.EntryHeader.Artist"/>
+        /// <inheritdoc cref="Models.PlayJ.AudioHeader.Artist"/>
         public string Artist => _audioFile.Header.Artist;
 
-        /// <inheritdoc cref="Models.PlayJ.EntryHeader.AlbumLength"/>
+        /// <inheritdoc cref="Models.PlayJ.AudioHeader.AlbumLength"/>
         public ushort AlbumLength => _audioFile.Header.AlbumLength;
 
-        /// <inheritdoc cref="Models.PlayJ.EntryHeader.Album"/>
+        /// <inheritdoc cref="Models.PlayJ.AudioHeader.Album"/>
         public string Album => _audioFile.Header.Album;
 
-        /// <inheritdoc cref="Models.PlayJ.EntryHeader.WriterLength"/>
+        /// <inheritdoc cref="Models.PlayJ.AudioHeader.WriterLength"/>
         public ushort WriterLength => _audioFile.Header.WriterLength;
 
-        /// <inheritdoc cref="Models.PlayJ.EntryHeader.Writer"/>
+        /// <inheritdoc cref="Models.PlayJ.AudioHeader.Writer"/>
         public string Writer => _audioFile.Header.Writer;
 
-        /// <inheritdoc cref="Models.PlayJ.EntryHeader.PublisherLength"/>
+        /// <inheritdoc cref="Models.PlayJ.AudioHeader.PublisherLength"/>
         public ushort PublisherLength => _audioFile.Header.PublisherLength;
 
-        /// <inheritdoc cref="Models.PlayJ.EntryHeader.Publisher"/>
+        /// <inheritdoc cref="Models.PlayJ.AudioHeader.Publisher"/>
         public string Publisher => _audioFile.Header.Publisher;
 
-        /// <inheritdoc cref="Models.PlayJ.EntryHeader.LabelLength"/>
+        /// <inheritdoc cref="Models.PlayJ.AudioHeader.LabelLength"/>
         public ushort LabelLength => _audioFile.Header.LabelLength;
 
-        /// <inheritdoc cref="Models.PlayJ.EntryHeader.Label"/>
+        /// <inheritdoc cref="Models.PlayJ.AudioHeader.Label"/>
         public string Label => _audioFile.Header.Label;
 
-        /// <inheritdoc cref="Models.PlayJ.EntryHeader.CommentsLength"/>
+        /// <inheritdoc cref="Models.PlayJ.AudioHeader.CommentsLength"/>
         public ushort CommentsLength => _audioFile.Header.CommentsLength;
 
-        /// <inheritdoc cref="Models.PlayJ.EntryHeader.Comments"/>
+        /// <inheritdoc cref="Models.PlayJ.AudioHeader.Comments"/>
         public string Comments => _audioFile.Header.Comments;
 
         #endregion
@@ -212,7 +289,7 @@ namespace BurnOutSharp.Wrappers
             builder.AppendLine("-------------------------");
             builder.AppendLine();
 
-            PrintEntryHeader(builder);
+            PrintAudioHeader(builder);
             PrintUnknownBlock1(builder);
 
             if (Version == 0x00000000)
@@ -229,25 +306,58 @@ namespace BurnOutSharp.Wrappers
         }
 
         /// <summary>
-        /// Print entry header information
+        /// Print audio header information
         /// </summary>
         /// <param name="builder">StringBuilder to append information to</param>
-        private void PrintEntryHeader(StringBuilder builder)
+        private void PrintAudioHeader(StringBuilder builder)
         {
-            builder.AppendLine("  Entry Header Information:");
+            builder.AppendLine("  Audio Header Information:");
             builder.AppendLine("  -------------------------");
             builder.AppendLine($"  Signature: {Signature} (0x{Signature:X})");
             builder.AppendLine($"  Version: {Version} (0x{Version:X})");
-            builder.AppendLine($"  Track ID: {TrackID} (0x{TrackID:X})");
-            builder.AppendLine($"  Unknown offset 1: {UnknownOffset1} (0x{UnknownOffset1:X})");
-            builder.AppendLine($"  Unknown offset 2: {UnknownOffset2} (0x{UnknownOffset2:X})");
-            builder.AppendLine($"  Unknown offset 3: {UnknownOffset3} (0x{UnknownOffset3:X})");
-            builder.AppendLine($"  Unknown 1: {Unknown1} (0x{Unknown1:X})");
-            builder.AppendLine($"  Unknown 2: {Unknown2} (0x{Unknown2:X})");
-            builder.AppendLine($"  Year: {Year} (0x{Year:X})");
-            builder.AppendLine($"  Track number: {TrackNumber} (0x{TrackNumber:X})");
-            builder.AppendLine($"  Subgenre: {Subgenre} (0x{Subgenre:X})");
-            builder.AppendLine($"  Duration in seconds: {Duration} (0x{Duration:X})");
+            if (Version == 0x00000000)
+            {
+                builder.AppendLine($"  Track ID: {V1_TrackID} (0x{V1_TrackID:X})");
+                builder.AppendLine($"  Unknown offset 1: {V1_UnknownOffset1} (0x{V1_UnknownOffset1:X})");
+                builder.AppendLine($"  Unknown offset 2: {V1_UnknownOffset2} (0x{V1_UnknownOffset2:X})");
+                builder.AppendLine($"  Unknown offset 3: {V1_UnknownOffset3} (0x{V1_UnknownOffset3:X})");
+                builder.AppendLine($"  Unknown 1: {V1_Unknown1} (0x{V1_Unknown1:X})");
+                builder.AppendLine($"  Unknown 2: {V1_Unknown2} (0x{V1_Unknown2:X})");
+                builder.AppendLine($"  Year: {V1_Year} (0x{V1_Year:X})");
+                builder.AppendLine($"  Track number: {V1_TrackNumber} (0x{V1_TrackNumber:X})");
+                builder.AppendLine($"  Subgenre: {V1_Subgenre} (0x{V1_Subgenre:X})");
+                builder.AppendLine($"  Duration in seconds: {V1_Duration} (0x{V1_Duration:X})");
+            }
+            else if (Version == 0x0000000A)
+            {
+                builder.AppendLine($"  Unknown 1: {V2_Unknown1} (0x{V2_Unknown1:X})");
+                builder.AppendLine($"  Unknown 2: {V2_Unknown2} (0x{V2_Unknown2:X})");
+                builder.AppendLine($"  Unknown 3: {V2_Unknown3} (0x{V2_Unknown3:X})");
+                builder.AppendLine($"  Unknown 4: {V2_Unknown4} (0x{V2_Unknown4:X})");
+                builder.AppendLine($"  Unknown 5: {V2_Unknown5} (0x{V2_Unknown5:X})");
+                builder.AppendLine($"  Unknown 6: {V2_Unknown6} (0x{V2_Unknown6:X})");
+                builder.AppendLine($"  Unknown Offset 1: {V2_UnknownOffset1} (0x{V2_UnknownOffset1:X})");
+                builder.AppendLine($"  Unknown 7: {V2_Unknown7} (0x{V2_Unknown7:X})");
+                builder.AppendLine($"  Unknown 8: {V2_Unknown8} (0x{V2_Unknown8:X})");
+                builder.AppendLine($"  Unknown 9: {V2_Unknown9} (0x{V2_Unknown9:X})");
+                builder.AppendLine($"  Unknown Offset 2: {V2_UnknownOffset2} (0x{V2_UnknownOffset2:X})");
+                builder.AppendLine($"  Unknown 10: {V2_Unknown10} (0x{V2_Unknown10:X})");
+                builder.AppendLine($"  Unknown 11: {V2_Unknown11} (0x{V2_Unknown11:X})");
+                builder.AppendLine($"  Unknown 12: {V2_Unknown12} (0x{V2_Unknown12:X})");
+                builder.AppendLine($"  Unknown 13: {V2_Unknown13} (0x{V2_Unknown13:X})");
+                builder.AppendLine($"  Unknown 14: {V2_Unknown14} (0x{V2_Unknown14:X})");
+                builder.AppendLine($"  Unknown 15: {V2_Unknown15} (0x{V2_Unknown15:X})");
+                builder.AppendLine($"  Unknown 16: {V2_Unknown16} (0x{V2_Unknown16:X})");
+                builder.AppendLine($"  Unknown 17: {V2_Unknown17} (0x{V2_Unknown17:X})");
+                builder.AppendLine($"  Track ID: {V2_TrackID} (0x{V2_TrackID:X})");
+                builder.AppendLine($"  Year: {V2_Year} (0x{V2_Year:X})");
+                builder.AppendLine($"  Track number: {V2_TrackNumber} (0x{V2_TrackNumber:X})");
+                builder.AppendLine($"  Unknown 18: {V2_Unknown18} (0x{V2_Unknown18:X})");
+            }
+            else
+            {
+                builder.AppendLine($"  Unrecognized version, not parsed...");
+            }
             builder.AppendLine($"  Track length: {TrackLength} (0x{TrackLength:X})");
             builder.AppendLine($"  Track: {Track ?? "[NULL]"}");
             builder.AppendLine($"  Artist length: {ArtistLength} (0x{ArtistLength:X})");

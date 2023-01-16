@@ -8,7 +8,7 @@ namespace BurnOutSharp.Models.PlayJ
         /// <summary>
         /// Header
         /// </summary>
-        public EntryHeader Header { get; set; }
+        public AudioHeader Header { get; set; }
 
         /// <summary>
         /// Unknown block 1
@@ -18,7 +18,7 @@ namespace BurnOutSharp.Models.PlayJ
         #region V1 Only
 
         /// <summary>
-        /// Value referred to by <see cref="EntryHeader.UnknownOffset2"/>
+        /// Value referred to by <see cref="AudioHeaderV1.UnknownOffset2"/>
         /// </summary>
         /// <remarks>Typically 0x00000000</remarks>
         public uint UnknownValue2 { get; set; }
