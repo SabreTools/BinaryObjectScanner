@@ -116,6 +116,11 @@
         PAK,
 
         /// <summary>
+        /// NovaLogic Game Archive Format
+        /// </summary>
+        PFF,
+
+        /// <summary>
         /// PKWARE ZIP archive and derivatives
         /// </summary>
         PKZIP,

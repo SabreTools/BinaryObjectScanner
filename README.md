@@ -177,6 +177,7 @@ Below is a list of container formats that are supported in some way:
 | Nintendo 3DS cart image | Yes | Yes | No | |
 | Nintendo CIA archive | Yes | Yes | No | |
 | Nintendo DS/DSi cart image | Yes | Yes | No | |
+| NovaLogic Game Archive Format (PFF) | Yes | Yes | Yes | |
 | PKZIP and derived files (ZIP, etc.) | No | Yes | Yes | Via `SharpCompress` |
 | PlayJ audio file (PLJ) | Yes* | Yes | No | Undocumented file format, many fields printed |
 | Portable Executable | Yes | Yes | No* | Some packed executables are supported |

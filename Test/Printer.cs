@@ -195,6 +195,12 @@ namespace Test
                         wrapper = PAK.Create(stream);
                         break;
 
+                    // PFF
+                    case SupportedFileType.PFF:
+                        wrapperName = "NovaLogic Game Archive Format";
+                        wrapper = PFF.Create(stream);
+                        break;
+
                     // PLJ
                     case SupportedFileType.PLJ:
                         wrapperName = "PlayJ audio file";

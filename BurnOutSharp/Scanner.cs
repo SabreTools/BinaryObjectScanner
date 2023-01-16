@@ -513,6 +513,14 @@ namespace BurnOutSharp
                         AppendToDictionary(protections, subProtections);
                     }
 
+                    // PFF
+                    if (fileName != null && scannable is PFF)
+                    {
+                        var subProtections = scannable.Scan(this, fileName);
+                        PrependToKeys(subProtections, fileName);
+                        AppendToDictionary(protections, subProtections);
+                    }
+
                     // PKZIP archive (and derivatives)
                     if (scannable is PKZIP)
                     {

@@ -532,7 +532,34 @@ namespace Test
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"Something went wrong extracting MS-CAB: {ex}");
+                        Console.WriteLine($"Something went wrong extracting PAK: {ex}");
+                        Console.WriteLine();
+                    }
+                }
+
+                // PFF
+                else if (ft == SupportedFileType.PFF)
+                {
+                    // Build the archive information
+                    Console.WriteLine("Extracting PFF contents");
+                    Console.WriteLine();
+
+                    var pff = PFF.Create(stream);
+                    if (pff == null)
+                    {
+                        Console.WriteLine("Something went wrong parsing PFF");
+                        Console.WriteLine();
+                        return;
+                    }
+
+                    try
+                    {
+                        // Extract the PFF contents to the directory
+                        pff.ExtractAll(outputDirectory);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Something went wrong extracting PFF: {ex}");
                         Console.WriteLine();
                     }
                 }

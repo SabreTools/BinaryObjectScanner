@@ -202,6 +202,22 @@ namespace BurnOutSharp.Tools
 
             #endregion
 
+            #region PFF
+
+            // Version 2
+            if (magic.StartsWith(new byte?[] { 0x14, 0x00, 0x00, 0x00, 0x50, 0x46, 0x46, 0x32 }))
+                return SupportedFileType.PFF;
+
+            // Version 3
+            if (magic.StartsWith(new byte?[] { 0x14, 0x00, 0x00, 0x00, 0x50, 0x46, 0x46, 0x33 }))
+                return SupportedFileType.PFF;
+
+            // Version 4
+            if (magic.StartsWith(new byte?[] { 0x14, 0x00, 0x00, 0x00, 0x50, 0x46, 0x46, 0x34 }))
+                return SupportedFileType.PFF;
+
+            #endregion
+
             #region PKZIP
 
             // PKZIP (Unknown)
@@ -382,7 +398,7 @@ namespace BurnOutSharp.Tools
                 return SupportedFileType.BDPlusSVM;
 
             #endregion
-            
+
             #region BFPK
 
             // No extensions registered for BFPK
@@ -434,7 +450,7 @@ namespace BurnOutSharp.Tools
                 return SupportedFileType.CIA;
 
             #endregion
-            
+
             #region Executable
 
             // DOS MZ executable file format (and descendants)
@@ -541,6 +557,13 @@ namespace BurnOutSharp.Tools
             // Both PAK and Quantum share one extension
             // if (extension.Equals("pak", StringComparison.OrdinalIgnoreCase))
             //     return SupportedFileType.PAK;
+
+            #endregion
+
+            #region PFF
+
+            if (extension.Equals("pff", StringComparison.OrdinalIgnoreCase))
+                return SupportedFileType.PFF;
 
             #endregion
 
@@ -791,6 +814,7 @@ namespace BurnOutSharp.Tools
                 //case SupportedFileType.NCF: return new FileType.NCF();
                 //case SupportedFileType.Nitro: return new FileType.Nitro();
                 case SupportedFileType.PAK: return new FileType.PAK();
+                case SupportedFileType.PFF: return new FileType.PFF();
                 case SupportedFileType.PKZIP: return new FileType.PKZIP();
                 case SupportedFileType.PLJ: return new FileType.PLJ();
                 //case SupportedFileType.Quantum: return new FileType.Quantum();
