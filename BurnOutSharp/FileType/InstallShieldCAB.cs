@@ -59,10 +59,10 @@ namespace BurnOutSharp.FileType
                             if (!cabfile.FileIsValid(i))
                                 continue;
 
-                            string filename = cabfile.FileName(i);
                             string tempFile;
                             try
                             {
+                                string filename = cabfile.FileName(i);
                                 tempFile = Path.Combine(tempPath, filename);
                             }
                             catch
