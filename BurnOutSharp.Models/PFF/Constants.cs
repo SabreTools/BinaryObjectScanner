@@ -3,9 +3,12 @@ namespace BurnOutSharp.Models.PFF
     /// <see href="https://devilsclaws.net/download/file-pff-new-bz2"/>
     public static class Constants
     {
+        public const string Version0SignatureString = "PFF0";
+        public const uint Version0HSegmentSize = 0x00000020;
+
         // Version 1 not confirmed
         // public const string Version1SignatureString = "PFF1";
-        // public const uint Version1HeaderSize = 0x00000000;
+        // public const uint Version1SegmentSize = 0x00000020;
 
         public const string Version2SignatureString = "PFF2";
         public const uint Version2SegmentSize = 0x00000020;

@@ -133,6 +133,11 @@ namespace BurnOutSharp.Builders
             header.FileSegmentSize = data.ReadUInt32();
             switch (header.Signature)
             {
+                case Version0SignatureString:
+                    if (header.FileSegmentSize != Version0HSegmentSize)
+                        return null;
+                    break;
+
                 case Version2SignatureString:
                     if (header.FileSegmentSize != Version2SegmentSize)
                         return null;
