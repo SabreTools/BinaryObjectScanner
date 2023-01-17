@@ -156,12 +156,15 @@ namespace Test
 
                     #region Information
 
-#if NET6_0_OR_GREATER
                     case "-j":
                     case "--json":
+#if NET6_0_OR_GREATER
                         options.Json = true;
-                        break;
+#else
+                        Console.WriteLine("JSON output not available in .NET Framework 4.8");
 #endif
+                        break;
+
 
                     #endregion
 
