@@ -48,7 +48,7 @@ namespace Test
 #if NET6_0_OR_GREATER
                     Printer.PrintPathInfo(inputPath, options.Json, options.Debug);
 #else
-                    Printer.PrintPathInfo(inputPath, options.Debug);
+                    Printer.PrintPathInfo(inputPath, false, options.Debug);
 #endif
 
                 // Scanning

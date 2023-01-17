@@ -16,32 +16,20 @@ namespace Test
         /// <param name="path">File or directory path</param>
         /// <param name="json">Enable JSON output, if supported</param>
         /// <param name="debug">Enable debug output</param>
-#if NET6_0_OR_GREATER
         public static void PrintPathInfo(string path, bool json, bool debug)
-#else
-        public static void PrintPathInfo(string path, bool debug)
-#endif
         {
             Console.WriteLine($"Checking possible path: {path}");
 
             // Check if the file or directory exists
             if (File.Exists(path))
             {
-#if NET6_0_OR_GREATER
                 PrintFileInfo(path, json, debug);
-#else
-                PrintFileInfo(path, debug);
-#endif
             }
             else if (Directory.Exists(path))
             {
                 foreach (string file in Directory.EnumerateFiles(path, "*", SearchOption.AllDirectories))
                 {
-#if NET6_0_OR_GREATER
                     PrintFileInfo(file, json, debug);
-#else
-                    PrintFileInfo(file, debug);
-#endif
                 }
             }
             else
@@ -53,11 +41,7 @@ namespace Test
         /// <summary>
         /// Print information for a single file, if possible
         /// </summary>
-#if NET6_0_OR_GREATER
         private static void PrintFileInfo(string file, bool json, bool debug)
-#else
-        private static void PrintFileInfo(string file, bool debug)
-#endif
         {
             Console.WriteLine($"Attempting to print info for {file}");
 
