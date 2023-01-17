@@ -16,20 +16,32 @@ namespace Test
         /// <param name="path">File or directory path</param>
         /// <param name="json">Enable JSON output, if supported</param>
         /// <param name="debug">Enable debug output</param>
+#if NET6_0_OR_GREATER
         public static void PrintPathInfo(string path, bool json, bool debug)
+#else
+        public static void PrintPathInfo(string path, bool debug)
+#endif
         {
             Console.WriteLine($"Checking possible path: {path}");
 
             // Check if the file or directory exists
             if (File.Exists(path))
             {
+#if NET6_0_OR_GREATER
                 PrintFileInfo(path, json, debug);
+#else
+                PrintFileInfo(path, debug);
+#endif
             }
             else if (Directory.Exists(path))
             {
                 foreach (string file in Directory.EnumerateFiles(path, "*", SearchOption.AllDirectories))
                 {
+#if NET6_0_OR_GREATER
                     PrintFileInfo(file, json, debug);
+#else
+                    PrintFileInfo(file, debug);
+#endif
                 }
             }
             else
@@ -41,7 +53,11 @@ namespace Test
         /// <summary>
         /// Print information for a single file, if possible
         /// </summary>
+#if NET6_0_OR_GREATER
         private static void PrintFileInfo(string file, bool json, bool debug)
+#else
+        private static void PrintFileInfo(string file, bool debug)
+#endif
         {
             Console.WriteLine($"Attempting to print info for {file}");
 
@@ -260,6 +276,9 @@ namespace Test
                 // Print the wrapper name
                 Console.WriteLine($"{wrapperName} wrapper created successfully!");
 
+                // Get the base info output name
+                string filenameBase = $"info-{DateTime.Now:yyyy-MM-dd_HHmmss.ffff}";
+
 #if NET6_0_OR_GREATER
                 // If we have the JSON flag
                 if (json)
@@ -269,24 +288,20 @@ namespace Test
                     Console.WriteLine(serializedData);
 
                     // Write the output data
-                    using (var sw = new StreamWriter(File.OpenWrite($"info-{DateTime.Now:yyyy-MM-dd_HHmmss.ffff}.json")))
+                    using (var sw = new StreamWriter(File.OpenWrite($"{filenameBase}.json")))
                     {
                         sw.WriteLine(serializedData);
                     }
                 }
 #endif
-                // If we don't have the JSON flag
-                if (!json)
-                {
-                    // Create the output data
-                    StringBuilder builder = wrapper.PrettyPrint();
-                    Console.WriteLine(builder);
+                // Create the output data
+                StringBuilder builder = wrapper.PrettyPrint();
+                Console.WriteLine(builder);
 
-                    // Write the output data
-                    using (var sw = new StreamWriter(File.OpenWrite($"info-{DateTime.Now:yyyy-MM-dd_HHmmss.ffff}.txt")))
-                    {
-                        sw.WriteLine(builder.ToString());
-                    }
+                // Write the output data
+                using (var sw = new StreamWriter(File.OpenWrite($"{filenameBase}.txt")))
+                {
+                    sw.WriteLine(builder.ToString());
                 }
             }
         }
