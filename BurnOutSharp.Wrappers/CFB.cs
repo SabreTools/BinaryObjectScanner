@@ -7,6 +7,13 @@ namespace BurnOutSharp.Wrappers
 {
     public class CFB : WrapperBase
     {
+        #region Descriptive Properties
+
+        /// <inheritdoc/>
+        public override string Description => "Compact File Binary";
+
+        #endregion
+
         #region Pass-Through Properties
 
         #region Header

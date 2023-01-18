@@ -5,6 +5,13 @@ namespace BurnOutSharp.Wrappers
 {
     public class PAK : WrapperBase
     {
+        #region Descriptive Properties
+
+        /// <inheritdoc/>
+        public override string Description => "Half-Life Package File (PAK)";
+
+        #endregion
+
         #region Pass-Through Properties
 
         #region Header

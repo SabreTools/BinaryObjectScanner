@@ -7,6 +7,13 @@ namespace BurnOutSharp.Wrappers
 {
     public partial class MicrosoftCabinet : WrapperBase
     {
+        #region Descriptive Properties
+
+        /// <inheritdoc/>
+        public override string Description => "Microsoft Cabinet";
+
+        #endregion
+
         #region Pass-Through Properties
 
         #region Header

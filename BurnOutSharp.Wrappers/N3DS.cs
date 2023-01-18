@@ -6,6 +6,13 @@ namespace BurnOutSharp.Wrappers
 {
     public class N3DS : WrapperBase
     {
+        #region Descriptive Properties
+
+        /// <inheritdoc/>
+        public override string Description => "Nintendo 3DS Cart Image";
+
+        #endregion
+
         #region Pass-Through Properties
 
         #region Header

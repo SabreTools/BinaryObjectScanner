@@ -6,6 +6,13 @@ namespace BurnOutSharp.Wrappers
 {
     public class PlayJAudioFile : WrapperBase
     {
+        #region Descriptive Properties
+
+        /// <inheritdoc/>
+        public override string Description => "PlayJ Audio File (PLJ)";
+
+        #endregion
+
         #region Pass-Through Properties
 
         #region Audio Header

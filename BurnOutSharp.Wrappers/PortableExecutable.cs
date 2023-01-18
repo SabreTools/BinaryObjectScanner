@@ -12,6 +12,13 @@ namespace BurnOutSharp.Wrappers
 {
     public class PortableExecutable : WrapperBase
     {
+        #region Descriptive Properties
+
+        /// <inheritdoc/>
+        public override string Description => "Portable Executable (PE)";
+
+        #endregion
+
         #region Pass-Through Properties
 
         #region MS-DOS Stub

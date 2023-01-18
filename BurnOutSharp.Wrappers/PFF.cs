@@ -5,6 +5,13 @@ namespace BurnOutSharp.Wrappers
 {
     public class PFF : WrapperBase
     {
+        #region Descriptive Properties
+
+        /// <inheritdoc/>
+        public override string Description => "NovaLogic Game Archive Format (PFF)";
+
+        #endregion
+
         #region Pass-Through Properties
 
         #region Header

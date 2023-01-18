@@ -6,6 +6,13 @@ namespace BurnOutSharp.Wrappers
 {
     public class LinearExecutable : WrapperBase
     {
+        #region Descriptive Properties
+
+        /// <inheritdoc/>
+        public override string Description => "Linear Executable (LE/LX)";
+
+        #endregion
+
         #region Pass-Through Properties
 
         #region MS-DOS Stub

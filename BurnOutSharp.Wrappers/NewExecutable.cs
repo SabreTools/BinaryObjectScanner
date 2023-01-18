@@ -8,6 +8,13 @@ namespace BurnOutSharp.Wrappers
 {
     public class NewExecutable : WrapperBase
     {
+        #region Descriptive Properties
+
+        /// <inheritdoc/>
+        public override string Description => "New Executable (NE)";
+
+        #endregion
+
         #region Pass-Through Properties
 
         #region MS-DOS Stub

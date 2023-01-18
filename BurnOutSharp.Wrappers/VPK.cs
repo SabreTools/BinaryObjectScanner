@@ -9,6 +9,13 @@ namespace BurnOutSharp.Wrappers
 {
     public class VPK : WrapperBase
     {
+        #region Descriptive Properties
+
+        /// <inheritdoc/>
+        public override string Description => "Valve Package File (VPK)";
+
+        #endregion
+
         #region Pass-Through Properties
 
         #region Header

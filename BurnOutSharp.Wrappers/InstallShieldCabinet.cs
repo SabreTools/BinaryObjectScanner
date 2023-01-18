@@ -7,6 +7,13 @@ namespace BurnOutSharp.Wrappers
 {
     public partial class InstallShieldCabinet : WrapperBase
     {
+        #region Descriptive Properties
+
+        /// <inheritdoc/>
+        public override string Description => "InstallShield Cabinet";
+
+        #endregion
+
         #region Pass-Through Properties
 
         #region Common Header

@@ -186,7 +186,7 @@
         XZ,
 
         /// <summary>
-        /// xz archive
+        /// Xbox Package File
         /// </summary>
         XZP,
     }

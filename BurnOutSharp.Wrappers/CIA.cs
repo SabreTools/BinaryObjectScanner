@@ -6,6 +6,13 @@ namespace BurnOutSharp.Wrappers
 {
     public class CIA : WrapperBase
     {
+        #region Descriptive Properties
+
+        /// <inheritdoc/>
+        public override string Description => "CTR Importable Archive (CIA)";
+
+        #endregion
+
         #region Pass-Through Properties
 
         #region Header

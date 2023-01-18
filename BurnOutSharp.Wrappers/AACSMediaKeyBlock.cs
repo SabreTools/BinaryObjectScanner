@@ -6,6 +6,13 @@ namespace BurnOutSharp.Wrappers
 {
     public class AACSMediaKeyBlock : WrapperBase
     {
+        #region Descriptive Properties
+
+        /// <inheritdoc/>
+        public override string Description => "AACS Media Key Block";
+
+        #endregion
+
         #region Pass-Through Properties
 
         #region Records

@@ -6,6 +6,13 @@ namespace BurnOutSharp.Wrappers
 {
     public class XZP : WrapperBase
     {
+        #region Descriptive Properties
+
+        /// <inheritdoc/>
+        public override string Description => "Xbox Package File (XZP)";
+
+        #endregion
+
         #region Pass-Through Properties
 
         #region Header

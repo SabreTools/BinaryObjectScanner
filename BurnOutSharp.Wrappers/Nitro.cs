@@ -6,6 +6,13 @@ namespace BurnOutSharp.Wrappers
 {
     public class Nitro : WrapperBase
     {
+        #region Descriptive Properties
+
+        /// <inheritdoc/>
+        public override string Description => "Nintendo DS/DSi Cart Image";
+
+        #endregion
+
         #region Pass-Through Properties
 
         #region Common Header

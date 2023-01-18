@@ -6,6 +6,13 @@ namespace BurnOutSharp.Wrappers
 {
     public class VBSP : WrapperBase
     {
+        #region Descriptive Properties
+
+        /// <inheritdoc/>
+        public override string Description => "Half-Life 2 Level (VBSP)";
+
+        #endregion
+
         #region Pass-Through Properties
 
         /// <inheritdoc cref="Models.VBSP.Header.Signature"/>

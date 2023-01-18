@@ -5,6 +5,13 @@ namespace BurnOutSharp.Wrappers
 {
     public class Quantum : WrapperBase
     {
+        #region Descriptive Properties
+
+        /// <inheritdoc/>
+        public override string Description => "Quantum Archive";
+
+        #endregion
+
         #region Pass-Through Properties
 
         #region Header

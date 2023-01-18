@@ -6,6 +6,13 @@ namespace BurnOutSharp.Wrappers
 {
     public class BDPlusSVM : WrapperBase
     {
+        #region Descriptive Properties
+
+        /// <inheritdoc/>
+        public override string Description => "BD+ SVM";
+
+        #endregion
+
         #region Pass-Through Properties
 
         /// <inheritdoc cref="Models.BDPlus.SVM.Signature"/>

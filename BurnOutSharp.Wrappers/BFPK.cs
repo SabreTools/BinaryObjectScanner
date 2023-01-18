@@ -7,6 +7,13 @@ namespace BurnOutSharp.Wrappers
 {
     public class BFPK : WrapperBase
     {
+        #region Descriptive Properties
+
+        /// <inheritdoc/>
+        public override string Description => "BFPK Archive";
+
+        #endregion
+
         #region Pass-Through Properties
 
         #region Header

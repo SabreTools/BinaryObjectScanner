@@ -5,6 +5,13 @@ namespace BurnOutSharp.Wrappers
 {
     public class MSDOS : WrapperBase
     {
+        #region Descriptive Properties
+
+        /// <inheritdoc/>
+        public override string Description => "MS-DOS Executable";
+
+        #endregion
+
         #region Pass-Through Properties
 
         #region Header

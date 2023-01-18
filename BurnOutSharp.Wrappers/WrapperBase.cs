@@ -9,6 +9,15 @@ namespace BurnOutSharp.Wrappers
 {
     public abstract class WrapperBase
     {
+        #region Descriptive Properties
+
+        /// <summary>
+        /// Description of the object
+        /// </summary>
+        public abstract string Description { get; }
+
+        #endregion
+
         #region Instance Variables
 
         /// <summary>

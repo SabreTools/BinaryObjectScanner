@@ -9,6 +9,13 @@ namespace BurnOutSharp.Wrappers
 {
     public class SGA : WrapperBase
     {
+        #region Descriptive Properties
+
+        /// <inheritdoc/>
+        public override string Description => "SGA";
+
+        #endregion
+
         #region Pass-Through Properties
 
         #region Header

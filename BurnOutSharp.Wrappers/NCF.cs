@@ -5,6 +5,13 @@ namespace BurnOutSharp.Wrappers
 {
     public class NCF : WrapperBase
     {
+        #region Descriptive Properties
+
+        /// <inheritdoc/>
+        public override string Description => "Half-Life No Cache File (NCF)";
+
+        #endregion
+
         #region Pass-Through Properties
 
         #region Header

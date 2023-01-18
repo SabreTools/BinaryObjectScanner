@@ -8,6 +8,13 @@ namespace BurnOutSharp.Wrappers
 {
     public class BSP : WrapperBase
     {
+        #region Descriptive Properties
+
+        /// <inheritdoc/>
+        public override string Description => "Half-Life Level (BSP)";
+
+        #endregion
+
         #region Pass-Through Properties
 
         #region Header

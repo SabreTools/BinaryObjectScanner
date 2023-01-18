@@ -5,6 +5,13 @@ namespace BurnOutSharp.Wrappers
 {
     public class WAD : WrapperBase
     {
+        #region Descriptive Properties
+
+        /// <inheritdoc/>
+        public override string Description => "Half-Life Texture Package File (WAD)";
+
+        #endregion
+
         #region Pass-Through Properties
 
         #region Header

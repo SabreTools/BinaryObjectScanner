@@ -7,6 +7,13 @@ namespace BurnOutSharp.Wrappers
 {
     public class GCF : WrapperBase
     {
+        #region Descriptive Properties
+
+        /// <inheritdoc/>
+        public override string Description => "Half-Life Game Cache File (GCF)";
+
+        #endregion
+
         #region Pass-Through Properties
 
         #region Header
