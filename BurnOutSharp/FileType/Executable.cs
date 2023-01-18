@@ -4,8 +4,6 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using BurnOutSharp.Interfaces;
-using BurnOutSharp.Matching;
-using BurnOutSharp.Utilities;
 using BurnOutSharp.Wrappers;
 using static BurnOutSharp.Utilities.Dictionary;
 
@@ -56,7 +54,7 @@ namespace BurnOutSharp.FileType
             }
 
             // Get the wrapper for the appropriate executable type
-            WrapperBase wrapper = DetermineExecutableType(stream);
+            WrapperBase wrapper = Tools.Utilities.DetermineExecutableType(stream);
             if (wrapper == null)
                 return protections;
 
@@ -146,52 +144,6 @@ namespace BurnOutSharp.FileType
         }
 
         #region Helpers
-
-        /// <summary>
-        /// Determine the executable type from the stream
-        /// </summary>
-        /// <param name="stream">Stream data to parse</param>
-        /// <returns>WrapperBase representing the executable, null on error</returns>
-        private WrapperBase DetermineExecutableType(Stream stream)
-        {
-            // Try to get an MS-DOS wrapper first
-            WrapperBase wrapper = MSDOS.Create(stream);
-            if (wrapper == null)
-                return null;
-
-            // Check for a valid new executable address
-            if ((wrapper as MSDOS).NewExeHeaderAddr >= stream.Length)
-                return wrapper;
-
-            // Try to read the executable info
-            stream.Seek((wrapper as MSDOS).NewExeHeaderAddr, SeekOrigin.Begin);
-            byte[] magic = stream.ReadBytes(4);
-
-            // New Executable
-            if (magic.StartsWith(Models.NewExecutable.Constants.SignatureBytes))
-            {
-                stream.Seek(0, SeekOrigin.Begin);
-                return NewExecutable.Create(stream);
-            }
-
-            // Linear Executable
-            else if (magic.StartsWith(Models.LinearExecutable.Constants.LESignatureBytes)
-                || magic.StartsWith(Models.LinearExecutable.Constants.LXSignatureBytes))
-            {
-                stream.Seek(0, SeekOrigin.Begin);
-                return LinearExecutable.Create(stream);
-            }
-
-            // Portable Executable
-            else if (magic.StartsWith(Models.PortableExecutable.Constants.SignatureBytes))
-            {
-                stream.Seek(0, SeekOrigin.Begin);
-                return PortableExecutable.Create(stream);
-            }
-
-            // Everything else fails
-            return null;
-        }
 
         /// <summary>
         /// Check to see if a protection should be added or not
