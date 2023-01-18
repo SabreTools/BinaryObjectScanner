@@ -89,7 +89,7 @@ namespace BurnOutSharp.FileType
             }
 
             // If we have a New Executable
-            if (wrapper is NewExecutable nex)
+            else if (wrapper is NewExecutable nex)
             {
                 Parallel.ForEach(ScanningClasses.NewExecutableCheckClasses, contentCheckClass =>
                 {
@@ -139,6 +139,8 @@ namespace BurnOutSharp.FileType
                     }
                 });
             }
+
+            // No other executable formats currently identified or supported
 
             return protections;
         }
