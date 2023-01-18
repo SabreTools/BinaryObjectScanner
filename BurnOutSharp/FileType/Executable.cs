@@ -53,11 +53,13 @@ namespace BurnOutSharp.FileType
                 }
             }
 
-            // Create PortableExecutable and NewExecutable objects for use in the checks
+            // Create Executable objects for use in the checks
             stream.Seek(0, SeekOrigin.Begin);
-            PortableExecutable pex = PortableExecutable.Create(stream);
+            LinearExecutable lex = LinearExecutable.Create(stream);
             stream.Seek(0, SeekOrigin.Begin);
             NewExecutable nex = NewExecutable.Create(stream);
+            stream.Seek(0, SeekOrigin.Begin);
+            PortableExecutable pex = PortableExecutable.Create(stream);
             stream.Seek(0, SeekOrigin.Begin);
 
             // Iterate through all generic content checks
