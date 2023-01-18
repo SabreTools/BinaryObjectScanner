@@ -4,6 +4,8 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using BurnOutSharp.Interfaces;
+using BurnOutSharp.Matching;
+using BurnOutSharp.Utilities;
 using BurnOutSharp.Wrappers;
 using static BurnOutSharp.Utilities.Dictionary;
 
@@ -53,14 +55,10 @@ namespace BurnOutSharp.FileType
                 }
             }
 
-            // Create Executable objects for use in the checks
-            stream.Seek(0, SeekOrigin.Begin);
-            LinearExecutable lex = LinearExecutable.Create(stream);
-            stream.Seek(0, SeekOrigin.Begin);
-            NewExecutable nex = NewExecutable.Create(stream);
-            stream.Seek(0, SeekOrigin.Begin);
-            PortableExecutable pex = PortableExecutable.Create(stream);
-            stream.Seek(0, SeekOrigin.Begin);
+            // Get the wrapper for the appropriate executable type
+            WrapperBase wrapper = DetermineExecutableType(stream);
+            if (wrapper == null)
+                return protections;
 
             // Iterate through all generic content checks
             if (fileContent != null)
@@ -84,8 +82,14 @@ namespace BurnOutSharp.FileType
                 });
             }
 
-            // If we have a NE executable, iterate through all NE content checks
-            if (nex != null)
+            // If we have an MS-DOS executable
+            if (wrapper is MSDOS mz)
+            {
+                // No-op
+            }
+
+            // If we have a New Executable
+            if (wrapper is NewExecutable nex)
             {
                 Parallel.ForEach(ScanningClasses.NewExecutableCheckClasses, contentCheckClass =>
                 {
@@ -107,8 +111,14 @@ namespace BurnOutSharp.FileType
                 });
             }
 
-            // If we have a PE executable, iterate through all PE content checks
-            if (pex != null)
+            // If we have a Linear Executable
+            else if (wrapper is LinearExecutable lex)
+            {
+                // No-op
+            }
+
+            // If we have a Portable Executable
+            else if (wrapper is PortableExecutable pex)
             {
                 Parallel.ForEach(ScanningClasses.PortableExecutableCheckClasses, contentCheckClass =>
                 {
@@ -134,6 +144,52 @@ namespace BurnOutSharp.FileType
         }
 
         #region Helpers
+
+        /// <summary>
+        /// Determine the executable type from the stream
+        /// </summary>
+        /// <param name="stream">Stream data to parse</param>
+        /// <returns>WrapperBase representing the executable, null on error</returns>
+        private WrapperBase DetermineExecutableType(Stream stream)
+        {
+            // Try to get an MS-DOS wrapper first
+            WrapperBase wrapper = MSDOS.Create(stream);
+            if (wrapper == null)
+                return null;
+
+            // Check for a valid new executable address
+            if ((wrapper as MSDOS).NewExeHeaderAddr >= stream.Length)
+                return wrapper;
+
+            // Try to read the executable info
+            stream.Seek((wrapper as MSDOS).NewExeHeaderAddr, SeekOrigin.Begin);
+            byte[] magic = stream.ReadBytes(4);
+
+            // New Executable
+            if (magic.StartsWith(Models.NewExecutable.Constants.SignatureBytes))
+            {
+                stream.Seek(0, SeekOrigin.Begin);
+                return NewExecutable.Create(stream);
+            }
+
+            // Linear Executable
+            else if (magic.StartsWith(Models.LinearExecutable.Constants.LESignatureBytes)
+                || magic.StartsWith(Models.LinearExecutable.Constants.LXSignatureBytes))
+            {
+                stream.Seek(0, SeekOrigin.Begin);
+                return LinearExecutable.Create(stream);
+            }
+
+            // Portable Executable
+            else if (magic.StartsWith(Models.PortableExecutable.Constants.SignatureBytes))
+            {
+                stream.Seek(0, SeekOrigin.Begin);
+                return PortableExecutable.Create(stream);
+            }
+
+            // Everything else fails
+            return null;
+        }
 
         /// <summary>
         /// Check to see if a protection should be added or not
