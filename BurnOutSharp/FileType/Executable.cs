@@ -47,8 +47,9 @@ namespace BurnOutSharp.FileType
                 {
                     if (scanner.IncludeDebug) Console.WriteLine(ex);
 
-                    AppendToDictionary(protections, file, "[Out of memory attempting to open]");
-                    return protections;
+                    // Enable for odd files, keep disabled otherwise
+                    // AppendToDictionary(protections, file, "[Out of memory attempting to open]");
+                    // return protections;
                 }
             }
 
