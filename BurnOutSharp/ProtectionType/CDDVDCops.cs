@@ -9,18 +9,41 @@ using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.ProtectionType
 {
-    // TODO: Investigate "Cops Copylock II" (https://www.cbmstuff.com/forum/showthread.php?tid=488).
-    // `AgentHugo.exe`
-    //      Embedded PE executable in one of the NE sections
-    // `AgentHugo.exe` / `NE.EXE` (1.46) / `NETINST.EXE` (1.48) / `NETINST.QZ_`
-    //      Embedded PKZIP archive that may contain the CD-Cops files
-    // `CDCOPS.DLL` (1.46) / `CDCOPS.DLL` (1.48)
-    //      `WINCOPS.INI`
-    // Samples of CD-Cops can be found in IA items "der-brockhaus-multimedial-2002-premium" and "der-brockhaus-multimedial-2003-premium".
-    // A sample of CD-Cops that makes use of encrypted PDFs (LDSCRYPT) can be found in IA item "Faculty_Edition_People_Problems_and_Power_by_Joseph_Unekis_Textbytes".
+    /// <summary>
+    /// TODO: Investigate "Cops Copylock II" (https://www.cbmstuff.com/forum/showthread.php?tid=488).
+    /// `AgentHugo.exe`
+    ///      Embedded PE executable in one of the NE sections
+    /// `AgentHugo.exe` / `NE.EXE` (1.46) / `NETINST.EXE` (1.48) / `NETINST.QZ_`
+    ///      Embedded PKZIP archive that may contain the CD-Cops files
+    /// `CDCOPS.DLL` (1.46) / `CDCOPS.DLL` (1.48)
+    ///      `WINCOPS.INI`
+    ///      
+    /// TODO: Investigate if "DVD-Cops" is a separate product, or simply what CD-Cops is referred to when used on a DVD.
+    /// Known versions of CD-Cops:
+    /// * 1.08 (Unconfirmed) (Redump entry 84517).
+    /// * 1.21 (Unconfirmed) (Redump entry 91713).
+    /// * 1,28[sic] (Confirmed) ("RunMenu.exe" in IA item "Faculty_Edition_People_Problems_and_Power_by_Joseph_Unekis_Textbytes").
+    /// * 1.31 (Unconfirmed) (Redump entry 19479).
+    /// * 1.72 (Confirmed) ("h3blade.exe" in Redump entry 85077).
+    /// * 1.73 (Confirmed) ("WETFLIPPER.EXE" in IA item "LULA_Erotic_Pinball_-_Windows95_Eng").
+    ///      
+    /// Known samples of CD-Cops include:
+    /// * IA item "der-brockhaus-multimedial-2002-premium".
+    /// * IA item "der-brockhaus-multimedial-2003-premium".
+    /// * IA item "SCIENCESENCYCLOPEDIAV2.0ARISSCD1".
+    /// * IA item "SCIENCESENCYCLOPEDIAV2.0ARISSCD2".
+    /// * IA item "Triada_Russian_DVD_Complete_Collection_of_Erotic_Games".
+    /// * IA item "LULA_Erotic_Pinball_-_Windows95_Eng".
+    /// * Redump entries 51403(?), 84517, and 85077.
+    /// 
+    /// A sample of CD-Cops that makes use of encrypted PDFs (LDSCRYPT) can be found in IA item "Faculty_Edition_People_Problems_and_Power_by_Joseph_Unekis_Textbytes".
+    /// </summary>
+
     public class CDDVDCops : IContentCheck, INewExecutableCheck, IPathCheck, IPortableExecutableCheck
     {
         /// <inheritdoc/>
+
+        // TODO: Investigate reference to "CD32COPS.DLL" in "WETFLIPP.QZ_" in IA item "Triada_Russian_DVD_Complete_Collection_of_Erotic_Games".
         public string CheckContents(string file, byte[] fileContent, bool includeDebug)
         {
             // TODO: Obtain a sample to find where this string is in a typical executable
@@ -126,7 +149,7 @@ namespace BurnOutSharp.ProtectionType
                 // A 400+ MB file called "WASTE.DAT" that is fully 00 padded can be found in IA item "Faculty_Edition_People_Problems_and_Power_by_Joseph_Unekis_Textbytes".
                 // Presumably used to increase the amount of data written to the disc to allow DPM checking to be used for the protection. It's unknown if this file is used on any other protected discs.
 
-                // Found in Redump entry 84517
+                // Found in Redump entry 84517.
                 new PathMatchSet(new PathMatch("CDCOPS.DLL", useEndsWith: true), "CD-Cops"),
                 new PathMatchSet(new PathMatch(".W_X", matchExact: true, useEndsWith: true), "CD-Cops"),
                 new PathMatchSet(new PathMatch(".QZ_", matchExact: true, useEndsWith: true), "CD-Cops"),
@@ -146,7 +169,7 @@ namespace BurnOutSharp.ProtectionType
                 // A 400+ MB file called "WASTE.DAT" that is fully 00 padded can be found in IA item "Faculty_Edition_People_Problems_and_Power_by_Joseph_Unekis_Textbytes".
                 // Presumably used to increase the amount of data written to the disc to allow DPM checking to be used for the protection. It's unknown if this file is used on any other protected discs.
 
-                // Found in Redump entry 84517
+                // Found in Redump entry 84517.
                 new PathMatchSet(new PathMatch("CDCOPS.DLL", useEndsWith: true), "CD-Cops"),
                 new PathMatchSet(new PathMatch(".W_X", matchExact: true, useEndsWith: true), "CD-Cops"),
                 new PathMatchSet(new PathMatch(".QZ_", matchExact: true, useEndsWith: true), "CD-Cops"),
