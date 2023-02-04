@@ -21,14 +21,15 @@ namespace BurnOutSharp.ProtectionType
     /// 
     /// It seems that C-Dilla License Management System is a newer name for their CD-Secure product, based on this URL (https://web.archive.org/web/20050211004709/http://www.macrovision.com/products/cdsecure/downloads.shtml) leading to a download of LMS.
     /// Known versions:
-    /// 1.31.34 (1.37.00?) (https://archive.org/details/PCDDec1995).
-    /// 3.23.000 (https://archive.org/details/3ds-max-4.2original).
-    /// 3.24.010 (https://archive.org/details/ejay_nestle_trial).
+    /// 1.31.34 (1.37.00?) (IA item "PCDDec1995").
+    /// 2.19.001 (Needs further research) (IA item "great-explorers").
+    /// 3.12.093 (Needs further research) ("PCMania CD78_1.iso" in IA item "PCMCDS").
+    /// 3.23.000 (IA item "3ds-max-4.2original").
+    /// 3.24.010 (IA item "ejay_nestle_trial").
     /// 3.27.000 (https://download.autodesk.com/mne/web/support/3dstudio/C-Dilla3.27.zip).
     /// 
     /// TODO:
     /// Investigate C-Dilla CD-Compress.
-    /// Find 2.X versions of CD-Secure/LMS.
     /// </summary>
     public partial class Macrovision
     {
