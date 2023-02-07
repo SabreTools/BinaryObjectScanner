@@ -49,6 +49,9 @@ namespace BurnOutSharp.FileType
                     AppendToDictionary(protections, file, "CD-Key / Serial");
                 else if (fileContent.Contains("serial number is located"))
                     AppendToDictionary(protections, file, "CD-Key / Serial");
+                // Found in "Setup.Ins" ("Word Point 2002" in IA item "advantage-language-french-beginner-langmaster-2005").
+                else if (fileContent.Contains("Please enter a valid registration number"))
+                    AppendToDictionary(protections, file, "CD-Key / Serial");
 
                 // Freelock
                 // Found in "FILE_ID.DIZ" distributed with Freelock.
