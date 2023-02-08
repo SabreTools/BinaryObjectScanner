@@ -76,6 +76,7 @@ Below is a list of protections detected by BurnOutSharp. The two columns explain
 | LaserLok | True | True | |
 | MediaCloQ | True | True | |
 | MediaMax CD3 | True | True | |
+| MGI Registration | True | False | |
 | nProtect GameGuard | True | True | |
 | nProtect KeyCrypt | True | True | |
 | OpenMG | True | True | |
