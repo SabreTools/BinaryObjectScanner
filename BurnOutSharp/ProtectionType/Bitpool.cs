@@ -9,7 +9,7 @@ namespace BurnOutSharp.ProtectionType
     /// <summary>
     /// Bitpool is a copy protection found most commonly in German releases.
     /// It always has errors present on the disc (either between 1-4, or between 1,000-10,000+ depending on generation), and makes use of padded dummy files to prevent copying.
-    /// <see href="https://github.com/TheRogueArchivist/DRML/blob/main/entries/Bitpool.md"/>
+    /// <see href="https://github.com/TheRogueArchivist/DRML/blob/main/entries/Bitpool/Bitpool.md"/>
     /// </summary>
     public class Bitpool : IPathCheck
     {
