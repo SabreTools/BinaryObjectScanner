@@ -9,7 +9,7 @@ namespace BurnOutSharp.ProtectionType
 {
     /// <summary>
     /// MediaCloQ was a copy protection created by SunnComm to protect music CDs. It's a multisession CD, and all the audio tracks are erroneously marked as data tracks.
-    /// <see href="https://github.com/TheRogueArchivist/DRML/blob/main/entries/MediaCloQ.md"/>
+    /// <see href="https://github.com/TheRogueArchivist/DRML/blob/main/entries/MediaCloQ/MediaCloQ.md/>
     /// </summary>
     public class MediaCloQ : IPathCheck, IPortableExecutableCheck
     {
