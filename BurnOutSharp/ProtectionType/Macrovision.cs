@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
@@ -112,6 +113,12 @@ namespace BurnOutSharp.ProtectionType
         {
             // TODO: Add all common Macrovision directory path checks here
 
+            var matchers = new List<PathMatchSet>
+            {
+                // Present in SafeDisc and CDS-300.
+                new PathMatchSet(new PathMatch("00000001.TMP", useEndsWith: true), Get00000001TMPVersion, "Macrovision Protection File"),
+            };
+
             ConcurrentQueue<string> results = new ConcurrentQueue<string>();
 
             // Run C-Dilla directory checks
@@ -132,13 +139,19 @@ namespace BurnOutSharp.ProtectionType
             if (results != null && results.Count > 0)
                 return results;
 
-            return MatchUtil.GetAllMatches(files, null, any: false);
+            return MatchUtil.GetAllMatches(files, matchers, any: false);
         }
 
         /// <inheritdoc/>
         public string CheckFilePath(string path)
         {
             // TODO: Add all common Macrovision file path checks here
+
+            var matchers = new List<PathMatchSet>
+            {
+                // Present in SafeDisc and CDS-300.
+                new PathMatchSet(new PathMatch("00000001.TMP", useEndsWith: true), Get00000001TMPVersion, "Macrovision Protection File"),
+            };
 
             List<string> resultsList = new List<string>();
 
@@ -160,7 +173,25 @@ namespace BurnOutSharp.ProtectionType
             if (resultsList != null && resultsList.Count > 0)
                 return string.Join(", ", resultsList);
 
-            return MatchUtil.GetFirstMatch(path, null, any: true);
+            return MatchUtil.GetFirstMatch(path, matchers, any: true);
+        }
+
+        static string Get00000001TMPVersion(string firstMatchedString, IEnumerable<string> files)
+        {
+            if (string.IsNullOrEmpty(firstMatchedString) || !File.Exists(firstMatchedString))
+                return string.Empty;
+
+            // A rough estimate of the product and version can be gotten by checking the file size.
+            // One filesize is known to overlap with both SafeDisc and CDS-300, and so is detected separately here.
+            FileInfo fi = new FileInfo(firstMatchedString);
+            switch (fi.Length)
+            {
+                // Found in Redump entries 30555 and 58573.
+                case 2_048:
+                    return "[Likely indicates either SafeDisc 1.45.011+ (CD) or CDS-300]";
+                default:
+                    return "(Unknown Version - Report this to us on GitHub)";
+            }
         }
 
         static string GetMacrovisionVersion(string file, byte[] fileContent, List<int> positions)
