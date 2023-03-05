@@ -362,14 +362,12 @@ namespace BurnOutSharp.ProtectionType
                 // Found in Redump entries 37832 and 66005. 
                 case 20:
                     return "1.00.025-1.41.001";
-                // Found in Redump entries 30555 and 58573.
-                case 2_048:
-                    return "1.45.011+ (CD) (Confirm presence of other SafeDisc files)";
                 // Found in Redump entries 11347 and 64255.
                 case 20_482_048:
                     return "3+ (DVD)";
+                // An unknown filesize may indicate a protection other than SafeDisc, due to Macrovision using this file throughout multiple protections.
                 default:
-                    return "Unknown Version (Report this to us on GitHub)";
+                    return null;
             }
         }
 
@@ -752,6 +750,9 @@ namespace BurnOutSharp.ProtectionType
                 // TODO: Further investigate versions 3.20.020-3.20.024, and verify that 3.20.024 doesn't use drvmgt.dll at all.
                 case "ECB341AB36C5B3B912F568D347368A6A2DEF8D5F":
                     return "3.20.020-3.20.022";
+                // Found in Redump entries 53666, 76775, and 102301.
+                case "69C776F67EBD53CB5FD760B498B4A491BF22F293":
+                    return "3.20.022";
                 // Found in Redump entries 15614, 79729, 83408, and 86196.
                 // The presence of any drvmgt.dll file at all is notably missing in several games with SafeDisc versions 4.00.001-4.00.003, including Redump entries 33326, 51597, and 67927.
                 case "E21FF43C2E663264D6CB11FBBC31EB1DCEE42B1A":
