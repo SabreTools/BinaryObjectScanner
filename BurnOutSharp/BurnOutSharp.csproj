@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net48;net6.0</TargetFrameworks>
+    <TargetFrameworks>net48;net6.0;net7.0</TargetFrameworks>
     <RuntimeIdentifiers>win-x86;win-x64;linux-x64;osx-x64</RuntimeIdentifiers>
     <Title>BurnOutSharp</Title>
     <AssemblyName>BurnOutSharp</AssemblyName>
@@ -46,7 +46,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="*.dll" Pack="true" Condition="'$(TargetFramework)' != 'net6.0'">
+    <None Include="*.dll" Pack="true" Condition="'$(TargetFramework)' == 'net48'">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <CopyToPublishDirectory>Always</CopyToPublishDirectory>
       <PackageCopyToOutput>true</PackageCopyToOutput>
