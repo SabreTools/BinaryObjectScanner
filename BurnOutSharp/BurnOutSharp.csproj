@@ -11,9 +11,9 @@
     <Copyright>Copyright (c)2018-2023 Matt Nadareski</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/mnadareski/BurnOutSharp</RepositoryUrl>
-    <Version>2.6</Version>
-    <AssemblyVersion>2.6</AssemblyVersion>
-    <FileVersion>2.6</FileVersion>
+    <Version>2.7</Version>
+    <AssemblyVersion>2.7</AssemblyVersion>
+    <FileVersion>2.7</FileVersion>
     <IncludeSource>true</IncludeSource>
     <IncludeSymbols>true</IncludeSymbols>
   </PropertyGroup>
