@@ -1,4 +1,4 @@
-namespace BurnOutSharp.ASN1
+namespace BinaryObjectScanner.ASN1
 {
 #pragma warning disable IDE0011
 

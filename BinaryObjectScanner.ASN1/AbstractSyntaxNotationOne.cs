@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace BurnOutSharp.ASN1
+namespace BinaryObjectScanner.ASN1
 {
     /// <summary>
     /// ASN.1 Parser

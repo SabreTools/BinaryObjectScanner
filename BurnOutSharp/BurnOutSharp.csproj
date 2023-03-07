@@ -54,7 +54,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BurnOutSharp.ASN1\BurnOutSharp.ASN1.csproj">
+    <ProjectReference Include="..\BinaryObjectScanner.ASN1\BinaryObjectScanner.ASN1.csproj">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </ProjectReference>

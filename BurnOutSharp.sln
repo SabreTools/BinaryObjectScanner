@@ -28,7 +28,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "psxt001z", "psxt001z\psxt00
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BinaryObjectScanner.Utilities", "BinaryObjectScanner.Utilities\BinaryObjectScanner.Utilities.csproj", "{3C1D1FE2-7E7C-4EC1-96B1-FE68B73282CD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BurnOutSharp.ASN1", "BurnOutSharp.ASN1\BurnOutSharp.ASN1.csproj", "{D5407F3A-236C-45B5-BE3A-1505412DCB22}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BinaryObjectScanner.ASN1", "BinaryObjectScanner.ASN1\BinaryObjectScanner.ASN1.csproj", "{D5407F3A-236C-45B5-BE3A-1505412DCB22}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BurnOutSharp.Compression", "BurnOutSharp.Compression\BurnOutSharp.Compression.csproj", "{B55206B2-58FD-4A47-AADC-74982FEA8FAD}"
 EndProject

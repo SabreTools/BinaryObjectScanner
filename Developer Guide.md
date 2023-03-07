@@ -9,7 +9,7 @@ This is a guide for any developers who wish to research protections, implement n
 | Project | Description |
 | --- | --- |
 | `BurnOutSharp` | Main library that contains all supported file format, packer, and protection checks. It also houses most of the utilities, interfaces, and structures needed when `BurnOutSharp` is used by another project. Most code additions will happen here. |
-| `BurnOutSharp.ASN1` | Library containing classes and methods associated with Abstract Syntax Notation One and OID parsing. |
+| `BinaryObjectScanner.ASN1` | Library containing classes and methods associated with Abstract Syntax Notation One and OID parsing. |
 | `BurnOutSharp.Builder` | Library containing classes that assist in populating the various object models defined in `BurnOutSharp.Models`. Builders can work with either byte arrays or streams for input. At the time of writing, the following executable types have builders: **MS-DOS**, **New Executable**, **Portable Executable**. |
 | `BurnOutSharp.Compression` | Library containing classes that deal with different compression formats. This library is used extensively by the wrappers in `BurnOutSharp.Wrappers`. |
 | `BurnOutSharp.Matching` | Library containing models and logic for generic searching and matching. This library is used extensively by the packer and protection checks in `BurnOutSharp`. |

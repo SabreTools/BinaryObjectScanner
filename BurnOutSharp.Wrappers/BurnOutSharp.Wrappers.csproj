@@ -26,7 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BurnOutSharp.ASN1\BurnOutSharp.ASN1.csproj" />
+    <ProjectReference Include="..\BinaryObjectScanner.ASN1\BinaryObjectScanner.ASN1.csproj" />
     <ProjectReference Include="..\BurnOutSharp.Builders\BurnOutSharp.Builders.csproj" />
     <ProjectReference Include="..\BurnOutSharp.Compression\BurnOutSharp.Compression.csproj" />
     <ProjectReference Include="..\BurnOutSharp.Models\BurnOutSharp.Models.csproj" />

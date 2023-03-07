@@ -324,7 +324,7 @@ This section contains information on project and class organization principles t
 | `BurnOutSharp/PackerType` | At least one file per packer type. Partial classes allowed. |
 | `BurnOutSharp/ProtectionType` | At least one file per protection type. Partial classes allowed. |
 | `BurnOutSharp/Tools` | Two files - one for extension methods and one for utilities. |
-| `BurnOutSharp.ASN1` | Flat directory structure. |
+| `BinaryObjectScanner.ASN1` | Flat directory structure. |
 | `BurnOutSharp.Builders` | One file per executable type. |
 | `BurnOutSharp.Compression` | One directory per compression type. |
 | `BurnOutSharp.Matching` | Flat directory structure. Include interfaces and base classes. |
@@ -348,7 +348,7 @@ This section contains information on in-code organization principles that depend
 | `BurnOutSharp/PackerType` | `IContentCheck` implementations, `INewExecutableCheck` implementations, `IPortableExecutableCheck` implementations, `IPathCheck` implementations, `IScannable` implementations, helper methods. |
 | `BurnOutSharp/ProtectionType` |  `IContentCheck` implementations, `INewExecutableCheck` implementations, `IPortableExecutableCheck` implementations, `IPathCheck` implementations, `IScannable` implementations, helper methods.. |
 | `BurnOutSharp/Tools` | Methods grouped by function. Regions ordered alphabetically. |
-| `BurnOutSharp.ASN1` | Partial classes suggested for different implmentations. |
+| `BinaryObjectScanner.ASN1` | Partial classes suggested for different implmentations. |
 | `BurnOutSharp.Builders` | Two copies of each non-generic method: one for byte arrays and one for Streams. |
 | `BurnOutSharp.Compression` | Varies from file to file. |
 | `BurnOutSharp.Matching` | Varies from file to file. |
