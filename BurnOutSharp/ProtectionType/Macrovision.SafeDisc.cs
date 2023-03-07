@@ -620,7 +620,7 @@ namespace BurnOutSharp.ProtectionType
             }
         }
 
-        public static string GetSafeDiscDrvmgtVersion(string firstMatchedString, IEnumerable<string> files)
+        internal static string GetSafeDiscDrvmgtVersion(string firstMatchedString, IEnumerable<string> files)
         {
             if (string.IsNullOrEmpty(firstMatchedString) || !File.Exists(firstMatchedString))
                 return string.Empty;
@@ -773,7 +773,7 @@ namespace BurnOutSharp.ProtectionType
         }
 
         // TODO: Verify these checks and remove any that may not be needed, file version checks should remove the need for any checks for 2.80+.
-        public static string GetSafeDiscSecdrvVersion(string firstMatchedString, IEnumerable<string> files)
+        internal static string GetSafeDiscSecdrvVersion(string firstMatchedString, IEnumerable<string> files)
         {
             if (string.IsNullOrEmpty(firstMatchedString) || !File.Exists(firstMatchedString))
                 return string.Empty;
