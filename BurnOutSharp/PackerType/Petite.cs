@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.IO;
 using BurnOutSharp.Interfaces;
-using BurnOutSharp.Wrappers;
+using BinaryObjectScanner.Wrappers;
 
 namespace BurnOutSharp.PackerType
 {

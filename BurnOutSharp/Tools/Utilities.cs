@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using BurnOutSharp.Interfaces;
-using BurnOutSharp.Matching;
+using BinaryObjectScanner.Matching;
 using BinaryObjectScanner.Utilities;
-using BurnOutSharp.Wrappers;
+using BinaryObjectScanner.Wrappers;
 
 namespace BurnOutSharp.Tools
 {
@@ -902,22 +902,22 @@ namespace BurnOutSharp.Tools
             byte[] magic = stream.ReadBytes(4);
 
             // New Executable
-            if (magic.StartsWith(Models.NewExecutable.Constants.SignatureBytes))
+            if (magic.StartsWith(BinaryObjectScanner.Models.NewExecutable.Constants.SignatureBytes))
             {
                 stream.Seek(0, SeekOrigin.Begin);
                 return NewExecutable.Create(stream);
             }
 
             // Linear Executable
-            else if (magic.StartsWith(Models.LinearExecutable.Constants.LESignatureBytes)
-                || magic.StartsWith(Models.LinearExecutable.Constants.LXSignatureBytes))
+            else if (magic.StartsWith(BinaryObjectScanner.Models.LinearExecutable.Constants.LESignatureBytes)
+                || magic.StartsWith(BinaryObjectScanner.Models.LinearExecutable.Constants.LXSignatureBytes))
             {
                 stream.Seek(0, SeekOrigin.Begin);
                 return LinearExecutable.Create(stream);
             }
 
             // Portable Executable
-            else if (magic.StartsWith(Models.PortableExecutable.Constants.SignatureBytes))
+            else if (magic.StartsWith(BinaryObjectScanner.Models.PortableExecutable.Constants.SignatureBytes))
             {
                 stream.Seek(0, SeekOrigin.Begin);
                 return PortableExecutable.Create(stream);

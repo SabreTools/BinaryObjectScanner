@@ -33,7 +33,7 @@ namespace BurnOutSharp.FileType
                 Directory.CreateDirectory(tempPath);
 
                 // Create the wrapper
-                Wrappers.GCF gcf = Wrappers.GCF.Create(stream);
+                BinaryObjectScanner.Wrappers.GCF gcf = BinaryObjectScanner.Wrappers.GCF.Create(stream);
                 if (gcf == null)
                     return null;
 

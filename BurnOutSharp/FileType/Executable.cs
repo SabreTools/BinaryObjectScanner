@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using BurnOutSharp.Interfaces;
-using BurnOutSharp.Wrappers;
+using BinaryObjectScanner.Wrappers;
 using static BinaryObjectScanner.Utilities.Dictionary;
 
 namespace BurnOutSharp.FileType

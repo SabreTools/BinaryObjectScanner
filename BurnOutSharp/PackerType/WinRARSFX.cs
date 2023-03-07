@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.IO;
 using System.Linq;
 using BurnOutSharp.Interfaces;
-using BurnOutSharp.Wrappers;
+using BinaryObjectScanner.Wrappers;
 using SharpCompress.Archives;
 using SharpCompress.Archives.Rar;
 using static BinaryObjectScanner.Utilities.Dictionary;

@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using BurnOutSharp.Matching;
-using BurnOutSharp.Wrappers;
+using BinaryObjectScanner.Matching;
+using BinaryObjectScanner.Wrappers;
 
 namespace BurnOutSharp.ProtectionType
 {

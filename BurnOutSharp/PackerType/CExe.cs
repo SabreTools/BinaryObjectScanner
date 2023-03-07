@@ -3,10 +3,10 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using BurnOutSharp.Compression;
+using BinaryObjectScanner.Compression;
 using BurnOutSharp.Interfaces;
-using BurnOutSharp.Matching;
-using BurnOutSharp.Wrappers;
+using BinaryObjectScanner.Matching;
+using BinaryObjectScanner.Wrappers;
 using ICSharpCode.SharpZipLib.Zip.Compression;
 
 namespace BurnOutSharp.PackerType

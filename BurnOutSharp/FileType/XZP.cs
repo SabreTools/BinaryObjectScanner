@@ -33,7 +33,7 @@ namespace BurnOutSharp.FileType
                 Directory.CreateDirectory(tempPath);
 
                 // Create the wrapper
-                Wrappers.XZP xzp = Wrappers.XZP.Create(stream);
+                BinaryObjectScanner.Wrappers.XZP xzp = BinaryObjectScanner.Wrappers.XZP.Create(stream);
                 if (xzp == null)
                     return null;
 

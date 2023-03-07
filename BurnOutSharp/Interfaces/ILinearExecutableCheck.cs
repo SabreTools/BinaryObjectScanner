@@ -1,4 +1,4 @@
-﻿using BurnOutSharp.Wrappers;
+﻿using BinaryObjectScanner.Wrappers;
 
 namespace BurnOutSharp.Interfaces
 {

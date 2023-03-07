@@ -33,7 +33,7 @@ namespace BurnOutSharp.FileType
                 Directory.CreateDirectory(tempPath);
 
                 // Create the wrapper
-                Wrappers.SGA sga = Wrappers.SGA.Create(stream);
+                BinaryObjectScanner.Wrappers.SGA sga = BinaryObjectScanner.Wrappers.SGA.Create(stream);
                 if (sga == null)
                     return null;
 

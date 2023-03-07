@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.IO;
-using BurnOutSharp.Compression;
+using BinaryObjectScanner.Compression;
 using BurnOutSharp.Interfaces;
 using static BinaryObjectScanner.Utilities.Dictionary;
 

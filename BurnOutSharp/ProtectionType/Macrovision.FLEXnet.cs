@@ -1,5 +1,5 @@
 ﻿using System;
-using BurnOutSharp.Wrappers;
+using BinaryObjectScanner.Wrappers;
 
 namespace BurnOutSharp.ProtectionType
 {

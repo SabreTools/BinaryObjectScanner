@@ -325,12 +325,12 @@ This section contains information on project and class organization principles t
 | `BurnOutSharp/ProtectionType` | At least one file per protection type. Partial classes allowed. |
 | `BurnOutSharp/Tools` | Two files - one for extension methods and one for utilities. |
 | `BinaryObjectScanner.ASN1` | Flat directory structure. |
-| `BurnOutSharp.Builders` | One file per executable type. |
-| `BurnOutSharp.Compression` | One directory per compression type. |
-| `BurnOutSharp.Matching` | Flat directory structure. Include interfaces and base classes. |
-| `BurnOutSharp.Models` | One directory per executable type. One file per object model. |
+| `BinaryObjectScanner.Builders` | One file per executable type. |
+| `BinaryObjectScanner.Compression` | One directory per compression type. |
+| `BinaryObjectScanner.Matching` | Flat directory structure. Include interfaces and base classes. |
+| `BinaryObjectScanner.Models` | One directory per executable type. One file per object model. |
 | `BinaryObjectScanner.Utilities` | Flat directory structure. |
-| `BurnOutSharp.Wrappers` | One file per executable type. Common functionality goes in `WrapperBase.cs`. |
+| `BinaryObjectScanner.Wrappers` | One file per executable type. Common functionality goes in `WrapperBase.cs`. |
 | `psxt001z` | Flat directory structure. |
 | `Test` | All functionality lives in `Program.cs`. |
 
@@ -349,10 +349,10 @@ This section contains information on in-code organization principles that depend
 | `BurnOutSharp/ProtectionType` |  `IContentCheck` implementations, `INewExecutableCheck` implementations, `IPortableExecutableCheck` implementations, `IPathCheck` implementations, `IScannable` implementations, helper methods.. |
 | `BurnOutSharp/Tools` | Methods grouped by function. Regions ordered alphabetically. |
 | `BinaryObjectScanner.ASN1` | Partial classes suggested for different implmentations. |
-| `BurnOutSharp.Builders` | Two copies of each non-generic method: one for byte arrays and one for Streams. |
-| `BurnOutSharp.Compression` | Varies from file to file. |
-| `BurnOutSharp.Matching` | Varies from file to file. |
-| `BurnOutSharp.Models` | No methods at all, just properties. |
+| `BinaryObjectScanner.Builders` | Two copies of each non-generic method: one for byte arrays and one for Streams. |
+| `BinaryObjectScanner.Compression` | Varies from file to file. |
+| `BinaryObjectScanner.Matching` | Varies from file to file. |
+| `BinaryObjectScanner.Models` | No methods at all, just properties. |
 | `BinaryObjectScanner.Utilities` | Varies from file to file. |
 | `BurnOutSharp.Wrappers` | Follow region and method grouping from existing wrappers. |
 | `psxt001z` | Varies from file to file. |

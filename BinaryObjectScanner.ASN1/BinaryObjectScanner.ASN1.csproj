@@ -3,8 +3,8 @@
   <PropertyGroup>
     <TargetFrameworks>net48;net6.0;net7.0</TargetFrameworks>
     <RuntimeIdentifiers>win-x86;win-x64;linux-x64;osx-x64</RuntimeIdentifiers>
-    <Title>BurnOutSharp.ASN1</Title>
-    <AssemblyName>BurnOutSharp.ASN1</AssemblyName>
+    <Title>BinaryObjectScanner.ASN1</Title>
+    <AssemblyName>BinaryObjectScanner.ASN1</AssemblyName>
     <Authors>Matt Nadareski</Authors>
     <Product>BurnOutSharp</Product>
     <Copyright>Copyright (c)2022 Matt Nadareski</Copyright>

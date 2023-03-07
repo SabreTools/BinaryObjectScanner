@@ -33,7 +33,7 @@ namespace BurnOutSharp.FileType
                 Directory.CreateDirectory(tempPath);
 
                 // Create the wrapper
-                Wrappers.AACSMediaKeyBlock mkb = Wrappers.AACSMediaKeyBlock.Create(stream);
+                BinaryObjectScanner.Wrappers.AACSMediaKeyBlock mkb = BinaryObjectScanner.Wrappers.AACSMediaKeyBlock.Create(stream);
                 if (mkb == null)
                     return null;
 
@@ -41,11 +41,11 @@ namespace BurnOutSharp.FileType
                 var protections = new ConcurrentDictionary<string, ConcurrentQueue<string>>();
                 protections[file] = new ConcurrentQueue<string>();
 
-                var typeAndVersion = mkb.Records.FirstOrDefault(r => r.RecordType == Models.AACS.RecordType.TypeAndVersion);
+                var typeAndVersion = mkb.Records.FirstOrDefault(r => r.RecordType == BinaryObjectScanner.Models.AACS.RecordType.TypeAndVersion);
                 if (typeAndVersion == null)
                     protections[file].Enqueue("AACS (Unknown Version)");
                 else
-                    protections[file].Enqueue($"AACS {(typeAndVersion as Models.AACS.TypeAndVersionRecord).VersionNumber}");
+                    protections[file].Enqueue($"AACS {(typeAndVersion as BinaryObjectScanner.Models.AACS.TypeAndVersionRecord).VersionNumber}");
 
                 return protections;
             }

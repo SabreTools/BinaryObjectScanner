@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using BurnOutSharp.Interfaces;
-using BurnOutSharp.Matching;
+using BinaryObjectScanner.Matching;
 
 namespace BurnOutSharp.ProtectionType
 {

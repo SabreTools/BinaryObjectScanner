@@ -2,9 +2,9 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using BurnOutSharp.Interfaces;
-using BurnOutSharp.Matching;
+using BinaryObjectScanner.Matching;
 using BurnOutSharp.Tools;
-using BurnOutSharp.Wrappers;
+using BinaryObjectScanner.Wrappers;
 
 namespace BurnOutSharp.ProtectionType
 {

@@ -33,7 +33,7 @@ namespace BurnOutSharp.FileType
                 Directory.CreateDirectory(tempPath);
 
                 // Create the wrapper
-                Wrappers.PFF bfpk = Wrappers.PFF.Create(stream);
+                BinaryObjectScanner.Wrappers.PFF bfpk = BinaryObjectScanner.Wrappers.PFF.Create(stream);
                 if (bfpk == null)
                     return null;
 

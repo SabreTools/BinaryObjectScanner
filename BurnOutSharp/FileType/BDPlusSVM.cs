@@ -32,7 +32,7 @@ namespace BurnOutSharp.FileType
                 Directory.CreateDirectory(tempPath);
 
                 // Create the wrapper
-                Wrappers.BDPlusSVM svm = Wrappers.BDPlusSVM.Create(stream);
+                BinaryObjectScanner.Wrappers.BDPlusSVM svm = BinaryObjectScanner.Wrappers.BDPlusSVM.Create(stream);
                 if (svm == null)
                     return null;
 

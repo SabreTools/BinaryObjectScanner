@@ -5,8 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using BurnOutSharp.Interfaces;
-using BurnOutSharp.Matching;
-using BurnOutSharp.Wrappers;
+using BinaryObjectScanner.Matching;
+using BinaryObjectScanner.Wrappers;
 
 namespace BurnOutSharp.PackerType
 {

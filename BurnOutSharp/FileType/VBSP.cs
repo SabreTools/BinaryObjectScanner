@@ -33,7 +33,7 @@ namespace BurnOutSharp.FileType
                 Directory.CreateDirectory(tempPath);
 
                 // Create the wrapper
-                Wrappers.VBSP vbsp = Wrappers.VBSP.Create(stream);
+                BinaryObjectScanner.Wrappers.VBSP vbsp = BinaryObjectScanner.Wrappers.VBSP.Create(stream);
                 if (vbsp == null)
                     return null;
 

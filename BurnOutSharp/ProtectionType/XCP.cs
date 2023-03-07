@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using BurnOutSharp.FileType;
 using BurnOutSharp.Interfaces;
-using BurnOutSharp.Wrappers;
+using BinaryObjectScanner.Wrappers;
 
 namespace BurnOutSharp.ProtectionType
 {

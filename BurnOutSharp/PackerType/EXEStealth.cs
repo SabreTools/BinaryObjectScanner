@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using BurnOutSharp.Interfaces;
-using BurnOutSharp.Matching;
-using BurnOutSharp.Wrappers;
+using BinaryObjectScanner.Matching;
+using BinaryObjectScanner.Wrappers;
 
 namespace BurnOutSharp.PackerType
 {

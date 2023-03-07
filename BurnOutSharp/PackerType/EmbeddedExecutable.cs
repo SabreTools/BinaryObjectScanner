@@ -3,8 +3,8 @@ using System.Collections.Concurrent;
 using System.IO;
 using System.Linq;
 using BurnOutSharp.Interfaces;
-using BurnOutSharp.Matching;
-using BurnOutSharp.Wrappers;
+using BinaryObjectScanner.Matching;
+using BinaryObjectScanner.Wrappers;
 
 namespace BurnOutSharp.PackerType
 {
@@ -23,7 +23,7 @@ namespace BurnOutSharp.PackerType
                 return null;
 
             // Get the resources that have an executable signature
-            if (pex.ResourceData?.Any(kvp => kvp.Value is byte[] ba && ba.StartsWith(Models.MSDOS.Constants.SignatureBytes)) == true)
+            if (pex.ResourceData?.Any(kvp => kvp.Value is byte[] ba && ba.StartsWith(BinaryObjectScanner.Models.MSDOS.Constants.SignatureBytes)) == true)
                 return "Embedded Executable";
 
             return null;
@@ -52,7 +52,7 @@ namespace BurnOutSharp.PackerType
             // Get the resources that have an executable signature
             var resources = pex.ResourceData
                 .Where(kvp => kvp.Value != null && kvp.Value is byte[])
-                .Where(kvp => (kvp.Value as byte[]).StartsWith(Models.MSDOS.Constants.SignatureBytes))
+                .Where(kvp => (kvp.Value as byte[]).StartsWith(BinaryObjectScanner.Models.MSDOS.Constants.SignatureBytes))
                 .ToList();
 
             // If any of the individual extractions fail
