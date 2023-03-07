@@ -106,10 +106,15 @@ namespace BurnOutSharp.ProtectionType
         {
             ConcurrentQueue<string> results = new ConcurrentQueue<string>();
 
-            // Run Macrovision file checks
-            var macrovision = CDillaCheckDirectoryPath(path, files);
+            // Run Macrovision directory checks
+            var macrovision = MacrovisionCheckDirectoryPath(path, files);
             if (macrovision != null && !macrovision.IsEmpty)
                 results.AddRange(macrovision);
+
+            // Run Cactus Data Shield directory checks
+            var cactusDataShield = CactusDataShieldCheckDirectoryPath(path, files);
+            if (cactusDataShield != null && !cactusDataShield.IsEmpty)
+                results.AddRange(cactusDataShield);
 
             // Run C-Dilla directory checks
             var cDilla = CDillaCheckDirectoryPath(path, files);
@@ -141,6 +146,11 @@ namespace BurnOutSharp.ProtectionType
             string macrovision = MacrovisionCheckFilePath(path);
             if (!string.IsNullOrWhiteSpace(macrovision))
                 resultsList.Add(macrovision);
+
+            // Run Cactus Data Shield file checks
+            string cactusDataShield = CactusDataShieldCheckFilePath(path);
+            if (!string.IsNullOrWhiteSpace(cactusDataShield))
+                resultsList.Add(cactusDataShield);
 
             // Run C-Dilla file checks
             string cDilla = CDillaCheckFilePath(path);
