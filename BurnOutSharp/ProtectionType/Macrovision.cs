@@ -238,7 +238,7 @@ namespace BurnOutSharp.ProtectionType
                     0x42, 0x6F, 0x47, 0x5F, 0x20, 0x2A, 0x39, 0x30,
                     0x2E, 0x30, 0x26, 0x21, 0x21, 0x20, 0x20, 0x59,
                     0x79, 0x3E
-                }, GetMacrovisionVersion, "SafeCast/SafeDisc"),
+                }, GetMacrovisionVersion, "Macrovision Protected Application"),
             };
 
             return MatchUtil.GetFirstMatch(file, sectionRaw, matchers, includeDebug);
@@ -254,12 +254,12 @@ namespace BurnOutSharp.ProtectionType
             string versionExpunged = GetSafeDisc320to4xVersion(null, null, null);
 
             // Clean SafeCast results
-            if (resultsList.Any(s => s == "SafeCast") && resultsList.Any(s => s.StartsWith("SafeCast/SafeDisc")))
+            if (resultsList.Any(s => s == "SafeCast") && resultsList.Any(s => s.StartsWith("Macrovision Protected Application")))
             {
                 resultsList = resultsList.Select(s =>
                 {
-                    if (s.StartsWith("SafeCast/SafeDisc"))
-                        return s.Replace("SafeCast/SafeDisc", "SafeCast");
+                    if (s.StartsWith("Macrovision Protected Application"))
+                        return s.Replace("Macrovision Protected Application", "SafeCast");
                     else if (s == "SafeCast" || s.EndsWith(versionExpunged))
                         return null;
                     else
@@ -269,8 +269,24 @@ namespace BurnOutSharp.ProtectionType
                 .ToList();
             }
 
+            // Clean SafeDisc results
+            if (resultsList.Any(s => s == "SafeDisc") && resultsList.Any(s => s.StartsWith("Macrovision Protected Application")))
+            {
+                resultsList = resultsList.Select(s =>
+                {
+                    if (s.StartsWith("Macrovision Protected Application"))
+                        return s.Replace("Macrovision Protected Application", "SafeDisc");
+                    else if (s == "SafeDisc" || s.EndsWith(versionExpunged))
+                        return null;
+                    else
+                        return s;
+                })
+                .Where(s => s != null)
+                .ToList();
+            }
+
             // Clean incorrect version expunged results
-            if (resultsList.Any(s => s.StartsWith("SafeCast/SafeDisc")) && resultsList.Any(s => s.EndsWith(versionExpunged)))
+            if (resultsList.Any(s => s.StartsWith("Macrovision Protected Application")) && resultsList.Any(s => s.EndsWith(versionExpunged)))
                 resultsList = resultsList.Where(s => !s.EndsWith(versionExpunged)).ToList();
 
             // Get distinct and order
