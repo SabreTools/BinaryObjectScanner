@@ -49,18 +49,7 @@ namespace BurnOutSharp.ProtectionType
                 return null;
 
             // Check for generic indications of Macrovision protections first.
-
-            string name = pex.FileDescription;
-
-            // Present in "Diag.exe" files from SafeDisc 4.50.000+.
-            if (name?.Equals("SafeDisc SRV Tool APP", StringComparison.OrdinalIgnoreCase) == true)
-                return $"SafeDisc SRV Tool APP {GetSafeDiscDiagExecutableVersion(pex)}";
-
-            name = pex.ProductName;
-
-            // Present in "Diag.exe" files from SafeDisc 4.50.000+.
-            if (name?.Equals("SafeDisc SRV Tool APP", StringComparison.OrdinalIgnoreCase) == true)
-                return $"SafeDisc SRV Tool APP {GetSafeDiscDiagExecutableVersion(pex)}";
+            // TODO: Fill out generic indicators
 
             // Check for specific indications for individual Macrovision protections.
 

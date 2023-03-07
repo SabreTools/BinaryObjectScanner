@@ -42,11 +42,17 @@ namespace BurnOutSharp.ProtectionType
             // Present in "secdrv.sys" files found in SafeDisc 2.80.010+.
             if (name?.Equals("Macrovision SECURITY Driver", StringComparison.OrdinalIgnoreCase) == true)
                 return $"SafeDisc Security Driver {GetSecDrvExecutableVersion(pex)}";
+            // Present in "Diag.exe" files from SafeDisc 4.50.000+.
+            else if (name?.Equals("SafeDisc SRV Tool APP", StringComparison.OrdinalIgnoreCase) == true)
+                return $"SafeDisc SRV Tool APP {GetSafeDiscDiagExecutableVersion(pex)}";
 
             // Present on all "CLOKSPL.DLL" versions before SafeDisc 1.06.000. Found on Redump entries 61731 and 66004. 
             name = pex.ProductName;
             if (name?.Equals("SafeDisc CDROM Protection System", StringComparison.OrdinalIgnoreCase) == true)
                 return "SafeDisc 1.00.025-1.01.044";
+            // Present in "Diag.exe" files from SafeDisc 4.50.000+.
+            else if (name?.Equals("SafeDisc SRV Tool APP", StringComparison.OrdinalIgnoreCase) == true)
+                return $"SafeDisc SRV Tool APP {GetSafeDiscDiagExecutableVersion(pex)}";
 
             // Get the stxt371 and stxt774 sections, if they exist -- TODO: Confirm if both are needed or either/or is fine
             bool stxt371Section = pex.ContainsSection("stxt371", exact: true);
