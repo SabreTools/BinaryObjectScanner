@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Text;
 using BurnOutSharp.Models.N3DS;
-using BurnOutSharp.Utilities;
+using BinaryObjectScanner.Utilities;
 using static BurnOutSharp.Models.N3DS.Constants;
 
 namespace BurnOutSharp.Builders

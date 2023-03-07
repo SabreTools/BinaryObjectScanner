@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using BurnOutSharp.Models.SGA;
-using BurnOutSharp.Utilities;
+using BinaryObjectScanner.Utilities;
 using static BurnOutSharp.Models.SGA.Constants;
 
 namespace BurnOutSharp.Builders

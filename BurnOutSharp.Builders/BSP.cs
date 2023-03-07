@@ -2,7 +2,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using BurnOutSharp.Models.BSP;
-using BurnOutSharp.Utilities;
+using BinaryObjectScanner.Utilities;
 using static BurnOutSharp.Models.BSP.Constants;
 
 namespace BurnOutSharp.Builders

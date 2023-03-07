@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using BurnOutSharp;
 using BurnOutSharp.Compression;
-using BurnOutSharp.Utilities;
+using BinaryObjectScanner.Utilities;
 using BurnOutSharp.Wrappers;
 using OpenMcdf;
 using SharpCompress.Archives;

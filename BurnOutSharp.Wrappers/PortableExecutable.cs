@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 using BurnOutSharp.ASN1;
-using BurnOutSharp.Utilities;
+using BinaryObjectScanner.Utilities;
 using static BurnOutSharp.Builders.Extensions;
 
 namespace BurnOutSharp.Wrappers

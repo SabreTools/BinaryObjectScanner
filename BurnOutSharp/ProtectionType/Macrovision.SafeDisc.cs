@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using BurnOutSharp.Matching;
-using BurnOutSharp.Utilities;
+using BinaryObjectScanner.Utilities;
 using BurnOutSharp.Wrappers;
-using static BurnOutSharp.Utilities.Hashing;
+using static BinaryObjectScanner.Utilities.Hashing;
 
 namespace BurnOutSharp.ProtectionType
 {

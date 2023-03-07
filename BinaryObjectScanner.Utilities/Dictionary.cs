@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.IO;
 using System.Linq;
 
-namespace BurnOutSharp.Utilities
+namespace BinaryObjectScanner.Utilities
 {
     /// <summary>
     /// Dictionary manipulation methods

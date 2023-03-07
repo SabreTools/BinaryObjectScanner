@@ -148,7 +148,7 @@ namespace BurnOutSharp.PackerType
                 }
 
                 // Remove temporary path references
-                Utilities.Dictionary.StripFromKeys(protections, tempPath);
+                BinaryObjectScanner.Utilities.Dictionary.StripFromKeys(protections, tempPath);
 
                 return protections;
             }

@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using BurnOutSharp.Models.NewExecutable;
-using BurnOutSharp.Utilities;
+using BinaryObjectScanner.Utilities;
 using static BurnOutSharp.Models.NewExecutable.Constants;
 
 namespace BurnOutSharp.Builders

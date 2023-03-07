@@ -5,9 +5,9 @@ using System.IO;
 using System.Linq;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
-using BurnOutSharp.Utilities;
+using BinaryObjectScanner.Utilities;
 using BurnOutSharp.Wrappers;
-using static BurnOutSharp.Utilities.Dictionary;
+using static BinaryObjectScanner.Utilities.Dictionary;
 using Wise = WiseUnpacker.WiseUnpacker;
 
 namespace BurnOutSharp.PackerType

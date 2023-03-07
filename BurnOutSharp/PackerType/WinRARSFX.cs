@@ -6,7 +6,7 @@ using BurnOutSharp.Interfaces;
 using BurnOutSharp.Wrappers;
 using SharpCompress.Archives;
 using SharpCompress.Archives.Rar;
-using static BurnOutSharp.Utilities.Dictionary;
+using static BinaryObjectScanner.Utilities.Dictionary;
 
 namespace BurnOutSharp.PackerType
 {

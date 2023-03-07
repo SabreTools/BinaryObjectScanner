@@ -329,7 +329,7 @@ This section contains information on project and class organization principles t
 | `BurnOutSharp.Compression` | One directory per compression type. |
 | `BurnOutSharp.Matching` | Flat directory structure. Include interfaces and base classes. |
 | `BurnOutSharp.Models` | One directory per executable type. One file per object model. |
-| `BurnOutSharp.Utilities` | Flat directory structure. |
+| `BinaryObjectScanner.Utilities` | Flat directory structure. |
 | `BurnOutSharp.Wrappers` | One file per executable type. Common functionality goes in `WrapperBase.cs`. |
 | `psxt001z` | Flat directory structure. |
 | `Test` | All functionality lives in `Program.cs`. |
@@ -353,7 +353,7 @@ This section contains information on in-code organization principles that depend
 | `BurnOutSharp.Compression` | Varies from file to file. |
 | `BurnOutSharp.Matching` | Varies from file to file. |
 | `BurnOutSharp.Models` | No methods at all, just properties. |
-| `BurnOutSharp.Utilities` | Varies from file to file. |
+| `BinaryObjectScanner.Utilities` | Varies from file to file. |
 | `BurnOutSharp.Wrappers` | Follow region and method grouping from existing wrappers. |
 | `psxt001z` | Varies from file to file. |
 | `Test` | New functionality should be added as a combination of a flag with a long and a short form, a new line in the help text, and a new method (if necessary). |

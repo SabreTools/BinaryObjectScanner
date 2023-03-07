@@ -6,8 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BurnOutSharp.FileType;
-using BurnOutSharp.Utilities;
-using static BurnOutSharp.Utilities.Dictionary;
+using BinaryObjectScanner.Utilities;
+using static BinaryObjectScanner.Utilities.Dictionary;
 
 namespace BurnOutSharp
 {

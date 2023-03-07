@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Text;
 using BurnOutSharp;
-using BurnOutSharp.Utilities;
+using BinaryObjectScanner.Utilities;
 
 namespace Test
 {

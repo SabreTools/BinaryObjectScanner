@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
-using BurnOutSharp.Utilities;
+using BinaryObjectScanner.Utilities;
 
 namespace BurnOutSharp.Builders
 {

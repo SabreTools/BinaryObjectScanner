@@ -2,7 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.IO;
 using BurnOutSharp.Interfaces;
-using static BurnOutSharp.Utilities.Dictionary;
+using static BinaryObjectScanner.Utilities.Dictionary;
 
 namespace BurnOutSharp.FileType
 {

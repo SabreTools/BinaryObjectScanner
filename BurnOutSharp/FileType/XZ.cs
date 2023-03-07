@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.IO;
 using BurnOutSharp.Interfaces;
 using SharpCompress.Compressors.Xz;
-using static BurnOutSharp.Utilities.Dictionary;
+using static BinaryObjectScanner.Utilities.Dictionary;
 
 namespace BurnOutSharp.FileType
 {

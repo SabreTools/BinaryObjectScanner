@@ -14,7 +14,7 @@ This is a guide for any developers who wish to research protections, implement n
 | `BurnOutSharp.Compression` | Library containing classes that deal with different compression formats. This library is used extensively by the wrappers in `BurnOutSharp.Wrappers`. |
 | `BurnOutSharp.Matching` | Library containing models and logic for generic searching and matching. This library is used extensively by the packer and protection checks in `BurnOutSharp`. |
 | `BurnOutSharp.Models` | Library containing object models that represent various pieces of known executable formats. At the time of writing, the following executable types have models: **MS-DOS**, **New Executable**, **Linear Executable (partial)**, **Portable Executable**. |
-| `BurnOutSharp.Utilities` | Library containing helper and extension methods that don't rely on any other libraries. |
+| `BinaryObjectScanner.Utilities` | Library containing helper and extension methods that don't rely on any other libraries. |
 | `BurnOutSharp.Wrappers` | Library that acts as a custom wrapper around both `BurnOutSharp.Builder` and `BurnOutSharp.Models` that allows for easier access to executable information. Each of the wrappers may also include additional functionality that would not otherwise be found in the models, e.g. Data and string reading from sections. |
 | `psxt001z` | **Ported External Library** Handles detection of PS1 protections. See the README for a link to the repository. |
 | `Test` | Testing executable that allows for standalone testing of the library. Includes the ability to scan files for protection as well as output executable information. |

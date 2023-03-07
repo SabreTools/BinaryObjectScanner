@@ -1,7 +1,7 @@
 using System.IO;
 using System.Text;
 using BurnOutSharp.Models.PFF;
-using BurnOutSharp.Utilities;
+using BinaryObjectScanner.Utilities;
 using static BurnOutSharp.Models.PFF.Constants;
 
 namespace BurnOutSharp.Builders

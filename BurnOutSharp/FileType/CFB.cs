@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using BurnOutSharp.Interfaces;
 using OpenMcdf;
-using static BurnOutSharp.Utilities.Dictionary;
+using static BinaryObjectScanner.Utilities.Dictionary;
 
 namespace BurnOutSharp.FileType
 {

@@ -27,7 +27,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BurnOutSharp.Models\BurnOutSharp.Models.csproj" />
-    <ProjectReference Include="..\BurnOutSharp.Utilities\BurnOutSharp.Utilities.csproj" />
+    <ProjectReference Include="..\BinaryObjectScanner.Utilities\BinaryObjectScanner.Utilities.csproj" />
   </ItemGroup>
 
 </Project>

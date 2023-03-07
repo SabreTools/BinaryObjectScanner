@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace BurnOutSharp.Utilities
+namespace BinaryObjectScanner.Utilities
 {
     public static class Extensions
     {

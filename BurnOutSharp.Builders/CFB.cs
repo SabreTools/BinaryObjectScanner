@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using BurnOutSharp.Models.CFB;
-using BurnOutSharp.Utilities;
+using BinaryObjectScanner.Utilities;
 using static BurnOutSharp.Models.CFB.Constants;
 
 namespace BurnOutSharp.Builders

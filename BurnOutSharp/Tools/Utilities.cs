@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using BurnOutSharp.Interfaces;
 using BurnOutSharp.Matching;
-using BurnOutSharp.Utilities;
+using BinaryObjectScanner.Utilities;
 using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.Tools

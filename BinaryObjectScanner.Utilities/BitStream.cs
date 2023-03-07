@@ -1,7 +1,7 @@
 using System.Collections;
 using System.IO;
 
-namespace BurnOutSharp.Utilities
+namespace BinaryObjectScanner.Utilities
 {
     /// <summary>
     /// Stream that allows reading bits or groups of bits at a time

@@ -4,7 +4,7 @@ using System.IO;
 using BurnOutSharp.Interfaces;
 using SharpCompress.Compressors;
 using SharpCompress.Compressors.BZip2;
-using static BurnOutSharp.Utilities.Dictionary;
+using static BinaryObjectScanner.Utilities.Dictionary;
 
 namespace BurnOutSharp.FileType
 {

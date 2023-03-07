@@ -1,7 +1,7 @@
 using System.IO;
 using System.Text;
 using BurnOutSharp.Models.XZP;
-using BurnOutSharp.Utilities;
+using BinaryObjectScanner.Utilities;
 using static BurnOutSharp.Models.XZP.Constants;
 
 namespace BurnOutSharp.Builders

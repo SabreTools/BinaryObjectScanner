@@ -1,7 +1,7 @@
 using System.IO;
 using System.Text;
 using BurnOutSharp.Models.BDPlus;
-using BurnOutSharp.Utilities;
+using BinaryObjectScanner.Utilities;
 using static BurnOutSharp.Models.BDPlus.Constants;
 
 namespace BurnOutSharp.Builders

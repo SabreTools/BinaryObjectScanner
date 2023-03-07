@@ -2,7 +2,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using BurnOutSharp.Models.Compression.LZ;
-using BurnOutSharp.Utilities;
+using BinaryObjectScanner.Utilities;
 using static BurnOutSharp.Models.Compression.LZ.Constants;
 
 namespace BurnOutSharp.Compression

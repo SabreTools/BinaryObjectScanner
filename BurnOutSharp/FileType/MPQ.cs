@@ -5,7 +5,7 @@ using BurnOutSharp.Interfaces;
 #if NET48
 using StormLibSharp;
 #endif
-using static BurnOutSharp.Utilities.Dictionary;
+using static BinaryObjectScanner.Utilities.Dictionary;
 
 namespace BurnOutSharp.FileType
 {

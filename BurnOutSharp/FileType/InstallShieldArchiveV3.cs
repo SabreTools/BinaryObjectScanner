@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using BurnOutSharp.Interfaces;
 using UnshieldSharp.Archive;
-using static BurnOutSharp.Utilities.Dictionary;
+using static BinaryObjectScanner.Utilities.Dictionary;
 
 namespace BurnOutSharp.FileType
 {

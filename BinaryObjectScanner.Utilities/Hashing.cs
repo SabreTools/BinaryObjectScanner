@@ -2,7 +2,7 @@
 using System.IO;
 using System.Security.Cryptography;
 
-namespace BurnOutSharp.Utilities
+namespace BinaryObjectScanner.Utilities
 {
     /// <summary>
     /// Data hashing methods

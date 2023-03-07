@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using BurnOutSharp.Models.MoPaQ;
-using BurnOutSharp.Utilities;
+using BinaryObjectScanner.Utilities;
 using static BurnOutSharp.Models.MoPaQ.Constants;
 
 namespace BurnOutSharp.Builders

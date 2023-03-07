@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using BurnOutSharp.Models.Nitro;
-using BurnOutSharp.Utilities;
+using BinaryObjectScanner.Utilities;
 
 namespace BurnOutSharp.Builders
 {
