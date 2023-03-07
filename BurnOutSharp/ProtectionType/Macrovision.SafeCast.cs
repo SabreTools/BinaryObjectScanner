@@ -31,8 +31,8 @@ namespace BurnOutSharp.ProtectionType
     /// </summary>
     public partial class Macrovision
     {
-        /// <inheritdoc/>
-        public string SafeCastCheckNewExecutable(string file, NewExecutable nex, bool includeDebug)
+        /// <inheritdoc cref="Interfaces.INewExecutableCheck.CheckNewExecutable(string, NewExecutable, bool)"/>
+        internal string SafeCastCheckNewExecutable(string file, NewExecutable nex, bool includeDebug)
         {
             // Check we have a valid executable
             if (nex == null)
@@ -48,6 +48,7 @@ namespace BurnOutSharp.ProtectionType
             return null;
         }
 
+        /// <inheritdoc cref="Interfaces.IPortableExecutableCheck.CheckPortableExecutable(string, PortableExecutable, bool)"/>
         internal string SafeCastCheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
@@ -88,7 +89,7 @@ namespace BurnOutSharp.ProtectionType
             return null;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc cref="Interfaces.IPathCheck.CheckDirectoryPath(string, IEnumerable{string})"/>
         internal ConcurrentQueue<string> SafeCastCheckDirectoryPath(string path, IEnumerable<string> files)
         {
             var matchers = new List<PathMatchSet>
@@ -110,7 +111,7 @@ namespace BurnOutSharp.ProtectionType
             return MatchUtil.GetAllMatches(files, matchers, any: false);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc cref="Interfaces.IPathCheck.CheckFilePath(string)"/>
         internal string SafeCastCheckFilePath(string path)
         {
             var matchers = new List<PathMatchSet>

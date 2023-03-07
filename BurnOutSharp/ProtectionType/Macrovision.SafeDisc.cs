@@ -30,6 +30,7 @@ namespace BurnOutSharp.ProtectionType
     /// </summary>
     public partial class Macrovision
     {
+        /// <inheritdoc cref="Interfaces.IPortableExecutableCheck.CheckPortableExecutable(string, PortableExecutable, bool)"/>
         internal string SafeDiscCheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
@@ -70,7 +71,7 @@ namespace BurnOutSharp.ProtectionType
             return null;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc cref="Interfaces.IPathCheck.CheckDirectoryPath(string, IEnumerable{string})"/>
         internal ConcurrentQueue<string> SafeDiscCheckDirectoryPath(string path, IEnumerable<string> files)
         {
             var matchers = new List<PathMatchSet>
@@ -113,7 +114,7 @@ namespace BurnOutSharp.ProtectionType
                 // TODO: Research "splash16.bmp" and "splash256.bmp".
 
                 // Found to be present in every version of SafeDisc, possibly every single release.
-                new PathMatchSet(new PathMatch("00000001.TMP", useEndsWith: true), GetSafeDisc00000001TMPVersion, "SafeDisc"),
+                //new PathMatchSet(new PathMatch("00000001.TMP", useEndsWith: true), GetSafeDisc00000001TMPVersion, "SafeDisc"),
 
                 // Found in many versions of SafeDisc, beginning in 2.05.030 and being used all the way until the final version 4.90.010. It is not always present, even in versions it has been used in. Found in Redump entries 56319 and 72195.
                 new PathMatchSet(new PathMatch("00000002.TMP", useEndsWith: true), "SafeDisc 2+"),
@@ -179,7 +180,7 @@ namespace BurnOutSharp.ProtectionType
             return MatchUtil.GetAllMatches(files, matchers, any: false);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc cref="Interfaces.IPathCheck.CheckFilePath(string)"/>
         internal string SafeDiscCheckFilePath(string path)
         {
             var matchers = new List<PathMatchSet>
@@ -188,7 +189,7 @@ namespace BurnOutSharp.ProtectionType
                 new PathMatchSet(new PathMatch("CLCD32.DLL", useEndsWith: true), GetSafeDiscCLCD32Version, "SafeDisc"),
                 new PathMatchSet(new PathMatch("CLOKSPL.EXE", useEndsWith: true), GetSafeDiscCLOKSPLVersion, "SafeDisc"),
 
-                new PathMatchSet(new PathMatch("00000001.TMP", useEndsWith: true), GetSafeDisc00000001TMPVersion, "SafeDisc"),
+                //new PathMatchSet(new PathMatch("00000001.TMP", useEndsWith: true), GetSafeDisc00000001TMPVersion, "SafeDisc"),
                 new PathMatchSet(new PathMatch("00000002.TMP", useEndsWith: true), "SafeDisc 2+"),
 
                 // TODO: Research "splash16.bmp" and "splash256.bmp".
@@ -348,27 +349,6 @@ namespace BurnOutSharp.ProtectionType
                 return string.Empty;
 
             return $"{version}.{subVersion:00}.{subsubVersion:000}";
-        }
-
-        internal static string GetSafeDisc00000001TMPVersion(string firstMatchedString, IEnumerable<string> files)
-        {
-            if (string.IsNullOrEmpty(firstMatchedString) || !File.Exists(firstMatchedString))
-                return string.Empty;
-
-            // This file is present in most, if not all, SafeDisc protected discs. It seems to have very consistent file sizes, only being found to use three different file sizes in it's entire run.
-            FileInfo fi = new FileInfo(firstMatchedString);
-            switch (fi.Length)
-            {
-                // Found in Redump entries 37832 and 66005. 
-                case 20:
-                    return "1.00.025-1.41.001";
-                // Found in Redump entries 11347 and 64255.
-                case 20_482_048:
-                    return "3+ (DVD)";
-                // An unknown filesize may indicate a protection other than SafeDisc, due to Macrovision using this file throughout multiple protections.
-                default:
-                    return null;
-            }
         }
 
         internal static string GetSafeDiscCLCD16Version(string firstMatchedString, IEnumerable<string> files)

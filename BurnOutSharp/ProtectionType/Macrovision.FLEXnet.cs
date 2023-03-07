@@ -8,6 +8,7 @@ namespace BurnOutSharp.ProtectionType
     /// </summary>
     public partial class Macrovision
     {
+        /// <inheritdoc cref="Interfaces.IPortableExecutableCheck.CheckPortableExecutable(string, PortableExecutable, bool)"/>
         internal string FLEXnetCheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
