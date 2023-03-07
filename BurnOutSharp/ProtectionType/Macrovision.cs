@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -69,6 +68,11 @@ namespace BurnOutSharp.ProtectionType
                     resultsList.Add(match);
             }
 
+            // Run Cactus Data Shield PE checks
+            match = CactusDataShieldCheckPortableExecutable(file, pex, includeDebug);
+            if (!string.IsNullOrWhiteSpace(match))
+                resultsList.Add(match);
+
             // Run C-Dilla PE checks
             match = CDillaCheckPortableExecutable(file, pex, includeDebug);
             if (!string.IsNullOrWhiteSpace(match))
@@ -100,15 +104,12 @@ namespace BurnOutSharp.ProtectionType
         /// <inheritdoc/>
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string> files)
         {
-            // TODO: Add all common Macrovision directory path checks here
-
-            var matchers = new List<PathMatchSet>
-            {
-                // Present in SafeDisc and CDS-300.
-                new PathMatchSet(new PathMatch("00000001.TMP", useEndsWith: true), Get00000001TMPVersion, "Macrovision Protection File"),
-            };
-
             ConcurrentQueue<string> results = new ConcurrentQueue<string>();
+
+            // Run Macrovision file checks
+            var macrovision = CDillaCheckDirectoryPath(path, files);
+            if (macrovision != null && !macrovision.IsEmpty)
+                results.AddRange(macrovision);
 
             // Run C-Dilla directory checks
             var cDilla = CDillaCheckDirectoryPath(path, files);
@@ -128,7 +129,7 @@ namespace BurnOutSharp.ProtectionType
             if (results != null && results.Count > 0)
                 return results;
 
-            return MatchUtil.GetAllMatches(files, matchers, any: false);
+            return null;
         }
 
         /// <inheritdoc/>
@@ -162,7 +163,18 @@ namespace BurnOutSharp.ProtectionType
             return null;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc cref="IPathCheck.CheckDirectoryPath(string, IEnumerable{string})"/>
+        internal ConcurrentQueue<string> MacrovisionCheckDirectoryPath(string path, IEnumerable<string> files)
+        {
+            var matchers = new List<PathMatchSet>
+            {
+                new PathMatchSet(new PathMatch("00000001.TMP", useEndsWith: true), Get00000001TMPVersion, string.Empty),
+            };
+
+            return MatchUtil.GetAllMatches(files, matchers, any: false);
+        }
+
+        /// <inheritdoc cref="IPathCheck.CheckFilePath(string)"/>
         internal string MacrovisionCheckFilePath(string path)
         {
             var matchers = new List<PathMatchSet>

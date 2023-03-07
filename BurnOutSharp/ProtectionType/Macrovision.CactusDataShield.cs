@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.IO;
-using BurnOutSharp.Interfaces;
-using BurnOutSharp.Matching;
-using BurnOutSharp.Tools;
+using System.Linq;
 using BurnOutSharp.Wrappers;
 
 namespace BurnOutSharp.ProtectionType
@@ -30,6 +26,32 @@ namespace BurnOutSharp.ProtectionType
     /// </summary>
     public partial class Macrovision
     {
-        // TODO: Port existing CactusDataShield checks here.
+        /// <inheritdoc cref="Interfaces.IPortableExecutableCheck.CheckPortableExecutable(string, PortableExecutable, bool)"/>
+        internal string CactusDataShieldCheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        {
+            // Get the sections from the executable, if possible
+            var sections = pex?.SectionTable;
+            if (sections == null)
+                return null;
+
+            // Get the .data/DATA section strings, if they exist
+            List<string> strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
+            if (strs != null)
+            {
+                if (strs.Any(s => s.Contains("\\*.CDS")))
+                    return "Cactus Data Shield 200";
+
+                if (strs.Any(s => s.Contains("DATA.CDS")))
+                    return "Cactus Data Shield 200";
+            }
+
+            // Found in "Volumia!" by Puur (Barcode 7 43218 63282 2) (Discogs Release Code [r795427]).
+            // Modified version of the PlayJ Music Player specificaly for CDS, as indicated by the About page present when running the executable.
+            var resources = pex.FindGenericResource("CactusPJ");
+            if (resources.Any())
+                return "PlayJ Music Player (Cactus Data Shield 200)";
+
+            return null;
+        }
     }
 }
