@@ -6,6 +6,8 @@ using BurnOutSharp.Interfaces;
 using BinaryObjectScanner.Matching;
 using BinaryObjectScanner.Utilities;
 using BinaryObjectScanner.Wrappers;
+using System.Xml.Linq;
+using System;
 
 namespace BurnOutSharp.ProtectionType
 {
@@ -48,7 +50,14 @@ namespace BurnOutSharp.ProtectionType
                 return null;
 
             // Check for generic indications of Macrovision protections first.
-            // TODO: Fill out generic indicators
+            string name = pex.FileDescription;
+
+            // Found in hidden resource of "32bit\Tax02\cdac14ba.dll" in IA item "TurboTax Deluxe Tax Year 2002 for Wndows (2.00R)(Intuit)(2002)(352282)".
+            // TODO: Fix File Description not getting properly pulled for this executable.
+            // Known versions:
+            // 4.16.050 Windows NT 2002/04/24
+            if (name?.Equals("Macrovision RTS Service", StringComparison.OrdinalIgnoreCase) == true)
+                return $"Macrovision RTS Service {pex.FileVersion}";
 
             // Check for specific indications for individual Macrovision protections.
 

@@ -22,8 +22,10 @@ namespace BurnOutSharp.ProtectionType
     /// https://archive.org/details/danceejay4
     /// https://archive.org/details/ejay_nestle_trial
     /// https://archive.org/details/eJayXtremeSoundtraxx
+    /// https://community.ptc.com/t5/Mathcad/SafeCast/td-p/25233
     /// SafeCast resources: 
     /// https://web.archive.org/web/20000129013431/http://www.macrovision.com/safecast_faq.html (SafeCast FAQ)
+    /// https://web.archive.org/web/20040223025801/http://www.macrovision.com/products/legacy_products/safecast/safecast_cdilla_faq.shtml
     /// https://web.archive.org/web/20031204024544mp_/http://www.macrovision.com/products/safecast/index.shtml
     /// https://web.archive.org/web/20010417222834/http://www.macrovision.com/press_rel3_17_99.html
     /// https://www.extremetech.com/computing/53394-turbotax-so-what-do-i-do-now/4
@@ -80,9 +82,16 @@ namespace BurnOutSharp.ProtectionType
                     return "SafeCast";
             }
 
+            // Found in "32bit\Tax02\cdac14ba.dll" in IA item "TurboTax Deluxe Tax Year 2002 for Wndows (2.00R)(Intuit)(2002)(352282)".
             string name = pex.FileDescription;
             if (name?.Equals("SafeCast2", StringComparison.OrdinalIgnoreCase) == true)
-                return $"SafeCast";
+                return "SafeCast";
+
+            // Found in hidden resource of "32bit\Tax02\cdac14ba.dll" in IA item "TurboTax Deluxe Tax Year 2002 for Wndows (2.00R)(Intuit)(2002)(352282)".
+            // TODO: Fix Product Name not getting properly pulled for this executable.
+            name = pex.ProductName;
+            if (name?.Equals("SafeCast Windows NT", StringComparison.OrdinalIgnoreCase) == true)
+                return "SafeCast";
 
             // Check for CDSHARE/DISAG_SH sections
 

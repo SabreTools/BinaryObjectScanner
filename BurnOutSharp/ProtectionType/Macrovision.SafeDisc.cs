@@ -295,7 +295,7 @@ namespace BurnOutSharp.ProtectionType
             if (string.IsNullOrEmpty(firstMatchedString) || !File.Exists(firstMatchedString))
                 return string.Empty;
 
-            // The hash of the file CLCD32.dll so far appears to be a solid indicator of version for versions it was used with. It appears to have been updated with every release, unlike it's counterpart, CLCD16.dll.
+            // The hash of the file CLCD32.dll so far appears to be a solid indicator of version for versions it was used with. It appears to have been updated with every release, unlike its counterpart, CLCD16.dll.
             string sha1 = GetFileSHA1(firstMatchedString);
             switch (sha1)
             {

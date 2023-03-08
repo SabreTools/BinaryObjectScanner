@@ -55,6 +55,11 @@ namespace BurnOutSharp.ProtectionType
             if (resources.Any())
                 return "PlayJ Music Player (Cactus Data Shield 200)";
 
+            // Found in various files in "Les Paul & Friends" (Barcode 4 98806 834170).
+            string name = pex.ProductName;
+            if (name?.Equals("CDS300", StringComparison.OrdinalIgnoreCase) == true)
+                return $"Cactus Data Shield 300";
+
             return null;
         }
 
