@@ -46,7 +46,7 @@ namespace BinaryObjectScanner.Wrappers
         /// <summary>
         /// Internal representation of the SVM
         /// </summary>
-        private BinaryObjectScanner.Models.BDPlus.SVM _svm;
+        private Models.BDPlus.SVM _svm;
 
         #endregion
 
