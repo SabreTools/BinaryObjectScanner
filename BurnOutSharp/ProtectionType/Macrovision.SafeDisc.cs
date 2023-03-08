@@ -332,11 +332,11 @@ namespace BurnOutSharp.ProtectionType
             // Known SafeCast versions:
             // 2.11.010 (Redump entry 83145).
             // 2.16.050 (IA items "cdrom-turbotax-2002", "TurboTax_Deluxe_Tax_Year_2002_for_Wndows_2.00R_Intuit_2002_352282", and "TurboTax_Premier_Tax_Year_2002_for_Windows_v02.00Z-R_Intuit_352283_2002").
-            // 2.42.000 (found in "Dreamweaver MX 2004 v7.0.1" according to https://web.archive.org/web/20210331144912/https://protectionid.net/).
-            // 2.50.030 (found in "ArcSoft Media Card Companion v1.0" according to https://web.archive.org/web/20210331144912/https://protectionid.net/).
-            // 2.51.000 (found in "Autodesk Inventor Professional v9.0" according to https://web.archive.org/web/20210331144912/https://protectionid.net/).
-            // 2.60.030 (found in "Data Becker Web To Date v3.1" according to https://web.archive.org/web/20210331144912/https://protectionid.net/).
-            // 2.67.010 (found in "Adobe Photoshop CS2" according to https://web.archive.org/web/20210331144912/https://protectionid.net/).
+            // 2.42.000 (Found in "Dreamweaver MX 2004 v7.0.1" according to https://web.archive.org/web/20210331144912/https://protectionid.net/).
+            // 2.50.030 (Found in "ArcSoft Media Card Companion v1.0" according to https://web.archive.org/web/20210331144912/https://protectionid.net/).
+            // 2.51.000 (Found in "Autodesk Inventor Professional v9.0" according to https://web.archive.org/web/20210331144912/https://protectionid.net/).
+            // 2.60.030 (Found in "Data Becker Web To Date v3.1" according to https://web.archive.org/web/20210331144912/https://protectionid.net/).
+            // 2.67.010 (Found in "Adobe Photoshop CS2" according to https://web.archive.org/web/20210331144912/https://protectionid.net/).
 
             int index = positions[0] + 20; // Begin reading after "BoG_ *90.0&!!  Yy>" for old SafeDisc
             int version = fileContent.ReadInt32(ref index);
