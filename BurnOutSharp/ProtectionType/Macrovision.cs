@@ -239,7 +239,7 @@ namespace BurnOutSharp.ProtectionType
                     0x42, 0x6F, 0x47, 0x5F, 0x20, 0x2A, 0x39, 0x30,
                     0x2E, 0x30, 0x26, 0x21, 0x21, 0x20, 0x20, 0x59,
                     0x79, 0x3E
-                }, GetMacrovisionVersion, "Macrovision Protected Application"),
+                }, GetMacrovisionVersion, string.Empty),
             };
 
             return MatchUtil.GetFirstMatch(file, sectionRaw, matchers, includeDebug);
@@ -247,26 +247,34 @@ namespace BurnOutSharp.ProtectionType
 
         internal static string GetMacrovisionVersion(string file, byte[] fileContent, List<int> positions)
         {
-            int index = positions[0] + 20; // Begin reading after "BoG_ *90.0&!!  Yy>" for old SafeDisc
+            // Begin reading after "BoG_ *90.0&!!  Yy>" for older versions
+            int index = positions[0] + 20;
             int version = fileContent.ReadInt32(ref index);
             int subVersion = fileContent.ReadInt32(ref index);
             int subsubVersion = fileContent.ReadInt32(ref index);
 
             if (version != 0)
-                return $"{version}.{subVersion:00}.{subsubVersion:000}";
+            {
+                string versionString = $"{version}.{subVersion:00}.{subsubVersion:000}";
+                return $"{MacrovisionVersionToProductName(versionString)} {versionString}";
+            }
 
+            // Begin reading after "BoG_ *90.0&!!  Yy>" for newer versions
             index = positions[0] + 18 + 14; // Begin reading after "BoG_ *90.0&!!  Yy>" for newer SafeDisc
             version = fileContent.ReadInt32(ref index);
             subVersion = fileContent.ReadInt32(ref index);
             subsubVersion = fileContent.ReadInt32(ref index);
 
-            if (version == 0)
-                return string.Empty;
+            if (version != 0)
+            {
+                string versionString = $"{version}.{subVersion:00}.{subsubVersion:000}";
+                return $"{MacrovisionVersionToProductName(versionString)} {versionString}";
+            }
 
-            return $"{version}.{subVersion:00}.{subsubVersion:000}";
+            return string.Empty;
         }
 
-        private static string VersionToProduct(string version)
+        private static string MacrovisionVersionToProductName(string version)
         {
             switch (version)
             {
