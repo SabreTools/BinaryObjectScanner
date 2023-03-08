@@ -98,7 +98,7 @@ namespace BinaryObjectScanner.Matching
                     if (version == null)
                         continue;
 
-                    matchedProtections.Enqueue($"{matcher.ProtectionName ?? "Unknown Protection"} {version}".TrimEnd() + (includeDebug ? $" (Index {positionsString})" : string.Empty));
+                    matchedProtections.Enqueue($"{matcher.ProtectionName ?? "Unknown Protection"} {version}".Trim() + (includeDebug ? $" (Index {positionsString})" : string.Empty));
                 }
 
                 // If we're stopping after the first protection, bail out here
@@ -199,7 +199,7 @@ namespace BinaryObjectScanner.Matching
                     if (version == null)
                         continue;
 
-                    matchedProtections.Enqueue($"{matcher.ProtectionName ?? "Unknown Protection"} {version}".TrimEnd() + (includeDebug ? $" (Index {positionsString})" : string.Empty));
+                    matchedProtections.Enqueue($"{matcher.ProtectionName ?? "Unknown Protection"} {version}".Trim() + (includeDebug ? $" (Index {positionsString})" : string.Empty));
                 }
 
                 // If we're stopping after the first protection, bail out here
@@ -324,7 +324,7 @@ namespace BinaryObjectScanner.Matching
                     if (version == null)
                         continue;
 
-                    matchedProtections.Enqueue($"{matcher.ProtectionName ?? "Unknown Protection"} {version}".TrimEnd());
+                    matchedProtections.Enqueue($"{matcher.ProtectionName ?? "Unknown Protection"} {version}".Trim());
                 }
 
                 // If we're stopping after the first protection, bail out here
