@@ -54,11 +54,12 @@ namespace BurnOutSharp.ProtectionType
             else if (name?.Equals("SafeDisc SRV Tool APP", StringComparison.OrdinalIgnoreCase) == true)
                 return $"SafeDisc SRV Tool APP {GetSafeDiscDiagExecutableVersion(pex)}";
 
-            // Get the stxt371 and stxt774 sections, if they exist -- TODO: Confirm if both are needed or either/or is fine
+            // Get the stxt371 and stxt774 sections, if they exist -- TODO: Confirm if both are needed or either/or is fine.
+            // Found together in seemingly every SafeDisc 2+ game, and appear to always be the final two sections.
             bool stxt371Section = pex.ContainsSection("stxt371", exact: true);
             bool stxt774Section = pex.ContainsSection("stxt774", exact: true);
             if (stxt371Section || stxt774Section)
-                return $"SafeDisc {GetSafeDisc320to4xVersion(null, null, null)}";
+                return $"SafeDisc 2+";
 
             // Present on all "CLOKSPL.EXE" versions before SafeDisc 1.06.000. Found on Redump entries 61731 and 66004. 
             // Only found so far on SafeDisc 1.00.025-1.01.044, but the report is currently left generic due to the generic nature of the check.
@@ -70,6 +71,14 @@ namespace BurnOutSharp.ProtectionType
             // Get the debug data
             if (pex.FindCodeViewDebugTableByPath("SafeDisc").Any() || pex.FindCodeViewDebugTableByPath("Safedisk").Any())
                 return "SafeDisc";
+
+            // TODO: Investigate various section names:
+            // "_rwcseg" - Found in Redump entry 55823.
+            // "STLPORT_" - Found in Redump entry 11638.
+            // "PACODE" - Found in Redump entry 9621.
+            // "CSEG" + "DSEG" + "TQIA_DAT" + "GRPOLY_D"  - Found in Redump entry 72195.
+            // "LBMPEG_D" - Found in Redump entries 11638 and 72195.
+            // "UVA_DATA" + "IDCT_DAT" Found in Redump entries 9621 and 72195.
 
             // TODO: Add entry point check
             // https://github.com/horsicq/Detect-It-Easy/blob/master/db/PE/Safedisc.2.sg
