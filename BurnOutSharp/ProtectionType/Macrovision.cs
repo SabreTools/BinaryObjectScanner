@@ -300,7 +300,7 @@ namespace BurnOutSharp.ProtectionType
                 case "2.67.010": // Found in "Adobe Photoshop CS2" according to https://web.archive.org/web/20210331144912/https://protectionid.net/.
                     return "SafeCast (Unconfirmed - Please report to us on GitHub)";
 
-                // SafeDisc
+                // SafeDisc (Confirmed)
                 case "1.00.025": // Found in Redump entry 66005.
                 case "1.00.026": // Found in Redump entries 1882 and 30049.
                 case "1.00.030": // Found in Redump entries 31575 and 41923.
@@ -310,7 +310,6 @@ namespace BurnOutSharp.ProtectionType
                 case "1.01.038": // Found in Redump entry 51459.
                 case "1.01.043": // Found in Redump entries 34562 and 63304.
                 case "1.01.044": // Found in Redump entries 61731 and 81619.
-                case "1.01.045": // Currently only found in a pirate compilation disc: IA item "cdrom-classic-fond-58".
                 case "1.06.000": // Found in Redump entries 29073 and 31149.
                 case "1.07.000": // Found in Redump entries 9718 and 46756.
                 case "1.09.000": // Found in Redump entries 12885 and 66210.
@@ -358,6 +357,10 @@ namespace BurnOutSharp.ProtectionType
                 case "4.90.000": // Found in Redump entries 56319 and 66333 (DVD only).
                 case "4.90.010": // Found in Redump entries 58573 and 78976 (CD) and Redump entries 11347 and 29069 (DVD).
                     return "SafeDisc";
+
+                // SafeDisc (Unconfirmed)
+                case "1.01.045": // Currently only found in a pirate compilation disc: IA item "cdrom-classic-fond-58".
+                    return "SafeDisc (Unconfirmed - Please report to us on GitHub)";
 
                 default:
                     return "Macrovision Protected Application (Generic detection - Report to us on GitHub)";
