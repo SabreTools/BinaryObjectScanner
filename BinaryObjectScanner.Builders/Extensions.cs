@@ -346,7 +346,7 @@ namespace BinaryObjectScanner.Builders
             try
             {
                 XmlSerializer serializer = new XmlSerializer(typeof(Models.PortableExecutable.AssemblyManifest));
-                return serializer.Deserialize(new MemoryStream(entry.Data)) as BinaryObjectScanner.Models.PortableExecutable.AssemblyManifest;
+                return serializer.Deserialize(new MemoryStream(entry.Data)) as Models.PortableExecutable.AssemblyManifest;
             }
             catch
             {
