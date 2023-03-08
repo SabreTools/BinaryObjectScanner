@@ -26,107 +26,107 @@ namespace BinaryObjectScanner.Wrappers
         #region V1 Only
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV1.TrackID"/>
-        public uint? V1_TrackID => (_audioFile.Header as BinaryObjectScanner.Models.PlayJ.AudioHeaderV1)?.TrackID;
+        public uint? V1_TrackID => (_audioFile.Header as Models.PlayJ.AudioHeaderV1)?.TrackID;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV1.UnknownOffset1"/>
-        public uint? V1_UnknownOffset1 => (_audioFile.Header as BinaryObjectScanner.Models.PlayJ.AudioHeaderV1)?.UnknownOffset1;
+        public uint? V1_UnknownOffset1 => (_audioFile.Header as Models.PlayJ.AudioHeaderV1)?.UnknownOffset1;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV1.UnknownOffset2"/>
-        public uint? V1_UnknownOffset2 => (_audioFile.Header as BinaryObjectScanner.Models.PlayJ.AudioHeaderV1)?.UnknownOffset2;
+        public uint? V1_UnknownOffset2 => (_audioFile.Header as Models.PlayJ.AudioHeaderV1)?.UnknownOffset2;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV1.UnknownOffset3"/>
-        public uint? V1_UnknownOffset3 => (_audioFile.Header as BinaryObjectScanner.Models.PlayJ.AudioHeaderV1)?.UnknownOffset3;
+        public uint? V1_UnknownOffset3 => (_audioFile.Header as Models.PlayJ.AudioHeaderV1)?.UnknownOffset3;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV1.Unknown1"/>
-        public uint? V1_Unknown1 => (_audioFile.Header as BinaryObjectScanner.Models.PlayJ.AudioHeaderV1)?.Unknown1;
+        public uint? V1_Unknown1 => (_audioFile.Header as Models.PlayJ.AudioHeaderV1)?.Unknown1;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV1.Unknown2"/>
-        public uint? V1_Unknown2 => (_audioFile.Header as BinaryObjectScanner.Models.PlayJ.AudioHeaderV1)?.Unknown2;
+        public uint? V1_Unknown2 => (_audioFile.Header as Models.PlayJ.AudioHeaderV1)?.Unknown2;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV1.Year"/>
-        public uint? V1_Year => (_audioFile.Header as BinaryObjectScanner.Models.PlayJ.AudioHeaderV1)?.Year;
+        public uint? V1_Year => (_audioFile.Header as Models.PlayJ.AudioHeaderV1)?.Year;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV1.TrackNumber"/>
-        public uint? V1_TrackNumber => (_audioFile.Header as BinaryObjectScanner.Models.PlayJ.AudioHeaderV1)?.TrackNumber;
+        public uint? V1_TrackNumber => (_audioFile.Header as Models.PlayJ.AudioHeaderV1)?.TrackNumber;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV1.Subgenre"/>
-        public BinaryObjectScanner.Models.PlayJ.Subgenre? V1_Subgenre => (_audioFile.Header as BinaryObjectScanner.Models.PlayJ.AudioHeaderV1)?.Subgenre;
+        public Models.PlayJ.Subgenre? V1_Subgenre => (_audioFile.Header as Models.PlayJ.AudioHeaderV1)?.Subgenre;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV1.Duration"/>
-        public uint? V1_Duration => (_audioFile.Header as BinaryObjectScanner.Models.PlayJ.AudioHeaderV1)?.Duration;
+        public uint? V1_Duration => (_audioFile.Header as Models.PlayJ.AudioHeaderV1)?.Duration;
 
         #endregion
 
         #region V2 Only
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Unknown1"/>
-        public uint? V2_Unknown1 => (_audioFile.Header as BinaryObjectScanner.Models.PlayJ.AudioHeaderV2)?.Unknown1;
+        public uint? V2_Unknown1 => (_audioFile.Header as Models.PlayJ.AudioHeaderV2)?.Unknown1;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Unknown2"/>
-        public uint? V2_Unknown2 => (_audioFile.Header as BinaryObjectScanner.Models.PlayJ.AudioHeaderV2)?.Unknown2;
+        public uint? V2_Unknown2 => (_audioFile.Header as Models.PlayJ.AudioHeaderV2)?.Unknown2;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Unknown3"/>
-        public uint? V2_Unknown3 => (_audioFile.Header as BinaryObjectScanner.Models.PlayJ.AudioHeaderV2)?.Unknown3;
+        public uint? V2_Unknown3 => (_audioFile.Header as Models.PlayJ.AudioHeaderV2)?.Unknown3;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Unknown4"/>
-        public uint? V2_Unknown4 => (_audioFile.Header as BinaryObjectScanner.Models.PlayJ.AudioHeaderV2)?.Unknown4;
+        public uint? V2_Unknown4 => (_audioFile.Header as Models.PlayJ.AudioHeaderV2)?.Unknown4;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Unknown5"/>
-        public uint? V2_Unknown5 => (_audioFile.Header as BinaryObjectScanner.Models.PlayJ.AudioHeaderV2)?.Unknown5;
+        public uint? V2_Unknown5 => (_audioFile.Header as Models.PlayJ.AudioHeaderV2)?.Unknown5;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Unknown6"/>
-        public uint? V2_Unknown6 => (_audioFile.Header as BinaryObjectScanner.Models.PlayJ.AudioHeaderV2)?.Unknown6;
+        public uint? V2_Unknown6 => (_audioFile.Header as Models.PlayJ.AudioHeaderV2)?.Unknown6;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.UnknownOffset1"/>
-        public uint? V2_UnknownOffset1 => (_audioFile.Header as BinaryObjectScanner.Models.PlayJ.AudioHeaderV2)?.UnknownOffset1;
+        public uint? V2_UnknownOffset1 => (_audioFile.Header as Models.PlayJ.AudioHeaderV2)?.UnknownOffset1;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Unknown7"/>
-        public uint? V2_Unknown7 => (_audioFile.Header as BinaryObjectScanner.Models.PlayJ.AudioHeaderV2)?.Unknown7;
+        public uint? V2_Unknown7 => (_audioFile.Header as Models.PlayJ.AudioHeaderV2)?.Unknown7;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Unknown8"/>
-        public uint? V2_Unknown8 => (_audioFile.Header as BinaryObjectScanner.Models.PlayJ.AudioHeaderV2)?.Unknown8;
+        public uint? V2_Unknown8 => (_audioFile.Header as Models.PlayJ.AudioHeaderV2)?.Unknown8;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Unknown9"/>
-        public uint? V2_Unknown9 => (_audioFile.Header as BinaryObjectScanner.Models.PlayJ.AudioHeaderV2)?.Unknown9;
+        public uint? V2_Unknown9 => (_audioFile.Header as Models.PlayJ.AudioHeaderV2)?.Unknown9;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.UnknownOffset2"/>
-        public uint? V2_UnknownOffset2 => (_audioFile.Header as BinaryObjectScanner.Models.PlayJ.AudioHeaderV2)?.UnknownOffset2;
+        public uint? V2_UnknownOffset2 => (_audioFile.Header as Models.PlayJ.AudioHeaderV2)?.UnknownOffset2;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Unknown10"/>
-        public uint? V2_Unknown10 => (_audioFile.Header as BinaryObjectScanner.Models.PlayJ.AudioHeaderV2)?.Unknown10;
+        public uint? V2_Unknown10 => (_audioFile.Header as Models.PlayJ.AudioHeaderV2)?.Unknown10;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Unknown11"/>
-        public uint? V2_Unknown11 => (_audioFile.Header as BinaryObjectScanner.Models.PlayJ.AudioHeaderV2)?.Unknown11;
+        public uint? V2_Unknown11 => (_audioFile.Header as Models.PlayJ.AudioHeaderV2)?.Unknown11;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Unknown12"/>
-        public uint? V2_Unknown12 => (_audioFile.Header as BinaryObjectScanner.Models.PlayJ.AudioHeaderV2)?.Unknown12;
+        public uint? V2_Unknown12 => (_audioFile.Header as Models.PlayJ.AudioHeaderV2)?.Unknown12;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Unknown13"/>
-        public uint? V2_Unknown13 => (_audioFile.Header as BinaryObjectScanner.Models.PlayJ.AudioHeaderV2)?.Unknown13;
+        public uint? V2_Unknown13 => (_audioFile.Header as Models.PlayJ.AudioHeaderV2)?.Unknown13;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Unknown14"/>
-        public uint? V2_Unknown14 => (_audioFile.Header as BinaryObjectScanner.Models.PlayJ.AudioHeaderV2)?.Unknown14;
+        public uint? V2_Unknown14 => (_audioFile.Header as Models.PlayJ.AudioHeaderV2)?.Unknown14;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Unknown15"/>
-        public uint? V2_Unknown15 => (_audioFile.Header as BinaryObjectScanner.Models.PlayJ.AudioHeaderV2)?.Unknown15;
+        public uint? V2_Unknown15 => (_audioFile.Header as Models.PlayJ.AudioHeaderV2)?.Unknown15;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Unknown16"/>
-        public uint? V2_Unknown16 => (_audioFile.Header as BinaryObjectScanner.Models.PlayJ.AudioHeaderV2)?.Unknown16;
+        public uint? V2_Unknown16 => (_audioFile.Header as Models.PlayJ.AudioHeaderV2)?.Unknown16;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Unknown17"/>
-        public uint? V2_Unknown17 => (_audioFile.Header as BinaryObjectScanner.Models.PlayJ.AudioHeaderV2)?.Unknown17;
+        public uint? V2_Unknown17 => (_audioFile.Header as Models.PlayJ.AudioHeaderV2)?.Unknown17;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.TrackID"/>
-        public uint? V2_TrackID => (_audioFile.Header as BinaryObjectScanner.Models.PlayJ.AudioHeaderV2)?.TrackID;
+        public uint? V2_TrackID => (_audioFile.Header as Models.PlayJ.AudioHeaderV2)?.TrackID;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Year"/>
-        public uint? V2_Year => (_audioFile.Header as BinaryObjectScanner.Models.PlayJ.AudioHeaderV2)?.Year;
+        public uint? V2_Year => (_audioFile.Header as Models.PlayJ.AudioHeaderV2)?.Year;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.TrackNumber"/>
-        public uint? V2_TrackNumber => (_audioFile.Header as BinaryObjectScanner.Models.PlayJ.AudioHeaderV2)?.TrackNumber;
+        public uint? V2_TrackNumber => (_audioFile.Header as Models.PlayJ.AudioHeaderV2)?.TrackNumber;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Unknown18"/>
-        public uint? V2_Unknown18 => (_audioFile.Header as BinaryObjectScanner.Models.PlayJ.AudioHeaderV2)?.Unknown18;
+        public uint? V2_Unknown18 => (_audioFile.Header as Models.PlayJ.AudioHeaderV2)?.Unknown18;
 
         #endregion
 
@@ -214,7 +214,7 @@ namespace BinaryObjectScanner.Wrappers
         #region Unknown Block 3
 
         /// <inheritdoc cref="Models.PlayJ.AudioFile.DataFiles"/>
-        public BinaryObjectScanner.Models.PlayJ.DataFile[] DataFiles => _audioFile.DataFiles;
+        public Models.PlayJ.DataFile[] DataFiles => _audioFile.DataFiles;
 
         #endregion
 
@@ -227,7 +227,7 @@ namespace BinaryObjectScanner.Wrappers
         /// <summary>
         /// Internal representation of the archive
         /// </summary>
-        private BinaryObjectScanner.Models.PlayJ.AudioFile _audioFile;
+        private Models.PlayJ.AudioFile _audioFile;
 
         #endregion
 

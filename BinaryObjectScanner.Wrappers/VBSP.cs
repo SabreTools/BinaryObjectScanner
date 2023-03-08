@@ -22,7 +22,7 @@ namespace BinaryObjectScanner.Wrappers
         public int Version => _file.Header.Version;
 
         /// <inheritdoc cref="Models.VBSP.File.Lumps"/>
-        public BinaryObjectScanner.Models.VBSP.Lump[] Lumps => _file.Header.Lumps;
+        public Models.VBSP.Lump[] Lumps => _file.Header.Lumps;
 
         /// <inheritdoc cref="Models.VBSP.Header.MapRevision"/>
         public int MapRevision => _file.Header.MapRevision;
@@ -40,7 +40,7 @@ namespace BinaryObjectScanner.Wrappers
         /// <summary>
         /// Internal representation of the VBSP
         /// </summary>
-        private BinaryObjectScanner.Models.VBSP.File _file;
+        private Models.VBSP.File _file;
 
         #endregion
 

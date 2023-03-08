@@ -39,7 +39,7 @@ namespace BinaryObjectScanner.Wrappers
         #region File List
 
         /// <inheritdoc cref="Models.Quantum.Archive.FileList"/>
-        public BinaryObjectScanner.Models.Quantum.FileDescriptor[] FileList => _archive.FileList;
+        public Models.Quantum.FileDescriptor[] FileList => _archive.FileList;
 
         #endregion
 
@@ -53,7 +53,7 @@ namespace BinaryObjectScanner.Wrappers
         /// <summary>
         /// Internal representation of the archive
         /// </summary>
-        private BinaryObjectScanner.Models.Quantum.Archive _archive;
+        private Models.Quantum.Archive _archive;
 
         #endregion
 

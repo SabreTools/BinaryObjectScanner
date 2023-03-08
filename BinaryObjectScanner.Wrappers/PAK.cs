@@ -30,7 +30,7 @@ namespace BinaryObjectScanner.Wrappers
         #region Directory Items
 
         /// <inheritdoc cref="Models.PAK.DirectoryItems"/>
-        public BinaryObjectScanner.Models.PAK.DirectoryItem[] DirectoryItems => _file.DirectoryItems;
+        public Models.PAK.DirectoryItem[] DirectoryItems => _file.DirectoryItems;
 
         #endregion
 
@@ -47,7 +47,7 @@ namespace BinaryObjectScanner.Wrappers
         /// <summary>
         /// Internal representation of the PAK
         /// </summary>
-        private BinaryObjectScanner.Models.PAK.File _file;
+        private Models.PAK.File _file;
 
         #endregion
 

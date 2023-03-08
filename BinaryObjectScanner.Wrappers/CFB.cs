@@ -70,35 +70,35 @@ namespace BinaryObjectScanner.Wrappers
         public uint NumberOfDIFATSectors => _binary.Header.NumberOfDIFATSectors;
 
         /// <inheritdoc cref="Models.CFB.FileHeader.DIFAT"/>
-        public BinaryObjectScanner.Models.CFB.SectorNumber[] DIFAT => _binary.Header.DIFAT;
+        public Models.CFB.SectorNumber[] DIFAT => _binary.Header.DIFAT;
 
         #endregion
 
         #region FAT Sector Numbers
 
         /// <inheritdoc cref="Models.CFB.Binary.FATSectorNumbers"/>
-        public BinaryObjectScanner.Models.CFB.SectorNumber[] FATSectorNumbers => _binary.FATSectorNumbers;
+        public Models.CFB.SectorNumber[] FATSectorNumbers => _binary.FATSectorNumbers;
 
         #endregion
 
         #region Mini FAT Sector Numbers
 
         /// <inheritdoc cref="Models.CFB.Binary.MiniFATSectorNumbers"/>
-        public BinaryObjectScanner.Models.CFB.SectorNumber[] MiniFATSectorNumbers => _binary.MiniFATSectorNumbers;
+        public Models.CFB.SectorNumber[] MiniFATSectorNumbers => _binary.MiniFATSectorNumbers;
 
         #endregion
 
         #region DIFAT Sector Numbers
 
         /// <inheritdoc cref="Models.CFB.Binary.DIFATSectorNumbers"/>
-        public BinaryObjectScanner.Models.CFB.SectorNumber[] DIFATSectorNumbers => _binary.DIFATSectorNumbers;
+        public Models.CFB.SectorNumber[] DIFATSectorNumbers => _binary.DIFATSectorNumbers;
 
         #endregion
 
         #region Directory Entries
 
         /// <inheritdoc cref="Models.CFB.Binary.DirectoryEntries"/>
-        public BinaryObjectScanner.Models.CFB.DirectoryEntry[] DirectoryEntries => _binary.DirectoryEntries;
+        public Models.CFB.DirectoryEntry[] DirectoryEntries => _binary.DirectoryEntries;
 
         #endregion
 

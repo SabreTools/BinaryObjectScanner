@@ -30,14 +30,14 @@ namespace BinaryObjectScanner.Wrappers
         #region Lumps
 
         /// <inheritdoc cref="Models.WAD.File.Lumps"/>
-        public BinaryObjectScanner.Models.WAD.Lump[] Lumps => _file.Lumps;
+        public Models.WAD.Lump[] Lumps => _file.Lumps;
 
         #endregion
 
         #region Lump Infos
 
         /// <inheritdoc cref="Models.WAD.File.LumpInfos"/>
-        public BinaryObjectScanner.Models.WAD.LumpInfo[] LumpInfos => _file.LumpInfos;
+        public Models.WAD.LumpInfo[] LumpInfos => _file.LumpInfos;
 
         #endregion
 
@@ -54,7 +54,7 @@ namespace BinaryObjectScanner.Wrappers
         /// <summary>
         /// Internal representation of the WAD
         /// </summary>
-        private BinaryObjectScanner.Models.WAD.File _file;
+        private Models.WAD.File _file;
 
         #endregion
 

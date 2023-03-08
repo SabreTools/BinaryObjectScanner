@@ -84,7 +84,7 @@ namespace BinaryObjectScanner.Wrappers
         #region Block Entries
 
         /// <inheritdoc cref="Models.GCF.File.BlockEntries"/>
-        public BinaryObjectScanner.Models.GCF.BlockEntry[] BlockEntries => _file.BlockEntries;
+        public Models.GCF.BlockEntry[] BlockEntries => _file.BlockEntries;
 
         #endregion
 
@@ -107,7 +107,7 @@ namespace BinaryObjectScanner.Wrappers
         #region Fragmentation Maps
 
         /// <inheritdoc cref="Models.GCF.File.FragmentationMaps"/>
-        public BinaryObjectScanner.Models.GCF.FragmentationMap[] FragmentationMaps => _file.FragmentationMaps;
+        public Models.GCF.FragmentationMap[] FragmentationMaps => _file.FragmentationMaps;
 
         #endregion
 
@@ -133,7 +133,7 @@ namespace BinaryObjectScanner.Wrappers
         #region Block Entry Maps
 
         /// <inheritdoc cref="Models.GCF.File.BlockEntryMaps"/>
-        public BinaryObjectScanner.Models.GCF.BlockEntryMap[] BlockEntryMaps => _file.BlockEntryMaps;
+        public Models.GCF.BlockEntryMap[] BlockEntryMaps => _file.BlockEntryMaps;
 
         #endregion
 
@@ -186,7 +186,7 @@ namespace BinaryObjectScanner.Wrappers
         #region Directory Entries
 
         /// <inheritdoc cref="Models.GCF.File.DirectoryEntries"/>
-        public BinaryObjectScanner.Models.GCF.DirectoryEntry[] DirectoryEntries => _file.DirectoryEntries;
+        public Models.GCF.DirectoryEntry[] DirectoryEntries => _file.DirectoryEntries;
 
         #endregion
 
@@ -200,28 +200,28 @@ namespace BinaryObjectScanner.Wrappers
         #region Directory Info 1 Entries
 
         /// <inheritdoc cref="Models.GCF.File.DirectoryInfo1Entries"/>
-        public BinaryObjectScanner.Models.GCF.DirectoryInfo1Entry[] DirectoryInfo1Entries => _file.DirectoryInfo1Entries;
+        public Models.GCF.DirectoryInfo1Entry[] DirectoryInfo1Entries => _file.DirectoryInfo1Entries;
 
         #endregion
 
         #region Directory Info 2 Entries
 
         /// <inheritdoc cref="Models.GCF.File.DirectoryInfo2Entries"/>
-        public BinaryObjectScanner.Models.GCF.DirectoryInfo2Entry[] DirectoryInfo2Entries => _file.DirectoryInfo2Entries;
+        public Models.GCF.DirectoryInfo2Entry[] DirectoryInfo2Entries => _file.DirectoryInfo2Entries;
 
         #endregion
 
         #region Directory Copy Entries
 
         /// <inheritdoc cref="Models.GCF.File.DirectoryCopyEntries"/>
-        public BinaryObjectScanner.Models.GCF.DirectoryCopyEntry[] DirectoryCopyEntries => _file.DirectoryCopyEntries;
+        public Models.GCF.DirectoryCopyEntry[] DirectoryCopyEntries => _file.DirectoryCopyEntries;
 
         #endregion
 
         #region Directory Local Entries
 
         /// <inheritdoc cref="Models.GCF.File.DirectoryLocalEntries"/>
-        public BinaryObjectScanner.Models.GCF.DirectoryLocalEntry[] DirectoryLocalEntries => _file.DirectoryLocalEntries;
+        public Models.GCF.DirectoryLocalEntry[] DirectoryLocalEntries => _file.DirectoryLocalEntries;
 
         #endregion
 
@@ -238,7 +238,7 @@ namespace BinaryObjectScanner.Wrappers
         #region Directory Map Entries
 
         /// <inheritdoc cref="Models.GCF.File.DirectoryMapEntries"/>
-        public BinaryObjectScanner.Models.GCF.DirectoryMapEntry[] DirectoryMapEntries => _file.DirectoryMapEntries;
+        public Models.GCF.DirectoryMapEntry[] DirectoryMapEntries => _file.DirectoryMapEntries;
 
         #endregion
 
@@ -271,14 +271,14 @@ namespace BinaryObjectScanner.Wrappers
         #region Checksum Map Entries
 
         /// <inheritdoc cref="Models.GCF.File.ChecksumMapEntries"/>
-        public BinaryObjectScanner.Models.GCF.ChecksumMapEntry[] ChecksumMapEntries => _file.ChecksumMapEntries;
+        public Models.GCF.ChecksumMapEntry[] ChecksumMapEntries => _file.ChecksumMapEntries;
 
         #endregion
 
         #region Checksum Entries
 
         /// <inheritdoc cref="Models.GCF.File.ChecksumEntries"/>
-        public BinaryObjectScanner.Models.GCF.ChecksumEntry[] ChecksumEntries => _file.ChecksumEntries;
+        public Models.GCF.ChecksumEntry[] ChecksumEntries => _file.ChecksumEntries;
 
         #endregion
 
@@ -328,17 +328,17 @@ namespace BinaryObjectScanner.Wrappers
                     var directoryMapEntry = DirectoryMapEntries[i];
 
                     // If we have a directory, skip for now
-                    if (!directoryEntry.DirectoryFlags.HasFlag(BinaryObjectScanner.Models.GCF.HL_GCF_FLAG.HL_GCF_FLAG_FILE))
+                    if (!directoryEntry.DirectoryFlags.HasFlag(Models.GCF.HL_GCF_FLAG.HL_GCF_FLAG_FILE))
                         continue;
 
                     // Otherwise, start building the file info
                     var fileInfo = new FileInfo()
                     {
                         Size = directoryEntry.ItemSize,
-                        Encrypted = directoryEntry.DirectoryFlags.HasFlag(BinaryObjectScanner.Models.GCF.HL_GCF_FLAG.HL_GCF_FLAG_ENCRYPTED),
+                        Encrypted = directoryEntry.DirectoryFlags.HasFlag(Models.GCF.HL_GCF_FLAG.HL_GCF_FLAG_ENCRYPTED),
                     };
                     var pathParts = new List<string> { directoryEntry.Name };
-                    var blockEntries = new List<BinaryObjectScanner.Models.GCF.BlockEntry>();
+                    var blockEntries = new List<Models.GCF.BlockEntry>();
 
                     // Traverse the parent tree
                     uint index = directoryEntry.ParentIndex;
@@ -406,7 +406,7 @@ namespace BinaryObjectScanner.Wrappers
         /// <summary>
         /// Internal representation of the GCF
         /// </summary>
-        private BinaryObjectScanner.Models.GCF.File _file;
+        private Models.GCF.File _file;
 
         /// <summary>
         /// Set of all files and their information
@@ -1109,7 +1109,7 @@ namespace BinaryObjectScanner.Wrappers
             /// <summary>
             /// Array of block entries
             /// </summary>
-            public BinaryObjectScanner.Models.GCF.BlockEntry[] BlockEntries;
+            public Models.GCF.BlockEntry[] BlockEntries;
         }
 
         #endregion

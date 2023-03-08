@@ -82,7 +82,7 @@ namespace BinaryObjectScanner.Wrappers
         #region Relocation Table
 
         /// <inheritdoc cref="Models.MSDOS.Executable.RelocationTable"/>
-        public BinaryObjectScanner.Models.MSDOS.RelocationEntry[] RelocationTable => _executable.RelocationTable;
+        public Models.MSDOS.RelocationEntry[] RelocationTable => _executable.RelocationTable;
 
         #endregion
 
@@ -93,7 +93,7 @@ namespace BinaryObjectScanner.Wrappers
         /// <summary>
         /// Internal representation of the executable
         /// </summary>
-        private BinaryObjectScanner.Models.MSDOS.Executable _executable;
+        private Models.MSDOS.Executable _executable;
 
         #endregion
 

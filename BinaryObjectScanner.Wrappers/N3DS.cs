@@ -32,13 +32,13 @@ namespace BinaryObjectScanner.Wrappers
         public byte[] MediaId => _cart.Header.MediaId;
 
         /// <inheritdoc cref="Models.N3DS.NCSDHeader.PartitionsFSType"/>
-        public BinaryObjectScanner.Models.N3DS.FilesystemType PartitionsFSType => _cart.Header.PartitionsFSType;
+        public Models.N3DS.FilesystemType PartitionsFSType => _cart.Header.PartitionsFSType;
 
         /// <inheritdoc cref="Models.N3DS.NCSDHeader.PartitionsCryptType"/>
         public byte[] PartitionsCryptType => _cart.Header.PartitionsCryptType;
 
         /// <inheritdoc cref="Models.N3DS.NCSDHeader.PartitionsTable"/>
-        public BinaryObjectScanner.Models.N3DS.PartitionTableEntry[] PartitionsTable => _cart.Header.PartitionsTable;
+        public Models.N3DS.PartitionTableEntry[] PartitionsTable => _cart.Header.PartitionsTable;
 
         #endregion
 
@@ -142,7 +142,7 @@ namespace BinaryObjectScanner.Wrappers
         public byte[] DCIH_ID_Reserved => _cart.DevelopmentCardInfoHeader?.InitialData?.Reserved;
 
         /// <inheritdoc cref="Models.N3DS.InitialData.BackupHeader"/>
-        public BinaryObjectScanner.Models.N3DS.NCCHHeader DCIH_ID_BackupHeader => _cart.DevelopmentCardInfoHeader?.InitialData?.BackupHeader;
+        public Models.N3DS.NCCHHeader DCIH_ID_BackupHeader => _cart.DevelopmentCardInfoHeader?.InitialData?.BackupHeader;
 
         #endregion
 
@@ -194,28 +194,28 @@ namespace BinaryObjectScanner.Wrappers
         #region Partitions
 
         /// <inheritdoc cref="Models.N3DS.Cart.Partitions"/>
-        public BinaryObjectScanner.Models.N3DS.NCCHHeader[] Partitions => _cart.Partitions;
+        public Models.N3DS.NCCHHeader[] Partitions => _cart.Partitions;
 
         #endregion
 
         #region Extended Headers
 
         /// <inheritdoc cref="Models.N3DS.Cart.ExtendedHeaders"/>
-        public BinaryObjectScanner.Models.N3DS.NCCHExtendedHeader[] ExtendedHeaders => _cart.ExtendedHeaders;
+        public Models.N3DS.NCCHExtendedHeader[] ExtendedHeaders => _cart.ExtendedHeaders;
 
         #endregion
 
         #region ExeFS Headers
 
         /// <inheritdoc cref="Models.N3DS.Cart.ExeFSHeaders"/>
-        public BinaryObjectScanner.Models.N3DS.ExeFSHeader[] ExeFSHeaders => _cart.ExeFSHeaders;
+        public Models.N3DS.ExeFSHeader[] ExeFSHeaders => _cart.ExeFSHeaders;
 
         #endregion
 
         #region RomFS Headers
 
         /// <inheritdoc cref="Models.N3DS.Cart.RomFSHeaders"/>
-        public BinaryObjectScanner.Models.N3DS.RomFSHeader[] RomFSHeaders => _cart.RomFSHeaders;
+        public Models.N3DS.RomFSHeader[] RomFSHeaders => _cart.RomFSHeaders;
 
         #endregion
 
@@ -226,7 +226,7 @@ namespace BinaryObjectScanner.Wrappers
         /// <summary>
         /// Internal representation of the cart
         /// </summary>
-        private BinaryObjectScanner.Models.N3DS.Cart _cart;
+        private Models.N3DS.Cart _cart;
 
         #endregion
 

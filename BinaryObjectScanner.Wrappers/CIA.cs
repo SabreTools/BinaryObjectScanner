@@ -49,14 +49,14 @@ namespace BinaryObjectScanner.Wrappers
         #region Certificate Chain
 
         /// <inheritdoc cref="Models.N3DS.CIA.CertificateChain"/>
-        public BinaryObjectScanner.Models.N3DS.Certificate[] CertificateChain => _cia.CertificateChain;
+        public Models.N3DS.Certificate[] CertificateChain => _cia.CertificateChain;
 
         #endregion
 
         #region Ticket
 
         /// <inheritdoc cref="Models.N3DS.Ticket.SignatureType"/>
-        public BinaryObjectScanner.Models.N3DS.SignatureType T_SignatureType => _cia.Ticket.SignatureType;
+        public Models.N3DS.SignatureType T_SignatureType => _cia.Ticket.SignatureType;
 
         /// <inheritdoc cref="Models.N3DS.Ticket.SignatureSize"/>
         public ushort T_SignatureSize => _cia.Ticket.SignatureSize;
@@ -140,14 +140,14 @@ namespace BinaryObjectScanner.Wrappers
         public byte[] T_ContentIndex => _cia.Ticket.ContentIndex;
 
         /// <inheritdoc cref="Models.N3DS.Ticket.CertificateChain"/>
-        public BinaryObjectScanner.Models.N3DS.Certificate[] T_CertificateChain => _cia.Ticket.CertificateChain;
+        public Models.N3DS.Certificate[] T_CertificateChain => _cia.Ticket.CertificateChain;
 
         #endregion
 
         #region Title Metadata
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.SignatureType"/>
-        public BinaryObjectScanner.Models.N3DS.SignatureType TMD_SignatureType => _cia.TMDFileData.SignatureType;
+        public Models.N3DS.SignatureType TMD_SignatureType => _cia.TMDFileData.SignatureType;
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.SignatureSize"/>
         public ushort TMD_SignatureSize => _cia.TMDFileData.SignatureSize;
@@ -222,20 +222,20 @@ namespace BinaryObjectScanner.Wrappers
         public byte[] TMD_SHA256HashContentInfoRecords => _cia.TMDFileData.SHA256HashContentInfoRecords;
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.ContentInfoRecords"/>
-        public BinaryObjectScanner.Models.N3DS.ContentInfoRecord[] TMD_ContentInfoRecords => _cia.TMDFileData.ContentInfoRecords;
+        public Models.N3DS.ContentInfoRecord[] TMD_ContentInfoRecords => _cia.TMDFileData.ContentInfoRecords;
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.ContentChunkRecords"/>
-        public BinaryObjectScanner.Models.N3DS.ContentChunkRecord[] TMD_ContentChunkRecords => _cia.TMDFileData.ContentChunkRecords;
+        public Models.N3DS.ContentChunkRecord[] TMD_ContentChunkRecords => _cia.TMDFileData.ContentChunkRecords;
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.CertificateChain"/>
-        public BinaryObjectScanner.Models.N3DS.Certificate[] TMD_CertificateChain => _cia.TMDFileData.CertificateChain;
+        public Models.N3DS.Certificate[] TMD_CertificateChain => _cia.TMDFileData.CertificateChain;
 
         #endregion
 
         #region Partitions
 
         /// <inheritdoc cref="Models.N3DS.CIA.Partitions"/>
-        public BinaryObjectScanner.Models.N3DS.NCCHHeader[] Partitions => _cia.Partitions;
+        public Models.N3DS.NCCHHeader[] Partitions => _cia.Partitions;
 
         #endregion
 
@@ -265,7 +265,7 @@ namespace BinaryObjectScanner.Wrappers
         /// <summary>
         /// Internal representation of the cart
         /// </summary>
-        private BinaryObjectScanner.Models.N3DS.CIA _cia;
+        private Models.N3DS.CIA _cia;
 
         #endregion
 
@@ -402,13 +402,13 @@ namespace BinaryObjectScanner.Wrappers
                     builder.AppendLine($"    Expiration time: {certificate.ExpirationTime} (0x{certificate.ExpirationTime:X})");
                     switch (certificate.KeyType)
                     {
-                        case BinaryObjectScanner.Models.N3DS.PublicKeyType.RSA_4096:
-                        case BinaryObjectScanner.Models.N3DS.PublicKeyType.RSA_2048:
+                        case Models.N3DS.PublicKeyType.RSA_4096:
+                        case Models.N3DS.PublicKeyType.RSA_2048:
                             builder.AppendLine($"    Modulus: {BitConverter.ToString(certificate.RSAModulus).Replace('-', ' ')}");
                             builder.AppendLine($"    Public exponent: {certificate.RSAPublicExponent} (0x{certificate.RSAPublicExponent:X})");
                             builder.AppendLine($"    Padding: {BitConverter.ToString(certificate.RSAPadding).Replace('-', ' ')}");
                             break;
-                        case BinaryObjectScanner.Models.N3DS.PublicKeyType.EllipticCurve:
+                        case Models.N3DS.PublicKeyType.EllipticCurve:
                             builder.AppendLine($"    Public key: {BitConverter.ToString(certificate.ECCPublicKey).Replace('-', ' ')}");
                             builder.AppendLine($"    Padding: {BitConverter.ToString(certificate.ECCPadding).Replace('-', ' ')}");
                             break;
@@ -491,13 +491,13 @@ namespace BinaryObjectScanner.Wrappers
                     builder.AppendLine($"    Expiration time: {certificate.ExpirationTime} (0x{certificate.ExpirationTime:X})");
                     switch (certificate.KeyType)
                     {
-                        case BinaryObjectScanner.Models.N3DS.PublicKeyType.RSA_4096:
-                        case BinaryObjectScanner.Models.N3DS.PublicKeyType.RSA_2048:
+                        case Models.N3DS.PublicKeyType.RSA_4096:
+                        case Models.N3DS.PublicKeyType.RSA_2048:
                             builder.AppendLine($"    Modulus: {BitConverter.ToString(certificate.RSAModulus).Replace('-', ' ')}");
                             builder.AppendLine($"    Public exponent: {certificate.RSAPublicExponent} (0x{certificate.RSAPublicExponent:X})");
                             builder.AppendLine($"    Padding: {BitConverter.ToString(certificate.RSAPadding).Replace('-', ' ')}");
                             break;
-                        case BinaryObjectScanner.Models.N3DS.PublicKeyType.EllipticCurve:
+                        case Models.N3DS.PublicKeyType.EllipticCurve:
                             builder.AppendLine($"    Public key: {BitConverter.ToString(certificate.ECCPublicKey).Replace('-', ' ')}");
                             builder.AppendLine($"    Padding: {BitConverter.ToString(certificate.ECCPadding).Replace('-', ' ')}");
                             break;
@@ -613,13 +613,13 @@ namespace BinaryObjectScanner.Wrappers
                     builder.AppendLine($"    Expiration time: {certificate.ExpirationTime} (0x{certificate.ExpirationTime:X})");
                     switch (certificate.KeyType)
                     {
-                        case BinaryObjectScanner.Models.N3DS.PublicKeyType.RSA_4096:
-                        case BinaryObjectScanner.Models.N3DS.PublicKeyType.RSA_2048:
+                        case Models.N3DS.PublicKeyType.RSA_4096:
+                        case Models.N3DS.PublicKeyType.RSA_2048:
                             builder.AppendLine($"    Modulus: {BitConverter.ToString(certificate.RSAModulus).Replace('-', ' ')}");
                             builder.AppendLine($"    Public exponent: {certificate.RSAPublicExponent} (0x{certificate.RSAPublicExponent:X})");
                             builder.AppendLine($"    Padding: {BitConverter.ToString(certificate.RSAPadding).Replace('-', ' ')}");
                             break;
-                        case BinaryObjectScanner.Models.N3DS.PublicKeyType.EllipticCurve:
+                        case Models.N3DS.PublicKeyType.EllipticCurve:
                             builder.AppendLine($"    Public key: {BitConverter.ToString(certificate.ECCPublicKey).Replace('-', ' ')}");
                             builder.AppendLine($"    Padding: {BitConverter.ToString(certificate.ECCPadding).Replace('-', ' ')}");
                             break;
@@ -651,7 +651,7 @@ namespace BinaryObjectScanner.Wrappers
                     {
                         builder.AppendLine($"    Empty partition, no data can be parsed");
                     }
-                    else if (partitionHeader.MagicID != BinaryObjectScanner.Models.N3DS.Constants.NCCHMagicNumber)
+                    else if (partitionHeader.MagicID != Models.N3DS.Constants.NCCHMagicNumber)
                     {
                         builder.AppendLine($"    Unrecognized partition data, no data can be parsed");
                     }

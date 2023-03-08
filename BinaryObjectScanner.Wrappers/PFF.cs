@@ -36,7 +36,7 @@ namespace BinaryObjectScanner.Wrappers
         #region Segments
 
         /// <inheritdoc cref="Models.PFF.Archive.Segments"/>
-        public BinaryObjectScanner.Models.PFF.Segment[] Segments => _archive.Segments;
+        public Models.PFF.Segment[] Segments => _archive.Segments;
 
         #endregion
 

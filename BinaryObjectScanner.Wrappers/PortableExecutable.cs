@@ -96,7 +96,7 @@ namespace BinaryObjectScanner.Wrappers
         #region COFF File Header
 
         /// <inheritdoc cref="Models.PortableExecutable.COFFFileHeader.Machine"/>
-        public BinaryObjectScanner.Models.PortableExecutable.MachineType Machine => _executable.COFFFileHeader.Machine;
+        public Models.PortableExecutable.MachineType Machine => _executable.COFFFileHeader.Machine;
 
         /// <inheritdoc cref="Models.PortableExecutable.COFFFileHeader.NumberOfSections"/>
         public ushort NumberOfSections => _executable.COFFFileHeader.NumberOfSections;
@@ -114,7 +114,7 @@ namespace BinaryObjectScanner.Wrappers
         public uint SizeOfOptionalHeader => _executable.COFFFileHeader.SizeOfOptionalHeader;
 
         /// <inheritdoc cref="Models.PortableExecutable.COFFFileHeader.Characteristics"/>
-        public BinaryObjectScanner.Models.PortableExecutable.Characteristics Characteristics => _executable.COFFFileHeader.Characteristics;
+        public Models.PortableExecutable.Characteristics Characteristics => _executable.COFFFileHeader.Characteristics;
 
         #endregion
 
@@ -123,7 +123,7 @@ namespace BinaryObjectScanner.Wrappers
         #region Standard Fields
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.Machine"/>
-        public BinaryObjectScanner.Models.PortableExecutable.OptionalHeaderMagicNumber OH_Magic => _executable.OptionalHeader.Magic;
+        public Models.PortableExecutable.OptionalHeaderMagicNumber OH_Magic => _executable.OptionalHeader.Magic;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.MajorLinkerVersion"/>
         public byte OH_MajorLinkerVersion => _executable.OptionalHeader.MajorLinkerVersion;
@@ -197,10 +197,10 @@ namespace BinaryObjectScanner.Wrappers
         public uint OH_CheckSum => _executable.OptionalHeader.CheckSum;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.Subsystem"/>
-        public BinaryObjectScanner.Models.PortableExecutable.WindowsSubsystem OH_Subsystem => _executable.OptionalHeader.Subsystem;
+        public Models.PortableExecutable.WindowsSubsystem OH_Subsystem => _executable.OptionalHeader.Subsystem;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.DllCharacteristics"/>
-        public BinaryObjectScanner.Models.PortableExecutable.DllCharacteristics OH_DllCharacteristics => _executable.OptionalHeader.DllCharacteristics;
+        public Models.PortableExecutable.DllCharacteristics OH_DllCharacteristics => _executable.OptionalHeader.DllCharacteristics;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.SizeOfStackReserve_PE32"/>
         public ulong OH_SizeOfStackReserve => _executable.OptionalHeader.Magic == Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
@@ -233,49 +233,49 @@ namespace BinaryObjectScanner.Wrappers
         #region Data Directories
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.ExportTable"/>
-        public BinaryObjectScanner.Models.PortableExecutable.DataDirectory OH_ExportTable => _executable.OptionalHeader.ExportTable;
+        public Models.PortableExecutable.DataDirectory OH_ExportTable => _executable.OptionalHeader.ExportTable;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.ImportTable"/>
-        public BinaryObjectScanner.Models.PortableExecutable.DataDirectory OH_ImportTable => _executable.OptionalHeader.ImportTable;
+        public Models.PortableExecutable.DataDirectory OH_ImportTable => _executable.OptionalHeader.ImportTable;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.ResourceTable"/>
-        public BinaryObjectScanner.Models.PortableExecutable.DataDirectory OH_ResourceTable => _executable.OptionalHeader.ResourceTable;
+        public Models.PortableExecutable.DataDirectory OH_ResourceTable => _executable.OptionalHeader.ResourceTable;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.ExceptionTable"/>
-        public BinaryObjectScanner.Models.PortableExecutable.DataDirectory OH_ExceptionTable => _executable.OptionalHeader.ExceptionTable;
+        public Models.PortableExecutable.DataDirectory OH_ExceptionTable => _executable.OptionalHeader.ExceptionTable;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.CertificateTable"/>
-        public BinaryObjectScanner.Models.PortableExecutable.DataDirectory OH_CertificateTable => _executable.OptionalHeader.CertificateTable;
+        public Models.PortableExecutable.DataDirectory OH_CertificateTable => _executable.OptionalHeader.CertificateTable;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.BaseRelocationTable"/>
-        public BinaryObjectScanner.Models.PortableExecutable.DataDirectory OH_BaseRelocationTable => _executable.OptionalHeader.BaseRelocationTable;
+        public Models.PortableExecutable.DataDirectory OH_BaseRelocationTable => _executable.OptionalHeader.BaseRelocationTable;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.Debug"/>
-        public BinaryObjectScanner.Models.PortableExecutable.DataDirectory OH_Debug => _executable.OptionalHeader.Debug;
+        public Models.PortableExecutable.DataDirectory OH_Debug => _executable.OptionalHeader.Debug;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.Architecture"/>
         public ulong OH_Architecture => _executable.OptionalHeader.Architecture;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.GlobalPtr"/>
-        public BinaryObjectScanner.Models.PortableExecutable.DataDirectory OH_GlobalPtr => _executable.OptionalHeader.GlobalPtr;
+        public Models.PortableExecutable.DataDirectory OH_GlobalPtr => _executable.OptionalHeader.GlobalPtr;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.ThreadLocalStorageTable"/>
-        public BinaryObjectScanner.Models.PortableExecutable.DataDirectory OH_ThreadLocalStorageTable => _executable.OptionalHeader.ThreadLocalStorageTable;
+        public Models.PortableExecutable.DataDirectory OH_ThreadLocalStorageTable => _executable.OptionalHeader.ThreadLocalStorageTable;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.LoadConfigTable"/>
-        public BinaryObjectScanner.Models.PortableExecutable.DataDirectory OH_LoadConfigTable => _executable.OptionalHeader.LoadConfigTable;
+        public Models.PortableExecutable.DataDirectory OH_LoadConfigTable => _executable.OptionalHeader.LoadConfigTable;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.BoundImport"/>
-        public BinaryObjectScanner.Models.PortableExecutable.DataDirectory OH_BoundImport => _executable.OptionalHeader.BoundImport;
+        public Models.PortableExecutable.DataDirectory OH_BoundImport => _executable.OptionalHeader.BoundImport;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.ImportAddressTable"/>
-        public BinaryObjectScanner.Models.PortableExecutable.DataDirectory OH_ImportAddressTable => _executable.OptionalHeader.ImportAddressTable;
+        public Models.PortableExecutable.DataDirectory OH_ImportAddressTable => _executable.OptionalHeader.ImportAddressTable;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.DelayImportDescriptor"/>
-        public BinaryObjectScanner.Models.PortableExecutable.DataDirectory OH_DelayImportDescriptor => _executable.OptionalHeader.DelayImportDescriptor;
+        public Models.PortableExecutable.DataDirectory OH_DelayImportDescriptor => _executable.OptionalHeader.DelayImportDescriptor;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.CLRRuntimeHeader"/>
-        public BinaryObjectScanner.Models.PortableExecutable.DataDirectory OH_CLRRuntimeHeader => _executable.OptionalHeader.CLRRuntimeHeader;
+        public Models.PortableExecutable.DataDirectory OH_CLRRuntimeHeader => _executable.OptionalHeader.CLRRuntimeHeader;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.Reserved"/>
         public ulong OH_Reserved => _executable.OptionalHeader.Reserved;
@@ -287,38 +287,38 @@ namespace BinaryObjectScanner.Wrappers
         #region Tables
 
         /// <inheritdoc cref="Models.PortableExecutable.SectionTable"/>
-        public BinaryObjectScanner.Models.PortableExecutable.SectionHeader[] SectionTable => _executable.SectionTable;
+        public Models.PortableExecutable.SectionHeader[] SectionTable => _executable.SectionTable;
 
         /// <inheritdoc cref="Models.PortableExecutable.COFFSymbolTable"/>
-        public BinaryObjectScanner.Models.PortableExecutable.COFFSymbolTableEntry[] COFFSymbolTable => _executable.COFFSymbolTable;
+        public Models.PortableExecutable.COFFSymbolTableEntry[] COFFSymbolTable => _executable.COFFSymbolTable;
 
         /// <inheritdoc cref="Models.PortableExecutable.COFFStringTable"/>
-        public BinaryObjectScanner.Models.PortableExecutable.COFFStringTable COFFStringTable => _executable.COFFStringTable;
+        public Models.PortableExecutable.COFFStringTable COFFStringTable => _executable.COFFStringTable;
 
         /// <inheritdoc cref="Models.PortableExecutable.AttributeCertificateTable"/>
-        public BinaryObjectScanner.Models.PortableExecutable.AttributeCertificateTableEntry[] AttributeCertificateTable => _executable.AttributeCertificateTable;
+        public Models.PortableExecutable.AttributeCertificateTableEntry[] AttributeCertificateTable => _executable.AttributeCertificateTable;
 
         /// <inheritdoc cref="Models.PortableExecutable.DelayLoadDirectoryTable"/>
-        public BinaryObjectScanner.Models.PortableExecutable.DelayLoadDirectoryTable DelayLoadDirectoryTable => _executable.DelayLoadDirectoryTable;
+        public Models.PortableExecutable.DelayLoadDirectoryTable DelayLoadDirectoryTable => _executable.DelayLoadDirectoryTable;
 
         #endregion
 
         #region Sections
 
         /// <inheritdoc cref="Models.PortableExecutable.BaseRelocationTable"/>
-        public BinaryObjectScanner.Models.PortableExecutable.BaseRelocationBlock[] BaseRelocationTable => _executable.BaseRelocationTable;
+        public Models.PortableExecutable.BaseRelocationBlock[] BaseRelocationTable => _executable.BaseRelocationTable;
 
         /// <inheritdoc cref="Models.PortableExecutable.DebugTable"/>
-        public BinaryObjectScanner.Models.PortableExecutable.DebugTable DebugTable => _executable.DebugTable;
+        public Models.PortableExecutable.DebugTable DebugTable => _executable.DebugTable;
 
         /// <inheritdoc cref="Models.PortableExecutable.ExportTable"/>
-        public BinaryObjectScanner.Models.PortableExecutable.ExportTable ExportTable => _executable.ExportTable;
+        public Models.PortableExecutable.ExportTable ExportTable => _executable.ExportTable;
 
         /// <inheritdoc cref="Models.PortableExecutable.ExportTable.ExportNameTable"/>
         public string[] ExportNameTable => _executable.ExportTable?.ExportNameTable?.Strings;
 
         /// <inheritdoc cref="Models.PortableExecutable.ImportTable"/>
-        public BinaryObjectScanner.Models.PortableExecutable.ImportTable ImportTable => _executable.ImportTable;
+        public Models.PortableExecutable.ImportTable ImportTable => _executable.ImportTable;
 
         /// <inheritdoc cref="Models.PortableExecutable.ImportTable.HintNameTable"/>
         public string[] ImportHintNameTable => _executable.ImportTable?.HintNameTable != null
@@ -326,7 +326,7 @@ namespace BinaryObjectScanner.Wrappers
             : null;
 
         /// <inheritdoc cref="Models.PortableExecutable.ResourceDirectoryTable"/>
-        public BinaryObjectScanner.Models.PortableExecutable.ResourceDirectoryTable ResourceDirectoryTable => _executable.ResourceDirectoryTable;
+        public Models.PortableExecutable.ResourceDirectoryTable ResourceDirectoryTable => _executable.ResourceDirectoryTable;
 
         #endregion
 
@@ -884,7 +884,7 @@ namespace BinaryObjectScanner.Wrappers
         /// <summary>
         /// Internal representation of the executable
         /// </summary>
-        private BinaryObjectScanner.Models.PortableExecutable.Executable _executable;
+        private Models.PortableExecutable.Executable _executable;
 
         /// <summary>
         /// Header padding data, if it exists
@@ -959,12 +959,12 @@ namespace BinaryObjectScanner.Wrappers
         /// <summary>
         /// Cached version info data
         /// </summary>
-        private BinaryObjectScanner.Models.PortableExecutable.VersionInfo _versionInfo = null;
+        private Models.PortableExecutable.VersionInfo _versionInfo = null;
 
         /// <summary>
         /// Cached assembly manifest data
         /// </summary>
-        private BinaryObjectScanner.Models.PortableExecutable.AssemblyManifest _assemblyManifest = null;
+        private Models.PortableExecutable.AssemblyManifest _assemblyManifest = null;
 
         /// <summary>
         /// Lock object for reading from the source
@@ -1069,7 +1069,7 @@ namespace BinaryObjectScanner.Wrappers
         /// Get the assembly manifest, if possible
         /// </summary>
         /// <returns>Assembly manifest object, null on error</returns>
-        private BinaryObjectScanner.Models.PortableExecutable.AssemblyManifest GetAssemblyManifest()
+        private Models.PortableExecutable.AssemblyManifest GetAssemblyManifest()
         {
             // Use the cached data if possible
             if (_assemblyManifest != null)
@@ -2062,67 +2062,67 @@ namespace BinaryObjectScanner.Wrappers
             {
                 switch ((Models.PortableExecutable.ResourceType)resourceType)
                 {
-                    case BinaryObjectScanner.Models.PortableExecutable.ResourceType.RT_CURSOR:
+                    case Models.PortableExecutable.ResourceType.RT_CURSOR:
                         PrintResourceRT_CURSOR(entry, level, builder);
                         break;
-                    case BinaryObjectScanner.Models.PortableExecutable.ResourceType.RT_BITMAP:
+                    case Models.PortableExecutable.ResourceType.RT_BITMAP:
                         PrintResourceRT_BITMAP(entry, level, builder);
                         break;
-                    case BinaryObjectScanner.Models.PortableExecutable.ResourceType.RT_ICON:
+                    case Models.PortableExecutable.ResourceType.RT_ICON:
                         PrintResourceRT_ICON(entry, level, builder);
                         break;
-                    case BinaryObjectScanner.Models.PortableExecutable.ResourceType.RT_MENU:
+                    case Models.PortableExecutable.ResourceType.RT_MENU:
                         PrintResourceRT_MENU(entry, level, builder);
                         break;
-                    case BinaryObjectScanner.Models.PortableExecutable.ResourceType.RT_DIALOG:
+                    case Models.PortableExecutable.ResourceType.RT_DIALOG:
                         PrintResourceRT_DIALOG(entry, level, builder);
                         break;
-                    case BinaryObjectScanner.Models.PortableExecutable.ResourceType.RT_STRING:
+                    case Models.PortableExecutable.ResourceType.RT_STRING:
                         PrintResourceRT_STRING(entry, level, builder);
                         break;
-                    case BinaryObjectScanner.Models.PortableExecutable.ResourceType.RT_FONTDIR:
+                    case Models.PortableExecutable.ResourceType.RT_FONTDIR:
                         PrintResourceRT_FONTDIR(entry, level, builder);
                         break;
-                    case BinaryObjectScanner.Models.PortableExecutable.ResourceType.RT_FONT:
+                    case Models.PortableExecutable.ResourceType.RT_FONT:
                         PrintResourceRT_FONT(entry, level, builder);
                         break;
-                    case BinaryObjectScanner.Models.PortableExecutable.ResourceType.RT_ACCELERATOR:
+                    case Models.PortableExecutable.ResourceType.RT_ACCELERATOR:
                         PrintResourceRT_ACCELERATOR(entry, level, builder);
                         break;
-                    case BinaryObjectScanner.Models.PortableExecutable.ResourceType.RT_RCDATA:
+                    case Models.PortableExecutable.ResourceType.RT_RCDATA:
                         PrintResourceRT_RCDATA(entry, level, builder);
                         break;
-                    case BinaryObjectScanner.Models.PortableExecutable.ResourceType.RT_MESSAGETABLE:
+                    case Models.PortableExecutable.ResourceType.RT_MESSAGETABLE:
                         PrintResourceRT_MESSAGETABLE(entry, level, builder);
                         break;
-                    case BinaryObjectScanner.Models.PortableExecutable.ResourceType.RT_GROUP_CURSOR:
+                    case Models.PortableExecutable.ResourceType.RT_GROUP_CURSOR:
                         PrintResourceRT_GROUP_CURSOR(entry, level, builder);
                         break;
-                    case BinaryObjectScanner.Models.PortableExecutable.ResourceType.RT_GROUP_ICON:
+                    case Models.PortableExecutable.ResourceType.RT_GROUP_ICON:
                         PrintResourceRT_GROUP_ICON(entry, level, builder);
                         break;
-                    case BinaryObjectScanner.Models.PortableExecutable.ResourceType.RT_VERSION:
+                    case Models.PortableExecutable.ResourceType.RT_VERSION:
                         PrintResourceRT_VERSION(entry, level, builder);
                         break;
-                    case BinaryObjectScanner.Models.PortableExecutable.ResourceType.RT_DLGINCLUDE:
+                    case Models.PortableExecutable.ResourceType.RT_DLGINCLUDE:
                         PrintResourceRT_DLGINCLUDE(entry, level, builder);
                         break;
-                    case BinaryObjectScanner.Models.PortableExecutable.ResourceType.RT_PLUGPLAY:
+                    case Models.PortableExecutable.ResourceType.RT_PLUGPLAY:
                         PrintResourceRT_PLUGPLAY(entry, level, builder);
                         break;
-                    case BinaryObjectScanner.Models.PortableExecutable.ResourceType.RT_VXD:
+                    case Models.PortableExecutable.ResourceType.RT_VXD:
                         PrintResourceRT_VXD(entry, level, builder);
                         break;
-                    case BinaryObjectScanner.Models.PortableExecutable.ResourceType.RT_ANICURSOR:
+                    case Models.PortableExecutable.ResourceType.RT_ANICURSOR:
                         PrintResourceRT_ANICURSOR(entry, level, builder);
                         break;
-                    case BinaryObjectScanner.Models.PortableExecutable.ResourceType.RT_ANIICON:
+                    case Models.PortableExecutable.ResourceType.RT_ANIICON:
                         PrintResourceRT_ANIICON(entry, level, builder);
                         break;
-                    case BinaryObjectScanner.Models.PortableExecutable.ResourceType.RT_HTML:
+                    case Models.PortableExecutable.ResourceType.RT_HTML:
                         PrintResourceRT_HTML(entry, level, builder);
                         break;
-                    case BinaryObjectScanner.Models.PortableExecutable.ResourceType.RT_MANIFEST:
+                    case Models.PortableExecutable.ResourceType.RT_MANIFEST:
                         PrintResourceRT_MANIFEST(entry, level, builder);
                         break;
                     default:
@@ -2993,13 +2993,13 @@ namespace BinaryObjectScanner.Wrappers
                 return Enumerable.Empty<object>();
 
             var nb10Found = DebugData.Select(r => r.Value)
-                .Select(r => r as BinaryObjectScanner.Models.PortableExecutable.NB10ProgramDatabase)
+                .Select(r => r as Models.PortableExecutable.NB10ProgramDatabase)
                 .Where(n => n != null)
                 .Where(n => n.PdbFileName.Contains(path))
                 .Select(n => (object)n);
 
             var rsdsFound = DebugData.Select(r => r.Value)
-                .Select(r => r as BinaryObjectScanner.Models.PortableExecutable.RSDSProgramDatabase)
+                .Select(r => r as Models.PortableExecutable.RSDSProgramDatabase)
                 .Where(r => r != null)
                 .Where(r => r.PathAndFileName.Contains(path))
                 .Select(r => (object)r);
@@ -3127,7 +3127,7 @@ namespace BinaryObjectScanner.Wrappers
                 return Enumerable.Empty<Models.PortableExecutable.DialogBoxResource>();
 
             return ResourceData.Select(r => r.Value)
-                .Select(r => r as BinaryObjectScanner.Models.PortableExecutable.DialogBoxResource)
+                .Select(r => r as Models.PortableExecutable.DialogBoxResource)
                 .Where(d => d != null)
                 .Where(d =>
                 {
@@ -3148,7 +3148,7 @@ namespace BinaryObjectScanner.Wrappers
                 return Enumerable.Empty<Models.PortableExecutable.DialogBoxResource>();
 
             return ResourceData.Select(r => r.Value)
-                .Select(r => r as BinaryObjectScanner.Models.PortableExecutable.DialogBoxResource)
+                .Select(r => r as Models.PortableExecutable.DialogBoxResource)
                 .Where(d => d != null)
                 .Where(d =>
                 {
@@ -3303,68 +3303,68 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     switch ((Models.PortableExecutable.ResourceType)resourceType)
                     {
-                        case BinaryObjectScanner.Models.PortableExecutable.ResourceType.RT_CURSOR:
+                        case Models.PortableExecutable.ResourceType.RT_CURSOR:
                             value = entry.Data;
                             break;
-                        case BinaryObjectScanner.Models.PortableExecutable.ResourceType.RT_BITMAP:
+                        case Models.PortableExecutable.ResourceType.RT_BITMAP:
                             value = entry.Data;
                             break;
-                        case BinaryObjectScanner.Models.PortableExecutable.ResourceType.RT_ICON:
+                        case Models.PortableExecutable.ResourceType.RT_ICON:
                             value = entry.Data;
                             break;
-                        case BinaryObjectScanner.Models.PortableExecutable.ResourceType.RT_MENU:
+                        case Models.PortableExecutable.ResourceType.RT_MENU:
                             value = entry.AsMenu();
                             break;
-                        case BinaryObjectScanner.Models.PortableExecutable.ResourceType.RT_DIALOG:
+                        case Models.PortableExecutable.ResourceType.RT_DIALOG:
                             value = entry.AsDialogBox();
                             break;
-                        case BinaryObjectScanner.Models.PortableExecutable.ResourceType.RT_STRING:
+                        case Models.PortableExecutable.ResourceType.RT_STRING:
                             value = entry.AsStringTable();
                             break;
-                        case BinaryObjectScanner.Models.PortableExecutable.ResourceType.RT_FONTDIR:
+                        case Models.PortableExecutable.ResourceType.RT_FONTDIR:
                             value = entry.Data;
                             break;
-                        case BinaryObjectScanner.Models.PortableExecutable.ResourceType.RT_FONT:
+                        case Models.PortableExecutable.ResourceType.RT_FONT:
                             value = entry.Data;
                             break;
-                        case BinaryObjectScanner.Models.PortableExecutable.ResourceType.RT_ACCELERATOR:
+                        case Models.PortableExecutable.ResourceType.RT_ACCELERATOR:
                             value = entry.AsAcceleratorTableResource();
                             break;
-                        case BinaryObjectScanner.Models.PortableExecutable.ResourceType.RT_RCDATA:
+                        case Models.PortableExecutable.ResourceType.RT_RCDATA:
                             value = entry.Data;
                             break;
-                        case BinaryObjectScanner.Models.PortableExecutable.ResourceType.RT_MESSAGETABLE:
+                        case Models.PortableExecutable.ResourceType.RT_MESSAGETABLE:
                             value = entry.AsMessageResourceData();
                             break;
-                        case BinaryObjectScanner.Models.PortableExecutable.ResourceType.RT_GROUP_CURSOR:
+                        case Models.PortableExecutable.ResourceType.RT_GROUP_CURSOR:
                             value = entry.Data;
                             break;
-                        case BinaryObjectScanner.Models.PortableExecutable.ResourceType.RT_GROUP_ICON:
+                        case Models.PortableExecutable.ResourceType.RT_GROUP_ICON:
                             value = entry.Data;
                             break;
-                        case BinaryObjectScanner.Models.PortableExecutable.ResourceType.RT_VERSION:
+                        case Models.PortableExecutable.ResourceType.RT_VERSION:
                             _versionInfo = entry.AsVersionInfo();
                             value = _versionInfo;
                             break;
-                        case BinaryObjectScanner.Models.PortableExecutable.ResourceType.RT_DLGINCLUDE:
+                        case Models.PortableExecutable.ResourceType.RT_DLGINCLUDE:
                             value = entry.Data;
                             break;
-                        case BinaryObjectScanner.Models.PortableExecutable.ResourceType.RT_PLUGPLAY:
+                        case Models.PortableExecutable.ResourceType.RT_PLUGPLAY:
                             value = entry.Data;
                             break;
-                        case BinaryObjectScanner.Models.PortableExecutable.ResourceType.RT_VXD:
+                        case Models.PortableExecutable.ResourceType.RT_VXD:
                             value = entry.Data;
                             break;
-                        case BinaryObjectScanner.Models.PortableExecutable.ResourceType.RT_ANICURSOR:
+                        case Models.PortableExecutable.ResourceType.RT_ANICURSOR:
                             value = entry.Data;
                             break;
-                        case BinaryObjectScanner.Models.PortableExecutable.ResourceType.RT_ANIICON:
+                        case Models.PortableExecutable.ResourceType.RT_ANIICON:
                             value = entry.Data;
                             break;
-                        case BinaryObjectScanner.Models.PortableExecutable.ResourceType.RT_HTML:
+                        case Models.PortableExecutable.ResourceType.RT_HTML:
                             value = entry.Data;
                             break;
-                        case BinaryObjectScanner.Models.PortableExecutable.ResourceType.RT_MANIFEST:
+                        case Models.PortableExecutable.ResourceType.RT_MANIFEST:
                             _assemblyManifest = entry.AsAssemblyManifest();
                             value = _versionInfo;
                             break;
@@ -3435,7 +3435,7 @@ namespace BinaryObjectScanner.Wrappers
         /// <param name="name">Name of the section to check for</param>
         /// <param name="exact">True to enable exact matching of names, false for starts-with</param>
         /// <returns>Section data on success, null on error</returns>
-        public BinaryObjectScanner.Models.PortableExecutable.SectionHeader GetFirstSection(string name, bool exact = false)
+        public Models.PortableExecutable.SectionHeader GetFirstSection(string name, bool exact = false)
         {
             // If we have no sections
             if (SectionTable == null || !SectionTable.Any())
@@ -3460,7 +3460,7 @@ namespace BinaryObjectScanner.Wrappers
         /// <param name="name">Name of the section to check for</param>
         /// <param name="exact">True to enable exact matching of names, false for starts-with</param>
         /// <returns>Section data on success, null on error</returns>
-        public BinaryObjectScanner.Models.PortableExecutable.SectionHeader GetLastSection(string name, bool exact = false)
+        public Models.PortableExecutable.SectionHeader GetLastSection(string name, bool exact = false)
         {
             // If we have no sections
             if (SectionTable == null || !SectionTable.Any())
@@ -3484,7 +3484,7 @@ namespace BinaryObjectScanner.Wrappers
         /// </summary>
         /// <param name="index">Index of the section to check for</param>
         /// <returns>Section data on success, null on error</returns>
-        public BinaryObjectScanner.Models.PortableExecutable.SectionHeader GetSection(int index)
+        public Models.PortableExecutable.SectionHeader GetSection(int index)
         {
             // If we have no sections
             if (SectionTable == null || !SectionTable.Any())

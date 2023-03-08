@@ -27,7 +27,7 @@ namespace BinaryObjectScanner.Wrappers
         public string MakerCode => _cart.CommonHeader.MakerCode;
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.UnitCode"/>
-        public BinaryObjectScanner.Models.Nitro.Unitcode UnitCode => _cart.CommonHeader.UnitCode;
+        public Models.Nitro.Unitcode UnitCode => _cart.CommonHeader.UnitCode;
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.EncryptionSeedSelect"/>
         public byte EncryptionSeedSelect => _cart.CommonHeader.EncryptionSeedSelect;
@@ -300,17 +300,17 @@ namespace BinaryObjectScanner.Wrappers
         #region Name Table
 
         /// <inheritdoc cref="Models.Nitro.NameTable.FolderAllocationTable"/>
-        public BinaryObjectScanner.Models.Nitro.FolderAllocationTableEntry[] FolderAllocationTable => _cart.NameTable.FolderAllocationTable;
+        public Models.Nitro.FolderAllocationTableEntry[] FolderAllocationTable => _cart.NameTable.FolderAllocationTable;
 
         /// <inheritdoc cref="Models.Nitro.NameTable.NameList"/>
-        public BinaryObjectScanner.Models.Nitro.NameListEntry[] NameList => _cart.NameTable.NameList;
+        public Models.Nitro.NameListEntry[] NameList => _cart.NameTable.NameList;
 
         #endregion
 
         #region File Allocation Table
 
         /// <inheritdoc cref="Models.Nitro.Cart.FileAllocationTable"/>
-        public BinaryObjectScanner.Models.Nitro.FileAllocationTableEntry[] FileAllocationTable => _cart.FileAllocationTable;
+        public Models.Nitro.FileAllocationTableEntry[] FileAllocationTable => _cart.FileAllocationTable;
 
         #endregion
 

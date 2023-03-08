@@ -49,28 +49,28 @@ namespace BinaryObjectScanner.Wrappers
         #region Directory Entries
 
         /// <inheritdoc cref="Models.XZP.DirectoryEntries"/>
-        public BinaryObjectScanner.Models.XZP.DirectoryEntry[] DirectoryEntries => _file.DirectoryEntries;
+        public Models.XZP.DirectoryEntry[] DirectoryEntries => _file.DirectoryEntries;
 
         #endregion
 
         #region Preload Directory Entries
 
         /// <inheritdoc cref="Models.XZP.PreloadDirectoryEntries"/>
-        public BinaryObjectScanner.Models.XZP.DirectoryEntry[] PreloadDirectoryEntries => _file.PreloadDirectoryEntries;
+        public Models.XZP.DirectoryEntry[] PreloadDirectoryEntries => _file.PreloadDirectoryEntries;
 
         #endregion
 
         #region Preload Directory Entries
 
         /// <inheritdoc cref="Models.XZP.PreloadDirectoryMappings"/>
-        public BinaryObjectScanner.Models.XZP.DirectoryMapping[] PreloadDirectoryMappings => _file.PreloadDirectoryMappings;
+        public Models.XZP.DirectoryMapping[] PreloadDirectoryMappings => _file.PreloadDirectoryMappings;
 
         #endregion
 
         #region Directory Items
 
         /// <inheritdoc cref="Models.XZP.DirectoryItems"/>
-        public BinaryObjectScanner.Models.XZP.DirectoryItem[] DirectoryItems => _file.DirectoryItems;
+        public Models.XZP.DirectoryItem[] DirectoryItems => _file.DirectoryItems;
 
         #endregion
 
@@ -97,7 +97,7 @@ namespace BinaryObjectScanner.Wrappers
         /// <summary>
         /// Internal representation of the XZP
         /// </summary>
-        private BinaryObjectScanner.Models.XZP.File _file;
+        private Models.XZP.File _file;
 
         #endregion
 
