@@ -363,7 +363,7 @@ namespace BurnOutSharp
                 // If we're scanning archives
                 if (extractable != null && ScanArchives)
                 {
-                    // If the archive file itself fails
+                    // If the extractable file itself fails
                     try
                     {
                         // Extract and get the output path

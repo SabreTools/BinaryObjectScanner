@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using BurnOutSharp.Interfaces;
 using BinaryObjectScanner.Wrappers;
 using static BinaryObjectScanner.Utilities.Dictionary;
+using BinaryObjectScanner.Interfaces;
 
 namespace BurnOutSharp.FileType
 {
@@ -77,6 +78,44 @@ namespace BurnOutSharp.FileType
                             AppendToDictionary(protections, subProtections);
                         }
                     }
+
+                    // If we have an IExtractable implementation
+                    if (contentCheckClass is IExtractable extractable)
+                    {
+                        if (file == null || string.IsNullOrEmpty(protection))
+                            return;
+
+                        // If the extractable file itself fails
+                        try
+                        {
+                            // Extract and get the output path
+                            string tempPath = extractable.Extract(stream, file);
+                            if (tempPath != null)
+                                return;
+
+                            // Collect and format all found protections
+                            var subProtections = scanner.GetProtections(tempPath);
+
+                            // If temp directory cleanup fails
+                            try
+                            {
+                                Directory.Delete(tempPath, true);
+                            }
+                            catch (Exception ex)
+                            {
+                                if (scanner.IncludeDebug) Console.WriteLine(ex);
+                            }
+
+                            // Prepare the returned protections
+                            StripFromKeys(protections, tempPath);
+                            PrependToKeys(subProtections, file);
+                            AppendToDictionary(protections, subProtections);
+                        }
+                        catch (Exception ex)
+                        {
+                            if (scanner.IncludeDebug) Console.WriteLine(ex);
+                        }
+                    }
                 });
             }
 
@@ -106,6 +145,44 @@ namespace BurnOutSharp.FileType
                             AppendToDictionary(protections, subProtections);
                         }
                     }
+
+                    // If we have an IExtractable implementation
+                    if (contentCheckClass is IExtractable extractable)
+                    {
+                        if (file == null || string.IsNullOrEmpty(protection))
+                            return;
+
+                        // If the extractable file itself fails
+                        try
+                        {
+                            // Extract and get the output path
+                            string tempPath = extractable.Extract(stream, file);
+                            if (tempPath != null)
+                                return;
+
+                            // Collect and format all found protections
+                            var subProtections = scanner.GetProtections(tempPath);
+
+                            // If temp directory cleanup fails
+                            try
+                            {
+                                Directory.Delete(tempPath, true);
+                            }
+                            catch (Exception ex)
+                            {
+                                if (scanner.IncludeDebug) Console.WriteLine(ex);
+                            }
+
+                            // Prepare the returned protections
+                            StripFromKeys(protections, tempPath);
+                            PrependToKeys(subProtections, file);
+                            AppendToDictionary(protections, subProtections);
+                        }
+                        catch (Exception ex)
+                        {
+                            if (scanner.IncludeDebug) Console.WriteLine(ex);
+                        }
+                    }
                 });
             }
 
@@ -133,6 +210,44 @@ namespace BurnOutSharp.FileType
                             var subProtections = scannable.Scan(scanner, file);
                             PrependToKeys(subProtections, file);
                             AppendToDictionary(protections, subProtections);
+                        }
+                    }
+
+                    // If we have an IExtractable implementation
+                    if (contentCheckClass is IExtractable extractable)
+                    {
+                        if (file == null || string.IsNullOrEmpty(protection))
+                            return;
+
+                        // If the extractable file itself fails
+                        try
+                        {
+                            // Extract and get the output path
+                            string tempPath = extractable.Extract(stream, file);
+                            if (tempPath != null)
+                                return;
+
+                            // Collect and format all found protections
+                            var subProtections = scanner.GetProtections(tempPath);
+
+                            // If temp directory cleanup fails
+                            try
+                            {
+                                Directory.Delete(tempPath, true);
+                            }
+                            catch (Exception ex)
+                            {
+                                if (scanner.IncludeDebug) Console.WriteLine(ex);
+                            }
+
+                            // Prepare the returned protections
+                            StripFromKeys(protections, tempPath);
+                            PrependToKeys(subProtections, file);
+                            AppendToDictionary(protections, subProtections);
+                        }
+                        catch (Exception ex)
+                        {
+                            if (scanner.IncludeDebug) Console.WriteLine(ex);
                         }
                     }
                 });
