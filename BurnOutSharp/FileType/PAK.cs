@@ -60,16 +60,10 @@ namespace BurnOutSharp.FileType
             // If the PAK file itself fails
             try
             {
-                string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-                Directory.CreateDirectory(tempPath);
-
-                // Create the wrapper
-                BinaryObjectScanner.Wrappers.PAK pak = BinaryObjectScanner.Wrappers.PAK.Create(stream);
-                if (pak == null)
+                // Extract and get the output path
+                string tempPath = Extract(stream, file);
+                if (tempPath == null)
                     return null;
-
-                // Loop through and extract all files
-                pak.ExtractAll(tempPath);
 
                 // Collect and format all found protections
                 var protections = scanner.GetProtections(tempPath);

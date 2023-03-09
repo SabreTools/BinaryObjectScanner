@@ -63,25 +63,10 @@ namespace BurnOutSharp.FileType
             // If the BZip2 file itself fails
             try
             {
-                string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-                Directory.CreateDirectory(tempPath);
-
-                using (BZip2Stream bz2File = new BZip2Stream(stream, CompressionMode.Decompress, true))
-                {
-                    // If an individual entry fails
-                    try
-                    {
-                        string tempFile = Path.Combine(tempPath, Guid.NewGuid().ToString());
-                        using (FileStream fs = File.OpenWrite(tempFile))
-                        {
-                            bz2File.CopyTo(fs);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        if (scanner.IncludeDebug) Console.WriteLine(ex);
-                    }
-                }
+                // Extract and get the output path
+                string tempPath = Extract(stream, file);
+                if (tempPath == null)
+                    return null;
 
                 // Collect and format all found protections
                 var protections = scanner.GetProtections(tempPath);

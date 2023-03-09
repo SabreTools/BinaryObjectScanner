@@ -72,33 +72,10 @@ namespace BurnOutSharp.FileType
             // If the archive itself fails
             try
             {
-                string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-                Directory.CreateDirectory(tempPath);
-
-                UnshieldSharp.Archive.InstallShieldArchiveV3 archive = new UnshieldSharp.Archive.InstallShieldArchiveV3(file);
-                foreach (CompressedFile cfile in archive.Files.Select(kvp => kvp.Value))
-                {
-                    // If an individual entry fails
-                    try
-                    {
-                        string tempFile = Path.Combine(tempPath, cfile.FullPath);
-                        if (!Directory.Exists(Path.GetDirectoryName(tempFile)))
-                            Directory.CreateDirectory(Path.GetDirectoryName(tempFile));
-
-                        (byte[] fileContents, string error) = archive.Extract(cfile.FullPath);
-                        if (!string.IsNullOrWhiteSpace(error))
-                            continue;
-
-                        using (FileStream fs = File.OpenWrite(tempFile))
-                        {
-                            fs.Write(fileContents, 0, fileContents.Length);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        if (scanner.IncludeDebug) Console.WriteLine(ex);
-                    }
-                }
+                // Extract and get the output path
+                string tempPath = Extract(stream, file);
+                if (tempPath == null)
+                    return null;
 
                 // Collect and format all found protections
                 var protections = scanner.GetProtections(tempPath);

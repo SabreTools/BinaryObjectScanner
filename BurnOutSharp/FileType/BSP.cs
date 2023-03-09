@@ -61,17 +61,10 @@ namespace BurnOutSharp.FileType
             // If the BSP file itself fails
             try
             {
-                string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-                Directory.CreateDirectory(tempPath);
-
-                // Create the wrapper
-                BinaryObjectScanner.Wrappers.BSP bsp = BinaryObjectScanner.Wrappers.BSP.Create(stream);
-                if (bsp == null)
+                // Extract and get the output path
+                string tempPath = Extract(stream, file);
+                if (tempPath == null)
                     return null;
-
-                // Loop through and extract all files
-                bsp.ExtractAllLumps(tempPath);
-                bsp.ExtractAllTextures(tempPath);
 
                 // Collect and format all found protections
                 var protections = scanner.GetProtections(tempPath);

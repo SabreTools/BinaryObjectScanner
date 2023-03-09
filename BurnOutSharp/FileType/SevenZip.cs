@@ -67,47 +67,28 @@ namespace BurnOutSharp.FileType
             // If the 7-zip file itself fails
             try
             {
-                string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-                Directory.CreateDirectory(tempPath);
+                // Extract and get the output path
+                string tempPath = Extract(stream, file);
+                if (tempPath == null)
+                    return null;
 
-                using (SevenZipArchive sevenZipFile = SevenZipArchive.Open(stream))
+                // Collect and format all found protections
+                var protections = scanner.GetProtections(tempPath);
+
+                // If temp directory cleanup fails
+                try
                 {
-                    foreach (var entry in sevenZipFile.Entries)
-                    {
-                        // If an individual entry fails
-                        try
-                        {
-                            // If we have a directory, skip it
-                            if (entry.IsDirectory)
-                                continue;
-
-                            string tempFile = Path.Combine(tempPath, entry.Key);
-                            entry.WriteToFile(tempFile);
-                        }
-                        catch (Exception ex)
-                        {
-                            if (scanner.IncludeDebug) Console.WriteLine(ex);
-                        }
-                    }
-
-                    // Collect and format all found protections
-                    var protections = scanner.GetProtections(tempPath);
-
-                    // If temp directory cleanup fails
-                    try
-                    {
-                        Directory.Delete(tempPath, true);
-                    }
-                    catch (Exception ex)
-                    {
-                        if (scanner.IncludeDebug) Console.WriteLine(ex);
-                    }
-
-                    // Remove temporary path references
-                    StripFromKeys(protections, tempPath);
-
-                    return protections;
+                    Directory.Delete(tempPath, true);
                 }
+                catch (Exception ex)
+                {
+                    if (scanner.IncludeDebug) Console.WriteLine(ex);
+                }
+
+                // Remove temporary path references
+                StripFromKeys(protections, tempPath);
+
+                return protections;
             }
             catch (Exception ex)
             {

@@ -65,30 +65,10 @@ namespace BurnOutSharp.FileType
             // If the cab file itself fails
             try
             {
-                string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-                Directory.CreateDirectory(tempPath);
-
-                // Open the cab file
-                var cabFile = MicrosoftCabinet.Create(stream);
-                if (cabFile == null)
-                {
-                    if (scanner.IncludeDebug) Console.WriteLine($"Error occurred while opening");
+                // Extract and get the output path
+                string tempPath = Extract(stream, file);
+                if (tempPath == null)
                     return null;
-                }
-
-                // If entry extraction fails
-                try
-                {
-                    bool success = cabFile.ExtractAll(tempPath);
-                    if (!success)
-                    {
-                        if (scanner.IncludeDebug) Console.WriteLine($"Error occurred during extraction of files");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    if (scanner.IncludeDebug) Console.WriteLine(ex);
-                }
 
                 // Collect and format all found protections
                 var protections = scanner.GetProtections(tempPath);

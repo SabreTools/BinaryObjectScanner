@@ -60,16 +60,10 @@ namespace BurnOutSharp.FileType
             // If the BFPK file itself fails
             try
             {
-                string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-                Directory.CreateDirectory(tempPath);
-
-                // Create the wrapper
-                BinaryObjectScanner.Wrappers.BFPK bfpk = BinaryObjectScanner.Wrappers.BFPK.Create(stream);
-                if (bfpk == null)
+                // Extract and get the output path
+                string tempPath = Extract(stream, file);
+                if (tempPath == null)
                     return null;
-
-                // Extract all files
-                bfpk.ExtractAll(tempPath);
 
                 // Collect and format all found protections
                 var protections = scanner.GetProtections(tempPath);

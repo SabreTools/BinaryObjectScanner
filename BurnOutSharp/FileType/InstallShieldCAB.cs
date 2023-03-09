@@ -29,6 +29,21 @@ namespace BurnOutSharp.FileType
         /// <inheritdoc/>
         public string Extract(Stream stream, string file)
         {
+            // Get the name of the first cabinet file or header
+            string directory = Path.GetDirectoryName(file);
+            string noExtension = Path.GetFileNameWithoutExtension(file);
+            string filenamePattern = Path.Combine(directory, noExtension);
+            filenamePattern = new Regex(@"\d+$").Replace(filenamePattern, string.Empty);
+
+            bool cabinetHeaderExists = File.Exists(Path.Combine(directory, filenamePattern + "1.hdr"));
+            bool shouldScanCabinet = cabinetHeaderExists
+                ? file.Equals(Path.Combine(directory, filenamePattern + "1.hdr"), StringComparison.OrdinalIgnoreCase)
+                : file.Equals(Path.Combine(directory, filenamePattern + "1.cab"), StringComparison.OrdinalIgnoreCase);
+
+            // If we have anything but the first file
+            if (!shouldScanCabinet)
+                return null;
+
             // Create a temp output directory
             string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
             Directory.CreateDirectory(tempPath);
@@ -73,77 +88,35 @@ namespace BurnOutSharp.FileType
         /// <inheritdoc/>
         public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, Stream stream, string file)
         {
-            // Get the name of the first cabinet file or header
-            string directory = Path.GetDirectoryName(file);
-            string noExtension = Path.GetFileNameWithoutExtension(file);
-            string filenamePattern = Path.Combine(directory, noExtension);
-            filenamePattern = new Regex(@"\d+$").Replace(filenamePattern, string.Empty);
-
-            bool cabinetHeaderExists = File.Exists(Path.Combine(directory, filenamePattern + "1.hdr"));
-            bool shouldScanCabinet = cabinetHeaderExists
-                ? file.Equals(Path.Combine(directory, filenamePattern + "1.hdr"), StringComparison.OrdinalIgnoreCase)
-                : file.Equals(Path.Combine(directory, filenamePattern + "1.cab"), StringComparison.OrdinalIgnoreCase);
-
-            // If we have the first file
-            if (shouldScanCabinet)
+            // If the cab file itself fails
+            try
             {
-                // If the cab file itself fails
+                // Extract and get the output path
+                string tempPath = Extract(stream, file);
+                if (tempPath == null)
+                    return null;
+
+                // Collect and format all found protections
+                var protections = scanner.GetProtections(tempPath);
+
+                // If temp directory cleanup fails
                 try
                 {
-                    string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-                    Directory.CreateDirectory(tempPath);
-
-                    InstallShieldCabinet cabfile = InstallShieldCabinet.Open(file);
-                    for (int i = 0; i < cabfile.FileCount; i++)
-                    {
-                        // If an individual entry fails
-                        try
-                        {
-                            // Check if the file is valid first
-                            if (!cabfile.FileIsValid(i))
-                                continue;
-
-                            string tempFile;
-                            try
-                            {
-                                string filename = cabfile.FileName(i);
-                                tempFile = Path.Combine(tempPath, filename);
-                            }
-                            catch
-                            {
-                                tempFile = Path.Combine(tempPath, $"BAD_FILENAME{i}");
-                            }
-
-                            cabfile.FileSave(i, tempFile);
-                        }
-                        catch (Exception ex)
-                        {
-                            if (scanner.IncludeDebug) Console.WriteLine(ex);
-                        }
-                    }
-
-                    // Collect and format all found protections
-                    var protections = scanner.GetProtections(tempPath);
-
-                    // If temp directory cleanup fails
-                    try
-                    {
-                        Directory.Delete(tempPath, true);
-                    }
-                    catch (Exception ex)
-                    {
-                        if (scanner.IncludeDebug) Console.WriteLine(ex);
-                    }
-
-                    // Remove temporary path references
-                    StripFromKeys(protections, tempPath);
-
-                    return protections;
+                    Directory.Delete(tempPath, true);
                 }
                 catch (Exception ex)
                 {
                     if (scanner.IncludeDebug) Console.WriteLine(ex);
                 }
+
+                // Remove temporary path references
+                StripFromKeys(protections, tempPath);
+
+                return protections;
+            }
+            catch (Exception ex)
+            {
+                if (scanner.IncludeDebug) Console.WriteLine(ex);
             }
 
             return null;
