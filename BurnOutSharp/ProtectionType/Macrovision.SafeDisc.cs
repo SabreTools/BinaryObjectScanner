@@ -61,15 +61,14 @@ namespace BurnOutSharp.ProtectionType
             if (stxt371Section || stxt774Section)
             {
                 int entryPointIndex = pex.FindEntryPointSectionIndex();
-                var entryPointSectionHeader = pex.SectionNames[entryPointIndex];
+                string entryPointSectionName = pex.SectionNames[entryPointIndex];
 
                 // Check if the entry point is one of the known protected sections.
                 // If it isn't, the executable has likely been cracked to remove the protection, or has been corrupted or tampered with and is no longer functional.
                 // TODO: Check if both sections can be entry points.
-                if (entryPointSectionHeader == "stxt371" || entryPointSectionHeader == "stxt774")
-                {
+                if (entryPointSectionName == "stxt371" || entryPointSectionName == "stxt774")
                     return "SafeDisc 2+";
-                }
+
                 return "SafeDisc 2+ (Entry point not present in a stxt* section. Executable is either unprotected or nonfunctional)";
             }
 
