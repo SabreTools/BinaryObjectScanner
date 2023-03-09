@@ -1,18 +1,15 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.IO;
 using System.Text.RegularExpressions;
-using BurnOutSharp.Interfaces;
 using BinaryObjectScanner.Interfaces;
 using UnshieldSharp.Cabinet;
-using static BinaryObjectScanner.Utilities.Dictionary;
 
 namespace BurnOutSharp.FileType
 {
     /// <summary>
     /// InstallShield cabinet file
     /// </summary>
-    public class InstallShieldCAB : IExtractable, IScannable
+    public class InstallShieldCAB : IExtractable
     {
         /// <inheritdoc/>
         public string Extract(string file)
@@ -70,56 +67,6 @@ namespace BurnOutSharp.FileType
             }
 
             return tempPath;
-        }
-
-        /// <inheritdoc/>
-        public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, string file)
-        {
-            if (!File.Exists(file))
-                return null;
-
-            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
-                return Scan(scanner, fs, file);
-            }
-        }
-
-        // TODO: Add stream opening support
-        /// <inheritdoc/>
-        public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, Stream stream, string file)
-        {
-            // If the cab file itself fails
-            try
-            {
-                // Extract and get the output path
-                string tempPath = Extract(stream, file);
-                if (tempPath == null)
-                    return null;
-
-                // Collect and format all found protections
-                var protections = scanner.GetProtections(tempPath);
-
-                // If temp directory cleanup fails
-                try
-                {
-                    Directory.Delete(tempPath, true);
-                }
-                catch (Exception ex)
-                {
-                    if (scanner.IncludeDebug) Console.WriteLine(ex);
-                }
-
-                // Remove temporary path references
-                StripFromKeys(protections, tempPath);
-
-                return protections;
-            }
-            catch (Exception ex)
-            {
-                if (scanner.IncludeDebug) Console.WriteLine(ex);
-            }
-
-            return null;
         }
     }
 }

@@ -341,255 +341,59 @@ namespace BurnOutSharp
                 if (fileType == SupportedFileType.UNKNOWN)
                     return null;
 
-                // Create a scannable for the given file type
-                var scannable = Tools.Utilities.CreateScannable(fileType);
-                if (scannable == null)
-                    return null;
-
                 #region Non-Archive File Types
 
+                // Create a scannable for the given file type
+                var scannable = Tools.Utilities.CreateScannable(fileType);
+
                 // If we're scanning file contents
-                if (ScanContents)
+                if (scannable != null && ScanContents)
                 {
-                    // AACS media key block
-                    if (scannable is AACSMediaKeyBlock)
-                    {
-                        var subProtections = scannable.Scan(this, stream, fileName);
-                        AppendToDictionary(protections, subProtections);
-                    }
-
-                    // BD+ SVM
-                    if (scannable is BDPlusSVM)
-                    {
-                        var subProtections = scannable.Scan(this, stream, fileName);
-                        AppendToDictionary(protections, subProtections);
-                    }
-
-                    // Executable
-                    if (scannable is Executable)
-                    {
-                        var subProtections = scannable.Scan(this, stream, fileName);
-                        AppendToDictionary(protections, subProtections);
-                    }
-
-                    // LDSCRYPT
-                    if (scannable is LDSCRYPT)
-                    {
-                        var subProtections = scannable.Scan(this, stream, fileName);
-                        AppendToDictionary(protections, subProtections);
-                    }
-
-                    // PLJ
-                    if (scannable is PLJ)
-                    {
-                        var subProtections = scannable.Scan(this, stream, fileName);
-                        AppendToDictionary(protections, subProtections);
-                    }
-
-                    // SFFS
-                    if (scannable is SFFS)
-                    {
-                        var subProtections = scannable.Scan(this, stream, fileName);
-                        AppendToDictionary(protections, subProtections);
-                    }
-
-                    // Text-based files
-                    if (scannable is Textfile)
-                    {
-                        var subProtections = scannable.Scan(this, stream, fileName);
-                        AppendToDictionary(protections, subProtections);
-                    }
+                    var subProtections = scannable.Scan(this, stream, fileName);
+                    AppendToDictionary(protections, subProtections);
                 }
 
                 #endregion
 
                 #region Archive File Types
 
+                // Create an extractable for the given file type
+                var extractable = Tools.Utilities.CreateExtractable(fileType);
+
                 // If we're scanning archives
-                if (ScanArchives)
+                if (extractable != null && ScanArchives)
                 {
-                    // 7-Zip archive
-                    if (scannable is SevenZip)
+                    // If the archive file itself fails
+                    try
                     {
-                        var subProtections = scannable.Scan(this, stream, fileName);
-                        PrependToKeys(subProtections, fileName);
-                        AppendToDictionary(protections, subProtections);
-                    }
+                        // Extract and get the output path
+                        string tempPath = extractable.Extract(stream, fileName);
+                        if (tempPath == null)
+                            return null;
 
-                    // BFPK archive
-                    if (scannable is BFPK)
-                    {
-                        var subProtections = scannable.Scan(this, stream, fileName);
-                        PrependToKeys(subProtections, fileName);
-                        AppendToDictionary(protections, subProtections);
-                    }
+                        // Collect and format all found protections
+                        var subProtections = GetProtections(tempPath);
 
-                    // BSP
-                    if (scannable is BSP)
-                    {
-                        var subProtections = scannable.Scan(this, stream, fileName);
-                        PrependToKeys(subProtections, fileName);
-                        AppendToDictionary(protections, subProtections);
-                    }
+                        // If temp directory cleanup fails
+                        try
+                        {
+                            Directory.Delete(tempPath, true);
+                        }
+                        catch (Exception ex)
+                        {
+                            if (IncludeDebug) Console.WriteLine(ex);
+                        }
 
-                    // BZip2
-                    if (scannable is BZip2)
-                    {
-                        var subProtections = scannable.Scan(this, stream, fileName);
+                        // Prepare the returned protections
+                        StripFromKeys(protections, tempPath);
                         PrependToKeys(subProtections, fileName);
                         AppendToDictionary(protections, subProtections);
-                    }
 
-                    // CFB
-                    if (fileName != null && scannable is CFB)
-                    {
-                        var subProtections = scannable.Scan(this, fileName);
-                        PrependToKeys(subProtections, fileName);
-                        AppendToDictionary(protections, subProtections);
+                        return protections;
                     }
-
-                    // GCF
-                    if (scannable is GCF)
+                    catch (Exception ex)
                     {
-                        var subProtections = scannable.Scan(this, stream, fileName);
-                        PrependToKeys(subProtections, fileName);
-                        AppendToDictionary(protections, subProtections);
-                    }
-
-                    // GZIP
-                    if (scannable is GZIP)
-                    {
-                        var subProtections = scannable.Scan(this, stream, fileName);
-                        PrependToKeys(subProtections, fileName);
-                        AppendToDictionary(protections, subProtections);
-                    }
-
-                    // InstallShield Archive V3 (Z)
-                    if (fileName != null && scannable is InstallShieldArchiveV3)
-                    {
-                        var subProtections = scannable.Scan(this, fileName);
-                        PrependToKeys(subProtections, fileName);
-                        AppendToDictionary(protections, subProtections);
-                    }
-
-                    // InstallShield Cabinet
-                    if (fileName != null && scannable is InstallShieldCAB)
-                    {
-                        var subProtections = scannable.Scan(this, fileName);
-                        PrependToKeys(subProtections, fileName);
-                        AppendToDictionary(protections, subProtections);
-                    }
-
-                    // Microsoft Cabinet
-                    if (fileName != null && scannable is MicrosoftCAB)
-                    {
-                        var subProtections = scannable.Scan(this, fileName);
-                        PrependToKeys(subProtections, fileName);
-                        AppendToDictionary(protections, subProtections);
-                    }
-
-                    // Microsoft LZ
-                    if (fileName != null && scannable is MicrosoftLZ)
-                    {
-                        var subProtections = scannable.Scan(this, fileName);
-                        PrependToKeys(subProtections, fileName);
-                        AppendToDictionary(protections, subProtections);
-                    }
-
-                    // MoPaQ archive
-                    if (fileName != null && scannable is MPQ)
-                    {
-                        var subProtections = scannable.Scan(this, fileName);
-                        PrependToKeys(subProtections, fileName);
-                        AppendToDictionary(protections, subProtections);
-                    }
-
-                    // PAK
-                    if (fileName != null && scannable is PAK)
-                    {
-                        var subProtections = scannable.Scan(this, fileName);
-                        PrependToKeys(subProtections, fileName);
-                        AppendToDictionary(protections, subProtections);
-                    }
-
-                    // PFF
-                    if (fileName != null && scannable is PFF)
-                    {
-                        var subProtections = scannable.Scan(this, fileName);
-                        PrependToKeys(subProtections, fileName);
-                        AppendToDictionary(protections, subProtections);
-                    }
-
-                    // PKZIP archive (and derivatives)
-                    if (scannable is PKZIP)
-                    {
-                        var subProtections = scannable.Scan(this, stream, fileName);
-                        PrependToKeys(subProtections, fileName);
-                        AppendToDictionary(protections, subProtections);
-                    }
-
-                    // RAR archive
-                    if (scannable is RAR)
-                    {
-                        var subProtections = scannable.Scan(this, stream, fileName);
-                        PrependToKeys(subProtections, fileName);
-                        AppendToDictionary(protections, subProtections);
-                    }
-
-                    // SGA
-                    if (scannable is SGA)
-                    {
-                        var subProtections = scannable.Scan(this, stream, fileName);
-                        PrependToKeys(subProtections, fileName);
-                        AppendToDictionary(protections, subProtections);
-                    }
-
-                    // Tape Archive
-                    if (scannable is TapeArchive)
-                    {
-                        var subProtections = scannable.Scan(this, stream, fileName);
-                        PrependToKeys(subProtections, fileName);
-                        AppendToDictionary(protections, subProtections);
-                    }
-
-                    // VBSP
-                    if (fileName != null && scannable is VBSP)
-                    {
-                        var subProtections = scannable.Scan(this, fileName);
-                        PrependToKeys(subProtections, fileName);
-                        AppendToDictionary(protections, subProtections);
-                    }
-
-                    // VPK
-                    if (fileName != null && scannable is VPK)
-                    {
-                        var subProtections = scannable.Scan(this, fileName);
-                        PrependToKeys(subProtections, fileName);
-                        AppendToDictionary(protections, subProtections);
-                    }
-
-                    // WAD
-                    if (scannable is WAD)
-                    {
-                        var subProtections = scannable.Scan(this, stream, fileName);
-                        PrependToKeys(subProtections, fileName);
-                        AppendToDictionary(protections, subProtections);
-                    }
-
-                    // XZ
-                    if (scannable is XZ)
-                    {
-                        var subProtections = scannable.Scan(this, stream, fileName);
-                        PrependToKeys(subProtections, fileName);
-                        AppendToDictionary(protections, subProtections);
-                    }
-
-                    // XZP
-                    if (scannable is XZP)
-                    {
-                        var subProtections = scannable.Scan(this, stream, fileName);
-                        PrependToKeys(subProtections, fileName);
-                        AppendToDictionary(protections, subProtections);
+                        if (IncludeDebug) Console.WriteLine(ex);
                     }
                 }
 

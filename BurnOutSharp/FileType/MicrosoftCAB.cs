@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.IO;
-using BurnOutSharp.Interfaces;
 using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Wrappers;
-using static BinaryObjectScanner.Utilities.Dictionary;
 
 namespace BurnOutSharp.FileType
 {
@@ -13,7 +10,7 @@ namespace BurnOutSharp.FileType
     /// </summary>
     /// <remarks>Specification available at <see href="http://download.microsoft.com/download/5/0/1/501ED102-E53F-4CE0-AA6B-B0F93629DDC6/Exchange/%5BMS-CAB%5D.pdf"/></remarks>
     /// <see href="https://github.com/wine-mirror/wine/tree/master/dlls/cabinet"/>
-    public class MicrosoftCAB : IExtractable, IScannable
+    public class MicrosoftCAB : IExtractable
     {
         /// <inheritdoc/>
         public string Extract(string file)
@@ -45,55 +42,6 @@ namespace BurnOutSharp.FileType
                 return null;
 
             return tempPath;
-        }
-
-        /// <inheritdoc/>
-        public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, string file)
-        {
-            if (!File.Exists(file))
-                return null;
-
-            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
-                return Scan(scanner, fs, file);
-            }
-        }
-
-        /// <inheritdoc/>
-        public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, Stream stream, string file)
-        {
-            // If the cab file itself fails
-            try
-            {
-                // Extract and get the output path
-                string tempPath = Extract(stream, file);
-                if (tempPath == null)
-                    return null;
-
-                // Collect and format all found protections
-                var protections = scanner.GetProtections(tempPath);
-
-                // If temp directory cleanup fails
-                try
-                {
-                    Directory.Delete(tempPath, true);
-                }
-                catch (Exception ex)
-                {
-                    if (scanner.IncludeDebug) Console.WriteLine(ex);
-                }
-
-                // Remove temporary path references
-                StripFromKeys(protections, tempPath);
-
-                return protections;
-            }
-            catch (Exception ex)
-            {
-                if (scanner.IncludeDebug) Console.WriteLine(ex);
-            }
-
-            return null;
         }
     }
 }
