@@ -12,60 +12,75 @@ namespace BurnOutSharp.FileType
     public class CFB : IExtractable
     {
         /// <inheritdoc/>
-        public string Extract(string file)
+        public string Extract(string file, bool includeDebug)
         {
             if (!File.Exists(file))
                 return null;
 
             using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
-                return Extract(fs, file);
+                return Extract(fs, file, includeDebug);
             }
         }
 
         /// <inheritdoc/>
-        public string Extract(Stream stream, string file)
+        public string Extract(Stream stream, string file, bool includeDebug)
         {
-            // Create a temp output directory
-            string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-            Directory.CreateDirectory(tempPath);
-
-            using (CompoundFile msi = new CompoundFile(stream, CFSUpdateMode.ReadOnly, CFSConfiguration.Default))
+            try
             {
-                msi.RootStorage.VisitEntries((e) =>
+                // Create a temp output directory
+                string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+                Directory.CreateDirectory(tempPath);
+
+                using (CompoundFile msi = new CompoundFile(stream, CFSUpdateMode.ReadOnly, CFSConfiguration.Default))
                 {
-                    if (!e.IsStream)
-                        return;
-
-                    var str = msi.RootStorage.GetStream(e.Name);
-                    if (str == null)
-                        return;
-
-                    byte[] strData = str.GetData();
-                    if (strData == null)
-                        return;
-
-                    string decoded = DecodeStreamName(e.Name).TrimEnd('\0');
-                    byte[] nameBytes = Encoding.UTF8.GetBytes(e.Name);
-
-                    // UTF-8 encoding of 0x4840.
-                    if (nameBytes[0] == 0xe4 && nameBytes[1] == 0xa1 && nameBytes[2] == 0x80)
-                        decoded = decoded.Substring(3);
-
-                    foreach (char c in Path.GetInvalidFileNameChars())
+                    msi.RootStorage.VisitEntries((e) =>
                     {
-                        decoded = decoded.Replace(c, '_');
-                    }
+                        try
+                        {
+                            if (!e.IsStream)
+                                return;
 
-                    string filename = Path.Combine(tempPath, decoded);
-                    using (Stream fs = File.OpenWrite(filename))
-                    {
-                        fs.Write(strData, 0, strData.Length);
-                    }
-                }, recursive: true);
+                            var str = msi.RootStorage.GetStream(e.Name);
+                            if (str == null)
+                                return;
+
+                            byte[] strData = str.GetData();
+                            if (strData == null)
+                                return;
+
+                            string decoded = DecodeStreamName(e.Name).TrimEnd('\0');
+                            byte[] nameBytes = Encoding.UTF8.GetBytes(e.Name);
+
+                            // UTF-8 encoding of 0x4840.
+                            if (nameBytes[0] == 0xe4 && nameBytes[1] == 0xa1 && nameBytes[2] == 0x80)
+                                decoded = decoded.Substring(3);
+
+                            foreach (char c in Path.GetInvalidFileNameChars())
+                            {
+                                decoded = decoded.Replace(c, '_');
+                            }
+
+                            string filename = Path.Combine(tempPath, decoded);
+                            using (Stream fs = File.OpenWrite(filename))
+                            {
+                                fs.Write(strData, 0, strData.Length);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            if (includeDebug) Console.WriteLine(ex);
+                        }
+                    }, recursive: true);
+                }
+
+                return tempPath;
             }
-
-            return tempPath;
+            catch (Exception ex)
+            {
+                if (includeDebug) Console.WriteLine(ex);
+                return null;
+            }
         }
 
         /// <remarks>Adapted from LibMSI</remarks>

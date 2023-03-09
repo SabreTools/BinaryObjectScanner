@@ -65,38 +65,53 @@ namespace BurnOutSharp.PackerType
         // TODO: Find a way to generically detect 2.X versions and improve exact version detection for SFX PE versions bundled with WinZip 11+
 
         /// <inheritdoc/>
-        public string Extract(string file)
+        public string Extract(string file, bool includeDebug)
         {
             if (!File.Exists(file))
                 return null;
 
             using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
-                return Extract(fs, file);
+                return Extract(fs, file, includeDebug);
             }
         }
 
         /// <inheritdoc/>
-        public string Extract(Stream stream, string file)
+        public string Extract(Stream stream, string file, bool includeDebug)
         {
-            string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-            Directory.CreateDirectory(tempPath);
-
-            // Should be using stream instead of file, but stream fails to extract anything. My guess is that the executable portion of the archive is causing stream to fail, but not file.
-            using (ZipArchive zipFile = ZipArchive.Open(file))
+            try
             {
-                foreach (var entry in zipFile.Entries)
+                string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+                Directory.CreateDirectory(tempPath);
+
+                // Should be using stream instead of file, but stream fails to extract anything. My guess is that the executable portion of the archive is causing stream to fail, but not file.
+                using (ZipArchive zipFile = ZipArchive.Open(file))
                 {
-                    // If we have a directory, skip it
-                    if (entry.IsDirectory)
-                        continue;
+                    foreach (var entry in zipFile.Entries)
+                    {
+                        try
+                        {
+                            // If we have a directory, skip it
+                            if (entry.IsDirectory)
+                                continue;
 
-                    string tempFile = Path.Combine(tempPath, entry.Key);
-                    entry.WriteToFile(tempFile);
+                            string tempFile = Path.Combine(tempPath, entry.Key);
+                            entry.WriteToFile(tempFile);
+                        }
+                        catch (Exception ex)
+                        {
+                            if (includeDebug) Console.WriteLine(ex);
+                        }
+                    }
                 }
-            }
 
-            return tempPath;
+                return tempPath;
+            }
+            catch (Exception ex)
+            {
+                if (includeDebug) Console.WriteLine(ex);
+                return null;
+            }
         }
 
         /// <summary>

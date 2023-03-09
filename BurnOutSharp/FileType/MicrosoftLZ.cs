@@ -12,47 +12,55 @@ namespace BurnOutSharp.FileType
     public class MicrosoftLZ : IExtractable
     {
         /// <inheritdoc/>
-        public string Extract(string file)
+        public string Extract(string file, bool includeDebug)
         {
             if (!File.Exists(file))
                 return null;
 
             using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
-                return Extract(fs, file);
+                return Extract(fs, file, includeDebug);
             }
         }
 
         /// <inheritdoc/>
-        public string Extract(Stream stream, string file)
+        public string Extract(Stream stream, string file, bool includeDebug)
         {
-            // Create a temp output directory
-            string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-            Directory.CreateDirectory(tempPath);
-
-            byte[] data = LZ.Decompress(stream);
-
-            // Create the temp filename
-            string tempFile = "temp.bin";
-            if (!string.IsNullOrEmpty(file))
+            try
             {
-                string expandedFilePath = LZ.GetExpandedName(file, out _);
-                tempFile = Path.GetFileName(expandedFilePath).TrimEnd('\0');
-                if (tempFile.EndsWith(".ex"))
-                    tempFile += "e";
-                else if (tempFile.EndsWith(".dl"))
-                    tempFile += "l";
+                // Create a temp output directory
+                string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+                Directory.CreateDirectory(tempPath);
+
+                byte[] data = LZ.Decompress(stream);
+
+                // Create the temp filename
+                string tempFile = "temp.bin";
+                if (!string.IsNullOrEmpty(file))
+                {
+                    string expandedFilePath = LZ.GetExpandedName(file, out _);
+                    tempFile = Path.GetFileName(expandedFilePath).TrimEnd('\0');
+                    if (tempFile.EndsWith(".ex"))
+                        tempFile += "e";
+                    else if (tempFile.EndsWith(".dl"))
+                        tempFile += "l";
+                }
+
+                tempFile = Path.Combine(tempPath, tempFile);
+
+                // Write the file data to a temp file
+                using (Stream tempStream = File.Open(tempFile, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
+                {
+                    tempStream.Write(data, 0, data.Length);
+                }
+
+                return tempPath;
             }
-
-            tempFile = Path.Combine(tempPath, tempFile);
-
-            // Write the file data to a temp file
-            using (Stream tempStream = File.Open(tempFile, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
+            catch (Exception ex)
             {
-                tempStream.Write(data, 0, data.Length);
+                if (includeDebug) Console.WriteLine(ex);
+                return null;
             }
-
-            return tempPath;
         }
     }
 }

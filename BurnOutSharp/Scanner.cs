@@ -366,7 +366,7 @@ namespace BurnOutSharp
                     try
                     {
                         // Extract and get the output path
-                        string tempPath = extractable.Extract(stream, fileName);
+                        string tempPath = extractable.Extract(stream, fileName, IncludeDebug);
                         if (tempPath == null)
                             return null;
 

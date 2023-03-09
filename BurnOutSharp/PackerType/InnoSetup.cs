@@ -58,19 +58,19 @@ namespace BurnOutSharp.PackerType
         }
 
         /// <inheritdoc/>
-        public string Extract(string file)
+        public string Extract(string file, bool includeDebug)
         {
             if (!File.Exists(file))
                 return null;
 
             using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
-                return Extract(fs, file);
+                return Extract(fs, file, includeDebug);
             }
         }
 
         /// <inheritdoc/>
-        public string Extract(Stream stream, string file)
+        public string Extract(Stream stream, string file, bool includeDebug)
         {
             return null;
         }

@@ -29,52 +29,67 @@ namespace BurnOutSharp.PackerType
         }
 
         /// <inheritdoc/>
-        public string Extract(string file)
+        public string Extract(string file, bool includeDebug)
         {
             if (!File.Exists(file))
                 return null;
 
             using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
-                return Extract(fs, file);
+                return Extract(fs, file, includeDebug);
             }
         }
 
         /// <inheritdoc/>
-        public string Extract(Stream stream, string file)
+        public string Extract(Stream stream, string file, bool includeDebug)
         {
-            // Parse into an executable again for easier extraction
-            PortableExecutable pex = PortableExecutable.Create(stream);
-            if (pex?.ResourceData == null)
-                return null;
-
-            // Get the resources that have an executable signature
-            var resources = pex.ResourceData
-                .Where(kvp => kvp.Value != null && kvp.Value is byte[])
-                .Where(kvp => (kvp.Value as byte[]).StartsWith(BinaryObjectScanner.Models.MSDOS.Constants.SignatureBytes))
-                .ToList();
-
-            string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-            Directory.CreateDirectory(tempPath);
-
-            for (int i = 0; i < resources.Count; i++)
+            try
             {
-                // Get the resource data
-                var resource = resources[i];
-                byte[] data = resource.Value as byte[];
+                // Parse into an executable again for easier extraction
+                PortableExecutable pex = PortableExecutable.Create(stream);
+                if (pex?.ResourceData == null)
+                    return null;
 
-                // Create the temp filename
-                string tempFile = $"embedded_resource_{i}.bin";
-                tempFile = Path.Combine(tempPath, tempFile);
+                // Get the resources that have an executable signature
+                var resources = pex.ResourceData
+                    .Where(kvp => kvp.Value != null && kvp.Value is byte[])
+                    .Where(kvp => (kvp.Value as byte[]).StartsWith(BinaryObjectScanner.Models.MSDOS.Constants.SignatureBytes))
+                    .ToList();
 
-                // Write the resource data to a temp file
-                using (Stream tempStream = File.Open(tempFile, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
+                string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+                Directory.CreateDirectory(tempPath);
+
+                for (int i = 0; i < resources.Count; i++)
                 {
-                    tempStream.Write(data, 0, data.Length);
-                }
-            }
+                    try
+                    {
+                        // Get the resource data
+                        var resource = resources[i];
+                        byte[] data = resource.Value as byte[];
 
-            return tempPath;
+                        // Create the temp filename
+                        string tempFile = $"embedded_resource_{i}.bin";
+                        tempFile = Path.Combine(tempPath, tempFile);
+
+                        // Write the resource data to a temp file
+                        using (Stream tempStream = File.Open(tempFile, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
+                        {
+                            tempStream.Write(data, 0, data.Length);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        if (includeDebug) Console.WriteLine(ex);
+                    }
+                }
+
+                return tempPath;
+            }
+            catch (Exception ex)
+            {
+                if (includeDebug) Console.WriteLine(ex);
+                return null;
+            }
         }
     }
 }

@@ -17,6 +17,9 @@ namespace BurnOutSharp.FileType
     /// In order to achiveve this, Executable specifically needs a way of supporting the Packer types (IExtractable) in such
     /// a way that we don't scan the files two times over. Somehow, we need to make Executable IExtractable as well and then
     /// take the outputs of `Scan` and figure out if we need to try extracting or not.
+    /// 
+    /// Since Options is a separate class now, that should be passed in instead of Scanner, so that we only have to worry about
+    /// what the user or implementer was requesting.
     public class Executable : IScannable
     {
         /// <inheritdoc/>
@@ -82,7 +85,7 @@ namespace BurnOutSharp.FileType
                         try
                         {
                             // Extract and get the output path
-                            string tempPath = extractable.Extract(stream, file);
+                            string tempPath = extractable.Extract(stream, file, scanner.IncludeDebug);
                             if (tempPath != null)
                                 return;
 
@@ -138,7 +141,7 @@ namespace BurnOutSharp.FileType
                         try
                         {
                             // Extract and get the output path
-                            string tempPath = extractable.Extract(stream, file);
+                            string tempPath = extractable.Extract(stream, file, scanner.IncludeDebug);
                             if (tempPath != null)
                                 return;
 
@@ -194,7 +197,7 @@ namespace BurnOutSharp.FileType
                         try
                         {
                             // Extract and get the output path
-                            string tempPath = extractable.Extract(stream, file);
+                            string tempPath = extractable.Extract(stream, file, scanner.IncludeDebug);
                             if (tempPath != null)
                                 return;
 

@@ -12,19 +12,19 @@ namespace BurnOutSharp.FileType
     public class InstallShieldCAB : IExtractable
     {
         /// <inheritdoc/>
-        public string Extract(string file)
+        public string Extract(string file, bool includeDebug)
         {
             if (!File.Exists(file))
                 return null;
 
             using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
-                return Extract(fs, file);
+                return Extract(fs, file, includeDebug);
             }
         }
 
         /// <inheritdoc/>
-        public string Extract(Stream stream, string file)
+        public string Extract(Stream stream, string file, bool includeDebug)
         {
             // Get the name of the first cabinet file or header
             string directory = Path.GetDirectoryName(file);
@@ -41,32 +41,47 @@ namespace BurnOutSharp.FileType
             if (!shouldScanCabinet)
                 return null;
 
-            // Create a temp output directory
-            string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-            Directory.CreateDirectory(tempPath);
-
-            InstallShieldCabinet cabfile = InstallShieldCabinet.Open(file);
-            for (int i = 0; i < cabfile.FileCount; i++)
+            try
             {
-                // Check if the file is valid first
-                if (!cabfile.FileIsValid(i))
-                    continue;
+                // Create a temp output directory
+                string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+                Directory.CreateDirectory(tempPath);
 
-                string tempFile;
-                try
+                InstallShieldCabinet cabfile = InstallShieldCabinet.Open(file);
+                for (int i = 0; i < cabfile.FileCount; i++)
                 {
-                    string filename = cabfile.FileName(i);
-                    tempFile = Path.Combine(tempPath, filename);
-                }
-                catch
-                {
-                    tempFile = Path.Combine(tempPath, $"BAD_FILENAME{i}");
+                    try
+                    {
+                        // Check if the file is valid first
+                        if (!cabfile.FileIsValid(i))
+                            continue;
+
+                        string tempFile;
+                        try
+                        {
+                            string filename = cabfile.FileName(i);
+                            tempFile = Path.Combine(tempPath, filename);
+                        }
+                        catch
+                        {
+                            tempFile = Path.Combine(tempPath, $"BAD_FILENAME{i}");
+                        }
+
+                        cabfile.FileSave(i, tempFile);
+                    }
+                    catch (Exception ex)
+                    {
+                        if (includeDebug) Console.WriteLine(ex);
+                    }
                 }
 
-                cabfile.FileSave(i, tempFile);
+                return tempPath;
             }
-
-            return tempPath;
+            catch (Exception ex)
+            {
+                if (includeDebug) Console.WriteLine(ex);
+                return null;
+            }
         }
     }
 }
