@@ -8,7 +8,7 @@ using BinaryObjectScanner.Wrappers;
 namespace BurnOutSharp.PackerType
 {
     // TODO: Add extraction
-    public class SevenZipSFX : IPortableExecutableCheck, IScannable
+    public class SevenZipSFX : IExtractable, IPortableExecutableCheck, IScannable
     {
         /// <inheritdoc/>
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
@@ -44,6 +44,25 @@ namespace BurnOutSharp.PackerType
             if (pex.FindDialogByTitle("7-Zip self-extracting archive").Any())
                 return "7-Zip SFX";
 
+            return null;
+        }
+
+        /// <inheritdoc/>
+        public string Extract(string file)
+        {
+            if (!File.Exists(file))
+                return null;
+
+            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                return Extract(fs, file);
+            }
+        }
+
+        /// <inheritdoc/>
+        public string Extract(Stream stream, string file)
+        {
+            // Create extraction based off Scan
             return null;
         }
 

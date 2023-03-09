@@ -12,7 +12,7 @@ namespace BurnOutSharp.PackerType
 {
     // TODO: Add extraction
     // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
-    public class UPX : IPortableExecutableCheck, IScannable
+    public class UPX : IExtractable, IPortableExecutableCheck, IScannable
     {
         private static readonly Regex _oldUpxVersionMatch = new Regex(@"\$Id: UPX (.*?) Copyright \(C\)", RegexOptions.Compiled);
 
@@ -62,6 +62,25 @@ namespace BurnOutSharp.PackerType
                 }
             }
 
+            return null;
+        }
+
+        /// <inheritdoc/>
+        public string Extract(string file)
+        {
+            if (!File.Exists(file))
+                return null;
+
+            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                return Extract(fs, file);
+            }
+        }
+
+        /// <inheritdoc/>
+        public string Extract(Stream stream, string file)
+        {
+            // Create extraction based off Scan
             return null;
         }
 

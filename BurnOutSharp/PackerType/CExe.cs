@@ -15,7 +15,7 @@ namespace BurnOutSharp.PackerType
     // The official website for CExe also includes the source code (which does have to be retrieved by the Wayback Machine)
     // http://www.scottlu.com/Content/CExe.html
     // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
-    public class CExe : IPortableExecutableCheck, IScannable
+    public class CExe : IExtractable, IPortableExecutableCheck, IScannable
     {
         /// <inheritdoc/>
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
@@ -46,6 +46,25 @@ namespace BurnOutSharp.PackerType
             if (!string.IsNullOrWhiteSpace(match))
                 return match;
 
+            return null;
+        }
+
+        /// <inheritdoc/>
+        public string Extract(string file)
+        {
+            if (!File.Exists(file))
+                return null;
+
+            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                return Extract(fs, file);
+            }
+        }
+
+        /// <inheritdoc/>
+        public string Extract(Stream stream, string file)
+        {
+            // Create extraction based off Scan
             return null;
         }
 

@@ -8,7 +8,7 @@ namespace BurnOutSharp.PackerType
 {
     // TODO: Add extraction
     // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
-    public class PEtite : IPortableExecutableCheck, IScannable
+    public class PEtite : IExtractable, IPortableExecutableCheck, IScannable
     {
         /// <inheritdoc/>
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
@@ -23,6 +23,25 @@ namespace BurnOutSharp.PackerType
             if (petiteSection)
                 return "PEtite";
 
+            return null;
+        }
+
+        /// <inheritdoc/>
+        public string Extract(string file)
+        {
+            if (!File.Exists(file))
+                return null;
+
+            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                return Extract(fs, file);
+            }
+        }
+
+        /// <inheritdoc/>
+        public string Extract(Stream stream, string file)
+        {
+            // Create extraction based off Scan
             return null;
         }
 

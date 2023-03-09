@@ -13,7 +13,7 @@ namespace BurnOutSharp.PackerType
     /// Though not technically a packer, this detection is for any executables that include
     /// others in their resources in some uncompressed manner to be used at runtime.
     /// </summary>
-    public class EmbeddedExecutable : IPortableExecutableCheck, IScannable
+    public class EmbeddedExecutable : IExtractable, IPortableExecutableCheck, IScannable
     {
         /// <inheritdoc/>
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
@@ -27,6 +27,25 @@ namespace BurnOutSharp.PackerType
             if (pex.ResourceData?.Any(kvp => kvp.Value is byte[] ba && ba.StartsWith(BinaryObjectScanner.Models.MSDOS.Constants.SignatureBytes)) == true)
                 return "Embedded Executable";
 
+            return null;
+        }
+
+        /// <inheritdoc/>
+        public string Extract(string file)
+        {
+            if (!File.Exists(file))
+                return null;
+
+            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                return Extract(fs, file);
+            }
+        }
+
+        /// <inheritdoc/>
+        public string Extract(Stream stream, string file)
+        {
+            // Create extraction based off Scan
             return null;
         }
 

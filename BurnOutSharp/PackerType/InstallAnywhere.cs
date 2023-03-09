@@ -9,7 +9,7 @@ namespace BurnOutSharp.PackerType
 {
     // TODO: Add extraction, which may be possible with the current libraries but needs to be investigated further.
     // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
-    public class InstallAnywhere : IPortableExecutableCheck, IScannable
+    public class InstallAnywhere : IExtractable, IPortableExecutableCheck, IScannable
     {
         /// <inheritdoc/>
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
@@ -27,6 +27,25 @@ namespace BurnOutSharp.PackerType
             if (name?.StartsWith("InstallAnywhere", StringComparison.OrdinalIgnoreCase) == true)
                 return $"InstallAnywhere {GetVersion(pex)}";
 
+            return null;
+        }
+
+        /// <inheritdoc/>
+        public string Extract(string file)
+        {
+            if (!File.Exists(file))
+                return null;
+
+            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                return Extract(fs, file);
+            }
+        }
+
+        /// <inheritdoc/>
+        public string Extract(Stream stream, string file)
+        {
+            // Create extraction based off Scan
             return null;
         }
 

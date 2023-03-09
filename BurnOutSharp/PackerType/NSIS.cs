@@ -9,7 +9,7 @@ using BinaryObjectScanner.Wrappers;
 namespace BurnOutSharp.PackerType
 {
     // TODO: Add extraction
-    public class NSIS : IPortableExecutableCheck, IScannable
+    public class NSIS : IExtractable, IPortableExecutableCheck, IScannable
     {
         /// <inheritdoc/>
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
@@ -33,7 +33,26 @@ namespace BurnOutSharp.PackerType
 
             return null;
         }
-        
+
+        /// <inheritdoc/>
+        public string Extract(string file)
+        {
+            if (!File.Exists(file))
+                return null;
+
+            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                return Extract(fs, file);
+            }
+        }
+
+        /// <inheritdoc/>
+        public string Extract(Stream stream, string file)
+        {
+            // Create extraction based off Scan
+            return null;
+        }
+
         /// <inheritdoc/>
         public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, string file)
         {

@@ -11,7 +11,7 @@ namespace BurnOutSharp.PackerType
 {
     // TODO: Add extraction - https://github.com/dscharrer/InnoExtract
     // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
-    public class InnoSetup : INewExecutableCheck, IPortableExecutableCheck, IScannable
+    public class InnoSetup : IExtractable, INewExecutableCheck, IPortableExecutableCheck, IScannable
     {
         /// <inheritdoc/>
         public string CheckNewExecutable(string file, NewExecutable nex, bool includeDebug)
@@ -56,6 +56,25 @@ namespace BurnOutSharp.PackerType
                 }
             }
 
+            return null;
+        }
+
+        /// <inheritdoc/>
+        public string Extract(string file)
+        {
+            if (!File.Exists(file))
+                return null;
+
+            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                return Extract(fs, file);
+            }
+        }
+
+        /// <inheritdoc/>
+        public string Extract(Stream stream, string file)
+        {
+            // Create extraction based off Scan
             return null;
         }
 

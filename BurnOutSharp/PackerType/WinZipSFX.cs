@@ -12,7 +12,7 @@ using static BinaryObjectScanner.Utilities.Dictionary;
 
 namespace BurnOutSharp.PackerType
 {
-    public class WinZipSFX : INewExecutableCheck, IPortableExecutableCheck, IScannable
+    public class WinZipSFX : IExtractable, INewExecutableCheck, IPortableExecutableCheck, IScannable
     {
         /// <inheritdoc/>
         public string CheckNewExecutable(string file, NewExecutable nex, bool includeDebug)
@@ -66,6 +66,25 @@ namespace BurnOutSharp.PackerType
         }
 
         // TODO: Find a way to generically detect 2.X versions and improve exact version detection for SFX PE versions bundled with WinZip 11+
+
+        /// <inheritdoc/>
+        public string Extract(string file)
+        {
+            if (!File.Exists(file))
+                return null;
+
+            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                return Extract(fs, file);
+            }
+        }
+
+        /// <inheritdoc/>
+        public string Extract(Stream stream, string file)
+        {
+            // Create extraction based off Scan
+            return null;
+        }
 
         /// <inheritdoc/>
         public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, string file)

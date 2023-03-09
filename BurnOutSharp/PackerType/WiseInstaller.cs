@@ -14,7 +14,7 @@ using Wise = WiseUnpacker.WiseUnpacker;
 namespace BurnOutSharp.PackerType
 {
     // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
-    public class WiseInstaller : INewExecutableCheck, IPortableExecutableCheck, IScannable
+    public class WiseInstaller : IExtractable, INewExecutableCheck, IPortableExecutableCheck, IScannable
     {
         /// <inheritdoc/>
         public string CheckNewExecutable(string file, NewExecutable nex, bool includeDebug)
@@ -76,6 +76,25 @@ namespace BurnOutSharp.PackerType
                     return "Wise Installation Wizard Module";
             }
 
+            return null;
+        }
+
+        /// <inheritdoc/>
+        public string Extract(string file)
+        {
+            if (!File.Exists(file))
+                return null;
+
+            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                return Extract(fs, file);
+            }
+        }
+
+        /// <inheritdoc/>
+        public string Extract(Stream stream, string file)
+        {
+            // Create extraction based off Scan
             return null;
         }
 

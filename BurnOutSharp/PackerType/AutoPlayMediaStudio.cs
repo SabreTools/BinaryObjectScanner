@@ -10,7 +10,7 @@ namespace BurnOutSharp.PackerType
     // Created by IndigoRose (creators of Setup Factory), primarily to be used to create autorun menus for various media.
     // Official website: https://www.autoplay.org/
     // TODO: Add extraction
-    public class AutoPlayMediaStudio : IPortableExecutableCheck, IScannable
+    public class AutoPlayMediaStudio : IExtractable, IPortableExecutableCheck, IScannable
     {
         /// <inheritdoc/>
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
@@ -32,6 +32,25 @@ namespace BurnOutSharp.PackerType
                 return $"AutoPlay Media Studio {GetVersion(pex)}";
                 */
 
+            return null;
+        }
+
+        /// <inheritdoc/>
+        public string Extract(string file)
+        {
+            if (!File.Exists(file))
+                return null;
+
+            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                return Extract(fs, file);
+            }
+        }
+
+        /// <inheritdoc/>
+        public string Extract(Stream stream, string file)
+        {
+            // Create extraction based off Scan
             return null;
         }
 

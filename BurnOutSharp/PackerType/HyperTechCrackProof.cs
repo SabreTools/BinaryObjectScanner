@@ -12,7 +12,7 @@ namespace BurnOutSharp.PackerType
     // https://www.reddit.com/r/riseofincarnates/comments/m3vbnm/subreddit_revival_does_anyone_still_have_rise_of/
     // https://steamcommunity.com/app/310950/discussions/0/4224890554455490819/
     // https://github.com/horsicq/Detect-It-Easy/blob/63a1aa8bb23ca02d8a7fd5936db8dbc5c5d52dea/db/PE/HyperTech%20Crackproof.2.sg
-    public class HyperTechCrackProof : IPortableExecutableCheck, IScannable
+    public class HyperTechCrackProof : IExtractable, IPortableExecutableCheck, IScannable
     {
         /// <inheritdoc/>
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
@@ -30,6 +30,25 @@ namespace BurnOutSharp.PackerType
             if (peCSection && importTableMatch)
                 return "HyperTech CrackProof";
 
+            return null;
+        }
+
+        /// <inheritdoc/>
+        public string Extract(string file)
+        {
+            if (!File.Exists(file))
+                return null;
+
+            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                return Extract(fs, file);
+            }
+        }
+
+        /// <inheritdoc/>
+        public string Extract(Stream stream, string file)
+        {
+            // Create extraction based off Scan
             return null;
         }
 

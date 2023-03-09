@@ -11,7 +11,7 @@ namespace BurnOutSharp.PackerType
 {
     // TODO: Add extraction, which should be possible with LibMSPackN, but it refuses to extract due to SFX files lacking the typical CAB identifiers.
     // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
-    public class MicrosoftCABSFX : IPortableExecutableCheck, IScannable
+    public class MicrosoftCABSFX : IExtractable, IPortableExecutableCheck, IScannable
     {
         /// <inheritdoc/>
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
@@ -47,6 +47,25 @@ namespace BurnOutSharp.PackerType
                     return $"Microsoft CAB SFX {GetVersion(pex)}";
             }
 
+            return null;
+        }
+
+        /// <inheritdoc/>
+        public string Extract(string file)
+        {
+            if (!File.Exists(file))
+                return null;
+
+            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                return Extract(fs, file);
+            }
+        }
+
+        /// <inheritdoc/>
+        public string Extract(Stream stream, string file)
+        {
+            // Create extraction based off Scan
             return null;
         }
 
