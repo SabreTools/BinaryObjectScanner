@@ -344,8 +344,8 @@ This section contains information on in-code organization principles that depend
 | --- | --- |
 | `BurnOutSharp` | Varies from file to file. |
 | `BurnOutSharp/FileType` | `IExtractable` implementations, `IScannable` implementations, helper methods. |
-| `BurnOutSharp/PackerType` | `IContentCheck` implementations, `ILinearExecutableCheck` implementations, `INewExecutableCheck` implementations, `IPortableExecutableCheck` implementations, `IPathCheck` implementations, `IExtractable` implementations, `IScannable` implementations, helper methods. |
-| `BurnOutSharp/ProtectionType` |  `IContentCheck` implementations, `ILinearExecutableCheck` implementations, `INewExecutableCheck` implementations, `IPortableExecutableCheck` implementations, `IPathCheck` implementations, `IExtractable` implementations, `IScannable` implementations, helper methods. |
+| `BurnOutSharp/PackerType` | `IContentCheck` implementations, `ILinearExecutableCheck` implementations, `INewExecutableCheck` implementations, `IPortableExecutableCheck` implementations, `IPathCheck` implementations, `IExtractable` implementations, helper methods. |
+| `BurnOutSharp/ProtectionType` |  `IContentCheck` implementations, `ILinearExecutableCheck` implementations, `INewExecutableCheck` implementations, `IPortableExecutableCheck` implementations, `IPathCheck` implementations, `IExtractable` implementations, helper methods. |
 | `BurnOutSharp/Tools` | Methods grouped by function. Regions ordered alphabetically. |
 | `BinaryObjectScanner.ASN1` | Partial classes suggested for different implmentations. |
 | `BinaryObjectScanner.Builders` | Two copies of each non-generic method: one for byte arrays and one for Streams. |
