@@ -94,7 +94,16 @@ namespace BurnOutSharp.PackerType
         /// <inheritdoc/>
         public string Extract(Stream stream, string file)
         {
-            // Create extraction based off Scan
+            // Try to parse as a New Executable
+            NewExecutable nex = NewExecutable.Create(stream);
+            if (nex != null)
+                return ExtractNewExecutable(nex, file);
+
+            // Try to parse as a Portable Executable
+            PortableExecutable pex = PortableExecutable.Create(stream);
+            if (pex != null)
+                return ExtractPortableExecutable(pex, file);
+
             return null;
         }
 
@@ -284,6 +293,24 @@ namespace BurnOutSharp.PackerType
         }
 
         /// <summary>
+        /// Attempt to extract Wise data from a New Executable
+        /// </summary>
+        /// <param name="nex">New executable to check</param>
+        /// <param name="file">Path to the input file</param>
+        /// <returns>True if it matches a known version, false otherwise</returns>
+        private string ExtractNewExecutable(NewExecutable nex, string file)
+        {
+            string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            Directory.CreateDirectory(tempPath);
+
+            // TODO: Try to find where the file data lives and how to get it
+            Wise unpacker = new Wise();
+            unpacker.ExtractTo(file, tempPath);
+
+            return tempPath;
+        }
+
+        /// <summary>
         /// Attempt to extract Wise data from a Portable Executable
         /// </summary>
         /// <param name="scanner">Scanner object for state tracking</param>
@@ -429,6 +456,101 @@ namespace BurnOutSharp.PackerType
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Attempt to extract Wise data from a Portable Executable
+        /// </summary>
+        /// <param name="pex">Portable executable to check</param>
+        /// <param name="file">Path to the input file</param>
+        /// <returns>True if it matches a known version, false otherwise</returns>
+        private string ExtractPortableExecutable(PortableExecutable pex, string file)
+        {
+            // Get the matching PE format
+            var format = GetPEFormat(pex);
+            if (format == null)
+                return null;
+
+            // Get the overlay data for easier reading
+            int overlayOffset = 0, dataStart = 0;
+            byte[] overlayData = pex.OverlayData;
+            if (overlayData == null)
+                return null;
+
+            // Skip over the additional DLL name, if we expect it
+            if (format.Dll)
+            {
+                // Read the name length
+                byte dllNameLength = overlayData.ReadByte(ref overlayOffset);
+                dataStart++;
+
+                // Read the name, if it exists
+                if (dllNameLength != 0)
+                {
+                    // Ignore the name for now
+                    _ = overlayData.ReadBytes(ref overlayOffset, dllNameLength);
+                    dataStart += dllNameLength;
+
+                    // Named DLLs also have a DLL length that we ignore
+                    _ = overlayData.ReadUInt32(ref overlayOffset);
+                    dataStart += 4;
+                }
+            }
+
+            // Check if flags are consistent
+            if (!format.NoCrc)
+            {
+                // Unlike WiseUnpacker, we ignore the flag value here
+                _ = overlayData.ReadUInt32(ref overlayOffset);
+            }
+
+            // Ensure that we have an archive end
+            if (format.ArchiveEnd > 0)
+            {
+                overlayOffset = dataStart + format.ArchiveEnd;
+                int archiveEndLoaded = overlayData.ReadInt32(ref overlayOffset);
+                if (archiveEndLoaded != 0)
+                    format.ArchiveEnd = archiveEndLoaded;
+            }
+
+            // Skip to the start of the archive
+            overlayOffset = dataStart + format.ArchiveStart;
+
+            // Skip over the initialization text, if we expect it
+            if (format.InitText)
+            {
+                int initTextLength = overlayData.ReadByte(ref overlayOffset);
+                _ = overlayData.ReadBytes(ref overlayOffset, initTextLength);
+            }
+
+            // Cache the current offset in the overlay as the "start of data"
+            int offsetReal = overlayOffset;
+
+            // If the first entry is PKZIP, we assume it's an embedded zipfile
+            byte[] magic = overlayData.ReadBytes(ref overlayOffset, 4); overlayOffset -= 4;
+            bool pkzip = magic.StartsWith(new byte?[] { (byte)'P', (byte)'K' });
+
+            string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            Directory.CreateDirectory(tempPath);
+
+            // If we have PKZIP
+            if (pkzip)
+            {
+                string tempFile = Path.Combine(tempPath, "WISEDATA.zip");
+                using (Stream tempStream = File.Open(tempFile, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
+                {
+                    tempStream.Write(overlayData, overlayOffset, overlayData.Length - overlayOffset);
+                }
+            }
+
+            // If we have DEFLATE -- TODO: Port implementation here or use DeflateStream
+            else
+            {
+                Wise unpacker = new Wise();
+                unpacker.ExtractTo(file, tempPath);
+            }
+
+            return tempPath;
         }
 
         /// <summary>

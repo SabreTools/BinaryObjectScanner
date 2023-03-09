@@ -10,7 +10,7 @@ namespace BurnOutSharp.PackerType
 {
     // TODO: Add extraction
     // TODO: Verify that all versions are detected
-    public class AdvancedInstaller : IPortableExecutableCheck, IScannable
+    public class AdvancedInstaller : IExtractable, IPortableExecutableCheck, IScannable
     {
         /// <inheritdoc/>
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
@@ -28,6 +28,24 @@ namespace BurnOutSharp.PackerType
                     return "Caphyon Advanced Installer";
             }
 
+            return null;
+        }
+
+        /// <inheritdoc/>
+        public string Extract(string file)
+        {
+            if (!File.Exists(file))
+                return null;
+
+            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                return Extract(fs, file);
+            }
+        }
+
+        /// <inheritdoc/>
+        public string Extract(Stream stream, string file)
+        {
             return null;
         }
 

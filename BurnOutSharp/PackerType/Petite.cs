@@ -41,7 +41,6 @@ namespace BurnOutSharp.PackerType
         /// <inheritdoc/>
         public string Extract(Stream stream, string file)
         {
-            // Create extraction based off Scan
             return null;
         }
 
