@@ -13,6 +13,10 @@ namespace BurnOutSharp.FileType
     /// <summary>
     /// Executable or library
     /// </summary>
+    /// TODO: We need to figure out a way to avoid passing in the Scanner object to all IScannable implementations.
+    /// In order to achiveve this, Executable specifically needs a way of supporting the Packer types (IExtractable) in such
+    /// a way that we don't scan the files two times over. Somehow, we need to make Executable IExtractable as well and then
+    /// take the outputs of `Scan` and figure out if we need to try extracting or not.
     public class Executable : IScannable
     {
         /// <inheritdoc/>
