@@ -25,12 +25,9 @@ namespace BurnOutSharp.FileType
         /// <inheritdoc/>
         public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, Stream stream, string file)
         {
-            // If the MKB file itself fails
+            // If the BD+ file itself fails
             try
             {
-                string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-                Directory.CreateDirectory(tempPath);
-
                 // Create the wrapper
                 BinaryObjectScanner.Wrappers.BDPlusSVM svm = BinaryObjectScanner.Wrappers.BDPlusSVM.Create(stream);
                 if (svm == null)

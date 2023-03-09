@@ -29,9 +29,6 @@ namespace BurnOutSharp.FileType
             // If the MKB file itself fails
             try
             {
-                string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-                Directory.CreateDirectory(tempPath);
-
                 // Create the wrapper
                 BinaryObjectScanner.Wrappers.AACSMediaKeyBlock mkb = BinaryObjectScanner.Wrappers.AACSMediaKeyBlock.Create(stream);
                 if (mkb == null)
