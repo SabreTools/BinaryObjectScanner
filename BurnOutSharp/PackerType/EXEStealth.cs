@@ -1,7 +1,5 @@
-﻿using System.Collections.Concurrent;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using BurnOutSharp.Interfaces;
 using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Matching;
 using BinaryObjectScanner.Wrappers;
@@ -12,7 +10,7 @@ namespace BurnOutSharp.PackerType
     // TODO: Detect 3.15 and up (maybe looking for `Metamorphism`)
     // TODO: Add extraction
     // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
-    public class EXEStealth : IContentCheck, IExtractable, IPortableExecutableCheck, IScannable
+    public class EXEStealth : IContentCheck, IExtractable, IPortableExecutableCheck
     {
         /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includeDebug)
@@ -90,24 +88,6 @@ namespace BurnOutSharp.PackerType
 
         /// <inheritdoc/>
         public string Extract(Stream stream, string file)
-        {
-            return null;
-        }
-
-        /// <inheritdoc/>
-        public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, string file)
-        {
-            if (!File.Exists(file))
-                return null;
-
-            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
-                return Scan(scanner, fs, file);
-            }
-        }
-
-        /// <inheritdoc/>
-        public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, Stream stream, string file)
         {
             return null;
         }

@@ -1,8 +1,6 @@
-﻿using System.Collections.Concurrent;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using BurnOutSharp.Interfaces;
 using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Matching;
 using BinaryObjectScanner.Wrappers;
@@ -11,7 +9,7 @@ namespace BurnOutSharp.PackerType
 {
     // TODO: Add extraction - https://github.com/dscharrer/InnoExtract
     // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
-    public class InnoSetup : IExtractable, INewExecutableCheck, IPortableExecutableCheck, IScannable
+    public class InnoSetup : IExtractable, INewExecutableCheck, IPortableExecutableCheck
     {
         /// <inheritdoc/>
         public string CheckNewExecutable(string file, NewExecutable nex, bool includeDebug)
@@ -73,24 +71,6 @@ namespace BurnOutSharp.PackerType
 
         /// <inheritdoc/>
         public string Extract(Stream stream, string file)
-        {
-            return null;
-        }
-
-        /// <inheritdoc/>
-        public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, string file)
-        {
-            if (!File.Exists(file))
-                return null;
-
-            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
-                return Scan(scanner, fs, file);
-            }
-        }
-
-        /// <inheritdoc/>
-        public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, Stream stream, string file)
         {
             return null;
         }

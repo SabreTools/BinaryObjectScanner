@@ -4,9 +4,9 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using BurnOutSharp.Interfaces;
+using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Wrappers;
 using static BinaryObjectScanner.Utilities.Dictionary;
-using BinaryObjectScanner.Interfaces;
 
 namespace BurnOutSharp.FileType
 {
@@ -68,17 +68,6 @@ namespace BurnOutSharp.FileType
                     if (ShouldAddProtection(contentCheckClass, scanner.ScanPackers, protection))
                         AppendToDictionary(protections, file, protection);
 
-                    // If we have an IScannable implementation
-                    if (contentCheckClass is IScannable scannable)
-                    {
-                        if (file != null && !string.IsNullOrEmpty(protection))
-                        {
-                            var subProtections = scannable.Scan(scanner, file);
-                            PrependToKeys(subProtections, file);
-                            AppendToDictionary(protections, subProtections);
-                        }
-                    }
-
                     // If we have an IExtractable implementation
                     if (contentCheckClass is IExtractable extractable)
                     {
@@ -135,17 +124,6 @@ namespace BurnOutSharp.FileType
                     if (ShouldAddProtection(contentCheckClass, scanner.ScanPackers, protection))
                         AppendToDictionary(protections, file, protection);
 
-                    // If we have an IScannable implementation
-                    if (contentCheckClass is IScannable scannable)
-                    {
-                        if (file != null && !string.IsNullOrEmpty(protection))
-                        {
-                            var subProtections = scannable.Scan(scanner, file);
-                            PrependToKeys(subProtections, file);
-                            AppendToDictionary(protections, subProtections);
-                        }
-                    }
-
                     // If we have an IExtractable implementation
                     if (contentCheckClass is IExtractable extractable)
                     {
@@ -201,17 +179,6 @@ namespace BurnOutSharp.FileType
                     string protection = contentCheckClass.CheckPortableExecutable(file, pex, scanner.IncludeDebug);
                     if (ShouldAddProtection(contentCheckClass, scanner.ScanPackers, protection))
                         AppendToDictionary(protections, file, protection);
-
-                    // If we have an IScannable implementation
-                    if (contentCheckClass is IScannable scannable)
-                    {
-                        if (file != null && !string.IsNullOrEmpty(protection))
-                        {
-                            var subProtections = scannable.Scan(scanner, file);
-                            PrependToKeys(subProtections, file);
-                            AppendToDictionary(protections, subProtections);
-                        }
-                    }
 
                     // If we have an IExtractable implementation
                     if (contentCheckClass is IExtractable extractable)

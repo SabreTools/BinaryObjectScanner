@@ -1,8 +1,6 @@
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using BurnOutSharp.Interfaces;
 using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Wrappers;
 
@@ -10,7 +8,7 @@ namespace BurnOutSharp.PackerType
 {
     // TODO: Add extraction
     // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
-    public class GenteeInstaller : IExtractable, IPortableExecutableCheck, IScannable
+    public class GenteeInstaller : IExtractable, IPortableExecutableCheck
     {
         /// <inheritdoc/>
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
@@ -48,24 +46,6 @@ namespace BurnOutSharp.PackerType
 
         /// <inheritdoc/>
         public string Extract(Stream stream, string file)
-        {
-            return null;
-        }
-
-        /// <inheritdoc/>
-        public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, string file)
-        {
-            if (!File.Exists(file))
-                return null;
-
-            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
-                return Scan(scanner, fs, file);
-            }
-        }
-
-        /// <inheritdoc/>
-        public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, Stream stream, string file)
         {
             return null;
         }

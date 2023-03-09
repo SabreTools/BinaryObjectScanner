@@ -1,20 +1,17 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using BurnOutSharp.Interfaces;
 using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Matching;
 using BinaryObjectScanner.Utilities;
 using BinaryObjectScanner.Wrappers;
-using static BinaryObjectScanner.Utilities.Dictionary;
 using Wise = WiseUnpacker.WiseUnpacker;
 
 namespace BurnOutSharp.PackerType
 {
     // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
-    public class WiseInstaller : IExtractable, INewExecutableCheck, IPortableExecutableCheck, IScannable
+    public class WiseInstaller : IExtractable, INewExecutableCheck, IPortableExecutableCheck
     {
         /// <inheritdoc/>
         public string CheckNewExecutable(string file, NewExecutable nex, bool includeDebug)
@@ -103,44 +100,6 @@ namespace BurnOutSharp.PackerType
             PortableExecutable pex = PortableExecutable.Create(stream);
             if (pex != null)
                 return ExtractPortableExecutable(pex, file);
-
-            return null;
-        }
-
-        /// <inheritdoc/>
-        public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, string file)
-        {
-            if (!File.Exists(file))
-                return null;
-
-            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
-                return Scan(scanner, fs, file);
-            }
-        }
-
-        /// <inheritdoc/>
-        public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, Stream stream, string file)
-        {
-            // If the installer file itself fails
-            try
-            {
-                // Try to parse as a New Executable
-                NewExecutable nex = NewExecutable.Create(stream);
-                if (nex != null)
-                    return ScanNewExecutable(scanner, nex, file);
-
-                // Try to parse as a Portable Executable
-                PortableExecutable pex = PortableExecutable.Create(stream);
-                if (pex != null)
-                    return ScanPortableExecutable(scanner, pex, file);
-
-                return null;
-            }
-            catch (Exception ex)
-            {
-                if (scanner.IncludeDebug) Console.WriteLine(ex);
-            }
 
             return null;
         }
@@ -250,51 +209,6 @@ namespace BurnOutSharp.PackerType
         /// <summary>
         /// Attempt to extract Wise data from a New Executable
         /// </summary>
-        /// <param name="scanner">Scanner object for state tracking</param>
-        /// <param name="nex">New executable to check</param>
-        /// <param name="file">Path to the input file</param>
-        /// <returns>True if it matches a known version, false otherwise</returns>
-        private ConcurrentDictionary<string, ConcurrentQueue<string>> ScanNewExecutable(Scanner scanner, NewExecutable nex, string file)
-        {
-            // If the installer file itself fails
-            try
-            {
-                string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-                Directory.CreateDirectory(tempPath);
-
-                // TODO: Try to find where the file data lives and how to get it
-                Wise unpacker = new Wise();
-                unpacker.ExtractTo(file, tempPath);
-
-                // Collect and format all found protections
-                var protections = scanner.GetProtections(tempPath);
-
-                // If temp directory cleanup fails
-                try
-                {
-                    Directory.Delete(tempPath, true);
-                }
-                catch (Exception ex)
-                {
-                    if (scanner.IncludeDebug) Console.WriteLine(ex);
-                }
-
-                // Remove temporary path references
-                StripFromKeys(protections, tempPath);
-
-                return protections;
-            }
-            catch (Exception ex)
-            {
-                if (scanner.IncludeDebug) Console.WriteLine(ex);
-            }
-
-            return null;
-        }
-
-        /// <summary>
-        /// Attempt to extract Wise data from a New Executable
-        /// </summary>
         /// <param name="nex">New executable to check</param>
         /// <param name="file">Path to the input file</param>
         /// <returns>True if it matches a known version, false otherwise</returns>
@@ -308,154 +222,6 @@ namespace BurnOutSharp.PackerType
             unpacker.ExtractTo(file, tempPath);
 
             return tempPath;
-        }
-
-        /// <summary>
-        /// Attempt to extract Wise data from a Portable Executable
-        /// </summary>
-        /// <param name="scanner">Scanner object for state tracking</param>
-        /// <param name="pex">Portable executable to check</param>
-        /// <param name="file">Path to the input file</param>
-        /// <returns>True if it matches a known version, false otherwise</returns>
-        private ConcurrentDictionary<string, ConcurrentQueue<string>> ScanPortableExecutable(Scanner scanner, PortableExecutable pex, string file)
-        {
-            // If the installer file itself fails
-            try
-            {
-                string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-                Directory.CreateDirectory(tempPath);
-
-                // Get the matching PE format
-                var format = GetPEFormat(pex);
-                if (format == null)
-                    return null;
-
-                // Get the overlay data for easier reading
-                int overlayOffset = 0, dataStart = 0;
-                byte[] overlayData = pex.OverlayData;
-                if (overlayData == null)
-                    return null;
-
-                // Skip over the additional DLL name, if we expect it
-                if (format.Dll)
-                {
-                    // Read the name length
-                    byte dllNameLength = overlayData.ReadByte(ref overlayOffset);
-                    dataStart++;
-
-                    // Read the name, if it exists
-                    if (dllNameLength != 0)
-                    {
-                        // Ignore the name for now
-                        _ = overlayData.ReadBytes(ref overlayOffset, dllNameLength);
-                        dataStart += dllNameLength;
-
-                        // Named DLLs also have a DLL length that we ignore
-                        _ = overlayData.ReadUInt32(ref overlayOffset);
-                        dataStart += 4;
-                    }
-                }
-
-                // Check if flags are consistent
-                if (!format.NoCrc)
-                {
-                    // Unlike WiseUnpacker, we ignore the flag value here
-                    _ = overlayData.ReadUInt32(ref overlayOffset);
-                }
-
-                // Ensure that we have an archive end
-                if (format.ArchiveEnd > 0)
-                {
-                    overlayOffset = dataStart + format.ArchiveEnd;
-                    int archiveEndLoaded = overlayData.ReadInt32(ref overlayOffset);
-                    if (archiveEndLoaded != 0)
-                        format.ArchiveEnd = archiveEndLoaded;
-                }
-
-                // Skip to the start of the archive
-                overlayOffset = dataStart + format.ArchiveStart;
-
-                // Skip over the initialization text, if we expect it
-                if (format.InitText)
-                {
-                    int initTextLength = overlayData.ReadByte(ref overlayOffset);
-                    _ = overlayData.ReadBytes(ref overlayOffset, initTextLength);
-                }
-
-                // Cache the current offset in the overlay as the "start of data"
-                int offsetReal = overlayOffset;
-
-                // If the first entry is PKZIP, we assume it's an embedded zipfile
-                byte[] magic = overlayData.ReadBytes(ref overlayOffset, 4); overlayOffset -= 4;
-                bool pkzip = magic.StartsWith(new byte?[] { (byte)'P', (byte)'K' });
-
-                // If we have PKZIP
-                if (pkzip)
-                {
-                    try
-                    {
-                        string tempFile = Path.Combine(tempPath, "WISEDATA.zip");
-                        using (Stream tempStream = File.Open(tempFile, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
-                        {
-                            tempStream.Write(overlayData, overlayOffset, overlayData.Length - overlayOffset);
-                        }
-
-                        // Collect and format all found protections
-                        var protections = scanner.GetProtections(tempPath);
-
-                        // If temp directory cleanup fails
-                        try
-                        {
-                            Directory.Delete(tempPath, true);
-                        }
-                        catch (Exception ex)
-                        {
-                            if (scanner.IncludeDebug) Console.WriteLine(ex);
-                        }
-
-                        // Remove temporary path references
-                        StripFromKeys(protections, tempPath);
-
-                        return protections;
-                    }
-                    catch (Exception ex)
-                    {
-                        if (scanner.IncludeDebug) Console.WriteLine(ex);
-                        return null;
-                    }
-                }
-
-                // If we have DEFLATE -- TODO: Port implementation here or use DeflateStream
-                else
-                {
-                    Wise unpacker = new Wise();
-                    unpacker.ExtractTo(file, tempPath);
-
-                    // Collect and format all found protections
-                    var protections = scanner.GetProtections(tempPath);
-
-                    // If temp directory cleanup fails
-                    try
-                    {
-                        Directory.Delete(tempPath, true);
-                    }
-                    catch (Exception ex)
-                    {
-                        if (scanner.IncludeDebug) Console.WriteLine(ex);
-                    }
-
-                    // Remove temporary path references
-                    StripFromKeys(protections, tempPath);
-
-                    return protections;
-                }
-            }
-            catch (Exception ex)
-            {
-                if (scanner.IncludeDebug) Console.WriteLine(ex);
-            }
-
-            return null;
         }
 
         /// <summary>

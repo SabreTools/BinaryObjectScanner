@@ -1,14 +1,12 @@
 using System;
-using System.Collections.Concurrent;
 using System.IO;
-using BurnOutSharp.Interfaces;
 using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Wrappers;
 
 namespace BurnOutSharp.PackerType
 {
     // TODO: Add extraction, seems to primarily use MSZip compression.
-    public class IntelInstallationFramework : IExtractable, IPortableExecutableCheck, IScannable
+    public class IntelInstallationFramework : IExtractable, IPortableExecutableCheck
     {
         /// <inheritdoc/>
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
@@ -49,24 +47,6 @@ namespace BurnOutSharp.PackerType
 
         /// <inheritdoc/>
         public string Extract(Stream stream, string file)
-        {
-            return null;
-        }
-
-        /// <inheritdoc/>
-        public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, string file)
-        {
-            if (!File.Exists(file))
-                return null;
-
-            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
-                return Scan(scanner, fs, file);
-            }
-        }
-
-        /// <inheritdoc/>
-        public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, Stream stream, string file)
         {
             return null;
         }
