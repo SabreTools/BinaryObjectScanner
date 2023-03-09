@@ -59,7 +59,18 @@ namespace BurnOutSharp.ProtectionType
             bool stxt371Section = pex.ContainsSection("stxt371", exact: true);
             bool stxt774Section = pex.ContainsSection("stxt774", exact: true);
             if (stxt371Section || stxt774Section)
-                return $"SafeDisc 2+";
+            {
+                int entryPointIndex = pex.FindEntryPointSectionIndex();
+                string entryPointSectionName = pex.SectionNames[entryPointIndex];
+
+                // Check if the entry point is one of the known protected sections.
+                // If it isn't, the executable has likely been cracked to remove the protection, or has been corrupted or tampered with and is no longer functional.
+                // TODO: Check if both sections can be entry points.
+                if (entryPointSectionName == "stxt371" || entryPointSectionName == "stxt774")
+                    return "SafeDisc 2+";
+
+                return "SafeDisc 2+ (Entry point not present in a stxt* section. Executable is either unprotected or nonfunctional)";
+            }
 
             // Present on all "CLOKSPL.EXE" versions before SafeDisc 1.06.000. Found on Redump entries 61731 and 66004. 
             // Only found so far on SafeDisc 1.00.025-1.01.044, but the report is currently left generic due to the generic nature of the check.
