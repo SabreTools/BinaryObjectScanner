@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.IO;
 using BurnOutSharp.Interfaces;
+using BinaryObjectScanner.Interfaces;
 using SharpCompress.Compressors.Xz;
 using static BinaryObjectScanner.Utilities.Dictionary;
 
@@ -10,8 +11,27 @@ namespace BurnOutSharp.FileType
     /// <summary>
     /// xz archive
     /// </summary>
-    public class XZ : IScannable
+    public class XZ : IExtractable, IScannable
     {
+        /// <inheritdoc/>
+        public string Extract(string file)
+        {
+            if (!File.Exists(file))
+                return null;
+
+            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                return Extract(fs, file);
+            }
+        }
+
+        /// <inheritdoc/>
+        public string Extract(Stream stream, string file)
+        {
+            // Implement from existing Scan
+            return null;
+        }
+
         /// <inheritdoc/>
         public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, string file)
         {

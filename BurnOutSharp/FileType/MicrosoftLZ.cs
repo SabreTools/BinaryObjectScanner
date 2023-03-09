@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.IO;
 using BinaryObjectScanner.Compression;
 using BurnOutSharp.Interfaces;
+using BinaryObjectScanner.Interfaces;
 using static BinaryObjectScanner.Utilities.Dictionary;
 
 namespace BurnOutSharp.FileType
@@ -11,8 +12,27 @@ namespace BurnOutSharp.FileType
     /// Microsoft LZ-compressed Files (LZ32)
     /// </summary>
     /// <remarks>This is treated like an archive type due to the packing style</remarks>
-    public class MicrosoftLZ : IScannable
+    public class MicrosoftLZ : IExtractable, IScannable
     {
+        /// <inheritdoc/>
+        public string Extract(string file)
+        {
+            if (!File.Exists(file))
+                return null;
+
+            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                return Extract(fs, file);
+            }
+        }
+
+        /// <inheritdoc/>
+        public string Extract(Stream stream, string file)
+        {
+            // Implement from existing Scan
+            return null;
+        }
+
         /// <inheritdoc/>
         public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, string file)
         {

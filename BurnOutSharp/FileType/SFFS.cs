@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.IO;
 using BurnOutSharp.Interfaces;
+using BinaryObjectScanner.Interfaces;
 using static BinaryObjectScanner.Utilities.Dictionary;
 
 namespace BurnOutSharp.FileType
@@ -10,8 +11,27 @@ namespace BurnOutSharp.FileType
     /// StarForce Filesystem file
     /// </summary>
     /// <see href="https://forum.xentax.com/viewtopic.php?f=21&t=2084"/>
-    public class SFFS : IScannable
+    public class SFFS : IExtractable, IScannable
     {
+        /// <inheritdoc/>
+        public string Extract(string file)
+        {
+            if (!File.Exists(file))
+                return null;
+
+            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                return Extract(fs, file);
+            }
+        }
+
+        /// <inheritdoc/>
+        public string Extract(Stream stream, string file)
+        {
+            // Implement from existing Scan
+            return null;
+        }
+
         /// <inheritdoc/>
         public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, string file)
         {

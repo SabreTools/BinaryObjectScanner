@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.IO;
 using BurnOutSharp.Interfaces;
+using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Wrappers;
 using static BinaryObjectScanner.Utilities.Dictionary;
 
@@ -12,8 +13,27 @@ namespace BurnOutSharp.FileType
     /// </summary>
     /// <remarks>Specification available at <see href="http://download.microsoft.com/download/5/0/1/501ED102-E53F-4CE0-AA6B-B0F93629DDC6/Exchange/%5BMS-CAB%5D.pdf"/></remarks>
     /// <see href="https://github.com/wine-mirror/wine/tree/master/dlls/cabinet"/>
-    public class MicrosoftCAB : IScannable
+    public class MicrosoftCAB : IExtractable, IScannable
     {
+        /// <inheritdoc/>
+        public string Extract(string file)
+        {
+            if (!File.Exists(file))
+                return null;
+
+            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                return Extract(fs, file);
+            }
+        }
+
+        /// <inheritdoc/>
+        public string Extract(Stream stream, string file)
+        {
+            // Implement from existing Scan
+            return null;
+        }
+
         /// <inheritdoc/>
         public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, string file)
         {
