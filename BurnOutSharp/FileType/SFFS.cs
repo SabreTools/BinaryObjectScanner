@@ -28,7 +28,6 @@ namespace BurnOutSharp.FileType
         /// <inheritdoc/>
         public string Extract(Stream stream, string file)
         {
-            // Implement from existing Scan
             return null;
         }
 

@@ -30,8 +30,21 @@ namespace BurnOutSharp.FileType
         /// <inheritdoc/>
         public string Extract(Stream stream, string file)
         {
-            // Implement from existing Scan
-            return null;
+            // Open the cab file
+            var cabFile = MicrosoftCabinet.Create(stream);
+            if (cabFile == null)
+                return null;
+
+            // Create a temp output directory
+            string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            Directory.CreateDirectory(tempPath);
+
+            // If entry extraction fails
+            bool success = cabFile.ExtractAll(tempPath);
+            if (!success)
+                return null;
+
+            return tempPath;
         }
 
         /// <inheritdoc/>

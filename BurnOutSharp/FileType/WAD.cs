@@ -27,8 +27,19 @@ namespace BurnOutSharp.FileType
         /// <inheritdoc/>
         public string Extract(Stream stream, string file)
         {
-            // Implement from existing Scan
-            return null;
+            // Create the wrapper
+            BinaryObjectScanner.Wrappers.WAD wad = BinaryObjectScanner.Wrappers.WAD.Create(stream);
+            if (wad == null)
+                return null;
+
+            // Create a temp output directory
+            string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            Directory.CreateDirectory(tempPath);
+
+            // Loop through and extract all files
+            wad.ExtractAllLumps(tempPath);
+
+            return tempPath;
         }
 
         /// <inheritdoc/>

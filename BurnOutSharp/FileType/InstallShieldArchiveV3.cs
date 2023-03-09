@@ -29,8 +29,28 @@ namespace BurnOutSharp.FileType
         /// <inheritdoc/>
         public string Extract(Stream stream, string file)
         {
-            // Implement from existing Scan
-            return null;
+            // Create a temp output directory
+            string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            Directory.CreateDirectory(tempPath);
+
+            UnshieldSharp.Archive.InstallShieldArchiveV3 archive = new UnshieldSharp.Archive.InstallShieldArchiveV3(file);
+            foreach (CompressedFile cfile in archive.Files.Select(kvp => kvp.Value))
+            {
+                string tempFile = Path.Combine(tempPath, cfile.FullPath);
+                if (!Directory.Exists(Path.GetDirectoryName(tempFile)))
+                    Directory.CreateDirectory(Path.GetDirectoryName(tempFile));
+
+                (byte[] fileContents, string error) = archive.Extract(cfile.FullPath);
+                if (!string.IsNullOrWhiteSpace(error))
+                    continue;
+
+                using (FileStream fs = File.OpenWrite(tempFile))
+                {
+                    fs.Write(fileContents, 0, fileContents.Length);
+                }
+            }
+
+            return tempPath;
         }
 
         /// <inheritdoc/>

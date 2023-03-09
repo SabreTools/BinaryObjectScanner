@@ -29,8 +29,46 @@ namespace BurnOutSharp.FileType
         /// <inheritdoc/>
         public string Extract(Stream stream, string file)
         {
-            // Implement from existing Scan
-            return null;
+            // Create a temp output directory
+            string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            Directory.CreateDirectory(tempPath);
+
+            using (CompoundFile msi = new CompoundFile(stream, CFSUpdateMode.ReadOnly, CFSConfiguration.Default))
+            {
+                msi.RootStorage.VisitEntries((e) =>
+                {
+                    if (!e.IsStream)
+                        return;
+
+                    var str = msi.RootStorage.GetStream(e.Name);
+                    if (str == null)
+                        return;
+
+                    byte[] strData = str.GetData();
+                    if (strData == null)
+                        return;
+
+                    string decoded = DecodeStreamName(e.Name).TrimEnd('\0');
+                    byte[] nameBytes = Encoding.UTF8.GetBytes(e.Name);
+
+                    // UTF-8 encoding of 0x4840.
+                    if (nameBytes[0] == 0xe4 && nameBytes[1] == 0xa1 && nameBytes[2] == 0x80)
+                        decoded = decoded.Substring(3);
+
+                    foreach (char c in Path.GetInvalidFileNameChars())
+                    {
+                        decoded = decoded.Replace(c, '_');
+                    }
+
+                    string filename = Path.Combine(tempPath, decoded);
+                    using (Stream fs = File.OpenWrite(filename))
+                    {
+                        fs.Write(strData, 0, strData.Length);
+                    }
+                }, recursive: true);
+            }
+
+            return tempPath;
         }
 
         /// <inheritdoc/>

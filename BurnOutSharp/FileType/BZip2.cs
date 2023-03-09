@@ -29,8 +29,20 @@ namespace BurnOutSharp.FileType
         /// <inheritdoc/>
         public string Extract(Stream stream, string file)
         {
-            // Implement from existing Scan
-            return null;
+            // Create a temp output directory
+            string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            Directory.CreateDirectory(tempPath);
+
+            using (BZip2Stream bz2File = new BZip2Stream(stream, CompressionMode.Decompress, true))
+            {
+                string tempFile = Path.Combine(tempPath, Guid.NewGuid().ToString());
+                using (FileStream fs = File.OpenWrite(tempFile))
+                {
+                    bz2File.CopyTo(fs);
+                }
+            }
+
+            return tempPath;
         }
 
         /// <inheritdoc/>

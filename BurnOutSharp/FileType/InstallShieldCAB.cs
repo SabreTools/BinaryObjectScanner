@@ -29,8 +29,32 @@ namespace BurnOutSharp.FileType
         /// <inheritdoc/>
         public string Extract(Stream stream, string file)
         {
-            // Implement from existing Scan
-            return null;
+            // Create a temp output directory
+            string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            Directory.CreateDirectory(tempPath);
+
+            InstallShieldCabinet cabfile = InstallShieldCabinet.Open(file);
+            for (int i = 0; i < cabfile.FileCount; i++)
+            {
+                // Check if the file is valid first
+                if (!cabfile.FileIsValid(i))
+                    continue;
+
+                string tempFile;
+                try
+                {
+                    string filename = cabfile.FileName(i);
+                    tempFile = Path.Combine(tempPath, filename);
+                }
+                catch
+                {
+                    tempFile = Path.Combine(tempPath, $"BAD_FILENAME{i}");
+                }
+
+                cabfile.FileSave(i, tempFile);
+            }
+
+            return tempPath;
         }
 
         /// <inheritdoc/>

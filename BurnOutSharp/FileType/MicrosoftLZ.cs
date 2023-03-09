@@ -29,8 +29,33 @@ namespace BurnOutSharp.FileType
         /// <inheritdoc/>
         public string Extract(Stream stream, string file)
         {
-            // Implement from existing Scan
-            return null;
+            // Create a temp output directory
+            string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            Directory.CreateDirectory(tempPath);
+
+            byte[] data = LZ.Decompress(stream);
+
+            // Create the temp filename
+            string tempFile = "temp.bin";
+            if (!string.IsNullOrEmpty(file))
+            {
+                string expandedFilePath = LZ.GetExpandedName(file, out _);
+                tempFile = Path.GetFileName(expandedFilePath).TrimEnd('\0');
+                if (tempFile.EndsWith(".ex"))
+                    tempFile += "e";
+                else if (tempFile.EndsWith(".dl"))
+                    tempFile += "l";
+            }
+
+            tempFile = Path.Combine(tempPath, tempFile);
+
+            // Write the file data to a temp file
+            using (Stream tempStream = File.Open(tempFile, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
+            {
+                tempStream.Write(data, 0, data.Length);
+            }
+
+            return tempPath;
         }
 
         /// <inheritdoc/>
