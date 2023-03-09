@@ -15,30 +15,25 @@ namespace BurnOutSharp
     {
         #region Options
 
-        /// <summary>
-        /// Determines whether archives are decompressed and scanned
-        /// </summary>
-        public bool ScanArchives { get; private set; }
+        /// <inheritdoc cref="Options.ScanArchives"/>
+        public bool ScanArchives => options?.ScanArchives ?? false;
+
+        /// <inheritdoc cref="Options.ScanContents"/>
+        public bool ScanContents => options?.ScanContents ?? false;
+
+        /// <inheritdoc cref="Options.ScanPaths"/>
+        public bool ScanPackers => options?.ScanPackers ?? false;
+
+        /// <inheritdoc cref="Options.ScanArchives"/>
+        public bool ScanPaths => options?.ScanPaths ?? false;
+
+        /// <inheritdoc cref="Options.IncludeDebug"/>
+        public bool IncludeDebug => options?.IncludeDebug ?? false;
 
         /// <summary>
-        /// Determines if content matches are used or not
+        /// Options object for configuration
         /// </summary>
-        public bool ScanContents { get; private set; }
-
-        /// <summary>
-        /// Determines if packers are counted as detected protections or not
-        /// </summary>
-        public bool ScanPackers { get; private set; }
-
-        /// <summary>
-        /// Determines if path matches are used or not
-        /// </summary>
-        public bool ScanPaths { get; private set; }
-
-        /// <summary>
-        /// Determines if debug information is output or not
-        /// </summary>
-        public bool IncludeDebug { get; private set; }
+        private readonly Options options;
 
         #endregion
 
@@ -58,11 +53,15 @@ namespace BurnOutSharp
         /// <param name="fileProgress">Optional progress callback</param>
         public Scanner(bool scanArchives, bool scanContents, bool scanPackers, bool scanPaths, bool includeDebug, IProgress<ProtectionProgress> fileProgress = null)
         {
-            ScanArchives = scanArchives;
-            ScanContents = scanContents;
-            ScanPackers = scanPackers;
-            ScanPaths = scanPaths;
-            IncludeDebug = includeDebug;
+            this.options = new Options
+            {
+                ScanArchives = scanArchives,
+                ScanContents = scanContents,
+                ScanPackers = scanPackers,
+                ScanPaths = scanPaths,
+                IncludeDebug = includeDebug,
+            };
+
             this.fileProgress = fileProgress;
 
             // Register the codepages
