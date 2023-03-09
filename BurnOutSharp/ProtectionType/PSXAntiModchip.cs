@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using BurnOutSharp.Interfaces;
+using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Matching;
 
 namespace BurnOutSharp.ProtectionType

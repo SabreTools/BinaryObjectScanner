@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using BurnOutSharp.Interfaces;
+using BinaryObjectScanner.Interfaces;
 
 namespace BurnOutSharp.ProtectionType
 {

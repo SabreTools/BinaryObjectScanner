@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using BurnOutSharp.FileType;
-using BurnOutSharp.Interfaces;
+using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Wrappers;
 
 namespace BurnOutSharp.ProtectionType

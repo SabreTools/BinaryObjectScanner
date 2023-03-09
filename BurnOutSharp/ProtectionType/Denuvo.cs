@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using BurnOutSharp.Interfaces;
+using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Matching;
-using BurnOutSharp.Tools;
 using BinaryObjectScanner.Wrappers;
 
 namespace BurnOutSharp.ProtectionType
@@ -261,6 +260,7 @@ namespace BurnOutSharp.ProtectionType
 
             return null;
         }
+        
         /// <inheritdoc/>
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string> files)
         {

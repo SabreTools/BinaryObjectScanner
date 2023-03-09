@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.IO;
 using BurnOutSharp.Interfaces;
+using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Wrappers;
 
 namespace BurnOutSharp.PackerType

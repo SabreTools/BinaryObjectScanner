@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using BurnOutSharp.Interfaces;
-using BinaryObjectScanner.Matching;
+using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Wrappers;
 
 namespace BurnOutSharp.PackerType

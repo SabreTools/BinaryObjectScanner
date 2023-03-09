@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using BurnOutSharp.Interfaces;
-using BinaryObjectScanner.Matching;
+using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Wrappers;
 
 namespace BurnOutSharp.ProtectionType

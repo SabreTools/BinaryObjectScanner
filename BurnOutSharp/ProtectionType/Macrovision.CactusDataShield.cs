@@ -30,7 +30,7 @@ namespace BurnOutSharp.ProtectionType
     /// </summary>
     public partial class Macrovision
     {
-        /// <inheritdoc cref="Interfaces.IPortableExecutableCheck.CheckPortableExecutable(string, PortableExecutable, bool)"/>
+        /// <inheritdoc cref="BinaryObjectScanner.Interfaces.IPortableExecutableCheck.CheckPortableExecutable(string, PortableExecutable, bool)"/>
         internal string CactusDataShieldCheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
@@ -63,7 +63,7 @@ namespace BurnOutSharp.ProtectionType
             return null;
         }
 
-        /// <inheritdoc cref="Interfaces.IPathCheck.CheckDirectoryPath(string, IEnumerable{string})"/>
+        /// <inheritdoc cref="BinaryObjectScanner.Interfaces.IPathCheck.CheckDirectoryPath(string, IEnumerable{string})"/>
         internal ConcurrentQueue<string> CactusDataShieldCheckDirectoryPath(string path, IEnumerable<string> files)
         {
             // TODO: Verify if these are OR or AND
@@ -90,7 +90,7 @@ namespace BurnOutSharp.ProtectionType
             return MatchUtil.GetAllMatches(files, matchers, any: false);
         }
 
-        /// <inheritdoc cref="Interfaces.IPathCheck.CheckFilePath(string)"/>
+        /// <inheritdoc cref="BinaryObjectScanner.Interfaces.IPathCheck.CheckFilePath(string)"/>
         internal string CactusDataShieldCheckFilePath(string path)
         {
             var matchers = new List<PathMatchSet>

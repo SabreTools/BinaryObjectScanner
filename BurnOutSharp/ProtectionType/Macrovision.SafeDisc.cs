@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using BinaryObjectScanner.Matching;
-using BinaryObjectScanner.Utilities;
 using BinaryObjectScanner.Wrappers;
 using static BinaryObjectScanner.Utilities.Hashing;
 
@@ -30,7 +29,7 @@ namespace BurnOutSharp.ProtectionType
     /// </summary>
     public partial class Macrovision
     {
-        /// <inheritdoc cref="Interfaces.IPortableExecutableCheck.CheckPortableExecutable(string, PortableExecutable, bool)"/>
+        /// <inheritdoc cref="BinaryObjectScanner.Interfaces.IPortableExecutableCheck.CheckPortableExecutable(string, PortableExecutable, bool)"/>
         internal string SafeDiscCheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
@@ -97,7 +96,7 @@ namespace BurnOutSharp.ProtectionType
             return null;
         }
 
-        /// <inheritdoc cref="Interfaces.IPathCheck.CheckDirectoryPath(string, IEnumerable{string})"/>
+        /// <inheritdoc cref="BinaryObjectScanner.Interfaces.IPathCheck.CheckDirectoryPath(string, IEnumerable{string})"/>
         internal ConcurrentQueue<string> SafeDiscCheckDirectoryPath(string path, IEnumerable<string> files)
         {
             var matchers = new List<PathMatchSet>
@@ -206,7 +205,7 @@ namespace BurnOutSharp.ProtectionType
             return MatchUtil.GetAllMatches(files, matchers, any: false);
         }
 
-        /// <inheritdoc cref="Interfaces.IPathCheck.CheckFilePath(string)"/>
+        /// <inheritdoc cref="BinaryObjectScanner.Interfaces.IPathCheck.CheckFilePath(string)"/>
         internal string SafeDiscCheckFilePath(string path)
         {
             var matchers = new List<PathMatchSet>

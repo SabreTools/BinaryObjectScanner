@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
 
-namespace BurnOutSharp.Interfaces
+namespace BinaryObjectScanner.Interfaces
 {
     /// <summary>
     /// Check a file or directory path for protection

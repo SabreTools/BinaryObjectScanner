@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using BurnOutSharp.Interfaces;
+using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Matching;
 using BinaryObjectScanner.Utilities;
 using BinaryObjectScanner.Wrappers;
-using System.Xml.Linq;
 using System;
 
 namespace BurnOutSharp.ProtectionType

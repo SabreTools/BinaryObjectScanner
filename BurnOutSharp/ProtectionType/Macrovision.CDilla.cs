@@ -33,7 +33,7 @@ namespace BurnOutSharp.ProtectionType
     /// </summary>
     public partial class Macrovision
     {
-        /// <inheritdoc cref="Interfaces.INewExecutableCheck.CheckNewExecutable(string, NewExecutable, bool)"/>
+        /// <inheritdoc cref="BinaryObjectScanner.Interfaces.INewExecutableCheck.CheckNewExecutable(string, NewExecutable, bool)"/>
         internal string CDillaCheckNewExecutable(string file, NewExecutable nex, bool includeDebug)
         {
             // Check we have a valid executable
@@ -63,7 +63,7 @@ namespace BurnOutSharp.ProtectionType
             return null;
         }
 
-        /// <inheritdoc cref="Interfaces.IPortableExecutableCheck.CheckPortableExecutable(string, PortableExecutable, bool)"/>
+        /// <inheritdoc cref="BinaryObjectScanner.Interfaces.IPortableExecutableCheck.CheckPortableExecutable(string, PortableExecutable, bool)"/>
         internal string CDillaCheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         { 
             // Get the sections from the executable, if possible
@@ -150,7 +150,7 @@ namespace BurnOutSharp.ProtectionType
             return null;
         }
 
-        /// <inheritdoc cref="Interfaces.IPathCheck.CheckDirectoryPath(string, IEnumerable{string})"/>
+        /// <inheritdoc cref="BinaryObjectScanner.Interfaces.IPathCheck.CheckDirectoryPath(string, IEnumerable{string})"/>
         internal ConcurrentQueue<string> CDillaCheckDirectoryPath(string path, IEnumerable<string> files)
         {
             var matchers = new List<PathMatchSet>
@@ -193,7 +193,7 @@ namespace BurnOutSharp.ProtectionType
             return MatchUtil.GetAllMatches(files, matchers, any: false);
         }
 
-        /// <inheritdoc cref="Interfaces.IPathCheck.CheckFilePath(string)"/>
+        /// <inheritdoc cref="BinaryObjectScanner.Interfaces.IPathCheck.CheckFilePath(string)"/>
         internal string CDillaCheckFilePath(string path)
         {
             var matchers = new List<PathMatchSet>

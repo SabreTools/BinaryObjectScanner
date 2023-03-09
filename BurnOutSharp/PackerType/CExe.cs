@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using BinaryObjectScanner.Compression;
 using BurnOutSharp.Interfaces;
+using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Matching;
 using BinaryObjectScanner.Wrappers;
 using ICSharpCode.SharpZipLib.Zip.Compression;

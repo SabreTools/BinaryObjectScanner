@@ -1,19 +1,19 @@
 ﻿using BinaryObjectScanner.Wrappers;
 
-namespace BurnOutSharp.Interfaces
+namespace BinaryObjectScanner.Interfaces
 {
     /// <summary>
-    /// Check a Portable Executable (PE) for protection
+    /// Check a New Executable (NE) for protection
     /// </summary>
-    public interface IPortableExecutableCheck
+    public interface INewExecutableCheck
     {
         /// <summary>
         /// Check a path for protections based on file contents
         /// </summary>
         /// <param name="file">File to check for protection indicators</param>
-        /// <param name="pex">PortableExecutable representing the read-in file</param>
+        /// <param name="nex">NewExecutable representing the read-in file</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
         /// <returns>String containing any protections found in the file</returns>
-        string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug);
+        string CheckNewExecutable(string file, NewExecutable nex, bool includeDebug);
     }
 }

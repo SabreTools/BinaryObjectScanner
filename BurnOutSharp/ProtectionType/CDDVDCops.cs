@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using BurnOutSharp.Interfaces;
+using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Matching;
 using BinaryObjectScanner.Wrappers;
 
@@ -41,9 +41,8 @@ namespace BurnOutSharp.ProtectionType
 
     public class CDDVDCops : IContentCheck, INewExecutableCheck, IPathCheck, IPortableExecutableCheck
     {
-        /// <inheritdoc/>
-
         // TODO: Investigate reference to "CD32COPS.DLL" in "WETFLIPP.QZ_" in IA item "Triada_Russian_DVD_Complete_Collection_of_Erotic_Games".
+        /// <inheritdoc/>
         public string CheckContents(string file, byte[] fileContent, bool includeDebug)
         {
             // TODO: Obtain a sample to find where this string is in a typical executable
