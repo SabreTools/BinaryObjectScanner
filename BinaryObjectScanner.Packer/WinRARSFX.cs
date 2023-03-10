@@ -6,7 +6,7 @@ using BinaryObjectScanner.Wrappers;
 using SharpCompress.Archives;
 using SharpCompress.Archives.Rar;
 
-namespace BurnOutSharp.PackerType
+namespace BinaryObjectScanner.Packer
 {
     public class WinRARSFX : IExtractable, IPortableExecutableCheck
     {

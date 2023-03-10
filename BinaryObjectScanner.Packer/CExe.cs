@@ -8,7 +8,7 @@ using BinaryObjectScanner.Matching;
 using BinaryObjectScanner.Wrappers;
 using ICSharpCode.SharpZipLib.Zip.Compression;
 
-namespace BurnOutSharp.PackerType
+namespace BinaryObjectScanner.Packer
 {
     // The official website for CExe also includes the source code (which does have to be retrieved by the Wayback Machine)
     // http://www.scottlu.com/Content/CExe.html

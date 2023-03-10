@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Wrappers;
 
-namespace BurnOutSharp.PackerType
+namespace BinaryObjectScanner.Packer
 {
     // TODO: Add extraction
     // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt

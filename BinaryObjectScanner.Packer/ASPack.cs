@@ -5,7 +5,7 @@ using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Matching;
 using BinaryObjectScanner.Wrappers;
 
-namespace BurnOutSharp.PackerType
+namespace BinaryObjectScanner.Packer
 {
     // TODO: Add extraction
     public class ASPack : IExtractable, IPortableExecutableCheck

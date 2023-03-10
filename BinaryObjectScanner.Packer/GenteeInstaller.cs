@@ -4,10 +4,11 @@ using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Wrappers;
 
-namespace BurnOutSharp.PackerType
+namespace BinaryObjectScanner.Packer
 {
     // TODO: Add extraction
-    public class NSIS : IExtractable, IPortableExecutableCheck
+    // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
+    public class GenteeInstaller : IExtractable, IPortableExecutableCheck
     {
         /// <inheritdoc/>
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
@@ -17,16 +18,15 @@ namespace BurnOutSharp.PackerType
             if (sections == null)
                 return null;
 
-            string description = pex.AssemblyDescription;
-            if (!string.IsNullOrWhiteSpace(description) && description.StartsWith("Nullsoft Install System"))
-                return $"NSIS {description.Substring("Nullsoft Install System".Length).Trim()}";
-
             // Get the .data/DATA section strings, if they exist
             List<string> strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
             if (strs != null)
             {
-                if (strs.Any(s => s.Contains("NullsoftInst")))
-                    return "NSIS";
+                if (strs.Any(s => s.Contains("Gentee installer")))
+                    return "Gentee Installer";
+
+                if (strs.Any(s => s.Contains("ginstall.dll")))
+                    return "Gentee Installer";
             }
 
             return null;

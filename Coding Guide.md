@@ -320,7 +320,6 @@ This section contains information on project and class organization principles t
 | `BurnOutSharp` | One file per class. See below for details on subdirectories. |
 | `BurnOutSharp/External` | One directory per external project. |
 | `BurnOutSharp/FileType` | One file per file type. |
-| `BurnOutSharp/PackerType` | At least one file per packer type. Partial classes allowed. |
 | `BurnOutSharp/Tools` | Two files - one for extension methods and one for utilities. |
 | `BinaryObjectScanner.ASN1` | Flat directory structure. |
 | `BinaryObjectScanner.Builders` | One file per executable type. |
@@ -328,6 +327,7 @@ This section contains information on project and class organization principles t
 | `BinaryObjectScanner.Interfaces` | One file per interface. |
 | `BinaryObjectScanner.Matching` | Flat directory structure. Include interfaces and base classes. |
 | `BinaryObjectScanner.Models` | One directory per executable type. One file per object model. |
+| `BinaryObjectScanner.Packer` | At least one file per packer type. Partial classes allowed. |
 | `BinaryObjectScanner.Protection` | At least one file per protection type. Partial classes allowed. |
 | `BinaryObjectScanner.Utilities` | Flat directory structure. |
 | `BinaryObjectScanner.Wrappers` | One file per executable type. Common functionality goes in `WrapperBase.cs`. |
@@ -344,7 +344,6 @@ This section contains information on in-code organization principles that depend
 | --- | --- |
 | `BurnOutSharp` | Varies from file to file. |
 | `BurnOutSharp/FileType` | `IExtractable` implementations, `IScannable` implementations, helper methods. |
-| `BurnOutSharp/PackerType` | `IContentCheck` implementations, `ILinearExecutableCheck` implementations, `INewExecutableCheck` implementations, `IPortableExecutableCheck` implementations, `IPathCheck` implementations, `IExtractable` implementations, helper methods. |
 | `BurnOutSharp/Tools` | Methods grouped by function. Regions ordered alphabetically. |
 | `BinaryObjectScanner.ASN1` | Partial classes suggested for different implmentations. |
 | `BinaryObjectScanner.Builders` | Two copies of each non-generic method: one for byte arrays and one for Streams. |
@@ -352,6 +351,7 @@ This section contains information on in-code organization principles that depend
 | `BinaryObjectScanner.Interfaces` | Methods ordered alphabetically. |
 | `BinaryObjectScanner.Matching` | Varies from file to file. |
 | `BinaryObjectScanner.Models` | No methods at all, just properties. |
+| `BinaryObjectScanner.Packer` | `IContentCheck` implementations, `ILinearExecutableCheck` implementations, `INewExecutableCheck` implementations, `IPortableExecutableCheck` implementations, `IPathCheck` implementations, `IExtractable` implementations, helper methods. |
 | `BinaryObjectScanner.Protection` | `IContentCheck` implementations, `ILinearExecutableCheck` implementations, `INewExecutableCheck` implementations, `IPortableExecutableCheck` implementations, `IPathCheck` implementations, `IExtractable` implementations, helper methods. |
 | `BinaryObjectScanner.Utilities` | Varies from file to file. |
 | `BurnOutSharp.Wrappers` | Follow region and method grouping from existing wrappers. |

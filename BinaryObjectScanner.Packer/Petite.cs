@@ -1,13 +1,12 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Wrappers;
 
-namespace BurnOutSharp.PackerType
+namespace BinaryObjectScanner.Packer
 {
     // TODO: Add extraction
-    public class dotFuscator : IExtractable, IPortableExecutableCheck
+    // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
+    public class PEtite : IExtractable, IPortableExecutableCheck
     {
         /// <inheritdoc/>
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
@@ -17,13 +16,10 @@ namespace BurnOutSharp.PackerType
             if (sections == null)
                 return null;
 
-            // Get the .text section strings, if they exist
-            List<string> strs = pex.GetFirstSectionStrings(".text");
-            if (strs != null)
-            {
-                if (strs.Any(s => s.Contains("DotfuscatorAttribute")))
-                    return "dotFuscator";
-            }
+            // Get the .petite section, if it exists -- TODO: Is there a version number that can be found?
+            bool petiteSection = pex.ContainsSection(".petite", exact: true);
+            if (petiteSection)
+                return "PEtite";
 
             return null;
         }

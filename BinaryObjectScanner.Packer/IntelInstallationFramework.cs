@@ -1,14 +1,12 @@
-using System.Collections.Generic;
+using System;
 using System.IO;
-using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Wrappers;
 
-namespace BurnOutSharp.PackerType
+namespace BinaryObjectScanner.Packer
 {
-    // TODO: Add extraction
-    // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
-    public class GenteeInstaller : IExtractable, IPortableExecutableCheck
+    // TODO: Add extraction, seems to primarily use MSZip compression.
+    public class IntelInstallationFramework : IExtractable, IPortableExecutableCheck
     {
         /// <inheritdoc/>
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
@@ -18,15 +16,18 @@ namespace BurnOutSharp.PackerType
             if (sections == null)
                 return null;
 
-            // Get the .data/DATA section strings, if they exist
-            List<string> strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
-            if (strs != null)
+            string name = pex.FileDescription;
+            if (name?.Equals("Intel(R) Installation Framework", StringComparison.OrdinalIgnoreCase) == true
+                || name?.Equals("Intel Installation Framework", StringComparison.OrdinalIgnoreCase) == true)
             {
-                if (strs.Any(s => s.Contains("Gentee installer")))
-                    return "Gentee Installer";
+                return $"Intel Installation Framework {pex.GetInternalVersion()}";
+            }
 
-                if (strs.Any(s => s.Contains("ginstall.dll")))
-                    return "Gentee Installer";
+            name = pex.ProductName;
+            if (name?.Equals("Intel(R) Installation Framework", StringComparison.OrdinalIgnoreCase) == true
+                || name?.Equals("Intel Installation Framework", StringComparison.OrdinalIgnoreCase) == true)
+            {
+                return $"Intel Installation Framework {pex.GetInternalVersion()}";
             }
 
             return null;

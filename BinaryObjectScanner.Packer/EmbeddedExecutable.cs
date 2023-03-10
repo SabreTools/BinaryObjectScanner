@@ -5,7 +5,7 @@ using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Matching;
 using BinaryObjectScanner.Wrappers;
 
-namespace BurnOutSharp.PackerType
+namespace BinaryObjectScanner.Packer
 {
     /// <summary>
     /// Though not technically a packer, this detection is for any executables that include

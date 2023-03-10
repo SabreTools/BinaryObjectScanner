@@ -4,7 +4,7 @@ using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Matching;
 using BinaryObjectScanner.Wrappers;
 
-namespace BurnOutSharp.PackerType
+namespace BinaryObjectScanner.Packer
 {
     // TODO: Figure out how to more granularly determine versions like PiD
     // TODO: Detect 3.15 and up (maybe looking for `Metamorphism`)

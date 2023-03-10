@@ -120,7 +120,9 @@ namespace BurnOutSharp
         /// Initialize all implementations of a type
         /// </summary>
         private static IEnumerable<T> InitCheckClasses<T>()
-            => InitCheckClasses<T>(Assembly.GetExecutingAssembly()).Concat(InitCheckClasses<T>(typeof(BinaryObjectScanner.Protection._DUMMY).Assembly));
+            => InitCheckClasses<T>(Assembly.GetExecutingAssembly())
+                .Concat(InitCheckClasses<T>(typeof(BinaryObjectScanner.Packer._DUMMY).Assembly))
+                .Concat(InitCheckClasses<T>(typeof(BinaryObjectScanner.Protection._DUMMY).Assembly));
 
         /// <summary>
         /// Initialize all implementations of a type

@@ -3,7 +3,7 @@ using System.IO;
 using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Wrappers;
 
-namespace BurnOutSharp.PackerType
+namespace BinaryObjectScanner.Packer
 {
     // TODO: Add extraction, which is possible but the only tools available that can
     // do this seem to be Universal Extractor 2 and InstallExplorer (https://totalcmd.net/plugring/InstallExplorer.html)

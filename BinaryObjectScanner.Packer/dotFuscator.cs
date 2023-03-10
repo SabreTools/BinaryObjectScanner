@@ -1,16 +1,14 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Wrappers;
 
-namespace BurnOutSharp.PackerType
+namespace BinaryObjectScanner.Packer
 {
-    // TODO: Add extraction - https://github.com/Bioruebe/UniExtract2
-    // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
-    public class InstallerVISE : IExtractable, IPortableExecutableCheck
+    // TODO: Add extraction
+    public class dotFuscator : IExtractable, IPortableExecutableCheck
     {
-        //TODO: Add exact version detection for Windows builds, make sure versions before 3.X are detected as well, and detect the Mac builds.
         /// <inheritdoc/>
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
@@ -19,14 +17,14 @@ namespace BurnOutSharp.PackerType
             if (sections == null)
                 return null;
 
-            // Get the .data/DATA section strings, if they exist
-            List<string> strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
+            // Get the .text section strings, if they exist
+            List<string> strs = pex.GetFirstSectionStrings(".text");
             if (strs != null)
             {
-                if (strs.Any(s => s.Contains("ViseMain")))
-                    return "Installer VISE";
+                if (strs.Any(s => s.Contains("DotfuscatorAttribute")))
+                    return "dotFuscator";
             }
-            
+
             return null;
         }
 

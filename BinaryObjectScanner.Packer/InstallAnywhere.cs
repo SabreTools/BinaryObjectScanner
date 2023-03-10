@@ -1,12 +1,13 @@
-﻿using System.IO;
+using System;
+using System.IO;
 using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Wrappers;
 
-namespace BurnOutSharp.PackerType
+namespace BinaryObjectScanner.Packer
 {
-    // TODO: Add extraction
+    // TODO: Add extraction, which may be possible with the current libraries but needs to be investigated further.
     // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
-    public class PEtite : IExtractable, IPortableExecutableCheck
+    public class InstallAnywhere : IExtractable, IPortableExecutableCheck
     {
         /// <inheritdoc/>
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
@@ -16,10 +17,13 @@ namespace BurnOutSharp.PackerType
             if (sections == null)
                 return null;
 
-            // Get the .petite section, if it exists -- TODO: Is there a version number that can be found?
-            bool petiteSection = pex.ContainsSection(".petite", exact: true);
-            if (petiteSection)
-                return "PEtite";
+            string name = pex.FileDescription;
+            if (name?.StartsWith("InstallAnywhere Self Extractor", StringComparison.OrdinalIgnoreCase) == true)
+                return $"InstallAnywhere {GetVersion(pex)}";
+
+            name = pex.ProductName;
+            if (name?.StartsWith("InstallAnywhere", StringComparison.OrdinalIgnoreCase) == true)
+                return $"InstallAnywhere {GetVersion(pex)}";
 
             return null;
         }
@@ -40,6 +44,16 @@ namespace BurnOutSharp.PackerType
         public string Extract(Stream stream, string file, bool includeDebug)
         {
             return null;
+        }
+
+        private string GetVersion(PortableExecutable pex)
+        {
+            // Check the internal versions
+            string version = pex.GetInternalVersion();
+            if (!string.IsNullOrEmpty(version))
+                return version;
+
+            return "(Unknown Version)";
         }
     }
 }

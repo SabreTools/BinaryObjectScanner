@@ -1,13 +1,14 @@
-using System;
+﻿using System;
 using System.IO;
 using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Wrappers;
 
-namespace BurnOutSharp.PackerType
+namespace BinaryObjectScanner.Packer
 {
-    // TODO: Add extraction, which may be possible with the current libraries but needs to be investigated further.
-    // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
-    public class InstallAnywhere : IExtractable, IPortableExecutableCheck
+    // Created by IndigoRose (creators of Setup Factory), primarily to be used to create autorun menus for various media.
+    // Official website: https://www.autoplay.org/
+    // TODO: Add extraction
+    public class AutoPlayMediaStudio : IExtractable, IPortableExecutableCheck
     {
         /// <inheritdoc/>
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
@@ -17,13 +18,17 @@ namespace BurnOutSharp.PackerType
             if (sections == null)
                 return null;
 
-            string name = pex.FileDescription;
-            if (name?.StartsWith("InstallAnywhere Self Extractor", StringComparison.OrdinalIgnoreCase) == true)
-                return $"InstallAnywhere {GetVersion(pex)}";
+            // Known to detect versions 5.0.0.3 - 8.1.0.0
+            string name = pex.ProductName;
+            if (name?.StartsWith("AutoPlay Media Studio", StringComparison.OrdinalIgnoreCase) == true)
+                return $"AutoPlay Media Studio {GetVersion(pex)}";
 
-            name = pex.ProductName;
-            if (name?.StartsWith("InstallAnywhere", StringComparison.OrdinalIgnoreCase) == true)
-                return $"InstallAnywhere {GetVersion(pex)}";
+            // Currently too vague, may be re-enabled in the future
+            /*
+            name  = Utilities.GetLegalCopyright(pex);
+            if (name?.StartsWith("Runtime Engine", StringComparison.OrdinalIgnoreCase) == true)
+                return $"AutoPlay Media Studio {GetVersion(pex)}";
+                */
 
             return null;
         }
@@ -45,11 +50,16 @@ namespace BurnOutSharp.PackerType
         {
             return null;
         }
-
+    
         private string GetVersion(PortableExecutable pex)
         {
+            // Check the product version explicitly
+            string version = pex.ProductVersion;
+            if (!string.IsNullOrEmpty(version))
+                return version;
+
             // Check the internal versions
-            string version = pex.GetInternalVersion();
+            version = pex.GetInternalVersion();
             if (!string.IsNullOrEmpty(version))
                 return version;
 

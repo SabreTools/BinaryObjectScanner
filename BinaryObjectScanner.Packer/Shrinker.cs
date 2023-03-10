@@ -1,14 +1,12 @@
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Wrappers;
 
-namespace BurnOutSharp.PackerType
+namespace BinaryObjectScanner.Packer
 {
     // TODO: Add extraction
-    // TODO: Verify that all versions are detected
-    public class AdvancedInstaller : IExtractable, IPortableExecutableCheck
+    // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
+    public class Shrinker : IExtractable, IPortableExecutableCheck
     {
         /// <inheritdoc/>
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
@@ -18,13 +16,11 @@ namespace BurnOutSharp.PackerType
             if (sections == null)
                 return null;
 
-            // Get the .rdata section strings, if they exist
-            List<string> strs = pex.GetFirstSectionStrings(".rdata");
-            if (strs != null)
-            {
-                if (strs.Any(s => s.Contains("Software\\Caphyon\\Advanced Installer")))
-                    return "Caphyon Advanced Installer";
-            }
+            // Get the .shrink0 and .shrink2 sections, if they exist -- TODO: Confirm if both are needed or either/or is fine
+            bool shrink0Section = pex.ContainsSection(".shrink0", true);
+            bool shrink2Section = pex.ContainsSection(".shrink2", true);
+            if (shrink0Section || shrink2Section)
+                return "Shrinker";
 
             return null;
         }

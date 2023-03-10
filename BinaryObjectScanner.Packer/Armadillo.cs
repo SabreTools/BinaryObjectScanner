@@ -1,12 +1,15 @@
+﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Wrappers;
 
-namespace BurnOutSharp.PackerType
+namespace BinaryObjectScanner.Packer
 {
     // TODO: Add extraction
+    // TODO: Add version checking, if possible
     // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
-    public class Shrinker : IExtractable, IPortableExecutableCheck
+    public class Armadillo : IExtractable, IPortableExecutableCheck
     {
         /// <inheritdoc/>
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
@@ -16,11 +19,22 @@ namespace BurnOutSharp.PackerType
             if (sections == null)
                 return null;
 
-            // Get the .shrink0 and .shrink2 sections, if they exist -- TODO: Confirm if both are needed or either/or is fine
-            bool shrink0Section = pex.ContainsSection(".shrink0", true);
-            bool shrink2Section = pex.ContainsSection(".shrink2", true);
-            if (shrink0Section || shrink2Section)
-                return "Shrinker";
+            // Get the .nicode section, if it exists
+            bool nicodeSection = pex.ContainsSection(".nicode", exact: true);
+            if (nicodeSection)
+                return "Armadillo";
+
+            // Loop through all "extension" sections -- usually .data1 or .text1
+            foreach (var sectionName in pex.SectionNames.Where(s => s != null && s.EndsWith("1")))
+            {
+                // Get the section strings, if they exist
+                List<string> strs = pex.GetFirstSectionStrings(sectionName);
+                if (strs != null)
+                {
+                    if (strs.Any(s => s.Contains("ARMDEBUG")))
+                        return "Armadillo";
+                }
+            }
 
             return null;
         }

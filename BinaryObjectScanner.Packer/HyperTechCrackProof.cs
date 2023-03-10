@@ -3,7 +3,7 @@ using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Wrappers;
 
-namespace BurnOutSharp.PackerType
+namespace BinaryObjectScanner.Packer
 {
     // CrackProof is a packer/obfuscator created by Japanese company HyperTech (https://www.hypertech.co.jp/products/windows/).
     // It is known to be used along with other DRM, such as Shury2 (Redump entry 97135) and BDL.

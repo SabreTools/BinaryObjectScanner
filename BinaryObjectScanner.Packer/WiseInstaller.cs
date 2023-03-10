@@ -8,7 +8,7 @@ using BinaryObjectScanner.Utilities;
 using BinaryObjectScanner.Wrappers;
 using Wise = WiseUnpacker.WiseUnpacker;
 
-namespace BurnOutSharp.PackerType
+namespace BinaryObjectScanner.Packer
 {
     // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
     public class WiseInstaller : IExtractable, INewExecutableCheck, IPortableExecutableCheck

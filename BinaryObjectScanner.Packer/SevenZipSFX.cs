@@ -3,7 +3,7 @@ using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Wrappers;
 
-namespace BurnOutSharp.PackerType
+namespace BinaryObjectScanner.Packer
 {
     // TODO: Add extraction
     public class SevenZipSFX : IExtractable, IPortableExecutableCheck

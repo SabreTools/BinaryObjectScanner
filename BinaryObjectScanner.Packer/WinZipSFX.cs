@@ -7,7 +7,7 @@ using BinaryObjectScanner.Wrappers;
 using SharpCompress.Archives;
 using SharpCompress.Archives.Zip;
 
-namespace BurnOutSharp.PackerType
+namespace BinaryObjectScanner.Packer
 {
     public class WinZipSFX : IExtractable, INewExecutableCheck, IPortableExecutableCheck
     {
