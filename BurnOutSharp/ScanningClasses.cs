@@ -9,6 +9,7 @@ namespace BurnOutSharp
     /// <summary>
     /// Statically-generated lists of scanning classes
     /// </summary>
+    /// TODO: Create a dummy class to use instead of Zzxzz
     internal static class ScanningClasses
     {
         #region Public Collections
@@ -24,6 +25,20 @@ namespace BurnOutSharp
                     contentCheckClasses = InitCheckClasses<IContentCheck>();
 
                 return contentCheckClasses;
+            }
+        }
+
+        /// <summary>
+        /// Cache for all ILinearExecutableCheck types
+        /// </summary>
+        public static IEnumerable<ILinearExecutableCheck> LinearExecutableCheckClasses
+        {
+            get
+            {
+                if (linearExecutableCheckClasses == null)
+                    linearExecutableCheckClasses = InitCheckClasses<ILinearExecutableCheck>();
+
+                return linearExecutableCheckClasses;
             }
         }
 
@@ -79,7 +94,12 @@ namespace BurnOutSharp
         private static IEnumerable<IContentCheck> contentCheckClasses;
 
         /// <summary>
-        /// Cache for all INEContentCheck types
+        /// Cache for all ILinearExecutableCheck types
+        /// </summary>
+        private static IEnumerable<ILinearExecutableCheck> linearExecutableCheckClasses;
+
+        /// <summary>
+        /// Cache for all INewExecutableCheck types
         /// </summary>
         private static IEnumerable<INewExecutableCheck> newExecutableCheckClasses;
 
@@ -89,7 +109,7 @@ namespace BurnOutSharp
         private static IEnumerable<IPathCheck> pathCheckClasses;
 
         /// <summary>
-        /// Cache for all IPEContentCheck types
+        /// Cache for all IPortableExecutableCheck types
         /// </summary>
         private static IEnumerable<IPortableExecutableCheck> portableExecutableCheckClasses;
 
@@ -101,8 +121,14 @@ namespace BurnOutSharp
         /// Initialize all implementations of a type
         /// </summary>
         private static IEnumerable<T> InitCheckClasses<T>()
+            => InitCheckClasses<T>(Assembly.GetExecutingAssembly()).Concat(InitCheckClasses<T>(typeof(BinaryObjectScanner.Protection.Zzxzz).Assembly));
+
+        /// <summary>
+        /// Initialize all implementations of a type
+        /// </summary>
+        private static IEnumerable<T> InitCheckClasses<T>(Assembly assembly)
         {
-            return Assembly.GetExecutingAssembly().GetTypes()
+            return assembly.GetTypes()
                 .Where(t => t.IsClass && t.GetInterface(typeof(T).Name) != null)
                 .Select(t => (T)Activator.CreateInstance(t));
         }

@@ -837,6 +837,28 @@ namespace BinaryObjectScanner.Wrappers
         /// </summary>
         public string TradeName => GetVersionInfoString(key: "TradeName");
 
+        /// <summary>
+        /// Get the internal version as reported by the resources
+        /// </summary>
+        /// <returns>Version string, null on error</returns>
+        /// <remarks>The internal version is either the file version, product version, or assembly version, in that order</remarks>
+        public string GetInternalVersion()
+        {
+            string version = this.FileVersion;
+            if (!string.IsNullOrWhiteSpace(version))
+                return version.Replace(", ", ".");
+
+            version = this.ProductVersion;
+            if (!string.IsNullOrWhiteSpace(version))
+                return version.Replace(", ", ".");
+
+            version = this.AssemblyVersion;
+            if (!string.IsNullOrWhiteSpace(version))
+                return version;
+
+            return null;
+        }
+
         #endregion
 
         #region Manifest Information

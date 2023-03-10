@@ -20,14 +20,14 @@ namespace BurnOutSharp.PackerType
             if (name?.Equals("Intel(R) Installation Framework", StringComparison.OrdinalIgnoreCase) == true
                 || name?.Equals("Intel Installation Framework", StringComparison.OrdinalIgnoreCase) == true)
             {
-                return $"Intel Installation Framework {Tools.Utilities.GetInternalVersion(pex)}";
+                return $"Intel Installation Framework {pex.GetInternalVersion()}";
             }
 
             name = pex.ProductName;
             if (name?.Equals("Intel(R) Installation Framework", StringComparison.OrdinalIgnoreCase) == true
                 || name?.Equals("Intel Installation Framework", StringComparison.OrdinalIgnoreCase) == true)
             {
-                return $"Intel Installation Framework {Tools.Utilities.GetInternalVersion(pex)}";
+                return $"Intel Installation Framework {pex.GetInternalVersion()}";
             }
 
             return null;

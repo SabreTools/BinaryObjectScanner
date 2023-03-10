@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using BurnOutSharp.Interfaces;
 using BinaryObjectScanner.Matching;
@@ -945,65 +944,6 @@ namespace BurnOutSharp.Tools
             // Everything else fails
             return null;
         }
-
-        #endregion
-
-        #region Processed Executable Information
-
-        /// <summary>
-        /// Get the internal version as reported by the filesystem
-        /// </summary>
-        /// <param name="file">File to check for version</param>
-        /// <returns>Version string, null on error</returns>
-        public static string GetInternalVersion(string file)
-        {
-            try
-            {
-                using (Stream fileStream = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
-                {
-                    var pex = PortableExecutable.Create(fileStream);
-                    return GetInternalVersion(pex);
-                }
-            }
-            catch
-            {
-                return string.Empty;
-            }
-        }
-
-        /// <summary>
-        /// Get the internal version as reported by the resources
-        /// </summary>
-        /// <param name="pex">PortableExecutable representing the file contents</param>
-        /// <returns>Version string, null on error</returns>
-        public static string GetInternalVersion(PortableExecutable pex)
-        {
-            string version = pex.FileVersion;
-            if (!string.IsNullOrWhiteSpace(version))
-                return version.Replace(", ", ".");
-
-            version = pex.ProductVersion;
-            if (!string.IsNullOrWhiteSpace(version))
-                return version.Replace(", ", ".");
-
-            version = pex.AssemblyVersion;
-            if (!string.IsNullOrWhiteSpace(version))
-                return version;
-
-            return null;
-        }
-
-        #endregion
-
-        #region Wrappers for Matchers
-
-        /// <summary>
-        /// Wrapper for GetInternalVersion for use in path matching
-        /// </summary>
-        /// <param name="firstMatchedString">File to check for version</param>
-        /// <param name="files">Full list of input paths</param>
-        /// <returns>Version string, null on error</returns>
-        public static string GetInternalVersion(string firstMatchedString, IEnumerable<string> files) => GetInternalVersion(firstMatchedString);
 
         #endregion
     }

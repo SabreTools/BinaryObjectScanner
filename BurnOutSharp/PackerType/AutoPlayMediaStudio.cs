@@ -59,7 +59,7 @@ namespace BurnOutSharp.PackerType
                 return version;
 
             // Check the internal versions
-            version = Tools.Utilities.GetInternalVersion(pex);
+            version = pex.GetInternalVersion();
             if (!string.IsNullOrEmpty(version))
                 return version;
 

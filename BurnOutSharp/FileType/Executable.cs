@@ -174,7 +174,51 @@ namespace BurnOutSharp.FileType
             // If we have a Linear Executable
             else if (wrapper is LinearExecutable lex)
             {
-                // No-op
+                Parallel.ForEach(ScanningClasses.LinearExecutableCheckClasses, contentCheckClass =>
+                {
+                    // Check using custom content checks first
+                    string protection = contentCheckClass.CheckLinearExecutable(file, lex, scanner.IncludeDebug);
+                    if (ShouldAddProtection(contentCheckClass, scanner.ScanPackers, protection))
+                        AppendToDictionary(protections, file, protection);
+
+                    // If we have an IExtractable implementation
+                    if (contentCheckClass is IExtractable extractable)
+                    {
+                        if (file == null || string.IsNullOrEmpty(protection))
+                            return;
+
+                        // If the extractable file itself fails
+                        try
+                        {
+                            // Extract and get the output path
+                            string tempPath = extractable.Extract(stream, file, scanner.IncludeDebug);
+                            if (tempPath != null)
+                                return;
+
+                            // Collect and format all found protections
+                            var subProtections = scanner.GetProtections(tempPath);
+
+                            // If temp directory cleanup fails
+                            try
+                            {
+                                Directory.Delete(tempPath, true);
+                            }
+                            catch (Exception ex)
+                            {
+                                if (scanner.IncludeDebug) Console.WriteLine(ex);
+                            }
+
+                            // Prepare the returned protections
+                            StripFromKeys(protections, tempPath);
+                            PrependToKeys(subProtections, file);
+                            AppendToDictionary(protections, subProtections);
+                        }
+                        catch (Exception ex)
+                        {
+                            if (scanner.IncludeDebug) Console.WriteLine(ex);
+                        }
+                    }
+                });
             }
 
             // If we have a Portable Executable

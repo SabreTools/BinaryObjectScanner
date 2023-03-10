@@ -8,13 +8,14 @@ This is a guide for any developers who wish to research protections, implement n
 
 | Project | Description |
 | --- | --- |
-| `BurnOutSharp` | Main library that contains all supported file format, packer, and protection checks. It also houses most of the utilities, interfaces, and structures needed when `BurnOutSharp` is used by another project. Most code additions will happen here. |
+| `BurnOutSharp` | Main library that contains all supported file formats and packers. It also houses most of the utilities and structures needed when `BurnOutSharp` is used by another project. Many code additions will happen here. |
 | `BinaryObjectScanner.ASN1` | Library containing classes and methods associated with Abstract Syntax Notation One and OID parsing. |
 | `BinaryObjectScanner.Builder` | Library containing classes that assist in populating the various object models defined in `BinaryObjectScanner.Models`. Builders can work with either byte arrays or streams for input. At the time of writing, the following executable types have builders: **MS-DOS**, **New Executable**, **Portable Executable**. |
 | `BinaryObjectScanner.Compression` | Library containing classes that deal with different compression formats. This library is used extensively by the wrappers in `BinaryObjectScanner.Wrappers`. |
 | `BinaryObjectScanner.Interfaces` | Library containing interface definitions for scanning and detection. |
 | `BinaryObjectScanner.Matching` | Library containing models and logic for generic searching and matching. This library is used extensively by the packer and protection checks in `BurnOutSharp`. |
 | `BinaryObjectScanner.Models` | Library containing object models that represent various pieces of known executable formats. At the time of writing, the following executable types have models: **MS-DOS**, **New Executable**, **Linear Executable (partial)**, **Portable Executable**. |
+| `BinaryObjectScanner.Protection` | Library containing protection scanning definitions. |
 | `BinaryObjectScanner.Utilities` | Library containing helper and extension methods that don't rely on any other libraries. |
 | `BinaryObjectScanner.Wrappers` | Library that acts as a custom wrapper around both `BinaryObjectScanner.Builder` and `BinaryObjectScanner.Models` that allows for easier access to executable information. Each of the wrappers may also include additional functionality that would not otherwise be found in the models, e.g. Data and string reading from sections. |
 | `psxt001z` | **Ported External Library** Handles detection of PS1 protections. See the README for a link to the repository. |
@@ -57,6 +58,7 @@ Below are all current helper methods along with a brief description.
 | **MS-DOS** | N/A | MS-DOS executables currently do not have any helper methods. |
 | **New Executable (NE)** | `ReadArbitraryRange(int, int)` | Reads an arbitrary range of bytes out of the new executable. **This method will be replaced in the future as proper extension properties and methods are created.** |
 | **Portable Executable (PE)** | `GetVersionInfoString(string)` | Get a field from the version info string table based on the key, if the version info, string table, and key exist. Most common fields are already accessible as extension properties. See the table above for details. |
+|  | `GetInternalVersion()` | Get the executable version from either the file version, product version, or assembly version, in that order, if possible. |
 |  | `GetAssemblyManifest()` | Get the parsed XML assembly manifest, if it exists. Some common fields are already accessible as extension properties. See the table above for details. |
 |  | `FindCodeViewDebugTableByPath(string)` | Find all CodeView-formatted debug tables that match a given path/filename, if they exist. |
 |  | `FindGenericDebugTableByValue(string)` | Find an unparsed or custom debug table where the ASCII, Unicode, or UTF-8 representations contain a given value, if they exist. |
@@ -89,7 +91,7 @@ Adding a new checker or format should happen in a few distinct steps:
 
     - If it is a new supported executable packer, compressor, or installer format, create the file in `BurnOutSharp/PackerType/`. By default, you will need to implement `BinaryObjectScanner.Interfaces.IExtractable` as well as at least one of: `BinaryObjectScanner.Interfaces.ILinearExecutableCheck`, `BinaryObjectScanner.Interfaces.INewExecutableCheck`, and `BinaryObjectScanner.Interfaces.IPortableExecutableCheck`. It is exceptionally rare to need to implement `BinaryObjectScanner.Interfaces.IPathCheck`.
 
-    - If it is a new supported DRM scheme, copy protection, or obfuscator, create the file in `BurnOutSharp/ProtectionType/`. By default, you will need to implement at least one of:`BinaryObjectScanner.Interfaces.ILinearExecutableCheck`, `BinaryObjectScanner.Interfaces.INewExecutableCheck`, `BinaryObjectScanner.Interfaces.IPortableExecutableCheck`, and `BinaryObjectScanner.Interfaces.IPathCheck`. It is exceptionally rare to need to implement `BinaryObjectScanner.Interfaces.Extractable`.
+    - If it is a new supported DRM scheme, copy protection, or obfuscator, create the file in `BinaryObjectScanner.Protection`. By default, you will need to implement at least one of:`BinaryObjectScanner.Interfaces.ILinearExecutableCheck`, `BinaryObjectScanner.Interfaces.INewExecutableCheck`, `BinaryObjectScanner.Interfaces.IPortableExecutableCheck`, and `BinaryObjectScanner.Interfaces.IPathCheck`. It is exceptionally rare to need to implement `BinaryObjectScanner.Interfaces.Extractable`.
 
     - In addition to the above, there is a debug-only interface called `BinaryObjectScanner.Interfaces.IContentCheck`. Though there are examples of this being used in code, it is highly recommended to avoid this in a final implementation.
 
