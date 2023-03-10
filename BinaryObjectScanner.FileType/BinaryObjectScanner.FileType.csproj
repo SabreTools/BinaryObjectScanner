@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net48;net6.0;net7.0</TargetFrameworks>
+    <RuntimeIdentifiers>win-x86;win-x64;linux-x64;osx-x64</RuntimeIdentifiers>
+    <Title>BinaryObjectScanner.FileType</Title>
+    <AssemblyName>BinaryObjectScanner.FileType</AssemblyName>
+    <Authors>Matt Nadareski</Authors>
+    <Product>BurnOutSharp</Product>
+    <Copyright>Copyright (c)2022 Matt Nadareski</Copyright>
+    <RepositoryUrl>https://github.com/mnadareski/BurnOutSharp</RepositoryUrl>
+    <Version>2.7</Version>
+    <AssemblyVersion>2.7</AssemblyVersion>
+    <FileVersion>2.7</FileVersion>
+    <IncludeSource>true</IncludeSource>
+    <IncludeSymbols>true</IncludeSymbols>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+</Project>

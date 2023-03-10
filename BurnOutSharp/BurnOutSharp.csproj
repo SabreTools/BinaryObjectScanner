@@ -65,6 +65,10 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </ProjectReference>
+    <ProjectReference Include="..\BinaryObjectScanner.FileType\BinaryObjectScanner.FileType.csproj">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </ProjectReference>
     <ProjectReference Include="..\BinaryObjectScanner.Interfaces\BinaryObjectScanner.Interfaces.csproj">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>

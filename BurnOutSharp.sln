@@ -36,7 +36,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BinaryObjectScanner.Interfa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BinaryObjectScanner.Protection", "BinaryObjectScanner.Protection\BinaryObjectScanner.Protection.csproj", "{FF0BC536-10B6-4A31-9AB4-1B9B06B3B2E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BinaryObjectScanner.Packer", "BinaryObjectScanner.Packer\BinaryObjectScanner.Packer.csproj", "{59B3DE26-9399-4B5A-B39B-6239DAF1A017}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BinaryObjectScanner.Packer", "BinaryObjectScanner.Packer\BinaryObjectScanner.Packer.csproj", "{59B3DE26-9399-4B5A-B39B-6239DAF1A017}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BinaryObjectScanner.FileType", "BinaryObjectScanner.FileType\BinaryObjectScanner.FileType.csproj", "{6733368B-63D4-4921-AE13-FD1A53C5180C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -96,6 +98,10 @@ Global
 		{59B3DE26-9399-4B5A-B39B-6239DAF1A017}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{59B3DE26-9399-4B5A-B39B-6239DAF1A017}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{59B3DE26-9399-4B5A-B39B-6239DAF1A017}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6733368B-63D4-4921-AE13-FD1A53C5180C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6733368B-63D4-4921-AE13-FD1A53C5180C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6733368B-63D4-4921-AE13-FD1A53C5180C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6733368B-63D4-4921-AE13-FD1A53C5180C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
