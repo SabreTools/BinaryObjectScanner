@@ -9,7 +9,6 @@ namespace BurnOutSharp
     /// <summary>
     /// Statically-generated lists of scanning classes
     /// </summary>
-    /// TODO: Create a dummy class to use instead of Zzxzz
     internal static class ScanningClasses
     {
         #region Public Collections
@@ -121,7 +120,7 @@ namespace BurnOutSharp
         /// Initialize all implementations of a type
         /// </summary>
         private static IEnumerable<T> InitCheckClasses<T>()
-            => InitCheckClasses<T>(Assembly.GetExecutingAssembly()).Concat(InitCheckClasses<T>(typeof(BinaryObjectScanner.Protection.Zzxzz).Assembly));
+            => InitCheckClasses<T>(Assembly.GetExecutingAssembly()).Concat(InitCheckClasses<T>(typeof(BinaryObjectScanner.Protection._DUMMY).Assembly));
 
         /// <summary>
         /// Initialize all implementations of a type
