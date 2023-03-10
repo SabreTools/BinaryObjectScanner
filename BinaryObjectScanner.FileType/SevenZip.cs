@@ -1,13 +1,15 @@
-using System;
+﻿using System;
 using System.IO;
 using BinaryObjectScanner.Interfaces;
+using SharpCompress.Archives;
+using SharpCompress.Archives.SevenZip;
 
-namespace BurnOutSharp.FileType
+namespace BinaryObjectScanner.FileType
 {
     /// <summary>
-    /// Half-Life Level
+    /// 7-zip archive
     /// </summary>
-    public class BSP : IExtractable
+    public class SevenZip : IExtractable
     {
         /// <inheritdoc/>
         public string Extract(string file, bool includeDebug)
@@ -26,18 +28,29 @@ namespace BurnOutSharp.FileType
         {
             try
             {
-                // Create the wrapper
-                BinaryObjectScanner.Wrappers.BSP bsp = BinaryObjectScanner.Wrappers.BSP.Create(stream);
-                if (bsp == null)
-                    return null;
-
                 // Create a temp output directory
                 string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
                 Directory.CreateDirectory(tempPath);
 
-                // Loop through and extract all files
-                bsp.ExtractAllLumps(tempPath);
-                bsp.ExtractAllTextures(tempPath);
+                using (SevenZipArchive sevenZipFile = SevenZipArchive.Open(stream))
+                {
+                    foreach (var entry in sevenZipFile.Entries)
+                    {
+                        try
+                        {
+                            // If we have a directory, skip it
+                            if (entry.IsDirectory)
+                                continue;
+
+                            string tempFile = Path.Combine(tempPath, entry.Key);
+                            entry.WriteToFile(tempFile);
+                        }
+                        catch (Exception ex)
+                        {
+                            if (includeDebug) Console.WriteLine(ex);
+                        }
+                    }
+                }
 
                 return tempPath;
             }

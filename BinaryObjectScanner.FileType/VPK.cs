@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using BinaryObjectScanner.Interfaces;
 
-namespace BurnOutSharp.FileType
+namespace BinaryObjectScanner.FileType
 {
     /// <summary>
     /// Valve Package File
@@ -27,7 +27,7 @@ namespace BurnOutSharp.FileType
             try
             {
                 // Create the wrapper
-                BinaryObjectScanner.Wrappers.VPK vpk = BinaryObjectScanner.Wrappers.VPK.Create(stream);
+                Wrappers.VPK vpk = Wrappers.VPK.Create(stream);
                 if (vpk == null)
                     return null;
 

@@ -1,13 +1,13 @@
-﻿using System;
+using System;
 using System.IO;
 using BinaryObjectScanner.Interfaces;
 
-namespace BurnOutSharp.FileType
+namespace BinaryObjectScanner.FileType
 {
     /// <summary>
-    /// BFPK custom archive format
+    /// NovaLogic Game Archive Format
     /// </summary>
-    public class BFPK : IExtractable
+    public class PFF : IExtractable
     {
         /// <inheritdoc/>
         public string Extract(string file, bool includeDebug)
@@ -27,8 +27,8 @@ namespace BurnOutSharp.FileType
             try
             {
                 // Create the wrapper
-                BinaryObjectScanner.Wrappers.BFPK bfpk = BinaryObjectScanner.Wrappers.BFPK.Create(stream);
-                if (bfpk == null)
+                Wrappers.PFF pff = Wrappers.PFF.Create(stream);
+                if (pff == null)
                     return null;
 
                 // Create a temp output directory
@@ -36,13 +36,13 @@ namespace BurnOutSharp.FileType
                 Directory.CreateDirectory(tempPath);
 
                 // Extract all files
-                bfpk.ExtractAll(tempPath);
+                pff.ExtractAll(tempPath);
 
                 return tempPath;
             }
             catch (Exception ex)
             {
-                if (includeDebug) Console.WriteLine(ex);
+                if (includeDebug) Console.WriteLine(ex.Message);
                 return null;
             }
         }

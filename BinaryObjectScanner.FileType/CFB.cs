@@ -4,7 +4,7 @@ using System.Text;
 using BinaryObjectScanner.Interfaces;
 using OpenMcdf;
 
-namespace BurnOutSharp.FileType
+namespace BinaryObjectScanner.FileType
 {
     /// <summary>
     /// Compound File Binary

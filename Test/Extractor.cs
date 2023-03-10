@@ -214,7 +214,7 @@ namespace Test
                                 if (strData == null)
                                     return;
 
-                                string decoded = BurnOutSharp.FileType.CFB.DecodeStreamName(e.Name).TrimEnd('\0');
+                                string decoded = BinaryObjectScanner.FileType.CFB.DecodeStreamName(e.Name).TrimEnd('\0');
                                 byte[] nameBytes = Encoding.UTF8.GetBytes(e.Name);
 
                                 // UTF-8 encoding of 0x4840.

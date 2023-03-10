@@ -424,37 +424,37 @@ namespace BurnOutSharp
         {
             switch (fileType)
             {
-                case SupportedFileType.BFPK: return new FileType.BFPK();
-                case SupportedFileType.BSP: return new FileType.BSP();
-                case SupportedFileType.BZip2: return new FileType.BZip2();
-                case SupportedFileType.CFB: return new FileType.CFB();
-                //case SupportedFileType.CIA: return new FileType.CIA();
-                //case SupportedFileType.Executable: return new FileType.Executable();
-                case SupportedFileType.GCF: return new FileType.GCF();
-                case SupportedFileType.GZIP: return new FileType.GZIP();
-                case SupportedFileType.InstallShieldArchiveV3: return new FileType.InstallShieldArchiveV3();
-                case SupportedFileType.InstallShieldCAB: return new FileType.InstallShieldCAB();
-                case SupportedFileType.MicrosoftCAB: return new FileType.MicrosoftCAB();
-                case SupportedFileType.MicrosoftLZ: return new FileType.MicrosoftLZ();
+                case SupportedFileType.BFPK: return new BinaryObjectScanner.FileType.BFPK();
+                case SupportedFileType.BSP: return new BinaryObjectScanner.FileType.BSP();
+                case SupportedFileType.BZip2: return new BinaryObjectScanner.FileType.BZip2();
+                case SupportedFileType.CFB: return new BinaryObjectScanner.FileType.CFB();
+                //case SupportedFileType.CIA: return new BinaryObjectScanner.FileType.CIA();
+                //case SupportedFileType.Executable: return new BinaryObjectScanner.FileType.Executable();
+                case SupportedFileType.GCF: return new BinaryObjectScanner.FileType.GCF();
+                case SupportedFileType.GZIP: return new BinaryObjectScanner.FileType.GZIP();
+                case SupportedFileType.InstallShieldArchiveV3: return new BinaryObjectScanner.FileType.InstallShieldArchiveV3();
+                case SupportedFileType.InstallShieldCAB: return new BinaryObjectScanner.FileType.InstallShieldCAB();
+                case SupportedFileType.MicrosoftCAB: return new BinaryObjectScanner.FileType.MicrosoftCAB();
+                case SupportedFileType.MicrosoftLZ: return new BinaryObjectScanner.FileType.MicrosoftLZ();
                 case SupportedFileType.MPQ: return new FileType.MPQ();
-                //case SupportedFileType.N3DS: return new FileType.N3DS();
-                //case SupportedFileType.NCF: return new FileType.NCF();
-                //case SupportedFileType.Nitro: return new FileType.Nitro();
-                case SupportedFileType.PAK: return new FileType.PAK();
-                case SupportedFileType.PFF: return new FileType.PFF();
-                case SupportedFileType.PKZIP: return new FileType.PKZIP();
-                //case SupportedFileType.PLJ: return new FileType.PLJ();
-                //case SupportedFileType.Quantum: return new FileType.Quantum();
-                case SupportedFileType.RAR: return new FileType.RAR();
-                case SupportedFileType.SevenZip: return new FileType.SevenZip();
+                //case SupportedFileType.N3DS: return new BinaryObjectScanner.FileType.N3DS();
+                //case SupportedFileType.NCF: return new BinaryObjectScanner.FileType.NCF();
+                //case SupportedFileType.Nitro: return new BinaryObjectScanner.FileType.Nitro();
+                case SupportedFileType.PAK: return new BinaryObjectScanner.FileType.PAK();
+                case SupportedFileType.PFF: return new BinaryObjectScanner.FileType.PFF();
+                case SupportedFileType.PKZIP: return new BinaryObjectScanner.FileType.PKZIP();
+                //case SupportedFileType.PLJ: return new BinaryObjectScanner.FileType.PLJ();
+                //case SupportedFileType.Quantum: return new BinaryObjectScanner.FileType.Quantum();
+                case SupportedFileType.RAR: return new BinaryObjectScanner.FileType.RAR();
+                case SupportedFileType.SevenZip: return new BinaryObjectScanner.FileType.SevenZip();
                 case SupportedFileType.SFFS: return new FileType.SFFS();
-                case SupportedFileType.SGA: return new FileType.SGA();
-                case SupportedFileType.TapeArchive: return new FileType.TapeArchive();
-                case SupportedFileType.VBSP: return new FileType.VBSP();
-                case SupportedFileType.VPK: return new FileType.VPK();
-                case SupportedFileType.WAD: return new FileType.WAD();
-                case SupportedFileType.XZ: return new FileType.XZ();
-                case SupportedFileType.XZP: return new FileType.XZP();
+                case SupportedFileType.SGA: return new BinaryObjectScanner.FileType.SGA();
+                case SupportedFileType.TapeArchive: return new BinaryObjectScanner.FileType.TapeArchive();
+                case SupportedFileType.VBSP: return new BinaryObjectScanner.FileType.VBSP();
+                case SupportedFileType.VPK: return new BinaryObjectScanner.FileType.VPK();
+                case SupportedFileType.WAD: return new BinaryObjectScanner.FileType.WAD();
+                case SupportedFileType.XZ: return new BinaryObjectScanner.FileType.XZ();
+                case SupportedFileType.XZP: return new BinaryObjectScanner.FileType.XZP();
                 default: return null;
             }
         }

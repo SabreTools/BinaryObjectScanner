@@ -10,10 +10,16 @@
   <ItemGroup>
     <ProjectReference Include="..\BurnOutSharp\BurnOutSharp.csproj" />
     <ProjectReference Include="..\BinaryObjectScanner.Builders\BinaryObjectScanner.Builders.csproj" />
+    <ProjectReference Include="..\BinaryObjectScanner.FileType\BinaryObjectScanner.FileType.csproj" />
     <ProjectReference Include="..\BinaryObjectScanner.Matching\BinaryObjectScanner.Matching.csproj" />
     <ProjectReference Include="..\BinaryObjectScanner.Models\BinaryObjectScanner.Models.csproj" />
     <ProjectReference Include="..\BinaryObjectScanner.Utilities\BinaryObjectScanner.Utilities.csproj" />
     <ProjectReference Include="..\BinaryObjectScanner.Wrappers\BinaryObjectScanner.Wrappers.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="OpenMcdf" Version="2.2.1.12" />
+    <PackageReference Include="UnshieldSharp" Version="1.6.9" />
   </ItemGroup>
 
   <ItemGroup>

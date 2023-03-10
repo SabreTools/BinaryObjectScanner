@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>net48;net6.0;net7.0</TargetFrameworks>
@@ -19,5 +19,16 @@
   <PropertyGroup>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BinaryObjectScanner.Interfaces\BinaryObjectScanner.Interfaces.csproj" />
+    <ProjectReference Include="..\BinaryObjectScanner.Wrappers\BinaryObjectScanner.Wrappers.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="OpenMcdf" Version="2.2.1.12" />
+    <PackageReference Include="SharpCompress" Version="0.32.2" />
+    <PackageReference Include="UnshieldSharp" Version="1.6.9" />
+  </ItemGroup>
 
 </Project>

@@ -2,12 +2,12 @@ using System;
 using System.IO;
 using BinaryObjectScanner.Interfaces;
 
-namespace BurnOutSharp.FileType
+namespace BinaryObjectScanner.FileType
 {
     /// <summary>
-    /// Half-Life 2 Level
+    /// Half-Life Level
     /// </summary>
-    public class VBSP : IExtractable
+    public class BSP : IExtractable
     {
         /// <inheritdoc/>
         public string Extract(string file, bool includeDebug)
@@ -27,8 +27,8 @@ namespace BurnOutSharp.FileType
             try
             {
                 // Create the wrapper
-                BinaryObjectScanner.Wrappers.VBSP vbsp = BinaryObjectScanner.Wrappers.VBSP.Create(stream);
-                if (vbsp == null)
+                Wrappers.BSP bsp = Wrappers.BSP.Create(stream);
+                if (bsp == null)
                     return null;
 
                 // Create a temp output directory
@@ -36,13 +36,14 @@ namespace BurnOutSharp.FileType
                 Directory.CreateDirectory(tempPath);
 
                 // Loop through and extract all files
-                vbsp.ExtractAllLumps(tempPath);
+                bsp.ExtractAllLumps(tempPath);
+                bsp.ExtractAllTextures(tempPath);
 
                 return tempPath;
             }
             catch (Exception ex)
             {
-                if (includeDebug) Console.WriteLine(ex.ToString());
+                if (includeDebug) Console.WriteLine(ex);
                 return null;
             }
         }

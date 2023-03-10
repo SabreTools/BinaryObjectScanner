@@ -1,13 +1,14 @@
-using System;
+﻿using System;
 using System.IO;
 using BinaryObjectScanner.Interfaces;
+using SharpCompress.Compressors.Xz;
 
-namespace BurnOutSharp.FileType
+namespace BinaryObjectScanner.FileType
 {
     /// <summary>
-    /// Half-Life Package File
+    /// xz archive
     /// </summary>
-    public class PAK : IExtractable
+    public class XZ : IExtractable
     {
         /// <inheritdoc/>
         public string Extract(string file, bool includeDebug)
@@ -26,17 +27,18 @@ namespace BurnOutSharp.FileType
         {
             try
             {
-                // Create the wrapper
-                BinaryObjectScanner.Wrappers.PAK pak = BinaryObjectScanner.Wrappers.PAK.Create(stream);
-                if (pak == null)
-                    return null;
-
                 // Create a temp output directory
                 string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
                 Directory.CreateDirectory(tempPath);
 
-                // Loop through and extract all files
-                pak.ExtractAll(tempPath);
+                using (XZStream xzFile = new XZStream(stream))
+                {
+                    string tempFile = Path.Combine(tempPath, Guid.NewGuid().ToString());
+                    using (FileStream fs = File.OpenWrite(tempFile))
+                    {
+                        xzFile.CopyTo(fs);
+                    }
+                }
 
                 return tempPath;
             }

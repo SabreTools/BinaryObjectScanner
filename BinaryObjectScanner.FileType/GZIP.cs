@@ -1,13 +1,15 @@
-using System;
+﻿using System;
 using System.IO;
 using BinaryObjectScanner.Interfaces;
+using SharpCompress.Archives;
+using SharpCompress.Archives.GZip;
 
-namespace BurnOutSharp.FileType
+namespace BinaryObjectScanner.FileType
 {
     /// <summary>
-    /// SGA game archive
+    /// gzip archive
     /// </summary>
-    public class SGA : IExtractable
+    public class GZIP : IExtractable
     {
         /// <inheritdoc/>
         public string Extract(string file, bool includeDebug)
@@ -26,17 +28,29 @@ namespace BurnOutSharp.FileType
         {
             try
             {
-                // Create the wrapper
-                BinaryObjectScanner.Wrappers.SGA sga = BinaryObjectScanner.Wrappers.SGA.Create(stream);
-                if (sga == null)
-                    return null;
-
                 // Create a temp output directory
                 string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
                 Directory.CreateDirectory(tempPath);
 
-                // Loop through and extract all files
-                sga.ExtractAll(tempPath);
+                using (GZipArchive zipFile = GZipArchive.Open(stream))
+                {
+                    foreach (var entry in zipFile.Entries)
+                    {
+                        try
+                        {
+                            // If we have a directory, skip it
+                            if (entry.IsDirectory)
+                                continue;
+
+                            string tempFile = Path.Combine(tempPath, entry.Key);
+                            entry.WriteToFile(tempFile);
+                        }
+                        catch (Exception ex)
+                        {
+                            if (includeDebug) Console.WriteLine(ex);
+                        }
+                    }
+                }
 
                 return tempPath;
             }

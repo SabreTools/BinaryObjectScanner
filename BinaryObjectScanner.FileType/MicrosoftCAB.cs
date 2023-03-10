@@ -1,15 +1,16 @@
 ﻿using System;
 using System.IO;
 using BinaryObjectScanner.Interfaces;
-using SharpCompress.Archives;
-using SharpCompress.Archives.Zip;
+using BinaryObjectScanner.Wrappers;
 
-namespace BurnOutSharp.FileType
+namespace BinaryObjectScanner.FileType
 {
     /// <summary>
-    /// PKWARE ZIP archive and derivatives
+    /// Microsoft cabinet file
     /// </summary>
-    public class PKZIP : IExtractable
+    /// <remarks>Specification available at <see href="http://download.microsoft.com/download/5/0/1/501ED102-E53F-4CE0-AA6B-B0F93629DDC6/Exchange/%5BMS-CAB%5D.pdf"/></remarks>
+    /// <see href="https://github.com/wine-mirror/wine/tree/master/dlls/cabinet"/>
+    public class MicrosoftCAB : IExtractable
     {
         /// <inheritdoc/>
         public string Extract(string file, bool includeDebug)
@@ -28,30 +29,19 @@ namespace BurnOutSharp.FileType
         {
             try
             {
+                // Open the cab file
+                var cabFile = MicrosoftCabinet.Create(stream);
+                if (cabFile == null)
+                    return null;
+
                 // Create a temp output directory
                 string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
                 Directory.CreateDirectory(tempPath);
 
-                using (ZipArchive zipFile = ZipArchive.Open(stream))
-                {
-                    foreach (var entry in zipFile.Entries)
-                    {
-                        try
-                        {
-                            // If we have a directory, skip it
-                            if (entry.IsDirectory)
-                                continue;
-
-                            string tempFile = Path.Combine(tempPath, entry.Key);
-                            Directory.CreateDirectory(Path.GetDirectoryName(tempFile));
-                            entry.WriteToFile(tempFile);
-                        }
-                        catch (Exception ex)
-                        {
-                            if (includeDebug) Console.WriteLine(ex);
-                        }
-                    }
-                }
+                // If entry extraction fails
+                bool success = cabFile.ExtractAll(tempPath);
+                if (!success)
+                    return null;
 
                 return tempPath;
             }

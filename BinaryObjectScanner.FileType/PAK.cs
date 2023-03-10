@@ -2,12 +2,12 @@ using System;
 using System.IO;
 using BinaryObjectScanner.Interfaces;
 
-namespace BurnOutSharp.FileType
+namespace BinaryObjectScanner.FileType
 {
     /// <summary>
-    /// NovaLogic Game Archive Format
+    /// Half-Life Package File
     /// </summary>
-    public class PFF : IExtractable
+    public class PAK : IExtractable
     {
         /// <inheritdoc/>
         public string Extract(string file, bool includeDebug)
@@ -27,22 +27,22 @@ namespace BurnOutSharp.FileType
             try
             {
                 // Create the wrapper
-                BinaryObjectScanner.Wrappers.PFF pff = BinaryObjectScanner.Wrappers.PFF.Create(stream);
-                if (pff == null)
+                Wrappers.PAK pak = Wrappers.PAK.Create(stream);
+                if (pak == null)
                     return null;
 
                 // Create a temp output directory
                 string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
                 Directory.CreateDirectory(tempPath);
 
-                // Extract all files
-                pff.ExtractAll(tempPath);
+                // Loop through and extract all files
+                pak.ExtractAll(tempPath);
 
                 return tempPath;
             }
             catch (Exception ex)
             {
-                if (includeDebug) Console.WriteLine(ex.Message);
+                if (includeDebug) Console.WriteLine(ex);
                 return null;
             }
         }

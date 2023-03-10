@@ -1,15 +1,13 @@
-﻿using System;
+using System;
 using System.IO;
 using BinaryObjectScanner.Interfaces;
-using SharpCompress.Archives;
-using SharpCompress.Archives.Rar;
 
-namespace BurnOutSharp.FileType
+namespace BinaryObjectScanner.FileType
 {
     /// <summary>
-    /// RAR archive
+    /// Half-Life Game Cache File
     /// </summary>
-    public class RAR : IExtractable
+    public class GCF : IExtractable
     {
         /// <inheritdoc/>
         public string Extract(string file, bool includeDebug)
@@ -28,29 +26,17 @@ namespace BurnOutSharp.FileType
         {
             try
             {
+                // Create the wrapper
+                Wrappers.GCF gcf = Wrappers.GCF.Create(stream);
+                if (gcf == null)
+                    return null;
+
                 // Create a temp output directory
                 string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
                 Directory.CreateDirectory(tempPath);
 
-                using (RarArchive rarFile = RarArchive.Open(stream))
-                {
-                    foreach (var entry in rarFile.Entries)
-                    {
-                        try
-                        {
-                            // If we have a directory, skip it
-                            if (entry.IsDirectory)
-                                continue;
-
-                            string tempFile = Path.Combine(tempPath, entry.Key);
-                            entry.WriteToFile(tempFile);
-                        }
-                        catch (Exception ex)
-                        {
-                            if (includeDebug) Console.WriteLine(ex);
-                        }
-                    }
-                }
+                // Loop through and extract all files
+                gcf.ExtractAll(tempPath);
 
                 return tempPath;
             }

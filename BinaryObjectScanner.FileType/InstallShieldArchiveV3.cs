@@ -4,7 +4,7 @@ using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using UnshieldSharp.Archive;
 
-namespace BurnOutSharp.FileType
+namespace BinaryObjectScanner.FileType
 {
     /// <summary>
     /// InstallShield archive v3

@@ -2,12 +2,12 @@ using System;
 using System.IO;
 using BinaryObjectScanner.Interfaces;
 
-namespace BurnOutSharp.FileType
+namespace BinaryObjectScanner.FileType
 {
     /// <summary>
-    /// XBox Package File
+    /// SGA game archive
     /// </summary>
-    public class XZP : IExtractable
+    public class SGA : IExtractable
     {
         /// <inheritdoc/>
         public string Extract(string file, bool includeDebug)
@@ -27,8 +27,8 @@ namespace BurnOutSharp.FileType
             try
             {
                 // Create the wrapper
-                BinaryObjectScanner.Wrappers.XZP xzp = BinaryObjectScanner.Wrappers.XZP.Create(stream);
-                if (xzp == null)
+                Wrappers.SGA sga = Wrappers.SGA.Create(stream);
+                if (sga == null)
                     return null;
 
                 // Create a temp output directory
@@ -36,7 +36,7 @@ namespace BurnOutSharp.FileType
                 Directory.CreateDirectory(tempPath);
 
                 // Loop through and extract all files
-                xzp.ExtractAll(tempPath);
+                sga.ExtractAll(tempPath);
 
                 return tempPath;
             }

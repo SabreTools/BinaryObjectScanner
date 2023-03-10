@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using BinaryObjectScanner.Interfaces;
 
-namespace BurnOutSharp.FileType
+namespace BinaryObjectScanner.FileType
 {
     /// <summary>
     /// Half-Life Texture Package File
@@ -27,7 +27,7 @@ namespace BurnOutSharp.FileType
             try
             {
                 // Create the wrapper
-                BinaryObjectScanner.Wrappers.WAD wad = BinaryObjectScanner.Wrappers.WAD.Create(stream);
+                Wrappers.WAD wad = Wrappers.WAD.Create(stream);
                 if (wad == null)
                     return null;
 

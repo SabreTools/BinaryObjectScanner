@@ -3,7 +3,7 @@ using System.IO;
 using BinaryObjectScanner.Compression;
 using BinaryObjectScanner.Interfaces;
 
-namespace BurnOutSharp.FileType
+namespace BinaryObjectScanner.FileType
 {
     /// <summary>
     /// Microsoft LZ-compressed Files (LZ32)

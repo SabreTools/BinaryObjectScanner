@@ -1,15 +1,13 @@
 ﻿using System;
 using System.IO;
 using BinaryObjectScanner.Interfaces;
-using SharpCompress.Archives;
-using SharpCompress.Archives.SevenZip;
 
-namespace BurnOutSharp.FileType
+namespace BinaryObjectScanner.FileType
 {
     /// <summary>
-    /// 7-zip archive
+    /// BFPK custom archive format
     /// </summary>
-    public class SevenZip : IExtractable
+    public class BFPK : IExtractable
     {
         /// <inheritdoc/>
         public string Extract(string file, bool includeDebug)
@@ -28,29 +26,17 @@ namespace BurnOutSharp.FileType
         {
             try
             {
+                // Create the wrapper
+                Wrappers.BFPK bfpk = Wrappers.BFPK.Create(stream);
+                if (bfpk == null)
+                    return null;
+
                 // Create a temp output directory
                 string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
                 Directory.CreateDirectory(tempPath);
 
-                using (SevenZipArchive sevenZipFile = SevenZipArchive.Open(stream))
-                {
-                    foreach (var entry in sevenZipFile.Entries)
-                    {
-                        try
-                        {
-                            // If we have a directory, skip it
-                            if (entry.IsDirectory)
-                                continue;
-
-                            string tempFile = Path.Combine(tempPath, entry.Key);
-                            entry.WriteToFile(tempFile);
-                        }
-                        catch (Exception ex)
-                        {
-                            if (includeDebug) Console.WriteLine(ex);
-                        }
-                    }
-                }
+                // Extract all files
+                bfpk.ExtractAll(tempPath);
 
                 return tempPath;
             }

@@ -2,14 +2,14 @@
 using System.IO;
 using BinaryObjectScanner.Interfaces;
 using SharpCompress.Archives;
-using SharpCompress.Archives.GZip;
+using SharpCompress.Archives.Zip;
 
-namespace BurnOutSharp.FileType
+namespace BinaryObjectScanner.FileType
 {
     /// <summary>
-    /// gzip archive
+    /// PKWARE ZIP archive and derivatives
     /// </summary>
-    public class GZIP : IExtractable
+    public class PKZIP : IExtractable
     {
         /// <inheritdoc/>
         public string Extract(string file, bool includeDebug)
@@ -32,7 +32,7 @@ namespace BurnOutSharp.FileType
                 string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
                 Directory.CreateDirectory(tempPath);
 
-                using (GZipArchive zipFile = GZipArchive.Open(stream))
+                using (ZipArchive zipFile = ZipArchive.Open(stream))
                 {
                     foreach (var entry in zipFile.Entries)
                     {
@@ -43,6 +43,7 @@ namespace BurnOutSharp.FileType
                                 continue;
 
                             string tempFile = Path.Combine(tempPath, entry.Key);
+                            Directory.CreateDirectory(Path.GetDirectoryName(tempFile));
                             entry.WriteToFile(tempFile);
                         }
                         catch (Exception ex)

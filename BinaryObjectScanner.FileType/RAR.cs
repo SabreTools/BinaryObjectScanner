@@ -1,15 +1,15 @@
 ﻿using System;
 using System.IO;
 using BinaryObjectScanner.Interfaces;
-using SharpCompress.Compressors;
-using SharpCompress.Compressors.BZip2;
+using SharpCompress.Archives;
+using SharpCompress.Archives.Rar;
 
-namespace BurnOutSharp.FileType
+namespace BinaryObjectScanner.FileType
 {
     /// <summary>
-    /// bzip2 archive
+    /// RAR archive
     /// </summary>
-    public class BZip2 : IExtractable
+    public class RAR : IExtractable
     {
         /// <inheritdoc/>
         public string Extract(string file, bool includeDebug)
@@ -32,12 +32,23 @@ namespace BurnOutSharp.FileType
                 string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
                 Directory.CreateDirectory(tempPath);
 
-                using (BZip2Stream bz2File = new BZip2Stream(stream, CompressionMode.Decompress, true))
+                using (RarArchive rarFile = RarArchive.Open(stream))
                 {
-                    string tempFile = Path.Combine(tempPath, Guid.NewGuid().ToString());
-                    using (FileStream fs = File.OpenWrite(tempFile))
+                    foreach (var entry in rarFile.Entries)
                     {
-                        bz2File.CopyTo(fs);
+                        try
+                        {
+                            // If we have a directory, skip it
+                            if (entry.IsDirectory)
+                                continue;
+
+                            string tempFile = Path.Combine(tempPath, entry.Key);
+                            entry.WriteToFile(tempFile);
+                        }
+                        catch (Exception ex)
+                        {
+                            if (includeDebug) Console.WriteLine(ex);
+                        }
                     }
                 }
 

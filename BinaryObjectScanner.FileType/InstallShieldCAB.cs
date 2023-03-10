@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 using BinaryObjectScanner.Interfaces;
 using UnshieldSharp.Cabinet;
 
-namespace BurnOutSharp.FileType
+namespace BinaryObjectScanner.FileType
 {
     /// <summary>
     /// InstallShield cabinet file
