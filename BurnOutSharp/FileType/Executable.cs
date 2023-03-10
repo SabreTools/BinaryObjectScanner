@@ -62,7 +62,7 @@ namespace BurnOutSharp.FileType
             }
 
             // Get the wrapper for the appropriate executable type
-            WrapperBase wrapper = Tools.Utilities.DetermineExecutableType(stream);
+            WrapperBase wrapper = Tools.FileTypeTools.DetermineExecutableType(stream);
             if (wrapper == null)
                 return protections;
 

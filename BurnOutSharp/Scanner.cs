@@ -332,9 +332,9 @@ namespace BurnOutSharp
                 }
 
                 // Get the file type either from magic number or extension
-                SupportedFileType fileType = Tools.Utilities.GetFileType(magic);
+                SupportedFileType fileType = Tools.FileTypeTools.GetFileType(magic);
                 if (fileType == SupportedFileType.UNKNOWN)
-                    fileType = Tools.Utilities.GetFileType(extension);
+                    fileType = Tools.FileTypeTools.GetFileType(extension);
 
                 // If we still got unknown, just return null
                 if (fileType == SupportedFileType.UNKNOWN)
@@ -343,7 +343,7 @@ namespace BurnOutSharp
                 #region Non-Archive File Types
 
                 // Create a scannable for the given file type
-                var scannable = Tools.Utilities.CreateScannable(fileType);
+                var scannable = Tools.FileTypeTools.CreateScannable(fileType);
 
                 // If we're scanning file contents
                 if (scannable != null && ScanContents)
@@ -357,7 +357,7 @@ namespace BurnOutSharp
                 #region Archive File Types
 
                 // Create an extractable for the given file type
-                var extractable = Tools.Utilities.CreateExtractable(fileType);
+                var extractable = Tools.FileTypeTools.CreateExtractable(fileType);
 
                 // If we're scanning archives
                 if (extractable != null && ScanArchives)

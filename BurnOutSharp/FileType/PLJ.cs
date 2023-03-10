@@ -32,7 +32,7 @@ namespace BurnOutSharp.FileType
                 byte[] magic = new byte[16];
                 stream.Read(magic, 0, 16);
 
-                if (Tools.Utilities.GetFileType(magic) == SupportedFileType.PLJ)
+                if (Tools.FileTypeTools.GetFileType(magic) == SupportedFileType.PLJ)
                 {
                     AppendToDictionary(protections, file, "PlayJ Audio File");
                     return protections;

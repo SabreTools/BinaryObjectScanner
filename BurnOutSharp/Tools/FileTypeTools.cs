@@ -8,10 +8,8 @@ using BinaryObjectScanner.Interfaces;
 
 namespace BurnOutSharp.Tools
 {
-    public static class Utilities
+    public static class FileTypeTools
     {
-        #region File Types
-
         /// <summary>
         /// Get the supported file type for a magic string
         /// </summary>
@@ -944,7 +942,5 @@ namespace BurnOutSharp.Tools
             // Everything else fails
             return null;
         }
-
-        #endregion
     }
 }

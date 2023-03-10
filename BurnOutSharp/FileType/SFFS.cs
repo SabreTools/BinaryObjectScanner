@@ -52,7 +52,7 @@ namespace BurnOutSharp.FileType
                 byte[] magic = new byte[16];
                 stream.Read(magic, 0, 16);
 
-                if (Tools.Utilities.GetFileType(magic) == SupportedFileType.SFFS)
+                if (Tools.FileTypeTools.GetFileType(magic) == SupportedFileType.SFFS)
                 {
                     AppendToDictionary(protections, file, "StarForce Filesystem Container");
                     return protections;

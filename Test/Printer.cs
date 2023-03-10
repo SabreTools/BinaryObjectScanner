@@ -50,18 +50,18 @@ namespace Test
                 stream.Seek(0, SeekOrigin.Begin);
 
                 // Get the file type
-                SupportedFileType ft = BurnOutSharp.Tools.Utilities.GetFileType(magic);
+                SupportedFileType ft = BurnOutSharp.Tools.FileTypeTools.GetFileType(magic);
                 if (ft == SupportedFileType.UNKNOWN)
                 {
                     string extension = Path.GetExtension(file).TrimStart('.');
-                    ft = BurnOutSharp.Tools.Utilities.GetFileType(extension);
+                    ft = BurnOutSharp.Tools.FileTypeTools.GetFileType(extension);
                 }
 
                 // Print out the file format
                 Console.WriteLine($"File format found: {ft}");
 
                 // Setup the wrapper to print
-                var wrapper = BurnOutSharp.Tools.Utilities.CreateWrapper(ft, stream);
+                var wrapper = BurnOutSharp.Tools.FileTypeTools.CreateWrapper(ft, stream);
 
                 // If we don't have a wrapper
                 if (wrapper == null)

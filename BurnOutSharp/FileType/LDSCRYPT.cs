@@ -32,7 +32,7 @@ namespace BurnOutSharp.FileType
                 byte[] magic = new byte[16];
                 stream.Read(magic, 0, 16);
 
-                if (Tools.Utilities.GetFileType(magic) == SupportedFileType.LDSCRYPT)
+                if (Tools.FileTypeTools.GetFileType(magic) == SupportedFileType.LDSCRYPT)
                 {
                     AppendToDictionary(protections, file, "Link Data Security encrypted file");
                     return protections;

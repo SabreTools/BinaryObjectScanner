@@ -64,7 +64,7 @@ namespace Test
                 stream.Seek(0, SeekOrigin.Begin);
 
                 // Get the file type
-                SupportedFileType ft = BurnOutSharp.Tools.Utilities.GetFileType(magic);
+                SupportedFileType ft = BurnOutSharp.Tools.FileTypeTools.GetFileType(magic);
 
                 // Executables technically can be "extracted", but let's ignore that
                 // TODO: Support executables that include other stuff
