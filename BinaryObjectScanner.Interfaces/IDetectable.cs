@@ -3,26 +3,26 @@
 namespace BinaryObjectScanner.Interfaces
 {
     /// <summary>
-    /// Mark a file type as being able to be extracted
+    /// Mark a file type as being able to be detected
     /// </summary>
-    public interface IExtractable
+    public interface IDetectable
     {
         /// <summary>
-        /// Extract a file to a temporary path, if possible
+        /// Check if a file is detected as this file type
         /// </summary>
         /// <param name="file">Path to the input file</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
-        /// <returns>Path to extracted files, null on error</returns>
-        /// <remarks>Ideally, this should just point to the other extract implementation.</remarks>
-        string Extract(string file, bool includeDebug);
+        /// <returns>Detected file or protection type, null on error</returns>
+        /// <remarks>Ideally, this should just point to the other detect implementation.</remarks>
+        string Detect(string file, bool includeDebug);
 
         /// <summary>
-        /// Extract a stream to a temporary path, if possible
+        /// Check if a stream is detected as this file type
         /// </summary>
         /// <param name="stream">Stream representing the input file</param>
         /// <param name="file">Path to the input file</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
-        /// <returns>Path to extracted files, null on error</returns>
-        string Extract(Stream stream, string file, bool includeDebug);
+        /// <returns>Detected file or protection type, null on error</returns>
+        string Detect(Stream stream, string file, bool includeDebug);
     }
 }
