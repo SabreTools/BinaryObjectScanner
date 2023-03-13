@@ -28,7 +28,27 @@ namespace BinaryObjectScanner.Utilities
         }
 
         /// <summary>
-        /// Append one result to a results dictionary
+        /// Append one set of results to a results dictionary
+        /// </summary>
+        /// <param name="original">Dictionary to append to</param>
+        /// <param name="key">Key to add information to</param>
+        /// <param name="value">String value to add</param>
+        public static void AppendToDictionary(ConcurrentDictionary<string, ConcurrentQueue<string>> original, string key, string[] values)
+        {
+            // If the dictionary is null, just return
+            if (original == null)
+                return;
+
+            // Use a placeholder value if the key is null
+            key = key ?? "NO FILENAME";
+
+            // Add the key if needed and then append the lists
+            original.TryAdd(key, new ConcurrentQueue<string>());
+            original[key].AddRange(values);
+        }
+
+        /// <summary>
+        /// Append one set of results to a results dictionary
         /// </summary>
         /// <param name="original">Dictionary to append to</param>
         /// <param name="key">Key to add information to</param>

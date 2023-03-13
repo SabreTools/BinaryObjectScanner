@@ -352,7 +352,18 @@ namespace BurnOutSharp
                 {
                     string subProtection = detectable.Detect(stream, fileName, IncludeDebug);
                     if (!string.IsNullOrWhiteSpace(subProtection))
-                        AppendToDictionary(protections, fileName, subProtection);
+                    {
+                        // If we have an indicator of multiple protections
+                        if (subProtection.Contains(';'))
+                        {
+                            var splitProtections = subProtection.Split(';');
+                            AppendToDictionary(protections, fileName, splitProtections);
+                        }
+                        else
+                        {
+                            AppendToDictionary(protections, fileName, subProtection);
+                        }
+                    }
                 }
 
                 // Create a scannable for the given file type
@@ -443,6 +454,7 @@ namespace BurnOutSharp
                 //case SupportedFileType.Nitro: return new BinaryObjectScanner.FileType.Nitro();
                 case SupportedFileType.PLJ: return new BinaryObjectScanner.FileType.PLJ();
                 case SupportedFileType.SFFS: return new BinaryObjectScanner.FileType.SFFS();
+                case SupportedFileType.Textfile: return new BinaryObjectScanner.FileType.Textfile();
                 default: return null;
             }
         }
@@ -497,7 +509,6 @@ namespace BurnOutSharp
             switch (fileType)
             {
                 case SupportedFileType.Executable: return new FileType.Executable();
-                case SupportedFileType.Textfile: return new FileType.Textfile();
                 default: return null;
             }
         }
