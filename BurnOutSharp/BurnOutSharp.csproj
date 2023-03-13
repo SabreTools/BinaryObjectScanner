@@ -30,16 +30,6 @@
     </PackageReference>
   </ItemGroup>
 
-  <!-- These are needed for dealing with submodules -->
-  <PropertyGroup>
-    <DefaultItemExcludes>
-      $(DefaultItemExcludes);
-      **\AssemblyInfo.cs;
-      External\stormlibsharp\lib\**;
-      External\stormlibsharp\TestConsole\**
-    </DefaultItemExcludes>
-  </PropertyGroup>
-
   <ItemGroup>
     <None Include="*.dll" Pack="true" Condition="'$(TargetFramework)' == 'net48'">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

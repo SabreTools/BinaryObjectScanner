@@ -20,6 +20,16 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
+  <!-- These are needed for dealing with submodules -->
+  <PropertyGroup>
+    <DefaultItemExcludes>
+      $(DefaultItemExcludes);
+      **\AssemblyInfo.cs;
+      External\stormlibsharp\lib\**;
+      External\stormlibsharp\TestConsole\**
+    </DefaultItemExcludes>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="SharpCompress" Version="0.32.2" />
     <PackageReference Include="SharpZipLib" Version="1.4.1" />
