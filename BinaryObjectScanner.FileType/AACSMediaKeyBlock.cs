@@ -1,0 +1,51 @@
+using System;
+using System.IO;
+using System.Linq;
+using BinaryObjectScanner.Interfaces;
+
+namespace BinaryObjectScanner.FileType
+{
+    /// <summary>
+    /// AACS media key block
+    /// </summary>
+    public class AACSMediaKeyBlock : IDetectable
+    {
+        /// <inheritdoc/>
+        public string Detect(string file, bool includeDebug)
+        {
+            if (!File.Exists(file))
+                return null;
+
+            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                return Detect(fs, file, includeDebug);
+            }
+        }
+
+        /// <inheritdoc/>
+        public string Detect(Stream stream, string file, bool includeDebug)
+        {
+            // If the MKB file itself fails
+            try
+            {
+                // Create the wrapper
+                Wrappers.AACSMediaKeyBlock mkb = Wrappers.AACSMediaKeyBlock.Create(stream);
+                if (mkb == null)
+                    return null;
+
+                // Derive the version, if possible
+                var typeAndVersion = mkb.Records.FirstOrDefault(r => r.RecordType == Models.AACS.RecordType.TypeAndVersion);
+                if (typeAndVersion == null)
+                    return "AACS (Unknown Version)";
+                else
+                    return $"AACS {(typeAndVersion as Models.AACS.TypeAndVersionRecord).VersionNumber}";
+            }
+            catch (Exception ex)
+            {
+                if (includeDebug) Console.WriteLine(ex);
+            }
+
+            return null;
+        }
+    }
+}

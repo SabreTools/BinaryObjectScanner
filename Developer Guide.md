@@ -12,6 +12,7 @@ This is a guide for any developers who wish to research protections, implement n
 | `BinaryObjectScanner.ASN1` | Library containing classes and methods associated with Abstract Syntax Notation One and OID parsing. |
 | `BinaryObjectScanner.Builder` | Library containing classes that assist in populating the various object models defined in `BinaryObjectScanner.Models`. Builders can work with either byte arrays or streams for input. At the time of writing, the following executable types have builders: **MS-DOS**, **New Executable**, **Portable Executable**. |
 | `BinaryObjectScanner.Compression` | Library containing classes that deal with different compression formats. This library is used extensively by the wrappers in `BinaryObjectScanner.Wrappers`. |
+| `BinaryObjectScanner.FileType` | Library containing file type definitions specific to scanning. |
 | `BinaryObjectScanner.Interfaces` | Library containing interface definitions for scanning and detection. |
 | `BinaryObjectScanner.Matching` | Library containing models and logic for generic searching and matching. This library is used extensively by the packer and protection checks in `BurnOutSharp`. |
 | `BinaryObjectScanner.Models` | Library containing object models that represent various pieces of known executable formats. At the time of writing, the following executable types have models: **MS-DOS**, **New Executable**, **Linear Executable (partial)**, **Portable Executable**. |
@@ -88,7 +89,7 @@ Adding a new checker or format should happen in a few distinct steps:
 
 1. Create a skeleton class representing the new checker or format
 
-    - If it is a new supported file type (such as an archive format), create the file in `BurnOutSharp/FileType/`. By default, you will need to implement `BurnOutSharp.Interfaces.IScannable` or `BinaryObjectScanner.Interfaces.IExtractable`. Do not implement any other interfaces. Please consider asking project maintainers before doing this work, especially if there are external dependencies.
+    - If it is a new supported file type (such as an archive format), create the file in `BinaryObjectScanner.FileType`. By default, you will need to implement `BurnOutSharp.Interfaces.IDetectable` or `BinaryObjectScanner.Interfaces.IExtractable`. Do not implement any other interfaces. Please consider asking project maintainers before doing this work, especially if there are external dependencies.
 
     - If it is a new supported executable packer, compressor, or installer format, create the file in `BinaryObjectScanner.Packer`. By default, you will need to implement `BinaryObjectScanner.Interfaces.IExtractable` as well as at least one of: `BinaryObjectScanner.Interfaces.ILinearExecutableCheck`, `BinaryObjectScanner.Interfaces.INewExecutableCheck`, and `BinaryObjectScanner.Interfaces.IPortableExecutableCheck`. It is exceptionally rare to need to implement `BinaryObjectScanner.Interfaces.IPathCheck`.
 

@@ -344,6 +344,17 @@ namespace BurnOutSharp
 
                 #region Non-Archive File Types
 
+                // Create a detectable for the given file type
+                var detectable = CreateDetectable(fileType);
+
+                // If we're scanning file contents
+                if (detectable != null && ScanContents)
+                {
+                    string subProtection = detectable.Detect(stream, fileName, IncludeDebug);
+                    if (!string.IsNullOrWhiteSpace(subProtection))
+                        AppendToDictionary(protections, fileName, subProtection);
+                }
+
                 // Create a scannable for the given file type
                 var scannable = CreateScannable(fileType);
 
@@ -418,6 +429,25 @@ namespace BurnOutSharp
         #region Helpers
 
         /// <summary>
+        /// Create an instance of a detectable based on file type
+        /// </summary>
+        private static IDetectable CreateDetectable(SupportedFileType fileType)
+        {
+            switch (fileType)
+            {
+                case SupportedFileType.AACSMediaKeyBlock: return new BinaryObjectScanner.FileType.AACSMediaKeyBlock();
+                case SupportedFileType.BDPlusSVM: return new BinaryObjectScanner.FileType.BDPlusSVM();
+                //case SupportedFileType.CIA: return new BinaryObjectScanner.FileType.CIA();
+                case SupportedFileType.LDSCRYPT: return new BinaryObjectScanner.FileType.LDSCRYPT();
+                //case SupportedFileType.N3DS: return new BinaryObjectScanner.FileType.N3DS();
+                //case SupportedFileType.Nitro: return new BinaryObjectScanner.FileType.Nitro();
+                case SupportedFileType.PLJ: return new BinaryObjectScanner.FileType.PLJ();
+                case SupportedFileType.SFFS: return new BinaryObjectScanner.FileType.SFFS();
+                default: return null;
+            }
+        }
+
+        /// <summary>
         /// Create an instance of an extractable based on file type
         /// </summary>
         private static IExtractable CreateExtractable(SupportedFileType fileType)
@@ -447,7 +477,7 @@ namespace BurnOutSharp
                 //case SupportedFileType.Quantum: return new BinaryObjectScanner.FileType.Quantum();
                 case SupportedFileType.RAR: return new BinaryObjectScanner.FileType.RAR();
                 case SupportedFileType.SevenZip: return new BinaryObjectScanner.FileType.SevenZip();
-                case SupportedFileType.SFFS: return new FileType.SFFS();
+                case SupportedFileType.SFFS: return new BinaryObjectScanner.FileType.SFFS();
                 case SupportedFileType.SGA: return new BinaryObjectScanner.FileType.SGA();
                 case SupportedFileType.TapeArchive: return new BinaryObjectScanner.FileType.TapeArchive();
                 case SupportedFileType.VBSP: return new BinaryObjectScanner.FileType.VBSP();
@@ -466,17 +496,7 @@ namespace BurnOutSharp
         {
             switch (fileType)
             {
-                case SupportedFileType.AACSMediaKeyBlock: return new FileType.AACSMediaKeyBlock();
-                case SupportedFileType.BDPlusSVM: return new FileType.BDPlusSVM();
-                //case SupportedFileType.CIA: return new FileType.CIA();
                 case SupportedFileType.Executable: return new FileType.Executable();
-                //case FileTypes.IniFile: return new FileType.IniFile();
-                case SupportedFileType.LDSCRYPT: return new FileType.LDSCRYPT();
-                //case SupportedFileType.N3DS: return new FileType.N3DS();
-                //case SupportedFileType.NCF: return new FileType.NCF();
-                //case SupportedFileType.Nitro: return new FileType.Nitro();
-                case SupportedFileType.PLJ: return new FileType.PLJ();
-                case SupportedFileType.SFFS: return new FileType.SFFS();
                 case SupportedFileType.Textfile: return new FileType.Textfile();
                 default: return null;
             }

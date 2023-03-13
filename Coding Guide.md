@@ -324,6 +324,7 @@ This section contains information on project and class organization principles t
 | `BinaryObjectScanner.ASN1` | Flat directory structure. |
 | `BinaryObjectScanner.Builders` | One file per executable type. |
 | `BinaryObjectScanner.Compression` | One directory per compression type. |
+| `BinaryObjectScanner.FileType` | One file per file type. |
 | `BinaryObjectScanner.Interfaces` | One file per interface. |
 | `BinaryObjectScanner.Matching` | Flat directory structure. Include interfaces and base classes. |
 | `BinaryObjectScanner.Models` | One directory per executable type. One file per object model. |
@@ -343,11 +344,12 @@ This section contains information on in-code organization principles that depend
 | Project | Description |
 | --- | --- |
 | `BurnOutSharp` | Varies from file to file. |
-| `BurnOutSharp/FileType` | `IExtractable` implementations, `IScannable` implementations, helper methods. |
+| `BurnOutSharp/FileType` | `IDetectable` implementations, `IExtractable` implementations, `IScannable` implementations, helper methods. |
 | `BurnOutSharp/Tools` | Methods grouped by function. Regions ordered alphabetically. |
 | `BinaryObjectScanner.ASN1` | Partial classes suggested for different implmentations. |
 | `BinaryObjectScanner.Builders` | Two copies of each non-generic method: one for byte arrays and one for Streams. |
 | `BinaryObjectScanner.Compression` | Varies from file to file. |
+| `BinaryObjectScanner.FileType` | `IDetectable` implementations, `IExtractable` implementations, helper methods. |
 | `BinaryObjectScanner.Interfaces` | Methods ordered alphabetically. |
 | `BinaryObjectScanner.Matching` | Varies from file to file. |
 | `BinaryObjectScanner.Models` | No methods at all, just properties. |
