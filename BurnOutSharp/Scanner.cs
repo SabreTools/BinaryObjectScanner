@@ -449,6 +449,7 @@ namespace BurnOutSharp
                 case SupportedFileType.AACSMediaKeyBlock: return new BinaryObjectScanner.FileType.AACSMediaKeyBlock();
                 case SupportedFileType.BDPlusSVM: return new BinaryObjectScanner.FileType.BDPlusSVM();
                 //case SupportedFileType.CIA: return new BinaryObjectScanner.FileType.CIA();
+                case SupportedFileType.Executable: return new FileType.Executable();
                 case SupportedFileType.LDSCRYPT: return new BinaryObjectScanner.FileType.LDSCRYPT();
                 //case SupportedFileType.N3DS: return new BinaryObjectScanner.FileType.N3DS();
                 //case SupportedFileType.Nitro: return new BinaryObjectScanner.FileType.Nitro();
@@ -471,7 +472,7 @@ namespace BurnOutSharp
                 case SupportedFileType.BZip2: return new BinaryObjectScanner.FileType.BZip2();
                 case SupportedFileType.CFB: return new BinaryObjectScanner.FileType.CFB();
                 //case SupportedFileType.CIA: return new BinaryObjectScanner.FileType.CIA();
-                //case SupportedFileType.Executable: return new BinaryObjectScanner.FileType.Executable();
+                case SupportedFileType.Executable: return new FileType.Executable();
                 case SupportedFileType.GCF: return new BinaryObjectScanner.FileType.GCF();
                 case SupportedFileType.GZIP: return new BinaryObjectScanner.FileType.GZIP();
                 case SupportedFileType.InstallShieldArchiveV3: return new BinaryObjectScanner.FileType.InstallShieldArchiveV3();
