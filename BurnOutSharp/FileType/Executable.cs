@@ -60,6 +60,14 @@ namespace BurnOutSharp.FileType
             // - Everything else should be basically the same for other extractable types
             // - Which extractions to run is directly influenced by the detected protections
             // - Can this somehow delegate to the proper extractable type?
+            // - Can we have a check in Scanner that then runs all extractable implementations if the class is Executable?
+
+            // The following packers fully implement IExtractable (extract and doesn't return null)
+            // - <see cref="BinaryObjectScanner.Packer.CExe" />
+            // - <see cref="BinaryObjectScanner.Packer.EmbeddedExecutable" />
+            // - <see cref="BinaryObjectScanner.Packer.WinRARSFX" />
+            // - <see cref="BinaryObjectScanner.Packer.WinZipSFX" />
+            // - <see cref="BinaryObjectScanner.Packer.WiseInstaller" />
 
             return null;
         }
