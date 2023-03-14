@@ -5,6 +5,7 @@ using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Wrappers;
 using SharpCompress.Archives;
 using SharpCompress.Archives.Rar;
+using SharpCompress.Readers;
 
 namespace BinaryObjectScanner.Packer
 {
@@ -46,12 +47,15 @@ namespace BinaryObjectScanner.Packer
         {
             try
             {
-                string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-                Directory.CreateDirectory(tempPath);
-
                 // Should be using stream instead of file, but stream fails to extract anything. My guess is that the executable portion of the archive is causing stream to fail, but not file.
-                using (RarArchive zipFile = RarArchive.Open(file, new SharpCompress.Readers.ReaderOptions() { LookForHeader = true }))
+                using (RarArchive zipFile = RarArchive.Open(file, new ReaderOptions() { LookForHeader = true }))
                 {
+                    if (!zipFile.IsComplete)
+                        return null;
+
+                    string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+                    Directory.CreateDirectory(tempPath);
+
                     foreach (var entry in zipFile.Entries)
                     {
                         try
@@ -68,9 +72,9 @@ namespace BinaryObjectScanner.Packer
                             if (includeDebug) Console.WriteLine(ex);
                         }
                     }
-                }
 
-                return tempPath;
+                    return tempPath;
+                }
             }
             catch (Exception ex)
             {

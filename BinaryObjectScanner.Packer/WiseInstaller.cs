@@ -230,7 +230,19 @@ namespace BinaryObjectScanner.Packer
             {
                 // TODO: Try to find where the file data lives and how to get it
                 Wise unpacker = new Wise();
-                unpacker.ExtractTo(file, tempPath);
+                if (!unpacker.ExtractTo(file, tempPath))
+                {
+                    try
+                    {
+                        Directory.Delete(tempPath, true);
+                    }
+                    catch (Exception ex)
+                    {
+                        if (includeDebug) Console.WriteLine(ex);
+                    }
+
+                    return null;
+                }
             }
             catch (Exception ex)
             {
@@ -333,7 +345,19 @@ namespace BinaryObjectScanner.Packer
                 else
                 {
                     Wise unpacker = new Wise();
-                    unpacker.ExtractTo(file, tempPath);
+                    if (!unpacker.ExtractTo(file, tempPath))
+                    {
+                        try
+                        {
+                            Directory.Delete(tempPath, true);
+                        }
+                        catch (Exception ex)
+                        {
+                            if (includeDebug) Console.WriteLine(ex);
+                        }
+
+                        return null;
+                    }
                 }
 
                 return tempPath;
