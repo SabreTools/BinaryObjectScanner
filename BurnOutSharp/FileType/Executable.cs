@@ -291,7 +291,7 @@ namespace BurnOutSharp.FileType
                 return false;
 
             // If we have a valid content check based on settings
-            if (scanPackers || !checkClass.GetType().Namespace.ToLowerInvariant().Contains("packertype"))
+            if (scanPackers || !checkClass.GetType().Namespace.ToLowerInvariant().Contains("packer"))
                 return true;
 
             // Everything else fails
