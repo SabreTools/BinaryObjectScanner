@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BinaryObjectScanner.FileType;
 using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Utilities;
 using static BinaryObjectScanner.Utilities.Dictionary;
@@ -385,37 +386,34 @@ namespace BurnOutSharp
                 // If we're scanning archives
                 if (extractable != null && ScanArchives)
                 {
-                    // If the extractable file itself fails
-                    try
+                    // If we have an executable, it needs to bypass normal handling
+                    if (extractable is Executable)
                     {
-                        // Extract and get the output path
-                        string tempPath = extractable.Extract(stream, fileName, IncludeDebug);
-                        if (tempPath == null)
-                            return null;
+                        var subProtections = HandleExtractable(extractable, fileName, stream);
+                        if (subProtections != null)
+                            AppendToDictionary(protections, subProtections);
 
-                        // Collect and format all found protections
-                        var subProtections = GetProtections(tempPath);
+                        // The following code is disabled because it is untested, though it represents the likely path
+                        // for how this implementation will be completed.
 
-                        // If temp directory cleanup fails
-                        try
-                        {
-                            Directory.Delete(tempPath, true);
-                        }
-                        catch (Exception ex)
-                        {
-                            if (IncludeDebug) Console.WriteLine(ex);
-                        }
-
-                        // Prepare the returned protections
-                        StripFromKeys(protections, tempPath);
-                        PrependToKeys(subProtections, fileName);
-                        AppendToDictionary(protections, subProtections);
-
-                        return protections;
+                        //Parallel.ForEach(ScanningClasses.ExtractableClasses, extractableClass =>
+                        //{
+                        //    string tempDir = extractableClass.Extract(stream, fileName, IncludeDebug);
+                        //    if (!string.IsNullOrWhiteSpace(tempDir))
+                        //    {
+                        //        var subProtections = HandleExtractable(extractable, fileName, stream);
+                        //        if (subProtections != null)
+                        //            AppendToDictionary(protections, subProtections);
+                        //    }
+                        //});
                     }
-                    catch (Exception ex)
+
+                    // Otherwise, use the default implementation
+                    else
                     {
-                        if (IncludeDebug) Console.WriteLine(ex);
+                        var subProtections = HandleExtractable(extractable, fileName, stream);
+                        if (subProtections != null)
+                            AppendToDictionary(protections, subProtections);
                     }
                 }
 
@@ -511,6 +509,49 @@ namespace BurnOutSharp
                 case SupportedFileType.Executable: return new BinaryObjectScanner.FileType.Executable();
                 default: return null;
             }
+        }
+
+        /// <summary>
+        /// Handle extractable files based on an IExtractable implementation
+        /// </summary>
+        /// <param name="extractable">IExtractable class representing the file type</param>
+        /// <param name="fileName">Name of the source file of the stream, for tracking</param>
+        /// <param name="stream">Stream to scan the contents of</param>
+        /// <returns>Set of protections in internal files, null on error</returns>
+        private ConcurrentDictionary<string, ConcurrentQueue<string>> HandleExtractable(IExtractable extractable, string fileName, Stream stream)
+        {
+            // If the extractable file itself fails
+            try
+            {
+                // Extract and get the output path
+                string tempPath = extractable.Extract(stream, fileName, IncludeDebug);
+                if (tempPath == null)
+                    return null;
+
+                // Collect and format all found protections
+                var subProtections = GetProtections(tempPath);
+
+                // If temp directory cleanup fails
+                try
+                {
+                    Directory.Delete(tempPath, true);
+                }
+                catch (Exception ex)
+                {
+                    if (IncludeDebug) Console.WriteLine(ex);
+                }
+
+                // Prepare the returned protections
+                StripFromKeys(subProtections, tempPath);
+                PrependToKeys(subProtections, fileName);
+                return subProtections;
+            }
+            catch (Exception ex)
+            {
+                if (IncludeDebug) Console.WriteLine(ex);
+            }
+
+            return null;
         }
 
         #endregion
