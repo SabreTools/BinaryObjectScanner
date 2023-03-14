@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Text;
-using BurnOutSharp;
 using BinaryObjectScanner.Utilities;
 
 namespace Test
@@ -50,11 +49,11 @@ namespace Test
                 stream.Seek(0, SeekOrigin.Begin);
 
                 // Get the file type
-                SupportedFileType ft = BurnOutSharp.Tools.FileTypeTools.GetFileType(magic);
+                SupportedFileType ft = FileTypes.GetFileType(magic);
                 if (ft == SupportedFileType.UNKNOWN)
                 {
                     string extension = Path.GetExtension(file).TrimStart('.');
-                    ft = BurnOutSharp.Tools.FileTypeTools.GetFileType(extension);
+                    ft = FileTypes.GetFileType(extension);
                 }
 
                 // Print out the file format

@@ -334,9 +334,9 @@ namespace BurnOutSharp
                 }
 
                 // Get the file type either from magic number or extension
-                SupportedFileType fileType = Tools.FileTypeTools.GetFileType(magic);
+                SupportedFileType fileType = FileTypes.GetFileType(magic);
                 if (fileType == SupportedFileType.UNKNOWN)
-                    fileType = Tools.FileTypeTools.GetFileType(extension);
+                    fileType = FileTypes.GetFileType(extension);
 
                 // If we still got unknown, just return null
                 if (fileType == SupportedFileType.UNKNOWN)

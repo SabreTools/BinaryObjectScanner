@@ -20,4 +20,8 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\BinaryObjectScanner.Matching\BinaryObjectScanner.Matching.csproj" />
+  </ItemGroup>
+
 </Project>
