@@ -13,15 +13,57 @@ namespace BurnOutSharp.FileType
     /// <summary>
     /// Executable or library
     /// </summary>
-    /// TODO: We need to figure out a way to avoid passing in the Scanner object to all IScannable implementations.
-    /// In order to achiveve this, Executable specifically needs a way of supporting the Packer types (IExtractable) in such
-    /// a way that we don't scan the files two times over. Somehow, we need to make Executable IExtractable as well and then
-    /// take the outputs of `Scan` and figure out if we need to try extracting or not.
-    /// 
-    /// Since Options is a separate class now, that should be passed in instead of Scanner, so that we only have to worry about
-    /// what the user or implementer was requesting.
-    public class Executable : IScannable
+    public class Executable : IDetectable, IExtractable, IScannable
     {
+        /// <inheritdoc/>
+        public string Detect(string file, bool includeDebug)
+        {
+            if (!File.Exists(file))
+                return null;
+
+            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                return Detect(fs, file, includeDebug);
+            }
+        }
+
+        /// <inheritdoc/>
+        public string Detect(Stream stream, string file, bool includeDebug)
+        {
+            // Implementation notes:
+            // - Executables may house more than one sort of packer/protection (see Textfile for details)
+            // - The output of Detect directly influences which types of packers should be attempted for extraction
+            // - There are no other file types that require this input, so is it worth changing the interface?
+            // - Can this somehow delegate to the proper extractable type?
+
+            return null;
+        }
+
+        /// <inheritdoc/>
+        public string Extract(string file, bool includeDebug)
+        {
+            if (!File.Exists(file))
+                return null;
+
+            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                return Extract(fs, file, includeDebug);
+            }
+        }
+
+        /// <inheritdoc/>
+        public string Extract(Stream stream, string file, bool includeDebug)
+        {
+            // Implementation notes:
+            // - Executables may house more than one sort of extractable packer/protection
+            // - We currently have no way of defining what folder is output for a given extractable
+            // - Everything else should be basically the same for other extractable types
+            // - Which extractions to run is directly influenced by the detected protections
+            // - Can this somehow delegate to the proper extractable type?
+
+            return null;
+        }
+
         /// <inheritdoc/>
         public ConcurrentDictionary<string, ConcurrentQueue<string>> Scan(Scanner scanner, string file)
         {
