@@ -7,7 +7,6 @@ using BurnOutSharp;
 using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Wrappers;
 using static BinaryObjectScanner.Utilities.Dictionary;
-using System.Linq;
 
 namespace BinaryObjectScanner.FileType
 {
