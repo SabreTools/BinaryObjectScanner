@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Text;
-using BurnOutSharp;
 using BinaryObjectScanner.Compression;
 using BinaryObjectScanner.Utilities;
 using BinaryObjectScanner.Wrappers;

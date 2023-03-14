@@ -1,4 +1,4 @@
-﻿namespace BurnOutSharp
+﻿namespace BinaryObjectScanner.Utilities
 {
     /// <summary>
     /// Subset of file types that are supported by the library
