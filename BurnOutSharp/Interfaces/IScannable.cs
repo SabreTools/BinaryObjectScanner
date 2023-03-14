@@ -1,7 +1,8 @@
 ﻿using System.Collections.Concurrent;
 using System.IO;
+using BurnOutSharp;
 
-namespace BurnOutSharp.Interfaces
+namespace BinaryObjectScanner.Interfaces
 {
     /// <summary>
     /// Mark a file type as being able to be scanned

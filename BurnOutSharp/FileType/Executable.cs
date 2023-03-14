@@ -3,12 +3,13 @@ using System.Collections.Concurrent;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using BurnOutSharp.Interfaces;
+using BurnOutSharp;
 using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Wrappers;
 using static BinaryObjectScanner.Utilities.Dictionary;
+using System.Linq;
 
-namespace BurnOutSharp.FileType
+namespace BinaryObjectScanner.FileType
 {
     /// <summary>
     /// Executable or library
@@ -37,6 +38,84 @@ namespace BurnOutSharp.FileType
             // - Can this somehow delegate to the proper extractable type?
 
             return null;
+
+            // The below code is a copy of what is currently in Scan, but without any of the
+            // extraction code or packer filtering code. It is not currently enabled since it
+            // is not as complete as the IScannable implementation and therefore cannot be reasonably
+            // used as a replacement yet.
+
+            // Files can be protected in multiple ways
+            var protections = new ConcurrentQueue<string>();
+
+            // Load the current file content for debug only
+            byte[] fileContent = null;
+            if (includeDebug)
+            {
+                try
+                {
+                    using (BinaryReader br = new BinaryReader(stream, Encoding.Default, true))
+                    {
+                        fileContent = br.ReadBytes((int)stream.Length);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    if (includeDebug) Console.WriteLine(ex);
+                }
+            }
+
+            // Get the wrapper for the appropriate executable type
+            WrapperBase wrapper = WrapperFactory.CreateExecutableWrapper(stream);
+            if (wrapper == null)
+                return null;
+
+            // Iterate through all generic content checks
+            if (fileContent != null)
+            {
+                Parallel.ForEach(ScanningClasses.ContentCheckClasses, checkClass =>
+                {
+                    string protection = checkClass.CheckContents(file, fileContent, includeDebug);
+                    protections.Enqueue(protection);
+                });
+            }
+
+            // If we have an MS-DOS executable
+            if (wrapper is MSDOS mz)
+            {
+                // No-op
+            }
+
+            // If we have a New Executable
+            else if (wrapper is NewExecutable nex)
+            {
+                Parallel.ForEach(ScanningClasses.NewExecutableCheckClasses, checkClass =>
+                {
+                    string protection = checkClass.CheckNewExecutable(file, nex, includeDebug);
+                    protections.Enqueue(protection);
+                });
+            }
+
+            // If we have a Linear Executable
+            else if (wrapper is LinearExecutable lex)
+            {
+                Parallel.ForEach(ScanningClasses.LinearExecutableCheckClasses, checkClass =>
+                {
+                    string protection = checkClass.CheckLinearExecutable(file, lex, includeDebug);
+                    protections.Enqueue(protection);
+                });
+            }
+
+            // If we have a Portable Executable
+            else if (wrapper is PortableExecutable pex)
+            {
+                Parallel.ForEach(ScanningClasses.PortableExecutableCheckClasses, checkClass =>
+                {
+                    string protection = checkClass.CheckPortableExecutable(file, pex, includeDebug);
+                    protections.Enqueue(protection);
+                });
+            }
+
+            return string.Join(";", protections.ToArray());
         }
 
         /// <inheritdoc/>
