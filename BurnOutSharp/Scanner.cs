@@ -479,7 +479,7 @@ namespace BurnOutSharp
                 case SupportedFileType.InstallShieldCAB: return new BinaryObjectScanner.FileType.InstallShieldCAB();
                 case SupportedFileType.MicrosoftCAB: return new BinaryObjectScanner.FileType.MicrosoftCAB();
                 case SupportedFileType.MicrosoftLZ: return new BinaryObjectScanner.FileType.MicrosoftLZ();
-                case SupportedFileType.MPQ: return new FileType.MPQ();
+                case SupportedFileType.MPQ: return new BinaryObjectScanner.FileType.MPQ();
                 //case SupportedFileType.N3DS: return new BinaryObjectScanner.FileType.N3DS();
                 //case SupportedFileType.NCF: return new BinaryObjectScanner.FileType.NCF();
                 //case SupportedFileType.Nitro: return new BinaryObjectScanner.FileType.Nitro();

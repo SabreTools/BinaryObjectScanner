@@ -5,7 +5,7 @@ using BinaryObjectScanner.Interfaces;
 using StormLibSharp;
 #endif
 
-namespace BurnOutSharp.FileType
+namespace BinaryObjectScanner.FileType
 {
     /// <summary>
     /// MoPaQ game data archive
