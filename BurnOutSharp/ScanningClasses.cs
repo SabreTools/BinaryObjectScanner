@@ -28,6 +28,20 @@ namespace BurnOutSharp
         }
 
         /// <summary>
+        /// Cache for all IExtractable types
+        /// </summary>
+        public static IEnumerable<IExtractable> ExtractableClasses
+        {
+            get
+            {
+                if (extractableClasses == null)
+                    extractableClasses = InitCheckClasses<IExtractable>();
+
+                return extractableClasses;
+            }
+        }
+
+        /// <summary>
         /// Cache for all ILinearExecutableCheck types
         /// </summary>
         public static IEnumerable<ILinearExecutableCheck> LinearExecutableCheckClasses
@@ -93,6 +107,11 @@ namespace BurnOutSharp
         private static IEnumerable<IContentCheck> contentCheckClasses;
 
         /// <summary>
+        /// Cache for all IExtractable types
+        /// </summary>
+        private static IEnumerable<IExtractable> extractableClasses;
+
+        /// <summary>
         /// Cache for all ILinearExecutableCheck types
         /// </summary>
         private static IEnumerable<ILinearExecutableCheck> linearExecutableCheckClasses;
@@ -120,8 +139,7 @@ namespace BurnOutSharp
         /// Initialize all implementations of a type
         /// </summary>
         private static IEnumerable<T> InitCheckClasses<T>()
-            => InitCheckClasses<T>(Assembly.GetExecutingAssembly())
-                .Concat(InitCheckClasses<T>(typeof(BinaryObjectScanner.Packer._DUMMY).Assembly))
+            => InitCheckClasses<T>(typeof(BinaryObjectScanner.Packer._DUMMY).Assembly)
                 .Concat(InitCheckClasses<T>(typeof(BinaryObjectScanner.Protection._DUMMY).Assembly));
 
         /// <summary>
