@@ -69,49 +69,16 @@ namespace BurnOutSharp.FileType
             // Iterate through all generic content checks
             if (fileContent != null)
             {
-                Parallel.ForEach(ScanningClasses.ContentCheckClasses, contentCheckClass =>
+                Parallel.ForEach(ScanningClasses.ContentCheckClasses, checkClass =>
                 {
-                    string protection = contentCheckClass.CheckContents(file, fileContent, scanner.IncludeDebug);
-                    if (ShouldAddProtection(contentCheckClass, scanner.ScanPackers, protection))
+                    // Get the protection for the class, if possible
+                    string protection = checkClass.CheckContents(file, fileContent, scanner.IncludeDebug);
+                    if (ShouldAddProtection(checkClass, scanner.ScanPackers, protection))
                         AppendToDictionary(protections, file, protection);
 
-                    // If we have an IExtractable implementation
-                    if (contentCheckClass is IExtractable extractable)
-                    {
-                        if (file == null || string.IsNullOrEmpty(protection))
-                            return;
-
-                        // If the extractable file itself fails
-                        try
-                        {
-                            // Extract and get the output path
-                            string tempPath = extractable.Extract(stream, file, scanner.IncludeDebug);
-                            if (tempPath != null)
-                                return;
-
-                            // Collect and format all found protections
-                            var subProtections = scanner.GetProtections(tempPath);
-
-                            // If temp directory cleanup fails
-                            try
-                            {
-                                Directory.Delete(tempPath, true);
-                            }
-                            catch (Exception ex)
-                            {
-                                if (scanner.IncludeDebug) Console.WriteLine(ex);
-                            }
-
-                            // Prepare the returned protections
-                            StripFromKeys(protections, tempPath);
-                            PrependToKeys(subProtections, file);
-                            AppendToDictionary(protections, subProtections);
-                        }
-                        catch (Exception ex)
-                        {
-                            if (scanner.IncludeDebug) Console.WriteLine(ex);
-                        }
-                    }
+                    // If we had a protection, check if it is extractable
+                    if (!string.IsNullOrWhiteSpace(protection))
+                        HandleExtractable(scanner, stream, file, checkClass, protections);
                 });
             }
 
@@ -124,154 +91,50 @@ namespace BurnOutSharp.FileType
             // If we have a New Executable
             else if (wrapper is NewExecutable nex)
             {
-                Parallel.ForEach(ScanningClasses.NewExecutableCheckClasses, contentCheckClass =>
+                Parallel.ForEach(ScanningClasses.NewExecutableCheckClasses, checkClass =>
                 {
-                    // Check using custom content checks first
-                    string protection = contentCheckClass.CheckNewExecutable(file, nex, scanner.IncludeDebug);
-                    if (ShouldAddProtection(contentCheckClass, scanner.ScanPackers, protection))
+                    // Get the protection for the class, if possible
+                    string protection = checkClass.CheckNewExecutable(file, nex, scanner.IncludeDebug);
+                    if (ShouldAddProtection(checkClass, scanner.ScanPackers, protection))
                         AppendToDictionary(protections, file, protection);
 
-                    // If we have an IExtractable implementation
-                    if (contentCheckClass is IExtractable extractable)
-                    {
-                        if (file == null || string.IsNullOrEmpty(protection))
-                            return;
-
-                        // If the extractable file itself fails
-                        try
-                        {
-                            // Extract and get the output path
-                            string tempPath = extractable.Extract(stream, file, scanner.IncludeDebug);
-                            if (tempPath != null)
-                                return;
-
-                            // Collect and format all found protections
-                            var subProtections = scanner.GetProtections(tempPath);
-
-                            // If temp directory cleanup fails
-                            try
-                            {
-                                Directory.Delete(tempPath, true);
-                            }
-                            catch (Exception ex)
-                            {
-                                if (scanner.IncludeDebug) Console.WriteLine(ex);
-                            }
-
-                            // Prepare the returned protections
-                            StripFromKeys(protections, tempPath);
-                            PrependToKeys(subProtections, file);
-                            AppendToDictionary(protections, subProtections);
-                        }
-                        catch (Exception ex)
-                        {
-                            if (scanner.IncludeDebug) Console.WriteLine(ex);
-                        }
-                    }
+                    // If we had a protection, check if it is extractable
+                    if (!string.IsNullOrWhiteSpace(protection))
+                        HandleExtractable(scanner, stream, file, checkClass, protections);
                 });
             }
 
             // If we have a Linear Executable
             else if (wrapper is LinearExecutable lex)
             {
-                Parallel.ForEach(ScanningClasses.LinearExecutableCheckClasses, contentCheckClass =>
+                Parallel.ForEach(ScanningClasses.LinearExecutableCheckClasses, checkClass =>
                 {
-                    // Check using custom content checks first
-                    string protection = contentCheckClass.CheckLinearExecutable(file, lex, scanner.IncludeDebug);
-                    if (ShouldAddProtection(contentCheckClass, scanner.ScanPackers, protection))
+                    // Get the protection for the class, if possible
+                    string protection = checkClass.CheckLinearExecutable(file, lex, scanner.IncludeDebug);
+                    if (ShouldAddProtection(checkClass, scanner.ScanPackers, protection))
                         AppendToDictionary(protections, file, protection);
 
-                    // If we have an IExtractable implementation
-                    if (contentCheckClass is IExtractable extractable)
-                    {
-                        if (file == null || string.IsNullOrEmpty(protection))
-                            return;
-
-                        // If the extractable file itself fails
-                        try
-                        {
-                            // Extract and get the output path
-                            string tempPath = extractable.Extract(stream, file, scanner.IncludeDebug);
-                            if (tempPath != null)
-                                return;
-
-                            // Collect and format all found protections
-                            var subProtections = scanner.GetProtections(tempPath);
-
-                            // If temp directory cleanup fails
-                            try
-                            {
-                                Directory.Delete(tempPath, true);
-                            }
-                            catch (Exception ex)
-                            {
-                                if (scanner.IncludeDebug) Console.WriteLine(ex);
-                            }
-
-                            // Prepare the returned protections
-                            StripFromKeys(protections, tempPath);
-                            PrependToKeys(subProtections, file);
-                            AppendToDictionary(protections, subProtections);
-                        }
-                        catch (Exception ex)
-                        {
-                            if (scanner.IncludeDebug) Console.WriteLine(ex);
-                        }
-                    }
+                    // If we had a protection, check if it is extractable
+                    if (!string.IsNullOrWhiteSpace(protection))
+                        HandleExtractable(scanner, stream, file, checkClass, protections);
                 });
             }
 
             // If we have a Portable Executable
             else if (wrapper is PortableExecutable pex)
             {
-                Parallel.ForEach(ScanningClasses.PortableExecutableCheckClasses, contentCheckClass =>
+                Parallel.ForEach(ScanningClasses.PortableExecutableCheckClasses, checkClass =>
                 {
-                    // Check using custom content checks first
-                    string protection = contentCheckClass.CheckPortableExecutable(file, pex, scanner.IncludeDebug);
-                    if (ShouldAddProtection(contentCheckClass, scanner.ScanPackers, protection))
+                    // Get the protection for the class, if possible
+                    string protection = checkClass.CheckPortableExecutable(file, pex, scanner.IncludeDebug);
+                    if (ShouldAddProtection(checkClass, scanner.ScanPackers, protection))
                         AppendToDictionary(protections, file, protection);
 
-                    // If we have an IExtractable implementation
-                    if (contentCheckClass is IExtractable extractable)
-                    {
-                        if (file == null || string.IsNullOrEmpty(protection))
-                            return;
-
-                        // If the extractable file itself fails
-                        try
-                        {
-                            // Extract and get the output path
-                            string tempPath = extractable.Extract(stream, file, scanner.IncludeDebug);
-                            if (tempPath != null)
-                                return;
-
-                            // Collect and format all found protections
-                            var subProtections = scanner.GetProtections(tempPath);
-
-                            // If temp directory cleanup fails
-                            try
-                            {
-                                Directory.Delete(tempPath, true);
-                            }
-                            catch (Exception ex)
-                            {
-                                if (scanner.IncludeDebug) Console.WriteLine(ex);
-                            }
-
-                            // Prepare the returned protections
-                            StripFromKeys(protections, tempPath);
-                            PrependToKeys(subProtections, file);
-                            AppendToDictionary(protections, subProtections);
-                        }
-                        catch (Exception ex)
-                        {
-                            if (scanner.IncludeDebug) Console.WriteLine(ex);
-                        }
-                    }
+                    // If we had a protection, check if it is extractable
+                    if (!string.IsNullOrWhiteSpace(protection))
+                        HandleExtractable(scanner, stream, file, checkClass, protections);
                 });
             }
-
-            // No other executable formats currently identified or supported
 
             return protections;
         }
@@ -296,6 +159,56 @@ namespace BurnOutSharp.FileType
 
             // Everything else fails
             return false;
+        }
+
+        /// <summary>
+        /// Handle extractable protections and packers
+        /// </summary>
+        /// <param name="scanner">Scanner object for state tracking</param>
+        /// <param name="stream">Stream representing the input file</param>
+        /// <param name="file">Path to the input file</param>
+        /// <param name="checkingClass">Class representing the current packer or protection</param>
+        /// <param name="protections">Set of existing protections to append to</param>
+        private static void HandleExtractable(Scanner scanner, Stream stream, string file, object checkingClass, ConcurrentDictionary<string, ConcurrentQueue<string>> protections)
+        {
+            // If we don't have an IExtractable implementation
+            if (!(checkingClass is IExtractable extractable))
+                return;
+
+            // If we have an invalid file
+            if (file == null)
+                return;
+
+            // If the extractable file itself fails
+            try
+            {
+                // Extract and get the output path
+                string tempPath = extractable.Extract(stream, file, scanner.IncludeDebug);
+                if (tempPath != null)
+                    return;
+
+                // Collect and format all found protections
+                var subProtections = scanner.GetProtections(tempPath);
+
+                // If temp directory cleanup fails
+                try
+                {
+                    Directory.Delete(tempPath, true);
+                }
+                catch (Exception ex)
+                {
+                    if (scanner.IncludeDebug) Console.WriteLine(ex);
+                }
+
+                // Prepare the returned protections
+                StripFromKeys(protections, tempPath);
+                PrependToKeys(subProtections, file);
+                AppendToDictionary(protections, subProtections);
+            }
+            catch (Exception ex)
+            {
+                if (scanner.IncludeDebug) Console.WriteLine(ex);
+            }
         }
 
         #endregion
