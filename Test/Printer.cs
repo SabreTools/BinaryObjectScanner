@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Text;
 using BinaryObjectScanner.Utilities;
+using BinaryObjectScanner.Wrappers;
 
 namespace Test
 {
@@ -60,7 +61,7 @@ namespace Test
                 Console.WriteLine($"File format found: {ft}");
 
                 // Setup the wrapper to print
-                var wrapper = BurnOutSharp.Tools.FileTypeTools.CreateWrapper(ft, stream);
+                var wrapper = WrapperFactory.CreateWrapper(ft, stream);
 
                 // If we don't have a wrapper
                 if (wrapper == null)

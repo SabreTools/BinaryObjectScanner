@@ -2,11 +2,10 @@
 using System.IO;
 using BinaryObjectScanner.Matching;
 using BinaryObjectScanner.Utilities;
-using BinaryObjectScanner.Wrappers;
 
-namespace BurnOutSharp.Tools
+namespace BinaryObjectScanner.Wrappers
 {
-    public static class FileTypeTools
+    public static class WrapperFactory
     {
         /// <summary>
         /// Create an instance of a wrapper based on file type
@@ -22,7 +21,7 @@ namespace BurnOutSharp.Tools
                 //case SupportedFileType.BZip2: return BZip2.Create(data);
                 case SupportedFileType.CFB: return CFB.Create(data);
                 case SupportedFileType.CIA: return CIA.Create(data);
-                case SupportedFileType.Executable: return DetermineExecutableType(data);
+                case SupportedFileType.Executable: return CreateExecutableWrapper(data);
                 case SupportedFileType.GCF: return GCF.Create(data);
                 //case SupportedFileType.GZIP: return GZIP.Create(data);
                 //case SupportedFileType.IniFile: return IniFile.Create(data);
@@ -56,11 +55,11 @@ namespace BurnOutSharp.Tools
         }
 
         /// <summary>
-        /// Determine the executable type from the stream
+        /// Create an instance of a wrapper based on the executable type
         /// </summary>
         /// <param name="stream">Stream data to parse</param>
         /// <returns>WrapperBase representing the executable, null on error</returns>
-        public static WrapperBase DetermineExecutableType(Stream stream)
+        public static WrapperBase CreateExecutableWrapper(Stream stream)
         {
             // Try to get an MS-DOS wrapper first
             WrapperBase wrapper = MSDOS.Create(stream);
