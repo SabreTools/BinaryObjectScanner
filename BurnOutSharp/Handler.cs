@@ -55,7 +55,7 @@ namespace BurnOutSharp
             Parallel.ForEach(ScanningClasses.ContentCheckClasses, checkClass =>
             {
                 // Get the protection for the class, if possible
-                var subProtections = HandleContentCheck(checkClass, fileName, fileContent, scanner.IncludeDebug);
+                var subProtections = checkClass.PerformCheck(fileName, fileContent, scanner.IncludeDebug);
                 if (subProtections != null)
                 {
                     // If we are filtering the output of the check
@@ -85,7 +85,7 @@ namespace BurnOutSharp
             Parallel.ForEach(ScanningClasses.LinearExecutableCheckClasses, checkClass =>
             {
                 // Get the protection for the class, if possible
-                var subProtections = HandleLinearExecutableCheck(checkClass, fileName, lex, scanner.IncludeDebug);
+                var subProtections = checkClass.PerformCheck(fileName, lex, scanner.IncludeDebug);
                 if (subProtections == null)
                     return;
 
@@ -124,7 +124,7 @@ namespace BurnOutSharp
             Parallel.ForEach(ScanningClasses.NewExecutableCheckClasses, checkClass =>
             {
                 // Get the protection for the class, if possible
-                var subProtections = HandleNewExecutableCheck(checkClass, fileName, nex, scanner.IncludeDebug);
+                var subProtections = checkClass.PerformCheck(fileName, nex, scanner.IncludeDebug);
                 if (subProtections == null)
                     return;
 
@@ -164,7 +164,7 @@ namespace BurnOutSharp
             // Iterate through all checks
             Parallel.ForEach(ScanningClasses.PathCheckClasses, checkClass =>
             {
-                var subProtections = HandlePathCheck(checkClass, path, files);
+                var subProtections = checkClass.PerformCheck(path, files);
                 if (subProtections != null)
                     AppendToDictionary(protections, subProtections);
             });
@@ -188,7 +188,7 @@ namespace BurnOutSharp
             Parallel.ForEach(ScanningClasses.PortableExecutableCheckClasses, checkClass =>
             {
                 // Get the protection for the class, if possible
-                var subProtections = HandlePortableExecutableCheck(checkClass, fileName, pex, scanner.IncludeDebug);
+                var subProtections = checkClass.PerformCheck(fileName, pex, scanner.IncludeDebug);
                 if (subProtections == null)
                     return;
 
@@ -214,20 +214,6 @@ namespace BurnOutSharp
         #endregion
 
         #region Single Implementation Handlers
-
-        /// <summary>
-        /// Handle files based on an IContentCheck implementation
-        /// </summary>
-        /// <param name="impl">IDetectable class representing the check</param>
-        /// <param name="fileName">Name of the source file of the byte array, for tracking</param>
-        /// <param name="fileContent">Contents of the source file</param>
-        /// <param name="includeDebug">True to include debug data, false otherwise</param>
-        /// <returns>Set of protections in file, null on error</returns>
-        public static ConcurrentQueue<string> HandleContentCheck(IContentCheck impl, string fileName, byte[] fileContent, bool includeDebug)
-        {
-            string protection = impl.CheckContents(fileName, fileContent, includeDebug);
-            return ProcessProtectionString(protection);
-        }
 
         /// <summary>
         /// Handle files based on an IDetectable implementation
@@ -288,6 +274,20 @@ namespace BurnOutSharp
         }
 
         /// <summary>
+        /// Handle files based on an IContentCheck implementation
+        /// </summary>
+        /// <param name="impl">IDetectable class representing the check</param>
+        /// <param name="fileName">Name of the source file of the byte array, for tracking</param>
+        /// <param name="fileContent">Contents of the source file</param>
+        /// <param name="includeDebug">True to include debug data, false otherwise</param>
+        /// <returns>Set of protections in file, null on error</returns>
+        private static ConcurrentQueue<string> PerformCheck(this IContentCheck impl, string fileName, byte[] fileContent, bool includeDebug)
+        {
+            string protection = impl.CheckContents(fileName, fileContent, includeDebug);
+            return ProcessProtectionString(protection);
+        }
+
+        /// <summary>
         /// Handle files based on an ILinearExecutableCheck implementation
         /// </summary>
         /// <param name="impl">ILinearExecutableCheck class representing the check</param>
@@ -295,7 +295,7 @@ namespace BurnOutSharp
         /// <param name="lex">LinearExecutable to check</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
         /// <returns>Set of protections in file, null on error</returns>
-        public static ConcurrentQueue<string> HandleLinearExecutableCheck(ILinearExecutableCheck impl, string fileName, LinearExecutable lex, bool includeDebug)
+        private static ConcurrentQueue<string> PerformCheck(this ILinearExecutableCheck impl, string fileName, LinearExecutable lex, bool includeDebug)
         {
             string protection = impl.CheckLinearExecutable(fileName, lex, includeDebug);
             return ProcessProtectionString(protection);
@@ -309,7 +309,7 @@ namespace BurnOutSharp
         /// <param name="nex">NewExecutable to check</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
         /// <returns>Set of protections in file, null on error</returns>
-        public static ConcurrentQueue<string> HandleNewExecutableCheck(INewExecutableCheck impl, string fileName, NewExecutable nex, bool includeDebug)
+        private static ConcurrentQueue<string> PerformCheck(this INewExecutableCheck impl, string fileName, NewExecutable nex, bool includeDebug)
         {
             string protection = impl.CheckNewExecutable(fileName, nex, includeDebug);
             return ProcessProtectionString(protection);
@@ -321,7 +321,7 @@ namespace BurnOutSharp
         /// <param name="impl">IPathCheck class representing the file type</param>
         /// <param name="path">Path of the file or directory to check</param>
         /// <returns>Set of protections in path, null on error</returns>
-        public static ConcurrentDictionary<string, ConcurrentQueue<string>> HandlePathCheck(IPathCheck impl, string path, IEnumerable<string> files)
+        private static ConcurrentDictionary<string, ConcurrentQueue<string>> PerformCheck(this IPathCheck impl, string path, IEnumerable<string> files)
         {
             // If we have an invalid path
             if (string.IsNullOrWhiteSpace(path))
@@ -358,7 +358,7 @@ namespace BurnOutSharp
         /// <param name="pex">NewExecutable to check</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
         /// <returns>Set of protections in file, null on error</returns>
-        public static ConcurrentQueue<string> HandlePortableExecutableCheck(IPortableExecutableCheck impl, string fileName, PortableExecutable pex, bool includeDebug)
+        private static ConcurrentQueue<string> PerformCheck(this IPortableExecutableCheck impl, string fileName, PortableExecutable pex, bool includeDebug)
         {
             string protection = impl.CheckPortableExecutable(fileName, pex, includeDebug);
             return ProcessProtectionString(protection);
