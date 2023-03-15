@@ -38,7 +38,6 @@ namespace BurnOutSharp
                 case SupportedFileType.BZip2: return new BinaryObjectScanner.FileType.BZip2();
                 case SupportedFileType.CFB: return new BinaryObjectScanner.FileType.CFB();
                 //case SupportedFileType.CIA: return new BinaryObjectScanner.FileType.CIA();
-                case SupportedFileType.Executable: return new BinaryObjectScanner.FileType.Executable();
                 case SupportedFileType.GCF: return new BinaryObjectScanner.FileType.GCF();
                 case SupportedFileType.GZIP: return new BinaryObjectScanner.FileType.GZIP();
                 case SupportedFileType.InstallShieldArchiveV3: return new BinaryObjectScanner.FileType.InstallShieldArchiveV3();

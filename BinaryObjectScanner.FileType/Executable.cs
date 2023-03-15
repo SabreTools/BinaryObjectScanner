@@ -19,7 +19,7 @@ namespace BinaryObjectScanner.FileType
     /// Due to the complexity of executables, all extraction handling
     /// another class that is used by the scanner
     /// </remarks>
-    public class Executable : IDetectable, IExtractable
+    public class Executable : IDetectable
     {
         #region Properties
 
@@ -165,25 +165,6 @@ namespace BinaryObjectScanner.FileType
             }
 
             return string.Join(";", protections);
-        }
-
-        /// <inheritdoc/>
-        public string Extract(string file, bool includeDebug)
-        {
-            if (!File.Exists(file))
-                return null;
-
-            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
-                return Extract(fs, file, includeDebug);
-            }
-        }
-
-        /// <inheritdoc/>
-        /// <remarks>This implementation should never be invoked</remarks>
-        public string Extract(Stream stream, string file, bool includeDebug)
-        {
-            throw new InvalidOperationException();
         }
 
         #region Check Runners

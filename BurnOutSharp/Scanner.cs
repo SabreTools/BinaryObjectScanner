@@ -298,16 +298,9 @@ namespace BurnOutSharp
                 if (detectable != null && ScanContents)
                 {
                     // If we have an executable, it needs to bypass normal handling
-                    // TODO: Write custom executable handling
                     if (detectable is Executable executable)
                     {
                         executable.IncludePackers = ScanPackers;
-
-                        // TODO: Enable this after IExtractable is properly implemented for Executable
-                        //var subProtections = Handler.HandleDetectable(executable, fileName, stream, IncludeDebug);
-                        //if (subProtections != null)
-                        //    AppendToDictionary(protections, fileName, subProtections);
-
                         var subProtections = ProcessExecutable(executable, fileName, stream);
                         if (subProtections != null)
                             AppendToDictionary(protections, subProtections);
@@ -347,13 +340,9 @@ namespace BurnOutSharp
                 // If we're scanning archives
                 if (extractable != null && ScanArchives)
                 {
-                    // We only want to process non-executables
-                    if (!(extractable is Executable))
-                    {
-                        var subProtections = Handler.HandleExtractable(extractable, fileName, stream, this);
-                        if (subProtections != null)
-                            AppendToDictionary(protections, subProtections);
-                    }
+                    var subProtections = Handler.HandleExtractable(extractable, fileName, stream, this);
+                    if (subProtections != null)
+                        AppendToDictionary(protections, subProtections);
                 }
 
                 #endregion
