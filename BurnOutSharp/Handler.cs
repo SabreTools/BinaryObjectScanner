@@ -166,7 +166,7 @@ namespace BurnOutSharp
             {
                 var subProtections = checkClass.PerformCheck(path, files);
                 if (subProtections != null)
-                    AppendToDictionary(protections, subProtections);
+                    AppendToDictionary(protections, path, subProtections);
             });
 
             return protections;
@@ -321,14 +321,14 @@ namespace BurnOutSharp
         /// <param name="impl">IPathCheck class representing the file type</param>
         /// <param name="path">Path of the file or directory to check</param>
         /// <returns>Set of protections in path, null on error</returns>
-        private static ConcurrentDictionary<string, ConcurrentQueue<string>> PerformCheck(this IPathCheck impl, string path, IEnumerable<string> files)
+        private static ConcurrentQueue<string> PerformCheck(this IPathCheck impl, string path, IEnumerable<string> files)
         {
             // If we have an invalid path
             if (string.IsNullOrWhiteSpace(path))
                 return null;
 
             // Setup the output dictionary
-            var protections = new ConcurrentDictionary<string, ConcurrentQueue<string>>();
+            var protections =  new ConcurrentQueue<string>();
 
             // If we have a file path
             if (File.Exists(path))
@@ -336,7 +336,7 @@ namespace BurnOutSharp
                 string protection = impl.CheckFilePath(path);
                 var subProtections = ProcessProtectionString(protection);
                 if (subProtections != null)
-                    AppendToDictionary(protections, path, subProtections);
+                    protections.AddRange(subProtections);
             }
 
             // If we have a directory path
@@ -344,7 +344,7 @@ namespace BurnOutSharp
             {
                 var subProtections = impl.CheckDirectoryPath(path, files);
                 if (subProtections != null)
-                    AppendToDictionary(protections, path, subProtections);
+                    protections.AddRange(subProtections);
             }
 
             return protections;
