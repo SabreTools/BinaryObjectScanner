@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using BinaryObjectScanner.FileType;
 using BinaryObjectScanner.Utilities;
 using BinaryObjectScanner.Wrappers;
@@ -114,7 +113,7 @@ namespace BurnOutSharp
                     // Scan for path-detectable protections
                     if (ScanPaths)
                     {
-                        var directoryPathProtections = GetDirectoryPathProtections(path, files);
+                        var directoryPathProtections = Handler.HandlePathChecks(path, files);
                         AppendToDictionary(protections, directoryPathProtections);
                     }
 
@@ -135,8 +134,8 @@ namespace BurnOutSharp
                         // Scan for path-detectable protections
                         if (ScanPaths)
                         {
-                            var filePathProtections = GetFilePathProtections(file);
-                            AppendToDictionary(protections, file, filePathProtections);
+                            var filePathProtections = Handler.HandlePathChecks(file, files: null);
+                            AppendToDictionary(protections, filePathProtections);
                         }
 
                         // Scan for content-detectable protections
@@ -173,8 +172,8 @@ namespace BurnOutSharp
                     // Scan for path-detectable protections
                     if (ScanPaths)
                     {
-                        var filePathProtections = GetFilePathProtections(path);
-                        AppendToDictionary(protections, path, filePathProtections);
+                        var filePathProtections = Handler.HandlePathChecks(path, files: null);
+                        AppendToDictionary(protections, filePathProtections);
                     }
 
                     // Scan for content-detectable protections
@@ -211,57 +210,6 @@ namespace BurnOutSharp
             if (IncludeDebug)
                 Console.WriteLine($"Time elapsed: {DateTime.UtcNow.Subtract(startTime)}");
 
-            return protections;
-        }
-
-        /// <summary>
-        /// Get the path-detectable protections associated with a single path
-        /// </summary>
-        /// <param name="path">Path of the directory to scan</param>
-        /// <param name="files">Files contained within</param>
-        /// <returns>Dictionary of list of strings representing the found protections</returns>
-        private ConcurrentDictionary<string, ConcurrentQueue<string>> GetDirectoryPathProtections(string path, List<string> files)
-        {
-            // Create an empty queue for protections
-            var protections = new ConcurrentQueue<string>();
-
-            // Preprocess the list of files
-            files = files.Select(f => f.Replace('\\', '/')).ToList();
-
-            // Iterate through all path checks
-            Parallel.ForEach(ScanningClasses.PathCheckClasses, pathCheckClass =>
-            {
-                ConcurrentQueue<string> protection = pathCheckClass.CheckDirectoryPath(path, files);
-                if (protection != null)
-                    protections.AddRange(protection);
-            });
-
-            // Create and return the dictionary
-            return new ConcurrentDictionary<string, ConcurrentQueue<string>>
-            {
-                [path] = protections
-            };
-        }
-
-        /// <summary>
-        /// Get the path-detectable protections associated with a single path
-        /// </summary>
-        /// <param name="path">Path of the file to scan</param>
-        /// <returns>Dictionary of list of strings representing the found protections</returns>
-        private ConcurrentQueue<string> GetFilePathProtections(string path)
-        {
-            // Create an empty queue for protections
-            var protections = new ConcurrentQueue<string>();
-
-            // Iterate through all path checks
-            Parallel.ForEach(ScanningClasses.PathCheckClasses, pathCheckClass =>
-            {
-                string protection = pathCheckClass.CheckFilePath(path.Replace("\\", "/"));
-                if (!string.IsNullOrWhiteSpace(protection))
-                    protections.Enqueue(protection);
-            });
-
-            // Create and return the dictionary
             return protections;
         }
 

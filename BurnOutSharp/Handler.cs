@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.IO;
 using System.Text;
@@ -7,10 +8,10 @@ using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Utilities;
 using BinaryObjectScanner.Wrappers;
 using static BinaryObjectScanner.Utilities.Dictionary;
+using System.Linq;
 
 namespace BurnOutSharp
 {
-    // TODO: Implement IPathCheck handler
     internal static class Handler
     {
         #region Multiple Implementation Wrappers
@@ -147,6 +148,31 @@ namespace BurnOutSharp
         }
 
         /// <summary>
+        /// Handle a single path based on all path check implementations
+        /// </summary>
+        /// <param name="path">Path of the file or directory to check</param>
+        /// <param name="scanner">Scanner object to use for options and scanning</param>
+        /// <returns>Set of protections in file, null on error</returns>
+        public static ConcurrentDictionary<string, ConcurrentQueue<string>> HandlePathChecks(string path, IEnumerable<string> files)
+        {
+            // Create the output dictionary
+            var protections = new ConcurrentDictionary<string, ConcurrentQueue<string>>();
+
+            // Preprocess the list of files
+            files = files?.Select(f => f.Replace('\\', '/'))?.ToList();
+
+            // Iterate through all checks
+            Parallel.ForEach(ScanningClasses.PathCheckClasses, checkClass =>
+            {
+                var subProtections = HandlePathCheck(checkClass, path, files);
+                if (subProtections != null)
+                    AppendToDictionary(protections, subProtections);
+            });
+
+            return protections;
+        }
+
+        /// <summary>
         /// Handle a single file based on all portable executable check implementations
         /// </summary>
         /// <param name="fileName">Name of the source file of the executable, for tracking</param>
@@ -192,7 +218,7 @@ namespace BurnOutSharp
         /// <summary>
         /// Handle files based on an IContentCheck implementation
         /// </summary>
-        /// <param name="impl">IDetectable class representing the file type</param>
+        /// <param name="impl">IDetectable class representing the check</param>
         /// <param name="fileName">Name of the source file of the byte array, for tracking</param>
         /// <param name="fileContent">Contents of the source file</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
@@ -264,7 +290,7 @@ namespace BurnOutSharp
         /// <summary>
         /// Handle files based on an ILinearExecutableCheck implementation
         /// </summary>
-        /// <param name="impl">ILinearExecutableCheck class representing the file type</param>
+        /// <param name="impl">ILinearExecutableCheck class representing the check</param>
         /// <param name="fileName">Name of the source file of the executable, for tracking</param>
         /// <param name="lex">LinearExecutable to check</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
@@ -278,7 +304,7 @@ namespace BurnOutSharp
         /// <summary>
         /// Handle files based on an INewExecutableCheck implementation
         /// </summary>
-        /// <param name="impl">INewExecutableCheck class representing the file type</param>
+        /// <param name="impl">INewExecutableCheck class representing the check</param>
         /// <param name="fileName">Name of the source file of the executable, for tracking</param>
         /// <param name="nex">NewExecutable to check</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
@@ -290,9 +316,44 @@ namespace BurnOutSharp
         }
 
         /// <summary>
+        /// Handle files based on an IPathCheck implementation
+        /// </summary>
+        /// <param name="impl">IPathCheck class representing the file type</param>
+        /// <param name="path">Path of the file or directory to check</param>
+        /// <returns>Set of protections in path, null on error</returns>
+        public static ConcurrentDictionary<string, ConcurrentQueue<string>> HandlePathCheck(IPathCheck impl, string path, IEnumerable<string> files)
+        {
+            // If we have an invalid path
+            if (string.IsNullOrWhiteSpace(path))
+                return null;
+
+            // Setup the output dictionary
+            var protections = new ConcurrentDictionary<string, ConcurrentQueue<string>>();
+
+            // If we have a file path
+            if (File.Exists(path))
+            {
+                string protection = impl.CheckFilePath(path);
+                var subProtections = ProcessProtectionString(protection);
+                if (subProtections != null)
+                    AppendToDictionary(protections, path, subProtections);
+            }
+
+            // If we have a directory path
+            if (Directory.Exists(path) && files?.Any() == true)
+            {
+                var subProtections = impl.CheckDirectoryPath(path, files);
+                if (subProtections != null)
+                    AppendToDictionary(protections, path, subProtections);
+            }
+
+            return protections;
+        }
+
+        /// <summary>
         /// Handle files based on an IPortableExecutableCheck implementation
         /// </summary>
-        /// <param name="impl">IPortableExecutableCheck class representing the file type</param>
+        /// <param name="impl">IPortableExecutableCheck class representing the check</param>
         /// <param name="fileName">Name of the source file of the executable, for tracking</param>
         /// <param name="pex">NewExecutable to check</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
@@ -327,6 +388,7 @@ namespace BurnOutSharp
             if (string.IsNullOrWhiteSpace(protection))
                 return null;
 
+            // Setup the output queue
             var protections = new ConcurrentQueue<string>();
 
             // If we have an indicator of multiple protections
@@ -342,7 +404,6 @@ namespace BurnOutSharp
 
             return protections;
         }
-
 
         #endregion
     }
