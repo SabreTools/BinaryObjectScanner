@@ -57,6 +57,20 @@ namespace BinaryObjectScanner.FileType
         }
 
         /// <summary>
+        /// Cache for all IMSDOSExecutableCheck types
+        /// </summary>
+        public static IEnumerable<IMSDOSExecutableCheck> MSDOSExecutableCheckClasses
+        {
+            get
+            {
+                if (msdosExecutableCheckClasses == null)
+                    msdosExecutableCheckClasses = InitCheckClasses<IMSDOSExecutableCheck>();
+
+                return msdosExecutableCheckClasses;
+            }
+        }
+
+        /// <summary>
         /// Cache for all INewExecutableCheck types
         /// </summary>
         public static IEnumerable<INewExecutableCheck> NewExecutableCheckClasses
@@ -97,6 +111,11 @@ namespace BinaryObjectScanner.FileType
         /// Cache for all ILinearExecutableCheck types
         /// </summary>
         private static IEnumerable<ILinearExecutableCheck> linearExecutableCheckClasses;
+
+        /// <summary>
+        /// Cache for all IMSDOSExecutableCheck types
+        /// </summary>
+        private static IEnumerable<IMSDOSExecutableCheck> msdosExecutableCheckClasses;
 
         /// <summary>
         /// Cache for all INewExecutableCheck types
@@ -141,9 +160,11 @@ namespace BinaryObjectScanner.FileType
                     protections.AddRange(subProtections.Values.ToArray());
             }
 
-            if (wrapper is MSDOS)
+            if (wrapper is MSDOS mz)
             {
-                // No-op until protection classes implmented
+                var subProtections = RunMSDOSExecutableChecks(file, stream, mz, includeDebug);
+                if (subProtections != null)
+                    protections.AddRange(subProtections.Values.ToArray());
             }
             else if (wrapper is LinearExecutable lex)
             {
@@ -239,6 +260,36 @@ namespace BinaryObjectScanner.FileType
             {
                 // Get the protection for the class, if possible
                 string protection = checkClass.CheckLinearExecutable(file, lex, includeDebug);
+                if (string.IsNullOrWhiteSpace(protection))
+                    return;
+
+                // If we are filtering the output of the check
+                if (!CheckIfPacker(checkClass) || !IncludePackers)
+                    return;
+
+                protections.TryAdd(checkClass, protection);
+            });
+
+            return protections;
+        }
+
+        /// <summary>
+        /// Handle a single file based on all MS-DOS executable check implementations
+        /// </summary>
+        /// <param name="file">Name of the source file of the executable, for tracking</param>
+        /// <param name="mz">Executable to scan</param>
+        /// <param name="includeDebug">True to include debug data, false otherwise</param>
+        /// <returns>Set of protections in file, null on error</returns>
+        public ConcurrentDictionary<IMSDOSExecutableCheck, string> RunMSDOSExecutableChecks(string file, Stream stream, MSDOS mz, bool includeDebug)
+        {
+            // Create the output dictionary
+            var protections = new ConcurrentDictionary<IMSDOSExecutableCheck, string>();
+
+            // Iterate through all checks
+            Parallel.ForEach(MSDOSExecutableCheckClasses, checkClass =>
+            {
+                // Get the protection for the class, if possible
+                string protection = checkClass.CheckMSDOSExecutable(file, mz, includeDebug);
                 if (string.IsNullOrWhiteSpace(protection))
                     return;
 

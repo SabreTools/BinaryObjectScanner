@@ -391,9 +391,19 @@ namespace BurnOutSharp
                     AppendToDictionary(protections, fileName, subProtections.Values.ToArray());
             }
 
-            if (wrapper is MSDOS)
+            if (wrapper is MSDOS mz)
             {
-                // No-op until protection classes implmented
+                var subProtections = executable.RunMSDOSExecutableChecks(fileName, stream, mz, IncludeDebug);
+                if (subProtections == null)
+                    return protections;
+
+                // Append the returned values
+                AppendToDictionary(protections, fileName, subProtections.Values.ToArray());
+
+                // If we have any extractable packers
+                var extractedProtections = HandleExtractableProtections(subProtections.Keys, fileName, stream);
+                if (extractedProtections != null)
+                    AppendToDictionary(protections, extractedProtections);
             }
             else if (wrapper is LinearExecutable lex)
             {
