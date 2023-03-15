@@ -10,7 +10,6 @@ using static BinaryObjectScanner.Utilities.Dictionary;
 
 namespace BurnOutSharp
 {
-    // TODO: Implement IExtractable handler
     // TODO: Implement IPathCheck handler
     internal static class Handler
     {
@@ -21,10 +20,9 @@ namespace BurnOutSharp
         /// </summary>
         /// <param name="fileName">Name of the source file of the stream, for tracking</param>
         /// <param name="stream">Stream to scan the contents of</param>
-        /// <param name="scanPackers">True to include packers in the output, false otherwise</param>
-        /// <param name="includeDebug">True to include debug data, false otherwise</param>
+        /// <param name="scanner">Scanner object to use for options and scanning</param>
         /// <returns>Set of protections in file, null on error</returns>
-        public static ConcurrentQueue<string> HandleContentChecks(string fileName, Stream stream, bool scanPackers, bool includeDebug)
+        public static ConcurrentQueue<string> HandleContentChecks(string fileName, Stream stream, Scanner scanner)
         {
             // If we have an invalid file
             if (string.IsNullOrWhiteSpace(fileName))
@@ -45,7 +43,7 @@ namespace BurnOutSharp
             }
             catch (Exception ex)
             {
-                if (includeDebug) Console.WriteLine(ex);
+                if (scanner.IncludeDebug) Console.WriteLine(ex);
                 return null;
             }
 
@@ -56,11 +54,11 @@ namespace BurnOutSharp
             Parallel.ForEach(ScanningClasses.ContentCheckClasses, checkClass =>
             {
                 // Get the protection for the class, if possible
-                var subProtections = HandleContentCheck(checkClass, fileName, fileContent, includeDebug);
+                var subProtections = HandleContentCheck(checkClass, fileName, fileContent, scanner.IncludeDebug);
                 if (subProtections != null)
                 {
                     // If we are filtering the output of the check
-                    if (!CheckIfPacker(checkClass) || !scanPackers)
+                    if (!CheckIfPacker(checkClass) || !scanner.ScanPackers)
                         return;
 
                     protections.AddRange(subProtections);
@@ -75,11 +73,9 @@ namespace BurnOutSharp
         /// </summary>
         /// <param name="fileName">Name of the source file of the executable, for tracking</param>
         /// <param name="lex">Executable to scan</param>
-        /// <param name="scanArchives">True to include extractable contents in the output, false otherwise</param>
-        /// <param name="scanPackers">True to include packers in the output, false otherwise</param>
-        /// <param name="includeDebug">True to include debug data, false otherwise</param>
+        /// <param name="scanner">Scanner object to use for options and scanning</param>
         /// <returns>Set of protections in file, null on error</returns>
-        public static ConcurrentDictionary<string, ConcurrentQueue<string>> HandleNewExecutableChecks(string fileName, LinearExecutable lex, bool scanArchives, bool scanPackers, bool includeDebug)
+        public static ConcurrentDictionary<string, ConcurrentQueue<string>> HandleLinearExecutableChecks(string fileName, Stream stream, LinearExecutable lex, Scanner scanner)
         {
             // Create the output dictionary
             var protections = new ConcurrentDictionary<string, ConcurrentQueue<string>>();
@@ -88,17 +84,24 @@ namespace BurnOutSharp
             Parallel.ForEach(ScanningClasses.LinearExecutableCheckClasses, checkClass =>
             {
                 // Get the protection for the class, if possible
-                var subProtections = HandleLinearExecutableCheck(checkClass, fileName, lex, includeDebug);
-                if (subProtections != null)
+                var subProtections = HandleLinearExecutableCheck(checkClass, fileName, lex, scanner.IncludeDebug);
+                if (subProtections == null)
+                    return;
+
+                // If we are filtering the output of the check
+                if (!CheckIfPacker(checkClass) || !scanner.ScanPackers)
+                    return;
+
+                // Add all found protections to the output
+                AppendToDictionary(protections, fileName, subProtections);
+
+                // If we have an extractable implementation
+                if (checkClass is IExtractable extractable)
                 {
-                    // If we are filtering the output of the check
-                    if (!CheckIfPacker(checkClass) || !scanPackers)
-                        return;
-
-                    AppendToDictionary(protections, fileName, subProtections);
+                    var extractedProtections = HandleExtractable(extractable, fileName, stream, scanner);
+                    if (extractedProtections != null)
+                        AppendToDictionary(protections, extractedProtections);
                 }
-
-                // TODO: Handle extractable implementations
             });
 
             return protections;
@@ -109,11 +112,9 @@ namespace BurnOutSharp
         /// </summary>
         /// <param name="fileName">Name of the source file of the executable, for tracking</param>
         /// <param name="nex">Executable to scan</param>
-        /// <param name="scanArchives">True to include extractable contents in the output, false otherwise</param>
-        /// <param name="scanPackers">True to include packers in the output, false otherwise</param>
-        /// <param name="includeDebug">True to include debug data, false otherwise</param>
+        /// <param name="scanner">Scanner object to use for options and scanning</param>
         /// <returns>Set of protections in file, null on error</returns>
-        public static ConcurrentDictionary<string, ConcurrentQueue<string>> HandleNewExecutableChecks(string fileName, NewExecutable nex, bool scanArchives, bool scanPackers, bool includeDebug)
+        public static ConcurrentDictionary<string, ConcurrentQueue<string>> HandleNewExecutableChecks(string fileName, Stream stream, NewExecutable nex, Scanner scanner)
         {
             // Create the output dictionary
             var protections = new ConcurrentDictionary<string, ConcurrentQueue<string>>();
@@ -122,17 +123,24 @@ namespace BurnOutSharp
             Parallel.ForEach(ScanningClasses.NewExecutableCheckClasses, checkClass =>
             {
                 // Get the protection for the class, if possible
-                var subProtections = HandleNewExecutableCheck(checkClass, fileName, nex, includeDebug);
-                if (subProtections != null)
+                var subProtections = HandleNewExecutableCheck(checkClass, fileName, nex, scanner.IncludeDebug);
+                if (subProtections == null)
+                    return;
+
+                // If we are filtering the output of the check
+                if (!CheckIfPacker(checkClass) || !scanner.ScanPackers)
+                    return;
+
+                // Add all found protections to the output
+                AppendToDictionary(protections, fileName, subProtections);
+
+                // If we have an extractable implementation
+                if (checkClass is IExtractable extractable)
                 {
-                    // If we are filtering the output of the check
-                    if (!CheckIfPacker(checkClass) || !scanPackers)
-                        return;
-
-                    AppendToDictionary(protections, fileName, subProtections);
+                    var extractedProtections = HandleExtractable(extractable, fileName, stream, scanner);
+                    if (extractedProtections != null)
+                        AppendToDictionary(protections, extractedProtections);
                 }
-
-                // TODO: Handle extractable implementations
             });
 
             return protections;
@@ -143,11 +151,9 @@ namespace BurnOutSharp
         /// </summary>
         /// <param name="fileName">Name of the source file of the executable, for tracking</param>
         /// <param name="pex">Executable to scan</param>
-        /// <param name="scanArchives">True to include extractable contents in the output, false otherwise</param>
-        /// <param name="scanPackers">True to include packers in the output, false otherwise</param>
-        /// <param name="includeDebug">True to include debug data, false otherwise</param>
+        /// <param name="scanner">Scanner object to use for options and scanning</param>
         /// <returns>Set of protections in file, null on error</returns>
-        public static ConcurrentDictionary<string, ConcurrentQueue<string>> HandlePortableExecutableChecks(string fileName, PortableExecutable pex, bool scanArchives, bool scanPackers, bool includeDebug)
+        public static ConcurrentDictionary<string, ConcurrentQueue<string>> HandlePortableExecutableChecks(string fileName, Stream stream, PortableExecutable pex, Scanner scanner)
         {
             // Create the output dictionary
             var protections = new ConcurrentDictionary<string, ConcurrentQueue<string>>();
@@ -156,17 +162,24 @@ namespace BurnOutSharp
             Parallel.ForEach(ScanningClasses.PortableExecutableCheckClasses, checkClass =>
             {
                 // Get the protection for the class, if possible
-                var subProtections = HandlePortableExecutableCheck(checkClass, fileName, pex, includeDebug);
-                if (subProtections != null)
+                var subProtections = HandlePortableExecutableCheck(checkClass, fileName, pex, scanner.IncludeDebug);
+                if (subProtections == null)
+                    return;
+
+                // If we are filtering the output of the check
+                if (!CheckIfPacker(checkClass) || !scanner.ScanPackers)
+                    return;
+
+                // Add all found protections to the output
+                AppendToDictionary(protections, fileName, subProtections);
+
+                // If we have an extractable implementation
+                if (checkClass is IExtractable extractable)
                 {
-                    // If we are filtering the output of the check
-                    if (!CheckIfPacker(checkClass) || !scanPackers)
-                        return;
-
-                    AppendToDictionary(protections, fileName, subProtections);
+                    var extractedProtections = HandleExtractable(extractable, fileName, stream, scanner);
+                    if (extractedProtections != null)
+                        AppendToDictionary(protections, extractedProtections);
                 }
-
-                // TODO: Handle extractable implementations
             });
 
             return protections;
@@ -202,6 +215,50 @@ namespace BurnOutSharp
         {
             string protection = impl.Detect(stream, fileName, includeDebug);
             return ProcessProtectionString(protection);
+        }
+
+        /// <summary>
+        /// Handle files based on an IExtractable implementation
+        /// </summary>
+        /// <param name="impl">IDetectable class representing the file type</param>
+        /// <param name="fileName">Name of the source file of the stream, for tracking</param>
+        /// <param name="stream">Stream to scan the contents of</param>
+        /// <param name="scanner">Scanner object to use on extractable contents</param>
+        /// <returns>Set of protections in file, null on error</returns>
+        public static ConcurrentDictionary<string, ConcurrentQueue<string>> HandleExtractable(IExtractable impl, string fileName, Stream stream, Scanner scanner)
+        {
+            // If the extractable file itself fails
+            try
+            {
+                // Extract and get the output path
+                string tempPath = impl.Extract(stream, fileName, scanner.IncludeDebug);
+                if (tempPath == null)
+                    return null;
+
+                // Collect and format all found protections
+                var subProtections = scanner.GetProtections(tempPath);
+
+                // If temp directory cleanup fails
+                try
+                {
+                    Directory.Delete(tempPath, true);
+                }
+                catch (Exception ex)
+                {
+                    if (scanner.IncludeDebug) Console.WriteLine(ex);
+                }
+
+                // Prepare the returned protections
+                StripFromKeys(subProtections, tempPath);
+                PrependToKeys(subProtections, fileName);
+                return subProtections;
+            }
+            catch (Exception ex)
+            {
+                if (scanner.IncludeDebug) Console.WriteLine(ex);
+            }
+
+            return null;
         }
 
         /// <summary>

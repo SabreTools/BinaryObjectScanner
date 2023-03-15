@@ -67,17 +67,5 @@ namespace BurnOutSharp
                 default: return null;
             }
         }
-
-        /// <summary>
-        /// Create an instance of a scannable based on file type
-        /// </summary>
-        public static IScannable CreateScannable(SupportedFileType fileType)
-        {
-            switch (fileType)
-            {
-                case SupportedFileType.Executable: return new BinaryObjectScanner.FileType.Executable();
-                default: return null;
-            }
-        }
     }
 }
