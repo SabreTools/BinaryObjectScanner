@@ -201,12 +201,7 @@ namespace BinaryObjectScanner.FileType
                 {
                     // Get the protection for the class, if possible
                     string protection = checkClass.CheckContents(file, fileContent, scanner.IncludeDebug);
-                    if (ShouldAddProtection(checkClass, scanner.ScanPackers, protection))
-                        AppendToDictionary(protections, file, protection);
-
-                    // If we had a protection, check if it is extractable
-                    if (!string.IsNullOrWhiteSpace(protection))
-                        HandleExtractable(scanner, stream, file, checkClass, protections);
+                    AppendToDictionary(protections, file, protection);
                 });
             }
 
