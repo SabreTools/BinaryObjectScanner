@@ -405,14 +405,9 @@ namespace BurnOutSharp
                 AppendToDictionary(protections, fileName, subProtections.Values.ToArray());
 
                 // If we have any extractable packers
-                var extractables = subProtections.Keys.Where(c => c is IExtractable).Select(c => c as IExtractable);
-                Parallel.ForEach(extractables, extractable =>
-                {
-                    // Get the protection for the class, if possible
-                    var extractedProtections = Handler.HandleExtractable(extractable, fileName, stream, this);
-                    if (extractedProtections != null)
-                        AppendToDictionary(protections, extractedProtections);
-                });
+                var extractedProtections = HandleExtractableProtections(subProtections.Keys, fileName, stream);
+                if (extractedProtections != null)
+                    AppendToDictionary(protections, extractedProtections);
             }
             else if (wrapper is NewExecutable nex)
             {
@@ -424,14 +419,9 @@ namespace BurnOutSharp
                 AppendToDictionary(protections, fileName, subProtections.Values.ToArray());
 
                 // If we have any extractable packers
-                var extractables = subProtections.Keys.Where(c => c is IExtractable).Select(c => c as IExtractable);
-                Parallel.ForEach(extractables, extractable =>
-                {
-                    // Get the protection for the class, if possible
-                    var extractedProtections = Handler.HandleExtractable(extractable, fileName, stream, this);
-                    if (extractedProtections != null)
-                        AppendToDictionary(protections, extractedProtections);
-                });
+                var extractedProtections = HandleExtractableProtections(subProtections.Keys, fileName, stream);
+                if (extractedProtections != null)
+                    AppendToDictionary(protections, extractedProtections);
             }
             else if (wrapper is PortableExecutable pex)
             {
@@ -443,15 +433,39 @@ namespace BurnOutSharp
                 AppendToDictionary(protections, fileName, subProtections.Values.ToArray());
 
                 // If we have any extractable packers
-                var extractables = subProtections.Keys.Where(c => c is IExtractable).Select(c => c as IExtractable);
-                Parallel.ForEach(extractables, extractable =>
-                {
-                    // Get the protection for the class, if possible
-                    var extractedProtections = Handler.HandleExtractable(extractable, fileName, stream, this);
-                    if (extractedProtections != null)
-                        AppendToDictionary(protections, extractedProtections);
-                });
+                var extractedProtections = HandleExtractableProtections(subProtections.Keys, fileName, stream);
+                if (extractedProtections != null)
+                    AppendToDictionary(protections, extractedProtections);
             }
+
+            return protections;
+        }
+
+        /// <summary>
+        /// Handle extractable protections, such as executable packers
+        /// </summary>
+        /// <param name="classes">Set of classes returned from Exectuable scans</param>
+        /// <param name="fileName">Name of the source file of the stream, for tracking</param>
+        /// <param name="stream">Stream to scan the contents of</param>
+        /// <returns>Set of protections found from extraction, null on error</returns>
+        private ConcurrentDictionary<string, ConcurrentQueue<string>> HandleExtractableProtections(IEnumerable<object> classes, string fileName, Stream stream)
+        {
+            // If we have an invalid set of classes
+            if (classes?.Any() != true)
+                return null;
+
+            // Create the output dictionary
+            var protections = new ConcurrentDictionary<string, ConcurrentQueue<string>>();
+
+            // If we have any extractable packers
+            var extractables = classes.Where(c => c is IExtractable).Select(c => c as IExtractable);
+            Parallel.ForEach(extractables, extractable =>
+            {
+                // Get the protection for the class, if possible
+                var extractedProtections = Handler.HandleExtractable(extractable, fileName, stream, this);
+                if (extractedProtections != null)
+                    AppendToDictionary(protections, extractedProtections);
+            });
 
             return protections;
         }
