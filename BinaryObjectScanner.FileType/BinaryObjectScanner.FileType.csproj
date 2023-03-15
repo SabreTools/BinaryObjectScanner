@@ -24,6 +24,8 @@
     <ProjectReference Include="..\BinaryObjectScanner.Compression\BinaryObjectScanner.Compression.csproj" />
     <ProjectReference Include="..\BinaryObjectScanner.Interfaces\BinaryObjectScanner.Interfaces.csproj" />
     <ProjectReference Include="..\BinaryObjectScanner.Matching\BinaryObjectScanner.Matching.csproj" />
+    <ProjectReference Include="..\BinaryObjectScanner.Packer\BinaryObjectScanner.Packer.csproj" />
+    <ProjectReference Include="..\BinaryObjectScanner.Protection\BinaryObjectScanner.Protection.csproj" />
     <ProjectReference Include="..\BinaryObjectScanner.Wrappers\BinaryObjectScanner.Wrappers.csproj" />
   </ItemGroup>
 

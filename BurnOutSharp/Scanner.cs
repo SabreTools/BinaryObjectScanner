@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using BinaryObjectScanner.FileType;
+using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Utilities;
 using BinaryObjectScanner.Wrappers;
 using static BinaryObjectScanner.Utilities.Dictionary;
@@ -297,9 +299,18 @@ namespace BurnOutSharp
                 {
                     // If we have an executable, it needs to bypass normal handling
                     // TODO: Write custom executable handling
-                    if (detectable is Executable)
+                    if (detectable is Executable executable)
                     {
-                        ProcessExecutable(fileName, stream, protections);
+                        executable.IncludePackers = ScanPackers;
+
+                        // TODO: Enable this after IExtractable is properly implemented for Executable
+                        //var subProtections = Handler.HandleDetectable(executable, fileName, stream, IncludeDebug);
+                        //if (subProtections != null)
+                        //    AppendToDictionary(protections, fileName, subProtections);
+
+                        var subProtections = ProcessExecutable(executable, fileName, stream);
+                        if (subProtections != null)
+                            AppendToDictionary(protections, subProtections);
                     }
 
                     // Otherwise, use the default implementation
@@ -366,26 +377,29 @@ namespace BurnOutSharp
         /// <summary>
         /// Process scanning for an Executable type
         /// </summary>
+        /// <param name="executable">Executable instance for processing</param>
         /// <param name="fileName">Name of the source file of the stream, for tracking</param>
         /// <param name="stream">Stream to scan the contents of</param>
-        /// <param name="protections">Current set of protections to append to</param>
         /// <remarks>
         /// Ideally, we wouldn't need to circumvent the proper handling of file types just for Executable,
         /// but due to the complexity of scanning, this is not currently possible.
         /// </remarks>
-        private void ProcessExecutable(string fileName, Stream stream, ConcurrentDictionary<string, ConcurrentQueue<string>> protections)
+        private ConcurrentDictionary<string, ConcurrentQueue<string>> ProcessExecutable(Executable executable, string fileName, Stream stream)
         {
             // Try to create a wrapper for the proper executable type
             var wrapper = WrapperFactory.CreateExecutableWrapper(stream);
             if (wrapper == null)
-                return;
+                return null;
+
+            // Create the output dictionary
+            var protections = new ConcurrentDictionary<string, ConcurrentQueue<string>>();
 
             // Only use generic content checks if we're in debug mode
             if (IncludeDebug)
             {
-                var subProtections = Handler.HandleContentChecks(fileName, stream, this);
+                var subProtections = executable.RunContentChecks(fileName, stream, IncludeDebug);
                 if (subProtections != null)
-                    AppendToDictionary(protections, fileName, subProtections);
+                    AppendToDictionary(protections, fileName, subProtections.Values.ToArray());
             }
 
             if (wrapper is MSDOS)
@@ -394,22 +408,63 @@ namespace BurnOutSharp
             }
             else if (wrapper is LinearExecutable lex)
             {
-                var subProtections = Handler.HandleLinearExecutableChecks(fileName, stream, lex, this);
-                if (subProtections != null)
-                    AppendToDictionary(protections, subProtections);
+                var subProtections = executable.RunLinearExecutableChecks(fileName, stream, lex, IncludeDebug);
+                if (subProtections == null)
+                    return protections;
+
+                // Append the returned values
+                AppendToDictionary(protections, fileName, subProtections.Values.ToArray());
+
+                // If we have any extractable packers
+                var extractables = subProtections.Keys.Where(c => c is IExtractable).Select(c => c as IExtractable);
+                Parallel.ForEach(extractables, extractable =>
+                {
+                    // Get the protection for the class, if possible
+                    var extractedProtections = Handler.HandleExtractable(extractable, fileName, stream, this);
+                    if (extractedProtections != null)
+                        AppendToDictionary(protections, extractedProtections);
+                });
             }
             else if (wrapper is NewExecutable nex)
             {
-                var subProtections = Handler.HandleNewExecutableChecks(fileName, stream, nex, this);
-                if (subProtections != null)
-                    AppendToDictionary(protections, subProtections);
+                var subProtections = executable.RunNewExecutableChecks(fileName, stream, nex, IncludeDebug);
+                if (subProtections == null)
+                    return protections;
+
+                // Append the returned values
+                AppendToDictionary(protections, fileName, subProtections.Values.ToArray());
+
+                // If we have any extractable packers
+                var extractables = subProtections.Keys.Where(c => c is IExtractable).Select(c => c as IExtractable);
+                Parallel.ForEach(extractables, extractable =>
+                {
+                    // Get the protection for the class, if possible
+                    var extractedProtections = Handler.HandleExtractable(extractable, fileName, stream, this);
+                    if (extractedProtections != null)
+                        AppendToDictionary(protections, extractedProtections);
+                });
             }
             else if (wrapper is PortableExecutable pex)
             {
-                var subProtections = Handler.HandlePortableExecutableChecks(fileName, stream, pex, this);
-                if (subProtections != null)
-                    AppendToDictionary(protections, subProtections);
+                var subProtections = executable.RunPortableExecutableChecks(fileName, stream, pex, IncludeDebug);
+                if (subProtections == null)
+                    return protections;
+
+                // Append the returned values
+                AppendToDictionary(protections, fileName, subProtections.Values.ToArray());
+
+                // If we have any extractable packers
+                var extractables = subProtections.Keys.Where(c => c is IExtractable).Select(c => c as IExtractable);
+                Parallel.ForEach(extractables, extractable =>
+                {
+                    // Get the protection for the class, if possible
+                    var extractedProtections = Handler.HandleExtractable(extractable, fileName, stream, this);
+                    if (extractedProtections != null)
+                        AppendToDictionary(protections, extractedProtections);
+                });
             }
+
+            return protections;
         }
 
         #endregion
