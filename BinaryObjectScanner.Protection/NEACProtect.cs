@@ -30,12 +30,9 @@ namespace BinaryObjectScanner.Protection
             if (sections == null)
                 return null;
 
-            // Get the .neac0 section, if it exists.
+            // Get the .neac0 and .neac1 sections, if they exist.
             // Found in "NeacSafe64.sys" and "NeacSafe.sys".
             bool neac0Section = pex.ContainsSection(".neac0", exact: true);
-
-            // Get the .neac1 section, if it exists.
-            // Found in "NeacSafe64.sys" and "NeacSafe.sys".
             bool neac1Section = pex.ContainsSection(".neac1", exact: true);
 
             // Check if either .neac section is present.
@@ -43,8 +40,9 @@ namespace BinaryObjectScanner.Protection
                 return "NEAC Protect";
 
             string name = pex.ProductName;
+
             // Found in "NeacSafe64.sys" and "NeacSafe.sys".
-            // TODO: Fix Product Name being properly grabbed from the file.
+            // TODO: Fix Product Name not being properly grabbed from the file.
             if (!string.IsNullOrEmpty(name) && name.Contains("neacsafe"))
                 return "NEAC Protect";
 
