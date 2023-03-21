@@ -21,7 +21,7 @@ namespace BinaryObjectScanner.Compression.MSZIP
                     return false;
 
                 //  CK = Chris Kirmse, official Microsoft purloiner
-                if (state.inpos[0] != 0x43 || state.inpos[1] != 0x48)
+                if (state.inpos[0] != 0x43 || state.inpos[1] != 0x4B)
                     return false;
 
                 state.inpos += 2;
