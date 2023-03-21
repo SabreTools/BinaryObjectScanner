@@ -191,6 +191,7 @@ namespace BinaryObjectScanner.Compression.MSZIP
             b = state.bb;
             k = state.bk;
 
+            state.ll = new uint[288 + 32];
             fixed (uint* ll = state.ll)
             {
                 /* read in table lengths */
