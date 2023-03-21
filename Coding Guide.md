@@ -325,6 +325,7 @@ This section contains information on project and class organization principles t
 | `BinaryObjectScanner.Builders` | One file per executable type. |
 | `BinaryObjectScanner.Compression` | One directory per compression type. |
 | `BinaryObjectScanner.FileType` | One file per file type. |
+| `BinaryObjectScanner.GameEngine` | At least one file per game engine. Partial classes allowed. |
 | `BinaryObjectScanner.Interfaces` | One file per interface. |
 | `BinaryObjectScanner.Matching` | Flat directory structure. Include interfaces and base classes. |
 | `BinaryObjectScanner.Models` | One directory per executable type. One file per object model. |
@@ -344,19 +345,19 @@ This section contains information on in-code organization principles that depend
 | Project | Description |
 | --- | --- |
 | `BurnOutSharp` | Varies from file to file. |
-| `BurnOutSharp/FileType` | `IDetectable` implementations, `IExtractable` implementations, `IScannable` implementations, helper methods. |
 | `BurnOutSharp/Tools` | Methods grouped by function. Regions ordered alphabetically. |
 | `BinaryObjectScanner.ASN1` | Partial classes suggested for different implmentations. |
 | `BinaryObjectScanner.Builders` | Two copies of each non-generic method: one for byte arrays and one for Streams. |
 | `BinaryObjectScanner.Compression` | Varies from file to file. |
 | `BinaryObjectScanner.FileType` | `IDetectable` implementations, `IExtractable` implementations, helper methods. |
+| `BinaryObjectScanner.GameEngine` | `IContentCheck` implementations, `ILinearExecutableCheck` implementations, `INewExecutableCheck` implementations, `IPortableExecutableCheck` implementations, `IPathCheck` implementations, `IExtractable` implementations, helper methods. |
 | `BinaryObjectScanner.Interfaces` | Methods ordered alphabetically. |
 | `BinaryObjectScanner.Matching` | Varies from file to file. |
 | `BinaryObjectScanner.Models` | No methods at all, just properties. |
 | `BinaryObjectScanner.Packer` | `IContentCheck` implementations, `ILinearExecutableCheck` implementations, `INewExecutableCheck` implementations, `IPortableExecutableCheck` implementations, `IPathCheck` implementations, `IExtractable` implementations, helper methods. |
 | `BinaryObjectScanner.Protection` | `IContentCheck` implementations, `ILinearExecutableCheck` implementations, `INewExecutableCheck` implementations, `IPortableExecutableCheck` implementations, `IPathCheck` implementations, `IExtractable` implementations, helper methods. |
 | `BinaryObjectScanner.Utilities` | Varies from file to file. |
-| `BurnOutSharp.Wrappers` | Follow region and method grouping from existing wrappers. |
+| `BinaryObjectScanner.Wrappers` | Follow region and method grouping from existing wrappers. |
 | `psxt001z` | Varies from file to file. |
 | `Test` | New functionality should be added as a combination of a flag with a long and a short form, a new line in the help text, and a new method (if necessary). |
 

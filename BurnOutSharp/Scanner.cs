@@ -23,10 +23,13 @@ namespace BurnOutSharp
         /// <inheritdoc cref="Options.ScanContents"/>
         public bool ScanContents => options?.ScanContents ?? false;
 
-        /// <inheritdoc cref="Options.ScanPaths"/>
+        /// <inheritdoc cref="Options.ScanGameEngines"/>
+        public bool ScanGameEngines => options?.ScanGameEngines ?? false;
+
+        /// <inheritdoc cref="Options.ScanPackers"/>
         public bool ScanPackers => options?.ScanPackers ?? false;
 
-        /// <inheritdoc cref="Options.ScanArchives"/>
+        /// <inheritdoc cref="Options.ScanPaths"/>
         public bool ScanPaths => options?.ScanPaths ?? false;
 
         /// <inheritdoc cref="Options.IncludeDebug"/>
@@ -49,16 +52,18 @@ namespace BurnOutSharp
         /// </summary>
         /// <param name="scanArchives">Enable scanning archive contents</param>
         /// <param name="scanContents">Enable including content detections in output</param>
+        /// <param name="scanGameEngines">Enable including game engines in output</param>
         /// <param name="scanPackers">Enable including packers in output</param>
         /// <param name="scanPaths">Enable including path detections in output</param>
         /// <param name="includeDebug">Enable including debug information</param>
         /// <param name="fileProgress">Optional progress callback</param>
-        public Scanner(bool scanArchives, bool scanContents, bool scanPackers, bool scanPaths, bool includeDebug, IProgress<ProtectionProgress> fileProgress = null)
+        public Scanner(bool scanArchives, bool scanContents, bool scanGameEngines, bool scanPackers, bool scanPaths, bool includeDebug, IProgress<ProtectionProgress> fileProgress = null)
         {
             this.options = new Options
             {
                 ScanArchives = scanArchives,
                 ScanContents = scanContents,
+                ScanGameEngines = scanGameEngines,
                 ScanPackers = scanPackers,
                 ScanPaths = scanPaths,
                 IncludeDebug = includeDebug,
@@ -300,6 +305,7 @@ namespace BurnOutSharp
                     // If we have an executable, it needs to bypass normal handling
                     if (detectable is Executable executable)
                     {
+                        executable.IncludeGameEngines = ScanGameEngines;
                         executable.IncludePackers = ScanPackers;
                         var subProtections = ProcessExecutable(executable, fileName, stream);
                         if (subProtections != null)

@@ -24,6 +24,11 @@ namespace BinaryObjectScanner.FileType
         #region Properties
 
         /// <summary>
+        /// Determines if game engines are counted as detected protections or not
+        /// </summary>
+        public bool IncludeGameEngines { get; set; }
+
+        /// <summary>
         /// Determines if packers are counted as detected protections or not
         /// </summary>
         public bool IncludePackers { get; set; }
@@ -233,8 +238,12 @@ namespace BinaryObjectScanner.FileType
                 if (string.IsNullOrWhiteSpace(protection))
                     return;
 
-                // If we are filtering the output of the check
-                if (!CheckIfPacker(checkClass) || !IncludePackers)
+                // If we are filtering on game engines
+                if (CheckIfGameEngine(checkClass) && !IncludeGameEngines)
+                    return;
+
+                // If we are filtering on packers
+                if (CheckIfPacker(checkClass) && !IncludePackers)
                     return;
 
                 protections.TryAdd(checkClass, protection);
@@ -263,8 +272,12 @@ namespace BinaryObjectScanner.FileType
                 if (string.IsNullOrWhiteSpace(protection))
                     return;
 
-                // If we are filtering the output of the check
-                if (!CheckIfPacker(checkClass) || !IncludePackers)
+                // If we are filtering on game engines
+                if (CheckIfGameEngine(checkClass) && !IncludeGameEngines)
+                    return;
+
+                // If we are filtering on packers
+                if (CheckIfPacker(checkClass) && !IncludePackers)
                     return;
 
                 protections.TryAdd(checkClass, protection);
@@ -293,8 +306,12 @@ namespace BinaryObjectScanner.FileType
                 if (string.IsNullOrWhiteSpace(protection))
                     return;
 
-                // If we are filtering the output of the check
-                if (!CheckIfPacker(checkClass) || !IncludePackers)
+                // If we are filtering on game engines
+                if (CheckIfGameEngine(checkClass) && !IncludeGameEngines)
+                    return;
+
+                // If we are filtering on packers
+                if (CheckIfPacker(checkClass) && !IncludePackers)
                     return;
 
                 protections.TryAdd(checkClass, protection);
@@ -323,8 +340,12 @@ namespace BinaryObjectScanner.FileType
                 if (string.IsNullOrWhiteSpace(protection))
                     return;
 
-                // If we are filtering the output of the check
-                if (!CheckIfPacker(checkClass) || !IncludePackers)
+                // If we are filtering on game engines
+                if (CheckIfGameEngine(checkClass) && !IncludeGameEngines)
+                    return;
+
+                // If we are filtering on packers
+                if (CheckIfPacker(checkClass) && !IncludePackers)
                     return;
 
                 protections.TryAdd(checkClass, protection);
@@ -353,8 +374,12 @@ namespace BinaryObjectScanner.FileType
                 if (string.IsNullOrWhiteSpace(protection))
                     return;
 
-                // If we are filtering the output of the check
-                if (!CheckIfPacker(checkClass) || !IncludePackers)
+                // If we are filtering on game engines
+                if (CheckIfGameEngine(checkClass) && !IncludeGameEngines)
+                    return;
+
+                // If we are filtering on packers
+                if (CheckIfPacker(checkClass) && !IncludePackers)
                     return;
 
                 protections.TryAdd(checkClass, protection);
@@ -371,8 +396,9 @@ namespace BinaryObjectScanner.FileType
         /// Initialize all implementations of a type
         /// </summary>
         private static IEnumerable<T> InitCheckClasses<T>()
-            => InitCheckClasses<T>(typeof(BinaryObjectScanner.Packer._DUMMY).Assembly)
-                .Concat(InitCheckClasses<T>(typeof(BinaryObjectScanner.Protection._DUMMY).Assembly));
+            => InitCheckClasses<T>(typeof(GameEngine._DUMMY).Assembly)
+                .Concat(InitCheckClasses<T>(typeof(Packer._DUMMY).Assembly))
+                .Concat(InitCheckClasses<T>(typeof(Protection._DUMMY).Assembly));
 
         /// <summary>
         /// Initialize all implementations of a type
@@ -387,6 +413,15 @@ namespace BinaryObjectScanner.FileType
         #endregion
 
         #region Helpers
+
+        /// <summary>
+        /// Check to see if an implementation is a game engine using reflection
+        /// </summary>
+        /// <param name="impl">Implementation that was last used to check</param>
+        private static bool CheckIfGameEngine(object impl)
+        {
+            return impl.GetType().Namespace.ToLowerInvariant().Contains("gameengine");
+        }
 
         /// <summary>
         /// Check to see if an implementation is a packer using reflection

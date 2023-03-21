@@ -69,6 +69,11 @@ namespace Test
         public bool ScanContents { get; private set; } = true;
 
         /// <summary>
+        /// Scan game engines during protection scanning
+        /// </summary>
+        public bool ScanGameEngines { get; private set; } = true;
+
+        /// <summary>
         /// Scan packers during protection scanning
         /// </summary>
         public bool ScanPackers { get; private set; } = true;
@@ -180,6 +185,11 @@ namespace Test
                         options.ScanContents = false;
                         break;
 
+                    case "-ng":
+                    case "--no-game-engines":
+                        options.ScanGameEngines = false;
+                        break;
+
                     case "-np":
                     case "--no-packers":
                         options.ScanPackers = false;
@@ -230,27 +240,28 @@ namespace Test
             Console.WriteLine("test.exe <features> <options> file|directory ...");
             Console.WriteLine();
             Console.WriteLine("Features:");
-            Console.WriteLine("-x, --extract        Extract archive formats");
-            Console.WriteLine("-i, --info           Print executable info");
-            Console.WriteLine("-s, --scan           Enable protection scanning (default if none)");
+            Console.WriteLine("-x, --extract            Extract archive formats");
+            Console.WriteLine("-i, --info               Print executable info");
+            Console.WriteLine("-s, --scan               Enable protection scanning (default if none)");
             Console.WriteLine();
             Console.WriteLine("Common options:");
-            Console.WriteLine("-?, -h, --help       Display this help text and quit");
-            Console.WriteLine("-d, --debug          Enable debug mode");
+            Console.WriteLine("-?, -h, --help           Display this help text and quit");
+            Console.WriteLine("-d, --debug              Enable debug mode");
             Console.WriteLine();
             Console.WriteLine("Extraction options:");
-            Console.WriteLine("-o, --outdir [PATH]  Set output path for extraction (required)");
+            Console.WriteLine("-o, --outdir [PATH]      Set output path for extraction (required)");
 #if NET6_0_OR_GREATER
             Console.WriteLine();
             Console.WriteLine("Information options:");
-            Console.WriteLine("-j, --json           Print executable info as JSON");
+            Console.WriteLine("-j, --json               Print executable info as JSON");
 #endif
             Console.WriteLine();
             Console.WriteLine("Scanning options:");
-            Console.WriteLine("-nc, --no-contents   Disable scanning for content checks");
-            Console.WriteLine("-na, --no-archives   Disable scanning archives");
-            Console.WriteLine("-np, --no-packers    Disable scanning for packers");
-            Console.WriteLine("-ns, --no-paths      Disable scanning for path checks");
+            Console.WriteLine("-nc, --no-contents       Disable scanning for content checks");
+            Console.WriteLine("-na, --no-archives       Disable scanning archives");
+            Console.WriteLine("-ng, --no-game-engines   Disable scanning for game engines");
+            Console.WriteLine("-np, --no-packers        Disable scanning for packers");
+            Console.WriteLine("-ns, --no-paths          Disable scanning for path checks");
         }
 
         /// <summary>

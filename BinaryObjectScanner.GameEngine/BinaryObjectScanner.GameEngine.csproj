@@ -1,10 +1,10 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>net48;net6.0;net7.0</TargetFrameworks>
     <RuntimeIdentifiers>win-x86;win-x64;linux-x64;osx-x64</RuntimeIdentifiers>
-    <Title>BinaryObjectScanner.FileType</Title>
-    <AssemblyName>BinaryObjectScanner.FileType</AssemblyName>
+    <Title>BinaryObjectScanner.GameEngine</Title>
+    <AssemblyName>BinaryObjectScanner.GameEngine</AssemblyName>
     <Authors>Matt Nadareski</Authors>
     <Product>BurnOutSharp</Product>
     <Copyright>Copyright (c)2022 Matt Nadareski</Copyright>
@@ -21,19 +21,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BinaryObjectScanner.Compression\BinaryObjectScanner.Compression.csproj" />
-    <ProjectReference Include="..\BinaryObjectScanner.GameEngine\BinaryObjectScanner.GameEngine.csproj" />
     <ProjectReference Include="..\BinaryObjectScanner.Interfaces\BinaryObjectScanner.Interfaces.csproj" />
     <ProjectReference Include="..\BinaryObjectScanner.Matching\BinaryObjectScanner.Matching.csproj" />
-    <ProjectReference Include="..\BinaryObjectScanner.Packer\BinaryObjectScanner.Packer.csproj" />
-    <ProjectReference Include="..\BinaryObjectScanner.Protection\BinaryObjectScanner.Protection.csproj" />
     <ProjectReference Include="..\BinaryObjectScanner.Wrappers\BinaryObjectScanner.Wrappers.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="OpenMcdf" Version="2.2.1.12" />
-    <PackageReference Include="SharpCompress" Version="0.32.2" />
-    <PackageReference Include="UnshieldSharp" Version="1.6.9" />
   </ItemGroup>
 
 </Project>
