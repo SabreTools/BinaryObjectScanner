@@ -5,6 +5,8 @@ namespace BinaryObjectScanner.Interfaces
     /// <summary>
     /// Mark a file type as being able to be extracted
     /// </summary>
+    /// TODO: Change to have output directory passed in
+    /// TODO: Change to return a bool
     public interface IExtractable
     {
         /// <summary>
