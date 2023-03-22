@@ -148,6 +148,14 @@ Below is a list of executable packers detected by BurnOutSharp. The three column
 | WinZip SFX | Yes | No | Yes | |
 | WISE Installer | Yes | No | Yes | |
 
+## Game Engines Detected
+
+Below is a list of game engines detected by BurnOutSharp. The two columns explain what sort of checks are performed to determine how the protection is detected. Generally speaking, it's better to have a content check than a path check.
+
+| Protection Name | Content Check | Path Check | Notes |
+| --------------- | ------------- | ---------- | ----- |
+| RenderWare | Yes | No | No | |
+
 ## Container Formats
 
 Below is a list of container formats that are supported in some way:

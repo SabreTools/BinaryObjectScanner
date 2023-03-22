@@ -83,7 +83,6 @@ namespace BinaryObjectScanner.Protection
                 return "SafeDisc";
 
             // TODO: Investigate various section names:
-            // "_rwcseg" - Found in Redump entry 55823.
             // "STLPORT_" - Found in Redump entry 11638.
             // "PACODE" - Found in Redump entry 9621.
             // "CSEG" + "DSEG" + "TQIA_DAT" + "GRPOLY_D"  - Found in Redump entry 72195.
