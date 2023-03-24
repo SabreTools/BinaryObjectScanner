@@ -666,6 +666,9 @@ namespace BinaryObjectScanner.Protection
                 // Found in Redump entries 53666, 76775, and 102301.
                 case "69C776F67EBD53CB5FD760B498B4A491BF22F293":
                     return "3.20.022";
+                // Found in Redump entry 102806.
+                case "2BD7CD06CED6F6FB1A31AAE2D6C403C166366C6F":
+                    return "3.20.022";
                 // Found in Redump entries 15614, 79729, 83408, and 86196.
                 // The presence of any drvmgt.dll file at all is notably missing in several games with SafeDisc versions 4.00.001-4.00.003, including Redump entries 33326, 51597, and 67927.
                 case "E21FF43C2E663264D6CB11FBBC31EB1DCEE42B1A":
