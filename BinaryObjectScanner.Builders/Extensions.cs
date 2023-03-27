@@ -1228,6 +1228,7 @@ namespace BinaryObjectScanner.Builders
                 int currentOffset = offset;
 
                 offset += 6;
+
                 string nextKey = entry.Data.ReadString(ref offset, Encoding.Unicode);
                 offset = currentOffset;
 
@@ -1278,12 +1279,18 @@ namespace BinaryObjectScanner.Builders
         {
             var stringFileInfo = new Models.PortableExecutable.StringFileInfo();
 
+            // Cache the initial offset
+            int currentOffset = offset;
+
             stringFileInfo.Length = data.ReadUInt16(ref offset);
             stringFileInfo.ValueLength = data.ReadUInt16(ref offset);
             stringFileInfo.ResourceType = (Models.PortableExecutable.VersionResourceType)data.ReadUInt16(ref offset);
             stringFileInfo.Key = data.ReadString(ref offset, Encoding.Unicode);
             if (stringFileInfo.Key != "StringFileInfo")
+            {
+                offset -= 6 + ((stringFileInfo.Key.Length + 1) * 2);
                 return null;
+            }
 
             // Align to the DWORD boundary if we're not at the end
             if (offset != data.Length)
@@ -1293,7 +1300,7 @@ namespace BinaryObjectScanner.Builders
             }
 
             var stringFileInfoChildren = new List<Models.PortableExecutable.StringTable>();
-            while (offset < stringFileInfo.Length)
+            while ((offset - currentOffset) < stringFileInfo.Length)
             {
                 var stringTable = new Models.PortableExecutable.StringTable();
 
@@ -1310,7 +1317,7 @@ namespace BinaryObjectScanner.Builders
                 }
 
                 var stringTableChildren = new List<Models.PortableExecutable.StringData>();
-                while (offset < stringTable.Length)
+                while ((offset - currentOffset) < stringTable.Length)
                 {
                     var stringData = new Models.PortableExecutable.StringData();
 
@@ -1362,6 +1369,9 @@ namespace BinaryObjectScanner.Builders
         {
             var varFileInfo = new Models.PortableExecutable.VarFileInfo();
 
+            // Cache the initial offset
+            int initialOffset = offset;
+
             varFileInfo.Length = data.ReadUInt16(ref offset);
             varFileInfo.ValueLength = data.ReadUInt16(ref offset);
             varFileInfo.ResourceType = (Models.PortableExecutable.VersionResourceType)data.ReadUInt16(ref offset);
@@ -1377,7 +1387,7 @@ namespace BinaryObjectScanner.Builders
             }
 
             var varFileInfoChildren = new List<Models.PortableExecutable.VarData>();
-            while (offset < varFileInfo.Length)
+            while ((offset - initialOffset) < varFileInfo.Length)
             {
                 var varData = new Models.PortableExecutable.VarData();
 
@@ -1386,7 +1396,10 @@ namespace BinaryObjectScanner.Builders
                 varData.ResourceType = (Models.PortableExecutable.VersionResourceType)data.ReadUInt16(ref offset);
                 varData.Key = data.ReadString(ref offset, Encoding.Unicode);
                 if (varData.Key != "Translation")
+                {
+                    offset -= 6 + ((varData.Key.Length + 1) * 2);
                     return null;
+                }
 
                 // Align to the DWORD boundary if we're not at the end
                 if (offset != data.Length)
@@ -1395,8 +1408,11 @@ namespace BinaryObjectScanner.Builders
                         varData.Padding = data.ReadByte(ref offset);
                 }
 
+                // Cache the current offset
+                int currentOffset = offset;
+
                 var varDataValue = new List<uint>();
-                while (offset < (varData.ValueLength * sizeof(ushort)))
+                while ((offset - currentOffset) < varData.ValueLength)
                 {
                     uint languageAndCodeIdentifierPair = data.ReadUInt32(ref offset);
                     varDataValue.Add(languageAndCodeIdentifierPair);
