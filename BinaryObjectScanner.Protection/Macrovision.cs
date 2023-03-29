@@ -48,11 +48,42 @@ namespace BinaryObjectScanner.Protection
             if (sections == null)
                 return null;
 
+            // Get the stxt371 and stxt774 sections, if they exist -- TODO: Confirm if both are needed or either/or is fine.
+            // Found together in seemingly every SafeDisc 2+ game, and appear to always be the final two sections.
+            bool stxt371Section = pex.ContainsSection("stxt371", exact: true);
+            bool stxt774Section = pex.ContainsSection("stxt774", exact: true);
+            if (stxt371Section && stxt774Section)
+            {
+                int entryPointIndex = pex.FindEntryPointSectionIndex();
+                string entryPointSectionName = pex.SectionNames[entryPointIndex];
+
+                // Check if the entry point is one of the known protected sections.
+                // If it isn't, the executable has likely been cracked to remove the protection, or has been corrupted or tampered with and is no longer functional.
+                // TODO: Check if both sections can be entry points.
+                if (entryPointSectionName == "stxt371" || entryPointSectionName == "stxt774")
+                    return "SafeDisc 2+";
+
+                return "SafeDisc 2+ (Entry point not present in a stxt* section. Executable is either unprotected or nonfunctional)";
+            }
+
+            // The stxt371 section is found without the stxt774 section in SafeCast protected programs.
+            if (stxt371Section)
+            {
+                int entryPointIndex = pex.FindEntryPointSectionIndex();
+                string entryPointSectionName = pex.SectionNames[entryPointIndex];
+
+                // Check if the entry point is one of the known protected sections.
+                // If it isn't, the executable has likely been cracked to remove the protection, or has been corrupted or tampered with and is no longer functional.
+                if (entryPointSectionName == "stxt371")
+                    return "SafeCast";
+
+                return "SafeCast (Entry point not present in the stxt371 section. Executable is either unprotected or nonfunctional)";
+            }
+
             // Check for generic indications of Macrovision protections first.
             string name = pex.FileDescription;
 
             // Found in hidden resource of "32bit\Tax02\cdac14ba.dll" in IA item "TurboTax Deluxe Tax Year 2002 for Wndows (2.00R)(Intuit)(2002)(352282)".
-            // TODO: Fix File Description not getting properly pulled for this executable.
             // Known versions:
             // 4.16.050 Windows NT 2002/04/24
             if (name?.Equals("Macrovision RTS Service", StringComparison.OrdinalIgnoreCase) == true)
@@ -287,7 +318,9 @@ namespace BinaryObjectScanner.Protection
             switch (version)
             {
                 // SafeCast (Confirmed)
+                // Version 1.04.000/1.4.0.0 can be found in "cdac01aa.dll" and "cdac01ba.dll" from IA item "ejay_nestle_trial", but needs further research.
                 case "2.11.010": // Found in Redump entry 83145.
+                case "2.11.060": // Found in Redump entry [Puyo Puyo Fever Ver. 1].
                 case "2.16.050": // Found in IA items "cdrom-turbotax-2002", "TurboTax_Deluxe_Tax_Year_2002_for_Wndows_2.00R_Intuit_2002_352282", and "TurboTax_Premier_Tax_Year_2002_for_Windows_v02.00Z-R_Intuit_352283_2002".
                 case "2.60.030": // Found in Redump entry 74384 (Semi-confirmed) and "Data Becker Web To Date v3.1" according to https://web.archive.org/web/20210331144912/https://protectionid.net/ (Unconfirmed).
                     return "SafeCast";

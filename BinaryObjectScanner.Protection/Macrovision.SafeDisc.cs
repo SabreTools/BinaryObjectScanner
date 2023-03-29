@@ -53,24 +53,6 @@ namespace BinaryObjectScanner.Protection
             else if (name?.Equals("SafeDisc SRV Tool APP", StringComparison.OrdinalIgnoreCase) == true)
                 return $"SafeDisc SRV Tool APP {GetSafeDiscDiagExecutableVersion(pex)}";
 
-            // Get the stxt371 and stxt774 sections, if they exist -- TODO: Confirm if both are needed or either/or is fine.
-            // Found together in seemingly every SafeDisc 2+ game, and appear to always be the final two sections.
-            bool stxt371Section = pex.ContainsSection("stxt371", exact: true);
-            bool stxt774Section = pex.ContainsSection("stxt774", exact: true);
-            if (stxt371Section || stxt774Section)
-            {
-                int entryPointIndex = pex.FindEntryPointSectionIndex();
-                string entryPointSectionName = pex.SectionNames[entryPointIndex];
-
-                // Check if the entry point is one of the known protected sections.
-                // If it isn't, the executable has likely been cracked to remove the protection, or has been corrupted or tampered with and is no longer functional.
-                // TODO: Check if both sections can be entry points.
-                if (entryPointSectionName == "stxt371" || entryPointSectionName == "stxt774")
-                    return "SafeDisc 2+";
-
-                return "SafeDisc 2+ (Entry point not present in a stxt* section. Executable is either unprotected or nonfunctional)";
-            }
-
             // Present on all "CLOKSPL.EXE" versions before SafeDisc 1.06.000. Found on Redump entries 61731 and 66004. 
             // Only found so far on SafeDisc 1.00.025-1.01.044, but the report is currently left generic due to the generic nature of the check.
             name = pex.FileDescription;
@@ -565,6 +547,9 @@ namespace BinaryObjectScanner.Protection
             string sha1 = GetFileSHA1(firstMatchedString);
             switch (sha1)
             {
+                // Found in Redump entry [Puyo Puyo Fever Ver. 1].
+                case "B858CB282617FB0956D960215C8E84D1CCF909C6":
+                    return "(Empty File)";
                 // Found in Redump entries 29073 and 31149.
                 case "33434590D7DE4EEE2C35FCC98B0BF141F422B26D":
                     return "1.06.000";
@@ -717,6 +702,9 @@ namespace BinaryObjectScanner.Protection
             FileInfo fi = new FileInfo(firstMatchedString);
             switch (fi.Length)
             {
+                // Found in Redump entry [Puyo Puyo Fever Ver. 1].
+                case 1:
+                    return "(Empty File)";
                 // Found in Redump entries 9718, 12885, 21154, 31149, 37523, 37920.
                 case 14_304:
                     return "/ SafeDisc 1.06.000-1.20.001";

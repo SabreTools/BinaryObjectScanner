@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using BinaryObjectScanner.Matching;
 using BinaryObjectScanner.Wrappers;
 
@@ -36,18 +37,31 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc cref="BinaryObjectScanner.Interfaces.INewExecutableCheck.CheckNewExecutable(string, NewExecutable, bool)"/>
         internal string SafeCastCheckNewExecutable(string file, NewExecutable nex, bool includeDebug)
         {
-            // Check we have a valid executable
+            // Check we have a valid executable.
             if (nex == null)
                 return null;
 
-            // TODO: Implement the following NE checks:
+            // Check for the CDAC01AA name string.
+            bool cdac01aaNameFound = nex.ResidentNameTable.Where(rnte => rnte?.NameString != null)
+                .Select(rnte => Encoding.ASCII.GetString(rnte.NameString))
+                .Any(s => s.Contains("CDAC01AA"));
+            
+            if (cdac01aaNameFound)
+                return "SafeCast";
 
-            // File Description "CdaC01A" in "cdac01aa.dll" from IA item "ejay_nestle_trial".
-            // File Description "CdaC01BA" in "cdac01ba.dll" from IA item "ejay_nestle_trial".
-            // Product name "SafeCas" in "cdac01aa.dll" from IA item "ejay_nestle_trial".
-            // Product name "SafeCast" in "cdac01ba.dll" from IA item "ejay_nestle_trial".
+            // TODO: Don't read entire file
+            var data = nex.ReadArbitraryRange();
+            if (data == null)
+                return null;
 
-            return null;
+            var neMatchSets = new List<ContentMatchSet>
+            {
+                // SafeCast
+                // Found as the Product Name in "cdac01aa.dll" from IA item "ejay_nestle_trial". Windows 10 appears to incorrectly truncate this to "SafeCas" in File Explorer.
+                new ContentMatchSet(new byte?[] { 0x53, 0x61, 0x66, 0x65, 0x43, 0x61, 0x73, 0x74 }, "SafeCast"), 
+            };
+
+            return MatchUtil.GetFirstMatch(file, data, neMatchSets, includeDebug);
         }
 
         /// <inheritdoc cref="BinaryObjectScanner.Interfaces.IPortableExecutableCheck.CheckPortableExecutable(string, PortableExecutable, bool)"/>
@@ -87,10 +101,22 @@ namespace BinaryObjectScanner.Protection
             if (name?.Equals("SafeCast2", StringComparison.OrdinalIgnoreCase) == true)
                 return "SafeCast";
 
+            // Found in "cdac01ba.dll" from IA item "ejay_nestle_trial".
+            // TODO: Figure out a reasonable way to parse version.
+            if (name?.Equals("CdaC01BA", StringComparison.OrdinalIgnoreCase) == true)
+                return $"SafeCast";
+
+            // Found in "SCRfrsh.exe" in Redump entry [Puyo Puyo Fever Ver. 1].
+            if (name?.Equals("32-bit SafeCast Toolkit", StringComparison.OrdinalIgnoreCase) == true)
+                return $"SafeCast {pex.FileVersion}";
+
             // Found in hidden resource of "32bit\Tax02\cdac14ba.dll" in IA item "TurboTax Deluxe Tax Year 2002 for Wndows (2.00R)(Intuit)(2002)(352282)".
-            // TODO: Fix Product Name not getting properly pulled for this executable.
             name = pex.ProductName;
             if (name?.Equals("SafeCast Windows NT", StringComparison.OrdinalIgnoreCase) == true)
+                return "SafeCast";
+
+            // Found in "cdac01ba.dll" from IA item "ejay_nestle_trial".
+            if (name?.Equals("SafeCast", StringComparison.OrdinalIgnoreCase) == true)
                 return "SafeCast";
 
             // Check for CDSHARE/DISAG_SH sections
@@ -113,8 +139,8 @@ namespace BinaryObjectScanner.Protection
                 // Found in Redump entry 83145.
                 new PathMatchSet(new PathMatch("CDAC21BA.DLL", useEndsWith: true), "SafeCast"),
 
-                // Shown in multiple sources (such as https://groups.google.com/g/alt.english.usage/c/kcBzeqXgE-M) to be associated with SafeCast, but no samples have been found as of yet.
-                new PathMatchSet(new PathMatch("SCRfrsh.exe", useEndsWith: true), "SafeCast (Unconfirmed - Please report to us on Github)"),
+                // Found in Redump entry [Puyo Puyo Fever Ver. 1].
+                new PathMatchSet(new PathMatch("SCRfrsh.exe", useEndsWith: true), "SafeCast"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: false);
@@ -137,8 +163,8 @@ namespace BinaryObjectScanner.Protection
                 // Found in Redump entry 83145.
                 new PathMatchSet(new PathMatch("CDAC21BA.DLL", useEndsWith: true), "SafeCast"),
 
-                // Shown in multiple sources (such as https://groups.google.com/g/alt.english.usage/c/kcBzeqXgE-M) to be associated with SafeCast, but no samples have been found as of yet.
-                new PathMatchSet(new PathMatch("SCRfrsh.exe", useEndsWith: true), "SafeCast (Unconfirmed - Please report to us on Github)"),
+                // Found in Redump entry [Puyo Puyo Fever Ver. 1].
+                new PathMatchSet(new PathMatch("SCRfrsh.exe", useEndsWith: true), "SafeCast"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
