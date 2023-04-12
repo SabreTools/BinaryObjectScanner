@@ -106,7 +106,7 @@ namespace BinaryObjectScanner.Protection
             if (name?.Equals("CdaC01BA", StringComparison.OrdinalIgnoreCase) == true)
                 return $"SafeCast";
 
-            // Found in "SCRfrsh.exe" in Redump entry [Puyo Puyo Fever Ver. 1].
+            // Found in "SCRfrsh.exe" in Redump entry 102979.
             if (name?.Equals("32-bit SafeCast Toolkit", StringComparison.OrdinalIgnoreCase) == true)
                 return $"SafeCast {pex.FileVersion}";
 
@@ -139,7 +139,7 @@ namespace BinaryObjectScanner.Protection
                 // Found in Redump entry 83145.
                 new PathMatchSet(new PathMatch("CDAC21BA.DLL", useEndsWith: true), "SafeCast"),
 
-                // Found in Redump entry [Puyo Puyo Fever Ver. 1].
+                // Found in Redump entry 102979.
                 new PathMatchSet(new PathMatch("SCRfrsh.exe", useEndsWith: true), "SafeCast"),
             };
 
@@ -163,7 +163,7 @@ namespace BinaryObjectScanner.Protection
                 // Found in Redump entry 83145.
                 new PathMatchSet(new PathMatch("CDAC21BA.DLL", useEndsWith: true), "SafeCast"),
 
-                // Found in Redump entry [Puyo Puyo Fever Ver. 1].
+                // Found in Redump entry 102979.
                 new PathMatchSet(new PathMatch("SCRfrsh.exe", useEndsWith: true), "SafeCast"),
             };
 

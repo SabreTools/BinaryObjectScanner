@@ -11,7 +11,10 @@ using System;
 namespace BinaryObjectScanner.Protection
 {
     /// <summary>
-    /// This is a placeholder for all Macrovision-based protections. See partial classes for more details
+    /// Macrovision was a company that specialized in various forms of DRM. They had an extensive product line, their most infamous product (within this context) being SafeDisc.
+    /// Due to there being a significant amount of backend tech being shared between various protections, a separate class is needed for generic Macrovision detections.
+    /// 
+    /// List of trademarks associated with Marovision: https://tmsearch.uspto.gov/bin/showfield?f=toc&state=4804%3Au8wykd.5.1&p_search=searchss&p_L=50&BackReference=&p_plural=yes&p_s_PARA1=&p_tagrepl%7E%3A=PARA1%24LD&expr=PARA1+AND+PARA2&p_s_PARA2=macrovision&p_tagrepl%7E%3A=PARA2%24ALL&p_op_ALL=AND&a_default=search&a_search=Submit+Query&a_search=Submit+Query
     /// </summary>
     public partial class Macrovision : IPathCheck, INewExecutableCheck, IPortableExecutableCheck
     {
@@ -48,38 +51,6 @@ namespace BinaryObjectScanner.Protection
             if (sections == null)
                 return null;
 
-            // Get the stxt371 and stxt774 sections, if they exist -- TODO: Confirm if both are needed or either/or is fine.
-            // Found together in seemingly every SafeDisc 2+ game, and appear to always be the final two sections.
-            bool stxt371Section = pex.ContainsSection("stxt371", exact: true);
-            bool stxt774Section = pex.ContainsSection("stxt774", exact: true);
-            if (stxt371Section && stxt774Section)
-            {
-                int entryPointIndex = pex.FindEntryPointSectionIndex();
-                string entryPointSectionName = pex.SectionNames[entryPointIndex];
-
-                // Check if the entry point is one of the known protected sections.
-                // If it isn't, the executable has likely been cracked to remove the protection, or has been corrupted or tampered with and is no longer functional.
-                // TODO: Check if both sections can be entry points.
-                if (entryPointSectionName == "stxt371" || entryPointSectionName == "stxt774")
-                    return "SafeDisc 2+";
-
-                return "SafeDisc 2+ (Entry point not present in a stxt* section. Executable is either unprotected or nonfunctional)";
-            }
-
-            // The stxt371 section is found without the stxt774 section in SafeCast protected programs.
-            if (stxt371Section)
-            {
-                int entryPointIndex = pex.FindEntryPointSectionIndex();
-                string entryPointSectionName = pex.SectionNames[entryPointIndex];
-
-                // Check if the entry point is one of the known protected sections.
-                // If it isn't, the executable has likely been cracked to remove the protection, or has been corrupted or tampered with and is no longer functional.
-                if (entryPointSectionName == "stxt371")
-                    return "SafeCast";
-
-                return "SafeCast (Entry point not present in the stxt371 section. Executable is either unprotected or nonfunctional)";
-            }
-
             // Check for generic indications of Macrovision protections first.
             string name = pex.FileDescription;
 
@@ -105,6 +76,27 @@ namespace BinaryObjectScanner.Protection
                 match = CheckSectionForProtection(file, includeDebug, pex.GetFirstSectionStrings(".data"), pex.GetFirstSectionData(".data"));
                 if (!string.IsNullOrWhiteSpace(match))
                     resultsList.Add(match);
+            }
+
+            // The stxt371 and stxt774 sections are found in various Macrovision products, including various versions of CDS-300, SafeCast, and SafeDisc.
+            // They may indicate SafeWrap, but this hasn't been confirmed yet.
+            bool stxt371Section = pex.ContainsSection("stxt371", exact: true);
+            bool stxt774Section = pex.ContainsSection("stxt774", exact: true);
+            if (stxt371Section || stxt774Section)
+            {
+                int entryPointIndex = pex.FindEntryPointSectionIndex();
+                string entryPointSectionName = pex.SectionNames[entryPointIndex];
+
+                // Check if the entry point is one of the known protected sections.
+                // If it isn't, the executable has likely been cracked to remove the protection, or has been corrupted or tampered with and is no longer functional.
+                if (entryPointSectionName == "stxt371")
+                    resultsList.Add("Macrovision protected application");
+
+                // It isn't known if this section ever contains the entry point, so if that does happen, it's worth investigating.
+                if (entryPointSectionName == "stxt774")
+                    resultsList.Add("Macrovision protected application (Report this to us on GitHub)");
+
+                resultsList.Add("Macrovision protected application (Entry point not present in the stxt371 section. Executable is either unprotected or nonfunctional)");
             }
 
             // Run Cactus Data Shield PE checks
@@ -320,7 +312,7 @@ namespace BinaryObjectScanner.Protection
                 // SafeCast (Confirmed)
                 // Version 1.04.000/1.4.0.0 can be found in "cdac01aa.dll" and "cdac01ba.dll" from IA item "ejay_nestle_trial", but needs further research.
                 case "2.11.010": // Found in Redump entry 83145.
-                case "2.11.060": // Found in Redump entry [Puyo Puyo Fever Ver. 1].
+                case "2.11.060": // Found in Redump entry 102979.
                 case "2.16.050": // Found in IA items "cdrom-turbotax-2002", "TurboTax_Deluxe_Tax_Year_2002_for_Wndows_2.00R_Intuit_2002_352282", and "TurboTax_Premier_Tax_Year_2002_for_Windows_v02.00Z-R_Intuit_352283_2002".
                 case "2.60.030": // Found in Redump entry 74384 (Semi-confirmed) and "Data Becker Web To Date v3.1" according to https://web.archive.org/web/20210331144912/https://protectionid.net/ (Unconfirmed).
                     return "SafeCast";

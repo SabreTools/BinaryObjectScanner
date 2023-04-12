@@ -125,9 +125,9 @@ namespace BinaryObjectScanner.Protection
                 // Found in many versions of SafeDisc, beginning in 2.05.030 and being used all the way until the final version 4.90.010. It is not always present, even in versions it has been used in. Found in Redump entries 56319 and 72195.
                 new PathMatchSet(new PathMatch("00000002.TMP", useEndsWith: true), "SafeDisc 2+"),
 
-                new PathMatchSet(new PathMatch("DPLAYERX.DLL", useEndsWith: true), GetSafeDiscDPlayerXVersion, "SafeDisc"),
-                new PathMatchSet(new PathMatch("drvmgt.dll", useEndsWith: true), GetSafeDiscDrvmgtVersion, "SafeDisc"),
-                new PathMatchSet(new PathMatch("secdrv.sys", useEndsWith: true), GetSafeDiscSecdrvVersion, "SafeDisc Security Driver"),
+                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}DPLAYERX.DLL", useEndsWith: true), GetSafeDiscDPlayerXVersion, "SafeDisc"),
+                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}drvmgt.dll", useEndsWith: true), GetSafeDiscDrvmgtVersion, "SafeDisc"),
+                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}secdrv.sys", useEndsWith: true), GetSafeDiscSecdrvVersion, "SafeDisc Security Driver"),
 
                 // The SD0XXX.dll files appear to solely contain custom strings that allowed the publisher to customize the SafeDisc error messages. They are currently only known to be used by EA.
                 // Each file appears to contain strings for a specific language each.
@@ -200,9 +200,9 @@ namespace BinaryObjectScanner.Protection
 
                 // TODO: Research "splash16.bmp" and "splash256.bmp".
 
-                new PathMatchSet(new PathMatch("DPLAYERX.DLL", useEndsWith: true), GetSafeDiscDPlayerXVersion, "SafeDisc"),
-                new PathMatchSet(new PathMatch("drvmgt.dll", useEndsWith: true), GetSafeDiscDrvmgtVersion, "SafeDisc"),
-                new PathMatchSet(new PathMatch("secdrv.sys", useEndsWith: true), GetSafeDiscSecdrvVersion, "SafeDisc Security Driver"),
+                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}DPLAYERX.DLL", useEndsWith: true), GetSafeDiscDPlayerXVersion, "SafeDisc"),
+                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}drvmgt.dll", useEndsWith: true), GetSafeDiscDrvmgtVersion, "SafeDisc"),
+                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}secdrv.sys", useEndsWith: true), GetSafeDiscSecdrvVersion, "SafeDisc Security Driver"),
 
                 // The SD0XXX.dll files appear to solely contain custom strings that allowed the publisher to customize the SafeDisc error messages. They are currently only known to be used by EA.
                 // Each file appears to contain strings for a specific language each.
@@ -547,7 +547,7 @@ namespace BinaryObjectScanner.Protection
             string sha1 = GetFileSHA1(firstMatchedString);
             switch (sha1)
             {
-                // Found in Redump entry [Puyo Puyo Fever Ver. 1].
+                // Found in Redump entry 102979.
                 case "B858CB282617FB0956D960215C8E84D1CCF909C6":
                     return "(Empty File)";
                 // Found in Redump entries 29073 and 31149.
@@ -702,7 +702,7 @@ namespace BinaryObjectScanner.Protection
             FileInfo fi = new FileInfo(firstMatchedString);
             switch (fi.Length)
             {
-                // Found in Redump entry [Puyo Puyo Fever Ver. 1].
+                // Found in Redump entry 102979.
                 case 1:
                     return "(Empty File)";
                 // Found in Redump entries 9718, 12885, 21154, 31149, 37523, 37920.
