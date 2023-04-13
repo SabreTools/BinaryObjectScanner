@@ -87,16 +87,21 @@ namespace BinaryObjectScanner.Protection
                 int entryPointIndex = pex.FindEntryPointSectionIndex();
                 string entryPointSectionName = pex.SectionNames[entryPointIndex];
 
-                // Check if the entry point is one of the known protected sections.
-                // If it isn't, the executable has likely been cracked to remove the protection, or has been corrupted or tampered with and is no longer functional.
-                if (entryPointSectionName == "stxt371")
-                    resultsList.Add("Macrovision protected application");
-
-                // It isn't known if this section ever contains the entry point, so if that does happen, it's worth investigating.
-                if (entryPointSectionName == "stxt774")
-                    resultsList.Add("Macrovision protected application (Report this to us on GitHub)");
-
-                resultsList.Add("Macrovision protected application (Entry point not present in the stxt371 section. Executable is either unprotected or nonfunctional)");
+                switch(entryPointSectionName)
+                {
+                    // Check if the entry point is in the expected section for normal protected executables.
+                    // If it isn't, the executable has likely been cracked to remove the protection, or has been corrupted or tampered with and is no longer functional.
+                    case "stxt371":
+                        resultsList.Add("Macrovision Protected Application");
+                        break;
+                    // It isn't known if this section ever contains the entry point, so if that does happen, it's worth investigating.
+                    case "stxt774":
+                        resultsList.Add("Macrovision Protected Application (Report this to us on GitHub)");
+                        break;
+                    default:
+                        resultsList.Add("Macrovision Protected Application (Entry point not present in the stxt371 section. Executable is either unprotected or nonfunctional)");
+                        break;
+                }
             }
 
             // Run Cactus Data Shield PE checks
@@ -309,6 +314,10 @@ namespace BinaryObjectScanner.Protection
         {
             switch (version)
             {
+                // CDS-300 (Confirmed)
+                case "2.90.044": // Found in "American Made World Played" by Les Paul & Friends (Japan) (https://www.discogs.com/release/18934432-Les-Paul-Friends-American-Made-World-Played) and "X&Y" by Coldplay (Japan) (https://www.discogs.com/release/822378-Coldplay-XY).
+                    return "CDS-300";
+
                 // SafeCast (Confirmed)
                 // Version 1.04.000/1.4.0.0 can be found in "cdac01aa.dll" and "cdac01ba.dll" from IA item "ejay_nestle_trial", but needs further research.
                 case "2.11.010": // Found in Redump entry 83145.
